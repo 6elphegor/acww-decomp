@@ -24,7 +24,7 @@
 #define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
 #define func_0209abc4 _ZN12Unk_0209ada413func_0209abc4Ev
 #define func_02135558 __register_global_object
-#define func_ov003_02216ba4 _ZN18Unk_ov003_02231e4c19func_ov003_02216ba4Ev
+#define Mailbox_execNoMail _ZN7Mailbox10execNoMailEv
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -224,7 +224,7 @@ public:
     /* 0x838 */ VillagerMood unk_838;
 };
 
-// Dialog sub-object at +0x914 of Unk_ov004_0224c7d0. Its vtable (0x0224c740) names every slot after the class that last overrides it;
+// Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
 // declared here slot by slot so that each slot mangles to that symbol.
 class ActorTalkRequest {
 public:
@@ -586,7 +586,7 @@ void *func_0207e310(void *o);
 void func_020785a8(void *o);
 void TalkRequest_EndTalkWith(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
-s32 func_ov003_02216ba4(void *a, void *b, s32 c);
+s32 Mailbox_execNoMail(void *a, void *b, s32 c);
 s32 func_02014220(void *);
 void func_020141b4(void *, s32, s32, s32);
 s32 func_020197a8(void *);
@@ -1374,7 +1374,7 @@ void HouseVisitVillager::execVisitWander() {
             unk_a4a--;
         }
         if (unk_a4a == 0) {
-            unk_a5a = func_ov003_02216ba4(&unk_a68, &unk_5c, unk_8e);
+            unk_a5a = Mailbox_execNoMail(&unk_a68, &unk_5c, unk_8e);
             unk_a5c = unk_a68;
             unk_a60 = unk_a6c;
             unk_a64 = unk_a70;

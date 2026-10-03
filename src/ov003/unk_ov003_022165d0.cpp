@@ -268,7 +268,7 @@ extern "C" {
 extern u32 gCurrentHeap;
 extern void *data_021c6204;
 extern HouseData data_021e58a8;
-extern const s8 data_ov003_0222f000[];
+extern const s8 sHexDigits[];
 extern char data_ov003_02235358[];
 
 s32 PlayerData_GetCurrentIndex();
@@ -284,11 +284,11 @@ void _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, s32 d, s32 e);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 BOOL _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *self, void *v, s16 *ang);
 
-BuildingActor *func_ov003_02218b40(u32 a);
-u32 func_ov003_02218da8();
-void func_ov003_022167d0();
-u8 func_ov003_022166d8();
-char *func_ov003_022166a4();
+BuildingActor *BuildingList_FindByItem(u32 a);
+u32 Field_GetStructureTexSuffix();
+void PlayerHouse_Create();
+u8 PlayerHouse_GetTexIndex();
+char *PlayerHouse_GetTexPath();
 }
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 
@@ -296,10 +296,10 @@ struct Unk_ov003_Vec3 {
     s32 x, y, z;
 };
 
-class Unk_ov003_02231c14 : public BuildingActor {
+class PlayerHouse : public BuildingActor {
 public:
-    Unk_ov003_02231c14();
-    virtual ~Unk_ov003_02231c14();
+    PlayerHouse();
+    virtual ~PlayerHouse();
     virtual BOOL onDraw();
     virtual BOOL vfunc_70();
     virtual BOOL vfunc_8c();
@@ -307,8 +307,8 @@ public:
     virtual BOOL vfunc_98();
     virtual BOOL vfunc_9c();
 
-    void func_ov003_02216604();
-    void func_ov003_02216648();
+    void bindHouseTex();
+    void loadHouseTex();
 
     /* 0x2b0 */ void *unk_2b0;
     /* 0x2b4 */ void *unk_2b4;
@@ -322,25 +322,25 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-extern "C" const s8 data_ov003_0222f000[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-extern "C" Unk_ov003_SceneEntry data_ov003_02231bf4 = { func_ov003_022167d0, 0x1f, 0x25, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" const s8 sHexDigits[16] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+extern "C" Unk_ov003_SceneEntry sPlayerHouseProfile = { PlayerHouse_Create, 0x1f, 0x25, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
 char data_ov003_02235358[0x20];
 }
 
-extern "C" void func_ov003_022167d0() {
-    new Unk_ov003_02231c14();
+extern "C" void PlayerHouse_Create() {
+    new PlayerHouse();
 }
 
-Unk_ov003_02231c14::Unk_ov003_02231c14() {}
+PlayerHouse::PlayerHouse() {}
 
-Unk_ov003_02231c14::~Unk_ov003_02231c14() {}
+PlayerHouse::~PlayerHouse() {}
 
-BOOL Unk_ov003_02231c14::vfunc_70() {
+BOOL PlayerHouse::vfunc_70() {
     Unk_ov003_Vec3 v;
     s16 ang;
-    func_ov003_02216648();
-    func_ov003_02216604();
+    loadHouseTex();
+    bindHouseTex();
     if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(this, &v, &ang)) {
         v.x -= 0x2000;
         v.z += 0x1000;
@@ -349,25 +349,25 @@ BOOL Unk_ov003_02231c14::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02231c14::onDraw() {
-    BuildingActor *o = func_ov003_02218b40(0x501d);
+BOOL PlayerHouse::onDraw() {
+    BuildingActor *o = BuildingList_FindByItem(0x501d);
     if (o) {
         o->updateMatrix();
     }
     return TRUE;
 }
 
-extern "C" u8 func_ov003_022166d8() { return data_021e58a8.func_0206045c(); }
+extern "C" u8 PlayerHouse_GetTexIndex() { return data_021e58a8.func_0206045c(); }
 
-extern "C" char *func_ov003_022166a4() {
-    u32 i = func_ov003_022166d8();
-    u32 c = func_ov003_02218da8();
-    func_020639e8(data_ov003_02235358, "/str/plHsTex/home%c%c.nsbtx", data_ov003_0222f000[i & 0xf], c);
+extern "C" char *PlayerHouse_GetTexPath() {
+    u32 i = PlayerHouse_GetTexIndex();
+    u32 c = Field_GetStructureTexSuffix();
+    func_020639e8(data_ov003_02235358, "/str/plHsTex/home%c%c.nsbtx", sHexDigits[i & 0xf], c);
     return data_ov003_02235358;
 }
 
-void Unk_ov003_02231c14::func_ov003_02216648() {
-    void *r4 = File_LoadAlloc(func_ov003_022166a4(), gCurrentHeap, -4, 0);
+void PlayerHouse::loadHouseTex() {
+    void *r4 = File_LoadAlloc(PlayerHouse_GetTexPath(), gCurrentHeap, -4, 0);
     unk_2b0 = NNS_G3dGetTex(r4);
     if (Gfx3d_LoadTex(unk_2b0, 0)) {
         unk_2b0 = Gfx3d_CopyTex(unk_2b0, data_021c6204);
@@ -375,7 +375,7 @@ void Unk_ov003_02231c14::func_ov003_02216648() {
     Mem_Free(r4);
 }
 
-void Unk_ov003_02231c14::func_ov003_02216604() {
+void PlayerHouse::bindHouseTex() {
     if (unk_2b0) {
         NNS_G3dBindMdlTex(unk_194, unk_2b0);
     }
@@ -385,7 +385,7 @@ void Unk_ov003_02231c14::func_ov003_02216604() {
     }
 }
 
-BOOL Unk_ov003_02231c14::vfunc_90() {
+BOOL PlayerHouse::vfunc_90() {
     PlayerData_GetCurrentIndex();
     if (func_020978fc() == 0) {
         return TRUE;
@@ -393,9 +393,9 @@ BOOL Unk_ov003_02231c14::vfunc_90() {
     return FALSE;
 }
 
-BOOL Unk_ov003_02231c14::vfunc_9c() { return data_021e58a8.func_0206022c(); }
+BOOL PlayerHouse::vfunc_9c() { return data_021e58a8.func_0206022c(); }
 
-BOOL Unk_ov003_02231c14::vfunc_8c() { return TRUE; }
+BOOL PlayerHouse::vfunc_8c() { return TRUE; }
 
-BOOL Unk_ov003_02231c14::vfunc_98() { return TRUE; }
+BOOL PlayerHouse::vfunc_98() { return TRUE; }
 

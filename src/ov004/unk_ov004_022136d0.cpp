@@ -1,5 +1,5 @@
 // mwcc-version: 1.2/sp2
-// ov004 TU04: .text 0x022136d0-0x02213b90 (class Unk_ov004_0224bc4c)
+// ov004 TU04: .text 0x022136d0-0x02213b90 (class RoomBoardSign)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
@@ -109,7 +109,7 @@ public:
     u8 pad_41[3];
 };
 
-// ---------------------------------------------------------------- Unk_ov004_0224bc4c
+// ---------------------------------------------------------------- RoomBoardSign
 struct Vec3;
 // Unk_020b6a94 member: the original constructs it with the complete-object constructor (C1), which a member
 // declaration cannot do, so it is raw storage plus explicit calls through the real symbol names.
@@ -133,27 +133,27 @@ u32 func_020b50e8();
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
 
-class Unk_ov004_0224bc4c : public Character, public TalkMsgRequest {
+class RoomBoardSign : public Character, public TalkMsgRequest {
 public:
-    Unk_ov004_0224bc4c();
+    RoomBoardSign();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224bc4c();
+    virtual ~RoomBoardSign();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
 
-    void func_ov004_0221371c();
-    BOOL func_ov004_0221374c();
-    void func_ov004_02213750();
-    BOOL func_ov004_02213774();
-    void func_ov004_022137bc();
-    BOOL func_ov004_022137c0();
-    void func_ov004_022137c4();
-    BOOL func_ov004_02213840(s32 m);
-    BOOL func_ov004_02213948();
-    BOOL func_ov004_0221397c();
+    void mainAct02();
+    BOOL setupAct02();
+    void mainAct01();
+    BOOL setupAct01();
+    void mainAct00();
+    BOOL setupAct00();
+    void execAct();
+    BOOL changeAct(s32 m);
+    BOOL unregisterSelf();
+    BOOL registerSelf();
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ Unk_020b6a94 unk_134;
@@ -163,15 +163,15 @@ public:
     /* 0x154 */ s32 unk_154;
 };
 
-typedef void (Unk_ov004_0224bc4c::*Unk_022137c4_Fn)();
-typedef BOOL (Unk_ov004_0224bc4c::*Unk_02213840_Fn)();
+typedef void (RoomBoardSign::*Unk_022137c4_Fn)();
+typedef BOOL (RoomBoardSign::*Unk_02213840_Fn)();
 
-extern "C" Unk_ov004_0224bc4c *func_ov004_02213b3c();
-extern "C" void func_ov004_022139ac();
+extern "C" RoomBoardSign *RoomBoardSign_Create();
+extern "C" void RoomBoardSign_ClearRegistry();
 
 // ---------------------------------------------------------------- data
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224bc4c *(*factory)();
+    RoomBoardSign *(*factory)();
     u16 id;
     u16 size;
     u32 zero;
@@ -188,21 +188,21 @@ struct Unk_ov004_Quad {
     }
 };
 
-extern "C" s16 data_ov004_0224bbf8;
-extern "C" u8 data_ov004_0225016c;
+extern "C" s16 sRoomBoardSignSpawnMsg;
+extern "C" u8 sRoomBoardSignCount;
 extern "C" Unk_ov004_Quad data_ov004_02250174;
 extern "C" Unk_ov004_Quad data_ov004_02250180;
-extern "C" Unk_ov004_0224bc4c *func_ov004_02213b3c();
+extern "C" RoomBoardSign *RoomBoardSign_Create();
 extern "C" Unk_ov004_Quad data_ov004_0225017c(0x1f, 0x14, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_02250184(0x14, 0x14, 0x1f, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_02250188(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_02250170(0x14, 0x1f, 0x14, 0x1f);
 extern "C" {
-void *data_ov004_022501c4[0x40];
+void *sRoomBoardSigns[0x40];
 }
-extern "C" Unk_ov004_SceneEntry data_ov004_0224bc2c = { func_ov004_02213b3c, 0x17, 0x1c, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov004_SceneEntry sRoomBoardSignProfile = { RoomBoardSign_Create, 0x17, 0x1c, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
-s32 data_ov004_02250190;
+s32 sRoomBoardSignSpawnRadius;
 }
 
 struct Unk_02213774_Pad {
@@ -211,78 +211,78 @@ struct Unk_02213774_Pad {
     ~Unk_02213774_Pad() {}
 };
 
-extern "C" Unk_ov004_0224bc4c *func_ov004_02213b3c() {
-    return new Unk_ov004_0224bc4c;
+extern "C" RoomBoardSign *RoomBoardSign_Create() {
+    return new RoomBoardSign;
 }
 
-Unk_ov004_0224bc4c::Unk_ov004_0224bc4c() {
+RoomBoardSign::RoomBoardSign() {
     _ZN12Unk_020b6a94C1Ev(&unk_134);
 }
 
-Unk_ov004_0224bc4c::~Unk_ov004_0224bc4c() {
+RoomBoardSign::~RoomBoardSign() {
     _ZN12Unk_020b6a94D1Ev(&unk_134);
 }
 
-BOOL Unk_ov004_0224bc4c::vfunc_00() {
-    func_ov004_022139ac();
-    unk_152 = data_ov004_0224bbf8;
-    unk_154 = data_ov004_02250190;
-    if (func_ov004_0221397c()) {
+BOOL RoomBoardSign::vfunc_00() {
+    RoomBoardSign_ClearRegistry();
+    unk_152 = sRoomBoardSignSpawnMsg;
+    unk_154 = sRoomBoardSignSpawnRadius;
+    if (registerSelf()) {
         u32 t = func_020b50e8();
         setCharId((u16)(unk_150 | (t << 8)));
-        func_ov004_02213840(0);
+        changeAct(0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bc4c::onExecute() {
-    func_ov004_022137c4();
+BOOL RoomBoardSign::onExecute() {
+    execAct();
     _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(func_020b50b4(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bc4c::onDraw() {
+BOOL RoomBoardSign::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bc4c::vfunc_0c() {
-    func_ov004_02213948();
+BOOL RoomBoardSign::vfunc_0c() {
+    unregisterSelf();
     return TRUE;
 }
 
-extern "C" void func_ov004_022139ac() {
-    if (data_ov004_0225016c == 0) {
+extern "C" void RoomBoardSign_ClearRegistry() {
+    if (sRoomBoardSignCount == 0) {
         u32 i;
         for (i = 0; i < 0x40; i++) {
-            data_ov004_022501c4[i] = 0;
+            sRoomBoardSigns[i] = 0;
         }
     }
 }
 
-BOOL Unk_ov004_0224bc4c::func_ov004_0221397c() {
-    unk_150 = data_ov004_0225016c;
+BOOL RoomBoardSign::registerSelf() {
+    unk_150 = sRoomBoardSignCount;
     u32 i = unk_150;
     if (i < 0x40) {
-        data_ov004_022501c4[i] = this;
-        data_ov004_0225016c++;
+        sRoomBoardSigns[i] = this;
+        sRoomBoardSignCount++;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bc4c::func_ov004_02213948() {
+BOOL RoomBoardSign::unregisterSelf() {
     u32 i = unk_150;
     if (i < 0x40) {
-        data_ov004_022501c4[i] = 0;
-        data_ov004_0225016c--;
+        sRoomBoardSigns[i] = 0;
+        sRoomBoardSignCount--;
         unk_150 = 0xff;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bc4c::vfunc_48(void *a) {
+BOOL RoomBoardSign::vfunc_48(void *a) {
     Character *o = (Character *)a;
     s32 lim = unk_154 + 0x2ccd;
     if (o) {
@@ -295,19 +295,19 @@ BOOL Unk_ov004_0224bc4c::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov004_0224bc4c::vfunc_4c(u32 a, u8 b) {
+void RoomBoardSign::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
-        func_ov004_02213840(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov004_02213840(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224bc4c::func_ov004_02213840(s32 m) {
-    static Unk_02213840_Fn tbl[3] = { (Unk_02213840_Fn)&Unk_ov004_0224bc4c::func_ov004_022137c0, (Unk_02213840_Fn)&Unk_ov004_0224bc4c::func_ov004_02213774, (Unk_02213840_Fn)&Unk_ov004_0224bc4c::func_ov004_0221374c };
+BOOL RoomBoardSign::changeAct(s32 m) {
+    static Unk_02213840_Fn tbl[3] = { (Unk_02213840_Fn)&RoomBoardSign::setupAct00, (Unk_02213840_Fn)&RoomBoardSign::setupAct01, (Unk_02213840_Fn)&RoomBoardSign::setupAct02 };
     if (m < 3) {
         if ((this->*tbl[m])()) {
             unk_130 = m;
@@ -317,27 +317,27 @@ BOOL Unk_ov004_0224bc4c::func_ov004_02213840(s32 m) {
     return FALSE;
 }
 
-void Unk_ov004_0224bc4c::func_ov004_022137c4() {
-    static Unk_022137c4_Fn tbl[3] = { &Unk_ov004_0224bc4c::func_ov004_022137bc, &Unk_ov004_0224bc4c::func_ov004_02213750, &Unk_ov004_0224bc4c::func_ov004_0221371c };
+void RoomBoardSign::execAct() {
+    static Unk_022137c4_Fn tbl[3] = { &RoomBoardSign::mainAct00, &RoomBoardSign::mainAct01, &RoomBoardSign::mainAct02 };
     if (unk_130 < 3) {
         (this->*tbl[unk_130])();
     }
 }
 
-extern "C" s16 data_ov004_0224bbf8 = -1;
+extern "C" s16 sRoomBoardSignSpawnMsg = -1;
 extern "C" Unk_ov004_Quad data_ov004_02250180(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" {
-u8 data_ov004_0225016c;
+u8 sRoomBoardSignCount;
 }
 extern "C" Unk_ov004_Quad data_ov004_02250174(0x14, 0x18, 0x18, 0x1f);
 
-BOOL Unk_ov004_0224bc4c::func_ov004_022137c0() {
+BOOL RoomBoardSign::setupAct00() {
     return TRUE;
 }
 
-void Unk_ov004_0224bc4c::func_ov004_022137bc() {}
+void RoomBoardSign::mainAct00() {}
 
-BOOL Unk_ov004_0224bc4c::func_ov004_02213774() {
+BOOL RoomBoardSign::setupAct01() {
     Unk_02213774_Pad pad;
     _ZN9Character13func_0203e488Ei(this, this);
     setFileName("obj_etc_board");
@@ -346,19 +346,19 @@ BOOL Unk_ov004_0224bc4c::func_ov004_02213774() {
     return TRUE;
 }
 
-void Unk_ov004_0224bc4c::func_ov004_02213750() {
+void RoomBoardSign::mainAct01() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02213840(2);
+            changeAct(2);
         }
     }
 }
 
-BOOL Unk_ov004_0224bc4c::func_ov004_0221374c() {
+BOOL RoomBoardSign::setupAct02() {
     return TRUE;
 }
 
-void Unk_ov004_0224bc4c::func_ov004_0221371c() {
+void RoomBoardSign::mainAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
@@ -367,17 +367,17 @@ void Unk_ov004_0224bc4c::func_ov004_0221371c() {
     }
 }
 
-extern "C" void *func_ov004_02213704(s32 i) {
+extern "C" void *RoomBoardSign_GetByIndex(s32 i) {
     if (i >= 0 && (u32)i < 0x40) {
-        return data_ov004_022501c4[i];
+        return sRoomBoardSigns[i];
     }
     return 0;
 }
 
-extern "C" void func_ov004_022136d0(void *a, s32 b, s32 c, s32 d) {
+extern "C" void RoomBoardSign_Spawn(void *a, s32 b, s32 c, s32 d) {
     u16 loc[3];
-    data_ov004_0224bbf8 = d;
-    data_ov004_02250190 = b;
+    sRoomBoardSignSpawnMsg = d;
+    sRoomBoardSignSpawnRadius = b;
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;

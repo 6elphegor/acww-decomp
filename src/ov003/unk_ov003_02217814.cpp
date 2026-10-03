@@ -222,7 +222,7 @@ public:
 };
 
 extern "C" {
-extern u32 data_ov003_02232284;
+extern u32 sGulliverShipVisitorProfile;
 void Visitor_ScheduleLow(void *a, void *b, void *c);
 void *func_020b50e8();
 }
@@ -235,11 +235,11 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-// ============================================================ class Unk_ov003_022322a8
-class Unk_ov003_022322a8 : public BuildingActor {
+// ============================================================ class GulliverShip
+class GulliverShip : public BuildingActor {
 public:
-    Unk_ov003_022322a8();
-    virtual ~Unk_ov003_022322a8();
+    GulliverShip();
+    virtual ~GulliverShip();
 
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -247,32 +247,32 @@ public:
     virtual BOOL vfunc_70();
 };
 
-extern "C" Unk_ov003_022322a8 *func_ov003_022178b4() {
-    return new Unk_ov003_022322a8;
+extern "C" GulliverShip *GulliverShip_Create() {
+    return new GulliverShip;
 }
 
-Unk_ov003_022322a8::Unk_ov003_022322a8() {
+GulliverShip::GulliverShip() {
 }
 
-Unk_ov003_022322a8::~Unk_ov003_022322a8() {
+GulliverShip::~GulliverShip() {
 }
 
-BOOL Unk_ov003_022322a8::vfunc_70() {
-    Visitor_ScheduleLow(&data_ov003_02232284, func_020b50e8(), &unk_5c);
+BOOL GulliverShip::vfunc_70() {
+    Visitor_ScheduleLow(&sGulliverShipVisitorProfile, func_020b50e8(), &unk_5c);
     return TRUE;
 }
 
-BOOL Unk_ov003_022322a8::onExecute() {
+BOOL GulliverShip::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022322a8::onDraw() {
+BOOL GulliverShip::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022322a8::vfunc_0c() {
+BOOL GulliverShip::vfunc_0c() {
     return TRUE;
 }
 
-extern "C" u32 data_ov003_02232284 = 0x60;
-extern "C" Unk_ov003_SceneEntry data_ov003_02232288 = {(void *(*)())func_ov003_022178b4, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" u32 sGulliverShipVisitorProfile = 0x60;
+extern "C" Unk_ov003_SceneEntry sGulliverShipProfile = {(void *(*)())GulliverShip_Create, 0x27, 0x2d, 0, 0xc8000, 0x12c000, 0x258000};

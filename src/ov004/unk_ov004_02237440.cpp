@@ -34,7 +34,7 @@
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
+#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define func_02088bb0 _ZN12Unk_020e0d1cD1Ev
 #define func_02088bc8 _ZN12Unk_020e0d1cC1Ev
 #define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
@@ -1006,7 +1006,7 @@ u32 func_02106020(u32 a, u32 b);
 void AnimModel_drawAnimated(void *obj, void *arg);
 void AnimModel_stepAnim(void *obj);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
-s32 func_02070358(void *tbl, void *v);
+s32 MuseumData_isDonated(void *tbl, void *v);
 void func_02031c48(void *p);
 void func_02031c10(void *p);
 u8 func_02031908(void *p, u32 a, u32 b, u32 c, void *r, s32 d, s32 e);
@@ -1077,7 +1077,7 @@ void func_02033988(void *p);
 extern s16 data_02135f44[];
 void func_ov004_0223a6e8(void *r, void *out);
 void *func_ov004_0223a570(void *r);
-void func_ov004_02213b90();
+void MuseumExhibitInfo_SpawnAutoTalk();
 s32 func_020e7870(void *v, s32 a, s32 b, s32 c, s32 d);
 void func_020e98f4(void *out, void *in, s32 s);
 void VEC_Subtract(void *a, void *b, void *c);
@@ -3440,7 +3440,7 @@ extern "C" void func_ov004_0223a850(void *r_) {
                 if (l.unk_0c > 0) {
                     if (r->unk_98 == 0) {
                         if (func_020e9650(&l, &r->unk_2c8) < 0xe66) {
-                            func_ov004_02213b90();
+                            MuseumExhibitInfo_SpawnAutoTalk();
                             r->unk_4c = 1;
                         }
                     }
@@ -5189,7 +5189,7 @@ void Unk_ov004_0224ec80::func_ov004_022378e4() {
                 if (flag) {
                     func_ov004_022383d8((u8 *)this, i);
                 }
-            } else if (func_02070358(data_021ed0a0, &tmp)) {
+            } else if (MuseumData_isDonated(data_021ed0a0, &tmp)) {
                 func_ov004_022383d8((u8 *)this, i);
                 if (i == 0x23) {
                     flag = TRUE;

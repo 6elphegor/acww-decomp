@@ -3,7 +3,7 @@
 
 # TU05
 src/ov004/unk_ov004_02213b90.cpp:
-    extra src/ov004/unk_ov004_02213b90_switch.cpp _ZN18Unk_ov004_0224bda019func_ov004_02214494Ev
+    extra src/ov004/unk_ov004_02213b90_switch.cpp _ZN17MuseumExhibitInfo13buildItemListEv
 
 # TU26
 src/ov004/unk_ov004_02229660.cpp:

@@ -57,7 +57,7 @@ void *_ZN10PlayerData13func_020986d4Ev(void *);
 void _ZN14PlayerPatterns13func_02071d08EP12Unk_020942c8(void *, void *);
 void _ZN12Unk_020970b813func_02097090Ev(void *);
 void func_02039d78(void *);
-void _ZN12Unk_0206fe8013func_020700e8Ej(void *, s32);
+void _ZN10MuseumData22releasePlayerDonationsEj(void *, s32);
 void func_020707ec(s32);
 void func_020ad314(u32);
 void *SaveManager_GetLetterStorage();
@@ -105,7 +105,7 @@ void _ZN7TownMapD1Ev(void *);
 void func_0205b67c(void *);
 void _ZN9HouseDataD1Ev(void *);
 void _ZN12Unk_02063578D2Ev(void *);
-void _ZN12Unk_0206fe8013func_0207054cEv(void *);
+void _ZN10MuseumData13func_0207054cEv(void *);
 void _ZN19AbleSistersPatternsD1Ev(void *);
 void _ZN12Unk_02077198D1Ev(void *);
 void SaveVillagers_Destruct(void *);
@@ -209,7 +209,7 @@ SaveData::~SaveData() {
     func_0204c504(&f_15e54);
     func_020408fc(&f_15e18);
     _ZN12Unk_020aec00C1Ev(&f_15db4);
-    _ZN12Unk_0206fe8013func_0207054cEv(&f_15d50);
+    _ZN10MuseumData13func_0207054cEv(&f_15d50);
     _ZN12Unk_0208f0a0D1Ev(&f_15c58);
     func_02096f48(&f_15b5c);
     _ZN12Unk_020b246cC2Ev(&f_1592c);
@@ -310,7 +310,7 @@ void SaveData::reset() {
 void SaveData::resetPlayer(s32 i) {
     _ZN12Unk_020970b813func_02097090Ev(&f_1200c[i]);
     func_02039d78(&f_15430[i]);
-    _ZN12Unk_0206fe8013func_020700e8Ej(&f_15d50, i);
+    _ZN10MuseumData22releasePlayerDonationsEj(&f_15d50, i);
     func_020707ec(i);
     func_020ad314((u8)i);
     u8 *r = (u8 *)SaveManager_GetLetterStorage();

@@ -283,13 +283,13 @@ struct Unk_ov003_0221655c_Src {
     Unk_ov003_0221655c_Owner *unk_04;
 };
 
-extern "C" void func_ov003_0221655c(Unk_ov003_0221655c_Src *a);
-extern "C" void func_ov003_0221657c();
+extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a);
+extern "C" void TownHall_Create();
 
-class Unk_ov003_02231aa8 : public BuildingActor {
+class TownHall : public BuildingActor {
 public:
-    Unk_ov003_02231aa8();
-    virtual ~Unk_ov003_02231aa8();
+    TownHall();
+    virtual ~TownHall();
 
     virtual void vfunc_60(u32 a, void *p);
     virtual BOOL vfunc_70();
@@ -308,37 +308,37 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-extern "C" Unk_ov003_SceneEntry data_ov003_02231a88 = { func_ov003_0221657c, 0x1e, 0x24, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sTownHallProfile = { TownHall_Create, 0x1e, 0x24, 0, 0xc8000, 0x12c000, 0x258000 };
 
-extern "C" void func_ov003_0221657c() {
-    new Unk_ov003_02231aa8();
+extern "C" void TownHall_Create() {
+    new TownHall();
 }
 
-extern "C" void func_ov003_0221655c(Unk_ov003_0221655c_Src *a) {
+extern "C" void TownHall_NodeCallback(Unk_ov003_0221655c_Src *a) {
     BuildingActor *o = a->unk_04->unk_2c;
     if (o) {
         o->vfunc_60(a->unk_00[1], a);
     }
 }
 
-Unk_ov003_02231aa8::Unk_ov003_02231aa8() {
+TownHall::TownHall() {
     unk_2b1 = -1;
     unk_2b0 = unk_2b1;
 }
 
-Unk_ov003_02231aa8::~Unk_ov003_02231aa8() {
+TownHall::~TownHall() {
 }
 
-BOOL Unk_ov003_02231aa8::vfunc_70() {
+BOOL TownHall::vfunc_70() {
     unk_2b0 = func_02056fcc(unk_194, (s32) "kh_j");
     unk_2b1 = func_02056fcc(unk_194, (s32) "km_j");
     if (unk_2b0 != -1 && unk_2b1 != -1) {
-        ((Model *)unk_138)->setCallback((s32)func_ov003_0221655c, 6, 2, (s32)this, 0);
+        ((Model *)unk_138)->setCallback((s32)TownHall_NodeCallback, 6, 2, (s32)this, 0);
     }
     return TRUE;
 }
 
-void Unk_ov003_02231aa8::vfunc_60(u32 a, void *p) {
+void TownHall::vfunc_60(u32 a, void *p) {
     if ((s32)a == unk_2b0) {
         ((Unk_020b1ddc *)p)->func_020b1e74();
     } else if ((s32)a == unk_2b1) {
@@ -346,7 +346,7 @@ void Unk_ov003_02231aa8::vfunc_60(u32 a, void *p) {
     }
 }
 
-BOOL Unk_ov003_02231aa8::vfunc_98() {
+BOOL TownHall::vfunc_98() {
     return TRUE;
 }
 

@@ -433,12 +433,12 @@ void _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 void func_02094574(s32, s32, s32);
 void *func_02095204(s32);
 s32 func_020e780c(s32, s32);
-void *func_ov003_02218b40(s32);
+void *BuildingList_FindByItem(s32);
 s32 _ZN13BuildingActor10isDoorIdleEv(void *);
 s32 PlayerActor_RequestAct6F(void *, s32, s32);
 s32 _ZN13BuildingActor15openDoorForExitEv(void *);
 void func_0203d990();
-void func_ov003_02218d6c(s32);
+void Field_SetDoorExitMode(s32);
 s32 _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
 void func_020b4bbc(void *, s32);
 void *func_020b50e8(void *);
@@ -831,7 +831,7 @@ void KappnTaxi::execTaxiDepart() {
                     unk_2d8 = unk_2d8 + 1;
                 }
                 if (unk_2d8 == 0x10) {
-                    void *q = func_ov003_02218b40(0x5000);
+                    void *q = BuildingList_FindByItem(0x5000);
                     if (q != 0) {
                         s32 l0[1];
                         s32 l1[3];
@@ -869,7 +869,7 @@ BOOL KappnTaxi::enterTaxiEnterTownHall() {
 }
 
 void KappnTaxi::execTaxiEnterTownHall() {
-    void *q = func_ov003_02218b40(0x5000);
+    void *q = BuildingList_FindByItem(0x5000);
     if (q != 0) {
         _ZN13BuildingActor16openDoorForEntryEv(q);
         unk_2b4 = _ZN13BuildingActor8getGridXEv(q);
@@ -890,7 +890,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
         unk_2d4 = unk_2d4 - 1;
     }
     if (unk_2d4 == 0) {
-        void *q = func_ov003_02218b40(0x5000);
+        void *q = BuildingList_FindByItem(0x5000);
         if (q != 0) {
             if (_ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(q, &v, &sv) != 0) {
                 func_020b4bbc(func_020b4934(), 9);
@@ -906,7 +906,7 @@ void KappnTaxi::execTaxiWarpTownHall() {
 
 BOOL KappnTaxi::enterTaxiLeave() {
     func_0203d990();
-    func_ov003_02218d6c(1);
+    Field_SetDoorExitMode(1);
     return TRUE;
 }
 
@@ -915,7 +915,7 @@ void KappnTaxi::execTaxiLeave() {
 }
 
 BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
-    void *q = func_ov003_02218b40(0x5000);
+    void *q = BuildingList_FindByItem(0x5000);
     if (q != 0) {
         unk_2d7 = 0x10;
         return _ZN13BuildingActor15openDoorForExitEv(q);
@@ -924,7 +924,7 @@ BOOL KappnTaxi::enterTaxiPlayerExitTownHall() {
 }
 
 void KappnTaxi::execTaxiPlayerExitTownHall() {
-    void *q = func_ov003_02218b40(0x5000);
+    void *q = BuildingList_FindByItem(0x5000);
     if (q != 0) {
         if (_ZN13BuildingActor10isDoorIdleEv(q) != 0) {
             u8 *o = (u8 *)func_02095204(4);

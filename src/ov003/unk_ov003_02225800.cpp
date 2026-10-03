@@ -502,7 +502,7 @@ u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
 u32 func_020b2b98(void *p);
 BOOL func_020b2ae0(void *p, s32 *x, s32 *y, u32 i);
-BuildingActor *func_ov003_02218b40(u32 id);
+BuildingActor *BuildingList_FindByItem(u32 id);
 void func_02133150();
 void *TownBlockMap_Get();
 s32 func_02063b8c(s32 n);
@@ -681,7 +681,7 @@ s32 func_ov003_02225bf8(s32 kind, s32 h);
 s32 func_ov003_022287c8(void *obj, Rec *e, s32 v);
 void func_ov003_022288dc(void *obj, Rec *e);
 u8 *func_ov003_0222eb10(s32 i);
-s32 func_ov003_022135e4(void *o);
+s32 Snowball_GetRadius(void *o);
 s32 func_ov003_0222c620(s32 a, s32 b);
 BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag);
 }
@@ -11212,7 +11212,7 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
             if (o) {
                 Vec3 *pos = (Vec3 *)(o + 0x5c);
                 Vec3 *dst = &cur->unk_204;
-                s32 s24 = func_ov003_022135e4(o);
+                s32 s24 = Snowball_GetRadius(o);
                 s32 s28 = func_ov003_0222c620(0x20, 1);
                 if (q) {
                     if (func_020e9650((u8 *)q + 0x5c, pos) > 0xc000) {
@@ -12152,7 +12152,7 @@ extern "C" void func_ov003_02225800(u16 (*arr)[4][16])
         if (p != 0) {
             n = func_020b2b98(p);
             if (n != 0) {
-                o = func_ov003_02218b40(id);
+                o = BuildingList_FindByItem(id);
                 if (o != 0) {
                     u32 j;
                     for (j = 0; j < n; j++) {

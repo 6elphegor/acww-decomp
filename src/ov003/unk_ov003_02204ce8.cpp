@@ -516,7 +516,7 @@ void PlayerActor_clearRequests(Obj *o);
 s32 func_02043f20(V2 *p);
 void func_0200f3ec(V3 *out, Obj *o, V3 *pos, s16 *ang, void *arg);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void func_ov003_0221cd34(s32 a, V2 *p, s32 b);
+void Tree_RequestShake(s32 a, V2 *p, s32 b);
 s32 func_020e972c(V3 *a, V3 *b);
 s32 func_020e7b98(s32 a, s32 b);
 BOOL func_02030d60(V3 *v);
@@ -975,7 +975,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 VEC_Mag(V3 *v);
 void func_020e9960(V3 *out, V3 *a, V3 *b);
-s32 func_ov003_0221950c(s32 a, V3 *v);
+s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
 s32 PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 
 s32 PlayerActor_RequestAct81(Obj *o, s32 a, s32 b);
@@ -1138,8 +1138,8 @@ void WorldCurve_FromCurved(V3 *a, V3 *b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-s32 func_ov003_0221950c(s32 a, V3 *v);
-s32 func_ov003_02219bf0(s32 a, V3 *v);
+s32 FieldItemFx_StartPitfallClose(s32 a, V3 *v);
+s32 FieldItemFx_StartPitfallHole(s32 a, V3 *v);
 void PlayerActor_ResumeWalkOrIdle(Obj *o);
 
 void PlayerActor_EndPitfallStruggle(Obj *o, s32 a);
@@ -1337,7 +1337,7 @@ void NetBuf_UnpackTriple20(void *p, s32 *out, s32 *x, s32 *y, s32 *z);
 void NetBuf_PackTriple20(void *p, s32 a, s32 x, s32 y, s32 z);
 s32 func_020e7b98(s32 a, s32 b);
 void PlayerActor_RequestStowItem(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void func_ov003_0221cd34(u32 a, Pair *p, s32 b);
+void Tree_RequestShake(u32 a, Pair *p, s32 b);
 void PlayerActor_Act69SetWork(void *r, s32 a, s32 b, s32 c, u32 d, u32 e);
 
 void PlayerActor_Act6ECheckEnd(Obj *o);
@@ -1546,9 +1546,9 @@ void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 func_020e7b98(s32 a, s32 b);
 
-void func_ov003_0221bf88(s32 a, Pair p);
-void func_ov003_0221cd34(s32 a, Pair p, s32 b);
-void func_ov003_0221977c(s32 a, V3 v);
+void Tree_KeepShaking(s32 a, Pair p);
+void Tree_RequestShake(s32 a, Pair p, s32 b);
+void FieldItemFx_StartHoleShrink(s32 a, V3 v);
 void PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_Act66GetNetData(void *a, Pair *p);
 void PlayerActor_Act66SetNetData(void *a, Pair *p);
@@ -1730,8 +1730,8 @@ void func_0200f504(Obj *o, s32 a);
 s32 func_020e7b98(s32 a, s32 b);
 void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-void func_ov003_02219b84(s32 h, V3 *v);
-void func_ov003_02219b18(s32 h, V3 *v);
+void FieldItemFx_StartFillHole(s32 h, V3 *v);
+void FieldItemFx_StartFillHoleWithItem(s32 h, V3 *v);
 void func_0203e47c(Obj *o, Unk_ov003_02208a58_Sec *s);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
@@ -2102,8 +2102,8 @@ s32 Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 BOOL Unk_02006d14_testActionFlag(Obj *o, u32 a);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void func_02030504(s32 a, s32 b);
-void func_ov003_02219c5c(s32 a, V3 v, u32 b);
-void func_ov003_02219908(s32 a, V3 v, s16 b);
+void FieldItemFx_StartDigHole(s32 a, V3 v, u32 b);
+void FieldItemFx_StartDigUpTree(s32 a, V3 v, s16 b);
 void func_0200e7f4(Obj *o);
 void func_0200f004(Obj *o, s32 a);
 void WorldCurve_FromCurved(void *a, void *b);
@@ -2157,7 +2157,7 @@ static inline BOOL Unk_ov003_02209fc8_Rng(u16 *p, u32 lo, u32 hi) {
 }
 
 namespace Unk_ov003_02209ef4_P {
-extern "C" void func_ov003_02219c5c(s32 a, V3 *v, u32 b);
+extern "C" void FieldItemFx_StartDigHole(s32 a, V3 *v, u32 b);
 }
 
 static inline BOOL Unk_ov003_02209fc8_IsNone(u16 *p) {
@@ -2372,9 +2372,9 @@ u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02090330(s32 a, V3 *v, s16 *ang, ...);
 
-s32 func_ov003_0221cb54(Pair *p);
-void func_ov003_0221cd34(s32 a, Pair p, s32 b);
-s32 func_ov003_022135c4(void *p, s32 a);
+s32 FieldItemFx_StartStrikeResult(Pair *p);
+void Tree_RequestShake(s32 a, Pair p, s32 b);
+s32 Snowball_Break(void *p, s32 a);
 s32 PlayerActor_ShovelClassifyTarget(Obj *o, V3 *p, u8 *f);
 s32 PlayerActor_RequestDigUpItem(Obj *o, V3 v, s32 a, s32 b, s32 c);
 s32 PlayerActor_RequestFillHole(Obj *o, s32 a, Pair p, s32 b, s32 c, s32 d);
@@ -3862,9 +3862,9 @@ s32 PlayerActor_Decelerate(s32 a, s32 b);
 s32 Unk_020102ec_setSpeed(Obj *o, s32 *a);
 s32 PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 FieldPos_FromUnitCenter(V3 *v, s32 a, s32 b);
-s32 func_ov003_0221cbe4(u32 a, P2 *p, s32 b);
-s32 func_ov003_0221cb54(P2 *p);
-s32 func_ov003_022135c4(Q *q, s32 a);
+s32 Tree_RequestChop(u32 a, P2 *p, s32 b);
+s32 FieldItemFx_StartStrikeResult(P2 *p);
+s32 Snowball_Break(Q *q, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 s32 PlayerActor_AxeStrikeUpdate(Obj *o);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
@@ -4439,8 +4439,8 @@ s32 func_0200f594(Obj *o, s32 a, s32 b, s32 c);
 
 void PlayerActor_StowItemSetArgs(Pay *p, s32 a, u32 b, s32 c, s32 d, s16 e);
 s32 PlayerActor_RequestStowUmbrella(Obj *o, s32 a, s32 b, s32 c, s32 d, s16 e, s32 f, s16 g);
-s32 func_ov003_02218d78();
-s32 func_ov003_02218d34(void *p);
+s32 Field_GetDoorExitMode();
+s32 Building_OpenDoorForExitAt(void *p);
 void PlayerActor_DoorExitGetNetData(u8 *p, u8 *a, u8 *b);
 void PlayerActor_DoorExitSetNetData(u8 *p, u32 a, u32 b);
 s32 PlayerActor_RequestDoorExitWith(Obj *o, u32 a, u32 b, s32 c, s16 d);
@@ -4608,7 +4608,7 @@ void func_02045570(Pair *a, s32 b);
 void FieldPos_FromUnitCenter(V3 *a, u32 b, u32 c);
 void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, V3 *v, u32 a);
-s32 func_ov003_02218d50(void *p, s32 a);
+s32 Building_OpenDoorForEntryAt(void *p, s32 a);
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 void PlayerActor_PluckReachGetNetData(void *p, Pair *q);
 s32 PlayerActor_RequestPluckReach(Obj *o, Pair *q, s32 a, s32 b);
@@ -6201,7 +6201,7 @@ extern "C" void PlayerActor_SetupDoorEnter(Obj *o, Msg *m) {
     Unk_ov003_02210f7c_Ns::PlayerActor_DoorEnterSetWork(r, id, t.a, t.b, ang, k);
     PlayerActor_DoorEnterSetNetData(o->unk_8ec, id, t.a, t.b, ang);
     s32 b = CommManager_isLocalSlot(gCommManager, o->unk_7fc) ? 1 : 0;
-    func_ov003_02218d50(&o->unk_5c, b);
+    Building_OpenDoorForEntryAt(&o->unk_5c, b);
 }
 }
 
@@ -6369,7 +6369,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     void *g = gCommManager;
     s32 n;
     if (CommManager_isLocalSlot(g, o->unk_7fc)) {
-        n = func_ov003_02218d78();
+        n = Field_GetDoorExitMode();
     } else {
         n = p[0];
     }
@@ -6403,7 +6403,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
     rec->b = u;
     rec->a = t;
     PlayerActor_DoorExitSetNetData(o->unk_8ec, n, t);
-    func_ov003_02218d34(o->unk_5c);
+    Building_OpenDoorForExitAt(o->unk_5c);
 }
 }
 
@@ -6571,7 +6571,7 @@ extern "C" s32 PlayerActor_RequestAct3C(Obj *o, s32 a, s32 b) {
 namespace ns_022105bc {
 extern "C" void PlayerActor_SetupAct3C(Obj *o) {
     Unk_02006d14_clearActionFlag(o, 0);
-    if (func_ov003_02218d78()) {
+    if (Field_GetDoorExitMode()) {
         func_02010358(o, 0x34, 0, 0);
     } else {
         func_02010358(o, 0x35, 0, 0);
@@ -7554,7 +7554,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
         s32 x = r->b0;
         q.x = x;
         q.z = y;
-        func_ov003_0221cb54(&q);
+        FieldItemFx_StartStrikeResult(&q);
         Unk_02006d14_clearActionFlag(o, 0x12);
         Unk_02006d14_clearActionFlag(o, 0x1c);
     }
@@ -7592,7 +7592,7 @@ extern "C" void PlayerActor_AxeStrikeHit(Obj *o) {
         break;
     case 3:
         if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            if (func_ov003_022135c4(o->unk_164, 1) == 0) {
+            if (Snowball_Break(o->unk_164, 1) == 0) {
                 Unk_02006d14_playSe(o, 0x7df);
             }
         } else {
@@ -7717,12 +7717,12 @@ extern "C" s32 PlayerActor_AxeChopHit(Obj *o) {
         P2 a;
         a.x = x;
         a.z = y;
-        func_ov003_0221cbe4(o->unk_7fc, &a, 5);
+        Tree_RequestChop(o->unk_7fc, &a, 5);
     } else {
         P2 b;
         b.x = x;
         b.z = y;
-        func_ov003_0221cbe4(o->unk_7fc, &b, 4);
+        Tree_RequestChop(o->unk_7fc, &b, 4);
     }
     Unk_02006d14_clearActionFlag(o, 0x1c);
 }
@@ -10743,7 +10743,7 @@ extern "C" void PlayerActor_EndShovelStrike(Obj *o) {
                 u32 a = r->a;
                 p.a = a;
                 p.b = b;
-                func_ov003_0221cb54(&p);
+                FieldItemFx_StartStrikeResult(&p);
                 Unk_02006d14_clearActionFlag(o, 0x12);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
             }
@@ -10768,7 +10768,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
             u32 a = rc->a;
             pa.a = a;
             pa.b = b;
-            func_ov003_0221cb54(&pa);
+            FieldItemFx_StartStrikeResult(&pa);
             Unk_02006d14_clearActionFlag(o, 0x12);
             Unk_02006d14_clearActionFlag(o, 0x1c);
         }
@@ -10786,7 +10786,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
         p = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (p != NULL) {
             if (Unk_ov003_0220a7fc_Chk(p)) {
-                func_ov003_0221cd34(o->unk_7fc, Pair(xy[0], xy[1]), 1);
+                Tree_RequestShake(o->unk_7fc, Pair(xy[0], xy[1]), 1);
             }
         }
         Unk_02006d14_setActionFlag(o, 9);
@@ -10856,7 +10856,7 @@ extern "C" void PlayerActor_ShovelStrikeUpdate(Obj *o) {
             break;
         case 3:
             if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-                if (func_ov003_022135c4(o->unk_164, 1) == 0) {
+                if (Snowball_Break(o->unk_164, 1) == 0) {
                     Unk_02006d14_playSe(o, 0x7df);
                 }
             } else {
@@ -10955,10 +10955,10 @@ extern "C" void PlayerActor_EndDig(Obj *o) {
             p.y = r->unk_04.y;
             p.z = r->unk_04.z;
             if (o->unk_700 == 0x4b) {
-                func_ov003_02219c5c(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
             } else {
-                func_ov003_02219908(o->unk_7fc, p, o->unk_8e);
-                func_ov003_02219c5c(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigUpTree(o->unk_7fc, p, o->unk_8e);
+                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
         }
@@ -10988,7 +10988,7 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 break;
             case 7: {
                 func_02090330(7, &p, &h, 0);
-                func_ov003_02219c5c(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
                 FieldPos_ToUnit(&a, &b, &p);
                 func_02030504(a, b);
@@ -11008,8 +11008,8 @@ extern "C" void PlayerActor_DigUpdate(Obj *o) {
                 func_02090330(8, &p, &h, 0);
                 break;
             case 21: {
-                func_ov003_02219908(o->unk_7fc, p, o->unk_8e);
-                func_ov003_02219c5c(o->unk_7fc, p, 0);
+                FieldItemFx_StartDigUpTree(o->unk_7fc, p, o->unk_8e);
+                FieldItemFx_StartDigHole(o->unk_7fc, p, 0);
                 Unk_02006d14_playSe(o, 0x85c);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
                 break;
@@ -11196,7 +11196,7 @@ extern "C" void PlayerActor_EndDigUpItem(Obj *o, s32 p) {
             Rec *r = &o->unk_7d0;
             V3 v;
             v = r->unk_00;
-            Unk_ov003_02209ef4_P::func_ov003_02219c5c(o->unk_7fc, &v, r->unk_0d);
+            Unk_ov003_02209ef4_P::FieldItemFx_StartDigHole(o->unk_7fc, &v, r->unk_0d);
             Unk_02006d14_clearActionFlag(o, 0x1c);
             Unk_02006d14_clearActionFlag(o, 9);
         }
@@ -11228,7 +11228,7 @@ extern "C" void PlayerActor_DigUpItemUpdate(Obj *o) {
             func_02090330(8, &p, 0, 0);
             FieldPos_ToUnit(&a, &b, &p);
             func_02030504(a, b);
-            func_ov003_02219c5c(o->unk_7fc, p, r->unk_0d);
+            FieldItemFx_StartDigHole(o->unk_7fc, p, r->unk_0d);
             Unk_02006d14_setActionFlag(o, 0xd);
             Unk_02006d14_clearActionFlag(o, 0x1c);
             break;
@@ -11727,12 +11727,12 @@ extern "C" void PlayerActor_EndFillHole(Obj *o) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
-                func_ov003_02219b84(o->unk_7fc, &w);
+                FieldItemFx_StartFillHole(o->unk_7fc, &w);
             } else {
                 x.x = v.x;
                 x.y = v.y;
                 x.z = v.z;
-                func_ov003_02219b18(o->unk_7fc, &x);
+                FieldItemFx_StartFillHoleWithItem(o->unk_7fc, &x);
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
         }
@@ -11768,7 +11768,7 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
                 w.x = v.x;
                 w.y = v.y;
                 w.z = v.z;
-                func_ov003_02219b84(o->unk_7fc, &w);
+                FieldItemFx_StartFillHole(o->unk_7fc, &w);
             } else {
                 u16 *p = BlockMap_GetItemPtrAtPos(gSceneBlockMap, &v, 0);
                 BOOL f = FALSE;
@@ -11777,7 +11777,7 @@ extern "C" void PlayerActor_FillHoleUpdate(Obj *o) {
                     x.x = v.x;
                     x.y = v.y;
                     x.z = v.z;
-                    func_ov003_02219b18(o->unk_7fc, &x);
+                    FieldItemFx_StartFillHoleWithItem(o->unk_7fc, &x);
                 }
             }
             Unk_02006d14_clearActionFlag(o, 0x1c);
@@ -12175,7 +12175,7 @@ extern "C" void PlayerActor_EndAct66(Obj *o, s32 a) {
         } else if (a != 0x67) {
             if (Unk_02006d14_testActionFlag(o, 0x1c)) {
                 V3 *p = (V3 *)((u8 *)o + 0x7d0);
-                func_ov003_0221977c(o->unk_7fc, *p);
+                FieldItemFx_StartHoleShrink(o->unk_7fc, *p);
                 Unk_02006d14_clearActionFlag(o, 0x1c);
             }
         } else {
@@ -12284,7 +12284,7 @@ extern "C" void PlayerActor_SetupAct67(Obj *o, u8 *m) {
     s32 ang = func_020e7b98(d.x, d.z);
     PlayerActor_Act67SetWork((RecC *)((u8 *)o + 0x7d0), ang, l);
     func_02010358(o, 0x65, 3, 0);
-    func_ov003_0221977c(o->unk_7fc, l);
+    FieldItemFx_StartHoleShrink(o->unk_7fc, l);
     Unk_02006d14_clearActionFlag(o, 0x1c);
     Unk_02006d14_playSe(o, 0x7da);
     Unk_02006d14_setActionFlag(o, 9);
@@ -12446,7 +12446,7 @@ extern "C" void PlayerActor_EndAct68(Obj *o) {
             p.a = 0;
             p.b = 0;
             FieldPos_ToUnit(&p.a, &p.b, &v);
-            func_ov003_0221cd34(o->unk_7fc, p, 2);
+            Tree_RequestShake(o->unk_7fc, p, 2);
         }
     }
 }
@@ -12501,11 +12501,11 @@ extern "C" void PlayerActor_MainAct68(Obj *o) {
     p.b = 0;
     FieldPos_ToUnit(&p.a, &p.b, &v);
     if (r->unk_0a > 5) {
-        func_ov003_0221bf88(o->unk_7fc, p);
+        Tree_KeepShaking(o->unk_7fc, p);
     } else {
         r->unk_0a++;
         if (r->unk_0a == 5) {
-            func_ov003_0221cd34(o->unk_7fc, p, 2);
+            Tree_RequestShake(o->unk_7fc, p, 2);
         }
     }
     Unk_020102ec_advanceAnim(o);
@@ -12593,7 +12593,7 @@ extern "C" void PlayerActor_Act69Update(Obj *o) {
         s32 x = r0[1];
         p.a = x;
         p.b = y;
-        func_ov003_0221cd34(o->unk_7fc, &p, 3);
+        Tree_RequestShake(o->unk_7fc, &p, 3);
         Unk_02006d14_clearActionFlag(o, 0x12);
         Unk_02006d14_setActionFlag(o, 9);
     }
@@ -13290,7 +13290,7 @@ extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a) {
             t.x = o->unk_5c.x;
             t.y = pv->y;
             t.z = pv->z;
-            func_ov003_02219bf0(o->unk_7fc, &t);
+            FieldItemFx_StartPitfallHole(o->unk_7fc, &t);
         }
         Unk_02006d14_clearActionFlag(o, 0x12);
     }
@@ -13300,7 +13300,7 @@ extern "C" void PlayerActor_EndPitfallFall(Obj *o, s32 a) {
         t.x = o->unk_5c.x;
         t.y = pv->y;
         t.z = pv->z;
-        func_ov003_0221950c(o->unk_7fc, &t);
+        FieldItemFx_StartPitfallClose(o->unk_7fc, &t);
     }
     if (a != 0x74) {
         s32 h = r->unk_08;
@@ -13369,7 +13369,7 @@ extern "C" void PlayerActor_PitfallFallUpdate(Obj *o) {
             c.x = l.b.x;
             c.y = l.b.y;
             c.z = l.b.z;
-            func_ov003_02219bf0(o->unk_7fc, &c);
+            FieldItemFx_StartPitfallHole(o->unk_7fc, &c);
             Unk_02006d14_clearActionFlag(o, 0x12);
             if (Unk_02006d14_getHeldToolKind(o) == 4) {
                 func_0205e1a0(o->unk_59c, 0x10, 3, 1);
@@ -13444,7 +13444,7 @@ extern "C" void PlayerActor_EndPitfallStruggle(Obj *o, s32 a) {
         v.x = o->unk_5c.x;
         v.y = pv->y;
         v.z = pv->z;
-        func_ov003_0221950c(o->unk_7fc, &v);
+        FieldItemFx_StartPitfallClose(o->unk_7fc, &v);
     }
 }
 }
@@ -13587,7 +13587,7 @@ extern "C" void PlayerActor_SetupPitfallClimbOut(Obj *o) {
     pos2.x = o->unk_5c.x;
     pos2.y = pv->y;
     pos2.z = pv->z;
-    func_ov003_0221950c(o->unk_7fc, &pos2);
+    FieldItemFx_StartPitfallClose(o->unk_7fc, &pos2);
     Unk_02006d14_playSe(o, 0x7e9);
     func_02033988(buf);
 }
@@ -14426,7 +14426,7 @@ extern "C" void PlayerActor_FieldCheckUnitAhead(Obj *o) {
                 V2 q;
                 q.x = p.x;
                 q.y = p.y;
-                func_ov003_0221cd34(o->unk_7fc, &q, 1);
+                Tree_RequestShake(o->unk_7fc, &q, 1);
             }
         }
     }

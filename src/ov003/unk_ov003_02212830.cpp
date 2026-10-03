@@ -273,10 +273,10 @@ public:
     /* 0x40 */ u8 *unk_40;
 };
 
-class Unk_ov003_02230c40 : public Unk_020e0cf4 {
+class SnowballCollider : public Unk_020e0cf4 {
 public:
-    Unk_ov003_02230c40();
-    ~Unk_ov003_02230c40();
+    SnowballCollider();
+    ~SnowballCollider();
     virtual void vfunc_08(u32 a, u32 b, u32 c);
     /* 0x44 */ u8 unk_44;
 };
@@ -289,17 +289,17 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-class Unk_ov003_02230c6c;
-typedef Unk_ov003_02230c6c Obj;
-typedef void (Unk_ov003_02230c6c::*Unk_02212954_Fn)();
-typedef BOOL (Unk_ov003_02230c6c::*Unk_022129d0_Fn)();
-typedef void (Unk_ov003_02230c6c::*Fn0)();
-typedef BOOL (Unk_ov003_02230c6c::*Fn1)();
+class Snowball;
+typedef Snowball Obj;
+typedef void (Snowball::*Unk_02212954_Fn)();
+typedef BOOL (Snowball::*Unk_022129d0_Fn)();
+typedef void (Snowball::*Fn0)();
+typedef BOOL (Snowball::*Fn1)();
 
-class Unk_ov003_02230c6c : public Character, public TalkMsgRequest {
+class Snowball : public Character, public TalkMsgRequest {
 public:
-    Unk_ov003_02230c6c();
-    virtual ~Unk_ov003_02230c6c();
+    Snowball();
+    virtual ~Snowball();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -309,25 +309,25 @@ public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
-    void func_ov003_02212830();
-    BOOL func_ov003_02212860();
-    void func_ov003_02212864();
-    BOOL func_ov003_02212888();
-    void func_ov003_0221294c();
-    BOOL func_ov003_02212950();
-    void func_ov003_02212954();
-    BOOL func_ov003_022129d0(s32 m);
-    void func_ov003_02212af4();
-    BOOL func_ov003_02212b5c();
-    void func_ov003_02212ba8();
-    BOOL func_ov003_02212bf4();
+    void mainTalkEnd();
+    BOOL setupTalkEnd();
+    void mainTalk();
+    BOOL setupTalk();
+    void mainTalkIdle();
+    BOOL setupTalkIdle();
+    void runTalkAct();
+    BOOL changeTalkAct(s32 m);
+    void execSnowmanHead();
+    BOOL enterSnowmanHead();
+    void execSnowmanBody();
+    BOOL enterSnowmanBody();
 
     /* 0x130 */ CachedModel unk_130;
     /* 0x1cc */ CachedModel unk_1cc;
     /* 0x268 */ s32 unk_268;
     /* 0x26c */ s32 unk_26c;
     /* 0x270 */ Unk_02032238 unk_270;
-    /* 0x2a0 */ Unk_ov003_02230c40 unk_2a0;
+    /* 0x2a0 */ SnowballCollider unk_2a0;
     /* 0x2e8 */ s32 unk_2e8;
     /* 0x2ec */ s32 unk_2ec;
     /* 0x2f0 */ s32 unk_2f0;
@@ -350,7 +350,7 @@ public:
 };
 
 // ov068 classes that own the state functions named in the ptmf tables (their symbols live in ov068)
-class Unk_ov068_02267584 : public Unk_ov003_02230c6c {
+class Unk_ov068_02267584 : public Snowball {
 public:
     void execSnowballCrumble2();
     void enterSnowballCrumble2();
@@ -360,7 +360,7 @@ public:
     void enterSnowballSettle();
     void execSnowballStack();
 };
-class Unk_ov068_022678c4 : public Unk_ov003_02230c6c {
+class Unk_ov068_022678c4 : public Snowball {
 public:
     void enterSnowballStack();
     void execSnowballToSnowman();
@@ -378,7 +378,7 @@ public:
     void execSnowballFall();
     void enterSnowballFall();
 };
-class Unk_ov068_02268214 : public Unk_ov003_02230c6c {
+class Unk_ov068_02268214 : public Snowball {
 public:
     void execSnowballRoll();
     void enterSnowballRoll();
@@ -394,9 +394,9 @@ extern s32 data_020d0584[4];
 extern u8 data_021ed2e6[];
 extern s16 data_02135f44[];
 extern void *gBgHeap;
-extern const s16 data_ov003_0222efb8[16];
+extern const s16 sSnowmanNeighbourOffsets[16];
 // 0x0222efba is the table's second element: no separate symbol once this unit is linked
-#define data_ov003_0222efba (&data_ov003_0222efb8[1])
+#define data_ov003_0222efba (&sSnowmanNeighbourOffsets[1])
 
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -460,24 +460,24 @@ void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *self, void *v);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *self);
 void _ZN12Unk_02003c3013func_02003eccEv(void *self);
 
-BOOL func_ov003_02212d28(Obj *o, s32 st);
-BOOL func_ov003_02213290(Obj *o);
-BOOL func_ov003_02213278(Obj *o);
-BOOL func_ov003_02213254(Obj *o);
-BOOL func_ov003_0221322c(Obj *o);
-BOOL func_ov003_02213058(Pos *p);
-BOOL func_ov003_02212fd4(void *a, Pos *p, u16 *out);
-BOOL func_ov003_02212f04(void *a, void *pos, u16 *out);
-BOOL func_ov003_02212e50(u16 *q);
+BOOL Snowball_ChangeState(Obj *o, s32 st);
+BOOL Snowball_IsLooseBall(Obj *o);
+BOOL Snowball_IsSnowmanPart(Obj *o);
+BOOL Snowball_IsSnowmanHead(Obj *o);
+BOOL Snowball_IsSnowmanBody(Obj *o);
+BOOL Snowball_CanBuildSnowmanAt(Pos *p);
+BOOL Snowball_PlaceSnowmanAt(void *a, Pos *p, u16 *out);
+BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out);
+BOOL Snowball_DropDisplacedItem(u16 *q);
 void func_ov003_0222ebdc(Obj *o);
 s32 func_ov003_0222ec00(Obj *o);
-BOOL func_ov003_022132a0(Obj *o);
-void func_ov003_0221316c(Obj *o);
-void func_ov003_02212c10(Obj *o);
-void func_ov003_02213960(Obj *o);
-s32 func_ov003_0221363c(Obj *o);
-void func_ov003_02213a30(Obj *o, s32 a, s32 b);
-s32 func_ov003_022135c4(Obj *o, s32 a);
+BOOL Snowball_IsInBallState(Obj *o);
+void Snowball_InitState(Obj *o);
+void Snowball_RunState(Obj *o);
+void Snowball_UpdateCarry(Obj *o);
+s32 Snowball_UpdateRolling(Obj *o);
+void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b);
+s32 Snowball_Break(Obj *o, s32 a);
 }
 static inline void *Unk_ov003_02213058_Cell(void *g, s32 x, s32 y) {
     s32 hx = x >> 4;
@@ -501,55 +501,55 @@ struct Unk_ov003_022132b4_Tgt {
     s16 unk_8e;
 };
 
-extern "C" void func_ov003_02214168() {
-    new Unk_ov003_02230c6c;
+extern "C" void Snowball_Create() {
+    new Snowball;
 }
 
 // ================================================================
-// class Unk_ov003_02230c6c
-Unk_ov003_02230c40::Unk_ov003_02230c40() {
+// class Snowball
+SnowballCollider::SnowballCollider() {
     unk_44 = 0;
 }
 
-Unk_ov003_02230c40::~Unk_ov003_02230c40() {
+SnowballCollider::~SnowballCollider() {
     unk_44 = 0;
 }
 
 // ================================================================
-// class Unk_ov003_02230c40
-void Unk_ov003_02230c40::vfunc_08(u32 a, u32 b, u32 c) {
+// class SnowballCollider
+void SnowballCollider::vfunc_08(u32 a, u32 b, u32 c) {
     if (c & 4) {
         unk_44 = 1;
     }
 }
 
-Unk_ov003_02230c6c::Unk_ov003_02230c6c() {
+Snowball::Snowball() {
     func_020f440c(unk_324);
     unk_396 = 0xfff1;
 }
 
-Unk_ov003_02230c6c::~Unk_ov003_02230c6c() {
+Snowball::~Snowball() {
     func_020f43fc(unk_324);
 }
 
-extern "C" s32 func_ov003_02213fbc() { return 0x800; }
+extern "C" s32 Snowball_GetMinRadius() { return 0x800; }
 
-extern "C" s32 func_ov003_02213fb4() { return 0x1400; }
+extern "C" s32 Snowball_GetMaxRadius() { return 0x1400; }
 
-void *Unk_ov003_02230c6c::operator new(unsigned long size) {
+void *Snowball::operator new(unsigned long size) {
     void *p = Heap_Alloc(gBgHeap, size);
     func_0212899c(p, 0, size);
     return p;
 }
 
-void Unk_ov003_02230c6c::operator delete(void *p) {
+void Snowball::operator delete(void *p) {
     void *h = gBgHeap;
     if (h) {
         Heap_Free(h, p);
     }
 }
 
-BOOL Unk_ov003_02230c6c::vfunc_00() {
+BOOL Snowball::vfunc_00() {
     u32 k = 0xfff1;
     unk_396 = k;
     unk_2f4.x = data_020d0584[0];
@@ -558,7 +558,7 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
     unk_2f4.w = data_020d0584[3];
     _ZN11CachedModel10loadCachedEPvS0_(&unk_130, 0x534e5730, "/snowman/snowball1.nsbmd");
     _ZN11CachedModel10loadCachedEPvS0_(&unk_1cc, 0x534e5731, "/snowman/snow_face.nsbmd");
-    if (func_ov003_02213290(this) != 0) {
+    if (Snowball_IsLooseBall(this) != 0) {
         u32 i = unk_08 & 1;
         Rec *r = func_020af3f4();
         unk_268 = r[i & 1].w;
@@ -573,8 +573,8 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
         r[i & 1].w = sv;
     }
     setCharId((u16)unk_08);
-    func_ov003_022129d0(0);
-    func_ov003_0221316c(this);
+    changeTalkAct(0);
+    Snowball_InitState(this);
     unk_68.x = unk_5c.x;
     unk_68.y = unk_5c.y;
     unk_68.z = unk_5c.z;
@@ -591,22 +591,22 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
     unk_318.y = pv->y;
     unk_318.z = pv->z;
     unk_365 = unk_270.unk_10;
-    func_ov003_02213a30(this, 0, 0);
+    Snowball_UpdateMatrix(this, 0, 0);
     _ZN12Unk_02003c3013func_02003eccEv(unk_324);
     func_0203e42c();
     func_ov003_0222ec00(this);
 }
 
-BOOL Unk_ov003_02230c6c::onExecute() {
+BOOL Snowball::onExecute() {
     s32 t = FX_Div(0xa000, 0x64000);
     if (unk_374.e == 0) unk_370 = t;
     unk_68.x = unk_318.x;
     unk_68.y = unk_318.y;
     unk_68.z = unk_318.z;
-    func_ov003_02213960(this);
-    func_ov003_02212c10(this);
-    func_ov003_02212954();
-    func_ov003_0221363c(this);
+    Snowball_UpdateCarry(this);
+    Snowball_RunState(this);
+    runTalkAct();
+    Snowball_UpdateRolling(this);
     Unk_ov003_022135c4_Fl *fl = &unk_374;
     fl->f = fl->e;
     fl->e = 0;
@@ -625,7 +625,7 @@ BOOL Unk_ov003_02230c6c::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02230c6c::onDraw() {
+BOOL Snowball::onDraw() {
     if (gCamera != 0) {
         if (func_020e9650(gCameraLookAt, &unk_5c) <= data_020c8cbc) {
             s32 s = FX_Div(unk_268, 0x1000);
@@ -644,7 +644,7 @@ BOOL Unk_ov003_02230c6c::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02230c6c::vfunc_0c() {
+BOOL Snowball::vfunc_0c() {
     if (unk_398 == 9) {
         void *g = gSceneBlockMap;
         volatile s32 x, y;
@@ -658,12 +658,12 @@ BOOL Unk_ov003_02230c6c::vfunc_0c() {
             u16 v = 0xfff1;
             BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
-        if (func_ov003_02212fd4((void *)unk_374.a, (Pos *)&unk_5c, &unk_396) == 0) {
-            if (func_ov003_02212f04((void *)unk_374.a, &unk_5c, &unk_396) == 0) {
+        if (Snowball_PlaceSnowmanAt((void *)unk_374.a, (Pos *)&unk_5c, &unk_396) == 0) {
+            if (Snowball_PlaceSnowmanNearby((void *)unk_374.a, &unk_5c, &unk_396) == 0) {
                 _ZN12Unk_020af53c13func_020af53cEj(data_021ed2e6, unk_374.a);
             }
         }
-        func_ov003_02212e50(&unk_396);
+        Snowball_DropDisplacedItem(&unk_396);
     }
     if (unk_39c == 0 && unk_398 == 0) {
         u32 i = unk_08 & 1;
@@ -680,7 +680,7 @@ BOOL Unk_ov003_02230c6c::vfunc_0c() {
     func_ov003_0222ebdc(this);
 }
 
-extern "C" void func_ov003_02213a30(Obj *o, s32 a, s32 b)
+extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)
 {
     V3P v1;
     Q4 q;
@@ -716,7 +716,7 @@ extern "C" void func_ov003_02213a30(Obj *o, s32 a, s32 b)
     *(Blk *)((u8 *)o + 0x230) = m;
 }
 
-extern "C" void func_ov003_02213960(Obj *o)
+extern "C" void Snowball_UpdateCarry(Obj *o)
 {
     if (o->unk_2a0.unk_3c != 0) {
         if (o->unk_374.h == 0) {
@@ -737,7 +737,7 @@ extern "C" void func_ov003_02213960(Obj *o)
     o->unk_2e8 = (func_01ffcb0c(FX_Div(o->unk_268 - 0x800, 0xc00), 0x10cd) + 0xdec) << 2;
 }
 
-extern "C" s32 func_ov003_0221363c(Obj *o)
+extern "C" s32 Snowball_UpdateRolling(Obj *o)
 {
     s32 kind = o->unk_374.c != 0 ? 0xb : 0;
     Loc loc;
@@ -772,7 +772,7 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
     s32 len = VEC_Mag(&d);
     s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
     yaw = func_020e7b98(d.x, d.z);
-    if (func_ov003_022132a0(o)) {
+    if (Snowball_IsInBallState(o)) {
         s32 n = VEC_Mag(&d);
         if (n == 0) {
             o->unk_2ec = 0;
@@ -828,10 +828,10 @@ extern "C" s32 func_ov003_0221363c(Obj *o)
             }
         }
     }
-    func_ov003_02213a30(o, ang, yaw);
+    Snowball_UpdateMatrix(o, ang, yaw);
 }
 
-extern "C" BOOL func_ov003_022135f0(Obj *o, V3P *v)
+extern "C" BOOL Snowball_TrySetPos(Obj *o, V3P *v)
 {
     if (o->unk_374.i == 0 && o->unk_374.e == 0 && o->unk_2a0.unk_44 == 0) {
         o->unk_5c.x = v->x;
@@ -843,20 +843,20 @@ extern "C" BOOL func_ov003_022135f0(Obj *o, V3P *v)
     return FALSE;
 }
 
-extern "C" s32 func_ov003_022135e4(Obj *o)
+extern "C" s32 Snowball_GetRadius(Obj *o)
 {
     return o->unk_268;
 }
 
-extern "C" s32 func_ov003_022135c4(Obj *o, s32 a)
+extern "C" s32 Snowball_Break(Obj *o, s32 a)
 {
     if (o->unk_398 < 7) {
-        return func_ov003_02212d28(o, 3);
+        return Snowball_ChangeState(o, 3);
     }
     return 0;
 }
 
-extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s32 speed, s32 ang) {
+extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s32 speed, s32 ang) {
     Unk_ov003_022132b4_Tgt *p;
     s32 v0c, v10, v14;
     s16 h[2];
@@ -944,61 +944,61 @@ extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal
     return TRUE;
 }
 
-extern "C" BOOL func_ov003_022132a0(Obj *o) {
+extern "C" BOOL Snowball_IsInBallState(Obj *o) {
     if (o->unk_398 < 7) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02213290(Obj *o) {
+extern "C" BOOL Snowball_IsLooseBall(Obj *o) {
     if (o->unk_08 < 2) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02213278(Obj *o) {
+extern "C" BOOL Snowball_IsSnowmanPart(Obj *o) {
     Unk_ov003_02213278_Pad pad;
-    if (!func_ov003_02213290(o)) return TRUE;
+    if (!Snowball_IsLooseBall(o)) return TRUE;
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02213254(Obj *o) {
-    if (func_ov003_02213278(o)) {
+extern "C" BOOL Snowball_IsSnowmanHead(Obj *o) {
+    if (Snowball_IsSnowmanPart(o)) {
         if ((o->unk_08 - 2) & 1) return FALSE;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_0221322c(Obj *o) {
-    if (func_ov003_02213278(o)) {
-        if (!func_ov003_02213254(o)) return TRUE;
+extern "C" BOOL Snowball_IsSnowmanBody(Obj *o) {
+    if (Snowball_IsSnowmanPart(o)) {
+        if (!Snowball_IsSnowmanHead(o)) return TRUE;
         return FALSE;
     }
     return FALSE;
 }
 
-extern "C" void func_ov003_0221316c(Obj *o) {
+extern "C" void Snowball_InitState(Obj *o) {
     s32 s10, s14, s18;
     s32 r;
-    if (func_ov003_02213290(o)) {
-        func_ov003_02212d28(o, 0);
+    if (Snowball_IsLooseBall(o)) {
+        Snowball_ChangeState(o, 0);
     } else {
-        r = func_ov003_0221322c(o);
+        r = Snowball_IsSnowmanBody(o);
         o->unk_374.a = (o->unk_08 - 2) >> 1;
         if (_ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(data_021ed2e6, o->unk_374.a, &s10, &s14, &s18, 0, 0, 0)) {
             o->unk_374.b = (u16)s18;
             if (r) {
                 o->unk_268 = s14;
-                func_ov003_02212d28(o, 9);
+                Snowball_ChangeState(o, 9);
             } else {
                 o->unk_268 = s10;
                 o->unk_5c.y = s14 * 2 - (s14 >> 3) - (s10 >> 3) - 0x400;
-                func_ov003_02212d28(o, 11);
+                Snowball_ChangeState(o, 11);
             }
         }
     }
 }
 
-extern "C" BOOL func_ov003_02213058(Pos *pos) {
+extern "C" BOOL Snowball_CanBuildSnowmanAt(Pos *pos) {
     void *g = gSceneBlockMap;
     if (g) {
         s32 px0, py0;
@@ -1050,9 +1050,9 @@ extern "C" BOOL func_ov003_02213058(Pos *pos) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02212fd4(void *a, Pos *pos, u16 *out) {
+extern "C" BOOL Snowball_PlaceSnowmanAt(void *a, Pos *pos, u16 *out) {
     *out = 0xfff1;
-    if (func_ov003_02213058(pos)) {
+    if (Snowball_CanBuildSnowmanAt(pos)) {
         void *g = gSceneBlockMap;
         if (g) {
             u16 t;
@@ -1073,7 +1073,7 @@ extern "C" BOOL func_ov003_02212fd4(void *a, Pos *pos, u16 *out) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
+extern "C" BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out) {
     void *g = gSceneBlockMap;
     if (g) {
         volatile u16 t[1];
@@ -1091,9 +1091,9 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
         mask = 0;
         n = 0;
         for (LampLights = 0; LampLights < 8; LampLights++) {
-            const s16 *e = &data_ov003_0222efb8[LampLights * 2];
-            FieldPos_FromUnitCenter(&p, x + data_ov003_0222efb8[LampLights * 2], y + e[1]);
-            if (func_ov003_02213058(&p)) {
+            const s16 *e = &sSnowmanNeighbourOffsets[LampLights * 2];
+            FieldPos_FromUnitCenter(&p, x + sSnowmanNeighbourOffsets[LampLights * 2], y + e[1]);
+            if (Snowball_CanBuildSnowmanAt(&p)) {
                 mask |= 1 << LampLights;
                 n++;
             }
@@ -1105,8 +1105,8 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
             for (; (u32)j < 8; j++) {
                 if ((mask >> j) & 1) {
                     if (C == k) {
-                        FieldPos_FromUnitCenter(&q, x + data_ov003_0222efb8[j * 2], y + data_ov003_0222efba[j * 2]);
-                        if (func_ov003_02212fd4(a, &q, out)) return TRUE;
+                        FieldPos_FromUnitCenter(&q, x + sSnowmanNeighbourOffsets[j * 2], y + data_ov003_0222efba[j * 2]);
+                        if (Snowball_PlaceSnowmanAt(a, &q, out)) return TRUE;
                         return FALSE;
                     }
                     C++;
@@ -1117,7 +1117,7 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02212ebc(void *p) {
+extern "C" BOOL Snowball_ClearItemAt(void *p) {
     void *g = gSceneBlockMap;
     if (g) {
         s32 x, y;
@@ -1129,7 +1129,7 @@ extern "C" BOOL func_ov003_02212ebc(void *p) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02212e50(u16 *p) {
+extern "C" BOOL Snowball_DropDisplacedItem(u16 *p) {
     BOOL ok;
     if (Item_IsFurniture(p)) {
         u16 t = 0xfff1;
@@ -1146,14 +1146,14 @@ extern "C" BOOL func_ov003_02212e50(u16 *p) {
     return FALSE;
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_02230c4c = {(void *(*)())func_ov003_02214168, 0xbd, 0x10, 0, 0xc8000, 0x12c000, 0x258000};
-extern "C" const s16 data_ov003_0222efb8[16] = {-1, -1, 0, -1, 0, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
+extern "C" Unk_ov003_SceneEntry sSnowballProfile = {(void *(*)())Snowball_Create, 0xbd, 0x10, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" const s16 sSnowmanNeighbourOffsets[16] = {-1, -1, 0, -1, 0, -1, -1, 0, 1, 0, -1, 1, 0, 1, 1, 1};
 
-extern "C" BOOL func_ov003_02212d28(Obj *o, s32 st) {
+extern "C" BOOL Snowball_ChangeState(Obj *o, s32 st) {
     static Fn1 tbl[14] = {
         (Fn1)&Unk_ov068_02268214::enterSnowballRoll, (Fn1)&Unk_ov068_022678c4::enterSnowballFall, (Fn1)&Unk_ov068_022678c4::enterSnowballSink, (Fn1)&Unk_ov068_022678c4::enterSnowballBreak,
         (Fn1)&Unk_ov068_022678c4::enterSnowballHole, (Fn1)&Unk_ov068_022678c4::enterSnowball05, (Fn1)&Unk_ov068_022678c4::enterSnowballSplash, (Fn1)&Unk_ov068_022678c4::enterSnowballToSnowman,
-        (Fn1)&Unk_ov068_022678c4::enterSnowballStack, (Fn1)&Obj::func_ov003_02212bf4, (Fn1)&Unk_ov068_02267584::enterSnowballSettle, (Fn1)&Obj::func_ov003_02212b5c,
+        (Fn1)&Unk_ov068_022678c4::enterSnowballStack, (Fn1)&Obj::enterSnowmanBody, (Fn1)&Unk_ov068_02267584::enterSnowballSettle, (Fn1)&Obj::enterSnowmanHead,
         (Fn1)&Unk_ov068_02267584::enterSnowballCrumble, (Fn1)&Unk_ov068_02267584::enterSnowballCrumble2};
     if (st < 0xe) {
         if ((o->*tbl[st])()) {
@@ -1164,34 +1164,34 @@ extern "C" BOOL func_ov003_02212d28(Obj *o, s32 st) {
     return FALSE;
 }
 
-extern "C" void func_ov003_02212c10(Obj *o) {
+extern "C" void Snowball_RunState(Obj *o) {
     static Fn0 tbl[14] = {
         (Fn0)&Unk_ov068_02268214::execSnowballRoll, (Fn0)&Unk_ov068_022678c4::execSnowballFall, (Fn0)&Unk_ov068_022678c4::execSnowballSink, (Fn0)&Unk_ov068_022678c4::execSnowballBreak,
         (Fn0)&Unk_ov068_022678c4::execSnowballHole, (Fn0)&Unk_ov068_022678c4::execSnowball05, (Fn0)&Unk_ov068_022678c4::execSnowballSplash, (Fn0)&Unk_ov068_022678c4::execSnowballToSnowman,
-        (Fn0)&Unk_ov068_02267584::execSnowballStack, (Fn0)&Obj::func_ov003_02212ba8, (Fn0)&Unk_ov068_02267584::execSnowballSettle, (Fn0)&Obj::func_ov003_02212af4,
+        (Fn0)&Unk_ov068_02267584::execSnowballStack, (Fn0)&Obj::execSnowmanBody, (Fn0)&Unk_ov068_02267584::execSnowballSettle, (Fn0)&Obj::execSnowmanHead,
         (Fn0)&Unk_ov068_02267584::execSnowballCrumble, (Fn0)&Unk_ov068_02267584::execSnowballCrumble2};
     if (o->unk_398 < 0xe) (o->*tbl[o->unk_398])();
 }
 
-BOOL Unk_ov003_02230c6c::func_ov003_02212bf4() {
+BOOL Snowball::enterSnowmanBody() {
     unk_374.c = 0;
     unk_374.d = 1;
     return TRUE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_02212ba8() {
+void Snowball::execSnowmanBody() {
     unk_26c = unk_268;
     if (unk_2a0.unk_3c != 0) {
         u8 *p = (u8 *)unk_2a0.func_02089098();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
-                func_ov003_022135c4(this, 1);
+                Snowball_Break(this, 1);
             }
         }
     }
 }
 
-BOOL Unk_ov003_02230c6c::func_ov003_02212b5c() {
+BOOL Snowball::enterSnowmanHead() {
     s32 *d = data_020d0584;
     unk_374.c = 0;
     unk_374.d = 1;
@@ -1202,13 +1202,13 @@ BOOL Unk_ov003_02230c6c::func_ov003_02212b5c() {
     return TRUE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_02212af4() {
+void Snowball::execSnowmanHead() {
     unk_26c = unk_268;
     if (unk_2a0.unk_3c != 0) {
         u8 *p = (u8 *)unk_2a0.func_02089098();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
-                func_ov003_022135c4(this, 1);
+                Snowball_Break(this, 1);
                 return;
             }
         }
@@ -1216,7 +1216,7 @@ void Unk_ov003_02230c6c::func_ov003_02212af4() {
     if (unk_374.g) TalkRequest_AddPlayerTalk6(this, 0);
 }
 
-BOOL Unk_ov003_02230c6c::vfunc_48(void *a) {
+BOOL Snowball::vfunc_48(void *a) {
     s32 lim;
     BOOL r;
     func_0203e42c();
@@ -1229,23 +1229,23 @@ BOOL Unk_ov003_02230c6c::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov003_02230c6c::vfunc_4c(u32 a, u8 b) {
+void Snowball::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
-        func_ov003_022129d0(1);
+        changeTalkAct(1);
         break;
     case 1:
-        func_ov003_022129d0(1);
+        changeTalkAct(1);
         unk_374.g = 0;
         break;
     case 8:
-        func_ov003_022129d0(0);
+        changeTalkAct(0);
         break;
     }
 }
 
-BOOL Unk_ov003_02230c6c::func_ov003_022129d0(s32 m) {
-    static Unk_022129d0_Fn tbl[3] = { (Unk_022129d0_Fn)&Unk_ov003_02230c6c::func_ov003_02212950, (Unk_022129d0_Fn)&Unk_ov003_02230c6c::func_ov003_02212888, (Unk_022129d0_Fn)&Unk_ov003_02230c6c::func_ov003_02212860 };
+BOOL Snowball::changeTalkAct(s32 m) {
+    static Unk_022129d0_Fn tbl[3] = { (Unk_022129d0_Fn)&Snowball::setupTalkIdle, (Unk_022129d0_Fn)&Snowball::setupTalk, (Unk_022129d0_Fn)&Snowball::setupTalkEnd };
     if (m < 3) {
         if ((this->*tbl[m])()) {
             unk_39c = m;
@@ -1255,20 +1255,20 @@ BOOL Unk_ov003_02230c6c::func_ov003_022129d0(s32 m) {
     return FALSE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_02212954() {
-    static Unk_02212954_Fn tbl[3] = { &Unk_ov003_02230c6c::func_ov003_0221294c, &Unk_ov003_02230c6c::func_ov003_02212864, &Unk_ov003_02230c6c::func_ov003_02212830 };
+void Snowball::runTalkAct() {
+    static Unk_02212954_Fn tbl[3] = { &Snowball::mainTalkIdle, &Snowball::mainTalk, &Snowball::mainTalkEnd };
     if (unk_39c < 3) {
         (this->*tbl[unk_39c])();
     }
 }
 
-BOOL Unk_ov003_02230c6c::func_ov003_02212950() {
+BOOL Snowball::setupTalkIdle() {
     return TRUE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_0221294c() {}
+void Snowball::mainTalkIdle() {}
 
-BOOL Unk_ov003_02230c6c::func_ov003_02212888() {
+BOOL Snowball::setupTalk() {
     _ZN9Character13func_0203e488Ei(this, this);
     s32 r;
     if (unk_374.g) {
@@ -1289,19 +1289,19 @@ BOOL Unk_ov003_02230c6c::func_ov003_02212888() {
     return TRUE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_02212864() {
+void Snowball::mainTalk() {
     if (unk_3c) {
         if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04) {
-            func_ov003_022129d0(2);
+            changeTalkAct(2);
         }
     }
 }
 
-BOOL Unk_ov003_02230c6c::func_ov003_02212860() {
+BOOL Snowball::setupTalkEnd() {
     return TRUE;
 }
 
-void Unk_ov003_02230c6c::func_ov003_02212830() {
+void Snowball::mainTalkEnd() {
     if (unk_3c) {
         if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);

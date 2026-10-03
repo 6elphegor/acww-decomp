@@ -27,7 +27,7 @@ public:
     virtual ~ProcBase();
 };
 
-class Unk_ov004_0224c574;
+class FleaMarketSellerVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
@@ -60,7 +60,7 @@ class Unk_ov004_0224c574;
 #define FtrActor_findOwnTile _ZN8FtrActor11findOwnTileEPiS0_ii
 #define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
 #define func_ov004_02235624 _ZN18Unk_ov004_0223570819func_ov004_02235624Eiii
-typedef BOOL (Unk_ov004_0224c574::*Unk_ov004_022187b8_Fn)();
+typedef BOOL (FleaMarketSellerVillager::*Unk_ov004_022187b8_Fn)();
 
 struct Unk_ov004_022187b8_Ent {
     Unk_ov004_022187b8_Fn a;
@@ -107,7 +107,7 @@ extern u8 data_020e416c;
 extern u16 gPad[];
 extern s16 data_02135f44[];
 extern void *gCommManager;
-extern Unk_ov004_022187b8_Ent data_ov004_02250718[8];
+extern Unk_ov004_022187b8_Ent sFleaMarketSellerActTable[8];
 extern u8 data_ov004_022506c8[0x28];
 extern u8 data_ov004_022506f0[0x28];
 
@@ -135,7 +135,7 @@ s32 TalkRequest_EndTalkWith(void *);
 void TalkRequest_AddPlayerTalk6(void *, u32);
 void func_020141b4(void *, u32, s32, u32);
 s32 Unk_020d77a4_getAngleTo(void *, void *);
-void func_0201adc8(void *, s32);
+void NpcActor_ChargePlayer(void *, s32);
 void func_02099014(void *, s32);
 void func_ov004_022344dc(void);
 void func_0207e400(void *, void *, s32, s32);
@@ -187,7 +187,7 @@ void func_ov004_022180e0(void *o);
 s32 Item_GetPrice(void *o);
 void func_02015958(void *o, s32 a, u32 b, u32 c, u32 d, u32 e);
 s32 func_0207e7a8(void *o, u16 *p);
-s32 func_0201ade4(void *o, s32 a);
+s32 NpcActor_CanPlayerPay(void *o, s32 a);
 void func_0201578c(void *o, void *a, u32 b, u32 c);
 void *ActorTalkRequest_getChoiceList(void *o);
 }
@@ -353,7 +353,7 @@ public:
     /* 0x838 */ VillagerMood unk_838;
 };
 
-// Dialog sub-object at +0x8a4 of Unk_ov004_0224c574. Its vtable (0x0224c4e4) names every slot after the class that last overrides it;
+// Dialog sub-object at +0x8a4 of FleaMarketSellerVillager. Its vtable (0x0224c4e4) names every slot after the class that last overrides it;
 // declared here slot by slot so that each slot mangles to that symbol.
 class ActorTalkRequest {
 public:
@@ -434,24 +434,24 @@ public:
     u8 pad_ac[0x1a0 - 0xac];
 };
 
-class Unk_ov004_0224c4e4 : public VillagerTalk {
+class FleaMarketSellerVillagerTalk : public VillagerTalk {
 public:
-    Unk_ov004_0224c4e4();
-    virtual ~Unk_ov004_0224c4e4();
+    FleaMarketSellerVillagerTalk();
+    virtual ~FleaMarketSellerVillagerTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_78(Unk_ov004_0224c4e4_Out *out);
 
-    void func_ov004_022180e0();
-    void func_ov004_022181c4(Unk_ov004_0224c574 *owner);
+    void sellFurniture();
+    void attachOwner(FleaMarketSellerVillager *owner);
 
-    /* 0x1a0 */ Unk_ov004_0224c574 *unk_1a0;
+    /* 0x1a0 */ FleaMarketSellerVillager *unk_1a0;
     /* 0x1a4 */ s32 unk_1a4;
 };
 
-class Unk_ov004_0224c574 : public VillagerActor {
+class FleaMarketSellerVillager : public VillagerActor {
 public:
-    Unk_ov004_0224c574()
+    FleaMarketSellerVillager()
         : unk_894(0xfff1), unk_898(0), unk_89c(0) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -463,32 +463,32 @@ public:
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
 
-    BOOL func_ov004_022178f0();
-    BOOL func_ov004_02217934();
-    BOOL func_ov004_02217954();
-    BOOL func_ov004_0221823c();
-    BOOL func_ov004_02218354();
-    BOOL func_ov004_02218394();
-    BOOL func_ov004_02218398();
-    BOOL func_ov004_022183e4();
-    BOOL func_ov004_0221841c();
-    BOOL func_ov004_02218460();
-    BOOL func_ov004_02218498();
-    BOOL func_ov004_02218588();
-    BOOL func_ov004_022185bc();
-    BOOL func_ov004_0221866c();
-    BOOL func_ov004_022186a0();
-    BOOL func_ov004_02218734();
-    BOOL func_ov004_02218768();
-    BOOL func_ov004_0221877c();
-    void func_ov004_022187b8(s32 idx);
+    BOOL checkPlayerLeaving();
+    BOOL requestTradeTalk();
+    BOOL checkFurnitureTap();
+    BOOL mainAct07();
+    BOOL setupAct07();
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct06();
+    BOOL setupAct06();
+    BOOL mainAct05();
+    BOOL setupAct05();
+    BOOL mainAct04();
+    BOOL setupAct04();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 idx);
 
     /* 0x894 */ u16 unk_894;
     /* 0x896 */ u16 pad_896;
     /* 0x898 */ s32 unk_898;
     /* 0x89c */ s32 unk_89c;
     /* 0x8a0 */ s32 unk_8a0;
-    /* 0x8a4 */ Unk_ov004_0224c4e4 unk_8a4;
+    /* 0x8a4 */ FleaMarketSellerVillagerTalk unk_8a4;
     /* 0xa4c */ u8 unk_a4c;
     /* 0xa4d */ u8 unk_a4d;
     /* 0xa4e */ u8 unk_a4e;
@@ -498,45 +498,45 @@ public:
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" Unk_ov004_0224c574 *func_ov004_02218934();
-extern "C" Unk_ov004_SceneEntry data_ov004_0224c4c4 = {(void *(*)())func_ov004_02218934, 0x86, 0x8a, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" FleaMarketSellerVillager *FleaMarketSellerVillager_Create();
+extern "C" Unk_ov004_SceneEntry sFleaMarketSellerVillagerProfile = {(void *(*)())FleaMarketSellerVillager_Create, 0x86, 0x8a, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022506c8[0x28];
 u8 data_ov004_022506f0[0x28];
-void _ZN18Unk_ov004_0224c57419func_ov004_0221877cEv();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218768Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_022183e4Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218398Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218394Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218460Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_0221841cEv();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218734Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_022186a0Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_0221866cEv();
-void _ZN18Unk_ov004_0224c57419func_ov004_022185bcEv();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218588Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218498Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_02218354Ev();
-void _ZN18Unk_ov004_0224c57419func_ov004_0221823cEv();
+void _ZN24FleaMarketSellerVillager10setupAct00Ev();
+void _ZN24FleaMarketSellerVillager9mainAct00Ev();
+void _ZN24FleaMarketSellerVillager10setupAct01Ev();
+void _ZN24FleaMarketSellerVillager9mainAct01Ev();
+void _ZN24FleaMarketSellerVillager9mainAct02Ev();
+void _ZN24FleaMarketSellerVillager10setupAct03Ev();
+void _ZN24FleaMarketSellerVillager9mainAct03Ev();
+void _ZN24FleaMarketSellerVillager10setupAct04Ev();
+void _ZN24FleaMarketSellerVillager9mainAct04Ev();
+void _ZN24FleaMarketSellerVillager10setupAct05Ev();
+void _ZN24FleaMarketSellerVillager9mainAct05Ev();
+void _ZN24FleaMarketSellerVillager10setupAct06Ev();
+void _ZN24FleaMarketSellerVillager9mainAct06Ev();
+void _ZN24FleaMarketSellerVillager10setupAct07Ev();
+void _ZN24FleaMarketSellerVillager9mainAct07Ev();
 // ptmf constants (named: their order cannot be reproduced natively), defined in the order that gives the original layout
-void *data_ov004_0224c464[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_022186a0Ev, 0};
-void *data_ov004_0224c44c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_0221877cEv, 0};
-void *data_ov004_0224c4bc[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218768Ev, 0};
-void *data_ov004_0224c4b4[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_022183e4Ev, 0};
-void *data_ov004_0224c4ac[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218498Ev, 0};
-void *data_ov004_0224c4a4[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218394Ev, 0};
-void *data_ov004_0224c49c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218460Ev, 0};
-void *data_ov004_0224c494[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_0221841cEv, 0};
-void *data_ov004_0224c454[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_0221823cEv, 0};
-void *data_ov004_0224c48c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218734Ev, 0};
-void *data_ov004_0224c47c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_0221866cEv, 0};
-void *data_ov004_0224c474[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_022185bcEv, 0};
-void *data_ov004_0224c46c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218588Ev, 0};
-void *data_ov004_0224c45c[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218354Ev, 0};
-void *data_ov004_0224c484[2] = {(void *)_ZN18Unk_ov004_0224c57419func_ov004_02218398Ev, 0};
+void *data_ov004_0224c464[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct04Ev, 0};
+void *data_ov004_0224c44c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct00Ev, 0};
+void *data_ov004_0224c4bc[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct00Ev, 0};
+void *data_ov004_0224c4b4[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct01Ev, 0};
+void *data_ov004_0224c4ac[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct06Ev, 0};
+void *data_ov004_0224c4a4[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct02Ev, 0};
+void *data_ov004_0224c49c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct03Ev, 0};
+void *data_ov004_0224c494[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct03Ev, 0};
+void *data_ov004_0224c454[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct07Ev, 0};
+void *data_ov004_0224c48c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct04Ev, 0};
+void *data_ov004_0224c47c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct05Ev, 0};
+void *data_ov004_0224c474[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct05Ev, 0};
+void *data_ov004_0224c46c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct06Ev, 0};
+void *data_ov004_0224c45c[2] = {(void *)_ZN24FleaMarketSellerVillager10setupAct07Ev, 0};
+void *data_ov004_0224c484[2] = {(void *)_ZN24FleaMarketSellerVillager9mainAct01Ev, 0};
 }
 #define PM(x) (*(Unk_ov004_022187b8_Fn *)(x))
-extern "C" Unk_ov004_022187b8_Ent data_ov004_02250718[8] = {
+extern "C" Unk_ov004_022187b8_Ent sFleaMarketSellerActTable[8] = {
     {PM(data_ov004_0224c44c), PM(data_ov004_0224c4bc)},
     {PM(data_ov004_0224c4b4), PM(data_ov004_0224c484)},
     {0, PM(data_ov004_0224c4a4)},
@@ -545,7 +545,7 @@ extern "C" Unk_ov004_022187b8_Ent data_ov004_02250718[8] = {
     {PM(data_ov004_0224c47c), PM(data_ov004_0224c474)},
     {PM(data_ov004_0224c46c), PM(data_ov004_0224c4ac)},
     {PM(data_ov004_0224c45c), PM(data_ov004_0224c454)}};
-#define data_ov004_02250720 ((Unk_ov004_022187fc_Ent *)((u8 *)data_ov004_02250718 + 8))
+#define data_ov004_02250720 ((Unk_ov004_022187fc_Ent *)((u8 *)sFleaMarketSellerActTable + 8))
 
 // ---------------------------------------------------------------------------------------------------------------------
 static inline BOOL Unk_ov004_02217954_Both() {
@@ -555,20 +555,20 @@ static inline BOOL Unk_ov004_02217954_Both() {
     return FALSE;
 }
 
-extern "C" Unk_ov004_0224c574 *func_ov004_02218934() {
-    return new Unk_ov004_0224c574;
+extern "C" FleaMarketSellerVillager *FleaMarketSellerVillager_Create() {
+    return new FleaMarketSellerVillager;
 }
 
-BOOL Unk_ov004_0224c574::vfunc_04() {
+BOOL FleaMarketSellerVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
     Unk_020d77a4_setTalkRequest(this, &unk_8a4);
-    unk_8a4.func_ov004_022181c4(this);
+    unk_8a4.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::vfunc_00() {
+BOOL FleaMarketSellerVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
@@ -577,9 +577,9 @@ BOOL Unk_ov004_0224c574::vfunc_00() {
     func_020135c4(&unk_558);
     func_020b50dc();
     if (func_020b5178()) {
-        func_ov004_022187b8(4);
+        changeAct(4);
     } else {
-        func_ov004_022187b8(0);
+        changeAct(0);
     }
     func_0202ffb0(0);
     unk_a54 = 0;
@@ -587,7 +587,7 @@ BOOL Unk_ov004_0224c574::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::vfunc_0c() {
+BOOL FleaMarketSellerVillager::vfunc_0c() {
     if (!VillagerActor::vfunc_0c()) {
         return FALSE;
     }
@@ -599,41 +599,41 @@ BOOL Unk_ov004_0224c574::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::updateAct() {
+BOOL FleaMarketSellerVillager::updateAct() {
     BOOL r = FALSE;
     if (data_ov004_02250720[unk_8a0].a) {
-        r = (this->*data_ov004_02250718[unk_8a0].b)();
+        r = (this->*sFleaMarketSellerActTable[unk_8a0].b)();
     }
     return r;
 }
 
-void Unk_ov004_0224c574::func_ov004_022187b8(s32 idx) {
+void FleaMarketSellerVillager::changeAct(s32 idx) {
     BOOL r = TRUE;
-    if (data_ov004_02250718[idx].a) {
-        r = (this->*data_ov004_02250718[idx].a)();
+    if (sFleaMarketSellerActTable[idx].a) {
+        r = (this->*sFleaMarketSellerActTable[idx].a)();
     }
     if (r) {
         unk_8a0 = idx;
     }
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_0221877c() {
+BOOL FleaMarketSellerVillager::setupAct00() {
     unk_a4c = 0;
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218768() {
+BOOL FleaMarketSellerVillager::mainAct00() {
     TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218734() {
+BOOL FleaMarketSellerVillager::setupAct04() {
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_022186a0() {
+BOOL FleaMarketSellerVillager::mainAct04() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4, r6;
     Unk_ov004_0221823c_Vec *p = func_020947f0(4);
@@ -644,31 +644,31 @@ BOOL Unk_ov004_0224c574::func_ov004_022186a0() {
     r4 = func_020e780c(unk_8e, Unk_020d77a4_getAngleToPlayer(this, 4));
     func_0201ae00(&b, this, &a);
     if (r6 > 0x3000 && func_020e96ec(&b, &unk_5c) != 0) {
-        func_ov004_022187b8(6);
+        changeAct(6);
     } else {
         if (r4 > 0x2000) {
-            func_ov004_022187b8(5);
+            changeAct(5);
         }
     }
-    if (func_ov004_022178f0()) {
+    if (checkPlayerLeaving()) {
         return TRUE;
     }
-    func_ov004_02217934();
+    requestTradeTalk();
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_0221866c() {
+BOOL FleaMarketSellerVillager::setupAct05() {
     func_020196b4(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_022185bc() {
+BOOL FleaMarketSellerVillager::mainAct05() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4, r6;
-    if (func_ov004_022178f0()) {
+    if (checkPlayerLeaving()) {
         return TRUE;
     }
-    if (func_ov004_02217934()) {
+    if (requestTradeTalk()) {
         return TRUE;
     }
     Unk_ov004_0221823c_Vec *p = func_020947f0(4);
@@ -679,30 +679,30 @@ BOOL Unk_ov004_0224c574::func_ov004_022185bc() {
     r6 = Unk_020d77a4_getAngleToPlayer(this, 4);
     func_0201ae00(&b, this, &a);
     if (r4 > 0x3000 && func_020e96ec(&b, &unk_5c) != 0) {
-        func_ov004_022187b8(6);
+        changeAct(6);
         return TRUE;
     }
     func_0201a99c(&unk_350, r6);
     if (func_020197a8(&unk_564) == 3) {
         if (func_02019790(&unk_564) != 0) {
-            func_ov004_022187b8(4);
+            changeAct(4);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218588() {
+BOOL FleaMarketSellerVillager::setupAct06() {
     func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218498() {
+BOOL FleaMarketSellerVillager::mainAct06() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4;
-    if (func_ov004_022178f0()) {
+    if (checkPlayerLeaving()) {
         return TRUE;
     }
-    if (func_ov004_02217934()) {
+    if (requestTradeTalk()) {
         return TRUE;
     }
     Unk_ov004_0221823c_Vec *p = func_020947f0(4);
@@ -722,12 +722,12 @@ BOOL Unk_ov004_0224c574::func_ov004_02218498() {
     }
     func_0201a9ec(&unk_350, &b);
     if (r4 <= 0x3000 || func_020e972c(&b, &unk_5c) != 0) {
-        func_ov004_022187b8(4);
+        changeAct(4);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218460() {
+BOOL FleaMarketSellerVillager::setupAct03() {
     void *t = func_02015aac(&unk_8a4);
     s32 r = 0;
     if (t != 0) {
@@ -737,7 +737,7 @@ BOOL Unk_ov004_0224c574::func_ov004_02218460() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_0221841c() {
+BOOL FleaMarketSellerVillager::mainAct03() {
     Unk_ov004_0221841c_Vec a;
     Unk_ov004_0221823c_Vec *p = func_020947f0(4);
     a.x = p->x;
@@ -745,12 +745,12 @@ BOOL Unk_ov004_0224c574::func_ov004_0221841c() {
     a.z = p->z;
     if (func_02014220(&unk_618) == 0) {
         func_020b4bbc(func_020b4934(), 0);
-        func_ov004_022187b8(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_022183e4() {
+BOOL FleaMarketSellerVillager::setupAct01() {
     void *t = func_02015aac(&unk_8a4);
     s32 r = 0;
     if (t != 0) {
@@ -760,31 +760,31 @@ BOOL Unk_ov004_0224c574::func_ov004_022183e4() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218398() {
+BOOL FleaMarketSellerVillager::mainAct01() {
     if (func_02014220(&unk_618) == 0) {
         if (unk_a4c == 0) {
             unk_a4c = 1;
         }
         unk_894 = 0xfff1;
         TalkRequest_EndTalkWith(this);
-        func_ov004_022187b8(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218394() {
+BOOL FleaMarketSellerVillager::mainAct02() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02218354() {
+BOOL FleaMarketSellerVillager::setupAct07() {
     unk_a4d = 0x32;
     func_020196b4(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-// ---- Unk_ov004_0224c574 ----
+// ---- FleaMarketSellerVillager ----
 
-BOOL Unk_ov004_0224c574::func_ov004_0221823c() {
+BOOL FleaMarketSellerVillager::mainAct07() {
     Unk_ov004_0221823c_Vec a, b;
     s32 r4;
     Unk_ov004_0221823c_Vec *p = func_020947f0(4);
@@ -808,26 +808,26 @@ BOOL Unk_ov004_0224c574::func_ov004_0221823c() {
         VillagerTalk *pb = &unk_8a4;
         pb->vfunc_08();
         func_02015ab0(&unk_8a4, Unk_020d77a4_getPlayerActor(this, 4));
-        func_ov004_022187b8(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-Unk_ov004_0224c4e4::Unk_ov004_0224c4e4() {
+FleaMarketSellerVillagerTalk::FleaMarketSellerVillagerTalk() {
 }
 
-Unk_ov004_0224c4e4::~Unk_ov004_0224c4e4() {
+FleaMarketSellerVillagerTalk::~FleaMarketSellerVillagerTalk() {
 }
 
-void Unk_ov004_0224c4e4::func_ov004_022181c4(Unk_ov004_0224c574 *owner) {
+void FleaMarketSellerVillagerTalk::attachOwner(FleaMarketSellerVillager *owner) {
     vfunc_08();
     VillagerTalk_begin(this, owner, 0x11);
     unk_1a0 = owner;
 }
 
-// ---- Unk_ov004_0224c4e4 ----
+// ---- FleaMarketSellerVillagerTalk ----
 
-void Unk_ov004_0224c4e4::func_ov004_022180e0() {
+void FleaMarketSellerVillagerTalk::sellFurniture() {
     u16 *p = &unk_1a0->unk_894;
     BOOL same;
     if (Item_IsFurniture(p)) {
@@ -845,13 +845,13 @@ void Unk_ov004_0224c4e4::func_ov004_022180e0() {
         }
     }
     if (!same) {
-        func_0201adc8(unk_1a0, unk_1a4);
+        NpcActor_ChargePlayer(unk_1a0, unk_1a4);
         func_02099014(&unk_1a0->unk_894, 0);
-        Unk_ov004_0224c574 *o = unk_1a0;
+        FleaMarketSellerVillager *o = unk_1a0;
         if (func_ov004_02235624(func_ov004_02235718(), o->unk_898, o->unk_89c, 0) != -1) {
             func_ov004_022344dc();
             if (unk_1a0->vfunc_64()) {
-                Unk_ov004_0224c574 *q = unk_1a0;
+                FleaMarketSellerVillager *q = unk_1a0;
                 func_0207e400(q->vfunc_64(), &q->unk_898, q->unk_a50, q->unk_a54);
             }
         }
@@ -859,7 +859,7 @@ void Unk_ov004_0224c4e4::func_ov004_022180e0() {
     }
 }
 
-void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
+void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
     void *r7 = func_0207f55c(unk_1a0->unk_82c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (r7) {
         func_02080ecc(r7, 0, 0, 0);
@@ -914,7 +914,7 @@ void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
             w = 0xfff1;
             r6 = 10 - func_0207e7a8(unk_1a0->unk_82c, &w);
         }
-        if (!(unk_1a0->unk_898 != -1 && func_02098ffc() != -1 && r6 > 3 && func_0201ade4(unk_1a0, unk_1a4))) {
+        if (!(unk_1a0->unk_898 != -1 && func_02098ffc() != -1 && r6 > 3 && NpcActor_CanPlayerPay(unk_1a0, unk_1a4))) {
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade4");
         } else {
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade3");
@@ -940,7 +940,7 @@ void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
     }
 }
 
-BOOL Unk_ov004_0224c574::vfunc_7c() {
+BOOL FleaMarketSellerVillager::vfunc_7c() {
     BOOL f = data_020e416c == 1 ? TRUE : FALSE;
     if (!f || unk_a4e == 0) {
         return TRUE;
@@ -948,12 +948,12 @@ BOOL Unk_ov004_0224c574::vfunc_7c() {
     return FALSE;
 }
 
-void Unk_ov004_0224c574::vfunc_80() { unk_a4e = 1; }
+void FleaMarketSellerVillager::vfunc_80() { unk_a4e = 1; }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void Unk_ov004_0224c4e4::vfunc_14() {}
+void FleaMarketSellerVillagerTalk::vfunc_14() {}
 
-void Unk_ov004_0224c4e4::vfunc_18() {
+void FleaMarketSellerVillagerTalk::vfunc_18() {
     void *r6 = ChoiceList_getResult(ActorTalkRequest_getChoiceList(this));
     u32 r4 = 0xff;
     u8 *s;
@@ -980,7 +980,7 @@ void Unk_ov004_0224c4e4::vfunc_18() {
         case 2:
             if (r6 == 0) {
                 VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q11_yes");
-                func_ov004_022180e0();
+                sellFurniture();
             } else {
                 VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q11_no");
             }
@@ -995,45 +995,45 @@ void Unk_ov004_0224c4e4::vfunc_18() {
     }
 }
 
-BOOL Unk_ov004_0224c574::vfunc_48() {
-    if (func_02014220(&unk_618) != 0 || func_ov004_02217934()) {
+BOOL FleaMarketSellerVillager::vfunc_48() {
+    if (func_02014220(&unk_618) != 0 || requestTradeTalk()) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::vfunc_58() {
+BOOL FleaMarketSellerVillager::vfunc_58() {
     if (func_02014220(&unk_618) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c574::vfunc_4c(s32 a) {
+void FleaMarketSellerVillager::vfunc_4c(s32 a) {
     switch (a) {
     case 1:
         unk_8a4.vfunc_08();
         func_02015ab0(&unk_8a4, Unk_020d77a4_getPlayerActor(this, 4));
         if (unk_a4c == 0) {
-            func_ov004_022187b8(1);
+            changeAct(1);
         } else if (unk_a4c == 3) {
-            func_ov004_022187b8(3);
+            changeAct(3);
         } else {
-            func_ov004_022187b8(7);
+            changeAct(7);
         }
         break;
     case 0:
         unk_8a4.vfunc_08();
         func_02015ab0(&unk_8a4, Unk_020d77a4_getPlayerActor(this, 4));
-        func_ov004_022187b8(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov004_022187b8(4);
+        changeAct(4);
         break;
     }
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02217954() {
+BOOL FleaMarketSellerVillager::checkFurnitureTap() {
     struct Unk_ov004_02217954_V { s32 x, y, z; };
     u16 r[4];
     s32 hx, hy;
@@ -1136,15 +1136,15 @@ done:
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_02217934() {
-    if (func_ov004_02217954()) {
+BOOL FleaMarketSellerVillager::requestTradeTalk() {
+    if (checkFurnitureTap()) {
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c574::func_ov004_022178f0() {
+BOOL FleaMarketSellerVillager::checkPlayerLeaving() {
     struct V { s32 x, y, z; } v;
     s32 *s = (s32 *)func_020947f0(4);
     v.x = s[0];

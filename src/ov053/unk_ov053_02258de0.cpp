@@ -467,8 +467,8 @@ void *_ZN10PlayerData11getPlayerIdEv(void *p);
 s32 _ZN8PlayerId9getGenderEv(void *p);
 s32 func_020aa514(void *p);
 s32 Hud_Hide();
-s32 func_0201ade4(void *o, s32 a);
-void func_0201adc8(void *o, s32 v);
+s32 NpcActor_CanPlayerPay(void *o, s32 a);
+void NpcActor_ChargePlayer(void *o, s32 v);
 void func_020851a4(void *p, s32 v);
 void func_02085188(void *p, s32 v);
 s32 _ZN10PlayerData12getHairStyleEv(void *p);
@@ -1105,8 +1105,8 @@ void Unk_ov053_0225a4c8::vfunc_18() {
         break;
     case 8:
         if (arg == 0) {
-            if (func_0201ade4(unk_b0, 0xbb8)) {
-                func_0201adc8(unk_b0, 0xbb8);
+            if (NpcActor_CanPlayerPay(unk_b0, 0xbb8)) {
+                NpcActor_ChargePlayer(unk_b0, 0xbb8);
                 msg = 0x3c;
                 func_020851a4(func_020850e0(), 7);
                 unk_b6 = 0;

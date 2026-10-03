@@ -403,7 +403,7 @@ void BuriedMask_Reset(void *p);
 BOOL Item_IsNormalItem(u16 *p);
 void func_02039e6c(u16 v);
 s32 func_020b2768();
-BOOL func_ov003_02218e2c(s32 a, void *b, s32 x, s32 y, s32 f);
+BOOL FieldStructureMgr_SpawnBuilding(s32 a, void *b, s32 x, s32 y, s32 f);
 u32 _ZN12Unk_020b28ac13func_020b2b0cEv(void *h);
 u32 _ZN12Unk_020b28ac13func_020b2b80Ev(void *h);
 BOOL _ZN12Unk_020b28ac13func_020b2a5cEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
@@ -1257,7 +1257,7 @@ BOOL TownMap::placeStructure(u16 *a, s32 x, s32 y, u8 flag) {
     tile = 0xfff1;
     if (p) tile = *p;
     if (flag && func_020b2768()) {
-        return func_ov003_02218e2c(func_020b2768(), a, x, y, 1);
+        return FieldStructureMgr_SpawnBuilding(func_020b2768(), a, x, y, 1);
     }
     if (putStructure(a, x, y)) {
         if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) func_02039e6c(tile);

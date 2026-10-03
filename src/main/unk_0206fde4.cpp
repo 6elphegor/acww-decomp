@@ -11,9 +11,9 @@ struct Unk_0206fde4_Mtx {
     s32 v[12];
 };
 
-class Unk_0206fe80 {
+class MuseumData {
 public:
-    BOOL func_02070358(u16 *id);
+    BOOL isDonated(u16 *id);
 };
 
 extern "C" {
@@ -36,7 +36,7 @@ extern "C" s32 func_0206fe34(u32 a, s32 b) {
     for (i = 0; i < 0x34; i++) {
         u16 v = Unk_0206fe34_Id(i);
         if (b == Item_GetFossilGroup(&v)) {
-            if (((Unk_0206fe80 *)a)->func_02070358(&v)) {
+            if (((MuseumData *)a)->isDonated(&v)) {
                 cnt++;
             }
         }

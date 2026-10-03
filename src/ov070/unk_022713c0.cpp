@@ -473,7 +473,7 @@ void func_020851a4(void *p, s32 v);
 BOOL func_0206ed18();
 s32 func_0206e8e8();
 BOOL TalkRequest_EndTalkWith(void *p);
-void func_0201adc8(void *p, s32 v);
+void NpcActor_ChargePlayer(void *p, s32 v);
 void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771013func_02015170Ejj(void *self, u32 a, u32 b);
 void _ZN12Unk_020d771013func_020151d0Ei(void *self, s32 a);
@@ -693,7 +693,7 @@ void Unk_ov070_0227277c::func_ov070_02272138() {
         } else if (unk_bc > 4000) {
             v = 0x30;
         }
-        func_0201adc8(unk_b0, unk_bc);
+        NpcActor_ChargePlayer(unk_b0, unk_bc);
     } else {
         Hud_Show();
         func_020851a4(func_020850e0(), 10);

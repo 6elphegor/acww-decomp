@@ -225,8 +225,8 @@ s16 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
 s32 _s32_div_f(s32 a, s32 b);
 void func_ov003_0222e328(void *, s32);
-s32 func_ov003_0221d0c8(void *a, void *b);
-s32 func_ov003_0221d118(void *a, void *b, s32 c);
+s32 Field_IsRafflesiaNear(void *a, void *b);
+s32 Field_FindFlowerNear(void *a, void *b, s32 c);
 s32 func_ov003_0222d1dc(s32 a);
 s32 func_ov003_0222dec8(s32 a, void *b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
@@ -235,8 +235,8 @@ s32 Flower_GetSpecies(void *cell);
 s32 func_020e9650(void *a, void *b);
 void func_ov068_022689c8(s32 code, s32 *v);
 void *func_ov003_0222ead4(void *self);
-s32 func_ov003_02212d28(void *o, s32 st);
-s32 func_ov003_022135c4(void *o, s32 a);
+s32 Snowball_ChangeState(void *o, s32 st);
+s32 Snowball_Break(void *o, s32 a);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e780c(s32 a, s32 b);
@@ -279,10 +279,10 @@ s32 func_ov003_0222d720(void *);
 void func_ov003_0222d75c(void *, s32, s32, s32);
 s32 PlayerActor_IsLocalAct67HitAt(void *);
 void *func_ov003_0222eb10(s32);
-s32 func_ov003_022135e4(void *);
-s32 func_ov003_022135f0(void *, void *);
-s32 func_ov003_02213fb4(void);
-s32 func_ov003_02213fbc(void);
+s32 Snowball_GetRadius(void *);
+s32 Snowball_TrySetPos(void *, void *);
+s32 Snowball_GetMaxRadius(void);
+s32 Snowball_GetMinRadius(void);
 s32 func_ov003_0222c620(s32, s32);
 s32 PlayerActor_RequestAct79(void);
 void func_02034d70(s32);
@@ -296,7 +296,7 @@ u16 Item_MakeBuilding(u32);
 void *StrBSize_Get(u16 *);
 u32 _ZN12Unk_020b28ac13func_020b2b98Ev(void *);
 s32 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(void *, s32 *, s32 *, u32);
-void *func_ov003_02218b40(u32);
+void *BuildingList_FindByItem(u32);
 s32 _ZN13BuildingActor9callIsLitEv(void *);
 s32 _ZN13BuildingActor8getGridXEv(void *);
 s32 _ZN13BuildingActor8getGridZEv(void *);
@@ -743,7 +743,7 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
             u32 cnt = _ZN12Unk_020b28ac13func_020b2b98Ev(obj);
             s32 px = zp, pz = zp;
             if (cnt != 0) {
-                void *q = func_ov003_02218b40(id);
+                void *q = BuildingList_FindByItem(id);
                 if (q != 0) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
@@ -829,14 +829,14 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         s32 rot, r6;
         q = a;
         q = a + 0x5c;
-        r6 = func_ov003_022135e4(a);
+        r6 = Snowball_GetRadius(a);
         ang = B20::Math_AngleXZ(q, pos);
         rot = ang;
         w[0] = *(s32 *)(a + 0x5c);
         w[1] = *(s32 *)(q + 4);
         w[2] = *(s32 *)(q + 8);
-        static s32 base = (tmp = func_ov003_02213fb4(), tmp - func_ov003_02213fbc());
-        r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - func_ov003_02213fbc(), base));
+        static s32 base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
+        r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - Snowball_GetMinRadius(), base));
         if (unk_24f % 0x14 == 0) {
             s32 t = (s32)(func_ov003_0222c620(6, 1) << 17) >> 16;
             ang += t;
@@ -867,7 +867,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
             pos[0] = pos[0] - func_01ffcb0c(w2[0], 0x2666);
             pos[2] = pos[2] - func_01ffcb0c(w2[2], 0x2666);
         }
-        if (func_ov003_022135f0(a, w) == 0) {
+        if (Snowball_TrySetPos(a, w) == 0) {
             unk_251 = 5;
             _ZN9AnimModel8setFrameEi((u8 *)this + 0x50, 0);
             unk_232 = func_02063b8c(0x14) + 0x28;
@@ -1456,13 +1456,13 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
     u32 t = *(u8 *)&unk_24d;
     BOOL ok;
     if (t == 0x33) {
-        if (func_ov003_0221d0c8(pos, p) != 0) {
+        if (Field_IsRafflesiaNear(pos, p) != 0) {
             ok = TRUE;
         } else {
             ok = FALSE;
         }
     } else {
-        if (func_ov003_0221d118(pos, p, func_ov003_0222d1dc((s8)t)) != 0) {
+        if (Field_FindFlowerNear(pos, p, func_ov003_0222d1dc((s8)t)) != 0) {
             ok = TRUE;
         } else {
             ok = FALSE;

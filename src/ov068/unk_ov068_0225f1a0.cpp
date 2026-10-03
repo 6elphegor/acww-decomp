@@ -1236,8 +1236,8 @@ extern u8 gVec3Zero[];
 void func_ov068_02265994(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
-void func_ov003_0221950c(s32, void *);
-void func_ov003_02219bf0(s32, void *);
+void FieldItemFx_StartPitfallClose(s32, void *);
+void FieldItemFx_StartPitfallHole(s32, void *);
 void func_02015ec4(void *, s32);
 void VillagerActor_clearFlag834(void *);
 void VillagerActor_setFlag834(void *);
@@ -1628,7 +1628,7 @@ s32 FieldVillagerAi_SetResumeState(void *, s32);
 s32 func_02013568(void *, void *);
 void *func_0207e310(void *);
 void func_0207e334(void *);
-s32 func_ov003_02218ce4();
+s32 VillagerHouse_TryOpenDoorForExit();
 void func_020195c8(void *, s32, s32, s32, s32, s32);
 void func_020785e8(void *, s32);
 void func_0207857c(void *, s32);
@@ -1734,7 +1734,7 @@ void FieldPos_FromUnitCenter(void *, u32, u32);
 void func_020e761c(void *, s32, s32);
 void func_02013568(void *, void *);
 void *func_0207e334(void *);
-s32 func_ov003_02218d0c(void *);
+s32 VillagerHouse_TryOpenDoorForEntry(void *);
 void func_020195c8(void *, s32, s32, s32, u32, s32);
 void func_020196b4(void *, s32, s32, s32, s32, s32, s32, s32, s32, u32, s32);
 void func_020135bc(void *);
@@ -4879,7 +4879,7 @@ void Unk_ov068_0225fd54::func_ov068_022642c4(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     if (func_020197a8((u8 *)o + 0x564) == 3) {
         if (func_02019790((u8 *)o + 0x564) != 0) {
-            if (func_ov003_02218d0c(func_0207e334((void *)o->vfunc_64())) != 0) {
+            if (VillagerHouse_TryOpenDoorForEntry(func_0207e334((void *)o->vfunc_64())) != 0) {
                 VillagerDataItemView_getHousePos((void *)o->vfunc_64());
                 func_020195c8((u8 *)o + 0x564, 2, 0x3b, 1, data_020c6cc8, 0);
                 *((u8 *)o + 0x511) = 0;
@@ -4893,7 +4893,7 @@ void Unk_ov068_0225fd54::func_ov068_0226424c(Unk_ov068_Owner *o) {
     using namespace ns_02264000;
     if (func_020197a8((u8 *)o + 0x564) == 1) {
         if (func_02019790((u8 *)o + 0x564) != 0) {
-            if (func_ov003_02218d0c(func_0207e334((void *)o->vfunc_64())) != 0) {
+            if (VillagerHouse_TryOpenDoorForEntry(func_0207e334((void *)o->vfunc_64())) != 0) {
                 VillagerDataItemView_getHousePos((void *)o->vfunc_64());
                 func_020195c8((u8 *)o + 0x564, 2, 0x3b, 1, data_020c6cc8, 0);
                 *((u8 *)o + 0x511) = 0;
@@ -5136,7 +5136,7 @@ void Unk_ov068_02263a40::func_ov068_02263b90(Unk_ov068_Owner *o) {
     void *ow = o->vfunc_64();
     void *r6 = func_0207e310(ow);
     func_0207e334(ow);
-    if (func_ov003_02218ce4() != 0) {
+    if (VillagerHouse_TryOpenDoorForExit() != 0) {
         func_020195c8((u8 *)o + 0x564, 2, 0x3d, 1, 1, 0);
         *(Unk_ov068_02263b90_Fn *)((u8 *)o + 0x8ac) = data_ov068_0226f910;
         func_020785e8(r6, 1);
@@ -6783,7 +6783,7 @@ void Unk_ov068_0225fd54::func_ov068_02260cdc(Unk_ov068_Owner *o) {
             v2.x = v.x;
             v2.y = v.y;
             v2.z = v.z;
-            func_ov003_02219bf0(0, &v2);
+            FieldItemFx_StartPitfallHole(0, &v2);
             if (r == 0x13) {
                 func_020902b0(0x8f, &v, 0, 0);
             } else {
@@ -6863,7 +6863,7 @@ void Unk_ov068_0225fd54::func_ov068_02260a64(Unk_ov068_Owner *o) {
             v2.x = v.x;
             v2.y = v.y;
             v2.z = v.z;
-            func_ov003_0221950c(0, &v2);
+            FieldItemFx_StartPitfallClose(0, &v2);
             if (r == 0x13) {
                 func_020902b0(0x91, &v, 0, 0);
             } else {
@@ -6951,7 +6951,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260780(Unk_ov068_Owner *o) {
     v2.x = v.x;
     v2.y = v.y;
     v2.z = v.z;
-    func_ov003_0221950c(0, &v2);
+    FieldItemFx_StartPitfallClose(0, &v2);
     if (r == 0x13) {
         func_020902b0(0x91, &v, 0, 0);
     } else {

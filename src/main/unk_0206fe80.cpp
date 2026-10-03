@@ -75,28 +75,28 @@ struct Unk_0206fe80_Bits {
     u32 e : 1;
 };
 
-class Unk_0206fe80 {
+class MuseumData {
 public:
-    s32 func_0206fe80();
-    BOOL func_0206ff58();
-    BOOL func_0206ff9c();
-    BOOL func_0206ffdc();
-    BOOL func_0207001c();
-    BOOL func_02070060();
-    BOOL func_020700a4(s32 x, u16 *id);
-    void func_020700e8(u32 v);
-    void func_020701d0(u16 *id);
-    BOOL func_02070248();
-    void func_020702ec();
-    BOOL func_02070358(u16 *id);
-    u32 func_02070370(u16 *id);
-    u32 func_020703ac(u16 *id);
-    u8 *func_020703d8(u16 *id, s32 *out);
-    void func_020704ac(u16 *id);
-    void func_020704e4(u16 *id);
-    void func_02070510();
+    s32 getDonationPercent();
+    BOOL isFishComplete();
+    BOOL isPaintingsComplete();
+    BOOL isFossilsComplete();
+    BOOL isInsectsComplete();
+    BOOL isComplete();
+    BOOL getDonorName(s32 x, u16 *id);
+    void releasePlayerDonations(u32 v);
+    void donate(u16 *id);
+    BOOL sendCompletionLetters();
+    void checkCompletionLetters();
+    BOOL isDonated(u16 *id);
+    u32 getDonationState(u16 *id);
+    u32 getDonor(u16 *id);
+    u8 *getEntry(u16 *id, s32 *out);
+    void markFormerResident(u16 *id);
+    void clearEntry(u16 *id);
+    void clear();
     void func_0207054c();
-    Unk_0206fe80 *func_02070550();
+    MuseumData *func_02070550();
 
     u8 unk_00[0x1b];
     u8 unk_1b[0x1d];
@@ -116,14 +116,14 @@ static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     return r;
 }
 
-Unk_0206fe80 *Unk_0206fe80::func_02070550() {
-    func_02070510();
+MuseumData *MuseumData::func_02070550() {
+    clear();
     return this;
 }
 
-void Unk_0206fe80::func_0207054c() {}
+void MuseumData::func_0207054c() {}
 
-void Unk_0206fe80::func_02070510() {
+void MuseumData::clear() {
     u32 i;
     for (i = 0; i < 0x1b; i++) unk_00[i] = 0;
     for (i = 0; i < 0x1d; i++) unk_1b[i] = 0;
@@ -131,17 +131,17 @@ void Unk_0206fe80::func_02070510() {
     for (i = 0; i < 0xb; i++) unk_55[i] = 0;
 }
 
-void Unk_0206fe80::func_020704e4(u16 *id) {
+void MuseumData::clearEntry(u16 *id) {
     s32 idx;
-    u8 *p = func_020703d8(id, &idx);
+    u8 *p = getEntry(id, &idx);
     if (p) {
         p[idx >> 1] &= ~(0xf << ((idx & 1) * 4));
     }
 }
 
-void Unk_0206fe80::func_020704ac(u16 *id) {
+void MuseumData::markFormerResident(u16 *id) {
     s32 idx;
-    u8 *p = func_020703d8(id, &idx);
+    u8 *p = getEntry(id, &idx);
     if (p) {
         s32 s = (idx & 1) * 4;
         s32 h = idx >> 1;
@@ -150,7 +150,7 @@ void Unk_0206fe80::func_020704ac(u16 *id) {
     }
 }
 
-u8 *Unk_0206fe80::func_020703d8(u16 *id, s32 *out) {
+u8 *MuseumData::getEntry(u16 *id, s32 *out) {
     BOOL in = FALSE;
     u16 v = *id;
     if (v >= 0x450c && v <= 0x45db) in = TRUE;
@@ -173,15 +173,15 @@ u8 *Unk_0206fe80::func_020703d8(u16 *id, s32 *out) {
     return 0;
 }
 
-u32 Unk_0206fe80::func_020703ac(u16 *id) {
+u32 MuseumData::getDonor(u16 *id) {
     s32 idx;
-    u8 *p = func_020703d8(id, &idx);
+    u8 *p = getEntry(id, &idx);
     if (p) return (p[idx >> 1] >> ((idx & 1) * 4)) & 0xf;
     return 0;
 }
 
-u32 Unk_0206fe80::func_02070370(u16 *id) {
-    u32 v = func_020703ac(id);
+u32 MuseumData::getDonationState(u16 *id) {
+    u32 v = getDonor(id);
     if (v == 0) return 3;
     if (v == 5) return 2;
     s32 t = PlayerData_GetCurrentIndex();
@@ -189,26 +189,26 @@ u32 Unk_0206fe80::func_02070370(u16 *id) {
     return 1;
 }
 
-BOOL Unk_0206fe80::func_02070358(u16 *id) {
-    if (func_020703ac(id)) return TRUE;
+BOOL MuseumData::isDonated(u16 *id) {
+    if (getDonor(id)) return TRUE;
     return FALSE;
 }
 
-void Unk_0206fe80::func_020702ec() {
+void MuseumData::checkCompletionLetters() {
     if (_ZN8SaveData8testFlagEj(gSaveData, 3) == 0) {
-        if (func_02070060()) {
+        if (isComplete()) {
             Unk_020702ec_Date t;
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
             Clock_GetDateTime(&t);
             if (unk_62 != t.b5 || unk_61 != t.b4 || unk_60 != t.b3) {
-                if (func_02070248()) _ZN8SaveData7setFlagEj(gSaveData, 3);
+                if (sendCompletionLetters()) _ZN8SaveData7setFlagEj(gSaveData, 3);
             }
         }
     }
 }
 
-BOOL Unk_0206fe80::func_02070248() {
+BOOL MuseumData::sendCompletionLetters() {
     Unk_020dd38c str;
     func_020638d0(data_021d7352, &str);
     MailText_SetSlot(2, &str);
@@ -228,16 +228,16 @@ BOOL Unk_0206fe80::func_02070248() {
     return r;
 }
 
-void Unk_0206fe80::func_020701d0(u16 *id) {
+void MuseumData::donate(u16 *id) {
     s32 idx;
     u32 t[2];
-    func_020704e4(id);
-    u8 *p = func_020703d8(id, &idx);
+    clearEntry(id);
+    u8 *p = getEntry(id, &idx);
     if (p) {
         u32 e = PlayerData_GetCurrentIndex() & 3;
         p[idx >> 1] |= (e + 1) << ((idx & 1) * 4);
     }
-    if (func_02070060()) {
+    if (isComplete()) {
         t[0] = 0;
         t[1] = 0;
         Clock_GetDateTime(t);
@@ -248,31 +248,31 @@ void Unk_0206fe80::func_020701d0(u16 *id) {
     }
 }
 
-void Unk_0206fe80::func_020700e8(u32 v) {
+void MuseumData::releasePlayerDonations(u32 v) {
     u16 l[4];
     u32 i = 0;
     u32 k = (v & 3) + 1;
     for (; i < 0x34; i++) {
         l[0] = i < 0x34 ? 0x450c + i * 4 : 0x450c;
-        if (k == func_020703ac(&l[0])) func_020704ac(&l[0]);
+        if (k == getDonor(&l[0])) markFormerResident(&l[0]);
     }
     for (i = 0; i < 0x38; i++) {
         l[1] = i < 0x38 ? (u16)(0x12e8 + i) : 0x12e8;
-        if (k == func_020703ac(&l[1])) func_020704ac(&l[1]);
+        if (k == getDonor(&l[1])) markFormerResident(&l[1]);
     }
     for (i = 0; i < 0x38; i++) {
         l[2] = i < 0x38 ? (u16)(0x12b0 + i) : 0x12b0;
-        if (k == func_020703ac(&l[2])) func_020704ac(&l[2]);
+        if (k == getDonor(&l[2])) markFormerResident(&l[2]);
     }
     for (i = 0; i < 0x14; i++) {
         l[3] = i < 0x14 ? 0x3894 + i * 4 : 0x3894;
-        if (k == func_020703ac(&l[3])) func_020704ac(&l[3]);
+        if (k == getDonor(&l[3])) markFormerResident(&l[3]);
     }
 }
 
-BOOL Unk_0206fe80::func_020700a4(s32 x, u16 *id) {
-    if (func_02070370(id) <= 1) {
-        s32 q = (func_020703ac(id) - 1) & 3;
+BOOL MuseumData::getDonorName(s32 x, u16 *id) {
+    if (getDonationState(id) <= 1) {
+        s32 q = (getDonor(id) - 1) & 3;
         void *p = PlayerData_GetResident(data_021d735c, q);
         if (p) {
             _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), x);
@@ -282,73 +282,73 @@ BOOL Unk_0206fe80::func_020700a4(s32 x, u16 *id) {
     return FALSE;
 }
 
-BOOL Unk_0206fe80::func_02070060() {
-    if (!func_0206ff9c()) return FALSE;
-    if (!func_0206ff58()) return FALSE;
-    if (!func_0207001c()) return FALSE;
-    if (func_0206ffdc()) return TRUE;
+BOOL MuseumData::isComplete() {
+    if (!isPaintingsComplete()) return FALSE;
+    if (!isFishComplete()) return FALSE;
+    if (!isInsectsComplete()) return FALSE;
+    if (isFossilsComplete()) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_0206fe80::func_0207001c() {
+BOOL MuseumData::isInsectsComplete() {
     u16 v;
     s32 i;
     for (i = 0; (u32)i < 0x38; i++) {
         v = (u32)i < 0x38 ? (u16)(0x12b0 + i) : 0x12b0;
-        if (!func_02070358(&v)) return FALSE;
+        if (!isDonated(&v)) return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_0206fe80::func_0206ffdc() {
+BOOL MuseumData::isFossilsComplete() {
     u16 v;
     s32 i;
     for (i = 0; (u32)i < 0x34; i++) {
         v = (u32)i < 0x34 ? 0x450c + i * 4 : 0x450c;
-        if (!func_02070358(&v)) return FALSE;
+        if (!isDonated(&v)) return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_0206fe80::func_0206ff9c() {
+BOOL MuseumData::isPaintingsComplete() {
     u16 v;
     s32 i;
     for (i = 0; (u32)i < 0x14; i++) {
         v = (u32)i < 0x14 ? 0x3894 + i * 4 : 0x3894;
-        if (!func_02070358(&v)) return FALSE;
+        if (!isDonated(&v)) return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_0206fe80::func_0206ff58() {
+BOOL MuseumData::isFishComplete() {
     u16 v;
     s32 i;
     for (i = 0; (u32)i < 0x38; i++) {
         v = (u32)i < 0x38 ? (u16)(0x12e8 + i) : 0x12e8;
-        if (!func_02070358(&v)) return FALSE;
+        if (!isDonated(&v)) return FALSE;
     }
     return TRUE;
 }
 
-s32 Unk_0206fe80::func_0206fe80() {
+s32 MuseumData::getDonationPercent() {
     u16 l[4];
     s32 cnt = 0;
     u32 i;
     for (i = 0; i < 0x14; i++) {
         l[0] = i < 0x14 ? 0x3894 + i * 4 : 0x3894;
-        if (func_02070358(&l[0])) cnt++;
+        if (isDonated(&l[0])) cnt++;
     }
     for (i = 0; i < 0x38; i++) {
         l[1] = i < 0x38 ? (u16)(0x12e8 + i) : 0x12e8;
-        if (func_02070358(&l[1])) cnt++;
+        if (isDonated(&l[1])) cnt++;
     }
     for (i = 0; i < 0x38; i++) {
         l[2] = i < 0x38 ? (u16)(0x12b0 + i) : 0x12b0;
-        if (func_02070358(&l[2])) cnt++;
+        if (isDonated(&l[2])) cnt++;
     }
     for (i = 0; i < 0x34; i++) {
         l[3] = i < 0x34 ? 0x450c + i * 4 : 0x450c;
-        if (func_02070358(&l[3])) cnt++;
+        if (isDonated(&l[3])) cnt++;
     }
     return FX_Div((cnt * 100) << 12, 0xb8000);
 }

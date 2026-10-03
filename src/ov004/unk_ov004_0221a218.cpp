@@ -27,7 +27,7 @@ public:
     virtual ~ProcBase();
 };
 
-class Unk_ov004_0224c994;
+class CafeVillager;
 
 #define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
@@ -43,7 +43,7 @@ class Unk_ov004_0224c994;
 #define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-typedef BOOL (Unk_ov004_0224c994::*Unk_ov004_0224c994_Fn)();
+typedef BOOL (CafeVillager::*Unk_ov004_0224c994_Fn)();
 
 struct Unk_ov004_0224c994_Ent {
     Unk_ov004_0224c994_Fn a;
@@ -67,7 +67,7 @@ struct Unk_ov004_SceneEntry {
 
 extern "C" {
 extern u16 data_020c6cc8;
-extern Unk_ov004_0224c994_Ent data_ov004_02250908[3];
+extern Unk_ov004_0224c994_Ent sCafeVillagerActTable[3];
 extern u8 data_ov004_022508e0[0x28];
 
 s32 func_02063b8c(s32 a);
@@ -255,7 +255,7 @@ public:
     /* 0x838 */ VillagerMood unk_838;
 };
 
-// Dialog sub-object at +0x914 of Unk_ov004_0224c7d0. Its vtable (0x0224c740) names every slot after the class that last overrides it;
+// Dialog sub-object at +0x914 of FleaMarketBuyerVillager. Its vtable (0x0224c740) names every slot after the class that last overrides it;
 // declared here slot by slot so that each slot mangles to that symbol.
 class ActorTalkRequest {
 public:
@@ -336,20 +336,20 @@ public:
     u8 pad_ac[0x1a0 - 0xac];
 };
 
-class Unk_ov004_0224c904 : public VillagerTalk {
+class CafeVillagerTalk : public VillagerTalk {
 public:
-    Unk_ov004_0224c904();
-    virtual ~Unk_ov004_0224c904();
+    CafeVillagerTalk();
+    virtual ~CafeVillagerTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_78(void *arg);
 
-    void func_ov004_0221a314(Unk_ov004_0224c994 *owner);
+    void attachOwner(CafeVillager *owner);
 
-    /* 0x1a0 */ Unk_ov004_0224c994 *unk_1a0;
+    /* 0x1a0 */ CafeVillager *unk_1a0;
 };
 
-class Unk_ov004_0224c994 : public VillagerActor {
+class CafeVillager : public VillagerActor {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -357,46 +357,46 @@ public:
     virtual void vfunc_4c(s32 a);
     virtual BOOL updateAct();
 
-    BOOL func_ov004_0221a38c();
-    BOOL func_ov004_0221a390();
-    BOOL func_ov004_0221a3bc();
-    BOOL func_ov004_0221a3f4();
-    BOOL func_ov004_0221a3f8();
-    void func_ov004_0221a42c(s32 idx);
+    BOOL mainAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    void changeAct(s32 idx);
 
     /* 0x894 */ s32 unk_894;
-    /* 0x898 */ Unk_ov004_0224c904 unk_898;
+    /* 0x898 */ CafeVillagerTalk unk_898;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" Unk_ov004_0224c994 *func_ov004_0221a530();
-extern "C" Unk_ov004_SceneEntry data_ov004_0224c8e4 = {(void *(*)())func_ov004_0221a530, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" CafeVillager *CafeVillager_Create();
+extern "C" Unk_ov004_SceneEntry sCafeVillagerProfile = {(void *(*)())CafeVillager_Create, 0x88, 0x8c, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" {
 u8 data_ov004_022508e0[0x28];
-void _ZN18Unk_ov004_0224c99419func_ov004_0221a3bcEv();
-void _ZN18Unk_ov004_0224c99419func_ov004_0221a390Ev();
-void _ZN18Unk_ov004_0224c99419func_ov004_0221a38cEv();
-void _ZN18Unk_ov004_0224c99419func_ov004_0221a3f8Ev();
-void _ZN18Unk_ov004_0224c99419func_ov004_0221a3f4Ev();
+void _ZN12CafeVillager10setupAct00Ev();
+void _ZN12CafeVillager9mainAct00Ev();
+void _ZN12CafeVillager9mainAct01Ev();
+void _ZN12CafeVillager10setupAct02Ev();
+void _ZN12CafeVillager9mainAct02Ev();
 // ptmf constants (named: their order cannot be reproduced natively), defined in the order that gives the original layout
-void *data_ov004_0224c8d4[2] = {(void *)_ZN18Unk_ov004_0224c99419func_ov004_0221a3f8Ev, 0};
-void *data_ov004_0224c8bc[2] = {(void *)_ZN18Unk_ov004_0224c99419func_ov004_0221a3bcEv, 0};
-void *data_ov004_0224c8dc[2] = {(void *)_ZN18Unk_ov004_0224c99419func_ov004_0221a38cEv, 0};
-void *data_ov004_0224c8cc[2] = {(void *)_ZN18Unk_ov004_0224c99419func_ov004_0221a390Ev, 0};
-void *data_ov004_0224c8c4[2] = {(void *)_ZN18Unk_ov004_0224c99419func_ov004_0221a3f4Ev, 0};
+void *data_ov004_0224c8d4[2] = {(void *)_ZN12CafeVillager10setupAct02Ev, 0};
+void *data_ov004_0224c8bc[2] = {(void *)_ZN12CafeVillager10setupAct00Ev, 0};
+void *data_ov004_0224c8dc[2] = {(void *)_ZN12CafeVillager9mainAct01Ev, 0};
+void *data_ov004_0224c8cc[2] = {(void *)_ZN12CafeVillager9mainAct00Ev, 0};
+void *data_ov004_0224c8c4[2] = {(void *)_ZN12CafeVillager9mainAct02Ev, 0};
 }
 #define PM(x) (*(Unk_ov004_0224c994_Fn *)(x))
-extern "C" Unk_ov004_0224c994_Ent data_ov004_02250908[3] = {
+extern "C" Unk_ov004_0224c994_Ent sCafeVillagerActTable[3] = {
     {PM(data_ov004_0224c8bc), PM(data_ov004_0224c8cc)},
     {0, PM(data_ov004_0224c8dc)},
     {PM(data_ov004_0224c8d4), PM(data_ov004_0224c8c4)}};
-#define data_ov004_02250910 ((Unk_ov004_0224c994_Ent *)((u8 *)data_ov004_02250908 + 8))
+#define data_ov004_02250910 ((Unk_ov004_0224c994_Ent *)((u8 *)sCafeVillagerActTable + 8))
 
-extern "C" Unk_ov004_0224c994 *func_ov004_0221a530() {
-    return new Unk_ov004_0224c994;
+extern "C" CafeVillager *CafeVillager_Create() {
+    return new CafeVillager;
 }
 
-BOOL Unk_ov004_0224c994::vfunc_04() {
+BOOL CafeVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
@@ -404,44 +404,44 @@ BOOL Unk_ov004_0224c994::vfunc_04() {
     func_0201ad30(&unk_2a0, 0x1e);
     func_0201ad2c(&unk_2a0, 0x1e);
     Unk_020d77a4_setTalkRequest(this, &unk_898);
-    unk_898.func_ov004_0221a314(this);
+    unk_898.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c994::vfunc_00() {
+BOOL CafeVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
-    func_ov004_0221a42c(2);
+    changeAct(2);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c994::updateAct() {
+BOOL CafeVillager::updateAct() {
     BOOL r = FALSE;
     if (data_ov004_02250910[unk_894].a) {
-        r = (this->*data_ov004_02250908[unk_894].b)();
+        r = (this->*sCafeVillagerActTable[unk_894].b)();
     }
     return r;
 }
 
-void Unk_ov004_0224c994::func_ov004_0221a42c(s32 idx) {
+void CafeVillager::changeAct(s32 idx) {
     BOOL ok = TRUE;
-    if (data_ov004_02250908[idx].a) {
-        ok = (this->*data_ov004_02250908[idx].a)();
+    if (sCafeVillagerActTable[idx].a) {
+        ok = (this->*sCafeVillagerActTable[idx].a)();
     }
     if (ok) {
         unk_894 = idx;
     }
 }
 
-BOOL Unk_ov004_0224c994::func_ov004_0221a3f8() {
+BOOL CafeVillager::setupAct02() {
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c994::func_ov004_0221a3f4() { return TRUE; }
+BOOL CafeVillager::mainAct02() { return TRUE; }
 
-BOOL Unk_ov004_0224c994::func_ov004_0221a3bc() {
+BOOL CafeVillager::setupAct00() {
     void *p = func_02015aac(&unk_898);
     s32 v = 0;
     if (p) {
@@ -451,53 +451,53 @@ BOOL Unk_ov004_0224c994::func_ov004_0221a3bc() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c994::func_ov004_0221a390() {
+BOOL CafeVillager::mainAct00() {
     if (func_02014220(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov004_0221a42c(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c994::func_ov004_0221a38c() { return TRUE; }
+BOOL CafeVillager::mainAct01() { return TRUE; }
 
-Unk_ov004_0224c904::Unk_ov004_0224c904() {}
+CafeVillagerTalk::CafeVillagerTalk() {}
 
-Unk_ov004_0224c904::~Unk_ov004_0224c904() {}
+CafeVillagerTalk::~CafeVillagerTalk() {}
 
-void Unk_ov004_0224c904::func_ov004_0221a314(Unk_ov004_0224c994 *owner) {
+void CafeVillagerTalk::attachOwner(CafeVillager *owner) {
     vfunc_08();
     VillagerTalk_begin(this, owner, 0x11);
     unk_1a0 = owner;
 }
 
-void Unk_ov004_0224c904::vfunc_78(void *arg) {
+void CafeVillagerTalk::vfunc_78(void *arg) {
     Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022508e0, 0x28, "ai_shop3");
     out->unk_00 = data_ov004_022508e0;
     out->unk_04 = func_02063b8c(5);
 }
 
-void Unk_ov004_0224c904::vfunc_14() {}
+void CafeVillagerTalk::vfunc_14() {}
 
-void Unk_ov004_0224c904::vfunc_18() {}
+void CafeVillagerTalk::vfunc_18() {}
 
-BOOL Unk_ov004_0224c994::vfunc_48() {
+BOOL CafeVillager::vfunc_48() {
     if (func_02014220(&unk_618) == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c994::vfunc_4c(s32 a) {
+void CafeVillager::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_898.vfunc_08();
         func_02015ab0(&unk_898, Unk_020d77a4_getPlayerActor(this, 4));
-        func_ov004_0221a42c(0);
+        changeAct(0);
         break;
     case 8:
-        func_ov004_0221a42c(2);
+        changeAct(2);
         break;
     }
 }

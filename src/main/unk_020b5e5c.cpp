@@ -5,14 +5,14 @@ struct Vec3 {
 };
 
 extern "C" s32 func_ov003_0222ebb0(s32 a);
-extern "C" s32 func_ov004_02213704(s32 a);
+extern "C" s32 RoomBoardSign_GetByIndex(s32 a);
 extern "C" s32 func_ov004_0222a2c0(void);
 extern "C" s32 func_ov004_0222864c(void);
-extern "C" s32 func_ov004_02213c40(s32 a);
+extern "C" s32 MuseumExhibitInfo_GetByIndex(s32 a);
 extern "C" s32 Atm_GetInstance(void);
 extern "C" s32 VillagerBoard_Get(s32 a);
 extern "C" s32 func_ov004_0223584c(void);
-extern "C" s32 func_ov003_02218bb0(s32 a);
+extern "C" s32 BuildingList_GetAt(s32 a);
 extern "C" s32 NpcRegistry_FindSpNpc(void);
 extern "C" s32 NpcRegistry_FindVillager(void);
 extern "C" s32 func_020951ec(void);
@@ -111,7 +111,7 @@ extern "C" s32 func_020b5ff8(void) { return NpcRegistry_FindSpNpc(); }
 
 extern "C" s32 func_020b5fd0(s32 a) {
     if (IsMode0()) {
-        return func_ov003_02218bb0(a);
+        return BuildingList_GetAt(a);
     }
     return 0;
 }
@@ -141,7 +141,7 @@ extern "C" s32 func_020b5f48(void) {
 
 extern "C" s32 func_020b5f20(s32 a) {
     if (IsMode1()) {
-        return func_ov004_02213c40(a);
+        return MuseumExhibitInfo_GetByIndex(a);
     }
     return 0;
 }
@@ -162,7 +162,7 @@ extern "C" s32 func_020b5ed0(void) {
 
 extern "C" s32 func_020b5ea8(s32 a) {
     if (IsMode1()) {
-        return func_ov004_02213704(a);
+        return RoomBoardSign_GetByIndex(a);
     }
     return 0;
 }

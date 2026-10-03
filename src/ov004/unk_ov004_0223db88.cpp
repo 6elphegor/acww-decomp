@@ -42,12 +42,12 @@ struct Unk_ov004_0223df20_V : V3 {
     Unk_ov004_0223df20_V(s32 a, s32 b, s32 c) { x = a; y = b; z = c; }
 };
 
-class Unk_0206fe80 {
+class MuseumData {
 public:
-    BOOL func_02070358(u16 *id);
+    BOOL isDonated(u16 *id);
 };
 
-extern "C" Unk_0206fe80 data_021ed0a0;
+extern "C" MuseumData data_021ed0a0;
 
 // main's u16 holder class (dtor = main's 0x02004b60)
 struct ItemId {
@@ -63,7 +63,7 @@ extern const Unk_ov004_0223dd88_Tbl data_ov004_02244230[];
 s32 FX_Div(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_020b50e8();
-void func_ov004_02213be8(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 u32 func_ov004_0223defc(Rec *r);
 s32 func_ov004_0223df00(Rec *r);
 s16 func_ov004_0223df04(Rec *r);
@@ -458,7 +458,7 @@ void Unk_ov004_0224f0ec::func_ov004_0223dd88() {
                 s32 d = func_ov004_0223df10(rec);
                 s32 f = func_ov004_0223df04(rec);
                 s32 g = func_ov004_0223df00(rec);
-                func_ov004_02213be8(a, b, c, d, f, g, func_ov004_0223defc(rec));
+                MuseumExhibitInfo_Spawn(a, b, c, d, f, g, func_ov004_0223defc(rec));
             }
             break;
         }
@@ -486,7 +486,7 @@ BOOL Unk_ov004_0224f140::vfunc_48() {
                 }
                 if (k) {
                     BOOL k2 = FALSE;
-                    if (data_021ed0a0.func_02070358(p)) {
+                    if (data_021ed0a0.isDonated(p)) {
                         k2 = TRUE;
                     }
                     if (!k2) {

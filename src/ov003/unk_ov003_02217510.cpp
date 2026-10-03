@@ -247,11 +247,11 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-// ============================================================ class Unk_ov003_02232114
-class Unk_ov003_02232114 : public BuildingActor {
+// ============================================================ class ShopBuilding
+class ShopBuilding : public BuildingActor {
 public:
-    Unk_ov003_02232114();
-    virtual ~Unk_ov003_02232114();
+    ShopBuilding();
+    virtual ~ShopBuilding();
 
     virtual BOOL vfunc_70();
     virtual void vfunc_78();
@@ -261,39 +261,39 @@ public:
     virtual char *vfunc_a8();
     virtual BOOL vfunc_ac();
 
-    BOOL func_02217514();
+    BOOL isClosedToday();
 
     /* 0x2b0 */ s32 unk_2b0;
 };
 
-extern "C" Unk_ov003_02232114 *func_ov003_022177c0() {
-    return new Unk_ov003_02232114;
+extern "C" ShopBuilding *ShopBuilding_Create() {
+    return new ShopBuilding;
 }
 
-Unk_ov003_02232114::Unk_ov003_02232114() {
+ShopBuilding::ShopBuilding() {
 }
 
-Unk_ov003_02232114::~Unk_ov003_02232114() {
+ShopBuilding::~ShopBuilding() {
 }
 
-BOOL Unk_ov003_02232114::vfunc_70() {
+BOOL ShopBuilding::vfunc_70() {
     unk_2b0 = Item_GetNookShopLevel(&unk_132);
     return TRUE;
 }
 
-char *Unk_ov003_02232114::vfunc_a4() {
+char *ShopBuilding::vfunc_a4() {
     return BuildingActor::vfunc_a4();
 }
 
-char *Unk_ov003_02232114::vfunc_a8() {
+char *ShopBuilding::vfunc_a8() {
     return BuildingActor::vfunc_a8();
 }
 
-BOOL Unk_ov003_02232114::vfunc_ac() {
+BOOL ShopBuilding::vfunc_ac() {
     return BuildingActor::vfunc_ac();
 }
 
-void Unk_ov003_02232114::vfunc_78() {
+void ShopBuilding::vfunc_78() {
     struct {
         s32 pad0, pad1;
         s32 a, b;
@@ -311,7 +311,7 @@ void Unk_ov003_02232114::vfunc_78() {
         if (func_020a032c() || func_02098044(x, 0x23)) {
             setFileName("sp_etc_sequence4");
             unk_1e = 0x15;
-        } else if (func_02217514()) {
+        } else if (isClosedToday()) {
             unk_1e = 7;
         } else if (unk_232.f1) {
             setFileName("obj_etc_error");
@@ -342,7 +342,7 @@ void Unk_ov003_02232114::vfunc_78() {
     }
 }
 
-BOOL Unk_ov003_02232114::vfunc_8c() {
+BOOL ShopBuilding::vfunc_8c() {
     struct {
         u8 a, b, c, d;
     } d;
@@ -360,7 +360,7 @@ BOOL Unk_ov003_02232114::vfunc_8c() {
     if (x && func_02098044(x, 1)) {
         return TRUE;
     }
-    if (func_02217514()) {
+    if (isClosedToday()) {
         return FALSE;
     }
     if (d.b >= 8) {
@@ -376,7 +376,7 @@ range:
     return FALSE;
 }
 
-BOOL Unk_ov003_02232114::func_02217514() {
+BOOL ShopBuilding::isClosedToday() {
     if (unk_2b0 != -1) {
         struct {
             s32 a, b;
@@ -391,8 +391,8 @@ BOOL Unk_ov003_02232114::func_02217514() {
     return FALSE;
 }
 
-BOOL Unk_ov003_02232114::vfunc_98() {
+BOOL ShopBuilding::vfunc_98() {
     return TRUE;
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_022320f4 = {(void *(*)())func_ov003_022177c0, 0x21, 0x27, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sShopBuildingProfile = {(void *(*)())ShopBuilding_Create, 0x21, 0x27, 0, 0xc8000, 0x12c000, 0x258000};

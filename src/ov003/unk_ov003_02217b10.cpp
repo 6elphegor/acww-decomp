@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 
-// TU18 of ov003: ground helper class Unk_ov003_02217b10 (0x02217b10-0x02217be8) and the six colour constants of its header
+// TU18 of ov003: ground helper class FieldGroundBackdrop (0x02217b10-0x02217be8) and the six colour constants of its header
 
 struct Unk_ov003_02215c7c_Blk {
     s64 v[6];
@@ -51,13 +51,13 @@ struct Unk_ov003_02235478_Col {
     }
 };
 
-class Unk_ov003_02217b10 {
+class FieldGroundBackdrop {
 public:
-    Unk_ov003_02217b10();
-    ~Unk_ov003_02217b10();
-    BOOL func_02217b10();
-    BOOL func_02217b78();
-    void func_02217bb8();
+    FieldGroundBackdrop();
+    ~FieldGroundBackdrop();
+    BOOL followCamera();
+    BOOL init();
+    void clear();
 
     /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ Unk_020553f8_Res *unk_9c;
@@ -94,27 +94,27 @@ Unk_ov003_02235478_Col data_ov003_0223548c(20, 24, 24, 31);
 
 // ---- functions ----
 
-Unk_ov003_02217b10::Unk_ov003_02217b10() {
-    func_02217bb8();
+FieldGroundBackdrop::FieldGroundBackdrop() {
+    clear();
 }
 
-Unk_ov003_02217b10::~Unk_ov003_02217b10() {
+FieldGroundBackdrop::~FieldGroundBackdrop() {
 }
 
-void Unk_ov003_02217b10::func_02217bb8() {
+void FieldGroundBackdrop::clear() {
     unk_9c = 0;
 }
 
-BOOL Unk_ov003_02217b10::func_02217b78() {
+BOOL FieldGroundBackdrop::init() {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), 0x83);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     unk_9c = e->unk_08;
     ((Model *)&unk_00)->setResourceAndBind(unk_9c, t);
-    func_02217b10();
+    followCamera();
     return TRUE;
 }
 
-BOOL Unk_ov003_02217b10::func_02217b10() {
+BOOL FieldGroundBackdrop::followCamera() {
     Unk_ov003_02217910_V3D v;
     void *cam = gCamera;
     if (cam != 0) {

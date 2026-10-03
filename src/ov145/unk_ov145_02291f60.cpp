@@ -15,8 +15,8 @@ typedef void (Unk_ov145_022937c0::*Unk_ov145_022937c0_Fn)();
 #define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 #define func_02133150 _s32_div_f
-#define func_020700a4 _ZN12Unk_0206fe8013func_020700a4EiPt
-#define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
+#define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
+#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define BgVramTask_requestPalette _ZN10BgVramTask14requestPaletteEjhj
 #define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define func_ov002_022028f0 _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev
@@ -218,7 +218,7 @@ void func_0206f9c8(Unk_020e0488 *w, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0206f9fc(Unk_020e0488 *w, s32 a);
 void func_0206ecf8(s32 a);
 void Snd_PlaySe(s32 a);
-BOOL func_02070358(void *a, void *b);
+BOOL MuseumData_isDonated(void *a, void *b);
 s32 func_02133150(s32 a, s32 b);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 BOOL ScrollKnob_areAnimsDone(void *p);
@@ -240,7 +240,7 @@ s32 BgVramTask_requestScreen(void *a, void *b, s32 c, s32 d, s32 e);
 void BgVramTask_requestPalette(void *a, void *b, u32 c, u32 d);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
-BOOL func_020700a4(void *a, void *b, void *c);
+BOOL MuseumData_getDonorName(void *a, void *b, void *c);
 BOOL func_ov002_0220125c(u32 v);
 BOOL func_ov002_0220126c(u32 v);
 BOOL func_ov002_0220127c(u32 v);
@@ -889,7 +889,7 @@ s32 Unk_ov145_022937c0::func_ov145_02292a40(u16 *out, s32 start, s32 n, s32 step
     s32 i;
     for (i = cnt; i < n; i++) {
         v = start;
-        if (func_02070358(&data_021ed0a0, &v)) {
+        if (MuseumData_isDonated(&data_021ed0a0, &v)) {
             out[cnt] = start;
             cnt++;
         }
@@ -1046,7 +1046,7 @@ void Unk_ov145_022937c0::func_ov145_02292600() {
                 w->copy(&b);
                 w2 = func_ov145_02292790();
                 s[1] = *list;
-                if (func_020700a4(&data_021ed0a0, &a, &s[1])) {
+                if (MuseumData_getDonorName(&data_021ed0a0, &a, &s[1])) {
                     _ZN9MsgString4copyEPS_(w2, &a);
                 } else {
                     func_0206f9fc(w2, 0xcc);

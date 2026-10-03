@@ -140,8 +140,8 @@ BOOL func_020a0318();
 void func_02097ff4(void *p, s32 a);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void func_ov003_02212ebc(void *p);
-s32 func_ov003_02212d28(void *o, s32 st);
+void Snowball_ClearItemAt(void *p);
+s32 Snowball_ChangeState(void *o, s32 st);
 extern u16 data_020c6cc8;
 extern u32 data_021ed104;
 extern u32 gVec3Zero[];
@@ -157,8 +157,8 @@ void FieldPos_ToUnit(s32 *, s32 *, void *);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u16 Item_MakeSnowman(u32);
 void BlockMap_SetItemAtUnit(void *m, u16 *v, s32 x, s32 y, s32 z);
-void func_ov003_02212e50(void *);
-s32 func_ov003_022135c4(void *o, s32 a);
+void Snowball_DropDisplacedItem(void *);
+s32 Snowball_Break(void *o, s32 a);
 void func_020339bc(void *, void *, s32, s32);
 s32 func_02033988(void *o);
 void func_020e9960(void *, void *, void *);
@@ -178,8 +178,8 @@ s32 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
 s32 func_02133150(s32 a, s32 b);
 void func_ov003_0222e328(void *v, s32 a);
-s32 func_ov003_0221d0c8(void *a, void *b);
-s32 func_ov003_0221d118(void *a, void *b, s32 c);
+s32 Field_IsRafflesiaNear(void *a, void *b);
+s32 Field_FindFlowerNear(void *a, void *b, s32 c);
 s32 func_ov003_0222d1dc(s32 a);
 s32 func_ov003_0222dec8(s32 a, void *b);
 s32 Flower_GetSpecies(void *cell);
@@ -421,8 +421,8 @@ void Unk_ov068_02268214::execSnowballRoll() {
                         fl_374.f2_3 = of.f2_3;
                         of.f8 = 1;
                         fl_374.f8 = of.f8;
-                        func_ov003_02212d28(this, 8);
-                        func_ov003_02212d28(o, 7);
+                        Snowball_ChangeState(this, 8);
+                        Snowball_ChangeState(o, 7);
                         if (lv == 0) {
                             func_020af3fc();
                         }
@@ -435,7 +435,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
     applySnowballMotion();
     func_020339bc(objA, &unk_5c, 0, 0);
     if (func_02033914(objA, 0) < 0) {
-        func_ov003_02212d28(this, 1);
+        Snowball_ChangeState(this, 1);
         func_02033988(objA);
         return;
     }
@@ -444,7 +444,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
         switch (objB[13]) {
         case 0x16:
         case 0x17:
-            func_ov003_02212d28(this, 5);
+            Snowball_ChangeState(this, 5);
             func_02033988(objB);
             func_02033988(objA);
             return;
@@ -459,13 +459,13 @@ void Unk_ov068_02268214::execSnowballRoll() {
                 u8 *o = (u8 *)func_ov003_0222ead4(this);
                 if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
                     if (func_020e9650(o + 0x5c, &unk_5c) > *(s32 *)(o + 0x268) + unk_268) {
-                        if (func_ov003_02212d28(this, 4) != 0) {
+                        if (Snowball_ChangeState(this, 4) != 0) {
                             func_02033988(objA);
                             return;
                         }
                     }
                 } else {
-                    if (func_ov003_02212d28(this, 4) != 0) {
+                    if (Snowball_ChangeState(this, 4) != 0) {
                         func_02033988(objA);
                         return;
                     }
@@ -487,7 +487,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
                 ang = func_020e7b98(unk_368, unk_36c);
                 for (i = 0; i < n; i++) {
                     if (func_020e780c((s16)(unk_27c[i] + 0x8000), ang) < 0x1000) {
-                        if (func_ov003_022135c4(this, 1) != 0) {
+                        if (Snowball_Break(this, 1) != 0) {
                             func_02033988(objA);
                             return;
                         }
@@ -557,7 +557,7 @@ void Unk_ov068_022678c4::execSnowballFall() {
         if (unk_60 < lim) {
             _ZN18Unk_ov068_0226821419spawnSnowballSplashEv(this);
             unk_60 = lim;
-            func_ov003_02212d28(this, 2);
+            Snowball_ChangeState(this, 2);
         }
         func_02033988(buf);
     }
@@ -650,7 +650,7 @@ void Unk_ov068_022678c4::execSnowballHole() {
     if (unk_60 < lim) {
         unk_60 = lim;
         if (d < 0x333) {
-            func_ov003_022135c4(this, 1);
+            Snowball_Break(this, 1);
         }
     }
 }
@@ -681,7 +681,7 @@ void Unk_ov068_022678c4::execSnowball05() {
     unk_60 = -func_01ffcb0c(d, 0x3d7);
     static s32 thr = FX_Div(0, 0x64000) + 0x3000;
     if (d >= thr) {
-        func_ov003_02212d28(this, 6);
+        Snowball_ChangeState(this, 6);
     }
 }
 
@@ -761,8 +761,8 @@ void Unk_ov068_022678c4::execSnowballToSnowman() {
             u16 v = Item_MakeSnowman(unk_374_lo);
             BlockMap_SetItemAtUnit(g, &v, x, y, 0);
         }
-        func_ov003_02212e50(&unk_396);
-        func_ov003_02212d28(this, 9);
+        Snowball_DropDisplacedItem(&unk_396);
+        Snowball_ChangeState(this, 9);
     }
 }
 
@@ -796,7 +796,7 @@ void Unk_ov068_02267584::execSnowballStack() {
         s32 t = unk_37c - 0x200;
         if (unk_60 < t) {
             unk_60 = t;
-            func_ov003_02212d28(this, 0xa);
+            Snowball_ChangeState(this, 0xa);
         }
     }
     if (unk_395++ >= 0x10) {
@@ -823,14 +823,14 @@ void Unk_ov068_02267584::execSnowballSettle() {
     }
     if (unk_395++ >= 0x10) {
         unk_60 = unk_37c;
-        func_ov003_02212d28(this, 0xb);
+        Snowball_ChangeState(this, 0xb);
     }
 }
 
 BOOL Unk_ov068_02267584::enterSnowballCrumble() {
     unk_374 &= ~0x10;
     unk_374 |= 0x20;
-    func_ov003_02212ebc(&unk_5c);
+    Snowball_ClearItemAt(&unk_5c);
     unk_304 = gVec3Zero[0];
     unk_308 = gVec3Zero[1];
     unk_30c = gVec3Zero[2];

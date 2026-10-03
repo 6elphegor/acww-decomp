@@ -32,28 +32,28 @@ struct Unk_0206fe80_Bits {
     u32 d : 10;
     u32 e : 1;
 };
-class Unk_0206fe80 {
+class MuseumData {
 public:
-    s32 func_0206fe80();
-    BOOL func_0206ff58();
-    BOOL func_0206ff9c();
-    BOOL func_0206ffdc();
-    BOOL func_0207001c();
-    BOOL func_02070060();
-    BOOL func_020700a4(s32 x, u16 *id);
-    void func_020700e8(u32 v);
-    void func_020701d0(u16 *id);
-    BOOL func_02070248();
-    void func_020702ec();
-    BOOL func_02070358(u16 *id);
-    u32 func_02070370(u16 *id);
-    u32 func_020703ac(u16 *id);
-    u8 *func_020703d8(u16 *id, s32 *out);
-    void func_020704ac(u16 *id);
-    void func_020704e4(u16 *id);
-    void func_02070510();
+    s32 getDonationPercent();
+    BOOL isFishComplete();
+    BOOL isPaintingsComplete();
+    BOOL isFossilsComplete();
+    BOOL isInsectsComplete();
+    BOOL isComplete();
+    BOOL getDonorName(s32 x, u16 *id);
+    void releasePlayerDonations(u32 v);
+    void donate(u16 *id);
+    BOOL sendCompletionLetters();
+    void checkCompletionLetters();
+    BOOL isDonated(u16 *id);
+    u32 getDonationState(u16 *id);
+    u32 getDonor(u16 *id);
+    u8 *getEntry(u16 *id, s32 *out);
+    void markFormerResident(u16 *id);
+    void clearEntry(u16 *id);
+    void clear();
     void func_0207054c();
-    Unk_0206fe80 *func_02070550();
+    MuseumData *func_02070550();
 
     u8 unk_00[0x1b];
     u8 unk_1b[0x1d];
@@ -745,10 +745,10 @@ extern "C" {
 s32 func_020b5184(void);
 }
 extern "C" {
-void *func_ov003_02218b40(u32 a);
+void *BuildingList_FindByItem(u32 a);
 }
 extern "C" {
-void func_ov003_02214e88(void);
+void GateHouse_ApplyTownFlag(void);
 }
 extern "C" {
 void Mem_Free(void *p);
@@ -1371,7 +1371,7 @@ extern "C" BOOL func_0207116c(s32 cmd, s32 x) {
     case 5:
         if (Unk_0207116c_Eq0(data_020e416c)) {
             if (func_020b5184()) {
-                if (func_ov003_02218b40(0x500b)) func_ov003_02214e88();
+                if (BuildingList_FindByItem(0x500b)) GateHouse_ApplyTownFlag();
             }
         }
         return TRUE;

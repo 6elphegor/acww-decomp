@@ -231,7 +231,7 @@ extern "C" {
 extern Unk_ov003_022173a8_Glob data_021ed150;
 
 void func_020ac1f8(void *p);
-s32 func_ov003_02218d9c();
+s32 Field_GetSpawnedKind1Count();
 void _ZN8ItemNameC1EPt(void *self, u16 *p);
 void _ZN8ItemNameD1Ev(void *self);
 }
@@ -244,11 +244,11 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-// ============================================================ class Unk_ov003_02231fa8
-class Unk_ov003_02231fa8 : public BuildingActor {
+// ============================================================ class TownSign
+class TownSign : public BuildingActor {
 public:
-    Unk_ov003_02231fa8();
-    virtual ~Unk_ov003_02231fa8();
+    TownSign();
+    virtual ~TownSign();
 
     virtual BOOL onDraw();
     virtual BOOL vfunc_70();
@@ -259,27 +259,27 @@ public:
     /* 0x2b2 */ u16 pad_2b2;
 };
 
-extern "C" void func_ov003_022174bc() {
-    new Unk_ov003_02231fa8;
+extern "C" void TownSign_Create() {
+    new TownSign;
 }
 
-Unk_ov003_02231fa8::Unk_ov003_02231fa8() {
+TownSign::TownSign() {
 }
 
-Unk_ov003_02231fa8::~Unk_ov003_02231fa8() {
+TownSign::~TownSign() {
 }
 
-BOOL Unk_ov003_02231fa8::vfunc_70() {
-    unk_2b0 = func_ov003_02218d9c();
+BOOL TownSign::vfunc_70() {
+    unk_2b0 = Field_GetSpawnedKind1Count();
     return TRUE;
 }
 
-BOOL Unk_ov003_02231fa8::onDraw() {
+BOOL TownSign::onDraw() {
     func_020ac1f8(unk_5c);
     return TRUE;
 }
 
-void Unk_ov003_02231fa8::vfunc_78() {
+void TownSign::vfunc_78() {
     u16 v[2];
     u32 obj[9];
     setFileName("obj_etc_board");
@@ -296,8 +296,8 @@ void Unk_ov003_02231fa8::vfunc_78() {
     _ZN8ItemNameD1Ev(obj);
 }
 
-BOOL Unk_ov003_02231fa8::vfunc_8c() {
+BOOL TownSign::vfunc_8c() {
     return FALSE;
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_02231f88 = {(void *(*)())func_ov003_022174bc, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sTownSignProfile = {(void *(*)())TownSign_Create, 0x20, 0x26, 0, 0xc8000, 0x12c000, 0x258000};

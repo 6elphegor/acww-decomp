@@ -86,26 +86,26 @@ struct Unk_ov003_02217c3c_Obj {
     Unk_ov003_02217c3c_P *unk_20;
 };
 
-class Unk_ov003_02217b10 {
+class FieldGroundBackdrop {
 public:
-    Unk_ov003_02217b10();
-    ~Unk_ov003_02217b10();
-    BOOL func_02217b10();
-    BOOL func_02217b78();
-    void func_02217bb8();
+    FieldGroundBackdrop();
+    ~FieldGroundBackdrop();
+    BOOL followCamera();
+    BOOL init();
+    void clear();
 
     /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ void *unk_9c;
 };
 
-class Unk_ov003_02217be8 {
+class FieldGroundBlock {
 public:
     static void *operator new(unsigned long, void *p) { return p; }
-    Unk_ov003_02217be8();
-    BOOL func_02217be8();
-    BOOL func_02217bfc();
-    BOOL func_02217c10();
-    BOOL func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b);
+    FieldGroundBlock();
+    BOOL release();
+    BOOL draw();
+    BOOL updateAnims();
+    BOOL init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b);
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ CachedModel unk_04;
@@ -115,19 +115,19 @@ public:
     /* 0xe8 */ s8 unk_e8;
 };
 
-class Unk_ov003_02217dbc {
+class FieldGroundPiece {
 public:
-    Unk_ov003_02217dbc();
-    ~Unk_ov003_02217dbc();
-    BOOL func_02217dbc();
-    BOOL func_02217df0();
-    BOOL func_02217e10();
-    BOOL func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx);
-    BOOL func_02217f78();
-    s32 func_02217fa4();
-    s32 func_02217fac();
-    Unk_ov003_02217910_V3 *func_02217fb4();
-    s32 func_02217fb8();
+    FieldGroundPiece();
+    ~FieldGroundPiece();
+    BOOL release();
+    BOOL draw();
+    BOOL updateAnims();
+    BOOL setup(Unk_ov003_02217910_V3 *pos, s32 idx);
+    BOOL isActive();
+    s32 getBlockZ();
+    s32 getBlockX();
+    Unk_ov003_02217910_V3 *getPos();
+    s32 getCurveAngle();
 
     /* 0x00 */ CachedModel unk_00;
     /* 0x9c */ Unk_ov003_02217910_V3 unk_9c;
@@ -171,24 +171,24 @@ struct Unk_ov003_022179b8_Rec {
     u32 pad[0x1c / 4];
 };
 
-class Unk_ov003_02232418 : public GameProc {
+class FieldGround : public GameProc {
 public:
-    /* 0x50 */ Unk_ov003_02217be8 *unk_50;
-    /* 0x54 */ Unk_ov003_02217dbc unk_54;
+    /* 0x50 */ FieldGroundBlock *unk_50;
+    /* 0x54 */ FieldGroundPiece unk_54;
     /* 0x148 */ s32 unk_148;
     /* 0x14c */ s32 unk_14c;
-    /* 0x150 */ Unk_ov003_02217b10 unk_150;
+    /* 0x150 */ FieldGroundBackdrop unk_150;
     /* 0x1f0 */ TexPatVramAnim unk_1f0;
     /* 0x280 */ TexPatVramAnim unk_280;
     /* 0x310 */ Unk_ov003_02217948 unk_310;
 
-    Unk_ov003_02232418();
+    FieldGround();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov003_02232418();
-    void func_ov003_022180a8();
+    virtual ~FieldGround();
+    void updateAmbientSe();
 };
 
 struct Unk_ov003_02218034_Obj {
@@ -278,17 +278,17 @@ s32 FX_Div(s32 a, s32 b);
 s32 TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, s32 x, s32 y, s32 flag);
 
 // TU17 functions (the nearest-record class, sound handle helpers)
-void func_ov003_02217908(void *p);
-void func_ov003_02217910(void *p, void *a, u16 b);
-void func_ov003_0221793c(void *p);
-void func_ov003_02217944(void *p);
-void func_ov003_02217948(void *p);
-s32 func_ov003_0221795c(void *p);
-void *func_ov003_02217960(void *p);
-void func_ov003_0221798c(void *p);
-void func_ov003_022179b8(void *out, Unk_ov003_02218478_V3 *pos);
-s32 func_ov003_02217adc(void *p);
-s32 func_ov003_02217aec(void *p);
+void FieldGround_ReleaseEnvChannel(void *p);
+void FieldGround_PlayEnvSe(void *p, void *a, u16 b);
+void FieldGround_ResetEnvChannel(void *p);
+void FieldGround_DestroyEnvChannel(void *p);
+void FieldGround_InitEnvChannel(void *p);
+s32 FieldGround_GetSoundSrcKind(void *p);
+void *FieldGround_GetSoundSrcPos(void *p);
+void FieldGround_EndSoundSrc(void *p);
+void FieldGround_FindSoundSrc(void *out, Unk_ov003_02218478_V3 *pos);
+s32 FieldGround_ReleaseBackdrop(void *p);
+s32 FieldGround_DrawBackdrop(void *p);
 
 }
 
@@ -298,7 +298,7 @@ struct Unk_ov003_022323ec_Entry {
     u16 a, b;
 };
 
-extern "C" Unk_ov003_02232418 *func_ov003_022187dc();
+extern "C" FieldGround *FieldGround_Create();
 
 extern "C" {
 // the six header colours first (in __sinit store order), then the unit's own data
@@ -308,22 +308,22 @@ Unk_ov003_02235498_Col data_ov003_02235498(31, 31, 20, 31);
 Unk_ov003_02235498_Col data_ov003_022354a0(20, 31, 20, 31);
 Unk_ov003_02235498_Col data_ov003_0223549c(20, 31, 31, 31);
 Unk_ov003_02235498_Col data_ov003_022354ac(20, 24, 24, 31);
-const s32 data_ov003_0222f010[2] = {0x84, 0x85};
+const s32 sFieldGroundPieceAcres[2] = {0x84, 0x85};
 u8 data_ov003_02235490;
 s32 data_ov003_02235494;
 char data_ov003_022323f4[0xc] = "m_grd_riv";
 char data_ov003_02232400[0x10] = "m_grd_sea085";
-u32 data_ov003_022323e4[2] = {(u32)data_ov003_022323f4, (u32)data_ov003_02232400};
-Unk_ov003_022323ec_Entry data_ov003_022323ec = {(void *)func_ov003_022187dc, 0xd, 0x9};
+u32 sWaterMatNames[2] = {(u32)data_ov003_022323f4, (u32)data_ov003_02232400};
+Unk_ov003_022323ec_Entry sFieldGroundProfile = {(void *)FieldGround_Create, 0xd, 0x9};
 }
 
 // ---- functions ----
 
-extern "C" Unk_ov003_02232418 *func_ov003_022187dc() {
-    return new Unk_ov003_02232418;
+extern "C" FieldGround *FieldGround_Create() {
+    return new FieldGround;
 }
 
-extern "C" void func_ov003_02218794(Unk_ov003_02218794_Obj *o) {
+extern "C" void FieldGround_OnBeachMaterial(Unk_ov003_02218794_Obj *o) {
     if (data_ov003_02235494 == 0) {
         Unk_ov003_02218794_Inner *in = o->unk_04;
         u8 *r3 = in->unk_2c;
@@ -338,22 +338,22 @@ extern "C" void func_ov003_02218794(Unk_ov003_02218794_Obj *o) {
     }
 }
 
-extern "C" void func_ov003_02218784(Unk_ov003_02218784_Obj *o) {
-    o->unk_1c = func_ov003_02218794;
+extern "C" void FieldGround_OnModelInit(Unk_ov003_02218784_Obj *o) {
+    o->unk_1c = FieldGround_OnBeachMaterial;
     o->unk_90 = 2;
 }
 
-Unk_ov003_02232418::Unk_ov003_02232418() {
-    func_ov003_02217948(&unk_310);
+FieldGround::FieldGround() {
+    FieldGround_InitEnvChannel(&unk_310);
 }
 
-Unk_ov003_02232418::~Unk_ov003_02232418() {
-    func_ov003_02217944(&unk_310);
+FieldGround::~FieldGround() {
+    FieldGround_DestroyEnvChannel(&unk_310);
 }
 
-BOOL Unk_ov003_02232418::vfunc_00() {
-    unk_150.func_02217bb8();
-    unk_150.func_02217b78();
+BOOL FieldGround::vfunc_00() {
+    unk_150.clear();
+    unk_150.init();
     s32 r6 = BgModelCache_getGroundTex(BgModelCache_Get());
     s32 r4 = BgModelCache_getRiverPatTex(BgModelCache_Get());
     s32 r0 = BgModelCache_getRiverPatAnm(BgModelCache_Get());
@@ -365,11 +365,11 @@ BOOL Unk_ov003_02232418::vfunc_00() {
     Unk_ov003_02218478_Grid *g = gSceneBlockMap;
     unk_148 = g->w;
     unk_14c = g->h;
-    unk_50 = (Unk_ov003_02217be8 *)Heap_Alloc(gBgHeap, unk_14c * (unk_148 * 0xec));
+    unk_50 = (FieldGroundBlock *)Heap_Alloc(gBgHeap, unk_14c * (unk_148 * 0xec));
     {
-        Unk_ov003_02217be8 *e = unk_50;
+        FieldGroundBlock *e = unk_50;
         for (; e < unk_50 + unk_148 * unk_14c; e++) {
-            e = new (e) Unk_ov003_02217be8;
+            e = new (e) FieldGroundBlock;
         }
     }
     u32 by, bx;
@@ -387,7 +387,7 @@ BOOL Unk_ov003_02232418::vfunc_00() {
                         v.y = 0;
                         v.z = 0;
                         FieldPos_FromBlockUnitCenter((Unk_ov003_02218478_V3 *)&v, bx, by, tx, ty);
-                        unk_54.func_02217e48(&v, t);
+                        unk_54.setup(&v, t);
                     }
                 }
             }
@@ -402,18 +402,18 @@ BOOL Unk_ov003_02232418::vfunc_00() {
             } else {
                 c = 0;
             }
-            (unk_50 + idx++)->func_02217c3c((Unk_ov003_02217c3c_Obj *)c, by, bx);
+            (unk_50 + idx++)->init((Unk_ov003_02217c3c_Obj *)c, by, bx);
         }
     }
-    func_ov003_0221793c(&unk_310);
+    FieldGround_ResetEnvChannel(&unk_310);
     return TRUE;
 }
 
-BOOL Unk_ov003_02232418::onExecute() {
-    Unk_ov003_02217be8 *e;
+BOOL FieldGround::onExecute() {
+    FieldGroundBlock *e;
     s32 i, j;
-    unk_150.func_02217b10();
-    unk_54.func_02217e10();
+    unk_150.followCamera();
+    unk_54.updateAnims();
     e = unk_50;
     i = 0;
     goto test0;
@@ -423,7 +423,7 @@ loop0:
         s32 *volatile pw = &unk_148;
         goto test1;
     loop1:
-        e->func_02217c10();
+        e->updateAnims();
         e++;
         j++;
     test1:
@@ -434,7 +434,7 @@ test0:
     if (i < unk_14c) goto loop0;
     unk_1f0.update();
     unk_280.update();
-    func_ov003_022180a8();
+    updateAmbientSe();
     data_021ce63c = 0;
     return TRUE;
 }
@@ -444,7 +444,7 @@ static inline BOOL Unk_ov003_022181bc_Chk(s32 x, s32 y, s32 cx, s32 cy) {
     return FALSE;
 }
 
-BOOL Unk_ov003_02232418::onDraw() {
+BOOL FieldGround::onDraw() {
     s32 a, cx, cy, b, cam_r, found;
     s32 x, y, idx;
     void *cam;
@@ -454,7 +454,7 @@ BOOL Unk_ov003_02232418::onDraw() {
     a = 0;
     cx = 0;
     cy = 0;
-    b = ((s32 *)unk_54.func_02217fb4())[2];
+    b = ((s32 *)unk_54.getPos())[2];
     cam_r = 0;
     cam = gCamera;
     if (cam != 0) {
@@ -468,14 +468,14 @@ BOOL Unk_ov003_02232418::onDraw() {
             BOOL r = FALSE;
             r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
             if (r) {
-                if (x == unk_54.func_02217fac() && y == unk_54.func_02217fa4()) {
+                if (x == unk_54.getBlockX() && y == unk_54.getBlockZ()) {
                     found = 1;
                 }
             }
         }
     }
     if (found == 0) {
-        func_ov003_02217aec(&unk_150);
+        FieldGround_DrawBackdrop(&unk_150);
     }
     if (found == 0) {
         idx = 0;
@@ -483,70 +483,70 @@ BOOL Unk_ov003_02232418::onDraw() {
             for (x = 0; x < unk_148; x++) {
                 BOOL r = FALSE;
                 r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                if (r) (unk_50 + idx)->func_02217bfc();
+                if (r) (unk_50 + idx)->draw();
                 idx++;
             }
         }
     } else {
-        if (unk_54.func_02217fb8() < cam_r) {
+        if (unk_54.getCurveAngle() < cam_r) {
             if (b < a) {
-                unk_54.func_02217df0();
-                func_ov003_02217aec(&unk_150);
+                unk_54.draw();
+                FieldGround_DrawBackdrop(&unk_150);
             } else {
-                func_ov003_02217aec(&unk_150);
-                unk_54.func_02217df0();
+                FieldGround_DrawBackdrop(&unk_150);
+                unk_54.draw();
             }
             idx = 0;
             for (y = 0; y < unk_14c; y++) {
                 for (x = 0; x < unk_148; x++) {
                     BOOL r = FALSE;
                     r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                    if (r) (unk_50 + idx)->func_02217bfc();
+                    if (r) (unk_50 + idx)->draw();
                     idx++;
                 }
             }
         } else {
-            func_ov003_02217aec(&unk_150);
+            FieldGround_DrawBackdrop(&unk_150);
             idx = 0;
             for (y = 0; y < unk_14c; y++) {
                 for (x = 0; x < unk_148; x++) {
                     BOOL r = FALSE;
                     r = Unk_ov003_022181bc_Chk(x, y, cx, cy);
-                    if (r) (unk_50 + idx)->func_02217bfc();
+                    if (r) (unk_50 + idx)->draw();
                     idx++;
                 }
             }
-            unk_54.func_02217df0();
+            unk_54.draw();
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov003_02232418::vfunc_0c() {
+BOOL FieldGround::vfunc_0c() {
     s32 i, j;
     s32 idx;
-    unk_54.func_02217dbc();
+    unk_54.release();
     idx = 0;
     for (i = 0; i < unk_14c; i++) {
         for (j = 0; j < unk_148; j++) {
-            (unk_50 + idx++)->func_02217be8();
+            (unk_50 + idx++)->release();
         }
     }
-    func_ov003_02217adc(&unk_150);
-    func_ov003_02217908(&unk_310);
+    FieldGround_ReleaseBackdrop(&unk_150);
+    FieldGround_ReleaseEnvChannel(&unk_310);
     return TRUE;
 }
 
-void Unk_ov003_02232418::func_ov003_022180a8() {
+void FieldGround::updateAmbientSe() {
     data_ov003_02235490 = 0;
     if (gCamera != 0) {
         Unk_ov003_02218478_V3 v = gCameraLookAt;
         Unk_ov003_022179b8_Rec q;
-        func_ov003_022179b8(&q, &v);
-        void *r6 = (void *)func_ov003_02217960(&q);
+        FieldGround_FindSoundSrc(&q, &v);
+        void *r6 = (void *)FieldGround_GetSoundSrcPos(&q);
         if (r6 != 0) {
             u32 r4 = 0x80d;
-            switch (func_ov003_0221795c(&q)) {
+            switch (FieldGround_GetSoundSrcKind(&q)) {
             case 0x11:
                 r4 = 0x80b;
                 break;
@@ -560,19 +560,19 @@ void Unk_ov003_02232418::func_ov003_022180a8() {
                 r4 = 0x80c;
                 break;
             }
-            func_ov003_02217910(&unk_310, r6, r4);
+            FieldGround_PlayEnvSe(&unk_310, r6, r4);
         }
-        func_ov003_0221798c(&q);
+        FieldGround_EndSoundSrc(&q);
     }
 }
 
-extern "C" void func_ov003_02218034(void *op, s32 flag) {
+extern "C" void FieldGround_SetWaterMatFlags(void *op, s32 flag) {
     Unk_ov003_02218034_Obj *o = (Unk_ov003_02218034_Obj *)op;
     u32 i;
     u8 *base = o->unk_5c;
     u8 *r4 = base + *(s32 *)(base + 8);
     for (i = 0; i < 2; i++) {
-        u32 t = G3dResAccess_findMatIdx(o->unk_5c, data_ov003_022323e4[i]);
+        u32 t = G3dResAccess_findMatIdx(o->unk_5c, sWaterMatNames[i]);
         if (t != (u32)-1) {
             u8 *r1 = r4 + 4;
             u32 hw = *(u16 *)(r4 + 0xa);
@@ -591,7 +591,7 @@ extern "C" void func_ov003_02218034(void *op, s32 flag) {
     }
 }
 
-Unk_ov003_02217dbc::Unk_ov003_02217dbc() {
+FieldGroundPiece::FieldGroundPiece() {
     unk_ac = -1;
     unk_b0 = -1;
     unk_9c.x = 0;
@@ -599,40 +599,40 @@ Unk_ov003_02217dbc::Unk_ov003_02217dbc() {
     unk_9c.z = 0;
 }
 
-Unk_ov003_02217dbc::~Unk_ov003_02217dbc() {
+FieldGroundPiece::~FieldGroundPiece() {
 }
 
-s32 Unk_ov003_02217dbc::func_02217fb8() {
+s32 FieldGroundPiece::getCurveAngle() {
     return unk_a8;
 }
 
-Unk_ov003_02217910_V3 *Unk_ov003_02217dbc::func_02217fb4() {
+Unk_ov003_02217910_V3 *FieldGroundPiece::getPos() {
     return &unk_9c;
 }
 
-s32 Unk_ov003_02217dbc::func_02217fac() {
+s32 FieldGroundPiece::getBlockX() {
     return unk_ac;
 }
 
-s32 Unk_ov003_02217dbc::func_02217fa4() {
+s32 FieldGroundPiece::getBlockZ() {
     return unk_b0;
 }
 
-BOOL Unk_ov003_02217dbc::func_02217f78() {
-    if (func_02217fac() != -1 && func_02217fa4() != -1) {
+BOOL FieldGroundPiece::isActive() {
+    if (getBlockX() != -1 && getBlockZ() != -1) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov003_02217dbc::func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx) {
-    if (func_02217f78()) {
+BOOL FieldGroundPiece::setup(Unk_ov003_02217910_V3 *pos, s32 idx) {
+    if (isActive()) {
         return FALSE;
     }
     unk_9c.x = pos->x;
     unk_9c.y = pos->y;
     unk_9c.z = pos->z;
-    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), data_ov003_0222f010[idx]);
+    Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)BgModelCache_getAcre(BgModelCache_Get(), sFieldGroundPieceAcres[idx]);
     s32 t = BgModelCache_getGroundTex(BgModelCache_Get());
     Unk_020553f8_Res *res = e->unk_08;
     ((Model *)&unk_00)->setResourceAndBind(res, t);
@@ -654,8 +654,8 @@ BOOL Unk_ov003_02217dbc::func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx) {
     return TRUE;
 }
 
-BOOL Unk_ov003_02217dbc::func_02217e10() {
-    if (func_02217f78()) {
+BOOL FieldGroundPiece::updateAnims() {
+    if (isActive()) {
         ModelAnim *p = &unk_b4[0];
         ModelAnim *e = &unk_b4[2];
         for (; p < e; p++) {
@@ -667,16 +667,16 @@ BOOL Unk_ov003_02217dbc::func_02217e10() {
     return FALSE;
 }
 
-BOOL Unk_ov003_02217dbc::func_02217df0() {
-    if (func_02217f78()) {
+BOOL FieldGroundPiece::draw() {
+    if (isActive()) {
         ((Model *)&unk_00)->drawScaled(0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov003_02217dbc::func_02217dbc() {
-    if (func_02217f78()) {
+BOOL FieldGroundPiece::release() {
+    if (isActive()) {
         ((Model *)&unk_00)->clearResource();
         unk_b0 = -1;
         unk_ac = unk_b0;
@@ -685,13 +685,13 @@ BOOL Unk_ov003_02217dbc::func_02217dbc() {
     return FALSE;
 }
 
-Unk_ov003_02217be8::Unk_ov003_02217be8() {
+FieldGroundBlock::FieldGroundBlock() {
     unk_00 = 0;
     unk_a0 = 0;
     unk_a4 = 0;
 }
 
-BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
+BOOL FieldGroundBlock::init(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) {
     unk_a0 = a;
     unk_a4 = b;
     unk_00 = MapBlockAcre_getAcreId(o);
@@ -716,14 +716,14 @@ BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) 
     if (Acre_GetAttr(unk_00) & 8) {
         unk_e8 = G3dResAccess_findMatIdx(res, (s32)"m_grd_beA");
         if (unk_e8 != -1) {
-            ((Model *)&unk_04)->setInitCallback((s32)func_ov003_02218784, (s32)this);
+            ((Model *)&unk_04)->setInitCallback((s32)FieldGround_OnModelInit, (s32)this);
         }
     }
-    func_ov003_02218034(&unk_04, 1);
+    FieldGround_SetWaterMatFlags(&unk_04, 1);
     return TRUE;
 }
 
-BOOL Unk_ov003_02217be8::func_02217c10() {
+BOOL FieldGroundBlock::updateAnims() {
     ModelAnim *e;
     ModelAnim *p;
     p = &unk_a8[0];
@@ -735,12 +735,12 @@ BOOL Unk_ov003_02217be8::func_02217c10() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02217be8::func_02217bfc() {
+BOOL FieldGroundBlock::draw() {
     ((Model *)&unk_04)->drawScaled(0);
     return TRUE;
 }
 
-BOOL Unk_ov003_02217be8::func_02217be8() {
+BOOL FieldGroundBlock::release() {
     ((Model *)&unk_04)->clearResource();
     return TRUE;
 }

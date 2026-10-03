@@ -245,30 +245,30 @@ struct Unk_ov003_02215748_Ent {
 };
 
 struct Unk_ov003_SceneEntry {void *(*factory)(); u16 id,size; u32 zero,a,b,c;};
-class Unk_ov003_022314d0; class Unk_ov003_02231614;
-extern "C" Unk_ov003_022314d0 *func_ov003_02215a30();
-extern "C" Unk_ov003_02231614 *func_ov003_02215a4c();
-extern "C" Unk_ov003_SceneEntry data_ov003_02231498 = {(void *(*)())func_ov003_02215a30, 0x26, 0x2c, 0, 0xc8000, 0x12c000, 0x258000};
-extern "C" Unk_ov003_SceneEntry data_ov003_022314b0 = {(void *(*)())func_ov003_02215a4c, 0x25, 0x2b, 0, 0xc8000, 0x12c000, 0x258000};
-extern "C" u8 data_ov003_02235270;
-extern "C" u32 data_ov003_02235278;
-extern "C" u32 data_ov003_0223527c;
-extern "C" u32 data_ov003_02235280;
-u8 data_ov003_02235270;
-u32 data_ov003_02235278, data_ov003_0223527c, data_ov003_02235280;
-extern "C" const s32 data_ov003_0222efd8[6] = {-0x1900,-0x1100,-0x500,0x300,0xf00,0x1700};
+class CountdownDigit; class CountdownSign;
+extern "C" CountdownDigit *CountdownDigit_Create();
+extern "C" CountdownSign *CountdownSign_Create();
+extern "C" Unk_ov003_SceneEntry sCountdownDigitProfile = {(void *(*)())CountdownDigit_Create, 0x26, 0x2c, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sCountdownSignProfile = {(void *(*)())CountdownSign_Create, 0x25, 0x2b, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" u8 sCountdownSpawnIndex;
+extern "C" u32 sCountdownHours;
+extern "C" u32 sCountdownSeconds;
+extern "C" u32 sCountdownMinutes;
+u8 sCountdownSpawnIndex;
+u32 sCountdownHours, sCountdownSeconds, sCountdownMinutes;
+extern "C" const s32 sCountdownDigitOffsetsX[6] = {-0x1900,-0x1100,-0x500,0x300,0xf00,0x1700};
 extern "C" {
-extern u8 data_ov003_02235270;
-extern u32 data_ov003_02235278;
-extern u32 data_ov003_0223527c;
-extern u32 data_ov003_02235280;
-extern const s32 data_ov003_0222efd8[6];
+extern u8 sCountdownSpawnIndex;
+extern u32 sCountdownHours;
+extern u32 sCountdownSeconds;
+extern u32 sCountdownMinutes;
+extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
 extern u32 data_021c6204;
 
-void func_ov003_022150f0(void *p);
-void func_ov003_02215a04(void *p);
+void CountdownDigit_Update(void *p);
+void CountdownSign_ModelCallback(void *p);
 s32 _ZN5Model12getRenderObjEv(void *p);
 void _ZN9ModelAnim7replaceEiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
 BOOL _ZN9ModelAnim11allocMatAnmEjPv(void *m, s32 a, s32 b);
@@ -298,11 +298,11 @@ public:
 };
 
 // ---------------------------------------------------------------- DoorLight
-class Unk_ov003_022314d0 : public BuildingActor {
+class CountdownDigit : public BuildingActor {
 public:
     virtual BOOL vfunc_b0();
-    Unk_ov003_022314d0();
-    virtual ~Unk_ov003_022314d0();
+    CountdownDigit();
+    virtual ~CountdownDigit();
     virtual BOOL onExecute();
     virtual BOOL vfunc_70();
     static void *operator new(unsigned long size);
@@ -319,14 +319,14 @@ public:
 };
 
 // ---------------------------------------------------------------- Y
-class Unk_ov003_02231614;
-typedef void (Unk_ov003_02231614::*Unk_02215614_Fn)();
-typedef BOOL (Unk_ov003_02231614::*Unk_02215680_Fn)();
+class CountdownSign;
+typedef void (CountdownSign::*Unk_02215614_Fn)();
+typedef BOOL (CountdownSign::*Unk_02215680_Fn)();
 
-class Unk_ov003_02231614 : public BuildingActor {
+class CountdownSign : public BuildingActor {
 public:
-    Unk_ov003_02231614();
-    virtual ~Unk_ov003_02231614();
+    CountdownSign();
+    virtual ~CountdownSign();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL postDraw(s32 a);
@@ -337,10 +337,10 @@ public:
     virtual void vfunc_a8();
     virtual void vfunc_ac();
 
-    void func_ov003_0221552c();
-    BOOL func_ov003_02215554();
-    void func_ov003_0221558c();
-    BOOL func_ov003_022155dc();
+    void execNewYear();
+    BOOL enterNewYear();
+    void execCountdown();
+    BOOL enterCountdown();
 
     /* 0x2b0 */ ModelAnim unk_2b0;
     /* 0x2d0 */ s8 unk_2d0;
@@ -350,7 +350,7 @@ public:
 };
 
 // ---------------------------------------------------------------- Z
-class Unk_ov003_0223177c : public BuildingActor {
+class KatrinaTent : public BuildingActor {
 public:
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
@@ -382,39 +382,39 @@ struct Unk_ov003_02215a04_Obj {
 };
 
 // ================================================================
-BOOL Unk_ov003_022314d0::onExecute() {
-    func_ov003_022150f0(this);
+BOOL CountdownDigit::onExecute() {
+    CountdownDigit_Update(this);
     s32 r4 = _ZN5Model12getRenderObjEv(unk_138);
     s32 r2 = getBtaAnim(0);
     _ZN9ModelAnim7replaceEiiiit(&unk_2b4, r4, r2, 1, 0x1000, unk_2b1);
     return TRUE;
 }
 
-Unk_ov003_022314d0::Unk_ov003_022314d0() {}
-Unk_ov003_022314d0::~Unk_ov003_022314d0() {}
+CountdownDigit::CountdownDigit() {}
+CountdownDigit::~CountdownDigit() {}
 
-void *Unk_ov003_022314d0::operator new(unsigned long size) {
+void *CountdownDigit::operator new(unsigned long size) {
     void *p = Heap_Alloc(data_021c6204, size);
     func_0212899c(p, 0, size);
     return p;
 }
 
-void Unk_ov003_022314d0::operator delete(void *p) {}
+void CountdownDigit::operator delete(void *p) {}
 
 // ---------------------------------------------------------------- Y methods
-void Unk_ov003_02231614::func_ov003_0221552c() {
+void CountdownSign::execNewYear() {
     _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
     *unk_2b0.unk_18 = unk_2b0.unk_08;
 }
 
-BOOL Unk_ov003_02231614::func_ov003_02215554() {
+BOOL CountdownSign::enterNewYear() {
     s32 r1 = getBtaAnim(1);
     _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
     unk_2d1 = 1;
     return TRUE;
 }
 
-void Unk_ov003_02231614::func_ov003_0221558c() {
+void CountdownSign::execCountdown() {
     _ZN13AnimFrameCtrl4stepEv(&unk_2b0);
     *unk_2b0.unk_18 = unk_2b0.unk_08;
     u32 tm[2];
@@ -427,22 +427,22 @@ void Unk_ov003_02231614::func_ov003_0221558c() {
     }
 }
 
-BOOL Unk_ov003_02231614::func_ov003_022155dc() {
+BOOL CountdownSign::enterCountdown() {
     s32 r1 = getBtaAnim(0);
     _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
     unk_2d1 = 0x1f;
     return TRUE;
 }
 
-void Unk_ov003_02231614::vfunc_74() {
-    static Unk_02215614_Fn tbl[3] = { &Unk_ov003_02231614::func_ov003_0221558c, &Unk_ov003_02231614::func_ov003_0221552c };
+void CountdownSign::vfunc_74() {
+    static Unk_02215614_Fn tbl[3] = { &CountdownSign::execCountdown, &CountdownSign::execNewYear };
     if (unk_130 < 3) {
         (this->*tbl[unk_130])();
     }
 }
 
-BOOL Unk_ov003_02231614::vfunc_6c(u32 a) {
-    static Unk_02215680_Fn tbl[3] = { &Unk_ov003_02231614::func_ov003_022155dc, &Unk_ov003_02231614::func_ov003_02215554 };
+BOOL CountdownSign::vfunc_6c(u32 a) {
+    static Unk_02215680_Fn tbl[3] = { &CountdownSign::enterCountdown, &CountdownSign::enterNewYear };
     if (a < 3) {
         if ((this->*tbl[a])()) {
             if (func_020b1d3c(unk_132, a)) {
@@ -454,18 +454,18 @@ BOOL Unk_ov003_02231614::vfunc_6c(u32 a) {
     return FALSE;
 }
 
-void Unk_ov003_02231614::vfunc_ac() { BuildingActor::vfunc_ac(); }
-void Unk_ov003_02231614::vfunc_a8() { BuildingActor::vfunc_a8(); }
-void Unk_ov003_02231614::vfunc_a4() { BuildingActor::vfunc_a4(); }
+void CountdownSign::vfunc_ac() { BuildingActor::vfunc_ac(); }
+void CountdownSign::vfunc_a8() { BuildingActor::vfunc_a8(); }
+void CountdownSign::vfunc_a4() { BuildingActor::vfunc_a4(); }
 
-BOOL Unk_ov003_02231614::vfunc_0c() {
+BOOL CountdownSign::vfunc_0c() {
     for (u32 i = 0; i < 6; i++) {
         unk_2d4[i] = 0;
     }
     return TRUE;
 }
 
-BOOL Unk_ov003_02231614::postDraw(s32 a) {
+BOOL CountdownSign::postDraw(s32 a) {
     if (a == 2) {
         if ((unk_231 & 1) == 0) {
             for (u32 i = 0; i < 6; i++) {
@@ -481,23 +481,23 @@ BOOL Unk_ov003_02231614::postDraw(s32 a) {
     return Character::postDraw(a);
 }
 
-BOOL Unk_ov003_02231614::onExecute() {
+BOOL CountdownSign::onExecute() {
     Unk_0209d498_Time t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
     Clock_GetDateTime(&t);
     u32 secs = 0x15180 - (t.b0 + (t.b1 * 0x3c + t.b2 * 0xe10));
-    data_ov003_0223527c = secs;
-    u32 h = data_ov003_0223527c / 0xe10;
-    data_ov003_02235278 = h;
-    data_ov003_0223527c = data_ov003_0223527c - h * 0xe10;
-    u32 m = data_ov003_0223527c / 0x3c;
-    data_ov003_02235280 = m;
-    data_ov003_0223527c = data_ov003_0223527c - m * 0x3c;
+    sCountdownSeconds = secs;
+    u32 h = sCountdownSeconds / 0xe10;
+    sCountdownHours = h;
+    sCountdownSeconds = sCountdownSeconds - h * 0xe10;
+    u32 m = sCountdownSeconds / 0x3c;
+    sCountdownMinutes = m;
+    sCountdownSeconds = sCountdownSeconds - m * 0x3c;
     return TRUE;
 }
 
-BOOL Unk_ov003_02231614::vfunc_70() {
+BOOL CountdownSign::vfunc_70() {
     getResources();
     onExecute();
     s32 z = 0;
@@ -506,15 +506,15 @@ BOOL Unk_ov003_02231614::vfunc_70() {
     do {
         s32 c = unk_5c[2] + 0x500;
         s32 b = unk_5c[1] + 0x2500;
-        s32 a = unk_5c[0] + data_ov003_0222efd8[i];
+        s32 a = unk_5c[0] + sCountdownDigitOffsetsX[i];
         v[0] = a;
         v[1] = b;
         v[2] = c;
-        data_ov003_02235270 = i;
+        sCountdownSpawnIndex = i;
         unk_2d4[i] = (Unk_ov003_02215748_Ent *)_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x26, 0x501f, v, z, z);
         i++;
     } while (i < 6);
-    _ZN5Model15setInitCallbackEii(unk_138, func_ov003_02215a04, this);
+    _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
     unk_2d0 = _ZN12G3dResAccess10findMatIdxEi(unk_194, "m_cbs_Adt");
     if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, unk_194, data_021c6204)) {
         s32 r1 = getBtaAnim(0);
@@ -533,38 +533,38 @@ BOOL Unk_ov003_02231614::vfunc_70() {
     return TRUE;
 }
 
-Unk_ov003_02231614::Unk_ov003_02231614() {
+CountdownSign::CountdownSign() {
     unk_2d0 = -1;
 }
-Unk_ov003_02231614::~Unk_ov003_02231614() {}
+CountdownSign::~CountdownSign() {}
 
 // ---------------------------------------------------------------- free functions
 extern "C" {
-void func_ov003_02215a14(Unk_ov003_02215a04_Obj *o);
-void func_ov003_022159c8(Unk_ov003_02231614 *self, s32 a, Unk_ov003_02215a04_Obj *o);
+void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o);
+void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o);
 
-void func_ov003_02215a04(void *p) {
+void CountdownSign_ModelCallback(void *p) {
     Unk_ov003_02215a04_Obj *o = (Unk_ov003_02215a04_Obj *)p;
-    o->unk_1c = (void (*)(void *))func_ov003_02215a14;
+    o->unk_1c = (void (*)(void *))CountdownSign_MaterialCallback;
     o->unk_90 = 2;
 }
 
-void func_ov003_02215a14(Unk_ov003_02215a04_Obj *o) {
+void CountdownSign_MaterialCallback(Unk_ov003_02215a04_Obj *o) {
     Unk_ov003_02215a04_Sub *s = o->unk_04;
     if (s->unk_2c != 0) {
-        func_ov003_022159c8((Unk_ov003_02231614 *)s->unk_2c, o->unk_00->unk_00[1], o);
+        CountdownSign_SetMaterialAlpha((CountdownSign *)s->unk_2c, o->unk_00->unk_00[1], o);
     }
 }
 
-Unk_ov003_022314d0 *func_ov003_02215a30() {
-    return new Unk_ov003_022314d0();
+CountdownDigit *CountdownDigit_Create() {
+    return new CountdownDigit();
 }
 
-Unk_ov003_02231614 *func_ov003_02215a4c() {
-    return new Unk_ov003_02231614();
+CountdownSign *CountdownSign_Create() {
+    return new CountdownSign();
 }
 
-void func_ov003_022159c8(Unk_ov003_02231614 *self, s32 a, Unk_ov003_02215a04_Obj *o) {
+void CountdownSign_SetMaterialAlpha(CountdownSign *self, s32 a, Unk_ov003_02215a04_Obj *o) {
     if (a == self->unk_2d0) {
         o->unk_b0->unk_0c &= ~0x1f0000;
         o->unk_b0->unk_0c |= (u32)self->unk_2d1 << 16;
@@ -574,6 +574,6 @@ void func_ov003_022159c8(Unk_ov003_02231614 *self, s32 a, Unk_ov003_02215a04_Obj
 
 
 
-BOOL Unk_ov003_022314d0::vfunc_b0() {
+BOOL CountdownDigit::vfunc_b0() {
     return FALSE;
 }

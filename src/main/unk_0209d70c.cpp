@@ -12,7 +12,7 @@ void MI_CpuCopy8(void *src, void *dst, u32 size);
 extern "C" void _ZN7TownMapC1Ev(void *);
 extern "C" void _ZN9HouseDataC1Ev(void *);
 extern "C" void _ZN12Unk_02063578C2Ev(void *);
-extern "C" void _ZN12Unk_0206fe8013func_02070550Ev(void *);
+extern "C" void _ZN10MuseumData13func_02070550Ev(void *);
 extern "C" void _ZN19AbleSistersPatternsC1Ev(void *);
 extern "C" void _ZN12Unk_02077198C1Ev(void *);
 extern "C" void _ZN12Unk_0208581013func_0208598cEv(void *);
@@ -76,7 +76,7 @@ public:
         _ZN12Unk_020b246cD2Ev(p + 0x1592c);
         func_02096f58(p + 0x15b5c);
         _ZN12Unk_0208f0a0C1Ev(p + 0x15c58);
-        _ZN12Unk_0206fe8013func_02070550Ev(p + 0x15d50);
+        _ZN10MuseumData13func_02070550Ev(p + 0x15d50);
         _ZN12Unk_020aec1cC1Ev(p + 0x15db4);
         func_02040900(p + 0x15e18);
         func_0204c508(p + 0x15e54);

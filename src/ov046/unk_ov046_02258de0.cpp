@@ -28,12 +28,12 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov046_0225aa0c;
-class Unk_ov046_0225aaa0;
-typedef void (Unk_ov046_0225aa0c::*Unk_ov046_0225aa0c_Fn)();
-typedef void (Unk_ov046_0225aa0c::*Unk_ov046_02259480_Fn)(s32);
+class SpNpcCelesteTalk;
+class SpNpcCeleste;
+typedef void (SpNpcCelesteTalk::*Unk_ov046_0225aa0c_Fn)();
+typedef void (SpNpcCelesteTalk::*Unk_ov046_02259480_Fn)(s32);
 
-struct Unk_ov046_0225aa0c_Out {
+struct TalkStartMsg {
     const void *unk_00;
     u8 unk_04;
 };
@@ -96,13 +96,13 @@ extern s32 data_020c6d1c;
 extern Unk_ov046_0225a11c_Vec gVec3Zero;
 
 s32 func_02063b8c(u32 v);
-s32 func_020b0564(void);
-s32 func_020b058c(void);
-s32 func_020b0334(s32 *out);
-void func_020b031c(void);
-void func_020b04cc(s32 idx);
-void func_020b02ec(void *a, s32 idx);
-s32 func_020b03a0(void *self, s32 idx);
+s32 Constellation_CountFreeSlots(void);
+s32 Constellation_FindFreeSlot(void);
+s32 Constellation_GetNewStatus(s32 *out);
+void Constellation_ClearNewFlags(void);
+void Constellation_Erase(s32 idx);
+void Constellation_GetViewingTime(void *a, s32 idx);
+s32 Constellation_GetName(void *self, s32 idx);
 void String_Load2d(void *o, u8 *p, u32 x);
 BOOL func_020a032c(void);
 void *PlayerData_GetCurrent(void);
@@ -181,7 +181,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov046_0225aa0c_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
@@ -412,48 +412,48 @@ struct Unk_ov046_02259480_Ent {
     Unk_ov046_02259480_Fn fn;
 };
 
-class Unk_ov046_0225aa0c : public SpNpcTalkRequest {
+class SpNpcCelesteTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov046_0225aa0c();
-    virtual ~Unk_ov046_0225aa0c();
+    SpNpcCelesteTalk();
+    virtual ~SpNpcCelesteTalk();
     virtual void vfunc_08();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov046_0225aa0c_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_84();
     virtual void vfunc_88();
 
-    void func_ov046_02259004(s32 a);
-    void func_ov046_02259024(s32 a);
+    void onRenameChoice(s32 a);
+    void onLookOrTimesChoice(s32 a);
     void func_ov046_0225904c(s32 a);
     void func_ov046_022590a0(s32 a);
-    void func_ov046_022590b4(s32 a);
-    void func_ov046_022590e0(s32 a);
-    void func_ov046_0225913c(s32 a);
-    void func_ov046_022591b0(s32 a);
-    void func_ov046_0225922c(s32 a);
-    void func_ov046_02259264(s32 a);
+    void onStargazeMenuChoice(s32 a);
+    void onMakeOrChangeChoice(s32 a);
+    void onEraseConfirmChoice(s32 a);
+    void onFullMenuChoice(s32 a);
+    void onTelescopeMenuChoice(s32 a);
+    void onDiscardNewChoice(s32 a);
     void func_ov046_022592a4(s32 a);
-    void func_ov046_022592d4(s32 idx);
-    void func_ov046_0225946c(s32 a);
-    void func_ov046_02259694();
-    void func_ov046_022596b8();
-    void func_ov046_022596dc();
-    void func_02259700();
-    void func_02259714();
-    void func_02259728();
-    void func_0225975c();
-    void func_022597a0();
-    void func_022597f8();
-    s32 func_02259ac0();
-    void func_02259c2c(s32 v);
-    void func_02259c34(void *p);
-    void func_02259ce0();
-    void func_02259d3c();
-    void func_02259d8c();
-    void func_02259de8();
-    void func_02259eb4();
-    void func_02259ed4(s32 idx);
+    void onConstellationListChoice(s32 idx);
+    void onViewingTimeChoice(s32 a);
+    void startStargazing();
+    void startRenameEntry();
+    void startNameEntry();
+    void showConstellationList();
+    void showFollowUpMenu();
+    void reactToConstellationName();
+    void startConstellationEditor();
+    void showTelescopeMenu();
+    void announceNewConstellations();
+    s32 getFollowUpMenuMsg();
+    void setTopic(s32 v);
+    void attachOwner(void *p);
+    void onConstellationRenamed();
+    void onConstellationRedrawn();
+    void onConstellationNamed();
+    void onConstellationDrawn();
+    void onStargazingDone();
+    void setResultHandler(s32 idx);
 
     /* 0xac */ s32 unk_ac;
     /* 0xb0 */ u8 *unk_b0;
@@ -467,9 +467,9 @@ public:
     /* 0xd8 */ s32 unk_d8;
 };
 
-class Unk_ov046_0225aaa0 : public Unk_020d8bc8 {
+class SpNpcCeleste : public Unk_020d8bc8 {
 public:
-    Unk_ov046_0225aaa0() {}
+    SpNpcCeleste() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -480,21 +480,21 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov046_02258e34();
-    BOOL func_ov046_02258e68();
-    BOOL func_ov046_0225a0d4();
-    BOOL func_ov046_0225a0d8();
-    BOOL func_ov046_0225a11c();
-    BOOL func_ov046_0225a1a0();
-    BOOL func_ov046_0225a1ec();
-    BOOL func_ov046_0225a250();
-    BOOL func_ov046_0225a280();
-    BOOL func_ov046_0225a2bc();
-    BOOL func_ov046_0225a32c();
-    void func_ov046_0225a398(s32 state);
+    BOOL tryStartTelescopeTalk();
+    BOOL isPlayerAtTelescope();
+    BOOL mainAct04();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
-    Unk_ov046_0225aa0c unk_658;
+    SpNpcCelesteTalk unk_658;
     u16 unk_734;
     s16 unk_736;
     u16 unk_738;
@@ -504,8 +504,8 @@ public:
 };
 
 struct Unk_ov046_0225a398_Ent {
-    BOOL (Unk_ov046_0225aaa0::*enter)();
-    BOOL (Unk_ov046_0225aaa0::*exit)();
+    BOOL (SpNpcCeleste::*enter)();
+    BOOL (SpNpcCeleste::*exit)();
 };
 
 struct Unk_ov046_SceneEntry {
@@ -514,7 +514,7 @@ struct Unk_ov046_SceneEntry {
     s32 c, d, e, f;
 };
 
-extern "C" void *func_ov046_0225a538();
+extern "C" void *SpNpcCeleste_Create();
 struct Unk_ov046_Quad {
     u8 a, b, c, d;
     Unk_ov046_Quad(u8 a_, u8 b_, u8 c_, u8 d_) {
@@ -530,12 +530,12 @@ extern "C" Unk_ov046_Quad data_ov046_0225ae20;
 extern "C" Unk_ov046_Quad data_ov046_0225ae10;
 extern "C" Unk_ov046_Quad data_ov046_0225ae00;
 extern "C" Unk_ov046_Quad data_ov046_0225ae0c;
-extern "C" u8 data_ov046_0225a9b8[];
-extern "C" u8 data_ov046_0225a9e8[];
-extern "C" const Unk_ov046_0225a650_Entry data_ov046_0225a650[5];
-extern "C" Unk_ov046_SceneEntry data_ov046_0225a9d0;
-extern Unk_ov046_0225a398_Ent data_ov046_0225ae4c[5];
-extern "C" u8 data_ov046_0225a9a8[];
+extern "C" u8 sSpNpcCelesteModelPath[];
+extern "C" u8 sSpNpcCelesteTexturePath[];
+extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5];
+extern "C" Unk_ov046_SceneEntry sSpNpcCelesteProfile;
+extern Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5];
+extern "C" u8 sSpNpcCelesteKey[];
 
 static inline BOOL Unk_ov046_02258e68_Both() {
     if (gTouchPrevHeld != 0 && gTouchPrevChanged != 0) {
@@ -548,38 +548,38 @@ struct Unk_ov046_02259de8_Time {
     u32 w0, w1;
 };
 
-extern "C" void *func_ov046_0225a538() {
-    return new Unk_ov046_0225aaa0();
+extern "C" void *SpNpcCeleste_Create() {
+    return new SpNpcCeleste();
 }
 
-BOOL Unk_ov046_0225aaa0::vfunc_04() {
+BOOL SpNpcCeleste::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_02259c34(this);
+    unk_658.attachOwner(this);
     unk_73c = -1;
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::vfunc_00() {
+BOOL SpNpcCeleste::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
     unk_736 = unk_8e;
     unk_738 = 0;
     unk_4cc.unk_1c |= 2;
-    unk_658.func_02259c2c(5);
+    unk_658.setTopic(5);
     if (Clock_GetTimeOfDay() == 2 || Clock_GetTimeOfDay() == 3 || CommManager_isOnline(gCommManager) != 0 ||
         *func_0209c37c(0, 0x4a) != 0) {
-        func_ov046_0225a398(0);
+        changeAct(0);
     } else {
-        func_ov046_0225a398(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::vfunc_0c() {
+BOOL SpNpcCeleste::vfunc_0c() {
     if (!Unk_020d8bc8::vfunc_0c()) {
         return FALSE;
     }
@@ -590,38 +590,38 @@ BOOL Unk_ov046_0225aaa0::vfunc_0c() {
     return TRUE;
 }
 
-u8 *Unk_ov046_0225aaa0::getTexturePath() { return data_ov046_0225a9e8; }
+u8 *SpNpcCeleste::getTexturePath() { return sSpNpcCelesteTexturePath; }
 
 // Getters at the end of the file so they are not inlined.
-u8 *Unk_ov046_0225aaa0::getModelPath() { return data_ov046_0225a9b8; }
+u8 *SpNpcCeleste::getModelPath() { return sSpNpcCelesteModelPath; }
 
-BOOL Unk_ov046_0225aaa0::updateAct() {
+BOOL SpNpcCeleste::updateAct() {
     BOOL r = FALSE;
-    if (data_ov046_0225ae4c[unk_654].exit) {
-        r = (this->*data_ov046_0225ae4c[unk_654].exit)();
+    if (sSpNpcCelesteActTable[unk_654].exit) {
+        r = (this->*sSpNpcCelesteActTable[unk_654].exit)();
     }
     return r;
 }
 
-void Unk_ov046_0225aaa0::func_ov046_0225a398(s32 state) {
+void SpNpcCeleste::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov046_0225ae4c[state].enter) {
-        ok = (this->*data_ov046_0225ae4c[state].enter)();
+    if (sSpNpcCelesteActTable[state].enter) {
+        ok = (this->*sSpNpcCelesteActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a32c() {
+BOOL SpNpcCeleste::setupAct00() {
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_734 = 0x78;
     func_0201a6c0(&unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a2bc() {
-    if (func_ov046_02258e34()) {
+BOOL SpNpcCeleste::mainAct00() {
+    if (tryStartTelescopeTalk()) {
         return TRUE;
     }
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0 || Clock_GetTimeOfDay() == 2 ||
@@ -630,34 +630,34 @@ BOOL Unk_ov046_0225aaa0::func_ov046_0225a2bc() {
     }
     if (func_020e7500(&unk_734) == 0) {
         unk_738 = 0x18;
-        func_ov046_0225a398(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a280() {
+BOOL SpNpcCeleste::setupAct01() {
     func_020196b4(&unk_564, 3, 1, 0, 0, 0, unk_736, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a250() {
+BOOL SpNpcCeleste::mainAct01() {
     if (func_020197a8(&unk_564) == 3) {
         if (func_02019790(&unk_564)) {
-            func_ov046_0225a398(0);
+            changeAct(0);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a1ec() {
+BOOL SpNpcCeleste::setupAct02() {
     func_020195c8(&unk_564, 1, 0xf0, 0, unk_738, 0);
     func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     unk_73a = 1;
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a1a0() {
-    if (func_ov046_02258e34()) {
+BOOL SpNpcCeleste::mainAct02() {
+    if (tryStartTelescopeTalk()) {
         return TRUE;
     }
     if (unk_73c == -1) {
@@ -668,7 +668,7 @@ BOOL Unk_ov046_0225aaa0::func_ov046_0225a1a0() {
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a11c() {
+BOOL SpNpcCeleste::setupAct03() {
     Unk_020d77a4 *p = (Unk_020d77a4 *)unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
@@ -683,20 +683,20 @@ BOOL Unk_ov046_0225aaa0::func_ov046_0225a11c() {
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a0d8() {
+BOOL SpNpcCeleste::mainAct03() {
     if (func_02014220(&unk_618) == 0) {
         unk_73a = 0;
-        unk_658.func_02259c2c(5);
+        unk_658.setTopic(5);
         TalkRequest_EndTalkWith(this);
-        func_ov046_0225a398(4);
+        changeAct(4);
     }
     return TRUE;
 }
 
 // ---- unit 3
-BOOL Unk_ov046_0225aaa0::func_ov046_0225a0d4() { return TRUE; }
+BOOL SpNpcCeleste::mainAct04() { return TRUE; }
 
-void Unk_ov046_0225aa0c::vfunc_88() {
+void SpNpcCelesteTalk::vfunc_88() {
     TalkWindowState *o = unk_3c;
     ChoiceList *r7 = o->getChoiceList();
     u8 v = 0xf;
@@ -712,7 +712,7 @@ void Unk_ov046_0225aa0c::vfunc_88() {
     s32 r6 = unk_c0;
     s32 r4 = 0;
     for (; r6 < 0x10 && r4 < 4 && unk_c1 != 0; r6++) {
-        if (func_020b03a0(&a, r6)) {
+        if (Constellation_GetName(&a, r6)) {
             MsgString256 c;
             ChoiceEntry *q = r7->getEntry(r4);
             MsgString_appendString(&c, &a);
@@ -740,7 +740,7 @@ void Unk_ov046_0225aa0c::vfunc_88() {
     unk_3c->openChoices(1);
 }
 
-void Unk_ov046_0225aa0c::vfunc_84() {
+void SpNpcCelesteTalk::vfunc_84() {
     if (unk_b4) {
         (this->*unk_b4)();
         unk_b4 = NULL;
@@ -759,46 +759,46 @@ extern "C" Unk_ov046_Quad data_ov046_0225ae00 = Unk_ov046_Quad(20, 31, 31, 31);
 
 extern "C" Unk_ov046_Quad data_ov046_0225ae0c = Unk_ov046_Quad(20, 24, 24, 31);
 
-extern "C" u8 data_ov046_0225a9b8[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcCelesteModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" u8 data_ov046_0225a9e8[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" u8 sSpNpcCelesteTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'o', 'w', 's', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-extern "C" const Unk_ov046_0225a650_Entry data_ov046_0225a650[5] = {
-    {data_ov046_0225a9a8, 0},
-    {data_ov046_0225a9a8, 0x2c},
-    {data_ov046_0225a9a8, 0x2d},
-    {data_ov046_0225a9a8, 0x2e},
-    {data_ov046_0225a9a8, 4},
+extern "C" const Unk_ov046_0225a650_Entry sSpNpcCelesteTopicMsgs[5] = {
+    {sSpNpcCelesteKey, 0},
+    {sSpNpcCelesteKey, 0x2c},
+    {sSpNpcCelesteKey, 0x2d},
+    {sSpNpcCelesteKey, 0x2e},
+    {sSpNpcCelesteKey, 4},
 };
 
-extern "C" Unk_ov046_SceneEntry data_ov046_0225a9d0 = {func_ov046_0225a538, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov046_SceneEntry sSpNpcCelesteProfile = {SpNpcCeleste_Create, 0x6d, 0x73, 2, 0x5000, 0x5000, 0x3e800};
 
-Unk_ov046_0225a398_Ent data_ov046_0225ae4c[5] = {
-    {&Unk_ov046_0225aaa0::func_ov046_0225a32c, &Unk_ov046_0225aaa0::func_ov046_0225a2bc},
-    {&Unk_ov046_0225aaa0::func_ov046_0225a280, &Unk_ov046_0225aaa0::func_ov046_0225a250},
-    {&Unk_ov046_0225aaa0::func_ov046_0225a1ec, &Unk_ov046_0225aaa0::func_ov046_0225a1a0},
-    {&Unk_ov046_0225aaa0::func_ov046_0225a11c, &Unk_ov046_0225aaa0::func_ov046_0225a0d8},
-    {NULL, &Unk_ov046_0225aaa0::func_ov046_0225a0d4},
+Unk_ov046_0225a398_Ent sSpNpcCelesteActTable[5] = {
+    {&SpNpcCeleste::setupAct00, &SpNpcCeleste::mainAct00},
+    {&SpNpcCeleste::setupAct01, &SpNpcCeleste::mainAct01},
+    {&SpNpcCeleste::setupAct02, &SpNpcCeleste::mainAct02},
+    {&SpNpcCeleste::setupAct03, &SpNpcCeleste::mainAct03},
+    {NULL, &SpNpcCeleste::mainAct04},
 };
 
-void Unk_ov046_0225aa0c::func_02259ed4(s32 idx) {
+void SpNpcCelesteTalk::setResultHandler(s32 idx) {
     static Unk_ov046_0225aa0c_Fn tbl[5] = {
-        &Unk_ov046_0225aa0c::func_02259eb4,
-        &Unk_ov046_0225aa0c::func_02259de8,
-        &Unk_ov046_0225aa0c::func_02259d8c,
-        &Unk_ov046_0225aa0c::func_02259d3c,
-        &Unk_ov046_0225aa0c::func_02259ce0,
+        &SpNpcCelesteTalk::onStargazingDone,
+        &SpNpcCelesteTalk::onConstellationDrawn,
+        &SpNpcCelesteTalk::onConstellationNamed,
+        &SpNpcCelesteTalk::onConstellationRedrawn,
+        &SpNpcCelesteTalk::onConstellationRenamed,
     };
     unk_b4 = tbl[idx];
 }
 
-void Unk_ov046_0225aa0c::func_02259eb4() {
+void SpNpcCelesteTalk::onStargazingDone() {
     TalkWindowState *o = unk_3c;
     u8 v = 0x12;
-    o->setNextMessage(&v, data_ov046_0225a9a8);
+    o->setNextMessage(&v, sSpNpcCelesteKey);
 }
 
-void Unk_ov046_0225aa0c::func_02259de8() {
+void SpNpcCelesteTalk::onConstellationDrawn() {
     TalkWindowState *o = unk_3c;
     u8 msg[4];
     Unk_ov046_02259de8_Time t;
@@ -806,7 +806,7 @@ void Unk_ov046_0225aa0c::func_02259de8() {
     if (func_0206ed18()) {
         t.w0 = 0;
         t.w1 = 0;
-        func_020b02ec(&t, unk_bc);
+        Constellation_GetViewingTime(&t, unk_bc);
         func_02015878(((u8 *)&t)[4], 2);
         func_02015848(((u8 *)&t)[3], 3);
         func_02015958(((u8 *)&t)[1], 5, 2, 0, 0);
@@ -824,76 +824,76 @@ void Unk_ov046_0225aa0c::func_02259de8() {
         _ZN15TalkWindowState17setSlotFromStringEiii(o, 8, &msg[1], (u8 *)"st_general");
         msg[0] = 8;
     } else {
-        func_020b04cc(unk_bc);
-        unk_c1 = 0x10 - func_020b0564();
+        Constellation_Erase(unk_bc);
+        unk_c1 = 0x10 - Constellation_CountFreeSlots();
         unk_c0 = 0;
     }
-    o->setNextMessage(msg, data_ov046_0225a9a8);
+    o->setNextMessage(msg, sSpNpcCelesteKey);
 }
 
-void Unk_ov046_0225aa0c::func_02259d8c() {
+void SpNpcCelesteTalk::onConstellationNamed() {
     TalkWindowState *o = unk_3c;
     u8 v = 5;
     if (func_0206ec6c()) {
         if (func_0206ed18()) {
             Unk_020e2f74 s;
             v = 0xb;
-            func_020b03a0(&s, unk_bc);
+            Constellation_GetName(&s, unk_bc);
             unk_3c->setSlot(0, &s);
         }
-        o->setNextMessage(&v, data_ov046_0225a9a8);
+        o->setNextMessage(&v, sSpNpcCelesteKey);
     }
 }
 
-void Unk_ov046_0225aa0c::func_02259d3c() {
+void SpNpcCelesteTalk::onConstellationRedrawn() {
     TalkWindowState *o = unk_3c;
     u8 v = 0x1d;
     if (func_0206ed18()) {
         v = 0x38;
     } else {
-        unk_c1 = 0x10 - func_020b0564();
+        unk_c1 = 0x10 - Constellation_CountFreeSlots();
         unk_c0 = 0;
         v = 0x1d;
     }
-    o->setNextMessage(&v, data_ov046_0225a9a8);
+    o->setNextMessage(&v, sSpNpcCelesteKey);
 }
 
-void Unk_ov046_0225aa0c::func_02259ce0() {
+void SpNpcCelesteTalk::onConstellationRenamed() {
     TalkWindowState *o = unk_3c;
     u8 v = 5;
     if (func_0206ec6c()) {
         if (func_0206ed18()) {
             v = 0x3d;
             Unk_020e2f74 s;
-            func_020b03a0(&s, unk_bc);
+            Constellation_GetName(&s, unk_bc);
             unk_3c->setSlot(0, &s);
         }
-        o->setNextMessage(&v, data_ov046_0225a9a8);
+        o->setNextMessage(&v, sSpNpcCelesteKey);
     }
 }
 
-Unk_ov046_0225aa0c::Unk_ov046_0225aa0c() {}
+SpNpcCelesteTalk::SpNpcCelesteTalk() {}
 
-Unk_ov046_0225aa0c::~Unk_ov046_0225aa0c() {}
+SpNpcCelesteTalk::~SpNpcCelesteTalk() {}
 
-void Unk_ov046_0225aa0c::vfunc_08() {
+void SpNpcCelesteTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
     unk_b4 = NULL;
-    unk_bc = func_020b058c();
+    unk_bc = Constellation_FindFreeSlot();
 }
 
-void Unk_ov046_0225aa0c::func_02259c34(void *p) {
+void SpNpcCelesteTalk::attachOwner(void *p) {
     vfunc_08();
     unk_b0 = (u8 *)p;
     unk_c0 = 0;
-    unk_c1 = 0x10 - func_020b0564();
+    unk_c1 = 0x10 - Constellation_CountFreeSlots();
 }
 
-void Unk_ov046_0225aa0c::func_02259c2c(s32 v) {
+void SpNpcCelesteTalk::setTopic(s32 v) {
     unk_ac = v;
 }
 
-void Unk_ov046_0225aa0c::vfunc_78(Unk_ov046_0225aa0c_Out *out) {
+void SpNpcCelesteTalk::vfunc_78(TalkStartMsg *out) {
     if (func_020a032c()) {
         out->unk_00 = (u8 *)"sp_etc_sequence4";
         out->unk_04 = 0x14;
@@ -917,77 +917,77 @@ void Unk_ov046_0225aa0c::vfunc_78(Unk_ov046_0225aa0c_Out *out) {
     s32 t = unk_ac;
     if (t == 4 && unk_b0[0x73a] == 0) {
         if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
-            if (func_020b0564() < 0x10) {
+            if (Constellation_CountFreeSlots() < 0x10) {
                 out->unk_04 = 0x13;
             } else {
                 out->unk_04 = 0x10;
             }
         } else {
-            if (func_020b0564() < 0x10) {
+            if (Constellation_CountFreeSlots() < 0x10) {
                 out->unk_04 = 0x14;
             } else {
                 out->unk_04 = 1;
             }
         }
-        out->unk_00 = data_ov046_0225a9a8;
+        out->unk_00 = sSpNpcCelesteKey;
     } else if (t >= 0 && t < 5) {
-        out->unk_04 = data_ov046_0225a650[t].v;
-        out->unk_00 = data_ov046_0225a650[unk_ac].p;
+        out->unk_04 = sSpNpcCelesteTopicMsgs[t].v;
+        out->unk_00 = sSpNpcCelesteTopicMsgs[unk_ac].p;
     }
 }
 
-s32 Unk_ov046_0225aa0c::func_02259ac0() {
-    unk_c1 = 0x10 - func_020b0564();
+s32 SpNpcCelesteTalk::getFollowUpMenuMsg() {
+    unk_c1 = 0x10 - Constellation_CountFreeSlots();
     unk_c0 = 0;
     if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             return 0x27;
         }
         return 0x26;
     }
-    if (func_020b0564() < 0x10) {
+    if (Constellation_CountFreeSlots() < 0x10) {
         return 0x28;
     }
     return 0x29;
 }
-extern "C" u8 data_ov046_0225a9a8[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's', 't', 'r', 'o', 0};
+extern "C" u8 sSpNpcCelesteKey[] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'a', 's', 't', 'r', 'o', 0};
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
-void Unk_ov046_0225aa0c::vfunc_14() {
+void SpNpcCelesteTalk::vfunc_14() {
     if (func_020a032c() == 0) {
         PlayerData_GetCurrent();
         unk_d8 = 0xff;
         static Unk_ov046_0225aa0c_Row tbl[29] = {
-            {0x00, &Unk_ov046_0225aa0c::func_022597f8},
-            {0x04, &Unk_ov046_0225aa0c::func_022597a0},
-            {0x05, &Unk_ov046_0225aa0c::func_ov046_022596dc},
-            {0x07, &Unk_ov046_0225aa0c::func_0225975c},
-            {0x09, &Unk_ov046_0225aa0c::func_ov046_022596dc},
-            {0x0b, &Unk_ov046_0225aa0c::func_02259728},
-            {0x0c, &Unk_ov046_0225aa0c::func_02259714},
-            {0x12, &Unk_ov046_0225aa0c::func_02259714},
-            {0x15, &Unk_ov046_0225aa0c::func_02259700},
-            {0x16, &Unk_ov046_0225aa0c::func_02259714},
-            {0x17, &Unk_ov046_0225aa0c::func_02259714},
-            {0x1a, &Unk_ov046_0225aa0c::func_02259714},
-            {0x1b, &Unk_ov046_0225aa0c::func_02259714},
-            {0x1d, &Unk_ov046_0225aa0c::func_02259714},
-            {0x1e, &Unk_ov046_0225aa0c::func_02259700},
-            {0x1f, &Unk_ov046_0225aa0c::func_02259700},
-            {0x21, &Unk_ov046_0225aa0c::func_02259714},
-            {0x2c, &Unk_ov046_0225aa0c::func_022597f8},
-            {0x2d, &Unk_ov046_0225aa0c::func_022597f8},
-            {0x2e, &Unk_ov046_0225aa0c::func_022597f8},
-            {0x30, &Unk_ov046_0225aa0c::func_ov046_02259694},
-            {0x32, &Unk_ov046_0225aa0c::func_02259714},
-            {0x33, &Unk_ov046_0225aa0c::func_02259714},
-            {0x3b, &Unk_ov046_0225aa0c::func_ov046_022596b8},
-            {0x3d, &Unk_ov046_0225aa0c::func_02259714},
-            {0x3e, &Unk_ov046_0225aa0c::func_02259714},
-            {0x3f, &Unk_ov046_0225aa0c::func_02259700},
-            {0x40, &Unk_ov046_0225aa0c::func_02259700},
-            {0x41, &Unk_ov046_0225aa0c::func_02259700},
+            {0x00, &SpNpcCelesteTalk::announceNewConstellations},
+            {0x04, &SpNpcCelesteTalk::showTelescopeMenu},
+            {0x05, &SpNpcCelesteTalk::startNameEntry},
+            {0x07, &SpNpcCelesteTalk::startConstellationEditor},
+            {0x09, &SpNpcCelesteTalk::startNameEntry},
+            {0x0b, &SpNpcCelesteTalk::reactToConstellationName},
+            {0x0c, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x12, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x15, &SpNpcCelesteTalk::showConstellationList},
+            {0x16, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x17, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x1a, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x1b, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x1d, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x1e, &SpNpcCelesteTalk::showConstellationList},
+            {0x1f, &SpNpcCelesteTalk::showConstellationList},
+            {0x21, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x2c, &SpNpcCelesteTalk::announceNewConstellations},
+            {0x2d, &SpNpcCelesteTalk::announceNewConstellations},
+            {0x2e, &SpNpcCelesteTalk::announceNewConstellations},
+            {0x30, &SpNpcCelesteTalk::startStargazing},
+            {0x32, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x33, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x3b, &SpNpcCelesteTalk::startRenameEntry},
+            {0x3d, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x3e, &SpNpcCelesteTalk::showFollowUpMenu},
+            {0x3f, &SpNpcCelesteTalk::showConstellationList},
+            {0x40, &SpNpcCelesteTalk::showConstellationList},
+            {0x41, &SpNpcCelesteTalk::showConstellationList},
         };
         s32 i = 0;
         u8 *p = &unk_1e;
@@ -1001,41 +1001,41 @@ void Unk_ov046_0225aa0c::vfunc_14() {
         }
         if (unk_d8 != 0xff) {
             u8 v = unk_d8;
-            unk_3c->setNextMessage(&v, data_ov046_0225a9a8);
+            unk_3c->setNextMessage(&v, sSpNpcCelesteKey);
         }
     }
 }
 
-void Unk_ov046_0225aa0c::func_022597f8() {
+void SpNpcCelesteTalk::announceNewConstellations() {
     s32 v = 0;
-    if (func_020b0334(&v) == 0) {
+    if (Constellation_GetNewStatus(&v) == 0) {
         if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
             unk_d8 = 0x2f;
         } else {
             unk_d8 = 0x11;
         }
     } else {
-        if (func_020b0334(&v) == 1) {
+        if (Constellation_GetNewStatus(&v) == 1) {
             Unk_020e2f74 s;
-            func_020b03a0(&s, v);
+            Constellation_GetName(&s, v);
             unk_3c->setSlot(7, &s);
             unk_d8 = 0x39;
         } else {
             unk_d8 = 0x3a;
         }
-        func_020b031c();
+        Constellation_ClearNewFlags();
     }
 }
 
-void Unk_ov046_0225aa0c::func_022597a0() {
+void SpNpcCelesteTalk::showTelescopeMenu() {
     if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             unk_d8 = 0x13;
         } else {
             unk_d8 = 0x10;
         }
     } else {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             unk_d8 = 0x14;
         } else {
             unk_d8 = 1;
@@ -1043,21 +1043,21 @@ void Unk_ov046_0225aa0c::func_022597a0() {
     }
 }
 
-void Unk_ov046_0225aa0c::func_0225975c() {
-    unk_bc = func_020b058c();
+void SpNpcCelesteTalk::startConstellationEditor() {
+    unk_bc = Constellation_FindFreeSlot();
     if (unk_bc >= 0) {
         func_02015158(0x2e, (u8)unk_bc, 0);
         func_020151d0(3);
-        func_02259ed4(1);
+        setResultHandler(1);
     } else {
         unk_d8 = 0x3e;
     }
 }
 
-void Unk_ov046_0225aa0c::func_02259728() {
+void SpNpcCelesteTalk::reactToConstellationName() {
     s32 r = func_02063b8c(0x65);
     if (r < 0x46) {
-        unk_d8 = func_02259ac0();
+        unk_d8 = getFollowUpMenuMsg();
     } else if (r < 0x55) {
         unk_d8 = 0x32;
     } else {
@@ -1065,63 +1065,63 @@ void Unk_ov046_0225aa0c::func_02259728() {
     }
 }
 
-void Unk_ov046_0225aa0c::func_02259714() {
-    unk_d8 = func_02259ac0();
+void SpNpcCelesteTalk::showFollowUpMenu() {
+    unk_d8 = getFollowUpMenuMsg();
 }
 
 // ---- unit 2
-void Unk_ov046_0225aa0c::func_02259700() {
+void SpNpcCelesteTalk::showConstellationList() {
     vfunc_88();
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022596dc() {
+void SpNpcCelesteTalk::startNameEntry() {
     func_02015170(0x12, 0);
     func_020151d0(2);
-    func_02259ed4(2);
+    setResultHandler(2);
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022596b8() {
+void SpNpcCelesteTalk::startRenameEntry() {
     func_02015170(0x12, 0);
     func_020151d0(2);
-    func_02259ed4(4);
+    setResultHandler(4);
 }
 
-void Unk_ov046_0225aa0c::func_ov046_02259694() {
+void SpNpcCelesteTalk::startStargazing() {
     func_02015170(0x2d, 0);
     func_020151d0(2);
-    func_02259ed4(0);
+    setResultHandler(0);
 }
 
-void Unk_ov046_0225aa0c::vfunc_18() {
+void SpNpcCelesteTalk::vfunc_18() {
     s32 t = getChoiceList()->getResult();
     unk_d8 = 0xff;
     static Unk_ov046_02259480_Ent tbl[26] = {
-        {0x01, &Unk_ov046_0225aa0c::func_ov046_0225922c},
-        {0x08, &Unk_ov046_0225aa0c::func_ov046_0225946c},
-        {0x10, &Unk_ov046_0225aa0c::func_ov046_022590b4},
-        {0x13, &Unk_ov046_0225aa0c::func_ov046_022590b4},
-        {0x14, &Unk_ov046_0225aa0c::func_ov046_022591b0},
-        {0x15, &Unk_ov046_0225aa0c::func_ov046_022592d4},
-        {0x18, &Unk_ov046_0225aa0c::func_ov046_022590e0},
-        {0x19, &Unk_ov046_0225aa0c::func_ov046_0225913c},
-        {0x1e, &Unk_ov046_0225aa0c::func_ov046_022592d4},
-        {0x1f, &Unk_ov046_0225aa0c::func_ov046_022592d4},
-        {0x20, &Unk_ov046_0225aa0c::func_ov046_022590a0},
-        {0x23, &Unk_ov046_0225aa0c::func_ov046_02259264},
-        {0x24, &Unk_ov046_0225aa0c::func_ov046_0225904c},
-        {0x25, &Unk_ov046_0225aa0c::func_ov046_022590e0},
-        {0x26, &Unk_ov046_0225aa0c::func_ov046_022590b4},
-        {0x27, &Unk_ov046_0225aa0c::func_ov046_022590b4},
-        {0x28, &Unk_ov046_0225aa0c::func_ov046_022591b0},
-        {0x29, &Unk_ov046_0225aa0c::func_ov046_0225922c},
-        {0x2a, &Unk_ov046_0225aa0c::func_ov046_022590e0},
-        {0x2b, &Unk_ov046_0225aa0c::func_ov046_022590e0},
-        {0x31, &Unk_ov046_0225aa0c::func_ov046_022592a4},
-        {0x35, &Unk_ov046_0225aa0c::func_ov046_02259024},
-        {0x38, &Unk_ov046_0225aa0c::func_ov046_02259004},
-        {0x3f, &Unk_ov046_0225aa0c::func_ov046_022592d4},
-        {0x40, &Unk_ov046_0225aa0c::func_ov046_022592d4},
-        {0x41, &Unk_ov046_0225aa0c::func_ov046_022592d4},
+        {0x01, &SpNpcCelesteTalk::onTelescopeMenuChoice},
+        {0x08, &SpNpcCelesteTalk::onViewingTimeChoice},
+        {0x10, &SpNpcCelesteTalk::onStargazeMenuChoice},
+        {0x13, &SpNpcCelesteTalk::onStargazeMenuChoice},
+        {0x14, &SpNpcCelesteTalk::onFullMenuChoice},
+        {0x15, &SpNpcCelesteTalk::onConstellationListChoice},
+        {0x18, &SpNpcCelesteTalk::onMakeOrChangeChoice},
+        {0x19, &SpNpcCelesteTalk::onEraseConfirmChoice},
+        {0x1e, &SpNpcCelesteTalk::onConstellationListChoice},
+        {0x1f, &SpNpcCelesteTalk::onConstellationListChoice},
+        {0x20, &SpNpcCelesteTalk::func_ov046_022590a0},
+        {0x23, &SpNpcCelesteTalk::onDiscardNewChoice},
+        {0x24, &SpNpcCelesteTalk::func_ov046_0225904c},
+        {0x25, &SpNpcCelesteTalk::onMakeOrChangeChoice},
+        {0x26, &SpNpcCelesteTalk::onStargazeMenuChoice},
+        {0x27, &SpNpcCelesteTalk::onStargazeMenuChoice},
+        {0x28, &SpNpcCelesteTalk::onFullMenuChoice},
+        {0x29, &SpNpcCelesteTalk::onTelescopeMenuChoice},
+        {0x2a, &SpNpcCelesteTalk::onMakeOrChangeChoice},
+        {0x2b, &SpNpcCelesteTalk::onMakeOrChangeChoice},
+        {0x31, &SpNpcCelesteTalk::func_ov046_022592a4},
+        {0x35, &SpNpcCelesteTalk::onLookOrTimesChoice},
+        {0x38, &SpNpcCelesteTalk::onRenameChoice},
+        {0x3f, &SpNpcCelesteTalk::onConstellationListChoice},
+        {0x40, &SpNpcCelesteTalk::onConstellationListChoice},
+        {0x41, &SpNpcCelesteTalk::onConstellationListChoice},
     };
     u32 i = 0;
     u8 *pe = &unk_1e;
@@ -1141,11 +1141,11 @@ test:
     }
     if (unk_d8 != 0xff) {
         u8 b = unk_d8;
-        unk_3c->setNextMessage(&b, data_ov046_0225a9a8);
+        unk_3c->setNextMessage(&b, sSpNpcCelesteKey);
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_0225946c(s32 a) {
+void SpNpcCelesteTalk::onViewingTimeChoice(s32 a) {
     if (a == 0) {
         unk_d8 = 9;
     } else {
@@ -1153,7 +1153,7 @@ void Unk_ov046_0225aa0c::func_ov046_0225946c(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022592d4(s32 idx) {
+void SpNpcCelesteTalk::onConstellationListChoice(s32 idx) {
     struct {
         u8 msg;
         u8 pad[3];
@@ -1164,7 +1164,7 @@ void Unk_ov046_0225aa0c::func_ov046_022592d4(s32 idx) {
     if (unk_bc >= 0) {
         u32 buf[9];
         _ZN12Unk_020e2f74C1Ev(buf);
-        func_020b03a0(buf, unk_bc);
+        Constellation_GetName(buf, unk_bc);
         unk_3c->setSlot(6, buf);
         if (unk_c2 == 0) {
             unk_d8 = 0x19;
@@ -1172,7 +1172,7 @@ void Unk_ov046_0225aa0c::func_ov046_022592d4(s32 idx) {
         } else if (unk_c2 == 1) {
             l.w[0] = 0;
             l.w[1] = 0;
-            func_020b02ec(&l.w, unk_bc);
+            Constellation_GetViewingTime(&l.w, unk_bc);
             func_02015878(((u8 *)l.w)[4], 2);
             func_02015848(((u8 *)l.w)[3], 3);
             func_02015958(((u8 *)l.w)[1], 5, 2, 0, 0);
@@ -1192,15 +1192,15 @@ void Unk_ov046_0225aa0c::func_ov046_022592d4(s32 idx) {
         } else if (unk_c2 == 2) {
             func_02015158(0x2e, (u8)unk_bc, 0);
             func_020151d0(3);
-            func_02259ed4(3);
+            setResultHandler(3);
         }
         unk_c2 = 0;
         _ZN12Unk_020e2f74D1Ev(buf);
     } else {
         if (unk_c1 == 0) {
-            unk_d8 = func_02259ac0();
+            unk_d8 = getFollowUpMenuMsg();
             if ((u8)(unk_c2 + 0xff) <= 1) {
-                if (func_020b0564() < 0x10) {
+                if (Constellation_CountFreeSlots() < 0x10) {
                     if (unk_c2 == 1) {
                         unk_d8 = 0x16;
                     } else {
@@ -1228,22 +1228,22 @@ void Unk_ov046_0225aa0c::func_ov046_022592d4(s32 idx) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022592a4(s32 a) {
+void SpNpcCelesteTalk::func_ov046_022592a4(s32 a) {
     if (a == 0) {
         unk_d8 = 7;
-    } else if (func_020b0564() < 0x10) {
+    } else if (Constellation_CountFreeSlots() < 0x10) {
         unk_d8 = 0x2a;
     } else {
-        unk_d8 = func_02259ac0();
+        unk_d8 = getFollowUpMenuMsg();
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_02259264(s32 a) {
+void SpNpcCelesteTalk::onDiscardNewChoice(s32 a) {
     if (a == 0) {
         if (unk_bc >= 0) {
-            func_020b04cc(unk_bc);
+            Constellation_Erase(unk_bc);
         }
-        unk_c1 = 0x10 - func_020b0564();
+        unk_c1 = 0x10 - Constellation_CountFreeSlots();
         unk_c0 = 0;
         unk_d8 = 0x21;
     } else {
@@ -1251,9 +1251,9 @@ void Unk_ov046_0225aa0c::func_ov046_02259264(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_0225922c(s32 a) {
+void SpNpcCelesteTalk::onTelescopeMenuChoice(s32 a) {
     if (a == 0) {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             unk_d8 = 0x18;
         } else {
             unk_d8 = 7;
@@ -1265,11 +1265,11 @@ void Unk_ov046_0225aa0c::func_ov046_0225922c(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022591b0(s32 a) {
-    unk_c1 = 0x10 - func_020b0564();
+void SpNpcCelesteTalk::onFullMenuChoice(s32 a) {
+    unk_c1 = 0x10 - Constellation_CountFreeSlots();
     unk_c0 = 0;
     if (a == 0) {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             unk_d8 = 0x18;
         } else {
             unk_d8 = 7;
@@ -1277,7 +1277,7 @@ void Unk_ov046_0225aa0c::func_ov046_022591b0(s32 a) {
     } else if (a == 1) {
         unk_d8 = 0x35;
     } else if (a == 2) {
-        unk_c1 = 0x10 - func_020b0564();
+        unk_c1 = 0x10 - Constellation_CountFreeSlots();
         u8 z = 0;
         unk_c0 = z;
         unk_d8 = 0x1f;
@@ -1287,30 +1287,30 @@ void Unk_ov046_0225aa0c::func_ov046_022591b0(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_0225913c(s32 a) {
+void SpNpcCelesteTalk::onEraseConfirmChoice(s32 a) {
     u32 buf[9];
     unk_c0 = 0;
     if (a == 0) {
         if (unk_bc >= 0) {
             _ZN12Unk_020e2f74C1Ev(buf);
-            func_020b03a0(buf, unk_bc);
+            Constellation_GetName(buf, unk_bc);
             unk_3c->setSlot(6, buf);
-            func_020b04cc(unk_bc);
+            Constellation_Erase(unk_bc);
             _ZN12Unk_020e2f74D1Ev(buf);
         }
-        unk_c1 = 0x10 - func_020b0564();
+        unk_c1 = 0x10 - Constellation_CountFreeSlots();
         unk_c0 = 0;
         unk_d8 = 0x1b;
     } else {
-        unk_d8 = func_02259ac0();
+        unk_d8 = getFollowUpMenuMsg();
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022590e0(s32 a) {
-    unk_c1 = 0x10 - func_020b0564();
+void SpNpcCelesteTalk::onMakeOrChangeChoice(s32 a) {
+    unk_c1 = 0x10 - Constellation_CountFreeSlots();
     unk_c0 = 0;
     if (a == 0) {
-        if (func_020b0564() == 0) {
+        if (Constellation_CountFreeSlots() == 0) {
             unk_d8 = 0x3e;
         } else {
             unk_d8 = 7;
@@ -1323,9 +1323,9 @@ void Unk_ov046_0225aa0c::func_ov046_022590e0(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022590b4(s32 a) {
+void SpNpcCelesteTalk::onStargazeMenuChoice(s32 a) {
     if (a == 0) {
-        if (func_020b0564() < 0x10) {
+        if (Constellation_CountFreeSlots() < 0x10) {
             unk_d8 = 0x35;
         } else {
             unk_d8 = 0x30;
@@ -1335,7 +1335,7 @@ void Unk_ov046_0225aa0c::func_ov046_022590b4(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_022590a0(s32 a) {
+void SpNpcCelesteTalk::func_ov046_022590a0(s32 a) {
     if (a == 0) {
         unk_d8 = 7;
     } else {
@@ -1343,20 +1343,20 @@ void Unk_ov046_0225aa0c::func_ov046_022590a0(s32 a) {
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_0225904c(s32 a) {
-    unk_c1 = 0x10 - func_020b0564();
+void SpNpcCelesteTalk::func_ov046_0225904c(s32 a) {
+    unk_c1 = 0x10 - Constellation_CountFreeSlots();
     unk_c0 = 0;
     if (a == 0) {
         unk_c2 = 2;
         unk_d8 = 0x1e;
-    } else if (func_020b0564() < 0x10) {
+    } else if (Constellation_CountFreeSlots() < 0x10) {
         unk_d8 = 0x25;
     } else {
-        unk_d8 = func_02259ac0();
+        unk_d8 = getFollowUpMenuMsg();
     }
 }
 
-void Unk_ov046_0225aa0c::func_ov046_02259024(s32 a) {
+void SpNpcCelesteTalk::onLookOrTimesChoice(s32 a) {
     if (a == 0) {
         unk_d8 = 0x30;
     } else if (a == 1) {
@@ -1368,42 +1368,42 @@ void Unk_ov046_0225aa0c::func_ov046_02259024(s32 a) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov046_0225aa0c
+// SpNpcCelesteTalk
 
-void Unk_ov046_0225aa0c::func_ov046_02259004(s32 a) {
+void SpNpcCelesteTalk::onRenameChoice(s32 a) {
     if (a == 0) {
         unk_d8 = 0x3b;
     } else {
-        unk_d8 = func_02259ac0();
+        unk_d8 = getFollowUpMenuMsg();
     }
 }
 
-BOOL Unk_ov046_0225aaa0::vfunc_48() {
+BOOL SpNpcCeleste::vfunc_48() {
     if (func_02014220(&unk_618) != 0 || func_0201b9bc() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_ov046_0225aaa0::vfunc_58() {
+BOOL SpNpcCeleste::vfunc_58() {
     return func_02014220(&unk_618) == 0 ? TRUE : FALSE;
 }
 
-void Unk_ov046_0225aaa0::vfunc_4c(s32 a) {
+void SpNpcCeleste::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
     case 1:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov046_0225a398(3);
+        changeAct(3);
         break;
     case 8:
-        func_ov046_0225a398(1);
+        changeAct(1);
         break;
     }
 }
 
-BOOL Unk_ov046_0225aaa0::func_ov046_02258e68() {
+BOOL SpNpcCeleste::isPlayerAtTelescope() {
     Unk_ov046_02258e68_Vec v0;
     Unk_ov046_02258e68_Vec v1;
     u32 out;
@@ -1417,7 +1417,7 @@ BOOL Unk_ov046_0225aaa0::func_ov046_02258e68() {
         r6 = FALSE;
     }
     if (p == 0 || func_02014220(&unk_618) != 0) {
-        unk_658.func_02259c2c(5);
+        unk_658.setTopic(5);
         result = FALSE;
         goto end;
     }
@@ -1435,7 +1435,7 @@ BOOL Unk_ov046_0225aaa0::func_ov046_02258e68() {
     if (d < 0x1000) {
         a = a & 0xffff;
         if (a < 0x6000 || a > 0xa000) {
-            unk_658.func_02259c2c(5);
+            unk_658.setTopic(5);
             result = FALSE;
             goto end;
         }
@@ -1460,9 +1460,9 @@ end:
 }
 
 // ---- unit 1
-BOOL Unk_ov046_0225aaa0::func_ov046_02258e34() {
-    if (func_ov046_02258e68()) {
-        unk_658.func_02259c2c(4);
+BOOL SpNpcCeleste::tryStartTelescopeTalk() {
+    if (isPlayerAtTelescope()) {
+        unk_658.setTopic(4);
         func_0203a304();
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;

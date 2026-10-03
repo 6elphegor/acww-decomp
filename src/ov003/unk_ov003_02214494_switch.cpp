@@ -282,7 +282,7 @@ void MI_CpuCopy8(void *, void *, s32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b50e8();
 void Visitor_ScheduleLow(void *, s32, void *);
-extern u16 data_ov003_02231144;
+extern u16 sGracieCarVisitorProfile;
 extern u8 data_ov003_02231430[];
 extern u8 data_ov003_02231434[];
 extern u8 data_ov003_0223144c[];
@@ -290,10 +290,10 @@ extern u8 data_ov003_02231464[];
 extern char data_ov003_0223524c[];
 extern char data_ov003_02235204[];
 extern char data_ov003_02235228[];
-extern u32 data_ov003_022312c8[];
-extern u32 data_ov003_02235278;
-extern u32 data_ov003_0223527c;
-extern u32 data_ov003_02235280;
+extern u32 sGateHouseModelNames[];
+extern u32 sCountdownHours;
+extern u32 sCountdownSeconds;
+extern u32 sCountdownMinutes;
 void func_0203c924(void *);
 void func_0203c928(void *);
 BOOL func_0203c6f8(void *a, void *b);
@@ -306,16 +306,16 @@ void func_020547e4(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL func_0203006c(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_ov003_02218da8();
+s32 Field_GetStructureTexSuffix();
 void Snd_PlaySe(u32);
-u32 func_ov003_02214f3c();
-s32 func_ov003_02214f54();
+u32 GateHouse_GetModelName();
+s32 GateHouse_GetDesign();
 }
 
-class Unk_ov003_02230ff0 : public BuildingActor {
+class ReddTent : public BuildingActor {
 public:
-    Unk_ov003_02230ff0();
-    virtual ~Unk_ov003_02230ff0();
+    ReddTent();
+    virtual ~ReddTent();
     virtual BOOL onExecute();
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
@@ -325,42 +325,42 @@ public:
     virtual void vfunc_s18();
     virtual BOOL vfunc_s6c();
 
-    void func_ov003_02214870();
-    void func_ov003_02214800();
-    void func_ov003_02214738();
-    void func_ov003_02214704();
-    void func_ov003_022146c8();
-    void func_ov003_02214644();
-    void func_ov003_0221461c();
-    void func_ov003_022145dc();
-    void func_ov003_02214578();
-    void func_ov003_02214494();
-    BOOL func_ov003_02214890();
-    BOOL func_ov003_02214848();
-    BOOL func_ov003_0221475c();
-    BOOL func_ov003_02214734();
-    BOOL func_ov003_02214700();
-    BOOL func_ov003_022146c4();
-    BOOL func_ov003_02214640();
-    BOOL func_ov003_02214608();
-    BOOL func_ov003_022145cc();
-    BOOL func_ov003_02214568();
-    void func_ov003_02214894();
-    BOOL func_ov003_02214974(s32 i);
+    void execTentIdle();
+    void execTentCheck();
+    void execTentTalkOpen();
+    void execTentTalk();
+    void execTentMenuWait();
+    void execTentMenu();
+    void execTentGoIn();
+    void execTentEntry07();
+    void execTentWalkIn();
+    void execTentWarp();
+    BOOL enterTentIdle();
+    BOOL enterTentCheck();
+    BOOL enterTentTalkOpen();
+    BOOL enterTentTalk();
+    BOOL enterTentMenuWait();
+    BOOL enterTentMenu();
+    BOOL enterTentGoIn();
+    BOOL enterTentEntry07();
+    BOOL enterTentWalkIn();
+    BOOL enterTentWarp();
+    void updateTentState();
+    BOOL setTentState(s32 i);
 
     /* 0x2b0 */ s32 unk_2b0;
     /* 0x2b4 */ u16 unk_2b4; u8 unk_2b6;
     /* 0x2b7 */ u8 unk_2b7;
 };
 
-void Unk_ov003_02230ff0::vfunc_4c(u32 a, u8 b) {
+void ReddTent::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 6:
         BuildingActor::vfunc_4c(a, b);
         break;
     case 0:
     case 1:
-        func_ov003_02214974(1);
+        setTentState(1);
         break;
     case 2:
     case 3:
@@ -369,7 +369,7 @@ void Unk_ov003_02230ff0::vfunc_4c(u32 a, u8 b) {
     case 7:
         break;
     case 8:
-        func_ov003_02214974(0);
+        setTentState(0);
         break;
     }
 }

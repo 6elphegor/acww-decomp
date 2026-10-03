@@ -202,9 +202,9 @@ extern u8 data_020e416c;
 u32 func_02095204(u32 v);
 void func_0204548c(Unk_02042104_Pair *p, s32 k);
 void func_02042660(u32 v, Unk_02042104_Pair *p);
-void func_ov003_02219ccc(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
+void FieldItemFx_StartDrop(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
 void func_ov004_0222bf80(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d, u32 e);
-void func_ov003_022197e8(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
+void FieldItemFx_StartPlant(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
 inline BOOL Unk_02042104_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
@@ -287,8 +287,8 @@ s32 func_020513b0(s32, s32);
 s32 func_02030f10(s32, s32, s32, s32, s32);
 s32 _ZN8BlockMap13func_0204e378Eii(void *, s32, s32);
 u16 *func_02042aec(u32, void *, s32, s32, Unk_020422c0_Pos *);
-BOOL func_ov003_02219ae0(u32, u32, Unk_020422c0_Pos *);
-BOOL func_ov003_02219ccc(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *);
+BOOL FieldItemFx_StartPop(u32, u32, Unk_020422c0_Pos *);
+BOOL FieldItemFx_StartDrop(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *);
 BOOL func_ov004_0222bf80(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *, u32);
 void *func_02095204(u32);
 u32 func_02043e70(void *);
@@ -379,8 +379,8 @@ void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 u8 *func_02095204(s32 a);
 s32 Item_IsTreeStage0(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
-void func_ov003_022197e8(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
-void func_ov003_02219ae0(s32 a, u16 b, Pos p);
+void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
+void FieldItemFx_StartPop(s32 a, u16 b, Pos p);
 void func_02045570(Pos p, u8 a);
 s32 func_020b5184();
 void *TownBlockMap_Get();
@@ -682,7 +682,7 @@ s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 void Area_PlaceItem(s32 m, s32 x, s32 z, s32 a, s32 b);
 void func_02044490(Unk_02044490_E *e, s32 t);
 void func_0204452c(Unk_02044490_E *e, s32 m);
-void func_ov003_02219ae0(s32 a, s32 b, Unk_02043f04_Pos *p);
+void FieldItemFx_StartPop(s32 a, s32 b, Unk_02043f04_Pos *p);
 void func_0204558c(s32 a, Unk_02043f04_Pos *p, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i);
 void func_0204548c(Unk_02043f04_Pos *p, s32 f);
 void func_020445a4(Unk_02044490_E *e);
@@ -816,7 +816,7 @@ s32 func_020453e8(Unk_020449e8_Pos *p, s32 a);
 void _ZN12ItemPickSpec3setEii(Unk_02044aa8_Rng *r, s32 a, s32 b);
 void func_02063388(Unk_02044aa8_Rng *r);
 void ItemPick_One(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
-u32 func_ov003_0221ba28(u32 a, Unk_02044aa8_Vec3 *v);
+u32 Tree_GetDropSide(u32 a, Unk_02044aa8_Vec3 *v);
 BOOL func_020a62a0();
 void func_02044774(Unk_020449e8_Src *s, s32 a, s32 b);
 s32 _ZN11CommManager11beginRecordEv(CommManager *g);
@@ -906,11 +906,11 @@ extern u8 data_021c4350[];
 void func_020457fc(s32 idx, u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
 BOOL func_020457bc(Unk_020452ec_Pos *pos);
 BOOL func_02045754(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k, u8 b, u8 c2, u8 d, u8 f, s8 g);
-void func_ov003_0221b73c(Unk_021c3f8c_Pos *q, u32 kind, Unk_020452ec_Pos *pos);
-void func_ov003_0221caf0(s32 x, s32 y, u32 a, u32 b);
+void Tree_DropItems(Unk_021c3f8c_Pos *q, u32 kind, Unk_020452ec_Pos *pos);
+void Field_SetUnitItem(s32 x, s32 y, u32 a, u32 b);
 void func_ov004_0222c49c(s32 x, s32 y, u32 a, u32 b);
 BOOL func_020b5184();
-s32 func_ov003_02219d08(u32 kind, Unk_020452ec_Pos *pos);
+s32 FieldItemFx_CancelAt(u32 kind, Unk_020452ec_Pos *pos);
 static inline s32 Unk_021c3f8c_GetX(Unk_021c3f8c_Pos p) { return p.v >> 8; }
 static inline s32 Unk_021c3f8c_GetY(Unk_021c3f8c_Pos p) { return p.v & 0xff; }
 static inline void Unk_0204548c_Unpack(Unk_021c3f8c_Pos px, Unk_021c3f8c_Pos py, Unk_020452ec_Pos *out) {
@@ -1265,7 +1265,7 @@ void Town_SpawnCoconut(void *, void *, s32);
 void Town_BuryGyroids(void *, void *, s32, s32, u32);
 void Town_UpgradeBuriedShovels(void *, void *, s32, s32);
 void _ZN12Unk_0208581013func_020859b4Ev(void *);
-void _ZN12Unk_0206fe8013func_020702ecEv(void *);
+void _ZN10MuseumData22checkCompletionLettersEv(void *);
 void _ZN9HouseData13func_020605a8Ev(void *);
 void func_020ada88();
 void _ZN9HouseData13func_02060394Ei(void *, s32);
@@ -1907,7 +1907,7 @@ BOOL func_020b5184();
 BOOL func_020b5164();
 void *TownBlockMap_Get();
 void *HouseRoomMaps_GetForScene(void *a);
-void func_ov003_0221caf0(void *a, void *b, void *c, void *d);
+void Field_SetUnitItem(void *a, void *b, void *c, void *d);
 void func_ov004_0222c49c(void *a, void *b, void *c, s32 d);
 void Town_GrowTree(void *a, u16 *p, s32 x, s32 y);
 void Town_WitherSapling(void *a, u32 v, s32 x, s32 y);
@@ -3356,7 +3356,7 @@ extern "C" void TownEval_EvaluateAcreAt(u8 *a, void *b, s32 i, s32 j) {
 namespace nN {
 extern "C" void func_02049928(void *a, void *b, void *c, void *d) {
     if (func_020b5184() || func_020b5164()) {
-        func_ov003_0221caf0(a, b, c, d);
+        Field_SetUnitItem(a, b, c, d);
     } else {
         func_ov004_0222c49c(a, b, c, 0);
     }
@@ -5496,7 +5496,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Town_BuryGyroids(a, p, x, y, e);
         Town_UpgradeBuriedShovels(a, p, x, y);
         _ZN12Unk_0208581013func_020859b4Ev(data_021ed24c);
-        _ZN12Unk_0206fe8013func_020702ecEv(data_021ed0a0);
+        _ZN10MuseumData22checkCompletionLettersEv(data_021ed0a0);
         char *const g = data_021e58a8;
         _ZN9HouseData13func_020605a8Ev(g);
         func_020ada88();
@@ -6175,7 +6175,7 @@ extern "C" void func_02045b80(Unk_021c3f8c *e, u8 kind, u16 pos, u16 a, u16 c, u
 namespace nG {
 extern "C" void func_02045b3c(Unk_021c3f8c *e) {
     if (func_020b5184()) {
-        func_ov003_0221caf0(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_01_a);
+        Field_SetUnitItem(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_01_a);
         func_02045af8(e);
     } else {
         func_ov004_0222c49c(e->unk_08.v >> 8, e->unk_08.v & 0xff, e->unk_0a, e->unk_02_b);
@@ -6454,7 +6454,7 @@ extern "C" void func_0204558c(u8 kind, Unk_020452ec_Pos *pos, u16 a, u16 c, u8 k
                 Unk_020452ec_Pos t2;
                 t2.x = pos->x;
                 t2.y = pos->y;
-                func_ov003_0221b73c(&q, e->unk_00_a, &t2);
+                Tree_DropItems(&q, e->unk_00_a, &t2);
                 break;
             }
             }
@@ -6515,7 +6515,7 @@ extern "C" void func_0204548c(Unk_020452ec_Pos *pos, s32 flag) {
         Unk_021c3f8c *e = &((Unk_021c3f8c *)nZ::data_021c3f88.unk_04)[i];
         Unk_020452ec_Pos xy;
         Unk_0204548c_Unpack(e->unk_08, e->unk_08, &xy);
-        if (func_ov003_02219d08(((Unk_021c3f8c *)nZ::data_021c3f88.unk_04)[i].unk_00_a, &xy) == 0) {
+        if (FieldItemFx_CancelAt(((Unk_021c3f8c *)nZ::data_021c3f88.unk_04)[i].unk_00_a, &xy) == 0) {
             switch (e->unk_00_k) {
             case 4:
             case 10:
@@ -7051,7 +7051,7 @@ extern "C" void func_02044aa8(Unk_020449e8_Out *o, Unk_020449e8_Src *s, u32 x) {
         y1 = t1;
         x1 = t1;
         FieldPos_FromUnitCenter(&vec, x1 >> 8, y1 & 0xff);
-        u32 idx = func_ov003_0221ba28(x, &vec);
+        u32 idx = Tree_GetDropSide(x, &vec);
         p2 = o->pos;
         u16 t2 = p2;
         y2 = t2;
@@ -7148,7 +7148,7 @@ extern "C" void func_02044774(Unk_02044774_S *src, u8 flag, s32 t) {
             Unk_02043f04_Pos q;
             q.x = x;
             q.z = z;
-            func_ov003_02219ae0(t, e.unk_04, &q);
+            FieldItemFx_StartPop(t, e.unk_04, &q);
             break;
         }
         case 26: {
@@ -7160,7 +7160,7 @@ extern "C" void func_02044774(Unk_02044774_S *src, u8 flag, s32 t) {
                 Unk_02043f04_Pos q;
                 q.x = x;
                 q.z = z;
-                func_ov003_02219ae0(t, e.unk_04, &q);
+                FieldItemFx_StartPop(t, e.unk_04, &q);
             }
             break;
         }
@@ -7211,7 +7211,7 @@ extern "C" void func_02044650(Unk_02044490_E *e) {
         Unk_02043f04_Pos p;
         p.x = x;
         p.z = z;
-        func_ov003_02219ae0(e->unk_00_1, e->unk_04, &p);
+        FieldItemFx_StartPop(e->unk_00_1, e->unk_04, &p);
         break;
     }
     }
@@ -8360,7 +8360,7 @@ extern "C" s32 func_02042d10(s32 idx) {
                             v = 0x1548;
                         }
                     }
-                    func_ov003_022197e8(e->f00, v, e->pos, *q);
+                    FieldItemFx_StartPlant(e->f00, v, e->pos, *q);
                 }
             }
             r = 1;
@@ -8379,7 +8379,7 @@ extern "C" s32 func_02042d10(s32 idx) {
         case 0x18:
         case 0x1a:
             if (_ZN11CommManager8isOnlineEv(obj) == 0) {
-                func_ov003_02219ae0(e->f00, e->f10, e->pos);
+                FieldItemFx_StartPop(e->f00, e->f10, e->pos);
             }
             r = 1;
             break;
@@ -8631,7 +8631,7 @@ extern "C" s32 func_02042830(s32 idx) {
                     Unk_020422c0_Pos q;
                     q.x = e->unk_14.x;
                     q.y = e->unk_14.y;
-                    if (func_ov003_02219ae0(e->unk_00, e->unk_10, &q)) {
+                    if (FieldItemFx_StartPop(e->unk_00, e->unk_10, &q)) {
                         res = 1;
                     }
                 } else {
@@ -8642,7 +8642,7 @@ extern "C" s32 func_02042830(s32 idx) {
                     Unk_020422c0_Pos q;
                     q.x = e->unk_14.x;
                     q.y = e->unk_14.y;
-                    if (func_ov003_02219ccc(e->unk_00, e->unk_10, &q, &a)) {
+                    if (FieldItemFx_StartDrop(e->unk_00, e->unk_10, &q, &a)) {
                         res = 1;
                     }
                 }
@@ -9038,7 +9038,7 @@ extern "C" void func_02042104(Unk_02042104_Bits *p) {
                 m.v[0] = *q;
                 m.p[2].hi = hi;
                 m.p[2].lo = lo;
-                func_ov003_02219ccc(p->idx, p->h4, &m.p[2], &m.v[0]);
+                FieldItemFx_StartDrop(p->idx, p->h4, &m.p[2], &m.v[0]);
             } else {
                 m.v[1] = *q;
                 m.p[3].hi = hi;
@@ -9061,7 +9061,7 @@ extern "C" void func_02042104(Unk_02042104_Bits *p) {
                 m.v[2] = *q;
                 m.p[5].hi = hi;
                 m.p[5].lo = lo;
-                func_ov003_022197e8(p->idx, p->h4, &m.p[5], &m.v[2]);
+                FieldItemFx_StartPlant(p->idx, p->h4, &m.p[5], &m.v[2]);
             }
         }
         break;

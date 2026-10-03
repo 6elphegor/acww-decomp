@@ -15,7 +15,7 @@
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define BlendAnimModel_getAnmRes _ZN14BlendAnimModel9getAnmResEv
-#define func_ov045_02258e34 _ZN18Unk_ov045_02259dec8vfunc_0cEv
+#define func_ov045_02258e34 _ZN22KatrinaEncodedString168vfunc_0cEv
 
 // shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),

@@ -89,7 +89,7 @@ BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
 void *_ZN10PlayerData13func_020986b0Ev(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
-s32 _ZN12Unk_0206fe8013func_02070060Ev(void *);
+s32 _ZN10MuseumData10isCompleteEv(void *);
 BOOL func_02096a50(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void func_02063388(void *);
@@ -706,7 +706,7 @@ BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
 void *_ZN10PlayerData13func_020986b0Ev(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
-s32 _ZN12Unk_0206fe8013func_02070060Ev(void *);
+s32 _ZN10MuseumData10isCompleteEv(void *);
 BOOL func_02096a50(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
 void func_02063388(void *);
@@ -1295,7 +1295,7 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
             }
             break;
         case 1:
-            if (_ZN12Unk_02097ff413func_02098044Ej(o, 8) || _ZN12Unk_0206fe8013func_02070060Ev(data_021ed0a0)) {
+            if (_ZN12Unk_02097ff413func_02098044Ej(o, 8) || _ZN10MuseumData10isCompleteEv(data_021ed0a0)) {
                 return TRUE;
             }
             break;

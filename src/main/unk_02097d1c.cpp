@@ -250,8 +250,8 @@ public:
     void setHeldItem(u16 *v);
     void *getHeldItem();
     void *func_02098750();
-    void func_02098784(u8 v);
-    u32 func_020987a0();
+    void setFortune(u8 v);
+    u32 getFortune();
     void setLastPlayDate(Unk_0209865c_Bits v);
     s32 getLastPlayDate();
     void setTan(u8 v);
@@ -397,7 +397,7 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     setHairStyle(s2);
     setHairColor(s3);
     setTan(s4);
-    func_02098784(0);
+    setFortune(0);
     func_0209875c(this, s5);
     ((PlayerInventory *)&unk_1148)->clear();
     func_02097ac4(&unk_1148, s6, 1);
@@ -452,9 +452,9 @@ s32 PlayerData::getLastPlayDate() { return unk_2216; }
 
 void PlayerData::setLastPlayDate(Unk_0209865c_Bits v) { unk_2216 = *(u16 *)&v; }
 
-u32 PlayerData::func_020987a0() { return unk_223d.hi; }
+u32 PlayerData::getFortune() { return unk_223d.hi; }
 
-void PlayerData::func_02098784(u8 v) { unk_223d.hi = v; }
+void PlayerData::setFortune(u8 v) { unk_223d.hi = v; }
 
 extern "C" void func_02098778(void *p) { ((Unk_02097ff4 *)p)->func_02098044(0); }
 
@@ -711,7 +711,7 @@ extern "C" void func_020981f8()
         }
         if (r4) {
             _ZN12Unk_020877e013func_02087870Ev(((PlayerData *)p)->func_02098698());
-            ((PlayerData *)p)->func_02098784(0);
+            ((PlayerData *)p)->setFortune(0);
             _ZN12Unk_02087ad813func_02087b40Ev(((PlayerData *)p)->func_0209868c());
             _ZN8SaveData9clearFlagEj(gSaveData, 16);
         }

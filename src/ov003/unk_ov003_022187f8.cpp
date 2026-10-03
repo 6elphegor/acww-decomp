@@ -2,7 +2,7 @@
 #include "types.h"
 
 // TU20 of ov003: the 21 static entries (0x22355c4, 0x1c bytes each) built by the 0x534-byte static initialiser, their
-// tables (used by ov005/ov006) and the 4-byte accessor func_ov003_022187f8 (0x022187f8-0x022187fc)
+// tables (used by ov005/ov006) and the 4-byte accessor PlayerHouseTex_Get (0x022187f8-0x022187fc)
 
 // 12-byte vector with a copy constructor (so it is passed by address of a copy)
 struct Unk_020b4f8c_Vec {
@@ -38,10 +38,10 @@ struct Unk_ov003_0223249c_Tbl {
 };
 
 extern "C" {
-u32 data_ov003_022324a4[14] = {0xc9, 0xca, 0xd, 0xc4, 0x8a, 0xc1, 0x89, 7, 0x8c, 0x8e, 0xd5, 0xd1, 0xd2, 0x8d};
-u32 data_ov003_02232498 = 0xe;
+u32 sFieldSceneProfiles[14] = {0xc9, 0xca, 0xd, 0xc4, 0x8a, 0xc1, 0x89, 7, 0x8c, 0x8e, 0xd5, 0xd1, 0xd2, 0x8d};
+u32 sFieldSceneProfileCount = 0xe;
 FxVec3 data_ov003_022355a0(0x10000, 0x200, 0x1d000);
-Unk_020b4f8c data_ov003_022355c4[21] = {
+Unk_020b4f8c sFieldSceneObjects[21] = {
     Unk_020b4f8c(0x11, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     Unk_020b4f8c(0x12, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     Unk_020b4f8c(0x13, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
@@ -64,9 +64,9 @@ Unk_020b4f8c data_ov003_022355c4[21] = {
     Unk_020b4f8c(0x0b, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     Unk_020b4f8c(0x3f, Unk_020b4f8c_Vec(0, 0, 0), 0, 0, 2, 2, 0, 0),
 };
-Unk_ov003_0223249c_Tbl data_ov003_0223249c = {data_ov003_022355c4, 0x15};
+Unk_ov003_0223249c_Tbl sFieldSceneObjectList = {sFieldSceneObjects, 0x15};
 }
 
-extern "C" s32 func_ov003_022187f8(s32 *p) {
+extern "C" s32 PlayerHouseTex_Get(s32 *p) {
     return *p;
 }

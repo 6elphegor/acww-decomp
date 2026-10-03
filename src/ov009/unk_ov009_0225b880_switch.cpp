@@ -654,8 +654,8 @@ void *func_02095204(u32);
 BOOL func_020b1d3c(u32, u32);
 
 void *Heap_Alloc(void *heap, u32 size);
-u32 func_ov003_02218b1c(void *p);
-void func_ov003_02218d6c(u32 a);
+u32 BuildingList_IndexOf(void *p);
+void Field_SetDoorExitMode(u32 a);
 BOOL PlayerActor_LocalRequestDoorExit();
 s32 func_02031da4(void *node);
 void func_02031de0(void *node);
@@ -681,11 +681,11 @@ void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
 s32 func_020b1d80(u32);
-s32 func_ov003_02218da8();
-void func_ov003_02218d94();
-s32 func_ov003_022187f8();
-void func_ov003_02218c0c(void *);
-void func_ov003_02218c34(void *);
+s32 Field_GetStructureTexSuffix();
+void FieldStructureMgr_GetPlayerHouseTex();
+s32 PlayerHouseTex_Get();
+void BuildingList_Remove(void *);
+void BuildingList_Add(void *);
 BOOL Model_setResource(void *, void *, s32);
 void AnimModel_allocAnmObj(void *, void *);
 void AnimModel_attachAnim(void *);

@@ -346,8 +346,8 @@ s32 _ZN9ModelAnim4initEiiit(void *, u32, u32, u32, u32);
 void *_ZN5Model12getRenderObjEv(void *);
 s32 _ZN9ModelAnim14addToRenderObjEj(void *, void *);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
-s32 func_ov045_02258fd8(void);
-Unk_ov004_02228a40_Mtx *func_ov045_02258ff0(void);
+s32 SpNpcKatrina_GetAnimFrame(void);
+Unk_ov004_02228a40_Mtx *SpNpcKatrina_GetJointMtx(void);
 void *_ZN9AnimModelC1Ev(void *, s32);
 void *_ZN9AnimModelD1Ev(void *, s32);
 void *_ZN18Unk_ov004_02224ee4C1Ev(void *, s32);
@@ -419,7 +419,7 @@ BOOL Unk_ov004_0224e034::onDraw() {
 }
 
 void Unk_ov004_0224e034::func_022292a4() {
-    Unk_ov004_02228a40_Mtx *m = func_ov045_02258ff0();
+    Unk_ov004_02228a40_Mtx *m = SpNpcKatrina_GetJointMtx();
     u8 i;
     data_021f47e0 = *m;
     F(Unk_ov004_02228a40_Mtx, 0xec + 0x64) = data_021f47e0;
@@ -485,7 +485,7 @@ BOOL Unk_ov004_0224e034::func_02229098() {
 }
 
 void Unk_ov004_0224e034::func_02229070() {
-    if (func_ov045_02258fd8() == 0xb) {
+    if (SpNpcKatrina_GetAnimFrame() == 0xb) {
         unk_6d4 = 0;
         unk_6b0[2] = 1;
     }
@@ -504,7 +504,7 @@ BOOL Unk_ov004_0224e034::func_02229004() {
 }
 
 void Unk_ov004_0224e034::func_02228fe8() {
-    if (func_ov045_02258fd8() == 9) {
+    if (SpNpcKatrina_GetAnimFrame() == 9) {
         unk_6b0[0] = 1;
     }
 }
@@ -520,16 +520,16 @@ BOOL Unk_ov004_0224e034::func_02228f68() {
 }
 
 void Unk_ov004_0224e034::func_02228f00() {
-    if (func_ov045_02258fd8() == 7) {
+    if (SpNpcKatrina_GetAnimFrame() == 7) {
         unk_6b0[0] = 0;
     }
-    if (func_ov045_02258fd8() == 0x12) {
+    if (SpNpcKatrina_GetAnimFrame() == 0x12) {
         unk_6b0[2] = 0;
     }
-    if (func_ov045_02258fd8() == 0x13) {
+    if (SpNpcKatrina_GetAnimFrame() == 0x13) {
         unk_6d4 = 1;
     }
-    if (func_ov045_02258fd8() == 0x25) {
+    if (SpNpcKatrina_GetAnimFrame() == 0x25) {
         unk_6d4 = 0;
     }
     if (_ZN13AnimFrameCtrl10isFinishedEv(&unk_290[2].unk_9c)) {

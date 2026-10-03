@@ -430,10 +430,10 @@ s32 Camera_MuteSe(void);
 s32 Camera_SetMode4(void);
 s32 func_020902f8(void *);
 s32 func_02090268(u32 a, void *b, void *c, u32 d);
-u32 func_ov004_0221c08c(void);
-u32 func_ov004_0221c070(void);
-void *func_ov004_0221c0a4(void);
-void *func_ov004_0221c0b8(void);
+u32 SpNpcBrewster_GetAnimFrame(void);
+u32 SpNpcBrewster_GetAnimState(void);
+void *SpNpcBrewster_GetJointMtxB(void);
+void *SpNpcBrewster_GetJointMtxE(void);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void *func_02034d2c(void);
 s32 func_020e77cc(void *p, u32 a, u32 b);
@@ -723,9 +723,9 @@ BOOL Unk_ov004_0224d988::onDraw() {
 void func_ov004_02227228(void *ov) {
     ObjB *o = (ObjB *)ov;
     u8 i;
-    data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+    data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
     o->unk_150 = data_021f47e0;
-    data_021f47e0 = *(Mtx *)func_ov004_0221c0b8();
+    data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxE();
     o->unk_2f4 = data_021f47e0;
     s32 st = o->unk_efc;
     if ((u32)(st - 8) <= 1) {
@@ -738,7 +738,7 @@ void func_ov004_02227228(void *ov) {
             o->unk_f14 = 0x1900;
             o->unk_f18 = 0x15000;
         } else {
-            data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
             o->unk_f10 = data_021f47e0.v[9];
             o->unk_f14 = data_021f47e0.v[10];
             o->unk_f18 = data_021f47e0.v[11];
@@ -750,13 +750,13 @@ void func_ov004_02227228(void *ov) {
             o->unk_f14 = 0x1900;
             o->unk_f18 = 0x15000;
         } else {
-            data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
             o->unk_f10 = data_021f47e0.v[9];
             o->unk_f14 = data_021f47e0.v[10];
             o->unk_f18 = data_021f47e0.v[11];
         }
     } else {
-        data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
         o->unk_f10 = data_021f47e0.v[9];
         o->unk_f14 = data_021f47e0.v[10];
         o->unk_f18 = data_021f47e0.v[11];
@@ -770,20 +770,20 @@ void func_ov004_02227228(void *ov) {
         if (o->unk_4a4.mid >= 0x10) {
             func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         } else {
-            data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
         }
     } else if (st == 6) {
         if ((s32)o->unk_4a4.mid >= (s32)o->unk_4a0.mid - 0x2d) {
             func_020e8388(&data_021f47e0, D2C[0], D2C[1], D2C[2]);
         } else {
-            data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+            data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
         }
     } else {
-        data_021f47e0 = *(Mtx *)func_ov004_0221c0a4();
+        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxB();
     }
     o->unk_464 = data_021f47e0;
     if (o->unk_55c.mid >= 0xf && o->unk_55c.mid <= 0x48) {
-        data_021f47e0 = *(Mtx *)func_ov004_0221c0b8();
+        data_021f47e0 = *(Mtx *)SpNpcBrewster_GetJointMtxE();
     } else {
         func_020e8388(&data_021f47e0, D5C[0], D5C[1], D5C[2]);
     }
@@ -872,11 +872,11 @@ BOOL func_ov004_0222700c(ObjB *o) {
 
 // @2226f6c
 void func_ov004_02226f6c(ObjB *o) {
-    func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf2) {
+    SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf2) {
         func_ov004_022264dc(o, 0, (u8 *)o + 0xec, (u8 *)o + 0x1a4, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 0, (u8 *)o + 0x290, (u8 *)o + 0x908, 0, 0x1000, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf4) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf4) {
         func_ov004_022264dc(o, 1, (u8 *)o + 0xec, (u8 *)o + 0x1a4, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 1, (u8 *)o + 0x290, (u8 *)o + 0x908, 0, 0x1000, 0, 0);
     }
@@ -889,11 +889,11 @@ BOOL func_ov004_02226f68(ObjB *o) {
 
 // @2226ec4
 void func_ov004_02226ec4(ObjB *o) {
-    func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf3) {
+    SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf3) {
         func_ov004_022264dc(o, 0, (u8 *)o + 0x348, (u8 *)o + 0x9ac, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 0, (u8 *)o + 0x400, (u8 *)o + 0xa50, 0, 0x1000, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf5) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf5) {
         func_ov004_022264dc(o, 1, (u8 *)o + 0x348, (u8 *)o + 0x9ac, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 1, (u8 *)o + 0x400, (u8 *)o + 0xa50, 0, 0x1000, 0, 0);
     }
@@ -906,11 +906,11 @@ BOOL func_ov004_02226ec0(ObjB *o) {
 
 // @2226e18
 void func_ov004_02226e18(ObjB *o) {
-    func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf3) {
+    SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf3) {
         func_ov004_022264dc(o, 3, (u8 *)o + 0x348, (u8 *)o + 0x9ac, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 0, (u8 *)o + 0x400, (u8 *)o + 0xa50, 0, 0x1000, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf5) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf5) {
         func_ov004_022264dc(o, 4, (u8 *)o + 0x348, (u8 *)o + 0x9ac, 0, 0x1000, 0, 0);
         func_ov004_022264dc(o, 1, (u8 *)o + 0x400, (u8 *)o + 0xa50, 0, 0x1000, 0, 0);
     }
@@ -923,14 +923,14 @@ BOOL func_ov004_02226e14(ObjB *o) {
 
 // @2226c24
 void func_ov004_02226c24(ObjA *o) {
-    u32 t = func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf2) {
+    u32 t = SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf2) {
         UP(0, (u8 *)o + 0xec, (u8 *)o + 0x1a4, 0, 0);
         UP(0, M0, R0, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf4) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf4) {
         UP(1, (u8 *)o + 0xec, (u8 *)o + 0x1a4, 0, 0);
         UP(1, M0, R0, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf6) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf6) {
         if (t <= 6) {
             o->unk_ef9 = 1;
             o->unk_ef0 = 1;
@@ -949,10 +949,10 @@ void func_ov004_02226c24(ObjA *o) {
         UP(2, M0, R0, 0, 0);
         UP(2, M1, R1, 0, 0);
         UP(2, M2, R2, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf3) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf3) {
         UP(0, M1, R1, 0, 0);
         UP(0, M2, R2, 0, 0);
-    } else if (func_ov004_0221c070() == 0xf5) {
+    } else if (SpNpcBrewster_GetAnimState() == 0xf5) {
         UP(1, M1, R1, 0, 0);
         UP(1, M2, R2, 0, 0);
     }
@@ -966,8 +966,8 @@ BOOL func_ov004_02226be8(ObjA *o) {
 
 // @2226b80
 void func_ov004_02226b80(ObjA *o) {
-    func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf7) {
+    SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf7) {
         UP(5, M1, R1, 0, 0);
         UP(3, M2, R2, 0, 0);
     }
@@ -980,8 +980,8 @@ BOOL func_ov004_02226b7c(void) {
 
 // @2226af0
 void func_ov004_02226af0(ObjA *o) {
-    u32 t = func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf8) {
+    u32 t = SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf8) {
         UP(6, M1, R1, 1, 0);
         UP(4, M2, R2, 1, 0);
         if (t == 0x3b) {
@@ -997,8 +997,8 @@ BOOL func_ov004_02226aec(void) {
 
 // @2226a80
 void func_ov004_02226a80(ObjA *o) {
-    u32 t = func_ov004_0221c08c();
-    if (func_ov004_0221c070() == 0xf8) {
+    u32 t = SpNpcBrewster_GetAnimFrame();
+    if (SpNpcBrewster_GetAnimState() == 0xf8) {
         UP(7, M1, R1, 3, t);
         UP(5, M2, R2, 3, t);
     }

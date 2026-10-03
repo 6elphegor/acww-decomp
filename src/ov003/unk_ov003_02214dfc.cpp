@@ -266,11 +266,11 @@ public:
     u8 pad_04[0x24];
 };
 
-struct Unk_ov003_02214e04 {
-    Unk_ov003_02214e04();
-    ~Unk_ov003_02214e04();
-    BOOL func_ov003_02214e04(void *res, void *b);
-    void func_ov003_02214dfc();
+struct GateHouseFlagTexture {
+    GateHouseFlagTexture();
+    ~GateHouseFlagTexture();
+    BOOL apply(void *res, void *b);
+    void cancelUpload();
 
     MatTexVramTask unk_00;
     u8 unk_28[4];
@@ -290,19 +290,19 @@ void _ZN9AnimModel8stepAnimEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL func_0203006c(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_ov003_02218da8();
-u32 func_ov003_02214f3c();
-s32 func_ov003_02214f54();
-void func_ov003_02215098();
+s32 Field_GetStructureTexSuffix();
+u32 GateHouse_GetModelName();
+s32 GateHouse_GetDesign();
+void GateHouse_Create();
 }
 #define func_020b23a0 _ZN12Unk_020b23a013func_020b23a0Ev
 #define func_020b24ac _ZN12Unk_020b24ac13func_020b24acEv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 
-class Unk_ov003_022312f4 : public BuildingActor {
+class GateHouse : public BuildingActor {
 public:
-    Unk_ov003_022312f4();
-    virtual ~Unk_ov003_022312f4();
+    GateHouse();
+    virtual ~GateHouse();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -312,7 +312,7 @@ public:
     virtual char *vfunc_a8();
     virtual char *vfunc_ac();
 
-    /* 0x2b0 */ Unk_ov003_02214e04 unk_2b0;
+    /* 0x2b0 */ GateHouseFlagTexture unk_2b0;
     /* 0x2dc */ u8 pad_2dc[0x59c - 0x2dc];
 };
 
@@ -331,25 +331,25 @@ char data_ov003_02235204[0x24];
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov003_SceneEntry data_ov003_022312d4;
+extern "C" Unk_ov003_SceneEntry sGateHouseProfile;
 extern "C" char data_ov003_022312a4[12];
-extern "C" u32 data_ov003_022312c8[3];
+extern "C" u32 sGateHouseModelNames[3];
 extern "C" char data_ov003_022312b0[12];
 extern "C" char data_ov003_022312bc[12];
 
-extern "C" void func_ov003_02215098() {
-    new Unk_ov003_022312f4;
+extern "C" void GateHouse_Create() {
+    new GateHouse;
 }
 
-Unk_ov003_022312f4::Unk_ov003_022312f4() {
+GateHouse::GateHouse() {
 }
 
-Unk_ov003_022312f4::~Unk_ov003_022312f4() {
+GateHouse::~GateHouse() {
 }
 
-BOOL Unk_ov003_022312f4::vfunc_70() {
+BOOL GateHouse::vfunc_70() {
     void *t = unk_194;
-    unk_2b0.func_ov003_02214e04(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
+    unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
     s32 x;
     s32 y;
     FieldPos_ToUnit(&x, &y, unk_5c);
@@ -360,70 +360,70 @@ BOOL Unk_ov003_022312f4::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022312f4::onExecute() {
+BOOL GateHouse::onExecute() {
     AnimModel_stepAnim(unk_138);
     return TRUE;
 }
 
-BOOL Unk_ov003_022312f4::onDraw() {
+BOOL GateHouse::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022312f4::vfunc_0c() {
-    unk_2b0.func_ov003_02214dfc();
+BOOL GateHouse::vfunc_0c() {
+    unk_2b0.cancelUpload();
     return TRUE;
 }
 
-extern "C" s32 func_ov003_02214f54() {
+extern "C" s32 GateHouse_GetDesign() {
     return func_020b24ac(func_020b23a0(data_021ecc7c));
 }
 
-extern "C" u32 func_ov003_02214f3c() {
-    return data_ov003_022312c8[func_ov003_02214f54()];
+extern "C" u32 GateHouse_GetModelName() {
+    return sGateHouseModelNames[GateHouse_GetDesign()];
 }
 
-extern "C" Unk_ov003_SceneEntry data_ov003_022312d4 = { func_ov003_02215098, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sGateHouseProfile = { GateHouse_Create, 0x1c, 0x22, 0, 0xc8000, 0x12c000, 0x258000 };
 
-char *Unk_ov003_022312f4::vfunc_a4() {
-    u32 x = func_ov003_02214f3c();
-    s32 y = func_ov003_02218da8();
+char *GateHouse::vfunc_a4() {
+    u32 x = GateHouse_GetModelName();
+    s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235228, "/str/chkp/%s%c.arc", x, y);
     return data_ov003_02235228;
 }
 
-char *Unk_ov003_022312f4::vfunc_a8() {
-    u32 x = func_ov003_02214f3c();
-    s32 y = func_ov003_02218da8();
+char *GateHouse::vfunc_a8() {
+    u32 x = GateHouse_GetModelName();
+    s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235204, "/str/chkp/%s%c.nsbtx", x, y);
     return data_ov003_02235204;
 }
 
-char *Unk_ov003_022312f4::vfunc_ac() {
-    u32 x = func_ov003_02214f3c();
-    s32 y = func_ov003_02218da8();
+char *GateHouse::vfunc_ac() {
+    u32 x = GateHouse_GetModelName();
+    s32 y = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_0223524c, "/str/chkp/%s%c_lt.nsbtx", x, y);
     return data_ov003_0223524c;
 }
 
-BOOL Unk_ov003_022312f4::vfunc_94() {
+BOOL GateHouse::vfunc_94() {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02214e88(Unk_ov003_022312f4 *self) {
+extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
     void *t = self->unk_194;
-    self->unk_2b0.func_ov003_02214e04(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
+    self->unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
     return TRUE;
 }
 
-Unk_ov003_02214e04::Unk_ov003_02214e04() {
+GateHouseFlagTexture::GateHouseFlagTexture() {
     func_0203c928(unk_28);
 }
 
-Unk_ov003_02214e04::~Unk_ov003_02214e04() {
+GateHouseFlagTexture::~GateHouseFlagTexture() {
     func_0203c924(unk_28);
 }
 
-BOOL Unk_ov003_02214e04::func_ov003_02214e04(void *res, void *b) {
+BOOL GateHouseFlagTexture::apply(void *res, void *b) {
     if (func_0203c6f8(unk_28, b)) {
         if (unk_00.request(res, (u32) "w", func_0203c6c8(unk_28), 0, 0)) {
             func_020b24a4((s32)func_020b23a0(data_021ecc7c), b);
@@ -433,11 +433,11 @@ BOOL Unk_ov003_02214e04::func_ov003_02214e04(void *res, void *b) {
     return FALSE;
 }
 
-void Unk_ov003_02214e04::func_ov003_02214dfc() {
+void GateHouseFlagTexture::cancelUpload() {
     unk_00.cancel();
 }
 
-extern "C" u32 data_ov003_022312c8[3] = { (u32)data_ov003_022312bc, (u32)data_ov003_022312b0, (u32)data_ov003_022312a4 };
+extern "C" u32 sGateHouseModelNames[3] = { (u32)data_ov003_022312bc, (u32)data_ov003_022312b0, (u32)data_ov003_022312a4 };
 extern "C" char data_ov003_022312a4[12] = "obj_check2";
 extern "C" char data_ov003_022312b0[12] = "obj_check1";
 extern "C" char data_ov003_022312bc[12] = "obj_check0";

@@ -311,12 +311,12 @@ extern "C" {
 extern u8 data_021dfd8c[];
 extern void *gCommManager;
 extern void *data_021c6204;
-extern const u8 data_ov003_0222eff8[];
-extern const u8 data_ov003_0222eff0[];
+extern const u8 sVillagerHouseClosedMsgs[];
+extern const u8 sVillagerHouseClosedMsgsAlt[];
 extern char data_ov003_02235330[];
 extern char data_ov003_02235308[];
 extern char data_ov003_022352d4[];
-extern u32 data_ov003_022352e8[];
+extern u32 sVillagerHouses[];
 
 BOOL Building_IsNight(void *p);
 void *SaveVillagers_Get(void *p, s32 i);
@@ -341,18 +341,18 @@ void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
 void NNS_G3dBindMdlPltt(void *a, s32 b);
 
-s32 func_ov003_02218d8c();
-s32 func_ov003_02218978(s32 a);
-s32 func_ov003_0221897c(s32 a);
-void *func_ov003_02218d84();
-BOOL func_ov003_02218868(void *p);
-void *func_ov003_02218870(void *p, s32 i);
-s32 func_ov003_02218880(void *p);
-s32 func_ov003_0221886c(void *p);
-s32 func_ov003_0221898c(s32 a, s32 b);
-s32 func_ov003_02218980(s32 a, s32 b);
-s32 func_ov003_02218da8();
-void func_ov003_022163dc();
+s32 FieldStructureMgr_GetVillagerHouseTex();
+s32 VillagerHouseTex_GetDoorOutAnim(s32 a);
+s32 VillagerHouseTex_GetDoorInAnim(s32 a);
+void *FieldStructureMgr_GetLightUpDeco();
+BOOL HouseLightUpDeco_IsLoaded(void *p);
+void *HouseLightUpDeco_GetModel(void *p, s32 i);
+s32 HouseLightUpDeco_GetTex(void *p);
+s32 HouseLightUpDeco_GetTexPattern(void *p);
+s32 VillagerHouseTex_GetHouseTex(s32 a, s32 b);
+s32 VillagerHouseTex_GetLightTex(s32 a, s32 b);
+s32 Field_GetStructureTexSuffix();
+void VillagerHouse_Create();
 }
 
 static inline s32 Unk_ov003_02215c7c_Idx(BuildingActor *o) {
@@ -383,11 +383,11 @@ struct FxVec3 {
     ~FxVec3();
 };
 
-// ============================================================ class Unk_ov003_022318e8
-class Unk_ov003_022318e8 : public BuildingActor {
+// ============================================================ class VillagerHouse
+class VillagerHouse : public BuildingActor {
 public:
-    Unk_ov003_022318e8();
-    virtual ~Unk_ov003_022318e8();
+    VillagerHouse();
+    virtual ~VillagerHouse();
 
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -404,9 +404,9 @@ public:
     virtual char *vfunc_a8();
     virtual char *vfunc_ac();
 
-    char *func_ov003_02215f98();
-    u8 func_ov003_02215fc0();
-    s32 func_ov003_02216018();
+    char *getModelName();
+    u8 getHouseVariant();
+    s32 getHouseStyle();
 
     /* 0x2b0 */ AnimModel unk_2b0;
     /* 0x368 */ ModelAnim unk_368;
@@ -421,42 +421,42 @@ struct Unk_ov003_SceneEntry {
 };
 extern "C" {
 char data_ov003_022352d4[0x14];
-u32 data_ov003_022352e8[8];
+u32 sVillagerHouses[8];
 char data_ov003_02235308[0x28];
 char data_ov003_02235330[0x28];
 }
 
-extern "C" void func_ov003_022163dc() {
-    new Unk_ov003_022318e8;
+extern "C" void VillagerHouse_Create() {
+    new VillagerHouse;
 }
 
-Unk_ov003_022318e8::Unk_ov003_022318e8() {
+VillagerHouse::VillagerHouse() {
     for (u32 i = 0; i < 8; i++) {
-        data_ov003_022352e8[i] = 0;
+        sVillagerHouses[i] = 0;
     }
 }
 
-Unk_ov003_022318e8::~Unk_ov003_022318e8() {
+VillagerHouse::~VillagerHouse() {
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" const u8 data_ov003_0222eff0[8];
-extern "C" Unk_ov003_SceneEntry data_ov003_022318c8;
-extern "C" const u8 data_ov003_0222eff8[8];
+extern "C" const u8 sVillagerHouseClosedMsgsAlt[8];
+extern "C" Unk_ov003_SceneEntry sVillagerHouseProfile;
+extern "C" const u8 sVillagerHouseClosedMsgs[8];
 
-extern "C" const u8 data_ov003_0222eff0[8] = { 0x0a, 0x0b, 0x0c, 0x08, 0x09, 0x0d, 0, 0 };
-extern "C" const u8 data_ov003_0222eff8[8] = { 0x10, 0x11, 0x12, 0x0e, 0x0f, 0x13, 0, 0 };
+extern "C" const u8 sVillagerHouseClosedMsgsAlt[8] = { 0x0a, 0x0b, 0x0c, 0x08, 0x09, 0x0d, 0, 0 };
+extern "C" const u8 sVillagerHouseClosedMsgs[8] = { 0x10, 0x11, 0x12, 0x0e, 0x0f, 0x13, 0, 0 };
 
-extern "C" Unk_ov003_SceneEntry data_ov003_022318c8 = { func_ov003_022163dc, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sVillagerHouseProfile = { VillagerHouse_Create, 0x1d, 0x23, 0, 0xc8000, 0x12c000, 0x258000 };
 
-BOOL Unk_ov003_022318e8::vfunc_70() {
+BOOL VillagerHouse::vfunc_70() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     static FxVec3 v(-0x2000, 0x1000, 0x2000);
     Unk_ov003_Vec tmp;
     func_01ffd070(&tmp, &unk_5c, &v);
     Actor_spawn(0x18, idx, &tmp, 0, this);
-    data_ov003_022352e8[idx] = (u32)this;
-    s32 k = func_ov003_02215fc0();
-    s32 r7 = func_ov003_0221898c(func_ov003_02218d8c(), k);
-    s32 r4 = func_ov003_02218980(func_ov003_02218d8c(), k);
+    sVillagerHouses[idx] = (u32)this;
+    s32 k = getHouseVariant();
+    s32 r7 = VillagerHouseTex_GetHouseTex(FieldStructureMgr_GetVillagerHouseTex(), k);
+    s32 r4 = VillagerHouseTex_GetLightTex(FieldStructureMgr_GetVillagerHouseTex(), k);
     void *g = unk_194;
     if (r7) {
         NNS_G3dBindMdlTex(g, r7);
@@ -465,16 +465,16 @@ BOOL Unk_ov003_022318e8::vfunc_70() {
         NNS_G3dBindMdlTex(g, r4);
         NNS_G3dBindMdlPltt(g, r4);
     }
-    if (func_ov003_02218868(func_ov003_02218d84())) {
-        s32 q = func_ov003_02216018() >> 2;
-        if (_ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_2b0, func_ov003_02218870(func_ov003_02218d84(), q), 0)) {
-            void *a = func_ov003_02218870(func_ov003_02218d84(), q);
-            NNS_G3dBindMdlTex(a, func_ov003_02218880(func_ov003_02218d84()));
-            void *b = func_ov003_02218870(func_ov003_02218d84(), q);
-            NNS_G3dBindMdlPltt(b, func_ov003_02218880(func_ov003_02218d84()));
+    if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
+        s32 q = getHouseStyle() >> 2;
+        if (_ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_2b0, HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q), 0)) {
+            void *a = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
+            NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
+            void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
+            NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             if (unk_368.allocMatAnm((u32)unk_2b0.unk_5c, data_021c6204)) {
-                s32 c = func_ov003_0221886c(func_ov003_02218d84());
-                s32 d = func_ov003_02218880(func_ov003_02218d84());
+                s32 c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
+                s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 unk_368.initWithTex(c, d, 0, 0x1000, 0);
                 unk_368.addToRenderObj((u32)_ZN5Model12getRenderObjEv(&unk_2b0));
                 *(Unk_ov003_Blk *)((u8 *)this + 0x314) = unk_19c;
@@ -484,8 +484,8 @@ BOOL Unk_ov003_022318e8::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022318e8::onExecute() {
-    if (func_ov003_02218868(func_ov003_02218d84())) {
+BOOL VillagerHouse::onExecute() {
+    if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         *(Unk_ov003_Blk *)((u8 *)this + 0x314) = unk_19c;
         if ((unk_231 & 1) == 0) {
             unk_368.step();
@@ -495,68 +495,68 @@ BOOL Unk_ov003_022318e8::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022318e8::onDraw() {
-    if (func_ov003_02218868(func_ov003_02218d84())) {
+BOOL VillagerHouse::onDraw() {
+    if (HouseLightUpDeco_IsLoaded(FieldStructureMgr_GetLightUpDeco())) {
         unk_2b0.drawAnimated(0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov003_022318e8::vfunc_0c() {
+BOOL VillagerHouse::vfunc_0c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    data_ov003_022352e8[idx] = 0;
+    sVillagerHouses[idx] = 0;
     return TRUE;
 }
 
-s32 Unk_ov003_022318e8::func_ov003_02216018() {
+s32 VillagerHouse::getHouseStyle() {
     u8 *g = data_021dfd8c;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f;
 }
 
-u8 Unk_ov003_022318e8::func_ov003_02215fc0() {
+u8 VillagerHouse::getHouseVariant() {
     u8 *g = data_021dfd8c;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f & 3;
 }
 
-char *Unk_ov003_022318e8::func_ov003_02215f98() {
-    s32 t = func_ov003_02216018();
+char *VillagerHouse::getModelName() {
+    s32 t = getHouseStyle();
     func_020639e8(data_ov003_022352d4, "obj_house%d_%d", t >> 2, t & 3);
     return data_ov003_022352d4;
 }
 
-char *Unk_ov003_022318e8::vfunc_a4() {
-    s32 a = func_ov003_02216018();
-    char *s = func_ov003_02215f98();
-    s32 e = func_ov003_02218da8();
+char *VillagerHouse::vfunc_a4() {
+    s32 a = getHouseStyle();
+    char *s = getModelName();
+    s32 e = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235308, "/str/npcHs/%d/%s%c.arc", a >> 2, s, e);
     return data_ov003_02235308;
 }
 
-char *Unk_ov003_022318e8::vfunc_a8() {
-    s32 a = func_ov003_02216018();
-    char *s = func_ov003_02215f98();
-    s32 e = func_ov003_02218da8();
+char *VillagerHouse::vfunc_a8() {
+    s32 a = getHouseStyle();
+    char *s = getModelName();
+    s32 e = Field_GetStructureTexSuffix();
     func_020639e8(data_ov003_02235330, "/str/npcHs/%d/%s%c.nsbtx", a >> 2, s, e);
     return data_ov003_02235330;
 }
 
-char *Unk_ov003_022318e8::vfunc_ac() {
+char *VillagerHouse::vfunc_ac() {
     return 0;
 }
 
-s32 Unk_ov003_022318e8::vfunc_64() {
-    return func_ov003_0221897c(func_ov003_02218d8c());
+s32 VillagerHouse::vfunc_64() {
+    return VillagerHouseTex_GetDoorInAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 
-s32 Unk_ov003_022318e8::vfunc_68() {
-    return func_ov003_02218978(func_ov003_02218d8c());
+s32 VillagerHouse::vfunc_68() {
+    return VillagerHouseTex_GetDoorOutAnim(FieldStructureMgr_GetVillagerHouseTex());
 }
 
-void Unk_ov003_022318e8::vfunc_78() {
+void VillagerHouse::vfunc_78() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(data_021dfd8c, idx);
     setFileName("obj_etc_closed");
@@ -567,9 +567,9 @@ void Unk_ov003_022318e8::vfunc_78() {
         unk_1e = 0;
     } else if (void *q = VillagerData_getVillagerId(p)) {
         if (unk_233 == 0) {
-            unk_1e = data_ov003_0222eff8[VillagerId_GetPersonality(q)];
+            unk_1e = sVillagerHouseClosedMsgs[VillagerId_GetPersonality(q)];
         } else {
-            unk_1e = data_ov003_0222eff0[VillagerId_GetPersonality(q)];
+            unk_1e = sVillagerHouseClosedMsgsAlt[VillagerId_GetPersonality(q)];
         }
     }
     u32 l[9];
@@ -579,7 +579,7 @@ void Unk_ov003_022318e8::vfunc_78() {
     _ZN12Unk_020e1c64D1Ev(&l[1]);
 }
 
-BOOL Unk_ov003_022318e8::vfunc_8c() {
+BOOL VillagerHouse::vfunc_8c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     void *p = SaveVillagers_Get(data_021dfd8c, idx);
     if (p) {
@@ -595,7 +595,7 @@ BOOL Unk_ov003_022318e8::vfunc_8c() {
     return FALSE;
 }
 
-BOOL Unk_ov003_022318e8::vfunc_9c() {
+BOOL VillagerHouse::vfunc_9c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     if (Building_IsNight(this)) {
         void *p = SaveVillagers_Get(data_021dfd8c, idx);
@@ -627,11 +627,11 @@ BOOL Unk_ov003_022318e8::vfunc_9c() {
     return FALSE;
 }
 
-BOOL Unk_ov003_022318e8::vfunc_90() {
+BOOL VillagerHouse::vfunc_90() {
     return TRUE;
 }
 
-BOOL Unk_ov003_022318e8::vfunc_98() {
+BOOL VillagerHouse::vfunc_98() {
     return TRUE;
 }
 

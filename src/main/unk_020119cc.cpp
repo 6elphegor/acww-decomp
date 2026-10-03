@@ -3220,10 +3220,10 @@ void _ZN12Unk_0201347413func_02013474EP19Unk_020133cc_Player(void *p, void *q);
 void _ZN12Unk_02019dd813func_020198c4EPh(void *p, void *q);
 void _ZN12Unk_0201985813func_020192f0EPh(void *p, void *q);
 void func_0201ac80(void *a, void *b);
-void func_0201ad4c(void *self, s32 v);
-s32 func_0201ad68(void *self, s32 v, s32 w);
-void func_0201adc8(void *self, s32 v);
-void func_0201ade4(void *self, s32 v);
+void NpcActor_PayPlayer(void *self, s32 v);
+s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
+void NpcActor_ChargePlayer(void *self, s32 v);
+void NpcActor_CanPlayerPay(void *self, s32 v);
 void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in);
 }
 }
@@ -4539,19 +4539,19 @@ extern "C" void func_0201ae00(V3 *out, Unk_020d77a4 *self, V3 *in) {
 }
 
 namespace nQ {
-extern "C" void func_0201ade4(void *self, s32 v) {
+extern "C" void NpcActor_CanPlayerPay(void *self, s32 v) {
     func_02097a90(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), -v, 1, 0);
 }
 }
 
 namespace nQ {
-extern "C" void func_0201adc8(void *self, s32 v) {
+extern "C" void NpcActor_ChargePlayer(void *self, s32 v) {
     func_02097a48(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), -v, 1);
 }
 }
 
 namespace nQ {
-extern "C" s32 func_0201ad68(void *self, s32 v, s32 w) {
+extern "C" s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w) {
     void *p = PlayerData_GetCurrent() ? _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()) : 0;
     s32 lo = p ? func_02097ce4(p, 0, 0) : 0;
     s32 hi = p ? func_02097ce4(p, 1, w) : 0;
@@ -4566,7 +4566,7 @@ extern "C" s32 func_0201ad68(void *self, s32 v, s32 w) {
 }
 
 namespace nQ {
-extern "C" void func_0201ad4c(void *self, s32 v) {
+extern "C" void NpcActor_PayPlayer(void *self, s32 v) {
     func_02097a48(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), v, 1);
 }
 }

@@ -4407,7 +4407,7 @@ extern "C" {
 void func_02040974(s32 a, s32 b, s32 c);
 }
 extern "C" {
-s32 func_ov003_02219654(s32 a, s32 b);
+s32 FieldItemFx_StartBalloonDrop(s32 a, s32 b);
 }
 extern "C" {
 void PlayerActor_SetWatchMode(s32 a, s32 b);
@@ -4766,7 +4766,7 @@ void Unk_020bd1b0::func_020bd408() {
     if (unk_08 > 0) {
         unk_08--;
         if (unk_08 == 0) {
-            if (func_ov003_02219654(unk_21 != 0 ? 1 : 0, ((unk_0c + 0x800) >> 12) - 0x80) == 0) {
+            if (FieldItemFx_StartBalloonDrop(unk_21 != 0 ? 1 : 0, ((unk_0c + 0x800) >> 12) - 0x80) == 0) {
                 unk_1e = 1;
             }
         }

@@ -5,7 +5,7 @@
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_02098784 _ZN10PlayerData13func_02098784Eh
+#define PlayerData_setFortune _ZN10PlayerData10setFortuneEh
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -20,8 +20,8 @@
 #define func_02019790 _ZN12Unk_0201985813func_02019790Ev
 #define base_vfunc_38 _ZN16ActorTalkRequest8vfunc_38Ej
 
-class Unk_ov045_02259eb0;
-class Unk_ov045_02259e20;
+class SpNpcKatrina;
+class SpNpcKatrinaTalk;
 
 extern "C" {
 void *PlayerData_GetCurrent();
@@ -35,13 +35,13 @@ s32 func_0206ed18();
 s32 func_0206ecf0();
 void func_020a78a4(void *, s32, s32);
 s32 ChoiceList_getResult();
-s32 func_0201ade4(void *, s32);
-void func_0201adc8(void *, s32);
+s32 NpcActor_CanPlayerPay(void *, s32);
+void NpcActor_ChargePlayer(void *, s32);
 s32 func_0202e1cc(...);
 void func_02034dd0(u32, s32, s32);
 void func_02034d70(u32);
 void *PlayerData_getPlayerId(void *self);
-void func_02098784(void *self, s32 kind);
+void PlayerData_setFortune(void *self, s32 kind);
 void func_02079d64(void *, void *);
 void func_02079e9c(void *);
 void *SaveVillagers_FindByName(void *, s32, s32, void *);
@@ -87,7 +87,7 @@ struct TalkWindowState {
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Chain for the vtable of Unk_ov045_02259e20. Its constructor and destructor call ActorTalkRequest's, so that is the most
+// Chain for the vtable of SpNpcKatrinaTalk. Its constructor and destructor call ActorTalkRequest's, so that is the most
 // derived base; symbols.txt names the slots after TalkMsgRequest (root, declares every slot), Unk_020d7710 (names
 // shifted by one slot) and ActorTalkRequest.
 class TalkMsgRequest {
@@ -193,10 +193,10 @@ public:
 };
 
 // vtable 0x02259dd4, data at +0x12, 0x24 bytes
-class Unk_ov045_02259dd4 : public MsgString {
+class KatrinaMsgString17 : public MsgString {
 public:
-    Unk_ov045_02259dd4();
-    virtual ~Unk_ov045_02259dd4();
+    KatrinaMsgString17();
+    virtual ~KatrinaMsgString17();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -204,10 +204,10 @@ public:
 };
 
 // vtable 0x02259dec, data at +0xe, 0x24 bytes
-class Unk_ov045_02259dec : public EncodedString {
+class KatrinaEncodedString16 : public EncodedString {
 public:
-    Unk_ov045_02259dec();
-    virtual ~Unk_ov045_02259dec();
+    KatrinaEncodedString16();
+    virtual ~KatrinaEncodedString16();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -217,10 +217,10 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Dialog
 
-class Unk_ov045_02259e20 : public Unk_020d7710 {
+class SpNpcKatrinaTalk : public Unk_020d7710 {
 public:
-    Unk_ov045_02259e20();
-    virtual ~Unk_ov045_02259e20();
+    SpNpcKatrinaTalk();
+    virtual ~SpNpcKatrinaTalk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -229,12 +229,12 @@ public:
     virtual void vfunc_80();
     virtual void vfunc_84();
 
-    void func_ov045_022590e4();
-    void func_ov045_0225916c(s32 v);
-    void func_ov045_02259654(Unk_ov045_02259eb0 *o);
+    void scriptReadPartnerName();
+    void setScript(s32 v);
+    void attachOwner(SpNpcKatrina *o);
 
     s32 unk_ac;
-    Unk_ov045_02259eb0 *unk_b0;
+    SpNpcKatrina *unk_b0;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -416,9 +416,9 @@ struct Unk_ov045_02258fd8_Bits {
     u32 hi : 4;
 };
 
-class Unk_ov045_02259eb0 : public Unk_020d8bc8 {
+class SpNpcKatrina : public Unk_020d8bc8 {
 public:
-    Unk_ov045_02259eb0() {}
+    SpNpcKatrina() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -429,23 +429,23 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    s32 func_ov045_02258ee4();
-    void func_ov045_02258f64();
-    BOOL func_ov045_02259004();
-    BOOL func_ov045_02259724();
-    BOOL func_ov045_02259728();
-    BOOL func_ov045_0225972c();
-    BOOL func_ov045_0225975c();
-    BOOL func_ov045_02259760();
-    BOOL func_ov045_0225978c();
-    BOOL func_ov045_022597c0();
-    BOOL func_ov045_022597dc();
-    void func_ov045_02259810(s32 state);
+    s32 getFortuneKind();
+    void drawFortuneCard();
+    BOOL isClosingTime();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
     s32 unk_658;
     u8 unk_65c[0x30];
-    Unk_ov045_02259e20 unk_68c;
+    SpNpcKatrinaTalk unk_68c;
     u8 unk_740;
     u8 unk_741;
     u8 pad_742[2];
@@ -458,7 +458,7 @@ public:
     u8 pad_755[3];
 };
 
-typedef void (Unk_ov045_02259e20::*Unk_ov045_02259e20_Fn)();
+typedef void (SpNpcKatrinaTalk::*Unk_ov045_02259e20_Fn)();
 
 struct Unk_ov045_02259e20_Ent {
     Unk_ov045_02259e20_Fn fn;
@@ -467,12 +467,12 @@ struct Unk_ov045_02259e20_Ent {
 };
 
 struct Unk_ov045_02259810_Ent {
-    BOOL (Unk_ov045_02259eb0::*enter)();
-    BOOL (Unk_ov045_02259eb0::*exit)();
+    BOOL (SpNpcKatrina::*enter)();
+    BOOL (SpNpcKatrina::*exit)();
 };
 
 struct Unk_ov045_SceneEntry {
-    Unk_ov045_02259eb0 *(*factory)();
+    SpNpcKatrina *(*factory)();
     u16 a;
     u16 b;
     s32 c;
@@ -482,18 +482,18 @@ struct Unk_ov045_SceneEntry {
 };
 
 extern "C" {
-extern const Unk_ov045_02258ee4_Ent data_ov045_02259b68[17];
-extern const Unk_ov045_02258ee4_Ent data_ov045_02259bf0[21];
-extern void *data_ov045_02259d40;
-extern u8 data_ov045_02259d8c[];
-extern u8 data_ov045_02259d9c[];
-extern u8 data_ov045_02259dfc[];
-extern Unk_ov045_02259eb0 *data_ov045_02259f60;
-extern Unk_ov045_02259e20_Ent data_ov045_02259f64[2];
-extern Unk_ov045_02259810_Ent data_ov045_02259f7c[4];
-extern Unk_ov045_02259eb0 *func_ov045_02259a50();
-u32 func_ov045_02258fd8();
-u8 *func_ov045_02258ff0();
+extern const Unk_ov045_02258ee4_Ent sSpNpcKatrinaGoodFortuneCards[17];
+extern const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21];
+extern void *sSpNpcKatrinaMsgKey;
+extern u8 sSpNpcKatrinaKey[];
+extern u8 sSpNpcKatrinaModelPath[];
+extern u8 sSpNpcKatrinaTexturePath[];
+extern SpNpcKatrina *sSpNpcKatrinaInstance;
+extern Unk_ov045_02259e20_Ent sSpNpcKatrinaTalkScripts[2];
+extern Unk_ov045_02259810_Ent sSpNpcKatrinaActTable[4];
+extern SpNpcKatrina *SpNpcKatrina_Create();
+u32 SpNpcKatrina_GetAnimFrame();
+u8 *SpNpcKatrina_GetJointMtx();
 }
 
 
@@ -502,40 +502,40 @@ u8 *func_ov045_02258ff0();
 
 
 
-extern "C" Unk_ov045_02259eb0 *func_ov045_02259a50() { return new Unk_ov045_02259eb0; }
+extern "C" SpNpcKatrina *SpNpcKatrina_Create() { return new SpNpcKatrina; }
 
-u8 data_ov045_02259d9c[23] = "npc_sp/model/bpt.nsbmd";
-u8 data_ov045_02259dfc[27] = "npc_sp/model/bpt_tex.nsbtx";
+u8 sSpNpcKatrinaModelPath[23] = "npc_sp/model/bpt.nsbmd";
+u8 sSpNpcKatrinaTexturePath[27] = "npc_sp/model/bpt_tex.nsbtx";
 // Data order: this unit is placed object by object (see object_order.txt).
-const Unk_ov045_02258ee4_Ent data_ov045_02259b68[17] = {
+const Unk_ov045_02258ee4_Ent sSpNpcKatrinaGoodFortuneCards[17] = {
     {0x00, 0}, {0x01, 0}, {0x02, 0}, {0x03, 0}, {0x04, 0}, {0x05, 0}, {0x06, 0}, {0x07, 0}, {0x08, 0},
     {0x0a, 0}, {0x0b, 0}, {0x0e, 0}, {0x11, 0}, {0x12, 1}, {0x13, 0}, {0x14, 0}, {0x15, 0},
 };
-void *data_ov045_02259d40 = data_ov045_02259d8c;
-u8 data_ov045_02259d8c[15] = "sp_npc_panther";
-Unk_ov045_02259e20_Ent data_ov045_02259f64[2] = {
+void *sSpNpcKatrinaMsgKey = sSpNpcKatrinaKey;
+u8 sSpNpcKatrinaKey[15] = "sp_npc_panther";
+Unk_ov045_02259e20_Ent sSpNpcKatrinaTalkScripts[2] = {
     {NULL, 0},
-    {&Unk_ov045_02259e20::func_ov045_022590e4, 0},
+    {&SpNpcKatrinaTalk::scriptReadPartnerName, 0},
 };
-Unk_ov045_02259810_Ent data_ov045_02259f7c[4] = {
-    {&Unk_ov045_02259eb0::func_ov045_022597dc, &Unk_ov045_02259eb0::func_ov045_022597c0},
-    {&Unk_ov045_02259eb0::func_ov045_0225978c, &Unk_ov045_02259eb0::func_ov045_02259760},
-    {&Unk_ov045_02259eb0::func_ov045_02259728, &Unk_ov045_02259eb0::func_ov045_02259724},
-    {&Unk_ov045_02259eb0::func_ov045_0225975c, &Unk_ov045_02259eb0::func_ov045_0225972c},
+Unk_ov045_02259810_Ent sSpNpcKatrinaActTable[4] = {
+    {&SpNpcKatrina::setupAct00, &SpNpcKatrina::mainAct00},
+    {&SpNpcKatrina::setupAct01, &SpNpcKatrina::mainAct01},
+    {&SpNpcKatrina::setupAct02, &SpNpcKatrina::mainAct02},
+    {&SpNpcKatrina::setupAct03, &SpNpcKatrina::mainAct03},
 };
-const Unk_ov045_02258ee4_Ent data_ov045_02259bf0[21] = {
+const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
     {0x00, 1}, {0x01, 1}, {0x02, 1}, {0x03, 1}, {0x04, 1}, {0x05, 1}, {0x06, 1}, {0x08, 1}, {0x09, 1}, {0x0a, 1},
     {0x0c, 0}, {0x0c, 1}, {0x0d, 0}, {0x0e, 1}, {0x0f, 0}, {0x10, 0}, {0x10, 1}, {0x12, 0}, {0x13, 1}, {0x14, 1},
     {0x15, 1},
 };
-Unk_ov045_02259eb0 *data_ov045_02259f60;
-extern "C" Unk_ov045_SceneEntry data_ov045_02259db4 = {func_ov045_02259a50, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
-BOOL Unk_ov045_02259eb0::vfunc_04() {
+SpNpcKatrina *sSpNpcKatrinaInstance;
+extern "C" Unk_ov045_SceneEntry sSpNpcKatrinaProfile = {SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
+BOOL SpNpcKatrina::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_68c);
-    unk_68c.func_ov045_02259654(this);
+    unk_68c.attachOwner(this);
     func_0201bd9c(0x100);
     setInteractionRange(0x5000);
     unk_654 = -1;
@@ -543,27 +543,27 @@ BOOL Unk_ov045_02259eb0::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::vfunc_00() {
+BOOL SpNpcKatrina::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    data_ov045_02259f60 = this;
-    func_ov045_02259810(0);
+    sSpNpcKatrinaInstance = this;
+    changeAct(0);
     unk_4cc.unk_1c |= 2;
     unk_740 = 0xff;
     unk_741 = 0xff;
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::vfunc_0c() {
+BOOL SpNpcKatrina::vfunc_0c() {
     if (!Unk_020d8bc8::vfunc_0c()) {
         return FALSE;
     }
-    data_ov045_02259f60 = 0;
+    sSpNpcKatrinaInstance = 0;
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::onDraw() {
+BOOL SpNpcKatrina::onDraw() {
     if (!Unk_020d77a4::onDraw()) {
         return FALSE;
     }
@@ -572,11 +572,11 @@ BOOL Unk_ov045_02259eb0::onDraw() {
     return TRUE;
 }
 
-u8 *Unk_ov045_02259eb0::getTexturePath() { return data_ov045_02259dfc; }
+u8 *SpNpcKatrina::getTexturePath() { return sSpNpcKatrinaTexturePath; }
 
-u8 *Unk_ov045_02259eb0::getModelPath() { return data_ov045_02259d9c; }
+u8 *SpNpcKatrina::getModelPath() { return sSpNpcKatrinaModelPath; }
 
-BOOL Unk_ov045_02259eb0::updateAct() {
+BOOL SpNpcKatrina::updateAct() {
     s32 t = func_020197a0(&unk_564);
     if (t != 0x1e && t != 0x20) {
     } else if (func_02019790(&unk_564)) {
@@ -594,35 +594,35 @@ BOOL Unk_ov045_02259eb0::updateAct() {
         func_020902d4(unk_654, (u8 *)this + 0x478, 0, 0);
     }
     BOOL r = FALSE;
-    if (data_ov045_02259f7c[unk_658].exit) {
-        r = (this->*data_ov045_02259f7c[unk_658].exit)();
+    if (sSpNpcKatrinaActTable[unk_658].exit) {
+        r = (this->*sSpNpcKatrinaActTable[unk_658].exit)();
     }
     return r;
 }
 
-void Unk_ov045_02259eb0::func_ov045_02259810(s32 state) {
+void SpNpcKatrina::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov045_02259f7c[state].enter) {
-        ok = (this->*data_ov045_02259f7c[state].enter)();
+    if (sSpNpcKatrinaActTable[state].enter) {
+        ok = (this->*sSpNpcKatrinaActTable[state].enter)();
     }
     if (ok) {
         unk_658 = state;
     }
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_022597dc() {
+BOOL SpNpcKatrina::setupAct00() {
     unk_564_func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_022597c0() {
-    if (func_ov045_02259004()) {
+BOOL SpNpcKatrina::mainAct00() {
+    if (isClosingTime()) {
         TalkRequest_AddPlayerTalk6(this, 0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_0225978c() {
+BOOL SpNpcKatrina::setupAct01() {
     Unk_020d77a4 *p = (Unk_020d77a4 *)unk_68c.func_02015aac();
     if (p) {
         getAngleTo(p);
@@ -631,33 +631,33 @@ BOOL Unk_ov045_02259eb0::func_ov045_0225978c() {
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_02259760() {
+BOOL SpNpcKatrina::mainAct01() {
     if (!unk_618_func_02014220(&unk_618)) {
         TalkRequest_EndTalkWith(this);
-        func_ov045_02259810(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_0225975c() { return TRUE; }
+BOOL SpNpcKatrina::setupAct03() { return TRUE; }
 
-BOOL Unk_ov045_02259eb0::func_ov045_0225972c() {
+BOOL SpNpcKatrina::mainAct03() {
     if (!unk_618_func_02014220(&unk_618)) {
         func_020b4bbc(func_020b4934(), 0);
-        func_ov045_02259810(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_02259728() { return TRUE; }
+BOOL SpNpcKatrina::setupAct02() { return TRUE; }
 
-BOOL Unk_ov045_02259eb0::func_ov045_02259724() { return TRUE; }
+BOOL SpNpcKatrina::mainAct02() { return TRUE; }
 
-Unk_ov045_02259e20::Unk_ov045_02259e20() {}
+SpNpcKatrinaTalk::SpNpcKatrinaTalk() {}
 
-Unk_ov045_02259e20::~Unk_ov045_02259e20() {}
+SpNpcKatrinaTalk::~SpNpcKatrinaTalk() {}
 
-void Unk_ov045_02259e20::vfunc_38(s32 a) {
+void SpNpcKatrinaTalk::vfunc_38(s32 a) {
     if (a != func_020197a0(&unk_b0->unk_564) || func_020197a8(&unk_b0->unk_564) != 8) {
         switch (a) {
         case 0x1e:
@@ -675,14 +675,14 @@ void Unk_ov045_02259e20::vfunc_38(s32 a) {
     base_vfunc_38(this, a);
 }
 
-void Unk_ov045_02259e20::func_ov045_02259654(Unk_ov045_02259eb0 *o) {
+void SpNpcKatrinaTalk::attachOwner(SpNpcKatrina *o) {
     vfunc_08();
     unk_b0 = o;
 }
 
-void Unk_ov045_02259e20::vfunc_78(void *arg) {
+void SpNpcKatrinaTalk::vfunc_78(void *arg) {
     Unk_ov045_022590e4_Msg *out = (Unk_ov045_022590e4_Msg *)arg;
-    out->unk_00 = (u32)data_ov045_02259d40;
+    out->unk_00 = (u32)sSpNpcKatrinaMsgKey;
     s32 a = func_0202e1cc(4, 0);
     s32 b = func_0202e1cc(5, 0);
     s32 c = func_0202e1cc(6, 0);
@@ -699,12 +699,12 @@ void Unk_ov045_02259e20::vfunc_78(void *arg) {
             out->unk_04 = 0x19;
         }
     }
-    if (unk_b0->func_ov045_02259004()) {
+    if (unk_b0->isClosingTime()) {
         out->unk_04 = 0x13;
     }
 }
 
-void Unk_ov045_02259e20::vfunc_14() {
+void SpNpcKatrinaTalk::vfunc_14() {
     void *h = PlayerData_GetCurrent();
     u8 *gp = gSaveData;
     u32 sel = 0xff;
@@ -713,26 +713,26 @@ void Unk_ov045_02259e20::vfunc_14() {
     case 11:
         func_02015170(0x13, 0);
         func_020151d0(2);
-        func_ov045_0225916c(1);
+        setScript(1);
         break;
     case 14:
-        unk_b0->func_ov045_02258f64();
+        unk_b0->drawFortuneCard();
         sel = unk_b0->unk_740;
         break;
     case 16:
-        if (func_0201ade4(unk_b0, 0x64)) {
-            func_0201adc8(unk_b0, 0x64);
+        if (NpcActor_CanPlayerPay(unk_b0, 0x64)) {
+            NpcActor_ChargePlayer(unk_b0, 0x64);
         }
         sel = 0x16;
         break;
     case 19:
-        unk_b0->func_ov045_02259810(3);
+        unk_b0->changeAct(3);
         break;
     case 24:
-        if (func_0201ade4(unk_b0, 10000)) {
-            func_0201adc8(unk_b0, 10000);
+        if (NpcActor_CanPlayerPay(unk_b0, 10000)) {
+            NpcActor_ChargePlayer(unk_b0, 10000);
         }
-        func_02098784(h, 0);
+        PlayerData_setFortune(h, 0);
         func_0202e1cc(6, 1);
         sel = 0x16;
         break;
@@ -758,11 +758,11 @@ void Unk_ov045_02259e20::vfunc_14() {
             void *w;
             void *r5;
             sel = 0x10;
-            kind = unk_b0->func_ov045_02258ee4();
+            kind = unk_b0->getFortuneKind();
             arg = PlayerData_getPlayerId(PlayerData_GetCurrent());
             switch (unk_b0->unk_744) {
             case 0:
-                func_02098784(h, kind);
+                PlayerData_setFortune(h, kind);
                 if (kind == 1) {
                     func_02079d64((gp + 0x8a3c), arg);
                 } else if (kind == 2) {
@@ -823,17 +823,17 @@ void Unk_ov045_02259e20::vfunc_14() {
     }
     if (sel != 0xff) {
         u8 buf = sel;
-        unk_3c->setNextMessage(&buf, data_ov045_02259d40);
+        unk_3c->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
     }
 }
 
-void Unk_ov045_02259e20::vfunc_10() {
+void SpNpcKatrinaTalk::vfunc_10() {
     if (unk_1e == 0xe || unk_1e == 0x17) {
         func_02034dd0(0x10, 0, 0);
     }
 }
 
-void Unk_ov045_02259e20::vfunc_18() {
+void SpNpcKatrinaTalk::vfunc_18() {
     u8 buf;
     u32 sel;
     s32 st;
@@ -845,7 +845,7 @@ void Unk_ov045_02259e20::vfunc_18() {
     case 3:
     case 5:
         if (st == 0) {
-            if (func_0201ade4(unk_b0, 0x64) == 0) {
+            if (NpcActor_CanPlayerPay(unk_b0, 0x64) == 0) {
                 sel = 6;
             } else {
                 sel = 7;
@@ -883,7 +883,7 @@ void Unk_ov045_02259e20::vfunc_18() {
         break;
     case 0x14:
         if (st == 0) {
-            if (func_0201ade4(unk_b0, 10000) == 0) {
+            if (NpcActor_CanPlayerPay(unk_b0, 10000) == 0) {
                 sel = 0x15;
             } else {
                 sel = 0x17;
@@ -893,53 +893,53 @@ void Unk_ov045_02259e20::vfunc_18() {
     }
     if (sel != 0xff) {
         buf = sel;
-        unk_3c->setNextMessage(&buf, data_ov045_02259d40);
+        unk_3c->setNextMessage(&buf, sSpNpcKatrinaMsgKey);
     }
 }
 
-void Unk_ov045_02259e20::vfunc_80() {
+void SpNpcKatrinaTalk::vfunc_80() {
     s32 i = unk_ac;
-    if (data_ov045_02259f64[i].flag != 0) {
-        if (data_ov045_02259f64[i].fn != 0) {
-            (this->*data_ov045_02259f64[i].fn)();
+    if (sSpNpcKatrinaTalkScripts[i].flag != 0) {
+        if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
+            (this->*sSpNpcKatrinaTalkScripts[i].fn)();
         }
     }
 }
 
-void Unk_ov045_02259e20::vfunc_84() {
+void SpNpcKatrinaTalk::vfunc_84() {
     s32 i = unk_ac;
-    if (data_ov045_02259f64[i].flag == 0) {
-        if (data_ov045_02259f64[i].fn != 0) {
-            (this->*data_ov045_02259f64[i].fn)();
-            func_ov045_0225916c(0);
+    if (sSpNpcKatrinaTalkScripts[i].flag == 0) {
+        if (sSpNpcKatrinaTalkScripts[i].fn != 0) {
+            (this->*sSpNpcKatrinaTalkScripts[i].fn)();
+            setScript(0);
         }
     }
 }
 
-void Unk_ov045_02259e20::func_ov045_0225916c(s32 v) {
+void SpNpcKatrinaTalk::setScript(s32 v) {
     unk_ac = v;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Dialog
 
-void Unk_ov045_02259e20::func_ov045_022590e4() {
+void SpNpcKatrinaTalk::scriptReadPartnerName() {
     u8 msg;
     void *o = unk_3c;
     msg = 0xb;
     if (func_0206ed18()) {
         unk_b0->unk_750 = func_0206ecf0();
-        Unk_ov045_02259dd4 src;
-        Unk_ov045_02259dec dst;
+        KatrinaMsgString17 src;
+        KatrinaEncodedString16 dst;
         func_020a78a4(&dst, unk_b0->unk_750, 0x10);
         src.fromEncoded(&dst, 0, 0);
         unk_3c->setSlot(0, &src);
         msg = 0xa;
     }
-    ((TalkWindowState *)o)->setNextMessage(&msg, data_ov045_02259d40);
+    ((TalkWindowState *)o)->setNextMessage(&msg, sSpNpcKatrinaMsgKey);
 }
 
-BOOL Unk_ov045_02259eb0::vfunc_48() {
+BOOL SpNpcKatrina::vfunc_48() {
     BOOL r = FALSE;
     Unk_ov045_02259070_Rec *src = (Unk_ov045_02259070_Rec *)func_020947f0(4);
     Unk_ov045_02259070_Rec rec;
@@ -962,21 +962,21 @@ BOOL Unk_ov045_02259eb0::vfunc_48() {
     return r;
 }
 
-void Unk_ov045_02259eb0::vfunc_4c(s32 cmd, u32 b) {
+void SpNpcKatrina::vfunc_4c(s32 cmd, u32 b) {
     switch (cmd) {
     case 0:
     case 1:
         unk_68c.vfunc_08();
         unk_68c.func_02015ab0(getPlayerActor(4));
-        func_ov045_02259810(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov045_02259810(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov045_02259eb0::func_ov045_02259004() {
+BOOL SpNpcKatrina::isClosingTime() {
     u32 z[2];
     z[0] = 0;
     z[1] = 0;
@@ -987,15 +987,15 @@ BOOL Unk_ov045_02259eb0::func_ov045_02259004() {
     return FALSE;
 }
 
-extern "C" u8 *func_ov045_02258ff0() {
-    return (u8 *)data_ov045_02259f60 + 0x65c;
+extern "C" u8 *SpNpcKatrina_GetJointMtx() {
+    return (u8 *)sSpNpcKatrinaInstance + 0x65c;
 }
 
-extern "C" u32 func_ov045_02258fd8() {
-    return ((Unk_ov045_02258fd8_Bits *)((u8 *)data_ov045_02259f60 + 0x190))->mid;
+extern "C" u32 SpNpcKatrina_GetAnimFrame() {
+    return ((Unk_ov045_02258fd8_Bits *)((u8 *)sSpNpcKatrinaInstance + 0x190))->mid;
 }
 
-void Unk_ov045_02259eb0::func_ov045_02258f64() {
+void SpNpcKatrina::drawFortuneCard() {
     unk_748 = func_02063b8c(0x16);
     if (func_02063b8c(2) == 0) {
         unk_74c = 0;
@@ -1012,37 +1012,37 @@ void Unk_ov045_02259eb0::func_ov045_02258f64() {
 // ---------------------------------------------------------------------------------------------------------------------
 // Owner object
 
-s32 Unk_ov045_02259eb0::func_ov045_02258ee4() {
+s32 SpNpcKatrina::getFortuneKind() {
     u8 i;
     for (i = 0; i < 0x11; i++) {
-        if (unk_748 == data_ov045_02259b68[i].a && unk_74c == data_ov045_02259b68[i].b) {
+        if (unk_748 == sSpNpcKatrinaGoodFortuneCards[i].a && unk_74c == sSpNpcKatrinaGoodFortuneCards[i].b) {
             return 1;
         }
     }
     for (i = 0; i < 0x15; i++) {
-        if (unk_748 == data_ov045_02259bf0[i].a && unk_74c == data_ov045_02259bf0[i].b) {
+        if (unk_748 == sSpNpcKatrinaBadFortuneCards[i].a && unk_74c == sSpNpcKatrinaBadFortuneCards[i].b) {
             return 2;
         }
     }
     return 0;
 }
 
-Unk_ov045_02259dd4::Unk_ov045_02259dd4() {}
+KatrinaMsgString17::KatrinaMsgString17() {}
 
-Unk_ov045_02259dd4::~Unk_ov045_02259dd4() {}
+KatrinaMsgString17::~KatrinaMsgString17() {}
 
-u32 Unk_ov045_02259dd4::vfunc_08() { return 0x11; }
+u32 KatrinaMsgString17::vfunc_08() { return 0x11; }
 
-u8 *Unk_ov045_02259dd4::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *KatrinaMsgString17::vfunc_0c() { return (u8 *)this + 0x12; }
 
-Unk_ov045_02259dec::Unk_ov045_02259dec() {}
+KatrinaEncodedString16::KatrinaEncodedString16() {}
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffer classes
 
-Unk_ov045_02259dec::~Unk_ov045_02259dec() {}
+KatrinaEncodedString16::~KatrinaEncodedString16() {}
 
-u32 Unk_ov045_02259dec::vfunc_08() { return 0x10; }
+u32 KatrinaEncodedString16::vfunc_08() { return 0x10; }
 
-u8 *Unk_ov045_02259dec::vfunc_0c() { return (u8 *)this + 0xe; }
+u8 *KatrinaEncodedString16::vfunc_0c() { return (u8 *)this + 0xe; }
 

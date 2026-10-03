@@ -319,11 +319,11 @@ struct Unk_ov004_0224d0a0_Bits {
     u32 hi : 4;
 };
 
-class Unk_ov004_0224d0a0;
-class Unk_ov004_0224d010;
+class SpNpcBrewster;
+class SpNpcBrewsterTalk;
 
-typedef void (Unk_ov004_0224d010::*Unk_ov004_0224d010_Fn)();
-typedef BOOL (Unk_ov004_0224d0a0::*Unk_ov004_0224d0a0_Fn)();
+typedef void (SpNpcBrewsterTalk::*Unk_ov004_0224d010_Fn)();
+typedef BOOL (SpNpcBrewster::*Unk_ov004_0224d0a0_Fn)();
 
 struct Unk_ov004_0224d010_Ent {
     Unk_ov004_0224d010_Fn fn;
@@ -383,17 +383,17 @@ extern Unk_ov004_0221b954_Global *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
 extern Unk_ov004_0221b954_Vec gVec3Zero;
-extern u32 data_ov004_0224cf54[];
+extern u32 sSpNpcBrewsterMsgFiles[];
 extern u8 data_ov004_0224cec8[];
-extern u8 data_ov004_0224cf8c[];
-extern u8 data_ov004_0224cfbc[];
-extern Unk_ov004_0224d0a0 *data_ov004_02250a9c;
-extern Unk_ov004_0224d010_Ent data_ov004_0224cfd8[];
-extern Unk_ov004_0224d0a0_Ent data_ov004_02250aa0[];
+extern u8 sSpNpcBrewsterModelPath[];
+extern u8 sSpNpcBrewsterTexturePath[];
+extern SpNpcBrewster *sSpNpcBrewster;
+extern Unk_ov004_0224d010_Ent sSpNpcBrewsterTalkScripts[];
+extern Unk_ov004_0224d0a0_Ent sSpNpcBrewsterActTable[];
 // 0x02250aa8 is a label inside the 0x80-byte table (second ptmf of entry 0)
-#define data_ov004_02250aa8 ((Unk_ov004_0224d0a0_Ent *)((u8 *)data_ov004_02250aa0 + 8))
+#define data_ov004_02250aa8 ((Unk_ov004_0224d0a0_Ent *)((u8 *)sSpNpcBrewsterActTable + 8))
 extern const u32 data_ov004_02240120[];
-extern const u32 data_ov004_02240128[];
+extern const u32 sSpNpcBrewsterGuestSpawnPos[];
 
 // main / other-module callees (self first)
 void func_0201b08c(void *self, u32 a, u32 b);
@@ -415,8 +415,8 @@ void func_0201a8c4(void *self, u8 a);
 void func_0201ad2c(void *self, s32 a);
 void func_0201ad30(void *self, s32 a);
 void func_0201ad34(void *self, s32 a);
-s32 func_0201ade4(s32 p, s32 v);
-void func_0201adc8(s32 p, s32 v);
+s32 NpcActor_CanPlayerPay(s32 p, s32 v);
+void NpcActor_ChargePlayer(s32 p, s32 v);
 s32 func_020197a8(void *self);
 s32 func_02019790(void *self);
 void func_020196b4(void *self, u32 a, s32 b, s32 c, s32 d, s16 e, s16 f, s32 g, s32 h, u16 i, u16 j);
@@ -480,10 +480,10 @@ void func_ov004_02224a38(s32 a);
 void func_ov004_02226860(void);
 }
 
-class Unk_ov004_0224d010 : public Unk_020d7710 {
+class SpNpcBrewsterTalk : public Unk_020d7710 {
 public:
-    Unk_ov004_0224d010();
-    virtual ~Unk_ov004_0224d010();
+    SpNpcBrewsterTalk();
+    virtual ~SpNpcBrewsterTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_70();
@@ -491,22 +491,22 @@ public:
     virtual void vfunc_80();
     virtual void vfunc_88();
 
-    void func_ov004_0221c304();
-    void func_ov004_0221c608();
-    void func_ov004_0221c794();
-    void func_ov004_0221cbe4(s32 v);
-    void func_ov004_0221cf0c(s32 v);
+    void runScript03();
+    void runDrinkScript();
+    void runCoffeeScript();
+    void setScript(s32 v);
+    void attachOwner(s32 v);
 
     /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ Unk_ov004_0224d0a0 *unk_b0;
+    /* 0xb0 */ SpNpcBrewster *unk_b0;
     /* 0xb4 */ u8 unk_b4;
     /* 0xb5 */ u8 unk_b5;
     /* 0xb6 */ u8 pad_b6[2];
 };
 
-class Unk_ov004_0224d0a0 : public Unk_020d8bc8 {
+class SpNpcBrewster : public Unk_020d8bc8 {
 public:
-    Unk_ov004_0224d0a0() {}
+    SpNpcBrewster() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -517,26 +517,26 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov004_0221cf78();
-    BOOL func_ov004_0221cf7c();
-    BOOL func_ov004_0221cf80();
-    BOOL func_ov004_0221cfd8();
-    BOOL func_ov004_0221d010();
-    BOOL func_ov004_0221d0ac();
-    BOOL func_ov004_0221d0e4();
-    BOOL func_ov004_0221d104();
-    BOOL func_ov004_0221d108();
-    BOOL func_ov004_0221d138();
-    BOOL func_ov004_0221d174();
-    BOOL func_ov004_0221d178();
-    BOOL func_ov004_0221d17c();
-    BOOL func_ov004_0221d20c();
-    BOOL func_ov004_0221d278();
-    BOOL func_ov004_0221d340();
-    void func_ov004_0221d37c(s32 idx);
+    BOOL mainAct07();
+    BOOL setupAct07();
+    BOOL mainAct06();
+    BOOL setupAct06();
+    BOOL mainAct05();
+    BOOL setupAct05();
+    BOOL mainAct04();
+    BOOL setupAct04();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 idx);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_ov004_0224d010 unk_658;
+    /* 0x658 */ SpNpcBrewsterTalk unk_658;
     /* 0x710 */ s16 unk_710;
     /* 0x712 */ u8 pad_712[2];
     /* 0x714 */ u8 unk_714[0x30];
@@ -548,19 +548,19 @@ public:
 };
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224d0a0 *(*factory)();
+    SpNpcBrewster *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
 
-extern "C" Unk_ov004_0224d0a0 *func_ov004_0221d630() { return new Unk_ov004_0224d0a0; }
+extern "C" SpNpcBrewster *SpNpcBrewster_Create() { return new SpNpcBrewster; }
 
-BOOL Unk_ov004_0224d0a0::vfunc_04() {
+BOOL SpNpcBrewster::vfunc_04() {
     if (Unk_020d8bc8::vfunc_04() == 0) {
         return FALSE;
     }
     Unk_020d77a4_setTalkRequest(this, &unk_658);
-    unk_658.func_ov004_0221cf0c((s32)this);
+    unk_658.attachOwner((s32)this);
     func_0201bd9c(this, 0x100);
     Character_setInteractionRange(this, 0x5000);
     func_0201a8d0(&unk_350, 2, 0x166, 0xcc, 0x133);
@@ -570,37 +570,37 @@ BOOL Unk_ov004_0224d0a0::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::vfunc_00() {
+BOOL SpNpcBrewster::vfunc_00() {
     if (Unk_020d8bc8::vfunc_00() == 0) {
         return FALSE;
     }
-    data_ov004_02250a9c = this;
+    sSpNpcBrewster = this;
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
         if (func_020a62a0() != 0) {
-            func_ov004_0221d37c(0);
+            changeAct(0);
         } else {
-            func_ov004_0221d37c(5);
+            changeAct(5);
         }
     } else {
-        func_ov004_0221d37c(0);
+        changeAct(0);
     }
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
-        Actor_spawn(0x66, 0xd01d, data_ov004_02240128, data_ov004_02240120, 0);
+        Actor_spawn(0x66, 0xd01d, sSpNpcBrewsterGuestSpawnPos, data_ov004_02240120, 0);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::vfunc_0c() {
+BOOL SpNpcBrewster::vfunc_0c() {
     if (Unk_020d8bc8::vfunc_0c() == 0) {
         return FALSE;
     }
-    data_ov004_02250a9c = 0;
+    sSpNpcBrewster = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::onDraw() {
+BOOL SpNpcBrewster::onDraw() {
     if (Unk_020d77a4::onDraw() == 0) {
         return FALSE;
     }
@@ -610,19 +610,19 @@ BOOL Unk_ov004_0224d0a0::onDraw() {
     return TRUE;
 }
 
-u8 *Unk_ov004_0224d0a0::getTexturePath() {
-    return data_ov004_0224cfbc;
+u8 *SpNpcBrewster::getTexturePath() {
+    return sSpNpcBrewsterTexturePath;
 }
 
-u8 *Unk_ov004_0224d0a0::getModelPath() {
-    return data_ov004_0224cf8c;
+u8 *SpNpcBrewster::getModelPath() {
+    return sSpNpcBrewsterModelPath;
 }
 
-BOOL Unk_ov004_0224d0a0::updateAct() {
+BOOL SpNpcBrewster::updateAct() {
     BOOL r = FALSE;
     s32 i = unk_654;
     if (data_ov004_02250aa8[i].fn1 != 0) {
-        r = (this->*data_ov004_02250aa0[i].fn2)();
+        r = (this->*sSpNpcBrewsterActTable[i].fn2)();
     }
     if (func_020e77cc(func_02034d2c(), 0x63, 0xab) != 0) {
         if (unk_77a == 0) {
@@ -646,23 +646,23 @@ BOOL Unk_ov004_0224d0a0::updateAct() {
     return r;
 }
 
-void Unk_ov004_0224d0a0::func_ov004_0221d37c(s32 idx) {
+void SpNpcBrewster::changeAct(s32 idx) {
     BOOL r = TRUE;
-    if (data_ov004_02250aa0[idx].fn1 != 0) {
-        r = (this->*data_ov004_02250aa0[idx].fn1)();
+    if (sSpNpcBrewsterActTable[idx].fn1 != 0) {
+        r = (this->*sSpNpcBrewsterActTable[idx].fn1)();
     }
     if (r != 0) {
         unk_654 = idx;
     }
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d340() {
+BOOL SpNpcBrewster::setupAct00() {
     unk_774 = 0;
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
+BOOL SpNpcBrewster::mainAct00() {
     if (unk_774 > 0) {
         unk_774++;
         if (unk_774 > 0x14) {
@@ -680,13 +680,13 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
         }
     }
     if (unk_710 != unk_8e) {
-        func_ov004_0221d37c(3);
+        changeAct(3);
         return TRUE;
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d20c() {
+BOOL SpNpcBrewster::setupAct01() {
     void *p = func_02015aac(&unk_658);
     s32 r = 0;
     func_0201a6c0(&unk_3b0, 1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
@@ -697,7 +697,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d20c() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d17c() {
+BOOL SpNpcBrewster::mainAct01() {
     if (func_02014220(&unk_618) == 0) {
         if (CommManager_isOnline(gCommManager) == 0 && *func_0209c37c(0, 0x4a) == 0) {
             if (PlayerActor_IsInAction(0x28, 4) != 0) {
@@ -707,50 +707,50 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d17c() {
         }
         func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
         TalkRequest_EndTalkWith(this);
-        func_ov004_0221d37c(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d178() {
+BOOL SpNpcBrewster::setupAct02() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d174() {
+BOOL SpNpcBrewster::mainAct02() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d138() {
+BOOL SpNpcBrewster::setupAct03() {
     func_020196b4(&unk_564, 3, 2, 0, 0, 0, unk_710, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d108() {
+BOOL SpNpcBrewster::mainAct03() {
     if (func_020197a8(&unk_564) == 3) {
         if (func_02019790(&unk_564) != 0) {
-            func_ov004_0221d37c(0);
+            changeAct(0);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d104() {
+BOOL SpNpcBrewster::setupAct04() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d0e4() {
+BOOL SpNpcBrewster::mainAct04() {
     if (PlayerActor_IsInAction(0x28, 4) != 0) {
-        func_ov004_0221d37c(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d0ac() {
+BOOL SpNpcBrewster::setupAct05() {
     func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221d010() {
+BOOL SpNpcBrewster::mainAct05() {
     if (func_0201ba88(this) != 0) {
         s32 a = 4;
         s32 b = 4;
@@ -759,21 +759,21 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d010() {
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             s32 r = Unk_020d77a4_getPlayerActor(this, 4);
             func_02015ab0(&unk_658, r);
-            func_ov004_0221d37c(1);
+            changeAct(1);
         } else if (func_020a62a0() != 0 && b == 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-            func_ov004_0221d37c(0);
+            changeAct(0);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221cfd8() {
+BOOL SpNpcBrewster::setupAct06() {
     func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221cf80() {
+BOOL SpNpcBrewster::mainAct06() {
     if (func_0201ba88(this) != 0) {
         s32 a = 4;
         s32 b = 4;
@@ -781,7 +781,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221cf80() {
             if (a == 4) {
                 if (func_020a62a0() != 0) {
                     func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-                    func_ov004_0221d37c(0);
+                    changeAct(0);
                 }
             }
         }
@@ -789,34 +789,34 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221cf80() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221cf7c() {
+BOOL SpNpcBrewster::setupAct07() {
     return TRUE;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov004_0224d0a0 (continued)
+// SpNpcBrewster (continued)
 
-BOOL Unk_ov004_0224d0a0::func_ov004_0221cf78() {
+BOOL SpNpcBrewster::mainAct07() {
     return TRUE;
 }
 
-Unk_ov004_0224d010::Unk_ov004_0224d010() {}
+SpNpcBrewsterTalk::SpNpcBrewsterTalk() {}
 
-Unk_ov004_0224d010::~Unk_ov004_0224d010() {}
+SpNpcBrewsterTalk::~SpNpcBrewsterTalk() {}
 
-void Unk_ov004_0224d010::func_ov004_0221cf0c(s32 v) {
+void SpNpcBrewsterTalk::attachOwner(s32 v) {
     vfunc_08();
-    unk_b0 = (Unk_ov004_0224d0a0 *)v;
+    unk_b0 = (SpNpcBrewster *)v;
 }
 
-void Unk_ov004_0224d010::vfunc_78(void *arg) {
+void SpNpcBrewsterTalk::vfunc_78(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
     void *h = func_0209868c(PlayerData_GetCurrent());
     if (func_020a032c() != 0) {
-        out->unk_00 = data_ov004_0224cf54[1];
+        out->unk_00 = sSpNpcBrewsterMsgFiles[1];
         out->unk_04 = 0x1f;
     } else {
-        out->unk_00 = data_ov004_0224cf54[0];
+        out->unk_00 = sSpNpcBrewsterMsgFiles[0];
         void *o = Actor_findByProfile(0x66, 0);
         if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
             out->unk_04 = func_02063b8c(3) + 0x55;
@@ -844,10 +844,10 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
     }
 }
 
-void Unk_ov004_0224d010::vfunc_14() {
+void SpNpcBrewsterTalk::vfunc_14() {
     void *h = func_0209868c(PlayerData_GetCurrent());
     Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
-    u32 d = data_ov004_0224cf54[0];
+    u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if (func_020a032c() == 0) {
         if ((s32)unk_1e >= 0x1c && (s32)unk_1e <= 0x23) {
@@ -858,7 +858,7 @@ void Unk_ov004_0224d010::vfunc_14() {
                 }
             }
             o->unk_14 = 0;
-            func_ov004_0221cbe4(1);
+            setScript(1);
         }
     next0:
         if (unk_1e != 0x2d && unk_1e != 0x2e) {
@@ -868,11 +868,11 @@ void Unk_ov004_0224d010::vfunc_14() {
             unk_b5 = 1;
         }
         o->unk_14 = 0;
-        func_ov004_0221cbe4(1);
+        setScript(1);
     next1:
         if ((s32)unk_1e >= 0x30 && (s32)unk_1e <= 0x3b) {
             o->unk_14 = 0;
-            func_ov004_0221cbe4(3);
+            setScript(3);
         }
         if (r != 0xff) {
             u8 buf;
@@ -882,17 +882,17 @@ void Unk_ov004_0224d010::vfunc_14() {
     }
 }
 
-void Unk_ov004_0224d010::vfunc_18() {
+void SpNpcBrewsterTalk::vfunc_18() {
     void *h = func_0209868c(PlayerData_GetCurrent());
     s32 t = getChoiceList()->getResult();
-    u32 d = data_ov004_0224cf54[0];
+    u32 d = sSpNpcBrewsterMsgFiles[0];
     u32 r = 0xff;
     if ((s32)unk_1e >= 0x24 && (s32)unk_1e <= 0x2b) {
         if (t != 0) {
             r = (u8)((func_02087c4c(h) >> 2) + 0x28);
         } else {
             ((Unk_ov004_0221cc88_Obj *)unk_3c)->unk_14 = 0;
-            func_ov004_0221cbe4(2);
+            setScript(2);
         }
     }
     switch (unk_1e) {
@@ -901,10 +901,10 @@ void Unk_ov004_0224d010::vfunc_18() {
     case 0x16:
     case 0x17:
         if (t == 0) {
-            if (func_0201ade4((s32)unk_b0, 200) == 0) {
+            if (NpcActor_CanPlayerPay((s32)unk_b0, 200) == 0) {
                 r = 0x2f;
             } else {
-                func_0201adc8((s32)unk_b0, 200);
+                NpcActor_ChargePlayer((s32)unk_b0, 200);
                 r = func_02063b8c(2);
                 r = (u8)(r + (((func_02087c4c(h) >> 2) << 1) + 0x1c));
             }
@@ -920,31 +920,31 @@ void Unk_ov004_0224d010::vfunc_18() {
     }
 }
 
-void Unk_ov004_0224d010::vfunc_80() {
+void SpNpcBrewsterTalk::vfunc_80() {
     s32 i = unk_ac;
-    if (data_ov004_0224cfd8[i].flag != 0) {
-        if (data_ov004_0224cfd8[i].fn != 0) {
-            (this->*data_ov004_0224cfd8[i].fn)();
+    if (sSpNpcBrewsterTalkScripts[i].flag != 0) {
+        if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
+            (this->*sSpNpcBrewsterTalkScripts[i].fn)();
         }
     }
 }
 
-void Unk_ov004_0224d010::vfunc_88() {
+void SpNpcBrewsterTalk::vfunc_88() {
     s32 i = unk_ac;
-    if (data_ov004_0224cfd8[i].flag == 0) {
-        if (data_ov004_0224cfd8[i].fn != 0) {
-            (this->*data_ov004_0224cfd8[i].fn)();
-            func_ov004_0221cbe4(0);
+    if (sSpNpcBrewsterTalkScripts[i].flag == 0) {
+        if (sSpNpcBrewsterTalkScripts[i].fn != 0) {
+            (this->*sSpNpcBrewsterTalkScripts[i].fn)();
+            setScript(0);
         }
     }
 }
 
-void Unk_ov004_0224d010::func_ov004_0221cbe4(s32 v) {
+void SpNpcBrewsterTalk::setScript(s32 v) {
     unk_ac = v;
     unk_b4 = 0;
 }
 
-void Unk_ov004_0224d010::func_ov004_0221c794() {
+void SpNpcBrewsterTalk::runCoffeeScript() {
     TalkWindowState *r6 = unk_3c;
     u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x24);
     void *r5 = &unk_b0->unk_564;
@@ -1049,15 +1049,15 @@ void Unk_ov004_0224d010::func_ov004_0221c794() {
         }
         if (func_02019790(r5)) {
             buf = r7;
-            TalkWindowState_setNextMessage(r6, &buf, data_ov004_0224cf54[0]);
+            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
             r6->unk_08 = 1;
-            func_ov004_0221cbe4(0);
+            setScript(0);
         }
         break;
     }
 }
 
-void Unk_ov004_0224d010::func_ov004_0221c608() {
+void SpNpcBrewsterTalk::runDrinkScript() {
     TalkWindowState *r6 = unk_3c;
     if (r6->unk_04 == 5) {
         if (func_ov004_022265c8() == 5) {
@@ -1095,19 +1095,19 @@ void Unk_ov004_0224d010::func_ov004_0221c608() {
             func_02034dd0(0xc, 0, 0xa);
             func_02034e10(0xd, 0x3e, 0x7f, 1);
             buf = r4;
-            TalkWindowState_setNextMessage(r6, &buf, data_ov004_0224cf54[0]);
+            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
             r6->unk_08 = 1;
             func_0202e1cc(0x17, 1);
             void *p = func_0209868c(PlayerData_GetCurrent());
             if (func_02063b8c(0xa) < 5) {
                 func_02087c3c(p, func_02087c4c(p) + 1);
             }
-            func_ov004_0221cbe4(0);
+            setScript(0);
         }
     }
 }
 
-void Unk_ov004_0224d010::vfunc_70() {
+void SpNpcBrewsterTalk::vfunc_70() {
     s32 t = unk_1e;
     if (t >= 0x30 && t <= 0x3b) {
         func_02034d84(0x3e);
@@ -1115,7 +1115,7 @@ void Unk_ov004_0224d010::vfunc_70() {
     }
 }
 
-void Unk_ov004_0224d010::func_ov004_0221c304() {
+void SpNpcBrewsterTalk::runScript03() {
     TalkWindowState *r6 = unk_3c;
     u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x51);
     void *r5 = &unk_b0->unk_564;
@@ -1186,9 +1186,9 @@ void Unk_ov004_0224d010::func_ov004_0221c304() {
     case 5:
         if (func_02019790(r5)) {
             buf = r7;
-            TalkWindowState_setNextMessage(r6, &buf, data_ov004_0224cf54[0]);
+            TalkWindowState_setNextMessage(r6, &buf, sSpNpcBrewsterMsgFiles[0]);
             r6->unk_08 = 1;
-            func_ov004_0221cbe4(0);
+            setScript(0);
             unk_b5 = 0;
         }
         break;
@@ -1196,34 +1196,34 @@ void Unk_ov004_0224d010::func_ov004_0221c304() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov004_0224d010
+// SpNpcBrewsterTalk
 
-BOOL Unk_ov004_0224d0a0::vfunc_48() {
+BOOL SpNpcBrewster::vfunc_48() {
     if (func_02014220(&unk_618) != 0 || func_0201b9bc(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcBrewster::vfunc_4c(u32 cmd, u32 arg) {
     s32 a, b;
     switch (cmd) {
     case 3:
         unk_558.unk_08 = arg;
         if (arg != 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, arg);
-            func_ov004_0221d37c(7);
+            changeAct(7);
         } else if (func_0201ba88(this)) {
             s32 g = gCommManager->unk_64;
             func_0201b9fc(this, 1, g, g);
-            func_ov004_0221d37c(7);
+            changeAct(7);
         }
         break;
     case 1:
         unk_558.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(this, 1, arg, arg);
-            func_ov004_0221d37c(6);
+            changeAct(6);
         } else if (func_0201ba88(this)) {
             Unk_ov004_0221b954_Global *gl = gCommManager;
             s32 g = gl->unk_64;
@@ -1232,9 +1232,9 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
             p->vfunc_08();
             func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
             if (CommManager_isOnline(gl) || *func_0209c37c(0, 0x4a) != 0) {
-                func_ov004_0221d37c(1);
+                changeAct(1);
             } else {
-                func_ov004_0221d37c(4);
+                changeAct(4);
             }
         }
         break;
@@ -1242,24 +1242,24 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
         unk_558.unk_08 = arg;
         if (arg != 4 && arg != gCommManager->unk_64) {
             func_0201b9fc(this, 1, arg, arg);
-            func_ov004_0221d37c(6);
+            changeAct(6);
         } else if (func_0201ba88(this)) {
             s32 g = gCommManager->unk_64;
             func_0201b9fc(this, 1, g, g);
             ActorTalkRequest *p = &unk_658;
             p->vfunc_08();
             func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
-            func_ov004_0221d37c(1);
+            changeAct(1);
         }
         break;
     case 8:
         if (arg == 4) {
             if (func_020a62a0()) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-                func_ov004_0221d37c(3);
+                changeAct(3);
             } else {
                 func_0201b9fc(this, 1, 4, gCommManager->unk_64);
-                func_ov004_0221d37c(5);
+                changeAct(5);
             }
         }
         break;
@@ -1276,7 +1276,7 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
                 if (arg == 4) {
                 body:
                     func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-                    func_ov004_0221d37c(0);
+                    changeAct(0);
                 }
             }
         }
@@ -1290,74 +1290,74 @@ void Unk_ov004_0224d0a0::vfunc_4c(u32 cmd, u32 arg) {
     func_0201b08c(this, cmd, arg);
 }
 
-extern "C" void *func_ov004_0221c0b8() { return &data_ov004_02250a9c->unk_714; }
+extern "C" void *SpNpcBrewster_GetJointMtxE() { return &sSpNpcBrewster->unk_714; }
 
-extern "C" void *func_ov004_0221c0a4() { return &data_ov004_02250a9c->unk_744; }
+extern "C" void *SpNpcBrewster_GetJointMtxB() { return &sSpNpcBrewster->unk_744; }
 
-extern "C" u32 func_ov004_0221c08c() { return ((u32)data_ov004_02250a9c->unk_ec.unk_a4 << 4) >> 16; }
+extern "C" u32 SpNpcBrewster_GetAnimFrame() { return ((u32)sSpNpcBrewster->unk_ec.unk_a4 << 4) >> 16; }
 
-extern "C" void func_ov004_0221c070() { func_02015e48(&data_ov004_02250a9c->unk_334, 0); }
+extern "C" void SpNpcBrewster_GetAnimState() { func_02015e48(&sSpNpcBrewster->unk_334, 0); }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov004_0224d0a0
+// SpNpcBrewster
 
 
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d010Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221cf80Ev();
-extern "C" void _ZN18Unk_ov004_0224d01019func_ov004_0221c304Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221cf7cEv();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d174Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d278Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221cfd8Ev();
-extern "C" void _ZN18Unk_ov004_0224d01019func_ov004_0221c608Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d0acEv();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221cf78Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d138Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d108Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d0e4Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d104Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d178Ev();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d17cEv();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d20cEv();
-extern "C" void _ZN18Unk_ov004_0224d0a019func_ov004_0221d340Ev();
-extern "C" void _ZN18Unk_ov004_0224d01019func_ov004_0221c794Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct05Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct06Ev();
+extern "C" void _ZN17SpNpcBrewsterTalk11runScript03Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct07Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct02Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct00Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct06Ev();
+extern "C" void _ZN17SpNpcBrewsterTalk14runDrinkScriptEv();
+extern "C" void _ZN13SpNpcBrewster10setupAct05Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct07Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct03Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct03Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct04Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct04Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct02Ev();
+extern "C" void _ZN13SpNpcBrewster9mainAct01Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct01Ev();
+extern "C" void _ZN13SpNpcBrewster10setupAct00Ev();
+extern "C" void _ZN17SpNpcBrewsterTalk15runCoffeeScriptEv();
 extern "C" const u32 data_ov004_02240120[2] = {0x40000000, 0};
-extern "C" const u32 data_ov004_02240128[3] = {0x15000, 0x1000, 0x13000};
+extern "C" const u32 sSpNpcBrewsterGuestSpawnPos[3] = {0x15000, 0x1000, 0x13000};
 extern "C" u8 data_ov004_0224cec8[4] = {0x08, 0x0b, 0x0e, 0x11};
 extern "C" u8 data_ov004_0224cf6c[12] = {'s', 'p', '_', 'n', 'p', 'c', '_', 'c', 'a', 'f', 'e', 0};
 extern "C" u8 data_ov004_0224cf78[17] = {'s', 'p', '_', 'e', 't', 'c', '_', 's', 'e', 'q', 'u', 'e', 'n', 'c', 'e', '4', 0};
-extern "C" void *data_ov004_0224cf24[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d108Ev, 0};
-extern "C" u8 data_ov004_0224cf8c[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '.', 'n', 's', 'b', 'm', 'd', 0};
-extern "C" u8 data_ov004_0224cfbc[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry data_ov004_0224cfa4 = {func_ov004_0221d630, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov004_0224cf0c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d0acEv, 0};
-extern "C" void *data_ov004_0224cf5c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d340Ev, 0};
-extern "C" u32 data_ov004_0224cf54[2] = {(u32)data_ov004_0224cf6c, (u32)data_ov004_0224cf78};
-extern "C" void *data_ov004_0224cf4c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d20cEv, 0};
-extern "C" void *data_ov004_0224cf44[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d17cEv, 0};
-extern "C" void *data_ov004_0224cf3c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d178Ev, 0};
-extern "C" void *data_ov004_0224cf34[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d104Ev, 0};
-extern "C" void *data_ov004_0224cef4[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d278Ev, 0};
-extern "C" void *data_ov004_0224ced4[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221cf80Ev, 0};
-extern "C" void *data_ov004_0224cf14[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221cf78Ev, 0};
-extern "C" void *data_ov004_0224cedc[2] = {(void *)_ZN18Unk_ov004_0224d01019func_ov004_0221c304Ev, 0};
-extern "C" void *data_ov004_0224cf64[2] = {(void *)_ZN18Unk_ov004_0224d01019func_ov004_0221c794Ev, 0};
-extern "C" void *data_ov004_0224cecc[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d010Ev, 0};
-extern "C" void *data_ov004_0224cf04[2] = {(void *)_ZN18Unk_ov004_0224d01019func_ov004_0221c608Ev, 0};
-extern "C" void *data_ov004_0224cefc[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221cfd8Ev, 0};
-extern "C" void *data_ov004_0224ceec[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d174Ev, 0};
-extern "C" void *data_ov004_0224cf2c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d0e4Ev, 0};
-extern "C" void *data_ov004_0224cf1c[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221d138Ev, 0};
-extern "C" void *data_ov004_0224cee4[2] = {(void *)_ZN18Unk_ov004_0224d0a019func_ov004_0221cf7cEv, 0};
-typedef BOOL (Unk_ov004_0224d0a0::*Unk_ov004_O_Fn)();
-typedef void (Unk_ov004_0224d010::*Unk_ov004_D_Fn)();
-extern "C" Unk_ov004_0224d010_Ent data_ov004_0224cfd8[4] = {
+extern "C" void *data_ov004_0224cf24[2] = {(void *)_ZN13SpNpcBrewster9mainAct03Ev, 0};
+extern "C" u8 sSpNpcBrewsterModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcBrewsterTexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'p', 'g', 'e', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" Unk_ov004_SceneEntry sSpNpcBrewsterProfile = {SpNpcBrewster_Create, 0x63, 0x6a, 0, 0x5000, 0x5000, 0x3e800};
+extern "C" void *data_ov004_0224cf0c[2] = {(void *)_ZN13SpNpcBrewster10setupAct05Ev, 0};
+extern "C" void *data_ov004_0224cf5c[2] = {(void *)_ZN13SpNpcBrewster10setupAct00Ev, 0};
+extern "C" u32 sSpNpcBrewsterMsgFiles[2] = {(u32)data_ov004_0224cf6c, (u32)data_ov004_0224cf78};
+extern "C" void *data_ov004_0224cf4c[2] = {(void *)_ZN13SpNpcBrewster10setupAct01Ev, 0};
+extern "C" void *data_ov004_0224cf44[2] = {(void *)_ZN13SpNpcBrewster9mainAct01Ev, 0};
+extern "C" void *data_ov004_0224cf3c[2] = {(void *)_ZN13SpNpcBrewster10setupAct02Ev, 0};
+extern "C" void *data_ov004_0224cf34[2] = {(void *)_ZN13SpNpcBrewster10setupAct04Ev, 0};
+extern "C" void *data_ov004_0224cef4[2] = {(void *)_ZN13SpNpcBrewster9mainAct00Ev, 0};
+extern "C" void *data_ov004_0224ced4[2] = {(void *)_ZN13SpNpcBrewster9mainAct06Ev, 0};
+extern "C" void *data_ov004_0224cf14[2] = {(void *)_ZN13SpNpcBrewster9mainAct07Ev, 0};
+extern "C" void *data_ov004_0224cedc[2] = {(void *)_ZN17SpNpcBrewsterTalk11runScript03Ev, 0};
+extern "C" void *data_ov004_0224cf64[2] = {(void *)_ZN17SpNpcBrewsterTalk15runCoffeeScriptEv, 0};
+extern "C" void *data_ov004_0224cecc[2] = {(void *)_ZN13SpNpcBrewster9mainAct05Ev, 0};
+extern "C" void *data_ov004_0224cf04[2] = {(void *)_ZN17SpNpcBrewsterTalk14runDrinkScriptEv, 0};
+extern "C" void *data_ov004_0224cefc[2] = {(void *)_ZN13SpNpcBrewster10setupAct06Ev, 0};
+extern "C" void *data_ov004_0224ceec[2] = {(void *)_ZN13SpNpcBrewster9mainAct02Ev, 0};
+extern "C" void *data_ov004_0224cf2c[2] = {(void *)_ZN13SpNpcBrewster9mainAct04Ev, 0};
+extern "C" void *data_ov004_0224cf1c[2] = {(void *)_ZN13SpNpcBrewster10setupAct03Ev, 0};
+extern "C" void *data_ov004_0224cee4[2] = {(void *)_ZN13SpNpcBrewster10setupAct07Ev, 0};
+typedef BOOL (SpNpcBrewster::*Unk_ov004_O_Fn)();
+typedef void (SpNpcBrewsterTalk::*Unk_ov004_D_Fn)();
+extern "C" Unk_ov004_0224d010_Ent sSpNpcBrewsterTalkScripts[4] = {
     {0, 0},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cf64, 1},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cf04, 1},
     {*(Unk_ov004_D_Fn *)data_ov004_0224cedc, 1},
 };
-extern "C" Unk_ov004_0224d0a0_Ent data_ov004_02250aa0[8] = {
+extern "C" Unk_ov004_0224d0a0_Ent sSpNpcBrewsterActTable[8] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf5c, *(Unk_ov004_O_Fn *)data_ov004_0224cef4},
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf4c, *(Unk_ov004_O_Fn *)data_ov004_0224cf44},
     {*(Unk_ov004_O_Fn *)data_ov004_0224cf3c, *(Unk_ov004_O_Fn *)data_ov004_0224ceec},
@@ -1367,4 +1367,4 @@ extern "C" Unk_ov004_0224d0a0_Ent data_ov004_02250aa0[8] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224cefc, *(Unk_ov004_O_Fn *)data_ov004_0224ced4},
     {*(Unk_ov004_O_Fn *)data_ov004_0224cee4, *(Unk_ov004_O_Fn *)data_ov004_0224cf14},
 };
-extern "C" Unk_ov004_0224d0a0 *data_ov004_02250a9c = 0;
+extern "C" SpNpcBrewster *sSpNpcBrewster = 0;

@@ -19,14 +19,14 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-extern "C" void func_ov003_02214c1c();
+extern "C" void ReddTent_Create();
 extern "C" Unk_ov003_Color data_ov003_02235144(0x1f, 0x14, 0x14, 0x1f);
 extern "C" Unk_ov003_Color data_ov003_02235160(0x14, 0x14, 0x1f, 0x1f);
 extern "C" Unk_ov003_Color data_ov003_0223514c(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_Color data_ov003_02235158(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_Color data_ov003_0223515c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov003_Color data_ov003_02235148(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry data_ov003_02230fd0 = {(void *(*)())func_ov003_02214c1c, 0x1b, 0x21, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sReddTentProfile = {(void *(*)())ReddTent_Create, 0x1b, 0x21, 0, 0xc8000, 0x12c000, 0x258000};
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -308,7 +308,7 @@ void MI_CpuCopy8(void *, void *, s32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b50e8();
 void Visitor_ScheduleLow(void *, s32, void *);
-extern u16 data_ov003_02231144;
+extern u16 sGracieCarVisitorProfile;
 extern u8 data_ov003_02231430[];
 extern u8 data_ov003_02231434[];
 extern u8 data_ov003_0223144c[];
@@ -316,10 +316,10 @@ extern u8 data_ov003_02231464[];
 extern char data_ov003_0223524c[];
 extern char data_ov003_02235204[];
 extern char data_ov003_02235228[];
-extern u32 data_ov003_022312c8[];
-extern u32 data_ov003_02235278;
-extern u32 data_ov003_0223527c;
-extern u32 data_ov003_02235280;
+extern u32 sGateHouseModelNames[];
+extern u32 sCountdownHours;
+extern u32 sCountdownSeconds;
+extern u32 sCountdownMinutes;
 void func_0203c924(void *);
 void func_0203c928(void *);
 BOOL func_0203c6f8(void *a, void *b);
@@ -332,16 +332,16 @@ void func_020547e4(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL func_0203006c(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_ov003_02218da8();
+s32 Field_GetStructureTexSuffix();
 void Snd_PlaySe(u32);
-u32 func_ov003_02214f3c();
-s32 func_ov003_02214f54();
+u32 GateHouse_GetModelName();
+s32 GateHouse_GetDesign();
 }
 
-class Unk_ov003_02230ff0 : public BuildingActor {
+class ReddTent : public BuildingActor {
 public:
-    Unk_ov003_02230ff0();
-    virtual ~Unk_ov003_02230ff0();
+    ReddTent();
+    virtual ~ReddTent();
     virtual BOOL onExecute();
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
@@ -351,48 +351,48 @@ public:
     virtual void vfunc_s18();
     virtual BOOL vfunc_s6c();
 
-    void func_ov003_02214870();
-    void func_ov003_02214800();
-    void func_ov003_02214738();
-    void func_ov003_02214704();
-    void func_ov003_022146c8();
-    void func_ov003_02214644();
-    void func_ov003_0221461c();
-    void func_ov003_022145dc();
-    void func_ov003_02214578();
-    void func_ov003_02214494();
-    BOOL func_ov003_02214890();
-    BOOL func_ov003_02214848();
-    BOOL func_ov003_0221475c();
-    BOOL func_ov003_02214734();
-    BOOL func_ov003_02214700();
-    BOOL func_ov003_022146c4();
-    BOOL func_ov003_02214640();
-    BOOL func_ov003_02214608();
-    BOOL func_ov003_022145cc();
-    BOOL func_ov003_02214568();
-    void func_ov003_02214894();
-    BOOL func_ov003_02214974(s32 i);
+    void execTentIdle();
+    void execTentCheck();
+    void execTentTalkOpen();
+    void execTentTalk();
+    void execTentMenuWait();
+    void execTentMenu();
+    void execTentGoIn();
+    void execTentEntry07();
+    void execTentWalkIn();
+    void execTentWarp();
+    BOOL enterTentIdle();
+    BOOL enterTentCheck();
+    BOOL enterTentTalkOpen();
+    BOOL enterTentTalk();
+    BOOL enterTentMenuWait();
+    BOOL enterTentMenu();
+    BOOL enterTentGoIn();
+    BOOL enterTentEntry07();
+    BOOL enterTentWalkIn();
+    BOOL enterTentWarp();
+    void updateTentState();
+    BOOL setTentState(s32 i);
 
     /* 0x2b0 */ s32 unk_2b0;
     /* 0x2b4 */ u16 unk_2b4; u8 unk_2b6;
     /* 0x2b7 */ u8 unk_2b7;
 };
 
-extern "C" void func_ov003_02214c1c() {
-    new Unk_ov003_02230ff0;
+extern "C" void ReddTent_Create() {
+    new ReddTent;
 }
 
 
-Unk_ov003_02230ff0::Unk_ov003_02230ff0() {
+ReddTent::ReddTent() {
 }
 
 
-Unk_ov003_02230ff0::~Unk_ov003_02230ff0() {
+ReddTent::~ReddTent() {
 }
 
 
-BOOL Unk_ov003_02230ff0::vfunc_70() {
+BOOL ReddTent::vfunc_70() {
     Unk_ov003_02214890_Buf l;
     l.w0 = 0;
     l.w1 = 0;
@@ -402,13 +402,13 @@ BOOL Unk_ov003_02230ff0::vfunc_70() {
 }
 
 
-BOOL Unk_ov003_02230ff0::onExecute() {
-    func_ov003_02214894();
+BOOL ReddTent::onExecute() {
+    updateTentState();
     return TRUE;
 }
 
 
-BOOL Unk_ov003_02230ff0::vfunc_8c() {
+BOOL ReddTent::vfunc_8c() {
     Unk_ov003_02214890_Buf l;
     l.w0 = 0;
     l.w1 = 0;
@@ -427,7 +427,7 @@ no:
 }
 
 
-void Unk_ov003_02230ff0::vfunc_s10() {
+void ReddTent::vfunc_s10() {
     if (unk_1e == 2) {
         u32 obj[0x38 / 4];
         _ZN12Unk_020e2e54C1Ev(obj);
@@ -439,36 +439,36 @@ void Unk_ov003_02230ff0::vfunc_s10() {
 }
 
 
-void Unk_ov003_02230ff0::vfunc_88() {
+void ReddTent::vfunc_88() {
     switch (unk_1e) {
     case 2:
         unk_3c->unk_14 = 1;
-        func_ov003_02214974(4);
+        setTentState(4);
         break;
     case 3:
     case 0x32:
-        func_ov003_02214974(6);
+        setTentState(6);
         break;
     }
 }
 
 
-void Unk_ov003_02230ff0::vfunc_s18() {
+void ReddTent::vfunc_s18() {
 }
 
 
-BOOL Unk_ov003_02230ff0::vfunc_s6c() {
+BOOL ReddTent::vfunc_s6c() {
     return FALSE;
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214974(s32 i) {
-    static BOOL (Unk_ov003_02230ff0::*tbl[10])() = {
-        &Unk_ov003_02230ff0::func_ov003_02214890, &Unk_ov003_02230ff0::func_ov003_02214848,
-        &Unk_ov003_02230ff0::func_ov003_0221475c, &Unk_ov003_02230ff0::func_ov003_02214734,
-        &Unk_ov003_02230ff0::func_ov003_02214700, &Unk_ov003_02230ff0::func_ov003_022146c4,
-        &Unk_ov003_02230ff0::func_ov003_02214640, &Unk_ov003_02230ff0::func_ov003_02214608,
-        &Unk_ov003_02230ff0::func_ov003_022145cc, &Unk_ov003_02230ff0::func_ov003_02214568,
+BOOL ReddTent::setTentState(s32 i) {
+    static BOOL (ReddTent::*tbl[10])() = {
+        &ReddTent::enterTentIdle, &ReddTent::enterTentCheck,
+        &ReddTent::enterTentTalkOpen, &ReddTent::enterTentTalk,
+        &ReddTent::enterTentMenuWait, &ReddTent::enterTentMenu,
+        &ReddTent::enterTentGoIn, &ReddTent::enterTentEntry07,
+        &ReddTent::enterTentWalkIn, &ReddTent::enterTentWarp,
     };
     if (i < 10) {
         if ((this->*tbl[i])()) {
@@ -480,13 +480,13 @@ BOOL Unk_ov003_02230ff0::func_ov003_02214974(s32 i) {
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214894() {
-    static void (Unk_ov003_02230ff0::*tbl[10])() = {
-        &Unk_ov003_02230ff0::func_ov003_02214870, &Unk_ov003_02230ff0::func_ov003_02214800,
-        &Unk_ov003_02230ff0::func_ov003_02214738, &Unk_ov003_02230ff0::func_ov003_02214704,
-        &Unk_ov003_02230ff0::func_ov003_022146c8, &Unk_ov003_02230ff0::func_ov003_02214644,
-        &Unk_ov003_02230ff0::func_ov003_0221461c, &Unk_ov003_02230ff0::func_ov003_022145dc,
-        &Unk_ov003_02230ff0::func_ov003_02214578, &Unk_ov003_02230ff0::func_ov003_02214494,
+void ReddTent::updateTentState() {
+    static void (ReddTent::*tbl[10])() = {
+        &ReddTent::execTentIdle, &ReddTent::execTentCheck,
+        &ReddTent::execTentTalkOpen, &ReddTent::execTentTalk,
+        &ReddTent::execTentMenuWait, &ReddTent::execTentMenu,
+        &ReddTent::execTentGoIn, &ReddTent::execTentEntry07,
+        &ReddTent::execTentWalkIn, &ReddTent::execTentWarp,
     };
     s32 i = unk_2b0;
     if (i < 10) {
@@ -495,26 +495,26 @@ void Unk_ov003_02230ff0::func_ov003_02214894() {
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214890() {
+BOOL ReddTent::enterTentIdle() {
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214870() {
+void ReddTent::execTentIdle() {
     if (unk_231 & 4) {
         TalkRequest_AddPlayerTalk6(this, 0);
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214848() {
+BOOL ReddTent::enterTentCheck() {
     func_020b10e0(unk_132);
     unk_232.f1 = 0;
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214800() {
+void ReddTent::execTentCheck() {
     u32 r = func_020b10c4(unk_132);
     if (r != 0) {
         u8 s;
@@ -524,12 +524,12 @@ void Unk_ov003_02230ff0::func_ov003_02214800() {
             s = 0;
         }
         unk_232.f1 = s;
-        func_ov003_02214974(2);
+        setTentState(2);
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_0221475c() {
+BOOL ReddTent::enterTentTalkOpen() {
     Unk_ov003_0221475c_Pad pad;
     _ZN9Character13func_0203e488Ei(this, this);
     setFileName("sp_npc_fox");
@@ -553,22 +553,22 @@ BOOL Unk_ov003_02230ff0::func_ov003_0221475c() {
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214738() {
+void ReddTent::execTentTalkOpen() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
         if (t->unk_04 != 0) {
-            func_ov003_02214974(3);
+            setTentState(3);
         }
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214734() {
+BOOL ReddTent::enterTentTalk() {
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214704() {
+void ReddTent::execTentTalk() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
         if (t->unk_04 == 0) {
@@ -579,26 +579,26 @@ void Unk_ov003_02230ff0::func_ov003_02214704() {
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214700() {
+BOOL ReddTent::enterTentMenuWait() {
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_022146c8() {
+void ReddTent::execTentMenuWait() {
     if (((Unk_ov003_022141bc_Target *)unk_3c)->unk_04 == 5) {
         _ZN12Unk_021ed2c013func_020ad3bcEv(data_021ed2c0);
         func_0206ec84(0xe, _ZN12Unk_020ad70013func_020ad5f8Ev());
-        func_ov003_02214974(5);
+        setTentState(5);
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_022146c4() {
+BOOL ReddTent::enterTentMenu() {
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214644() {
+void ReddTent::execTentMenu() {
     if (func_0206ec6c()) {
         u8 r[2];
         if (func_0206ed18()) {
@@ -606,57 +606,57 @@ void Unk_ov003_02230ff0::func_ov003_02214644() {
             r[0] = 3;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[0], "sp_npc_fox");
             ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
-            func_ov003_02214974(3);
+            setTentState(3);
         } else {
             r[1] = 4;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[1], "sp_npc_fox");
             ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
-            func_ov003_02214974(3);
+            setTentState(3);
             func_020b1040(unk_132, 0);
         }
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214640() {
+BOOL ReddTent::enterTentGoIn() {
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_0221461c() {
+void ReddTent::execTentGoIn() {
     Unk_ov003_022141bc_Target *t = (Unk_ov003_022141bc_Target *)unk_3c;
     if (t) {
         if (t->unk_04 == 0) {
-            func_ov003_02214974(7);
+            setTentState(7);
         }
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214608() {
+BOOL ReddTent::enterTentEntry07() {
     func_020949a0(0);
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_022145dc() {
+void ReddTent::execTentEntry07() {
     if (func_020951d0()) {
-        if (func_ov003_02214974(8)) {
+        if (setTentState(8)) {
             _ZN9Character13func_0203e47cEi(this, this);
         }
     }
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_022145cc() {
+BOOL ReddTent::enterTentWalkIn() {
     unk_2b6 = 0;
     return TRUE;
 }
 
 
-void Unk_ov003_02230ff0::func_ov003_02214578() {
+void ReddTent::execTentWalkIn() {
     if (func_020951c4()) {
-        func_ov003_02214974(9);
+        setTentState(9);
     } else if (unk_2b6 == 0) {
         s16 ang;
         Unk_ov009_0225b880_Vec3 v;
@@ -669,15 +669,15 @@ void Unk_ov003_02230ff0::func_ov003_02214578() {
 }
 
 
-BOOL Unk_ov003_02230ff0::func_ov003_02214568() {
+BOOL ReddTent::enterTentWarp() {
     unk_2b4 = 0;
     return TRUE;
 }
 
 
 // ================================================================
-// class Unk_ov003_02230ff0 (state functions)
-void Unk_ov003_02230ff0::func_ov003_02214494() {
+// class ReddTent (state functions)
+void ReddTent::execTentWarp() {
     if (func_020951d0()) {
         unk_2b4++;
     }

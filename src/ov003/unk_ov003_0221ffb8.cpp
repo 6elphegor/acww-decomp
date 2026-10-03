@@ -1041,7 +1041,7 @@ s32 MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void PlayerActor_ApplyHoldOffset(T48_f5 *t, V3_f5 *d);
 s32 PlayerActor_TestSlotFlag9(s32 a);
-void func_ov003_0221cfdc(s32 o, V3_f9 *a, V3_f9 *b, s32 c, s16 d, s16 e);
+void Field_DrawItemModel(s32 o, V3_f9 *a, V3_f9 *b, s32 c, s16 d, s16 e);
 
 // own functions
 BOOL func_ov003_02220030(u8 *self, void *a);
@@ -1611,7 +1611,7 @@ extern "C" void func_ov003_02224990(void *self, E_f9 *e)
         ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
         V3_f9 t6c(*pos);
         V3_f9 b78(0x1000, 0x1000, 0x1000);
-        func_ov003_0221cfdc(0x1520, &t6c, &b78, 0, 0, 0);
+        Field_DrawItemModel(0x1520, &t6c, &b78, 0, 0, 0);
         *cnt = *cnt + 1;
     }
 }
@@ -1631,7 +1631,7 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
         b.x = 0x1000;
         b.y = 0x1000;
         b.z = 0x1000;
-        func_ov003_0221cfdc(0x1520, &a1, &b, 0, 0, 0);
+        Field_DrawItemModel(0x1520, &a1, &b, 0, 0, 0);
         if (func_ov003_02224b1c(e) != 0) {
             *cnt = 0x64;
         }
@@ -1642,7 +1642,7 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
         b.x = 0x1000;
         b.y = 0x1000;
         b.z = 0x1000;
-        func_ov003_0221cfdc(0x1520, &a2, &b, 0, 0, 0);
+        Field_DrawItemModel(0x1520, &a2, &b, 0, 0, 0);
     }
     ((void (*)(void *, s32))func_ov003_022209ec)(pos, data_ov003_02234768);
     pos->y = pos->y - data_ov003_02234764;

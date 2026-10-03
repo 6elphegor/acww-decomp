@@ -270,10 +270,10 @@ s32 func_020b50e8();
 void Visitor_ScheduleLow(void *, s32, void *);
 }
 
-class Unk_ov003_02231168 : public BuildingActor {
+class GracieCar : public BuildingActor {
 public:
-    Unk_ov003_02231168();
-    virtual ~Unk_ov003_02231168();
+    GracieCar();
+    virtual ~GracieCar();
     virtual BOOL vfunc_70();
 };
 
@@ -285,9 +285,9 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-extern "C" void func_ov003_02214da8();
-extern "C" u32 data_ov003_02231144 = 0x6c;
-extern "C" Unk_ov003_SceneEntry data_ov003_02231148 = { func_ov003_02214da8, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" void GracieCar_Create();
+extern "C" u32 sGracieCarVisitorProfile = 0x6c;
+extern "C" Unk_ov003_SceneEntry sGracieCarProfile = { GracieCar_Create, 0x29, 0x2f, 0, 0xc8000, 0x12c000, 0x258000 };
 
 static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
     if (Event_GetState(0x40, m, 0)) {
@@ -296,17 +296,17 @@ static inline BOOL Unk_ov003_02214ce0_Chk(void *m) {
     return FALSE;
 }
 
-extern "C" void func_ov003_02214da8() {
-    new Unk_ov003_02231168;
+extern "C" void GracieCar_Create() {
+    new GracieCar;
 }
 
-Unk_ov003_02231168::Unk_ov003_02231168() {
+GracieCar::GracieCar() {
 }
 
-Unk_ov003_02231168::~Unk_ov003_02231168() {
+GracieCar::~GracieCar() {
 }
 
-BOOL Unk_ov003_02231168::vfunc_70() {
+BOOL GracieCar::vfunc_70() {
     Unk_ov003_02214890_Buf l;
     Unk_ov003_02214890_Buf m;
     l.w0 = 0;
@@ -314,7 +314,7 @@ BOOL Unk_ov003_02231168::vfunc_70() {
     Clock_GetDateTime(&l);
     MI_CpuCopy8(&l, &m, 8);
     if (Unk_ov003_02214ce0_Chk(&m)) {
-        Visitor_ScheduleLow(&data_ov003_02231144, func_020b50e8(), &unk_5c);
+        Visitor_ScheduleLow(&sGracieCarVisitorProfile, func_020b50e8(), &unk_5c);
     }
     return TRUE;
 }

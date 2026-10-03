@@ -64,9 +64,9 @@ struct Unk_ov005_Scene {  // 24 bytes; main's table data_020e4280 points to it
     s32 unk_14;
 };
 
-extern u8 data_ov003_02232498;  // copied into the entry table by __sinit
-extern Unk_ov005_Objs data_ov003_0223249c;
-extern u32 data_ov003_022324a4[];
+extern u8 sFieldSceneProfileCount;  // copied into the entry table by __sinit
+extern Unk_ov005_Objs sFieldSceneObjectList;
+extern u32 sFieldSceneProfiles[];
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern Unk_ov005_Scene data_ov005_0225b7b4;
@@ -77,12 +77,12 @@ extern u32 data_ov005_0225b790[4];
 extern u32 data_ov005_0225b7e4[36];
 extern Unk_ov005_Rec data_ov005_0225b7a0[1];
 
-Unk_ov005_Scene data_ov005_0225b7b4 = {&data_ov005_0225b780, 1, &data_ov005_0225b788, &data_ov003_0223249c, 9, -1};
+Unk_ov005_Scene data_ov005_0225b7b4 = {&data_ov005_0225b780, 1, &data_ov005_0225b788, &sFieldSceneObjectList, 9, -1};
 
 Unk_ov005_Grid data_ov005_0225b788 = {data_ov005_0225b7e4, 6, 6};
 
 Unk_ov005_Entry data_ov005_0225b7cc[3] = {
-    {2, data_ov003_02232498, 0, data_ov003_022324a4},
+    {2, sFieldSceneProfileCount, 0, sFieldSceneProfiles},
     {2, 4, 0, data_ov005_0225b790},
     {1, 1, 0, data_ov005_0225b7a0},
 };

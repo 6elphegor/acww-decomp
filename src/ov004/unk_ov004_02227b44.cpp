@@ -306,7 +306,7 @@ extern void *gBgHeap;
 extern u8 data_021ed0a0[];
 s32 func_ov004_02224d8c(void *, u32);
 void *Heap_Alloc(void *heap, u32 size);
-s32 _ZN12Unk_0206fe8013func_02070358EPt(void *p, u16 *v);
+s32 _ZN10MuseumData9isDonatedEPt(void *p, u16 *v);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 _ZN12G3dResAccess13func_02056fccEi(void *p, char *name);
 s32 _ZN9AnimModel12drawAnimatedEPv(void *p, u32 a);
@@ -431,7 +431,7 @@ void Unk_ov004_0224dbc0::func_02227b7c() {
     for (i = 0; i < r->unk_04; i++) {
         u16 v = r->unk_00(i);
         u32 f = z;
-        if (_ZN12Unk_0206fe8013func_02070358EPt(data_021ed0a0, &v) != 0) {
+        if (_ZN10MuseumData9isDonatedEPt(data_021ed0a0, &v) != 0) {
             f = 1;
         }
         func_020639e8(data_ov004_02250e20, "p%d_%d", i, f);

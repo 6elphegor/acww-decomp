@@ -399,8 +399,8 @@ void func_020e8434(Mtx43 *m, s32 a);
 void func_0202f3a8(Vec3 *out, Vec3 *a, Vec3 *b, Vec3 *c);
 BOOL func_020307c4(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, Vec3 *v);
-s32 func_ov003_02218bc8(s32 a, s32 b);
-s32 func_ov003_02218b1c(s32 a);
+s32 BuildingList_FindByGrid(s32 a, s32 b);
+s32 BuildingList_IndexOf(s32 a);
 
 extern s32 gGfxMainOnTop;
 extern Unk_020b60dc_Cfg *data_021ef2f0;
@@ -690,7 +690,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                             self->unk_18 = 6;
                             s32 g1, g2;
                             FieldPos_ToUnit(&g1, &g2, (Vec3 *)&self->unk_0c);
-                            self->unk_19 = func_ov003_02218b1c(func_ov003_02218bc8(g1, g2));
+                            self->unk_19 = BuildingList_IndexOf(BuildingList_FindByGrid(g1, g2));
                         } else {
                             self->unk_18 = 5;
                         }

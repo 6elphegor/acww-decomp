@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/base
-// ov004 TU05: .text 0x02213b90-0x02214948 (class Unk_ov004_0224bda0). The switch function
-// Unk_ov004_0224bda0::func_ov004_02214494 needs mwcc 1.2/base and is in the _switch file (object order).
+// ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
+// MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
@@ -55,9 +55,9 @@ struct TalkWindowState {
     /* 0x0008 */ s32 unk_08;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0). Unk_ov004_0224bda0 overrides its slots 0x10, 0x14 and 0x18 with
-// the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the names vfunc_60/64/68 here
-// (the thunks are _ZThn236_N18Unk_ov004_0224bda08vfunc_60Ev ...). Every other slot is named vfunc_sXX: main has a
+// Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
+// the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the derived names onMessageStart/onMessageEnd/onChoice here
+// (the thunks are _ZThn236_N17MuseumExhibitInfo14onMessageStartEv ...). Every other slot is named vfunc_sXX: main has a
 // label _ZN14TalkMsgRequest9vfunc_sXXEv for each, and the names cannot be overridden by the primary chain by accident.
 class MsgRequest {
 public:
@@ -76,9 +76,9 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_60();
-    virtual BOOL vfunc_64();
-    virtual BOOL vfunc_68();
+    virtual void onMessageStart();
+    virtual BOOL onMessageEnd();
+    virtual BOOL onChoice();
     virtual void vfunc_s1c();
     virtual void vfunc_s20();
     virtual void vfunc_s24();
@@ -154,7 +154,7 @@ struct Unk_ov004_022146ec_Sing {
     u32 unk_64;
 };
 
-class Unk_ov004_0224bda0;
+class MuseumExhibitInfo;
 class Unk_020b6960;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
@@ -163,9 +163,9 @@ class Unk_020b6960;
 #define func_0203e488 _ZN9Character13func_0203e488Ei
 #define Character_setCharId _ZN9Character9setCharIdEj
 #define func_020b68a8 _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih
-#define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
-#define func_02070370 _ZN12Unk_0206fe8013func_02070370EPt
-#define func_020700a4 _ZN12Unk_0206fe8013func_020700a4EiPt
+#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
+#define MuseumData_getDonationState _ZN10MuseumData16getDonationStateEPt
+#define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
@@ -191,9 +191,9 @@ void func_0203e47c(void *self, TalkMsgRequest *sec);
 void func_0203e488(void *self, TalkMsgRequest *sec);
 void Character_setCharId(void *self, u32 a);
 s32 func_020b68a8(Unk_020b6960 *self, Unk_020b6a94 *o, void *a, u32 b, u32 c, u32 d);
-s32 func_02070358(void *self, u16 *p);
-s32 func_02070370(void *self, u16 *p);
-s32 func_020700a4(void *self, Unk_020e1c64 *a, u16 *p);
+s32 MuseumData_isDonated(void *self, u16 *p);
+s32 MuseumData_getDonationState(void *self, u16 *p);
+s32 MuseumData_getDonorName(void *self, Unk_020e1c64 *a, u16 *p);
 void *TalkWindowState_getChoiceList(void *self);
 void TalkWindowState_openChoices(void *self, s32 a);
 void TalkWindowState_setNamedSlot(void *self, s32 a, ItemName *b, u32 c);
@@ -216,38 +216,38 @@ Unk_ov004_022146ec_Actor *func_020951ec(u32);
 void func_01ffd070(void *, void *, void *);
 }
 
-class Unk_ov004_0224bda0 : public Character, public TalkMsgRequest {
+class MuseumExhibitInfo : public Character, public TalkMsgRequest {
 public:
-    Unk_ov004_0224bda0();
+    MuseumExhibitInfo();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224bda0();
+    virtual ~MuseumExhibitInfo();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void vfunc_60();
-    virtual BOOL vfunc_64();
-    virtual BOOL vfunc_68();
+    virtual void onMessageStart();
+    virtual BOOL onMessageEnd();
+    virtual BOOL onChoice();
 
-    void func_ov004_02213c58();
-    BOOL func_ov004_02213c7c();
-    void func_ov004_02213d18();
-    BOOL func_ov004_02213d48();
-    void func_ov004_02213d4c();
-    BOOL func_ov004_02213d70();
-    void func_ov004_02213e74();
-    BOOL func_ov004_02213ea4();
-    void func_ov004_02213ea8();
-    BOOL func_ov004_02213f34(s32 idx);
-    BOOL func_ov004_02214350();
-    void func_ov004_02214364();
-    u32 func_ov004_022143b8();
-    BOOL func_ov004_02214404();
-    BOOL func_ov004_0221444c();
-    BOOL func_ov004_02214494();
-    BOOL func_ov004_022145bc();
-    BOOL func_ov004_02214608();
+    void mainAct03();
+    BOOL setupAct03();
+    void mainAct02();
+    BOOL setupAct02();
+    void mainAct01();
+    BOOL setupAct01();
+    void mainAct00();
+    BOOL setupAct00();
+    void execAct();
+    BOOL changeAct(s32 idx);
+    BOOL isAutoTalkKind();
+    void advanceToNextDonated();
+    u32 countDonatedFromCursor();
+    BOOL isAllDonated();
+    BOOL isAnyDonated();
+    BOOL buildItemList();
+    BOOL unregisterSelf();
+    BOOL registerSelf();
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ Unk_020b6a94 unk_134;
@@ -263,11 +263,11 @@ public:
     /* 0x168 */ u8 unk_168;
 };
 
-typedef void (Unk_ov004_0224bda0::*Unk_ov004_02213ea8_Fn)();
-typedef BOOL (Unk_ov004_0224bda0::*Unk_ov004_02213f34_Fn)();
+typedef void (MuseumExhibitInfo::*Unk_ov004_02213ea8_Fn)();
+typedef BOOL (MuseumExhibitInfo::*Unk_ov004_02213f34_Fn)();
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224bda0 *(*factory)();
+    MuseumExhibitInfo *(*factory)();
     u16 id;
     u16 size;
     u32 zero;
@@ -285,22 +285,22 @@ struct Unk_ov004_Quad {
 };
 
 extern "C" {
-extern s16 data_ov004_0224bd3c;
-extern char data_ov004_0224be8c[];
-extern u8 data_ov004_022502c4;
-extern u8 data_ov004_022502c8;
-extern u32 data_ov004_022502d4;
-extern u8 *data_ov004_022502d8;
-extern u32 data_ov004_022502e8;
-extern u32 data_ov004_022502f8;
-extern Unk_ov004_0224bda0 *data_ov004_0225033c[0x20];
-Unk_ov004_0224bda0 *func_ov004_022148a0(void);
-void func_ov004_0221465c(void);
+extern s16 sMuseumExhibitSpawnMsg;
+extern char sMuseumExhibitMsgFile[];
+extern u8 sMuseumExhibitAutoTalkActive;
+extern u8 sMuseumExhibitInfoCount;
+extern u32 sMuseumExhibitSpawnKind;
+extern u8 *sMuseumExhibitSpawnList;
+extern u32 sMuseumExhibitSpawnCount;
+extern u32 sMuseumExhibitSpawnFacingArc;
+extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
+MuseumExhibitInfo *MuseumExhibitInfo_Create(void);
+void MuseumExhibitInfo_ClearRegistry(void);
 }
 
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
-BOOL Unk_ov004_0224bda0::func_ov004_02214494() {
-    if (func_ov004_02214350() == 0) {
+BOOL MuseumExhibitInfo::buildItemList() {
+    if (isAutoTalkKind() == 0) {
         u16 **p = &unk_160;
         *p = (u16 *)Mem_Alloc(unk_164 * 2);
         if (*p) {
@@ -308,7 +308,7 @@ BOOL Unk_ov004_0224bda0::func_ov004_02214494() {
             switch (unk_158) {
             case 0:
                 for (i = 0; i < unk_164; i++) {
-                    u32 v = data_ov004_022502d8[i];
+                    u32 v = sMuseumExhibitSpawnList[i];
                     u16 r;
                     if (v < 0x38) r = v + 0x12b0; else r = 0x12b0;
                     unk_160[i] = r;
@@ -316,7 +316,7 @@ BOOL Unk_ov004_0224bda0::func_ov004_02214494() {
                 return TRUE;
             case 1:
                 for (i = 0; i < unk_164; i++) {
-                    u32 v = data_ov004_022502d8[i];
+                    u32 v = sMuseumExhibitSpawnList[i];
                     u16 r;
                     if (v < 0x38) r = v + 0x12e8; else r = 0x12e8;
                     unk_160[i] = r;
@@ -324,7 +324,7 @@ BOOL Unk_ov004_0224bda0::func_ov004_02214494() {
                 return TRUE;
             case 2:
                 for (i = 0; i < unk_164; i++) {
-                    u32 v = data_ov004_022502d8[i];
+                    u32 v = sMuseumExhibitSpawnList[i];
                     u32 r;
                     if (v < 0x14) r = v * 4 + 0x3894; else r = 0x3894;
                     unk_160[i] = r;
@@ -332,7 +332,7 @@ BOOL Unk_ov004_0224bda0::func_ov004_02214494() {
                 return TRUE;
             case 3:
                 for (i = 0; i < unk_164; i++) {
-                    u32 v = data_ov004_022502d8[i];
+                    u32 v = sMuseumExhibitSpawnList[i];
                     u32 r;
                     if (v < 0x34) r = v * 4 + 0x450c; else r = 0x450c;
                     unk_160[i] = r;

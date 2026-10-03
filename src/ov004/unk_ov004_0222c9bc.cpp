@@ -28,7 +28,7 @@
 #define Model_setInitCallback _ZN5Model15setInitCallbackEii
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
-#define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
+#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
@@ -677,7 +677,7 @@ void func_0205bf84(void);
 s32 func_020639e8(char *, char *, ...);
 s32 func_02063b8c(s32 n);
 s32 File_LoadAlloc(char *, s32, s32, s32);
-s32 func_02070358(void *, u16 *);
+s32 MuseumData_isDonated(void *, u16 *);
 void func_02088c64(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
 void func_02089040(void *a);
 P *func_020947f0(s32 n);
@@ -4160,7 +4160,7 @@ extern "C" void func_ov004_0222cf38(Mgr *o) {
     for (; i < data_ov004_0224e5f0; p++, i++) {
         V3 *v;
         id = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
-        if (func_02070358(data_021ed0a0, &id)) {
+        if (MuseumData_isDonated(data_021ed0a0, &id)) {
             v = &(*p)->unk_1a8;
             if (i >= 0x11) {
                 if (i != 0x19) {
@@ -4212,7 +4212,7 @@ extern "C" void func_ov004_0222cde0(Mgr *self) {
             w = 0x12e8;
         }
         v = w;
-        if (func_02070358(data_021ed0a0, (u16 *)&v)) {
+        if (MuseumData_isDonated(data_021ed0a0, (u16 *)&v)) {
             s32 *e = (s32 *)((u8 *)*pp + 0x1a8);
             switch (i) {
             case 0x34:

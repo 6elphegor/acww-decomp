@@ -131,9 +131,9 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
     virtual void vfunc_s1c();
     virtual void vfunc_s20();
     virtual void vfunc_s24();
@@ -216,9 +216,9 @@ public:
     virtual ~Atm();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void vfunc_60();
-    virtual void vfunc_64();
-    virtual void vfunc_68();
+    virtual void onMessageStart();
+    virtual void onMessageEnd();
+    virtual void onChoice();
 
     void execTalkAct02();
     BOOL enterTalkAct02();
@@ -423,9 +423,9 @@ void Atm::execTalkAct02() {
     }
 }
 
-void Atm::vfunc_60() {}
+void Atm::onMessageStart() {}
 
-void Atm::vfunc_64() {
+void Atm::onMessageEnd() {
     u8 buf[2];
     switch (unk_1e) {
     case 1:
@@ -442,7 +442,7 @@ void Atm::vfunc_64() {
 }
 
 // ================================================================ Atm
-void Atm::vfunc_68() {
+void Atm::onChoice() {
     u8 buf[4];
     u32 st = unk_1e;
     s32 v = unk_3c->getChoiceList()->getResult();

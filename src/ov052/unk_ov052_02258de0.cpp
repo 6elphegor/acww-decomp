@@ -105,8 +105,8 @@ s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 BOOL func_020b50dc();
 s32 _ZN11CommManager8isOnlineEv(void *g);
-void func_0201adc8(void *o, s32 v);
-s32 func_0201ade4(void *o, s32 v);
+void NpcActor_ChargePlayer(void *o, s32 v);
+s32 NpcActor_CanPlayerPay(void *o, s32 v);
 void func_020ac894(s32 a, s32 b, s32 c);
 BOOL func_020ac88c();
 u16 *func_020acfa8(void *tbl, s32 a, s32 b);
@@ -1048,7 +1048,7 @@ void Unk_ov052_0225a870::vfunc_14() {
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &v[3], 0, 5, 0);
         unk_b0->unk_71a = 0xfff1;
         msg = 0x11;
-        func_0201adc8(unk_b0, 0xbb8);
+        NpcActor_ChargePlayer(unk_b0, 0xbb8);
         func_ov052_02259a90(7);
         _ZN12Unk_02097ff413func_0209801cEj(h, 0xc);
         func_0202e1cc(1, 1);
@@ -1086,7 +1086,7 @@ void Unk_ov052_0225a870::vfunc_18() {
     case 7:
     case 0x12:
         if (t != 0) {
-            if (func_0201ade4(unk_b0, 0xbb8) == 0) {
+            if (NpcActor_CanPlayerPay(unk_b0, 0xbb8) == 0) {
                 msg = 0xa;
             } else if (unk_bc == 0) {
                 msg = 8;
@@ -1108,7 +1108,7 @@ void Unk_ov052_0225a870::vfunc_18() {
     case 0x21:
     case 0x22:
         if (t == 0) {
-            if (func_0201ade4(unk_b0, unk_b4) != 0) {
+            if (NpcActor_CanPlayerPay(unk_b0, unk_b4) != 0) {
                 if (func_02098ffc() >= 0) {
                     s32 idx = func_ov052_02259b1c(unk_b0, unk_b0->unk_734, 5);
                     unk_b0->unk_734[idx] = 1;
@@ -1134,7 +1134,7 @@ void Unk_ov052_0225a870::vfunc_18() {
 }
 
 void Unk_ov052_0225a870::func_ov052_02259274() {
-    func_0201adc8(unk_b0, unk_b4);
+    NpcActor_ChargePlayer(unk_b0, unk_b4);
     func_02099014(&unk_b0->unk_71a, 0);
     func_020ac894(unk_b0->unk_724, unk_b0->unk_728, 0xf);
     u8 *const g = data_021ed284;

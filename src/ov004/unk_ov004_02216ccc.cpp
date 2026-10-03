@@ -26,7 +26,7 @@ public:
     virtual ~ProcBase();
 };
 
-class Unk_ov004_0224c38c;
+class HouseOwnerVillager;
 
 #define VillagerId_isValid _ZN10VillagerId7isValidEv
 #define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
@@ -58,10 +58,10 @@ class Unk_ov004_0224c38c;
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define VillagerDataProfileView_getShirt _ZN23VillagerDataProfileView8getShirtEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-class Unk_ov004_02216ff4;
+class HouseOwnerAi;
 
-typedef BOOL (Unk_ov004_02216ff4::*Unk_ov004_02216ff4_Fn)(Unk_ov004_0224c38c *);
-typedef void (Unk_ov004_02216ff4::*Unk_ov004_02216ff4_VFn)(Unk_ov004_0224c38c *);
+typedef BOOL (HouseOwnerAi::*Unk_ov004_02216ff4_Fn)(HouseOwnerVillager *);
+typedef void (HouseOwnerAi::*Unk_ov004_02216ff4_VFn)(HouseOwnerVillager *);
 
 struct Unk_ov004_0221745c_Dir {
     s32 dx;
@@ -90,8 +90,8 @@ struct Unk_ov004_SceneEntry {
 };
 
 extern "C" {
-extern Unk_ov004_0221745c_Dir data_ov004_02250658[4];
-extern Unk_ov004_02216ff4_Entry data_ov004_02250678[];
+extern Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4];
+extern Unk_ov004_02216ff4_Entry sHouseOwnerAiStates[];
 extern Unk_ov004_022170e0_Global *gCommManager;
 extern u16 data_020c6cc8;
 extern const u8 data_ov004_02240090[4];
@@ -308,28 +308,28 @@ public:
     /* 0x838 */ VillagerMood unk_838;
 };
 
-// Member at +0x89c (state machine). Methods are named after Unk_ov004_02216ff4, its constructor after
-// Unk_ov004_022175bc (symbol _ZN18Unk_ov004_022175bcC1Ev).
-class Unk_ov004_02216ff4 {
+// Member at +0x89c (state machine). Methods are named after HouseOwnerAi, its constructor after
+// HouseOwnerAiMember (symbol _ZN18HouseOwnerAiMemberC1Ev).
+class HouseOwnerAi {
 public:
-    BOOL func_ov004_02216ff4(Unk_ov004_0224c38c *o);
-    void func_ov004_02217240(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_022172b4(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_02216f84(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_02217188(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_02216ff8(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_022170dc(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_022170e0(Unk_ov004_0224c38c *o);
-    void func_ov004_02217244(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_022171d4(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_0221727c(Unk_ov004_0224c38c *o);
-    void func_ov004_02217144(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_02217404(Unk_ov004_0224c38c *o);
-    BOOL func_ov004_0221745c(s32 *o1, s32 *o2, Unk_ov004_0224c38c *o);
-    BOOL func_ov004_02217508(Unk_ov004_0224c38c *o);
-    void func_ov004_02217528();
-    void func_ov004_02217530(Unk_ov004_0224c38c *o, s32 idx);
-    void func_ov004_0221757c(Unk_ov004_0224c38c *o);
+    BOOL enterState04(HouseOwnerVillager *o);
+    void updateState01Step01(HouseOwnerVillager *o);
+    BOOL updateState00(HouseOwnerVillager *o);
+    BOOL updateState04(HouseOwnerVillager *o);
+    BOOL enterState02(HouseOwnerVillager *o);
+    BOOL updateState03(HouseOwnerVillager *o);
+    BOOL enterState03(HouseOwnerVillager *o);
+    BOOL updateState02(HouseOwnerVillager *o);
+    void updateState01Step00(HouseOwnerVillager *o);
+    BOOL updateState01(HouseOwnerVillager *o);
+    BOOL enterState01(HouseOwnerVillager *o);
+    void updateState02Step00(HouseOwnerVillager *o);
+    BOOL enterState00(HouseOwnerVillager *o);
+    BOOL findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o);
+    BOOL applyPendingState(HouseOwnerVillager *o);
+    void clearPendingState();
+    void changeState(HouseOwnerVillager *o, s32 idx);
+    void update(HouseOwnerVillager *o);
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ Unk_ov004_02216ff4_Entry *unk_04;
@@ -339,10 +339,10 @@ public:
     /* 0x10 */ s32 unk_10;
 };
 
-class Unk_ov004_022175bc : public Unk_ov004_02216ff4 {
+class HouseOwnerAiMember : public HouseOwnerAi {
 public:
-    Unk_ov004_022175bc();
-    ~Unk_ov004_022175bc();
+    HouseOwnerAiMember();
+    ~HouseOwnerAiMember();
 };
 
 class Unk_02084038 {
@@ -352,7 +352,7 @@ public:
     u32 pad[0x20 / 4];
 };
 
-class Unk_ov004_0224c38c : public VillagerActor {
+class HouseOwnerVillager : public VillagerActor {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -363,27 +363,27 @@ public:
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
 
-    BOOL func_ov004_02217708();
+    BOOL drawModel();
 
-    typedef BOOL (Unk_ov004_0224c38c::*Fn)();
+    typedef BOOL (HouseOwnerVillager::*Fn)();
     /* 0x894 */ Fn unk_894;
-    /* 0x89c */ Unk_ov004_022175bc unk_89c;
+    /* 0x89c */ HouseOwnerAiMember unk_89c;
     /* 0x8b0 */ Unk_02084038 unk_8b0;
     /* 0x8d0 */ u8 unk_8d0;
     /* 0x8d4 */ s32 unk_8d4;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-extern "C" Unk_ov004_0224c38c *func_ov004_0221785c();
-extern "C" Unk_ov004_SceneEntry data_ov004_0224c36c = {(void *(*)())func_ov004_0221785c, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" HouseOwnerVillager *HouseOwnerVillager_Create();
+extern "C" Unk_ov004_SceneEntry sHouseOwnerVillagerProfile = {(void *(*)())HouseOwnerVillager_Create, 0x85, 0x89, 2, 0x5000, 0x5000, 0x3e800};
 extern "C" const u8 data_ov004_02240090[4] = {0x28, 0x1e, 0x14, 0x0a};
-#define data_ov004_0225065c ((Unk_ov004_0221745c_Dir *)((u8 *)data_ov004_02250658 + 4))
+#define data_ov004_0225065c ((Unk_ov004_0221745c_Dir *)((u8 *)sHouseOwnerStepDirs + 4))
 
-extern "C" Unk_ov004_0224c38c *func_ov004_0221785c() {
-    return new Unk_ov004_0224c38c;
+extern "C" HouseOwnerVillager *HouseOwnerVillager_Create() {
+    return new HouseOwnerVillager;
 }
 
-BOOL Unk_ov004_0224c38c::vfunc_04() {
+BOOL HouseOwnerVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
@@ -404,17 +404,17 @@ BOOL Unk_ov004_0224c38c::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c38c::vfunc_00() {
+BOOL HouseOwnerVillager::vfunc_00() {
     if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
-    unk_894 = &Unk_ov004_0224c38c::func_ov004_02217708;
+    unk_894 = &HouseOwnerVillager::drawModel;
     func_020135c4(&unk_558);
     if (func_0201ba88(this)) {
-        unk_89c.func_ov004_02217530(this, 0);
+        unk_89c.changeState(this, 0);
         func_0202bcdc(this, data_ov004_02240094, data_ov004_02240090, 0);
     } else {
-        unk_89c.func_ov004_02217530(this, 3);
+        unk_89c.changeState(this, 3);
     }
     u32 *g = (u32 *)gCommManager;
     if (!CommManager_isSlotActive(g, g[0x64 / 4])) {
@@ -427,14 +427,14 @@ BOOL Unk_ov004_0224c38c::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c38c::func_ov004_02217708() {
+BOOL HouseOwnerVillager::drawModel() {
     if (Unk_020d77a4::onDraw()) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c38c::onDraw() {
+BOOL HouseOwnerVillager::onDraw() {
     BOOL r = TRUE;
     if (unk_894) {
         r = (this->*unk_894)();
@@ -442,17 +442,17 @@ BOOL Unk_ov004_0224c38c::onDraw() {
     return r;
 }
 
-BOOL Unk_ov004_0224c38c::vfunc_7c() {
+BOOL HouseOwnerVillager::vfunc_7c() {
     if (unk_8d0 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov004_0224c38c::vfunc_80() { unk_8d0 = 1; }
+void HouseOwnerVillager::vfunc_80() { unk_8d0 = 1; }
 
-BOOL Unk_ov004_0224c38c::updateAct() {
-    unk_89c.func_ov004_0221757c(this);
+BOOL HouseOwnerVillager::updateAct() {
+    unk_89c.update(this);
     if (CommManager_isOnline(gCommManager)) {
         if (func_02015e48(&unk_334, 0) != 6) {
             if (vfunc_64()) {
@@ -482,14 +482,14 @@ BOOL Unk_ov004_0224c38c::updateAct() {
     return TRUE;
 }
 
-Unk_ov004_022175bc::Unk_ov004_022175bc() {
+HouseOwnerAiMember::HouseOwnerAiMember() {
     unk_08 = 5;
     unk_10 = 0;
 }
 
-Unk_ov004_022175bc::~Unk_ov004_022175bc() {}
+HouseOwnerAiMember::~HouseOwnerAiMember() {}
 
-void Unk_ov004_02216ff4::func_ov004_0221757c(Unk_ov004_0224c38c *o) {
+void HouseOwnerAi::update(HouseOwnerVillager *o) {
     if (unk_04 != 0) {
         (this->*unk_04->update)(o);
     }
@@ -498,10 +498,10 @@ void Unk_ov004_02216ff4::func_ov004_0221757c(Unk_ov004_0224c38c *o) {
     }
 }
 
-void Unk_ov004_02216ff4::func_ov004_02217530(Unk_ov004_0224c38c *o, s32 idx) {
+void HouseOwnerAi::changeState(HouseOwnerVillager *o, s32 idx) {
     if (idx >= 0 && idx < 5) {
         unk_00 = idx;
-        unk_04 = &data_ov004_02250678[unk_00];
+        unk_04 = &sHouseOwnerAiStates[unk_00];
         unk_0c = 0;
         Unk_ov004_02216ff4_Entry *e = unk_04;
         if (e != 0 && e->enter != 0) {
@@ -510,21 +510,21 @@ void Unk_ov004_02216ff4::func_ov004_02217530(Unk_ov004_0224c38c *o, s32 idx) {
     }
 }
 
-void Unk_ov004_02216ff4::func_ov004_02217528() {
+void HouseOwnerAi::clearPendingState() {
     unk_08 = 5;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_02217508(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::applyPendingState(HouseOwnerVillager *o) {
     BOOL r = FALSE;
     if (unk_08 < 5) {
-        func_ov004_02217530(o, unk_08);
-        func_ov004_02217528();
+        changeState(o, unk_08);
+        clearPendingState();
         r = TRUE;
     }
     return r;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_0221745c(s32 *o1, s32 *o2, Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o) {
     s32 x, y;
     s32 v[3];
     v[0] = 0;
@@ -536,7 +536,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221745c(s32 *o1, s32 *o2, Unk_ov004_0224c38
     FieldPos_ToUnit(&x, &y, (u8 *)o + 0x5c);
     s32 px = x;
     s32 py = y;
-    px += data_ov004_02250658[dir].dx;
+    px += sHouseOwnerStepDirs[dir].dx;
     py += data_ov004_0225065c[dir].dx;
     if ((u32) * (volatile s32 *)&y < 0xe) {
         if (func_02083eb4(&o->unk_8b0, px, py) != 0) {
@@ -557,23 +557,23 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221745c(s32 *o1, s32 *o2, Unk_ov004_0224c38
 }
 
 extern "C" const u8 data_ov004_02240094[5] = {0x00, 0x0a, 0x32, 0x0f, 0x14};
-extern "C" Unk_ov004_02216ff4_Entry data_ov004_02250678[5] = {
-    {&Unk_ov004_02216ff4::func_ov004_02217404, &Unk_ov004_02216ff4::func_ov004_022172b4},
-    {&Unk_ov004_02216ff4::func_ov004_0221727c, &Unk_ov004_02216ff4::func_ov004_022171d4},
-    {&Unk_ov004_02216ff4::func_ov004_02217188, &Unk_ov004_02216ff4::func_ov004_022170e0},
-    {&Unk_ov004_02216ff4::func_ov004_022170dc, &Unk_ov004_02216ff4::func_ov004_02216ff8},
-    {&Unk_ov004_02216ff4::func_ov004_02216ff4, &Unk_ov004_02216ff4::func_ov004_02216f84}};
-extern "C" Unk_ov004_0221745c_Dir data_ov004_02250658[4] = {
+extern "C" Unk_ov004_02216ff4_Entry sHouseOwnerAiStates[5] = {
+    {&HouseOwnerAi::enterState00, &HouseOwnerAi::updateState00},
+    {&HouseOwnerAi::enterState01, &HouseOwnerAi::updateState01},
+    {&HouseOwnerAi::enterState02, &HouseOwnerAi::updateState02},
+    {&HouseOwnerAi::enterState03, &HouseOwnerAi::updateState03},
+    {&HouseOwnerAi::enterState04, &HouseOwnerAi::updateState04}};
+extern "C" Unk_ov004_0221745c_Dir sHouseOwnerStepDirs[4] = {
     Unk_ov004_0221745c_Dir(0, 1), Unk_ov004_0221745c_Dir(1, 0), Unk_ov004_0221745c_Dir(0, -1), Unk_ov004_0221745c_Dir(-1, 0)};
 
-BOOL Unk_ov004_02216ff4::func_ov004_02217404(Unk_ov004_0224c38c *o) {
-    o->unk_894 = &Unk_ov004_0224c38c::func_ov004_02217708;
+BOOL HouseOwnerAi::enterState00(HouseOwnerVillager *o) {
+    o->unk_894 = &HouseOwnerVillager::drawModel;
     func_020196b4(&o->unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_10 = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_022172b4(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
     u8 *sub = (u8 *)&o->unk_564;
     s32 a, b;
     if (func_02019790(sub) != 0) {
@@ -587,7 +587,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_022172b4(Unk_ov004_0224c38c *o) {
                 }
                 func_020196b4(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             } else {
-                if (func_02063b8c(3) != 0 && func_ov004_0221745c(&a, &b, o) != 0) {
+                if (func_02063b8c(3) != 0 && findStepTarget(&a, &b, o) != 0) {
                     func_020196b4(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
                     unk_10 = 0x3c;
                 } else {
@@ -609,7 +609,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_022172b4(Unk_ov004_0224c38c *o) {
     return FALSE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_0221727c(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::enterState01(HouseOwnerVillager *o) {
     void *t = func_02015aac(&o->unk_680);
     s32 r = 0;
     if (t != 0) {
@@ -619,7 +619,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221727c(Unk_ov004_0224c38c *o) {
     return TRUE;
 }
 
-void Unk_ov004_02216ff4::func_ov004_02217244(Unk_ov004_0224c38c *o) {
+void HouseOwnerAi::updateState01Step00(HouseOwnerVillager *o) {
     if (func_02014220(&o->unk_618) == 0) {
         VillagerMood_requestApply(&o->unk_838);
         TalkRequest_EndTalkWith(o);
@@ -627,24 +627,24 @@ void Unk_ov004_02216ff4::func_ov004_02217244(Unk_ov004_0224c38c *o) {
     }
 }
 
-void Unk_ov004_02216ff4::func_ov004_02217240(Unk_ov004_0224c38c *o) {}
+void HouseOwnerAi::updateState01Step01(HouseOwnerVillager *o) {}
 
-BOOL Unk_ov004_02216ff4::func_ov004_022171d4(Unk_ov004_0224c38c *o) {
-    static Unk_ov004_02216ff4_VFn tbl[2] = {&Unk_ov004_02216ff4::func_ov004_02217244, &Unk_ov004_02216ff4::func_ov004_02217240};
+BOOL HouseOwnerAi::updateState01(HouseOwnerVillager *o) {
+    static Unk_ov004_02216ff4_VFn tbl[2] = {&HouseOwnerAi::updateState01Step00, &HouseOwnerAi::updateState01Step01};
     if (unk_0c < 2) {
         (this->*tbl[unk_0c])(o);
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_02217188(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::enterState02(HouseOwnerVillager *o) {
     s32 t = Unk_020d77a4_getAngleToPlayer(o, o->unk_558.unk_08);
     func_020196b4(&o->unk_564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     unk_0c = 0;
     return TRUE;
 }
 
-void Unk_ov004_02216ff4::func_ov004_02217144(Unk_ov004_0224c38c *o) {
+void HouseOwnerAi::updateState02Step00(HouseOwnerVillager *o) {
     if (func_020197a8(&o->unk_564) == 3) {
         if (func_02019790(&o->unk_564) != 0) {
             func_02019614(&o->unk_564, 2, data_020c6cc8);
@@ -653,19 +653,19 @@ void Unk_ov004_02216ff4::func_ov004_02217144(Unk_ov004_0224c38c *o) {
     }
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_022170e0(Unk_ov004_0224c38c *o) {
-    static Unk_ov004_02216ff4_VFn tbl[1] = {&Unk_ov004_02216ff4::func_ov004_02217144};
+BOOL HouseOwnerAi::updateState02(HouseOwnerVillager *o) {
+    static Unk_ov004_02216ff4_VFn tbl[1] = {&HouseOwnerAi::updateState02Step00};
     if (unk_0c < 1) {
         (this->*tbl[unk_0c])(o);
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_022170dc(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::enterState03(HouseOwnerVillager *o) {
     return TRUE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
     if (func_0201ba88(o) != 0) {
         s32 a = 4;
         s32 b = 4;
@@ -681,12 +681,12 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
             }
             VillagerTalk_begin(&o->unk_680, o, o->unk_8d4);
             func_02015ab0(&o->unk_680, Unk_020d77a4_getPlayerActor(o, 4));
-            o->unk_89c.func_ov004_02217530(o, 1);
+            o->unk_89c.changeState(o, 1);
         } else {
             if (func_020a62a0() != 0 && b == 4) {
                 func_0201b9fc(o, 1, gCommManager->unk_64, 4);
-                if (o->unk_89c.func_ov004_02217508(o) == 0) {
-                    o->unk_89c.func_ov004_02217530(o, 0);
+                if (o->unk_89c.applyPendingState(o) == 0) {
+                    o->unk_89c.changeState(o, 0);
                 }
             }
         }
@@ -694,11 +694,11 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
     return FALSE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_02216ff4(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::enterState04(HouseOwnerVillager *o) {
     return TRUE;
 }
 
-BOOL Unk_ov004_02216ff4::func_ov004_02216f84(Unk_ov004_0224c38c *o) {
+BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
     if (func_0201ba88(o) != 0) {
         s32 a = 4;
         s32 b = 4;
@@ -706,8 +706,8 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216f84(Unk_ov004_0224c38c *o) {
             if (a == 4) {
                 if (func_020a62a0() != 0) {
                     func_0201b9fc(o, 1, gCommManager->unk_64, 4);
-                    if (o->unk_89c.func_ov004_02217508(o) == 0) {
-                        o->unk_89c.func_ov004_02217530(o, 0);
+                    if (o->unk_89c.applyPendingState(o) == 0) {
+                        o->unk_89c.changeState(o, 0);
                     }
                 }
             }
@@ -716,20 +716,20 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216f84(Unk_ov004_0224c38c *o) {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c38c::vfunc_48() {
+BOOL HouseOwnerVillager::vfunc_48() {
     if (func_02014220(&unk_618) != 0 || func_0201b9bc(this) != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
+void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
     switch (idx) {
     case 3:
         unk_558.unk_08 = v;
         if (v != 4) {
             func_0201b9fc(this, 1, gCommManager->unk_64, v);
-            unk_89c.func_ov004_02217530(this, 2);
+            unk_89c.changeState(this, 2);
         } else {
             if (func_0201ba88(this) == 0) {
                 return;
@@ -755,21 +755,21 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
                     break;
                 }
             }
-            unk_89c.func_ov004_02217530(this, 2);
+            unk_89c.changeState(this, 2);
         }
         break;
     case 0:
         unk_558.unk_08 = v;
         if (v != 4 && v != gCommManager->unk_64) {
             func_0201b9fc(this, 1, v, v);
-            unk_89c.func_ov004_02217530(this, 4);
+            unk_89c.changeState(this, 4);
         } else {
             if (func_0201ba88(this) != 0) {
                 s32 g = gCommManager->unk_64;
                 func_0201b9fc(this, 1, g, g);
                 VillagerTalk_begin(&unk_680, this, unk_8d4);
                 func_02015ab0(&unk_680, Unk_020d77a4_getPlayerActor(this, 4));
-                unk_89c.func_ov004_02217530(this, 1);
+                unk_89c.changeState(this, 1);
                 unk_8d4 = 0;
             }
         }
@@ -778,12 +778,12 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
         if (v == 4) {
             if (func_020a62a0() != 0) {
                 func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-                if (unk_89c.func_ov004_02217508(this) == 0) {
-                    unk_89c.func_ov004_02217530(this, 0);
+                if (unk_89c.applyPendingState(this) == 0) {
+                    unk_89c.changeState(this, 0);
                 }
             } else {
                 func_0201b9fc(this, 1, 4, gCommManager->unk_64);
-                unk_89c.func_ov004_02217530(this, 3);
+                unk_89c.changeState(this, 3);
             }
         }
         break;
@@ -805,8 +805,8 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
                     }
                 body:
                     func_0201b9fc(this, 1, gCommManager->unk_64, 4);
-                    if (unk_89c.func_ov004_02217508(this) == 0) {
-                        unk_89c.func_ov004_02217530(this, 0);
+                    if (unk_89c.applyPendingState(this) == 0) {
+                        unk_89c.changeState(this, 0);
                     }
                 }
             }

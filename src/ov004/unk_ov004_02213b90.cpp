@@ -1,6 +1,6 @@
 // mwcc-version: 1.2/sp2
-// ov004 TU05: .text 0x02213b90-0x02214948 (class Unk_ov004_0224bda0). The switch function
-// Unk_ov004_0224bda0::func_ov004_02214494 needs mwcc 1.2/base and is in the _switch file (object order).
+// ov004 TU05: .text 0x02213b90-0x02214948 (class MuseumExhibitInfo). The switch function
+// MuseumExhibitInfo::buildItemList needs mwcc 1.2/base and is in the _switch file (object order).
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
@@ -55,9 +55,9 @@ struct TalkWindowState {
     /* 0x0008 */ s32 unk_08;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0). Unk_ov004_0224bda0 overrides its slots 0x10, 0x14 and 0x18 with
-// the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the names vfunc_60/64/68 here
-// (the thunks are _ZThn236_N18Unk_ov004_0224bda08vfunc_60Ev ...). Every other slot is named vfunc_sXX: main has a
+// Secondary base at +0xec (vtable main 0x020ddcf0). MuseumExhibitInfo overrides its slots 0x10, 0x14 and 0x18 with
+// the functions its own vtable has at 0x60, 0x64 and 0x68, so those three slots carry the derived names onMessageStart/onMessageEnd/onChoice here
+// (the thunks are _ZThn236_N17MuseumExhibitInfo14onMessageStartEv ...). Every other slot is named vfunc_sXX: main has a
 // label _ZN14TalkMsgRequest9vfunc_sXXEv for each, and the names cannot be overridden by the primary chain by accident.
 class MsgRequest {
 public:
@@ -76,9 +76,9 @@ public:
     virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
-    virtual void vfunc_60();
-    virtual BOOL vfunc_64();
-    virtual BOOL vfunc_68();
+    virtual void onMessageStart();
+    virtual BOOL onMessageEnd();
+    virtual BOOL onChoice();
     virtual void vfunc_s1c();
     virtual void vfunc_s20();
     virtual void vfunc_s24();
@@ -154,7 +154,7 @@ struct Unk_ov004_022146ec_Sing {
     u32 unk_64;
 };
 
-class Unk_ov004_0224bda0;
+class MuseumExhibitInfo;
 class Unk_020b6960;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
@@ -163,9 +163,9 @@ class Unk_020b6960;
 #define func_0203e488 _ZN9Character13func_0203e488Ei
 #define Character_setCharId _ZN9Character9setCharIdEj
 #define func_020b68a8 _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih
-#define func_02070358 _ZN12Unk_0206fe8013func_02070358EPt
-#define func_02070370 _ZN12Unk_0206fe8013func_02070370EPt
-#define func_020700a4 _ZN12Unk_0206fe8013func_020700a4EiPt
+#define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
+#define MuseumData_getDonationState _ZN10MuseumData16getDonationStateEPt
+#define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
@@ -191,9 +191,9 @@ void func_0203e47c(void *self, TalkMsgRequest *sec);
 void func_0203e488(void *self, TalkMsgRequest *sec);
 void Character_setCharId(void *self, u32 a);
 s32 func_020b68a8(Unk_020b6960 *self, Unk_020b6a94 *o, void *a, u32 b, u32 c, u32 d);
-s32 func_02070358(void *self, u16 *p);
-s32 func_02070370(void *self, u16 *p);
-s32 func_020700a4(void *self, Unk_020e1c64 *a, u16 *p);
+s32 MuseumData_isDonated(void *self, u16 *p);
+s32 MuseumData_getDonationState(void *self, u16 *p);
+s32 MuseumData_getDonorName(void *self, Unk_020e1c64 *a, u16 *p);
 void *TalkWindowState_getChoiceList(void *self);
 void TalkWindowState_openChoices(void *self, s32 a);
 void TalkWindowState_setNamedSlot(void *self, s32 a, ItemName *b, u32 c);
@@ -216,38 +216,38 @@ Unk_ov004_022146ec_Actor *func_020951ec(u32);
 void func_01ffd070(void *, void *, void *);
 }
 
-class Unk_ov004_0224bda0 : public Character, public TalkMsgRequest {
+class MuseumExhibitInfo : public Character, public TalkMsgRequest {
 public:
-    Unk_ov004_0224bda0();
+    MuseumExhibitInfo();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov004_0224bda0();
+    virtual ~MuseumExhibitInfo();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void vfunc_60();
-    virtual BOOL vfunc_64();
-    virtual BOOL vfunc_68();
+    virtual void onMessageStart();
+    virtual BOOL onMessageEnd();
+    virtual BOOL onChoice();
 
-    void func_ov004_02213c58();
-    BOOL func_ov004_02213c7c();
-    void func_ov004_02213d18();
-    BOOL func_ov004_02213d48();
-    void func_ov004_02213d4c();
-    BOOL func_ov004_02213d70();
-    void func_ov004_02213e74();
-    BOOL func_ov004_02213ea4();
-    void func_ov004_02213ea8();
-    BOOL func_ov004_02213f34(s32 idx);
-    BOOL func_ov004_02214350();
-    void func_ov004_02214364();
-    u32 func_ov004_022143b8();
-    BOOL func_ov004_02214404();
-    BOOL func_ov004_0221444c();
-    BOOL func_ov004_02214494();
-    BOOL func_ov004_022145bc();
-    BOOL func_ov004_02214608();
+    void mainAct03();
+    BOOL setupAct03();
+    void mainAct02();
+    BOOL setupAct02();
+    void mainAct01();
+    BOOL setupAct01();
+    void mainAct00();
+    BOOL setupAct00();
+    void execAct();
+    BOOL changeAct(s32 idx);
+    BOOL isAutoTalkKind();
+    void advanceToNextDonated();
+    u32 countDonatedFromCursor();
+    BOOL isAllDonated();
+    BOOL isAnyDonated();
+    BOOL buildItemList();
+    BOOL unregisterSelf();
+    BOOL registerSelf();
 
     /* 0x130 */ s32 unk_130;
     /* 0x134 */ Unk_020b6a94 unk_134;
@@ -263,11 +263,11 @@ public:
     /* 0x168 */ u8 unk_168;
 };
 
-typedef void (Unk_ov004_0224bda0::*Unk_ov004_02213ea8_Fn)();
-typedef BOOL (Unk_ov004_0224bda0::*Unk_ov004_02213f34_Fn)();
+typedef void (MuseumExhibitInfo::*Unk_ov004_02213ea8_Fn)();
+typedef BOOL (MuseumExhibitInfo::*Unk_ov004_02213f34_Fn)();
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224bda0 *(*factory)();
+    MuseumExhibitInfo *(*factory)();
     u16 id;
     u16 size;
     u32 zero;
@@ -285,17 +285,17 @@ struct Unk_ov004_Quad {
 };
 
 extern "C" {
-extern s16 data_ov004_0224bd3c;
-extern char data_ov004_0224be8c[];
-extern u8 data_ov004_022502c4;
-extern u8 data_ov004_022502c8;
-extern u32 data_ov004_022502d4;
-extern u8 *data_ov004_022502d8;
-extern u32 data_ov004_022502e8;
-extern u32 data_ov004_022502f8;
-extern Unk_ov004_0224bda0 *data_ov004_0225033c[0x20];
-Unk_ov004_0224bda0 *func_ov004_022148a0(void);
-void func_ov004_0221465c(void);
+extern s16 sMuseumExhibitSpawnMsg;
+extern char sMuseumExhibitMsgFile[];
+extern u8 sMuseumExhibitAutoTalkActive;
+extern u8 sMuseumExhibitInfoCount;
+extern u32 sMuseumExhibitSpawnKind;
+extern u8 *sMuseumExhibitSpawnList;
+extern u32 sMuseumExhibitSpawnCount;
+extern u32 sMuseumExhibitSpawnFacingArc;
+extern MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
+MuseumExhibitInfo *MuseumExhibitInfo_Create(void);
+void MuseumExhibitInfo_ClearRegistry(void);
 }
 
 // ---- definitions ----
@@ -308,69 +308,69 @@ extern "C" Unk_ov004_Quad data_ov004_022502ec(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022502dc(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022502d0(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov004_Quad data_ov004_022502e0(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov004_SceneEntry data_ov004_0224bd80 = { func_ov004_022148a0, 0x19, 0x1e, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov004_SceneEntry sMuseumExhibitInfoProfile = { MuseumExhibitInfo_Create, 0x19, 0x1e, 0, 0xc8000, 0x12c000, 0x258000 };
 extern "C" {
-s16 data_ov004_0224bd3c = -1;
-char data_ov004_0224be8c[] = "obj_etc_museum";
-u8 data_ov004_022502c4;
-u8 data_ov004_022502c8;
-u32 data_ov004_022502d4;
-u8 *data_ov004_022502d8;
-u32 data_ov004_022502e8;
-u32 data_ov004_022502f8;
-Unk_ov004_0224bda0 *data_ov004_0225033c[0x20];
+s16 sMuseumExhibitSpawnMsg = -1;
+char sMuseumExhibitMsgFile[] = "obj_etc_museum";
+u8 sMuseumExhibitAutoTalkActive;
+u8 sMuseumExhibitInfoCount;
+u32 sMuseumExhibitSpawnKind;
+u8 *sMuseumExhibitSpawnList;
+u32 sMuseumExhibitSpawnCount;
+u32 sMuseumExhibitSpawnFacingArc;
+MuseumExhibitInfo *sMuseumExhibitInfos[0x20];
 }
 
 // ---------------------------------------------------------------- 0x02213b90
-extern "C" s32 func_ov004_02213b90() {
-    if (data_ov004_022502c4 == 0) {
-        data_ov004_022502d4 = 4;
-        data_ov004_0224bd3c = 0;
-        data_ov004_022502d8 = 0;
-        data_ov004_022502e8 = 0;
-        data_ov004_022502f8 = 0;
+extern "C" s32 MuseumExhibitInfo_SpawnAutoTalk() {
+    if (sMuseumExhibitAutoTalkActive == 0) {
+        sMuseumExhibitSpawnKind = 4;
+        sMuseumExhibitSpawnMsg = 0;
+        sMuseumExhibitSpawnList = 0;
+        sMuseumExhibitSpawnCount = 0;
+        sMuseumExhibitSpawnFacingArc = 0;
         return Actor_spawn(0x19, 0, gVec3Zero, 0, 0);
     }
     return 0;
 }
 
-extern "C" void func_ov004_02213be8(s32 a, void *b, s32 c, s32 d, s16 e, u8 *f, s32 g) {
+extern "C" void MuseumExhibitInfo_Spawn(s32 a, void *b, s32 c, s32 d, s16 e, u8 *f, s32 g) {
     u16 loc[3];
-    data_ov004_022502d4 = a;
-    data_ov004_0224bd3c = e;
-    data_ov004_022502d8 = f;
-    data_ov004_022502e8 = g;
-    data_ov004_022502f8 = d;
+    sMuseumExhibitSpawnKind = a;
+    sMuseumExhibitSpawnMsg = e;
+    sMuseumExhibitSpawnList = f;
+    sMuseumExhibitSpawnCount = g;
+    sMuseumExhibitSpawnFacingArc = d;
     loc[0] = 0;
     loc[1] = c;
     loc[2] = 0;
     Actor_spawn(0x19, 0, b, loc, 0);
 }
 
-extern "C" void *func_ov004_02213c40(s32 i) {
+extern "C" void *MuseumExhibitInfo_GetByIndex(s32 i) {
     if (i >= 0 && (u32)i < 0x20) {
-        return data_ov004_0225033c[i];
+        return sMuseumExhibitInfos[i];
     }
     return 0;
 }
 
-void Unk_ov004_0224bda0::func_ov004_02213c58() {
+void MuseumExhibitInfo::mainAct03() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02213f34(2);
+            changeAct(2);
         }
     }
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02213c7c() {
+BOOL MuseumExhibitInfo::setupAct03() {
     u16 id[2];
     func_0203e488(this, this);
-    setFileName(data_ov004_0224be8c);
+    setFileName(sMuseumExhibitMsgFile);
     id[1] = 0x12e4;
     TalkWindowState *const g = &data_021ed0a0;
-    if ((u32)func_02070370(g, &id[1]) <= 1) {
+    if ((u32)MuseumData_getDonationState(g, &id[1]) <= 1) {
         Unk_020e1c64 obj;
-        if (func_020700a4(g, &obj, &id[1])) {
+        if (MuseumData_getDonorName(g, &obj, &id[1])) {
             unk_1e = 3;
             TalkWindowState_setSlot(unk_3c, 0, &obj);
         }
@@ -382,7 +382,7 @@ BOOL Unk_ov004_0224bda0::func_ov004_02213c7c() {
     return TRUE;
 }
 
-void Unk_ov004_0224bda0::func_ov004_02213d18() {
+void MuseumExhibitInfo::mainAct02() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             func_0203e47c(this, this);
@@ -391,21 +391,21 @@ void Unk_ov004_0224bda0::func_ov004_02213d18() {
     }
 }
 
-void Unk_ov004_0224bda0::func_ov004_02213d4c() {
+void MuseumExhibitInfo::mainAct01() {
     if (unk_3c) {
         if (unk_3c->unk_04) {
-            func_ov004_02213f34(2);
+            changeAct(2);
         }
     }
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02213d70() {
+BOOL MuseumExhibitInfo::setupAct01() {
     struct { u16 pad[3]; u16 w; u16 sel; } l;
     u32 i = 0;
     unk_151 = i;
     for (; i < unk_164; i++) {
         l.w = unk_160[i];
-        if (func_02070358(&data_021ed0a0, &l.w)) {
+        if (MuseumData_isDonated(&data_021ed0a0, &l.w)) {
             unk_151 = i;
             break;
         }
@@ -413,8 +413,8 @@ BOOL Unk_ov004_0224bda0::func_ov004_02213d70() {
     l.sel = unk_160[unk_151];
     func_0203e488(this, this);
     TalkMsgRequest &s = *this;
-    s.setFileName(data_ov004_0224be8c);
-    if (func_ov004_0221444c() == 0) {
+    s.setFileName(sMuseumExhibitMsgFile);
+    if (isAnyDonated() == 0) {
         unk_1e = 0;
     } else if (unk_158 == 3) {
         if (unk_164 == 1) {
@@ -423,11 +423,11 @@ BOOL Unk_ov004_0224bda0::func_ov004_02213d70() {
             unk_1e = unk_15c;
         }
     } else if (unk_158 <= 1) {
-        u32 n = func_ov004_022143b8();
+        u32 n = countDonatedFromCursor();
         if (n > 3) n = 3;
         unk_1e = (n - 1) % 3 + 5;
     } else {
-        if (func_02070370(&data_021ed0a0, &l.sel) != 2) {
+        if (MuseumData_getDonationState(&data_021ed0a0, &l.sel) != 2) {
             unk_1e = 1;
         } else {
             unk_1e = 2;
@@ -437,8 +437,8 @@ BOOL Unk_ov004_0224bda0::func_ov004_02213d70() {
     return TRUE;
 }
 
-void Unk_ov004_0224bda0::func_ov004_02213e74() {
-    if (func_ov004_02214350()) {
+void MuseumExhibitInfo::mainAct00() {
+    if (isAutoTalkKind()) {
         if (unk_168 == 0) {
             TalkRequest_AddPlayerTalk6(this, 0);
         } else {
@@ -447,24 +447,24 @@ void Unk_ov004_0224bda0::func_ov004_02213e74() {
     }
 }
 
-void Unk_ov004_0224bda0::func_ov004_02213ea8() {
+void MuseumExhibitInfo::execAct() {
     static Unk_ov004_02213ea8_Fn tbl[4] = {
-        &Unk_ov004_0224bda0::func_ov004_02213e74,
-        &Unk_ov004_0224bda0::func_ov004_02213d4c,
-        &Unk_ov004_0224bda0::func_ov004_02213d18,
-        &Unk_ov004_0224bda0::func_ov004_02213c58,
+        &MuseumExhibitInfo::mainAct00,
+        &MuseumExhibitInfo::mainAct01,
+        &MuseumExhibitInfo::mainAct02,
+        &MuseumExhibitInfo::mainAct03,
     };
     if (unk_130 < 4) {
         (this->*tbl[unk_130])();
     }
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02213f34(s32 idx) {
+BOOL MuseumExhibitInfo::changeAct(s32 idx) {
     static Unk_ov004_02213f34_Fn tbl[4] = {
-        &Unk_ov004_0224bda0::func_ov004_02213ea4,
-        &Unk_ov004_0224bda0::func_ov004_02213d70,
-        &Unk_ov004_0224bda0::func_ov004_02213d48,
-        &Unk_ov004_0224bda0::func_ov004_02213c7c,
+        &MuseumExhibitInfo::setupAct00,
+        &MuseumExhibitInfo::setupAct01,
+        &MuseumExhibitInfo::setupAct02,
+        &MuseumExhibitInfo::setupAct03,
     };
     if (idx < 4) {
         if ((this->*tbl[idx])()) {
@@ -475,18 +475,18 @@ BOOL Unk_ov004_0224bda0::func_ov004_02213f34(s32 idx) {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bda0::vfunc_68() {
-    if (func_ov004_02214350() == 0) {
+BOOL MuseumExhibitInfo::onChoice() {
+    if (isAutoTalkKind() == 0) {
         u8 a0, a1, a2, a3;
         u16 sel;
         if (ChoiceList_getResult(TalkWindowState_getChoiceList(unk_3c)) == 0) {
             sel = unk_160[unk_151];
             if (unk_158 <= 1) {
-                u32 n = func_ov004_022143b8();
+                u32 n = countDonatedFromCursor();
                 if (n > 3) n = 3;
                 a0 = (n - 1) % 3 + 5;
                 TalkWindowState_setNextMessage(unk_3c, &a0, 0);
-            } else if (func_02070370(&data_021ed0a0, &sel) != 2) {
+            } else if (MuseumData_getDonationState(&data_021ed0a0, &sel) != 2) {
                 a1 = 1;
                 TalkWindowState_setNextMessage(unk_3c, &a1, 0);
             } else {
@@ -500,12 +500,12 @@ BOOL Unk_ov004_0224bda0::vfunc_68() {
     }
 }
 
-BOOL Unk_ov004_0224bda0::vfunc_64() {
+BOOL MuseumExhibitInfo::onMessageEnd() {
     u8 b[7];
-    if (func_ov004_02214350() == 0) {
+    if (isAutoTalkKind() == 0) {
         if (unk_158 == 3) {
             if (unk_1e != 5) {
-                if (func_ov004_02214404()) {
+                if (isAllDonated()) {
                     u32 e = unk_1e;
                     if (unk_15c == e) {
                         b[0] = e + 1;
@@ -522,7 +522,7 @@ BOOL Unk_ov004_0224bda0::vfunc_64() {
                 b[3] = gTalkMsgIndexEnd;
                 TalkWindowState_setNextMessage(unk_3c, &b[3], 0);
             }
-        } else if (func_ov004_022143b8() != 0) {
+        } else if (countDonatedFromCursor() != 0) {
             void *o = TalkWindowState_getChoiceList(unk_3c);
             if (o) {
                 ChoiceList_reset(o, 2, 1);
@@ -540,8 +540,8 @@ BOOL Unk_ov004_0224bda0::vfunc_64() {
     }
 }
 
-void Unk_ov004_0224bda0::vfunc_60() {
-    if (func_ov004_02214350() == 0) {
+void MuseumExhibitInfo::onMessageStart() {
+    if (isAutoTalkKind() == 0) {
         u16 w1, w2;
         if (unk_158 <= 1) {
             u32 n = 0;
@@ -555,40 +555,40 @@ void Unk_ov004_0224bda0::vfunc_60() {
                 w1 = unk_160[unk_151];
                 ItemName o(&w1);
                 TalkWindowState_setNamedSlot(unk_3c, i, &o, 7);
-                func_ov004_02214364();
+                advanceToNextDonated();
             }
         } else {
             u32 idx = unk_151;
             if (idx < unk_164) {
                 w2 = unk_160[idx];
                 Unk_020e1c64 e;
-                func_020700a4(&data_021ed0a0, &e, &w2);
+                MuseumData_getDonorName(&data_021ed0a0, &e, &w2);
                 TalkWindowState_setSlot(unk_3c, 0, &e);
                 ItemName o2(&w2);
                 TalkWindowState_setNamedSlot(unk_3c, 0, &o2, 7);
                 if (unk_158 != 3) {
-                    func_ov004_02214364();
+                    advanceToNextDonated();
                 }
             }
         }
     }
 }
 
-void Unk_ov004_0224bda0::vfunc_4c(u32 a, u8 b) {
+void MuseumExhibitInfo::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 1:
-        func_ov004_02213f34(3);
+        changeAct(3);
         break;
     case 0:
-        func_ov004_02213f34(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov004_02213f34(0);
+        changeAct(0);
         break;
     }
 }
 
-BOOL Unk_ov004_0224bda0::vfunc_48(void *a0) {
+BOOL MuseumExhibitInfo::vfunc_48(void *a0) {
     Unk_ov004_022142fc_Actor *a = (Unk_ov004_022142fc_Actor *)a0;
     if (a) {
         if (func_020e9650(a->unk_5c, (u8 *)this + 0x5c) < 0x2333) {
@@ -600,49 +600,49 @@ BOOL Unk_ov004_0224bda0::vfunc_48(void *a0) {
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_022145bc() {
-    if (func_ov004_02214350() == 0) {
+BOOL MuseumExhibitInfo::unregisterSelf() {
+    if (isAutoTalkKind() == 0) {
         u32 idx = unk_150;
         if (idx < 0x20) {
-            data_ov004_0225033c[idx] = 0;
-            data_ov004_022502c8--;
+            sMuseumExhibitInfos[idx] = 0;
+            sMuseumExhibitInfoCount--;
             unk_150 = 0xff;
             return TRUE;
         }
     } else {
-        data_ov004_022502c4 = 0;
+        sMuseumExhibitAutoTalkActive = 0;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02214608() {
-    if (func_ov004_02214350()) {
+BOOL MuseumExhibitInfo::registerSelf() {
+    if (isAutoTalkKind()) {
         unk_150 = 0xff;
-        data_ov004_022502c4 = 1;
+        sMuseumExhibitAutoTalkActive = 1;
         return TRUE;
     }
-    unk_150 = data_ov004_022502c8;
+    unk_150 = sMuseumExhibitInfoCount;
     if (unk_150 < 0x20) {
-        data_ov004_0225033c[unk_150] = this;
-        data_ov004_022502c8++;
+        sMuseumExhibitInfos[unk_150] = this;
+        sMuseumExhibitInfoCount++;
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02213d48() {
+BOOL MuseumExhibitInfo::setupAct02() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02213ea4() {
+BOOL MuseumExhibitInfo::setupAct00() {
     return TRUE;
 }
 
-void Unk_ov004_0224bda0::func_ov004_02214364() {
+void MuseumExhibitInfo::advanceToNextDonated() {
     u32 i = unk_151 + 1;
     for (; i < unk_164; i++) {
         u16 w = unk_160[i];
-        if (func_02070358(&data_021ed0a0, &w)) {
+        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
             unk_151 = i;
             return;
         }
@@ -650,41 +650,41 @@ void Unk_ov004_0224bda0::func_ov004_02214364() {
     unk_151 = unk_164;
 }
 
-u32 Unk_ov004_0224bda0::func_ov004_022143b8() {
+u32 MuseumExhibitInfo::countDonatedFromCursor() {
     u32 cnt = 0;
     u32 i = unk_151;
     for (; i < unk_164; i++) {
         u16 w = unk_160[i];
-        if (func_02070358(&data_021ed0a0, &w)) {
+        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
             cnt++;
         }
     }
     return cnt;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02214404() {
+BOOL MuseumExhibitInfo::isAllDonated() {
     u32 i;
     for (i = 0; i < unk_164; i++) {
         u16 w = unk_160[i];
-        if (func_02070358(&data_021ed0a0, &w) == 0) {
+        if (MuseumData_isDonated(&data_021ed0a0, &w) == 0) {
             return FALSE;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_0221444c() {
+BOOL MuseumExhibitInfo::isAnyDonated() {
     u32 i;
     for (i = 0; i < unk_164; i++) {
         u16 w = unk_160[i];
-        if (func_02070358(&data_021ed0a0, &w)) {
+        if (MuseumData_isDonated(&data_021ed0a0, &w)) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224bda0::func_ov004_02214350() {
+BOOL MuseumExhibitInfo::isAutoTalkKind() {
     if (unk_158 == 4) {
         return TRUE;
     }
@@ -692,47 +692,47 @@ BOOL Unk_ov004_0224bda0::func_ov004_02214350() {
 }
 
 // ---------------------------------------------------------------- 0x0221465c
-extern "C" void func_ov004_0221465c(void) {
-    if (data_ov004_022502c8 == 0) {
+extern "C" void MuseumExhibitInfo_ClearRegistry(void) {
+    if (sMuseumExhibitInfoCount == 0) {
         u32 i;
         for (i = 0; i < 0x20; i++) {
-            data_ov004_0225033c[i] = 0;
+            sMuseumExhibitInfos[i] = 0;
         }
     }
 }
 
-BOOL Unk_ov004_0224bda0::vfunc_0c() {
-    func_ov004_022145bc();
+BOOL MuseumExhibitInfo::vfunc_0c() {
+    unregisterSelf();
     if (unk_160 != 0) {
         Mem_Free(unk_160);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bda0::onDraw() {
+BOOL MuseumExhibitInfo::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bda0::onExecute() {
-    func_ov004_02213ea8();
-    if (func_ov004_02214350() == 0) {
+BOOL MuseumExhibitInfo::onExecute() {
+    execAct();
+    if (isAutoTalkKind() == 0) {
         func_020b68a8(func_020b50b4(), &unk_134, unk_5c, 0xc00, 0xe, unk_150);
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224bda0::vfunc_00() {
+BOOL MuseumExhibitInfo::vfunc_00() {
     Unk_ov004_022146ec_Bits l;
     s32 v[3];
     s32 out[3];
     BOOL r;
-    func_ov004_0221465c();
-    unk_158 = data_ov004_022502d4;
-    unk_15c = data_ov004_0224bd3c;
-    unk_164 = data_ov004_022502e8;
-    unk_154 = data_ov004_022502f8;
-    if (func_ov004_02214608() != 0) {
-        if (func_ov004_02214350() != 0) {
+    MuseumExhibitInfo_ClearRegistry();
+    unk_158 = sMuseumExhibitSpawnKind;
+    unk_15c = sMuseumExhibitSpawnMsg;
+    unk_164 = sMuseumExhibitSpawnCount;
+    unk_154 = sMuseumExhibitSpawnFacingArc;
+    if (registerSelf() != 0) {
+        if (isAutoTalkKind() != 0) {
             Unk_ov004_022146ec_Actor *o = func_020951ec(4);
             if (o != 0) {
                 s32 idx = (o->ang >> 4) * 2;
@@ -749,22 +749,22 @@ BOOL Unk_ov004_0224bda0::vfunc_00() {
         *(u16 *)&l = (*(u16 *)&l & ~0xfc) | ((func_020b50e8() & 0x3f) << 2);
         l.c = unk_150;
         Character_setCharId(this, *(u16 *)&l);
-        func_ov004_02213f34(0);
-        r = func_ov004_02214494();
+        changeAct(0);
+        r = buildItemList();
     } else {
         r = FALSE;
     }
     return r;
 }
 
-Unk_ov004_0224bda0::~Unk_ov004_0224bda0() {
+MuseumExhibitInfo::~MuseumExhibitInfo() {
     _ZN12Unk_020b6a94D1Ev(&unk_134);
 }
 
-Unk_ov004_0224bda0::Unk_ov004_0224bda0() {
+MuseumExhibitInfo::MuseumExhibitInfo() {
     _ZN12Unk_020b6a94C1Ev(&unk_134);
 }
 
-extern "C" Unk_ov004_0224bda0 *func_ov004_022148a0(void) {
-    return new Unk_ov004_0224bda0;
+extern "C" MuseumExhibitInfo *MuseumExhibitInfo_Create(void) {
+    return new MuseumExhibitInfo;
 }

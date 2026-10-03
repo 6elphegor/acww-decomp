@@ -314,10 +314,10 @@ public:
 };
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
-class Unk_ov003_02232c08 : public Unk_020d8d3cX {
+class FieldObjectShapeQuery : public Unk_020d8d3cX {
 public:
     virtual void vfunc_08();
-    virtual ~Unk_ov003_02232c08() {}
+    virtual ~FieldObjectShapeQuery() {}
 };
 
 s32 Math_LerpFx(s32 t, s32 lo, s32 hi);
@@ -385,9 +385,9 @@ void NNS_G3dMdlSetMdlAlpha(Ctx *c, s32 i, u8 v);
 void NNS_G3dMdlSetMdlEmi(Pal *p, s32 i, u16 c);
 void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
 void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
-Obj *func_ov003_02218b40(u32 a);
-Obj *func_ov003_02218c60(u32 a);
-BOOL _ZN18Unk_ov003_02232c088vfunc_08EPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
+Obj *BuildingList_FindByItem(u32 a);
+Obj *Building_FindNearPos(u32 a);
+BOOL _ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
 u16 *_ZN13BuildingActor9getItemIdEv(Obj *o);
 BOOL _ZN13BuildingActor15getEntranceTypeEv(void);
 }
@@ -403,7 +403,7 @@ extern void *sStrBSizeArchive;
 extern u32 data_021ee2a0;
 extern s32 data_021ee2a4;
 extern s32 data_021ee2ac;
-extern Unk_ov003_02232c08 data_021ee2b0;
+extern FieldObjectShapeQuery data_021ee2b0;
 extern u32 data_021ee2b4;
 extern u32 data_021ee2bc;
 extern char data_021ee2c4[12];
@@ -772,7 +772,7 @@ Unk_020e3dcc::~Unk_020e3dcc() {}
 
 BOOL Unk_020e3dcc::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
-        if (!_ZN18Unk_ov003_02232c088vfunc_08EPiS0_S0_ii(&data_021ee2b0, a, b, c, x, y)) {
+        if (!_ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(&data_021ee2b0, a, b, c, x, y)) {
             void *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;
@@ -1495,7 +1495,7 @@ extern "C" u32 func_020b1614(u32 a) {
     if (!IsEnabled()) {
         return 1;
     }
-    o = func_ov003_02218c60(a);
+    o = Building_FindNearPos(a);
     if (o) {
         if (_ZN13BuildingActor15getEntranceTypeEv() == 1) {
             u16 *i = o->vfunc_64();
@@ -1624,7 +1624,7 @@ extern "C" BOOL func_020b1388(u16 *p) {
     u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
     if (IsEnabled()) {
-        Obj *o = func_ov003_02218b40(a);
+        Obj *o = BuildingList_FindByItem(a);
         if (o) {
             return o->vfunc_6c(b);
         }
@@ -1837,7 +1837,7 @@ const u16 data_020d0a14[52] = {
 const u32 sLightFlickerTable[11] = {0x0, 0x19a, 0x333, 0x4cd, 0x333, 0x19a, 0x4cd, 0x666, 0x800, 0x666, 0x4cd};
 NibblePair data_021ee330[0x22];
 char data_021ee2c4[12];
-Unk_ov003_02232c08 data_021ee2b0;
+FieldObjectShapeQuery data_021ee2b0;
 
 extern "C" void func_020b0e60(void) {
     u32 a = func_020b50e8();

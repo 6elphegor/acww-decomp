@@ -981,7 +981,7 @@ void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
 void Melody_SetPacked(u8 *p);
 BOOL CommSend_JoinDone(u32 v);
-BOOL func_ov048_0225b8a8();
+BOOL SpNpcCopper_CheckKatieEscort();
 void *func_020b4934();
 void func_020b4bbc(void *p, u32 v);
 void func_020b4940(void *p, u32 v);
@@ -2212,7 +2212,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
             NH::_Z20NetOverlay_AssertAnyv();
             if (NH::Net_IsReadyToSend()) {
                 NH::gCommManager->setMode(2);
-                if (NH::func_ov048_0225b8a8()) {
+                if (NH::SpNpcCopper_CheckKatieEscort()) {
                     NH::func_020b4bbc(NH::func_020b4934(), 2);
                     NH::func_020b4940(NH::func_020b4934(), 3);
                 } else {

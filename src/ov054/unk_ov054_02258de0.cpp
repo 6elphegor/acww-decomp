@@ -542,7 +542,7 @@ extern u8 data_021d735c[];
 
 s32 CommManager_isOnline(void *g);
 s32 CommManager_isSlotActive(void *g, s32 v);
-BOOL func_ov004_0221e3dc();
+BOOL SpNpcTortimer2_IsIdle();
 BOOL func_0202e148(...);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *PlayerData_GetCurrent();
@@ -2588,7 +2588,7 @@ void Unk_ov054_0225ba54::vfunc_4c(u32 cmd, u32 arg) {
 }
 
 BOOL Unk_ov054_0225ba54::func_ov054_02258e58() {
-    if (unk_2ac.func_02019d8c() == 0xba && func_ov004_0221e3dc() && unk_658.unk_3c->unk_04 == 2) {
+    if (unk_2ac.func_02019d8c() == 0xba && SpNpcTortimer2_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
         return TRUE;
     }
     return FALSE;

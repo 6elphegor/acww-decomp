@@ -325,22 +325,22 @@ s32 func_020e780c(s32 a, s32 b);
 void *func_020b50b4();
 void _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(void *self, void *o);
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
-u32 func_ov003_02218b1c(void *p);
+u32 BuildingList_IndexOf(void *p);
 BOOL func_020b5184();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 func_020b1d80(u32 a);
-void func_ov003_02217350();
+void Mailbox_Create();
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
 void _ZN9Character13func_0203e42cEv(void *self, void *a);
 }
 
-// ============================================================ class Unk_ov003_02231e4c
-class Unk_ov003_02231e4c : public BuildingActor {
+// ============================================================ class Mailbox
+class Mailbox : public BuildingActor {
 public:
-    Unk_ov003_02231e4c();
-    virtual ~Unk_ov003_02231e4c();
+    Mailbox();
+    virtual ~Mailbox();
 
     virtual BOOL onExecute();
     virtual BOOL vfunc_48(void *a);
@@ -352,36 +352,36 @@ public:
     virtual BOOL vfunc_b8(void *a);
 
     // state methods (old file 022164d0)
-    void func_ov003_02216824();
-    BOOL func_ov003_0221687c();
-    void func_ov003_022168d4();
-    BOOL func_ov003_02216940();
-    void func_ov003_02216998();
-    BOOL func_ov003_022169c0();
-    void func_ov003_02216a04();
-    BOOL func_ov003_02216a5c();
-    void func_ov003_02216aa0();
-    BOOL func_ov003_02216ac8();
-    void func_ov003_02216b38();
-    BOOL func_ov003_02216b70();
-    void func_ov003_02216ba4();
-    BOOL func_ov003_02216bc0();
-    s32 func_ov003_02216dd0();
+    void execMailGone();
+    BOOL enterMailGone();
+    void execLidClose();
+    BOOL enterLidClose();
+    void execLidOpened();
+    BOOL enterLidOpened();
+    void execLidOpen();
+    BOOL enterLidOpen();
+    void execHasMail();
+    BOOL enterHasMail();
+    void execMailArrive();
+    BOOL enterMailArrive();
+    void execNoMail();
+    BOOL enterNoMail();
+    s32 execUseClose();
 
     // old file 02216df0
-    s32 func_02216df0();
-    s32 func_02216e04();
-    s32 func_02216e28();
-    s32 func_02216e2c();
-    s32 func_02216e38();
-    s32 func_02216e54();
-    s32 func_02216e70();
-    s32 func_02216eac();
-    s32 func_02216eb0();
-    void func_02216eb4();
-    s32 func_02216f4c(s32 idx);
-    u32 func_0221706c();
-    s32 func_02217078();
+    s32 enterUseClose();
+    s32 execUseMenuWait();
+    s32 enterUseMenuWait();
+    s32 execUseMenu();
+    s32 enterUseMenu();
+    s32 execUseOpen();
+    s32 enterUseOpen();
+    s32 execUseIdle();
+    s32 enterUseIdle();
+    void updateUseState();
+    s32 setUseState(s32 idx);
+    u32 isUsable();
+    s32 countLetters();
 
     /* 0x2b0 */ s32 unk_2b0;
     /* 0x2b4 */ ModelAnim unk_2b4;
@@ -390,9 +390,9 @@ public:
     /* 0x2f1 */ u8 pad_2f1[3];
 };
 
-typedef void (Unk_ov003_02231e4c::*Unk_ov003_02216c20_Fn)();
-typedef BOOL (Unk_ov003_02231e4c::*Unk_ov003_02216cf8_Fn)();
-typedef s32 (Unk_ov003_02231e4c::*Unk_ov003_02231e4c_Fn)();
+typedef void (Mailbox::*Unk_ov003_02216c20_Fn)();
+typedef BOOL (Mailbox::*Unk_ov003_02216cf8_Fn)();
+typedef s32 (Mailbox::*Unk_ov003_02231e4c_Fn)();
 
 // colour constants (sinit store order = definition order), then the registration entry
 extern "C" Unk_ov003_02231e4c_Color data_ov003_02235380(0x1f, 0x14, 0x14, 0x1f);
@@ -401,28 +401,28 @@ extern "C" Unk_ov003_02231e4c_Color data_ov003_02235390(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_02231e4c_Color data_ov003_02235394(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_02231e4c_Color data_ov003_0223538c(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov003_02231e4c_Color data_ov003_02235388(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry data_ov003_02231e2c = {(void *(*)())func_ov003_02217350, 0x24, 0x2a, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sMailboxProfile = {(void *(*)())Mailbox_Create, 0x24, 0x2a, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void func_ov003_02217350() {
-    new Unk_ov003_02231e4c;
+extern "C" void Mailbox_Create() {
+    new Mailbox;
 }
 
-Unk_ov003_02231e4c::Unk_ov003_02231e4c() {
+Mailbox::Mailbox() {
     _ZN12Unk_020b6a94C1Ev(&unk_2d4);
 }
 
-Unk_ov003_02231e4c::~Unk_ov003_02231e4c() {
+Mailbox::~Mailbox() {
     _ZN12Unk_020b6a94D1Ev(&unk_2d4);
 }
 
-BOOL Unk_ov003_02231e4c::vfunc_70() {
+BOOL Mailbox::vfunc_70() {
     if (getBtaAnim(0)) {
         if (unk_2b4.allocMatAnm((u32)unk_194, data_021c6204)) {
             unk_2b4.init((s32)getBtaAnim(0), 1, 0x1000, 0);
             unk_2b4.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
         }
     }
-    u8 b = (u8)func_ov003_02218b1c(this);
+    u8 b = (u8)BuildingList_IndexOf(this);
     struct {
         s32 x, y, z;
     } v;
@@ -442,8 +442,8 @@ BOOL Unk_ov003_02231e4c::vfunc_70() {
             }
         }
     }
-    func_02216f4c(0);
-    if (func_0221706c()) {
+    setUseState(0);
+    if (isUsable()) {
         vfunc_6c(0);
     } else {
         vfunc_6c(func_020b1d80(unk_132));
@@ -451,19 +451,19 @@ BOOL Unk_ov003_02231e4c::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02231e4c::onExecute() {
-    func_02216eb4();
+BOOL Mailbox::onExecute() {
+    updateUseState();
     _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(func_020b50b4(), &unk_2d4);
     return TRUE;
 }
 
-BOOL Unk_ov003_02231e4c::vfunc_b0() {
+BOOL Mailbox::vfunc_b0() {
     return FALSE;
 }
 
-BOOL Unk_ov003_02231e4c::vfunc_48(void *a) {
+BOOL Mailbox::vfunc_48(void *a) {
     _ZN9Character13func_0203e42cEv(this, a);
-    if (!func_0221706c()) {
+    if (!isUsable()) {
         return FALSE;
     }
     if (unk_130 == 2 && a) {
@@ -476,20 +476,20 @@ BOOL Unk_ov003_02231e4c::vfunc_48(void *a) {
     return FALSE;
 }
 
-void Unk_ov003_02231e4c::vfunc_4c(u32 a, u8 b) {
+void Mailbox::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:
-        func_02216f4c(1);
+        setUseState(1);
         break;
     case 8:
-        func_02216f4c(0);
+        setUseState(0);
         break;
     }
 }
 
-s32 Unk_ov003_02231e4c::func_02217078() {
-    if (func_0221706c()) {
+s32 Mailbox::countLetters() {
+    if (isUsable()) {
         Unk_020970b8 *p = func_020979d8(PlayerData_GetCurrent());
         if (p) {
             s32 n = 0;
@@ -507,11 +507,11 @@ s32 Unk_ov003_02231e4c::func_02217078() {
     return 0;
 }
 
-u32 Unk_ov003_02231e4c::func_0221706c() {
+u32 Mailbox::isUsable() {
     return unk_2f0;
 }
 
-BOOL Unk_ov003_02231e4c::vfunc_b8(void *a) {
+BOOL Mailbox::vfunc_b8(void *a) {
     struct {
         s32 a, b, c;
     } v;
@@ -527,13 +527,13 @@ BOOL Unk_ov003_02231e4c::vfunc_b8(void *a) {
     return TRUE;
 }
 
-s32 Unk_ov003_02231e4c::func_02216f4c(s32 idx) {
+s32 Mailbox::setUseState(s32 idx) {
     static Unk_ov003_02231e4c_Fn tbl[5] = {
-        &Unk_ov003_02231e4c::func_02216eb0,
-        &Unk_ov003_02231e4c::func_02216e70,
-        &Unk_ov003_02231e4c::func_02216e38,
-        &Unk_ov003_02231e4c::func_02216e28,
-        &Unk_ov003_02231e4c::func_02216df0,
+        &Mailbox::enterUseIdle,
+        &Mailbox::enterUseOpen,
+        &Mailbox::enterUseMenu,
+        &Mailbox::enterUseMenuWait,
+        &Mailbox::enterUseClose,
     };
     if (idx < 5) {
         if ((this->*tbl[idx])()) {
@@ -544,27 +544,27 @@ s32 Unk_ov003_02231e4c::func_02216f4c(s32 idx) {
     return FALSE;
 }
 
-void Unk_ov003_02231e4c::func_02216eb4() {
+void Mailbox::updateUseState() {
     static Unk_ov003_02231e4c_Fn tbl[5] = {
-        &Unk_ov003_02231e4c::func_02216eac,
-        &Unk_ov003_02231e4c::func_02216e54,
-        &Unk_ov003_02231e4c::func_02216e2c,
-        &Unk_ov003_02231e4c::func_02216e04,
-        &Unk_ov003_02231e4c::func_ov003_02216dd0,
+        &Mailbox::execUseIdle,
+        &Mailbox::execUseOpen,
+        &Mailbox::execUseMenu,
+        &Mailbox::execUseMenuWait,
+        &Mailbox::execUseClose,
     };
     if (unk_2b0 < 5) {
         (this->*tbl[unk_2b0])();
     }
 }
 
-s32 Unk_ov003_02231e4c::func_02216eb0() {
+s32 Mailbox::enterUseIdle() {
     return TRUE;
 }
 
-s32 Unk_ov003_02231e4c::func_02216eac() {
+s32 Mailbox::execUseIdle() {
 }
 
-s32 Unk_ov003_02231e4c::func_02216e70() {
+s32 Mailbox::enterUseOpen() {
     struct {
         s32 a, b, c;
     } v;
@@ -577,54 +577,54 @@ s32 Unk_ov003_02231e4c::func_02216e70() {
     return TRUE;
 }
 
-s32 Unk_ov003_02231e4c::func_02216e54() {
+s32 Mailbox::execUseOpen() {
     if (unk_130 == 4) {
-        func_02216f4c(2);
+        setUseState(2);
     }
 }
 
-s32 Unk_ov003_02231e4c::func_02216e38() {
+s32 Mailbox::enterUseMenu() {
     if (func_0206eca4(0x27)) {
         return TRUE;
     }
     return FALSE;
 }
 
-s32 Unk_ov003_02231e4c::func_02216e2c() {
-    return func_02216f4c(3);
+s32 Mailbox::execUseMenu() {
+    return setUseState(3);
 }
 
-s32 Unk_ov003_02231e4c::func_02216e28() {
+s32 Mailbox::enterUseMenuWait() {
     return TRUE;
 }
 
-s32 Unk_ov003_02231e4c::func_02216e04() {
+s32 Mailbox::execUseMenuWait() {
     if (func_0206ec6c()) {
         if (PlayerActor_LocalRequestAct6BOr6C(2)) {
-            func_02216f4c(4);
+            setUseState(4);
         }
     }
 }
 
 // ---- old file 02216df0
-s32 Unk_ov003_02231e4c::func_02216df0() {
+s32 Mailbox::enterUseClose() {
     func_020b1454(this, 5);
     return TRUE;
 }
 
-s32 Unk_ov003_02231e4c::func_ov003_02216dd0() {
+s32 Mailbox::execUseClose() {
     u8 s = unk_130;
     if (s == 0 || s == 2) {
         TalkRequest_EndTalkWith(this);
     }
 }
 
-s32 Unk_ov003_02231e4c::vfunc_6c(s32 idx) {
+s32 Mailbox::vfunc_6c(s32 idx) {
     static Unk_ov003_02216cf8_Fn tbl[7] = {
-        &Unk_ov003_02231e4c::func_ov003_02216bc0, &Unk_ov003_02231e4c::func_ov003_02216b70,
-        &Unk_ov003_02231e4c::func_ov003_02216ac8, &Unk_ov003_02231e4c::func_ov003_02216a5c,
-        &Unk_ov003_02231e4c::func_ov003_022169c0, &Unk_ov003_02231e4c::func_ov003_02216940,
-        &Unk_ov003_02231e4c::func_ov003_0221687c};
+        &Mailbox::enterNoMail, &Mailbox::enterMailArrive,
+        &Mailbox::enterHasMail, &Mailbox::enterLidOpen,
+        &Mailbox::enterLidOpened, &Mailbox::enterLidClose,
+        &Mailbox::enterMailGone};
     if ((u32)idx < 7) {
         if ((this->*tbl[idx])() && func_020b1d3c(unk_132, idx)) {
             unk_130 = idx;
@@ -634,12 +634,12 @@ s32 Unk_ov003_02231e4c::vfunc_6c(s32 idx) {
     return FALSE;
 }
 
-void Unk_ov003_02231e4c::vfunc_74() {
+void Mailbox::vfunc_74() {
     static Unk_ov003_02216c20_Fn tbl[7] = {
-        &Unk_ov003_02231e4c::func_ov003_02216ba4, &Unk_ov003_02231e4c::func_ov003_02216b38,
-        &Unk_ov003_02231e4c::func_ov003_02216aa0, &Unk_ov003_02231e4c::func_ov003_02216a04,
-        &Unk_ov003_02231e4c::func_ov003_02216998, &Unk_ov003_02231e4c::func_ov003_022168d4,
-        &Unk_ov003_02231e4c::func_ov003_02216824};
+        &Mailbox::execNoMail, &Mailbox::execMailArrive,
+        &Mailbox::execHasMail, &Mailbox::execLidOpen,
+        &Mailbox::execLidOpened, &Mailbox::execLidClose,
+        &Mailbox::execMailGone};
     if (unk_130 < 7) {
         (this->*tbl[unk_130])();
     }
@@ -648,7 +648,7 @@ void Unk_ov003_02231e4c::vfunc_74() {
     }
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_02216bc0() {
+BOOL Mailbox::enterNoMail() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     void *r4 = ((Model *)unk_138)->getRenderObj();
@@ -657,27 +657,27 @@ BOOL Unk_ov003_02231e4c::func_ov003_02216bc0() {
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_02216ba4() {
-    if (func_02217078()) {
+void Mailbox::execNoMail() {
+    if (countLetters()) {
         func_020b1454(this, 1);
     }
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_02216b70() {
+BOOL Mailbox::enterMailArrive() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_02216b38() {
-    if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+void Mailbox::execMailArrive() {
+    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         func_020b1454(this, 2);
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_02216ac8() {
+BOOL Mailbox::enterHasMail() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
@@ -687,40 +687,40 @@ BOOL Unk_ov003_02231e4c::func_ov003_02216ac8() {
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_02216aa0() {
+void Mailbox::execHasMail() {
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_02216a5c() {
+BOOL Mailbox::enterLidOpen() {
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, 0, 0);
     ((BuildingSeEmitter *)unk_234)->playSe(0x819);
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_02216a04() {
+void Mailbox::execLidOpen() {
     _ZN9AnimModel8stepAnimEv(unk_138);
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
-    if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         func_020b1454(this, 4);
     }
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_022169c0() {
+BOOL Mailbox::enterLidOpened() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 1, 0x1000, a->unk_04 - 1, 0);
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_02216998() {
+void Mailbox::execLidOpened() {
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_02216940() {
+BOOL Mailbox::enterLidClose() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_68();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_68();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
@@ -728,9 +728,9 @@ BOOL Unk_ov003_02231e4c::func_ov003_02216940() {
     return TRUE;
 }
 
-void Unk_ov003_02231e4c::func_ov003_022168d4() {
-    if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
-        if (func_02217078() == 0) {
+void Mailbox::execLidClose() {
+    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+        if (countLetters() == 0) {
             func_020b1454(this, 6);
         } else {
             func_020b1454(this, 2);
@@ -742,7 +742,7 @@ void Unk_ov003_02231e4c::func_ov003_022168d4() {
     *unk_2b4.unk_18 = unk_2b4.unk_08;
 }
 
-BOOL Unk_ov003_02231e4c::func_ov003_0221687c() {
+BOOL Mailbox::enterMailGone() {
     Unk_ov003_02216824_Rec *a = (Unk_ov003_02216824_Rec *)vfunc_64();
     Unk_ov003_02216824_Rec *b = (Unk_ov003_02216824_Rec *)vfunc_64();
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, b, 3, 0x1000, a->unk_04 - 1, 0);
@@ -751,8 +751,8 @@ BOOL Unk_ov003_02231e4c::func_ov003_0221687c() {
 }
 
 // ---- state methods
-void Unk_ov003_02231e4c::func_ov003_02216824() {
-    if (func_0221706c() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
+void Mailbox::execMailGone() {
+    if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         func_020b1454(this, 0);
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);

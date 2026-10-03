@@ -300,11 +300,11 @@ struct Unk_ov004_0221b954_Global {
     u32 unk_64;
 };
 
-class Unk_ov004_0224d3f8;
+class SpNpcTortimer2;
 
 struct Unk_ov004_0221e56c_Ent {
-    BOOL (Unk_ov004_0224d3f8::*enter)();
-    BOOL (Unk_ov004_0224d3f8::*exit)();
+    BOOL (SpNpcTortimer2::*enter)();
+    BOOL (SpNpcTortimer2::*exit)();
 };
 
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -325,12 +325,12 @@ struct Unk_ov004_0221e56c_Ent {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov004_0221e56c_Ent data_ov004_02250bc4[];
+extern Unk_ov004_0221e56c_Ent sSpNpcTortimer2ActTable[];
 // 0x02250bcc is a label inside the 0x20-byte table (second ptmf of entry 0)
-#define data_ov004_02250bcc ((Unk_ov004_0221e56c_Ent *)((u8 *)data_ov004_02250bc4 + 8))
-extern Unk_ov004_0224d3f8 *volatile data_ov004_02250bc0;
-extern u8 data_ov004_0224d3a4[];
-extern u8 data_ov004_0224d3d4[];
+#define data_ov004_02250bcc ((Unk_ov004_0221e56c_Ent *)((u8 *)sSpNpcTortimer2ActTable + 8))
+extern SpNpcTortimer2 *volatile sSpNpcTortimer2;
+extern u8 sSpNpcTortimer2ModelPath[];
+extern u8 sSpNpcTortimer2TexturePath[];
 
 void func_0201ad34(void *self, s32 a);
 s32 func_0201622c(void *self, s32 a, void *b);
@@ -341,9 +341,9 @@ s32 func_020e7518(void *self);
 s32 SaveManager_IsIdle();
 }
 
-class Unk_ov004_0224d3f8 : public Unk_020d8bc8 {
+class SpNpcTortimer2 : public Unk_020d8bc8 {
 public:
-    Unk_ov004_0224d3f8() {}
+    SpNpcTortimer2() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -351,25 +351,25 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov004_0221e428();
-    BOOL func_ov004_0221e4ac();
-    BOOL func_ov004_0221e4dc();
-    BOOL func_ov004_0221e528();
-    void func_ov004_0221e56c(s32 state);
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
     /* 0x658 */ u8 unk_658;
 };
 
 struct Unk_ov004_SceneEntry {
-    Unk_ov004_0224d3f8 *(*factory)();
+    SpNpcTortimer2 *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
 
-extern "C" Unk_ov004_0224d3f8 *func_ov004_0221e69c() { return new Unk_ov004_0224d3f8; }
+extern "C" SpNpcTortimer2 *SpNpcTortimer2_Create() { return new SpNpcTortimer2; }
 
-BOOL Unk_ov004_0224d3f8::vfunc_04() {
+BOOL SpNpcTortimer2::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
@@ -377,84 +377,84 @@ BOOL Unk_ov004_0224d3f8::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d3f8::vfunc_00() {
+BOOL SpNpcTortimer2::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    data_ov004_02250bc0 = this;
-    func_ov004_0221e56c(0);
+    sSpNpcTortimer2 = this;
+    changeAct(0);
     unk_4cc.unk_1c |= 2;
     unk_4cc.unk_44 = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d3f8::vfunc_0c() {
+BOOL SpNpcTortimer2::vfunc_0c() {
     if (!Unk_020d8bc8::vfunc_0c()) {
         return FALSE;
     }
-    data_ov004_02250bc0 = 0;
+    sSpNpcTortimer2 = 0;
     return TRUE;
 }
 
-u8 *Unk_ov004_0224d3f8::getTexturePath() { return data_ov004_0224d3d4; }
+u8 *SpNpcTortimer2::getTexturePath() { return sSpNpcTortimer2TexturePath; }
 
-u8 *Unk_ov004_0224d3f8::getModelPath() { return data_ov004_0224d3a4; }
+u8 *SpNpcTortimer2::getModelPath() { return sSpNpcTortimer2ModelPath; }
 
-BOOL Unk_ov004_0224d3f8::updateAct() {
+BOOL SpNpcTortimer2::updateAct() {
     BOOL r = FALSE;
     if (data_ov004_02250bcc[unk_654].enter) {
-        r = (this->*data_ov004_02250bc4[unk_654].exit)();
+        r = (this->*sSpNpcTortimer2ActTable[unk_654].exit)();
     }
     return r;
 }
 
-void Unk_ov004_0224d3f8::func_ov004_0221e56c(s32 state) {
+void SpNpcTortimer2::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov004_02250bc4[state].enter) {
-        ok = (this->*data_ov004_02250bc4[state].enter)();
+    if (sSpNpcTortimer2ActTable[state].enter) {
+        ok = (this->*sSpNpcTortimer2ActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov004_0224d3f8::func_ov004_0221e528() {
+BOOL SpNpcTortimer2::setupAct00() {
     func_020196b4(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     unk_658 = 0xa;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d3f8::func_ov004_0221e4dc() {
+BOOL SpNpcTortimer2::mainAct00() {
     if (((u32)unk_ec.unk_a4 << 4) >> 16 == (((u32)unk_ec.unk_a0 << 4) >> 16) - 1) {
         if (func_020e7518(&unk_658) == 0 && SaveManager_IsIdle()) {
-            func_ov004_0221e56c(1);
+            changeAct(1);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d3f8::func_ov004_0221e4ac() {
+BOOL SpNpcTortimer2::setupAct01() {
     func_020195c8(&unk_564, 1, 0x100, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d3f8::func_ov004_0221e428() {
+BOOL SpNpcTortimer2::mainAct01() {
     if (func_0201622c(&unk_334, 0x100, &unk_2a0) && func_02019790(&unk_564)) {
         func_020195c8(&unk_564, 1, 0x101, 1, data_020c6cc8, 0);
     }
     if (func_0201622c(&unk_334, 0x101, &unk_2a0) && func_02019790(&unk_564)) {
-        func_ov004_0221e56c(0);
+        changeAct(0);
     }
     return TRUE;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov004_0224d3f8
+// SpNpcTortimer2
 
-extern "C" BOOL func_ov004_0221e3dc() {
-    Unk_ov004_0224d3f8 *y = data_ov004_02250bc0;
+extern "C" BOOL SpNpcTortimer2_IsIdle() {
+    SpNpcTortimer2 *y = sSpNpcTortimer2;
     if (y) {
-        if (func_0201622c(&y->unk_334, 0xff, &y->unk_2a0) && data_ov004_02250bc0->unk_654 == 0) {
+        if (func_0201622c(&y->unk_334, 0xff, &y->unk_2a0) && sSpNpcTortimer2->unk_654 == 0) {
             return TRUE;
         }
         return FALSE;
@@ -462,20 +462,20 @@ extern "C" BOOL func_ov004_0221e3dc() {
     return TRUE;
 }
 
-extern "C" void _ZN18Unk_ov004_0224d3f819func_ov004_0221e528Ev();
-extern "C" void _ZN18Unk_ov004_0224d3f819func_ov004_0221e4dcEv();
-extern "C" void _ZN18Unk_ov004_0224d3f819func_ov004_0221e4acEv();
-extern "C" void _ZN18Unk_ov004_0224d3f819func_ov004_0221e428Ev();
-extern "C" u8 data_ov004_0224d3a4[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '.', 'n', 's', 'b', 'm', 'd', 0};
-extern "C" u8 data_ov004_0224d3d4[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov004_SceneEntry data_ov004_0224d3bc = {func_ov004_0221e69c, 0x5d, 0x64, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" void *data_ov004_0224d394[2] = {(void *)_ZN18Unk_ov004_0224d3f819func_ov004_0221e4acEv, 0};
-extern "C" void *data_ov004_0224d39c[2] = {(void *)_ZN18Unk_ov004_0224d3f819func_ov004_0221e428Ev, 0};
-extern "C" void *data_ov004_0224d384[2] = {(void *)_ZN18Unk_ov004_0224d3f819func_ov004_0221e528Ev, 0};
-extern "C" void *data_ov004_0224d38c[2] = {(void *)_ZN18Unk_ov004_0224d3f819func_ov004_0221e4dcEv, 0};
-typedef BOOL (Unk_ov004_0224d3f8::*Unk_ov004_O_Fn)();
-extern "C" Unk_ov004_0221e56c_Ent data_ov004_02250bc4[2] = {
+extern "C" void _ZN14SpNpcTortimer210setupAct00Ev();
+extern "C" void _ZN14SpNpcTortimer29mainAct00Ev();
+extern "C" void _ZN14SpNpcTortimer210setupAct01Ev();
+extern "C" void _ZN14SpNpcTortimer29mainAct01Ev();
+extern "C" u8 sSpNpcTortimer2ModelPath[23] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcTortimer2TexturePath[27] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'i', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" Unk_ov004_SceneEntry sSpNpcTortimer2Profile = {SpNpcTortimer2_Create, 0x5d, 0x64, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" void *data_ov004_0224d394[2] = {(void *)_ZN14SpNpcTortimer210setupAct01Ev, 0};
+extern "C" void *data_ov004_0224d39c[2] = {(void *)_ZN14SpNpcTortimer29mainAct01Ev, 0};
+extern "C" void *data_ov004_0224d384[2] = {(void *)_ZN14SpNpcTortimer210setupAct00Ev, 0};
+extern "C" void *data_ov004_0224d38c[2] = {(void *)_ZN14SpNpcTortimer29mainAct00Ev, 0};
+typedef BOOL (SpNpcTortimer2::*Unk_ov004_O_Fn)();
+extern "C" Unk_ov004_0221e56c_Ent sSpNpcTortimer2ActTable[2] = {
     {*(Unk_ov004_O_Fn *)data_ov004_0224d384, *(Unk_ov004_O_Fn *)data_ov004_0224d38c},
     {*(Unk_ov004_O_Fn *)data_ov004_0224d394, *(Unk_ov004_O_Fn *)data_ov004_0224d39c},
 };
-extern "C" Unk_ov004_0224d3f8 *volatile data_ov004_02250bc0 = 0;
+extern "C" SpNpcTortimer2 *volatile sSpNpcTortimer2 = 0;

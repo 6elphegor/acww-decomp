@@ -104,8 +104,8 @@ s32 func_020b5184();
 BOOL func_020af564(void *o);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
-BOOL func_ov003_022132a0(void *p);
-BOOL func_ov003_022132b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
+BOOL Snowball_IsInBallState(void *p);
+BOOL Snowball_TryPush(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
 void func_ov003_0222e964(Unk_ov003_0222e734_Pool *pool, s32 x, s32 y);
 s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool);
@@ -261,7 +261,7 @@ extern "C" BOOL func_ov003_0222eb68(void *self, s32 a, s32 b, s32 c, s32 d) {
     u32 i;
     for (i = 0; i < 8; i++) {
         if (data_ov003_0225b4f8[i] != 0) {
-            if (func_ov003_022132b4(data_ov003_0225b4f8[i], (s32)self, a, b, c, d)) {
+            if (Snowball_TryPush(data_ov003_0225b4f8[i], (s32)self, a, b, c, d)) {
                 return TRUE;
             }
         }
@@ -295,7 +295,7 @@ extern "C" void *func_ov003_0222ead4(void *self) {
     u32 i;
     for (i = 0; i < 8; i++) {
         Unk_ov003_0222eb10_Obj *p = data_ov003_0225b4f8[i];
-        if (p != 0 && p != self && func_ov003_022132a0(p)) {
+        if (p != 0 && p != self && Snowball_IsInBallState(p)) {
             return p;
         }
     }

@@ -91,10 +91,10 @@ BOOL func_020b0084(const u8 *name, s32 skip);
 BOOL func_020b01b0(Entry *e);
 void func_020b01f8(void);
 void func_020b0208(void);
-Base *func_020b05bc(void);
+Base *Constellation_GetData(void);
 Entry *func_020b04a4(s32 i);
 Entry *func_020b053c(s32 i);
-s32 func_020b058c(void);
+s32 Constellation_FindFreeSlot(void);
 void func_020b05c4(u16 *p, s32 *a, s32 *b);
 BOOL func_020b02bc(s32 x, s32 y, s32 px, s32 py);
 BOOL func_020b0708(s32 n);
@@ -202,12 +202,12 @@ void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
     *outB = (minv * 8 + (maxv * 8 + 8)) >> 1;
 }
 
-Base *func_020b05bc(void) {
+Base *Constellation_GetData(void) {
     return &data_021ec31c;
 }
 
-s32 func_020b058c(void) {
-    Base *base = func_020b05bc();
+s32 Constellation_FindFreeSlot(void) {
+    Base *base = Constellation_GetData();
     s32 i;
     for (i = 0; i < 16; i++) {
         if (!func_020b0980(base, i)) {
@@ -217,8 +217,8 @@ s32 func_020b058c(void) {
     return -1;
 }
 
-s32 func_020b0564(void) {
-    Base *base = func_020b05bc();
+s32 Constellation_CountFreeSlots(void) {
+    Base *base = Constellation_GetData();
     s32 i, n;
     i = n = 0;
     for (; i < 16; i++) {
@@ -230,7 +230,7 @@ s32 func_020b0564(void) {
 }
 
 Entry *func_020b053c(s32 idx) {
-    Base *base = func_020b05bc();
+    Base *base = Constellation_GetData();
     if (func_020b0980(base, idx) == 0) {
         return NULL;
     }
@@ -238,7 +238,7 @@ Entry *func_020b053c(s32 idx) {
 }
 
 void func_020b04f8(Entry *e, s32 idx, s32 flag) {
-    Base *base = func_020b05bc();
+    Base *base = Constellation_GetData();
     func_020b09ac(base, idx);
     func_020b0a18(&base->entries[idx], e);
     if (flag) {
@@ -246,14 +246,14 @@ void func_020b04f8(Entry *e, s32 idx, s32 flag) {
     }
 }
 
-void func_020b04cc(s32 idx) {
-    Base *base = func_020b05bc();
+void Constellation_Erase(s32 idx) {
+    Base *base = Constellation_GetData();
     func_020b0998(base, idx);
     base->mask &= ~(1 << idx);
 }
 
 Entry *func_020b04a4(s32 idx) {
-    Base *base = func_020b05bc();
+    Base *base = Constellation_GetData();
     if (func_020b0980(base, idx) == 0) {
         return NULL;
     }
@@ -271,21 +271,21 @@ void func_020b0450(u8 *dst) {
 }
 
 void func_020b0428(u8 *src, s32 idx) {
-    Mem_Copy(src, func_020b05bc()->entries[idx].name, 16);
+    Mem_Copy(src, Constellation_GetData()->entries[idx].name, 16);
 }
 
 void func_020b03f0(u8 *dst, s32 idx) {
-    Base *base = func_020b05bc();
+    Base *base = Constellation_GetData();
     Mem_Clear(dst, 16);
     if (func_020b0980(base, idx)) {
         Mem_Copy(base->entries[idx].name, dst, 16);
     }
 }
 
-BOOL func_020b03a0(void *self, s32 idx) {
+BOOL Constellation_GetName(void *self, s32 idx) {
     u32 buf[9];
     Entry *e;
-    if (!func_020b0980(func_020b05bc(), idx)) {
+    if (!func_020b0980(Constellation_GetData(), idx)) {
         return FALSE;
     }
     e = func_020b053c(idx);
@@ -296,11 +296,11 @@ BOOL func_020b03a0(void *self, s32 idx) {
     return TRUE;
 }
 
-s32 func_020b0334(s32 *out) {
+s32 Constellation_GetNewStatus(s32 *out) {
     Base *base;
     s32 i;
     *out = -1;
-    base = func_020b05bc();
+    base = Constellation_GetData();
     for (i = 0; i < 16; i++) {
         u32 bit = 1 << i;
         if (base->mask & bit) {
@@ -321,11 +321,11 @@ s32 func_020b0334(s32 *out) {
     return 0;
 }
 
-void func_020b031c(void) {
-    func_020b05bc()->mask = 0;
+void Constellation_ClearNewFlags(void) {
+    Constellation_GetData()->mask = 0;
 }
 
-void func_020b02ec(void *a, s32 idx) {
+void Constellation_GetViewingTime(void *a, s32 idx) {
     s32 x, y;
     Entry *e = func_020b053c(idx);
     func_020b05c4(e->slots, &x, &y);
@@ -386,7 +386,7 @@ void func_020b01f8(void) {
 }
 
 BOOL func_020b01b0(Entry *e) {
-    s32 idx = func_020b058c();
+    s32 idx = Constellation_FindFreeSlot();
     s32 r;
     if (idx == -1) {
         return FALSE;
@@ -410,7 +410,7 @@ void func_020b013c(void) {
     e = _ZN12Unk_0208f23813func_0208f154Ev(data_021e7f8c);
     func_020b0a30(e);
     n = 0;
-    base = func_020b05bc();
+    base = Constellation_GetData();
     for (i = 0; i < 16; i++) {
         if (func_020b0980(base, i)) {
             n++;

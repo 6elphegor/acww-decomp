@@ -654,8 +654,8 @@ void *func_02095204(u32);
 BOOL func_020b1d3c(u32, u32);
 
 void *Heap_Alloc(void *heap, u32 size);
-u32 func_ov003_02218b1c(void *p);
-void func_ov003_02218d6c(u32 a);
+u32 BuildingList_IndexOf(void *p);
+void Field_SetDoorExitMode(u32 a);
 BOOL PlayerActor_LocalRequestDoorExit();
 s32 func_02031da4(void *node);
 void func_02031de0(void *node);
@@ -681,11 +681,11 @@ void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
 s32 func_020b1d80(u32);
-s32 func_ov003_02218da8();
-void func_ov003_02218d94();
-s32 func_ov003_022187f8();
-void func_ov003_02218c0c(void *);
-void func_ov003_02218c34(void *);
+s32 Field_GetStructureTexSuffix();
+void FieldStructureMgr_GetPlayerHouseTex();
+s32 PlayerHouseTex_Get();
+void BuildingList_Remove(void *);
+void BuildingList_Add(void *);
 BOOL Model_setResource(void *, void *, s32);
 void AnimModel_allocAnmObj(void *, void *);
 void AnimModel_attachAnim(void *);
@@ -892,7 +892,7 @@ BOOL BuildingActor::vfunc_00() {
         s32 v[12];
     } m;
     Unk_ov009_0225b880_Vec3 v;
-    func_ov003_02218c34(this);
+    BuildingList_Add(this);
     unk_228 = unk_5c[0] >> 13;
     unk_22c = unk_5c[2] >> 13;
     Character_setCharId(this, (u16)(((unk_22c & 0xff) << 8) | (unk_228 & 0xff)));
@@ -990,7 +990,7 @@ BOOL BuildingActor::preDelete() {
     destroyShadows();
     destroyColliders();
     Model_clearResource(unk_138);
-    func_ov003_02218c0c(this);
+    BuildingList_Remove(this);
     if (unk_232.f0) {
         func_0203e9d8();
         if (Item_IsNookShop(&unk_132)) {
@@ -1163,13 +1163,13 @@ extern "C" BOOL Building_IsNight() {
 
 char *BuildingActor::vfunc_a4() {
     u32 i = unk_134;
-    func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, func_ov003_02218da8());
+    func_020639e8(sBuildingArcPath, sBuildingArcPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingArcPath;
 }
 
 char *BuildingActor::vfunc_a8() {
     u32 i = unk_134;
-    func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, func_ov003_02218da8());
+    func_020639e8(sBuildingTexPath, sBuildingTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingTexPath;
 }
 
@@ -1183,7 +1183,7 @@ char *BuildingActor::vfunc_ac() {
         return 0;
     }
     u32 i = unk_134;
-    func_020639e8(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, func_ov003_02218da8());
+    func_020639e8(sBuildingLightTexPath, sBuildingLightTexPathFmt, i, i, Field_GetStructureTexSuffix());
     return sBuildingLightTexPath;
 }
 
@@ -1195,8 +1195,8 @@ BOOL BuildingActor::setupModel(char *a, char *b, char *c) {
     BuildingResources *r = getResources();
     if (r != NULL && r->unk_00 != 0) {
         if (Model_setResource(unk_138, (void *)r->unk_00, 0)) {
-            func_ov003_02218d94();
-            s32 x = func_ov003_022187f8();
+            FieldStructureMgr_GetPlayerHouseTex();
+            s32 x = PlayerHouseTex_Get();
             NNS_G3dBindMdlPltt((void *)r->unk_00, x);
             if (r->unk_14) {
                 NNS_G3dBindMdlTex((void *)r->unk_00, r->unk_14);
@@ -1319,7 +1319,7 @@ void BuildingActor::func_ov009_0225d0d8() {
             if (func_02094e3c()) {
                 switch (getEntranceType()) {
                 case 2:
-                    func_ov003_02218d6c(1);
+                    Field_SetDoorExitMode(1);
                     data_021c1b3c->unk_2d0.func_0203535c(1);
                     if (PlayerActor_LocalRequestDoorExit()) {
                         unk_230 = 0;
@@ -1327,7 +1327,7 @@ void BuildingActor::func_ov009_0225d0d8() {
                     }
                     break;
                 case 3:
-                    func_ov003_02218d6c(0);
+                    Field_SetDoorExitMode(0);
                     data_021c1b3c->unk_2d0.func_0203535c(2);
                     if (PlayerActor_LocalRequestDoorExit()) {
                         unk_230 = 0;
@@ -1335,7 +1335,7 @@ void BuildingActor::func_ov009_0225d0d8() {
                     }
                     break;
                 case 1:
-                    func_ov003_02218d6c(0);
+                    Field_SetDoorExitMode(0);
                     if (Unk_ov009_0225d0d8_Match(&unk_132, 0x5012) || Unk_ov009_0225d0d8_Match(&unk_132, 0x5013)) {
                         data_021c1b3c->unk_2d0.func_0203535c(4);
                     } else {
@@ -1443,7 +1443,7 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
             unk_288 = (BuildingCollider *)Heap_Alloc(data_021c6204, unk_28c * 0x54);
             e4 = unk_288;
             e6 = unk_284;
-            k = func_ov003_02218b1c(this);
+            k = BuildingList_IndexOf(this);
             for (i = 0; i < unk_28c; e4++, e6++, i++) {
                 if (h->func_020b2958(&a.x, &b.x, &c.x, i)) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);

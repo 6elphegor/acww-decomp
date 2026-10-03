@@ -274,15 +274,15 @@ void Clock_GetDateTime(void *p);
 void Npc_GetName(void *p, void *q);
 void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
-void func_ov003_02215c20();
+void KatrinaTent_Create();
 }
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 
-class Unk_ov003_0223177c : public BuildingActor {
+class KatrinaTent : public BuildingActor {
 public:
-    Unk_ov003_0223177c();
-    virtual ~Unk_ov003_0223177c();
+    KatrinaTent();
+    virtual ~KatrinaTent();
 
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
@@ -301,19 +301,19 @@ struct Unk_ov003_SceneEntry {
     u32 a, b, c;
 };
 
-extern "C" Unk_ov003_SceneEntry data_ov003_0223175c = { func_ov003_02215c20, 0x28, 0x2e, 0, 0xc8000, 0x12c000, 0x258000 };
+extern "C" Unk_ov003_SceneEntry sKatrinaTentProfile = { KatrinaTent_Create, 0x28, 0x2e, 0, 0xc8000, 0x12c000, 0x258000 };
 
-extern "C" void func_ov003_02215c20() {
-    new Unk_ov003_0223177c;
+extern "C" void KatrinaTent_Create() {
+    new KatrinaTent;
 }
 
-Unk_ov003_0223177c::Unk_ov003_0223177c() {
+KatrinaTent::KatrinaTent() {
 }
 
-Unk_ov003_0223177c::~Unk_ov003_0223177c() {
+KatrinaTent::~KatrinaTent() {
 }
 
-BOOL Unk_ov003_0223177c::vfunc_70() {
+BOOL KatrinaTent::vfunc_70() {
     struct {
         s32 a, b;
     } d;
@@ -324,11 +324,11 @@ BOOL Unk_ov003_0223177c::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_0223177c::onExecute() {
+BOOL KatrinaTent::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_ov003_0223177c::vfunc_8c() {
+BOOL KatrinaTent::vfunc_8c() {
     Unk_0209d498_Time t;
     ((u32 *)&t)[0] = 0;
     ((u32 *)&t)[1] = 0;
@@ -343,7 +343,7 @@ BOOL Unk_ov003_0223177c::vfunc_8c() {
     return r;
 }
 
-void Unk_ov003_0223177c::vfunc_78() {
+void KatrinaTent::vfunc_78() {
     setFileName("sp_npc_panther");
     if (vfunc_8c() == 0) {
         unk_1e = 0xf;

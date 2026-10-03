@@ -73,8 +73,8 @@ extern u32 __ptmf_null[];
 s32 func_02098ffc(void);
 void Hud_Hide(void);
 void Hud_Show(void);
-s32 func_0201ade4(s32 a, s32 b);
-void func_0201adc8(s32 a, s32 b);
+s32 NpcActor_CanPlayerPay(s32 a, s32 b);
+void NpcActor_ChargePlayer(s32 a, s32 b);
 s32 func_02099014(u16 *p, s32 a);
 void func_02098f30(void *buf, s32 (*cb)(u16 *));
 s32 func_0206ed18(void);
@@ -1016,14 +1016,14 @@ b16:
 b19:
     if (res == 0) {
         s32 t = func_02098ffc();
-        if (func_0201ade4(unk_b0, unk_bc) == 0) {
+        if (NpcActor_CanPlayerPay(unk_b0, unk_bc) == 0) {
             cmd = 0x1b;
         } else if (t < 0) {
             cmd = 0x1c;
         } else if (func_02271754() == 0) {
             cmd = 0x14;
         } else {
-            func_0201adc8(unk_b0, unk_bc);
+            NpcActor_ChargePlayer(unk_b0, unk_bc);
             a = 0x1531;
             _ZN12Unk_020d771013func_02014e60EPtjjj(this, &a, 0, 5, 0);
             unk_c4 = 0;
@@ -1043,13 +1043,13 @@ b23:
     goto end;
 b25:
     if (res == 0) {
-        if (func_0201ade4(unk_b0, 0x3e8) == 0) {
+        if (NpcActor_CanPlayerPay(unk_b0, 0x3e8) == 0) {
             cmd = 0x1b;
         } else {
             b = 0x1567;
             if (func_02099014(&b, 0)) {
                 cmd = 0x15;
-                func_0201adc8(unk_b0, 0x3e8);
+                NpcActor_ChargePlayer(unk_b0, 0x3e8);
                 _ZN8SaveData7setFlagEj(gSaveData, 4);
                 unk_c4 = 1;
                 c = 0x1567;
@@ -1188,7 +1188,7 @@ L_case19:
     mov r1, r5
     add r1, #188
     ldr r1, [r1, #0]
-    bl func_0201ade4
+    bl NpcActor_CanPlayerPay
     cmp r0, #0
     bne L_case19_a
     mov r4, #27
@@ -1212,7 +1212,7 @@ L_case19_c:
     mov r1, r5
     add r1, #188
     ldr r1, [r1, #0]
-    bl func_0201adc8
+    bl NpcActor_ChargePlayer
     ldr r1, =0x1531
     add r0, sp, #8
     strh r1, [r0, #2]
@@ -1250,7 +1250,7 @@ L_case25:
     add r0, #176
     ldr r0, [r0, #0]
     ldr r1, =0x3e8
-    bl func_0201ade4
+    bl NpcActor_CanPlayerPay
     cmp r0, #0
     bne L_case25_a
     mov r4, #27
@@ -1269,7 +1269,7 @@ L_case25_a:
     add r0, #176
     ldr r0, [r0, #0]
     ldr r1, =0x3e8
-    bl func_0201adc8
+    bl NpcActor_ChargePlayer
     ldr r0, =gSaveData
     mov r1, #4
     bl _ZN8SaveData7setFlagEj

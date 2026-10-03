@@ -2613,7 +2613,7 @@ BOOL func_020a78a4(void *, const void *, s32);
 s32 func_020ad2c8();
 s32 func_020ad330();
 s32 func_020b0218();
-void * func_020b05bc();
+void * Constellation_GetData();
 s32 func_020b0980(void *, s32);
 s32 String_MakeNickname(void *, void *, u8 *);
 s32 func_020b50e8();
@@ -12360,7 +12360,7 @@ BOOL VillagerTalkTopics::selectTsuStar() {
     if (!Unk_02020b38_IsZero(data_020e416c)) {
         return FALSE;
     }
-    base = func_020b05bc();
+    base = Constellation_GetData();
     r4 = func_020b0218();
     r7 = (void *)((u32)PlayerData_GetCurrent());
     p14 = 0;

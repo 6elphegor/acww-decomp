@@ -427,7 +427,7 @@ s32 BlendAnimModel_getAnmObj(void *self);
 void AnimModel_stepAnim(void *self);
 void AnimFrameCtrl_step(void *self);
 s32 func_ov004_02234ba8(s32 a);
-void func_ov004_022136d0(void *v, s32 a, s32 b, u32 c);
+void RoomBoardSign_Spawn(void *v, s32 a, s32 b, u32 c);
 void Unk_02003c40_callRequestSustained(void *self, u32 a);
 void Unk_02003c40_callUpdateRelative(void *self, Unk_ov004_0222b9a4_Vec *v);
 void Model_setInitCallback(void *self, void *fn, void *obj);
@@ -1290,7 +1290,7 @@ extern "C" void func_ov004_0222a644(void *self) {
                 u32 i;
                 for (i = 0; i < o->unk_2c; e++, i++) {
                     Unk_ov004_0222a644_V3 v((e->unk_00 << 12) >> 4, (e->unk_02 << 12) >> 4, (e->unk_04 << 12) >> 4);
-                    func_ov004_022136d0(&v, (e->unk_06 << 12) >> 4, ((s32)(e->unk_08 << 30)) >> 16, e->unk_09);
+                    RoomBoardSign_Spawn(&v, (e->unk_06 << 12) >> 4, ((s32)(e->unk_08 << 30)) >> 16, e->unk_09);
                 }
             }
         }

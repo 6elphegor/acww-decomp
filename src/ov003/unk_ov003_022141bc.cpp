@@ -248,10 +248,10 @@ BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e780c(s32 a, s32 b);
 }
 
-class Unk_ov003_02230df4 : public BuildingActor {
+class BulletinBoard : public BuildingActor {
 public:
-    Unk_ov003_02230df4();
-    virtual ~Unk_ov003_02230df4();
+    BulletinBoard();
+    virtual ~BulletinBoard();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -259,22 +259,22 @@ public:
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
 
-    void func_ov003_02214208();
-    BOOL func_ov003_02214284(s32 m);
-    void func_ov003_022141bc();
-    BOOL func_ov003_022141d4();
-    BOOL func_ov003_022141d8();
-    BOOL func_ov003_022141e4();
-    void func_ov003_02214200();
-    BOOL func_ov003_02214204();
+    void updateBoardState();
+    BOOL setBoardState(s32 m);
+    void execBoardRead();
+    BOOL enterBoardRead();
+    BOOL execBoardOpen();
+    BOOL enterBoardOpen();
+    void execBoardIdle();
+    BOOL enterBoardIdle();
 
     /* 0x2b0 */ s32 unk_2b0;
 };
 
-extern "C" void func_ov003_02214424();
+extern "C" void BulletinBoard_Create();
 
-typedef void (Unk_ov003_02230df4::*Unk_02214208_Fn)();
-typedef BOOL (Unk_ov003_02230df4::*Unk_02214284_Fn)();
+typedef void (BulletinBoard::*Unk_02214208_Fn)();
+typedef BOOL (BulletinBoard::*Unk_02214284_Fn)();
 
 extern "C" Unk_ov003_02230df4_Color data_ov003_02235110(0x1f, 0x14, 0x14, 0x1f);
 extern "C" Unk_ov003_02230df4_Color data_ov003_02235100(0x14, 0x14, 0x1f, 0x1f);
@@ -282,35 +282,35 @@ extern "C" Unk_ov003_02230df4_Color data_ov003_02235104(0x1f, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_02230df4_Color data_ov003_022350fc(0x14, 0x1f, 0x14, 0x1f);
 extern "C" Unk_ov003_02230df4_Color data_ov003_022350f8(0x14, 0x1f, 0x1f, 0x1f);
 extern "C" Unk_ov003_02230df4_Color data_ov003_022350f4(0x14, 0x18, 0x18, 0x1f);
-extern "C" Unk_ov003_SceneEntry data_ov003_02230dd4 = {(void *(*)())func_ov003_02214424, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
+extern "C" Unk_ov003_SceneEntry sBulletinBoardProfile = {(void *(*)())BulletinBoard_Create, 0x22, 0x28, 0, 0xc8000, 0x12c000, 0x258000};
 
-extern "C" void func_ov003_02214424() {
-    new Unk_ov003_02230df4;
+extern "C" void BulletinBoard_Create() {
+    new BulletinBoard;
 }
 
-Unk_ov003_02230df4::Unk_ov003_02230df4() {}
+BulletinBoard::BulletinBoard() {}
 
-Unk_ov003_02230df4::~Unk_ov003_02230df4() {}
+BulletinBoard::~BulletinBoard() {}
 
-BOOL Unk_ov003_02230df4::vfunc_70() {
-    func_ov003_02214284(0);
+BOOL BulletinBoard::vfunc_70() {
+    setBoardState(0);
     return TRUE;
 }
 
-BOOL Unk_ov003_02230df4::onExecute() {
-    func_ov003_02214208();
+BOOL BulletinBoard::onExecute() {
+    updateBoardState();
     return TRUE;
 }
 
-BOOL Unk_ov003_02230df4::onDraw() {
+BOOL BulletinBoard::onDraw() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02230df4::vfunc_0c() {
+BOOL BulletinBoard::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02230df4::vfunc_48(Character *a) {
+BOOL BulletinBoard::vfunc_48(Character *a) {
     if (unk_231 & 8) {
         if (a) {
             if (func_020e780c((s16)(unk_8e + 0x8000), a->unk_8e) < 0x1300) {
@@ -322,20 +322,20 @@ BOOL Unk_ov003_02230df4::vfunc_48(Character *a) {
     return FALSE;
 }
 
-void Unk_ov003_02230df4::vfunc_4c(u32 a, u8 b) {
+void BulletinBoard::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 0:
     case 1:
-        func_ov003_02214284(1);
+        setBoardState(1);
         break;
     case 8:
-        func_ov003_02214284(0);
+        setBoardState(0);
         break;
     }
 }
 
-BOOL Unk_ov003_02230df4::func_ov003_02214284(s32 m) {
-    static Unk_02214284_Fn tbl[3] = { &Unk_ov003_02230df4::func_ov003_02214204, &Unk_ov003_02230df4::func_ov003_022141e4, &Unk_ov003_02230df4::func_ov003_022141d4 };
+BOOL BulletinBoard::setBoardState(s32 m) {
+    static Unk_02214284_Fn tbl[3] = { &BulletinBoard::enterBoardIdle, &BulletinBoard::enterBoardOpen, &BulletinBoard::enterBoardRead };
     if (m < 3) {
         if ((this->*tbl[m])()) {
             unk_2b0 = m;
@@ -345,35 +345,35 @@ BOOL Unk_ov003_02230df4::func_ov003_02214284(s32 m) {
     return FALSE;
 }
 
-void Unk_ov003_02230df4::func_ov003_02214208() {
-    static Unk_02214208_Fn tbl[3] = { (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_02214200, (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_022141d8, (Unk_02214208_Fn)&Unk_ov003_02230df4::func_ov003_022141bc };
+void BulletinBoard::updateBoardState() {
+    static Unk_02214208_Fn tbl[3] = { (Unk_02214208_Fn)&BulletinBoard::execBoardIdle, (Unk_02214208_Fn)&BulletinBoard::execBoardOpen, (Unk_02214208_Fn)&BulletinBoard::execBoardRead };
     if (unk_2b0 < 3) {
         (this->*tbl[unk_2b0])();
     }
 }
 
-BOOL Unk_ov003_02230df4::func_ov003_02214204() {
+BOOL BulletinBoard::enterBoardIdle() {
     return TRUE;
 }
 
-void Unk_ov003_02230df4::func_ov003_02214200() {}
+void BulletinBoard::execBoardIdle() {}
 
-BOOL Unk_ov003_02230df4::func_ov003_022141e4() {
+BOOL BulletinBoard::enterBoardOpen() {
     if (func_0206eca4(0)) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov003_02230df4::func_ov003_022141d8() {
-    return func_ov003_02214284(2);
+BOOL BulletinBoard::execBoardOpen() {
+    return setBoardState(2);
 }
 
-BOOL Unk_ov003_02230df4::func_ov003_022141d4() {
+BOOL BulletinBoard::enterBoardRead() {
     return TRUE;
 }
 
-void Unk_ov003_02230df4::func_ov003_022141bc() {
+void BulletinBoard::execBoardRead() {
     if (func_0206ec6c()) {
         TalkRequest_EndTalkWith(this);
     }

@@ -114,8 +114,8 @@ BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void func_02099064(s32 n);
 s32 func_0206ea84(void *cb);
-s32 func_0201ade4(void *owner, s32 n);
-void func_0201adc8(void *owner, s32 n);
+s32 NpcActor_CanPlayerPay(void *owner, s32 n);
+void NpcActor_ChargePlayer(void *owner, s32 n);
 u32 func_020951ec(s32 n);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
@@ -1292,7 +1292,7 @@ void Unk_ov071_02272ba8::vfunc_14() {
     case 0x19:
         m.a = 0x149d;
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &m.a, 0, 5, 0);
-        func_0201adc8(unk_b0, 0xbb8);
+        NpcActor_ChargePlayer(unk_b0, 0xbb8);
         r5 = 0x1a;
         _ZN12Unk_02097ff413func_0209801cEj(h, 0x17);
         _ZN12Unk_020877e013func_02087af0Ev(_ZN10PlayerData13func_0209868cEv(h));
@@ -1305,7 +1305,7 @@ void Unk_ov071_02272ba8::vfunc_14() {
     case 0x1e:
         m.b = 0x14a0;
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &m.b, 0, 5, 0);
-        func_0201adc8(unk_b0, 0x1770);
+        NpcActor_ChargePlayer(unk_b0, 0x1770);
         r5 = 0x1f;
         _ZN12Unk_02097ff413func_0209801cEj(h, 0x18);
         break;
@@ -1409,7 +1409,7 @@ blkC:
 blkA:
     if (t == 0) {
         func_0202e1cc(0x28, 1);
-        if (func_0201ade4(unk_b0, 0xbb8) != 0) {
+        if (NpcActor_CanPlayerPay(unk_b0, 0xbb8) != 0) {
             r5 = 0x18;
         } else {
             r5 = 0x16;
@@ -1419,7 +1419,7 @@ blkA:
 blkB:
     if (t == 0) {
         func_0202e1cc(0x28, 1);
-        if (func_0201ade4(unk_b0, 0x1770) != 0) {
+        if (NpcActor_CanPlayerPay(unk_b0, 0x1770) != 0) {
             r5 = 0x18;
         } else {
             r5 = 0x16;
