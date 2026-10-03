@@ -6,9 +6,9 @@
 #undef vfunc_14
 
 // Calls into other modules' class methods: extern "C" functions named by the real mangled symbol (self first).
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
 #define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
 #define PlayerData_getWifiUserData _ZN10PlayerData15getWifiUserDataEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -63,8 +63,8 @@ void FriendEntry_Clear(void *p);
 void *PlayerWifiData_GetOwnFriendData(void *a);
 void DwcFriendData_Copy(void *a, void *b);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0206f9fc(void *p, s32 a);
-void func_0206f994(void *p, void *s, s32 n);
+void String_Load2dMenu(void *p, s32 a);
+void String_FromEncodedBytes(void *p, void *s, s32 n);
 void MenuCtrl_SetIndex(u32 v);
 void func_020a78a4(void *dst, void *src, s32 n);
 void String_SetSlot(s32 a, void *p);
@@ -127,9 +127,9 @@ s32 PopupChoice_ForceClose(void *p);
 void PopupChoice_LoadFriendBg(void *p);
 void PopupChoice_Draw(void *p);
 
-void func_0206fab4(void *self, s32 a, s32 b);
-void func_0206fb9c(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f);
-void func_0206fc44(void *self);
+void LabelString_redrawAligned(void *self, s32 a, s32 b);
+void LabelString_createLabel(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f);
+void LabelString_destroyLabel(void *self);
 void func_020940d0(void *self, void *b);
 void *PlayerData_getWifiUserData(void *self);
 void *PlayerData_getPlayerId(void *self);
@@ -180,10 +180,10 @@ extern Unk_ov119_02295588 data_ov119_02295588;
 }
 
 // 0x40-byte element with ctor/dtor in main
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
+    LabelString();
+    ~LabelString();
     u8 unk_00[0x40];
 };
 
@@ -545,7 +545,7 @@ public:
     /* 0x0b8 */ s32 unk_b8;
     /* 0x0bc */ u8 unk_bc[0x20];
     /* 0x0dc */ PopupChoiceMenu unk_dc;
-    /* 0x3dc */ Unk_020e0488 unk_3dc[0x13];
+    /* 0x3dc */ LabelString unk_3dc[0x13];
     /* 0x89c */ MsgString193 unk_89c;
     /* 0x970 */ MenuCursorBuf0 unk_970;
     /* 0x9d4 */ u16 unk_9d4[0x800];
@@ -1183,7 +1183,7 @@ void FriendRosterTab::resetTextLabels() {
     i = 0;
     E9V = i;
     for (i = 0; i < 0x13; i++) {
-        func_0206fc44(&unk_3dc[i]);
+        LabelString_destroyLabel(&unk_3dc[i]);
     }
 }
 
@@ -1197,16 +1197,16 @@ void *FriendRosterTab::allocTextLabel() {
 
 void FriendRosterTab::addRegisterLabel() {
     void *e = allocTextLabel();
-    func_0206f9fc(e, 0xd6);
-    func_0206fb9c(e, 8, 0xca, 6, 0xf, 0, 0);
-    func_0206fab4(e, 1, 0);
+    String_Load2dMenu(e, 0xd6);
+    LabelString_createLabel(e, 8, 0xca, 6, 0xf, 0, 0);
+    LabelString_redrawAligned(e, 1, 0);
 }
 
 void FriendRosterTab::addTitleLabel(u32 id) {
     void *e = allocTextLabel();
-    func_0206f9fc(e, id);
-    func_0206fb9c(e, 8, 0x160, 0xd, 0xf, 0, 0);
-    func_0206fab4(e, 1, 0);
+    String_Load2dMenu(e, id);
+    LabelString_createLabel(e, 8, 0x160, 0xd, 0xf, 0, 0);
+    LabelString_redrawAligned(e, 1, 0);
 }
 
 void FriendRosterTab::showCursor() {
@@ -1834,7 +1834,7 @@ void FriendRosterTab::drawPresentPage() {
             void *g2 = PlayerData_getPlayerId(rec);
             func_020638d0(func_0209409c(g2), &LampLights);
             String_SetSlot(0, &LampLights);
-            func_0206f9fc(a, 0x66);
+            String_Load2dMenu(a, 0x66);
             func_020940d0(g2, &LightLevel);
             MsgString_copy(b, &LightLevel);
             setRowIcon(&unk_9d4[pos], 0x58);
@@ -1844,10 +1844,10 @@ void FriendRosterTab::drawPresentPage() {
             MsgString_clear(b);
             setRowIcon(&unk_9d4[pos], 0x10);
         }
-        func_0206fb9c(a, 4, x, 10, 0xf, 0, 0);
-        func_0206fab4(a, 0, 0);
-        func_0206fb9c(b, 4, y, 8, 0xf, 0, 0);
-        func_0206fab4(b, 0, 0);
+        LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
+        LabelString_redrawAligned(a, 0, 0);
+        LabelString_createLabel(b, 4, y, 8, 0xf, 0, 0);
+        LabelString_redrawAligned(b, 0, 0);
         x += 0x14;
         y += 0x10;
         pos += 0x40;
@@ -1864,16 +1864,16 @@ void FriendRosterTab::drawOwnCodePage() {
     _ZN12Unk_020dd38cC2Ev(LampLights);
     func_020638d0(func_0209409c(g), &LampLights);
     String_SetSlot(0, &LampLights);
-    func_0206f9fc(a, 0x66);
-    func_0206fb9c(a, 4, 0x102, 10, 0xf, 0, 0);
-    func_0206fab4(a, 0, 0);
+    String_Load2dMenu(a, 0x66);
+    LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
+    LabelString_redrawAligned(a, 0, 0);
     void *b = allocTextLabel();
     u32 LightLevel[7];
     _ZN12Unk_020e1c64C1Ev(LightLevel);
     func_020940d0(g, &LightLevel);
     MsgString_copy(b, &LightLevel);
-    func_0206fb9c(b, 4, 0x116, 8, 0xf, 0, 0);
-    func_0206fab4(b, 0, 0);
+    LabelString_createLabel(b, 4, 0x116, 8, 0xf, 0, 0);
+    LabelString_redrawAligned(b, 0, 0);
     _ZN12Unk_020e1c64D1Ev(LightLevel);
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
@@ -1893,8 +1893,8 @@ void FriendRosterTab::drawFriendCodeHelp() {
     for (i = 0; i < 3; i++) {
         void *o = allocTextLabel();
         MsgString_setLine(o, Msg_SkipLines((u8 *)this + 0x8ae, i));
-        func_0206fb9c(o, 4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
-        func_0206fab4(o, 0, 0);
+        LabelString_createLabel(o, 4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
+        LabelString_redrawAligned(o, 0, 0);
     }
 }
 
@@ -1946,8 +1946,8 @@ void FriendRosterTab::drawRosterPage() {
             func_020a78a4(&LightLevel, (void *)FriendEntry_GetTownName(rec), 8);
             MsgString_fromEncoded(&LampLights, &LightLevel, 0, 0);
             String_SetSlot(0, &LampLights);
-            func_0206f9fc(a, 0x66);
-            func_0206f994(b, (void *)FriendEntry_GetPlayerName(rec), 8);
+            String_Load2dMenu(a, 0x66);
+            String_FromEncodedBytes(b, (void *)FriendEntry_GetPlayerName(rec), 8);
             unk_af = unk_af + 1;
             if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec))) {
                 setRowIcon(&unk_9d4[pos], 0x50);
@@ -1959,10 +1959,10 @@ void FriendRosterTab::drawRosterPage() {
             MsgString_clear(b);
             setRowIcon(&unk_9d4[pos], 0x10);
         }
-        func_0206fb9c(a, 4, x, 10, 0xf, 0, 0);
-        func_0206fab4(a, 0, 0);
-        func_0206fb9c(b, 4, y, 8, 0xf, 0, 0);
-        func_0206fab4(b, 0, 0);
+        LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
+        LabelString_redrawAligned(a, 0, 0);
+        LabelString_createLabel(b, 4, y, 8, 0xf, 0, 0);
+        LabelString_redrawAligned(b, 0, 0);
         x += 0x14;
         y += 0x10;
         base++;

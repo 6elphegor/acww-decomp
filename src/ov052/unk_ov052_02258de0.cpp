@@ -94,9 +94,9 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
 void *_ZN12FtrActorGrid8getActorEiii(void *self, s32 a, s32 b, s32 c);
-void *Scene_GetCollision();
+void *Scene_GetTouchPicker();
 void *func_020b6048(void *a, s32 b, s32 c);
-void func_020b60b0(void *a, void *b);
+void TouchPick_GetGroundPos(void *a, void *b);
 u16 *ShopStock_GetItemAt(s32 a, s32 b);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
@@ -1230,13 +1230,13 @@ BOOL SpNpcRedd::pickDisplayItem() {
     if (f) {
         void *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetCollision(), 0, 0)) {
+            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             Unk_ov052_Vec v2;
-            func_020b60b0(Scene_GetCollision(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

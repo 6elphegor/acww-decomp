@@ -74,7 +74,7 @@ void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
@@ -666,7 +666,7 @@ void SpNpcTortimerBugOffTalk::attachOwner(SpNpcTortimerBugOff *owner) {
 void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
     u16 x[4];
     Unk_ov082_022718b0_Rec rec;
-    _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
+    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle2";
     rec.a = 0;
     rec.b = 0;

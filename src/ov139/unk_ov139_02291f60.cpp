@@ -72,17 +72,17 @@ public:
 };
 
 // String buffer wrapping a text renderer at +0x3c (size 0x40)
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    s32 func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    s32 redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ void *unk_3c;
@@ -141,8 +141,8 @@ extern u32 gCurrentHeap;
 
 s32 Gfx2d_LoadCharFile(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
 s32 Gfx2d_LoadPaletteFile(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-void func_0206f994(MsgString *dst, const void *s, s32 len);
-void func_0206f9fc(void *a, u8 v);
+void String_FromEncodedBytes(MsgString *dst, const void *s, s32 len);
+void String_Load2dMenu(void *a, u8 v);
 BOOL func_020a78a4(void *, const void *, s32);
 u8 String_SetSlot(u32 idx, MsgString *other);
 BOOL File_LoadToBuffer(void *a, void *b, s32 c);
@@ -179,7 +179,7 @@ public:
     u32 getCellList(s32 i);
     void setRowPlayerName(s32 i, u8 *str, u8 pal);
     void setRowTownName(s32 i, u8 *str, u8 pal);
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
     void clearRow(s32 i);
     void setRow(s32 i, u8 *str);
@@ -195,7 +195,7 @@ public:
     void init(u8 id, u8 v);
 
     /* 0x000 */ MenuTitleBalloon unk_00;
-    /* 0x0bc */ Unk_020e0488 unk_bc[20];
+    /* 0x0bc */ LabelString unk_bc[20];
     /* 0x5bc */ BgVramTask unk_5bc;
     /* 0x5e0 */ u16 unk_5e0[16];
     /* 0x600 */ u16 unk_600[16];
@@ -277,27 +277,27 @@ void MenuTownListPanel::setRowFadeColor(s32 a, s32 x, s32 n, s32 e) {
 }
 
 void MenuTownListPanel::createLabels() {
-    Unk_020e0488 *t;
+    LabelString *t;
     t = allocTextLabel();
-    func_0206f9fc(t, 0x65);
-    t->func_0206fb9c(8, 0x93, 6, 0xf, 0, 0);
-    t->func_0206fab4(1, 0);
+    String_Load2dMenu(t, 0x65);
+    t->createLabel(8, 0x93, 6, 0xf, 0, 0);
+    t->redrawAligned(1, 0);
     t = allocTextLabel();
-    func_0206f9fc(t, 0xc2);
-    t->func_0206fb9c(8, 0x8d, 6, 0xf, 0, 0);
-    t->func_0206fab4(1, 0);
+    String_Load2dMenu(t, 0xc2);
+    t->createLabel(8, 0x8d, 6, 0xf, 0, 0);
+    t->redrawAligned(1, 0);
     t = allocTextLabel();
-    func_0206f9fc(t, 0xc1);
-    t->func_0206fb9c(8, 0x99, 6, 0xf, 0, 0);
-    t->func_0206fab4(1, 0);
+    String_Load2dMenu(t, 0xc1);
+    t->createLabel(8, 0x99, 6, 0xf, 0, 0);
+    t->redrawAligned(1, 0);
     t = allocTextLabel();
-    func_0206f9fc(t, 0xbc);
-    t->func_0206fb48(8, 0xcd, 6, 0xe, 0, 0);
-    t->func_0206fab4(1, 0);
+    String_Load2dMenu(t, 0xbc);
+    t->createSmallLabel(8, 0xcd, 6, 0xe, 0, 0);
+    t->redrawAligned(1, 0);
     t = allocTextLabel();
-    func_0206f9fc(t, 0xbd);
-    t->func_0206fb48(8, 0xed, 6, 0xe, 0, 0);
-    t->func_0206fab4(1, 0);
+    String_Load2dMenu(t, 0xbd);
+    t->createSmallLabel(8, 0xed, 6, 0xe, 0, 0);
+    t->redrawAligned(1, 0);
 }
 
 void MenuTownListPanel::setRow(s32 i, u8 *str) {
@@ -316,11 +316,11 @@ void MenuTownListPanel::resetTextLabels() {
     s32 i;
     unk_623 = 0;
     for (i = 0; i < 0x14; i++) {
-        unk_bc[i].func_0206fc44();
+        unk_bc[i].destroyLabel();
     }
 }
 
-Unk_020e0488 *MenuTownListPanel::allocTextLabel() {
+LabelString *MenuTownListPanel::allocTextLabel() {
     if (unk_623 >= 0x14) {
         return &unk_bc[19];
     }
@@ -332,7 +332,7 @@ Unk_020e0488 *MenuTownListPanel::allocTextLabel() {
 
 
 void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = allocTextLabel();
+    LabelString *t = allocTextLabel();
     static Unk_020dd374 sA;
     static Unk_020dd38c sB;
     if (str == NULL) {
@@ -341,7 +341,7 @@ void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
         func_020a78a4(&sA, str, 8);
         sB.fromEncoded(&sA, 0, 0);
         String_SetSlot(0, &sB);
-        func_0206f9fc(t, 0x66);
+        String_Load2dMenu(t, 0x66);
     }
     u32 a = i * 0x14 + 0x11e;
     u8 x = 0xf;
@@ -350,8 +350,8 @@ void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
         x = pal;
         y = 0xf;
     }
-    t->func_0206fb9c(unk_622, a, 0xa, x, y, 0);
-    t->func_0206fab4(1, 0);
+    t->createLabel(unk_622, a, 0xa, x, y, 0);
+    t->redrawAligned(1, 0);
 }
 
 
@@ -359,11 +359,11 @@ void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
 extern "C" u32 data_ov139_02292660[8] = {0x80254048, 0x0000888d, 0x40450048, 0x00008891, 0x803b0041, 0x00008882, 0x801f0041, 0xffff8880};
 
 void MenuTownListPanel::setRowPlayerName(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = allocTextLabel();
+    LabelString *t = allocTextLabel();
     if (str == NULL) {
         t->clear();
     } else {
-        func_0206f994(t, str, 8);
+        String_FromEncodedBytes(t, str, 8);
     }
     u32 a = i * 16 + 0x1d2;
     u8 x = 0xf;
@@ -372,8 +372,8 @@ void MenuTownListPanel::setRowPlayerName(s32 i, u8 *str, u8 pal) {
         x = pal;
         y = 0xf;
     }
-    t->func_0206fb9c(unk_622, a, 8, x, y, 0);
-    t->func_0206fab4(1, 0);
+    t->createLabel(unk_622, a, 8, x, y, 0);
+    t->redrawAligned(1, 0);
 }
 
 u32 MenuTownListPanel::getCellList(s32 i) { return sTownListCellLists[i]; }

@@ -44,7 +44,7 @@ struct ChoiceList {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
@@ -537,7 +537,7 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     Unk_ov086_022716b0_A a;
     Unk_ov086_022716b0_B t;
     BOOL f;
-    _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
+    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle6";
     if (unk_b0 == -1) {
         h = 0x37e0;

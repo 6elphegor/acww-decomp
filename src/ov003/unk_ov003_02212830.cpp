@@ -76,7 +76,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
@@ -593,7 +593,7 @@ BOOL Snowball::vfunc_00() {
     unk_365 = unk_270.unk_10;
     Snowball_UpdateMatrix(this, 0, 0);
     _ZN12Unk_02003c3013func_02003eccEv(unk_324);
-    func_0203e42c();
+    clearTalkStartMode();
     Snowball_Register(this);
 }
 
@@ -1219,7 +1219,7 @@ void Snowball::execSnowmanHead() {
 BOOL Snowball::vfunc_48(void *a) {
     s32 lim;
     BOOL r;
-    func_0203e42c();
+    clearTalkStartMode();
     lim = func_01ffcb0c(0x2000, FX_Div(0x7d000, 0x64000));
     if (a) {
         if (func_020e9650((u8 *)a + 0x5c, (u8 *)this + 0x5c) < lim) {

@@ -167,7 +167,7 @@ BOOL GameStart_IsActive();
 s32 _ZN10ChoiceList9getResultEv(void *);
 void * _ZN15TalkWindowState13getChoiceListEv(void *);
 s32 CheckInGate_Close();
-s32 func_02073340();
+s32 Comm_ResetNetSession();
 s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
 BOOL _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN11CommManager7isMyAidEj(void *, s32);
@@ -201,7 +201,7 @@ void SaveManager_RequestAct02();
 void * Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *, s32, s32, s32);
 void * TownSessionState_Get();
-void * func_02085180(void *);
+void * TownSessionState_GetTravelState(void *);
 Unk_ov048_0225b278_Ent * func_02095204(s32);
 void FieldPos_ToUnit(s32 *, s32 *, Unk_ov048_0225b278_Vec *);
 void _ZN15TownTravelState7setModeEj(void *, s32);
@@ -217,20 +217,20 @@ void _ZN15TalkWindowState13detachRequestEv(void *);
 void SceneWarp_RequestExit(void *, s32);
 void PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 func_020951b8(s32);
-void _ZN10PlayerData13func_02098a58Ev(void *);
+void _ZN10PlayerData5resetEv(void *);
 void _ZN10MsgRequest11setFileNameEPKc(void *, const char *);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 void * _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *, void *);
 s32 func_020a03c4();
-void func_020b78c4();
+void FieldInfoBalloon_ShowPleaseWait();
 s32 Net_GetJoiningAid();
 s32 func_02094f2c(s32, s32);
 void func_02094f48(s32, s32);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *, s32);
 s32 func_020a03e4();
 s32 LostChild_IsKatieDue();
-void * _ZN10PlayerData13func_020986a4Ev(void *);
+void * _ZN10PlayerData18getLostChildRecordEv(void *);
 void * _ZN15LostChildRecord9getTownIdEv(void *);
 s32 func_02063954();
 s32 memcmp(void *, void *, u32);
@@ -263,12 +263,12 @@ Unk_ov048_Vec * func_020947f0(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
 s32 _ZN10SpNpcActor8vfunc_0cEv();
 s32 Scene_GetCurrent();
-void func_0203d984();
+void TalkRequestFlags_ClearSceneHold();
 s32 _ZN10SpNpcActor8vfunc_00Ev();
 s32 _ZN15TownTravelState7getModeEv(void *);
 s32 _ZN15TownTravelState8getAngleEv(void *);
 void _ZN15TownTravelState9clearModeEv(void *);
-void func_0203d990();
+void TalkRequestFlags_SetSceneHold();
 s32 _ZN10SpNpcActor8vfunc_04Ev();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *, s32);
@@ -283,7 +283,7 @@ void Comm_ClearSyncState();
 BOOL Comm_RequestSync(u32);
 void NetSession_SetSyncKind(u32);
 void NetSession_SetActiveSyncKind(u32);
-void * func_02085178(void *);
+void * TownSessionState_GetKatieState(void *);
 BOOL _ZN12Unk_02086f8411isFollowingEv(void *);
 void _ZN15LostChildRecord12setEscortingEv(void *);
 s32 NetSession_GetSyncMemberMask();
@@ -967,7 +967,7 @@ BOOL SpNpcCopper::vfunc_00() {
         }
         return TRUE;
     }
-    void *p = func_02085180(TownSessionState_Get());
+    void *p = TownSessionState_GetTravelState(TownSessionState_Get());
     if (_ZN15TownTravelState7getModeEv(p) == 1 || _ZN15TownTravelState7getModeEv(p) == 2) {
         if (_ZN15TownTravelState7getModeEv(p) == 1) {
             unk_658.setTopic(6);
@@ -979,10 +979,10 @@ BOOL SpNpcCopper::vfunc_00() {
         unk_94 = _ZN15TownTravelState8getAngleEv(p);
         _ZN15TownTravelState9clearModeEv(p);
     } else if (Scene_GetCurrent() == 0xd) {
-        func_0203d990();
+        TalkRequestFlags_SetSceneHold();
         SpNpcCopper_ChangeAct(this, 9);
     } else if (Scene_GetCurrent() == 0xe) {
-        func_0203d990();
+        TalkRequestFlags_SetSceneHold();
         SpNpcCopper_ChangeAct(this, 0xb);
     } else {
         SpNpcCopper_ChangeAct(this, 1);
@@ -995,7 +995,7 @@ BOOL SpNpcCopper::vfunc_0c() {
         return FALSE;
     }
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0xe) {
-        func_0203d984();
+        TalkRequestFlags_ClearSceneHold();
     }
     return TRUE;
 }
@@ -1308,7 +1308,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
     void *h = PlayerData_GetCurrent();
     void *r4;
     if (LostChild_IsKatieDue()) {
-        r4 = _ZN10PlayerData13func_020986a4Ev(h);
+        r4 = _ZN10PlayerData18getLostChildRecordEv(h);
         _ZN15LostChildRecord9getTownIdEv(r4);
         if (func_02063954()) {
             u16 *q = (u16 *)gSaveTownId;
@@ -1319,7 +1319,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
                 }
             }
         }
-        _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
+        _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
     skip:
         if (_ZN15LostChildRecord11isEscortingEv(r4)) {
             _ZN12Unk_02097ff47setFlagEj(h, 0x36);
@@ -1674,7 +1674,7 @@ BOOL SpNpcCopper::act09Step2() {
     void *o = TalkWindow_Get(0);
     if (*(s32 *)((u8 *)o + 4) == 0) {
         if (func_020a03c4() == 0) {
-            func_020b78c4();
+            FieldInfoBalloon_ShowPleaseWait();
             return FALSE;
         }
         _ZN15TalkWindowState13detachRequestEv(o);
@@ -1756,7 +1756,7 @@ BOOL SpNpcCopper::act0BStep2() {
     s32 a = NetSession_GetLastSyncSlot();
     void *b = PlayerData_GetBySessionSlot();
     if (func_020951b8(a) == 0) {
-        _ZN10PlayerData13func_02098a58Ev(b);
+        _ZN10PlayerData5resetEv(b);
         return TRUE;
     }
     return FALSE;
@@ -2106,7 +2106,7 @@ BOOL SpNpcCopper::mainAct0C() {
         s32 s;
         Unk_ov048_0225b278_Vec v;
         Unk_ov048_0225b278_Ent *e;
-        h = func_02085180(TownSessionState_Get());
+        h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = func_02095204(4);
         Unk_ov048_0225b278_Vec *pv = &e->unk_5c;
         v.x = pv->x;
@@ -2137,7 +2137,7 @@ BOOL SpNpcCopper::mainAct0D() {
         s32 s;
         Unk_ov048_0225b278_Vec v;
         Unk_ov048_0225b278_Ent *e;
-        h = func_02085180(TownSessionState_Get());
+        h = TownSessionState_GetTravelState(TownSessionState_Get());
         e = func_02095204(4);
         Unk_ov048_0225b278_Vec *pv = &e->unk_5c;
         v.x = pv->x;
@@ -2349,7 +2349,7 @@ void SpNpcCopperTalk::showMainMenu() {
 
 void SpNpcCopperTalk::closeGate() {
     SpNpcCopper_ChangeAct(unk_b4, 7);
-    func_02073340();
+    Comm_ResetNetSession();
     if (Net_GetMode() == 3 || Net_GetMode() == 4) {
         setScript(0x14);
     } else {
@@ -2747,7 +2747,7 @@ void SpNpcCopperTalk::onChoiceGoOutInstead(s32 p) {
         u8 v = 0x52;
         _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v, sSpNpcCopperMsgKey);
         CheckInGate_Close();
-        func_02073340();
+        Comm_ResetNetSession();
         if (Net_GetMode() == 3 || Net_GetMode() == 4) {
             setScript(0x14);
         } else {
@@ -3334,17 +3334,17 @@ void SpNpcCopperTalk::waitJoinAccepted() {
     }
     if (checkNetError(b)) {
         Comm_ClearSyncState();
-        if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get()))) {
-            if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()))) {
-                _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
+        if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+            if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()))) {
+                _ZN15LostChildRecord14clearEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
             }
         }
     } else {
         s32 t = Comm_GetSyncState();
         if (t == 5) {
-            if (_ZN12Unk_02086f8411isFollowingEv(func_02085178(TownSessionState_Get()))) {
-                if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent())) == 0) {
-                    _ZN15LostChildRecord12setEscortingEv(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
+            if (_ZN12Unk_02086f8411isFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()))) {
+                if (_ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent())) == 0) {
+                    _ZN15LostChildRecord12setEscortingEv(_ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent()));
                 }
             }
             if (CommSend_PlayerData(&unk_7e2, NetSession_GetSyncMemberMask())) {

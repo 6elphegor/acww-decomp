@@ -53,13 +53,13 @@ void *PlayerData_GetCurrent(void);
 void *PlayerData_GetResident(void *, s32);
 void _ZN12Unk_02097ff49clearFlagEj(void *, s32);
 void _ZN12Unk_02097ff47setFlagEj(void *, s32);
-void _ZN12Unk_02097ff413func_020981acEj(void *, s32);
-void *_ZN12Unk_02097ff413func_0209832cEv(void *);
-void _ZN12Unk_02097ff413func_020983d8Ev(void *);
+void _ZN12Unk_02097ff414setSkyShotHitsEj(void *, s32);
+void *_ZN12Unk_02097ff416getDayUpdateDateEv(void *);
+void _ZN12Unk_02097ff415resetForNewTownEv(void *);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *);
-void *_ZN10PlayerData13func_020986a4Ev(void *);
-void *_ZN10PlayerData13func_020986d4Ev(void *);
-void func_0209875c(void *, s32);
+void *_ZN10PlayerData18getLostChildRecordEv(void *);
+void *_ZN10PlayerData11getPatternsEv(void *);
+void PlayerData_SetStungFace(void *, s32);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
 void func_0209c80c();
 s32 ClockOffset_Clear(void *p);
@@ -177,7 +177,7 @@ void SaveData::func_0209db94() {
     p += 0xc;
     for (; i < 4; i++) {
         void *x = PlayerData_GetResident(p, i);
-        if (x) func_0209875c(x, z);
+        if (x) PlayerData_SetStungFace(x, z);
     }
 }
 
@@ -199,7 +199,7 @@ void SaveData::func_0209dae8() {
     _ZN12Unk_020af51413func_020af514Ev();
     _ZN7TownMap13func_0204df30Ev(&f_c330);
     func_0209c80c();
-    _ZN12Unk_02097ff413func_020981acEj(a, 0);
+    _ZN12Unk_02097ff414setSkyShotHitsEj(a, 0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&f_8a3c, 1);
     TownSessionState_Get();
@@ -234,9 +234,9 @@ void func_0209d994(u8 *p) {
     Unk_0209d994_Buf l;
     _ZN10PlayerData11getPlayerIdEv(r4);
     l = *(Unk_0209d994_Buf *)func_0209409c();
-    Clock_GetDate(_ZN12Unk_02097ff413func_0209832cEv(r4));
+    Clock_GetDate(_ZN12Unk_02097ff416getDayUpdateDateEv(r4));
     _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(r4), p + 2);
-    void *r5 = _ZN10PlayerData13func_020986d4Ev(r4);
+    void *r5 = _ZN10PlayerData11getPatternsEv(r4);
     _ZN14PlayerPatterns17replaceAuthorTownEP12Unk_020942c8S1_(r5, _ZN10PlayerData11getPlayerIdEv(r4), &l);
     _ZN12Unk_02097ff49clearFlagEj(r4, 0x24);
     _ZN12Unk_02097ff49clearFlagEj(r4, 0x25);
@@ -244,8 +244,8 @@ void func_0209d994(u8 *p) {
     _ZN17PlayerSpNpcRecord15resetAcornCountEv(_ZN10PlayerData14getSpNpcRecordEv(r4));
     _ZN12Unk_02097ff49clearFlagEj(r4, 0xf);
     _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(r4));
-    _ZN15LostChildRecord5clearEv(_ZN10PlayerData13func_020986a4Ev(r4));
-    _ZN12Unk_02097ff413func_020983d8Ev(r4);
+    _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv(r4));
+    _ZN12Unk_02097ff415resetForNewTownEv(r4);
     func_020639b8(&l);
 }
 

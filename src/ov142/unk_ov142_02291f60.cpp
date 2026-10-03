@@ -42,18 +42,18 @@ public:
 
 class TextLabel;
 
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    void func_0206fa4c();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    void redrawRight();
+    void redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ TextLabel *unk_3c;
@@ -103,8 +103,8 @@ extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern void *gCurrentHeap;
 
-void func_0206f9c8(Unk_020e0488 *w, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0206f9fc(Unk_020e0488 *w, s32 a);
+void String_FormatNumberWrapper(LabelString *w, s32 a, s32 b, s32 c, s32 d, s32 e);
+void String_Load2dMenu(LabelString *w, s32 a);
 void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(u32 id);
 void *FtrPreviewer_GetInstance();
@@ -361,7 +361,7 @@ public:
     void drawCountLabels();
     void drawItemNames();
     void resetTextLabels();
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void releaseCursor();
     void pressCursor();
     void refreshCursor();
@@ -441,7 +441,7 @@ public:
     /* 0x0e8 */ MenuCursorBuf0 unk_e8;
     /* 0x14c */ MenuScrollKnob unk_14c;
     /* 0x194 */ MenuBottomButtons unk_194;
-    /* 0x2f8 */ Unk_020e0488 unk_2f8[14];
+    /* 0x2f8 */ LabelString unk_2f8[14];
     /* 0x678 */ BgVramTask unk_678[4];
     /* 0x708 */ u16 unk_708[0x800 / 2];
     /* 0xf08 */ u16 unk_f08[0x88 / 2];
@@ -1278,7 +1278,7 @@ void CatalogMenu::releaseCursor() {
     setMainState(10);
 }
 
-Unk_020e0488 *CatalogMenu::allocTextLabel() {
+LabelString *CatalogMenu::allocTextLabel() {
     if (*(volatile u8 *)&unk_bb >= 14) {
         return &unk_2f8[13];
     }
@@ -1289,16 +1289,16 @@ Unk_020e0488 *CatalogMenu::allocTextLabel() {
 void CatalogMenu::resetTextLabels() {
     s32 i = 0;
     unk_bb = 0;
-    Unk_020e0488 *w = unk_2f8;
+    LabelString *w = unk_2f8;
     for (; i < 14; i++) {
-        (w + i)->func_0206fc44();
+        (w + i)->destroyLabel();
     }
 }
 
 void CatalogMenu::drawItemNames() {
     ItemName buf;
     s32 i;
-    Unk_020e0488 *w;
+    LabelString *w;
     s32 cnt;
     s32 z4 = 0, z1 = 0, z2 = 0, z3 = 0;
     s32 cur = unk_b4;
@@ -1306,7 +1306,7 @@ void CatalogMenu::drawItemNames() {
     s32 col = (cur + 9) % 9;
     cnt = getTabOwnedCount();
     for (i = 0; i < 9; i++) {
-        w = (Unk_020e0488 *)z4;
+        w = (LabelString *)z4;
         if (cur < 0 || cur >= cnt) {
             unk_157e[col] = 0xfff1;
             w = allocTextLabel();
@@ -1322,8 +1322,8 @@ void CatalogMenu::drawItemNames() {
             list++;
         }
         if (w) {
-            w->func_0206fb9c(4, col * 26 + 0x52, 0xd, 0xf, 8, z1);
-            w->func_0206fab4(z2, z2);
+            w->createLabel(4, col * 26 + 0x52, 0xd, 0xf, 8, z1);
+            w->redrawAligned(z2, z2);
         }
         cur++;
         col++;
@@ -1332,28 +1332,28 @@ void CatalogMenu::drawItemNames() {
 }
 
 void CatalogMenu::drawCountLabels() {
-    Unk_020e0488 *w = allocTextLabel();
-    func_0206f9c8(w, getTabOwnedCount(), 3, 0, 0, 0);
-    w->func_0206fb48(6, 0x156, 3, 0xe, 4, 0);
-    w->func_0206fa4c();
+    LabelString *w = allocTextLabel();
+    String_FormatNumberWrapper(w, getTabOwnedCount(), 3, 0, 0, 0);
+    w->createSmallLabel(6, 0x156, 3, 0xe, 4, 0);
+    w->redrawRight();
     w = allocTextLabel();
-    func_0206f9c8(w, getTabTotalCount(), 3, 0, 0, 0);
-    w->func_0206fb48(6, 0x15a, 3, 0xe, 4, 0);
-    w->func_0206fab4(0, 0);
+    String_FormatNumberWrapper(w, getTabTotalCount(), 3, 0, 0, 0);
+    w->createSmallLabel(6, 0x15a, 3, 0xe, 4, 0);
+    w->redrawAligned(0, 0);
 }
 
 void CatalogMenu::drawPriceLabel(s32 a) {
-    Unk_020e0488 *w = allocTextLabel();
-    func_0206f9c8(w, a, 8, 1, 0, 1);
-    w->func_0206fb9c(6, 0x15d, 8, 0xe, 4, 1);
-    w->func_0206fa4c();
+    LabelString *w = allocTextLabel();
+    String_FormatNumberWrapper(w, a, 8, 1, 0, 1);
+    w->createLabel(6, 0x15d, 8, 0xe, 4, 1);
+    w->redrawRight();
 }
 
 void CatalogMenu::drawMessageLabel(s32 a, s32 b, s32 c, u8 d, s32 e) {
-    Unk_020e0488 *w = allocTextLabel();
-    func_0206f9fc(w, a);
-    w->func_0206fb9c(6, b, c, d, 4, 0);
-    w->func_0206fab4(e, 0);
+    LabelString *w = allocTextLabel();
+    String_Load2dMenu(w, a);
+    w->createLabel(6, b, c, d, 4, 0);
+    w->redrawAligned(e, 0);
 }
 
 void CatalogMenu::drawNotSellingLabel() {
@@ -1361,10 +1361,10 @@ void CatalogMenu::drawNotSellingLabel() {
 }
 
 void CatalogMenu::clearInfoLabel() {
-    Unk_020e0488 *w = allocTextLabel();
+    LabelString *w = allocTextLabel();
     w->clear();
-    w->func_0206fb9c(6, 0x15d, 8, 0xe, 4, 0);
-    w->func_0206fab4(0, 0);
+    w->createLabel(6, 0x15d, 8, 0xe, 4, 0);
+    w->redrawAligned(0, 0);
 }
 
 void CatalogMenu::setTab(u8 v) {

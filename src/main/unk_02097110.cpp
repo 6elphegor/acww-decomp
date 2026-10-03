@@ -35,7 +35,7 @@ extern s32 data_020e1e08;
 extern s32 data_020e1e0c;
 
 s32 PlayerData_GetCurrent(void);
-s32 _ZN12Unk_02097ff413func_02098320Ev(s32);
+s32 _ZN12Unk_02097ff414getBankAccountEv(s32);
 s32 _ZN10PlayerData11getPlayerIdEv(s32);
 s32 _ZN12Unk_02097ff48testFlagEj(s32, s32);
 s32 _ZN12Unk_02097ff49clearFlagEj(s32, s32);
@@ -99,7 +99,7 @@ extern "C" void func_020973e4(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
 
 extern "C" void func_02097318(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
+    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (MenuCtrl_IsClockMovedForward() == 0) {
         if (n > 0) {
             s32 m = func_02097414((Unk_020973e4 *)o);
@@ -133,7 +133,7 @@ extern "C" void func_02097318(s32 n) {
 
 extern "C" void func_02097214(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
+    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
         s32 m = func_02097414((Unk_020973e4 *)o);
         if (m >= 1000000) {
@@ -179,7 +179,7 @@ extern "C" void func_02097214(s32 n) {
 
 extern "C" void func_02097110(s32 n) {
     s32 s = PlayerData_GetCurrent();
-    s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
+    s32 o = _ZN12Unk_02097ff414getBankAccountEv(s);
     if (n > 0) {
         if (_ZN12Unk_02097ff48testFlagEj(s, 0x16)) {
             s32 id = func_020973e8((Unk_020973e4 *)o);

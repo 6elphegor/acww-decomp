@@ -61,7 +61,7 @@ void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
-s32 _ZN10PlayerData13func_0209865cEv(s32 a);
+s32 _ZN10PlayerData10getErrandsEv(s32 a);
 s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
@@ -731,7 +731,7 @@ void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
 s32 func_020b0f30(void);
-s32 _ZN10PlayerData13func_0209865cEv(s32 a);
+s32 _ZN10PlayerData10getErrandsEv(s32 a);
 s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
@@ -1208,7 +1208,7 @@ void FieldSpecialBgm::start() {
             play(4, 0x45, 1);
         } else if (func_020b0f30() != 0) {
             play(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData10getErrandsEv(r5)) == 0))) {
             play(0x1c, 0x46, 0);
         } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0) {
             play(0x1d, 0x48, 0);

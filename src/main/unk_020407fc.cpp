@@ -92,7 +92,7 @@ void _ZN12BgmSceneFade13func_02035368Eii(void *, s32, s32);
 void _ZN12BgmSceneFade13func_020353b0Eii(void *, s32, s32);
 void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
 void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
-s32 func_0203d9cc(void);
+s32 TalkRequestFlags_IsEventWarpStarted(void);
 BOOL func_02040c10(void);
 void func_02040c6c(s32);
 void func_02040c50(s32);
@@ -104,8 +104,8 @@ void func_02040c94(void);
 void func_02040e14(void);
 BOOL func_02040d80(void);
 void func_02040cac(void);
-s32 func_0203d9d8(void);
-s32 func_0203d9c0(void);
+s32 TalkRequest_AddEventWarp(void);
+s32 TalkRequestFlags_IsEventWarpReady(void);
 s32 Melody_IsBusy(void);
 s32 TownBlockMap_Get(void);
 s32 Town_FindGulliverShip(s32, void *);
@@ -115,9 +115,9 @@ void SceneWarp_RequestAt(s32, s32, void *, s32, ...);
 s32 NetArea_IsUnsharedScene(s32);
 s32 Event_GetStateAt(s32, void *, s32);
 s32 Event_GetState(s32, void *, s32);
-s32 func_0203d99c(void);
-s32 func_0203d984(void);
-s32 func_0203d990(void);
+s32 TalkRequestFlags_IsSceneHold(void);
+s32 TalkRequestFlags_ClearSceneHold(void);
+s32 TalkRequestFlags_SetSceneHold(void);
 s32 Scene_InTownUnk31(void);
 void Town_RefreshEventsOffline(void);
 void Town_UpdateDay(s32);
@@ -244,7 +244,7 @@ BOOL Unk_020da258::vfunc_00()
         if (Scene_InTownUnk31() == 0) {
             func_02040e14();
         } else {
-            func_0203d990();
+            TalkRequestFlags_SetSceneHold();
             data_021c3ca8.unk_00 = 5;
             if (data_021c3ca8.unk_03 != 0) {
                 Town_UpdateDay(0);
@@ -298,8 +298,8 @@ BOOL Unk_020da258::vfunc_0c()
     if (func_02040908()) {
         return TRUE;
     }
-    if (func_0203d99c()) {
-        func_0203d984();
+    if (TalkRequestFlags_IsSceneHold()) {
+        TalkRequestFlags_ClearSceneHold();
         data_021c3c98 = 0;
         data_021c3ca8.unk_00 = 0;
         data_021c3ca8.unk_02 = 0;
@@ -456,7 +456,7 @@ extern "C" void func_02040c38(s32)
 extern "C" BOOL func_02040c10(void)
 {
     BOOL r = FALSE;
-    if (func_0203d9d8() == 0) {
+    if (TalkRequest_AddEventWarp() == 0) {
         data_021c3ca8.unk_00 = r;
         data_021c3ca8.unk_02 = r;
     } else {
@@ -470,8 +470,8 @@ extern "C" void func_02040b48(s32)
 {
     u8 buf[0x10];
     s32 r;
-    if (func_0203d9cc() == 0) {
-        if (func_0203d9d8() == 0) {
+    if (TalkRequestFlags_IsEventWarpStarted() == 0) {
+        if (TalkRequest_AddEventWarp() == 0) {
             data_021c3ca8.unk_00 = 0;
             data_021c3ca8.unk_02 = 0;
         }
@@ -479,7 +479,7 @@ extern "C" void func_02040b48(s32)
         s32 v = data_021c3ca8.unk_08;
         data_020da220 = v;
         data_020da21c = v;
-        if (func_0203d9c0() != 0 && Melody_IsBusy() == 0) {
+        if (TalkRequestFlags_IsEventWarpReady() != 0 && Melody_IsBusy() == 0) {
             r = TownBlockMap_Get();
             if (r != 0) {
                 if (data_021c3ca8.unk_04 == 14) {

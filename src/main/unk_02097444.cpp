@@ -47,8 +47,8 @@ u8 *func_0209788c(u8 *base, u16 *p);
 s32 func_02097554(s32 idx);
 s32 func_02097534(s32 idx);
 u8 *func_0209759c();
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
-s32 _ZN10PlayerData13func_02098a58Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
+s32 _ZN10PlayerData5resetEv(void *p);
 void *_ZN10PlayerDataD1Ev(void *p, s32 f);
 void *_ZN10PlayerDataC1Ev(void *p, s32 f);
 u32 PlayerSession_GetDataIndex(u32 a);
@@ -62,14 +62,14 @@ s32 _ZN8PlayerId13func_02094218Ev(void *p);
 u16 _ZN8PlayerId13func_0209412cEv(void *p);
 u32 func_02094154(u16 *p, u32 n);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
-s32 _ZN10PlayerData13func_02098898EjjjjhhhhhjPt(void *, s32, u32, s32, u32, u32, u32, u32, u32, u32, u32, u16 *);
+s32 _ZN10PlayerData8setupNewEjjjjhhhhhjPt(void *, s32, u32, s32, u32, u32, u32, u32, u32, u32, u32, u16 *);
 s32 _ZN10PlayerData6setBedEPt(void *, void *);
 s32 memcmp(void *, void *, u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 func_02097740(u8 *base, u16 *p);
 u32 func_020978a4(u8 *base);
 u32 func_02063b8c();
-s32 _ZN12Unk_02097ff413func_02098338Ei(void *, s32);
+s32 _ZN12Unk_02097ff414findUnusedSlotEi(void *, s32);
 s32 _ZN10PlayerData8getIndexEv(void *);
 void _ZN13PlayerMailbox17setLastWifiMailIdEj(void *, s32);
 s32 _ZN13PlayerMailbox17getLastWifiMailIdEv(void *);
@@ -273,7 +273,7 @@ extern "C" s32 func_020978fc(u32 idx) {
 
 extern "C" s32 func_020978c8(u8 *base, s32 idx) {
     if (func_020978fc(idx) != 0) {
-        if (_ZN10PlayerData13func_02098a48Ev(base + idx * 0x228c) != 0) return 1;
+        if (_ZN10PlayerData6isUsedEv(base + idx * 0x228c) != 0) return 1;
     }
     return 0;
 }
@@ -306,7 +306,7 @@ extern "C" u8 *func_020977d0(u8 *base, u16 *p) {
         s32 i;
         for (i = 0; i < 4; i++) {
             u8 *e = base + i * 0x228c;
-            if (_ZN10PlayerData13func_02098a48Ev(e) == 1) {
+            if (_ZN10PlayerData6isUsedEv(e) == 1) {
                 if (p != 0) {
                     u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(e);
                     if (p[0] == q[0]) {
@@ -328,10 +328,10 @@ extern "C" u8 *func_020977d0(u8 *base, u16 *p) {
 
 extern "C" void func_020977ac(void *p) {
     s32 i;
-    for (i = 0; i < 4; i++) _ZN10PlayerData13func_02098a58Ev((u8 *)p + i * 0x228c);
+    for (i = 0; i < 4; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
 }
 
-extern "C" s32 func_020977a0(void *p) { return _ZN12Unk_02097ff413func_02098338Ei(p, 4); }
+extern "C" s32 func_020977a0(void *p) { return _ZN12Unk_02097ff414findUnusedSlotEi(p, 4); }
 
 extern "C" s32 func_02097740(u8 *base, u16 *p) {
     if (_ZN8PlayerId13func_02094218Ev(p) == 1) {
@@ -367,11 +367,11 @@ extern "C" u8 *func_020975f0(u8 *base, s32 a1, s32 a2, u32 idx) {
                 }
             }
         }
-        _ZN10PlayerData13func_02098a58Ev(r);
+        _ZN10PlayerData5resetEv(r);
         hdr = 0xfff1;
         {
             u32 s = func_02094154(v, cnt);
-            _ZN10PlayerData13func_02098898EjjjjhhhhhjPt(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
+            _ZN10PlayerData8setupNewEjjjjhhhhhjPt(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
         }
         idx &= 3;
         _ZN10PlayerData6setBedEPt(r, &tbl[idx]);
@@ -390,7 +390,7 @@ extern "C" u8 *func_0209759c() { return (u8 *)&data_021d0910; }
 
 extern "C" s32 func_02097578(void *p) {
     s32 i;
-    for (i = 0; i < 3; i++) _ZN10PlayerData13func_02098a58Ev((u8 *)p + i * 0x228c);
+    for (i = 0; i < 3; i++) _ZN10PlayerData5resetEv((u8 *)p + i * 0x228c);
 }
 
 extern "C" void func_02097564() { func_02097578(func_0209759c()); }
@@ -432,7 +432,7 @@ extern "C" s32 func_02097444(s32 idx) {
     } else if (func_02097554(idx) == 1) {
         if (func_0209759c() != 0) {
             s32 t = func_02097534(idx);
-            r = _ZN10PlayerData13func_02098a48Ev(func_0209759c() + t * 0x228c);
+            r = _ZN10PlayerData6isUsedEv(func_0209759c() + t * 0x228c);
         }
     }
     return r;

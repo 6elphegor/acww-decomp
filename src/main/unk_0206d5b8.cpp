@@ -282,7 +282,7 @@ void Main_PreTaskHook(void);
 }
 
 extern "C" {
-void func_02038148(s32 v);
+void CommCaution_Update(s32 v);
 }
 
 extern "C" {
@@ -290,7 +290,7 @@ void Task_RunFrame(s32 v);
 }
 
 extern "C" {
-void func_02038138(void);
+void CommCaution_Draw(void);
 }
 
 extern "C" {
@@ -346,7 +346,7 @@ void Gfx_VBlankFlush(void);
 }
 
 extern "C" {
-void func_02038128(void);
+void CommCaution_UpdateBlendRegs(void);
 }
 
 extern "C" {
@@ -470,11 +470,11 @@ struct Unk_0206d1d4_Src {
     u8 cnt;
 };
 
-// ---- Unk_0206d0a0 : Unk_0206ce50 ----
-class Unk_0206d0a0 : public Unk_0206ce50 {
+// ---- LetterRenderer : Unk_0206ce50 ----
+class LetterRenderer : public Unk_0206ce50 {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d0a0(u32 a, u32 b);
     void func_0206d0b8(u8 *data);
     void func_0206d0fc(u8 *src, BOOL flag);
@@ -485,7 +485,7 @@ public:
     void func_0206d380();
     void func_0206d394();
     void func_0206d39c(s32 v);
-    void func_0206d3f4(u32 v);
+    void loadLetterScreen(u32 v);
 
     /* 0x4c */ Unk_0206ce50 unk_4c;
     /* 0x98 */ Unk_0206ce50 unk_98[4];
@@ -541,7 +541,7 @@ public:
     /* 0x38 */ RecordFile unk_38;
 };
 extern "C" void Fatal_ExceptionCallback(void *arg, void *p);
-extern "C" void func_0206d770(void);
+extern "C" void Main_InitNop(void);
 extern "C" void Main_WaitVBlank(void);
 extern "C" void Main_WaitFrame(void);
 extern "C" void Main_PreTaskUpdate(u32 r);
@@ -679,7 +679,7 @@ extern "C" void Fatal_ExceptionCallback(void *arg, void *p) {
     CrashScreen_Run();
 }
 
-extern "C" void func_0206d770(void) {}
+extern "C" void Main_InitNop(void) {}
 
 extern "C" void Main_WaitVBlank(void) {
     OS_SleepThread(gVBlankQueue);
@@ -713,7 +713,7 @@ extern "C" void Main_PostTaskUpdate(u32 r) {
 
 extern "C" void Main_PostFrameUpdate(void) {
     Gfx_VBlankFlush();
-    func_02038128();
+    CommCaution_UpdateBlendRegs();
     VramQueue2d_Run();
 }
 
@@ -752,9 +752,9 @@ extern "C" void Main_Loop(void) {
         } else {
             b = 0;
         }
-        func_02038148(b);
+        CommCaution_Update(b);
         Task_RunFrame(b);
-        func_02038138();
+        CommCaution_Draw();
         Main_PostTaskUpdate(r);
         Main_PostTaskHook();
         *flag = 1;

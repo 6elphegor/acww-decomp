@@ -603,12 +603,12 @@ u16 *BlockMap_GetItemPtr(Unk_ov004_02233f3c_World *w, s32 hx, s32 hy, s32 lx, s3
 void FieldPos_FromUnitCenter(Unk_ov004_Vec3 *out, s32 x, s32 z);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 s32 Backup_GetStatus(void *p);
-s32 func_020515b8(s32, void *, s32);
-s32 func_02051da4(void *, s32, s32, s32);
-s16 *func_0205242c(Unk_ov004_022341c0_Buf *b, u32 i);
-u32 func_0205248c(Unk_ov004_022341c0_Buf *b);
-void func_020524a4(Unk_ov004_022341c0_Buf *b);
-void func_020524a8(Unk_ov004_022341c0_Buf *b, void *cell);
+s32 FtrSync_RequestToggleGyroid(s32, void *, s32);
+s32 FtrSync_ChangeAct(void *, s32, s32, s32);
+s16 *FtrFootprint_GetTileOffset(Unk_ov004_022341c0_Buf *b, u32 i);
+u32 FtrFootprint_GetTileCount(Unk_ov004_022341c0_Buf *b);
+void FtrFootprint_Destruct(Unk_ov004_022341c0_Buf *b);
+void FtrFootprint_Init(Unk_ov004_022341c0_Buf *b, void *cell);
 s32 FtrInfo_TestIndoorFlag2(s32 a);
 s32 FtrInfo_GetDmaUnk04(s32 a);
 s32 FtrInfo_TestAlwaysFlag4(s32);
@@ -1869,7 +1869,7 @@ extern "C" s32 FtrMgr_SpawnFromArg(FtrActor *self) {
                 FtrActor *e = FtrMgr_SwitchOffRandom(FtrActor_isGyroid, 0);
                 if (e != NULL) {
                     e->unk_73c.set(1, 0);
-                    func_020515b8(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
+                    FtrSync_RequestToggleGyroid(Scene_GetCurrent(), (u8 *)e + 0x5c, 0);
                 }
             }
         }
@@ -3775,7 +3775,7 @@ extern "C" BOOL FtrMgr_BroadcastStereosAct0() {
     for (; (u32)i < FtrMgr_GetMaxFurniture(); i++) {
         FtrActor *e = FtrActorTable_GetInstance()->get(i);
         if (e != NULL && FtrActor_PredIsStereo(e) && e->unk_73c.isOn()) {
-            func_02051da4(e, z, 0xff, 1);
+            FtrSync_ChangeAct(e, z, 0xff, 1);
         }
     }
     return TRUE;
@@ -4256,15 +4256,15 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
     u16 s34;
     Unk_ov004_022341c0_Buf b;
     s34 = Item_MakeFurniture(pl, dir);
-    func_020524a8(&b, &s34);
+    FtrFootprint_Init(&b, &s34);
     Unk_ov004_02233f3c_World *w = gSceneBlockMap;
     BOOL ok = TRUE;
     u32 i = 0;
     z2 = i;
     z = i;
-    for (; i < func_0205248c(&b); i++) {
-        px = x + *(s16 *)((u8 *)func_0205242c(&b, i) + z);
-        py = y + func_0205242c(&b, i)[1];
+    for (; i < FtrFootprint_GetTileCount(&b); i++) {
+        px = x + *(s16 *)((u8 *)FtrFootprint_GetTileOffset(&b, i) + z);
+        py = y + FtrFootprint_GetTileOffset(&b, i)[1];
         s32 hx = px >> 4;
         s32 hy = py >> 4;
         u16 *cell = BlockMap_GetItemPtr(w, hx, hy, px - (hx << 4), py - (hy << 4), layer);
@@ -4302,10 +4302,10 @@ extern "C" s32 FtrMgr_TryPlaceAt(void *out, s32 x, s32 y, s32 dir, s32 pl, u32 l
     }
     if (ok) {
         *(u32 *)out = (u32)FtrActor_MakeSpawnArg(x, y, pl, dir, layer, 1);
-        func_020524a4(&b);
+        FtrFootprint_Destruct(&b);
         return 3;
     }
-    func_020524a4(&b);
+    FtrFootprint_Destruct(&b);
     return 2;
 }
 
@@ -4377,30 +4377,30 @@ loopE:
         if (kind == 1) {
             s48 = Item_MakeFurniture(pl, r7);
             dr = (s32)(r7 << 30) >> 16;
-            func_020524a8(&buf, &s48);
+            FtrFootprint_Init(&buf, &s48);
             v70.x = 0;
             v70.y = 0;
             v70.z = 0;
-            m = func_0205248c(&buf);
+            m = FtrFootprint_GetTileCount(&buf);
             i = 0;
             z = i;
             for (; i < m; i++) {
-                q3c = px + *(s16 *)((u8 *)func_0205242c(&buf, i) + z);
-                y3c = py + func_0205242c(&buf, i)[1];
+                q3c = px + *(s16 *)((u8 *)FtrFootprint_GetTileOffset(&buf, i) + z);
+                y3c = py + FtrFootprint_GetTileOffset(&buf, i)[1];
                 FieldPos_FromUnitCenter((Unk_ov004_Vec3 *)&v7c, q3c, y3c);
                 VEC_Add(&v70, &v7c, &v70);
             }
             func_020e97c8(&v70, m << 12);
             func_020e9960(&v88, pos, &v70);
             if (func_020e780c(dr, func_020e7b98(v88.x, v88.z)) > 0x4000) {
-                s16 *p1 = func_0205242c(&buf, 1);
-                s16 *p2 = func_0205242c(&buf, 1);
+                s16 *p1 = FtrFootprint_GetTileOffset(&buf, 1);
+                s16 *p2 = FtrFootprint_GetTileOffset(&buf, 1);
                 if (Unk_ov004_02233f3c_Ns::FtrMgr_TryPlaceAt(out, px + p1[0], py + p2[1], (r7 + 2) & 3, pl, layer, bx, by) == 3) {
-                    func_020524a4(&buf);
+                    FtrFootprint_Destruct(&buf);
                     return 3;
                 }
             }
-            func_020524a4(&buf);
+            FtrFootprint_Destruct(&buf);
         }
         return 3;
     }

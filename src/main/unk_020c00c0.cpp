@@ -165,7 +165,7 @@ void TownSessionState_Get(void);
 }
 
 extern "C" {
-void func_02085178(void);
+void TownSessionState_GetKatieState(void);
 }
 
 extern "C" {
@@ -301,7 +301,7 @@ BOOL func_020a03c4(void);
 }
 
 extern "C" {
-void func_020b78c4(void);
+void FieldInfoBalloon_ShowPleaseWait(void);
 }
 
 extern "C" {
@@ -381,7 +381,7 @@ u8 sWeatherPrevDayRain;
 }
 
 extern "C" {
-s32 data_021f4574;
+s32 sWeatherRolledAtLoad;
 }
 
 extern "C" {
@@ -389,8 +389,8 @@ extern SpNpcMissing1 *sSpNpcMissing1Instance;
 }
 
 // 0x020d1a28: first .rodata object of this file; read by the previous unit (0x020be9e4, src/main/unk_020b8d9c.cpp)
-extern const u32 data_020d1a28;
-const u32 data_020d1a28 = 0x20000000;
+extern const u32 kFireworkBurstFlag29;
+const u32 kFireworkBurstFlag29 = 0x20000000;
 
 extern const u8 sWeatherPatternWeights[0x260];
 
@@ -510,8 +510,8 @@ struct Unk_020c010c_Ent {
     u8 unk_02[10];
 };
 // prototypes
-extern "C" void func_020c0320();
-extern "C" void func_020c031c();
+extern "C" void Weather_Construct();
+extern "C" void Weather_Destruct();
 extern "C" void Weather_InitNew(WeatherRecord *self);
 extern "C" void Weather_SetDateToday(void *p);
 extern "C" void Weather_Apply(WeatherRecord *self);
@@ -520,9 +520,9 @@ extern "C" u8 Weather_PickPattern(void *self, void *p);
 extern "C" u8 Weather_GetPrevDayRain();
 
 
-extern "C" void func_020c0320() {}
+extern "C" void Weather_Construct() {}
 
-extern "C" void func_020c031c() {}
+extern "C" void Weather_Destruct() {}
 
 extern "C" void Weather_InitNew(WeatherRecord *self) {
     sWeatherPrevDayRain = 0;
@@ -545,12 +545,12 @@ extern "C" void Weather_Apply(WeatherRecord *self) {
     ((u32 *)buf)[1] = 0;
     Clock_GetDateTime(buf);
     if (Scene_GetCurrent() == 0x3f) {
-        data_021f4574 = Weather_UpdateDaily(self, buf);
-        if (data_021f4574 == 0) {
+        sWeatherRolledAtLoad = Weather_UpdateDaily(self, buf);
+        if (sWeatherRolledAtLoad == 0) {
             sWeatherPrevDayRain = self->unk_07;
         }
     } else {
-        if (data_021f4574 != 0) {
+        if (sWeatherRolledAtLoad != 0) {
             u8 saved = sWeatherPrevDayRain;
             if (Weather_UpdateDaily(self, buf)) {
                 sWeatherPrevDayRain = saved;
@@ -558,7 +558,7 @@ extern "C" void Weather_Apply(WeatherRecord *self) {
         } else {
             Weather_UpdateDaily(self, buf);
         }
-        data_021f4574 = 0;
+        sWeatherRolledAtLoad = 0;
     }
     self->unk_06 = buf[2] - 6;
     if (self->unk_06 < 0) {

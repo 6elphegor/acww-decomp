@@ -1,9 +1,9 @@
 #include "types.h"
 
-extern "C" void func_020030e8(void *);
-extern "C" void func_02003100(void *);
-extern "C" void func_02003130(void *);
-extern "C" void func_020030d8(void *, void *);
+extern "C" void VillagerId_Clear(void *);
+extern "C" void VillagerId_Destruct(void *);
+extern "C" void VillagerId_Construct(void *);
+extern "C" void VillagerId_Copy(void *, void *);
 extern "C" void func_02063990(void *, void *);
 extern "C" BOOL func_02063954(void *);
 extern "C" void func_020639a0(void *);
@@ -47,18 +47,18 @@ extern "C" void func_02098e8c() {}
 
 Unk_02098d20::Unk_02098d20() {
     func_020639bc(this);
-    func_02003130(&unk_0a);
+    VillagerId_Construct(&unk_0a);
     unk_16 = 0xfff1;
 }
 
 Unk_02098d20::~Unk_02098d20() {
-    func_02003100(&unk_0a);
+    VillagerId_Destruct(&unk_0a);
     func_020639b8(this);
 }
 
 void Unk_02098d20::func_02098e30() {
     func_020639a0(this);
-    func_020030e8(&unk_0a);
+    VillagerId_Clear(&unk_0a);
     unk_16 = 0xfff1;
     unk_18 = -0x80;
 }
@@ -70,7 +70,7 @@ BOOL Unk_02098d20::func_02098e0c() {
 
 void Unk_02098d20::func_02098de4(void *a1, s32 a2, void *a3, u16 *p) {
     func_02063990(this, a3);
-    func_020030d8(&unk_0a, a1);
+    VillagerId_Copy(&unk_0a, a1);
     unk_16 = *p;
     unk_18 = a2;
 }

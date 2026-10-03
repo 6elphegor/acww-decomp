@@ -62,9 +62,9 @@ u32 PlayerData_GetCurrent();
 u16 *_ZN12Unk_02097ff413func_020983ccEv();
 void *Heap_AllocTail(void *, u32);
 void Heap_Free(void *, void *);
-void func_0203c764(void *, void *, u32);
-void *func_0203c6d0(void *);
-void *func_0203c6e4(void *);
+void ClothTex_LoadItem(void *, void *, u32);
+void *ClothTex_GetPlttData(void *);
+void *ClothTex_GetTexData(void *);
 s32 _ZN12Unk_02097ff413func_020983c0EPt(u32 a, u16 *p);
 s32 Gfx2d_LoadPaletteRange(void *, u32, u32, u32, u32);
 void Gfx2d_LinearToTiles4bppBytes(void *, void *, u32, u32);
@@ -245,9 +245,9 @@ extern "C" void MenuScreen_UploadClothPattern(u16 *p, BgVramTaskPair *x, u8 *img
         void *heap = *(void **)gCurrentHeap;
         void *o = Heap_AllocTail(heap, 0x2c4);
         if (o != NULL) {
-            func_0203c764(o, p, r);
-            Gfx_LightenPalette16((u16 *)func_0203c6d0(o), pal);
-            Gfx2d_LinearToTiles4bppBytes(func_0203c6e4(o), img, 4, 4);
+            ClothTex_LoadItem(o, p, r);
+            Gfx_LightenPalette16((u16 *)ClothTex_GetPlttData(o), pal);
+            Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(o), img, 4, 4);
             Heap_Free(heap, o);
             if (x->requestCharsAndPalette((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
                 _ZN12Unk_02097ff413func_020983c0EPt(r, p);
@@ -304,10 +304,10 @@ extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
         Heap_Free(heap, b);
         return FALSE;
     }
-    func_0203c764(c, &tmp, r);
-    Gfx_LightenPalette16((u16 *)func_0203c6d0(c), (u16 *)b);
+    ClothTex_LoadItem(c, &tmp, r);
+    Gfx_LightenPalette16((u16 *)ClothTex_GetPlttData(c), (u16 *)b);
     ok = Gfx2d_LoadPaletteRange(b, arg, 0, 0, 0);
-    Gfx2d_LinearToTiles4bppBytes(func_0203c6e4(c), a, 4, 4);
+    Gfx2d_LinearToTiles4bppBytes(ClothTex_GetTexData(c), a, 4, 4);
     ok &= Gfx2d_LoadCharRange(a, arg, 0, 0, 0xf);
     Heap_Free(heap, a);
     Heap_Free(heap, b);

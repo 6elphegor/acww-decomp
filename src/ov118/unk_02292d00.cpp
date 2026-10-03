@@ -19,7 +19,7 @@ extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
-void func_0206f9fc(void *self, u32 v);
+void String_Load2dMenu(void *self, u32 v);
 void _ZN12Unk_020dd38cC2Ev(void *self);
 void _ZN12Unk_020dd38cD1Ev(void *self);
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
@@ -82,13 +82,13 @@ BOOL MenuKeys_HasUp(void *pad);
 }
 
 // 0x40-byte element with ctor/dtor in main
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
     u8 unk_00[0x40];
 };
 
@@ -303,11 +303,11 @@ public:
     s32 rebuildList();
     void showPlacesList();
     void showResidentsList();
-    void setEntryName(Unk_020e0488 *p, u32 idx);
+    void setEntryName(LabelString *p, u32 idx);
     s32 buildEntryLabels(u8 *tbl);
     void layoutListLabels();
     void buildEntryLists();
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void resetTextLabels();
     s32 getEntryIconRow(u32 x, s32 idx);
     void buildListScreen();
@@ -378,7 +378,7 @@ public:
     /* 0x00b1 */ u8 unk_b1;
     /* 0x00b2 */ u8 unk_b2[2];
     /* 0x00b4 */ BgVramTask unk_b4[2];
-    /* 0x00fc */ Unk_020e0488 unk_fc[13];
+    /* 0x00fc */ LabelString unk_fc[13];
     /* 0x043c */ MenuScrollKnob unk_43c;
     /* 0x0484 */ MenuCursorBuf0 unk_484;
     /* 0x04e8 */ u8 unk_4e8[0x800];
@@ -732,10 +732,10 @@ void MapTab::stateOpen() {
     _ZN12Unk_020dd38cC2Ev(buf);
     func_020638d0(gSaveTownId, buf);
     String_SetSlot(0, buf);
-    Unk_020e0488 *o = allocTextLabel();
-    o->func_0206fb9c(8, 0x1ab, 0x12, 0xf, 0, 0);
-    func_0206f9fc(o, 0xa9);
-    o->func_0206fab4(1, 0);
+    LabelString *o = allocTextLabel();
+    o->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
+    String_Load2dMenu(o, 0xa9);
+    o->redrawAligned(1, 0);
     _ZN12Unk_020dd38cD1Ev(buf);
     beginSubSlideIn(0xa, 3, 0, 0x30);
     Gfx2d_ShowLayer(4);
@@ -1192,14 +1192,14 @@ s32 MapTab::getEntryIconRow(u32 x, s32 idx) {
 void MapTab::resetTextLabels() {
     s32 i = 0;
     unk_a0 = 0;
-    Unk_020e0488 *p = unk_fc;
+    LabelString *p = unk_fc;
     do {
-        (p + i)->func_0206fc44();
+        (p + i)->destroyLabel();
         i++;
     } while (i < 13);
 }
 
-Unk_020e0488 *MapTab::allocTextLabel() {
+LabelString *MapTab::allocTextLabel() {
     if (unk_a0 >= 13) {
         return &unk_fc[12];
     }
@@ -1258,14 +1258,14 @@ void MapTab::layoutListLabels() {
 s32 MapTab::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
-        Unk_020e0488 *w = allocTextLabel();
-        w->func_0206fb9c(6, (i << 4) + 0x160, 8, 1, 0xf, 0);
+        LabelString *w = allocTextLabel();
+        w->createLabel(6, (i << 4) + 0x160, 8, 1, 0xf, 0);
         setEntryName(w, tbl[i]);
-        w->func_0206fab4(0, 0);
+        w->redrawAligned(0, 0);
     }
 }
 
-void MapTab::setEntryName(Unk_020e0488 *p, u32 idx) {
+void MapTab::setEntryName(LabelString *p, u32 idx) {
     if (idx == 0) {
         _ZN9MsgString5clearEv(p);
     } else if (idx == 1) {
@@ -1275,7 +1275,7 @@ void MapTab::setEntryName(Unk_020e0488 *p, u32 idx) {
     } else if (idx >= 6 && idx < 0xe) {
         PopupChoice_CopyVillagerName(p, idx - 6);
     } else if (idx >= 0xe && idx < 0x13) {
-        func_0206f9fc(p, idx + 0x88);
+        String_Load2dMenu(p, idx + 0x88);
     } else {
         _ZN9MsgString5clearEv(p);
     }

@@ -297,10 +297,10 @@ public:
     void clearCharFlags(u32 mask);
     void setCharFlags(u32 mask);
     BOOL testCharFlags(u32 mask);
-    BOOL func_0203e3e8();
-    void func_0203e3f4();
-    s32 func_0203e400();
-    void func_0203e42c();
+    BOOL isAreaSynced();
+    void setAreaSynced();
+    s32 getTalkStartMode();
+    void clearTalkStartMode();
     void func_0203e438();
     void func_0203e450();
     void setInteractionRange(s32 v);

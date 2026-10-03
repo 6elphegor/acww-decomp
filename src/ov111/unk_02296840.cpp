@@ -60,8 +60,8 @@ void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_LoadCharFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadPaletteFile(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 void Snd_PlaySe(u32 v);
-void func_02038fd4(s32 a);
-void func_02038fe8(s32 a, void *p, void *q);
+void ChatBalloon_Dismiss(s32 a);
+void ChatBalloon_Post(s32 a, void *p, void *q);
 void Mem_Clear(void *p, s32 n);
 s32 Mem_Copy(void *src, void *dst, s32 n);
 s32 func_020512e0(void *p, s32 n);
@@ -278,10 +278,10 @@ public:
 };
 
 // 0x40-byte objects at +0x23e8
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
+    LabelString();
+    ~LabelString();
     u32 unk_00[0x40 / 4];
 };
 
@@ -292,14 +292,14 @@ public:
     ~Keyboard() {}
     u32 unk_00[0x22f4 / 4];
     /* 0x22f4 */ BgVramTask unk_22f4[2];
-    /* 0x233c */ Unk_020e0488 unk_233c[2];
+    /* 0x233c */ LabelString unk_233c[2];
 };
 
 // +0x3c68
-class Unk_020d917c {
+class ChatBalloonText {
 public:
-    Unk_020d917c();
-    ~Unk_020d917c();
+    ChatBalloonText();
+    ~ChatBalloonText();
     u32 unk_00[0x34 / 4];
 };
 
@@ -424,7 +424,7 @@ public:
     /* 0xa8 */ TextLabel *unk_a8;
     /* 0xac */ Keyboard unk_ac;
     /* 0x2468 */ u8 unk_2468[0x3c68 - 0x2468];
-    /* 0x3c68 */ Unk_020d917c unk_3c68;
+    /* 0x3c68 */ ChatBalloonText unk_3c68;
     /* 0x3c9c */ EncodedString32 unk_3c9c;
     /* 0x3ccc */ MenuCursorBuf0 unk_3ccc;
     /* 0x3d30 */ MenuErrorMessage unk_3d30;
@@ -1179,13 +1179,13 @@ void ChatMenu_SendText(S *s) {
     Unk_020e1c64 buf;
     ((PlayerId *)r->getPlayerId())->func_020940d0((MsgString *)&buf);
     String_CensorTaboo(&s->unk_3c68);
-    func_02038fe8(*(s32 *)(gCommManager + 0x64), &buf, &s->unk_3c68);
+    ChatBalloon_Post(*(s32 *)(gCommManager + 0x64), &buf, &s->unk_3c68);
     ChatMenu_ClearText(s);
     ChatMenu_RedrawText(s);
 }
 
 void ChatMenu_BeginSend(S *s) {
-    func_02038fd4(*(s32 *)(gCommManager + 0x64));
+    ChatBalloon_Dismiss(*(s32 *)(gCommManager + 0x64));
 }
 
 BOOL ChatMenu_InsertChar(S *s, u32 a) {

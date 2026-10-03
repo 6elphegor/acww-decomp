@@ -106,10 +106,10 @@ public:
 
 struct Unk_0206d1d4_Src;
 
-class Unk_0206d0a0 {
+class LetterRenderer {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d2e0(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
     void func_0206d394();
     void func_0206d39c(s32 a);
@@ -465,7 +465,7 @@ public:
     /* 0x220c */ MenuCursorBuf0 unk_220c;
     /* 0x2270 */ PopupChoiceMenu unk_2270;
     /* 0x2570 */ MenuErrorMessage unk_2570;
-    /* 0x2678 */ Unk_0206d0a0 unk_2678;
+    /* 0x2678 */ LetterRenderer unk_2678;
     /* 0x2888 */ MenuLabelButton unk_2888;
     /* 0x28f8 */ u32 unk_28f8;
     /* 0x28fc */ s32 unk_28fc;
@@ -494,7 +494,7 @@ typedef char Unk_ov103_size_Unk_ov002_02204558[(sizeof(PopupChoiceMenu) == 0x300
 typedef char Unk_ov103_size_Unk_ov002_02204738[(sizeof(MenuLabelButton) == 0x70) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_020dd458[(sizeof(Letter) == 0xf4) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov094_02292d6c[(sizeof(InventoryBg) == 0x15e0) ? 1 : -1];
-typedef char Unk_ov103_size_Unk_0206d0a0[(sizeof(Unk_0206d0a0) == 0x210) ? 1 : -1];
+typedef char Unk_ov103_size_Unk_0206d0a0[(sizeof(LetterRenderer) == 0x210) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov002_022040ec[(sizeof(MenuErrorMessage) == 0x108) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov002_02204604[(sizeof(CursorMotion) == 0x18) ? 1 : -1];
 typedef char Unk_ov103_size_Unk_ov094_02294a50[(sizeof(InventoryItemGrid) == 0xa60) ? 1 : -1];

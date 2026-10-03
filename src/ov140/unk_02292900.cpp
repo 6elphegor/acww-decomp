@@ -18,7 +18,7 @@ extern u16 gPad[];
 
 void Mem_Clear(void *p, u32 n);
 void Mem_Copy(const void *src, void *dst, u32 n);
-void func_0206f994(void *win, u8 *src, u32 n);
+void String_FromEncodedBytes(void *win, u8 *src, u32 n);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
@@ -94,13 +94,13 @@ public:
 };
 
 // Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    LabelString();
+    virtual ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
     u8 unk_04[0x3c];
 };
 
@@ -208,7 +208,7 @@ public:
     void drawLastPageIndex();
     void drawTownCount();
     void resetTextLabels();
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void *getFriendList();
     void fadeRows(s32 t);
     BOOL isListedFriend(u8 *p);
@@ -286,7 +286,7 @@ public:
     /* 0xf70 */ MenuBottomButtons unk_f70;
     /* 0x10d4 */ BgVramTask unk_10d4;
     /* 0x10f8 */ u8 unk_10f8[0x16a0 - 0x10f8];
-    /* 0x16a0 */ Unk_020e0488 unk_16a0[3];
+    /* 0x16a0 */ LabelString unk_16a0[3];
 };
 
 extern "C" {
@@ -1018,7 +1018,7 @@ void DistantTownsMenu::fadeRows(s32 t) {
 
 void *DistantTownsMenu::getFriendList() { return Net_GetWifiFriendList(); }
 
-Unk_020e0488 *DistantTownsMenu::allocTextLabel() {
+LabelString *DistantTownsMenu::allocTextLabel() {
     u32 c = unk_8e6;
     if (c >= 3) {
         return &unk_16a0[2];
@@ -1031,12 +1031,12 @@ void DistantTownsMenu::resetTextLabels() {
     s32 i;
     unk_8e6 = 0;
     for (i = 0; i < 3; i++) {
-        unk_16a0[i].func_0206fc44();
+        unk_16a0[i].destroyLabel();
     }
 }
 
 void DistantTownsMenu::drawTownCount() {
-    Unk_020e0488 *w = allocTextLabel();
+    LabelString *w = allocTextLabel();
     u8 buf[3];
     u32 v = unk_8df;
     if (v < 10) {
@@ -1048,29 +1048,29 @@ void DistantTownsMenu::drawTownCount() {
         buf[1] = unk_8df % 10 + 0x35;
         buf[2] = 0;
     }
-    func_0206f994(w, buf, 3);
-    w->func_0206fb48(8, 0x1f4, 2, 0xf, 0, 1);
-    w->func_0206fab4(0, 0);
+    String_FromEncodedBytes(w, buf, 3);
+    w->createSmallLabel(8, 0x1f4, 2, 0xf, 0, 1);
+    w->redrawAligned(0, 0);
 }
 
 void DistantTownsMenu::drawLastPageIndex() {
-    Unk_020e0488 *w = allocTextLabel();
+    LabelString *w = allocTextLabel();
     u8 buf[2];
     buf[0] = unk_8de + 0x35;
     buf[1] = 0;
-    func_0206f994(w, buf, 2);
-    w->func_0206fb48(8, 0x1f3, 1, 0xf, 0, 1);
-    w->func_0206fab4(0, 0);
+    String_FromEncodedBytes(w, buf, 2);
+    w->createSmallLabel(8, 0x1f3, 1, 0xf, 0, 1);
+    w->redrawAligned(0, 0);
 }
 
 void DistantTownsMenu::drawPageIndex() {
-    Unk_020e0488 *w = allocTextLabel();
+    LabelString *w = allocTextLabel();
     u8 buf[2];
     buf[0] = unk_8dd + 0x35;
     buf[1] = 0;
-    func_0206f994(w, buf, 2);
-    w->func_0206fb48(8, 0x1f2, 1, 0xf, 0, 1);
-    w->func_0206fab4(0, 0);
+    String_FromEncodedBytes(w, buf, 2);
+    w->createSmallLabel(8, 0x1f2, 1, 0xf, 0, 1);
+    w->redrawAligned(0, 0);
 }
 
 BOOL DistantTownsMenu::testFlags(u32 m) {

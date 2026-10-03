@@ -9,7 +9,7 @@ s32 Gfx2d_EnableMainWindows(u32 a);
 s32 Gfx2d_DisableMainWindows(u32 a);
 s32 Snd_StopSe(u32 a, u32 b);
 void func_02004008(u32 a);
-s32 func_0203d99c();
+s32 TalkRequestFlags_IsSceneHold();
 extern u32 data_020d5b0c[][2];
 extern u8 data_020d5d34[];
 extern u32 *data_020d5d0c[];
@@ -170,7 +170,7 @@ extern Unk_020e10bc_Rec data_020e10bc;
 
 BOOL Unk_020e1164::func_0208ee94() {
     BOOL r = FALSE;
-    if (func_0203d99c()) {
+    if (TalkRequestFlags_IsSceneHold()) {
         r = TRUE;
     }
     return r;

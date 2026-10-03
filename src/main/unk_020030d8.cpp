@@ -1,7 +1,7 @@
 #include "types.h"
 
 // ---------------------------------------------------------------------------------------------------------------------
-// 12-byte record with a base class at 0x020639xx (functions func_020030d8..func_0200315c are still free functions)
+// 12-byte record with a base class at 0x020639xx (functions VillagerId_Copy..VillagerId_CopyFrom are still free functions)
 
 struct Unk_020030d8 {
     /* 0x00 */ u8 unk_00[10];
@@ -25,13 +25,13 @@ s32 Net_GetLinkLevel();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
-extern const s8 data_020c6158[8];
-const s8 data_020c6158[8] = {-18, -12, -2, -1, 0, 0, 0, 0};
+extern const s8 sHudIconSlideOffsets[8];
+const s8 sHudIconSlideOffsets[8] = {-18, -12, -2, -1, 0, 0, 0, 0};
 extern u8 data_020d47a4[];
 
 struct SpriteAnimSeq;
 
-// Sub-object at +0xc of Unk_020d5e0c (ctor 0x02089270, dtor 0x0208926c)
+// Sub-object at +0xc of HudUnkSlideIcon (ctor 0x02089270, dtor 0x0208926c)
 class SpriteAnim {
 public:
     SpriteAnim();
@@ -65,22 +65,22 @@ public:
 };
 
 // Vtable at 0x020d5e0c
-class Unk_020d5e0c : public UiWidget {
+class HudUnkSlideIcon : public UiWidget {
 public:
-    Unk_020d5e0c();
-    virtual ~Unk_020d5e0c();
+    HudUnkSlideIcon();
+    virtual ~HudUnkSlideIcon();
     virtual void draw();
     virtual void vfunc_0c();
 
-    void func_02003178();
-    void func_020031c4();
-    void func_0200326c();
-    BOOL func_020032e8();
-    void func_0200331c(BOOL flag);
-    void func_02003374();
-    void func_02003384();
-    void func_02003394();
-    void func_020033a0();
+    void applyVariantRequest();
+    void updateSlide();
+    void trackMenuTransition();
+    BOOL canShow();
+    void setAnimFrozen(BOOL flag);
+    void callDraw();
+    void callUpdate();
+    void exit();
+    void reset();
 
     /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
@@ -96,19 +96,19 @@ public:
     /* 0x3c */ s32 unk_3c;
 };
 
-// Unk_02003574: state object at data_0213c894
-struct Unk_02003574 {
-    Unk_02003574();
-    ~Unk_02003574();
+// HudLinkIcon: state object at sHudLinkIcon
+struct HudLinkIcon {
+    HudLinkIcon();
+    ~HudLinkIcon();
     void func_02003574();
-    void func_02003578();
-    void func_020035e8();
-    BOOL func_02003648();
-    BOOL func_02003670();
-    void func_020036a4();
-    void func_020036ec();
-    void func_02003738();
-    void func_0200373c();
+    void updateSlide();
+    void trackMenuTransition();
+    BOOL isWifiGfxCurrent();
+    BOOL canShow();
+    void draw();
+    void update();
+    void exit();
+    void reset();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -151,8 +151,8 @@ extern s32 gCamera;
 extern Unk_02003878_Vec gCameraEye;
 
 // bss, in the order __sinit constructs them
-Unk_02003574 data_0213c894;
-Unk_020d5e0c data_0213c8ac;
+HudLinkIcon sHudLinkIcon;
+HudUnkSlideIcon sHudUnkSlideIcon;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -178,15 +178,15 @@ void TvSound::callTurnOn(s32 a) { turnOn(a); }
 
 void TvSound::callTurnOff() { turnOff(); }
 
-extern "C" void func_020037a0() { data_0213c894.func_0200373c(); }
+extern "C" void HudLinkIcon_Reset() { sHudLinkIcon.reset(); }
 
-extern "C" void func_02003790() { data_0213c894.func_02003738(); }
+extern "C" void HudLinkIcon_Exit() { sHudLinkIcon.exit(); }
 
-extern "C" void func_02003780() { data_0213c894.func_020036ec(); }
+extern "C" void HudLinkIcon_Update() { sHudLinkIcon.update(); }
 
-extern "C" void func_02003770() { data_0213c894.func_020036a4(); }
+extern "C" void HudLinkIcon_Draw() { sHudLinkIcon.draw(); }
 
-Unk_02003574::Unk_02003574() {
+HudLinkIcon::HudLinkIcon() {
     unk_00 = 3;
     unk_04 = 0;
     unk_08 = 0;
@@ -196,22 +196,22 @@ Unk_02003574::Unk_02003574() {
     unk_15 = 0;
 }
 
-Unk_02003574::~Unk_02003574() {}
+HudLinkIcon::~HudLinkIcon() {}
 
-void Unk_02003574::func_0200373c() {
+void HudLinkIcon::reset() {
     unk_00 = 3;
     unk_08 = 0;
-    unk_04 = data_020c6158[0];
+    unk_04 = sHudIconSlideOffsets[0];
     unk_0c = 0;
     unk_10 = 0;
     unk_14 = 0;
     unk_15 = 0;
 }
 
-void Unk_02003574::func_02003738() {}
+void HudLinkIcon::exit() {}
 
-void Unk_02003574::func_020036ec() {
-    if (func_02003670()) {
+void HudLinkIcon::update() {
+    if (canShow()) {
         s32 v = Net_GetLinkLevel();
         if (v == 1) {
             unk_00 = 2;
@@ -223,18 +223,18 @@ void Unk_02003574::func_020036ec() {
             unk_00 = 3;
         }
     }
-    func_020035e8();
-    func_02003578();
+    trackMenuTransition();
+    updateSlide();
     func_02003574();
 }
 
-void Unk_02003574::func_020036a4() {
+void HudLinkIcon::draw() {
     if (unk_08 != 0) {
         Oam_DrawCell(0, (void *)data_020d467c.unk_08[unk_00][0], unk_04 + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
-BOOL Unk_02003574::func_02003670() {
+BOOL HudLinkIcon::canShow() {
     BOOL r = FALSE;
     if (Net_GetMode() != 0) {
         s32 v = Net_GetMode();
@@ -248,7 +248,7 @@ BOOL Unk_02003574::func_02003670() {
     return FALSE;
 }
 
-BOOL Unk_02003574::func_02003648() {
+BOOL HudLinkIcon::isWifiGfxCurrent() {
     BOOL b;
     switch (Net_GetMode()) {
     case 3:
@@ -265,7 +265,7 @@ BOOL Unk_02003574::func_02003648() {
     return FALSE;
 }
 
-void Unk_02003574::func_020035e8() {
+void HudLinkIcon::trackMenuTransition() {
     BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
     s32 b = MenuCtrl_GetTransitionProgressOrFull();
     if (unk_10 > 0) {
@@ -277,24 +277,24 @@ void Unk_02003574::func_020035e8() {
         }
     } else if (a) {
         unk_08 = 0;
-        unk_04 = data_020c6158[0];
+        unk_04 = sHudIconSlideOffsets[0];
         unk_10 = 0xe;
     }
     unk_14 = a;
     unk_0c = b;
 }
 
-void Unk_02003574::func_02003578() {
-    BOOL a = func_02003670();
-    BOOL b = func_02003648();
+void HudLinkIcon::updateSlide() {
+    BOOL a = canShow();
+    BOOL b = isWifiGfxCurrent();
     if (a && b) {
         if ((u32)unk_08 < 4) {
             unk_08++;
-            unk_04 = data_020c6158[unk_08];
+            unk_04 = sHudIconSlideOffsets[unk_08];
         }
     } else if (unk_08 != 0) {
         unk_08--;
-        unk_04 = data_020c6158[unk_08];
+        unk_04 = sHudIconSlideOffsets[unk_08];
     }
     if (a && !b && unk_08 == 0) {
         unk_15 = unk_15 == 0 ? 1 : 0;
@@ -302,9 +302,9 @@ void Unk_02003574::func_02003578() {
     }
 }
 
-void Unk_02003574::func_02003574() {}
+void HudLinkIcon::func_02003574() {}
 
-Unk_020d5e0c::Unk_020d5e0c() {
+HudUnkSlideIcon::HudUnkSlideIcon() {
     unk_20 = 0;
     unk_24 = 0;
     unk_28 = 0;
@@ -318,11 +318,11 @@ Unk_020d5e0c::Unk_020d5e0c() {
     unk_3c = 0;
 }
 
-Unk_020d5e0c::~Unk_020d5e0c() {
-    func_02003394();
+HudUnkSlideIcon::~HudUnkSlideIcon() {
+    exit();
 }
 
-void Unk_020d5e0c::draw() {
+void HudUnkSlideIcon::draw() {
     if (unk_24 != 0) {
         void *h = unk_0c.getCell();
         if (h != 0) {
@@ -340,48 +340,48 @@ void Unk_020d5e0c::draw() {
     }
 }
 
-void Unk_020d5e0c::vfunc_0c() {
-    func_0200326c();
-    func_020031c4();
-    func_02003178();
+void HudUnkSlideIcon::vfunc_0c() {
+    trackMenuTransition();
+    updateSlide();
+    applyVariantRequest();
 }
 
-extern "C" void func_02003414() { data_0213c8ac.func_020033a0(); }
+extern "C" void HudUnkSlideIcon_Reset() { sHudUnkSlideIcon.reset(); }
 
-extern "C" void func_02003404() { data_0213c8ac.func_02003394(); }
+extern "C" void HudUnkSlideIcon_Exit() { sHudUnkSlideIcon.exit(); }
 
-extern "C" void func_020033f4() { data_0213c8ac.func_02003384(); }
+extern "C" void HudUnkSlideIcon_Update() { sHudUnkSlideIcon.callUpdate(); }
 
-extern "C" void func_020033e4() { data_0213c8ac.func_02003374(); }
+extern "C" void HudUnkSlideIcon_Draw() { sHudUnkSlideIcon.callDraw(); }
 
-void Unk_020d5e0c::func_020033a0() {
+void HudUnkSlideIcon::reset() {
     unk_31 = 0;
-    unk_20 = data_020c6158[0];
+    unk_20 = sHudIconSlideOffsets[0];
     unk_24 = 0;
     unk_28 = 0;
     unk_2c = 0;
     unk_30 = 0;
     unk_32 = 1;
-    func_0200331c(FALSE);
+    setAnimFrozen(FALSE);
     unk_33 = 0;
     unk_34 = 0;
     unk_38 = 5;
     unk_3c = 0;
 }
 
-void Unk_020d5e0c::func_02003394() {
+void HudUnkSlideIcon::exit() {
     unk_0c.restart();
 }
 
-void Unk_020d5e0c::func_02003384() {
+void HudUnkSlideIcon::callUpdate() {
     vfunc_0c();
 }
 
-void Unk_020d5e0c::func_02003374() {
+void HudUnkSlideIcon::callDraw() {
     draw();
 }
 
-void Unk_020d5e0c::func_0200331c(BOOL flag) {
+void HudUnkSlideIcon::setAnimFrozen(BOOL flag) {
     unk_0c.setSeq((SpriteAnimSeq *)data_020d47a4);
     if (flag) {
         unk_0c.setPlayOnce(1);
@@ -394,7 +394,7 @@ void Unk_020d5e0c::func_0200331c(BOOL flag) {
     unk_33 = 0;
 }
 
-BOOL Unk_020d5e0c::func_020032e8() {
+BOOL HudUnkSlideIcon::canShow() {
     BOOL r;
     if (unk_31 != 0 && unk_2c == 0 && unk_3c > 0) {
         r = TRUE;
@@ -409,7 +409,7 @@ BOOL Unk_020d5e0c::func_020032e8() {
     return r;
 }
 
-void Unk_020d5e0c::func_0200326c() {
+void HudUnkSlideIcon::trackMenuTransition() {
     BOOL a = MenuCtrl_IsTransitionActive() ? TRUE : FALSE;
     s32 b = MenuCtrl_GetTransitionProgressOrFull();
     if (unk_2c > 0) {
@@ -424,40 +424,40 @@ void Unk_020d5e0c::func_0200326c() {
         }
     } else if (a) {
         unk_24 = 0;
-        unk_20 = data_020c6158[0];
-        func_0200331c(TRUE);
+        unk_20 = sHudIconSlideOffsets[0];
+        setAnimFrozen(TRUE);
         unk_2c = 0xe;
     }
     unk_30 = a;
     unk_28 = b;
 }
 
-void Unk_020d5e0c::func_020031c4() {
+void HudUnkSlideIcon::updateSlide() {
     if (unk_33 != 0) {
-        func_0200331c(FALSE);
+        setAnimFrozen(FALSE);
     }
     if (unk_32 != 0) {
-        if (func_020032e8()) {
+        if (canShow()) {
             unk_24 = 4;
-            unk_20 = data_020c6158[4];
+            unk_20 = sHudIconSlideOffsets[4];
         } else {
             unk_24 = 0;
-            unk_20 = data_020c6158[0];
+            unk_20 = sHudIconSlideOffsets[0];
         }
-    } else if (func_020032e8()) {
+    } else if (canShow()) {
         if ((u32)unk_24 < 4) {
             unk_24++;
-            unk_20 = data_020c6158[unk_24];
+            unk_20 = sHudIconSlideOffsets[unk_24];
             if (unk_24 == 4) {
-                func_0200331c(FALSE);
+                setAnimFrozen(FALSE);
             }
         }
     } else if (unk_24 != 0) {
         if (unk_24 == 4) {
-            func_0200331c(TRUE);
+            setAnimFrozen(TRUE);
         }
         unk_24--;
-        unk_20 = data_020c6158[unk_24];
+        unk_20 = sHudIconSlideOffsets[unk_24];
     }
     if (unk_3c > 0) {
         unk_3c--;
@@ -465,7 +465,7 @@ void Unk_020d5e0c::func_020031c4() {
     unk_0c.update();
 }
 
-void Unk_020d5e0c::func_02003178() {
+void HudUnkSlideIcon::applyVariantRequest() {
     if (unk_24 == 0) {
         s32 t = unk_38;
         if (t != 5 && t != unk_34) {
@@ -482,41 +482,41 @@ void Unk_020d5e0c::func_02003178() {
     }
 }
 
-extern "C" void func_0200315c(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" void VillagerId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other) {
     func_0206397c(p, other);
     p->unk_0b = other->unk_0b;
     p->unk_0a = other->unk_0a;
 }
 
-extern "C" void func_02003140(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" void VillagerId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other) {
     func_02063968(p, other);
     other->unk_0b = p->unk_0b;
     other->unk_0a = p->unk_0a;
 }
 
-extern "C" Unk_020030d8 *func_02003130(Unk_020030d8 *p) {
+extern "C" Unk_020030d8 *VillagerId_Construct(Unk_020030d8 *p) {
     func_020639bc(p);
     return p;
 }
 
-extern "C" Unk_020030d8 *func_02003110(Unk_020030d8 *p, Unk_020030d8 *other) {
+extern "C" Unk_020030d8 *VillagerId_ConstructCopy(Unk_020030d8 *p, Unk_020030d8 *other) {
     func_020639bc(p);
-    func_0200315c(p, other);
+    VillagerId_CopyFrom(p, other);
     return p;
 }
 
-extern "C" Unk_020030d8 *func_02003100(Unk_020030d8 *p) {
+extern "C" Unk_020030d8 *VillagerId_Destruct(Unk_020030d8 *p) {
     func_020639b8(p);
     return p;
 }
 
-extern "C" void func_020030e8(Unk_020030d8 *p) {
+extern "C" void VillagerId_Clear(Unk_020030d8 *p) {
     func_020639a0(p);
     p->unk_0b = 0xff;
     p->unk_0a = 6;
 }
 
-extern "C" void func_020030d8(Unk_020030d8 *dst, Unk_020030d8 *src) {
+extern "C" void VillagerId_Copy(Unk_020030d8 *dst, Unk_020030d8 *src) {
     MI_CpuCopy8(src, dst, 0xc);
 }
 

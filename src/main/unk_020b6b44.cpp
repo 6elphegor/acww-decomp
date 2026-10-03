@@ -31,12 +31,12 @@ struct Unk_020d8ccc {
     u8 pad[0x34];
 };
 
-struct Unk_020e44d4 : Unk_020d8ccc {
-    Unk_020e44d4();
-    ~Unk_020e44d4();
-    BOOL func_020b6ac4(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6b04(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x38 */ Unk_020e44d4 *unk_38;
+struct TouchPickTriangle : Unk_020d8ccc {
+    TouchPickTriangle();
+    ~TouchPickTriangle();
+    BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    /* 0x38 */ TouchPickTriangle *unk_38;
     /* 0x3c */ s32 unk_3c;
     /* 0x40 */ u8 unk_40;
 };
@@ -45,7 +45,7 @@ struct Unk_020b6e10 {
     Unk_020b6e10();
     ~Unk_020b6e10();
     BOOL func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ Unk_020e44d4 unk_00[10];
+    /* 0x00 */ TouchPickTriangle unk_00[10];
 };
 
 struct CollisionCylinder {
@@ -199,26 +199,26 @@ BOOL Unk_020b6e10::func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 
     c[0].y = c[1].y = c[2].y = c[3].y = pos->y;
     c[4].y = c[5].y = c[6].y = c[7].y = pos->y + d;
     BOOL ok = TRUE;
-    ok = (ok | unk_00[0].func_020b6b04(&c[4], &c[5], &c[6], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[1].func_020b6b04(&c[4], &c[6], &c[7], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[2].func_020b6b04(&c[5], &c[1], &c[2], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[3].func_020b6b04(&c[5], &c[2], &c[6], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[4].func_020b6b04(&c[6], &c[2], &c[3], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[5].func_020b6b04(&c[6], &c[3], &c[7], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[6].func_020b6b04(&c[4], &c[0], &c[1], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[7].func_020b6b04(&c[4], &c[1], &c[5], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[8].func_020b6b04(&c[7], &c[3], &c[0], e, f)) ? TRUE : FALSE;
-    ok = (ok | unk_00[9].func_020b6b04(&c[7], &c[0], &c[4], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[0].setup(&c[4], &c[5], &c[6], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[1].setup(&c[4], &c[6], &c[7], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[2].setup(&c[5], &c[1], &c[2], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[3].setup(&c[5], &c[2], &c[6], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[4].setup(&c[6], &c[2], &c[3], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[5].setup(&c[6], &c[3], &c[7], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[6].setup(&c[4], &c[0], &c[1], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[7].setup(&c[4], &c[1], &c[5], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[8].setup(&c[7], &c[3], &c[0], e, f)) ? TRUE : FALSE;
+    ok = (ok | unk_00[9].setup(&c[7], &c[0], &c[4], e, f)) ? TRUE : FALSE;
     return ok;
 }
 
-Unk_020e44d4::Unk_020e44d4() {
+TouchPickTriangle::TouchPickTriangle() {
     unk_3c = 0;
     unk_38 = 0;
     unk_40 = 0xff;
 }
 
-Unk_020e44d4::~Unk_020e44d4() {
+TouchPickTriangle::~TouchPickTriangle() {
     _ZN12Unk_020d8cccD1Ev(this);
 }
 

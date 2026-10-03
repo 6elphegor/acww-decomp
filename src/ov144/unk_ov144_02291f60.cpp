@@ -12,9 +12,9 @@ typedef void (MusicMenu::*Unk_ov144_02293db8_Fn)();
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
 #define HandCursor_disableObjWindow _ZN10HandCursor16disableObjWindowEv
@@ -94,9 +94,9 @@ void ItemName_setFromItem(void *p, u16 *v);
 void func_0206260c(void *p);
 void MsgString_clear(void *p);
 void MsgString_copy(void *p, void *q);
-void func_0206fb9c(void *obj, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206fab4(void *obj, s32 a, s32 b);
-void func_0206fc44(void *obj);
+void LabelString_createLabel(void *obj, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void LabelString_redrawAligned(void *obj, s32 a, s32 b);
+void LabelString_destroyLabel(void *obj);
 u16 *func_020601cc();
 s32 func_020600f4(u32 id);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
@@ -244,10 +244,10 @@ public:
     u32 unk_00[0x164 / 4];
 };
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
+    LabelString();
+    ~LabelString();
     u32 unk_00[0x40 / 4];
 };
 
@@ -385,7 +385,7 @@ public:
     /* 0x0c4 */ MenuCursorBuf0 unk_c4;
     /* 0x128 */ MenuScrollKnob unk_128;
     /* 0x170 */ MenuBottomButtons unk_170;
-    /* 0x2d4 */ Unk_020e0488 unk_2d4[9];
+    /* 0x2d4 */ LabelString unk_2d4[9];
     /* 0x514 */ BgVramTask unk_514[2];
     /* 0x55c */ MenuErrorMessage unk_55c;
     /* 0x664 */ u16 unk_664[0x46];
@@ -1132,7 +1132,7 @@ void MusicMenu::resetTextLabels() {
     s32 i = 0;
     unk_bf = 0;
     for (; i < 9; i++) {
-        func_0206fc44(&unk_2d4[i]);
+        LabelString_destroyLabel(&unk_2d4[i]);
     }
 }
 
@@ -1171,8 +1171,8 @@ void MusicMenu::drawSongNames() {
             p++;
         }
         if (obj) {
-            func_0206fb9c(obj, 4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
-            func_0206fab4(obj, 0, 0);
+            LabelString_createLabel(obj, 4, slot * 0x1a + 0x184, 0xd, 0xf, 7, 0);
+            LabelString_redrawAligned(obj, 0, 0);
         }
         idx++;
         slot++;

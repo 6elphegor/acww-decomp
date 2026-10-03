@@ -94,24 +94,24 @@ struct Unk_020653cc_Buf {
 };
 
 extern "C" {
-void func_02003130(void *);
-void func_02003100(void *);
+void VillagerId_Construct(void *);
+void VillagerId_Destruct(void *);
 void _ZN8PlayerIdC1EPv(void *);
 void _ZN8PlayerIdC1Ev(void *);
 void _ZN12Unk_020e1c64C1Ev(void *);
 void _ZN12Unk_020e1c64D1Ev(void *);
 void _ZN12Unk_020e1c4cC1Ev(void *);
 void _ZN12Unk_020e1c4cD1Ev(void *);
-void _ZN12Unk_020e0488C1Ev(void *);
-void _ZN12Unk_020e0488D1Ev(void *);
-void _ZN12Unk_020e0470C1Ev(void *);
-void _ZN12Unk_020e0470D1Ev(void *);
+void _ZN11LabelStringC1Ev(void *);
+void _ZN11LabelStringD1Ev(void *);
+void _ZN15EncodedString41C1Ev(void *);
+void _ZN15EncodedString41D1Ev(void *);
 }
 
 struct Unk_02065d5c_Str {
     u32 v[3];
-    Unk_02065d5c_Str() { func_02003130(this); }
-    ~Unk_02065d5c_Str() { func_02003100(this); }
+    Unk_02065d5c_Str() { VillagerId_Construct(this); }
+    ~Unk_02065d5c_Str() { VillagerId_Destruct(this); }
 };
 struct Unk_02065d5c_Buf18 {
     u32 v[6];
@@ -130,14 +130,14 @@ struct Unk_02065dc8_Obj18 {
 };
 struct Unk_02065dc8_Obj44 {
     u32 v[0x11];
-    Unk_02065dc8_Obj44() { _ZN12Unk_020e0488C1Ev(this); }
-    ~Unk_02065dc8_Obj44() { _ZN12Unk_020e0488D1Ev(this); }
+    Unk_02065dc8_Obj44() { _ZN11LabelStringC1Ev(this); }
+    ~Unk_02065dc8_Obj44() { _ZN11LabelStringD1Ev(this); }
 };
 struct Unk_02065a1c_Str {
     u8 pad[0xe];
     char text[0x2a];
-    Unk_02065a1c_Str() { _ZN12Unk_020e0470C1Ev(this); }
-    ~Unk_02065a1c_Str() { _ZN12Unk_020e0470D1Ev(this); }
+    Unk_02065a1c_Str() { _ZN15EncodedString41C1Ev(this); }
+    ~Unk_02065a1c_Str() { _ZN15EncodedString41D1Ev(this); }
 };
 
 extern Unk_020ddf2c data_021c9fa4;
@@ -157,22 +157,22 @@ s32 MailText_LoadLetter(void *a, void *b, void *c, void *d, void *e, void *f);
 s32 MailText_LoadLetterZ(void *a, void *b, void *c, void *d, void *e1, void *e2, void *e3, void *e4, void *name);
 void MailText_SetSlot(s32 i, void *x);
 void _ZN10VillagerId7getNameEj(void *o, void *x);
-void func_0200315c(void *o, void *x);
+void VillagerId_CopyFrom(void *o, void *x);
 void _ZN8PlayerId13func_02094264EPS_(void *o, void *x);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *o, void *x);
 void _ZN8PlayerId13func_02094238EPS_(void *src, void *dst);
-void func_02003140(void *src, void *dst);
-void func_020030d8(void *o, void *x);
+void VillagerId_CopyTo(void *src, void *dst);
+void VillagerId_Copy(void *o, void *x);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *o, void *x);
 void _ZN12Unk_020e1c4c13func_02093f90EPvj(void *o, void *x, u32 n);
 void _ZN8PlayerId13func_020942b8EPv(void *o, void *x);
-void func_0206f9fc(void *o, u32 x);
-void func_0206f964(void *o, void *x);
+void String_Load2dMenu(void *o, u32 x);
+void String_ToEncodedBytes(void *o, void *x);
 void StrBuf_ClearAlt(void *o);
 void String_Load2d(void *dst, void *code, void *z);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
-void *_ZN10PlayerData13func_02098750Ev(void *);
+void *_ZN10PlayerData12getInventoryEv(void *);
 u8 *_ZN15PlayerInventory9getUnk988Ev(void *);
 void *PlayerData_GetResident(void *);
 void *SaveVillagers_Get(void *);
@@ -224,14 +224,14 @@ extern "C" void func_02065dc8(Letter *self, void *out) {
         Mem_Copy((u8 *)self + 0xc, out, 8);
         break;
     case 3:
-        func_0200315c(&c, self);
+        VillagerId_CopyFrom(&c, self);
         _ZN10VillagerId7getNameEj(&c, &a);
         _ZN13EncodedString13fromMsgStringEP9MsgString(&b, &a);
         _ZN12Unk_020e1c4c13func_02093f90EPvj(&b, out, 8);
         break;
     case 7:
-        func_0206f9fc(&d, 0x43);
-        func_0206f964(&d, out);
+        String_Load2dMenu(&d, 0x43);
+        String_ToEncodedBytes(&d, out);
         break;
     }
 }
@@ -251,7 +251,7 @@ extern "C" void func_02065d5c(Letter *self, void *out) {
         break;
     case 3:
     case 5:
-        func_0200315c(&a, self);
+        VillagerId_CopyFrom(&a, self);
         _ZN10VillagerId7getNameEj(&a, out);
         break;
     }
@@ -269,7 +269,7 @@ extern "C" Letter *func_02065d38(Letter *self) {
 
 extern "C" void func_02065d24(Letter *self, void *src) {
     self->unk_16 = 3;
-    func_02003140(src, self);
+    VillagerId_CopyTo(src, self);
 }
 
 extern "C" void func_02065d10(Letter *self, void *src) {
@@ -310,7 +310,7 @@ extern "C" void func_02065c34(Unk_02065554 *self, u32 v) {
     self->unk_1c.unk_16 = 2;
     _ZN8PlayerId13func_02094238EPS_(_ZN10PlayerData11getPlayerIdEv(r), &self->unk_1c);
     self->func_02065564(1);
-    func_020654c8(self, _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData13func_02098750Ev(r)) + 0x30);
+    func_020654c8(self, _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(r)) + 0x30);
 }
 
 extern "C" void func_02065bfc(Unk_02065554 *self) {
@@ -338,7 +338,7 @@ extern "C" void func_02065b5c(Unk_02065554 *self) {
     void *a = PlayerData_GetCurrent();
     void *b = _ZN10PlayerData11getPlayerIdEv(a);
     if (self->unk_04.unk_16 != 1) {
-        u8 *c = _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData13func_02098750Ev(a));
+        u8 *c = _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(a));
         Mem_Copy(c + 0x18, self->unk_34, 0x18);
         self->unk_ec = c[0x51];
     }
@@ -397,7 +397,7 @@ extern "C" void func_02065a1c(Unk_02065554 *self, s32 *pv, void *a, void *b, voi
 extern "C" void func_0206598c(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
     Unk_02065d5c_Str l1;
     Unk_02065d5c_Buf18 l2;
-    func_020030d8(&l1, s1);
+    VillagerId_Copy(&l1, s1);
     _ZN8PlayerId13func_020942b8EPv(&l2, s2);
     func_02065c94(self);
     self->unk_ed = *ped;
@@ -437,8 +437,8 @@ extern "C" void func_020658a8(Unk_02065554 *self, void *a1, void *a2, void *a3, 
 extern "C" void func_02065818(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
     Unk_02065d5c_Str l1;
     Unk_02065d5c_Str l2;
-    func_020030d8(&l1, s1);
-    func_020030d8(&l2, s2);
+    VillagerId_Copy(&l1, s1);
+    VillagerId_Copy(&l2, s2);
     func_02065c94(self);
     self->unk_ed = *ped;
     self->unk_ef = 0;
@@ -559,7 +559,7 @@ BOOL Unk_02065554::func_02065554() {
 
 void Unk_02065554::func_02065518() {
     if ((u8)(unk_04.unk_16 + 0xfe) <= 1) return;
-    u8 *p = (u8 *)_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
+    u8 *p = (u8 *)_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
     Mem_Copy(p, unk_34, 0x18);
     unk_ec = p[0x50];
 }
@@ -596,8 +596,8 @@ extern "C" void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
     Unk_020653cc_Buf out;
     s32 n;
     s32 m;
-    _ZN12Unk_020e0488C1Ev(src);
-    _ZN12Unk_020e0470C1Ev(&out);
+    _ZN11LabelStringC1Ev(src);
+    _ZN15EncodedString41C1Ev(&out);
     String_Load2d(src, code, NULL);
     _ZN13EncodedString13fromMsgStringEP9MsgString(&out, src);
     n = func_02051320(out.unk_0e, 0x29, 0);
@@ -619,8 +619,8 @@ extern "C" void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
             Mem_Copy(p, dst + m, k);
         }
     }
-    _ZN12Unk_020e0470D1Ev(&out);
-    _ZN12Unk_020e0488D1Ev(src);
+    _ZN15EncodedString41D1Ev(&out);
+    _ZN11LabelStringD1Ev(src);
 }
 
 extern "C" void func_02065388(Unk_02065388_Obj *o) {

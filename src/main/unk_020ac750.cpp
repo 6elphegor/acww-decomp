@@ -865,7 +865,7 @@ extern "C" {
 void* PlayerData_GetResident(void*, int);
 }
 extern "C" {
-int _ZN10PlayerData13func_02098a48Ev(void*);
+int _ZN10PlayerData6isUsedEv(void*);
 }
 extern "C" {
 int _ZN12Unk_02097ff48testFlagEj(void*, int);
@@ -1288,7 +1288,7 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     if (cnt != 0 && cnt != 1) {
         for (i = 0; i < 4; i++) {
             p = PlayerData_GetResident(gSavePlayers, i);
-            if (p != 0 && _ZN10PlayerData13func_02098a48Ev(p) != 0 && _ZN12Unk_02097ff48testFlagEj(p, 1) == 0) {
+            if (p != 0 && _ZN10PlayerData6isUsedEv(p) != 0 && _ZN12Unk_02097ff48testFlagEj(p, 1) == 0) {
                 ok = 0;
                 break;
             }
@@ -1972,7 +1972,7 @@ extern "C" {
 void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
-u32 _ZN10PlayerData13func_02098a48Ev();
+u32 _ZN10PlayerData6isUsedEv();
 }
 extern "C" {
 u32 _ZN12Unk_02097ff48testFlagEj(void *p, u32 n);
@@ -2476,7 +2476,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
             s32 i;
             for (i = 0; i < 4; i++) {
                 void *p = PlayerData_GetResident(gSavePlayers, i);
-                if (p != NULL && _ZN10PlayerData13func_02098a48Ev() != 0 && _ZN12Unk_02097ff48testFlagEj(p, 12) != 0) {
+                if (p != NULL && _ZN10PlayerData6isUsedEv() != 0 && _ZN12Unk_02097ff48testFlagEj(p, 12) != 0) {
                     Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {
                         LetterDelivery_QueueOutgoing(&ctx, 0);

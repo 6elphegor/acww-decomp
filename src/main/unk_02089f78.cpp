@@ -15,11 +15,11 @@ void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
-void func_020033e4();
+void HudUnkSlideIcon_Draw();
 }
 
 extern "C" {
-void func_02003770();
+void HudLinkIcon_Draw();
 }
 
 extern "C" {
@@ -31,11 +31,11 @@ void HudUnkIcon_Draw();
 }
 
 extern "C" {
-void func_02003780();
+void HudLinkIcon_Update();
 }
 
 extern "C" {
-void func_020033f4();
+void HudUnkSlideIcon_Update();
 }
 
 extern "C" {
@@ -55,19 +55,19 @@ void HudUnkIcon_Exit();
 }
 
 extern "C" {
-void func_02003404();
+void HudUnkSlideIcon_Exit();
 }
 
 extern "C" {
-void func_02003790();
+void HudLinkIcon_Exit();
 }
 
 extern "C" {
-void func_020037a0();
+void HudLinkIcon_Reset();
 }
 
 extern "C" {
-void func_02003414();
+void HudUnkSlideIcon_Reset();
 }
 
 extern "C" {

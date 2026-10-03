@@ -1285,16 +1285,16 @@ extern "C" {
 void _ZN12MsgString193D1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0488C1Ev(void *p);
+void _ZN11LabelStringC1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0488D1Ev(void *p);
+void _ZN11LabelStringD1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0470C1Ev(void *p);
+void _ZN15EncodedString41C1Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020e0470D1Ev(void *p);
+void _ZN15EncodedString41D1Ev(void *p);
 }
 extern "C" {
 void *Msg_SkipLines(void *p, s32 i);
@@ -1312,7 +1312,7 @@ extern "C" {
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 }
 extern "C" {
-s32 _ZN12Unk_020e047013func_0206f828Ev(void *p);
+s32 _ZN15EncodedString4113func_0206f828Ev(void *p);
 }
 extern "C" {
 void MailText_LoadBbs(void *a, void *b, u32 c);
@@ -1409,8 +1409,8 @@ struct Unk_02076ff0_Obj {
     ~Unk_02076ff0_Obj() { _ZN12MsgString193D1Ev(this); }
 };
 
-struct Unk_02077040_A { u32 pad[0x40 / 4]; Unk_02077040_A() { _ZN12Unk_020e0488C1Ev(this); } ~Unk_02077040_A() { _ZN12Unk_020e0488D1Ev(this); } };
-struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN12Unk_020e0470C1Ev(this); } ~Unk_02077040_B() { _ZN12Unk_020e0470D1Ev(this); } };
+struct Unk_02077040_A { u32 pad[0x40 / 4]; Unk_02077040_A() { _ZN11LabelStringC1Ev(this); } ~Unk_02077040_A() { _ZN11LabelStringD1Ev(this); } };
+struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN15EncodedString41C1Ev(this); } ~Unk_02077040_B() { _ZN15EncodedString41D1Ev(this); } };
 
 
 extern "C" void Bbs_LoadMsg(void *a, u32 b, u32 c) {
@@ -1452,7 +1452,7 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
             _ZN9MsgString7setLineEPh(&o1, e);
             _ZN13EncodedString13fromMsgStringEP9MsgString(&o2, &o1);
             StrBuf_GetBytes(&o2, buf + n, 0x28);
-            n = n + _ZN12Unk_020e047013func_0206f828Ev(&o2);
+            n = n + _ZN15EncodedString4113func_0206f828Ev(&o2);
             buf[n] = 0x86;
             n = n + 1;
         } else {
@@ -1950,31 +1950,31 @@ extern "C" {
 void func_020b1388(void *p);
 }
 extern "C" {
-void func_02051f40(u32 a);
+void SpotSync_OnRelease(u32 a);
 }
 extern "C" {
-void func_02051f50(u32 a);
+void SpotSync_OnReserveReply(u32 a);
 }
 extern "C" {
-void func_02051f68(void *p, u32 a);
+void SpotSync_OnReserveRequest(void *p, u32 a);
 }
 extern "C" {
-void func_02051fcc(void *p);
+void FtrSync_OnToggleRecord(void *p);
 }
 extern "C" {
-void func_020520d0(u32 a, void *p);
+void FtrSync_OnPlaceRecord(u32 a, void *p);
 }
 extern "C" {
-void func_02052134(u32 a, void *p);
+void FtrSync_OnRemoveRecord(u32 a, void *p);
 }
 extern "C" {
-void func_020520a8(u32 a, void *p);
+void FtrSync_OnTopItemRecord(u32 a, void *p);
 }
 extern "C" {
-void func_0205218c(void *p);
+void FtrSync_OnRoomLightRecord(void *p);
 }
 extern "C" {
-void func_020521fc(void *p);
+void FtrSync_OnStateRecord(void *p);
 }
 extern "C" {
 void func_0203eb60(void *p, u32 a);
@@ -2022,7 +2022,7 @@ extern "C" {
 void func_020954f8(u32 a, u32 b);
 }
 extern "C" {
-void func_02038828(u32 a, u32 b, u32 c);
+void ChatBalloon_PackSyncVar(u32 a, u32 b, u32 c);
 }
 extern "C" {
 void InsectNetSync_PackVar(u32 a, u32 b, u32 c);
@@ -2166,10 +2166,10 @@ extern "C" void CommSyncVar_PackVillager4(u32 a) { func_020843c4(a, 0x10); }
 extern "C" void CommSyncVar_PackVillager5(u32 a) { func_020843c4(a, 0x11); }
 extern "C" void CommSyncVar_PackVillager6(u32 a) { func_020843c4(a, 0x12); }
 extern "C" void CommSyncVar_PackVillager7(u32 a) { func_020843c4(a, 0x13); }
-extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { func_02038828(a, 0x14, b); }
-extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { func_02038828(a, 0x15, b); }
-extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { func_02038828(a, 0x16, b); }
-extern "C" void CommSyncVar_PackPlayerMsg3(u32 a, u32 b) { func_02038828(a, 0x17, b); }
+extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x14, b); }
+extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x15, b); }
+extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x16, b); }
+extern "C" void CommSyncVar_PackPlayerMsg3(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x17, b); }
 extern "C" void CommSyncVar_PackVar18(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x18, b); }
 extern "C" void CommSyncVar_PackVar19(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x19, b); }
 extern "C" void CommSyncVar_PackVar1A(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1a, b); }
@@ -2268,41 +2268,41 @@ extern "C" void CommRecv_CharInteract(u32 a, u32 b, u32 c, u32 d) {
 extern "C" void CommRecv_FurnitureState(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_020521fc(buf);
+    FtrSync_OnStateRecord(buf);
 }
 extern "C" void CommRecv_HouseRoomFlag(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_0205218c(buf);
+    FtrSync_OnRoomLightRecord(buf);
 }
 extern "C" void CommRecv_RoomItemSet(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    func_020520a8(c, buf);
+    FtrSync_OnTopItemRecord(c, buf);
 }
 extern "C" void CommRecv_FurnitureRemove(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    func_02052134(c, buf);
+    FtrSync_OnRemoveRecord(c, buf);
 }
 extern "C" void CommRecv_FurniturePlace(u32 a, u32 b, u32 c) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 4);
-    func_020520d0(c, buf);
+    FtrSync_OnPlaceRecord(c, buf);
 }
 extern "C" void CommRecv_FurnitureUseRequest(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_02051fcc(buf);
+    FtrSync_OnToggleRecord(buf);
 }
 extern "C" void CommRecv_SpotReserveRequest(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 3);
-    func_02051f68(buf, d);
+    SpotSync_OnReserveRequest(buf, d);
 }
-extern "C" void CommRecv_SpotReserveGranted() { func_02051f50(1); }
-extern "C" void CommRecv_SpotReserveDenied() { func_02051f50(0); }
-extern "C" void CommRecv_SpotRelease(u32 a, u32 b, u32 c, u32 d) { func_02051f40(d); }
+extern "C" void CommRecv_SpotReserveGranted() { SpotSync_OnReserveReply(1); }
+extern "C" void CommRecv_SpotReserveDenied() { SpotSync_OnReserveReply(0); }
+extern "C" void CommRecv_SpotRelease(u32 a, u32 b, u32 c, u32 d) { SpotSync_OnRelease(d); }
 extern "C" void CommRecv_BuildingState(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);

@@ -72,7 +72,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
@@ -314,7 +314,7 @@ BOOL BulletinBoard::vfunc_48(Character *a) {
     if (unk_231 & 8) {
         if (a) {
             if (func_020e780c((s16)(unk_8e + 0x8000), a->unk_8e) < 0x1300) {
-                func_0203e42c();
+                clearTalkStartMode();
                 return TRUE;
             }
         }

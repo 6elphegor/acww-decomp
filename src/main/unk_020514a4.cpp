@@ -6,14 +6,14 @@ void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void *dtor);
 }
 
 // 16 x u16 bit matrix
-class Unk_02052978 {
+class FtrSwitchGrid {
 public:
     u16 unk_00[16];
-    Unk_02052978();
-    ~Unk_02052978();
-    void func_02052978(u32 x, u32 y, u32 set);
-    BOOL func_020529a4(u32 x, u32 y);
-    void func_020529bc();
+    FtrSwitchGrid();
+    ~FtrSwitchGrid();
+    void set(u32 x, u32 y, u32 set);
+    BOOL test(u32 x, u32 y);
+    void reset();
 };
 
 // small 4-slot table
@@ -22,57 +22,57 @@ struct Unk_0205276c_Slot {
     u8 hi : 4;
 };
 
-class Unk_0205276c {
+class GyroidBeatTable {
 public:
     Unk_0205276c_Slot unk_00[4];
     u8 unk_04[1];
     u8 unk_05[2];
-    Unk_0205276c();
-    ~Unk_0205276c();
-    BOOL func_0205276c(u32 x, u32 y, u32 val);
-    BOOL func_02052860(u32 x, u32 y);
-    s32 func_020528dc(u32 x, u32 y);
-    void func_02052934();
+    GyroidBeatTable();
+    ~GyroidBeatTable();
+    BOOL set(u32 x, u32 y, u32 val);
+    BOOL remove(u32 x, u32 y);
+    s32 get(u32 x, u32 y);
+    void clear();
 };
 
-class Unk_02052620 {
+class RoomFtrState {
 public:
-    Unk_02052978 unk_00[2];
-    Unk_0205276c unk_40;
-    Unk_02052620();
-    ~Unk_02052620();
-    BOOL func_02052620(u32 a, u32 b);
-    BOOL func_0205262c(u32 a, u32 b, u32 c);
-    s32 func_0205263c(u32 a, u32 b);
-    void func_020526c4(u32 x, u32 y, u32 idx, u8 v);
-    BOOL func_020526e0(u32 x, u32 y, u32 idx);
-    void func_020526ec();
+    FtrSwitchGrid unk_00[2];
+    GyroidBeatTable unk_40;
+    RoomFtrState();
+    ~RoomFtrState();
+    BOOL removeGyroidBeat(u32 a, u32 b);
+    BOOL setGyroidBeat(u32 a, u32 b, u32 c);
+    s32 getGyroidBeat(u32 a, u32 b);
+    void setSwitch(u32 x, u32 y, u32 idx, u8 v);
+    BOOL getSwitch(u32 x, u32 y, u32 idx);
+    void reset();
 };
 
 struct Unk_02052ab4_Vec {
     s32 x, y, z;
 };
 
-class Unk_02052aac {
+class SpotReservation {
 public:
     u8 unk_00;
     s32 unk_04, unk_08, unk_0c;
     u8 unk_10;
-    Unk_02052aac();
-    ~Unk_02052aac();
-    BOOL func_02052aac();
-    BOOL func_02052ab4(u32 tag, Unk_02052ab4_Vec *p);
-    void func_02052ad0();
+    SpotReservation();
+    ~SpotReservation();
+    BOOL release();
+    BOOL set(u32 tag, Unk_02052ab4_Vec *p);
+    void clear();
 };
 
-class Unk_02052a10 {
+class SpotReservationTable {
 public:
-    Unk_02052aac unk_00[4];
-    ~Unk_02052a10();
-    BOOL func_020529e4(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
-    BOOL func_02052a10(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
-    BOOL func_02052a70(s32 idx);
-    BOOL func_02052a8c(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
+    SpotReservation unk_00[4];
+    ~SpotReservationTable();
+    BOOL tryReserve(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
+    BOOL isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
+    BOOL release(s32 idx);
+    BOOL set(s32 idx, u32 tag, Unk_02052ab4_Vec *p);
 };
 
 struct Unk_02051d24_Obj {
@@ -117,9 +117,9 @@ extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern void *gSceneBlockMap;
 extern u8 gSaveHouse[];
-extern const Unk_0205242c_Ent data_020ca650;
-extern const Unk_0205242c_Ent data_020ca63c;
-extern const Unk_0205242c_Ent data_020ca664;
+extern const Unk_0205242c_Ent sFtrFootprint1x1;
+extern const Unk_0205242c_Ent sFtrFootprint2x1;
+extern const Unk_0205242c_Ent sFtrFootprint2x2;
 
 inline BOOL IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 inline BOOL Range(u16 *p, u32 lo, u32 hi) {
@@ -157,7 +157,7 @@ s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
 void _ZN9HouseData13func_02060244Ejj(void *p, s32 a, s32 b);
 s32 _ZN9HouseData13func_0206052cEi(void *p, s32 a);
-Unk_02052620 *_ZN9HouseRoom13func_0206086cEv();
+RoomFtrState *_ZN9HouseRoom13func_0206086cEv();
 void func_02060174(s32 a);
 void func_020601a4(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
@@ -167,32 +167,32 @@ s32 SceneId_GetVillagerHouse(u32 id);
 s32 SceneId_IsNookShop(u32 id);
 s32 SceneId_GetNookShop(u32 id);
 
-u32 func_02051518();
-void func_02051524(s32 *p);
-void func_020514a4(void *p);
-void func_020515e0(s32 a, s32 b, s32 c, s32 d);
-void func_0205170c(s32 a, s32 b, s32 c);
-void func_020516e4(s32 a, s32 b);
-void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f);
-void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i);
-void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h);
-s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
-s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
-s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g);
-s32 func_02051da4(s32 a, s32 b, u8 c, u8 d);
-void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e);
-s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, u8 i);
-Unk_0205242c_Item *func_0205242c(Unk_0205242c_Self *p, u32 idx);
-s32 func_0205248c(Unk_0205242c_Self *p);
-void func_020524a4(Unk_0205242c_Self *p);
-Unk_0205242c_Self *func_020524a8(Unk_0205242c_Self *p, u16 *q);
-s32 func_020524dc(s32 a, s32 b, u32 c);
-s32 func_02052504(s32 a, s32 b, s32 c, u32 d);
-s32 func_02052554(s32 a, s32 b, s32 c, u8 d, u8 e);
-Unk_02052620 *func_020525a8(u32 id);
-BOOL func_02052660(u32 v);
-BOOL func_02052648(u32 idx);
-void func_0205267c();
+u32 SpotSync_GetReserveResult();
+void SpotSync_RequestReserve(s32 *p);
+void SpotSync_Release(void *p);
+void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d);
+void FtrSync_SendRoomLight(s32 a, s32 b, s32 c);
+void FtrSync_ApplyRoomLight(s32 a, s32 b);
+void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f);
+void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i);
+void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h);
+s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
+s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g);
+s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g);
+s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
+void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e);
+s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, u8 i);
+Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx);
+s32 FtrFootprint_GetTileCount(Unk_0205242c_Self *p);
+void FtrFootprint_Destruct(Unk_0205242c_Self *p);
+Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q);
+s32 RoomFtrState_RemoveGyroidBeat(s32 a, s32 b, u32 c);
+s32 RoomFtrState_SetGyroidBeat(s32 a, s32 b, s32 c, u32 d);
+s32 RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e);
+RoomFtrState *RoomFtrState_GetForScene(u32 id);
+BOOL RoomFtrState_ResetScene(u32 v);
+BOOL RoomFtrState_ResetVillagerHouse(u32 idx);
+void RoomFtrState_ResetAll();
 }
 
 extern "C" {
@@ -200,30 +200,30 @@ extern u8 data_020d0c08;
 }
 
 // ---- globals, in the order the original __sinit builds them ----
-Unk_02052620 data_021c50e4[8];
-Unk_02052620 data_021c4f34[6];
-Unk_02052620 data_021c4e9c;
-Unk_02052a10 data_021c4ee4;
+RoomFtrState sVillagerHouseFtrStates[8];
+RoomFtrState sNookShopFtrStates[6];
+RoomFtrState sScene10FtrState;
+SpotReservationTable sSpotReservations;
 
 extern Unk_0205242c_Item data_021c4e3c[2];
 extern Unk_0205242c_Item data_021c4e44[2];
 extern Unk_0205242c_Item data_021c4e54[2];
 extern Unk_0205242c_Item data_021c4e4c[2];
 extern Unk_0205242c_Item data_021c4e8c[4];
-extern const Unk_0205242c_Ent *data_020dbcd8[3];
-extern s32 data_021c4e38;
+extern const Unk_0205242c_Ent *sFtrFootprintTables[3];
+extern s32 sSpotReserveResult;
 
 extern "C" {
 long long func_01ffd028(void *a, void *b);
 }
 
-Unk_02052aac::Unk_02052aac() { func_02052ad0(); }
+SpotReservation::SpotReservation() { clear(); }
 
-Unk_02052aac::~Unk_02052aac() {}
+SpotReservation::~SpotReservation() {}
 
-Unk_02052a10::~Unk_02052a10() {}
+SpotReservationTable::~SpotReservationTable() {}
 
-void Unk_02052aac::func_02052ad0() {
+void SpotReservation::clear() {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
@@ -231,7 +231,7 @@ void Unk_02052aac::func_02052ad0() {
     unk_10 = 0;
 }
 
-BOOL Unk_02052aac::func_02052ab4(u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservation::set(u32 tag, Unk_02052ab4_Vec *p) {
     unk_00 = 1;
     unk_04 = p->x;
     unk_08 = p->y;
@@ -240,25 +240,25 @@ BOOL Unk_02052aac::func_02052ab4(u32 tag, Unk_02052ab4_Vec *p) {
     return TRUE;
 }
 
-BOOL Unk_02052aac::func_02052aac() {
+BOOL SpotReservation::release() {
     unk_00 = 0;
     return TRUE;
 }
 
-BOOL Unk_02052a10::func_02052a8c(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
-    if (idx < 4) return unk_00[idx].func_02052ab4(tag, p);
+BOOL SpotReservationTable::set(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+    if (idx < 4) return unk_00[idx].set(tag, p);
     return TRUE;
 }
 
-BOOL Unk_02052a10::func_02052a70(s32 idx) {
-    if (idx < 4) return unk_00[idx].func_02052aac();
+BOOL SpotReservationTable::release(s32 idx) {
+    if (idx < 4) return unk_00[idx].release();
     return FALSE;
 }
 
-BOOL Unk_02052a10::func_02052a10(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+BOOL SpotReservationTable::isFree(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
     if (idx < 4) {
         for (u32 i = 0; i < 4; i++) {
-            Unk_02052aac *e = &unk_00[i];
+            SpotReservation *e = &unk_00[i];
             if ((s32)i != idx && e->unk_00 != 0 && tag == e->unk_10) {
                 if (func_01ffd028(&e->unk_04, p) < 0x2400) return FALSE;
             }
@@ -268,38 +268,38 @@ BOOL Unk_02052a10::func_02052a10(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
     return FALSE;
 }
 
-BOOL Unk_02052a10::func_020529e4(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
-    if (func_02052a10(idx, tag, p)) return func_02052a8c(idx, tag, p);
+BOOL SpotReservationTable::tryReserve(s32 idx, u32 tag, Unk_02052ab4_Vec *p) {
+    if (isFree(idx, tag, p)) return set(idx, tag, p);
     return FALSE;
 }
 
-Unk_02052978::Unk_02052978() { func_020529bc(); }
+FtrSwitchGrid::FtrSwitchGrid() { reset(); }
 
-Unk_02052978::~Unk_02052978() {}
+FtrSwitchGrid::~FtrSwitchGrid() {}
 
-void Unk_02052978::func_020529bc() {
+void FtrSwitchGrid::reset() {
     for (u32 i = 0; i < 16; i++) unk_00[i] = 0xffff;
 }
 
-BOOL Unk_02052978::func_020529a4(u32 x, u32 y) {
+BOOL FtrSwitchGrid::test(u32 x, u32 y) {
     x &= 0xf; y &= 0xf;
     s32 v = unk_00[y];
     if ((v >> x) & 1) return TRUE;
     return FALSE;
 }
 
-void Unk_02052978::func_02052978(u32 x, u32 y, u32 set) {
+void FtrSwitchGrid::set(u32 x, u32 y, u32 set) {
     s32 xx = x & 0xf;
     s32 yy = y & 0xf;
     if (set) unk_00[yy] |= 1 << xx;
     else unk_00[yy] &= ~(1 << xx);
 }
 
-Unk_0205276c::Unk_0205276c() { func_02052934(); }
+GyroidBeatTable::GyroidBeatTable() { clear(); }
 
-Unk_0205276c::~Unk_0205276c() {}
+GyroidBeatTable::~GyroidBeatTable() {}
 
-void Unk_0205276c::func_02052934() {
+void GyroidBeatTable::clear() {
     for (u32 i = 0; i < 4; i++) {
         unk_00[i].lo = 0;
         unk_00[i].hi = 0;
@@ -308,7 +308,7 @@ void Unk_0205276c::func_02052934() {
     for (u32 j = 0; j < 2; j++) unk_05[j] = 0;
 }
 
-s32 Unk_0205276c::func_020528dc(u32 x, u32 y) {
+s32 GyroidBeatTable::get(u32 x, u32 y) {
     for (u32 i = 0; i < 4; i++) {
         if ((unk_04[i >> 3] >> (i & 7)) & 1) {
             if (x == unk_00[i].lo && y == unk_00[i].hi) {
@@ -319,7 +319,7 @@ s32 Unk_0205276c::func_020528dc(u32 x, u32 y) {
     return -1;
 }
 
-BOOL Unk_0205276c::func_02052860(u32 x, u32 y) {
+BOOL GyroidBeatTable::remove(u32 x, u32 y) {
     for (u32 i = 0; i < 4; i++) {
         if ((unk_04[i >> 3] >> (i & 7)) & 1) {
             if (x == unk_00[i].lo && y == unk_00[i].hi) {
@@ -334,9 +334,9 @@ BOOL Unk_0205276c::func_02052860(u32 x, u32 y) {
     return FALSE;
 }
 
-BOOL Unk_0205276c::func_0205276c(u32 x, u32 y, u32 val) {
+BOOL GyroidBeatTable::set(u32 x, u32 y, u32 val) {
     if (val >= 16) return FALSE;
-    if (func_020528dc(x, y) == -1) {
+    if (get(x, y) == -1) {
         for (u32 i = 0; i < 4; i++) {
             if (!((unk_04[i >> 3] >> (i & 7)) & 1)) {
                 u32 sh = (i & 1) << 2;
@@ -363,91 +363,91 @@ BOOL Unk_0205276c::func_0205276c(u32 x, u32 y, u32 val) {
     return FALSE;
 }
 
-Unk_02052620::Unk_02052620() { func_020526ec(); }
+RoomFtrState::RoomFtrState() { reset(); }
 
-Unk_02052620::~Unk_02052620() {}
+RoomFtrState::~RoomFtrState() {}
 
-void Unk_02052620::func_020526ec() {
-    for (u32 i = 0; i < 2; i++) unk_00[i].func_020529bc();
-    unk_40.func_02052934();
+void RoomFtrState::reset() {
+    for (u32 i = 0; i < 2; i++) unk_00[i].reset();
+    unk_40.clear();
 }
 
-BOOL Unk_02052620::func_020526e0(u32 x, u32 y, u32 idx) { return unk_00[idx].func_020529a4(x, y); }
+BOOL RoomFtrState::getSwitch(u32 x, u32 y, u32 idx) { return unk_00[idx].test(x, y); }
 
-void Unk_02052620::func_020526c4(u32 x, u32 y, u32 idx, u8 v) { unk_00[idx].func_02052978(x, y, v); }
+void RoomFtrState::setSwitch(u32 x, u32 y, u32 idx, u8 v) { unk_00[idx].set(x, y, v); }
 
-extern "C" void func_0205267c() {
-    for (u32 i = 0; i < 8; i++) data_021c50e4[i].func_020526ec();
-    for (u32 i = 0; i < 6; i++) data_021c4f34[i].func_020526ec();
-    data_021c4e9c.func_020526ec();
+extern "C" void RoomFtrState_ResetAll() {
+    for (u32 i = 0; i < 8; i++) sVillagerHouseFtrStates[i].reset();
+    for (u32 i = 0; i < 6; i++) sNookShopFtrStates[i].reset();
+    sScene10FtrState.reset();
 }
 
-extern "C" BOOL func_02052660(u32 v) {
-    Unk_02052620 *p = func_020525a8(v);
+extern "C" BOOL RoomFtrState_ResetScene(u32 v) {
+    RoomFtrState *p = RoomFtrState_GetForScene(v);
     if (p) {
-        p->func_020526ec();
+        p->reset();
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02052648(u32 idx) { return func_02052660((u8)(data_020d0c08 + idx)); }
+extern "C" BOOL RoomFtrState_ResetVillagerHouse(u32 idx) { return RoomFtrState_ResetScene((u8)(data_020d0c08 + idx)); }
 
-s32 Unk_02052620::func_0205263c(u32 a, u32 b) { return unk_40.func_020528dc(a, b); }
+s32 RoomFtrState::getGyroidBeat(u32 a, u32 b) { return unk_40.get(a, b); }
 
-BOOL Unk_02052620::func_0205262c(u32 a, u32 b, u32 c) { return unk_40.func_0205276c(a, b, c); }
+BOOL RoomFtrState::setGyroidBeat(u32 a, u32 b, u32 c) { return unk_40.set(a, b, c); }
 
-BOOL Unk_02052620::func_02052620(u32 a, u32 b) { return unk_40.func_02052860(a, b); }
+BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return unk_40.remove(a, b); }
 
 // ---- 0x020514a4..0x020525a8 ----
 
-extern "C" Unk_02052620 *func_020525a8(u32 id) {
+extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
         if (_ZN9HouseData13func_0206052cEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
             return _ZN9HouseRoom13func_0206086cEv();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
-        return &data_021c50e4[SceneId_GetVillagerHouse(id)];
+        return &sVillagerHouseFtrStates[SceneId_GetVillagerHouse(id)];
     } else if (SceneId_IsNookShop(id)) {
-        return &data_021c4f34[SceneId_GetNookShop(id)];
+        return &sNookShopFtrStates[SceneId_GetNookShop(id)];
     } else if (id == 10) {
-        return &data_021c4e9c;
+        return &sScene10FtrState;
     }
     return 0;
 }
 
-extern "C" s32 func_02052580(s32 a, s32 b, s32 c, u32 d) {
-    Unk_02052620 *r = func_020525a8(d);
-    if (r) return r->func_020526e0(a, b, c);
+extern "C" s32 RoomFtrState_GetSwitch(s32 a, s32 b, s32 c, u32 d) {
+    RoomFtrState *r = RoomFtrState_GetForScene(d);
+    if (r) return r->getSwitch(a, b, c);
     return 0;
 }
 
-extern "C" s32 func_02052554(s32 a, s32 b, s32 c, u8 d, u8 e) {
-    Unk_02052620 *r = func_020525a8(e);
+extern "C" s32 RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, u8 d, u8 e) {
+    RoomFtrState *r = RoomFtrState_GetForScene(e);
     if (r) {
-        r->func_020526c4(a, b, c, d);
+        r->setSwitch(a, b, c, d);
     }
 }
 
-extern "C" s32 func_0205252c(s32 a, s32 b, u32 c) {
-    Unk_02052620 *r = func_020525a8(c);
-    if (r) return r->func_0205263c(a, b);
+extern "C" s32 RoomFtrState_GetGyroidBeat(s32 a, s32 b, u32 c) {
+    RoomFtrState *r = RoomFtrState_GetForScene(c);
+    if (r) return r->getGyroidBeat(a, b);
     return -1;
 }
 
-extern "C" s32 func_02052504(s32 a, s32 b, s32 c, u32 d) {
-    Unk_02052620 *r = func_020525a8(d);
-    if (r) return r->func_0205262c(a, b, c);
+extern "C" s32 RoomFtrState_SetGyroidBeat(s32 a, s32 b, s32 c, u32 d) {
+    RoomFtrState *r = RoomFtrState_GetForScene(d);
+    if (r) return r->setGyroidBeat(a, b, c);
     return 0;
 }
 
-extern "C" s32 func_020524dc(s32 a, s32 b, u32 c) {
-    Unk_02052620 *r = func_020525a8(c);
-    if (r) return r->func_02052620(a, b);
+extern "C" s32 RoomFtrState_RemoveGyroidBeat(s32 a, s32 b, u32 c) {
+    RoomFtrState *r = RoomFtrState_GetForScene(c);
+    if (r) return r->removeGyroidBeat(a, b);
     return 0;
 }
 
-extern "C" Unk_0205242c_Self *func_020524a8(Unk_0205242c_Self *p, u16 *q) {
+extern "C" Unk_0205242c_Self *FtrFootprint_Init(Unk_0205242c_Self *p, u16 *q) {
     p->a = -1;
     s32 r = Item_GetFurnitureIndex(q);
     s32 m = -1;
@@ -458,18 +458,18 @@ extern "C" Unk_0205242c_Self *func_020524a8(Unk_0205242c_Self *p, u16 *q) {
     return p;
 }
 
-extern "C" void func_020524a4(Unk_0205242c_Self *) {}
+extern "C" void FtrFootprint_Destruct(Unk_0205242c_Self *) {}
 
-extern "C" s32 func_0205248c(Unk_0205242c_Self *p) {
+extern "C" s32 FtrFootprint_GetTileCount(Unk_0205242c_Self *p) {
     if (p->a < 3) {
-        return data_020dbcd8[p->a]->count;
+        return sFtrFootprintTables[p->a]->count;
     }
     return 0;
 }
 
-extern "C" Unk_0205242c_Item *func_0205242c(Unk_0205242c_Self *p, u32 idx) {
-    if (p->a < 3 && idx < func_0205248c(p)) {
-        return &data_020dbcd8[p->a]->rows[p->b][idx & 3];
+extern "C" Unk_0205242c_Item *FtrFootprint_GetTileOffset(Unk_0205242c_Self *p, u32 idx) {
+    if (p->a < 3 && idx < FtrFootprint_GetTileCount(p)) {
+        return &sFtrFootprintTables[p->a]->rows[p->b][idx & 3];
     }
     static Unk_0205242c_Item dflt;
     return &dflt;
@@ -477,17 +477,17 @@ extern "C" Unk_0205242c_Item *func_0205242c(Unk_0205242c_Self *p, u32 idx) {
 
 Unk_0205242c_Item data_021c4e34(0, 0);
 Unk_0205242c_Item data_021c4e3c[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(1, 0) };
-const Unk_0205242c_Ent *data_020dbcd8[3] = { &data_020ca650, &data_020ca63c, &data_020ca664 };
-extern const Unk_0205242c_Ent data_020ca664 = { { data_021c4e8c, data_021c4e8c, data_021c4e8c, data_021c4e8c }, 4 };
-extern const Unk_0205242c_Ent data_020ca63c = { { data_021c4e3c, data_021c4e44, data_021c4e54, data_021c4e4c }, 2 };
-extern const Unk_0205242c_Ent data_020ca650 = { { &data_021c4e34, &data_021c4e34, &data_021c4e34, &data_021c4e34 }, 1 };
+const Unk_0205242c_Ent *sFtrFootprintTables[3] = { &sFtrFootprint1x1, &sFtrFootprint2x1, &sFtrFootprint2x2 };
+extern const Unk_0205242c_Ent sFtrFootprint2x2 = { { data_021c4e8c, data_021c4e8c, data_021c4e8c, data_021c4e8c }, 4 };
+extern const Unk_0205242c_Ent sFtrFootprint2x1 = { { data_021c4e3c, data_021c4e44, data_021c4e54, data_021c4e4c }, 2 };
+extern const Unk_0205242c_Ent sFtrFootprint1x1 = { { &data_021c4e34, &data_021c4e34, &data_021c4e34, &data_021c4e34 }, 1 };
 Unk_0205242c_Item data_021c4e44[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(0, -1) };
 Unk_0205242c_Item data_021c4e54[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(-1, 0) };
-s32 data_021c4e38;
+s32 sSpotReserveResult;
 Unk_0205242c_Item data_021c4e4c[2] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(0, 1) };
 Unk_0205242c_Item data_021c4e8c[4] = { Unk_0205242c_Item(0, 0), Unk_0205242c_Item(1, 0), Unk_0205242c_Item(0, 1), Unk_0205242c_Item(1, 1) };
 
-extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
+extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bool h, volatile u8 i) {
     if (IsOne(gFieldSceneKind) && a == Scene_GetCurrent()) {
         Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
         if (o) {
@@ -501,13 +501,13 @@ extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bo
         u16 *p = (u16 *)BlockMap_GetItemPtr(t, hb, hc, b - (hb << 4), c - (hc << 4), 0);
         if (p && Range(p, 0x45dc, 0x47d7)) {
             if (f) {
-                func_02052504(b, c, (u8)(i & 0xf), a);
+                RoomFtrState_SetGyroidBeat(b, c, (u8)(i & 0xf), a);
             } else {
-                func_020524dc(b, c, a);
+                RoomFtrState_RemoveGyroidBeat(b, c, a);
             }
         }
     }
-    func_02052554(b, c, d, f, a);
+    RoomFtrState_SetSwitch(b, c, d, f, a);
     if (g) {
         if (f) {
             u32 t = i;
@@ -520,10 +520,10 @@ extern "C" s32 func_02052318(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool g, bo
     return 1;
 }
 
-extern "C" s32 func_020521fc(u32 *pp) {
+extern "C" s32 FtrSync_OnStateRecord(u32 *pp) {
     Unk_020521fc_W *p = (Unk_020521fc_W *)pp;
     if (p->n == 1) {
-        func_02052318(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
+        FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
         u32 w = *pp;
         w &= 0xdfffffff;
         void *g = gCommManager;
@@ -531,11 +531,11 @@ extern "C" s32 func_020521fc(u32 *pp) {
         _ZN11CommManager11writeRecordEPhj(g, &w, 4);
         _ZN11CommManager9endRecordEjj(g, 0x18, 4);
     } else {
-        func_02052318(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
+        FtrSync_ApplyState(p->a, p->d, p->e, (u8)p->b, p->f, p->c, p->o, p->p, p->g);
     }
 }
 
-extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
+extern "C" s32 FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
@@ -552,26 +552,26 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
     }
 }
 
-extern "C" s32 func_02052134(s32 a, Unk_02052134_W *w) {
+extern "C" s32 FtrSync_OnRemoveRecord(s32 a, Unk_02052134_W *w) {
     u16 t = w->f;
     BOOL e = w->e ? 1 : 0;
     BOOL d = w->d ? 1 : 0;
-    func_02051844(a, w->b, w->c, (u8)w->a, e, &t, d, 0);
+    FtrSync_RemoveFurniture(a, w->b, w->c, (u8)w->a, e, &t, d, 0);
 }
 
-extern "C" s32 func_020520d0(s32 a, Unk_020520d0_W *w) {
+extern "C" s32 FtrSync_OnPlaceRecord(s32 a, Unk_020520d0_W *w) {
     u16 t = w->c;
     BOOL j = w->j ? 1 : 0;
     BOOL k = w->k ? 1 : 0;
-    func_02051a50(a, w->a, w->b, (u8)w->i, j, k, (u8)w->h, &t, 0);
+    FtrSync_PlaceFurniture(a, w->a, w->b, (u8)w->i, j, k, (u8)w->h, &t, 0);
 }
 
-extern "C" s32 func_020520a8(s32 a, Unk_020520a8_W *w) {
+extern "C" s32 FtrSync_OnTopItemRecord(s32 a, Unk_020520a8_W *w) {
     u16 t = w->c;
-    func_02051784(a, w->a, w->b, &t, 0);
+    FtrSync_SetTopItem(a, w->a, w->b, &t, 0);
 }
 
-extern "C" void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e) {
+extern "C" void FtrSync_ToggleGyroidAt(u8 a, s32 b, s32 c, u8 d, u8 e) {
     if (a == Scene_GetCurrent() && IsOne(gFieldSceneKind)) {
         {
             Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), b, c, d);
@@ -580,30 +580,30 @@ extern "C" void func_02051ff8(u8 a, s32 b, s32 c, u8 d, u8 e) {
                     if ((u32)FtrMgr_CountSwitchedOn(_ZN8FtrActor8isGyroidEv) >= 4) {
                         void *r = FtrMgr_SwitchOffRandom(_ZN8FtrActor8isGyroidEv, 0);
                         if (r) {
-                            func_02051da4((s32)r, 0, 0xff, e);
+                            FtrSync_ChangeAct((s32)r, 0, 0xff, e);
                         }
                     }
-                    func_02051d24(b, c, d, 1, 0xff, e, 1);
+                    FtrSync_ChangeActAt(b, c, d, 1, 0xff, e, 1);
                 } else {
-                    func_02051d24(b, c, d, 0, 0xff, e, 1);
+                    FtrSync_ChangeActAt(b, c, d, 0, 0xff, e, 1);
                 }
             }
         }
     }
 }
 
-extern "C" void func_02051fcc(Unk_02051fcc_W *p) {
-    func_02051ff8(p->a, p->c, p->d, p->b, 1);
+extern "C" void FtrSync_OnToggleRecord(Unk_02051fcc_W *p) {
+    FtrSync_ToggleGyroidAt(p->a, p->c, p->d, p->b, 1);
 }
 
-extern "C" s32 func_02051f68(u8 *p, s32 q) {
+extern "C" s32 SpotSync_OnReserveRequest(u8 *p, s32 q) {
     Unk_02051f68_V v;
     v.x = 0;
     v.y = 0;
     v.z = 0;
     v.x = p[0] << 9;
     v.z = p[1] << 9;
-    if (data_021c4ee4.func_020529e4(q, p[2], (Unk_02052ab4_Vec *)&v)) {
+    if (sSpotReservations.tryReserve(q, p[2], (Unk_02052ab4_Vec *)&v)) {
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager9endRecordEjj(g, 0x1f, q);
@@ -614,16 +614,16 @@ extern "C" s32 func_02051f68(u8 *p, s32 q) {
     }
 }
 
-extern "C" void func_02051f50(s32 x) {
-    if (x) data_021c4e38 = 1;
-    else data_021c4e38 = 2;
+extern "C" void SpotSync_OnReserveReply(s32 x) {
+    if (x) sSpotReserveResult = 1;
+    else sSpotReserveResult = 2;
 }
 
-extern "C" s32 func_02051f40(s32 x) {
-    return data_021c4ee4.func_02052a70(x);
+extern "C" s32 SpotSync_OnRelease(s32 x) {
+    return sSpotReservations.release(x);
 }
 
-extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
+extern "C" s32 FtrSync_SendState(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     u32 w;
     u32 r5 = (g != 4) ? 1 : 0;
     Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
@@ -654,42 +654,42 @@ extern "C" s32 func_02051e00(u32 a, u32 b, u32 c, u32 d, u8 e, u8 f, s32 g) {
     return 1;
 }
 
-extern "C" s32 func_02051da4(s32 a, s32 b, u8 c, u8 d) {
+extern "C" s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
-            return func_02051d24(x, y, FtrActor_GetLayer(a), b, c, d, 1);
+            return FtrSync_ChangeActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
     return 0;
 }
 
-extern "C" s32 func_02051d24(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
+extern "C" s32 FtrSync_ChangeActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     if (!IsOne(gFieldSceneKind)) return 0;
     Unk_02051d24_Obj *o = _ZN12FtrActorGrid8getActorEiii(FtrActorGrid_GetInstance(), a, b, c);
     if (!o) return 0;
     o->vfunc_70(d, e);
     if (g) {
-        return func_02051e00(a, b, c, d, o->vfunc_78(), f, 4);
+        return FtrSync_SendState(a, b, c, d, o->vfunc_78(), f, 4);
     }
     return 1;
 }
 
-extern "C" s32 func_02051cc8(s32 a, s32 b, u8 c, u8 d) {
+extern "C" s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d) {
     s32 x, y;
     if (IsOne(gFieldSceneKind)) {
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(a, &x, &y, 0, 0)) {
-            return func_02051c10(x, y, FtrActor_GetLayer(a), b, c, d, 1);
+            return FtrSync_RequestActAt(x, y, FtrActor_GetLayer(a), b, c, d, 1);
         }
     }
     return 0;
 }
 
-extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
+extern "C" s32 FtrSync_RequestActAt(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     void *s = gCommManager;
     u8 *p;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
-        return func_02051d24(a, b, c, d, e, f, g);
+        return FtrSync_ChangeActAt(a, b, c, d, e, f, g);
     }
     if (!(gFieldSceneKind == 1 ? TRUE : FALSE)) {
         return 0;
@@ -699,7 +699,7 @@ extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
         return 0;
     }
     if (g != 0) {
-        if (func_02051e00(a, b, c, d, e, f, 0) != 0) {
+        if (FtrSync_SendState(a, b, c, d, e, f, 0) != 0) {
             p[0x779] = 1;
             return 1;
         }
@@ -708,7 +708,7 @@ extern "C" s32 func_02051c10(s32 a, s32 b, s32 c, s32 d, u8 e, u8 f, u8 g) {
     return 0;
 }
 
-extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i) {
+extern "C" void FtrSync_PlaceFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u16 *h, u8 i) {
     void *o;
     u16 loc[3];
     Unk_0205242c_Self pk;
@@ -725,12 +725,12 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
     if (o == NULL) {
         return;
     }
-    func_020524a8(&pk, h);
+    FtrFootprint_Init(&pk, h);
     off = 0;
-    for (idx = 0; idx < func_0205248c(&pk); idx++) {
+    for (idx = 0; idx < FtrFootprint_GetTileCount(&pk); idx++) {
         u16 *src;
-        x = b + *(s16 *)((u8 *)func_0205242c(&pk, idx) + off);
-        y = c + ((s16 *)func_0205242c(&pk, idx))[1];
+        x = b + *(s16 *)((u8 *)FtrFootprint_GetTileOffset(&pk, idx) + off);
+        y = c + ((s16 *)FtrFootprint_GetTileOffset(&pk, idx))[1];
         if (idx == 0) {
             src = &loc[0];
         } else {
@@ -739,12 +739,12 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
         }
         loc[1] = *src;
         if (BlockMap_SetItemAtUnit(o, &loc[1], x, y, d) == 0) {
-            func_020524a4(&pk);
+            FtrFootprint_Destruct(&pk);
             return;
         }
-        ((s32 (*)(s32, s32, s32, s32, s32))func_02052554)(x, y, d, e, a);
+        ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
         if (f != 0 && e != 0 && idx == 0) {
-            func_02052504(x, y, g, a);
+            RoomFtrState_SetGyroidBeat(x, y, g, a);
         }
     }
     if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && i != 0) {
@@ -761,10 +761,10 @@ extern "C" void func_02051a50(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, u
         _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
         _ZN11CommManager9endRecordEjj(t, 0x1c, 4);
     }
-    func_020524a4(&pk);
+    FtrFootprint_Destruct(&pk);
 }
 
-extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h) {
+extern "C" void FtrSync_RemoveFurniture(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, u8 h) {
     void *o;
     u32 idx;
     s32 x, y;
@@ -781,32 +781,32 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
     if (o == NULL) {
         return;
     }
-    func_020524a8(&pk, f);
+    FtrFootprint_Init(&pk, f);
     k = FALSE;
     if (*f >= 0x45dc && *f <= 0x47d7) {
         k = TRUE;
     }
-    for (idx = 0; idx < func_0205248c(&pk); idx++) {
-        x = b + ((s16 *)func_0205242c(&pk, idx))[0];
-        y = c + ((s16 *)func_0205242c(&pk, idx))[1];
+    for (idx = 0; idx < FtrFootprint_GetTileCount(&pk); idx++) {
+        x = b + ((s16 *)FtrFootprint_GetTileOffset(&pk, idx))[0];
+        y = c + ((s16 *)FtrFootprint_GetTileOffset(&pk, idx))[1];
         loc[1] = 0xfff1;
         if (BlockMap_SetItemAtUnit(o, &loc[1], x, y, d) == 0 ? TRUE : FALSE) {
-            func_020524a4(&pk);
+            FtrFootprint_Destruct(&pk);
             return;
         }
         if (g != 0 && d == 0) {
             loc[2] = 0xfff1;
             if (BlockMap_SetItemAtUnit(o, &loc[2], x, y, 1) == 0 ? TRUE : FALSE) {
-                func_020524a4(&pk);
+                FtrFootprint_Destruct(&pk);
                 return;
             }
         }
-        ((s32 (*)(s32, s32, s32, s32, s32))func_02052554)(x, y, d, e, a);
+        ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, d, e, a);
         if (g != 0 && d == 0) {
-            ((s32 (*)(s32, s32, s32, s32, s32))func_02052554)(x, y, 1, e, a);
+            ((s32 (*)(s32, s32, s32, s32, s32))RoomFtrState_SetSwitch)(x, y, 1, e, a);
         }
         if (k != 0 && e != 0) {
-            func_020524dc(x, y, a);
+            RoomFtrState_RemoveGyroidBeat(x, y, a);
         }
     }
     if (_ZN11CommManager8isOnlineEv(gCommManager) != 0 && h != 0) {
@@ -822,10 +822,10 @@ extern "C" void func_02051844(s32 a, s32 b, s32 c, s32 d, s32 e, u16 *f, s32 g, 
         _ZN11CommManager11writeRecordEPhj(t, &bits, 4);
         _ZN11CommManager9endRecordEjj(t, 0x1b, 4);
     }
-    func_020524a4(&pk);
+    FtrFootprint_Destruct(&pk);
 }
 
-extern "C" void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f) {
+extern "C" void FtrSync_SetTopItem(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     void *o;
     if ((gFieldSceneKind == 1 ? TRUE : FALSE) && a == Scene_GetCurrent()) {
         o = gSceneBlockMap;
@@ -845,7 +845,7 @@ extern "C" void func_02051784(s32 a, s32 b, s32 c, u16 *d, u8 f) {
     }
 }
 
-extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
+extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
     if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
         volatile u8 bits;
         BOOL f;
@@ -864,23 +864,23 @@ extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
     }
 }
 
-extern "C" void func_020516e4(s32 a, s32 b) {
+extern "C" void FtrSync_ApplyRoomLight(s32 a, s32 b) {
     _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
-    func_0205170c(a, b, 4);
+    FtrSync_SendRoomLight(a, b, 4);
 }
 
-extern "C" void func_020516a4(s32 a, s32 b) {
+extern "C" void FtrSync_SetRoomLight(s32 a, s32 b) {
     void *s = gCommManager;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
-        func_020516e4(a, b);
+        FtrSync_ApplyRoomLight(a, b);
     } else {
-        func_0205170c(a, b, 0);
+        FtrSync_SendRoomLight(a, b, 0);
     }
 }
 
-extern "C" void func_020515e0(s32 a, s32 b, s32 c, s32 d) {
+extern "C" void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d) {
     if (_ZN11CommManager8isOnlineEv(gCommManager) == 0 || NetArea_IsLocalOwner() != 0) {
-        ((void (*)(s32, s32, s32, s32, s32))func_02051ff8)(a, b, c, d, 1);
+        ((void (*)(s32, s32, s32, s32, s32))FtrSync_ToggleGyroidAt)(a, b, c, d, 1);
     } else {
         volatile u16 bits;
         void *t;
@@ -899,22 +899,22 @@ extern "C" void func_020515e0(s32 a, s32 b, s32 c, s32 d) {
     }
 }
 
-extern "C" void func_020515b8(s32 a, s32 b, s32 c) {
+extern "C" void FtrSync_RequestToggleGyroid(s32 a, s32 b, s32 c) {
     s32 x, y;
     FieldPos_ToUnit(&x, &y, b);
-    func_020515e0(a, x, y, c);
+    FtrSync_RequestToggleGyroidAt(a, x, y, c);
 }
 
-extern "C" void func_02051524(s32 *p) {
+extern "C" void SpotSync_RequestReserve(s32 *p) {
     void *s;
     u8 buf[3];
-    data_021c4e38 = 0;
+    sSpotReserveResult = 0;
     s = gCommManager;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0) {
-        if (data_021c4ee4.func_020529e4(0, Scene_GetCurrent(), (Unk_02052ab4_Vec *)p) != 0) {
-            data_021c4e38 = 1;
+        if (sSpotReservations.tryReserve(0, Scene_GetCurrent(), (Unk_02052ab4_Vec *)p) != 0) {
+            sSpotReserveResult = 1;
         } else {
-            data_021c4e38 = 2;
+            sSpotReserveResult = 2;
         }
     } else {
         void *t;
@@ -928,20 +928,20 @@ extern "C" void func_02051524(s32 *p) {
     }
 }
 
-extern "C" u32 func_02051518() {
-    return data_021c4e38;
+extern "C" u32 SpotSync_GetReserveResult() {
+    return sSpotReserveResult;
 }
 
-extern "C" void func_02051510(s32 *p) { func_02051524(p); }
+extern "C" void SpotSync_RequestStandUpSpot(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051508() { return func_02051518(); }
+extern "C" u32 SpotSync_GetStandUpSpotResult() { return SpotSync_GetReserveResult(); }
 
-extern "C" void func_020514a4(void *arg) {
+extern "C" void SpotSync_Release(void *arg) {
     void *s;
-    data_021c4e38 = 0;
+    sSpotReserveResult = 0;
     s = gCommManager;
     if (_ZN11CommManager8isOnlineEv(s) == 0 || _ZN11CommManager7isMyAidEj(s, 0) != 0 || _ZN11CommManager7isMyAidEj(s, 4) != 0) {
-        data_021c4ee4.func_02052a70((s32)arg);
+        sSpotReservations.release((s32)arg);
     } else {
         void *t = gCommManager;
         _ZN11CommManager11beginRecordEv(t);

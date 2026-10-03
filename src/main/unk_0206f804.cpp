@@ -1,7 +1,7 @@
 #include "types.h"
 
 // Fixed 0x29 byte string holder (vtable and constructors live in the next unit)
-class Unk_020e0470 {
+class EncodedString41 {
 public:
     s32 func_0206f828();
 
@@ -36,7 +36,7 @@ Unk_0206f804_Fn data_020de3a8[24] = {
     CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, CommSub_StartCountdown, func_0206f4d8,
 };
 
-s32 Unk_020e0470::func_0206f828() { return func_020512e0(unk_0e, 0x29); }
+s32 EncodedString41::func_0206f828() { return func_020512e0(unk_0e, 0x29); }
 
 extern "C" void func_0206f81c() { data_020de390 = 0x18; }
 

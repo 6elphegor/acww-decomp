@@ -121,9 +121,9 @@ void func_02072398(u32 p, u32 v);
 u32 func_0207238c(u32 p);
 void Main_PreTaskUpdate(u32 v);
 void Main_PreTaskHook(void);
-void func_02038148(s32 v);
+void CommCaution_Update(s32 v);
 void Task_RunFrame(s32 v);
-void func_02038138(void);
+void CommCaution_Draw(void);
 void Main_PostTaskUpdate(u32 v);
 void Main_PostTaskHook(void);
 void Main_WaitFrame(void);
@@ -137,7 +137,7 @@ void Sky_SwapBuffers(void);
 void HBlank_RunFrame(void);
 void Snd_Update(s32 v);
 void Gfx_VBlankFlush(void);
-void func_02038128(void);
+void CommCaution_UpdateBlendRegs(void);
 void VramQueue2d_Run(void);
 void NetSession_PostUpdate(void);
 void Comm_Update(u32 v);
@@ -180,11 +180,11 @@ struct Unk_0206d1d4_Src {
     u8 cnt;
 };
 
-// ---- Unk_0206d0a0 : Unk_020ddf44 ----
-class Unk_0206d0a0 : public Unk_020ddf44 {
+// ---- LetterRenderer : Unk_020ddf44 ----
+class LetterRenderer : public Unk_020ddf44 {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d0a0(u32 a, u32 b);
     void func_0206d0b8(u8 *data);
     void func_0206d0fc(u8 *src, BOOL flag);
@@ -195,7 +195,7 @@ public:
     void func_0206d380();
     void func_0206d394();
     void func_0206d39c(s32 v);
-    void func_0206d3f4(u32 v);
+    void loadLetterScreen(u32 v);
 
     /* 0x4c */ Unk_020ddf44 unk_4c;
     /* 0x98 */ Unk_020ddf44 unk_98[4];
@@ -206,10 +206,10 @@ public:
     /* 0x20c */ s32 unk_20c;
 };
 
-Unk_0206d0a0::Unk_0206d0a0() {}
+LetterRenderer::LetterRenderer() {}
 
-Unk_0206d0a0::~Unk_0206d0a0() {}
+LetterRenderer::~LetterRenderer() {}
 
-void Unk_0206d0a0::func_0206d3f4(u32 v) {
+void LetterRenderer::loadLetterScreen(u32 v) {
     Gfx2d_LoadScreenFile("menu/letter/b_ltr_a_bg.bsc", gCurrentHeap, v);
 }

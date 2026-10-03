@@ -98,7 +98,7 @@ void _ZN10PlayerData6setTanEh(void *p, u32 v);
 }
 
 extern "C" {
-void func_0209875c(void *p, s32 v);
+void PlayerData_SetStungFace(void *p, s32 v);
 }
 
 extern "C" {
@@ -166,15 +166,15 @@ void ItemInfo_GetNthHoldable(u16 *out, u32 v);
 }
 
 extern "C" {
-void func_0205e24c(u8 *p, u16 *v, void *z);
+void HeldItemModel_SetItem(u8 *p, u16 *v, void *z);
 }
 
 extern "C" {
-void func_0205e120(u8 *p);
+void HeldItemModel_Update(u8 *p);
 }
 
 extern "C" {
-s32 func_0203d878();
+s32 TalkRequest_IsSaveMenuRunning();
 }
 
 extern "C" {
@@ -258,14 +258,14 @@ extern "C" BOOL func_020946f0(u32 a, u32 idx) {
         v[3] = 0xfff1;
         _ZN10PlayerData11setHeldItemEPt(p, &v[3]);
         v[4] = 0xfff1;
-        func_0205e24c(o->unk_59c, &v[4], 0);
+        HeldItemModel_SetItem(o->unk_59c, &v[4], 0);
         _ZN12Unk_020102ec10replayAnimEv(o);
     } else {
         ItemInfo_GetNthHoldable(&v[0], a - 1);
         _ZN10PlayerData11setHeldItemEPt(p, &v[0]);
-        func_0205e24c(o->unk_59c, &v[0], p);
+        HeldItemModel_SetItem(o->unk_59c, &v[0], p);
         _ZN12Unk_020102ec10replayAnimEv(o);
-        func_0205e120(o->unk_59c);
+        HeldItemModel_Update(o->unk_59c);
     }
     return TRUE;
 }
@@ -311,7 +311,7 @@ extern "C" BOOL PlayerActor_SetClothing(u16 *p, s32 kind, u32 idx) {
 extern "C" BOOL func_020945d4(s32 a, u32 idx) {
     void *p = PlayerData_GetBySessionSlot(idx);
     if (!p) return FALSE;
-    func_0209875c(p, a);
+    PlayerData_SetStungFace(p, a);
     Unk_02006d14 *o = PlayerActor_Get(idx);
     if (!o) return FALSE;
     if (o->unk_700 >= 0xa1) return FALSE;

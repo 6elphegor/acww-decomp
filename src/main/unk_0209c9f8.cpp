@@ -32,7 +32,7 @@ void HouseRoomMaps_Create(u32);
 void Comm_CreateHeap(u32);
 void NetSession_Init();
 void NpcSpawn_ResetAll();
-void func_02038ef0();
+void ChatBalloon_ClearAll();
 void Bgm_ResetAll();
 void Text_ResetLabels();
 void Scene_RequestBoot();
@@ -63,7 +63,7 @@ extern "C" void func_0209cb0c() {
 }
 
 extern "C" void func_0209caf4() {
-    func_02038ef0();
+    ChatBalloon_ClearAll();
     Bgm_ResetAll();
     Text_ResetLabels();
 }

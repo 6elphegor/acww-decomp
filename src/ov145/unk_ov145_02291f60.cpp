@@ -91,19 +91,19 @@ public:
 
 class TextLabel;
 
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    void func_0206fa4c();
+    void redrawRight();
 
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    void redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ TextLabel *unk_3c;
@@ -214,8 +214,8 @@ extern void *gCurrentHeap;
 DonationMenu *DonationMenu_Create();
 
 void _ZN9MsgString4copyEPS_(void *self, void *o);
-void func_0206f9c8(Unk_020e0488 *w, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0206f9fc(Unk_020e0488 *w, s32 a);
+void String_FormatNumberWrapper(LabelString *w, s32 a, s32 b, s32 c, s32 d, s32 e);
+void String_Load2dMenu(LabelString *w, s32 a);
 void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(s32 a);
 BOOL MuseumData_isDonated(void *a, void *b);
@@ -323,7 +323,7 @@ public:
     void flushDirty();
     void drawEntryNames();
     void resetTextLabels();
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void releaseCursor();
     void pressCursor();
     void refreshCursor();
@@ -401,7 +401,7 @@ public:
     /* 0x0c8 */ MenuCursorBuf0 unk_c8;
     /* 0x12c */ MenuScrollKnob unk_12c;
     /* 0x174 */ MenuBottomButtons unk_174;
-    /* 0x2d8 */ Unk_020e0488 unk_2d8[18];
+    /* 0x2d8 */ LabelString unk_2d8[18];
     /* 0x758 */ BgVramTask unk_758[3];
     /* 0x7c4 */ u8 unk_7c4[0x68];
     /* 0x82c */ u8 unk_82c[0x70];
@@ -1002,7 +1002,7 @@ void DonationMenu::releaseCursor() {
     setMainState(8);
 }
 
-Unk_020e0488 *DonationMenu::allocTextLabel() {
+LabelString *DonationMenu::allocTextLabel() {
     if (*(volatile u8 *)&unk_c4 >= 18) {
         return &unk_2d8[17];
     }
@@ -1014,7 +1014,7 @@ void DonationMenu::resetTextLabels() {
     s32 i = 0;
     unk_c4 = 0;
     for (; i < 18; i++) {
-        unk_2d8[i].func_0206fc44();
+        unk_2d8[i].destroyLabel();
     }
 }
 
@@ -1023,8 +1023,8 @@ void DonationMenu::drawEntryNames() {
     Unk_ov145_02292600_B b;
     u16 s[2];
     s32 k;
-    Unk_020e0488 *w;
-    Unk_020e0488 *w2;
+    LabelString *w;
+    LabelString *w2;
     s32 cur = unk_b6;
     u16 *list = getTabItemPtr(cur);
     s32 col = (cur + 9) % 9;
@@ -1049,16 +1049,16 @@ void DonationMenu::drawEntryNames() {
                 if (MuseumData_getDonorName(&data_021ed0a0, &a, &s[1])) {
                     _ZN9MsgString4copyEPS_(w2, &a);
                 } else {
-                    func_0206f9fc(w2, 0xcc);
+                    String_Load2dMenu(w2, 0xcc);
                 }
             }
             list++;
         }
         if (w) {
-            w->func_0206fb9c(4, col * 26 + 0x184, 0xd, 0xf, 7, 0);
-            w->func_0206fab4(0, 0);
-            w2->func_0206fb9c(4, col * 16 + 0xf4, 8, 0xf, 7, 0);
-            w2->func_0206fab4(0, 0);
+            w->createLabel(4, col * 26 + 0x184, 0xd, 0xf, 7, 0);
+            w->redrawAligned(0, 0);
+            w2->createLabel(4, col * 16 + 0xf4, 8, 0xf, 7, 0);
+            w2->redrawAligned(0, 0);
         }
         cur++;
         col++;

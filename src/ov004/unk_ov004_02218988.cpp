@@ -57,7 +57,7 @@ class FleaMarketBuyerVillager;
 #define VillagerMemory_setReceivedItem _ZN14VillagerMemory15setReceivedItemEPt
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
 #define func_02094218 _ZN8PlayerId13func_02094218Ev
-#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define func_021319d0 _fadd
@@ -161,7 +161,7 @@ void Unk_020d7710_setSubSceneKind(void *, s32, s32);
 void Unk_020d7710_openSubScene(void *, s32);
 void Unk_020d7710_requestGiveItem(void *, void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
-void *func_02098750(void *);
+void *PlayerData_getInventory(void *);
 void *PlayerData_getPlayerId(void *);
 s32 NpcActor_CheckPayoutFits(void *, void *, s32);
 void NpcActor_PayPlayer(void *, void *);
@@ -1355,7 +1355,7 @@ void FleaMarketBuyerVillagerTalk::vfunc_18() {
         case 13:
             VillagerId_makeFileName(VillagerData_getVillagerId(b->unk_82c), data_ov004_022507d8, 0x28, "ev_fmarket3");
             if (st == 0) {
-                void *r7 = func_02098750(PlayerData_GetCurrent());
+                void *r7 = PlayerData_getInventory(PlayerData_GetCurrent());
                 st = NpcActor_CheckPayoutFits(unk_1a0, (void *)unk_1a4, 0);
                 tmp = Item_FindMoneyBagForAmount((void *)unk_1a4, 0, 0);
                 if (tmp == 0xfff1) {

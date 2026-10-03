@@ -21,9 +21,9 @@ extern u8 *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL func_0203c6b8(u32 a, u16 *b, s32 c);
-BOOL func_0203c6b0(void *, void *);
-u32 func_0203c6c0();
+BOOL ClothTex_LoadItemThunk(u32 a, u16 *b, s32 c);
+BOOL ClothTex_LoadPatternThunk(void *, void *);
+u32 ClothTex_GetBufferSize();
 void func_0205be58();
 void func_0205be74();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
@@ -92,14 +92,14 @@ void Unk_0205cbe8::func_0205ccb0() {
     u32 i;
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, func_0203c6c0(), 4);
+        ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
-    ptr[4] = (u32)Heap_AllocAligned(heap, func_0203c6c0(), 4);
+    ptr[4] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
     m = (q + func_02084fbc()) - m;
     for (i = 5; i < m + 5; i++) {
-        ptr[i] = (u32)Heap_AllocAligned(heap, func_0203c6c0(), 4);
+        ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
     sub.func_0205cbb0(4);
 }
@@ -188,14 +188,14 @@ void Unk_0205ca94::func_0205ca94(u16 *s, s32 a, s32 b, s32 c) {
             return;
         }
     }
-    if (func_0203c6b8(data_021c6404.func_0205cc68(st), s, a)) {
+    if (ClothTex_LoadItemThunk(data_021c6404.func_0205cc68(st), s, a)) {
         data_021c6404.func_0205cc4c(st, s);
     }
 }
 
 extern "C" void func_0205ca2c(u8 *p, void *q) {
     u32 cur = *p;
-    if (func_0203c6b0((void *)data_021c6404.func_0205cc68(cur), q)) {
+    if (ClothTex_LoadPatternThunk((void *)data_021c6404.func_0205cc68(cur), q)) {
         static ItemId dflt(0xffff);
         data_021c6404.func_0205cc4c(cur, &dflt.v);
     }
@@ -236,7 +236,7 @@ extern "C" void func_0205c930(void *pp, s32 x) {
         void *pa = (void *)data_021c6404.func_0205cc68(x);
         void *pb = (void *)data_021c6404.func_0205cc68(cur);
         if (pa != 0 && pb != 0) {
-            MI_CpuCopy8(pa, pb, func_0203c6c0());
+            MI_CpuCopy8(pa, pb, ClothTex_GetBufferSize());
             data_021c6404.func_0205cc4c(cur, v);
         }
     }

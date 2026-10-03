@@ -72,7 +72,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
@@ -163,11 +163,11 @@ public:
 };
 
 // member at +0x134: the original constructs it with C2 (base-object constructor), so it is raw storage plus explicit calls
-struct Unk_020b6a94 {
+struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
-struct Unk_020b6960;
+struct TouchPicker;
 
 struct Unk_ov003_022309d0_Color {
     u8 a, b, c, d;
@@ -193,13 +193,13 @@ u8 *SaveVillagers_Get(u8 *p, s32 i);
 VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
-BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Unk_020b6960 *self, Unk_020b6a94 *o, s32 *a, s32 b, s32 c, u8 d);
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, s32 *a, s32 b, s32 c, u8 d);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *Scene_GetCollision();
-void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
-void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
+TouchPicker *Scene_GetTouchPicker();
+void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
+void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 void VillagerBoard_ResetTable();
 }
 
@@ -227,7 +227,7 @@ public:
     BOOL changeAct(s32 m);
 
     /* 0x130 */ s32 unk_130;
-    /* 0x134 */ Unk_020b6a94 unk_134;
+    /* 0x134 */ TouchPickSphere unk_134;
 };
 
 typedef void (VillagerBoard::*Unk_022049a8_Fn)();
@@ -252,11 +252,11 @@ extern "C" VillagerBoard *VillagerBoard_Create() {
 }
 
 VillagerBoard::VillagerBoard() {
-    _ZN12Unk_020b6a94C1Ev(&unk_134);
+    _ZN15TouchPickSphereC1Ev(&unk_134);
 }
 
 VillagerBoard::~VillagerBoard() {
-    _ZN12Unk_020b6a94D1Ev(&unk_134);
+    _ZN15TouchPickSphereD1Ev(&unk_134);
 }
 
 BOOL VillagerBoard::vfunc_00() {
@@ -270,7 +270,7 @@ BOOL VillagerBoard::vfunc_00() {
 
 BOOL VillagerBoard::onExecute() {
     runAct();
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, unk_5c, 0xc00, 9, *(s32 *)((u8 *)this + 8));
     return TRUE;
 }
 
@@ -294,7 +294,7 @@ extern "C" void VillagerBoard_ResetTable() {
 }
 
 BOOL VillagerBoard::vfunc_48(void *a) {
-    func_0203e42c();
+    clearTalkStartMode();
     Character *o = (Character *)a;
     if (o) {
         if (func_020e9650(o->unk_5c, unk_5c) < 0x2333) {

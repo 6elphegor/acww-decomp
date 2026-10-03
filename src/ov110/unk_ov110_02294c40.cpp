@@ -41,7 +41,7 @@ void MenuCtrl_SetIndex(u32 a);
 s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
+void String_Load2dMenu(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
 s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
@@ -101,13 +101,13 @@ void LetterGrid_LoadPocketLetters(void *a);
 }
 
 // Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fab4(s32, s32);
-    void func_0206fb9c(u32, u32, u32, u8, u8, s32);
-    void func_0206fc44();
+    LabelString();
+    virtual ~LabelString();
+    void redrawAligned(s32, s32);
+    void createLabel(u32, u32, u32, u8, u8, s32);
+    void destroyLabel();
     u8 unk_04[0x3c];
 };
 
@@ -473,12 +473,12 @@ public:
     /* 0x2278 */ MenuCursorBuf0 unk_2278;
     /* 0x22dc */ PopupChoiceMenu unk_22dc;
     /* 0x25dc */ MenuErrorMessage unk_25dc;
-    /* 0x26e4 */ Unk_020e0488 unk_26e4[2];
+    /* 0x26e4 */ LabelString unk_26e4[2];
 };
 
-static inline void func_0206fab4(void *p, s32 a, s32 b) { ((Unk_020e0488 *)p)->func_0206fab4((s32)a, (s32)b); }
-static inline void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) { ((Unk_020e0488 *)p)->func_0206fb9c((u32)a, (u32)b, (u32)c, (u8)d, (u8)e, (s32)f); }
-static inline void func_0206fc44(void *p) { ((Unk_020e0488 *)p)->func_0206fc44(); }
+static inline void func_0206fab4(void *p, s32 a, s32 b) { ((LabelString *)p)->redrawAligned((s32)a, (s32)b); }
+static inline void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) { ((LabelString *)p)->createLabel((u32)a, (u32)b, (u32)c, (u8)d, (u8)e, (s32)f); }
+static inline void func_0206fc44(void *p) { ((LabelString *)p)->destroyLabel(); }
 static inline void CommManager_endRecord(void *p, s32 a, s32 b) { ((CommManager *)p)->endRecord((u32)a, (u32)b); }
 static inline void CommManager_writeRecord(void *p, void *buf, s32 n) { ((CommManager *)p)->writeRecord((u8 *)buf, (u32)n); }
 static inline void CommManager_beginRecord(void *p) { ((CommManager *)p)->beginRecord(); }
@@ -2083,8 +2083,8 @@ void LostFoundRecycleMenu::setOkLabel(s32 flag) {
         v = 0xf;
     }
     void *p = allocTextLabel();
-    ((Unk_020e0488 *)p)->func_0206fb9c(4, 0x1ca, 6, v, 9, 0);
-    func_0206f9fc(p, 0x88);
+    ((LabelString *)p)->createLabel(4, 0x1ca, 6, v, 9, 0);
+    String_Load2dMenu(p, 0x88);
     func_0206fab4(p, 1, 0);
 }
 

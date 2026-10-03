@@ -23,7 +23,7 @@ void MenuCtrl_SetIndex(u32 a);
 s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
+void String_Load2dMenu(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
 s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
@@ -197,13 +197,13 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fab4(s32, s32);
-    void func_0206fb9c(u32, u32, u32, u8, u8, s32);
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void redrawAligned(s32, s32);
+    void createLabel(u32, u32, u32, u8, u8, s32);
+    void destroyLabel();
     u32 unk_00[0x40 / 4];
 };
 
@@ -347,7 +347,7 @@ public:
     void drawPageTabs();
     void confirm(s32);
     void setOkLabel(s32);
-    Unk_020e0488 * allocTextLabel();
+    LabelString * allocTextLabel();
     void resetTextLabels();
     BOOL moveCursorByPad(void *, u32);
     void moveCursorOnTabs(void *, u32);
@@ -408,7 +408,7 @@ public:
     /* 0x21f4 */ CursorMotion unk_21f4;
     /* 0x220c */ MenuCursorBuf0 unk_220c;
     /* 0x2270 */ MenuErrorMessage unk_2270;
-    /* 0x2378 */ Unk_020e0488 unk_2378[2];
+    /* 0x2378 */ LabelString unk_2378[2];
     /* 0x23f8 */ u32 unk_23f8;
     /* 0x23fc */ s32 unk_23fc;
     /* 0x2400 */ s32 unk_2400;
@@ -1885,11 +1885,11 @@ void ChestMenu::resetTextLabels() {
     s32 i;
     unk_24d4 = 0;
     for (i = 0; i < 2; i++) {
-        ((Unk_020e0488 *)&unk_2378[i])->func_0206fc44();
+        ((LabelString *)&unk_2378[i])->destroyLabel();
     }
 }
 
-Unk_020e0488 *ChestMenu::allocTextLabel() {
+LabelString *ChestMenu::allocTextLabel() {
     if (unk_24d4 >= 2) {
         return &unk_2378[1];
     }
@@ -1902,10 +1902,10 @@ void ChestMenu::setOkLabel(s32 v) {
     if (v) {
         c = 0xf;
     }
-    Unk_020e0488 *o = allocTextLabel();
-    o->func_0206fb9c(4, 0x1d6, 6, c, 9, 0);
-    func_0206f9fc(o, 0x88);
-    o->func_0206fab4(1, 0);
+    LabelString *o = allocTextLabel();
+    o->createLabel(4, 0x1d6, 6, c, 9, 0);
+    String_Load2dMenu(o, 0x88);
+    o->redrawAligned(1, 0);
 }
 
 void ChestMenu::confirm(s32 v) {

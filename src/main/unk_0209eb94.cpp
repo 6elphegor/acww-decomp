@@ -420,7 +420,7 @@ extern Unk_0209fb48_V3 data_020e2770;
 BOOL Comm_IsConnectionLost(s32 a);
 void Comm_SetLostFlag();
 u32 Comm_GetRemoteMask();
-void func_02073340();
+void Comm_ResetNetSession();
 void _Z20NetOverlay_AssertAnyv();
 BOOL Net_IsReadyToSend();
 BOOL Net_GetMyAid();
@@ -459,7 +459,7 @@ void _ZN12Unk_020dd38cD1Ev(void *p);
 void func_020638d0(void *a, void *b);
 void *func_0209409c(void *a);
 void *_ZN10PlayerData11getPlayerIdEv(void *a);
-void *_ZN10PlayerData13func_020986a4Ev(void *a);
+void *_ZN10PlayerData18getLostChildRecordEv(void *a);
 void *PlayerData_GetCurrent();
 void *PlayerData_GetBySessionSlot(s32 i);
 void *func_0209c37c(s32 a, s32 b);
@@ -558,13 +558,13 @@ void LostChild_TryPair(void *, s32);
 s32 NetSession_GetLastSyncSlot();
 void _ZN11SaveManager15setTransferDestEjh(void *, s32, s32);
 s32 func_02063b8c(s32);
-void func_02073340(void *);
+void Comm_ResetNetSession(void *);
 void Wifi_EndSession(void *);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetDataIndex(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
 s32 PlayerData_Get(s32);
-void _ZN10PlayerData13func_02098a58Ev();
+void _ZN10PlayerData5resetEv();
 void Clock_Update(s32);
 void SaveData_Setup(void *, s32);
 void SaveData_Apply(void *);
@@ -753,7 +753,7 @@ void *PlayerData_GetCurrent(void);
 u32 PlayerData_Get(u32 x);
 s32 PlayerData_GetCurrentIndex(void);
 s32 _ZN12Unk_02097ff49clearFlagEj(void *p, u32 x);
-void *_ZN10PlayerData13func_02098a58Ev(void *p);
+void *_ZN10PlayerData5resetEv(void *p);
 void SaveData_Apply(void *p);
 void SaveData_Setup(void *p, u32 x);
 void _ZN8SaveData11resetPlayerEi(void *p, s32 x);
@@ -1091,7 +1091,7 @@ void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
 void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, void *p);
-void _ZN10PlayerData13func_02098a58Ev(s32 a);
+void _ZN10PlayerData5resetEv(s32 a);
 void _ZN8SaveData11resetPlayerEi(void *p, u32 n);
 s32 func_020978a4(void *p);
 }
@@ -1120,7 +1120,7 @@ s32 Scene_GetCurrent(void);
 void _ZN12Unk_020a09909startTalkEPKch(void *p, char *name, s32 id);
 s32 func_0203ca94(void);
 s32 _ZN11SaveManager13func_020a15c8Ej(void *p, s32 v);
-s32 func_02073340(void);
+s32 Comm_ResetNetSession(void);
 BOOL Wifi_EndSession(void *p);
 s32 NetOverlay_Restore(void);
 s32 _ZN11SaveManager15verifySlotsStepEv(void *p);
@@ -1455,7 +1455,7 @@ void SaveManager::execAct01() {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
             if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
-                NJ::func_02073340();
+                NJ::Comm_ResetNetSession();
                 if (NJ::Wifi_EndSession(this) != 0) {
                     NJ::NetOverlay_Restore();
                 }
@@ -1517,7 +1517,7 @@ void SaveManager::execAct02() {
     case 0:
         if (NJ::_ZN11SaveManager13func_020a15c8Ej(this, 0) != 0) {
             if (NJ::gCommManager->isSlotActive(NJ::gCommManager->unk_64) != 0) {
-                NJ::func_02073340();
+                NJ::Comm_ResetNetSession();
                 if (NJ::Wifi_EndSession(this) != 0) {
                     NJ::NetOverlay_Restore();
                 }
@@ -1731,7 +1731,7 @@ void Unk_020a3238::enterAct06() {
     NI::_ZN12Unk_020e1c64C1Ev(buf);
     NI::_ZN8PlayerId13func_020940d0EP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
     o->setSlot(0, buf);
-    NI::_ZN10PlayerData13func_02098a58Ev(h);
+    NI::_ZN10PlayerData5resetEv(h);
     NI::_ZN8SaveData11resetPlayerEi(d, NI::sEraseResidentSlot);
     NI::_ZN12Unk_020a09909startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 7);
     if (NI::func_020978a4(NI::gSavePlayers) == 0) {
@@ -3335,7 +3335,7 @@ void SaveManager::execAct1F() {
         } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
             NF::Hud_GetWallet()->freezeValue();
             NF::MI_CpuCopy8(NF::PlayerData_GetCurrent(), unk_b8, 0x228c);
-            NF::_ZN10PlayerData13func_02098a58Ev(NF::PlayerData_GetCurrent());
+            NF::_ZN10PlayerData5resetEv(NF::PlayerData_GetCurrent());
             NF::_ZN8SaveData11resetPlayerEi(NF::gSaveData, NF::PlayerData_GetCurrentIndex());
             unk_9d = 5;
         }
@@ -4415,7 +4415,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
     s32 r5;
     u8 *r4;
     struct { Unk_020a0088_Date packed; u32 d[2]; } l;
-    ND::func_02073340(a);
+    ND::Comm_ResetNetSession(a);
     ND::Wifi_EndSession(a);
     if (b < 7) {
         g = ND::gCommManager;
@@ -4433,7 +4433,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         if (i != s) ND::PlayerSession_ClearDataIndex(i);
     }
     for (i = 2; i >= 0; i--) {
-        if (ND::PlayerData_Get(i + 4)) ND::_ZN10PlayerData13func_02098a58Ev();
+        if (ND::PlayerData_Get(i + 4)) ND::_ZN10PlayerData5resetEv();
     }
     if (c == 0) {
         ND::Clock_Update(0);
@@ -4559,7 +4559,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     u32 sa[7];
     NC::_ZN12Unk_020dd38cC2Ev(sa);
     NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
-    void *r6 = NC::_ZN10PlayerData13func_020986a4Ev(r7);
+    void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r7);
     if (NC::_ZN15LostChildRecord11getDaysLeftEv(r6)) {
         NC::func_0209fef8(self, r6);
         NC::_ZN12Unk_020dd38cD1Ev(sa);
@@ -4578,7 +4578,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
         other = NC::PlayerData_GetBySessionSlot(i);
         if (!other) continue;
         NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
-        other2 = NC::_ZN10PlayerData13func_020986a4Ev(other);
+        other2 = NC::_ZN10PlayerData18getLostChildRecordEv(other);
         if (NC::_ZN15LostChildRecord11getDaysLeftEv(other2)) continue;
         if (NC::Net_GetMode() == 3 || NC::Net_GetMode() == 4) {
             if (!NC::Wifi_IsInFriendList(self, other, r7)) continue;
@@ -4652,7 +4652,7 @@ extern "C" void LostChild_ApplyReceived(Unk_0209f638 *self) {
     u32 s1[7];
     NC::_ZN12Unk_020dd38cC2Ev(s1);
     NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
-    void *r6 = NC::_ZN10PlayerData13func_020986a4Ev(r4);
+    void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r4);
     void *q = NC::_ZN12Unk_0208f23813func_0208f18cEv(p5);
     u32 s2[7];
     NC::_ZN12Unk_020dd38cC2Ev(s2);
@@ -4740,7 +4740,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
                 return 0x20;
             }
             if (flag) {
-                NC::func_02073340();
+                NC::Comm_ResetNetSession();
                 NC::Wifi_EndSession(self);
                 *st = base + 3;
             }
@@ -4765,7 +4765,7 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
             }
             NC::_Z20NetOverlay_AssertAnyv();
             if (NC::Net_IsReadyToSend()) {
-                NC::func_02073340();
+                NC::Comm_ResetNetSession();
                 NC::Wifi_EndSession(self);
                 *st = base + 4;
             }
@@ -4824,12 +4824,12 @@ extern "C" s32 SaveManager_RunSessionEnd(Unk_0209f638 *self, u8 *st, s32 base, s
                 return 0x20;
             }
             if (flag) {
-                NC::func_02073340();
+                NC::Comm_ResetNetSession();
                 NC::Wifi_EndSession(self);
                 *st = base2 + 3;
             }
         } else {
-            NC::func_02073340();
+            NC::Comm_ResetNetSession();
             NC::Wifi_EndSession(self);
             *st = base2 + 3;
         }

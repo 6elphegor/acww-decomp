@@ -1034,10 +1034,10 @@ s32 PlanState_GetGroup(void *p);
 s32 TopicWord_PickRandom(u32 *a, s32 i);
 s32 Clock_GetDateTime(s32 x);
 s32 _ZN10VillagerId7isValidEv(void *p);
-void func_020030d8(void *p, s32 v);
-void func_020030e8(void *p);
-void func_02003100(void *p);
-void func_02003130(void *p);
+void VillagerId_Copy(void *p, s32 v);
+void VillagerId_Clear(void *p);
+void VillagerId_Destruct(void *p);
+void VillagerId_Construct(void *p);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId12makeFileNameEPvjj(void *a, void *b, s32 c, const void *d);
 void MailText_SetSlot(s32 a, void *b);
@@ -1474,12 +1474,12 @@ extern "C" u8 *VillagerPlanBlock_GetErrand(u8 *p) {
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Construct(PlayerErrandSlot *self) {
     _ZN12ErrandRecord4initEv(self);
-    __cxa_vec_ctor(self->unk_0c, 2, 0xc, func_02003130, func_02003100);
+    __cxa_vec_ctor(self->unk_0c, 2, 0xc, VillagerId_Construct, VillagerId_Destruct);
     return self;
 }
 
 extern "C" PlayerErrandSlot *PlayerErrandSlot_Destruct(PlayerErrandSlot *self) {
-    __cxa_vec_cleanup(self->unk_0c, 2, 0xc, func_02003100);
+    __cxa_vec_cleanup(self->unk_0c, 2, 0xc, VillagerId_Destruct);
     _ZN12ErrandRecord13func_0209ada0Ev(self);
     return self;
 }
@@ -1488,7 +1488,7 @@ extern "C" void PlayerErrandSlot_Clear(PlayerErrandSlot *self) {
     s32 i;
     _ZN12ErrandRecord5clearEv(self);
     for (i = 0; i < 2; i++) {
-        func_020030e8(self->unk_0c[i]);
+        VillagerId_Clear(self->unk_0c[i]);
     }
     self->unk_24 = 0;
 }
@@ -1508,10 +1508,10 @@ extern "C" BOOL PlayerErrandSlot_Start(PlayerErrandSlot *self, s32 kind, s32 r6,
                 }
             }
             if (r6) {
-                func_020030d8(self->unk_0c[0], r6);
+                VillagerId_Copy(self->unk_0c[0], r6);
             }
             if (r3) {
-                func_020030d8(self->unk_0c[1], r3);
+                VillagerId_Copy(self->unk_0c[1], r3);
             }
             r = TRUE;
         }
@@ -1707,14 +1707,14 @@ void _ZN12ErrandRecord5startEhPth(ErrandRecord *y, s32 t, u16 *v, s32 k);
 s32 _ZN12ErrandRecord8isActiveEv(ErrandRecord *y);
 void _ZN12ErrandRecord5clearEv(ErrandRecord *y);
 s32 _ZN10VillagerId7isValidEv(Unk_02003130 *r);
-void func_020030d8(Unk_02003130 *r, Unk_02003130 *o);
-void func_020030e8(Unk_02003130 *r);
+void VillagerId_Copy(Unk_02003130 *r, Unk_02003130 *o);
+void VillagerId_Clear(Unk_02003130 *r);
 Unk_02003130 *_ZN12VillagerData13getVillagerIdEv(void *p);
 void *SaveVillagers_PickRandomTalkPartner(void *g, Unk_02003130 **a, s32 n);
 s32 _ZN12Unk_0206555413func_02065578Ev(void *p);
 s32 func_0206561c(void *p);
 s32 PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void func_02133ef8(void *p, s32 n);
 s32 memcmp(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -1883,7 +1883,7 @@ extern "C" BOOL ParcelErrand_IsFor(ParcelErrand *z, u16 *p) {
 }
 HouseVisitInvite::HouseVisitInvite() : unk_18(0), unk_1c(0) {
     using namespace n3;
-    func_020030e8(this);
+    VillagerId_Clear(this);
     _ZN12ErrandRecord5clearEv(&unk_0c);
     unk_18 = 0;
     unk_1c = 0;
@@ -1900,7 +1900,7 @@ HouseVisitInvite::~HouseVisitInvite() {
 namespace n3 {
 extern "C" void HouseVisitInvite_Clear(HouseVisitInvite *x) {
     _ZN12ErrandRecord5clearEv(&x->unk_0c);
-    func_020030e8(x);
+    VillagerId_Clear(x);
     x->unk_18 = 0;
     x->unk_1c = 0;
     MI_CpuFill8(x->unk_20, 0, 1);
@@ -1919,7 +1919,7 @@ extern "C" void HouseVisitInvite_Set(HouseVisitInvite *x, Unk_02003130 *r, void 
     u16 v = 0xfff1;
     _ZN12ErrandRecord5startEhPth(&x->unk_0c, 0x15, &v, 0);
     _ZN12ErrandRecord14setTimeFromNowEi(&x->unk_0c, 0);
-    func_020030d8(x, r);
+    VillagerId_Copy(x, r);
     MI_CpuCopy8(src, &x->unk_18, 8);
 }
 
@@ -2022,7 +2022,7 @@ end:
 
 extern "C" void PlayerErrands_ClearJobVillagers(PlayerErrands *m) {
     for (s32 i = 0; i < 3; i++) {
-        func_020030e8(&m->unk_50[i]);
+        VillagerId_Clear(&m->unk_50[i]);
     }
 }
 
@@ -2069,7 +2069,7 @@ extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m) {
     PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
     void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, 0, 0);
     PlayerErrandSlot_Start(e, 0xe, 0, _ZN12VillagerData13getVillagerIdEv(t));
-    func_020030d8(&m->unk_50[0], _ZN12VillagerData13getVillagerIdEv(t));
+    VillagerId_Copy(&m->unk_50[0], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
@@ -2084,7 +2084,7 @@ extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
     }
     void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, a, n);
     PlayerErrandSlot_Start(e, 0xf, 0, _ZN12VillagerData13getVillagerIdEv(t));
-    func_020030d8(&m->unk_50[1], _ZN12VillagerData13getVillagerIdEv(t));
+    VillagerId_Copy(&m->unk_50[1], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void Arbeit_OnLetterWritten(void *p) {
@@ -2099,7 +2099,7 @@ extern "C" void Arbeit_OnLetterWritten(void *p) {
 extern "C" void Arbeit_NotifyLetterWritten() {
     void *r = (void *)PlayerData_GetCurrent();
     if (r) {
-        Arbeit_OnLetterWritten(_ZN10PlayerData13func_0209865cEv(r));
+        Arbeit_OnLetterWritten(_ZN10PlayerData10getErrandsEv(r));
     }
 }
 
@@ -2151,7 +2151,7 @@ extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m) {
     }
     void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, a, n);
     PlayerErrandSlot_Start(e, 0x10, 0, _ZN12VillagerData13getVillagerIdEv(t));
-    func_020030d8(&m->unk_50[2], _ZN12VillagerData13getVillagerIdEv(t));
+    VillagerId_Copy(&m->unk_50[2], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void Arbeit_StartWateringCanDelivery(PlayerErrands *m) {
@@ -2193,7 +2193,7 @@ extern "C" BOOL Arbeit_IsLetterRecipient(PlayerErrands *m, Unk_02003130 *r) {
 namespace n2 {
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_02098750Ev(void *);
+void *_ZN10PlayerData12getInventoryEv(void *);
 s32 _ZN15PlayerInventory15findEmptyPocketEv(void *);
 s32 _ZN15PlayerInventory14getEmptyLetterEv(void *);
 s32 _ZN15PlayerInventory15findEmptyLetterEv(void *);
@@ -2222,10 +2222,10 @@ void *_ZN8PlayerIdC1Ev(void *);
 void *_ZN8PlayerIdC1EPv(void *);
 s32 Date_DaysBetween(void *, void *);
 s32 Clock_GetDate(void *);
-void func_020030d8(void *, void *);
-void func_020030e8(void *);
-void *func_02003100(void *);
-void *func_02003130(void *);
+void VillagerId_Copy(void *, void *);
+void VillagerId_Clear(void *);
+void *VillagerId_Destruct(void *);
+void *VillagerId_Construct(void *);
 void _ZN12ErrandRecord5startEhPth(void *, u32, u16 *, u32);
 void _ZN12ErrandRecord5clearEv(void *);
 void *_ZN12ErrandRecord13func_0209ada0Ev(void *);
@@ -2285,7 +2285,7 @@ namespace n2 {
 SickVillagerRecord *SickVillagerRecord::constructRecord() {
     using namespace n2;
     _ZN12ErrandRecord4initEv(this);
-    func_02003130(&unk_0c);
+    VillagerId_Construct(&unk_0c);
     __cxa_vec_ctor(unk_18, 5, 0x16, _ZN8PlayerIdC1EPv, _ZN8PlayerIdC1Ev);
     resetRecord();
     return this;
@@ -2297,7 +2297,7 @@ namespace n2 {
 SickVillagerRecord *SickVillagerRecord::destructRecord() {
     using namespace n2;
     __cxa_vec_cleanup(unk_18, 5, 0x16, _ZN8PlayerIdC1Ev);
-    func_02003100(&unk_0c);
+    VillagerId_Destruct(&unk_0c);
     _ZN12ErrandRecord13func_0209ada0Ev(this);
     return this;
 }
@@ -2309,7 +2309,7 @@ void SickVillagerRecord::resetRecord() {
     using namespace n2;
     s32 i;
     _ZN12ErrandRecord5clearEv(this);
-    func_020030e8(&unk_0c);
+    VillagerId_Clear(&unk_0c);
     for (i = 0; i < 5; i++) _ZN8PlayerId13func_02094294Ev(&unk_18[i]);
     unk_86[0] = 1;
     unk_86[1] = 1;
@@ -2344,7 +2344,7 @@ void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
     using namespace n2;
     u16 v;
     resetRecord();
-    func_020030d8(&unk_0c, a);
+    VillagerId_Copy(&unk_0c, a);
     v = 0x155e;
     _ZN12ErrandRecord5startEhPth(this, 9, &v, 0);
     MI_CpuCopy8(b, unk_86, 4);
@@ -2576,11 +2576,11 @@ extern "C" void func_02099214() {
 }
 
 extern "C" s32 Inventory_FindEmptyLetter() {
-    return _ZN15PlayerInventory15findEmptyLetterEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
+    return _ZN15PlayerInventory15findEmptyLetterEv(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
 }
 
 extern "C" s32 Inventory_GetEmptyLetter() {
-    return _ZN15PlayerInventory14getEmptyLetterEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
+    return _ZN15PlayerInventory14getEmptyLetterEv(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
 }
 
 extern "C" u16 Item_PickRandomPresent() {
@@ -2627,7 +2627,7 @@ extern "C" s32 Pocket_SetItem(u16 *a, s32 b, s32 c) {
                 func_0203c42c(_ZN10PlayerData10getCatalogEv(r6), &t, 0, 1);
             }
         }
-        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData13func_02098750Ev(r6), a, c, b);
+        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(r6), a, c, b);
     }
 }
 
@@ -2635,12 +2635,12 @@ extern "C" void Pocket_RemoveItem(s32 c) {
     void *r4 = PlayerData_GetCurrent();
     if (Pocket_IsValidIndex(c)) {
         u16 t = 0xfff1;
-        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData13func_02098750Ev(r4), &t, c, 0);
+        _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(r4), &t, c, 0);
     }
 }
 
 extern "C" u16 Pocket_GetItem(s32 i) {
-    return *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), i);
+    return *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), i);
 }
 
 extern "C" BOOL Pocket_AddItem(u16 *a, s32 b) {
@@ -2655,7 +2655,7 @@ extern "C" BOOL Pocket_AddItem(u16 *a, s32 b) {
 }
 
 extern "C" s32 Pocket_FindEmpty() {
-    return _ZN15PlayerInventory15findEmptyPocketEv(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()));
+    return _ZN15PlayerInventory15findEmptyPocketEv(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
 }
 
 extern "C" void PocketMatches_Init(Unk_02098ff4 *p) {
@@ -2667,9 +2667,9 @@ extern "C" s32 Pocket_CountKind(Unk_02098ff4 *self, s32 v) {
     void *r7 = PlayerData_GetCurrent();
     s32 i;
     PocketMatches_Init(self);
-    u16 *tbl = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(r7), 0);
+    u16 *tbl = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(r7), 0);
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(_ZN10PlayerData13func_02098750Ev(r7), i)) {
+        if (_ZN15PlayerInventory18isPocketFlagsClearEi(_ZN10PlayerData12getInventoryEv(r7), i)) {
             if (v == Item_GetKind(tbl + i)) {
                 self->unk_00 |= (1 << i);
                 self->unk_02++;
@@ -2684,8 +2684,8 @@ extern "C" s32 Pocket_CountKind(Unk_02098ff4 *self, s32 v) {
 // ======== unk_0209865c.cpp (0x02098e90..0x02098f90) ========
 class PlayerData {
 public:
-    void *func_0209865c();
-    void *func_02098750();
+    void *getErrands();
+    void *getInventory();
 };
 namespace n1 {
 struct Unk_02098f30_Out {
@@ -2705,10 +2705,10 @@ void PocketMatches_Init(void *);
 extern "C" s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
     PlayerData *o = PlayerData_GetCurrent();
     PocketMatches_Init(out);
-    u16 *p = _ZN15PlayerInventory9getPocketEi(o->func_02098750(), 0);
+    u16 *p = _ZN15PlayerInventory9getPocketEi(o->getInventory(), 0);
     s32 i;
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->func_02098750(), i)) {
+        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->getInventory(), i)) {
             if (fn(p + i)) {
                 out->flags |= 1 << i;
                 out->count++;
@@ -2720,10 +2720,10 @@ extern "C" s32 Pocket_CountMatching(Unk_02098f30_Out *out, s32 (*fn)(u16 *)) {
 
 extern "C" s32 Pocket_FindItem(u16 *a) {
     PlayerData *o = PlayerData_GetCurrent();
-    u16 *p = _ZN15PlayerInventory9getPocketEi(o->func_02098750(), 0);
+    u16 *p = _ZN15PlayerInventory9getPocketEi(o->getInventory(), 0);
     s32 i;
     for (i = 0; i < 15; i++) {
-        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->func_02098750(), i)) {
+        if (_ZN15PlayerInventory18isPocketFlagsClearEi(o->getInventory(), i)) {
             s32 off = i << 1;
             u16 *e = (u16 *)((u32)p + off);
             BOOL r;
@@ -2742,7 +2742,7 @@ extern "C" s32 Pocket_FindItem(u16 *a) {
 
 extern "C" s32 Player_GetDeliveryRecipientName(void *a, void *b) {
     PlayerData *o = PlayerData_GetCurrent();
-    PlayerErrands_GetDeliveryRecipientName(o->func_0209865c(), a, b);
+    PlayerErrands_GetDeliveryRecipientName(o->getErrands(), a, b);
 }
 }
 

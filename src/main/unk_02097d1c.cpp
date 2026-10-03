@@ -51,7 +51,7 @@ void _ZN8PlayerIdC1Ev(void *);
 void _ZN8PlayerIdC1EPv(void *);
 void _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(void *, void *);
 void NookPoints_Init(void *);
-void func_0203c638(void *);
+void Catalog_Init(void *);
 void _ZN12FutureLetter17clearFutureLetterEv(void *);
 void _ZN17MotherLetterState5clearEv(void *);
 void PlayerWifiData_Create(void *);
@@ -61,7 +61,7 @@ void func_020877cc(void *);
 void func_02097418(void *);
 void EmotionSlots_Clear(void *);
 void MI_CpuFill8(void *, s32, u32);
-void func_0203c640(void *);
+void Catalog_Clear(void *);
 void PlayerErrands_Clear(void *);
 void NookPoints_Reset(void *);
 void func_02096e20(void *);
@@ -76,8 +76,8 @@ void PlayerWifiData_Destruct(void *);
 void _ZN13PlayerErrandsD1Ev(void *);
 void FutureLetter_Destruct(void *);
 void func_0203ca88(void *);
-void func_0203c6a0(void *);
-void func_0203c6a4(void *);
+void Catalog_Destruct(void *);
+void Catalog_Construct(void *);
 void func_0203ca8c(void *);
 void FutureLetter_Construct(void *);
 void _ZN13PlayerErrandsC1Ev(void *);
@@ -97,10 +97,10 @@ s32 Item_IsFurniture(void *);
 s32 Item_GetFurnitureIndex(void *);
 void PocketMatches_Init(void *);
 BOOL func_020030b4(void *);
-void func_020030d8(void *, void *);
-void func_020030e8(void *);
-void func_02003100(void *);
-void func_02003130(void *);
+void VillagerId_Copy(void *, void *);
+void VillagerId_Clear(void *);
+void VillagerId_Destruct(void *);
+void VillagerId_Construct(void *);
 void func_02063990(void *, void *);
 BOOL func_02063954(void *);
 void func_020639a0(void *);
@@ -228,17 +228,17 @@ public:
     /* 0x225c */ u8 unk_225c[0x1a];
     /* 0x2276 */ u8 unk_2276[0x16];
 
-    void *func_0209865c();
+    void *getErrands();
     void *func_02098668();
     void *getFriendList();
     void *getWifiUserData();
     void *getSpNpcRecord();
     void *getDailyTalkFlags();
-    void *func_020986a4();
-    void *func_020986b0();
+    void *getLostChildRecord();
+    void *getDramaRecord();
     void *getNookPoints();
     void *getCatalog();
-    void func_020986d4();
+    void getPatterns();
     void setBed(u16 *v);
     void *getBed();
     void setFaceItem(u16 *v);
@@ -249,7 +249,7 @@ public:
     void *getShirt();
     void setHeldItem(u16 *v);
     void *getHeldItem();
-    void *func_02098750();
+    void *getInventory();
     void setFortune(u8 v);
     u32 getFortune();
     void setLastPlayDate(Unk_0209865c_Bits v);
@@ -263,10 +263,10 @@ public:
     void setFaceType(u8 v);
     u32 getFaceType();
     void getIndex();
-    void func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
-    BOOL func_02098a48();
-    void func_02098a58();
-    void func_02098ae0();
+    void setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7);
+    BOOL isUsed();
+    void reset();
+    void fillZero();
     void *getPlayerId();
 };
 
@@ -293,35 +293,35 @@ public:
     void clearFlag(u32 bit);
     void setFlag(u32 bit);
     BOOL testFlag(u32 bit);
-    void func_02098074();
-    void *func_0209817c();
+    void sendForeignVillagerLetter();
+    void *getForeignVillagerRecord();
     void func_02098188(u32 idx, u32 v);
     u32 func_02098198(u32 idx);
-    void func_020981ac(u32 v);
-    u32 func_020981b8();
-    void func_020981c4();
-    u32 func_020981ec();
-    u32 func_020982d0();
-    void func_020982dc(u32 v);
-    void func_020982e8();
-    void func_020982f4(u32 a, u32 b);
-    void *func_02098308();
+    void setSkyShotHits(u32 v);
+    u32 getSkyShotHits();
+    void advanceArbeitTalkCount();
+    u32 getArbeitTalkCount();
+    u32 getBirthdayTalkYear();
+    void setBirthdayTalkYear(u32 v);
+    void clearBirthday();
+    void setBirthday(u32 a, u32 b);
+    void *getBirthday();
     void *getEmotions();
-    void *func_02098320();
-    u8 *func_0209832c();
-    s32 func_02098338(s32 n);
-    BOOL func_0209836c(void *p);
-    s32 func_020983a4();
+    void *getBankAccount();
+    u8 *getDayUpdateDate();
+    s32 findUnusedSlot(s32 n);
+    BOOL getOtherResidentName(void *p);
+    s32 pickOtherResident();
     void func_020983c0(u16 *p);
     void *func_020983cc();
-    void func_020983d8();
+    void resetForNewTown();
     void func_020984a8();
 
     };
 
 extern "C" {
 BOOL Letter_IsValidIndex(s32 i);
-void func_0209875c(void *p, u32 flag);
+void PlayerData_SetStungFace(void *p, u32 flag);
 BOOL Pocket_IsValidIndex(s32 i);
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
@@ -331,7 +331,7 @@ struct Unk_020981f8_Pos { u8 a, b, c, d; };
 struct Unk_020984a8_Obj { u32 pad[2]; Unk_020984a8_Obj(){} ~Unk_020984a8_Obj(){} };
 
 PlayerData::PlayerData() {
-    func_0203c6a4(&unk_1b48);
+    Catalog_Construct(&unk_1b48);
     func_0203ca8c(&unk_1c6b);
     FutureLetter_Construct(&unk_1c6c);
     _ZN13PlayerErrandsC1Ev(&unk_1d64);
@@ -369,16 +369,16 @@ PlayerData::~PlayerData() {
     _ZN13PlayerErrandsD1Ev(&unk_1d64);
     FutureLetter_Destruct(&unk_1c6c);
     func_0203ca88(&unk_1c6b);
-    func_0203c6a0(&unk_1b48);
+    Catalog_Destruct(&unk_1b48);
 }
 
-void PlayerData::func_02098ae0() { MI_CpuFill8(this, 0, 0x228c); }
+void PlayerData::fillZero() { MI_CpuFill8(this, 0, 0x228c); }
 
-void PlayerData::func_02098a58() {
-    func_02098ae0();
+void PlayerData::reset() {
+    fillZero();
     _ZN8PlayerId13func_02094294Ev(&unk_2276);
     ((PlayerInventory *)&unk_1148)->clear();
-    func_0203c640(&unk_1b48);
+    Catalog_Clear(&unk_1b48);
     PlayerErrands_Clear(&unk_1d64);
     unk_220a = 0xfff1;
     NookPoints_Reset(&unk_2208);
@@ -388,9 +388,9 @@ void PlayerData::func_02098a58() {
     _ZN12Unk_02098d2013func_02098e30Ev(&unk_225c);
 }
 
-BOOL PlayerData::func_02098a48() { _ZN8PlayerId13func_02094218Ev(&unk_2276); }
+BOOL PlayerData::isUsed() { _ZN8PlayerId13func_02094218Ev(&unk_2276); }
 
-void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
+void PlayerData::setupNew(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 s3, u8 s4, u8 s5, u32 s6, u16 *s7) {
     Unk_0209865c_Bits bits;
     _ZN8PlayerId13func_020941b4EPvtaP6TownId(&unk_2276, p1, p2, p3, s0);
     setFaceType(s1);
@@ -398,13 +398,13 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     setHairColor(s3);
     setTan(s4);
     setFortune(0);
-    func_0209875c(this, s5);
+    PlayerData_SetStungFace(this, s5);
     ((PlayerInventory *)&unk_1148)->clear();
     func_02097ac4(&unk_1148, s6, 1);
     unk_220a = *s7;
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(this, &unk_2276);
     NookPoints_Init(&unk_2208);
-    func_0203c638(&unk_1b48);
+    Catalog_Init(&unk_1b48);
     _ZN12FutureLetter17clearFutureLetterEv(&unk_1c6c);
     _ZN17MotherLetterState5clearEv(&unk_223e);
     PlayerWifiData_Create(&unk_1e10);
@@ -414,7 +414,7 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     bits.b = 1;
     bits.c = 1;
     setLastPlayDate(bits);
-    ((Unk_02097ff4 *)this)->func_020982e8();
+    ((Unk_02097ff4 *)this)->clearBirthday();
     unk_220c = 0x11a8;
     func_02087c80(&unk_221a);
     unk_2210 = 0xfff1;
@@ -423,7 +423,7 @@ void PlayerData::func_02098898(u32 p1, u32 p2, u32 p3, u32 s0, u8 s1, u8 s2, u8 
     func_020877cc(&unk_222b);
     func_02097418(&unk_21e4);
     EmotionSlots_Clear(&unk_21ec);
-    ((Unk_02097ff4 *)this)->func_0209832c();
+    ((Unk_02097ff4 *)this)->getDayUpdateDate();
     Clock_GetDate();
     MI_CpuFill8(&unk_2254, 0xff, 8);
 }
@@ -456,9 +456,9 @@ u32 PlayerData::getFortune() { return unk_223d.hi; }
 
 void PlayerData::setFortune(u8 v) { unk_223d.hi = v; }
 
-extern "C" void func_02098778(void *p) { ((Unk_02097ff4 *)p)->testFlag(0); }
+extern "C" void PlayerData_HasStungFace(void *p) { ((Unk_02097ff4 *)p)->testFlag(0); }
 
-extern "C" void func_0209875c(void *p, u32 flag) {
+extern "C" void PlayerData_SetStungFace(void *p, u32 flag) {
     if (flag) {
         ((Unk_02097ff4 *)p)->setFlag(0);
     } else {
@@ -466,7 +466,7 @@ extern "C" void func_0209875c(void *p, u32 flag) {
     }
 }
 
-void *PlayerData::func_02098750() { return &unk_1148; }
+void *PlayerData::getInventory() { return &unk_1148; }
 
 void *PlayerData::getHeldItem() { return &unk_220a; }
 
@@ -488,15 +488,15 @@ void *PlayerData::getBed() { return &unk_2212; }
 
 void PlayerData::setBed(u16 *v) { unk_2212 = *v; }
 
-void PlayerData::func_020986d4() {}
+void PlayerData::getPatterns() {}
 
 void *PlayerData::getCatalog() { return &unk_1b48; }
 
 void *PlayerData::getNookPoints() { return &unk_2208; }
 
-void *PlayerData::func_020986b0() { return &unk_222b; }
+void *PlayerData::getDramaRecord() { return &unk_222b; }
 
-void *PlayerData::func_020986a4() { return &unk_2230; }
+void *PlayerData::getLostChildRecord() { return &unk_2230; }
 
 void *PlayerData::getDailyTalkFlags() { return &unk_21f0; }
 
@@ -508,11 +508,11 @@ void *PlayerData::getFriendList() { return &unk_1e60; }
 
 void *PlayerData::func_02098668() { return &unk_1c6b; }
 
-void *PlayerData::func_0209865c() { return &unk_1d64; }
+void *PlayerData::getErrands() { return &unk_1d64; }
 
 void Unk_02097ff4::func_020984a8()
 {
-    if (((PlayerData *)this)->func_02098a48()) {
+    if (((PlayerData *)this)->isUsed()) {
         volatile u16 v0;
         u16 v1, v2, v3, v4, v5;
         PlayerInventory *in;
@@ -523,8 +523,8 @@ void Unk_02097ff4::func_020984a8()
         u32 k = 1;
         s32 z28 = 0, z2c = 0, z40 = 0, z44 = 0, z3c = 0, z34 = 0, z38 = 0, z30 = 0, z4c = 0, z48 = 0, z20 = 0;
         v0 = 0xfff1;
-        ParcelErrand_Clear(_ZN18SickVillagerRecord15getParcelErrandEv(((PlayerData *)this)->func_0209865c()));
-        in = (PlayerInventory *)((PlayerData *)this)->func_02098750();
+        ParcelErrand_Clear(_ZN18SickVillagerRecord15getParcelErrandEv(((PlayerData *)this)->getErrands()));
+        in = (PlayerInventory *)((PlayerData *)this)->getInventory();
         p = in->getPocket(0);
         i = 0;
         z28 = 0;
@@ -572,14 +572,14 @@ void Unk_02097ff4::func_020984a8()
     }
 }
 
-void Unk_02097ff4::func_020983d8()
+void Unk_02097ff4::resetForNewTown()
 {
-    if (((PlayerData *)this)->func_02098a48()) {
-        PlayerInventory *r7 = (PlayerInventory *)((PlayerData *)this)->func_02098750();
+    if (((PlayerData *)this)->isUsed()) {
+        PlayerInventory *r7 = (PlayerInventory *)((PlayerData *)this)->getInventory();
         u16 *r5 = r7->getPocket(0);
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->func_0209865c(), 0));
-        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->func_0209865c(), 1));
-        HouseVisitInvite_Clear((u8 *)((PlayerData *)this)->func_0209865c() + 0x88);
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->getErrands(), 0));
+        PlayerErrandSlot_Clear(PlayerErrands_GetSlot(((PlayerData *)this)->getErrands(), 1));
+        HouseVisitInvite_Clear((u8 *)((PlayerData *)this)->getErrands() + 0x88);
         s32 i = 0;
         s32 z = i;
         BOOL zz = i;
@@ -614,17 +614,17 @@ void Unk_02097ff4::func_020983c0(u16 *p)
     unk_2214 = *p;
 }
 
-s32 Unk_02097ff4::func_020983a4()
+s32 Unk_02097ff4::pickOtherResident()
 {
     return func_020977d0(gSavePlayers, ((PlayerData *)this)->getPlayerId());
 }
 
-BOOL Unk_02097ff4::func_0209836c(void *q)
+BOOL Unk_02097ff4::getOtherResidentName(void *q)
 {
     ((PlayerData *)this)->getPlayerId();
     BOOL r = FALSE;
     if (func_02094048() != -1) {
-        if (func_020983a4()) {
+        if (pickOtherResident()) {
             _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(), q);
             r = TRUE;
         }
@@ -632,13 +632,13 @@ BOOL Unk_02097ff4::func_0209836c(void *q)
     return r;
 }
 
-s32 Unk_02097ff4::func_02098338(s32 n)
+s32 Unk_02097ff4::findUnusedSlot(s32 n)
 {
     Unk_02097ff4 *p = this;
     s32 i = 0;
     s32 r = -1;
     for (; i < n; i++) {
-        if (!((PlayerData *)p)->func_02098a48()) {
+        if (!((PlayerData *)p)->isUsed()) {
             r = i;
             break;
         }
@@ -647,12 +647,12 @@ s32 Unk_02097ff4::func_02098338(s32 n)
     return r;
 }
 
-u8 *Unk_02097ff4::func_0209832c()
+u8 *Unk_02097ff4::getDayUpdateDate()
 {
     return unk_2204;
 }
 
-void *Unk_02097ff4::func_02098320()
+void *Unk_02097ff4::getBankAccount()
 {
     return unk_21e4;
 }
@@ -662,40 +662,40 @@ void *Unk_02097ff4::getEmotions()
     return unk_21ec;
 }
 
-void *Unk_02097ff4::func_02098308()
+void *Unk_02097ff4::getBirthday()
 {
     return &unk_2218;
 }
 
-void Unk_02097ff4::func_020982f4(u32 a, u32 b)
+void Unk_02097ff4::setBirthday(u32 a, u32 b)
 {
     unk_2219 = a;
     unk_2218 = b;
 }
 
-void Unk_02097ff4::func_020982e8()
+void Unk_02097ff4::clearBirthday()
 {
     *(u16 *)&unk_2218 = 0;
 }
 
-void Unk_02097ff4::func_020982dc(u32 v)
+void Unk_02097ff4::setBirthdayTalkYear(u32 v)
 {
     unk_2253 = v;
 }
 
-u32 Unk_02097ff4::func_020982d0()
+u32 Unk_02097ff4::getBirthdayTalkYear()
 {
     return unk_2253;
 }
 
-extern "C" void func_020981f8()
+extern "C" void PlayerData_UpdateDay()
 {
     u8 *g = gSaveData;
     Unk_02097ff4 *p = (Unk_02097ff4 *)PlayerData_GetCurrent();
     if (p) {
         Unk_020981f8_Pos loc;
         Clock_GetDate(&loc);
-        u8 *q = p->func_0209832c();
+        u8 *q = p->getDayUpdateDate();
         s32 r4 = Date_DaysBetween(&loc, q);
         s32 t = (loc.b - q[1]) + (loc.c - q[2]) * 12;
         func_02097318(t);
@@ -706,8 +706,8 @@ extern "C" void func_020981f8()
         if (r4) {
             p->func_020984a8();
         }
-        if (loc.c != p->func_020982d0()) {
-            p->func_020982dc(0xff);
+        if (loc.c != p->getBirthdayTalkYear()) {
+            p->setBirthdayTalkYear(0xff);
         }
         if (r4) {
             _ZN20PlayerDailyTalkFlags8clearAllEv(((PlayerData *)p)->getDailyTalkFlags());
@@ -716,19 +716,19 @@ extern "C" void func_020981f8()
             _ZN8SaveData9clearFlagEj(gSaveData, 16);
         }
         if (r4 < 0) {
-            _ZN15LostChildRecord5clearEv(((PlayerData *)p)->func_020986a4());
+            _ZN15LostChildRecord5clearEv(((PlayerData *)p)->getLostChildRecord());
             _ZN15LostChildRecord5clearEv(g + 0x15fca);
         }
-        Clock_GetDate(p->func_0209832c());
+        Clock_GetDate(p->getDayUpdateDate());
     }
 }
 
-u32 Unk_02097ff4::func_020981ec()
+u32 Unk_02097ff4::getArbeitTalkCount()
 {
     return unk_2251;
 }
 
-void Unk_02097ff4::func_020981c4()
+void Unk_02097ff4::advanceArbeitTalkCount()
 {
     unk_2251 += 1;
     if (unk_2251 == 1) {
@@ -739,12 +739,12 @@ void Unk_02097ff4::func_020981c4()
     }
 }
 
-u32 Unk_02097ff4::func_020981b8()
+u32 Unk_02097ff4::getSkyShotHits()
 {
     return unk_2252;
 }
 
-void Unk_02097ff4::func_020981ac(u32 v)
+void Unk_02097ff4::setSkyShotHits(u32 v)
 {
     unk_2252 = v;
 }
@@ -764,12 +764,12 @@ void Unk_02097ff4::func_02098188(u32 idx, u32 v)
     }
 }
 
-void *Unk_02097ff4::func_0209817c()
+void *Unk_02097ff4::getForeignVillagerRecord()
 {
     return unk_225c;
 }
 
-void Unk_02097ff4::func_02098074()
+void Unk_02097ff4::sendForeignVillagerLetter()
 {
     void *r8 = ((PlayerData *)this)->getPlayerId();
     if (_ZN8PlayerId13func_02094218Ev()) {

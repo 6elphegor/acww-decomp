@@ -241,10 +241,10 @@ extern u8 sJointAnmHeader2[];
 s32 _ZN9AnimModel12drawAnimatedEPv(void *p);
 void func_0206fde4(u32 v);
 void func_0206fe0c(u32 v);
-void func_0206fd10(void *a, void *b, void *c);
-void func_0206fd84(void *a);
-void func_0206fd64(void *a);
-void func_0206fdb4(void *a, void *b);
+void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
+void CpuMtx_MultTrans(void *a);
+void CpuMtx_MultRot(void *a);
+void CpuMtx_MultRotTrans(void *a, void *b);
 s32 strcmp(void *a, void *b);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 extern void *gCurrentHeap;
@@ -617,18 +617,18 @@ extern "C" void func_02054594(void *unused, Unk_02054628_Obj *o, void *p)
     }
     if (p != 0) {
         Unk_02054584_Data *d = o->unk_b4;
-        func_0206fd10(d->unk_28, &d->unk_4c, p);
+        CpuMtx_MultRotScaledTrans(d->unk_28, &d->unk_4c, p);
     } else {
         Unk_02054584_Data *d = o->unk_b4;
         u32 f = d->unk_00;
         if (f & 2) {
             if (!(f & 4)) {
-                func_0206fd84(&d->unk_4c);
+                CpuMtx_MultTrans(&d->unk_4c);
             }
         } else if (f & 4) {
-            func_0206fd64(d->unk_28);
+            CpuMtx_MultRot(d->unk_28);
         } else {
-            func_0206fdb4(d->unk_28, &d->unk_4c);
+            CpuMtx_MultRotTrans(d->unk_28, &d->unk_4c);
         }
     }
     if (t == 0x20 || t == 0x60) {

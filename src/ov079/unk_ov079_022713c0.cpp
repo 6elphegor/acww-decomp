@@ -75,7 +75,7 @@ void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
@@ -477,7 +477,7 @@ extern "C" {
 void EventWeekSlots_MarkPlayer(u32 a);
 u32 Pocket_GetItem(s32 v);
 BOOL Pocket_AddItem(u16 *p, u32 a);
-void *_ZN10PlayerData13func_020986d4Ev(void *p);
+void *_ZN10PlayerData11getPatternsEv(void *p);
 void *_ZN14PlayerPatterns15getPatternOrderEv(void *p);
 u32 _ZN12PatternOrder7getSlotEj(void *p, u32 v);
 void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 v);
@@ -1013,7 +1013,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
     if (MenuCtrl_IsResultOk()) {
         void *g = PlayerData_GetCurrent();
         u32 a0 = MenuCtrl_GetIndex();
-        u32 r6 = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(_ZN10PlayerData13func_020986d4Ev(g)), a0);
+        u32 r6 = _ZN12PatternOrder7getSlotEj(_ZN14PlayerPatterns15getPatternOrderEv(_ZN10PlayerData11getPatternsEv(g)), a0);
         r4 = 0;
         if (Unk_ov079_02271718_Chk(this, &buf.v[4], 0x131f)) {
             r4 = 0x15;
@@ -1100,7 +1100,7 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
                 PlayerActor_RequestChangeHeldItem(&buf.v[3]);
             }
         }
-        void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(g), r6);
+        void *h = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(g), r6);
         u32 obj[9];
         _ZN8ItemNameC1Ev(obj);
         _ZN11PatternInfo8getTitleEPv(_ZN7Pattern7getInfoEv(h), obj);

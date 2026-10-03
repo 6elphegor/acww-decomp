@@ -21,7 +21,7 @@ extern u8 gTouchCurX;
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void *PlayerData_GetCurrent();
-void _ZN12Unk_02097ff413func_020982f4Ejj(void *p, u32 a, u32 b);
+void _ZN12Unk_02097ff411setBirthdayEjj(void *p, u32 a, u32 b);
 BOOL MenuKeys_HasRight(u32 v);
 BOOL MenuKeys_HasLeft(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -684,7 +684,7 @@ void BirthdayMenu::confirm() {
     w[0] = 0;
     w[1] = 0;
     DateTimePicker_GetDateTime(&unk_25c, w);
-    _ZN12Unk_02097ff413func_020982f4Ejj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
+    _ZN12Unk_02097ff411setBirthdayEjj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
 }
 
 void BirthdayMenu::openFieldList(u32 a) {

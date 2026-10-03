@@ -30,7 +30,7 @@ void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN16ActorTalkRequest15setTownNameSlotEjj(void *self, s32 a, s32 b);
 void *PlayerData_GetCurrent(void);
-void *_ZN10PlayerData13func_020986a4Ev(void);
+void *_ZN10PlayerData18getLostChildRecordEv(void);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
 s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 a);
 void _ZN12Unk_02097ff47setFlagEj(void *p, s32 a);
@@ -695,7 +695,7 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
 
 void SpNpcMissing2Talk::vfunc_10() {
     PlayerData_GetCurrent();
-    void *r4 = _ZN10PlayerData13func_020986a4Ev();
+    void *r4 = _ZN10PlayerData18getLostChildRecordEv();
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv(r4), 1);
 }

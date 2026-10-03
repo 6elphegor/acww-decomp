@@ -333,8 +333,8 @@ void _ZN15TalkWindowState11lockAdvanceEv(void *self);
 void *_ZN15TalkWindowState13getChoiceListEv(void *self);
 s32 _ZN10ChoiceList9getResultEv(void *self);
 void _ZN16ActorTalkRequest13func_02015ab0Ej(void *self, u32 v);
-void func_0203d984();
-void func_0203d990();
+void TalkRequestFlags_ClearSceneHold();
+void TalkRequestFlags_SetSceneHold();
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *self, u8 a, u8 b);
@@ -518,7 +518,7 @@ BOOL SpNpcRover::vfunc_00() {
     loadTagModeOverlay();
     changeAct(0);
     Camera_SetMode20At(&unk_5c);
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     prepareTagData();
     return TRUE;
 }
@@ -529,7 +529,7 @@ BOOL SpNpcRover::vfunc_0c() {
     }
     sSpNpcRoverInstance = 0;
     restoreOv068();
-    func_0203d984();
+    TalkRequestFlags_ClearSceneHold();
     saveTagData();
     return TRUE;
 }

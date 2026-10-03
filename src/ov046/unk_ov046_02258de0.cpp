@@ -113,7 +113,7 @@ BOOL MenuCtrl_IsResultOk(void);
 const void *Choice_GetBmgName(u32 i);
 Unk_ov046_02258e68_Actor *func_02095204(s32 n);
 s32 func_020e9650(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
-void *Scene_GetCollision();
+void *Scene_GetTouchPicker();
 s32 func_020b6080(void *a, void *b, void *c, s32 d);
 void func_0203a304();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
@@ -1445,7 +1445,7 @@ BOOL SpNpcCeleste::isPlayerAtTelescope() {
             }
         }
         if (r6 != 0) {
-            if (func_020b6080(Scene_GetCollision(), &buf, &out, 0) != 0) {
+            if (func_020b6080(Scene_GetTouchPicker(), &buf, &out, 0) != 0) {
                 if (out == 0x16) {
                     result = TRUE;
                     goto end;

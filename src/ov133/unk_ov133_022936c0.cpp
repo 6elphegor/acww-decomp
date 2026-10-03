@@ -52,7 +52,7 @@ BOOL DwcFriendData_Compare(u32 a, void *p);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void ProcBase_RequestDelete(void *p);
-void func_0206f9fc(void *p, s32 a);
+void String_Load2dMenu(void *p, s32 a);
 void File_LoadToBuffer(void *a, void *b, s32 c);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
@@ -182,13 +182,13 @@ public:
 };
 
 // Element at +0xb0, 0x40 bytes
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fc44();
-    void func_0206fb9c(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void func_0206fab4(s32 a, s32 b);
+    LabelString();
+    virtual ~LabelString();
+    void destroyLabel();
+    void createLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
+    void redrawAligned(s32 a, s32 b);
     u8 unk_04[0x3c];
 };
 
@@ -389,7 +389,7 @@ public:
     /* 0x0a2 */ u8 unk_a2;
     /* 0x0a3 */ u8 unk_a3;
     /* 0x0a4 */ u8 unk_a4[12];
-    /* 0x0b0 */ Unk_020e0488 unk_b0[1];
+    /* 0x0b0 */ LabelString unk_b0[1];
     /* 0x0f0 */ MenuCursorBuf0 unk_f0;
     /* 0x154 */ MenuBottomButtons unk_154;
     /* 0x2b8 */ BgVramTask unk_2b8[2];
@@ -688,9 +688,9 @@ void FriendCodeMenu::loadBgGfx() {
 void FriendCodeMenu::loadObjGfx() {
     NumberPad_LoadObjGraphics(7);
     void *p = allocLabel();
-    func_0206f9fc(p, 0xd7);
-    ((Unk_020e0488 *)p)->func_0206fb9c(8, 0x14c, 0xe, 0xf, 0, 0);
-    ((Unk_020e0488 *)p)->func_0206fab4(1, 0);
+    String_Load2dMenu(p, 0xd7);
+    ((LabelString *)p)->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
+    ((LabelString *)p)->redrawAligned(1, 0);
     MenuButtons_LoadTextColors(&unk_154);
 }
 
@@ -910,7 +910,7 @@ void FriendCodeMenu::showMessage(u8 v, s32 b) {
 
 void FriendCodeMenu::releaseLabels() {
     unk_9a = 0;
-    unk_b0[0].func_0206fc44();
+    unk_b0[0].destroyLabel();
 }
 
 void *FriendCodeMenu::allocLabel() {

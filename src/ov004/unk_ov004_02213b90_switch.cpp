@@ -111,7 +111,7 @@ public:
 
 // Member at +0x134: the original constructs it with the complete-object constructor (C1), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names (as in TU04).
-struct Unk_020b6a94 {
+struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
@@ -155,14 +155,14 @@ struct Unk_ov004_022146ec_Sing {
 };
 
 class MuseumExhibitInfo;
-class Unk_020b6960;
+class TouchPicker;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define func_0203e47c _ZN9Character13func_0203e47cEi
 #define func_0203e488 _ZN9Character13func_0203e488Ei
 #define Character_setCharId _ZN9Character9setCharIdEj
-#define func_020b68a8 _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih
+#define TouchPicker_addSphere _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define MuseumData_getDonationState _ZN10MuseumData16getDonationStateEPt
 #define MuseumData_getDonorName _ZN10MuseumData12getDonorNameEiPt
@@ -184,13 +184,13 @@ extern s16 data_02135f44[];
 extern Unk_ov004_022146ec_Sing *gCommManager;
 extern TalkWindowState data_021ed0a0;
 
-void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
-void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
+void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
+void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 s32 Actor_spawn(s32 a, s32 b, void *c, void *d, void *e);
 void func_0203e47c(void *self, TalkMsgRequest *sec);
 void func_0203e488(void *self, TalkMsgRequest *sec);
 void Character_setCharId(void *self, u32 a);
-s32 func_020b68a8(Unk_020b6960 *self, Unk_020b6a94 *o, void *a, u32 b, u32 c, u32 d);
+s32 TouchPicker_addSphere(TouchPicker *self, TouchPickSphere *o, void *a, u32 b, u32 c, u32 d);
 s32 MuseumData_isDonated(void *self, u16 *p);
 s32 MuseumData_getDonationState(void *self, u16 *p);
 s32 MuseumData_getDonorName(void *self, Unk_020e1c64 *a, u16 *p);
@@ -210,7 +210,7 @@ void *Mem_Alloc(u32 size);
 void Mem_Free(void *p);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *Scene_GetCollision(void);
+TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
 Unk_ov004_022146ec_Actor *func_020951ec(u32);
 void func_01ffd070(void *, void *, void *);
@@ -250,7 +250,7 @@ public:
     BOOL registerSelf();
 
     /* 0x130 */ s32 unk_130;
-    /* 0x134 */ Unk_020b6a94 unk_134;
+    /* 0x134 */ TouchPickSphere unk_134;
     /* 0x150 */ u8 unk_150;
     /* 0x151 */ u8 unk_151;
     /* 0x152 */ u8 pad_152[2];

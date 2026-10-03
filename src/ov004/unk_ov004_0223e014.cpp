@@ -136,21 +136,21 @@ BOOL InputMode_IsTouch();
 BOOL InputMode_IsButtons();
 void InputMode_SetTouch(void);
 void InputMode_SetButtons(void);
-u8 *Scene_GetCollision();
+u8 *Scene_GetTouchPicker();
 s32 func_020b6080(u8 *obj, void *out, s32 *a, u8 *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void Clock_GetDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 s32 _ZN8SaveData8testFlagEj(void *self, u32 i);
 #define SaveData_testFlag _ZN8SaveData8testFlagEj
-s32 _ZN10PlayerData13func_02098a48Ev(void *self);
-#define func_02098a48 _ZN10PlayerData13func_02098a48Ev
+s32 _ZN10PlayerData6isUsedEv(void *self);
+#define PlayerData_isUsed _ZN10PlayerData6isUsedEv
 s32 MenuCtrl_IsClockEdited(void);
 s32 MenuCtrl_ClearClockChangeFlags(void);
 s32 MenuCtrl_SetClockMovedForward(void);
 s32 MenuCtrl_SetClockMovedBack(void);
-void func_0203d984(void);
-void func_0203d990(void);
+void TalkRequestFlags_ClearSceneHold(void);
+void TalkRequestFlags_SetSceneHold(void);
 void PlayerActor_LocalRequestGetOutOfBed(u32 a, u32 b);
 BOOL RoomTelephone_IsTalking();
 BOOL RoomTelephone_StartAct0A();
@@ -259,11 +259,11 @@ BOOL ResidentSelect::vfunc_00() {
     u8 *g;
     u8 c;
     u8 i;
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     g = gSaveData;
     for (i = 0; i < 4; i++) {
         void *o = PlayerData_GetResident(g + 0xc, i);
-        if (o != 0 && func_02098a48(o) != 0) {
+        if (o != 0 && PlayerData_isUsed(o) != 0) {
             unk_31c = i;
             break;
         }
@@ -286,7 +286,7 @@ BOOL ResidentSelect::vfunc_00() {
 }
 
 BOOL ResidentSelect::vfunc_0c() {
-    func_0203d984();
+    TalkRequestFlags_ClearSceneHold();
     u8 i;
     for (i = 0; i < 5; i++) {
         unk_9c[i].func_0208d31c();
@@ -366,7 +366,7 @@ void ResidentSelect::updateTouchSelect() {
         return;
     }
     if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
-        if (func_020b6080(Scene_GetCollision(), out, &a, &c) && a == 1) {
+        if (func_020b6080(Scene_GetTouchPicker(), out, &a, &c) && a == 1) {
             gCommManager->unk_68 = c;
             unk_31c = c;
             changeState(3);

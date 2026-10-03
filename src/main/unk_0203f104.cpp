@@ -138,7 +138,7 @@ void *SaveVillagers_Get(void *, s32);
 s32 SaveVillagers_GetUnk3830Index(void *);
 u8 *Villager_GetBirthday(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
-u8 *_ZN12Unk_02097ff413func_02098308Ev(s32);
+u8 *_ZN12Unk_02097ff411getBirthdayEv(s32);
 
 void Event_RefreshToday(s32);
 void EventSchedule_CollectDay(Unk_0203f554_Ent *, Unk_0203f508_Date, s32);
@@ -491,7 +491,7 @@ extern "C" u8 EventRule_ResolveDay(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_C
 
 extern "C" void EventRule_GetPlayerBirthday(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
     if (PlayerData_GetCurrent()) {
-        u8 *p = _ZN12Unk_02097ff413func_02098308Ev(PlayerData_GetCurrent());
+        u8 *p = _ZN12Unk_02097ff411getBirthdayEv(PlayerData_GetCurrent());
         if (p) {
             out->s.b3 = p[1];
             out->s.b2 = p[0];

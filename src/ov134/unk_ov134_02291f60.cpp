@@ -26,14 +26,14 @@ public:
 };
 
 // 0x40 byte sprite/text object
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fc44();
-    void func_0206fb9c(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void func_0206fa74(s32 a, s32 b);
-    void func_0206fab4(s32 a, s32 b);
+    LabelString();
+    virtual ~LabelString();
+    void destroyLabel();
+    void createLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
+    void redrawOffset(s32 a, s32 b);
+    void redrawAligned(s32 a, s32 b);
     u8 unk_04[0x3c];
 };
 
@@ -141,7 +141,7 @@ public:
     /* 0xc0 */ Unk_ov134_Date8 unk_c0;
     /* 0xc8 */ Unk_ov134_Date8 unk_c8;
     /* 0xd0 */ Unk_ov134_Date8 unk_d0;
-    /* 0xd8 */ Unk_020e0488 unk_d8[0x11];
+    /* 0xd8 */ LabelString unk_d8[0x11];
     /* 0x518 */ BgVramTask unk_518;
     /* 0x53c */ BgVramTask unk_53c;
     /* 0x560 */ BgVramTask unk_560;
@@ -278,9 +278,9 @@ void Menu_PlayScrollTickSe(void *p);
 void func_02088730(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g);
 void func_02088378(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
 void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void func_0206f9c8(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
-void func_0206f9e4(void *a, const void *c, u32 v);
-void func_0206f9fc(void *a, u32 v);
+void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
+void String_LoadByIndex(void *a, const void *c, u32 v);
+void String_Load2dMenu(void *a, u32 v);
 void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadCharFile(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadScreenFile(const void *name, s32 h, s32 a);
@@ -671,7 +671,7 @@ extern "C" void DateTimePicker_ReleaseLabels(S *s) {
     s32 i;
     s->unk_9f = 0;
     for (i = 0; i < 0x11; i++) {
-        ((Unk_020e0488 *)((u8 *)s + 0xd8))[i].func_0206fc44();
+        ((LabelString *)((u8 *)s + 0xd8))[i].destroyLabel();
     }
 }
 
@@ -684,31 +684,31 @@ extern "C" void *DateTimePicker_AllocLabel(S *s) {
 }
 
 extern "C" void DateTimePicker_AddMenuText(S *s, u32 a, u32 b, u32 c, u8 d, s32 e, u8 f, u8 g) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9fc(p, d);
-    p->func_0206fb9c(a, b, c, f, g, 0);
-    p->func_0206fab4(e, 0);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_Load2dMenu(p, d);
+    p->createLabel(a, b, c, f, g, 0);
+    p->redrawAligned(e, 0);
 }
 
 extern "C" void DateTimePicker_AddMenuTextAt(S *s, u32 a, u32 b, u32 c, u8 d, u32 e) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9fc(p, d);
-    p->func_0206fb9c(a, b, c, 0xf, 0, 0);
-    p->func_0206fa74(1, -((c - e) * 4));
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_Load2dMenu(p, d);
+    p->createLabel(a, b, c, 0xf, 0, 0);
+    p->redrawOffset(1, -((c - e) * 4));
 }
 
 extern "C" void DateTimePicker_AddNamedText(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9e4(p, d, e);
-    p->func_0206fb9c(a, b, c, f, g, 0);
-    p->func_0206fab4(1, 0);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_LoadByIndex(p, d, e);
+    p->createLabel(a, b, c, f, g, 0);
+    p->redrawAligned(1, 0);
 }
 
 extern "C" void DateTimePicker_AddNamedTextAt(S *s, u32 a, u32 b, u32 c, const void *d, u32 e, u8 f, u8 g, s32 h, s32 i) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9e4(p, d, e);
-    p->func_0206fb9c(a, b, c, f, g, 0);
-    p->func_0206fa74(h, i);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_LoadByIndex(p, d, e);
+    p->createLabel(a, b, c, f, g, 0);
+    p->redrawOffset(h, i);
 }
 
 extern "C" void DateTimePicker_AddMonthText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
@@ -716,42 +716,42 @@ extern "C" void DateTimePicker_AddMonthText(S *s, u32 a, u32 b, u32 c, u32 d, u8
 }
 
 extern "C" void DateTimePicker_AddListDayText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9e4(p, "st_day_month", DateTimePicker_GetDayStringId(s, d));
-    p->func_0206fb9c(a, b, c, e, f, 0);
-    p->func_0206fa74(1, (c - 5) * 4);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_LoadByIndex(p, "st_day_month", DateTimePicker_GetDayStringId(s, d));
+    p->createLabel(a, b, c, e, f, 0);
+    p->redrawOffset(1, (c - 5) * 4);
 }
 
 extern "C" void DateTimePicker_AddListHourText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9e4(p, "st_general", d + 0x1e);
-    p->func_0206fb9c(a, b, c, e, f, 0);
-    p->func_0206fa74(0, (c - 6) * 8 + 6);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_LoadByIndex(p, "st_general", d + 0x1e);
+    p->createLabel(a, b, c, e, f, 0);
+    p->redrawOffset(0, (c - 6) * 8 + 6);
 }
 
 extern "C" void DateTimePicker_AddPaddedNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9c8(p, d, 2, 6, 0, 0);
-    p->func_0206fb9c(a, b, c, f, g, 0);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_FormatNumberWrapper(p, d, 2, 6, 0, 0);
+    p->createLabel(a, b, c, f, g, 0);
     if (e != 0) {
-        p->func_0206fa74(1, (c - e) * 4);
+        p->redrawOffset(1, (c - e) * 4);
     } else {
-        p->func_0206fab4(1, 0);
+        p->redrawAligned(1, 0);
     }
 }
 
 extern "C" void DateTimePicker_AddNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u8 e, u8 f) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9c8(p, d, 4, 0, 0, 0);
-    p->func_0206fb9c(a, b, c, e, f, 0);
-    p->func_0206fab4(1, 0);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_FormatNumberWrapper(p, d, 4, 0, 0, 0);
+    p->createLabel(a, b, c, e, f, 0);
+    p->redrawAligned(1, 0);
 }
 
 extern "C" void DateTimePicker_AddListNumberText(S *s, u32 a, u32 b, u32 c, u32 d, u32 e, u8 f, u8 g) {
-    Unk_020e0488 *p = (Unk_020e0488 *)DateTimePicker_AllocLabel(s);
-    func_0206f9c8(p, d, 4, 0, 0, 0);
-    p->func_0206fb9c(a, b, c, f, g, 0);
-    p->func_0206fa74(1, (c - e) * 4);
+    LabelString *p = (LabelString *)DateTimePicker_AllocLabel(s);
+    String_FormatNumberWrapper(p, d, 4, 0, 0, 0);
+    p->createLabel(a, b, c, f, g, 0);
+    p->redrawOffset(1, (c - e) * 4);
 }
 
 extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {

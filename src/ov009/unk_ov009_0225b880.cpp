@@ -101,7 +101,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setInteractionRange(s32 v);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
@@ -216,15 +216,15 @@ struct Unk_ov009_0225bce0_Pad {
 };
 
 // ---- main-module helper classes (declarations only)
-struct Unk_020e44d4 {
-    Unk_020e44d4();
+struct TouchPickTriangle {
+    TouchPickTriangle();
     static void *operator new(unsigned long, void *p) { return p; }
     u8 pad[0x44];
 };
 
-struct Unk_020b6960 {
-    BOOL func_020b6818(Unk_020e44d4 *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6848(Unk_020e44d4 *o);
+struct TouchPicker {
+    BOOL addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL pushTriangle(TouchPickTriangle *o);
 };
 
 struct Unk_020b28ac {
@@ -512,7 +512,7 @@ public:
     /* 0x27d */ u8 pad_27d;
     /* 0x27e */ u16 unk_27e;
     /* 0x280 */ Unk_020abea8 *unk_280;
-    /* 0x284 */ Unk_020e44d4 *unk_284;
+    /* 0x284 */ TouchPickTriangle *unk_284;
     /* 0x288 */ BuildingCollider *unk_288;
     /* 0x28c */ u8 unk_28c;
     /* 0x28d */ u8 pad_28d;
@@ -646,9 +646,9 @@ BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
 void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
 void Melody_PlayAt(void *, s32);
 s32 PlayerActor_TestSlotFlag(s32, s32);
-BOOL func_0203d978();
+BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
-Unk_020b6960 *Scene_GetCollision();
+TouchPicker *Scene_GetTouchPicker();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);
 BOOL func_020b1d3c(u32, u32);
@@ -1433,13 +1433,13 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
         unk_28c = h->func_020b29e4();
         if (unk_28c != 0) {
             BuildingCollider *e4;
-            Unk_020e44d4 *e6;
+            TouchPickTriangle *e6;
             u8 k;
             u32 i;
             Unk_ov009_0225b880_Vec3 a, b, c;
             Unk_ov009_0225b880_Vec3 wa, wb, wc;
             Unk_ov009_0225b880_Vec3 la, lb, lc;
-            unk_284 = (Unk_020e44d4 *)Heap_Alloc(data_021c6204, unk_28c * 0x44);
+            unk_284 = (TouchPickTriangle *)Heap_Alloc(data_021c6204, unk_28c * 0x44);
             unk_288 = (BuildingCollider *)Heap_Alloc(data_021c6204, unk_28c * 0x54);
             e4 = unk_288;
             e6 = unk_284;
@@ -1452,8 +1452,8 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
                     func_01ffd070(&la, unk_5c, &a);
                     func_01ffd070(&lb, unk_5c, &b);
                     func_01ffd070(&lc, unk_5c, &c);
-                    e6 = new (e6) Unk_020e44d4;
-                    Scene_GetCollision()->func_020b6818(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
+                    e6 = new (e6) TouchPickTriangle;
+                    Scene_GetTouchPicker()->addTriangle(e6, (Vec3 *)&wa, (Vec3 *)&wb, (Vec3 *)&wc, 7, k);
                     e4 = new (e4) BuildingCollider;
                     e4->unk_4c = this;
                     e4->unk_50 = getEntranceType();
@@ -1467,10 +1467,10 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
 
 void BuildingActor::submitColliders() {
     if ((unk_231 & 1) == 0) {
-        Unk_020e44d4 *p = unk_284;
+        TouchPickTriangle *p = unk_284;
         if (p != NULL) {
             for (; p < unk_284 + unk_28c; p++) {
-                Scene_GetCollision()->func_020b6848(p);
+                Scene_GetTouchPicker()->pushTriangle(p);
             }
         }
     }
@@ -1597,16 +1597,16 @@ BOOL BuildingActor::enterDoorIdle() {
 }
 
 void BuildingActor::execDoorIdle() {
-    if (PlayerActor_TestSlotFlag(0x13, 4) == 0 && func_0203d978() == 0) {
+    if (PlayerActor_TestSlotFlag(0x13, 4) == 0 && TalkRequestFlags_IsResetti() == 0) {
         s32 st = getEntranceType();
         s32 f = 0;
         if (st == 1 || st == 3) {
             if ((unk_231 & 4) != 0) {
                 if (vfunc_8c() == 0) {
-                    func_0203e42c();
+                    clearTalkStartMode();
                     unk_27c = 1;
                 } else {
-                    func_0203e42c();
+                    clearTalkStartMode();
                     unk_27c = 0;
                 }
                 TalkRequest_AddPlayerTalk6(this, 0);
@@ -1614,14 +1614,14 @@ void BuildingActor::execDoorIdle() {
             }
         }
         if ((unk_231 & 2) != 0 && f == 0) {
-            s32 a = func_020b6014(Scene_GetCollision(), 0, 0);
+            s32 a = func_020b6014(Scene_GetTouchPicker(), 0, 0);
             s32 b = (s32)func_02095204(4);
             if (b != 0 && b == a) {
                 if (vfunc_8c() == 0) {
-                    func_0203e42c();
+                    clearTalkStartMode();
                     unk_27c = 1;
                 } else {
-                    func_0203e42c();
+                    clearTalkStartMode();
                     unk_27c = 0;
                 }
                 TalkRequest_AddPlayerTalk6(this, 0);
@@ -2067,17 +2067,17 @@ BOOL BuildingActor::vfunc_48(Character *a) {
         if (getEntranceType() != 0) {
             if ((unk_231 & 8) != 0 && getEntranceType() == 2) {
                 if (vfunc_8c() == 0) {
-                    func_0203e42c();
+                    clearTalkStartMode();
                     unk_27c = 1;
                     return TRUE;
                 }
-                func_0203e42c();
+                clearTalkStartMode();
                 unk_27c = 0;
                 return TRUE;
             }
         } else if (vfunc_8c() == 0) {
             s32 r = func_020e9650(a->getInteractionPos(), getInteractionPos());
-            func_0203e42c();
+            clearTalkStartMode();
             unk_27c = 1;
             if (r >= 0x3000) {
                 return FALSE;

@@ -1,8 +1,8 @@
 #include "types.h"
 
 extern "C" {
-void func_0206f9fc(void *a, u32 v);
-void func_0206f994(void *p, void *s, s32 n);
+void String_Load2dMenu(void *a, u32 v);
+void String_FromEncodedBytes(void *p, void *s, s32 n);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void Gfx2d_LoadCharRange(void *a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadPaletteFileSlot(const char *buf, void *font, s32 a, u32 b, s32 c);
@@ -24,16 +24,16 @@ extern u8 data_ov124_02296f90[];
 }
 
 // String buffer wrapping a text renderer (src/main/unk_0206f53c.cpp), 0x40 bytes; ctor 0x0206fcc8, D1 0x0206fca8
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
 
-    void func_0206f904(u8 a, u8 b, u32 c, u32 d);
-    void func_0206fa28(s32 v);
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    void setHighlight(u8 a, u8 b, u32 c, u32 d);
+    void redrawAt(s32 v);
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     u32 unk_04[0x3c / 4];
 };
@@ -72,7 +72,7 @@ public:
     void loadBgGfxForStyle(s32 a);
     void loadTitleBg(s32 a, s32 b);
 
-    /* 0x00 */ Unk_020e0488 unk_00[1];
+    /* 0x00 */ LabelString unk_00[1];
     /* 0x40 */ MenuTextButton unk_40;
     /* 0x90 */ u8 unk_90;
     /* 0x91 */ u8 unk_91;
@@ -92,15 +92,15 @@ void GeneralMenuHeader::loadTitleBg(s32 a, s32 b) {
     switch (MenuCtrl_GetMode()) {
     case 4:
     case 7:
-    case 10: func_0206f9fc(this, 0x3a); break;
-    case 5: func_0206f9fc(this, 0x90); break;
+    case 10: String_Load2dMenu(this, 0x3a); break;
+    case 5: String_Load2dMenu(this, 0x90); break;
     case 8:
-    case 9: func_0206f9fc(this, 0x92); break;
-    case 6: func_0206f9fc(this, 0x49); break;
-    default: func_0206f9fc(this, 0x3a); break;
+    case 9: String_Load2dMenu(this, 0x92); break;
+    case 6: String_Load2dMenu(this, 0x49); break;
+    default: String_Load2dMenu(this, 0x3a); break;
     }
-    unk_00[0].func_0206fb9c(a, 0x11, 0xd, 4, 1, 0);
-    unk_00[0].func_0206fab4(1, 0);
+    unk_00[0].createLabel(a, 0x11, 0xd, 4, 1, 0);
+    unk_00[0].redrawAligned(1, 0);
 }
 
 void GeneralMenuHeader::loadBgGfxForStyle(s32 a) {
@@ -116,7 +116,7 @@ void GeneralMenuHeader::placeTitleText() {
     case 3: v = 5; break;
     case 4: v = 10; break;
     }
-    unk_00[0].func_0206fb9c(3, 0x11, v, 4, 1, 0);
+    unk_00[0].createLabel(3, 0x11, v, 4, 1, 0);
 }
 
 void GeneralMenuHeader::func_ov124_02296c98() {
@@ -128,15 +128,15 @@ void GeneralMenuHeader::func_ov124_02296c98() {
     case 3:
     case 4: v = 0; break;
     }
-    unk_00[0].func_0206fa28(v);
+    unk_00[0].redrawAt(v);
 }
 
 void GeneralMenuHeader::setTitleText(void *s, s32 n) {
-    func_0206f994(this, s, n);
+    String_FromEncodedBytes(this, s, n);
 }
 
 void GeneralMenuHeader::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
-    unk_00[0].func_0206f904(a, b, c, d);
+    unk_00[0].setHighlight(a, b, c, d);
 }
 
 extern "C" s32 GeneralMenuHeader_GetStyle() {
@@ -246,7 +246,7 @@ void GeneralMenuHeader::drawWithIcon(s32 x, s32 y) {
 }
 
 void GeneralMenuHeader::resetFrame() {
-    unk_00[0].func_0206fc44();
+    unk_00[0].destroyLabel();
     unk_40.freeText();
 }
 

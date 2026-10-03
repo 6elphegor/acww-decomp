@@ -192,11 +192,11 @@ public:
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
 #define func_02065578 _ZN12Unk_0206555413func_02065578Ev
 #define func_020655d0 _ZN12Unk_0206555413func_020655d0Ev
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
-#define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_0206fcc8 _ZN12Unk_020e0488C1Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
+#define func_0206fca8 _ZN11LabelStringD1Ev
+#define func_0206fcc8 _ZN11LabelStringC1Ev
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
@@ -209,7 +209,7 @@ public:
 #define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
 #define PlayerInventory_getPocket _ZN15PlayerInventory9getPocketEi
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
-#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
@@ -252,10 +252,10 @@ void func_02065e70(void *o, s32 x);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
-void func_0206fab4(void *p, s32 a, s32 b);
-void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206fc44(void *p);
+void String_Load2dMenu(void *p, s32 a);
+void LabelString_redrawAligned(void *p, s32 a, s32 b);
+void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void LabelString_destroyLabel(void *p);
 void func_0206fca8(void *p);
 void func_0206fcc8(void *p);
 s32 func_02087e0c(void *p);
@@ -275,7 +275,7 @@ void *PlayerInventory_getLetter(s32 a, s32 b);
 u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
 u16 *PlayerInventory_getPocket(s32 a, s32 b);
 u16 *PlayerData_getHeldItem(s32 a);
-s32 func_02098750(s32 a);
+s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
 void Player_GetDeliveryRecipientName(void *a, void *b);
 void Pocket_SetItem(u16 *a, s32 b, s32 c);
@@ -559,30 +559,30 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     if (k == 0x11) {
         func_020655f0(o, b1);
         String_SetSlot(1, b1);
-        func_0206f9fc(b0, 0x4b);
+        String_Load2dMenu(b0, 0x4b);
     } else if (k == 0) {
         func_020655f0(o, b1);
         String_SetSlot(1, b1);
         if (t == 4) {
-            func_0206f9fc(b0, 0x4b);
+            String_Load2dMenu(b0, 0x4b);
         } else {
-            func_0206f9fc(b0, 0x3d);
+            String_Load2dMenu(b0, 0x3d);
         }
     } else {
-        func_0206f9fc(b0, sLetterKindMsgIds[k]);
+        String_Load2dMenu(b0, sLetterKindMsgIds[k]);
     }
     StrBuf_Copy(b3, b0);
     if (func_020655d8(o) != 0) {
         u32 b4[0x40 / 4];
         func_0206fcc8(b4);
-        func_0206f9fc(b4, 0x43);
+        String_Load2dMenu(b4, 0x43);
         String_SetSlot(0, b4);
         func_0206fca8(b4);
     } else {
         func_020655e4(o, b1);
         String_SetSlot(0, b1);
     }
-    func_0206f9fc(b0, 0x3c);
+    String_Load2dMenu(b0, 0x3c);
     StrBuf_Copy(b2, b0);
     switch (t) {
     case 1:
@@ -638,7 +638,7 @@ void LetterGrid::markSlot(s32 i) {
 }
 
 void *LetterGrid::getLetter(s32 i) {
-    void *r = (void *)func_02098750(PlayerData_GetCurrent());
+    void *r = (void *)PlayerData_getInventory(PlayerData_GetCurrent());
     if (i >= 0 && i <= 9) {
         return PlayerInventory_getLetter((s32)r, i);
     }
@@ -724,7 +724,7 @@ void LetterGrid::setHighlighted(s32 i) {
 }
 
 void LetterGrid::drawPocketLetters(s32 a, s32 b) {
-    u8 *rec = (u8 *)PlayerInventory_getLetter(func_02098750(PlayerData_GetCurrent()), 0);
+    u8 *rec = (u8 *)PlayerInventory_getLetter(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
     s32 idx = 0;
     s32 i = idx;
     for (; i < 10; i++) {
@@ -915,7 +915,7 @@ BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i)
 
 void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o)
 {
-    s32 q = (s32)PlayerInventory_getLetter(func_02098750(PlayerData_GetCurrent()), 0);
+    s32 q = (s32)PlayerInventory_getLetter(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
     s32 k = 0;
     s32 i = 0;
     do {

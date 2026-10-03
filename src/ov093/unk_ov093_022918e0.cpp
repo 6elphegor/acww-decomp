@@ -1,14 +1,14 @@
 #include "types.h"
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fc44();
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fa4c();
+    LabelString();
+    ~LabelString();
+    void destroyLabel();
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void redrawRight();
     u32 pad[0x10];
 };
 
@@ -84,7 +84,7 @@ public:
     BOOL testFlags(u32 m);
     void loadLogo();
     void resetLabels();
-    Unk_020e0488 *allocLabel();
+    LabelString *allocLabel();
     void scroll(BOOL b);
     void fillNextRow(s32 a, StaffRollLayer *s);
     s8 *getLine(s32 i);
@@ -115,7 +115,7 @@ public:
     /* 0x0820 */ StaffRollLayer unk_820;
     /* 0x1028 */ u16 unk_1028[0x400];
     /* 0x1828 */ MsgString193 unk_1828;
-    /* 0x18fc */ Unk_020e0488 unk_18fc[26];
+    /* 0x18fc */ LabelString unk_18fc[26];
     /* 0x1f7c */ BgVramTask unk_1f7c[2];
 };
 
@@ -375,10 +375,10 @@ void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
         if (s->testFlags(1)) {
             s->clearFlags(1);
             copyTemplateRow(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
-            Unk_020e0488 *e = allocLabel();
+            LabelString *e = allocLabel();
             ((MsgString *)e)->setLine((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
+            e->createSmallLabel(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
             s->unk_04 = s->unk_04 + 1;
             s->unk_02 = s->unk_02 + 1;
             s->unk_00 = s->unk_00 + 1;
@@ -390,16 +390,16 @@ void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
             copyTemplateRow(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
             e = allocLabel();
             ((MsgString *)e)->setLine((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
+            e->createSmallLabel(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
             s->unk_04 = s->unk_04 + 1;
             s->unk_02 = s->unk_02 + 1;
             s->unk_00 = s->unk_00 + 1;
         } else if (p[0] == 0x20 && p[1] == 0xa) {
-            Unk_020e0488 *e = allocLabel();
+            LabelString *e = allocLabel();
             ((MsgString *)e)->setLine((u8 *)p);
-            e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fab4(0, 0);
+            e->createSmallLabel(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawAligned(0, 0);
             s->unk_04 = s->unk_04 + 1;
             s->unk_02 = s->unk_02 + 1;
             s->unk_00 = s->unk_00 + 1;
@@ -410,10 +410,10 @@ void StaffRoll::fillNextRow(s32 a, StaffRollLayer *s)
             copyTemplateRow(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
             s->unk_00 = s->unk_00 + 1;
             s->unk_04 = s->unk_04 + 1;
-            Unk_020e0488 *e = allocLabel();
+            LabelString *e = allocLabel();
             ((MsgString *)e)->setLine((u8 *)p);
-            e->func_0206fb9c(a, (s->unk_04 - 2) * 16 + 0x11, 0x10, 1, 0, 0);
-            e->func_0206fa4c();
+            e->createLabel(a, (s->unk_04 - 2) * 16 + 0x11, 0x10, 1, 0, 0);
+            e->redrawRight();
             s->unk_02 = s->unk_02 + 1;
         }
     }
@@ -430,7 +430,7 @@ void StaffRoll::scroll(BOOL b)
     }
 }
 
-Unk_020e0488 *StaffRoll::allocLabel()
+LabelString *StaffRoll::allocLabel()
 {
     if (unk_04 >= 26) {
         return &unk_18fc[25] + 0;
@@ -444,7 +444,7 @@ void StaffRoll::resetLabels()
     s32 i;
     unk_04 = 0;
     for (i = 0; i < 26; i++) {
-        unk_18fc[i].func_0206fc44();
+        unk_18fc[i].destroyLabel();
     }
     for (i = 0; i < 2; i++) {
         unk_1f7c[i].cancel();

@@ -27,12 +27,12 @@ struct Unk_0202f64c {
     u8 pad[0x34];
 };
 
-struct Unk_020e44d4 : Unk_0202f64c {
-    Unk_020e44d4();
-    ~Unk_020e44d4();
-    BOOL func_020b6ac4(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6b04(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    /* 0x38 */ Unk_020e44d4 *unk_38;
+struct TouchPickTriangle : Unk_0202f64c {
+    TouchPickTriangle();
+    ~TouchPickTriangle();
+    BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    /* 0x38 */ TouchPickTriangle *unk_38;
     /* 0x3c */ s32 unk_3c;
     /* 0x40 */ u8 unk_40;
 };
@@ -40,7 +40,7 @@ struct Unk_020e44d4 : Unk_0202f64c {
 struct Unk_0202f660_V3;
 struct Unk_0202e918_Vec3;
 
-// base of Unk_020b6a0c: symbols.txt names its base-object constructor/destructor and func_0202fd8c with the class
+// base of TouchPickCylinder: symbols.txt names its base-object constructor/destructor and func_0202fd8c with the class
 // name CollisionCylinderX and these parameter types (labels at 0x0202fddc / 0x0202fda4 / 0x0202fd8c)
 struct CollisionCylinderX {
     CollisionCylinderX();
@@ -49,13 +49,13 @@ struct CollisionCylinderX {
     u8 pad[0x14];
 };
 
-struct Unk_020b6a0c : CollisionCylinderX {
-    Unk_020b6a0c();
-    ~Unk_020b6a0c();
-    BOOL func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+struct TouchPickCylinder : CollisionCylinderX {
+    TouchPickCylinder();
+    ~TouchPickCylinder();
+    BOOL setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
     /* 0x14 */ s32 unk_14;
     /* 0x18 */ u8 unk_18;
-    /* 0x1c */ Unk_020b6a0c *unk_1c;
+    /* 0x1c */ TouchPickCylinder *unk_1c;
 };
 
 struct Unk_0202e9c8 {
@@ -65,20 +65,20 @@ struct Unk_0202e9c8 {
     u8 pad[0x10];
 };
 
-struct Unk_020b6a94 : Unk_0202e9c8 {
-    Unk_020b6a94();
-    ~Unk_020b6a94();
-    BOOL func_020b6a28(Vec3 *a, Vec3 *b, s32 c, u8 d);
-    BOOL func_020b6a48(Vec3 *a, Vec3 *b, s32 c, u8 d);
+struct TouchPickSphere : Unk_0202e9c8 {
+    TouchPickSphere();
+    ~TouchPickSphere();
+    BOOL setupCurved(Vec3 *a, Vec3 *b, s32 c, u8 d);
+    BOOL setup(Vec3 *a, Vec3 *b, s32 c, u8 d);
     /* 0x10 */ u8 unk_10;
     /* 0x14 */ s32 unk_14;
-    /* 0x18 */ Unk_020b6a94 *unk_18;
+    /* 0x18 */ TouchPickSphere *unk_18;
 };
 
-struct Unk_020b60d8 {
-    Unk_020b60d8();
-    ~Unk_020b60d8();
-    void func_020b69c0(u8 a);
+struct TouchPickResult {
+    TouchPickResult();
+    ~TouchPickResult();
+    void resetResult(u8 a);
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -94,31 +94,31 @@ struct Unk_020b6e10 {
     Unk_020b6e10();
     ~Unk_020b6e10();
     BOOL func_020b6b84(Vec3 *pos, s32 w, s32 h, s32 d, s32 angle, s32 e, u8 f);
-    /* 0x00 */ Unk_020e44d4 unk_00[10];
+    /* 0x00 */ TouchPickTriangle unk_00[10];
 };
 
-struct Unk_020b6960 : Unk_020b60d8 {
-    Unk_020b6960();
-    ~Unk_020b6960();
-    void func_020b6990();
-    BOOL func_020b6818(Unk_020e44d4 *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6848(Unk_020e44d4 *o);
-    BOOL func_020b6860(Unk_020b6a0c *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6890(Unk_020b6a0c *o);
-    BOOL func_020b68a8(Unk_020b6a94 *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
-    BOOL func_020b68d4(Unk_020b6a94 *o);
-    BOOL func_020b68ec(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL func_020b6928(Unk_020b6e10 *box);
-    /* 0x1c */ Unk_020e44d4 *unk_1c;
-    /* 0x20 */ Unk_020b6a94 *unk_20;
-    /* 0x24 */ Unk_020b6a0c *unk_24;
+struct TouchPicker : TouchPickResult {
+    TouchPicker();
+    ~TouchPicker();
+    void reset();
+    BOOL addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL pushTriangle(TouchPickTriangle *o);
+    BOOL addCylinder(TouchPickCylinder *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL pushCylinder(TouchPickCylinder *o);
+    BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
+    BOOL pushSphere(TouchPickSphere *o);
+    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(Unk_020b6e10 *box);
+    /* 0x1c */ TouchPickTriangle *unk_1c;
+    /* 0x20 */ TouchPickSphere *unk_20;
+    /* 0x24 */ TouchPickCylinder *unk_24;
 };
 
-struct Unk_020b69a8 : Unk_020b60d8 {
-    void func_020b69a8();
-    Unk_020e44d4 *unk_1c;
-    Unk_020b6a94 *unk_20;
-    Unk_020b6a0c *unk_24;
+struct TouchPickerView : TouchPickResult {
+    void reset();
+    TouchPickTriangle *unk_1c;
+    TouchPickSphere *unk_20;
+    TouchPickCylinder *unk_24;
 };
 
 extern "C" {
@@ -142,7 +142,7 @@ void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 void func_020e93a0(Vec3 *v, s32 angle);
 void WorldCurve_Apply(Vec3 *out, Vec3 *in);
 s32 func_0202f3a8(Plane *p);
-BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(Unk_020e44d4 *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
+BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
 }
 
 struct Unk_020b69e0_Pad {
@@ -151,15 +151,15 @@ struct Unk_020b69e0_Pad {
     ~Unk_020b69e0_Pad() {}
 };
 
-BOOL Unk_020e44d4::func_020b6b04(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+BOOL TouchPickTriangle::setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Vec3 va, vb, vc;
     WorldCurve_Apply(&va, a);
     WorldCurve_Apply(&vb, b);
     WorldCurve_Apply(&vc, c);
-    return func_020b6ac4(&va, &vb, &vc, d, e);
+    return setupCurved(&va, &vb, &vc, d, e);
 }
 
-BOOL Unk_020e44d4::func_020b6ac4(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+BOOL TouchPickTriangle::setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Plane p;
     if (func_0202f3a8(&p) != 0) {
         unk_3c = d;
@@ -169,38 +169,38 @@ BOOL Unk_020e44d4::func_020b6ac4(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     return FALSE;
 }
 
-Unk_020b6a94::Unk_020b6a94() {
+TouchPickSphere::TouchPickSphere() {
     unk_14 = 0;
     unk_10 = 0;
     unk_18 = 0;
 }
 
-Unk_020b6a94::~Unk_020b6a94() {
+TouchPickSphere::~TouchPickSphere() {
 }
 
-BOOL Unk_020b6a94::func_020b6a48(Vec3 *a, Vec3 *b, s32 c, u8 d) {
+BOOL TouchPickSphere::setup(Vec3 *a, Vec3 *b, s32 c, u8 d) {
     Vec3 v;
     WorldCurve_Apply(&v, a);
-    return func_020b6a28(&v, b, c, d);
+    return setupCurved(&v, b, c, d);
 }
 
-BOOL Unk_020b6a94::func_020b6a28(Vec3 *a, Vec3 *b, s32 c, u8 d) {
+BOOL TouchPickSphere::setupCurved(Vec3 *a, Vec3 *b, s32 c, u8 d) {
     unk_14 = c;
     unk_10 = d;
     func_0202e9b4((Unk_0202e918_Vec3 *)a, (s32)b);
     return TRUE;
 }
 
-Unk_020b6a0c::Unk_020b6a0c() {
+TouchPickCylinder::TouchPickCylinder() {
     unk_14 = 0;
     unk_1c = 0;
     unk_18 = 0xff;
 }
 
-Unk_020b6a0c::~Unk_020b6a0c() {
+TouchPickCylinder::~TouchPickCylinder() {
 }
 
-BOOL Unk_020b6a0c::func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+BOOL TouchPickCylinder::setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Unk_020b69e0_Pad pad;
     unk_14 = d;
     unk_18 = e;
@@ -208,7 +208,7 @@ BOOL Unk_020b6a0c::func_020b69e0(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     return TRUE;
 }
 
-void Unk_020b60d8::func_020b69c0(u8 a) {
+void TouchPickResult::resetResult(u8 a) {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
@@ -221,47 +221,47 @@ void Unk_020b60d8::func_020b69c0(u8 a) {
     unk_1a = a;
 }
 
-void Unk_020b69a8::func_020b69a8() {
-    func_020b69c0(0);
+void TouchPickerView::reset() {
+    resetResult(0);
     unk_1c = 0;
     unk_20 = 0;
     unk_24 = 0;
 }
 
-void Unk_020b6960::func_020b6990() {
-    func_020b69c0(0);
+void TouchPicker::reset() {
+    resetResult(0);
     unk_1c = 0;
     unk_20 = 0;
     unk_24 = 0;
 }
 
-Unk_020b6960::~Unk_020b6960() {
+TouchPicker::~TouchPicker() {
 }
 
-Unk_020b6960::Unk_020b6960() {
-    func_020b69c0(0);
+TouchPicker::TouchPicker() {
+    resetResult(0);
     unk_1c = 0;
     unk_20 = 0;
     unk_24 = 0;
 }
 
-BOOL Unk_020b6960::func_020b6928(Unk_020b6e10 *box) {
+BOOL TouchPicker::pushBox(Unk_020b6e10 *box) {
     BOOL ok = TRUE;
-    Unk_020e44d4 *p = box->unk_00;
+    TouchPickTriangle *p = box->unk_00;
     for (u32 i = 0; i < 10; i++) {
-        BOOL r = func_020b6848(p);
+        BOOL r = pushTriangle(p);
         p++;
         ok = (ok | r) ? TRUE : FALSE;
     }
     return ok;
 }
 
-BOOL Unk_020b6960::func_020b68ec(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f) {
+BOOL TouchPicker::addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f) {
     box->func_020b6b84(pos, w, h, d, angle, e, f);
-    return func_020b6928(box);
+    return pushBox(box);
 }
 
-BOOL Unk_020b6960::func_020b68d4(Unk_020b6a94 *o) {
+BOOL TouchPicker::pushSphere(TouchPickSphere *o) {
     o->unk_18 = 0;
     if (unk_20 == 0) {
         unk_20 = o;
@@ -272,12 +272,12 @@ BOOL Unk_020b6960::func_020b68d4(Unk_020b6a94 *o) {
     return TRUE;
 }
 
-BOOL Unk_020b6960::func_020b68a8(Unk_020b6a94 *o, Vec3 *a, Vec3 *b, s32 c, u8 d) {
-    o->func_020b6a48(a, b, c, d);
-    return func_020b68d4(o);
+BOOL TouchPicker::addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d) {
+    o->setup(a, b, c, d);
+    return pushSphere(o);
 }
 
-BOOL Unk_020b6960::func_020b6890(Unk_020b6a0c *o) {
+BOOL TouchPicker::pushCylinder(TouchPickCylinder *o) {
     o->unk_1c = 0;
     if (unk_24 == 0) {
         unk_24 = o;
@@ -288,12 +288,12 @@ BOOL Unk_020b6960::func_020b6890(Unk_020b6a0c *o) {
     return TRUE;
 }
 
-BOOL Unk_020b6960::func_020b6860(Unk_020b6a0c *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
-    o->func_020b69e0(a, b, c, d, e);
-    return func_020b6890(o);
+BOOL TouchPicker::addCylinder(TouchPickCylinder *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+    o->setup(a, b, c, d, e);
+    return pushCylinder(o);
 }
 
-BOOL Unk_020b6960::func_020b6848(Unk_020e44d4 *o) {
+BOOL TouchPicker::pushTriangle(TouchPickTriangle *o) {
     o->unk_38 = 0;
     if (unk_1c == 0) {
         unk_1c = o;
@@ -304,9 +304,9 @@ BOOL Unk_020b6960::func_020b6848(Unk_020e44d4 *o) {
     return TRUE;
 }
 
-BOOL Unk_020b6960::func_020b6818(Unk_020e44d4 *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
-    o->func_020b6b04(a, b, c, d, e);
-    return func_020b6848(o);
+BOOL TouchPicker::addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
+    o->setup(a, b, c, d, e);
+    return pushTriangle(o);
 }
 
 // six file-scope 4-byte objects built by the unit's __sinit (nothing reads them)
@@ -320,12 +320,12 @@ struct Unk_021ef474 {
     }
 };
 
-Unk_021ef474 data_021ef474(31, 20, 20, 31);
-Unk_021ef474 data_021ef494(20, 20, 31, 31);
-Unk_021ef474 data_021ef490(31, 31, 20, 31);
-Unk_021ef474 data_021ef48c(20, 31, 20, 31);
-Unk_021ef474 data_021ef488(20, 31, 31, 31);
-Unk_021ef474 data_021ef484(20, 24, 24, 31);
+Unk_021ef474 sColorPaleRed(31, 20, 20, 31);
+Unk_021ef474 sColorPaleBlue(20, 20, 31, 31);
+Unk_021ef474 sColorPaleYellow(31, 31, 20, 31);
+Unk_021ef474 sColorPaleGreen(20, 31, 20, 31);
+Unk_021ef474 sColorPaleCyan(20, 31, 31, 31);
+Unk_021ef474 sColorGreyCyan(20, 24, 24, 31);
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
@@ -389,7 +389,7 @@ void func_020b6e38(Basis *out, s32 a, s32 b);
 BOOL func_020b6f10(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
 BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
 BOOL func_020b705c(u8 v);
-BOOL func_020b60b0(void *obj, Vec3 *out);
+BOOL TouchPick_GetGroundPos(void *obj, Vec3 *out);
 void WorldCurve_FromCurved(Vec3 *out, Vec3 *in);
 s32 WorldCurve_GetRadius(void);
 void *_ZN12Unk_020d93b816getEyeCurveAngleEv(void *cam);
@@ -417,11 +417,11 @@ inline BOOL Unk_020b60dc_IsMode0() {
     return gFieldSceneKind == 0;
 }
 
-extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
+extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     Vec3 t[3];
     Vec3 p0, p1, r, v;
 
-    self->func_020b69c0(flag);
+    self->resetResult(flag);
     if (flag == 0 || gGfxMainOnTop == 1) {
         self->unk_20 = 0;
         self->unk_24 = 0;
@@ -449,7 +449,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             }
             GroundInfo_Destruct(&x);
         }
-        if (!func_020b60b0(self, 0)) {
+        if (!TouchPick_GetGroundPos(self, 0)) {
             if (func_020b7074(&r, &p0, &p1, WorldCurve_GetRadius(), kk)) {
                 p1 = r;
                 Vec3 w;
@@ -460,7 +460,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                 self->unk_08 = w.z;
             }
         }
-        if (!func_020b60b0(self, 0)) {
+        if (!TouchPick_GetGroundPos(self, 0)) {
             void *cam = gCamera;
             if (cam != 0) {
                 struct { Vec3 a, b, c; } l;
@@ -702,7 +702,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
         }
     }
     Vec3 ip;
-    for (Unk_020e44d4 *n = self->unk_1c; n != 0; n = n->unk_38) {
+    for (TouchPickTriangle *n = self->unk_1c; n != 0; n = n->unk_38) {
         if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(n, &p0) >= 0) {
             BOOL in;
             if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(n, &p1) >= 0) {
@@ -724,7 +724,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             }
         }
     }
-    Unk_020b6a94 *n = self->unk_20;
+    TouchPickSphere *n = self->unk_20;
     while (n != 0) {
         Unk_020b60dc_Line l;
         _ZN12Unk_0202f660C1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
@@ -751,7 +751,7 @@ extern "C" void func_020b60d8(void) {}
 
 extern "C" void func_020b60d4(void) {}
 
-extern "C" BOOL func_020b60b0(Vec3 *obj, Vec3 *out) {
+extern "C" BOOL TouchPick_GetGroundPos(Vec3 *obj, Vec3 *out) {
     if (out) {
         out->x = obj->x;
         out->y = obj->y;

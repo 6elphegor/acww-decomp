@@ -20,8 +20,8 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN12Unk_02097ff413func_02098320Ev();
-void *_ZN10PlayerData13func_02098750Ev(void *p);
+void *_ZN12Unk_02097ff414getBankAccountEv();
+void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
@@ -619,7 +619,7 @@ void AmountEntryMenu::setupAmounts() {
     s32 lo;
     s32 m = MenuCtrl_GetMode();
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN12Unk_02097ff413func_02098320Ev();
+    void *q = _ZN12Unk_02097ff414getBankAccountEv();
     switch (m) {
     case 0x38:
         hi = 0x98967f;
@@ -631,7 +631,7 @@ void AmountEntryMenu::setupAmounts() {
         hi = func_02097414(q);
         break;
     default:
-        hi = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(p), 1);
+        hi = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
         break;
     }
     lo = 0;
@@ -644,7 +644,7 @@ void AmountEntryMenu::setupAmounts() {
         lo = func_02097414(q);
         break;
     case 0x36:
-        lo = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(p), 1);
+        lo = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(p), 1);
         break;
     }
     volatile s32 mx = hi;
@@ -662,7 +662,7 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     case 0x36: {
-        s32 t = func_02097ce4(_ZN10PlayerData13func_02098750Ev(p), 1, 0);
+        s32 t = func_02097ce4(_ZN10PlayerData12getInventoryEv(p), 1, 0);
         if (t < hi) {
             mx = t;
         }
@@ -677,7 +677,7 @@ void AmountEntryMenu::commitAmount() {
     s32 b = NumberPad_GetTopAmount(&unk_25c);
     s32 c = NumberPad_GetBottomAmount(&unk_25c);
     void *p = PlayerData_GetCurrent();
-    void *q = _ZN12Unk_02097ff413func_02098320Ev();
+    void *q = _ZN12Unk_02097ff414getBankAccountEv();
     s32 m = MenuCtrl_GetMode();
     switch (m) {
     case 0x36:
@@ -685,7 +685,7 @@ void AmountEntryMenu::commitAmount() {
         break;
     case 0x37:
     default:
-        func_02097a48(_ZN10PlayerData13func_02098750Ev(p), -a, 1);
+        func_02097a48(_ZN10PlayerData12getInventoryEv(p), -a, 1);
         break;
     case 0x38:
     case 0x39:
@@ -700,7 +700,7 @@ void AmountEntryMenu::commitAmount() {
         func_02097410(q, c + a);
         break;
     case 0x36:
-        func_02097a48(_ZN10PlayerData13func_02098750Ev(p), a, 1);
+        func_02097a48(_ZN10PlayerData12getInventoryEv(p), a, 1);
         break;
     }
 }

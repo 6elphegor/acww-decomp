@@ -168,10 +168,10 @@ public:
 };
 
 struct Unk_0206d1d4_Src;
-class Unk_0206d0a0 {
+class LetterRenderer {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d2e0(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
     void func_0206d394();
     void func_0206d39c(s32 a);
@@ -571,7 +571,7 @@ public:
     /* 0x2420 */ MenuCursorBuf0 unk_2420;
     /* 0x2484 */ PopupChoiceMenu unk_2484;
     /* 0x2784 */ MenuErrorMessage unk_2784;
-    /* 0x288c */ Unk_0206d0a0 unk_288c;
+    /* 0x288c */ LetterRenderer unk_288c;
     /* 0x2a9c */ MenuLabelButton unk_2a9c;
     /* 0x2b0c */ Letter unk_2b0c[10];
     /* 0x3494 */ Letter unk_3494[10];

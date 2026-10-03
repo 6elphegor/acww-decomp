@@ -46,7 +46,7 @@ public:
     /* 0x64 */ s32 unk_64;
     BOOL isOnline();
     BOOL isSlotActive(s32 i);
-    void func_02072204(u32 v);
+    void setSessionMemberMask(u32 v);
     u32 getErrorFlags();
     void setErrorFlags(u32 v);
     void endRecord(u32 a, u32 b);
@@ -298,8 +298,8 @@ void Gfx3d_InitEngine(void);
 void Snd_DestroyScene(void);
 s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
 void func_0203d4c0(void);
-void func_0203d544(void);
-BOOL func_0203d56c(void);
+void TalkRequest_EndNetSyncHold(void);
+BOOL TalkRequest_BeginNetSyncHold(void);
 s32 TalkRequestQueue_Reset(void);
 s32 func_0203eb38(void);
 void ScreenTransition_ShowCover(void);
@@ -319,7 +319,7 @@ void Comm_ProcessReceived(s32 a);
 void func_0208e968(void);
 s32 func_02097444(s32 a);
 s32 PlayerData_Get(s32 a);
-LostChildRecord *_ZN10PlayerData13func_020986a4Ev(s32 a);
+LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
 void func_0209caf4(void);
 void func_0209f230(s32 a);
 void Net_SetJoiningAid(s32 a);
@@ -358,9 +358,9 @@ void Scene_SavePlayerPos(s32 a, s32 b);
 void SceneWarp_RequestAt(s32 a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g);
 void SceneWarp_RequestFade(s32 a, s32 b, s32 c, s32 d);
 s32 Scene_GetCurrent(void);
-void func_020b78dc(void);
-void func_020b78f4(s32 a);
-void func_020b7914(s32 a);
+void FieldInfoBalloon_ShowCancelled(void);
+void FieldInfoBalloon_ShowSyncKindMsg(s32 a);
+void FieldInfoBalloon_ShowSyncWaitMsg(s32 a);
 void Net_WifiHostKeepAlive(void);
 u32 Net_GetConnectedMask(void);
 s32 ProcBase_HasCreatingChild(void *p);
@@ -1581,7 +1581,7 @@ void NetSessionState::updateSyncClient() {
         s32 t = Scene_GetCurrent();
         if (t != 0x2e && t != 0xc && t != 0xd && t != 0xe && t != 0x2f) {
             if (SceneWarp_GetScene(Scene_GetWarpRequest()) == 0x3f && gSceneCreating == 0) {
-                if (func_0203d56c()) {
+                if (TalkRequest_BeginNetSyncHold()) {
                     r7 = TRUE;
                 }
             }
@@ -1599,9 +1599,9 @@ void NetSessionState::updateSyncClient() {
                 g2->endRecord(0xc, 0);
                 func_020a66f0(&m[0]);
             }
-            func_020b78f4(mode);
+            FieldInfoBalloon_ShowSyncKindMsg(mode);
             setMemberSyncReply(st, 2);
-            g->func_02072204(Comm_GetMemberMask());
+            g->setSessionMemberMask(Comm_GetMemberMask());
         } else {
             u32 n = getReplyTimer() + 1;
             if (n >= 0xa0) {
@@ -1622,17 +1622,17 @@ void NetSessionState::updateSyncClient() {
             } else {
                 setReplyTimer(n);
             }
-            func_020b7914(mode);
+            FieldInfoBalloon_ShowSyncWaitMsg(mode);
         }
     }
     st2 = g->unk_64;
     v = getMemberSyncReply(st2);
     if (v == 2) {
-        func_020b78f4(getSyncKind());
+        FieldInfoBalloon_ShowSyncKindMsg(getSyncKind());
     } else if (v == 4) {
-        func_0203d544();
+        TalkRequest_EndNetSyncHold();
         MenuCtrl_ResetForceClose();
-        func_020b78dc();
+        FieldInfoBalloon_ShowCancelled();
         setGoDelay(0);
         if (st2 != 0) {
             func_020a66f4(&m[2]);
@@ -1648,7 +1648,7 @@ void NetSessionState::updateSyncClient() {
         BOOL r7;
         s32 md = getSyncKind();
         s32 sl;
-        func_020b78f4(md);
+        FieldInfoBalloon_ShowSyncKindMsg(md);
         u8 u = gNetSessionState.getGoDelay();
         if (u != 0) {
             gNetSessionState.setGoDelay(u - 1);
@@ -1687,7 +1687,7 @@ void NetSessionState::updateSyncClient() {
             s32 x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
             u8 *idb = (u8 *)&gSaveTownId;
-            if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->isEscorting() && (p = _ZN10PlayerData13func_020986a4Ev(x)->getTownId(), p[0] == *(u16 *)idb) &&
+            if (x != 0 && _ZN10PlayerData18getLostChildRecordEv(x)->isEscorting() && (p = _ZN10PlayerData18getLostChildRecordEv(x)->getTownId(), p[0] == *(u16 *)idb) &&
                 memcmp(p + 1, idb + 2, 8) == 0) {
                 SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2f, 2, 2);
             } else {

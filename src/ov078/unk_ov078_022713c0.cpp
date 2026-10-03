@@ -71,7 +71,7 @@ void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, Unk_ov078
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *self, void *owner, s32 v);
 s32 _ZN12Unk_0201acf813func_0201acfcEv(void *self);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN18SickVillagerRecord15getParcelErrandEv(void *p);
 void *ParcelErrand_GetRecord(void *p);
 void ParcelErrand_Start(void *p);
@@ -824,7 +824,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 
 void SpNpcSaharahTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
-    void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent()));
+    void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
     Unk_020e1c64 o;
     out->a = (u32)"sp_npc_camel";
     if (unk_b0 == -1) {
@@ -879,7 +879,7 @@ void SpNpcSaharahTalk::vfunc_14() {
     u8 *s;
     h[0] = 0xfff1;
     Unk_020e1c64 o3;
-    g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent()));
+    g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
     s = (u8 *)"sp_npc_camel";
     msg = 0;
     switch (unk_1e) {

@@ -226,7 +226,7 @@ struct ItemId {
 };
 
 extern "C" {
-void func_0203c640(Unk_0203c640 *p);
+void Catalog_Clear(Unk_0203c640 *p);
 }
 
 extern "C" {
@@ -262,7 +262,7 @@ void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
 }
 
 extern "C" {
-void *_ZN10PlayerData13func_020986d4Ev(void *p);
+void *_ZN10PlayerData11getPatternsEv(void *p);
 }
 
 extern "C" {
@@ -274,12 +274,12 @@ extern u8 gSaveAbleSistersPatterns[];
 }
 
 extern "C" {
-BOOL func_0203c764(void *self, u16 *p, void *q);
+BOOL ClothTex_LoadItem(void *self, u16 *p, void *q);
 }
-extern "C" void *func_0203c6c8();
-extern "C" void *func_0203c6e4(void *unused);
-extern "C" void *func_0203c6d0(void *unused);
-extern "C" BOOL func_0203c6f8(void *a, void *b);
+extern "C" void *ClothTex_GetTex();
+extern "C" void *ClothTex_GetTexData(void *unused);
+extern "C" void *ClothTex_GetPlttData(void *unused);
+extern "C" BOOL ClothTex_LoadPattern(void *a, void *b);
 
 static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -287,11 +287,11 @@ static inline BOOL Unk_0203c764_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" void func_0203c928() {}
+extern "C" void ClothTex_Construct() {}
 
-extern "C" void func_0203c924() {}
+extern "C" void ClothTex_Destruct() {}
 
-extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
+extern "C" BOOL ClothTex_LoadItem(void *self, u16 *p, void *q) {
     s32 i1, i2, i3, i4;
     char buf[0x20];
     BOOL res;
@@ -300,24 +300,24 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
         else i1 = -1;
         res = FALSE;
         if (i1 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i1));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i1));
+            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i1));
+            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
         if (*p >= 0x1429 && *p <= 0x1430) i2 = *p - 0x1429;
         else i2 = -1;
         res = FALSE;
         if (i2 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i2));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i2));
+            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i2));
+            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
         if (*p >= 0x13a0 && *p <= 0x13a7) i3 = *p - 0x13a0;
         else i3 = -1;
         res = FALSE;
         if (i3 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i3));
-            else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i3));
+            if (q == 0) res = ClothTex_LoadPattern(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i3));
+            else res = ClothTex_LoadPattern(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(q), (u8)i3));
         }
     } else {
         if (*p >= 0x11a8 && *p <= 0x12a7) i4 = *p - 0x11a8;
@@ -328,21 +328,21 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
             return FALSE;
         } else {
             static ItemId def;
-            return func_0203c764(self, &def.unk_00, q);
+            return ClothTex_LoadItem(self, &def.unk_00, q);
         }
     }
     return res;
 }
 
-extern "C" BOOL func_0203c6f8(void *a, void *b) {
+extern "C" BOOL ClothTex_LoadPattern(void *a, void *b) {
     u16 id = 0x11a8;
-    if (func_0203c764(a, &id, 0)) {
+    if (ClothTex_LoadItem(a, &id, 0)) {
         if (b != 0) {
             void *dst = _ZN7Pattern9getPixelsEv(b);
-            MI_CpuCopy8(dst, func_0203c6e4(a), 0x200);
+            MI_CpuCopy8(dst, ClothTex_GetTexData(a), 0x200);
             _ZN7Pattern7getInfoEv(b);
             void *dst2 = _ZN11PatternInfo14getPaletteDataEv();
-            MI_CpuCopy8(dst2, func_0203c6d0(a), 0x20);
+            MI_CpuCopy8(dst2, ClothTex_GetPlttData(a), 0x20);
             return TRUE;
         }
         return TRUE;
@@ -350,25 +350,25 @@ extern "C" BOOL func_0203c6f8(void *a, void *b) {
     return FALSE;
 }
 
-extern "C" void *func_0203c6e4(void *unused) { return _ZN12G3dResAccess10getTexDataEi(func_0203c6c8(), 0); }
+extern "C" void *ClothTex_GetTexData(void *unused) { return _ZN12G3dResAccess10getTexDataEi(ClothTex_GetTex(), 0); }
 
-extern "C" void *func_0203c6d0(void *unused) { return _ZN12G3dResAccess11getPlttDataEi(func_0203c6c8(), 0); }
+extern "C" void *ClothTex_GetPlttData(void *unused) { return _ZN12G3dResAccess11getPlttDataEi(ClothTex_GetTex(), 0); }
 
-extern "C" void *func_0203c6c8() { return NNS_G3dGetTex(); }
+extern "C" void *ClothTex_GetTex() { return NNS_G3dGetTex(); }
 
-extern "C" u32 func_0203c6c0() { return 0x2c4; }
+extern "C" u32 ClothTex_GetBufferSize() { return 0x2c4; }
 
-extern "C" BOOL func_0203c6b8(void *a, u16 *b, void *c) { return func_0203c764(a, b, c); }
+extern "C" BOOL ClothTex_LoadItemThunk(void *a, u16 *b, void *c) { return ClothTex_LoadItem(a, b, c); }
 
-extern "C" BOOL func_0203c6b0(void *a, void *b) { return func_0203c6f8(a, b); }
+extern "C" BOOL ClothTex_LoadPatternThunk(void *a, void *b) { return ClothTex_LoadPattern(a, b); }
 
-extern "C" void *func_0203c6a8() { return func_0203c6c8(); }
+extern "C" void *ClothTex_GetTexThunk() { return ClothTex_GetTex(); }
 
-extern "C" void func_0203c6a4() {}
+extern "C" void Catalog_Construct() {}
 
-extern "C" void func_0203c6a0() {}
+extern "C" void Catalog_Destruct() {}
 
-extern "C" void func_0203c640(Unk_0203c640 *p) {
+extern "C" void Catalog_Clear(Unk_0203c640 *p) {
     u32 i;
     for (i = 0; i < 0x100; i++) p->unk_000[i] = 0;
     for (i = 0; i < 9; i++) p->unk_100[i] = 0;
@@ -377,5 +377,5 @@ extern "C" void func_0203c640(Unk_0203c640 *p) {
     for (i = 0; i < 8; i++) p->unk_11b[i] = 0;
 }
 
-extern "C" void func_0203c638(Unk_0203c640 *p) { func_0203c640(p); }
+extern "C" void Catalog_Init(Unk_0203c640 *p) { Catalog_Clear(p); }
 

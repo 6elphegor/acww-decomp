@@ -269,7 +269,7 @@ void SceneWarp_RequestFade(void *a, s32 b, s32 c, s32 d);
 void SaveManager_RequestAct1C();
 void SaveManager_RequestAct05();
 void SaveManager_RequestAct06();
-void func_0203d52c();
+void TalkRequestFlags_SetTitleTimeout();
 void InputMode_SetButtons();
 void InputMode_SetTouch();
 BOOL func_020e7500(void *p);
@@ -277,15 +277,15 @@ void Bgm_Release(s32 a);
 void Bgm_ReleasePriority(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
-void func_0203d984();
+void TalkRequestFlags_ClearSceneHold();
 void GameStart_SetupSave();
 void func_0203cbb8();
 void _ZN12Unk_0203c92c13func_0203c98cEv();
-void func_0203d990();
+void TalkRequestFlags_SetSceneHold();
 s32 Main_TakeDwcInitResult();
 s32 Save_CheckBackupError();
-s32 func_0203d538();
-void func_0203d520();
+s32 TalkRequestFlags_IsTitleTimeout();
+void TalkRequestFlags_ClearTitleTimeout();
 TitleScreen *TitleScreen_Create();
 
 }
@@ -404,7 +404,7 @@ BOOL TitleScreen::vfunc_00() {
     unk_54.setOwner(this);
     func_0203cbb8();
     _ZN12Unk_0203c92c13func_0203c98cEv();
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     if (Main_TakeDwcInitResult() == 3) {
         unk_f0 = 1;
     }
@@ -415,10 +415,10 @@ BOOL TitleScreen::vfunc_00() {
     if (Save_CheckBackupError() == 1) {
         unk_9e = 1;
     }
-    startBgm(func_0203d538() != 0 ? TRUE : FALSE);
-    if (func_0203d538() != 0) {
+    startBgm(TalkRequestFlags_IsTitleTimeout() != 0 ? TRUE : FALSE);
+    if (TalkRequestFlags_IsTitleTimeout() != 0) {
         unk_a6 = 6;
-        func_0203d520();
+        TalkRequestFlags_ClearTitleTimeout();
     }
     return TRUE;
 }
@@ -427,7 +427,7 @@ BOOL TitleScreen::vfunc_0c() {
     stopBgm();
     unk_ac.shutdown();
     unk_cc.cancel();
-    func_0203d984();
+    TalkRequestFlags_ClearSceneHold();
     if (unk_50 == 7) {
         GameStart_SetupSave();
     }
@@ -527,7 +527,7 @@ void TitleScreen::enterIdleTimeout() {}
 
 void TitleScreen::updateIdleTimeout() {
     if (unk_ac.isHidden()) {
-        func_0203d52c();
+        TalkRequestFlags_SetTitleTimeout();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         stopBgm();
     }

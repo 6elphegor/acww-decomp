@@ -350,7 +350,7 @@ struct Unk_ov004_0221e0b4_Ent {
 #define ActorTalkRequest_setPlayerNameSlot _ZN16ActorTalkRequest17setPlayerNameSlotEjj
 #define ActorTalkRequest_setNumberSlot _ZN16ActorTalkRequest13setNumberSlotEijiii
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
-#define func_020986d4 _ZN10PlayerData13func_020986d4Ev
+#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerPatterns_getPatternOrder _ZN14PlayerPatterns15getPatternOrderEv
 #define PatternOrder_getSlot _ZN12PatternOrder7getSlotEj
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
@@ -405,7 +405,7 @@ s32 MenuCtrl_IsResultOk(void);
 u32 MenuCtrl_GetIndex(void);
 u16 *MenuCtrl_GetChosenItems(void);
 void *PlayerData_GetCurrent(void);
-void *func_020986d4(void *p);
+void *PlayerData_getPatterns(void *p);
 void *PlayerPatterns_getPatternOrder(void *p);
 u32 PatternOrder_getSlot(void *p, u32 i);
 void PatternSrc_Swap(s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -831,7 +831,7 @@ void SpNpcBookerTalk::runScript01() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(g)), idx);
+        s32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Copy(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
         buf[0] = 0x18;
@@ -852,7 +852,7 @@ void SpNpcBookerTalk::runScript02() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *g = PlayerData_GetCurrent();
         u32 idx = MenuCtrl_GetIndex();
-        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(g)), idx);
+        u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(g)), idx);
         PatternSrc_Swap(9, t, 5, 0, 1);
         func_02003ddc(&unk_ac->unk_514, 0x50, 0x7f, 0);
         u32 x;

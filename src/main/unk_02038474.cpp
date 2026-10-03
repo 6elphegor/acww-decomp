@@ -97,64 +97,64 @@ struct CommManager {
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of this unit, in vtable order
 
-class Unk_020d9124 {
+class ChatQuickMsgInput {
 public:
-    Unk_020d9124();
-    virtual ~Unk_020d9124();
-    void func_02038764();
-    void func_0203877c();
-    void func_02038780();
+    ChatQuickMsgInput();
+    virtual ~ChatQuickMsgInput();
+    void update();
+    void shutdown();
+    void init();
 };
 
 // 0x34-byte buffer
-class Unk_020d917c : public MsgString {
+class ChatBalloonText : public MsgString {
 public:
-    Unk_020d917c();
-    virtual ~Unk_020d917c();
+    ChatBalloonText();
+    virtual ~ChatBalloonText();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
     /* 0x14 */ u8 unk_14[0x20];
 };
 
 // Text (vtable 0x020d9134), 0x10 bytes
-class Unk_020d9134 : public MsgStringBase {
+class ChatBalloonName : public MsgStringBase {
 public:
-    Unk_020d9134();
-    virtual ~Unk_020d9134();
+    ChatBalloonName();
+    virtual ~ChatBalloonName();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
     /* 0x04 */ u8 unk_04[9];
 };
 
 // Player slot, 0xb4 bytes (vtable 0x020d9194)
-class Unk_020d9194 : public UiWidget {
+class ChatBalloon : public UiWidget {
 public:
-    Unk_020d9194();
-    virtual ~Unk_020d9194();
+    ChatBalloon();
+    virtual ~ChatBalloon();
     virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0203900c();
-    void func_02039028();
-    void func_020390c8();
-    void func_020390e4();
-    void func_02039194();
-    void func_02039230();
-    void func_02039290();
-    void func_0203930c();
-    void func_0203934c();
-    void func_020393b4();
-    void func_020393f8();
-    void func_02039498();
-    void func_02039508();
-    void func_02039534();
-    void func_02039544();
-    void func_02039584();
-    BOOL func_020395bc();
-    BOOL func_020395dc();
-    void func_020395fc(s32 a, s32 b, s32 c);
-    void func_0203960c(StrBuf *a, MsgString *b, s32 c);
-    void func_02039630();
+    void destroyTextLabel();
+    void createTextLabel();
+    void destroyNameLabel();
+    void createNameLabel();
+    void fitToText();
+    void initSprites();
+    void execClose();
+    void enterClose();
+    void execShow();
+    void enterShow();
+    void execOpen();
+    void enterOpen();
+    void execHidden();
+    void enterHidden();
+    void reset();
+    void refreshLabelsUnk();
+    BOOL requestClose();
+    BOOL requestOpen();
+    void setup(s32 a, s32 b, s32 c);
+    void setMessage(StrBuf *a, MsgString *b, s32 c);
+    void updateSlideOffset();
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -166,8 +166,8 @@ public:
     /* 0x48 */ s32 unk_48;
     /* 0x4c */ s32 unk_4c;
     /* 0x50 */ s32 unk_50;
-    /* 0x54 */ Unk_020d917c unk_54;
-    /* 0x88 */ Unk_020d9134 unk_88;
+    /* 0x54 */ ChatBalloonText unk_54;
+    /* 0x88 */ ChatBalloonName unk_88;
     /* 0x98 */ TextLabel *unk_98;
     /* 0x9c */ TextLabel *unk_9c;
     /* 0xa0 */ s32 unk_a0;
@@ -178,76 +178,76 @@ public:
 };
 
 // Slot table (vtable 0x020d9114), 0x2f4 bytes
-class Unk_020d9114 {
+class ChatBalloonList {
 public:
-    Unk_020d9114();
-    virtual ~Unk_020d9114();
+    ChatBalloonList();
+    virtual ~ChatBalloonList();
 
-    void func_02038a1c();
-    void func_02038a58();
-    void func_02038a80();
-    void func_02038ab4();
-    void func_02038aec();
-    void func_02038b04();
-    BOOL func_02038b44(Unk_020d9194 *p);
-    BOOL func_02038b74(Unk_020d9194 *p);
-    void func_02038ba4();
-    void func_02038c10();
-    void func_02038c40();
-    BOOL func_02038ca8(Unk_020d9194 *p);
-    BOOL func_02038d28(Unk_020d9194 *p);
-    void func_02038d68(s32 idx);
-    s32 func_02038dd0(s32 idx);
-    s32 func_02038ddc(s32 idx);
-    void func_02038dfc(s32 idx, StrBuf *a, MsgString *b);
+    void clear();
+    void refreshLabelsUnk();
+    void draw();
+    void update();
+    void shutdown();
+    void init();
+    BOOL isShown(ChatBalloon *p);
+    BOOL isQueued(ChatBalloon *p);
+    void removeFinished();
+    void layoutShown();
+    void showQueued();
+    BOOL tryShow(ChatBalloon *p);
+    BOOL enqueue(ChatBalloon *p);
+    void dismiss(s32 idx);
+    s32 getColorIndex(s32 idx);
+    s32 toLocalIndex(s32 idx);
+    void post(s32 idx, StrBuf *a, MsgString *b);
 
-    /* 0x004 */ Unk_020d9194 unk_04[4];
-    /* 0x2d4 */ Unk_020d9194 *unk_2d4[4];
-    /* 0x2e4 */ Unk_020d9194 *unk_2e4[4];
+    /* 0x004 */ ChatBalloon unk_04[4];
+    /* 0x2d4 */ ChatBalloon *unk_2d4[4];
+    /* 0x2e4 */ ChatBalloon *unk_2e4[4];
 };
 
-typedef void (Unk_020d9194::*Unk_020d9194_Fn)();
+typedef void (ChatBalloon::*Unk_020d9194_Fn)();
 
 // Pointer + size view
-class Unk_020d914c : public EncodedStringBase {
+class EncodedStringBaseRef : public EncodedStringBase {
 public:
-    Unk_020d914c(u8 *data, u32 size);
-    virtual ~Unk_020d914c();
+    EncodedStringBaseRef(u8 *data, u32 size);
+    virtual ~EncodedStringBaseRef();
     virtual u32 capacity();
     virtual u8 *data();
     /* 0x04 */ u8 *unk_04;
     /* 0x08 */ u32 unk_08;
 };
 
-class Unk_020d9104 {
+class ChatBalloonReceiver {
 public:
-    Unk_020d9104();
-    virtual ~Unk_020d9104();
-    void func_020389dc();
-    void func_020389e4();
-    void func_020389e8();
+    ChatBalloonReceiver();
+    virtual ~ChatBalloonReceiver();
+    void update();
+    void shutdown();
+    void init();
 };
 
 // Main object (vtable 0x020d91b0)
-class Unk_020d91b0 : public GameProc {
+class ChatBalloonProc : public GameProc {
 public:
-    Unk_020d91b0();
-    virtual ~Unk_020d91b0();
+    ChatBalloonProc();
+    virtual ~ChatBalloonProc();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x050 */ Unk_020d9124 unk_50;
-    /* 0x054 */ Unk_020d9114 unk_54;
-    /* 0x348 */ Unk_020d9104 unk_348;
+    /* 0x050 */ ChatQuickMsgInput unk_50;
+    /* 0x054 */ ChatBalloonList unk_54;
+    /* 0x348 */ ChatBalloonReceiver unk_348;
 };
 
 // Buffer wrapping external memory
-class Unk_020d9164 : public EncodedString {
+class EncodedStringRef : public EncodedString {
 public:
-    Unk_020d9164(u8 *data, u32 size);
-    virtual ~Unk_020d9164();
+    EncodedStringRef(u8 *data, u32 size);
+    virtual ~EncodedStringRef();
     virtual u32 capacity();
     virtual u8 *data();
     /* 0x10 */ u8 *unk_10;
@@ -256,8 +256,8 @@ public:
 
 // Data
 extern const u8 data_020c8ce4;  // first .rodata object of the next unit
-extern u8 data_021c302c[0x29];
-extern const u32 data_020c8cd4[4];
+extern u8 sChatBalloonSyncBuf[0x29];
+extern const u32 sChatBalloonNameSeqs[4];
 
 
 extern "C" {
@@ -273,22 +273,22 @@ u8 *_ZN11CommManager10getSyncVarEj(CommManager *p, s32 i);
 BOOL TalkRequest_IsActive();
 BOOL func_02011880();
 s32 Scene_GetCurrent();
-void String_Load2d(Unk_020d917c *buf, u8 *c, s32 z);
+void String_Load2d(ChatBalloonText *buf, u8 *c, s32 z);
 void Snd_PlaySe(u32 a);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *p, Unk_020e1c64 *t);
 void StrBuf_ClearAlt(void *p);
-void StrBuf_AsciiToGame(Unk_020d914c *p, void *q);
-void StrBuf_GameToAscii(Unk_020d9134 *a, Unk_020d914c *b);
+void StrBuf_AsciiToGame(EncodedStringBaseRef *p, void *q);
+void StrBuf_GameToAscii(ChatBalloonName *a, EncodedStringBaseRef *b);
 void CommSyncVar_SetVar(s32 a, s32 b, s32 c, s32 d);
 u32 CommSyncVar_GetVarSize(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-void func_020385ec(void *self);
-void func_020388fc();
-u8 func_0203889c(s32 idx);
-void func_020389a0(s32 i, Unk_020d9194 *x);
-void func_02038fe8(s32 idx, StrBuf *a, MsgString *b);
+void ChatQuickMsg_CheckButtons(void *self);
+void ChatBalloon_ReceiveRemote();
+u8 ChatBalloon_ReadSyncVar(s32 idx);
+void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x);
+void ChatBalloon_Post(s32 idx, StrBuf *a, MsgString *b);
 TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
 s32 func_0209c38c(s32 a, s32 b);
@@ -327,39 +327,39 @@ static inline BOOL Unk_02038f10_Pos(s32 v) {
     return FALSE;
 }
 
-Unk_020d917c::Unk_020d917c() { clear(); }
+ChatBalloonText::ChatBalloonText() { clear(); }
 
-Unk_020d917c::~Unk_020d917c() {}
+ChatBalloonText::~ChatBalloonText() {}
 
-u32 Unk_020d917c::vfunc_08() { return 0x21; }
+u32 ChatBalloonText::vfunc_08() { return 0x21; }
 
-u8 *Unk_020d917c::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *ChatBalloonText::vfunc_0c() { return (u8 *)this + 0x12; }
 
-Unk_020d9164::Unk_020d9164(u8 *data, u32 size) : unk_10(data), unk_14(size) {}
+EncodedStringRef::EncodedStringRef(u8 *data, u32 size) : unk_10(data), unk_14(size) {}
 
-Unk_020d9164::~Unk_020d9164() {}
+EncodedStringRef::~EncodedStringRef() {}
 
-u32 Unk_020d9164::capacity() { return unk_14; }
+u32 EncodedStringRef::capacity() { return unk_14; }
 
-u8 *Unk_020d9164::data() { return unk_10; }
+u8 *EncodedStringRef::data() { return unk_10; }
 
-Unk_020d9134::Unk_020d9134() { StrBuf_Clear(this); }
+ChatBalloonName::ChatBalloonName() { StrBuf_Clear(this); }
 
-Unk_020d9134::~Unk_020d9134() {}
+ChatBalloonName::~ChatBalloonName() {}
 
-u32 Unk_020d9134::vfunc_08() { return 9; }
+u32 ChatBalloonName::vfunc_08() { return 9; }
 
-u8 *Unk_020d9134::vfunc_0c() { return (u8 *)this + 4; }
+u8 *ChatBalloonName::vfunc_0c() { return (u8 *)this + 4; }
 
-Unk_020d914c::Unk_020d914c(u8 *data, u32 size) : unk_04(data), unk_08(size) {}
+EncodedStringBaseRef::EncodedStringBaseRef(u8 *data, u32 size) : unk_04(data), unk_08(size) {}
 
-Unk_020d914c::~Unk_020d914c() {}
+EncodedStringBaseRef::~EncodedStringBaseRef() {}
 
-u32 Unk_020d914c::capacity() { return unk_08; }
+u32 EncodedStringBaseRef::capacity() { return unk_08; }
 
-u8 *Unk_020d914c::data() { return unk_04; }
+u8 *EncodedStringBaseRef::data() { return unk_04; }
 
-Unk_020d9194::Unk_020d9194()
+ChatBalloon::ChatBalloon()
     : unk_0c(0), unk_10(0), unk_14(0), unk_18(0), unk_44(0), unk_48(0), unk_4c(0), unk_50(0) {
     unk_98 = 0;
     unk_9c = 0;
@@ -370,12 +370,12 @@ Unk_020d9194::Unk_020d9194()
     unk_b0 = 0;
 }
 
-Unk_020d9194::~Unk_020d9194() {
-    func_020390c8();
-    func_0203900c();
+ChatBalloon::~ChatBalloon() {
+    destroyNameLabel();
+    destroyTextLabel();
 }
 
-void Unk_020d9194::draw() {
+void ChatBalloon::draw() {
     if (unk_b0 != 0) {
         if (unk_0c == 0) {
             void *h = unk_30.getCell();
@@ -395,12 +395,12 @@ void Unk_020d9194::draw() {
     }
 }
 
-void Unk_020d9194::vfunc_0c() {
+void ChatBalloon::vfunc_0c() {
     if (unk_a8 > 0) {
         unk_a8--;
     }
-    static Unk_020d9194_Fn tbl[4] = {&Unk_020d9194::func_02039508, &Unk_020d9194::func_020393f8,
-                                     &Unk_020d9194::func_0203934c, &Unk_020d9194::func_02039290};
+    static Unk_020d9194_Fn tbl[4] = {&ChatBalloon::execHidden, &ChatBalloon::execOpen,
+                                     &ChatBalloon::execShow, &ChatBalloon::execClose};
     (this->*tbl[unk_a0])();
     if (unk_a0 != 0) {
         if (unk_0c != 0) {
@@ -410,25 +410,25 @@ void Unk_020d9194::vfunc_0c() {
     }
 }
 
-// Data creation order: with the record data_020d90d4 in the unit, the original order needs the definitions in exactly
+// Data creation order: with the record sChatBalloonProcProfile in the unit, the original order needs the definitions in exactly
 // this sequence after vfunc_0c.
 // Data order: this unit is placed object by object (see object_order.txt).
-const u32 data_020c8cd4[4] = {7, 7, 8, 9};
-u8 data_021c302c[0x29];
-extern const u32 data_020c8cc4[4];
-const u32 data_020c8cc4[4] = {10, 11, 12, 13};
-s32 data_021c3000;
-// 0x020d90d4: scene registration record of func_020385d0 (referenced only from the table word 0x020e2158)
-extern "C" Unk_020d91b0 *func_020385d0();
+const u32 sChatBalloonNameSeqs[4] = {7, 7, 8, 9};
+u8 sChatBalloonSyncBuf[0x29];
+extern const u32 sChatBalloonTextSeqs[4];
+const u32 sChatBalloonTextSeqs[4] = {10, 11, 12, 13};
+s32 sChatQuickMsgCooldown;
+// 0x020d90d4: scene registration record of ChatBalloonProc_Create (referenced only from the table word 0x020e2158)
+extern "C" ChatBalloonProc *ChatBalloonProc_Create();
 struct Unk_020d90d4_Rec {
-    Unk_020d91b0 *(*unk_00)();
+    ChatBalloonProc *(*unk_00)();
     s16 unk_04;
     s16 unk_06;
 };
-Unk_020d90d4_Rec data_020d90d4 = {func_020385d0, 0xcb, 0x8d};
-Unk_020d9114 *data_021c3008;
+Unk_020d90d4_Rec sChatBalloonProcProfile = {ChatBalloonProc_Create, 0xcb, 0x8d};
+ChatBalloonList *sChatBalloonList;
 
-void Unk_020d9194::func_02039630() {
+void ChatBalloon::updateSlideOffset() {
     s32 a, t, t2;
     if (unk_0c == 0) {
         a = MenuCtrl_GetTransitionProgressOrFull();
@@ -443,20 +443,20 @@ void Unk_020d9194::func_02039630() {
     }
 }
 
-void Unk_020d9194::func_0203960c(StrBuf *a, MsgString *b, s32 c) {
+void ChatBalloon::setMessage(StrBuf *a, MsgString *b, s32 c) {
     StrBuf_Copy((StrBuf *)&unk_88, a);
     unk_54.copy(b);
     unk_10 = c + 5;
 }
 
-void Unk_020d9194::func_020395fc(s32 a, s32 b, s32 c) {
+void ChatBalloon::setup(s32 a, s32 b, s32 c) {
     unk_0c = a;
     unk_14 = b;
     unk_18 = c;
-    func_02039230();
+    initSprites();
 }
 
-BOOL Unk_020d9194::func_020395dc() {
+BOOL ChatBalloon::requestOpen() {
     BOOL r = unk_a0 == 0 ? TRUE : FALSE;
     if (r) {
         unk_ac = 2;
@@ -464,7 +464,7 @@ BOOL Unk_020d9194::func_020395dc() {
     return r;
 }
 
-BOOL Unk_020d9194::func_020395bc() {
+BOOL ChatBalloon::requestClose() {
     BOOL r = unk_a0 != 0 ? TRUE : FALSE;
     if (r) {
         unk_ac = 0;
@@ -472,7 +472,7 @@ BOOL Unk_020d9194::func_020395bc() {
     return r;
 }
 
-void Unk_020d9194::func_02039584() {
+void ChatBalloon::refreshLabelsUnk() {
     if (unk_98 != NULL) {
         unk_98->unk_50 = 3;
         unk_98->requestRedraw();
@@ -483,32 +483,32 @@ void Unk_020d9194::func_02039584() {
     }
 }
 
-void Unk_020d9194::func_02039544() {
+void ChatBalloon::reset() {
     unk_54.clear();
     StrBuf_Clear(&unk_88);
-    func_020390c8();
-    func_0203900c();
+    destroyNameLabel();
+    destroyTextLabel();
     unk_a4 = 0;
     unk_a8 = 0;
     unk_ac = 0;
-    func_02039534();
+    enterHidden();
 }
 
-void Unk_020d9194::func_02039534() {
+void ChatBalloon::enterHidden() {
     unk_a0 = 0;
     unk_b0 = 0;
 }
 
-void Unk_020d9194::func_02039508() {
+void ChatBalloon::execHidden() {
     if (unk_ac != 0) {
-        func_020390e4();
-        func_02039028();
-        func_02039194();
-        func_02039498();
+        createNameLabel();
+        createTextLabel();
+        fitToText();
+        enterOpen();
     }
 }
 
-void Unk_020d9194::func_02039498() {
+void ChatBalloon::enterOpen() {
     s32 a, b;
     unk_a0 = 1;
     unk_b0 = 1;
@@ -529,7 +529,7 @@ void Unk_020d9194::func_02039498() {
     }
 }
 
-void Unk_020d9194::func_020393f8() {
+void ChatBalloon::execOpen() {
     s32 a, b, c;
     if (unk_0c == 0) {
         a = func_0209c38c(0x136, 4) + 2;
@@ -554,11 +554,11 @@ void Unk_020d9194::func_020393f8() {
     unk_a4--;
     if (unk_a4 <= 0) {
         unk_4c = 0;
-        func_020393b4();
+        enterShow();
     }
 }
 
-void Unk_020d9194::func_020393b4() {
+void ChatBalloon::enterShow() {
     s32 t;
     unk_a0 = 2;
     unk_b0 = 1;
@@ -570,7 +570,7 @@ void Unk_020d9194::func_020393b4() {
     unk_a4 = t;
 }
 
-void Unk_020d9194::func_0203934c() {
+void ChatBalloon::execShow() {
     s32 t;
     if (unk_0c == 0) {
         t = func_0209c38c(0x137, 3) + 6;
@@ -583,11 +583,11 @@ void Unk_020d9194::func_0203934c() {
         unk_ac = 0;
     }
     if (unk_ac == 0) {
-        func_0203930c();
+        enterClose();
     }
 }
 
-void Unk_020d9194::func_0203930c() {
+void ChatBalloon::enterClose() {
     s32 t;
     unk_a0 = 3;
     unk_b0 = 1;
@@ -599,7 +599,7 @@ void Unk_020d9194::func_0203930c() {
     unk_a4 = t;
 }
 
-void Unk_020d9194::func_02039290() {
+void ChatBalloon::execClose() {
     s32 t;
     if (unk_0c == 0) {
         t = func_0209c38c(0x138, 3) + 0xb;
@@ -609,9 +609,9 @@ void Unk_020d9194::func_02039290() {
     unk_4c += t;
     unk_a4--;
     if (unk_a4 <= 0) {
-        func_020390c8();
-        func_0203900c();
-        func_02039534();
+        destroyNameLabel();
+        destroyTextLabel();
+        enterHidden();
         if (unk_0c == 0) {
             t = func_0209c38c(0x138, 4);
         } else {
@@ -621,7 +621,7 @@ void Unk_020d9194::func_02039290() {
     }
 }
 
-void Unk_020d9194::func_02039230() {
+void ChatBalloon::initSprites() {
     u8 *t = data_020d467c + unk_18 * 8;
     if (unk_0c != 0) {
         _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(&unk_1c, data_020d467c + unk_14 * 8);
@@ -633,7 +633,7 @@ void Unk_020d9194::func_02039230() {
     _ZN10SpriteAnim8setSpeedEi(&unk_30, 0);
 }
 
-void Unk_020d9194::func_02039194() {
+void ChatBalloon::fitToText() {
     u32 w, n, w2, n2;
     s32 pad, hi, lo;
     if (unk_98 != NULL) {
@@ -665,7 +665,7 @@ void Unk_020d9194::func_02039194() {
     }
 }
 
-void Unk_020d9194::func_020390e4() {
+void ChatBalloon::createNameLabel() {
     if (unk_0c != 0 && unk_98 == NULL) {
         unk_98 = MsgTextLabel_CreateVram((*(volatile s32 *)&unk_0c << 3) + 0x1c0, 8, 2);
         if (unk_98 != NULL) {
@@ -686,14 +686,14 @@ void Unk_020d9194::func_020390e4() {
     }
 }
 
-void Unk_020d9194::func_020390c8() {
+void ChatBalloon::destroyNameLabel() {
     if (unk_98 != NULL) {
         MsgTextLabel_Destroy(unk_98);
         unk_98 = NULL;
     }
 }
 
-void Unk_020d9194::func_02039028() {
+void ChatBalloon::createTextLabel() {
     if (unk_9c == NULL) {
         unk_9c = MsgTextLabel_CreateVram((unk_0c << 6) + 0xc0, 0x14, 2);
         if (unk_9c != NULL) {
@@ -714,29 +714,29 @@ void Unk_020d9194::func_02039028() {
     }
 }
 
-void Unk_020d9194::func_0203900c() {
+void ChatBalloon::destroyTextLabel() {
     if (unk_9c != NULL) {
         MsgTextLabel_Destroy(unk_9c);
         unk_9c = NULL;
     }
 }
 
-extern "C" void func_02038fe8(s32 idx, StrBuf *a, MsgString *b) { data_021c3008->func_02038dfc(idx, a, b); }
+extern "C" void ChatBalloon_Post(s32 idx, StrBuf *a, MsgString *b) { sChatBalloonList->post(idx, a, b); }
 
-extern "C" void func_02038fd4(s32 idx) { data_021c3008->func_02038d68(idx); }
+extern "C" void ChatBalloon_Dismiss(s32 idx) { sChatBalloonList->dismiss(idx); }
 
-extern "C" void func_02038fb0(void) {
+extern "C" void ChatBalloon_DismissAll(void) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        data_021c3008->func_02038d68(i);
+        sChatBalloonList->dismiss(i);
     }
 }
 
-extern "C" BOOL func_02038f60(void) {
+extern "C" BOOL ChatBalloon_IsRemoteBusy(void) {
     BOOL r = FALSE;
     s32 i = 0;
     for (; i < 4; i++) {
-        Unk_020d9194 *p = &data_021c3008->unk_04[i];
+        ChatBalloon *p = &sChatBalloonList->unk_04[i];
         if ((p->unk_0c != 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
             r = TRUE;
             break;
@@ -745,11 +745,11 @@ extern "C" BOOL func_02038f60(void) {
     return r;
 }
 
-extern "C" BOOL func_02038f10(void) {
+extern "C" BOOL ChatBalloon_IsOwnBusy(void) {
     BOOL r = FALSE;
     s32 i = 0;
     for (; i < 4; i++) {
-        Unk_020d9194 *p = &data_021c3008->unk_04[i];
+        ChatBalloon *p = &sChatBalloonList->unk_04[i];
         if ((p->unk_0c == 0 && p->unk_a0 != 0) || Unk_02038f10_Pos(p->unk_a8)) {
             r = TRUE;
             break;
@@ -758,11 +758,11 @@ extern "C" BOOL func_02038f10(void) {
     return r;
 }
 
-extern "C" void func_02038f00(void) { data_021c3008->func_02038a58(); }
+extern "C" void ChatBalloon_RefreshLabelsUnk(void) { sChatBalloonList->refreshLabelsUnk(); }
 
-extern "C" void func_02038ef0(void) { data_021c3008->func_02038a1c(); }
+extern "C" void ChatBalloon_ClearAll(void) { sChatBalloonList->clear(); }
 
-Unk_020d9114::Unk_020d9114() {
+ChatBalloonList::ChatBalloonList() {
     s32 i;
     for (i = 0; i < 4; i++) {
         unk_2d4[i] = NULL;
@@ -770,56 +770,56 @@ Unk_020d9114::Unk_020d9114() {
     }
 }
 
-Unk_020d9114::~Unk_020d9114() {}
+ChatBalloonList::~ChatBalloonList() {}
 
-void Unk_020d9114::func_02038dfc(s32 idx, StrBuf *a, MsgString *b) {
+void ChatBalloonList::post(s32 idx, StrBuf *a, MsgString *b) {
     if (idx <= 4) {
-        Unk_020d9194 *p = &unk_04[func_02038ddc(idx)];
-        if (func_02038d28(p)) {
-            p->func_0203960c(a, b, func_02038dd0(idx));
+        ChatBalloon *p = &unk_04[toLocalIndex(idx)];
+        if (enqueue(p)) {
+            p->setMessage(a, b, getColorIndex(idx));
             if (p->unk_0c == 0) {
-                func_020389a0(idx, p);
+                ChatBalloon_SendSyncVar(idx, p);
             }
         }
     }
 }
 
-s32 Unk_020d9114::func_02038ddc(s32 idx) {
+s32 ChatBalloonList::toLocalIndex(s32 idx) {
     return (idx - gCommManager->unk_64 + 4) % 4;
 }
 
-s32 Unk_020d9114::func_02038dd0(s32 idx) {
+s32 ChatBalloonList::getColorIndex(s32 idx) {
     if (idx == 4) {
         idx = 0;
     }
     return idx;
 }
 
-void Unk_020d9114::func_02038d68(s32 idx) {
+void ChatBalloonList::dismiss(s32 idx) {
     s32 i;
     if (idx <= 4) {
-        s32 v = func_02038ddc(idx);
+        s32 v = toLocalIndex(idx);
         for (i = 0; i < 4; i++) {
-            Unk_020d9194 *p = unk_2d4[i];
+            ChatBalloon *p = unk_2d4[i];
             if (p != NULL && v == p->unk_0c) {
                 unk_2d4[i] = NULL;
                 break;
             }
         }
         for (i = 0; i < 4; i++) {
-            Unk_020d9194 *p = unk_2e4[i];
+            ChatBalloon *p = unk_2e4[i];
             if (p != NULL && v == p->unk_0c) {
-                p->func_020395bc();
+                p->requestClose();
                 break;
             }
         }
     }
 }
 
-BOOL Unk_020d9114::func_02038d28(Unk_020d9194 *p) {
+BOOL ChatBalloonList::enqueue(ChatBalloon *p) {
     BOOL ok = FALSE;
     s32 i;
-    if (func_02038b74(p)) {
+    if (isQueued(p)) {
         ok = TRUE;
     } else {
         for (i = 0; i < 4; i++) {
@@ -833,11 +833,11 @@ BOOL Unk_020d9114::func_02038d28(Unk_020d9194 *p) {
     return ok;
 }
 
-BOOL Unk_020d9114::func_02038ca8(Unk_020d9194 *p) {
+BOOL ChatBalloonList::tryShow(ChatBalloon *p) {
     BOOL result = FALSE;
     s32 z, i;
-    if (func_02038b44(p)) {
-        p->func_020395bc();
+    if (isShown(p)) {
+        p->requestClose();
     } else if (!IsPositive(p->unk_a8)) {
         for (i = 3, z = 0; i >= 0; i--) {
             if (unk_2e4[i]) {
@@ -851,8 +851,8 @@ BOOL Unk_020d9114::func_02038ca8(Unk_020d9194 *p) {
                 }
                 p->unk_48 = z;
                 p->unk_44 = z;
-                p->func_02039630();
-                p->func_020395dc();
+                p->updateSlideOffset();
+                p->requestOpen();
                 result = TRUE;
                 break;
             }
@@ -861,10 +861,10 @@ BOOL Unk_020d9114::func_02038ca8(Unk_020d9194 *p) {
     return result;
 }
 
-void Unk_020d9114::func_02038c40() {
+void ChatBalloonList::showQueued() {
     s32 i, j, k;
     for (i = 0; i < 4; i++) {
-        if (unk_2d4[i] && func_02038ca8(unk_2d4[i])) {
+        if (unk_2d4[i] && tryShow(unk_2d4[i])) {
             unk_2d4[i] = NULL;
         }
     }
@@ -881,10 +881,10 @@ void Unk_020d9114::func_02038c40() {
     }
 }
 
-void Unk_020d9114::func_02038c10() {
+void ChatBalloonList::layoutShown() {
     s32 i, z;
     for (i = 3, z = 0; i >= 0; i--) {
-        Unk_020d9194 *p = unk_2e4[i];
+        ChatBalloon *p = unk_2e4[i];
         if (p && p->unk_0c) {
             p->unk_44 = z;
             z += 0x10;
@@ -892,10 +892,10 @@ void Unk_020d9114::func_02038c10() {
     }
 }
 
-void Unk_020d9114::func_02038ba4() {
+void ChatBalloonList::removeFinished() {
     s32 i, j, k;
     for (i = 0; i < 4; i++) {
-        Unk_020d9194 *p = unk_2e4[i];
+        ChatBalloon *p = unk_2e4[i];
         if (p && p->unk_a0 == 0 && p->unk_ac == 0) {
             unk_2e4[i] = NULL;
         }
@@ -913,7 +913,7 @@ void Unk_020d9114::func_02038ba4() {
     }
 }
 
-BOOL Unk_020d9114::func_02038b74(Unk_020d9194 *p) {
+BOOL ChatBalloonList::isQueued(ChatBalloon *p) {
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -925,7 +925,7 @@ BOOL Unk_020d9114::func_02038b74(Unk_020d9194 *p) {
     return r;
 }
 
-BOOL Unk_020d9114::func_02038b44(Unk_020d9194 *p) {
+BOOL ChatBalloonList::isShown(ChatBalloon *p) {
     BOOL r = FALSE;
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -937,70 +937,70 @@ BOOL Unk_020d9114::func_02038b44(Unk_020d9194 *p) {
     return r;
 }
 
-void Unk_020d9114::func_02038b04() {
+void ChatBalloonList::init() {
     s32 i;
-    data_021c3008 = this;
+    sChatBalloonList = this;
     for (i = 0; i < 4; i++) {
-        unk_04[i].func_020395fc(i, data_020c8cd4[i], data_020c8cc4[i]);
+        unk_04[i].setup(i, sChatBalloonNameSeqs[i], sChatBalloonTextSeqs[i]);
     }
 }
 
-void Unk_020d9114::func_02038aec() {
-    func_02038a1c();
-    data_021c3008 = NULL;
+void ChatBalloonList::shutdown() {
+    clear();
+    sChatBalloonList = NULL;
 }
 
-void Unk_020d9114::func_02038ab4() {
+void ChatBalloonList::update() {
     s32 i;
-    func_02038c40();
-    func_02038c10();
+    showQueued();
+    layoutShown();
     for (i = 0; i < 4; i++) {
         unk_04[i].vfunc_0c();
     }
-    func_02038ba4();
+    removeFinished();
 }
 
-void Unk_020d9114::func_02038a80() {
+void ChatBalloonList::draw() {
     s32 i;
     for (i = 3; i >= 0; i--) {
-        Unk_020d9194 *p = unk_2e4[i];
+        ChatBalloon *p = unk_2e4[i];
         if (p) {
-            p->func_02039630();
+            p->updateSlideOffset();
             p->draw();
         }
     }
 }
 
-void Unk_020d9114::func_02038a58() {
+void ChatBalloonList::refreshLabelsUnk() {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (unk_2e4[i]) {
-            unk_2e4[i]->func_02039584();
+            unk_2e4[i]->refreshLabelsUnk();
         }
     }
 }
 
-void Unk_020d9114::func_02038a1c() {
+void ChatBalloonList::clear() {
     s32 i;
     for (i = 0; i < 4; i++) {
-        unk_04[i].func_02039544();
+        unk_04[i].reset();
         unk_2d4[i] = NULL;
         unk_2e4[i] = NULL;
     }
 }
 
-// Unk_020d9104 (vtable 0x020d9104)
-Unk_020d9104::Unk_020d9104() {}
+// ChatBalloonReceiver (vtable 0x020d9104)
+ChatBalloonReceiver::ChatBalloonReceiver() {}
 
-Unk_020d9104::~Unk_020d9104() {}
+ChatBalloonReceiver::~ChatBalloonReceiver() {}
 
-void Unk_020d9104::func_020389e8() {}
+void ChatBalloonReceiver::init() {}
 
-void Unk_020d9104::func_020389e4() {}
+void ChatBalloonReceiver::shutdown() {}
 
-void Unk_020d9104::func_020389dc() { func_020388fc(); }
+void ChatBalloonReceiver::update() { ChatBalloon_ReceiveRemote(); }
 
-extern "C" void func_020389a0(s32 i, Unk_020d9194 *x) {
+extern "C" void ChatBalloon_SendSyncVar(s32 i, ChatBalloon *x) {
     if (i < 4) {
         CommManager *g = gCommManager;
         if (_ZN11CommManager8isOnlineEv(g) && _ZN11CommManager12isSlotActiveEi(g, i)) {
@@ -1009,26 +1009,26 @@ extern "C" void func_020389a0(s32 i, Unk_020d9194 *x) {
     }
 }
 
-extern "C" void func_020388fc() {
+extern "C" void ChatBalloon_ReceiveRemote() {
     CommManager *g = gCommManager;
     s32 n = g->unk_64;
     s32 i;
     if (_ZN11CommManager8isOnlineEv(g)) {
         for (i = 0; i < 4; i++) {
-            if (i != n && _ZN11CommManager12isSlotActiveEi(g, i) && func_0203889c(i)) {
-                Unk_020d914c s((data_021c302c + 1), 8);
-                Unk_020d9164 b((data_021c302c + 9), 0x20);
-                Unk_020d9134 t;
-                Unk_020d917c u;
+            if (i != n && _ZN11CommManager12isSlotActiveEi(g, i) && ChatBalloon_ReadSyncVar(i)) {
+                EncodedStringBaseRef s((sChatBalloonSyncBuf + 1), 8);
+                EncodedStringRef b((sChatBalloonSyncBuf + 9), 0x20);
+                ChatBalloonName t;
+                ChatBalloonText u;
                 StrBuf_GameToAscii(&t, &s);
                 u.fromEncoded(&b, 0, 0);
-                func_02038fe8(i, (StrBuf *)&t, &u);
+                ChatBalloon_Post(i, (StrBuf *)&t, &u);
             }
         }
     }
 }
 
-extern "C" u8 func_0203889c(s32 idx) {
+extern "C" u8 ChatBalloon_ReadSyncVar(s32 idx) {
     u8 *p = _ZN11CommManager10getSyncVarEj(gCommManager, idx + 0x14);
     u8 c = *p;
     if (c != 0) {
@@ -1036,56 +1036,56 @@ extern "C" u8 func_0203889c(s32 idx) {
         if (r == 0x2e || r == 0xc || r == 0xd || r == 0xe || r == 0x2f) {
             c = 0;
         } else {
-            MI_CpuCopy8(p, data_021c302c, 0x29);
+            MI_CpuCopy8(p, sChatBalloonSyncBuf, 0x29);
         }
         MI_CpuCopy8((void *)&data_020c8ce4, p, 1);
     }
     return c;
 }
 
-extern "C" void func_02038828(u8 *a, void *b, Unk_020d9194 *c) {
-    Unk_020d9164 buf((data_021c302c + 9), 0x20);
-    Unk_020d914c s((data_021c302c + 1), 8);
+extern "C" void ChatBalloon_PackSyncVar(u8 *a, void *b, ChatBalloon *c) {
+    EncodedStringRef buf((sChatBalloonSyncBuf + 9), 0x20);
+    EncodedStringBaseRef s((sChatBalloonSyncBuf + 1), 8);
     StrBuf_ClearAlt(&buf);
     StrBuf_ClearAlt(&s);
     buf.fromMsgString((MsgString *)((u8 *)c + 0x54));
     StrBuf_AsciiToGame(&s, (u8 *)c + 0x88);
-    data_021c302c[0] = 1;
-    MI_CpuCopy8(data_021c302c, a, CommSyncVar_GetVarSize(b));
+    sChatBalloonSyncBuf[0] = 1;
+    MI_CpuCopy8(sChatBalloonSyncBuf, a, CommSyncVar_GetVarSize(b));
 }
 
-extern "C" void func_020387b4() {
+extern "C" void ChatQuickMsg_PostWantToSave() {
     void *p = PlayerData_GetCurrent();
-    if (data_021c3000 <= 0 && p != NULL) {
+    if (sChatQuickMsgCooldown <= 0 && p != NULL) {
         Unk_020e1c64 t;
-        Unk_020d917c buf;
+        ChatBalloonText buf;
         u8 code;
         _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
         code = 0xef;
         String_Load2d(&buf, &code, 0);
-        func_02038fe8(gCommManager->unk_64, (StrBuf *)&t, &buf);
+        ChatBalloon_Post(gCommManager->unk_64, (StrBuf *)&t, &buf);
         Snd_PlaySe(0x32);
-        data_021c3000 = 0x1e;
+        sChatQuickMsgCooldown = 0x1e;
     }
 }
 
-// Unk_020d9124 (vtable 0x020d9124)
-Unk_020d9124::Unk_020d9124() {}
+// ChatQuickMsgInput (vtable 0x020d9124)
+ChatQuickMsgInput::ChatQuickMsgInput() {}
 
-Unk_020d9124::~Unk_020d9124() {}
+ChatQuickMsgInput::~ChatQuickMsgInput() {}
 
-void Unk_020d9124::func_02038780() {}
+void ChatQuickMsgInput::init() {}
 
-void Unk_020d9124::func_0203877c() {}
+void ChatQuickMsgInput::shutdown() {}
 
-void Unk_020d9124::func_02038764() {
-    if (data_021c3000 > 0) {
-        data_021c3000--;
+void ChatQuickMsgInput::update() {
+    if (sChatQuickMsgCooldown > 0) {
+        sChatQuickMsgCooldown--;
     }
-    func_020385ec(this);
+    ChatQuickMsg_CheckButtons(this);
 }
 
-extern "C" void func_020385ec(void *self) {
+extern "C" void ChatQuickMsg_CheckButtons(void *self) {
     BOOL a, ready, modeOk, any;
     CommManager *g;
     BOOL b, c, d, e;
@@ -1133,8 +1133,8 @@ extern "C" void func_020385ec(void *self) {
     } else {
         idle = TRUE;
     }
-    if (data_021c3000 <= 0 && modeOk && any && ready && idle) {
-        Unk_020d917c buf;
+    if (sChatQuickMsgCooldown <= 0 && modeOk && any && ready && idle) {
+        ChatBalloonText buf;
         s32 code;
         BOOL skip = FALSE;
         if (a) {
@@ -1158,47 +1158,47 @@ extern "C" void func_020385ec(void *self) {
             String_Load2d(&buf, &ch, 0);
             Unk_020e1c64 t;
             _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), &t);
-            func_02038fe8(g->unk_64, (StrBuf *)&t, &buf);
+            ChatBalloon_Post(g->unk_64, (StrBuf *)&t, &buf);
             Snd_PlaySe(0x32);
-            data_021c3000 = 0x1e;
+            sChatQuickMsgCooldown = 0x1e;
         }
     }
 }
 
-extern "C" Unk_020d91b0 *func_020385d0() { return new Unk_020d91b0(); }
+extern "C" ChatBalloonProc *ChatBalloonProc_Create() { return new ChatBalloonProc(); }
 
-Unk_020d91b0::Unk_020d91b0() {}
+ChatBalloonProc::ChatBalloonProc() {}
 
-Unk_020d91b0::~Unk_020d91b0() {}
+ChatBalloonProc::~ChatBalloonProc() {}
 
-BOOL Unk_020d91b0::vfunc_00() {
-    unk_50.func_02038780();
-    unk_54.func_02038b04();
-    unk_348.func_020389e8();
+BOOL ChatBalloonProc::vfunc_00() {
+    unk_50.init();
+    unk_54.init();
+    unk_348.init();
     return TRUE;
 }
 
-BOOL Unk_020d91b0::onExecute() {
-    unk_50.func_02038764();
+BOOL ChatBalloonProc::onExecute() {
+    unk_50.update();
     if (func_02011880()) {
-        unk_54.func_02038ab4();
+        unk_54.update();
     }
-    unk_348.func_020389dc();
+    unk_348.update();
     return TRUE;
 }
 
-BOOL Unk_020d91b0::onDraw() {
+BOOL ChatBalloonProc::onDraw() {
     if (func_02011880()) {
-        unk_54.func_02038a80();
+        unk_54.draw();
     }
     return TRUE;
 }
 
 // Main object
-BOOL Unk_020d91b0::vfunc_0c() {
-    unk_348.func_020389e4();
-    unk_54.func_02038aec();
-    unk_50.func_0203877c();
+BOOL ChatBalloonProc::vfunc_0c() {
+    unk_348.shutdown();
+    unk_54.shutdown();
+    unk_50.shutdown();
     return TRUE;
 }
 

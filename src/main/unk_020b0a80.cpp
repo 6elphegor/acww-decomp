@@ -363,7 +363,7 @@ void Field_ResetActions(void);
 }
 
 extern "C" {
-void func_020380e0(void);
+void CommCaution_LoadMessages(void);
 }
 
 extern "C" {
@@ -375,7 +375,7 @@ void Random_SeedGlobal(void);
 }
 
 extern "C" {
-void func_0206d770(void);
+void Main_InitNop(void);
 }
 
 extern "C" {
@@ -590,7 +590,7 @@ extern "C" void Main_Init(void) {
     func_020e7d2c();
     Clock_Init();
     Field_ResetActions();
-    func_020380e0();
+    CommCaution_LoadMessages();
     gProfileTable = (u32)sProfileTableMain;
     func_02099214();
     Random_SeedGlobal();
@@ -598,7 +598,7 @@ extern "C" void Main_Init(void) {
     *(vu32 *)0x40004cc = 0x7fff;
     *(vu32 *)0x40004c0 = 0x7fff;
     *(vu32 *)0x40004c4 = 0;
-    func_0206d770();
+    Main_InitNop();
     func_0209cb0c();
     OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
 }

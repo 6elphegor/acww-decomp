@@ -197,7 +197,7 @@ void func_02065c34(void *p, u8 v);
 void _ZN6LetterC1Ev(void *p);
 void *_ZN6LetterD1Ev(void *p);
 void *_ZN15MenuLabelButtonD1Ev(void *p);
-void *_ZN12Unk_0206d0a0D1Ev(void *p);
+void *_ZN14LetterRendererD1Ev(void *p);
 void *_ZN16MenuErrorMessageD1Ev(void *p);
 void *_ZN15PopupChoiceMenuD1Ev(void *p);
 void *_ZN14MenuCursorBuf0D1Ev(void *p);
@@ -207,10 +207,10 @@ void *_ZN11InventoryBgD1Ev(void *p);
 void *_ZN10LetterGridD1Ev(void *p);
 void *_ZN17InventoryItemGridD1Ev(void *p);
 void func_02065e70(void *dst, void *src);
-void _ZN12Unk_0206d0a013func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_0206d0a013func_0206d394Ev(void *p);
-void _ZN12Unk_0206d0a013func_0206d39cEi(void *p, s32 a);
-void _ZN12Unk_0206d0a0C1Ev(void *p);
+void _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer13func_0206d394Ev(void *p);
+void _ZN14LetterRenderer13func_0206d39cEi(void *p, s32 a);
+void _ZN14LetterRendererC1Ev(void *p);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
@@ -253,7 +253,7 @@ u16 *_ZN10PlayerData6getHatEv(void *o);
 void _ZN10PlayerData8setShirtEPt(void *o, u16 *p);
 u16 *_ZN10PlayerData8getShirtEv(void *o);
 u16 *_ZN10PlayerData11getHeldItemEv(void *o);
-void *_ZN10PlayerData13func_02098750Ev(void *p);
+void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 Pocket_FindEmpty();
 s32 Inventory_FindEmptyLetter();
 s32 Scene_InHouseRoom();
@@ -560,7 +560,7 @@ class CursorMotion { public: ~CursorMotion(); u8 pad[0x18]; };
 class MenuCursorBuf0 { public: ~MenuCursorBuf0(); u8 pad[0x64]; };
 class PopupChoiceMenu { public: ~PopupChoiceMenu(); u8 pad[0x2f4]; };
 class MenuErrorMessage { public: ~MenuErrorMessage(); u8 pad[0x108]; };
-class Unk_0206d0a0 { public: ~Unk_0206d0a0(); u8 pad[0x210]; };
+class LetterRenderer { public: ~LetterRenderer(); u8 pad[0x210]; };
 class MenuLabelButton { public: ~MenuLabelButton(); u8 pad[0x70]; };
 class Letter { public: ~Letter(); u8 pad[0x18]; };
 
@@ -832,7 +832,7 @@ public:
     /* 0x24fc */ PopupChoiceMenu m_24fc;
     /* 0x27f0 */ u8 unk_27f0[0xc];
     /* 0x27fc */ MenuErrorMessage m_27fc;
-    /* 0x2904 */ Unk_0206d0a0 m_2904;
+    /* 0x2904 */ LetterRenderer m_2904;
     /* 0x2b14 */ MenuLabelButton m_2b14;
     /* 0x2b84 */ u8 unk_2b84[0xc];
     /* 0x2b90 */ u32 unk_2b90;
@@ -916,7 +916,7 @@ inline PocketMenu::PocketMenu() {
     _ZN14MenuCursorBuf0C1Ev(unk_2498);
     _ZN15PopupChoiceMenuC1Ev(unk_24fc);
     _ZN16MenuErrorMessageC1Ev(unk_27fc);
-    _ZN12Unk_0206d0a0C1Ev(unk_2904);
+    _ZN14LetterRendererC1Ev(unk_2904);
     _ZN15MenuLabelButtonC1Ev(unk_2b14);
     unk_2b90 = 0;
     unk_2b94 = 0;
@@ -1186,7 +1186,7 @@ void PocketMenu::stateWaitSlideOut() {
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
     func_02065af0();
-    _ZN12Unk_0206d0a013func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
+    _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);
@@ -1255,7 +1255,7 @@ void PocketMenu::initPocketMenu() {
     unk_b5 = MenuCtrl_GetSavedSlot();
     _ZN15PopupChoiceMenu4initEiiPKc(unk_24fc, 3, 1, 0);
     _ZN19PopupChoiceMenuBody18buildAddresseeListEv(unk_24fc);
-    _ZN12Unk_0206d0a013func_0206d39cEi(unk_2904, 3);
+    _ZN14LetterRenderer13func_0206d39cEi(unk_2904, 3);
     unk_c2 = 0;
     ProcBase_GetParent(this);
     if (_ZN10MenuTabBar12isJustOpenedEv()) {
@@ -1268,7 +1268,7 @@ void PocketMenu::releaseResources() {
     InventoryBg_Exit(unk_de0);
     InventoryItemGrid_Exit(unk_358);
     PopupChoice_ForceClose(unk_24fc);
-    _ZN12Unk_0206d0a013func_0206d394Ev(unk_2904);
+    _ZN14LetterRenderer13func_0206d394Ev(unk_2904);
 }
 
 void PocketMenu::preInputUpdate() {
@@ -3357,11 +3357,11 @@ BOOL PocketMenu::isHoldingMoneyBag(s32 flag) {
 }
 
 s32 PocketMenu::getWalletBells() {
-    return _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), 0);
+    return _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 0);
 }
 
 void PocketMenu::setWalletBells(s32 v) {
-    func_02097ac4(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), v, 0);
+    func_02097ac4(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), v, 0);
     InventoryBg_StartBellRoll(unk_de0 + 0, 0);
 }
 

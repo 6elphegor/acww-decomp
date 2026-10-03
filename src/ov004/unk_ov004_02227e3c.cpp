@@ -307,9 +307,9 @@ struct Unk_020b6e10 {
     u8 pad[0x2a8];
 };
 
-struct Unk_020b6960 {
-    BOOL func_020b68ec(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL func_020b6928(Unk_020b6e10 *box);
+struct TouchPicker {
+    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(Unk_020b6e10 *box);
 };
 
 struct Unk_ov004_Scene_Entry {
@@ -387,7 +387,7 @@ extern s32 gGfxMainOnTop;
 extern u32 gBgHeap;
 s32 BoxCollider_Unregister(void *);
 s32 BoxCollider_Register(void *, s32, s32, s32, void *, s32, s32);
-Unk_020b6960 *Scene_GetCollision(void);
+TouchPicker *Scene_GetTouchPicker(void);
 s32 TalkRequest_SetTargetDone(void *);
 s32 func_0209c41c(void *, u32);
 s32 MenuCtrl_IsFinished(void);
@@ -482,7 +482,7 @@ BOOL RecycleBox::vfunc_00() {
 BOOL RecycleBox::onExecute() {
     updateState();
     execAct();
-    Scene_GetCollision()->func_020b6928((Unk_020b6e10 *)unk_370);
+    Scene_GetTouchPicker()->pushBox((Unk_020b6e10 *)unk_370);
     return TRUE;
 }
 
@@ -707,7 +707,7 @@ void RecycleBox::func_ov004_02227ea8(u32 a, u8 b) {}
 
 void RecycleBox::initCollision() {
     BoxCollider_Register(unk_2d4, 0x2000, 0x4000, 0x2000, (u8 *)this + 0x5c, 0, 0);
-    Scene_GetCollision()->func_020b68ec((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
+    Scene_GetTouchPicker()->addBox((Unk_020b6e10 *)unk_370, (Vec3 *)((u8 *)this + 0x5c), 0x2000, 0x4000, 0x2000, 0, 0xc, 0xff);
 }
 
 void RecycleBox::removeCollision() {

@@ -115,7 +115,7 @@
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
 #define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
-#define func_0203e42c _ZN9Character13func_0203e42cEv
+#define Character_clearTalkStartMode _ZN9Character18clearTalkStartModeEv
 #define func_0203e450 _ZN9Character13func_0203e450Ev
 #define Character_isInFacingArcOf _ZN9Character15isInFacingArcOfEPS_ss
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
@@ -1182,7 +1182,7 @@ void VillagerTalk_setInvitedByPartner(void *, s32);
 void func_0203e450(void *);
 void TalkRequest_SetTargetDone(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-void func_0203e42c(void *);
+void Character_clearTalkStartMode(void *);
 void Villager_HalveTalkUrge(s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 }
@@ -1250,7 +1250,7 @@ void func_02011b60(void *, s32);
 void func_02011cf4(void *, u32, s32);
 void func_02011d4c(void *, u32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-void func_0203e42c(void *);
+void Character_clearTalkStartMode(void *);
 void *func_020951ec(s32);
 s32 NpcActor_getRelativeAngleTo(void *, void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
@@ -1317,7 +1317,7 @@ void VillagerMood_disableEffects(void *);
 void NpcAnimCtrl_playHoldItemPose(void *, void *, void *, s32, s32);
 void TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-void func_0203d93c(void);
+void TalkRequestFlags_ClearEventWarpBlock(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void PlayerActor_SetSlotFlag(s32, s32);
 void Camera_SetModeDefault(void);
@@ -1333,7 +1333,7 @@ s16 Math_AngleXZ(Unk_ov068_02260f90_V3 *, Unk_ov068_02260f90_V3 *);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void Bgm_RequestSilence(s32, s32, s32);
 void VillagerStates_SetBirthdayVisitor(s32);
-void func_0203d948(void);
+void TalkRequestFlags_SetEventWarpBlock(void);
 }
 static inline BOOL Unk_ov068_02261118_InRange(volatile u16 *p) {
     BOOL r = FALSE;
@@ -6442,7 +6442,7 @@ BOOL Unk_ov068_0226179c::func_ov068_022617b8(Unk_ov068_Owner *o) {
     Bgm_RequestSilence(0x12, 0xf, 0);
     VillagerStates_SetBirthdayVisitor(-1);
     VillagerMood_disableEffects((u8 *)o + 0x838);
-    func_0203d948();
+    TalkRequestFlags_SetEventWarpBlock();
     return TRUE;
 }
 
@@ -6495,7 +6495,7 @@ void Unk_ov068_02261574::func_ov068_022615f0(Unk_ov068_Owner *o) {
     if ((NpcActionCtrl_getAction((u8 *)o + 0x564) == 2 && NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) || unk_20 == 0) {
         TalkRequest_SetTargetDone(o);
         NpcActionCtrl_requestStand((u8 *)o + 0x564, 1, data_020c6cc8);
-        func_0203d93c();
+        TalkRequestFlags_ClearEventWarpBlock();
         unk_1c = 3;
     }
 }
@@ -6995,7 +6995,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022605f4(Unk_ov068_Owner *o) {
         r = 0xec;
         TalkRequest_AddPlayerTalk6(o, 0);
         *(s32 *)((u8 *)o + 0xa08) = 1;
-        func_0203e42c(o);
+        Character_clearTalkStartMode(o);
         unk_38 = 3;
     } else {
         Unk_ov068_02260780_Own *ow = (Unk_ov068_02260780_Own *)o;
@@ -7088,7 +7088,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260374(Unk_ov068_Owner *o) {
     *(u16 *)((u8 *)o + 0xa02) = 0;
     TalkRequest_AddPlayerTalk6(o, 0);
     *(s32 *)((u8 *)o + 0xa08) = 2;
-    func_0203e42c(o);
+    Character_clearTalkStartMode(o);
     unk_1c = 0;
     VillagerMood_disableEffects((u8 *)o + 0x838);
     if ((s32)o->vfunc_64() != 0) {

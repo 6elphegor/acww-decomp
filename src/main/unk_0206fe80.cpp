@@ -39,7 +39,7 @@ s32 func_020978fc(s32 t);
 void Clock_GetDateTime(void *p);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 void func_020638d0(void *a, void *b);
 void MailText_SetSlot(s32 i, void *p);
@@ -48,8 +48,8 @@ void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, cons
 void PatternSrc_Swap(u32 a, u8 b, u32 c, u8 d, s32 e);
 void PatternSrc_Copy(u32 a, u8 b, u32 c, u8 d, s32 e);
 s32 func_02071b00(void *p, s32 i);
-void func_0203c6f8(void *p, s32 v);
-s32 func_0203c6c8(void *p);
+void ClothTex_LoadPattern(void *p, s32 v);
+s32 ClothTex_GetTex(void *p);
 void func_02056e88(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void *func_020986d4(void *p);
 void *func_02071c88(void *p, s32 i);
@@ -217,7 +217,7 @@ BOOL MuseumData::sendCompletionLetters() {
     u8 b;
     for (; i < 4; i++) {
         void *p = PlayerData_GetResident(gSavePlayers, i);
-        if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
+        if (p && _ZN10PlayerData6isUsedEv(p)) {
             Letter big;
             b = 0;
             Letter_ComposeFromMail(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));

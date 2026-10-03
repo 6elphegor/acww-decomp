@@ -134,9 +134,9 @@ extern s32 gCameraLookAt[];
 extern s16 data_02135f44[];
 
 void *BlancaFaceRecord_getPattern(u8 *p);
-s32 func_0203c6b0(u32 h, void *x);
-u32 func_0203c6a8(u32 h);
-u32 func_0203c6c0();
+s32 ClothTex_LoadPatternThunk(u32 h, void *x);
+u32 ClothTex_GetTexThunk(u32 h);
+u32 ClothTex_GetBufferSize();
 u32 Heap_Alloc(u32 *a, u32 b);
 void Heap_Free(u32 *a, u32 b);
 BOOL NpcActor_IsFrontAngle(s16 a);
@@ -1112,14 +1112,14 @@ SpNpcBlancaFaceTexture::SpNpcBlancaFaceTexture() {}
 SpNpcBlancaFaceTexture::~SpNpcBlancaFaceTexture() {}
 
 void SpNpcBlancaFaceTexture::init(u32 *a, void *b) {
-    unk_00 = Heap_Alloc(a, func_0203c6c0());
+    unk_00 = Heap_Alloc(a, ClothTex_GetBufferSize());
     apply(b);
 }
 
 u32 SpNpcBlancaFaceTexture::getTextureData() {
     u32 r = 0;
     if (unk_00 != 0) {
-        r = func_0203c6a8(unk_00);
+        r = ClothTex_GetTexThunk(unk_00);
     }
     return r;
 }
@@ -1130,7 +1130,7 @@ void SpNpcBlancaFaceTexture::apply(void *e) {
     u32 h;
     t = BlancaFaceRecord_getPattern(gSaveGameStats);
     if (t != 0) {
-        if (func_0203c6b0(unk_00, t) != 0) {
+        if (ClothTex_LoadPatternThunk(unk_00, t) != 0) {
             h = getTextureData();
             if (h != 0) {
                 MatTexVramTask_request(&unk_04, ent->unk_5c, data_ov074_022724e4, h, 0, 0);

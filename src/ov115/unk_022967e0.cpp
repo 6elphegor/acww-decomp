@@ -50,11 +50,11 @@ void func_ov114_02296498(void *p);
 
 class FishBookTab;
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void destroyLabel();
     u32 unk_00[0x40 / 4];
 };
 
@@ -241,7 +241,7 @@ public:
     /* 0x0091 */ u8 unk_91[0x3];
     /* 0x0094 */ MenuCursorBuf0 unk_94;
     /* 0x00f8 */ CreatureBookPanel unk_f8;
-    /* 0x1394 */ Unk_020e0488 unk_1394[1];
+    /* 0x1394 */ LabelString unk_1394[1];
     /* 0x13d4 */ s32 unk_13d4;
     /* 0x13d8 */ u16 unk_13d8;
     /* 0x13da */ u8 unk_13da;
@@ -607,7 +607,7 @@ void FishBookTab::resumeInput() {
 
 void FishBookTab::resetTextLabels() {
     unk_13da = 0;
-    unk_1394[0].func_0206fc44();
+    unk_1394[0].destroyLabel();
 }
 
 void FishBookTab::showCursor() {

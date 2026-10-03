@@ -15,8 +15,8 @@
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
 #define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_0206fcc8 _ZN12Unk_020e0488C1Ev
-#define func_0206fca8 _ZN12Unk_020e0488D1Ev
+#define func_0206fcc8 _ZN11LabelStringC1Ev
+#define func_0206fca8 _ZN11LabelStringD1Ev
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define MsgString_append _ZN9MsgString6appendEPh
 #define MsgString_appendString _ZN9MsgString12appendStringEPS_
@@ -70,8 +70,8 @@ void func_02065b5c(void *p);
 void func_02065ba4(void *p, s32 a);
 void func_02065bd0(void *p, s32 a);
 void String_Load2d(void *buf, u8 *c, s32 z);
-void func_0206f994(void *dst, const void *s, s32 len);
-void func_0206f9fc(void *a, s32 v);
+void String_FromEncodedBytes(void *dst, const void *s, s32 len);
+void String_Load2dMenu(void *a, s32 v);
 void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 s32 func_020978c8(void *a, s32 b);
@@ -199,17 +199,17 @@ public:
 };
 
 // String buffer wrapping a text renderer (TextLabel) at +0x3c
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    u32 func_0206fa1c();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    u32 getTextWidth();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ TextLabel *unk_3c;
@@ -579,7 +579,7 @@ public:
     BOOL stepPress();
     void drawAt(s32 x, s32 y, s32 c);
 
-    /* 0x04 */ Unk_020e0488 unk_04;
+    /* 0x04 */ LabelString unk_04;
     /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
     /* 0x48 */ u8 unk_48;
     /* 0x49 */ u8 unk_49;
@@ -801,7 +801,7 @@ public:
 };
 
 // Element of the 5-entry array at +0x28 of the menu (0x48 bytes)
-class PopupChoiceRow : public Unk_020e0488 {
+class PopupChoiceRow : public LabelString {
 public:
     PopupChoiceRow();
     virtual ~PopupChoiceRow();

@@ -13,12 +13,12 @@ public:
     void func_02060b14();
 };
 
-class Unk_02052620 {
+class RoomFtrState {
 public:
     u8 unk_00[0x48];
-    Unk_02052620();
-    ~Unk_02052620();
-    void func_020526ec();
+    RoomFtrState();
+    ~RoomFtrState();
+    void reset();
 };
 
 struct MapBlockEntry {
@@ -39,7 +39,7 @@ public:
 class HouseRoom {
 public:
     Unk_02060b10 unk_000[2];
-    Unk_02052620 unk_400;
+    RoomFtrState unk_400;
     u16 unk_448;
     u16 unk_44a;
     u16 unk_44c;
@@ -56,7 +56,7 @@ public:
     void func_02060808(u16 *src, u32 flag);
     u16 *func_02060834(s32 *out);
     u16 *func_02060850(s32 *out);
-    Unk_02052620 *func_0206086c();
+    RoomFtrState *func_0206086c();
 };
 
 struct Unk_0206022c_Bits {
@@ -121,7 +121,7 @@ BOOL BlockMap_FindItemAnyAttr(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
 void OS_GetOwnerInfo(u8 *buf);
-void func_02052554(s32 a, s32 b, s32 c, s32 d, s32 e);
+void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 func_020602ac(u32 x);
 BOOL func_0206057c(s32 i);
 u16 func_020603c8();
@@ -220,7 +220,7 @@ void HouseRoom::func_020608b8(s32 i) {
     for (; j < 2; p++, j++) {
         p->func_02060b14();
     }
-    unk_400.func_020526ec();
+    unk_400.reset();
     static Unk_020608b8_W t1[5] = { Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e) };
     unk_448 = t1[i].v;
     static Unk_020608b8_W t2[5] = { Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182), Unk_020608b8_W(0x1182) };
@@ -235,7 +235,7 @@ void HouseRoom::func_020608b8(s32 i) {
         }
         if (b) {
             b->unk_00[0xa6] = 0x382c;
-            func_02052554(6, 10, 1, 0, 1);
+            RoomFtrState_SetSwitch(6, 10, 1, 0, 1);
         }
     }
 }
@@ -254,7 +254,7 @@ MapBlockEntry *HouseRoom::func_02060878(void *heap) {
     return p;
 }
 
-Unk_02052620 *HouseRoom::func_0206086c() { return &unk_400; }
+RoomFtrState *HouseRoom::func_0206086c() { return &unk_400; }
 
 u16 *HouseRoom::func_02060850(s32 *out) {
     if (out) *out = unk_44e_0;

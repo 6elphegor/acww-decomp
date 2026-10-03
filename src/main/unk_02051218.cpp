@@ -6,9 +6,9 @@ void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
-extern u32 data_021c4e38;
+extern u32 sSpotReserveResult;
 extern void *gCommManager;
-extern u8 data_021c4ee4[];
+extern u8 sSpotReservations[];
 extern u8 gSaveHouse[];
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
@@ -30,34 +30,34 @@ s32 Scene_GetCurrent();
 s32 func_020529e4(void *p, s32 a, s32 b, void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 NetArea_IsLocalOwner();
-void func_02051ff8(s32 a, s32 b, s32 c, s32 d, s32 e);
+void FtrSync_ToggleGyroidAt(s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_02060244(void *p, s32 a, s32 b);
 void *BlockMap_GetForArea(s32 a);
 s32 BlockMap_SetItemAtUnit(void *p, void *b, s32 c, s32 d, s32 e);
 
 u32 func_02051370(u32 c);
-u32 func_02051518();
-void func_02051524(s32 *p);
-void func_020514a4(void *p);
-void func_020515e0(s32 a, s32 b, s32 c, s32 d);
-void func_0205170c(s32 a, s32 b, s32 c);
-void func_020516e4(s32 a, s32 b);
+u32 SpotSync_GetReserveResult();
+void SpotSync_RequestReserve(s32 *p);
+void SpotSync_Release(void *p);
+void FtrSync_RequestToggleGyroidAt(s32 a, s32 b, s32 c, s32 d);
+void FtrSync_SendRoomLight(s32 a, s32 b, s32 c);
+void FtrSync_ApplyRoomLight(s32 a, s32 b);
 
 }
 
-extern "C" void func_0205149c(s32 *p) { func_02051524(p); }
+extern "C" void func_0205149c(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051494() { return func_02051518(); }
+extern "C" u32 func_02051494() { return SpotSync_GetReserveResult(); }
 
-extern "C" void func_0205148c(s32 *p) { func_02051524(p); }
+extern "C" void func_0205148c(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051484() { return func_02051518(); }
+extern "C" u32 func_02051484() { return SpotSync_GetReserveResult(); }
 
-extern "C" void func_02051478() { func_020514a4(0); }
+extern "C" void func_02051478() { SpotSync_Release(0); }
 
-extern "C" void func_02051470(s32 *p) { func_02051524(p); }
+extern "C" void func_02051470(s32 *p) { SpotSync_RequestReserve(p); }
 
-extern "C" u32 func_02051468() { return func_02051518(); }
+extern "C" u32 func_02051468() { return SpotSync_GetReserveResult(); }
 
 extern "C" BOOL func_020513b0(s32 x, s32 y) {
     BOOL r;

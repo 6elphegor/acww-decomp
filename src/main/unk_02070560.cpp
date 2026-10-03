@@ -763,28 +763,28 @@ extern "C" {
 void *Heap_Alloc(void *heap, u32 size);
 }
 extern "C" {
-void func_0203c928(void *p);
+void ClothTex_Construct(void *p);
 }
 extern "C" {
-void func_0203c764(void *self, u16 *p, void *q);
+void ClothTex_LoadItem(void *self, u16 *p, void *q);
 }
 extern "C" {
 void *PlayerData_GetResident(void *tbl, s32 i);
 }
 extern "C" {
-void *_ZN10PlayerData13func_020986d4Ev(void *p);
+void *_ZN10PlayerData11getPatternsEv(void *p);
 }
 extern "C" {
 void *_ZN14PlayerPatterns10getPatternEh(void *p, u32 i);
 }
 extern "C" {
-void *func_0203c6e4(void *unused);
+void *ClothTex_GetTexData(void *unused);
 }
 extern "C" {
 void *_ZN7Pattern9getPixelsEv(void *p);
 }
 extern "C" {
-void *func_0203c6d0(void *unused);
+void *ClothTex_GetPlttData(void *unused);
 }
 extern "C" {
 void *_ZN7Pattern7getInfoEv(void *p);
@@ -793,7 +793,7 @@ extern "C" {
 void *_ZN11PatternInfo14getPaletteDataEv(void *p);
 }
 extern "C" {
-void *func_0203c6c8(void *);
+void *ClothTex_GetTex(void *);
 }
 extern "C" {
 s32 Gfx3d_LoadTexAndPltt(void *a, u32 b);
@@ -802,7 +802,7 @@ extern "C" {
 void *ResCache_GetTex(void *a, u32 key);
 }
 extern "C" {
-s32 func_0203c6f8(void *a, void *b);
+s32 ClothTex_LoadPattern(void *a, void *b);
 }
 extern "C" {
 void *_ZN19AbleSistersPatterns10getPatternEh(void *tbl, u32 i);
@@ -1114,7 +1114,7 @@ void PatternTexCache::load() {
     sPlayerPatternVramTasks = b;
     a = sPlayerPatternTexWork;
     for (i = 0; i < 8; i++) {
-        if (a != 0) func_0203c928(a);
+        if (a != 0) ClothTex_Construct(a);
         if (b != 0) _ZN15TexPatVramTasksC1Ev(b);
         a += 0x2c4;
         b += 0x38;
@@ -1124,7 +1124,7 @@ void PatternTexCache::load() {
     sAblePatternVramTasks = d;
     c = sAblePatternTexWork;
     for (j = 0; j < 8; j++) {
-        if (c != 0) func_0203c928(c);
+        if (c != 0) ClothTex_Construct(c);
         if (d != 0) _ZN15TexPatVramTasksC1Ev(d);
         c += 0x2c4;
         d += 0x38;
@@ -1234,26 +1234,26 @@ void PatternTexCache::createTextures() {
             u32 *row;
             u8 *src, *p;
             u16 *q, *sp;
-            if (a != 0) func_0203c928(a);
-            if (b != 0) func_0203c928(b);
+            if (a != 0) ClothTex_Construct(a);
+            if (b != 0) ClothTex_Construct(b);
             v = 0x11a8;
-            func_0203c764(a, &v, 0);
+            ClothTex_LoadItem(a, &v, 0);
             i = 0;
         loop1:
             {
                 j = 0;
                 row = (u32 *)sPlayerPatternTexKeys + i * 8;
             loop0:
-                e = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetResident(((Unk_02071460_Tbl *)(u32)&gSaveData)->t, i)), j);
+                e = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(((Unk_02071460_Tbl *)(u32)&gSaveData)->t, i)), j);
                 *b = *a;
-                p = (u8 *)func_0203c6e4(b);
+                p = (u8 *)ClothTex_GetTexData(b);
                 src = (u8 *)_ZN7Pattern9getPixelsEv(e);
                 for (k1 = 0; k1 < 0x200; k1++) *p++ = *src++;
-                q = (u16 *)func_0203c6d0(b);
+                q = (u16 *)ClothTex_GetPlttData(b);
                 sp = (u16 *)_ZN11PatternInfo14getPaletteDataEv(_ZN7Pattern7getInfoEv(e));
                 for (k2 = 0; k2 < 0x10; k2++) *q++ = *sp++;
-                if (Gfx3d_LoadTexAndPltt(func_0203c6c8(b), 0)) {
-                    row[j] = (u32)ResCache_GetTex(func_0203c6c8(b), 0x4e554c4c);
+                if (Gfx3d_LoadTexAndPltt(ClothTex_GetTex(b), 0)) {
+                    row[j] = (u32)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
                 }
                 j++;
                 if (j < 8) goto loop0;
@@ -1263,9 +1263,9 @@ void PatternTexCache::createTextures() {
             t = Scene_GetCurrent();
             if (t == 10) {
                 for (j = 0; j < 8; j++) {
-                    func_0203c6f8(b, _ZN19AbleSistersPatterns10getPatternEh((u8 *)&gSaveData + 0xfafc, j));
-                    if (Gfx3d_LoadTexAndPltt(func_0203c6c8(b), 0)) {
-                        sAblePatternTexKeys[j] = (u32)ResCache_GetTex(func_0203c6c8(b), 0x4e554c4c);
+                    ClothTex_LoadPattern(b, _ZN19AbleSistersPatterns10getPatternEh((u8 *)&gSaveData + 0xfafc, j));
+                    if (Gfx3d_LoadTexAndPltt(ClothTex_GetTex(b), 0)) {
+                        sAblePatternTexKeys[j] = (u32)ResCache_GetTex(ClothTex_GetTex(b), 0x4e554c4c);
                     }
                 }
             }
@@ -1420,7 +1420,7 @@ extern "C" {
 void *PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
-void *_ZN10PlayerData13func_020986d4Ev(void *p);
+void *_ZN10PlayerData11getPatternsEv(void *p);
 }
 extern "C" {
 s32 _ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
@@ -1874,7 +1874,7 @@ extern "C" s32 PatternSrc_GetSessionPlayer(s32 a, s32 b) {
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         void *p = PlayerData_GetBySessionSlot(a);
         if (p) {
-            return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(p), b);
+            return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(p), b);
         }
     }
     return 0;
@@ -1966,7 +1966,7 @@ extern "C" {
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
 }
 extern "C" {
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
 }
 extern "C" {
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
@@ -1993,16 +1993,16 @@ extern "C" {
 s32 _ZN19AbleSistersPatterns10getPatternEh(void *p, s32 i);
 }
 extern "C" {
-void func_0203c6f8(void *p, s32 v);
+void ClothTex_LoadPattern(void *p, s32 v);
 }
 extern "C" {
-s32 func_0203c6c8(void *p);
+s32 ClothTex_GetTex(void *p);
 }
 extern "C" {
 void _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 }
 extern "C" {
-void *_ZN10PlayerData13func_020986d4Ev(void *p);
+void *_ZN10PlayerData11getPatternsEv(void *p);
 }
 extern "C" {
 void *_ZN14PlayerPatterns10getPatternEh(void *p, s32 i);
@@ -2074,7 +2074,7 @@ extern "C" s32 PatternSrc_GetBlancaFace() {
 }
 extern "C" void *PatternSrc_GetCurrentPlayer(s32 i) {
     void *p = PlayerData_GetCurrent();
-    if (p) return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(p), i);
+    if (p) return _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(p), i);
     return 0;
 }
 extern "C" s32 PatternSrc_Get(s32 i, s32 a) {
@@ -2086,10 +2086,10 @@ extern "C" BOOL PatternTex_UploadPlayer(u32 a, u32 b) {
     u8 y = b & 7;
     u32 t = sPlayerPatternTexKeys[x][y];
     if (t && sPlayerPatternTexWork && sPlayerPatternVramTasks) {
-        void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetResident(gSavePlayers, x)), y);
+        void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData11getPatternsEv(PlayerData_GetResident(gSavePlayers, x)), y);
         s32 off = y * 0x2c4;
-        func_0203c6f8(sPlayerPatternTexWork + off, (s32)q);
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * 0x38, t, 0, 0, func_0203c6c8(sPlayerPatternTexWork + off), 0, 0);
+        ClothTex_LoadPattern(sPlayerPatternTexWork + off, (s32)q);
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * 0x38, t, 0, 0, ClothTex_GetTex(sPlayerPatternTexWork + off), 0, 0);
         return TRUE;
     }
     return FALSE;
@@ -2099,8 +2099,8 @@ extern "C" BOOL PatternTex_UploadAble(u32 x) {
     u32 t = sAblePatternTexKeys[i];
     if (t && sAblePatternTexWork && sAblePatternVramTasks) {
         s32 off = i * 0x2c4;
-        func_0203c6f8(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x));
-        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * 0x38, t, 0, 0, func_0203c6c8(sAblePatternTexWork + off), 0, 0);
+        ClothTex_LoadPattern(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x));
+        _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * 0x38, t, 0, 0, ClothTex_GetTex(sAblePatternTexWork + off), 0, 0);
         return TRUE;
     }
     return FALSE;

@@ -1625,7 +1625,7 @@ extern "C" {
 void TownSessionState_Get(void);
 }
 extern "C" {
-void func_02085178(void);
+void TownSessionState_GetKatieState(void);
 }
 extern "C" {
 void _ZN12Unk_02086f8412setFollowingEv(void);
@@ -1634,7 +1634,7 @@ extern "C" {
 void _ZN12Unk_02086f8414clearFollowingEv(void);
 }
 extern "C" {
-s32 _ZN10PlayerData13func_020986a4Ev(s32 a);
+s32 _ZN10PlayerData18getLostChildRecordEv(s32 a);
 }
 extern "C" {
 s32 _ZN15LostChildRecord9getTownIdEv(s32 a);
@@ -1727,7 +1727,7 @@ extern "C" {
 BOOL func_020a03c4(void);
 }
 extern "C" {
-void func_020b78c4(void);
+void FieldInfoBalloon_ShowPleaseWait(void);
 }
 extern "C" {
 BOOL _ZN11CommManager7isMyAidEj(CommManager *p, s32 a);
@@ -1785,7 +1785,7 @@ extern "C" {
 extern u8 sWeatherPrevDayRain;
 }
 extern "C" {
-extern s32 data_021f4574;
+extern s32 sWeatherRolledAtLoad;
 }
 extern "C" {
 extern SpNpcMissing1 *sSpNpcMissing1Instance;
@@ -3137,7 +3137,7 @@ extern "C" {
 extern s8 sBirdDelays[];
 }
 extern "C" {
-extern u32 data_020d1a28;
+extern u32 kFireworkBurstFlag29;
 }
 extern "C" {
 extern s32 data_020c8cb8;
@@ -3264,7 +3264,7 @@ void Unk_020be204::updateFireworkBurst() {
         }
     }
     if (unk_64 == 0x1d) {
-        unk_60 |= data_020d1a28;
+        unk_60 |= kFireworkBurstFlag29;
     }
 }
 namespace n10 {
@@ -4392,7 +4392,7 @@ extern "C" {
 void* PlayerData_GetResident(void* a, s32 i);
 }
 extern "C" {
-s32 _ZN10PlayerData13func_02098a48Ev(void* p);
+s32 _ZN10PlayerData6isUsedEv(void* p);
 }
 extern "C" {
 void* _ZN10PlayerData17getDailyTalkFlagsEv(void* p);
@@ -4416,10 +4416,10 @@ extern "C" {
 void* PlayerData_GetCurrent();
 }
 extern "C" {
-u32 _ZN12Unk_02097ff413func_020981b8Ev(void* p);
+u32 _ZN12Unk_02097ff414getSkyShotHitsEv(void* p);
 }
 extern "C" {
-void _ZN12Unk_02097ff413func_020981acEj(void* p, u8 v);
+void _ZN12Unk_02097ff414setSkyShotHitsEj(void* p, u8 v);
 }
 extern "C" {
 s32 func_02094348();
@@ -4731,14 +4731,14 @@ namespace n08 {
 
 extern "C" void SkyShot_AddHit() {
     void* p = PlayerData_GetCurrent();
-    u32 n = _ZN12Unk_02097ff413func_020981b8Ev(p);
+    u32 n = _ZN12Unk_02097ff414getSkyShotHitsEv(p);
     if (n < 0x10) {
-        _ZN12Unk_02097ff413func_020981acEj(p, n + 1);
+        _ZN12Unk_02097ff414setSkyShotHitsEj(p, n + 1);
     }
 }
 
 extern "C" BOOL SkyShot_HasMaxHits() {
-    return _ZN12Unk_02097ff413func_020981b8Ev(PlayerData_GetCurrent()) >= 0x10;
+    return _ZN12Unk_02097ff414getSkyShotHitsEv(PlayerData_GetCurrent()) >= 0x10;
 }
 
 }
@@ -4819,7 +4819,7 @@ void SkyShotSequence::actUfoCrashed() {
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
             void* p = PlayerData_GetResident(gSavePlayers, i);
-            if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
+            if (p && _ZN10PlayerData6isUsedEv(p)) {
                 _ZN20PlayerDailyTalkFlags5clearEj(_ZN10PlayerData17getDailyTalkFlagsEv(p), 0x14);
             }
         }
@@ -5689,7 +5689,7 @@ extern "C" {
 s32 _ZN13PeteFallState15isVisitorActiveEv();
 }
 extern "C" {
-void func_02085170();
+void TownSessionState_GetVisitorFlags();
 }
 extern "C" {
 s32 _ZN17VisitorSpawnFlags16isVisitorSpawnedEv();
@@ -6456,7 +6456,7 @@ void Unk_020bbc28::updateUfo() {
             if (unk_2f1a != v) {
                 if (m == 2 || m == 7) {
                     TownSessionState_Get();
-                    func_02085170();
+                    TownSessionState_GetVisitorFlags();
                     if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
                         if (unk_1464 != 6) {
                             if (unk_2f25 == 0) {

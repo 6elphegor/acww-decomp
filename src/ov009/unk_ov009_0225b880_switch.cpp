@@ -101,7 +101,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setInteractionRange(s32 v);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
@@ -216,15 +216,15 @@ struct Unk_ov009_0225bce0_Pad {
 };
 
 // ---- main-module helper classes (declarations only)
-struct Unk_020e44d4 {
-    Unk_020e44d4();
+struct TouchPickTriangle {
+    TouchPickTriangle();
     static void *operator new(unsigned long, void *p) { return p; }
     u8 pad[0x44];
 };
 
-struct Unk_020b6960 {
-    BOOL func_020b6818(Unk_020e44d4 *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
-    BOOL func_020b6848(Unk_020e44d4 *o);
+struct TouchPicker {
+    BOOL addTriangle(TouchPickTriangle *o, Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
+    BOOL pushTriangle(TouchPickTriangle *o);
 };
 
 struct Unk_020b28ac {
@@ -512,7 +512,7 @@ public:
     /* 0x27d */ u8 pad_27d;
     /* 0x27e */ u16 unk_27e;
     /* 0x280 */ Unk_020abea8 *unk_280;
-    /* 0x284 */ Unk_020e44d4 *unk_284;
+    /* 0x284 */ TouchPickTriangle *unk_284;
     /* 0x288 */ BuildingCollider *unk_288;
     /* 0x28c */ u8 unk_28c;
     /* 0x28d */ u8 pad_28d;
@@ -646,9 +646,9 @@ BOOL AnimFrameCtrl_hasPassedFrame(void *, s32);
 void BlendAnimModel_initAnim(void *, void *, s32, s32, s32, s32);
 void Melody_PlayAt(void *, s32);
 s32 PlayerActor_TestSlotFlag(s32, s32);
-BOOL func_0203d978();
+BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
-Unk_020b6960 *Scene_GetCollision();
+TouchPicker *Scene_GetTouchPicker();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);
 BOOL func_020b1d3c(u32, u32);

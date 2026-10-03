@@ -119,9 +119,9 @@ void _ZN9MsgString5clearEv(void *p);
 void _ZN9MsgString4copyEPS_(void *p, void *q);
 void _ZN9MsgString7setLineEPh(void *p, s32 v);
 s32 Msg_SkipLines(void *p, s32 i);
-void _ZN12Unk_020e048813func_0206fb9cEjjjhhi(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void _ZN12Unk_020e048813func_0206fab4Eii(void *p, s32 a, s32 b);
-void _ZN12Unk_020e048813func_0206fc44Ev(void *p);
+void _ZN11LabelString11createLabelEjjjhhi(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void _ZN11LabelString13redrawAlignedEii(void *p, s32 a, s32 b);
+void _ZN11LabelString12destroyLabelEv(void *p);
 void _ZN10BgVramTask6cancelEv(void *p);
 void String_Load(void *p, u8 *q, const char *name);
 BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
@@ -253,10 +253,10 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
+    LabelString();
+    ~LabelString();
     u32 unk_00[0x40 / 4];
 };
 
@@ -299,7 +299,7 @@ public:
     /* 0x9b0 */ BgVramTask unk_9b0;
     /* 0xe94 */ BgVramTaskPair unk_e94[9];
     /* 0x108c */ u8 unk_108c[0x10f8 - 0x108c];
-    /* 0x10f8 */ Unk_020e0488 unk_10f8[4];
+    /* 0x10f8 */ LabelString unk_10f8[4];
     /* 0x11f8 */ MenuScrollKnob unk_11f8;
     /* 0x124c */ s32 unk_124c;
     /* 0x1250 */ s32 unk_1250;
@@ -713,8 +713,8 @@ void CreatureBook_ShowDescPage(S *s)
             ob = o[i];
             _ZN9MsgString5clearEv(ob);
         }
-        _ZN12Unk_020e048813func_0206fb9cEjjjhhi(ob, s->unk_128d, y, 0xd, 2, 3, z10);
-        _ZN12Unk_020e048813func_0206fab4Eii(ob, z14, z14);
+        _ZN11LabelString11createLabelEjjjhhi(ob, s->unk_128d, y, 0xd, 2, 3, z10);
+        _ZN11LabelString13redrawAlignedEii(ob, z14, z14);
         k++;
         y += 0x1a;
         i++;
@@ -797,7 +797,7 @@ void CreatureBook_ClearLabels(S *s)
     s->unk_1292 = 0;
     u8 *b = s->unk_10f8;
     for (i = 0; i < 4; i++) {
-        _ZN12Unk_020e048813func_0206fc44Ev(b + (i << 6));
+        _ZN11LabelString12destroyLabelEv(b + (i << 6));
     }
 }
 
@@ -837,8 +837,8 @@ void CreatureBook_SetNameLabel(S *s, u32 a)
     }
     void *t = CreatureBook_AllocLabel(s);
     _ZN9MsgString4copyEPS_(t, obj);
-    _ZN12Unk_020e048813func_0206fb9cEjjjhhi(t, s->unk_128d, 0xa1, 0xd, 1, 3, 0);
-    _ZN12Unk_020e048813func_0206fab4Eii(t, 1, 0);
+    _ZN11LabelString11createLabelEjjjhhi(t, s->unk_128d, 0xa1, 0xd, 1, 3, 0);
+    _ZN11LabelString13redrawAlignedEii(t, 1, 0);
     _ZN8ItemNameD1Ev(obj);
 }
 

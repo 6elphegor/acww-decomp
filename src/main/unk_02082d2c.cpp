@@ -158,7 +158,7 @@ void *TownSessionState_Get();
 }
 
 extern "C" {
-void *func_02085170(void *p);
+void *TownSessionState_GetVisitorFlags(void *p);
 }
 
 extern "C" {
@@ -170,7 +170,7 @@ void *TownSessionState_GetPeteFall(void *p);
 }
 
 extern "C" {
-void *func_02085178(void *p);
+void *TownSessionState_GetKatieState(void *p);
 }
 
 extern "C" {

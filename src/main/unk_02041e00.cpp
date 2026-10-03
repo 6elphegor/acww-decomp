@@ -1079,7 +1079,7 @@ extern u8 gSavePlayers[];
 void *HouseRoomMaps_Get(s32);
 s32 func_020978c8(void *, s32);
 void *PlayerData_GetResident(void *, s32);
-void *_ZN10PlayerData13func_02098750Ev(void *);
+void *_ZN10PlayerData12getInventoryEv(void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
 s32 func_02063b8c(s32);
@@ -1101,7 +1101,7 @@ s32 func_0205b124(void *);
 s32 func_0205afa0(void *);
 s32 func_0205b120(void *);
 s32 _ZN12TurnipMarket9updateDayEi(void *, s32);
-s32 func_020981f8();
+s32 PlayerData_UpdateDay();
 extern u8 gSaveData[];
 extern u8 data_021ed29c[];
 s32 TownState_SetSeasonPeriod(u32);
@@ -5703,7 +5703,7 @@ extern "C" void Players_SpoilTurnips() {
         if (func_020978c8(gSavePlayers, i) != 0) {
             void *q = PlayerData_GetResident(gSavePlayers, i);
             for (j = z; j < 15; j++) {
-                void *r = _ZN10PlayerData13func_02098750Ev(q);
+                void *r = _ZN10PlayerData12getInventoryEv(q);
                 u16 *e = _ZN15PlayerInventory9getPocketEi(r, j);
                 if (e != 0) {
                     if (Unk_02046358_R1(e)) {
@@ -5866,7 +5866,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
         src->a = ((u8 *)&l.t)[3];
     }
     _ZN12TurnipMarket9updateDayEi(data_021ed29c, days);
-    func_020981f8();
+    PlayerData_UpdateDay();
 }
 }
 

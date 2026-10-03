@@ -77,7 +77,7 @@ void Gfx2d_ShowLayer(s32 a);
 void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
-void func_0206f994(void *self, u8 *s, s32 n);
+void String_FromEncodedBytes(void *self, u8 *s, s32 n);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void StargazingMenu_SetupBgLayers();
@@ -147,17 +147,17 @@ public:
 };
 
 // Text buffer (0x40 bytes, vptr + text renderer)
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    s32 func_0206fa1c();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    s32 getTextWidth();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     u32 unk_04[0x3c / 4];
 };
@@ -340,7 +340,7 @@ public:
     /* 0x00e4 */ MenuCursorBuf0 unk_e4;
     /* 0x0148 */ Unk_020b08b4 unk_148;
     /* 0x0478 */ StarSkyView unk_478;
-    /* 0x2cb0 */ Unk_020e0488 unk_2cb0;
+    /* 0x2cb0 */ LabelString unk_2cb0;
     /* 0x2cf0 */ s32 unk_2cf0;
     /* 0x2cf4 */ s32 unk_2cf4;
     /* 0x2cf8 */ s32 unk_2cf8;
@@ -544,7 +544,7 @@ void StargazingMenu::releaseResources() {
     func_020b0780(&unk_148);
     StarSky_CancelUpload(&unk_478);
     unk_94.freeText();
-    unk_2cb0.func_0206fc44();
+    unk_2cb0.destroyLabel();
     func_02094960();
     BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
@@ -558,7 +558,7 @@ void StargazingMenu::postInputUpdate() {
 }
 
 void StargazingMenu::preStateUpdate() {
-    unk_2cb0.func_0206fc44();
+    unk_2cb0.destroyLabel();
     func_020b080c(&unk_148);
     unk_94.freeText();
 }
@@ -914,13 +914,13 @@ void StargazingMenu::setupNameLabel() {
         s32 u = unk_2d08;
         if (u != unk_2d0c) {
             u8 *s = ((u8 *(*)(s32))func_020b053c)(u);
-            func_0206f994(&unk_2cb0, s + 0x16, 0x10);
-            unk_2d18 = (unk_2cb0.func_0206fa1c() + 7) >> 3;
+            String_FromEncodedBytes(&unk_2cb0, s + 0x16, 0x10);
+            unk_2d18 = (unk_2cb0.getTextWidth() + 7) >> 3;
             if (unk_2d18 < 2) {
                 unk_2d18 = 2;
             }
-            unk_2cb0.func_0206fb9c(8, 0xc6, unk_2d18, 0xf, 0, 0);
-            unk_2cb0.func_0206fab4(1, 0);
+            unk_2cb0.createLabel(8, 0xc6, unk_2d18, 0xf, 0, 0);
+            unk_2cb0.redrawAligned(1, 0);
             unk_2d0c = unk_2d08;
         }
     }

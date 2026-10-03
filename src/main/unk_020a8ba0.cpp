@@ -142,19 +142,19 @@ void InputMode_SetButtons(void);
 }
 
 extern "C" {
-void func_020b7798(void);
+void FieldInfoBalloon_Draw(void);
 }
 
 extern "C" {
-void func_020b77a8(void);
+void FieldInfoBalloon_Update(void);
 }
 
 extern "C" {
-void func_020b77b8(void);
+void FieldInfoBalloon_Release(void);
 }
 
 extern "C" {
-void func_020b77c8(void);
+void FieldInfoBalloon_Init(void);
 }
 
 extern "C" {
@@ -751,14 +751,14 @@ BOOL Unk_020e2b70::vfunc_00() {
     func_0201195c();
     func_02011874();
     TalkWindow_CreateAll();
-    func_020b77c8();
+    FieldInfoBalloon_Init();
     func_020a8b94();
     return TRUE;
 }
 
 BOOL Unk_020e2b70::vfunc_0c() {
     func_020a8b88();
-    func_020b77b8();
+    FieldInfoBalloon_Release();
     TalkWindow_DestroyAll();
     func_02011868();
     func_0208eff0();
@@ -768,12 +768,12 @@ BOOL Unk_020e2b70::vfunc_0c() {
 BOOL Unk_020e2b70::onExecute() {
     func_0208efe0();
     TalkWindow_UpdateAll();
-    func_020b77a8();
+    FieldInfoBalloon_Update();
     return TRUE;
 }
 
 BOOL Unk_020e2b70::onDraw() {
-    func_020b7798();
+    FieldInfoBalloon_Draw();
     TalkWindow_DrawAll();
     func_0208efd0();
     return TRUE;

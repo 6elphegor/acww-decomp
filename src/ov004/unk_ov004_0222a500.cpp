@@ -37,8 +37,8 @@
 #define PatternTexCache_getPlayerTexKey _ZN15PatternTexCache15getPlayerTexKeyEii
 #define func_020b1ddc _ZN12Unk_020b1ddc13func_020b1ddcEv
 #define func_020b1e74 _ZN12Unk_020b1ddc13func_020b1e74Ev
-#define func_020b6860 _ZN12Unk_020b696013func_020b6860EP12Unk_020b6a0cP4Vec3S3_S3_ih
-#define func_020b6890 _ZN12Unk_020b696013func_020b6890EP12Unk_020b6a0c
+#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih
+#define TouchPicker_pushCylinder _ZN11TouchPicker12pushCylinderEP17TouchPickCylinder
 #define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 #define MatTexVramTask_cancel _ZN14MatTexVramTask6cancelEv
 
@@ -124,9 +124,9 @@ public:
     u8 pad_0c[0xc];
 };
 
-struct Unk_020b6a0c {
-    Unk_020b6a0c();
-    ~Unk_020b6a0c();
+struct TouchPickCylinder {
+    TouchPickCylinder();
+    ~TouchPickCylinder();
     u8 pad[0x20];
 };
 
@@ -287,8 +287,8 @@ public:
     BOOL setWallpaper(u16 *q, G3dResAccess *a, s32 key);
 };
 
-// class Y (billboard/effect handle, base Unk_020b6a0c)
-class RoomScene22Shape : public Unk_020b6a0c {
+// class Y (billboard/effect handle, base TouchPickCylinder)
+class RoomScene22Shape : public TouchPickCylinder {
 public:
     RoomScene22Shape();
     ~RoomScene22Shape();
@@ -362,9 +362,9 @@ u32 Scene_GetHouseRoom(void);
 void Snd_PlaySe(s32 a);
 void func_020b1e74(void *p);
 void func_020b1ddc(void *p);
-u32 Scene_GetCollision(void);
-u32 func_020b6860(u32 o, void *obj, void *v, s32 a, s32 b, s32 c, s32 d);
-u32 func_020b6890(u32 o, void *obj);
+u32 Scene_GetTouchPicker(void);
+u32 TouchPicker_addCylinder(u32 o, void *obj, void *v, s32 a, s32 b, s32 c, s32 d);
+u32 TouchPicker_pushCylinder(u32 o, void *obj);
 BOOL Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 u32 Item_GetDesignPlayer(u16 *p);
@@ -1033,13 +1033,13 @@ void RoomScene22Shape::init() {
         v.x = 0x108f6;
         v.y = 0;
         v.z = 0x1351e;
-        func_020b6860(Scene_GetCollision(), this, &v, 0xf33, 0x6000, 0x16, 0xff);
+        TouchPicker_addCylinder(Scene_GetTouchPicker(), this, &v, 0xf33, 0x6000, 0x16, 0xff);
     }
 }
 
 void RoomScene22Shape::update() {
     if (unk_20 != 0) {
-        func_020b6890(Scene_GetCollision(), this);
+        TouchPicker_pushCylinder(Scene_GetTouchPicker(), this);
     }
 }
 

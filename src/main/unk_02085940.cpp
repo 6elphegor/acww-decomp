@@ -34,7 +34,7 @@ s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 s32 Event_GetDaysSinceStart(s32 a);
 void *PlayerData_GetResident(void *, s32);
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
 s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
@@ -77,7 +77,7 @@ void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_020986a4Ev();
+void *_ZN10PlayerData18getLostChildRecordEv();
 s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
@@ -86,7 +86,7 @@ extern u8 data_021c47c4_dummy[];
 void *func_020639bc(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
-void *_ZN10PlayerData13func_020986b0Ev(void *);
+void *_ZN10PlayerData14getDramaRecordEv(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
@@ -615,11 +615,11 @@ extern char data_020e0c70[];
 extern char data_020e0c7c[];
 extern char data_020e0c88[];
 extern char data_020e0c98[];
-s32 func_020030e8(Unk_02085810_Rec *p);
+s32 VillagerId_Clear(Unk_02085810_Rec *p);
 void _ZN8PlayerId13func_02094294Ev(void *p);
 void Clock_GetDate(u8 *p);
-void func_02003100(Unk_02085810_Rec *p);
-void func_02003130(Unk_02085810_Rec *p);
+void VillagerId_Destruct(Unk_02085810_Rec *p);
+void VillagerId_Construct(Unk_02085810_Rec *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
 void _ZN12Unk_020e1c64C1Ev(void *p);
@@ -650,7 +650,7 @@ s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
 s32 Event_GetDaysSinceStart(s32 a);
 void *PlayerData_GetResident(void *, s32);
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 s32 _ZN17PlayerSpNpcRecord24hasEnteredFishingTourneyEv(void *p);
 s32 _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(void *p);
@@ -694,7 +694,7 @@ void *_ZN7PatternD1Ev(void *p);
 void *_ZN7PatternC1Ev(void *p);
 s32 _ZN11PatternInfo10setPaletteEj(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_020986a4Ev();
+void *_ZN10PlayerData18getLostChildRecordEv();
 s32 _ZN12Unk_02097ff49clearFlagEj(void *p, s32 v);
 extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
@@ -703,7 +703,7 @@ extern u8 data_021c47c4_dummy[];
 void *func_020639bc(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
-void *_ZN10PlayerData13func_020986b0Ev(void *);
+void *_ZN10PlayerData14getDramaRecordEv(void *);
 s32 Date_GetNthWeekdayDay(u8 a, u32 b, u32 c, u32 d);
 void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
@@ -1268,8 +1268,8 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
         return FALSE;
     }
     Unk_020874e8_Bits t;
-    func_020877c0(_ZN10PlayerData13func_020986b0Ev(o), &t);
-    u8 *p = func_0208779c((u8 *)_ZN10PlayerData13func_020986b0Ev(o));
+    func_020877c0(_ZN10PlayerData14getDramaRecordEv(o), &t);
+    u8 *p = func_0208779c((u8 *)_ZN10PlayerData14getDramaRecordEv(o));
     if (d->a == t.a && d->b == t.b && d->c == t.c) {
         if ((p[2] == a && p[1] == b && p[0] == c) || (p[2] == 0 && p[1] == 0 && p[0] == 0)) {
             return TRUE;
@@ -1335,7 +1335,7 @@ extern "C" void LostChild_AdvanceDays(s32 n) {
 
 extern "C" BOOL LostChild_IsKatieDue() {
     if (PlayerData_GetCurrent() != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData13func_020986a4Ev();
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
         if (p->isKaitlinRole() == 0) {
             if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1345,7 +1345,7 @@ extern "C" BOOL LostChild_IsKatieDue() {
 
 extern "C" BOOL LostChild_IsKaitlinDue() {
     if (PlayerData_GetCurrent() != 0) {
-        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData13func_020986a4Ev();
+        LostChildRecord *p = (LostChildRecord *)_ZN10PlayerData18getLostChildRecordEv();
         if (p->isKaitlinRole() == 1) {
             if (Ns_02086b7c::func_020e77cc(p->getDaysLeft(), 1, 7) != 0) return TRUE;
         }
@@ -1356,7 +1356,7 @@ extern "C" BOOL LostChild_IsKaitlinDue() {
 extern "C" void LostChild_SaveToTown() {
     u8 *const g = gSaveData;
     if (PlayerData_GetCurrent() != 0 && g != 0) {
-        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData13func_020986a4Ev(), g + 0x15fca, 12);
+        Ns_02086b7c::MI_CpuCopy8(_ZN10PlayerData18getLostChildRecordEv(), g + 0x15fca, 12);
     }
 }
 
@@ -1364,7 +1364,7 @@ extern "C" void LostChild_LoadFromTown() {
     u8 *const g = gSaveData;
     void *a = PlayerData_GetCurrent();
     if (a != 0 && g != 0) {
-        void *b = _ZN10PlayerData13func_020986a4Ev();
+        void *b = _ZN10PlayerData18getLostChildRecordEv();
         Ns_02086b7c::MI_CpuCopy8(g + 0x15fca, b, 12);
         if (Ns_02086b7c::func_020e77cc(((LostChildRecord *)(g + 0x15fca))->getDaysLeft(), 1, 7) == 0) _ZN12Unk_02097ff49clearFlagEj(a, 0x33);
     }
@@ -2392,7 +2392,7 @@ void ContestRecord::sendResultLetters() {
         ok = z10;
         void *r4 = PlayerData_GetResident(gSavePlayers, i);
         if (r4 == 0) continue;
-        if (_ZN10PlayerData13func_02098a48Ev(r4) == 0) continue;
+        if (_ZN10PlayerData6isUsedEv(r4) == 0) continue;
         void *r7 = _ZN10PlayerData14getSpNpcRecordEv(r4);
         if ((u8)(unk_37 + 0xff) <= 1) {
             MailText_SetSlotMonth(z14, unk_35);
@@ -2454,23 +2454,23 @@ void ContestRecord::sendResultLetters() {
 
 ContestRecord *ContestRecord::construct() {
     _ZN8PlayerIdC1EPv(this);
-    func_02003130(&unk_16);
-    func_02003130(&unk_22);
+    VillagerId_Construct(&unk_16);
+    VillagerId_Construct(&unk_22);
     unk_2e = 0xfff1;
     return this;
 }
 
 ContestRecord *ContestRecord::destruct() {
-    func_02003100(&unk_22);
-    func_02003100(&unk_16);
+    VillagerId_Destruct(&unk_22);
+    VillagerId_Destruct(&unk_16);
     _ZN8PlayerIdC1Ev(this);
     return this;
 }
 
 void ContestRecord::clear() {
     _ZN8PlayerId13func_02094294Ev(this);
-    func_020030e8(&unk_16);
-    func_020030e8(&unk_22);
+    VillagerId_Clear(&unk_16);
+    VillagerId_Clear(&unk_22);
     unk_2e = 0xfff1;
     unk_30 = 0;
 }

@@ -25,10 +25,10 @@ class LetterViewMenu;
 
 struct Unk_0206d1d4_Src;
 
-class Unk_0206d0a0 {
+class LetterRenderer {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
     void func_0206d394();
     void func_0206d39c(s32 v);
@@ -194,7 +194,7 @@ public:
     void releaseResources();
     void initLetterView();
 
-    /* 0x094 */ Unk_0206d0a0 unk_94;
+    /* 0x094 */ LetterRenderer unk_94;
     /* 0x2a4 */ MenuLabelButtonStyle1 unk_2a4;
     /* 0x314 */ MenuCursorBuf1 unk_314;
 };

@@ -354,7 +354,7 @@ void NNS_G3dBindMdlPltt(void *, void *);
 void *BgModelCache_Get(void);
 void *_ZN12BgModelCache12getGroundTexEv(void *);
 s32 TownSessionState_Get(void);
-s32 func_02085180(s32);
+s32 TownSessionState_GetTravelState(s32);
 s32 _ZN15TownTravelState7getModeEv(s32);
 s32 _ZN11CommManager12isSlotActiveEi(void *, u32);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
@@ -427,7 +427,7 @@ CheckInGate::~CheckInGate() {
 // @2226158
 BOOL CheckInGate::vfunc_00() {
     s32 v;
-    s32 s = func_02085180(TownSessionState_Get());
+    s32 s = TownSessionState_GetTravelState(TownSessionState_Get());
     RoomObjRes_Load(&unk_1a4, "/roomObj/obj_check_in.arc");
     RoomObjTex_Load(&unk_248, "/roomObj/obj_check_in.nsbtx");
     _ZN5Model11setResourceEP16Unk_020553f8_Resj(&unk_ec, RoomObjRes_GetModel(&unk_1a4), 0);

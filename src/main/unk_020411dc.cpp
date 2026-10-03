@@ -75,7 +75,7 @@ void func_0203d4c8(u32);
 void Gfx2d_SetMainPlanes(u32);
 void Gfx2d_SetSubPlanes(u32);
 void Gfx2d_SetBrightness(s32);
-s32 func_0203818c();
+s32 CommCaution_ArePlanesHidden();
 s32 func_020e759c(void *, u32, s32);
 s32 FX_Div(s32, s32);
 void func_0208e9d4(u32);
@@ -318,7 +318,7 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
 }
 
 extern "C" void ScreenTransition_Update() {
-    if (func_0203818c() != 0) return;
+    if (CommCaution_ArePlanesHidden() != 0) return;
     u32 idx = gScreenTransition.unk_01;
     u32 st = gScreenTransition.unk_00;
     if (st == 0 || st == 2) return;
@@ -335,7 +335,7 @@ extern "C" void ScreenTransition_Update() {
 }
 
 extern "C" void ScreenTransition_VBlank() {
-    if (func_0203818c() != 0) return;
+    if (CommCaution_ArePlanesHidden() != 0) return;
     Unk_021c3cc0 *s = &gScreenTransition;
     u32 idx = s->unk_01;
     u32 st = s->unk_00;

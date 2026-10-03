@@ -216,11 +216,11 @@ s32 SaveManager_RequestAct01();
 }
 
 extern "C" {
-void func_0203d86c();
+void TalkRequest_FinishSaveMenu();
 }
 
 extern "C" {
-s32 func_0203d878();
+s32 TalkRequest_IsSaveMenuRunning();
 }
 
 extern "C" {
@@ -240,11 +240,11 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_0203d978();
+s32 TalkRequestFlags_IsResetti();
 }
 
 extern "C" {
-s32 func_0203d99c();
+s32 TalkRequestFlags_IsSceneHold();
 }
 
 extern "C" {
@@ -256,11 +256,11 @@ s32 _ZN11CommManager7isMyAidEj(void *p, s32 v);
 }
 
 extern "C" {
-void func_020387b4();
+void ChatQuickMsg_PostWantToSave();
 }
 
 extern "C" {
-s32 func_0203d884();
+s32 TalkRequest_AddSaveMenu();
 }
 
 extern "C" {
@@ -272,7 +272,7 @@ s32 PlayerData_GetCurrent();
 }
 
 extern "C" {
-s32 _ZN12Unk_02097ff413func_02098320Ev();
+s32 _ZN12Unk_02097ff414getBankAccountEv();
 }
 
 extern "C" {
@@ -288,7 +288,7 @@ void func_020973ec(s32 v);
 }
 
 extern "C" {
-s32 _ZN10PlayerData13func_02098750Ev(s32 v);
+s32 _ZN10PlayerData12getInventoryEv(s32 v);
 }
 
 extern "C" {
@@ -462,7 +462,7 @@ BOOL SaveMenu::onExecute() {
 
     if (*func_0209c37c(0, 0x4b) != 0) {
         if (PlayerData_GetCurrent() != 0) {
-            r4 = _ZN12Unk_02097ff413func_02098320Ev();
+            r4 = _ZN12Unk_02097ff414getBankAccountEv();
             switch (*func_0209c37c(0, 0x4b)) {
             case 0:
                 break;
@@ -486,7 +486,7 @@ BOOL SaveMenu::onExecute() {
     }
     if (*func_0209c37c(0, 0x4c) != 0) {
         if (PlayerData_GetCurrent() != 0) {
-            _ZN12Unk_02097ff413func_02098320Ev();
+            _ZN12Unk_02097ff414getBankAccountEv();
             if (*func_0209c37c(0, 0x4c) != 0) {
                 t = *func_0209c37c(0, 0x4c);
                 if (t < 1) {
@@ -504,14 +504,14 @@ BOOL SaveMenu::onExecute() {
     }
     if (*func_0209c37c(0, 0x48) != 0) {
         r6 = PlayerData_GetCurrent();
-        r4 = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(r6), 1);
+        r4 = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(r6), 1);
         r4 += *func_0209c37c(0, 0x48);
         if (r4 < 0) {
             r4 = 0;
         } else if (r4 > 0x1869f) {
             r4 = 0x1869f;
         }
-        func_02097ac4(_ZN10PlayerData13func_02098750Ev(r6), r4, 1);
+        func_02097ac4(_ZN10PlayerData12getInventoryEv(r6), r4, 1);
         *func_0209c37c(0, 0x48) = 0;
     }
     if (sSaveMenuStates[unk_50].update != 0) {
@@ -532,14 +532,14 @@ void SaveMenu::enterIdle() {}
 void SaveMenu::updateIdle() {
     if ((gPad[1] & 8) != 0) {
         if (Scene_GetCurrent() != 0x2d) {
-            if (func_0203d978() == 0) {
-                if (func_0203d99c() == 0) {
+            if (TalkRequestFlags_IsResetti() == 0) {
+                if (TalkRequestFlags_IsSceneHold() == 0) {
                     if (Unk_0209e7b4_Is2(gScreenTransition) != 0) {
                         if (TalkRequest_IsActive() == 0) {
                             void *g = gCommManager;
                             if (_ZN11CommManager8isOnlineEv(g) != 0 && _ZN11CommManager7isMyAidEj(g, 0) == 0) {
-                                func_020387b4();
-                            } else if (func_0203d884() != 0) {
+                                ChatQuickMsg_PostWantToSave();
+                            } else if (TalkRequest_AddSaveMenu() != 0) {
                                 setState(1);
                             }
                         }
@@ -553,7 +553,7 @@ void SaveMenu::updateIdle() {
 void SaveMenu::enterOpenTalk() {}
 
 void SaveMenu::updateOpenTalk() {
-    if (func_0203d878() != 0) {
+    if (TalkRequest_IsSaveMenuRunning() != 0) {
         TalkWindowState *o = TalkWindow_Get(0);
         SaveMenuTalk *p = &unk_54;
         p->vfunc_08();
@@ -581,7 +581,7 @@ void SaveMenu::updateTalking() {
     TalkWindowState *o = TalkWindow_Get(0);
     if (o->unk_04 == 0) {
         o->detachRequest();
-        func_0203d86c();
+        TalkRequest_FinishSaveMenu();
         setState(0);
     }
 }

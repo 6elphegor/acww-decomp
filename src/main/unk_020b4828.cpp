@@ -118,10 +118,10 @@ public:
 };
 
 // 0x28-byte object (constructor/destructor in another unit)
-class Unk_020b6960 {
+class TouchPicker {
 public:
-    Unk_020b6960();
-    ~Unk_020b6960();
+    TouchPicker();
+    ~TouchPicker();
     u8 d[0x28];
 };
 
@@ -214,7 +214,7 @@ BOOL Town_FindGateHouse(void* o, Vec3* v, s32* a, s32* b);
 void Clock_GetDayMonth(u8 *out);
 void OverlayMgr_Release(u32 v);
 void OverlayMgr_Acquire(u32 v);
-void func_020b60dc(s32, u32, u32, u32);
+void TouchPick_Cast(s32, u32, u32, u32);
 void PlayerSession_SetDataIndex(s32, s32);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetGfxSlot(s32, s32);
@@ -224,17 +224,17 @@ void _ZN12Unk_020afaa413func_020afad0Ev(void*);
 s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
-void _ZN10PlayerData13func_02098a58Ev();
+void _ZN10PlayerData5resetEv();
 s32 BgModelCache_Get();
 void _ZN15BgModelCacheObj5setupEj(s32, s32);
 void FtrInfo_LoadIndoor(s32);
 void ItemInfo_LoadIndoor(s32);
-void _ZN12Unk_020b69a813func_020b69a8Ev();
-void _ZN12Unk_020b696013func_020b6990Ev();
-void func_02038158();
+void _ZN15TouchPickerView5resetEv();
+void _ZN11TouchPicker5resetEv();
+void CommCaution_Release();
 s32 ResCache_Destroy();
 void ResCache_Init();
-void func_02038168();
+void CommCaution_Init();
 void Gfx_ResetScene();
 void VramQueue2d_Init();
 void VramQueueTex_Init();
@@ -266,7 +266,7 @@ void NetSession_SetActiveSyncKind(s32);
 void ScreenTransition_ShowCover();
 void Character_ResetList();
 void TalkRequestQueue_StartInitial();
-void func_02038fb0();
+void ChatBalloon_DismissAll();
 void Bgm_StartSceneBgm();
 void Effect_ResetAll();
 void func_02089124();
@@ -276,10 +276,10 @@ void func_02081d00();
 void NpcHeapPools_DestroyAll();
 void NpcRegistry_Clear();
 void func_0205fff4();
-void func_0205ed9c();
+void HeldItemModels_Destroy();
 void func_0205f054();
 void func_0205d798();
-void func_0205df58();
+void PlayerHeadBank_Destroy();
 void func_0205c8dc();
 void func_0205eec8();
 void func_0205d300();
@@ -302,10 +302,10 @@ void func_0205d1d0(u32);
 void func_0205d318(u32);
 void func_0205eee0(u32);
 void func_0205c8f4(u32);
-void func_0205df70(u32);
+void PlayerHeadBank_Init(u32);
 void func_0205f06c(u32);
 void func_0205d7b0(u32);
-void func_0205edb8(u32);
+void HeldItemModels_Init(u32);
 void func_0206000c(u32);
 void func_020ac500(s32);
 void func_020abe58();
@@ -356,7 +356,7 @@ u32 ScenePos_GetSpawnParam(ScenePos* i);
 Vec3* ScenePos_GetPos(ScenePos* i);
 void ScenePos_Set(ScenePos* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q);
 void ScenePos_Reset(ScenePos* i);
-u8* Scene_GetCollision();
+u8* Scene_GetTouchPicker();
 BOOL GroundSeason_IsSnow();
 BOOL GroundSeason_IsSnowPhase(s32 a);
 u8 Scene_GetPrevious();
@@ -438,7 +438,7 @@ extern ScenePos sSavedScenePos;
 extern ScenePos gTownReturnPos;
 extern SceneWarp sSceneWarpRequest;
 extern S394 sFogState;
-extern Unk_020b6960 sSceneCollision;
+extern TouchPicker sTouchPicker;
 extern ViewFrustum gViewFrustum;
 
 
@@ -544,7 +544,7 @@ s32 sSceneOverlayIds[51] = {
     30, 5, 18,
 };
 
-Unk_020b6960 sSceneCollision;
+TouchPicker sTouchPicker;
 
 TileData *gCurSceneInfo;
 
@@ -723,8 +723,8 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
     sCurSceneId = SceneWarp_GetScene((u8*)&sSceneWarpRequest);
     FieldScene_AcquireOv002();
     gGfxFrameHooks = (u32)&sFieldGfxFrameHooks;
-    Scene_GetCollision();
-    _ZN12Unk_020b69a813func_020b69a8Ev();
+    Scene_GetTouchPicker();
+    _ZN15TouchPickerView5resetEv();
     data_021ef2d4 = 0;
     sOverlaySceneId = sCurSceneId;
     FieldScene_AcquireOverlays();
@@ -788,10 +788,10 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     func_0205d318(gCurrentHeap);
     func_0205eee0(gCurrentHeap);
     func_0205c8f4(gCurrentHeap);
-    func_0205df70(gCurrentHeap);
+    PlayerHeadBank_Init(gCurrentHeap);
     func_0205f06c(gCurrentHeap);
     func_0205d7b0(gCurrentHeap);
-    func_0205edb8(gCurrentHeap);
+    HeldItemModels_Init(gCurrentHeap);
     func_0206000c(gCurrentHeap);
     func_020ac500(gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
     func_020abe58();
@@ -826,7 +826,7 @@ BOOL FieldSceneSteps::stepFinish(u32, u32) {
     gVBlanksPerFrame = 3;
     TalkRequestQueue_StartInitial();
     if (Scene_GetCurrent() == 0x2e || Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f)
-        func_02038fb0();
+        ChatBalloon_DismissAll();
     Bgm_StartSceneBgm();
     return TRUE;
 }
@@ -868,18 +868,18 @@ BOOL FieldScene::vfunc_00() {
 
 BOOL FieldScene::vfunc_0c() {
     Bgm_EndSceneBgm();
-    Scene_GetCollision();
-    _ZN12Unk_020b696013func_020b6990Ev();
+    Scene_GetTouchPicker();
+    _ZN11TouchPicker5resetEv();
     gGfxFrameHooks = 0;
     func_0205b848();
     func_02081d00();
     NpcHeapPools_DestroyAll();
     NpcRegistry_Clear();
     func_0205fff4();
-    func_0205ed9c();
+    HeldItemModels_Destroy();
     func_0205f054();
     func_0205d798();
-    func_0205df58();
+    PlayerHeadBank_Destroy();
     func_0205c8dc();
     func_0205eec8();
     func_0205d300();
@@ -914,7 +914,7 @@ BOOL FieldScene::vfunc_0c() {
     } else if (Scene_GetCurrent() == 0xe) {
         s32 v = NetSession_GetLastSyncSlot();
         if (v > 0 && v < 4) {
-            if (PlayerData_Get(v + 3)) _ZN10PlayerData13func_02098a58Ev();
+            if (PlayerData_Get(v + 3)) _ZN10PlayerData5resetEv();
             PlayerSession_ClearDataIndex(v);
         }
         NetSession_SetLastSyncSlot(4);
@@ -942,8 +942,8 @@ BOOL FieldScene::onExecute() {
 BOOL FieldScene::onDraw() {
     Fog_Apply((s32)this);
     NNS_G3dGeFlushBuffer();
-    s32 r0 = (s32)Scene_GetCollision();
-    func_020b60dc(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
+    s32 r0 = (s32)Scene_GetTouchPicker();
+    TouchPick_Cast(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
     func_02034044();
     func_02088d58();
     return TRUE;
@@ -991,10 +991,10 @@ extern "C" void Scene_SetupGraphics(void) {
     Gfx2d_ShowMainPlanes(0x11);
     Gfx2d_ShowSubPlanes(0x10);
     ResCache_Init();
-    func_02038168();
+    CommCaution_Init();
 }
 
-extern "C" s32 Scene_ShutdownGraphics(void) { func_02038158(); return ResCache_Destroy(); }
+extern "C" s32 Scene_ShutdownGraphics(void) { CommCaution_Release(); return ResCache_Destroy(); }
 
 extern "C" void Fog_SetAlpha(u32 v) { sFogState.m26 = v & 0x1f; }
 
@@ -1154,7 +1154,7 @@ extern "C" BOOL GroundSeason_IsSnowPhase(s32 a) {
 
 extern "C" BOOL GroundSeason_IsSnow() { return GroundSeason_IsSnowPhase(((Bits14*)&data_021e5890[0x14])->v); }
 
-extern "C" u8* Scene_GetCollision() { return (u8*)&sSceneCollision; }
+extern "C" u8* Scene_GetTouchPicker() { return (u8*)&sTouchPicker; }
 
 ScenePos::ScenePos() { ScenePos_Reset(this); }
 

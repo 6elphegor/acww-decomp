@@ -92,8 +92,8 @@ s32 Scene_GetWarpRequest();
 void SceneWarp_RequestAt(s32 a, s32 b, void *p, u32 c, u32 d, u32 e, u32 f);
 s32 func_020e7500(void *p);
 s32 func_020e7518(void *p);
-void func_0203d984();
-void func_0203d990();
+void TalkRequestFlags_ClearSceneHold();
+void TalkRequestFlags_SetSceneHold();
 s32 func_02063b8c(s32 a);
 void func_0203a318();
 void ScreenTransition_StartFadeOut(s32 a, s32 b);
@@ -578,7 +578,7 @@ BOOL SpNpcKappn::vfunc_00() {
     sSpNpcKappnInstance = this;
     changeAct(0);
     unk_4cc.unk_1c |= 2;
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     unk_714 = 0x29;
     return TRUE;
 }
@@ -587,7 +587,7 @@ BOOL SpNpcKappn::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    func_0203d984();
+    TalkRequestFlags_ClearSceneHold();
     return TRUE;
 }
 

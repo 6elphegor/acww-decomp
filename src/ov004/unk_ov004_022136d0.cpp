@@ -111,24 +111,24 @@ public:
 
 // ---------------------------------------------------------------- RoomBoardSign
 struct Vec3;
-// Unk_020b6a94 member: the original constructs it with the complete-object constructor (C1), which a member
+// TouchPickSphere member: the original constructs it with the complete-object constructor (C1), which a member
 // declaration cannot do, so it is raw storage plus explicit calls through the real symbol names.
-struct Unk_020b6a94 {
+struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
-class Unk_020b6960;
+class TouchPicker;
 
 extern "C" {
-void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
-void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
+void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
+void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
-Unk_020b6960 *Scene_GetCollision();
-BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Unk_020b6960 *self, Unk_020b6a94 *o, void *a, s32 b, s32 c, u8 d);
+TouchPicker *Scene_GetTouchPicker();
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(TouchPicker *self, TouchPickSphere *o, void *a, s32 b, s32 c, u8 d);
 u32 Scene_GetCurrent();
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
@@ -156,7 +156,7 @@ public:
     BOOL registerSelf();
 
     /* 0x130 */ s32 unk_130;
-    /* 0x134 */ Unk_020b6a94 unk_134;
+    /* 0x134 */ TouchPickSphere unk_134;
     /* 0x150 */ u8 unk_150;
     /* 0x151 */ u8 pad_151;
     /* 0x152 */ s16 unk_152;
@@ -216,11 +216,11 @@ extern "C" RoomBoardSign *RoomBoardSign_Create() {
 }
 
 RoomBoardSign::RoomBoardSign() {
-    _ZN12Unk_020b6a94C1Ev(&unk_134);
+    _ZN15TouchPickSphereC1Ev(&unk_134);
 }
 
 RoomBoardSign::~RoomBoardSign() {
-    _ZN12Unk_020b6a94D1Ev(&unk_134);
+    _ZN15TouchPickSphereD1Ev(&unk_134);
 }
 
 BOOL RoomBoardSign::vfunc_00() {
@@ -238,7 +238,7 @@ BOOL RoomBoardSign::vfunc_00() {
 
 BOOL RoomBoardSign::onExecute() {
     execAct();
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_134, unk_5c, unk_154, 0x10, unk_150);
     return TRUE;
 }
 

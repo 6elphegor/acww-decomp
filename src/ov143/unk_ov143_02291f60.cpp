@@ -58,13 +58,13 @@ class MelodyMenu;
 typedef void (MelodyMenu::*Unk_ov143_02293b80_Fn)();
 
 // Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
     u32 unk_00[0x40 / 4];
 };
 
@@ -201,7 +201,7 @@ BOOL MenuCtrl_IsResultOk();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0206f9fc(void *self, u32 id);
+void String_Load2dMenu(void *self, u32 id);
 s32 Comm_IsSeqConfirmed(s32 v);
 void SaveVillagers_ClearTuneRequester(void *a);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -322,7 +322,7 @@ public:
     void drawSelectedNote(u32 idx, s32 x, s32 y);
     void drawPlayingNote(u32 idx, s32 x, s32 y);
     void resetTextLabels();
-    Unk_020e0488 *allocTextLabel();
+    LabelString *allocTextLabel();
     void closeEraseAllDialog();
     void openEraseAllDialog();
     void endPlayback();
@@ -401,7 +401,7 @@ public:
     /* 0xa8 */ s32 unk_a8;
     /* 0xac */ MenuCursorBuf0 unk_ac;
     /* 0x110 */ MenuBottomButtons unk_110;
-    /* 0x274 */ Unk_020e0488 unk_274[16];
+    /* 0x274 */ LabelString unk_274[16];
     /* 0x674 */ u8 unk_674[0x800];
     /* 0xe74 */ BgVramTask unk_e74[1];
 };
@@ -1157,7 +1157,7 @@ void MelodyMenu::closeEraseAllDialog() {
     endDialogDim();
 }
 
-Unk_020e0488 *MelodyMenu::allocTextLabel() {
+LabelString *MelodyMenu::allocTextLabel() {
     if (unk_9f >= 0x10) {
         return &unk_274[15];
     }
@@ -1169,7 +1169,7 @@ void MelodyMenu::resetTextLabels() {
     s32 i;
     unk_9f = 0;
     for (i = 0; i < 16; i++) {
-        unk_274[i].func_0206fc44();
+        unk_274[i].destroyLabel();
     }
 }
 
@@ -1253,10 +1253,10 @@ u32 MelodyMenu::noteFromLevel(u32 idx) {
 
 void MelodyMenu::createNoteLabel(u32 id, u32 idx) {
     Unk_ov143_02293b38_E *p = sMelodyNoteSprites[idx];
-    Unk_020e0488 *e = allocTextLabel();
-    func_0206f9fc(e, id);
-    e->func_0206fb9c(8, p->w1.lo, 3, 0xf, 0, 0);
-    e->func_0206fab4(1, 0);
+    LabelString *e = allocTextLabel();
+    String_Load2dMenu(e, id);
+    e->createLabel(8, p->w1.lo, 3, 0xf, 0, 0);
+    e->redrawAligned(1, 0);
 }
 
 void MelodyMenu::createNoteLabels() {
@@ -1272,10 +1272,10 @@ void MelodyMenu::createNoteLabels() {
     } while (j < 0xd);
     createNoteLabel(0xca, 0xd);
     createNoteLabel(0xcb, 0xe);
-    Unk_020e0488 *e = allocTextLabel();
-    func_0206f9fc(e, 0x8d);
-    e->func_0206fb9c(8, data_ov143_02293980[0].w1.lo, 8, 0xf, 0, 0);
-    e->func_0206fab4(1, 0);
+    LabelString *e = allocTextLabel();
+    String_Load2dMenu(e, 0x8d);
+    e->createLabel(8, data_ov143_02293980[0].w1.lo, 8, 0xf, 0, 0);
+    e->redrawAligned(1, 0);
 }
 
 void MelodyMenu::getNotePos(s32 *out, s32 idx) {

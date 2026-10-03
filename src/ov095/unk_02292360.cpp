@@ -75,9 +75,9 @@ s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 s32 MenuCtrl_GetKeyboardPageMode(s32 a);
 s32 MenuCtrl_GetKeyboardPage(void);
-s32 func_0206f9fc(void *a, s32 b);
-s32 _ZN12Unk_020e048813func_0206fab4Eii(void *a, s32 b, s32 c);
-s32 _ZN12Unk_020e048813func_0206fb48Ejjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
+s32 String_Load2dMenu(void *a, s32 b);
+s32 _ZN11LabelString13redrawAlignedEii(void *a, s32 b, s32 c);
+s32 _ZN11LabelString16createSmallLabelEjjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
@@ -97,7 +97,7 @@ void Snd_SetKeySeMode(s32 a);
 void Snd_PlaySe(s32 a);
 void MenuCtrl_SetKeyboardPageMode(s32 a, s32 b);
 void MenuCtrl_SetKeyboardPage(s32 a);
-void _ZN12Unk_020e048813func_0206fc44Ev(void *a);
+void _ZN11LabelString12destroyLabelEv(void *a);
 void _ZN10PlayerData11getPlayerIdEv(void);
 void _ZN10BgVramTask12requestCharsEjhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10BgVramTask6cancelEv(void *a);
@@ -1285,8 +1285,8 @@ void Keyboard_Shutdown(Keyboard *s)
 {
     _ZN10BgVramTask6cancelEv((u8 *)s + 0x22f4);
     _ZN10BgVramTask6cancelEv((u8 *)s + 0x2318);
-    _ZN12Unk_020e048813func_0206fc44Ev((u8 *)s + 0x233c);
-    _ZN12Unk_020e048813func_0206fc44Ev((u8 *)s + 0x237c);
+    _ZN11LabelString12destroyLabelEv((u8 *)s + 0x233c);
+    _ZN11LabelString12destroyLabelEv((u8 *)s + 0x237c);
     MenuCtrl_SetKeyboardPage(s->unk_02);
 }
 
@@ -1659,12 +1659,12 @@ void Keyboard_LoadObjGfx(Keyboard *s)
     Gfx2d_LoadPaletteFile((void *)"menu/chat2/b_cht_obj.bpl", h, 8, 4, 4, 0xe);
     Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
     Gfx2d_LoadCharFile((void *)"menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
-    func_0206f9fc(s->unk_233c, 0x9c);
-    _ZN12Unk_020e048813func_0206fb48Ejjjhhi(s->unk_233c, 8, 0xd8, 4, 0xa, 0, 0);
-    _ZN12Unk_020e048813func_0206fab4Eii(s->unk_233c, 1, 0);
-    func_0206f9fc(s->unk_237c, 0x9d);
-    _ZN12Unk_020e048813func_0206fb48Ejjjhhi(s->unk_237c, 8, 0xf8, 4, 0xa, 0, 0);
-    _ZN12Unk_020e048813func_0206fab4Eii(s->unk_237c, 1, 0);
+    String_Load2dMenu(s->unk_233c, 0x9c);
+    _ZN11LabelString16createSmallLabelEjjjhhi(s->unk_233c, 8, 0xd8, 4, 0xa, 0, 0);
+    _ZN11LabelString13redrawAlignedEii(s->unk_233c, 1, 0);
+    String_Load2dMenu(s->unk_237c, 0x9d);
+    _ZN11LabelString16createSmallLabelEjjjhhi(s->unk_237c, 8, 0xf8, 4, 0xa, 0, 0);
+    _ZN11LabelString13redrawAlignedEii(s->unk_237c, 1, 0);
 }
 
 void Keyboard_LoadEmotionIcons(Keyboard *s)

@@ -262,7 +262,7 @@ public:
 
 // Member at +0x2d4: the original constructs it with the base-object constructor (C1 here; the member is built with the complete-object ctor at 0x020b6a94), which a member declaration
 // cannot do, so it is raw storage plus explicit calls through the real symbol names.
-struct Unk_020b6a94 {
+struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
@@ -322,18 +322,18 @@ PlayerMailbox *func_020979d8(void *p);
 BOOL _ZN12Unk_0206555413func_02065578Ev();
 s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
-void *Scene_GetCollision();
-void _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(void *self, void *o);
-BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
+void *Scene_GetTouchPicker();
+void _ZN11TouchPicker10pushSphereEP15TouchPickSphere(void *self, void *o);
+BOOL _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(void *self, void *o, void *a, s32 b, s32 c, u8 d);
 u32 BuildingList_IndexOf(void *p);
 BOOL Scene_InTown();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
 u32 func_020b1d80(u32 a);
 void Mailbox_Create();
-void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
-void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
-void _ZN9Character13func_0203e42cEv(void *self, void *a);
+void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
+void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
+void _ZN9Character18clearTalkStartModeEv(void *self, void *a);
 }
 
 // ============================================================ class Mailbox
@@ -385,7 +385,7 @@ public:
 
     /* 0x2b0 */ s32 unk_2b0;
     /* 0x2b4 */ ModelAnim unk_2b4;
-    /* 0x2d4 */ Unk_020b6a94 unk_2d4;
+    /* 0x2d4 */ TouchPickSphere unk_2d4;
     /* 0x2f0 */ u8 unk_2f0;
     /* 0x2f1 */ u8 pad_2f1[3];
 };
@@ -408,11 +408,11 @@ extern "C" void Mailbox_Create() {
 }
 
 Mailbox::Mailbox() {
-    _ZN12Unk_020b6a94C1Ev(&unk_2d4);
+    _ZN15TouchPickSphereC1Ev(&unk_2d4);
 }
 
 Mailbox::~Mailbox() {
-    _ZN12Unk_020b6a94D1Ev(&unk_2d4);
+    _ZN15TouchPickSphereD1Ev(&unk_2d4);
 }
 
 BOOL Mailbox::vfunc_70() {
@@ -430,7 +430,7 @@ BOOL Mailbox::vfunc_70() {
     v.y = unk_5c[1];
     v.z = unk_5c[2];
     v.y = v.y + 0x1000;
-    _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Scene_GetCollision(), &unk_2d4, &v, 0x1000, 7, b);
+    _ZN11TouchPicker9addSphereEP15TouchPickSphereP4Vec3S3_ih(Scene_GetTouchPicker(), &unk_2d4, &v, 0x1000, 7, b);
     unk_2f0 = 1;
     if (!Scene_InTown()) {
         unk_2f0 = 0;
@@ -453,7 +453,7 @@ BOOL Mailbox::vfunc_70() {
 
 BOOL Mailbox::onExecute() {
     updateUseState();
-    _ZN12Unk_020b696013func_020b68d4EP12Unk_020b6a94(Scene_GetCollision(), &unk_2d4);
+    _ZN11TouchPicker10pushSphereEP15TouchPickSphere(Scene_GetTouchPicker(), &unk_2d4);
     return TRUE;
 }
 
@@ -462,7 +462,7 @@ BOOL Mailbox::vfunc_b0() {
 }
 
 BOOL Mailbox::vfunc_48(void *a) {
-    _ZN9Character13func_0203e42cEv(this, a);
+    _ZN9Character18clearTalkStartModeEv(this, a);
     if (!isUsable()) {
         return FALSE;
     }

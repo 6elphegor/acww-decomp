@@ -192,11 +192,11 @@ public:
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
 #define func_02065578 _ZN12Unk_0206555413func_02065578Ev
 #define func_020655d0 _ZN12Unk_0206555413func_020655d0Ev
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
-#define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_0206fcc8 _ZN12Unk_020e0488C1Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
+#define func_0206fca8 _ZN11LabelStringD1Ev
+#define func_0206fcc8 _ZN11LabelStringC1Ev
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
@@ -209,7 +209,7 @@ public:
 #define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
 #define PlayerInventory_getPocket _ZN15PlayerInventory9getPocketEi
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
-#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
@@ -252,10 +252,10 @@ void func_02065e70(void *o, s32 x);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
-void func_0206fab4(void *p, s32 a, s32 b);
-void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206fc44(void *p);
+void String_Load2dMenu(void *p, s32 a);
+void LabelString_redrawAligned(void *p, s32 a, s32 b);
+void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void LabelString_destroyLabel(void *p);
 void func_0206fca8(void *p);
 void func_0206fcc8(void *p);
 s32 func_02087e0c(void *p);
@@ -275,7 +275,7 @@ void *PlayerInventory_getLetter(s32 a, s32 b);
 u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
 u16 *PlayerInventory_getPocket(s32 a, s32 b);
 u16 *PlayerData_getHeldItem(s32 a);
-s32 func_02098750(s32 a);
+s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
 void Player_GetDeliveryRecipientName(void *a, void *b);
 void Pocket_SetItem(u16 *a, s32 b, s32 c);
@@ -537,14 +537,14 @@ void InventoryBg_SetupTextWindows(void *o)
     func_02063888(buf);
     func_020638d0(func_0209409c(r), buf);
     String_SetSlot(0, buf);
-    func_0206fb9c((u8 *)p + 0xe0, p->unk_0e, 0x11, 0xa, 0xf, 0xc, 0);
-    func_0206f9fc((u8 *)p + 0xe0, 0x66);
-    func_0206fab4((u8 *)p + 0xe0, 1, 0);
+    LabelString_createLabel((u8 *)p + 0xe0, p->unk_0e, 0x11, 0xa, 0xf, 0xc, 0);
+    String_Load2dMenu((u8 *)p + 0xe0, 0x66);
+    LabelString_redrawAligned((u8 *)p + 0xe0, 1, 0);
     func_02094030(buf2);
     func_020940d0(r, buf2);
-    func_0206fb9c((u8 *)p + 0x120, p->unk_0e, 0x25, 8, 0xf, 0xc, 0);
+    LabelString_createLabel((u8 *)p + 0x120, p->unk_0e, 0x25, 8, 0xf, 0xc, 0);
     MsgString_copy((u8 *)p + 0x120, buf2);
-    func_0206fab4((u8 *)p + 0x120, 1, 0);
+    LabelString_redrawAligned((u8 *)p + 0x120, 1, 0);
     func_02094018(buf2);
     func_02063870(buf);
 }
@@ -596,7 +596,7 @@ void InventoryBg_ClearTextWindows(void *o)
     s32 i = 0;
     u8 *b = (u8 *)o + 0xe0;
     for (; i < 2; i++) {
-        func_0206fc44(b + (i << 6));
+        LabelString_destroyLabel(b + (i << 6));
     }
 }
 
@@ -794,7 +794,7 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
 
 s32 InventoryBg_GetTotalBells()
 {
-    return PlayerInventory_getTotalBells(func_02098750(PlayerData_GetCurrent()), 0);
+    return PlayerInventory_getTotalBells(PlayerData_getInventory(PlayerData_GetCurrent()), 0);
 }
 
 void InventoryBg_ResetBells(void *o)

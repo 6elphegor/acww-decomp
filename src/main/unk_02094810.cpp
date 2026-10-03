@@ -116,8 +116,8 @@ void _ZN12Unk_02006d1413setActionFlagEj(Unk_02006d14 *o, s32 id);
 s32 _ZN12Unk_02006d1413canAcceptTalkEj(Unk_02006d14 *o, s32 v);
 
 s32 Scene_InHouseRoom();
-BOOL func_0203d978();
-s32 func_0203d878();
+BOOL TalkRequestFlags_IsResetti();
+s32 TalkRequest_IsSaveMenuRunning();
 void PlayerActor_GetHeldItem(void *out, Unk_02006d14 *o);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
@@ -745,7 +745,7 @@ extern "C" BOOL func_02094e64()
         if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xb)) {
             return FALSE;
         }
-        if (func_0203d978() || _ZN12Unk_02006d1414testActionFlagEj(o, 0x13)) {
+        if (TalkRequestFlags_IsResetti() || _ZN12Unk_02006d1414testActionFlagEj(o, 0x13)) {
             return FALSE;
         }
         if (o->unk_7ec == 0x3d || _ZN12Unk_02006d1414testActionFlagEj(o, 7) || _ZN12Unk_02006d1414testActionFlagEj(o, 8)) {
@@ -799,7 +799,7 @@ extern "C" BOOL func_02094d88()
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         s32 st = o->unk_7ec;
-        if (func_0203d978() || _ZN12Unk_02006d1414testActionFlagEj(o, 0x13)) {
+        if (TalkRequestFlags_IsResetti() || _ZN12Unk_02006d1414testActionFlagEj(o, 0x13)) {
             return FALSE;
         }
         if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xb)) {
@@ -936,7 +936,7 @@ extern "C" s32 PlayerActor_RequestAct32() {
 }
 
 extern "C" s32 PlayerActor_RequestAct79() {
-    if (func_0203d878()) return 0;
+    if (TalkRequest_IsSaveMenuRunning()) return 0;
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xb)) return 0;

@@ -90,17 +90,17 @@ public:
     /* 0x08 */ MsgStringAttr unk_08;
 };
 
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    void redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ void *unk_3c;
@@ -146,8 +146,8 @@ void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Snd_PlaySe(u32 a);
 s32 func_02133150(s32 a, s32 b);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0206f9fc(Unk_020e0488 *w, s32 a);
-void func_0206f994(Unk_020e0488 *dst, const void *s, s32 len);
+void String_Load2dMenu(LabelString *w, s32 a);
+void String_FromEncodedBytes(LabelString *dst, const void *s, s32 len);
 void MenuCtrl_SetResult(s32 a);
 void MenuCtrl_SetIndex(u32 v);
 BOOL MenuCtrl_IsTouch();
@@ -330,7 +330,7 @@ public:
     void drawStaticLabels();
     void renderRows();
     void resetTextPool();
-    Unk_020e0488 *allocText();
+    LabelString *allocText();
     void startCursorRelease();
     void startCursorPress();
     void setCursorIdle();
@@ -402,7 +402,7 @@ public:
     /* 0x13aa */ u16 unk_13aa[16];
     /* 0x13ca */ u8 unk_13ca[2];
     /* 0x13cc */ MenuCursorBuf0 unk_13cc;
-    /* 0x1430 */ Unk_020e0488 unk_1430[0x14];
+    /* 0x1430 */ LabelString unk_1430[0x14];
     /* 0x1930 */ BgVramTask unk_1930[2];
     /* 0x1978 */ MenuTitleBalloon unk_1978;
     /* 0x1a34 */ MenuScrollKnob unk_1a34;
@@ -1027,7 +1027,7 @@ void WfcFriendListMenu::startCursorRelease() {
     setMainState(8);
 }
 
-Unk_020e0488 *WfcFriendListMenu::allocText() {
+LabelString *WfcFriendListMenu::allocText() {
     if (unk_b4 >= 0x14) {
         return &unk_1430[0x13];
     }
@@ -1039,7 +1039,7 @@ void WfcFriendListMenu::resetTextPool() {
     s32 i;
     unk_b4 = 0;
     for (i = 0; i < 0x14; i++) {
-        unk_1430[i].func_0206fc44();
+        unk_1430[i].destroyLabel();
     }
 }
 extern "C" u32 data_ov146_02293e20[2] = {0x804040d8, 0xffffc9c8};
@@ -1063,8 +1063,8 @@ extern "C" u32 sWfcFrameCells[24] = {0x81a800a0, 0x0000b57b, 0x41c880a0, 0x0000b
 void WfcFriendListMenu::renderRows() {
     static Unk_020dd374 sa;
     static Unk_020dd38c sb;
-    Unk_020e0488 *w1;
-    Unk_020e0488 *w2;
+    LabelString *w1;
+    LabelString *w2;
     s32 j;
     s32 idx;
     s32 col;
@@ -1092,15 +1092,15 @@ void WfcFriendListMenu::renderRows() {
                 func_020a78a4(&sa, unk_12a + 8 + off, 8);
                 sb.fromEncoded(&sa, 0, 0);
                 String_SetSlot(0, &sb);
-                func_0206f9fc(w1, 0x66);
+                String_Load2dMenu(w1, 0x66);
                 w2 = allocText();
-                func_0206f994(w2, unk_12a + off, 8);
+                String_FromEncodedBytes(w2, unk_12a + off, 8);
             }
             if (w1) {
-                w1->func_0206fb9c(4, col * 0x14 + 0x11e, 10, 0xe - col, 0xf, 0);
-                w1->func_0206fab4(0, 0);
-                w2->func_0206fb9c(4, col * 0x10 + 0x1d2, 8, 0xe - col, 0xf, 0);
-                w2->func_0206fab4(0, 0);
+                w1->createLabel(4, col * 0x14 + 0x11e, 10, 0xe - col, 0xf, 0);
+                w1->redrawAligned(0, 0);
+                w2->createLabel(4, col * 0x10 + 0x1d2, 8, 0xe - col, 0xf, 0);
+                w2->redrawAligned(0, 0);
             }
         }
         idx++;
@@ -1112,27 +1112,27 @@ void WfcFriendListMenu::renderRows() {
 }
 
 void WfcFriendListMenu::drawStaticLabels() {
-    Unk_020e0488 *w;
+    LabelString *w;
     w = allocText();
-    func_0206f9fc(w, 0x65);
-    w->func_0206fb9c(8, 0x93, 6, 0xf, 0, 0);
-    w->func_0206fab4(1, 0);
+    String_Load2dMenu(w, 0x65);
+    w->createLabel(8, 0x93, 6, 0xf, 0, 0);
+    w->redrawAligned(1, 0);
     w = allocText();
-    func_0206f9fc(w, 0xc2);
-    w->func_0206fb9c(8, 0x8d, 6, 0xf, 0, 0);
-    w->func_0206fab4(1, 0);
+    String_Load2dMenu(w, 0xc2);
+    w->createLabel(8, 0x8d, 6, 0xf, 0, 0);
+    w->redrawAligned(1, 0);
     w = allocText();
-    func_0206f9fc(w, 0xc1);
-    w->func_0206fb9c(8, 0x99, 6, 0xf, 0, 0);
-    w->func_0206fab4(1, 0);
+    String_Load2dMenu(w, 0xc1);
+    w->createLabel(8, 0x99, 6, 0xf, 0, 0);
+    w->redrawAligned(1, 0);
     w = allocText();
-    func_0206f9fc(w, 0xbc);
-    w->func_0206fb48(8, 0xcd, 6, 0xe, 0, 0);
-    w->func_0206fab4(1, 0);
+    String_Load2dMenu(w, 0xbc);
+    w->createSmallLabel(8, 0xcd, 6, 0xe, 0, 0);
+    w->redrawAligned(1, 0);
     w = allocText();
-    func_0206f9fc(w, 0xbd);
-    w->func_0206fb48(8, 0xed, 6, 0xe, 0, 0);
-    w->func_0206fab4(1, 0);
+    String_Load2dMenu(w, 0xbd);
+    w->createSmallLabel(8, 0xed, 6, 0xe, 0, 0);
+    w->redrawAligned(1, 0);
 }
 
 void WfcFriendListMenu::drawStaticLabelsOnce() {
@@ -1193,7 +1193,7 @@ void WfcFriendListMenu::refreshFriendStatus() {
     }
     if (cnt != unk_b6) {
         u8 buf[3];
-        Unk_020e0488 *w;
+        LabelString *w;
         unk_b6 = cnt;
         w = allocText();
         if (unk_b6 < 10) {
@@ -1205,9 +1205,9 @@ void WfcFriendListMenu::refreshFriendStatus() {
             buf[1] = unk_b6 % 10 + 0x35;
             buf[2] = 0;
         }
-        func_0206f994(w, buf, 3);
-        w->func_0206fb48(8, 0x1f4, 2, 9, 0, 1);
-        w->func_0206fab4(0, 0);
+        String_FromEncodedBytes(w, buf, 3);
+        w->createSmallLabel(8, 0x1f4, 2, 9, 0, 1);
+        w->redrawAligned(0, 0);
     }
 }
 

@@ -100,7 +100,7 @@ void MailboxMenu_SetupBgLayers();
 }
 
 class Unk_02065554;
-class Unk_0206d0a0;
+class LetterRenderer;
 class Unk_0206d1d4_Src;
 class PlayerMailbox;
 class PlayerData;
@@ -229,10 +229,10 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class Unk_0206d0a0 {
+class LetterRenderer {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d2e0(Unk_0206d1d4_Src *, void *, void *, s32);
     void func_0206d394();
     void func_0206d39c(s32);
@@ -605,7 +605,7 @@ public:
     /* 0x2238 */ MenuCursorBuf0 unk_2238;
     /* 0x229c */ PopupChoiceMenu unk_229c;
     /* 0x259c */ MenuErrorMessage unk_259c;
-    /* 0x26a4 */ Unk_0206d0a0 unk_26a4;
+    /* 0x26a4 */ LetterRenderer unk_26a4;
     /* 0x28b4 */ MenuLabelButton unk_28b4;
     /* 0x2924 */ Letter unk_2924[10];
     /* 0x32ac */ Letter unk_32ac[10];
@@ -871,7 +871,7 @@ void MailboxMenu::transitionAct07() {
     void *t = getSlotLetter(unk_b9);
     registerLetterPaper(t);
     func_02065af0(t);
-    ((Unk_0206d0a0 *)&unk_26a4)->func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    ((LetterRenderer *)&unk_26a4)->func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -944,7 +944,7 @@ void MailboxMenu::initParts() {
     unk_b4 = 0;
     unk_b8 = 0xb;
     ((PopupChoiceMenu *)&unk_229c)->init(3, 0, 0);
-    ((Unk_0206d0a0 *)&unk_26a4)->func_0206d39c(3);
+    ((LetterRenderer *)&unk_26a4)->func_0206d39c(3);
     for (i = 0; i < 10; i++) {
         func_02065c94((u8 *)unk_2924 + i * 0xf4);
     }
@@ -963,7 +963,7 @@ void MailboxMenu::releaseResources() {
     InventoryBg_Exit(&unk_b80);
     InventoryItemGrid_Exit(&unk_f8);
     PopupChoice_ForceClose(&unk_229c);
-    ((Unk_0206d0a0 *)&unk_26a4)->func_0206d394();
+    ((LetterRenderer *)&unk_26a4)->func_0206d394();
     ((MenuBottomButtons *)&unk_3c34)->freeTexts();
 }
 

@@ -10,11 +10,11 @@
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
-#define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_0206fcc8 _ZN12Unk_020e0488C1Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
+#define func_0206fca8 _ZN11LabelStringD1Ev
+#define func_0206fcc8 _ZN11LabelStringC1Ev
 #define PlayerPatterns_getPatternByOrder _ZN14PlayerPatterns17getPatternByOrderEj
 #define Pattern_getInfo _ZN7Pattern7getInfoEv
 #define PatternInfo_setTitleRaw _ZN11PatternInfo11setTitleRawEPh
@@ -26,7 +26,7 @@
 #define func_02094104 _ZN8PlayerId13func_02094104Ev
 #define func_02094108 _ZN8PlayerId13func_02094108EPv
 #define PlayerData_getFriendList _ZN10PlayerData13getFriendListEv
-#define func_020986d4 _ZN10PlayerData13func_020986d4Ev
+#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define EncodedString_fromMsgString _ZN13EncodedString13fromMsgStringEP9MsgString
 #define MsgString_fromEncoded _ZN9MsgString11fromEncodedEP13EncodedStringii
@@ -139,19 +139,19 @@ s32 func_02094104(s32 a);
 void func_02094108(s32 a, void *b);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
-void func_0206f9e4(void *p, const char *fmt, s32 a);
-BOOL func_0206f88c(void *p, void *q, u32 n);
+void String_LoadByIndex(void *p, const char *fmt, s32 a);
+BOOL String_EqualsEncodedBytes(void *p, void *q, u32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
 void ItemName_setFromItem(void *p, void *q);
 void MsgString_copy(void *p, void *q);
 void MsgString_clear(void *p);
 void String_SetSlot(s32 a, void *p);
-void func_0206f9fc(void *p, s32 a);
-void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206fab4(void *p, s32 a, s32 b);
-void func_0206fc44(void *p);
-s32 func_020986d4(s32 a);
+void String_Load2dMenu(void *p, s32 a);
+void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void LabelString_redrawAligned(void *p, s32 a, s32 b);
+void LabelString_destroyLabel(void *p);
+s32 PlayerData_getPatterns(s32 a);
 s32 PlayerData_getFriendList(s32 a);
 void *PlayerPatterns_getPatternByOrder(s32 a, s32 b);
 void *FriendList_GetEntries(s32 a);
@@ -273,17 +273,17 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 }
 
 // Real class layouts for the objects whose constructors/destructors the compiler emits calls to.
-class Unk_020e0488 {  // text window, 0x40 bytes
+class LabelString {  // text window, 0x40 bytes
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
+    LabelString();
+    virtual ~LabelString();
     u8 unk_04[0x3c];
 };
 
-class Unk_020e0470 {  // 0x38 bytes
+class EncodedString41 {  // 0x38 bytes
 public:
-    Unk_020e0470();
-    ~Unk_020e0470();
+    EncodedString41();
+    ~EncodedString41();
     u8 unk_00[0x38];
 };
 
@@ -351,7 +351,7 @@ public:
     ~Keyboard() {}
     u32 unk_00[0x22f4 / 4];
     BgVramTask unk_22f4[2];
-    Unk_020e0488 unk_233c[2];
+    LabelString unk_233c[2];
 };
 
 // Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
@@ -576,9 +576,9 @@ public:
     /* 0x2500 */ u32 unk_2500[(0x3d00 - 0x2500) / 4];
     /* 0x3d00 */ MenuBottomButtons unk_3d00;
     /* 0x3e64 */ MenuCursorBuf0 unk_3e64;
-    /* 0x3ec8 */ Unk_020e0488 unk_3ec8;
-    /* 0x3f08 */ Unk_020e0488 unk_3f08;
-    /* 0x3f48 */ Unk_020e0470 unk_3f48;
+    /* 0x3ec8 */ LabelString unk_3ec8;
+    /* 0x3f08 */ LabelString unk_3f08;
+    /* 0x3f48 */ EncodedString41 unk_3f48;
     /* 0x3f80 */ MenuErrorMessage unk_3f80;
     /* 0x4088 */ u8 unk_4088[0x20];
     /* 0x40a8 */ u8 unk_40a8[0x20];
@@ -991,7 +991,7 @@ void NameEntryMenu::releaseResources() {
     func_ov111_02296840(&unk_b0);
     Keyboard_Shutdown(&unk_144);
     MenuBottomButtons_freeTexts(&unk_3d00);
-    func_0206fc44(&unk_3ec8);
+    LabelString_destroyLabel(&unk_3ec8);
 }
 
 void NameEntryMenu::preInputUpdate() {
@@ -1007,7 +1007,7 @@ void NameEntryMenu::preStateUpdate() {
     clearFlags(0x10);
     func_ov111_02296840(&unk_b0);
     MenuBottomButtons_freeTexts(&unk_3d00);
-    func_0206fc44(&unk_3ec8);
+    LabelString_destroyLabel(&unk_3ec8);
 }
 
 void NameEntryMenu::postStateUpdate() {
@@ -1042,12 +1042,12 @@ void NameEntryMenu::loadObjGfx() {
         MsgString_clear(buf);
         String_SetSlot(0, buf);
         if (MenuCtrl_GetMode() == 0x12) {
-            func_0206f9fc(&unk_3ec8, 0x80);
+            String_Load2dMenu(&unk_3ec8, 0x80);
         } else {
-            func_0206f9fc(&unk_3ec8, 0x66);
+            String_Load2dMenu(&unk_3ec8, 0x66);
         }
-        func_0206fb9c(&unk_3ec8, 8, 0x1c0, 6, 0xf, 0, 0);
-        func_0206fab4(&unk_3ec8, 0, 0);
+        LabelString_createLabel(&unk_3ec8, 8, 0x1c0, 6, 0xf, 0, 0);
+        LabelString_redrawAligned(&unk_3ec8, 0, 0);
         func_0206fca8(buf);
     }
 }
@@ -1939,7 +1939,7 @@ BOOL NameEntryMenu::tryStartConfirm() {
 
 void NameEntryMenu::loadDesignName() {
     u8 buf[0x10];
-    s32 a = func_020986d4(PlayerData_GetCurrent());
+    s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
     PatternInfo_getTitleRaw(Pattern_getInfo(PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex())), buf);
     Mem_Copy(buf, unk_4088, 0x10);
 }
@@ -1983,16 +1983,16 @@ void NameEntryMenu::loadInitialText() {
 
 void NameEntryMenu::storeDesignName() {
     u8 buf[0x10];
-    s32 a = func_020986d4(PlayerData_GetCurrent());
+    s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
     void *p = PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex());
     Mem_Copy(unk_4088, buf, 0x10);
     PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }
 
 void NameEntryMenu::checkGeneralAnswer() {
-    Unk_020e0488 b;
-    func_0206f9e4(&b, "st_general", MenuCtrl_GetIndex());
-    if (!func_0206f88c(&b, unk_4088, unk_a6)) {
+    LabelString b;
+    String_LoadByIndex(&b, "st_general", MenuCtrl_GetIndex());
+    if (!String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
         MenuCtrl_SetResult(0);
     }
 }
@@ -2000,13 +2000,13 @@ void NameEntryMenu::checkGeneralAnswer() {
 void NameEntryMenu::checkItemNameAnswer() {
     u16 id;
     ItemName rec;
-    Unk_020e0488 b;
+    LabelString b;
     u16 i;
     for (i = 0x1323; i <= 0x1368; i++) {
         id = i;
         ItemName_setFromItem(&rec, &id);
         MsgString_copy(&b, &rec);
-        if (func_0206f88c(&b, unk_4088, unk_a6)) {
+        if (String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
             MenuCtrl_SetIndex((u8)(i - 0x1323));
             MenuCtrl_SetResult(1);
             return;
@@ -2016,9 +2016,9 @@ void NameEntryMenu::checkItemNameAnswer() {
 }
 
 void NameEntryMenu::checkPasswordAnswer() {
-    Unk_020e0488 b;
-    func_0206f9e4(&b, "st_password", MenuCtrl_GetIndex());
-    if (!func_0206f88c(&b, unk_4088, unk_a6)) {
+    LabelString b;
+    String_LoadByIndex(&b, "st_password", MenuCtrl_GetIndex());
+    if (!String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
         MenuCtrl_SetResult(0);
     }
 }

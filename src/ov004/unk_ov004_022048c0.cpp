@@ -167,9 +167,9 @@ struct Unk_020b6e10 {
     u8 pad[0x2a8];
 };
 
-struct Unk_020b6960 {
-    BOOL func_020b68ec(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-    BOOL func_020b6928(Unk_020b6e10 *box);
+struct TouchPicker {
+    BOOL addBox(Unk_020b6e10 *box, Vec3 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+    BOOL pushBox(Unk_020b6e10 *box);
 };
 
 class MsgString25 {
@@ -185,7 +185,7 @@ u16 *NookPoints_GetValuePtr(void *p);
 s32 NookPoints_GetRank(u32 x);
 s32 NookPoints_GetToNextRank(u16 *p);
 s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-Unk_020b6960 *Scene_GetCollision();
+TouchPicker *Scene_GetTouchPicker();
 BOOL TalkRequest_SetTargetDone(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 BOOL BoxCollider_Unregister(void *self);
@@ -285,7 +285,7 @@ BOOL Atm::vfunc_00() {
 
 BOOL Atm::onExecute() {
     execTalkAct();
-    Scene_GetCollision()->func_020b6928(&unk_1d0);
+    Scene_GetTouchPicker()->pushBox(&unk_1d0);
     return TRUE;
 }
 
@@ -300,7 +300,7 @@ BOOL Atm::vfunc_0c() {
 
 void Atm::initCollision() {
     BoxCollider_Register(unk_134, 0x2000, 0x2000, 0x2000, unk_5c, 0, 0);
-    Scene_GetCollision()->func_020b68ec(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
+    Scene_GetTouchPicker()->addBox(&unk_1d0, (Vec3 *)unk_5c, 0x2000, 0x2000, 0x2000, 0, 0xb, 0xff);
 }
 
 BOOL Atm::releaseCollision() {

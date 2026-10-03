@@ -419,11 +419,11 @@ void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
 void PlayerActor_SetLastPlayDate(void *, void *, void *);
 void *PlayerActor_Get(s32);
-void func_0203d984();
+void TalkRequestFlags_ClearSceneHold();
 void *Scene_GetWarpRequest();
 void SceneWarp_RequestFade(void *, s32, s32, s32);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_02098a58Ev(void *);
+void *_ZN10PlayerData5resetEv(void *);
 void *PlayerData_GetCurrentIndex();
 void _ZN8SaveData11resetPlayerEi(void *, void *);
 void _ZN17BuildingSeEmitter10playSeHeldEj(void *, s32);
@@ -437,7 +437,7 @@ void *BuildingList_FindByItem(s32);
 s32 _ZN13BuildingActor10isDoorIdleEv(void *);
 s32 PlayerActor_RequestWalkTo(void *, s32, s32);
 s32 _ZN13BuildingActor15openDoorForExitEv(void *);
-void func_0203d990();
+void TalkRequestFlags_SetSceneHold();
 void Field_SetDoorExitMode(s32);
 s32 _ZN13BuildingActor10getDoorPosEP23Unk_ov009_0225b880_Vec3Ps(void *, void *, void *);
 void SceneWarp_RequestExit(void *, s32);
@@ -548,7 +548,7 @@ BOOL KappnTaxi::onDraw() {
 
 BOOL KappnTaxi::vfunc_0c() {
     if (unk_2b0) {
-        func_0203d984();
+        TalkRequestFlags_ClearSceneHold();
     }
     if (unk_2da) {
         unk_2da = 0;
@@ -714,7 +714,7 @@ void KappnTaxi::execTaxiIdle() {
 
 BOOL KappnTaxi::enterTaxiArrive() {
     _ZN14BlendAnimModel8initAnimEiiitt(unk_138, vfunc_64(), 1, 0x1000, 0, 0);
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     return TRUE;
 }
 
@@ -898,14 +898,14 @@ void KappnTaxi::execTaxiWarpTownHall() {
                 void *r4 = Scene_GetWarpRequest();
                 void *r1 = Scene_GetCurrent(r4);
                 Scene_SetTownReturnPos(r4, r1, &v, 0xf000000, (s16)(sv + 0x8000), unk_2b4, unk_2b8);
-                func_0203d984();
+                TalkRequestFlags_ClearSceneHold();
             }
         }
     }
 }
 
 BOOL KappnTaxi::enterTaxiLeave() {
-    func_0203d990();
+    TalkRequestFlags_SetSceneHold();
     Field_SetDoorExitMode(1);
     return TRUE;
 }
@@ -1026,9 +1026,9 @@ BOOL KappnTaxi::enterTaxiLeaveEnd() {
 
 void KappnTaxi::execTaxiLeaveEnd() {
     if (sKappnTaxiLeaveTimer == 0) {
-        func_0203d984();
+        TalkRequestFlags_ClearSceneHold();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
-        _ZN10PlayerData13func_02098a58Ev(PlayerData_GetCurrent());
+        _ZN10PlayerData5resetEv(PlayerData_GetCurrent());
         _ZN8SaveData11resetPlayerEi(gSaveData, PlayerData_GetCurrentIndex());
     }
     if (sKappnTaxiLeaveTimer >= 0) {

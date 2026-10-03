@@ -18,8 +18,8 @@ struct Unk_020e085c {
 };
 
 extern "C" {
-void func_0205e274(void *);
-void func_0205e310(void *, u32, u32, u16 *, u32, u32);
+void HeldItemModel_Release(void *);
+void HeldItemModel_Setup(void *, u32, u32, u16 *, u32, u32);
 void _ZN12Unk_0205d1f813func_0205d20cEj(void *);
 void _ZN12Unk_0205ce0c13func_0205cf84Ej(void *);
 void _ZN12Unk_0205ca9413func_0205cba8Ev(void *);
@@ -32,10 +32,10 @@ struct Unk_020829b0;
 void _ZN12Unk_020829b013func_020829b0Ev(Unk_020829b0 *, u32);
 }
 
-struct Unk_0205e66c {
+struct HeldItemModel {
     u32 pad[26];
-    Unk_0205e66c();
-    ~Unk_0205e66c();
+    HeldItemModel();
+    ~HeldItemModel();
 };
 struct Unk_0205d1f8 {
     u8 pad;
@@ -158,7 +158,7 @@ extern "C" Unk_020e07d0 *func_020827bc();
 struct Unk_02082314 : Unk_02082d68 {
     Unk_02082314();
     ~Unk_02082314();
-    Unk_0205e66c unk_04;
+    HeldItemModel unk_04;
     void func_02082314();
     void func_02082328(u32 id, u16 *p);
 };
@@ -170,7 +170,7 @@ struct Unk_020e07ec : Unk_020e085c {
     virtual void vfunc_08(u32 i);
     virtual void vfunc_0c(u32 i);
     virtual Unk_02082314 *vfunc_10(u32 i);
-    Unk_0205e66c *func_020821c4(u32 i);
+    HeldItemModel *func_020821c4(u32 i);
     BOOL func_020821fc(u32 i, u16 *p);
 };
 
@@ -557,12 +557,12 @@ Unk_02082314::Unk_02082314() {}
 Unk_02082314::~Unk_02082314() {}
 
 void Unk_02082314::func_02082328(u32 id, u16 *p) {
-    func_0205e310(&unk_04, id, 0, p, 0, 0);
+    HeldItemModel_Setup(&unk_04, id, 0, p, 0, 0);
     unk_00 = 1;
 }
 
 void Unk_02082314::func_02082314() {
-    func_0205e274(&unk_04);
+    HeldItemModel_Release(&unk_04);
     unk_00 = 0;
 }
 
@@ -604,7 +604,7 @@ Unk_02082314 *Unk_020e07ec::vfunc_10(u32 i) {
 }
 
 // ---- 0x020e07ec functions
-Unk_0205e66c *Unk_020e07ec::func_020821c4(u32 i) {
+HeldItemModel *Unk_020e07ec::func_020821c4(u32 i) {
     if (i < (u32)unk_04) {
         Unk_02082314 *e = &func_02082274()->unk_08[i];
         return &e->unk_04;

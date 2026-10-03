@@ -192,11 +192,11 @@ public:
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
 #define func_02065578 _ZN12Unk_0206555413func_02065578Ev
 #define func_020655d0 _ZN12Unk_0206555413func_020655d0Ev
-#define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
-#define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
-#define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
-#define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_0206fcc8 _ZN12Unk_020e0488C1Ev
+#define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
+#define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
+#define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
+#define func_0206fca8 _ZN11LabelStringD1Ev
+#define func_0206fcc8 _ZN11LabelStringC1Ev
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
@@ -209,7 +209,7 @@ public:
 #define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
 #define PlayerInventory_getPocket _ZN15PlayerInventory9getPocketEi
 #define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
-#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define BgVramTaskPair_requestCharPair _ZN14BgVramTaskPair15requestCharPairEjjhjjjj
@@ -252,10 +252,10 @@ void func_02065e70(void *o, s32 x);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
-void func_0206fab4(void *p, s32 a, s32 b);
-void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_0206fc44(void *p);
+void String_Load2dMenu(void *p, s32 a);
+void LabelString_redrawAligned(void *p, s32 a, s32 b);
+void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void LabelString_destroyLabel(void *p);
 void func_0206fca8(void *p);
 void func_0206fcc8(void *p);
 s32 func_02087e0c(void *p);
@@ -275,7 +275,7 @@ void *PlayerInventory_getLetter(s32 a, s32 b);
 u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
 u16 *PlayerInventory_getPocket(s32 a, s32 b);
 u16 *PlayerData_getHeldItem(s32 a);
-s32 func_02098750(s32 a);
+s32 PlayerData_getInventory(s32 a);
 s32 PlayerData_getPlayerId(...);
 void Player_GetDeliveryRecipientName(void *a, void *b);
 void Pocket_SetItem(u16 *a, s32 b, s32 c);
@@ -631,7 +631,7 @@ void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a)
 
 void InventoryItemGrid_LoadPockets(InventoryItemGrid *o)
 {
-    s32 h = func_02098750(PlayerData_GetCurrent());
+    s32 h = PlayerData_getInventory(PlayerData_GetCurrent());
     s32 base = (s32)PlayerInventory_getPocket(h, 0);
     s32 i;
     s32 k;
@@ -687,7 +687,7 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
     func_02094030(d);
     switch (mode) {
     case 1:
-        func_0206f9fc(a, 0x18);
+        String_Load2dMenu(a, 0x18);
         StrBuf_Copy(b, a);
         break;
     case 2:
@@ -697,7 +697,7 @@ void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
         } else {
             Player_GetDeliveryRecipientName(d, p);
             String_SetSlot(0, d);
-            func_0206f9fc(a, 0x40);
+            String_Load2dMenu(a, 0x40);
             StrBuf_Copy(b, a);
         }
         break;
@@ -771,7 +771,7 @@ void InventoryItemGrid_MarkSlot(S *s, s32 i) {
 }
 
 u16 InventoryItemGrid_GetSlotItem(S *s, s32 i) {
-    s32 t = func_02098750(PlayerData_GetCurrent());
+    s32 t = PlayerData_getInventory(PlayerData_GetCurrent());
     if (i >= 0 && i <= 0xe) {
         return PlayerInventory_getPocket(t, 0)[i];
     }
@@ -786,7 +786,7 @@ u16 InventoryItemGrid_GetSlotItem(S *s, s32 i) {
 
 u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i) {
     if (i >= 0 && i <= 0xe) {
-        return (u8)PlayerInventory_getPocketFlags(func_02098750(PlayerData_GetCurrent()), i);
+        return (u8)PlayerInventory_getPocketFlags(PlayerData_getInventory(PlayerData_GetCurrent()), i);
     }
     return 0;
 }

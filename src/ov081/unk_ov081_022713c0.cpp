@@ -94,7 +94,7 @@ void _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(void *p, void *q);
 void _ZN13ContestRecord7setKindEj(void *p, s32 v);
 void _ZN17PlayerSpNpcRecord16setEnteredBugOffEi(void *p, s32 v);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
@@ -711,7 +711,7 @@ void SpNpcTortimerFishingTourneyTalk::vfunc_78(TalkStartMsg *out) {
         u16 h[5];
         Unk_0209d498_Obj o;
     } l;
-    _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
+    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle1";
     l.o.w[0] = 0;
     l.o.w[1] = 0;

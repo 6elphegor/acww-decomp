@@ -98,7 +98,7 @@ public:
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
@@ -320,10 +320,10 @@ extern u32 sGateHouseModelNames[];
 extern u32 sCountdownHours;
 extern u32 sCountdownSeconds;
 extern u32 sCountdownMinutes;
-void func_0203c924(void *);
-void func_0203c928(void *);
-BOOL func_0203c6f8(void *a, void *b);
-void *func_0203c6c8(void *);
+void ClothTex_Destruct(void *);
+void ClothTex_Construct(void *);
+BOOL ClothTex_LoadPattern(void *a, void *b);
+void *ClothTex_GetTex(void *);
 s32 func_020b23a0(void *);
 s32 func_020b249c(s32);
 void func_020b24a4(s32, void *);

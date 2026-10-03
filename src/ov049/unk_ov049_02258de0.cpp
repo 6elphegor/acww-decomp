@@ -41,8 +41,8 @@
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_020941e8 _ZN8PlayerId13func_020941e8EPS_
 #define func_020942c8 _ZN8PlayerIdC1Ev
-#define func_0209865c _ZN10PlayerData13func_0209865cEv
-#define func_020986d4 _ZN10PlayerData13func_020986d4Ev
+#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
+#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerData_getFaceItem _ZN10PlayerData11getFaceItemEv
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
@@ -154,9 +154,9 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
 void *FtrActorGrid_GetInstance();
 void *FtrActorGrid_getActor(void *self, s32 a, s32 b, s32 c);
-void *Scene_GetCollision();
+void *Scene_GetTouchPicker();
 void *func_020b6048(void *a, s32 b, s32 c);
-void func_020b60b0(void *a, void *b);
+void TouchPick_GetGroundPos(void *a, void *b);
 u16 *ShopStock_GetItemAtTile(s32 a, s32 b);
 BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
@@ -168,7 +168,7 @@ s32 VillagerTrend_OnClothesBought();
 void func_02015ab0(void *self, s32 v);
 void *PlayerData_GetCurrent();
 s32 MenuCtrl_GetIndex();
-void *func_020986d4(void *h);
+void *PlayerData_getPatterns(void *h);
 void PlayerPatterns_getPatternByOrder(void *a, s32 b);
 void *Pattern_getInfo(...);
 void PatternInfo_setTaste(void *a, u32 b);
@@ -179,7 +179,7 @@ void ChoiceList_setEntry(void *h, s32 a, u8 *b, s32 c, u8 *d, char *e, s32 f);
 void ChoiceList_loadTexts(void *h);
 s32 TalkWindowState_setNextMessage(void *self, void *buf, void *cb);
 BOOL MenuCtrl_IsResultOk();
-void *func_0209865c(...);
+void *PlayerData_getErrands(...);
 void *SickVillagerRecord_getParcelErrand(void *p);
 s32 Talk_IsInOwnTown();
 s32 Pocket_GetItem();
@@ -1398,7 +1398,7 @@ s32 SpNpcMabelTalk::getTopic() { return unk_b0; }
 
 void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
     void *r7 = PlayerData_GetCurrent();
-    void *r6 = SickVillagerRecord_getParcelErrand(func_0209865c());
+    void *r6 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands());
     u8 buf[4];
     if (GameStart_IsActive() != 0 && getTopic() == 2) {
         out->unk_00 = sSpNpcMabelMsgKeys[2];
@@ -2008,7 +2008,7 @@ void SpNpcMabelTalk::onDisplayPatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        func_020986d4(h);
+        PlayerData_getPatterns(h);
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
         PatternSrc_Copy(9, t, 4, unk_ac->unk_966, 1);
         m[0] = 0x24;
@@ -2025,7 +2025,7 @@ void SpNpcMabelTalk::onTakePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        func_020986d4(h);
+        PlayerData_getPatterns(h);
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
         u16 lo, hi;
         PatternSrc_Copy(4, unk_ac->unk_966, 9, t, 1);
@@ -2067,7 +2067,7 @@ void SpNpcMabelTalk::onTradePatternChosen() {
     if (MenuCtrl_IsResultOk()) {
         void *h = PlayerData_GetCurrent();
         s32 a = MenuCtrl_GetIndex();
-        func_020986d4(h);
+        PlayerData_getPatterns(h);
         u32 t = PatternOrder_getSlot(PlayerPatterns_getPatternOrder(), a);
         u16 lo, hi;
         PatternSrc_Swap(9, t, 4, unk_ac->unk_966, 1);
@@ -2162,7 +2162,7 @@ void SpNpcMabelTalk::onDeliveryItemChosen() {
     u16 v[3];
     void *hh;
     if (MenuCtrl_IsResultOk()) {
-        hh = SickVillagerRecord_getParcelErrand(func_0209865c(PlayerData_GetCurrent()));
+        hh = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
         if (Talk_IsInOwnTown()) {
             s32 n = (s32)MenuCtrl_GetIndex();
             v[1] = Pocket_GetItem();
@@ -2322,7 +2322,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
 void SpNpcMabel::setDesignConcept(u32 y) {
     void *h = PlayerData_GetCurrent();
     s32 n = MenuCtrl_GetIndex();
-    PlayerPatterns_getPatternByOrder(func_020986d4(h), (s32)n);
+    PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(h), (s32)n);
     PatternInfo_setTaste(Pattern_getInfo(), y);
 }
 
@@ -2350,13 +2350,13 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     if (f) {
         void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetCollision(), 0, 0)) {
+            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             Unk_ov049_02258ee0_Vec v2;
-            func_020b60b0(Scene_GetCollision(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;

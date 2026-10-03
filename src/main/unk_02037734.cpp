@@ -56,31 +56,31 @@ public:
 
 // ---- Classes of this file ----
 
-class Unk_020d909c : public MsgString {
+class CautionMsgString64 : public MsgString {
 public:
-    Unk_020d909c();
-    virtual ~Unk_020d909c();
+    CautionMsgString64();
+    virtual ~CautionMsgString64();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x14 */ u8 unk_14[0x40];
 };
 
-class Unk_020d9084 : public MsgString {
+class CautionMsgString128 : public MsgString {
 public:
-    Unk_020d9084();
-    virtual ~Unk_020d9084();
+    CautionMsgString128();
+    virtual ~CautionMsgString128();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x14 */ u8 unk_14[0x80];
 };
 
-// Members of Unk_020d905c, all derived from MsgString
-class Unk_020d906c : public MsgString {
+// Members of CommCautionWindow, all derived from MsgString
+class CautionMsgString256 : public MsgString {
 public:
-    Unk_020d906c();
-    virtual ~Unk_020d906c();
+    CautionMsgString256();
+    virtual ~CautionMsgString256();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -117,7 +117,7 @@ u32 Gfx2d_GetMainWindows();
 u32 Gfx2d_GetSubWindows();
 char *Msg_SkipLines(char *p, u32 n);
 u32 func_020a7f94(MsgString *obj);
-u8 *func_020382c8();
+u8 *CommCaution_FormatErrorCode();
 void func_020b4154(void *);
 void func_020b413c(void *);
 void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -136,16 +136,16 @@ void _ZN11CachedModel7releaseEv(void *p);
 void _ZN11CachedModel10loadCachedEPvS0_(void *p, u32 a, void *b);
 void String_Load2d(void *o, u8 *p, u32 x);
 void func_020639e8(void *buf, void *fmt, u32 a);
-void func_020382f4(void *a, void *b);
+void CommCaution_CopyString(void *a, void *b);
 void func_0212a360(void *a, void *b);
 s32 Net_GetLastErrorCode();
 s32 Net_GetMode();
 }
 
-extern u8 data_020d9010[];
-extern u8 data_021c2204;
-extern u32 data_021c2208;
-extern u8 data_021c2240[];
+extern u8 sCommCautionNumberGap[];
+extern u8 sCommCautionShowErrorCode;
+extern u32 sCommCautionErrorCode;
+extern u8 sCommCautionErrorCodeText[];
 extern Unk_020dbd34_Mtx data_021f47e0;
 extern u8 gFieldSceneKind;
 extern u8 gFontA[];
@@ -174,44 +174,44 @@ struct Unk_02037b90_S {
     u8 a, b, c;
 };
 
-class Unk_020d905c {
+class CommCautionWindow {
 public:
-    Unk_020d905c();
-    virtual ~Unk_020d905c();
+    CommCautionWindow();
+    virtual ~CommCautionWindow();
 
-    void func_02037ac8();
-    void func_02037b10();
-    void func_02037b70();
-    void func_02037b90(u32 a, u32 b);
-    void func_02037c40(void *buf, s32 x);
-    void func_02037ce4();
-    void func_02037d94();
-    void func_02037dc8(s32 i);
-    void func_02037e0c();
-    void func_02037e44();
-    void func_02037ea0();
-    void func_02037f70(u8 a);
-    void func_02038038();
-    void func_02038058();
+    void restorePlanes();
+    void hidePlanes();
+    void clearPlaneState();
+    void buildLine(u32 a, u32 b);
+    void renderCountdown(void *buf, s32 x);
+    void renderLine();
+    void clearLines();
+    void uploadLine(s32 i);
+    void setupModelMatrix();
+    void updateBlendRegs();
+    void draw();
+    void update(u8 a);
+    void release();
+    void init();
 
     void func_020376f4();
     void func_0203771c();
-    void func_02037734();
-    void func_020377c4();
-    void func_020377f4();
-    void func_02037810();
-    void func_02037840();
-    void func_020378f0();
-    void func_02037924();
-    void func_02037954();
-    void func_02037978();
-    void func_020379b0();
-    void func_020379c8();
-    void func_02037a04();
-    void func_02037ab4();
-    void func_02037a1c();
-    void func_02037a20();
-    void func_02037a28();
+    void execEnded();
+    void enterEnded();
+    void execShutdown();
+    void enterShutdown();
+    void execCountdown();
+    void enterCountdown();
+    void execPrepare();
+    void enterPrepare();
+    void execDelay();
+    void enterDelay();
+    void execWatch();
+    void enterWatch();
+    void muteSound();
+    void execIdle();
+    void enterIdle();
+    void checkNetError();
 
     /* 0x004 */ CachedModel unk_04;
     /* 0x0a0 */ TexVramTask unk_a0;
@@ -230,16 +230,16 @@ public:
     /* 0x0dc */ u32 unk_dc;
     /* 0x0e0 */ s32 unk_e0;
     /* 0x0e4 */ s32 unk_e4;
-    /* 0x0e8 */ Unk_020d906c unk_e8;
-    /* 0x1fc */ Unk_020d909c unk_1fc;
-    /* 0x250 */ Unk_020d9084 unk_250;
+    /* 0x0e8 */ CautionMsgString256 unk_e8;
+    /* 0x1fc */ CautionMsgString64 unk_1fc;
+    /* 0x250 */ CautionMsgString128 unk_250;
     /* 0x2e4 */ u8 unk_2e4[0x800];
 };
 
-extern Unk_020d905c data_021c251c;
-extern Unk_020d906c data_021c22f4;
-extern Unk_020d909c data_021c22a0;
-extern Unk_020d906c data_021c2408;
+extern CommCautionWindow sCommCautionWindow;
+extern CautionMsgString256 sCommCautionLagMsg;
+extern CautionMsgString64 sCommCautionSecondsMsg;
+extern CautionMsgString256 sCommCautionEndedMsg;
 
 extern "C" {
 s32 Scene_GetCurrent(void);
@@ -249,7 +249,7 @@ s32 _ZN11CommManager12getErrorModeEv(void *);
 s32 Net_GetError(void);
 u32 _ZN11CommManager13getErrorFlagsEv(void *);
 void _ZN11CommManager13setErrorFlagsEj(void *, s32);
-void func_020382fc(void);
+void CommCaution_SaveErrorCode(void);
 void Backup_CancelAndWait(void);
 void Comm_Shutdown(void);
 s32 _ZN11CommManager20getLatchedErrorFlagsEv(void *);
@@ -261,14 +261,14 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
 
-u32 data_021c2208;
-Unk_020d905c data_021c251c;
-u8 data_020d9010[4] = {0xa0, 0xa0, 0, 0};
-u8 data_021c2204;
-u8 data_021c2240[0x20];
-Unk_020d906c data_021c22f4;
-Unk_020d909c data_021c22a0;
-Unk_020d906c data_021c2408;
+u32 sCommCautionErrorCode;
+CommCautionWindow sCommCautionWindow;
+u8 sCommCautionNumberGap[4] = {0xa0, 0xa0, 0, 0};
+u8 sCommCautionShowErrorCode;
+u8 sCommCautionErrorCodeText[0x20];
+CautionMsgString256 sCommCautionLagMsg;
+CautionMsgString64 sCommCautionSecondsMsg;
+CautionMsgString256 sCommCautionEndedMsg;
 
 static inline BOOL Unk_02038058_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
@@ -278,50 +278,50 @@ static inline BOOL Unk_02038058_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
 
-extern "C" void func_02038450() {
+extern "C" void Comm_SetShutdownErrorFlag() {
     void *g = gCommManager;
     u32 v = _ZN11CommManager13getErrorFlagsEv(g) | 0x20;
     _ZN11CommManager13setErrorFlagsEj(g, v);
 }
 
-Unk_020d906c::Unk_020d906c() { clear(); }
+CautionMsgString256::CautionMsgString256() { clear(); }
 
-Unk_020d906c::~Unk_020d906c() {}
+CautionMsgString256::~CautionMsgString256() {}
 
-u32 Unk_020d906c::vfunc_08() { return 0x100; }
+u32 CautionMsgString256::vfunc_08() { return 0x100; }
 
-u8 *Unk_020d906c::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *CautionMsgString256::vfunc_0c() { return (u8 *)this + 0x12; }
 
-Unk_020d909c::Unk_020d909c() { clear(); }
+CautionMsgString64::CautionMsgString64() { clear(); }
 
-Unk_020d909c::~Unk_020d909c() {
+CautionMsgString64::~CautionMsgString64() {
 }
 
-u32 Unk_020d909c::vfunc_08() {
+u32 CautionMsgString64::vfunc_08() {
     return 0x40;
 }
 
-u8 *Unk_020d909c::vfunc_0c() {
+u8 *CautionMsgString64::vfunc_0c() {
     return (u8 *)this + 0x12;
 }
 
-Unk_020d9084::Unk_020d9084() {
+CautionMsgString128::CautionMsgString128() {
     clear();
 }
 
-Unk_020d9084::~Unk_020d9084() {
+CautionMsgString128::~CautionMsgString128() {
 }
 
-u32 Unk_020d9084::vfunc_08() {
+u32 CautionMsgString128::vfunc_08() {
     return 0x80;
 }
 
-u8 *Unk_020d9084::vfunc_0c() {
+u8 *CautionMsgString128::vfunc_0c() {
     return (u8 *)this + 0x12;
 }
 
-extern "C" void func_020382fc() {
-    data_021c2208 = Net_GetLastErrorCode();
+extern "C" void CommCaution_SaveErrorCode() {
+    sCommCautionErrorCode = Net_GetLastErrorCode();
     u8 f;
     switch (Net_GetMode()) {
     case 3:
@@ -332,71 +332,71 @@ extern "C" void func_020382fc() {
         f = 0;
         break;
     }
-    data_021c2204 = f;
+    sCommCautionShowErrorCode = f;
 }
 
-extern "C" void func_020382f4(void *a, void *b) {
+extern "C" void CommCaution_CopyString(void *a, void *b) {
     func_0212a360(a, b);
 }
 
-u8 *func_020382c8() {
+u8 *CommCaution_FormatErrorCode() {
     u8 buf[0x14];
-    func_020639e8(buf, (void *)" <%d>", data_021c2208);
-    func_020382f4(data_021c2240, buf);
-    return data_021c2240;
+    func_020639e8(buf, (void *)" <%d>", sCommCautionErrorCode);
+    CommCaution_CopyString(sCommCautionErrorCodeText, buf);
+    return sCommCautionErrorCodeText;
 }
 
-Unk_020d905c::Unk_020d905c()
+CommCautionWindow::CommCautionWindow()
     : unk_bc(0), unk_c0(0), unk_c4(0), unk_c8(0), unk_c9(0), unk_ca(0), unk_cb(0), unk_cc(0), unk_ce(0), unk_d0(0),
       unk_d4(0), unk_d8(0), unk_dc(0), unk_e0(0), unk_e4(0) {
     MI_CpuFill8(unk_2e4, 0x11, 0x800);
 }
 
-Unk_020d905c::~Unk_020d905c() {
+CommCautionWindow::~CommCautionWindow() {
 }
 
-extern "C" u8 func_0203818c() {
-    return data_021c251c.unk_ca;
+extern "C" u8 CommCaution_ArePlanesHidden() {
+    return sCommCautionWindow.unk_ca;
 }
 
-extern "C" BOOL func_02038178() {
-    if (data_021c251c.unk_bc >= 5) {
+extern "C" BOOL CommCaution_IsShutDown() {
+    if (sCommCautionWindow.unk_bc >= 5) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_02038168() {
-    data_021c251c.func_02038058();
+extern "C" void CommCaution_Init() {
+    sCommCautionWindow.init();
 }
 
-extern "C" void func_02038158() {
-    data_021c251c.func_02038038();
+extern "C" void CommCaution_Release() {
+    sCommCautionWindow.release();
 }
 
-extern "C" void func_02038148(u8 a) {
-    data_021c251c.func_02037f70(a);
+extern "C" void CommCaution_Update(u8 a) {
+    sCommCautionWindow.update(a);
 }
 
-extern "C" void func_02038138() {
-    data_021c251c.func_02037ea0();
+extern "C" void CommCaution_Draw() {
+    sCommCautionWindow.draw();
 }
 
-extern "C" void func_02038128() {
-    data_021c251c.func_02037e44();
+extern "C" void CommCaution_UpdateBlendRegs() {
+    sCommCautionWindow.updateBlendRegs();
 }
 
-extern "C" void func_020380e0() {
+extern "C" void CommCaution_LoadMessages() {
     u8 c[3];
     c[0] = 0xe3;
     c[1] = 0xe4;
     c[2] = 0xe5;
-    String_Load2d(&data_021c22f4, &c[0], 0);
-    String_Load2d(&data_021c22a0, &c[1], 0);
-    String_Load2d(&data_021c2408, &c[2], 0);
+    String_Load2d(&sCommCautionLagMsg, &c[0], 0);
+    String_Load2d(&sCommCautionSecondsMsg, &c[1], 0);
+    String_Load2d(&sCommCautionEndedMsg, &c[2], 0);
 }
 
-void Unk_020d905c::func_02038058() {
+void CommCautionWindow::init() {
     BOOL a = TRUE;
     u8 v = gFieldSceneKind;
     if (!Unk_02038058_IsZero(v)) {
@@ -410,37 +410,37 @@ void Unk_020d905c::func_02038058() {
     } else {
         b = FALSE;
     }
-    func_02037b70();
+    clearPlaneState();
     if (a || b) {
         _ZN11CachedModel10loadCachedEPvS0_(&unk_04, 0x43617557, (void *)"caution/caution_window.nsbmd");
-        func_02037e0c();
+        setupModelMatrix();
         unk_c4 = 0;
         unk_c8 = 0;
-        func_02037a04();
+        enterWatch();
     } else {
-        func_02037a20();
+        enterIdle();
     }
 }
 
-void Unk_020d905c::func_02038038() {
+void CommCautionWindow::release() {
     if (unk_bc != 0) {
         _ZN11CachedModel7releaseEv(&unk_04);
         unk_bc = 0;
     }
 }
 
-void Unk_020d905c::func_02037f70(u8 a) {
+void CommCautionWindow::update(u8 a) {
     unk_c9 = a;
-    func_02037a28();
-    static void (Unk_020d905c::*tbl[8])() = {
-        &Unk_020d905c::func_02037a1c, &Unk_020d905c::func_020379c8, &Unk_020d905c::func_02037978,
-        &Unk_020d905c::func_02037924, &Unk_020d905c::func_02037840, &Unk_020d905c::func_020377f4,
-        &Unk_020d905c::func_02037734, &Unk_020d905c::func_020376f4,
+    checkNetError();
+    static void (CommCautionWindow::*tbl[8])() = {
+        &CommCautionWindow::execIdle, &CommCautionWindow::execWatch, &CommCautionWindow::execDelay,
+        &CommCautionWindow::execPrepare, &CommCautionWindow::execCountdown, &CommCautionWindow::execShutdown,
+        &CommCautionWindow::execEnded, &CommCautionWindow::func_020376f4,
     };
     (this->*tbl[unk_bc])();
 }
 
-void Unk_020d905c::func_02037ea0() {
+void CommCautionWindow::draw() {
     if (unk_c8) {
         G3i_PerspectiveW_(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
         data_027e0148[0x7c / 4] &= ~0x50;
@@ -465,7 +465,7 @@ void Unk_020d905c::func_02037ea0() {
     }
 }
 
-void Unk_020d905c::func_02037e44() {
+void CommCautionWindow::updateBlendRegs() {
     if (unk_cb) {
         if (unk_ca) {
             unk_cc = *(volatile u16 *)0x4000050;
@@ -480,12 +480,12 @@ void Unk_020d905c::func_02037e44() {
     }
 }
 
-void Unk_020d905c::func_02037e0c() {
+void CommCautionWindow::setupModelMatrix() {
     func_020e8388(&data_021f47e0, 0, 0, -0x1000, 0, 0, -0x1000);
     unk_04.unk_64 = data_021f47e0;
 }
 
-void Unk_020d905c::func_02037dc8(s32 i) {
+void CommCautionWindow::uploadLine(s32 i) {
     u8 *b = (u8 *)unk_04.unk_5c;
     b += *(s32 *)(b + 8);
     u8 *c = b + *(u16 *)(b + 0xa);
@@ -493,14 +493,14 @@ void Unk_020d905c::func_02037dc8(s32 i) {
     unk_a0.requestTex((u32)unk_2e4, v + (i << 11), 0x800, 2);
 }
 
-void Unk_020d905c::func_02037d94() {
+void CommCautionWindow::clearLines() {
     MI_CpuFill8(unk_2e4, 0x11, 0x800);
     for (s32 i = 0; i < 4; i++) {
-        func_02037dc8(i);
+        uploadLine(i);
     }
 }
 
-void Unk_020d905c::func_02037ce4() {
+void CommCautionWindow::renderLine() {
     void *buf = Mem_AllocTail(0x800);
     if (buf != NULL) {
         MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
@@ -518,7 +518,7 @@ void Unk_020d905c::func_02037ce4() {
             u32 w = o->unk_30;
             MsgTextLabel_Destroy(o);
             if (unk_e4 >= 0 && unk_e0 != 0) {
-                func_02037c40(buf, w);
+                renderCountdown(buf, w);
             }
             Gfx2d_TilesToLinear4bpp(buf, unk_2e4, 0x20, 2);
         }
@@ -526,7 +526,7 @@ void Unk_020d905c::func_02037ce4() {
     }
 }
 
-void Unk_020d905c::func_02037c40(void *buf, s32 x) {
+void CommCautionWindow::renderCountdown(void *buf, s32 x) {
     MsgString25 t;
     String_FormatNumber(&t, unk_e4, 2, 0, 0, 0);
     u32 w = func_020a7f94(&t);
@@ -554,7 +554,7 @@ void Unk_020d905c::func_02037c40(void *buf, s32 x) {
     }
 }
 
-void Unk_020d905c::func_02037b90(u32 a, u32 b) {
+void CommCautionWindow::buildLine(u32 a, u32 b) {
     unk_250.clear();
     unk_e0 = 0;
     u8 *r = (u8 *)Msg_SkipLines((char *)unk_e8.vfunc_0c(), a);
@@ -562,17 +562,17 @@ void Unk_020d905c::func_02037b90(u32 a, u32 b) {
         unk_250.setLine(r);
         if (unk_e4 >= 0 && a == 3) {
             unk_e0 = func_020a7f94(&unk_250);
-            Unk_02037b90_S s = *(Unk_02037b90_S *)data_020d9010;
+            Unk_02037b90_S s = *(Unk_02037b90_S *)sCommCautionNumberGap;
             unk_250.append((u8 *)&s);
             unk_250.appendString(&unk_1fc);
         }
-        if (b != 0 && a == 3 && data_021c2204 != 0) {
-            unk_250.append(func_020382c8());
+        if (b != 0 && a == 3 && sCommCautionShowErrorCode != 0) {
+            unk_250.append(CommCaution_FormatErrorCode());
         }
     }
 }
 
-void Unk_020d905c::func_02037b70() {
+void CommCautionWindow::clearPlaneState() {
     unk_ca = 0;
     unk_d0 = 0;
     unk_d4 = 0;
@@ -580,7 +580,7 @@ void Unk_020d905c::func_02037b70() {
     unk_dc = 0;
 }
 
-void Unk_020d905c::func_02037b10() {
+void CommCautionWindow::hidePlanes() {
     if (!unk_ca) {
         unk_ca = 1;
         unk_d0 = Gfx2d_GetMainPlanes();
@@ -595,7 +595,7 @@ void Unk_020d905c::func_02037b10() {
     }
 }
 
-void Unk_020d905c::func_02037ac8() {
+void CommCautionWindow::restorePlanes() {
     if (unk_ca) {
         unk_ca = 0;
         Gfx2d_SetMainPlanes(unk_d0);
@@ -606,12 +606,12 @@ void Unk_020d905c::func_02037ac8() {
     }
 }
 
-void Unk_020d905c::func_02037ab4() {
+void CommCautionWindow::muteSound() {
     func_020af330();
     Snd_VolumeOff();
 }
 
-void Unk_020d905c::func_02037a28() {
+void CommCautionWindow::checkNetError() {
     s32 s = Net_GetMode();
     if (s != 0 && s != 6) {
         s32 r4 = _ZN11CommManager12getErrorModeEv(gCommManager);
@@ -625,60 +625,60 @@ void Unk_020d905c::func_02037a28() {
     }
 }
 
-void Unk_020d905c::func_02037a20() {
+void CommCautionWindow::enterIdle() {
     unk_bc = 0;
 }
 
-void Unk_020d905c::func_02037a1c() {}
+void CommCautionWindow::execIdle() {}
 
-void Unk_020d905c::func_02037a04() {
+void CommCautionWindow::enterWatch() {
     unk_bc = 1;
     unk_c8 = 0;
-    func_02037ac8();
+    restorePlanes();
 }
 
-void Unk_020d905c::func_020379c8() {
+void CommCautionWindow::execWatch() {
     if (unk_c9 != 0) {
         if ((_ZN11CommManager20getLatchedErrorFlagsEv(gCommManager) & 0x7c) != 0) {
-            func_02037b10();
-            func_02037810();
+            hidePlanes();
+            enterShutdown();
         } else {
-            func_020379b0();
+            enterDelay();
         }
     }
 }
 
-void Unk_020d905c::func_020379b0() {
+void CommCautionWindow::enterDelay() {
     unk_bc = 2;
     unk_c0 = 0x14;
     unk_c8 = 0;
 }
 
-void Unk_020d905c::func_02037978() {
+void CommCautionWindow::execDelay() {
     if (unk_c9 == 0) {
-        func_02037a04();
+        enterWatch();
     } else {
         unk_c0 = unk_c0 - 1;
         if (unk_c0 <= 0) {
-            func_02037954();
+            enterPrepare();
         }
     }
 }
 
-void Unk_020d905c::func_02037954() {
+void CommCautionWindow::enterPrepare() {
     unk_bc = 3;
     unk_c8 = 0;
-    func_02037d94();
-    func_02037b10();
+    clearLines();
+    hidePlanes();
 }
 
-void Unk_020d905c::func_02037924() {
-    _ZN9MsgString4copyEPS_(&unk_e8, &data_021c22f4);
-    _ZN9MsgString4copyEPS_((u8 *)this + 0x1fc, &data_021c22a0);
-    func_020378f0();
+void CommCautionWindow::execPrepare() {
+    _ZN9MsgString4copyEPS_(&unk_e8, &sCommCautionLagMsg);
+    _ZN9MsgString4copyEPS_((u8 *)this + 0x1fc, &sCommCautionSecondsMsg);
+    enterCountdown();
 }
 
-void Unk_020d905c::func_020378f0() {
+void CommCautionWindow::enterCountdown() {
     unk_bc = 4;
     unk_c0 = 0x12c;
     unk_c4 = 0;
@@ -687,7 +687,7 @@ void Unk_020d905c::func_020378f0() {
     unk_e4 = 0xf;
 }
 
-void Unk_020d905c::func_02037840() {
+void CommCautionWindow::execCountdown() {
     s32 q = _s32_div_f(unk_c0 + 0x13, 0x14);
     BOOL changed;
     if (unk_e4 != q) {
@@ -697,41 +697,41 @@ void Unk_020d905c::func_02037840() {
     }
     unk_e4 = q;
     if (unk_c4 < 4) {
-        func_02037b90(unk_c4, 0);
-        func_02037ce4();
-        func_02037dc8(unk_c4);
+        buildLine(unk_c4, 0);
+        renderLine();
+        uploadLine(unk_c4);
         unk_c4 = unk_c4 + 1;
     } else if (changed) {
-        func_02037b90(3, 0);
-        func_02037ce4();
-        func_02037dc8(3);
+        buildLine(3, 0);
+        renderLine();
+        uploadLine(3);
     }
     if (unk_c9 == 0) {
-        func_02037a04();
+        enterWatch();
     } else {
         unk_c0 = unk_c0 - 1;
         if (unk_c0 <= -0x14) {
-            func_02037810();
+            enterShutdown();
         }
     }
 }
 
-void Unk_020d905c::func_02037810() {
+void CommCautionWindow::enterShutdown() {
     unk_bc = 5;
     unk_c8 = 1;
-    func_02037d94();
-    func_02037ab4();
-    func_020382fc();
+    clearLines();
+    muteSound();
+    CommCaution_SaveErrorCode();
     Backup_CancelAndWait();
     Comm_Shutdown();
 }
 
-void Unk_020d905c::func_020377f4() {
-    _ZN9MsgString4copyEPS_(&unk_e8, &data_021c2408);
-    func_020377c4();
+void CommCautionWindow::execShutdown() {
+    _ZN9MsgString4copyEPS_(&unk_e8, &sCommCautionEndedMsg);
+    enterEnded();
 }
 
-void Unk_020d905c::func_020377c4() {
+void CommCautionWindow::enterEnded() {
     unk_bc = 6;
     unk_c4 = 0;
     unk_c8 = 1;
@@ -740,11 +740,11 @@ void Unk_020d905c::func_020377c4() {
     unk_c0 = 0x14;
 }
 
-void Unk_020d905c::func_02037734() {
+void CommCautionWindow::execEnded() {
     if (unk_c4 < 4) {
-        func_02037b90(unk_c4, 1);
-        func_02037ce4();
-        func_02037dc8(unk_c4);
+        buildLine(unk_c4, 1);
+        renderLine();
+        uploadLine(unk_c4);
         unk_c4 = unk_c4 + 1;
     }
     unk_c0 = unk_c0 - 1;

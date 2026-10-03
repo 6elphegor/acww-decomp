@@ -4701,7 +4701,7 @@ extern "C" { void *Villager_GetMemory(void *a, s32 b); }
 extern "C" { void _ZN14VillagerMemory13addFriendshipEi(void *a, s32 b); }
 extern "C" { void *_ZN14VillagerMemory13getFriendshipEv(void *a); }
 extern "C" { void VillagerSync_Friendship(void *a, s32 b, void *c); }
-extern "C" { s32 _ZN12Unk_02097ff413func_0209836cEPv(void *g, void *p); }
+extern "C" { s32 _ZN12Unk_02097ff420getOtherResidentNameEPv(void *g, void *p); }
 extern "C" { void Villager_GetRandomOtherName(void *a, void *b); }
 extern "C" { void Villager_GetEnemyName(void *a, void *b); }
 extern "C" { void Villager_GetFriendName(void *a, void *b); }
@@ -4831,7 +4831,7 @@ BOOL TalkWindowMsg::buildOtherResidentName() {
     if (unk_19f5 == 0) {
         void *g = PlayerData_GetCurrent();
         _ZN9MsgString5clearEv(unk_190c);
-        if (_ZN12Unk_02097ff413func_0209836cEPv(g, unk_190c) == 0) {
+        if (_ZN12Unk_02097ff420getOtherResidentNameEPv(g, unk_190c) == 0) {
             void *r0 = OWNER->vfunc_68();
             if (r0 != 0) {
                 Villager_GetRandomOtherName(r0, unk_190c);
@@ -5157,7 +5157,7 @@ extern "C" { s32 TalkFrame_ShowBg(void *p); }
 extern "C" { s32 TalkFrame_FreeBuffers(void *p); }
 extern "C" { s32 _ZN13TalkWindowMsg15createNameLabelEv(void *p); }
 extern "C" { s32 _ZN11TalkTextBox12createLabelsEv(void *p); }
-extern "C" { s32 func_02038fd4(u32 a); }
+extern "C" { s32 ChatBalloon_Dismiss(u32 a); }
 extern "C" { s32 _ZN10ChoiceList14getResultValueEv(void *p); }
 extern "C" { s32 _ZN10ChoiceList13getResultNameEv(void *p); }
 extern "C" { s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *p, s32 a, s32 b); }
@@ -5242,7 +5242,7 @@ void TalkWindowState::enterOpening() {
     _ZN13TalkFrameView9hideArrowEv(unk_1c);
     _ZN13TalkWindowMsg15createNameLabelEv(this);
     _ZN11TalkTextBox12createLabelsEv(unk_58c);
-    if (gCommManager) func_02038fd4(gCommManager->unk_64);
+    if (gCommManager) ChatBalloon_Dismiss(gCommManager->unk_64);
     if (unk_1a19 == 0) Snd_PlaySe(9);
     if (unk_1a18 == 0) {
         if (unk_14 != 1 && unk_14 != 2 && unk_14 != 3) _ZN14BgmVolumeMixer13startTalkDuckEv(data_021c1b3c + 0x1c4);

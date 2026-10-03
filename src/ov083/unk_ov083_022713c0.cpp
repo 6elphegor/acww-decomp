@@ -46,7 +46,7 @@ struct TalkStartMsg {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
@@ -511,7 +511,7 @@ void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
 void SpNpcTortimerFlowerFestTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
     u32 w[2];
-    _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
+    _ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle3";
     if (unk_b0 == -1) {
         h = 0x37e0;

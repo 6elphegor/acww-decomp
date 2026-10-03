@@ -166,8 +166,8 @@ s32 FtrActorGrid_getIndex(void *g, s32 x, s32 y, u32 z);
 void *FtrActorGrid_getActor(void *g, s32 x, s32 y, u32 z);
 u16 Item_MakeFurniture(void *p, u32 a);
 void FtrActor_findOwnTile(void *o, s32 *x, s32 *y, u32 a, u32 b);
-void *Scene_GetCollision();
-void func_020b60b0(void *a, void *b);
+void *Scene_GetTouchPicker();
+void TouchPick_GetGroundPos(void *a, void *b);
 void *func_020b6048(void *a, u32 b, u32 c);
 s32 Villager_HasShownFurnitureAt(void *o, s32 *xy, u32 a, u32 b);
 void *ChoiceList_getResult(void *o);
@@ -1068,13 +1068,13 @@ BOOL FleaMarketSellerVillager::checkFurnitureTap() {
         }
         void *c = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), hx, hy, 0);
         if (c != NULL) {
-            if (c != func_020b6048(Scene_GetCollision(), 0, 0)) {
+            if (c != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             ax = 0;
             ay = 0;
-            func_020b60b0(Scene_GetCollision(), &v1);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v1);
             FieldPos_ToUnit(&ax, &ay, &v1);
             if (ax != hx || ay != hy) {
                 return FALSE;

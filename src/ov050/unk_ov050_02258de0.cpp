@@ -50,8 +50,8 @@
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-#define func_02098308 _ZN12Unk_02097ff413func_02098308Ev
-#define func_0209865c _ZN10PlayerData13func_0209865cEv
+#define Unk_02097ff4_getBirthday _ZN12Unk_02097ff411getBirthdayEv
+#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define PlayerData_getSpNpcRecord _ZN10PlayerData14getSpNpcRecordEv
 #define PlayerData_getShirt _ZN10PlayerData8getShirtEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -732,7 +732,7 @@ BOOL CommManager_isOnline(void *g);
 void VillagerTrend_OnFurnitureBought();
 BOOL SaveVillagers_AllKnowPlayer(void *a, u32 b);
 void *TownSessionState_Get();
-void *func_02085184(void *p);
+void *TownSessionState_GetClosingTime(void *p);
 void TownSessionState_SetFlag(void *p, s32 v);
 s32 TownSessionState_TestFlag(void *p, s32 a);
 s32 TurnipMarket_getPrice(void *p);
@@ -754,8 +754,8 @@ void func_02097740(void *a, s32 b);
 void Unk_02097ff4_clearFlag(void *p, s32 v);
 void Unk_02097ff4_setFlag(void *h, u32 a);
 s32 Unk_02097ff4_testFlag(void *h, s32 a);
-u16 *func_02098308(void *a);
-void *func_0209865c(void *a);
+u16 *Unk_02097ff4_getBirthday(void *a);
+void *PlayerData_getErrands(void *a);
 void *PlayerData_getSpNpcRecord(void *h);
 u16 *PlayerData_getShirt(void *a);
 u32 PlayerData_getPlayerId(...);
@@ -813,11 +813,11 @@ BOOL NookShop_IsPointSpecialToday(void *g);
 BOOL NookShop_IsSaleTime(void *g);
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
-void *Scene_GetCollision();
+void *Scene_GetTouchPicker();
 s32 Scene_GetPrevious();
 void *Scene_GetCurrent();
 void *func_020b6048(void *a, s32 b, s32 c);
-void func_020b60b0(void *a, void *b);
+void TouchPick_GetGroundPos(void *a, void *b);
 s32 func_020e7500(void *p);
 s32 func_020e7518(void *p);
 s32 func_020e780c(s32 a, s32 b);
@@ -1122,9 +1122,9 @@ BOOL SpNpcNookShop::vfunc_00() {
     if (CommManager_isOnline(gCommManager) != 0 || *func_0209c37c(0, 0x4a) != 0) {
         unk_4cc.unk_1c |= 2;
         if (NetArea_IsLocalOwner()) {
-            func_02086f80(func_02085184(TownSessionState_Get()));
+            func_02086f80(TownSessionState_GetClosingTime(TownSessionState_Get()));
             if (DateTime_IsInvalid()) {
-                ResettiVisitFlag_setClosingTimeToday(func_02085184(TownSessionState_Get()));
+                ResettiVisitFlag_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
             }
             unk_8e = 0;
             unk_94 = 0;
@@ -1134,13 +1134,13 @@ BOOL SpNpcNookShop::vfunc_00() {
         }
         return TRUE;
     }
-    func_02086f80(func_02085184(TownSessionState_Get()));
+    func_02086f80(TownSessionState_GetClosingTime(TownSessionState_Get()));
     if (DateTime_IsInvalid()) {
-        ResettiVisitFlag_setClosingTimeToday(func_02085184(TownSessionState_Get()));
+        ResettiVisitFlag_setClosingTimeToday(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
-    void *h = func_02085184(TownSessionState_Get());
+    void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
     void *p = PlayerData_GetCurrent();
-    void *q = func_0209865c(p);
+    void *q = PlayerData_getErrands(p);
     if (Unk_02097ff4_testFlag(p, 1)) {
         PlayerErrands_GetSlot(q, 0);
         void *m = PlayerErrandSlot_GetRecord();
@@ -1415,7 +1415,7 @@ BOOL SpNpcNookShop::setupAct04() {
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 0);
     void *h = PlayerData_GetCurrent();
-    func_0209865c(h);
+    PlayerData_getErrands(h);
     if (Unk_02097ff4_testFlag(h, 1)) {
         return TRUE;
     }
@@ -1449,14 +1449,14 @@ BOOL SpNpcNookShop::setupAct05() {
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r, 1);
     if (isNook()) {
-        Unk_02086f84_clearClosingTime(func_02085184(TownSessionState_Get()));
+        Unk_02086f84_clearClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()));
     }
     return TRUE;
 }
 
 BOOL SpNpcNookShop::mainAct05() {
     if (NpcTalkCtrl_isBusy(&unk_618) == 0) {
-        void *h = func_02085184(TownSessionState_Get());
+        void *h = TownSessionState_GetClosingTime(TownSessionState_Get());
         if (isTwin() && ResettiVisitFlag_isPastClosingTime(h)) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), 1);
         } else {
@@ -2355,7 +2355,7 @@ void SpNpcNookShopTalk::handleDeliveryMenu() {
                 Unk_02014420_requestTakeItem(this, &m.unk_02, 2, 5, 0);
             }
             m.unk_00 = 3;
-            ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(func_0209865c(r7))), 1);
+            ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
         }
     }
     if (unk_b0->isNook()) {
@@ -2474,7 +2474,7 @@ void SpNpcNookShopTalk::givePlantingItems() {
 
 BOOL SpNpcNookShopTalk::checkNotInUniform(Unk_ov050_0225b908_Out *out) {
     void *r4 = PlayerData_GetCurrent();
-    if (Arbeit_IsOnDuty(func_0209865c(r4)) && r4) {
+    if (Arbeit_IsOnDuty(PlayerData_getErrands(r4)) && r4) {
         u16 *p = PlayerData_getShirt(r4);
         u16 t;
         if (!Unk_ov050_0225bd54_Same(p, &t, 0x11a8)) {
@@ -2487,7 +2487,7 @@ BOOL SpNpcNookShopTalk::checkNotInUniform(Unk_ov050_0225b908_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0B(Unk_ov050_0225b908_Out *out) {
     void *g = PlayerData_GetCurrent();
-    void *s0 = func_0209865c(g);
+    void *s0 = PlayerData_getErrands(g);
     u8 *a = (u8 *)PlayerErrands_GetSlot(s0, 0);
     void *r4 = PlayerErrandSlot_GetRecord(a);
     Pocket_FindEmpty(r4);
@@ -2533,7 +2533,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0B(Unk_ov050_0225b908_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0C(Unk_ov050_0225b908_Out *out) {
     void *g = PlayerData_GetCurrent();
-    void *p = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(func_0209865c(g), 0));
+    void *p = PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(g), 0));
     Pocket_FindEmpty(p);
     if (!checkNotInUniform(out)) {
         BOOL k0 = FALSE, k1 = FALSE, k2 = FALSE, k3 = FALSE, k4 = FALSE;
@@ -2558,7 +2558,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0C(Unk_ov050_0225b908_Out *out) {
         }
         unk_b0->unk_73a = 1;
         if (Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)) &&
-            *func_02098308(PlayerData_GetCurrent()) != 0) {
+            *Unk_02097ff4_getBirthday(PlayerData_GetCurrent()) != 0) {
             ErrandRecord_setStep(p, 1);
             out->unk_04 = 0x1a;
         } else {
@@ -2569,7 +2569,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0C(Unk_ov050_0225b908_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out) {
     void *g = PlayerData_GetCurrent();
-    Pocket_FindEmpty(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(func_0209865c(g), 0)));
+    Pocket_FindEmpty(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(g), 0)));
     if (!checkNotInUniform(out)) {
         if (!(Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)))) {
             if (unk_b0->unk_73a != 0) {
@@ -2578,7 +2578,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out) {
                 out->unk_04 = 0x14;
             }
         } else {
-            if (*func_02098308(PlayerData_GetCurrent()) == 0) {
+            if (*Unk_02097ff4_getBirthday(PlayerData_GetCurrent()) == 0) {
                 out->unk_04 = 0x15;
             } else {
                 out->unk_04 = 0x16;
@@ -2589,7 +2589,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg0E(Unk_ov050_0225b908_Out *out) {
     if (!checkNotInUniform(out)) {
-        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(func_0209865c(PlayerData_GetCurrent()), 0))) == 1) {
+        if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(PlayerData_getErrands(PlayerData_GetCurrent()), 0))) == 1) {
             out->unk_04 = 0x1e;
         } else if (unk_b0->unk_73a == 0) {
             out->unk_04 = 0x1c;
@@ -2604,7 +2604,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0E(Unk_ov050_0225b908_Out *out) {
 void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
     if (!checkNotInUniform(out)) {
         void *g = PlayerData_GetCurrent();
-        u8 *a = (u8 *)PlayerErrands_GetSlot(func_0209865c(g), 0);
+        u8 *a = (u8 *)PlayerErrands_GetSlot(PlayerData_getErrands(g), 0);
         void *b = PlayerErrandSlot_GetRecord(a);
         u8 *c = (u8 *)PlayerErrandSlot_GetVillager(a, 1);
         Unk_020e1c64 o;
@@ -2641,7 +2641,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg10(Unk_ov050_0225b7f4_Out *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(PlayerData_GetCurrent());
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->unk_04 = 0x2c;
         } else if (unk_b0->unk_73a == 0) {
@@ -2655,7 +2655,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg10(Unk_ov050_0225b7f4_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg11(Unk_ov050_0225b7f4_Out *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(PlayerData_GetCurrent());
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->unk_04 = 0x31;
         } else if (unk_b0->unk_73a == 0) {
@@ -2669,7 +2669,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg11(Unk_ov050_0225b7f4_Out *out) {
 
 void SpNpcNookShopTalk::pickArbeitStartMsg12(Unk_ov050_0225b7f4_Out *out) {
     if (func_ov050_0225bd54_self(this) == 0) {
-        void *h = func_0209865c(PlayerData_GetCurrent());
+        void *h = PlayerData_getErrands(PlayerData_GetCurrent());
         if (ErrandRecord_getStep(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0))) == 1) {
             out->unk_04 = 0x33;
         } else if (unk_b0->unk_73a == 0) {
@@ -2750,7 +2750,7 @@ extern "C" const Unk_ov050_MsgRow sSpNpcNookShopTopicTable[31] = {
 };
 
 void SpNpcNookShopTalk::onArbeitMessageEnd() {
-    void *h = func_0209865c(PlayerData_GetCurrent());
+    void *h = PlayerData_getErrands(PlayerData_GetCurrent());
     PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(h, 0));
     unk_cc = 0xff;
     static Unk_ov050_0225b5a8_Row tbl[24] = {
@@ -3026,8 +3026,8 @@ void SpNpcNookShopTalk::vfunc_78(Unk_ov050_0225a888_Out *out) {
     u16 w0, w4, w6, w8, wa, t0, t1, t2, t3;
     Unk_ov050_0225a888_Bytes s, v, o1, o2, c;
     void *h = PlayerData_GetCurrent();
-    void *r7 = SickVillagerRecord_getParcelErrand(func_0209865c(h));
-    x = func_0209865c(h);
+    void *r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(h));
+    x = PlayerData_getErrands(h);
     if (Unk_02097ff4_testFlag(h, 1)) {
         PlayerErrands_GetSlot(x, 0);
         void *ev = PlayerErrandSlot_GetRecord();
@@ -3288,7 +3288,7 @@ extern "C" const u8 sSpNpcNookShopDramaMsgTable[32] = {0x00, 0x01, 0x02, 0x03, 0
 
 void SpNpcNookShopTalk::vfunc_14() {
     void *h = PlayerData_GetCurrent();
-    func_0209865c(h);
+    PlayerData_getErrands(h);
     if (Unk_02097ff4_testFlag(h, 1)) {
         onArbeitMessageEnd();
         return;
@@ -3530,7 +3530,7 @@ void SpNpcNookShopTalk::vfunc_18(s32 a) {
     };
     s32 i = 0;
     void *h = PlayerData_GetCurrent();
-    func_0209865c(h);
+    PlayerData_getErrands(h);
     if (Unk_02097ff4_testFlag(h, 1)) {
         i = 2;
     } else if (unk_ac == 0xf) {
@@ -4173,13 +4173,13 @@ BOOL SpNpcNookShop::pickItemTopic() {
     if (f) {
         void *o = FtrActorGrid_getActor(FtrActorGrid_GetInstance(), bx, by, 0);
         if (o != 0) {
-            if (o != func_020b6048(Scene_GetCollision(), 0, 0)) {
+            if (o != func_020b6048(Scene_GetTouchPicker(), 0, 0)) {
                 return FALSE;
             }
         } else {
             s32 bx2 = 0, by2 = 0;
             Unk_ov050_022590f8_Vec v2;
-            func_020b60b0(Scene_GetCollision(), &v2);
+            TouchPick_GetGroundPos(Scene_GetTouchPicker(), &v2);
             FieldPos_ToUnit(&bx2, &by2, &v2);
             if (bx2 != bx || by2 != by) {
                 return FALSE;
@@ -4236,7 +4236,7 @@ BOOL SpNpcNookShop::tryItemTalk() {
 
 BOOL SpNpcNookShop::tryStairsBlockTalk() {
     void *p = PlayerData_GetCurrent();
-    func_0209865c(p);
+    PlayerData_getErrands(p);
     if (Unk_02097ff4_testFlag(p, 1)) {
         Unk_ov050_02258f80_Loc v;
         Unk_ov050_022590f8_Vec *src = (Unk_ov050_022590f8_Vec *)func_020947f0(4);
@@ -4265,7 +4265,7 @@ BOOL SpNpcNookShop::tryFarewellTalk() {
             return FALSE;
         }
         void *p = PlayerData_GetCurrent();
-        func_0209865c(p);
+        PlayerData_getErrands(p);
         if (Unk_02097ff4_testFlag(p, 1)) {
             return FALSE;
         }
@@ -4293,7 +4293,7 @@ BOOL SpNpcNookShop::tryClosingTimeTalk() {
     if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1)) {
         return FALSE;
     }
-    if (ResettiVisitFlag_isPastClosingTime(func_02085184(TownSessionState_Get()))) {
+    if (ResettiVisitFlag_isPastClosingTime(TownSessionState_GetClosingTime(TownSessionState_Get()))) {
         if (isNook()) {
             unk_658.setTopic(6);
         } else if (isTommy()) {

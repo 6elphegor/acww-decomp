@@ -49,8 +49,8 @@ void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 a, u8 *b, void 
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *self, s32 a);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
-void func_0203d960();
-void func_0203d96c();
+void TalkRequestFlags_ClearResetti();
+void TalkRequestFlags_SetResetti();
 s32 func_020e77cc(void *p, u32 lo, u32 hi);
 u32 func_02063b8c(u32 n);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
@@ -303,7 +303,7 @@ public:
     virtual void getInteractionPos();
     virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
-    void func_0203e42c();
+    void clearTalkStartMode();
     void setInteractionRange(s32 a);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
@@ -545,8 +545,8 @@ BOOL SpNpcResetti::vfunc_00() {
     unk_4cc.unk_1c |= 2;
     setInteractionRange(0);
     changeAct(3);
-    func_0203e42c();
-    func_0203d96c();
+    clearTalkStartMode();
+    TalkRequestFlags_SetResetti();
     return TRUE;
 }
 
@@ -554,7 +554,7 @@ BOOL SpNpcResetti::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    func_0203d960();
+    TalkRequestFlags_ClearResetti();
     return TRUE;
 }
 

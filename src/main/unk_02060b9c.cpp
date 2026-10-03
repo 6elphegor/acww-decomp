@@ -112,7 +112,7 @@ void *PlayerData_Get(s32 i);
 }
 
 extern "C" {
-void *_ZN10PlayerData13func_02098750Ev(void *p);
+void *_ZN10PlayerData12getInventoryEv(void *p);
 }
 
 extern "C" {
@@ -380,12 +380,12 @@ extern "C" void Save_ConvertFakePaintings() {
         m = PlayerData_Get(k);
         if (m) {
             for (j = 0; j < 15; j++) {
-                s32 s = _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData13func_02098750Ev(m), j);
-                t[0] = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(m), j);
+                s32 s = _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(m), j);
+                t[0] = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(m), j);
                 Item_ConvertFakePainting(&t[1], &t[0]);
                 u16 *pb = &t[0];
                 if (!Unk_02060e3c_Eq(&t[1], pb) && s == 0) {
-                    _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData13func_02098750Ev(m), &t[1], j, 0);
+                    _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData12getInventoryEv(m), &t[1], j, 0);
                     func_0203c41c(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
                 }
             }

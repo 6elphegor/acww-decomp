@@ -22,9 +22,9 @@ u32 Bbs_GetPostCount();
 void *ProcBase_GetParent(...);
 void ProcBase_RequestDelete(void *p);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void func_0206f9fc(void *o, u32 x);
-void func_0206f994(void *dst, const void *s, s32 len);
-void func_0206f920(void *dst, const void *s, s32 len, BOOL a, u32 b);
+void String_Load2dMenu(void *o, u32 x);
+void String_FromEncodedBytes(void *dst, const void *s, s32 len);
+void String_FromEncodedBytesEx(void *dst, const void *s, s32 len, BOOL a, u32 b);
 void func_ov092_02291ce4(void *p, s32 a, s32 b);
 void func_ov092_02291c5c();
 void Gfx2d_HideLayer(s32 a);
@@ -77,14 +77,14 @@ public:
 };
 
 // Text window, 0x40 bytes
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb48(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fb04(u32 a, u32 b, u8 x, u8 y);
-    void func_0206fc44();
+    LabelString();
+    virtual ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createSmallLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void createBufferLabel(u32 a, u32 b, u8 x, u8 y);
+    void destroyLabel();
     u8 unk_04[0x3c];
 };
 
@@ -273,8 +273,8 @@ public:
     /* 0x0a0 */ u16 unk_a0[0x400];
     /* 0x8a0 */ u8 unk_8a0[6][0x500];
     /* 0x26a0 */ BgVramTask unk_26a0[2];
-    /* 0x26e8 */ Unk_020e0488 unk_26e8[4];
-    /* 0x27e8 */ Unk_020e0488 unk_27e8[6];
+    /* 0x26e8 */ LabelString unk_26e8[4];
+    /* 0x27e8 */ LabelString unk_27e8[6];
     /* 0x2968 */ MenuCursorBuf1 unk_2968;
 };
 
@@ -538,12 +538,12 @@ void BbsReadMenu::init() {
 void BbsReadMenu::releaseResources() {
     unk_26a0[0].cancel();
     unk_26a0[1].cancel();
-    unk_26e8[0].func_0206fc44();
-    unk_26e8[1].func_0206fc44();
-    unk_26e8[2].func_0206fc44();
-    unk_26e8[3].func_0206fc44();
+    unk_26e8[0].destroyLabel();
+    unk_26e8[1].destroyLabel();
+    unk_26e8[2].destroyLabel();
+    unk_26e8[3].destroyLabel();
     for (s32 i = 0; i < 6; i++) {
-        unk_27e8[i].func_0206fc44();
+        unk_27e8[i].destroyLabel();
     }
 }
 
@@ -551,12 +551,12 @@ void BbsReadMenu::preInputUpdate() { preStateUpdate(); }
 
 void BbsReadMenu::preStateUpdate() {
     unk_2968.vfunc_0c();
-    unk_26e8[0].func_0206fc44();
-    unk_26e8[1].func_0206fc44();
-    unk_26e8[2].func_0206fc44();
-    unk_26e8[3].func_0206fc44();
+    unk_26e8[0].destroyLabel();
+    unk_26e8[1].destroyLabel();
+    unk_26e8[2].destroyLabel();
+    unk_26e8[3].destroyLabel();
     for (s32 i = 0; i < 6; i++) {
-        unk_27e8[i].func_0206fc44();
+        unk_27e8[i].destroyLabel();
     }
 }
 
@@ -669,16 +669,16 @@ void BbsReadMenu::showPostText(void *unused) {
     func_0206cf4c(BbsPost_GetText(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
     for (i = 0; i < 6; i++) {
         s32 len = starts[i + 1] - starts[i];
-        Unk_020e0488 *o = &unk_27e8[i];
+        LabelString *o = &unk_27e8[i];
         ((MsgString *)o)->clear();
         if (len != 0) {
-            func_0206f920(o, BbsPost_GetText(p) + starts[i], len, z1, z1);
+            String_FromEncodedBytesEx(o, BbsPost_GetText(p) + starts[i], len, z1, z1);
         }
     }
     for (i = 0; i < 6; i++) {
-        Unk_020e0488 *o = &unk_27e8[i];
-        o->func_0206fb04((u32)unk_8a0[i], 0x14, 0xe, 0xd);
-        o->func_0206fab4(z2, z2);
+        LabelString *o = &unk_27e8[i];
+        o->createBufferLabel((u32)unk_8a0[i], 0x14, 0xe, 0xd);
+        o->redrawAligned(z2, z2);
     }
     unk_26a0[0].requestChars((u32)unk_8a0, 2, 0x11, 0x11, 0x100);
 }
@@ -691,13 +691,13 @@ void BbsReadMenu::showPostDate(void *unused) {
     buf[2] = p->getYear() / 10 + 0x35;
     buf[3] = p->getYear() % 10 + 0x35;
     buf[4] = 0;
-    func_0206f994(&unk_26e8[0], buf, 5);
+    String_FromEncodedBytes(&unk_26e8[0], buf, 5);
     placeLabel(0, 0x111, 4, 0, 1);
     buf[0] = p->getMonth() / 10 + 0x35;
     buf[1] = p->getMonth() % 10 + 0x35;
     buf[2] = p->getDay() / 10 + 0x35;
     buf[3] = p->getDay() % 10 + 0x35;
-    func_0206f994(&unk_26e8[1], buf, 5);
+    String_FromEncodedBytes(&unk_26e8[1], buf, 5);
     placeLabel(1, 0x116, 4, 0, 1);
 }
 
@@ -711,10 +711,10 @@ void BbsReadMenu::showPostNumber(s32 i) {
         buf[0] = i + 0x36;
         buf[1] = 0;
     }
-    Unk_020e0488 str;
-    func_0206f994(&str, buf, 3);
+    LabelString str;
+    String_FromEncodedBytes(&str, buf, 3);
     String_SetSlot(0, &str);
-    func_0206f9fc(&unk_26e8[2], 0x86);
+    String_Load2dMenu(&unk_26e8[2], 0x86);
     placeLabel(2, 0x11a, 5, 1, 0);
 }
 
@@ -746,20 +746,20 @@ void BbsReadMenu::showPost(void *pad) {
 }
 
 void BbsReadMenu::setupButtonLabels() {
-    func_0206f9fc(&unk_26e8[0], 0x83);
+    String_Load2dMenu(&unk_26e8[0], 0x83);
     placeLabel(0, 0x101, 4, 1, 0);
-    func_0206f9fc(&unk_26e8[1], 0x82);
+    String_Load2dMenu(&unk_26e8[1], 0x82);
     placeLabel(1, 0x105, 4, 1, 0);
-    func_0206f9fc(&unk_26e8[2], 0x84);
+    String_Load2dMenu(&unk_26e8[2], 0x84);
     placeLabel(2, 0x109, 4, 1, 0);
-    func_0206f9fc(&unk_26e8[3], 0x88);
+    String_Load2dMenu(&unk_26e8[3], 0x88);
     placeLabel(3, 0x10d, 4, 1, 0);
 }
 
 void BbsReadMenu::placeLabel(s32 idx, s32 a, s32 b, s32 c, s32 d) {
-    Unk_020e0488 *o = &unk_26e8[idx];
-    o->func_0206fb48(2, a, b, 0xf, 0xa, d);
-    o->func_0206fab4(c, 0);
+    LabelString *o = &unk_26e8[idx];
+    o->createSmallLabel(2, a, b, 0xf, 0xa, d);
+    o->redrawAligned(c, 0);
 }
 
 BOOL BbsReadMenu::testFlags(u32 mask) {

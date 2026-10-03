@@ -44,8 +44,8 @@
 #define func_0209c2d8 _ZN12Unk_0209c15cD1Ev
 #define func_0209c2dc _ZN12Unk_0209c15cC1Ev
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_020b68ec _ZN12Unk_020b696013func_020b68ecEP12Unk_020b6e10P4Vec3iiisih
-#define func_020b6928 _ZN12Unk_020b696013func_020b6928EP12Unk_020b6e10
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10
 #define func_020b6df4 _ZN12Unk_020b6e10D2Ev
 #define func_020b6e10 _ZN12Unk_020b6e10C2Ev
 #define func_02133150 _s32_div_f
@@ -697,10 +697,10 @@ void func_0209c2dc(void *p);
 s32 func_0209c348(s32);
 void func_0209c364(u16 *);
 void func_0209c370(u16 *);
-void *Scene_GetCollision(void);
+void *Scene_GetTouchPicker(void);
 s32 func_020b6080(void *, void *, void *, void *);
-void func_020b68ec(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-s32 func_020b6928(void *, void *);
+void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
+s32 TouchPicker_pushBox(void *, void *);
 void func_020b6df4(void *p);
 void func_020b6e10(void *p);
 s32 func_020e759c(void *p, s32 a, s32 b);
@@ -3096,7 +3096,7 @@ extern "C" BOOL AquariumFish_GetTouchPoint(E864 *e, V3 *out) {
     u8 b;
     s32 t;
     V3 v;
-    if (func_020b6080(Scene_GetCollision(), &v, &t, &b)) {
+    if (func_020b6080(Scene_GetTouchPicker(), &v, &t, &b)) {
         if (!Unk_ov004_0222ee2c_Both()) {
             if (t == 0x13) {
                 if (b == 0) {
@@ -3748,8 +3748,8 @@ extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
         self->unk_50[4].unk_50[4] = 0x700;
         sAquariumObstacleCount = 5;
         MuseumAquarium_CreateFreshwaterFish(self);
-        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
-        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
+        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 0);
+        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x550, &sAquariumTankCenterB, 0x11c00, 0x5c00, 0x3800, 0, 0x13, 1);
     } else {
         self->unk_50[0].unk_50[0] = 0x8b00;
         self->unk_50[0].unk_50[1] = 0xfffff300;
@@ -3778,7 +3778,7 @@ extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
         self->unk_294[3] = 0xc00;
         self->unk_294[4] = 0x2000;
         MuseumAquarium_CreateSeaFish(self);
-        func_020b68ec(Scene_GetCollision(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
+        TouchPicker_addBox(Scene_GetTouchPicker(), (u8 *)self + 0x2a8, &sAquariumTankCenterA, 0x26000, 0x4dc3, 0x3800, 0, 0x13, 0);
     }
     func_02004008(0x4da);
     return TRUE;
@@ -4018,10 +4018,10 @@ extern "C" s32 _ZN14MuseumAquarium9onExecuteEv(Mgr *o) {
     s32 i;
     R **p;
     if (sAquariumRoom == 0) {
-        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x2a8);
-        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x550);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x2a8);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x550);
     } else if (sAquariumRoom == 1) {
-        func_020b6928(Scene_GetCollision(), (u8 *)o + 0x2a8);
+        TouchPicker_pushBox(Scene_GetTouchPicker(), (u8 *)o + 0x2a8);
     }
     i = sAquariumEndFish - 1;
     p = &sAquariumFish[i];

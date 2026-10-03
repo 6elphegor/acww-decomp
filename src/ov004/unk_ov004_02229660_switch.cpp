@@ -330,7 +330,7 @@ struct Unk_ov004_0222a0bc_V3 {
     s32 v[3];
 };
 
-class Unk_020b6960;
+class TouchPicker;
 class ChoiceList;
 
 // Functions of other modules, under their real (mangled) symbol names; the object is the first argument.
@@ -359,8 +359,8 @@ class ChoiceList;
 #define ChoiceList_loadTexts _ZN10ChoiceList9loadTextsEv
 #define ChoiceList_setEntry _ZN10ChoiceList8setEntryEiPKhiS1_PKci
 #define ChoiceList_reset _ZN10ChoiceList5resetEii
-#define func_020b68ec _ZN12Unk_020b696013func_020b68ecEP12Unk_020b6e10P4Vec3iiisih
-#define func_020b6928 _ZN12Unk_020b696013func_020b6928EP12Unk_020b6e10
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10
 
 extern "C" {
 extern u8 gScreenTransition;
@@ -375,8 +375,8 @@ void _ZN11BoxColliderC1Ev(void *self);
 void _ZN11BoxColliderD2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
-void _ZN12Unk_020b6a94C1Ev(void *self);
-void _ZN12Unk_020b6a94D1Ev(void *self);
+void _ZN15TouchPickSphereC1Ev(void *self);
+void _ZN15TouchPickSphereD1Ev(void *self);
 s32 BlendAnimModel_initAnim(void *p, u32 a, u32 b, u32 c, u32 d, u32 e);
 void AnimModel_attachAnim(void *p);
 void AnimModel_drawAnimated(void *p, s32 a);
@@ -402,16 +402,16 @@ s32 ChoiceList_getResult(ChoiceList *p);
 void ChoiceList_loadTexts(ChoiceList *p);
 void ChoiceList_setEntry(ChoiceList *p, u32 i, u8 *b, u32 n, void *d, s32 z, s32 c);
 void ChoiceList_reset(ChoiceList *p, u32 n, s32 v);
-BOOL func_020b68ec(Unk_020b6960 *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
-void func_020b6928(Unk_020b6960 *o, void *p);
+BOOL TouchPicker_addBox(TouchPicker *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
+void TouchPicker_pushBox(TouchPicker *o, void *p);
 s32 TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 BOOL MenuCtrl_OpenLauncher(u32 a);
 u32 Scene_GetCurrent();
-Unk_020b6960 *Scene_GetCollision();
-BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
-s32 func_020b6014(Unk_020b6960 *o, u32 a, u32 b);
+TouchPicker *Scene_GetTouchPicker();
+BOOL func_020b6080(TouchPicker *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
+s32 func_020b6014(TouchPicker *o, u32 a, u32 b);
 void *func_02095204(u32 x);
 void *func_020951ec(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
@@ -479,7 +479,7 @@ public:
 
     /* 0x2d4 */ u32 unk_2d4[0x27]; // a BoxCollider (ctor C1 / dtor D2 by hand, as the original calls them)
     /* 0x370 */ u32 unk_370[0xaa]; // a Unk_020b6e10 (ctor C2 / dtor D2 by hand)
-    /* 0x618 */ u32 unk_618[7];    // a Unk_020b6a94 (ctor C2 / dtor D1 by hand)
+    /* 0x618 */ u32 unk_618[7];    // a TouchPickSphere (ctor C2 / dtor D1 by hand)
     /* 0x634 */ s32 unk_634;
     /* 0x638 */ u8 unk_638;
     /* 0x639 */ u8 pad_639[3];

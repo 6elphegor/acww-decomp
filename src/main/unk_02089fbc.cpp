@@ -79,17 +79,17 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_020033e4();
-void func_02003770();
+void HudUnkSlideIcon_Draw();
+void HudLinkIcon_Draw();
 void HudUnkIcon_Draw();
-void func_02003780();
-void func_020033f4();
+void HudLinkIcon_Update();
+void HudUnkSlideIcon_Update();
 void HudUnkIcon_Update();
 void HudUnkIcon_Exit();
-void func_02003404();
-void func_02003790();
-void func_020037a0();
-void func_02003414();
+void HudUnkSlideIcon_Exit();
+void HudLinkIcon_Exit();
+void HudLinkIcon_Reset();
+void HudUnkSlideIcon_Reset();
 void HudUnkIcon_Reset();
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
@@ -99,11 +99,11 @@ void func_02011900(u32 a);
 s32 func_0201188c();
 BOOL func_020118f4();
 s32 MenuCtrl_IsTransitionActive();
-s32 func_02038f60();
+s32 ChatBalloon_IsRemoteBusy();
 s32 MenuCtrl_GetTransitionProgressOrFull();
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 PlayerData_GetCurrent();
-s32 _ZN10PlayerData13func_02098750Ev();
+s32 _ZN10PlayerData12getInventoryEv();
 s32 _ZN15PlayerInventory13getTotalBellsEi(s32 a, s32 b);
 s32 MenuCtrl_GetHandBells();
 void func_02003edc();
@@ -114,9 +114,9 @@ void func_020e7870(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_020e759c(void *p, s32 a, s32 b);
 MsgTextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 void MsgTextLabel_Destroy(TextLabel *obj);
-BOOL func_0203d848();
-BOOL func_0203d854();
-void func_0203d860();
+BOOL TalkRequest_FinishCameraView();
+BOOL TalkRequest_IsCameraViewRunning();
+void TalkRequest_AddCameraView();
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_ResetForceClose();
 BOOL Input_IsTouchMode();
@@ -130,13 +130,13 @@ BOOL TalkRequest_IsActive();
 u32 PlayerActor_GetAction(s32 a);
 void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
-BOOL func_02038f10();
+BOOL ChatBalloon_IsOwnBusy();
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void Clock_GetRtcDateTime(void *p);
 s32 DateTime_Compare(void *a, void *b, s32 n);
 void DateTime_Sub(void *a, void *b);
 s32 Scene_GetCurrent();
-void func_020b7878(s32 x);
+void FieldInfoBalloon_ShowTimerMsg(s32 x);
 u64 OS_GetTick();
 s32 MenuCtrl_IsMenuOpen();
 void DateTime_AddSeconds(void *p, s32 v);
@@ -1192,7 +1192,7 @@ void HudClockLabels::pollDateTime() {
 }
 
 void HudClockLabels::updateSlide() {
-    s32 a = func_02038f10();
+    s32 a = ChatBalloon_IsOwnBusy();
     s32 b = _ZN8HudClock7canShowEv(this);
     s32 t;
     if (a != 0 && b != 0) t = -0x14000; else t = 0;
@@ -1307,7 +1307,7 @@ void HudCountdown::start(s32 a, s32 b) {
         unk_97 = 1;
     }
     if (b == 0) {
-        func_020b7878(a == 0 ? 2 : 1);
+        FieldInfoBalloon_ShowTimerMsg(a == 0 ? 2 : 1);
     }
 }
 
@@ -1607,7 +1607,7 @@ void HudCountdownLabels::updateRemaining() {
                     if (Scene_GetCurrent() != 0x2e) {
                         Snd_PlaySe(0x65);
                     }
-                    func_020b7878(3);
+                    FieldInfoBalloon_ShowTimerMsg(3);
                 } else if (b0 <= 10) {
                     u64 now = OS_GetTick();
                     u64 d = now - *(u64 *)&unk_cc;
@@ -1630,7 +1630,7 @@ void HudCountdownLabels::updateRemaining() {
 }
 
 void HudCountdownLabels::updateSlide() {
-    BOOL a = func_02038f10();
+    BOOL a = ChatBalloon_IsOwnBusy();
     BOOL b = _ZN12HudCountdown7canShowEv(this);
     s32 t;
     s32 c4;
@@ -2123,13 +2123,13 @@ void HudCameraButton::enterShown() {
 }
 
 void HudCameraButton::updateShown() {
-    if (func_0203d854()) {
+    if (TalkRequest_IsCameraViewRunning()) {
         MenuCtrl_ResetForceClose();
         enterGridOpening();
     } else if (!canShow()) {
         enterHiding();
     } else if (isTogglePressed(0)) {
-        func_0203d860();
+        TalkRequest_AddCameraView();
     }
 }
 
@@ -2174,7 +2174,7 @@ void HudCameraButton::enterGridClosing() {
 
 void HudCameraButton::updateGridClosing() {
     if (unk_28.isClosed()) {
-        func_0203d848();
+        TalkRequest_FinishCameraView();
         unk_24 = 0;
         enterShown();
     }
@@ -2405,7 +2405,7 @@ extern "C" s32 Hud_GetBells() {
     s32 c = PlayerData_GetCurrent();
     s32 r = 0;
     if (c != 0) {
-        s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData13func_02098750Ev(), 1);
+        s32 a = _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(), 1);
         r = a + MenuCtrl_GetHandBells();
     }
     return r;
@@ -2421,7 +2421,7 @@ void HudWallet::updateBaseY() {
 void HudWallet::updateSlide() {
     if (MenuCtrl_IsTransitionActive() != 0) {
         s32 r;
-        if (func_02038f60() != 0) {
+        if (ChatBalloon_IsRemoteBusy() != 0) {
             r = 0x28000;
         } else {
             r = 0;
@@ -2686,8 +2686,8 @@ HudProc::HudProc() {}
 HudProc::~HudProc() {}
 
 BOOL HudProc::vfunc_00() {
-    func_020037a0();
-    func_02003414();
+    HudLinkIcon_Reset();
+    HudUnkSlideIcon_Reset();
     HudUnkIcon_Reset();
     Hud_Init();
     return TRUE;
@@ -2696,22 +2696,22 @@ BOOL HudProc::vfunc_00() {
 BOOL HudProc::vfunc_0c() {
     Hud_Exit();
     HudUnkIcon_Exit();
-    func_02003404();
-    func_02003790();
+    HudUnkSlideIcon_Exit();
+    HudLinkIcon_Exit();
     return TRUE;
 }
 
 BOOL HudProc::onExecute() {
-    func_02003780();
-    func_020033f4();
+    HudLinkIcon_Update();
+    HudUnkSlideIcon_Update();
     HudUnkIcon_Update();
     Hud_Update();
     return TRUE;
 }
 
 BOOL HudProc::onDraw() {
-    func_020033e4();
-    func_02003770();
+    HudUnkSlideIcon_Draw();
+    HudLinkIcon_Draw();
     Hud_Draw();
     HudUnkIcon_Draw();
     return TRUE;

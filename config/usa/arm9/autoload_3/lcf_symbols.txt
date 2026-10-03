@@ -164,9 +164,9 @@ data_021c40e4 addr:0x021c40e4 base:gTownEval
 data_021c40ec addr:0x021c40ec base:gTownEval
 data_021c4110 addr:0x021c4110 base:gTownEval
 data_021c43bc addr:0x021c43bc base:sFieldActions
-data_021c5b50 addr:0x021c5b50 base:data_021c5b48
-data_021c5bc8 addr:0x021c5bc8 base:data_021c5b48
-data_021c5c48 addr:0x021c5c48 base:data_021c5b48
+data_021c5b50 addr:0x021c5b50 base:sHandOverItemActs
+data_021c5bc8 addr:0x021c5bc8 base:sHandOverItemActs
+data_021c5c48 addr:0x021c5c48 base:sHandOverItemActs
 data_021c6164 addr:0x021c6164 base:data_021c6064
 data_021c7d1c addr:0x021c7d1c base:gItemInfo
 data_021ce840 addr:0x021ce840 base:gHud
@@ -242,7 +242,7 @@ data_021edbf0 addr:0x021edbf0 base:sBmgFileHeader
 data_021edbfc addr:0x021edbfc base:sBmgFileHeader
 data_021edcfc addr:0x021edcfc base:gMsgQuery
 data_021ee352 addr:0x021ee352 base:data_021ee330
-data_021ef548 addr:0x021ef548 base:data_021ef4c8
+data_021ef548 addr:0x021ef548 base:sFieldInfoBalloon
 data_021ef690 addr:0x021ef690 base:sSkyLight
 data_021ef90c addr:0x021ef90c base:sSkyGradient
 data_021efa88 addr:0x021efa88 base:sSkyGradient

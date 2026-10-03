@@ -134,10 +134,10 @@ struct Unk_0206d1d4_Src {
     u8 cnt;
 };
 
-class Unk_0206d0a0 : public Unk_0206ce98 {
+class LetterRenderer : public Unk_0206ce98 {
 public:
-    Unk_0206d0a0();
-    ~Unk_0206d0a0();
+    LetterRenderer();
+    ~LetterRenderer();
     void func_0206d0a0(u32 a, u32 b);
     void func_0206d0b8(u8 *data);
     void func_0206d0fc(u8 *src, BOOL flag);
@@ -148,7 +148,7 @@ public:
     void func_0206d380();
     void func_0206d394();
     void func_0206d39c(s32 v);
-    void func_0206d3f4(u32 v);
+    void loadLetterScreen(u32 v);
 
     /* 0x208 */ s32 unk_208;
     /* 0x20c */ s32 unk_20c;
@@ -156,8 +156,8 @@ public:
 
 extern "C" s32 func_0206cfdc(void *unused, u8 *a, s32 *b, s32 *c);
 
-// ---- Unk_0206d0a0
-void Unk_0206d0a0::func_0206d39c(s32 v) {
+// ---- LetterRenderer
+void LetterRenderer::func_0206d39c(s32 v) {
     s32 i;
     ((Unk_020ddf44 *)this)->func_0206cdcc(0x75, v);
     ((Unk_020ddf44 *)unk_000 + 1)->func_0206cdcc(0x180, v);
@@ -167,16 +167,16 @@ void Unk_0206d0a0::func_0206d39c(s32 v) {
     unk_208 = 0;
 }
 
-void Unk_0206d0a0::func_0206d394() {
+void LetterRenderer::func_0206d394() {
     func_0206ced0();
 }
 
-void Unk_0206d0a0::func_0206d380() {
+void LetterRenderer::func_0206d380() {
     func_0206ced0();
     func_0206ce98();
 }
 
-void Unk_0206d0a0::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c) {
+void LetterRenderer::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c) {
     Gfx2d_HideLayer(b);
     Gfx2d_SetLayerPriority(b, 1);
     Gfx2d_SetLayerControl(b, 0, 0, 0);
@@ -189,23 +189,23 @@ void Unk_0206d0a0::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c)
     func_0206d1d4(src, 0);
     func_0206d0fc((u8 *)src + 0x4c, 0);
     func_0206d0b8((u8 *)src + 0xcc);
-    func_0206d3f4((u32)a);
+    loadLetterScreen((u32)a);
     func_0206d380();
     Gfx2d_SetLayerOffset(a, 0, 0);
 }
 
-s32 Unk_0206d0a0::func_0206d2d4() {
+s32 LetterRenderer::func_0206d2d4() {
     return unk_208;
 }
 
-void Unk_0206d0a0::func_0206d288(void *src) {
+void LetterRenderer::func_0206d288(void *src) {
     Mem_Clear(unk_1c8, 0x28);
     func_02065604(src, unk_1c8);
     unk_208 = func_020512e0(unk_1c8, 0x28);
     unk_20c = func_02051348(unk_1c8, 0x28);
 }
 
-void Unk_0206d0a0::func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out) {
+void LetterRenderer::func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out) {
     u8 tmp[0x28];
     s32 n, j, k;
     ((Unk_020ddf44 *)this)->func_0206cc38();
@@ -243,7 +243,7 @@ void Unk_0206d0a0::func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out) {
     ((Unk_020ddf44 *)this)->func_0206cc84(&buf);
 }
 
-void Unk_0206d0a0::func_0206d0fc(u8 *src, BOOL flag) {
+void LetterRenderer::func_0206d0fc(u8 *src, BOOL flag) {
     func_0206cfdc(this, src, unk_1f0, &unk_204);
     Unk_020ddf5c buf;
     u8 z[0x28];
@@ -272,14 +272,14 @@ void Unk_0206d0a0::func_0206d0fc(u8 *src, BOOL flag) {
     }
 }
 
-void Unk_0206d0a0::func_0206d0b8(u8 *data) {
+void LetterRenderer::func_0206d0b8(u8 *data) {
     Unk_020ddf5c buf;
     ((Unk_020ddf44 *)unk_000 + 1)->func_0206cc38();
     func_020a78a4(&buf, data, 0x20);
     ((Unk_020ddf44 *)unk_000 + 1)->func_0206cc84(&buf);
 }
 
-void Unk_0206d0a0::func_0206d0a0(u32 a, u32 b) {
+void LetterRenderer::func_0206d0a0(u32 a, u32 b) {
     Unk_0206d0a0_Pad pad;
     u32 u;
     ((Unk_020ddf44 *)this)->func_0206cc20(a, b, u);

@@ -20,19 +20,19 @@ struct Unk_02087e70_Oam {
 
 // The original constructor calls the base's C1 and its destructor the base's D2; mwcc would call C2/D2
 // for a base subobject, so the base is a plain struct and the two calls are written out.
-struct Unk_020b6a94 {
+struct TouchPickSphere {
     u8 pad[0x1c];
 };
 
-extern "C" void _ZN12Unk_020b6a94C2Ev(Unk_020b6a94 *p);
-extern "C" void _ZN12Unk_020b6a94D2Ev(Unk_020b6a94 *p);
+extern "C" void _ZN15TouchPickSphereC2Ev(TouchPickSphere *p);
+extern "C" void _ZN15TouchPickSphereD2Ev(TouchPickSphere *p);
 
-class Unk_020b6960 {
+class TouchPicker {
 public:
-    BOOL func_020b68a8(Unk_020b6a94 *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
+    BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
 };
 
-class Unk_02088b20 : public Unk_020b6a94 {
+class Unk_02088b20 : public TouchPickSphere {
 public:
     Unk_02088b20();
     ~Unk_02088b20();
@@ -62,7 +62,7 @@ void MIi_CpuCopyFast(void *a, void *b, u32 c);
 void DC_FlushRange(void *a, u32 b);
 void GX_LoadOAM(void *a, u32 b, u32 c);
 void GXS_LoadOAM(void *a, u32 b, u32 c);
-Unk_020b6960 *Scene_GetCollision();
+TouchPicker *Scene_GetTouchPicker();
 }
 
 extern s32 sOamAffineCountA;
@@ -93,13 +93,13 @@ static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32
 }
 
 Unk_02088b20::Unk_02088b20() {
-    _ZN12Unk_020b6a94C2Ev(this);
+    _ZN15TouchPickSphereC2Ev(this);
     unk_1c = 0;
     unk_20 = 0;
 }
 
 Unk_02088b20::~Unk_02088b20() {
-    _ZN12Unk_020b6a94D2Ev(this);
+    _ZN15TouchPickSphereD2Ev(this);
 }
 
 void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
@@ -113,7 +113,7 @@ void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
     }
     unk_20 = 0;
     unk_24 = b;
-    Scene_GetCollision()->func_020b68a8(this, a, c, 4, d);
+    Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
 }
 
 extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {

@@ -22,7 +22,7 @@ void *ProcBase_GetParent(void *p);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_020986d4Ev(void *a);
+void *_ZN10PlayerData11getPatternsEv(void *a);
 void *_ZN14PlayerPatterns17getPatternByOrderEj(void *o, u32 i);
 void *_ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(void *a, void *b);
 void *_ZN7Pattern9getPixelsEv(void *o);
@@ -542,7 +542,7 @@ void PatternSelectMenu::loadHeaderBg() {
 extern "C" void PatternSelect_LoadPatternIcons() {
     void *heap = gCurrentHeap;
     void *buf = Heap_AllocTail(heap, 0x1000);
-    void *obj = _ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent());
+    void *obj = _ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent());
     u8 i = 0;
     do {
         void *t = _ZN14PlayerPatterns17getPatternByOrderEj(obj, i);
@@ -786,7 +786,7 @@ void PatternSelectMenu::refreshNameLabel() {
     }
     _ZN12LabelBalloon6setPosEii(&unk_428, getSlotX(unk_6b6) - 0x78, x);
     _ZN18EncodedString16BufC1Ev(a);
-    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent()), unk_6b6)), a);
+    _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent()), unk_6b6)), a);
     _ZN12Unk_020e0d80C1Ev(b);
     StrBuf_GameToAscii(b, a);
     _ZN12LabelBalloon7setTextEP6StrBuf(&unk_428, b);

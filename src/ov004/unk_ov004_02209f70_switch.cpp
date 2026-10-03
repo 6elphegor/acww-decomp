@@ -613,7 +613,7 @@ struct Unk_ov004_View00_Chk {
     /* 0x16c */ s32 unk_16c[3];
     /* 0x178 */ u8 unk_178[0x10];   // FtrStackLink
     /* 0x188 */ u8 unk_188[0x44];   // FtrTopItems
-    /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x Unk_020b6a0c (0x20)
+    /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x TouchPickCylinder (0x20)
     /* 0x24c */ u8 unk_24c[0x34];
     /* 0x280 */ u32 unk_280;
     /* 0x284 */ u8 unk_284;
@@ -1031,7 +1031,7 @@ public:
             /* 0x16c */ s32 unk_16c[3];
             /* 0x178 */ u8 unk_178[0x10];   // FtrStackLink
             /* 0x188 */ u8 unk_188[0x44];   // FtrTopItems
-            /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x Unk_020b6a0c (0x20)
+            /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x TouchPickCylinder (0x20)
             /* 0x24c */ u8 unk_24c[0x34];
             /* 0x280 */ u32 unk_280;
             /* 0x284 */ u8 unk_284;
@@ -1581,8 +1581,8 @@ extern u8 data_ov004_02240024[];
 extern u8 data_ov004_02240038[];
 extern char data_ov004_0224bb50[];
 
-s32 func_02051cc8(s32 a, s32 b, u8 c, u8 d);
-s32 func_02051da4(s32 a, s32 b, u8 c, u8 d);
+s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
+s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
 s32 func_02063b8c(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL func_0203c23c(u32 a, u16 *p);

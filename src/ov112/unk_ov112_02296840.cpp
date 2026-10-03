@@ -81,22 +81,22 @@ public:
 };
 
 // text window, 0x40 bytes
-class Unk_020e0488 : public MsgString {
+class LabelString : public MsgString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206f904(u8 a, u8 b, u32 c, u32 d);
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb04(u32 a, u32 b, u8 c, u8 d);
-    void func_0206fb48(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void func_0206fc44();
+    LabelString();
+    virtual ~LabelString();
+    void setHighlight(u8 a, u8 b, u32 c, u32 d);
+    void redrawAligned(s32 a, s32 b);
+    void createBufferLabel(u32 a, u32 b, u8 c, u8 d);
+    void createSmallLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
+    void destroyLabel();
     u32 unk_04[(0x40 - 4) / 4];
 };
 
-class Unk_020e0470 : public EncodedString {
+class EncodedString41 : public EncodedString {
 public:
-    Unk_020e0470();
-    virtual ~Unk_020e0470();
+    EncodedString41();
+    virtual ~EncodedString41();
     u8 pad_04[0xa];
     char text[0x2a];
 };
@@ -136,7 +136,7 @@ public:
 
 class PlayerData {
 public:
-    void func_0209865c();
+    void getErrands();
     PlayerId *getPlayerId();
 };
 
@@ -290,7 +290,7 @@ public:
     Keyboard() : unk_22f4(), unk_233c() {}
     u32 unk_00[0x22f4 / 4];
     BgVramTask unk_22f4[2];
-    Unk_020e0488 unk_233c[2];
+    LabelString unk_233c[2];
 };
 
 typedef void (BbsWriteMenu::*Unk_ov112_02299b10_Fn)();
@@ -409,7 +409,7 @@ public:
     /* 0x34c */ BgVramTask unk_34c[1];
     /* 0x370 */ Keyboard unk_370;
     /* 0x272c */ u32 unk_272c[(0x3f2c - 0x272c) / 4];
-    /* 0x3f2c */ Unk_020e0488 unk_3f2c[6];
+    /* 0x3f2c */ LabelString unk_3f2c[6];
     /* 0x40ac */ MenuScrollKnob unk_40ac;
     /* 0x40f4 */ MenuBottomButtons unk_40f4;
     /* 0x4258 */ MenuCursorBuf0 unk_4258;
@@ -445,7 +445,7 @@ void Keyboard_DrawCaret(void *p, s32 a, s32 b, s32 c);
 void Snd_PlaySe(s32 a);
 void func_020e76f8(void *p, u32 v, u32 n);
 s32 func_020512e0(void *p, s32 n);
-void func_0206f920(void *p, void *q, u32 n, u32 a, u32 b);
+void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
 void func_0206cf4c(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 BOOL MenuCtrl_IsTouch();
 void Bbs_AddPost(void *p);
@@ -516,7 +516,7 @@ void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void func_0206f874(void *p);
 void func_0206f85c(void *p);
-void func_0206f9fc(void *o, u32 x);
+void String_Load2dMenu(void *o, u32 x);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void String_SetSlot(s32 a, void *p);
@@ -537,7 +537,7 @@ void Gfx2d_SetSubWin1Planes(s32 a, s32 b);
 void Gfx2d_EnableSubWindows(s32 a);
 void Gfx2d_SetSubWin1Rect(s32 a, s32 b, s32 c, s32 d);
 void Clock_GetDate(void *p);
-void func_0206f994(void *p, void *s, s32 n);
+void String_FromEncodedBytes(void *p, void *s, s32 n);
 void func_020a78a4(void *dst, void *src, s32 n);
 s32 String_CensorTaboo(void *p);
 void StrBuf_GetBytes(void *p, void *buf, s32 n);
@@ -952,13 +952,13 @@ void BbsWriteMenu::init() {
     unk_ac = 0;
     Keyboard_Init(&unk_370, 2);
     Mem_Clear(unk_c3, 0xc0);
-    Unk_020e0488 a;
+    LabelString a;
     PlayerData *t = PlayerData_GetCurrent();
     Unk_020e1c64 b;
     t->getPlayerId()->func_020940d0(&b);
     String_SetSlot(0, &b);
-    func_0206f9fc(&a, 0x89);
-    Unk_020e0470 c;
+    String_Load2dMenu(&a, 0x89);
+    EncodedString41 c;
     ((EncodedString *)(&c))->fromMsgString(&a);
     s32 n = func_020512e0(c.text, 0x28);
     Mem_Copy(c.text, unk_c3, n);
@@ -1765,7 +1765,7 @@ extern "C" void BbsWriteMenu_ConfirmYes(S *s) {
         Bbs_AddPost(s->unk_0c3);
         Snd_PlaySe(0x27);
         ((BbsWriteMenu *)s)->sendPostToPeers();
-        PlayerData_GetCurrent()->func_0209865c();
+        PlayerData_GetCurrent()->getErrands();
         Arbeit_OnBbsPosted();
     }
 }
@@ -1878,15 +1878,15 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
         if (d != 0) {
             u32 a3 = (i == 0) ? z14 : r6;
             u32 st = (i == s->unk_094) ? 1 : z18;
-            func_0206f920(obj, s->unk_0c3 + *pp, d, a3, st);
+            String_FromEncodedBytesEx(obj, s->unk_0c3 + *pp, d, a3, st);
         } else if (r6 != 0) {
             if (i == s->unk_094) {
-                func_0206f920(obj, &zb, 1, r6, 1);
+                String_FromEncodedBytesEx(obj, &zb, 1, r6, 1);
             }
         }
     }
     for (i = 0; i < 6; i++) {
-        ((Unk_020e0488 *)(s->unk_3f2c + i * 0x40))->func_0206fb04((u32)(s->unk_4c60 + i * 0x500), 0x14, 0xe, 0xd);
+        ((LabelString *)(s->unk_3f2c + i * 0x40))->createBufferLabel((u32)(s->unk_4c60 + i * 0x500), 0x14, 0xe, 0xd);
     }
     BbsWriteMenu_HighlightSelection(s);
     BbsWriteMenu_SetFlags(s, 4);
@@ -1933,7 +1933,7 @@ extern "C" void BbsWriteMenu_HighlightRange(S *s, u8 a, u8 b, u32 c, u32 n) {
             if (c < e) {
                 if (e > c + n) cnt = n;
                 else cnt = d - (c - off);
-                ((Unk_020e0488 *)(s->unk_3f2c + i * 0x40))->func_0206f904(a, b, c - off, cnt);
+                ((LabelString *)(s->unk_3f2c + i * 0x40))->setHighlight(a, b, c - off, cnt);
                 c = (u8)e;
                 n -= cnt;
                 if (n == 0) return;
@@ -1948,7 +1948,7 @@ extern "C" void BbsWriteMenu_DrawLineLabels(S *s) {
     u8 *p = s->unk_3f2c;
     s32 z = 0;
     for (; i < 6; i++) {
-        ((Unk_020e0488 *)(p + i * 0x40))->func_0206fab4(z, z);
+        ((LabelString *)(p + i * 0x40))->redrawAligned(z, z);
     }
 }
 
@@ -1956,7 +1956,7 @@ extern "C" void BbsWriteMenu_UpdateLineLabels(S *s) {
     s32 i = 0;
     u8 *p = s->unk_3f2c;
     for (; i < 6; i++) {
-        ((Unk_020e0488 *)(p + i * 0x40))->func_0206fc44();
+        ((LabelString *)(p + i * 0x40))->destroyLabel();
     }
 }
 
@@ -2353,7 +2353,7 @@ void BbsWriteMenu::showTodayDate() {
     t[6] = v / 10 + 0x35;
     t[7] = v % 10 + 0x35;
     t[8] = 0;
-    func_0206f994(&unk_3f2c[0], &t[4], 5);
+    String_FromEncodedBytes(&unk_3f2c[0], &t[4], 5);
     placeLabel(0, 0x111, 4, 1);
     v = t[1];
     t[4] = v / 10 + 0x35;
@@ -2361,7 +2361,7 @@ void BbsWriteMenu::showTodayDate() {
     v = t[0];
     t[6] = v / 10 + 0x35;
     t[7] = v % 10 + 0x35;
-    func_0206f994(&unk_3f2c[1], &t[4], 5);
+    String_FromEncodedBytes(&unk_3f2c[1], &t[4], 5);
     placeLabel(1, 0x116, 4, 1);
 }
 
@@ -2371,9 +2371,9 @@ void BbsWriteMenu::clearPostNumberLabel() {
 }
 
 void BbsWriteMenu::placeLabel(s32 idx, u32 a, u32 b, s32 c) {
-    Unk_020e0488 *p = &unk_3f2c[idx];
-    ((Unk_020e0488 *)(p))->func_0206fb48(4, a, b, 0xf, 0xa, c);
-    ((Unk_020e0488 *)(p))->func_0206fab4(0, 0);
+    LabelString *p = &unk_3f2c[idx];
+    ((LabelString *)(p))->createSmallLabel(4, a, b, 0xf, 0xa, c);
+    ((LabelString *)(p))->redrawAligned(0, 0);
 }
 
 void BbsWriteMenu::beginDialogDim() {

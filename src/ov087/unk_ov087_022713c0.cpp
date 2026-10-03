@@ -44,7 +44,7 @@ struct ChoiceList {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void *_ZN10PlayerData14getSpNpcRecordEv(void *p);
 void _ZN17PlayerSpNpcRecord15setFestivalGiftEv(void *p);
 s32 Pocket_FindEmpty();
@@ -585,7 +585,7 @@ void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
 
 void SpNpcCornimerTalk::vfunc_78(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
-    _ZN10PlayerData13func_0209865cEv(g);
+    _ZN10PlayerData10getErrandsEv(g);
     out->a = (u8 *)"sp_npc_acorn";
     if (_ZN12Unk_02097ff48testFlagEj(g, 0xf) == 0) {
         out->b = 0;

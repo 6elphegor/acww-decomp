@@ -81,7 +81,7 @@ struct TalkStartMsg {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData10getErrandsEv(void *p);
 void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void EventWeekSlots_MarkPlayer(s32 v);

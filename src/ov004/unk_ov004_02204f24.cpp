@@ -665,7 +665,7 @@ public:
     /* 0x16c */ s32 unk_16c[3];
     /* 0x178 */ u8 unk_178[0x10];   // FtrStackLink
     /* 0x188 */ u8 unk_188[0x44];   // FtrTopItems
-    /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x Unk_020b6a0c (0x20)
+    /* 0x1cc */ u8 unk_1cc[0x80];   // 4 x TouchPickCylinder (0x20)
     /* 0x24c */ u8 unk_24c[0x34];
     /* 0x280 */ u32 unk_280;
     /* 0x284 */ u8 unk_284;
@@ -916,11 +916,11 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define LightLevel_getLevel _ZN10LightLevel8getLevelEv   // main
 #define Math_LerpFx _Z11Math_LerpFxiii   // main
 #define LightLevel_update _ZN10LightLevel6updateEv   // main
-#define func_020b6860 _ZN12Unk_020b696013func_020b6860EP12Unk_020b6a0cP4Vec3S3_S3_ih   // main
-#define func_020b68ec _ZN12Unk_020b696013func_020b68ecEP12Unk_020b6e10P4Vec3iiisih   // main
-#define func_020b6928 _ZN12Unk_020b696013func_020b6928EP12Unk_020b6e10   // main
-#define func_020b69fc _ZN12Unk_020b6a0cD2Ev   // main
-#define func_020b6a0c _ZN12Unk_020b6a0cC2Ev   // main
+#define TouchPicker_addCylinder _ZN11TouchPicker11addCylinderEP17TouchPickCylinderP4Vec3S3_S3_ih   // main
+#define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih   // main
+#define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10   // main
+#define func_020b69fc _ZN17TouchPickCylinderD2Ev   // main
+#define func_020b6a0c _ZN17TouchPickCylinderC2Ev   // main
 #define func_020b6df4 _ZN12Unk_020b6e10D2Ev   // main
 #define func_020b6e10 _ZN12Unk_020b6e10C2Ev   // main
 #define Atm_execTalkAct02 _ZN3Atm13execTalkAct02Ev   // ov004
@@ -1015,9 +1015,9 @@ void MTX_Inverse43(void *a, void *b);
 void MTX_MultVec43(void *a, void *b, void *c);
 void func_020e8528(void *m, s32 x, s32 y, s32 z);
 u32 Scene_GetCurrent();
-void func_02052554(s32 x, s32 y, u32 a, u32 b, u32 mgr);
-s32 func_02052580(s32 x, s32 y, u32 a, u32 mgr);
-void func_02051784(u32 mgr, s32 x, s32 y, u16 *p, s32 a);
+void RoomFtrState_SetSwitch(s32 x, s32 y, u32 a, u32 b, u32 mgr);
+s32 RoomFtrState_GetSwitch(s32 x, s32 y, u32 a, u32 mgr);
+void FtrSync_SetTopItem(u32 mgr, s32 x, s32 y, u16 *p, s32 a);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Item_IsFurnitureOrF031(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
@@ -1072,7 +1072,7 @@ u32 ItemInfo_GetIndoorUnk1(u16 *p);
 u32 GroundAttr_GetDragSe(u32 a);
 s32 FtrMgr_CountSwitchedOn(void *fn);
 void LightSwitch_SetOff(u32 a, u32 b);
-s32 func_020516a4(u32 a, u32 b);
+s32 FtrSync_SetRoomLight(u32 a, u32 b);
 void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
 void *func_020947f0(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
@@ -1083,8 +1083,8 @@ extern u8 gCameraEye[];
 extern u8 gCameraLookAt[];
 BOOL SceneId_IsHouseRoom(u32 a);
 void LightSwitch_SetOn(u32 a, u32 b, u32 c);
-void func_02051844(s32 a, s32 x, s32 y, u32 layer, u32 c, void *p, s32 b, s32 a2);
-void func_02051a50(s32 a, s32 x, s32 y, u32 layer, u32 c, u32 r7, s32 v18, void *p, s32 one);
+void FtrSync_RemoveFurniture(s32 a, s32 x, s32 y, u32 layer, u32 c, void *p, s32 b, s32 a2);
+void FtrSync_PlaceFurniture(s32 a, s32 x, s32 y, u32 layer, u32 c, u32 r7, s32 v18, void *p, s32 one);
 void FtrActorGrid_setCell(void *a, void *self, s32 x, s32 y, u32 layer);
 void FtrActorGrid_clearCell(void *a, void *self, s32 x, s32 y, u32 layer);
 s32 FtrActorGrid_getIndex(void *a, s32 x, s32 y, s32 one);
@@ -1105,9 +1105,9 @@ s32 FtrInfo_GetDmaUnk04(s32 a);
 BOOL FtrInfo_GetIndoorFlagPair(u32 a);
 extern u32 sFtrMgrPool[];
 s32 FtrMgr_GetSurfaceHeight(s32 x, s32 y);
-void func_020b6860(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d);
-void func_020b68ec(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_020b6928(u32 o, void *p);
+void TouchPicker_addCylinder(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d);
+void TouchPicker_addBox(u32 o, void *p, void *v, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void TouchPicker_pushBox(u32 o, void *p);
 s32 BoxColliderShape_updateTransform(void *o, void *p, s32 a, void *q);
 void BoxCollider_Register(void *o, s32 a, s32 b, s32 c, void *p, s32 d, void *q);
 void BoxCollider_Unregister(void *o);
@@ -1198,7 +1198,7 @@ u32 FtrContact_getPushAngle(void *);
 u32 ItemInfo_IsReady(void);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, u32);
-u32 Scene_GetCollision();
+u32 Scene_GetTouchPicker();
 void *FtrActorGrid_GetInstance();
 void *func_ov004_02206be4(void *o);
 void ProcBase_RequestDelete(void *self);
@@ -1548,7 +1548,7 @@ extern "C" void FtrActor_TurnOnRoomLight(u32 a) {
     } else {
         LightSwitch_SetOn(0, 0xc, t);
     }
-    func_020516a4(Scene_GetCurrent(), 1);
+    FtrSync_SetRoomLight(Scene_GetCurrent(), 1);
 }
 
 // @02209d58
@@ -2433,7 +2433,7 @@ extern "C" void FtrActor_InitCollider(Self *self) {
         } else {
             k = 8;
         }
-        func_020b68ec(Scene_GetCollision(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
+        TouchPicker_addBox(Scene_GetTouchPicker(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
     }
 }
 
@@ -2479,9 +2479,9 @@ extern "C" void FtrActor_UpdateBox(Self *self) {
             } else {
                 k = 8;
             }
-            func_020b68ec(Scene_GetCollision(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
+            TouchPicker_addBox(Scene_GetTouchPicker(), PT(0x288), &c, a.x, a.z, a.y, S16(0x8e), k, r6);
         } else {
-            func_020b6928(Scene_GetCollision(), PT(0x288));
+            TouchPicker_pushBox(Scene_GetTouchPicker(), PT(0x288));
         }
     }
 }
@@ -2506,7 +2506,7 @@ extern "C" void FtrActor_UpdateTopItemBoxes(Self *self) {
                 if (Item_IsNormalItem(c)) {
                     FieldPos_FromUnitCenter(&v, x, y);
                     v.y = FtrMgr_GetSurfaceHeight(x, y);
-                    func_020b6860(Scene_GetCollision(), (u8 *)self + 0x1cc + i * 0x20, &v, 0xccd, 0x100, 10, 0xff);
+                    TouchPicker_addCylinder(Scene_GetTouchPicker(), (u8 *)self + 0x1cc + i * 0x20, &v, 0xccd, 0x100, 10, 0xff);
                 }
             }
         }
@@ -2729,7 +2729,7 @@ void Unk_ov004_022077a4::clearTiles(s32 a, s32 b) {
                 void *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), unk_284);
                 if (p != 0 && Item_IsFurniture((u16 *)p)) {
                     s32 t = Scene_GetCurrent();
-                    func_02051844(t, x, y, unk_284, ((FtrSwitch *)(unk_73c))->isOn(), p, b, a);
+                    FtrSync_RemoveFurniture(t, x, y, unk_284, ((FtrSwitch *)(unk_73c))->isOn(), p, b, a);
                 }
                 FtrActorGrid_clearCell(FtrActorGrid_GetInstance(), this, x, y, unk_284);
                 if (b != 0 && unk_284 == 0) {
@@ -2781,7 +2781,7 @@ void Unk_ov004_022077a4::writeTiles(s32 unused, void *x, s32 y, u8 flag) {
                 s32 t = Scene_GetCurrent();
                 Unk_ov004_02206520_Ent *p1 = _ZN11FtrTileList3getEi(&l, i);
                 Unk_ov004_02206520_Ent *p2 = _ZN11FtrTileList3getEi(&l, i);
-                func_02051a50(t, p1->x, p2->y, unk_284, s, r7, v18, &a, 1);
+                FtrSync_PlaceFurniture(t, p1->x, p2->y, unk_284, s, r7, v18, &a, 1);
             }
             void *o = FtrActorGrid_GetInstance();
             Unk_ov004_02206520_Ent *p3 = _ZN11FtrTileList3getEi(&l, i);
@@ -2839,7 +2839,7 @@ void Unk_ov004_022077a4::initLamp() {
             if (((FtrSwitch *)(unk_73c))->isOn() != 0 && r == 1) {
                 if (unk_768 != 0) {
                     FtrActor_TurnOnRoomLight(unk_790);
-                    func_020516a4(Scene_GetCurrent(), 1);
+                    FtrSync_SetRoomLight(Scene_GetCurrent(), 1);
                 } else {
                     LightSwitch_SetOn(0, 1, 0);
                 }
@@ -2859,11 +2859,11 @@ void FtrActor::updateLamp() {
                 if (((FtrSwitch *)(unk_73c))->isOn()) {
                     if (m == 1) {
                         FtrActor_TurnOnRoomLight(unk_790);
-                        func_020516a4(Scene_GetCurrent(), 1);
+                        FtrSync_SetRoomLight(Scene_GetCurrent(), 1);
                     }
                 } else if (m == 0) {
                     LightSwitch_SetOff(0, 8);
-                    func_020516a4(Scene_GetCurrent(), 0);
+                    FtrSync_SetRoomLight(Scene_GetCurrent(), 0);
                 }
             }
         }
@@ -2879,7 +2879,7 @@ void FtrActor::releaseRoomLight() {
                 if (FtrMgr_CountSwitchedOn((void *)FtrActor_IsLightSource) == 1) {
                     LightSwitch_SetOff(0, 1);
                     if (isRemoving()) {
-                        func_020516a4(Scene_GetCurrent(), 0);
+                        FtrSync_SetRoomLight(Scene_GetCurrent(), 0);
                     }
                 }
             }
@@ -3943,7 +3943,7 @@ void FtrTopItems::dropAll(Unk_ov004_02205c80_Obj *o) {
             MTX_MultVec43(&z, &data_021f47e0, &d);
             FieldPos_ToUnit(&a, &b, &d);
             u32 mgr = Scene_GetCurrent();
-            func_02051784(mgr, a, b, e->getItem(), 1);
+            FtrSync_SetTopItem(mgr, a, b, e->getItem(), 1);
         }
     }
     clearAll();
@@ -4077,7 +4077,7 @@ void FtrSwitch::loadFromMap(Unk_ov004_02205c80_Obj *o) {
     } else {
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(o, &x, &y, r, r)) {
             u32 mgr = Scene_GetCurrent();
-            r = func_02052580(x, y, o->unk_284, mgr);
+            r = RoomFtrState_GetSwitch(x, y, o->unk_284, mgr);
         }
     }
     set(r, 0);
@@ -4095,7 +4095,7 @@ void FtrSwitch::saveToMap(Unk_ov004_02205c80_Obj *o) {
     if (_ZN8FtrActor9isPreviewEv(o) == 0) {
         s32 x, y;
         if (_ZN8FtrActor11findOwnTileEPiS0_ii(o, &x, &y, 0, 0)) {
-            func_02052554(x, y, o->unk_284, unk_01, Scene_GetCurrent());
+            RoomFtrState_SetSwitch(x, y, o->unk_284, unk_01, Scene_GetCurrent());
         }
     }
 }

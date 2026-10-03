@@ -46,7 +46,7 @@ extern "C" void BottleLetterRecord_Construct(void *);
 extern "C" void PlayerDataArray_Construct(void *);
 extern "C" void func_0209eb08(void *);
 extern "C" void AbleShop_Construct(void *);
-extern "C" void func_020c0320(void *);
+extern "C" void Weather_Construct(void *);
 extern "C" void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 
 class SaveData;
@@ -85,7 +85,7 @@ public:
         _ZN13ContestRecord9constructEv(p + 0x15efc);
         _ZN12ReddLastSaleC1Ev(p + 0x15f34);
         func_020868c8(p + 0x15f4c);
-        func_020c0320(p + 0x15f66);
+        Weather_Construct(p + 0x15f66);
         _ZN8ReddShopC1Ev(p + 0x15f70);
         AbleShop_Construct(p + 0x15f84);
         _ZN12Unk_020af53cC1Ev(p + 0x15f96);

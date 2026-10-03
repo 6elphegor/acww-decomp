@@ -211,9 +211,9 @@ extern PlayerMailbox data_021e935c[];
 
 extern "C" {
 Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
-void func_02003100(void *);
-void func_02003130(void *);
-void func_0200315c(void *, void *);
+void VillagerId_Destruct(void *);
+void VillagerId_Construct(void *);
+void VillagerId_CopyFrom(void *, void *);
 void func_0203c42c(void *a, u16 *b, s32 c, s32 d);
 void MailText_SetSlot(s32, void *);
 void Town_GetUpdater();
@@ -370,7 +370,7 @@ void *func_02097a3c(void *);
 s32 func_02097ff4(s32, s32);
 s32 func_0209801c(s32, s32);
 s32 func_02098044(s32, s32);
-u8 *_ZN12Unk_02097ff413func_02098308Ev(void *);
+u8 *_ZN12Unk_02097ff411getBirthdayEv(void *);
 s32 func_02098320(s32);
 void *_ZN10PlayerData10getCatalogEv(void *a);
 void *_ZN10PlayerData8getIndexEv(void *);
@@ -538,14 +538,14 @@ extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *) {
     u8 tmp[12];
     s32 res;
     if (r4 == 0) return -1;
-    func_02003130(tmp);
-    func_0200315c(tmp, r4);
+    VillagerId_Construct(tmp);
+    VillagerId_CopyFrom(tmp, r4);
     res = SaveVillagers_FindIndex(r5, tmp);
     if (SaveVillagers_IsValidIndex(res)) {
-        func_02003100(tmp);
+        VillagerId_Destruct(tmp);
         return res;
     }
-    func_02003100(tmp);
+    VillagerId_Destruct(tmp);
     return -2;
 }
 
@@ -720,7 +720,7 @@ extern "C" void MotherLetter_OnNewDay(Unk_02096354_Arg *p, s32 n) {
 extern "C" s32 MotherLetter_TrySendBirthday(Unk_02096354_Arg *p) {
     void *r5 = PlayerData_GetCurrent();
     void *r6 = func_02097a30(r5);
-    u8 *q = _ZN12Unk_02097ff413func_02098308Ev(r5);
+    u8 *q = _ZN12Unk_02097ff411getBirthdayEv(r5);
     if (*(u16 *)q == 0) return 0;
     if (p->unk_00 == _ZN17MotherLetterState21getBirthdayLetterYearEv(r6)) return 0;
     s32 r;

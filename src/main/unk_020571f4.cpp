@@ -64,8 +64,8 @@ public:
     s16 unk_8e;
 };
 
-class Unk_020dc034;
-typedef void (Unk_020dc034::*Unk_020dc034_Fn)();
+class HandOverItem;
+typedef void (HandOverItem::*Unk_020dc034_Fn)();
 
 struct Unk_020dc034_Entry {
     Unk_020dc034_Fn a;
@@ -82,9 +82,9 @@ extern "C" {
 void func_020f440c(void *p);
 }
 
-class Unk_020dc034 : public GameProc {
+class HandOverItem : public GameProc {
 public:
-    Unk_020dc034() { unk_50 = 0xfff1; func_020f440c(&unk_dc); }
+    HandOverItem() { unk_50 = 0xfff1; func_020f440c(&unk_dc); }
 
     /* 0x50 */ u16 unk_50;
     /* 0x54 */ s32 unk_54;
@@ -119,66 +119,66 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    void func_02057450(void);
-    void func_020574cc(void);
-    void func_020575f8(void);
-    void func_02057724(void);
-    void func_02057800(void);
-    void func_0205781c(void);
-    void func_02057824(void);
-    void func_0205783c(void);
+    void updateAct09V1(void);
+    void act09V1Phase2(void);
+    void act09V1Phase1(void);
+    void act09V1Phase0(void);
+    void startAct09V1(void);
+    void updateAct07V1(void);
+    void startAct07V1(void);
+    void updateAct05V1(void);
 
-    void func_02057940();
-    void func_020579dc();
-    void func_02057a58();
-    void func_02057a70();
-    void func_02057ad4();
-    void func_02057b84();
-    void func_02057be8();
-    void func_02057cf4();
-    void func_02057d70();
-    void func_02057e48();
-    void func_02058024();
-    void func_020580d0();
-    void func_0205811c();
-    void func_02058188();
-    void func_0205821c();
+    void startAct05V1();
+    void updateAct04V1();
+    void startAct04V1();
+    void updateAct03V1();
+    void startAct03V1();
+    void updateAct02V1();
+    void startAct02V1();
+    void updateAct01V1();
+    void act01V1Phase2();
+    void act01V1Phase1();
+    void act01V1Phase0();
+    void startAct01V1();
+    void updateAct0B();
+    void act0BPhase1();
+    void act0BPhase0();
 
-    void func_020582a0();
-    void func_020582ec();
-    void func_02058320();
-    void func_02058350();
-    void func_0205839c();
-    void func_020583e4();
-    void func_020583e8();
-    void func_020583ec();
-    void func_020584cc();
-    void func_020585ac();
-    void func_020585cc();
-    void func_02058614();
-    void func_020586bc();
-    void func_020587b8();
-    void func_0205881c();
-    void func_02058930();
-    void func_0205893c();
-    void func_020589c4();
-    void func_02058ae0();
-    void func_02058b80();
+    void startAct0B();
+    void updateAct08();
+    void startAct08();
+    void updateAct07();
+    void startAct07();
+    void updateAct06();
+    void startAct06();
+    void updateAct05();
+    void startAct05();
+    void updateAct0A();
+    void startAct0A();
+    void updateAct04();
+    void startAct04();
+    void updateAct03();
+    void startAct03();
+    void startAct02();
+    void updateAct01();
+    void act01Phase1();
+    void act01Phase0();
+    void startAct01();
 
-    Unk_020dc034_V func_02058c58(u32 idx);
-    void func_02058cbc(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx);
-    BOOL func_02058cfc(u8 v, void *p);
-    void func_02058d34(u32 v);
-    void func_02058d3c(Unk_020dc034_V *out);
-    void func_02058d54();
-    BOOL func_02058f5c();
-    BOOL func_02058f9c(u8 v, void *p);
-    void func_02058fc4(u8 v);
-    void func_02058fe0();
-    BOOL func_02058fec(void *p);
-    BOOL func_0205902c(void *p, u32 idx);
-    BOOL func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1);
-    void func_02059184();
+    Unk_020dc034_V getHoldOffset(u32 idx);
+    void localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx);
+    BOOL setNextModeBy(u8 v, void *p);
+    void setBusy(u32 v);
+    void getMasterHoldPos(Unk_020dc034_V *out);
+    void drawItem();
+    BOOL isAwaitingTake();
+    BOOL requestModeBy(u8 v, void *p);
+    void setModeRequest(u8 v);
+    void clearModeRequest();
+    BOOL switchMaster(void *p);
+    BOOL isCharAt(void *p, u32 idx);
+    BOOL begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1);
+    void resetState();
 };
 
 static inline s32 Unk_020574cc_Abs(s32 v) {
@@ -237,19 +237,19 @@ void SaveVillagers_Get(void *p, u32 v);
 u32 Villager_GetAnimalKind();
 
 // ---- own data (defined below / after the functions) ----
-extern const u8 data_020ca678[4];
+extern const u8 sHandOverTakeTimeout[4];
 extern const u8 data_020ca67c[4];
 extern const u8 data_020ca680[4];
 extern const u8 data_020ca684[4];
-extern const s32 data_020ca688;
-extern const s32 data_020ca68c;
+extern const s32 sHandOverReachFar;
+extern const s32 sHandOverReach;
 extern const u8 data_020ca690[4];
-extern const Unk_020dc034_V data_020ca694;
+extern const Unk_020dc034_V sHoldOffsetDefault;
 extern const Unk_020dc034_V data_020ca6a0;
 extern const Unk_020dc034_V data_020ca6ac;
 extern const Unk_020dc034_V data_020ca6b8;
 extern const s32 data_020ca6c4[4];
-extern const u32 data_020ca6d4[8];
+extern const u32 sHandOverFishScale[8];
 extern const s32 data_020ca6f4[0x30];
 extern const s32 data_020ca7b4[0x30];
 extern const s32 data_020ca874[0x30];
@@ -263,27 +263,27 @@ struct Unk_020dbeb4_Entry {
     u16 unk_06;
 };
 
-extern "C" Unk_020dc034 *func_02059340();
-extern Unk_02059384_Rec *data_020dc014[6];
+extern "C" HandOverItem *HandOverItem_Create();
+extern Unk_02059384_Rec *sFishHoldOffsetSets[6];
 
-Unk_020dc034 *data_021c5a38;
-Unk_020dc034_Entry data_021c5b48[12][2] = {
+HandOverItem *sHandOverItem;
+Unk_020dc034_Entry sHandOverItemActs[12][2] = {
     { { NULL, NULL }, { NULL, NULL } },
-    { { &Unk_020dc034::func_02058b80, &Unk_020dc034::func_0205893c }, { &Unk_020dc034::func_020580d0, &Unk_020dc034::func_02057cf4 } },
-    { { &Unk_020dc034::func_02058930, NULL }, { &Unk_020dc034::func_02057be8, &Unk_020dc034::func_02057b84 } },
-    { { &Unk_020dc034::func_0205881c, &Unk_020dc034::func_020587b8 }, { &Unk_020dc034::func_02057ad4, &Unk_020dc034::func_02057a70 } },
-    { { &Unk_020dc034::func_020586bc, &Unk_020dc034::func_02058614 }, { &Unk_020dc034::func_02057a58, &Unk_020dc034::func_020579dc } },
-    { { &Unk_020dc034::func_020584cc, &Unk_020dc034::func_020583ec }, { &Unk_020dc034::func_02057940, &Unk_020dc034::func_0205783c } },
-    { { &Unk_020dc034::func_020583e8, &Unk_020dc034::func_020583e4 }, { NULL, NULL } },
-    { { &Unk_020dc034::func_0205839c, &Unk_020dc034::func_02058350 }, { &Unk_020dc034::func_02057824, &Unk_020dc034::func_0205781c } },
-    { { &Unk_020dc034::func_02058320, &Unk_020dc034::func_020582ec }, { NULL, NULL } },
-    { { NULL, NULL }, { &Unk_020dc034::func_02057800, &Unk_020dc034::func_02057450 } },
-    { { &Unk_020dc034::func_020585cc, &Unk_020dc034::func_020585ac }, { NULL, NULL } },
-    { { &Unk_020dc034::func_020582a0, &Unk_020dc034::func_0205811c }, { NULL, NULL } },
+    { { &HandOverItem::startAct01, &HandOverItem::updateAct01 }, { &HandOverItem::startAct01V1, &HandOverItem::updateAct01V1 } },
+    { { &HandOverItem::startAct02, NULL }, { &HandOverItem::startAct02V1, &HandOverItem::updateAct02V1 } },
+    { { &HandOverItem::startAct03, &HandOverItem::updateAct03 }, { &HandOverItem::startAct03V1, &HandOverItem::updateAct03V1 } },
+    { { &HandOverItem::startAct04, &HandOverItem::updateAct04 }, { &HandOverItem::startAct04V1, &HandOverItem::updateAct04V1 } },
+    { { &HandOverItem::startAct05, &HandOverItem::updateAct05 }, { &HandOverItem::startAct05V1, &HandOverItem::updateAct05V1 } },
+    { { &HandOverItem::startAct06, &HandOverItem::updateAct06 }, { NULL, NULL } },
+    { { &HandOverItem::startAct07, &HandOverItem::updateAct07 }, { &HandOverItem::startAct07V1, &HandOverItem::updateAct07V1 } },
+    { { &HandOverItem::startAct08, &HandOverItem::updateAct08 }, { NULL, NULL } },
+    { { NULL, NULL }, { &HandOverItem::startAct09V1, &HandOverItem::updateAct09V1 } },
+    { { &HandOverItem::startAct0A, &HandOverItem::updateAct0A }, { NULL, NULL } },
+    { { &HandOverItem::startAct0B, &HandOverItem::updateAct0B }, { NULL, NULL } },
 };
 
 u8 data_021c5a30[4] = { data_020ca690[1] - data_020ca690[0], data_020ca690[2] - data_020ca690[1], data_020ca690[3] - data_020ca690[2] };
-FxVec3 data_021c5a78(-0x400, -0x300, 0x1100);
+FxVec3 sPutDownOffset(-0x400, -0x300, 0x1100);
 u8 data_021c5a2c[4] = { data_020ca680[1] - data_020ca680[0], data_020ca680[2] - data_020ca680[1] };
 u8 data_021c5a28[4] = { data_020ca684[1] - data_020ca684[0], data_020ca684[2] - data_020ca684[1] };
 u8 data_021c5a24[4] = { data_020ca67c[1] - data_020ca67c[0] };
@@ -292,23 +292,23 @@ s32 data_021c5ae8[4] = { 0, Unk_020574cc_Abs(data_020ca6c4[1] / data_021c5a30[0]
 FxVec3 data_021c5a84(0, 0, 0x1300);
 
 // ---- own functions (declared for forward references) ----
-s32 func_020573f4(s32 a);
-s32 func_020572b0(u32 v);
-u32 func_020593e8(Unk_020593e8_Obj *o);
-Unk_020dc034_V *func_020593b8(Unk_020593e8_Obj *t, u32 i);
-Unk_020dc034_V *func_02059384(Unk_020593e8_Obj *t, u32 i);
-u32 func_020594d0(u32 a);
-void func_02058ddc(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
-void _ZN12Unk_020dc03413func_02058c58Ej(Unk_020dc034_V *out, Unk_020dc034 *self, s32 idx);
-void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
+s32 HandOverItem_IsMaster(s32 a);
+s32 HandOverItem_IsModeActive(u32 v);
+u32 HandOverItem_GetFishHoldOffsetSet(Unk_020593e8_Obj *o);
+Unk_020dc034_V *HandOverItem_GetFishHoldOffset(Unk_020593e8_Obj *t, u32 i);
+Unk_020dc034_V *HandOverItem_GetFishHoldOffset2(Unk_020593e8_Obj *t, u32 i);
+u32 HandOverItem_GetFishScale(u32 a);
+void HandOverItem_DrawIcon(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
+void _ZN12HandOverItem13getHoldOffsetEj(Unk_020dc034_V *out, HandOverItem *self, s32 idx);
+void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang);
 }
 
-extern "C" u32 func_020594d0(u32 i)
+extern "C" u32 HandOverItem_GetFishScale(u32 i)
 {
-    return data_020ca6d4[i];
+    return sHandOverFishScale[i];
 }
 
-extern "C" u32 func_020593e8(Unk_020593e8_Obj *o)
+extern "C" u32 HandOverItem_GetFishHoldOffsetSet(Unk_020593e8_Obj *o)
 {
     u32 r = 3;
     volatile u16 h = 0xfff1;
@@ -337,57 +337,57 @@ extern "C" u32 func_020593e8(Unk_020593e8_Obj *o)
     return r;
 }
 
-extern "C" Unk_020dc034_V *func_020593b8(Unk_020593e8_Obj *o, u32 idx)
+extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset(Unk_020593e8_Obj *o, u32 idx)
 {
     if (o->unk_0c == 9) {
-        return (Unk_020dc034_V *)&data_020dc014[3][idx];
+        return (Unk_020dc034_V *)&sFishHoldOffsetSets[3][idx];
     }
-    return (Unk_020dc034_V *)&data_020dc014[func_020593e8(o)][idx];
+    return (Unk_020dc034_V *)&sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx];
 }
 
-extern "C" Unk_020dc034_V *func_02059384(Unk_020593e8_Obj *o, u32 idx)
+extern "C" Unk_020dc034_V *HandOverItem_GetFishHoldOffset2(Unk_020593e8_Obj *o, u32 idx)
 {
     if (o->unk_0c == 9) {
-        return (Unk_020dc034_V *)data_020dc014[3][idx].unk_0c;
+        return (Unk_020dc034_V *)sFishHoldOffsetSets[3][idx].unk_0c;
     }
-    return (Unk_020dc034_V *)data_020dc014[func_020593e8(o)][idx].unk_0c;
+    return (Unk_020dc034_V *)sFishHoldOffsetSets[HandOverItem_GetFishHoldOffsetSet(o)][idx].unk_0c;
 }
 
-extern "C" Unk_020dc034 *func_02059340()
+extern "C" HandOverItem *HandOverItem_Create()
 {
-    return new Unk_020dc034;
+    return new HandOverItem;
 }
 
-BOOL Unk_020dc034::vfunc_00()
+BOOL HandOverItem::vfunc_00()
 {
-    func_02059184();
+    resetState();
     _ZN12Unk_02003c3013func_02003eccEv(&unk_dc);
-    data_021c5a38 = this;
+    sHandOverItem = this;
     return TRUE;
 }
 
-BOOL Unk_020dc034::vfunc_0c()
+BOOL HandOverItem::vfunc_0c()
 {
-    _ZN12Unk_02003c3013func_02003e50Ev(&data_021c5a38->unk_dc);
-    data_021c5a38 = NULL;
+    _ZN12Unk_02003c3013func_02003e50Ev(&sHandOverItem->unk_dc);
+    sHandOverItem = NULL;
     return TRUE;
 }
 
-BOOL Unk_020dc034::onExecute()
+BOOL HandOverItem::onExecute()
 {
     if (unk_5c >= 0 && unk_5c < 2) {
         if (unk_da < 0xc) {
             unk_c8 = unk_da;
             unk_d6 = 0;
-            Unk_020dc034_Entry *e = &data_021c5b48[unk_c8][unk_5c];
+            Unk_020dc034_Entry *e = &sHandOverItemActs[unk_c8][unk_5c];
             if (e->a != 0) {
                 (this->*(e->a))();
             }
-            func_02058fe0();
+            clearModeRequest();
         }
         if (unk_c8 < 0xc) {
-            if (data_021c5b48[unk_c8][unk_5c].b != 0) {
-                (this->*(data_021c5b48[unk_c8][unk_5c].b))();
+            if (sHandOverItemActs[unk_c8][unk_5c].b != 0) {
+                (this->*(sHandOverItemActs[unk_c8][unk_5c].b))();
                 Unk_020dc034_V v;
                 v.x = unk_60.x;
                 v.y = unk_60.y;
@@ -395,20 +395,20 @@ BOOL Unk_020dc034::onExecute()
                 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(&unk_dc, &v);
             }
         }
-        if (func_02058f5c()) {
+        if (isAwaitingTake()) {
             func_020e7518(&unk_d5);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_020dc034::onDraw()
+BOOL HandOverItem::onDraw()
 {
-    func_02058d54();
+    drawItem();
     return TRUE;
 }
 
-void Unk_020dc034::func_02059184()
+void HandOverItem::resetState()
 {
     unk_c8 = 0;
     for (s32 i = 0; i < 2; i++) unk_cc[i] = NULL;
@@ -416,7 +416,7 @@ void Unk_020dc034::func_02059184()
     unk_58 = 0xc;
     unk_d6 = 0;
     unk_d4 = 0;
-    func_02058fe0();
+    clearModeRequest();
     unk_84.x = 0;
     unk_84.y = 0;
     unk_84.z = 0;
@@ -427,12 +427,12 @@ void Unk_020dc034::func_02059184()
     unk_a8.y = 0;
     unk_a8.z = 0;
     unk_d8 = 0;
-    func_02058d34(0);
-    unk_bc = data_020ca68c;
+    setBusy(0);
+    unk_bc = sHandOverReach;
     unk_c4 = -1;
 }
 
-BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1)
+BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o0, Unk_020dc034_Owner_Base *o1)
 {
     if (unk_c8 == 0 && o0 != NULL) {
         unk_50 = *id;
@@ -457,12 +457,12 @@ BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner
         if (rr == 1 && unk_54 == 2) {
         near:
             if (Scene_GetCurrent() == 9 || Scene_GetCurrent() == 0x10) {
-                unk_bc = data_020ca688;
+                unk_bc = sHandOverReachFar;
             } else {
-                unk_bc = data_020ca68c;
+                unk_bc = sHandOverReach;
             }
         } else {
-            unk_bc = data_020ca68c;
+            unk_bc = sHandOverReach;
         }
         BOOL r2 = FALSE;
         if (unk_50 >= 0x12e8 && unk_50 <= 0x131f) r2 = TRUE;
@@ -473,7 +473,7 @@ BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner
     return FALSE;
 }
 
-BOOL Unk_020dc034::func_0205902c(void *p, u32 idx)
+BOOL HandOverItem::isCharAt(void *p, u32 idx)
 {
     if (idx < 2 && unk_cc[idx] != NULL) {
         if (_ZN9Character9getCharIdEv(p) == _ZN9Character9getCharIdEv(*(Unk_020dc034_Owner_Base **)((u8 *)this + idx * 4 + 0xcc))) {
@@ -483,56 +483,56 @@ BOOL Unk_020dc034::func_0205902c(void *p, u32 idx)
     return FALSE;
 }
 
-BOOL Unk_020dc034::func_02058fec(void *p)
+BOOL HandOverItem::switchMaster(void *p)
 {
     BOOL r = FALSE;
-    if (func_0205902c(p, 1) == 1) {
+    if (isCharAt(p, 1) == 1) {
         unk_cc[1] = unk_cc[0];
         unk_cc[0] = (Unk_020dc034_Owner_Base *)p;
         r = TRUE;
-    } else if (func_0205902c(p, 0) == 1) {
+    } else if (isCharAt(p, 0) == 1) {
         r = TRUE;
     }
     return r;
 }
 
-void Unk_020dc034::func_02058fe0()
+void HandOverItem::clearModeRequest()
 {
-    func_02058fc4(0xc);
+    setModeRequest(0xc);
 }
 
-void Unk_020dc034::func_02058fc4(u8 v)
+void HandOverItem::setModeRequest(u8 v)
 {
     unk_da = v;
     if (v == 1 || v == 7) {
-        unk_d5 = data_020ca678[0];
+        unk_d5 = sHandOverTakeTimeout[0];
     }
 }
 
-BOOL Unk_020dc034::func_02058f9c(u8 v, void *p)
+BOOL HandOverItem::requestModeBy(u8 v, void *p)
 {
     BOOL r = FALSE;
-    if (func_0205902c(p, 0) == 1) {
-        func_02058fc4(v);
+    if (isCharAt(p, 0) == 1) {
+        setModeRequest(v);
         r = TRUE;
     }
     return r;
 }
 
-BOOL Unk_020dc034::func_02058f5c()
+BOOL HandOverItem::isAwaitingTake()
 {
     BOOL r5 = TRUE;
     BOOL r4 = TRUE;
     if (unk_c8 != 2) {
-        if (unk_c8 != 1 || func_020572b0(1) != 0) r4 = FALSE;
+        if (unk_c8 != 1 || HandOverItem_IsModeActive(1) != 0) r4 = FALSE;
     }
     if (!r4) {
-        if (unk_c8 != 7 || func_020572b0(7) != 0) r5 = FALSE;
+        if (unk_c8 != 7 || HandOverItem_IsModeActive(7) != 0) r5 = FALSE;
     }
     return r5;
 }
 
-void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
+void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
 {
     BOOL r = FALSE;
     if (*id >= 0x12e8 && *id <= 0x131f) r = TRUE;
@@ -556,7 +556,7 @@ void func_02058e68(Unk_020dc034 *self, u16 *id, Unk_020dc034_V *p, Unk_020dc034_
     }
 }
 
-void func_02058ddc(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
+void HandOverItem_DrawIcon(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s16 *ang)
 {
     if (Unk_02058ddc_IsZero(*gFieldSceneKind) == 1) {
         Unk_02058ddc_V a(*(Unk_02058ddc_V *)p);
@@ -569,40 +569,40 @@ void func_02058ddc(void *unused, u32 id, Unk_020dc034_V *p, Unk_020dc034_V *q, s
     }
 }
 
-void Unk_020dc034::func_02058d54()
+void HandOverItem::drawItem()
 {
     if (unk_c8 < 0xc && unk_50 != 0xfff1 && unk_d8 == 1) {
         if (unk_54 == 2 && !(unk_50 >= 0x1561 && unk_50 <= 0x1564) && !(unk_50 >= 0x155f && unk_50 <= 0x1560)) {
-            func_02058ddc(this, 0x27, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
+            HandOverItem_DrawIcon(this, 0x27, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
         } else {
-            func_02058e68(this, &unk_50, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
+            HandOverItem_DrawItem(this, &unk_50, &unk_60, (Unk_020dc034_V *)&unk_a8, unk_b4);
         }
     }
 }
 
-void Unk_020dc034::func_02058d3c(Unk_020dc034_V *out)
+void HandOverItem::getMasterHoldPos(Unk_020dc034_V *out)
 {
     if (unk_cc[0] != NULL) {
         unk_cc[0]->vfunc_5c(out);
     }
 }
 
-void Unk_020dc034::func_02058d34(u32 v)
+void HandOverItem::setBusy(u32 v)
 {
     unk_d9 = v;
 }
 
-BOOL Unk_020dc034::func_02058cfc(u8 v, void *p)
+BOOL HandOverItem::setNextModeBy(u8 v, void *p)
 {
     BOOL r = FALSE;
-    if (unk_c8 != 0 && unk_d9 != 1 && func_0205902c(p, 0) == 1) {
+    if (unk_c8 != 0 && unk_d9 != 1 && isCharAt(p, 0) == 1) {
         unk_58 = v;
         r = TRUE;
     }
     return r;
 }
 
-void Unk_020dc034::func_02058cbc(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx)
+void HandOverItem::localToWorld(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 idx)
 {
     out->x = in->x;
     out->y = in->y;
@@ -615,7 +615,7 @@ void Unk_020dc034::func_02058cbc(Unk_020dc034_V *out, Unk_020dc034_V *in, u32 id
     }
 }
 
-Unk_020dc034_V Unk_020dc034::func_02058c58(u32 idx)
+Unk_020dc034_V HandOverItem::getHoldOffset(u32 idx)
 {
     u32 t = 0xd8;
     Unk_020dc034_Owner_Base *o = unk_cc[idx];
@@ -629,11 +629,11 @@ Unk_020dc034_V Unk_020dc034::func_02058c58(u32 idx)
     } else if (t == 0x76) {
         return data_020ca6b8;
     } else {
-        return data_020ca694;
+        return sHoldOffsetDefault;
     }
 }
 
-void Unk_020dc034::func_02058b80()
+void HandOverItem::startAct01()
 {
     Unk_020dc034_V pos, off;
     unk_84.x = 0;
@@ -647,22 +647,22 @@ void Unk_020dc034::func_02058b80()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
-    ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
+    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    func_02058cbc(&unk_9c, &pos, 0);
+    localToWorld(&unk_9c, &pos, 0);
     unk_a8.x = 0;
     unk_a8.y = 0;
     unk_a8.z = 0;
     unk_d8 = 1;
     unk_d4 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_02058ae0()
+void HandOverItem::act01Phase0()
 {
-    func_02058d3c(&unk_60);
+    getMasterHoldPos(&unk_60);
     unk_d6 = unk_d6 + 1;
     if ((s32)unk_d6 >= data_020ca690[(*(volatile u8 *)&unk_d4)]) {
         s32 n, t;
@@ -680,14 +680,14 @@ void Unk_020dc034::func_02058ae0()
     }
 }
 
-void Unk_020dc034::func_020589c4()
+void HandOverItem::act01Phase1()
 {
     Unk_020dc034_V cur;
     s32 v = unk_a8.x;
     s32 a = data_020ca6c4[unk_d4];
     s32 b = data_021c5ae8[unk_d4];
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        s32 k = func_020594d0(func_0204f334(unk_50 - 0x12e8));
+        s32 k = HandOverItem_GetFishScale(func_0204f334(unk_50 - 0x12e8));
         a = func_01ffcb0c(a, k);
         b = func_01ffcb0c(b, k);
     }
@@ -696,7 +696,7 @@ void Unk_020dc034::func_020589c4()
     unk_a8.x = u;
     unk_a8.y = u;
     unk_a8.z = u;
-    func_02058d3c(&cur);
+    getMasterHoldPos(&cur);
     func_020e761c(&unk_60.x, unk_9c.x, unk_90.x);
     func_020e761c(&unk_60.y, cur.y + unk_9c.y, unk_90.y);
     func_020e761c(&unk_60.z, unk_9c.z, unk_90.z);
@@ -704,44 +704,44 @@ void Unk_020dc034::func_020589c4()
     if ((s32)unk_d6 >= data_020ca690[(*(volatile u8 *)&unk_d4)]) {
         (*(volatile u8 *)&unk_d4) = (*(volatile u8 *)&unk_d4) + 1;
         if ((*(volatile u8 *)&unk_d4) >= 4) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_0205893c()
+void HandOverItem::updateAct01()
 {
-    static void (Unk_020dc034::*const tbl[4])() = {
-        &Unk_020dc034::func_02058ae0,
-        &Unk_020dc034::func_020589c4,
-        &Unk_020dc034::func_020589c4,
-        &Unk_020dc034::func_020589c4,
+    static void (HandOverItem::*const tbl[4])() = {
+        &HandOverItem::act01Phase0,
+        &HandOverItem::act01Phase1,
+        &HandOverItem::act01Phase1,
+        &HandOverItem::act01Phase1,
     };
     if (unk_d4 < 4) {
         (this->*tbl[unk_d4])();
     }
 }
 
-void Unk_020dc034::func_02058930()
+void HandOverItem::startAct02()
 {
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_0205881c()
+void HandOverItem::startAct03()
 {
     Unk_020dc034_V cur, pos, off;
     s32 a, b, c;
-    func_02058d3c(&cur);
+    getMasterHoldPos(&cur);
     unk_9c.x = 0;
     unk_9c.y = 0;
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5a84;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, func_02059384((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
-    ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
+    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    func_02058cbc(&unk_9c, &pos, 0);
+    localToWorld(&unk_9c, &pos, 0);
     unk_6c.x = unk_9c.x;
     unk_6c.y = cur.y + unk_9c.y;
     unk_6c.z = unk_9c.z;
@@ -755,10 +755,10 @@ void Unk_020dc034::func_0205881c()
     unk_90.y = b;
     unk_90.z = c;
     unk_d6 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_020587b8()
+void HandOverItem::updateAct03()
 {
     if ((s32)unk_d6 < 2) {
         func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
@@ -766,26 +766,26 @@ void Unk_020dc034::func_020587b8()
         func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 2) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_020586bc()
+void HandOverItem::startAct04()
 {
     Unk_020dc034_V cur, pos, off;
     s32 a, b;
-    func_02058d3c(&cur);
+    getMasterHoldPos(&cur);
     unk_9c.x = 0;
     unk_9c.y = 0;
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, func_020593b8((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
     }
-    ::_ZN12Unk_020dc03413func_02058c58Ej(&off, this, 0);
+    ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
-    func_02058cbc(&unk_9c, &pos, 0);
+    localToWorld(&unk_9c, &pos, 0);
     unk_6c.x = unk_9c.x;
     unk_6c.y = unk_9c.y;
     unk_6c.z = unk_9c.z;
@@ -797,15 +797,15 @@ void Unk_020dc034::func_020586bc()
     unk_90.y = 0;
     unk_90.z = a;
     unk_d6 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_02058614()
+void HandOverItem::updateAct04()
 {
     Unk_020dc034_V cur, t;
     s32 n = unk_d6;
     if (n < 9) {
-        func_02058d3c(&cur);
+        getMasterHoldPos(&cur);
         func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
         unk_60.y = cur.y + unk_6c.y;
         func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
@@ -815,19 +815,19 @@ void Unk_020dc034::func_02058614()
             unk_84.x = t.x;
             unk_84.y = t.y;
             unk_84.z = t.z;
-            func_02058d34(0);
+            setBusy(0);
         }
     } else if (n == 9) {
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         VEC_Add(&unk_60, &unk_84, &unk_60);
     }
 }
 
-void Unk_020dc034::func_020585cc()
+void HandOverItem::startAct0A()
 {
     Unk_020dc034_V cur, t;
-    func_02058d34(0);
-    func_02058d3c(&cur);
+    setBusy(0);
+    getMasterHoldPos(&cur);
     func_020e9960(&t, &unk_60, &cur);
     unk_84.x = t.x;
     unk_84.y = t.y;
@@ -835,19 +835,19 @@ void Unk_020dc034::func_020585cc()
     unk_d6 = 0;
 }
 
-void Unk_020dc034::func_020585ac()
+void HandOverItem::updateAct0A()
 {
-    func_02058d3c(&unk_60);
+    getMasterHoldPos(&unk_60);
     VEC_Add(&unk_60, &unk_84, &unk_60);
 }
 
-void Unk_020dc034::func_020584cc()
+void HandOverItem::startAct05()
 {
     Unk_020dc034_V cur, t;
     unk_6c.x = 0;
     unk_6c.y = 0;
     unk_6c.z = 0;
-    func_02058d3c(&cur);
+    getMasterHoldPos(&cur);
     func_020e9960(&t, &unk_60, &cur);
     unk_84.x = t.x;
     unk_84.y = t.y;
@@ -871,16 +871,16 @@ void Unk_020dc034::func_020584cc()
     a = unk_a8.x / 8;
     if (a < 0) a = -a;
     unk_c0 = a;
-    func_02058d34(1);
+    setBusy(1);
     unk_d6 = 0;
     unk_d4 = 0;
 }
 
-void Unk_020dc034::func_020583ec()
+void HandOverItem::updateAct05()
 {
     s32 v = unk_a8.x;
     if ((s32)unk_d6 < 8) {
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         func_020e761c(&v, 0, unk_c0);
         s32 u = v;
         unk_a8.x = u;
@@ -898,42 +898,42 @@ void Unk_020dc034::func_020583ec()
         VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 8) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_020583e8() {}
+void HandOverItem::startAct06() {}
 
-void Unk_020dc034::func_020583e4() {}
+void HandOverItem::updateAct06() {}
 
-void Unk_020dc034::func_0205839c()
+void HandOverItem::startAct07()
 {
     Unk_020dc034_V cur, t;
-    func_02058d3c(&cur);
+    getMasterHoldPos(&cur);
     func_020e9960(&t, &unk_60, &cur);
     unk_84.x = t.x;
     unk_84.y = t.y;
     unk_84.z = t.z;
-    func_02058d34(1);
+    setBusy(1);
     unk_d6 = 0;
 }
 
-void Unk_020dc034::func_02058350()
+void HandOverItem::updateAct07()
 {
     if ((s32)unk_d6 < 9) {
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 9) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_02058320()
+void HandOverItem::startAct08()
 {
-    func_02058d34(1);
+    setBusy(1);
     unk_d6 = 0;
     if (unk_54 == 2) {
         unk_54 = 0;
@@ -941,21 +941,21 @@ void Unk_020dc034::func_02058320()
     Effect_PlayById(0x93, &unk_60, 0, 0);
 }
 
-void Unk_020dc034::func_020582ec()
+void HandOverItem::updateAct08()
 {
     if ((s32)unk_d6 < 10) {
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 10) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_020582a0()
+void HandOverItem::startAct0B()
 {
     Unk_020dc034_V cur, t;
-    func_02058d34(1);
-    func_02058d3c(&cur);
+    setBusy(1);
+    getMasterHoldPos(&cur);
     func_020e9960(&t, &unk_60, &cur);
     unk_84.x = t.x;
     unk_84.y = t.y;
@@ -964,10 +964,10 @@ void Unk_020dc034::func_020582a0()
     unk_d4 = 0;
 }
 
-void Unk_020dc034::func_0205821c()
+void HandOverItem::act0BPhase0()
 {
     if ((s32)unk_d6 < data_020ca67c[unk_d4]) {
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= data_020ca67c[unk_d4]) {
@@ -980,7 +980,7 @@ void Unk_020dc034::func_0205821c()
     }
 }
 
-void Unk_020dc034::func_02058188()
+void HandOverItem::act0BPhase1()
 {
     if ((s32)unk_d6 < data_020ca67c[(*(volatile u8 *)&unk_d4)]) {
         s32 t = unk_a8.x;
@@ -989,7 +989,7 @@ void Unk_020dc034::func_02058188()
         unk_a8.x = u;
         unk_a8.y = u;
         unk_a8.z = u;
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         VEC_Add(&unk_60, &unk_84, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= data_020ca67c[(*(volatile u8 *)&unk_d4)]) {
@@ -998,16 +998,16 @@ void Unk_020dc034::func_02058188()
     }
 }
 
-void Unk_020dc034::func_0205811c()
+void HandOverItem::updateAct0B()
 {
-    static Unk_020dc034_Fn tbl[2] = { &Unk_020dc034::func_0205821c, &Unk_020dc034::func_02058188 };
+    static Unk_020dc034_Fn tbl[2] = { &HandOverItem::act0BPhase0, &HandOverItem::act0BPhase1 };
     u32 i = unk_d4;
     if (i < 2) {
         (this->*tbl[i])();
     }
 }
 
-void Unk_020dc034::func_020580d0()
+void HandOverItem::startAct01V1()
 {
     unk_84.x = 0;
     unk_84.y = 0;
@@ -1021,10 +1021,10 @@ void Unk_020dc034::func_020580d0()
     unk_d8 = 1;
     unk_d4 = 0;
     unk_d6 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_02058024()
+void HandOverItem::act01V1Phase0()
 {
     s32 n = data_020ca680[0];
     if ((s32)unk_d6 < n) {
@@ -1036,9 +1036,9 @@ void Unk_020dc034::func_02058024()
             unk_78.x = 0;
             unk_78.y = 0;
             unk_78.z = 0;
-            unk_6c.x = data_021c5a78.x;
-            unk_6c.y = data_021c5a78.y;
-            unk_6c.z = data_021c5a78.z;
+            unk_6c.x = sPutDownOffset.x;
+            unk_6c.y = sPutDownOffset.y;
+            unk_6c.z = sPutDownOffset.z;
             s32 a, b, c;
     c = unk_6c.z / 12;
             if (c < 0) c = -c;
@@ -1054,12 +1054,12 @@ void Unk_020dc034::func_02058024()
     }
 }
 
-void Unk_020dc034::func_02057e48()
+void HandOverItem::act01V1Phase1()
 {
     s32 n = data_020ca680[1];
     if ((s32)unk_d6 < n) {
         s32 t = unk_a8.x;
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         func_020e761c(&t, 0x1000, 0x200);
         s32 u = t;
         unk_a8.x = u;
@@ -1108,7 +1108,7 @@ void Unk_020dc034::func_02057e48()
     }
 }
 
-void Unk_020dc034::func_02057d70()
+void HandOverItem::act01V1Phase2()
 {
     s32 n = data_020ca680[2];
     if ((s32)unk_d6 < n) {
@@ -1129,21 +1129,21 @@ void Unk_020dc034::func_02057d70()
                 func_02003e70(&unk_dc, 0x70, 0x7f, 0);
             }
             unk_d4 = 3;
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_02057cf4()
+void HandOverItem::updateAct01V1()
 {
-    static Unk_020dc034_Fn tbl[3] = { &Unk_020dc034::func_02058024, &Unk_020dc034::func_02057e48, &Unk_020dc034::func_02057d70 };
+    static Unk_020dc034_Fn tbl[3] = { &HandOverItem::act01V1Phase0, &HandOverItem::act01V1Phase1, &HandOverItem::act01V1Phase2 };
     u32 i = unk_d4;
     if (i < 3) {
         (this->*tbl[i])();
     }
 }
 
-void Unk_020dc034::func_02057be8()
+void HandOverItem::startAct02V1()
 {
     static FxVec3 s(0x10000, 0, 0x17000);
     Unk_020dc034_V t;
@@ -1171,10 +1171,10 @@ void Unk_020dc034::func_02057be8()
     unk_90.y = b;
     unk_90.z = c;
     unk_d6 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_02057b84()
+void HandOverItem::updateAct02V1()
 {
     if ((s32)unk_d6 < 4) {
         func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
@@ -1182,18 +1182,18 @@ void Unk_020dc034::func_02057b84()
         func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 4) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_02057ad4()
+void HandOverItem::startAct03V1()
 {
-    func_02058d3c(&unk_6c);
+    getMasterHoldPos(&unk_6c);
     if (unk_cc[0] != NULL) {
-        unk_78.x = data_021c5a78.x;
-        unk_78.y = data_021c5a78.y;
-        unk_78.z = data_021c5a78.z;
+        unk_78.x = sPutDownOffset.x;
+        unk_78.y = sPutDownOffset.y;
+        unk_78.z = sPutDownOffset.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
     VEC_Add(&unk_6c, &unk_78, &unk_6c);
@@ -1208,10 +1208,10 @@ void Unk_020dc034::func_02057ad4()
     unk_90.y = b;
     unk_90.z = c;
     unk_d6 = 0;
-    func_02058d34(1);
+    setBusy(1);
 }
 
-void Unk_020dc034::func_02057a70()
+void HandOverItem::updateAct03V1()
 {
     if ((s32)unk_d6 < 2) {
         func_020e761c(&unk_60.x, unk_6c.x, unk_90.x);
@@ -1219,43 +1219,43 @@ void Unk_020dc034::func_02057a70()
         func_020e761c(&unk_60.z, unk_6c.z, unk_90.z);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 2) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_02057a58()
+void HandOverItem::startAct04V1()
 {
-    func_02058d34(1);
+    setBusy(1);
     unk_d6 = 0;
 }
 
-void Unk_020dc034::func_020579dc()
+void HandOverItem::updateAct04V1()
 {
     if ((s32)unk_d6 < 10) {
-        func_02058d3c(&unk_60);
+        getMasterHoldPos(&unk_60);
         if (unk_cc[0] != NULL) {
-            unk_78.x = data_021c5a78.x;
-            unk_78.y = data_021c5a78.y;
-            unk_78.z = data_021c5a78.z;
+            unk_78.x = sPutDownOffset.x;
+            unk_78.y = sPutDownOffset.y;
+            unk_78.z = sPutDownOffset.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
         VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= 10) {
-            func_02058d34(0);
+            setBusy(0);
         }
     }
 }
 
-void Unk_020dc034::func_02057940()
+void HandOverItem::startAct05V1()
 {
     unk_6c.x = 0;
     unk_6c.y = 0;
     unk_6c.z = 0;
-    unk_84.x = data_021c5a78.x;
-    unk_84.y = data_021c5a78.y;
-    unk_84.z = data_021c5a78.z;
+    unk_84.x = sPutDownOffset.x;
+    unk_84.y = sPutDownOffset.y;
+    unk_84.z = sPutDownOffset.z;
     unk_78.x = 0;
     unk_78.y = 0;
     unk_78.z = 0;
@@ -1269,18 +1269,18 @@ void Unk_020dc034::func_02057940()
     unk_90.x = a;
     unk_90.y = b;
     unk_90.z = c;
-    func_02058d34(1);
+    setBusy(1);
     unk_d6 = 0;
     unk_d4 = 0;
 }
 
-void Unk_020dc034::func_0205783c(void) {
+void HandOverItem::updateAct05V1(void) {
     static s32 step = Unk_020574cc_Abs(0x1000 / 8);
     s32 tmp = unk_a8.x;
     if ((s32)unk_d6 >= 8) {
         return;
     }
-    func_02058d3c(&unk_60);
+    getMasterHoldPos(&unk_60);
     func_020e761c(&tmp, 0, step);
     s32 t2 = tmp;
     unk_a8.x = t2;
@@ -1298,26 +1298,26 @@ void Unk_020dc034::func_0205783c(void) {
     VEC_Add(&unk_60, &unk_78, &unk_60);
     unk_d6++;
     if ((s32)unk_d6 >= 8) {
-        func_02058d34(0);
+        setBusy(0);
     }
 }
 
-void Unk_020dc034::func_02057824(void) {
-    func_02058d34(1);
+void HandOverItem::startAct07V1(void) {
+    setBusy(1);
     unk_d6 = 0;
 }
 
-void Unk_020dc034::func_0205781c(void) {
-    func_02058614();
+void HandOverItem::updateAct07V1(void) {
+    updateAct04();
 }
 
-void Unk_020dc034::func_02057800(void) {
-    func_02058d34(1);
+void HandOverItem::startAct09V1(void) {
+    setBusy(1);
     unk_d6 = 0;
     unk_d4 = 0;
 }
 
-void Unk_020dc034::func_02057724(void) {
+void HandOverItem::act09V1Phase0(void) {
     s32 c, b, a;
     s32 n = data_020ca684[0];
     if (unk_d6 >= n) {
@@ -1325,11 +1325,11 @@ void Unk_020dc034::func_02057724(void) {
     }
     unk_d6++;
     if (unk_d6 >= n) {
-        func_02058d3c(&unk_6c);
+        getMasterHoldPos(&unk_6c);
         if (unk_cc[0]) {
-            unk_78.x = data_021c5a78.x;
-            unk_78.y = data_021c5a78.y;
-            unk_78.z = data_021c5a78.z;
+            unk_78.x = sPutDownOffset.x;
+            unk_78.y = sPutDownOffset.y;
+            unk_78.z = sPutDownOffset.z;
             func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
         }
         VEC_Add(&unk_6c, &unk_78, &unk_6c);
@@ -1344,17 +1344,17 @@ void Unk_020dc034::func_02057724(void) {
     }
 }
 
-void Unk_020dc034::func_020575f8(void) {
+void HandOverItem::act09V1Phase1(void) {
     s32 c, b, a;
     s32 n = data_020ca684[1];
     if (unk_d6 >= n) {
         return;
     }
-    func_02058d3c(&unk_6c);
+    getMasterHoldPos(&unk_6c);
     if (unk_cc[0]) {
-        unk_78.x = data_021c5a78.x;
-        unk_78.y = data_021c5a78.y;
-        unk_78.z = data_021c5a78.z;
+        unk_78.x = sPutDownOffset.x;
+        unk_78.y = sPutDownOffset.y;
+        unk_78.z = sPutDownOffset.z;
         func_020e93a0(&unk_78, unk_cc[0]->unk_8e);
     }
     VEC_Add(&unk_6c, &unk_78, &unk_6c);
@@ -1366,9 +1366,9 @@ void Unk_020dc034::func_020575f8(void) {
         unk_6c.x = 0;
         unk_6c.y = 0;
         unk_6c.z = 0;
-        unk_84.x = data_021c5a78.x;
-        unk_84.y = data_021c5a78.y;
-        unk_84.z = data_021c5a78.z;
+        unk_84.x = sPutDownOffset.x;
+        unk_84.y = sPutDownOffset.y;
+        unk_84.z = sPutDownOffset.z;
         unk_78.x = 0;
         unk_78.y = 0;
         unk_78.z = 0;
@@ -1382,14 +1382,14 @@ void Unk_020dc034::func_020575f8(void) {
     }
 }
 
-void Unk_020dc034::func_020574cc(void) {
+void HandOverItem::act09V1Phase2(void) {
     static s32 step = Unk_020574cc_Abs(0x1000 / data_021c5a28[1]);
     s32 tmp = unk_a8.x;
     s32 n = data_020ca684[2];
     if (unk_d6 >= n) {
         return;
     }
-    func_02058d3c(&unk_60);
+    getMasterHoldPos(&unk_60);
     func_020e761c(&tmp, 0, step);
     s32 t2 = tmp;
     unk_a8.x = t2;
@@ -1408,15 +1408,15 @@ void Unk_020dc034::func_020574cc(void) {
     unk_d6++;
     if (unk_d6 >= n) {
         unk_d4 = 3;
-        func_02058d34(0);
+        setBusy(0);
     }
 }
 
-void Unk_020dc034::func_02057450(void) {
-    static void (Unk_020dc034::*tbl[3])(void) = {
-        &Unk_020dc034::func_02057724,
-        &Unk_020dc034::func_020575f8,
-        &Unk_020dc034::func_020574cc,
+void HandOverItem::updateAct09V1(void) {
+    static void (HandOverItem::*tbl[3])(void) = {
+        &HandOverItem::act09V1Phase0,
+        &HandOverItem::act09V1Phase1,
+        &HandOverItem::act09V1Phase2,
     };
     u32 state = unk_d4;
     if (state < 3) {
@@ -1424,57 +1424,57 @@ void Unk_020dc034::func_02057450(void) {
     }
 }
 
-extern "C" s32 func_02057418(s32 a, s32 b, u8 c, s32 d, s32 e, s32 f) {
+extern "C" s32 HandOverItem_Begin(s32 a, s32 b, u8 c, s32 d, s32 e, s32 f) {
     s32 r = 0;
-    if (data_021c5a38) {
-        r = data_021c5a38->func_02059068((u16 *)a, b, c, d, (Unk_020dc034_Owner_Base *)e, (Unk_020dc034_Owner_Base *)f);
+    if (sHandOverItem) {
+        r = sHandOverItem->begin((u16 *)a, b, c, d, (Unk_020dc034_Owner_Base *)e, (Unk_020dc034_Owner_Base *)f);
     }
     return r;
 }
 
-extern "C" s32 func_020573f4(s32 a) {
+extern "C" s32 HandOverItem_IsMaster(s32 a) {
     s32 r = 0;
-    if (data_021c5a38) {
-        r = data_021c5a38->func_0205902c((void *)a, 0);
+    if (sHandOverItem) {
+        r = sHandOverItem->isCharAt((void *)a, 0);
     }
     return r;
 }
 
-extern "C" s32 func_020573cc(u8 a, s32 b) {
+extern "C" s32 HandOverItem_RequestMode(u8 a, s32 b) {
     s32 r = 0;
-    if (data_021c5a38) {
-        r = data_021c5a38->func_02058f9c(a, (void *)b);
+    if (sHandOverItem) {
+        r = sHandOverItem->requestModeBy(a, (void *)b);
     }
     return r;
 }
 
-extern "C" u8 func_020573b4(void) {
-    if (data_021c5a38) {
-        return data_021c5a38->unk_58;
+extern "C" u8 HandOverItem_GetNextMode(void) {
+    if (sHandOverItem) {
+        return sHandOverItem->unk_58;
     }
     return 0xc;
 }
 
-extern "C" void func_02057378(s32 a) {
-    if (data_021c5a38) {
-        if (func_020573f4(a) == 1) {
-            if (data_021c5a38->unk_c4 != -1) {
-                func_0204f3b4(data_021c5a38->unk_c4);
+extern "C" void HandOverItem_End(s32 a) {
+    if (sHandOverItem) {
+        if (HandOverItem_IsMaster(a) == 1) {
+            if (sHandOverItem->unk_c4 != -1) {
+                func_0204f3b4(sHandOverItem->unk_c4);
             }
-            data_021c5a38->func_02059184();
+            sHandOverItem->resetState();
         }
     }
 }
 
-extern "C" BOOL func_02057328(Unk_02057328_Obj *p) {
+extern "C" BOOL HandOverItem_CanTake(Unk_02057328_Obj *p) {
     BOOL r = FALSE;
     if (p) {
-        Unk_020dc034 *g = data_021c5a38;
+        HandOverItem *g = sHandOverItem;
         if (g) {
             if (func_020e9650(&p->unk_5c, &g->unk_60) <= g->unk_bc) {
                 r = TRUE;
-            } else if (g->func_02058f5c()) {
-                if (data_021c5a38->unk_d5 == 0) {
+            } else if (g->isAwaitingTake()) {
+                if (sHandOverItem->unk_d5 == 0) {
                     r = TRUE;
                 }
             }
@@ -1483,9 +1483,9 @@ extern "C" BOOL func_02057328(Unk_02057328_Obj *p) {
     return r;
 }
 
-extern "C" BOOL func_02057304(Unk_020dc034_V *out) {
+extern "C" BOOL HandOverItem_GetPos(Unk_020dc034_V *out) {
     BOOL r = FALSE;
-    Unk_020dc034 *g = data_021c5a38;
+    HandOverItem *g = sHandOverItem;
     if (g) {
         Unk_020dc034_V *pv = &g->unk_60;
         out->x = pv->x;
@@ -1496,17 +1496,17 @@ extern "C" BOOL func_02057304(Unk_020dc034_V *out) {
     return r;
 }
 
-extern "C" s32 func_020572e0(s32 a) {
+extern "C" s32 HandOverItem_SwitchMaster(s32 a) {
     s32 r = 0;
-    if (data_021c5a38) {
-        r = data_021c5a38->func_02058fec((void *)a);
+    if (sHandOverItem) {
+        r = sHandOverItem->switchMaster((void *)a);
     }
     return r;
 }
 
-extern "C" BOOL func_020572b0(u32 a) {
+extern "C" BOOL HandOverItem_IsModeActive(u32 a) {
     BOOL r = FALSE;
-    Unk_020dc034 *g = data_021c5a38;
+    HandOverItem *g = sHandOverItem;
     if (g) {
         if ((g->unk_c8 == a && g->unk_d9 == 1) || g->unk_da == a) {
             r = TRUE;
@@ -1515,49 +1515,49 @@ extern "C" BOOL func_020572b0(u32 a) {
     return r;
 }
 
-extern "C" BOOL func_02057294(void) {
+extern "C" BOOL HandOverItem_IsActive(void) {
     BOOL r = FALSE;
-    if (data_021c5a38) {
-        if (data_021c5a38->unk_c8 != 0) {
+    if (sHandOverItem) {
+        if (sHandOverItem->unk_c8 != 0) {
             r = TRUE;
         }
     }
     return r;
 }
 
-extern "C" void func_02057278(u16 *out) {
+extern "C" void HandOverItem_GetItem(u16 *out) {
     *out = 0xfff1;
-    if (data_021c5a38) {
-        *out = data_021c5a38->unk_50;
+    if (sHandOverItem) {
+        *out = sHandOverItem->unk_50;
     }
 }
 
 // ======== FUNCTIONS ========
 
-extern "C" s32 func_02057250(u8 a, s32 b) {
+extern "C" s32 HandOverItem_SetNextMode(u8 a, s32 b) {
     s32 r = 0;
-    if (data_021c5a38) {
-        r = data_021c5a38->func_02058cfc(a, (void *)b);
+    if (sHandOverItem) {
+        r = sHandOverItem->setNextModeBy(a, (void *)b);
     }
     return r;
 }
 
-Unk_020dbeb4_Entry data_020dbeb4 = { (void *)func_02059340, 0xd1, 0xcd };
-Unk_02059384_Rec *data_020dc014[6] = { (Unk_02059384_Rec *)data_020caab4, (Unk_02059384_Rec *)data_020ca6f4, (Unk_02059384_Rec *)data_020ca7b4, (Unk_02059384_Rec *)data_020ca874, (Unk_02059384_Rec *)data_020ca934, (Unk_02059384_Rec *)data_020ca9f4 };
+Unk_020dbeb4_Entry sHandOverItemProfile = { (void *)HandOverItem_Create, 0xd1, 0xcd };
+Unk_02059384_Rec *sFishHoldOffsetSets[6] = { (Unk_02059384_Rec *)data_020caab4, (Unk_02059384_Rec *)data_020ca6f4, (Unk_02059384_Rec *)data_020ca7b4, (Unk_02059384_Rec *)data_020ca874, (Unk_02059384_Rec *)data_020ca934, (Unk_02059384_Rec *)data_020ca9f4 };
 
-const u8 data_020ca678[4] = { 0x28, 0x0, 0x0, 0x0 };
+const u8 sHandOverTakeTimeout[4] = { 0x28, 0x0, 0x0, 0x0 };
 const u8 data_020ca67c[4] = { 0xa, 0x16, 0x0, 0x0 };
 const u8 data_020ca680[4] = { 0xb, 0x11, 0x15, 0x0 };
 const u8 data_020ca684[4] = { 0x6, 0x9, 0x15, 0x0 };
 const u8 data_020ca690[4] = { 0xb, 0x14, 0x16, 0x18 };
-const s32 data_020ca688 = 0x4000;
-const s32 data_020ca68c = 0x1500;
-const Unk_020dc034_V data_020ca694 = { 0x0, -0x600, 0x0 };
+const s32 sHandOverReachFar = 0x4000;
+const s32 sHandOverReach = 0x1500;
+const Unk_020dc034_V sHoldOffsetDefault = { 0x0, -0x600, 0x0 };
 const Unk_020dc034_V data_020ca6a0 = { 0x0, -0x1000, 0x0 };
 const Unk_020dc034_V data_020ca6ac = { 0x0, -0x1000, 0x200 };
 const Unk_020dc034_V data_020ca6b8 = { 0x0, -0x900, 0x300 };
 const s32 data_020ca6c4[4] = { 0x0, 0x1100, 0xf80, 0x1000 };
-const u32 data_020ca6d4[8] = { 0x1666, 0x14cd, 0x1333, 0x10cd, 0x1000, 0x1000, 0x1000, 0xe66 };
+const u32 sHandOverFishScale[8] = { 0x1666, 0x14cd, 0x1333, 0x10cd, 0x1000, 0x1000, 0x1000, 0xe66 };
 const s32 data_020ca6f4[0x30] = {
     0x0, 0xb00, 0x200, 0x0, 0xb00, 0x0,
     0x0, 0xa00, 0x200, 0x0, 0xa00, 0x0,

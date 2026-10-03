@@ -238,7 +238,7 @@ s32 _ZN8BlockMap13func_0204e474Eii(void *grid, s32 x, s32 y);
 s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
 void *PlayerData_GetResident(void *tbl, s32 i);
-s32 _ZN10PlayerData13func_02098a48Ev(void *p);
+s32 _ZN10PlayerData6isUsedEv(void *p);
 s32 LetterDelivery_IsMailboxFull(s32 i);
 void _ZN11MsgString25C1Ev(void *o);
 void _ZN11MsgString25D1Ev(void *o);
@@ -287,10 +287,10 @@ s32 SaveVillagers_Get(void *p, s32 k);
 s32 Villager_GetCarpet();
 s32 Villager_GetWallpaper();
 u32 MATH_CountPopulation(u32 v);
-void func_020524a8(Unk_0205b320_Buf *b, void *cell);
-u32 func_0205248c(Unk_0205b320_Buf *b);
-s16 *func_0205242c(Unk_0205b320_Buf *b, u32 i);
-void func_020524a4(Unk_0205b320_Buf *b);
+void FtrFootprint_Init(Unk_0205b320_Buf *b, void *cell);
+u32 FtrFootprint_GetTileCount(Unk_0205b320_Buf *b);
+s16 *FtrFootprint_GetTileOffset(Unk_0205b320_Buf *b, u32 i);
+void FtrFootprint_Destruct(Unk_0205b320_Buf *b);
 void Clock_GetDateTime(Unk_0205b524_T *t);
 void DateTime_SubDays(Unk_0205b524_T *t, s32 v);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
@@ -481,12 +481,12 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile 
                 u16 *cell = (u16 *)BlockMap_GetItemPtr((void *)m, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (cell != NULL && Item_IsFurniture(cell)) {
                     f = Item_GetFurnitureIndex(cell);
-                    func_020524a8(&buf, cell);
-                    n = func_0205248c(&buf);
+                    FtrFootprint_Init(&buf, cell);
+                    n = FtrFootprint_GetTileCount(&buf);
                     ok = TRUE;
                     for (i = 0; i < n; i++) {
-                        nx = x + func_0205242c(&buf, i)[0];
-                        s32 ny = y + func_0205242c(&buf, i)[1];
+                        nx = x + FtrFootprint_GetTileOffset(&buf, i)[0];
+                        s32 ny = y + FtrFootprint_GetTileOffset(&buf, i)[1];
                         if (nx < x0 || nx > x1 || ny < y0 || ny > y1) {
                             ok = FALSE;
                             break;
@@ -496,7 +496,7 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile 
                         if (FtrInfo_GetUnk01(f) == kind) cnt++;
                         if (FtrInfo_GetUnk02(f) == kind) cnt++;
                     }
-                    func_020524a4(&buf);
+                    FtrFootprint_Destruct(&buf);
                 }
             }
                 x++;
@@ -1456,7 +1456,7 @@ extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
         }
         for (i = 0; i < 4; i++) {
             void *p = PlayerData_GetResident(gSavePlayers, i);
-            if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
+            if (p && _ZN10PlayerData6isUsedEv(p)) {
                 if (func_0209c37c(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
                     _ZN6LetterC1Ev(objD);
                     by[0] = a;
@@ -1496,7 +1496,7 @@ extern "C" void func_02059adc(void *self, s32 n)
             void *p = PlayerData_GetResident(gSavePlayers, i);
             u32 obj[0x3e];
             u8 b;
-            if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff48testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
+            if (p && _ZN10PlayerData6isUsedEv(p) && _ZN12Unk_02097ff48testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
                 _ZN6LetterC1Ev(obj);
                 b = id;
                 Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));

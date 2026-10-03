@@ -142,19 +142,19 @@ void InputMode_SetButtons(void);
 }
 
 extern "C" {
-void func_020b7798(void);
+void FieldInfoBalloon_Draw(void);
 }
 
 extern "C" {
-void func_020b77a8(void);
+void FieldInfoBalloon_Update(void);
 }
 
 extern "C" {
-void func_020b77b8(void);
+void FieldInfoBalloon_Release(void);
 }
 
 extern "C" {
-void func_020b77c8(void);
+void FieldInfoBalloon_Init(void);
 }
 
 extern "C" {

@@ -25,7 +25,7 @@
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
 #define HandCursor_setAnimAtEnd _ZN10HandCursor12setAnimAtEndEi
 #define func_020983cc _ZN12Unk_02097ff413func_020983ccEv
-#define func_020986d4 _ZN10PlayerData13func_020986d4Ev
+#define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerData_setHat _ZN10PlayerData6setHatEPt
 #define PlayerData_getHat _ZN10PlayerData6getHatEv
 #define PlayerData_setShirt _ZN10PlayerData8setShirtEPt
@@ -105,7 +105,7 @@ BOOL HandCursor_isAnimDone(void *p);
 BOOL HandCursor_getAnim(void *p);
 void HandCursor_setAnimAtEnd(void *p, s32 v);
 void *func_020983cc(void *p);
-void *func_020986d4(void *p);
+void *PlayerData_getPatterns(void *p);
 void PlayerData_setHat(void *p, u16 *v);
 u16 *PlayerData_getHat(void *p);
 void PlayerData_setShirt(void *p, u16 *v);
@@ -877,7 +877,7 @@ void DesignTab::loadPatternIcons() {
     r6 = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/desi/b_myd_obj.bch", r6, 8, 0x140, 0x140, 0x17f);
     r5 = Heap_AllocTail(r6, 0x1000);
-    v = (s32)func_020986d4(PlayerData_GetCurrent());
+    v = (s32)PlayerData_getPatterns(PlayerData_GetCurrent());
     i = 0;
     k = 4;
     do {
@@ -1385,7 +1385,7 @@ BOOL DesignTab::dropHeldOnTarget() {
 
 void DesignTab::swapPatternSlots(u32 a, u32 b) {
     if (a != b) {
-        PatternOrder_swap(PlayerPatterns_getPatternOrder(func_020986d4(PlayerData_GetCurrent())), a, b);
+        PatternOrder_swap(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(PlayerData_GetCurrent())), a, b);
         u8 t = unk_1074[a];
         unk_1074[a] = unk_1074[b];
         unk_1074[b] = t;
@@ -1393,7 +1393,7 @@ void DesignTab::swapPatternSlots(u32 a, u32 b) {
 }
 
 u32 DesignTab::getSlotPattern(u32 i) {
-    return PatternOrder_getSlot(PlayerPatterns_getPatternOrder(func_020986d4(PlayerData_GetCurrent())), i);
+    return PatternOrder_getSlot(PlayerPatterns_getPatternOrder(PlayerData_getPatterns(PlayerData_GetCurrent())), i);
 }
 
 void DesignTab::setPopupChoices(u32 i) {
@@ -1674,7 +1674,7 @@ void DesignTab::refreshNameLabel() {
     }
     LabelBalloon_setPos(&unk_2d8, getSlotX(unk_ad) - 0x78, x);
     func_02062510(a);
-    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(func_020986d4(PlayerData_GetCurrent()), unk_ad)), a);
+    PatternInfo_getTitleEncoded(Pattern_getInfo(PlayerPatterns_getPatternByOrder(PlayerData_getPatterns(PlayerData_GetCurrent()), unk_ad)), a);
     func_02089f44(b);
     StrBuf_GameToAscii(b, a);
     LabelBalloon_setText(&unk_2d8, b);

@@ -20,8 +20,8 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
 void *PlayerData_GetCurrent();
-void *_ZN12Unk_02097ff413func_02098320Ev(void *p);
-void *_ZN10PlayerData13func_02098750Ev(void *p);
+void *_ZN12Unk_02097ff414getBankAccountEv(void *p);
+void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 MenuCtrl_GetMode();
 void MenuCtrl_SetResult(s32 a);
 s32 MenuCtrl_IsTouch();
@@ -33,7 +33,7 @@ void func_02097a48(void *p, s32 v, s32 w);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 v);
 s32 func_02097ce4(void *p, s32 v, s32 w);
 void *ProcBase_GetParent();
-void func_0206f9fc(void *self, s32 v);
+void String_Load2dMenu(void *self, s32 v);
 s32 File_LoadToBuffer(const char *a, void *b, s32 c);
 s32 BgScreen_SetRectPalette(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Gfx2d_LoadScreen(void *a, s32 b, s32 c, s32 d);
@@ -172,13 +172,13 @@ public:
     /* 0x90 */ u8 unk_90;
 };
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    void destroyLabel();
     u8 unk_00[0x40];
 };
 
@@ -262,7 +262,7 @@ public:
     /* 0x091 */ u8 unk_91[3];
     /* 0x094 */ MenuCursorBuf0 unk_94;
     /* 0x0f8 */ MenuBottomButtons unk_f8;
-    /* 0x25c */ Unk_020e0488 unk_25c[2];
+    /* 0x25c */ LabelString unk_25c[2];
     /* 0x2dc */ BgVramTask unk_2dc[2];
     /* 0x324 */ MenuErrorMessage unk_324;
     /* 0x42c */ u8 unk_42c[0x800];
@@ -450,14 +450,14 @@ void BankMenu::loadBgGfx() {
     File_LoadToBuffer("menu/bank/c1_bg.bsc", unk_c2c, 0x800);
     BgScreen_SetRectPalette(unk_c2c, 6, 7, 0x19, 0xf, 6);
     Gfx2d_LoadScreen(unk_c2c, 4, 0x800, 0);
-    Unk_020e0488 *p = (Unk_020e0488 *)allocLabel();
-    func_0206f9fc(p, 0x5f);
-    p->func_0206fb9c(4, 0x114, 0xe, 0xf, 0, 0);
-    p->func_0206fab4(1, 0);
-    p = (Unk_020e0488 *)allocLabel();
-    func_0206f9fc(p, 0x60);
-    p->func_0206fb9c(4, 0x130, 0xe, 0xf, 0, 0);
-    p->func_0206fab4(1, 0);
+    LabelString *p = (LabelString *)allocLabel();
+    String_Load2dMenu(p, 0x5f);
+    p->createLabel(4, 0x114, 0xe, 0xf, 0, 0);
+    p->redrawAligned(1, 0);
+    p = (LabelString *)allocLabel();
+    String_Load2dMenu(p, 0x60);
+    p->createLabel(4, 0x130, 0xe, 0xf, 0, 0);
+    p->redrawAligned(1, 0);
 }
 
 void BankMenu::loadObjGfx() {
@@ -615,7 +615,7 @@ void BankMenu::startSelect() {
 }
 
 void BankMenu::selectDeposit() {
-    if (func_02097414(_ZN12Unk_02097ff413func_02098320Ev(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
+    if (func_02097414(_ZN12Unk_02097ff414getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
         unk_1431 = 0x35;
@@ -626,7 +626,7 @@ void BankMenu::selectDeposit() {
 }
 
 void BankMenu::selectWithdraw() {
-    if (func_02097ce4(_ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent()), 1, 0) == 0) {
+    if (func_02097ce4(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1, 0) == 0) {
         showMessage(0xf);
     } else {
         unk_1431 = 0x36;
@@ -705,7 +705,7 @@ void BankMenu::releaseLabels() {
     s32 i = 0;
     unk_1430 = i;
     for (; i < 2; i++) {
-        unk_25c[i].func_0206fc44();
+        unk_25c[i].destroyLabel();
     }
 }
 

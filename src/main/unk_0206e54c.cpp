@@ -98,7 +98,7 @@ u32 PlayerData_GetCurrent(void);
 void *func_02097a3c(u32);
 void *FutureLetter_GetLetter(void *);
 u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
-void *_ZN10PlayerData13func_02098750Ev(u32);
+void *_ZN10PlayerData12getInventoryEv(u32);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 void *_ZN15PlayerInventory14getPocketFlagsEi(void *, s32);
 void Pocket_SetItem(u16 *, u32, u32);
@@ -116,7 +116,7 @@ BOOL func_0203d4d4();
 s32 Scene_GetCurrent();
 BOOL TalkRequest_IsActive();
 s32 func_0201188c();
-void func_0203da24(u32);
+void TalkRequest_AddMenu(u32);
 void MenuScreen_Reset();
 void func_0205c1a4();
 void PrioList_Init(void *);
@@ -484,26 +484,26 @@ BOOL MenuManager::onExecute() {
         if (gTouchHeld && gTouchChanged) r = TRUE;
         else r = FALSE;
         if (r && gTouchCurY <= 0x10 && gTouchCurX >= 0xe8) {
-            func_0203da24(0);
+            TalkRequest_AddMenu(0);
             sMenuMode = 0;
             MenuCtrl_SetTouch();
             return TRUE;
         }
         k = gPad[1];
         if (k & 4) {
-            func_0203da24(0);
+            TalkRequest_AddMenu(0);
             sMenuMode = 4;
             MenuCtrl_SetButtons();
             return TRUE;
         }
         if (k & 0x800) {
-            func_0203da24(0);
+            TalkRequest_AddMenu(0);
             sMenuMode = 0;
             MenuCtrl_SetButtons();
             return TRUE;
         }
         if (func_0201188c() != 2 && (gPad[1] & 0x400)) {
-            func_0203da24(0);
+            TalkRequest_AddMenu(0);
             sMenuMode = 5;
             MenuCtrl_SetButtons();
             return TRUE;
@@ -779,7 +779,7 @@ extern "C" u32 MenuCtrl_GetSavedSlot() { return sMenuSavedSlot; }
 extern "C" void MenuCtrl_BackupPockets() {
     void *p;
     s32 i;
-    p = _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
+    p = _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
     for (i = 0; i < 15; i++) {
         sPocketBackupItems[i] = *_ZN15PlayerInventory9getPocketEi(p, i);
         sPocketBackupFlags[i] = (u32)_ZN15PlayerInventory14getPocketFlagsEi(p, i);
@@ -789,7 +789,7 @@ extern "C" void MenuCtrl_BackupPockets() {
 extern "C" void MenuCtrl_RestorePockets() {
     u16 tmp[1];
     s32 i;
-    _ZN10PlayerData13func_02098750Ev(PlayerData_GetCurrent());
+    _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
     tmp[0] = 0xfff1;
     for (i = 0; i < 15; i++) {
         tmp[0] = sPocketBackupItems[i];
@@ -852,11 +852,11 @@ extern "C" BOOL MenuCtrl_OpenPocketSelect(u32 a, u32 b) {
 
 extern "C" u16 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, void *)) {
     u32 a = PlayerData_GetCurrent();
-    u16 *p = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(a), 0);
+    u16 *p = _ZN15PlayerInventory9getPocketEi(_ZN10PlayerData12getInventoryEv(a), 0);
     s32 i;
     u16 mask = 0;
     for (i = 0; i < 15; i++) {
-        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData13func_02098750Ev(a), i))) {
+        if (cb(p + i, _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData12getInventoryEv(a), i))) {
             mask |= 1 << i;
         }
     }

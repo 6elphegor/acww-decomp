@@ -94,17 +94,17 @@ s32 func_02084fbc(void);
 u32 func_02077e28(void);
 u32 func_02077e20(void);
 u32 func_0205ffbc(void);
-u32 func_0205ecfc(void);
+u32 HeldItem_GetAnimHeapSize(void);
 u32 func_0205eec0(void);
 u32 func_0205d2fc(void);
-u32 func_0205ed04(void);
+u32 HeldItem_GetModelBufferSize(void);
 u32 func_0205d770(void);
 u32 func_0205f018(void);
-u32 func_0205ddc0(void);
+u32 PlayerHead_GetBufferSize(void);
 u32 func_0205c8c8(void);
 u32 func_0205d178(void);
 u32 func_0205d418(void);
-u32 func_0203c6c0(void);
+u32 ClothTex_GetBufferSize(void);
 u32 func_0205c604(void);
 u32 func_0205c5fc(void);
 u32 func_0205c5f4(void);
@@ -562,7 +562,7 @@ extern "C" void func_0205beb8(void) {
 
 extern "C" void func_0205be74(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0203c6c0());
+    s += ALIGN4(ClothTex_GetBufferSize());
     s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d + 1);
@@ -617,7 +617,7 @@ extern "C" void func_0205bd54(void) {
 extern "C" void func_0205bd1c(void *parent) {
     u32 n = gCommManager->unk_6c;
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205ddc0());
+    s += ALIGN4(PlayerHead_GetBufferSize());
     t += s * n;
     data_021c61cc = FrameHeap_Create(t, parent);
 }
@@ -655,7 +655,7 @@ extern "C" void func_0205bc60(void) {
 
 extern "C" void func_0205bc20(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205ed04());
+    s += ALIGN4(HeldItem_GetModelBufferSize());
     s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 d = func_02084fbc();
     t += s * (c + d);
@@ -696,7 +696,7 @@ extern "C" void func_0205bb48(void) {
 
 extern "C" void func_0205bb00(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_0205ecfc());
+    s += ALIGN4(HeldItem_GetAnimHeapSize());
     s32 c = Scene_GetMaxCharacters(Scene_GetCurrent());
     s32 e = c + func_02084fbc();
     t += ALIGN4(s + 0x48) * e;

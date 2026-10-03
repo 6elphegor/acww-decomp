@@ -9,7 +9,7 @@
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
-#define func_02098a48 _ZN10PlayerData13func_02098a48Ev
+#define PlayerData_isUsed _ZN10PlayerData6isUsedEv
 #define Unk_02014420_requestTakeItem _ZN12Unk_0201442015requestTakeItemEPtjjj
 #define unk_618_func_020141b4 _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define unk_618_func_02014220 _ZN11NpcTalkCtrl6isBusyEv
@@ -22,7 +22,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 u32 func_02063b8c(u32 n);
 BOOL TalkRequest_SetTargetDone(void *p);
-void func_0203d948();
+void TalkRequestFlags_SetEventWarpBlock();
 BOOL func_0203c338();
 BOOL func_0203c31c();
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
@@ -39,7 +39,7 @@ void Pocket_RemoveItem(s32 a);
 s32 Pocket_FindItem(u16 *p);
 s32 Pocket_FindEmpty();
 void *PlayerData_GetResident(void *tbl, s32 i);
-BOOL func_02098a48(void *p);
+BOOL PlayerData_isUsed(void *p);
 extern u16 data_020c6cc8;
 extern u8 gSavePlayers[];
 extern u8 sSpNpcTortimerModelPath[];
@@ -403,7 +403,7 @@ BOOL SpNpcTortimer::vfunc_00() {
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 1) == 0) {
-        func_0203d948();
+        TalkRequestFlags_SetEventWarpBlock();
     }
     return TRUE;
 }
@@ -504,7 +504,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && func_02098a48(p) && p != g && Unk_02097ff4_testFlag(p, 0x21)) {
+                    if (p != NULL && PlayerData_isUsed(p) && p != g && Unk_02097ff4_testFlag(p, 0x21)) {
                         out->b = 2;
                         break;
                     }
@@ -518,7 +518,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
                 s32 i;
                 for (i = 0; i < 4; i++) {
                     void *p = PlayerData_GetResident(gSavePlayers, i);
-                    if (p != NULL && func_02098a48(p) && p != g && Unk_02097ff4_testFlag(p, 0x22)) {
+                    if (p != NULL && PlayerData_isUsed(p) && p != g && Unk_02097ff4_testFlag(p, 0x22)) {
                         out->b = 5;
                         break;
                     }

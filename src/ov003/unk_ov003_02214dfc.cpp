@@ -278,10 +278,10 @@ struct GateHouseFlagTexture {
 
 extern "C" {
 extern u8 gSaveTownFlag[];
-void func_0203c924(void *);
-void func_0203c928(void *);
-BOOL func_0203c6f8(void *a, void *b);
-void *func_0203c6c8(void *);
+void ClothTex_Destruct(void *);
+void ClothTex_Construct(void *);
+BOOL ClothTex_LoadPattern(void *a, void *b);
+void *ClothTex_GetTex(void *);
 void *_ZN12Unk_020b23a013func_020b23a0Ev(void *);
 s32 func_020b249c(s32);
 void func_020b24a4(s32, void *);
@@ -416,16 +416,16 @@ extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
 }
 
 GateHouseFlagTexture::GateHouseFlagTexture() {
-    func_0203c928(unk_28);
+    ClothTex_Construct(unk_28);
 }
 
 GateHouseFlagTexture::~GateHouseFlagTexture() {
-    func_0203c924(unk_28);
+    ClothTex_Destruct(unk_28);
 }
 
 BOOL GateHouseFlagTexture::apply(void *res, void *b) {
-    if (func_0203c6f8(unk_28, b)) {
-        if (unk_00.request(res, (u32) "w", func_0203c6c8(unk_28), 0, 0)) {
+    if (ClothTex_LoadPattern(unk_28, b)) {
+        if (unk_00.request(res, (u32) "w", ClothTex_GetTex(unk_28), 0, 0)) {
             func_020b24a4((s32)func_020b23a0(gSaveTownFlag), b);
             return TRUE;
         }

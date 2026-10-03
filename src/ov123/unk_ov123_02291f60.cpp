@@ -36,7 +36,7 @@ BOOL MenuKeys_HasUp(void *pad);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void func_0206f994(void *p, void *s, s32 n);
+void String_FromEncodedBytes(void *p, void *s, s32 n);
 void MenuCtrl_SetResult(u32 v);
 s32 MenuCtrl_GetMode();
 void Gfx2d_LoadCharRange(void *p, s32 a, s32 b, s32 c, s32 d);
@@ -79,7 +79,7 @@ void _ZN11PatternInfo24setAuthorToCurrentPlayerEv(void *self);
 void _ZN11PatternInfo10setPaletteEj(void *self, s32 a);
 u8 _ZN11PatternInfo10getPaletteEv(void *self);
 void *_ZN16BlancaFaceRecord10getPatternEv(void *self);
-void *_ZN10PlayerData13func_020986d4Ev(void *self);
+void *_ZN10PlayerData11getPatternsEv(void *self);
 u16 *_ZN10PlayerData6getHatEv(void *self);
 u16 *_ZN10PlayerData8getShirtEv(void *self);
 void _ZN10BgVramTask14requestPaletteEjhj(void *self, void *q, s32 a, s32 b);
@@ -96,13 +96,13 @@ public:
 };
 
 // Element at +0xb8, 0x40 bytes
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fc44();
-    void func_0206fb48(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
-    void func_0206fab4(s32 a, s32 b);
+    LabelString();
+    virtual ~LabelString();
+    void destroyLabel();
+    void createSmallLabel(u32 a, u32 b, u32 c, u8 d, u8 e, s32 f);
+    void redrawAligned(s32 a, s32 b);
     u8 unk_04[0x3c];
 };
 
@@ -464,7 +464,7 @@ public:
     /* 0xb4 */ u8 unk_b4;
     /* 0xb5 */ u8 unk_b5;
     /* 0xb6 */ u8 unk_b6[2];
-    /* 0xb8 */ Unk_020e0488 unk_b8[1];
+    /* 0xb8 */ LabelString unk_b8[1];
     /* 0xf8 */ BgVramTaskPair unk_f8[3];
     /* 0x1a0 */ MenuCursorBuf0 unk_1a0;
     /* 0x204 */ u8 unk_204[0xa04 - 0x204];
@@ -1383,7 +1383,7 @@ void PatternEditorMenu::startBarTransition(u8 a, u8 b)
 
 void PatternEditorMenu::loadFromPlayerPattern()
 {
-    void *b = _ZN10PlayerData13func_020986d4Ev(PlayerData_GetCurrent());
+    void *b = _ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent());
     void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, MenuCtrl_GetIndex());
     MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_a04, 0x200);
     MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(d), unk_c04, 0x200);
@@ -1394,7 +1394,7 @@ void PatternEditorMenu::loadFromPlayerPattern()
 void PatternEditorMenu::saveToPlayerPattern()
 {
     void *a = PlayerData_GetCurrent();
-    void *b = _ZN10PlayerData13func_020986d4Ev(a);
+    void *b = _ZN10PlayerData11getPatternsEv(a);
     void *c = MenuCtrl_GetIndex();
     void *d = _ZN14PlayerPatterns17getPatternByOrderEj(b, c);
     _ZN7Pattern9setPixelsEPv(d, getCanvas());
@@ -1535,9 +1535,9 @@ void PatternEditorMenu::setPalette(u8 a) {
     }
     buf[1] = (a + 1) % 10 + 0x35;
     buf[2] = 0;
-    func_0206f994(unk_b8, buf, 5);
-    unk_b8[0].func_0206fb48(8, 0x128, 2, 6, 0, 1);
-    unk_b8[0].func_0206fab4(0, 0);
+    String_FromEncodedBytes(unk_b8, buf, 5);
+    unk_b8[0].createSmallLabel(8, 0x128, 2, 6, 0, 1);
+    unk_b8[0].redrawAligned(0, 0);
 }
 
 u8 PatternEditorMenu::hitTest(s32 x, s32 y) {
@@ -2219,7 +2219,7 @@ void PatternEditorMenu::updateButtonFlash() {
 }
 
 void PatternEditorMenu::resetPaletteLabel() {
-    unk_b8[0].func_0206fc44();
+    unk_b8[0].destroyLabel();
 }
 
 void PatternEditorMenu::drawShapeCorner(s32 x, s32 y, u32 i) {

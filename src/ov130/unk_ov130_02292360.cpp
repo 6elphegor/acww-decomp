@@ -11,7 +11,7 @@ void Gfx2d_LoadScreen(void *p, s32 a, s32 b, s32 c);
 u8 *File_LoadAlloc(u32 id, void *heap, s32 a, void *out);
 void File_LoadToBuffer(u32 src, void *dst, s32 n);
 void Heap_Free(void *heap, void *p);
-void func_0206f9fc(void *o, u32 v);
+void String_Load2dMenu(void *o, u32 v);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 s32 PlayerData_GetCurrent();
 void _ZN10PlayerData11getPlayerIdEv();
@@ -20,12 +20,12 @@ void Snd_SetKeySeMode(u32 v);
 }
 
 // text buffer object, 0x40 bytes (vtable 0x020e0488, see src/main/unk_0206f53c.cpp)
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    virtual ~Unk_020e0488();
-    void func_0206fab4(s32 a, s32 b);
-    void func_0206fb9c(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
+    LabelString();
+    virtual ~LabelString();
+    void redrawAligned(s32 a, s32 b);
+    void createLabel(u32 id, u32 a, u32 b, u8 x, u8 y, s32 flag);
     u8 unk_04[0x3c];
 };
 
@@ -73,7 +73,7 @@ public:
     /* 0x14 */ u32 unk_14;
     /* 0x18 */ u32 unk_18;
     /* 0x1c */ u8 unk_1c[0x2c - 0x1c];
-    /* 0x2c */ Unk_020e0488 unk_2c[5];
+    /* 0x2c */ LabelString unk_2c[5];
     /* 0x16c */ BgVramTask unk_16c[2];
     /* 0x1b4 */ u8 unk_1b4[0x800];
     /* 0x9b4 */ u8 unk_9b4[0x800];
@@ -186,7 +186,7 @@ struct Ov130S {
 };
 
 extern "C" {
-void _ZN12Unk_020e048813func_0206fc44Ev(void *p);
+void _ZN11LabelString12destroyLabelEv(void *p);
 void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
 s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
@@ -308,11 +308,11 @@ void NumberPad::loadBg() {
     Gfx2d_LoadScreen(unk_1b4, unk_0a, 0x800, 0);
     File_LoadToBuffer(sKeyScreenFiles[unk_08], unk_9b4, 0x800);
     Gfx2d_LoadScreen(unk_9b4, unk_0b, 0x800, 0);
-    Unk_020e0488 *o = (Unk_020e0488 *)NumberPad_AllocLabel((Ov130S *)this);
+    LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
     if (unk_07 == 6) {
-        func_0206f9fc(o, 0x51);
+        String_Load2dMenu(o, 0x51);
     } else {
-        func_0206f9fc(o, 0xb8);
+        String_Load2dMenu(o, 0xb8);
     }
     u32 a = 0xec;
     u32 b = 4;
@@ -320,31 +320,31 @@ void NumberPad::loadBg() {
         a = 0x14c;
         b = 6;
     }
-    o->func_0206fb9c(unk_0b, a, b, 0xf, 0, 0);
-    o->func_0206fab4(1, 0);
-    o = (Unk_020e0488 *)NumberPad_AllocLabel((Ov130S *)this);
+    o->createLabel(unk_0b, a, b, 0xf, 0, 0);
+    o->redrawAligned(1, 0);
+    o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
     switch (unk_07) {
     case 2:
-        func_0206f9fc(o, 0x59);
+        String_Load2dMenu(o, 0x59);
         break;
     case 4:
-        func_0206f9fc(o, 0x50);
+        String_Load2dMenu(o, 0x50);
         break;
     default:
-        func_0206f9fc(o, 0x54);
+        String_Load2dMenu(o, 0x54);
         break;
     }
-    o->func_0206fb9c(unk_0b, 0xb0, 0xa, 0xf, 0, 0);
-    o->func_0206fab4(1, 0);
-    o = (Unk_020e0488 *)NumberPad_AllocLabel((Ov130S *)this);
-    func_0206f9fc(o, sValueLabelTextIds[unk_07]);
-    o->func_0206fb9c(unk_0b, 0xc4, 0xa, 0xf, 0, 0);
-    o->func_0206fab4(1, 0);
+    o->createLabel(unk_0b, 0xb0, 0xa, 0xf, 0, 0);
+    o->redrawAligned(1, 0);
+    o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    String_Load2dMenu(o, sValueLabelTextIds[unk_07]);
+    o->createLabel(unk_0b, 0xc4, 0xa, 0xf, 0, 0);
+    o->redrawAligned(1, 0);
     if (unk_08 == 0 || unk_08 == 2) {
-        o = (Unk_020e0488 *)NumberPad_AllocLabel((Ov130S *)this);
-        func_0206f9fc(o, sBalanceLabelTextIds[unk_07]);
-        o->func_0206fb9c(unk_0b, 0xd8, 0xa, 0xf, 0, 0);
-        o->func_0206fab4(1, 0);
+        o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+        String_Load2dMenu(o, sBalanceLabelTextIds[unk_07]);
+        o->createLabel(unk_0b, 0xd8, 0xa, 0xf, 0, 0);
+        o->redrawAligned(1, 0);
     }
     NumberPad_ResetKeyPalettes((Ov130S *)this);
     NumberPad_RedrawValues((Ov130S *)this);
@@ -371,10 +371,10 @@ void NumberPad_LoadObjGraphics(s32 n) {
 
 void NumberPad::loadObj() {
     NumberPad_LoadObjGraphics(unk_09);
-    Unk_020e0488 *o = (Unk_020e0488 *)NumberPad_AllocLabel((Ov130S *)this);
-    func_0206f9fc(o, sTitleTextIds[unk_07]);
-    o->func_0206fb9c(8, 0x14c, 0xe, 0xf, 0, 0);
-    o->func_0206fab4(1, 0);
+    LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
+    String_Load2dMenu(o, sTitleTextIds[unk_07]);
+    o->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
+    o->redrawAligned(1, 0);
 }
 
 void NumberPad::shutdown() {
@@ -735,7 +735,7 @@ extern "C" void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
 extern "C" void NumberPad_ReleaseLabels(Ov130S *s) {
     s32 i;
     s->unk_06 = 0;
-    for (i = 0; i < 5; i++) _ZN12Unk_020e048813func_0206fc44Ev(s->slots[i]);
+    for (i = 0; i < 5; i++) _ZN11LabelString12destroyLabelEv(s->slots[i]);
 }
 
 extern "C" void *NumberPad_AllocLabel(Ov130S *s) {

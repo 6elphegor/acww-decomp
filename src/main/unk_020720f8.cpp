@@ -74,7 +74,7 @@ public:
 
     u8 *getWifiUserData();
     u8 *getWifiFriendList();
-    void func_02072204(u32 v);
+    void setSessionMemberMask(u32 v);
     u32 getSendRetryLimit();
     void setSendRetryLimit(u32 v);
     u32 getSendRetry();
@@ -635,7 +635,7 @@ extern "C" {
 void TownSessionState_Reset();
 }
 extern "C" {
-void func_0205267c();
+void RoomFtrState_ResetAll();
 }
 extern "C" {
 void func_0209c408();
@@ -656,7 +656,7 @@ extern "C" {
 void func_020b1040(void *, u32);
 }
 extern "C" {
-void func_020514a4(u32);
+void SpotSync_Release(u32);
 }
 extern "C" {
 void func_0209c5a0(u32, u32);
@@ -679,7 +679,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
         TownSessionState_Get();
         TownSessionState_Reset();
     }
-    func_0205267c();
+    RoomFtrState_ResetAll();
     func_0209c408();
     func_020b1dc0();
     func_0203eb38();
@@ -694,9 +694,9 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
                     func_020b1040(r6, 2);
                     func_020b1040(r6, 3);
                 }
-                func_020514a4(1);
-                func_020514a4(2);
-                func_020514a4(3);
+                SpotSync_Release(1);
+                SpotSync_Release(2);
+                SpotSync_Release(3);
                 for (u32 i = 0; i < 0x33; i++) {
                     u32 r6 = (u8)i;
                     func_0209c5a0(r6, 1);
@@ -708,7 +708,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
                 for (u32 i = 0; i < 0x22; i++) {
                     func_020b1040(Item_MakeBuilding(i), r6);
                 }
-                func_020514a4(r6);
+                SpotSync_Release(r6);
                 for (u32 i = 0; i < 0x33; i++) {
                     func_0209c5a0((u8)i, r6);
                 }
@@ -1038,7 +1038,7 @@ extern "C" {
 BOOL Comm_QueueRecords(void *unused, u8 *buf, u32 n);
 }
 extern "C" {
-BOOL func_02038178();
+BOOL CommCaution_IsShutDown();
 }
 extern "C" {
 BOOL Comm_HasSendCreditAll();
@@ -1149,7 +1149,7 @@ extern "C" void Comm_Update(s32 a) {
             if (Comm_QueueRecords(o, o->getRecordBuf(), n)) {
                 g->resetRecordBuf();
                 if (fl & 2) {
-                    if (!func_02038178()) {
+                    if (!CommCaution_IsShutDown()) {
                         g->setErrorFlags(fl ^ 2);
                     }
                 }
@@ -1327,7 +1327,7 @@ extern "C" void Comm_Update(s32 a) {
             }
         } else {
             if (fl & 1) {
-                if (!func_02038178()) {
+                if (!CommCaution_IsShutDown()) {
                     g->setErrorFlags(fl ^ 1);
                 }
             }
@@ -1452,7 +1452,7 @@ extern "C" {
 void Comm_SetRecvBuffers(u32 a);
 }
 extern "C" {
-void func_02073340();
+void Comm_ResetNetSession();
 }
 extern "C" {
 void Comm_PrepareJoin(u32 a);
@@ -1482,7 +1482,7 @@ extern "C" void Comm_PrepareJoin(u32 a) {
     gCommManager->setMode(0);
     Comm_SetRecvBuffers(a);
 }
-extern "C" void func_02073340() { NetSession_Reset(); }
+extern "C" void Comm_ResetNetSession() { NetSession_Reset(); }
 extern "C" void Comm_SetRecvBuffers(u32 a) {
     s32 i = 3;
     CommManager *g = gCommManager;
@@ -1559,7 +1559,7 @@ extern "C" u32 Comm_GetMemberMask() {
     return r;
 }
 extern "C" s32 Comm_Shutdown() {
-    func_02073340();
+    Comm_ResetNetSession();
     return Comm_End();
 }
 extern "C" void Comm_SetLostFlag() {
@@ -2685,7 +2685,7 @@ u32 CommManager::getSendRetryLimit() {
     using namespace n1; return unk_130; }
 namespace n1 {
 }
-void CommManager::func_02072204(u32 v) {
+void CommManager::setSessionMemberMask(u32 v) {
     using namespace n1; unk_132 = v; }
 namespace n1 {
 }

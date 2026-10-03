@@ -48,10 +48,10 @@ public:
 };
 
 // Sub-object at +0x38 of Unk_020e0ff0 (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
-class Unk_020d917c {
+class ChatBalloonText {
 public:
-    Unk_020d917c();
-    ~Unk_020d917c();
+    ChatBalloonText();
+    ~ChatBalloonText();
     void func_020a7bd8(void *p);
 
     /* 0x00 */ u32 unk_00[13];
@@ -119,7 +119,7 @@ public:
     /* 0x2c */ s32 unk_2c;
     /* 0x30 */ s32 unk_30;
     /* 0x34 */ s32 unk_34;
-    /* 0x38 */ Unk_020d917c unk_38;
+    /* 0x38 */ ChatBalloonText unk_38;
     /* 0x6c */ Unk_0208d154_Sub *unk_6c;
     /* 0x70 */ s32 unk_70;
     /* 0x74 */ s32 unk_74;

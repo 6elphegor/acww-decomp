@@ -23,7 +23,7 @@ void MenuCtrl_SetIndex(u32 a);
 s32 MenuCtrl_GetMode();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-void func_0206f9fc(void *p, s32 a);
+void String_Load2dMenu(void *p, s32 a);
 s32 Comm_IsSeqConfirmed(s32 a);
 s32 Pocket_FindEmpty();
 BOOL Clock_GetWeekday();
@@ -186,13 +186,13 @@ public:
     u32 unk_00[0x108 / 4];
 };
 
-class Unk_020e0488 {
+class LabelString {
 public:
-    Unk_020e0488();
-    ~Unk_020e0488();
-    void func_0206fab4(s32, s32);
-    void func_0206fb9c(u32, u32, u32, u8, u8, s32);
-    void func_0206fc44();
+    LabelString();
+    ~LabelString();
+    void redrawAligned(s32, s32);
+    void createLabel(u32, u32, u32, u8, u8, s32);
+    void destroyLabel();
     u32 unk_00[0x40 / 4];
 };
 
@@ -393,7 +393,7 @@ public:
     /* 0x220c */ MenuCursorBuf0 unk_220c;
     /* 0x2270 */ PopupChoiceMenu unk_2270;
     /* 0x2570 */ MenuErrorMessage unk_2570;
-    /* 0x2678 */ Unk_020e0488 unk_2678[2];
+    /* 0x2678 */ LabelString unk_2678[2];
     /* 0x26f8 */ u32 unk_26f8;
     /* 0x26fc */ s32 unk_26fc;
     /* 0x2700 */ s32 unk_2700;
@@ -1895,7 +1895,7 @@ void ShopSellMenu::resetTextLabels() {
     s32 i;
     unk_275f = 0;
     for (i = 0; i < 2; i++) {
-        ((Unk_020e0488 *)&unk_2678[i])->func_0206fc44();
+        ((LabelString *)&unk_2678[i])->destroyLabel();
     }
 }
 
@@ -1913,9 +1913,9 @@ void ShopSellMenu::setOkLabel(s32 flag) {
         v = 0xf;
     }
     void *p = allocTextLabel();
-    ((Unk_020e0488 *)p)->func_0206fb9c(4, 0x1ca, 6, v, 9, 0);
-    func_0206f9fc(p, 0x21);
-    ((Unk_020e0488 *)p)->func_0206fab4(1, 0);
+    ((LabelString *)p)->createLabel(4, 0x1ca, 6, v, 9, 0);
+    String_Load2dMenu(p, 0x21);
+    ((LabelString *)p)->redrawAligned(1, 0);
 }
 
 void ShopSellMenu::setQuitLabel(s32 flag) {
@@ -1924,9 +1924,9 @@ void ShopSellMenu::setQuitLabel(s32 flag) {
         v = 0xf;
     }
     void *p = allocTextLabel();
-    ((Unk_020e0488 *)p)->func_0206fb9c(4, 0x1d6, 6, v, 9, 0);
-    func_0206f9fc(p, 0x65);
-    ((Unk_020e0488 *)p)->func_0206fab4(1, 0);
+    ((LabelString *)p)->createLabel(4, 0x1d6, 6, v, 9, 0);
+    String_Load2dMenu(p, 0x65);
+    ((LabelString *)p)->redrawAligned(1, 0);
 }
 
 void ShopSellMenu::cancel() {

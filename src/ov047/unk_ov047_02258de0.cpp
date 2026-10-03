@@ -156,7 +156,7 @@ void _ZN15TalkWindowState7setSlotEiPv(void *self, s32 a, void *obj);
 u32 _ZN10ChoiceList9getResultEv();
 void _ZN12Unk_02097ff47setFlagEj(void *p, u32 v);
 BOOL _ZN12Unk_02097ff48testFlagEj(u32 a, u32 b);
-u32 _ZN10PlayerData13func_0209865cEv(...);
+u32 _ZN10PlayerData10getErrandsEv(...);
 u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
 void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 void _ZN8SaveData7setFlagEj(void *g, u32 n);
@@ -199,7 +199,7 @@ BOOL _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
-#define func_0209865c _ZN10PlayerData13func_0209865cEv
+#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define SickVillagerRecord_getParcelErrand _ZN18SickVillagerRecord15getParcelErrandEv
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
@@ -1195,7 +1195,7 @@ void SpNpcBlathersTalk::scriptDeliveryItemChosen() {
         if (!Unk_ov047_0225a3e4_Same(&m.unk_02, &m.unk_04)) {
             Unk_02014420_requestTakeItem(this, &m.unk_02, 2, 5, 0);
         }
-        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(func_0209865c(r7))), 1);
+        ErrandRecord_setStep(ParcelErrand_GetRecord(SickVillagerRecord_getParcelErrand(PlayerData_getErrands(r7))), 1);
         m.unk_00 = 0xe7;
     }
     TalkWindowState_setNextMessage(o, &m, sSpNpcBlathersKey);
@@ -1248,7 +1248,7 @@ void SpNpcBlathersTalk::vfunc_78(TalkStartMsg *out) {
         return;
     }
     out->unk_00 = sSpNpcBlathersKey;
-    u32 r7 = SickVillagerRecord_getParcelErrand(func_0209865c(PlayerData_GetCurrent()));
+    u32 r7 = SickVillagerRecord_getParcelErrand(PlayerData_getErrands(PlayerData_GetCurrent()));
     void *g = gCommManager;
     Unk_ov047_0225a074_Buf l;
     if (!CommManager_isOnline(g) && *func_0209c37c(0, 0x4a) == 0) {
@@ -1716,7 +1716,7 @@ void SpNpcBlathersTalk::vfunc_18(u32 a) {
         };
         u32 i = 0;
         PlayerData_GetCurrent();
-        func_0209865c();
+        PlayerData_getErrands();
         if (unk_ac == 1) {
             i = 1;
         }

@@ -47,7 +47,7 @@ void _ZN12Unk_0201106c13func_0201137cEi(void *p, u32 v);
 void _ZN12Unk_0201106c13func_02011408Ev(void *p);
 s32 InputMode_IsTouch(void);
 s32 Scene_GetCurrent(void);
-s32 func_02038f00(void);
+s32 ChatBalloon_RefreshLabelsUnk(void);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 func_0201188c(void);
 void func_020116e0(void *p);
@@ -78,12 +78,12 @@ Unk_02011580::~Unk_02011580() {
 
 extern "C" void func_0201195c(void) {
     data_021bdb80.func_02011800(0);
-    func_02038f00();
+    ChatBalloon_RefreshLabelsUnk();
 }
 
 extern "C" void func_02011940(void) {
     data_021bdb80.func_02011800(2);
-    func_02038f00();
+    ChatBalloon_RefreshLabelsUnk();
 }
 
 extern "C" void func_0201192c(u32 a, u32 b) { data_021bdb80.func_02011788(a, b); }

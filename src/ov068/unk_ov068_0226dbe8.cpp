@@ -19,7 +19,7 @@
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
 #define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define func_0209865c _ZN10PlayerData13func_0209865cEv
+#define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define ErrandRecord_setStep _ZN12ErrandRecord7setStepEh
 #define ErrandRecord_getStep _ZN12ErrandRecord7getStepEv
@@ -639,7 +639,7 @@ void Snd_PlaySe(s32);
 s32 VillagerId_GetPersonality(void *);
 s32 FtrMgr_PickFurnitureComment(s32);
 void *PlayerData_GetCurrent();
-void *func_0209865c(void *);
+void *PlayerData_getErrands(void *);
 }
 
 }
@@ -649,7 +649,7 @@ extern Unk_ov068_0226ee74_Grid *gSceneBlockMap;
 
 
 void *PlayerData_GetCurrent();
-u8 *func_0209865c(void *);
+u8 *PlayerData_getErrands(void *);
 s32 ErrandRecord_setStep(void *, s32);
 s32 ErrandRecord_getStep(void *);
 s32 func_02063b8c(s32);
@@ -757,7 +757,7 @@ BOOL HouseVisitVillager::preDelete() {
     if (func_0202d928(this) == 0) {
         return FALSE;
     }
-    Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)func_0209865c(PlayerData_GetCurrent());
+    Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)PlayerData_getErrands(PlayerData_GetCurrent());
     Unk_ov068_0226eee0_Mid &m = *t;
     Unk_ov068_0226eee0_Q1 &q = m;
     if (ErrandRecord_getStep(&q) == 1) {
@@ -816,7 +816,7 @@ void HouseVisitVillager::func_ov068_0226ee18() {
 extern "C" BOOL HouseVisit_IsAppointmentNow(void *) {
     using namespace sC;
     Unk_ov068_0226eda4_V a, b, c;
-    MI_CpuCopy8(func_0209865c(PlayerData_GetCurrent()) + 0xa0, &a, 8);
+    MI_CpuCopy8(PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa0, &a, 8);
     MI_CpuCopy8(&a, &b, 8);
     DateTime_AddMinutes(&b, 0x1e);
     c.a = 0;
@@ -832,7 +832,7 @@ extern "C" BOOL HouseVisit_IsAppointmentNow(void *) {
 
 extern "C" void HouseVisit_SetFinished(void *) {
     using namespace sC;
-    ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 4);
+    ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
 BOOL HouseVisitVillager::vfunc_48() {
@@ -892,7 +892,7 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
 
 extern "C" BOOL HouseVisit_IsCalled(void *) {
     using namespace sC;
-    if (ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) != 0) {
+    if (ErrandRecord_getStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -901,13 +901,13 @@ extern "C" BOOL HouseVisit_IsCalled(void *) {
 extern "C" void HouseVisit_SetCalled(void *p) {
     using namespace sC;
     if (HouseVisit_IsCalled(p) == 0) {
-        ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 1);
+        ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 1);
     }
 }
 
 extern "C" BOOL HouseVisit_IsDoorTalkDone(void *) {
     using namespace sC;
-    if ((u32)ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) > 1) {
+    if ((u32)ErrandRecord_getStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94) > 1) {
         return TRUE;
     }
     return FALSE;
@@ -916,13 +916,13 @@ extern "C" BOOL HouseVisit_IsDoorTalkDone(void *) {
 extern "C" void HouseVisit_SetDoorTalkDone(void *p) {
     using namespace sC;
     if (HouseVisit_IsDoorTalkDone(p) == 0) {
-        ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 2);
+        ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 2);
     }
 }
 
 extern "C" BOOL HouseVisit_IsFirstTalkPending(void *) {
     using namespace sC;
-    if (ErrandRecord_getStep(func_0209865c(PlayerData_GetCurrent()) + 0x94) == 2) {
+    if (ErrandRecord_getStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94) == 2) {
         return TRUE;
     }
     return FALSE;
@@ -930,7 +930,7 @@ extern "C" BOOL HouseVisit_IsFirstTalkPending(void *) {
 
 extern "C" void HouseVisit_SetFirstTalkDone(void *) {
     using namespace sC;
-    ErrandRecord_setStep(func_0209865c(PlayerData_GetCurrent()) + 0x94, 3);
+    ErrandRecord_setStep(PlayerData_getErrands(PlayerData_GetCurrent()) + 0x94, 3);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1025,7 +1025,7 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
         } else {
             out->unk_04 = func_02063b8c(2) + 6;
         }
-        ((Unk_ov068_02270a6c_Bits *)((u8 *)func_0209865c(PlayerData_GetCurrent()) + 0xa8))->lo = n;
+        ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
         unk_1a0->unk_a52 = 0;
         setTopicFns((Unk_020d8938_Tbl *)sHouseVisitTsuTopicTable);

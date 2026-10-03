@@ -2,7 +2,7 @@
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_0203d99c();
+s32 TalkRequestFlags_IsSceneHold();
 s32 _ZN12Unk_0206555413func_02065578Ev();
 void func_02065c94(void *p);
 }

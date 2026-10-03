@@ -11,7 +11,7 @@ s32 _ZN12LabelBalloon8getDrawYEv(void *p);
 s32 _ZN10SpriteAnim9getFrameXEi(void *p, s32 v);
 s32 _ZN10SpriteAnim9getFrameYEi(void *p, s32 v);
 void Oam_DrawCell(s32 a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void _ZN12Unk_020e451c13func_020b7a24Ev(void *p);
+void _ZN21FieldInfoLabelBalloon11updateBlinkEv(void *p);
 }
 
 class SpriteAnim {
@@ -31,7 +31,7 @@ public:
     virtual void setOrigin(s32 a, s32 b);
 };
 
-// Base of Unk_020e451c (ctor func_02089e60, dtor func_02089d9c), 0xbc bytes
+// Base of FieldInfoLabelBalloon (ctor func_02089e60, dtor func_02089d9c), 0xbc bytes
 class LabelBalloon : public UiWidget {
 public:
     LabelBalloon(s32 a);
@@ -40,10 +40,10 @@ public:
     /* 0x04 */ u8 unk_04[0xb8];
 };
 
-class Unk_020e451c : public LabelBalloon {
+class FieldInfoLabelBalloon : public LabelBalloon {
 public:
-    Unk_020e451c();
-    virtual ~Unk_020e451c();
+    FieldInfoLabelBalloon();
+    virtual ~FieldInfoLabelBalloon();
     virtual void draw();
     virtual void vfunc_0c();
 
@@ -56,7 +56,7 @@ public:
     /* 0xd8 */ u8 unk_d8;
 };
 
-Unk_020e451c::Unk_020e451c() : LabelBalloon(1) {
+FieldInfoLabelBalloon::FieldInfoLabelBalloon() : LabelBalloon(1) {
     unk_d0 = 0;
     unk_d4 = 0;
     unk_d5 = 0;
@@ -65,10 +65,10 @@ Unk_020e451c::Unk_020e451c() : LabelBalloon(1) {
     unk_d8 = 0;
 }
 
-Unk_020e451c::~Unk_020e451c() {
+FieldInfoLabelBalloon::~FieldInfoLabelBalloon() {
 }
 
-void Unk_020e451c::draw() {
+void FieldInfoLabelBalloon::draw() {
     s32 r7, y;
     s32 r4 = 0;
     if (unk_d0 < 0x19) {
@@ -87,8 +87,8 @@ void Unk_020e451c::draw() {
     unk_d6 = r4;
 }
 
-void Unk_020e451c::vfunc_0c() {
+void FieldInfoLabelBalloon::vfunc_0c() {
     unk_d7 = unk_d6;
     _ZN12LabelBalloon8vfunc_0cEv(this);
-    _ZN12Unk_020e451c13func_020b7a24Ev(this);
+    _ZN21FieldInfoLabelBalloon11updateBlinkEv(this);
 }
