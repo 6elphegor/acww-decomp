@@ -155,10 +155,10 @@ extern u8 data_021dfd8c[];
 extern u32 data_020ca150[];
 void _ZN12Unk_020e1c64C1Ev(Unk_02041e00_Obj *o);
 void _ZN12Unk_020e1c64D1Ev(Unk_02041e00_Obj *o);
-s32 func_0207bf60(void *p, u32 v);
-s32 _ZN12VillagerData13func_020805c4Ev();
-u32 func_02002ff8();
-void func_02081550(Unk_02041e00_Obj *o, u32 v);
+s32 SaveVillagers_Get(void *p, u32 v);
+s32 _ZN12VillagerData13getVillagerIdEv();
+u32 VillagerId_GetSpecies();
+void Villager_GetSpeciesName(Unk_02041e00_Obj *o, u32 v);
 void MailText_SetSlot(s32 a, Unk_02041e00_Obj *o);
 s32 func_02063b8c(s32 v);
 s32 func_0203f31c(u32 ty, Unk_02042104_Date *d, s32 v);
@@ -1491,13 +1491,13 @@ s32 func_02048f3c(void *a, Unk_02047830_Pos *from, Unk_02047830_Pos *to, void *f
 s32 func_02042564(void *p);
 s32 MI_CpuCopy8(void *src, void *dst, s32 n);
 s32 func_0203f2e0(s32 a, void *b, s32 c);
-s32 func_0207a484(void *p);
-void *func_0207bf60(void *p, s32 i);
+s32 SaveVillagers_GetUnk3830Index(void *p);
+void *SaveVillagers_Get(void *p, s32 i);
 s32 func_0203fc10(void *a, s32 b);
-s32 func_0207e268(void *p);
+s32 Villager_GetPlan(void *p);
 s32 func_0209a610();
 s32 _ZN12Unk_0209b3bc13func_0209b354Ev();
-u8 *_ZN12Unk_0207e94013func_0207f170Ev(void *p);
+u8 *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 s32 func_02081038(void *p);
 s32 func_0204814c(void *a, void *b, s32 c, s32 d);
 s32 func_02048104(void *a, void *b, s32 c, s32 d);
@@ -4563,19 +4563,19 @@ extern "C" void func_02047edc(void *a, void *b, Unk_02047830_Pos *pos, s32 d) {
 
 namespace nK {
 extern "C" void func_02047e64(void *a, void *b, s32 c, s32 d) {
-    s32 r = func_0207a484(data_021dfd8c);
+    s32 r = SaveVillagers_GetUnk3830Index(data_021dfd8c);
     u8 *q;
     void *p;
     s32 i;
     for (i = 0; i < 8; i++) {
-        p = func_0207bf60(data_021dfd8c, i);
+        p = SaveVillagers_Get(data_021dfd8c, i);
         if (func_0203fc10(p, r)) {
             if (c == 0) {
-                func_0207e268(p);
+                Villager_GetPlan(p);
                 func_0209a610();
                 if (_ZN12Unk_0209b3bc13func_0209b354Ev() != 5) continue;
             }
-            q = _ZN12Unk_0207e94013func_0207f170Ev(p);
+            q = _ZN20VillagerDataItemView11getHousePosEv(p);
             if (func_02081038(q)) {
                 Unk_02047e64_Pos pos(q[0], q[1]);
                 func_02047edc(a, b, &pos, d);
@@ -9192,8 +9192,8 @@ extern "C" void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d
         case 5:
         case 6:
         case 7:
-            if (func_0207bf60(data_021dfd8c, ty) != 0 && _ZN12VillagerData13func_020805c4Ev() != 0) {
-                func_02081550(&obj, func_02002ff8());
+            if (SaveVillagers_Get(data_021dfd8c, ty) != 0 && _ZN12VillagerData13getVillagerIdEv() != 0) {
+                Villager_GetSpeciesName(&obj, VillagerId_GetSpecies());
                 MailText_SetSlot(v0c, &obj);
                 t = func_02063b8c(3) + 0x1e;
             }

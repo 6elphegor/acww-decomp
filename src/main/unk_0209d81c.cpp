@@ -33,7 +33,7 @@ void func_0207a80c(void);
 void func_0207ac60(void *);
 void func_0207ae84(void *, s32);
 void func_0207b7fc(void *, s32);
-void func_0207b814(void *);
+void SaveVillagers_InitNewTown(void *);
 void func_020850e0(void);
 void *func_0208517c();
 void _ZN12Unk_0208581013func_02085908Ev(void *);
@@ -252,7 +252,7 @@ void func_0209d994(u8 *p) {
 void SaveData_InitNew(u8 *p) {
     p[0] = 0x8a;
     _ZN11SaveRecord413setStateValidEv(p + 0x15fdc);
-    func_0207b814(p + 0x8a3c);
+    SaveVillagers_InitNewTown(p + 0x8a3c);
     func_0207ac60(p + 0x8a3c);
     func_0207a80c();
     if (PlayerData_GetCurrent()) {

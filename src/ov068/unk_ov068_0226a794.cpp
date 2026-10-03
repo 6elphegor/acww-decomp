@@ -106,15 +106,15 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     u8 pad_00[0x14];
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -125,7 +125,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -144,10 +144,10 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f90(u8 *a, u32 b);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -171,7 +171,7 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
@@ -448,13 +448,13 @@ s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b980Ev(void *);
 s32 _ZN18Unk_ov009_0225e29c19func_ov009_0225b974Ev(void *);
 s32 func_ov003_02212430(s32, void *, void *, s32);
 s32 func_020951b8(s32);
-u32 *func_02067918(s32);
-void _ZN12Unk_020660f813func_02067958Ev(void *, u32);
+u32 *TalkWindow_Get(s32);
+void _ZN15TalkWindowState13detachRequestEv(void *, u32);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
-s32 _ZN8PlayerId13func_0209411cEv(...);
-void _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(void *, void *);
+s32 _ZN8PlayerId9getGenderEv(...);
+void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 void func_02094030(void *);
-void func_020814ec(void *, void *);
+void Npc_GetName(void *, void *);
 void func_02094018(void *);
 void func_02094f20();
 void PlayerActor_RequestAct70(s32, s32);
@@ -768,24 +768,24 @@ void Unk_ov068_02270110::func_ov068_0226b12c() {
 }
 
 BOOL Unk_ov068_02270110::func_ov068_0226b094() {
-    u32 *rec = func_02067918(0);
-    this->Unk_020ddcf0::vfunc_s08();
+    u32 *rec = TalkWindow_Get(0);
+    this->TalkMsgRequest::vfunc_s08();
     this->setFileName("sp_etc_sequence4");
     BOOL r;
-    if (PlayerData_GetCurrent() != 0 && (_ZN10PlayerData11getPlayerIdEv(), _ZN8PlayerId13func_0209411cEv() == 1)) {
+    if (PlayerData_GetCurrent() != 0 && (_ZN10PlayerData11getPlayerIdEv(), _ZN8PlayerId9getGenderEv() == 1)) {
         r = TRUE;
     } else {
         r = FALSE;
     }
     unk_1e = r;
-    _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(rec, (Unk_020ddcf0 *)this);
+    _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(rec, (TalkMsgRequest *)this);
     rec[2] = 1;
     Unk_ov068_0226a940_Loc l;
     Unk_020e1c64 o;
     l.h = 0xd014;
-    func_020814ec(&o, &l.h);
+    Npc_GetName(&o, &l.h);
     Unk_020e1c64 *po = (Unk_020e1c64 *)(u8 *)&o;
-    this->func_02065f90(po->vfunc_0c(), 0);
+    this->setSpeakerName(po->vfunc_0c(), 0);
     return TRUE;
 }
 
@@ -798,10 +798,10 @@ BOOL Unk_ov068_02270110::func_ov068_0226b084() {
 }
 
 void Unk_ov068_02270110::func_ov068_0226b060() {
-    u32 *r = func_02067918(0);
+    u32 *r = TalkWindow_Get(0);
     u32 t = r[1];
     if (t == 0) {
-        _ZN12Unk_020660f813func_02067958Ev(r, t);
+        _ZN15TalkWindowState13detachRequestEv(r, t);
         func_ov068_0226b43c(6);
     }
 }

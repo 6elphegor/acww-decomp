@@ -108,19 +108,19 @@ struct Unk_0203e4f0_Vec {
 };
 
 extern "C" {
-extern Unk_0203e22c_State *data_021c39c0;
+extern Unk_0203e22c_State *gTalkRequestCurrent;
 }
 
 extern "C" {
-extern u32 data_021c39c4;
+extern u32 sTalkTargetId;
 }
 
 extern "C" {
-extern u32 data_021c39c8;
+extern u32 sTalkRequestFlags;
 }
 
 extern "C" {
-extern u32 data_021c39cc;
+extern u32 sTalkRequestList;
 }
 
 extern "C" {
@@ -144,7 +144,7 @@ void func_0203ebb0(void);
 }
 
 extern "C" {
-void func_0203d904(u32);
+void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
@@ -152,7 +152,7 @@ BOOL func_02094960(void);
 }
 
 extern "C" {
-void func_0203d640(u32);
+void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
@@ -196,11 +196,11 @@ s32 func_01ffcb0c(s32);
 }
 
 extern "C" {
-u32 func_0203d5e4(s32);
+u32 Talk_DetachRequest(s32);
 }
 
 extern "C" {
-u32 func_0203d5f0(s32);
+u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
@@ -276,7 +276,7 @@ void func_0203e938(u32 id, u8 x, u8 mode);
 }
 
 extern "C" {
-void func_0203e358(void);
+void TalkRequestQueue_Reset(void);
 }
 
 extern "C" {

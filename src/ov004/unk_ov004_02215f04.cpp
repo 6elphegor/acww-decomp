@@ -57,22 +57,22 @@ public:
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void vfunc_60();
     virtual void *vfunc_64();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
+    virtual u16 getSpecies();
+    virtual void setShirt(u16 *p, BOOL flag);
     virtual void vfunc_8c();
     virtual void vfunc_90();
     virtual void vfunc_94();
     virtual void vfunc_98();
     virtual void vfunc_9c();
     virtual void vfunc_a0();
-    virtual void vfunc_a4(u32 a, s32 b);
+    virtual void addMood(u32 a, s32 b);
     virtual BOOL vfunc_a8();
     virtual BOOL vfunc_ac();
     virtual BOOL vfunc_b0();
@@ -87,24 +87,24 @@ public:
     u8 unk_618[0x640 - 0x618];
 };
 
-class Unk_020d89c8 : public Unk_020d77a4 {
+class VillagerActor : public Unk_020d77a4 {
 public:
-    Unk_020d89c8();
-    virtual ~Unk_020d89c8();
+    VillagerActor();
+    virtual ~VillagerActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL preDelete();
     virtual BOOL vfunc_0c();
     virtual void *vfunc_64();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
-    virtual void vfunc_a4(u32 a, s32 b);
+    virtual u16 getSpecies();
+    virtual void setShirt(u16 *p, BOOL flag);
+    virtual void addMood(u32 a, s32 b);
     virtual BOOL vfunc_a8();
     virtual BOOL vfunc_ac();
     virtual BOOL vfunc_b0();
@@ -141,7 +141,7 @@ public:
     virtual void vfunc_24(u32 a);
     virtual void vfunc_28(u32 a);
     virtual void vfunc_2c(u32 a);
-    virtual void vfunc_30(u32 a);
+    virtual void onActionTag4(u32 a);
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -174,7 +174,7 @@ public:
     virtual void vfunc_60x();
 };
 
-class Unk_020d7714 : public Unk_020d7710 {
+class ActorTalkRequest : public Unk_020d7710 {
 public:
     virtual void vfunc_08();
     virtual void vfunc_34();
@@ -186,7 +186,7 @@ public:
     virtual void vfunc_6c();
 };
 
-class Unk_020ddcf0 : public Unk_020d7714 {
+class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
     virtual void vfunc_1c();
@@ -202,15 +202,15 @@ struct Unk_ov004_0221572c_Sub {
     /* 0x14 */ s32 unk_14;
 };
 
-class Unk_020d8938 : public Unk_020ddcf0 {
+class VillagerTalk : public TalkMsgRequest {
 public:
-    Unk_020d8938();
-    virtual ~Unk_020d8938();
+    VillagerTalk();
+    virtual ~VillagerTalk();
     virtual void vfunc_20();
     virtual void vfunc_24(u32 a);
     virtual void vfunc_28(u32 a);
     virtual void vfunc_2c(u32 a);
-    virtual void vfunc_30(u32 a);
+    virtual void onActionTag4(u32 a);
     virtual void vfunc_60();
     virtual void vfunc_68();
     virtual void vfunc_70();
@@ -227,7 +227,7 @@ public:
 
 class Unk_ov004_0224c228;
 
-class Unk_ov004_0224c198 : public Unk_020d8938 {
+class Unk_ov004_0224c198 : public VillagerTalk {
 public:
     Unk_ov004_0224c198() {}
     virtual void vfunc_10();
@@ -235,7 +235,7 @@ public:
     virtual void vfunc_18();
     virtual void vfunc_78(void *arg);
 
-    void func_ov004_022168c0(Unk_020d89c8 *owner);
+    void func_ov004_022168c0(VillagerActor *owner);
     void func_ov004_022168e0();
     BOOL func_ov004_022168f8();
     void *func_ov004_0221691c();
@@ -246,7 +246,7 @@ public:
 typedef void (Unk_ov004_0224c228::*Unk_ov004_0224c228_VFn)();
 typedef BOOL (Unk_ov004_0224c228::*Unk_ov004_0224c228_BFn)();
 
-class Unk_ov004_0224c228 : public Unk_020d89c8 {
+class Unk_ov004_0224c228 : public VillagerActor {
 public:
     Unk_ov004_0224c228() {}
     virtual BOOL vfunc_00();
@@ -255,7 +255,7 @@ public:
     virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
-    virtual BOOL vfunc_68();
+    virtual BOOL updateAct();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
 
@@ -292,7 +292,7 @@ public:
 };
 
 // Menu of TU06, seen from here: only what the code in this unit touches.
-class Unk_ov004_0224c034 : public Unk_020d89c8 {
+class Unk_ov004_0224c034 : public VillagerActor {
 public:
     BOOL func_ov004_02215208(s32 idx);
 
@@ -311,11 +311,11 @@ struct Unk_ov004_022162f0_Actor {
     Unk_ov004_Vec3 pos;
 };
 
-#define func_0200301c _ZN12Unk_02002fc813func_0200301cEPvjj
+#define VillagerId_makeFileName _ZN10VillagerId12makeFileNameEPvjj
 #define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
 #define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
 #define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_020157b8 _ZN12Unk_020d771413func_020157b8Ejj
+#define func_020157b8 _ZN16ActorTalkRequest13func_020157b8Ejj
 #define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
 #define func_02019638 _ZN12Unk_0201985813func_02019638Eiht
 #define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
@@ -324,10 +324,10 @@ struct Unk_ov004_022162f0_Actor {
 #define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
 #define func_0201a9ec _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3
 #define func_0201bb3c _ZN12Unk_020d77a413func_0201bb3cEP16Unk_020d77a4_Vec
-#define func_0201bc28 _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c
-#define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
-#define func_0202d388 _ZN12Unk_020d893813func_0202d388EP12Unk_020d89c8j
-#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
+#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
+#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define func_02080a74 _ZN14VillagerMemory13func_02080a74Ev
 #define func_02080a98 _ZN14VillagerMemory13func_02080a98Ev
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -361,7 +361,7 @@ s32 func_02080ecc(void *, s32, s32, s32);
 void *func_0207f55c(void *, void *);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *);
-void *func_020805c4(void *);
+void *VillagerData_getVillagerId(void *);
 s32 func_02080a74(void *);
 void func_02080a98(void *);
 s32 func_02037558(void *, s32, s32, s32);
@@ -370,23 +370,23 @@ void func_0203002c(s32, s32);
 s32 func_02031154(s32, s32);
 void func_0204ed8c(void *, s32, s32);
 void func_0204ee10(s32 *, s32 *, void *);
-void func_0200301c(void *, void *, u32, u32);
+void VillagerId_makeFileName(void *, void *, u32, u32);
 void *func_020b51d4();
-s32 func_0207bf84(void *, void *);
-void *func_0207bf60(void *, void *);
+s32 SaveVillagers_IsOccupied(void *, void *);
+void *SaveVillagers_Get(void *, void *);
 s32 func_020157b8(void *, void *, u32);
 s32 func_0201bd20(void *, u32);
 s32 Math_AngleXZ(void *, void *);
 void func_020141b4(void *, s32, s32, s32);
 void *func_02095204(s32);
-s32 func_0201bcbc(void *, void *);
+s32 Unk_020d77a4_getAngleTo(void *, void *);
 s32 func_02019638(void *, s32, s32, u32);
 void func_02067a84(void *, void *, s32);
 s32 func_0206ea84(void *);
 s32 func_0206ead4(s32, u32);
-s32 func_0203d67c(void *);
-s32 func_0203d704(void *, u32);
-extern u8 data_021edb5c[];
+s32 TalkRequest_EndTalkWith(void *);
+s32 TalkRequest_AddPlayerTalk6(void *, u32);
+extern u8 gTalkMsgIndexEnd[];
 extern u8 data_ov004_0225042c[];
 void *func_020679b4(void *);
 s32 func_020aa514(void *);
@@ -400,8 +400,8 @@ void func_0206338c(void *, s32, s32);
 void func_02063388(void *);
 void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
 void func_0206277c(u16 *, void *, s32);
-void *func_0208175c(s32);
-s32 func_02081780();
+void *NpcRegistry_GetVillager(s32);
+s32 NpcRegistry_GetSlotCount();
 s32 func_0206ec6c();
 s32 func_0206ed18();
 void *func_0206ed38();
@@ -409,16 +409,16 @@ u16 func_02099048();
 s32 Item_GetPrice(u16 *);
 void func_02099064(void *);
 void func_02014ce4(void *, void *, s32, s32, s32);
-void *func_0207e268(void *);
+void *Villager_GetPlan(void *);
 u32 func_0209a610(void *);
 u32 func_0209b354(u32);
 s32 Item_IsFurniture(void *);
-void func_0202d388(void *, void *, u32);
+void VillagerTalk_begin(void *, void *, u32);
 s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
 void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
-void func_0201bc28(void *self, void *p);
+void Unk_020d77a4_setTalkRequest(void *self, void *p);
 void *func_0201bc4c(void *self, s32 n);
 void func_02015ab0(void *p, void *q);
 s32 func_02080a64(void *p);
@@ -533,18 +533,18 @@ extern "C" s32 func_ov004_02216ba4(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 
 }
 
 BOOL Unk_ov004_0224c228::vfunc_04() {
-    if (!Unk_020d89c8::vfunc_04()) {
+    if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
     data_ov004_02250584 = this;
-    func_0201bc28(this, &unk_898);
+    Unk_020d77a4_setTalkRequest(this, &unk_898);
     unk_898.func_ov004_022168c0(this);
     func_ov004_022166e8(0);
     return TRUE;
 }
 
 BOOL Unk_ov004_0224c228::vfunc_00() {
-    if (!Unk_020d89c8::vfunc_00()) {
+    if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
     unk_a3c = *(Unk_ov004_0224c228_BFn *)data_ov004_0224c158;
@@ -568,14 +568,14 @@ BOOL Unk_ov004_0224c228::onDraw() {
 }
 
 BOOL Unk_ov004_0224c228::preDelete() {
-    if (!Unk_020d89c8::preDelete()) {
+    if (!VillagerActor::preDelete()) {
         return FALSE;
     }
     data_ov004_02250584 = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c228::vfunc_68() {
+BOOL Unk_ov004_0224c228::updateAct() {
     func_ov004_02216634();
     return TRUE;
 }
@@ -682,15 +682,15 @@ void Unk_ov004_0224c198::func_ov004_022168e0() {
     }
 }
 
-void Unk_ov004_0224c198::func_ov004_022168c0(Unk_020d89c8 *owner) {
-    func_0202d388(this, owner, 0x11);
+void Unk_ov004_0224c198::func_ov004_022168c0(VillagerActor *owner) {
+    VillagerTalk_begin(this, owner, 0x11);
     unk_1a0 = (Unk_ov004_0224c228 *)owner;
 }
 
 void Unk_ov004_0224c198::vfunc_78(void *arg) {
     Unk_ov004_0224c228 *o = unk_1a0;
     u32 *out = (u32 *)arg;
-    func_0200301c(func_020805c4(o->unk_82c), data_ov004_022505a0, 0x28, (u32)"ev_nbirth");
+    VillagerId_makeFileName(VillagerData_getVillagerId(o->unk_82c), data_ov004_022505a0, 0x28, (u32)"ev_nbirth");
     out[0] = (u32)data_ov004_022505a0;
     s32 r6 = 2;
     if (func_ov004_022168f8()) {
@@ -714,15 +714,15 @@ void Unk_ov004_0224c198::vfunc_78(void *arg) {
     if (*(void **)((u8 *)o + 0x8d4)) {
         u8 *const g = gSaveData;
         void *p = func_020b51d4();
-        if (func_0207bf84(data_021dfd8c, p)) {
+        if (SaveVillagers_IsOccupied(data_021dfd8c, p)) {
             Unk_020e1c64 loc;
-            func_020157b8((u8 *)unk_1a0 + 0x898, func_020805c4(func_0207bf60(g + 0x8a3c, p)), 1);
+            func_020157b8((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
         }
         Unk_ov004_0224c228 *o2 = unk_1a0;
         if (o2) {
             void *m = o2->unk_82c;
             if (m) {
-                func_020157b8((u8 *)unk_1a0 + 0x898, func_020805c4(m), 0);
+                func_020157b8((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(m), 0);
             }
         }
     }
@@ -988,7 +988,7 @@ void Unk_ov004_0224c228::func_ov004_02216024() {}
 BOOL Unk_ov004_0224c228::func_ov004_02215ff0() {
     void *p = func_02095204(4);
     if (p != NULL) {
-        func_020141b4(&unk_618, 0, func_0201bcbc(this, p), 0);
+        func_020141b4(&unk_618, 0, Unk_020d77a4_getAngleTo(this, p), 0);
         return TRUE;
     }
     return FALSE;
@@ -1001,7 +1001,7 @@ BOOL Unk_ov004_0224c228::func_ov004_02215fe0() { return TRUE; }
 void Unk_ov004_0224c228::func_ov004_02215fc0() {
     void *p = *(void **)((u8 *)this + 0x8d4);
     if (p != NULL && *(u32 *)((u8 *)p + 4) == 0) {
-        func_0203d67c(this);
+        TalkRequest_EndTalkWith(this);
     }
 }
 

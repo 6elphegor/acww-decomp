@@ -203,7 +203,7 @@ public:
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
 #define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
-#define func_0209411c _ZN8PlayerId13func_0209411cEv
+#define PlayerId_getGender _ZN8PlayerId9getGenderEv
 #define PlayerInventory_getTotalBells _ZN15PlayerInventory13getTotalBellsEi
 #define PlayerInventory_getLetter _ZN15PlayerInventory9getLetterEi
 #define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
@@ -268,7 +268,7 @@ void func_02094018(void *p);
 void func_02094030(void *p);
 s32 func_0209409c(s32 a);
 void func_020940d0(s32 a, void *p);
-s32 func_0209411c();
+s32 PlayerId_getGender();
 s32 PlayerData_GetCurrent();
 s32 PlayerInventory_getTotalBells(s32 a, s32 b);
 void *PlayerInventory_getLetter(s32 a, s32 b);

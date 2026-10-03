@@ -86,27 +86,27 @@ void File_ReadRange(void *file, void *buf, u32 size, u32 offset);
 }
 
 extern "C" {
-BOOL func_0206774c(void);
+BOOL Talk_IsAltTextEnabled(void);
 }
 
 extern "C" {
-void func_02067844(void);
+void TalkWindow_DrawAll(void);
 }
 
 extern "C" {
-void func_02067874(void);
+void TalkWindow_UpdateAll(void);
 }
 
 extern "C" {
-void func_020678a4(void);
+void TalkWindow_DestroyAll(void);
 }
 
 extern "C" {
-void func_020678d4(void);
+void TalkWindow_CreateAll(void);
 }
 
 extern "C" {
-u8 func_020682a8(u32 x);
+u8 Talk_ColorTagToTextColor(u32 x);
 }
 
 extern "C" {
@@ -750,7 +750,7 @@ BOOL Unk_020e2b70::vfunc_00() {
     func_02002ab8();
     func_0201195c();
     func_02011874();
-    func_020678d4();
+    TalkWindow_CreateAll();
     func_020b77c8();
     func_020a8b94();
     return TRUE;
@@ -759,7 +759,7 @@ BOOL Unk_020e2b70::vfunc_00() {
 BOOL Unk_020e2b70::vfunc_0c() {
     func_020a8b88();
     func_020b77b8();
-    func_020678a4();
+    TalkWindow_DestroyAll();
     func_02011868();
     func_0208eff0();
     return TRUE;
@@ -767,14 +767,14 @@ BOOL Unk_020e2b70::vfunc_0c() {
 
 BOOL Unk_020e2b70::onExecute() {
     func_0208efe0();
-    func_02067874();
+    TalkWindow_UpdateAll();
     func_020b77a8();
     return TRUE;
 }
 
 BOOL Unk_020e2b70::onDraw() {
     func_020b7798();
-    func_02067844();
+    TalkWindow_DrawAll();
     func_0208efd0();
     return TRUE;
 }

@@ -117,8 +117,8 @@ public:
 
 extern "C" {
 void *PlayerData_GetCurrent();
-void func_0203d67c(void *p);
-BOOL func_0203d704(void *p, s32 a);
+void TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_AddPlayerTalk6(void *p, s32 a);
 u32 func_0201bc4c(void *p, s32 n);
 u32 func_0201bcbc(void *p, void *q);
 void func_0201bc28(void *p, void *q);

@@ -86,27 +86,27 @@ void File_ReadRange(void *file, void *buf, u32 size, u32 offset);
 }
 
 extern "C" {
-BOOL func_0206774c(void);
+BOOL Talk_IsAltTextEnabled(void);
 }
 
 extern "C" {
-void func_02067844(void);
+void TalkWindow_DrawAll(void);
 }
 
 extern "C" {
-void func_02067874(void);
+void TalkWindow_UpdateAll(void);
 }
 
 extern "C" {
-void func_020678a4(void);
+void TalkWindow_DestroyAll(void);
 }
 
 extern "C" {
-void func_020678d4(void);
+void TalkWindow_CreateAll(void);
 }
 
 extern "C" {
-u8 func_020682a8(u32 x);
+u8 Talk_ColorTagToTextColor(u32 x);
 }
 
 extern "C" {
@@ -356,8 +356,8 @@ struct Unk_020e29e0_Rec {
 };
 
 extern Unk_02008040 data_021edb68;
-extern Unk_02008040 data_021edb60;
-extern Unk_02008040 data_021edb5c;
+extern Unk_02008040 gTalkMsgIndexNone;
+extern Unk_02008040 gTalkMsgIndexEnd;
 extern const u8 sColorTags[10][7];
 extern const u32 data_020d0800[25];
 extern const u32 data_020d0864[25];
@@ -1312,7 +1312,7 @@ void MsgRenderProcessor::onTag(u8 *p) {
             u32 x;
             char *y, *z;
             s.func_020a72c4(&x, &y, &z);
-            if (!func_0206774c()) {
+            if (!Talk_IsAltTextEnabled()) {
                 skip(x * 2);
                 pushText((u8 *)z);
                 unk_2c = (u32)y;
@@ -1442,7 +1442,7 @@ void MsgTextLabel::onTag(u8 *p) {
         u32 b = *(volatile u32 *)&s.unk_04;
         if (a == 0xff) {
             if (b == 0) {
-                unk_38 = func_020682a8(s.getArgU8());
+                unk_38 = Talk_ColorTagToTextColor(s.getArgU8());
             }
         }
     }
@@ -2348,10 +2348,10 @@ const u8 sColorTags[10][7] = {
     {26, 6, 255, 0, 0, 8, 0},
     {26, 6, 255, 0, 0, 9, 0}};
 u8 sInputButtonMode;
-Unk_02008040 data_021edb60(0xff);
+Unk_02008040 gTalkMsgIndexNone(0xff);
 const u32 data_020d0800[25] = {0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6};
 const u32 data_020d0864[25] = {0, 0, 1, 1, 2, 2, 1, 0, 1, 2, 0, 2, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1};
-Unk_02008040 data_021edb5c(0xfe);
+Unk_02008040 gTalkMsgIndexEnd(0xfe);
 Unk_020e29e0_Rec data_020e29e0 = {(void *)func_020a8c84, 0xc9, 0xc7};
 BmgDatHeader sBmgDatHeader;
 

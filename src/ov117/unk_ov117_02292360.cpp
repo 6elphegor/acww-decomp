@@ -46,7 +46,7 @@ static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_0229
 }
 
 struct HouseData { void func_020604c4(); };
-struct Unk_0207e940 { u8 *func_0207f170(); };
+struct VillagerDataItemView { u8 *getHousePos(); };
 struct Unk_020b28ac { void func_020b28ac(s32 *, s32 *, s32 *, s32 *); };
 
 extern "C" {
@@ -66,7 +66,7 @@ void *StrBSize_Get(u16 *t);
 u32 func_020374e8(void *c);
 s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
 BOOL func_02031098(u8 *out, s32 a, s32 b);
-void *func_0207bf60(void *, s32);
+void *SaveVillagers_Get(void *, s32);
 BOOL func_02081038(void *p);
 u16 Item_MakeNeighborHouse(u32 x);
 
@@ -195,11 +195,11 @@ extern "C" void func_ov117_02292acc(Unk_ov117_02292c88 *s) {
     s32 i;
     s32 zero = 0;
     for (i = 0; i < 8; i++) {
-        void *p = func_0207bf60(data_021dfd8c, i);
-        if (func_02081038(((Unk_0207e940 *)p)->func_0207f170())) {
+        void *p = SaveVillagers_Get(data_021dfd8c, i);
+        if (func_02081038(((VillagerDataItemView *)p)->getHousePos())) {
             u16 t = Item_MakeNeighborHouse(i);
-            s32 bx = ((Unk_0207e940 *)p)->func_0207f170()[0];
-            s32 by = ((Unk_0207e940 *)p)->func_0207f170()[1];
+            s32 bx = ((VillagerDataItemView *)p)->getHousePos()[0];
+            s32 by = ((VillagerDataItemView *)p)->getHousePos()[1];
             s32 o1, o2, o3, o4;
             s32 x = bx << 1;
             s32 y = by << 1;

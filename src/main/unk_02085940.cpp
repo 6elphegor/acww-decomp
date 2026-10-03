@@ -22,8 +22,8 @@ void func_02076fc8(u32 a, u32 b);
 void MailText_SetSlot(s32 i, void *x);
 void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
+s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId13func_02094218Ev(void *p);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *a, void *b);
 s32 func_02063b8c(u32 n);
@@ -638,8 +638,8 @@ void func_02076fc8(u32 a, u32 b);
 void MailText_SetSlot(s32 i, void *x);
 void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
+s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId13func_02094218Ev(void *p);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *a, void *b);
 s32 func_02063b8c(u32 n);
@@ -2296,7 +2296,7 @@ u32 Unk_02085f7c::func_02085f90() { return unk_00_2; }
 BOOL Unk_02085f7c::func_02085f7c() { if (unk_00_3) return TRUE; return FALSE; }
 
 void Unk_02085810::func_02085df0() {
-    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN12Unk_02002fc813func_020030b4Ev(&unk_16) == 0) {
+    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) {
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
@@ -2304,7 +2304,7 @@ void Unk_02085810::func_02085df0() {
     if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
     Unk_02085df0_Rec rec;
     if (_ZN8PlayerId13func_02094218Ev(this) != 0) _ZN8PlayerId13func_020940d0EP9MsgString(this, &rec);
-    else _ZN12Unk_02002fc813func_02002fc8Ej(&unk_16, &rec);
+    else _ZN10VillagerId7getNameEj(&unk_16, &rec);
     if ((u8)(unk_37 + 0xff) <= 1) {
         MailText_SetSlotMonth(0, unk_35);
         MailText_SetSlotDayOrdinal(1, unk_34);
@@ -2338,7 +2338,7 @@ void Unk_02085810::func_02085df0() {
 }
 
 void Unk_02085810::func_020859b4() {
-    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN12Unk_02002fc813func_020030b4Ev(&unk_16) == 0) return;
+    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
     if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
     Unk_020859b4_Loc l;
     func_0209cf88(l.unk_06);

@@ -50,11 +50,11 @@ public:
     /* 0xea */ u16 pad_ea;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     /* 0x0000 */ u32 unk_00;
     /* 0x0004 */ s32 unk_04;
     /* 0x0008 */ s32 unk_08;
-    s32 func_02067a3c(s32 idx, void *p);
+    s32 setSlot(s32 idx, void *p);
 };
 
 // Secondary base of the 0x0224882c family (at +0xec). Its vtable 0x020ddcf0 is not overridden by the derived class.
@@ -70,10 +70,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_s0c();
     virtual void vfunc_10();
@@ -84,7 +84,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -104,7 +104,7 @@ public:
     virtual void vfunc_74();
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -122,9 +122,9 @@ class Unk_020b6960;
 extern "C" {
 void _ZN12Unk_020b6a94C1Ev(Unk_020b6a94 *self);
 void _ZN12Unk_020b6a94D1Ev(Unk_020b6a94 *self);
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
-BOOL func_0203d67c(void *p);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
+BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
 Unk_020b6960 *func_020b50b4();
@@ -133,7 +133,7 @@ u32 func_020b50e8();
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 }
 
-class Unk_ov004_0224bc4c : public Character, public Unk_020ddcf0 {
+class Unk_ov004_0224bc4c : public Character, public TalkMsgRequest {
 public:
     Unk_ov004_0224bc4c();
     virtual BOOL vfunc_00();
@@ -362,7 +362,7 @@ void Unk_ov004_0224bc4c::func_ov004_0221371c() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            func_0203d67c(this);
+            TalkRequest_EndTalkWith(this);
         }
     }
 }

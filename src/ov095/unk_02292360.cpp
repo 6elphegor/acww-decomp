@@ -83,7 +83,7 @@ s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 s32 func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 _ZN8PlayerId13func_0209411cEv(void);
+s32 _ZN8PlayerId9getGenderEv(void);
 s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_020e45f813func_020b86c0Ejhjj(void *a, void *b, s32 c, s32 d, s32 e);
 s32 Heap_Free(u32 heap, void *p);
@@ -1273,7 +1273,7 @@ void func_ov095_02294478(Unk_ov095_02292360 *s, s32 a)
     r->unk_0c = (r->unk_0c & ~0x3ff) | 0x107;
     if (PlayerData_GetCurrent() != 0) {
         _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId13func_0209411cEv() == 0) {
+        if (_ZN8PlayerId9getGenderEv() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

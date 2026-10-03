@@ -48,9 +48,9 @@ struct Unk_020030d8_R256 {
     u8 pad[0xc];
 };
 
-class Unk_02002fc8 {
+class VillagerId {
 public:
-    u32 func_020030b4();
+    u32 isValid();
 };
 
 struct Unk_020994cc_Ent {
@@ -1033,13 +1033,13 @@ s32 func_0209ab6c(void *p);
 s32 func_0209b334(void *p);
 s32 func_0209b570(u32 *a, s32 i);
 s32 func_0209d498(s32 x);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
+s32 _ZN10VillagerId7isValidEv(void *p);
 void func_020030d8(void *p, s32 v);
 void func_020030e8(void *p);
 void func_02003100(void *p);
 void func_02003130(void *p);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
-s32 _ZN12Unk_02002fc813func_0200301cEPvjj(void *a, void *b, s32 c, const void *d);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
+s32 _ZN10VillagerId12makeFileNameEPvjj(void *a, void *b, s32 c, const void *d);
 void MailText_SetSlot(s32 a, void *b);
 void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
@@ -1598,14 +1598,14 @@ extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg) {
     u32 Y[13];
     s32 i;
     s32 r;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(self->unk_0c[0]) && _ZN12Unk_02002fc813func_020030b4Ev(self->unk_0c[1])) {
+    if (_ZN10VillagerId7isValidEv(self->unk_0c[0]) && _ZN10VillagerId7isValidEv(self->unk_0c[1])) {
         _ZN12Unk_020e1c64C1Ev(DoorLight);
         _ZN11MsgString33C1Ev(Y);
         cnt = 0;
-        _ZN12Unk_02002fc813func_02002fc8Ej(self->unk_0c[1], DoorLight);
+        _ZN10VillagerId7getNameEj(self->unk_0c[1], DoorLight);
         MailText_SetSlot(0, DoorLight);
         _ZN9MsgString5clearEv(DoorLight);
-        _ZN12Unk_02002fc813func_02002fc8Ej(self->unk_0c[0], DoorLight);
+        _ZN10VillagerId7getNameEj(self->unk_0c[0], DoorLight);
         MailText_SetSlot(1, DoorLight);
         for (i = 0; i < 6; i++) {
             r = func_0209b570(&cnt, i);
@@ -1614,7 +1614,7 @@ extern "C" void func_0209a2c0(Unk_0209a5dc *self, void *arg) {
             String_LoadResolveAltText(Y, b, r);
             MailText_SetSlot(i + 2, Y);
         }
-        _ZN12Unk_02002fc813func_0200301cEPvjj(self->unk_0c[0], buf, 0x1e, data_020d05bc);
+        _ZN10VillagerId12makeFileNameEPvjj(self->unk_0c[0], buf, 0x1e, data_020d05bc);
         b[1] = func_02063b8c(10);
         b[2] = func_02063b8c(10);
         b[3] = func_02063b8c(10);
@@ -1706,11 +1706,11 @@ u32 _ZN12Unk_0209ada413func_0209ac64Ev(Unk_0209ada4 *y);
 void _ZN12Unk_0209ada413func_0209ad54EhPth(Unk_0209ada4 *y, s32 t, u16 *v, s32 k);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(Unk_0209ada4 *y);
 void _ZN12Unk_0209ada413func_0209ad80Ev(Unk_0209ada4 *y);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(Unk_02003130 *r);
+s32 _ZN10VillagerId7isValidEv(Unk_02003130 *r);
 void func_020030d8(Unk_02003130 *r, Unk_02003130 *o);
 void func_020030e8(Unk_02003130 *r);
-Unk_02003130 *_ZN12VillagerData13func_020805c4Ev(void *p);
-void *func_0207bc44(void *g, Unk_02003130 **a, s32 n);
+Unk_02003130 *_ZN12VillagerData13getVillagerIdEv(void *p);
+void *SaveVillagers_PickRandomTalkPartner(void *g, Unk_02003130 **a, s32 n);
 s32 _ZN12Unk_0206555413func_02065578Ev(void *p);
 s32 func_0206561c(void *p);
 s32 PlayerData_GetCurrent();
@@ -1722,8 +1722,8 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 u32 func_02063b8c(u32 n);
-s32 func_020814ec(void *p, u16 *v);
-u32 _ZN12Unk_02002fc813func_02002fc8Ej(Unk_02003130 *r, u32 a);
+s32 Npc_GetName(void *p, u16 *v);
+u32 _ZN10VillagerId7getNameEj(Unk_02003130 *r, u32 a);
 s32 _ZN10PlayerData11getPlayerIdEv(s32 v);
 s32 _ZN6TownId13func_02094058Ev(s32 v);
 s32 func_020ac7a8();
@@ -1817,7 +1817,7 @@ extern "C" void *func_0209a108(Unk_02099f98 *z) {
 extern "C" void *func_0209a0dc(Unk_02099f98 *z, s32 v) {
     if (z->unk_0c < 5) {
         u16 t = data_020d05c8[z->unk_0c];
-        return (void *)func_020814ec((void *)v, &t);
+        return (void *)Npc_GetName((void *)v, &t);
     }
     return 0;
 }
@@ -1907,7 +1907,7 @@ extern "C" void func_02099f1c(Unk_02099f5c *x) {
 }
 
 extern "C" BOOL func_02099ed4(Unk_02099f5c *x, Unk_02003130 *p) {
-    if (_ZN12Unk_0209ada413func_0209ad68Ev(&x->unk_0c) && _ZN12Unk_02002fc813func_020030b4Ev(p) && p->unk_00 == x->unk_00 &&
+    if (_ZN12Unk_0209ada413func_0209ad68Ev(&x->unk_0c) && _ZN10VillagerId7isValidEv(p) && p->unk_00 == x->unk_00 &&
         memcmp(p->unk_02, x->unk_02, 8) == 0 && p->unk_0b == x->unk_0b) {
         return TRUE;
     }
@@ -1954,7 +1954,7 @@ extern "C" Unk_0209a5dc *func_02099db4(Unk_02099e38 *m, s32 i) {
 
 extern "C" Unk_0209a5dc *func_02099d44(Unk_0209a5dc *arr, Unk_02003130 *p, s32 idx) {
     Unk_0209a5dc *ret = 0;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(p)) {
+    if (_ZN10VillagerId7isValidEv(p)) {
         s32 i;
         for (i = 0; i < 2; i++) {
             Unk_0209a5dc *e = &arr[i];
@@ -2011,7 +2011,7 @@ extern "C" void *func_02099c68(Unk_02099e38 *m, s32 a, u16 *p) {
                     }
                 }
                 if (same) {
-                    ret = (void *)_ZN12Unk_02002fc813func_02002fc8Ej(func_0209a4e4(e, 1), a);
+                    ret = (void *)_ZN10VillagerId7getNameEj(func_0209a4e4(e, 1), a);
                 }
             }
         }
@@ -2067,9 +2067,9 @@ extern "C" void func_02099b90(Unk_02099e38 *m) {
 
 extern "C" void func_02099b4c(Unk_02099e38 *m) {
     Unk_0209a5dc *e = func_02099db4(m, 0);
-    void *t = func_0207bc44(data_021dfd8c, 0, 0);
-    func_0209a4f4(e, 0xe, 0, _ZN12VillagerData13func_020805c4Ev(t));
-    func_020030d8(&m->unk_50[0], _ZN12VillagerData13func_020805c4Ev(t));
+    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, 0, 0);
+    func_0209a4f4(e, 0xe, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    func_020030d8(&m->unk_50[0], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void func_02099ae4(Unk_02099e38 *m) {
@@ -2078,13 +2078,13 @@ extern "C" void func_02099ae4(Unk_02099e38 *m) {
     Unk_02003130 *a[1];
     func_02133ef8(a, 4);
     s32 n = 0;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(&m->unk_50[0])) {
+    if (_ZN10VillagerId7isValidEv(&m->unk_50[0])) {
         a[0] = &m->unk_50[0];
         n = 1;
     }
-    void *t = func_0207bc44(data_021dfd8c, a, n);
-    func_0209a4f4(e, 0xf, 0, _ZN12VillagerData13func_020805c4Ev(t));
-    func_020030d8(&m->unk_50[1], _ZN12VillagerData13func_020805c4Ev(t));
+    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
+    func_0209a4f4(e, 0xf, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    func_020030d8(&m->unk_50[1], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void func_02099ab4(void *p) {
@@ -2111,7 +2111,7 @@ extern "C" BOOL func_020999c0(Unk_02099e38 *m, void *p) {
             s32 v = func_0206561c(p);
             if (v) {
                 Unk_02003130 tmp(v);
-                if (_ZN12Unk_02002fc813func_020030b4Ev(&tmp)) {
+                if (_ZN10VillagerId7isValidEv(&tmp)) {
                     Unk_02003130 *q = func_0209a4e4(e, 1);
                     if (q->unk_00 == tmp.unk_00 && memcmp(q->unk_02, tmp.unk_02, 8) == 0 && q->unk_0b == tmp.unk_0b) {
                         if (_ZN12Unk_0209ada413func_0209abc4Ev(y) < 2) {
@@ -2144,14 +2144,14 @@ extern "C" void func_02099948(Unk_02099e38 *m) {
     s32 n = 0, i = n;
     for (; i < 2; i++) {
         Unk_02003130 *r = &m->unk_50[i];
-        if (_ZN12Unk_02002fc813func_020030b4Ev(r)) {
+        if (_ZN10VillagerId7isValidEv(r)) {
             a[n] = r;
             n++;
         }
     }
-    void *t = func_0207bc44(data_021dfd8c, a, n);
-    func_0209a4f4(e, 0x10, 0, _ZN12VillagerData13func_020805c4Ev(t));
-    func_020030d8(&m->unk_50[2], _ZN12VillagerData13func_020805c4Ev(t));
+    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
+    func_0209a4f4(e, 0x10, 0, _ZN12VillagerData13getVillagerIdEv(t));
+    func_020030d8(&m->unk_50[2], _ZN12VillagerData13getVillagerIdEv(t));
 }
 
 extern "C" void func_0209992c(Unk_02099e38 *m) {
@@ -2180,7 +2180,7 @@ extern "C" void func_020998b8(Unk_02099e38 *m) {
 }
 
 extern "C" BOOL func_02099868(Unk_02099e38 *m, Unk_02003130 *r) {
-    if (_ZN12Unk_02002fc813func_020030b4Ev(r) && func_02099c1c(m) && r->unk_00 == m->unk_50[1].unk_00 &&
+    if (_ZN10VillagerId7isValidEv(r) && func_02099c1c(m) && r->unk_00 == m->unk_50[1].unk_00 &&
         memcmp(r->unk_02, m->unk_50[1].unk_02, 8) == 0 && r->unk_0b == m->unk_50[1].unk_0b) {
         return TRUE;
     }

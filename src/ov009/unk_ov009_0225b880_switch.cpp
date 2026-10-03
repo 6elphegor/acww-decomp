@@ -129,10 +129,10 @@ public:
 };
 
 // Secondary base at +0xec (vtable 0x020ddcf0 in main)
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -143,7 +143,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -382,7 +382,7 @@ public:
     /* 0x40 */ u8 unk_40;
 };
 
-class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
@@ -550,7 +550,7 @@ typedef BOOL (Unk_ov009_0225e29c::*Unk_ov009_0225c360_Fn)();
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
-#define func_02066cf8 _ZN12Unk_02066ce013func_02066cf8Ei
+#define TalkAutoAdvance_start _ZN15TalkAutoAdvance5startEi
 #define BuildingLights_isLit _ZN14BuildingLights5isLitEv
 #define BuildingLights_setLit _ZN14BuildingLights6setLitEiii
 #define BuildingLights_updateLights _ZN14BuildingLights12updateLightsEP3Ctx
@@ -616,7 +616,7 @@ void func_01ffd070(Unk_ov009_0225b880_Vec3 *, void *, Unk_ov009_0225b880_Vec3 *)
 void *func_02031ea0(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
-void func_02066cf8(void *, u32);
+void TalkAutoAdvance_start(void *, u32);
 void func_020b1040(u32, u32);
 void func_020b101c();
 void *func_020b4934();
@@ -629,7 +629,7 @@ BOOL func_020951d0();
 void func_020949a0(u32);
 BOOL func_020951c4();
 void Camera_SetMode3();
-void func_0203d67c(void *);
+void TalkRequest_EndTalkWith(void *);
 BOOL func_ov003_0221249c(s32 *, s32 *, s16 *);
 s32 func_020b50e8();
 s32 func_020b4bbc(void *, s32);
@@ -647,7 +647,7 @@ void func_02054720(void *, void *, s32, s32, s32, s32);
 void Melody_PlayAt(void *, s32);
 s32 PlayerActor_TestSlotFlag(s32, s32);
 BOOL func_0203d978();
-void func_0203d704(void *, s32);
+void TalkRequest_AddPlayerTalk6(void *, s32);
 Unk_020b6960 *func_020b50b4();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);

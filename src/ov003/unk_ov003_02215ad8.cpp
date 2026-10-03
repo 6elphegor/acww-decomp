@@ -7,7 +7,7 @@
 // (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
 //
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
-//   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of Unk_020ddcf0
+//   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of TalkMsgRequest
 //   (D1, D0, 08..74).  Primary slot -> symbol:
 //     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
 //     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
@@ -23,14 +23,14 @@
 //   ov009  _ZN18Unk_ov009_0225e29c7preDrawEv           -> _ZN18Unk_ov009_0225e29c7preDrawEv        (0x0225d9e4)
 //   ov009  func_ov009_0225b884                           -> _ZN18Unk_ov009_0225e29c8vfunc_b4Ev        (0x0225b884)
 //   ov009  func_ov009_0225b880                           -> _ZN18Unk_ov009_0225e29c8vfunc_b8Ev        (0x0225b880)
-//   main   Unk_020ddcf0 slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
-//          cannot override them): _ZN12Unk_020ddcf09vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
-//          5c 60 64 68 6c 70 74 (existing name _ZN12Unk_020ddcf08vfunc_XXEv) and _ZN12Unk_020ddcf09vfunc_s38Ej (existing
-//          _ZN12Unk_020ddcf08vfunc_38Ej).
+//   main   TalkMsgRequest slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
+//          cannot override them): _ZN14TalkMsgRequest9vfunc_sXXEv for XX = 08 0c 10 18 1c 20 24 28 2c 30 34 3c 40 44 48 4c 50 54 58
+//          5c 60 64 68 6c 70 74 (existing name _ZN14TalkMsgRequest8vfunc_XXEv) and _ZN14TalkMsgRequest9vfunc_s38Ej (existing
+//          _ZN14TalkMsgRequest8vfunc_38Ej).
 //   ov003  0x0221445c is _ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev, the thunk of ov009::vfunc_88 in slot 0x14 of the secondary
 //          vtable.  Every unit of the family names that slot vfunc_88, so each emits the thunk as a link-once function and
 //          the linker keeps the copy of the first unit in link order (unk_ov003_022141bc.cpp), as in the original.
-//          (No alias: the old label _ZN12Unk_020ddcf09vfunc_s14Ev is gone.)
+//          (No alias: the old label _ZN14TalkMsgRequest9vfunc_s14Ev is gone.)
 // Notes:
 //  * The ctor of a derived class calls Unk_ov009_0225e29c::Unk_ov009_0225e29c() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
@@ -126,15 +126,15 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     u8 pad_00[0x14];
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -148,7 +148,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -167,10 +167,10 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f90(u8 *a, u32 b);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -188,7 +188,7 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
@@ -271,7 +271,7 @@ public:
 
 extern "C" {
 void func_0209d498(void *p);
-void func_020814ec(void *p, void *q);
+void Npc_GetName(void *p, void *q);
 void _ZN12Unk_020e1c64C1Ev(void *p);
 void _ZN12Unk_020e1c64D1Ev(void *p);
 void func_ov003_02215c20();
@@ -354,8 +354,8 @@ void Unk_ov003_0223177c::vfunc_78() {
     u16 v[2];
     func_02094030(buf);
     v[1] = 0xd00a;
-    func_020814ec(buf, &v[1]);
-    func_02065f90((u8 *)((Unk_ov003_02215ad8_Str *)buf)->vfunc_0c(), 1);
+    Npc_GetName(buf, &v[1]);
+    setSpeakerName((u8 *)((Unk_ov003_02215ad8_Str *)buf)->vfunc_0c(), 1);
     func_02094018(buf);
 }
 

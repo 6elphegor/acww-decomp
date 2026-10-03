@@ -95,11 +95,11 @@ class Unk_020bfe30;
 struct Unk_020c010c;
 struct Unk_020c010c_Ent;
 struct Unk_020c0538_Out;
-class Unk_020d8b38;
+class SpNpcTalkRequest;
 struct Unk_020c0408_Obj;
-class Unk_020e6894;
+class SpNpcMissing1Talk;
 class Unk_0202e5a8;
-class Unk_020e6924;
+class SpNpcMissing1;
 struct Unk_021f4400 { u8 pad[9]; u8 unk_09; };
 struct Unk_021f4420 { u8 pad[0x10]; u8 unk_10; };
 struct Unk_021f44a0 { u8 pad[6]; u8 unk_06; u8 unk_07; u8 unk_08; };
@@ -1008,10 +1008,10 @@ struct Unk_020c0538_Out {
     u8 unk_04;
 };
 // Library base class; its ctor and dtor are out of line.
-class Unk_020d8b38 {
+class SpNpcTalkRequest {
 public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
+    SpNpcTalkRequest();
+    virtual ~SpNpcTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -1049,11 +1049,11 @@ struct Unk_020c0408_Obj {
     u8 unk_0c[8];
     s32 unk_14;
 };
-// Sub-object at 0x658 of Unk_020e6924
-class Unk_020e6894 : public Unk_020d8b38 {
+// Sub-object at 0x658 of SpNpcMissing1
+class SpNpcMissing1Talk : public SpNpcTalkRequest {
 public:
-    Unk_020e6894();
-    virtual ~Unk_020e6894();
+    SpNpcMissing1Talk();
+    virtual ~SpNpcMissing1Talk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -1065,14 +1065,14 @@ public:
     /* 0x1f */ u8 unk_1f[0x1d];
     /* 0x3c */ Unk_020c0408_Obj *unk_3c;
     /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ Unk_020e6924 *unk_ac;
+    /* 0xac */ SpNpcMissing1 *unk_ac;
     /* 0xb0 */ s32 unk_b0;
 
-    s32 func_020c0624();
-    void func_020c062c(s32 v);
-    void func_020c0634(Unk_020e6924 *owner);
+    s32 getTopic();
+    void setTopic(s32 v);
+    void attachOwner(SpNpcMissing1 *owner);
 };
-// Base of Unk_020e6924; its dtor is out of line.
+// Base of SpNpcMissing1; its dtor is out of line.
 class Unk_0202e5a8 : public ProcBase {
 public:
     virtual ~Unk_0202e5a8();
@@ -1085,19 +1085,19 @@ public:
     /* 0x564 */ u8 unk_564[0x618 - 0x564];
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
-class Unk_020e6924 : public Unk_0202e5a8 {
+class SpNpcMissing1 : public Unk_0202e5a8 {
 public:
-    virtual ~Unk_020e6924();
+    virtual ~SpNpcMissing1();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_020e6894 unk_658;
+    /* 0x658 */ SpNpcMissing1Talk unk_658;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
     /* 0x724 */ u8 unk_724;
 
-    void func_020c11b8(s32 state);
-    BOOL func_020c06a0();
+    void changeAct(s32 state);
+    BOOL mainAct08();
 };
 
 // 0x330-byte object of another unit's class (constructor 0x020b08b8, destructor 0x020b08b4)
@@ -1613,13 +1613,13 @@ extern "C" {
 s32 _ZN12Unk_02019dd813func_02019d8cEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020660f813func_020679b4Ev(void *p);
+s32 _ZN15TalkWindowState13getChoiceListEv(void *p);
 }
 extern "C" {
 s32 _ZN10ChoiceList9getResultEv(void);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a84EPhPv(void *a, void *b, u32 c);
+void _ZN15TalkWindowState14setNextMessageEPhPv(void *a, void *b, u32 c);
 }
 extern "C" {
 void func_020850e0(void);
@@ -1640,7 +1640,7 @@ extern "C" {
 s32 _ZN12Unk_020872fc13func_02087364Ev(s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020d771413func_02015818Ejj(void *p, s32 a, s32 b);
+s32 _ZN16ActorTalkRequest13func_02015818Ejj(void *p, s32 a, s32 b);
 }
 extern "C" {
 s32 _ZN12Unk_02097ff413func_0209801cEj(s32 a, s32 b);
@@ -1655,13 +1655,13 @@ extern "C" {
 s32 _ZN12Unk_0201ad2013func_0201ad30Ei(void *p, s32 a);
 }
 extern "C" {
-s32 _ZN12Unk_020d77148vfunc_38Ej(void *p, void *q);
+s32 _ZN16ActorTalkRequest8vfunc_38Ej(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_020d8b38D2Ev(void *p);
+void _ZN16SpNpcTalkRequestD2Ev(void *p);
 }
 extern "C" {
-void _ZN12Unk_020d8b38C2Ev(void *p);
+void _ZN16SpNpcTalkRequestC2Ev(void *p);
 }
 extern "C" {
 void func_020c11b8(void *p, s32 n);
@@ -1694,7 +1694,7 @@ extern "C" {
 void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a78Ev(void *p);
+void _ZN15TalkWindowState11lockAdvanceEv(void *p);
 }
 extern "C" {
 void _Z13func_020c22fcv(void);
@@ -1703,13 +1703,13 @@ extern "C" {
 void Camera_SetMode19(void);
 }
 extern "C" {
-s32 func_020816f8(s32 a);
+s32 NpcRegistry_FindSpNpc(s32 a);
 }
 extern "C" {
-void _ZN12Unk_020d771413func_02015a80EP18Unk_02015b8c_Scene(void *p, s32 a);
+void _ZN16ActorTalkRequest13func_02015a80EP18Unk_02015b8c_Scene(void *p, s32 a);
 }
 extern "C" {
-void _ZN12Unk_020660f813func_02067a6cEv(void *p);
+void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 }
 extern "C" {
 s32 _ZN12Unk_02013b1013func_02014220Ev(void *p);
@@ -1788,7 +1788,7 @@ extern "C" {
 extern s32 data_021f4574;
 }
 extern "C" {
-extern Unk_020e6924 *data_021f4578;
+extern SpNpcMissing1 *sSpNpcMissing1Instance;
 }
 extern "C" {
 extern u8 data_020d1a2c[];
@@ -1797,7 +1797,7 @@ extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 }
 extern "C" {
-extern u32 data_020e679c;
+extern u32 sSpNpcMissing1MsgKey;
 }
 // ---------------------------------------------------------------------------------------------------------------------
 static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {
@@ -5668,7 +5668,7 @@ extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 }
 extern "C" {
-BOOL func_020816f8(s32);
+BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
 BOOL _ZN12Unk_020d77a413func_0201b84cEv();
@@ -6482,7 +6482,7 @@ namespace n06 {
 void Unk_020bbc28::func_020bbc28() {
     using namespace n06;
     if (unk_2f27 != 0) {
-        if (func_020816f8(8)) {
+        if (NpcRegistry_FindSpNpc(8)) {
             if (_ZN12Unk_020d77a413func_0201b84cEv()) {
                 unk_2f27 = 0;
             }

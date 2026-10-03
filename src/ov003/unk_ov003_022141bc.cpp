@@ -95,15 +95,15 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     u8 pad_00[0x14];
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -133,10 +133,10 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f90(u8 *a, u32 b);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -154,7 +154,7 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
@@ -244,7 +244,7 @@ struct Unk_ov003_SceneEntry {
 extern "C" {
 BOOL func_0206ec6c();
 BOOL func_0206eca4(u32 a);
-BOOL func_0203d67c(void *p);
+BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e780c(s32 a, s32 b);
 }
 
@@ -375,7 +375,7 @@ BOOL Unk_ov003_02230df4::func_ov003_022141d4() {
 
 void Unk_ov003_02230df4::func_ov003_022141bc() {
     if (func_0206ec6c()) {
-        func_0203d67c(this);
+        TalkRequest_EndTalkWith(this);
     }
 }
 

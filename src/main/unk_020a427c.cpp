@@ -300,7 +300,7 @@ s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
 void func_0203d4c0(void);
 void func_0203d544(void);
 BOOL func_0203d56c(void);
-s32 func_0203e358(void);
+s32 TalkRequestQueue_Reset(void);
 s32 func_0203eb38(void);
 void func_02041104(void);
 s32 func_020412f0(u32 a, u32 b, u32 c);
@@ -1919,7 +1919,7 @@ extern "C" void func_020a42c4(void *p) {
             if (Unk_020a42c4_IsZero(m) != 0) {
                 func_020a4414(0xd4, 0, 0, 0);
                 ProcBase_RequestDelete(p);
-                func_0203e358();
+                TalkRequestQueue_Reset();
                 func_0203eb38();
             }
         }

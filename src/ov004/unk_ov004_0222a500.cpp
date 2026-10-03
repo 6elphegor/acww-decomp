@@ -403,7 +403,7 @@ u32 Model_getRenderObj(void *self);
 s32 ModelAnim_addToRenderObj(void *self, u32 a);
 u16 *func_02060850(void *self, s32 *i);
 u16 *func_02060834(void *self, s32 *i);
-void *func_0207bf60(void *self, s32 i);
+void *SaveVillagers_Get(void *self, s32 i);
 u32 func_0207e3ac(void *self);
 u32 func_0207e3a0(void *self);
 u16 *func_02034134(s32 r);
@@ -608,7 +608,7 @@ extern "C" void func_ov004_0222b610(void *self, u16 *a, s32 *b, u16 *c, s32 *d) 
             *c = *func_02060834(o, d);
         }
     } else if (func_020b51b8(r)) {
-        void *o = func_0207bf60(data_021dfd8c, func_020b51e8(r));
+        void *o = SaveVillagers_Get(data_021dfd8c, func_020b51e8(r));
         if (o != NULL) {
             u32 t = func_0207e3ac(o);
             *a = t < 0x44 ? (u16)(t + 0x1100) : 0x1100;

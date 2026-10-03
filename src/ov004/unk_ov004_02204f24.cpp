@@ -133,10 +133,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -147,7 +147,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -558,7 +558,7 @@ struct Unk_ov004_02207854_List {
 class Unk_ov004_0224882c;
 typedef Unk_ov004_0224882c Self;
 
-class Unk_ov004_0224882c : public Character, public Unk_020ddcf0 {
+class Unk_ov004_0224882c : public Character, public TalkMsgRequest {
 public:
     Unk_ov004_0224882c();
     virtual ~Unk_ov004_0224882c();
@@ -979,7 +979,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 // ================================================================ externs
 extern "C" {
 s32 PlayerData_GetCurrent();
-BOOL func_0203d67c(void *p);
+BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e9650(void *a, void *b);
 s32 FtrInfo_GetDmaUnk05Fx();
 s32 FX_Div(s32 a, s32 b);
@@ -1115,8 +1115,8 @@ s32 func_020e8388(void *m, s32 x, s32 y, s32 z);
 s32 func_020e8434(void *m, s32 a);
 s32 func_020e8404(void *m, s32 a);
 s32 FtrInfo_GetDmaUnk06();
-s32 func_02081780();
-void *func_02081718(s32 i);
+s32 NpcRegistry_GetSlotCount();
+void *NpcRegistry_GetBySlot(s32 i);
 s32 PlayerData_getPlayerId();
 s32 func_02094058();
 s32 func_02054584(void *o);
@@ -1196,7 +1196,7 @@ void *func_ov004_02235464(void *, void *);
 s32 *func_ov004_022354ec(void);
 u32 func_ov004_022354e0(void *);
 u32 ItemInfo_IsReady(void);
-void func_0203d704(void *, s32);
+void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *, u32);
 u32 func_020b50b4();
 void *func_ov004_02235718();
@@ -2265,9 +2265,9 @@ extern "C" BOOL func_ov004_022087e8(Self *self, s32 a, s32 b, s32 c, s32 d) {
                 }
             }
         }
-        n = func_02081780();
+        n = NpcRegistry_GetSlotCount();
         for (j = 0; j < n; j++) {
-            void *q = func_02081718(j);
+            void *q = NpcRegistry_GetBySlot(j);
             if (q) {
                 if (func_ov004_02208870(self, b, (u8 *)q + 0x5c, d)) {
                     return FALSE;

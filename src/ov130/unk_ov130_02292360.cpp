@@ -15,7 +15,7 @@ void func_0206f9fc(void *o, u32 v);
 void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 s32 PlayerData_GetCurrent();
 void _ZN10PlayerData11getPlayerIdEv();
-s32 _ZN8PlayerId13func_0209411cEv();
+s32 _ZN8PlayerId9getGenderEv();
 void Snd_SetKeySeMode(u32 v);
 }
 
@@ -278,7 +278,7 @@ void Unk_ov130_02292360::func_ov130_022930ac(u32 mode, u32 a, u32 b) {
     unk_18 = 0;
     if (PlayerData_GetCurrent() != 0) {
         _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId13func_0209411cEv() == 0) {
+        if (_ZN8PlayerId9getGenderEv() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

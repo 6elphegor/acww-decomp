@@ -3,17 +3,17 @@
 #include "Unk_020d8c7c.h"
 
 // ---- declarations shared by the merged files
-class Unk_020ddcf0;
+class TalkMsgRequest;
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    void func_02067958();
-    void func_02067978(Unk_020ddcf0 *p);
+    void detachRequest();
+    void attachRequest(TalkMsgRequest *p);
     void func_02067990();
-    s32 func_02067a3c(s32 idx, void *p);
-    void func_02067a6c();
-    void func_02067a78();
-    void func_02067a84(u8 *b, void *c);
+    s32 setSlot(s32 idx, void *p);
+    void unlockAdvance();
+    void lockAdvance();
+    void setNextMessage(u8 *b, void *c);
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u32 unk_04;
@@ -57,10 +57,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -71,7 +71,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -101,7 +101,7 @@ struct Unk_020e2824_Nib {
 };
 
 // vtable 0x020e281c: the message object inside the scene (size 0x48)
-class Unk_020e2824 : public Unk_020ddcf0 {
+class Unk_020e2824 : public TalkMsgRequest {
 public:
     Unk_020e2824();
     virtual ~Unk_020e2824();
@@ -345,10 +345,10 @@ void func_0209ecf8(void);
 void func_0209ec80(void);
 void func_0209f248(void);
 s32 Save_WritePlayerFriendList(void);
-s32 func_02067918(s32 a);
-void _ZN12Unk_020660f813func_02067990Ev(void);
-void _ZN12Unk_020660f813func_02067a6cEv(s32 a);
-void _ZN12Unk_020660f813func_02067a84EPhPv(s32 a, u8 *b, void *c);
+s32 TalkWindow_Get(s32 a);
+void _ZN15TalkWindowState13func_02067990Ev(void);
+void _ZN15TalkWindowState13unlockAdvanceEv(s32 a);
+void _ZN15TalkWindowState14setNextMessageEPhPv(s32 a, u8 *b, void *c);
 void OS_CreateThread(void *a, void *fn, u32 b, void *c, u32 d, u32 e);
 void OS_WakeupThreadDirect(void *a);
 s32 OS_IsThreadTerminated(void *a);
@@ -440,7 +440,7 @@ void _ZN11SaveRecord415markInterruptedEv(void *p);
 void _ZN11SaveRecord416setStateValidAltEv(void *p);
 void func_020873e0();
 void func_0209f000(Unk_0209f638 *p);
-Unk_0209f898_Rec *func_02067918(s32 i);
+Unk_0209f898_Rec *TalkWindow_Get(s32 i);
 void OS_ResetSystem(s32 v);
 void func_02074eb4(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *func_0208f0b0(s32 a);
@@ -651,7 +651,7 @@ public:
     void func_020a0990(const char *str, u8 flag);
 
      u32 unk_00[0x15];
-     Unk_020ddcf0 unk_54;
+     TalkMsgRequest unk_54;
 };
 
 namespace NE {
@@ -664,7 +664,7 @@ extern s32 sSaveSlotDataSizes[];
 extern s32 sSaveSlotOffsets[];
 extern u8 __ptmf_null[];
 extern SaveSlotWriter *gSaveManager;
-Unk_020660f8 *func_02067918(s32 i);
+TalkWindowState *TalkWindow_Get(s32 i);
 s32 Backup_GetStatus(void *p);
 s32 Backup_EndAccess(void *p);
 s32 Backup_ReadAsync(void *p, void *buf, s32 size, s32 off);
@@ -722,7 +722,7 @@ extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 extern u8 gSaveData[];
 extern u8 data_021ed32c[];
-extern u8 data_021edb5c[];
+extern u8 gTalkMsgIndexEnd[];
 extern u8 data_021e7f8c[];
 extern u8 data_020e24ec;
 u8 _ZN14SaveSlotWriter14verifySlotStepEi(SaveManager *self, u32 x);
@@ -730,12 +730,12 @@ s32 _ZN14SaveSlotWriter12saveSlotStepEi(SaveManager *self, u32 x);
 u32 Save_SlotStampsMatch(void);
 s32 func_020a0210(void);
 void _ZN11SaveManager13func_020a3ebcEi(void *p, s32 x);
-void *func_02067918(u32 x);
-void _ZN12Unk_020660f813func_02067a78Ev(void *o);
-void _ZN12Unk_020660f813func_02067a84EPhPv(void *o, void *a, void *b);
-void _ZN12Unk_020660f813func_02067990Ev(void *o);
-s32 _ZN12Unk_020660f813func_02067a6cEv(void *o);
-void _ZN12Unk_020660f813func_0206799cEv(void *o, u32 x);
+void *TalkWindow_Get(u32 x);
+void _ZN15TalkWindowState11lockAdvanceEv(void *o);
+void _ZN15TalkWindowState14setNextMessageEPhPv(void *o, void *a, void *b);
+void _ZN15TalkWindowState13func_02067990Ev(void *o);
+s32 _ZN15TalkWindowState13unlockAdvanceEv(void *o);
+void _ZN15TalkWindowState13func_0206799cEv(void *o, u32 x);
 s32 func_02073090(s32 x);
 void func_0207312c(void);
 s32 func_02074894(void);
@@ -828,7 +828,7 @@ void _ZN12Unk_0209f30413func_0209f430EPhjjhhhj(Unk_020a1c88 *self, u8 *s, u32 a,
 void func_0209f638(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
 void func_0209f898(Unk_020a1c88 *self, u8 *s, u32 a, u32 b, u32 c, u32 d);
 BOOL _ZN8SaveData7isValidEv(void *p);
-Unk_020660f8 *func_02067918(u32 x);
+TalkWindowState *TalkWindow_Get(u32 x);
 u32 func_020eb004();
 BOOL func_020e7500(void *p);
 BOOL func_020733bc();
@@ -1057,7 +1057,7 @@ void _ZN11SaveManager13func_020a3ebcEi(Unk_020a3238 *self, u32 n);
 void _ZN12Unk_020a099013func_020a0990EPKch(Unk_020a3238 *self, void *p, u32 n);
 s32 Save_InvalidateAll(Unk_020a3238 *self);
 s32 _ZN14SaveSlotWriter13eraseSlotStepEi(Unk_020a3238 *self, u32 n);
-Unk_020660f8 *func_02067918(s32 i);
+TalkWindowState *TalkWindow_Get(s32 i);
 s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 s32 func_020b50e8();
@@ -1724,13 +1724,13 @@ void Unk_020a3238::func_020a38f4() {
 }
 
 void Unk_020a3238::func_020a3868() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     u8 *d = NI::gSaveData;
     u8 buf[0x1c];
     s32 h = NI::PlayerData_GetResident(NI::data_021d735c, NI::data_021ed3c4);
     NI::_ZN12Unk_020e1c64C1Ev(buf);
     NI::_ZN8PlayerId13func_020940d0EP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
-    o->func_02067a3c(0, buf);
+    o->setSlot(0, buf);
     NI::_ZN10PlayerData13func_02098a58Ev(h);
     NI::_ZN8SaveData11resetPlayerEi(d, NI::data_021ed3c4);
     NI::_ZN12Unk_020a099013func_020a0990EPKch(this, (u32 *)"sp_etc_sequence1", 7);
@@ -1852,9 +1852,9 @@ void Unk_020a3238::func_020a36a4() {
 void Unk_020a3238::func_020a36a0() {}
 
 void Unk_020a3238::func_020a3674() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         NI::func_020b4bbc(NI::func_020b4934(), 1);
         NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
     }
@@ -1864,9 +1864,9 @@ void Unk_020a3238::func_020a3670() {}
 
 void Unk_020a3238::func_020a3618() {
     Unk_020a3238_Vec v;
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         v.x = NI::data_020d0770.x;
         v.y = NI::data_020d0770.y;
         v.z = NI::data_020d0770.z;
@@ -1879,9 +1879,9 @@ void Unk_020a3238::func_020a3614() {}
 
 void Unk_020a3238::func_020a35bc() {
     Unk_020a3238_Vec v;
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         v.x = NI::data_020d0788.x;
         v.y = NI::data_020d0788.y;
         v.z = NI::data_020d0788.z;
@@ -1893,9 +1893,9 @@ void Unk_020a3238::func_020a35bc() {
 void Unk_020a3238::func_020a35b8() {}
 
 void Unk_020a3238::func_020a3588() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         NI::func_020b4f58(NI::func_020b4934(), 0x2f, 3, 2);
         NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
     }
@@ -1904,9 +1904,9 @@ void Unk_020a3238::func_020a3588() {
 void Unk_020a3238::func_020a3584() {}
 
 void Unk_020a3238::func_020a3518() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         s32 r = NI::Save_LoadSync();
         if (r == 4 || r == 1) {
             NI::_ZN8SaveData5resetEv(NI::gSaveData);
@@ -1926,9 +1926,9 @@ void Unk_020a3238::func_020a3518() {
 void Unk_020a3238::func_020a3514() {}
 
 void Unk_020a3238::func_020a34e4() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         NI::func_020a4414(2, 3, 0, 0);
         NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
     }
@@ -1937,10 +1937,10 @@ void Unk_020a3238::func_020a34e4() {
 void Unk_020a3238::func_020a34e0() {}
 
 void Unk_020a3238::func_020a347c() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::data_021c3cc0)) {
         if (o->unk_04 == 0) {
-            o->func_02067958();
+            o->detachRequest();
             if (NI::_ZN8SaveData8testFlagEj(NI::gSaveData, 0x12) != 0) {
                 NI::func_020a034c();
             } else {
@@ -1957,10 +1957,10 @@ void Unk_020a3238::func_020a3478() {}
 
 void Unk_020a3238::func_020a340c() {
     Unk_020a3238_Vec v;
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (Unk_020a3238_Is2(NI::data_021c3cc0)) {
         if (o->unk_04 == 0) {
-            o->func_02067958();
+            o->detachRequest();
             NI::func_0204d5d8(NI::func_0204da0c(), &v, 0, 0);
             NI::func_020b4f18(NI::func_020b4934(), 0, &v, 0x400000, -0x8000, 3, 2);
             NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
@@ -1971,9 +1971,9 @@ void Unk_020a3238::func_020a340c() {
 void Unk_020a3238::func_020a3408() {}
 
 void Unk_020a3238::func_020a33c8() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         if (NI::func_020b50e8() == 6) {
             NI::func_020b4bbc(NI::func_020b4934(), 2);
         } else {
@@ -1986,9 +1986,9 @@ void Unk_020a3238::func_020a33c8() {
 void Unk_020a3238::func_020a33c4() {}
 
 void Unk_020a3238::func_020a3398() {
-    Unk_020660f8 *o = NI::func_02067918(0);
+    TalkWindowState *o = NI::TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         NI::func_020b4bbc(NI::func_020b4934(), 2);
         NI::_ZN11SaveManager13func_020a3ebcEi(this, 0);
     }
@@ -2914,7 +2914,7 @@ void Unk_020a1c88::func_020a20ac() {
         NG::_ZN11SaveManager13func_020a15f8Ev(this);
         if (NG::func_0209f23c()) {
             b = 6;
-            NG::func_02067918(0)->func_02067a84(&b, (u8 *)"sp_etc_sequence2");
+            NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
         }
         NG::_ZN11SaveManager13func_020a3ebcEi(this, 8);
         break;
@@ -3052,7 +3052,7 @@ void Unk_020a1c88::func_020a1e14() {
         NG::_ZN11SaveManager13func_020a15f8Ev(this);
         if (NG::func_0209f23c()) {
             b = 6;
-            NG::func_02067918(0)->func_02067a84(&b, (u8 *)"sp_etc_sequence2");
+            NG::TalkWindow_Get(0)->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             NG::_ZN11SaveManager13func_020a3ebcEi(this, 0x11);
         } else {
             NG::_ZN11SaveManager13func_020a3ebcEi(this, 8);
@@ -3093,11 +3093,11 @@ void Unk_020a1c88::func_020a1cb8() {
     u8 b[2];
     s32 n = NG::func_020a0210(this);
     if (n > 0 && n < 4) {
-        Unk_020660f8 *p = NG::func_02067918(0);
+        TalkWindowState *p = NG::TalkWindow_Get(0);
         p->func_02067990();
-        p->func_02067a6c();
+        p->unlockAdvance();
         b[0] = 0x26;
-        p->func_02067a84(&b[0], (u8 *)"sp_etc_sequence1");
+        p->setNextMessage(&b[0], (u8 *)"sp_etc_sequence1");
         NG::_ZN11SaveManager13func_020a3ebcEi(this, 0);
     } else {
         BOOL ok = FALSE;
@@ -3118,11 +3118,11 @@ void Unk_020a1c88::func_020a1cb8() {
             if (NG::func_0209f000(this)) {
                 NG::func_0209f1c4();
             }
-            Unk_020660f8 *p = NG::func_02067918(0);
+            TalkWindowState *p = NG::TalkWindow_Get(0);
             b[1] = 0x25;
-            p->func_02067a84(&b[1], (u8 *)"sp_etc_sequence1");
+            p->setNextMessage(&b[1], (u8 *)"sp_etc_sequence1");
             p->func_02067990();
-            p->func_02067a6c();
+            p->unlockAdvance();
             NG::_ZN11SaveManager13func_020a3ebcEi(this, 0xc);
         }
     }
@@ -3428,35 +3428,35 @@ void SaveManager::func_020a167c() {
 
 void SaveManager::func_020a1648() {
     u8 b;
-    void *o = NF::func_02067918(0);
-    NF::_ZN12Unk_020660f813func_02067990Ev(o);
-    NF::_ZN12Unk_020660f813func_02067a6cEv(o);
+    void *o = NF::TalkWindow_Get(0);
+    NF::_ZN15TalkWindowState13func_02067990Ev(o);
+    NF::_ZN15TalkWindowState13unlockAdvanceEv(o);
     b = 0xa;
-    NF::_ZN12Unk_020660f813func_02067a84EPhPv(o, &b, (u8 *)"sp_etc_sequence2");
+    NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, &b, (u8 *)"sp_etc_sequence2");
 }
 
 void SaveManager::func_020a1614() {
     u8 b;
-    void *o = NF::func_02067918(0);
-    NF::_ZN12Unk_020660f813func_02067990Ev(o);
-    NF::_ZN12Unk_020660f813func_02067a6cEv(o);
+    void *o = NF::TalkWindow_Get(0);
+    NF::_ZN15TalkWindowState13func_02067990Ev(o);
+    NF::_ZN15TalkWindowState13unlockAdvanceEv(o);
     b = 0xb;
-    NF::_ZN12Unk_020660f813func_02067a84EPhPv(o, &b, (u8 *)"sp_etc_sequence2");
+    NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, &b, (u8 *)"sp_etc_sequence2");
 }
 
 void SaveManager::func_020a15f8() {
-    void *o = NF::func_02067918(0);
-    NF::_ZN12Unk_020660f813func_02067990Ev(o);
-    NF::_ZN12Unk_020660f813func_02067a6cEv(o);
+    void *o = NF::TalkWindow_Get(0);
+    NF::_ZN15TalkWindowState13func_02067990Ev(o);
+    NF::_ZN15TalkWindowState13unlockAdvanceEv(o);
 }
 
 BOOL SaveManager::func_020a15c8(u32 v) {
-    void *o = NF::func_02067918(0);
+    void *o = NF::TalkWindow_Get(0);
     if (((u32 *)o)[1] == 2) {
         if (v != 0) {
-            NF::_ZN12Unk_020660f813func_0206799cEv(o, 1);
+            NF::_ZN15TalkWindowState13func_0206799cEv(o, 1);
         } else {
-            NF::_ZN12Unk_020660f813func_0206799cEv(o, 0);
+            NF::_ZN15TalkWindowState13func_0206799cEv(o, 0);
         }
         return TRUE;
     }
@@ -3474,23 +3474,23 @@ void Unk_020e2824::func_020a1574(u32 v) {
 }
 
 void Unk_020e2824::vfunc_14() {
-    void *o = NF::func_02067918(0);
+    void *o = NF::TalkWindow_Get(0);
     switch (((u8 *)unk_04)[0x1a]) {
     case 0xa:
-        NF::_ZN12Unk_020660f813func_02067a78Ev(o);
+        NF::_ZN15TalkWindowState11lockAdvanceEv(o);
         break;
     case 8:
-        NF::_ZN12Unk_020660f813func_02067a84EPhPv(o, NF::data_021edb5c, 0);
+        NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
         break;
     case 0x27:
-        NF::_ZN12Unk_020660f813func_02067a84EPhPv(o, NF::data_021edb5c, 0);
+        NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
         break;
     case 0x26:
-        NF::_ZN12Unk_020660f813func_02067a78Ev(o);
+        NF::_ZN15TalkWindowState11lockAdvanceEv(o);
         NF::_ZN11SaveManager13func_020a3ebcEi((void *)unk_44, 0x1e);
         break;
     case 0x69:
-        NF::_ZN12Unk_020660f813func_02067a84EPhPv(o, NF::data_021edb5c, 0);
+        NF::_ZN15TalkWindowState14setNextMessageEPhPv(o, NF::gTalkMsgIndexEnd, 0);
         break;
     }
 }
@@ -4094,12 +4094,12 @@ BOOL SaveSlotWriter::memEqual(u8 *p, u8 *q, s32 n) {
 }
 
 void Unk_020a0990::func_020a0990(const char *str, u8 flag) {
-    Unk_020660f8 *o = NE::func_02067918(0);
+    TalkWindowState *o = NE::TalkWindow_Get(0);
     unk_54.vfunc_08();
     unk_54.setFileName(str);
     unk_54.unk_1e = flag;
-    o->func_02067a78();
-    o->func_02067978(&unk_54);
+    o->lockAdvance();
+    o->attachRequest(&unk_54);
     o->unk_08 = 1;
 }
 
@@ -4837,7 +4837,7 @@ extern "C" s32 func_0209f898(Unk_0209f638 *self, u8 *st, s32 base, s32 base2, u3
         if (a6) NC::_ZN11SaveManager13func_020a1614Ev(self);
         *st = base2 + 4;
     } else if (cur == base2 + 4) {
-        if (NC::func_02067918(0)->unk_04 == 0) {
+        if (NC::TalkWindow_Get(0)->unk_04 == 0) {
             NC::OS_ResetSystem(0);
         }
     }
@@ -5254,11 +5254,11 @@ extern "C" s32 func_0209f000(void) {
                 NB::func_0209ec80();
                 NB::func_0209f248();
                 if (NB::Save_WritePlayerFriendList() != 0) {
-                    s32 t = NB::func_02067918(0);
-                    NB::_ZN12Unk_020660f813func_02067990Ev();
-                    NB::_ZN12Unk_020660f813func_02067a6cEv(t);
+                    s32 t = NB::TalkWindow_Get(0);
+                    NB::_ZN15TalkWindowState13func_02067990Ev();
+                    NB::_ZN15TalkWindowState13unlockAdvanceEv(t);
                     u8 b = 2;
-                    NB::_ZN12Unk_020660f813func_02067a84EPhPv(t, &b, (u8 *)"sp_npc_gatekeeper");
+                    NB::_ZN15TalkWindowState14setNextMessageEPhPv(t, &b, (u8 *)"sp_npc_gatekeeper");
                 }
             }
         }

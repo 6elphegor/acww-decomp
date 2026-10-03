@@ -138,11 +138,11 @@ public:
 };
 extern "C" Unk_020cbb18 *data_020cbb18;
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    void func_02067a3c(s32 a, void *p);
+    void setSlot(s32 a, void *p);
 };
-extern "C" Unk_020660f8 *func_02067918(s32 a);
+extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 class MsgString {
 public:

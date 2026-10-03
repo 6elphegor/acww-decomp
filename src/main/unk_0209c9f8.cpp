@@ -31,7 +31,7 @@ void func_0204dc54(u32);
 void func_0204d498(u32);
 void func_02073dd8(u32);
 void func_020a5cbc();
-void func_02084f48();
+void NpcSpawn_ResetAll();
 void func_02038ef0();
 void func_020349e0();
 void Text_ResetLabels();
@@ -81,7 +81,7 @@ BOOL Unk_020e2304::vfunc_00() {
     func_0204d498((u32)gCurrentHeap);
     func_02073dd8((u32)gCurrentHeap);
     func_020a5cbc();
-    func_02084f48();
+    NpcSpawn_ResetAll();
     return TRUE;
 }
 

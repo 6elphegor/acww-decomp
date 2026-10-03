@@ -12,7 +12,7 @@ struct Unk_0201f7d0_Out;
 struct Unk_020238b0_Out;
 struct Unk_020254ec_Out;
 struct Unk_02027a34_Out;
-class Unk_020238b0 {
+class VillagerTalkRequestItemTopics {
 public:
     void func_020238b0();
     void func_02023928(Unk_020238b0_Out *);
@@ -20,19 +20,19 @@ public:
     void func_02023ab4(Unk_020238b0_Out *);
     void func_02023b50(Unk_020238b0_Out *);
     void func_02023c80();
-    void func_02023cb0(Unk_020238b0_Out *);
+    void selectQItemB(Unk_020238b0_Out *);
     void func_020241a0();
 };
-class Unk_020254ec : public Unk_020238b0 {
+class VillagerTalkRequestStartTopics : public VillagerTalkRequestItemTopics {
 public:
     void func_020254ec();
     void func_02025540(Unk_020254ec_Out *);
-    void func_02025680(Unk_020254ec_Out *);
-    void func_02025780(Unk_020254ec_Out *);
+    void selectQNo(Unk_020254ec_Out *);
+    void selectQStart(Unk_020254ec_Out *);
     void func_020257f0();
     void func_0202585c();
 };
-class Unk_0201f7d0 : public Unk_020254ec {
+class VillagerTalkKaraokeTopics : public VillagerTalkRequestStartTopics {
 public:
     void func_0201f7d0();
     void func_0201f83c(Unk_0201f7d0_Out *);
@@ -40,59 +40,59 @@ public:
     void func_0201f9c0();
     void func_0201f9f8(Unk_0201f7d0_Out *);
     void func_0201fa58(Unk_0201f7d0_Out *);
-    void func_0201fb54(Unk_0201f7d0_Out *);
+    void selectEvFirework(Unk_0201f7d0_Out *);
     void func_0201fc48();
-    void func_0201fcb0(Unk_0201f7d0_Out *);
-    void func_0201fd10(Unk_0201f7d0_Out *);
-    void func_0201fd70(Unk_0201f7d0_Out *);
-    void func_0201fdd0(Unk_0201f7d0_Out *);
-    void func_0201fe5c(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg17(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg14(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg12(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg10(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg8(Unk_0201f7d0_Out *);
     void func_0201fed0();
-    void func_0201ff3c(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg6(Unk_0201f7d0_Out *);
     void func_02020010();
     void func_02020030();
-    void func_02020084(Unk_0201f7d0_Out *);
+    void selectEvKaraokeMsg20(Unk_0201f7d0_Out *);
 };
-class Unk_0201e5a4 : public Unk_0201f7d0 {
+class VillagerTalkAcornTopics : public VillagerTalkKaraokeTopics {
 public:
     void func_0201e5a4(u32);
-    void func_0201e6b0(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg15(Unk_0201e5a4_Out *);
     void func_0201e710();
-    void func_0201e81c(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg19(Unk_0201e5a4_Out *);
     void func_0201e87c();
-    void func_0201e914(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg17(Unk_0201e5a4_Out *);
     void func_0201ea8c();
     void func_0201eabc();
-    void func_0201eb2c(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg13(Unk_0201e5a4_Out *);
     void func_0201eb8c();
     void func_0201eb94();
     void func_0201eb9c();
-    void func_0201ebf0(Unk_0201e5a4_Out *);
-    void func_0201ec50(Unk_0201e5a4_Out *);
-    void func_0201ecb0(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg7(Unk_0201e5a4_Out *);
+    void selectEvAcornMsg10(Unk_0201e5a4_Out *);
+    void selectEvAcorn(Unk_0201e5a4_Out *);
     void func_0201ed3c(u32);
     void func_0201ee9c();
 };
-class Unk_0201eea4 : public Unk_0201e5a4 {
+class VillagerTalkHobbyTopics : public VillagerTalkAcornTopics {
 public:
     void func_0201eea4();
     void func_0201eeac();
-    void func_0201ef00(Unk_0201ef00_Out *);
-    void func_0201ef60(Unk_0201ef00_Out *);
-    void func_0201efc0(Unk_0201ef00_Out *);
+    void selectEvGardeniingMsg10(Unk_0201ef00_Out *);
+    void selectEvGardeniingMsg13(Unk_0201ef00_Out *);
+    void selectEvGardeniing(Unk_0201ef00_Out *);
     void func_0201f058(void *);
-    void func_0201f170(Unk_0201ef00_Out *);
-    void func_0201f36c(Unk_0201ef00_Out *);
+    void selectEvInsect(Unk_0201ef00_Out *);
+    void selectEvFishing(Unk_0201ef00_Out *);
     void func_0201f55c();
     void func_0201f564();
     void func_0201f56c();
-    void func_0201f5c0(Unk_0201ef00_Out *);
-    void func_0201f620(Unk_0201ef00_Out *);
-    void func_0201f680(Unk_0201ef00_Out *);
+    void selectEvAdmireMsg4(Unk_0201ef00_Out *);
+    void selectEvAdmireMsg10(Unk_0201ef00_Out *);
+    void selectEvAdmireMsg14(Unk_0201ef00_Out *);
     void func_0201f738();
-    void func_0201f770(Unk_0201ef00_Out *);
+    void selectEvAdmireMsg12(Unk_0201ef00_Out *);
 };
-class Unk_0201dc44 : public Unk_0201eea4 {
+class VillagerTalkHolidayTopics : public VillagerTalkHobbyTopics {
 public:
     void func_0201dd1c();
     void func_0201dd3c(Unk_0201dc44_Ret *);
@@ -102,11 +102,11 @@ public:
     void func_0201de70();
     void func_0201de78();
     void func_0201de80();
-    void func_0201ded4(Unk_0201dc44_Ret *);
-    void func_0201df34(Unk_0201dc44_Ret *);
-    void func_0201df94(Unk_0201dc44_Ret *);
-    void func_0201dff4(Unk_0201dc44_Ret *);
-    void func_0201e08c(Unk_0201dc44_Ret *);
+    void selectEvCountdownMsg18(Unk_0201dc44_Ret *);
+    void selectEvCountdownMsg16(Unk_0201dc44_Ret *);
+    void selectEvCountdownMsg14(Unk_0201dc44_Ret *);
+    void selectEvCountdownB(Unk_0201dc44_Ret *);
+    void selectEvCountdown(Unk_0201dc44_Ret *);
     void func_0201e110();
     void func_0201e18c();
     void func_0201e194();
@@ -115,81 +115,81 @@ public:
     void func_0201e334();
     void func_0201e33c();
     void func_0201e344();
-    void func_0201e398(Unk_0201dc44_Ret *);
-    void func_0201e3f8(Unk_0201dc44_Ret *);
-    void func_0201e4ac(Unk_0201dc44_Ret *);
+    void selectEvSnowfesC(Unk_0201dc44_Ret *);
+    void selectEvSnowfesB(Unk_0201dc44_Ret *);
+    void selectEvSnowfes(Unk_0201dc44_Ret *);
 };
-class Unk_02027a34 : public Unk_0201dc44 {
+class VillagerTalkRequestReplyTopics : public VillagerTalkHolidayTopics {
 public:
     void func_02027a34(Unk_02027a34_Out *);
     void func_02027b08();
     void func_02027b1c();
     void func_02027c6c(Unk_02027a34_Out *);
     void func_02027cf8();
-    void func_02027cfc(Unk_02027a34_Out *);
-    void func_02027d78(Unk_02027a34_Out *);
+    void selectQFull(Unk_02027a34_Out *);
+    void selectQNoB(Unk_02027a34_Out *);
     void func_02027dec();
-    void func_02027e9c(Unk_02027a34_Out *);
+    void selectQTime(Unk_02027a34_Out *);
     void func_02027f34();
     void func_02027f88();
     void func_02027fd8(Unk_02027a34_Out *);
     void func_020280c0();
 };
-class Unk_0201d2d0 : public Unk_02027a34 {
+class VillagerTalkTopics : public VillagerTalkRequestReplyTopics {
 public:
-    void func_0201d2d0(Unk_0201d2d0_Out *);
-    void func_0201d378(Unk_0201d2d0_Out *);
-    void func_0201d420(Unk_0201d2d0_Out *);
-    void func_0201d4a8(Unk_0201d2d0_Out *);
-    void func_0201d508(Unk_0201d2d0_Out *);
+    void selectEtcPush(Unk_0201d2d0_Out *);
+    void selectEtcHit(Unk_0201d2d0_Out *);
+    void selectAiFall(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg4(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg3(Unk_0201d2d0_Out *);
     void func_0201d568();
-    void func_0201d5d4(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg2(Unk_0201d2d0_Out *);
     void func_0201d634();
-    void func_0201d668(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg7(Unk_0201d2d0_Out *);
     void func_0201d6c8();
-    void func_0201d71c(Unk_0201d2d0_Out *);
-    void func_0201d7d4(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg6(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg5(Unk_0201d2d0_Out *);
     void func_0201d90c();
-    void func_0201d9e0(Unk_0201d2d0_Out *);
+    void selectEvBirthMsg1(Unk_0201d2d0_Out *);
     void func_020200e4();
     void func_02020150(Unk_0201d2d0_Out *);
     void func_020201b0(Unk_0201d2d0_Out *);
     void func_020204b4(Unk_0201d2d0_Out *);
-    void func_020204dc(Unk_0201d2d0_Out *);
-    void func_0202053c(Unk_0201d2d0_Out *);
-    void func_0202059c(Unk_0201d2d0_Out *);
+    void selectTsuMove2(Unk_0201d2d0_Out *);
+    void selectTsuMove1Part1(Unk_0201d2d0_Out *);
+    void selectTsuMove1B(Unk_0201d2d0_Out *);
     void func_02020654();
-    void func_020206bc(Unk_0201d2d0_Out *);
+    void selectTsuMove1(Unk_0201d2d0_Out *);
     void func_0202071c();
     void func_020207c8();
     void func_0202081c();
     void func_02020850(Unk_0201d2d0_Out *);
-    void func_02022a6c(Unk_0201d2d0_Out *);
-    void func_02022acc(Unk_0201d2d0_Out *);
-    void func_02022b40(Unk_0201d2d0_Out *);
-    void func_02022c14(Unk_0201d2d0_Out *);
-    void func_02022ca0(Unk_0201d2d0_Out *);
-    void func_02022d00(Unk_0201d2d0_Out *);
-    void func_02022d60(Unk_0201d2d0_Out *);
+    void selectEtcCancel(Unk_0201d2d0_Out *);
+    void selectQ10Leave(Unk_0201d2d0_Out *);
+    void selectQ10Con(Unk_0201d2d0_Out *);
+    void selectQ10Reserved(Unk_0201d2d0_Out *);
+    void selectQError3(Unk_0201d2d0_Out *);
+    void selectQError2(Unk_0201d2d0_Out *);
+    void selectQError1(Unk_0201d2d0_Out *);
     void func_02022e8c();
-    void func_02022eb4(Unk_0201d2d0_Out *);
+    void selectQ10Reserve(Unk_0201d2d0_Out *);
     void func_02022f14();
-    void func_02022f80(Unk_0201d2d0_Out *);
-    void func_02022fe0(Unk_0201d2d0_Out *);
+    void selectQ10Req(Unk_0201d2d0_Out *);
+    void selectQ12FullPart2(Unk_0201d2d0_Out *);
     void func_02023044();
-    void func_020230b4(Unk_0201d2d0_Out *);
-    void func_02023140(Unk_0201d2d0_Out *);
-    void func_020231cc(Unk_0201d2d0_Out *);
+    void selectQ12FullPart1(Unk_0201d2d0_Out *);
+    void selectQ12Full(Unk_0201d2d0_Out *);
+    void selectQ12End(Unk_0201d2d0_Out *);
     void func_0202329c();
-    void func_02023308(Unk_0201d2d0_Out *);
+    void selectQItem(Unk_0201d2d0_Out *);
     void func_020233b8();
-    void func_02023428(Unk_0201d2d0_Out *);
-    void func_02023488(Unk_0201d2d0_Out *);
-    void func_020234e8(Unk_0201d2d0_Out *);
+    void selectQ12Thanks(Unk_0201d2d0_Out *);
+    void selectQ12Report(Unk_0201d2d0_Out *);
+    void selectQ12Other(Unk_0201d2d0_Out *);
     void func_02023548(Unk_0201d2d0_Out *);
     void func_02023614();
     void func_0202368c(Unk_0201d2d0_Out *);
-    void func_020241f4(Unk_0201d2d0_Out *);
+    void selectQPreitemB(Unk_0201d2d0_Out *);
     void func_020242d8();
     void func_02024370(Unk_0201d2d0_Out *);
     void func_02024418(Unk_0201d2d0_Out *);
@@ -215,37 +215,37 @@ public:
     void func_02026214();
     void func_020262ac(Unk_0201d2d0_Out *);
     void func_0202635c();
-    void func_020263b0(Unk_0201d2d0_Out *);
+    void selectQPreitem(Unk_0201d2d0_Out *);
     void func_02026410();
-    void func_02026490(Unk_0201d2d0_Out *);
-    void func_02026560(Unk_0201d2d0_Out *);
-    void func_02026668(Unk_0201d2d0_Out *);
+    void selectQ06Bad(Unk_0201d2d0_Out *);
+    void selectQ06Normal(Unk_0201d2d0_Out *);
+    void selectQ06Good(Unk_0201d2d0_Out *);
     void func_02026834(void *);
     void func_02026998(Unk_0201d2d0_Out *);
     void func_02026a24(Unk_0201d2d0_Out *);
     void func_02026ab0(Unk_0201d2d0_Out *);
     void func_02026b98();
-    void func_02026bec(Unk_0201d2d0_Out *);
+    void selectQ07Show(Unk_0201d2d0_Out *);
     void func_02026c4c();
-    void func_02026d2c(Unk_0201d2d0_Out *);
-    void func_02026df0(Unk_0201d2d0_Out *);
+    void selectQ07Read(Unk_0201d2d0_Out *);
+    void selectQ07Open2(Unk_0201d2d0_Out *);
     void func_02026e64();
-    void func_02026ebc(Unk_0201d2d0_Out *);
-    void func_02026f58(Unk_0201d2d0_Out *);
+    void selectQ06Open2(Unk_0201d2d0_Out *);
+    void selectQ06Open3(Unk_0201d2d0_Out *);
     void func_02026fe0();
-    void func_0202708c(Unk_0201d2d0_Out *);
+    void selectQ06Open1(Unk_0201d2d0_Out *);
     void func_020271c8();
     void func_020272a4(Unk_0201d2d0_Out *);
-    void func_02027430(Unk_0201d2d0_Out *);
+    void selectQIcancel(Unk_0201d2d0_Out *);
     void func_02027490();
-    void func_02027530(Unk_0201d2d0_Out *);
+    void selectQTimeover(Unk_0201d2d0_Out *);
     void func_0202760c(Unk_0201d2d0_Out *);
     void func_020276e8();
     void func_02027730(Unk_0201d2d0_Out *);
     void func_020277b0();
     void func_020277fc(Unk_0201d2d0_Out *);
     void func_0202787c();
-    void func_02029d84(Unk_0201d2d0_Out *);
+    void selectEtcConnect(Unk_0201d2d0_Out *);
     void func_02029de4(Unk_0201d2d0_Out *);
     void func_02029e38(Unk_0201d2d0_Out *);
     void func_02029e8c();
@@ -258,23 +258,23 @@ public:
     void func_0202a2b8(Unk_0201d2d0_Out *);
     void func_0202a30c();
     void func_0202a378(Unk_0201d2d0_Out *);
-    void func_0202a3e4(Unk_0201d2d0_Out *);
+    void selectApHabitB(Unk_0201d2d0_Out *);
     void func_0202a468();
     void func_0202a4d4(Unk_0201d2d0_Out *);
     void func_0202a540();
     void func_0202a618(s32);
-    void func_0202a680(Unk_0201d2d0_Out *);
+    void selectApHabitPart1(Unk_0201d2d0_Out *);
     void func_0202a6e0();
     void func_0202a750(Unk_0201d2d0_Out *);
     void func_0202b0b4(Unk_0201d2d0_Out *);
     void func_0202b208();
     void func_0202b410();
-    void func_0202b520(Unk_0201d2d0_Out *);
+    void selectGreeting(Unk_0201d2d0_Out *);
 };
-class Unk_Menu : public Unk_0201d2d0 {};
+class Unk_Menu : public VillagerTalkTopics {};
 
 typedef void (Unk_Menu::*Unk_ov069_Fn)();
-typedef void (Unk_0201d2d0::*Unk_ov069_FnB)();
+typedef void (VillagerTalkTopics::*Unk_ov069_FnB)();
 struct Unk_ov069_EntB {
     Unk_ov069_FnB a;
     Unk_ov069_FnB b;
@@ -304,198 +304,198 @@ extern Unk_ov069_Ent data_021bec70[8];
 extern Unk_ov069_Ent data_021beb08[7];
 
 Unk_ov069_Ent data_ov069_022613cc[17] = {
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202b520, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202b410, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202b208},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202b0b4, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202a750, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020201b0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fb54, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fa58, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f36c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f170, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f058, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201ed3c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201e5a4, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e1f0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202b520, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202081c, (Unk_ov069_Fn)&Unk_0201d2d0::func_020207c8},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201dd3c, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201dd1c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0201d420, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0201d378, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0201d2d0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202b410, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202b208},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202b0b4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202a750, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020201b0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvFirework, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fa58, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvFishing, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvInsect, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f058, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ed3c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e5a4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e1f0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectGreeting, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202081c, (Unk_ov069_Fn)&VillagerTalkTopics::func_020207c8},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201dd3c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201dd1c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectAiFall, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcHit, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcPush, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02261294[13] = {
-    {0, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a6e0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a680, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a618},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a540, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a4d4, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a468},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a3e4, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a378, 0, 0},
-    {0, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a30c},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a2b8, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a18c, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a0c8},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202a074, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202a030},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02029f04, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_02029e98},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02029e8c, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02029e38, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02029de4, 0, 0},
+    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a6e0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitPart1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a618},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a540, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a4d4, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a468},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectApHabitB, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a378, 0, 0},
+    {0, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a30c},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a2b8, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a18c, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a0c8},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_0202a074, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202a030},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029f04, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_02029e98},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029e8c, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029e38, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02029de4, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260cc4[1] = {
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02029d84, 0, (Unk_ov069_Fn)&Unk_02027a34::func_020280c0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_020280c0},
 };
 Unk_ov069_EntB data_ov069_02260cdc[1] = {
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02022a6c, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcCancel, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02260cf4[2] = {
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02020850, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_02020850, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02261564[73] = {
     {0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027fd8, (Unk_ov069_Fn)&Unk_02027a34::func_02027f88, (Unk_ov069_Fn)&Unk_02027a34::func_02027f34},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027e9c, 0, (Unk_ov069_Fn)&Unk_02027a34::func_02027dec},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027d78, 0, 0},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027cfc, 0, (Unk_ov069_Fn)&Unk_02027a34::func_02027cf8},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027c6c, (Unk_ov069_Fn)&Unk_02027a34::func_02027b1c, (Unk_ov069_Fn)&Unk_02027a34::func_02027b08},
-    {(Unk_ov069_Fn)&Unk_02027a34::func_02027a34, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202787c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020277fc, (Unk_ov069_Fn)&Unk_0201d2d0::func_020277b0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02027730, (Unk_ov069_Fn)&Unk_0201d2d0::func_020276e8, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202760c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02027530, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02027430, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020272a4, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020271c8},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02027490, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202708c, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026fe0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026f58, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026ebc, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026e64},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026df0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026d2c, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026c4c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026bec, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026b98},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026ab0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026a24, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026998, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026834},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026668, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026410},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026560, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026410},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026490, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026410},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020263b0, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202635c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020262ac, (Unk_ov069_Fn)&Unk_0201d2d0::func_02026214, (Unk_ov069_Fn)&Unk_0201d2d0::func_020261c0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026128, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02026000, (Unk_ov069_Fn)&Unk_020254ec::func_0202585c, (Unk_ov069_Fn)&Unk_020254ec::func_020257f0},
-    {(Unk_ov069_Fn)&Unk_020254ec::func_02025780, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020254ec::func_02025680, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020254ec::func_02025540, 0, (Unk_ov069_Fn)&Unk_020254ec::func_020254ec},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02025460, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02025410, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020251fc, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020251c0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02025090, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020249ec},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02025008, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024f54, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024df4, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024c4c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024bd8, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02024bbc},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024a90, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020249ec},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024964, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024800, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020244b8, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024418, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02024370, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020242d8},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020241f4, 0, (Unk_ov069_Fn)&Unk_020238b0::func_020241a0},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_02023cb0, 0, (Unk_ov069_Fn)&Unk_020238b0::func_02023c80},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_02023b50, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_02023ab4, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_020239c8, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_02023928, 0, 0},
-    {(Unk_ov069_Fn)&Unk_020238b0::func_020238b0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_0202368c, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02023614},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02023548, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020234e8, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02023488, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02023428, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020233b8},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02023308, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_0202329c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020231cc, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02023140, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_020230b4, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02023044},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022fe0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022f80, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02022f14},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022eb4, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02022e8c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022d60, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02022e8c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022d00, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02022e8c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022ca0, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_02022e8c},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022c14, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022b40, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02022acc, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027fd8, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027f88, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027f34},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQTime, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027dec},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQNoB, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::selectQFull, 0, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027cf8},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027c6c, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027b1c, (Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027b08},
+    {(Unk_ov069_Fn)&VillagerTalkRequestReplyTopics::func_02027a34, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202787c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020277fc, (Unk_ov069_Fn)&VillagerTalkTopics::func_020277b0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02027730, (Unk_ov069_Fn)&VillagerTalkTopics::func_020276e8, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202760c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQTimeover, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQIcancel, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020272a4, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020271c8},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02027490, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026fe0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open3, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Open2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026e64},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Open2, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Read, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026c4c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ07Show, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026b98},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026ab0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026a24, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026998, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026834},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Good, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Normal, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ06Bad, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026410},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202635c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020262ac, (Unk_ov069_Fn)&VillagerTalkTopics::func_02026214, (Unk_ov069_Fn)&VillagerTalkTopics::func_020261c0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026128, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02026000, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_0202585c, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_020257f0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQStart, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::selectQNo, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_02025540, 0, (Unk_ov069_Fn)&VillagerTalkRequestStartTopics::func_020254ec},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025460, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025410, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020251fc, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020251c0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025090, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020249ec},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02025008, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024f54, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024df4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024c4c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024bd8, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02024bbc},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024a90, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020249ec},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024964, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024800, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_020244b8, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024418, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02024370, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020242d8},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQPreitemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020241a0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::selectQItemB, 0, (Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023c80},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023b50, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023ab4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020239c8, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_02023928, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkRequestItemTopics::func_020238b0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_0202368c, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02023614},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02023548, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Other, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Report, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Thanks, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020233b8},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQItem, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_0202329c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12End, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12Full, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02023044},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ12FullPart2, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Req, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022f14},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserve, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError1, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError2, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQError3, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_02022e8c},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Reserved, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Con, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::selectQ10Leave, 0, 0},
 };
 Unk_ov069_Ent data_ov069_022611bc[9] = {
-    {(Unk_ov069_Fn)&Unk_0201d2d0::func_02020150, 0, (Unk_ov069_Fn)&Unk_0201d2d0::func_020200e4},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_02020084, 0, (Unk_ov069_Fn)&Unk_0201f7d0::func_02020030},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_02020010, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201ff3c, 0, (Unk_ov069_Fn)&Unk_0201f7d0::func_0201fed0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fe5c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fdd0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fd70, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fd10, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201fcb0, 0, (Unk_ov069_Fn)&Unk_0201f7d0::func_0201fc48},
+    {(Unk_ov069_Fn)&VillagerTalkTopics::func_02020150, 0, (Unk_ov069_Fn)&VillagerTalkTopics::func_020200e4},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg20, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_02020030},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_02020010, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg6, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fed0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg8, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg10, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg12, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg14, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::selectEvKaraokeMsg17, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201fc48},
 };
 Unk_ov069_Ent data_ov069_02261024[8] = {
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201f9f8, 0, (Unk_ov069_Fn)&Unk_0201f7d0::func_0201f9c0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201f89c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201f7d0::func_0201f83c, 0, (Unk_ov069_Fn)&Unk_0201f7d0::func_0201f7d0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f770, 0, (Unk_ov069_Fn)&Unk_0201eea4::func_0201f738},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f680, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f620, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f5c0, 0, (Unk_ov069_Fn)&Unk_0201eea4::func_0201f56c},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201f564, 0, (Unk_ov069_Fn)&Unk_0201eea4::func_0201f55c},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f9f8, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f9c0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f89c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f83c, 0, (Unk_ov069_Fn)&VillagerTalkKaraokeTopics::func_0201f7d0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg12, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f738},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg14, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg10, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvAdmireMsg4, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f56c},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f564, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201f55c},
 };
 Unk_ov069_Ent data_ov069_02260d6c[4] = {
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201efc0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201ef60, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201ef00, 0, (Unk_ov069_Fn)&Unk_0201eea4::func_0201eeac},
-    {(Unk_ov069_Fn)&Unk_0201eea4::func_0201eea4, 0, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201ee9c},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniing, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg13, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::selectEvGardeniingMsg10, 0, (Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201eeac},
+    {(Unk_ov069_Fn)&VillagerTalkHobbyTopics::func_0201eea4, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ee9c},
 };
 Unk_ov069_Ent data_ov069_022610e4[9] = {
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201ecb0, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201ec50, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201ebf0, 0, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201eb9c},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201eb94, 0, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201eb8c},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201eb2c, 0, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201eabc},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201ea8c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201e914, 0, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201e87c},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201e81c, (Unk_ov069_Fn)&Unk_0201e5a4::func_0201e710, 0},
-    {(Unk_ov069_Fn)&Unk_0201e5a4::func_0201e6b0, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcorn, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg10, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg7, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb9c},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb94, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eb8c},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg13, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201eabc},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201ea8c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg17, 0, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e87c},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg19, (Unk_ov069_Fn)&VillagerTalkAcornTopics::func_0201e710, 0},
+    {(Unk_ov069_Fn)&VillagerTalkAcornTopics::selectEvAcornMsg15, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260dcc[4] = {
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e4ac, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e3f8, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e398, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201e344},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e33c, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201e334},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfes, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesB, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvSnowfesC, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e344},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e33c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e334},
 };
 Unk_ov069_Ent data_ov069_02260f64[8] = {
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e1e8, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201e194},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e18c, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201e110},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201e08c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201dff4, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201df94, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201df34, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201ded4, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201de80},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201de78, 0, (Unk_ov069_Fn)&Unk_0201dc44::func_0201de70},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e1e8, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e194},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e18c, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201e110},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdown, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownB, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg14, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg16, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::selectEvCountdownMsg18, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de80},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de78, 0, (Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de70},
 };
 Unk_ov069_EntB data_ov069_02260e2c[6] = {
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_02029d84, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0202071c},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_020206bc, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_02020654},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202059c, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0202053c, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_020204dc, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_020204b4, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEtcConnect, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0202071c},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_02020654},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1B, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove1Part1, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectTsuMove2, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::func_020204b4, 0, 0},
 };
 Unk_ov069_Ent data_ov069_02260d24[3] = {
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201de3c, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201de08, 0, 0},
-    {(Unk_ov069_Fn)&Unk_0201dc44::func_0201ddd4, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de3c, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201de08, 0, 0},
+    {(Unk_ov069_Fn)&VillagerTalkHolidayTopics::func_0201ddd4, 0, 0},
 };
 Unk_ov069_EntB data_ov069_02260ebc[7] = {
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d9e0, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0201d90c},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d7d4, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0201d90c},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d71c, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0201d6c8},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d668, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0201d634},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d5d4, 0, (Unk_ov069_FnB)&Unk_0201d2d0::func_0201d568},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d508, 0, 0},
-    {(Unk_ov069_FnB)&Unk_0201d2d0::func_0201d4a8, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg1, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d90c},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg5, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d90c},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg6, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d6c8},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg7, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d634},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg2, 0, (Unk_ov069_FnB)&VillagerTalkTopics::func_0201d568},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg3, 0, 0},
+    {(Unk_ov069_FnB)&VillagerTalkTopics::selectEvBirthMsg4, 0, 0},
 };
 extern "C" void func_ov069_0225f1a0() {
     memcpy(data_021be7e0, data_ov069_02260d24, 72);

@@ -6,7 +6,7 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 }
 
 extern "C" {
-s32 func_0203e2f4();
+s32 TalkRequest_IsActive();
 }
 
 extern "C" {

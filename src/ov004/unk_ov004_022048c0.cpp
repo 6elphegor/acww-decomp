@@ -113,11 +113,11 @@ public:
     s32 getResult();
 };
 
-struct Unk_020660f8 {
-    ChoiceList *func_020679b4();
-    void func_02067a1c(s32 idx, s32 a, s32 b);
-    s32 func_02067a3c(s32 idx, void *p);
-    void func_02067a84(u8 *src, void *s);
+struct TalkWindowState {
+    ChoiceList *getChoiceList();
+    void setSlotFromString(s32 idx, s32 a, s32 b);
+    s32 setSlot(s32 idx, void *p);
+    void setNextMessage(u8 *src, void *s);
 
     /* 0x0000 */ u32 unk_00;
     /* 0x0004 */ s32 unk_04;
@@ -125,10 +125,10 @@ struct Unk_020660f8 {
 };
 
 // Slots 0x10..0x18 are overridden by the derived class's own new virtuals (named after their addresses).
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_60();
@@ -139,7 +139,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -159,7 +159,7 @@ public:
     virtual void vfunc_s74();
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
 };
 
@@ -186,12 +186,12 @@ s32 func_020acde8(u32 x);
 s32 func_020acdac(u16 *p);
 s32 String_FormatNumber(MsgString25 *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 Unk_020b6960 *func_020b50b4();
-BOOL func_0203d67c(void *p);
+BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 BOOL func_020318cc(void *self);
 void func_02031908(void *self, s32 a, s32 b, s32 c, s32 *p, s16 s, s32 *q);
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 void *_ZN10PlayerData13getNookPointsEv(void *self);
 void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
@@ -206,7 +206,7 @@ extern char *data_ov004_022485a4;
 #define PlayerData_getNookPoints _ZN10PlayerData13getNookPointsEv
 
 // ---------------------------------------------------------------- Unk_ov004_0224860c
-class Unk_ov004_0224860c : public Character, public Unk_020ddcf0 {
+class Unk_ov004_0224860c : public Character, public TalkMsgRequest {
 public:
     Unk_ov004_0224860c();
     virtual BOOL vfunc_00();
@@ -313,15 +313,15 @@ void Unk_ov004_0224860c::func_ov004_02204c10() {
         u8 buf[2];
         MsgString25 obj;
         String_FormatNumber(&obj, *p, 10, 1, 0, 0);
-        unk_3c->func_02067a3c(0, &obj);
+        unk_3c->setSlot(0, &obj);
         String_FormatNumber(&obj, func_020acdac(p), 10, 1, 0, 0);
-        unk_3c->func_02067a3c(1, &obj);
+        unk_3c->setSlot(1, &obj);
         if (func_020acde8(*p) != 0) {
             buf[0] = func_020acde8(*p) - 1;
-            unk_3c->func_02067a1c(2, (s32)&buf[0], (s32)data_ov004_022485a4);
+            unk_3c->setSlotFromString(2, (s32)&buf[0], (s32)data_ov004_022485a4);
         }
         buf[1] = func_020acde8(*p);
-        unk_3c->func_02067a1c(3, (s32)&buf[1], (s32)data_ov004_022485a4);
+        unk_3c->setSlotFromString(3, (s32)&buf[1], (s32)data_ov004_022485a4);
     }
 }
 
@@ -418,7 +418,7 @@ void Unk_ov004_0224860c::func_ov004_022049e0() {
     if (unk_3c) {
         if (unk_3c->unk_04 == 0) {
             func_0203e47c(this, this);
-            func_0203d67c(this);
+            TalkRequest_EndTalkWith(this);
         }
     }
 }
@@ -432,10 +432,10 @@ void Unk_ov004_0224860c::vfunc_64() {
     case 2:
         if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 4) {
             buf[0] = 5;
-            unk_3c->func_02067a84(&buf[0], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[0], data_ov004_022485a0);
         } else {
             buf[1] = 3;
-            unk_3c->func_02067a84(&buf[1], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[1], data_ov004_022485a0);
         }
         break;
     }
@@ -445,25 +445,25 @@ void Unk_ov004_0224860c::vfunc_64() {
 void Unk_ov004_0224860c::vfunc_68() {
     u8 buf[4];
     u32 st = unk_1e;
-    s32 v = unk_3c->func_020679b4()->getResult();
+    s32 v = unk_3c->getChoiceList()->getResult();
     if (st == 0 || st == 7) {
         switch (v) {
         case 0:
             if (func_020acde8(*func_020acf54(PlayerData_getNookPoints(PlayerData_GetCurrent()))) == 0) {
                 buf[0] = 1;
-                unk_3c->func_02067a84(&buf[0], data_ov004_022485a0);
+                unk_3c->setNextMessage(&buf[0], data_ov004_022485a0);
             } else {
                 buf[1] = 2;
-                unk_3c->func_02067a84(&buf[1], data_ov004_022485a0);
+                unk_3c->setNextMessage(&buf[1], data_ov004_022485a0);
             }
             break;
         case 1:
             buf[2] = 6;
-            unk_3c->func_02067a84(&buf[2], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[2], data_ov004_022485a0);
             break;
         case 2:
             buf[3] = 4;
-            unk_3c->func_02067a84(&buf[3], data_ov004_022485a0);
+            unk_3c->setNextMessage(&buf[3], data_ov004_022485a0);
             break;
         }
     }

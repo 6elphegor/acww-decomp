@@ -252,8 +252,8 @@ void func_02076280(s32 a, void *b, s32 c, s32 d);
 void func_02076a2c(u32 a, s32 *x, s32 *y);
 void func_02076ae8(u32 a, u8 *b, s32 c);
 void func_020795c4(void *, void *);
-s32 func_0207bfb4(void *, void *);
-s32 func_0207c014(s32);
+s32 SaveVillagers_FindIndex(void *, void *);
+s32 SaveVillagers_IsValidIndex(s32);
 void *func_0208f05c(void *);
 s32 func_0208f070(void *);
 void *func_0208f088(void *);
@@ -540,8 +540,8 @@ extern "C" s32 func_02096960(Letter *) {
     if (r4 == 0) return -1;
     func_02003130(tmp);
     func_0200315c(tmp, r4);
-    res = func_0207bfb4(r5, tmp);
-    if (func_0207c014(res)) {
+    res = SaveVillagers_FindIndex(r5, tmp);
+    if (SaveVillagers_IsValidIndex(res)) {
         func_02003100(tmp);
         return res;
     }

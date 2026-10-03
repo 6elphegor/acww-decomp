@@ -86,7 +86,7 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX, except 0x14 (main symbol _ZN12Unk_020ddcf08vfunc_14Ev).
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX, except 0x14 (main symbol _ZN14TalkMsgRequest8vfunc_14Ev).
 class MsgRequest {
 public:
     MsgRequest();
@@ -106,18 +106,18 @@ public:
     u8 pad_04[0x18];
 };
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    s32 func_02067a3c(s32 idx, void *p);
+    s32 setSlot(s32 idx, void *p);
     u8 pad_00[4];
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -128,7 +128,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -147,10 +147,10 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f90(u8 *a, u32 b);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -296,7 +296,7 @@ typedef BOOL (Unk_ov003_02230c6c::*Unk_022129d0_Fn)();
 typedef void (Unk_ov003_02230c6c::*Fn0)();
 typedef BOOL (Unk_ov003_02230c6c::*Fn1)();
 
-class Unk_ov003_02230c6c : public Character, public Unk_020ddcf0 {
+class Unk_ov003_02230c6c : public Character, public TalkMsgRequest {
 public:
     Unk_ov003_02230c6c();
     virtual ~Unk_ov003_02230c6c();
@@ -440,16 +440,16 @@ BOOL Item_IsMarker(void *p);
 s32 func_020b5184();
 Rec *func_020af3f4();
 void String_Load(void *a, void *b, const char *c);
-BOOL func_0203d67c(void *p);
-void func_0203d704(void *self, s32 a);
+BOOL TalkRequest_EndTalkWith(void *p);
+void TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void *Heap_Alloc(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 void _ZN12MsgString256C1Ev(void *self);
 void _ZN12MsgString256D1Ev(void *self);
 void _ZN12Unk_020af53c13func_020af53cEj(void *self, u32 a);
@@ -1213,7 +1213,7 @@ void Unk_ov003_02230c6c::func_ov003_02212af4() {
             }
         }
     }
-    if (unk_374.g) func_0203d704(this, 0);
+    if (unk_374.g) TalkRequest_AddPlayerTalk6(this, 0);
 }
 
 BOOL Unk_ov003_02230c6c::vfunc_48(void *a) {
@@ -1283,7 +1283,7 @@ BOOL Unk_ov003_02230c6c::func_ov003_02212888() {
     u32 buf[0x46];
     _ZN12MsgString256C1Ev(buf);
     String_Load(buf, &c, "st_spnpc_name");
-    static_cast<Unk_020ddcf0 &>(*this).func_02065f90((u8 *)((Unk_ov003_02212888_Str *)buf)->vfunc_0c(), 0);
+    static_cast<TalkMsgRequest &>(*this).setSpeakerName((u8 *)((Unk_ov003_02212888_Str *)buf)->vfunc_0c(), 0);
     unk_374.g = 0;
     _ZN12MsgString256D1Ev(buf);
     return TRUE;
@@ -1305,7 +1305,7 @@ void Unk_ov003_02230c6c::func_ov003_02212830() {
     if (unk_3c) {
         if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            func_0203d67c(this);
+            TalkRequest_EndTalkWith(this);
         }
     }
 }

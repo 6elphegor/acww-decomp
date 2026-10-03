@@ -58,7 +58,7 @@ s32 func_02087298(void *p);
 s32 func_020718dc();
 s32 func_020718e8(s32 t, s32 x);
 s32 func_020718e4(s32 t);
-void *func_0207bf60(void *a, s32 x);
+void *SaveVillagers_Get(void *a, s32 x);
 s32 func_020805b8(void *p);
 s32 func_020b23a0(void *p);
 void func_020b249c(s32 p);

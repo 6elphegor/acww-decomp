@@ -32,7 +32,7 @@ extern u32 data_020d5dfc[];
 }
 
 extern "C" {
-extern u32 data_020d5de4[];
+extern u32 sPersonalityPrefixes[];
 }
 
 extern "C" {
@@ -48,7 +48,7 @@ extern u32 data_021d7352;
 }
 
 extern "C" {
-extern u32 data_020c6140[];
+extern u32 sPersonalityVoiceTypes[];
 }
 
 extern "C" {
@@ -196,7 +196,7 @@ void func_020639a0(void *p);
 }
 
 extern "C" {
-u32 func_02081550(u32 a, u32 b);
+u32 Villager_GetSpeciesName(u32 a, u32 b);
 }
 
 extern "C" {
@@ -338,24 +338,24 @@ public:
 };
 
 // Class with a type byte at +0x0a and an id byte at +0x0b (base class unknown, 0xc bytes in total)
-class Unk_02002fc8 {
+class VillagerId {
 public:
-    u32 func_02002fc8(u32 arg);
-    void func_0200301c(void *buf, u32 size, u32 arg);
-    u32 func_02003070();
-    void func_0200309c(u32 id, u32 type, void *s);
-    u32 func_020030b4();
+    u32 getName(u32 arg);
+    void makeFileName(void *buf, u32 size, u32 arg);
+    u32 getGender();
+    void set(u32 id, u32 type, void *s);
+    u32 isValid();
 
     /* 0x00 */ u8 unk_00[0xa];
     /* 0x0a */ u8 unk_0a;
     /* 0x0b */ u8 unk_0b;
 };
 
-extern "C" u32 func_02003098(Unk_02002fc8 *o);
-extern "C" u32 func_02003084(u32 t);
-extern "C" u32 func_02002fec(u32 id);
-extern "C" u32 func_02003008(u32 t);
-extern "C" void func_0200303c(void *buf, u32 size, u32 arg, u32 idx);
+extern "C" u32 VillagerId_GetPersonality(VillagerId *o);
+extern "C" u32 Villager_PersonalityToGender(u32 t);
+extern "C" u32 VillagerId_IsValidSpecies(u32 id);
+extern "C" u32 Villager_PersonalityToVoiceType(u32 t);
+extern "C" void Villager_MakePersonalityFileName(void *buf, u32 size, u32 arg, u32 idx);
 
 extern "C" void func_02002918(void);
 extern "C" void func_02002ab0(void *p);

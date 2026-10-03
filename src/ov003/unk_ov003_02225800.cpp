@@ -1195,7 +1195,7 @@ BOOL func_02072e88(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 void *func_02095204(s32 a);
-Unk_ov003_02227f20_Slot *func_02081708(s32 i);
+Unk_ov003_02227f20_Slot *NpcRegistry_FindVillager(s32 i);
 s32 func_020e9650(void *a, void *b);
 void func_ov068_022687c0(void *p);
 BOOL File_Exists(char *s);
@@ -9379,7 +9379,7 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
             u8 i;
             void *pv = &e->unk_204;
             for (i = 0; i < 8; i++) {
-                o = func_02081708(i);
+                o = NpcRegistry_FindVillager(i);
                 if (o) {
                     s32 lim = e->unk_224;
                     if (func_020e9650(pv, (u8 *)o + 0x5c) < lim) {

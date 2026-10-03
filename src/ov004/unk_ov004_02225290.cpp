@@ -182,10 +182,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -196,7 +196,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -278,7 +278,7 @@ public:
     /* 0x250 */ Unk_ov004_02224cf4 unk_250;
 };
 
-class Unk_ov004_0224d618 : public Unk_ov004_0224d4e8, public Unk_020ddcf0 {
+class Unk_ov004_0224d618 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
 public:
     Unk_ov004_0224d618();
     virtual ~Unk_ov004_0224d618();

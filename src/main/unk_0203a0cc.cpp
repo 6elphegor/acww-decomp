@@ -395,8 +395,8 @@ void func_020e98f4(void *out, void *a, s32 n);
 void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 void WorldCurve_Update(void *a, void *b);
-s32 func_02081640(s32 a);
-Unk_0203be94_Obj *func_0208175c(s32 i);
+s32 NpcRegistry_PickRandomVillager(s32 a);
+Unk_0203be94_Obj *NpcRegistry_GetVillager(s32 i);
 void *PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *s, s32 a);
 void *func_020b50dc();
@@ -620,14 +620,14 @@ BOOL Unk_020d93b8::vfunc_00() {
         s32 *g = &data_020d9250;
         s32 i = *g;
         if (i == 8) {
-            p = (Unk_0203be94_Obj *)func_02081640((s32)g);
+            p = (Unk_0203be94_Obj *)NpcRegistry_PickRandomVillager((s32)g);
         } else {
             i = i + 1;
             if (i == 8) {
                 i = (s32)p;
             } else {
                 while (i != data_020d9250) {
-                    p = func_0208175c(i);
+                    p = NpcRegistry_GetVillager(i);
                     if (p) {
                         if (p->vfunc_a8()) break;
                     }

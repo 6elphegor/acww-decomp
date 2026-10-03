@@ -1,10 +1,10 @@
 #include "types.h"
 
 // Base of the object below (vtable 0x020ddcf0); all members live in other units
-class Unk_020ddcf0 {
+class TalkMsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -15,7 +15,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -40,10 +40,10 @@ public:
 };
 
 // Library base (ctor/dtor and virtuals are defined in the unit of vtable 0x020d770c)
-class Unk_020d7714 : public Unk_020ddcf0 {
+class ActorTalkRequest : public TalkMsgRequest {
 public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
+    ActorTalkRequest();
+    virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
@@ -66,12 +66,12 @@ public:
     u32 pad_44[0xb0 / 4 - 0x11];
 };
 
-class Unk_020d8b38 : public Unk_020d7714 {
+class SpNpcTalkRequest : public ActorTalkRequest {
 public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
+    SpNpcTalkRequest();
+    virtual ~SpNpcTalkRequest();
 };
 
-Unk_020d8b38::Unk_020d8b38() {}
+SpNpcTalkRequest::SpNpcTalkRequest() {}
 
-Unk_020d8b38::~Unk_020d8b38() {}
+SpNpcTalkRequest::~SpNpcTalkRequest() {}

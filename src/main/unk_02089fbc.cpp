@@ -126,7 +126,7 @@ BOOL Input_IsTouchTrig();
 void Input_SetButtonMode();
 void Input_SetTouchMode();
 s32 Input_StoreMode();
-BOOL func_0203e2f4();
+BOOL TalkRequest_IsActive();
 u32 PlayerActor_GetAction(s32 a);
 void Camera_SetPresetCell(u32 a, u32 b);
 BOOL Input_IsTouchTrigInRect(s32 x0, s32 x1, s32 y0, s32 y1);
@@ -878,7 +878,7 @@ void HudClock::updateHiding() {
 u32 HudClock::canShow() {
     u32 r = unk_4e;
     if (r != 0) {
-        BOOL t = func_0203e2f4();
+        BOOL t = TalkRequest_IsActive();
         BOOL a = PlayerActor_IsInAction(2, 4);
         BOOL b = MenuCtrl_IsMenuOpen();
         BOOL f5 = FALSE;
@@ -1398,7 +1398,7 @@ void HudCountdown::updateHiding() {
 u8 HudCountdown::canShow() {
     u8 r = unk_98;
     if (r != 0) {
-        s32 a = func_0203e2f4();
+        s32 a = TalkRequest_IsActive();
         s32 b = MenuCtrl_IsMenuOpen();
         BOOL c = FALSE;
         if (a != 0 && b == 0) c = TRUE;
@@ -2016,7 +2016,7 @@ BOOL HudCameraButton::isHidden() {
 
 BOOL HudCameraButton::canShow() {
     BOOL a;
-    if (func_0203e2f4()) {
+    if (TalkRequest_IsActive()) {
         a = TRUE;
     } else {
         a = FALSE;

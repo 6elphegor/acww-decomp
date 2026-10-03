@@ -99,9 +99,9 @@ struct Unk_02082d74_M {
     ~Unk_02082d74_M();
 };
 
-class Unk_020e09ac : public GameProc {
+class NpcSpawner : public GameProc {
 public:
-    virtual ~Unk_020e09ac();
+    virtual ~NpcSpawner();
     /* 0x50 */ Unk_02082d74_M unk_50;
 };
 
@@ -130,7 +130,7 @@ extern Unk_02082e80_Grid *data_021c47c4;
 }
 
 extern "C" {
-extern u8 data_020cf1d0[], data_020cf208[], data_020cf1d8[], data_020e0a78[];
+extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
 }
 
 extern "C" {
@@ -138,7 +138,7 @@ extern s32 data_020cf1bc[];
 }
 
 extern "C" {
-extern s32 data_020cf1c8;
+extern s32 sVisitorSpawnTableCount;
 }
 
 extern "C" {
@@ -230,15 +230,15 @@ s32 func_02083b84();
 }
 
 extern "C" {
-s32 func_02083bc8(void *tbl, s32 x);
+s32 Visitor_FindActiveEventEntry(void *tbl, s32 x);
 }
 
 extern "C" {
-s32 func_02083de8(void *a, void *b, s32 c);
+s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
 }
 
 extern "C" {
-s32 func_02083e10(void *a, void *b, s32 c);
+s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 }
 
 extern "C" {
@@ -246,7 +246,7 @@ void func_0209d498(void *p);
 }
 
 extern "C" {
-s32 func_02084de0(s32 a, void *p);
+s32 Event_IsActive(s32 a, void *p);
 }
 
 extern "C" {
@@ -301,10 +301,10 @@ Unk_020e085c::~Unk_020e085c() {}
 struct Unk_02082dd0_V { s32 x, y, z; };
 
 extern "C" {
-BOOL func_0208310c(BOOL flag);
+BOOL Visitor_FindBlanca(BOOL flag);
 }
 
 extern "C" {
-BOOL func_0208323c(BOOL flag);
+BOOL Visitor_FindKaitlin(BOOL flag);
 }
 

@@ -9,8 +9,8 @@
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
-#define func_02002fc8 _ZN12Unk_02002fc813func_02002fc8Ej
-#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define VillagerId_getName _ZN10VillagerId7getNameEj
+#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
 #define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
@@ -26,8 +26,8 @@ extern "C" {
 BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(void *self, s32 x, s32 a, s32 b);
-void func_02002fc8(s32 a, void *buf);
-s32 func_020805c4(void *self);
+void VillagerId_getName(s32 a, void *buf);
+s32 VillagerData_getVillagerId(void *self);
 void func_02094018(void *p);
 void func_02094030(void *p);
 void func_020940d0(s32 a, void *buf);
@@ -76,9 +76,9 @@ void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 s32 func_020978c8(void *a, s32 b);
 void *PlayerData_GetResident(void *a, s32 b);
-s32 func_0207bf84(void *a, s32 b);
-void *func_0207bf60(void *a, s32 b);
-s32 func_0207f854(void *a, s32 b);
+s32 SaveVillagers_IsOccupied(void *a, s32 b);
+void *SaveVillagers_Get(void *a, s32 b);
+s32 Villager_FindMemory(void *a, s32 b);
 BOOL MenuCtrl_IsButtons();
 void func_0200212c(s32 a);
 s32 func_0200273c(s32 a);
@@ -113,7 +113,7 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchPressX;
 extern u8 gTouchPressY;
-extern u8 data_021edb5c[];
+extern u8 gTalkMsgIndexEnd[];
 }
 
 void operator delete(void *p);
@@ -348,28 +348,28 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
 };
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    void func_02067940();
-    void func_0206794c();
-    s32 func_02067958();
-    void func_02067978(Unk_020ddcf0 *p);
-    void func_02067a60();
-    void func_02067a6c();
-    void func_02067a78();
-    void func_02067abc(u8 *a, void *b);
+    void setKeepSe();
+    void disableInput();
+    s32 detachRequest();
+    void attachRequest(TalkMsgRequest *p);
+    void setAdvancePending();
+    void unlockAdvance();
+    void lockAdvance();
+    void setNextMessageIfUnset(u8 *a, void *b);
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
-extern "C" Unk_020660f8 *func_02067918(s32 a);
+extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Overlay 2 classes
@@ -702,9 +702,9 @@ public:
     void func_ov002_02204394(u8 *a, s32 b, u32 c);
 
     /* 0x00 */ Unk_ov002_02204468 unk_00;
-    /* 0xc0 */ Unk_020ddcf0 unk_c0;
+    /* 0xc0 */ TalkMsgRequest unk_c0;
     /* 0xe0 */ u8 unk_e0[0x1c];
-    /* 0xfc */ Unk_020660f8 *unk_fc;
+    /* 0xfc */ TalkWindowState *unk_fc;
     /* 0x100 */ u8 unk_100[4];
     /* 0x104 */ u8 unk_104;
     /* 0x105 */ u8 unk_105;
@@ -1480,13 +1480,13 @@ void func_ov002_02201984(s32 x, s32 y) {
 void func_ov002_02201958(s32 a, s32 b) {
     u32 buf[7];
     func_02094030(buf);
-    func_02002fc8(b, buf);
+    VillagerId_getName(b, buf);
     MsgString_copy((void *)a, buf);
     func_02094018(buf);
 }
 
 void func_ov002_02201938(s32 x, s32 y) {
-    func_ov002_02201958(x, func_020805c4(func_0207bf60(data_021dfd8c, y)));
+    func_ov002_02201958(x, VillagerData_getVillagerId(SaveVillagers_Get(data_021dfd8c, y)));
 }
 
 void func_ov002_022018e4(s32 unused, s32 x, u32 id) {
@@ -1540,8 +1540,8 @@ void Unk_ov002_022013ac::func_ov002_022017c4()
     k = 5;
     j = 0;
     do {
-        if (func_0207bf84(data_021dfd8c, j)) {
-            if (func_0207f854(func_0207bf60(data_021dfd8c, j), g)) {
+        if (SaveVillagers_IsOccupied(data_021dfd8c, j)) {
+            if (Villager_FindMemory(SaveVillagers_Get(data_021dfd8c, j), g)) {
                 unk_2d8[n] = k;
                 n++;
             }

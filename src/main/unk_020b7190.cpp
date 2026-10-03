@@ -113,10 +113,10 @@ void func_020e9888(void *a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
 u16 *func_02094440(void);
 u32 func_020b50e8(void);
-BOOL func_0203d64c(void);
+BOOL TalkRequest_IsTalking(void);
 BOOL func_0203d878(void);
 BOOL func_0203d7ec(void);
-void *func_02067918(s32 a);
+void *TalkWindow_Get(s32 a);
 BOOL MenuCtrl_IsMenuOpen(void);
 BOOL func_0206e5ec(void);
 BOOL func_0206ed8c(void);
@@ -264,10 +264,10 @@ extern "C" void func_020b7914(s32 arg) {
     BOOL ok = v;
     if (!((u8)(r + 0xf4) <= 2 || (u8)(r + 0xd2) <= 1)) ok = TRUE;
     if (ok) {
-        BOOL a = func_0203d64c() || func_0203d878() || func_0203d7ec();
+        BOOL a = TalkRequest_IsTalking() || func_0203d878() || func_0203d7ec();
         s32 b = 0;
         if (a) {
-            u32 *t = (u32 *)func_02067918(b);
+            u32 *t = (u32 *)TalkWindow_Get(b);
             s32 c = b;
             if (t && t[1]) c = 1;
             if (MenuCtrl_IsMenuOpen()) {

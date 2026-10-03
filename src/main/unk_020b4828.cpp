@@ -265,7 +265,7 @@ u8 func_020a5f08();
 void func_020a5f18(s32);
 void func_02041104();
 void Character_ResetList();
-void func_0203e308();
+void TalkRequestQueue_StartInitial();
 void func_02038fb0();
 void func_0203498c();
 void func_0209035c();
@@ -274,7 +274,7 @@ void func_02034938();
 void func_0205b848();
 void func_02081d00();
 void func_02077e30();
-void func_02081784();
+void NpcRegistry_Clear();
 void func_0205fff4();
 void func_0205ed9c();
 void func_0205f054();
@@ -797,7 +797,7 @@ BOOL Unk_020b5844::func_020b58f0(u32, u32) {
     func_020abe58();
     func_02077e4c();
     func_02081d08();
-    func_02081784();
+    NpcRegistry_Clear();
     func_0205b864(gCurrentHeap);
     func_0209c540();
     if (func_020b50e8() == 0x2c || func_020b50e8() == 0x2d) {
@@ -824,7 +824,7 @@ BOOL Unk_020b5844::func_020b5844(u32, u32) {
     data_021ce63c = 0;
     func_020b49ac((u8*)&data_021ef378);
     gVBlanksPerFrame = 3;
-    func_0203e308();
+    TalkRequestQueue_StartInitial();
     if (func_020b50e8() == 0x2e || func_020b50e8() == 0xd || func_020b50e8() == 0x2f)
         func_02038fb0();
     func_0203498c();
@@ -874,7 +874,7 @@ BOOL Unk_020e4238::vfunc_0c() {
     func_0205b848();
     func_02081d00();
     func_02077e30();
-    func_02081784();
+    NpcRegistry_Clear();
     func_0205fff4();
     func_0205ed9c();
     func_0205f054();

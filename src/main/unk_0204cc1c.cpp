@@ -348,9 +348,9 @@ extern u32 data_020c8cb8;
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void *Heap_AllocTail(void *heap, s32 size);
 void func_020e885c(u32 v);
-u32 func_0207bf60(u32 *a, s32 b);
-s32 _ZN12Unk_0207e94013func_0207f07cEPiS0_(u32 h, s32 *a, s32 *b);
-u32 _ZN12Unk_0207e94013func_0207f04cEv(u32 h);
+u32 SaveVillagers_Get(u32 *a, s32 b);
+s32 _ZN20VillagerDataItemView13func_0207f07cEPiS0_(u32 h, s32 *a, s32 *b);
+u32 _ZN20VillagerDataItemView13func_0207f04cEv(u32 h);
 void func_0207e568(u32 h, void *p);
 void File_ReadRangeByPath(u32 a, void *dst, s32 size, s32 off);
 void *File_LoadAlloc(u32 a, void *heap, s32 b, s32 *sizeOut);
@@ -1829,9 +1829,9 @@ extern "C" void func_0204d280(Unk_0204d0a4 *p) {
 extern "C" Unk_0204d0f4_Info *func_0204d22c(u16 *dst, u32 b, void *heap) {
     Unk_0204d0f4_Info *p = Ns_0204cc48::func_0204ee64(1, heap);
     if (p) {
-        u32 h = func_0207bf60(&data_021dfd8c, b);
+        u32 h = SaveVillagers_Get(&data_021dfd8c, b);
         if (h) {
-            p->a = _ZN12Unk_0207e94013func_0207f04cEv(h);
+            p->a = _ZN20VillagerDataItemView13func_0207f04cEv(h);
         } else {
             p->a = 0x1010;
         }
@@ -1850,8 +1850,8 @@ extern "C" BOOL func_0204d1dc(u16 *dst, u32 b, void *heap) {
     x = 2;
     y = 0;
     r = FALSE;
-    h = func_0207bf60(&data_021dfd8c, b);
-    if (h) _ZN12Unk_0207e94013func_0207f07cEPiS0_(h, &x, &y);
+    h = SaveVillagers_Get(&data_021dfd8c, b);
+    if (h) _ZN20VillagerDataItemView13func_0207f07cEPiS0_(h, &x, &y);
     if (h) {
         if (func_0204cdf0(dst, x, y, heap)) {
             func_0207e568(h, dst);
@@ -2110,9 +2110,9 @@ extern "C" void *func_0204cc90(void *a, s32 *b, s32 c, s32 d, void *heap) {
 }
 
 extern "C" void *func_0204cc48(void *a, s32 *b, s32 c, void *d) {
-    u32 h = func_0207bf60(&data_021dfd8c, c);
+    u32 h = SaveVillagers_Get(&data_021dfd8c, c);
     s32 x = 2, y = 0;
-    if (h && _ZN12Unk_0207e94013func_0207f07cEPiS0_(h, &x, &y)) {
+    if (h && _ZN20VillagerDataItemView13func_0207f07cEPiS0_(h, &x, &y)) {
         return func_0204cc90(a, b, x, y, d);
     }
     return 0;

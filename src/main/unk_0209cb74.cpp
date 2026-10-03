@@ -93,7 +93,7 @@ s32 func_0209ce48(u32 y, u32 m);
 s32 func_0209ceac(u32 a, u32 b, u32 c);
 
 void _ZN11SaveRecord413func_0209ea60Ev(void *);
-void func_02084f48(void);
+void NpcSpawn_ResetAll(void);
 void func_02084ecc(void);
 void func_02079c7c(void *);
 void func_020850e0(void);
@@ -166,7 +166,7 @@ public:
 
 extern "C" void SaveData_Apply(u8 *p) {
     _ZN11SaveRecord413func_0209ea60Ev(p + 0x15fc5);
-    func_02084f48();
+    NpcSpawn_ResetAll();
     func_02084ecc();
     func_02079c7c(p + 0x8a3c);
     func_020850e0();

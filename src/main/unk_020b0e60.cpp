@@ -363,7 +363,7 @@ void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *q, u32 n);
 void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
 BOOL _ZN12Unk_020cbb1813func_020729ccEj(void *p, u32 a);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
-BOOL func_0207bf60(void *a, u32 b);
+BOOL SaveVillagers_Get(void *a, u32 b);
 u32 func_0207e278(void);
 void func_02084ffc(void);
 void func_0208627c(void *a);
@@ -1591,7 +1591,7 @@ extern "C" BOOL func_020b1454(Obj *o, s32 v) {
 }
 
 extern "C" u32 func_020b1428(s32 v) {
-    if (func_0207bf60(&data_021dfd8c, v)) {
+    if (SaveVillagers_Get(&data_021dfd8c, v)) {
         if (func_0207e278() == 2) {
             return TRUE;
         }

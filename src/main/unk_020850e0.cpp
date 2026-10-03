@@ -92,13 +92,13 @@ void _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(void *self, void *src)
 void _ZN12Unk_0208581013func_02085908Ev(void *self);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 MI_CpuCopy8(void *, void *, s32);
-void *func_0207bf60(void *, s32);
-void *_ZN12VillagerData13func_020805c4Ev(void *);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *);
-u8 *_ZN12Unk_0207e94013func_0207f170Ev(...);
+void *SaveVillagers_Get(void *, s32);
+void *_ZN12VillagerData13getVillagerIdEv(void *);
+s32 _ZN10VillagerId7isValidEv(void *);
+u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 void func_02076a6c(void *, s32, s32);
 void func_02076b08(void *, s32, s32);
-s32 func_02083e60(void *);
+s32 VisitorSchedule_Clear(void *);
 void func_0208403c(void *);
 BOOL func_02072e88(void *, u32);
 s32 func_020b50e8();
@@ -136,7 +136,7 @@ void _ZN12Unk_02086b7c13func_02086c00Ev(void *);
 void func_020030e8(...);
 void _ZN8PlayerId13func_02094294Ev(...);
 s32 func_02063b8c(s32);
-s32 func_0207bcfc(u32, s32, s32);
+s32 Random_PickSetBit(u32, s32, s32);
 s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void func_0204edf8(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
@@ -335,12 +335,12 @@ extern "C" s32 func_02085580(u32 v)
 
 extern "C" s32 func_020854e0(void *obj, void *grid)
 {
-    void *k = _ZN12VillagerData13func_020805c4Ev(obj);
+    void *k = _ZN12VillagerData13getVillagerIdEv(obj);
     s32 r = 0;
     s32 i, sx, sy, z1, z2, v;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(k) != 0) {
+    if (_ZN10VillagerId7isValidEv(k) != 0) {
         u32 mask = r;
-        u8 *q = _ZN12Unk_0207e94013func_0207f170Ev(obj);
+        u8 *q = _ZN20VillagerDataItemView11getHousePosEv(obj);
         sx = q[0];
         sy = q[1];
         s32 *d = (s32 *)data_021cdd38;
@@ -461,8 +461,8 @@ extern "C" void func_02085290(void *self)
             best = -1;
             cnt = 0;
             for (i = 0; i < 8; i++) {
-                void *o = func_0207bf60(data_021dfd8c, i);
-                if (o != NULL && _ZN12Unk_02002fc813func_020030b4Ev(_ZN12VillagerData13func_020805c4Ev(o)) != 0) {
+                void *o = SaveVillagers_Get(data_021dfd8c, i);
+                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
                     s32 v = func_020854e0(o, grid);
                     if (v > best) {
                         mask = (u8)(1 << i);
@@ -478,9 +478,9 @@ extern "C" void func_02085290(void *self)
             if (cnt == 0 || w > best || (w > 0 && w == best && func_02063b8c(2) == 0)) {
                 _ZN12Unk_0208581013func_020858b0EP17Unk_02085810_Base(self, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
             } else {
-                void *o = func_0207bf60(data_021dfd8c, func_0207bcfc(mask, cnt, 8));
-                if (o != NULL && _ZN12Unk_02002fc813func_020030b4Ev(_ZN12VillagerData13func_020805c4Ev(o)) != 0) {
-                    _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(self, _ZN12VillagerData13func_020805c4Ev(o));
+                void *o = SaveVillagers_Get(data_021dfd8c, Random_PickSetBit(mask, cnt, 8));
+                if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
+                    _ZN12Unk_0208581013func_02085870EP16Unk_02085810_Rec(self, _ZN12VillagerData13getVillagerIdEv(o));
                 }
             }
         }

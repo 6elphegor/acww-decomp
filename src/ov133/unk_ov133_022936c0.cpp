@@ -119,7 +119,7 @@ public:
 
 class PlayerId {
 public:
-    s32 func_0209411c();
+    s32 getGender();
 };
 
 class Unk_ov090_022921e0 {
@@ -627,7 +627,7 @@ void Unk_ov133_022952bc::func_ov133_02294bc4() {
     unk_9d = 0;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
-        if (((PlayerId *)((PlayerData *)p)->getPlayerId())->func_0209411c() == 0) {
+        if (((PlayerId *)((PlayerData *)p)->getPlayerId())->getGender() == 0) {
             Snd_SetKeySeMode(0);
             return;
         }

@@ -114,7 +114,7 @@ void func_020e7968(void *, u32);
 void func_0206df78();
 BOOL func_0203d4d4();
 s32 func_020b50e8();
-BOOL func_0203e2f4();
+BOOL TalkRequest_IsActive();
 s32 func_0201188c();
 void func_0203da24(u32);
 void func_0206dfe4();
@@ -479,7 +479,7 @@ BOOL MenuManager::onExecute() {
     if (func_0203d4d4()) return TRUE;
     if (func_020b50e8() == 6) return TRUE;
     if (data_021d726c) return TRUE;
-    if (func_0203e2f4()) return TRUE;
+    if (TalkRequest_IsActive()) return TRUE;
     if (MenuCtrl_IsIdle()) {
         if (gTouchHeld && gTouchChanged) r = TRUE;
         else r = FALSE;

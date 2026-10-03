@@ -94,7 +94,7 @@ u8 *Text_GetSpecialCharStr1(void);
 s32 Text_ToUpper(s32 v);
 BOOL PlayerData_GetCurrent(void);
 s32 _ZN10PlayerData11getPlayerIdEv(void);
-BOOL _ZN8PlayerId13func_0209411cEv(void);
+BOOL _ZN8PlayerId9getGenderEv(void);
 void _ZN12BmgReader512D1Ev(void *);
 void _ZN16MailTextExpanderD1Ev(void *);
 void _ZN16MailTextExpanderC1EP18Unk_020d94e8_Owner(void *, void *);
@@ -419,7 +419,7 @@ void MailTextExpander::selectByUnkCondition(s32 sel) {
     unk_28.getStrings2(&a, &b);
     if (PlayerData_GetCurrent()) {
         _ZN10PlayerData11getPlayerIdEv();
-        if (_ZN8PlayerId13func_0209411cEv() == 0) {
+        if (_ZN8PlayerId9getGenderEv() == 0) {
             if (a != 0) {
                 pushText((u8 *)a);
             }

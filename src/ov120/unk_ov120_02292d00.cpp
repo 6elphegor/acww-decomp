@@ -119,7 +119,7 @@ void *PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
 s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
-BOOL func_0207bf84(void *a, s32 b);
+BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void MIi_CpuCopy16(void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
@@ -1013,7 +1013,7 @@ void Unk_ov120_02295010::func_ov120_02293cfc() {
         n++;
     }
     for (i = 0; i < 8; i++) {
-        if (func_0207bf84(data_021dfd8c, i)) {
+        if (SaveVillagers_IsOccupied(data_021dfd8c, i)) {
             unk_24e4[n] = i + 6;
             n++;
         }

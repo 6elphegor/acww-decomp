@@ -177,11 +177,11 @@ s32 func_020b50e8();
 }
 
 extern "C" {
-s32 func_02081640(s32 a);
+s32 NpcRegistry_PickRandomVillager(s32 a);
 }
 
 extern "C" {
-Unk_0203be94_Obj *func_0208175c(s32 i);
+Unk_0203be94_Obj *NpcRegistry_GetVillager(s32 i);
 }
 
 extern "C" {

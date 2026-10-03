@@ -89,7 +89,7 @@ s32 Item_IsFurniture(u16 *p);
 u32 Item_GetFurnitureIndex(u16 *p);
 void _ZN12Unk_020d771013func_02014e60EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_0201442013func_02014ce4EPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
-void _ZN12Unk_020d771413func_0201578cEjjj(void *p, u16 *q, s32 a, s32 b);
+void _ZN16ActorTalkRequest13func_0201578cEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void func_02063388(Unk_0202368c_Obj *o);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -97,9 +97,9 @@ void func_0203ffa4(s32 v);
 BOOL func_0202e1cc(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
-BOOL func_0201bd84(s32 v);
+BOOL NpcActor_IsFrontAngle(s32 v);
 void func_020e7518(void *p);
-BOOL _ZN12Unk_020d77a413func_0201bcbcEPS_(void *p, void *q);
+BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -112,7 +112,7 @@ void func_0204edd8(Unk_ov078_Vec *a, Unk_ov078_Vec *b);
 BOOL func_02077f40(Unk_ov078_Vec *a, s32 b);
 BOOL func_0201a834(void *p);
 void func_0201a900(void *out, Unk_ov078_Vec *a, Unk_ov078_Vec *b, s32 c);
-void func_0203d67c(void *p);
+void TalkRequest_EndTalkWith(void *p);
 void *func_020850e0();
 Unk_020868cc *func_0208516c(void *p);
 
@@ -124,15 +124,15 @@ struct Unk_020868cc {
     void func_020868dc(s32 a, s32 b);
 };
 
-struct Unk_020660f8 {
-    void func_02067a84(u8 *a, void *b);
-    s32 func_02067a3c(s32 idx, void *p);
+struct TalkWindowState {
+    void setNextMessage(u8 *a, void *b);
+    s32 setSlot(s32 idx, void *p);
 };
 
-class Unk_020d7714 {
+class ActorTalkRequest {
 public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
+    ActorTalkRequest();
+    virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -143,7 +143,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 v);
     virtual void vfunc_3c();
@@ -167,15 +167,15 @@ public:
     virtual void vfunc_88();
     void *func_02015aac();
     void func_02015ab0(u32 p);
-    ChoiceList *func_02015a5c();
+    ChoiceList *getChoiceList();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
-    Unk_020660f8 *unk_3c;
+    TalkWindowState *unk_3c;
     u8 pad_40[0xac - 0x40];
 };
 
-class Unk_020ddcf0 : public Unk_020d7714 {
+class TalkMsgRequest : public ActorTalkRequest {
 public:
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -184,14 +184,14 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_64();
     virtual void vfunc_68();
     virtual void vfunc_70();
     virtual void vfunc_74();
 };
 
-class Unk_020d7710 : public Unk_020ddcf0 {
+class Unk_020d7710 : public TalkMsgRequest {
 public:
     virtual void vfunc_50();
     virtual void vfunc_54();
@@ -202,10 +202,10 @@ public:
     virtual void vfunc_88();
 };
 
-class Unk_020d8b38 : public Unk_020d7710 {
+class SpNpcTalkRequest : public Unk_020d7710 {
 public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
+    SpNpcTalkRequest();
+    virtual ~SpNpcTalkRequest();
 };
 
 struct ItemId {
@@ -214,7 +214,7 @@ struct ItemId {
     ~ItemId();
 };
 
-class Unk_ov078_0227245c : public Unk_020d8b38 {
+class Unk_ov078_0227245c : public SpNpcTalkRequest {
 public:
     Unk_ov078_0227245c();
     virtual ~Unk_ov078_0227245c();
@@ -341,26 +341,26 @@ public:
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
     virtual void vfunc_64();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 v);
-    virtual void vfunc_78();
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual void getName(u32 v);
+    virtual void getGender();
     virtual void vfunc_7c();
     virtual void vfunc_80();
-    virtual void vfunc_84();
-    virtual void vfunc_88();
+    virtual void getSpecies();
+    virtual void setShirt();
     virtual void vfunc_8c();
     virtual void vfunc_90();
     virtual void vfunc_94();
     virtual void vfunc_98();
     virtual void vfunc_9c();
     virtual void vfunc_a0();
-    virtual void vfunc_a4();
+    virtual void addMood();
     virtual s32 vfunc_a8();
 
-    void func_0201bc28(Unk_0201bc1c *p);
-    void *func_0201bc4c(u32 v);
+    void setTalkRequest(Unk_0201bc1c *p);
+    void *getPlayerActor(u32 v);
 
     u16 unk_ea;
     Unk_020dbd74 unk_ec;
@@ -389,11 +389,11 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL preDelete();
-    virtual void vfunc_74(u32 v);
-    virtual void vfunc_78();
+    virtual void getName(u32 v);
+    virtual void getGender();
     virtual void vfunc_7c();
     virtual void vfunc_80();
-    virtual void vfunc_84();
+    virtual void getSpecies();
     virtual s32 vfunc_a8();
 
     Unk_020e06dc unk_640;
@@ -410,9 +410,9 @@ public:
     virtual BOOL vfunc_0c();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 v);
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
     virtual s32 vfunc_a8();
 
     BOOL func_ov078_02271a08();
@@ -538,7 +538,7 @@ BOOL Unk_ov078_022724ec::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
-    func_0201bc28((Unk_0201bc1c *)&unk_658);
+    setTalkRequest((Unk_0201bc1c *)&unk_658);
     unk_658.func_ov078_02271934(this);
     return TRUE;
 }
@@ -559,11 +559,11 @@ BOOL Unk_ov078_022724ec::vfunc_0c() {
     return TRUE;
 }
 
-u8 *Unk_ov078_022724ec::vfunc_6c() { return data_ov078_02272438; }
+u8 *Unk_ov078_022724ec::getTexturePath() { return data_ov078_02272438; }
 
-u8 *Unk_ov078_022724ec::vfunc_70() { return data_ov078_02272408; }
+u8 *Unk_ov078_022724ec::getModelPath() { return data_ov078_02272408; }
 
-BOOL Unk_ov078_022724ec::vfunc_68() {
+BOOL Unk_ov078_022724ec::updateAct() {
     BOOL result = FALSE;
     if (data_ov078_02272608[unk_654].exit != NULL) {
         result = (this->*data_ov078_02272608[unk_654].exit)();
@@ -585,7 +585,7 @@ BOOL Unk_ov078_022724ec::func_ov078_0227202c() { return TRUE; }
 
 BOOL Unk_ov078_022724ec::func_ov078_02272000() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
-        func_0203d67c(this);
+        TalkRequest_EndTalkWith(this);
         func_ov078_02272030(1);
     }
     return TRUE;
@@ -742,7 +742,7 @@ BOOL Unk_ov078_022724ec::func_ov078_02271ab4() {
                     v.z = gVec3Zero.z;
                     if (func_ov078_02271e5c(&v.x, &v.z)) {
                         r6 = Math_AngleXZ(&unk_5c, &v);
-                        if (func_0201bd84((s16)(r6 - unk_8e))) {
+                        if (NpcActor_IsFrontAngle((s16)(r6 - unk_8e))) {
                             r6 = 1;
                             if (func_02063b8c(4) == 0) {
                                 r6 = 2;
@@ -770,7 +770,7 @@ BOOL Unk_ov078_022724ec::func_ov078_02271ab4() {
                         w.x = q->x;
                         w.y = q->y;
                         w.z = q->z;
-                        if (func_0201bd84((s16)(Math_AngleXZ(&unk_5c, &w) - unk_8e)) == 0) {
+                        if (NpcActor_IsFrontAngle((s16)(Math_AngleXZ(&unk_5c, &w) - unk_8e)) == 0) {
                             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(p, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
                         }
                     }
@@ -801,7 +801,7 @@ BOOL Unk_ov078_022724ec::func_ov078_02271a0c() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a413func_0201bcbcEPS_(this, p);
+        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
     _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
     return TRUE;
@@ -849,7 +849,7 @@ void Unk_ov078_0227245c::vfunc_78(Unk_ov078_022717d8_Out *out) {
     }
     if (_ZN12Unk_0209ada413func_0209ad68Ev(func_0209a108(g)) != 0 && _ZN12Unk_0209ada413func_0209abc4Ev(func_0209a108(g)) == 0) {
         if (func_0209a0dc(g, &o)) {
-            unk_3c->func_02067a3c(0, &o);
+            unk_3c->setSlot(0, &o);
         }
         out->b = 9;
         return;
@@ -860,7 +860,7 @@ void Unk_ov078_0227245c::vfunc_78(Unk_ov078_022717d8_Out *out) {
     }
     if (func_0209a05c(g)) {
         if (func_0209a0dc(g, &o)) {
-            unk_3c->func_02067a3c(0, &o);
+            unk_3c->setSlot(0, &o);
         }
         out->b = 0xa;
     } else if (_ZN12Unk_0209ada413func_0209abc4Ev(func_0209a108(g)) == 1) {
@@ -923,7 +923,7 @@ void Unk_ov078_0227245c::vfunc_14() {
         func_02099014(_ZN12Unk_0209ada413func_0209ab94Ev(func_0209a108(g)), 2);
         _ZN12Unk_020d771013func_02014e60EPtjjj(this, _ZN12Unk_0209ada413func_0209ab94Ev(func_0209a108(g)), 2, 5, 0);
         if (func_0209a0dc(g, &o3)) {
-            unk_3c->func_02067a3c(0, &o3);
+            unk_3c->setSlot(0, &o3);
         }
         if (unk_1e != 10) {
             msg = 8;
@@ -936,12 +936,12 @@ void Unk_ov078_0227245c::vfunc_14() {
         ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
         unk_b4[0].unk_00 = h[1];
         func_02063388(&o1);
-        _ZN12Unk_020d771413func_0201578cEjjj(this, &unk_b4[0].unk_00, 1, 7);
+        _ZN16ActorTalkRequest13func_0201578cEjjj(this, &unk_b4[0].unk_00, 1, 7);
         _ZN12ItemPickSpec3setEii(&o2, 3, 0x23);
         ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
         unk_b4[1].unk_00 = h[2];
         func_02063388(&o2);
-        _ZN12Unk_020d771413func_0201578cEjjj(this, &unk_b4[1].unk_00, 2, 7);
+        _ZN16ActorTalkRequest13func_0201578cEjjj(this, &unk_b4[1].unk_00, 2, 7);
         msg = 0xd;
         break;
     case 0xe:
@@ -959,21 +959,21 @@ void Unk_ov078_0227245c::vfunc_14() {
             msg = 0x18;
         }
         unk_b0 = -2;
-        _ZN12Unk_020d771413func_0201578cEjjj(this, &h[0], 0, 7);
+        _ZN16ActorTalkRequest13func_0201578cEjjj(this, &h[0], 0, 7);
         _ZN12Unk_020d771013func_02014e60EPtjjj(this, &h[0], 0, 5, 0);
         func_02099014(&h[0], 0);
         break;
     }
     if (msg != 0) {
         b = msg;
-        unk_3c->func_02067a84(&b, s);
+        unk_3c->setNextMessage(&b, s);
     }
 }
 
 void Unk_ov078_0227245c::vfunc_18() {
     u8 b;
     u16 h[2];
-    s32 t = func_02015a5c()->getResult();
+    s32 t = getChoiceList()->getResult();
     u8 msg;
     u8 *s;
     h[0] = 0xfff1;
@@ -1014,7 +1014,7 @@ void Unk_ov078_0227245c::vfunc_18() {
     }
     if (msg != 0) {
         b = msg;
-        unk_3c->func_02067a84(&b, s);
+        unk_3c->setNextMessage(&b, s);
     }
 }
 
@@ -1031,12 +1031,12 @@ void Unk_ov078_022724ec::vfunc_4c(s32 v) {
     switch (v) {
     case 1:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)func_0201bc4c(4));
+        unk_658.func_02015ab0((u32)getPlayerActor(4));
         func_ov078_02272030(0);
         break;
     case 3:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0((u32)func_0201bc4c(4));
+        unk_658.func_02015ab0((u32)getPlayerActor(4));
         func_ov078_02272030(4);
         break;
     case 0:

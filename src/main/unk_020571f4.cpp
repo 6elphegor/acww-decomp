@@ -233,8 +233,8 @@ void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
 void func_020e7518(void *p);
-void func_0207bf60(void *p, u32 v);
-u32 func_0207f9a4();
+void SaveVillagers_Get(void *p, u32 v);
+u32 Villager_GetAnimalKind();
 
 // ---- own data (defined below / after the functions) ----
 extern const u8 data_020ca678[4];
@@ -318,8 +318,8 @@ extern "C" u32 func_020593e8(Unk_020593e8_Obj *o)
     s32 t = (s32)(b & 0xf000) >> 12;
     if (t != 0xd) {
       if (t == 0xe) {
-        func_0207bf60(data_021dfd8c, b & 0xfff);
-        switch (func_0207f9a4()) {
+        SaveVillagers_Get(data_021dfd8c, b & 0xfff);
+        switch (Villager_GetAnimalKind()) {
         case 0: case 5: case 6: case 10: case 12: case 15: case 16: case 21: case 25: case 31: case 32:
             r = 4; break;
         case 1: case 2: case 4: case 7: case 9: case 13: case 14: case 17: case 19: case 20: case 22: case 23: case 26: case 27: case 29:

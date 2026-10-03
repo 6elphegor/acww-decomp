@@ -22,7 +22,7 @@
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; Unk_020ddcf0 (secondary base of the derived classes) starts at 0x290.
+// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(s32), slot 20 takes a u32).
@@ -240,7 +240,7 @@ public:
 // ---------------------------------------------------------------- secondary base at +0x290 (vtable main 0x020ddcf0)
 // Unk_ov004_0224e2b8 overrides its slots 0x10, 0x14 and 0x18 with the functions its own vtable has at 0x68, 0x6c and
 // 0x70, so those three slots carry the names vfunc_68/6c/70 here (thunks _ZThn656_N18Unk_ov004_0224e2b88vfunc_68Ev ...).
-// Every other slot is named vfunc_sXX: main has a label _ZN12Unk_020ddcf09vfunc_sXXEv for each of them.
+// Every other slot is named vfunc_sXX: main has a label _ZN14TalkMsgRequest9vfunc_sXXEv for each of them.
 class MsgRequest {
 public:
     MsgRequest();
@@ -252,7 +252,7 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     /* 0x0000 */ u32 unk_00;
     /* 0x0004 */ s32 unk_04;
     /* 0x0008 */ s32 unk_08;
@@ -262,10 +262,10 @@ struct Unk_020660f8 {
     /* 0x16dc */ u8 unk_16dc[4];
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_68();
@@ -276,7 +276,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -296,7 +296,7 @@ public:
     virtual void vfunc_s74();
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
 };
 
@@ -342,15 +342,15 @@ class ChoiceList;
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define func_0203e47c _ZN9Character13func_0203e47cEi
 #define func_0203e488 _ZN9Character13func_0203e488Ei
-#define func_02067958 _ZN12Unk_020660f813func_02067958Ev
-#define func_02067978 _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0
-#define func_020679b4 _ZN12Unk_020660f813func_020679b4Ev
-#define func_020679c0 _ZN12Unk_020660f813func_020679c0Ei
-#define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
-#define func_02068290 _ZN12Unk_020ddc2413func_02068290Ev
-#define func_02068298 _ZN12Unk_020ddc2413func_02068298Ei
-#define func_0206829c _ZN12Unk_020ddc2413func_0206829cEv
-#define func_020682a4 _ZN12Unk_020ddc2413func_020682a4Ei
+#define TalkWindowState_detachRequest _ZN15TalkWindowState13detachRequestEv
+#define TalkWindowState_attachRequest _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest
+#define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
+#define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
+#define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
+#define func_02068290 _ZN9TalkVoice13func_02068290Ev
+#define func_02068298 _ZN9TalkVoice13func_02068298Ei
+#define func_0206829c _ZN9TalkVoice13func_0206829cEv
+#define func_020682a4 _ZN9TalkVoice13func_020682a4Ei
 #define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
 #define SaveData_clearFlag _ZN8SaveData9clearFlagEj
 #define SaveData_setFlag _ZN8SaveData7setFlagEj
@@ -368,7 +368,7 @@ extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
 extern Unk_ov004_02229970_Glob *data_020cbb18;
 extern u8 gSaveData[];
-extern u8 data_021edb60[];
+extern u8 gTalkMsgIndexNone[];
 extern s32 data_021c620c;
 
 void _ZN12Unk_020d8cf4C1Ev(void *self);
@@ -383,13 +383,13 @@ void func_020547cc(void *p, s32 a);
 void func_020547e4(void *p);
 BOOL func_02054800(void *p, s32 v);
 BOOL AnimFrameCtrl_isFinished(void *p);
-void func_0203e47c(void *self, Unk_020ddcf0 *sec);
-void func_0203e488(void *self, Unk_020ddcf0 *sec);
-void func_02067958(Unk_020660f8 *p);
-void func_02067978(Unk_020660f8 *p, Unk_020ddcf0 *sec);
-ChoiceList *func_020679b4(Unk_020660f8 *p);
-void func_020679c0(Unk_020660f8 *p, u32 v);
-void func_02067a84(Unk_020660f8 *p, u8 *src, const void *s);
+void func_0203e47c(void *self, TalkMsgRequest *sec);
+void func_0203e488(void *self, TalkMsgRequest *sec);
+void TalkWindowState_detachRequest(TalkWindowState *p);
+void TalkWindowState_attachRequest(TalkWindowState *p, TalkMsgRequest *sec);
+ChoiceList *TalkWindowState_getChoiceList(TalkWindowState *p);
+void TalkWindowState_openChoices(TalkWindowState *p, u32 v);
+void TalkWindowState_setNextMessage(TalkWindowState *p, u8 *src, const void *s);
 void func_02068290(void *p);
 void func_02068298(void *p, s32 a);
 void func_0206829c(void *p);
@@ -404,7 +404,7 @@ void ChoiceList_setEntry(ChoiceList *p, u32 i, u8 *b, u32 n, void *d, s32 z, s32
 void ChoiceList_reset(ChoiceList *p, u32 n, s32 v);
 BOOL func_020b68ec(Unk_020b6960 *o, void *box, s32 *pos, s32 w, s32 h, s32 d, s16 angle, s32 e, u8 f);
 void func_020b6928(Unk_020b6960 *o, void *p);
-s32 func_02067918(s32 a);
+s32 TalkWindow_Get(s32 a);
 BOOL func_0206ec6c();
 s32 func_0206ed18();
 BOOL func_0206eca4(u32 a);
@@ -414,8 +414,8 @@ BOOL func_020b6080(Unk_020b6960 *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b
 s32 func_020b6014(Unk_020b6960 *o, u32 a, u32 b);
 void *func_02095204(u32 x);
 void *func_020951ec(s32 v);
-void func_0203d704(void *p, s32 a);
-void func_0203d67c(void *p);
+void TalkRequest_AddPlayerTalk6(void *p, s32 a);
+void TalkRequest_EndTalkWith(void *p);
 BOOL InputMode_IsTouch();
 void func_0203cb80(u32 a);
 void func_0203cb48(u32 a);
@@ -428,7 +428,7 @@ void func_ov004_022248a0(void *p);
 void func_ov004_022248c4(void *p);
 }
 
-class Unk_ov004_0224e2b8 : public Unk_ov004_0224d4e8, public Unk_020ddcf0 {
+class Unk_ov004_0224e2b8 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
 public:
     Unk_ov004_0224e2b8();
     virtual BOOL vfunc_00();
@@ -536,8 +536,8 @@ Unk_ov004_0224e2b8 *func_ov004_0222a2cc();
 // Only this function: it needs mwcc 1.2/base (the rest of the unit is in the main file, built with 1.2/sp2).
 // It is the class's virtual at vtable slot 0x70 (and, through the thunk, the secondary base's slot 0x18).
 void Unk_ov004_0224e2b8::vfunc_70(u32 a_, u8 b_) {
-    Unk_020660f8 *p = unk_3c;
-    s32 t = ChoiceList_getResult(func_020679b4(p));
+    TalkWindowState *p = unk_3c;
+    s32 t = ChoiceList_getResult(TalkWindowState_getChoiceList(p));
     u32 r = 0;
     switch (unk_1e) {
     case 0xe:
@@ -630,6 +630,6 @@ void Unk_ov004_0224e2b8::vfunc_70(u32 a_, u8 b_) {
     }
     if (r) {
         u8 b = r;
-        func_02067a84(p, &b, data_ov004_022402a4);
+        TalkWindowState_setNextMessage(p, &b, data_ov004_022402a4);
     }
 }

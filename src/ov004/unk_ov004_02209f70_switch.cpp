@@ -4,7 +4,7 @@
 // switch tables): Unk_ov004_0224b43c::vfunc_80 and vfunc_7c. Same declarations as the main file of the unit;
 // nothing else is emitted here (see config/usa/arm9/overlays/ov004/object_order.txt).
 // ================================================================ library chain and TU02 helper classes (from the linked TU02 unit)
-struct Unk_020660f8 {
+struct TalkWindowState {
     /* 0x0000 */ u32 unk_00;
     /* 0x0004 */ s32 unk_04;
     /* 0x0008 */ s32 unk_08;
@@ -145,10 +145,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -159,7 +159,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -179,7 +179,7 @@ public:
     virtual void vfunc_s74();
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
 };
 
@@ -921,7 +921,7 @@ typedef char Unk_ov004_View25_Assert[sizeof(Unk_ov004_View25_Chk) == 0x840 - 0x1
 
 class Unk_ov004_0224882c;
 
-class Unk_ov004_0224882c : public Character, public Unk_020ddcf0 {
+class Unk_ov004_0224882c : public Character, public TalkMsgRequest {
 public:
     Unk_ov004_0224882c();
     virtual ~Unk_ov004_0224882c();
@@ -1417,8 +1417,8 @@ s32 *_ZN18Unk_ov004_022355ac19func_ov004_022354ecEv(void);
 u32 _ZN18Unk_ov004_022355ac19func_ov004_022354e0Ev(void *);
 
 u32 ItemInfo_IsReady(void);
-void func_0203d67c(void *);
-void func_0203d704(void *, s32);
+void TalkRequest_EndTalkWith(void *);
+void TalkRequest_AddPlayerTalk6(void *, s32);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, u32);
 }
 }

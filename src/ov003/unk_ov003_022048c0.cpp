@@ -82,7 +82,7 @@ public:
     /* 0xeb */ u8 pad_eb;
 };
 
-// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX, except 0x14 (main symbol _ZN12Unk_020ddcf08vfunc_14Ev).
+// Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX, except 0x14 (main symbol _ZN14TalkMsgRequest8vfunc_14Ev).
 class MsgRequest {
 public:
     MsgRequest();
@@ -102,18 +102,18 @@ public:
     u8 pad_04[0x18];
 };
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    s32 func_02067a3c(s32 idx, void *p);
+    s32 setSlot(s32 idx, void *p);
     u8 pad_00[4];
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -124,7 +124,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -143,10 +143,10 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f90(u8 *a, u32 b);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -157,9 +157,9 @@ struct Unk_02204930_Pad {
     ~Unk_02204930_Pad() {}
 };
 
-class Unk_02002fc8 {
+class VillagerId {
 public:
-    u32 func_02002fc8(u32 p);
+    u32 getName(u32 p);
 };
 
 // member at +0x134: the original constructs it with C2 (base-object constructor), so it is raw storage plus explicit calls
@@ -189,12 +189,12 @@ struct Unk_ov003_SceneEntry {
 
 extern "C" {
 extern u8 data_021dfd8c[];
-u8 *func_0207bf60(u8 *p, s32 i);
-Unk_02002fc8 *_ZN12VillagerData13func_020805c4Ev(u8 *p);
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+u8 *SaveVillagers_Get(u8 *p, s32 i);
+VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 BOOL _ZN12Unk_020b696013func_020b68a8EP12Unk_020b6a94P4Vec3S3_ih(Unk_020b6960 *self, Unk_020b6a94 *o, s32 *a, s32 b, s32 c, u8 d);
-BOOL func_0203d67c(void *p);
+BOOL TalkRequest_EndTalkWith(void *p);
 s32 func_020e9650(s32 *a, s32 *b);
 s32 func_020e780c(s32 a, s32 b);
 Unk_020b6960 *func_020b50b4();
@@ -206,7 +206,7 @@ void func_ov003_02204b20();
 class Unk_ov003_022309d0;
 
 // ---------------------------------------------------------------- Unk_ov003_022309d0
-class Unk_ov003_022309d0 : public Character, public Unk_020ddcf0 {
+class Unk_ov003_022309d0 : public Character, public TalkMsgRequest {
 public:
     Unk_ov003_022309d0();
     virtual BOOL vfunc_00();
@@ -351,16 +351,16 @@ BOOL Unk_ov003_022309d0::func_ov003_02204930() {
     _ZN9Character13func_0203e488Ei(this, this);
     setFileName("obj_etc_board");
     unk_1e = 0;
-    ((Unk_020660f8 *)unk_3c)->unk_08 = 1;
+    ((TalkWindowState *)unk_3c)->unk_08 = 1;
     Unk_020e1c64 buf;
-    _ZN12VillagerData13func_020805c4Ev(func_0207bf60(data_021dfd8c, *(s32 *)((u8 *)this + 8)))->func_02002fc8((u32)&buf);
-    ((Unk_020660f8 *)unk_3c)->func_02067a3c(0, &buf);
+    _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(data_021dfd8c, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
+    ((TalkWindowState *)unk_3c)->setSlot(0, &buf);
     return TRUE;
 }
 
 void Unk_ov003_022309d0::func_ov003_0220490c() {
     if (unk_3c) {
-        if (((Unk_020660f8 *)unk_3c)->unk_04) {
+        if (((TalkWindowState *)unk_3c)->unk_04) {
             func_ov003_02204a24(2);
         }
     }
@@ -372,9 +372,9 @@ BOOL Unk_ov003_022309d0::func_ov003_02204908() {
 
 void Unk_ov003_022309d0::func_ov003_022048d8() {
     if (unk_3c) {
-        if (((Unk_020660f8 *)unk_3c)->unk_04 == 0) {
+        if (((TalkWindowState *)unk_3c)->unk_04 == 0) {
             _ZN9Character13func_0203e47cEi(this, this);
-            func_0203d67c(this);
+            TalkRequest_EndTalkWith(this);
         }
     }
 }

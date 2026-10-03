@@ -1,12 +1,12 @@
 #include "types.h"
 
 extern "C" {
-u32 _ZN12Unk_020d77a413func_0201bc4cEj(void *p, s32 n);
-s32 _ZN12Unk_020d77a413func_0201bcf8EPS_i(void *p, void *q, s32 n);
-BOOL func_0203d67c(void *p);
-void _ZN12Unk_020d77a413func_0201bda8EPt(void *p, u16 *q);
-u32 _ZN12Unk_020d77a413func_0201bcbcEPS_(void *p, void *q);
-void _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(void *p, void *q);
+u32 _ZN12Unk_020d77a414getPlayerActorEj(void *p, s32 n);
+s32 _ZN12Unk_020d77a46isNearEPS_i(void *p, void *q, s32 n);
+BOOL TalkRequest_EndTalkWith(void *p);
+void _ZN12Unk_020d77a412setNpcHandleEPt(void *p, u16 *q);
+u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
 extern u16 data_020c6cc8;
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
 }
@@ -38,11 +38,11 @@ public:
     virtual ~ProcBase();
 };
 
-// ---- Unk_020e73b0 and its bases (vtable 0x020ddcf0 chain) ----
-class Unk_020ddcf0 {
+// ---- SpNpcTestTalk and its bases (vtable 0x020ddcf0 chain) ----
+class TalkMsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -53,7 +53,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -82,10 +82,10 @@ struct Unk_020c270c_Out {
     u8 flag;
 };
 
-class Unk_020d7714 : public Unk_020ddcf0 {
+class ActorTalkRequest : public TalkMsgRequest {
 public:
-    Unk_020d7714();
-    virtual ~Unk_020d7714();
+    ActorTalkRequest();
+    virtual ~ActorTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
@@ -111,28 +111,28 @@ public:
     u32 pad_44[(0xac - 0x44) / 4];
 };
 
-class Unk_020e73b0;
-typedef void (Unk_020e73b0::*Unk_020c2620_Fn)(void *);
-typedef void (Unk_020e73b0::*Unk_020c269c_Fn)(void *);
+class SpNpcTestTalk;
+typedef void (SpNpcTestTalk::*Unk_020c2620_Fn)(void *);
+typedef void (SpNpcTestTalk::*Unk_020c269c_Fn)(void *);
 
-class Unk_020e73b0 : public Unk_020d7714 {
+class SpNpcTestTalk : public ActorTalkRequest {
 public:
-    Unk_020e73b0();
-    virtual ~Unk_020e73b0();
+    SpNpcTestTalk();
+    virtual ~SpNpcTestTalk();
     virtual void vfunc_14(void *a);
     virtual void vfunc_78(Unk_020c270c_Out *out);
 
-    void func_020c2690(void *a);
-    void func_020c269c(Unk_020c270c_Out *out);
-    void func_020c270c(Unk_020c270c_Out *out);
-    void func_020c271c(s32 v);
-    void func_020c2724(u32 v);
+    void onMessageEndPhase00(void *a);
+    void dispatchStart(Unk_020c270c_Out *out);
+    void startPhase00(Unk_020c270c_Out *out);
+    void setPhase(s32 v);
+    void attachOwner(u32 v);
 
     s32 unk_ac;
     u32 unk_b0;
 };
 
-// ---- Unk_020e7440 and its bases (scene object derived from Unk_020d77a4) ----
+// ---- SpNpcTest and its bases (scene object derived from Unk_020d77a4) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -235,22 +235,22 @@ struct Unk_020d77a4 : Character {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void vfunc_60();
     virtual void vfunc_64();
-    virtual BOOL vfunc_68() = 0;
-    virtual const char *vfunc_6c() = 0;
-    virtual const char *vfunc_70() = 0;
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual BOOL updateAct() = 0;
+    virtual const char *getTexturePath() = 0;
+    virtual const char *getModelPath() = 0;
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88();
+    virtual u16 getSpecies();
+    virtual void setShirt();
     virtual void vfunc_8c();
     virtual void vfunc_90();
     virtual void vfunc_94();
     virtual void vfunc_98();
     virtual void vfunc_9c();
     virtual void vfunc_a0();
-    virtual void vfunc_a4();
+    virtual void addMood();
     virtual BOOL vfunc_a8();
 };
 
@@ -262,11 +262,11 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL preDelete();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
+    virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
     Unk_020e06dc unk_640;
@@ -275,47 +275,47 @@ public:
     u8 unk_650;
 };
 
-class Unk_020e7440;
-typedef BOOL (Unk_020e7440::*Unk_020c28b0_Fn)();
+class SpNpcTest;
+typedef BOOL (SpNpcTest::*Unk_020c28b0_Fn)();
 struct Unk_020c28b0_Entry {
     Unk_020c28b0_Fn a;
     Unk_020c28b0_Fn b;
 };
 
-class Unk_020e7440 : public Unk_020d8bc8 {
+class SpNpcTest : public Unk_020d8bc8 {
 public:
-    Unk_020e7440() {}
+    SpNpcTest() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual ~Unk_020e7440() {}
+    virtual ~SpNpcTest() {}
     virtual BOOL vfunc_48(void *p);
     virtual void vfunc_4c(s32 a);
-    virtual BOOL vfunc_68();
-    virtual const char *vfunc_6c();
-    virtual const char *vfunc_70();
+    virtual BOOL updateAct();
+    virtual const char *getTexturePath();
+    virtual const char *getModelPath();
 
-    BOOL func_020c2798();
-    BOOL func_020c27c8();
-    BOOL func_020c2804();
-    BOOL func_020c2808();
-    BOOL func_020c2834();
-    BOOL func_020c2878();
-    BOOL func_020c287c();
-    void func_020c28b0(s32 state);
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
-    Unk_020e73b0 unk_658;
+    SpNpcTestTalk unk_658;
     s16 unk_70c;
 };
 
 extern "C" {
-extern const u8 data_020d1c98[8];
-extern const char *const data_020d1ca0[];
+extern const u8 sSpNpcTestMsgKey[8];
+extern const char *const sSpNpcModelPaths[];
 }
 
-extern "C" Unk_020e7440 *func_020c29ec();
-extern Unk_020c28b0_Entry data_021f4728[4];
+extern "C" SpNpcTest *func_020c29ec();
+extern Unk_020c28b0_Entry sSpNpcTestActTable[4];
 extern char data_020e6c5c[23];
 extern char data_020e6c74[23];
 extern char data_020e6c8c[23];
@@ -406,10 +406,10 @@ char data_020e7220[] = "npc_sp/model/pga_tex.nsbtx";
 char data_020e7258[] = "npc_sp/model/pgb_tex.nsbtx";
 char data_020e7274[] = "npc_sp/model/plb_tex.nsbtx";
 struct Unk_020e6fbc_Rec {
-    Unk_020e7440 *(*fn)();
+    SpNpcTest *(*fn)();
     u32 w[5];
 };
-Unk_020e6fbc_Rec data_020e6fbc = { func_020c29ec, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
+Unk_020e6fbc_Rec sSpNpcTestProfile = { func_020c29ec, { 0x0080007c, 2, 0x5000, 0x5000, 0x3e800 } };
 char data_020e7290[] = "npc_sp/model/end_tex.nsbtx";
 char data_020e6dac[] = "npc_sp/model/dnk.nsbmd";
 char data_020e6eb4[] = "npc_sp/model/bpt.nsbmd";
@@ -427,10 +427,10 @@ char data_020e700c[] = "npc_sp/model/ttl_tex.nsbtx";
 char data_020e6d94[] = "npc_sp/model/ttl.nsbmd";
 char data_020e6c8c[] = "npc_sp/model/mum.nsbmd";
 char data_020e7028[] = "npc_sp/model/los_tex.nsbtx";
-const u8 data_020d1c98[8] = { 't', 'e', 's', 't' };
+const u8 sSpNpcTestMsgKey[8] = { 't', 'e', 's', 't' };
 char data_020e7060[] = "npc_sp/model/wip_tex.nsbtx";
 char data_020e6cec[] = "npc_sp/model/ott.nsbmd";
-const char *const data_020d1ca0[78] = {
+const char *const sSpNpcModelPaths[78] = {
     data_020e6df4,
     data_020e738c,
     data_020e6f44,
@@ -516,132 +516,132 @@ char data_020e6f74[] = "npc_sp/model/fox.nsbmd";
 char data_020e70b4[] = "npc_sp/model/seg_tex.nsbtx";
 char data_020e70ec[] = "npc_sp/model/xct_tex.nsbtx";
 
-extern "C" Unk_020e7440 *func_020c29ec() {
-    return new Unk_020e7440();
+extern "C" SpNpcTest *func_020c29ec() {
+    return new SpNpcTest();
 }
 
-BOOL Unk_020e7440::vfunc_04() {
+BOOL SpNpcTest::vfunc_04() {
     u16 v = 0xfff1;
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     v = 0xd000;
-    _ZN12Unk_020d77a413func_0201bda8EPt(this, &v);
-    _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c(this, &unk_658);
-    unk_658.func_020c2724((u32)this);
+    _ZN12Unk_020d77a412setNpcHandleEPt(this, &v);
+    _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
+    unk_658.attachOwner((u32)this);
     return TRUE;
 }
 
-BOOL Unk_020e7440::vfunc_00() {
+BOOL SpNpcTest::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_020c28b0(0);
+    changeAct(0);
     unk_70c = unk_8e;
     return TRUE;
 }
 
-BOOL Unk_020e7440::vfunc_0c() {
+BOOL SpNpcTest::vfunc_0c() {
     if (Unk_020d8bc8::vfunc_0c()) {
         return TRUE;
     }
     return FALSE;
 }
 
-const char *Unk_020e7440::vfunc_6c() {
-    return data_020d1ca0[1];
+const char *SpNpcTest::getTexturePath() {
+    return sSpNpcModelPaths[1];
 }
 
-const char *Unk_020e7440::vfunc_70() {
-    return data_020d1ca0[0];
+const char *SpNpcTest::getModelPath() {
+    return sSpNpcModelPaths[0];
 }
 
-BOOL Unk_020e7440::vfunc_68() {
+BOOL SpNpcTest::updateAct() {
     BOOL result = FALSE;
-    if (data_021f4728[unk_654].b != NULL) {
-        result = (this->*data_021f4728[unk_654].b)();
+    if (sSpNpcTestActTable[unk_654].b != NULL) {
+        result = (this->*sSpNpcTestActTable[unk_654].b)();
     }
     return result;
 }
 
-void Unk_020e7440::func_020c28b0(s32 state) {
+void SpNpcTest::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_021f4728[state].a != NULL) {
-        ok = (this->*data_021f4728[state].a)();
+    if (sSpNpcTestActTable[state].a != NULL) {
+        ok = (this->*sSpNpcTestActTable[state].a)();
     }
     if (ok == 1) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_020e7440::func_020c287c() {
+BOOL SpNpcTest::setupAct00() {
     unk_564.func_020196b4(0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2878() {
+BOOL SpNpcTest::mainAct00() {
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2834() {
+BOOL SpNpcTest::setupAct01() {
     u32 x;
     void *p = unk_658.func_02015aac();
     x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a413func_0201bcbcEPS_(this, p);
+        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
     }
     _ZN12Unk_02013b1013func_020141b4Essh(&unk_618, 0, x, 0);
-    unk_658.func_020c271c(0);
+    unk_658.setPhase(0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2808() {
+BOOL SpNpcTest::mainAct01() {
     if (unk_618.func_02014220() == 0) {
-        func_0203d67c(this);
-        func_020c28b0(2);
+        TalkRequest_EndTalkWith(this);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2804() {
+BOOL SpNpcTest::mainAct02() {
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c27c8() {
+BOOL SpNpcTest::setupAct03() {
     unk_564.func_020196b4(3, 1, 0, 0, 0, unk_70c, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_020e7440::func_020c2798() {
+BOOL SpNpcTest::mainAct03() {
     if (unk_564.func_020197a8() == 3) {
         if (unk_564.func_02019790() == 1) {
-            func_020c28b0(0);
+            changeAct(0);
         }
     }
     return TRUE;
 }
 
-Unk_020e73b0::Unk_020e73b0() {}
+SpNpcTestTalk::SpNpcTestTalk() {}
 
-Unk_020e73b0::~Unk_020e73b0() {}
+SpNpcTestTalk::~SpNpcTestTalk() {}
 
-void Unk_020e73b0::func_020c2724(u32 v) {
+void SpNpcTestTalk::attachOwner(u32 v) {
     vfunc_08();
     unk_b0 = v;
     unk_ac = 1;
 }
 
-void Unk_020e73b0::func_020c271c(s32 v) {
+void SpNpcTestTalk::setPhase(s32 v) {
     unk_ac = v;
 }
 
-void Unk_020e73b0::func_020c270c(Unk_020c270c_Out *out) {
-    out->vptr = data_020d1c98;
+void SpNpcTestTalk::startPhase00(Unk_020c270c_Out *out) {
+    out->vptr = sSpNpcTestMsgKey;
     out->flag = 0;
 }
 
-void Unk_020e73b0::func_020c269c(Unk_020c270c_Out *out) {
-    static Unk_020c269c_Fn tbl[1] = { (Unk_020c269c_Fn)&Unk_020e73b0::func_020c270c };
+void SpNpcTestTalk::dispatchStart(Unk_020c270c_Out *out) {
+    static Unk_020c269c_Fn tbl[1] = { (Unk_020c269c_Fn)&SpNpcTestTalk::startPhase00 };
     if (unk_ac >= 0 && unk_ac < 1) {
         if (tbl[unk_ac]) {
             (this->*tbl[unk_ac])((void *)out);
@@ -649,11 +649,11 @@ void Unk_020e73b0::func_020c269c(Unk_020c270c_Out *out) {
     }
 }
 
-void Unk_020e73b0::vfunc_78(Unk_020c270c_Out *out) {
-    func_020c269c(out);
+void SpNpcTestTalk::vfunc_78(Unk_020c270c_Out *out) {
+    dispatchStart(out);
 }
 
-void Unk_020e73b0::func_020c2690(void *a) {}
+void SpNpcTestTalk::onMessageEndPhase00(void *a) {}
 
 char data_020e6ee4[] = "npc_sp/model/rcd.nsbmd";
 char data_020e7178[] = "npc_sp/model/boa_tex.nsbtx";
@@ -663,8 +663,8 @@ char data_020e6e84[] = "npc_sp/model/cml.nsbmd";
 char data_020e6e0c[] = "npc_sp/model/pgb.nsbmd";
 char data_020e6e9c[] = "npc_sp/model/plb.nsbmd";
 
-void Unk_020e73b0::vfunc_14(void *a) {
-    static Unk_020c2620_Fn tbl[1] = { &Unk_020e73b0::func_020c2690 };
+void SpNpcTestTalk::vfunc_14(void *a) {
+    static Unk_020c2620_Fn tbl[1] = { &SpNpcTestTalk::onMessageEndPhase00 };
     if (unk_ac >= 0 && unk_ac < 1) {
         if (tbl[unk_ac]) {
             (this->*tbl[unk_ac])(a);
@@ -672,32 +672,32 @@ void Unk_020e73b0::vfunc_14(void *a) {
     }
 }
 
-BOOL Unk_020e7440::vfunc_48(void *p) {
+BOOL SpNpcTest::vfunc_48(void *p) {
     BOOL r = FALSE;
-    if (_ZN12Unk_020d77a413func_0201bcf8EPS_i(this, p, 0x2000) == 1) {
+    if (_ZN12Unk_020d77a46isNearEPS_i(this, p, 0x2000) == 1) {
         r = TRUE;
     }
     return r;
 }
 
-void Unk_020e7440::vfunc_4c(s32 a) {
+void SpNpcTest::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN12Unk_020d77a413func_0201bc4cEj(this, 4));
-        func_020c28b0(1);
+        unk_658.func_02015ab0(_ZN12Unk_020d77a414getPlayerActorEj(this, 4));
+        changeAct(1);
         break;
     case 8:
-        func_020c28b0(3);
+        changeAct(3);
         break;
     }
 }
 
-Unk_020c28b0_Entry data_021f4728[4] = {
-    { &Unk_020e7440::func_020c287c, &Unk_020e7440::func_020c2878 },
-    { &Unk_020e7440::func_020c2834, &Unk_020e7440::func_020c2808 },
-    { 0, &Unk_020e7440::func_020c2804 },
-    { &Unk_020e7440::func_020c27c8, &Unk_020e7440::func_020c2798 },
+Unk_020c28b0_Entry sSpNpcTestActTable[4] = {
+    { &SpNpcTest::setupAct00, &SpNpcTest::mainAct00 },
+    { &SpNpcTest::setupAct01, &SpNpcTest::mainAct01 },
+    { 0, &SpNpcTest::mainAct02 },
+    { &SpNpcTest::setupAct03, &SpNpcTest::mainAct03 },
 };
 char data_020e7098[] = "npc_sp/model/mum_tex.nsbtx";
 char data_020e6d1c[] = "npc_sp/model/seg.nsbmd";

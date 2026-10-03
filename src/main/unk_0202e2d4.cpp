@@ -43,8 +43,8 @@ s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
 void ProcBase_RequestDelete();
 void _ZN17Unk_020d8c7c_Base10postCreateEi(void *self, int a);
-s32 func_02081428(u16 *p);
-void func_020814ec(u32 a, u16 *p);
+s32 SpNpc_GetInfoByte0(u16 *p);
+void Npc_GetName(u32 a, u16 *p);
 }
 
 // ---- Unk_020d8bc8 (scene object derived from Unk_020d77a4) ----
@@ -146,28 +146,28 @@ struct Unk_020d77a4 : Character {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void vfunc_60();
     virtual void vfunc_64();
-    virtual void vfunc_68();
-    virtual void vfunc_6c() = 0;
-    virtual void vfunc_70() = 0;
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual void updateAct();
+    virtual void getTexturePath() = 0;
+    virtual void getModelPath() = 0;
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88();
+    virtual u16 getSpecies();
+    virtual void setShirt();
     virtual void vfunc_8c();
     virtual void vfunc_90();
     virtual void vfunc_94();
     virtual void vfunc_98();
     virtual void vfunc_9c();
     virtual void vfunc_a0();
-    virtual void vfunc_a4();
+    virtual void addMood();
     virtual BOOL vfunc_a8();
-    u16 func_0201bdec();
+    u16 getNpcIndex();
 };
 
 extern "C" {
-void func_020815f8(void *p);
+void NpcRegistry_RemoveSpNpc(void *p);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(u32 v);
 BOOL func_020a62a0();
 BOOL func_020e96ec(void *a, void *b);
@@ -178,7 +178,7 @@ BOOL _ZN12Unk_02019dd813func_02019cacEP18Unk_02019cac_Owner(void *p, void *q);
 BOOL _ZN12Unk_0201635013func_020162c4EP16Unk_02015fe0_Obji(void *p, void *q, s32 r);
 void _ZN12Unk_0201985813func_020197acEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
-BOOL func_02081608(void *p, void *q);
+BOOL NpcRegistry_AddSpNpc(void *p, void *q);
 void _ZN12Unk_0201347413func_020135c4Ev(void *p);
 s32 _ZN12Unk_020d77a413func_0201b888EPiPh(void *self, void *a, void *b);
 s32 func_02077ac4(void *p);
@@ -201,14 +201,14 @@ public:
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL preDelete();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
+    virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
-    BOOL func_0202e55c();
+    BOOL loadAnimSet();
     void func_0202e548(s32 a, s32 b);
 
     Unk_020e06dc unk_640;
@@ -219,7 +219,7 @@ public:
 
 Unk_020d8bc8::~Unk_020d8bc8() {}
 
-BOOL Unk_020d8bc8::func_0202e55c() {
+BOOL Unk_020d8bc8::loadAnimSet() {
     void *p = _ZN12Unk_020e074013func_02081fb8Ev(&unk_640);
     if (!_ZN12Unk_020dbd3413func_02054b38EPv(&unk_ec, func_02077ac4(p))) {
         return FALSE;
@@ -268,7 +268,7 @@ BOOL Unk_020d8bc8::vfunc_00() {
         if (!_ZN12Unk_020e071813func_02082140Ev(&unk_640)) {
             return FALSE;
         }
-        if (!func_0202e55c()) {
+        if (!loadAnimSet()) {
             return FALSE;
         }
     }
@@ -279,8 +279,8 @@ BOOL Unk_020d8bc8::vfunc_00() {
         return FALSE;
     }
     _ZN12Unk_0201985813func_020197acEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
-    _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)func_0201bdec(), 0x1000);
-    if (!func_02081608(this, &unk_ea)) {
+    _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
+    if (!NpcRegistry_AddSpNpc(this, &unk_ea)) {
         return FALSE;
     }
     _ZN12Unk_0201347413func_020135c4Ev(&unk_558);
@@ -291,7 +291,7 @@ BOOL Unk_020d8bc8::preDelete() {
     if (!Unk_020d77a4::preDelete()) {
         return FALSE;
     }
-    func_020815f8(&unk_ea);
+    NpcRegistry_RemoveSpNpc(&unk_ea);
     return TRUE;
 }
 
@@ -303,9 +303,9 @@ BOOL Unk_020d8bc8::vfunc_0c() {
     return TRUE;
 }
 
-void Unk_020d8bc8::vfunc_74(u32 a) { func_020814ec(a, &unk_ea); }
+void Unk_020d8bc8::getName(u32 a) { Npc_GetName(a, &unk_ea); }
 
-u32 Unk_020d8bc8::vfunc_78() { return func_02081428(&unk_ea); }
+u32 Unk_020d8bc8::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
 
 BOOL Unk_020d8bc8::vfunc_7c() {
     if (!Unk_0202e318_IsOne(data_020e416c) || unk_650 == 0) {
@@ -316,7 +316,7 @@ BOOL Unk_020d8bc8::vfunc_7c() {
 
 void Unk_020d8bc8::vfunc_80() { unk_650 = 1; }
 
-u16 Unk_020d8bc8::vfunc_84() {
+u16 Unk_020d8bc8::getSpecies() {
     u16 v = unk_ea;
     if (((v & 0xf000) >> 12) == 0xd) {
         return (v & 0xfff) + 0xc8;

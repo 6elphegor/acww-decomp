@@ -257,7 +257,7 @@ void func_02000c8c();
 void func_02000c98();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-void *func_02081708(u32 i);
+void *NpcRegistry_FindVillager(u32 i);
 BOOL func_0204e474(void *g, s32 x, s32 y);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_0204ed8c(void *p, s32 x, s32 y);
@@ -554,7 +554,7 @@ Unk_ov004_0224ebec::~Unk_ov004_0224ebec() {
 extern "C" void func_ov004_02236db4(void *) {
     u8 i;
     for (i = 0; i < 8; i++) {
-        void *r = func_02081708(i);
+        void *r = NpcRegistry_FindVillager(i);
         if (r) data_ov004_022523d4 = (Unk_ov004_02236320_Ent *)r;
     }
 }

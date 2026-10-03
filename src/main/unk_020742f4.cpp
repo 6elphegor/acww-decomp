@@ -358,7 +358,7 @@ extern "C" {
 BOOL Item_IsTreeStage0(void *);
 }
 extern "C" {
-s32 func_02081650(s32, s32);
+s32 NpcRegistry_FindAt(s32, s32);
 }
 extern "C" {
 void *func_020947f0(s32);
@@ -391,13 +391,13 @@ extern "C" {
 BOOL func_020030b4(void *);
 }
 extern "C" {
-s32 func_0207e1f0(void *);
+s32 Villager_GetResidentStatus(void *);
 }
 extern "C" {
-s32 func_0207c6d4(void *);
+s32 Villager_PickShownFurniture(void *);
 }
 extern "C" {
-void *func_0207f86c(void *, s32);
+void *Villager_GetMemory(void *, s32);
 }
 extern "C" {
 BOOL func_02080f94(void *);
@@ -619,7 +619,7 @@ extern "C" {
 u32 func_0207e334(u32 a);
 }
 extern "C" {
-BOOL func_0207c014(u32 a);
+BOOL SaveVillagers_IsValidIndex(u32 a);
 }
 extern "C" {
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *), void *(*)(void *));
@@ -706,7 +706,7 @@ static inline BOOL R1(u16 *p, u32 lo, u32 hi) {
 extern "C" void func_02077a1c(u32 a, u32 b) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_02077a54(a, b);
         }
     }
@@ -726,7 +726,7 @@ extern "C" void func_020779d4(u32 a, u32 b) {
 extern "C" void func_0207799c(u32 a, u32 b) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_020779d4(a, b);
         }
     }
@@ -747,7 +747,7 @@ extern "C" void func_02077944(u32 a, u32 b, u32 c) {
 extern "C" void func_0207790c(u32 a, u32 b, u32 c) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_02077944(a, b, c);
         }
     }
@@ -768,7 +768,7 @@ extern "C" void func_020778b4(u32 a, u32 b, u32 c) {
 extern "C" void func_0207787c(u32 a, u32 b, u32 c) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_020778b4(a, b, c);
         }
     }
@@ -798,7 +798,7 @@ extern "C" void func_020777f0(u32 a, u32 b, u32 c) {
 extern "C" void func_020777b8(u32 a, u32 b, u32 c) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_020777f0(a, b, c);
         }
     }
@@ -829,7 +829,7 @@ extern "C" void func_02077734(u32 a, u32 b, u32 c) {
 extern "C" void func_020776fc(u32 a, u32 b, u32 c) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_02077734(a, b, c);
         }
     }
@@ -870,7 +870,7 @@ extern "C" void func_020775e8(u32 a, u32 b, u32 c, u32 d, u8 e) {
 extern "C" void func_020775a0(u32 a, u32 b, u32 c, u32 d, u8 e) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_020775e8(a, b, c, d, e);
         }
     }
@@ -890,7 +890,7 @@ extern "C" void func_02077558(u32 a, u16 *b) {
 extern "C" void func_02077520(u32 a, u16 *b) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_02077558(a, b);
         }
     }
@@ -922,7 +922,7 @@ extern "C" void func_02077488(u32 a, u16 *b) {
 extern "C" void func_02077450(u32 a, u16 *b) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_02077488(a, b);
         }
     }
@@ -960,7 +960,7 @@ extern "C" void func_020773b8(u32 a, u16 *b) {
 extern "C" void func_02077380(u32 a, u16 *b) {
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
         a = func_0207e334(a);
-        if (func_0207c014(a)) {
+        if (SaveVillagers_IsValidIndex(a)) {
             func_020773b8(a, b);
         }
     }
@@ -2409,7 +2409,7 @@ extern "C" {
 void func_02077404(u32 *, u16 *, void *);
 }
 extern "C" {
-void *func_0207bf60(void *, u32);
+void *SaveVillagers_Get(void *, u32);
 }
 extern "C" {
 void *func_0207d074(void *, s32);
@@ -2418,10 +2418,10 @@ extern "C" {
 void func_020774f0(u32 *, u16 *, void *);
 }
 extern "C" {
-s32 _ZN12Unk_0207fb8013func_0207fd90EPt(void *, u16 *);
+s32 _ZN23VillagerDataProfileView8setShirtEPt(void *, u16 *);
 }
 extern "C" {
-void func_0207e268();
+void Villager_GetPlan();
 }
 extern "C" {
 void *func_0209a60c();
@@ -2481,28 +2481,28 @@ extern "C" {
 void func_0207783c(u32 *, u32 *, u16 *, u8 *);
 }
 extern "C" {
-void *func_0207f86c(void *, u32);
+void *Villager_GetMemory(void *, u32);
 }
 extern "C" {
 s32 func_02080f94(void *);
 }
 extern "C" {
-s32 _ZN14VillagerMemory13func_02080b78EPt(void *, u16 *);
+s32 _ZN14VillagerMemory15setReceivedItemEPt(void *, u16 *);
 }
 extern "C" {
 void func_02077a9c(u32 *, u32 *, void *);
 }
 extern "C" {
-s32 _ZN14VillagerMemory13func_02080dd0Ea(void *, s32);
+s32 _ZN14VillagerMemory13setFriendshipEa(void *, s32);
 }
 extern "C" {
-s32 _ZN14VillagerMemory13func_02080b38Ei(void *, u32);
+s32 _ZN14VillagerMemory13setImpressionEi(void *, u32);
 }
 extern "C" {
 s32 func_02080ecc(void *, void *, u8 *, s32);
 }
 extern "C" {
-s32 func_02080f4c(void *, void *, u8 *, s32);
+s32 VillagerMemory_InitForPlayer(void *, void *, u8 *, s32);
 }
 extern "C" {
 s32 func_0209c4a8(void *, s32);
@@ -2762,12 +2762,12 @@ extern "C" void func_02075acc(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, n);
     func_02077a9c(&id, &x, &buf);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        void *r5 = func_0207f86c(r0, x);
+        void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
             void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
-            func_02080f4c(r5, r1, data_021d7352, 0);
+            VillagerMemory_InitForPlayer(r5, r1, data_021d7352, 0);
         }
     }
 }
@@ -2776,9 +2776,9 @@ extern "C" void func_02075a6c(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, n);
     func_02077a9c(&id, &x, &buf);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        void *r5 = func_0207f86c(r0, x);
+        void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
             void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
             func_02080ecc(r5, r1, data_021d7352, 0);
@@ -2792,12 +2792,12 @@ extern "C" void func_02075a10() {
     void *r5 = data_020cbb18;
     _ZN12Unk_020cbb1813func_02072770EPhj(r5, b, 1);
     func_02077a9c(&id, &x, b);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        void *r4 = func_0207f86c(r0, x);
+        void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
             _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
-            _ZN14VillagerMemory13func_02080b38Ei(r4, b[1]);
+            _ZN14VillagerMemory13setImpressionEi(r4, b[1]);
         }
     }
 }
@@ -2808,12 +2808,12 @@ extern "C" void func_020759b4() {
     void *r5 = data_020cbb18;
     _ZN12Unk_020cbb1813func_02072770EPhj(r5, b, 1);
     func_02077a9c(&id, &x, b);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        void *r4 = func_0207f86c(r0, x);
+        void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
             _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
-            _ZN14VillagerMemory13func_02080dd0Ea(r4, b[1]);
+            _ZN14VillagerMemory13setFriendshipEa(r4, b[1]);
         }
     }
 }
@@ -2825,12 +2825,12 @@ extern "C" void func_02075950() {
     l.x = 0xfff1;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 3);
     func_0207783c(&id, &k, &l.x, l.y);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        void *r4 = func_0207f86c(r0, k);
+        void *r4 = Villager_GetMemory(r0, k);
         if (r4 != NULL) {
             if (func_02080f94(r4) != 0) {
-                _ZN14VillagerMemory13func_02080b78EPt(r4, &l.x);
+                _ZN14VillagerMemory15setReceivedItemEPt(r4, &l.x);
             }
         }
     }
@@ -2843,9 +2843,9 @@ extern "C" void func_02075860() {
     l.b = 0;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &l.c, 2);
     func_02077780(&id, &l.a, &l.b, &l.c);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        func_0207e268();
+        Villager_GetPlan();
         u8 *r4 = (u8 *)func_0209a60c();
         switch (l.a) {
         case 0:
@@ -2890,9 +2890,9 @@ extern "C" void func_020757ac() {
     l.b = 0;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, &buf, 4);
     func_0207764c(&id, &l.a, &l.c, &n, &l.b, &buf);
-    void *r6 = func_0207bf60(data_021dfd8c, id);
+    void *r6 = SaveVillagers_Get(data_021dfd8c, id);
     if (r6 != NULL) {
-        func_0207e268();
+        Villager_GetPlan();
         void *r7 = func_0209a60c();
         void *r4 = NULL;
         BOOL t = l.b ? TRUE : FALSE;
@@ -2916,9 +2916,9 @@ extern "C" void func_020756ec() {
     l.x = 0xfff1;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 4);
     func_020774f0(&id, &l.x, l.y);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
-        func_0207e268();
+        Villager_GetPlan();
         void *r5 = func_0209a60c();
         void *r4 = func_0209a940(r5);
         if (_ZN12Unk_0209ada413func_0209ad68Ev(r4)) {
@@ -2943,10 +2943,10 @@ extern "C" void func_02075680() {
     l.x = 0xfff1;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, l.y, 3);
     func_020774f0(&id, &l.x, l.y);
-    void *r0 = func_0207bf60(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
     if (r0 != NULL) {
         BOOL r4 = Unk_02075680_R(&l.x, 0x11a8, 0x12a7);
-        if (r4) _ZN12Unk_0207fb8013func_0207fd90EPt(r0, &l.x);
+        if (r4) _ZN23VillagerDataProfileView8setShirtEPt(r0, &l.x);
     }
 }
 
@@ -2962,7 +2962,7 @@ extern "C" void func_0207561c() {
     arr[3] = 0xfff1;
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, 9);
     func_02077404(&id, arr, buf);
-    r5 = func_0207bf60(data_021dfd8c, id);
+    r5 = SaveVillagers_Get(data_021dfd8c, id);
     if (r5 != NULL) {
         for (i = 0; i < 4; i++) {
             u16 *p = (u16 *)func_0207d074(r5, i);

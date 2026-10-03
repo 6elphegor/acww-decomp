@@ -95,15 +95,15 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020660f8 {
+struct TalkWindowState {
     u8 pad_00[0x14];
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -133,11 +133,11 @@ public:
     virtual void vfunc_s70();
     virtual void vfunc_s74();
 
-    void func_02065f50(u32 a);
-    void func_02065f90(u8 *a, u32 b);
+    void setNoSpeakerName(u32 a);
+    void setSpeakerName(u8 *a, u32 b);
 
     u8 pad_20[0x1c];
-    /* 0x3c */ Unk_020660f8 *unk_3c;
+    /* 0x3c */ TalkWindowState *unk_3c;
     /* 0x40 */ u8 unk_40;
     u8 pad_41[3];
 };
@@ -155,7 +155,7 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public TalkMsgRequest {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
@@ -242,10 +242,10 @@ void func_020f43fc(void *p);
 void func_020f440c(void *p);
 BOOL func_0206ec6c();
 BOOL func_0206eca4(u32 a);
-BOOL func_0203d67c(void *p);
-BOOL func_0203d704(void *p, u32 a);
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+BOOL TalkRequest_EndTalkWith(void *p);
+BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 BOOL func_020951d0();
 BOOL func_020951c4();
 void func_020949a0(u32 a);
@@ -257,7 +257,7 @@ s32 func_02030814(u32 a);
 BOOL func_ov003_02212430(u32 a, s32 *b, s32 *c, s32 d);
 BOOL func_0206ed18();
 s32 func_020ad274();
-s32 _ZN12Unk_020660f813func_02067a84EPhPv(void *o, u8 *p, char *s);
+s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
 void func_020b1040(u32 a, u32 b);
 extern u8 data_ov003_02231138[];
 extern u8 data_021ed2c0[];
@@ -276,12 +276,12 @@ extern u8 data_021ecc7c[];
 void _ZN12Unk_020e2e54C1Ev(void *);
 void _ZN12Unk_020e2e54D1Ev(void *);
 Unk_020ad700 *_ZN12Unk_021ed2c013func_020ad3bcEv(void *);
-void _ZN12Unk_020660f813func_02067a3cEiPv(void *, s32, void *);
+void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void func_0209d498(void *);
 void MI_CpuCopy8(void *, void *, s32);
 s32 func_0203f2e0(u32, void *, u32);
 s32 func_020b50e8();
-void func_02083d84(void *, s32, void *);
+void Visitor_ScheduleLow(void *, s32, void *);
 extern u16 data_ov003_02231144;
 extern u8 data_ov003_02231430[];
 extern u8 data_ov003_02231434[];

@@ -2,10 +2,10 @@
 
 #include "Unk_020d8c7c.h"
 
-class Unk_020ddcf0 {
+class TalkMsgRequest {
 public:
-    Unk_020ddcf0();
-    ~Unk_020ddcf0();
+    TalkMsgRequest();
+    ~TalkMsgRequest();
     u8 unk_00[0x44];
 };
 
@@ -18,7 +18,7 @@ public:
     virtual BOOL onExecute();
 
     /* 0x50 */ u32 unk_50;
-    /* 0x54 */ Unk_020ddcf0 unk_54;
+    /* 0x54 */ TalkMsgRequest unk_54;
 };
 
 struct Unk_02040754_Time { u8 b[4]; };
@@ -84,14 +84,14 @@ s32 func_0208517c(void);
 s32 _ZN12Unk_02086f1413func_02086f18Ev(void);
 s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
 void func_0209d498(void *);
-void *func_02067918(s32);
-void _ZN12Unk_020660f813func_02067958Ev(void *p);
+void *TalkWindow_Get(s32);
+void _ZN15TalkWindowState13detachRequestEv(void *p);
 s32 func_020b4934(void);
 void func_020b4bbc(s32, s32);
 void _ZN12Unk_020d8e1413func_02035368Eii(void *, s32, s32);
 void _ZN12Unk_020d8e1413func_020353b0Eii(void *, s32, s32);
 void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
-void _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(void *, void *);
+void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(void *, void *);
 s32 func_0203d9cc(void);
 BOOL func_02040c10(void);
 void func_02040c6c(s32);
@@ -502,11 +502,11 @@ extern "C" void func_02040b48(s32)
 extern "C" void func_02040ad8(Unk_02040ad8_Owner *o)
 {
     if (Unk_02040ad8_IsTwo(data_021c3cc0)) {
-        Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
+        Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
         o->unk_54.vfunc_08();
         _ZN10MsgRequest11setFileNameEPKc(&o->unk_54, (void *)data_020da22c[data_021c3ca8.unk_01]);
         *((u8 *)o + 0x72) = data_021c3ca8.unk_04;
-        _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(p, &o->unk_54);
+        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(p, &o->unk_54);
         p->unk_08 = 1;
         data_021c3ca8.unk_00 = 6;
     }
@@ -514,9 +514,9 @@ extern "C" void func_02040ad8(Unk_02040ad8_Owner *o)
 
 extern "C" void func_02040a84(s32)
 {
-    Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
+    Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)TalkWindow_Get(0);
     if (p->unk_04 == 0) {
-        _ZN12Unk_020660f813func_02067958Ev(p);
+        _ZN15TalkWindowState13detachRequestEv(p);
         func_020b4bbc(func_020b4934(), 20);
         _ZN12Unk_020d8e1413func_02035368Eii(data_021c1b3c + 0x2d0, data_021c3c94, data_021c3ca8.unk_04);
         data_021c3c94 = 0;

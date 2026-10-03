@@ -2,15 +2,15 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    void *func_020679b4();
-    void func_02067a78();
+    void *getChoiceList();
+    void lockAdvance();
     void func_02067990();
-    void func_02067a6c();
-    void func_02067a84(u8 *a, void *b);
-    void func_020679c0(s32 v);
-    void func_02067958();
+    void unlockAdvance();
+    void setNextMessage(u8 *a, void *b);
+    void openChoices(s32 v);
+    void detachRequest();
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -26,10 +26,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -40,7 +40,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -67,7 +67,7 @@ public:
 class SaveMenu;
 
 // vtable 0x020e244c, size 0x4c
-class SaveMenuTalk : public Unk_020ddcf0 {
+class SaveMenuTalk : public TalkMsgRequest {
 public:
     SaveMenuTalk();
     virtual ~SaveMenuTalk();
@@ -118,8 +118,8 @@ struct Unk_0209ea1c_Entry {
 };
 
 extern "C" SaveMenu *SaveMenu_Create();
-extern "C" void _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(Unk_020660f8 *o, Unk_020ddcf0 *p);
-extern "C" void _ZN12Unk_020660f813func_0206799cEv(Unk_020660f8 *o, s32 v);
+extern "C" void _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(TalkWindowState *o, TalkMsgRequest *p);
+extern "C" void _ZN15TalkWindowState13func_0206799cEv(TalkWindowState *o, s32 v);
 
 Unk_0209ea1c_Entry data_020e2394 = {(void *)SaveMenu_Create, 0xd5, 0xd0};
 
@@ -135,7 +135,7 @@ Unk_0209e840_Ent sSaveMenuStates[6] = {
     {&SaveMenu::enterSaveB, &SaveMenu::updateSaveB},
 };
 
-extern u8 data_021edb5c[];
+extern u8 gTalkMsgIndexEnd[];
 extern void *data_020cbb18;
 extern u16 gPad[];
 extern u8 data_021c3cc0;
@@ -144,7 +144,7 @@ extern u8 data_021ed3a0;
 extern u8 data_021ed448[];
 
 extern "C" {
-Unk_020660f8 *func_02067918(s32 v);
+TalkWindowState *TalkWindow_Get(s32 v);
 }
 
 extern "C" {
@@ -248,7 +248,7 @@ s32 func_0203d99c();
 }
 
 extern "C" {
-s32 func_0203e2f4();
+s32 TalkRequest_IsActive();
 }
 
 extern "C" {
@@ -535,7 +535,7 @@ void SaveMenu::updateIdle() {
             if (func_0203d978() == 0) {
                 if (func_0203d99c() == 0) {
                     if (Unk_0209e7b4_Is2(data_021c3cc0) != 0) {
-                        if (func_0203e2f4() == 0) {
+                        if (TalkRequest_IsActive() == 0) {
                             void *g = data_020cbb18;
                             if (_ZN12Unk_020cbb1813func_02072e44Ev(g) != 0 && _ZN12Unk_020cbb1813func_020729ccEj(g, 0) == 0) {
                                 func_020387b4();
@@ -554,7 +554,7 @@ void SaveMenu::enterOpenTalk() {}
 
 void SaveMenu::updateOpenTalk() {
     if (func_0203d878() != 0) {
-        Unk_020660f8 *o = func_02067918(0);
+        TalkWindowState *o = TalkWindow_Get(0);
         SaveMenuTalk *p = &unk_54;
         p->vfunc_08();
         if (func_020a0318() != 0 || func_020a0304() != 0) {
@@ -567,7 +567,7 @@ void SaveMenu::updateOpenTalk() {
             _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence2");
             unk_54.unk_1e = 0;
         }
-        _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(o, &unk_54);
+        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &unk_54);
         o->unk_08 = 1;
         setState(2);
     } else {
@@ -578,9 +578,9 @@ void SaveMenu::updateOpenTalk() {
 void SaveMenu::enterTalking() {}
 
 void SaveMenu::updateTalking() {
-    Unk_020660f8 *o = func_02067918(0);
+    TalkWindowState *o = TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         func_0203d86c();
         setState(0);
     }
@@ -589,9 +589,9 @@ void SaveMenu::updateTalking() {
 void SaveMenu::enterQuitting() {}
 
 void SaveMenu::updateQuitting() {
-    Unk_020660f8 *o = func_02067918(0);
+    TalkWindowState *o = TalkWindow_Get(0);
     if (o->unk_04 == 0) {
-        o->func_02067958();
+        o->detachRequest();
         func_020b4f58(func_020b4934(), 0x2e, 2, 3);
         if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) != 0) {
             func_020b4a08(func_020b4934(), 0);
@@ -608,21 +608,21 @@ void SaveMenu::enterSaveA() {
 }
 
 void SaveMenu::updateSaveA() {
-    Unk_020660f8 *o = (Unk_020660f8 *)unk_54.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
     s32 r = func_02073204();
     if (r == 5 || r == 6) {
         o->func_02067990();
-        o->func_02067a6c();
+        o->unlockAdvance();
         if (r == 5) {
             func_020a5f48(0, 6);
             func_020a5f28();
             func_020a5f18();
-            o->func_02067a84(data_021edb5c, 0);
+            o->setNextMessage(gTalkMsgIndexEnd, 0);
             func_0209f230(0);
             setState(3);
         } else {
             u8 b = 5;
-            o->func_02067a84(&b, (u8 *)"sp_etc_sequence2");
+            o->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             setState(2);
         }
         func_020731d4();
@@ -637,21 +637,21 @@ void SaveMenu::enterSaveB() {
 // SaveMenu
 
 void SaveMenu::updateSaveB() {
-    Unk_020660f8 *o = (Unk_020660f8 *)unk_54.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
     s32 r = func_02073204();
     if (r == 5 || r == 6) {
         o->func_02067990();
-        o->func_02067a6c();
+        o->unlockAdvance();
         if (r == 5) {
             func_020a5f48(0, 6);
             func_020a5f28();
             func_020a5f18();
-            o->func_02067a84(data_021edb5c, 0);
+            o->setNextMessage(gTalkMsgIndexEnd, 0);
             func_0209f230(1);
             setState(3);
         } else {
             u8 b = 5;
-            o->func_02067a84(&b, (u8 *)"sp_etc_sequence2");
+            o->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             setState(2);
         }
         func_020731d4();
@@ -668,37 +668,37 @@ void SaveMenuTalk::setOwner(SaveMenu *owner) {
 
 void SaveMenuTalk::vfunc_14() {
     if (unk_1e == 0) {
-        Unk_020660f8 *o = (Unk_020660f8 *)unk_3c;
-        void *h = o->func_020679b4();
+        TalkWindowState *o = (TalkWindowState *)unk_3c;
+        void *h = o->getChoiceList();
         _ZN10ChoiceList5resetEii(h, 2, 1);
         u8 buf[4];
         buf[0] = 0xc;
-        buf[1] = data_021edb5c[0];
+        buf[1] = gTalkMsgIndexEnd[0];
         _ZN10ChoiceList8setEntryEiPKhiS1_PKci(h, 0, buf, 1, &buf[1], 0, 2);
         buf[2] = 0xd;
-        buf[3] = data_021edb5c[0];
+        buf[3] = gTalkMsgIndexEnd[0];
         _ZN10ChoiceList8setEntryEiPKhiS1_PKci(h, 1, &buf[2], 1, &buf[3], 0, 0);
         _ZN10ChoiceList9loadTextsEv(h);
-        o->func_020679c0(1);
+        o->openChoices(1);
     }
 }
 
 // SaveMenuTalk
 
 void SaveMenuTalk::vfunc_18() {
-    Unk_020660f8 *o = (Unk_020660f8 *)unk_3c;
-    s32 r = _ZN10ChoiceList9getResultEv(o->func_020679b4());
+    TalkWindowState *o = (TalkWindowState *)unk_3c;
+    s32 r = _ZN10ChoiceList9getResultEv(o->getChoiceList());
     switch (unk_1e) {
     case 4:
         switch (r) {
         case 0:
-            o->func_02067a78();
-            _ZN12Unk_020660f813func_0206799cEv(o, 1);
+            o->lockAdvance();
+            _ZN15TalkWindowState13func_0206799cEv(o, 1);
             unk_44->setState(4);
             break;
         case 1: {
             u8 b = 8;
-            o->func_02067a84(&b, (u8 *)"sp_etc_sequence2");
+            o->setNextMessage(&b, (u8 *)"sp_etc_sequence2");
             break;
         }
         }
@@ -706,18 +706,18 @@ void SaveMenuTalk::vfunc_18() {
     case 8:
         switch (r) {
         case 0:
-            o->func_02067a78();
-            _ZN12Unk_020660f813func_0206799cEv(o, 1);
+            o->lockAdvance();
+            _ZN15TalkWindowState13func_0206799cEv(o, 1);
             unk_44->setState(5);
             break;
         case 1:
-            o->func_02067a84(data_021edb5c, 0);
+            o->setNextMessage(gTalkMsgIndexEnd, 0);
             break;
         }
         break;
     case 0:
         if (r == 0) {
-            o->func_02067a84(data_021edb5c, 0);
+            o->setNextMessage(gTalkMsgIndexEnd, 0);
             unk_44->setState(3);
         }
         break;

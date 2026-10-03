@@ -270,7 +270,7 @@ s32 PlayerActor_GetAction(s32 a);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(Unk_020cbb18 *p);
 BOOL _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *p, s32 i);
 u8 *_ZN12Unk_020cbb1813func_02072970Ej(Unk_020cbb18 *p, s32 i);
-BOOL func_0203e2f4();
+BOOL TalkRequest_IsActive();
 BOOL func_02011880();
 s32 func_020b50e8();
 void String_Load2d(Unk_020d917c *buf, u8 *c, s32 z);
@@ -1128,7 +1128,7 @@ extern "C" void func_020385ec(void *self) {
     }
     g = data_020cbb18;
     ready = _ZN12Unk_020cbb1813func_02072e44Ev(g);
-    if (func_0203e2f4()) {
+    if (TalkRequest_IsActive()) {
         idle = FALSE;
     } else {
         idle = TRUE;

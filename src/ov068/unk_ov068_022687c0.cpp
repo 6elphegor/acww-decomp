@@ -306,8 +306,8 @@ void func_ov003_02225ec8(void *, s32);
 s32 func_020312a8(s32, s32);
 void func_0209028c(s32, void *, void *, s32);
 s32 func_ov003_0222e500(void *, s32, s32);
-void *func_02081718(u32);
-s32 func_02081780();
+void *NpcRegistry_GetBySlot(u32);
+s32 NpcRegistry_GetSlotCount();
 void func_ov068_0226a6ac(DObj *o, u8 *fp, DVec *out);
 void func_ov068_0226a618(DObj *o, u8 *flag, s32 a, s32 b);
 s32 func_ov068_0226a4f0(DObj *o);
@@ -350,8 +350,8 @@ void func_ov068_0226a6ac(DObj *o, u8 *fp, DVec *out) {
     }
     zero = 0;
     i = zero;
-    for (; i < func_02081780(); i++) {
-        void *e = func_02081718(i);
+    for (; i < NpcRegistry_GetSlotCount(); i++) {
+        void *e = NpcRegistry_GetBySlot(i);
         if (e != 0) {
             DVec *q = (DVec *)((u8 *)e + 0x5c);
             DVec t;

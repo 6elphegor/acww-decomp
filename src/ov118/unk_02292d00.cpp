@@ -57,7 +57,7 @@ u32 func_ov117_02292c2c(void *p, s32 i);
 void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
-BOOL func_0207bf84(void *a, s32 b);
+BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 void func_ov002_022019a4(void *p, s32 a);
 void func_ov002_02201984(void *p, s32 a);
 void func_ov002_02201938(void *p, s32 a);
@@ -1227,7 +1227,7 @@ void Unk_ov118_022955c8::func_ov118_02293f24() {
     }
     unk_b0 = n;
     for (i = 0; i < 8; i++) {
-        if (func_0207bf84(data_021dfd8c, i)) {
+        if (SaveVillagers_IsOccupied(data_021dfd8c, i)) {
             unk_454e[n] = i + 6;
             n++;
         }

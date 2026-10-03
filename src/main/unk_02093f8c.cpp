@@ -289,7 +289,7 @@ public:
     void func_020940d0(MsgString *x);
     u8 *func_02094104();
     void func_02094108(void *src);
-    s8 func_0209411c();
+    s8 getGender();
     void func_02094124(u8 v);
     void func_02094128(u16 v);
     u16 func_0209412c();

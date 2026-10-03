@@ -38,7 +38,7 @@ public:
     BOOL func_02098044(u32 a);
 };
 
-class Unk_020e6924;
+class SpNpcMissing1;
 
 extern "C" {
 void func_020be094(void *p);
@@ -261,7 +261,7 @@ void func_02067a78(void *p);
 }
 
 extern "C" {
-void func_020c22fc(void);
+void SpNpcMissing2_ChangeAct04(void);
 }
 
 extern "C" {
@@ -269,7 +269,7 @@ void Camera_SetMode19(void);
 }
 
 extern "C" {
-s32 func_020816f8(s32 a);
+s32 NpcRegistry_FindSpNpc(s32 a);
 }
 
 extern "C" {
@@ -293,7 +293,7 @@ void PlayerActor_RequestAct70(s32 a, s32 b);
 }
 
 extern "C" {
-void func_020c22e0(void);
+void SpNpcMissing2_ChangeAct06(void);
 }
 
 extern "C" {
@@ -385,7 +385,7 @@ s32 data_021f4574;
 }
 
 extern "C" {
-extern Unk_020e6924 *data_021f4578;
+extern SpNpcMissing1 *sSpNpcMissing1Instance;
 }
 
 // 0x020d1a28: first .rodata object of this file; read by the previous unit (0x020be9e4, src/main/unk_020b8d9c.cpp)
@@ -440,7 +440,7 @@ extern Unk_020cbb18 *data_020cbb18;
 }
 
 extern "C" {
-extern u32 data_020e679c;
+extern u32 sSpNpcMissing1MsgKey;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -668,10 +668,10 @@ struct Unk_020c0538_Out {
 };
 
 // Library base class; its ctor and dtor are out of line.
-class Unk_020d8b38 {
+class SpNpcTalkRequest {
 public:
-    Unk_020d8b38();
-    virtual ~Unk_020d8b38();
+    SpNpcTalkRequest();
+    virtual ~SpNpcTalkRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
@@ -711,11 +711,11 @@ struct Unk_020c0408_Obj {
     s32 unk_14;
 };
 
-// Sub-object at 0x658 of Unk_020e6924
-class Unk_020e6894 : public Unk_020d8b38 {
+// Sub-object at 0x658 of SpNpcMissing1
+class SpNpcMissing1Talk : public SpNpcTalkRequest {
 public:
-    Unk_020e6894();
-    virtual ~Unk_020e6894();
+    SpNpcMissing1Talk();
+    virtual ~SpNpcMissing1Talk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -727,15 +727,15 @@ public:
     /* 0x1f */ u8 unk_1f[0x1d];
     /* 0x3c */ Unk_020c0408_Obj *unk_3c;
     /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ Unk_020e6924 *unk_ac;
+    /* 0xac */ SpNpcMissing1 *unk_ac;
     /* 0xb0 */ s32 unk_b0;
 
-    s32 func_020c0624();
-    void func_020c062c(s32 v);
-    void func_020c0634(Unk_020e6924 *owner);
+    s32 getTopic();
+    void setTopic(s32 v);
+    void attachOwner(SpNpcMissing1 *owner);
 };
 
-// Base of Unk_020e6924; its dtor is out of line.
+// Base of SpNpcMissing1; its dtor is out of line.
 class Unk_0202e5a8 : public ProcBase {
 public:
     virtual ~Unk_0202e5a8();
@@ -749,19 +749,19 @@ public:
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
 
-class Unk_020e6924 : public Unk_0202e5a8 {
+class SpNpcMissing1 : public Unk_0202e5a8 {
 public:
-    virtual ~Unk_020e6924();
+    virtual ~SpNpcMissing1();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_020e6894 unk_658;
+    /* 0x658 */ SpNpcMissing1Talk unk_658;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
     /* 0x724 */ u8 unk_724;
 
-    void func_020c11b8(s32 state);
-    BOOL func_020c06a0();
+    void changeAct(s32 state);
+    BOOL mainAct08();
 };
 
 static inline BOOL Unk_020c06a0_IsMode2() {

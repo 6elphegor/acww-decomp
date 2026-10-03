@@ -95,7 +95,7 @@ void _ZN12Unk_020872fc13func_02087368Ev(void *);
 void _ZN12Unk_0208620c13func_0208620cEv(void *);
 void func_0208f1dc(void *);
 void PlayerDataArray_Destruct(void *);
-void func_0207c020(void *);
+void SaveVillagers_Clear(void *);
 void func_020639b8(void *);
 void func_02039c00(void *);
 void func_02039d6c(void *);
@@ -108,7 +108,7 @@ void _ZN12Unk_02063578D2Ev(void *);
 void _ZN12Unk_0206fe8013func_0207054cEv(void *);
 void _ZN19AbleSistersPatternsD1Ev(void *);
 void _ZN12Unk_02077198D1Ev(void *);
-void func_0207c0dc(void *);
+void SaveVillagers_Destruct(void *);
 void _ZN12Unk_0208581013func_0208596cEv(void *);
 void func_02086230(void *);
 void func_02086290(void *);
@@ -225,7 +225,7 @@ SaveData::~SaveData() {
     func_02086230(&f_e557);
     func_02086290(&f_e556);
     _ZN7TownMapD1Ev(&f_c330);
-    func_0207c0dc(&f_8a3c);
+    SaveVillagers_Destruct(&f_8a3c);
     PlayerDataArray_Destruct(&f_c);
     func_020639b8(&f_2);
 }
@@ -278,7 +278,7 @@ void SaveData::reset() {
     for (i = 0; i < 4; i++) resetPlayer(i);
     func_020639a0(&f_2);
     func_020977ac(&f_c);
-    func_0207c020(&f_8a3c);
+    SaveVillagers_Clear(&f_8a3c);
     func_020ada24(&f_15f84);
     func_020ad3c0(&f_15f70);
     _ZN7TownMap13func_0204e038Ev(&f_c330);

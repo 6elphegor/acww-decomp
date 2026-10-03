@@ -138,11 +138,11 @@ public:
 };
 extern "C" Unk_020cbb18 *data_020cbb18;
 
-class Unk_020660f8 {
+class TalkWindowState {
 public:
-    void func_02067a3c(s32 a, void *p);
+    void setSlot(s32 a, void *p);
 };
-extern "C" Unk_020660f8 *func_02067918(s32 a);
+extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 
 class MsgString {
 public:
@@ -2273,7 +2273,7 @@ u32 Unk_ov104_02298170::func_ov104_0229514c(void *p) {
     u8 *q = (u8 *)p;
     s32 cnt = 0;
     s32 i = 0;
-    Unk_020660f8 *obj;
+    TalkWindowState *obj;
     s32 z;
     s32 j;
     for (; i < n; q += 0xf4, i++) {
@@ -2303,20 +2303,20 @@ u32 Unk_ov104_02298170::func_ov104_0229514c(void *p) {
     }
     if (cnt != 0) {
         z = 0;
-        obj = func_02067918(0);
+        obj = TalkWindow_Get(0);
         Unk_020e1c64 buf;
         for (j = 0; j < 4; j++) {
             if (mask & (1 << j)) {
                 ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, j))->getPlayerId())->func_020940d0(&buf);
                 switch (z) {
                 case 0:
-                    obj->func_02067a3c(7, &buf);
+                    obj->setSlot(7, &buf);
                     break;
                 case 1:
-                    obj->func_02067a3c(8, &buf);
+                    obj->setSlot(8, &buf);
                     break;
                 case 2:
-                    obj->func_02067a3c(9, &buf);
+                    obj->setSlot(9, &buf);
                     break;
                 }
                 z++;

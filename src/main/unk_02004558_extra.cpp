@@ -104,10 +104,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual s32 vfunc_60();
@@ -118,7 +118,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -2498,8 +2498,8 @@ void _ZN12Unk_02019e2c13func_0201a040EP18Unk_02019e2c_Entryi(void *, void *, u32
 void _ZN12Unk_02019e2c13func_02019e2cEv(void *);
 void *func_02018984(u32);
 BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *, s32);
-void *func_0203d608();
-void *func_0208169c(void *);
+void *TalkRequest_GetTalkTarget();
+void *NpcRegistry_FindByHandle(void *);
 s32 func_020e7b98(s32, s32);
 void func_02010d98(void *, s32);
 void func_02094c38();
@@ -3115,12 +3115,12 @@ void func_02034d84(u32 a);
 void func_02034dd0(s32 a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 _ZN12Unk_020660f813func_020679b4Ev(s32 a);
+s32 _ZN15TalkWindowState13getChoiceListEv(s32 a);
 s32 _ZN10ChoiceList9getResultEv();
-void _ZN12Unk_020660f813func_02067a84EPhPv(s32 a, u8 *b, s32 c);
+void _ZN15TalkWindowState14setNextMessageEPhPv(s32 a, u8 *b, s32 c);
 void _ZN8ItemNameC1EPt(void *obj, u16 *p);
 void _ZN8ItemNameD1Ev(void *obj);
-void _ZN12Unk_020660f813func_020679ecEiPvj(s32 a, s32 b, void *c, s32 d);
+void _ZN15TalkWindowState12setNamedSlotEiPvj(s32 a, s32 b, void *c, s32 d);
 void PlayerActor_GetHeldItem(u16 *out, void *obj);
 void PlayerActor_GetFaceItem(u16 *out, void *obj);
 void PlayerActor_GetHat(u16 *out, void *obj);
@@ -3133,7 +3133,7 @@ struct Unk_021c1b3c {
     s32 unk_248;
 };
 extern Unk_021c1b3c *data_021c1b3c;
-extern u8 data_021edb5c;
+extern u8 gTalkMsgIndexEnd;
 extern char data_020d6f28[], data_020d6f30[];
 class PlayerActor {
 public:
@@ -3591,7 +3591,7 @@ void func_0205d530(void *);
 void func_0205d588(void *);
 void *func_0205d4d0(void *);
 BOOL func_0203d978(void *);
-void func_0203d73c(void *, void *);
+void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
 void func_0200f3ec(Unk_0200ff08_Vec *, void *, void *, void *, void *);
@@ -3814,7 +3814,7 @@ s32 _ZN10PlayerData12getHairStyleEv(void *p);
 u16 *_ZN10PlayerData6getHatEv(void *p);
 u16 *_ZN10PlayerData8getShirtEv(void *p);
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN8PlayerId13func_0209411cEv(void);
+s32 _ZN8PlayerId9getGenderEv(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -4100,7 +4100,7 @@ public:
 
 
 // ---- the object (size 0xc9c; vtable 0x020d6dec with the secondary table at 0x020d6e64)
-class PlayerActor : public Character, public Unk_020ddcf0 {
+class PlayerActor : public Character, public TalkMsgRequest {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
@@ -4291,19 +4291,19 @@ void PlayerActor::vfunc_64() {
     switch (((nO::PlayerActor *)this)->unk_818) {
     case 0:
         buf[0] = 0x3d;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[0], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[0], 0);
         break;
     case 4:
         buf[1] = 0x3e;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[1], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[1], 0);
         break;
     case 2:
         buf[2] = 3;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[2], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[2], 0);
         break;
     case 1:
         buf[3] = 0x3c;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[3], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[3], 0);
         ((nO::PlayerActor *)this)->unk_818 = 9;
         break;
     case 5:
@@ -4313,10 +4313,10 @@ void PlayerActor::vfunc_64() {
     case 13: {
         u32 obj[9];
         buf[4] = 0x3f;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[4], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[4], 0);
         *(u16 *)&buf[6] = ((nO::PlayerActor *)this)->unk_7d8 + 0x12b0;
         _ZN8ItemNameC1EPt(obj, (u16 *)&buf[6]);
-        _ZN12Unk_020660f813func_020679ecEiPvj(((nO::PlayerActor *)this)->unk_128, 0, obj, 7);
+        _ZN15TalkWindowState12setNamedSlotEiPvj(((nO::PlayerActor *)this)->unk_128, 0, obj, 7);
         _ZN8ItemNameD1Ev(obj);
         ((nO::PlayerActor *)this)->unk_818 = 8;
         break;
@@ -4324,11 +4324,11 @@ void PlayerActor::vfunc_64() {
     case 14: {
         u32 obj[9];
         buf[5] = 0x3f;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &buf[5], 0);
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &buf[5], 0);
         ((nO::PlayerActor *)this)->unk_818 = 8;
         *(u16 *)&buf[8] = ((nO::PlayerActor *)this)->unk_7d3 + 0x12e8;
         _ZN8ItemNameC1EPt(obj, (u16 *)&buf[8]);
-        _ZN12Unk_020660f813func_020679ecEiPvj(((nO::PlayerActor *)this)->unk_128, 0, obj, 7);
+        _ZN15TalkWindowState12setNamedSlotEiPvj(((nO::PlayerActor *)this)->unk_128, 0, obj, 7);
         _ZN8ItemNameD1Ev(obj);
         break;
     }
@@ -4346,10 +4346,10 @@ void PlayerActor::vfunc_68() {
     case 4: {
         s32 r5;
         u8 b;
-        _ZN12Unk_020660f813func_020679b4Ev(((nO::PlayerActor *)this)->unk_128);
+        _ZN15TalkWindowState13getChoiceListEv(((nO::PlayerActor *)this)->unk_128);
         r5 = _ZN10ChoiceList9getResultEv();
-        b = data_021edb5c;
-        _ZN12Unk_020660f813func_02067a84EPhPv(((nO::PlayerActor *)this)->unk_128, &b, 0);
+        b = gTalkMsgIndexEnd;
+        _ZN15TalkWindowState14setNextMessageEPhPv(((nO::PlayerActor *)this)->unk_128, &b, 0);
         if (r5 == 0) {
             ((nO::PlayerActor *)this)->unk_818 = 5;
         } else {

@@ -21,7 +21,7 @@
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; Unk_020ddcf0 (secondary base of the derived classes) starts at 0x290.
+// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(s32), slot 20 takes a u32).

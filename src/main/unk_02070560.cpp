@@ -1456,19 +1456,19 @@ extern "C" {
 void _ZN12Unk_020cbb1813func_02072824Ejj(void *g, s32 a, s32 n);
 }
 extern "C" {
-void *func_0207bf60(void *a, s32 x);
+void *SaveVillagers_Get(void *a, s32 x);
 }
 extern "C" {
-s32 _ZN12VillagerData13func_020805c4Ev(void *p);
+s32 _ZN12VillagerData13getVillagerIdEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_02002fc813func_020030b4Ev(s32 p);
+s32 _ZN10VillagerId7isValidEv(s32 p);
 }
 extern "C" {
 u8 *func_0207f968(void *p);
 }
 extern "C" {
-s32 func_0207e268(void *p);
+s32 Villager_GetPlan(void *p);
 }
 extern "C" {
 s32 func_0209a610(s32 p);
@@ -1562,11 +1562,11 @@ extern "C" s32 func_02070790(s32 x);
 extern "C" s32 func_02070784(s32 x);
 
 extern "C" BOOL func_02070fbc(s32 a, s32 b) {
-    void *p = func_0207bf60(data_021dfd8c, a);
+    void *p = SaveVillagers_Get(data_021dfd8c, a);
     if (p != NULL) {
-        if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12VillagerData13func_020805c4Ev(p)) != 0) {
+        if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) != 0) {
             u32 val = *func_0207f968(p);
-            s32 mode = _ZN12Unk_0209b3bc13func_0209b354Ev(func_0209a610(func_0207e268(p)));
+            s32 mode = _ZN12Unk_0209b3bc13func_0209b354Ev(func_0209a610(Villager_GetPlan(p)));
             u32 rnd = func_02063b8c(100);
             s32 fa, fb, fc;
             u16 bufw[2];
@@ -2023,10 +2023,10 @@ extern "C" {
 s32 _ZN12Unk_020718a413func_020718e4Ev(s32 t);
 }
 extern "C" {
-void *func_0207bf60(void *a, s32 x);
+void *SaveVillagers_Get(void *a, s32 x);
 }
 extern "C" {
-s32 _ZN12VillagerData13func_020805b8Ev(void *p);
+s32 _ZN12VillagerData10getPatternEv(void *p);
 }
 extern "C" {
 s32 _ZN12Unk_020b23a013func_020b23a0Ev(void *p);
@@ -2060,8 +2060,8 @@ extern "C" void func_0207075c() {
     func_020b249c(_ZN12Unk_020b23a013func_020b23a0Ev(data_021ecc7c));
 }
 extern "C" s32 func_02070738(s32 x) {
-    void *p = func_0207bf60(data_021dfd8c, x);
-    if (p) return _ZN12VillagerData13func_020805b8Ev(p);
+    void *p = SaveVillagers_Get(data_021dfd8c, x);
+    if (p) return _ZN12VillagerData10getPatternEv(p);
     return 0;
 }
 extern "C" s32 func_02070718(s32 x) {

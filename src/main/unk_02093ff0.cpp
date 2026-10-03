@@ -283,7 +283,7 @@ public:
     void func_020940d0(MsgString *x);
     u8 *func_02094104();
     void func_02094108(void *src);
-    s8 func_0209411c();
+    s8 getGender();
     void func_02094124(u8 v);
     void func_02094128(u16 v);
     u16 func_0209412c();
@@ -488,7 +488,7 @@ void PlayerId::func_02094128(u16 v) { unk_0a = v; }
 
 void PlayerId::func_02094124(u8 v) { unk_14 = v; }
 
-s8 PlayerId::func_0209411c() { return unk_14; }
+s8 PlayerId::getGender() { return unk_14; }
 
 void PlayerId::func_02094108(void *src) { MI_CpuCopy8(src, unk_0c, 8); }
 

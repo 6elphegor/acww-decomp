@@ -44,7 +44,7 @@ p__sinit_020c2cd0 addr:0x020d1dd8 base:ARM9_CTOR_START
 data_020d6e6c addr:0x020d6e6c base:_ZTV11PlayerActor
 data_020d6f54 addr:0x020d6f54 base:_ZTV17SndSeEmitterKind1
 data_020e0878 addr:0x020e0878 base:data_020e0874
-data_020e09a0 addr:0x020e09a0 base:data_020e0994
+data_020e09a0 addr:0x020e09a0 base:sVisitorSchedule
 data_020e1918 addr:0x020e1918 base:data_020e1914
 data_020e220c addr:0x020e220c base:data_020e21fc
 data_020e227c addr:0x020e227c base:data_020e21fc

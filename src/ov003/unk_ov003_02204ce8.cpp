@@ -92,7 +92,7 @@
 #define func_0205fbbc _ZN12Unk_0205f8d413func_0205fbbcEPv
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_02062650 _ZN8ItemNameC1EPt
-#define func_020679ec _ZN12Unk_020660f813func_020679ecEiPvj
+#define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
 #define func_020729bc _ZN12Unk_020cbb1813func_020729bcEj
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
 #define HudCountdown_incCountB _ZN12HudCountdown9incCountBEv
@@ -490,7 +490,7 @@ extern u8 data_ov003_02230acc[];
 extern u8 data_ov003_0222efb4[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
-Item *func_020816cc(u32 a, u32 b);
+Item *NpcRegistry_FindByKind(u32 a, u32 b);
 Item *func_ov003_0222ebb0(u32 a);
 BOOL func_0200e7c0(Obj *o);
 u16 *func_020952d0();
@@ -849,10 +849,10 @@ struct Unk_ov003_022067c4_Shared {
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020ddcf0 {
+class TalkMsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -888,7 +888,7 @@ struct Unk_ov003_022067c4_Pad {
 
 enum Unk_ov003_02206a84_Three { Unk_ov003_02206a84_THREE = 3 };
 
-class Unk_ov003_02206574_Obj : public Character, public Unk_020ddcf0 {
+class Unk_ov003_02206574_Obj : public Character, public TalkMsgRequest {
 public:
     /* 0x130 */ u8 pad_130[0x2cc - 0x130];
     /* 0x2cc */ u8 unk_2cc[8];
@@ -959,8 +959,8 @@ void func_0209875c(s32 a, s32 b);
 u8 *PlayerData_getFaceType(s32 a);
 s32 func_02098044(s32 a, s32 b);
 void func_0209801c(s32 a, s32 b);
-void func_0203e47c(void *self, Unk_020ddcf0 *sec);
-void func_0203e488(void *self, Unk_020ddcf0 *sec);
+void func_0203e47c(void *self, TalkMsgRequest *sec);
+void func_0203e488(void *self, TalkMsgRequest *sec);
 void Camera_SetMode4();
 void Camera_SetModeDefault();
 void func_0203d7f8();
@@ -1947,7 +1947,7 @@ s32 func_02098044(void *p, s32 a);
 void func_0209801c(void *p, s32 a);
 void func_02062650(void *b, void *s);
 void func_0206260c(void *b);
-void func_020679ec(void *a, s32 b, void *c, s32 d);
+void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
 void func_02034d70(s32 a);
 void func_02034dd0(s32 a, s32 b, s32 c);
 void func_02034e10(s32 a, s32 b, s32 c, s32 d);
@@ -2290,10 +2290,10 @@ struct Unk_ov003_0220a684_Shared {
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020ddcf0 {
+class TalkMsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual void vfunc_s10();
@@ -2310,7 +2310,7 @@ public:
     /* 0x40 */ u8 pad_40[4];
 };
 
-class Unk_ov003_0220a684_Obj : public Character, public Unk_020ddcf0 {
+class Unk_ov003_0220a684_Obj : public Character, public TalkMsgRequest {
 public:
     /* 0x130 */ u8 pad_130[0x164 - 0x130];
     /* 0x164 */ Unk_ov003_0220a684_Item *unk_164;
@@ -11318,7 +11318,7 @@ extern "C" void func_ov003_022099d0(Obj *o) {
         }
         o->unk_10a = 1;
         func_02062650(buf, &o->unk_81c);
-        func_020679ec(o->unk_128, 0, buf, 7);
+        TalkWindowState_setNamedSlot(o->unk_128, 0, buf, 7);
         func_0206260c(buf);
     l54:
         o->unk_128->unk_08 = 1;
@@ -13716,7 +13716,7 @@ extern "C" void func_ov003_022067c4(Obj *o) {
             *p = 1;
             func_0203e488(o, o);
             Unk_02006d14_setActionFlag(o, 0x11);
-            MsgRequest_setFileName(&(Unk_020ddcf0 &)*o, "obj_etc_player");
+            MsgRequest_setFileName(&(TalkMsgRequest &)*o, "obj_etc_player");
             o->unk_1e = 0x14;
             o->unk_3c->unk_08 = 1;
             Camera_SetMode4();
@@ -14593,7 +14593,7 @@ extern "C" BOOL func_ov003_022052f4(Obj *o) {
     switch (k) {
     case 2:
     case 3: {
-        Item *it = func_020816cc(k, id);
+        Item *it = NpcRegistry_FindByKind(k, id);
         if (it != NULL) {
             BOOL f = Unk_ov003_022052f4_Rng(buf, 0x1376, 0x1376);
             if (f || Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) {

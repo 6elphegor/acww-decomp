@@ -82,19 +82,19 @@ struct Unk_0203e4f0_Vec {
 };
 
 extern "C" {
-extern Unk_0203e22c_State *data_021c39c0;
+extern Unk_0203e22c_State *gTalkRequestCurrent;
 }
 
 extern "C" {
-extern u32 data_021c39c4;
+extern u32 sTalkTargetId;
 }
 
 extern "C" {
-extern u32 data_021c39c8;
+extern u32 sTalkRequestFlags;
 }
 
 extern "C" {
-extern u32 data_021c39cc;
+extern u32 sTalkRequestList;
 }
 
 extern "C" {
@@ -118,7 +118,7 @@ void func_0203ebb0(void);
 }
 
 extern "C" {
-void func_0203d904(u32);
+void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
@@ -126,7 +126,7 @@ BOOL func_02094960(void);
 }
 
 extern "C" {
-void func_0203d640(u32);
+void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
@@ -170,11 +170,11 @@ s32 func_01ffcb0c(s32);
 }
 
 extern "C" {
-u32 func_0203d5e4(s32);
+u32 Talk_DetachRequest(s32);
 }
 
 extern "C" {
-u32 func_0203d5f0(s32);
+u32 Talk_AttachRequestToWindow0(s32);
 }
 
 extern "C" {
@@ -250,7 +250,7 @@ void func_0203e938(u32 id, u8 x, u8 mode);
 }
 
 extern "C" {
-void func_0203e358(void);
+void TalkRequestQueue_Reset(void);
 }
 
 extern "C" {
@@ -318,12 +318,12 @@ public:
     /* 0xea */ u16 pad_ea;
 };
 
-class Unk_020d9620 : public GameProc {
+class TalkRequestQueue : public GameProc {
 public:
-    Unk_020d9620() {}
+    TalkRequestQueue() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual ~Unk_020d9620();
+    virtual ~TalkRequestQueue();
 };
 Unk_0203e5d0_List gCharacterList;
 
@@ -447,9 +447,9 @@ BOOL Character::vfunc_58(void *a) { return FALSE; }
 
 BOOL Character::vfunc_5c() { return FALSE; }
 
-void Character::func_0203e488(s32 a) { func_0203d5f0(a); }
+void Character::func_0203e488(s32 a) { Talk_AttachRequestToWindow0(a); }
 
-void Character::func_0203e47c(s32 a) { func_0203d5e4(a); }
+void Character::func_0203e47c(s32 a) { Talk_DetachRequest(a); }
 
 void Character::setInteractionRange(s32 v) { unk_e4 = func_01ffcb0c(v); }
 

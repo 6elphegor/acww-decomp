@@ -13,8 +13,8 @@ extern "C" s32 func_ov004_02204e70(void);
 extern "C" s32 func_ov003_022048c0(s32 a);
 extern "C" s32 func_ov004_0223584c(void);
 extern "C" s32 func_ov003_02218bb0(s32 a);
-extern "C" s32 func_020816f8(void);
-extern "C" s32 func_02081708(void);
+extern "C" s32 NpcRegistry_FindSpNpc(void);
+extern "C" s32 NpcRegistry_FindVillager(void);
 extern "C" s32 func_020951ec(void);
 extern "C" BOOL func_020b705c(u8 v);
 
@@ -105,9 +105,9 @@ extern "C" s32 func_020b6010(void) { return 0; }
 
 extern "C" s32 func_020b6008(void) { return func_020951ec(); }
 
-extern "C" s32 func_020b6000(void) { return func_02081708(); }
+extern "C" s32 func_020b6000(void) { return NpcRegistry_FindVillager(); }
 
-extern "C" s32 func_020b5ff8(void) { return func_020816f8(); }
+extern "C" s32 func_020b5ff8(void) { return NpcRegistry_FindSpNpc(); }
 
 extern "C" s32 func_020b5fd0(s32 a) {
     if (IsMode0()) {

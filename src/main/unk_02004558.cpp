@@ -107,10 +107,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_s08();
     virtual void vfunc_s0c();
     virtual s32 vfunc_60();
@@ -121,7 +121,7 @@ public:
     virtual void vfunc_s24();
     virtual void vfunc_s28();
     virtual void vfunc_s2c();
-    virtual void vfunc_s30();
+    virtual void onActionTag4();
     virtual void vfunc_s34();
     virtual void vfunc_s38(u32 a);
     virtual void vfunc_s3c();
@@ -2997,8 +2997,8 @@ void _ZN12Unk_02019e2c13func_0201a040EP18Unk_02019e2c_Entryi(void *, void *, u32
 void _ZN12Unk_02019e2c13func_02019e2cEv(void *);
 void *func_02018984(u32);
 BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *, s32);
-void *func_0203d608();
-void *func_0208169c(void *);
+void *TalkRequest_GetTalkTarget();
+void *NpcRegistry_FindByHandle(void *);
 s32 func_020e7b98(s32, s32);
 void func_02010d98(void *, s32);
 void func_02094c38();
@@ -3614,12 +3614,12 @@ void func_02034d84(u32 a);
 void func_02034dd0(s32 a, s32 b, s32 c);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 _ZN12Unk_020660f813func_020679b4Ev(s32 a);
+s32 _ZN15TalkWindowState13getChoiceListEv(s32 a);
 s32 _ZN10ChoiceList9getResultEv();
-void _ZN12Unk_020660f813func_02067a84EPhPv(s32 a, u8 *b, s32 c);
+void _ZN15TalkWindowState14setNextMessageEPhPv(s32 a, u8 *b, s32 c);
 void _ZN8ItemNameC1EPt(void *obj, u16 *p);
 void _ZN8ItemNameD1Ev(void *obj);
-void _ZN12Unk_020660f813func_020679ecEiPvj(s32 a, s32 b, void *c, s32 d);
+void _ZN15TalkWindowState12setNamedSlotEiPvj(s32 a, s32 b, void *c, s32 d);
 void PlayerActor_GetHeldItem(u16 *out, void *obj);
 void PlayerActor_GetFaceItem(u16 *out, void *obj);
 void PlayerActor_GetHat(u16 *out, void *obj);
@@ -3632,7 +3632,7 @@ struct Unk_021c1b3c {
     s32 unk_248;
 };
 extern Unk_021c1b3c *data_021c1b3c;
-extern u8 data_021edb5c;
+extern u8 gTalkMsgIndexEnd;
 extern char data_020d6f28[], data_020d6f30[];
 class PlayerActor {
 public:
@@ -4090,7 +4090,7 @@ void func_0205d530(void *);
 void func_0205d588(void *);
 void *func_0205d4d0(void *);
 BOOL func_0203d978(void *);
-void func_0203d73c(void *, void *);
+void TalkRequest_AddTalk(void *, void *);
 BOOL Character_FindInteractionTarget(void *);
 BOOL _ZN9Character16checkInteractionEPS_(void *, void *);
 void func_0200f3ec(Unk_0200ff08_Vec *, void *, void *, void *, void *);
@@ -4313,7 +4313,7 @@ s32 _ZN10PlayerData12getHairStyleEv(void *p);
 u16 *_ZN10PlayerData6getHatEv(void *p);
 u16 *_ZN10PlayerData8getShirtEv(void *p);
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN8PlayerId13func_0209411cEv(void);
+s32 _ZN8PlayerId9getGenderEv(void);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *PlayerActor_GetPlayerData(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -4599,7 +4599,7 @@ public:
 
 
 // ---- the object (size 0xc9c; vtable 0x020d6dec with the secondary table at 0x020d6e64)
-class PlayerActor : public Character, public Unk_020ddcf0 {
+class PlayerActor : public Character, public TalkMsgRequest {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
@@ -5935,7 +5935,7 @@ extern "C" BOOL PlayerActor_GetGender(void *p) {
     BOOL result = FALSE;
     if (r != NULL) {
         _ZN10PlayerData11getPlayerIdEv(r);
-        if (_ZN8PlayerId13func_0209411cEv()) {
+        if (_ZN8PlayerId9getGenderEv()) {
             result = TRUE;
         } else {
             result = FALSE;
@@ -6474,7 +6474,7 @@ s32 Unk_02006d14::func_0200ff08() {
     using namespace nR;
     if (func_0203d978(((nR::Unk_02006d14 *)this)) || _ZN12Unk_02006d1414testActionFlagEj(this, 0x13)) return FALSE;
     if (_ZN11PlayerActor13func_0200d5b8Ev(this)) {
-        func_0203d73c(((nR::Unk_02006d14 *)this), ((nR::Unk_02006d14 *)this)->unk_138);
+        TalkRequest_AddTalk(((nR::Unk_02006d14 *)this), ((nR::Unk_02006d14 *)this)->unk_138);
         if (((nR::Unk_02006d14 *)this)->unk_138 == 0) {
             if (Character_FindInteractionTarget(((nR::Unk_02006d14 *)this))) return TRUE;
         } else if (!_ZN9Character16checkInteractionEPS_(((nR::Unk_02006d14 *)this)->unk_138, ((nR::Unk_02006d14 *)this))) {
@@ -8570,7 +8570,7 @@ void Unk_02006d14::func_0200bc78() {
     Unk_0200bc78_Vec d;
     nK::Unk_02006d14_Vec *pv;
     s16 *pr;
-    o = (Unk_0200bc78_Obj *)func_0203d608();
+    o = (Unk_0200bc78_Obj *)TalkRequest_GetTalkTarget();
     pr = 0;
     if (_ZN12Unk_02006d1414testActionFlagEj(this, 0xe)) o = 0;
     if (o != 0) {
@@ -8597,12 +8597,12 @@ void Unk_02006d14::func_0200bc08() {
         p = *(Unk_0200bc08_Obj **)((u8 *)((nK::Unk_02006d14 *)this) + 0x138);
     } else if (((nK::Unk_02006d14 *)this)->unk_16c == 1) {
         if (gPad[1] & 0x400) {
-            p = (Unk_0200bc08_Obj *)func_0203d608();
+            p = (Unk_0200bc08_Obj *)TalkRequest_GetTalkTarget();
         }
     }
     if (p != 0) {
         tmp = p->unk_08;
-        o = func_0208169c(&tmp);
+        o = NpcRegistry_FindByHandle(&tmp);
         if (o != 0) {
             if ((*(s32 (**)(void *))(*(u32 *)o + 0xa0))(o) != -1) {
                 requestAct15(5, -1);

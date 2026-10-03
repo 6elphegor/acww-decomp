@@ -3,10 +3,10 @@
 
 struct Unk_0203389c_Vec { s32 x, y, z; };
 typedef Unk_0203389c_Vec Unk_02083c28_Vec;
-struct Unk_02083c28;
-struct Unk_02083c28_G;
-typedef void (Unk_02083c28::*Unk_02083c28_Fn)(Unk_02083c28_Vec *, u16 *, Unk_02083c28_G *);
-typedef u16 *(Unk_02083c28::*Unk_02083d14_Fn)();
+struct VisitorSpawner;
+struct VisitorSchedule;
+typedef void (VisitorSpawner::*Unk_02083c28_Fn)(Unk_02083c28_Vec *, u16 *, VisitorSchedule *);
+typedef u16 *(VisitorSpawner::*Unk_02083d14_Fn)();
 
 struct Unk_02083c28_VecZ {
     s32 x, y, z;
@@ -14,15 +14,15 @@ struct Unk_02083c28_VecZ {
     ~Unk_02083c28_VecZ() {}
 };
 
-struct Unk_02083c28_G {
+struct VisitorSchedule {
     Unk_02083c28_VecZ pos;
     u16 unk_0c;
     u8 unk_0e;
     u8 unk_0f;
-    ~Unk_02083c28_G();
+    ~VisitorSchedule();
 };
 
-struct Unk_02083c28_Ent {
+struct VisitorSpawnEntry {
     u16 id;
     u16 id2;
     u32 ovl;
@@ -30,7 +30,7 @@ struct Unk_02083c28_Ent {
     u8 flag : 1;
 };
 
-struct Unk_02083d14_Ent {
+struct VisitorCheckEntry {
     Unk_02083d14_Fn fn;
     u8 lvl;
 };
@@ -49,16 +49,16 @@ struct Unk_020cbb18 {
 };
 
 
-struct Unk_02083c28 {
+struct VisitorSpawner {
     u8 pad[0x70];
     u8 unk_70;
     u8 pad2[3];
     u32 unk_74;
 
-    u16 *func_02083c28(Unk_02083c28_Ent *tbl, s32 n);
-    BOOL func_02083d14();
-    void func_02083e38();
-    void func_02083e40(u32 *p);
+    u16 *spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n);
+    BOOL pickVisitor();
+    void clearVisitorOverlay();
+    void setVisitorOverlay(u32 *p);
 };
 
 struct Unk_02083c08 {
@@ -67,7 +67,7 @@ struct Unk_02083c08 {
     u8 pad_71[3];
     u32 unk_74;
 
-    void func_02083c08();
+    void releaseVisitorOverlay();
 };
 
 struct Unk_02083314_V3 {
@@ -82,7 +82,7 @@ struct Unk_02083314_K {
     u16 c;
 };
 
-struct Unk_02083314_Ent {
+struct EventVisitorEntry {
     u32 a;
     u16 b;
     u16 c;
@@ -145,9 +145,9 @@ struct Unk_02084038 {
     ~Unk_02084038();
 };
 
-class Unk_020e09ac : public GameProc {
+class NpcSpawner : public GameProc {
 public:
-    Unk_020e09ac() {}
+    NpcSpawner() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -163,26 +163,26 @@ void func_02082e2c();
 void func_02082e58();
 void func_02082e80();
 void func_02082ff4();
-void func_0208301c();
-void func_02083038();
-void func_02083100();
+void Visitor_CheckPete();
+void Visitor_CheckDateVisitors();
+void Visitor_CheckBlanca();
 void func_02083214();
-void func_02083230();
+void Visitor_CheckKaitlin();
 void func_02083314();
-void func_02083360();
-void func_02083430();
+void Visitor_CheckKatie();
+void Visitor_CheckJoan();
 void func_020834cc();
-void func_0208356c();
+void Visitor_CheckLyle();
 void func_02083608();
 void func_02083614();
 void func_02083644();
-void func_02083774();
-void func_020838e8();
+void Visitor_CheckEventHost();
+void Visitor_CheckTortimer();
 void func_02083984();
-void func_02083a20();
+void Visitor_CheckTomNook();
 void func_02083a9c();
-void func_02083b2c();
-void func_02084f84();
+void Visitor_CheckResetti();
+void NpcSpawner_Create();
 }
 }
 
@@ -221,19 +221,19 @@ extern void *data_020e0974[2];
 extern void *data_020e097c[2];
 extern void *data_020e0984[2];
 extern void *data_020e098c[2];
-extern const s32 data_020cf1c8;
+extern const s32 sVisitorSpawnTableCount;
 extern const s32 data_020cf1cc;
-extern const Unk_02083314_Ent data_020cf1d0[1];
-extern void *const data_020cf1d8[4];
+extern const EventVisitorEntry sPeteVisitTable[1];
+extern void *const sDateVisitorChecks[4];
 extern const s32 data_020cf1e8[8];
-extern const Unk_02083314_Ent data_020cf208[4];
-extern const Unk_02083314_Ent data_020cf228[8];
+extern const EventVisitorEntry sDateVisitorTable[4];
+extern const EventVisitorEntry sEventHostTable[8];
 extern u32 data_020e0870;
 extern u32 data_020e0874[2];
-extern Unk_02084f84_Scene data_020e092c;
-extern Unk_02083c28_G data_020e0994;
-extern Unk_02083d14_Ent data_020e09f4[11];
-extern Unk_02083c28_Ent data_020e0a78[23];
+extern Unk_02084f84_Scene sNpcSpawnerProfile;
+extern VisitorSchedule sVisitorSchedule;
+extern VisitorCheckEntry sVisitorCheckTable[11];
+extern VisitorSpawnEntry sVisitorSpawnTable[23];
 extern Unk_02083c28_Rec data_021cd654[8];
 extern Unk_02083c28_Rec data_021cd844[0x26];
 extern u8 data_021cd640;
@@ -243,26 +243,26 @@ void *data_020e095c[2] = {(void *)Dp::func_02083644, 0};
 void *data_020e08b4[2] = {(void *)Dp::func_02082e08, 0};
 u32 data_020e0874[2] = {0x56, 0};
 void *data_020e08e4[2] = {(void *)Dp::func_02082e2c, 0};
-void *data_020e097c[2] = {(void *)Dp::func_02083b2c, 0};
+void *data_020e097c[2] = {(void *)Dp::Visitor_CheckResetti, 0};
 const s32 data_020cf1cc = 4;
 void *data_020e0884[2] = {(void *)Dp::func_02082e2c, 0};
 void *data_020e0894[2] = {(void *)Dp::func_02082e80, 0};
 void *data_020e08bc[2] = {(void *)Dp::func_02082dd0, 0};
-void *data_020e08ec[2] = {(void *)Dp::func_02083a20, 0};
-Unk_02083c28_G data_020e0994 = {Unk_02083c28_VecZ(), 0xfff1, 0x33, 0};
-void *data_020e0984[2] = {(void *)Dp::func_02083230, 0};
+void *data_020e08ec[2] = {(void *)Dp::Visitor_CheckTomNook, 0};
+VisitorSchedule sVisitorSchedule = {Unk_02083c28_VecZ(), 0xfff1, 0x33, 0};
+void *data_020e0984[2] = {(void *)Dp::Visitor_CheckKaitlin, 0};
 void *data_020e08dc[2] = {(void *)Dp::func_02082e2c, 0};
-void *data_020e0974[2] = {(void *)Dp::func_02083100, 0};
-void *data_020e096c[2] = {(void *)Dp::func_0208301c, 0};
+void *data_020e0974[2] = {(void *)Dp::Visitor_CheckBlanca, 0};
+void *data_020e096c[2] = {(void *)Dp::Visitor_CheckPete, 0};
 void *data_020e0964[2] = {(void *)Dp::func_02083644, 0};
 void *data_020e08cc[2] = {(void *)Dp::func_02082e2c, 0};
 void *data_020e0954[2] = {(void *)Dp::func_02083614, 0};
 Unk_02083c28_Rec data_021cd844[0x26];
-const Unk_02083314_Ent data_020cf208[4] = {{0x3e, 0x6a, 0}, {0x41, 0x6b, 0}, {0x42, 0x68, 0}, {0x43, 0x62, 0}};
+const EventVisitorEntry sDateVisitorTable[4] = {{0x3e, 0x6a, 0}, {0x41, 0x6b, 0}, {0x42, 0x68, 0}, {0x43, 0x62, 0}};
 void *data_020e0944[2] = {(void *)Dp::func_02083644, 0};
 void *data_020e0934[2] = {(void *)Dp::func_02083214, 0};
-Unk_02084f84_Scene data_020e092c = {(void *)Dp::func_02084f84, 0xd0, 0xcc};
-Unk_02083d14_Ent data_020e09f4[11] = {
+Unk_02084f84_Scene sNpcSpawnerProfile = {(void *)Dp::NpcSpawner_Create, 0xd0, 0xcc};
+VisitorCheckEntry sVisitorCheckTable[11] = {
     {*(Unk_02083d14_Fn *)data_020e08a4, 4},
     {*(Unk_02083d14_Fn *)data_020e097c, 4},
     {*(Unk_02083d14_Fn *)data_020e08ec, 4},
@@ -280,28 +280,28 @@ void *data_020e087c[2] = {(void *)Dp::func_02082e2c, 0};
 void *data_020e090c[2] = {(void *)Dp::func_02083314, 0};
 void *data_020e0904[2] = {(void *)Dp::func_02083984, 0};
 void *data_020e08fc[2] = {(void *)Dp::func_02083644, 0};
-const Unk_02083314_Ent data_020cf228[8] = {{0x14, 0x57, 0}, {0x15, 0x58, 0}, {0x16, 0x59, 0}, {0x17, 0x5a, 0}, {0x18, 0x5f, 0}, {0x19, 0x5b, 0}, {0x1a, 0x5c, 0}, {0x1b, 0x5c, 0}};
-void *data_020e088c[2] = {(void *)Dp::func_02083774, 0};
-const Unk_02083314_Ent data_020cf1d0[1] = {{0x45, 0x54, 0}};
-const s32 data_020cf1c8 = 0x17;
-void *data_020e08c4[2] = {(void *)Dp::func_02083038, 0};
-void *data_020e08d4[2] = {(void *)Dp::func_0208356c, 0};
+const EventVisitorEntry sEventHostTable[8] = {{0x14, 0x57, 0}, {0x15, 0x58, 0}, {0x16, 0x59, 0}, {0x17, 0x5a, 0}, {0x18, 0x5f, 0}, {0x19, 0x5b, 0}, {0x1a, 0x5c, 0}, {0x1b, 0x5c, 0}};
+void *data_020e088c[2] = {(void *)Dp::Visitor_CheckEventHost, 0};
+const EventVisitorEntry sPeteVisitTable[1] = {{0x45, 0x54, 0}};
+const s32 sVisitorSpawnTableCount = 0x17;
+void *data_020e08c4[2] = {(void *)Dp::Visitor_CheckDateVisitors, 0};
+void *data_020e08d4[2] = {(void *)Dp::Visitor_CheckLyle, 0};
 u8 data_021cd640;
 void *data_020e093c[2] = {(void *)Dp::func_02083644, 0};
 const s32 data_020cf1e8[8] = {9, 10, 14, 15, 16, 17, 18, 19};
 void *data_020e0924[2] = {(void *)Dp::func_02083644, 0};
 void *data_020e0914[2] = {(void *)Dp::func_02083608, 0};
 void *data_020e089c[2] = {(void *)Dp::func_02082e58, 0};
-void *const data_020cf1d8[4] = {0, 0, (void *)Dp::func_02082ff4, 0};
-void *data_020e098c[2] = {(void *)Dp::func_02083360, 0};
+void *const sDateVisitorChecks[4] = {0, 0, (void *)Dp::func_02082ff4, 0};
+void *data_020e098c[2] = {(void *)Dp::Visitor_CheckKatie, 0};
 
 namespace F1 {
 extern "C" {
 extern u8 data_020e416c;
 extern Unk_020cbb18 *data_020cbb18;
 extern Unk_02082e80_Grid *data_021c47c4;
-extern u8 data_020cf1d0[], data_020cf208[], data_020cf1d8[], data_020e0a78[];
-extern s32 data_020cf1c8;
+extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
+extern s32 sVisitorSpawnTableCount;
 extern u8 data_021ed315, data_021eca50;
 void func_0204edd8(void *g, void *v);
 void *func_020850e0();
@@ -323,11 +323,11 @@ s32 _ZN11SaveRecord413func_0209ea50Ev(void *a);
 s32 func_020b50e8();
 s32 func_02083ba4();
 s32 func_02083b84();
-s32 func_02083bc8(void *tbl, s32 x);
-s32 func_02083de8(void *a, void *b, s32 c);
-s32 func_02083e10(void *a, void *b, s32 c);
+s32 Visitor_FindActiveEventEntry(void *tbl, s32 x);
+s32 VisitorTable_FindByProfile(void *a, void *b, s32 c);
+s32 VisitorTable_FindByNpc(void *a, void *b, s32 c);
 void func_0209d498(void *p);
-s32 func_02084de0(s32 a, void *p);
+s32 Event_IsActive(s32 a, void *p);
 s32 _ZN12Unk_0208722413func_0208723cEv(void *p);
 s32 func_0208740c();
 s32 func_02087444();
@@ -336,8 +336,8 @@ s32 func_020374cc(void *c, s32 v);
 s32 func_02031194(s32 x, s32 y);
 void func_0204edf8(s32 *o1, s32 *o2, s32 a, s32 b, s32 c, s32 d);
 void func_0204ed8c(void *a, s32 x, s32 y);
-BOOL func_0208310c(BOOL flag);
-BOOL func_0208323c(BOOL flag);
+BOOL Visitor_FindBlanca(BOOL flag);
+BOOL Visitor_FindKaitlin(BOOL flag);
 }
 static inline BOOL Unk_02083058_IsA() { return data_020e416c == 0 ? TRUE : FALSE; }
 static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 x, u32 y) {
@@ -354,11 +354,11 @@ extern u8 data_020e416c;
 extern Unk_020cbb18 *data_020cbb18;
 extern u8 data_021ed315;
 extern void *data_021c47c4;
-extern s32 data_020cf1c8;
-extern u8 data_020e0a78[];
+extern s32 sVisitorSpawnTableCount;
+extern u8 sVisitorSpawnTable[];
 extern u8 data_020e0874[];
 extern u8 data_020e0870[];
-extern Unk_02083314_Ent data_020cf228[];
+extern EventVisitorEntry sEventHostTable[];
 extern s32 data_020cf1e8[];
 s32 func_020b50e8();
 s32 func_020b50dc();
@@ -385,7 +385,7 @@ s32 _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(s32, void *);
 s32 _ZN12Unk_02086f8413func_02086fa8Ev(s32);
 s32 _ZN12Unk_02086f1413func_02086f18Ev(s32);
 s32 func_02087444();
-s32 func_02084de0(u32, void *);
+s32 Event_IsActive(u32, void *);
 s32 func_0204ed8c(void *, s32, s32);
 s32 func_0204ea88(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void func_0204eda4(void *, s32, s32, s32, s32);
@@ -393,43 +393,43 @@ void func_0204ed70(void *, s32, s32, s32, s32);
 void func_0204edf8(s32 *, s32 *, s32, s32, s32, s32);
 s32 func_02063b8c(s32);
 void OverlayMgr_Release(u32);
-void *func_02083e10(u16 *, void *, s32);
-void *func_02083de8(void *, void *, s32);
+void *VisitorTable_FindByNpc(u16 *, void *, s32);
+void *VisitorTable_FindByProfile(void *, void *, s32);
 BOOL func_02083314(s32 a, Unk_02083314_V3 *p);
-BOOL func_02083360(s32 a, s32 b, s32 c);
-BOOL func_0208336c(s32 flag);
-BOOL func_02083430(s32 a, s32 b, s32 c);
-BOOL func_0208343c(s32 flag);
+BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c);
+BOOL Visitor_FindKatie(s32 flag);
+BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c);
+BOOL Visitor_FindJoan(s32 flag);
 BOOL func_020834cc(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL func_0208356c(s32 a, s32 b, s32 c);
-BOOL func_02083578(s32 flag);
+BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c);
+BOOL Visitor_FindLyle(s32 flag);
 BOOL func_02083608(s32 a, Unk_02083314_V3 *p);
 BOOL func_02083614(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
 BOOL func_02083644(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
 BOOL func_0208364c(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
 BOOL func_020836e4(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL func_02083774(s32 a, s32 b, s32 c);
-BOOL func_02083780(s32 flag);
+BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c);
+BOOL Visitor_FindEventHost(s32 flag);
 BOOL func_02083898();
-BOOL func_020838e8(s32 a, s32 b, s32 c);
-BOOL func_020838f4(s32 flag);
+BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c);
+BOOL Visitor_FindTortimer(s32 flag);
 BOOL func_02083944();
 BOOL func_02083984(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q);
-BOOL func_02083a20();
+BOOL Visitor_CheckTomNook();
 BOOL func_02083a9c(s32 a, Unk_02083314_V3 *p);
-BOOL func_02083b2c();
+BOOL Visitor_CheckResetti();
 BOOL func_02083b84();
 BOOL func_02083ba4();
-s32 func_02083bc8(Unk_02083314_Ent *p, s32 n);
+s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n);
 }
 
 }
 
 namespace F3 {
 extern "C" {
-extern Unk_02083c28_G data_020e0994;
+extern VisitorSchedule sVisitorSchedule;
 extern u32 data_020e0874[2];
-extern Unk_02083d14_Ent data_020e09f4[11];
+extern VisitorCheckEntry sVisitorCheckTable[11];
 extern u8 data_020e416c;
 extern Unk_020cbb18 *data_020cbb18;
 extern Unk_02083c28_Vec gVec3Zero;
@@ -459,22 +459,22 @@ void *func_0207aa78(s32 i);
 s32 func_02078568(void *p, s32 v);
 s32 func_0207854c(void *p, s32 v);
 s32 func_0207869c();
-s32 func_0207b74c(void *p);
-void *func_0207bf60(void *p, s32 i);
-s32 _ZN12VillagerData13func_020805c4Ev();
-s32 _ZN12Unk_02002fc813func_020030b4Ev();
+s32 SaveVillagers_UpdatePlans(void *p);
+void *SaveVillagers_Get(void *p, s32 i);
+s32 _ZN12VillagerData13getVillagerIdEv();
+s32 _ZN10VillagerId7isValidEv();
 void *func_0207e310(void *p);
-s32 func_0208168c(u16 *p);
+s32 NpcRegistry_FindVillagerByHandle(u16 *p);
 s32 func_0207856c(void *p);
 s32 func_0207853c(void *p);
 s32 func_02078548(void *p);
 void *func_020784f4(void *p);
 s32 func_020784b8(void *p, s32 v);
-u16 *func_02083de8(u16 *key, Unk_02083c28_Ent *tbl, s32 n);
-BOOL func_02083e50(void *p, Unk_02083c28_G *g);
-void func_02083e60(Unk_02083c28_G *g);
-void func_02083e7c(Unk_02083c28_G *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos);
-BOOL func_02083dbc(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos);
+u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n);
+BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g);
+void VisitorSchedule_Clear(VisitorSchedule *g);
+void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos);
+BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos);
 BOOL func_02083ed4(u16 *arr, s32 x, s32 y);
 BOOL func_02083ef4(u16 *arr, s32 x, s32 y);
 BOOL func_02083f1c(u16 *arr, s32 x, s32 y);
@@ -497,25 +497,25 @@ namespace F4 {
 extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 extern u8 data_021dfd8c[];
-extern u8 data_020e0994[];
+extern u8 sVisitorSchedule[];
 extern u8 data_021cd654[];
 extern u8 data_020e416c;
-extern u32 data_020cf1c8;
-extern u8 data_020e0a78[];
+extern u32 sVisitorSpawnTableCount;
+extern u8 sVisitorSpawnTable[];
 extern u8 data_021ed315[];
-extern u8 data_020cf208[];
-extern u8 data_020cf1d8[];
+extern u8 sDateVisitorTable[];
+extern u8 sDateVisitorChecks[];
 extern u32 data_020cf1cc;
-void _ZN12Unk_02083c0813func_02083c08Ev();
-void func_02083e60(void *p);
+void _ZN12Unk_02083c0821releaseVisitorOverlayEv();
+void VisitorSchedule_Clear(void *p);
 void func_020782c4();
 s32 func_020b5184();
 void func_0207af34(void *p);
 s32 func_020b4994();
 s32 func_020b51b8();
 void *func_0207bdf4(void *p, s32 v);
-void *_ZN12VillagerData13func_020805c4Ev(void *p);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *p);
+void *_ZN12VillagerData13getVillagerIdEv(void *p);
+s32 _ZN10VillagerId7isValidEv(void *p);
 void func_0207e4f4(void *p);
 void *func_020850e0();
 void *func_02085174(void *p);
@@ -546,60 +546,60 @@ s32 func_02079fd8();
 s32 func_02078204();
 s32 func_020b101c();
 s32 func_020b5328();
-void _ZN12Unk_02083c2813func_02083d14Ev(void *p);
-void *_ZN12Unk_02083c2813func_02083c28EP16Unk_02083c28_Enti(void *a, void *b, u32 c);
+void _ZN14VisitorSpawner11pickVisitorEv(void *p);
+void *_ZN14VisitorSpawner21spawnScheduledVisitorEP17VisitorSpawnEntryi(void *a, void *b, u32 c);
 void func_020832c4(void *p);
 s32 _ZN10PlayerData13func_0209865cEv(s32 p);
 s32 _ZN12Unk_0209ada413func_0209ad68Ev(void *p);
 s32 _ZN12Unk_0209ada413func_0209ac64Ev(void *p);
 s32 func_0209d374(void *p, void *q);
 s32 _ZN12Unk_0209ada413func_0209abc4Ev(void *p);
-s32 func_0207bfb4(void *p, void *q);
-s32 func_0207c014(s32 v);
+s32 SaveVillagers_FindIndex(void *p, void *q);
+s32 SaveVillagers_IsValidIndex(s32 v);
 void func_02076a2c(void *a, void *b, void *c);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-s32 func_0207bf38(void *p, void *q);
+s32 SaveVillagers_Find(void *p, void *q);
 s32 func_0207e310();
 s32 func_020785a8();
 void func_020798a0(void *p);
 s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(s32 a, s32 b, void *c, void *d, void *e);
 s32 func_020b51d4();
-void *func_0207bf60(void *p, s32 i);
+void *SaveVillagers_Get(void *p, s32 i);
 void *func_02084398(void *p);
 s32 func_020a62a0();
 s32 func_02063b8c(s32 n);
 s32 func_02078264();
-s32 func_0207a484(void *p);
-s32 func_0207a4b8(void *p);
+s32 SaveVillagers_GetUnk3830Index(void *p);
+s32 SaveVillagers_GetUnk3830(void *p);
 s32 _ZN12Unk_020994cc13func_02099668Ev(s32 v);
-s32 func_0207e1f0(void *p);
+s32 Villager_GetResidentStatus(void *p);
 s32 func_020812f4();
 s32 func_0207b7d4(void *p, void *q);
 void func_02076ae8(void *a, void *b, s32 c);
 s32 func_020b50e8();
 s32 func_020b5178(s32 v);
-void *_ZN12Unk_0207e94013func_0207f170Ev(void *p);
+void *_ZN20VillagerDataItemView11getHousePosEv(void *p);
 void func_0204ed8c(void *p, s32 x, s32 y);
 s32 func_0207e278(void *p);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(void *buf, void *v, s32 a, s32 b);
 s32 _ZN12Unk_0203389c13func_02033914Ei(void *buf, s32 f);
 void func_02033988(void *buf);
 s32 _ZN11SaveRecord413func_0209ea50Ev(void *p);
-void *func_020838f4(s32 v);
-void *func_02083780(s32 v);
-u16 *func_02083578(s32 v);
-u16 *func_0208343c(s32 v);
-u16 *func_0208336c(s32 v);
-u16 *func_0208323c(s32 v);
-u16 *func_02083058(void *a, void *b, u32 c, s32 d);
-u16 *func_0208310c(s32 v);
-BOOL func_02084de0(s32 a, s32 *p);
+void *Visitor_FindTortimer(s32 v);
+void *Visitor_FindEventHost(s32 v);
+u16 *Visitor_FindLyle(s32 v);
+u16 *Visitor_FindJoan(s32 v);
+u16 *Visitor_FindKatie(s32 v);
+u16 *Visitor_FindKaitlin(s32 v);
+u16 *Visitor_FindInEventTable(void *a, void *b, u32 c, s32 d);
+u16 *Visitor_FindBlanca(s32 v);
+BOOL Event_IsActive(s32 a, s32 *p);
 s32 func_0203f2e0(s32 a, void *b, s32 c);
 s32 func_02083f44(void *p);
 void func_02083ef4(void *p, s32 x, s32 y);
 s32 func_02083ed4(void *p, s32 x, s32 y);
-void func_02084ae4(void *a);
-void func_02084960(u8 *a);
+void NpcSpawner_SpawnVillagers(void *a);
+void NpcSpawner_SpawnHouseOwner(u8 *a);
 void func_020847b0(void *a);
 s32 func_02084e20(u8 *a, void *v);
 void func_02084c94(void *a, void *v);
@@ -612,19 +612,19 @@ extern "C" {
 extern u8 data_021cd640;
 extern u8 data_021cd654[];
 extern u8 data_021cd844[];
-extern u8 data_020e0994[];
+extern u8 sVisitorSchedule[];
 extern u8 data_021dfd8c[];
 extern u8 data_020e416c;
 extern Unk_020cbb18_Data *data_020cbb18;
 void MI_CpuFill8(void *p, u32 v, u32 n);
-void *func_0207bf60(void *, s32);
-void *_ZN12VillagerData13func_020805c4Ev(void *);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *);
-u8 *_ZN12Unk_0207e94013func_0207f170Ev(...);
+void *SaveVillagers_Get(void *, s32);
+void *_ZN12VillagerData13getVillagerIdEv(void *);
+s32 _ZN10VillagerId7isValidEv(void *);
+u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 void func_0204ed8c(Unk_02084ecc_Vec *out, s32 x, s32 z);
 void func_02076a6c(void *, s32, s32);
 void func_02076b08(void *, s32, s32);
-s32 func_02083e60(void *);
+s32 VisitorSchedule_Clear(void *);
 BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
 s32 func_020b50e8();
 s32 func_020b4910();
@@ -693,19 +693,19 @@ extern "C" s32 func_02084fbc()
     return F5::func_020b4910();
 }
 
-Unk_02083c28_G::~Unk_02083c28_G() {}
+VisitorSchedule::~VisitorSchedule() {}
 
-extern "C" Unk_020e09ac *func_02084f84()
+extern "C" NpcSpawner *NpcSpawner_Create()
 {
-    return new Unk_020e09ac();
+    return new NpcSpawner();
 }
 
-extern "C" void func_02084f48()
+extern "C" void NpcSpawn_ResetAll()
 {
     F5::data_021cd640 = 0;
     F5::MI_CpuFill8(F5::data_021cd654, 0, 0xf0);
     F5::MI_CpuFill8(F5::data_021cd844, 0, 0x474);
-    F5::func_02083e60(F5::data_020e0994);
+    F5::VisitorSchedule_Clear(F5::sVisitorSchedule);
 }
 
 extern "C" void func_02084ecc()
@@ -715,13 +715,13 @@ extern "C" void func_02084ecc()
     s32 z = 0;
     F5::MI_CpuFill8(p, 0, 0xf0);
     for (i = 0; i < 8; p += 0x1e, i++) {
-        void *o = F5::func_0207bf60(F5::data_021dfd8c, i);
-        if (o != NULL && F5::_ZN12Unk_02002fc813func_020030b4Ev(F5::_ZN12VillagerData13func_020805c4Ev(o)) != 0) {
+        void *o = F5::SaveVillagers_Get(F5::data_021dfd8c, i);
+        if (o != NULL && F5::_ZN10VillagerId7isValidEv(F5::_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
             Unk_02084ecc_Vec v;
             v.x = 0;
             v.y = 0;
             v.z = 0;
-            u8 *q = F5::_ZN12Unk_0207e94013func_0207f170Ev(o);
+            u8 *q = F5::_ZN20VillagerDataItemView11getHousePosEv(o);
             F5::func_0204ed8c(&v, q[0] + 1, q[1] + 2);
             F5::func_02076a6c(p + 4, v.x, v.z);
             F5::func_02076b08(p + 3, z, z);
@@ -764,7 +764,7 @@ extern "C" s32 func_02084e20(u8 *a, void *out)
     return 0;
 }
 
-extern "C" BOOL func_02084de0(s32 a, s32 *p)
+extern "C" BOOL Event_IsActive(s32 a, s32 *p)
 {
     s32 t[2];
     u8 buf[8];
@@ -781,56 +781,56 @@ extern "C" BOOL func_02084de0(s32 a, s32 *p)
     return FALSE;
 }
 
-extern "C" void func_02084ce0(u16 *out)
+extern "C" void Visitor_GetTodaysNpc(u16 *out)
 {
     s32 r4 = F4::_ZN11SaveRecord413func_0209ea50Ev(F4::data_021ed315);
     u16 *p;
-    void *q = F4::func_020838f4(0);
+    void *q = F4::Visitor_FindTortimer(0);
     if (q == 0) {
-        q = F4::func_02083780(0);
+        q = F4::Visitor_FindEventHost(0);
     }
     if (q) {
         *out = 0xfff1;
         return;
     }
-    p = F4::func_02083578(0);
+    p = F4::Visitor_FindLyle(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::func_0208343c(0);
+    p = F4::Visitor_FindJoan(0);
     if (p) {
         *out = p[1];
         return;
     }
-    if (r4 == 0 && F4::func_02084de0(0x3d, 0)) {
+    if (r4 == 0 && F4::Event_IsActive(0x3d, 0)) {
         *out = 0xd00e;
         return;
     }
-    p = F4::func_0208336c(0);
+    p = F4::Visitor_FindKatie(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::func_0208323c(0);
+    p = F4::Visitor_FindKaitlin(0);
     if (p) {
         *out = p[1];
         return;
     }
-    p = F4::func_02083058(F4::data_020cf208, F4::data_020cf1d8, F4::data_020cf1cc, 0);
+    p = F4::Visitor_FindInEventTable(F4::sDateVisitorTable, F4::sDateVisitorChecks, F4::data_020cf1cc, 0);
     if (p) {
         *out = p[1];
         return;
     }
-    if (r4 == 0 && F4::func_02084de0(0x3f, 0)) {
+    if (r4 == 0 && F4::Event_IsActive(0x3f, 0)) {
         *out = 0xd00a;
         return;
     }
-    if (r4 == 0 && F4::func_02084de0(0x40, 0)) {
+    if (r4 == 0 && F4::Event_IsActive(0x40, 0)) {
         *out = 0xd00b;
         return;
     }
-    p = F4::func_0208310c(0);
+    p = F4::Visitor_FindBlanca(0);
     if (p) {
         *out = p[1];
         return;
@@ -845,14 +845,14 @@ extern "C" void func_02084c94(void *a, void *vec)
     F4::_ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(buf, u, 0, 0);
     if (F4::func_0207e278(a) == 0) {
         if (F4::_ZN12Unk_0203389c13func_02033914Ei(buf, 0)) {
-            u8 *p = (u8 *)F4::_ZN12Unk_0207e94013func_0207f170Ev(a);
+            u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(a);
             F4::func_0204ed8c(vec, p[0] + 1, p[1] + 2);
         }
     }
     F4::func_02033988(buf);
 }
 
-extern "C" void func_02084ae4(void *a)
+extern "C" void NpcSpawner_SpawnVillagers(void *a)
 {
     Unk_02084ae4_W w;
     Unk_02084ae4_Vec v;
@@ -868,10 +868,10 @@ extern "C" void func_02084ae4(void *a)
         i = cnt;
         goto test0;
     loop0:
-        void *r7 = F4::func_0207bf60(F4::data_021dfd8c, i);
+        void *r7 = F4::SaveVillagers_Get(F4::data_021dfd8c, i);
         if (r7 == 0) goto next0;
-        if (F4::_ZN12Unk_02002fc813func_020030b4Ev(F4::_ZN12VillagerData13func_020805c4Ev(r7)) == 0) goto next0;
-        if (F4::func_0207b7d4(F4::data_021dfd8c, F4::_ZN12VillagerData13func_020805c4Ev(r7)) == 0) goto next0;
+        if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
+        if (F4::func_0207b7d4(F4::data_021dfd8c, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
         w.b = 0;
         v.x = 0;
         v.y = 0;
@@ -887,7 +887,7 @@ extern "C" void func_02084ae4(void *a)
                 F4::func_02076a2c(e + 4, &v.x, &v.z);
                 F4::MI_CpuCopy8(e + 9, &w.h[2], 2);
             } else {
-                u8 *p = (u8 *)F4::_ZN12Unk_0207e94013func_0207f170Ev(r7);
+                u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
                 F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
             }
         } else if (F4::func_020a62a0() && ((u8 *)(F4::data_021cd654 + i * 30))[0] != 0) {
@@ -895,14 +895,14 @@ extern "C" void func_02084ae4(void *a)
             F4::func_02076ae8(t + 3, &w, 0);
             s32 wb = w.b;
             if (wb != F4::func_020b50e8() && F4::func_020b5198(wb) == 0 && F4::func_020b5178(w.b) == 0 && w.b != 0x2c) {
-                u8 *p = (u8 *)F4::_ZN12Unk_0207e94013func_0207f170Ev(r7);
+                u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
                 F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
             } else {
                 F4::func_02076a2c(t + 4, &v.x, &v.z);
                 F4::func_02084c94(r7, &v);
             }
         } else {
-            u8 *p = (u8 *)F4::_ZN12Unk_0207e94013func_0207f170Ev(r7);
+            u8 *p = (u8 *)F4::_ZN20VillagerDataItemView11getHousePosEv(r7);
             F4::func_0204ed8c(&v, p[0] + 1, p[1] + 2);
         }
         if (F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(0x84, w.h[0], &v, &w.h[1], a)) {
@@ -915,14 +915,14 @@ extern "C" void func_02084ae4(void *a)
     }
 }
 
-extern "C" void func_02084960(u8 *a)
+extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
 {
     s32 r7 = F4::func_020b51d4();
-    void *obj = F4::func_0207bf60(F4::data_021dfd8c, r7);
+    void *obj = F4::SaveVillagers_Get(F4::data_021dfd8c, r7);
     if (obj == 0) {
         return;
     }
-    if (F4::_ZN12Unk_02002fc813func_020030b4Ev(F4::_ZN12VillagerData13func_020805c4Ev(obj)) == 0) {
+    if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(obj)) == 0) {
         return;
     }
     u16 h[5];
@@ -955,16 +955,16 @@ extern "C" void func_02084960(u8 *a)
         if (F4::_ZN12Unk_020cbb1813func_02072e88Ei(F4::data_020cbb18, F4::data_020cbb18->unk_64) == 0) {
             if (r7 == F4::func_02078294()) {
                 c = 0x80;
-                if (F4::func_0207c014(F4::func_02078264())) {
+                if (F4::SaveVillagers_IsValidIndex(F4::func_02078264())) {
                     h[1] = (F4::func_02078264() & 0xfff) | 0xe000;
                     r6 = 0x81;
                 }
-            } else if (r7 == F4::func_0207a484(F4::data_021dfd8c)) {
-                if (F4::_ZN12Unk_020994cc13func_02099668Ev(F4::func_0207a4b8(F4::data_021dfd8c)) == 0) {
+            } else if (r7 == F4::SaveVillagers_GetUnk3830Index(F4::data_021dfd8c)) {
+                if (F4::_ZN12Unk_020994cc13func_02099668Ev(F4::SaveVillagers_GetUnk3830(F4::data_021dfd8c)) == 0) {
                     c = 0x83;
                 }
             } else if (F4::func_02079fd8() == 0xa) {
-                if (F4::func_0207e1f0(obj) == 3) {
+                if (F4::Villager_GetResidentStatus(obj) == 3) {
                     c = 0x86;
                 }
             }
@@ -1016,12 +1016,12 @@ extern "C" void func_020847b0(void *a)
                 t = F4::func_0209d374(r7 + 0x18, vv);
                 if (F4::_ZN12Unk_0209ada413func_0209abc4Ev(r4) == 0) {
                     if (t <= 0x1e) {
-                        r5 = F4::func_0207bfb4(F4::data_021dfd8c, r7);
+                        r5 = F4::SaveVillagers_FindIndex(F4::data_021dfd8c, r7);
                     }
                 } else if ((u32)F4::_ZN12Unk_0209ada413func_0209abc4Ev(r4) < 4) {
                     if (t <= 0x3c) {
-                        r5 = F4::func_0207bfb4(F4::data_021dfd8c, r7);
-                        if (F4::func_0207c014(r5)) {
+                        r5 = F4::SaveVillagers_FindIndex(F4::data_021dfd8c, r7);
+                        if (F4::SaveVillagers_IsValidIndex(r5)) {
                             u8 *e = F4::data_021cd654 + r5 * 30;
                             if (e[0] != 0) {
                                 F4::func_02076a2c(e + 4, &v.x, &v.z);
@@ -1030,7 +1030,7 @@ extern "C" void func_020847b0(void *a)
                         }
                     } else {
                         F4::func_020b101c();
-                        if (F4::func_0207bf38(F4::data_021dfd8c, r7)) {
+                        if (F4::SaveVillagers_Find(F4::data_021dfd8c, r7)) {
                             F4::func_0207e310();
                             F4::func_020785a8();
                         }
@@ -1048,7 +1048,7 @@ extern "C" void func_020847b0(void *a)
             F4::func_020798a0(F4::data_021dfd8c);
         }
         s32 r4 = F4::func_02078204();
-        if (F4::func_0207c014(r4)) {
+        if (F4::SaveVillagers_IsValidIndex(r4)) {
             h[0] = (r4 & 0xfff) | 0xe000;
             code = 0x87;
             if (F4::func_020b5198(F4::func_020b50dc()) == 0) {
@@ -1066,10 +1066,10 @@ extern "C" void func_020847b0(void *a)
     }
 }
 
-BOOL Unk_020e09ac::vfunc_00()
+BOOL NpcSpawner::vfunc_00()
 {
     u8 *a = (u8 *)this;
-    u32 saved = F4::data_020cf1c8;
+    u32 saved = F4::sVisitorSpawnTableCount;
     u8 *g = F4::data_021dfd8c;
     F4::_ZN12Unk_02086c0413func_02086e78Ev(F4::func_02085174(F4::func_020850e0()));
     F4::_ZN12Unk_02086b7c13func_02086b88Ev(F4::func_02085170(F4::func_020850e0()));
@@ -1109,10 +1109,10 @@ BOOL Unk_020e09ac::vfunc_00()
                 }
                 F4::func_020793e8(g, r1);
             }
-            F4::func_02084ae4(a);
+            F4::NpcSpawner_SpawnVillagers(a);
         }
     } else if (F4::func_020b51a4()) {
-        F4::func_02084960(a);
+        F4::NpcSpawner_SpawnHouseOwner(a);
     } else if (F4::func_020b52f8()) {
         if (g != 0) {
             if (F4::func_02079fd8() != 0xa) {
@@ -1127,8 +1127,8 @@ BOOL Unk_020e09ac::vfunc_00()
             F4::func_020847b0(a);
         }
     }
-    F4::_ZN12Unk_02083c2813func_02083d14Ev(a);
-    u16 *r4 = (u16 *)F4::_ZN12Unk_02083c2813func_02083c28EP16Unk_02083c28_Enti(a, F4::data_020e0a78, saved);
+    F4::_ZN14VisitorSpawner11pickVisitorEv(a);
+    u16 *r4 = (u16 *)F4::_ZN14VisitorSpawner21spawnScheduledVisitorEP17VisitorSpawnEntryi(a, F4::sVisitorSpawnTable, saved);
     if (r4) {
         F4::_ZN12Unk_02086b7c13func_02086b7cEv(F4::func_02085170(F4::func_020850e0()));
         if (r4[1] != 0xd008 || F4::_ZN12Unk_02086c0413func_02086eb0Ev(F4::func_02085174(F4::func_020850e0())) != 0) {
@@ -1142,10 +1142,10 @@ BOOL Unk_020e09ac::vfunc_00()
     return TRUE;
 }
 
-BOOL Unk_020e09ac::vfunc_0c()
+BOOL NpcSpawner::vfunc_0c()
 {
-    F4::_ZN12Unk_02083c0813func_02083c08Ev();
-    F4::func_02083e60(F4::data_020e0994);
+    F4::_ZN12Unk_02083c0821releaseVisitorOverlayEv();
+    F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
     F4::func_020782c4();
     if (F4::func_020b5184()) {
         void *g = F4::data_021dfd8c;
@@ -1154,7 +1154,7 @@ BOOL Unk_020e09ac::vfunc_0c()
         if (F4::func_020b51b8()) {
             void *r = F4::func_0207bdf4(g, (s8)v);
             if (r) {
-                if (F4::_ZN12Unk_02002fc813func_020030b4Ev(F4::_ZN12VillagerData13func_020805c4Ev(r))) {
+                if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r))) {
                     F4::func_0207e4f4(r);
                 }
             }
@@ -1163,7 +1163,7 @@ BOOL Unk_020e09ac::vfunc_0c()
     return TRUE;
 }
 
-BOOL Unk_020e09ac::onExecute()
+BOOL NpcSpawner::onExecute()
 {
     u8 *g = F3::data_021dfd8c;
     void *a, *b;
@@ -1172,21 +1172,21 @@ BOOL Unk_020e09ac::onExecute()
     if (F3::func_020b5184()) {
         F3::func_0207869c();
         if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
-            if (g) F3::func_0207b74c(g);
+            if (g) F3::SaveVillagers_UpdatePlans(g);
         }
     }
     if (F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
         if (g) {
             id = 0xfff1;
             for (i = 0; i < 8; i++) {
-                a = F3::func_0207bf60(g, i);
+                a = F3::SaveVillagers_Get(g, i);
                 if (a) {
-                    F3::_ZN12VillagerData13func_020805c4Ev();
-                    if (F3::_ZN12Unk_02002fc813func_020030b4Ev()) {
+                    F3::_ZN12VillagerData13getVillagerIdEv();
+                    if (F3::_ZN10VillagerId7isValidEv()) {
                         b = F3::func_0207e310(a);
                         if (b) {
                             id = (i & 0xfff) | 0xe000;
-                            if (F3::func_0208168c(&id) == 0) {
+                            if (F3::NpcRegistry_FindVillagerByHandle(&id) == 0) {
                                 if (F3::func_0207856c(b)) {
                                     F3::func_0207853c(b);
                                     if (F3::func_02078548(b) == 0) F3::func_02078568(b, 0);
@@ -1464,7 +1464,7 @@ extern "C" BOOL func_02083eb4(u16 *arr, s32 x, s32 y) {
     return FALSE;
 }
 
-extern "C" void func_02083e7c(Unk_02083c28_G *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos) {
+extern "C" void VisitorSchedule_Set(VisitorSchedule *out, u16 *idp, u32 b, u32 c, Unk_02083c28_Vec *pos) {
     out->unk_0c = *idp;
     out->unk_0e = b;
     out->unk_0f = c;
@@ -1475,25 +1475,25 @@ extern "C" void func_02083e7c(Unk_02083c28_G *out, u16 *idp, u32 b, u32 c, Unk_0
     }
 }
 
-extern "C" void func_02083e60(Unk_02083c28_G *g) {
-    F3::func_02083e7c(g, (u16 *)&F3::data_020e0874[1], 0x33, 0, 0);
+extern "C" void VisitorSchedule_Clear(VisitorSchedule *g) {
+    F3::VisitorSchedule_Set(g, (u16 *)&F3::data_020e0874[1], 0x33, 0, 0);
 }
 
-extern "C" BOOL func_02083e50(void *p, Unk_02083c28_G *g) {
+extern "C" BOOL VisitorSchedule_IsSet(void *p, VisitorSchedule *g) {
     BOOL r = FALSE;
     u32 v = g->unk_0f;
     if (v != 0 && v < 5) r = TRUE;
     return r;
 }
 
-void Unk_02083c28::func_02083e40(u32 *p) {
+void VisitorSpawner::setVisitorOverlay(u32 *p) {
     unk_70 = 1;
     unk_74 = *p;
 }
 
-void Unk_02083c28::func_02083e38() { unk_70 = 0; }
+void VisitorSpawner::clearVisitorOverlay() { unk_70 = 0; }
 
-extern "C" u16 *func_02083e10(u16 *key, Unk_02083c28_Ent *tbl, s32 n) {
+extern "C" u16 *VisitorTable_FindByNpc(u16 *key, VisitorSpawnEntry *tbl, s32 n) {
     s32 i;
     for (i = 0; i < n; tbl++, i++) {
         if (tbl->id2 == *key) return (u16 *)tbl;
@@ -1501,7 +1501,7 @@ extern "C" u16 *func_02083e10(u16 *key, Unk_02083c28_Ent *tbl, s32 n) {
     return 0;
 }
 
-extern "C" u16 *func_02083de8(u16 *key, Unk_02083c28_Ent *tbl, s32 n) {
+extern "C" u16 *VisitorTable_FindByProfile(u16 *key, VisitorSpawnEntry *tbl, s32 n) {
     s32 i;
     for (i = 0; i < n; tbl++, i++) {
         if (*key == tbl->id) return (u16 *)tbl;
@@ -1509,57 +1509,57 @@ extern "C" u16 *func_02083de8(u16 *key, Unk_02083c28_Ent *tbl, s32 n) {
     return 0;
 }
 
-extern "C" BOOL func_02083dbc(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos) {
-    if (F3::data_020e0994.unk_0f < lvl) {
-        F3::func_02083e7c(&F3::data_020e0994, p, b, lvl, pos);
+extern "C" BOOL Visitor_ScheduleIfHigher(u16 *p, u32 lvl, u32 b, Unk_02083c28_Vec *pos) {
+    if (F3::sVisitorSchedule.unk_0f < lvl) {
+        F3::VisitorSchedule_Set(&F3::sVisitorSchedule, p, b, lvl, pos);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02083d84(u16 *p, u8 b, Unk_02083c28_Vec *pos) {
+extern "C" BOOL Visitor_ScheduleLow(u16 *p, u8 b, Unk_02083c28_Vec *pos) {
     if (F3::func_02083ba4(p) == 0 && F3::_ZN12Unk_020cbb1813func_02072e88Ei(F3::data_020cbb18, F3::data_020cbb18->unk_64) == 0) {
-        return F3::func_02083dbc(p, 1, b, pos);
+        return F3::Visitor_ScheduleIfHigher(p, 1, b, pos);
     }
     return 0;
 }
 
-BOOL Unk_02083c28::func_02083d14() {
-    Unk_02083d14_Ent *e = F3::data_020e09f4;
+BOOL VisitorSpawner::pickVisitor() {
+    VisitorCheckEntry *e = F3::sVisitorCheckTable;
     s32 ovl = F3::func_020b50e8();
     s32 i = 0;
     Unk_02083c28_Vec *z = 0;
     for (; i < 11; e++, i++) {
-        if (e->lvl <= F3::data_020e0994.unk_0f) break;
+        if (e->lvl <= F3::sVisitorSchedule.unk_0f) break;
         if (e->fn) {
             u16 *r = (this->*(e->fn))();
             if (r) {
-                if (F3::func_02083dbc(r, e->lvl, ovl, z)) return TRUE;
+                if (F3::Visitor_ScheduleIfHigher(r, e->lvl, ovl, z)) return TRUE;
             }
         }
     }
     return FALSE;
 }
 
-u16 *Unk_02083c28::func_02083c28(Unk_02083c28_Ent *tbl, s32 n) {
+u16 *VisitorSpawner::spawnScheduledVisitor(VisitorSpawnEntry *tbl, s32 n) {
     u16 *result = 0;
-    if (F3::func_02083e50(this, &F3::data_020e0994)) {
-        Unk_02083c28_Ent *e = (Unk_02083c28_Ent *)F3::func_02083de8(&F3::data_020e0994.unk_0c, tbl, n);
+    if (F3::VisitorSchedule_IsSet(this, &F3::sVisitorSchedule)) {
+        VisitorSpawnEntry *e = (VisitorSpawnEntry *)F3::VisitorTable_FindByProfile(&F3::sVisitorSchedule.unk_0c, tbl, n);
         if (e) {
-            if (F3::data_020e0994.unk_0e == F3::func_020b50e8()) {
+            if (F3::sVisitorSchedule.unk_0e == F3::func_020b50e8()) {
                 Unk_02083c28_Vec v;
                 u16 t[3];
                 t[0] = 0;
                 t[1] = 0;
                 t[2] = 0;
                 if (e->fn) {
-                    (this->*(e->fn))(&v, t, &F3::data_020e0994);
+                    (this->*(e->fn))(&v, t, &F3::sVisitorSchedule);
                 }
                 if (e->flag) {
                     F3::OverlayMgr_Acquire(e->ovl);
-                    func_02083e40(&e->ovl);
+                    setVisitorOverlay(&e->ovl);
                 } else {
-                    func_02083e38();
+                    clearVisitorOverlay();
                 }
                 if (F3::_ZN5Actor5spawnEPvS0_S0_S0_S0_(e->id, e->id2, &v, t, this)) {
                     if (F3::Unk_02083c28_IsZero(F3::data_020e416c)) {
@@ -1575,20 +1575,20 @@ u16 *Unk_02083c28::func_02083c28(Unk_02083c28_Ent *tbl, s32 n) {
                 }
             }
         }
-        F3::func_02083e60(&F3::data_020e0994);
+        F3::VisitorSchedule_Clear(&F3::sVisitorSchedule);
     }
     return result;
 }
 
-void Unk_02083c08::func_02083c08()
+void Unk_02083c08::releaseVisitorOverlay()
 {
     if (unk_70 != 0) {
         F2::OverlayMgr_Release(unk_74);
-        ((Unk_02083c28 *)this)->func_02083e38();
+        ((VisitorSpawner *)this)->clearVisitorOverlay();
     }
 }
 
-extern "C" s32 func_02083bc8(Unk_02083314_Ent *p, s32 n)
+extern "C" s32 Visitor_FindActiveEventEntry(EventVisitorEntry *p, s32 n)
 {
     u32 buf[3];
     s32 i;
@@ -1596,7 +1596,7 @@ extern "C" s32 func_02083bc8(Unk_02083314_Ent *p, s32 n)
     buf[1] = 0;
     F2::func_0209d498(buf);
     for (i = 0; i < n; p++, i++) {
-        if (F2::func_02084de0(p->a, buf) != 0)
+        if (F2::Event_IsActive(p->a, buf) != 0)
             return i;
     }
     return -1;
@@ -1617,12 +1617,12 @@ extern "C" BOOL func_02083b84()
     return FALSE;
 }
 
-extern "C" BOOL func_02083b2c()
+extern "C" BOOL Visitor_CheckResetti()
 {
     u16 k;
     if (F2::func_020b50e8() == 0 && F2::_ZN12Unk_02086f1413func_02086f18Ev(F2::func_0208517c(F2::func_020850e0())) != 0 && F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
         k = 0xd011;
-        return (BOOL)F2::func_02083e10(&k, F2::data_020e0a78, F2::data_020cf1c8);
+        return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
     return FALSE;
 }
@@ -1647,14 +1647,14 @@ extern "C" BOOL func_02083a9c(s32 a, Unk_02083314_V3 *p)
     return FALSE;
 }
 
-extern "C" BOOL func_02083a20()
+extern "C" BOOL Visitor_CheckTomNook()
 {
     u16 k;
     void *r4 = F2::PlayerData_GetCurrent();
     if (F2::func_020b50e8() == 0 && F2::func_02083b84() == 0 && F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0 && r4 != 0 && F2::_ZN12Unk_02097ff413func_02098044Ej(r4, 0x23) != 0) {
         if (F2::func_020b530c(F2::func_020b50dc()) != 0 || F2::func_020b50dc() == 6) {
             k = 0xd019;
-            return (BOOL)F2::func_02083e10(&k, F2::data_020e0a78, F2::data_020cf1c8);
+            return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
     }
     return FALSE;
@@ -1691,7 +1691,7 @@ extern "C" BOOL func_02083944()
     return FALSE;
 }
 
-extern "C" BOOL func_020838f4(s32 flag)
+extern "C" BOOL Visitor_FindTortimer(s32 flag)
 {
     if (F2::func_02083944() != 0) {
         if (flag != 0) {
@@ -1701,15 +1701,15 @@ extern "C" BOOL func_020838f4(s32 flag)
             if (F2::func_020b50e8() == 0x2c)
                 goto fail;
         }
-        return (BOOL)F2::func_02083de8(F2::data_020e0870, F2::data_020e0a78, F2::data_020cf1c8);
+        return (BOOL)F2::VisitorTable_FindByProfile(F2::data_020e0870, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
   fail:
     return FALSE;
 }
 
-extern "C" BOOL func_020838e8(s32 a, s32 b, s32 c)
+extern "C" BOOL Visitor_CheckTortimer(s32 a, s32 b, s32 c)
 {
-    return F2::func_020838f4(1);
+    return F2::Visitor_FindTortimer(1);
 }
 
 extern "C" BOOL func_02083898()
@@ -1731,7 +1731,7 @@ extern "C" BOOL func_02083898()
     return FALSE;
 }
 
-extern "C" BOOL func_02083780(s32 flag)
+extern "C" BOOL Visitor_FindEventHost(s32 flag)
 {
     s32 pass; s32 idx; s32 ok; s32 r6;
     u16 k1, k2;
@@ -1749,11 +1749,11 @@ extern "C" BOOL func_02083780(s32 flag)
         if (F2::func_02083898() != 0) {
             if (ok == 0)
                 goto fail;
-            return (BOOL)F2::func_02083de8(F2::data_020e0874, F2::data_020e0a78, F2::data_020cf1c8);
+            return (BOOL)F2::VisitorTable_FindByProfile(F2::data_020e0874, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
         idx = -1;
         if (F2::func_02083b84() == 0)
-            idx = F2::func_02083bc8(F2::data_020cf228, 8);
+            idx = F2::Visitor_FindActiveEventEntry(F2::sEventHostTable, 8);
         if (idx != -1) {
             r6 = F2::data_020cf1e8[idx];
             if (r6 != F2::func_02040c70() && r6 != 0x13)
@@ -1762,23 +1762,23 @@ extern "C" BOOL func_02083780(s32 flag)
         if (idx != -1) {
             if (ok == 0)
                 goto fail;
-            return (BOOL)F2::func_02083de8(&F2::data_020cf228[idx].b, F2::data_020e0a78, F2::data_020cf1c8);
+            return (BOOL)F2::VisitorTable_FindByProfile(&F2::sEventHostTable[idx].b, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
         if (F2::func_02083944() == 0 && F2::func_020b50e8() == 9) {
             k1 = 0xd025;
-            return (BOOL)F2::func_02083e10(&k1, F2::data_020e0a78, F2::data_020cf1c8);
+            return (BOOL)F2::VisitorTable_FindByNpc(&k1, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
         }
     } else if (F2::func_020b50e8() == 9) {
         k2 = 0xd025;
-        return (BOOL)F2::func_02083e10(&k2, F2::data_020e0a78, F2::data_020cf1c8);
+        return (BOOL)F2::VisitorTable_FindByNpc(&k2, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
     }
   fail:
     return FALSE;
 }
 
-extern "C" BOOL func_02083774(s32 a, s32 b, s32 c)
+extern "C" BOOL Visitor_CheckEventHost(s32 a, s32 b, s32 c)
 {
-    return F2::func_02083780(1);
+    return F2::Visitor_FindEventHost(1);
 }
 
 extern "C" BOOL func_020836e4(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
@@ -1847,7 +1847,7 @@ extern "C" BOOL func_02083608(s32 a, Unk_02083314_V3 *p)
     return TRUE;
 }
 
-extern "C" BOOL func_02083578(s32 flag)
+extern "C" BOOL Visitor_FindLyle(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord413func_0209ea50Ev(&F2::data_021ed315);
@@ -1860,9 +1860,9 @@ extern "C" BOOL func_02083578(s32 flag)
                 goto fail2;
         }
         {
-            if (r4 == 0 && F2::func_02083ba4() == 0 && F2::func_02083b84() == 0 && F2::func_02084de0(0x3c, 0) != 0) {
+            if (r4 == 0 && F2::func_02083ba4() == 0 && F2::func_02083b84() == 0 && F2::Event_IsActive(0x3c, 0) != 0) {
                 k = 0xd00d;
-                return (BOOL)F2::func_02083e10(&k, F2::data_020e0a78, F2::data_020cf1c8);
+                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
@@ -1870,9 +1870,9 @@ extern "C" BOOL func_02083578(s32 flag)
     return FALSE;
 }
 
-extern "C" BOOL func_0208356c(s32 a, s32 b, s32 c)
+extern "C" BOOL Visitor_CheckLyle(s32 a, s32 b, s32 c)
 {
-    return F2::func_02083578(1);
+    return F2::Visitor_FindLyle(1);
 }
 
 extern "C" BOOL func_020834cc(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
@@ -1897,7 +1897,7 @@ extern "C" BOOL func_020834cc(s32 a, Unk_02083314_V3 *p, Unk_02083314_K *q)
     return FALSE;
 }
 
-extern "C" BOOL func_0208343c(s32 flag)
+extern "C" BOOL Visitor_FindJoan(s32 flag)
 {
     u16 k;
     void *r4 = F2::_ZN11SaveRecord413func_0209ea50Ev(&F2::data_021ed315);
@@ -1910,9 +1910,9 @@ extern "C" BOOL func_0208343c(s32 flag)
                 goto fail1;
         }
         {
-            if (r4 == 0 && F2::func_02083ba4() == 0 && F2::func_02083b84() == 0 && F2::func_02084de0(0x3b, 0) != 0) {
+            if (r4 == 0 && F2::func_02083ba4() == 0 && F2::func_02083b84() == 0 && F2::Event_IsActive(0x3b, 0) != 0) {
                 k = 0xd002;
-                return (BOOL)F2::func_02083e10(&k, F2::data_020e0a78, F2::data_020cf1c8);
+                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
@@ -1920,12 +1920,12 @@ extern "C" BOOL func_0208343c(s32 flag)
     return FALSE;
 }
 
-extern "C" BOOL func_02083430(s32 a, s32 b, s32 c)
+extern "C" BOOL Visitor_CheckJoan(s32 a, s32 b, s32 c)
 {
-    return F2::func_0208343c(1);
+    return F2::Visitor_FindJoan(1);
 }
 
-extern "C" BOOL func_0208336c(s32 flag)
+extern "C" BOOL Visitor_FindKatie(s32 flag)
 {
     u16 k;
     if (F2::func_02083ba4() == 0 && F2::func_02083b84() == 0) {
@@ -1942,7 +1942,7 @@ extern "C" BOOL func_0208336c(s32 flag)
             goto c2;
         a8:
             if (F2::_ZN12Unk_020cbb1813func_02072e88Ei(F2::data_020cbb18, F2::data_020cbb18->unk_64) == 0) {
-                if (F2::func_02084de0(0x3d, 0) == 0)
+                if (F2::Event_IsActive(0x3d, 0) == 0)
                     goto fe;
             }
         }
@@ -1957,16 +1957,16 @@ extern "C" BOOL func_0208336c(s32 flag)
             if (F2::func_020b50e8() == 0xc) {
             fe:
                 k = 0xd022;
-                return (BOOL)F2::func_02083e10(&k, F2::data_020e0a78, F2::data_020cf1c8);
+                return (BOOL)F2::VisitorTable_FindByNpc(&k, F2::sVisitorSpawnTable, F2::sVisitorSpawnTableCount);
             }
         }
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02083360(s32 a, s32 b, s32 c)
+extern "C" BOOL Visitor_CheckKatie(s32 a, s32 b, s32 c)
 {
-    return F2::func_0208336c(1);
+    return F2::Visitor_FindKatie(1);
 }
 
 extern "C" BOOL func_02083314(s32 a, Unk_02083314_V3 *p)
@@ -1993,7 +1993,7 @@ extern "C" void func_020832c4() {
     }
 }
 
-extern "C" BOOL func_0208323c(BOOL flag) {
+extern "C" BOOL Visitor_FindKaitlin(BOOL flag) {
     u16 v;
     if (F1::func_0208740c() == 0) goto fail;
     if (F1::func_02083ba4() != 0) goto fail;
@@ -2003,15 +2003,15 @@ extern "C" BOOL func_0208323c(BOOL flag) {
         if (F1::func_020b50e8() == 0x2c) goto fail;
     }
     if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
-    if (F1::func_02084de0(0x3d, NULL) != 0) goto fail;
+    if (F1::Event_IsActive(0x3d, NULL) != 0) goto fail;
     v = 0xd023;
-    return F1::func_02083e10(&v, F1::data_020e0a78, F1::data_020cf1c8);
+    return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
     return FALSE;
 }
 
-extern "C" BOOL func_02083230() {
-    return F1::func_0208323c(1);
+extern "C" BOOL Visitor_CheckKaitlin() {
+    return F1::Visitor_FindKaitlin(1);
 }
 
 extern "C" BOOL func_02083214(void *self, void *b) {
@@ -2019,7 +2019,7 @@ extern "C" BOOL func_02083214(void *self, void *b) {
     return TRUE;
 }
 
-extern "C" BOOL func_0208310c(BOOL flag) {
+extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     u16 v;
     s32 loc[2];
     loc[0] = 0;
@@ -2032,28 +2032,28 @@ extern "C" BOOL func_0208310c(BOOL flag) {
         if (F1::func_020b50e8() == 0x2c) goto fail;
     }
     if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
-    if (F1::func_02084de0(0x3b, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x3c, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x3d, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x3e, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x3f, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x40, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x41, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x42, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x43, loc) != 0) goto fail;
-    if (F1::func_02084de0(0x44, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x3b, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x3c, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x3d, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x3e, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x3f, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x40, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x41, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
+    if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
     if (F1::_ZN12Unk_0208722413func_0208723cEv(&F1::data_021eca50) == 0) goto fail;
     v = 0xd020;
-    return F1::func_02083e10(&v, F1::data_020e0a78, F1::data_020cf1c8);
+    return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
     return FALSE;
 }
 
-extern "C" BOOL func_02083100() {
-    return F1::func_0208310c(1);
+extern "C" BOOL Visitor_CheckBlanca() {
+    return F1::Visitor_FindBlanca(1);
 }
 
-extern "C" BOOL func_02083058(void *tbl, void *fn, s32 x, BOOL flag) {
+extern "C" BOOL Visitor_FindInEventTable(void *tbl, void *fn, s32 x, BOOL flag) {
     s32 r7 = F1::_ZN11SaveRecord413func_0209ea50Ev(&F1::data_021ed315);
     s32 idx;
     if (flag) {
@@ -2064,7 +2064,7 @@ extern "C" BOOL func_02083058(void *tbl, void *fn, s32 x, BOOL flag) {
     if (F1::func_02083ba4() != 0) goto fail;
     if (F1::func_02083b84() != 0) goto fail;
     if (F1::data_020cbb18->func_02072e88(F1::data_020cbb18->unk_64) != 0) goto fail;
-    idx = F1::func_02083bc8(tbl, x);
+    idx = F1::Visitor_FindActiveEventEntry(tbl, x);
     if (idx == -1) goto fail;
     if (fn != NULL) {
         BOOL (*f)() = ((BOOL (**)())fn)[idx];
@@ -2072,17 +2072,17 @@ extern "C" BOOL func_02083058(void *tbl, void *fn, s32 x, BOOL flag) {
             if (f() == 0) goto fail;
         }
     }
-    return F1::func_02083de8((u8 *)tbl + idx * 8 + 4, F1::data_020e0a78, F1::data_020cf1c8);
+    return F1::VisitorTable_FindByProfile((u8 *)tbl + idx * 8 + 4, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:
     return FALSE;
 }
 
-extern "C" BOOL func_02083038() {
-    return func_02083058(F1::data_020cf208, F1::data_020cf1d8, 4, 1);
+extern "C" BOOL Visitor_CheckDateVisitors() {
+    return Visitor_FindInEventTable(F1::sDateVisitorTable, F1::sDateVisitorChecks, 4, 1);
 }
 
-extern "C" BOOL func_0208301c() {
-    return func_02083058(F1::data_020cf1d0, NULL, 1, 1);
+extern "C" BOOL Visitor_CheckPete() {
+    return Visitor_FindInEventTable(F1::sPeteVisitTable, NULL, 1, 1);
 }
 
 extern "C" BOOL func_02082ff4() {
@@ -2203,8 +2203,8 @@ extern "C" BOOL func_02082dd0(void *self, void *g, u16 *out, s32 *a) {
     return TRUE;
 }
 
-void *data_020e08ac[2] = {(void *)Dp::func_02083430, 0};
-Unk_02083c28_Ent data_020e0a78[23] = {
+void *data_020e08ac[2] = {(void *)Dp::Visitor_CheckJoan, 0};
+VisitorSpawnEntry sVisitorSpawnTable[23] = {
     {0x56, 0xd012, 0x50, *(Unk_02083c28_Fn *)data_020e0954, 1},
     {0x65, 0xd011, 0x4d, *(Unk_02083c28_Fn *)data_020e094c, 1},
     {0x7d, 0xd019, 0x0, *(Unk_02083c28_Fn *)data_020e0904, 0},
@@ -2231,5 +2231,5 @@ Unk_02083c28_Ent data_020e0a78[23] = {
 };
 void *data_020e08f4[2] = {(void *)Dp::func_02083644, 0};
 void *data_020e091c[2] = {(void *)Dp::func_020834cc, 0};
-void *data_020e08a4[2] = {(void *)Dp::func_020838e8, 0};
+void *data_020e08a4[2] = {(void *)Dp::Visitor_CheckTortimer, 0};
 void *data_020e094c[2] = {(void *)Dp::func_02083a9c, 0};

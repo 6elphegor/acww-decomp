@@ -28,11 +28,11 @@ void *_ZN11MsgString33C1Ev(void *p);
 void _ZN11MsgString33D1Ev(void *p);
 void MailText_SetSlot(s32 a, void *b);
 void _ZN9MsgString5clearEv(void *p);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *a, void *b);
+void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 func_0209b570(s32 *p, s32 i);
 void String_LoadResolveAltText(void *a, u8 *b, s32 c);
 void func_020638d0(void *a, void *b);
-s32 func_0207c47c(const char *a, s32 b, s32 c, void *d, void *e, void *f);
+s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
 s32 func_020977d0(void *a, void *b);
 void *func_02099db4(void *a, s32 b);
 void func_0209a588(void *p);
@@ -795,7 +795,7 @@ void Unk_02097ff4::func_02098074()
             _ZN8PlayerId13func_020940d0EP9MsgString(r8, o20);
             MailText_SetSlot(0, o20);
             _ZN9MsgString5clearEv(o20);
-            _ZN12Unk_02002fc813func_02002fc8Ej(r7, o20);
+            _ZN10VillagerId7getNameEj(r7, o20);
             MailText_SetSlot(1, o20);
             s32 i;
             for (i = 0; i < 6; i++) {
@@ -807,7 +807,7 @@ void Unk_02097ff4::func_02098074()
             }
             func_020638d0(unk_225c, o3c);
             MailText_SetSlot(8, o3c);
-            if (func_0207c47c("re_foreign", a, b, r8, r7, l10)) {
+            if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
                 _ZN12Unk_02098d2013func_02098e30Ev(unk_225c);
             }
             _ZN11MsgString33D1Ev(o58);

@@ -98,10 +98,10 @@ extern "C" BOOL String_Load(MsgString *buf, u8 *key, const char *name);
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-class Unk_020ddc4c : public BmgReader {
+class TalkBmgReader : public BmgReader {
 public:
-    Unk_020ddc4c();
-    virtual ~Unk_020ddc4c();
+    TalkBmgReader();
+    virtual ~TalkBmgReader();
     virtual u32 getBuffer();
     virtual u32 getBufferSize();
 };

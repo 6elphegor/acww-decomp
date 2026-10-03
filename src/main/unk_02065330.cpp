@@ -156,7 +156,7 @@ s32 func_020512e0(void *p, s32 n);
 s32 MailText_LoadLetter(void *a, void *b, void *c, void *d, void *e, void *f);
 s32 MailText_LoadLetterZ(void *a, void *b, void *c, void *d, void *e1, void *e2, void *e3, void *e4, void *name);
 void MailText_SetSlot(s32 i, void *x);
-void _ZN12Unk_02002fc813func_02002fc8Ej(void *o, void *x);
+void _ZN10VillagerId7getNameEj(void *o, void *x);
 void func_0200315c(void *o, void *x);
 void _ZN8PlayerId13func_02094264EPS_(void *o, void *x);
 void _ZN8PlayerId13func_020940d0EP9MsgString(void *o, void *x);
@@ -175,8 +175,8 @@ void *_ZN10PlayerData11getPlayerIdEv(void *);
 void *_ZN10PlayerData13func_02098750Ev(void *);
 u8 *_ZN15PlayerInventory9getUnk988Ev(void *);
 void *PlayerData_GetResident(void *);
-void *func_0207bf60(void *);
-void *_ZN12VillagerData13func_020805c4Ev(void *);
+void *SaveVillagers_Get(void *);
+void *_ZN12VillagerData13getVillagerIdEv(void *);
 
 void func_02065388(Unk_02065388_Obj *o);
 void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
@@ -225,7 +225,7 @@ extern "C" void func_02065dc8(Letter *self, void *out) {
         break;
     case 3:
         func_0200315c(&c, self);
-        _ZN12Unk_02002fc813func_02002fc8Ej(&c, &a);
+        _ZN10VillagerId7getNameEj(&c, &a);
         _ZN13EncodedString13fromMsgStringEP9MsgString(&b, &a);
         _ZN12Unk_020e1c4c13func_02093f90EPvj(&b, out, 8);
         break;
@@ -252,7 +252,7 @@ extern "C" void func_02065d5c(Letter *self, void *out) {
     case 3:
     case 5:
         func_0200315c(&a, self);
-        _ZN12Unk_02002fc813func_02002fc8Ej(&a, out);
+        _ZN10VillagerId7getNameEj(&a, out);
         break;
     }
 }
@@ -323,7 +323,7 @@ extern "C" void func_02065bfc(Unk_02065554 *self) {
 }
 
 extern "C" void func_02065bd0(Unk_02065554 *self) {
-    void *r = _ZN12VillagerData13func_020805c4Ev(func_0207bf60(data_021dfd8c));
+    void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(data_021dfd8c));
     self->func_02065518();
     func_02065d24(&self->unk_04, r);
 }
@@ -416,7 +416,7 @@ extern "C" void func_02065920(Unk_02065554 *self, void *a1, void *a2, void *a3, 
     u32 out;
     if (a6 != 0xb) {
         Unk_02065dc8_Obj1c o;
-        _ZN12Unk_02002fc813func_02002fc8Ej(a4, &o);
+        _ZN10VillagerId7getNameEj(a4, &o);
         MailText_SetSlot(a6, &o);
     }
     MailText_LoadLetter(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2);
@@ -427,7 +427,7 @@ extern "C" void func_020658a8(Unk_02065554 *self, void *a1, void *a2, void *a3, 
     u32 out;
     if (a9 != 0xb) {
         Unk_02065dc8_Obj1c o;
-        _ZN12Unk_02002fc813func_02002fc8Ej(a7, &o);
+        _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
     MailText_LoadLetterZ(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2, a3, a4, a5);
@@ -456,7 +456,7 @@ extern "C" void func_020657a0(Unk_02065554 *self, void *a1, void *a2, void *a3, 
     u32 out;
     if (a9 != 0xb) {
         Unk_02065dc8_Obj1c o;
-        _ZN12Unk_02002fc813func_02002fc8Ej(a7, &o);
+        _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
     MailText_LoadLetterZ(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2, a3, a4, a5);

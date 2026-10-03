@@ -2,7 +2,7 @@
 
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_0203e2f4();
+s32 TalkRequest_IsActive();
 s32 func_020b50e8();
 s32 PlayerActor_GetAction(s32 v);
 }
@@ -115,7 +115,7 @@ extern "C" BOOL HudUnkIcon_CanShow() {
     long d, e;
     s32 v;
     a = data_021c5384 == 0 ? TRUE : FALSE;
-    b = func_0203e2f4() == 0 ? TRUE : FALSE;
+    b = TalkRequest_IsActive() == 0 ? TRUE : FALSE;
     c = func_020b50e8() == 6 ? TRUE : FALSE;
     v = PlayerActor_GetAction(4);
     d = (u32)(v - 8) <= 7 ? TRUE : FALSE;

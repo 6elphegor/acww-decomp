@@ -15,9 +15,9 @@ extern "C" void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 extern const u32 data_020d0538[];
 const u32 data_020d0538[] = {0, 4, 3};
 
-class Unk_02002fc8 {
+class VillagerId {
 public:
-    BOOL func_020030b4();
+    BOOL isValid();
 };
 
 struct ItemPickSpec {
@@ -64,7 +64,7 @@ void Unk_02098d20::func_02098e30() {
 }
 
 BOOL Unk_02098d20::func_02098e0c() {
-    if (func_02063954(this) && ((Unk_02002fc8 *)&unk_0a)->func_020030b4()) return TRUE;
+    if (func_02063954(this) && ((VillagerId *)&unk_0a)->isValid()) return TRUE;
     return FALSE;
 }
 
@@ -76,7 +76,7 @@ void Unk_02098d20::func_02098de4(void *a1, s32 a2, void *a3, u16 *p) {
 }
 
 BOOL Unk_02098d20::func_02098d20(void *a1, s32 a2, void *a3) {
-    if (((Unk_02002fc8 *)a1)->func_020030b4() && func_02063954(a3)) {
+    if (((VillagerId *)a1)->isValid() && func_02063954(a3)) {
         u16 local = 0xfff1;
         u16 out;
         if (func_02063b8c(4) == 0) {

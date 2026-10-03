@@ -215,13 +215,13 @@ static inline void Unk_0205a930_Clear(void *dst, u32 n)
 
 // ---- callees ----
 extern "C" {
-void *func_0207bf38(void *tbl, s32 id);
+void *SaveVillagers_Find(void *tbl, s32 id);
 void *func_0207fae4(void *p);
 void MailText_SetSlotMonth(s32 slot, s32 v);
 void MailText_SetSlotDayOrdinal(s32 slot, s32 v);
 s32 func_02063b8c(s32 n);
-void _ZN12Unk_02002fc813func_0200301cEPvjj(s32 a, void *b, s32 c, s32 d);
-void func_02003098(s32 a);
+void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
+void VillagerId_GetPersonality(s32 a);
 s32 func_020966b0();
 void _ZN6LetterC1Ev(void *obj);
 void _ZN6LetterD1Ev(void *obj);
@@ -283,7 +283,7 @@ void *func_0204d528(s32 i);
 void *_ZN9HouseData13func_0206052cEi(void *p, s32 a);
 u16 *_ZN9HouseRoom13func_02060850EPi(void *h, s32 i);
 u16 *_ZN9HouseRoom13func_02060834EPi(void *h, s32 i);
-s32 func_0207bf60(void *p, s32 k);
+s32 SaveVillagers_Get(void *p, s32 k);
 s32 func_0207e3a0();
 s32 func_0207e3ac();
 u32 MATH_CountPopulation(u32 v);
@@ -550,7 +550,7 @@ extern "C" void *Unk_020dc09c::vfunc_00(s32 i) {
 
 extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
     u16 v;
-    if (func_0207bf60(data_021dfd8c, key) != 0) {
+    if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
         u32 t = func_0207e3ac();
         if (t < 0x44) v = (u16)(t + 0x1100);
         else v = 0x1100;
@@ -562,7 +562,7 @@ extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
 
 extern "C" void Unk_020dc09c::vfunc_08(s32 a, s32 key) {
     u16 v;
-    if (func_0207bf60(data_021dfd8c, key) != 0) {
+    if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
         u32 t = func_0207e3a0();
         if (t < 0x44) v = (u16)(t + 0x1144);
         else v = 0x1144;
@@ -1564,12 +1564,12 @@ extern "C" BOOL func_020599b0()
 
 extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v)
 {
-    if (func_0207bf38(data_021dfd8c, r3)) {
+    if (SaveVillagers_Find(data_021dfd8c, r3)) {
         u8 buf[2];
         u32 obj[0x3d];
-        _ZN12Unk_02002fc813func_0200301cEPvjj(r3, data_021c5dec, 0x28, (s32)r0);
+        _ZN10VillagerId12makeFileNameEPvjj(r3, data_021c5dec, 0x28, (s32)r0);
         buf[0] = r1;
-        func_02003098(r3);
+        VillagerId_GetPersonality(r3);
         buf[1] = func_020966b0();
         if (v != -1) buf[1] = v;
         _ZN6LetterC1Ev(obj);
@@ -1590,7 +1590,7 @@ extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32
 
 extern "C" BOOL func_0205989c(s32 a, s32 b)
 {
-    void *r = func_0207bf38(data_021dfd8c, b);
+    void *r = SaveVillagers_Find(data_021dfd8c, b);
     if (r) {
         MailText_SetSlotMonth(2, *(u8 *)func_0207fae4(r));
         MailText_SetSlotDayOrdinal(3, ((u8 *)func_0207fae4(r))[1]);

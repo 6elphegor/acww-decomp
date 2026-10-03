@@ -131,13 +131,13 @@ s32 func_020400f8(Unk_0203f554_Cal);
 s32 func_02087444();
 s32 func_0208740c();
 s32 _ZN12Unk_0208722413func_0208723cEv(void *);
-s32 _ZN12Unk_02002fc813func_020030b4Ev(void *);
-s32 func_0207e1f0(void *);
+s32 _ZN10VillagerId7isValidEv(void *);
+s32 Villager_GetResidentStatus(void *);
 s32 func_0207e334(void *);
-void *func_0207bf60(void *, s32);
-s32 func_0207a484(void *);
+void *SaveVillagers_Get(void *, s32);
+s32 SaveVillagers_GetUnk3830Index(void *);
 u8 *func_0207fae4(void *);
-void *_ZN12VillagerData13func_020805c4Ev(void *);
+void *_ZN12VillagerData13getVillagerIdEv(void *);
 u8 *_ZN12Unk_02097ff413func_02098308Ev(s32);
 
 void func_0203f4c0(s32);
@@ -502,8 +502,8 @@ extern "C" void func_0203fc4c(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
 
 extern "C" BOOL func_0203fc10(void *a, s32 b) {
     BOOL r = FALSE;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12VillagerData13func_020805c4Ev(a))) {
-        if (func_0207e1f0(a) == 3) {
+    if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
+        if (Villager_GetResidentStatus(a) == 3) {
             s32 x = func_0207e334(a);
             if (x != -1 && x != b) {
                 r = TRUE;
@@ -517,8 +517,8 @@ extern "C" void func_0203fbb0(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n)
     u8 *base = gSaveData;
     out->w = 0;
     if (n < 0 || n > 7) n -= 0x4b;
-    void *r6 = func_0207bf60(base + 0x8a3c, n);
-    if (func_0203fc10(r6, func_0207a484(base + 0x8a3c))) {
+    void *r6 = SaveVillagers_Get(base + 0x8a3c, n);
+    if (func_0203fc10(r6, SaveVillagers_GetUnk3830Index(base + 0x8a3c))) {
         u8 *p = func_0207fae4(r6);
         if (p) {
             out->s.b3 = p[0];

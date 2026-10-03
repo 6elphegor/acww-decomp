@@ -20,7 +20,7 @@
 //  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
 //    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
-// Layout: M is 0x290 bytes; Unk_020ddcf0 (secondary base of the derived classes) starts at 0x290.
+// Layout: M is 0x290 bytes; TalkMsgRequest (secondary base of the derived classes) starts at 0x290.
 
 // Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
 // slot 08 is Character::postCreate(s32), slot 20 takes a u32).
@@ -255,10 +255,10 @@ struct Unk_ov004_0224dd98_Rec {
 
 // Slots 0x10 / 0x14 / 0x18 are overridden by the derived class's three new virtuals (named after their addresses), which
 // is what makes the five _ZThn656 thunks.
-class Unk_020ddcf0 : public MsgRequest {
+class TalkMsgRequest : public MsgRequest {
 public:
-    Unk_020ddcf0();
-    virtual ~Unk_020ddcf0();
+    TalkMsgRequest();
+    virtual ~TalkMsgRequest();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void func_ov004_02227ec0();
@@ -269,7 +269,7 @@ public:
     virtual void vfunc_24();
     virtual void vfunc_28();
     virtual void vfunc_2c();
-    virtual void vfunc_30();
+    virtual void onActionTag4();
     virtual void vfunc_34();
     virtual void vfunc_38(u32 a);
     virtual void vfunc_3c();
@@ -330,7 +330,7 @@ struct Unk_ov004_Rgba {
     }
 };
 
-class Unk_ov004_0224dd98 : public Unk_ov004_0224d4e8, public Unk_020ddcf0 {
+class Unk_ov004_0224dd98 : public Unk_ov004_0224d4e8, public TalkMsgRequest {
 public:
     Unk_ov004_0224dd98();
     virtual ~Unk_ov004_0224dd98();
@@ -388,7 +388,7 @@ extern u32 data_021c620c;
 s32 func_020318cc(void *);
 s32 func_02031908(void *, s32, s32, s32, void *, s32, s32);
 Unk_020b6960 *func_020b50b4(void);
-s32 func_0203d67c(void *);
+s32 TalkRequest_EndTalkWith(void *);
 s32 func_0209c41c(void *, u32);
 s32 func_0206ec6c(void);
 s32 func_0206eca4(u32);
@@ -406,8 +406,8 @@ void _ZN12Unk_020d8cf4C1Ev(void *self);
 void _ZN12Unk_020d8cf4D2Ev(void *self);
 void _ZN12Unk_020b6e10C2Ev(void *self);
 void _ZN12Unk_020b6e10D2Ev(void *self);
-void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
+void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 s32 _ZN18Unk_ov004_0224d4e819func_ov004_02224f20Ev(void *self, s32 a);
 Unk_ov004_0224dd98 *func_ov004_02228658();
 Unk_ov004_0224dd98 *func_ov004_0222864c();
@@ -634,16 +634,16 @@ void Unk_ov004_0224dd98::func_ov004_02228000() {}
 
 BOOL Unk_ov004_0224dd98::func_ov004_02227fb8() {
     Unk_ov004_02227fb8_Pad pad;
-    _ZN9Character13func_0203e488Ei(this, (Unk_020ddcf0 *)this);
+    _ZN9Character13func_0203e488Ei(this, (TalkMsgRequest *)this);
     MsgRequest::setFileName(data_ov004_0224dcc4);
     MsgRequest::unk_1e = 0;
-    Unk_020ddcf0::unk_3c->unk_08 = 1;
+    TalkMsgRequest::unk_3c->unk_08 = 1;
     return TRUE;
 }
 
 void Unk_ov004_0224dd98::func_ov004_02227f94() {
-    if (Unk_020ddcf0::unk_3c != 0) {
-        if (Unk_020ddcf0::unk_3c->unk_04 != 0) {
+    if (TalkMsgRequest::unk_3c != 0) {
+        if (TalkMsgRequest::unk_3c->unk_04 != 0) {
             func_ov004_022280b0(2);
         }
     }
@@ -654,9 +654,9 @@ BOOL Unk_ov004_0224dd98::func_ov004_02227f90() {
 }
 
 void Unk_ov004_0224dd98::func_ov004_02227f58() {
-    if (Unk_020ddcf0::unk_3c != 0) {
-        if (Unk_020ddcf0::unk_3c->unk_04 == 0) {
-            _ZN9Character13func_0203e47cEi(this, (Unk_020ddcf0 *)this);
+    if (TalkMsgRequest::unk_3c != 0) {
+        if (TalkMsgRequest::unk_3c->unk_04 == 0) {
+            _ZN9Character13func_0203e47cEi(this, (TalkMsgRequest *)this);
             func_ov004_022280b0(3);
         }
     }
@@ -693,7 +693,7 @@ void Unk_ov004_0224dd98::func_ov004_02227ee0() {
 
 void Unk_ov004_0224dd98::func_ov004_02227ec4() {
     if (unk_248.unk_04 == 0) {
-        func_0203d67c(this);
+        TalkRequest_EndTalkWith(this);
     }
 }
 

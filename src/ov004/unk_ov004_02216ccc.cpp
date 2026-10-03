@@ -28,12 +28,12 @@ public:
 
 class Unk_ov004_0224c38c;
 
-#define func_020030b4 _ZN12Unk_02002fc813func_020030b4Ev
+#define VillagerId_isValid _ZN10VillagerId7isValidEv
 #define func_020135c4 _ZN12Unk_0201347413func_020135c4Ev
 #define func_020141b4 _ZN12Unk_02013b1013func_020141b4Essh
 #define func_02014220 _ZN12Unk_02013b1013func_02014220Ev
-#define func_02015aac _ZN12Unk_020d771413func_02015aacEv
-#define func_02015ab0 _ZN12Unk_020d771413func_02015ab0Ej
+#define func_02015aac _ZN16ActorTalkRequest13func_02015aacEv
+#define func_02015ab0 _ZN16ActorTalkRequest13func_02015ab0Ej
 #define func_02015e48 _ZN12Unk_02015b8c13func_02015e48Ej
 #define func_02019614 _ZN12Unk_0201985813func_02019614Ejt
 #define func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
@@ -43,21 +43,21 @@ class Unk_ov004_0224c38c;
 #define func_0201b9e8 _ZN12Unk_020d77a413func_0201b9e8Eii
 #define func_0201b9fc _ZN12Unk_020d77a413func_0201b9fcEjjjz
 #define func_0201ba88 _ZN12Unk_020d77a413func_0201ba88Ev
-#define func_0201bc28 _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c
-#define func_0201bc4c _ZN12Unk_020d77a413func_0201bc4cEj
-#define func_0201bc70 _ZN12Unk_020d77a413func_0201bc70Ej
-#define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
-#define func_0201c078 _ZN12Unk_0201c07813func_0201c078EP12Unk_020d8938
-#define func_0201c5f0 _ZN12Unk_0201c07813func_0201c5f0Ev
-#define func_0201c784 _ZN12Unk_020d893813func_0201c784Ev
-#define func_0202bcdc _ZN12Unk_0201d2d013func_0202bcdcEPhPvj
-#define func_0202d388 _ZN12Unk_020d893813func_0202d388EP12Unk_020d89c8j
-#define func_0202d648 _ZN12Unk_0202d64813func_0202d648Ev
-#define func_0202d664 _ZN12Unk_0202d64813func_0202d664EP12Unk_020d89c8Pt
+#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
+#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
+#define Unk_020d77a4_getAngleToPlayer _ZN12Unk_020d77a416getAngleToPlayerEj
+#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define VillagerMood_update _ZN12VillagerMood6updateEP12VillagerTalk
+#define VillagerMood_requestApply _ZN12VillagerMood12requestApplyEv
+#define func_0201c784 _ZN12VillagerTalk13func_0201c784Ev
+#define func_0202bcdc _ZN18VillagerTalkTopics13func_0202bcdcEPhPvj
+#define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
+#define VillagerClothModel_getItem _ZN18VillagerClothModel7getItemEv
+#define VillagerClothModel_change _ZN18VillagerClothModel6changeEP13VillagerActorPt
 #define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
-#define func_0207fd9c _ZN12Unk_0207fb8013func_0207fd9cEv
-#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define VillagerDataProfileView_getShirt _ZN23VillagerDataProfileView8getShirtEv
+#define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 class Unk_ov004_02216ff4;
 
 typedef BOOL (Unk_ov004_02216ff4::*Unk_ov004_02216ff4_Fn)(Unk_ov004_0224c38c *);
@@ -102,21 +102,21 @@ s32 func_0201ba88(void *);
 s32 func_0201b9e8(void *, s32 *, s32 *);
 s32 func_0201b9bc(void *);
 s32 func_0201c784(void *);
-s32 func_0207e1f0(void *);
-s32 func_0201bc4c(void *, u32);
-void func_0202d388(void *, void *, s32);
+s32 Villager_GetResidentStatus(void *);
+s32 Unk_020d77a4_getPlayerActor(void *, u32);
+void VillagerTalk_begin(void *, void *, s32);
 void func_02015ab0(void *, s32);
 s32 func_020a62a0();
 s32 func_02014220(void *);
 s32 func_020197a8(void *);
 s32 func_02019790(void *);
 void func_02019614(void *, u32, u32);
-s32 func_0201bc70(void *, u32);
+s32 Unk_020d77a4_getAngleToPlayer(void *, u32);
 void func_020196b4(void *, u32, u32, u32, u32, u32, u32, u32, u32, u32, u32);
-void func_0201c5f0(void *);
-void func_0203d67c(void *);
+void VillagerMood_requestApply(void *);
+void TalkRequest_EndTalkWith(void *);
 void *func_02015aac(void *);
-s32 func_0201bcbc(void *, void *);
+s32 Unk_020d77a4_getAngleTo(void *, void *);
 void func_020141b4(void *, u32, s32, u32);
 s32 func_02063b8c(u32);
 void func_0204ee10(s32 *, s32 *, void *);
@@ -126,24 +126,24 @@ s32 func_02083ed4(void *, s32, s32);
 
 u32 func_02072e44(void *g);
 s32 func_02072e88(void *g, u32 v);
-void *func_0207fd9c(void *o);
-u16 *func_0202d648(void *o);
+void *VillagerDataProfileView_getShirt(void *o);
+u16 *VillagerClothModel_getItem(void *o);
 s32 Item_IsFurniture(void *p);
 u32 Item_GetFurnitureIndex(void *p);
-void func_0201c078(void *o, void *owner);
+void VillagerMood_update(void *o, void *owner);
 void func_0202bcdc(void *o, const void *a, const void *b, u32 c);
-void func_0203d704(void *o, u32 a);
+void TalkRequest_AddPlayerTalk6(void *o, u32 a);
 void func_02083f44(void *o);
 void func_020135c4(void *o);
 void *func_0207e310(void *o);
 u32 func_020785ec(void *o);
 void func_020785e8(void *o, u32 a);
-void *func_020805c4(void *o);
-u32 func_020030b4(void *o);
+void *VillagerData_getVillagerId(void *o);
+u32 VillagerId_isValid(void *o);
 void *func_020784f4(void *o);
 void func_020784e0(void *o);
-void func_0201bc28(void *self, void *p);
-void func_0202d664(void *self, void *owner, u16 *p);
+void Unk_020d77a4_setTalkRequest(void *self, void *p);
+void VillagerClothModel_change(void *self, void *owner, u16 *p);
 u32 func_02015e48(void *o, u32 v);
 }
 
@@ -195,7 +195,7 @@ public:
     u8 pad_1a1[3];
 };
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
-struct Unk_0201c078 { Unk_0201c078(); ~Unk_0201c078(); u32 pad[0x5c / 4]; };
+struct VillagerMood { VillagerMood(); ~VillagerMood(); u32 pad[0x5c / 4]; };
 
 class Actor : public ProcBase {
 public:
@@ -237,15 +237,15 @@ public:
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
     virtual void *vfunc_64();
-    virtual BOOL vfunc_68();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
+    virtual BOOL updateAct();
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
+    virtual u16 getSpecies();
+    virtual void setShirt(u16 *p, BOOL flag);
     virtual void vfunc_8c();
     virtual void vfunc_90();
     virtual void vfunc_94();
@@ -273,22 +273,22 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d89c8 : public Unk_020d77a4 {
+class VillagerActor : public Unk_020d77a4 {
 public:
-    Unk_020d89c8();
-    virtual ~Unk_020d89c8();
+    VillagerActor();
+    virtual ~VillagerActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
     virtual BOOL preDelete();
     virtual void *vfunc_64();
-    virtual u8 *vfunc_6c();
-    virtual u8 *vfunc_70();
-    virtual void vfunc_74(u32 a);
-    virtual u32 vfunc_78();
-    virtual u16 vfunc_84();
-    virtual void vfunc_88(u16 *p, BOOL flag);
-    virtual void vfunc_a4(u32 a, s32 b);
+    virtual u8 *getTexturePath();
+    virtual u8 *getModelPath();
+    virtual void getName(u32 a);
+    virtual u32 getGender();
+    virtual u16 getSpecies();
+    virtual void setShirt(u16 *p, BOOL flag);
+    virtual void addMood(u32 a, s32 b);
     virtual BOOL vfunc_a8();
     virtual BOOL vfunc_ac();
     virtual BOOL vfunc_b0();
@@ -305,7 +305,7 @@ public:
     /* 0x82c */ void *unk_82c;
     /* 0x830 */ void *unk_830;
     /* 0x834 */ u32 unk_834;
-    /* 0x838 */ Unk_0201c078 unk_838;
+    /* 0x838 */ VillagerMood unk_838;
 };
 
 // Member at +0x89c (state machine). Methods are named after Unk_ov004_02216ff4, its constructor after
@@ -352,14 +352,14 @@ public:
     u32 pad[0x20 / 4];
 };
 
-class Unk_ov004_0224c38c : public Unk_020d89c8 {
+class Unk_ov004_0224c38c : public VillagerActor {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
-    virtual BOOL vfunc_68();
+    virtual BOOL updateAct();
     virtual BOOL vfunc_7c();
     virtual void vfunc_80();
 
@@ -384,17 +384,17 @@ extern "C" Unk_ov004_0224c38c *func_ov004_0221785c() {
 }
 
 BOOL Unk_ov004_0224c38c::vfunc_04() {
-    if (!Unk_020d89c8::vfunc_04()) {
+    if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
-    func_0201bc28(this, &unk_680);
+    Unk_020d77a4_setTalkRequest(this, &unk_680);
     unk_680.vfunc_08();
     func_02083f44(&unk_8b0);
     unk_8d4 = 0;
     unk_8d0 = 0;
     void *p = vfunc_64();
     if (p) {
-        if (func_020030b4(func_020805c4(p))) {
+        if (VillagerId_isValid(VillagerData_getVillagerId(p))) {
             void *t = func_0207e310(p);
             if (t) {
                 func_020784e0(func_020784f4(t));
@@ -405,7 +405,7 @@ BOOL Unk_ov004_0224c38c::vfunc_04() {
 }
 
 BOOL Unk_ov004_0224c38c::vfunc_00() {
-    if (!Unk_020d89c8::vfunc_00()) {
+    if (!VillagerActor::vfunc_00()) {
         return FALSE;
     }
     unk_894 = &Unk_ov004_0224c38c::func_ov004_02217708;
@@ -451,13 +451,13 @@ BOOL Unk_ov004_0224c38c::vfunc_7c() {
 
 void Unk_ov004_0224c38c::vfunc_80() { unk_8d0 = 1; }
 
-BOOL Unk_ov004_0224c38c::vfunc_68() {
+BOOL Unk_ov004_0224c38c::updateAct() {
     unk_89c.func_ov004_0221757c(this);
     if (func_02072e44(data_020cbb18)) {
         if (func_02015e48(&unk_334, 0) != 6) {
             if (vfunc_64()) {
-                u16 *p = (u16 *)func_0207fd9c(vfunc_64());
-                u16 *q = func_0202d648(&unk_64c);
+                u16 *p = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
+                u16 *q = VillagerClothModel_getItem(&unk_64c);
                 BOOL eq;
                 if (Item_IsFurniture(q)) {
                     eq = Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(p) ? TRUE : FALSE;
@@ -465,20 +465,20 @@ BOOL Unk_ov004_0224c38c::vfunc_68() {
                     eq = *q == *p ? TRUE : FALSE;
                 }
                 if (!eq) {
-                    u16 *w = (u16 *)func_0207fd9c(vfunc_64());
+                    u16 *w = (u16 *)VillagerDataProfileView_getShirt(vfunc_64());
                     BOOL in = FALSE;
                     u16 v = *w;
                     if (v >= 0x11a8 && v <= 0x12a7) {
                         in = TRUE;
                     }
                     if (in) {
-                        func_0202d664(&unk_64c, this, (u16 *)func_0207fd9c(vfunc_64()));
+                        VillagerClothModel_change(&unk_64c, this, (u16 *)VillagerDataProfileView_getShirt(vfunc_64()));
                     }
                 }
             }
         }
     }
-    func_0201c078(&unk_838, this);
+    VillagerMood_update(&unk_838, this);
     return TRUE;
 }
 
@@ -613,7 +613,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221727c(Unk_ov004_0224c38c *o) {
     void *t = func_02015aac(&o->unk_680);
     s32 r = 0;
     if (t != 0) {
-        r = func_0201bcbc(o, t);
+        r = Unk_020d77a4_getAngleTo(o, t);
     }
     func_020141b4(&o->unk_618, 0, r, 0);
     return TRUE;
@@ -621,8 +621,8 @@ BOOL Unk_ov004_02216ff4::func_ov004_0221727c(Unk_ov004_0224c38c *o) {
 
 void Unk_ov004_02216ff4::func_ov004_02217244(Unk_ov004_0224c38c *o) {
     if (func_02014220(&o->unk_618) == 0) {
-        func_0201c5f0(&o->unk_838);
-        func_0203d67c(o);
+        VillagerMood_requestApply(&o->unk_838);
+        TalkRequest_EndTalkWith(o);
         unk_0c = 1;
     }
 }
@@ -638,7 +638,7 @@ BOOL Unk_ov004_02216ff4::func_ov004_022171d4(Unk_ov004_0224c38c *o) {
 }
 
 BOOL Unk_ov004_02216ff4::func_ov004_02217188(Unk_ov004_0224c38c *o) {
-    s32 t = func_0201bc70(o, o->unk_558.unk_08);
+    s32 t = Unk_020d77a4_getAngleToPlayer(o, o->unk_558.unk_08);
     func_020196b4(&o->unk_564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     unk_0c = 0;
     return TRUE;
@@ -674,13 +674,13 @@ BOOL Unk_ov004_02216ff4::func_ov004_02216ff8(Unk_ov004_0224c38c *o) {
         s32 g;
         if (func_0201b9e8(o, &a, &b) != 0 && ((la = a), la == (g = data_020cbb18->unk_64)) && la == b) {
             func_0201b9fc(o, 1, g, g);
-            if (w != 0 && func_0207e1f0(w) != 3) {
+            if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->unk_8d4 = 12;
             } else {
                 o->unk_8d4 = 0;
             }
-            func_0202d388(&o->unk_680, o, o->unk_8d4);
-            func_02015ab0(&o->unk_680, func_0201bc4c(o, 4));
+            VillagerTalk_begin(&o->unk_680, o, o->unk_8d4);
+            func_02015ab0(&o->unk_680, Unk_020d77a4_getPlayerActor(o, 4));
             o->unk_89c.func_ov004_02217530(o, 1);
         } else {
             if (func_020a62a0() != 0 && b == 4) {
@@ -736,7 +736,7 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
             }
             s32 g = data_020cbb18->unk_64;
             func_0201b9fc(this, 1, g, g);
-            if (unk_82c != 0 && func_0207e1f0(unk_82c) != 3) {
+            if (unk_82c != 0 && Villager_GetResidentStatus(unk_82c) != 3) {
                 unk_8d4 = 12;
             } else {
                 switch (func_0201c784(this)) {
@@ -767,8 +767,8 @@ void Unk_ov004_0224c38c::vfunc_4c(u32 idx, u32 v) {
             if (func_0201ba88(this) != 0) {
                 s32 g = data_020cbb18->unk_64;
                 func_0201b9fc(this, 1, g, g);
-                func_0202d388(&unk_680, this, unk_8d4);
-                func_02015ab0(&unk_680, func_0201bc4c(this, 4));
+                VillagerTalk_begin(&unk_680, this, unk_8d4);
+                func_02015ab0(&unk_680, Unk_020d77a4_getPlayerActor(this, 4));
                 unk_89c.func_ov004_02217530(this, 1);
                 unk_8d4 = 0;
             }
