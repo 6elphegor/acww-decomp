@@ -7,60 +7,60 @@ struct Unk_ov114_02294c40_Bits {
     u32 hi : 16;
 };
 
-struct Unk_ov114_02294c40_Entry {
-    u32 unk_00;
-    Unk_ov114_02294c40_Bits unk_04;
-    s32 unk_08;
+struct CreatureBookIconObj {
+    u32 attr01;
+    Unk_ov114_02294c40_Bits attr2;
+    s32 iconId;
 };
 
 struct Unk_ov114_S {
     /* 0x0000 */ u8 pad_000[0x808];
     /* 0x0808 */ u8 unk_808[0x81a - 0x808];
     /* 0x081a */ u8 unk_81a[0x9d8 - 0x81a];
-    /* 0x09d8 */ u16 unk_9d8;
-    /* 0x09da */ u16 unk_9da;
+    /* 0x09d8 */ u16 bgColorShown;
+    /* 0x09da */ u16 bgColorHidden;
     /* 0x09dc */ u8 pad_9dc[0x9f8 - 0x9dc];
-    /* 0x09f8 */ u16 unk_9f8;
+    /* 0x09f8 */ u16 bgColorBlended;
     /* 0x09fa */ u8 pad_9fa[0xa14 - 0x9fa];
     /* 0x0a14 */ u8 unk_0a14[0x480];
     /* 0x0e94 */ u8 unk_0e94[0x108c - 0xe94];
-    /* 0x108c */ Unk_ov114_02294c40_Entry unk_108c[9];
+    /* 0x108c */ CreatureBookIconObj unk_108c[9];
     /* 0x10f8 */ u8 unk_10f8[0x11b8 - 0x10f8];
     /* 0x11b8 */ u8 unk_11b8[0x11f8 - 0x11b8];
     /* 0x11f8 */ u8 unk_11f8[0x48];
     /* 0x1240 */ u32 unk_1240[3];
-    /* 0x124c */ s32 unk_124c;
-    /* 0x1250 */ s32 unk_1250;
-    /* 0x1254 */ s32 unk_1254;
-    /* 0x1258 */ s32 unk_1258;
-    /* 0x125c */ s32 unk_125c;
-    /* 0x1260 */ s32 unk_1260;
-    /* 0x1264 */ s32 unk_1264;
-    /* 0x1268 */ s32 unk_1268;
-    /* 0x126c */ s32 unk_126c;
-    /* 0x1270 */ s32 unk_1270;
-    /* 0x1274 */ s32 unk_1274;
-    /* 0x1278 */ s32 unk_1278;
-    /* 0x127c */ s32 unk_127c;
-    /* 0x1280 */ void *unk_1280;
-    /* 0x1284 */ void *unk_1284;
-    /* 0x1288 */ u16 unk_1288;
-    /* 0x128a */ u8 unk_128a;
-    /* 0x128b */ u8 unk_128b;
-    /* 0x128c */ u8 unk_128c;
-    /* 0x128d */ u8 unk_128d;
+    /* 0x124c */ s32 knobPos;
+    /* 0x1250 */ s32 knobGrabOffset;
+    /* 0x1254 */ s32 knobLastTickPos;
+    /* 0x1258 */ s32 scroll;
+    /* 0x125c */ s32 pendingScroll;
+    /* 0x1260 */ s32 firstIconX;
+    /* 0x1264 */ s32 iconRowY;
+    /* 0x1268 */ s32 firstVisibleEntry;
+    /* 0x126c */ s32 firstIconSlot;
+    /* 0x1270 */ s32 listLength;
+    /* 0x1274 */ s32 scrollMax;
+    /* 0x1278 */ s32 pageButtonPalettes;
+    /* 0x127c */ s32 prevPageButtonPal;
+    /* 0x1280 */ void *listBlendMask;
+    /* 0x1284 */ void *pictureBlendMask;
+    /* 0x1288 */ u16 flags;
+    /* 0x128a */ u8 nextPageFlashTimer;
+    /* 0x128b */ u8 prevPageFlashTimer;
+    /* 0x128c */ u8 descPageCount;
+    /* 0x128d */ u8 mainLayer;
     /* 0x128e */ u8 pad_128e;
-    /* 0x128f */ u8 unk_128f;
-    /* 0x1290 */ u8 unk_1290;
-    /* 0x1291 */ u8 unk_1291;
-    /* 0x1292 */ u8 unk_1292;
-    /* 0x1293 */ u8 unk_1293;
-    /* 0x1294 */ u8 unk_1294;
-    /* 0x1295 */ u8 unk_1295;
-    /* 0x1296 */ u8 unk_1296;
-    /* 0x1297 */ u8 unk_1297;
-    /* 0x1298 */ u8 unk_1298;
-    /* 0x1299 */ u8 unk_1299;
+    /* 0x128f */ u8 pictureLayer;
+    /* 0x1290 */ u8 iconTaskCount;
+    /* 0x1291 */ u8 descPage;
+    /* 0x1292 */ u8 labelCount;
+    /* 0x1293 */ u8 mode;
+    /* 0x1294 */ u8 shownEntry;
+    /* 0x1295 */ u8 selectedEntry;
+    /* 0x1296 */ u8 pictureFade;
+    /* 0x1297 */ u8 touchTarget;
+    /* 0x1298 */ u8 focus;
+    /* 0x1299 */ u8 ownTabFocus;
 };
 
 typedef Unk_ov114_S S;
@@ -233,8 +233,8 @@ public:
     ItemIconCache();
     virtual ~ItemIconCache();
     void invalidate();
-    u8 unk_04[0x800];
-    u8 unk_804;
+    u8 iconChars[0x800];
+    u8 loadedPage;
 };
 
 class BgVramTask {
@@ -293,37 +293,37 @@ public:
     void cleanup();
     void init(u8 a, u8 b, u8 c, u8 d);
 
-    /* 0x000 */ ItemIconCache unk_00;
-    /* 0x808 */ MsgString406 unk_808;
+    /* 0x000 */ ItemIconCache iconCache;
+    /* 0x808 */ MsgString406 descText;
     /* 0x828 */ u8 unk_828[0x9b0 - 0x828];
-    /* 0x9b0 */ BgVramTask unk_9b0;
-    /* 0xe94 */ BgVramTaskPair unk_e94[9];
+    /* 0x9b0 */ BgVramTask paletteTask;
+    /* 0xe94 */ BgVramTaskPair rowIconTasks[9];
     /* 0x108c */ u8 unk_108c[0x10f8 - 0x108c];
-    /* 0x10f8 */ LabelString unk_10f8[4];
-    /* 0x11f8 */ MenuScrollKnob unk_11f8;
-    /* 0x124c */ s32 unk_124c;
-    /* 0x1250 */ s32 unk_1250;
-    /* 0x1254 */ s32 unk_1254;
-    /* 0x1258 */ s32 unk_1258;
-    /* 0x125c */ s32 unk_125c;
+    /* 0x10f8 */ LabelString labels[4];
+    /* 0x11f8 */ MenuScrollKnob scrollKnob;
+    /* 0x124c */ s32 knobPos;
+    /* 0x1250 */ s32 knobGrabOffset;
+    /* 0x1254 */ s32 knobLastTickPos;
+    /* 0x1258 */ s32 scroll;
+    /* 0x125c */ s32 pendingScroll;
     /* 0x1260 */ u8 unk_1260[0x10];
-    /* 0x1270 */ s32 unk_1270;
-    /* 0x1274 */ s32 unk_1274;
-    /* 0x1278 */ s32 unk_1278[2];
-    /* 0x1280 */ s32 unk_1280;
-    /* 0x1284 */ s32 unk_1284;
-    /* 0x1288 */ u16 unk_1288;
+    /* 0x1270 */ s32 listLength;
+    /* 0x1274 */ s32 scrollMax;
+    /* 0x1278 */ s32 pageButtonPalettes[2];
+    /* 0x1280 */ s32 listBlendMask;
+    /* 0x1284 */ s32 pictureBlendMask;
+    /* 0x1288 */ u16 flags;
     /* 0x128a */ u8 unk_128a[2];
     /* 0x128c */ u8 unk_128c;
-    /* 0x128d */ u8 unk_128d;
-    /* 0x128e */ u8 unk_128e;
-    /* 0x128f */ u8 unk_128f;
+    /* 0x128d */ u8 mainLayer;
+    /* 0x128e */ u8 listLayer;
+    /* 0x128f */ u8 pictureLayer;
     /* 0x1290 */ u8 unk_1290[3];
-    /* 0x1293 */ u8 unk_1293;
+    /* 0x1293 */ u8 mode;
     /* 0x1294 */ u8 unk_1294[3];
-    /* 0x1297 */ u8 unk_1297;
-    /* 0x1298 */ u8 unk_1298;
-    /* 0x1299 */ u8 unk_1299;
+    /* 0x1297 */ u8 touchTarget;
+    /* 0x1298 */ u8 focus;
+    /* 0x1299 */ u8 ownTabFocus;
 };
 
 CreatureBookPanel::CreatureBookPanel() {}
@@ -331,60 +331,60 @@ CreatureBookPanel::CreatureBookPanel() {}
 CreatureBookPanel::~CreatureBookPanel() {}
 
 void CreatureBookPanel::init(u8 a, u8 b, u8 c, u8 d) {
-    unk_1288 = 0;
-    unk_128d = a;
-    unk_128e = b;
-    unk_128f = c;
-    unk_1280 = Gfx2d_GetLayerBlendMask(b);
-    unk_1284 = Gfx2d_GetLayerBlendMask(c);
-    unk_1293 = d;
-    unk_00.invalidate();
+    flags = 0;
+    mainLayer = a;
+    listLayer = b;
+    pictureLayer = c;
+    listBlendMask = Gfx2d_GetLayerBlendMask(b);
+    pictureBlendMask = Gfx2d_GetLayerBlendMask(c);
+    mode = d;
+    iconCache.invalidate();
     CreatureBook_InitRows((S *)this);
     switch (d) {
     case 0:
-        unk_1270 = 0x38;
-        unk_1299 = 7;
+        listLength = 0x38;
+        ownTabFocus = 7;
         break;
     case 1:
-        unk_1270 = 0x38;
-        unk_1299 = 8;
+        listLength = 0x38;
+        ownTabFocus = 8;
         break;
     default:
-        unk_1270 = 0x38;
-        unk_1299 = 0;
+        listLength = 0x38;
+        ownTabFocus = 0;
         break;
     }
     CreatureBook_BuildCaughtMask((S *)this);
-    unk_1298 = 0x10;
-    unk_1274 = (unk_1270 - 8) * 0x1b;
-    unk_125c = 0;
-    unk_11f8.show();
+    focus = 0x10;
+    scrollMax = (listLength - 8) * 0x1b;
+    pendingScroll = 0;
+    scrollKnob.show();
     u8 *p = &unk_128a[1];
     *p = 0;
     unk_128a[0] = *p;
-    _ZN9MsgString5clearEv(&unk_808);
-    unk_1297 = 4;
+    _ZN9MsgString5clearEv(&descText);
+    touchTarget = 4;
 }
 
 void CreatureBookPanel::cleanup() {
-    unk_9b0.cancel();
+    paletteTask.cancel();
     CreatureBook_CancelIconTasks((S *)this);
     CreatureBook_ClearLabels((S *)this);
 }
 
 void CreatureBookPanel::preUpdate() {
-    unk_9b0.cancel();
+    paletteTask.cancel();
     CreatureBook_CancelIconTasks((S *)this);
-    unk_11f8.vfunc_0c();
+    scrollKnob.vfunc_0c();
     CreatureBook_ClearLabels((S *)this);
 }
 
 void CreatureBookPanel::postUpdate() {
     CreatureBook_ApplyScrollInertia((S *)this);
-    unk_11f8.updateRelease();
+    scrollKnob.updateRelease();
     CreatureBook_UpdatePictureFade((S *)this);
     if (CreatureBook_HasFlags((S *)this, 1)) {
-        if (unk_9b0.requestPalette((u32)unk_9b0.unk_44, unk_128d, 4)) {
+        if (paletteTask.requestPalette((u32)paletteTask.unk_44, mainLayer, 4)) {
             CreatureBook_ClearFlags((S *)this, 1);
         }
     }
@@ -392,12 +392,12 @@ void CreatureBookPanel::postUpdate() {
 
 void CreatureBookPanel::loadBgGraphics() {
     s32 h = (s32)gCurrentHeap;
-    Gfx2d_LoadCharFile("menu/fish/bg0.bch", (u32 *)h, unk_128d, 0x109, 0x109, 0x153);
-    Gfx2d_LoadCharFile("menu/fish/bg1.bch", (u32 *)h, unk_128d, 0x154, 0x154, 0x19f);
-    if (unk_1293 == 1) {
-        Gfx2d_LoadCharFile("menu/fish/bug_bg.bch", (u32 *)h, unk_128d, 0x150, 0x150, 0x164);
+    Gfx2d_LoadCharFile("menu/fish/bg0.bch", (u32 *)h, mainLayer, 0x109, 0x109, 0x153);
+    Gfx2d_LoadCharFile("menu/fish/bg1.bch", (u32 *)h, mainLayer, 0x154, 0x154, 0x19f);
+    if (mode == 1) {
+        Gfx2d_LoadCharFile("menu/fish/bug_bg.bch", (u32 *)h, mainLayer, 0x150, 0x150, 0x164);
     }
-    switch (unk_1293) {
+    switch (mode) {
     case 0:
         sCreatureBgPaletteName = "menu/fish/bg.bpl";
         break;
@@ -405,12 +405,12 @@ void CreatureBookPanel::loadBgGraphics() {
         sCreatureBgPaletteName = "menu/fish/bug_bg.bpl";
         break;
     }
-    Gfx2d_LoadPaletteFile(sCreatureBgPaletteName, h, unk_128d, 1, 1, 6);
-    File_LoadToBuffer("menu/fish/bg4.bpl", unk_9b0.unk_24, 0x20);
-    MIi_CpuCopy16(unk_9b0.unk_24, unk_9b0.unk_44, 0x20);
-    Gfx2d_LoadScreenFile("menu/fish/a_bg.bsc", h, unk_128d);
-    Gfx2d_LoadScreenFile("menu/fish/b_bg.bsc", h, unk_128e);
-    Gfx2d_LoadScreenFile("menu/fish/c_bg.bsc", h, unk_128f);
+    Gfx2d_LoadPaletteFile(sCreatureBgPaletteName, h, mainLayer, 1, 1, 6);
+    File_LoadToBuffer("menu/fish/bg4.bpl", paletteTask.unk_24, 0x20);
+    MIi_CpuCopy16(paletteTask.unk_24, paletteTask.unk_44, 0x20);
+    Gfx2d_LoadScreenFile("menu/fish/a_bg.bsc", h, mainLayer);
+    Gfx2d_LoadScreenFile("menu/fish/b_bg.bsc", h, listLayer);
+    Gfx2d_LoadScreenFile("menu/fish/c_bg.bsc", h, pictureLayer);
 }
 
 void CreatureBookPanel::loadObjGraphics() {
@@ -426,7 +426,7 @@ void CreatureBookPanel::drawButtons(s32 y) {
     s32 i = 0;
     s32 z = i;
     do {
-        s32 pal = unk_1278[i];
+        s32 pal = pageButtonPalettes[i];
         u8 *b = (u8 *)this + i;
         u8 *q = b + 0x128a;
         u32 v = *q;
@@ -438,10 +438,10 @@ void CreatureBookPanel::drawButtons(s32 y) {
         i++;
     } while (i < 2);
     s32 py1 = py;
-    if (unk_1297 == 0) py1 = py + 2;
+    if (touchTarget == 0) py1 = py + 2;
     Oam_DrawObj(1, data_ov114_022965c0, 0x80, py1, -1, 1, 0);
     s32 py2 = py;
-    if (unk_1297 == 1) py2 = py + 2;
+    if (touchTarget == 1) py2 = py + 2;
     Oam_DrawObj(1, (data_ov114_022965c0 + 8), 0x80, py2, -1, 1, 0);
     Oam_DrawCell(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
@@ -459,46 +459,46 @@ BOOL CreatureBookPanel::hitDescPageButtons(s32 x, s32 y) {
 }
 
 void CreatureBookPanel::drawScrollKnob() {
-    unk_11f8.vfunc_08();
+    scrollKnob.vfunc_08();
 }
 
 void CreatureBookPanel::placeScrollKnob(s32 x) {
-    _ZN10ScrollKnob6moveToEii(&unk_11f8, unk_124c - 0x4e, x + 0x4a);
+    _ZN10ScrollKnob6moveToEii(&scrollKnob, knobPos - 0x4e, x + 0x4a);
 }
 
 void CreatureBookPanel::syncKnobToScroll() {
-    unk_124c = _s32_div_f(unk_1258 * 0x8c, unk_1274);
+    knobPos = _s32_div_f(scroll * 0x8c, scrollMax);
 }
 
 void CreatureBookPanel::syncScrollToKnob() {
-    if (CreatureBook_SetScroll((S *)this, _s32_div_f(unk_124c * unk_1274, 0x8c))) {
+    if (CreatureBook_SetScroll((S *)this, _s32_div_f(knobPos * scrollMax, 0x8c))) {
         CreatureBook_RefreshRowIcons((S *)this);
     }
-    unk_125c = 0;
+    pendingScroll = 0;
 }
 
 BOOL CreatureBookPanel::beginScrollTouch(s32 x, s32 y) {
-    if (unk_11f8.hitTest(x, y)) {
-        unk_1250 = unk_124c - x;
-        unk_11f8.grab();
-        unk_1297 = 2;
-        unk_1254 = unk_124c;
+    if (scrollKnob.hitTest(x, y)) {
+        knobGrabOffset = knobPos - x;
+        scrollKnob.grab();
+        touchTarget = 2;
+        knobLastTickPos = knobPos;
         return TRUE;
     }
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
     if (Cell_HitTest(data_ov114_022965c0, xs, ys, 2, 2)) {
-        unk_1297 = 0;
+        touchTarget = 0;
         return TRUE;
     }
     if (Cell_HitTest((data_ov114_022965c0 + 8), xs, ys, 2, 2)) {
-        unk_1297 = 1;
+        touchTarget = 1;
         return TRUE;
     }
     if (x > 0x3a && x < 0xc6 && y > 0xac && y < 0xb8) {
-        unk_11f8.grab();
-        unk_1297 = 3;
-        unk_1254 = unk_124c;
+        scrollKnob.grab();
+        touchTarget = 3;
+        knobLastTickPos = knobPos;
         return TRUE;
     }
     return FALSE;
@@ -506,11 +506,11 @@ BOOL CreatureBookPanel::beginScrollTouch(s32 x, s32 y) {
 
 void CreatureBook_UpdateScrollTouch(S *s, s32 a)
 {
-    s32 *p = &s->unk_124c;
+    s32 *p = &s->knobPos;
     s32 old = *p;
-    switch (s->unk_1297) {
+    switch (s->touchTarget) {
     case 2:
-        *p = a + s->unk_1250;
+        *p = a + s->knobGrabOffset;
         break;
     case 0:
         *p = old - 2;
@@ -522,35 +522,35 @@ void CreatureBook_UpdateScrollTouch(S *s, s32 a)
         func_020e761c(p, a - 0x3a, 4);
         break;
     }
-    if (s->unk_124c < 0) {
-        s->unk_124c = 0;
+    if (s->knobPos < 0) {
+        s->knobPos = 0;
     }
-    if (s->unk_124c > 0x8c) {
-        s->unk_124c = 0x8c;
+    if (s->knobPos > 0x8c) {
+        s->knobPos = 0x8c;
     }
     ((CreatureBookPanel *)s)->syncScrollToKnob();
-    if (s->unk_1297 == 2) {
-        s32 d = s->unk_1254 - s->unk_124c;
+    if (s->touchTarget == 2) {
+        s32 d = s->knobLastTickPos - s->knobPos;
         if (d >= 4 || d <= -4) {
             Menu_PlayScrollTickSe(s->unk_11f8);
-            s->unk_1254 = s->unk_124c;
+            s->knobLastTickPos = s->knobPos;
         }
-    } else if (s->unk_124c != old) {
+    } else if (s->knobPos != old) {
         Menu_PlayScrollTickSe(s->unk_11f8);
     }
 }
 
 void CreatureBook_EndScrollTouch(S *s)
 {
-    if (s->unk_1297 == 2) {
+    if (s->touchTarget == 2) {
         _ZN14MenuScrollKnob7releaseEv(s->unk_11f8);
     }
-    s->unk_1297 = 4;
+    s->touchTarget = 4;
 }
 
 s32 CreatureBook_WaitScrollHoldStart(S *s)
 {
-    if (s->unk_1297 == 2) {
+    if (s->touchTarget == 2) {
         return _ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8);
     }
     CreatureBook_UpdateScrollHold(s);
@@ -559,31 +559,31 @@ s32 CreatureBook_WaitScrollHoldStart(S *s)
 
 void CreatureBook_UpdateScrollHold(S *s)
 {
-    s32 old = s->unk_124c;
-    switch (s->unk_1297) {
+    s32 old = s->knobPos;
+    switch (s->touchTarget) {
     case 2: {
         u16 k = gPad;
         if (k & 0x20) {
-            s->unk_124c = old - 2;
+            s->knobPos = old - 2;
         } else if (k & 0x10) {
-            s->unk_124c = old + 2;
+            s->knobPos = old + 2;
         }
         break;
     }
     case 0:
-        s->unk_124c = old - 2;
+        s->knobPos = old - 2;
         break;
     case 1:
-        s->unk_124c = old + 2;
+        s->knobPos = old + 2;
         break;
     }
-    if (s->unk_124c < 0) {
-        s->unk_124c = 0;
+    if (s->knobPos < 0) {
+        s->knobPos = 0;
     }
-    if (s->unk_124c > 0x8c) {
-        s->unk_124c = 0x8c;
+    if (s->knobPos > 0x8c) {
+        s->knobPos = 0x8c;
     }
-    if (s->unk_124c != old) {
+    if (s->knobPos != old) {
         Menu_PlayScrollTickSe(s->unk_11f8);
     }
     ((CreatureBookPanel *)s)->syncScrollToKnob();
@@ -591,21 +591,21 @@ void CreatureBook_UpdateScrollHold(S *s)
 
 void CreatureBook_ReleaseKnob(S *s)
 {
-    if (s->unk_1297 == 2) {
+    if (s->touchTarget == 2) {
         _ZN14MenuScrollKnob7releaseEv(s->unk_11f8);
     }
 }
 
 BOOL CreatureBook_FinishScrollHold(S *s)
 {
-    if (s->unk_1297 == 2) {
+    if (s->touchTarget == 2) {
         if (_ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8)) {
             _ZN14MenuScrollKnob4showEv(s->unk_11f8);
-            s->unk_1297 = 4;
+            s->touchTarget = 4;
             return TRUE;
         }
     } else {
-        s->unk_1297 = 4;
+        s->touchTarget = 4;
         return TRUE;
     }
     return FALSE;
@@ -613,28 +613,28 @@ BOOL CreatureBook_FinishScrollHold(S *s)
 
 void CreatureBook_ApplyScrollInertia(S *s)
 {
-    s32 pos = s->unk_1258;
-    s32 r = s->unk_125c;
+    s32 pos = s->scroll;
+    s32 r = s->pendingScroll;
     if (r > 0) {
         if (r < 0xb) {
             pos += r;
-            s->unk_125c = 0;
+            s->pendingScroll = 0;
         } else {
             pos += 0xb;
             r -= 0xb;
-            s->unk_125c = r;
+            s->pendingScroll = r;
         }
     } else if (r < 0) {
         if (r > -11) {
             pos += r;
-            s->unk_125c = 0;
+            s->pendingScroll = 0;
         } else {
             pos -= 0xb;
             r += 0xb;
-            s->unk_125c = r;
+            s->pendingScroll = r;
         }
     }
-    if (pos != s->unk_1258) {
+    if (pos != s->scroll) {
         ((CreatureBookPanel *)s)->syncKnobToScroll();
         if (CreatureBook_SetScroll(s, pos)) {
             CreatureBook_RefreshRowIcons(s);
@@ -652,9 +652,9 @@ u8 *MsgString406::data() { return (u8 *)this + 0x12; }
 
 void CreatureBook_LoadDescription(S *s)
 {
-    u8 v = s->unk_1294;
+    u8 v = s->shownEntry;
     const char *name;
-    switch (s->unk_1293) {
+    switch (s->mode) {
     case 0:
         name = (const char *)"obj_etc_fish";
         break;
@@ -664,13 +664,13 @@ void CreatureBook_LoadDescription(S *s)
     }
     if (v == 0xff) {
         _ZN9MsgString5clearEv(s->unk_808);
-        s->unk_128c = 1;
+        s->descPageCount = 1;
     } else {
         u8 key = v;
         String_Load(s->unk_808, &key, name);
-        s->unk_128c = CreatureBook_CountDescPages(s);
+        s->descPageCount = CreatureBook_CountDescPages(s);
     }
-    s->unk_1291 = 0;
+    s->descPage = 0;
     CreatureBook_ShowDescPage(s);
 }
 
@@ -695,7 +695,7 @@ void CreatureBook_ShowDescPage(S *s)
     void *o[3];
     s32 z10 = 0;
     s32 z14 = 0;
-    s32 k = (u8)s->unk_1291 * 3;
+    s32 k = (u8)s->descPage * 3;
     s32 y;
     s32 i;
     o[0] = CreatureBook_AllocLabel(s);
@@ -713,30 +713,30 @@ void CreatureBook_ShowDescPage(S *s)
             ob = o[i];
             _ZN9MsgString5clearEv(ob);
         }
-        _ZN11LabelString11createLabelEjjjhhi(ob, s->unk_128d, y, 0xd, 2, 3, z10);
+        _ZN11LabelString11createLabelEjjjhhi(ob, s->mainLayer, y, 0xd, 2, 3, z10);
         _ZN11LabelString13redrawAlignedEii(ob, z14, z14);
         k++;
         y += 0x1a;
         i++;
     } while (i < 3);
-    if (s->unk_1291 == 0) {
-        s->unk_127c = 4;
+    if (s->descPage == 0) {
+        s->prevPageButtonPal = 4;
     } else {
-        s->unk_127c = 5;
+        s->prevPageButtonPal = 5;
     }
-    if (s->unk_1291 + 1 >= s->unk_128c) {
-        s->unk_1278 = 4;
+    if (s->descPage + 1 >= s->descPageCount) {
+        s->pageButtonPalettes = 4;
     } else {
-        s->unk_1278 = 5;
+        s->pageButtonPalettes = 5;
     }
 }
 
 BOOL CreatureBook_NextDescPage(S *s)
 {
-    s32 n = s->unk_1291 + 1;
-    if (n < s->unk_128c) {
-        s->unk_1291 = n;
-        s->unk_128a = 5;
+    s32 n = s->descPage + 1;
+    if (n < s->descPageCount) {
+        s->descPage = n;
+        s->nextPageFlashTimer = 5;
         CreatureBook_ShowDescPage(s);
         Snd_PlaySe(0x39);
         return TRUE;
@@ -746,10 +746,10 @@ BOOL CreatureBook_NextDescPage(S *s)
 
 BOOL CreatureBook_PrevDescPage(S *s)
 {
-    u32 c = s->unk_1291;
+    u32 c = s->descPage;
     if (c != 0) {
-        s->unk_1291 = c - 1;
-        s->unk_128b = 5;
+        s->descPage = c - 1;
+        s->prevPageFlashTimer = 5;
         CreatureBook_ShowDescPage(s);
         Snd_PlaySe(0x39);
         return TRUE;
@@ -759,16 +759,16 @@ BOOL CreatureBook_PrevDescPage(S *s)
 
 void CreatureBook_SetBgFadeColor(S *s, s32 a, s32 b)
 {
-    s32 c1 = s->unk_9da;
+    s32 c1 = s->bgColorHidden;
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;
     u8 bl = (c1 & 0x7c00) >> 10;
     s32 d = b - a;
-    s32 c2 = s->unk_9d8;
+    s32 c2 = s->bgColorShown;
     r = ((u8)(c2 & 0x1f) * a + r * d) / b;
     g = ((u8)((c2 & 0x3e0) >> 5) * a + g * d) / b;
     bl = ((u8)((c2 & 0x7c00) >> 10) * a + bl * d) / b;
-    s->unk_9f8 = r | (g << 5) | (bl << 10);
+    s->bgColorBlended = r | (g << 5) | (bl << 10);
     CreatureBook_SetFlags(s, 1);
 }
 
@@ -778,23 +778,23 @@ void CreatureBook_CancelIconTasks(S *s)
     for (i = 0; i < 9; i++) {
         _ZN10BgVramTask6cancelEv(&s->unk_0e94[i * 0x38]);
     }
-    s->unk_1290 = 0;
+    s->iconTaskCount = 0;
 }
 
 u32 CreatureBook_AllocIconTask(S *s)
 {
-    u32 c = s->unk_1290;
+    u32 c = s->iconTaskCount;
     if (c >= 9) {
         return 8;
     }
-    s->unk_1290 = c + 1;
+    s->iconTaskCount = c + 1;
     return c;
 }
 
 void CreatureBook_ClearLabels(S *s)
 {
     s32 i;
-    s->unk_1292 = 0;
+    s->labelCount = 0;
     u8 *b = s->unk_10f8;
     for (i = 0; i < 4; i++) {
         _ZN11LabelString12destroyLabelEv(b + (i << 6));
@@ -803,7 +803,7 @@ void CreatureBook_ClearLabels(S *s)
 
 void *CreatureBook_AllocLabel(S *s)
 {
-    u8 *p = &s->unk_1292;
+    u8 *p = &s->labelCount;
     u32 c = *p;
     if (c >= 4) {
         return &s->unk_11b8;
@@ -821,7 +821,7 @@ void CreatureBook_SetNameLabel(S *s, u32 a)
     if (a == 0xff) {
         _ZN9MsgString5clearEv(obj);
     } else {
-        switch (s->unk_1293) {
+        switch (s->mode) {
         case 0:
             v = a < 0x38 ? (u16)(a + 0x12e8) : 0x12e8;
             break;
@@ -837,7 +837,7 @@ void CreatureBook_SetNameLabel(S *s, u32 a)
     }
     void *t = CreatureBook_AllocLabel(s);
     _ZN9MsgString4copyEPS_(t, obj);
-    _ZN11LabelString11createLabelEjjjhhi(t, s->unk_128d, 0xa1, 0xd, 1, 3, 0);
+    _ZN11LabelString11createLabelEjjjhhi(t, s->mainLayer, 0xa1, 0xd, 1, 3, 0);
     _ZN11LabelString13redrawAlignedEii(t, 1, 0);
     _ZN8ItemNameD1Ev(obj);
 }
@@ -846,16 +846,16 @@ void CreatureBook_DrawRows(S *s, s32 a)
 {
     s32 z18 = 0, z1c = 0, z20 = 0, z24 = 0;
     s32 i;
-    s32 rowY = s->unk_1260;
-    s32 x = s->unk_1264 + a;
-    s32 idx = s->unk_126c;
+    s32 rowY = s->firstIconX;
+    s32 x = s->iconRowY + a;
+    s32 idx = s->firstIconSlot;
     s32 m1;
     s32 t14;
     void *src;
     i = 0;
     m1 = -1;
     do {
-        if (CreatureBook_IsCaught(s, s->unk_1268 + i)) {
+        if (CreatureBook_IsCaught(s, s->firstVisibleEntry + i)) {
             src = (u8 *)s->unk_108c + idx * 12;
             t14 = m1;
         } else {
@@ -863,7 +863,7 @@ void CreatureBook_DrawRows(S *s, s32 a)
             t14 = 4;
         }
         Oam_DrawObj(1, src, rowY, x, m1, 2, z18);
-        if (*(u8 *)((u8 *)s + 0x1295) == s->unk_1268 + i) {
+        if (*(u8 *)((u8 *)s + 0x1295) == s->firstVisibleEntry + i) {
             Oam_DrawObj(1, data_ov114_022965a0, rowY, x, m1, 2, z1c);
         }
         Oam_DrawObj(1, data_ov114_02296598, rowY, x, t14, 2, z20);
@@ -881,18 +881,18 @@ BOOL CreatureBook_SetScroll(S *s, s32 v)
     if (v < 0) {
         v = 0;
     }
-    if (v >= s->unk_1274) {
-        v = s->unk_1274;
+    if (v >= s->scrollMax) {
+        v = s->scrollMax;
     }
-    s->unk_1258 = v;
-    s32 old = s->unk_1268;
-    s->unk_1260 = 0x22 - v;
-    s->unk_1268 = 0;
-    while (s->unk_1260 < 8) {
-        s->unk_1260 += 0x1b;
-        s->unk_1268++;
+    s->scroll = v;
+    s32 old = s->firstVisibleEntry;
+    s->firstIconX = 0x22 - v;
+    s->firstVisibleEntry = 0;
+    while (s->firstIconX < 8) {
+        s->firstIconX += 0x1b;
+        s->firstVisibleEntry++;
     }
-    if (old != s->unk_1268) {
+    if (old != s->firstVisibleEntry) {
         return TRUE;
     }
     return FALSE;
@@ -905,15 +905,15 @@ void CreatureBook_RefreshRowIcons(S *s)
     u32 pos;
     s32 i;
     s32 idx;
-    s->unk_126c = s->unk_1268 % 9;
-    pos = s->unk_1268;
-    idx = s->unk_126c;
+    s->firstIconSlot = s->firstVisibleEntry % 9;
+    pos = s->firstVisibleEntry;
+    idx = s->firstIconSlot;
     col = 0xfff1;
     zero = 0;
     i = 0;
     goto test0;
 loop0:
-    switch (s->unk_1293) {
+    switch (s->mode) {
     case 0:
         col = pos < 0x38 ? (u16)(pos + 0x12e8) : 0x12e8;
         break;
@@ -950,16 +950,16 @@ BOOL CreatureBook_TouchRow(S *s, s32 x, s32 y) {
     if (x > 0xe8) {
         x = 0xe8;
     }
-    s32 t = x - (0x15 - s->unk_1258);
+    s32 t = x - (0x15 - s->scroll);
     if (t < 0) {
         t = 0;
     }
     s32 q = t / 0x1b;
-    if (q >= s->unk_1270) {
-        q = s->unk_1270 - 1;
+    if (q >= s->listLength) {
+        q = s->listLength - 1;
     }
     if (CreatureBook_IsCaught(s, q)) {
-        if (s->unk_1295 != q) {
+        if (s->selectedEntry != q) {
             Snd_PlaySe(0x29);
         }
         CreatureBook_SelectEntry(s, (u8)q);
@@ -971,21 +971,21 @@ BOOL CreatureBook_TouchRow(S *s, s32 x, s32 y) {
 void CreatureBook_InitRows(S *s) {
     s32 i;
     for (i = 0; i < 9; i++) {
-        Unk_ov114_02294c40_Entry *e = &s->unk_108c[i];
+        CreatureBookIconObj *e = &s->unk_108c[i];
         MI_CpuCopy8(data_ov114_02296580, e, 8);
-        e->unk_04.idx = i * 2 + 0xc0;
-        e->unk_08 = -1;
+        e->attr2.idx = i * 2 + 0xc0;
+        e->iconId = -1;
     }
-    s->unk_1264 = (s32)Oam_GetObjY(data_ov114_022965e0) + 0x70;
+    s->iconRowY = (s32)Oam_GetObjY(data_ov114_022965e0) + 0x70;
     CreatureBook_SetScroll(s, 0);
 }
 
 void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx) {
-    Unk_ov114_02294c40_Entry *e = &s->unk_108c[idx];
+    CreatureBookIconObj *e = &s->unk_108c[idx];
     s32 key = Item_GetInfoUnk02(a);
-    if (key != e->unk_08) {
-        e->unk_08 = key;
-        u32 lo = e->unk_04.idx;
+    if (key != e->iconId) {
+        e->iconId = key;
+        u32 lo = e->attr2.idx;
         void *dst = _ZN13ItemIconCache12getIconCharsEi(s, key);
         s32 n = CreatureBook_AllocIconTask(s);
         u8 *src = s->unk_0a14 + n * 0x80;
@@ -993,39 +993,39 @@ void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx) {
         MI_CpuCopy8(dst, src, 0x40);
         MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
         _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(s->unk_0e94 + n * 0x38, src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
-        e->unk_04.pal = InventoryItemGrid_GetIconPalette(s, key);
+        e->attr2.pal = InventoryItemGrid_GetIconPalette(s, key);
     }
 }
 
 void CreatureBook_InitPictureView(S *s) {
-    s->unk_1295 = 0xff;
-    s->unk_1296 = 0;
+    s->selectedEntry = 0xff;
+    s->pictureFade = 0;
     CreatureBook_SetNameLabel(s, 0xff);
     CreatureBook_ShowSelected(s);
     CreatureBook_SetBgFadeColor(s, 0, 0x10);
-    Gfx2d_SetSubAlphaBlend(s->unk_1284, s->unk_1280, 0);
+    Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, 0);
 }
 
 void CreatureBook_StopPictureFade(S *s) {
-    s->unk_1295 = s->unk_1294;
+    s->selectedEntry = s->shownEntry;
     Gfx2d_ResetSubBlend();
-    s->unk_1296 = 0x10;
+    s->pictureFade = 0x10;
 }
 
 void CreatureBook_ShowSelected(S *s) {
-    s->unk_1294 = s->unk_1295;
+    s->shownEntry = s->selectedEntry;
     CreatureBook_LoadPicture(s);
     CreatureBook_LoadDescription(s);
 }
 
 void CreatureBook_LoadPicture(S *s) {
-    u32 c = s->unk_1294;
+    u32 c = s->shownEntry;
     if (c == 0xff) {
         return;
     }
     s32 q = (s32)c / 12;
     u32 *font = gCurrentHeap;
-    switch (s->unk_1293) {
+    switch (s->mode) {
     case 0:
         sCreaturePicDir = "menu/fish_pic";
         break;
@@ -1036,22 +1036,22 @@ void CreatureBook_LoadPicture(S *s) {
         return;
     }
     func_020639e8(sCreaturePicPath, "%s/%d/%d_%02d.bch", sCreaturePicDir, q, q, c);
-    Gfx2d_LoadCharFile(sCreaturePicPath, font, s->unk_128f, 0x11, 0x11, 0xa0);
+    Gfx2d_LoadCharFile(sCreaturePicPath, font, s->pictureLayer, 0x11, 0x11, 0xa0);
     func_020639e8(sCreaturePicPath, "%s/%d/%d.bpl", sCreaturePicDir, q, q, c);
-    Gfx2d_LoadPaletteFileSlot(sCreaturePicPath, font, s->unk_128f, (s32)c % 12, 5);
+    Gfx2d_LoadPaletteFileSlot(sCreaturePicPath, font, s->pictureLayer, (s32)c % 12, 5);
 }
 
 void CreatureBook_UpdatePictureFade(S *s) {
-    u8 old = s->unk_1296;
-    u32 a = s->unk_1294;
-    if (a == s->unk_1295) {
+    u8 old = s->pictureFade;
+    u32 a = s->shownEntry;
+    if (a == s->selectedEntry) {
         if (a != 0xff && old != 0x10) {
             if (old < 0xc) {
                 if (old == 0) {
-                    Gfx2d_ShowLayer(s->unk_128f);
+                    Gfx2d_ShowLayer(s->pictureLayer);
                 }
-                s->unk_1296 = s->unk_1296 + 4;
-                Gfx2d_SetSubAlphaBlend(s->unk_1284, s->unk_1280, s->unk_1296);
+                s->pictureFade = s->pictureFade + 4;
+                Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, s->pictureFade);
             } else {
                 Gfx2d_ResetSubBlend();
             }
@@ -1059,20 +1059,20 @@ void CreatureBook_UpdatePictureFade(S *s) {
     } else if (old == 0) {
         CreatureBook_ShowSelected(s);
     } else if (old > 4) {
-        s->unk_1296 = old - 4;
-        Gfx2d_SetSubAlphaBlend(s->unk_1284, s->unk_1280, s->unk_1296);
+        s->pictureFade = old - 4;
+        Gfx2d_SetSubAlphaBlend(s->pictureBlendMask, s->listBlendMask, s->pictureFade);
     } else {
-        s->unk_1296 = 0;
-        Gfx2d_HideLayer(s->unk_128f);
+        s->pictureFade = 0;
+        Gfx2d_HideLayer(s->pictureLayer);
     }
-    if (old != s->unk_1296) {
-        CreatureBook_SetBgFadeColor(s, s->unk_1296, 0x10);
+    if (old != s->pictureFade) {
+        CreatureBook_SetBgFadeColor(s, s->pictureFade, 0x10);
     }
 }
 
 void CreatureBook_SelectEntry(S *s, u8 v) {
-    s->unk_1295 = v;
-    if (s->unk_1295 != s->unk_1294) {
+    s->selectedEntry = v;
+    if (s->selectedEntry != s->shownEntry) {
         CreatureBook_SetNameLabel(s, v);
     }
 }
@@ -1080,15 +1080,15 @@ void CreatureBook_SelectEntry(S *s, u8 v) {
 s32 CreatureBook_GetFocusX(S *s) {
     s32 r;
     if (CreatureBook_GetFocusedTab(s) != -1) {
-        r = MenuTabBar_GetTabX(s->unk_1298 - 5);
+        r = MenuTabBar_GetTabX(s->focus - 5);
     } else {
-        u32 t = s->unk_1298;
+        u32 t = s->focus;
         if (t == 4) {
             r = _ZN14MenuScrollKnob8getGripXEv(s->unk_11f8);
         } else if (t < 4) {
             r = data_ov114_02296554[t];
         } else {
-            r = (t - 0xd) * 0x1b + 0x22 - s->unk_1258 - s->unk_125c;
+            r = (t - 0xd) * 0x1b + 0x22 - s->scroll - s->pendingScroll;
         }
     }
     return r;
@@ -1099,15 +1099,15 @@ s32 CreatureBook_GetFocusY(S *s) {
     if (CreatureBook_GetFocusedTab(s) != -1) {
         return 8;
     }
-    u32 t = s->unk_1298;
+    u32 t = s->focus;
     if (t == 4) {
         return _ZN14MenuScrollKnob8getGripYEv(s->unk_11f8);
     }
     if (t < 4) {
         r = data_ov114_02296564[t];
-        if (t == 2 && s->unk_1297 == 0) {
+        if (t == 2 && s->touchTarget == 0) {
             r += 2;
-        } else if (t == 3 && s->unk_1297 == 1) {
+        } else if (t == 3 && s->touchTarget == 1) {
             r += 2;
         }
     } else {
@@ -1117,7 +1117,7 @@ s32 CreatureBook_GetFocusY(S *s) {
 }
 
 s32 CreatureBook_GetFocusedTab(S *s) {
-    u8 v = s->unk_1298;
+    u8 v = s->focus;
     if (v >= 5 && v <= 0xc) {
         return v - 5;
     }
@@ -1126,7 +1126,7 @@ s32 CreatureBook_GetFocusedTab(S *s) {
 
 BOOL CreatureBook_IsFocusOnPageArrow(S *s) {
     BOOL r = TRUE;
-    u8 v = s->unk_1298;
+    u8 v = s->focus;
     if (v != 0 && v != 1) {
         r = FALSE;
     }
@@ -1137,119 +1137,119 @@ BOOL CreatureBook_MoveFocus(S *s, void *pad) {
     if (pad == 0) {
         return FALSE;
     }
-    u8 old = s->unk_1298;
+    u8 old = s->focus;
     if (CreatureBook_GetFocusedTab(s) != -1) {
         if (MenuKeys_HasDown(pad)) {
-            s->unk_1298 = 0;
+            s->focus = 0;
         } else if (MenuKeys_HasLeft(pad)) {
-            if (s->unk_1298 > 5) {
-                s->unk_1298 = s->unk_1298 - 1;
+            if (s->focus > 5) {
+                s->focus = s->focus - 1;
             }
         } else if (MenuKeys_HasRight(pad)) {
-            if (s->unk_1298 < 0xc) {
-                s->unk_1298 = s->unk_1298 + 1;
+            if (s->focus < 0xc) {
+                s->focus = s->focus + 1;
             }
         }
     } else {
-        s32 c = s->unk_1298;
+        s32 c = s->focus;
         if ((u32)c <= 1) {
             if (MenuKeys_HasUp(pad)) {
-                s->unk_1298 = s->unk_1299;
+                s->focus = s->ownTabFocus;
             } else if (MenuKeys_HasDown(pad)) {
-                s->unk_1298 = CreatureBook_GetRowFocusAtCursor(s);
+                s->focus = CreatureBook_GetRowFocusAtCursor(s);
             } else if (MenuKeys_HasLeft(pad)) {
-                s->unk_1298 = 1;
+                s->focus = 1;
             } else {
                 if (MenuKeys_HasRight(pad)) {
-                    s->unk_1298 = 0;
+                    s->focus = 0;
                 }
             }
         } else if ((u32)c >= 0xd) {
             s32 d = c - 0xd;
             if (MenuKeys_HasUp(pad)) {
                 if (CreatureBook_GetFocusX(s) < 0x48) {
-                    s->unk_1298 = 1;
+                    s->focus = 1;
                 } else {
-                    s->unk_1298 = 0;
+                    s->focus = 0;
                 }
             } else if (MenuKeys_HasDown(pad)) {
                 s32 r = CreatureBook_GetFocusX(s);
                 if (r < 0x40) {
-                    s->unk_1298 = 2;
+                    s->focus = 2;
                 } else if (r >= 0xc0) {
-                    s->unk_1298 = 3;
+                    s->focus = 3;
                 } else {
-                    s->unk_1298 = 4;
+                    s->focus = 4;
                 }
             } else if (MenuKeys_HasRight(pad)) {
-                if (d < s->unk_1270 - 1) {
-                    s->unk_1298 = s->unk_1298 + 1;
+                if (d < s->listLength - 1) {
+                    s->focus = s->focus + 1;
                     s32 r = CreatureBook_GetFocusX(s);
                     if (r > 0xe0) {
-                        s->unk_125c = r - 0xe0;
+                        s->pendingScroll = r - 0xe0;
                     }
                 }
             } else if (MenuKeys_HasLeft(pad)) {
                 if (d > 0) {
-                    s->unk_1298 = s->unk_1298 - 1;
+                    s->focus = s->focus - 1;
                     s32 r = CreatureBook_GetFocusX(s);
                     if (r < 0x20) {
-                        s->unk_125c = r - 0x20;
+                        s->pendingScroll = r - 0x20;
                     }
                 }
             }
         } else {
             s32 d = c - 2;
             if (MenuKeys_HasUp(pad)) {
-                s->unk_1298 = CreatureBook_GetRowFocusAtCursor(s);
+                s->focus = CreatureBook_GetRowFocusAtCursor(s);
             } else if (MenuKeys_HasLeft(pad)) {
-                s->unk_1298 = data_ov114_02296550[d];
+                s->focus = data_ov114_02296550[d];
             } else if (MenuKeys_HasRight(pad)) {
-                s->unk_1298 = data_ov114_0229654c[d];
+                s->focus = data_ov114_0229654c[d];
             }
         }
     }
-    if (old != s->unk_1298) {
+    if (old != s->focus) {
         return TRUE;
     }
     return FALSE;
 }
 
 void CreatureBook_ClampFocusToView(S *s) {
-    if (s->unk_1298 >= 0xd) {
+    if (s->focus >= 0xd) {
         s32 r = CreatureBook_GetFocusX(s);
         if (r < 0x20) {
-            s->unk_1298 = s->unk_1268 + 0xd;
+            s->focus = s->firstVisibleEntry + 0xd;
             if (CreatureBook_GetFocusX(s) < 0x20) {
-                s->unk_1298 = s->unk_1298 + 1;
+                s->focus = s->focus + 1;
             }
         } else if (r > 0xe0) {
-            s->unk_1298 = s->unk_1268 + 0x14;
+            s->focus = s->firstVisibleEntry + 0x14;
             if (CreatureBook_GetFocusX(s) > 0xe0) {
-                s->unk_1298 = s->unk_1298 - 1;
+                s->focus = s->focus - 1;
             }
         }
     }
 }
 
 u8 CreatureBook_GetRowFocusAtCursor(S *s) {
-    s32 t = CreatureBook_GetFocusX(s) - (0x15 - s->unk_1258);
+    s32 t = CreatureBook_GetFocusX(s) - (0x15 - s->scroll);
     if (t < 0) {
         t = 0;
     }
     s32 q = t / 0x1b;
-    if (q >= s->unk_1270) {
-        q = s->unk_1270 - 1;
+    if (q >= s->listLength) {
+        q = s->listLength - 1;
     }
     return q + 0xd;
 }
 
 BOOL CreatureBook_ActivateFocus(S *s) {
-    u32 t = s->unk_1298;
+    u32 t = s->focus;
     if (t >= 0xd) {
         u32 k = t - 0xd;
         if (CreatureBook_IsCaught(s, k)) {
-            if (s->unk_1295 != k) {
+            if (s->selectedEntry != k) {
                 Snd_PlaySe(0x29);
             }
             CreatureBook_SelectEntry(s, (u8)k);
@@ -1264,13 +1264,13 @@ BOOL CreatureBook_ActivateFocus(S *s) {
             CreatureBook_NextDescPage(s);
             return FALSE;
         case 2:
-            s->unk_1297 = 0;
+            s->touchTarget = 0;
             return TRUE;
         case 3:
-            s->unk_1297 = 1;
+            s->touchTarget = 1;
             return TRUE;
         case 4:
-            s->unk_1297 = 2;
+            s->touchTarget = 2;
             _ZN14MenuScrollKnob4grabEv(s->unk_11f8);
             Menu_PlayScrollGrabSe(s->unk_11f8);
             return TRUE;
@@ -1288,15 +1288,15 @@ void CreatureBook_BuildCaughtMask(S *s) {
     }
     void *p = PlayerData_GetCurrent();
     v = 0xfff1;
-    if (s->unk_1293 == 0) {
-        for (i = 0; i < s->unk_1270; i++) {
+    if (s->mode == 0) {
+        for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
             if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
                 s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
-        for (i = 0; i < s->unk_1270; i++) {
+        for (i = 0; i < s->listLength; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
             if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
                 s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
@@ -1314,15 +1314,15 @@ BOOL CreatureBook_IsCaught(S *s, s32 i) {
 }
 
 BOOL CreatureBook_HasFlags(S *s, u32 m) {
-    if (s->unk_1288 & m) {
+    if (s->flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void CreatureBook_SetFlags(S *s, u32 m) { s->unk_1288 = s->unk_1288 | m; }
+void CreatureBook_SetFlags(S *s, u32 m) { s->flags = s->flags | m; }
 
-void CreatureBook_ClearFlags(S *s, u32 m) { s->unk_1288 = s->unk_1288 & ~m; }
+void CreatureBook_ClearFlags(S *s, u32 m) { s->flags = s->flags & ~m; }
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 data_ov114_02296550[4];

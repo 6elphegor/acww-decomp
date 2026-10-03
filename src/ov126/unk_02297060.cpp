@@ -347,11 +347,11 @@ public:
 // +0x144 ov095 menu sub-object, 0x23bc bytes
 class Keyboard {
 public:
-    Keyboard() : unk_22f4(), unk_233c() {}
+    Keyboard() : bgTasks(), labels() {}
     ~Keyboard() {}
     u32 unk_00[0x22f4 / 4];
-    BgVramTask unk_22f4[2];
-    LabelString unk_233c[2];
+    BgVramTask bgTasks[2];
+    LabelString labels[2];
 };
 
 // Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
@@ -393,15 +393,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Embedded polymorphic sub-object at +0x3e64 (vfunc_0c is called by func_ov126_02298ea4)
@@ -434,7 +434,7 @@ struct Unk_ov126_SceneEntry {
 class NameEntryMenu : public MenuProc {
 public:
     NameEntryMenu()
-        : unk_b0(), unk_144(), unk_3d00(), unk_3e64(), unk_3ec8(), unk_3f08(), unk_3f48(), unk_3f80() {}
+        : header(), keyboard(), bottomButtons(), cursor(), suffixLabel(), censorString(), encodedText(), errorMessage() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
@@ -556,32 +556,32 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u32 unk_94;
-    /* 0x098 */ s32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ u16 unk_a4;
-    /* 0x0a6 */ u8 unk_a6;
-    /* 0x0a7 */ u8 unk_a7;
-    /* 0x0a8 */ u8 unk_a8;
-    /* 0x0a9 */ u8 unk_a9;
-    /* 0x0aa */ u8 unk_aa;
-    /* 0x0ab */ u8 unk_ab;
-    /* 0x0ac */ u8 unk_ac;
-    /* 0x0ad */ u8 unk_ad;
-    /* 0x0ae */ u8 unk_ae;
-    /* 0x0af */ u8 unk_af;
-    /* 0x0b0 */ GeneralMenuHeader unk_b0;
-    /* 0x144 */ Keyboard unk_144;
+    /* 0x094 */ u32 slideY;
+    /* 0x098 */ s32 caretX;
+    /* 0x09c */ s32 caretY;
+    /* 0x0a0 */ s32 suffixLabelX;
+    /* 0x0a4 */ u16 flags;
+    /* 0x0a6 */ u8 maxLength;
+    /* 0x0a7 */ u8 caretBlinkTimer;
+    /* 0x0a8 */ u8 caretIndex;
+    /* 0x0a9 */ u8 selectionStart;
+    /* 0x0aa */ u8 selectionEnd;
+    /* 0x0ab */ u8 textLeft;
+    /* 0x0ac */ u8 textRight;
+    /* 0x0ad */ u8 entryMode;
+    /* 0x0ae */ u8 returnState;
+    /* 0x0af */ u8 textWidth;
+    /* 0x0b0 */ GeneralMenuHeader header;
+    /* 0x144 */ Keyboard keyboard;
     /* 0x2500 */ u32 unk_2500[(0x3d00 - 0x2500) / 4];
-    /* 0x3d00 */ MenuBottomButtons unk_3d00;
-    /* 0x3e64 */ MenuCursorBuf0 unk_3e64;
-    /* 0x3ec8 */ LabelString unk_3ec8;
-    /* 0x3f08 */ LabelString unk_3f08;
-    /* 0x3f48 */ EncodedString41 unk_3f48;
-    /* 0x3f80 */ MenuErrorMessage unk_3f80;
-    /* 0x4088 */ u8 unk_4088[0x20];
-    /* 0x40a8 */ u8 unk_40a8[0x20];
+    /* 0x3d00 */ MenuBottomButtons bottomButtons;
+    /* 0x3e64 */ MenuCursorBuf0 cursor;
+    /* 0x3ec8 */ LabelString suffixLabel;
+    /* 0x3f08 */ LabelString censorString;
+    /* 0x3f48 */ EncodedString41 encodedText;
+    /* 0x3f80 */ MenuErrorMessage errorMessage;
+    /* 0x4088 */ u8 text[0x20];
+    /* 0x40a8 */ u8 clipboard[0x20];
 };
 
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
@@ -651,7 +651,7 @@ extern "C" NameEntryMenu *NameEntryMenu_Create() { return new NameEntryMenu(); }
 
 BOOL NameEntryMenu::vfunc_00() {
     init();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -671,26 +671,26 @@ BOOL NameEntryMenu::vfunc_0c() {
 }
 
 BOOL NameEntryMenu::onDraw() {
-    u8 *p = (u8 *)unk_94;
+    u8 *p = (u8 *)slideY;
     if (!testFlags(1)) {
         return FALSE;
     }
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&unk_3e64);
+        MenuCursorBase_drawWrapped(&cursor);
     }
-    GeneralMenuHeader_drawWithIcon(&unk_b0, 0, p);
-    MenuBottomButtons_drawAt(&unk_3d00, getSlideOffsetY());
-    Keyboard_Draw(&unk_144, 0x80, p + 0x60, 1);
-    Keyboard_DrawCopyPasteKeys(&unk_144, 0x80, p + 0x60);
+    GeneralMenuHeader_drawWithIcon(&header, 0, p);
+    MenuBottomButtons_drawAt(&bottomButtons, getSlideOffsetY());
+    Keyboard_Draw(&keyboard, 0x80, p + 0x60, 1);
+    Keyboard_DrawCopyPasteKeys(&keyboard, 0x80, p + 0x60);
     if (testFlags(0x100)) {
-        Oam_DrawCell(1, data_ov126_02299ad0, (u32)unk_a0 + 0x80, p + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov126_02299ad0, (u32)suffixLabelX + 0x80, p + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (testFlags(2)) {
-        s32 a = unk_98;
-        s32 b = unk_9c;
-        unk_a7 = unk_a7 + 1;
-        if ((unk_a7 & 0x10) != 0) {
-            Keyboard_DrawCaret(&unk_144, a, b, 2);
+        s32 a = caretX;
+        s32 b = caretY;
+        caretBlinkTimer = caretBlinkTimer + 1;
+        if ((caretBlinkTimer & 0x10) != 0) {
+            Keyboard_DrawCaret(&keyboard, a, b, 2);
         }
     }
     return TRUE;
@@ -699,14 +699,14 @@ BOOL NameEntryMenu::onDraw() {
 BOOL NameEntryMenu::execTransition() {
     static Unk_ov126_02299ae8_Fn tbl[12] = {*(Unk_ov126_02299ae8_Fn *)data_ov126_02299ac8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ac0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ab8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299ab0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299aa8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299aa0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a98, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a90, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a88, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a80, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a78, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a70};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
 
 void NameEntryMenu::runMainState() {
     static Unk_ov126_02299ae8_Fn tbl[17] = {*(Unk_ov126_02299ae8_Fn *)data_ov126_02299a10, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a58, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a48, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a60, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a40, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a38, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a30, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a28, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a20, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a68, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999e8, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a50, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a08, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999f8, *(Unk_ov126_02299ae8_Fn *)data_ov126_022999f0, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a18, *(Unk_ov126_02299ae8_Fn *)data_ov126_02299a00};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL NameEntryMenu::execMain() {
@@ -718,7 +718,7 @@ BOOL NameEntryMenu::execMain() {
         case 0x19:
         case 0x1a:
         case 0x1b:
-            switch (unk_8d) {
+            switch (mainState) {
             case 0: case 1: case 2: case 4: case 6: case 7: case 9: case 10: case 11: case 12: case 13: case 14:
                 clearFlags(2);
                 hideCursor();
@@ -766,7 +766,7 @@ void NameEntryMenu::transitionAct00() {
 }
 
 void NameEntryMenu::transitionAct01() {
-    Keyboard_RestoreLastPage(&unk_144, 6);
+    Keyboard_RestoreLastPage(&keyboard, 6);
     loadObjGfx();
     redrawText();
     setupDialogButtons();
@@ -855,7 +855,7 @@ void NameEntryMenu::transitionAct05() {
         } else {
             MenuCtrl_SetResult(1);
             commitEntry();
-            MenuCtrl_SetText(unk_4088, unk_a6);
+            MenuCtrl_SetText(text, maxLength);
             s32 t = MenuCtrl_GetMode();
             if (t != 0x18 && t != 0x19 && t != 0x1a) {
             } else {
@@ -876,9 +876,9 @@ void NameEntryMenu::transitionAct07() {
     if (stepSlideOut(-1)) {
         initSlideIn(0, 0);
         if (testFlags(0x40)) {
-            MenuBottomButtonsBody_setLayoutYesNo09(&unk_3d00, 0x87);
+            MenuBottomButtonsBody_setLayoutYesNo09(&bottomButtons, 0x87);
         } else {
-            MenuBottomButtonsBody_setLayoutYesNo09(&unk_3d00, 0x22);
+            MenuBottomButtonsBody_setLayoutYesNo09(&bottomButtons, 0x22);
         }
         setTransitionState(8);
     }
@@ -914,73 +914,73 @@ void NameEntryMenu::transitionAct0B() {
 void NameEntryMenu::updateBgScroll() {
     applySlideOffset(4, 0, 0);
     applySlideOffset(6, 0, 0);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void NameEntryMenu::init() {
-    unk_a4 = 0;
-    unk_a0 = 0;
+    flags = 0;
+    suffixLabelX = 0;
     u32 r5 = MenuCtrl_GetMode();
     switch (r5) {
     case 0x0b: case 0x0c: case 0x0d: case 0x0e: case 0x0f: case 0x10: case 0x11: case 0x12:
     case 0x13: case 0x14: case 0x15: case 0x16: case 0x17: case 0x18: case 0x1a:
-        unk_ad = 2;
+        entryMode = 2;
         break;
     case 0x19:
     case 0x1b:
         setFlags(0x20);
-        unk_ad = 0;
+        entryMode = 0;
         break;
     }
-    switch (unk_ad) {
+    switch (entryMode) {
     case 0:
-        Keyboard_Init(&unk_144, 5);
+        Keyboard_Init(&keyboard, 5);
         break;
     case 1:
     case 2:
-        Keyboard_Init(&unk_144, 4);
+        Keyboard_Init(&keyboard, 4);
         break;
     case 3:
-        Keyboard_Init(&unk_144, 3);
+        Keyboard_Init(&keyboard, 3);
         break;
     }
-    switch (GeneralMenuHeader_GetStyle(&unk_b0)) {
+    switch (GeneralMenuHeader_GetStyle(&header)) {
     case 0:
-        unk_a6 = 0x10;
-        unk_ab = 0x50;
-        unk_ac = 0xb8;
-        unk_af = 0x68;
+        maxLength = 0x10;
+        textLeft = 0x50;
+        textRight = 0xb8;
+        textWidth = 0x68;
         break;
     case 1:
-        unk_a6 = 0x8;
-        unk_ab = 0x60;
-        unk_ac = 0xa0;
-        unk_af = 0x40;
+        maxLength = 0x8;
+        textLeft = 0x60;
+        textRight = 0xa0;
+        textWidth = 0x40;
         break;
     case 2:
-        unk_a6 = 0x20;
-        unk_ab = 0x30;
-        unk_ac = 0xd0;
-        unk_af = 0xa0;
+        maxLength = 0x20;
+        textLeft = 0x30;
+        textRight = 0xd0;
+        textWidth = 0xa0;
         break;
     case 3:
-        unk_a6 = 0x4;
-        unk_ab = 0x68;
-        unk_ac = 0x90;
-        unk_af = 0x28;
+        maxLength = 0x4;
+        textLeft = 0x68;
+        textRight = 0x90;
+        textWidth = 0x28;
         break;
     case 4:
-        unk_a6 = 0xa;
-        unk_ab = 0x58;
-        unk_ac = 0xa8;
-        unk_af = 0x50;
+        maxLength = 0xa;
+        textLeft = 0x58;
+        textRight = 0xa8;
+        textWidth = 0x50;
         break;
     }
-    Mem_Clear(unk_4088, 0x20);
-    Mem_Clear(unk_40a8, 0x20);
+    Mem_Clear(text, 0x20);
+    Mem_Clear(clipboard, 0x20);
     loadInitialText();
-    if (Text_GetTrimmedLength(unk_4088, unk_a6) == 0) {
-        Mem_Clear(unk_4088, 0x20);
+    if (Text_GetTrimmedLength(text, maxLength) == 0) {
+        Mem_Clear(text, 0x20);
     }
     if (r5 == 0x10 || r5 == 0x18 || r5 == 0x19 || r5 == 0x12) {
         setFlags(0x100);
@@ -988,15 +988,15 @@ void NameEntryMenu::init() {
 }
 
 void NameEntryMenu::releaseResources() {
-    GeneralMenuHeader_resetFrame(&unk_b0);
-    Keyboard_Shutdown(&unk_144);
-    MenuBottomButtons_freeTexts(&unk_3d00);
-    LabelString_destroyLabel(&unk_3ec8);
+    GeneralMenuHeader_resetFrame(&header);
+    Keyboard_Shutdown(&keyboard);
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    LabelString_destroyLabel(&suffixLabel);
 }
 
 void NameEntryMenu::preInputUpdate() {
     preStateUpdate();
-    ((Unk_ov126_02298ea4_Sub *)&unk_3e64)->vfunc_0c();
+    ((Unk_ov126_02298ea4_Sub *)&cursor)->vfunc_0c();
 }
 
 void NameEntryMenu::postInputUpdate() {
@@ -1005,13 +1005,13 @@ void NameEntryMenu::postInputUpdate() {
 
 void NameEntryMenu::preStateUpdate() {
     clearFlags(0x10);
-    GeneralMenuHeader_resetFrame(&unk_b0);
-    MenuBottomButtons_freeTexts(&unk_3d00);
-    LabelString_destroyLabel(&unk_3ec8);
+    GeneralMenuHeader_resetFrame(&header);
+    MenuBottomButtons_freeTexts(&bottomButtons);
+    LabelString_destroyLabel(&suffixLabel);
 }
 
 void NameEntryMenu::postStateUpdate() {
-    Keyboard_EndFrame(&unk_144, 6);
+    Keyboard_EndFrame(&keyboard, 6);
 }
 
 void NameEntryMenu::setupBgLayers() {
@@ -1023,31 +1023,31 @@ void NameEntryMenu::setupBgLayers() {
 }
 
 void NameEntryMenu::loadBg() {
-    GeneralMenuHeader_loadBgGfxForStyle(&unk_b0, 4);
+    GeneralMenuHeader_loadBgGfxForStyle(&header, 4);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", (void *)gCurrentHeap, 4, 0x13d, 0x13d, 0x1e9);
-    Keyboard_LoadScreenFile(&unk_144, "menu/letter/b_key.bsc");
+    Keyboard_LoadScreenFile(&keyboard, "menu/letter/b_key.bsc");
     refreshKeys();
-    Keyboard_LoadScreenNow(&unk_144, 6);
-    Keyboard_LoadLetterChars(&unk_144, 6);
+    Keyboard_LoadScreenNow(&keyboard, 6);
+    Keyboard_LoadLetterChars(&keyboard, 6);
 }
 
 void NameEntryMenu::loadObjGfx() {
-    Keyboard_LoadObjGfx(&unk_144);
-    FishBookTab_moveCursorTo(&unk_b0, 6);
+    Keyboard_LoadObjGfx(&keyboard);
+    FishBookTab_moveCursorTo(&header, 6);
     Gfx2d_LoadPaletteFile("menu/han/obj.bpl", (void *)gCurrentHeap, 8, 5, 5, 5);
-    MenuButtons_LoadTextColors(&unk_3d00);
+    MenuButtons_LoadTextColors(&bottomButtons);
     if (testFlags(0x100)) {
         u32 buf[0x44 / 4];
         func_0206fcc8(buf);
         MsgString_clear(buf);
         String_SetSlot(0, buf);
         if (MenuCtrl_GetMode() == 0x12) {
-            String_Load2dMenu(&unk_3ec8, 0x80);
+            String_Load2dMenu(&suffixLabel, 0x80);
         } else {
-            String_Load2dMenu(&unk_3ec8, 0x66);
+            String_Load2dMenu(&suffixLabel, 0x66);
         }
-        LabelString_createLabel(&unk_3ec8, 8, 0x1c0, 6, 0xf, 0, 0);
-        LabelString_redrawAligned(&unk_3ec8, 0, 0);
+        LabelString_createLabel(&suffixLabel, 8, 0x1c0, 6, 0xf, 0, 0);
+        LabelString_redrawAligned(&suffixLabel, 0, 0);
         func_0206fca8(buf);
     }
 }
@@ -1057,12 +1057,12 @@ void NameEntryMenu::mainAct00() {
         startButtonInput();
         return;
     }
-    BOOL r4 = Keyboard_UpdatePressedKey(&unk_144);
+    BOOL r4 = Keyboard_UpdatePressedKey(&keyboard);
     if (Unk_ov126_02298c4c_Both()) {
         if (!touchDialogButtons()) {
             if (!touchTextField()) {
-                if (Keyboard_TouchPageTab(&unk_144)) {
-                    Keyboard_SetMode(&unk_144, 8, 6, 1);
+                if (Keyboard_TouchPageTab(&keyboard)) {
+                    Keyboard_SetMode(&keyboard, 8, 6, 1);
                     redrawText();
                 } else if (gTouchCurY >= 0x48) {
                     if (!r4) {
@@ -1083,9 +1083,9 @@ void NameEntryMenu::mainAct01() {
     if (gTouchHeld == 0) {
         setMainState(0);
     } else {
-        u8 old = unk_a8;
+        u8 old = caretIndex;
         setCursorFromTouchX(gTouchCurX);
-        if (old != unk_a8) {
+        if (old != caretIndex) {
             extendSelection();
             redrawText();
             Snd_PlaySe(0x15);
@@ -1096,24 +1096,24 @@ void NameEntryMenu::mainAct01() {
 void NameEntryMenu::mainAct02() {
     if (gTouchHeld == 0) {
         setMainState(0);
-    } else if (Keyboard_TickKeyRepeat(&unk_144)) {
-        s32 t = Keyboard_GetPressedKey(&unk_144);
-        s32 r = Keyboard_GetKeyCode(&unk_144, t, 8);
+    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+        s32 t = Keyboard_GetPressedKey(&keyboard);
+        s32 r = Keyboard_GetKeyCode(&keyboard, t, 8);
         pressKeyCode(r);
-        Keyboard_HighlightKey(&unk_144, t);
+        Keyboard_HighlightKey(&keyboard, t);
     }
 }
 
 void NameEntryMenu::mainAct03() {
     if (checkSwitchToButtons(1)) {
         enterDialogButtons();
-    } else if (MenuBottomButtonsBody_isTouched(&unk_3d00, 3)) {
-        MenuBottomButtonsBody_setSelected(&unk_3d00, 3);
-        unk_8c = 3;
+    } else if (MenuBottomButtonsBody_isTouched(&bottomButtons, 3)) {
+        MenuBottomButtonsBody_setSelected(&bottomButtons, 3);
+        transitionState = 3;
         setMainState(0xf);
-    } else if (MenuBottomButtonsBody_isTouched(&unk_3d00, 4)) {
-        MenuBottomButtonsBody_setSelected(&unk_3d00, 4);
-        unk_8c = 9;
+    } else if (MenuBottomButtonsBody_isTouched(&bottomButtons, 4)) {
+        MenuBottomButtonsBody_setSelected(&bottomButtons, 4);
+        transitionState = 9;
         setMainState(0xf);
     }
 }
@@ -1122,21 +1122,21 @@ void NameEntryMenu::mainAct04() {
     if (checkSwitchToTouch()) {
         startTouchInput();
     } else {
-        switch (Keyboard_MoveCursor(&unk_144, takeRepeatedKeys())) {
+        switch (Keyboard_MoveCursor(&keyboard, takeRepeatedKeys())) {
         case 1:
-            MenuCursor_switchToAnim01(&unk_3e64);
+            MenuCursor_switchToAnim01(&cursor);
             moveCursorToTarget();
             break;
         case 2:
-            MenuCursor_switchToAnim0D(&unk_3e64);
+            MenuCursor_switchToAnim0D(&cursor);
             moveCursorToTarget();
             break;
         case 3:
-            MenuCursor_switchToAnim07(&unk_3e64);
+            MenuCursor_switchToAnim07(&cursor);
             moveCursorToTarget();
             break;
         case 4:
-            MenuCursor_switchToAnim01(&unk_3e64);
+            MenuCursor_switchToAnim01(&cursor);
             setFlags(0x80);
             setMainState(6);
             moveCursorToTarget();
@@ -1165,7 +1165,7 @@ void NameEntryMenu::mainAct06() {
         s32 r = navigateText(takeRepeatedKeys());
         switch (r) {
         case 1:
-            Keyboard_ResetTypedRun(&unk_144);
+            Keyboard_ResetTypedRun(&keyboard);
             clearSelection();
             updateCaretX();
             redrawText();
@@ -1173,13 +1173,13 @@ void NameEntryMenu::mainAct06() {
             Snd_PlaySe(0xb);
             break;
         case 2:
-            Keyboard_EnterTabRowAtX(&unk_144, MenuCursorBase_getScreenX(&unk_3e64));
+            Keyboard_EnterTabRowAtX(&keyboard, MenuCursorBase_getScreenX(&cursor));
             leaveTextToKeys();
             break;
         default: {
-            u32 old = unk_a8;
+            u32 old = caretIndex;
             if (tryBackspaceButton()) {
-                if (old != unk_a8) {
+                if (old != caretIndex) {
                     snapCursor();
                 }
             } else if (tryCopyButton()) {
@@ -1204,7 +1204,7 @@ void NameEntryMenu::mainAct07() {
     if ((gPad[0] & 1) == 0) {
         setMainState(6);
     } else if (navigateText(takeRepeatedKeys()) == 1) {
-        Keyboard_ResetTypedRun(&unk_144);
+        Keyboard_ResetTypedRun(&keyboard);
         extendSelection();
         updateCaretX();
         redrawText();
@@ -1214,22 +1214,22 @@ void NameEntryMenu::mainAct07() {
 }
 
 void NameEntryMenu::mainAct08() {
-    if (MenuCursorBase_isMoving(&unk_3e64) == 0) {
-        setMainState(unk_ae);
+    if (MenuCursorBase_isMoving(&cursor) == 0) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void NameEntryMenu::mainAct09() {
-    if (HandCursor_isAnimDone(&unk_3e64)) {
-        s32 t = Keyboard_PressCursorKey(&unk_144);
-        s32 r = pressKeyCode(Keyboard_GetKeyCode(&unk_144, t, 8));
+    if (HandCursor_isAnimDone(&cursor)) {
+        s32 t = Keyboard_PressCursorKey(&keyboard);
+        s32 r = pressKeyCode(Keyboard_GetKeyCode(&keyboard, t, 8));
         if (r == 1 && (gPad[0] & 1) != 0) {
-            Keyboard_StartKeyRepeat(&unk_144);
+            Keyboard_StartKeyRepeat(&keyboard);
             setMainState(0xa);
-            Keyboard_HighlightKey(&unk_144, t);
+            Keyboard_HighlightKey(&keyboard, t);
         } else if (r == 4) {
-            Keyboard_ClearHighlight(&unk_144);
+            Keyboard_ClearHighlight(&keyboard);
         } else if (r != 3) {
             releaseCursor();
         }
@@ -1239,16 +1239,16 @@ void NameEntryMenu::mainAct09() {
 void NameEntryMenu::mainAct0A() {
     if ((gPad[0] & 1) == 0) {
         releaseCursor();
-    } else if (Keyboard_TickKeyRepeat(&unk_144)) {
-        s32 t = Keyboard_GetPressedKey(&unk_144);
-        s32 r = Keyboard_GetKeyCode(&unk_144, t, 8);
+    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+        s32 t = Keyboard_GetPressedKey(&keyboard);
+        s32 r = Keyboard_GetKeyCode(&keyboard, t, 8);
         pressKeyCode(r);
-        Keyboard_HighlightKey(&unk_144, t);
+        Keyboard_HighlightKey(&keyboard, t);
     }
 }
 
 void NameEntryMenu::mainAct0B() {
-    if (HandCursor_isAnimDone(&unk_3e64)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         refreshCursor();
         setMainState(4);
     }
@@ -1256,9 +1256,9 @@ void NameEntryMenu::mainAct0B() {
 
 void NameEntryMenu::mainAct0C() {
     if ((gPad[0] & 2) == 0) {
-        setMainState(unk_ae);
-    } else if (Keyboard_TickKeyRepeat(&unk_144)) {
-        Keyboard_ShrinkTypedRun(&unk_144);
+        setMainState(returnState);
+    } else if (Keyboard_TickKeyRepeat(&keyboard)) {
+        Keyboard_ShrinkTypedRun(&keyboard);
         if (backspace(0)) {
             if (testFlags(0x80)) {
                 snapCursor();
@@ -1271,25 +1271,25 @@ void NameEntryMenu::mainAct0C() {
 
 void NameEntryMenu::mainAct0D() {
     if ((gPad[0] & 0x200) == 0) {
-        setMainState(unk_ae);
+        setMainState(returnState);
         refreshKeys();
     }
 }
 
 void NameEntryMenu::mainAct0E() {
     if ((gPad[0] & 0x100) == 0) {
-        setMainState(unk_ae);
+        setMainState(returnState);
         refreshKeys();
     }
 }
 
 void NameEntryMenu::mainAct0F() {
-    if (MenuBottomButtonsBody_stepPress(&unk_3d00)) {
-        if (HandCursor_getAnim(&unk_3e64)) {
-            s32 a = MenuBottomButtonsBody_getPressOffset(&unk_3d00);
-            s32 b = MenuBottomButtonsBody_getTargetX(&unk_3d00, -1);
-            s32 c = MenuBottomButtonsBody_getTargetY(&unk_3d00, -1);
-            MenuCursorBase_warpTo(&unk_3e64, a + b, a + c);
+    if (MenuBottomButtonsBody_stepPress(&bottomButtons)) {
+        if (HandCursor_getAnim(&cursor)) {
+            s32 a = MenuBottomButtonsBody_getPressOffset(&bottomButtons);
+            s32 b = MenuBottomButtonsBody_getTargetX(&bottomButtons, -1);
+            s32 c = MenuBottomButtonsBody_getTargetY(&bottomButtons, -1);
+            MenuCursorBase_warpTo(&cursor, a + b, a + c);
         }
     } else {
         hideCursor();
@@ -1298,8 +1298,8 @@ void NameEntryMenu::mainAct0F() {
 }
 
 void NameEntryMenu::mainAct10() {
-    Keyboard_UpdatePressedKey(&unk_144);
-    if (MenuErrorMessage_update(&unk_3f80, 1)) {
+    Keyboard_UpdatePressedKey(&keyboard);
+    if (MenuErrorMessage_update(&errorMessage, 1)) {
         resumeInput();
     }
 }
@@ -1327,7 +1327,7 @@ void NameEntryMenu::showMessage(u32 v, u32 w) {
     u8 buf[1];
     buf[0] = gU8None;
     buf[0] = v;
-    MenuErrorMessage_open(&unk_3f80, buf, w, 0);
+    MenuErrorMessage_open(&errorMessage, buf, w, 0);
     setMainState(0x10);
     hideCursor();
 }
@@ -1352,14 +1352,14 @@ void NameEntryMenu::enterDialogInput() {
 
 void NameEntryMenu::closeWithResult(s32 a) {
     if (a == 0) {
-        MenuBottomButtonsBody_setSelected(&unk_3d00, 6);
-        if (unk_ad == 1) {
+        MenuBottomButtonsBody_setSelected(&bottomButtons, 6);
+        if (entryMode == 1) {
             setFlags(0x40);
         } else {
             clearFlags(0x40);
         }
     } else {
-        MenuBottomButtonsBody_setSelected(&unk_3d00, 7);
+        MenuBottomButtonsBody_setSelected(&bottomButtons, 7);
         setFlags(0x40);
     }
     if (testFlags(0x20)) {
@@ -1375,16 +1375,16 @@ void NameEntryMenu::closeWithResult(s32 a) {
     } else {
         Snd_PlaySe(0x27);
     }
-    unk_8c = 3;
+    transitionState = 3;
     setMainState(0xf);
 }
 
 BOOL NameEntryMenu::confirm() {
-    if (MenuBottomButtonsBody_isButtonDisabled(&unk_3d00, 6)) {
+    if (MenuBottomButtonsBody_isButtonDisabled(&bottomButtons, 6)) {
         playErrorSe();
         return FALSE;
     }
-    if (unk_ad == 0 || unk_ad == 2) {
+    if (entryMode == 0 || entryMode == 2) {
         hideCursor();
         closeWithResult(0);
         return TRUE;
@@ -1394,7 +1394,7 @@ BOOL NameEntryMenu::confirm() {
 }
 
 BOOL NameEntryMenu::onBackspaceEmpty() {
-    switch (unk_ad) {
+    switch (entryMode) {
     case 0:
         hideCursor();
         closeWithResult(1);
@@ -1410,66 +1410,66 @@ BOOL NameEntryMenu::onBackspaceEmpty() {
 }
 
 void NameEntryMenu::refreshKeys() {
-    if (unk_ad == 0 || unk_ad == 2) {
-        if (Text_GetTrimmedLength(unk_4088, unk_a6) == 0) {
-            MenuBottomButtonsBody_disableButton(&unk_3d00, 6);
+    if (entryMode == 0 || entryMode == 2) {
+        if (Text_GetTrimmedLength(text, maxLength) == 0) {
+            MenuBottomButtonsBody_disableButton(&bottomButtons, 6);
         } else {
-            MenuBottomButtonsBody_enableButton(&unk_3d00, 6);
+            MenuBottomButtonsBody_enableButton(&bottomButtons, 6);
         }
     }
-    Keyboard_DisableKey(&unk_144, 0);
+    Keyboard_DisableKey(&keyboard, 0);
     if (hasSelection()) {
-        Keyboard_EnableKey(&unk_144, 0xb);
+        Keyboard_EnableKey(&keyboard, 0xb);
     } else {
-        Keyboard_DisableKey(&unk_144, 0xb);
+        Keyboard_DisableKey(&keyboard, 0xb);
     }
     if (testFlags(8)) {
-        Keyboard_EnableKey(&unk_144, 0xc);
+        Keyboard_EnableKey(&keyboard, 0xc);
     } else {
-        Keyboard_DisableKey(&unk_144, 0xc);
+        Keyboard_DisableKey(&keyboard, 0xc);
     }
     if (hasSelection()) {
-        Keyboard_DisableModifierKeys(&unk_144);
-        Keyboard_EnableKey(&unk_144, 6);
-    } else if (unk_a8 == 0) {
-        Keyboard_DisableModifierKeys(&unk_144);
+        Keyboard_DisableModifierKeys(&keyboard);
+        Keyboard_EnableKey(&keyboard, 6);
+    } else if (caretIndex == 0) {
+        Keyboard_DisableModifierKeys(&keyboard);
     } else {
-        Keyboard_UpdateModifierKeys(&unk_144, getCharBeforeCursor());
+        Keyboard_UpdateModifierKeys(&keyboard, getCharBeforeCursor());
     }
 }
 
 void NameEntryMenu::resetTextCursor() {
     setFlags(2);
-    unk_98 = unk_ab;
-    unk_9c = 0x28;
+    caretX = textLeft;
+    caretY = 0x28;
     setCursorIndex(0);
     clearSelection();
-    Keyboard_ResetKeyPalettes(&unk_144);
+    Keyboard_ResetKeyPalettes(&keyboard);
     refreshKeys();
 }
 
 void NameEntryMenu::setCursorIndex(u32 v) {
-    unk_a8 = v;
-    unk_a7 = 0x10;
+    caretIndex = v;
+    caretBlinkTimer = 0x10;
 }
 
 u32 NameEntryMenu::getCharBeforeCursor() {
-    if (unk_a8 == 0) return 0;
-    return *((u8 *)this + (unk_a8 - 1) + 0x4088);
+    if (caretIndex == 0) return 0;
+    return *((u8 *)this + (caretIndex - 1) + 0x4088);
 }
 
 void NameEntryMenu::updateCaretX() {
-    unk_98 = unk_ab;
-    unk_9c = 0x28;
-    unk_98 = unk_98 + (u8)Text_MeasureWidth(unk_4088, unk_a8);
+    caretX = textLeft;
+    caretY = 0x28;
+    caretX = caretX + (u8)Text_MeasureWidth(text, caretIndex);
 }
 
 void NameEntryMenu::setCursorFromTouchX(s32 v) {
-    s32 t = v - unk_ab;
+    s32 t = v - textLeft;
     if (t < 0) t = 0;
     u8 out[8];
-    unk_98 = Keyboard_HitTestText(&unk_144, unk_4088, unk_a6, unk_af, (u8)t, out);
-    unk_98 = unk_98 + unk_ab;
+    caretX = Keyboard_HitTestText(&keyboard, text, maxLength, textWidth, (u8)t, out);
+    caretX = caretX + textLeft;
     setCursorIndex(out[0]);
     refreshKeys();
 }
@@ -1478,12 +1478,12 @@ BOOL NameEntryMenu::touchTextField() {
     s32 r1 = gTouchCurX;
     s32 r2 = gTouchCurY;
     if (r2 < 0x28 || r2 > 0x38) return FALSE;
-    if (r1 < unk_ab - 0xc) return FALSE;
-    if (r1 > unk_ac + 0xc) return FALSE;
+    if (r1 < textLeft - 0xc) return FALSE;
+    if (r1 > textRight + 0xc) return FALSE;
     setCursorFromTouchX(r1);
     startSelection();
     setMainState(1);
-    Keyboard_ResetTypedRun(&unk_144);
+    Keyboard_ResetTypedRun(&keyboard);
     redrawText();
     return TRUE;
 }
@@ -1491,7 +1491,7 @@ BOOL NameEntryMenu::touchTextField() {
 s32 NameEntryMenu::navigateText(s32 a) {
     void *p = (void *)a;
     if (p == 0) return 0;
-    u32 r4 = unk_a8;
+    u32 r4 = caretIndex;
     if (MenuKeys_HasLeft(p) != 0) {
         if (r4 != 0) {
             setCursorIndex((u8)(r4 - 1));
@@ -1500,7 +1500,7 @@ s32 NameEntryMenu::navigateText(s32 a) {
         return 3;
     }
     if (MenuKeys_HasRight(p) != 0) {
-        s32 n = Text_GetLength(unk_4088, unk_a6);
+        s32 n = Text_GetLength(text, maxLength);
         s32 t = r4 + 1;
         if (t <= n) {
             setCursorIndex((u8)t);
@@ -1514,7 +1514,7 @@ s32 NameEntryMenu::navigateText(s32 a) {
 
 BOOL NameEntryMenu::hasSelection() {
     if (testFlags(4) == 0) goto no;
-    if (unk_a9 != unk_aa) goto yes;
+    if (selectionStart != selectionEnd) goto yes;
 no:
     return FALSE;
 yes:
@@ -1522,14 +1522,14 @@ yes:
 }
 
 void NameEntryMenu::clearSelection() {
-    unk_a9 = 0;
-    unk_aa = 0;
+    selectionStart = 0;
+    selectionEnd = 0;
     clearFlags(4);
 }
 
 void NameEntryMenu::deleteSelection() {
-    u32 e = unk_aa;
-    u32 s = unk_a9;
+    u32 e = selectionEnd;
+    u32 s = selectionStart;
     u32 lo, hi;
     if (s > e) {
         lo = e;
@@ -1538,20 +1538,20 @@ void NameEntryMenu::deleteSelection() {
         lo = s;
         hi = e;
     }
-    u8 r = Keyboard_DeleteRange(&unk_144, unk_4088, lo, hi, unk_a6);
+    u8 r = Keyboard_DeleteRange(&keyboard, text, lo, hi, maxLength);
     setCursorIndex(r);
     clearSelection();
 }
 
 void NameEntryMenu::startSelection() {
-    unk_a9 = unk_a8;
-    unk_aa = unk_a8;
+    selectionStart = caretIndex;
+    selectionEnd = caretIndex;
     clearFlags(4);
 }
 
 void NameEntryMenu::extendSelection() {
-    unk_aa = unk_a8;
-    if (unk_aa != unk_a9) {
+    selectionEnd = caretIndex;
+    if (selectionEnd != selectionStart) {
         setFlags(4);
     } else {
         clearFlags(4);
@@ -1560,8 +1560,8 @@ void NameEntryMenu::extendSelection() {
 
 void NameEntryMenu::copy() {
     if (hasSelection() != 0) {
-        u32 e = unk_aa;
-        u32 s = unk_a9;
+        u32 e = selectionEnd;
+        u32 s = selectionStart;
         s32 r6, r4;
         if (s > e) {
             r6 = e;
@@ -1570,45 +1570,45 @@ void NameEntryMenu::copy() {
             r6 = s;
             r4 = e - s;
         }
-        Mem_Clear(unk_40a8, 0x20);
-        Mem_Copy(unk_4088 + r6, unk_40a8, r4);
+        Mem_Clear(clipboard, 0x20);
+        Mem_Copy(text + r6, clipboard, r4);
         setFlags(8);
-        Keyboard_PlayCopySe(&unk_144);
+        Keyboard_PlayCopySe(&keyboard);
         refreshKeys();
     }
 }
 
 void NameEntryMenu::paste() {
     if (testFlags(8) != 0) {
-        Keyboard_BeginPaste(&unk_144);
-        Keyboard_ResetTypedRun(&unk_144);
+        Keyboard_BeginPaste(&keyboard);
+        Keyboard_ResetTypedRun(&keyboard);
         if (hasSelection() != 0) deleteSelection();
-        s32 n = Text_GetLength(unk_40a8, 0x20);
+        s32 n = Text_GetLength(clipboard, 0x20);
         u8 v;
-        v = unk_a8;
+        v = caretIndex;
         s32 i;
         for (i = 0; i < n; i++) {
-            if (Keyboard_InsertChar(&unk_144, unk_4088, unk_40a8[i], &v, unk_a6, unk_af, 0, 0) == 0) {
+            if (Keyboard_InsertChar(&keyboard, text, clipboard[i], &v, maxLength, textWidth, 0, 0) == 0) {
                 if (i == 0) playErrorSe();
                 i = n;
             }
         }
-        Keyboard_PlayPasteSe(&unk_144);
+        Keyboard_PlayPasteSe(&keyboard);
         setCursorIndex(v);
         updateCaretX();
         redrawText();
-        Keyboard_EndPaste(&unk_144);
+        Keyboard_EndPaste(&keyboard);
     }
 }
 
 s32 NameEntryMenu::touchKey() {
-    Keyboard_ClearHighlight(&unk_144);
-    s32 r4 = Keyboard_TouchKey(&unk_144, gTouchCurX, gTouchCurY);
+    Keyboard_ClearHighlight(&keyboard);
+    s32 r4 = Keyboard_TouchKey(&keyboard, gTouchCurX, gTouchCurY);
     if (r4 != -1) {
-        s32 r1 = Keyboard_GetKeyCode(&unk_144, r4, 8);
+        s32 r1 = Keyboard_GetKeyCode(&keyboard, r4, 8);
         s32 r6 = pressKeyCode(r1);
-        Keyboard_HighlightKey(&unk_144, r4);
-        Keyboard_StartKeyRepeat(&unk_144);
+        Keyboard_HighlightKey(&keyboard, r4);
+        Keyboard_StartKeyRepeat(&keyboard);
         return r6;
     }
     return 0;
@@ -1616,12 +1616,12 @@ s32 NameEntryMenu::touchKey() {
 
 s32 NameEntryMenu::pressKeyCode(s32 x) {
     s32 r6 = 1;
-    s32 r7 = Keyboard_HandleModeKey(&unk_144, x, 6);
+    s32 r7 = Keyboard_HandleModeKey(&keyboard, x, 6);
     if (r7 != 0) {
         redrawText();
         return r7;
     }
-    if (Keyboard_IsControlCode(&unk_144, x) != 0) {
+    if (Keyboard_IsControlCode(&keyboard, x) != 0) {
         switch (x) {
         case 0x100:
             backspace(r6);
@@ -1654,11 +1654,11 @@ s32 NameEntryMenu::pressKeyCode(s32 x) {
         }
     } else {
         BOOL r4 = insertChar((u8)x);
-        if (Keyboard_IsFull(&unk_144) != 0) {
+        if (Keyboard_IsFull(&keyboard) != 0) {
             showMessage(0x1c, r6);
             return 4;
         }
-        if (Keyboard_IsTooWide(&unk_144) != 0) {
+        if (Keyboard_IsTooWide(&keyboard) != 0) {
             showMessage(0x1c, r6);
             return 4;
         }
@@ -1672,17 +1672,17 @@ BOOL NameEntryMenu::applyModifierKey(s32 x) {
     if (r2 == 0) return FALSE;
     switch (x) {
     case 0x103:
-        r2 = Keyboard_ModifyCharKey103(&unk_144, r2);
+        r2 = Keyboard_ModifyCharKey103(&keyboard, r2);
         break;
     case 0x104:
-        r2 = Keyboard_ModifyCharKey104(&unk_144, r2);
+        r2 = Keyboard_ModifyCharKey104(&keyboard, r2);
         break;
     case 0x105:
-        r2 = Keyboard_ModifyCharKey105(&unk_144, r2);
+        r2 = Keyboard_ModifyCharKey105(&keyboard, r2);
         break;
     }
     if (r2 == 0) return FALSE;
-    if (Keyboard_ReplaceCharBeforeCursor(&unk_144, unk_4088, r2, unk_a8, unk_a6, 0x2710) == 0) return FALSE;
+    if (Keyboard_ReplaceCharBeforeCursor(&keyboard, text, r2, caretIndex, maxLength, 0x2710) == 0) return FALSE;
     redrawText();
     updateCaretX();
     return TRUE;
@@ -1690,22 +1690,22 @@ BOOL NameEntryMenu::applyModifierKey(s32 x) {
 
 BOOL NameEntryMenu::backspace(s32 x) {
     if (hasSelection() != 0) {
-        Keyboard_ResetTypedRun(&unk_144);
+        Keyboard_ResetTypedRun(&keyboard);
         Snd_PlaySe(0x35);
         goto done;
     }
     {
-        u32 t = unk_a8;
+        u32 t = caretIndex;
         if (t != 0) {
-            unk_a9 = t;
-            unk_aa = unk_a8 - 1;
+            selectionStart = t;
+            selectionEnd = caretIndex - 1;
             Snd_PlaySe(0x35);
             goto done;
         }
     }
-    if (unk_4088[0] != 0) {
-        unk_a9 = 0;
-        unk_aa = 1;
+    if (text[0] != 0) {
+        selectionStart = 0;
+        selectionEnd = 1;
         Snd_PlaySe(0x35);
         goto done;
     }
@@ -1720,8 +1720,8 @@ done:
 
 BOOL NameEntryMenu::insertCharRaw(u32 x) {
     u8 v[8];
-    v[0] = unk_a8;
-    if (Keyboard_InsertChar(&unk_144, unk_4088, x, v, unk_a6, unk_af, 0, 1) != 0) {
+    v[0] = caretIndex;
+    if (Keyboard_InsertChar(&keyboard, text, x, v, maxLength, textWidth, 0, 1) != 0) {
         setCursorIndex(v[0]);
         return TRUE;
     }
@@ -1731,7 +1731,7 @@ BOOL NameEntryMenu::insertCharRaw(u32 x) {
 BOOL NameEntryMenu::insertChar(u32 x) {
     if (hasSelection() != 0) {
         deleteSelection();
-        Keyboard_ResetTypedRun(&unk_144);
+        Keyboard_ResetTypedRun(&keyboard);
     }
     BOOL r = insertCharRaw(x);
     redrawText();
@@ -1740,14 +1740,14 @@ BOOL NameEntryMenu::insertChar(u32 x) {
 }
 
 void NameEntryMenu::redrawText() {
-    GeneralMenuHeader_setTitleText(&unk_b0, unk_4088, unk_a6);
+    GeneralMenuHeader_setTitleText(&header, text, maxLength);
     if (testFlags(0x100) != 0) {
-        s32 t = Text_MeasureWidth(unk_4088, unk_a6);
-        unk_a0 = -(unk_af - t - 2);
+        s32 t = Text_MeasureWidth(text, maxLength);
+        suffixLabelX = -(textWidth - t - 2);
     }
-    GeneralMenuHeader_placeTitleText(&unk_b0);
+    GeneralMenuHeader_placeTitleText(&header);
     highlightSelection();
-    func_ov124_02296c98(&unk_b0);
+    func_ov124_02296c98(&header);
     setFlags(0x10);
     refreshKeys();
 }
@@ -1755,8 +1755,8 @@ void NameEntryMenu::redrawText() {
 void NameEntryMenu::highlightSelection() {
     s32 r0, r1, r2, r4;
     if (hasSelection() != 0) {
-        u32 e = unk_aa;
-        u32 s = unk_a9;
+        u32 e = selectionEnd;
+        u32 s = selectionStart;
         if (s > e) {
             r4 = e;
             r0 = s - e;
@@ -1767,15 +1767,15 @@ void NameEntryMenu::highlightSelection() {
         r1 = 7;
         r2 = 6;
     } else {
-        r0 = Keyboard_GetTypedRunLength(&unk_144);
+        r0 = Keyboard_GetTypedRunLength(&keyboard);
         if (r0 != 0) {
-            r4 = unk_a8 - r0;
+            r4 = caretIndex - r0;
         }
         r1 = 5;
         r2 = 1;
     }
     if (r0 != 0) {
-        func_ov124_02296c7c(&unk_b0, r1, r2, r4, r0);
+        func_ov124_02296c7c(&header, r1, r2, r4, r0);
     }
 }
 
@@ -1784,13 +1784,13 @@ void NameEntryMenu::playErrorSe() {
 }
 
 BOOL NameEntryMenu::touchDialogButtons() {
-    if (unk_ad == 3) return FALSE;
-    if (MenuBottomButtonsBody_isButtonDisabled(&unk_3d00, 6) == 0 && MenuBottomButtonsBody_isTouched(&unk_3d00, 6) != 0) {
+    if (entryMode == 3) return FALSE;
+    if (MenuBottomButtonsBody_isButtonDisabled(&bottomButtons, 6) == 0 && MenuBottomButtonsBody_isTouched(&bottomButtons, 6) != 0) {
         closeWithResult(0);
         return TRUE;
     }
-    if (unk_ad != 0) return FALSE;
-    if (MenuBottomButtonsBody_isTouched(&unk_3d00, 7) != 0) {
+    if (entryMode != 0) return FALSE;
+    if (MenuBottomButtonsBody_isTouched(&bottomButtons, 7) != 0) {
         closeWithResult(1);
         return TRUE;
     }
@@ -1798,15 +1798,15 @@ BOOL NameEntryMenu::touchDialogButtons() {
 }
 
 void NameEntryMenu::setupDialogButtons() {
-    switch (unk_ad) {
+    switch (entryMode) {
     case 0:
-        MenuBottomButtons_setLayoutConfirmAnd06(&unk_3d00, 0xd8);
+        MenuBottomButtons_setLayoutConfirmAnd06(&bottomButtons, 0xd8);
         break;
     case 2:
-        MenuBottomButtons_setLayoutSingle05(&unk_3d00, 0x21);
+        MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x21);
         break;
     case 1:
-        MenuBottomButtons_setLayoutSingle05(&unk_3d00, 0x65);
+        MenuBottomButtons_setLayoutSingle05(&bottomButtons, 0x65);
         break;
     case 3:
         break;
@@ -1815,72 +1815,72 @@ void NameEntryMenu::setupDialogButtons() {
 
 void NameEntryMenu::showCursor() {
     clearFlags(0x80);
-    Keyboard_ResetCursor(&unk_144);
-    s32 a = Keyboard_GetCursorX(&unk_144);
-    s32 b = Keyboard_GetCursorY(&unk_144);
-    MenuCursorBase_warpTo(&unk_3e64, a, b);
-    MenuCursor_setAnimIfChanged(&unk_3e64, 1);
+    Keyboard_ResetCursor(&keyboard);
+    s32 a = Keyboard_GetCursorX(&keyboard);
+    s32 b = Keyboard_GetCursorY(&keyboard);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    MenuCursor_setAnimIfChanged(&cursor, 1);
     refreshCursor();
 }
 
 void NameEntryMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_3e64, 0);
-    unk_3e64.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void NameEntryMenu::moveCursorToTarget() {
     if (testFlags(0x80)) {
-        MenuCursorBase_moveToNear(&unk_3e64, unk_98, 0x28, 3, 2);
-        unk_ae = 6;
+        MenuCursorBase_moveToNear(&cursor, caretX, 0x28, 3, 2);
+        returnState = 6;
     } else {
-        s32 a = Keyboard_GetCursorX(&unk_144);
-        s32 b = Keyboard_GetCursorY(&unk_144);
-        MenuCursorBase_moveToNear(&unk_3e64, a, b, 3, 2);
-        unk_ae = 4;
+        s32 a = Keyboard_GetCursorX(&keyboard);
+        s32 b = Keyboard_GetCursorY(&keyboard);
+        MenuCursorBase_moveToNear(&cursor, a, b, 3, 2);
+        returnState = 4;
     }
     setMainState(8);
 }
 
 void NameEntryMenu::snapCursor() {
     if (testFlags(0x80)) {
-        MenuCursorBase_warpTo(&unk_3e64, unk_98, 0x28);
+        MenuCursorBase_warpTo(&cursor, caretX, 0x28);
     } else {
-        s32 a = Keyboard_GetCursorX(&unk_144);
-        s32 b = Keyboard_GetCursorY(&unk_144);
-        MenuCursorBase_warpTo(&unk_3e64, a, b);
+        s32 a = Keyboard_GetCursorX(&keyboard);
+        s32 b = Keyboard_GetCursorY(&keyboard);
+        MenuCursorBase_warpTo(&cursor, a, b);
     }
-    unk_3e64.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void NameEntryMenu::pressCursor() {
-    MenuCursor_setPosePress(&unk_3e64);
+    MenuCursor_setPosePress(&cursor);
     setMainState(9);
 }
 
 void NameEntryMenu::releaseCursor() {
-    Keyboard_ClearHighlight(&unk_144);
-    MenuCursorBase_setPoseRelease(&unk_3e64);
+    Keyboard_ClearHighlight(&keyboard);
+    MenuCursorBase_setPoseRelease(&cursor);
     setMainState(0xb);
 }
 
 void NameEntryMenu::refreshCursor() {
-    MenuCursorBase_setPoseIdle(&unk_3e64);
-    unk_3e64.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 BOOL NameEntryMenu::tryPressKey() {
     if ((gPad[1] & 1) == 0) {
         return FALSE;
     }
-    s32 t = Keyboard_PressCursorKey(&unk_144);
+    s32 t = Keyboard_PressCursorKey(&keyboard);
     if (t == -1) {
         return FALSE;
     }
-    if (MenuBottomButtonsBody_isButtonDisabled(&unk_3d00, 6) && t == 0xd9) {
+    if (MenuBottomButtonsBody_isButtonDisabled(&bottomButtons, 6) && t == 0xd9) {
         return FALSE;
     }
-    Keyboard_GetKeyCode(&unk_144, t, 8);
-    Keyboard_HighlightKey(&unk_144, t);
+    Keyboard_GetKeyCode(&keyboard, t, 8);
+    Keyboard_HighlightKey(&keyboard, t);
     pressCursor();
     return TRUE;
 }
@@ -1889,10 +1889,10 @@ BOOL NameEntryMenu::tryBackspaceButton() {
     if ((gPad[0] & 2) == 0) {
         return FALSE;
     }
-    Keyboard_ShrinkTypedRun(&unk_144);
+    Keyboard_ShrinkTypedRun(&keyboard);
     if (backspace(0)) {
-        Keyboard_StartKeyRepeat(&unk_144);
-        unk_ae = unk_8d;
+        Keyboard_StartKeyRepeat(&keyboard);
+        returnState = mainState;
         setMainState(0xc);
     } else {
         onBackspaceEmpty();
@@ -1904,13 +1904,13 @@ BOOL NameEntryMenu::tryPasteButton() {
     if ((gPad[1] & 0x100) == 0) {
         return FALSE;
     }
-    if (Keyboard_IsSlotDisabled(&unk_144, 0xc)) {
+    if (Keyboard_IsSlotDisabled(&keyboard, 0xc)) {
         return FALSE;
     }
     pressKeyCode(0x119);
-    Keyboard_HighlightKey(&unk_144, 0xdc);
+    Keyboard_HighlightKey(&keyboard, 0xdc);
     snapCursor();
-    unk_ae = unk_8d;
+    returnState = mainState;
     setMainState(0xe);
     return FALSE;
 }
@@ -1919,12 +1919,12 @@ BOOL NameEntryMenu::tryCopyButton() {
     if ((gPad[1] & 0x200) == 0) {
         return FALSE;
     }
-    if (Keyboard_IsSlotDisabled(&unk_144, 0xb)) {
+    if (Keyboard_IsSlotDisabled(&keyboard, 0xb)) {
         return FALSE;
     }
     pressKeyCode(0x118);
-    Keyboard_HighlightKey(&unk_144, 0xdb);
-    unk_ae = unk_8d;
+    Keyboard_HighlightKey(&keyboard, 0xdb);
+    returnState = mainState;
     setMainState(0xd);
     return FALSE;
 }
@@ -1941,11 +1941,11 @@ void NameEntryMenu::loadDesignName() {
     u8 buf[0x10];
     s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
     PatternInfo_getTitleRaw(Pattern_getInfo(PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex())), buf);
-    Mem_Copy(buf, unk_4088, 0x10);
+    Mem_Copy(buf, text, 0x10);
 }
 
 void NameEntryMenu::func_ov126_0229763c() {
-    Constellation_CopyName(unk_4088, MenuCtrl_GetIndex());
+    Constellation_CopyName(text, MenuCtrl_GetIndex());
 }
 
 u8 *NameEntryMenu::getFriendEntry() {
@@ -1957,11 +1957,11 @@ u8 *NameEntryMenu::getFriendEntry() {
 }
 
 void NameEntryMenu::loadFriendField1() {
-    Mem_Copy(FriendEntry_GetTownName(getFriendEntry()), unk_4088, 8);
+    Mem_Copy(FriendEntry_GetTownName(getFriendEntry()), text, 8);
 }
 
 void NameEntryMenu::loadFriendField2() {
-    Mem_Copy(FriendEntry_GetPlayerName(getFriendEntry()), unk_4088, 8);
+    Mem_Copy(FriendEntry_GetPlayerName(getFriendEntry()), text, 8);
 }
 
 void NameEntryMenu::loadInitialText() {
@@ -1970,7 +1970,7 @@ void NameEntryMenu::loadInitialText() {
     case 0x15:
     case 0x16:
     case 0x17:
-        Mem_Copy(MenuCtrl_GetText(), unk_4088, unk_a6);
+        Mem_Copy(MenuCtrl_GetText(), text, maxLength);
         break;
     case 0xb: loadDesignName(); break;
     case 0x12: func_ov126_0229763c(); break;
@@ -1985,14 +1985,14 @@ void NameEntryMenu::storeDesignName() {
     u8 buf[0x10];
     s32 a = PlayerData_getPatterns(PlayerData_GetCurrent());
     void *p = PlayerPatterns_getPatternByOrder(a, MenuCtrl_GetIndex());
-    Mem_Copy(unk_4088, buf, 0x10);
+    Mem_Copy(text, buf, 0x10);
     PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }
 
 void NameEntryMenu::checkGeneralAnswer() {
     LabelString b;
     String_LoadByIndex(&b, "st_general", MenuCtrl_GetIndex());
-    if (!String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
+    if (!String_EqualsEncodedBytes(&b, text, maxLength)) {
         MenuCtrl_SetResult(0);
     }
 }
@@ -2006,7 +2006,7 @@ void NameEntryMenu::checkItemNameAnswer() {
         id = i;
         ItemName_setFromItem(&rec, &id);
         MsgString_copy(&b, &rec);
-        if (String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
+        if (String_EqualsEncodedBytes(&b, text, maxLength)) {
             MenuCtrl_SetIndex((u8)(i - 0x1323));
             MenuCtrl_SetResult(1);
             return;
@@ -2018,7 +2018,7 @@ void NameEntryMenu::checkItemNameAnswer() {
 void NameEntryMenu::checkPasswordAnswer() {
     LabelString b;
     String_LoadByIndex(&b, "st_password", MenuCtrl_GetIndex());
-    if (!String_EqualsEncodedBytes(&b, unk_4088, unk_a6)) {
+    if (!String_EqualsEncodedBytes(&b, text, maxLength)) {
         MenuCtrl_SetResult(0);
     }
 }
@@ -2031,40 +2031,40 @@ void NameEntryMenu::storePlayerName() {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (i != n && PlayerDataArray_IsUsed(gSavePlayers, i)) {
-            if (Text_EqualsTrimmed((void *)PlayerId_getName(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
+            if (Text_EqualsTrimmed((void *)PlayerId_getName(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), text, 8)) {
                 MenuCtrl_SetResult(2);
                 return;
             }
         }
     }
-    PlayerId_setName(PlayerData_getPlayerId(t), unk_4088);
+    PlayerId_setName(PlayerData_getPlayerId(t), text);
 }
 
 s32 NameEntryMenu::storeTownName() {
-    return TownId_InitWithName(gSaveTownId, unk_4088);
+    return TownId_InitWithName(gSaveTownId, text);
 }
 
 void NameEntryMenu::func_ov126_02297328() {
     s32 t = MenuCtrl_GetIndex();
-    if (Constellation_IsNameTaken(unk_4088, t)) {
+    if (Constellation_IsNameTaken(text, t)) {
         MenuCtrl_SetResult(0);
     }
-    Constellation_SetName(unk_4088, t);
+    Constellation_SetName(text, t);
 }
 
 void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
     void *p = BlancaFaceRecord_getPattern(gSaveBlancaFace);
-    Mem_Copy(unk_4088, buf, 0x10);
+    Mem_Copy(text, buf, 0x10);
     PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }
 
 void NameEntryMenu::storeFriendField1() {
-    Mem_Copy(unk_4088, FriendEntry_GetTownName(getFriendEntry()), 8);
+    Mem_Copy(text, FriendEntry_GetTownName(getFriendEntry()), 8);
 }
 
 void NameEntryMenu::storeFriendField2() {
-    Mem_Copy(unk_4088, FriendEntry_GetPlayerName(getFriendEntry()), 8);
+    Mem_Copy(text, FriendEntry_GetPlayerName(getFriendEntry()), 8);
 }
 
 void NameEntryMenu::commitEntry() {
@@ -2094,28 +2094,28 @@ void NameEntryMenu::commitEntry() {
 }
 
 void NameEntryMenu::censorText() {
-    u8 *buf = unk_4088;
-    u32 n = unk_a6;
-    EncodedString_SetRaw(&unk_3f48, buf, n);
-    MsgString_fromEncoded(&unk_3f08, &unk_3f48, 0, 0);
-    if (String_CensorTaboo(&unk_3f08)) {
-        EncodedString_fromMsgString(&unk_3f48, &unk_3f08);
-        StrBuf_GetBytes(&unk_3f48, buf, n);
+    u8 *buf = text;
+    u32 n = maxLength;
+    EncodedString_SetRaw(&encodedText, buf, n);
+    MsgString_fromEncoded(&censorString, &encodedText, 0, 0);
+    if (String_CensorTaboo(&censorString)) {
+        EncodedString_fromMsgString(&encodedText, &censorString);
+        StrBuf_GetBytes(&encodedText, buf, n);
     }
 }
 
 BOOL NameEntryMenu::testFlags(u32 mask) {
-    if ((unk_a4 & mask) != 0) {
+    if ((flags & mask) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 void NameEntryMenu::setFlags(u32 mask) {
-    unk_a4 = unk_a4 | mask;
+    flags = flags | mask;
 }
 
 void NameEntryMenu::clearFlags(u32 mask) {
-    unk_a4 = unk_a4 & ~mask;
+    flags = flags & ~mask;
 }
 

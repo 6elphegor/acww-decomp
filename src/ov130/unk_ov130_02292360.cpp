@@ -57,26 +57,26 @@ public:
     void loadBg();
     void init(u32 mode, u32 a, u32 b);
 
-    /* 0x00 */ u16 unk_00;
-    /* 0x02 */ u8 unk_02;
-    /* 0x03 */ u8 unk_03;
-    /* 0x04 */ u8 unk_04;
-    /* 0x05 */ u8 unk_05;
-    /* 0x06 */ u8 unk_06;
-    /* 0x07 */ u8 unk_07;
-    /* 0x08 */ u8 unk_08;
-    /* 0x09 */ u8 unk_09;
-    /* 0x0a */ u8 unk_0a;
-    /* 0x0b */ u8 unk_0b;
-    /* 0x0c */ u32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u32 unk_14;
-    /* 0x18 */ u32 unk_18;
+    /* 0x00 */ u16 flags;
+    /* 0x02 */ u8 repeatTimer;
+    /* 0x03 */ u8 highlightTimer;
+    /* 0x04 */ u8 pressedKey;
+    /* 0x05 */ u8 cursorKey;
+    /* 0x06 */ u8 labelCount;
+    /* 0x07 */ u8 entryMode;
+    /* 0x08 */ u8 layout;
+    /* 0x09 */ u8 objVariant;
+    /* 0x0a */ u8 mainLayer;
+    /* 0x0b */ u8 keyLayer;
+    /* 0x0c */ u32 value;
+    /* 0x10 */ u32 maxValue;
+    /* 0x14 */ u32 topAmount;
+    /* 0x18 */ u32 bottomAmount;
     /* 0x1c */ u8 unk_1c[0x2c - 0x1c];
-    /* 0x2c */ LabelString unk_2c[5];
-    /* 0x16c */ BgVramTask unk_16c[2];
-    /* 0x1b4 */ u8 unk_1b4[0x800];
-    /* 0x9b4 */ u8 unk_9b4[0x800];
+    /* 0x2c */ LabelString labels[5];
+    /* 0x16c */ BgVramTask screenTasks[2];
+    /* 0x1b4 */ u8 mainScreen[0x800];
+    /* 0x9b4 */ u8 keyScreen[0x800];
 };
 
 // Declarations (definition order below sets the data layout)
@@ -164,21 +164,21 @@ extern "C" u32 sTitleObjCharFiles[2] = {(u32)data_ov130_022934a0, (u32)data_ov13
 
 struct Ov130S {
     u16 flags;
-    u8 unk_02;
-    u8 unk_03;
-    u8 unk_04;
-    u8 unk_05;
-    u8 unk_06;
-    u8 unk_07;
-    u8 unk_08;
-    u8 unk_09;
+    u8 repeatTimer;
+    u8 highlightTimer;
+    u8 pressedKey;
+    u8 cursorKey;
+    u8 labelCount;
+    u8 entryMode;
+    u8 layout;
+    u8 objVariant;
     u8 pad_0a[2];
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    s32 unk_1c;
-    s32 unk_20;
+    s32 value;
+    s32 maxValue;
+    s32 topAmount;
+    s32 bottomAmount;
+    s32 shownTopAmount;
+    s32 shownBottomAmount;
     u8 pad_24[8];
     u8 slots[5][0x40];
     u8 pad_16c[0x1b4 - 0x16c];
@@ -233,49 +233,49 @@ NumberPad::NumberPad() {}
 NumberPad::~NumberPad() {}
 
 void NumberPad::init(u32 mode, u32 a, u32 b) {
-    unk_00 = 0;
-    unk_07 = mode;
-    switch (unk_07) {
+    flags = 0;
+    entryMode = mode;
+    switch (entryMode) {
     case 0:
-        unk_08 = 2;
-        unk_09 = 0;
+        layout = 2;
+        objVariant = 0;
         break;
     case 1:
-        unk_08 = 2;
-        unk_09 = 5;
+        layout = 2;
+        objVariant = 5;
         break;
     case 2:
-        unk_08 = 2;
-        unk_09 = 1;
+        layout = 2;
+        objVariant = 1;
         break;
     case 3:
-        unk_08 = 3;
-        unk_09 = 2;
+        layout = 3;
+        objVariant = 2;
         break;
     case 4:
-        unk_08 = 5;
-        unk_09 = 3;
+        layout = 5;
+        objVariant = 3;
         break;
     case 5:
-        unk_08 = 3;
-        unk_09 = 4;
+        layout = 3;
+        objVariant = 4;
         break;
     case 6:
-        unk_08 = 4;
-        unk_09 = 6;
+        layout = 4;
+        objVariant = 6;
         break;
     }
-    unk_0a = a;
-    unk_0b = b;
+    mainLayer = a;
+    keyLayer = b;
     NumberPad_ReleaseLabels((Ov130S *)this);
-    unk_05 = 0xa;
-    unk_04 = 0xd;
-    unk_03 = 0;
-    unk_02 = 0;
-    unk_0c = 0;
-    unk_10 = 0;
-    unk_14 = 0;
-    unk_18 = 0;
+    cursorKey = 0xa;
+    pressedKey = 0xd;
+    highlightTimer = 0;
+    repeatTimer = 0;
+    value = 0;
+    maxValue = 0;
+    topAmount = 0;
+    bottomAmount = 0;
     if (PlayerData_GetCurrent() != 0) {
         _ZN10PlayerData11getPlayerIdEv();
         if (_ZN8PlayerId9getGenderEv() == 0) {
@@ -294,36 +294,36 @@ void NumberPad_LoadBgGraphics(s32 x) {
 }
 
 void NumberPad::loadBg() {
-    NumberPad_LoadBgGraphics(unk_0a);
-    File_LoadToBuffer(sMainScreenFiles[unk_08], unk_1b4, 0x800);
-    switch (unk_07) {
+    NumberPad_LoadBgGraphics(mainLayer);
+    File_LoadToBuffer(sMainScreenFiles[layout], mainScreen, 0x800);
+    switch (entryMode) {
     case 0:
     case 1:
-        BgScreen_SetRectPalette(unk_1b4, 2, 8, 0xd, 9, 0xa);
+        BgScreen_SetRectPalette(mainScreen, 2, 8, 0xd, 9, 0xa);
         break;
     case 2:
-        BgScreen_SetRectPalette(unk_1b4, 2, 2, 0xd, 3, 0xa);
+        BgScreen_SetRectPalette(mainScreen, 2, 2, 0xd, 3, 0xa);
         break;
     }
-    Gfx2d_LoadScreen(unk_1b4, unk_0a, 0x800, 0);
-    File_LoadToBuffer(sKeyScreenFiles[unk_08], unk_9b4, 0x800);
-    Gfx2d_LoadScreen(unk_9b4, unk_0b, 0x800, 0);
+    Gfx2d_LoadScreen(mainScreen, mainLayer, 0x800, 0);
+    File_LoadToBuffer(sKeyScreenFiles[layout], keyScreen, 0x800);
+    Gfx2d_LoadScreen(keyScreen, keyLayer, 0x800, 0);
     LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
-    if (unk_07 == 6) {
+    if (entryMode == 6) {
         String_Load2dMenu(o, 0x51);
     } else {
         String_Load2dMenu(o, 0xb8);
     }
     u32 a = 0xec;
     u32 b = 4;
-    if (unk_07 == 6) {
+    if (entryMode == 6) {
         a = 0x14c;
         b = 6;
     }
-    o->createLabel(unk_0b, a, b, 0xf, 0, 0);
+    o->createLabel(keyLayer, a, b, 0xf, 0, 0);
     o->redrawAligned(1, 0);
     o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
-    switch (unk_07) {
+    switch (entryMode) {
     case 2:
         String_Load2dMenu(o, 0x59);
         break;
@@ -334,16 +334,16 @@ void NumberPad::loadBg() {
         String_Load2dMenu(o, 0x54);
         break;
     }
-    o->createLabel(unk_0b, 0xb0, 0xa, 0xf, 0, 0);
+    o->createLabel(keyLayer, 0xb0, 0xa, 0xf, 0, 0);
     o->redrawAligned(1, 0);
     o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
-    String_Load2dMenu(o, sValueLabelTextIds[unk_07]);
-    o->createLabel(unk_0b, 0xc4, 0xa, 0xf, 0, 0);
+    String_Load2dMenu(o, sValueLabelTextIds[entryMode]);
+    o->createLabel(keyLayer, 0xc4, 0xa, 0xf, 0, 0);
     o->redrawAligned(1, 0);
-    if (unk_08 == 0 || unk_08 == 2) {
+    if (layout == 0 || layout == 2) {
         o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
-        String_Load2dMenu(o, sBalanceLabelTextIds[unk_07]);
-        o->createLabel(unk_0b, 0xd8, 0xa, 0xf, 0, 0);
+        String_Load2dMenu(o, sBalanceLabelTextIds[entryMode]);
+        o->createLabel(keyLayer, 0xd8, 0xa, 0xf, 0, 0);
         o->redrawAligned(1, 0);
     }
     NumberPad_ResetKeyPalettes((Ov130S *)this);
@@ -370,30 +370,30 @@ void NumberPad_LoadObjGraphics(s32 n) {
 }
 
 void NumberPad::loadObj() {
-    NumberPad_LoadObjGraphics(unk_09);
+    NumberPad_LoadObjGraphics(objVariant);
     LabelString *o = (LabelString *)NumberPad_AllocLabel((Ov130S *)this);
-    String_Load2dMenu(o, sTitleTextIds[unk_07]);
+    String_Load2dMenu(o, sTitleTextIds[entryMode]);
     o->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
     o->redrawAligned(1, 0);
 }
 
 void NumberPad::shutdown() {
     NumberPad_ReleaseLabels((Ov130S *)this);
-    unk_16c[0].cancel();
-    unk_16c[1].cancel();
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
 }
 
 void NumberPad::update() {
     NumberPad_ReleaseLabels((Ov130S *)this);
-    unk_16c[0].cancel();
-    unk_16c[1].cancel();
-    if (unk_03 != 0) {
-        unk_03 = unk_03 - 1;
-        if (*(volatile u8 *)&unk_03 == 0) {
-            if (unk_02 != 0) {
-                unk_03 = 1;
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
+    if (highlightTimer != 0) {
+        highlightTimer = highlightTimer - 1;
+        if (*(volatile u8 *)&highlightTimer == 0) {
+            if (repeatTimer != 0) {
+                highlightTimer = 1;
             } else {
-                NumberPad_UnhighlightKey((Ov130S *)this, unk_04);
+                NumberPad_UnhighlightKey((Ov130S *)this, pressedKey);
             }
         }
     }
@@ -401,12 +401,12 @@ void NumberPad::update() {
 
 void NumberPad::flushScreens() {
     if (NumberPad_TestFlags((Ov130S *)this, 1)) {
-        if (unk_16c[0].requestScreen((u32)unk_1b4, unk_0a, 0x800, 0)) {
+        if (screenTasks[0].requestScreen((u32)mainScreen, mainLayer, 0x800, 0)) {
             NumberPad_ClearFlags((Ov130S *)this, 1);
         }
     }
     if (NumberPad_TestFlags((Ov130S *)this, 2)) {
-        if (unk_16c[1].requestScreen((u32)unk_9b4, unk_0b, 0x800, 0)) {
+        if (screenTasks[1].requestScreen((u32)keyScreen, keyLayer, 0x800, 0)) {
             NumberPad_ClearFlags((Ov130S *)this, 2);
         }
     }
@@ -417,31 +417,31 @@ extern "C" u32 NumberPad_HitTestKey(Ov130S *s, s32 x, s32 y) {
     x -= 0x50;
     yy = y - 0x60;
     y = yy;
-    if (s->unk_08 == 0 || s->unk_08 == 2) x -= 0x40;
+    if (s->layout == 0 || s->layout == 2) x -= 0x40;
     if (x >= 0 && x < 0x60 && y >= 0 && y < 0x40) {
-        s->unk_04 = sNumberPadTouchKeyMap[(x >> 5) + (y >> 4) * 3];
-        return s->unk_04;
+        s->pressedKey = sNumberPadTouchKeyMap[(x >> 5) + (y >> 4) * 3];
+        return s->pressedKey;
     }
     return 13;
 }
 
 extern "C" void NumberPad_PressKey(Ov130S *s) {
     NumberPad_ResetKeyPalettes(s);
-    NumberPad_HighlightKey(s, s->unk_04);
-    s->unk_02 = 0xd;
-    s->unk_03 = 5;
+    NumberPad_HighlightKey(s, s->pressedKey);
+    s->repeatTimer = 0xd;
+    s->highlightTimer = 5;
     NumberPad_ApplyKey(s);
 }
 
 extern "C" void NumberPad_StopKeyRepeat(Ov130S *s) {
-    s->unk_02 = 0;
+    s->repeatTimer = 0;
 }
 
 extern "C" BOOL NumberPad_TickKeyRepeat(Ov130S *s) {
-    if (s->unk_02 != 0) {
-        s->unk_02--;
-        if (s->unk_02 == 0) {
-            s->unk_02 = 2;
+    if (s->repeatTimer != 0) {
+        s->repeatTimer--;
+        if (s->repeatTimer == 0) {
+            s->repeatTimer = 2;
             NumberPad_ApplyKey(s);
             return TRUE;
         }
@@ -451,7 +451,7 @@ extern "C" BOOL NumberPad_TickKeyRepeat(Ov130S *s) {
 
 extern "C" void NumberPad_ResetKeyPalettes(Ov130S *s) {
     s32 x;
-    if (s->unk_08 == 0 || s->unk_08 == 2) x = 0x12;
+    if (s->layout == 0 || s->layout == 2) x = 0x12;
     else x = 0xa;
     BgScreen_SetRectPalette((u8 *)s + 0x9b4, x, 0xc, x + 0xc, 0x13, 2);
     NumberPad_UnhighlightKey(s, 10);
@@ -463,7 +463,7 @@ extern "C" void NumberPad_SetKeyPalette(Ov130S *s, u32 idx, s32 n) {
     s32 b = sKeyX1Table[idx];
     s32 c = sKeyRowTable[idx];
     s32 d = c + 1;
-    if (s->unk_08 == 0 || s->unk_08 == 2) {
+    if (s->layout == 0 || s->layout == 2) {
         a += 8;
         b += 8;
     }
@@ -483,21 +483,21 @@ extern "C" void NumberPad_UnhighlightKey(Ov130S *s, u32 idx) {
 }
 
 extern "C" u32 NumberPad_GetCursorX(Ov130S *s) {
-    u32 t = s->unk_05;
+    u32 t = s->cursorKey;
     u32 v = sNumberPadCursorXTable[t];
-    if (s->unk_08 == 0 || s->unk_08 == 2) {
+    if (s->layout == 0 || s->layout == 2) {
         if (t <= 10) v += 0x40;
     }
     return v;
 }
 
 extern "C" u32 NumberPad_GetCursorY(Ov130S *s) {
-    return sNumberPadCursorYTable[s->unk_05];
+    return sNumberPadCursorYTable[s->cursorKey];
 }
 
 extern "C" BOOL NumberPad_IsCursorOnButton(Ov130S *s) {
     BOOL r = TRUE;
-    u32 t = s->unk_05;
+    u32 t = s->cursorKey;
     if (t != 0xb && t != 0xc) r = FALSE;
     return r;
 }
@@ -505,25 +505,25 @@ extern "C" BOOL NumberPad_IsCursorOnButton(Ov130S *s) {
 extern "C" BOOL NumberPad_MoveCursor(Ov130S *s, u32 p) {
     u32 old;
     if (p == 0) return FALSE;
-    old = s->unk_05;
-    if (MenuKeys_HasUp(p)) s->unk_05 = sNumberPadCursorUpTable[s->unk_05];
-    else if (MenuKeys_HasDown(p)) s->unk_05 = sNumberPadCursorDownTable[s->unk_05];
-    if (MenuKeys_HasLeft(p)) s->unk_05 = sNumberPadCursorLeftTable[s->unk_05];
-    else if (MenuKeys_HasRight(p)) s->unk_05 = sNumberPadCursorRightTable[s->unk_05];
-    if (old != s->unk_05) return TRUE;
+    old = s->cursorKey;
+    if (MenuKeys_HasUp(p)) s->cursorKey = sNumberPadCursorUpTable[s->cursorKey];
+    else if (MenuKeys_HasDown(p)) s->cursorKey = sNumberPadCursorDownTable[s->cursorKey];
+    if (MenuKeys_HasLeft(p)) s->cursorKey = sNumberPadCursorLeftTable[s->cursorKey];
+    else if (MenuKeys_HasRight(p)) s->cursorKey = sNumberPadCursorRightTable[s->cursorKey];
+    if (old != s->cursorKey) return TRUE;
     return FALSE;
 }
 
 extern "C" BOOL NumberPad_PressCursorKey(Ov130S *s) {
-    u32 t = s->unk_05;
+    u32 t = s->cursorKey;
     if ((u8)(t + 0xf5) <= 1) return FALSE;
-    s->unk_04 = t;
+    s->pressedKey = t;
     NumberPad_PressKey(s);
     return TRUE;
 }
 
 extern "C" BOOL NumberPad_IsCursorOnOk(Ov130S *s) {
-    if (s->unk_05 == 0xb) return TRUE;
+    if (s->cursorKey == 0xb) return TRUE;
     return FALSE;
 }
 
@@ -538,53 +538,53 @@ extern "C" void NumberPad_Draw(Ov130S *s, s32 y) {
     s32 r6 = r4 + 0x60;
     u32 *t1;
     u32 *t2;
-    if (s->unk_08 == 0 || s->unk_08 == 2) {
+    if (s->layout == 0 || s->layout == 2) {
         t1 = data_ov130_022934d8;
         t2 = data_ov130_022935e8;
-    } else if (s->unk_08 == 4) {
+    } else if (s->layout == 4) {
         t1 = data_ov130_02293518;
         t2 = data_ov130_022935a8;
     } else {
         t1 = data_ov130_02293518;
         t2 = data_ov130_02293568;
     }
-    if (s->unk_09 == 3) r6 += 10;
+    if (s->objVariant == 3) r6 += 10;
     Oam_DrawCell(1, t1, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(1, t2, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     r4 += 0x60;
-    if (s->unk_08 == 4) return;
-    if (s->unk_08 == 0 || s->unk_08 == 2) {
-        if (s->unk_0c >= 1000) Oam_DrawObj(1, sSeparatorCellsWide, 0x80, r4, -1, 2, 0);
-        if (s->unk_0c >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 2), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 4), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 6), 0x80, r4, -1, 2, 0);
-        if (s->unk_20 >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 8), 0x80, r4, -1, 2, 0);
-        if (s->unk_20 >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 10), 0x80, r4, -1, 2, 0);
+    if (s->layout == 4) return;
+    if (s->layout == 0 || s->layout == 2) {
+        if (s->value >= 1000) Oam_DrawObj(1, sSeparatorCellsWide, 0x80, r4, -1, 2, 0);
+        if (s->value >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 2), 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 4), 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 6), 0x80, r4, -1, 2, 0);
+        if (s->shownBottomAmount >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 8), 0x80, r4, -1, 2, 0);
+        if (s->shownBottomAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 10), 0x80, r4, -1, 2, 0);
     } else {
-        if (s->unk_08 == 5) r4 -= 8;
-        if (s->unk_0c >= 1000) Oam_DrawObj(1, (sSeparatorCells + 4), 0x80, r4, -1, 2, 0);
-        if (s->unk_0c >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 6), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000) Oam_DrawObj(1, sSeparatorCells, 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 2), 0x80, r4, -1, 2, 0);
+        if (s->layout == 5) r4 -= 8;
+        if (s->value >= 1000) Oam_DrawObj(1, (sSeparatorCells + 4), 0x80, r4, -1, 2, 0);
+        if (s->value >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 6), 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000) Oam_DrawObj(1, sSeparatorCells, 0x80, r4, -1, 2, 0);
+        if (s->shownTopAmount >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 2), 0x80, r4, -1, 2, 0);
     }
 }
 
 extern "C" void NumberPad_SetAmounts(Ov130S *s, s32 a, s32 b, s32 c) {
-    s->unk_10 = a;
-    s->unk_14 = b;
-    s->unk_18 = c;
+    s->maxValue = a;
+    s->topAmount = b;
+    s->bottomAmount = c;
 }
 
 extern "C" s32 NumberPad_GetValue(Ov130S *s) {
-    return s->unk_0c;
+    return s->value;
 }
 
 extern "C" s32 NumberPad_GetTopAmount(Ov130S *s) {
-    return s->unk_14;
+    return s->topAmount;
 }
 
 extern "C" s32 NumberPad_GetBottomAmount(Ov130S *s) {
-    return s->unk_18;
+    return s->bottomAmount;
 }
 
 extern "C" void NumberPad_PlayKeySe(u32 idx) {
@@ -596,8 +596,8 @@ extern "C" void NumberPad_PlayCancelSe() {
 }
 
 extern "C" BOOL NumberPad_ClearValue(Ov130S *s) {
-    if (s->unk_0c == 0) return FALSE;
-    s->unk_0c = 0;
+    if (s->value == 0) return FALSE;
+    s->value = 0;
     NumberPad_PlayCancelSe();
     NumberPad_RedrawValues(s);
     return TRUE;
@@ -605,57 +605,57 @@ extern "C" BOOL NumberPad_ClearValue(Ov130S *s) {
 
 extern "C" void NumberPad_ApplyKey(Ov130S *s) {
     s32 n;
-    s32 v = s->unk_0c;
-    u32 k = s->unk_04;
+    s32 v = s->value;
+    u32 k = s->pressedKey;
     if (k == 10) {
         if (!NumberPad_ClearValue(s)) Snd_PlaySe(0x34);
     } else {
         n = k + v * 10;
-        if (n > s->unk_10) n = s->unk_10;
+        if (n > s->maxValue) n = s->maxValue;
         if (n == v) {
             Snd_PlaySe(0x34);
         } else {
             NumberPad_PlayKeySe(k);
-            s->unk_0c = n;
+            s->value = n;
             NumberPad_RedrawValues(s);
         }
     }
 }
 
 extern "C" void NumberPad_RedrawValues(Ov130S *s) {
-    u32 m = s->unk_08;
+    u32 m = s->layout;
     u32 a = sDigitColumnTable[m];
     u32 b = sDigitRowTable[m];
     switch (m) {
     case 4:
-        if (s->unk_0c == 0) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b, 2);
-        else Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->unk_0c, a, b, 2);
+        if (s->value == 0) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b, 2);
+        else Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b, 2);
         break;
     case 5:
-        if (s->unk_0c == 0) {
+        if (s->value == 0) {
             Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, 0, a, b, 9);
             Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b, 7);
         } else {
-            Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->unk_0c, a, b, 7);
+            Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b, 7);
         }
         break;
     default:
-        s->unk_1c = s->unk_14;
-        if (s->unk_08 >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->unk_1c, a, b, 9);
-        else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->unk_1c, a, b, 6);
-        if (s->unk_0c == 0) {
-            if (s->unk_08 >= 2) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b + 3, 9);
+        s->shownTopAmount = s->topAmount;
+        if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->shownTopAmount, a, b, 9);
+        else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->shownTopAmount, a, b, 6);
+        if (s->value == 0) {
+            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_FillSmallDigits(s, 10, a, b + 3, 9);
             else Unk_ov130_022925c8_Imp::NumberPad_FillLargeDigits(s, 10, a, b + 3, 6);
         } else {
-            if (s->unk_08 >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->unk_0c, a, b + 3, 9);
-            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->unk_0c, a, b + 3, 6);
+            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->value, a, b + 3, 9);
+            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->value, a, b + 3, 6);
         }
-        if (s->unk_08 == 0 || s->unk_08 == 2) {
-            s32 t = s->unk_18;
-            if (s->unk_07 != 0) t += s->unk_0c;
-            s->unk_20 = t;
-            if (s->unk_08 >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->unk_20, a, b + 6, 9);
-            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->unk_20, a, b + 6, 6);
+        if (s->layout == 0 || s->layout == 2) {
+            s32 t = s->bottomAmount;
+            if (s->entryMode != 0) t += s->value;
+            s->shownBottomAmount = t;
+            if (s->layout >= 2) Unk_ov130_022925c8_Imp::NumberPad_PrintSmallNumber(s, s->shownBottomAmount, a, b + 6, 9);
+            else Unk_ov130_022925c8_Imp::NumberPad_PrintLargeNumber(s, s->shownBottomAmount, a, b + 6, 6);
         }
     }
 }
@@ -734,14 +734,14 @@ extern "C" void NumberPad_PutSmallDigit(Ov130S *s, s32 idx, s32 x, s32 y) {
 
 extern "C" void NumberPad_ReleaseLabels(Ov130S *s) {
     s32 i;
-    s->unk_06 = 0;
+    s->labelCount = 0;
     for (i = 0; i < 5; i++) _ZN11LabelString12destroyLabelEv(s->slots[i]);
 }
 
 extern "C" void *NumberPad_AllocLabel(Ov130S *s) {
-    if (s->unk_06 >= 5) return (u8 *)s + 0x12c;
-    s->unk_06++;
-    return s->slots[s->unk_06 - 1];
+    if (s->labelCount >= 5) return (u8 *)s + 0x12c;
+    s->labelCount++;
+    return s->slots[s->labelCount - 1];
 }
 
 extern "C" BOOL NumberPad_TestFlags(Ov130S *s, u32 m) {

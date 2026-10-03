@@ -271,15 +271,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 typedef void (CatalogMenu::*Unk_ov142_02294da8_Fn)();
@@ -546,7 +546,7 @@ extern "C" CatalogMenu *CatalogMenu_Create() { return new CatalogMenu(); }
 
 BOOL CatalogMenu::vfunc_00() {
     initCatalog();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -653,7 +653,7 @@ BOOL CatalogMenu::execTransition() {
         *(Unk_ov142_02294da8_Fn *)data_ov142_02294cf0,
         *(Unk_ov142_02294da8_Fn *)data_ov142_02294ce8};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -682,7 +682,7 @@ void CatalogMenu::runMainState() {
         *(Unk_ov142_02294da8_Fn *)data_ov142_02294cb8,
         *(Unk_ov142_02294da8_Fn *)data_ov142_02294cb0,
         *(Unk_ov142_02294da8_Fn *)data_ov142_02294c68};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL CatalogMenu::execMain() {
@@ -1081,7 +1081,7 @@ void CatalogMenu::confirmOrder() {
 void CatalogMenu::cancelOrderConfirm() {
     Snd_PlaySe(0x2a);
     unk_194.setSelected(4);
-    unk_8c = 6;
+    transitionState = 6;
     initSlideOut(0, 0);
     setMainState(0xd);
     setFlags(0x80);
@@ -1258,7 +1258,7 @@ void CatalogMenu::moveCursorToTarget() {
 
 void CatalogMenu::moveCursorTo(s32 a, s32 b) {
     unk_e8.moveToEase(a, b, 3, 1);
-    unk_ba = unk_8d;
+    unk_ba = mainState;
     setMainState(8);
 }
 
@@ -1274,7 +1274,7 @@ void CatalogMenu::pressCursor() {
 
 void CatalogMenu::releaseCursor() {
     unk_e8.setPoseRelease();
-    unk_ba = unk_8d;
+    unk_ba = mainState;
     setMainState(10);
 }
 

@@ -101,8 +101,8 @@ public:
     void enterIdle();
     void setState(s32 state);
 
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ SaveMenuTalk unk_54;
+    /* 0x50 */ s32 saveMenuState;
+    /* 0x54 */ SaveMenuTalk talk;
 };
 
 typedef void (SaveMenu::*Unk_020e23fc_Fn)();
@@ -446,7 +446,7 @@ extern "C" SaveMenu *SaveMenu_Create() {
 }
 
 BOOL SaveMenu::vfunc_00() {
-    unk_54.setOwner(this);
+    talk.setOwner(this);
     return TRUE;
 }
 
@@ -514,8 +514,8 @@ BOOL SaveMenu::onExecute() {
         PlayerInventory_SetWallet(_ZN10PlayerData12getInventoryEv(r6), r4, 1);
         *DebugVar_GetPtr(0, 0x48) = 0;
     }
-    if (sSaveMenuStates[unk_50].update != 0) {
-        (this->*sSaveMenuStates[unk_50].update)();
+    if (sSaveMenuStates[saveMenuState].update != 0) {
+        (this->*sSaveMenuStates[saveMenuState].update)();
     }
     return TRUE;
 }
@@ -524,7 +524,7 @@ void SaveMenu::setState(s32 state) {
     if (sSaveMenuStates[state].enter != 0) {
         (this->*sSaveMenuStates[state].enter)();
     }
-    unk_50 = state;
+    saveMenuState = state;
 }
 
 void SaveMenu::enterIdle() {}
@@ -555,19 +555,19 @@ void SaveMenu::enterOpenTalk() {}
 void SaveMenu::updateOpenTalk() {
     if (TalkRequest_IsSaveMenuRunning() != 0) {
         TalkWindowState *o = TalkWindow_Get(0);
-        SaveMenuTalk *p = &unk_54;
+        SaveMenuTalk *p = &talk;
         p->vfunc_08();
         if (GameStart_IsNewTown() != 0 || GameStart_IsNewResident() != 0) {
-            _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence4");
-            unk_54.unk_1e = 4;
+            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence4");
+            talk.unk_1e = 4;
         } else if (_ZN11CommManager8isOnlineEv(gCommManager) != 0) {
-            _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence2");
-            unk_54.unk_1e = 4;
+            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
+            talk.unk_1e = 4;
         } else {
-            _ZN10MsgRequest11setFileNameEPKc(&unk_54, (u8 *)"sp_etc_sequence2");
-            unk_54.unk_1e = 0;
+            _ZN10MsgRequest11setFileNameEPKc(&talk, (u8 *)"sp_etc_sequence2");
+            talk.unk_1e = 0;
         }
-        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &unk_54);
+        _ZN15TalkWindowState13attachRequestEP14TalkMsgRequest(o, &talk);
         o->unk_08 = 1;
         setState(2);
     } else {
@@ -603,12 +603,12 @@ void SaveMenu::updateQuitting() {
 }
 
 void SaveMenu::enterSaveA() {
-    unk_54.unk_48 = 200;
+    talk.unk_48 = 200;
     Comm_RequestSync(2);
 }
 
 void SaveMenu::updateSaveA() {
-    TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)talk.unk_3c;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->hideBusyIcon();
@@ -630,14 +630,14 @@ void SaveMenu::updateSaveA() {
 }
 
 void SaveMenu::enterSaveB() {
-    unk_54.unk_48 = 200;
+    talk.unk_48 = 200;
     Comm_RequestSync(3);
 }
 
 // SaveMenu
 
 void SaveMenu::updateSaveB() {
-    TalkWindowState *o = (TalkWindowState *)unk_54.unk_3c;
+    TalkWindowState *o = (TalkWindowState *)talk.unk_3c;
     s32 r = Comm_GetSyncState();
     if (r == 5 || r == 6) {
         o->hideBusyIcon();

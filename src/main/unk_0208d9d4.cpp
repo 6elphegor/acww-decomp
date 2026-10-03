@@ -46,12 +46,12 @@ public:
     void setState(s32 idx);
     void getAnimOffset(s32 *a, s32 *b);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -86,12 +86,12 @@ void ScrollKnob::setState(s32 idx) {
     unk_14.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
     unk_14.setPlayOnce(f);
     unk_14.restart();
-    unk_28.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
-    unk_28.setPlayOnce(f);
-    unk_28.restart();
+    priority.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
+    priority.setPlayOnce(f);
+    priority.restart();
     if (idx == 1) {
         unk_14.setSpeed(0);
-        unk_28.setSpeed(0);
+        priority.setSpeed(0);
     }
 }
 

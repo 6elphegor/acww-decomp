@@ -50,16 +50,16 @@ public:
 
     void setAnim(s32 idx);
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 class ScrollKnob : public UiWidget {
@@ -67,12 +67,12 @@ public:
     BOOL areAnimsDone();
     s32 getState();
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -82,7 +82,7 @@ s32 ScrollKnob::getState() {
 
 BOOL ScrollKnob::areAnimsDone() {
     BOOL r;
-    if (unk_14.isFinished() && unk_28.isFinished()) {
+    if (unk_14.isFinished() && priority.isFinished()) {
         r = TRUE;
     } else {
         r = FALSE;
@@ -90,12 +90,12 @@ BOOL ScrollKnob::areAnimsDone() {
     return r;
 }
 
-HandCursor::HandCursor(BOOL flag) : unk_20(0), unk_24(0), unk_28(-1) {
-    unk_40 = 0;
+HandCursor::HandCursor(BOOL flag) : unk_20(0), unk_24(0), priority(-1) {
+    anim = 0;
     unk_44 = 0x16;
-    unk_48 = flag;
-    unk_49 = 1;
-    unk_4a = 0;
+    onBufferA = flag;
+    hasLayer2 = 1;
+    objWindow = 0;
     setAnim(0);
 }
 
@@ -105,44 +105,44 @@ HandCursor::~HandCursor() {
 void HandCursor::draw() {
     void *h0;
     s32 x, y, y0, x0;
-    if (unk_40 != 0) {
-        h0 = unk_0c.getCell();
+    if (anim != 0) {
+        h0 = layer1.getCell();
         void *h1;
-        if (unk_49 != 0) {
-            h1 = unk_2c.getCell();
+        if (hasLayer2 != 0) {
+            h1 = layer2.getCell();
         } else {
             h1 = 0;
         }
-        s32 ax = unk_0c.getFrameX(-1);
-        s32 ay = unk_0c.getFrameY(-1);
-        s32 bx = unk_2c.getFrameX(-1);
-        s32 by = unk_2c.getFrameY(-1);
+        s32 ax = layer1.getFrameX(-1);
+        s32 ay = layer1.getFrameY(-1);
+        s32 bx = layer2.getFrameX(-1);
+        s32 by = layer2.getFrameY(-1);
         x = (s32)((u8 *)0 + (unk_20 + getOriginX()));
         y = (s32)((u8 *)0 + (unk_24 + getOriginY()));
         x0 = x + ax;
         y0 = y + ay;
         x += bx;
         y += by;
-        if (unk_48 != 0) {
-            Oam_DrawCell(0, h0, x0, y0, -1, unk_28, 0x1000, 0x1000, 0, -1, 0, 0);
+        if (onBufferA != 0) {
+            Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             if (h1 != 0) {
-                Oam_DrawCell(0, h1, x, y, -1, unk_28, 0x1000, 0x1000, 0, -1, 0, 0);
+                Oam_DrawCell(0, h1, x, y, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_4a != 0) {
-                Oam_DrawCell(0, h0, x0, y0, -1, unk_28, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 if (h1 != 0) {
-                    Oam_DrawCell(0, h1, x, y, -1, unk_28, 0x1000, 0x1000, 0, 2, 0, 0);
+                    Oam_DrawCell(0, h1, x, y, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         } else {
-            Oam_DrawCell(1, h0, x0, y0, -1, unk_28, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             if (h1 != 0) {
-                Oam_DrawCell(1, h1, x, y, -1, unk_28, 0x1000, 0x1000, 0, -1, 0, 0);
+                Oam_DrawCell(1, h1, x, y, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_4a != 0) {
-                Oam_DrawCell(1, h0, x0, y0, -1, unk_28, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 if (h1 != 0) {
-                    Oam_DrawCell(1, h1, x, y, -1, unk_28, 0x1000, 0x1000, 0, 2, 0, 0);
+                    Oam_DrawCell(1, h1, x, y, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         }
@@ -150,10 +150,10 @@ void HandCursor::draw() {
 }
 
 void HandCursor::vfunc_0c() {
-    if (unk_40 != 0) {
-        unk_0c.update();
-        if (unk_49 != 0) {
-            unk_2c.update();
+    if (anim != 0) {
+        layer1.update();
+        if (hasLayer2 != 0) {
+            layer2.update();
         }
     }
 }

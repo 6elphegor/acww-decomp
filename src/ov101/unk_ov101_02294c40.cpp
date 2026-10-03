@@ -231,7 +231,7 @@ public:
     void init(s32 a, s32 b, const char *path);
     u32 unk_04[(0x2f4 - 4) / 4];
     u8 unk_2f4[5];
-    u8 unk_2f9[7];
+    u8 choiceValues[7];
 };
 
 class MenuErrorMessage {
@@ -299,15 +299,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
     /* 0x91 */ u8 unk_91[3];
 };
 
@@ -316,7 +316,7 @@ typedef void (PocketItemSelectMenu::*Unk_ov101_02296b38_Fn)();
 class PocketItemSelectMenu : public MenuProc {
 public:
     PocketItemSelectMenu()
-        : unk_bc(), unk_f4(), unk_b54(), unk_b7c(), unk_215c(), unk_221c(), unk_2234(), unk_2298(), unk_2598(), unk_26a0() {}
+        : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), bottomButtons() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -430,36 +430,36 @@ public:
     void transitionAct00();
     void runMainState();
 
-    /* 0x0094 */ u32 unk_94;
-    /* 0x0098 */ s32 unk_98;
-    /* 0x009c */ s32 unk_9c;
-    /* 0x00a0 */ s32 unk_a0;
-    /* 0x00a4 */ s32 unk_a4;
-    /* 0x00a8 */ s32 unk_a8;
-    /* 0x00ac */ u16 unk_ac;
-    /* 0x00ae */ u8 unk_ae;
-    /* 0x00af */ u8 unk_af;
-    /* 0x00b0 */ u8 unk_b0;
-    /* 0x00b1 */ u8 unk_b1;
-    /* 0x00b2 */ u8 unk_b2;
-    /* 0x00b3 */ u8 unk_b3;
-    /* 0x00b4 */ u8 unk_b4;
-    /* 0x00b5 */ u8 unk_b5;
-    /* 0x00b6 */ u8 unk_b6;
-    /* 0x00b7 */ u8 unk_b7;
-    /* 0x00b8 */ u8 unk_b8;
-    /* 0x00b9 */ u8 unk_b9;
+    /* 0x0094 */ u32 stateFlags;
+    /* 0x0098 */ s32 slideY;
+    /* 0x009c */ s32 dragOffsetX;
+    /* 0x00a0 */ s32 dragOffsetY;
+    /* 0x00a4 */ s32 handX;
+    /* 0x00a8 */ s32 handY;
+    /* 0x00ac */ u16 handItem;
+    /* 0x00ae */ u8 handItemFlags;
+    /* 0x00af */ u8 handKind;
+    /* 0x00b0 */ u8 touchedSlot;
+    /* 0x00b1 */ u8 balloonSlot;
+    /* 0x00b2 */ u8 heldSlot;
+    /* 0x00b3 */ u8 cursorSlot;
+    /* 0x00b4 */ u8 selectedSlot;
+    /* 0x00b5 */ u8 targetSlot;
+    /* 0x00b6 */ u8 returnState;
+    /* 0x00b7 */ u8 popupChoice;
+    /* 0x00b8 */ u8 popupRow;
+    /* 0x00b9 */ u8 touchHoldDelay;
     /* 0x00ba */ u8 unk_ba[2];
-    /* 0x00bc */ BgVramTaskPair unk_bc[1];
-    /* 0x00f4 */ InventoryItemGrid unk_f4;
-    /* 0x0b54 */ LetterGrid unk_b54;
-    /* 0x0b7c */ InventoryBg unk_b7c;
-    /* 0x215c */ TouchPromptBalloon unk_215c;
-    /* 0x221c */ CursorMotion unk_221c;
-    /* 0x2234 */ MenuCursorBuf0 unk_2234;
-    /* 0x2298 */ PopupChoiceMenu unk_2298;
-    /* 0x2598 */ MenuErrorMessage unk_2598;
-    /* 0x26a0 */ MenuBottomButtons unk_26a0;
+    /* 0x00bc */ BgVramTaskPair bgTasks[1];
+    /* 0x00f4 */ InventoryItemGrid pocketGrid;
+    /* 0x0b54 */ LetterGrid letterGrid;
+    /* 0x0b7c */ InventoryBg inventoryBg;
+    /* 0x215c */ TouchPromptBalloon nameBalloon;
+    /* 0x221c */ CursorMotion flyMotion;
+    /* 0x2234 */ MenuCursorBuf0 cursor;
+    /* 0x2298 */ PopupChoiceMenu popup;
+    /* 0x2598 */ MenuErrorMessage errorMessage;
+    /* 0x26a0 */ MenuBottomButtons bottomButtons;
 };
 
 extern "C" PocketItemSelectMenu *PocketItemSelectMenu_Create() { return new PocketItemSelectMenu(); }
@@ -479,20 +479,20 @@ BOOL PocketItemSelectMenu::vfunc_0c() {
 
 BOOL PocketItemSelectMenu::onDraw() {
     s32 t;
-    PopupChoice_Draw(&unk_2298);
+    PopupChoice_Draw(&popup);
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_215c.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        unk_2234.drawWrapped();
+        cursor.drawWrapped();
     }
     if (testFlags(2)) {
-        unk_26a0.drawAt(unk_98);
-        t = unk_98 - 0x10;
-        InventoryItemGrid_DrawPockets(&unk_f4, 0, t);
-        unk_b54.drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&unk_b7c, t);
+        bottomButtons.drawAt(slideY);
+        t = slideY - 0x10;
+        InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
+        letterGrid.drawPocketLetters(0, t);
+        InventoryBg_DrawSprite(&inventoryBg, t);
     }
     return TRUE;
 }
@@ -517,7 +517,7 @@ BOOL PocketItemSelectMenu::execTransition() {
         &PocketItemSelectMenu::transitionAct02, &PocketItemSelectMenu::transitionAct03,
         &PocketItemSelectMenu::transitionAct04};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -536,7 +536,7 @@ void PocketItemSelectMenu::runMainState() {
         &PocketItemSelectMenu::mainAct12, &PocketItemSelectMenu::mainAct13,
         &PocketItemSelectMenu::mainAct14, &PocketItemSelectMenu::mainAct15,
         &PocketItemSelectMenu::mainAct16, &PocketItemSelectMenu::mainAct17};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL PocketItemSelectMenu::execMain() {
@@ -563,18 +563,18 @@ void PocketItemSelectMenu::transitionAct00() {
 
 void PocketItemSelectMenu::transitionAct01() {
     loadObjGraphics();
-    unk_26a0.setLayoutSingle05(0x65);
-    InventoryItemGrid_LoadPockets(&unk_f4);
+    bottomButtons.setLayoutSingle05(0x65);
+    InventoryItemGrid_LoadPockets(&pocketGrid);
     disableFilteredPockets();
-    LetterGrid_LoadPocketLetters(&unk_b54);
-    unk_b54.highlightLetterKinds(0xf);
+    LetterGrid_LoadPocketLetters(&letterGrid);
+    letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, -16);
     setTransitionState(2);
     setFlags(1);
     setFlags(2);
-    unk_98 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void PocketItemSelectMenu::transitionAct02() {
@@ -583,17 +583,17 @@ void PocketItemSelectMenu::transitionAct02() {
         resumeInput();
     }
     applySlideOffset(6, 0, -16);
-    unk_98 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void PocketItemSelectMenu::transitionAct03() {
-    unk_215c.hide(1);
+    nameBalloon.hide(1);
     hideCursor();
     ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
     beginSubSlideOut(8, 0, 0, 0x30);
     applySlideOffset(6, 0, -16);
     setTransitionState(4);
-    unk_98 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void PocketItemSelectMenu::transitionAct04() {
@@ -605,33 +605,33 @@ void PocketItemSelectMenu::transitionAct04() {
     } else {
         applySlideOffset(6, 0, -16);
     }
-    unk_98 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void PocketItemSelectMenu::initParts() {
-    unk_94 = 0;
-    InventoryItemGrid_Init(&unk_f4, 2);
-    unk_b54.init(2);
-    InventoryBg_Init(&unk_b7c, 6);
-    unk_b1 = 0x10;
-    unk_221c.reset();
-    unk_af = 0;
-    unk_b3 = 0;
-    unk_2298.init(3, 1, 0);
-    unk_b9 = 0;
+    stateFlags = 0;
+    InventoryItemGrid_Init(&pocketGrid, 2);
+    letterGrid.init(2);
+    InventoryBg_Init(&inventoryBg, 6);
+    balloonSlot = 0x10;
+    flyMotion.reset();
+    handKind = 0;
+    cursorSlot = 0;
+    popup.init(3, 1, 0);
+    touchHoldDelay = 0;
 }
 
 void PocketItemSelectMenu::releaseResources() {
     cancelBgTasks();
-    InventoryBg_Exit(&unk_b7c);
-    InventoryItemGrid_Exit(&unk_f4);
-    PopupChoice_ForceClose(&unk_2298);
-    unk_26a0.freeTexts();
+    InventoryBg_Exit(&inventoryBg);
+    InventoryItemGrid_Exit(&pocketGrid);
+    PopupChoice_ForceClose(&popup);
+    bottomButtons.freeTexts();
 }
 
 void PocketItemSelectMenu::preInputUpdate() {
     preStateUpdate();
-    unk_2234.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void PocketItemSelectMenu::postInputUpdate() {
@@ -640,16 +640,16 @@ void PocketItemSelectMenu::postInputUpdate() {
 
 void PocketItemSelectMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&unk_b7c);
-    InventoryItemGrid_PreUpdate(&unk_f4);
-    unk_b54.updateCursorLift();
-    unk_26a0.freeTexts();
+    InventoryBg_PreUpdate(&inventoryBg);
+    InventoryItemGrid_PreUpdate(&pocketGrid);
+    letterGrid.updateCursorLift();
+    bottomButtons.freeTexts();
 }
 
 void PocketItemSelectMenu::postStateUpdate() {
-    PopupChoice_Update(&unk_2298);
-    InventoryBg_Update(&unk_b7c);
-    if (unk_215c.updatePrompt()) {
+    PopupChoice_Update(&popup);
+    InventoryBg_Update(&inventoryBg);
+    if (nameBalloon.updatePrompt()) {
         placeBalloon();
     }
 }
@@ -660,12 +660,12 @@ void PocketItemSelectMenu::setupBgLayer6() {
 }
 
 void PocketItemSelectMenu::loadInventoryBg() {
-    InventoryBg_Load(&unk_b7c, 0);
+    InventoryBg_Load(&inventoryBg, 0);
 }
 
 void PocketItemSelectMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&unk_b7c);
-    MenuButtons_LoadTextColors(&unk_26a0);
+    InventoryBg_LoadObjGraphics(&inventoryBg);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void PocketItemSelectMenu::mainAct00() {
@@ -677,8 +677,8 @@ void PocketItemSelectMenu::mainAct00() {
             if (r != 0x10) {
                 beginTouchOnSlot(r);
             } else {
-                if (unk_26a0.isTouched(9)) {
-                    unk_26a0.setSelected(9);
+                if (bottomButtons.isTouched(9)) {
+                    bottomButtons.setSelected(9);
                     setMainState(0x17);
                     Snd_PlaySe(0x28);
                 }
@@ -689,23 +689,23 @@ void PocketItemSelectMenu::mainAct00() {
 
 void PocketItemSelectMenu::mainAct01() {
     if (gTouchHeld == 0) {
-        if (isSlotDisabled(unk_b0)) {
+        if (isSlotDisabled(touchedSlot)) {
             setMainState(0);
-            unk_215c.setAutoCloseTimer(0x3c);
+            nameBalloon.setAutoCloseTimer(0x3c);
         } else {
             setMainState(3);
             runMainState();
         }
     } else {
-        if (isSlotDisabled(unk_b0) == 0 && unk_215c.isOpenOrOpening()) {
-            if (*(volatile u8 *)&unk_b9 != 0) {
-                unk_b9 = unk_b9 - 1;
+        if (isSlotDisabled(touchedSlot) == 0 && nameBalloon.isOpenOrOpening()) {
+            if (*(volatile u8 *)&touchHoldDelay != 0) {
+                touchHoldDelay = touchHoldDelay - 1;
             } else {
-                selectPocket(unk_b0, 1);
+                selectPocket(touchedSlot, 1);
                 setMainState(2);
             }
         } else {
-            unk_215c.commitOpen();
+            nameBalloon.commitOpen();
         }
     }
 }
@@ -717,26 +717,26 @@ void PocketItemSelectMenu::mainAct02() {
 }
 
 void PocketItemSelectMenu::mainAct03() {
-    if (unk_215c.isOpenOrOpening()) {
-        if (*(volatile u8 *)&unk_b9 != 0) {
-            unk_b9 = unk_b9 - 1;
+    if (nameBalloon.isOpenOrOpening()) {
+        if (*(volatile u8 *)&touchHoldDelay != 0) {
+            touchHoldDelay = touchHoldDelay - 1;
         } else {
-            selectPocket(unk_b0, 1);
+            selectPocket(touchedSlot, 1);
             setMainState(2);
         }
     }
 }
 
 void PocketItemSelectMenu::mainAct04() {
-    if (((PopupChoiceMenuBody *)&unk_2298)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (checkSwitchToButtons(1)) {
             cancelPopupForButtons();
         } else {
             if (Unk_ov101_02296280_Both()) {
-                s32 t = ((PopupChoiceMenuBody *)&unk_2298)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+                s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
                 if (t >= 0) {
-                    PopupChoice_DecideRow(&unk_2298, t, 1);
-                    unk_b7 = unk_2298.unk_2f9[t - 0];
+                    PopupChoice_DecideRow(&popup, t, 1);
+                    popupChoice = popup.choiceValues[t - 0];
                     setMainState(0x14);
                 }
             }
@@ -747,46 +747,46 @@ void PocketItemSelectMenu::mainAct04() {
 void PocketItemSelectMenu::mainAct05() {
     getDragPos();
     clearHoverSlot();
-    s32 r = getSlotAt(unk_a4 + 8, unk_a8 + 8, 0);
+    s32 r = getSlotAt(handX + 8, handY + 8, 0);
     if (r != 0x10) {
         if (gTouchHeld == 0) {
             if (dropHeldOnSlot(r) == 0) {
-                flyHeldTo(unk_b2, 4);
+                flyHeldTo(heldSlot, 4);
             }
             resumeInput();
         } else {
             setHoverSlot(r);
         }
     } else if (gTouchHeld == 0) {
-        flyHeldTo(unk_b2, 4);
+        flyHeldTo(heldSlot, 4);
     }
 }
 
 void PocketItemSelectMenu::mainAct06() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        unk_215c.hide(1);
+        nameBalloon.hide(1);
     } else if (moveCursorByPad((void *)takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
-        unk_215c.hide(0);
-    } else if (isSlotDisabled(unk_b3) == 0 && (gPad[1] & 1) != 0) {
-        if (isPocketSlot(unk_b3)) {
-            if (isSlotEmpty(unk_b3) == 0) {
-                selectPocket(unk_b3, 0);
+        nameBalloon.hide(0);
+    } else if (isSlotDisabled(cursorSlot) == 0 && (gPad[1] & 1) != 0) {
+        if (isPocketSlot(cursorSlot)) {
+            if (isSlotEmpty(cursorSlot) == 0) {
+                selectPocket(cursorSlot, 0);
             }
-        } else if (unk_b3 == 0xf) {
+        } else if (cursorSlot == 0xf) {
             pressCloseButton();
         }
     } else {
         if ((gPad[1] & 2) != 0) {
             hideCursor();
-            unk_26a0.setSelected(9);
+            bottomButtons.setSelected(9);
             setMainState(0x17);
             Snd_PlaySe(0x28);
-            unk_215c.hide(0);
+            nameBalloon.hide(0);
         } else {
-            unk_215c.commitOpen();
+            nameBalloon.commitOpen();
         }
     }
 }
@@ -795,22 +795,22 @@ void PocketItemSelectMenu::mainAct07() {
     if (moveCursorByPad((void *)takeRepeatedKeys())) {
         updateBalloonForCursor();
         moveCursorToTarget();
-        unk_215c.hide(0);
+        nameBalloon.hide(0);
     } else {
         u16 f = gPad[1];
         if ((f & 1) != 0) {
-            if (isPocketSlot(unk_b3)) {
-                if (isSlotEmpty(unk_b3)) {
-                    beginPutDownAt(unk_b3);
+            if (isPocketSlot(cursorSlot)) {
+                if (isSlotEmpty(cursorSlot)) {
+                    beginPutDownAt(cursorSlot);
                 } else {
-                    beginSwapAt(unk_b3);
+                    beginSwapAt(cursorSlot);
                 }
             }
         } else if ((f & 2) != 0) {
-            beginPutDownAt(unk_b2);
+            beginPutDownAt(heldSlot);
         } else {
             getHandPos();
-            unk_215c.commitOpen();
+            nameBalloon.commitOpen();
         }
     }
 }
@@ -819,12 +819,12 @@ void PocketItemSelectMenu::mainAct08() {
     if (checkSwitchToTouch()) {
         cancelPopupForButtons();
     } else {
-        if (PopupChoice_MoveCursor(&unk_2298, takeRepeatedKeys(), &unk_b8, 0)) {
+        if (PopupChoice_MoveCursor(&popup, takeRepeatedKeys(), &popupRow, 0)) {
             moveCursorToPopupRow();
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                ((MenuCursor *)&unk_2234)->setPosePress();
+                ((MenuCursor *)&cursor)->setPosePress();
                 setMainState(9);
             } else if (k & 2) {
                 cancelPopup();
@@ -834,18 +834,18 @@ void PocketItemSelectMenu::mainAct08() {
 }
 
 void PocketItemSelectMenu::mainAct09() {
-    if (unk_2234.isAnimDone()) {
-        PopupChoice_DecideRow(&unk_2298, unk_b8, 1);
-        unk_b7 = unk_2298.unk_2f9[unk_b8];
+    if (cursor.isAnimDone()) {
+        PopupChoice_DecideRow(&popup, popupRow, 1);
+        popupChoice = popup.choiceValues[popupRow];
         setMainState(0x14);
     }
 }
 
 void PocketItemSelectMenu::mainAct0A() {
-    if (!unk_2234.isMoving()) {
-        setMainState(unk_b6);
-        if ((u8)(unk_b6 + 0xfa) <= 1) {
-            setFocusSlot(unk_b3);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
+        if ((u8)(returnState + 0xfa) <= 1) {
+            setFocusSlot(cursorSlot);
         }
         runMainState();
     }
@@ -853,38 +853,38 @@ void PocketItemSelectMenu::mainAct0A() {
 }
 
 void PocketItemSelectMenu::mainAct0B() {
-    if (unk_2234.isAnimDone()) {
-        unk_26a0.setSelected(9);
+    if (cursor.isAnimDone()) {
+        bottomButtons.setSelected(9);
         setMainState(0x17);
         Snd_PlaySe(0x28);
     }
 }
 
 void PocketItemSelectMenu::mainAct0C() {
-    if (unk_2234.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
         setMainState(6);
     }
 }
 
 void PocketItemSelectMenu::mainAct0D() {
-    if (unk_2234.func_ov002_02202928()) {
-        pickUpAtSlot(unk_b3);
+    if (cursor.func_ov002_02202928()) {
+        pickUpAtSlot(cursorSlot);
         setMainState(0xe);
     }
 }
 
 void PocketItemSelectMenu::mainAct0E() {
-    if (unk_2234.isAnimDone()) {
-        setMainState(unk_b6);
+    if (cursor.isAnimDone()) {
+        setMainState(returnState);
     }
     getHandPos();
 }
 
 void PocketItemSelectMenu::mainAct0F() {
-    if (!unk_2234.func_ov002_02202928()) {
-        u32 a = unk_b5;
-        if (unk_b3 == a) {
+    if (!cursor.func_ov002_02202928()) {
+        u32 a = targetSlot;
+        if (cursorSlot == a) {
             dropHeldOnSlot(a);
             updateBalloonForCursor();
             setMainState(6);
@@ -897,8 +897,8 @@ void PocketItemSelectMenu::mainAct0F() {
 }
 
 void PocketItemSelectMenu::mainAct10() {
-    if (!unk_2234.func_ov002_022028fc()) {
-        exchangeHeldWith(unk_b5);
+    if (!cursor.func_ov002_022028fc()) {
+        exchangeHeldWith(targetSlot);
         setFlags(0x20);
         setMainState(0x11);
         updateBalloonForCursor();
@@ -908,18 +908,18 @@ void PocketItemSelectMenu::mainAct10() {
 }
 
 void PocketItemSelectMenu::mainAct11() {
-    if (unk_2234.isAnimDone()) {
-        setMainState(unk_b6);
+    if (cursor.isAnimDone()) {
+        setMainState(returnState);
     }
-    if (unk_2234.func_ov002_02202928()) {
+    if (cursor.func_ov002_02202928()) {
         clearFlags(0x20);
         getHandPos();
     }
 }
 
 void PocketItemSelectMenu::mainAct12() {
-    if (unk_221c.update()) {
-        releaseHeldTo(unk_b2);
+    if (flyMotion.update()) {
+        releaseHeldTo(heldSlot);
         resumeInput();
     } else {
         getFlyPos();
@@ -927,7 +927,7 @@ void PocketItemSelectMenu::mainAct12() {
 }
 
 void PocketItemSelectMenu::mainAct13() {
-    if (((PopupChoiceMenuBody *)&unk_2298)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(8);
@@ -938,10 +938,10 @@ void PocketItemSelectMenu::mainAct13() {
 }
 
 void PocketItemSelectMenu::mainAct14() {
-    if (PopupChoice_TickDecideDelay(&unk_2298)) {
-        PopupChoice_Close(&unk_2298, 0);
-        unk_215c.hide(1);
-        if (unk_2234.getAnim()) {
+    if (PopupChoice_TickDecideDelay(&popup)) {
+        PopupChoice_Close(&popup, 0);
+        nameBalloon.hide(1);
+        if (cursor.getAnim()) {
             showCursorAtSlot();
         }
         setMainState(0x15);
@@ -949,25 +949,25 @@ void PocketItemSelectMenu::mainAct14() {
 }
 
 void PocketItemSelectMenu::mainAct15() {
-    if (((PopupChoiceMenuBody *)&unk_2298)->isClosed()) {
+    if (((PopupChoiceMenuBody *)&popup)->isClosed()) {
         onPopupChoice();
     }
 }
 
 void PocketItemSelectMenu::mainAct16() {
-    if (unk_2598.update(0)) {
-        setMainState(unk_b6);
-        unk_2234.enableObjWindow();
+    if (errorMessage.update(0)) {
+        setMainState(returnState);
+        cursor.enableObjWindow();
     }
 }
 
 void PocketItemSelectMenu::mainAct17() {
-    if (unk_26a0.stepPress()) {
-        if (unk_2234.getAnim()) {
-            s32 r4 = unk_26a0.getPressOffset();
-            s32 r6 = unk_26a0.getTargetX(-1);
-            s32 r2 = unk_26a0.getTargetY(-1);
-            unk_2234.warpTo(r4 + r6, r4 + r2);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 r4 = bottomButtons.getPressOffset();
+            s32 r6 = bottomButtons.getTargetX(-1);
+            s32 r2 = bottomButtons.getTargetY(-1);
+            cursor.warpTo(r4 + r6, r4 + r2);
         }
     } else {
         closeWithoutChoice();
@@ -981,12 +981,12 @@ void PocketItemSelectMenu::startTouchInput() {
 }
 
 void PocketItemSelectMenu::startButtonInput() {
-    unk_b1 = 0x10;
+    balloonSlot = 0x10;
     showCursor();
     restartKeyRepeat();
     updateBalloonForCursor();
     setMainState(6);
-    setFocusSlot(unk_b3);
+    setFocusSlot(cursorSlot);
 }
 
 void PocketItemSelectMenu::resumeInput() {
@@ -999,41 +999,41 @@ void PocketItemSelectMenu::resumeInput() {
 
 void PocketItemSelectMenu::beginTouchOnSlot(u32 a) {
     u32 r6, r7;
-    unk_b0 = a;
+    touchedSlot = a;
     setMainState(1);
     r6 = gTouchCurX;
     r7 = gTouchCurY;
-    unk_9c = getSlotX(unk_b0) - r6;
-    unk_a0 = getSlotY(unk_b0) - r7;
-    unk_b1 = a;
-    unk_215c.queueOpen();
-    unk_215c.commitOpen();
-    unk_b9 = 2;
+    dragOffsetX = getSlotX(touchedSlot) - r6;
+    dragOffsetY = getSlotY(touchedSlot) - r7;
+    balloonSlot = a;
+    nameBalloon.queueOpen();
+    nameBalloon.commitOpen();
+    touchHoldDelay = 2;
     if (!isSlotDisabled(a)) {
         Inventory_PlayTouchSe();
     }
 }
 
 void PocketItemSelectMenu::pickUpAtSlot(u32 a) {
-    unk_b2 = a;
-    unk_215c.hide(1);
+    heldSlot = a;
+    nameBalloon.hide(1);
     pickUpFrom(a);
-    if (unk_af == 1) unk_b6 = 7;
+    if (handKind == 1) returnState = 7;
     getHandPos();
 }
 
 void PocketItemSelectMenu::flyHeldTo(u32 a, u32 b) {
-    unk_b2 = a;
-    unk_221c.setPos(unk_a4, unk_a8);
+    heldSlot = a;
+    flyMotion.setPos(handX, handY);
     s32 x = getSlotX(a);
-    unk_221c.startLinear(x, getSlotY(a), b);
-    unk_221c.update();
+    flyMotion.startLinear(x, getSlotY(a), b);
+    flyMotion.update();
     getFlyPos();
     setMainState(0x12);
 }
 
 void PocketItemSelectMenu::cancelBgTasks() {
-    unk_bc[0].cancel();
+    bgTasks[0].cancel();
 }
 
 BOOL PocketItemSelectMenu::isPocketSlot(u32 a) {
@@ -1052,10 +1052,10 @@ u32 PocketItemSelectMenu::toSlotOrNone(u32 a) {
 }
 
 u32 PocketItemSelectMenu::getSlotAt(u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&unk_f4);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&pocketGrid);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(&unk_f4, t)) return 0x10;
+            if (InventoryItemGrid_IsSlotEmpty(&pocketGrid, t)) return 0x10;
         }
         return toSlotOrNone(t);
     }
@@ -1066,7 +1066,7 @@ BOOL PocketItemSelectMenu::dropHeldOnSlot(u32 a) {
     if (isPocketSlot(a)) {
         u32 t = getSlotItem(a);
         if (t != 0xfff1) {
-            putItemInSlot(unk_b2, t, getSlotItemFlags(a));
+            putItemInSlot(heldSlot, t, getSlotItemFlags(a));
         }
         releaseHeldTo(a);
         return TRUE;
@@ -1077,14 +1077,14 @@ BOOL PocketItemSelectMenu::dropHeldOnSlot(u32 a) {
 void PocketItemSelectMenu::putItemInSlot(u32 a, u32 b, u32 c) {
     if (isPocketSlot(a)) {
         u32 t = toPocketIndex(a);
-        InventoryItemGrid_SetSlotItem(&unk_f4, t, b, c);
-        InventoryItemGrid_RefreshSlot(&unk_f4, t);
+        InventoryItemGrid_SetSlotItem(&pocketGrid, t, b, c);
+        InventoryItemGrid_RefreshSlot(&pocketGrid, t);
     }
 }
 
 s32 PocketItemSelectMenu::getSlotX(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotX(&unk_f4, toPocketIndex(a));
+        return InventoryItemGrid_GetSlotX(&pocketGrid, toPocketIndex(a));
     } else if (a == 0xf) {
         return 0xbc;
     }
@@ -1093,7 +1093,7 @@ s32 PocketItemSelectMenu::getSlotX(u32 a) {
 
 s32 PocketItemSelectMenu::getSlotY(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotY(&unk_f4, toPocketIndex(a)) - 0x10;
+        return InventoryItemGrid_GetSlotY(&pocketGrid, toPocketIndex(a)) - 0x10;
     } else if (a == 0xf) {
         return 0xb6;
     }
@@ -1106,7 +1106,7 @@ void PocketItemSelectMenu::disableFilteredPockets() {
     s32 j = 0;
     do {
         if (!isSlotEmpty(i) && (m & (1 << j)) == 0) {
-            InventoryItemGrid_DisableSlot(&unk_f4, toPocketIndex(i));
+            InventoryItemGrid_DisableSlot(&pocketGrid, toPocketIndex(i));
         }
         i++;
         j++;
@@ -1115,117 +1115,117 @@ void PocketItemSelectMenu::disableFilteredPockets() {
 
 BOOL PocketItemSelectMenu::isSlotDisabled(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_IsSlotDisabled(&unk_f4, toPocketIndex(a));
+        return InventoryItemGrid_IsSlotDisabled(&pocketGrid, toPocketIndex(a));
     }
     return FALSE;
 }
 
 BOOL PocketItemSelectMenu::isSlotEmpty(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_IsSlotEmpty(&unk_f4, toPocketIndex(a));
+        return InventoryItemGrid_IsSlotEmpty(&pocketGrid, toPocketIndex(a));
     }
     return TRUE;
 }
 
 u32 PocketItemSelectMenu::getSlotItem(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotItem(&unk_f4, toPocketIndex(a));
+        return InventoryItemGrid_GetSlotItem(&pocketGrid, toPocketIndex(a));
     }
     return 0xfff1;
 }
 
 u32 PocketItemSelectMenu::getSlotItemFlags(u32 a) {
     if (isPocketSlot(a)) {
-        return InventoryItemGrid_GetSlotFlags(&unk_f4, toPocketIndex(a));
+        return InventoryItemGrid_GetSlotFlags(&pocketGrid, toPocketIndex(a));
     }
     return 0xf1;
 }
 
 void PocketItemSelectMenu::clearFocusSlot() {
-    InventoryItemGrid_ClearCursorSlot(&unk_f4);
-    unk_b54.clearCursorSlot();
+    InventoryItemGrid_ClearCursorSlot(&pocketGrid);
+    letterGrid.clearCursorSlot();
 }
 
 void PocketItemSelectMenu::setFocusSlot(u32 a) {
     if (isPocketSlot(a)) {
-        InventoryItemGrid_SetCursorSlot(&unk_f4, toPocketIndex(a));
-        unk_b54.clearCursorSlot();
+        InventoryItemGrid_SetCursorSlot(&pocketGrid, toPocketIndex(a));
+        letterGrid.clearCursorSlot();
     } else {
         clearFocusSlot();
     }
 }
 
 void PocketItemSelectMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&unk_f4);
-    unk_b54.clearMarks();
+    InventoryItemGrid_ClearMarks(&pocketGrid);
+    letterGrid.clearMarks();
 }
 
 void PocketItemSelectMenu::setHoverSlot(u32 a) {
     if (isPocketSlot(a)) {
-        InventoryItemGrid_MarkSlot(&unk_f4, toPocketIndex(a));
+        InventoryItemGrid_MarkSlot(&pocketGrid, toPocketIndex(a));
     }
 }
 
 void PocketItemSelectMenu::placeBalloon() {
-    s32 r6 = getSlotX(unk_b1) - 0x6d;
-    s32 r4 = getSlotY(unk_b1) - 0x78;
+    s32 r6 = getSlotX(balloonSlot) - 0x6d;
+    s32 r4 = getSlotY(balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) r4 -= 8;
-    unk_215c.setPos(r6, r4);
-    if (isPocketSlot(unk_b1)) {
-        InventoryItemGrid_ShowSlotName(&unk_f4, &unk_215c, toPocketIndex(unk_b1));
+    nameBalloon.setPos(r6, r4);
+    if (isPocketSlot(balloonSlot)) {
+        InventoryItemGrid_ShowSlotName(&pocketGrid, &nameBalloon, toPocketIndex(balloonSlot));
     }
 }
 
 void PocketItemSelectMenu::updateBalloonForCursor() {
-    if (isPocketSlot(unk_b3)) {
-        if (isSlotEmpty(unk_b3)) {
-            unk_215c.cancelQueuedOpen();
+    if (isPocketSlot(cursorSlot)) {
+        if (isSlotEmpty(cursorSlot)) {
+            nameBalloon.cancelQueuedOpen();
         } else {
-            unk_b1 = unk_b3;
-            unk_215c.queueOpen();
+            balloonSlot = cursorSlot;
+            nameBalloon.queueOpen();
         }
     } else {
-        unk_215c.cancelQueuedOpen();
+        nameBalloon.cancelQueuedOpen();
     }
 }
 
 void PocketItemSelectMenu::getDragPos() {
-    unk_a4 = unk_9c + gTouchCurX;
-    unk_a8 = unk_a0 + gTouchCurY;
+    handX = dragOffsetX + gTouchCurX;
+    handY = dragOffsetY + gTouchCurY;
 }
 
 void PocketItemSelectMenu::getHandPos() {
-    unk_a4 = unk_2234.getFrameScreenX() - 2;
-    unk_a8 = unk_2234.getFrameScreenY() - 4;
+    handX = cursor.getFrameScreenX() - 2;
+    handY = cursor.getFrameScreenY() - 4;
 }
 
 void PocketItemSelectMenu::getFlyPos() {
-    unk_a4 = unk_221c.getX();
-    unk_a8 = unk_221c.getY();
+    handX = flyMotion.getX();
+    handY = flyMotion.getY();
 }
 
 void PocketItemSelectMenu::pickUpFrom(u32 idx) {
     if (isPocketSlot(idx)) {
         s32 r4 = toPocketIndex(idx);
-        unk_af = 1;
-        unk_ac = InventoryItemGrid_GetSlotItem(&unk_f4, r4);
-        unk_ae = InventoryItemGrid_GetSlotFlags(&unk_f4, r4);
-        InventoryItemGrid_ClearSlot(&unk_f4, r4);
-        InventoryItemGrid_SetHeldItem(&unk_f4, unk_ac, unk_ae);
+        handKind = 1;
+        handItem = InventoryItemGrid_GetSlotItem(&pocketGrid, r4);
+        handItemFlags = InventoryItemGrid_GetSlotFlags(&pocketGrid, r4);
+        InventoryItemGrid_ClearSlot(&pocketGrid, r4);
+        InventoryItemGrid_SetHeldItem(&pocketGrid, handItem, handItemFlags);
     }
 }
 
 void PocketItemSelectMenu::releaseHeldTo(u32 idx) {
-    if (unk_af == 1) {
-        putItemInSlot(idx, unk_ac, unk_ae);
+    if (handKind == 1) {
+        putItemInSlot(idx, handItem, handItemFlags);
     }
-    unk_af = 0;
+    handKind = 0;
 }
 
 void PocketItemSelectMenu::exchangeHeldWith(u32 idx) {
-    if (unk_af == 1) {
-        u16 a = unk_ac;
-        u8 b = unk_ae;
+    if (handKind == 1) {
+        u16 a = handItem;
+        u8 b = handItemFlags;
         pickUpFrom(idx);
         putItemInSlot(idx, a, b);
     }
@@ -1234,17 +1234,17 @@ void PocketItemSelectMenu::exchangeHeldWith(u32 idx) {
 void PocketItemSelectMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_2234.warpTo(a, b);
-    if (unk_b3 == 0xf) {
-        ((MenuCursor *)&unk_2234)->setAnimIfChanged(7);
+    cursor.warpTo(a, b);
+    if (cursorSlot == 0xf) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_2234)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 PocketItemSelectMenu::getCursorTargetX() {
-    s32 r = getSlotX(unk_b3);
+    s32 r = getSlotX(cursorSlot);
     if (testFlags(0x10)) {
         r += 0x100;
     } else if (testFlags(8)) {
@@ -1253,88 +1253,88 @@ s32 PocketItemSelectMenu::getCursorTargetX() {
     return r + 8;
 }
 
-s32 PocketItemSelectMenu::getCursorTargetY() { return getSlotY(unk_b3); }
+s32 PocketItemSelectMenu::getCursorTargetY() { return getSlotY(cursorSlot); }
 
 void PocketItemSelectMenu::hideCursor() {
-    ((MenuCursor *)&unk_2234)->setAnimIfChanged(0);
-    unk_2234.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void PocketItemSelectMenu::moveCursorToTarget() {
     if (testFlags(4)) {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_2234.warpTo(a, b);
+        cursor.warpTo(a, b);
         clearFlags(4);
     } else {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
-        unk_2234.moveToEase(a, b, 3, 1);
-        unk_b6 = unk_8d;
+        cursor.moveToEase(a, b, 3, 1);
+        returnState = mainState;
         setMainState(0xa);
     }
 }
 
 void PocketItemSelectMenu::moveCursorToPopupRow() {
-    s32 a = ((PopupChoiceMenuBody *)&unk_2298)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_2298)->getRowY(unk_b8);
-    unk_2234.moveToLinear(a, b, 2);
-    unk_b6 = unk_8d;
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.moveToLinear(a, b, 2);
+    returnState = mainState;
     setMainState(0xa);
 }
 
 void PocketItemSelectMenu::cancelPopup() {
-    unk_b7 = 1;
-    unk_b8 = PopupChoice_DecideCancel(&unk_2298);
-    s32 a = ((PopupChoiceMenuBody *)&unk_2298)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_2298)->getRowY(unk_b8);
-    unk_2234.warpTo(a, b);
-    unk_2234.setAnimAtEnd(8);
+    popupChoice = 1;
+    popupRow = PopupChoice_DecideCancel(&popup);
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.warpTo(a, b);
+    cursor.setAnimAtEnd(8);
     setMainState(0x14);
 }
 
 void PocketItemSelectMenu::cursorToPopupTop() {
-    unk_b8 = 0;
-    s32 a = ((PopupChoiceMenuBody *)&unk_2298)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&unk_2298)->getRowY(unk_b8);
-    unk_2234.warpTo(a, b);
-    ((MenuCursor *)&unk_2234)->setAnimIfChanged(7);
+    popupRow = 0;
+    s32 a = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 }
 
 void PocketItemSelectMenu::showCursorAtSlot() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_2234.warpTo(a, b);
-    ((MenuCursor *)&unk_2234)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
 }
 
 void PocketItemSelectMenu::refreshCursor() {
-    unk_2234.setPoseIdle();
-    unk_2234.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void PocketItemSelectMenu::pressCloseButton() {
-    ((MenuCursor *)&unk_2234)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(0xb);
 }
 
 void PocketItemSelectMenu::beginPutDownAt(u32 v) {
-    unk_215c.hide(1);
-    unk_b5 = v;
-    ((MenuCursor *)&unk_2234)->setAnimIfChanged(5);
+    nameBalloon.hide(1);
+    targetSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
     setMainState(0xf);
 }
 
 void PocketItemSelectMenu::beginSwapAt(u32 v) {
-    unk_215c.hide(1);
-    unk_b6 = unk_8d;
-    unk_b5 = v;
-    ((MenuCursor *)&unk_2234)->setAnimIfChanged(6);
+    nameBalloon.hide(1);
+    returnState = mainState;
+    targetSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
     setMainState(0x10);
 }
 
 s32 PocketItemSelectMenu::onPopupChoice() {
-    switch (unk_b7) {
+    switch (popupChoice) {
     case 0:
         closeWithSelection();
         break;
@@ -1346,62 +1346,62 @@ s32 PocketItemSelectMenu::onPopupChoice() {
 }
 
 void PocketItemSelectMenu::openPopup(u32 v) {
-    ((PopupChoiceMenuBody *)&unk_2298)->setRowsFromIds((PopupChoiceIdList *)&unk_2298.unk_2f4, 0);
-    s32 a = getSlotX(unk_b4);
-    s32 b = getSlotY(unk_b4);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, 0);
+    s32 a = getSlotX(selectedSlot);
+    s32 b = getSlotY(selectedSlot);
     if (v) {
-        unk_2298.placeAboveBalloon(&unk_215c);
+        popup.placeAboveBalloon(&nameBalloon);
     } else {
-        unk_2298.placeNearPoint(a, b);
+        popup.placeNearPoint(a, b);
     }
-    PopupChoice_Open(&unk_2298, 0);
+    PopupChoice_Open(&popup, 0);
     setMainState(0x13);
 }
 
 void PocketItemSelectMenu::cancelPopupForButtons() {
-    unk_b7 = 1;
+    popupChoice = 1;
     showCursorAtSlot();
-    PopupChoice_Close(&unk_2298, 0);
+    PopupChoice_Close(&popup, 0);
     setMainState(0x15);
 }
 
 void PocketItemSelectMenu::closeWithSelection() {
-    MenuCtrl_SetIndex(unk_b4);
+    MenuCtrl_SetIndex(selectedSlot);
     MenuCtrl_SetResult(1);
-    unk_8c = 3;
+    transitionState = 3;
     setPhase(1);
-    unk_215c.hide(1);
+    nameBalloon.hide(1);
     hideCursor();
 }
 
 void PocketItemSelectMenu::closeWithoutChoice() {
     MenuCtrl_SetResult(0);
-    unk_8c = 3;
+    transitionState = 3;
     setPhase(1);
-    unk_215c.hide(1);
+    nameBalloon.hide(1);
     hideCursor();
 }
 
 void PocketItemSelectMenu::setPopupChoices() {
-    ChoiceIdList_Add(&unk_2298.unk_2f4, MenuCtrl_GetPocketSelectLabel(), 0);
-    ChoiceIdList_Add(&unk_2298.unk_2f4, 2, 1);
+    ChoiceIdList_Add(&popup.unk_2f4, MenuCtrl_GetPocketSelectLabel(), 0);
+    ChoiceIdList_Add(&popup.unk_2f4, 2, 1);
 }
 
 void PocketItemSelectMenu::selectPocket(u32 idx, u32 v) {
-    unk_b4 = idx;
-    ChoiceIdList_Clear(&unk_2298.unk_2f4, 1);
+    selectedSlot = idx;
+    ChoiceIdList_Clear(&popup.unk_2f4, 1);
     if (isPocketSlot(idx)) {
         setPopupChoices();
         hideCursor();
         if (v == 0) {
-            unk_215c.hide(1);
+            nameBalloon.hide(1);
         }
         openPopup(v);
     }
 }
 
 void PocketItemSelectMenu::moveCursorInGrid(void *pad) {
-    s32 col = unk_b3;
+    s32 col = cursorSlot;
     s32 row = 0;
     while (col >= 5) {
         col -= 5;
@@ -1410,70 +1410,70 @@ void PocketItemSelectMenu::moveCursorInGrid(void *pad) {
     if (MenuKeys_HasLeft(pad)) {
         if (!MenuKeys_HasUp(pad) || row == 0) {
             if (col == 0) {
-                unk_b3 = unk_b3 + 4;
+                cursorSlot = cursorSlot + 4;
                 setFlags(8);
             } else {
-                unk_b3 = unk_b3 - 1;
+                cursorSlot = cursorSlot - 1;
             }
         }
     } else if (MenuKeys_HasRight(pad)) {
         if (!MenuKeys_HasDown(pad)) {
             if (col == 4) {
-                unk_b3 = unk_b3 - 4;
+                cursorSlot = cursorSlot - 4;
                 setFlags(0x10);
             } else {
-                unk_b3 = unk_b3 + 1;
+                cursorSlot = cursorSlot + 1;
             }
         }
     }
     if (!testFlags(0x18)) {
         if (MenuKeys_HasUp(pad)) {
             if (row > 0) {
-                unk_b3 = unk_b3 - 5;
+                cursorSlot = cursorSlot - 5;
             }
         } else if (MenuKeys_HasDown(pad)) {
             if (row < 2) {
-                unk_b3 = unk_b3 + 5;
+                cursorSlot = cursorSlot + 5;
             } else {
-                unk_b3 = 0xf;
-                ((MenuCursor *)&unk_2234)->switchToAnim07();
+                cursorSlot = 0xf;
+                ((MenuCursor *)&cursor)->switchToAnim07();
             }
         }
     }
 }
 
 BOOL PocketItemSelectMenu::moveCursorByPad(void *pad) {
-    u8 old = unk_b3;
+    u8 old = cursorSlot;
     clearFlags(0x18);
     if (pad == 0) {
         return FALSE;
     }
-    if (isPocketSlot(unk_b3)) {
+    if (isPocketSlot(cursorSlot)) {
         moveCursorInGrid(pad);
-    } else if (unk_b3 == 0xf) {
+    } else if (cursorSlot == 0xf) {
         if (MenuKeys_HasUp(pad)) {
-            unk_b3 = 0xe;
-            ((MenuCursor *)&unk_2234)->switchToAnim01();
+            cursorSlot = 0xe;
+            ((MenuCursor *)&cursor)->switchToAnim01();
         }
     }
-    if (old != unk_b3) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL PocketItemSelectMenu::testFlags(u32 mask) {
-    if (unk_94 & mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void PocketItemSelectMenu::setFlags(u32 mask) { unk_94 = unk_94 | mask; }
+void PocketItemSelectMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
 // ---------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------------------
 
-void PocketItemSelectMenu::clearFlags(u32 mask) { unk_94 = unk_94 & ~mask; }
+void PocketItemSelectMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 

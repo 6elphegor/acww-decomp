@@ -221,15 +221,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 struct Unk_ov123_022958c0 {
@@ -668,7 +668,7 @@ extern "C" PatternEditorMenu *PatternEditorMenu_Create() { return new PatternEdi
 
 BOOL PatternEditorMenu::vfunc_00() {
     initEditor();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -727,7 +727,7 @@ BOOL PatternEditorMenu::execTransition() {
         *(Unk_ov123_022959c4_Fn *)data_ov123_022958e8,
         *(Unk_ov123_022959c4_Fn *)data_ov123_022958e0};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }extern "C" void *data_ov123_02295838[2] = {(void *)_ZN17PatternEditorMenu13updateButtonsEv, 0};
@@ -749,7 +749,7 @@ void PatternEditorMenu::runMainState() {
         *(Unk_ov123_022959c4_Fn *)data_ov123_02295880,
         *(Unk_ov123_022959c4_Fn *)data_ov123_02295808,
         *(Unk_ov123_022959c4_Fn *)data_ov123_02295818};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL PatternEditorMenu::execMain() {
@@ -1273,7 +1273,7 @@ void PatternEditorMenu::updateCursorPress()
     if (unk_1a0.isAnimDone()) {
         unk_a5 = unk_aa;
         activateButton();
-        if (unk_8d == 0xa) {
+        if (mainState == 0xa) {
             releaseCursor();
         }
     }
@@ -2438,7 +2438,7 @@ void PatternEditorMenu::moveCursorToTarget() {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         unk_1a0.moveToEase(a, b, 3, 1);
-        unk_a0 = unk_8d;
+        unk_a0 = mainState;
         setMainState(9);
     }
 }

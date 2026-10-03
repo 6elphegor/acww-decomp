@@ -84,18 +84,18 @@ public:
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ SpriteAnim unk_1c;
-    /* 0x30 */ SpriteAnim unk_30;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ LabelButtonText unk_4c;
-    /* 0x68 */ u16 unk_68;
-    /* 0x6a */ u8 unk_6a;
-    /* 0x6b */ u8 unk_6b;
-    /* 0x6c */ u8 unk_6c;
-    /* 0x6d */ u8 unk_6d;
+    /* 0x14 */ s32 palette;
+    /* 0x18 */ s32 kind;
+    /* 0x1c */ SpriteAnim layer1;
+    /* 0x30 */ SpriteAnim layer2;
+    /* 0x44 */ s32 state;
+    /* 0x48 */ s32 label;
+    /* 0x4c */ LabelButtonText text;
+    /* 0x68 */ u16 textColor;
+    /* 0x6a */ u8 onBufferA;
+    /* 0x6b */ u8 objWindow;
+    /* 0x6c */ u8 layer2Hidden;
+    /* 0x6d */ u8 textColorDirty;
 };
 
 LabelButtonText::LabelButtonText() { clear(); }
@@ -107,12 +107,12 @@ u32 LabelButtonText::capacity() { return 9; }
 
 u8 *LabelButtonText::data() { return (u8 *)this + 0x12; }
 
-LabelButton::LabelButton(u8 a, s32 b) : unk_0c(0), unk_10(0), unk_14(-1), unk_18(b), unk_44(0), unk_48(0) {
-    unk_68 = 0x50c0;
-    unk_6a = a;
-    unk_6b = 0;
-    unk_6c = 0;
-    unk_6d = 0;
+LabelButton::LabelButton(u8 a, s32 b) : unk_0c(0), unk_10(0), palette(-1), kind(b), state(0), label(0) {
+    textColor = 0x50c0;
+    onBufferA = a;
+    objWindow = 0;
+    layer2Hidden = 0;
+    textColorDirty = 0;
     setState(0);
 }
 
@@ -121,37 +121,37 @@ LabelButton::~LabelButton() {
 }
 
 void LabelButton::draw() {
-    if (unk_44 != 0) {
-        void *h0 = unk_1c.getCell();
-        void *h1 = unk_30.getCell();
-        s32 a = unk_1c.getFrameX(-1);
-        s32 b = unk_1c.getFrameY(-1);
-        s32 c = unk_30.getFrameX(-1);
-        s32 d = unk_30.getFrameY(-1);
+    if (state != 0) {
+        void *h0 = layer1.getCell();
+        void *h1 = layer2.getCell();
+        s32 a = layer1.getFrameX(-1);
+        s32 b = layer1.getFrameY(-1);
+        s32 c = layer2.getFrameX(-1);
+        s32 d = layer2.getFrameY(-1);
         s32 bx = unk_0c + getOriginX();
         s32 by = unk_10 + getOriginY();
         s32 x0 = bx + a;
         s32 y0 = by + b;
         s32 x1 = bx + c;
         s32 y1 = by + d;
-        BOOL show = unk_6c == 0 ? TRUE : FALSE;
-        if (unk_6a != 0) {
-            Oam_DrawCell(0, h0, x0, y0, unk_14, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+        BOOL show = layer2Hidden == 0 ? TRUE : FALSE;
+        if (onBufferA != 0) {
+            Oam_DrawCell(0, h0, x0, y0, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             if (show) {
                 Oam_DrawCell(0, h1, x1, y1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_6b != 0) {
+            if (objWindow != 0) {
                 Oam_DrawCell(0, h0, x0, y0, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
                 if (show) {
                     Oam_DrawCell(0, h1, x1, y1, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         } else {
-            Oam_DrawCell(1, h0, x0, y0, unk_14, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h0, x0, y0, palette, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             if (show) {
                 Oam_DrawCell(1, h1, x1, y1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_6b != 0) {
+            if (objWindow != 0) {
                 Oam_DrawCell(1, h0, x0, y0, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
                 if (show) {
                     Oam_DrawCell(1, h1, x1, y1, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
@@ -164,9 +164,9 @@ void LabelButton::draw() {
 
 // ---- LabelButton ----
 void LabelButton::vfunc_0c() {
-    if (unk_44 != 0) {
-        unk_1c.update();
-        unk_30.update();
+    if (state != 0) {
+        layer1.update();
+        layer2.update();
     }
 }
 

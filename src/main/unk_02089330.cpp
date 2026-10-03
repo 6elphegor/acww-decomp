@@ -5,15 +5,15 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 }
 
 struct SpriteAnimFrame {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s16 unk_08;
-    /* 0x0a */ s16 unk_0a;
+    /* 0x00 */ void *cell;
+    /* 0x04 */ s32 duration;
+    /* 0x08 */ s16 x;
+    /* 0x0a */ s16 y;
 };
 
 struct SpriteAnimSeq {
-    /* 0x00 */ SpriteAnimFrame *unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ SpriteAnimFrame *frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 // Animation cursor over a table of 12-byte records (fixed-point frame position)
@@ -35,11 +35,11 @@ public:
     void setPlayOnce(s32 v);
     void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ SpriteAnimSeq *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x00 */ SpriteAnimSeq *seq;
+    /* 0x04 */ s32 frameIndex;
+    /* 0x08 */ s32 frameTime;
+    /* 0x0c */ s32 speed;
+    /* 0x10 */ s32 playOnce;
 };
 
 // Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)

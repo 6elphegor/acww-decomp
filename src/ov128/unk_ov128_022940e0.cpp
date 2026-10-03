@@ -214,15 +214,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 extern "C" {
@@ -271,7 +271,7 @@ struct Unk_ov128_SceneEntry {
 class StargazingMenu : public MenuProc {
 public:
     StargazingMenu()
-        : unk_94(), unk_e4(), unk_148(), unk_478(), unk_2cb0() {}
+        : closeButton(), cursor(), twinkle(), skyView(), nameLabel() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -336,34 +336,34 @@ public:
     void runMainState();
 
     /* 0x0091 */ u8 unk_91[3];
-    /* 0x0094 */ MenuTextButton unk_94;
-    /* 0x00e4 */ MenuCursorBuf0 unk_e4;
-    /* 0x0148 */ StarTwinkle unk_148;
-    /* 0x0478 */ StarSkyView unk_478;
-    /* 0x2cb0 */ LabelString unk_2cb0;
-    /* 0x2cf0 */ s32 unk_2cf0;
-    /* 0x2cf4 */ s32 unk_2cf4;
-    /* 0x2cf8 */ s32 unk_2cf8;
-    /* 0x2cfc */ s32 unk_2cfc;
-    /* 0x2d00 */ s32 unk_2d00;
-    /* 0x2d04 */ s32 unk_2d04;
-    /* 0x2d08 */ s32 unk_2d08;
-    /* 0x2d0c */ s32 unk_2d0c;
-    /* 0x2d10 */ u16 unk_2d10;
-    /* 0x2d12 */ u8 unk_2d12;
-    /* 0x2d13 */ u8 unk_2d13;
-    /* 0x2d14 */ u8 unk_2d14;
-    /* 0x2d15 */ u8 unk_2d15;
-    /* 0x2d16 */ u8 unk_2d16;
-    /* 0x2d17 */ u8 unk_2d17;
-    /* 0x2d18 */ u8 unk_2d18;
+    /* 0x0094 */ MenuTextButton closeButton;
+    /* 0x00e4 */ MenuCursorBuf0 cursor;
+    /* 0x0148 */ StarTwinkle twinkle;
+    /* 0x0478 */ StarSkyView skyView;
+    /* 0x2cb0 */ LabelString nameLabel;
+    /* 0x2cf0 */ s32 pointerX;
+    /* 0x2cf4 */ s32 pointerY;
+    /* 0x2cf8 */ s32 slideY;
+    /* 0x2cfc */ s32 scrollFineX;
+    /* 0x2d00 */ s32 scrollFineY;
+    /* 0x2d04 */ s32 centerConstellation;
+    /* 0x2d08 */ s32 shownConstellation;
+    /* 0x2d0c */ s32 labelConstellation;
+    /* 0x2d10 */ u16 stateFlags;
+    /* 0x2d12 */ u8 returnState;
+    /* 0x2d13 */ u8 scrollDir;
+    /* 0x2d14 */ u8 cursorTarget;
+    /* 0x2d15 */ u8 nameLabelAnimStep;
+    /* 0x2d16 */ u8 nameLabelState;
+    /* 0x2d17 */ u8 nameLabelHoldTimer;
+    /* 0x2d18 */ u8 nameLabelWidth;
 };
 
 extern "C" StargazingMenu *StargazingMenu_Create() { return new StargazingMenu(); }
 
 BOOL StargazingMenu::vfunc_00() {
     initMembers();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -378,11 +378,11 @@ BOOL StargazingMenu::onDraw() {
     MenuCtrl_IsButtons();
     drawNameLabel();
     if (testFlags(1)) {
-        unk_94.drawAt(0, unk_2cf8 >> 2, 1);
-        StarSky_DrawArrows(&unk_478, unk_2cf8, 6);
+        closeButton.drawAt(0, slideY >> 2, 1);
+        StarSky_DrawArrows(&skyView, slideY, 6);
     }
     if (testFlags(1)) {
-        drawScrollStrips(unk_2cf8);
+        drawScrollStrips(slideY);
     }
     return TRUE;
 }
@@ -428,7 +428,7 @@ BOOL StargazingMenu::execTransition() {
         *(Unk_ov128_022954e0_Fn *)data_ov128_02295260,
         *(Unk_ov128_022954e0_Fn *)data_ov128_022951f0};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -446,7 +446,7 @@ void StargazingMenu::runMainState() {
         *(Unk_ov128_022954e0_Fn *)data_ov128_02295208,
         *(Unk_ov128_022954e0_Fn *)data_ov128_02295200,
         *(Unk_ov128_022954e0_Fn *)data_ov128_022951f8};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL StargazingMenu::execMain() {
@@ -512,7 +512,7 @@ void StargazingMenu::transitionAct03() {
 
 void StargazingMenu::updateLayerSlide() {
     applySlideOffset(6, 0, 0);
-    unk_2cf8 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void StargazingMenu::updateSlideWindow() {
@@ -530,21 +530,21 @@ void StargazingMenu::updateSlideWindow() {
 }
 
 void StargazingMenu::initMembers() {
-    unk_2d10 = 0;
-    StarSky_Reset(&unk_478);
-    unk_2cf0 = 0x80;
-    unk_2cf4 = 0x60;
-    unk_2d14 = 1;
+    stateFlags = 0;
+    StarSky_Reset(&skyView);
+    pointerX = 0x80;
+    pointerY = 0x60;
+    cursorTarget = 1;
     resetNameLabel();
     PlayerActor_LocalRequestAct12();
     BgmTracks_FadeOutScene22(data_021c1b3c + 0x2f0);
 }
 
 void StargazingMenu::releaseResources() {
-    StarTwinkle_Stop(&unk_148);
-    StarSky_CancelUpload(&unk_478);
-    unk_94.freeText();
-    unk_2cb0.destroyLabel();
+    StarTwinkle_Stop(&twinkle);
+    StarSky_CancelUpload(&skyView);
+    closeButton.freeText();
+    nameLabel.destroyLabel();
     PlayerActor_RequestAct10();
     BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
@@ -558,13 +558,13 @@ void StargazingMenu::postInputUpdate() {
 }
 
 void StargazingMenu::preStateUpdate() {
-    unk_2cb0.destroyLabel();
-    StarTwinkle_Update(&unk_148);
-    unk_94.freeText();
+    nameLabel.destroyLabel();
+    StarTwinkle_Update(&twinkle);
+    closeButton.freeText();
 }
 
 void StargazingMenu::postStateUpdate() {
-    StarSky_Update(&unk_478);
+    StarSky_Update(&skyView);
     updateNameLabelAnim();
 }
 
@@ -577,12 +577,12 @@ extern "C" void StargazingMenu_SetupBgLayers() {
 }
 
 void StargazingMenu::setupSkyView() {
-    StarSky_LoadSkyBg(&unk_478, 3);
-    StarSky_LoadScopeBg(&unk_478, 6, 0);
-    StarTwinkle_Init(&unk_148, 3);
-    StarSky_LoadObjGraphics(&unk_478);
-    unk_94.setup((Unk_ov002_02203c5c_Rec *)data_ov128_02295458, 6, 2);
-    unk_94.setLabelWithShadow(0x69);
+    StarSky_LoadSkyBg(&skyView, 3);
+    StarSky_LoadScopeBg(&skyView, 6, 0);
+    StarTwinkle_Init(&twinkle, 3);
+    StarSky_LoadObjGraphics(&skyView);
+    closeButton.setup((Unk_ov002_02203c5c_Rec *)data_ov128_02295458, 6, 2);
+    closeButton.setLabelWithShadow(0x69);
     updateSkyScroll();
 }
 
@@ -592,9 +592,9 @@ void StargazingMenu::mainAct00() {
     } else if (Unk_ov128_02294b44_Both()) {
         s32 x = gTouchCurX;
         s32 y = gTouchCurY;
-        unk_2d13 = StarSky_HitArrow(&unk_478, x, y);
-        if (unk_2d13 != 4) {
-            StarSky_ScrollInDir(&unk_478, unk_2d13, 1);
+        scrollDir = StarSky_HitArrow(&skyView, x, y);
+        if (scrollDir != 4) {
+            StarSky_ScrollInDir(&skyView, scrollDir, 1);
             updateSkyScroll();
             setMainState(1);
         } else if (x >= 0xc0 && y > 0xab) {
@@ -606,20 +606,20 @@ void StargazingMenu::mainAct00() {
 void StargazingMenu::mainAct01() {
     if (gTouchHeld == 0) {
         setMainState(2);
-        StarSky_StartBounce(&unk_478, unk_2d13);
+        StarSky_StartBounce(&skyView, scrollDir);
         updateSkyScroll();
     } else {
-        StarSky_ScrollInDir(&unk_478, unk_2d13, 1);
+        StarSky_ScrollInDir(&skyView, scrollDir, 1);
         updateSkyScroll();
     }
 }
 
 void StargazingMenu::mainAct02() {
-    if (StarSky_UpdateBounce(&unk_478)) {
+    if (StarSky_UpdateBounce(&skyView)) {
         if (gTouchHeld != 0) {
-            unk_2d13 = StarSky_HitArrow(&unk_478, gTouchPressX, gTouchPressY);
-            if (unk_2d13 != 4) {
-                StarSky_ScrollInDir(&unk_478, unk_2d13, 1);
+            scrollDir = StarSky_HitArrow(&skyView, gTouchPressX, gTouchPressY);
+            if (scrollDir != 4) {
+                StarSky_ScrollInDir(&skyView, scrollDir, 1);
                 updateSkyScroll();
                 setMainState(1);
                 return;
@@ -642,44 +642,44 @@ void StargazingMenu::mainAct03() {
             setMainState(4);
             moveCursorToTarget();
         } else {
-            s32 ox = unk_2cf0;
-            s32 oy = unk_2cf4;
+            s32 ox = pointerX;
+            s32 oy = pointerY;
             u32 k0 = gPad[0];
             if (k0 & 0x20) {
-                unk_2cf0 = ox - 4;
+                pointerX = ox - 4;
             } else if (k0 & 0x10) {
-                unk_2cf0 = ox + 4;
+                pointerX = ox + 4;
             }
             u32 k2 = *(volatile u16 *)&gPad[0];
             if (k2 & 0x40) {
-                s32 *py = &unk_2cf4;
+                s32 *py = &pointerY;
                 *py = *py - 4;
             } else if (k2 & 0x80) {
-                s32 *py = &unk_2cf4;
+                s32 *py = &pointerY;
                 *py = *py + 4;
             }
-            s32 nx = unk_2cf0;
-            if (ox != nx || oy != unk_2cf4) {
+            s32 nx = pointerX;
+            if (ox != nx || oy != pointerY) {
                 if (nx < 0x30) {
-                    unk_2cf0 = 0x30;
-                    StarSky_ScrollX(&unk_478, -4);
+                    pointerX = 0x30;
+                    StarSky_ScrollX(&skyView, -4);
                     updateSkyScroll();
                 } else if (nx > 0xd0) {
-                    unk_2cf0 = 0xd0;
-                    StarSky_ScrollX(&unk_478, 4);
+                    pointerX = 0xd0;
+                    StarSky_ScrollX(&skyView, 4);
                     updateSkyScroll();
                 }
-                s32 ny = unk_2cf4;
+                s32 ny = pointerY;
                 if (ny < 0x20) {
-                    unk_2cf4 = 0x20;
-                    StarSky_ScrollY(&unk_478, -4, 0);
+                    pointerY = 0x20;
+                    StarSky_ScrollY(&skyView, -4, 0);
                     updateSkyScroll();
                 } else if (ny > 0xa0) {
-                    unk_2cf4 = 0xa0;
-                    StarSky_ScrollY(&unk_478, 4, 0);
+                    pointerY = 0xa0;
+                    StarSky_ScrollY(&skyView, 4, 0);
                     updateSkyScroll();
                 }
-                unk_e4.warpTo(unk_2cf0, unk_2cf4);
+                cursor.warpTo(pointerX, pointerY);
             }
         }
     }
@@ -693,10 +693,10 @@ void StargazingMenu::mainAct04() {
         if ((k & 2) || (k & 8)) {
             requestClose();
         } else {
-            u8 *q = &unk_2d13;
+            u8 *q = &scrollDir;
             *q = getPadDirection();
             if (*q != 4) {
-                StarSky_ScrollInDir(&unk_478, *q, 1);
+                StarSky_ScrollInDir(&skyView, *q, 1);
                 updateSkyScroll();
                 setMainState(5);
             }
@@ -706,46 +706,46 @@ void StargazingMenu::mainAct04() {
 
 void StargazingMenu::mainAct05() {
     u32 k = getPadDirection();
-    if (k != unk_2d13) {
+    if (k != scrollDir) {
         setMainState(6);
-        StarSky_StartBounce(&unk_478, unk_2d13);
+        StarSky_StartBounce(&skyView, scrollDir);
         updateSkyScroll();
     } else {
-        StarSky_ScrollInDir(&unk_478, unk_2d13, 1);
+        StarSky_ScrollInDir(&skyView, scrollDir, 1);
         updateSkyScroll();
     }
 }
 
 void StargazingMenu::mainAct06() {
-    if (StarSky_UpdateBounce(&unk_478)) {
+    if (StarSky_UpdateBounce(&skyView)) {
         setMainState(4);
     }
     updateSkyScroll();
 }
 
 void StargazingMenu::updateCursorMove() {
-    if (!unk_e4.isMoving()) {
-        setMainState(unk_2d12);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void StargazingMenu::updateCursorPress() {
-    if (unk_e4.isAnimDone() && testFlags(2)) {
+    if (cursor.isAnimDone() && testFlags(2)) {
         setMainState(3);
         releaseCursor();
     }
 }
 
 void StargazingMenu::updateCursorRelease() {
-    if (unk_e4.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
-        setMainState(unk_2d12);
+        setMainState(returnState);
     }
 }
 
 void StargazingMenu::mainAct0A() {
-    if (!unk_94.stepPress()) {
+    if (!closeButton.stepPress()) {
         setPhase(1);
     }
 }
@@ -781,43 +781,43 @@ void StargazingMenu::requestClose() {
 void StargazingMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_e4.warpTo(a, b);
+    cursor.warpTo(a, b);
     if (testFlags(2)) {
-        ((MenuCursor *)&unk_e4)->setAnimIfChanged(1);
-    } else if (unk_2d14 == 3) {
-        ((MenuCursor *)&unk_e4)->setAnimIfChanged(0xd);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+    } else if (cursorTarget == 3) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
-        ((MenuCursor *)&unk_e4)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 StargazingMenu::getCursorTargetX() {
     if (testFlags(2)) {
-        return unk_2cf0;
+        return pointerX;
     }
-    return sArrowCursorX[unk_2d14];
+    return sArrowCursorX[cursorTarget];
 }
 
 s32 StargazingMenu::getCursorTargetY() {
     if (testFlags(2)) {
-        return unk_2cf4;
+        return pointerY;
     }
-    return sArrowCursorY[unk_2d14];
+    return sArrowCursorY[cursorTarget];
 }
 
 void StargazingMenu::hideCursor() {
-    ((MenuCursor *)&unk_e4)->setAnimIfChanged(0);
-    unk_e4.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void StargazingMenu::moveCursorToTarget() {
     if (testFlags(2)) {
-        ((MenuCursor *)&unk_e4)->switchToAnim01();
-    } else if (unk_2d14 == 3) {
-        ((MenuCursor *)&unk_e4)->switchToAnim0D();
+        ((MenuCursor *)&cursor)->switchToAnim01();
+    } else if (cursorTarget == 3) {
+        ((MenuCursor *)&cursor)->switchToAnim0D();
     } else {
-        ((MenuCursor *)&unk_e4)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -825,39 +825,39 @@ void StargazingMenu::moveCursorToTarget() {
 }
 
 void StargazingMenu::moveCursorToPos(s32 x, s32 y) {
-    unk_e4.moveToEase(x, y, 3, 1);
-    unk_2d12 = unk_8d;
+    cursor.moveToEase(x, y, 3, 1);
+    returnState = mainState;
     setMainState(7);
 }
 
 void StargazingMenu::refreshCursor() {
-    unk_e4.setPoseIdle();
-    unk_e4.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void StargazingMenu::pressCursor() {
-    ((MenuCursor *)&unk_e4)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(8);
 }
 
 void StargazingMenu::releaseCursor() {
-    unk_e4.setPoseRelease();
-    unk_2d12 = unk_8d;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(9);
 }
 
 void StargazingMenu::drawScrollStrips(s32 y) {
     s32 t = y + 0x60;
-    Oam_DrawCell(1, data_ov128_022955c0, 0x80, t - unk_2d00, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    s32 x = t + (s32)StarSky_GetOverscroll(&unk_478);
-    Oam_DrawCell(1, data_ov128_02295540, 0x80 - unk_2cfc, x, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov128_022955c0, 0x80, t - scrollFineY, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    s32 x = t + (s32)StarSky_GetOverscroll(&skyView);
+    Oam_DrawCell(1, data_ov128_02295540, 0x80 - scrollFineX, x, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void StargazingMenu::updateSkyScroll() {
-    s32 a = StarSky_GetScrollX(&unk_478);
-    s32 b = StarSky_GetScrollY(&unk_478);
-    unk_2cfc = a & 0xf;
-    unk_2d00 = b & 0xf;
+    s32 a = StarSky_GetScrollX(&skyView);
+    s32 b = StarSky_GetScrollY(&skyView);
+    scrollFineX = a & 0xf;
+    scrollFineY = b & 0xf;
     findCenterConstellation();
 }
 
@@ -880,100 +880,100 @@ u32 StargazingMenu::getPadDirection() {
 }
 
 void StargazingMenu::resetNameLabel() {
-    unk_2d04 = -1;
-    unk_2d08 = -1;
-    unk_2d0c = -1;
-    unk_2d16 = 0;
-    unk_2d15 = 0;
-    unk_2d18 = 2;
+    centerConstellation = -1;
+    shownConstellation = -1;
+    labelConstellation = -1;
+    nameLabelState = 0;
+    nameLabelAnimStep = 0;
+    nameLabelWidth = 2;
 }
 
 void StargazingMenu::findCenterConstellation() {
     s32 a, b;
-    u8 *p = StarSky_GetOverscroll(&unk_478) + 0x60;
-    if (StarSky_ScreenToCell(&unk_478, 0x80, p, &a, &b)) {
+    u8 *p = StarSky_GetOverscroll(&skyView) + 0x60;
+    if (StarSky_ScreenToCell(&skyView, 0x80, p, &a, &b)) {
         s32 r = StarSky_GetLineAt(a, b);
         if (r != -1) {
-            unk_2d04 = StarSky_FindConstellationByLine((u16)r);
+            centerConstellation = StarSky_FindConstellationByLine((u16)r);
         }
     }
 }
 
 void StargazingMenu::drawNameLabel() {
-    if (unk_2d16 != 0) {
-        Oam_DrawCell(1, sNameLabelFrames[unk_2d18 - 2], 0x80, sNameLabelAnimY[unk_2d15] + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    if (nameLabelState != 0) {
+        Oam_DrawCell(1, sNameLabelFrames[nameLabelWidth - 2], 0x80, sNameLabelAnimY[nameLabelAnimStep] + 0x60, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
 void StargazingMenu::setupNameLabel() {
-    s32 t = unk_2d08;
+    s32 t = shownConstellation;
     if (t == -1) {
-        unk_2d16 = 0;
+        nameLabelState = 0;
     } else {
-        unk_2d16 = 1;
-        s32 u = unk_2d08;
-        if (u != unk_2d0c) {
+        nameLabelState = 1;
+        s32 u = shownConstellation;
+        if (u != labelConstellation) {
             u8 *s = ((u8 *(*)(s32))Constellation_GetRecord)(u);
-            String_FromEncodedBytes(&unk_2cb0, s + 0x16, 0x10);
-            unk_2d18 = (unk_2cb0.getTextWidth() + 7) >> 3;
-            if (unk_2d18 < 2) {
-                unk_2d18 = 2;
+            String_FromEncodedBytes(&nameLabel, s + 0x16, 0x10);
+            nameLabelWidth = (nameLabel.getTextWidth() + 7) >> 3;
+            if (nameLabelWidth < 2) {
+                nameLabelWidth = 2;
             }
-            unk_2cb0.createLabel(8, 0xc6, unk_2d18, 0xf, 0, 0);
-            unk_2cb0.redrawAligned(1, 0);
-            unk_2d0c = unk_2d08;
+            nameLabel.createLabel(8, 0xc6, nameLabelWidth, 0xf, 0, 0);
+            nameLabel.redrawAligned(1, 0);
+            labelConstellation = shownConstellation;
         }
     }
 }
 
 void StargazingMenu::refreshNameLabel() {
-    s32 t = unk_2d08;
-    if (t != -1 && t == unk_2d0c) {
+    s32 t = shownConstellation;
+    if (t != -1 && t == labelConstellation) {
         setupNameLabel();
     } else {
-        unk_2d16 = 3;
+        nameLabelState = 3;
     }
 }
 
 void StargazingMenu::hideNameLabel() {
-    unk_2d08 = -1;
-    unk_2d16 = 3;
+    shownConstellation = -1;
+    nameLabelState = 3;
 }
 
 void StargazingMenu::trackCenterConstellation() {
-    s32 t = unk_2d04;
+    s32 t = centerConstellation;
     if (t != -1) {
-        if (unk_2d08 != t) {
-            unk_2d08 = t;
+        if (shownConstellation != t) {
+            shownConstellation = t;
             refreshNameLabel();
         }
     }
 }
 
 void StargazingMenu::updateNameLabelAnim() {
-    switch (unk_2d16) {
+    switch (nameLabelState) {
     case 1:
-        if (unk_2d15 < 3) {
-            unk_2d15 = unk_2d15 + 1;
+        if (nameLabelAnimStep < 3) {
+            nameLabelAnimStep = nameLabelAnimStep + 1;
         } else {
-            unk_2d16 = 2;
-            unk_2d17 = 0x14;
+            nameLabelState = 2;
+            nameLabelHoldTimer = 0x14;
         }
         break;
     case 2:
-        if (unk_2d04 == -1) {
-            if (unk_2d17 != 0) {
-                unk_2d17 = unk_2d17 - 1;
+        if (centerConstellation == -1) {
+            if (nameLabelHoldTimer != 0) {
+                nameLabelHoldTimer = nameLabelHoldTimer - 1;
             } else {
                 hideNameLabel();
             }
         } else {
-            unk_2d17 = 0x14;
+            nameLabelHoldTimer = 0x14;
         }
         break;
     case 3:
-        if (unk_2d15 != 0) {
-            unk_2d15 = unk_2d15 - 1;
+        if (nameLabelAnimStep != 0) {
+            nameLabelAnimStep = nameLabelAnimStep - 1;
         } else {
             setupNameLabel();
         }
@@ -982,15 +982,15 @@ void StargazingMenu::updateNameLabelAnim() {
 }
 
 BOOL StargazingMenu::testFlags(u32 m) {
-    if (unk_2d10 & m) {
+    if (stateFlags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void StargazingMenu::setFlags(u32 m) { unk_2d10 = unk_2d10 | m; }
+void StargazingMenu::setFlags(u32 m) { stateFlags = stateFlags | m; }
 
-void StargazingMenu::clearFlags(u32 m) { unk_2d10 = unk_2d10 & ~m; }
+void StargazingMenu::clearFlags(u32 m) { stateFlags = stateFlags & ~m; }
 
 extern "C" void *data_ov128_022951e8[2] = {(void *)_ZN14StargazingMenu15transitionAct00Ev, 0};
 extern "C" void *data_ov128_02295208[2] = {(void *)_ZN14StargazingMenu17updateCursorPressEv, 0};

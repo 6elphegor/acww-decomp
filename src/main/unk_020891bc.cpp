@@ -1,15 +1,15 @@
 #include "types.h"
 
 struct SpriteAnimFrame {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s16 unk_08;
-    /* 0x0a */ s16 unk_0a;
+    /* 0x00 */ void *cell;
+    /* 0x04 */ s32 duration;
+    /* 0x08 */ s16 x;
+    /* 0x0a */ s16 y;
 };
 
 struct SpriteAnimSeq {
-    /* 0x00 */ SpriteAnimFrame *unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ SpriteAnimFrame *frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 // Animation cursor over a table of 12-byte records (fixed-point frame position)
@@ -31,11 +31,11 @@ public:
     void setPlayOnce(s32 v);
     void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ SpriteAnimSeq *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x00 */ SpriteAnimSeq *seq;
+    /* 0x04 */ s32 frameIndex;
+    /* 0x08 */ s32 frameTime;
+    /* 0x0c */ s32 speed;
+    /* 0x10 */ s32 playOnce;
 };
 
 // Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
@@ -119,54 +119,54 @@ BOOL TalkArrow::isAnimDone() {
 
 // Cursor ctor/dtor and 0x020890f4/0x02089100 are defined last so they are not inlined
 SpriteAnim::SpriteAnim() {
-    unk_00 = 0;
-    unk_04 = 0;
-    unk_08 = 0;
-    unk_0c = 0x1000;
-    unk_10 = 0;
+    seq = 0;
+    frameIndex = 0;
+    frameTime = 0;
+    speed = 0x1000;
+    playOnce = 0;
 }
 
 SpriteAnim::~SpriteAnim() {}
 
-void SpriteAnim::setSeq(SpriteAnimSeq *v) { unk_00 = v; }
+void SpriteAnim::setSeq(SpriteAnimSeq *v) { seq = v; }
 
-void SpriteAnim::setPlayOnce(s32 v) { unk_10 = v; }
+void SpriteAnim::setPlayOnce(s32 v) { playOnce = v; }
 
-void SpriteAnim::setSpeed(s32 v) { unk_0c = v; }
+void SpriteAnim::setSpeed(s32 v) { speed = v; }
 
 void SpriteAnim::setFrame(s32 a, s32 b) {
-    unk_04 = a;
-    unk_08 = b;
+    frameIndex = a;
+    frameTime = b;
 }
 
-void *SpriteAnim::getCell() { return unk_00->unk_00[unk_04].unk_00; }
+void *SpriteAnim::getCell() { return seq->frames[frameIndex].cell; }
 
-s32 SpriteAnim::getFrameIndex() { return unk_04; }
+s32 SpriteAnim::getFrameIndex() { return frameIndex; }
 
-SpriteAnimSeq *SpriteAnim::getSeq() { return unk_00; }
+SpriteAnimSeq *SpriteAnim::getSeq() { return seq; }
 
 s32 SpriteAnim::getFrameX(s32 v) {
     if (v < 0) {
-        v = unk_04;
+        v = frameIndex;
     }
-    return unk_00->unk_00[v].unk_08;
+    return seq->frames[v].x;
 }
 
 s32 SpriteAnim::getFrameY(s32 v) {
     if (v < 0) {
-        v = unk_04;
+        v = frameIndex;
     }
-    return unk_00->unk_00[v].unk_0a;
+    return seq->frames[v].y;
 }
 
 BOOL SpriteAnim::isFinished() {
     BOOL r = FALSE;
-    if (unk_10 == 1) {
-        SpriteAnimSeq *t = unk_00;
-        s32 i = unk_04;
-        if (i >= t->unk_04 - 1) {
-            s32 f = unk_08 >> 12;
-            if (f >= t->unk_00[i].unk_04 - 1) {
+    if (playOnce == 1) {
+        SpriteAnimSeq *t = seq;
+        s32 i = frameIndex;
+        if (i >= t->frameCount - 1) {
+            s32 f = frameTime >> 12;
+            if (f >= t->frames[i].duration - 1) {
                 r = TRUE;
             }
         }
@@ -174,10 +174,10 @@ BOOL SpriteAnim::isFinished() {
     return r;
 }
 
-void SpriteAnim::pause() { unk_0c = 0; }
+void SpriteAnim::pause() { speed = 0; }
 
 void SpriteAnim::restart() {
-    unk_0c = 0x1000;
+    speed = 0x1000;
     setFrame(0, 0);
 }
 

@@ -178,15 +178,15 @@ public:
     u32 takeRepeatedKeys();
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 typedef void (BbsReadMenu::*Unk_ov113_02293640_Fn)();
@@ -200,7 +200,7 @@ struct Unk_ov113_SceneEntry {
 // Vtable 0x02293640, size 0x29cc
 class BbsReadMenu : public MenuProc {
 public:
-    BbsReadMenu() : unk_26a0(), unk_26e8(), unk_27e8(), unk_2968() {}
+    BbsReadMenu() : bgTasks(), infoLabels(), lineLabels(), cursor() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -262,20 +262,20 @@ public:
     void drawPageDots(s32 a, s32 *p);
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
-    /* 0x098 */ u16 unk_98;
-    /* 0x09a */ volatile u8 unk_9a;
-    /* 0x09b */ volatile u8 unk_9b;
-    /* 0x09c */ u8 unk_9c;
-    /* 0x09d */ u8 unk_9d;
-    /* 0x09e */ u8 unk_9e;
+    /* 0x094 */ s32 slideY;
+    /* 0x098 */ u16 flags;
+    /* 0x09a */ volatile u8 postIndex;
+    /* 0x09b */ volatile u8 focus;
+    /* 0x09c */ u8 returnState;
+    /* 0x09d */ u8 postCount;
+    /* 0x09e */ u8 pageDotsX;
     /* 0x09f */ u8 unk_9f;
-    /* 0x0a0 */ u16 unk_a0[0x400];
-    /* 0x8a0 */ u8 unk_8a0[6][0x500];
-    /* 0x26a0 */ BgVramTask unk_26a0[2];
-    /* 0x26e8 */ LabelString unk_26e8[4];
-    /* 0x27e8 */ LabelString unk_27e8[6];
-    /* 0x2968 */ MenuCursorBuf1 unk_2968;
+    /* 0x0a0 */ u16 bgScreenBuf[0x400];
+    /* 0x8a0 */ u8 lineCharBufs[6][0x500];
+    /* 0x26a0 */ BgVramTask bgTasks[2];
+    /* 0x26e8 */ LabelString infoLabels[4];
+    /* 0x27e8 */ LabelString lineLabels[6];
+    /* 0x2968 */ MenuCursorBuf1 cursor;
 };
 
 static inline BOOL Unk_ov113_02292cc0_Both() {
@@ -304,8 +304,8 @@ BOOL BbsReadMenu::vfunc_0c() {
 void BbsReadMenu::drawPageDots(s32 a, s32 *p) {
     u8 i;
     s32 z = 0;
-    for (i = 0; i < unk_9d; i++) {
-        Oam_DrawObj(z, (void *)(data_ov113_022936a0 + (i + 8) * 8), a, (s32)p, i == unk_9a ? 11 : 10, 1, (s32 *)z);
+    for (i = 0; i < postCount; i++) {
+        Oam_DrawObj(z, (void *)(data_ov113_022936a0 + (i + 8) * 8), a, (s32)p, i == postIndex ? 11 : 10, 1, (s32 *)z);
     }
 }
 
@@ -314,10 +314,10 @@ BOOL BbsReadMenu::onDraw() {
         return TRUE;
     }
     if (MenuCtrl_IsButtons()) {
-        unk_2968.drawWrapped();
+        cursor.drawWrapped();
     }
     s32 x = 0x80;
-    s32 y = unk_94 + 0x60;
+    s32 y = slideY + 0x60;
     s32 p0 = 10;
     s32 p1 = 10;
     if (testFlags(2)) {
@@ -327,7 +327,7 @@ BOOL BbsReadMenu::onDraw() {
     }
     Oam_DrawCell(0, (void *)data_ov113_022936a0, 0x80, y, p0, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(0, (void *)(data_ov113_022936a0 + 0x20), 0x80, y, p1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    x += unk_9e;
+    x += pageDotsX;
     if (testFlags(0x100)) {
         x += getSlideOffsetX();
     }
@@ -354,7 +354,7 @@ BOOL BbsReadMenu::execTransition() {
         &BbsReadMenu::transitionAct07,
         &BbsReadMenu::transitionAct08};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -362,10 +362,10 @@ BOOL BbsReadMenu::execTransition() {
 BOOL BbsReadMenu::execMain() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        if (unk_8d == 0) goto st;
-        if (unk_8d == 1) {
+        if (mainState == 0) goto st;
+        if (mainState == 1) {
         st:
-            unk_9b = 3;
+            focus = 3;
             hideCursor();
             activateFocus();
             return TRUE;
@@ -378,7 +378,7 @@ BOOL BbsReadMenu::execMain() {
         &BbsReadMenu::mainAct02,
         &BbsReadMenu::mainAct03,
         &BbsReadMenu::mainAct04};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
     postInputUpdate();
     return TRUE;
 }
@@ -404,8 +404,8 @@ void BbsReadMenu::transitionAct00() {
 
 void BbsReadMenu::transitionAct01() {
     setTransitionState(2);
-    showPost((void *)unk_9a);
-    unk_94 = getSlideOffsetY();
+    showPost((void *)postIndex);
+    slideY = getSlideOffsetY();
     setFlags(8);
 }
 
@@ -419,7 +419,7 @@ void BbsReadMenu::transitionAct02() {
         }
     }
     applySlideOffset(2, 0, 0);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void BbsReadMenu::transitionAct03() {
@@ -436,14 +436,14 @@ void BbsReadMenu::transitionAct04() {
         clearFlags(8);
     } else {
         applySlideOffset(2, 0, 0);
-        unk_94 = getSlideOffsetY();
+        slideY = getSlideOffsetY();
     }
 }
 
 void BbsReadMenu::transitionAct05() {
     s32 m;
     setFlags(0x100);
-    switch (unk_9b) {
+    switch (focus) {
     case 1:
     case 4:
         m = 2;
@@ -460,7 +460,7 @@ void BbsReadMenu::transitionAct05() {
         }
         break;
     }
-    switch (unk_9b) {
+    switch (focus) {
     case 0:
     case 1:
         Snd_PlaySe(0x3c);
@@ -485,7 +485,7 @@ void BbsReadMenu::transitionAct06() {
 
 void BbsReadMenu::transitionAct07() {
     s32 m;
-    switch (unk_9b) {
+    switch (focus) {
     case 1:
         setFocusHighlight(0);
     case 4:
@@ -508,7 +508,7 @@ void BbsReadMenu::transitionAct07() {
     Gfx2d_ShowLayer(2);
     applySlideOffset(2, 0, 0);
     setTransitionState(8);
-    showPost((void *)unk_9a);
+    showPost((void *)postIndex);
 }
 
 void BbsReadMenu::transitionAct08() {
@@ -528,35 +528,35 @@ void BbsReadMenu::transitionAct08() {
 }
 
 void BbsReadMenu::init() {
-    unk_94 = 0;
-    unk_98 = 0;
-    unk_9b = 3;
+    slideY = 0;
+    flags = 0;
+    focus = 3;
     updatePostCount();
-    unk_9a = unk_9d - 1;
+    postIndex = postCount - 1;
 }
 
 void BbsReadMenu::releaseResources() {
-    unk_26a0[0].cancel();
-    unk_26a0[1].cancel();
-    unk_26e8[0].destroyLabel();
-    unk_26e8[1].destroyLabel();
-    unk_26e8[2].destroyLabel();
-    unk_26e8[3].destroyLabel();
+    bgTasks[0].cancel();
+    bgTasks[1].cancel();
+    infoLabels[0].destroyLabel();
+    infoLabels[1].destroyLabel();
+    infoLabels[2].destroyLabel();
+    infoLabels[3].destroyLabel();
     for (s32 i = 0; i < 6; i++) {
-        unk_27e8[i].destroyLabel();
+        lineLabels[i].destroyLabel();
     }
 }
 
 void BbsReadMenu::preInputUpdate() { preStateUpdate(); }
 
 void BbsReadMenu::preStateUpdate() {
-    unk_2968.vfunc_0c();
-    unk_26e8[0].destroyLabel();
-    unk_26e8[1].destroyLabel();
-    unk_26e8[2].destroyLabel();
-    unk_26e8[3].destroyLabel();
+    cursor.vfunc_0c();
+    infoLabels[0].destroyLabel();
+    infoLabels[1].destroyLabel();
+    infoLabels[2].destroyLabel();
+    infoLabels[3].destroyLabel();
     for (s32 i = 0; i < 6; i++) {
-        unk_27e8[i].destroyLabel();
+        lineLabels[i].destroyLabel();
     }
 }
 
@@ -564,7 +564,7 @@ void BbsReadMenu::postInputUpdate() { postStateUpdate(); }
 
 void BbsReadMenu::postStateUpdate() {
     if (testFlags(1)) {
-        if (unk_26a0[1].requestScreen((u32)unk_a0, 2, 0x800, 0)) {
+        if (bgTasks[1].requestScreen((u32)bgScreenBuf, 2, 0x800, 0)) {
             clearFlags(1);
         }
     }
@@ -579,8 +579,8 @@ void BbsReadMenu::setupBgLayer() {
 void BbsReadMenu::loadBg() {
     void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile((void *)"menu/bbs/b_bbs.bpl", h, 2, 8, 8, 0xe);
-    File_LoadToBuffer((void *)"menu/bbs/b_bbs_us.bsc", unk_a0, 0x800);
-    Gfx2d_LoadScreen(unk_a0, 2, 0x800, 0);
+    File_LoadToBuffer((void *)"menu/bbs/b_bbs_us.bsc", bgScreenBuf, 0x800);
+    Gfx2d_LoadScreen(bgScreenBuf, 2, 0x800, 0);
     Gfx2d_LoadCharFile((void *)"menu/bbs/b_bbs.bch", h, 2, 0x10, 0x10, 0x13f);
 }
 
@@ -604,16 +604,16 @@ void BbsReadMenu::mainAct01() {
         if ((v & 1) != 0) {
             pressCursor();
         } else if ((v & 2) != 0) {
-            unk_9b = 3;
+            focus = 3;
             hideCursor();
             activateFocus();
         } else if ((v & 0x200) != 0) {
-            unk_9b = 5;
+            focus = 5;
             if (activateFocus()) {
                 hideCursor();
             }
         } else if ((v & 0x100) != 0) {
-            unk_9b = 4;
+            focus = 4;
             if (activateFocus()) {
                 hideCursor();
             }
@@ -622,18 +622,18 @@ void BbsReadMenu::mainAct01() {
 }
 
 void BbsReadMenu::mainAct02() {
-    if (!unk_2968.isMoving()) {
-        setMainState(unk_9c);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
     }
 }
 
 void BbsReadMenu::mainAct03() {
-    if (unk_2968.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         if (activateFocus()) {
-            if ((u8)(unk_9b + 0xfe) <= 1) {
+            if ((u8)(focus + 0xfe) <= 1) {
                 hideCursor();
             } else {
-                unk_2968.setPoseRelease();
+                cursor.setPoseRelease();
             }
         } else {
             releaseCursor();
@@ -642,7 +642,7 @@ void BbsReadMenu::mainAct03() {
 }
 
 void BbsReadMenu::mainAct04() {
-    if (unk_2968.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
         setMainState(1);
     }
@@ -669,18 +669,18 @@ void BbsReadMenu::showPostText(void *unused) {
     Text_SplitLines(BbsPost_GetText(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
     for (i = 0; i < 6; i++) {
         s32 len = starts[i + 1] - starts[i];
-        LabelString *o = &unk_27e8[i];
+        LabelString *o = &lineLabels[i];
         ((MsgString *)o)->clear();
         if (len != 0) {
             String_FromEncodedBytesEx(o, BbsPost_GetText(p) + starts[i], len, z1, z1);
         }
     }
     for (i = 0; i < 6; i++) {
-        LabelString *o = &unk_27e8[i];
-        o->createBufferLabel((u32)unk_8a0[i], 0x14, 0xe, 0xd);
+        LabelString *o = &lineLabels[i];
+        o->createBufferLabel((u32)lineCharBufs[i], 0x14, 0xe, 0xd);
         o->redrawAligned(z2, z2);
     }
-    unk_26a0[0].requestChars((u32)unk_8a0, 2, 0x11, 0x11, 0x100);
+    bgTasks[0].requestChars((u32)lineCharBufs, 2, 0x11, 0x11, 0x100);
 }
 
 void BbsReadMenu::showPostDate(void *unused) {
@@ -691,13 +691,13 @@ void BbsReadMenu::showPostDate(void *unused) {
     buf[2] = p->getYear() / 10 + 0x35;
     buf[3] = p->getYear() % 10 + 0x35;
     buf[4] = 0;
-    String_FromEncodedBytes(&unk_26e8[0], buf, 5);
+    String_FromEncodedBytes(&infoLabels[0], buf, 5);
     placeLabel(0, 0x111, 4, 0, 1);
     buf[0] = p->getMonth() / 10 + 0x35;
     buf[1] = p->getMonth() % 10 + 0x35;
     buf[2] = p->getDay() / 10 + 0x35;
     buf[3] = p->getDay() % 10 + 0x35;
-    String_FromEncodedBytes(&unk_26e8[1], buf, 5);
+    String_FromEncodedBytes(&infoLabels[1], buf, 5);
     placeLabel(1, 0x116, 4, 0, 1);
 }
 
@@ -714,7 +714,7 @@ void BbsReadMenu::showPostNumber(s32 i) {
     LabelString str;
     String_FromEncodedBytes(&str, buf, 3);
     String_SetSlot(0, &str);
-    String_Load2dMenu(&unk_26e8[2], 0x86);
+    String_Load2dMenu(&infoLabels[2], 0x86);
     placeLabel(2, 0x11a, 5, 1, 0);
 }
 
@@ -727,13 +727,13 @@ void BbsReadMenu::markPostRead(void *unused) {
     } else {
         m = 0xa;
     }
-    BgScreen_SetRectPalette(unk_a0, 0x10, 0, 0x12, 3, m);
+    BgScreen_SetRectPalette(bgScreenBuf, 0x10, 0, 0x12, 3, m);
     if (p->isFreeText()) {
         m = 0xa;
     } else {
         m = 8;
     }
-    BgScreen_SetRectPalette(unk_a0, 6, 5, 0x19, 6, m);
+    BgScreen_SetRectPalette(bgScreenBuf, 6, 5, 0x19, 6, m);
     setFlags(1);
     p->setRead(n);
 }
@@ -746,45 +746,45 @@ void BbsReadMenu::showPost(void *pad) {
 }
 
 void BbsReadMenu::setupButtonLabels() {
-    String_Load2dMenu(&unk_26e8[0], 0x83);
+    String_Load2dMenu(&infoLabels[0], 0x83);
     placeLabel(0, 0x101, 4, 1, 0);
-    String_Load2dMenu(&unk_26e8[1], 0x82);
+    String_Load2dMenu(&infoLabels[1], 0x82);
     placeLabel(1, 0x105, 4, 1, 0);
-    String_Load2dMenu(&unk_26e8[2], 0x84);
+    String_Load2dMenu(&infoLabels[2], 0x84);
     placeLabel(2, 0x109, 4, 1, 0);
-    String_Load2dMenu(&unk_26e8[3], 0x88);
+    String_Load2dMenu(&infoLabels[3], 0x88);
     placeLabel(3, 0x10d, 4, 1, 0);
 }
 
 void BbsReadMenu::placeLabel(s32 idx, s32 a, s32 b, s32 c, s32 d) {
-    LabelString *o = &unk_26e8[idx];
+    LabelString *o = &infoLabels[idx];
     o->createSmallLabel(2, a, b, 0xf, 0xa, d);
     o->redrawAligned(c, 0);
 }
 
 BOOL BbsReadMenu::testFlags(u32 mask) {
-    if (unk_98 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void BbsReadMenu::setFlags(u32 mask) { unk_98 = unk_98 | mask; }
+void BbsReadMenu::setFlags(u32 mask) { flags = flags | mask; }
 
-void BbsReadMenu::clearFlags(u32 mask) { unk_98 = unk_98 & ~mask; }
+void BbsReadMenu::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 BOOL BbsReadMenu::touchButtons() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     if (y >= 0x54 && y <= 0x70) {
         if (x <= 0x18) {
-            unk_9b = 5;
+            focus = 5;
             return TRUE;
         }
         if (x < 0xe8) {
             goto fail;
         }
-        unk_9b = 4;
+        focus = 4;
         return TRUE;
     }
     if (y >= 0xa4 && y <= 0xb4) {
@@ -792,33 +792,33 @@ BOOL BbsReadMenu::touchButtons() {
             return FALSE;
         }
         if (x < 0x50) {
-            unk_9b = 0;
+            focus = 0;
             return TRUE;
         }
         if (x < 0x80) {
-            unk_9b = 1;
+            focus = 1;
             return TRUE;
         }
         if (x < 0xb0) {
-            unk_9b = 2;
+            focus = 2;
             return TRUE;
         }
         if (x >= 0xe0) {
             goto fail;
         }
-        unk_9b = 3;
+        focus = 3;
         return TRUE;
     }
     if (y >= 0x92 && y <= 0x9e) {
-        s32 t = unk_9e + 0x44;
+        s32 t = pageDotsX + 0x44;
         if (x < t) {
             goto fail;
         }
         u32 idx = (u32)((x - t) << 21) >> 24;
-        if (idx >= unk_9d) {
+        if (idx >= postCount) {
             return FALSE;
         }
-        unk_9b = idx + 6;
+        focus = idx + 6;
         return TRUE;
     }
 fail:
@@ -826,7 +826,7 @@ fail:
 }
 
 void BbsReadMenu::setFocusHighlight(s32 flag) {
-    u32 st = unk_9b;
+    u32 st = focus;
     switch (st) {
     case 0:
     case 1:
@@ -834,7 +834,7 @@ void BbsReadMenu::setFocusHighlight(s32 flag) {
     case 3: {
         s32 e = flag ? 0xe : 0xd;
         s32 x = st * 6 + 4;
-        BgScreen_SetRectPalette(&unk_a0, x, 0x14, x + 5, 0x16, e);
+        BgScreen_SetRectPalette(&bgScreenBuf, x, 0x14, x + 5, 0x16, e);
         setFlags(1);
         break;
     }
@@ -858,16 +858,16 @@ void BbsReadMenu::setFocusHighlight(s32 flag) {
 
 BOOL BbsReadMenu::activateFocus() {
     updatePostCount();
-    u32 st = unk_9b;
+    u32 st = focus;
     switch (st) {
     case 2:
         Snd_PlaySe(0x29);
     case 3: {
         setFocusHighlight(1);
-        unk_8c = 3;
+        transitionState = 3;
         setPhase(1);
         void *r = ProcBase_GetParent(this);
-        if (unk_9b == 3) {
+        if (focus == 3) {
             ((MenuLauncher *)r)->setNextRequest(0x43, 0);
             Snd_PlaySe(0x12);
         } else {
@@ -876,39 +876,39 @@ BOOL BbsReadMenu::activateFocus() {
         return TRUE;
     }
     case 4:
-        if (unk_9d > unk_9a + 1) {
-            unk_9a = unk_9a + 1;
+        if (postCount > postIndex + 1) {
+            postIndex = postIndex + 1;
             setFocusHighlight(1);
-            unk_8c = 5;
+            transitionState = 5;
             setPhase(1);
             return TRUE;
         }
         break;
     case 5:
-        if (unk_9a != 0) {
-            unk_9a = unk_9a - 1;
+        if (postIndex != 0) {
+            postIndex = postIndex - 1;
             setFocusHighlight(1);
-            unk_8c = 5;
+            transitionState = 5;
             setPhase(1);
             return TRUE;
         }
         break;
     case 1: {
-        s32 t = unk_9d - 1;
-        if (unk_9a != t) {
-            unk_9a = t;
+        s32 t = postCount - 1;
+        if (postIndex != t) {
+            postIndex = t;
             setFocusHighlight(1);
-            unk_8c = 5;
+            transitionState = 5;
             setPhase(1);
             return TRUE;
         }
         break;
     }
     case 0:
-        if (unk_9a != 0) {
-            unk_9a = 0;
+        if (postIndex != 0) {
+            postIndex = 0;
             setFocusHighlight(1);
-            unk_8c = 5;
+            transitionState = 5;
             setPhase(1);
             return TRUE;
         }
@@ -916,7 +916,7 @@ BOOL BbsReadMenu::activateFocus() {
     }
     if (st >= 6 && st <= 0x14) {
         u8 idx = (u8)(st - 6);
-        u32 cur = unk_9a;
+        u32 cur = postIndex;
         if (idx == cur) {
             return FALSE;
         }
@@ -925,8 +925,8 @@ BOOL BbsReadMenu::activateFocus() {
         } else {
             clearFlags(0x40);
         }
-        unk_9a = idx;
-        unk_8c = 5;
+        postIndex = idx;
+        transitionState = 5;
         setPhase(1);
         return TRUE;
     }
@@ -934,20 +934,20 @@ BOOL BbsReadMenu::activateFocus() {
 }
 
 void BbsReadMenu::updatePostCount() {
-    unk_9d = Bbs_GetPostCount();
-    unk_9e = (0xf - unk_9d) * 4;
+    postCount = Bbs_GetPostCount();
+    pageDotsX = (0xf - postCount) * 4;
 }
 
 void BbsReadMenu::showCursor() {
     s32 a = getFocusX();
     s32 b = getFocusY();
-    unk_2968.warpTo(a, b);
-    ((MenuCursor *)&unk_2968)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     refreshCursor();
 }
 
 s32 BbsReadMenu::getFocusBaseX() {
-    u32 st = unk_9b;
+    u32 st = focus;
     if (st <= 3) {
         return st * 0x30 + 0x47;
     }
@@ -958,7 +958,7 @@ s32 BbsReadMenu::getFocusBaseX() {
         return 0xf0;
     }
     if (st <= 0x14) {
-        return unk_9e + 0x48 + (st - 6) * 8;
+        return pageDotsX + 0x48 + (st - 6) * 8;
     }
     return 0x80;
 }
@@ -975,7 +975,7 @@ s32 BbsReadMenu::getFocusX() {
 }
 
 s32 BbsReadMenu::getFocusY() {
-    u32 st = unk_9b;
+    u32 st = focus;
     if (st <= 3) {
         return 0xaa;
     }
@@ -989,120 +989,120 @@ s32 BbsReadMenu::getFocusY() {
 }
 
 void BbsReadMenu::hideCursor() {
-    ((MenuCursor *)&unk_2968)->setAnimIfChanged(0);
-    unk_2968.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void BbsReadMenu::moveCursorToTarget() {
     if (testFlags(0x80)) {
         s32 a = getFocusX();
         s32 b = getFocusY();
-        unk_2968.warpTo(a, b);
+        cursor.warpTo(a, b);
         clearFlags(0x80);
     } else {
         s32 a = getFocusX();
         s32 b = getFocusY();
-        unk_2968.moveToEase(a, b, 4, 1);
-        unk_9c = unk_8d;
+        cursor.moveToEase(a, b, 4, 1);
+        returnState = mainState;
         setMainState(2);
     }
 }
 
 void BbsReadMenu::pressCursor() {
-    ((MenuCursor *)&unk_2968)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(3);
 }
 
 void BbsReadMenu::releaseCursor() {
-    unk_2968.setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(4);
 }
 
 void BbsReadMenu::refreshCursor() {
-    unk_2968.setPoseIdle();
-    unk_2968.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 BOOL BbsReadMenu::moveFocusByPad(void *pad) {
-    u32 st = unk_9b;
+    u32 st = focus;
     if (st <= 3) {
         if (MenuKeys_HasLeft(pad)) {
-            if (unk_9b != 0) {
-                unk_9b = unk_9b - 1;
+            if (focus != 0) {
+                focus = focus - 1;
             } else {
-                unk_9b = 3;
+                focus = 3;
                 setFlags(0x10);
             }
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_9b < 3) {
-                unk_9b = unk_9b + 1;
+            if (focus < 3) {
+                focus = focus + 1;
             } else {
-                unk_9b = 0;
+                focus = 0;
                 setFlags(0x20);
             }
         } else if (MenuKeys_HasUp(pad)) {
-            s32 t = unk_9e + 0x44;
-            s32 v = unk_2968.getFrameScreenX() - t;
+            s32 t = pageDotsX + 0x44;
+            s32 v = cursor.getFrameScreenX() - t;
             if (v < 0) {
                 v = 0;
             }
             s32 i = v >> 3;
-            s32 n = unk_9d;
+            s32 n = postCount;
             if (i >= n) {
                 i = n - 1;
             }
-            unk_9b = i + 6;
+            focus = i + 6;
         }
     } else if (st == 5) {
         if (MenuKeys_HasDown(pad)) {
-            unk_9b = 6;
+            focus = 6;
         } else if (MenuKeys_HasLeft(pad)) {
-            unk_9b = 4;
+            focus = 4;
             setFlags(0x10);
         } else if (MenuKeys_HasRight(pad)) {
-            unk_9b = 4;
+            focus = 4;
         }
     } else if (st == 4) {
         if (MenuKeys_HasDown(pad)) {
-            unk_9b = unk_9d + 5;
+            focus = postCount + 5;
         } else if (MenuKeys_HasLeft(pad)) {
-            unk_9b = 5;
+            focus = 5;
         } else if (MenuKeys_HasRight(pad)) {
-            unk_9b = 5;
+            focus = 5;
             setFlags(0x20);
         }
     } else if (st <= 0x14) {
         if (MenuKeys_HasUp(pad)) {
-            if (MenuKeys_HasRight(pad) != 0 || (unk_2968.getFrameScreenX() > 0x80 && MenuKeys_HasLeft(pad) == 0)) {
-                unk_9b = 4;
+            if (MenuKeys_HasRight(pad) != 0 || (cursor.getFrameScreenX() > 0x80 && MenuKeys_HasLeft(pad) == 0)) {
+                focus = 4;
             } else {
-                unk_9b = 5;
+                focus = 5;
             }
         } else if (MenuKeys_HasDown(pad)) {
-            if (MenuKeys_HasRight(pad) != 0 || (unk_2968.getFrameScreenX() > 0x80 && MenuKeys_HasLeft(pad) == 0)) {
-                unk_9b = 2;
+            if (MenuKeys_HasRight(pad) != 0 || (cursor.getFrameScreenX() > 0x80 && MenuKeys_HasLeft(pad) == 0)) {
+                focus = 2;
             } else {
-                unk_9b = 1;
+                focus = 1;
             }
         } else if (MenuKeys_HasLeft(pad)) {
-            if (unk_9b > 6) {
-                unk_9b = unk_9b - 1;
+            if (focus > 6) {
+                focus = focus - 1;
                 setFlags(0x80);
                 Snd_PlaySe(0xb);
             } else {
-                unk_9b = 5;
+                focus = 5;
             }
         } else if (MenuKeys_HasRight(pad)) {
-            if (unk_9b + 1 < unk_9d + 6) {
-                unk_9b = unk_9b + 1;
+            if (focus + 1 < postCount + 6) {
+                focus = focus + 1;
                 setFlags(0x80);
                 Snd_PlaySe(0xb);
             } else {
-                unk_9b = 4;
+                focus = 4;
             }
         }
     }
-    if (unk_9b != st) {
+    if (focus != st) {
         return TRUE;
     }
     return FALSE;

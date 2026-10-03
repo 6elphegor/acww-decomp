@@ -214,15 +214,15 @@ public:
     void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class MapViewerMenu;
@@ -522,7 +522,7 @@ BOOL MapViewerMenu::execTransition() {
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f50,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f48};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -553,7 +553,7 @@ void MapViewerMenu::runMainState() {
         *(Unk_ov120_02295010_Fn *)data_ov120_02294ef8,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f00,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f30};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL MapViewerMenu::execMain() {
@@ -574,7 +574,7 @@ BOOL MapViewerMenu::execClosed() {
 
 BOOL MapViewerMenu::requestClose() {
     MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
-    unk_8c = 5;
+    transitionState = 5;
     setPhase(1);
     return TRUE;
 }
@@ -1546,7 +1546,7 @@ void MapViewerMenu::moveCursorToTarget() {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         MenuCursorBase_moveToEase(&unk_480, a, b, 3, 1);
-        unk_aa = unk_8d;
+        unk_aa = mainState;
         setMainState(3);
     }
 }

@@ -122,15 +122,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x0229aea8, size 0x2d80
@@ -172,37 +172,37 @@ public:
     s32 clearFlags(u32 a);
     s32 setFlags(u32 a);
 
-    /* 0x094 */ u32 unk_94;
-    /* 0x098 */ u32 unk_98;
+    /* 0x094 */ u32 stateFlags;
+    /* 0x098 */ u32 slideY;
     /* 0x09c */ u8 unk_9c[8];
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ u16 unk_ac;
-    /* 0x0ae */ u8 unk_ae[2];
-    /* 0x0b0 */ u8 unk_b0;
+    /* 0x0a4 */ s32 handX;
+    /* 0x0a8 */ s32 handY;
+    /* 0x0ac */ u16 handItem;
+    /* 0x0ae */ u8 auxItem[2];
+    /* 0x0b0 */ u8 handItemFlags;
     /* 0x0b1 */ u8 unk_b1[3];
-    /* 0x0b4 */ u8 unk_b4;
-    /* 0x0b5 */ u8 unk_b5;
-    /* 0x0b6 */ u8 unk_b6;
-    /* 0x0b7 */ u8 unk_b7;
-    /* 0x0b8 */ u8 unk_b8;
-    /* 0x0b9 */ u8 unk_b9;
-    /* 0x0ba */ u8 unk_ba;
-    /* 0x0bb */ u8 unk_bb;
-    /* 0x0bc */ u8 unk_bc;
+    /* 0x0b4 */ u8 handSource;
+    /* 0x0b5 */ u8 cursorTarget;
+    /* 0x0b6 */ u8 actionTarget;
+    /* 0x0b7 */ u8 placeTarget;
+    /* 0x0b8 */ u8 paperTarget;
+    /* 0x0b9 */ u8 swapTarget;
+    /* 0x0ba */ u8 returnState;
+    /* 0x0bb */ u8 chosenAction;
+    /* 0x0bc */ u8 popupRow;
     /* 0x0bd */ u8 unk_bd[3];
-    /* 0x0c0 */ u8 unk_c0;
+    /* 0x0c0 */ u8 useOnPlayerKind;
     /* 0x0c1 */ u8 unk_c1[3];
-    /* 0x0c4 */ s32 unk_c4;
+    /* 0x0c4 */ s32 fieldRequest;
     /* 0x0c8 */ u8 unk_c8[0x27f0 - 0xc8];
     /* 0x27f0 */ u8 unk_27f0[0xc];
-    /* 0x27fc */ MenuErrorMessage unk_27fc;
+    /* 0x27fc */ MenuErrorMessage errorMessage;
     /* 0x2904 */ u8 unk_2904[0x2b84 - 0x2904];
-    /* 0x2b84 */ s32 unk_2b84;
-    /* 0x2b88 */ s32 unk_2b88;
-    /* 0x2b8c */ s32 unk_2b8c;
-    /* 0x2b90 */ s32 unk_2b90;
-    /* 0x2b94 */ s32 unk_2b94;
+    /* 0x2b84 */ s32 waterPos;
+    /* 0x2b88 */ s32 waterPosY;
+    /* 0x2b8c */ s32 waterPosZ;
+    /* 0x2b90 */ s32 digUnitX;
+    /* 0x2b94 */ s32 digUnitY;
     /* 0x2b98 */ u8 unk_2b98[0x2d80 - 0x2b98];
 };
 
@@ -315,7 +315,7 @@ BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
             base += 0x3e8;
         }
     }
-    return Ground_FindWaterAhead(&unk_2b84, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
+    return Ground_FindWaterAhead(&waterPos, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
 }
 
 void PocketMenu::actionReleaseFish() {
@@ -325,8 +325,8 @@ void PocketMenu::actionReleaseFish() {
 
 void PocketMenu::mainAct30() {
     void *r6 = PocketMenu_GetPlayerSlot(this);
-    s32 a = PocketMenu_GetItem(this, unk_b6);
-    if (FishCatch_StartRelease(r6, a, &unk_2b84)) {
+    s32 a = PocketMenu_GetItem(this, actionTarget);
+    if (FishCatch_StartRelease(r6, a, &waterPos)) {
         struct {
             u16 a;
         } l;
@@ -355,7 +355,7 @@ void PocketMenu::sendReleasePacket(u8 a, u8 b) {
         u8 pkt[12];
         pkt[0] = b;
         pkt[1] = a;
-        NetBuf_PackPair20(&pkt[7], unk_2b84, unk_2b8c);
+        NetBuf_PackPair20(&pkt[7], waterPos, waterPosZ);
         MI_CpuCopy8(&pkt[7], &pkt[2], 5);
         CommManager *g = gCommManager;
         g->beginRecord();
@@ -377,7 +377,7 @@ void PocketMenu::mainAct2C() {
     void *r7 = PocketMenu_GetPlayerSlot(this);
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
-        l.a = PocketMenu_GetItem(this, unk_b6);
+        l.a = PocketMenu_GetItem(this, actionTarget);
         BOOL ok = FALSE;
         volatile u16 *pv = &l.a;
         u16 a = *pv;
@@ -454,8 +454,8 @@ BOOL PocketMenu::findBuryHole() {
                 ok = TRUE;
             }
             if (ok) {
-                unk_2b90 = x;
-                unk_2b94 = y;
+                digUnitX = x;
+                digUnitY = y;
                 return TRUE;
             }
         }
@@ -468,12 +468,12 @@ void PocketMenu::actionBuryItem() {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
     } else {
-        s32 a = PocketMenu_GetItem(this, unk_b6);
+        s32 a = PocketMenu_GetItem(this, actionTarget);
         s32 pair[2];
-        pair[0] = unk_2b90;
-        pair[1] = unk_2b94;
-        unk_c4 = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
-        if (unk_c4 == -1) {
+        pair[0] = digUnitX;
+        pair[1] = digUnitY;
+        fieldRequest = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
+        if (fieldRequest == -1) {
             PocketMenu_ReturnToIdle(this);
             PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
         } else {
@@ -483,7 +483,7 @@ void PocketMenu::actionBuryItem() {
 }
 
 void PocketMenu::mainAct2D() {
-    switch (FieldAction_PollResult(unk_c4)) {
+    switch (FieldAction_PollResult(fieldRequest)) {
     case 1:
         setMainState(0x2e);
         mainAct2E();
@@ -492,36 +492,36 @@ void PocketMenu::mainAct2D() {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 3, 0xff, 1);
     done:
-        FieldAction_Release(unk_c4);
-        unk_c4 = -1;
+        FieldAction_Release(fieldRequest);
+        fieldRequest = -1;
     }
 }
 
 void PocketMenu::mainAct2E() {
     u16 v;
     s32 out[3];
-    FieldPos_FromUnitCenter(out, unk_2b90, unk_2b94);
-    v = PocketMenu_GetItem(this, unk_b6);
+    FieldPos_FromUnitCenter(out, digUnitX, digUnitY);
+    v = PocketMenu_GetItem(this, actionTarget);
     if (PlayerActor_LocalRequestBuryItem(out, &v)) {
-        PocketMenu_ClearSlotItem(this, unk_b6);
+        PocketMenu_ClearSlotItem(this, actionTarget);
         setMainState(0x2f);
     }
 }
 
 void PocketMenu::actionPlantItem() {
-    s32 a = PocketMenu_GetItem(this, unk_b6);
+    s32 a = PocketMenu_GetItem(this, actionTarget);
     if (findBuryHole()) {
         s32 pair[2];
-        pair[0] = unk_2b90;
-        pair[1] = unk_2b94;
-        unk_c4 = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
-        if (unk_c4 != -1) {
+        pair[0] = digUnitX;
+        pair[1] = digUnitY;
+        fieldRequest = FieldAction_RequestTool(gCommManager->unk_64, pair, 2, 0, a);
+        if (fieldRequest != -1) {
             setMainState(0x2d);
             return;
         }
     }
-    unk_c4 = FieldAction_RequestAtFreeUnit(gCommManager->unk_64, 0x18, a);
-    if (unk_c4 == -1) {
+    fieldRequest = FieldAction_RequestAtFreeUnit(gCommManager->unk_64, 0x18, a);
+    if (fieldRequest == -1) {
         PocketMenu_ReturnToIdle(this);
         PocketMenu_ShowMessage(this, 8, 0xff, 0);
         Snd_PlaySe(0x73);
@@ -534,8 +534,8 @@ void PocketMenu::actionPlantItem() {
 void PocketMenu::actionThrowBottle() {
     sendBottleLetter();
     PlayerActor_LocalRequestThrowBottle();
-    BottleThrow_SetTarget(&unk_2b84, PocketMenu_GetPlayerSlot(this));
-    PocketMenu_ClearLetter(this, unk_b6);
+    BottleThrow_SetTarget(&waterPos, PocketMenu_GetPlayerSlot(this));
+    PocketMenu_ClearLetter(this, actionTarget);
     setMainState(0x33);
 }
 
@@ -553,7 +553,7 @@ void PocketMenu::mainAct34() {
 
 void PocketMenu::sendBottleLetter() {
     sendReleasePacket(0, 5);
-    s32 p = PocketMenu_GetLetter(this, unk_b6);
+    s32 p = PocketMenu_GetLetter(this, actionTarget);
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->unk_64 == 0) {
         u8 *const d = data_021e7f8c;
@@ -580,7 +580,7 @@ void PocketMenu::actionAct21() {
 }
 
 void PocketMenu::mainAct35() {
-    PocketMenu_GetItem(this, unk_b6);
+    PocketMenu_GetItem(this, actionTarget);
     if (PlayerActor_LocalRequestReleaseCreature()) {
         setMainState(0x36);
     }
@@ -589,29 +589,29 @@ void PocketMenu::mainAct35() {
 void PocketMenu::mainAct36() {
     if (PlayerActor_IsLocalReleaseWaiting()) {
         setMainState(0x37);
-        unk_27fc.showPromptOnly();
+        errorMessage.showPromptOnly();
     }
 }
 
 void PocketMenu::mainAct37() {
-    unk_27fc.updatePromptBalloon();
+    errorMessage.updatePromptBalloon();
     if (MenuCtrl_IsForceCloseDue() != 0 || Unk_ov098_0229b2d8_Both() || (gPad[1] & 1) || (gPad[1] & 2)) {
         setMainState(0x38);
-        unk_27fc.hidePromptBalloon();
+        errorMessage.hidePromptBalloon();
     }
 }
 
 void PocketMenu::mainAct38() {
-    unk_27fc.updatePromptBalloon();
+    errorMessage.updatePromptBalloon();
     if (PlayerActor_ConfirmReleaseCreature()) {
         setMainState(0x39);
     }
 }
 
 void PocketMenu::mainAct39() {
-    unk_27fc.updatePromptBalloon();
+    errorMessage.updatePromptBalloon();
     if (PlayerActor_IsInAction(6, 4) == 0) {
-        unk_27fc.undim();
+        errorMessage.undim();
         PocketMenu_ReturnToIdle(this);
     }
 }

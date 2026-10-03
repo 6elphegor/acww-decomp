@@ -88,15 +88,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Screen upload helper, 0x24 bytes (src/main/unk_020b8464.cpp)
@@ -292,7 +292,7 @@ extern "C" NearbyTownsMenu *NearbyTownsMenu_Create() { return new NearbyTownsMen
 
 BOOL NearbyTownsMenu::vfunc_00() {
     initNearbyTowns();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -335,7 +335,7 @@ BOOL NearbyTownsMenu::execTransition() {
         &NearbyTownsMenu::stateClose,
         &NearbyTownsMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -348,7 +348,7 @@ void NearbyTownsMenu::runMainState() {
         &NearbyTownsMenu::updateCursorPress,
         &NearbyTownsMenu::updateCursorRelease,
         &NearbyTownsMenu::updateCloseDelay};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL NearbyTownsMenu::execMain() {
@@ -673,7 +673,7 @@ void NearbyTownsMenu::moveCursorTo(s32 a, s32 b) {
     } else {
         unk_6b8.moveToEase(a, b, 3, 1);
     }
-    unk_1662 = unk_8d;
+    unk_1662 = mainState;
     setMainState(2);
 }
 
@@ -689,7 +689,7 @@ void NearbyTownsMenu::pressCursor() {
 
 void NearbyTownsMenu::releaseCursor() {
     unk_6b8.setPoseRelease();
-    unk_1662 = unk_8d;
+    unk_1662 = mainState;
     setMainState(4);
 }
 

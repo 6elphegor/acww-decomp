@@ -308,15 +308,15 @@ public:
     void setPhase(u8);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 typedef void (LostFoundRecycleMenu::*Unk_ov110_02297778_Fn)();
@@ -331,43 +331,43 @@ struct Unk_ov110_02295588_Vt {
 
 struct Unk_ov110_S {
     /* 0x0000 */ u8 pad_00[0x8c];
-    /* 0x008c */ u8 unk_8c;
-    /* 0x008d */ u8 unk_8d;
+    /* 0x008c */ u8 transitionState;
+    /* 0x008d */ u8 mainState;
     /* 0x008e */ u8 pad_8e[0x94 - 0x8e];
-    /* 0x0094 */ s32 unk_94;
-    /* 0x0098 */ s32 unk_98;
-    /* 0x009c */ s32 unk_9c;
-    /* 0x00a0 */ s32 unk_a0;
-    /* 0x00a4 */ s32 unk_a4;
-    /* 0x00a8 */ s32 unk_a8;
-    /* 0x00ac */ s32 unk_ac;
-    /* 0x00b0 */ u16 unk_b0[15];
-    /* 0x00ce */ u16 unk_ce[15];
-    /* 0x00ec */ u16 unk_ec;
+    /* 0x0094 */ s32 stateFlags;
+    /* 0x0098 */ s32 pocketsSlideY;
+    /* 0x009c */ s32 boxSlideY;
+    /* 0x00a0 */ s32 grabOffsetX;
+    /* 0x00a4 */ s32 grabOffsetY;
+    /* 0x00a8 */ s32 heldX;
+    /* 0x00ac */ s32 heldY;
+    /* 0x00b0 */ u16 boxItems[15];
+    /* 0x00ce */ u16 initialBoxItems[15];
+    /* 0x00ec */ u16 heldItem;
     /* 0x00ee */ u8 pad_ee[2];
-    /* 0x00f0 */ u8 unk_f0;
-    /* 0x00f1 */ u8 unk_f1;
-    /* 0x00f2 */ u8 unk_f2;
-    /* 0x00f3 */ u8 unk_f3;
-    /* 0x00f4 */ u8 unk_f4;
-    /* 0x00f5 */ u8 unk_f5;
+    /* 0x00f0 */ u8 heldItemFlags;
+    /* 0x00f1 */ u8 heldKind;
+    /* 0x00f2 */ u8 touchedSlot;
+    /* 0x00f3 */ u8 balloonSlot;
+    /* 0x00f4 */ u8 pickUpSlot;
+    /* 0x00f5 */ u8 cursorSlot;
     /* 0x00f6 */ u8 unk_f6;
-    /* 0x00f7 */ u8 unk_f7;
-    /* 0x00f8 */ u8 unk_f8;
-    /* 0x00f9 */ u8 unk_f9;
-    /* 0x00fa */ u8 unk_fa;
-    /* 0x00fb */ u8 unk_fb;
-    /* 0x00fc */ u8 unk_fc;
+    /* 0x00f7 */ u8 actionSlot;
+    /* 0x00f8 */ u8 returnState;
+    /* 0x00f9 */ u8 chosenAction;
+    /* 0x00fa */ u8 choiceRow;
+    /* 0x00fb */ u8 numTextLabels;
+    /* 0x00fc */ u8 delayTimer;
     /* 0x00fd */ u8 pad_fd[3];
-    /* 0x0100 */ u8 unk_100[0x38];
-    /* 0x0138 */ u8 unk_138[0xa60];
-    /* 0x0b98 */ u8 unk_b98[0x28];
-    /* 0x0bc0 */ u8 unk_bc0[0x15e0];
-    /* 0x21a0 */ u8 unk_21a0[0xc0];
-    /* 0x2260 */ u8 unk_2260[0x18];
-    /* 0x2278 */ u8 unk_2278[0x64];
-    /* 0x22dc */ u8 unk_22dc[0x2f9];
-    /* 0x25d5 */ u8 unk_25d5[0x18f];
+    /* 0x0100 */ u8 vramTask[0x38];
+    /* 0x0138 */ u8 itemGrid[0xa60];
+    /* 0x0b98 */ u8 letterGrid[0x28];
+    /* 0x0bc0 */ u8 inventoryBg[0x15e0];
+    /* 0x21a0 */ u8 nameBalloon[0xc0];
+    /* 0x2260 */ u8 flyMotion[0x18];
+    /* 0x2278 */ u8 cursor[0x64];
+    /* 0x22dc */ u8 choiceMenu[0x2f9];
+    /* 0x25d5 */ u8 choiceValues[0x18f];
 };
 typedef Unk_ov110_S S;
 
@@ -375,7 +375,7 @@ typedef Unk_ov110_S S;
 class LostFoundRecycleMenu : public MenuProc {
 public:
     LostFoundRecycleMenu()
-        : unk_100(), unk_138(), unk_b98(), unk_bc0(), unk_21a0(), unk_2260(), unk_2278(), unk_22dc(), unk_25dc(), unk_26e4() {}
+        : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), choiceMenu(), errorMessage(), textLabels() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -446,34 +446,34 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u32 unk_94;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
+    /* 0x94 */ u32 stateFlags;
+    /* 0x98 */ s32 pocketsSlideY;
+    /* 0x9c */ s32 boxSlideY;
     /* 0xa0 */ u8 unk_a0[0x10];
-    /* 0xb0 */ u16 unk_b0[15];
-    /* 0xce */ u16 unk_ce[15];
+    /* 0xb0 */ u16 boxItems[15];
+    /* 0xce */ u16 initialBoxItems[15];
     /* 0xec */ u8 unk_ec[2];
-    /* 0xee */ s16 unk_ee;
+    /* 0xee */ s16 sendSeq;
     /* 0xf0 */ u8 unk_f0[5];
-    /* 0xf5 */ u8 unk_f5;
+    /* 0xf5 */ u8 cursorSlot;
     /* 0xf6 */ u8 unk_f6;
-    /* 0xf7 */ u8 unk_f7;
-    /* 0xf8 */ u8 unk_f8;
-    /* 0xf9 */ u8 unk_f9;
-    /* 0xfa */ u8 unk_fa;
-    /* 0xfb */ u8 unk_fb;
-    /* 0xfc */ u8 unk_fc;
+    /* 0xf7 */ u8 actionSlot;
+    /* 0xf8 */ u8 returnState;
+    /* 0xf9 */ u8 chosenAction;
+    /* 0xfa */ u8 choiceRow;
+    /* 0xfb */ u8 numTextLabels;
+    /* 0xfc */ u8 delayTimer;
     /* 0xfd */ u8 unk_fd[3];
-    /* 0x100 */ BgVramTaskPair unk_100[1];
-    /* 0x138 */ InventoryItemGrid unk_138;
-    /* 0xb98 */ LetterGrid unk_b98;
-    /* 0xbc0 */ InventoryBg unk_bc0;
-    /* 0x21a0 */ TouchPromptBalloon unk_21a0;
-    /* 0x2260 */ CursorMotion unk_2260;
-    /* 0x2278 */ MenuCursorBuf0 unk_2278;
-    /* 0x22dc */ PopupChoiceMenu unk_22dc;
-    /* 0x25dc */ MenuErrorMessage unk_25dc;
-    /* 0x26e4 */ LabelString unk_26e4[2];
+    /* 0x100 */ BgVramTaskPair vramTask[1];
+    /* 0x138 */ InventoryItemGrid itemGrid;
+    /* 0xb98 */ LetterGrid letterGrid;
+    /* 0xbc0 */ InventoryBg inventoryBg;
+    /* 0x21a0 */ TouchPromptBalloon nameBalloon;
+    /* 0x2260 */ CursorMotion flyMotion;
+    /* 0x2278 */ MenuCursorBuf0 cursor;
+    /* 0x22dc */ PopupChoiceMenu choiceMenu;
+    /* 0x25dc */ MenuErrorMessage errorMessage;
+    /* 0x26e4 */ LabelString textLabels[2];
 };
 
 static inline void func_0206fab4(void *p, s32 a, s32 b) { ((LabelString *)p)->redrawAligned((s32)a, (s32)b); }
@@ -698,18 +698,18 @@ BOOL LostFoundRecycleMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_21a0.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        unk_2278.drawWrapped();
+        cursor.drawWrapped();
     }
     LostFoundRecycleMenu_DrawHeldItem((S *)this);
     if (testFlags(0x80)) {
-        InventoryItemGrid_DrawBox(&unk_138, 0, unk_9c);
+        InventoryItemGrid_DrawBox(&itemGrid, 0, boxSlideY);
     }
     if (testFlags(2)) {
-        InventoryItemGrid_DrawPockets(&unk_138, 0, unk_98);
-        unk_b98.drawPocketLetters(0, unk_98);
-        InventoryBg_DrawSprite(&unk_bc0, unk_98);
+        InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
+        letterGrid.drawPocketLetters(0, pocketsSlideY);
+        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }
@@ -724,7 +724,7 @@ BOOL LostFoundRecycleMenu::execTransition() {
         &LostFoundRecycleMenu::transitionAct05,
         &LostFoundRecycleMenu::transitionAct06};
     LostFoundRecycleMenu_PreStateUpdate((S *)this);
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     LostFoundRecycleMenu_PostStateUpdate((S *)this);
     return TRUE;
 }
@@ -742,7 +742,7 @@ void LostFoundRecycleMenu::runMainState() {
         &LostFoundRecycleMenu::mainAct10, &LostFoundRecycleMenu::mainAct11,
         &LostFoundRecycleMenu::mainAct12, &LostFoundRecycleMenu::mainAct13,
         &LostFoundRecycleMenu::mainAct14, &LostFoundRecycleMenu::mainAct15};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL LostFoundRecycleMenu::isForcedClose() {
@@ -755,9 +755,9 @@ BOOL LostFoundRecycleMenu::isForcedClose() {
 BOOL LostFoundRecycleMenu::execMain() {
     MenuCtrl_TickForceClose();
     if (isForcedClose()) {
-        if (unk_8d == 0 || unk_8d == 1 || unk_8d == 4) {
+        if (mainState == 0 || mainState == 1 || mainState == 4) {
             LostFoundRecycleMenu_HideCursor((S *)this);
-            unk_21a0.hide(0);
+            nameBalloon.hide(0);
             confirm(0);
             return TRUE;
         }
@@ -786,25 +786,25 @@ void LostFoundRecycleMenu::transitionAct00() {
 void LostFoundRecycleMenu::transitionAct01() {
     S *s = (S *)this;
     ::LostFoundRecycleMenu_LoadObjGraphics(s);
-    ::InventoryItemGrid_LoadPockets(s->unk_138);
-    ::InventoryItemGrid_LoadBox(s->unk_138, s->unk_b0);
+    ::InventoryItemGrid_LoadPockets(s->itemGrid);
+    ::InventoryItemGrid_LoadBox(s->itemGrid, s->boxItems);
     ::LostFoundRecycleMenu_DisableRejectedItems(s);
-    ::LetterGrid_LoadPocketLetters(s->unk_b98);
-    ::func_ov094_022941f8(s->unk_b98, 0xf);
+    ::LetterGrid_LoadPocketLetters(s->letterGrid);
+    ::func_ov094_022941f8(s->letterGrid, 0xf);
     ::func_ov002_022008e0(s, 8, 0, 0, 0x30);
     ::Gfx2d_ShowLayer(6);
     ::func_ov002_02200840(s, 6, 0, 0);
     ::func_ov002_02200a50(s, 2);
     ::func_ov110_02294d78(s, 1);
     ::func_ov110_02294d78(s, 2);
-    s->unk_98 = ::func_ov002_02200920(s);
+    s->pocketsSlideY = ::func_ov002_02200920(s);
 }
 
 void LostFoundRecycleMenu::transitionAct02() {
     S *s = (S *)this;
     s32 v = ::func_ov002_02200908(s, 0);
     ::func_ov002_02200840(s, 6, 0, 0);
-    s->unk_98 = ::func_ov002_02200920(s);
+    s->pocketsSlideY = ::func_ov002_02200920(s);
     if (v) {
         ::LostFoundRecycleMenu_LoadTopBg(s);
         ::func_ov002_022008e0(s, 2, 0, 1, 0x30);
@@ -812,7 +812,7 @@ void LostFoundRecycleMenu::transitionAct02() {
         ::func_ov110_02294d78(s, 0x80);
         ::Gfx2d_ShowLayer(4);
         ::func_ov002_02200840(s, 4, 0, 0);
-        s->unk_9c = ::func_ov002_02200920(s);
+        s->boxSlideY = ::func_ov002_02200920(s);
         ::func_ov002_02200a50(s, 3);
     }
 }
@@ -824,19 +824,19 @@ void LostFoundRecycleMenu::transitionAct03() {
         ::LostFoundRecycleMenu_ResumeInput(s);
     }
     ::func_ov002_02200840(s, 4, 0, 0);
-    s->unk_9c = ::func_ov002_02200920(s);
+    s->boxSlideY = ::func_ov002_02200920(s);
 }
 
 void LostFoundRecycleMenu::transitionAct04() {
     S *s = (S *)this;
     if (::func_ov110_02294d9c(s)) {
-        ::func_ov002_022006e4(s->unk_21a0, 1);
+        ::func_ov002_022006e4(s->nameBalloon, 1);
         ::LostFoundRecycleMenu_HideCursor(s);
         ::func_ov092_02291ce4(::ProcBase_GetParent(s), 0x44, 1);
         ::func_ov002_022008c4(s, 2, 4, 1, 0x30);
         ::func_ov002_02200850(s, 0x80);
         ::func_ov002_02200840(s, 4, 0, 0);
-        s->unk_9c = ::func_ov002_02200920(s);
+        s->boxSlideY = ::func_ov002_02200920(s);
         ::func_ov002_02200a50(s, 5);
     }
 }
@@ -852,7 +852,7 @@ void LostFoundRecycleMenu::transitionAct05() {
         ::func_ov110_02296f70(s);
     } else {
         ::func_ov002_02200840(s, 4, 0, 0);
-        s->unk_9c = ::func_ov002_02200920(s);
+        s->boxSlideY = ::func_ov002_02200920(s);
     }
 }
 
@@ -866,51 +866,51 @@ void LostFoundRecycleMenu::transitionAct06() {
     } else {
         ::func_ov002_02200840(s, 6, 0, 0);
     }
-    s->unk_98 = ::func_ov002_02200920(s);
+    s->pocketsSlideY = ::func_ov002_02200920(s);
 }
 
 extern "C" void LostFoundRecycleMenu_Init(S *s) {
     s32 i;
-    s->unk_94 = 0;
-    InventoryItemGrid_Init(s->unk_138, 1);
-    func_ov094_02294644(s->unk_b98, 2);
-    InventoryBg_Init(s->unk_bc0, 6);
-    s->unk_f3 = 0x1f;
-    func_ov002_022027a4(s->unk_2260);
-    s->unk_f1 = 0;
-    s->unk_f5 = 0;
-    func_ov002_02202310(s->unk_22dc, 3, 1, 0);
-    s->unk_fb = 0;
+    s->stateFlags = 0;
+    InventoryItemGrid_Init(s->itemGrid, 1);
+    func_ov094_02294644(s->letterGrid, 2);
+    InventoryBg_Init(s->inventoryBg, 6);
+    s->balloonSlot = 0x1f;
+    func_ov002_022027a4(s->flyMotion);
+    s->heldKind = 0;
+    s->cursorSlot = 0;
+    func_ov002_02202310(s->choiceMenu, 3, 1, 0);
+    s->numTextLabels = 0;
     switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
         for (i = 0; i < 15; i++) {
-            s->unk_b0[i] = 0xfff1;
+            s->boxItems[i] = 0xfff1;
         }
         func_ov110_02294d78(s, 0x200);
         break;
     case 0x1f:
-        MI_CpuCopy8(gSaveLostAndFound, s->unk_b0, 0x1e);
+        MI_CpuCopy8(gSaveLostAndFound, s->boxItems, 0x1e);
         break;
     case 0x20:
-        MI_CpuCopy8(gSaveRecycleBin, s->unk_b0, 0x1e);
+        MI_CpuCopy8(gSaveRecycleBin, s->boxItems, 0x1e);
         break;
     }
-    MI_CpuCopy8(s->unk_b0, s->unk_ce, 0x1e);
+    MI_CpuCopy8(s->boxItems, s->initialBoxItems, 0x1e);
     MenuCtrl_BackupPockets();
 }
 
 extern "C" void LostFoundRecycleMenu_Exit(S *s) {
     LostFoundRecycleMenu_CancelUploads(s);
-    InventoryBg_Exit(s->unk_bc0);
-    InventoryItemGrid_Exit(s->unk_138);
-    PopupChoice_ForceClose(s->unk_22dc);
+    InventoryBg_Exit(s->inventoryBg);
+    InventoryItemGrid_Exit(s->itemGrid);
+    PopupChoice_ForceClose(s->choiceMenu);
     func_ov110_02295034(s);
 }
 
 extern "C" void LostFoundRecycleMenu_PreInputUpdate(S *s) {
     LostFoundRecycleMenu_PreStateUpdate(s);
-    ((Unk_ov110_02295588_Vt *)s->unk_2278)->vfunc_0c();
+    ((Unk_ov110_02295588_Vt *)s->cursor)->vfunc_0c();
 }
 
 extern "C" void LostFoundRecycleMenu_PostInputUpdate(S *s) {
@@ -919,16 +919,16 @@ extern "C" void LostFoundRecycleMenu_PostInputUpdate(S *s) {
 
 extern "C" void LostFoundRecycleMenu_PreStateUpdate(S *s) {
     LostFoundRecycleMenu_CancelUploads(s);
-    InventoryBg_PreUpdate(s->unk_bc0);
-    InventoryItemGrid_PreUpdate(s->unk_138);
-    func_ov094_0229462c(s->unk_b98);
+    InventoryBg_PreUpdate(s->inventoryBg);
+    InventoryItemGrid_PreUpdate(s->itemGrid);
+    func_ov094_0229462c(s->letterGrid);
     func_ov110_02295034(s);
 }
 
 extern "C" void LostFoundRecycleMenu_PostStateUpdate(S *s) {
-    PopupChoice_Update(s->unk_22dc);
-    InventoryBg_Update(s->unk_bc0);
-    if (func_ov002_0220071c(s->unk_21a0)) {
+    PopupChoice_Update(s->choiceMenu);
+    InventoryBg_Update(s->inventoryBg);
+    if (func_ov002_0220071c(s->nameBalloon)) {
         LostFoundRecycleMenu_PlaceNameBalloon(s);
     }
 }
@@ -941,7 +941,7 @@ void LostFoundRecycleMenu_SetupBgLayers() {
 }
 
 extern "C" void LostFoundRecycleMenu_LoadInventoryBg(S *s) {
-    InventoryBg_Load(s->unk_bc0, 0);
+    InventoryBg_Load(s->inventoryBg, 0);
 }
 
 extern "C" void LostFoundRecycleMenu_LoadTopBg(S *s) {
@@ -979,7 +979,7 @@ extern "C" void LostFoundRecycleMenu_LoadTopBg(S *s) {
 }
 
 extern "C" void LostFoundRecycleMenu_LoadObjGraphics(S *s) {
-    InventoryBg_LoadObjGraphics(s->unk_bc0);
+    InventoryBg_LoadObjGraphics(s->inventoryBg);
 }
 
 void LostFoundRecycleMenu::mainAct00() {
@@ -1004,11 +1004,11 @@ void LostFoundRecycleMenu::mainAct01() {
     S *s = (S *)this;
     if (gTouchHeld == 0) {
         ::func_ov002_02200a58(s, 0);
-        ::func_ov002_022006a4(s->unk_21a0, 0x3c);
+        ::func_ov002_022006a4(s->nameBalloon, 0x3c);
     } else if (::func_ov110_02294d88(s, 4) && ::LostFoundRecycleMenu_HasTouchMoved(s)) {
-        ::LostFoundRecycleMenu_PickUpWithTouch(s, s->unk_f2);
+        ::LostFoundRecycleMenu_PickUpWithTouch(s, s->touchedSlot);
     } else {
-        ::func_ov002_022006c0(s->unk_21a0);
+        ::func_ov002_022006c0(s->nameBalloon);
     }
 }
 
@@ -1020,10 +1020,10 @@ void LostFoundRecycleMenu::mainAct02() {
         ::func_ov110_022953b4(s);
     } else {
         if (Unk_ov110_02296b1c_Both()) {
-            s32 t = ::func_ov002_022014c0(s->unk_22dc, gTouchCurX, gTouchCurY);
+            s32 t = ::func_ov002_022014c0(s->choiceMenu, gTouchCurX, gTouchCurY);
             if (t >= 0) {
-                ::PopupChoice_DecideRow(s->unk_22dc, t, 1);
-                s->unk_f9 = s->unk_25d5[t];
+                ::PopupChoice_DecideRow(s->choiceMenu, t, 1);
+                s->chosenAction = s->choiceValues[t];
                 ::func_ov002_02200a58(s, 0x12);
             }
         }
@@ -1033,18 +1033,18 @@ void LostFoundRecycleMenu::mainAct02() {
 void LostFoundRecycleMenu::mainAct03() {
     S *s = (S *)this;
     if (::func_ov110_0229726c(s)) {
-        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->unk_f4);
+        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->pickUpSlot);
         ::LostFoundRecycleMenu_HideCursor(s);
-        ::func_ov002_022006e4(s->unk_21a0, 0);
+        ::func_ov002_022006e4(s->nameBalloon, 0);
         ::func_ov110_02294e78(s, 0);
     } else {
         ::LostFoundRecycleMenu_TrackTouch(s);
         ::LostFoundRecycleMenu_ClearMarks(s);
-        s32 x = s->unk_ac + 8;
-        s32 t = ::LostFoundRecycleMenu_FindSlotAt(s, s->unk_a8 + 8, x, 0);
+        s32 x = s->heldY + 8;
+        s32 t = ::LostFoundRecycleMenu_FindSlotAt(s, s->heldX + 8, x, 0);
         if (::func_ov110_02294d88(s, 0x200)) {
-            if ((::LostFoundRecycleMenu_IsBoxSlot(s, t) && ::LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f4))
-                || (::LostFoundRecycleMenu_IsPocketSlot(s, t) && ::LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f4))) {
+            if ((::LostFoundRecycleMenu_IsBoxSlot(s, t) && ::LostFoundRecycleMenu_IsPocketSlot(s, s->pickUpSlot))
+                || (::LostFoundRecycleMenu_IsPocketSlot(s, t) && ::LostFoundRecycleMenu_IsBoxSlot(s, s->pickUpSlot))) {
                 if (::LostFoundRecycleMenu_GetSlotItem(s, t) != 0xfff1) {
                     t = 0x1f;
                 }
@@ -1053,11 +1053,11 @@ void LostFoundRecycleMenu::mainAct03() {
         if (t != 0x1f) {
             if (gTouchHeld == 0) {
                 if (::LostFoundRecycleMenu_IsSlotDisabled(s, t)) {
-                    ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->unk_f4, x);
+                    ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
                 } else {
                     s32 r = ::LostFoundRecycleMenu_DropHeldItem(s, t);
                     if (r == 0) {
-                        ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->unk_f4, x);
+                        ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
                     } else {
                         ::Inventory_PlayPutDownSe();
                         ::LostFoundRecycleMenu_ResumeInput(s);
@@ -1067,7 +1067,7 @@ void LostFoundRecycleMenu::mainAct03() {
                 ::LostFoundRecycleMenu_MarkSlot(s, t);
             }
         } else if (gTouchHeld == 0) {
-            ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->unk_f4, x);
+            ::LostFoundRecycleMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
         }
     }
 }
@@ -1076,32 +1076,32 @@ void LostFoundRecycleMenu::mainAct04() {
     S *s = (S *)this;
     if (::func_ov002_022009d4(s)) {
         ::LostFoundRecycleMenu_StartTouchInput(s);
-        ::func_ov002_022006e4(s->unk_21a0, 1);
+        ::func_ov002_022006e4(s->nameBalloon, 1);
     } else {
         s32 v = ::func_ov002_022009c8(s);
         if (::func_ov110_02295060(s, v, 0)) {
             ::LostFoundRecycleMenu_UpdateNameBalloon(s);
             ::LostFoundRecycleMenu_MoveCursorToTarget(s);
-            ::func_ov002_022006e4(s->unk_21a0, 0);
+            ::func_ov002_022006e4(s->nameBalloon, 0);
         } else {
-            if (::LostFoundRecycleMenu_IsSlotDisabled(s, s->unk_f5) != 0) goto tail;
+            if (::LostFoundRecycleMenu_IsSlotDisabled(s, s->cursorSlot) != 0) goto tail;
             {
                 u32 k = gPad[1];
                 if (k & 1) {
-                    if (::LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f5) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f5)) {
-                        if (!::LostFoundRecycleMenu_IsSlotEmpty(s, s->unk_f5)) {
+                    if (::LostFoundRecycleMenu_IsPocketSlot(s, s->cursorSlot) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->cursorSlot)) {
+                        if (!::LostFoundRecycleMenu_IsSlotEmpty(s, s->cursorSlot)) {
                             ::func_ov110_02295488(s);
                         }
-                    } else if (::LostFoundRecycleMenu_IsButtonSlot(s, s->unk_f5)) {
+                    } else if (::LostFoundRecycleMenu_IsButtonSlot(s, s->cursorSlot)) {
                         ::func_ov110_022954c8(s);
                     }
                 } else if (k & 0x800) {
-                    if (::LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f5) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f5)) {
-                        if (!::LostFoundRecycleMenu_IsSlotEmpty(s, s->unk_f5)) {
-                            s32 r = ::LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f5) ? ::LostFoundRecycleMenu_FindFreeBoxSlot(s) : ::LostFoundRecycleMenu_FindFreePocket(s);
+                    if (::LostFoundRecycleMenu_IsPocketSlot(s, s->cursorSlot) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->cursorSlot)) {
+                        if (!::LostFoundRecycleMenu_IsSlotEmpty(s, s->cursorSlot)) {
+                            s32 r = ::LostFoundRecycleMenu_IsPocketSlot(s, s->cursorSlot) ? ::LostFoundRecycleMenu_FindFreeBoxSlot(s) : ::LostFoundRecycleMenu_FindFreePocket(s);
                             if (r != 0x1f) {
-                                ::LostFoundRecycleMenu_QuickMove(s, s->unk_f5, r);
-                                ::func_ov002_022006e4(s->unk_21a0, 1);
+                                ::LostFoundRecycleMenu_QuickMove(s, s->cursorSlot, r);
+                                ::func_ov002_022006e4(s->nameBalloon, 1);
                             }
                         }
                     }
@@ -1115,10 +1115,10 @@ tail:
                 u32 k = gPad[1];
                 if ((k & 8) || (k & 2)) {
                     ::LostFoundRecycleMenu_HideCursor(s);
-                    ::func_ov002_022006e4(s->unk_21a0, 0);
+                    ::func_ov002_022006e4(s->nameBalloon, 0);
                     ::func_ov110_02294e78(s, 1);
                 } else {
-                    ::func_ov002_022006c0(s->unk_21a0);
+                    ::func_ov002_022006c0(s->nameBalloon);
                 }
             }
         }
@@ -1128,31 +1128,31 @@ tail:
 void LostFoundRecycleMenu::mainAct05() {
     S *s = (S *)this;
     if (::func_ov110_0229726c(s)) {
-        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->unk_f4);
+        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->pickUpSlot);
         ::LostFoundRecycleMenu_HideCursor(s);
-        ::func_ov002_022006e4(s->unk_21a0, 0);
+        ::func_ov002_022006e4(s->nameBalloon, 0);
         ::func_ov110_02294e78(s, 0);
     } else if (::func_ov110_02295060(s, ::func_ov002_022009c8(s), 1)) {
         ::LostFoundRecycleMenu_UpdateNameBalloon(s);
         ::LostFoundRecycleMenu_MoveCursorToTarget(s);
-        ::func_ov002_022006e4(s->unk_21a0, 0);
+        ::func_ov002_022006e4(s->nameBalloon, 0);
     } else {
         u32 k = gPad[1];
         if ((k & 1) != 0) {
-            if (::LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f5) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f5)) {
-                if (!::LostFoundRecycleMenu_IsSlotDisabled(s, s->unk_f5)) {
-                    if (::LostFoundRecycleMenu_IsSlotEmpty(s, s->unk_f5)) {
-                        ::func_ov110_0229544c(s, s->unk_f5);
+            if (::LostFoundRecycleMenu_IsPocketSlot(s, s->cursorSlot) || ::LostFoundRecycleMenu_IsBoxSlot(s, s->cursorSlot)) {
+                if (!::LostFoundRecycleMenu_IsSlotDisabled(s, s->cursorSlot)) {
+                    if (::LostFoundRecycleMenu_IsSlotEmpty(s, s->cursorSlot)) {
+                        ::func_ov110_0229544c(s, s->cursorSlot);
                     } else {
-                        ::func_ov110_02295404(s, s->unk_f5);
+                        ::func_ov110_02295404(s, s->cursorSlot);
                     }
                 }
             }
         } else if ((k & 2) != 0) {
-            ::func_ov110_0229544c(s, s->unk_f4);
+            ::func_ov110_0229544c(s, s->pickUpSlot);
         } else {
             ::LostFoundRecycleMenu_TrackCursor(s);
-            ::func_ov002_022006c0(s->unk_21a0);
+            ::func_ov002_022006c0(s->nameBalloon);
         }
     }
 }
@@ -1161,12 +1161,12 @@ void LostFoundRecycleMenu::mainAct06() {
     S *s = (S *)this;
     if (::func_ov002_022009d4(s) || ::func_ov110_0229726c(s)) {
         ::func_ov110_022953b4(s);
-    } else if (::PopupChoice_MoveCursor(s->unk_22dc, ::func_ov002_022009c8(s), &s->unk_fa, 0)) {
+    } else if (::PopupChoice_MoveCursor(s->choiceMenu, ::func_ov002_022009c8(s), &s->choiceRow, 0)) {
         ::LostFoundRecycleMenu_MoveCursorToChoice(s);
     } else {
         u32 k = gPad[1];
         if ((k & 1) != 0) {
-            ::func_ov002_02202b68(s->unk_2278);
+            ::func_ov002_02202b68(s->cursor);
             ::func_ov002_02200a58(s, 7);
         } else if ((k & 2) != 0) {
             ::LostFoundRecycleMenu_PickCancelChoice(s);
@@ -1176,19 +1176,19 @@ void LostFoundRecycleMenu::mainAct06() {
 
 void LostFoundRecycleMenu::mainAct07() {
     S *s = (S *)this;
-    if (::func_0208d4fc(s->unk_2278)) {
-        ::PopupChoice_DecideRow(s->unk_22dc, s->unk_fa, 1);
-        s->unk_f9 = *(u8 *)((u8 *)s + s->unk_fa + 0x25d5);
+    if (::func_0208d4fc(s->cursor)) {
+        ::PopupChoice_DecideRow(s->choiceMenu, s->choiceRow, 1);
+        s->chosenAction = *(u8 *)((u8 *)s + s->choiceRow + 0x25d5);
         ::func_ov002_02200a58(s, 0x12);
     }
 }
 
 void LostFoundRecycleMenu::updateCursorMove() {
     S *s = (S *)this;
-    if (!::func_ov002_022028f0(s->unk_2278)) {
-        ::func_ov002_02200a58(s, s->unk_f8);
-        if ((u8)(s->unk_f8 + 0xfc) <= 1) {
-            ::LostFoundRecycleMenu_SetCursorSlot(s, s->unk_f5);
+    if (!::func_ov002_022028f0(s->cursor)) {
+        ::func_ov002_02200a58(s, s->returnState);
+        if ((u8)(s->returnState + 0xfc) <= 1) {
+            ::LostFoundRecycleMenu_SetCursorSlot(s, s->cursorSlot);
         }
         ::func_ov110_0229728c(s);
     }
@@ -1197,8 +1197,8 @@ void LostFoundRecycleMenu::updateCursorMove() {
 
 void LostFoundRecycleMenu::updateCursorPress() {
     S *s = (S *)this;
-    if (::func_0208d4fc(s->unk_2278)) {
-        u32 t = s->unk_f5;
+    if (::func_0208d4fc(s->cursor)) {
+        u32 t = s->cursorSlot;
         if (t == 0x1e) {
             ::func_ov110_02294e78(s, 1);
         } else {
@@ -1209,7 +1209,7 @@ void LostFoundRecycleMenu::updateCursorPress() {
 
 void LostFoundRecycleMenu::updateCursorRelease() {
     S *s = (S *)this;
-    if (::func_0208d4fc(s->unk_2278)) {
+    if (::func_0208d4fc(s->cursor)) {
         ::func_ov110_022954e8(s);
         ::func_ov002_02200a58(s, 4);
     }
@@ -1217,25 +1217,25 @@ void LostFoundRecycleMenu::updateCursorRelease() {
 
 void LostFoundRecycleMenu::mainAct0B() {
     S *s = (S *)this;
-    if (::func_ov002_02202928(s->unk_2278)) {
-        ::LostFoundRecycleMenu_PickUpWithHand(s, s->unk_f5);
+    if (::func_ov002_02202928(s->cursor)) {
+        ::LostFoundRecycleMenu_PickUpWithHand(s, s->cursorSlot);
         ::func_ov002_02200a58(s, 0xc);
     }
 }
 
 void LostFoundRecycleMenu::mainAct0C() {
     S *s = (S *)this;
-    if (::func_0208d4fc(s->unk_2278)) {
-        ::func_ov002_02200a58(s, s->unk_f8);
+    if (::func_0208d4fc(s->cursor)) {
+        ::func_ov002_02200a58(s, s->returnState);
     }
     ::LostFoundRecycleMenu_TrackCursor(s);
 }
 
 void LostFoundRecycleMenu::mainAct0D() {
     S *s = (S *)this;
-    if (!::func_ov002_02202928(s->unk_2278)) {
-        u32 a = s->unk_f7;
-        if (s->unk_f5 == a) {
+    if (!::func_ov002_02202928(s->cursor)) {
+        u32 a = s->actionSlot;
+        if (s->cursorSlot == a) {
             ::LostFoundRecycleMenu_DropHeldItem(s, a);
             ::LostFoundRecycleMenu_UpdateNameBalloon(s);
             ::func_ov002_02200a58(s, 4);
@@ -1250,8 +1250,8 @@ void LostFoundRecycleMenu::mainAct0D() {
 
 void LostFoundRecycleMenu::mainAct0E() {
     S *s = (S *)this;
-    if (!::func_ov002_022028fc(s->unk_2278)) {
-        ::LostFoundRecycleMenu_ExchangeHeldItem(s, s->unk_f7);
+    if (!::func_ov002_022028fc(s->cursor)) {
+        ::LostFoundRecycleMenu_ExchangeHeldItem(s, s->actionSlot);
         ::func_ov110_02294d78(s, 0x40);
         ::func_ov002_02200a58(s, 0xf);
         ::LostFoundRecycleMenu_UpdateNameBalloon(s);
@@ -1262,10 +1262,10 @@ void LostFoundRecycleMenu::mainAct0E() {
 
 void LostFoundRecycleMenu::mainAct0F() {
     S *s = (S *)this;
-    if (::func_0208d4fc(s->unk_2278)) {
-        ::func_ov002_02200a58(s, s->unk_f8);
+    if (::func_0208d4fc(s->cursor)) {
+        ::func_ov002_02200a58(s, s->returnState);
     }
-    if (::func_ov002_02202928(s->unk_2278)) {
+    if (::func_ov002_02202928(s->cursor)) {
         if (::func_ov110_02294d88(s, 0x40)) {
             ::func_ov110_02294d68(s, 0x40);
             ::Inventory_PlayPickUpSe();
@@ -1276,8 +1276,8 @@ void LostFoundRecycleMenu::mainAct0F() {
 
 void LostFoundRecycleMenu::mainAct10() {
     S *s = (S *)this;
-    if (::func_ov002_02202718(s->unk_2260)) {
-        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->unk_f4);
+    if (::func_ov002_02202718(s->flyMotion)) {
+        ::LostFoundRecycleMenu_ReleaseHeldItem(s, s->pickUpSlot);
         ::LostFoundRecycleMenu_ResumeInput(s);
         ::Inventory_PlayPutDownSe();
     } else {
@@ -1287,7 +1287,7 @@ void LostFoundRecycleMenu::mainAct10() {
 
 void LostFoundRecycleMenu::mainAct11() {
     S *s = (S *)this;
-    if (::func_ov002_022017b4(s->unk_22dc)) {
+    if (::func_ov002_022017b4(s->choiceMenu)) {
         if (::MenuCtrl_IsButtons()) {
             ::func_ov110_0229553c(s);
             ::func_ov002_02200a58(s, 6);
@@ -1299,9 +1299,9 @@ void LostFoundRecycleMenu::mainAct11() {
 
 void LostFoundRecycleMenu::mainAct12() {
     S *s = (S *)this;
-    if (::PopupChoice_TickDecideDelay(s->unk_22dc)) {
-        ::PopupChoice_Close(s->unk_22dc, 0);
-        if (::func_0208d534(s->unk_2278)) {
+    if (::PopupChoice_TickDecideDelay(s->choiceMenu)) {
+        ::PopupChoice_Close(s->choiceMenu, 0);
+        if (::func_0208d534(s->cursor)) {
             ::func_ov110_02295508(s);
         }
         ::func_ov002_02200a58(s, 0x13);
@@ -1310,27 +1310,27 @@ void LostFoundRecycleMenu::mainAct12() {
 
 void LostFoundRecycleMenu::mainAct13() {
     S *s = (S *)this;
-    if (::func_ov002_022017a4(s->unk_22dc)) {
+    if (::func_ov002_022017a4(s->choiceMenu)) {
         ::func_ov110_022953e0(s);
     }
 }
 
 void LostFoundRecycleMenu::mainAct14() {
     S *s = (S *)this;
-    if (::func_ov002_02204234((s->unk_25d5 + 7), 1)) {
-        ::func_ov002_02200a58(s, s->unk_f8);
-        ::func_0208d644(s->unk_2278);
+    if (::func_ov002_02204234((s->choiceValues + 7), 1)) {
+        ::func_ov002_02200a58(s, s->returnState);
+        ::func_0208d644(s->cursor);
     }
 }
 
 void LostFoundRecycleMenu::mainAct15() {
     S *s = (S *)this;
-    if (s->unk_fc != 0) {
-        s->unk_fc--;
+    if (s->delayTimer != 0) {
+        s->delayTimer--;
     } else {
-        s->unk_8c = 4;
+        s->transitionState = 4;
         ::func_ov002_02200a60(s, 1);
-        ::func_ov002_022006e4(s->unk_21a0, 0);
+        ::func_ov002_022006e4(s->nameBalloon, 0);
         ::LostFoundRecycleMenu_HideCursor(s);
     }
 }
@@ -1342,12 +1342,12 @@ extern "C" void LostFoundRecycleMenu_StartTouchInput(S *s) {
 }
 
 extern "C" void LostFoundRecycleMenu_StartButtonInput(S *s) {
-    s->unk_f3 = 0x1f;
+    s->balloonSlot = 0x1f;
     LostFoundRecycleMenu_ShowCursor(s);
     func_ov002_02200980(s);
     LostFoundRecycleMenu_UpdateNameBalloon(s);
     func_ov002_02200a58(s, 4);
-    LostFoundRecycleMenu_SetCursorSlot(s, s->unk_f5);
+    LostFoundRecycleMenu_SetCursorSlot(s, s->cursorSlot);
 }
 
 extern "C" void LostFoundRecycleMenu_ResumeInput(S *s) {
@@ -1360,14 +1360,14 @@ extern "C" void LostFoundRecycleMenu_ResumeInput(S *s) {
 
 extern "C" void LostFoundRecycleMenu_TouchItem(S *s, u32 a) {
     u32 r6, r7;
-    s->unk_f2 = a;
+    s->touchedSlot = a;
     func_ov002_02200a58(s, 1);
     r6 = gTouchCurX;
     r7 = gTouchCurY;
-    s->unk_a0 = LostFoundRecycleMenu_GetSlotX(s, s->unk_f2) - r6;
-    s->unk_a4 = LostFoundRecycleMenu_GetSlotY(s, s->unk_f2) - r7;
-    s->unk_f3 = a;
-    func_ov002_022006b8(s->unk_21a0);
+    s->grabOffsetX = LostFoundRecycleMenu_GetSlotX(s, s->touchedSlot) - r6;
+    s->grabOffsetY = LostFoundRecycleMenu_GetSlotY(s, s->touchedSlot) - r7;
+    s->balloonSlot = a;
+    func_ov002_022006b8(s->nameBalloon);
     if (LostFoundRecycleMenu_IsSlotDisabled(s, a)) {
         func_ov110_02294d68(s, 4);
     } else {
@@ -1377,10 +1377,10 @@ extern "C" void LostFoundRecycleMenu_TouchItem(S *s, u32 a) {
 }
 
 extern "C" void LostFoundRecycleMenu_PickUpWithTouch(S *s, u32 a) {
-    s->unk_f4 = a;
-    func_ov002_022006e4(s->unk_21a0, 1);
+    s->pickUpSlot = a;
+    func_ov002_022006e4(s->nameBalloon, 1);
     LostFoundRecycleMenu_PickUpItem(s, a);
-    if (s->unk_f1 == 1) {
+    if (s->heldKind == 1) {
         func_ov002_02200a58(s, 3);
     }
     LostFoundRecycleMenu_TrackTouch(s);
@@ -1388,23 +1388,23 @@ extern "C" void LostFoundRecycleMenu_PickUpWithTouch(S *s, u32 a) {
 }
 
 extern "C" void LostFoundRecycleMenu_PickUpWithHand(S *s, u32 a) {
-    s->unk_f4 = a;
-    func_ov002_022006e4(s->unk_21a0, 1);
+    s->pickUpSlot = a;
+    func_ov002_022006e4(s->nameBalloon, 1);
     LostFoundRecycleMenu_PickUpItem(s, a);
-    if (s->unk_f1 == 1) {
-        s->unk_f8 = 5;
+    if (s->heldKind == 1) {
+        s->returnState = 5;
     }
     LostFoundRecycleMenu_TrackCursor(s);
     Inventory_PlayPickUpSe();
 }
 
 extern "C" void LostFoundRecycleMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
-    s->unk_f4 = a;
-    func_ov002_022026f4(s->unk_2260, s->unk_a8, s->unk_ac);
+    s->pickUpSlot = a;
+    func_ov002_022026f4(s->flyMotion, s->heldX, s->heldY);
     u32 x = LostFoundRecycleMenu_GetSlotX(s, a);
     u32 y = LostFoundRecycleMenu_GetSlotY(s, a);
-    func_ov002_022026c4(s->unk_2260, x, y, b);
-    func_ov002_02202718(s->unk_2260);
+    func_ov002_022026c4(s->flyMotion, x, y, b);
+    func_ov002_02202718(s->flyMotion);
     LostFoundRecycleMenu_TrackFlyingItem(s);
     func_ov002_02200a58(s, 0x10);
 }
@@ -1422,8 +1422,8 @@ extern "C" void LostFoundRecycleMenu_FlyHeldToFreeSlot(S *s, u32 a, s32 b) {
 
 extern "C" void LostFoundRecycleMenu_QuickMove(S *s, u32 a, u32 b) {
     LostFoundRecycleMenu_PickUpItem(s, a);
-    s->unk_a8 = LostFoundRecycleMenu_GetSlotX(s, a);
-    s->unk_ac = LostFoundRecycleMenu_GetSlotY(s, a);
+    s->heldX = LostFoundRecycleMenu_GetSlotX(s, a);
+    s->heldY = LostFoundRecycleMenu_GetSlotY(s, a);
     LostFoundRecycleMenu_StartFlyHeldItem(s, b, 4);
 }
 
@@ -1437,13 +1437,13 @@ extern "C" u32 LostFoundRecycleMenu_FindFreePocket(S *s) {
 extern "C" u32 LostFoundRecycleMenu_FindFreeBoxSlot(S *s) {
     s32 i;
     for (i = 0; i < 0xf; i++) {
-        if (s->unk_b0[i] == 0xfff1) return (u8)(i + 0xf);
+        if (s->boxItems[i] == 0xfff1) return (u8)(i + 0xf);
     }
     return 0x1f;
 }
 
 extern "C" void LostFoundRecycleMenu_CancelUploads(S *s) {
-    func_020b87d0(s->unk_100);
+    func_020b87d0(s->vramTask);
 }
 
 extern "C" BOOL LostFoundRecycleMenu_IsPocketSlot(S *s, u32 a) {
@@ -1473,17 +1473,17 @@ extern "C" u32 LostFoundRecycleMenu_GridToPocketSlot(S *s, u32 a) {
 }
 
 extern "C" u32 LostFoundRecycleMenu_FindSlotAt(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(s->unk_138);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(s->itemGrid);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(s->unk_138, t)) return 0x1f;
+            if (InventoryItemGrid_IsSlotEmpty(s->itemGrid, t)) return 0x1f;
         }
         return LostFoundRecycleMenu_GridToPocketSlot(s, t);
     }
-    t = InventoryItemGrid_FindBoxSlotAt(s->unk_138, a, b);
+    t = InventoryItemGrid_FindBoxSlotAt(s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(s->unk_138, t)) return 0x1f;
+            if (InventoryItemGrid_IsSlotEmpty(s->itemGrid, t)) return 0x1f;
         }
         return LostFoundRecycleMenu_GridToBoxSlot(s, t);
     }
@@ -1494,7 +1494,7 @@ extern "C" BOOL LostFoundRecycleMenu_DropHeldItem(S *s, u32 a) {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
         u32 t = LostFoundRecycleMenu_GetSlotItem(s, a);
         if (t != 0xfff1) {
-            LostFoundRecycleMenu_SetSlotItem(s, s->unk_f4, t, LostFoundRecycleMenu_GetSlotFlags(s, a));
+            LostFoundRecycleMenu_SetSlotItem(s, s->pickUpSlot, t, LostFoundRecycleMenu_GetSlotFlags(s, a));
         }
         LostFoundRecycleMenu_ReleaseHeldItem(s, a);
         return TRUE;
@@ -1505,8 +1505,8 @@ extern "C" BOOL LostFoundRecycleMenu_DropHeldItem(S *s, u32 a) {
 extern "C" void LostFoundRecycleMenu_SetSlotItem(S *s, u32 a, u32 b, u32 c) {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
         u32 t = LostFoundRecycleMenu_ToGridSlot(s, a);
-        InventoryItemGrid_SetSlotItem(s->unk_138, t, b, c);
-        InventoryItemGrid_RefreshSlot(s->unk_138, t);
+        InventoryItemGrid_SetSlotItem(s->itemGrid, t, b, c);
+        InventoryItemGrid_RefreshSlot(s->itemGrid, t);
     }
 }
 
@@ -1522,7 +1522,7 @@ extern "C" u32 LostFoundRecycleMenu_GridToBoxSlot(S *s, u32 a) {
 
 extern "C" u32 LostFoundRecycleMenu_GetSlotX(S *s, u32 a) {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotX(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotX(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     if (LostFoundRecycleMenu_IsButtonSlot(s, a)) return 0xc4;
     return 0;
@@ -1531,7 +1531,7 @@ extern "C" u32 LostFoundRecycleMenu_GetSlotX(S *s, u32 a) {
 extern "C" s32 LostFoundRecycleMenu_GetSlotY(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotY(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotY(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     if (LostFoundRecycleMenu_IsButtonSlot(s, a)) {
         return 0x68;
@@ -1605,7 +1605,7 @@ extern "C" void LostFoundRecycleMenu_DisableRejectedItems(S *s)
     u32 i = 0;
     do {
         if (LostFoundRecycleMenu_IsItemRejected(s, i)) {
-            InventoryItemGrid_DisableSlot(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, i));
+            InventoryItemGrid_DisableSlot(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, i));
         }
         i = (u8)(i + 1);
     } while (i <= 0xe);
@@ -1614,7 +1614,7 @@ extern "C" void LostFoundRecycleMenu_DisableRejectedItems(S *s)
 extern "C" BOOL LostFoundRecycleMenu_IsSlotDisabled(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotDisabled(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1622,7 +1622,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsSlotDisabled(S *s, u32 a)
 extern "C" BOOL LostFoundRecycleMenu_IsSlotEmpty(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotEmpty(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotEmpty(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return TRUE;
 }
@@ -1630,7 +1630,7 @@ extern "C" BOOL LostFoundRecycleMenu_IsSlotEmpty(S *s, u32 a)
 extern "C" u32 LostFoundRecycleMenu_GetSlotItem(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotItem(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1638,22 +1638,22 @@ extern "C" u32 LostFoundRecycleMenu_GetSlotItem(S *s, u32 a)
 extern "C" u32 LostFoundRecycleMenu_GetSlotFlags(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotFlags(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotFlags(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
     return 0xf1;
 }
 
 extern "C" void LostFoundRecycleMenu_ClearCursorSlots(S *s)
 {
-    InventoryItemGrid_ClearCursorSlot(s->unk_138);
-    func_ov094_022943f8(s->unk_b98);
+    InventoryItemGrid_ClearCursorSlot(s->itemGrid);
+    func_ov094_022943f8(s->letterGrid);
 }
 
 extern "C" void LostFoundRecycleMenu_SetCursorSlot(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
-        func_ov094_022943f8(s->unk_b98);
+        InventoryItemGrid_SetCursorSlot(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
+        func_ov094_022943f8(s->letterGrid);
     } else if (LostFoundRecycleMenu_IsButtonSlot(s, a)) {
         LostFoundRecycleMenu_ClearCursorSlots(s);
     }
@@ -1661,14 +1661,14 @@ extern "C" void LostFoundRecycleMenu_SetCursorSlot(S *s, u32 a)
 
 extern "C" void LostFoundRecycleMenu_ClearMarks(S *s)
 {
-    InventoryItemGrid_ClearMarks(s->unk_138);
-    func_ov094_022943b0(s->unk_b98);
+    InventoryItemGrid_ClearMarks(s->itemGrid);
+    func_ov094_022943b0(s->letterGrid);
 }
 
 extern "C" void LostFoundRecycleMenu_MarkSlot(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_MarkSlot(s->unk_138, LostFoundRecycleMenu_ToGridSlot(s, a));
+        InventoryItemGrid_MarkSlot(s->itemGrid, LostFoundRecycleMenu_ToGridSlot(s, a));
     }
 }
 
@@ -1685,45 +1685,45 @@ extern "C" BOOL LostFoundRecycleMenu_HasTouchMoved(S *s)
 
 extern "C" void LostFoundRecycleMenu_PlaceNameBalloon(S *s)
 {
-    s32 a = LostFoundRecycleMenu_GetSlotX(s, s->unk_f3) - 0x6d;
-    s32 b = LostFoundRecycleMenu_GetSlotY(s, s->unk_f3) - 0x78;
+    s32 a = LostFoundRecycleMenu_GetSlotX(s, s->balloonSlot) - 0x6d;
+    s32 b = LostFoundRecycleMenu_GetSlotY(s, s->balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) {
         b -= 8;
     }
     if (b < -0x5c) {
-        func_02089af8(s->unk_21a0);
-        b = LostFoundRecycleMenu_GetSlotY(s, s->unk_f3) - 0x50;
+        func_02089af8(s->nameBalloon);
+        b = LostFoundRecycleMenu_GetSlotY(s, s->balloonSlot) - 0x50;
     } else {
-        func_02089af0(s->unk_21a0);
+        func_02089af0(s->nameBalloon);
     }
-    func_02089ad8(s->unk_21a0, a, b);
-    if (LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f3) || LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f3)) {
-        u32 t = LostFoundRecycleMenu_ToGridSlot(s, s->unk_f3);
-        InventoryItemGrid_ShowSlotName(s->unk_138, s->unk_21a0, t);
+    func_02089ad8(s->nameBalloon, a, b);
+    if (LostFoundRecycleMenu_IsPocketSlot(s, s->balloonSlot) || LostFoundRecycleMenu_IsBoxSlot(s, s->balloonSlot)) {
+        u32 t = LostFoundRecycleMenu_ToGridSlot(s, s->balloonSlot);
+        InventoryItemGrid_ShowSlotName(s->itemGrid, s->nameBalloon, t);
     }
 }
 
 extern "C" void LostFoundRecycleMenu_UpdateNameBalloon(S *s)
 {
-    if (LostFoundRecycleMenu_IsPocketSlot(s, s->unk_f5) || LostFoundRecycleMenu_IsBoxSlot(s, s->unk_f5)) {
-        if (LostFoundRecycleMenu_IsSlotEmpty(s, s->unk_f5)) {
-            func_ov002_022006b0(s->unk_21a0);
+    if (LostFoundRecycleMenu_IsPocketSlot(s, s->cursorSlot) || LostFoundRecycleMenu_IsBoxSlot(s, s->cursorSlot)) {
+        if (LostFoundRecycleMenu_IsSlotEmpty(s, s->cursorSlot)) {
+            func_ov002_022006b0(s->nameBalloon);
         } else {
-            s->unk_f3 = s->unk_f5;
-            func_ov002_022006b8(s->unk_21a0);
+            s->balloonSlot = s->cursorSlot;
+            func_ov002_022006b8(s->nameBalloon);
         }
     } else {
-        func_ov002_022006b0(s->unk_21a0);
+        func_ov002_022006b0(s->nameBalloon);
     }
 }
 
 extern "C" void LostFoundRecycleMenu_DrawHeldItem(S *s)
 {
     if (!func_ov110_02294d88(s, 0x40)) {
-        u32 t = s->unk_f1;
+        u32 t = s->heldKind;
         if (t != 0) {
             if (t == 1) {
-                InventoryItemGrid_DrawHeldItem(s->unk_138, s->unk_a8, s->unk_ac);
+                InventoryItemGrid_DrawHeldItem(s->itemGrid, s->heldX, s->heldY);
             }
         }
     }
@@ -1731,47 +1731,47 @@ extern "C" void LostFoundRecycleMenu_DrawHeldItem(S *s)
 
 extern "C" void LostFoundRecycleMenu_TrackTouch(S *s)
 {
-    s->unk_a8 = s->unk_a0 + gTouchCurX;
-    s->unk_ac = s->unk_a4 + gTouchCurY;
+    s->heldX = s->grabOffsetX + gTouchCurX;
+    s->heldY = s->grabOffsetY + gTouchCurY;
 }
 
 extern "C" void LostFoundRecycleMenu_TrackCursor(S *s)
 {
-    s->unk_a8 = func_ov002_022028c8(s->unk_2278) - 2;
-    s->unk_ac = func_ov002_022028a0(s->unk_2278) - 4;
+    s->heldX = func_ov002_022028c8(s->cursor) - 2;
+    s->heldY = func_ov002_022028a0(s->cursor) - 4;
 }
 
 extern "C" void LostFoundRecycleMenu_TrackFlyingItem(S *s)
 {
-    s->unk_a8 = func_ov002_02202710(s->unk_2260);
-    s->unk_ac = func_ov002_02202708(s->unk_2260);
+    s->heldX = func_ov002_02202710(s->flyMotion);
+    s->heldY = func_ov002_02202708(s->flyMotion);
 }
 
 extern "C" void LostFoundRecycleMenu_PickUpItem(S *s, u32 a)
 {
     if (LostFoundRecycleMenu_IsPocketSlot(s, a) || LostFoundRecycleMenu_IsBoxSlot(s, a)) {
         u32 t = LostFoundRecycleMenu_ToGridSlot(s, a);
-        s->unk_f1 = 1;
-        s->unk_ec = InventoryItemGrid_GetSlotItem(s->unk_138, t);
-        s->unk_f0 = InventoryItemGrid_GetSlotFlags(s->unk_138, t);
-        InventoryItemGrid_ClearSlot(s->unk_138, t);
-        InventoryItemGrid_SetHeldItem(s->unk_138, s->unk_ec, s->unk_f0);
+        s->heldKind = 1;
+        s->heldItem = InventoryItemGrid_GetSlotItem(s->itemGrid, t);
+        s->heldItemFlags = InventoryItemGrid_GetSlotFlags(s->itemGrid, t);
+        InventoryItemGrid_ClearSlot(s->itemGrid, t);
+        InventoryItemGrid_SetHeldItem(s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
 extern "C" void LostFoundRecycleMenu_ReleaseHeldItem(S *s, u32 a)
 {
-    if (s->unk_f1 == 1) {
-        LostFoundRecycleMenu_SetSlotItem(s, a, s->unk_ec, s->unk_f0);
+    if (s->heldKind == 1) {
+        LostFoundRecycleMenu_SetSlotItem(s, a, s->heldItem, s->heldItemFlags);
     }
-    s->unk_f1 = 0;
+    s->heldKind = 0;
 }
 
 extern "C" void LostFoundRecycleMenu_ExchangeHeldItem(S *s, u32 a)
 {
-    if (s->unk_f1 == 1) {
-        u32 h = s->unk_ec;
-        u32 b = s->unk_f0;
+    if (s->heldKind == 1) {
+        u32 h = s->heldItem;
+        u32 b = s->heldItemFlags;
         LostFoundRecycleMenu_PickUpItem(s, a);
         LostFoundRecycleMenu_SetSlotItem(s, a, h, b);
     }
@@ -1781,18 +1781,18 @@ extern "C" void LostFoundRecycleMenu_ShowCursor(S *s)
 {
     s32 a = LostFoundRecycleMenu_GetCursorTargetX(s);
     s32 b = LostFoundRecycleMenu_GetCursorTargetY(s);
-    func_ov002_02202a40(s->unk_2278, a, b);
-    if (LostFoundRecycleMenu_IsButtonSlot(s, s->unk_f5)) {
-        func_ov002_02202d00(s->unk_2278, 7);
+    func_ov002_02202a40(s->cursor, a, b);
+    if (LostFoundRecycleMenu_IsButtonSlot(s, s->cursorSlot)) {
+        func_ov002_02202d00(s->cursor, 7);
     } else {
-        func_ov002_02202d00(s->unk_2278, 1);
+        func_ov002_02202d00(s->cursor, 1);
     }
     func_ov110_022954e8(s);
 }
 
 extern "C" s32 LostFoundRecycleMenu_GetCursorTargetX(S *s)
 {
-    s32 r = LostFoundRecycleMenu_GetSlotX(s, s->unk_f5);
+    s32 r = LostFoundRecycleMenu_GetSlotX(s, s->cursorSlot);
     if (func_ov110_02294d88(s, 0x20)) {
         r += 0x100;
     } else if (func_ov110_02294d88(s, 0x10)) {
@@ -1804,100 +1804,100 @@ extern "C" s32 LostFoundRecycleMenu_GetCursorTargetX(S *s)
 
 extern "C" s32 LostFoundRecycleMenu_GetCursorTargetY(S *s)
 {
-    return LostFoundRecycleMenu_GetSlotY(s, s->unk_f5);
+    return LostFoundRecycleMenu_GetSlotY(s, s->cursorSlot);
 }
 
 extern "C" void LostFoundRecycleMenu_HideCursor(S *s)
 {
-    func_ov002_02202d00(s->unk_2278, 0);
-    ((Unk_ov110_02295588_Vt *)s->unk_2278)->vfunc_0c();
+    func_ov002_02202d00(s->cursor, 0);
+    ((Unk_ov110_02295588_Vt *)s->cursor)->vfunc_0c();
 }
 
 extern "C" void LostFoundRecycleMenu_MoveCursorToTarget(S *s)
 {
     s32 a = LostFoundRecycleMenu_GetCursorTargetX(s);
     s32 b = LostFoundRecycleMenu_GetCursorTargetY(s);
-    func_ov002_022029e8(s->unk_2278, a, b, 3, 1);
-    s->unk_f8 = s->unk_8d;
+    func_ov002_022029e8(s->cursor, a, b, 3, 1);
+    s->returnState = s->mainState;
     func_ov002_02200a58(s, 8);
     if (func_ov110_02294d88(s, 0x100)) {
-        ((Unk_ov110_02295588_Vt *)s->unk_2278)->vfunc_0c();
+        ((Unk_ov110_02295588_Vt *)s->cursor)->vfunc_0c();
         func_ov110_02294d68(s, 0x100);
     }
 }
 
 extern "C" void LostFoundRecycleMenu_MoveCursorToChoice(S *s)
 {
-    s32 a = func_ov002_022014a4(s->unk_22dc);
-    s32 b = func_ov002_02201498(s->unk_22dc, s->unk_fa);
-    func_ov002_02202a18(s->unk_2278, a, b, 2);
-    s->unk_f8 = s->unk_8d;
+    s32 a = func_ov002_022014a4(s->choiceMenu);
+    s32 b = func_ov002_02201498(s->choiceMenu, s->choiceRow);
+    func_ov002_02202a18(s->cursor, a, b, 2);
+    s->returnState = s->mainState;
     func_ov002_02200a58(s, 8);
 }
 
 extern "C" void LostFoundRecycleMenu_PickCancelChoice(S *s)
 {
-    s->unk_f9 = 1;
-    s->unk_fa = PopupChoice_DecideCancel(s->unk_22dc);
-    s32 a = func_ov002_022014a4(s->unk_22dc);
-    s32 b = func_ov002_02201498(s->unk_22dc, s->unk_fa);
-    func_ov002_02202a40(s->unk_2278, a, b);
-    func_0208d538(s->unk_2278, 8);
+    s->chosenAction = 1;
+    s->choiceRow = PopupChoice_DecideCancel(s->choiceMenu);
+    s32 a = func_ov002_022014a4(s->choiceMenu);
+    s32 b = func_ov002_02201498(s->choiceMenu, s->choiceRow);
+    func_ov002_02202a40(s->cursor, a, b);
+    func_0208d538(s->cursor, 8);
     func_ov002_02200a58(s, 0x12);
 }
 
 void LostFoundRecycleMenu::placeCursorOnFirstChoice() {
-    unk_fa = 0;
-    s32 a = func_ov002_022014a4(&unk_22dc);
-    s32 b = func_ov002_02201498(&unk_22dc, unk_fa);
-    unk_2278.warpTo(a, b);
-    ((MenuCursor *)&unk_2278)->setAnimIfChanged(7);
+    choiceRow = 0;
+    s32 a = func_ov002_022014a4(&choiceMenu);
+    s32 b = func_ov002_02201498(&choiceMenu, choiceRow);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 }
 
 void LostFoundRecycleMenu::placeCursorAtTarget() {
     s32 a = LostFoundRecycleMenu_GetCursorTargetX((S *)this);
     s32 b = LostFoundRecycleMenu_GetCursorTargetY((S *)this);
-    unk_2278.warpTo(a, b);
-    ((MenuCursor *)&unk_2278)->setAnimIfChanged(1);
+    cursor.warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
 }
 
 void LostFoundRecycleMenu::refreshCursor() {
-    unk_2278.setPoseIdle();
-    unk_2278.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void LostFoundRecycleMenu::pressCursor() {
-    ((MenuCursor *)&unk_2278)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(9);
 }
 
 void LostFoundRecycleMenu::releaseCursor() {
-    unk_2278.setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(0xa);
 }
 
 void LostFoundRecycleMenu::startPickUp() {
-    ((MenuCursor *)&unk_2278)->setAnimIfChanged(4);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
     setMainState(0xb);
 }
 
 void LostFoundRecycleMenu::startPutDown(u8 v) {
-    unk_21a0.hide(1);
-    unk_f7 = v;
-    ((MenuCursor *)&unk_2278)->setAnimIfChanged(5);
+    nameBalloon.hide(1);
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
     setMainState(0xd);
 }
 
 void LostFoundRecycleMenu::startExchange(u8 v) {
-    unk_21a0.hide(1);
-    unk_f8 = unk_8d;
-    unk_f7 = v;
-    ((MenuCursor *)&unk_2278)->setAnimIfChanged(6);
+    nameBalloon.hide(1);
+    returnState = mainState;
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
     setMainState(0xe);
 }
 
 s32 LostFoundRecycleMenu::applyChoice() {
-    switch (unk_f9) {
+    switch (chosenAction) {
     case 0:
         startPickUp();
         break;
@@ -1909,14 +1909,14 @@ s32 LostFoundRecycleMenu::applyChoice() {
 }
 
 void LostFoundRecycleMenu::cancelChoiceList() {
-    unk_f9 = 1;
+    chosenAction = 1;
     placeCursorAtTarget();
-    PopupChoice_Close(&unk_22dc, 0);
+    PopupChoice_Close(&choiceMenu, 0);
     setMainState(0x13);
 }
 
 void LostFoundRecycleMenu::moveCursorInPockets(void *pad, s32 mode) {
-    s32 r = unk_f5;
+    s32 r = cursorSlot;
     s32 q = 0;
     while (r >= 5) {
         r -= 5;
@@ -1926,46 +1926,46 @@ void LostFoundRecycleMenu::moveCursorInPockets(void *pad, s32 mode) {
         if (!MenuKeys_HasUp(pad) || q == 0) {
             if (r == 0) {
                 if (mode == 1) {
-                    unk_f5 += 4;
+                    cursorSlot += 4;
                 } else {
-                    unk_f5 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 setFlags(0x10);
                 return;
             }
-            unk_f5--;
+            cursorSlot--;
             r--;
         }
     } else if (MenuKeys_HasRight(pad)) {
         if (!MenuKeys_HasDown(pad)) {
             if (r == 4) {
                 if (mode == 1) {
-                    unk_f5 -= 4;
+                    cursorSlot -= 4;
                     setFlags(0x20);
                 } else {
-                    unk_f5 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 return;
             }
-            unk_f5++;
+            cursorSlot++;
             r++;
         }
     }
     if (MenuKeys_HasUp(pad)) {
         if (q > 0) {
-            unk_f5 -= 5;
+            cursorSlot -= 5;
         } else {
-            unk_f5 = r + 0x19;
+            cursorSlot = r + 0x19;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (q < 2) {
-            unk_f5 += 5;
+            cursorSlot += 5;
         }
     }
 }
 
 void LostFoundRecycleMenu::moveCursorInBox(void *pad, s32 mode) {
-    s32 r = unk_f5 - 0xf;
+    s32 r = cursorSlot - 0xf;
     s32 q = 0;
     while (r >= 5) {
         r -= 5;
@@ -1975,40 +1975,40 @@ void LostFoundRecycleMenu::moveCursorInBox(void *pad, s32 mode) {
         if (!MenuKeys_HasUp(pad) || q == 0) {
             if (r == 0) {
                 if (mode == 1) {
-                    unk_f5 += 4;
+                    cursorSlot += 4;
                 } else {
-                    unk_f5 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 setFlags(0x10);
                 return;
             }
-            unk_f5--;
+            cursorSlot--;
             r--;
         }
     } else if (MenuKeys_HasRight(pad)) {
         if (!MenuKeys_HasDown(pad)) {
             if (r == 4) {
                 if (mode == 1) {
-                    unk_f5 -= 4;
+                    cursorSlot -= 4;
                     setFlags(0x20);
                 } else {
-                    unk_f5 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 return;
             }
-            unk_f5++;
+            cursorSlot++;
             r++;
         }
     }
     if (MenuKeys_HasUp(pad)) {
         if (q > 0) {
-            unk_f5 -= 5;
+            cursorSlot -= 5;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (q < 2) {
-            unk_f5 += 5;
+            cursorSlot += 5;
         } else {
-            unk_f5 = r;
+            cursorSlot = r;
         }
     }
 }
@@ -2016,46 +2016,46 @@ void LostFoundRecycleMenu::moveCursorInBox(void *pad, s32 mode) {
 void LostFoundRecycleMenu::moveCursorOnButtons(void *pad) {
     if (MenuKeys_HasRight(pad)) {
         if (MenuKeys_HasUp(pad)) {
-            unk_f5 = 0x19;
+            cursorSlot = 0x19;
         } else {
-            unk_f5 = 0;
+            cursorSlot = 0;
         }
         setFlags(0x20);
     } else if (MenuKeys_HasLeft(pad)) {
         if (MenuKeys_HasUp(pad)) {
-            unk_f5 = 0x1d;
+            cursorSlot = 0x1d;
         } else {
-            unk_f5 = 4;
+            cursorSlot = 4;
         }
     } else if (MenuKeys_HasUp(pad)) {
-        unk_f5 = 0x1d;
+        cursorSlot = 0x1d;
     }
 }
 
 BOOL LostFoundRecycleMenu::moveCursorByPad(void *pad, s32 mode) {
-    u8 old = unk_f5;
+    u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
     if (pad == 0) {
         return FALSE;
     }
-    if (LostFoundRecycleMenu_IsPocketSlot((S *)this, unk_f5)) {
+    if (LostFoundRecycleMenu_IsPocketSlot((S *)this, cursorSlot)) {
         moveCursorInPockets(pad, mode);
-    } else if (LostFoundRecycleMenu_IsBoxSlot((S *)this, unk_f5)) {
+    } else if (LostFoundRecycleMenu_IsBoxSlot((S *)this, cursorSlot)) {
         moveCursorInBox(pad, mode);
-    } else if (LostFoundRecycleMenu_IsButtonSlot((S *)this, unk_f5)) {
+    } else if (LostFoundRecycleMenu_IsButtonSlot((S *)this, cursorSlot)) {
         moveCursorOnButtons(pad);
     }
-    BOOL a = LostFoundRecycleMenu_IsButtonSlot((S *)this, unk_f5);
+    BOOL a = LostFoundRecycleMenu_IsButtonSlot((S *)this, cursorSlot);
     if (a != LostFoundRecycleMenu_IsButtonSlot((S *)this, old)) {
-        if (LostFoundRecycleMenu_IsButtonSlot((S *)this, unk_f5)) {
-            ((MenuCursor *)&unk_2278)->switchToAnim07();
+        if (LostFoundRecycleMenu_IsButtonSlot((S *)this, cursorSlot)) {
+            ((MenuCursor *)&cursor)->switchToAnim07();
         } else {
-            ((MenuCursor *)&unk_2278)->switchToAnim01();
+            ((MenuCursor *)&cursor)->switchToAnim01();
         }
         setFlags(0x100);
     }
-    if (old != unk_f5) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -2063,18 +2063,18 @@ BOOL LostFoundRecycleMenu::moveCursorByPad(void *pad, s32 mode) {
 
 void LostFoundRecycleMenu::resetTextLabels() {
     s32 i;
-    unk_fb = 0;
+    numTextLabels = 0;
     for (i = 0; i < 2; i++) {
-        func_0206fc44(&unk_26e4[i]);
+        func_0206fc44(&textLabels[i]);
     }
 }
 
 void *LostFoundRecycleMenu::allocTextLabel() {
-    if (unk_fb >= 2) {
-        return &unk_26e4[1];
+    if (numTextLabels >= 2) {
+        return &textLabels[1];
     }
-    unk_fb++;
-    return &unk_26e4[unk_fb - 1];
+    numTextLabels++;
+    return &textLabels[numTextLabels - 1];
 }
 
 void LostFoundRecycleMenu::setOkLabel(s32 flag) {
@@ -2097,13 +2097,13 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
         Snd_PlaySe(0x27);
     }
     if (flag != 0) {
-        unk_fc = 5;
+        delayTimer = 5;
     } else {
-        unk_fc = 0;
+        delayTimer = 0;
     }
     setMainState(0x15);
     setOkLabel(1);
-    s32 n = packItemList(unk_b0);
+    s32 n = packItemList(boxItems);
     switch (r) {
     case 0x1d:
     case 0x1e:
@@ -2111,35 +2111,35 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
             MenuCtrl_SetResult(0);
         } else {
             MenuCtrl_SetResult(1);
-            MenuCtrl_SetChosenItems(unk_b0);
+            MenuCtrl_SetChosenItems(boxItems);
         }
         break;
     case 0x1f: {
         s32 i, j;
         for (i = 0; i < 15; i++) {
-            if (unk_b0[i] != 0xfff1) {
+            if (boxItems[i] != 0xfff1) {
                 for (j = 0; j < 15; j++) {
-                    if (unk_b0[i] == unk_ce[j]) {
-                        unk_ce[j] = 0xfff1;
+                    if (boxItems[i] == initialBoxItems[j]) {
+                        initialBoxItems[j] = 0xfff1;
                         j = 15;
                     }
                 }
             }
         }
-        n = packItemList(unk_ce);
+        n = packItemList(initialBoxItems);
         if (n == 0) {
             MenuCtrl_SetResult(0);
         } else {
             MenuCtrl_SetResult(1);
             MenuCtrl_SetIndex((u8)n);
-            MenuCtrl_SetChosenItems(unk_ce);
-            MI_CpuCopy8(unk_b0, gSaveLostAndFound, 0x1e);
+            MenuCtrl_SetChosenItems(initialBoxItems);
+            MI_CpuCopy8(boxItems, gSaveLostAndFound, 0x1e);
             sendItemsRecord(3);
         }
         break;
     }
     case 0x20:
-        MI_CpuCopy8(unk_b0, gSaveRecycleBin, 0x1e);
+        MI_CpuCopy8(boxItems, gSaveRecycleBin, 0x1e);
         sendItemsRecord(4);
         MenuCtrl_SetResult(1);
         break;
@@ -2167,12 +2167,12 @@ void LostFoundRecycleMenu::sendItemsRecord(u8 v) {
     if (CommManager_isOnline(gCommManager)) {
         setFlags(8);
         buf[0] = v;
-        MI_CpuCopy8(unk_b0, &buf[1], 0x1e);
+        MI_CpuCopy8(boxItems, &buf[1], 0x1e);
         void *g = gCommManager;
         CommManager_beginRecord(g);
         CommManager_writeRecord(g, buf, 0x1f);
         CommManager_endRecord(g, 0x16, 4);
-        unk_ee = CommManager_getSendSeq(g);
+        sendSeq = CommManager_getSendSeq(g);
     }
 }
 
@@ -2184,7 +2184,7 @@ BOOL LostFoundRecycleMenu::isResultSent() {
         return TRUE;
     }
     if (CommManager_isOnline(gCommManager)) {
-        if (Comm_IsSeqConfirmed(unk_ee) == 0) {
+        if (Comm_IsSeqConfirmed(sendSeq) == 0) {
             return FALSE;
         }
     }
@@ -2192,13 +2192,13 @@ BOOL LostFoundRecycleMenu::isResultSent() {
 }
 
 BOOL LostFoundRecycleMenu::testFlags(u32 mask) {
-    if (unk_94 & mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void LostFoundRecycleMenu::setFlags(u32 mask) { unk_94 |= mask; }
+void LostFoundRecycleMenu::setFlags(u32 mask) { stateFlags |= mask; }
 
-void LostFoundRecycleMenu::clearFlags(u32 mask) { unk_94 &= ~mask; }
+void LostFoundRecycleMenu::clearFlags(u32 mask) { stateFlags &= ~mask; }
 

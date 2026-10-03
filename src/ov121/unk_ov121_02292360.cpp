@@ -71,7 +71,7 @@
 extern "C" {
 struct Unk_ov121_Comm {
     u32 unk_00[0x64 / 4];
-    s32 unk_64;
+    s32 myAid;
 };
 extern Unk_ov121_Comm *gCommManager;
 extern u8 gTouchCurY;
@@ -233,7 +233,7 @@ extern const u8 sDesignTabPopupChoices[][0xb];
 extern u16 sDesignItemBase[];
 struct Unk_ov121_02294c80 {
     u32 unk_00;
-    u16 unk_04;
+    u16 attr2;
     u16 unk_06;
 };
 extern Unk_ov121_02294c80 sDesignTabIconCell;
@@ -356,15 +356,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x02294d68, size 0x107c
@@ -594,7 +594,7 @@ BOOL DesignTab::onDraw() {
         }
         u8 *q = unk_1074;
         u8 s = unk_ae;
-        sDesignTabIconCell.unk_04 = (sDesignTabIconCell.unk_04 & 0xfffffc00) | (u16)(q[s] * 4 + 0xc0) & 0x3ff;
+        sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(q[s] * 4 + 0xc0) & 0x3ff;
         Oam_DrawObj(1, &sDesignTabIconCell, unk_a4, unk_a6, q[s] + 4, 2, 0);
     }
     if (testFlags(8)) {
@@ -608,7 +608,7 @@ BOOL DesignTab::onDraw() {
         if (testFlags(4) && i == unk_ae) {
         } else {
             u8 *e = (u8 *)this + j;
-            sDesignTabIconCell.unk_04 = (sDesignTabIconCell.unk_04 & 0xfffffc00) | (u16)(e[0x1074] * 4 + 0xc0) & 0x3ff;
+            sDesignTabIconCell.attr2 = (sDesignTabIconCell.attr2 & 0xfffffc00) | (u16)(e[0x1074] * 4 + 0xc0) & 0x3ff;
             s32 y, pal;
             pal = e[0x1074] + 4;
             y = (s32)(p + getSlotY(i));
@@ -632,7 +632,7 @@ BOOL DesignTab::execTransition() {
         &DesignTab::stateOpen, &DesignTab::stateOpening,
         &DesignTab::stateClose, &DesignTab::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -650,7 +650,7 @@ void DesignTab::runMainState() {
         &DesignTab::updatePopupDone, &DesignTab::updateWearRequest,
         &DesignTab::updateWearWait, &DesignTab::updateMessage,
         &DesignTab::updateItemPlace};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL DesignTab::execMain() {
@@ -679,7 +679,7 @@ BOOL DesignTab::execClosed() {
 BOOL DesignTab::handleTabSwitch() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        switch (unk_8d) {
+        switch (mainState) {
         case 0:
         case 1:
         case 4:
@@ -693,7 +693,7 @@ BOOL DesignTab::handleTabSwitch() {
             break;
         }
     }
-    if (unk_8d != 0 && unk_8d != 4) {
+    if (mainState != 0 && mainState != 4) {
         return FALSE;
     }
     s32 r5 = -1;
@@ -718,7 +718,7 @@ BOOL DesignTab::requestTab(s32 a) {
     if (a == m) goto fail;
     if (a == 1) goto fail;
     MenuTabBar_selectTab(r, (u8)a);
-    unk_8c = 2;
+    transitionState = 2;
     setPhase(1);
     TouchPromptBalloon_hide(&unk_2d8, 1);
     if (a != 7) {
@@ -787,7 +787,7 @@ void DesignTab::initDesignTab() {
         disableTarget(0xa);
         disableTarget(0xb);
         Unk_ov121_Comm *g = gCommManager;
-        if (CommManager_isOnline(g) && g->unk_64 != 0) {
+        if (CommManager_isOnline(g) && g->myAid != 0) {
             disableTarget(0xf);
         }
     } else if (canDecorateRoom()) {
@@ -809,7 +809,7 @@ void DesignTab::initDesignTab() {
 BOOL DesignTab::canDecorateRoom() {
     if (Scene_InHouseRoom()) {
         Unk_ov121_Comm *g = gCommManager;
-        if (CommManager_isOnline(g) && g->unk_64 != 0) {
+        if (CommManager_isOnline(g) && g->myAid != 0) {
             return FALSE;
         }
         return TRUE;
@@ -1595,7 +1595,7 @@ void DesignTab::placeDesignItem() {
     u32 x = sDesignItemBase[t];
     x += u;
     unk_a0 = x;
-    unk_98 = FieldAction_RequestDrop(gCommManager->unk_64, unk_a0);
+    unk_98 = FieldAction_RequestDrop(gCommManager->myAid, unk_a0);
     if (unk_98 == -1) {
         openMessageWindow(3, 0);
         Snd_PlaySe(0x73);
@@ -1740,7 +1740,7 @@ void DesignTab::moveCursorToTarget() {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         MenuCursorBase_moveToEase(&unk_398, a, b, 3, 1);
-        unk_b4 = unk_8d;
+        unk_b4 = mainState;
         setMainState(6);
     }
 }
@@ -1749,7 +1749,7 @@ void DesignTab::moveCursorToPopupRow() {
     s32 a = PopupChoiceMenuBody_getRowX(&unk_504);
     s32 b = PopupChoiceMenuBody_getRowY(&unk_504, unk_b3);
     MenuCursorBase_moveToLinear(&unk_398, a, b, 2);
-    unk_b4 = unk_8d;
+    unk_b4 = mainState;
     setMainState(6);
 }
 
@@ -2078,7 +2078,7 @@ BOOL DesignTab::isWearDone(s32 k) {
 BOOL DesignTab::isRoomEditAllowed() {
     Unk_ov121_Comm *c = gCommManager;
     if (CommManager_isOnline(c)) {
-        if (c->unk_64 != 0 || Room_CountOccupants() > 1) {
+        if (c->myAid != 0 || Room_CountOccupants() > 1) {
             return FALSE;
         }
     } else if (Room_CountOccupants() > 1) {

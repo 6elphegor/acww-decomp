@@ -464,8 +464,8 @@ class FtrPreviewer {
 public:
     /* 0x00 */ u32 unk_00[2];
     /* 0x08 */ u16 unk_08[2];
-    /* 0x0c */ u8 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x0c */ u8 curSlot;
+    /* 0x10 */ s32 sampleIndex;
     /* 0x14 */ u32 unk_14[2];
     /* 0x1c */ u32 unk_1c[2];
 
@@ -1041,13 +1041,13 @@ void FtrPreviewer::reset() {
     for (; i < 2; i++) {
         unk_00[i] = z;
         unk_08[i] = 0xfff1;
-        unk_0c = z;
+        curSlot = z;
     }
 }
 
 // @0x2235c74 unk_02235984.cpp
 s32 FtrPreviewer::getSampleIndex() {
-    return unk_10;
+    return sampleIndex;
 }
 
 // @0x2235c10 unk_02235984.cpp
@@ -1111,7 +1111,7 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         } else {
             in = TRUE;
         }
-        unk_10 = in ? x - 0x1100 : -1;
+        sampleIndex = in ? x - 0x1100 : -1;
         v = 0x4a64;
     } else if (a >= 0x1144 && a <= 0x1187) {
         {
@@ -1121,7 +1121,7 @@ BOOL FtrPreviewer::showItem(u16 *p) {
             } else {
                 in = TRUE;
             }
-            unk_10 = in ? x - 0x1144 : -1;
+            sampleIndex = in ? x - 0x1144 : -1;
             v = 0x4a60;
         }
     } else if (a >= 0x1000 && a <= 0x10ff) {
@@ -1134,7 +1134,7 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
         v = t;
     }
-    u16 *pv = &unk_08[unk_0c & 1];
+    u16 *pv = &unk_08[curSlot & 1];
     BOOL same;
     if (Item_IsFurniture(p)) {
         s32 a = Item_GetFurnitureIndex(p);
@@ -1152,18 +1152,18 @@ BOOL FtrPreviewer::showItem(u16 *p) {
         }
     }
     if (!same) {
-        u32 *slot = &unk_00[unk_0c & 1];
+        u32 *slot = &unk_00[curSlot & 1];
         if (*slot) {
             ProcBase_RequestDelete((void *)*slot);
-            unk_00[unk_0c & 1] = 0;
+            unk_00[curSlot & 1] = 0;
         }
-        u8 n = (u8)((unk_0c + 1) & 1);
+        u8 n = (u8)((curSlot + 1) & 1);
         u32 *slot2 = &unk_00[n];
         if (*slot2 == 0) {
             if (FtrMgr_FindPlacementForPlayer(&out, &v, 2) == 3) {
                 *slot2 = FtrMgr_SpawnFromArg((FtrActor *)out);
                 unk_08[n] = *p;
-                unk_0c = n;
+                curSlot = n;
                 return TRUE;
             }
         }
@@ -1183,12 +1183,12 @@ void FtrPreviewer::clear() {
 
 // @0x2235a1c unk_02235984.cpp
 u32 FtrPreviewer::getWallBuffer() {
-    return unk_14[unk_0c & 1];
+    return unk_14[curSlot & 1];
 }
 
 // @0x2235a0c unk_02235984.cpp
 u32 FtrPreviewer::getFloorBuffer() {
-    return unk_1c[unk_0c & 1];
+    return unk_1c[curSlot & 1];
 }
 
 // @0x2235a04 unk_02235984.cpp

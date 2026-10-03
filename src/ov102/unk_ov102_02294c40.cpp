@@ -186,7 +186,7 @@ public:
     void init(s32, s32, const char *);
     u32 unk_00[0x2f8 / 4];
     u8 unk_2f8;
-    u8 unk_2f9[7];
+    u8 choiceValues[7];
 };
 
 class MenuErrorMessage {
@@ -245,15 +245,15 @@ public:
     void setPhase(u8);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class CommManager {
@@ -328,7 +328,7 @@ typedef void (ChestMenu::*Unk_ov102_02297520_Fn)();
 class ChestMenu : public MenuProc {
 public:
     ChestMenu()
-        : unk_94(), unk_cc(), unk_b2c(), unk_b54(), unk_2134(), unk_21f4(), unk_220c(), unk_2270(), unk_2378() {}
+        : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), errorMessage(), textLabels() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
@@ -400,37 +400,37 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ BgVramTaskPair unk_94[1];
-    /* 0xcc */ InventoryItemGrid unk_cc;
-    /* 0xb2c */ LetterGrid unk_b2c;
-    /* 0xb54 */ InventoryBg unk_b54;
-    /* 0x2134 */ TouchPromptBalloon unk_2134;
-    /* 0x21f4 */ CursorMotion unk_21f4;
-    /* 0x220c */ MenuCursorBuf0 unk_220c;
-    /* 0x2270 */ MenuErrorMessage unk_2270;
-    /* 0x2378 */ LabelString unk_2378[2];
-    /* 0x23f8 */ u32 unk_23f8;
-    /* 0x23fc */ s32 unk_23fc;
-    /* 0x2400 */ s32 unk_2400;
-    /* 0x2404 */ s32 unk_2404;
-    /* 0x2408 */ s32 unk_2408;
-    /* 0x240c */ s32 unk_240c;
-    /* 0x2410 */ s32 unk_2410;
-    /* 0x2414 */ u16 unk_2414[0x5a];
-    /* 0x24c8 */ u16 unk_24c8;
-    /* 0x24ca */ u8 unk_24ca;
-    /* 0x24cb */ u8 unk_24cb;
-    /* 0x24cc */ u8 unk_24cc;
-    /* 0x24cd */ u8 unk_24cd;
-    /* 0x24ce */ u8 unk_24ce;
-    /* 0x24cf */ u8 unk_24cf;
-    /* 0x24d0 */ u8 unk_24d0;
-    /* 0x24d1 */ u8 unk_24d1;
-    /* 0x24d2 */ u8 unk_24d2;
-    /* 0x24d3 */ u8 unk_24d3;
-    /* 0x24d4 */ u8 unk_24d4;
-    /* 0x24d5 */ u8 unk_24d5;
-    /* 0x24d6 */ u8 unk_24d6;
+    /* 0x94 */ BgVramTaskPair vramTask[1];
+    /* 0xcc */ InventoryItemGrid itemGrid;
+    /* 0xb2c */ LetterGrid letterGrid;
+    /* 0xb54 */ InventoryBg inventoryBg;
+    /* 0x2134 */ TouchPromptBalloon nameBalloon;
+    /* 0x21f4 */ CursorMotion flyMotion;
+    /* 0x220c */ MenuCursorBuf0 cursor;
+    /* 0x2270 */ MenuErrorMessage errorMessage;
+    /* 0x2378 */ LabelString textLabels[2];
+    /* 0x23f8 */ u32 stateFlags;
+    /* 0x23fc */ s32 pocketsSlideY;
+    /* 0x2400 */ s32 boxSlideY;
+    /* 0x2404 */ s32 grabOffsetX;
+    /* 0x2408 */ s32 grabOffsetY;
+    /* 0x240c */ s32 heldX;
+    /* 0x2410 */ s32 heldY;
+    /* 0x2414 */ u16 storageItems[0x5a];
+    /* 0x24c8 */ u16 heldItem;
+    /* 0x24ca */ u8 heldItemFlags;
+    /* 0x24cb */ u8 heldKind;
+    /* 0x24cc */ u8 touchedSlot;
+    /* 0x24cd */ u8 balloonSlot;
+    /* 0x24ce */ u8 pickUpSlot;
+    /* 0x24cf */ u8 pickUpPage;
+    /* 0x24d0 */ u8 pickUpOriginSlot;
+    /* 0x24d1 */ u8 cursorSlot;
+    /* 0x24d2 */ u8 actionSlot;
+    /* 0x24d3 */ u8 returnState;
+    /* 0x24d4 */ u8 numTextLabels;
+    /* 0x24d5 */ u8 delayTimer;
+    /* 0x24d6 */ u8 currentPage;
 };
 
 typedef ChestMenu S;
@@ -528,19 +528,19 @@ BOOL ChestMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_2134.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_220c)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     ChestMenu_DrawHeldItem(this);
     if (testFlags(0x80)) {
-        InventoryItemGrid_DrawBox(&unk_cc, 0, unk_2400);
+        InventoryItemGrid_DrawBox(&itemGrid, 0, boxSlideY);
         drawPageTabs();
     }
     if (testFlags(2)) {
-        InventoryItemGrid_DrawPockets(&unk_cc, 0, unk_23fc);
-        unk_b2c.drawPocketLetters(0, unk_23fc);
-        InventoryBg_DrawSprite(&unk_b54, unk_23fc);
+        InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
+        letterGrid.drawPocketLetters(0, pocketsSlideY);
+        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -560,7 +560,7 @@ BOOL ChestMenu::execTransition() {
         &ChestMenu::transitionAct06, &ChestMenu::transitionAct07,
         &ChestMenu::transitionAct08, &ChestMenu::transitionAct09};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -575,16 +575,16 @@ void ChestMenu::runMainState() {
         &ChestMenu::mainAct0A, &ChestMenu::mainAct0B,
         &ChestMenu::mainAct0C, &ChestMenu::mainAct0D,
         &ChestMenu::mainAct0E, &ChestMenu::mainAct0F};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL ChestMenu::execMain() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        u32 s = unk_8d;
+        u32 s = mainState;
         if (s == 0 || s == 1 || s == 3) {
             ChestMenu_HideCursor(this);
-            unk_2134.hide(0);
+            nameBalloon.hide(0);
             confirm(0);
         }
     }
@@ -614,7 +614,7 @@ void ChestMenu::showPage() {
     setFlags(0x80);
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
-    unk_2400 = getSlideOffsetY();
+    boxSlideY = getSlideOffsetY();
 }
 
 void ChestMenu::transitionAct00() {
@@ -625,23 +625,23 @@ void ChestMenu::transitionAct00() {
 
 void ChestMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&unk_cc);
+    InventoryItemGrid_LoadPockets(&itemGrid);
     ChestMenu_DisableRejectedItems(this);
-    LetterGrid_LoadPocketLetters(&unk_b2c);
-    unk_b2c.highlightLetterKinds(0xf);
+    LetterGrid_LoadPocketLetters(&letterGrid);
+    letterGrid.highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
     setTransitionState(2);
     setFlags(1);
     setFlags(2);
-    unk_23fc = getSlideOffsetY();
+    pocketsSlideY = getSlideOffsetY();
 }
 
 void ChestMenu::transitionAct02() {
     s32 r = stepSlideIn(0);
     applySlideOffset(6, 0, 0);
-    unk_23fc = getSlideOffsetY();
+    pocketsSlideY = getSlideOffsetY();
     if (r != 0) {
         loadTopBg();
         showPage();
@@ -654,26 +654,26 @@ void ChestMenu::transitionAct03() {
         setPhase(2);
         ChestMenu_ResumeInput(this);
         clearFlags(0x40);
-        if (unk_24cb != 0 && MenuCtrl_IsButtons()) {
-            if (unk_24d1 < 0x1e || unk_24d1 > 0x23) {
-                ((HandCursor *)&unk_220c)->setAnimAtEnd(4);
+        if (heldKind != 0 && MenuCtrl_IsButtons()) {
+            if (cursorSlot < 0x1e || cursorSlot > 0x23) {
+                ((HandCursor *)&cursor)->setAnimAtEnd(4);
             }
-            unk_220c.vfunc_0c();
+            cursor.vfunc_0c();
             ChestMenu_TrackCursor(this);
             setMainState(4);
         }
     }
     applySlideOffset(4, 0, 0);
-    unk_2400 = getSlideOffsetY();
+    boxSlideY = getSlideOffsetY();
 }
 
 void ChestMenu::startSlideOut() {
-    unk_2134.hide(1);
+    nameBalloon.hide(1);
     ChestMenu_HideCursor(this);
     beginSubSlideOut(2, 4, 1, 0x30);
     setSlideExtent(0x90);
     applySlideOffset(4, 0, 0);
-    unk_2400 = getSlideOffsetY();
+    boxSlideY = getSlideOffsetY();
 }
 
 void ChestMenu::transitionAct04() {
@@ -692,7 +692,7 @@ void ChestMenu::transitionAct05() {
         transitionAct06();
     } else {
         applySlideOffset(4, 0, 0);
-        unk_2400 = getSlideOffsetY();
+        boxSlideY = getSlideOffsetY();
     }
 }
 
@@ -705,28 +705,28 @@ void ChestMenu::transitionAct06() {
     } else {
         applySlideOffset(6, 0, 0);
     }
-    unk_23fc = getSlideOffsetY();
+    pocketsSlideY = getSlideOffsetY();
 }
 
 void ChestMenu::transitionAct07() {
     startSlideOut();
     setTransitionState(8);
-    unk_24d5 = 4;
+    delayTimer = 4;
     transitionAct08();
 }
 
 void ChestMenu::transitionAct08() {
     if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(4);
-        if (unk_24d5 != 0) {
-            unk_24d5--;
+        if (delayTimer != 0) {
+            delayTimer--;
         } else {
             showPage();
             setTransitionState(9);
         }
     } else {
         applySlideOffset(4, 0, 0);
-        unk_2400 = getSlideOffsetY();
+        boxSlideY = getSlideOffsetY();
     }
 }
 
@@ -735,32 +735,32 @@ void ChestMenu::transitionAct09() {
 }
 
 void ChestMenu::initMembers() {
-    unk_23f8 = 0;
-    InventoryItemGrid_Init(&unk_cc, 1);
-    unk_b2c.init(2);
-    InventoryBg_Init(&unk_b54, 6);
-    unk_24cd = 0x25;
-    unk_21f4.reset();
-    unk_24cb = 0;
-    unk_24d1 = 0;
-    unk_24d4 = 0;
+    stateFlags = 0;
+    InventoryItemGrid_Init(&itemGrid, 1);
+    letterGrid.init(2);
+    InventoryBg_Init(&inventoryBg, 6);
+    balloonSlot = 0x25;
+    flyMotion.reset();
+    heldKind = 0;
+    cursorSlot = 0;
+    numTextLabels = 0;
     PlayerData_GetCurrent();
     PlayerData_GetDresser();
-    MI_CpuCopy8((void *)ChestStorage_GetItems(), unk_2414, 0xb4);
+    MI_CpuCopy8((void *)ChestStorage_GetItems(), storageItems, 0xb4);
     MenuCtrl_BackupPockets();
-    unk_24d6 = 0;
+    currentPage = 0;
 }
 
 void ChestMenu::releaseResources() {
     ChestMenu_CancelUploads(this);
-    InventoryBg_Exit(&unk_b54);
-    InventoryItemGrid_Exit(&unk_cc);
+    InventoryBg_Exit(&inventoryBg);
+    InventoryItemGrid_Exit(&itemGrid);
     resetTextLabels();
 }
 
 void ChestMenu::preInputUpdate() {
     preStateUpdate();
-    unk_220c.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void ChestMenu::postInputUpdate() {
@@ -769,15 +769,15 @@ void ChestMenu::postInputUpdate() {
 
 void ChestMenu::preStateUpdate() {
     ChestMenu_CancelUploads(this);
-    InventoryBg_PreUpdate(&unk_b54);
-    InventoryItemGrid_PreUpdate(&unk_cc);
-    unk_b2c.updateCursorLift();
+    InventoryBg_PreUpdate(&inventoryBg);
+    InventoryItemGrid_PreUpdate(&itemGrid);
+    letterGrid.updateCursorLift();
     resetTextLabels();
 }
 
 void ChestMenu::postStateUpdate() {
-    InventoryBg_Update(&unk_b54);
-    if (unk_2134.updatePrompt()) {
+    InventoryBg_Update(&inventoryBg);
+    if (nameBalloon.updatePrompt()) {
         ChestMenu_PlaceNameBalloon(this);
     }
 }
@@ -790,7 +790,7 @@ extern "C" void ChestMenu_SetupBgLayers() {
 }
 
 void ChestMenu::loadInventoryBg() {
-    InventoryBg_Load(&unk_b54, 0);
+    InventoryBg_Load(&inventoryBg, 0);
 }
 
 void ChestMenu::loadTopBg() {
@@ -803,13 +803,13 @@ void ChestMenu::loadTopBg() {
 void ChestMenu::loadPage() {
     char buf[0x24];
     s32 h = gCurrentHeap;
-    func_020639e8(buf, "menu/inventory/ten%d.bpl", unk_24d6);
+    func_020639e8(buf, "menu/inventory/ten%d.bpl", currentPage);
     Gfx2d_LoadPaletteFile(buf, h, 4, 3, 3, 5);
-    InventoryItemGrid_LoadBox(&unk_cc, ChestMenu_GetPageItems(this));
+    InventoryItemGrid_LoadBox(&itemGrid, ChestMenu_GetPageItems(this));
 }
 
 void ChestMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&unk_b54);
+    InventoryBg_LoadObjGraphics(&inventoryBg);
 }
 
 void ChestMenu::mainAct00() {
@@ -834,34 +834,34 @@ void ChestMenu::mainAct00() {
 void ChestMenu::mainAct01() {
     if (gTouchHeld == 0) {
         setMainState(0);
-        unk_2134.setAutoCloseTimer(0x3c);
+        nameBalloon.setAutoCloseTimer(0x3c);
     } else if (testFlags(4) && ChestMenu_HasTouchMoved(this)) {
-        ChestMenu_PickUpWithTouch(this, unk_24cc);
+        ChestMenu_PickUpWithTouch(this, touchedSlot);
     } else {
-        unk_2134.commitOpen();
+        nameBalloon.commitOpen();
     }
 }
 
 void ChestMenu::mainAct02() {
     if (MenuCtrl_IsForceCloseDue()) {
-        ChestMenu_ReleaseHeldItem(this, unk_24ce);
+        ChestMenu_ReleaseHeldItem(this, pickUpSlot);
         ChestMenu_HideCursor(this);
-        unk_2134.hide(0);
+        nameBalloon.hide(0);
         confirm(0);
     } else {
         s32 a, r;
         ChestMenu_TrackTouch(this);
         ChestMenu_ClearMarks(this);
-        a = unk_2410 + 8;
-        r = ChestMenu_FindSlotAt(this, unk_240c + 8, a, 0);
+        a = heldY + 8;
+        r = ChestMenu_FindSlotAt(this, heldX + 8, a, 0);
         if (r != 0x25) {
             if (gTouchHeld == 0) {
                 if (ChestMenu_IsSlotDisabled(this, r)) {
-                    ChestMenu_FlyHeldToFreeSlot(this, unk_24ce, a);
+                    ChestMenu_FlyHeldToFreeSlot(this, pickUpSlot, a);
                 } else {
                     s32 q = ChestMenu_DropHeldItem(this, r);
                     if (q == 0) {
-                        ChestMenu_FlyHeldToFreeSlot(this, unk_24ce, a);
+                        ChestMenu_FlyHeldToFreeSlot(this, pickUpSlot, a);
                     } else {
                         Inventory_PlayPutDownSe(q);
                         ChestMenu_ResumeInput(this);
@@ -871,7 +871,7 @@ void ChestMenu::mainAct02() {
                 ChestMenu_MarkSlot(this, r);
             }
         } else if (gTouchHeld == 0) {
-            ChestMenu_FlyHeldToFreeSlot(this, unk_24ce, a);
+            ChestMenu_FlyHeldToFreeSlot(this, pickUpSlot, a);
         }
     }
 }
@@ -879,34 +879,34 @@ void ChestMenu::mainAct02() {
 void ChestMenu::mainAct03() {
     if (checkSwitchToTouch()) {
         ChestMenu_StartTouchInput(this);
-        unk_2134.hide(1);
+        nameBalloon.hide(1);
     } else {
         u32 v = takeRepeatedKeys();
         if (moveCursorByPad((void *)v, 0)) {
             ChestMenu_UpdateNameBalloon(this);
             ChestMenu_MoveCursorToTarget(this);
-            unk_2134.hide(0);
+            nameBalloon.hide(0);
         } else {
-            if (ChestMenu_IsSlotDisabled(this, unk_24d1)) goto tail;
+            if (ChestMenu_IsSlotDisabled(this, cursorSlot)) goto tail;
             {
                 u32 k = gPad[1];
                 if (k & 1) {
-                    if (ChestMenu_IsPocketSlot(this, unk_24d1) || ChestMenu_IsBoxSlot(this, unk_24d1)) {
-                        if (!ChestMenu_IsSlotEmpty(this, unk_24d1)) {
+                    if (ChestMenu_IsPocketSlot(this, cursorSlot) || ChestMenu_IsBoxSlot(this, cursorSlot)) {
+                        if (!ChestMenu_IsSlotEmpty(this, cursorSlot)) {
                             startPickUp();
                         }
-                    } else if (ChestMenu_IsButtonSlot(this, unk_24d1)) {
+                    } else if (ChestMenu_IsButtonSlot(this, cursorSlot)) {
                         pressCursor();
-                    } else if (ChestMenu_IsTabSlot(this, unk_24d1)) {
+                    } else if (ChestMenu_IsTabSlot(this, cursorSlot)) {
                         pressCursor();
                     }
                 } else if (k & 0x800) {
-                    if (ChestMenu_IsPocketSlot(this, unk_24d1) || ChestMenu_IsBoxSlot(this, unk_24d1)) {
-                        if (!ChestMenu_IsSlotEmpty(this, unk_24d1)) {
-                            u32 r = ChestMenu_IsPocketSlot(this, unk_24d1) ? ChestMenu_FindFreeBoxSlot(this) : ChestMenu_FindFreePocket(this);
+                    if (ChestMenu_IsPocketSlot(this, cursorSlot) || ChestMenu_IsBoxSlot(this, cursorSlot)) {
+                        if (!ChestMenu_IsSlotEmpty(this, cursorSlot)) {
+                            u32 r = ChestMenu_IsPocketSlot(this, cursorSlot) ? ChestMenu_FindFreeBoxSlot(this) : ChestMenu_FindFreePocket(this);
                             if (r != 0x25) {
-                                ChestMenu_QuickMove(this, unk_24d1, r);
-                                unk_2134.hide(1);
+                                ChestMenu_QuickMove(this, cursorSlot, r);
+                                nameBalloon.hide(1);
                             }
                         }
                     }
@@ -921,9 +921,9 @@ tail:
                 if ((k & 8) || (k & 2)) {
                     ChestMenu_HideCursor(this);
                     confirm(1);
-                    unk_2134.hide(0);
+                    nameBalloon.hide(0);
                 } else if (!handlePageKeys()) {
-                    unk_2134.commitOpen();
+                    nameBalloon.commitOpen();
                 }
             }
         }
@@ -932,43 +932,43 @@ tail:
 
 void ChestMenu::mainAct04() {
     if (MenuCtrl_IsForceCloseDue()) {
-        ChestMenu_ReleaseHeldItem(this, unk_24ce);
+        ChestMenu_ReleaseHeldItem(this, pickUpSlot);
         ChestMenu_HideCursor(this);
-        unk_2134.hide(0);
+        nameBalloon.hide(0);
         confirm(0);
     } else {
         u32 v = takeRepeatedKeys();
         if (moveCursorByPad((void *)v, 1)) {
             ChestMenu_UpdateNameBalloon(this);
             ChestMenu_MoveCursorToTarget(this);
-            unk_2134.hide(0);
+            nameBalloon.hide(0);
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                if (ChestMenu_IsPocketSlot(this, unk_24d1) || ChestMenu_IsBoxSlot(this, unk_24d1)) {
-                    if (!ChestMenu_IsSlotDisabled(this, unk_24d1)) {
-                        if (ChestMenu_IsSlotEmpty(this, unk_24d1)) {
-                            startPutDown(unk_24d1);
+                if (ChestMenu_IsPocketSlot(this, cursorSlot) || ChestMenu_IsBoxSlot(this, cursorSlot)) {
+                    if (!ChestMenu_IsSlotDisabled(this, cursorSlot)) {
+                        if (ChestMenu_IsSlotEmpty(this, cursorSlot)) {
+                            startPutDown(cursorSlot);
                         } else {
-                            startExchange(unk_24d1);
+                            startExchange(cursorSlot);
                         }
                     }
-                } else if (ChestMenu_IsTabSlot(this, unk_24d1)) {
+                } else if (ChestMenu_IsTabSlot(this, cursorSlot)) {
                     pressCursor();
                 }
             } else if (k & 2) {
                 u32 t;
-                if (ChestMenu_IsBoxSlot(this, unk_24ce) && (t = unk_24cf, t != unk_24d6)) {
+                if (ChestMenu_IsBoxSlot(this, pickUpSlot) && (t = pickUpPage, t != currentPage)) {
                     ChestMenu_StartFlyHeldItem(this, (u8)(t + 0x1e), 4);
-                } else if (((HandCursor *)&unk_220c)->getAnim() == 1) {
-                    ChestMenu_StartFlyHeldItem(this, unk_24ce, 4);
+                } else if (((HandCursor *)&cursor)->getAnim() == 1) {
+                    ChestMenu_StartFlyHeldItem(this, pickUpSlot, 4);
                 } else {
-                    startPutDown(unk_24ce);
+                    startPutDown(pickUpSlot);
                 }
             } else {
                 if (!handlePageKeys()) {
                     ChestMenu_TrackCursor(this);
-                    unk_2134.commitOpen();
+                    nameBalloon.commitOpen();
                 }
             }
         }
@@ -976,10 +976,10 @@ void ChestMenu::mainAct04() {
 }
 
 void ChestMenu::updateCursorMove() {
-    if (!((MenuCursorBase *)&unk_220c)->isMoving()) {
-        setMainState(unk_24d3);
-        if ((u8)(unk_24d3 + 0xfd) <= 1) {
-            ChestMenu_SetCursorSlot(this, unk_24d1);
+    if (!((MenuCursorBase *)&cursor)->isMoving()) {
+        setMainState(returnState);
+        if ((u8)(returnState + 0xfd) <= 1) {
+            ChestMenu_SetCursorSlot(this, cursorSlot);
         }
         runMainState();
     }
@@ -987,16 +987,16 @@ void ChestMenu::updateCursorMove() {
 }
 
 void ChestMenu::updateCursorPress() {
-    if (((HandCursor *)&unk_220c)->isAnimDone()) {
-        if (ChestMenu_IsTabSlot(this, unk_24d1)) {
-            u32 v = (u8)(unk_24d1 - 0x1e);
-            if (v == unk_24d6) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        if (ChestMenu_IsTabSlot(this, cursorSlot)) {
+            u32 v = (u8)(cursorSlot - 0x1e);
+            if (v == currentPage) {
                 releaseCursor();
             } else {
-                unk_24d6 = v;
+                currentPage = v;
                 startPageSwitch();
             }
-        } else if (unk_24d1 == 0x24) {
+        } else if (cursorSlot == 0x24) {
             confirm(1);
         } else {
             releaseCursor();
@@ -1005,9 +1005,9 @@ void ChestMenu::updateCursorPress() {
 }
 
 void ChestMenu::updateCursorRelease() {
-    if (((HandCursor *)&unk_220c)->isAnimDone()) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
         ChestMenu_RefreshCursor(this);
-        if (unk_24cb == 1) {
+        if (heldKind == 1) {
             setMainState(4);
         } else {
             setMainState(3);
@@ -1016,23 +1016,23 @@ void ChestMenu::updateCursorRelease() {
 }
 
 void ChestMenu::mainAct08() {
-    if (((MenuCursorBase *)&unk_220c)->func_ov002_02202928()) {
-        ChestMenu_PickUpWithHand(this, unk_24d1);
+    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+        ChestMenu_PickUpWithHand(this, cursorSlot);
         setMainState(9);
     }
 }
 
 void ChestMenu::mainAct09() {
-    if (((HandCursor *)&unk_220c)->isAnimDone()) {
-        setMainState(unk_24d3);
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        setMainState(returnState);
     }
     ChestMenu_TrackCursor(this);
 }
 
 void ChestMenu::mainAct0A() {
-    if (!((MenuCursorBase *)&unk_220c)->func_ov002_02202928()) {
-        u32 a = unk_24d2;
-        if (unk_24d1 == a) {
+    if (!((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+        u32 a = actionSlot;
+        if (cursorSlot == a) {
             ChestMenu_DropHeldItem(this, a);
             ChestMenu_UpdateNameBalloon(this);
             setMainState(3);
@@ -1046,8 +1046,8 @@ void ChestMenu::mainAct0A() {
 }
 
 void ChestMenu::mainAct0B() {
-    if (!((MenuCursorBase *)&unk_220c)->func_ov002_022028fc()) {
-        ChestMenu_ExchangeHeldItem(this, unk_24d2);
+    if (!((MenuCursorBase *)&cursor)->func_ov002_022028fc()) {
+        ChestMenu_ExchangeHeldItem(this, actionSlot);
         setFlags(0x40);
         setMainState(0xc);
         ChestMenu_UpdateNameBalloon(this);
@@ -1057,10 +1057,10 @@ void ChestMenu::mainAct0B() {
 }
 
 void ChestMenu::mainAct0C() {
-    if (((HandCursor *)&unk_220c)->isAnimDone()) {
-        setMainState(unk_24d3);
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        setMainState(returnState);
     }
-    if (((MenuCursorBase *)&unk_220c)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();
@@ -1070,12 +1070,12 @@ void ChestMenu::mainAct0C() {
 }
 
 void ChestMenu::mainAct0D() {
-    if (unk_21f4.update()) {
+    if (flyMotion.update()) {
         if (testFlags(0x200)) {
             clearFlags(0x200);
             ChestMenu_TrackFlyingItem(this);
         } else {
-            ChestMenu_ReleaseHeldItem(this, unk_24ce);
+            ChestMenu_ReleaseHeldItem(this, pickUpSlot);
             ChestMenu_ResumeInput(this);
             Inventory_PlayPutDownSe();
         }
@@ -1085,20 +1085,20 @@ void ChestMenu::mainAct0D() {
 }
 
 void ChestMenu::mainAct0E() {
-    if (unk_2270.update(1)) {
-        setMainState(unk_24d3);
-        ((HandCursor *)&unk_220c)->enableObjWindow();
+    if (errorMessage.update(1)) {
+        setMainState(returnState);
+        ((HandCursor *)&cursor)->enableObjWindow();
     }
 }
 
 // ---- handlers / methods
 void ChestMenu::mainAct0F() {
-    if (unk_24d5 != 0) {
-        unk_24d5--;
+    if (delayTimer != 0) {
+        delayTimer--;
     } else {
-        unk_8c = 4;
+        transitionState = 4;
         setPhase(1);
-        unk_2134.hide(1);
+        nameBalloon.hide(1);
         ChestMenu_HideCursor(this);
     }
 }
@@ -1110,12 +1110,12 @@ void ChestMenu_StartTouchInput(S *s) {
 }
 
 void ChestMenu_StartButtonInput(S *s) {
-    s->unk_24cd = 0x25;
+    s->balloonSlot = 0x25;
     ChestMenu_ShowCursor(s);
     s->restartKeyRepeat();
     ChestMenu_UpdateNameBalloon(s);
     s->setMainState(3);
-    ChestMenu_SetCursorSlot(s, s->unk_24d1);
+    ChestMenu_SetCursorSlot(s, s->cursorSlot);
 }
 
 void ChestMenu_ResumeInput(S *s) {
@@ -1127,14 +1127,14 @@ void ChestMenu_ResumeInput(S *s) {
 }
 
 void ChestMenu_TouchItem(S *s, u32 a) {
-    s->unk_24cc = a;
+    s->touchedSlot = a;
     s->setMainState(1);
     u32 r6 = gTouchCurX;
     u32 r7 = gTouchCurY;
-    s->unk_2404 = ChestMenu_GetSlotX(s, s->unk_24cc) - r6;
-    s->unk_2408 = ChestMenu_GetSlotY(s, s->unk_24cc) - r7;
-    s->unk_24cd = a;
-    s->unk_2134.queueOpen();
+    s->grabOffsetX = ChestMenu_GetSlotX(s, s->touchedSlot) - r6;
+    s->grabOffsetY = ChestMenu_GetSlotY(s, s->touchedSlot) - r7;
+    s->balloonSlot = a;
+    s->nameBalloon.queueOpen();
     if (ChestMenu_IsSlotDisabled(s, a)) {
         s->clearFlags(4);
     } else {
@@ -1144,12 +1144,12 @@ void ChestMenu_TouchItem(S *s, u32 a) {
 }
 
 void ChestMenu_PickUpWithTouch(S *s, u8 a) {
-    s->unk_24ce = a;
-    s->unk_24d0 = a;
-    s->unk_24cf = s->unk_24d6;
-    s->unk_2134.hide(1);
+    s->pickUpSlot = a;
+    s->pickUpOriginSlot = a;
+    s->pickUpPage = s->currentPage;
+    s->nameBalloon.hide(1);
     ChestMenu_PickUpItem(s, a);
-    if (s->unk_24cb == 1) {
+    if (s->heldKind == 1) {
         s->setMainState(2);
     }
     ChestMenu_TrackTouch(s);
@@ -1157,28 +1157,28 @@ void ChestMenu_PickUpWithTouch(S *s, u8 a) {
 }
 
 void ChestMenu_PickUpWithHand(S *s, u8 a) {
-    s->unk_24ce = a;
-    s->unk_24d0 = a;
-    s->unk_24cf = s->unk_24d6;
-    s->unk_2134.hide(1);
+    s->pickUpSlot = a;
+    s->pickUpOriginSlot = a;
+    s->pickUpPage = s->currentPage;
+    s->nameBalloon.hide(1);
     ChestMenu_PickUpItem(s, a);
-    if (s->unk_24cb == 1) {
-        s->unk_24d3 = 4;
+    if (s->heldKind == 1) {
+        s->returnState = 4;
     }
     ChestMenu_TrackCursor(s);
     Inventory_PlayPickUpSe();
 }
 
 void ChestMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
-    s->unk_24ce = a;
-    s->unk_21f4.setPos(s->unk_240c, s->unk_2410);
+    s->pickUpSlot = a;
+    s->flyMotion.setPos(s->heldX, s->heldY);
     s32 t = ChestMenu_GetSlotY(s, a);
     if (ChestMenu_IsTabSlot(s, a)) {
         t -= 8;
     }
     s32 u = ChestMenu_GetSlotX(s, a);
-    s->unk_21f4.startLinear(u, t, b);
-    s->unk_21f4.update();
+    s->flyMotion.startLinear(u, t, b);
+    s->flyMotion.update();
     ChestMenu_TrackFlyingItem(s);
     if (ChestMenu_IsTabSlot(s, a)) {
         s->setFlags(0x200);
@@ -1207,8 +1207,8 @@ void ChestMenu_FlyHeldToFreeSlot(S *s, u32 a, s32 c) {
 
 void ChestMenu_QuickMove(S *s, u8 a, u32 b) {
     ChestMenu_PickUpItem(s, a);
-    s->unk_240c = ChestMenu_GetSlotX(s, a);
-    s->unk_2410 = ChestMenu_GetSlotY(s, a);
+    s->heldX = ChestMenu_GetSlotX(s, a);
+    s->heldY = ChestMenu_GetSlotY(s, a);
     ChestMenu_StartFlyHeldItem(s, b, 4);
 }
 
@@ -1232,7 +1232,7 @@ u32 ChestMenu_FindFreeBoxSlot(S *s) {
 }
 
 void ChestMenu_CancelUploads(S *s) {
-    ((BgVramTask *)s->unk_94)->cancel();
+    ((BgVramTask *)s->vramTask)->cancel();
 }
 
 BOOL ChestMenu_IsPocketSlot(S *s, u32 v) {
@@ -1282,18 +1282,18 @@ u32 ChestMenu_GridToPocketSlot(S *s, u32 v) {
 
 u32 ChestMenu_FindSlotAt(S *s, u32 a, u32 b, u32 c)
 {
-    u32 r = InventoryItemGrid_FindPocketSlotAt(&s->unk_cc);
+    u32 r = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid);
     if (r != 0x23) {
-        if (c != 0 && InventoryItemGrid_IsSlotEmpty(&s->unk_cc, r)) {
+        if (c != 0 && InventoryItemGrid_IsSlotEmpty(&s->itemGrid, r)) {
             return 0x25;
         }
         return ChestMenu_GridToPocketSlot(s, r);
     }
-    r = InventoryItemGrid_FindBoxSlotAt(&s->unk_cc, a, b);
+    r = InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
     if (r == 0x23) {
         goto fail;
     }
-    if (c != 0 && InventoryItemGrid_IsSlotEmpty(&s->unk_cc, r)) {
+    if (c != 0 && InventoryItemGrid_IsSlotEmpty(&s->itemGrid, r)) {
         return 0x25;
     }
     return ChestMenu_GridToBoxSlot(s, r);
@@ -1307,7 +1307,7 @@ BOOL ChestMenu_DropHeldItem(S *s, u32 a)
         u32 t = ChestMenu_GetSlotItem(s, a);
         if (t != 0xfff1) {
             u32 u = ChestMenu_GetSlotFlags(s, a);
-            ChestMenu_SetSlotItem(s, s->unk_24ce, t, u);
+            ChestMenu_SetSlotItem(s, s->pickUpSlot, t, u);
         }
         ChestMenu_ReleaseHeldItem(s, a);
         return TRUE;
@@ -1319,11 +1319,11 @@ void ChestMenu_SetSlotItem(S *s, u32 a, u32 b, u32 c)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
         u32 t = ChestMenu_ToGridSlot(s, a);
-        InventoryItemGrid_SetSlotItem(&s->unk_cc, t, b, c);
-        InventoryItemGrid_RefreshSlot(&s->unk_cc, t);
+        InventoryItemGrid_SetSlotItem(&s->itemGrid, t, b, c);
+        InventoryItemGrid_RefreshSlot(&s->itemGrid, t);
     } else if (ChestMenu_IsTabSlot(s, a)) {
-        s32 t = (s->unk_24cf - 1) * 0xf;
-        s->unk_2414[t + s->unk_24d0] = b;
+        s32 t = (s->pickUpPage - 1) * 0xf;
+        s->storageItems[t + s->pickUpOriginSlot] = b;
     }
 }
 
@@ -1345,13 +1345,13 @@ u32 ChestMenu_GridToBoxSlot(S *s, u32 a)
 
 u16 *ChestMenu_GetPageItems(S *s)
 {
-    return s->unk_2414 + s->unk_24d6 * 0xf;
+    return s->storageItems + s->currentPage * 0xf;
 }
 
 s32 ChestMenu_GetSlotX(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotX(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotX(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     if (ChestMenu_IsButtonSlot(s, a)) {
         return 0xc4;
@@ -1365,7 +1365,7 @@ s32 ChestMenu_GetSlotX(S *s, u32 a)
 s32 ChestMenu_GetSlotY(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotY(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotY(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     if (ChestMenu_IsButtonSlot(s, a)) {
         return 0x70;
@@ -1399,7 +1399,7 @@ void ChestMenu_DisableRejectedItems(S *s)
     u32 i = 0;
     do {
         if (ChestMenu_IsItemRejected(s, i)) {
-            InventoryItemGrid_DisableSlot(&s->unk_cc, ChestMenu_ToGridSlot(s, i));
+            InventoryItemGrid_DisableSlot(&s->itemGrid, ChestMenu_ToGridSlot(s, i));
         }
         i = (u8)(i + 1);
     } while (i <= 0xe);
@@ -1408,7 +1408,7 @@ void ChestMenu_DisableRejectedItems(S *s)
 BOOL ChestMenu_IsSlotDisabled(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1416,7 +1416,7 @@ BOOL ChestMenu_IsSlotDisabled(S *s, u32 a)
 BOOL ChestMenu_IsSlotEmpty(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotEmpty(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotEmpty(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return TRUE;
 }
@@ -1424,7 +1424,7 @@ BOOL ChestMenu_IsSlotEmpty(S *s, u32 a)
 u32 ChestMenu_GetSlotItem(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotItem(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1432,22 +1432,22 @@ u32 ChestMenu_GetSlotItem(S *s, u32 a)
 u32 ChestMenu_GetSlotFlags(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotFlags(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotFlags(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
     return 0xf1;
 }
 
 void ChestMenu_ClearCursorSlots(S *s)
 {
-    InventoryItemGrid_ClearCursorSlot(&s->unk_cc);
-    s->unk_b2c.clearCursorSlot();
+    InventoryItemGrid_ClearCursorSlot(&s->itemGrid);
+    s->letterGrid.clearCursorSlot();
 }
 
 void ChestMenu_SetCursorSlot(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
-        s->unk_b2c.clearCursorSlot();
+        InventoryItemGrid_SetCursorSlot(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
+        s->letterGrid.clearCursorSlot();
     } else {
         ChestMenu_ClearCursorSlots(s);
     }
@@ -1455,14 +1455,14 @@ void ChestMenu_SetCursorSlot(S *s, u32 a)
 
 void ChestMenu_ClearMarks(S *s)
 {
-    InventoryItemGrid_ClearMarks(&s->unk_cc);
-    s->unk_b2c.clearMarks();
+    InventoryItemGrid_ClearMarks(&s->itemGrid);
+    s->letterGrid.clearMarks();
 }
 
 void ChestMenu_MarkSlot(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_MarkSlot(&s->unk_cc, ChestMenu_ToGridSlot(s, a));
+        InventoryItemGrid_MarkSlot(&s->itemGrid, ChestMenu_ToGridSlot(s, a));
     }
 }
 
@@ -1479,45 +1479,45 @@ BOOL ChestMenu_HasTouchMoved(S *s)
 
 void ChestMenu_PlaceNameBalloon(S *s)
 {
-    s32 a = ChestMenu_GetSlotX(s, s->unk_24cd) - 0x6d;
-    s32 b = ChestMenu_GetSlotY(s, s->unk_24cd) - 0x78;
+    s32 a = ChestMenu_GetSlotX(s, s->balloonSlot) - 0x6d;
+    s32 b = ChestMenu_GetSlotY(s, s->balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) {
         b -= 8;
     }
     if (b < -0x5c) {
-        ((LabelBalloon *)&s->unk_2134)->setPopDownward();
-        b = ChestMenu_GetSlotY(s, s->unk_24cd) - 0x50;
+        ((LabelBalloon *)&s->nameBalloon)->setPopDownward();
+        b = ChestMenu_GetSlotY(s, s->balloonSlot) - 0x50;
     } else {
-        ((LabelBalloon *)&s->unk_2134)->setPopUpward();
+        ((LabelBalloon *)&s->nameBalloon)->setPopUpward();
     }
-    ((LabelBalloon *)&s->unk_2134)->setPos(a, b);
-    if (ChestMenu_IsPocketSlot(s, s->unk_24cd) || ChestMenu_IsBoxSlot(s, s->unk_24cd)) {
-        u32 t = ChestMenu_ToGridSlot(s, s->unk_24cd);
-        InventoryItemGrid_ShowSlotName(&s->unk_cc, &s->unk_2134, t);
+    ((LabelBalloon *)&s->nameBalloon)->setPos(a, b);
+    if (ChestMenu_IsPocketSlot(s, s->balloonSlot) || ChestMenu_IsBoxSlot(s, s->balloonSlot)) {
+        u32 t = ChestMenu_ToGridSlot(s, s->balloonSlot);
+        InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
     }
 }
 
 void ChestMenu_UpdateNameBalloon(S *s)
 {
-    if (ChestMenu_IsPocketSlot(s, s->unk_24d1) || ChestMenu_IsBoxSlot(s, s->unk_24d1)) {
-        if (ChestMenu_IsSlotEmpty(s, s->unk_24d1)) {
-            s->unk_2134.cancelQueuedOpen();
+    if (ChestMenu_IsPocketSlot(s, s->cursorSlot) || ChestMenu_IsBoxSlot(s, s->cursorSlot)) {
+        if (ChestMenu_IsSlotEmpty(s, s->cursorSlot)) {
+            s->nameBalloon.cancelQueuedOpen();
         } else {
-            s->unk_24cd = s->unk_24d1;
-            s->unk_2134.queueOpen();
+            s->balloonSlot = s->cursorSlot;
+            s->nameBalloon.queueOpen();
         }
     } else {
-        s->unk_2134.cancelQueuedOpen();
+        s->nameBalloon.cancelQueuedOpen();
     }
 }
 
 void ChestMenu_DrawHeldItem(S *s)
 {
     if (!s->testFlags(0x40)) {
-        u32 t = s->unk_24cb;
+        u32 t = s->heldKind;
         if (t != 0) {
             if (t == 1) {
-                InventoryItemGrid_DrawHeldItem(&s->unk_cc, s->unk_240c, s->unk_2410);
+                InventoryItemGrid_DrawHeldItem(&s->itemGrid, s->heldX, s->heldY);
             }
         }
     }
@@ -1525,50 +1525,50 @@ void ChestMenu_DrawHeldItem(S *s)
 
 void ChestMenu_TrackTouch(S *s)
 {
-    s->unk_240c = s->unk_2404 + gTouchCurX;
-    s->unk_2410 = s->unk_2408 + gTouchCurY;
+    s->heldX = s->grabOffsetX + gTouchCurX;
+    s->heldY = s->grabOffsetY + gTouchCurY;
 }
 
 void ChestMenu_TrackCursor(S *s)
 {
-    s->unk_240c = ((MenuCursorBase *)&s->unk_220c)->getFrameScreenX() - 2;
-    s->unk_2410 = ((MenuCursorBase *)&s->unk_220c)->getFrameScreenY() - 4;
-    if (((HandCursor *)&s->unk_220c)->getAnim() == 1) {
-        s->unk_2410 -= 0x16;
+    s->heldX = ((MenuCursorBase *)&s->cursor)->getFrameScreenX() - 2;
+    s->heldY = ((MenuCursorBase *)&s->cursor)->getFrameScreenY() - 4;
+    if (((HandCursor *)&s->cursor)->getAnim() == 1) {
+        s->heldY -= 0x16;
     }
 }
 
 void ChestMenu_TrackFlyingItem(S *s)
 {
-    s->unk_240c = s->unk_21f4.getX();
-    s->unk_2410 = s->unk_21f4.getY();
+    s->heldX = s->flyMotion.getX();
+    s->heldY = s->flyMotion.getY();
 }
 
 void ChestMenu_PickUpItem(S *s, u32 a)
 {
     if (ChestMenu_IsPocketSlot(s, a) || ChestMenu_IsBoxSlot(s, a)) {
         u32 t = ChestMenu_ToGridSlot(s, a);
-        s->unk_24cb = 1;
-        s->unk_24c8 = InventoryItemGrid_GetSlotItem(&s->unk_cc, t);
-        s->unk_24ca = InventoryItemGrid_GetSlotFlags(&s->unk_cc, t);
-        InventoryItemGrid_ClearSlot(&s->unk_cc, t);
-        InventoryItemGrid_SetHeldItem(&s->unk_cc, s->unk_24c8, s->unk_24ca);
+        s->heldKind = 1;
+        s->heldItem = InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
+        s->heldItemFlags = InventoryItemGrid_GetSlotFlags(&s->itemGrid, t);
+        InventoryItemGrid_ClearSlot(&s->itemGrid, t);
+        InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
 void ChestMenu_ReleaseHeldItem(S *s, u32 a)
 {
-    if (s->unk_24cb == 1) {
-        ChestMenu_SetSlotItem(s, a, s->unk_24c8, s->unk_24ca);
+    if (s->heldKind == 1) {
+        ChestMenu_SetSlotItem(s, a, s->heldItem, s->heldItemFlags);
     }
-    s->unk_24cb = 0;
+    s->heldKind = 0;
 }
 
 void ChestMenu_ExchangeHeldItem(S *s, u32 a)
 {
-    if (s->unk_24cb == 1) {
-        u32 h = s->unk_24c8;
-        u32 b = s->unk_24ca;
+    if (s->heldKind == 1) {
+        u32 h = s->heldItem;
+        u32 b = s->heldItemFlags;
         ChestMenu_PickUpItem(s, a);
         ChestMenu_SetSlotItem(s, a, h, b);
     }
@@ -1578,18 +1578,18 @@ void ChestMenu_ShowCursor(S *s)
 {
     s32 a = ChestMenu_GetCursorTargetX(s);
     s32 b = ChestMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
-    if (ChestMenu_IsButtonSlot(s, s->unk_24d1)) {
-        ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(7);
+    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    if (ChestMenu_IsButtonSlot(s, s->cursorSlot)) {
+        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(1);
+        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
     }
     ChestMenu_RefreshCursor(s);
 }
 
 s32 ChestMenu_GetCursorTargetX(S *s)
 {
-    s32 r = ChestMenu_GetSlotX(s, s->unk_24d1);
+    s32 r = ChestMenu_GetSlotX(s, s->cursorSlot);
     if (s->testFlags(0x20)) {
         r += 0x100;
     } else if (s->testFlags(0x10)) {
@@ -1601,13 +1601,13 @@ s32 ChestMenu_GetCursorTargetX(S *s)
 
 s32 ChestMenu_GetCursorTargetY(S *s)
 {
-    return ChestMenu_GetSlotY(s, s->unk_24d1);
+    return ChestMenu_GetSlotY(s, s->cursorSlot);
 }
 
 void ChestMenu_HideCursor(S *s)
 {
-    ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(0);
-    s->unk_220c.vfunc_0c();
+    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
+    s->cursor.vfunc_0c();
 }
 
 void ChestMenu_MoveCursorToTarget(S *s)
@@ -1615,16 +1615,16 @@ void ChestMenu_MoveCursorToTarget(S *s)
     if (s->testFlags(8)) {
         s32 a = ChestMenu_GetCursorTargetX(s);
         s32 b = ChestMenu_GetCursorTargetY(s);
-        ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
+        ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
         s->clearFlags(8);
     } else {
         s32 a = ChestMenu_GetCursorTargetX(s);
         s32 b = ChestMenu_GetCursorTargetY(s);
-        ((MenuCursorBase *)&s->unk_220c)->moveToEase(a, b, 3, 1);
-        s->unk_24d3 = s->unk_8d;
+        ((MenuCursorBase *)&s->cursor)->moveToEase(a, b, 3, 1);
+        s->returnState = s->mainState;
         s->setMainState(5);
         if (s->testFlags(0x100)) {
-            s->unk_220c.vfunc_0c();
+            s->cursor.vfunc_0c();
             s->clearFlags(0x100);
         }
     }
@@ -1633,42 +1633,42 @@ void ChestMenu_MoveCursorToTarget(S *s)
 // ---- free functions (plain symbols)
 void ChestMenu_RefreshCursor(S *s)
 {
-    ((MenuCursorBase *)&s->unk_220c)->setPoseIdle();
-    s->unk_220c.vfunc_0c();
+    ((MenuCursorBase *)&s->cursor)->setPoseIdle();
+    s->cursor.vfunc_0c();
 }
 
 void ChestMenu::pressCursor() {
-    ((MenuCursor *)&unk_220c)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(6);
 }
 
 void ChestMenu::releaseCursor() {
-    ((MenuCursorBase *)&unk_220c)->setPoseRelease();
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
     setMainState(7);
 }
 
 void ChestMenu::startPickUp() {
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(4);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
     setMainState(8);
 }
 
 void ChestMenu::startPutDown(u32 v) {
-    unk_2134.hide(1);
-    unk_24d2 = v;
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(5);
+    nameBalloon.hide(1);
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
     setMainState(0xa);
 }
 
 void ChestMenu::startExchange(u32 v) {
-    unk_2134.hide(1);
-    unk_24d3 = unk_8d;
-    unk_24d2 = v;
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(6);
+    nameBalloon.hide(1);
+    returnState = mainState;
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
     setMainState(0xb);
 }
 
 void ChestMenu::moveCursorInPockets(void *pad, u32 b) {
-    s32 col = unk_24d1;
+    s32 col = cursorSlot;
     s32 row = 0;
     while (col >= 5) {
         col -= 5;
@@ -1678,14 +1678,14 @@ void ChestMenu::moveCursorInPockets(void *pad, u32 b) {
         if (!MenuKeys_HasUp(pad) || row == 0) {
             if (col == 0) {
                 if (b == 1) {
-                    unk_24d1 = unk_24d1 + 4;
+                    cursorSlot = cursorSlot + 4;
                 } else {
-                    unk_24d1 = 0x24;
+                    cursorSlot = 0x24;
                 }
                 setFlags(0x10);
                 return;
             } else {
-                unk_24d1 = unk_24d1 - 1;
+                cursorSlot = cursorSlot - 1;
                 col = col - 1;
                 goto next;
             }
@@ -1694,33 +1694,33 @@ void ChestMenu::moveCursorInPockets(void *pad, u32 b) {
         if (!MenuKeys_HasDown(pad)) {
             if (col == 4) {
                 if (b == 1) {
-                    unk_24d1 = unk_24d1 - 4;
+                    cursorSlot = cursorSlot - 4;
                     setFlags(0x20);
                 } else {
-                    unk_24d1 = 0x24;
+                    cursorSlot = 0x24;
                 }
                 return;
             }
-            unk_24d1 = unk_24d1 + 1;
+            cursorSlot = cursorSlot + 1;
             col = col + 1;
         }
     }
 next:
     if (MenuKeys_HasUp(pad)) {
         if (row > 0) {
-            unk_24d1 = unk_24d1 - 5;
+            cursorSlot = cursorSlot - 5;
         } else {
-            unk_24d1 = col + 0x19;
+            cursorSlot = col + 0x19;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (row < 2) {
-            unk_24d1 = unk_24d1 + 5;
+            cursorSlot = cursorSlot + 5;
         }
     }
 }
 
 void ChestMenu::moveCursorInBox(void *pad, u32 b) {
-    s32 col = unk_24d1 - 0xf;
+    s32 col = cursorSlot - 0xf;
     s32 row = 0;
     while (col >= 5) {
         col -= 5;
@@ -1731,24 +1731,24 @@ void ChestMenu::moveCursorInBox(void *pad, u32 b) {
             if (col == 0) {
                 switch (row) {
                 case 0:
-                    unk_24d1 = 0x20;
+                    cursorSlot = 0x20;
                     break;
                 case 1:
-                    unk_24d1 = 0x23;
+                    cursorSlot = 0x23;
                     break;
                 case 2:
                 default:
                     if (b == 1) {
-                        unk_24d1 = unk_24d1 + 4;
+                        cursorSlot = cursorSlot + 4;
                     } else {
-                        unk_24d1 = 0x24;
+                        cursorSlot = 0x24;
                     }
                     break;
                 }
                 setFlags(0x10);
                 return;
             } else {
-                unk_24d1 = unk_24d1 - 1;
+                cursorSlot = cursorSlot - 1;
                 col = col - 1;
                 goto next;
             }
@@ -1758,55 +1758,55 @@ void ChestMenu::moveCursorInBox(void *pad, u32 b) {
             if (col == 4) {
                 switch (row) {
                 case 0:
-                    unk_24d1 = 0x1e;
+                    cursorSlot = 0x1e;
                     break;
                 case 1:
-                    unk_24d1 = 0x21;
+                    cursorSlot = 0x21;
                     break;
                 case 2:
                 default:
                     if (b == 1) {
-                        unk_24d1 = unk_24d1 - 4;
+                        cursorSlot = cursorSlot - 4;
                         setFlags(0x20);
                     } else {
-                        unk_24d1 = 0x24;
+                        cursorSlot = 0x24;
                     }
                     break;
                 }
                 return;
             }
-            unk_24d1 = unk_24d1 + 1;
+            cursorSlot = cursorSlot + 1;
             col = col + 1;
         }
     }
 next:
     if (MenuKeys_HasUp(pad)) {
         if (row > 0) {
-            unk_24d1 = unk_24d1 - 5;
+            cursorSlot = cursorSlot - 5;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (row < 2) {
-            unk_24d1 = unk_24d1 + 5;
+            cursorSlot = cursorSlot + 5;
         } else {
-            unk_24d1 = col;
+            cursorSlot = col;
         }
     }
 }
 
 void ChestMenu::moveCursorOnButtons(void *pad) {
     if (MenuKeys_HasUp(pad)) {
-        unk_24d1 = 0x21;
+        cursorSlot = 0x21;
     }
     if (MenuKeys_HasRight(pad)) {
-        unk_24d1 = 0;
+        cursorSlot = 0;
         setFlags(0x20);
     } else if (MenuKeys_HasLeft(pad)) {
-        unk_24d1 = 4;
+        cursorSlot = 4;
     }
 }
 
 void ChestMenu::moveCursorOnTabs(void *pad, u32 b) {
-    s32 col = unk_24d1 - 0x1e;
+    s32 col = cursorSlot - 0x1e;
     s32 row = 0;
     while (col >= 3) {
         col -= 3;
@@ -1814,68 +1814,68 @@ void ChestMenu::moveCursorOnTabs(void *pad, u32 b) {
     }
     if (MenuKeys_HasRight(pad)) {
         if (col < 2) {
-            unk_24d1 = unk_24d1 + 1;
+            cursorSlot = cursorSlot + 1;
         } else {
             setFlags(0x20);
-            unk_24d1 = row * 5 + 0xf;
+            cursorSlot = row * 5 + 0xf;
             return;
         }
     } else if (MenuKeys_HasLeft(pad)) {
         if (col > 0) {
-            unk_24d1 = unk_24d1 - 1;
+            cursorSlot = cursorSlot - 1;
         } else {
-            unk_24d1 = row * 5 + 0x13;
+            cursorSlot = row * 5 + 0x13;
             return;
         }
     }
     if (MenuKeys_HasUp(pad)) {
         if (row > 0) {
-            unk_24d1 = unk_24d1 - 3;
+            cursorSlot = cursorSlot - 3;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (row < 1) {
-            unk_24d1 = unk_24d1 + 3;
+            cursorSlot = cursorSlot + 3;
         } else if (b != 1) {
-            unk_24d1 = 0x24;
+            cursorSlot = 0x24;
         }
     }
 }
 
 BOOL ChestMenu::moveCursorByPad(void *pad, u32 b) {
-    u8 old = unk_24d1;
+    u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
     if (pad == 0) {
         return FALSE;
     }
-    if (ChestMenu_IsPocketSlot(this, unk_24d1)) {
+    if (ChestMenu_IsPocketSlot(this, cursorSlot)) {
         moveCursorInPockets(pad, b);
-    } else if (ChestMenu_IsBoxSlot(this, unk_24d1)) {
+    } else if (ChestMenu_IsBoxSlot(this, cursorSlot)) {
         moveCursorInBox(pad, b);
         if (b == 1) {
-            if (ChestMenu_IsTabSlot(this, unk_24d1)) {
-                ((MenuCursor *)&unk_220c)->setAnimIfChanged(1);
+            if (ChestMenu_IsTabSlot(this, cursorSlot)) {
+                ((MenuCursor *)&cursor)->setAnimIfChanged(1);
             }
         }
-    } else if (ChestMenu_IsButtonSlot(this, unk_24d1)) {
+    } else if (ChestMenu_IsButtonSlot(this, cursorSlot)) {
         moveCursorOnButtons(pad);
-    } else if (ChestMenu_IsTabSlot(this, unk_24d1)) {
+    } else if (ChestMenu_IsTabSlot(this, cursorSlot)) {
         moveCursorOnTabs(pad, b);
         if (b == 1) {
-            if (!ChestMenu_IsTabSlot(this, unk_24d1)) {
-                ((HandCursor *)&unk_220c)->setAnimAtEnd(4);
+            if (!ChestMenu_IsTabSlot(this, cursorSlot)) {
+                ((HandCursor *)&cursor)->setAnimAtEnd(4);
             }
         }
     }
-    if (ChestMenu_IsButtonSlot(this, unk_24d1) != ChestMenu_IsButtonSlot(this, old)) {
-        if (ChestMenu_IsButtonSlot(this, unk_24d1)) {
-            ((MenuCursor *)&unk_220c)->switchToAnim07();
+    if (ChestMenu_IsButtonSlot(this, cursorSlot) != ChestMenu_IsButtonSlot(this, old)) {
+        if (ChestMenu_IsButtonSlot(this, cursorSlot)) {
+            ((MenuCursor *)&cursor)->switchToAnim07();
         } else {
-            ((MenuCursor *)&unk_220c)->switchToAnim01();
+            ((MenuCursor *)&cursor)->switchToAnim01();
         }
         setFlags(0x100);
     }
-    if (old != unk_24d1) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -1883,18 +1883,18 @@ BOOL ChestMenu::moveCursorByPad(void *pad, u32 b) {
 
 void ChestMenu::resetTextLabels() {
     s32 i;
-    unk_24d4 = 0;
+    numTextLabels = 0;
     for (i = 0; i < 2; i++) {
-        ((LabelString *)&unk_2378[i])->destroyLabel();
+        ((LabelString *)&textLabels[i])->destroyLabel();
     }
 }
 
 LabelString *ChestMenu::allocTextLabel() {
-    if (unk_24d4 >= 2) {
-        return &unk_2378[1];
+    if (numTextLabels >= 2) {
+        return &textLabels[1];
     }
-    unk_24d4 = unk_24d4 + 1;
-    return &unk_2378[unk_24d4 - 1];
+    numTextLabels = numTextLabels + 1;
+    return &textLabels[numTextLabels - 1];
 }
 
 void ChestMenu::setOkLabel(s32 v) {
@@ -1911,27 +1911,27 @@ void ChestMenu::setOkLabel(s32 v) {
 void ChestMenu::confirm(s32 v) {
     Snd_PlaySe(0x27);
     if (v) {
-        unk_24d5 = 5;
+        delayTimer = 5;
     } else {
-        unk_24d5 = 0;
+        delayTimer = 0;
     }
     setMainState(0xf);
     setOkLabel(1);
     MenuCtrl_SetResult(1);
     PlayerData_GetCurrent();
     PlayerData_GetDresser();
-    MI_CpuCopy8(unk_2414, (u8 *)ChestStorage_GetItems(), 0xb4);
+    MI_CpuCopy8(storageItems, (u8 *)ChestStorage_GetItems(), 0xb4);
 }
 
 void ChestMenu::drawPageTabs() {
-    u32 p0 = unk_2400 + 0x60;
+    u32 p0 = boxSlideY + 0x60;
     s32 i = 0, j = 0;
     s32 m = -1;
     u32 z0 = 0, z1 = 0, z2 = 0;
     do {
         u32 p;
         u32 q;
-        if (i == unk_24d6) {
+        if (i == currentPage) {
             p = p0 + 2;
             q = 4;
         } else {
@@ -1951,9 +1951,9 @@ BOOL ChestMenu::hitTestPageTab(s32 x, s32 y) {
     s32 px = x - 0x80;
     s32 py = y - 0x60;
     for (i = 0, j = 0; i < 6; i++, j += 3) {
-        if (i != unk_24d6) {
+        if (i != currentPage) {
             if (Cell_HitTest(&sChestPageTabSprites[j], px, py, 2, 2)) {
-                unk_24d6 = i;
+                currentPage = i;
                 return TRUE;
             }
         }
@@ -1962,11 +1962,11 @@ BOOL ChestMenu::hitTestPageTab(s32 x, s32 y) {
 }
 
 void ChestMenu::startPageSwitch() {
-    unk_2134.hide(1);
+    nameBalloon.hide(1);
     ChestMenu_HideCursor(this);
-    unk_8c = 7;
+    transitionState = 7;
     setPhase(1);
-    Snd_PlaySe(sChestPageSe[unk_24d6]);
+    Snd_PlaySe(sChestPageSe[currentPage]);
     setFlags(0x40);
 }
 
@@ -1979,28 +1979,28 @@ s32 ChestMenu::handlePageKeys() {
         dir = 1;
     }
     if (dir) {
-        dir = dir + unk_24d6;
+        dir = dir + currentPage;
         if (dir < 0) {
             dir = 5;
         } else if (dir >= 6) {
             dir = 0;
         }
-        unk_24d6 = dir;
+        currentPage = dir;
         startPageSwitch();
     }
     return 0;
 }
 
 BOOL ChestMenu::testFlags(u32 mask) {
-    if (unk_23f8 & mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void ChestMenu::setFlags(u32 mask) { unk_23f8 = unk_23f8 | mask; }
+void ChestMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
-void ChestMenu::clearFlags(u32 mask) { unk_23f8 = unk_23f8 & ~mask; }
+void ChestMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 
 extern "C" Unk_ov102_02297580_Ent sChestPageTabSprites[18] = {
     {0x402e00ac, 0x000061c6},

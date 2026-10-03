@@ -161,15 +161,15 @@ public:
     void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class LabelString {
@@ -204,7 +204,7 @@ typedef void (BankMenu::*Unk_ov132_02294390_Fn)();
 // Vtable 0x02294390, size 0x1434
 class BankMenu : public MenuProc {
 public:
-    BankMenu() : unk_94(), unk_f8(), unk_25c(), unk_2dc(), unk_324() {}
+    BankMenu() : cursor(), bottomButtons(), labels(), screenTasks(), errorMessage() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -260,19 +260,19 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ MenuCursorBuf0 unk_94;
-    /* 0x0f8 */ MenuBottomButtons unk_f8;
-    /* 0x25c */ LabelString unk_25c[2];
-    /* 0x2dc */ BgVramTask unk_2dc[2];
-    /* 0x324 */ MenuErrorMessage unk_324;
-    /* 0x42c */ u8 unk_42c[0x800];
-    /* 0xc2c */ u8 unk_c2c[0x800];
-    /* 0x142c */ u16 unk_142c;
-    /* 0x142e */ u8 unk_142e;
-    /* 0x142f */ u8 unk_142f;
-    /* 0x1430 */ u8 unk_1430;
-    /* 0x1431 */ u8 unk_1431;
-    /* 0x1432 */ u8 unk_1432;
+    /* 0x094 */ MenuCursorBuf0 cursor;
+    /* 0x0f8 */ MenuBottomButtons bottomButtons;
+    /* 0x25c */ LabelString labels[2];
+    /* 0x2dc */ BgVramTask screenTasks[2];
+    /* 0x324 */ MenuErrorMessage errorMessage;
+    /* 0x42c */ u8 layer6Screen[0x800];
+    /* 0xc2c */ u8 layer4Screen[0x800];
+    /* 0x142c */ u16 flags;
+    /* 0x142e */ u8 cursorSlot;
+    /* 0x142f */ u8 returnState;
+    /* 0x1430 */ u8 labelCount;
+    /* 0x1431 */ u8 nextMenuId;
+    /* 0x1432 */ u8 selectTimer;
 };
 
 struct Unk_ov132_SceneEntry {
@@ -294,7 +294,7 @@ extern "C" BankMenu *BankMenu_Create() { return new BankMenu(); }
 
 BOOL BankMenu::vfunc_00() {
     initState();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -307,12 +307,12 @@ BOOL BankMenu::vfunc_0c() {
 
 BOOL BankMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_94)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    unk_f8.drawAt(getSlideOffsetY());
+    bottomButtons.drawAt(getSlideOffsetY());
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" Unk_ov132_SceneEntry sBankMenuProfile;
@@ -328,7 +328,7 @@ BOOL BankMenu::execTransition() {
         &BankMenu::stateClose,
         &BankMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -343,7 +343,7 @@ void BankMenu::runMainState() {
         &BankMenu::stateExit,
         &BankMenu::stateSelectWait,
         &BankMenu::stateMessage};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL BankMenu::execMain() {
@@ -371,7 +371,7 @@ void BankMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_f8.setLayoutSingle05(0x65);
+    bottomButtons.setLayoutSingle05(0x65);
     setTransitionState(1);
 }
 
@@ -384,7 +384,7 @@ void BankMenu::stateOpening() {
 }
 
 void BankMenu::stateClose() {
-    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), unk_1431, 1);
+    _ZN12MenuLauncher14setNextRequestEii(ProcBase_GetParent(), nextMenuId, 1);
     beginSubSlideOut(10, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
@@ -406,20 +406,20 @@ void BankMenu::updateLayerSlide() {
 }
 
 void BankMenu::initState() {
-    unk_142e = 0;
-    unk_142c = 0;
+    cursorSlot = 0;
+    flags = 0;
 }
 
 void BankMenu::releaseResources() {
-    unk_f8.freeTexts();
+    bottomButtons.freeTexts();
     releaseLabels();
-    unk_2dc[0].cancel();
-    unk_2dc[1].cancel();
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
 }
 
 void BankMenu::preInputUpdate() {
     preStateUpdate();
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void BankMenu::postInputUpdate() {
@@ -427,7 +427,7 @@ void BankMenu::postInputUpdate() {
 }
 
 void BankMenu::preStateUpdate() {
-    unk_f8.freeTexts();
+    bottomButtons.freeTexts();
     releaseLabels();
 }
 
@@ -444,12 +444,12 @@ void BankMenu::setupBgLayers() {
 
 void BankMenu::loadBgGfx() {
     NumberPad_LoadBgGraphics(6);
-    File_LoadToBuffer("menu/bank/c0_bg.bsc", unk_42c, 0x800);
-    BgScreen_SetRectPalette(unk_42c, 6, 7, 0x19, 0xf, 6);
-    Gfx2d_LoadScreen(unk_42c, 6, 0x800, 0);
-    File_LoadToBuffer("menu/bank/c1_bg.bsc", unk_c2c, 0x800);
-    BgScreen_SetRectPalette(unk_c2c, 6, 7, 0x19, 0xf, 6);
-    Gfx2d_LoadScreen(unk_c2c, 4, 0x800, 0);
+    File_LoadToBuffer("menu/bank/c0_bg.bsc", layer6Screen, 0x800);
+    BgScreen_SetRectPalette(layer6Screen, 6, 7, 0x19, 0xf, 6);
+    Gfx2d_LoadScreen(layer6Screen, 6, 0x800, 0);
+    File_LoadToBuffer("menu/bank/c1_bg.bsc", layer4Screen, 0x800);
+    BgScreen_SetRectPalette(layer4Screen, 6, 7, 0x19, 0xf, 6);
+    Gfx2d_LoadScreen(layer4Screen, 4, 0x800, 0);
     LabelString *p = (LabelString *)allocLabel();
     String_Load2dMenu(p, 0x5f);
     p->createLabel(4, 0x114, 0xe, 0xf, 0, 0);
@@ -461,7 +461,7 @@ void BankMenu::loadBgGfx() {
 }
 
 void BankMenu::loadObjGfx() {
-    MenuButtons_LoadTextColors(&unk_f8);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void BankMenu::updateTouch() {
@@ -470,7 +470,7 @@ void BankMenu::updateTouch() {
         return;
     }
     if (Unk_ov132_02293d40_Both()) {
-        if (unk_f8.isTouched(6)) {
+        if (bottomButtons.isTouched(6)) {
             quit();
         } else {
             s32 x = gTouchCurX[0];
@@ -493,17 +493,17 @@ void BankMenu::updateButtons() {
         return;
     }
     takeRepeatedKeys();
-    u8 old = unk_142e;
+    u8 old = cursorSlot;
     if (isRepeatUp()) {
-        if (unk_142e != 0) {
-            unk_142e = unk_142e - 1;
+        if (cursorSlot != 0) {
+            cursorSlot = cursorSlot - 1;
         }
     } else if (isRepeatDown()) {
-        if (unk_142e < 2) {
-            unk_142e = unk_142e + 1;
+        if (cursorSlot < 2) {
+            cursorSlot = cursorSlot + 1;
         }
     }
-    if (old != unk_142e) {
+    if (old != cursorSlot) {
         moveCursorToTarget();
         return;
     }
@@ -518,15 +518,15 @@ void BankMenu::updateButtons() {
 }
 
 void BankMenu::updateCursorMove() {
-    if (!((MenuCursorBase *)&unk_94)->isMoving()) {
-        setMainState(unk_142f);
+    if (!((MenuCursorBase *)&cursor)->isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void BankMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
-        switch (unk_142e) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+        switch (cursorSlot) {
         case 2:
             quit();
             break;
@@ -541,19 +541,19 @@ void BankMenu::updateCursorPress() {
 }
 
 void BankMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         refreshCursor();
-        setMainState(unk_142f);
+        setMainState(returnState);
     }
 }
 
 void BankMenu::stateExit() {
-    if (unk_f8.stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&unk_94)) {
-            s32 a = unk_f8.getPressOffset();
-            s32 b = unk_f8.getTargetX(-1);
-            s32 c = unk_f8.getTargetY(-1);
-            ((MenuCursorBase *)&unk_94)->warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -562,9 +562,9 @@ void BankMenu::stateExit() {
 }
 
 void BankMenu::stateSelectWait() {
-    u8 n = unk_1432;
+    u8 n = selectTimer;
     if (n != 0) {
-        unk_1432 = n - 1;
+        selectTimer = n - 1;
     } else {
         hideCursor();
         setPhase(1);
@@ -572,9 +572,9 @@ void BankMenu::stateSelectWait() {
 }
 
 void BankMenu::stateMessage() {
-    if (unk_324.update(0)) {
+    if (errorMessage.update(0)) {
         resumeInput();
-        _ZN10HandCursor15enableObjWindowEv(&unk_94);
+        _ZN10HandCursor15enableObjWindowEv(&cursor);
     }
 }
 
@@ -598,18 +598,18 @@ void BankMenu::resumeInput() {
 }
 
 void BankMenu::quit() {
-    unk_1431 = 0x44;
+    nextMenuId = 0x44;
     MenuCtrl_SetResult(0);
-    unk_f8.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(2);
     setMainState(5);
 }
 
 void BankMenu::startSelect() {
     setTransitionState(2);
-    unk_1432 = 10;
-    _ZN10BgVramTask13requestScreenEjhjj(&unk_2dc[0], unk_42c, 6, 0x800, 0);
-    _ZN10BgVramTask13requestScreenEjhjj(&unk_2dc[1], unk_c2c, 4, 0x800, 0);
+    selectTimer = 10;
+    _ZN10BgVramTask13requestScreenEjhjj(&screenTasks[0], layer6Screen, 6, 0x800, 0);
+    _ZN10BgVramTask13requestScreenEjhjj(&screenTasks[1], layer4Screen, 4, 0x800, 0);
     setMainState(6);
     Snd_PlaySe(0x29);
 }
@@ -618,9 +618,9 @@ void BankMenu::selectDeposit() {
     if (PlayerBank_GetBalance(_ZN12Unk_02097ff414getBankAccountEv(PlayerData_GetCurrent())) == 0x3b9ac9ff) {
         showMessage(0xe);
     } else {
-        unk_1431 = 0x35;
-        BgScreen_SetRectPalette(unk_42c, 6, 7, 0x19, 0xa, 7);
-        BgScreen_SetRectPalette(unk_c2c, 6, 7, 0x19, 0xa, 7);
+        nextMenuId = 0x35;
+        BgScreen_SetRectPalette(layer6Screen, 6, 7, 0x19, 0xa, 7);
+        BgScreen_SetRectPalette(layer4Screen, 6, 7, 0x19, 0xa, 7);
         startSelect();
     }
 }
@@ -629,56 +629,56 @@ void BankMenu::selectWithdraw() {
     if (PlayerInventory_GetBellsRoom(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1, 0) == 0) {
         showMessage(0xf);
     } else {
-        unk_1431 = 0x36;
-        BgScreen_SetRectPalette(unk_42c, 6, 0xc, 0x19, 0xf, 7);
-        BgScreen_SetRectPalette(unk_c2c, 6, 0xc, 0x19, 0xf, 7);
+        nextMenuId = 0x36;
+        BgScreen_SetRectPalette(layer6Screen, 6, 0xc, 0x19, 0xf, 7);
+        BgScreen_SetRectPalette(layer4Screen, 6, 0xc, 0x19, 0xf, 7);
         startSelect();
     }
 }
 
 void BankMenu::showMessage(u8 v) {
     u8 b = v;
-    unk_324.open(&b, 1, 0);
+    errorMessage.open(&b, 1, 0);
     setMainState(7);
-    _ZN10HandCursor16disableObjWindowEv(&unk_94);
+    _ZN10HandCursor16disableObjWindowEv(&cursor);
 }
 
 void BankMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    ((MenuCursorBase *)&unk_94)->warpTo(a, b);
-    if (unk_142e == 2) {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(7);
+    ((MenuCursorBase *)&cursor)->warpTo(a, b);
+    if (cursorSlot == 2) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 BankMenu::getCursorTargetX() {
-    if (unk_142e == 2) {
-        return unk_f8.getTargetX(6);
+    if (cursorSlot == 2) {
+        return bottomButtons.getTargetX(6);
     }
-    return sBankMenuCursorXTable[unk_142e];
+    return sBankMenuCursorXTable[cursorSlot];
 }
 
 s32 BankMenu::getCursorTargetY() {
-    if (unk_142e == 2) {
-        return unk_f8.getTargetY(6);
+    if (cursorSlot == 2) {
+        return bottomButtons.getTargetY(6);
     }
-    return sBankMenuCursorYTable[unk_142e];
+    return sBankMenuCursorYTable[cursorSlot];
 }
 
 void BankMenu::hideCursor() {
-    ((MenuCursor *)&unk_94)->setAnimIfChanged(0);
-    unk_94.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void BankMenu::moveCursorToTarget() {
-    if (unk_142e == 2) {
-        ((MenuCursor *)&unk_94)->switchToAnim07();
+    if (cursorSlot == 2) {
+        ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
-        ((MenuCursor *)&unk_94)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -686,47 +686,47 @@ void BankMenu::moveCursorToTarget() {
 }
 
 void BankMenu::startCursorMove(s32 a, s32 b) {
-    ((MenuCursorBase *)&unk_94)->moveToEase(a, b, 3, 1);
-    unk_142f = unk_8d;
+    ((MenuCursorBase *)&cursor)->moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(2);
 }
 
 void BankMenu::refreshCursor() {
-    ((MenuCursorBase *)&unk_94)->setPoseIdle();
-    unk_94.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void BankMenu::pressCursor() {
-    ((MenuCursor *)&unk_94)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(3);
 }
 
 void BankMenu::releaseLabels() {
     s32 i = 0;
-    unk_1430 = i;
+    labelCount = i;
     for (; i < 2; i++) {
-        unk_25c[i].destroyLabel();
+        labels[i].destroyLabel();
     }
 }
 
 u8 *BankMenu::allocLabel() {
-    u8 *p = &unk_1430;
+    u8 *p = &labelCount;
     if (*p >= 2) {
-        return (u8 *)&unk_25c[1];
+        return (u8 *)&labels[1];
     }
     *p = *p + 1;
-    return (u8 *)&unk_25c[*p - 1];
+    return (u8 *)&labels[*p - 1];
 }
 
 BOOL BankMenu::testFlags(u32 mask) {
-    if ((unk_142c & mask) != 0) {
+    if ((flags & mask) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 void BankMenu::setFlags(u32 mask) {
-    unk_142c = unk_142c | mask;
+    flags = flags | mask;
 }
 
 extern "C" const s32 sBankMenuCursorXTable[3] = {0xc8, 0xc8, 0};

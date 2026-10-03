@@ -163,15 +163,15 @@ public:
     void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 static inline BOOL func_ov131_Both() {
@@ -187,7 +187,7 @@ typedef void (AmountEntryMenu::*Unk_ov131_022942f0_Fn)();
 // Vtable 0x022942f0, size 0x1414
 class AmountEntryMenu : public MenuProc {
 public:
-    AmountEntryMenu() : unk_94(), unk_f8(), unk_25c() {}
+    AmountEntryMenu() : cursor(), bottomButtons(), numberPad() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -241,11 +241,11 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ MenuCursorBuf0 unk_94;
-    /* 0xf8 */ MenuBottomButtons unk_f8;
-    /* 0x25c */ NumberPad unk_25c;
-    /* 0x1410 */ u16 unk_1410;
-    /* 0x1412 */ u8 unk_1412;
+    /* 0x94 */ MenuCursorBuf0 cursor;
+    /* 0xf8 */ MenuBottomButtons bottomButtons;
+    /* 0x25c */ NumberPad numberPad;
+    /* 0x1410 */ u16 flags;
+    /* 0x1412 */ u8 returnState;
 };
 
 extern "C" AmountEntryMenu *AmountEntryMenu_Create() { return new AmountEntryMenu(); }
@@ -261,7 +261,7 @@ extern "C" Unk_ov131_SceneEntry sAmountEntryMenuProfile = {AmountEntryMenu_Creat
 
 BOOL AmountEntryMenu::vfunc_00() {
     initPad();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -274,13 +274,13 @@ BOOL AmountEntryMenu::vfunc_0c() {
 
 BOOL AmountEntryMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_94)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    unk_f8.drawAt(getSlideOffsetY());
-    NumberPad_Draw(&unk_25c, getSlideOffsetY());
+    bottomButtons.drawAt(getSlideOffsetY());
+    NumberPad_Draw(&numberPad, getSlideOffsetY());
     return TRUE;
 }
 
@@ -291,7 +291,7 @@ BOOL AmountEntryMenu::execTransition() {
         &AmountEntryMenu::stateClose,
         &AmountEntryMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -306,7 +306,7 @@ void AmountEntryMenu::runMainState() {
         &AmountEntryMenu::updateCursorRelease,
         &AmountEntryMenu::stateButtonRepeat,
         &AmountEntryMenu::stateExit};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL AmountEntryMenu::execMain() {
@@ -334,7 +334,7 @@ void AmountEntryMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_f8.setLayoutConfirmAnd06(0x65);
+    bottomButtons.setLayoutConfirmAnd06(0x65);
     setTransitionState(1);
 }
 
@@ -370,34 +370,34 @@ void AmountEntryMenu::updateLayerSlide() {
 }
 
 void AmountEntryMenu::initPad() {
-    unk_25c.init((u8)(MenuCtrl_GetMode() - 0x34), 6, 4);
+    numberPad.init((u8)(MenuCtrl_GetMode() - 0x34), 6, 4);
     setupAmounts();
-    unk_1410 = 0;
+    flags = 0;
 }
 
 void AmountEntryMenu::releaseResources() {
-    unk_f8.freeTexts();
-    unk_25c.shutdown();
+    bottomButtons.freeTexts();
+    numberPad.shutdown();
 }
 
 void AmountEntryMenu::preInputUpdate() {
     preStateUpdate();
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void AmountEntryMenu::postInputUpdate() { postStateUpdate(); }
 
 void AmountEntryMenu::preStateUpdate() {
-    unk_f8.freeTexts();
-    unk_25c.update();
+    bottomButtons.freeTexts();
+    numberPad.update();
 }
 
 void AmountEntryMenu::postStateUpdate() {
-    unk_25c.flushScreens();
-    if (NumberPad_GetValue(&unk_25c) == 0) {
-        unk_f8.disableButton(6);
+    numberPad.flushScreens();
+    if (NumberPad_GetValue(&numberPad) == 0) {
+        bottomButtons.disableButton(6);
     } else {
-        unk_f8.enableButton(6);
+        bottomButtons.enableButton(6);
     }
 }
 
@@ -409,11 +409,11 @@ void AmountEntryMenu::setupBgLayers() {
     Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
-s32 AmountEntryMenu::loadBgGfx() { return unk_25c.loadBg(); }
+s32 AmountEntryMenu::loadBgGfx() { return numberPad.loadBg(); }
 
 void AmountEntryMenu::loadObjGfx() {
-    unk_25c.loadObj();
-    MenuButtons_LoadTextColors(&unk_f8);
+    numberPad.loadObj();
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void AmountEntryMenu::updateTouch() {
@@ -421,13 +421,13 @@ void AmountEntryMenu::updateTouch() {
         startButtonInput();
     } else {
         if (func_ov131_Both()) {
-            if (unk_f8.isTouched(6)) {
+            if (bottomButtons.isTouched(6)) {
                 confirm();
-            } else if (unk_f8.isTouched(7)) {
+            } else if (bottomButtons.isTouched(7)) {
                 cancel();
             } else {
-                if (NumberPad_HitTestKey(&unk_25c, gTouchCurX[0], gTouchCurY[0]) != 0xd) {
-                    NumberPad_PressKey(&unk_25c);
+                if (NumberPad_HitTestKey(&numberPad, gTouchCurX[0], gTouchCurY[0]) != 0xd) {
+                    NumberPad_PressKey(&numberPad);
                     setMainState(1);
                 }
             }
@@ -437,17 +437,17 @@ void AmountEntryMenu::updateTouch() {
 
 void AmountEntryMenu::stateTouchRepeat() {
     if (gTouchHeld[0] == 0) {
-        NumberPad_StopKeyRepeat(&unk_25c);
+        NumberPad_StopKeyRepeat(&numberPad);
         setMainState(0);
     } else {
-        NumberPad_TickKeyRepeat(&unk_25c);
+        NumberPad_TickKeyRepeat(&numberPad);
     }
 }
 
 void AmountEntryMenu::updateButtons() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-    } else if (NumberPad_MoveCursor(&unk_25c, takeRepeatedKeys())) {
+    } else if (NumberPad_MoveCursor(&numberPad, takeRepeatedKeys())) {
         moveCursorToTarget();
     } else {
         u32 k = gPad[1];
@@ -458,7 +458,7 @@ void AmountEntryMenu::updateButtons() {
         } else if (k & 1) {
             pressCursor();
         } else if (k & 2) {
-            if (!NumberPad_ClearValue(&unk_25c)) {
+            if (!NumberPad_ClearValue(&numberPad)) {
                 hideCursor();
                 cancel();
             }
@@ -467,17 +467,17 @@ void AmountEntryMenu::updateButtons() {
 }
 
 void AmountEntryMenu::updateCursorMove() {
-    if (!((MenuCursorBase *)&unk_94)->isMoving()) {
-        setMainState(unk_1412);
+    if (!((MenuCursorBase *)&cursor)->isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void AmountEntryMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
-        if (NumberPad_PressCursorKey(&unk_25c)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
+        if (NumberPad_PressCursorKey(&numberPad)) {
             setMainState(6);
-        } else if (NumberPad_IsCursorOnOk(&unk_25c)) {
+        } else if (NumberPad_IsCursorOnOk(&numberPad)) {
             if (!confirm()) {
                 setMainState(2);
                 releaseCursor();
@@ -489,29 +489,29 @@ void AmountEntryMenu::updateCursorPress() {
 }
 
 void AmountEntryMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         refreshCursor();
-        setMainState(unk_1412);
+        setMainState(returnState);
     }
 }
 
 void AmountEntryMenu::stateButtonRepeat() {
     if ((gPad[0] & 1) == 0) {
-        NumberPad_StopKeyRepeat(&unk_25c);
+        NumberPad_StopKeyRepeat(&numberPad);
         setMainState(2);
         releaseCursor();
     } else {
-        NumberPad_TickKeyRepeat(&unk_25c);
+        NumberPad_TickKeyRepeat(&numberPad);
     }
 }
 
 void AmountEntryMenu::stateExit() {
-    if (unk_f8.stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&unk_94)) {
-            s32 a = unk_f8.getPressOffset();
-            s32 b = unk_f8.getTargetX(-1);
-            s32 c = unk_f8.getTargetY(-1);
-            ((MenuCursorBase *)&unk_94)->warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -539,14 +539,14 @@ void AmountEntryMenu::resumeInput() {
 }
 
 BOOL AmountEntryMenu::confirm() {
-    if (unk_f8.isButtonDisabled(6)) {
+    if (bottomButtons.isButtonDisabled(6)) {
         return FALSE;
     }
-    unk_f8.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(2);
     setMainState(7);
     MenuCtrl_SetResult(1);
-    NumberPad_GetValue(&unk_25c);
+    NumberPad_GetValue(&numberPad);
     MenuCtrl_SetAmount();
     commitAmount();
     return TRUE;
@@ -555,7 +555,7 @@ BOOL AmountEntryMenu::confirm() {
 void AmountEntryMenu::cancel() {
     Snd_PlaySe(0x2a);
     MenuCtrl_SetResult(0);
-    unk_f8.setSelected(7);
+    bottomButtons.setSelected(7);
     setTransitionState(2);
     setMainState(7);
 }
@@ -563,29 +563,29 @@ void AmountEntryMenu::cancel() {
 void AmountEntryMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    ((MenuCursorBase *)&unk_94)->warpTo(a, b);
-    if (NumberPad_IsCursorOnButton(&unk_25c)) {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(7);
+    ((MenuCursorBase *)&cursor)->warpTo(a, b);
+    if (NumberPad_IsCursorOnButton(&numberPad)) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
-s32 AmountEntryMenu::getCursorTargetX() { return NumberPad_GetCursorX(&unk_25c); }
+s32 AmountEntryMenu::getCursorTargetX() { return NumberPad_GetCursorX(&numberPad); }
 
-s32 AmountEntryMenu::getCursorTargetY() { return NumberPad_GetCursorY(&unk_25c); }
+s32 AmountEntryMenu::getCursorTargetY() { return NumberPad_GetCursorY(&numberPad); }
 
 void AmountEntryMenu::hideCursor() {
-    ((MenuCursor *)&unk_94)->setAnimIfChanged(0);
-    unk_94.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void AmountEntryMenu::moveCursorToTarget() {
-    if (NumberPad_IsCursorOnButton(&unk_25c)) {
-        ((MenuCursor *)&unk_94)->switchToAnim07();
+    if (NumberPad_IsCursorOnButton(&numberPad)) {
+        ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
-        ((MenuCursor *)&unk_94)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -593,24 +593,24 @@ void AmountEntryMenu::moveCursorToTarget() {
 }
 
 void AmountEntryMenu::startCursorMove(s32 a, s32 b) {
-    ((MenuCursorBase *)&unk_94)->moveToEase(a, b, 3, 1);
-    unk_1412 = unk_8d;
+    ((MenuCursorBase *)&cursor)->moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(3);
 }
 
 void AmountEntryMenu::refreshCursor() {
-    ((MenuCursorBase *)&unk_94)->setPoseIdle();
-    unk_94.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void AmountEntryMenu::pressCursor() {
-    ((MenuCursor *)&unk_94)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(4);
 }
 
 void AmountEntryMenu::releaseCursor() {
-    ((MenuCursorBase *)&unk_94)->setPoseRelease();
-    unk_1412 = unk_8d;
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
+    returnState = mainState;
     setMainState(5);
 }
 
@@ -669,13 +669,13 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     }
-    NumberPad_SetAmounts(&unk_25c, mx, hi, lo);
+    NumberPad_SetAmounts(&numberPad, mx, hi, lo);
 }
 
 void AmountEntryMenu::commitAmount() {
-    s32 a = NumberPad_GetValue(&unk_25c);
-    s32 b = NumberPad_GetTopAmount(&unk_25c);
-    s32 c = NumberPad_GetBottomAmount(&unk_25c);
+    s32 a = NumberPad_GetValue(&numberPad);
+    s32 b = NumberPad_GetTopAmount(&numberPad);
+    s32 c = NumberPad_GetBottomAmount(&numberPad);
     void *p = PlayerData_GetCurrent();
     void *q = _ZN12Unk_02097ff414getBankAccountEv();
     s32 m = MenuCtrl_GetMode();
@@ -706,13 +706,13 @@ void AmountEntryMenu::commitAmount() {
 }
 
 BOOL AmountEntryMenu::testFlags(u32 mask) {
-    if (unk_1410 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void AmountEntryMenu::setFlags(u32 mask) { unk_1410 = unk_1410 | mask; }
+void AmountEntryMenu::setFlags(u32 mask) { flags = flags | mask; }
 
 // ---------------------------------------------------------------------------------------------
 

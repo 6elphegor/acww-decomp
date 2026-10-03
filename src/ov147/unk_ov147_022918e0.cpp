@@ -2,9 +2,9 @@
 #include "Unk_020d8c7c.h"
 
 struct TitleChoiceSet {
-    u8 *unk_00;
-    u8 *unk_04;
-    u8 unk_08;
+    u8 *msgIds;
+    u8 *nextMsgIds;
+    u8 numChoices;
 };
 
 class ChoiceEntry {
@@ -181,8 +181,8 @@ public:
 
 struct Unk_ov147_SceneEntry {
     TitleScreen *(*factory)();
-    u16 unk_04;
-    u16 unk_06;
+    u16 executePriority;
+    u16 drawPriority;
 };
 
 typedef void (TitleScreen::*Unk_ov147_022933e8_Fn)();
@@ -218,13 +218,13 @@ class TitleBlinkText {
 public:
     TitleBlinkText();
     virtual ~TitleBlinkText();
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    u8 unk_1c;
+    s32 state;
+    s32 variant;
+    s32 requestedVariant;
+    s32 alpha;
+    s32 holdCount;
+    s32 showDelay;
+    u8 fadingOut;
 
     void updateShown();
     void show();
@@ -363,20 +363,20 @@ public:
     void skipLogoReveal();
     void updateLogo();
 
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ TitleTalk unk_54;
+    /* 0x50 */ s32 titleState;
+    /* 0x54 */ TitleTalk talk;
     /* 0x9c */ u8 pad_9c[2];
-    /* 0x9e */ u8 unk_9e;
-    /* 0x9f */ u8 unk_9f;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ u16 unk_a4;
-    /* 0xa6 */ u8 unk_a6;
-    /* 0xa7 */ u8 unk_a7;
-    /* 0xa8 */ u16 unk_a8;
+    /* 0x9e */ u8 backupError;
+    /* 0x9f */ u8 bgmMode;
+    /* 0xa0 */ s32 logoStep;
+    /* 0xa4 */ u16 logoTimer;
+    /* 0xa6 */ u8 logoState;
+    /* 0xa7 */ u8 skipDelay;
+    /* 0xa8 */ u16 idleTimer;
     /* 0xaa */ u8 pad_aa[2];
-    /* 0xac */ TitleBlinkText unk_ac;
-    /* 0xcc */ BgVramTask unk_cc;
-    /* 0xf0 */ u8 unk_f0;
+    /* 0xac */ TitleBlinkText blinkText;
+    /* 0xcc */ BgVramTask vramTask;
+    /* 0xf0 */ u8 wifiIdErased;
     /* 0xf1 */ u8 pad_f1[3];
 };
 extern "C" TitleStateEntry sTitleStates[12] = {
@@ -401,23 +401,23 @@ TitleScreen::TitleScreen() {}
 TitleScreen::~TitleScreen() {}
 
 BOOL TitleScreen::vfunc_00() {
-    unk_54.setOwner(this);
+    talk.setOwner(this);
     PlayerOptions_Get();
     _ZN13PlayerOptions5resetEv();
     TalkRequestFlags_SetSceneHold();
     if (Main_TakeDwcInitResult() == 3) {
-        unk_f0 = 1;
+        wifiIdErased = 1;
     }
     changeState(0);
-    unk_a6 = 0;
-    unk_a7 = 0;
-    unk_ac.init();
+    logoState = 0;
+    skipDelay = 0;
+    blinkText.init();
     if (Save_CheckBackupError() == 1) {
-        unk_9e = 1;
+        backupError = 1;
     }
     startBgm(TalkRequestFlags_IsTitleTimeout() != 0 ? TRUE : FALSE);
     if (TalkRequestFlags_IsTitleTimeout() != 0) {
-        unk_a6 = 6;
+        logoState = 6;
         TalkRequestFlags_ClearTitleTimeout();
     }
     return TRUE;
@@ -425,38 +425,38 @@ BOOL TitleScreen::vfunc_00() {
 
 BOOL TitleScreen::vfunc_0c() {
     stopBgm();
-    unk_ac.shutdown();
-    unk_cc.cancel();
+    blinkText.shutdown();
+    vramTask.cancel();
     TalkRequestFlags_ClearSceneHold();
-    if (unk_50 == 7) {
+    if (titleState == 7) {
         GameStart_SetupSave();
     }
     return TRUE;
 }
 
 BOOL TitleScreen::onExecute() {
-    if (((TitleStateEntry *)((u8 *)sTitleStates + 8))[unk_50].enter) {
-        (this->*sTitleStates[unk_50].update)();
+    if (((TitleStateEntry *)((u8 *)sTitleStates + 8))[titleState].enter) {
+        (this->*sTitleStates[titleState].update)();
     }
     updateLogo();
-    unk_ac.update();
+    blinkText.update();
     return TRUE;
 }
 
 void TitleScreen::startBgm(BOOL flag) {
-    if (unk_9f == 0) {
+    if (bgmMode == 0) {
         if (flag) {
             Bgm_RequestSilence(1, 0xf, 0);
-            unk_9f = 2;
+            bgmMode = 2;
         } else {
             Bgm_Request(2, 0, 0x7f, 0);
-            unk_9f = 1;
+            bgmMode = 1;
         }
     }
 }
 
 void TitleScreen::stopBgm() {
-    u32 t = unk_9f;
+    u32 t = bgmMode;
     if (t != 0) {
         if (t == 1) {
             Bgm_Release(0);
@@ -464,12 +464,12 @@ void TitleScreen::stopBgm() {
             Bgm_ReleasePriority(1);
         }
         Bgm_RequestSilence(1, 0xf, 0xf);
-        unk_9f = 0;
+        bgmMode = 0;
     }
 }
 
 void TitleScreen::func_ov147_022929c0() {
-    if (unk_9f == 1) {
+    if (bgmMode == 1) {
         *(s32 *)(data_021c1b3c + 0x248) = 0xb;
     }
 }
@@ -478,10 +478,10 @@ void TitleScreen::changeState(s32 state) {
     if (sTitleStates[state].enter) {
         (this->*sTitleStates[state].enter)();
     }
-    unk_50 = state;
+    titleState = state;
 }
 
-void TitleScreen::enterWaitStart() { unk_a8 = 0xe10; }
+void TitleScreen::enterWaitStart() { idleTimer = 0xe10; }
 
 void TitleScreen::updateWaitStart() {
     if (gPad[1] != 0) {
@@ -491,42 +491,42 @@ void TitleScreen::updateWaitStart() {
     }
     u32 pad = gPad[1];
     if ((pad & 2) == 0 && (pad & 0x400) == 0 && (pad & 0x800) == 0) {
-        if (unk_f0 != 0 || unk_9e != 0 || (pad & 8) != 0 || (pad & 1) != 0 || Unk_ov147_0229281c_Both()) {
+        if (wifiIdErased != 0 || backupError != 0 || (pad & 8) != 0 || (pad & 1) != 0 || Unk_ov147_0229281c_Both()) {
             if (Unk_ov147_022924c0_IsTwo()) {
-                u32 t = unk_a6;
+                u32 t = logoState;
                 if (t != 0) {
                     if (t == 1) {
                         skipLogoReveal();
-                        unk_a7 = 0xc;
-                    } else if (unk_a7 == 0) {
+                        skipDelay = 0xc;
+                    } else if (skipDelay == 0) {
                         dismissLogo();
-                        unk_ac.requestHide();
+                        blinkText.requestHide();
                         changeState(1);
                     }
                 }
             }
         }
     }
-    if (unk_a7 != 0) {
-        unk_a7 = *(volatile u8 *)&unk_a7 - 1;
-        if (unk_a7 == 0) {
-            unk_ac.requestVariant(0);
+    if (skipDelay != 0) {
+        skipDelay = *(volatile u8 *)&skipDelay - 1;
+        if (skipDelay == 0) {
+            blinkText.requestVariant(0);
         }
     }
-    if ((u8)(unk_a6 + 0xfc) <= 1) {
-        if (func_020e7500(&unk_a8) == 0) {
-            unk_ac.requestHide();
+    if ((u8)(logoState + 0xfc) <= 1) {
+        if (func_020e7500(&idleTimer) == 0) {
+            blinkText.requestHide();
             changeState(0xb);
         }
     } else {
-        unk_a8 = 0xe10;
+        idleTimer = 0xe10;
     }
 }
 
 void TitleScreen::enterIdleTimeout() {}
 
 void TitleScreen::updateIdleTimeout() {
-    if (unk_ac.isHidden()) {
+    if (blinkText.isHidden()) {
         TalkRequestFlags_SetTitleTimeout();
         SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2c, 2, 2);
         stopBgm();
@@ -536,24 +536,24 @@ void TitleScreen::updateIdleTimeout() {
 void TitleScreen::enterOpenMenu() {}
 
 void TitleScreen::updateOpenMenu() {
-    if (unk_ac.isHidden()) {
+    if (blinkText.isHidden()) {
         TalkWindowState *r = TalkWindow_Get(0);
-        unk_54.vfunc_08();
-        if (unk_f0 != 0) {
-            unk_54.setFileName(sTitleTalkFilePtr);
+        talk.vfunc_08();
+        if (wifiIdErased != 0) {
+            talk.setFileName(sTitleTalkFilePtr);
             *((u8 *)this + 0x72) = 0x32;
-            unk_f0 = 0;
-        } else if (unk_9e != 0) {
-            unk_54.setFileName("sp_etc_sequence2");
+            wifiIdErased = 0;
+        } else if (backupError != 0) {
+            talk.setFileName("sp_etc_sequence2");
             *((u8 *)this + 0x72) = 9;
         } else if (gSaveData.testFlag(0x12)) {
-            unk_54.setFileName(sTitleTalkFilePtr);
+            talk.setFileName(sTitleTalkFilePtr);
             *((u8 *)this + 0x72) = 0x24;
         } else {
-            unk_54.setFileName(sTitleTalkFilePtr);
-            *((u8 *)this + 0x72) = unk_54.getGreetingMsg();
+            talk.setFileName(sTitleTalkFilePtr);
+            *((u8 *)this + 0x72) = talk.getGreetingMsg();
         }
-        r->attachRequest(&unk_54);
+        r->attachRequest(&talk);
         r->unk_08 = 1;
         changeState(2);
     }
@@ -570,7 +570,7 @@ void TitleScreen::updateBackToTitle() {
     if (r->unk_04 == 0) {
         r->detachRequest();
         changeState(0);
-        unk_ac.requestVariant(1);
+        blinkText.requestVariant(1);
     }
 }
 
@@ -704,7 +704,7 @@ void TitleTalk::onMessageEnd() {
     s32 r6 = PlayerDataArray_CountUsed(gSavePlayers);
     s32 r0 = gSaveData.isValid();
     TitleScreen *r2 = unk_44;
-    if (r2->unk_9e != 0) {
+    if (r2->backupError != 0) {
         r5->lockAdvance();
         return;
     }
@@ -784,9 +784,9 @@ void TitleTalk::onMessageEnd() {
 void TitleTalk::openChoiceSet(TitleChoiceSet *d) {
     TalkWindowState *sp0 = unk_3c;
     ChoiceList *sp10 = sp0->getChoiceList();
-    u8 *r5 = d->unk_00;
-    u8 *r6 = d->unk_04;
-    u32 r7 = d->unk_08;
+    u8 *r5 = d->msgIds;
+    u8 *r6 = d->nextMsgIds;
+    u32 r7 = d->numChoices;
     sp10->reset(r7, r7 - 1);
     s32 r4;
     s32 z0 = 0;
@@ -968,7 +968,7 @@ void TitleScreen::loadLogo() {
 }
 
 void TitleScreen::updateLogo() {
-    switch (unk_a6) {
+    switch (logoState) {
     case 0:
         if (Unk_ov147_02291b28_IsTwo(gScreenTransition)) {
             loadLogo();
@@ -977,30 +977,30 @@ void TitleScreen::updateLogo() {
         break;
     case 6:
         if (Unk_ov147_02291b28_IsTwo(gScreenTransition)) {
-            unk_ac.requestVariant(1);
-            unk_a8 = 0xe10;
-            unk_a6 = 5;
+            blinkText.requestVariant(1);
+            idleTimer = 0xe10;
+            logoState = 5;
         }
         break;
     case 1:
         if (stepLogoReveal()) {
-            unk_a6 = 2;
-            if (unk_a7 == 0) {
-                unk_ac.requestVariant(0);
+            logoState = 2;
+            if (skipDelay == 0) {
+                blinkText.requestVariant(0);
             }
         }
         break;
     case 2:
-        if (unk_a4 != 0) {
-            unk_a4 = *(volatile u16 *)&unk_a4 - 1;
+        if (logoTimer != 0) {
+            logoTimer = *(volatile u16 *)&logoTimer - 1;
         } else {
             startLogoHide();
-            unk_ac.requestVariant(1);
+            blinkText.requestVariant(1);
         }
         break;
     case 3:
         if (stepLogoHide()) {
-            unk_a6 = 4;
+            logoState = 4;
         }
         break;
     case 4:
@@ -1010,13 +1010,13 @@ void TitleScreen::updateLogo() {
 }
 
 void TitleScreen::skipLogoReveal() {
-    if (unk_a6 == 1) {
-        unk_a0 = 0x64;
+    if (logoState == 1) {
+        logoStep = 0x64;
     }
 }
 
 void TitleScreen::dismissLogo() {
-    if (unk_a6 == 2) {
+    if (logoState == 2) {
         startLogoHide();
     } else {
         hideLogo();
@@ -1026,20 +1026,20 @@ void TitleScreen::dismissLogo() {
 void TitleScreen::hideLogo() {
     Gfx2d_HideLayer(5);
     func_0203d4c4(1);
-    unk_a6 = 5;
+    logoState = 5;
 }
 
 void TitleScreen::startLogoReveal() {
-    unk_a6 = 1;
-    unk_a0 = 0;
-    unk_a4 = 0x4b0;
+    logoState = 1;
+    logoStep = 0;
+    logoTimer = 0x4b0;
     MI_CpuFill8(sTitleLogoCharsWork, 0, 0x3800);
     Gfx2d_ShowLayer(5);
 }
 
 BOOL TitleScreen::stepLogoReveal() {
     s32 y;
-    s32 r4 = unk_a0;
+    s32 r4 = logoStep;
     if (r4 < 0x36) {
         r4 += 9;
         s32 r6 = 0;
@@ -1057,35 +1057,35 @@ BOOL TitleScreen::stepLogoReveal() {
                 }
             }
         }
-        unk_cc.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
-        unk_a0 = unk_a0 + 1;
+        vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+        logoStep = logoStep + 1;
         goto ret0;
     }
     MI_CpuCopy8(sTitleLogoChars, sTitleLogoCharsWork, 0x3800);
-    unk_cc.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+    vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
     return TRUE;
 ret0:
     return FALSE;
 }
 
 void TitleScreen::startLogoHide() {
-    unk_a0 = 7;
-    unk_a6 = 3;
+    logoStep = 7;
+    logoState = 3;
 }
 
 BOOL TitleScreen::stepLogoHide() {
-    if (unk_a0 == 0) {
+    if (logoStep == 0) {
         Gfx2d_HideLayer(5);
         func_0203d4c4(1);
         return TRUE;
     }
-    unk_a0 = unk_a0 - 1;
-    u32 *p = sTitleLogoHideMasks[unk_a0];
+    logoStep = logoStep - 1;
+    u32 *p = sTitleLogoHideMasks[logoStep];
     s32 i;
     for (i = 0; i < 0x1c0; i++) {
         maskLogoChar(p, i);
     }
-    unk_cc.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
+    vramTask.requestChars((u32)sTitleLogoCharsWork, 5, 0x140, 0x140, 0x2ff);
     return FALSE;
 }
 

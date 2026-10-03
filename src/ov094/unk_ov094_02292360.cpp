@@ -1,21 +1,21 @@
 #include "types.h"
 
 struct Unk_ov094_02292360_Obj {
-    s32 unk_00;
-    s32 unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
+    s32 shownBells;
+    s32 bellStep;
+    u16 dirtyFlags;
+    u16 bellsColorA;
+    u16 bellsColorB;
+    u8 bgId;
+    u8 paintedHighlight;
+    u8 highlight;
+    u8 blinkHighlight;
+    u8 blinkTimer;
+    u8 bellRollTimer;
+    u8 pictureIndex;
     u8 unk_15;
-    u8 unk_16[0x1c];
-    u16 unk_32;
+    u8 palette[0x1c];
+    u16 bellsColor;
 };
 
 struct Unk_ov094_022923a4_Pad {
@@ -43,18 +43,18 @@ struct Unk_ov094_02292d6c_Rec {
 
 struct InventoryBg {
     /* 0x000 */ u32 unk_00;
-    /* 0x004 */ u8 unk_04[0x4];
-    /* 0x008 */ u16 unk_08;
+    /* 0x004 */ u8 bellStep[0x4];
+    /* 0x008 */ u16 dirtyFlags;
     /* 0x00a */ u8 unk_0a[4];
-    /* 0x00e */ u8 unk_0e;
-    /* 0x00f */ u8 unk_0f;
-    /* 0x010 */ u8 unk_10;
+    /* 0x00e */ u8 bgId;
+    /* 0x00f */ u8 paintedHighlight;
+    /* 0x010 */ u8 highlight;
     /* 0x011 */ u8 unk_11[3];
-    /* 0x014 */ u8 unk_14;
+    /* 0x014 */ u8 pictureIndex;
     /* 0x015 */ u8 unk_15[0x23];
-    /* 0x038 */ u8 unk_38[0xa8];
-    /* 0x0e0 */ u8 unk_e0[0x80];
-    /* 0x160 */ u8 unk_160[0x24];
+    /* 0x038 */ u8 vramTasks[0xa8];
+    /* 0x0e0 */ u8 textWindows[0x80];
+    /* 0x160 */ u8 screenData[0x24];
     /* 0x184 */ u8 unk_184[0x808];
     /* 0x98c */ Unk_ov094_02292d6c_Obj38 unk_98c[3];
     /* 0xa34 */ u16 *unk_a34;
@@ -79,8 +79,8 @@ typedef Unk_ov094_02292d6c_Rec Rec;
 void operator delete(void *p);
 
 struct ItemIconCache {
-    u8 unk_04[0x800];
-    u8 unk_804;
+    u8 iconChars[0x800];
+    u8 loadedPage;
 
     ItemIconCache();
     virtual ~ItemIconCache();
@@ -90,21 +90,21 @@ struct ItemIconCache {
 };
 
 struct InventoryItemGrid {
-    u8 unk_04[0x180];
-    ItemIconCache unk_184;
-    u8 unk_98c[0xa8];
-    u16 *unk_a34;
-    u8 unk_a38[8];
-    u8 unk_a40[8];
-    u8 unk_a48[8];
-    u32 unk_a50;
-    u8 unk_a54[2];
-    u8 unk_a56;
-    u8 unk_a57;
-    u8 unk_a58;
-    u8 unk_a59;
+    u8 iconUploadChars[0x180];
+    ItemIconCache iconCache;
+    u8 iconUploadTasks[0xa8];
+    u16 *boxItems;
+    u8 occupiedBits[8];
+    u8 markedBits[8];
+    u8 disabledBits[8];
+    u32 objPriority;
+    u8 presentItem[2];
+    u8 cursorSlot;
+    u8 cursorLiftTimer;
+    u8 numIconUploads;
+    u8 heldScale;
     u8 unk_a5a[2];
-    u8 unk_a5c;
+    u8 showHeldFocus;
 
     InventoryItemGrid();
     virtual ~InventoryItemGrid();
@@ -112,19 +112,19 @@ struct InventoryItemGrid {
 
 struct Unk_ov094_02293c04_Rec {
     u8 unk_00[0x26];
-    volatile u8 unk_26;
-    u8 unk_27;
+    volatile u8 popTimer;
+    u8 heldScale;
 };
 
 struct Unk_ov094_02293ca0_Obj {
     s32 unk_00;
-    u8 *volatile unk_04;
-    u32 unk_08[2];
+    u8 *volatile letterArray;
+    u32 occupiedBits[2];
 };
 
 struct Unk_ov094_022937e4_Ent {
     s32 unk_00;
-    u32 unk_04;
+    u32 attr2;
 };
 struct Unk_ov094_02294bb4_Bits {
     u32 pad;
@@ -132,7 +132,7 @@ struct Unk_ov094_02294bb4_Bits {
 };
 
 struct Unk_ov094_Bits8 {
-    u32 unk_00[2];
+    u32 words[2];
 };
 
 // Vtable 0x02294bd4
@@ -173,15 +173,15 @@ public:
     void updateCursorLift();
     void init(s32 x);
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ Unk_ov094_Bits8 unk_08;
-    /* 0x10 */ Unk_ov094_Bits8 unk_10;
-    /* 0x18 */ Unk_ov094_Bits8 unk_18;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ u8 unk_24;
-    /* 0x25 */ u8 unk_25;
-    /* 0x26 */ u8 unk_26;
-    /* 0x27 */ u8 unk_27;
+    /* 0x04 */ u8 *letterArray;
+    /* 0x08 */ Unk_ov094_Bits8 occupiedBits;
+    /* 0x10 */ Unk_ov094_Bits8 markedBits;
+    /* 0x18 */ Unk_ov094_Bits8 highlightedBits;
+    /* 0x20 */ s32 objPriority;
+    /* 0x24 */ u8 cursorSlot;
+    /* 0x25 */ u8 cursorLiftTimer;
+    /* 0x26 */ u8 popTimer;
+    /* 0x27 */ u8 heldScale;
 };
 
 // symbols.txt names of main functions (called with the object first)
@@ -316,8 +316,8 @@ extern "C" {
 void InventoryBg_LoadBg(S *s, s32 flag);
 void InventoryBg_Load(S *s, s32 flag);
 S *_ZN11InventoryBgC1Ev(S *s) {
-    u8 *p = s->unk_38;
-    u8 *e = s->unk_e0;
+    u8 *p = s->vramTasks;
+    u8 *e = s->textWindows;
     do {
         func_020b85f8(p);
         p += 0x38;
@@ -327,7 +327,7 @@ S *_ZN11InventoryBgC1Ev(S *s) {
 }
 
 S *_ZN11InventoryBgD1Ev(S *s) {
-    func_021355f0(s->unk_e0, 2, 0x40, (void *)func_0206fca8);
+    func_021355f0(s->textWindows, 2, 0x40, (void *)func_0206fca8);
     return s;
 }
 
@@ -491,12 +491,12 @@ static inline void Unk_ov094_SetName(Unk_ov094_02294bb4_Bits *o, s32 name) {
 extern "C" u8 sInventoryBgSprite[8] = {0xf8, 0x00, 0xc3, 0x01, 0xfa, 0x61, 0xff, 0xff};
 
 void InventoryBg_Init(S *s, u32 v) {
-    s->unk_0e = v;
-    s->unk_08 = 0;
+    s->bgId = v;
+    s->dirtyFlags = 0;
     InventoryBg_ResetBells(s);
-    s->unk_0f = 2;
-    s->unk_10 = 2;
-    s->unk_14 = 8;
+    s->paintedHighlight = 2;
+    s->highlight = 2;
+    s->pictureIndex = 8;
 }
 
 void InventoryBg_Load(S *s, s32 flag) {
@@ -506,25 +506,25 @@ void InventoryBg_Load(S *s, s32 flag) {
 
 void InventoryBg_LoadBg(S *s, s32 flag) {
     u32 h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile(data_ov094_0229499c, h, s->unk_0e, 0, 1, 0xd);
-    File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->unk_160, 0x800);
-    Gfx2d_LoadScreen(s->unk_160, s->unk_0e, 0x800, 0);
-    Gfx2d_LoadCharFile(data_ov094_022949f8, h, s->unk_0e, 0, 0x10, 0xff);
-    Gfx2d_LoadCharFile(data_ov094_02294a14, h, s->unk_0e, 0x100, 0x100, 0x1ff);
+    Gfx2d_LoadPaletteFile(data_ov094_0229499c, h, s->bgId, 0, 1, 0xd);
+    File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->screenData, 0x800);
+    Gfx2d_LoadScreen(s->screenData, s->bgId, 0x800, 0);
+    Gfx2d_LoadCharFile(data_ov094_022949f8, h, s->bgId, 0, 0x10, 0xff);
+    Gfx2d_LoadCharFile(data_ov094_02294a14, h, s->bgId, 0x100, 0x100, 0x1ff);
 }
 
 void InventoryBg_LoadGraphics(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    Gfx2d_LoadCharFile(data_ov094_02294928, gCurrentHeap, p->unk_0e, 0x200, 0x200, 0x2ff);
+    Gfx2d_LoadCharFile(data_ov094_02294928, gCurrentHeap, p->bgId, 0x200, 0x200, 0x2ff);
     InventoryBg_SetupTextWindows(p);
     InventoryBg_ResetBells(p);
     InventoryBg_LoadPictureForHeldItem(p);
-    File_LoadToBuffer(data_ov094_02294944, p->unk_16, 0x20);
-    p->unk_0a = p->unk_32;
-    File_LoadToBuffer(data_ov094_02294960, p->unk_16, 0x20);
-    p->unk_0c = p->unk_32;
-    File_LoadToBuffer(data_ov094_0229497c, p->unk_16, 0x20);
+    File_LoadToBuffer(data_ov094_02294944, p->palette, 0x20);
+    p->bellsColorA = p->bellsColor;
+    File_LoadToBuffer(data_ov094_02294960, p->palette, 0x20);
+    p->bellsColorB = p->bellsColor;
+    File_LoadToBuffer(data_ov094_0229497c, p->palette, 0x20);
 }
 
 void InventoryBg_SetupTextWindows(void *o)
@@ -537,12 +537,12 @@ void InventoryBg_SetupTextWindows(void *o)
     func_02063888(buf);
     TownId_GetNameString(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
-    LabelString_createLabel((u8 *)p + 0xe0, p->unk_0e, 0x11, 0xa, 0xf, 0xc, 0);
+    LabelString_createLabel((u8 *)p + 0xe0, p->bgId, 0x11, 0xa, 0xf, 0xc, 0);
     String_Load2dMenu((u8 *)p + 0xe0, 0x66);
     LabelString_redrawAligned((u8 *)p + 0xe0, 1, 0);
     func_02094030(buf2);
     PlayerId_getNameString(r, buf2);
-    LabelString_createLabel((u8 *)p + 0x120, p->unk_0e, 0x25, 8, 0xf, 0xc, 0);
+    LabelString_createLabel((u8 *)p + 0x120, p->bgId, 0x25, 8, 0xf, 0xc, 0);
     MsgString_copy((u8 *)p + 0x120, buf2);
     LabelString_redrawAligned((u8 *)p + 0x120, 1, 0);
     func_02094018(buf2);
@@ -577,7 +577,7 @@ void InventoryBg_Exit(void *o)
 {
     InventoryBg_CancelUploads(o);
     InventoryBg_ClearTextWindows(o);
-    if (((Unk_ov094_02292360_Obj *)o)->unk_13 != 0) {
+    if (((Unk_ov094_02292360_Obj *)o)->bellRollTimer != 0) {
         Snd_StopSe(0x2d, 1);
     }
 }
@@ -604,7 +604,7 @@ void InventoryBg_UploadScreen(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
     if (InventoryBg_IsDirty(p, 1)) {
-        if (BgVramTask_requestScreen((u8 *)p + 0x38, (u8 *)p + 0x160, p->unk_0e, 0x800, 0)) {
+        if (BgVramTask_requestScreen((u8 *)p + 0x38, (u8 *)p + 0x160, p->bgId, 0x800, 0)) {
             InventoryBg_ClearDirty(p, 1);
         }
     }
@@ -666,7 +666,7 @@ void InventoryBg_LoadPicture(void *o, s32 a, s32 b)
         func_020639e8(buf, data_ov094_022948a4, a);
     }
     File_LoadToBuffer(buf, (u8 *)p + 0x960, 0xc80);
-    p->unk_14 = a;
+    p->pictureIndex = a;
     InventoryBg_SetDirty(p, 4);
 }
 
@@ -674,7 +674,7 @@ void InventoryBg_UploadPicture(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
     if (InventoryBg_IsDirty(p, 4)) {
-        if (BgVramTask_requestChars((u8 *)p + 0x70, (u8 *)p + 0x960, p->unk_0e, 0x35, 0x35, 0x98)) {
+        if (BgVramTask_requestChars((u8 *)p + 0x70, (u8 *)p + 0x960, p->bgId, 0x35, 0x35, 0x98)) {
             InventoryBg_ClearDirty(p, 4);
         }
     }
@@ -697,18 +697,18 @@ void InventoryBg_DrawSprite(s32 a, void *o)
 void InventoryBg_StartBlink(void *o, u32 v)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    p->unk_11 = v;
-    p->unk_12 = 14;
+    p->blinkHighlight = v;
+    p->blinkTimer = 14;
 }
 
 BOOL InventoryBg_UpdateBlink(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    if (p->unk_12 != 0) {
-        p->unk_12 = p->unk_12 - 1;
-        switch (p->unk_12 % 5) {
+    if (p->blinkTimer != 0) {
+        p->blinkTimer = p->blinkTimer - 1;
+        switch (p->blinkTimer % 5) {
         case 3:
-            InventoryBg_SetHighlight(p, p->unk_11);
+            InventoryBg_SetHighlight(p, p->blinkHighlight);
             break;
         case 0:
             InventoryBg_ResetHighlight(p);
@@ -723,7 +723,7 @@ zero:
 
 void InventoryBg_StopBlink(void *o)
 {
-    ((Unk_ov094_02292360_Obj *)o)->unk_12 = 0;
+    ((Unk_ov094_02292360_Obj *)o)->blinkTimer = 0;
     InventoryBg_ResetHighlight(o);
 }
 
@@ -731,7 +731,7 @@ void InventoryBg_StartBellRoll(void *o, u32 v)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
     s32 t = InventoryBg_GetTotalBells();
-    s32 c = p->unk_00;
+    s32 c = p->shownBells;
     if (t != c) {
         s32 d;
         if (t > c) {
@@ -740,15 +740,15 @@ void InventoryBg_StartBellRoll(void *o, u32 v)
             d = c - t;
         }
         if (d < 30) {
-            p->unk_13 = 1;
+            p->bellRollTimer = 1;
         } else {
-            p->unk_13 = 14;
-            p->unk_04 = d / 13;
-            if (p->unk_04 % 5 == 0) {
-                p->unk_04 = p->unk_04 - 1;
+            p->bellRollTimer = 14;
+            p->bellStep = d / 13;
+            if (p->bellStep % 5 == 0) {
+                p->bellStep = p->bellStep - 1;
             }
-            if (p->unk_04 <= 1) {
-                p->unk_13 = 1;
+            if (p->bellStep <= 1) {
+                p->bellRollTimer = 1;
             }
             InventoryBg_SetBellsPanelMode(p, v);
             func_02004008(0x2d);
@@ -782,11 +782,11 @@ void InventoryBg_SetBellsPanelMode(void *o, u32 n)
     switch (n) {
     case 0:
     case 1:
-        p->unk_32 = p->unk_0a;
+        p->bellsColor = p->bellsColorA;
         break;
     case 2:
     case 3:
-        p->unk_32 = p->unk_0c;
+        p->bellsColor = p->bellsColorB;
         break;
     }
     InventoryBg_SetDirty(p, 1);
@@ -800,8 +800,8 @@ s32 InventoryBg_GetTotalBells()
 void InventoryBg_ResetBells(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    p->unk_00 = InventoryBg_GetTotalBells();
-    p->unk_13 = 0;
+    p->shownBells = InventoryBg_GetTotalBells();
+    p->bellRollTimer = 0;
     InventoryBg_SetDirty(p, 2);
 }
 
@@ -809,25 +809,25 @@ void InventoryBg_UpdateBells(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
     s32 t = InventoryBg_GetTotalBells();
-    if (p->unk_13 != 0) {
-        p->unk_13 = p->unk_13 - 1;
-        if (p->unk_13 == 0) {
-            p->unk_00 = t;
+    if (p->bellRollTimer != 0) {
+        p->bellRollTimer = p->bellRollTimer - 1;
+        if (p->bellRollTimer == 0) {
+            p->shownBells = t;
             InventoryBg_SetBellsPanelMode(p, 0);
             Snd_StopSe(0x2d, 1);
             Snd_PlaySe(0x3e);
         } else {
-            s32 c = p->unk_00;
+            s32 c = p->shownBells;
             if (c < t) {
-                p->unk_00 = c + p->unk_04;
+                p->shownBells = c + p->bellStep;
             } else {
-                p->unk_00 = c - p->unk_04;
+                p->shownBells = c - p->bellStep;
             }
         }
         InventoryBg_SetDirty(p, 2);
     }
     if (InventoryBg_IsDirty(p, 2)) {
-        s32 v = p->unk_00;
+        s32 v = p->shownBells;
         InventoryBg_SetDirty(p, 1);
         u16 *q = (u16 *)((u8 *)p + 0x3f6);
         s32 i;
@@ -862,11 +862,11 @@ BOOL InvItem_IsTurnipFishOrInsect(u32 v)
 void InventoryBg_UpdateHighlight(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    u32 a = p->unk_10;
-    if (a != p->unk_0f) {
-        p->unk_0f = a;
+    u32 a = p->highlight;
+    if (a != p->paintedHighlight) {
+        p->paintedHighlight = a;
         InventoryBg_PaintNormal(p);
-        u32 b = p->unk_0f;
+        u32 b = p->paintedHighlight;
         switch (b) {
         case 0:
             InventoryBg_PaintHighlight0(p);
@@ -880,12 +880,12 @@ void InventoryBg_UpdateHighlight(void *o)
 
 void InventoryBg_SetHighlight(void *o, u32 v)
 {
-    ((Unk_ov094_02292360_Obj *)o)->unk_10 = v;
+    ((Unk_ov094_02292360_Obj *)o)->highlight = v;
 }
 
 void InventoryBg_ResetHighlight(void *o)
 {
-    ((Unk_ov094_02292360_Obj *)o)->unk_10 = 2;
+    ((Unk_ov094_02292360_Obj *)o)->highlight = 2;
 }
 
 BOOL InvItem_IsDeliveryItem(u32 v)
@@ -945,7 +945,7 @@ void Inventory_PlayPickUpSe()
 s32 InventoryBg_IsDirty(void *o, u32 m)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    if (p->unk_08 & m) {
+    if (p->dirtyFlags & m) {
         return TRUE;
     }
     return FALSE;
@@ -954,11 +954,11 @@ s32 InventoryBg_IsDirty(void *o, u32 m)
 void InventoryBg_SetDirty(void *o, u32 m)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    p->unk_08 = p->unk_08 | m;
+    p->dirtyFlags = p->dirtyFlags | m;
 }
 
 void InventoryBg_ClearDirty(void *o, u32 m)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    p->unk_08 = p->unk_08 & ~m;
+    p->dirtyFlags = p->dirtyFlags & ~m;
 }

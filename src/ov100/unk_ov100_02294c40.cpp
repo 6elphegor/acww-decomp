@@ -175,7 +175,7 @@ public:
     void init(s32, s32, const char *);
     u32 unk_00[0x2f8 / 4];
     u8 unk_2f8;
-    u8 unk_2f9[7];
+    u8 choiceValues[7];
 };
 
 class MenuErrorMessage {
@@ -234,15 +234,15 @@ public:
     void setPhase(u8);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class CommManager {
@@ -318,7 +318,7 @@ typedef void (ShopSellMenu::*Unk_ov100_02297778_Fn)();
 class ShopSellMenu : public MenuProc {
 public:
     ShopSellMenu()
-        : unk_94(), unk_cc(), unk_b2c(), unk_b54(), unk_2134(), unk_21f4(), unk_220c(), unk_2270(), unk_2570(), unk_2678() {}
+        : vramTask(), itemGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), choiceMenu(), errorMessage(), textLabels() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
@@ -384,40 +384,40 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ BgVramTaskPair unk_94[1];
-    /* 0xcc */ InventoryItemGrid unk_cc;
-    /* 0xb2c */ LetterGrid unk_b2c;
-    /* 0xb54 */ InventoryBg unk_b54;
-    /* 0x2134 */ TouchPromptBalloon unk_2134;
-    /* 0x21f4 */ CursorMotion unk_21f4;
-    /* 0x220c */ MenuCursorBuf0 unk_220c;
-    /* 0x2270 */ PopupChoiceMenu unk_2270;
-    /* 0x2570 */ MenuErrorMessage unk_2570;
-    /* 0x2678 */ LabelString unk_2678[2];
-    /* 0x26f8 */ u32 unk_26f8;
-    /* 0x26fc */ s32 unk_26fc;
-    /* 0x2700 */ s32 unk_2700;
-    /* 0x2704 */ s32 unk_2704;
-    /* 0x2708 */ s32 unk_2708;
-    /* 0x270c */ s32 unk_270c;
-    /* 0x2710 */ s32 unk_2710;
-    /* 0x2714 */ u16 unk_2714[15];
-    /* 0x2732 */ u16 unk_2732[15];
-    /* 0x2750 */ u16 unk_2750;
-    /* 0x2752 */ s16 unk_2752;
-    /* 0x2754 */ u8 unk_2754;
-    /* 0x2755 */ u8 unk_2755;
-    /* 0x2756 */ u8 unk_2756;
-    /* 0x2757 */ u8 unk_2757;
-    /* 0x2758 */ u8 unk_2758;
-    /* 0x2759 */ u8 unk_2759;
+    /* 0x94 */ BgVramTaskPair vramTask[1];
+    /* 0xcc */ InventoryItemGrid itemGrid;
+    /* 0xb2c */ LetterGrid letterGrid;
+    /* 0xb54 */ InventoryBg inventoryBg;
+    /* 0x2134 */ TouchPromptBalloon nameBalloon;
+    /* 0x21f4 */ CursorMotion flyMotion;
+    /* 0x220c */ MenuCursorBuf0 cursor;
+    /* 0x2270 */ PopupChoiceMenu choiceMenu;
+    /* 0x2570 */ MenuErrorMessage errorMessage;
+    /* 0x2678 */ LabelString textLabels[2];
+    /* 0x26f8 */ u32 stateFlags;
+    /* 0x26fc */ s32 pocketsSlideY;
+    /* 0x2700 */ s32 boxSlideY;
+    /* 0x2704 */ s32 grabOffsetX;
+    /* 0x2708 */ s32 grabOffsetY;
+    /* 0x270c */ s32 heldX;
+    /* 0x2710 */ s32 heldY;
+    /* 0x2714 */ u16 boxItems[15];
+    /* 0x2732 */ u16 initialBoxItems[15];
+    /* 0x2750 */ u16 heldItem;
+    /* 0x2752 */ s16 sendSeq;
+    /* 0x2754 */ u8 heldItemFlags;
+    /* 0x2755 */ u8 heldKind;
+    /* 0x2756 */ u8 touchedSlot;
+    /* 0x2757 */ u8 balloonSlot;
+    /* 0x2758 */ u8 pickUpSlot;
+    /* 0x2759 */ u8 cursorSlot;
     /* 0x275a */ u8 unk_275a;
-    /* 0x275b */ u8 unk_275b;
-    /* 0x275c */ u8 unk_275c;
-    /* 0x275d */ u8 unk_275d;
-    /* 0x275e */ u8 unk_275e;
-    /* 0x275f */ u8 unk_275f;
-    /* 0x2760 */ u8 unk_2760;
+    /* 0x275b */ u8 actionSlot;
+    /* 0x275c */ u8 returnState;
+    /* 0x275d */ u8 chosenAction;
+    /* 0x275e */ u8 choiceRow;
+    /* 0x275f */ u8 numTextLabels;
+    /* 0x2760 */ u8 delayTimer;
 };
 
 typedef ShopSellMenu S;
@@ -542,18 +542,18 @@ BOOL ShopSellMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_2134.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_220c)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     ShopSellMenu_DrawHeldItem(this);
     if (testFlags(0x80)) {
-        InventoryItemGrid_DrawBox(&unk_cc, 0, unk_2700);
+        InventoryItemGrid_DrawBox(&itemGrid, 0, boxSlideY);
     }
     if (testFlags(2)) {
-        InventoryItemGrid_DrawPockets(&unk_cc, 0, unk_26fc);
-        ((LetterGrid *)&unk_b2c)->drawPocketLetters(0, unk_26fc);
-        InventoryBg_DrawSprite(&unk_b54, unk_26fc);
+        InventoryItemGrid_DrawPockets(&itemGrid, 0, pocketsSlideY);
+        ((LetterGrid *)&letterGrid)->drawPocketLetters(0, pocketsSlideY);
+        InventoryBg_DrawSprite(&inventoryBg, pocketsSlideY);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -569,7 +569,7 @@ BOOL ShopSellMenu::execTransition() {
         &ShopSellMenu::transitionAct04, &ShopSellMenu::transitionAct05,
         &ShopSellMenu::transitionAct06};
     ShopSellMenu_PreStateUpdate(this);
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     ShopSellMenu_PostStateUpdate(this);
     return TRUE;
 }
@@ -587,7 +587,7 @@ void ShopSellMenu::runMainState() {
         &ShopSellMenu::mainAct10, &ShopSellMenu::mainAct11,
         &ShopSellMenu::mainAct12, &ShopSellMenu::mainAct13,
         &ShopSellMenu::mainAct14, &ShopSellMenu::mainAct15};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL ShopSellMenu::execMain() {
@@ -614,24 +614,24 @@ void ShopSellMenu::transitionAct00() {
 
 void ShopSellMenu::transitionAct01() {
     ShopSellMenu_LoadObjGraphics(this);
-    InventoryItemGrid_LoadPockets(&unk_cc);
-    InventoryItemGrid_LoadBox(&unk_cc, unk_2714);
+    InventoryItemGrid_LoadPockets(&itemGrid);
+    InventoryItemGrid_LoadBox(&itemGrid, boxItems);
     ShopSellMenu_DisableRejectedItems(this);
-    LetterGrid_LoadPocketLetters(&unk_b2c);
-    ((LetterGrid *)&unk_b2c)->highlightLetterKinds(0xf);
+    LetterGrid_LoadPocketLetters(&letterGrid);
+    ((LetterGrid *)&letterGrid)->highlightLetterKinds(0xf);
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
     setTransitionState(2);
     setFlags(1);
     setFlags(2);
-    unk_26fc = getSlideOffsetY();
+    pocketsSlideY = getSlideOffsetY();
 }
 
 void ShopSellMenu::transitionAct02() {
     BOOL b = stepSlideIn(0);
     applySlideOffset(6, 0, 0);
-    unk_26fc = getSlideOffsetY();
+    pocketsSlideY = getSlideOffsetY();
     if (b) {
         ShopSellMenu_LoadTopBg(this);
         beginSubSlideIn(2, 0, 1, 0x30);
@@ -639,7 +639,7 @@ void ShopSellMenu::transitionAct02() {
         setFlags(0x80);
         Gfx2d_ShowLayer(4);
         applySlideOffset(4, 0, 0);
-        unk_2700 = getSlideOffsetY();
+        boxSlideY = getSlideOffsetY();
         setTransitionState(3);
     }
 }
@@ -651,19 +651,19 @@ void ShopSellMenu::transitionAct03() {
         ShopSellMenu_ResumeInput(s);
     }
     s->applySlideOffset(4, 0, 0);
-    s->unk_2700 = s->getSlideOffsetY();
+    s->boxSlideY = s->getSlideOffsetY();
 }
 
 void ShopSellMenu::transitionAct04() {
     S *const s = this;
     if (s->isResultSent()) {
-        ((TouchPromptBalloon *)&s->unk_2134)->hide(1);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
         ShopSellMenu_HideCursor(s);
         ((MenuLauncher *)ProcBase_GetParent(s))->setNextRequest(0x44, 1);
         s->beginSubSlideOut(2, 4, 1, 0x30);
         s->setSlideExtent(0x80);
         s->applySlideOffset(4, 0, 0);
-        s->unk_2700 = s->getSlideOffsetY();
+        s->boxSlideY = s->getSlideOffsetY();
         s->setTransitionState(5);
     }
 }
@@ -679,7 +679,7 @@ void ShopSellMenu::transitionAct05() {
         s->transitionAct06();
     } else {
         s->applySlideOffset(4, 0, 0);
-        s->unk_2700 = s->getSlideOffsetY();
+        s->boxSlideY = s->getSlideOffsetY();
     }
 }
 
@@ -693,51 +693,51 @@ void ShopSellMenu::transitionAct06() {
     } else {
         s->applySlideOffset(6, 0, 0);
     }
-    s->unk_26fc = s->getSlideOffsetY();
+    s->pocketsSlideY = s->getSlideOffsetY();
 }
 
 extern "C" void ShopSellMenu_Init(S *s) {
     s32 i;
-    s->unk_26f8 = 0;
-    InventoryItemGrid_Init(&s->unk_cc, 1);
-    ((LetterGrid *)&s->unk_b2c)->init(2);
-    InventoryBg_Init(&s->unk_b54, 6);
-    s->unk_2757 = 0x20;
-    ((CursorMotion *)&s->unk_21f4)->reset();
-    s->unk_2755 = 0;
-    s->unk_2759 = 0;
-    ((PopupChoiceMenu *)&s->unk_2270)->init(3, 1, 0);
-    s->unk_275f = 0;
+    s->stateFlags = 0;
+    InventoryItemGrid_Init(&s->itemGrid, 1);
+    ((LetterGrid *)&s->letterGrid)->init(2);
+    InventoryBg_Init(&s->inventoryBg, 6);
+    s->balloonSlot = 0x20;
+    ((CursorMotion *)&s->flyMotion)->reset();
+    s->heldKind = 0;
+    s->cursorSlot = 0;
+    ((PopupChoiceMenu *)&s->choiceMenu)->init(3, 1, 0);
+    s->numTextLabels = 0;
     switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
         for (i = 0; i < 15; i++) {
-            s->unk_2714[i] = 0xfff1;
+            s->boxItems[i] = 0xfff1;
         }
         s->setFlags(0x200);
         break;
     case 0x1f:
-        MI_CpuCopy8(gSaveLostAndFound, s->unk_2714, 0x1e);
+        MI_CpuCopy8(gSaveLostAndFound, s->boxItems, 0x1e);
         break;
     case 0x20:
-        MI_CpuCopy8(gSaveRecycleBin, s->unk_2714, 0x1e);
+        MI_CpuCopy8(gSaveRecycleBin, s->boxItems, 0x1e);
         break;
     }
-    MI_CpuCopy8(s->unk_2714, s->unk_2732, 0x1e);
+    MI_CpuCopy8(s->boxItems, s->initialBoxItems, 0x1e);
     MenuCtrl_BackupPockets();
 }
 
 extern "C" void ShopSellMenu_Exit(S *s) {
     ShopSellMenu_CancelUploads(s);
-    InventoryBg_Exit(&s->unk_b54);
-    InventoryItemGrid_Exit(&s->unk_cc);
-    PopupChoice_ForceClose(&s->unk_2270);
+    InventoryBg_Exit(&s->inventoryBg);
+    InventoryItemGrid_Exit(&s->itemGrid);
+    PopupChoice_ForceClose(&s->choiceMenu);
     s->resetTextLabels();
 }
 
 extern "C" void ShopSellMenu_PreInputUpdate(S *s) {
     ShopSellMenu_PreStateUpdate(s);
-    s->unk_220c.vfunc_0c();
+    s->cursor.vfunc_0c();
 }
 
 extern "C" void ShopSellMenu_PostInputUpdate(S *s) {
@@ -746,16 +746,16 @@ extern "C" void ShopSellMenu_PostInputUpdate(S *s) {
 
 extern "C" void ShopSellMenu_PreStateUpdate(S *s) {
     ShopSellMenu_CancelUploads(s);
-    InventoryBg_PreUpdate(&s->unk_b54);
-    InventoryItemGrid_PreUpdate(&s->unk_cc);
-    ((LetterGrid *)&s->unk_b2c)->updateCursorLift();
+    InventoryBg_PreUpdate(&s->inventoryBg);
+    InventoryItemGrid_PreUpdate(&s->itemGrid);
+    ((LetterGrid *)&s->letterGrid)->updateCursorLift();
     s->resetTextLabels();
 }
 
 extern "C" void ShopSellMenu_PostStateUpdate(S *s) {
-    PopupChoice_Update(&s->unk_2270);
-    InventoryBg_Update(&s->unk_b54);
-    if (((TouchPromptBalloon *)&s->unk_2134)->updatePrompt()) {
+    PopupChoice_Update(&s->choiceMenu);
+    InventoryBg_Update(&s->inventoryBg);
+    if (((TouchPromptBalloon *)&s->nameBalloon)->updatePrompt()) {
         ShopSellMenu_PlaceNameBalloon(s);
     }
 }
@@ -768,7 +768,7 @@ extern "C" void ShopSellMenu_SetupBgLayers(S *s) {
 }
 
 extern "C" void ShopSellMenu_LoadInventoryBg(S *s) {
-    InventoryBg_Load(&s->unk_b54, 0);
+    InventoryBg_Load(&s->inventoryBg, 0);
 }
 
 extern "C" void ShopSellMenu_LoadTopBg(S *s) {
@@ -807,7 +807,7 @@ extern "C" void ShopSellMenu_LoadTopBg(S *s) {
 }
 
 extern "C" void ShopSellMenu_LoadObjGraphics(S *s) {
-    InventoryBg_LoadObjGraphics(&s->unk_b54);
+    InventoryBg_LoadObjGraphics(&s->inventoryBg);
 }
 
 void ShopSellMenu::mainAct00() {
@@ -836,11 +836,11 @@ void ShopSellMenu::mainAct01() {
     S *const s = this;
     if (gTouchHeld == 0) {
         s->setMainState(0);
-        ((TouchPromptBalloon *)&s->unk_2134)->setAutoCloseTimer(0x3c);
+        ((TouchPromptBalloon *)&s->nameBalloon)->setAutoCloseTimer(0x3c);
     } else if (s->testFlags(4) && ShopSellMenu_HasTouchMoved(s)) {
-        ShopSellMenu_PickUpWithTouch(s, s->unk_2756);
+        ShopSellMenu_PickUpWithTouch(s, s->touchedSlot);
     } else {
-        ((TouchPromptBalloon *)&s->unk_2134)->commitOpen();
+        ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
     }
 }
 
@@ -850,10 +850,10 @@ void ShopSellMenu::mainAct02() {
         s->cancelChoiceList();
     } else {
         if (Unk_ov100_02296b58_Both()) {
-            s32 t = ((PopupChoiceMenuBody *)&s->unk_2270)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+            s32 t = ((PopupChoiceMenuBody *)&s->choiceMenu)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
             if (t >= 0) {
-                PopupChoice_DecideRow(&s->unk_2270, t, 1);
-                s->unk_275d = s->unk_2270.unk_2f9[t - 0];
+                PopupChoice_DecideRow(&s->choiceMenu, t, 1);
+                s->chosenAction = s->choiceMenu.choiceValues[t - 0];
                 s->setMainState(0x12);
             }
         }
@@ -864,11 +864,11 @@ void ShopSellMenu::mainAct03() {
     S *const s = this;
     ShopSellMenu_TrackTouch(s);
     ShopSellMenu_ClearMarks(s);
-    s32 x = s->unk_2710 + 8;
-    s32 t = ShopSellMenu_FindSlotAt(s, s->unk_270c + 8, x, 0);
+    s32 x = s->heldY + 8;
+    s32 t = ShopSellMenu_FindSlotAt(s, s->heldX + 8, x, 0);
     if (s->testFlags(0x200)) {
-        if ((ShopSellMenu_IsBoxSlot(s, t) && ShopSellMenu_IsPocketSlot(s, s->unk_2758))
-            || (ShopSellMenu_IsPocketSlot(s, t) && ShopSellMenu_IsBoxSlot(s, s->unk_2758))) {
+        if ((ShopSellMenu_IsBoxSlot(s, t) && ShopSellMenu_IsPocketSlot(s, s->pickUpSlot))
+            || (ShopSellMenu_IsPocketSlot(s, t) && ShopSellMenu_IsBoxSlot(s, s->pickUpSlot))) {
             if (ShopSellMenu_GetSlotItem(s, t) != 0xfff1) {
                 t = 0x20;
             }
@@ -877,11 +877,11 @@ void ShopSellMenu::mainAct03() {
     if (t != 0x20) {
         if (gTouchHeld == 0) {
             if (ShopSellMenu_IsSlotDisabled(s, t)) {
-                ShopSellMenu_FlyHeldToFreeSlot(s, s->unk_2758, x);
+                ShopSellMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
             } else {
                 s32 r = ShopSellMenu_DropHeldItem(s, t);
                 if (r == 0) {
-                    ShopSellMenu_FlyHeldToFreeSlot(s, s->unk_2758, x);
+                    ShopSellMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
                 } else {
                     Inventory_PlayPutDownSe(r);
                     ShopSellMenu_ResumeInput(s);
@@ -891,7 +891,7 @@ void ShopSellMenu::mainAct03() {
             ShopSellMenu_MarkSlot(s, t);
         }
     } else if (gTouchHeld == 0) {
-        ShopSellMenu_FlyHeldToFreeSlot(s, s->unk_2758, x);
+        ShopSellMenu_FlyHeldToFreeSlot(s, s->pickUpSlot, x);
     }
 }
 
@@ -899,32 +899,32 @@ void ShopSellMenu::mainAct04() {
     S *const s = this;
     if (s->checkSwitchToTouch()) {
         ShopSellMenu_StartTouchInput(s);
-        ((TouchPromptBalloon *)&s->unk_2134)->hide(1);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
     } else {
         s32 v = s->takeRepeatedKeys();
         if (s->moveCursorByPad((void *)v, 0)) {
             ShopSellMenu_UpdateNameBalloon(s);
             ShopSellMenu_MoveCursorToTarget(s);
-            ((TouchPromptBalloon *)&s->unk_2134)->hide(0);
+            ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
         } else {
-            if (ShopSellMenu_IsSlotDisabled(s, s->unk_2759)) goto tail;
+            if (ShopSellMenu_IsSlotDisabled(s, s->cursorSlot)) goto tail;
             {
                 u32 k = gPad[1];
                 if (k & 1) {
-                    if (ShopSellMenu_IsPocketSlot(s, s->unk_2759) || ShopSellMenu_IsBoxSlot(s, s->unk_2759)) {
-                        if (!ShopSellMenu_IsSlotEmpty(s, s->unk_2759)) {
+                    if (ShopSellMenu_IsPocketSlot(s, s->cursorSlot) || ShopSellMenu_IsBoxSlot(s, s->cursorSlot)) {
+                        if (!ShopSellMenu_IsSlotEmpty(s, s->cursorSlot)) {
                             s->startPickUp();
                         }
-                    } else if (ShopSellMenu_IsButtonSlot(s, s->unk_2759)) {
+                    } else if (ShopSellMenu_IsButtonSlot(s, s->cursorSlot)) {
                         s->pressCursor();
                     }
                 } else if (k & 0x800) {
-                    if (ShopSellMenu_IsPocketSlot(s, s->unk_2759) || ShopSellMenu_IsBoxSlot(s, s->unk_2759)) {
-                        if (!ShopSellMenu_IsSlotEmpty(s, s->unk_2759)) {
-                            s32 r = ShopSellMenu_IsPocketSlot(s, s->unk_2759) ? ShopSellMenu_FindFreeBoxSlot(s) : ShopSellMenu_FindFreePocket(s);
+                    if (ShopSellMenu_IsPocketSlot(s, s->cursorSlot) || ShopSellMenu_IsBoxSlot(s, s->cursorSlot)) {
+                        if (!ShopSellMenu_IsSlotEmpty(s, s->cursorSlot)) {
+                            s32 r = ShopSellMenu_IsPocketSlot(s, s->cursorSlot) ? ShopSellMenu_FindFreeBoxSlot(s) : ShopSellMenu_FindFreePocket(s);
                             if (r != 0x20) {
-                                ShopSellMenu_QuickMove(s, s->unk_2759, r);
-                                ((TouchPromptBalloon *)&s->unk_2134)->hide(1);
+                                ShopSellMenu_QuickMove(s, s->cursorSlot, r);
+                                ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
                             }
                         }
                     }
@@ -939,13 +939,13 @@ tail:
                 if (k & 2) {
                     ShopSellMenu_HideCursor(s);
                     s->cancel();
-                    ((TouchPromptBalloon *)&s->unk_2134)->hide(0);
+                    ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
                 } else if (k & 8) {
                     ShopSellMenu_HideCursor(s);
                     s->confirm();
-                    ((TouchPromptBalloon *)&s->unk_2134)->hide(0);
+                    ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
                 } else {
-                    ((TouchPromptBalloon *)&s->unk_2134)->commitOpen();
+                    ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
                 }
             }
         }
@@ -958,24 +958,24 @@ void ShopSellMenu::mainAct05() {
     if (s->moveCursorByPad((void *)v, 1)) {
         ShopSellMenu_UpdateNameBalloon(s);
         ShopSellMenu_MoveCursorToTarget(s);
-        ((TouchPromptBalloon *)&s->unk_2134)->hide(0);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
     } else {
         u32 k = gPad[1];
         if (k & 1) {
-            if (ShopSellMenu_IsPocketSlot(s, s->unk_2759) || ShopSellMenu_IsBoxSlot(s, s->unk_2759)) {
-                if (!ShopSellMenu_IsSlotDisabled(s, s->unk_2759)) {
-                    if (ShopSellMenu_IsSlotEmpty(s, s->unk_2759)) {
-                        s->startPutDown(s->unk_2759);
+            if (ShopSellMenu_IsPocketSlot(s, s->cursorSlot) || ShopSellMenu_IsBoxSlot(s, s->cursorSlot)) {
+                if (!ShopSellMenu_IsSlotDisabled(s, s->cursorSlot)) {
+                    if (ShopSellMenu_IsSlotEmpty(s, s->cursorSlot)) {
+                        s->startPutDown(s->cursorSlot);
                     } else {
-                        s->startExchange(s->unk_2759);
+                        s->startExchange(s->cursorSlot);
                     }
                 }
             }
         } else if (k & 2) {
-            s->startPutDown(s->unk_2758);
+            s->startPutDown(s->pickUpSlot);
         } else {
             ShopSellMenu_TrackCursor(s);
-            ((TouchPromptBalloon *)&s->unk_2134)->commitOpen();
+            ((TouchPromptBalloon *)&s->nameBalloon)->commitOpen();
         }
     }
 }
@@ -984,12 +984,12 @@ void ShopSellMenu::mainAct06() {
     S *const s = this;
     if (s->checkSwitchToTouch()) {
         s->cancelChoiceList();
-    } else if (PopupChoice_MoveCursor(&s->unk_2270, s->takeRepeatedKeys(), &s->unk_275e, 0)) {
+    } else if (PopupChoice_MoveCursor(&s->choiceMenu, s->takeRepeatedKeys(), &s->choiceRow, 0)) {
         ShopSellMenu_MoveCursorToChoice(s);
     } else {
         u32 k = gPad[1];
         if ((k & 1) != 0) {
-            ((MenuCursor *)&s->unk_220c)->setPosePress();
+            ((MenuCursor *)&s->cursor)->setPosePress();
             s->setMainState(7);
         } else if ((k & 2) != 0) {
             ShopSellMenu_PickCancelChoice(s);
@@ -999,19 +999,19 @@ void ShopSellMenu::mainAct06() {
 
 void ShopSellMenu::mainAct07() {
     S *const s = this;
-    if (((HandCursor *)&s->unk_220c)->isAnimDone()) {
-        PopupChoice_DecideRow(&s->unk_2270, s->unk_275e, 1);
-        s->unk_275d = s->unk_2270.unk_2f9[s->unk_275e];
+    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+        PopupChoice_DecideRow(&s->choiceMenu, s->choiceRow, 1);
+        s->chosenAction = s->choiceMenu.choiceValues[s->choiceRow];
         s->setMainState(0x12);
     }
 }
 
 void ShopSellMenu::updateCursorMove() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->unk_220c)->isMoving()) {
-        s->setMainState(s->unk_275c);
-        if ((u8)(s->unk_275c + 0xfc) <= 1) {
-            ShopSellMenu_SetCursorSlot(s, s->unk_2759);
+    if (!((MenuCursorBase *)&s->cursor)->isMoving()) {
+        s->setMainState(s->returnState);
+        if ((u8)(s->returnState + 0xfc) <= 1) {
+            ShopSellMenu_SetCursorSlot(s, s->cursorSlot);
         }
         s->runMainState();
     }
@@ -1020,8 +1020,8 @@ void ShopSellMenu::updateCursorMove() {
 
 void ShopSellMenu::updateCursorPress() {
     S *const s = this;
-    if (((HandCursor *)&s->unk_220c)->isAnimDone()) {
-        u32 t = s->unk_2759;
+    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+        u32 t = s->cursorSlot;
         if (t == 0x1e) {
             s->confirm();
         } else if (t == 0x1f) {
@@ -1034,7 +1034,7 @@ void ShopSellMenu::updateCursorPress() {
 
 void ShopSellMenu::updateCursorRelease() {
     S *const s = this;
-    if (((HandCursor *)&s->unk_220c)->isAnimDone()) {
+    if (((HandCursor *)&s->cursor)->isAnimDone()) {
         s->refreshCursor();
         s->setMainState(4);
     }
@@ -1042,25 +1042,25 @@ void ShopSellMenu::updateCursorRelease() {
 
 void ShopSellMenu::mainAct0B() {
     S *const s = this;
-    if (((MenuCursorBase *)&s->unk_220c)->func_ov002_02202928()) {
-        ShopSellMenu_PickUpWithHand(s, s->unk_2759);
+    if (((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
+        ShopSellMenu_PickUpWithHand(s, s->cursorSlot);
         s->setMainState(0xc);
     }
 }
 
 void ShopSellMenu::mainAct0C() {
     S *const s = this;
-    if (((HandCursor *)&s->unk_220c)->isAnimDone()) {
-        s->setMainState(s->unk_275c);
+    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+        s->setMainState(s->returnState);
     }
     ShopSellMenu_TrackCursor(s);
 }
 
 void ShopSellMenu::mainAct0D() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->unk_220c)->func_ov002_02202928()) {
-        u32 a = s->unk_275b;
-        if (s->unk_2759 == a) {
+    if (!((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
+        u32 a = s->actionSlot;
+        if (s->cursorSlot == a) {
             ShopSellMenu_DropHeldItem(s, a);
             ShopSellMenu_UpdateNameBalloon(s);
             s->setMainState(4);
@@ -1075,8 +1075,8 @@ void ShopSellMenu::mainAct0D() {
 
 void ShopSellMenu::mainAct0E() {
     S *const s = this;
-    if (!((MenuCursorBase *)&s->unk_220c)->func_ov002_022028fc()) {
-        ShopSellMenu_ExchangeHeldItem(s, s->unk_275b);
+    if (!((MenuCursorBase *)&s->cursor)->func_ov002_022028fc()) {
+        ShopSellMenu_ExchangeHeldItem(s, s->actionSlot);
         s->setFlags(0x40);
         s->setMainState(0xf);
         ShopSellMenu_UpdateNameBalloon(s);
@@ -1087,10 +1087,10 @@ void ShopSellMenu::mainAct0E() {
 
 void ShopSellMenu::mainAct0F() {
     S *const s = this;
-    if (((HandCursor *)&s->unk_220c)->isAnimDone()) {
-        s->setMainState(s->unk_275c);
+    if (((HandCursor *)&s->cursor)->isAnimDone()) {
+        s->setMainState(s->returnState);
     }
-    if (((MenuCursorBase *)&s->unk_220c)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&s->cursor)->func_ov002_02202928()) {
         if (s->testFlags(0x40)) {
             s->clearFlags(0x40);
             Inventory_PlayPickUpSe();
@@ -1101,8 +1101,8 @@ void ShopSellMenu::mainAct0F() {
 
 void ShopSellMenu::mainAct10() {
     S *const s = this;
-    if (((CursorMotion *)&s->unk_21f4)->update()) {
-        ShopSellMenu_ReleaseHeldItem(s, s->unk_2758);
+    if (((CursorMotion *)&s->flyMotion)->update()) {
+        ShopSellMenu_ReleaseHeldItem(s, s->pickUpSlot);
         ShopSellMenu_ResumeInput(s);
         Inventory_PlayPutDownSe();
     } else {
@@ -1112,7 +1112,7 @@ void ShopSellMenu::mainAct10() {
 
 void ShopSellMenu::mainAct11() {
     S *const s = this;
-    if (((PopupChoiceMenuBody *)&s->unk_2270)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&s->choiceMenu)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             ShopSellMenu_PlaceCursorOnFirstChoice(s);
             s->setMainState(6);
@@ -1124,9 +1124,9 @@ void ShopSellMenu::mainAct11() {
 
 void ShopSellMenu::mainAct12() {
     S *const s = this;
-    if (PopupChoice_TickDecideDelay(&s->unk_2270)) {
-        PopupChoice_Close(&s->unk_2270, 0);
-        if (((HandCursor *)&s->unk_220c)->getAnim()) {
+    if (PopupChoice_TickDecideDelay(&s->choiceMenu)) {
+        PopupChoice_Close(&s->choiceMenu, 0);
+        if (((HandCursor *)&s->cursor)->getAnim()) {
             ShopSellMenu_PlaceCursorAtTarget(s);
         }
         s->setMainState(0x13);
@@ -1135,27 +1135,27 @@ void ShopSellMenu::mainAct12() {
 
 void ShopSellMenu::mainAct13() {
     S *const s = this;
-    if (((PopupChoiceMenuBody *)&s->unk_2270)->isClosed()) {
+    if (((PopupChoiceMenuBody *)&s->choiceMenu)->isClosed()) {
         s->applyChoice();
     }
 }
 
 void ShopSellMenu::mainAct14() {
     S *const s = this;
-    if (((MenuErrorMessage *)&s->unk_2570)->update(0)) {
-        s->setMainState(s->unk_275c);
-        ((HandCursor *)&s->unk_220c)->enableObjWindow();
+    if (((MenuErrorMessage *)&s->errorMessage)->update(0)) {
+        s->setMainState(s->returnState);
+        ((HandCursor *)&s->cursor)->enableObjWindow();
     }
 }
 
 void ShopSellMenu::mainAct15() {
     S *const s = this;
-    if (s->unk_2760 != 0) {
-        s->unk_2760--;
+    if (s->delayTimer != 0) {
+        s->delayTimer--;
     } else {
-        s->unk_8c = 4;
+        s->transitionState = 4;
         s->setPhase(1);
-        ((TouchPromptBalloon *)&s->unk_2134)->hide(0);
+        ((TouchPromptBalloon *)&s->nameBalloon)->hide(0);
         ShopSellMenu_HideCursor(s);
     }
 }
@@ -1167,12 +1167,12 @@ extern "C" void ShopSellMenu_StartTouchInput(S *s) {
 }
 
 extern "C" void ShopSellMenu_StartButtonInput(S *s) {
-    s->unk_2757 = 0x20;
+    s->balloonSlot = 0x20;
     ShopSellMenu_ShowCursor(s);
     s->restartKeyRepeat();
     ShopSellMenu_UpdateNameBalloon(s);
     s->setMainState(4);
-    ShopSellMenu_SetCursorSlot(s, s->unk_2759);
+    ShopSellMenu_SetCursorSlot(s, s->cursorSlot);
 }
 
 extern "C" void ShopSellMenu_ResumeInput(S *s) {
@@ -1185,14 +1185,14 @@ extern "C" void ShopSellMenu_ResumeInput(S *s) {
 
 extern "C" void ShopSellMenu_TouchItem(S *s, u32 a) {
     u32 r6, r7;
-    s->unk_2756 = a;
+    s->touchedSlot = a;
     s->setMainState(1);
     r6 = gTouchCurX;
     r7 = gTouchCurY;
-    s->unk_2704 = ShopSellMenu_GetSlotX(s, s->unk_2756) - r6;
-    s->unk_2708 = ShopSellMenu_GetSlotY(s, s->unk_2756) - r7;
-    s->unk_2757 = a;
-    ((TouchPromptBalloon *)&s->unk_2134)->queueOpen();
+    s->grabOffsetX = ShopSellMenu_GetSlotX(s, s->touchedSlot) - r6;
+    s->grabOffsetY = ShopSellMenu_GetSlotY(s, s->touchedSlot) - r7;
+    s->balloonSlot = a;
+    ((TouchPromptBalloon *)&s->nameBalloon)->queueOpen();
     if (ShopSellMenu_IsSlotDisabled(s, a)) {
         s->clearFlags(4);
     } else {
@@ -1202,10 +1202,10 @@ extern "C" void ShopSellMenu_TouchItem(S *s, u32 a) {
 }
 
 extern "C" void ShopSellMenu_PickUpWithTouch(S *s, u32 a) {
-    s->unk_2758 = a;
-    ((TouchPromptBalloon *)&s->unk_2134)->hide(1);
+    s->pickUpSlot = a;
+    ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
     ShopSellMenu_PickUpItem(s, a);
-    if (s->unk_2755 == 1) {
+    if (s->heldKind == 1) {
         s->setMainState(3);
     }
     ShopSellMenu_TrackTouch(s);
@@ -1213,23 +1213,23 @@ extern "C" void ShopSellMenu_PickUpWithTouch(S *s, u32 a) {
 }
 
 extern "C" void ShopSellMenu_PickUpWithHand(S *s, u32 a) {
-    s->unk_2758 = a;
-    ((TouchPromptBalloon *)&s->unk_2134)->hide(1);
+    s->pickUpSlot = a;
+    ((TouchPromptBalloon *)&s->nameBalloon)->hide(1);
     ShopSellMenu_PickUpItem(s, a);
-    if (s->unk_2755 == 1) {
-        s->unk_275c = 5;
+    if (s->heldKind == 1) {
+        s->returnState = 5;
     }
     ShopSellMenu_TrackCursor(s);
     Inventory_PlayPickUpSe();
 }
 
 extern "C" void ShopSellMenu_StartFlyHeldItem(S *s, u32 a, u32 b) {
-    s->unk_2758 = a;
-    ((CursorMotion *)&s->unk_21f4)->setPos(s->unk_270c, s->unk_2710);
+    s->pickUpSlot = a;
+    ((CursorMotion *)&s->flyMotion)->setPos(s->heldX, s->heldY);
     u32 x = ShopSellMenu_GetSlotX(s, a);
     u32 y = ShopSellMenu_GetSlotY(s, a);
-    ((CursorMotion *)&s->unk_21f4)->startLinear(x, y, b);
-    ((CursorMotion *)&s->unk_21f4)->update();
+    ((CursorMotion *)&s->flyMotion)->startLinear(x, y, b);
+    ((CursorMotion *)&s->flyMotion)->update();
     ShopSellMenu_TrackFlyingItem(s);
     s->setMainState(0x10);
 }
@@ -1247,8 +1247,8 @@ extern "C" void ShopSellMenu_FlyHeldToFreeSlot(S *s, u32 a, s32 b) {
 
 extern "C" void ShopSellMenu_QuickMove(S *s, u32 a, u32 b) {
     ShopSellMenu_PickUpItem(s, a);
-    s->unk_270c = ShopSellMenu_GetSlotX(s, a);
-    s->unk_2710 = ShopSellMenu_GetSlotY(s, a);
+    s->heldX = ShopSellMenu_GetSlotX(s, a);
+    s->heldY = ShopSellMenu_GetSlotY(s, a);
     ShopSellMenu_StartFlyHeldItem(s, b, 4);
 }
 
@@ -1262,13 +1262,13 @@ extern "C" u32 ShopSellMenu_FindFreePocket(S *s) {
 extern "C" u32 ShopSellMenu_FindFreeBoxSlot(S *s) {
     s32 i;
     for (i = 0; i < 0xf; i++) {
-        if (s->unk_2714[i] == 0xfff1) return (u8)(i + 0xf);
+        if (s->boxItems[i] == 0xfff1) return (u8)(i + 0xf);
     }
     return 0x20;
 }
 
 extern "C" void ShopSellMenu_CancelUploads(S *s) {
-    ((BgVramTask *)s->unk_94)->cancel();
+    ((BgVramTask *)s->vramTask)->cancel();
 }
 
 extern "C" BOOL ShopSellMenu_IsPocketSlot(S *s, u32 a) {
@@ -1298,17 +1298,17 @@ extern "C" u32 ShopSellMenu_GridToPocketSlot(S *s, u32 a) {
 }
 
 extern "C" u32 ShopSellMenu_FindSlotAt(S *s, u32 a, u32 b, s32 c) {
-    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->unk_cc);
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&s->itemGrid);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(&s->unk_cc, t)) return 0x20;
+            if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x20;
         }
         return ShopSellMenu_GridToPocketSlot(s, t);
     }
-    t = InventoryItemGrid_FindBoxSlotAt(&s->unk_cc, a, b);
+    t = InventoryItemGrid_FindBoxSlotAt(&s->itemGrid, a, b);
     if (t != 0x23) {
         if (c != 0) {
-            if (InventoryItemGrid_IsSlotEmpty(&s->unk_cc, t)) return 0x20;
+            if (InventoryItemGrid_IsSlotEmpty(&s->itemGrid, t)) return 0x20;
         }
         return ShopSellMenu_GridToBoxSlot(s, t);
     }
@@ -1319,7 +1319,7 @@ extern "C" BOOL ShopSellMenu_DropHeldItem(S *s, u32 a) {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
         u32 t = ShopSellMenu_GetSlotItem(s, a);
         if (t != 0xfff1) {
-            ShopSellMenu_SetSlotItem(s, s->unk_2758, t, ShopSellMenu_GetSlotFlags(s, a));
+            ShopSellMenu_SetSlotItem(s, s->pickUpSlot, t, ShopSellMenu_GetSlotFlags(s, a));
         }
         ShopSellMenu_ReleaseHeldItem(s, a);
         return TRUE;
@@ -1330,8 +1330,8 @@ extern "C" BOOL ShopSellMenu_DropHeldItem(S *s, u32 a) {
 extern "C" void ShopSellMenu_SetSlotItem(S *s, u32 a, u32 b, u32 c) {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
         u32 t = ShopSellMenu_ToGridSlot(s, a);
-        InventoryItemGrid_SetSlotItem(&s->unk_cc, t, b, c);
-        InventoryItemGrid_RefreshSlot(&s->unk_cc, t);
+        InventoryItemGrid_SetSlotItem(&s->itemGrid, t, b, c);
+        InventoryItemGrid_RefreshSlot(&s->itemGrid, t);
     }
 }
 
@@ -1347,7 +1347,7 @@ extern "C" u32 ShopSellMenu_GridToBoxSlot(S *s, u32 a) {
 
 extern "C" u32 ShopSellMenu_GetSlotX(S *s, u32 a) {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotX(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotX(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     if (ShopSellMenu_IsButtonSlot(s, a)) return 0xc4;
     return 0;
@@ -1355,7 +1355,7 @@ extern "C" u32 ShopSellMenu_GetSlotX(S *s, u32 a) {
 
 extern "C" u32 ShopSellMenu_GetSlotY(S *s, u32 a) {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotY(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotY(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     if (ShopSellMenu_IsButtonSlot(s, a)) {
         if (a == 0x1e) return 0x58;
@@ -1430,7 +1430,7 @@ extern "C" void ShopSellMenu_DisableRejectedItems(S *s)
     u32 i = 0;
     do {
         if (ShopSellMenu_IsItemRejected(s, i)) {
-            InventoryItemGrid_DisableSlot(&s->unk_cc, ShopSellMenu_ToGridSlot(s, i));
+            InventoryItemGrid_DisableSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, i));
         }
         i = (u8)(i + 1);
     } while (i <= 0xe);
@@ -1439,7 +1439,7 @@ extern "C" void ShopSellMenu_DisableRejectedItems(S *s)
 extern "C" BOOL ShopSellMenu_IsSlotDisabled(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotDisabled(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotDisabled(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return FALSE;
 }
@@ -1447,7 +1447,7 @@ extern "C" BOOL ShopSellMenu_IsSlotDisabled(S *s, u32 a)
 extern "C" BOOL ShopSellMenu_IsSlotEmpty(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_IsSlotEmpty(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_IsSlotEmpty(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return TRUE;
 }
@@ -1455,7 +1455,7 @@ extern "C" BOOL ShopSellMenu_IsSlotEmpty(S *s, u32 a)
 extern "C" u32 ShopSellMenu_GetSlotItem(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotItem(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotItem(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return 0xfff1;
 }
@@ -1463,22 +1463,22 @@ extern "C" u32 ShopSellMenu_GetSlotItem(S *s, u32 a)
 extern "C" u32 ShopSellMenu_GetSlotFlags(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        return InventoryItemGrid_GetSlotFlags(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        return InventoryItemGrid_GetSlotFlags(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
     return 0xf1;
 }
 
 extern "C" void ShopSellMenu_ClearCursorSlots(S *s)
 {
-    InventoryItemGrid_ClearCursorSlot(&s->unk_cc);
-    ((LetterGrid *)&s->unk_b2c)->clearCursorSlot();
+    InventoryItemGrid_ClearCursorSlot(&s->itemGrid);
+    ((LetterGrid *)&s->letterGrid)->clearCursorSlot();
 }
 
 extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_SetCursorSlot(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
-        ((LetterGrid *)&s->unk_b2c)->clearCursorSlot();
+        InventoryItemGrid_SetCursorSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
+        ((LetterGrid *)&s->letterGrid)->clearCursorSlot();
     } else if (ShopSellMenu_IsButtonSlot(s, a)) {
         ShopSellMenu_ClearCursorSlots(s);
     }
@@ -1486,14 +1486,14 @@ extern "C" void ShopSellMenu_SetCursorSlot(S *s, u32 a)
 
 extern "C" void ShopSellMenu_ClearMarks(S *s)
 {
-    InventoryItemGrid_ClearMarks(&s->unk_cc);
-    ((LetterGrid *)&s->unk_b2c)->clearMarks();
+    InventoryItemGrid_ClearMarks(&s->itemGrid);
+    ((LetterGrid *)&s->letterGrid)->clearMarks();
 }
 
 extern "C" void ShopSellMenu_MarkSlot(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
-        InventoryItemGrid_MarkSlot(&s->unk_cc, ShopSellMenu_ToGridSlot(s, a));
+        InventoryItemGrid_MarkSlot(&s->itemGrid, ShopSellMenu_ToGridSlot(s, a));
     }
 }
 
@@ -1510,45 +1510,45 @@ extern "C" BOOL ShopSellMenu_HasTouchMoved(S *s)
 
 extern "C" void ShopSellMenu_PlaceNameBalloon(S *s)
 {
-    s32 a = ShopSellMenu_GetSlotX(s, s->unk_2757) - 0x6d;
-    s32 b = ShopSellMenu_GetSlotY(s, s->unk_2757) - 0x78;
+    s32 a = ShopSellMenu_GetSlotX(s, s->balloonSlot) - 0x6d;
+    s32 b = ShopSellMenu_GetSlotY(s, s->balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) {
         b -= 8;
     }
     if (b < -0x5c) {
-        ((LabelBalloon *)&s->unk_2134)->setPopDownward();
-        b = ShopSellMenu_GetSlotY(s, s->unk_2757) - 0x50;
+        ((LabelBalloon *)&s->nameBalloon)->setPopDownward();
+        b = ShopSellMenu_GetSlotY(s, s->balloonSlot) - 0x50;
     } else {
-        ((LabelBalloon *)&s->unk_2134)->setPopUpward();
+        ((LabelBalloon *)&s->nameBalloon)->setPopUpward();
     }
-    ((LabelBalloon *)&s->unk_2134)->setPos(a, b);
-    if (ShopSellMenu_IsPocketSlot(s, s->unk_2757) || ShopSellMenu_IsBoxSlot(s, s->unk_2757)) {
-        u32 t = ShopSellMenu_ToGridSlot(s, s->unk_2757);
-        InventoryItemGrid_ShowSlotName(&s->unk_cc, &s->unk_2134, t);
+    ((LabelBalloon *)&s->nameBalloon)->setPos(a, b);
+    if (ShopSellMenu_IsPocketSlot(s, s->balloonSlot) || ShopSellMenu_IsBoxSlot(s, s->balloonSlot)) {
+        u32 t = ShopSellMenu_ToGridSlot(s, s->balloonSlot);
+        InventoryItemGrid_ShowSlotName(&s->itemGrid, &s->nameBalloon, t);
     }
 }
 
 extern "C" void ShopSellMenu_UpdateNameBalloon(S *s)
 {
-    if (ShopSellMenu_IsPocketSlot(s, s->unk_2759) || ShopSellMenu_IsBoxSlot(s, s->unk_2759)) {
-        if (ShopSellMenu_IsSlotEmpty(s, s->unk_2759)) {
-            ((TouchPromptBalloon *)&s->unk_2134)->cancelQueuedOpen();
+    if (ShopSellMenu_IsPocketSlot(s, s->cursorSlot) || ShopSellMenu_IsBoxSlot(s, s->cursorSlot)) {
+        if (ShopSellMenu_IsSlotEmpty(s, s->cursorSlot)) {
+            ((TouchPromptBalloon *)&s->nameBalloon)->cancelQueuedOpen();
         } else {
-            s->unk_2757 = s->unk_2759;
-            ((TouchPromptBalloon *)&s->unk_2134)->queueOpen();
+            s->balloonSlot = s->cursorSlot;
+            ((TouchPromptBalloon *)&s->nameBalloon)->queueOpen();
         }
     } else {
-        ((TouchPromptBalloon *)&s->unk_2134)->cancelQueuedOpen();
+        ((TouchPromptBalloon *)&s->nameBalloon)->cancelQueuedOpen();
     }
 }
 
 extern "C" void ShopSellMenu_DrawHeldItem(S *s)
 {
     if (!s->testFlags(0x40)) {
-        u32 t = s->unk_2755;
+        u32 t = s->heldKind;
         if (t != 0) {
             if (t == 1) {
-                InventoryItemGrid_DrawHeldItem(&s->unk_cc, s->unk_270c, s->unk_2710);
+                InventoryItemGrid_DrawHeldItem(&s->itemGrid, s->heldX, s->heldY);
             }
         }
     }
@@ -1556,47 +1556,47 @@ extern "C" void ShopSellMenu_DrawHeldItem(S *s)
 
 extern "C" void ShopSellMenu_TrackTouch(S *s)
 {
-    s->unk_270c = s->unk_2704 + gTouchCurX;
-    s->unk_2710 = s->unk_2708 + gTouchCurY;
+    s->heldX = s->grabOffsetX + gTouchCurX;
+    s->heldY = s->grabOffsetY + gTouchCurY;
 }
 
 extern "C" void ShopSellMenu_TrackCursor(S *s)
 {
-    s->unk_270c = ((MenuCursorBase *)&s->unk_220c)->getFrameScreenX() - 2;
-    s->unk_2710 = ((MenuCursorBase *)&s->unk_220c)->getFrameScreenY() - 4;
+    s->heldX = ((MenuCursorBase *)&s->cursor)->getFrameScreenX() - 2;
+    s->heldY = ((MenuCursorBase *)&s->cursor)->getFrameScreenY() - 4;
 }
 
 extern "C" void ShopSellMenu_TrackFlyingItem(S *s)
 {
-    s->unk_270c = ((CursorMotion *)&s->unk_21f4)->getX();
-    s->unk_2710 = ((CursorMotion *)&s->unk_21f4)->getY();
+    s->heldX = ((CursorMotion *)&s->flyMotion)->getX();
+    s->heldY = ((CursorMotion *)&s->flyMotion)->getY();
 }
 
 extern "C" void ShopSellMenu_PickUpItem(S *s, u32 a)
 {
     if (ShopSellMenu_IsPocketSlot(s, a) || ShopSellMenu_IsBoxSlot(s, a)) {
         u32 t = ShopSellMenu_ToGridSlot(s, a);
-        s->unk_2755 = 1;
-        s->unk_2750 = InventoryItemGrid_GetSlotItem(&s->unk_cc, t);
-        s->unk_2754 = InventoryItemGrid_GetSlotFlags(&s->unk_cc, t);
-        InventoryItemGrid_ClearSlot(&s->unk_cc, t);
-        InventoryItemGrid_SetHeldItem(&s->unk_cc, s->unk_2750, s->unk_2754);
+        s->heldKind = 1;
+        s->heldItem = InventoryItemGrid_GetSlotItem(&s->itemGrid, t);
+        s->heldItemFlags = InventoryItemGrid_GetSlotFlags(&s->itemGrid, t);
+        InventoryItemGrid_ClearSlot(&s->itemGrid, t);
+        InventoryItemGrid_SetHeldItem(&s->itemGrid, s->heldItem, s->heldItemFlags);
     }
 }
 
 extern "C" void ShopSellMenu_ReleaseHeldItem(S *s, u32 a)
 {
-    if (s->unk_2755 == 1) {
-        ShopSellMenu_SetSlotItem(s, a, s->unk_2750, s->unk_2754);
+    if (s->heldKind == 1) {
+        ShopSellMenu_SetSlotItem(s, a, s->heldItem, s->heldItemFlags);
     }
-    s->unk_2755 = 0;
+    s->heldKind = 0;
 }
 
 extern "C" void ShopSellMenu_ExchangeHeldItem(S *s, u32 a)
 {
-    if (s->unk_2755 == 1) {
-        u32 h = s->unk_2750;
-        u32 b = s->unk_2754;
+    if (s->heldKind == 1) {
+        u32 h = s->heldItem;
+        u32 b = s->heldItemFlags;
         ShopSellMenu_PickUpItem(s, a);
         ShopSellMenu_SetSlotItem(s, a, h, b);
     }
@@ -1606,18 +1606,18 @@ extern "C" void ShopSellMenu_ShowCursor(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
-    if (ShopSellMenu_IsButtonSlot(s, s->unk_2759)) {
-        ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(7);
+    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    if (ShopSellMenu_IsButtonSlot(s, s->cursorSlot)) {
+        ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(1);
+        ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
     }
     s->refreshCursor();
 }
 
 extern "C" s32 ShopSellMenu_GetCursorTargetX(S *s)
 {
-    s32 r = ShopSellMenu_GetSlotX(s, s->unk_2759);
+    s32 r = ShopSellMenu_GetSlotX(s, s->cursorSlot);
     if (s->testFlags(0x20)) {
         r += 0x100;
     } else if (s->testFlags(0x10)) {
@@ -1629,102 +1629,102 @@ extern "C" s32 ShopSellMenu_GetCursorTargetX(S *s)
 
 extern "C" s32 ShopSellMenu_GetCursorTargetY(S *s)
 {
-    return ShopSellMenu_GetSlotY(s, s->unk_2759);
+    return ShopSellMenu_GetSlotY(s, s->cursorSlot);
 }
 
 extern "C" void ShopSellMenu_HideCursor(S *s)
 {
-    ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(0);
-    ((MenuCursorBuf0 *)&s->unk_220c)->vfunc_0c();
+    ((MenuCursor *)&s->cursor)->setAnimIfChanged(0);
+    ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
 }
 
 extern "C" void ShopSellMenu_MoveCursorToTarget(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->unk_220c)->moveToEase(a, b, 3, 1);
-    s->unk_275c = s->unk_8d;
+    ((MenuCursorBase *)&s->cursor)->moveToEase(a, b, 3, 1);
+    s->returnState = s->mainState;
     s->setMainState(8);
     if (s->testFlags(0x100)) {
-        ((MenuCursorBuf0 *)&s->unk_220c)->vfunc_0c();
+        ((MenuCursorBuf0 *)&s->cursor)->vfunc_0c();
         s->clearFlags(0x100);
     }
 }
 
 extern "C" void ShopSellMenu_MoveCursorToChoice(S *s)
 {
-    s32 a = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowY(s->unk_275e);
-    ((MenuCursorBase *)&s->unk_220c)->moveToLinear(a, b, 2);
-    s->unk_275c = s->unk_8d;
+    s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
+    ((MenuCursorBase *)&s->cursor)->moveToLinear(a, b, 2);
+    s->returnState = s->mainState;
     s->setMainState(8);
 }
 
 extern "C" void ShopSellMenu_PickCancelChoice(S *s)
 {
-    s->unk_275d = 1;
-    s->unk_275e = PopupChoice_DecideCancel(&s->unk_2270);
-    s32 a = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowY(s->unk_275e);
-    ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
-    ((HandCursor *)&s->unk_220c)->setAnimAtEnd(8);
+    s->chosenAction = 1;
+    s->choiceRow = PopupChoice_DecideCancel(&s->choiceMenu);
+    s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
+    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    ((HandCursor *)&s->cursor)->setAnimAtEnd(8);
     s->setMainState(0x12);
 }
 
 extern "C" void ShopSellMenu_PlaceCursorOnFirstChoice(S *s)
 {
-    s->unk_275e = 0;
-    s32 a = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowX();
-    s32 b = ((PopupChoiceMenuBody *)&s->unk_2270)->getRowY(s->unk_275e);
-    ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
-    ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(7);
+    s->choiceRow = 0;
+    s32 a = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowX();
+    s32 b = ((PopupChoiceMenuBody *)&s->choiceMenu)->getRowY(s->choiceRow);
+    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    ((MenuCursor *)&s->cursor)->setAnimIfChanged(7);
 }
 
 extern "C" void ShopSellMenu_PlaceCursorAtTarget(S *s)
 {
     s32 a = ShopSellMenu_GetCursorTargetX(s);
     s32 b = ShopSellMenu_GetCursorTargetY(s);
-    ((MenuCursorBase *)&s->unk_220c)->warpTo(a, b);
-    ((MenuCursor *)&s->unk_220c)->setAnimIfChanged(1);
+    ((MenuCursorBase *)&s->cursor)->warpTo(a, b);
+    ((MenuCursor *)&s->cursor)->setAnimIfChanged(1);
 }
 
 void ShopSellMenu::refreshCursor() {
-    ((MenuCursorBase *)&unk_220c)->setPoseIdle();
-    unk_220c.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void ShopSellMenu::pressCursor() {
-    ((MenuCursor *)&unk_220c)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(9);
 }
 
 void ShopSellMenu::releaseCursor() {
-    ((MenuCursorBase *)&unk_220c)->setPoseRelease();
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
     setMainState(0xa);
 }
 
 void ShopSellMenu::startPickUp() {
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(4);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
     setMainState(0xb);
 }
 
 void ShopSellMenu::startPutDown(u8 v) {
-    ((TouchPromptBalloon *)&unk_2134)->hide(1);
-    unk_275b = v;
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(5);
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
     setMainState(0xd);
 }
 
 void ShopSellMenu::startExchange(u8 v) {
-    ((TouchPromptBalloon *)&unk_2134)->hide(1);
-    unk_275c = unk_8d;
-    unk_275b = v;
-    ((MenuCursor *)&unk_220c)->setAnimIfChanged(6);
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    returnState = mainState;
+    actionSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
     setMainState(0xe);
 }
 
 s32 ShopSellMenu::applyChoice() {
-    switch (unk_275d) {
+    switch (chosenAction) {
     case 0:
         startPickUp();
         break;
@@ -1736,14 +1736,14 @@ s32 ShopSellMenu::applyChoice() {
 }
 
 void ShopSellMenu::cancelChoiceList() {
-    unk_275d = 1;
+    chosenAction = 1;
     ShopSellMenu_PlaceCursorAtTarget(this);
-    PopupChoice_Close(&unk_2270, 0);
+    PopupChoice_Close(&choiceMenu, 0);
     setMainState(0x13);
 }
 
 void ShopSellMenu::moveCursorInPockets(void *pad, s32 mode) {
-    s32 r = unk_2759;
+    s32 r = cursorSlot;
     s32 q = 0;
     while (r >= 5) {
         r -= 5;
@@ -1753,46 +1753,46 @@ void ShopSellMenu::moveCursorInPockets(void *pad, s32 mode) {
         if (!MenuKeys_HasUp(pad) || q == 0) {
             if (r == 0) {
                 if (mode == 1) {
-                    unk_2759 += 4;
+                    cursorSlot += 4;
                 } else {
-                    unk_2759 = 0x1f;
+                    cursorSlot = 0x1f;
                 }
                 setFlags(0x10);
                 return;
             }
-            unk_2759--;
+            cursorSlot--;
             r--;
         }
     } else if (MenuKeys_HasRight(pad)) {
         if (!MenuKeys_HasDown(pad)) {
             if (r == 4) {
                 if (mode == 1) {
-                    unk_2759 -= 4;
+                    cursorSlot -= 4;
                     setFlags(0x20);
                 } else {
-                    unk_2759 = 0x1f;
+                    cursorSlot = 0x1f;
                 }
                 return;
             }
-            unk_2759++;
+            cursorSlot++;
             r++;
         }
     }
     if (MenuKeys_HasUp(pad)) {
         if (q > 0) {
-            unk_2759 -= 5;
+            cursorSlot -= 5;
         } else {
-            unk_2759 = r + 0x19;
+            cursorSlot = r + 0x19;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (q < 2) {
-            unk_2759 += 5;
+            cursorSlot += 5;
         }
     }
 }
 
 void ShopSellMenu::moveCursorInBox(void *pad, s32 mode) {
-    s32 r = unk_2759 - 0xf;
+    s32 r = cursorSlot - 0xf;
     s32 q = 0;
     while (r >= 5) {
         r -= 5;
@@ -1802,90 +1802,90 @@ void ShopSellMenu::moveCursorInBox(void *pad, s32 mode) {
         if (!MenuKeys_HasUp(pad) || q == 0) {
             if (r == 0) {
                 if (mode == 1) {
-                    unk_2759 += 4;
+                    cursorSlot += 4;
                 } else {
-                    unk_2759 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 setFlags(0x10);
                 return;
             }
-            unk_2759--;
+            cursorSlot--;
             r--;
         }
     } else if (MenuKeys_HasRight(pad)) {
         if (!MenuKeys_HasDown(pad)) {
             if (r == 4) {
                 if (mode == 1) {
-                    unk_2759 -= 4;
+                    cursorSlot -= 4;
                     setFlags(0x20);
                 } else {
-                    unk_2759 = 0x1e;
+                    cursorSlot = 0x1e;
                 }
                 return;
             }
-            unk_2759++;
+            cursorSlot++;
             r++;
         }
     }
     if (MenuKeys_HasUp(pad)) {
         if (q > 0) {
-            unk_2759 -= 5;
+            cursorSlot -= 5;
         }
     } else if (MenuKeys_HasDown(pad)) {
         if (q < 2) {
-            unk_2759 += 5;
+            cursorSlot += 5;
         } else {
-            unk_2759 = r;
+            cursorSlot = r;
         }
     }
 }
 
 void ShopSellMenu::moveCursorOnButtons(void *pad) {
     if (MenuKeys_HasUp(pad)) {
-        unk_2759 = 0x1e;
+        cursorSlot = 0x1e;
     } else if (MenuKeys_HasDown(pad)) {
-        unk_2759 = 0x1f;
+        cursorSlot = 0x1f;
     }
     if (MenuKeys_HasRight(pad)) {
-        if (unk_2759 == 0x1e) {
-            unk_2759 = 0x19;
+        if (cursorSlot == 0x1e) {
+            cursorSlot = 0x19;
         } else {
-            unk_2759 = 0;
+            cursorSlot = 0;
         }
         setFlags(0x20);
     } else if (MenuKeys_HasLeft(pad)) {
-        if (unk_2759 == 0x1e) {
-            unk_2759 = 0x1d;
+        if (cursorSlot == 0x1e) {
+            cursorSlot = 0x1d;
         } else {
-            unk_2759 = 4;
+            cursorSlot = 4;
         }
     }
 }
 
 BOOL ShopSellMenu::moveCursorByPad(void *pad, s32 mode) {
-    u8 old = unk_2759;
+    u8 old = cursorSlot;
     clearFlags(0x30);
     clearFlags(0x100);
     if (pad == 0) {
         return FALSE;
     }
-    if (ShopSellMenu_IsPocketSlot(this, unk_2759)) {
+    if (ShopSellMenu_IsPocketSlot(this, cursorSlot)) {
         moveCursorInPockets(pad, mode);
-    } else if (ShopSellMenu_IsBoxSlot(this, unk_2759)) {
+    } else if (ShopSellMenu_IsBoxSlot(this, cursorSlot)) {
         moveCursorInBox(pad, mode);
-    } else if (ShopSellMenu_IsButtonSlot(this, unk_2759)) {
+    } else if (ShopSellMenu_IsButtonSlot(this, cursorSlot)) {
         moveCursorOnButtons(pad);
     }
-    BOOL a = ShopSellMenu_IsButtonSlot(this, unk_2759);
+    BOOL a = ShopSellMenu_IsButtonSlot(this, cursorSlot);
     if (a != ShopSellMenu_IsButtonSlot(this, old)) {
-        if (ShopSellMenu_IsButtonSlot(this, unk_2759)) {
-            ((MenuCursor *)&unk_220c)->switchToAnim07();
+        if (ShopSellMenu_IsButtonSlot(this, cursorSlot)) {
+            ((MenuCursor *)&cursor)->switchToAnim07();
         } else {
-            ((MenuCursor *)&unk_220c)->switchToAnim01();
+            ((MenuCursor *)&cursor)->switchToAnim01();
         }
         setFlags(0x100);
     }
-    if (old != unk_2759) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -1893,18 +1893,18 @@ BOOL ShopSellMenu::moveCursorByPad(void *pad, s32 mode) {
 
 void ShopSellMenu::resetTextLabels() {
     s32 i;
-    unk_275f = 0;
+    numTextLabels = 0;
     for (i = 0; i < 2; i++) {
-        ((LabelString *)&unk_2678[i])->destroyLabel();
+        ((LabelString *)&textLabels[i])->destroyLabel();
     }
 }
 
 void *ShopSellMenu::allocTextLabel() {
-    if (unk_275f >= 2) {
-        return &unk_2678[1];
+    if (numTextLabels >= 2) {
+        return &textLabels[1];
     }
-    unk_275f++;
-    return &unk_2678[unk_275f - 1];
+    numTextLabels++;
+    return &textLabels[numTextLabels - 1];
 }
 
 void ShopSellMenu::setOkLabel(s32 flag) {
@@ -1932,7 +1932,7 @@ void ShopSellMenu::setQuitLabel(s32 flag) {
 void ShopSellMenu::cancel() {
     clearFlags(8);
     Snd_PlaySe(0x28);
-    unk_2760 = 5;
+    delayTimer = 5;
     setMainState(0x15);
     setQuitLabel(1);
     MenuCtrl_SetResult(0);
@@ -1942,10 +1942,10 @@ void ShopSellMenu::cancel() {
 void ShopSellMenu::confirm() {
     clearFlags(8);
     Snd_PlaySe(0x27);
-    unk_2760 = 5;
+    delayTimer = 5;
     setMainState(0x15);
     setOkLabel(1);
-    s32 n = packItemList(unk_2714);
+    s32 n = packItemList(boxItems);
     switch (MenuCtrl_GetMode()) {
     case 0x1d:
     case 0x1e:
@@ -1953,35 +1953,35 @@ void ShopSellMenu::confirm() {
             MenuCtrl_SetResult(0);
         } else {
             MenuCtrl_SetResult(1);
-            MenuCtrl_SetChosenItems(unk_2714);
+            MenuCtrl_SetChosenItems(boxItems);
         }
         break;
     case 0x1f: {
         s32 i, j;
         for (i = 0; i < 15; i++) {
-            if (unk_2714[i] != 0xfff1) {
+            if (boxItems[i] != 0xfff1) {
                 for (j = 0; j < 15; j++) {
-                    if (unk_2714[i] == unk_2732[j]) {
-                        unk_2732[j] = 0xfff1;
+                    if (boxItems[i] == initialBoxItems[j]) {
+                        initialBoxItems[j] = 0xfff1;
                         j = 15;
                     }
                 }
             }
         }
-        n = packItemList(unk_2732);
+        n = packItemList(initialBoxItems);
         if (n == 0) {
             MenuCtrl_SetResult(0);
         } else {
             MenuCtrl_SetResult(1);
             MenuCtrl_SetIndex((u8)n);
-            MenuCtrl_SetChosenItems(unk_2732);
-            MI_CpuCopy8(unk_2714, gSaveLostAndFound, 0x1e);
+            MenuCtrl_SetChosenItems(initialBoxItems);
+            MI_CpuCopy8(boxItems, gSaveLostAndFound, 0x1e);
             sendItemsRecord(3);
         }
         break;
     }
     case 0x20:
-        MI_CpuCopy8(unk_2714, gSaveRecycleBin, 0x1e);
+        MI_CpuCopy8(boxItems, gSaveRecycleBin, 0x1e);
         sendItemsRecord(4);
         MenuCtrl_SetResult(1);
         break;
@@ -2009,12 +2009,12 @@ void ShopSellMenu::sendItemsRecord(u8 v) {
     if (((CommManager *)gCommManager)->isOnline()) {
         setFlags(8);
         buf[0] = v;
-        MI_CpuCopy8(unk_2714, &buf[1], 0x1e);
+        MI_CpuCopy8(boxItems, &buf[1], 0x1e);
         void *g = gCommManager;
         ((CommManager *)g)->beginRecord();
         ((CommManager *)g)->writeRecord(buf, 0x1f);
         ((CommManager *)g)->endRecord(0x16, 4);
-        unk_2752 = ((CommManager *)g)->getSendSeq();
+        sendSeq = ((CommManager *)g)->getSendSeq();
     }
 }
 
@@ -2026,7 +2026,7 @@ BOOL ShopSellMenu::isResultSent() {
         return TRUE;
     }
     if (((CommManager *)gCommManager)->isOnline()) {
-        if (Comm_IsSeqConfirmed(unk_2752) == 0) {
+        if (Comm_IsSeqConfirmed(sendSeq) == 0) {
             return FALSE;
         }
     }
@@ -2034,12 +2034,12 @@ BOOL ShopSellMenu::isResultSent() {
 }
 
 BOOL ShopSellMenu::testFlags(u32 mask) {
-    if (unk_26f8 & mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void ShopSellMenu::setFlags(u32 mask) { unk_26f8 |= mask; }
+void ShopSellMenu::setFlags(u32 mask) { stateFlags |= mask; }
 
-void ShopSellMenu::clearFlags(u32 mask) { unk_26f8 &= ~mask; }
+void ShopSellMenu::clearFlags(u32 mask) { stateFlags &= ~mask; }

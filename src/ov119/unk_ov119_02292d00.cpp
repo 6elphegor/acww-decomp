@@ -157,7 +157,7 @@ void _ZN11MsgString9BD1Ev(void *self);
 
 struct Unk_ov119_Comm {
     u32 unk_00[0x64 / 4];
-    s32 unk_64;
+    s32 myAid;
 };
 extern Unk_ov119_Comm *gCommManager;
 extern u8 *data_ov119_02295648[6];
@@ -173,7 +173,7 @@ extern u32 data_ov119_022957a8[12];
 extern u32 data_ov119_022957d8[24];
 struct Unk_ov119_02295588 {
     u32 unk_00;
-    u16 unk_04;
+    u16 attr2;
     u16 unk_06;
 };
 extern Unk_ov119_02295588 data_ov119_02295588;
@@ -262,9 +262,9 @@ public:
     u32 unk_04[0x60 / 4];
 };
 
-#define U970_A ((MenuCursorBase *)&unk_970)
-#define U970_B ((MenuCursor *)&unk_970)
-#define U970_C ((HandCursor *)&unk_970)
+#define U970_A ((MenuCursorBase *)&cursor)
+#define U970_B ((MenuCursor *)&cursor)
+#define U970_C ((HandCursor *)&cursor)
 
 // +0x1ac4 sub-object
 class MenuErrorMessage {
@@ -324,15 +324,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // stack helper objects (ctor/dtor are plain calls into main)
@@ -404,14 +404,14 @@ extern void *data_ov119_02295628[2];
 void _ZN15FriendRosterTab12stateClosingEv();
 extern void *data_ov119_02295620[2];
 }
-#define A0V (*(volatile u8 *)&unk_a0)
-#define E9V (*(volatile u8 *)&unk_9e)
-#define B1V (*(volatile u8 *)&unk_b1)
+#define A0V (*(volatile u8 *)&focus)
+#define E9V (*(volatile u8 *)&labelCount)
+#define B1V (*(volatile u8 *)&delayTimer)
 
 // Vtable 0x02295840, size 0x1bcc
 class FriendRosterTab : public MenuProc {
 public:
-    FriendRosterTab() : unk_dc(), unk_3dc(), unk_89c(), unk_970(), unk_1a58(), unk_1ac4() {}
+    FriendRosterTab() : popup(), textLabels(), helpText(), cursor(), vramTasks(), errorMessage() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -524,38 +524,38 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ u32 unk_94;
-    /* 0x098 */ u16 unk_98;
-    /* 0x09a */ s16 unk_9a;
-    /* 0x09c */ u8 unk_9c;
-    /* 0x09d */ u8 unk_9d;
-    /* 0x09e */ u8 unk_9e;
-    /* 0x09f */ u8 unk_9f;
-    /* 0x0a0 */ u8 unk_a0;
-    /* 0x0a1 */ u8 unk_a1[12];
-    /* 0x0ad */ u8 unk_ad;
-    /* 0x0ae */ u8 unk_ae;
-    /* 0x0af */ u8 unk_af;
-    /* 0x0b0 */ u8 unk_b0;
-    /* 0x0b1 */ u8 unk_b1;
-    /* 0x0b2 */ u8 unk_b2;
-    /* 0x0b3 */ u8 unk_b3;
-    /* 0x0b4 */ u8 unk_b4;
+    /* 0x094 */ u32 slideY;
+    /* 0x098 */ u16 flags;
+    /* 0x09a */ s16 selectedRow;
+    /* 0x09c */ u8 page;
+    /* 0x09d */ u8 targetPage;
+    /* 0x09e */ u8 labelCount;
+    /* 0x09f */ u8 returnState;
+    /* 0x0a0 */ u8 focus;
+    /* 0x0a1 */ u8 ownCodeDigits[12];
+    /* 0x0ad */ u8 popupValue;
+    /* 0x0ae */ u8 popupRow;
+    /* 0x0af */ u8 rowCount;
+    /* 0x0b0 */ u8 registerButtonPalette;
+    /* 0x0b1 */ u8 delayTimer;
+    /* 0x0b2 */ u8 rowMarkMask;
+    /* 0x0b3 */ u8 rowMarkBlinkTimer;
+    /* 0x0b4 */ u8 friendIndex;
     /* 0x0b5 */ u8 unk_b5[3];
-    /* 0x0b8 */ s32 unk_b8;
-    /* 0x0bc */ u8 unk_bc[0x20];
-    /* 0x0dc */ PopupChoiceMenu unk_dc;
-    /* 0x3dc */ LabelString unk_3dc[0x13];
-    /* 0x89c */ MsgString193 unk_89c;
-    /* 0x970 */ MenuCursorBuf0 unk_970;
-    /* 0x9d4 */ u16 unk_9d4[0x800];
-    /* 0x19d4 */ void *unk_19d4;
-    /* 0x19d8 */ u16 unk_19d8[16];
-    /* 0x19f8 */ u16 unk_19f8[16];
-    /* 0x1a18 */ u16 unk_1a18[16];
-    /* 0x1a38 */ u16 unk_1a38[16];
-    /* 0x1a58 */ BgVramTask unk_1a58[3];
-    /* 0x1ac4 */ MenuErrorMessage unk_1ac4;
+    /* 0x0b8 */ s32 fadeLevel;
+    /* 0x0bc */ u8 rosterIndices[0x20];
+    /* 0x0dc */ PopupChoiceMenu popup;
+    /* 0x3dc */ LabelString textLabels[0x13];
+    /* 0x89c */ MsgString193 helpText;
+    /* 0x970 */ MenuCursorBuf0 cursor;
+    /* 0x9d4 */ u16 pageScreens[0x800];
+    /* 0x19d4 */ void *shownScreen;
+    /* 0x19d8 */ u16 objPalette[16];
+    /* 0x19f8 */ u16 bgPalette[16];
+    /* 0x1a18 */ u16 objPaletteWork[16];
+    /* 0x1a38 */ u16 bgPaletteWork[16];
+    /* 0x1a58 */ BgVramTask vramTasks[3];
+    /* 0x1ac4 */ MenuErrorMessage errorMessage;
 };
 
 static inline BOOL Unk_ov119_02294a44_Both() {
@@ -581,25 +581,25 @@ BOOL FriendRosterTab::vfunc_0c() {
 }
 
 BOOL FriendRosterTab::onDraw() {
-    u8 *p = (u8 *)unk_94 + 0x60;
+    u8 *p = (u8 *)slideY + 0x60;
     s32 i;
     if (!testFlags(1)) {
         return TRUE;
     }
-    PopupChoice_Draw(&unk_dc);
+    PopupChoice_Draw(&popup);
     if (MenuCtrl_IsButtons()) {
         U970_A->drawWrapped();
     }
     Oam_DrawCell(1, data_ov119_02295660, 0x80, (s32)p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     for (i = 0; i < 6; i++) {
-        Oam_DrawCell(1, data_ov119_02295648[i], 0x80, (s32)p, i == unk_9d ? 5 : 4, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov119_02295648[i], 0x80, (s32)p, i == targetPage ? 5 : 4, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     }
-    Oam_DrawCell(1, data_ov119_02295778, 0x80, (s32)p, unk_b0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov119_02295778, 0x80, (s32)p, registerButtonPalette, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     s32 x = 0x80;
-    switch (unk_9c) {
+    switch (page) {
     case 4:
         for (i = 0; i < 12; i++) {
-            data_ov119_02295588.unk_04 = (data_ov119_02295588.unk_04 & 0xfffffc00) | (u16)(unk_a1[i] * 2 + 0x1a0) & 0x3ff;
+            data_ov119_02295588.attr2 = (data_ov119_02295588.attr2 & 0xfffffc00) | (u16)(ownCodeDigits[i] * 2 + 0x1a0) & 0x3ff;
             Oam_DrawObj(1, &data_ov119_02295588, x, (s32)p, -1, 2, 0);
             x += 14;
         }
@@ -608,8 +608,8 @@ BOOL FriendRosterTab::onDraw() {
     case 5:
         break;
     default:
-        if (unk_9a != -1) {
-            Oam_DrawCell(1, data_ov119_022957a8, x, (s32)(p + unk_9a * 16 - 16), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        if (selectedRow != -1) {
+            Oam_DrawCell(1, data_ov119_022957a8, x, (s32)(p + selectedRow * 16 - 16), -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
         break;
     }
@@ -680,7 +680,7 @@ BOOL FriendRosterTab::execTransition() {
         *(Unk_ov119_02295840_Fn *)data_ov119_02295630, *(Unk_ov119_02295840_Fn *)data_ov119_02295628,
         *(Unk_ov119_02295840_Fn *)data_ov119_02295620};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -721,7 +721,7 @@ void FriendRosterTab::runMainState() {
         *(Unk_ov119_02295840_Fn *)data_ov119_02295598, *(Unk_ov119_02295840_Fn *)data_ov119_022955f8,
         *(Unk_ov119_02295840_Fn *)data_ov119_022955d8, *(Unk_ov119_02295840_Fn *)data_ov119_02295590,
         *(Unk_ov119_02295840_Fn *)data_ov119_022955b8, *(Unk_ov119_02295840_Fn *)data_ov119_022955e0};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL FriendRosterTab::execMain() {
@@ -746,7 +746,7 @@ BOOL FriendRosterTab::execClosed() {
 BOOL FriendRosterTab::handleTabSwitch() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        switch (unk_8d) {
+        switch (mainState) {
         case 0:
         case 2:
         case 4:
@@ -757,7 +757,7 @@ BOOL FriendRosterTab::handleTabSwitch() {
             return requestTab(7);
         }
     }
-    if (unk_8d != 0 && unk_8d != 2) {
+    if (mainState != 0 && mainState != 2) {
         return FALSE;
     }
     s32 r5 = -1;
@@ -782,7 +782,7 @@ BOOL FriendRosterTab::requestTab(s32 idx) {
     void *o = ProcBase_GetParent(this);
     if (idx != -1 && idx != 6) {
         MenuTabBar_selectTab(o, (u8)idx);
-        unk_8c = 3;
+        transitionState = 3;
         setPhase(1);
         return TRUE;
     }
@@ -798,7 +798,7 @@ void FriendRosterTab::stateLoad() {
     loadBgGfx();
     loadObjGfx();
     addRegisterLabel();
-    PopupChoice_LoadFriendBg(&unk_dc);
+    PopupChoice_LoadFriendBg(&popup);
     u32 v;
     if (MenuCtrl_IsFriendPageFromIndex()) {
         v = MenuCtrl_GetIndex(MenuCtrl_ClearFriendPageFromIndex());
@@ -817,7 +817,7 @@ void FriendRosterTab::stateOpen() {
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
     setFlags(1);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
     setFlags(8);
     setTransitionState(2);
 }
@@ -833,7 +833,7 @@ void FriendRosterTab::stateOpening() {
     }
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, 0);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void FriendRosterTab::stateClose() {
@@ -842,7 +842,7 @@ void FriendRosterTab::stateClose() {
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, 0);
     setTransitionState(4);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void FriendRosterTab::stateClosing() {
@@ -854,7 +854,7 @@ void FriendRosterTab::stateClosing() {
     } else {
         applySlideOffset(6, 0, 0);
         applySlideOffset(4, 0, 0);
-        unk_94 = getSlideOffsetY();
+        slideY = getSlideOffsetY();
     }
 }
 
@@ -869,43 +869,43 @@ void FriendRosterTab::initFriendRoster() {
             MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
         }
     }
-    unk_9e = 0;
-    unk_98 = 0;
-    unk_a0 = 8;
-    unk_19d4 = unk_9d4;
-    unk_9a = -1;
-    unk_9c = 0xff;
-    unk_af = 0;
-    unk_b0 = 7;
-    unk_b8 = 5;
+    labelCount = 0;
+    flags = 0;
+    focus = 8;
+    shownScreen = pageScreens;
+    selectedRow = -1;
+    page = 0xff;
+    rowCount = 0;
+    registerButtonPalette = 7;
+    fadeLevel = 5;
     loadOwnFriendCode();
-    PopupChoiceMenu_init(&unk_dc, 3, 1, "menu/friend/c_bg.bsc");
+    PopupChoiceMenu_init(&popup, 3, 1, "menu/friend/c_bg.bsc");
     buildFriendIndex();
 }
 
 void FriendRosterTab::releaseResources() {
-    PopupChoice_ForceClose(&unk_dc);
+    PopupChoice_ForceClose(&popup);
     resetTextLabels();
-    unk_1a58[0].cancel();
-    unk_1a58[1].cancel();
-    unk_1a58[2].cancel();
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
 }
 
 void FriendRosterTab::preStateUpdate() {
     resetTextLabels();
-    unk_1a58[0].cancel();
-    unk_1a58[1].cancel();
-    unk_1a58[2].cancel();
+    vramTasks[0].cancel();
+    vramTasks[1].cancel();
+    vramTasks[2].cancel();
 }
 
 void FriendRosterTab::postStateUpdate() {
     uploadScreen();
-    PopupChoice_Update(&unk_dc);
+    PopupChoice_Update(&popup);
 }
 
 void FriendRosterTab::preInputUpdate() {
     preStateUpdate();
-    unk_970.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void FriendRosterTab::postInputUpdate() { postStateUpdate(); }
@@ -920,11 +920,11 @@ extern "C" void FriendRosterTab_SetupLayers() {
 void FriendRosterTab::loadBgGfx() {
     u32 r4 = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/friend/bg0.bpl", r4, 6, 1, 1, 5);
-    File_LoadToBuffer("menu/friend/bg2.bpl", unk_19f8, 0x20);
+    File_LoadToBuffer("menu/friend/bg2.bpl", bgPalette, 0x20);
     Gfx2d_LoadCharFile("menu/friend/bg0.bch", r4, 6, 0x11, 0x11, 0x89);
     Gfx2d_LoadScreenFile("menu/friend/a_bg.bsc", r4, 6);
-    File_LoadToBuffer("menu/friend/b_bg.bsc", unk_9d4, 0x800);
-    File_LoadToBuffer("menu/friend/d_bg.bsc", unk_9d4 + 0x400, 0x800);
+    File_LoadToBuffer("menu/friend/b_bg.bsc", pageScreens, 0x800);
+    File_LoadToBuffer("menu/friend/d_bg.bsc", pageScreens + 0x400, 0x800);
 }
 
 void FriendRosterTab::loadObjGfx() {
@@ -932,7 +932,7 @@ void FriendRosterTab::loadObjGfx() {
     Gfx2d_LoadCharFile("menu/friend/obj0.bch", r4, 8, 0xc0, 0xc0, 0x15d);
     Gfx2d_LoadCharFile("menu/friend/obj1.bch", r4, 8, 0x1a0, 0x1a0, 0x1df);
     Gfx2d_LoadPaletteFile("menu/friend/obj.bpl", r4, 8, 4, 4, 10);
-    File_LoadToBuffer("menu/friend/obj1.bpl", unk_19d8, 0x20);
+    File_LoadToBuffer("menu/friend/obj1.bpl", objPalette, 0x20);
 }
 
 void FriendRosterTab::updateTouch() {
@@ -941,7 +941,7 @@ void FriendRosterTab::updateTouch() {
     } else if (Unk_ov119_02294a44_Both()) {
         u32 r = hitTest(gTouchCurX, gTouchCurY);
         if (r != 0x17) {
-            unk_a0 = r;
+            focus = r;
             activateFocus();
         }
     }
@@ -954,11 +954,11 @@ void FriendRosterTab::mainAct01() {
         cursorToPopupTop();
         setMainState(6);
     } else if (Unk_ov119_02294a44_Both()) {
-        s32 r5 = PopupChoiceMenuBody_hitTestRowOrLast(&unk_dc, gTouchCurX, gTouchCurY);
+        s32 r5 = PopupChoiceMenuBody_hitTestRowOrLast(&popup, gTouchCurX, gTouchCurY);
         if (r5 >= 0) {
             if (!(testFlags(0x10) && r5 == 0)) {
-                PopupChoice_DecideRow(&unk_dc, r5, 1);
-                unk_ad = getPopupRowValue(r5);
+                PopupChoice_DecideRow(&popup, r5, 1);
+                popupValue = getPopupRowValue(r5);
                 setMainState(0xb);
             }
         }
@@ -987,7 +987,7 @@ void FriendRosterTab::updateButtons() {
 
 void FriendRosterTab::updateCursorMove() {
     if (!U970_A->isMoving()) {
-        setMainState(unk_9f);
+        setMainState(returnState);
         runMainState();
     }
 }
@@ -1024,7 +1024,7 @@ void FriendRosterTab::mainAct06() {
     } else {
         u32 r4 = takeRepeatedKeys();
         u8 f = testFlags(0x10);
-        if (PopupChoice_MoveCursor(&unk_dc, r4, &unk_ae, f)) {
+        if (PopupChoice_MoveCursor(&popup, r4, &popupRow, f)) {
             moveCursorToPopupRow();
         } else {
             u32 k = gPad[1];
@@ -1042,8 +1042,8 @@ void FriendRosterTab::mainAct07() {
     if (MenuCtrl_IsForceCloseDue()) {
         cancelChoice();
     } else if (U970_C->isAnimDone()) {
-        PopupChoice_DecideRow(&unk_dc, unk_ae, 1);
-        unk_ad = getPopupRowValue(unk_ae);
+        PopupChoice_DecideRow(&popup, popupRow, 1);
+        popupValue = getPopupRowValue(popupRow);
         setMainState(0xb);
     }
 }
@@ -1067,7 +1067,7 @@ void FriendRosterTab::mainAct09() {
         compactRoster();
         MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
         if (isWifiMode()) {
-            if (!Net_WifiDeleteFriend(unk_b4)) {
+            if (!Net_WifiDeleteFriend(friendIndex)) {
                 setMainState(0x11);
             }
         }
@@ -1079,7 +1079,7 @@ void FriendRosterTab::mainAct09() {
 }
 
 void FriendRosterTab::mainAct0A() {
-    if (unk_dc.isOpen()) {
+    if (popup.isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(6);
@@ -1090,8 +1090,8 @@ void FriendRosterTab::mainAct0A() {
 }
 
 void FriendRosterTab::mainAct0B() {
-    if (PopupChoice_TickDecideDelay(&unk_dc)) {
-        PopupChoice_Close(&unk_dc, 0);
+    if (PopupChoice_TickDecideDelay(&popup)) {
+        PopupChoice_Close(&popup, 0);
         if (U970_C->getAnim()) {
             hideCursor();
         }
@@ -1100,31 +1100,31 @@ void FriendRosterTab::mainAct0B() {
 }
 
 void FriendRosterTab::mainAct0C() {
-    if (unk_dc.isClosed()) {
+    if (popup.isClosed()) {
         onPopupChoice();
     }
 }
 
 void FriendRosterTab::mainAct0D() {
-    if (unk_1ac4.update(1)) {
+    if (errorMessage.update(1)) {
         resumeInput();
     }
 }
 
 void FriendRosterTab::mainAct0E() {
-    if (unk_b8 > 0) {
-        unk_b8 = unk_b8 - 1;
-        setPaletteFade(unk_b8);
+    if (fadeLevel > 0) {
+        fadeLevel = fadeLevel - 1;
+        setPaletteFade(fadeLevel);
     } else {
-        setPage(unk_9d);
+        setPage(targetPage);
         setMainState(0xf);
     }
 }
 
 void FriendRosterTab::mainAct0F() {
-    if (unk_b8 < 5) {
-        unk_b8 = unk_b8 + 1;
-        setPaletteFade(unk_b8);
+    if (fadeLevel < 5) {
+        fadeLevel = fadeLevel + 1;
+        setPaletteFade(fadeLevel);
     } else if (MenuCtrl_IsTouch()) {
         startTouchInput();
     } else {
@@ -1134,14 +1134,14 @@ void FriendRosterTab::mainAct0F() {
 
 void FriendRosterTab::mainAct10() {
     u8 *base = (u8 *)getFriendEntries();
-    void *r = DwcFriendData_GetBytes(FriendEntry_GetFriendData(base + unk_b4 * 0x1c));
-    if (Net_WifiAddFriend(unk_b4, r)) {
-        showFriend(unk_b4);
+    void *r = DwcFriendData_GetBytes(FriendEntry_GetFriendData(base + friendIndex * 0x1c));
+    if (Net_WifiAddFriend(friendIndex, r)) {
+        showFriend(friendIndex);
     }
 }
 
 void FriendRosterTab::mainAct11() {
-    if (Net_WifiDeleteFriend(unk_b4)) {
+    if (Net_WifiDeleteFriend(friendIndex)) {
         setFlags(2);
         refreshPage();
         resumeInput();
@@ -1160,7 +1160,7 @@ void FriendRosterTab::startButtonInput() {
 }
 
 void FriendRosterTab::resumeInput() {
-    unk_9a = -1;
+    selectedRow = -1;
     setFlags(4);
     if (MenuCtrl_IsTouch()) {
         startTouchInput();
@@ -1173,7 +1173,7 @@ void FriendRosterTab::showError(u8 v) {
     volatile u8 buf[1];
     buf[0] = gU8None;
     buf[0] = v;
-    unk_1ac4.open((u8 *)buf, 1, 0);
+    errorMessage.open((u8 *)buf, 1, 0);
     setMainState(0xd);
     hideCursor();
 }
@@ -1183,16 +1183,16 @@ void FriendRosterTab::resetTextLabels() {
     i = 0;
     E9V = i;
     for (i = 0; i < 0x13; i++) {
-        LabelString_destroyLabel(&unk_3dc[i]);
+        LabelString_destroyLabel(&textLabels[i]);
     }
 }
 
 void *FriendRosterTab::allocTextLabel() {
     if (E9V >= 0x13) {
-        return &unk_3dc[0x12];
+        return &textLabels[0x12];
     }
     E9V = E9V + 1;
-    return &unk_3dc[E9V - 1];
+    return &textLabels[E9V - 1];
 }
 
 void FriendRosterTab::addRegisterLabel() {
@@ -1212,7 +1212,7 @@ void FriendRosterTab::addTitleLabel(u32 id) {
 void FriendRosterTab::showCursor() {
     u32 c = A0V;
     if (c <= 7) {
-        s32 n = unk_af;
+        s32 n = rowCount;
         if (n == 0) {
             A0V = 8;
         } else if (n <= (s32)c) {
@@ -1269,7 +1269,7 @@ s32 FriendRosterTab::getFocusY() {
 
 void FriendRosterTab::hideCursor() {
     U970_B->setAnimIfChanged(0);
-    unk_970.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void FriendRosterTab::moveCursorToTarget() {
@@ -1284,23 +1284,23 @@ void FriendRosterTab::moveCursorToTarget() {
     s32 a = getFocusX();
     s32 b = getFocusY();
     U970_A->moveToEase(a, b, 3, 1);
-    unk_9f = unk_8d;
+    returnState = mainState;
     setMainState(3);
 }
 
 void FriendRosterTab::moveCursorToPopupRow() {
-    s32 a = unk_dc.getRowX();
-    s32 b = unk_dc.getRowY(unk_ae);
+    s32 a = popup.getRowX();
+    s32 b = popup.getRowY(popupRow);
     U970_A->moveToLinear(a, b, 2);
-    unk_9f = unk_8d;
+    returnState = mainState;
     setMainState(3);
 }
 
 void FriendRosterTab::cancelPopup() {
-    unk_ad = 10;
-    unk_ae = PopupChoice_DecideCancel(&unk_dc, 1);
-    s32 a = unk_dc.getRowX();
-    s32 b = unk_dc.getRowY(unk_ae);
+    popupValue = 10;
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
+    s32 a = popup.getRowX();
+    s32 b = popup.getRowY(popupRow);
     U970_A->warpTo(a, b);
     U970_C->setAnimAtEnd(8);
     setMainState(0xb);
@@ -1308,12 +1308,12 @@ void FriendRosterTab::cancelPopup() {
 
 void FriendRosterTab::cursorToPopupTop() {
     if (testFlags(0x10)) {
-        unk_ae = 2;
+        popupRow = 2;
     } else {
-        unk_ae = 0;
+        popupRow = 0;
     }
-    s32 a = unk_dc.getRowX();
-    s32 b = unk_dc.getRowY(unk_ae);
+    s32 a = popup.getRowX();
+    s32 b = popup.getRowY(popupRow);
     U970_A->warpTo(a, b);
     U970_B->setAnimIfChanged(7);
 }
@@ -1330,7 +1330,7 @@ void FriendRosterTab::releaseCursor() {
 
 void FriendRosterTab::refreshCursor() {
     U970_A->setPoseIdle();
-    unk_970.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 BOOL FriendRosterTab::moveFocus(u32 keys) {
@@ -1340,7 +1340,7 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
     }
     if (old <= 7) {
         if (MenuKeys_HasDown(keys)) {
-            if (A0V + 1 < unk_af) {
+            if (A0V + 1 < rowCount) {
                 A0V = A0V + 1;
             }
         } else if (MenuKeys_HasUp(keys)) {
@@ -1372,7 +1372,7 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
             }
         } else if (MenuKeys_HasDown(keys)) {
             s32 t = U970_A->getScreenX();
-            if (unk_af != 0 && t < 0x80) {
+            if (rowCount != 0 && t < 0x80) {
                 A0V = 0;
             } else {
                 A0V = 8;
@@ -1392,12 +1392,12 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
                 A0V = 0x16;
             }
         } else if (MenuKeys_HasLeft(keys)) {
-            if (unk_af != 0) {
+            if (rowCount != 0) {
                 s32 t = U970_A->getScreenY();
                 t -= 0x30;
                 if (t < 0) t = 0;
                 t >>= 4;
-                s32 n = unk_af;
+                s32 n = rowCount;
                 if (t >= n) t = n - 1;
                 A0V = t;
             }
@@ -1407,7 +1407,7 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
             A0V = 0xd;
         }
         if (MenuKeys_HasLeft(keys)) {
-            u32 n = unk_af;
+            u32 n = rowCount;
             if (n != 0) {
                 A0V = n - 1;
             }
@@ -1421,11 +1421,11 @@ BOOL FriendRosterTab::moveFocus(u32 keys) {
 
 void FriendRosterTab::openRegisterChoices()
 {
-    unk_b0 = 7;
+    registerButtonPalette = 7;
     ChoiceIdList_Clear(U3D0, 0xa);
     Unk_ov119_Comm *g = gCommManager;
     if (CommManager_isOnline(g)) {
-        s32 skip = g->unk_64;
+        s32 skip = g->myAid;
         s32 i = 0;
         u32 tmp[7];
         _ZN11MsgString9BC1Ev(tmp);
@@ -1434,7 +1434,7 @@ void FriendRosterTab::openRegisterChoices()
                 void *p = PlayerData_GetBySessionSlot(i);
                 if (p) {
                     PlayerId_getNameString(PlayerData_getPlayerId(p), tmp);
-                    PopupChoiceMenuBody_addCustomRow(&unk_dc, U3D0, tmp, (u8)(i + 6));
+                    PopupChoiceMenuBody_addCustomRow(&popup, U3D0, tmp, (u8)(i + 6));
                 }
             }
         }
@@ -1476,12 +1476,12 @@ void FriendRosterTab::removeFriend()
     void *rec = getFocusedFriendEntry();
     if (rec) {
         FriendEntry_Clear(rec);
-        unk_9a = -1;
+        selectedRow = -1;
         setFlags(2);
         refreshPage();
-        unk_b1 = 1;
+        delayTimer = 1;
         setMainState(9);
-        unk_b4 = getFocusedFriendIndex();
+        friendIndex = getFocusedFriendIndex();
     }
 }
 
@@ -1512,7 +1512,7 @@ void FriendRosterTab::registerPresentPlayer()
         showError(0x13);
         return;
     }
-    void *a = PlayerData_GetBySessionSlot(unk_ad - 6);
+    void *a = PlayerData_GetBySessionSlot(popupValue - 6);
     if (isInRoster(PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)))) {
         showError(0x14);
         return;
@@ -1527,9 +1527,9 @@ void FriendRosterTab::registerPresentPlayer()
     void *f = TownId_GetName(PlayerId_GetTownId(c));
     Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
     MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
-    unk_b4 = i;
+    friendIndex = i;
     if (isWifiMode()) {
-        if (Net_WifiAddFriend(unk_b4, DwcFriendData_GetBytes(FriendEntry_GetFriendData(b + unk_b4 * 0x1c))) == 0) {
+        if (Net_WifiAddFriend(friendIndex, DwcFriendData_GetBytes(FriendEntry_GetFriendData(b + friendIndex * 0x1c))) == 0) {
             setMainState(0x10);
             return;
         }
@@ -1541,7 +1541,7 @@ void FriendRosterTab::showFriend(s32 x)
 {
     buildFriendIndex();
     u32 t = getPageOfFriend(x);
-    if (t != unk_9d) {
+    if (t != targetPage) {
         _ZN15FriendRosterTab7setPageEh(this, t);
     } else {
         refreshPage();
@@ -1551,7 +1551,7 @@ void FriendRosterTab::showFriend(s32 x)
 
 BOOL FriendRosterTab::activateFocus()
 {
-    u32 m = unk_a0;
+    u32 m = focus;
     if (m >= 0xe && m <= 0x15) {
         if (requestTab(m - 0xe)) {
             return TRUE;
@@ -1560,8 +1560,8 @@ BOOL FriendRosterTab::activateFocus()
     }
     if (m >= 8 && m <= 0xd) {
         u8 k = m - 8;
-        if (k != unk_9d) {
-            unk_9d = k;
+        if (k != targetPage) {
+            targetPage = k;
             setMainState(0xe);
             if (k == 4) {
                 Snd_PlaySe(0xf);
@@ -1573,16 +1573,16 @@ BOOL FriendRosterTab::activateFocus()
         return FALSE;
     }
     if (m == 0x16) {
-        unk_b0 = 8;
-        unk_b1 = 3;
+        registerButtonPalette = 8;
+        delayTimer = 3;
         setMainState(8);
         Snd_PlaySe(0x2b);
         return TRUE;
     }
     if (m <= 7) {
-        unk_9a = m;
+        selectedRow = m;
         setFlags(4);
-        unk_b1 = 3;
+        delayTimer = 3;
         setMainState(8);
         Snd_PlaySe(0x2b);
         return TRUE;
@@ -1604,7 +1604,7 @@ u8 FriendRosterTab::hitTest(s32 x, s32 y)
     }
     if (x >= 0x18 && x <= 0xc0 && y >= 0x30 && y < 0xb0) {
         s32 r = (y - 0x30) >> 4;
-        if (r < unk_af) {
+        if (r < rowCount) {
             return (u8)r;
         }
     }
@@ -1618,25 +1618,25 @@ void FriendRosterTab::uploadScreen()
 {
     updateRowMarkBlink();
     if (testFlags(4)) {
-        if (unk_9c <= 3) {
-            BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 3);
-            s32 v = unk_9a;
+        if (page <= 3) {
+            BgScreen_SetRectPalette(pageScreens, 5, 6, 0x17, 0x15, 3);
+            s32 v = selectedRow;
             if (v != -1) {
                 s32 y = v * 2 + 6;
-                BgScreen_SetRectPalette(unk_9d4, 5, y, 0x17, y + 1, 4);
+                BgScreen_SetRectPalette(pageScreens, 5, y, 0x17, y + 1, 4);
             }
         }
         clearFlags(4);
         setFlags(2);
     }
     if (testFlags(2)) {
-        if (unk_1a58[0].requestScreen((u32)unk_19d4, 4, 0x800, 0)) {
+        if (vramTasks[0].requestScreen((u32)shownScreen, 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(0x20)) {
-        unk_1a58[1].requestPalette((u32)unk_1a38, 6, 3);
-        unk_1a58[2].requestPalette((u32)unk_1a18, 8, 10);
+        vramTasks[1].requestPalette((u32)bgPaletteWork, 6, 3);
+        vramTasks[2].requestPalette((u32)objPaletteWork, 8, 10);
     }
 }
 
@@ -1662,16 +1662,16 @@ void FriendRosterTab::setPaletteFade(s32 x)
         v = 5;
     }
     setFlags(0x20);
-    MIi_CpuCopy16(unk_19d8, unk_1a18, 0x20);
-    MIi_CpuCopy16(unk_19f8, unk_1a38, 0x20);
+    MIi_CpuCopy16(objPalette, objPaletteWork, 0x20);
+    MIi_CpuCopy16(bgPalette, bgPaletteWork, 0x20);
     for (i = 2; i <= 5; i++) {
-        unk_1a38[i] = blendColor(unk_19f8[i], unk_19f8[14], v, 5);
+        bgPaletteWork[i] = blendColor(bgPalette[i], bgPalette[14], v, 5);
     }
-    unk_1a38[15] = blendColor(unk_19f8[15], unk_19f8[14], v, 5);
+    bgPaletteWork[15] = blendColor(bgPalette[15], bgPalette[14], v, 5);
     for (i = 1; i <= 3; i++) {
-        unk_1a18[i] = blendColor(unk_19d8[i], unk_19d8[14], v, 5);
+        objPaletteWork[i] = blendColor(objPalette[i], objPalette[14], v, 5);
     }
-    unk_1a18[15] = blendColor(unk_1a18[15], unk_19d8[14], v, 5);
+    objPaletteWork[15] = blendColor(objPaletteWork[15], objPalette[14], v, 5);
 }
 
 BOOL FriendRosterTab::isWifiMode()
@@ -1702,7 +1702,7 @@ void *FriendRosterTab::getFocusedFriendEntry()
 
 u32 FriendRosterTab::getFocusedFriendIndex()
 {
-    return unk_bc[unk_a0 + (unk_9c << 3)];
+    return rosterIndices[focus + (page << 3)];
 }
 
 void FriendRosterTab::buildFriendIndex()
@@ -1712,12 +1712,12 @@ void FriendRosterTab::buildFriendIndex()
     s32 n = 0;
     for (i = 0; i < 0x20; i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(b + i * 0x1c))) {
-            unk_bc[n] = i;
+            rosterIndices[n] = i;
             n++;
         }
     }
     for (; n < 0x20; n++) {
-        unk_bc[n] = 0x20;
+        rosterIndices[n] = 0x20;
     }
 }
 
@@ -1811,7 +1811,7 @@ void FriendRosterTab::drawPresentPage() {
     Unk_ov119_Comm *g;
     s32 pos = 0xc3;
     g = gCommManager;
-    cur = g->unk_64;
+    cur = g->myAid;
     s32 n = 0;
     u32 A[7];
     u32 B[7];
@@ -1837,12 +1837,12 @@ void FriendRosterTab::drawPresentPage() {
             String_Load2dMenu(a, 0x66);
             PlayerId_getNameString(g2, &B);
             MsgString_copy(b, &B);
-            setRowIcon(&unk_9d4[pos], 0x58);
-            unk_b2 = unk_b2 | (1 << i);
+            setRowIcon(&pageScreens[pos], 0x58);
+            rowMarkMask = rowMarkMask | (1 << i);
         } else {
             MsgString_clear(a);
             MsgString_clear(b);
-            setRowIcon(&unk_9d4[pos], 0x10);
+            setRowIcon(&pageScreens[pos], 0x10);
         }
         LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
         LabelString_redrawAligned(a, 0, 0);
@@ -1852,7 +1852,7 @@ void FriendRosterTab::drawPresentPage() {
         y += 0x10;
         pos += 0x40;
     }
-    BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 5);
+    BgScreen_SetRectPalette(pageScreens, 5, 6, 0x17, 0x15, 5);
     _ZN11MsgString9BD1Ev(B);
     _ZN11MsgString9CD1Ev(A);
 }
@@ -1889,7 +1889,7 @@ void FriendRosterTab::drawFriendCodeHelp() {
     } else {
         ch = 0xd5;
     }
-    String_Load2d(&unk_89c, &ch, 0);
+    String_Load2d(&helpText, &ch, 0);
     for (i = 0; i < 3; i++) {
         void *o = allocTextLabel();
         MsgString_setLine(o, Msg_SkipLines((u8 *)this + 0x8ae, i));
@@ -1924,7 +1924,7 @@ void FriendRosterTab::drawRosterPage() {
     void *a;
     void *b;
     recs = (u8 *)getFriendEntries();
-    s32 base = unk_9c << 3;
+    s32 base = page << 3;
     s32 x = 0x1ce;
     s32 y = 0x14e;
     s32 pos = 0xc3;
@@ -1935,7 +1935,7 @@ void FriendRosterTab::drawRosterPage() {
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
-        s32 idx = unk_bc[base];
+        s32 idx = rosterIndices[base];
         u8 *rec;
         if (idx < 0x20) {
             rec = recs + idx * 0x1c;
@@ -1948,16 +1948,16 @@ void FriendRosterTab::drawRosterPage() {
             String_SetSlot(0, &A);
             String_Load2dMenu(a, 0x66);
             String_FromEncodedBytes(b, (void *)FriendEntry_GetPlayerName(rec), 8);
-            unk_af = unk_af + 1;
+            rowCount = rowCount + 1;
             if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec))) {
-                setRowIcon(&unk_9d4[pos], 0x50);
+                setRowIcon(&pageScreens[pos], 0x50);
             } else {
-                setRowIcon(&unk_9d4[pos], 0x54);
+                setRowIcon(&pageScreens[pos], 0x54);
             }
         } else {
             MsgString_clear(a);
             MsgString_clear(b);
-            setRowIcon(&unk_9d4[pos], 0x10);
+            setRowIcon(&pageScreens[pos], 0x10);
         }
         LabelString_createLabel(a, 4, x, 10, 0xf, 0, 0);
         LabelString_redrawAligned(a, 0, 0);
@@ -1973,11 +1973,11 @@ void FriendRosterTab::drawRosterPage() {
 }
 
 void FriendRosterTab::refreshPage() {
-    unk_b2 = 0;
-    unk_b3 = 0;
+    rowMarkMask = 0;
+    rowMarkBlinkTimer = 0;
     clearRowMarks();
-    unk_af = 0;
-    u8 t = unk_9c;
+    rowCount = 0;
+    u8 t = page;
     switch (t) {
     case 5:
         drawPresentPage();
@@ -1993,19 +1993,19 @@ void FriendRosterTab::refreshPage() {
 }
 
 void FriendRosterTab::setPage(u8 s) {
-    if (s != unk_9c) {
-        unk_9d = s;
-        unk_9c = s;
-        u8 t = unk_9c;
+    if (s != page) {
+        targetPage = s;
+        page = s;
+        u8 t = page;
         if (t == 5) {
             addTitleLabel(0xeb);
-            unk_19d4 = unk_9d4;
+            shownScreen = pageScreens;
         } else if (t == 4) {
             addTitleLabel(0xea);
-            unk_19d4 = &unk_9d4[0x400];
+            shownScreen = &pageScreens[0x400];
         } else {
             addTitleLabel(0xcd);
-            unk_19d4 = unk_9d4;
+            shownScreen = pageScreens;
         }
         setFlags(2);
         refreshPage();
@@ -2035,12 +2035,12 @@ void FriendRosterTab::loadOwnFriendCode() {
     s32 i;
     if ((PlayerWifiData_HasUserId(PlayerData_getWifiUserData(p)) & PlayerWifiData_IsConfigValid(PlayerData_getWifiUserData(p))) == 0) {
         for (i = 0; i < 12; i++) {
-            unk_a1[i] = 10;
+            ownCodeDigits[i] = 10;
         }
     } else {
         u64 v = PlayerWifiData_GetFriendCode(PlayerData_getWifiUserData(p));
         for (i = 11; i >= 0; i--) {
-            unk_a1[i] = (u8)(v % 10);
+            ownCodeDigits[i] = (u8)(v % 10);
             v = v / 10;
         }
     }
@@ -2049,7 +2049,7 @@ void FriendRosterTab::loadOwnFriendCode() {
 u8 FriendRosterTab::getPopupRowValue(u32 idx) { return *((u8 *)this + idx + 0x3d5); }
 
 void FriendRosterTab::onPopupChoice() {
-    switch (unk_ad) {
+    switch (popupValue) {
     case 1:
         removeFriend();
         break;
@@ -2082,23 +2082,23 @@ void FriendRosterTab::onPopupChoice() {
 }
 
 void FriendRosterTab::openPopup(u32 x) {
-    PopupChoiceMenuBody_setRowsFromIds(&unk_dc, (u8 *)this + 0x3d0, x);
+    PopupChoiceMenuBody_setRowsFromIds(&popup, (u8 *)this + 0x3d0, x);
     u32 r;
-    if (unk_a0 == 0x16) {
+    if (focus == 0x16) {
         r = 0x9c;
     } else {
         r = 0xb8;
     }
-    PopupChoiceMenu_placeAbove(&unk_dc, 0x100, r);
-    PopupChoice_Open(&unk_dc, 0);
+    PopupChoiceMenu_placeAbove(&popup, 0x100, r);
+    PopupChoice_Open(&popup, 0);
     setMainState(10);
     clearFlags(0x10);
 }
 
 void FriendRosterTab::cancelChoice() {
-    unk_ad = 10;
+    popupValue = 10;
     hideCursor();
-    PopupChoice_Close(&unk_dc, 0);
+    PopupChoice_Close(&popup, 0);
     setMainState(0xc);
 }
 
@@ -2106,38 +2106,38 @@ void FriendRosterTab::drawRowMarks() {
     s32 i;
     clearRowMarks();
     for (i = 0; i < 8; i++) {
-        if (unk_b2 & (1 << i)) {
-            BgScreen_SetRectPalette(unk_9d4, 3, i * 2 + 6, 4, i * 2 + 7, 5);
+        if (rowMarkMask & (1 << i)) {
+            BgScreen_SetRectPalette(pageScreens, 3, i * 2 + 6, 4, i * 2 + 7, 5);
         }
     }
 }
 
 void FriendRosterTab::clearRowMarks() {
-    BgScreen_SetRectPalette(unk_9d4, 3, 6, 4, 0x15, 3);
+    BgScreen_SetRectPalette(pageScreens, 3, 6, 4, 0x15, 3);
     setFlags(2);
 }
 
 void FriendRosterTab::updateRowMarkBlink() {
-    unk_b3 = unk_b3 + 1;
-    u8 c = unk_b3;
+    rowMarkBlinkTimer = rowMarkBlinkTimer + 1;
+    u8 c = rowMarkBlinkTimer;
     if (c == 10) {
         drawRowMarks();
     } else if (c >= 0x19) {
         clearRowMarks();
-        unk_b3 = 0;
+        rowMarkBlinkTimer = 0;
     }
 }
 
 BOOL FriendRosterTab::testFlags(u32 mask) {
-    if (unk_98 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FriendRosterTab::setFlags(u32 mask) { unk_98 = unk_98 | mask; }
+void FriendRosterTab::setFlags(u32 mask) { flags = flags | mask; }
 
-void FriendRosterTab::clearFlags(u32 mask) { unk_98 = unk_98 & ~mask; }
+void FriendRosterTab::clearFlags(u32 mask) { flags = flags & ~mask; }
 
 extern "C" void *data_ov119_02295590[2] = {(void *)_ZN15FriendRosterTab9mainAct0FEv, 0};
 

@@ -403,23 +403,23 @@ public:
     void setPhase(u8);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x02298180
 class MailboxMenu : public MenuProc {
 public:
     MailboxMenu()
-        : unk_c0(), unk_f8(), unk_b58(), unk_b80(), unk_2160(), unk_2220(), unk_2238(), unk_229c(), unk_259c(), unk_26a4(),
-          unk_28b4(), unk_2924(), unk_32ac(), unk_3c34(), unk_3d98(), unk_3e8c() {}
+        : bgTasks(), pocketGrid(), letterGrid(), inventoryBg(), nameBalloon(), flyMotion(), cursor(), popup(), errorMessage(), letterView(),
+          letterCloseButton(), mailboxLetters(), unk_32ac(), bottomButtons(), heldLetter(), swapLetter() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -576,42 +576,42 @@ public:
     void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
-    /* 0x94 */ u32 unk_94;
-    /* 0x98 */ s32 unk_98;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
-    /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ s32 unk_b0;
-    /* 0xb4 */ u8 unk_b4;
-    /* 0xb5 */ u8 unk_b5;
-    /* 0xb6 */ u8 unk_b6;
-    /* 0xb7 */ u8 unk_b7;
-    /* 0xb8 */ u8 unk_b8;
-    /* 0xb9 */ u8 unk_b9;
-    /* 0xba */ u8 unk_ba;
-    /* 0xbb */ u8 unk_bb;
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ u8 unk_be;
-    /* 0xbf */ u8 unk_bf;
-    /* 0x00c0 */ BgVramTaskPair unk_c0[1];
-    /* 0x00f8 */ InventoryItemGrid unk_f8;
-    /* 0x0b58 */ LetterGrid unk_b58;
-    /* 0x0b80 */ InventoryBg unk_b80;
-    /* 0x2160 */ TouchPromptBalloon unk_2160;
-    /* 0x2220 */ CursorMotion unk_2220;
-    /* 0x2238 */ MenuCursorBuf0 unk_2238;
-    /* 0x229c */ PopupChoiceMenu unk_229c;
-    /* 0x259c */ MenuErrorMessage unk_259c;
-    /* 0x26a4 */ LetterRenderer unk_26a4;
-    /* 0x28b4 */ MenuLabelButton unk_28b4;
-    /* 0x2924 */ Letter unk_2924[10];
+    /* 0x94 */ u32 stateFlags;
+    /* 0x98 */ s32 slideY;
+    /* 0x9c */ s32 boxSlideX;
+    /* 0xa0 */ s32 buttonsSlideY;
+    /* 0xa4 */ s32 dragOffsetX;
+    /* 0xa8 */ s32 dragOffsetY;
+    /* 0xac */ s32 handX;
+    /* 0xb0 */ s32 handY;
+    /* 0xb4 */ u8 handKind;
+    /* 0xb5 */ u8 touchedSlot;
+    /* 0xb6 */ u8 balloonSlot;
+    /* 0xb7 */ u8 heldSlot;
+    /* 0xb8 */ u8 cursorSlot;
+    /* 0xb9 */ u8 selectedSlot;
+    /* 0xba */ u8 targetSlot;
+    /* 0xbb */ u8 returnState;
+    /* 0xbc */ u8 popupChoice;
+    /* 0xbd */ u8 popupRow;
+    /* 0xbe */ u8 promptChoice;
+    /* 0xbf */ u8 touchHoldDelay;
+    /* 0x00c0 */ BgVramTaskPair bgTasks[1];
+    /* 0x00f8 */ InventoryItemGrid pocketGrid;
+    /* 0x0b58 */ LetterGrid letterGrid;
+    /* 0x0b80 */ InventoryBg inventoryBg;
+    /* 0x2160 */ TouchPromptBalloon nameBalloon;
+    /* 0x2220 */ CursorMotion flyMotion;
+    /* 0x2238 */ MenuCursorBuf0 cursor;
+    /* 0x229c */ PopupChoiceMenu popup;
+    /* 0x259c */ MenuErrorMessage errorMessage;
+    /* 0x26a4 */ LetterRenderer letterView;
+    /* 0x28b4 */ MenuLabelButton letterCloseButton;
+    /* 0x2924 */ Letter mailboxLetters[10];
     /* 0x32ac */ Letter unk_32ac[10];
-    /* 0x3c34 */ MenuBottomButtons unk_3c34;
-    /* 0x3d98 */ Letter unk_3d98;
-    /* 0x3e8c */ Letter unk_3e8c;
+    /* 0x3c34 */ MenuBottomButtons bottomButtons;
+    /* 0x3d98 */ Letter heldLetter;
+    /* 0x3e8c */ Letter swapLetter;
 };
 
 static inline BOOL Unk_ov106_022966b8_Both() {
@@ -656,24 +656,24 @@ BOOL MailboxMenu::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_2160.vfunc_08();
+    nameBalloon.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_2238)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     drawHeldItem();
     if (testFlags(2)) {
-        ((MenuBottomButtons *)&unk_3c34)->drawAt(unk_a0);
-        s32 t = unk_98 - 0x10;
-        InventoryItemGrid_DrawPockets(&unk_f8, 0, t);
-        ((LetterGrid *)&unk_b58)->drawPocketLetters(0, t);
-        InventoryBg_DrawSprite(&unk_b80, t);
+        ((MenuBottomButtons *)&bottomButtons)->drawAt(buttonsSlideY);
+        s32 t = slideY - 0x10;
+        InventoryItemGrid_DrawPockets(&pocketGrid, 0, t);
+        ((LetterGrid *)&letterGrid)->drawPocketLetters(0, t);
+        InventoryBg_DrawSprite(&inventoryBg, t);
     }
     if (testFlags(0x200)) {
-        ((LetterGrid *)&unk_b58)->drawLetters23(unk_9c, -0x10);
+        ((LetterGrid *)&letterGrid)->drawLetters23(boxSlideX, -0x10);
     }
     if (testFlags(0x80)) {
-        ((LabelButton *)&unk_28b4)->setPos(0, getSlideOffsetY());
-        unk_28b4.vfunc_08();
+        ((LabelButton *)&letterCloseButton)->setPos(0, getSlideOffsetY());
+        letterCloseButton.vfunc_08();
     }
     return TRUE;
 }
@@ -692,7 +692,7 @@ BOOL MailboxMenu::execTransition() {
         &MailboxMenu::transitionAct09,
         &MailboxMenu::transitionAct0A};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -738,17 +738,17 @@ void MailboxMenu::runMainState() {
         &MailboxMenu::mainAct24,
         &MailboxMenu::mainAct25,
         &MailboxMenu::mainAct26};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL MailboxMenu::execMain() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        u32 s = unk_8d;
+        u32 s = mainState;
         if (s == 0 || s == 1 || s == 7) {
             hideCursor();
             pressCloseTab();
-            ((TouchPromptBalloon *)&unk_2160)->hide(0);
+            ((TouchPromptBalloon *)&nameBalloon)->hide(0);
             return TRUE;
         }
     }
@@ -768,11 +768,11 @@ BOOL MailboxMenu::execPhase4() {
 
 BOOL MailboxMenu::execClosed() {
     MenuCtrl_SetResult(1);
-    LetterList_Compact(unk_2924, 10);
+    LetterList_Compact(mailboxLetters, 10);
     PlayerData_GetCurrent();
     u8 *p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     s32 i = 0;
-    u8 *q = (u8 *)unk_2924;
+    u8 *q = (u8 *)mailboxLetters;
     for (; i < 10; i++) {
         Letter_Copy(p, q + i * 0xf4);
         p += 0xf4;
@@ -789,9 +789,9 @@ void MailboxMenu::transitionAct00() {
 
 void MailboxMenu::transitionAct01() {
     loadObjGraphics();
-    InventoryItemGrid_LoadPockets(&unk_f8);
-    LetterGrid_LoadPocketLetters(&unk_b58);
-    LetterGrid_SetLetters23(&unk_b58, unk_2924);
+    InventoryItemGrid_LoadPockets(&pocketGrid);
+    LetterGrid_LoadPocketLetters(&letterGrid);
+    LetterGrid_SetLetters23(&letterGrid, mailboxLetters);
     disableAllPockets();
     beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
@@ -829,7 +829,7 @@ void MailboxMenu::transitionAct03() {
 }
 
 void MailboxMenu::transitionAct04() {
-    ((TouchPromptBalloon *)&unk_2160)->hide(1);
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     hideCursor();
     if (!testFlags(0x100)) {
         ((MenuLauncher *)ProcBase_GetParent(this))->setNextRequest(0x44, 1);
@@ -868,16 +868,16 @@ void MailboxMenu::transitionAct06() {
 }
 
 void MailboxMenu::transitionAct07() {
-    void *t = getSlotLetter(unk_b9);
+    void *t = getSlotLetter(selectedSlot);
     registerLetterPaper(t);
     Letter_MarkRead(t);
-    ((LetterRenderer *)&unk_26a4)->show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    ((LetterRenderer *)&letterView)->show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
     scrollLetterViewBg();
     setTransitionState(8);
-    ((MenuLabelButton *)&unk_28b4)->showDefault(0x88);
+    ((MenuLabelButton *)&letterCloseButton)->showDefault(0x88);
     setFlags(0x80);
 }
 
@@ -923,53 +923,53 @@ void MailboxMenu::scrollLetterViewBg() {
 
 void MailboxMenu::scrollMainBg() {
     applySlideOffset(6, 0, -16);
-    unk_98 = getSlideOffsetY();
-    unk_a0 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
 }
 
 void MailboxMenu::scrollBoxBg() {
     applySlideOffset(4, 0, -16);
-    unk_9c = getSlideOffsetX();
+    boxSlideX = getSlideOffsetX();
 }
 
 void MailboxMenu::initParts() {
     s32 i;
     u8 *p;
-    unk_94 = 0;
-    InventoryItemGrid_Init(&unk_f8, 2);
-    ((LetterGrid *)&unk_b58)->init(1);
-    InventoryBg_Init(&unk_b80, 6);
-    unk_b6 = 0x20;
-    ((CursorMotion *)&unk_2220)->reset();
-    unk_b4 = 0;
-    unk_b8 = 0xb;
-    ((PopupChoiceMenu *)&unk_229c)->init(3, 0, 0);
-    ((LetterRenderer *)&unk_26a4)->setLayer(3);
+    stateFlags = 0;
+    InventoryItemGrid_Init(&pocketGrid, 2);
+    ((LetterGrid *)&letterGrid)->init(1);
+    InventoryBg_Init(&inventoryBg, 6);
+    balloonSlot = 0x20;
+    ((CursorMotion *)&flyMotion)->reset();
+    handKind = 0;
+    cursorSlot = 0xb;
+    ((PopupChoiceMenu *)&popup)->init(3, 0, 0);
+    ((LetterRenderer *)&letterView)->setLayer(3);
     for (i = 0; i < 10; i++) {
-        Letter_Clear((u8 *)unk_2924 + i * 0xf4);
+        Letter_Clear((u8 *)mailboxLetters + i * 0xf4);
     }
     PlayerData_GetCurrent();
     p = ((PlayerMailbox *)PlayerData_GetMailbox())->getLetter(0);
     for (i = 0; i < 10; i++) {
-        Letter_Copy((u8 *)unk_2924 + i * 0xf4, p);
+        Letter_Copy((u8 *)mailboxLetters + i * 0xf4, p);
         p += 0xf4;
     }
     setFlags(0x4000);
-    unk_bf = 0;
+    touchHoldDelay = 0;
 }
 
 void MailboxMenu::releaseResources() {
     cancelBgTasks();
-    InventoryBg_Exit(&unk_b80);
-    InventoryItemGrid_Exit(&unk_f8);
-    PopupChoice_ForceClose(&unk_229c);
-    ((LetterRenderer *)&unk_26a4)->release();
-    ((MenuBottomButtons *)&unk_3c34)->freeTexts();
+    InventoryBg_Exit(&inventoryBg);
+    InventoryItemGrid_Exit(&pocketGrid);
+    PopupChoice_ForceClose(&popup);
+    ((LetterRenderer *)&letterView)->release();
+    ((MenuBottomButtons *)&bottomButtons)->freeTexts();
 }
 
 void MailboxMenu::preInputUpdate() {
     preStateUpdate();
-    unk_2238.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void MailboxMenu::postInputUpdate() {
@@ -978,16 +978,16 @@ void MailboxMenu::postInputUpdate() {
 
 void MailboxMenu::preStateUpdate() {
     cancelBgTasks();
-    InventoryBg_PreUpdate(&unk_b80);
-    InventoryItemGrid_PreUpdate(&unk_f8);
-    ((LetterGrid *)&unk_b58)->updateCursorLift();
-    ((MenuBottomButtons *)&unk_3c34)->freeTexts();
+    InventoryBg_PreUpdate(&inventoryBg);
+    InventoryItemGrid_PreUpdate(&pocketGrid);
+    ((LetterGrid *)&letterGrid)->updateCursorLift();
+    ((MenuBottomButtons *)&bottomButtons)->freeTexts();
 }
 
 void MailboxMenu::postStateUpdate() {
-    PopupChoice_Update(&unk_229c);
-    InventoryBg_Update(&unk_b80);
-    if (((TouchPromptBalloon *)&unk_2160)->updatePrompt()) {
+    PopupChoice_Update(&popup);
+    InventoryBg_Update(&inventoryBg);
+    if (((TouchPromptBalloon *)&nameBalloon)->updatePrompt()) {
         placeBalloon();
     }
 }
@@ -1000,7 +1000,7 @@ extern "C" void MailboxMenu_SetupBgLayers() {
 }
 
 void MailboxMenu::loadInventoryBg() {
-    InventoryBg_Load(&unk_b80, 0);
+    InventoryBg_Load(&inventoryBg, 0);
 }
 
 void MailboxMenu::loadBoxBg() {
@@ -1011,9 +1011,9 @@ void MailboxMenu::loadBoxBg() {
 }
 
 void MailboxMenu::loadObjGraphics() {
-    InventoryBg_LoadObjGraphics(&unk_b80);
-    MenuButtons_LoadTextColors(&unk_3c34);
-    ((MenuBottomButtons *)&unk_3c34)->setLayoutSingle05(0x88);
+    InventoryBg_LoadObjGraphics(&inventoryBg);
+    MenuButtons_LoadTextColors(&bottomButtons);
+    ((MenuBottomButtons *)&bottomButtons)->setLayoutSingle05(0x88);
 }
 
 void MailboxMenu::mainAct00() {
@@ -1024,7 +1024,7 @@ void MailboxMenu::mainAct00() {
             s32 r = getSlotAt(gTouchCurX, gTouchCurY + 0x10, 1);
             if (r != 0x20) {
                 beginTouchOnSlot(r);
-            } else if (((MenuBottomButtonsBody *)&unk_3c34)->isTouched(9)) {
+            } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(9)) {
                 pressCloseTab();
             }
         }
@@ -1038,25 +1038,25 @@ void MailboxMenu::mainAct01() {
             runMainState();
         } else {
             setMainState(0);
-            ((TouchPromptBalloon *)&unk_2160)->setAutoCloseTimer(0x3c);
+            ((TouchPromptBalloon *)&nameBalloon)->setAutoCloseTimer(0x3c);
         }
     } else {
         if (testFlags(4)) {
             if (hasTouchMoved()) {
-                beginDragFromSlot(unk_b5);
+                beginDragFromSlot(touchedSlot);
                 return;
             }
-            if (((TouchPromptBalloon *)&unk_2160)->isOpenOrOpening()) {
-                if (unk_bf != 0) {
-                    unk_bf--;
+            if (((TouchPromptBalloon *)&nameBalloon)->isOpenOrOpening()) {
+                if (touchHoldDelay != 0) {
+                    touchHoldDelay--;
                 } else {
-                    selectLetter(unk_b5, 1);
+                    selectLetter(touchedSlot, 1);
                     setMainState(2);
                 }
                 return;
             }
         }
-        ((TouchPromptBalloon *)&unk_2160)->commitOpen();
+        ((TouchPromptBalloon *)&nameBalloon)->commitOpen();
     }
 }
 
@@ -1066,18 +1066,18 @@ void MailboxMenu::mainAct02() {
     } else if (gTouchHeld == 0) {
         setMainState(6);
     } else if (testFlags(4) && hasTouchMoved()) {
-        beginDragFromSlot(unk_b5);
-        PopupChoice_Close(&unk_229c, 0);
-        ((TouchPromptBalloon *)&unk_2160)->hide(1);
+        beginDragFromSlot(touchedSlot);
+        PopupChoice_Close(&popup, 0);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     }
 }
 
 void MailboxMenu::mainAct03() {
-    if (((TouchPromptBalloon *)&unk_2160)->isOpenOrOpening()) {
-        if (unk_bf != 0) {
-            unk_bf--;
+    if (((TouchPromptBalloon *)&nameBalloon)->isOpenOrOpening()) {
+        if (touchHoldDelay != 0) {
+            touchHoldDelay--;
         } else {
-            selectLetter(unk_b5, 1);
+            selectLetter(touchedSlot, 1);
             setMainState(2);
         }
     }
@@ -1086,35 +1086,35 @@ void MailboxMenu::mainAct03() {
 void MailboxMenu::mainAct04() {
     s32 p, t;
     if (MenuCtrl_IsForceCloseDue()) {
-        releaseHeldTo(unk_b7);
+        releaseHeldTo(heldSlot);
         pressCloseTab();
-        ((TouchPromptBalloon *)&unk_2160)->hide(0);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(0);
     } else {
         getDragPos();
         clearHoverSlot();
-        p = unk_ac + 8;
-        t = getSlotAt(p, unk_b0 + 0x18, 0);
+        p = handX + 8;
+        t = getSlotAt(p, handY + 0x18, 0);
         if (t != 0x20) {
             if (gTouchHeld == 0) {
-                if (isLetterSlot(unk_b7) && isMailboxSlot(t)) {
-                    flyHeldTo(unk_b7, 4);
-                } else if (isMailboxSlot(unk_b7) && isLetterSlot(t)
+                if (isLetterSlot(heldSlot) && isMailboxSlot(t)) {
+                    flyHeldTo(heldSlot, 4);
+                } else if (isMailboxSlot(heldSlot) && isLetterSlot(t)
                            && isSlotEmpty(t) == 0) {
-                    flyHeldTo(unk_b7, 4);
+                    flyHeldTo(heldSlot, 4);
                 } else if (isSlotDisabled(t) != 0 || dropHeldOnSlot(t) == 0) {
-                    flyHeldToOtherList(unk_b7, p);
+                    flyHeldToOtherList(heldSlot, p);
                 } else {
                     Inventory_PlayPutDownSe();
                     resumeInput();
                 }
             } else {
-                if (isLetterSlot(unk_b7) && isMailboxSlot(t)) {
+                if (isLetterSlot(heldSlot) && isMailboxSlot(t)) {
                 } else {
                     setHoverSlot(t);
                 }
             }
         } else if (gTouchHeld == 0) {
-            flyHeldToOtherList(unk_b7, p);
+            flyHeldToOtherList(heldSlot, p);
         }
     }
 }
@@ -1125,31 +1125,31 @@ void MailboxMenu::mainAct05() {
     } else if (checkSwitchToButtons(1)) {
         setMainState(9);
     } else {
-        if (((MenuLabelButton *)&unk_28b4)->isTouched()) {
+        if (((MenuLabelButton *)&letterCloseButton)->isTouched()) {
             closeLetterView();
         }
     }
 }
 
 void MailboxMenu::mainAct06() {
-    if (((PopupChoiceMenuBody *)&unk_229c)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsForceCloseDue()) {
             cancelPopupForButtons();
         } else if (checkSwitchToButtons(1)) {
             cancelPopupForButtons();
         } else {
             if (Unk_ov106_02296ee4_Both()) {
-                s32 t = ((PopupChoiceMenuBody *)&unk_229c)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
+                s32 t = ((PopupChoiceMenuBody *)&popup)->hitTestRowOrLast(gTouchCurX, gTouchCurY);
                 if (t >= 0) {
                     if (testFlags(0x10000) == 0 || t != 0) {
                         u32 r;
-                        unk_bc = ((u8 *)this + 0x2595)[t];
+                        popupChoice = ((u8 *)this + 0x2595)[t];
                         r = 1;
-                        if (unk_bc == 2) {
+                        if (popupChoice == 2) {
                             r = 0;
                             Snd_PlaySe(0x24);
                         }
-                        PopupChoice_DecideRow(&unk_229c, t, r);
+                        PopupChoice_DecideRow(&popup, t, r);
                         setMainState(0x17);
                     }
                 }
@@ -1161,32 +1161,32 @@ void MailboxMenu::mainAct06() {
 void MailboxMenu::mainAct07() {
     if (checkSwitchToTouch()) {
         startTouchInput();
-        ((TouchPromptBalloon *)&unk_2160)->hide(1);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     } else {
         s32 v = takeRepeatedKeys();
         if (moveCursorByPad((void *)v, 0)) {
             updateBalloonForCursor();
             moveCursorToTarget();
-            ((TouchPromptBalloon *)&unk_2160)->hide(0);
+            ((TouchPromptBalloon *)&nameBalloon)->hide(0);
         } else {
-            if (isSlotDisabled(unk_b8) != 0) goto tail;
+            if (isSlotDisabled(cursorSlot) != 0) goto tail;
             {
                 u32 k = gPad[1];
                 if (k & 1) {
-                    if (isLetterSlot(unk_b8) || isMailboxSlot(unk_b8)) {
-                        if (isSlotEmpty(unk_b8) == 0) {
-                            selectLetter(unk_b8, 0);
+                    if (isLetterSlot(cursorSlot) || isMailboxSlot(cursorSlot)) {
+                        if (isSlotEmpty(cursorSlot) == 0) {
+                            selectLetter(cursorSlot, 0);
                         }
-                    } else if (isButtonSlot(unk_b8)) {
+                    } else if (isButtonSlot(cursorSlot)) {
                         pressCloseButton();
                     }
                 } else if (k & 0x800) {
-                    if (isMailboxSlot(unk_b8)) {
-                        if (isSlotEmpty(unk_b8) == 0) {
+                    if (isMailboxSlot(cursorSlot)) {
+                        if (isSlotEmpty(cursorSlot) == 0) {
                             s32 r = findFreePocketSlot();
                             if (r != 0x20) {
-                                pickUpAndFlyTo(unk_b8, r);
-                                ((TouchPromptBalloon *)&unk_2160)->hide(1);
+                                pickUpAndFlyTo(cursorSlot, r);
+                                ((TouchPromptBalloon *)&nameBalloon)->hide(1);
                             }
                         }
                     }
@@ -1201,9 +1201,9 @@ tail:
                 if ((k & 8) || (k & 2)) {
                     hideCursor();
                     pressCloseTab();
-                    ((TouchPromptBalloon *)&unk_2160)->hide(0);
+                    ((TouchPromptBalloon *)&nameBalloon)->hide(0);
                 } else {
-                    ((TouchPromptBalloon *)&unk_2160)->commitOpen();
+                    ((TouchPromptBalloon *)&nameBalloon)->commitOpen();
                 }
             }
         }
@@ -1212,36 +1212,36 @@ tail:
 
 void MailboxMenu::mainAct08() {
     if (MenuCtrl_IsForceCloseDue()) {
-        releaseHeldTo(unk_b7);
+        releaseHeldTo(heldSlot);
         hideCursor();
         pressCloseTab();
-        ((TouchPromptBalloon *)&unk_2160)->hide(0);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(0);
     } else {
         s32 v = takeRepeatedKeys();
         if (moveCursorByPad((void *)v, 1)) {
             updateBalloonForCursor();
             moveCursorToTarget();
-            ((TouchPromptBalloon *)&unk_2160)->hide(0);
+            ((TouchPromptBalloon *)&nameBalloon)->hide(0);
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                if (isLetterSlot(unk_b8)) {
-                    if (isMailboxSlot(unk_b7)) {
-                        if (isSlotEmpty(unk_b8) == 0) return;
+                if (isLetterSlot(cursorSlot)) {
+                    if (isMailboxSlot(heldSlot)) {
+                        if (isSlotEmpty(cursorSlot) == 0) return;
                     }
                 }
-                if (isSlotDisabled(unk_b8) == 0) {
-                    if (isSlotEmpty(unk_b8)) {
-                        beginPutDownAt(unk_b8);
+                if (isSlotDisabled(cursorSlot) == 0) {
+                    if (isSlotEmpty(cursorSlot)) {
+                        beginPutDownAt(cursorSlot);
                     } else {
-                        beginSwapAt(unk_b8);
+                        beginSwapAt(cursorSlot);
                     }
                 }
             } else if (k & 2) {
-                beginPutDownAt(unk_b7);
+                beginPutDownAt(heldSlot);
             } else {
                 getHandPos();
-                ((TouchPromptBalloon *)&unk_2160)->commitOpen();
+                ((TouchPromptBalloon *)&nameBalloon)->commitOpen();
             }
         }
     }
@@ -1251,11 +1251,11 @@ void MailboxMenu::mainAct09() {
     if (MenuCtrl_IsForceCloseDue()) {
         forceCloseFromLetterView();
     } else {
-        if (((HandCursor *)&unk_2238)->getAnim() == 0) {
-            s32 a = ((MenuLabelButton *)&unk_28b4)->getAnchorX(1);
-            s32 b = ((MenuLabelButton *)&unk_28b4)->getAnchorY(1);
-            ((MenuCursorBase *)&unk_2238)->warpTo(a, b);
-            ((MenuCursor *)&unk_2238)->setAnimIfChanged(1);
+        if (((HandCursor *)&cursor)->getAnim() == 0) {
+            s32 a = ((MenuLabelButton *)&letterCloseButton)->getAnchorX(1);
+            s32 b = ((MenuLabelButton *)&letterCloseButton)->getAnchorY(1);
+            ((MenuCursorBase *)&cursor)->warpTo(a, b);
+            ((MenuCursor *)&cursor)->setAnimIfChanged(1);
         }
         if (checkSwitchToTouch()) {
             hideCursor();
@@ -1263,7 +1263,7 @@ void MailboxMenu::mainAct09() {
         } else {
             u32 k = gPad[1];
             if ((k & 1) || (k & 2)) {
-                ((MenuCursor *)&unk_2238)->setPosePress();
+                ((MenuCursor *)&cursor)->setPosePress();
                 setMainState(10);
             }
         }
@@ -1271,7 +1271,7 @@ void MailboxMenu::mainAct09() {
 }
 
 void MailboxMenu::mainAct0A() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
         closeLetterView();
     }
 }
@@ -1284,12 +1284,12 @@ void MailboxMenu::mainAct0B() {
     } else {
         s32 v = takeRepeatedKeys();
         u8 f = (u8)testFlags(0x10000);
-        if (PopupChoice_MoveCursor(&unk_229c, v, &unk_bd, f)) {
+        if (PopupChoice_MoveCursor(&popup, v, &popupRow, f)) {
             moveCursorToPopupRow();
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                ((MenuCursor *)&unk_2238)->setPosePress();
+                ((MenuCursor *)&cursor)->setPosePress();
                 setMainState(0xc);
             } else if (k & 2) {
                 cancelPopup();
@@ -1299,24 +1299,24 @@ void MailboxMenu::mainAct0B() {
 }
 
 void MailboxMenu::mainAct0C() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
         u32 r;
-        unk_bc = ((u8 *)this + 0x2595)[unk_bd];
+        popupChoice = ((u8 *)this + 0x2595)[popupRow];
         r = 1;
-        if (unk_bc == 2) {
+        if (popupChoice == 2) {
             r = 0;
             Snd_PlaySe(0x24);
         }
-        PopupChoice_DecideRow(&unk_229c, unk_bd, r);
+        PopupChoice_DecideRow(&popup, popupRow, r);
         setMainState(0x17);
     }
 }
 
 void MailboxMenu::mainAct0D() {
-    if (((MenuCursorBase *)&unk_2238)->isMoving() == 0) {
-        setMainState(unk_bb);
-        if (unk_bb == 7) {
-            setFocusSlot(unk_b8);
+    if (((MenuCursorBase *)&cursor)->isMoving() == 0) {
+        setMainState(returnState);
+        if (returnState == 7) {
+            setFocusSlot(cursorSlot);
         }
         runMainState();
     }
@@ -1324,8 +1324,8 @@ void MailboxMenu::mainAct0D() {
 }
 
 void MailboxMenu::mainAct0E() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
-        if (unk_b8 == 0x1f) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        if (cursorSlot == 0x1f) {
             pressCloseTab();
         } else {
             func_ov106_022954b4();
@@ -1334,30 +1334,30 @@ void MailboxMenu::mainAct0E() {
 }
 
 void MailboxMenu::mainAct0F() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
         refreshCursor();
         setMainState(7);
     }
 }
 
 void MailboxMenu::mainAct10() {
-    if (((MenuCursorBase *)&unk_2238)->func_ov002_02202928()) {
-        pickUpAtSlot(unk_b8);
+    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
+        pickUpAtSlot(cursorSlot);
         setMainState(0x11);
     }
 }
 
 void MailboxMenu::mainAct11() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
-        setMainState(unk_bb);
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        setMainState(returnState);
     }
     getHandPos();
 }
 
 void MailboxMenu::mainAct12() {
-    if (((MenuCursorBase *)&unk_2238)->func_ov002_02202928() == 0) {
-        u32 a = unk_ba;
-        if (unk_b8 == a) {
+    if (((MenuCursorBase *)&cursor)->func_ov002_02202928() == 0) {
+        u32 a = targetSlot;
+        if (cursorSlot == a) {
             dropHeldOnSlot(a);
             updateBalloonForCursor();
             setMainState(7);
@@ -1371,8 +1371,8 @@ void MailboxMenu::mainAct12() {
 }
 
 void MailboxMenu::mainAct13() {
-    if (((MenuCursorBase *)&unk_2238)->func_ov002_022028fc() == 0) {
-        exchangeHeldWith(unk_ba);
+    if (((MenuCursorBase *)&cursor)->func_ov002_022028fc() == 0) {
+        exchangeHeldWith(targetSlot);
         setFlags(0x40);
         setMainState(0x14);
         updateBalloonForCursor();
@@ -1382,10 +1382,10 @@ void MailboxMenu::mainAct13() {
 }
 
 void MailboxMenu::mainAct14() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
-        setMainState(unk_bb);
+    if (((HandCursor *)&cursor)->isAnimDone()) {
+        setMainState(returnState);
     }
-    if (((MenuCursorBase *)&unk_2238)->func_ov002_02202928()) {
+    if (((MenuCursorBase *)&cursor)->func_ov002_02202928()) {
         if (testFlags(0x40)) {
             clearFlags(0x40);
             Inventory_PlayPickUpSe();
@@ -1395,8 +1395,8 @@ void MailboxMenu::mainAct14() {
 }
 
 void MailboxMenu::mainAct15() {
-    if (((CursorMotion *)&unk_2220)->update()) {
-        releaseHeldTo(unk_b7);
+    if (((CursorMotion *)&flyMotion)->update()) {
+        releaseHeldTo(heldSlot);
         resumeInput();
         Inventory_PlayPutDownSe();
     } else {
@@ -1405,7 +1405,7 @@ void MailboxMenu::mainAct15() {
 }
 
 void MailboxMenu::mainAct16() {
-    if (((PopupChoiceMenuBody *)&unk_229c)->isOpen()) {
+    if (((PopupChoiceMenuBody *)&popup)->isOpen()) {
         if (MenuCtrl_IsButtons()) {
             cursorToPopupTop();
             setMainState(0xb);
@@ -1416,10 +1416,10 @@ void MailboxMenu::mainAct16() {
 }
 
 void MailboxMenu::mainAct17() {
-    if (PopupChoice_TickDecideDelay(&unk_229c)) {
-        PopupChoice_Close(&unk_229c, 0);
-        ((TouchPromptBalloon *)&unk_2160)->hide(1);
-        if (((HandCursor *)&unk_2238)->getAnim()) {
+    if (PopupChoice_TickDecideDelay(&popup)) {
+        PopupChoice_Close(&popup, 0);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+        if (((HandCursor *)&cursor)->getAnim()) {
             showCursorAtSlot();
         }
         setMainState(0x18);
@@ -1427,33 +1427,33 @@ void MailboxMenu::mainAct17() {
 }
 
 void MailboxMenu::mainAct18() {
-    if (((PopupChoiceMenuBody *)&unk_229c)->isClosed()) {
+    if (((PopupChoiceMenuBody *)&popup)->isClosed()) {
         onPopupChoice();
     }
 }
 
 void MailboxMenu::mainAct19() {
-    if (((MenuErrorMessage *)&unk_259c)->update(1)) {
-        setMainState(unk_bb);
-        ((HandCursor *)&unk_2238)->enableObjWindow();
+    if (((MenuErrorMessage *)&errorMessage)->update(1)) {
+        setMainState(returnState);
+        ((HandCursor *)&cursor)->enableObjWindow();
     }
 }
 
 void MailboxMenu::mainAct1A() {
-    s32 a = ((MenuErrorMessage *)&unk_259c)->stepOpen();
+    s32 a = ((MenuErrorMessage *)&errorMessage)->stepOpen();
     a &= stepSlideOut(-1);
-    unk_a0 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
     if (a) {
         setMainState(0x1b);
         initSlideIn(0, 0);
-        ((MenuBottomButtonsBody *)&unk_3c34)->setLayoutTossKeep();
-        ((MenuBottomButtonsBody *)&unk_3c34)->enableObjWindow();
+        ((MenuBottomButtonsBody *)&bottomButtons)->setLayoutTossKeep();
+        ((MenuBottomButtonsBody *)&bottomButtons)->enableObjWindow();
     }
 }
 
 void MailboxMenu::mainAct1B() {
     BOOL r4 = stepSlideIn(-1);
-    unk_a0 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
     if (r4) {
         resumePromptInput();
     }
@@ -1466,9 +1466,9 @@ void MailboxMenu::mainAct1C() {
     if (checkSwitchToButtons(1)) {
         startPromptButtonInput();
     } else if (Unk_ov106_022966b8_Both()) {
-        if (((MenuBottomButtonsBody *)&unk_3c34)->isTouched(3)) {
+        if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(3)) {
             pressPromptTab3();
-        } else if (((MenuBottomButtonsBody *)&unk_3c34)->isTouched(4)) {
+        } else if (((MenuBottomButtonsBody *)&bottomButtons)->isTouched(4)) {
             pressPromptTab4();
         }
     }
@@ -1483,7 +1483,7 @@ void MailboxMenu::mainAct1D() {
     } else {
         u32 t = gPad[1];
         if (t & 1) {
-            ((MenuCursor *)&unk_2238)->setPosePress();
+            ((MenuCursor *)&cursor)->setPosePress();
             setMainState(0x1e);
         } else if (t & 2) {
             hideCursor();
@@ -1492,25 +1492,25 @@ void MailboxMenu::mainAct1D() {
             hideCursor();
             pressPromptTab3();
         } else {
-            u32 r4 = unk_be;
+            u32 r4 = promptChoice;
             u32 r6 = takeRepeatedKeys();
             if (MenuKeys_HasLeft(r6)) {
-                if (unk_be != 0) {
-                    unk_be = ((volatile MailboxMenu *)this)->unk_be - 1;
+                if (promptChoice != 0) {
+                    promptChoice = ((volatile MailboxMenu *)this)->promptChoice - 1;
                 }
             } else if (MenuKeys_HasRight(r6)) {
-                if (unk_be < 1) {
-                    unk_be = ((volatile MailboxMenu *)this)->unk_be + 1;
+                if (promptChoice < 1) {
+                    promptChoice = ((volatile MailboxMenu *)this)->promptChoice + 1;
                 }
             }
-            if (r4 != unk_be) {
-                if (unk_be != 0) {
-                    s32 a = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetX(4);
-                    s32 b = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetY(4);
+            if (r4 != promptChoice) {
+                if (promptChoice != 0) {
+                    s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
+                    s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
                     moveCursorToPoint(a, b);
                 } else {
-                    s32 a = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetX(3);
-                    s32 b = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetY(3);
+                    s32 a = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(3);
+                    s32 b = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(3);
                     moveCursorToPoint(a, b);
                 }
             }
@@ -1519,46 +1519,46 @@ void MailboxMenu::mainAct1D() {
 }
 
 void MailboxMenu::mainAct1E() {
-    if (((HandCursor *)&unk_2238)->isAnimDone()) {
+    if (((HandCursor *)&cursor)->isAnimDone()) {
         setMainState(0x1f);
-        if (unk_be != 0) {
-            ((MenuBottomButtonsBody *)&unk_3c34)->setSelected(4);
+        if (promptChoice != 0) {
+            ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(4);
             Snd_PlaySe(0x28);
         } else {
-            ((MenuBottomButtonsBody *)&unk_3c34)->setSelected(3);
+            ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
             Snd_PlaySe(0x27);
         }
     }
 }
 
 void MailboxMenu::mainAct1F() {
-    if (((MenuBottomButtonsBody *)&unk_3c34)->stepPress()) {
-        if (((HandCursor *)&unk_2238)->getAnim()) {
-            s32 r4 = ((MenuBottomButtonsBody *)&unk_3c34)->getPressOffset();
-            s32 r6 = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetX(-1);
-            s32 r2 = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetY(-1);
-            ((MenuCursorBase *)&unk_2238)->warpTo(r4 + r6, r4 + r2);
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
+        if (((HandCursor *)&cursor)->getAnim()) {
+            s32 r4 = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 r6 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 r2 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
+            ((MenuCursorBase *)&cursor)->warpTo(r4 + r6, r4 + r2);
         }
     } else {
         hideCursor();
         setMainState(0x20);
         initSlideOut(0, 0);
-        ((MenuErrorMessage *)&unk_259c)->beginClose();
+        ((MenuErrorMessage *)&errorMessage)->beginClose();
     }
 }
 
 void MailboxMenu::mainAct20() {
-    BOOL r4 = ((MenuErrorMessage *)&unk_259c)->stepClose();
+    BOOL r4 = ((MenuErrorMessage *)&errorMessage)->stepClose();
     r4 &= stepSlideOut(-1);
-    unk_a0 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
     if (r4) {
-        ((MenuBottomButtonsBody *)&unk_3c34)->disableObjWindow();
-        if (unk_be == 0) {
+        ((MenuBottomButtonsBody *)&bottomButtons)->disableObjWindow();
+        if (promptChoice == 0) {
             initSlideIn(0, 0);
-            ((MenuBottomButtons *)&unk_3c34)->setLayoutSingle05(0x88);
+            ((MenuBottomButtons *)&bottomButtons)->setLayoutSingle05(0x88);
             setMainState(0x21);
         } else {
-            ((MenuBottomButtons *)&unk_3c34)->hide();
+            ((MenuBottomButtons *)&bottomButtons)->hide();
             setTransitionState(4);
             setPhase(1);
         }
@@ -1567,18 +1567,18 @@ void MailboxMenu::mainAct20() {
 
 void MailboxMenu::mainAct21() {
     BOOL r4 = stepSlideIn(-1);
-    unk_a0 = getSlideOffsetY();
+    buttonsSlideY = getSlideOffsetY();
     if (r4) {
         resumeInput();
     }
 }
 
 void MailboxMenu::mainAct22() {
-    if (((MenuLabelButton *)&unk_28b4)->stepAnim()) {
-        if (((HandCursor *)&unk_2238)->getAnim()) {
-            s32 r4 = ((MenuLabelButton *)&unk_28b4)->getAnchorX(1);
-            s32 r2 = ((MenuLabelButton *)&unk_28b4)->getAnchorY(1);
-            ((MenuCursorBase *)&unk_2238)->warpTo(r4, r2);
+    if (((MenuLabelButton *)&letterCloseButton)->stepAnim()) {
+        if (((HandCursor *)&cursor)->getAnim()) {
+            s32 r4 = ((MenuLabelButton *)&letterCloseButton)->getAnchorX(1);
+            s32 r2 = ((MenuLabelButton *)&letterCloseButton)->getAnchorY(1);
+            ((MenuCursorBase *)&cursor)->warpTo(r4, r2);
         }
     } else {
         hideCursor();
@@ -1588,16 +1588,16 @@ void MailboxMenu::mainAct22() {
 }
 
 void MailboxMenu::mainAct23() {
-    if (((MenuBottomButtonsBody *)&unk_3c34)->stepPress()) {
-        if (((HandCursor *)&unk_2238)->getAnim()) {
-            s32 r4 = ((MenuBottomButtonsBody *)&unk_3c34)->getPressOffset();
-            s32 r6 = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetX(-1);
-            s32 r2 = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetY(-1);
-            ((MenuCursorBase *)&unk_2238)->warpTo(r4 + r6, r4 + r2);
+    if (((MenuBottomButtonsBody *)&bottomButtons)->stepPress()) {
+        if (((HandCursor *)&cursor)->getAnim()) {
+            s32 r4 = ((MenuBottomButtonsBody *)&bottomButtons)->getPressOffset();
+            s32 r6 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(-1);
+            s32 r2 = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(-1);
+            ((MenuCursorBase *)&cursor)->warpTo(r4 + r6, r4 + r2);
         }
     } else {
         hideCursor();
-        unk_8c = 4;
+        transitionState = 4;
         clearFlags(0x100);
         setPhase(1);
     }
@@ -1606,7 +1606,7 @@ void MailboxMenu::mainAct23() {
 void MailboxMenu::mainAct24() {
     u32 r5 = findFirstMailboxLetter();
     if (r5 == 0x20) {
-        unk_b8 = 0x1f;
+        cursorSlot = 0x1f;
         resumeInput();
     } else {
         u32 r2 = findFreePocketSlot();
@@ -1620,8 +1620,8 @@ void MailboxMenu::mainAct24() {
 }
 
 void MailboxMenu::mainAct25() {
-    if (((CursorMotion *)&unk_2220)->update()) {
-        releaseHeldTo(unk_b7);
+    if (((CursorMotion *)&flyMotion)->update()) {
+        releaseHeldTo(heldSlot);
         setMainState(0x24);
         Inventory_PlayPutDownSe();
     } else {
@@ -1630,8 +1630,8 @@ void MailboxMenu::mainAct25() {
 }
 
 void MailboxMenu::mainAct26() {
-    if (LetterGrid_UpdatePopAnim(&unk_b58)) {
-        unk_b4 = 0;
+    if (LetterGrid_UpdatePopAnim(&letterGrid)) {
+        handKind = 0;
         resumeInput();
     }
 }
@@ -1643,12 +1643,12 @@ void MailboxMenu::startTouchInput() {
 }
 
 void MailboxMenu::startButtonInput() {
-    unk_b6 = 0x20;
+    balloonSlot = 0x20;
     showCursor();
     restartKeyRepeat();
     updateBalloonForCursor();
     setMainState(7);
-    setFocusSlot(unk_b8);
+    setFocusSlot(cursorSlot);
 }
 
 void MailboxMenu::resumeInput() {
@@ -1666,12 +1666,12 @@ void MailboxMenu::startPromptTouchInput() {
 
 void MailboxMenu::startPromptButtonInput() {
     restartKeyRepeat();
-    unk_be = 1;
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(1);
-    unk_2238.vfunc_0c();
-    s32 t = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetX(4);
-    s32 u = ((MenuBottomButtonsBody *)&unk_3c34)->getTargetY(4);
-    ((MenuCursorBase *)&unk_2238)->warpTo(t, u);
+    promptChoice = 1;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
+    cursor.vfunc_0c();
+    s32 t = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetX(4);
+    s32 u = ((MenuBottomButtonsBody *)&bottomButtons)->getTargetY(4);
+    ((MenuCursorBase *)&cursor)->warpTo(t, u);
     setMainState(0x1d);
 }
 
@@ -1684,16 +1684,16 @@ void MailboxMenu::resumePromptInput() {
 }
 
 void MailboxMenu::beginTouchOnSlot(u32 a) {
-    unk_b5 = a;
+    touchedSlot = a;
     setMainState(1);
     u32 r6 = gTouchCurX;
     u32 r7 = gTouchCurY;
-    unk_a4 = getSlotX(unk_b5) - r6;
-    unk_a8 = getSlotY(unk_b5) - r7;
-    unk_b6 = a;
-    ((TouchPromptBalloon *)&unk_2160)->queueOpen();
-    ((TouchPromptBalloon *)&unk_2160)->commitOpen();
-    unk_bf = 2;
+    dragOffsetX = getSlotX(touchedSlot) - r6;
+    dragOffsetY = getSlotY(touchedSlot) - r7;
+    balloonSlot = a;
+    ((TouchPromptBalloon *)&nameBalloon)->queueOpen();
+    ((TouchPromptBalloon *)&nameBalloon)->commitOpen();
+    touchHoldDelay = 2;
     if (isSlotDisabled(a)) {
         clearFlags(4);
     } else {
@@ -1703,10 +1703,10 @@ void MailboxMenu::beginTouchOnSlot(u32 a) {
 }
 
 void MailboxMenu::beginDragFromSlot(u32 a) {
-    unk_b7 = a;
-    ((TouchPromptBalloon *)&unk_2160)->hide(1);
+    heldSlot = a;
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     pickUpFrom(a);
-    if (unk_b4 == 1) {
+    if (handKind == 1) {
         setMainState(4);
     }
     getDragPos();
@@ -1714,23 +1714,23 @@ void MailboxMenu::beginDragFromSlot(u32 a) {
 }
 
 void MailboxMenu::pickUpAtSlot(u32 a) {
-    unk_b7 = a;
-    ((TouchPromptBalloon *)&unk_2160)->hide(1);
+    heldSlot = a;
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     pickUpFrom(a);
-    if (unk_b4 == 1) {
-        unk_bb = 8;
+    if (handKind == 1) {
+        returnState = 8;
     }
     getHandPos();
     Inventory_PlayPickUpSe();
 }
 
 void MailboxMenu::flyHeldTo(u32 a, u32 b) {
-    unk_b7 = a;
-    ((CursorMotion *)&unk_2220)->setPos(unk_ac, unk_b0);
+    heldSlot = a;
+    ((CursorMotion *)&flyMotion)->setPos(handX, handY);
     s32 x = getSlotX(a);
     s32 y = getSlotY(a);
-    ((CursorMotion *)&unk_2220)->startLinear(x, y, b);
-    ((CursorMotion *)&unk_2220)->update();
+    ((CursorMotion *)&flyMotion)->startLinear(x, y, b);
+    ((CursorMotion *)&flyMotion)->update();
     getFlyPos();
     setMainState(0x15);
 }
@@ -1750,8 +1750,8 @@ void MailboxMenu::flyHeldToOtherList(u32 a, s32 c) {
 
 void MailboxMenu::pickUpAndFlyTo(u32 a, u32 b) {
     pickUpFrom(a);
-    unk_ac = getSlotX(a);
-    unk_b0 = getSlotY(a);
+    handX = getSlotX(a);
+    handY = getSlotY(a);
     flyHeldTo(b, 4);
 }
 
@@ -1764,7 +1764,7 @@ u32 MailboxMenu::findFreePocketSlot() {
 }
 
 u32 MailboxMenu::findFirstMailboxLetter() {
-    Letter *p = unk_2924;
+    Letter *p = mailboxLetters;
     s32 i;
     for (i = 0; i < 10; p++, i++) {
         if (((LetterView *)p)->getState()) {
@@ -1778,27 +1778,27 @@ void MailboxMenu::showMessage(u32 v) {
     volatile u8 buf[2];
     buf[0] = gU8None;
     buf[0] = v;
-    ((MenuErrorMessage *)&unk_259c)->startTalk((u8 *)buf, 1);
+    ((MenuErrorMessage *)&errorMessage)->startTalk((u8 *)buf, 1);
     setMainState(0x1a);
     initSlideOut(0, 0);
 }
 
 void MailboxMenu::pressPromptTab3() {
     Snd_PlaySe(0x27);
-    ((MenuBottomButtonsBody *)&unk_3c34)->setSelected(3);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(3);
     setMainState(0x1f);
-    unk_be = 0;
+    promptChoice = 0;
 }
 
 void MailboxMenu::pressPromptTab4() {
     Snd_PlaySe(0x28);
-    ((MenuBottomButtonsBody *)&unk_3c34)->setSelected(4);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(4);
     setMainState(0x1f);
-    unk_be = 1;
+    promptChoice = 1;
 }
 
 void MailboxMenu::cancelBgTasks() {
-    ((BgVramTask *)unk_c0)->cancel();
+    ((BgVramTask *)bgTasks)->cancel();
 }
 
 BOOL MailboxMenu::isLetterSlot(u32 v) {
@@ -1833,12 +1833,12 @@ u8 MailboxMenu::fromLetterGridIndex(u32 a) {
 }
 
 u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
-    s32 r4 = _ZN10LetterGrid18findPocketLetterAtEii(&unk_b58);
+    s32 r4 = _ZN10LetterGrid18findPocketLetterAtEii(&letterGrid);
     if (r4 == 0x37) {
-        r4 = ((LetterGrid *)&unk_b58)->findLetterAt23(a, b);
+        r4 = ((LetterGrid *)&letterGrid)->findLetterAt23(a, b);
     }
     if (r4 != 0x37) {
-        if (c != 0 && LetterGrid_IsSlotEmpty(&unk_b58, r4)) return 0x20;
+        if (c != 0 && LetterGrid_IsSlotEmpty(&letterGrid, r4)) return 0x20;
         return fromLetterGridIndex(r4);
     }
     return 0x20;
@@ -1846,8 +1846,8 @@ u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
 
 BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
     if (isSlotEmpty(a) == 0) {
-        Letter_Copy(&unk_3e8c, getSlotLetter(a));
-        putLetterInSlot(unk_b7, &unk_3e8c);
+        Letter_Copy(&swapLetter, getSlotLetter(a));
+        putLetterInSlot(heldSlot, &swapLetter);
     }
     releaseHeldTo(a);
     return TRUE;
@@ -1855,7 +1855,7 @@ BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
 
 void MailboxMenu::putLetterInSlot(u32 a, void *p) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&unk_b58)->func_ov094_02294318(toLetterGridIndex(a), (s32)p);
+        ((LetterGrid *)&letterGrid)->func_ov094_02294318(toLetterGridIndex(a), (s32)p);
         if (isLetterSlot(a)) {
             registerLetterPaper(p);
         }
@@ -1864,7 +1864,7 @@ void MailboxMenu::putLetterInSlot(u32 a, void *p) {
 
 void * MailboxMenu::getSlotLetter(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return ((LetterGrid *)&unk_b58)->getLetter(toLetterGridIndex(a));
+        return ((LetterGrid *)&letterGrid)->getLetter(toLetterGridIndex(a));
     }
     return 0;
 }
@@ -1880,7 +1880,7 @@ void MailboxMenu::registerLetterPaper(void *p) {
 
 s32 MailboxMenu::getSlotX(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return LetterGrid_GetSlotX(&unk_b58, toLetterGridIndex(a));
+        return LetterGrid_GetSlotX(&letterGrid, toLetterGridIndex(a));
     }
     if (a == 0x1f) return 0xbc;
     return 0;
@@ -1888,53 +1888,53 @@ s32 MailboxMenu::getSlotX(u32 a) {
 
 s32 MailboxMenu::getSlotY(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return LetterGrid_GetSlotY(&unk_b58, toLetterGridIndex(a)) - 0x10;
+        return LetterGrid_GetSlotY(&letterGrid, toLetterGridIndex(a)) - 0x10;
     }
     if (a == 0x1f) return 0xb6;
     return 0;
 }
 
 void MailboxMenu::disableAllPockets() {
-    InventoryItemGrid_DisableSlotRange(&unk_f8, 0, 0xe);
-    ((LetterGrid *)&unk_b58)->highlightLetterKinds(4);
+    InventoryItemGrid_DisableSlotRange(&pocketGrid, 0, 0xe);
+    ((LetterGrid *)&letterGrid)->highlightLetterKinds(4);
 }
 
 BOOL MailboxMenu::isSlotDisabled(u32 a) {
     if (isLetterSlot(a)) {
-        return ((LetterGrid *)&unk_b58)->isHighlighted(toLetterGridIndex(a));
+        return ((LetterGrid *)&letterGrid)->isHighlighted(toLetterGridIndex(a));
     }
     return FALSE;
 }
 
 BOOL MailboxMenu::isSlotEmpty(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        return LetterGrid_IsSlotEmpty(&unk_b58, toLetterGridIndex(a));
+        return LetterGrid_IsSlotEmpty(&letterGrid, toLetterGridIndex(a));
     }
     return TRUE;
 }
 
 void MailboxMenu::clearFocusSlot() {
-    InventoryItemGrid_ClearCursorSlot(&unk_f8);
-    ((LetterGrid *)&unk_b58)->clearCursorSlot();
+    InventoryItemGrid_ClearCursorSlot(&pocketGrid);
+    ((LetterGrid *)&letterGrid)->clearCursorSlot();
 }
 
 void MailboxMenu::setFocusSlot(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&unk_b58)->setCursorSlot(toLetterGridIndex(a));
-        InventoryItemGrid_ClearCursorSlot(&unk_f8);
+        ((LetterGrid *)&letterGrid)->setCursorSlot(toLetterGridIndex(a));
+        InventoryItemGrid_ClearCursorSlot(&pocketGrid);
     } else {
         clearFocusSlot();
     }
 }
 
 void MailboxMenu::clearHoverSlot() {
-    InventoryItemGrid_ClearMarks(&unk_f8);
-    ((LetterGrid *)&unk_b58)->clearMarks();
+    InventoryItemGrid_ClearMarks(&pocketGrid);
+    ((LetterGrid *)&letterGrid)->clearMarks();
 }
 
 void MailboxMenu::setHoverSlot(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
-        ((LetterGrid *)&unk_b58)->markSlot(toLetterGridIndex(a));
+        ((LetterGrid *)&letterGrid)->markSlot(toLetterGridIndex(a));
     }
 }
 
@@ -1949,92 +1949,92 @@ BOOL MailboxMenu::hasTouchMoved() {
 }
 
 void MailboxMenu::placeBalloon() {
-    s32 r6 = getSlotX(unk_b6) - 0x6d;
-    s32 r4 = getSlotY(unk_b6) - 0x78;
+    s32 r6 = getSlotX(balloonSlot) - 0x6d;
+    s32 r4 = getSlotY(balloonSlot) - 0x78;
     if (MenuCtrl_IsButtons()) {
         r4 -= 8;
     }
-    ((LabelBalloon *)&unk_2160)->setPos(r6, r4);
-    if (isLetterSlot(unk_b6) || isMailboxSlot(unk_b6)) {
-        ((LetterGrid *)&unk_b58)->showLetterName(&unk_2160, toLetterGridIndex(unk_b6));
+    ((LabelBalloon *)&nameBalloon)->setPos(r6, r4);
+    if (isLetterSlot(balloonSlot) || isMailboxSlot(balloonSlot)) {
+        ((LetterGrid *)&letterGrid)->showLetterName(&nameBalloon, toLetterGridIndex(balloonSlot));
     }
 }
 
 void MailboxMenu::updateBalloonForCursor() {
-    if (isLetterSlot(unk_b8) || isMailboxSlot(unk_b8)) {
-        if (isSlotEmpty(unk_b8)) {
-            ((TouchPromptBalloon *)&unk_2160)->cancelQueuedOpen();
+    if (isLetterSlot(cursorSlot) || isMailboxSlot(cursorSlot)) {
+        if (isSlotEmpty(cursorSlot)) {
+            ((TouchPromptBalloon *)&nameBalloon)->cancelQueuedOpen();
         } else {
-            unk_b6 = unk_b8;
-            ((TouchPromptBalloon *)&unk_2160)->queueOpen();
+            balloonSlot = cursorSlot;
+            ((TouchPromptBalloon *)&nameBalloon)->queueOpen();
         }
     } else {
-        ((TouchPromptBalloon *)&unk_2160)->cancelQueuedOpen();
+        ((TouchPromptBalloon *)&nameBalloon)->cancelQueuedOpen();
     }
 }
 
 void MailboxMenu::drawHeldItem() {
     if (testFlags(0x40) == 0) {
-        if (unk_b4 != 0) {
-            if (unk_b4 == 1) {
-                ((LetterGrid *)&unk_b58)->drawHeldLetter(unk_ac, unk_b0, &unk_3d98);
+        if (handKind != 0) {
+            if (handKind == 1) {
+                ((LetterGrid *)&letterGrid)->drawHeldLetter(handX, handY, &heldLetter);
             }
         }
     }
 }
 
 void MailboxMenu::getDragPos() {
-    unk_ac = unk_a4 + gTouchCurX;
-    unk_b0 = unk_a8 + gTouchCurY;
+    handX = dragOffsetX + gTouchCurX;
+    handY = dragOffsetY + gTouchCurY;
 }
 
 void MailboxMenu::getHandPos() {
-    unk_ac = ((MenuCursorBase *)&unk_2238)->getFrameScreenX() - 2;
-    unk_b0 = ((MenuCursorBase *)&unk_2238)->getFrameScreenY() - 4;
+    handX = ((MenuCursorBase *)&cursor)->getFrameScreenX() - 2;
+    handY = ((MenuCursorBase *)&cursor)->getFrameScreenY() - 4;
 }
 
 void MailboxMenu::getFlyPos() {
-    unk_ac = ((CursorMotion *)&unk_2220)->getX();
-    unk_b0 = ((CursorMotion *)&unk_2220)->getY();
+    handX = ((CursorMotion *)&flyMotion)->getX();
+    handY = ((CursorMotion *)&flyMotion)->getY();
 }
 
 void MailboxMenu::pickUpFrom(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
         u32 r4 = toLetterGridIndex(a);
-        unk_b4 = 1;
-        Letter_Copy(&unk_3d98, ((LetterGrid *)&unk_b58)->getLetter(r4));
-        ((LetterGrid *)&unk_b58)->clearLetter(r4);
+        handKind = 1;
+        Letter_Copy(&heldLetter, ((LetterGrid *)&letterGrid)->getLetter(r4));
+        ((LetterGrid *)&letterGrid)->clearLetter(r4);
     }
 }
 
 void MailboxMenu::releaseHeldTo(u32 a) {
-    if (unk_b4 == 1) {
-        putLetterInSlot(a, &unk_3d98);
+    if (handKind == 1) {
+        putLetterInSlot(a, &heldLetter);
     }
-    unk_b4 = 0;
+    handKind = 0;
 }
 
 void MailboxMenu::exchangeHeldWith(u32 a) {
-    if (unk_b4 == 1) {
-        Letter_Copy(&unk_3e8c, &unk_3d98);
+    if (handKind == 1) {
+        Letter_Copy(&swapLetter, &heldLetter);
         pickUpFrom(a);
-        putLetterInSlot(a, &unk_3e8c);
+        putLetterInSlot(a, &swapLetter);
     }
 }
 
 void MailboxMenu::showCursor() {
     s32 r4 = getCursorTargetX();
-    ((MenuCursorBase *)&unk_2238)->warpTo(r4, getCursorTargetY());
-    if (isButtonSlot(unk_b8)) {
-        ((MenuCursor *)&unk_2238)->setAnimIfChanged(7);
+    ((MenuCursorBase *)&cursor)->warpTo(r4, getCursorTargetY());
+    if (isButtonSlot(cursorSlot)) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_2238)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 MailboxMenu::getCursorTargetX() {
-    s32 r4 = getSlotX(unk_b8);
+    s32 r4 = getSlotX(cursorSlot);
     if (testFlags(0x20)) {
         r4 += 0x100;
     } else if (testFlags(0x10)) {
@@ -2045,107 +2045,107 @@ s32 MailboxMenu::getCursorTargetX() {
 }
 
 s32 MailboxMenu::getCursorTargetY() {
-    return getSlotY(unk_b8);
+    return getSlotY(cursorSlot);
 }
 
 void MailboxMenu::hideCursor() {
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(0);
-    unk_2238.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void MailboxMenu::moveCursorToTarget() {
     s32 r5;
     if (testFlags(8)) {
         r5 = getCursorTargetX();
-        ((MenuCursorBase *)&unk_2238)->warpTo(r5, getCursorTargetY());
+        ((MenuCursorBase *)&cursor)->warpTo(r5, getCursorTargetY());
         clearFlags(8);
     } else {
         r5 = getCursorTargetX();
-        ((MenuCursorBase *)&unk_2238)->moveToEase(r5, getCursorTargetY(), 3, 1);
-        unk_bb = unk_8d;
+        ((MenuCursorBase *)&cursor)->moveToEase(r5, getCursorTargetY(), 3, 1);
+        returnState = mainState;
         setMainState(0xd);
     }
 }
 
 void MailboxMenu::moveCursorToPoint(s32 a, s32 b) {
-    ((MenuCursorBase *)&unk_2238)->moveToEase(a, b, 3, 1);
-    unk_bb = unk_8d;
+    ((MenuCursorBase *)&cursor)->moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(0xd);
 }
 
 void MailboxMenu::moveCursorToPopupRow() {
-    s32 r4 = ((PopupChoiceMenuBody *)&unk_229c)->getRowX();
-    ((MenuCursorBase *)&unk_2238)->moveToLinear(r4, ((PopupChoiceMenuBody *)&unk_229c)->getRowY(unk_bd), 2);
-    unk_bb = unk_8d;
+    s32 r4 = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    ((MenuCursorBase *)&cursor)->moveToLinear(r4, ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow), 2);
+    returnState = mainState;
     setMainState(0xd);
 }
 
 void MailboxMenu::cancelPopup() {
     s32 r4;
-    unk_bc = 4;
-    unk_bd = PopupChoice_DecideCancel(&unk_229c, 1);
-    r4 = ((PopupChoiceMenuBody *)&unk_229c)->getRowX();
-    ((MenuCursorBase *)&unk_2238)->warpTo(r4, ((PopupChoiceMenuBody *)&unk_229c)->getRowY(unk_bd));
-    ((HandCursor *)&unk_2238)->setAnimAtEnd(8);
+    popupChoice = 4;
+    popupRow = PopupChoice_DecideCancel(&popup, 1);
+    r4 = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    ((MenuCursorBase *)&cursor)->warpTo(r4, ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow));
+    ((HandCursor *)&cursor)->setAnimAtEnd(8);
     setMainState(0x17);
 }
 
 void MailboxMenu::cursorToPopupTop() {
     s32 r4;
     if (testFlags(0x10000)) {
-        unk_bd = 1;
+        popupRow = 1;
     } else {
-        unk_bd = 0;
+        popupRow = 0;
     }
-    r4 = ((PopupChoiceMenuBody *)&unk_229c)->getRowX();
-    ((MenuCursorBase *)&unk_2238)->warpTo(r4, ((PopupChoiceMenuBody *)&unk_229c)->getRowY(unk_bd));
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(7);
+    r4 = ((PopupChoiceMenuBody *)&popup)->getRowX();
+    ((MenuCursorBase *)&cursor)->warpTo(r4, ((PopupChoiceMenuBody *)&popup)->getRowY(popupRow));
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 }
 
 void MailboxMenu::showCursorAtSlot() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    ((MenuCursorBase *)&unk_2238)->warpTo(a, b);
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(1);
+    ((MenuCursorBase *)&cursor)->warpTo(a, b);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
 }
 
 void MailboxMenu::refreshCursor() {
-    ((MenuCursorBase *)&unk_2238)->setPoseIdle();
-    unk_2238.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void MailboxMenu::pressCloseButton() {
-    ((MenuCursor *)&unk_2238)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(0xe);
 }
 
 void MailboxMenu::func_ov106_022954b4() {
-    ((MenuCursorBase *)&unk_2238)->setPoseRelease();
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
     setMainState(0xf);
 }
 
 void MailboxMenu::beginMoveFromPopup() {
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(4);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(4);
     setMainState(0x10);
 }
 
 void MailboxMenu::beginPutDownAt(u32 v) {
-    ((TouchPromptBalloon *)&unk_2160)->hide(1);
-    unk_ba = v;
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(5);
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    targetSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(5);
     setMainState(0x12);
 }
 
 void MailboxMenu::beginSwapAt(u32 v) {
-    ((TouchPromptBalloon *)&unk_2160)->hide(1);
-    unk_bb = unk_8d;
-    unk_ba = v;
-    ((MenuCursor *)&unk_2238)->setAnimIfChanged(6);
+    ((TouchPromptBalloon *)&nameBalloon)->hide(1);
+    returnState = mainState;
+    targetSlot = v;
+    ((MenuCursor *)&cursor)->setAnimIfChanged(6);
     setMainState(0x13);
 }
 
 void MailboxMenu::onPopupChoice() {
-    switch (unk_bc) {
+    switch (popupChoice) {
     case 0:
         beginMoveFromPopup();
         break;
@@ -2166,98 +2166,98 @@ void MailboxMenu::onPopupChoice() {
 }
 
 void MailboxMenu::openPopup(u32 x) {
-    ((PopupChoiceMenuBody *)&unk_229c)->setRowsFromIds((PopupChoiceIdList *)&unk_229c.unk_2f4, testFlags(0x10000));
-    s32 a = getSlotX(unk_b9);
-    s32 b = getSlotY(unk_b9);
+    ((PopupChoiceMenuBody *)&popup)->setRowsFromIds((PopupChoiceIdList *)&popup.unk_2f4, testFlags(0x10000));
+    s32 a = getSlotX(selectedSlot);
+    s32 b = getSlotY(selectedSlot);
     if (x != 0) {
-        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(&unk_229c, &unk_2160, b);
+        _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(&popup, &nameBalloon, b);
     } else {
-        ((PopupChoiceMenu *)&unk_229c)->placeNearPoint(a, b);
+        ((PopupChoiceMenu *)&popup)->placeNearPoint(a, b);
     }
-    PopupChoice_Open(&unk_229c, 0);
+    PopupChoice_Open(&popup, 0);
     setMainState(0x16);
 }
 
 void MailboxMenu::cancelPopupForButtons() {
-    unk_bc = 4;
+    popupChoice = 4;
     showCursorAtSlot();
-    PopupChoice_Close(&unk_229c, 0);
+    PopupChoice_Close(&popup, 0);
     setMainState(0x18);
 }
 
 void MailboxMenu::selectLetter(u32 idx, u32 x) {
     clearFlags(0x10000);
-    unk_b9 = idx;
-    ChoiceIdList_Clear(&unk_229c.unk_2f4, 4);
+    selectedSlot = idx;
+    ChoiceIdList_Clear(&popup.unk_2f4, 4);
     void *r7 = getSlotLetter(idx);
     if (MenuCtrl_IsButtons()) {
-        ChoiceIdList_Add(&unk_229c.unk_2f4, 0, 0);
+        ChoiceIdList_Add(&popup.unk_2f4, 0, 0);
     }
     s32 r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
-            ChoiceIdList_Add(&unk_229c.unk_2f4, 0x17, 1);
+            ChoiceIdList_Add(&popup.unk_2f4, 0x17, 1);
         } else {
-            ChoiceIdList_Add(&unk_229c.unk_2f4, 0x14, 1);
+            ChoiceIdList_Add(&popup.unk_2f4, 0x14, 1);
         }
     }
     if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
-            ChoiceIdList_Add(&unk_229c.unk_2f4, 0x15, 3);
+            ChoiceIdList_Add(&popup.unk_2f4, 0x15, 3);
         }
     }
-    ChoiceIdList_Add(&unk_229c.unk_2f4, 2, 4);
+    ChoiceIdList_Add(&popup.unk_2f4, 2, 4);
     hideCursor();
     if (x == 0) {
-        ((TouchPromptBalloon *)&unk_2160)->hide(1);
+        ((TouchPromptBalloon *)&nameBalloon)->hide(1);
     }
     openPopup(x);
 }
 
 void MailboxMenu::openDiscardConfirm() {
     setFlags(0x10000);
-    ChoiceIdList_Clear(&unk_229c.unk_2f4, 4);
-    ChoiceIdList_Add(&unk_229c.unk_2f4, 0x1a, 4);
-    ChoiceIdList_Add(&unk_229c.unk_2f4, 0x15, 2);
-    ChoiceIdList_Add(&unk_229c.unk_2f4, 0x19, 4);
+    ChoiceIdList_Clear(&popup.unk_2f4, 4);
+    ChoiceIdList_Add(&popup.unk_2f4, 0x1a, 4);
+    ChoiceIdList_Add(&popup.unk_2f4, 0x15, 2);
+    ChoiceIdList_Add(&popup.unk_2f4, 0x19, 4);
     openPopup(0);
 }
 
 void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
-    s32 r6 = unk_b8 - 0xb;
+    s32 r6 = cursorSlot - 0xb;
     s32 r4 = r6 >> 1;
     if (MenuKeys_HasLeft((u32)pad)) {
         if ((r6 & 1) > 0) {
-            unk_b8 = unk_b8 - 1;
+            cursorSlot = cursorSlot - 1;
         } else {
-            if (x != 1 || !isLetterSlot(unk_b7)) {
-                unk_b8 = r4 * 2 + 0x16;
+            if (x != 1 || !isLetterSlot(heldSlot)) {
+                cursorSlot = r4 * 2 + 0x16;
                 return;
             }
         }
     } else if (MenuKeys_HasRight((u32)pad)) {
         if ((r6 & 1) < 1) {
-            unk_b8 = unk_b8 + 1;
+            cursorSlot = cursorSlot + 1;
         } else {
-            if (x != 1 || !isLetterSlot(unk_b7)) {
-                unk_b8 = r4 * 2 + 0x15;
+            if (x != 1 || !isLetterSlot(heldSlot)) {
+                cursorSlot = r4 * 2 + 0x15;
                 setFlags(0x20);
                 return;
             }
         }
     }
-    if (isLetterSlot(unk_b8)) {
+    if (isLetterSlot(cursorSlot)) {
         if (!testFlags(0x30)) {
             if (MenuKeys_HasUp((u32)pad)) {
                 if (r4 > 0) {
-                    unk_b8 = unk_b8 - 2;
+                    cursorSlot = cursorSlot - 2;
                 }
             } else if (MenuKeys_HasDown((u32)pad)) {
                 if (r4 < 4) {
-                    unk_b8 = unk_b8 + 2;
+                    cursorSlot = cursorSlot + 2;
                 } else if (x == 0) {
-                    unk_b8 = 0x1f;
-                    ((MenuCursor *)&unk_2238)->switchToAnim07();
+                    cursorSlot = 0x1f;
+                    ((MenuCursor *)&cursor)->switchToAnim07();
                 }
             }
         }
@@ -2265,38 +2265,38 @@ void MailboxMenu::moveCursorInPocketLetters(void *pad, u32 x) {
 }
 
 void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
-    s32 r6 = unk_b8 - 0x15;
+    s32 r6 = cursorSlot - 0x15;
     s32 r4 = 0;
     for (; r6 >= 2; r4++, r6 -= 2) {
     }
     if (MenuKeys_HasLeft((u32)pad)) {
         if (r6 > 0) {
-            unk_b8 = unk_b8 - 1;
+            cursorSlot = cursorSlot - 1;
         } else {
-            unk_b8 = r4 * 2 + 0xc;
+            cursorSlot = r4 * 2 + 0xc;
             setFlags(0x10);
             return;
         }
     } else if (MenuKeys_HasRight((u32)pad)) {
         if (r6 < 1) {
-            unk_b8 = unk_b8 + 1;
+            cursorSlot = cursorSlot + 1;
         } else {
-            unk_b8 = r4 * 2 + 0xb;
+            cursorSlot = r4 * 2 + 0xb;
             return;
         }
     }
-    if (isMailboxSlot(unk_b8)) {
+    if (isMailboxSlot(cursorSlot)) {
         if (!testFlags(0x30)) {
             if (MenuKeys_HasUp((u32)pad)) {
                 if (r4 > 0) {
-                    unk_b8 = unk_b8 - 2;
+                    cursorSlot = cursorSlot - 2;
                 }
             } else if (MenuKeys_HasDown((u32)pad)) {
                 if (r4 < 4) {
-                    unk_b8 = unk_b8 + 2;
+                    cursorSlot = cursorSlot + 2;
                 } else if (x == 0) {
-                    unk_b8 = 0x1f;
-                    ((MenuCursor *)&unk_2238)->switchToAnim07();
+                    cursorSlot = 0x1f;
+                    ((MenuCursor *)&cursor)->switchToAnim07();
                 }
             }
         }
@@ -2305,25 +2305,25 @@ void MailboxMenu::moveCursorInMailbox(void *pad, u32 x) {
 
 void MailboxMenu::moveCursorOnButton(void *pad) {
     if (MenuKeys_HasUp((u32)pad)) {
-        ((MenuCursor *)&unk_2238)->switchToAnim01();
-        unk_b8 = 0x13;
+        ((MenuCursor *)&cursor)->switchToAnim01();
+        cursorSlot = 0x13;
     }
 }
 
 BOOL MailboxMenu::moveCursorByPad(void *pad, u32 x) {
-    u8 old = unk_b8;
+    u8 old = cursorSlot;
     clearFlags(0x30);
     if (pad == 0) {
         return FALSE;
     }
-    if (isLetterSlot(unk_b8)) {
+    if (isLetterSlot(cursorSlot)) {
         moveCursorInPocketLetters(pad, x);
-    } else if (isMailboxSlot(unk_b8)) {
+    } else if (isMailboxSlot(cursorSlot)) {
         moveCursorInMailbox(pad, x);
-    } else if (isButtonSlot(unk_b8)) {
+    } else if (isButtonSlot(cursorSlot)) {
         moveCursorOnButton(pad);
     }
-    if (old != unk_b8) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -2337,7 +2337,7 @@ void MailboxMenu::startReadLetter() {
 
 void MailboxMenu::closeLetterView() {
     setMainState(0x22);
-    ((LabelButton *)&unk_28b4)->setState(2);
+    ((LabelButton *)&letterCloseButton)->setState(2);
     Snd_PlaySe(0x29);
 }
 
@@ -2351,34 +2351,34 @@ void MailboxMenu::forceCloseFromLetterView() {
 }
 
 void MailboxMenu::startDiscardLetter() {
-    u8 idx = unk_b9;
+    u8 idx = selectedSlot;
     pickUpFrom(idx);
-    unk_ac = getSlotX(idx);
-    unk_b0 = getSlotY(idx);
+    handX = getSlotX(idx);
+    handY = getSlotY(idx);
     if (MenuCtrl_IsButtons()) {
-        unk_ac = unk_ac - 2;
-        unk_b0 = unk_b0 - 2;
+        handX = handX - 2;
+        handY = handY - 2;
     }
     setMainState(0x26);
-    LetterGrid_StartPopAnim(&unk_b58);
+    LetterGrid_StartPopAnim(&letterGrid);
 }
 
 void MailboxMenu::onChoiceDiscard() { openDiscardConfirm(); }
 
 void MailboxMenu::pressCloseTab() {
     Snd_PlaySe(0x27);
-    ((MenuBottomButtonsBody *)&unk_3c34)->setSelected(9);
+    ((MenuBottomButtonsBody *)&bottomButtons)->setSelected(9);
     setMainState(0x23);
 }
 
 BOOL MailboxMenu::testFlags(u32 mask) {
-    if (unk_94 & mask) {
+    if (stateFlags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MailboxMenu::setFlags(u32 mask) { unk_94 = unk_94 | mask; }
+void MailboxMenu::setFlags(u32 mask) { stateFlags = stateFlags | mask; }
 
-void MailboxMenu::clearFlags(u32 mask) { unk_94 = unk_94 & ~mask; }
+void MailboxMenu::clearFlags(u32 mask) { stateFlags = stateFlags & ~mask; }
 

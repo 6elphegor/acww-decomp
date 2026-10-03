@@ -99,15 +99,15 @@ public:
     void func_ov002_02200a68();
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class MenuCursorBase {
@@ -184,7 +184,7 @@ typedef void (BirthdayMenu::*Unk_ov137_022962e0_Fn)();
 // Vtable 0x022962e0, size 0x2824 (scene overlay on MenuProc)
 class BirthdayMenu : public MenuProc {
 public:
-    BirthdayMenu() : unk_94(), unk_f8(), unk_25c() {}
+    BirthdayMenu() : cursor(), bottomButtons(), picker() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -249,16 +249,16 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ MenuCursorBuf0 unk_94;
-    /* 0x0f8 */ MenuBottomButtons unk_f8;
-    /* 0x25c */ DateTimePicker unk_25c;
-    /* 0x2820 */ u16 unk_2820;
-    /* 0x2822 */ u8 unk_2822;
-    /* 0x2823 */ u8 unk_2823;
+    /* 0x094 */ MenuCursorBuf0 cursor;
+    /* 0x0f8 */ MenuBottomButtons bottomButtons;
+    /* 0x25c */ DateTimePicker picker;
+    /* 0x2820 */ u16 flags;
+    /* 0x2822 */ u8 returnState;
+    /* 0x2823 */ u8 cursorSlot;
 };
 
-#define U94A ((MenuCursorBase *)&unk_94)
-#define U94B ((MenuCursor *)&unk_94)
+#define U94A ((MenuCursorBase *)&cursor)
+#define U94B ((MenuCursor *)&cursor)
 
 static inline BOOL Unk_ov137_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -271,7 +271,7 @@ extern "C" BirthdayMenu *BirthdayMenu_Create() { return new BirthdayMenu(); }
 
 BOOL BirthdayMenu::vfunc_00() {
     initPicker();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -290,9 +290,9 @@ BOOL BirthdayMenu::onDraw() {
         return FALSE;
     }
     s32 r = getSlideOffsetY();
-    DateTimePicker_Draw(&unk_25c, 0, r);
+    DateTimePicker_Draw(&picker, 0, r);
     s32 r2 = getSlideOffsetY();
-    unk_f8.drawAt(r2);
+    bottomButtons.drawAt(r2);
     return TRUE;
 }
 
@@ -327,7 +327,7 @@ BOOL BirthdayMenu::execTransition() {
         &BirthdayMenu::stateClose,
         &BirthdayMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -348,7 +348,7 @@ void BirthdayMenu::runMainState() {
         &BirthdayMenu::stateExit,
         &BirthdayMenu::stateListOpening,
         &BirthdayMenu::stateListClosing};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL BirthdayMenu::execMain() {
@@ -376,7 +376,7 @@ void BirthdayMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_f8.setLayoutSingle05(0x21);
+    bottomButtons.setLayoutSingle05(0x21);
     setTransitionState(1);
 }
 
@@ -411,19 +411,19 @@ void BirthdayMenu::updateLayerSlide() {
 }
 
 void BirthdayMenu::initPicker() {
-    DateTimePicker_Init(&unk_25c, 2, 6, 4, 3);
-    unk_2823 = 0;
-    unk_2820 = 0;
+    DateTimePicker_Init(&picker, 2, 6, 4, 3);
+    cursorSlot = 0;
+    flags = 0;
 }
 
 void BirthdayMenu::releaseResources() {
-    DateTimePicker_Shutdown(&unk_25c);
-    unk_f8.freeTexts();
+    DateTimePicker_Shutdown(&picker);
+    bottomButtons.freeTexts();
 }
 
 void BirthdayMenu::preInputUpdate() {
     preStateUpdate();
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void BirthdayMenu::postInputUpdate() {
@@ -431,12 +431,12 @@ void BirthdayMenu::postInputUpdate() {
 }
 
 void BirthdayMenu::preStateUpdate() {
-    unk_f8.freeTexts();
-    DateTimePicker_BeginFrame(&unk_25c);
+    bottomButtons.freeTexts();
+    DateTimePicker_BeginFrame(&picker);
 }
 
 void BirthdayMenu::postStateUpdate() {
-    DateTimePicker_EndFrame(&unk_25c);
+    DateTimePicker_EndFrame(&picker);
 }
 
 void BirthdayMenu::setupBgLayers() {
@@ -450,13 +450,13 @@ void BirthdayMenu::setupBgLayers() {
 }
 
 void BirthdayMenu::loadBgGfx() {
-    DateTimePicker_LoadBgGraphics(&unk_25c);
-    DateTimePicker_DrawTitleAndFields(&unk_25c, 0x6d);
+    DateTimePicker_LoadBgGraphics(&picker);
+    DateTimePicker_DrawTitleAndFields(&picker, 0x6d);
 }
 
 void BirthdayMenu::loadObjGfx() {
-    DateTimePicker_LoadObjGraphics(&unk_25c);
-    MenuButtons_LoadTextColors(&unk_f8);
+    DateTimePicker_LoadObjGraphics(&picker);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void BirthdayMenu::updateTouch() {
@@ -464,10 +464,10 @@ void BirthdayMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov137_Both()) {
-            if (unk_f8.isTouched(6)) {
+            if (bottomButtons.isTouched(6)) {
                 confirm();
             } else {
-                s32 r = DateTimePicker_HitTestMonthDayField(&unk_25c, gTouchCurX, gTouchCurY);
+                s32 r = DateTimePicker_HitTestMonthDayField(&picker, gTouchCurX, gTouchCurY);
                 if (r != 6) {
                     openFieldList(r);
                 }
@@ -482,7 +482,7 @@ void BirthdayMenu::stateListTouch() {
         return;
     }
     if (Unk_ov137_Both()) {
-        switch (DateTimePicker_HitTestList(&unk_25c, gTouchCurX, gTouchCurY)) {
+        switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
         case 0:
             decideList();
             break;
@@ -501,18 +501,18 @@ void BirthdayMenu::stateListTouch() {
 
 void BirthdayMenu::stateListKnobDrag() {
     if (gTouchHeld != 0) {
-        unk_25c.dragKnob(gTouchCurY);
+        picker.dragKnob(gTouchCurY);
     } else {
-        unk_25c.releaseKnob();
+        picker.releaseKnob();
         setMainState(1);
     }
 }
 
 void BirthdayMenu::stateListTrackDrag() {
     if (gTouchHeld != 0) {
-        unk_25c.dragKnobToward(gTouchCurY);
+        picker.dragKnobToward(gTouchCurY);
     } else {
-        unk_25c.releaseKnob();
+        picker.releaseKnob();
         setMainState(1);
     }
 }
@@ -540,7 +540,7 @@ void BirthdayMenu::stateListButtons() {
     if (checkSwitchToTouch()) {
         enterListTouchMode();
     } else {
-        s32 r = unk_25c.navigateList(takeRepeatedKeys());
+        s32 r = picker.navigateList(takeRepeatedKeys());
         switch (r) {
         case 2:
             setFlags(4);
@@ -570,18 +570,18 @@ void BirthdayMenu::stateListButtons() {
 
 void BirthdayMenu::stateListKnobHold() {
     if (gPad[0] & 1) {
-        unk_25c.moveKnobByPad();
+        picker.moveKnobByPad();
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         U94A->warpTo(a, b);
     } else {
-        unk_25c.releaseKnob();
+        picker.releaseKnob();
         setMainState(7);
     }
 }
 
 void BirthdayMenu::stateListKnobRelease() {
-    if (unk_25c.finishKnobRelease()) {
+    if (picker.finishKnobRelease()) {
         setMainState(5);
         releaseCursor();
     }
@@ -592,22 +592,22 @@ void BirthdayMenu::stateListKnobRelease() {
 
 void BirthdayMenu::updateCursorMove() {
     if (!U94A->isMoving()) {
-        setMainState(unk_2822);
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void BirthdayMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         if (testFlags(2)) {
-            if (unk_25c.grabKnobByCursor()) {
+            if (picker.grabKnobByCursor()) {
                 setMainState(6);
             } else {
-                unk_25c.pickListCursorRow();
+                picker.pickListCursorRow();
                 decideList();
             }
         } else {
-            u32 s = unk_2823;
+            u32 s = cursorSlot;
             if (s == 2) {
                 confirm();
             } else {
@@ -618,18 +618,18 @@ void BirthdayMenu::updateCursorPress() {
 }
 
 void BirthdayMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_94)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         refreshCursor();
-        setMainState(unk_2822);
+        setMainState(returnState);
     }
 }
 
 void BirthdayMenu::stateExit() {
-    if (unk_f8.stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&unk_94)) {
-            s32 a = unk_f8.getPressOffset();
-            s32 b = unk_f8.getTargetX(-1);
-            s32 c = unk_f8.getTargetY(-1);
+    if (bottomButtons.stepPress()) {
+        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
             U94A->warpTo(a + b, a + c);
         }
     } else {
@@ -639,18 +639,18 @@ void BirthdayMenu::stateExit() {
 }
 
 void BirthdayMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&unk_25c)) {
+    if (DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void BirthdayMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&unk_25c)) {
-        s32 r = DateTimePicker_GetCursorField(&unk_25c);
+    if (DateTimePicker_UpdateListClose(&picker)) {
+        s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
-            unk_2823 = 2;
+            cursorSlot = 2;
         } else {
-            unk_2823 = r - 1;
+            cursorSlot = r - 1;
         }
         resumeInput();
     }
@@ -677,33 +677,33 @@ void BirthdayMenu::resumeInput() {
 
 void BirthdayMenu::confirm() {
     u32 w[2];
-    unk_f8.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
     void *obj = PlayerData_GetCurrent();
     w[0] = 0;
     w[1] = 0;
-    DateTimePicker_GetDateTime(&unk_25c, w);
+    DateTimePicker_GetDateTime(&picker, w);
     _ZN12Unk_02097ff411setBirthdayEjj(obj, ((u8 *)w)[4], ((u8 *)w)[3]);
 }
 
 void BirthdayMenu::openFieldList(u32 a) {
     hideCursor();
-    DateTimePicker_OpenList(&unk_25c, a);
+    DateTimePicker_OpenList(&picker, a);
     setMainState(0xc);
 }
 
 void BirthdayMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&unk_25c);
+    DateTimePicker_DecideList(&picker);
     setMainState(0xd);
 }
 
 void BirthdayMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&unk_25c);
+    DateTimePicker_CancelList(&picker);
     setMainState(0xd);
 }
 
@@ -713,8 +713,8 @@ void BirthdayMenu::enterListTouchMode() {
 }
 
 void BirthdayMenu::enterListButtonMode() {
-    s32 t = unk_25c.getListCursorY();
-    unk_25c.setListCursorFromY(t);
+    s32 t = picker.getListCursorY();
+    picker.setListCursorFromY(t);
     setFlags(2);
     showCursor();
     restartKeyRepeat();
@@ -733,7 +733,7 @@ void BirthdayMenu::showCursor() {
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
     U94A->warpTo(a, b);
-    if (testFlags(2) || unk_2823 != 2) {
+    if (testFlags(2) || cursorSlot != 2) {
         U94B->setAnimIfChanged(1);
     } else {
         U94B->setAnimIfChanged(7);
@@ -743,31 +743,31 @@ void BirthdayMenu::showCursor() {
 
 s32 BirthdayMenu::getCursorTargetX() {
     if (testFlags(2)) {
-        return unk_25c.getListCursorX();
+        return picker.getListCursorX();
     }
-    if (unk_2823 == 2) {
-        return unk_f8.getTargetX(6);
+    if (cursorSlot == 2) {
+        return bottomButtons.getTargetX(6);
     }
-    return sBirthdayCursorXTable[unk_2823];
+    return sBirthdayCursorXTable[cursorSlot];
 }
 
 s32 BirthdayMenu::getCursorTargetY() {
     if (testFlags(2)) {
-        return unk_25c.getListCursorY();
+        return picker.getListCursorY();
     }
-    if (unk_2823 == 2) {
-        return unk_f8.getTargetY(6);
+    if (cursorSlot == 2) {
+        return bottomButtons.getTargetY(6);
     }
-    return sBirthdayCursorYTable[unk_2823];
+    return sBirthdayCursorYTable[cursorSlot];
 }
 
 void BirthdayMenu::hideCursor() {
     U94B->setAnimIfChanged(0);
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void BirthdayMenu::moveCursorToTarget() {
-    if (testFlags(2) || unk_2823 != 2) {
+    if (testFlags(2) || cursorSlot != 2) {
         U94B->switchToAnim01();
     } else {
         U94B->switchToAnim07();
@@ -783,14 +783,14 @@ void BirthdayMenu::startCursorMove(s32 a, s32 b) {
     } else {
         U94A->moveToEase(a, b, 3, 1);
     }
-    unk_2822 = unk_8d;
+    returnState = mainState;
     setMainState(8);
     clearFlags(4);
 }
 
 void BirthdayMenu::refreshCursor() {
     U94A->setPoseIdle();
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void BirthdayMenu::pressCursor() {
@@ -800,41 +800,41 @@ void BirthdayMenu::pressCursor() {
 
 void BirthdayMenu::releaseCursor() {
     U94A->setPoseRelease();
-    unk_2822 = unk_8d;
+    returnState = mainState;
     setMainState(10);
 }
 
 BOOL BirthdayMenu::moveCursorByPad(u32 a) {
-    u8 old = unk_2823;
+    u8 old = cursorSlot;
     if (MenuKeys_HasLeft(a)) {
-        unk_2823 = sBirthdayCursorLeftTable[unk_2823];
+        cursorSlot = sBirthdayCursorLeftTable[cursorSlot];
     } else if (MenuKeys_HasRight(a)) {
-        unk_2823 = sBirthdayCursorRightTable[unk_2823];
+        cursorSlot = sBirthdayCursorRightTable[cursorSlot];
     }
-    if (old != unk_2823) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     if (MenuKeys_HasUp(a)) {
-        unk_2823 = sBirthdayCursorUpTable[unk_2823];
+        cursorSlot = sBirthdayCursorUpTable[cursorSlot];
     } else if (MenuKeys_HasDown(a)) {
-        unk_2823 = sBirthdayCursorDownTable[unk_2823];
+        cursorSlot = sBirthdayCursorDownTable[cursorSlot];
     }
-    if (old != unk_2823) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL BirthdayMenu::testFlags(u32 m) {
-    if (unk_2820 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void BirthdayMenu::setFlags(u32 m) { unk_2820 = unk_2820 | m; }
+void BirthdayMenu::setFlags(u32 m) { flags = flags | m; }
 
-void BirthdayMenu::clearFlags(u32 m) { unk_2820 = unk_2820 & ~m; }
+void BirthdayMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" const u8 sBirthdayCursorRightTable[4] = {1, 1, 2, 0};
 

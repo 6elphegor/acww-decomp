@@ -272,22 +272,22 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x02294080, size 0x1a7c
 class WfcFriendListMenu : public MenuProc {
 public:
     WfcFriendListMenu()
-        : unk_13cc(), unk_1430(), unk_1930(), unk_1978(), unk_1a34() {}
+        : cursor(), textPool(), vramTasks(), title(), knob() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -372,40 +372,40 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
-    /* 0x098 */ s32 unk_98;
-    /* 0x09c */ s32 unk_9c;
-    /* 0x0a0 */ s32 unk_a0;
-    /* 0x0a4 */ s32 unk_a4;
-    /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ u16 unk_ac;
-    /* 0x0ae */ s16 unk_ae;
-    /* 0x0b0 */ u8 unk_b0;
-    /* 0x0b1 */ u8 unk_b1;
-    /* 0x0b2 */ u8 unk_b2;
-    /* 0x0b3 */ u8 unk_b3;
-    /* 0x0b4 */ u8 unk_b4;
-    /* 0x0b5 */ u8 unk_b5;
-    /* 0x0b6 */ u8 unk_b6;
-    /* 0x0b7 */ u8 unk_b7[3];
-    /* 0x0ba */ u8 unk_ba;
-    /* 0x0bb */ u8 unk_bb;
-    /* 0x0bc */ u8 unk_bc[7];
-    /* 0x0c3 */ u8 unk_c3[7];
-    /* 0x0ca */ u8 unk_ca[0xea - 0xca];
-    /* 0x0ea */ u8 unk_ea[0x20];
-    /* 0x10a */ u8 unk_10a[0x20];
-    /* 0x12a */ u8 unk_12a[0x20 * 0x13];
-    /* 0x38a */ u8 unk_38a[0x800];
-    /* 0xb8a */ u8 unk_b8a[0x800];
-    /* 0x138a */ u16 unk_138a[16];
-    /* 0x13aa */ u16 unk_13aa[16];
+    /* 0x094 */ s32 slideOffsetY;
+    /* 0x098 */ s32 knobPos;
+    /* 0x09c */ s32 knobGrabOffset;
+    /* 0x0a0 */ s32 knobTickPos;
+    /* 0x0a4 */ s32 scrollY;
+    /* 0x0a8 */ s32 scrollTargetY;
+    /* 0x0ac */ u16 flags;
+    /* 0x0ae */ s16 topRow;
+    /* 0x0b0 */ u8 confirmButtonPal;
+    /* 0x0b1 */ u8 quitButtonPal;
+    /* 0x0b2 */ u8 cursorTarget;
+    /* 0x0b3 */ u8 returnState;
+    /* 0x0b4 */ u8 numTextsUsed;
+    /* 0x0b5 */ u8 staticLabelsDrawn;
+    /* 0x0b6 */ u8 numOnline;
+    /* 0x0b7 */ u8 iconAnim[3];
+    /* 0x0ba */ u8 exitDelay;
+    /* 0x0bb */ u8 selectedFriend;
+    /* 0x0bc */ u8 rowFriends[7];
+    /* 0x0c3 */ u8 rowColorKeys[7];
+    /* 0x0ca */ u8 listStatus[0xea - 0xca];
+    /* 0x0ea */ u8 listOrder[0x20];
+    /* 0x10a */ u8 friendFade[0x20];
+    /* 0x12a */ u8 friendRecords[0x20 * 0x13];
+    /* 0x38a */ u8 listScreenSrc[0x800];
+    /* 0xb8a */ u8 listScreen[0x800];
+    /* 0x138a */ u16 rowPaletteSrc[16];
+    /* 0x13aa */ u16 rowPalette[16];
     /* 0x13ca */ u8 unk_13ca[2];
-    /* 0x13cc */ MenuCursorBuf0 unk_13cc;
-    /* 0x1430 */ LabelString unk_1430[0x14];
-    /* 0x1930 */ BgVramTask unk_1930[2];
-    /* 0x1978 */ MenuTitleBalloon unk_1978;
-    /* 0x1a34 */ MenuScrollKnob unk_1a34;
+    /* 0x13cc */ MenuCursorBuf0 cursor;
+    /* 0x1430 */ LabelString textPool[0x14];
+    /* 0x1930 */ BgVramTask vramTasks[2];
+    /* 0x1978 */ MenuTitleBalloon title;
+    /* 0x1a34 */ MenuScrollKnob knob;
 };
 
 extern "C" WfcFriendListMenu *WfcFriendListMenu_Create();
@@ -436,7 +436,7 @@ extern "C" WfcFriendListMenu *WfcFriendListMenu_Create() { return new WfcFriendL
 
 BOOL WfcFriendListMenu::vfunc_00() {
     initState();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -492,47 +492,47 @@ BOOL WfcFriendListMenu::onDraw() {
     s32 y2;
     s32 idx;
     if (MenuCtrl_IsButtons()) {
-        MenuCursorBase_drawWrapped(&unk_13cc);
+        MenuCursorBase_drawWrapped(&cursor);
     }
     if (!testFlags(1)) {
         return FALSE;
     }
-    unk_1a34.vfunc_08();
-    LabelBalloon_setPos(&unk_1978, 0, unk_94);
-    unk_1978.vfunc_08();
-    y = unk_94 + 0x60;
-    y2 = y - (unk_a4 & 0xf);
+    knob.vfunc_08();
+    LabelBalloon_setPos(&title, 0, slideOffsetY);
+    title.vfunc_08();
+    y = slideOffsetY + 0x60;
+    y2 = y - (scrollY & 0xf);
     for (i = 0; i < 7; y2 += 0x10, i++) {
-        idx = i + unk_ae;
-        if (idx < 0x20 && unk_bb < 0x20 && unk_bb == unk_ea[idx]) {
+        idx = i + topRow;
+        if (idx < 0x20 && selectedFriend < 0x20 && selectedFriend == listOrder[idx]) {
             Oam_DrawCell(1, sWfcRowCellsSelected, 0x80, y2, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
             Oam_DrawCell(1, sWfcRowCells, 0x80, y2, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
-        idx = i + unk_ae;
+        idx = i + topRow;
         if (idx < 0x20) {
             void *tb[5] = {0, data_ov146_02293e18, data_ov146_02293e78, data_ov146_02293e20, data_ov146_02293e48};
-            void *h = tb[unk_ca[idx]];
+            void *h = tb[listStatus[idx]];
             if (h != 0) {
                 Oam_DrawCell(1, h, 0x80, y2, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
             }
         }
     }
     Oam_DrawCell(1, sWfcFrameCells, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, sWfcQuitButtonCells, 0x80, y, unk_b1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    Oam_DrawCell(1, sWfcConfirmButtonCells, 0x80, y, unk_b0, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, sWfcQuitButtonCells, 0x80, y, quitButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, sWfcConfirmButtonCells, 0x80, y, confirmButtonPal, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     Oam_DrawCell(1, data_ov146_02293e98, 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     void *tc[5] = {data_ov146_02293f90, data_ov146_02293ed0, data_ov146_02293ef0, data_ov146_02293f10, data_ov146_02293f30};
-    if (unk_b7[0] != 0) {
-        unk_b7[0] = *(volatile u8 *)&unk_b7[0] - 1;
+    if (iconAnim[0] != 0) {
+        iconAnim[0] = *(volatile u8 *)&iconAnim[0] - 1;
     } else {
-        unk_b7[1] = unk_b7[1] + 1;
-        if (unk_b7[1] >= 5) {
-            unk_b7[1] = 0;
+        iconAnim[1] = iconAnim[1] + 1;
+        if (iconAnim[1] >= 5) {
+            iconAnim[1] = 0;
         }
-        unk_b7[0] = 10;
+        iconAnim[0] = 10;
     }
-    Oam_DrawCell(1, tc[unk_b7[1]], 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, tc[iconAnim[1]], 0x80, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     return TRUE;
 }
 extern "C" u32 sWfcRowCellsSelected[14] = {0x403c40e6, 0x000058c6, 0x402040e6, 0x000058c6, 0x419400d7, 0x00005886, 0x400040e6,
@@ -568,7 +568,7 @@ BOOL WfcFriendListMenu::execTransition() {
         *(Unk_ov146_02294080_Fn *)data_ov146_02293e88,
         *(Unk_ov146_02294080_Fn *)data_ov146_02293e80};
     beginFrame();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     updateList();
     return TRUE;
 }
@@ -590,7 +590,7 @@ void WfcFriendListMenu::runMainState() {
         *(Unk_ov146_02294080_Fn *)data_ov146_02293e00,
         *(Unk_ov146_02294080_Fn *)data_ov146_02293e28,
         *(Unk_ov146_02294080_Fn *)data_ov146_02293e40};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL WfcFriendListMenu::execMain() {
@@ -614,7 +614,7 @@ void WfcFriendListMenu::enterOpen() {
     loadBgGraphics();
     rebuildOrder();
     setScroll(0);
-    unk_a8 = 0;
+    scrollTargetY = 0;
     loadObjGraphics();
     beginSubSlideIn(0xa, 4, 0, 0x28);
     Gfx2d_ShowLayer(6);
@@ -653,37 +653,37 @@ void WfcFriendListMenu::execSlideOut() {
 
 void WfcFriendListMenu::applySlide() {
     applySlideOffset(6, 0, 0);
-    applySlideOffset(4, 0, 0x38 - unk_a4);
-    unk_94 = getSlideOffsetY();
+    applySlideOffset(4, 0, 0x38 - scrollY);
+    slideOffsetY = getSlideOffsetY();
     placeKnob();
 }
 
 void WfcFriendListMenu::initState() {
     s32 i;
     s32 j;
-    unk_ac = 0;
-    unk_b2 = 3;
-    unk_b0 = 9;
-    unk_b1 = 8;
-    MenuTitleBalloon_hideNow(&unk_1978);
-    MenuTitleBalloon_showText(&unk_1978, 0x7f, 0x90, 0x10);
-    LabelBalloon_showLayer2(&unk_1978);
-    unk_b5 = 0;
-    MenuScrollKnob_show(&unk_1a34);
+    flags = 0;
+    cursorTarget = 3;
+    confirmButtonPal = 9;
+    quitButtonPal = 8;
+    MenuTitleBalloon_hideNow(&title);
+    MenuTitleBalloon_showText(&title, 0x7f, 0x90, 0x10);
+    LabelBalloon_showLayer2(&title);
+    staticLabelsDrawn = 0;
+    MenuScrollKnob_show(&knob);
     for (i = 0; i < 7; i++) {
-        unk_bc[i] = 0x21;
-        unk_c3[i] = 0xff;
+        rowFriends[i] = 0x21;
+        rowColorKeys[i] = 0xff;
     }
     for (j = 0; j < 0x20; j++) {
-        unk_ea[j] = 0x20;
-        unk_10a[j] = 0;
+        listOrder[j] = 0x20;
+        friendFade[j] = 0;
     }
     initFriendStatus();
-    unk_b6 = 0x21;
-    unk_b7[0] = 10;
-    unk_b7[1] = 0;
-    unk_b7[2] = 10;
-    unk_bb = 0x20;
+    numOnline = 0x21;
+    iconAnim[0] = 10;
+    iconAnim[1] = 0;
+    iconAnim[2] = 10;
+    selectedFriend = 0x20;
 }
 
 void WfcFriendListMenu::releaseResources() {
@@ -693,7 +693,7 @@ void WfcFriendListMenu::releaseResources() {
 
 void WfcFriendListMenu::beginMainFrame() {
     beginFrame();
-    unk_13cc.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 // thunk: defined before its target so it stays a tail branch
@@ -702,7 +702,7 @@ void WfcFriendListMenu::endFrame() { updateList(); }
 void WfcFriendListMenu::beginFrame() {
     resetTextPool();
     cancelVramTasks();
-    unk_1a34.vfunc_0c();
+    knob.vfunc_0c();
 }
 
 void WfcFriendListMenu::updateList() {
@@ -711,10 +711,10 @@ void WfcFriendListMenu::updateList() {
         if (rebuildOrder()) {
             setFlags(4);
         }
-        if (isFriendSelectable(unk_bb)) {
-            unk_b0 = 8;
+        if (isFriendSelectable(selectedFriend)) {
+            confirmButtonPal = 8;
         } else {
-            unk_b0 = 9;
+            confirmButtonPal = 9;
         }
     }
     stepScroll();
@@ -724,7 +724,7 @@ void WfcFriendListMenu::updateList() {
     }
     updateRowColors();
     flushVram();
-    MenuScrollKnob_updateRelease(&unk_1a34);
+    MenuScrollKnob_updateRelease(&knob);
 }
 
 void WfcFriendListMenu::setupLayers() {
@@ -739,12 +739,12 @@ void WfcFriendListMenu::loadBgGraphics() {
     void *p = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/wfc/bg.bch", p, 6, 0x11, 0x11, 0x5c);
     Gfx2d_LoadPaletteFile("menu/wfc/bg.bpl", p, 6, 1, 1, 8);
-    File_LoadToBuffer("menu/wfc/bg7.bpl", unk_138a, 0x20);
-    MIi_CpuCopy16(unk_138a, unk_13aa, 0x20);
+    File_LoadToBuffer("menu/wfc/bg7.bpl", rowPaletteSrc, 0x20);
+    MIi_CpuCopy16(rowPaletteSrc, rowPalette, 0x20);
     Gfx2d_LoadScreenFile("menu/wfc/a_bg.bsc", p, 6);
-    File_LoadToBuffer("menu/wfc/b_bg.bsc", unk_38a, 0x800);
-    BgScreen_SetRectPalette(unk_38a, 5, 7, 0xe, 0x14, 7);
-    BgScreen_SetRectPalette(unk_38a, 0x10, 7, 0x17, 0x14, 7);
+    File_LoadToBuffer("menu/wfc/b_bg.bsc", listScreenSrc, 0x800);
+    BgScreen_SetRectPalette(listScreenSrc, 5, 7, 0xe, 0x14, 7);
+    BgScreen_SetRectPalette(listScreenSrc, 0x10, 7, 0x17, 0x14, 7);
 }
 
 void WfcFriendListMenu::loadObjGraphics() {
@@ -769,18 +769,18 @@ void WfcFriendListMenu::execTouch() {
                 decideQuit();
                 return;
             }
-            if (x >= 0x8b && x < 0xc7 && unk_b0 == 8) {
+            if (x >= 0x8b && x < 0xc7 && confirmButtonPal == 8) {
                 decideConfirm();
                 return;
             }
         }
         if (x >= 0x18 && x <= 0xe0 && y >= 0x38 && y < 0x98) {
-            s32 idx = unk_ae + ((y - (0x38 - (unk_a8 & 0xf))) >> 4);
+            s32 idx = topRow + ((y - (0x38 - (scrollTargetY & 0xf))) >> 4);
             if (idx < 0x20) {
-                x = unk_ea[idx];
+                x = listOrder[idx];
                 if (isFriendSelectable(x)) {
-                    if (unk_bb != x) {
-                        unk_bb = x;
+                    if (selectedFriend != x) {
+                        selectedFriend = x;
                         Snd_PlaySe(0x29);
                     }
                 }
@@ -788,7 +788,7 @@ void WfcFriendListMenu::execTouch() {
         } else if (tryGrabKnob(x, y)) {
             setMainState(1);
         } else if (x >= 0xe6 && x <= 0xee && y >= 0x38 && y <= 0x88) {
-            MenuScrollKnob_grab(&unk_1a34);
+            MenuScrollKnob_grab(&knob);
             setMainState(2);
         }
     }
@@ -835,7 +835,7 @@ void WfcFriendListMenu::execKnobKeys() {
         moveKnobByKeys();
         a = getTargetX();
         b = getTargetY();
-        MenuCursorBase_warpTo(&unk_13cc, a, b);
+        MenuCursorBase_warpTo(&cursor, a, b);
     } else {
         releaseKnob();
         setMainState(5);
@@ -851,20 +851,20 @@ void WfcFriendListMenu::execKnobRelease() {
     }
     a = getTargetX();
     b = getTargetY();
-    MenuCursorBase_warpTo(&unk_13cc, a, b);
+    MenuCursorBase_warpTo(&cursor, a, b);
 }
 
 void WfcFriendListMenu::execCursorMove() {
-    if (!MenuCursorBase_isMoving(&unk_13cc)) {
-        setMainState(unk_b3);
+    if (!MenuCursorBase_isMoving(&cursor)) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 // ---- 0x022931f8 ----
 void WfcFriendListMenu::execCursorPress() {
-    if (HandCursor_isAnimDone(&unk_13cc)) {
-        if (!decideTarget(unk_b2)) {
+    if (HandCursor_isAnimDone(&cursor)) {
+        if (!decideTarget(cursorTarget)) {
             setMainState(3);
             startCursorRelease();
         }
@@ -872,20 +872,20 @@ void WfcFriendListMenu::execCursorPress() {
 }
 
 void WfcFriendListMenu::execCursorRelease() {
-    if (HandCursor_isAnimDone(&unk_13cc)) {
+    if (HandCursor_isAnimDone(&cursor)) {
         setCursorIdle();
-        setMainState(unk_b3);
+        setMainState(returnState);
         if (testFlags(0x10)) {
             clearFlags(0x10);
-            unk_b2 = 1;
+            cursorTarget = 1;
             moveCursorToTarget();
         }
     }
 }
 
 void WfcFriendListMenu::execExitDelay() {
-    if (unk_ba != 0) {
-        unk_ba = *(volatile u8 *)&unk_ba - 1;
+    if (exitDelay != 0) {
+        exitDelay = *(volatile u8 *)&exitDelay - 1;
     } else {
         hideCursor();
         setPhase(1);
@@ -913,10 +913,10 @@ void WfcFriendListMenu::enterInputMode() {
 
 void WfcFriendListMenu::decideConfirm() {
     MenuCtrl_SetResult(1);
-    MenuCtrl_SetIndex(unk_bb);
-    unk_b0 = 10;
+    MenuCtrl_SetIndex(selectedFriend);
+    confirmButtonPal = 10;
     setFlags(0x40);
-    unk_ba = 5;
+    exitDelay = 5;
     setTransitionState(2);
     setMainState(9);
     Snd_PlaySe(0x27);
@@ -924,8 +924,8 @@ void WfcFriendListMenu::decideConfirm() {
 
 void WfcFriendListMenu::decideQuit() {
     MenuCtrl_SetResult(0);
-    unk_b1 = 10;
-    unk_ba = 5;
+    quitButtonPal = 10;
+    exitDelay = 5;
     setTransitionState(2);
     setMainState(9);
     Snd_PlaySe(0x28);
@@ -933,25 +933,25 @@ void WfcFriendListMenu::decideQuit() {
 
 void WfcFriendListMenu::snapCursorToTarget() {
     s32 a, b;
-    if (unk_b2 == 3) {
-        u32 t = unk_a8 & 0xf;
+    if (cursorTarget == 3) {
+        u32 t = scrollTargetY & 0xf;
         if (t != 0) {
-            unk_a8 = *(volatile s32 *)&unk_a8 - t;
+            scrollTargetY = *(volatile s32 *)&scrollTargetY - t;
         }
     }
     a = getTargetX();
     b = getTargetY();
-    MenuCursorBase_warpTo(&unk_13cc, a, b);
-    if (unk_b2 == 2) {
-        MenuCursor_setAnimIfChanged(&unk_13cc, 1);
+    MenuCursorBase_warpTo(&cursor, a, b);
+    if (cursorTarget == 2) {
+        MenuCursor_setAnimIfChanged(&cursor, 1);
     } else {
-        MenuCursor_setAnimIfChanged(&unk_13cc, 7);
+        MenuCursor_setAnimIfChanged(&cursor, 7);
     }
     setCursorIdle();
 }
 
 s32 WfcFriendListMenu::getTargetX() {
-    u32 m = unk_b2;
+    u32 m = cursorTarget;
     if (m >= 3 && m <= 9) {
         return 0x1c;
     }
@@ -961,39 +961,39 @@ s32 WfcFriendListMenu::getTargetX() {
     case 1:
         return 0x99;
     case 2:
-        return MenuScrollKnob_getGripX(&unk_1a34);
+        return MenuScrollKnob_getGripX(&knob);
     default:
         return 0x80;
     }
 }
 
 s32 WfcFriendListMenu::getTargetY() {
-    u32 m = unk_b2;
+    u32 m = cursorTarget;
     if (m >= 3 && m <= 9) {
-        return ((m - 3) << 4) + 0x40 - (unk_a8 & 0xf);
+        return ((m - 3) << 4) + 0x40 - (scrollTargetY & 0xf);
     }
     switch (m) {
     case 0:
     case 1:
         return 0xad;
     case 2:
-        return MenuScrollKnob_getGripY(&unk_1a34);
+        return MenuScrollKnob_getGripY(&knob);
     default:
         return 0x60;
     }
 }
 
 void WfcFriendListMenu::hideCursor() {
-    MenuCursor_setAnimIfChanged(&unk_13cc, 0);
-    unk_13cc.vfunc_0c();
+    MenuCursor_setAnimIfChanged(&cursor, 0);
+    cursor.vfunc_0c();
 }
 
 void WfcFriendListMenu::moveCursorToTarget() {
     s32 a, b;
-    if (unk_b2 == 2) {
-        MenuCursor_switchToAnim01(&unk_13cc);
+    if (cursorTarget == 2) {
+        MenuCursor_switchToAnim01(&cursor);
     } else {
-        MenuCursor_switchToAnim07(&unk_13cc);
+        MenuCursor_switchToAnim07(&cursor);
     }
     a = getTargetX();
     b = getTargetY();
@@ -1002,44 +1002,44 @@ void WfcFriendListMenu::moveCursorToTarget() {
 
 void WfcFriendListMenu::moveCursorTo(s32 a, s32 b) {
     if (testFlags(0x20)) {
-        MenuCursorBase_moveToEase(&unk_13cc, a, b, 3, 0);
+        MenuCursorBase_moveToEase(&cursor, a, b, 3, 0);
         clearFlags(0x20);
     } else {
-        MenuCursorBase_moveToEase(&unk_13cc, a, b, 3, 1);
+        MenuCursorBase_moveToEase(&cursor, a, b, 3, 1);
     }
-    unk_b3 = unk_8d;
+    returnState = mainState;
     setMainState(6);
 }
 
 void WfcFriendListMenu::setCursorIdle() {
-    MenuCursorBase_setPoseIdle(&unk_13cc);
-    unk_13cc.vfunc_0c();
+    MenuCursorBase_setPoseIdle(&cursor);
+    cursor.vfunc_0c();
 }
 
 void WfcFriendListMenu::startCursorPress() {
-    MenuCursor_setPosePress(&unk_13cc);
+    MenuCursor_setPosePress(&cursor);
     setMainState(7);
 }
 
 void WfcFriendListMenu::startCursorRelease() {
-    MenuCursorBase_setPoseRelease(&unk_13cc);
-    unk_b3 = unk_8d;
+    MenuCursorBase_setPoseRelease(&cursor);
+    returnState = mainState;
     setMainState(8);
 }
 
 LabelString *WfcFriendListMenu::allocText() {
-    if (unk_b4 >= 0x14) {
-        return &unk_1430[0x13];
+    if (numTextsUsed >= 0x14) {
+        return &textPool[0x13];
     }
-    unk_b4 = *(volatile u8 *)&unk_b4 + 1;
-    return &unk_1430[unk_b4 - 1];
+    numTextsUsed = *(volatile u8 *)&numTextsUsed + 1;
+    return &textPool[numTextsUsed - 1];
 }
 
 void WfcFriendListMenu::resetTextPool() {
     s32 i;
-    unk_b4 = 0;
+    numTextsUsed = 0;
     for (i = 0; i < 0x14; i++) {
-        unk_1430[i].destroyLabel();
+        textPool[i].destroyLabel();
     }
 }
 extern "C" u32 data_ov146_02293e20[2] = {0x804040d8, 0xffffc9c8};
@@ -1069,32 +1069,32 @@ void WfcFriendListMenu::renderRows() {
     s32 idx;
     s32 col;
     getFriendList();
-    idx = unk_ae;
+    idx = topRow;
     col = idx % 7;
     for (j = 0; j < 7; j++) {
         if (idx >= 0x20) {
-            unk_bc[col] = 0x20;
+            rowFriends[col] = 0x20;
         } else {
-            s32 e = unk_ea[idx];
+            s32 e = listOrder[idx];
             s32 off;
-            if (e == unk_bc[col]) {
+            if (e == rowFriends[col]) {
                 w1 = 0;
             } else if (e >= 0x20) {
                 w1 = allocText();
                 w1->clear();
                 w2 = allocText();
                 w2->clear();
-                unk_bc[col] = 0x20;
+                rowFriends[col] = 0x20;
             } else {
-                unk_bc[col] = e;
+                rowFriends[col] = e;
                 w1 = allocText();
                 off = e * 0x13;
-                EncodedString_SetRaw(&sa, unk_12a + 8 + off, 8);
+                EncodedString_SetRaw(&sa, friendRecords + 8 + off, 8);
                 sb.fromEncoded(&sa, 0, 0);
                 String_SetSlot(0, &sb);
                 String_Load2dMenu(w1, 0x66);
                 w2 = allocText();
-                String_FromEncodedBytes(w2, unk_12a + off, 8);
+                String_FromEncodedBytes(w2, friendRecords + off, 8);
             }
             if (w1) {
                 w1->createLabel(4, col * 0x14 + 0x11e, 10, 0xe - col, 0xf, 0);
@@ -1136,9 +1136,9 @@ void WfcFriendListMenu::drawStaticLabels() {
 }
 
 void WfcFriendListMenu::drawStaticLabelsOnce() {
-    if (unk_b5 == 0) {
+    if (staticLabelsDrawn == 0) {
         drawStaticLabels();
-        unk_b5 = unk_b5 + 1;
+        staticLabelsDrawn = staticLabelsDrawn + 1;
     }
 }
 
@@ -1149,17 +1149,17 @@ void WfcFriendListMenu::initFriendStatus() {
     s32 i;
     u8 *tbl;
     s32 z;
-    MI_CpuFill8(unk_12a, 0, 0x260);
+    MI_CpuFill8(friendRecords, 0, 0x260);
     tbl = (u8 *)getFriendList();
     i = 0;
     z = 0;
     do {
         u8 *rec = tbl + 0x180 + i * 0x13;
         if (isFriendOnline(rec)) {
-            MI_CpuCopy8(rec, unk_12a + (u32)i * 0x13, 0x13);
-            unk_10a[i] = 0x14;
+            MI_CpuCopy8(rec, friendRecords + (u32)i * 0x13, 0x13);
+            friendFade[i] = 0x14;
         } else {
-            unk_10a[i] = z;
+            friendFade[i] = z;
         }
         i++;
     } while (i < 0x20);
@@ -1172,37 +1172,37 @@ void WfcFriendListMenu::refreshFriendStatus() {
     for (i = 0; i < 0x20; i++) {
         s32 off = i * 0x13;
         if (isFriendOnline(tbl + 0x180 + off)) {
-            if ((unk_12a + off)[0x10] == 6) {
-                if (unk_10a[i] < 0x14) {
-                    unk_10a[i]++;
+            if ((friendRecords + off)[0x10] == 6) {
+                if (friendFade[i] < 0x14) {
+                    friendFade[i]++;
                 }
             } else {
-                unk_10a[i] = 0;
-                MI_CpuCopy8(tbl + 0x180 + off, unk_12a + (u32)i * 0x13, 0x13);
+                friendFade[i] = 0;
+                MI_CpuCopy8(tbl + 0x180 + off, friendRecords + (u32)i * 0x13, 0x13);
             }
             cnt++;
         } else {
-            if ((unk_12a + off)[0x10] == 6) {
-                if (unk_10a[i] != 0) {
-                    unk_10a[i]--;
+            if ((friendRecords + off)[0x10] == 6) {
+                if (friendFade[i] != 0) {
+                    friendFade[i]--;
                 } else {
-                    (unk_12a + off)[0x10] = 0;
+                    (friendRecords + off)[0x10] = 0;
                 }
             }
         }
     }
-    if (cnt != unk_b6) {
+    if (cnt != numOnline) {
         u8 buf[3];
         LabelString *w;
-        unk_b6 = cnt;
+        numOnline = cnt;
         w = allocText();
-        if (unk_b6 < 10) {
-            buf[0] = unk_b6 + 0x35;
+        if (numOnline < 10) {
+            buf[0] = numOnline + 0x35;
             buf[1] = 0;
             buf[2] = 0;
         } else {
-            buf[0] = unk_b6 / 10 + 0x35;
-            buf[1] = unk_b6 % 10 + 0x35;
+            buf[0] = numOnline / 10 + 0x35;
+            buf[1] = numOnline % 10 + 0x35;
             buf[2] = 0;
         }
         String_FromEncodedBytes(w, buf, 3);
@@ -1236,10 +1236,10 @@ BOOL WfcFriendListMenu::rebuildOrder() {
         }
     }
     for (; cnt < 0x20; cnt++) {
-        if (unk_ea[cnt] != 0x20) {
+        if (listOrder[cnt] != 0x20) {
             changed = TRUE;
-            unk_ea[cnt] = 0x20;
-            unk_ca[cnt] = 0;
+            listOrder[cnt] = 0x20;
+            listStatus[cnt] = 0;
         }
     }
     return changed;
@@ -1281,9 +1281,9 @@ void WfcFriendListMenu::flushVram() {
 }
 
 void WfcFriendListMenu::setScroll(s32 v) {
-    unk_a4 = v;
-    Gfx2d_SetLayerOffset(4, 0, unk_a4 - 0x38);
-    unk_ae = v >> 4;
+    scrollY = v;
+    Gfx2d_SetLayerOffset(4, 0, scrollY - 0x38);
+    topRow = v >> 4;
     buildListScreen();
     setFlags(4);
 }
@@ -1292,7 +1292,7 @@ void WfcFriendListMenu::buildListScreen() {
     volatile u16 z = 0x10;
     MIi_CpuClear16(z, (u8 *)this + 0xb8a, 0x800);
     for (s32 i = 0; i < 7; i++) {
-        s32 v = unk_ae + i;
+        s32 v = topRow + i;
         s32 m = v % 7;
         MIi_CpuCopy16((u8 *)this + 0x38a + ((m * 2 + 7) << 6), (u8 *)this + 0xb8a + ((v & 0xf) << 7), 0x80);
     }
@@ -1300,19 +1300,19 @@ void WfcFriendListMenu::buildListScreen() {
 }
 
 BOOL WfcFriendListMenu::stepScroll() {
-    if (unk_a4 != unk_a8) {
-        if (unk_a4 > unk_a8) {
-            unk_a4 = unk_a4 - 6;
-            if (unk_a4 < unk_a8) {
-                unk_a4 = unk_a8;
+    if (scrollY != scrollTargetY) {
+        if (scrollY > scrollTargetY) {
+            scrollY = scrollY - 6;
+            if (scrollY < scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         } else {
-            unk_a4 = unk_a4 + 6;
-            if (unk_a4 > unk_a8) {
-                unk_a4 = unk_a8;
+            scrollY = scrollY + 6;
+            if (scrollY > scrollTargetY) {
+                scrollY = scrollTargetY;
             }
         }
-        setScroll(unk_a4);
+        setScroll(scrollY);
         syncKnobFromScroll();
         return TRUE;
     }
@@ -1320,10 +1320,10 @@ BOOL WfcFriendListMenu::stepScroll() {
 }
 
 BOOL WfcFriendListMenu::tryGrabKnob(s32 x, s32 y) {
-    if (MenuScrollKnob_hitTest(&unk_1a34, x, y)) {
-        unk_9c = unk_98 - y;
-        MenuScrollKnob_grab(&unk_1a34);
-        unk_a0 = unk_98;
+    if (MenuScrollKnob_hitTest(&knob, x, y)) {
+        knobGrabOffset = knobPos - y;
+        MenuScrollKnob_grab(&knob);
+        knobTickPos = knobPos;
         return TRUE;
     }
     return FALSE;
@@ -1333,7 +1333,7 @@ void WfcFriendListMenu::dragKnob(s32 v, BOOL c) {
     if (c) {
         v = v - 0x40;
     } else {
-        v = v + unk_9c;
+        v = v + knobGrabOffset;
     }
     if (v < 0) {
         v = 0;
@@ -1342,56 +1342,56 @@ void WfcFriendListMenu::dragKnob(s32 v, BOOL c) {
         v = 0x50;
     }
     if (c) {
-        func_020e761c(&unk_98, v, 8);
+        func_020e761c(&knobPos, v, 8);
     } else {
-        unk_98 = v;
+        knobPos = v;
     }
     syncScrollFromKnob();
     placeKnob();
-    s32 d = unk_a0 - unk_98;
+    s32 d = knobTickPos - knobPos;
     if (d >= 4 || d <= -4) {
-        Menu_PlayScrollTickSe(&unk_1a34);
-        unk_a0 = unk_98;
+        Menu_PlayScrollTickSe(&knob);
+        knobTickPos = knobPos;
     }
 }
 
-void WfcFriendListMenu::releaseKnob() { MenuScrollKnob_release(&unk_1a34); }
+void WfcFriendListMenu::releaseKnob() { MenuScrollKnob_release(&knob); }
 
 void WfcFriendListMenu::moveKnobByKeys() {
-    s32 old = unk_98;
+    s32 old = knobPos;
     u32 k = gPad[0];
     if (k & 0x40) {
-        unk_98 = unk_98 - 4;
-        if (unk_98 < 0) {
-            unk_98 = 0;
+        knobPos = knobPos - 4;
+        if (knobPos < 0) {
+            knobPos = 0;
         }
     } else if (k & 0x80) {
-        unk_98 = unk_98 + 4;
-        if (unk_98 > 0x50) {
-            unk_98 = 0x50;
+        knobPos = knobPos + 4;
+        if (knobPos > 0x50) {
+            knobPos = 0x50;
         }
     }
-    if (old != unk_98) {
+    if (old != knobPos) {
         syncScrollFromKnob();
         placeKnob();
-        Menu_PlayScrollTickSe(&unk_1a34);
+        Menu_PlayScrollTickSe(&knob);
     }
 }
 
 BOOL WfcFriendListMenu::finishKnobRelease() {
-    if (ScrollKnob_areAnimsDone(&unk_1a34)) {
-        MenuScrollKnob_show(&unk_1a34);
+    if (ScrollKnob_areAnimsDone(&knob)) {
+        MenuScrollKnob_show(&knob);
         return TRUE;
     }
     return FALSE;
 }
 
 void WfcFriendListMenu::placeKnob() {
-    ScrollKnob_moveTo(&unk_1a34, 0x62, unk_94 + (unk_98 - 0x28));
+    ScrollKnob_moveTo(&knob, 0x62, slideOffsetY + (knobPos - 0x28));
 }
 
 void WfcFriendListMenu::syncScrollFromKnob() {
-    s32 v = func_02133150(unk_98 * 0x1a0, 0x50);
+    s32 v = func_02133150(knobPos * 0x1a0, 0x50);
     if (v < 0) {
         v = 0;
     }
@@ -1399,23 +1399,23 @@ void WfcFriendListMenu::syncScrollFromKnob() {
         v = 0x1a0;
     }
     setScroll(v);
-    unk_a8 = v;
+    scrollTargetY = v;
 }
 
 void WfcFriendListMenu::syncKnobFromScroll() {
-    unk_98 = func_02133150(unk_a4 * 0x50, 0x1a0);
+    knobPos = func_02133150(scrollY * 0x50, 0x1a0);
     placeKnob();
 }
 
 BOOL WfcFriendListMenu::decideTarget(u32 k) {
     if (k >= 3 && k <= 9) {
-        s32 idx = unk_ae + k - 3;
+        s32 idx = topRow + k - 3;
         if (idx >= 0x20) {
             return FALSE;
         }
         u8 c = *((u8 *)this + idx + 0xea);
         if (isFriendSelectable(c)) {
-            unk_bb = c;
+            selectedFriend = c;
             Snd_PlaySe(0x29);
             setFlags(0x10);
             setFlags(0x20);
@@ -1424,12 +1424,12 @@ BOOL WfcFriendListMenu::decideTarget(u32 k) {
     }
     switch (k) {
     case 2:
-        MenuScrollKnob_grab(&unk_1a34);
-        Menu_PlayScrollGrabSe(&unk_1a34);
+        MenuScrollKnob_grab(&knob);
+        Menu_PlayScrollGrabSe(&knob);
         setMainState(4);
         return TRUE;
     case 1:
-        if (unk_b0 == 8) {
+        if (confirmButtonPal == 8) {
             decideConfirm();
             return TRUE;
         }
@@ -1442,44 +1442,44 @@ BOOL WfcFriendListMenu::decideTarget(u32 k) {
 }
 
 BOOL WfcFriendListMenu::moveTargetByKeys(u32 pad) {
-    u32 old = unk_b2;
+    u32 old = cursorTarget;
     if (old >= 3 && old <= 9) {
         if (MenuKeys_HasRight(pad)) {
-            unk_b2 = 2;
+            cursorTarget = 2;
         } else if (MenuKeys_HasUp(pad)) {
-            if (unk_b2 > 3) {
-                unk_b2 = *(volatile u8 *)&unk_b2 - 1;
-                if (unk_b2 == 3) {
-                    s32 r = unk_a8 & 0xf;
+            if (cursorTarget > 3) {
+                cursorTarget = *(volatile u8 *)&cursorTarget - 1;
+                if (cursorTarget == 3) {
+                    s32 r = scrollTargetY & 0xf;
                     if (r != 0) {
-                        unk_a8 = unk_a8 - r;
+                        scrollTargetY = scrollTargetY - r;
                     }
                 }
                 return TRUE;
-            } else if (unk_a8 >= 0x10) {
-                unk_a8 = unk_a8 - 0x10;
+            } else if (scrollTargetY >= 0x10) {
+                scrollTargetY = scrollTargetY - 0x10;
                 return TRUE;
-            } else if (unk_a8 > 0) {
-                unk_a8 = 0;
+            } else if (scrollTargetY > 0) {
+                scrollTargetY = 0;
                 return TRUE;
             }
         } else if (MenuKeys_HasDown(pad)) {
-            u32 cur = unk_b2;
-            if ((s32)(cur - 3) + unk_ae >= (s32)unk_b6 - 1) {
-                unk_b2 = 0;
+            u32 cur = cursorTarget;
+            if ((s32)(cur - 3) + topRow >= (s32)numOnline - 1) {
+                cursorTarget = 0;
             } else if (cur < 8) {
-                unk_b2 = *(volatile u8 *)&unk_b2 + 1;
+                cursorTarget = *(volatile u8 *)&cursorTarget + 1;
             } else {
-                s32 t = unk_a8;
+                s32 t = scrollTargetY;
                 s32 r = t & 0xf;
                 if (r != 0) {
-                    unk_a8 = unk_a8 + (0x10 - r);
+                    scrollTargetY = scrollTargetY + (0x10 - r);
                     return TRUE;
                 } else if (t <= 0x190) {
-                    unk_a8 = unk_a8 + 0x10;
+                    scrollTargetY = scrollTargetY + 0x10;
                     return TRUE;
                 } else {
-                    unk_b2 = 0;
+                    cursorTarget = 0;
                 }
             }
         }
@@ -1487,61 +1487,61 @@ BOOL WfcFriendListMenu::moveTargetByKeys(u32 pad) {
         switch (old) {
         case 0:
             if (MenuKeys_HasUp(pad)) {
-                if (unk_b6 != 0) {
+                if (numOnline != 0) {
                     targetLastVisibleRow();
                 }
             } else if (MenuKeys_HasRight(pad)) {
-                unk_b2 = 1;
+                cursorTarget = 1;
             }
             break;
         case 1:
             if (MenuKeys_HasUp(pad)) {
-                if (unk_b6 != 0) {
+                if (numOnline != 0) {
                     targetLastVisibleRow();
                 } else {
-                    unk_b2 = 2;
+                    cursorTarget = 2;
                 }
             } else if (MenuKeys_HasLeft(pad)) {
-                unk_b2 = 0;
+                cursorTarget = 0;
             } else if (MenuKeys_HasRight(pad)) {
-                unk_b2 = 2;
+                cursorTarget = 2;
             }
             break;
         case 2:
             if (MenuKeys_HasDown(pad)) {
-                unk_b2 = 1;
+                cursorTarget = 1;
             } else if (MenuKeys_HasLeft(pad)) {
                 targetFromCursorY();
             }
             break;
         }
     }
-    if (old != unk_b2) {
+    if (old != cursorTarget) {
         return TRUE;
     }
     return FALSE;
 }
 
 void WfcFriendListMenu::targetLastVisibleRow() {
-    unk_b2 = 8;
-    s32 r = unk_a8 & 0xf;
+    cursorTarget = 8;
+    s32 r = scrollTargetY & 0xf;
     if (r != 0) {
-        unk_a8 = unk_a8 - r;
+        scrollTargetY = scrollTargetY - r;
     }
 }
 
 void WfcFriendListMenu::targetFromCursorY() {
-    if (unk_b6 == 0) {
-        unk_b2 = 1;
+    if (numOnline == 0) {
+        cursorTarget = 1;
     } else {
-        s32 v = MenuCursorBase_getScreenY(&unk_13cc);
+        s32 v = MenuCursorBase_getScreenY(&cursor);
         if (v < 0x38) {
             v = 0x38;
         }
         if (v > 0xa7) {
             v = 0xa7;
         }
-        unk_b2 = ((v - (0x38 - (unk_a8 & 0xf))) >> 4) + 3;
+        cursorTarget = ((v - (0x38 - (scrollTargetY & 0xf))) >> 4) + 3;
     }
 }
 
@@ -1554,23 +1554,23 @@ void WfcFriendListMenu::cancelVramTasks() {
 }
 
 void WfcFriendListMenu::fadeRowColor(s32 a, s32 t, s32 b) {
-    u16 y = unk_138a[15];
+    u16 y = rowPaletteSrc[15];
     u8 rr = y & 0x1f;
     u8 rg = (y & 0x3e0) >> 5;
     u8 rb = (y & 0x7c00) >> 10;
     s32 n = 20 - t;
-    u16 x = unk_138a[b];
+    u16 x = rowPaletteSrc[b];
     rr = ((u8)(x & 0x1f) * t + rr * n) / 20;
     rg = ((u8)((x & 0x3e0) >> 5) * t + rg * n) / 20;
     rb = ((u8)((x & 0x7c00) >> 10) * t + rb * n) / 20;
-    unk_13aa[(u8)(14 - a)] = rr | (rg << 5) | (rb << 10);
+    rowPalette[(u8)(14 - a)] = rr | (rg << 5) | (rb << 10);
     setFlags(8);
 }
 
 void WfcFriendListMenu::updateRowColors() {
     s32 i;
     for (i = 0; i < 7; i++) {
-        s32 idx = unk_bc[i];
+        s32 idx = rowFriends[i];
         if (idx < 0x20) {
             u32 v;
             u32 base;
@@ -1584,24 +1584,24 @@ void WfcFriendListMenu::updateRowColors() {
                 v = base;
                 sel = 0xe;
             }
-            if (v != unk_c3[i]) {
+            if (v != rowColorKeys[i]) {
                 fadeRowColor(i, base, sel);
-                unk_c3[i] = v;
+                rowColorKeys[i] = v;
             }
         }
     }
 }
 
 BOOL WfcFriendListMenu::testFlags(u32 m) {
-    if (unk_ac & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void WfcFriendListMenu::setFlags(u32 m) { unk_ac = unk_ac | m; }
+void WfcFriendListMenu::setFlags(u32 m) { flags = flags | m; }
 
-void WfcFriendListMenu::clearFlags(u32 m) { unk_ac = unk_ac & ~m; }
+void WfcFriendListMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" void *data_ov146_02293e28[2] = {(void *)_ZN17WfcFriendListMenu17execCursorReleaseEv, 0};
 

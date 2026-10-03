@@ -1,21 +1,21 @@
 #include "types.h"
 
 struct Unk_ov094_02292360_Obj {
-    s32 unk_00;
-    s32 unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
+    s32 shownBells;
+    s32 bellStep;
+    u16 dirtyFlags;
+    u16 bellsColorA;
+    u16 bellsColorB;
+    u8 bgId;
+    u8 paintedHighlight;
+    u8 highlight;
+    u8 blinkHighlight;
+    u8 blinkTimer;
+    u8 bellRollTimer;
+    u8 pictureIndex;
     u8 unk_15;
-    u8 unk_16[0x1c];
-    u16 unk_32;
+    u8 palette[0x1c];
+    u16 bellsColor;
 };
 
 struct Unk_ov094_022923a4_Pad {
@@ -43,18 +43,18 @@ struct Unk_ov094_02292d6c_Rec {
 
 struct InventoryBg {
     /* 0x000 */ u32 unk_00;
-    /* 0x004 */ u8 unk_04[0x4];
-    /* 0x008 */ u16 unk_08;
+    /* 0x004 */ u8 bellStep[0x4];
+    /* 0x008 */ u16 dirtyFlags;
     /* 0x00a */ u8 unk_0a[4];
-    /* 0x00e */ u8 unk_0e;
-    /* 0x00f */ u8 unk_0f;
-    /* 0x010 */ u8 unk_10;
+    /* 0x00e */ u8 bgId;
+    /* 0x00f */ u8 paintedHighlight;
+    /* 0x010 */ u8 highlight;
     /* 0x011 */ u8 unk_11[3];
-    /* 0x014 */ u8 unk_14;
+    /* 0x014 */ u8 pictureIndex;
     /* 0x015 */ u8 unk_15[0x23];
-    /* 0x038 */ u8 unk_38[0xa8];
-    /* 0x0e0 */ u8 unk_e0[0x80];
-    /* 0x160 */ u8 unk_160[0x24];
+    /* 0x038 */ u8 vramTasks[0xa8];
+    /* 0x0e0 */ u8 textWindows[0x80];
+    /* 0x160 */ u8 screenData[0x24];
     /* 0x184 */ u8 unk_184[0x808];
     /* 0x98c */ Unk_ov094_02292d6c_Obj38 unk_98c[3];
     /* 0xa34 */ u16 *unk_a34;
@@ -79,8 +79,8 @@ typedef Unk_ov094_02292d6c_Rec Rec;
 void operator delete(void *p);
 
 struct ItemIconCache {
-    u8 unk_04[0x800];
-    u8 unk_804;
+    u8 iconChars[0x800];
+    u8 loadedPage;
 
     ItemIconCache();
     virtual ~ItemIconCache();
@@ -90,21 +90,21 @@ struct ItemIconCache {
 };
 
 struct InventoryItemGrid {
-    u8 unk_04[0x180];
-    ItemIconCache unk_184;
-    u8 unk_98c[0xa8];
-    u16 *unk_a34;
-    u8 unk_a38[8];
-    u8 unk_a40[8];
-    u8 unk_a48[8];
-    u32 unk_a50;
-    u8 unk_a54[2];
-    u8 unk_a56;
-    u8 unk_a57;
-    u8 unk_a58;
-    u8 unk_a59;
+    u8 iconUploadChars[0x180];
+    ItemIconCache iconCache;
+    u8 iconUploadTasks[0xa8];
+    u16 *boxItems;
+    u8 occupiedBits[8];
+    u8 markedBits[8];
+    u8 disabledBits[8];
+    u32 objPriority;
+    u8 presentItem[2];
+    u8 cursorSlot;
+    u8 cursorLiftTimer;
+    u8 numIconUploads;
+    u8 heldScale;
     u8 unk_a5a[2];
-    u8 unk_a5c;
+    u8 showHeldFocus;
 
     InventoryItemGrid();
     virtual ~InventoryItemGrid();
@@ -112,19 +112,19 @@ struct InventoryItemGrid {
 
 struct Unk_ov094_02293c04_Rec {
     u8 unk_00[0x26];
-    volatile u8 unk_26;
-    u8 unk_27;
+    volatile u8 popTimer;
+    u8 heldScale;
 };
 
 struct Unk_ov094_02293ca0_Obj {
     s32 unk_00;
-    u8 *volatile unk_04;
-    u32 unk_08[2];
+    u8 *volatile letterArray;
+    u32 occupiedBits[2];
 };
 
 struct Unk_ov094_022937e4_Ent {
     s32 unk_00;
-    u32 unk_04;
+    u32 attr2;
 };
 struct Unk_ov094_02294bb4_Bits {
     u32 pad;
@@ -132,7 +132,7 @@ struct Unk_ov094_02294bb4_Bits {
 };
 
 struct Unk_ov094_Bits8 {
-    u32 unk_00[2];
+    u32 words[2];
 };
 
 // Vtable 0x02294bd4
@@ -173,15 +173,15 @@ public:
     void updateCursorLift();
     void init(s32 x);
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ Unk_ov094_Bits8 unk_08;
-    /* 0x10 */ Unk_ov094_Bits8 unk_10;
-    /* 0x18 */ Unk_ov094_Bits8 unk_18;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ u8 unk_24;
-    /* 0x25 */ u8 unk_25;
-    /* 0x26 */ u8 unk_26;
-    /* 0x27 */ u8 unk_27;
+    /* 0x04 */ u8 *letterArray;
+    /* 0x08 */ Unk_ov094_Bits8 occupiedBits;
+    /* 0x10 */ Unk_ov094_Bits8 markedBits;
+    /* 0x18 */ Unk_ov094_Bits8 highlightedBits;
+    /* 0x20 */ s32 objPriority;
+    /* 0x24 */ u8 cursorSlot;
+    /* 0x25 */ u8 cursorLiftTimer;
+    /* 0x26 */ u8 popTimer;
+    /* 0x27 */ u8 heldScale;
 };
 
 // symbols.txt names of main functions (called with the object first)
@@ -489,19 +489,19 @@ LetterGrid::~LetterGrid() {
 }
 
 void LetterGrid::init(s32 x) {
-    LetterGrid_ClearBits((u32 *)&unk_08);
-    LetterGrid_ClearBits((u32 *)&unk_10);
-    LetterGrid_ClearBits((u32 *)&unk_18);
-    unk_24 = 0x37;
-    unk_25 = 0;
-    unk_20 = x;
-    unk_04 = 0;
-    unk_27 = 10;
+    LetterGrid_ClearBits((u32 *)&occupiedBits);
+    LetterGrid_ClearBits((u32 *)&markedBits);
+    LetterGrid_ClearBits((u32 *)&highlightedBits);
+    cursorSlot = 0x37;
+    cursorLiftTimer = 0;
+    objPriority = x;
+    letterArray = 0;
+    heldScale = 10;
 }
 
 void LetterGrid::updateCursorLift() {
-    if (*(volatile u8 *)&unk_25 != 0) {
-        unk_25 = *(volatile u8 *)&unk_25 - 1;
+    if (*(volatile u8 *)&cursorLiftTimer != 0) {
+        cursorLiftTimer = *(volatile u8 *)&cursorLiftTimer - 1;
     }
 }
 
@@ -606,35 +606,35 @@ void LetterGrid::showLetterName(void *out, s32 idx) {
 }
 
 BOOL LetterGrid::isCursorSlot(s32 v) {
-    if (v == unk_24) {
+    if (v == cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 u32 LetterGrid::getCursorLift() {
-    return sLetterCursorLift[unk_25];
+    return sLetterCursorLift[cursorLiftTimer];
 }
 
 void LetterGrid::clearCursorSlot() {
-    unk_24 = 0x37;
+    cursorSlot = 0x37;
 }
 
 void LetterGrid::setCursorSlot(u32 v) {
     if (isHighlighted((u8)v)) {
         clearCursorSlot();
-    } else if (unk_24 != v) {
-        unk_24 = v;
-        unk_25 = 2;
+    } else if (cursorSlot != v) {
+        cursorSlot = v;
+        cursorLiftTimer = 2;
     }
 }
 
 void LetterGrid::clearMarks() {
-    LetterGrid_ClearBits((u32 *)&unk_10);
+    LetterGrid_ClearBits((u32 *)&markedBits);
 }
 
 void LetterGrid::markSlot(s32 i) {
-    LetterGrid_SetBit((u32 *)&unk_10, i);
+    LetterGrid_SetBit((u32 *)&markedBits, i);
 }
 
 void *LetterGrid::getLetter(s32 i) {
@@ -643,31 +643,31 @@ void *LetterGrid::getLetter(s32 i) {
         return PlayerInventory_getLetter((s32)r, i);
     }
     if (i >= 10 && i <= 0x22) {
-        return unk_04 + (i - 10) * 0xf4;
+        return letterArray + (i - 10) * 0xf4;
     }
     if (i >= 0x23 && i <= 0x2c) {
-        return unk_04 + (i - 0x23) * 0xf4;
+        return letterArray + (i - 0x23) * 0xf4;
     }
     if (i >= 0x2d && i <= 0x36) {
-        return unk_04 + (i - 0x2d) * 0xf4;
+        return letterArray + (i - 0x2d) * 0xf4;
     }
     return 0;
 }
 
 void LetterGrid::func_ov094_02294318(s32 i, s32 x) {
     Letter_Copy(getLetter(i), x);
-    LetterGrid_SetBit((u32 *)&unk_08, i);
+    LetterGrid_SetBit((u32 *)&occupiedBits, i);
 }
 
 void LetterGrid::clearLetter(s32 i) {
     Letter_Clear(getLetter(i));
-    LetterGrid_ClearBit((u32 *)&unk_08, i);
+    LetterGrid_ClearBit((u32 *)&occupiedBits, i);
 }
 
 void LetterGrid::highlightLetterKinds(u32 flags) {
     u8 i;
     u32 f1, f8, f2, f4;
-    LetterGrid_ClearBits((u32 *)&unk_18);
+    LetterGrid_ClearBits((u32 *)&highlightedBits);
     i = 0;
     f1 = flags & 1;
     f8 = flags & 8;
@@ -716,11 +716,11 @@ void LetterGrid::highlightLetterKinds(u32 flags) {
 }
 
 BOOL LetterGrid::isHighlighted(s32 i) {
-    return LetterGrid_TestBit((u32 *)&unk_18, i);
+    return LetterGrid_TestBit((u32 *)&highlightedBits, i);
 }
 
 void LetterGrid::setHighlighted(s32 i) {
-    LetterGrid_SetBit((u32 *)&unk_18, i);
+    LetterGrid_SetBit((u32 *)&highlightedBits, i);
 }
 
 void LetterGrid::drawPocketLetters(s32 a, s32 b) {
@@ -735,7 +735,7 @@ void LetterGrid::drawPocketLetters(s32 a, s32 b) {
 }
 
 void LetterGrid::drawLetters0A(s32 a, s32 b) {
-    u8 *rec = unk_04;
+    u8 *rec = letterArray;
     s32 idx = 10;
     s32 i = 0;
     for (; i < 0x19; i++) {
@@ -746,7 +746,7 @@ void LetterGrid::drawLetters0A(s32 a, s32 b) {
 }
 
 void LetterGrid::drawLetters23(s32 a, s32 b) {
-    u8 *rec = unk_04;
+    u8 *rec = letterArray;
     s32 idx = 0x23;
     s32 i = 0;
     for (; i < 10; i++) {
@@ -757,7 +757,7 @@ void LetterGrid::drawLetters23(s32 a, s32 b) {
 }
 
 void LetterGrid::drawLetters2D(s32 a, s32 b) {
-    u8 *rec = unk_04;
+    u8 *rec = letterArray;
     s32 idx = 0x2d;
     s32 i = 0;
     for (; i < 10; i++) {
@@ -768,8 +768,8 @@ void LetterGrid::drawLetters2D(s32 a, s32 b) {
 }
 
 void LetterGrid::drawHeldLetter(s32 a, s32 b, void *o) {
-    if (unk_27 != 0) {
-        s32 t = InventoryItemGrid_GetScale(unk_27);
+    if (heldScale != 0) {
+        s32 t = InventoryItemGrid_GetScale(heldScale);
         if (t == 0x1000) {
             drawLetterIcon(a, b, getLetterPalette(o), o, 0);
             drawUnderlay(a, b, getLetterPalette(o), 0);
@@ -801,20 +801,20 @@ void LetterGrid::drawLetterIcon(s32 a, s32 b, u32 c, void *e, void *f) {
     if (idx != m1) {
         Unk_ov094_SetPal((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, (u8)c);
         Unk_ov094_SetName((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, sLetterIconChars[idx]);
-        Oam_DrawObj(1, sLetterIconSprite, a, b, m1, unk_20, f);
+        Oam_DrawObj(1, sLetterIconSprite, a, b, m1, objPriority, f);
     }
 }
 
 void LetterGrid::drawMark(s32 a, s32 b) {
-    Oam_DrawObj(1, data_ov094_02294bec, a - 8, b - 8, -1, unk_20, 0);
+    Oam_DrawObj(1, data_ov094_02294bec, a - 8, b - 8, -1, objPriority, 0);
 }
 
 void LetterGrid::drawUnderlay(s32 a, s32 b, s32 c, void *d) {
-    Oam_DrawObj(1, sLetterMarkSprites, a - 8, b - 8, c, unk_20, d);
+    Oam_DrawObj(1, sLetterMarkSprites, a - 8, b - 8, c, objPriority, d);
 }
 
 void LetterGrid::drawFocus(s32 a, s32 b, s32 c) {
-    Oam_DrawObj(1, data_ov094_02294be4, a - 8, b - 8, -1, unk_20, c);
+    Oam_DrawObj(1, data_ov094_02294be4, a - 8, b - 8, -1, objPriority, c);
 }
 
 void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0)
@@ -907,7 +907,7 @@ s32 LetterGrid_GetSlotY(void *o, s32 i)
 
 BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i)
 {
-    if (LetterGrid_TestBit(o->unk_08, i) == 0) {
+    if (LetterGrid_TestBit(o->occupiedBits, i) == 0) {
         return TRUE;
     }
     return FALSE;
@@ -920,9 +920,9 @@ void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o)
     s32 i = 0;
     do {
         if (LetterGrid_GetIconIndex(o, q) != -1) {
-            LetterGrid_SetBit(o->unk_08, k);
+            LetterGrid_SetBit(o->occupiedBits, k);
         } else {
-            LetterGrid_ClearBit(o->unk_08, k);
+            LetterGrid_ClearBit(o->occupiedBits, k);
         }
         q += 0xf4;
         k++;
@@ -948,13 +948,13 @@ void LetterGrid_SetLetters23(void *o, u8 *p)
 void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n)
 {
     s32 i;
-    o->unk_04 = p;
-    u8 *q = o->unk_04;
+    o->letterArray = p;
+    u8 *q = o->letterArray;
     for (i = 0; i < n; i++) {
         if (LetterGrid_GetIconIndex(o, (s32)q) != -1) {
-            LetterGrid_SetBit(o->unk_08, m);
+            LetterGrid_SetBit(o->occupiedBits, m);
         } else {
-            LetterGrid_ClearBit(o->unk_08, m);
+            LetterGrid_ClearBit(o->occupiedBits, m);
         }
         q += 0xf4;
         m++;
@@ -976,20 +976,20 @@ s32 LetterGrid_GetIconIndex(void *o, s32 h)
 
 void LetterGrid_StartPopAnim(Unk_ov094_02293c04_Rec *o)
 {
-    o->unk_26 = 4;
-    o->unk_27 = 10;
+    o->popTimer = 4;
+    o->heldScale = 10;
 }
 
 void LetterGrid_ResetScale(Unk_ov094_02293c04_Rec *o)
 {
-    o->unk_27 = 10;
+    o->heldScale = 10;
 }
 
 BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o)
 {
-    if (o->unk_26 != 0) {
-        o->unk_26 = o->unk_26 - 1;
-        o->unk_27 = LetterGrid_GetPopScale(o);
+    if (o->popTimer != 0) {
+        o->popTimer = o->popTimer - 1;
+        o->heldScale = LetterGrid_GetPopScale(o);
         return FALSE;
     }
     LetterGrid_ResetScale(o);
@@ -998,7 +998,7 @@ BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o)
 
 u8 LetterGrid_GetPopScale(Unk_ov094_02293c04_Rec *o)
 {
-    u32 v = o->unk_26;
+    u32 v = o->popTimer;
     if (v >= 4) {
         return 10;
     }

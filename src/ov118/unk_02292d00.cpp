@@ -210,15 +210,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // ov117 object (0x66 bytes) initialised and torn down by plain ov117 functions
@@ -597,7 +597,7 @@ extern "C" void *data_ov118_022954e8[2] = {(void *)_ZN6MapTab10stateCloseEv, 0};
 BOOL MapTab::execTransition() {
     static Unk_ov118_022955c8_Fn tbl[9] = {*(Unk_ov118_022955c8_Fn *)data_ov118_02295520, *(Unk_ov118_022955c8_Fn *)data_ov118_02295518, *(Unk_ov118_022955c8_Fn *)data_ov118_02295510, *(Unk_ov118_022955c8_Fn *)data_ov118_02295508, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295498};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -610,7 +610,7 @@ extern "C" void *data_ov118_022954a8[2] = {(void *)_ZN6MapTab16updateCursorMoveE
 
 void MapTab::runMainState() {
     static Unk_ov118_022955c8_Fn tbl[11] = {*(Unk_ov118_022955c8_Fn *)data_ov118_022954d0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954d8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295528, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295488, *(Unk_ov118_022955c8_Fn *)data_ov118_02295490, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b0};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 extern "C" void *data_ov118_022954e0[2] = {(void *)_ZN6MapTab17updateKnobReleaseEv, 0};
@@ -656,7 +656,7 @@ BOOL MapTab::handleTabSwitch() {
     if (MenuCtrl_IsForceCloseDue()) {
         return requestTab(7);
     }
-    if (unk_8d != 0 && unk_8d != 3 && unk_8d != 10) {
+    if (mainState != 0 && mainState != 3 && mainState != 10) {
         return FALSE;
     }
     s32 r = -1;
@@ -679,7 +679,7 @@ BOOL MapTab::requestTab(s32 x) {
     void *r = ProcBase_GetParent(this);
     if (x != -1 && x != 5) {
         ((MenuTabBar *)r)->selectTab((u8)x);
-        unk_8c = 7;
+        transitionState = 7;
         setPhase(1);
         return TRUE;
     }
@@ -1797,7 +1797,7 @@ void MapTab::moveCursorToTarget() {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         ((MenuCursorBase *)&unk_484)->moveToEase(a, b, 3, 1);
-        unk_ab = unk_8d;
+        unk_ab = mainState;
         setMainState(4);
     }
 }

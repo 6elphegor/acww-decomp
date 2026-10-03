@@ -238,30 +238,30 @@ public:
     s32 getDrawY();
     s32 getDrawX();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ u8 unk_54;
-    /* 0x55 */ u8 unk_55;
-    /* 0x56 */ u8 unk_56;
-    /* 0x57 */ u8 unk_57;
-    /* 0x58 */ u8 unk_58;
-    /* 0x59 */ u8 unk_59;
-    /* 0x5a */ u8 unk_5a;
-    /* 0x5b */ u8 unk_5b;
-    /* 0x5c */ u8 unk_5c;
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
+    /* 0x54 */ u8 openRequest;
+    /* 0x55 */ u8 closeRequest;
+    /* 0x56 */ u8 onBufferA;
+    /* 0x57 */ u8 clampToScreen;
+    /* 0x58 */ u8 objWindow;
+    /* 0x59 */ u8 noPopAnim;
+    /* 0x5a */ u8 popDownward;
+    /* 0x5b */ u8 layer2Visible;
+    /* 0x5c */ u8 centerText;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 // Vtable 0x020e0f80, created by the factory HudProc_Create
@@ -293,14 +293,14 @@ public:
     void func_0208a3ec();
 
     /* 0x000 */ s32 unk_00;
-    /* 0x004 */ s32 unk_04;
+    /* 0x004 */ s32 state;
     /* 0x008 */ u32 unk_08[0x32];
     /* 0x0d0 */ u32 unk_d0[0x35];
     /* 0x1a4 */ u32 unk_1a4[0x40];
     /* 0x2a4 */ u32 unk_2a4[0x1c];
-    /* 0x314 */ u8 unk_314;
-    /* 0x315 */ u8 unk_315;
-    /* 0x316 */ u8 unk_316;
+    /* 0x314 */ u8 hideRequest;
+    /* 0x315 */ u8 hideRequestB;
+    /* 0x316 */ u8 buttonLayout;
 };
 
 static inline BOOL Unk_0208a150_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }

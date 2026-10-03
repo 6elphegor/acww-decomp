@@ -281,15 +281,15 @@ public:
     s32 isRepeatRight();
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x02293b80 (melody / tune editor menu)
@@ -415,7 +415,7 @@ extern "C" MelodyMenu *MelodyMenu_Create() { return new MelodyMenu(); }
 
 BOOL MelodyMenu::vfunc_00() {
     initMelody();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -445,7 +445,7 @@ BOOL MelodyMenu::execTransition() {
         &MelodyMenu::stateDialogOpen, &MelodyMenu::stateDialog,
         &MelodyMenu::stateDialogClose, &MelodyMenu::stateDialogBack};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -458,7 +458,7 @@ void MelodyMenu::runMainState() {
         &MelodyMenu::updateCursorRelease, &MelodyMenu::updateConfirmTouch,
         &MelodyMenu::updateConfirmButtons, &MelodyMenu::updateBarTransition,
         &MelodyMenu::updatePlayback};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL MelodyMenu::execMain() {
@@ -965,7 +965,7 @@ void MelodyMenu::moveCursorToTarget() {
 
 void MelodyMenu::moveCursorTo(s32 a, s32 b) {
     unk_ac.moveToEase(a, b, 3, 1);
-    unk_9e = unk_8d;
+    unk_9e = mainState;
     setMainState(4);
 }
 
@@ -981,7 +981,7 @@ void MelodyMenu::pressCursor() {
 
 void MelodyMenu::releaseCursor() {
     unk_ac.setPoseRelease();
-    unk_9e = unk_8d;
+    unk_9e = mainState;
     setMainState(6);
 }
 

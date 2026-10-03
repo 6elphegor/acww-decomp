@@ -170,15 +170,15 @@ public:
     void func_ov002_02200a68();
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Element at +0xb0, 0x40 bytes
@@ -288,7 +288,7 @@ typedef void (FriendCodeMenu::*Unk_ov133_022952bc_Fn)();
 // Vtable 0x022952bc, size 0x1408
 class FriendCodeMenu : public MenuProc {
 public:
-    FriendCodeMenu() : unk_b0(), unk_f0(), unk_154(), unk_2b8(), unk_1300() {}
+    FriendCodeMenu() : labels(), cursor(), bottomButtons(), screenTasks(), errorMessage() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -376,26 +376,26 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
-    /* 0x094 */ s32 unk_94;
-    /* 0x098 */ u16 unk_98;
-    /* 0x09a */ u8 unk_9a;
-    /* 0x09b */ u8 unk_9b;
-    /* 0x09c */ u8 unk_9c;
-    /* 0x09d */ u8 unk_9d;
-    /* 0x09e */ u8 unk_9e;
-    /* 0x09f */ u8 unk_9f;
-    /* 0x0a0 */ u8 unk_a0;
-    /* 0x0a1 */ u8 unk_a1;
-    /* 0x0a2 */ u8 unk_a2;
-    /* 0x0a3 */ u8 unk_a3;
-    /* 0x0a4 */ u8 unk_a4[12];
-    /* 0x0b0 */ LabelString unk_b0[1];
-    /* 0x0f0 */ MenuCursorBuf0 unk_f0;
-    /* 0x154 */ MenuBottomButtons unk_154;
-    /* 0x2b8 */ BgVramTask unk_2b8[2];
-    /* 0x300 */ u16 unk_300[0x400];
-    /* 0xb00 */ u16 unk_b00[0x400];
-    /* 0x1300 */ MenuErrorMessage unk_1300;
+    /* 0x094 */ s32 slideY;
+    /* 0x098 */ u16 flags;
+    /* 0x09a */ u8 labelCount;
+    /* 0x09b */ u8 returnState;
+    /* 0x09c */ u8 cursorSlot;
+    /* 0x09d */ u8 repeatTimer;
+    /* 0x09e */ u8 highlightTimer;
+    /* 0x09f */ u8 caretPos;
+    /* 0x0a0 */ u8 pressedKey;
+    /* 0x0a1 */ u8 caretBlinkTimer;
+    /* 0x0a2 */ u8 selectionEnd;
+    /* 0x0a3 */ u8 selectionAnchor;
+    /* 0x0a4 */ u8 codeDigits[12];
+    /* 0x0b0 */ LabelString labels[1];
+    /* 0x0f0 */ MenuCursorBuf0 cursor;
+    /* 0x154 */ MenuBottomButtons bottomButtons;
+    /* 0x2b8 */ BgVramTask screenTasks[2];
+    /* 0x300 */ u16 keypadScreen[0x400];
+    /* 0xb00 */ u16 codeScreen[0x400];
+    /* 0x1300 */ MenuErrorMessage errorMessage;
 };
 
 struct Unk_ov133_SceneEntry {
@@ -427,12 +427,12 @@ BOOL FriendCodeMenu::onDraw() {
         return TRUE;
     }
     if (MenuCtrl_IsButtons()) {
-        unk_f0.drawWrapped();
+        cursor.drawWrapped();
     }
-    unk_154.drawAt(unk_94);
-    NumberPad_DrawKeypadFrame(unk_94);
-    if (unk_a1 & 0x10) {
-        Oam_DrawCell(1, sCaretCells, (unk_9f << 4) + 0x20, unk_94 + 0x40, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    bottomButtons.drawAt(slideY);
+    NumberPad_DrawKeypadFrame(slideY);
+    if (caretBlinkTimer & 0x10) {
+        Oam_DrawCell(1, sCaretCells, (caretPos << 4) + 0x20, slideY + 0x40, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -484,7 +484,7 @@ BOOL FriendCodeMenu::execTransition() {
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295208,
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295218};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -521,7 +521,7 @@ void FriendCodeMenu::runMainState() {
         *(Unk_ov133_022952bc_Fn *)data_ov133_02295238};
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        switch (unk_8d) {
+        switch (mainState) {
         case 0:
         case 1:
         case 2:
@@ -543,7 +543,7 @@ void FriendCodeMenu::runMainState() {
             break;
         }
     }
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL FriendCodeMenu::execMain() {
@@ -572,7 +572,7 @@ void FriendCodeMenu::stateLoad() {
     loadBgGfx();
     loadObjGfx();
     setTransitionState(1);
-    unk_154.setLayoutConfirmAnd06(0x65);
+    bottomButtons.setLayoutConfirmAnd06(0x65);
     stateOpen();
 }
 
@@ -583,7 +583,7 @@ void FriendCodeMenu::stateOpen() {
     Gfx2d_ShowLayer(6);
     applySlideOffset(6, 0, 0);
     setFlags(1);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
     setTransitionState(2);
 }
 
@@ -594,7 +594,7 @@ void FriendCodeMenu::stateOpening() {
     }
     applySlideOffset(4, 0, 0);
     applySlideOffset(6, 0, 0);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void FriendCodeMenu::stateClose() {
@@ -603,7 +603,7 @@ void FriendCodeMenu::stateClose() {
     applySlideOffset(4, 0, 0);
     applySlideOffset(6, 0, 0);
     setTransitionState(4);
-    unk_94 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void FriendCodeMenu::stateClosing() {
@@ -615,16 +615,16 @@ void FriendCodeMenu::stateClosing() {
     } else {
         applySlideOffset(4, 0, 0);
         applySlideOffset(6, 0, 0);
-        unk_94 = getSlideOffsetY();
+        slideY = getSlideOffsetY();
     }
 }
 
 void FriendCodeMenu::initState() {
-    unk_9a = 0;
-    unk_98 = 0;
-    unk_9c = 0xb;
-    unk_9e = 0;
-    unk_9d = 0;
+    labelCount = 0;
+    flags = 0;
+    cursorSlot = 0xb;
+    highlightTimer = 0;
+    repeatTimer = 0;
     void *p = PlayerData_GetCurrent();
     if (p != 0) {
         if (((PlayerId *)((PlayerData *)p)->getPlayerId())->getGender() == 0) {
@@ -636,35 +636,35 @@ void FriendCodeMenu::initState() {
 }
 
 void FriendCodeMenu::releaseResources() {
-    unk_2b8[0].cancel();
-    unk_2b8[1].cancel();
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
     releaseLabels();
-    unk_154.freeTexts();
+    bottomButtons.freeTexts();
 }
 
 void FriendCodeMenu::preStateUpdate() {
-    unk_2b8[0].cancel();
-    unk_2b8[1].cancel();
+    screenTasks[0].cancel();
+    screenTasks[1].cancel();
     releaseLabels();
-    unk_154.freeTexts();
-    if (unk_9e != 0) {
-        unk_9e = *(volatile u8 *)&unk_9e - 1;
-        if (unk_9e == 0) {
-            if (unk_9d != 0) {
-                unk_9e = 1;
+    bottomButtons.freeTexts();
+    if (highlightTimer != 0) {
+        highlightTimer = *(volatile u8 *)&highlightTimer - 1;
+        if (highlightTimer == 0) {
+            if (repeatTimer != 0) {
+                highlightTimer = 1;
             } else {
-                unhighlightKey(unk_a0);
+                unhighlightKey(pressedKey);
             }
         }
     }
-    unk_a1 = unk_a1 + 1;
+    caretBlinkTimer = caretBlinkTimer + 1;
 }
 
 void FriendCodeMenu::postStateUpdate() { flushScreens(); }
 
 void FriendCodeMenu::preInputUpdate() {
     preStateUpdate();
-    unk_f0.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void FriendCodeMenu::postInputUpdate() { postStateUpdate(); }
@@ -678,8 +678,8 @@ void FriendCodeMenu::setupBgLayers() {
 
 void FriendCodeMenu::loadBgGfx() {
     NumberPad_LoadBgGraphics(4);
-    File_LoadToBuffer((void *)"menu/bank/g0_bg.bsc", unk_b00, 0x800);
-    File_LoadToBuffer((void *)"menu/bank/g1_bg.bsc", unk_300, 0x800);
+    File_LoadToBuffer((void *)"menu/bank/g0_bg.bsc", codeScreen, 0x800);
+    File_LoadToBuffer((void *)"menu/bank/g1_bg.bsc", keypadScreen, 0x800);
     loadEntryCode();
     setFlags(2);
     setFlags(4);
@@ -691,7 +691,7 @@ void FriendCodeMenu::loadObjGfx() {
     String_Load2dMenu(p, 0xd7);
     ((LabelString *)p)->createLabel(8, 0x14c, 0xe, 0xf, 0, 0);
     ((LabelString *)p)->redrawAligned(1, 0);
-    MenuButtons_LoadTextColors(&unk_154);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void FriendCodeMenu::updateTouch() {
@@ -705,9 +705,9 @@ void FriendCodeMenu::updateTouch() {
             ok = FALSE;
         }
         if (ok) {
-            if (unk_154.isButtonDisabled(6) == 0 && unk_154.isTouched(6) != 0) {
+            if (bottomButtons.isButtonDisabled(6) == 0 && bottomButtons.isTouched(6) != 0) {
                 confirm();
-            } else if (unk_154.isTouched(7)) {
+            } else if (bottomButtons.isTouched(7)) {
                 cancel();
             } else {
                 u32 r = hitTest(gTouchCurX, gTouchCurY);
@@ -758,19 +758,19 @@ void FriendCodeMenu::updateButtons() {
                 pressCursor();
             } else if (t & 2) {
                 if (deleteBackward(0)) {
-                    unk_9d = 0xd;
+                    repeatTimer = 0xd;
                     setMainState(8);
-                    if (unk_9c == 0xc) {
+                    if (cursorSlot == 0xc) {
                         s32 x = getCursorTargetX();
                         s32 y = getCursorTargetY();
-                        unk_f0.warpTo(x, y);
+                        cursor.warpTo(x, y);
                     }
                 } else {
                     cancel();
                     hideCursor();
                 }
             } else if (t & 8) {
-                if (!unk_154.isButtonDisabled(6)) {
+                if (!bottomButtons.isButtonDisabled(6)) {
                     confirm();
                     hideCursor();
                 }
@@ -780,14 +780,14 @@ void FriendCodeMenu::updateButtons() {
 }
 
 void FriendCodeMenu::updateCursorMove() {
-    if (!unk_f0.isMoving()) {
-        setMainState(unk_9b);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void FriendCodeMenu::updateCursorPress() {
-    if (unk_f0.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         s32 r = activateCursorKey();
         switch (r) {
         case 1:
@@ -803,7 +803,7 @@ void FriendCodeMenu::updateCursorPress() {
 }
 
 void FriendCodeMenu::updateCursorRelease() {
-    if (unk_f0.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
         setMainState(3);
     }
@@ -828,10 +828,10 @@ void FriendCodeMenu::stateBackspaceRepeat() {
     } else {
         if (tickKeyRepeat()) {
             if (deleteBackward(1)) {
-                if (unk_9c == 0xc) {
+                if (cursorSlot == 0xc) {
                     s32 x = getCursorTargetX();
                     s32 y = getCursorTargetY();
-                    unk_f0.warpTo(x, y);
+                    cursor.warpTo(x, y);
                 }
             }
         }
@@ -845,18 +845,18 @@ void FriendCodeMenu::stateCaretSelect() {
     } else {
         u32 k = takeRepeatedKeys();
         if (moveCaretByPad(k)) {
-            extendSelection(unk_9f);
+            extendSelection(caretPos);
         }
     }
 }
 
 void FriendCodeMenu::stateExit() {
-    if (unk_154.stepPress()) {
-        if (unk_f0.getAnim()) {
-            s32 a = unk_154.getPressOffset();
-            s32 b = unk_154.getTargetX(-1);
-            s32 c = unk_154.getTargetY(-1);
-            unk_f0.warpTo(a + (b - 6), a + c);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            cursor.warpTo(a + (b - 6), a + c);
         }
     } else {
         hideCursor();
@@ -865,7 +865,7 @@ void FriendCodeMenu::stateExit() {
 }
 
 void FriendCodeMenu::stateMessage() {
-    if (unk_1300.update(1)) {
+    if (errorMessage.update(1)) {
         resumeInput();
     }
 }
@@ -903,55 +903,55 @@ void FriendCodeMenu::showMessage(u8 v, s32 b) {
     u8 *p = &l;
     *p = gU8None;
     *p = v;
-    unk_1300.open(p, b, 0);
+    errorMessage.open(p, b, 0);
     setMainState(0xb);
     hideCursor();
 }
 
 void FriendCodeMenu::releaseLabels() {
-    unk_9a = 0;
-    unk_b0[0].destroyLabel();
+    labelCount = 0;
+    labels[0].destroyLabel();
 }
 
 void *FriendCodeMenu::allocLabel() {
-    if ((*(volatile u8 *)&unk_9a) >= 1) {
-        return &unk_b0;
+    if ((*(volatile u8 *)&labelCount) >= 1) {
+        return &labels;
     }
-    (*(volatile u8 *)&unk_9a) = (*(volatile u8 *)&unk_9a) + 1;
-    return (u8 *)&unk_b0 + ((*(volatile u8 *)&unk_9a) - 1) * 0x40;
+    (*(volatile u8 *)&labelCount) = (*(volatile u8 *)&labelCount) + 1;
+    return (u8 *)&labels + ((*(volatile u8 *)&labelCount) - 1) * 0x40;
 }
 
 void FriendCodeMenu::showCursor() {
     s32 x = getCursorTargetX();
     s32 y = getCursorTargetY();
-    unk_f0.warpTo(x, y);
-    if ((u8)(unk_9c + 0xf3) <= 1) {
-        ((MenuCursor *)&unk_f0)->setAnimIfChanged(7);
+    cursor.warpTo(x, y);
+    if ((u8)(cursorSlot + 0xf3) <= 1) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     } else {
-        ((MenuCursor *)&unk_f0)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 FriendCodeMenu::getCursorTargetX() {
-    u32 v = unk_9c;
+    u32 v = cursorSlot;
     if (v <= 0xb) {
         return sFriendCodeCursorXTable[v];
     }
     switch (v) {
     case 0xc:
-        return (unk_9f << 4) + 0x20;
+        return (caretPos << 4) + 0x20;
     case 0xd:
-        return unk_154.getTargetX(6);
+        return bottomButtons.getTargetX(6);
     case 0xe:
-        return unk_154.getTargetX(7);
+        return bottomButtons.getTargetX(7);
     default:
         return 0x80;
     }
 }
 
 s32 FriendCodeMenu::getCursorTargetY() {
-    u32 v = unk_9c;
+    u32 v = cursorSlot;
     if (v <= 0xb) {
         return sFriendCodeCursorYTable[v];
     }
@@ -959,112 +959,112 @@ s32 FriendCodeMenu::getCursorTargetY() {
     case 0xc:
         return 0x40;
     case 0xd:
-        return unk_154.getTargetY(6);
+        return bottomButtons.getTargetY(6);
     case 0xe:
-        return unk_154.getTargetY(7);
+        return bottomButtons.getTargetY(7);
     default:
         return 0x60;
     }
 }
 
 void FriendCodeMenu::hideCursor() {
-    ((MenuCursor *)&unk_f0)->setAnimIfChanged(0);
-    unk_f0.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void FriendCodeMenu::moveCursorToTarget() {
-    if ((u8)(unk_9c + 0xf3) <= 1) {
-        ((MenuCursor *)&unk_f0)->switchToAnim07();
+    if ((u8)(cursorSlot + 0xf3) <= 1) {
+        ((MenuCursor *)&cursor)->switchToAnim07();
     } else {
-        ((MenuCursor *)&unk_f0)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 x = getCursorTargetX();
     s32 y = getCursorTargetY();
-    unk_f0.moveToEase(x, y, 3, 1);
-    unk_9b = unk_8d;
+    cursor.moveToEase(x, y, 3, 1);
+    returnState = mainState;
     setMainState(4);
 }
 
 void FriendCodeMenu::pressCursor() {
-    if (unk_9c == 0xc) {
+    if (cursorSlot == 0xc) {
         setMainState(9);
     } else {
-        ((MenuCursor *)&unk_f0)->setPosePress();
+        ((MenuCursor *)&cursor)->setPosePress();
         setMainState(5);
     }
 }
 
 void FriendCodeMenu::releaseCursor() {
-    unk_f0.setPoseRelease();
+    cursor.setPoseRelease();
     setMainState(6);
 }
 
 void FriendCodeMenu::refreshCursor() {
-    unk_f0.setPoseIdle();
-    unk_f0.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 BOOL FriendCodeMenu::moveCursorByPad(u32 keys) {
-    u32 old = unk_9c;
+    u32 old = cursorSlot;
     if (keys == 0) {
         return FALSE;
     }
     if (old <= 0xb) {
         if (MenuKeys_HasLeft(keys)) {
-            if ((s32)(*(volatile u8 *)&unk_9c) % 3 > 0) {
-                (*(volatile u8 *)&unk_9c) = (*(volatile u8 *)&unk_9c) - 1;
+            if ((s32)(*(volatile u8 *)&cursorSlot) % 3 > 0) {
+                (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) - 1;
             }
         } else if (MenuKeys_HasRight(keys)) {
-            if ((s32)(*(volatile u8 *)&unk_9c) % 3 < 2) {
-                (*(volatile u8 *)&unk_9c) = (*(volatile u8 *)&unk_9c) + 1;
+            if ((s32)(*(volatile u8 *)&cursorSlot) % 3 < 2) {
+                (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) + 1;
             } else {
-                (*(volatile u8 *)&unk_9c) = 0xd;
+                (*(volatile u8 *)&cursorSlot) = 0xd;
             }
         }
-        if ((*(volatile u8 *)&unk_9c) <= 0xb) {
+        if ((*(volatile u8 *)&cursorSlot) <= 0xb) {
             if (MenuKeys_HasUp(keys)) {
-                if ((*(volatile u8 *)&unk_9c) <= 2) {
-                    (*(volatile u8 *)&unk_9c) = 0xc;
+                if ((*(volatile u8 *)&cursorSlot) <= 2) {
+                    (*(volatile u8 *)&cursorSlot) = 0xc;
                 } else {
-                    (*(volatile u8 *)&unk_9c) = (*(volatile u8 *)&unk_9c) - 3;
+                    (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) - 3;
                 }
             } else if (MenuKeys_HasDown(keys)) {
-                u32 v = (*(volatile u8 *)&unk_9c);
+                u32 v = (*(volatile u8 *)&cursorSlot);
                 if (v < 9 || v > 0xb) {
-                    (*(volatile u8 *)&unk_9c) = (*(volatile u8 *)&unk_9c) + 3;
+                    (*(volatile u8 *)&cursorSlot) = (*(volatile u8 *)&cursorSlot) + 3;
                 } else {
-                    (*(volatile u8 *)&unk_9c) = 0xe;
+                    (*(volatile u8 *)&cursorSlot) = 0xe;
                 }
             }
         }
     } else if (old == 0xc) {
         if (MenuKeys_HasDown(keys)) {
-            s32 r = unk_f0.getScreenX();
+            s32 r = cursor.getScreenX();
             if (r <= 0x70) {
-                (*(volatile u8 *)&unk_9c) = 0;
+                (*(volatile u8 *)&cursorSlot) = 0;
             } else if (r <= 0x90) {
-                (*(volatile u8 *)&unk_9c) = 1;
+                (*(volatile u8 *)&cursorSlot) = 1;
             } else {
-                (*(volatile u8 *)&unk_9c) = 2;
+                (*(volatile u8 *)&cursorSlot) = 2;
             }
         } else if (moveCaretByPad(keys)) {
             Snd_PlaySe(0xb);
-            setCaret(unk_9f);
+            setCaret(caretPos);
         }
     } else if (old == 0xd) {
         if (MenuKeys_HasLeft(keys)) {
-            (*(volatile u8 *)&unk_9c) = 0xe;
+            (*(volatile u8 *)&cursorSlot) = 0xe;
         } else if (MenuKeys_HasUp(keys)) {
-            (*(volatile u8 *)&unk_9c) = 0xb;
+            (*(volatile u8 *)&cursorSlot) = 0xb;
         }
     } else if (old == 0xe) {
         if (MenuKeys_HasRight(keys)) {
-            (*(volatile u8 *)&unk_9c) = 0xd;
+            (*(volatile u8 *)&cursorSlot) = 0xd;
         } else if (MenuKeys_HasUp(keys)) {
-            (*(volatile u8 *)&unk_9c) = 0xa;
+            (*(volatile u8 *)&cursorSlot) = 0xa;
         }
     }
-    if (old == (*(volatile u8 *)&unk_9c)) {
+    if (old == (*(volatile u8 *)&cursorSlot)) {
         return FALSE;
     }
     return TRUE;
@@ -1074,12 +1074,12 @@ u32 FriendCodeMenu::hitTest(s32 x0, s32 y) {
     s32 x = x0 - 0x50;
     s32 t = y - 0x60;
     if (x >= 0 && x < 0x60 && t >= 0 && t < 0x40) {
-        unk_9c = sFriendCodeTouchKeyMap[(x >> 5) + (t >> 4) * 3];
-        return unk_9c;
+        cursorSlot = sFriendCodeTouchKeyMap[(x >> 5) + (t >> 4) * 3];
+        return cursorSlot;
     }
     if (y >= 0x40 && y <= 0x50) {
-        unk_9c = 0xc;
-        return unk_9c;
+        cursorSlot = 0xc;
+        return cursorSlot;
     }
     return 0xf;
 }
@@ -1110,7 +1110,7 @@ BOOL FriendCodeMenu::isOwnFriendCode() {
     s64 sum = 0;
     s32 i;
     for (i = 0; i < 12; i++) {
-        sum = sum * 10 + (s64)(u32)unk_a4[i];
+        sum = sum * 10 + (s64)(u32)codeDigits[i];
     }
     return PlayerWifiData_GetFriendCode(((PlayerData *)h)->getWifiUserData()) == sum;
 }
@@ -1119,7 +1119,7 @@ void FriendCodeMenu::confirm() {
     void *h = PlayerData_GetCurrent();
     DwcFriendData l;
     DwcFriendData_Clear(&l);
-    if (!DwcFriendData_FromCodeDigits(&l, unk_a4, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()))) {
+    if (!DwcFriendData_FromCodeDigits(&l, codeDigits, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()))) {
         showMessage(0x19, 0);
         Snd_PlaySe(0x73);
         return;
@@ -1136,9 +1136,9 @@ void FriendCodeMenu::confirm() {
     }
     void *s = getFriendEntry();
     void *t = FriendEntry_GetFriendData(s);
-    DwcFriendData_FromCodeDigits(t, unk_a4, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
+    DwcFriendData_FromCodeDigits(t, codeDigits, PlayerWifiData_GetDwcUserData(((PlayerData *)h)->getWifiUserData()));
     MenuCtrl_SetResult(1);
-    unk_154.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(3);
     setMainState(10);
     Snd_PlaySe(0x29);
@@ -1166,7 +1166,7 @@ void FriendCodeMenu::confirm() {
 
 void FriendCodeMenu::cancel() {
     MenuCtrl_SetResult(0);
-    unk_154.setSelected(7);
+    bottomButtons.setSelected(7);
     setTransitionState(3);
     setMainState(10);
     notifyParent(6);
@@ -1177,7 +1177,7 @@ void FriendCodeMenu::cancel() {
 }
 
 s32 FriendCodeMenu::activateCursorKey() {
-    u32 st = unk_9c;
+    u32 st = cursorSlot;
     if (st <= 11) {
         if (pressCursorKey()) {
             setMainState(7);
@@ -1189,7 +1189,7 @@ s32 FriendCodeMenu::activateCursorKey() {
     case 12:
         break;
     case 13:
-        if (!unk_154.isButtonDisabled(6)) {
+        if (!bottomButtons.isButtonDisabled(6)) {
             confirm();
             return 1;
         }
@@ -1202,14 +1202,14 @@ s32 FriendCodeMenu::activateCursorKey() {
 }
 
 BOOL FriendCodeMenu::applyKey(s32 a) {
-    u32 st = unk_9c;
+    u32 st = cursorSlot;
     switch (st) {
     case 11:
         if (a) {
             clearCode();
             InventoryBg_DrawSprite();
         }
-        unk_9d = 0;
+        repeatTimer = 0;
         return FALSE;
     case 10:
         deleteBackward(1);
@@ -1226,20 +1226,20 @@ BOOL FriendCodeMenu::applyKey(s32 a) {
 }
 
 BOOL FriendCodeMenu::moveCaretByPad(u32 key) {
-    u32 old = unk_9f;
+    u32 old = caretPos;
     if (MenuKeys_HasLeft(key)) {
-        if (unk_9f != 0) {
-            unk_9f = *(volatile u8 *)&unk_9f - 1;
+        if (caretPos != 0) {
+            caretPos = *(volatile u8 *)&caretPos - 1;
         }
     } else if (MenuKeys_HasRight(key)) {
-        if (getCodeLength() > *(volatile u8 *)&unk_9f) {
-            unk_9f = *(volatile u8 *)&unk_9f + 1;
+        if (getCodeLength() > *(volatile u8 *)&caretPos) {
+            caretPos = *(volatile u8 *)&caretPos + 1;
         }
     }
-    if (old != *(volatile u8 *)&unk_9f) {
+    if (old != *(volatile u8 *)&caretPos) {
         s32 x = getCursorTargetX();
         s32 y = getCursorTargetY();
-        unk_f0.warpTo(x, y);
+        cursor.warpTo(x, y);
         return TRUE;
     }
     return FALSE;
@@ -1259,25 +1259,25 @@ s32 FriendCodeMenu::getCaretFromTouch() {
 }
 
 void FriendCodeMenu::setCaret(u8 x) {
-    unk_9f = x;
-    unk_a1 = 0x10;
-    unk_a2 = x;
-    unk_a3 = x;
+    caretPos = x;
+    caretBlinkTimer = 0x10;
+    selectionEnd = x;
+    selectionAnchor = x;
     setFlags(0x10);
 }
 
 void FriendCodeMenu::extendSelection(s32 x) {
-    unk_9f = x;
-    unk_a1 = 0x10;
-    if (unk_a2 != x) {
+    caretPos = x;
+    caretBlinkTimer = 0x10;
+    if (selectionEnd != x) {
         Snd_PlaySe(0x15);
     }
-    unk_a2 = x;
+    selectionEnd = x;
     setFlags(0x10);
 }
 
 void FriendCodeMenu::loadEntryCode() {
-    if (DwcFriendData_ToCodeDigits(FriendEntry_GetFriendData(getFriendEntry()), unk_a4)) {
+    if (DwcFriendData_ToCodeDigits(FriendEntry_GetFriendData(getFriendEntry()), codeDigits)) {
         setCaret(0);
         setFlags(8);
     } else {
@@ -1288,7 +1288,7 @@ void FriendCodeMenu::loadEntryCode() {
 void FriendCodeMenu::clearCode() {
     s32 i;
     for (i = 0; i < 12; i++) {
-        unk_a4[i] = 10;
+        codeDigits[i] = 10;
     }
     setCaret(0);
     setFlags(8);
@@ -1296,14 +1296,14 @@ void FriendCodeMenu::clearCode() {
 
 BOOL FriendCodeMenu::deleteBackward(s32 f) {
     s32 i;
-    if (unk_a2 != unk_a3) {
+    if (selectionEnd != selectionAnchor) {
         deleteSelection();
         Snd_PlaySe(0x35);
         return TRUE;
     }
-    if (unk_9f == 0) {
-        if (unk_a4[0] != 10) {
-            unk_9f = 1;
+    if (caretPos == 0) {
+        if (codeDigits[0] != 10) {
+            caretPos = 1;
         } else {
             if (f) {
                 Snd_PlaySe(0x34);
@@ -1311,19 +1311,19 @@ BOOL FriendCodeMenu::deleteBackward(s32 f) {
             return FALSE;
         }
     }
-    for (i = unk_9f; i < 12; i++) {
-        unk_a4[i - 1] = unk_a4[i];
+    for (i = caretPos; i < 12; i++) {
+        codeDigits[i - 1] = codeDigits[i];
     }
-    unk_a4[11] = 10;
+    codeDigits[11] = 10;
     setFlags(8);
-    setCaret(unk_9f - 1);
+    setCaret(caretPos - 1);
     Snd_PlaySe(0x35);
     return TRUE;
 }
 
 void FriendCodeMenu::deleteSelection() {
-    u32 b = unk_a3;
-    u32 a = unk_a2;
+    u32 b = selectionAnchor;
+    u32 a = selectionEnd;
     s32 lo, hi;
     if (a < b) {
         lo = a;
@@ -1334,34 +1334,34 @@ void FriendCodeMenu::deleteSelection() {
     }
     setCaret(lo);
     for (; hi < 12; lo++, hi++) {
-        unk_a4[lo] = unk_a4[hi];
+        codeDigits[lo] = codeDigits[hi];
     }
     for (; lo < 12; lo++) {
-        unk_a4[lo] = 10;
+        codeDigits[lo] = 10;
     }
     setFlags(8);
 }
 
 BOOL FriendCodeMenu::insertDigit(u8 v) {
     s32 i;
-    if (unk_9f == 12 && unk_a2 == unk_a3) {
+    if (caretPos == 12 && selectionEnd == selectionAnchor) {
         Snd_PlaySe(0x34);
         return FALSE;
     }
-    u32 b = unk_a3;
-    u32 a = unk_a2;
-    if (a == b && unk_a4[11] != 10) {
+    u32 b = selectionAnchor;
+    u32 a = selectionEnd;
+    if (a == b && codeDigits[11] != 10) {
         Snd_PlaySe(0x34);
         return FALSE;
     }
     if (a != b) {
         deleteSelection();
     }
-    for (i = 11; i > unk_9f; i--) {
-        unk_a4[i] = unk_a4[i - 1];
+    for (i = 11; i > caretPos; i--) {
+        codeDigits[i] = codeDigits[i - 1];
     }
-    unk_a4[unk_9f] = v;
-    setCaret(unk_9f + 1);
+    codeDigits[caretPos] = v;
+    setCaret(caretPos + 1);
     setFlags(8);
     return TRUE;
 }
@@ -1369,7 +1369,7 @@ BOOL FriendCodeMenu::insertDigit(u8 v) {
 s32 FriendCodeMenu::getCodeLength() {
     s32 i;
     for (i = 0; i < 12; i++) {
-        if (unk_a4[i] == 10) {
+        if (codeDigits[i] == 10) {
             return i;
         }
     }
@@ -1378,10 +1378,10 @@ s32 FriendCodeMenu::getCodeLength() {
 
 void FriendCodeMenu::drawCodeDigits() {
     s32 i;
-    u16 *p = unk_b00;
+    u16 *p = codeScreen;
     p += 0xe4;
     for (i = 0; i < 12; p += 2, i++) {
-        u32 c = unk_a4[i];
+        u32 c = codeDigits[i];
         if (c == 10) {
             p[0] = (p[0] & 0xfc00) | 0x176;
             p[1] = (p[1] & 0xfc00) | 0x176;
@@ -1395,19 +1395,19 @@ void FriendCodeMenu::drawCodeDigits() {
             p[0x21] = (p[0x21] & 0xfc00) | (v + 3);
         }
     }
-    if (unk_154.isButtonDisabled(6)) {
-        if (unk_a4[11] != 10) {
-            unk_154.enableButton(6);
+    if (bottomButtons.isButtonDisabled(6)) {
+        if (codeDigits[11] != 10) {
+            bottomButtons.enableButton(6);
         }
-    } else if (unk_a4[11] == 10) {
-        unk_154.disableButton(6);
+    } else if (codeDigits[11] == 10) {
+        bottomButtons.disableButton(6);
     }
 }
 
 void FriendCodeMenu::drawSelection() {
-    BgScreen_SetRectPalette(unk_b00, 4, 7, 0x1b, 8, 4);
-    u32 b = unk_a3;
-    u32 a = unk_a2;
+    BgScreen_SetRectPalette(codeScreen, 4, 7, 0x1b, 8, 4);
+    u32 b = selectionAnchor;
+    u32 a = selectionEnd;
     if (a != b) {
         u32 lo, hi;
         if (a > b) {
@@ -1419,7 +1419,7 @@ void FriendCodeMenu::drawSelection() {
         }
         lo = lo * 2 + 4;
         hi = hi * 2 + 3;
-        BgScreen_SetRectPalette(unk_b00, lo, 7, hi, 8, 8);
+        BgScreen_SetRectPalette(codeScreen, lo, 7, hi, 8, 8);
     }
 }
 
@@ -1435,12 +1435,12 @@ void FriendCodeMenu::flushScreens() {
         setFlags(4);
     }
     if (testFlags(2)) {
-        if (unk_2b8[0].requestScreen((u32)unk_300, 4, 0x800, 0)) {
+        if (screenTasks[0].requestScreen((u32)keypadScreen, 4, 0x800, 0)) {
             clearFlags(2);
         }
     }
     if (testFlags(4)) {
-        if (unk_2b8[1].requestScreen((u32)unk_b00, 6, 0x800, 0)) {
+        if (screenTasks[1].requestScreen((u32)codeScreen, 6, 0x800, 0)) {
             clearFlags(4);
         }
     }
@@ -1448,20 +1448,20 @@ void FriendCodeMenu::flushScreens() {
 
 BOOL FriendCodeMenu::pressCursorKey() {
     resetKeyPalettes();
-    unk_a0 = unk_9c;
-    highlightKey(unk_a0);
-    unk_9d = 0xd;
-    unk_9e = 5;
+    pressedKey = cursorSlot;
+    highlightKey(pressedKey);
+    repeatTimer = 0xd;
+    highlightTimer = 5;
     return applyKey(1);
 }
 
-void FriendCodeMenu::stopKeyRepeat() { unk_9d = 0; }
+void FriendCodeMenu::stopKeyRepeat() { repeatTimer = 0; }
 
 BOOL FriendCodeMenu::tickKeyRepeat() {
-    if (unk_9d != 0) {
-        unk_9d = *(volatile u8 *)&unk_9d - 1;
-        if (unk_9d == 0) {
-            unk_9d = 2;
+    if (repeatTimer != 0) {
+        repeatTimer = *(volatile u8 *)&repeatTimer - 1;
+        if (repeatTimer == 0) {
+            repeatTimer = 2;
             return TRUE;
         }
     }
@@ -1469,7 +1469,7 @@ BOOL FriendCodeMenu::tickKeyRepeat() {
 }
 
 void FriendCodeMenu::resetKeyPalettes() {
-    BgScreen_SetRectPalette(unk_300, 9, 0xc, 0x15, 0x14, 2);
+    BgScreen_SetRectPalette(keypadScreen, 9, 0xc, 0x15, 0x14, 2);
     unhighlightKey(0xb);
     unhighlightKey(0xa);
     setFlags(2);
@@ -1485,7 +1485,7 @@ void FriendCodeMenu::setKeyPalette(s32 idx, u32 to) {
         x1 = x0 + 3;
     }
     u32 y0 = sKeyRowY[idx];
-    BgScreen_SetRectPalette(unk_300, x0, y0, x1, y0 + 1, to);
+    BgScreen_SetRectPalette(keypadScreen, x0, y0, x1, y0 + 1, to);
     setFlags(2);
 }
 
@@ -1502,15 +1502,15 @@ void FriendCodeMenu::unhighlightKey(s32 idx) {
 }
 
 BOOL FriendCodeMenu::testFlags(u32 m) {
-    if (unk_98 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void FriendCodeMenu::setFlags(u32 m) { unk_98 = unk_98 | m; }
+void FriendCodeMenu::setFlags(u32 m) { flags = flags | m; }
 
-void FriendCodeMenu::clearFlags(u32 m) { unk_98 = unk_98 & ~m; }
+void FriendCodeMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" void *data_ov133_02295250[2] = {(void *)_ZN14FriendCodeMenu16stateCaretSelectEv, 0};
 

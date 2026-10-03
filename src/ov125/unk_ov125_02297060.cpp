@@ -222,15 +222,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class PatternSelectMenu;
@@ -346,7 +346,7 @@ extern "C" PatternSelectMenu *PatternSelectMenu_Create() { return new PatternSel
 
 BOOL PatternSelectMenu::vfunc_00() {
     initPatternSelect();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -390,7 +390,7 @@ BOOL PatternSelectMenu::execTransition() {
         &PatternSelectMenu::stateClose,
         &PatternSelectMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -408,7 +408,7 @@ void PatternSelectMenu::runMainState() {
         &PatternSelectMenu::updatePopupClose,
         &PatternSelectMenu::updatePopupDone,
         &PatternSelectMenu::updateBarTransition};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL PatternSelectMenu::execMain() {
@@ -743,7 +743,7 @@ void PatternSelectMenu::closeWithoutChoice() {
     hideCursor();
     unk_428.hide(1);
     setFlags(0x10);
-    unk_8c = 3;
+    transitionState = 3;
     MenuCtrl_SetResult(0);
     setPhase(1);
     Snd_PlaySe(0x28);
@@ -840,7 +840,7 @@ void PatternSelectMenu::onPopupChoice() {
     case 0:
         MenuCtrl_SetIndex(unk_6b7);
         MenuCtrl_SetResult(1);
-        unk_8c = 3;
+        transitionState = 3;
         unk_428.hide(1);
         setPhase(1);
         break;
@@ -891,7 +891,7 @@ void PatternSelectMenu::moveCursorToTarget() {
         s32 a = getCursorTargetX();
         s32 b = getCursorTargetY();
         unk_4e8.moveToEase(a, b, 3, 1);
-        unk_6bb = unk_8d;
+        unk_6bb = mainState;
         setMainState(5);
     }
 }
@@ -900,7 +900,7 @@ void PatternSelectMenu::moveCursorToPopupRow() {
     s32 a = ((PopupChoiceMenuBody *)&unk_128)->getRowX();
     s32 b = ((PopupChoiceMenuBody *)&unk_128)->getRowY(unk_6ba);
     unk_4e8.moveToLinear(a, b, 2);
-    unk_6bb = unk_8d;
+    unk_6bb = mainState;
     setMainState(5);
 }
 

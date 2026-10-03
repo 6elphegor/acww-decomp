@@ -554,7 +554,7 @@ public:
     u8 unk_2fa8[0x10];
 };
 struct SpriteAnim {
-    u8 unk_00[4];
+    u8 seq[4];
     ~SpriteAnim();
 };
 // 0x74-byte element of the 60-element array at the start of SkySprites

@@ -1,21 +1,21 @@
 #include "types.h"
 
 struct Unk_ov094_02292360_Obj {
-    s32 unk_00;
-    s32 unk_04;
-    u16 unk_08;
-    u16 unk_0a;
-    u16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
-    u8 unk_11;
-    u8 unk_12;
-    u8 unk_13;
-    u8 unk_14;
+    s32 shownBells;
+    s32 bellStep;
+    u16 dirtyFlags;
+    u16 bellsColorA;
+    u16 bellsColorB;
+    u8 bgId;
+    u8 paintedHighlight;
+    u8 highlight;
+    u8 blinkHighlight;
+    u8 blinkTimer;
+    u8 bellRollTimer;
+    u8 pictureIndex;
     u8 unk_15;
-    u8 unk_16[0x1c];
-    u16 unk_32;
+    u8 palette[0x1c];
+    u16 bellsColor;
 };
 
 struct Unk_ov094_022923a4_Pad {
@@ -43,18 +43,18 @@ struct Unk_ov094_02292d6c_Rec {
 
 struct InventoryBg {
     /* 0x000 */ u32 unk_00;
-    /* 0x004 */ u8 unk_04[0x4];
-    /* 0x008 */ u16 unk_08;
+    /* 0x004 */ u8 bellStep[0x4];
+    /* 0x008 */ u16 dirtyFlags;
     /* 0x00a */ u8 unk_0a[4];
-    /* 0x00e */ u8 unk_0e;
-    /* 0x00f */ u8 unk_0f;
-    /* 0x010 */ u8 unk_10;
+    /* 0x00e */ u8 bgId;
+    /* 0x00f */ u8 paintedHighlight;
+    /* 0x010 */ u8 highlight;
     /* 0x011 */ u8 unk_11[3];
-    /* 0x014 */ u8 unk_14;
+    /* 0x014 */ u8 pictureIndex;
     /* 0x015 */ u8 unk_15[0x23];
-    /* 0x038 */ u8 unk_38[0xa8];
-    /* 0x0e0 */ u8 unk_e0[0x80];
-    /* 0x160 */ u8 unk_160[0x24];
+    /* 0x038 */ u8 vramTasks[0xa8];
+    /* 0x0e0 */ u8 textWindows[0x80];
+    /* 0x160 */ u8 screenData[0x24];
     /* 0x184 */ u8 unk_184[0x808];
     /* 0x98c */ Unk_ov094_02292d6c_Obj38 unk_98c[3];
     /* 0xa34 */ u16 *unk_a34;
@@ -79,8 +79,8 @@ typedef Unk_ov094_02292d6c_Rec Rec;
 void operator delete(void *p);
 
 struct ItemIconCache {
-    u8 unk_04[0x800];
-    u8 unk_804;
+    u8 iconChars[0x800];
+    u8 loadedPage;
 
     ItemIconCache();
     virtual ~ItemIconCache();
@@ -90,21 +90,21 @@ struct ItemIconCache {
 };
 
 struct InventoryItemGrid {
-    u8 unk_04[0x180];
-    ItemIconCache unk_184;
-    u8 unk_98c[0xa8];
-    u16 *unk_a34;
-    u8 unk_a38[8];
-    u8 unk_a40[8];
-    u8 unk_a48[8];
-    u32 unk_a50;
-    u8 unk_a54[2];
-    u8 unk_a56;
-    u8 unk_a57;
-    u8 unk_a58;
-    u8 unk_a59;
+    u8 iconUploadChars[0x180];
+    ItemIconCache iconCache;
+    u8 iconUploadTasks[0xa8];
+    u16 *boxItems;
+    u8 occupiedBits[8];
+    u8 markedBits[8];
+    u8 disabledBits[8];
+    u32 objPriority;
+    u8 presentItem[2];
+    u8 cursorSlot;
+    u8 cursorLiftTimer;
+    u8 numIconUploads;
+    u8 heldScale;
     u8 unk_a5a[2];
-    u8 unk_a5c;
+    u8 showHeldFocus;
 
     InventoryItemGrid();
     virtual ~InventoryItemGrid();
@@ -112,19 +112,19 @@ struct InventoryItemGrid {
 
 struct Unk_ov094_02293c04_Rec {
     u8 unk_00[0x26];
-    volatile u8 unk_26;
-    u8 unk_27;
+    volatile u8 popTimer;
+    u8 heldScale;
 };
 
 struct Unk_ov094_02293ca0_Obj {
     s32 unk_00;
-    u8 *volatile unk_04;
-    u32 unk_08[2];
+    u8 *volatile letterArray;
+    u32 occupiedBits[2];
 };
 
 struct Unk_ov094_022937e4_Ent {
     s32 unk_00;
-    u32 unk_04;
+    u32 attr2;
 };
 struct Unk_ov094_02294bb4_Bits {
     u32 pad;
@@ -132,7 +132,7 @@ struct Unk_ov094_02294bb4_Bits {
 };
 
 struct Unk_ov094_Bits8 {
-    u32 unk_00[2];
+    u32 words[2];
 };
 
 // Vtable 0x02294bd4
@@ -173,15 +173,15 @@ public:
     void updateCursorLift();
     void init(s32 x);
 
-    /* 0x04 */ u8 *unk_04;
-    /* 0x08 */ Unk_ov094_Bits8 unk_08;
-    /* 0x10 */ Unk_ov094_Bits8 unk_10;
-    /* 0x18 */ Unk_ov094_Bits8 unk_18;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ u8 unk_24;
-    /* 0x25 */ u8 unk_25;
-    /* 0x26 */ u8 unk_26;
-    /* 0x27 */ u8 unk_27;
+    /* 0x04 */ u8 *letterArray;
+    /* 0x08 */ Unk_ov094_Bits8 occupiedBits;
+    /* 0x10 */ Unk_ov094_Bits8 markedBits;
+    /* 0x18 */ Unk_ov094_Bits8 highlightedBits;
+    /* 0x20 */ s32 objPriority;
+    /* 0x24 */ u8 cursorSlot;
+    /* 0x25 */ u8 cursorLiftTimer;
+    /* 0x26 */ u8 popTimer;
+    /* 0x27 */ u8 heldScale;
 };
 
 // symbols.txt names of main functions (called with the object first)
@@ -487,19 +487,19 @@ ItemIconCache::~ItemIconCache() {}
 
 void ItemIconCache::invalidate()
 {
-    unk_804 = 0xff;
+    loadedPage = 0xff;
 }
 
 u8 *ItemIconCache::getIconChars(s32 idx)
 {
     char buf[0x28];
     s32 page = idx >> 4;
-    if (page != unk_804) {
-        unk_804 = page;
+    if (page != loadedPage) {
+        loadedPage = page;
         func_020639e8(buf, (const char *)data_ov094_02294b94, page);
-        File_LoadToBuffer(buf, unk_04, 0x800);
+        File_LoadToBuffer(buf, iconChars, 0x800);
     }
-    u8 *r = unk_04;
+    u8 *r = iconChars;
     r += Menu_GetIconCharIndex(idx & 0xf) << 5;
     return r;
 }
@@ -508,10 +508,10 @@ u8 *ItemIconCache::getPresentChars(s32 idx)
 {
     char buf[0x28];
     func_020639e8(buf, (const char *)data_ov094_02294b80);
-    File_LoadToBuffer(buf, unk_04, 0x800);
-    u8 *r = unk_04;
+    File_LoadToBuffer(buf, iconChars, 0x800);
+    u8 *r = iconChars;
     r += Menu_GetIconCharIndex(idx) << 5;
-    unk_804 = 0xff;
+    loadedPage = 0xff;
     return r;
 }
 
@@ -522,35 +522,35 @@ u8 InventoryItemGrid_GetIconPalette(void *o, s32 i)
 
 InventoryItemGrid::InventoryItemGrid()
 {
-    u8 *e = unk_98c;
+    u8 *e = iconUploadTasks;
     do {
         func_020b85f8(e);
         e += 0x38;
-    } while (e != (u8 *)&unk_a34);
+    } while (e != (u8 *)&boxItems);
 }
 
 InventoryItemGrid::~InventoryItemGrid() {}
 
 void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a)
 {
-    o->unk_184.invalidate();
-    InventoryItemGrid_ClearBits((u32 *)(o->unk_a38));
-    InventoryItemGrid_ClearBits((u32 *)(o->unk_a40));
-    InventoryItemGrid_ClearBits((u32 *)(o->unk_a48));
-    o->unk_a56 = 0x23;
-    o->unk_a57 = 0;
-    o->unk_a50 = a;
-    o->unk_a34 = 0;
-    o->unk_a59 = 0xa;
-    o->unk_a5c = 1;
+    o->iconCache.invalidate();
+    InventoryItemGrid_ClearBits((u32 *)(o->occupiedBits));
+    InventoryItemGrid_ClearBits((u32 *)(o->markedBits));
+    InventoryItemGrid_ClearBits((u32 *)(o->disabledBits));
+    o->cursorSlot = 0x23;
+    o->cursorLiftTimer = 0;
+    o->objPriority = a;
+    o->boxItems = 0;
+    o->heldScale = 0xa;
+    o->showHeldFocus = 1;
 }
 
 void InventoryItemGrid_PreUpdate(InventoryItemGrid *o)
 {
     InventoryItemGrid_CancelUploads((S *)o);
-    u8 v = o->unk_a57;
+    u8 v = o->cursorLiftTimer;
     if (v != 0) {
-        o->unk_a57 = v - 1;
+        o->cursorLiftTimer = v - 1;
     }
 }
 
@@ -615,17 +615,17 @@ s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c)
 void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a)
 {
     if (*p == 0xfff1) {
-        InventoryItemGrid_ClearBit((u32 *)(o->unk_a38), k);
+        InventoryItemGrid_ClearBit((u32 *)(o->occupiedBits), k);
     } else {
-        InventoryItemGrid_SetBit((u32 *)(o->unk_a38), k);
+        InventoryItemGrid_SetBit((u32 *)(o->occupiedBits), k);
         s32 r = InventoryItemGrid_GetIconIndex(o, p, a);
         Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)InventoryItemGrid_GetSlotSprite((S *)o, k);
-        s32 c = (u32)(e->unk_04 << 22) >> 22;
-        u8 *q = o->unk_184.getIconChars(r);
+        s32 c = (u32)(e->attr2 << 22) >> 22;
+        u8 *q = o->iconCache.getIconChars(r);
         Gfx2d_LoadCharRange(q, 8, c, c, c + 1);
         Gfx2d_LoadCharRange(q + 0x400, 8, c + 0x20, c + 0x20, c + 0x21);
-        u32 n = InventoryItemGrid_GetIconPalette(&o->unk_184, r);
-        e->unk_04 = (e->unk_04 & 0xffff0fff) | ((n & 0xf) << 12);
+        u32 n = InventoryItemGrid_GetIconPalette(&o->iconCache, r);
+        e->attr2 = (e->attr2 & 0xffff0fff) | ((n & 0xf) << 12);
     }
 }
 
@@ -657,7 +657,7 @@ void InventoryItemGrid_LoadBox(InventoryItemGrid *o, u16 *arr)
         k++;
         i++;
     } while (i < 0xf);
-    o->unk_a34 = arr;
+    o->boxItems = arr;
 }
 
 s32 InventoryItemGrid_GetIconIndex(void *o, u16 *p, s32 mode)
@@ -736,7 +736,7 @@ s32 InventoryItemGrid_GetSlotY(void *o, s32 i)
 
 BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v)
 {
-    if (v == o->unk_a56) {
+    if (v == o->cursorSlot) {
         return TRUE;
     }
     return FALSE;
@@ -744,21 +744,21 @@ BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v)
 
 s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o)
 {
-    return sItemCursorLift[o->unk_a57];
+    return sItemCursorLift[o->cursorLiftTimer];
 }
 
 void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o)
 {
-    o->unk_a56 = 0x23;
+    o->cursorSlot = 0x23;
 }
 
 void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v)
 {
     if (InventoryItemGrid_IsSlotDisabled((S *)o, (u8)v)) {
         InventoryItemGrid_ClearCursorSlot(o);
-    } else if (o->unk_a56 != v) {
-        o->unk_a56 = v;
-        o->unk_a57 = 2;
+    } else if (o->cursorSlot != v) {
+        o->cursorSlot = v;
+        o->cursorLiftTimer = 2;
     }
 }
 

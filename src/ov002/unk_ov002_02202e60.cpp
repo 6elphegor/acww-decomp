@@ -253,22 +253,22 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 class HandCursor : public UiWidget {
@@ -286,16 +286,16 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 class ScrollKnob : public UiWidget {
@@ -310,12 +310,12 @@ public:
     void setState(s32 idx);
     void getAnimOffset(s32 *a, s32 *b);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -377,7 +377,7 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 // 8-byte animation record
 struct Unk_ov002_02203c5c_Rec {
     u32 unk_00;
-    u32 unk_04 : 10;
+    u32 charName : 10;
     u32 unk_04_hi : 22;
 };
 
@@ -412,9 +412,9 @@ public:
     BOOL hide(s32 a);
     s32 updatePrompt();
 
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ volatile u8 unk_be;
+    /* 0xbc */ u8 promptState;
+    /* 0xbd */ u8 openQueued;
+    /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
 // vptr-only class (vtable 0x022044d4)
@@ -428,14 +428,14 @@ public:
 class KeyRepeatView {
 public:
     u32 unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0a;
-    s16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    s16 delay;
+    s16 minInterval;
+    s16 intervalStep;
+    s16 interval;
+    s16 countdown;
+    u8 heldKeys;
+    u8 pendingKeys;
+    u8 takenKeys;
     void init(s32 a, s32 b, s32 c);
     BOOL isRight();
     BOOL isLeft();
@@ -450,8 +450,8 @@ class MenuTween {
 public:
     MenuTween();
     virtual ~MenuTween();
-    s32 unk_04;
-    s32 unk_08;
+    s32 stepSize;
+    s32 progress;
     s32 scaleLinear(s32 v);
     s32 scaleQuadratic(s32 v);
     BOOL step();
@@ -463,10 +463,10 @@ class MenuSlide : public MenuTween {
 public:
     MenuSlide();
     virtual ~MenuSlide();
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
+    s32 offset;
+    s32 extent;
+    s32 edgeDistance;
+    u8 direction;
     void updateSlideOutHorizontal(s32 mode);
     void updateSlideOutVertical(s32 mode);
     BOOL stepSlideIn(s32 mode);
@@ -541,17 +541,17 @@ public:
     BOOL isRepeatUp();
     u32 takeRepeatedKeys();
 
-    /* 0x50 */ KeyRepeat unk_50;
+    /* 0x50 */ KeyRepeat keyRepeat;
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlide unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlide slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // 8-byte-aligned owner helpers of the menu: text elements
@@ -579,13 +579,13 @@ public:
     BOOL stepPress();
     void drawAt(s32 x, s32 y, s32 c);
 
-    /* 0x04 */ LabelString unk_04;
-    /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
+    /* 0x04 */ LabelString caption;
+    /* 0x44 */ Unk_ov002_02203c5c_Rec *cells;
+    /* 0x48 */ u8 widthTiles;
+    /* 0x49 */ u8 pressStep;
+    /* 0x4a */ u8 frameCellCount;
+    /* 0x4b */ u8 msgId;
+    /* 0x4c */ u8 flags;
 };
 
 // Menu, vtable 0x02204770
@@ -617,9 +617,9 @@ public:
     void freeTexts();
 
     /* 0x004 */ MenuTextButton unk_04[2];
-    /* 0x0a4 */ MenuTitleBalloon unk_a4;
-    /* 0x160 */ u8 unk_160;
-    /* 0x161 */ u8 unk_161;
+    /* 0x0a4 */ MenuTitleBalloon title;
+    /* 0x160 */ u8 layout;
+    /* 0x161 */ u8 selectedTarget;
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -701,13 +701,13 @@ public:
     void openHigh(u8 *a, s32 b, u32 c);
     void open(u8 *a, s32 b, u32 c);
 
-    /* 0x00 */ TouchPromptBalloon unk_00;
-    /* 0xc0 */ TalkMsgRequest unk_c0;
+    /* 0x00 */ TouchPromptBalloon prompt;
+    /* 0xc0 */ TalkMsgRequest talk;
     /* 0xe0 */ u8 unk_e0[0x1c];
     /* 0xfc */ TalkWindowState *unk_fc;
     /* 0x100 */ u8 unk_100[4];
-    /* 0x104 */ u8 unk_104;
-    /* 0x105 */ u8 unk_105;
+    /* 0x104 */ u8 state;
+    /* 0x105 */ u8 isFatal;
 };
 
 // Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
@@ -726,12 +726,12 @@ public:
     BOOL update();
     void reset();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x04 */ s32 posX;
+    /* 0x08 */ s32 posY;
+    /* 0x0c */ s32 stepX;
+    /* 0x10 */ s32 stepY;
+    /* 0x14 */ u8 framesLeft;
+    /* 0x15 */ u8 mode;
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
@@ -757,7 +757,7 @@ public:
     void setPoseIdle();
     void setPoseRelease();
 
-    /* 0x4c */ CursorMotion unk_4c;
+    /* 0x4c */ CursorMotion motion;
 };
 
 class MenuCursor : public MenuCursorBase {
@@ -809,16 +809,16 @@ public:
     void setup(u32 a, u16 b, u8 c, u8 d);
     void render(s32 v);
 
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 layer;
+    /* 0x43 */ u8 fgColor;
+    /* 0x44 */ u8 bgColor;
 };
 
 struct PopupChoiceIdList {
-    u8 unk_00[5];
-    u8 unk_05[5];
-    u8 unk_0a;
+    u8 msgIds[5];
+    u8 values[5];
+    u8 customMask;
 };
 
 // Menu/selection object, vtable 0x02204558
@@ -834,30 +834,30 @@ public:
     s32 placeCentered(s32 a, s32 b);
     void init(s32 a, s32 b, const char *path);
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u16 unk_14;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
-    /* 0x18 */ u8 unk_18;
-    /* 0x19 */ u8 unk_19;
-    /* 0x1a */ u8 unk_1a;
-    /* 0x1b */ u8 unk_1b;
-    /* 0x1c */ u8 unk_1c;
-    /* 0x1d */ u8 unk_1d;
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f;
-    /* 0x20 */ u8 unk_20;
-    /* 0x21 */ volatile u8 unk_21;
+    /* 0x04 */ u32 rowCharBase;
+    /* 0x08 */ s32 scrollX;
+    /* 0x0c */ s32 scrollY;
+    /* 0x10 */ u32 bgPriority;
+    /* 0x14 */ u16 flags;
+    /* 0x16 */ u8 state;
+    /* 0x17 */ u8 request;
+    /* 0x18 */ u8 stateStep;
+    /* 0x19 */ u8 openLeftward;
+    /* 0x1a */ u8 layer;
+    /* 0x1b */ u8 textWidthTiles;
+    /* 0x1c */ u8 numRows;
+    /* 0x1d */ u8 numPages;
+    /* 0x1e */ u8 decideDelay;
+    /* 0x1f */ u8 decidedRow;
+    /* 0x20 */ u8 addresseePage;
+    /* 0x21 */ volatile u8 titleRefreshDelay;
     /* 0x22 */ u8 pad_22[2];
-    /* 0x24 */ const char *unk_24;
-    /* 0x28 */ PopupChoiceRow unk_28[5];
-    /* 0x190 */ MenuLabelButton unk_190;
-    /* 0x200 */ MenuTitleBalloon unk_200;
-    /* 0x2bc */ MenuSlide unk_2bc;
-    /* 0x2d8 */ u8 unk_2d8[0x19];
+    /* 0x24 */ const char *screenFile;
+    /* 0x28 */ PopupChoiceRow rows[5];
+    /* 0x190 */ MenuLabelButton pageButton;
+    /* 0x200 */ MenuTitleBalloon title;
+    /* 0x2bc */ MenuSlide slide;
+    /* 0x2d8 */ u8 addresseeIds[0x19];
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -984,7 +984,7 @@ s32 MenuScrollKnob::updateRelease() {
 }
 
 s32 MenuScrollKnob::getScreenX() {
-    return unk_0c + getOriginX();
+    return layer1 + getOriginX();
 }
 
 s32 MenuScrollKnob::getScreenY() {

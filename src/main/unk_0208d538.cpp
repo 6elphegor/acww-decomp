@@ -63,30 +63,30 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 void HandCursor::enableObjWindow() {
-    unk_4a = 1;
+    objWindow = 1;
 }
 
 void HandCursor::disableObjWindow() {
-    unk_4a = 0;
+    objWindow = 0;
 }
 
 void HandCursor::setPos(s32 a, s32 b) {
     unk_20 = a;
     unk_24 = b;
-    if (unk_40 != 0) {
+    if (anim != 0) {
         s32 v = unk_20 + getOriginX();
         if (v < 0) {
             v = 0;
@@ -109,25 +109,25 @@ void HandCursor::setAnim(s32 idx) {
     case 0:
         f = TRUE;
     }
-    unk_40 = idx;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
-    unk_0c.setPlayOnce(f);
-    unk_0c.restart();
-    unk_49 = sHandCursorAnimHasLayer2[idx];
-    if (unk_49 != 0) {
-        unk_2c.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
-        unk_2c.setPlayOnce(f);
-        unk_2c.restart();
+    anim = idx;
+    layer1.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+    layer1.setPlayOnce(f);
+    layer1.restart();
+    hasLayer2 = sHandCursorAnimHasLayer2[idx];
+    if (hasLayer2 != 0) {
+        layer2.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
+        layer2.setPlayOnce(f);
+        layer2.restart();
     }
 }
 
 void HandCursor::setAnimAtEnd(s32 idx) {
     setAnim(idx);
-    Unk_02089240_Rec *p = unk_0c.getSeq();
-    unk_0c.setFrame(p->unk_04 - 1, 0);
-    if (unk_49 != 0) {
-        Unk_02089240_Rec *q = unk_2c.getSeq();
-        unk_2c.setFrame(q->unk_04 - 1, 0);
+    Unk_02089240_Rec *p = layer1.getSeq();
+    layer1.setFrame(p->unk_04 - 1, 0);
+    if (hasLayer2 != 0) {
+        Unk_02089240_Rec *q = layer2.getSeq();
+        layer2.setFrame(q->unk_04 - 1, 0);
     }
 }
 

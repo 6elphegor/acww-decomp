@@ -10,15 +10,15 @@ void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 struct SpriteAnimFrame {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s16 unk_08;
-    /* 0x0a */ s16 unk_0a;
+    /* 0x00 */ void *cell;
+    /* 0x04 */ s32 duration;
+    /* 0x08 */ s16 x;
+    /* 0x0a */ s16 y;
 };
 
 struct SpriteAnimSeq {
-    /* 0x00 */ SpriteAnimFrame *unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ SpriteAnimFrame *frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 class SpriteAnim {
@@ -39,11 +39,11 @@ public:
     void setPlayOnce(s32 v);
     void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ SpriteAnimSeq *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x00 */ SpriteAnimSeq *seq;
+    /* 0x04 */ s32 frameIndex;
+    /* 0x08 */ s32 frameTime;
+    /* 0x0c */ s32 speed;
+    /* 0x10 */ s32 playOnce;
 };
 
 class MsgStringBase {
@@ -125,30 +125,30 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ u8 unk_54;
-    /* 0x55 */ u8 unk_55;
-    /* 0x56 */ u8 unk_56;
-    /* 0x57 */ u8 unk_57;
-    /* 0x58 */ u8 unk_58;
-    /* 0x59 */ u8 unk_59;
-    /* 0x5a */ u8 unk_5a;
-    /* 0x5b */ u8 unk_5b;
-    /* 0x5c */ u8 unk_5c;
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
+    /* 0x54 */ u8 openRequest;
+    /* 0x55 */ u8 closeRequest;
+    /* 0x56 */ u8 onBufferA;
+    /* 0x57 */ u8 clampToScreen;
+    /* 0x58 */ u8 objWindow;
+    /* 0x59 */ u8 noPopAnim;
+    /* 0x5a */ u8 popDownward;
+    /* 0x5b */ u8 layer2Visible;
+    /* 0x5c */ u8 centerText;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 typedef void (LabelBalloon::*Unk_020e0d98_Fn)();
@@ -174,9 +174,9 @@ u32 LabelBalloonText::capacity() { return 0x21; }
 u8 *LabelBalloonText::data() { return (u8 *)this + 4; }
 
 LabelBalloon::LabelBalloon(s32 flag)
-    : unk_34(0), unk_38(0), unk_3c(0), unk_40(0), unk_44(-1), unk_48(0), unk_4c(0), unk_50(0), unk_54(0),
-      unk_55(0), unk_56(flag), unk_57(0), unk_58(0), unk_59(0), unk_5a(0), unk_5b(0), unk_5c(0), unk_b0(0),
-      unk_b4(0), unk_b8(0) {
+    : state(0), animTimer(0), x(0), unk_40(0), priority(-1), popOffsetX(0), popOffsetY(0), clampOffsetX(0), openRequest(0),
+      closeRequest(0), onBufferA(flag), clampToScreen(0), objWindow(0), noPopAnim(0), popDownward(0), layer2Visible(0), centerText(0), label(0),
+      label2(0), textMode(0) {
     initAnims();
     enterClosed();
 }
@@ -184,35 +184,35 @@ LabelBalloon::LabelBalloon(s32 flag)
 LabelBalloon::~LabelBalloon() { freeLabels(); }
 
 void LabelBalloon::draw() {
-    if (unk_34 != 0) {
-        void *h0 = unk_0c.getCell();
-        void *h1 = unk_20.getCell();
+    if (state != 0) {
+        void *h0 = layer1.getCell();
+        void *h1 = layer2.getCell();
         s32 base = getDrawX();
         s32 base2 = getDrawY();
-        s32 x0 = base + unk_0c.getFrameX(-1);
-        s32 y0 = base2 + unk_0c.getFrameY(-1);
-        s32 x1 = base + unk_20.getFrameX(-1);
-        s32 y1 = base2 + unk_20.getFrameY(-1);
-        if (unk_56 != 0) {
-            Oam_DrawCell(0, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            if (unk_5b != 0) {
-                Oam_DrawCell(0, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+        s32 x0 = base + layer1.getFrameX(-1);
+        s32 y0 = base2 + layer1.getFrameY(-1);
+        s32 x1 = base + layer2.getFrameX(-1);
+        s32 y1 = base2 + layer2.getFrameY(-1);
+        if (onBufferA != 0) {
+            Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
+            if (layer2Visible != 0) {
+                Oam_DrawCell(0, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_58 != 0) {
-                Oam_DrawCell(0, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
-                if (unk_5b != 0) {
-                    Oam_DrawCell(0, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(0, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
+                if (layer2Visible != 0) {
+                    Oam_DrawCell(0, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         } else {
-            Oam_DrawCell(1, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
-            if (unk_5b != 0) {
-                Oam_DrawCell(1, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
+            if (layer2Visible != 0) {
+                Oam_DrawCell(1, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, -1, 0, 0);
             }
-            if (unk_58 != 0) {
-                Oam_DrawCell(1, h0, x0, y0, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
-                if (unk_5b != 0) {
-                    Oam_DrawCell(1, h1, x1, y1, -1, unk_44, 0x1000, 0x1000, 0, 2, 0, 0);
+            if (objWindow != 0) {
+                Oam_DrawCell(1, h0, x0, y0, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
+                if (layer2Visible != 0) {
+                    Oam_DrawCell(1, h1, x1, y1, -1, priority, 0x1000, 0x1000, 0, 2, 0, 0);
                 }
             }
         }
@@ -222,52 +222,52 @@ void LabelBalloon::draw() {
 void LabelBalloon::vfunc_0c() {
     static Unk_020e0d98_Fn tbl[4] = {&LabelBalloon::updateClosed, &LabelBalloon::updateOpening,
                                      &LabelBalloon::updateOpen, &LabelBalloon::updateClosing};
-    (this->*tbl[unk_34])();
-    if (unk_34 != 0) {
-        unk_0c.update();
-        unk_20.update();
+    (this->*tbl[state])();
+    if (state != 0) {
+        layer1.update();
+        layer2.update();
         updateScreenClamp();
     }
 }
 
-void LabelBalloon::enableObjWindow() { unk_58 = 1; }
+void LabelBalloon::enableObjWindow() { objWindow = 1; }
 
-void LabelBalloon::disableObjWindow() { unk_58 = 0; }
+void LabelBalloon::disableObjWindow() { objWindow = 0; }
 
-void LabelBalloon::disablePopAnim() { unk_59 = 1; }
+void LabelBalloon::disablePopAnim() { noPopAnim = 1; }
 
-void LabelBalloon::setPopDownward() { unk_5a = 1; }
+void LabelBalloon::setPopDownward() { popDownward = 1; }
 
-void LabelBalloon::setPopUpward() { unk_5a = 0; }
+void LabelBalloon::setPopUpward() { popDownward = 0; }
 
-void LabelBalloon::showLayer2() { unk_5b = 1; }
+void LabelBalloon::showLayer2() { layer2Visible = 1; }
 
-void LabelBalloon::hideLayer2() { unk_5b = 0; }
+void LabelBalloon::hideLayer2() { layer2Visible = 0; }
 
 void LabelBalloon::setPos(s32 a, s32 b) {
-    unk_3c = a;
+    x = a;
     unk_40 = b;
 }
 
 void LabelBalloon::setText(StrBuf *src) {
-    StrBuf_Copy((StrBuf *)&unk_60, src);
-    unk_b8 = 1;
+    StrBuf_Copy((StrBuf *)&text, src);
+    textMode = 1;
 }
 
-void LabelBalloon::enableCenterText() { unk_5c = 1; }
+void LabelBalloon::enableCenterText() { centerText = 1; }
 
-void LabelBalloon::setClampToScreen(u8 v) { unk_57 = v; }
+void LabelBalloon::setClampToScreen(u8 v) { clampToScreen = v; }
 
 void LabelBalloon::refreshText(s32 flag) {
-    TextLabel *p = unk_b0;
+    TextLabel *p = label;
     if (p) {
-        p->unk_10 = (u32)unk_60.data();
-        unk_b0->requestRedraw();
+        p->unk_10 = (u32)text.data();
+        label->requestRedraw();
     }
-    p = unk_b4;
+    p = label2;
     if (p) {
-        p->unk_10 = (u32)unk_88.data();
-        unk_b4->requestRedraw();
+        p->unk_10 = (u32)text2.data();
+        label2->requestRedraw();
     }
     if (flag) {
         fitToText();
@@ -275,26 +275,26 @@ void LabelBalloon::refreshText(s32 flag) {
 }
 
 BOOL LabelBalloon::requestOpen() {
-    BOOL r = unk_34 == 0 ? TRUE : FALSE;
+    BOOL r = state == 0 ? TRUE : FALSE;
     if (r) {
-        unk_54 = 1;
+        openRequest = 1;
     }
     return r;
 }
 
 BOOL LabelBalloon::requestClose() {
-    BOOL r = unk_34 == 2 ? TRUE : FALSE;
+    BOOL r = state == 2 ? TRUE : FALSE;
     if (r) {
-        unk_55 = 1;
+        closeRequest = 1;
     }
     return r;
 }
 
-void LabelBalloon::enterClosed() { unk_34 = 0; }
+void LabelBalloon::enterClosed() { state = 0; }
 
 void LabelBalloon::updateClosed() {
-    if (unk_54 != 0) {
-        unk_54 = 0;
+    if (openRequest != 0) {
+        openRequest = 0;
         createLabels();
         fitToText();
         enterOpening();
@@ -302,132 +302,132 @@ void LabelBalloon::updateClosed() {
 }
 
 void LabelBalloon::enterOpening() {
-    if (unk_59 != 0) {
-        unk_38 = 1;
-        unk_48 = 0;
-        unk_4c = 0;
+    if (noPopAnim != 0) {
+        animTimer = 1;
+        popOffsetX = 0;
+        popOffsetY = 0;
     } else {
-        unk_38 = 3;
-        unk_48 = -5;
+        animTimer = 3;
+        popOffsetX = -5;
         s32 v = -5;
-        if (unk_5a == 0) {
+        if (popDownward == 0) {
             v = 5;
         }
-        unk_4c = v;
+        popOffsetY = v;
     }
-    unk_34 = 1;
+    state = 1;
 }
 
 void LabelBalloon::updateOpening() {
-    if (unk_59 == 0) {
-        if (unk_38 > 2) {
-            unk_48 += 6;
+    if (noPopAnim == 0) {
+        if (animTimer > 2) {
+            popOffsetX += 6;
             s32 d;
-            if (unk_5a != 0) {
+            if (popDownward != 0) {
                 d = 6;
             } else {
                 d = -6;
             }
-            unk_4c += d;
+            popOffsetY += d;
         } else {
-            unk_48 -= 1;
+            popOffsetX -= 1;
             s32 d;
-            if (unk_5a != 0) {
+            if (popDownward != 0) {
                 d = -1;
             } else {
                 d = 1;
             }
-            unk_4c += d;
+            popOffsetY += d;
         }
     }
-    unk_38--;
-    if (unk_38 <= 0) {
-        unk_48 = 0;
-        unk_4c = 0;
+    animTimer--;
+    if (animTimer <= 0) {
+        popOffsetX = 0;
+        popOffsetY = 0;
         enterOpen();
     }
 }
 
-void LabelBalloon::enterOpen() { unk_34 = 2; }
+void LabelBalloon::enterOpen() { state = 2; }
 
 void LabelBalloon::updateOpen() {
-    if (unk_55 != 0) {
-        unk_55 = 0;
+    if (closeRequest != 0) {
+        closeRequest = 0;
         enterClosing();
     }
 }
 
 void LabelBalloon::enterClosing() {
-    if (unk_59 != 0) {
-        unk_38 = 1;
+    if (noPopAnim != 0) {
+        animTimer = 1;
     } else {
-        unk_38 = 2;
+        animTimer = 2;
     }
-    unk_34 = 3;
+    state = 3;
 }
 
 void LabelBalloon::updateClosing() {
-    if (unk_59 == 0) {
-        unk_48 -= 11;
+    if (noPopAnim == 0) {
+        popOffsetX -= 11;
         s32 d;
-        if (unk_5a != 0) {
+        if (popDownward != 0) {
             d = -11;
         } else {
             d = 11;
         }
-        unk_4c += d;
+        popOffsetY += d;
     }
-    unk_38--;
-    if (unk_38 <= 0) {
+    animTimer--;
+    if (animTimer <= 0) {
         freeLabels();
         enterClosed();
     }
 }
 
-s32 LabelBalloon::getState() { return unk_34; }
+s32 LabelBalloon::getState() { return state; }
 
-SpriteAnim *LabelBalloon::getAnim() { return &unk_0c; }
+SpriteAnim *LabelBalloon::getAnim() { return &layer1; }
 
-s32 LabelBalloon::getDrawX() { return unk_50 + (unk_48 + (unk_3c + getOriginX())); }
+s32 LabelBalloon::getDrawX() { return clampOffsetX + (popOffsetX + (x + getOriginX())); }
 
-s32 LabelBalloon::getDrawY() { return unk_4c + (unk_40 + getOriginY()); }
+s32 LabelBalloon::getDrawY() { return popOffsetY + (unk_40 + getOriginY()); }
 
-s32 LabelBalloon::getPosX() { return unk_3c; }
+s32 LabelBalloon::getPosX() { return x; }
 
 s32 LabelBalloon::getPosY() { return unk_40; }
 
-s32 LabelBalloon::getWidth() { return unk_0c.getFrameIndex() * 8 + 0x18; }
+s32 LabelBalloon::getWidth() { return layer1.getFrameIndex() * 8 + 0x18; }
 
 void LabelBalloon::reset() {
-    unk_34 = 0;
-    unk_38 = 0;
-    unk_3c = 0;
+    state = 0;
+    animTimer = 0;
+    x = 0;
     unk_40 = 0;
-    unk_44 = -1;
-    unk_48 = 0;
-    unk_4c = 0;
-    unk_50 = 0;
-    unk_54 = 0;
-    unk_55 = 0;
-    unk_57 = 0;
-    unk_58 = 0;
-    unk_59 = 0;
-    unk_5a = 0;
-    unk_5b = 0;
-    unk_5c = 0;
-    StrBuf_Clear((StrBuf *)&unk_60);
-    StrBuf_Clear((StrBuf *)&unk_88);
-    unk_b8 = 0;
+    priority = -1;
+    popOffsetX = 0;
+    popOffsetY = 0;
+    clampOffsetX = 0;
+    openRequest = 0;
+    closeRequest = 0;
+    clampToScreen = 0;
+    objWindow = 0;
+    noPopAnim = 0;
+    popDownward = 0;
+    layer2Visible = 0;
+    centerText = 0;
+    StrBuf_Clear((StrBuf *)&text);
+    StrBuf_Clear((StrBuf *)&text2);
+    textMode = 0;
     freeLabels();
 }
 
 void LabelBalloon::initAnims() {
-    unk_0c.setSeq((SpriteAnimSeq *)data_020d5ce4);
-    unk_0c.setPlayOnce(1);
-    unk_0c.setSpeed(0);
-    unk_20.setSeq((SpriteAnimSeq *)data_020d5cec);
-    unk_20.setPlayOnce(1);
-    unk_20.setSpeed(0);
+    layer1.setSeq((SpriteAnimSeq *)data_020d5ce4);
+    layer1.setPlayOnce(1);
+    layer1.setSpeed(0);
+    layer2.setSeq((SpriteAnimSeq *)data_020d5cec);
+    layer2.setPlayOnce(1);
+    layer2.setSpeed(0);
 }
 
 void LabelBalloon::fitToText() {
@@ -436,119 +436,119 @@ void LabelBalloon::fitToText() {
     u32 n;
     s32 hi;
     s32 lo;
-    if (unk_b0 != NULL) {
-        w0 = unk_b0->measureWidth();
+    if (label != NULL) {
+        w0 = label->measureWidth();
     } else {
         w0 = 0;
     }
-    if (unk_b4 != NULL) {
-        u32 t1 = unk_b4->measureWidth();
+    if (label2 != NULL) {
+        u32 t1 = label2->measureWidth();
         w1 = t1;
     } else {
         w1 = 0;
     }
     n = (w0 + 7) >> 3;
     n = n > ((w1 + 7) >> 3) ? n : ((w1 + 7) >> 3);
-    hi = unk_0c.getSeq()->unk_04 - 1;
+    hi = layer1.getSeq()->frameCount - 1;
     lo = n - 1;
     if (lo < 0) {
         hi = 0;
     } else if (lo <= hi) {
         hi = lo;
     }
-    unk_0c.setFrame(hi, 0);
-    unk_20.setFrame(hi, 0);
-    if (unk_5c != 0) {
+    layer1.setFrame(hi, 0);
+    layer2.setFrame(hi, 0);
+    if (centerText != 0) {
         u32 full = n * 8;
-        if (unk_b0 != NULL) {
-            unk_b0->unk_30 = full > w0 ? (full - w0) >> 1 : 0;
+        if (label != NULL) {
+            label->unk_30 = full > w0 ? (full - w0) >> 1 : 0;
         }
-        if (unk_b4 != NULL) {
-            unk_b4->unk_30 = full > w1 ? (full - w1) >> 1 : 0;
+        if (label2 != NULL) {
+            label2->unk_30 = full > w1 ? (full - w1) >> 1 : 0;
         }
     } else {
-        if (unk_b0 != NULL) {
-            unk_b0->unk_30 = 0;
+        if (label != NULL) {
+            label->unk_30 = 0;
         }
-        if (unk_b4 != NULL) {
-            unk_b4->unk_30 = 0;
+        if (label2 != NULL) {
+            label2->unk_30 = 0;
         }
     }
 }
 
 void LabelBalloon::createLabels() {
     BOOL two;
-    if (unk_b8 == 2) {
+    if (textMode == 2) {
         two = TRUE;
     } else {
         two = FALSE;
     }
-    if (unk_b0 == NULL) {
-        unk_b0 = MsgTextLabel_CreateVram(0x41, 0x14, 2);
-        if (unk_b0 != NULL) {
-            unk_b0->unk_2c = 4;
-            TextLabel *t = unk_b0;
-            t->unk_10 = (u32)((StrBuf *)&unk_60)->data();
-            unk_b0->unk_58 = 1;
-            if (unk_56 != 0) {
-                unk_b0->unk_50 = 2;
+    if (label == NULL) {
+        label = MsgTextLabel_CreateVram(0x41, 0x14, 2);
+        if (label != NULL) {
+            label->unk_2c = 4;
+            TextLabel *t = label;
+            t->unk_10 = (u32)((StrBuf *)&text)->data();
+            label->unk_58 = 1;
+            if (onBufferA != 0) {
+                label->unk_50 = 2;
             }
             if (two) {
-                unk_b0->unk_28 = (GameFontDesc *)gFontB;
+                label->unk_28 = (GameFontDesc *)gFontB;
             } else {
-                unk_b0->unk_28 = (GameFontDesc *)gFontA;
+                label->unk_28 = (GameFontDesc *)gFontA;
             }
-            unk_b0->unk_55 = 1;
-            unk_b0->unk_39 = 0;
-            unk_b0->unk_38 = 3;
-            unk_b0->requestRedraw();
+            label->unk_55 = 1;
+            label->unk_39 = 0;
+            label->unk_38 = 3;
+            label->requestRedraw();
         }
     }
-    if (unk_b4 == NULL && two) {
-        unk_b4 = MsgTextLabel_CreateVram(0x61, 0x14, 2);
-        if (unk_b4 != NULL) {
-            unk_b4->unk_2c = 4;
-            TextLabel *t = unk_b4;
-            t->unk_10 = (u32)((StrBuf *)&unk_88)->data();
-            unk_b4->unk_58 = 1;
-            if (unk_56 != 0) {
-                unk_b4->unk_50 = 2;
+    if (label2 == NULL && two) {
+        label2 = MsgTextLabel_CreateVram(0x61, 0x14, 2);
+        if (label2 != NULL) {
+            label2->unk_2c = 4;
+            TextLabel *t = label2;
+            t->unk_10 = (u32)((StrBuf *)&text2)->data();
+            label2->unk_58 = 1;
+            if (onBufferA != 0) {
+                label2->unk_50 = 2;
             }
-            unk_b4->unk_28 = (GameFontDesc *)gFontB;
-            unk_b4->unk_55 = 1;
-            unk_b4->unk_39 = 0;
-            unk_b4->unk_38 = 3;
-            unk_b4->requestRedraw();
+            label2->unk_28 = (GameFontDesc *)gFontB;
+            label2->unk_55 = 1;
+            label2->unk_39 = 0;
+            label2->unk_38 = 3;
+            label2->requestRedraw();
         }
     }
 }
 
 void LabelBalloon::freeLabels() {
-    if (unk_b0 != NULL) {
-        MsgTextLabel_Destroy(unk_b0);
-        unk_b0 = NULL;
+    if (label != NULL) {
+        MsgTextLabel_Destroy(label);
+        label = NULL;
     }
-    if (unk_b4 != NULL) {
-        MsgTextLabel_Destroy(unk_b4);
-        unk_b4 = NULL;
+    if (label2 != NULL) {
+        MsgTextLabel_Destroy(label2);
+        label2 = NULL;
     }
 }
 
 void LabelBalloon::updateScreenClamp() {
-    if (unk_57 != 0) {
-        s32 w = unk_0c.getFrameIndex() * 4 + 12;
-        s32 c = unk_3c + unk_48;
+    if (clampToScreen != 0) {
+        s32 w = layer1.getFrameIndex() * 4 + 12;
+        s32 c = x + popOffsetX;
         s32 lo = c - w + 0x80;
         s32 hi = w + c - 0x80;
         if (lo < 0) {
-            unk_50 = -lo;
+            clampOffsetX = -lo;
         } else if (hi > 0) {
-            unk_50 = -hi;
+            clampOffsetX = -hi;
         } else {
-            unk_50 = 0;
+            clampOffsetX = 0;
         }
     } else {
-        unk_50 = 0;
+        clampOffsetX = 0;
     }
 }
 

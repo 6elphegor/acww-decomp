@@ -208,15 +208,15 @@ public:
     void initSlideOut(u32 a, u32 b);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class MenuCursorBuf0 {
@@ -419,7 +419,7 @@ extern "C" MusicMenu *MusicMenu_Create() { return new MusicMenu(); }
 
 BOOL MusicMenu::vfunc_00() {
     initMusic();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -452,7 +452,7 @@ BOOL MusicMenu::execTransition() {
         &MusicMenu::stateOpen, &MusicMenu::stateOpening,
         &MusicMenu::stateClose, &MusicMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -472,13 +472,13 @@ void C::runMainState() {
         &C::updateTakeOutDelay,
         &C::updateCloseDelay,
         &C::updateMessage};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL C::execMain() {
     MenuCtrl_TickForceClose();
     if (MenuCtrl_IsForceCloseDue()) {
-        switch (unk_8d) {
+        switch (mainState) {
         case 0:
         case 1:
         case 2:
@@ -1100,7 +1100,7 @@ void MusicMenu::moveCursorToTarget() {
 
 void MusicMenu::moveCursorTo(s32 a, s32 b) {
     MenuCursorBase_moveToEase(&unk_c4, a, b, 3, 1);
-    unk_be = unk_8d;
+    unk_be = mainState;
     setMainState(6);
 }
 
@@ -1116,7 +1116,7 @@ void MusicMenu::pressCursor() {
 
 void MusicMenu::releaseCursor() {
     MenuCursorBase_setPoseRelease(&unk_c4);
-    unk_be = unk_8d;
+    unk_be = mainState;
     setMainState(8);
 }
 

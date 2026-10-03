@@ -89,22 +89,22 @@ public:
     void setClampToScreen(u8 v);
     void enableCenterText();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 // Vtable 0x02204468
@@ -122,9 +122,9 @@ public:
     BOOL hide(s32 a);
     s32 updatePrompt();
 
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ volatile u8 unk_be;
+    /* 0xbc */ u8 promptState;
+    /* 0xbd */ u8 openQueued;
+    /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
 // Sub-object at +0x70 of MenuProc (window / mask helper)
@@ -152,10 +152,10 @@ public:
     s32 func_ov002_02201140();
 
     /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ u8 unk_18;
+    /* 0x0c */ s32 offset;
+    /* 0x10 */ s32 extent;
+    /* 0x14 */ s32 edgeDistance;
+    /* 0x18 */ u8 direction;
 };
 
 // Sub-object at +0x50 of MenuProc (pad input)
@@ -225,16 +225,16 @@ public:
     BOOL isRepeatUp();
     u32 takeRepeatedKeys();
 
-    /* 0x50 */ Unk_ov002_022013a0 unk_50;
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlideView unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x50 */ Unk_ov002_022013a0 keyRepeat;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlideView slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // ---------------------------------------------------------------- ov090 declarations
@@ -377,18 +377,18 @@ public:
     void selectTab(u32 idx);
 
     /* 0x91 */ u8 unk_91;
-    /* 0x92 */ u8 unk_92;
-    /* 0x93 */ u8 unk_93;
-    /* 0x94 */ u8 unk_94;
-    /* 0x95 */ u8 unk_95;
-    /* 0x96 */ u8 unk_96;
-    /* 0x97 */ u8 unk_97;
-    /* 0x98 */ u8 unk_98;
+    /* 0x92 */ u8 slideY;
+    /* 0x93 */ u8 curTab;
+    /* 0x94 */ u8 tabsShown;
+    /* 0x95 */ u8 lrSwitchEnabled;
+    /* 0x96 */ u8 loadedTab;
+    /* 0x97 */ u8 saveState;
+    /* 0x98 */ u8 justOpened;
     /* 0x9c */ BgVramTaskPair unk_9c[3];
     /* 0x144 */ u32 unk_144[0x200];
     /* 0x944 */ u32 unk_944[0x200];
     /* 0x1144 */ u32 unk_1144[8];
-    /* 0x1164 */ MenuErrorMessage unk_1164;
+    /* 0x1164 */ MenuErrorMessage errorMessage;
 };
 
 extern "C" {
@@ -418,15 +418,15 @@ static inline BOOL Unk_ov090_02291aa0_Both() {
 extern "C" MenuTabBar *MenuTabBar_Create() { return new MenuTabBar(); }
 
 BOOL MenuTabBar::vfunc_00() {
-    unk_98 = 1;
+    justOpened = 1;
     func_0206e60c();
     initTabBar();
     MenuScreen_BeginOpen();
-    unk_96 = 0xff;
+    loadedTab = 0xff;
     sTabSwitchCooldown = 0;
-    unk_97 = 0;
-    unk_8d = 1;
-    unk_8c = 0;
+    saveState = 0;
+    mainState = 1;
+    transitionState = 0;
     setPhase(0);
     MenuCtrl_ClearSavedSlot();
     Snd_BeginMenuDuck();
@@ -450,8 +450,8 @@ BOOL MenuTabBar::onDraw() {
     s32 j = 0;
     i = j;
     for (; i <= 7; i++, j += 2) {
-        Oam_DrawObj(1, &sTabBarOamCells[j * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
-        Oam_DrawObj(1, &sTabBarOamCells[(j + 1) * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
+        Oam_DrawObj(1, &sTabBarOamCells[j * 2], 0x80, slideY + 0x50, -1, 2, 0);
+        Oam_DrawObj(1, &sTabBarOamCells[(j + 1) * 2], 0x80, slideY + 0x50, -1, 2, 0);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -468,7 +468,7 @@ BOOL MenuTabBar::execTransition() {
     static Unk_ov090_022921e0_Fn tbl[3] = {&MenuTabBar::stateLoad, &MenuTabBar::stateSlideIn,
                                            &MenuTabBar::stateSlideOut};
     cancelVramTasks();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     return TRUE;
 }
 
@@ -476,45 +476,45 @@ BOOL MenuTabBar::execMain() {
     static Unk_ov090_022921e0_Fn tbl[3] = {&MenuTabBar::updateIdle, &MenuTabBar::updateOpenTabMenu,
                                            &MenuTabBar::updateSaving};
     cancelVramTasks();
-    if (unk_97 == 2) {
+    if (saveState == 2) {
         if (Save_WritePlayerFriendList()) {
             u8 c;
-            unk_8d = 2;
+            mainState = 2;
             c = 0x1f;
-            unk_1164.open(&c, 1, 1);
-            unk_97 = 3;
+            errorMessage.open(&c, 1, 1);
+            saveState = 3;
         } else {
-            unk_97 = 0;
+            saveState = 0;
             MenuScreen_BeginClose();
         }
     }
     if (sTabSwitchCooldown != 0) {
         sTabSwitchCooldown = sTabSwitchCooldown - 1;
     }
-    (this->*tbl[unk_8d])();
-    if (unk_94 != 0) {
-        if (unk_92 != 0x10) {
-            if (unk_92 >= 0xe) {
-                unk_92 = 0x10;
+    (this->*tbl[mainState])();
+    if (tabsShown != 0) {
+        if (slideY != 0x10) {
+            if (slideY >= 0xe) {
+                slideY = 0x10;
             } else {
-                unk_92 = *(volatile u8 *)&unk_92 + 2;
+                slideY = *(volatile u8 *)&slideY + 2;
             }
         }
-    } else if (unk_92 != 0) {
-        if (unk_92 <= 4) {
+    } else if (slideY != 0) {
+        if (slideY <= 4) {
             unk_91 = 0;
-            unk_92 = 0;
+            slideY = 0;
         } else {
-            unk_92 = *(volatile u8 *)&unk_92 - 4;
+            slideY = *(volatile u8 *)&slideY - 4;
         }
     }
-    if (unk_95 != 0) {
+    if (lrSwitchEnabled != 0) {
         if ((gPad[1] & 0x100) != 0) {
-            showTab(MenuTabBar_NextTab(unk_93));
+            showTab(MenuTabBar_NextTab(curTab));
             Snd_PlaySe(3);
         }
         if ((gPad[1] & 0x200) != 0) {
-            showTab(MenuTabBar_PrevTab(unk_93));
+            showTab(MenuTabBar_PrevTab(curTab));
             Snd_PlaySe(3);
         }
     }
@@ -531,15 +531,15 @@ BOOL MenuTabBar::execClosed() {
 }
 
 void MenuTabBar::selectTab(u32 idx) {
-    unk_98 = 0;
-    u32 old = unk_93;
+    justOpened = 0;
+    u32 old = curTab;
     showTab(idx);
     if (idx == 7) {
-        unk_94 = 0;
-        if (unk_97 == 1) {
-            unk_97 = 2;
+        tabsShown = 0;
+        if (saveState == 1) {
+            saveState = 2;
         }
-        if (unk_97 == 0) {
+        if (saveState == 0) {
             MenuScreen_BeginClose();
         }
         Snd_PlaySe(2);
@@ -553,14 +553,14 @@ void MenuTabBar::selectTab(u32 idx) {
         MenuCtrl_ClearSavedSlot();
     }
     if (old <= 6 && idx <= 6) {
-        unk_95 = 1;
+        lrSwitchEnabled = 1;
     }
 }
 
 u8 MenuTabBar::onTabMenuClosed() {
-    switch (unk_93) {
+    switch (curTab) {
     case 7:
-        if (unk_97 == 0) {
+        if (saveState == 0) {
             MenuScreen_ReleaseCloseHold();
             beginClose();
         }
@@ -579,14 +579,14 @@ u8 MenuTabBar::onTabMenuClosed() {
     case 12:
     case 13:
     case 14:
-        unk_8d = 1;
+        mainState = 1;
         break;
     }
-    return unk_93;
+    return curTab;
 }
 
 void MenuTabBar::beginClose() {
-    unk_8c = 2;
+    transitionState = 2;
     setPhase(1);
     Gfx2d_SetSubBgModeState(1);
 }
@@ -595,8 +595,8 @@ void MenuTabBar::updateIdle() {}
 
 void MenuTabBar::updateOpenTabMenu() {
     if (sTabSwitchCooldown == 0) {
-        unk_95 = 0;
-        switch (unk_93) {
+        lrSwitchEnabled = 0;
+        switch (curTab) {
         case 0: {
             BOOL r = FALSE;
             if (gFieldSceneKind == 0) {
@@ -635,21 +635,21 @@ void MenuTabBar::updateOpenTabMenu() {
         case 11:
         case 12:
             MenuCtrl_RequestOpenNested(0xf);
-            MenuCtrl_SetMode(unk_93 + 0xf);
+            MenuCtrl_SetMode(curTab + 0xf);
             break;
         case 13:
         case 14:
             MenuCtrl_RequestOpenNested(0x2b);
-            MenuCtrl_SetMode(unk_93);
+            MenuCtrl_SetMode(curTab);
             break;
         case 7:
             break;
         }
-        unk_8d = 0;
+        mainState = 0;
     }
 }
 
-void MenuTabBar::updateSaving() { unk_1164.update(0); }
+void MenuTabBar::updateSaving() { errorMessage.update(0); }
 
 void MenuTabBar::stateLoad() {
     Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
@@ -657,30 +657,30 @@ void MenuTabBar::stateLoad() {
     File_LoadToBuffer("menu/tag/obj2.bch", unk_944, 0x800);
     showTab(MenuCtrl_GetMode());
     unk_91 = 1;
-    unk_92 = 0;
-    unk_8c = 1;
+    slideY = 0;
+    transitionState = 1;
     Gfx2d_SetSubBgModeState(0);
 }
 
 void MenuTabBar::stateSlideIn() {
-    unk_94 = 1;
+    tabsShown = 1;
     setPhase(2);
 }
 
 void MenuTabBar::stateSlideOut() {
-    if (*(volatile u8 *)&unk_92 <= 4) {
+    if (*(volatile u8 *)&slideY <= 4) {
         unk_91 = 0;
         setPhase(0);
     } else {
-        unk_92 = unk_92 - 4;
+        slideY = slideY - 4;
     }
 }
 
 void MenuTabBar::initTabBar() {
     unk_91 = 0;
-    unk_92 = 0;
-    unk_94 = 0;
-    unk_95 = 0;
+    slideY = 0;
+    tabsShown = 0;
+    lrSwitchEnabled = 0;
     Snd_PlaySe(1);
     data_021c1b3c->unk_1c4.setMenuDuck(0);
 }
@@ -710,11 +710,11 @@ extern "C" s32 MenuTabBar_HitTestTouch() {
 }
 
 void MenuTabBar::showTabs() {
-    unk_94 = 1;
+    tabsShown = 1;
     unk_91 = 1;
 }
 
-void MenuTabBar::hideTabs() { unk_94 = 0; }
+void MenuTabBar::hideTabs() { tabsShown = 0; }
 
 extern "C" s32 MenuTabBar_GetTabX(s32 a) {
     if (a == 7) {
@@ -753,9 +753,9 @@ void MenuTabBar::cancelVramTasks() {
 }
 
 void MenuTabBar::showTab(u32 idx) {
-    unk_93 = idx;
+    curTab = idx;
     if (idx <= 7) {
-        if (idx != unk_96) {
+        if (idx != loadedTab) {
             char buf[0x24];
             unk_9c[0].requestChars((u32)unk_144, 8, 0x80, 0x80, 0xbf);
             u32 a = (u32)unk_944 + idx * 0x60;
@@ -764,12 +764,12 @@ void MenuTabBar::showTab(u32 idx) {
             func_020639e8(buf, "menu/tag/obj%d.bpl", idx);
             File_LoadToBuffer(buf, unk_1144, 0x20);
             unk_9c[2].requestPalette((u32)unk_1144, 8, 0xf);
-            unk_96 = idx;
+            loadedTab = idx;
         }
     }
 }
 
-void MenuTabBar::requestSaveOnClose() { unk_97 = 1; }
+void MenuTabBar::requestSaveOnClose() { saveState = 1; }
 
 extern "C" s32 MenuTabBar_TabFromX(s32 a) {
     s32 r = (a - 0x33) / 0x19;
@@ -785,7 +785,7 @@ extern "C" s32 MenuTabBar_TabFromX(s32 a) {
 // ---------------------------------------------------------------- MenuTabBar
 
 BOOL MenuTabBar::isJustOpened() {
-    if (unk_98 != 0) {
+    if (justOpened != 0) {
         return TRUE;
     }
     return FALSE;

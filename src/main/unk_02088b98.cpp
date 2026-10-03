@@ -94,15 +94,15 @@ public:
 };
 
 struct SpriteAnimFrame {
-    /* 0x00 */ void *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s16 unk_08;
-    /* 0x0a */ s16 unk_0a;
+    /* 0x00 */ void *cell;
+    /* 0x04 */ s32 duration;
+    /* 0x08 */ s16 x;
+    /* 0x0a */ s16 y;
 };
 
 struct SpriteAnimSeq {
-    /* 0x00 */ SpriteAnimFrame *unk_00;
-    /* 0x04 */ s32 unk_04;
+    /* 0x00 */ SpriteAnimFrame *frames;
+    /* 0x04 */ s32 frameCount;
 };
 
 class SpriteAnim {
@@ -111,11 +111,11 @@ public:
     ~SpriteAnim();
     void update();
     void restart();
-    /* 0x00 */ SpriteAnimSeq *unk_00;
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
+    /* 0x00 */ SpriteAnimSeq *seq;
+    /* 0x04 */ s32 frameIndex;
+    /* 0x08 */ s32 frameTime;
+    /* 0x0c */ s32 speed;
+    /* 0x10 */ s32 playOnce;
 };
 
 extern "C" {
@@ -133,28 +133,28 @@ s32 func_020e9688(Vec3 *v);
 ActorCollider *gActorColliderList;
 
 void SpriteAnim::update() {
-    if (unk_10 == 0) {
-        unk_08 = unk_08 + unk_0c;
-        s32 f = unk_08 >> 12;
-        if (f >= unk_00->unk_00[unk_04].unk_04) {
-            unk_08 = 0;
-            s32 n = unk_00->unk_04;
-            unk_04 = unk_04 + 1;
-            if (unk_04 >= n) {
-                unk_04 = 0;
+    if (playOnce == 0) {
+        frameTime = frameTime + speed;
+        s32 f = frameTime >> 12;
+        if (f >= seq->frames[frameIndex].duration) {
+            frameTime = 0;
+            s32 n = seq->frameCount;
+            frameIndex = frameIndex + 1;
+            if (frameIndex >= n) {
+                frameIndex = 0;
             }
         }
     } else {
-        unk_08 = unk_08 + unk_0c;
-        SpriteAnimSeq *t = unk_00;
-        s32 f = unk_08 >> 12;
-        if (f >= t->unk_00[unk_04].unk_04) {
-            s32 n = t->unk_04;
-            unk_04 = unk_04 + 1;
-            if (unk_04 < n) {
-                unk_08 = 0;
+        frameTime = frameTime + speed;
+        SpriteAnimSeq *t = seq;
+        s32 f = frameTime >> 12;
+        if (f >= t->frames[frameIndex].duration) {
+            s32 n = t->frameCount;
+            frameIndex = frameIndex + 1;
+            if (frameIndex < n) {
+                frameTime = 0;
             } else {
-                unk_04 = n - 1;
+                frameIndex = n - 1;
             }
         }
     }

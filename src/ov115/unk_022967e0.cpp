@@ -169,15 +169,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 typedef void (FishBookTab::*Unk_ov115_02297378_Fn)();
@@ -185,7 +185,7 @@ typedef void (FishBookTab::*Unk_ov115_02297378_Fn)();
 // Vtable 0x02297378, size 0x13e0
 class FishBookTab : public MenuProc {
 public:
-    FishBookTab() : unk_94(), unk_f8(), unk_1394() {}
+    FishBookTab() : cursor(), bookPanel(), textLabels() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -239,14 +239,14 @@ public:
     void runMainState();
 
     /* 0x0091 */ u8 unk_91[0x3];
-    /* 0x0094 */ MenuCursorBuf0 unk_94;
-    /* 0x00f8 */ CreatureBookPanel unk_f8;
-    /* 0x1394 */ LabelString unk_1394[1];
-    /* 0x13d4 */ s32 unk_13d4;
-    /* 0x13d8 */ u16 unk_13d8;
-    /* 0x13da */ u8 unk_13da;
+    /* 0x0094 */ MenuCursorBuf0 cursor;
+    /* 0x00f8 */ CreatureBookPanel bookPanel;
+    /* 0x1394 */ LabelString textLabels[1];
+    /* 0x13d4 */ s32 slideY;
+    /* 0x13d8 */ u16 flags;
+    /* 0x13da */ u8 labelCount;
     /* 0x13db */ u8 unk_13db;
-    /* 0x13dc */ u8 unk_13dc;
+    /* 0x13dc */ u8 returnState;
     /* 0x13dd */ u8 unk_13dd[3];
 };
 
@@ -285,13 +285,13 @@ BOOL FishBookTab::onDraw() {
     if (!testFlags(1)) {
         return TRUE;
     }
-    unk_f8.placeScrollKnob(unk_13d4);
+    bookPanel.placeScrollKnob(slideY);
     if (MenuCtrl_IsButtons()) {
-        unk_94.drawWrapped();
+        cursor.drawWrapped();
     }
-    unk_f8.drawButtons(unk_13d4);
-    CreatureBook_DrawRows(&unk_f8, unk_13d4);
-    unk_f8.drawScrollKnob();
+    bookPanel.drawButtons(slideY);
+    CreatureBook_DrawRows(&bookPanel, slideY);
+    bookPanel.drawScrollKnob();
     return TRUE;
 }
 
@@ -302,7 +302,7 @@ BOOL FishBookTab::execTransition() {
         &FishBookTab::stateClose,
         &FishBookTab::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -318,7 +318,7 @@ void FishBookTab::runMainState() {
         &FishBookTab::mainAct06,
         &FishBookTab::mainAct07,
         &FishBookTab::mainAct08};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL FishBookTab::execMain() {
@@ -346,7 +346,7 @@ BOOL FishBookTab::handleTabSwitch() {
     if (MenuCtrl_IsForceCloseDue()) {
         return requestTab(7);
     }
-    if (unk_8d != 0 && unk_8d != 2) {
+    if (mainState != 0 && mainState != 2) {
         return FALSE;
     }
     r = -1;
@@ -371,7 +371,7 @@ BOOL FishBookTab::requestTab(s32 v) {
     void *h = ProcBase_GetParent();
     if (v != -1 && v != 2) {
         ((MenuTabBar *)h)->selectTab((u8)v);
-        unk_8c = 2;
+        transitionState = 2;
         setPhase(1);
         return TRUE;
     }
@@ -403,7 +403,7 @@ void FishBookTab::stateClose() {
     beginSubSlideOut(0xb, 0, 0, 0x30);
     updateLayerSlide();
     setTransitionState(3);
-    CreatureBook_StopPictureFade(&unk_f8);
+    CreatureBook_StopPictureFade(&bookPanel);
 }
 
 void FishBookTab::stateClosing() {
@@ -421,22 +421,22 @@ void FishBookTab::updateLayerSlide() {
     applySlideOffset(3, 0, 0);
     applySlideOffset(6, 0, 0);
     applySlideOffset(4, 0, 0);
-    unk_13d4 = getSlideOffsetY();
+    slideY = getSlideOffsetY();
 }
 
 void FishBookTab::initFishBook() {
-    unk_13d8 = 0;
-    unk_f8.init(3, 6, 4, 0);
+    flags = 0;
+    bookPanel.init(3, 6, 4, 0);
 }
 
 void FishBookTab::releaseResources() {
-    unk_f8.cleanup();
+    bookPanel.cleanup();
     resetTextLabels();
 }
 
 void FishBookTab::preInputUpdate() {
     preStateUpdate();
-    unk_94.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void FishBookTab::postInputUpdate() {
@@ -444,12 +444,12 @@ void FishBookTab::postInputUpdate() {
 }
 
 void FishBookTab::preStateUpdate() {
-    unk_f8.preUpdate();
+    bookPanel.preUpdate();
     resetTextLabels();
 }
 
 void FishBookTab::postStateUpdate() {
-    unk_f8.postUpdate();
+    bookPanel.postUpdate();
 }
 
 void FishBookTab::setupBgLayers() {
@@ -462,13 +462,13 @@ void FishBookTab::setupBgLayers() {
 }
 
 void FishBookTab::loadBgGfx() {
-    unk_f8.loadBgGraphics();
-    CreatureBook_InitPictureView(&unk_f8);
+    bookPanel.loadBgGraphics();
+    CreatureBook_InitPictureView(&bookPanel);
 }
 
 void FishBookTab::loadObjGfx() {
-    unk_f8.loadObjGraphics();
-    CreatureBook_RefreshRowIcons(&unk_f8);
+    bookPanel.loadObjGraphics();
+    CreatureBook_RefreshRowIcons(&bookPanel);
 }
 
 void FishBookTab::updateTouch() {
@@ -477,10 +477,10 @@ void FishBookTab::updateTouch() {
     } else if (Unk_ov115_02296ce8_Both()) {
         u32 a = gTouchCurX;
         u32 b = gTouchCurY;
-        if (unk_f8.hitDescPageButtons(a, b) == 0) {
-            if (unk_f8.beginScrollTouch(a, b)) {
+        if (bookPanel.hitDescPageButtons(a, b) == 0) {
+            if (bookPanel.beginScrollTouch(a, b)) {
                 setMainState(1);
-            } else if (CreatureBook_TouchRow(&unk_f8, a, b) != 0) {
+            } else if (CreatureBook_TouchRow(&bookPanel, a, b) != 0) {
                 return;
             }
         }
@@ -489,9 +489,9 @@ void FishBookTab::updateTouch() {
 
 void FishBookTab::mainAct01() {
     if (gTouchHeld != 0) {
-        CreatureBook_UpdateScrollTouch(&unk_f8, gTouchCurX);
+        CreatureBook_UpdateScrollTouch(&bookPanel, gTouchCurX);
     } else {
-        CreatureBook_EndScrollTouch(&unk_f8);
+        CreatureBook_EndScrollTouch(&bookPanel);
         setMainState(0);
     }
 }
@@ -501,7 +501,7 @@ void FishBookTab::updateButtons() {
         startTouchInput();
     } else {
         u32 k = takeRepeatedKeys();
-        if (CreatureBook_MoveFocus(&unk_f8, k)) {
+        if (CreatureBook_MoveFocus(&bookPanel, k)) {
             moveCursorToTarget();
         } else {
             u32 m = gPad[1];
@@ -517,22 +517,22 @@ void FishBookTab::updateButtons() {
 }
 
 void FishBookTab::updateCursorMove() {
-    if (!unk_94.isMoving()) {
-        setMainState(unk_13dc);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void FishBookTab::updateCursorPress() {
-    if (unk_94.isAnimDone()) {
-        s32 r = CreatureBook_GetFocusedTab(&unk_f8);
+    if (cursor.isAnimDone()) {
+        s32 r = CreatureBook_GetFocusedTab(&bookPanel);
         if (r != -1) {
             if (requestTab(r) != 0) {
                 return;
             }
             goto bea;
         } else {
-            if (CreatureBook_ActivateFocus(&unk_f8) == 0) {
+            if (CreatureBook_ActivateFocus(&bookPanel) == 0) {
                 goto bea;
             }
             setMainState(6);
@@ -546,44 +546,44 @@ void FishBookTab::updateCursorPress() {
 }
 
 void FishBookTab::updateCursorRelease() {
-    if (unk_94.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
-        setMainState(unk_13dc);
+        setMainState(returnState);
     }
 }
 
 void FishBookTab::mainAct06() {
-    if (CreatureBook_WaitScrollHoldStart(&unk_f8)) {
+    if (CreatureBook_WaitScrollHoldStart(&bookPanel)) {
         setMainState(7);
     }
-    unk_f8.placeScrollKnob(unk_13d4);
+    bookPanel.placeScrollKnob(slideY);
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_94.warpTo(a, b);
+    cursor.warpTo(a, b);
 }
 
 void FishBookTab::mainAct07() {
     if (gPad[0] & 1) {
-        CreatureBook_UpdateScrollHold(&unk_f8);
+        CreatureBook_UpdateScrollHold(&bookPanel);
     } else {
-        CreatureBook_ReleaseKnob(&unk_f8);
+        CreatureBook_ReleaseKnob(&bookPanel);
         setMainState(8);
     }
-    unk_f8.placeScrollKnob(unk_13d4);
+    bookPanel.placeScrollKnob(slideY);
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_94.warpTo(a, b);
+    cursor.warpTo(a, b);
 }
 
 void FishBookTab::mainAct08() {
-    if (CreatureBook_FinishScrollHold(&unk_f8)) {
+    if (CreatureBook_FinishScrollHold(&bookPanel)) {
         setMainState(2);
         releaseCursor();
     }
-    unk_f8.placeScrollKnob(unk_13d4);
+    bookPanel.placeScrollKnob(slideY);
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_94.warpTo(a, b);
+    cursor.warpTo(a, b);
 }
 
 void FishBookTab::startTouchInput() {
@@ -606,43 +606,43 @@ void FishBookTab::resumeInput() {
 }
 
 void FishBookTab::resetTextLabels() {
-    unk_13da = 0;
-    unk_1394[0].destroyLabel();
+    labelCount = 0;
+    textLabels[0].destroyLabel();
 }
 
 void FishBookTab::showCursor() {
-    CreatureBook_ClampFocusToView(&unk_f8);
+    CreatureBook_ClampFocusToView(&bookPanel);
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
-    unk_94.warpTo(a, b);
-    s32 r = CreatureBook_GetFocusedTab(&unk_f8);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&unk_f8) != 0) {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(0xd);
+    cursor.warpTo(a, b);
+    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(0xd);
     } else {
-        ((MenuCursor *)&unk_94)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     }
     refreshCursor();
 }
 
 s32 FishBookTab::getCursorTargetX() {
-    return CreatureBook_GetFocusX(&unk_f8);
+    return CreatureBook_GetFocusX(&bookPanel);
 }
 
 s32 FishBookTab::getCursorTargetY() {
-    return CreatureBook_GetFocusY(&unk_f8);
+    return CreatureBook_GetFocusY(&bookPanel);
 }
 
 void FishBookTab::hideCursor() {
-    ((MenuCursor *)&unk_94)->setAnimIfChanged(0);
-    unk_94.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void FishBookTab::moveCursorToTarget() {
-    s32 r = CreatureBook_GetFocusedTab(&unk_f8);
-    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&unk_f8) != 0) {
-        ((MenuCursor *)&unk_94)->switchToAnim0D();
+    s32 r = CreatureBook_GetFocusedTab(&bookPanel);
+    if (r != -1 || CreatureBook_IsFocusOnPageArrow(&bookPanel) != 0) {
+        ((MenuCursor *)&cursor)->switchToAnim0D();
     } else {
-        ((MenuCursor *)&unk_94)->switchToAnim01();
+        ((MenuCursor *)&cursor)->switchToAnim01();
     }
     s32 a = getCursorTargetX();
     s32 b = getCursorTargetY();
@@ -650,36 +650,36 @@ void FishBookTab::moveCursorToTarget() {
 }
 
 void FishBookTab::moveCursorTo(s32 a, s32 b) {
-    unk_94.moveToEase(a, b, 3, 1);
-    unk_13dc = unk_8d;
+    cursor.moveToEase(a, b, 3, 1);
+    returnState = mainState;
     setMainState(3);
 }
 
 void FishBookTab::refreshCursor() {
-    unk_94.setPoseIdle();
-    unk_94.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void FishBookTab::pressCursor() {
-    ((MenuCursor *)&unk_94)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(4);
 }
 
 void FishBookTab::releaseCursor() {
-    unk_94.setPoseRelease();
-    unk_13dc = unk_8d;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(5);
 }
 
 BOOL FishBookTab::testFlags(u32 mask) {
-    if (unk_13d8 & mask) {
+    if (flags & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
 void FishBookTab::setFlags(u32 mask) {
-    unk_13d8 |= mask;
+    flags |= mask;
 }
 
 // ---------------------------------------------------------------------------------------------

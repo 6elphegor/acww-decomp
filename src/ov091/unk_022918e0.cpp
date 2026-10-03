@@ -140,15 +140,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class MenuCursorBase {
@@ -168,7 +168,7 @@ typedef void (LetterViewMenu::*Unk_ov091_02291ef0_Fn)();
 class LetterViewMenu : public MenuProc {
 public:
     LetterViewMenu()
-        : unk_94(), unk_2a4(), unk_314() {}
+        : letterRenderer(), closeButton(), cursor() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -194,9 +194,9 @@ public:
     void releaseResources();
     void initLetterView();
 
-    /* 0x094 */ LetterRenderer unk_94;
-    /* 0x2a4 */ MenuLabelButtonStyle1 unk_2a4;
-    /* 0x314 */ MenuCursorBuf1 unk_314;
+    /* 0x094 */ LetterRenderer letterRenderer;
+    /* 0x2a4 */ MenuLabelButtonStyle1 closeButton;
+    /* 0x314 */ MenuCursorBuf1 cursor;
 };
 
 extern "C" LetterViewMenu *LetterViewMenu_Create() { return new LetterViewMenu(); }
@@ -224,12 +224,12 @@ BOOL LetterViewMenu::vfunc_0c() {
 }
 
 BOOL LetterViewMenu::onDraw() {
-    unk_314.vfunc_0c();
+    cursor.vfunc_0c();
     s32 r = getSlideOffsetY();
-    unk_2a4.setPos(0, r);
-    unk_2a4.draw();
+    closeButton.setPos(0, r);
+    closeButton.draw();
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_314)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     return TRUE;
 }
@@ -239,7 +239,7 @@ BOOL LetterViewMenu::execTransition() {
         &LetterViewMenu::stateLoad, &LetterViewMenu::stateWaitSlideIn,
         &LetterViewMenu::statePressButton, &LetterViewMenu::stateWaitButton,
         &LetterViewMenu::stateSlideOut, &LetterViewMenu::stateWaitSlideOut};
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     return TRUE;
 }
 
@@ -247,7 +247,7 @@ BOOL LetterViewMenu::execMain() {
     preInputUpdate();
     static Unk_ov091_02291ef0_Fn tbl[2] = {&LetterViewMenu::updateTouch,
                                            &LetterViewMenu::updateButtons};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
     postInputUpdate();
     return TRUE;
 }
@@ -265,7 +265,7 @@ void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
     ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
     Gfx2d_SetMainBgModeState(0);
-    unk_94.show((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
+    letterRenderer.show((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(0);
     applySlideOffset(0, 0, 0);
@@ -279,7 +279,7 @@ void LetterViewMenu::stateLoad() {
 void LetterViewMenu::stateWaitSlideIn() {
     if (stepSlideIn(1)) {
         setPhase(2);
-        ((MenuCursor *)&unk_314)->setAnimIfChanged(1);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
         if (MenuCtrl_IsTouch()) {
             setMainState(0);
         } else {
@@ -291,22 +291,22 @@ void LetterViewMenu::stateWaitSlideIn() {
 }
 
 void LetterViewMenu::statePressButton() {
-    if (unk_314.isAnimDone()) {
-        unk_2a4.setState(2);
+    if (cursor.isAnimDone()) {
+        closeButton.setState(2);
         setTransitionState(3);
         Snd_PlaySe(0x27);
     }
 }
 
 void LetterViewMenu::stateWaitButton() {
-    if (((MenuLabelButton *)&unk_2a4)->stepAnim()) {
-        if (unk_314.getAnim()) {
-            s32 a = ((MenuLabelButton *)&unk_2a4)->getAnchorX(1);
-            s32 b = ((MenuLabelButton *)&unk_2a4)->getAnchorY(1);
-            ((MenuCursorBase *)&unk_314)->warpTo(a, b);
+    if (((MenuLabelButton *)&closeButton)->stepAnim()) {
+        if (cursor.getAnim()) {
+            s32 a = ((MenuLabelButton *)&closeButton)->getAnchorX(1);
+            s32 b = ((MenuLabelButton *)&closeButton)->getAnchorY(1);
+            ((MenuCursorBase *)&cursor)->warpTo(a, b);
         }
     } else {
-        ((MenuCursor *)&unk_314)->setAnimIfChanged(0);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(0);
         setTransitionState(4);
     }
 }
@@ -332,14 +332,14 @@ void LetterViewMenu::stateWaitSlideOut() {
 }
 
 void LetterViewMenu::initLetterView() {
-    unk_94.setLayer(0);
-    ((MenuLabelButton *)&unk_2a4)->showDefault(0x65);
-    s32 a = ((MenuLabelButton *)&unk_2a4)->getAnchorX(1);
-    s32 b = ((MenuLabelButton *)&unk_2a4)->getAnchorY(1);
-    ((MenuCursorBase *)&unk_314)->warpTo(a, b);
+    letterRenderer.setLayer(0);
+    ((MenuLabelButton *)&closeButton)->showDefault(0x65);
+    s32 a = ((MenuLabelButton *)&closeButton)->getAnchorX(1);
+    s32 b = ((MenuLabelButton *)&closeButton)->getAnchorY(1);
+    ((MenuCursorBase *)&cursor)->warpTo(a, b);
 }
 
-void LetterViewMenu::releaseResources() { unk_94.release(); }
+void LetterViewMenu::releaseResources() { letterRenderer.release(); }
 
 void LetterViewMenu::preInputUpdate() {}
 
@@ -348,9 +348,9 @@ void LetterViewMenu::postInputUpdate() {}
 void LetterViewMenu::updateTouch() {
     if (checkSwitchToButtons(1)) {
         startButtonInput();
-    } else if (((MenuLabelButton *)&unk_2a4)->isTouched()) {
-        unk_2a4.setState(2);
-        unk_8c = 3;
+    } else if (((MenuLabelButton *)&closeButton)->isTouched()) {
+        closeButton.setState(2);
+        transitionState = 3;
         setPhase(1);
         Snd_PlaySe(0x27);
     }
@@ -362,8 +362,8 @@ void LetterViewMenu::updateButtons() {
     } else {
         u16 v = gPad[1];
         if ((v & 1) != 0 || (v & 2) != 0) {
-            ((MenuCursor *)&unk_314)->setPosePress();
-            unk_8c = 2;
+            ((MenuCursor *)&cursor)->setPosePress();
+            transitionState = 2;
             setPhase(1);
         }
     }

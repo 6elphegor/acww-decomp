@@ -188,15 +188,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 typedef MsgString9B Unk_ov145_02292600_A;
@@ -426,7 +426,7 @@ extern "C" DonationMenu *DonationMenu_Create() { return new DonationMenu(); }
 
 BOOL DonationMenu::vfunc_00() {
     initDonation();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -476,7 +476,7 @@ BOOL DonationMenu::execTransition() {
         &DonationMenu::stateClose,
         &DonationMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -493,7 +493,7 @@ void DonationMenu::runMainState() {
         &DonationMenu::updateCursorPress,
         &DonationMenu::updateCursorRelease,
         &DonationMenu::updateBarTransition};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL DonationMenu::execMain() {
@@ -982,7 +982,7 @@ void DonationMenu::moveCursorToTarget() {
 
 void DonationMenu::moveCursorTo(s32 a, s32 b) {
     MenuCursorBase_moveToEase(&unk_c8, a, b, 3, 1);
-    unk_c3 = unk_8d;
+    unk_c3 = mainState;
     setMainState(6);
 }
 
@@ -998,7 +998,7 @@ void DonationMenu::pressCursor() {
 
 void DonationMenu::releaseCursor() {
     MenuCursorBase_setPoseRelease(&unk_c8);
-    unk_c3 = unk_8d;
+    unk_c3 = mainState;
     setMainState(8);
 }
 

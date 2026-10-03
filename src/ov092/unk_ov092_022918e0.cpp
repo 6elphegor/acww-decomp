@@ -44,10 +44,10 @@ public:
     MenuSlideView();
     ~MenuSlideView();
     /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ u8 unk_18;
+    /* 0x0c */ s32 offset;
+    /* 0x10 */ s32 extent;
+    /* 0x14 */ s32 edgeDistance;
+    /* 0x18 */ u8 direction;
 };
 
 class MenuProc : public GameProc {
@@ -73,16 +73,16 @@ public:
 
     void setPhase(u8 v);
 
-    /* 0x50 */ Unk_ov002_022013a0 unk_50;
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlideView unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x50 */ Unk_ov002_022013a0 keyRepeat;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlideView slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class MenuLauncher;
@@ -143,13 +143,13 @@ BOOL MenuLauncher::onDraw() { return TRUE; }
 
 BOOL MenuLauncher::execTransition() {
     static Unk_ov092_02291ec8_Fn tbl[1] = {&MenuLauncher::stateStart};
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     return TRUE;
 }
 
 BOOL MenuLauncher::execMain() {
     static Unk_ov092_02291ec8_Fn tbl[2] = {&MenuLauncher::updateIdle, &MenuLauncher::updateOpenRequested};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
     return TRUE;
 }
 
@@ -197,14 +197,14 @@ void MenuLauncher::onChildClosed() {
     case 0:
     case 1:
         MenuScreen_BeginOpen();
-        unk_8d = 1;
+        mainState = 1;
         break;
     case 2:
     case 0x23:
     case 0x35:
     case 0x36:
     case 0x40:
-        unk_8d = 1;
+        mainState = 1;
         MenuCtrl_SetMode(unk_91);
         break;
     }
@@ -287,7 +287,7 @@ void MenuLauncher::updateOpenRequested() {
     case 0x41: MenuCtrl_RequestOpenNested(0x27); break;
     case 0x42: MenuCtrl_RequestOpenNested(0x2d); break;
     }
-    unk_8d = 0;
+    mainState = 0;
 }
 #else
 void MenuLauncher::updateOpenRequested() {
@@ -533,11 +533,11 @@ void MenuLauncher::stateStart() {
 
 void MenuLauncher::initLauncher() {
     unk_91 = MenuCtrl_GetMode();
-    unk_8d = 1;
+    mainState = 1;
     if (unk_91 == 0) {
         setPhase(2);
     } else {
-        unk_8c = 0;
+        transitionState = 0;
         setPhase(0);
         MenuScreen_BeginOpen();
     }

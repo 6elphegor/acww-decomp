@@ -38,13 +38,13 @@ class TitleBlinkText {
 public:
     TitleBlinkText();
     virtual ~TitleBlinkText();
-    s32 unk_04;
-    s32 unk_08;
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    s32 unk_18;
-    u8 unk_1c;
+    s32 state;
+    s32 variant;
+    s32 requestedVariant;
+    s32 alpha;
+    s32 holdCount;
+    s32 showDelay;
+    u8 fadingOut;
 
     void updateShown();
     void show();
@@ -71,10 +71,10 @@ TitleBlinkText::~TitleBlinkText() {
 }
 
 void TitleBlinkText::init() {
-    unk_04 = 0;
-    unk_08 = 2;
-    unk_18 = 0;
-    unk_0c = 2;
+    state = 0;
+    variant = 2;
+    showDelay = 0;
+    requestedVariant = 2;
     resetBlink();
     setIdle();
 }
@@ -85,19 +85,19 @@ void TitleBlinkText::shutdown() {
 void TitleBlinkText::update() {
     typedef void (TitleBlinkText::*Fn)();
     static Fn tbl[3] = { &TitleBlinkText::updateIdle, &TitleBlinkText::updateDelay, &TitleBlinkText::updateShown };
-    (this->*tbl[unk_04])();
+    (this->*tbl[state])();
 }
 
 void TitleBlinkText::requestVariant(s32 v) {
-    unk_0c = v;
+    requestedVariant = v;
 }
 
 void TitleBlinkText::requestHide() {
-    unk_0c = 2;
+    requestedVariant = 2;
 }
 
 BOOL TitleBlinkText::isHidden() {
-    if (unk_08 == 2 && unk_04 == 0) {
+    if (variant == 2 && state == 0) {
         return TRUE;
     }
     return FALSE;
@@ -105,38 +105,38 @@ BOOL TitleBlinkText::isHidden() {
 
 void TitleBlinkText::resetBlink() {
     s32 z = 0;
-    unk_10 = z;
-    unk_14 = z;
-    unk_1c = z;
+    alpha = z;
+    holdCount = z;
+    fadingOut = z;
 }
 
 BOOL TitleBlinkText::stepBlink() {
-    BOOL same = (unk_0c == 2) ? TRUE : FALSE;
+    BOOL same = (requestedVariant == 2) ? TRUE : FALSE;
     if (same) {
-        unk_1c = 1;
-        unk_14 = 0;
+        fadingOut = 1;
+        holdCount = 0;
     }
-    if (unk_1c) {
-        unk_10 = unk_10 - 1;
-        if (unk_10 <= 0) {
-            unk_1c = 0;
+    if (fadingOut) {
+        alpha = alpha - 1;
+        if (alpha <= 0) {
+            fadingOut = 0;
         }
     } else {
-        unk_10 = unk_10 + 1;
-        if (unk_10 >= 10) {
-            unk_10 = 10;
-            unk_14 = unk_14 + 1;
-            if (unk_14 > 5) {
-                unk_1c = 1;
-                unk_14 = 0;
+        alpha = alpha + 1;
+        if (alpha >= 10) {
+            alpha = 10;
+            holdCount = holdCount + 1;
+            if (holdCount > 5) {
+                fadingOut = 1;
+                holdCount = 0;
             }
         }
     }
     BOOL r0 = FALSE;
-    if (unk_10 > 0) {
+    if (alpha > 0) {
     } else if (same) {
         r0 = TRUE;
-    } else if (unk_08 != unk_0c) {
+    } else if (variant != requestedVariant) {
         r0 = TRUE;
     }
     return r0;
@@ -229,7 +229,7 @@ extern "C" void TitleBlinkText_HideBg3() {
 }
 
 void TitleBlinkText::applyBlendAlpha() {
-    s32 t = _s32_div_f(unk_10 << 12, 10);
+    s32 t = _s32_div_f(alpha << 12, 10);
     s32 a = (s16)(t << 2);
     u32 i = ((u16)a >> 4) * 2;
     s32 v = data_02135f44[i];
@@ -245,29 +245,29 @@ void TitleBlinkText::applyBlendAlpha() {
 void TitleBlinkText::clearBlend() { G2x_SetBlendAlpha_(0x4000050, 0, 0x20, 0x10, 0); }
 
 void TitleBlinkText::setIdle() {
-    unk_04 = 0;
-    unk_08 = 2;
+    state = 0;
+    variant = 2;
 }
 
 void TitleBlinkText::updateIdle() {
-    s32 t = unk_0c;
+    s32 t = requestedVariant;
     if (t != 2) {
-        unk_08 = t;
+        variant = t;
         startDelay();
     }
 }
 
 void TitleBlinkText::startDelay() {
-    unk_04 = 1;
-    unk_18 = 5;
+    state = 1;
+    showDelay = 5;
 }
 
 void TitleBlinkText::updateDelay() {
-    if (unk_08 != unk_0c) {
+    if (variant != requestedVariant) {
         setIdle();
     } else {
-        unk_18 = unk_18 - 1;
-        if (unk_18 > 0) {
+        showDelay = showDelay - 1;
+        if (showDelay > 0) {
         } else {
             show();
         }
@@ -275,10 +275,10 @@ void TitleBlinkText::updateDelay() {
 }
 
 void TitleBlinkText::show() {
-    unk_04 = 2;
+    state = 2;
     resetBlink();
     TitleBlinkText_SetupBg3();
-    TitleBlinkText_LoadGraphics(unk_08);
+    TitleBlinkText_LoadGraphics(variant);
     TitleBlinkText_ShowBg3();
     applyBlendAlpha();
 }

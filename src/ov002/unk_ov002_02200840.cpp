@@ -253,22 +253,22 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 class HandCursor : public UiWidget {
@@ -286,16 +286,16 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 class ScrollKnob : public UiWidget {
@@ -310,12 +310,12 @@ public:
     void setState(s32 idx);
     void getAnimOffset(s32 *a, s32 *b);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -377,7 +377,7 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 // 8-byte animation record
 struct Unk_ov002_02203c5c_Rec {
     u32 unk_00;
-    u32 unk_04 : 10;
+    u32 charName : 10;
     u32 unk_04_hi : 22;
 };
 
@@ -412,9 +412,9 @@ public:
     BOOL hide(s32 a);
     s32 updatePrompt();
 
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ volatile u8 unk_be;
+    /* 0xbc */ u8 promptState;
+    /* 0xbd */ u8 openQueued;
+    /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
 // vptr-only class (vtable 0x022044d4)
@@ -428,14 +428,14 @@ public:
 class KeyRepeatView {
 public:
     u32 unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0a;
-    s16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    s16 delay;
+    s16 minInterval;
+    s16 intervalStep;
+    s16 interval;
+    s16 countdown;
+    u8 heldKeys;
+    u8 pendingKeys;
+    u8 takenKeys;
     void init(s32 a, s32 b, s32 c);
     BOOL isRight();
     BOOL isLeft();
@@ -450,8 +450,8 @@ class MenuTween {
 public:
     MenuTween();
     virtual ~MenuTween();
-    s32 unk_04;
-    s32 unk_08;
+    s32 stepSize;
+    s32 progress;
     s32 scaleLinear(s32 v);
     s32 scaleQuadratic(s32 v);
     BOOL step();
@@ -463,10 +463,10 @@ class MenuSlide : public MenuTween {
 public:
     MenuSlide();
     virtual ~MenuSlide();
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
+    s32 offset;
+    s32 extent;
+    s32 edgeDistance;
+    u8 direction;
     void updateSlideOutHorizontal(s32 mode);
     void updateSlideOutVertical(s32 mode);
     BOOL stepSlideIn(s32 mode);
@@ -541,17 +541,17 @@ public:
     BOOL isRepeatUp();
     u32 takeRepeatedKeys();
 
-    /* 0x50 */ KeyRepeat unk_50;
+    /* 0x50 */ KeyRepeat keyRepeat;
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlide unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlide slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // 8-byte-aligned owner helpers of the menu: text elements
@@ -579,13 +579,13 @@ public:
     BOOL stepPress();
     void drawAt(s32 x, s32 y, s32 c);
 
-    /* 0x04 */ LabelString unk_04;
-    /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
+    /* 0x04 */ LabelString caption;
+    /* 0x44 */ Unk_ov002_02203c5c_Rec *cells;
+    /* 0x48 */ u8 widthTiles;
+    /* 0x49 */ u8 pressStep;
+    /* 0x4a */ u8 frameCellCount;
+    /* 0x4b */ u8 msgId;
+    /* 0x4c */ u8 flags;
 };
 
 // Menu, vtable 0x02204770
@@ -617,9 +617,9 @@ public:
     void freeTexts();
 
     /* 0x004 */ MenuTextButton unk_04[2];
-    /* 0x0a4 */ MenuTitleBalloon unk_a4;
-    /* 0x160 */ u8 unk_160;
-    /* 0x161 */ u8 unk_161;
+    /* 0x0a4 */ MenuTitleBalloon title;
+    /* 0x160 */ u8 layout;
+    /* 0x161 */ u8 selectedTarget;
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -701,13 +701,13 @@ public:
     void openHigh(u8 *a, s32 b, u32 c);
     void open(u8 *a, s32 b, u32 c);
 
-    /* 0x00 */ TouchPromptBalloon unk_00;
-    /* 0xc0 */ TalkMsgRequest unk_c0;
+    /* 0x00 */ TouchPromptBalloon prompt;
+    /* 0xc0 */ TalkMsgRequest talk;
     /* 0xe0 */ u8 unk_e0[0x1c];
     /* 0xfc */ TalkWindowState *unk_fc;
     /* 0x100 */ u8 unk_100[4];
-    /* 0x104 */ u8 unk_104;
-    /* 0x105 */ u8 unk_105;
+    /* 0x104 */ u8 state;
+    /* 0x105 */ u8 isFatal;
 };
 
 // Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
@@ -726,12 +726,12 @@ public:
     BOOL update();
     void reset();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x04 */ s32 posX;
+    /* 0x08 */ s32 posY;
+    /* 0x0c */ s32 stepX;
+    /* 0x10 */ s32 stepY;
+    /* 0x14 */ u8 framesLeft;
+    /* 0x15 */ u8 mode;
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
@@ -757,7 +757,7 @@ public:
     void setPoseIdle();
     void setPoseRelease();
 
-    /* 0x4c */ CursorMotion unk_4c;
+    /* 0x4c */ CursorMotion motion;
 };
 
 class MenuCursor : public MenuCursorBase {
@@ -809,16 +809,16 @@ public:
     void setup(u32 a, u16 b, u8 c, u8 d);
     void render(s32 v);
 
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 layer;
+    /* 0x43 */ u8 fgColor;
+    /* 0x44 */ u8 bgColor;
 };
 
 struct PopupChoiceIdList {
-    u8 unk_00[5];
-    u8 unk_05[5];
-    u8 unk_0a;
+    u8 msgIds[5];
+    u8 values[5];
+    u8 customMask;
 };
 
 // Menu/selection object, vtable 0x02204558
@@ -834,30 +834,30 @@ public:
     s32 placeCentered(s32 a, s32 b);
     void init(s32 a, s32 b, const char *path);
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u16 unk_14;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
-    /* 0x18 */ u8 unk_18;
-    /* 0x19 */ u8 unk_19;
-    /* 0x1a */ u8 unk_1a;
-    /* 0x1b */ u8 unk_1b;
-    /* 0x1c */ u8 unk_1c;
-    /* 0x1d */ u8 unk_1d;
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f;
-    /* 0x20 */ u8 unk_20;
-    /* 0x21 */ volatile u8 unk_21;
+    /* 0x04 */ u32 rowCharBase;
+    /* 0x08 */ s32 scrollX;
+    /* 0x0c */ s32 scrollY;
+    /* 0x10 */ u32 bgPriority;
+    /* 0x14 */ u16 flags;
+    /* 0x16 */ u8 state;
+    /* 0x17 */ u8 request;
+    /* 0x18 */ u8 stateStep;
+    /* 0x19 */ u8 openLeftward;
+    /* 0x1a */ u8 layer;
+    /* 0x1b */ u8 textWidthTiles;
+    /* 0x1c */ u8 numRows;
+    /* 0x1d */ u8 numPages;
+    /* 0x1e */ u8 decideDelay;
+    /* 0x1f */ u8 decidedRow;
+    /* 0x20 */ u8 addresseePage;
+    /* 0x21 */ volatile u8 titleRefreshDelay;
     /* 0x22 */ u8 pad_22[2];
-    /* 0x24 */ const char *unk_24;
-    /* 0x28 */ PopupChoiceRow unk_28[5];
-    /* 0x190 */ MenuLabelButton unk_190;
-    /* 0x200 */ MenuTitleBalloon unk_200;
-    /* 0x2bc */ MenuSlide unk_2bc;
-    /* 0x2d8 */ u8 unk_2d8[0x19];
+    /* 0x24 */ const char *screenFile;
+    /* 0x28 */ PopupChoiceRow rows[5];
+    /* 0x190 */ MenuLabelButton pageButton;
+    /* 0x200 */ MenuTitleBalloon title;
+    /* 0x2bc */ MenuSlide slide;
+    /* 0x2d8 */ u8 addresseeIds[0x19];
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -954,37 +954,37 @@ KeyRepeat::~KeyRepeat() {}
 
 void KeyRepeatView::update()
 {
-    u32 prev = unk_0e;
-    unk_0e = gPad[0] & 0xf0;
-    u8 *p = &unk_0f;
-    unk_0f |= (u8)(gPad[1] & 0xf0);
-    u32 cur = unk_0e;
+    u32 prev = heldKeys;
+    heldKeys = gPad[0] & 0xf0;
+    u8 *p = &pendingKeys;
+    pendingKeys |= (u8)(gPad[1] & 0xf0);
+    u32 cur = heldKeys;
     if (cur == 0 || prev != cur) {
-        unk_0f = gPad[1] & 0xf0;
-        unk_0a = unk_04;
-        unk_0c = unk_04;
-    } else if (unk_0c > 0) {
-        unk_0c--;
+        pendingKeys = gPad[1] & 0xf0;
+        interval = delay;
+        countdown = delay;
+    } else if (countdown > 0) {
+        countdown--;
     } else {
         *p |= cur & 0xf0;
-        unk_0a = unk_0a - unk_08;
-        if (unk_0a < unk_06) {
-            unk_0a = unk_06;
+        interval = interval - intervalStep;
+        if (interval < minInterval) {
+            interval = minInterval;
         }
-        unk_0c = unk_0a;
+        countdown = interval;
     }
 }
 
 u32 KeyRepeatView::take()
 {
-    unk_10 = unk_0f;
-    unk_0f = 0;
-    return unk_10;
+    takenKeys = pendingKeys;
+    pendingKeys = 0;
+    return takenKeys;
 }
 
 BOOL KeyRepeatView::isUp()
 {
-    if (unk_10 & 0x40) {
+    if (takenKeys & 0x40) {
         return TRUE;
     }
     return FALSE;
@@ -992,7 +992,7 @@ BOOL KeyRepeatView::isUp()
 
 BOOL KeyRepeatView::isDown()
 {
-    if (unk_10 & 0x80) {
+    if (takenKeys & 0x80) {
         return TRUE;
     }
     return FALSE;
@@ -1000,7 +1000,7 @@ BOOL KeyRepeatView::isDown()
 
 BOOL KeyRepeatView::isLeft()
 {
-    if (unk_10 & 0x20) {
+    if (takenKeys & 0x20) {
         return TRUE;
     }
     return FALSE;
@@ -1008,7 +1008,7 @@ BOOL KeyRepeatView::isLeft()
 
 BOOL KeyRepeatView::isRight()
 {
-    if (unk_10 & 0x10) {
+    if (takenKeys & 0x10) {
         return TRUE;
     }
     return FALSE;
@@ -1048,14 +1048,14 @@ extern "C" BOOL MenuKeys_HasRight(u32 v)
 
 void KeyRepeatView::init(s32 a, s32 b, s32 c)
 {
-    unk_0e = 0;
-    unk_0f = 0;
-    unk_10 = 0;
-    unk_0a = 0;
-    unk_0c = 0;
-    unk_04 = a;
-    unk_06 = b;
-    unk_08 = c;
+    heldKeys = 0;
+    pendingKeys = 0;
+    takenKeys = 0;
+    interval = 0;
+    countdown = 0;
+    delay = a;
+    minInterval = b;
+    intervalStep = c;
 }
 
 extern "C" void *_ZN9MenuTweenC2Ev(MenuTween *self) {
@@ -1067,33 +1067,33 @@ MenuTween::~MenuTween() {}
 
 void MenuTween::start(u32 n)
 {
-    unk_08 = 0x1000;
-    unk_04 = 0x1000 / n;
+    progress = 0x1000;
+    stepSize = 0x1000 / n;
 }
 
 BOOL MenuTween::step()
 {
-    s32 a = unk_08;
+    s32 a = progress;
     if (a == 0) {
         return TRUE;
     }
-    s32 b = unk_04;
+    s32 b = stepSize;
     if (a > b) {
-        unk_08 = a - b;
+        progress = a - b;
     } else {
-        unk_08 = 0;
+        progress = 0;
     }
     return FALSE;
 }
 
 s32 MenuTween::scaleQuadratic(s32 v)
 {
-    return (v * func_01ffcb0c(unk_08, unk_08)) >> 12;
+    return (v * func_01ffcb0c(progress, progress)) >> 12;
 }
 
 s32 MenuTween::scaleLinear(s32 v)
 {
-    return (v * unk_08) >> 12;
+    return (v * progress) >> 12;
 }
 
 MenuSlide::MenuSlide() {}
@@ -1102,32 +1102,32 @@ MenuSlide::~MenuSlide() {}
 
 s32 MenuSlide::getOffsetY()
 {
-    switch (unk_18) {
+    switch (direction) {
     case 0:
-        return unk_0c;
+        return offset;
     case 1:
-        return -unk_0c;
+        return -offset;
     }
     return 0;
 }
 
 s32 MenuSlide::getOffsetX()
 {
-    switch (unk_18) {
+    switch (direction) {
     case 2:
-        return -unk_0c;
+        return -offset;
     case 3:
-        return unk_0c;
+        return offset;
     }
     return 0;
 }
 
 void MenuSlide::updateSlideInVertical(s32 mode)
 {
-    unk_0c = scaleQuadratic(unk_10);
+    offset = scaleQuadratic(extent);
     switch (mode) {
     case 0:
-        if (unk_0c > unk_14) {
+        if (offset > edgeDistance) {
             ((MenuSlideView *)this)->applyWindow(2);
         } else {
             Gfx2d_DisableSubWindows(1);
@@ -1135,7 +1135,7 @@ void MenuSlide::updateSlideInVertical(s32 mode)
         }
         break;
     case 1:
-        if (unk_0c > unk_14) {
+        if (offset > edgeDistance) {
             ((MenuSlideView *)this)->applyWindow(0);
         } else {
             Gfx2d_DisableMainWindows(1);
@@ -1147,7 +1147,7 @@ void MenuSlide::updateSlideInVertical(s32 mode)
 
 void MenuSlide::updateSlideInHorizontal(s32 mode)
 {
-    unk_0c = scaleQuadratic(unk_10);
+    offset = scaleQuadratic(extent);
     switch (mode) {
     case 0:
         ((MenuSlideView *)this)->applyWindow(2);
@@ -1161,7 +1161,7 @@ void MenuSlide::updateSlideInHorizontal(s32 mode)
 BOOL MenuSlide::stepSlideIn(s32 mode)
 {
     if (step()) {
-        unk_0c = 0;
+        offset = 0;
         switch (mode) {
         case 0:
             Gfx2d_DisableSubWindows(1);
@@ -1174,7 +1174,7 @@ BOOL MenuSlide::stepSlideIn(s32 mode)
         }
         return TRUE;
     }
-    switch (unk_18) {
+    switch (direction) {
     case 0:
     case 1:
         updateSlideInVertical(mode);
@@ -1188,8 +1188,8 @@ BOOL MenuSlide::stepSlideIn(s32 mode)
 
 void MenuSlide::updateSlideOutVertical(s32 mode)
 {
-    unk_0c = unk_10 - scaleLinear(unk_10);
-    if (unk_0c > unk_14) {
+    offset = extent - scaleLinear(extent);
+    if (offset > edgeDistance) {
         switch (mode) {
         case 0:
             Gfx2d_EnableSubWindows(1);
@@ -1207,7 +1207,7 @@ void MenuSlide::updateSlideOutVertical(s32 mode)
 
 void MenuSlide::updateSlideOutHorizontal(s32 mode)
 {
-    unk_0c = unk_10 - scaleLinear(unk_10);
+    offset = extent - scaleLinear(extent);
     switch (mode) {
     case 0:
         ((MenuSlideView *)this)->applyWindow(2);
@@ -1230,7 +1230,7 @@ BOOL MenuSlideView::stepSlideOut(s32 a) {
         }
         return TRUE;
     }
-    switch (unk_18) {
+    switch (direction) {
     case 0:
     case 1:
         updateSlideOutVertical(a);
@@ -1279,53 +1279,53 @@ void MenuSlideView::beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist) {
 }
 
 void MenuSlideView::initSlideIn(s32 a, s32 mode, s32 dist) {
-    unk_18 = mode;
-    unk_14 = dist;
+    direction = mode;
+    edgeDistance = dist;
     start(a);
-    switch (unk_18) {
+    switch (direction) {
     case 0:
     case 1:
-        unk_0c = 0xc0;
-        unk_10 = 0xc0;
+        offset = 0xc0;
+        extent = 0xc0;
         break;
     case 2:
     case 3:
-        unk_0c = 0x100;
-        unk_10 = 0x100;
+        offset = 0x100;
+        extent = 0x100;
         break;
     }
 }
 
 void MenuSlideView::initSlideOut(s32 a, s32 mode, s32 dist) {
-    unk_18 = mode;
-    unk_14 = dist;
+    direction = mode;
+    edgeDistance = dist;
     start(a);
-    unk_0c = 0;
-    switch (unk_18) {
+    offset = 0;
+    switch (direction) {
     case 0:
     case 1:
-        unk_10 = 0xc0;
+        extent = 0xc0;
         break;
     case 2:
     case 3:
-        unk_10 = 0x100;
+        extent = 0x100;
         break;
     }
 }
 
 void MenuSlideView::applyLayerOffset(s32 a, s32 b, s32 c) {
-    switch (unk_18) {
+    switch (direction) {
     case 0:
-        Gfx2d_SetLayerOffset(a, -b, -(unk_0c + c));
+        Gfx2d_SetLayerOffset(a, -b, -(offset + c));
         break;
     case 1:
-        Gfx2d_SetLayerOffset(a, -b, unk_0c - c);
+        Gfx2d_SetLayerOffset(a, -b, offset - c);
         break;
     case 2:
-        Gfx2d_SetLayerOffset(a, unk_0c - b, -c);
+        Gfx2d_SetLayerOffset(a, offset - b, -c);
         break;
     case 3:
-        Gfx2d_SetLayerOffset(a, -(unk_0c + b), -c);
+        Gfx2d_SetLayerOffset(a, -(offset + b), -c);
         break;
     }
 }
@@ -1335,27 +1335,27 @@ void MenuSlideView::applyWindow(s32 a) {
     s32 y0 = 0;
     s32 x1 = 0xff;
     s32 y1 = 0xc0;
-    switch (unk_18) {
+    switch (direction) {
     case 0:
-        y0 = unk_0c - unk_14;
+        y0 = offset - edgeDistance;
         if (y0 < 0) {
             y0 = x0;
         }
         break;
     case 1:
-        y1 = unk_14 + 0xc0 - unk_0c;
+        y1 = edgeDistance + 0xc0 - offset;
         if (y1 > 0xbf) {
             y1 = 0xbf;
         }
         break;
     case 2:
-        x1 = 0xff - unk_0c;
+        x1 = 0xff - offset;
         if (x1 < 1) {
             x1 = 1;
         }
         break;
     case 3:
-        x0 = unk_0c;
+        x0 = offset;
         if (x0 > 0xfe) {
             x0 = 0xfe;
         }
@@ -1366,16 +1366,16 @@ void MenuSlideView::applyWindow(s32 a) {
 
 // ---------------------------------------------------------------- MenuSlideView
 
-void MenuSlideView::setExtent(s32 v) { unk_10 = v; }
+void MenuSlideView::setExtent(s32 v) { extent = v; }
 
 extern "C" void *_ZN8MenuProcC2Ev(MenuProc *self) {
     _ZN8ProcBaseC2Ev(self);
     *(void *volatile *)self = _ZTV8GameProc + 8;
     *(void **)self = _ZTV8MenuProc + 8;
-    _ZN9KeyRepeatC1Ev(&self->unk_50);
-    self->unk_64 = 0;
-    self->unk_68 = 0;
-    _ZN9MenuSlideC1Ev(&self->unk_70);
+    _ZN9KeyRepeatC1Ev(&self->keyRepeat);
+    self->openMenuPrev = 0;
+    self->openMenuNext = 0;
+    _ZN9MenuSlideC1Ev(&self->slide);
     return self;
 }
 
@@ -1385,14 +1385,14 @@ BOOL MenuProc::vfunc_04() {
     if (!ProcBase::vfunc_04()) {
         return FALSE;
     }
-    unk_90 = *(s32 *)&unk_04[4];
-    unk_6c = this;
-    ((KeyRepeatView *)&unk_50)->init(8, 1, 7);
+    menuId = *(s32 *)&unk_04[4];
+    openMenuOwner = this;
+    ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7);
     return TRUE;
 }
 
 void MenuProc::postCreate(s32 a) {
-    MenuCtrl_AddOpenMenu(&unk_64);
+    MenuCtrl_AddOpenMenu(&openMenuPrev);
     if (a == 2) {
         void *p = ProcBase_GetParent(this);
         if (p != 0) {
@@ -1413,7 +1413,7 @@ BOOL MenuProc::preDelete() {
 
 BOOL MenuProc::vfunc_14(s32 a) {
     if (a == 2) {
-        MenuCtrl_RemoveOpenMenu(&unk_64);
+        MenuCtrl_RemoveOpenMenu(&openMenuPrev);
     }
     return _ZN8ProcBase8vfunc_14Ev(this, a);
 }
@@ -1457,16 +1457,16 @@ BOOL MenuProc::onExecute() {
         (Unk_ov002_02200a68_Fn)&MenuProc::execPhase4,
         (Unk_ov002_02200a68_Fn)&MenuProc::execClosed,
     };
-    ((KeyRepeatView *)&unk_50)->update();
-    (this->*tbl[unk_8f])();
+    ((KeyRepeatView *)&keyRepeat)->update();
+    (this->*tbl[phase])();
     return TRUE;
 }
 
-void MenuProc::setPhase(u8 v) { unk_8f = v; }
+void MenuProc::setPhase(u8 v) { phase = v; }
 
-void MenuProc::setMainState(u8 v) { unk_8d = v; }
+void MenuProc::setMainState(u8 v) { mainState = v; }
 
-void MenuProc::setTransitionState(u8 v) { unk_8c = v; }
+void MenuProc::setTransitionState(u8 v) { transitionState = v; }
 
 BOOL MenuProc::checkSwitchToButtons(s32 a) {
     if ((gPad[1] & 0xfff) != 0) {
@@ -1489,19 +1489,19 @@ BOOL MenuProc::checkSwitchToTouch() {
     return FALSE;
 }
 
-u32 MenuProc::takeRepeatedKeys() { return ((KeyRepeatView *)&unk_50)->take(); }
+u32 MenuProc::takeRepeatedKeys() { return ((KeyRepeatView *)&keyRepeat)->take(); }
 
-BOOL MenuProc::isRepeatUp() { return ((KeyRepeatView *)&unk_50)->isUp(); }
+BOOL MenuProc::isRepeatUp() { return ((KeyRepeatView *)&keyRepeat)->isUp(); }
 
-BOOL MenuProc::isRepeatDown() { return ((KeyRepeatView *)&unk_50)->isDown(); }
+BOOL MenuProc::isRepeatDown() { return ((KeyRepeatView *)&keyRepeat)->isDown(); }
 
-BOOL MenuProc::isRepeatLeft() { return ((KeyRepeatView *)&unk_50)->isLeft(); }
+BOOL MenuProc::isRepeatLeft() { return ((KeyRepeatView *)&keyRepeat)->isLeft(); }
 
-BOOL MenuProc::isRepeatRight() { return ((KeyRepeatView *)&unk_50)->isRight(); }
+BOOL MenuProc::isRepeatRight() { return ((KeyRepeatView *)&keyRepeat)->isRight(); }
 
-void MenuProc::restartKeyRepeat() { ((KeyRepeatView *)&unk_50)->init(8, 1, 7); }
+void MenuProc::restartKeyRepeat() { ((KeyRepeatView *)&keyRepeat)->init(8, 1, 7); }
 
-void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { ((KeyRepeatView *)&unk_50)->init(a, b, c); }
+void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { ((KeyRepeatView *)&keyRepeat)->init(a, b, c); }
 
 void *MenuProc::operator new(unsigned long size) {
     void *p = Heap_AllocTail(gMenuHeap, size);
@@ -1514,56 +1514,56 @@ void *MenuProc::operator new(unsigned long size) {
 
 void MenuProc::operator delete(void *p) { Heap_Free(gMenuHeap, p); }
 
-s32 MenuProc::getSlideOffsetY() { return ((MenuSlideView *)&unk_70)->getOffsetY(); }
+s32 MenuProc::getSlideOffsetY() { return ((MenuSlideView *)&slide)->getOffsetY(); }
 
-s32 MenuProc::getSlideOffsetX() { return ((MenuSlideView *)&unk_70)->getOffsetX(); }
+s32 MenuProc::getSlideOffsetX() { return ((MenuSlideView *)&slide)->getOffsetX(); }
 
-BOOL MenuProc::stepSlideIn(s32 a) { return ((MenuSlideView *)&unk_70)->stepSlideIn(a); }
+BOOL MenuProc::stepSlideIn(s32 a) { return ((MenuSlideView *)&slide)->stepSlideIn(a); }
 
-BOOL MenuProc::stepSlideOut(s32 a) { return ((MenuSlideView *)&unk_70)->stepSlideOut(a); }
+BOOL MenuProc::stepSlideOut(s32 a) { return ((MenuSlideView *)&slide)->stepSlideOut(a); }
 
 void MenuProc::beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist) {
     if (b == 0) {
         b = 4;
     }
-    ((MenuSlideView *)&unk_70)->beginSubSlideIn(a, b, mode, dist);
+    ((MenuSlideView *)&slide)->beginSubSlideIn(a, b, mode, dist);
 }
 
 void MenuProc::beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist) {
     if (b == 0) {
         b = 3;
     }
-    ((MenuSlideView *)&unk_70)->beginSubSlideOut(a, b, mode, dist);
+    ((MenuSlideView *)&slide)->beginSubSlideOut(a, b, mode, dist);
 }
 
 void MenuProc::beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist) {
     if (b == 0) {
         b = 4;
     }
-    ((MenuSlideView *)&unk_70)->beginMainSlideIn(a, b, mode, dist);
+    ((MenuSlideView *)&slide)->beginMainSlideIn(a, b, mode, dist);
 }
 
 void MenuProc::beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist) {
     if (b == 0) {
         b = 3;
     }
-    ((MenuSlideView *)&unk_70)->beginMainSlideOut(a, b, mode, dist);
+    ((MenuSlideView *)&slide)->beginMainSlideOut(a, b, mode, dist);
 }
 
 void MenuProc::initSlideIn(s32 a, s32 mode) {
     if (a == 0) {
         a = 4;
     }
-    ((MenuSlideView *)&unk_70)->initSlideIn(a, mode, 0x30);
+    ((MenuSlideView *)&slide)->initSlideIn(a, mode, 0x30);
 }
 
 void MenuProc::initSlideOut(s32 a, s32 mode) {
     if (a == 0) {
         a = 3;
     }
-    ((MenuSlideView *)&unk_70)->initSlideOut(a, mode, 0x30);
+    ((MenuSlideView *)&slide)->initSlideOut(a, mode, 0x30);
 }
 
-void MenuProc::setSlideExtent(s32 v) { ((MenuSlideView *)&unk_70)->setExtent(v); }
+void MenuProc::setSlideExtent(s32 v) { ((MenuSlideView *)&slide)->setExtent(v); }
 
-void MenuProc::applySlideOffset(s32 a, s32 b, s32 c) { ((MenuSlideView *)&unk_70)->applyLayerOffset(a, b, c); }
+void MenuProc::applySlideOffset(s32 a, s32 b, s32 c) { ((MenuSlideView *)&slide)->applyLayerOffset(a, b, c); }

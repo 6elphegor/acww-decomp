@@ -167,15 +167,15 @@ public:
     BOOL stepSlideOut(s32 a);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 class DateSelectMenu;
@@ -191,7 +191,7 @@ static inline BOOL Unk_ov138_Both() {
 // Vtable 0x02296380, size 0x2824 (scene overlay on MenuProc)
 class DateSelectMenu : public MenuProc {
 public:
-    DateSelectMenu() : unk_98(), unk_fc(), unk_260() {}
+    DateSelectMenu() : cursor(), bottomButtons(), picker() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -257,13 +257,13 @@ public:
     void runMainState();
 
     /* 0x091 */ u8 unk_91;
-    /* 0x092 */ u16 unk_92;
-    /* 0x094 */ u8 unk_94;
-    /* 0x095 */ u8 unk_95;
+    /* 0x092 */ u16 flags;
+    /* 0x094 */ u8 returnState;
+    /* 0x095 */ u8 cursorSlot;
     /* 0x096 */ u8 unk_96[2];
-    /* 0x098 */ MenuCursorBuf0 unk_98;
-    /* 0x0fc */ MenuBottomButtons unk_fc;
-    /* 0x260 */ DateTimePicker unk_260;
+    /* 0x098 */ MenuCursorBuf0 cursor;
+    /* 0x0fc */ MenuBottomButtons bottomButtons;
+    /* 0x260 */ DateTimePicker picker;
 };
 
 struct Unk_ov138_SceneEntry {
@@ -278,7 +278,7 @@ extern "C" DateSelectMenu *DateSelectMenu_Create() { return new DateSelectMenu()
 
 BOOL DateSelectMenu::vfunc_00() {
     initPicker();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -291,15 +291,15 @@ BOOL DateSelectMenu::vfunc_0c() {
 
 BOOL DateSelectMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        ((MenuCursorBase *)&unk_98)->drawWrapped();
+        ((MenuCursorBase *)&cursor)->drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
     s32 r = getSlideOffsetY();
-    DateTimePicker_Draw(&unk_260, 0, r);
+    DateTimePicker_Draw(&picker, 0, r);
     s32 r2 = getSlideOffsetY();
-    unk_fc.drawAt(r2);
+    bottomButtons.drawAt(r2);
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
 extern "C" const s32 sDateSelectCursorXTable[5];
@@ -319,7 +319,7 @@ BOOL DateSelectMenu::execTransition() {
         &DateSelectMenu::stateClose,
         &DateSelectMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -340,7 +340,7 @@ void DateSelectMenu::runMainState() {
         &DateSelectMenu::stateExit,
         &DateSelectMenu::stateListOpening,
         &DateSelectMenu::stateListClosing};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL DateSelectMenu::execMain() {
@@ -368,7 +368,7 @@ void DateSelectMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_fc.setLayoutConfirmAnd06(0x65);
+    bottomButtons.setLayoutConfirmAnd06(0x65);
     setTransitionState(1);
 }
 
@@ -403,20 +403,20 @@ void DateSelectMenu::updateLayerSlide() {
 }
 
 void DateSelectMenu::initPicker() {
-    DateTimePicker_Init(&unk_260, 3, 6, 4, 3);
-    DateTimePicker_EnableMinLimit(&unk_260);
-    unk_95 = 0;
-    unk_92 = 0;
+    DateTimePicker_Init(&picker, 3, 6, 4, 3);
+    DateTimePicker_EnableMinLimit(&picker);
+    cursorSlot = 0;
+    flags = 0;
 }
 
 void DateSelectMenu::releaseResources() {
-    DateTimePicker_Shutdown(&unk_260);
-    unk_fc.freeTexts();
+    DateTimePicker_Shutdown(&picker);
+    bottomButtons.freeTexts();
 }
 
 void DateSelectMenu::preInputUpdate() {
     preStateUpdate();
-    unk_98.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void DateSelectMenu::postInputUpdate() {
@@ -424,12 +424,12 @@ void DateSelectMenu::postInputUpdate() {
 }
 
 void DateSelectMenu::preStateUpdate() {
-    unk_fc.freeTexts();
-    DateTimePicker_BeginFrame(&unk_260);
+    bottomButtons.freeTexts();
+    DateTimePicker_BeginFrame(&picker);
 }
 
 void DateSelectMenu::postStateUpdate() {
-    DateTimePicker_EndFrame(&unk_260);
+    DateTimePicker_EndFrame(&picker);
 }
 
 void DateSelectMenu::setupBgLayers() {
@@ -443,13 +443,13 @@ void DateSelectMenu::setupBgLayers() {
 }
 
 void DateSelectMenu::loadBgGfx() {
-    DateTimePicker_LoadBgGraphics(&unk_260);
-    DateTimePicker_DrawTitleAndFields(&unk_260, 0x6c);
+    DateTimePicker_LoadBgGraphics(&picker);
+    DateTimePicker_DrawTitleAndFields(&picker, 0x6c);
 }
 
 void DateSelectMenu::loadObjGfx() {
-    DateTimePicker_LoadObjGraphics(&unk_260);
-    MenuButtons_LoadTextColors(&unk_fc);
+    DateTimePicker_LoadObjGraphics(&picker);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void DateSelectMenu::updateTouch() {
@@ -457,12 +457,12 @@ void DateSelectMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov138_Both()) {
-            if (unk_fc.isTouched(6)) {
+            if (bottomButtons.isTouched(6)) {
                 confirm();
-            } else if (unk_fc.isTouched(7)) {
+            } else if (bottomButtons.isTouched(7)) {
                 cancel();
             } else {
-                s32 r = DateTimePicker_HitTestDateField(&unk_260, gTouchCurX, gTouchCurY);
+                s32 r = DateTimePicker_HitTestDateField(&picker, gTouchCurX, gTouchCurY);
                 if (r != 6) {
                     openFieldList(r);
                 }
@@ -483,7 +483,7 @@ void DateSelectMenu::stateListTouch() {
         ok = FALSE;
     }
     if (ok) {
-        switch (DateTimePicker_HitTestList(&unk_260, gTouchCurX, gTouchCurY)) {
+        switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
         case 0:
             decideList();
             break;
@@ -502,18 +502,18 @@ void DateSelectMenu::stateListTouch() {
 
 void DateSelectMenu::stateListKnobDrag() {
     if (gTouchHeld) {
-        unk_260.dragKnob(gTouchCurY);
+        picker.dragKnob(gTouchCurY);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(1);
     }
 }
 
 void DateSelectMenu::stateListTrackDrag() {
     if (gTouchHeld) {
-        unk_260.dragKnobToward(gTouchCurY);
+        picker.dragKnobToward(gTouchCurY);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(1);
     }
 }
@@ -545,7 +545,7 @@ void DateSelectMenu::stateListButtons() {
         enterListTouchMode();
         return;
     }
-    s32 r = unk_260.navigateList(takeRepeatedKeys());
+    s32 r = picker.navigateList(takeRepeatedKeys());
     switch (r) {
     case 2:
         setFlags(4);
@@ -553,7 +553,7 @@ void DateSelectMenu::stateListButtons() {
     case 3: {
         s32 b = getCursorTargetX();
         s32 c = getCursorTargetY();
-        ((MenuCursorBase *)&unk_98)->warpTo(b, c);
+        ((MenuCursorBase *)&cursor)->warpTo(b, c);
         return;
     }
     default:
@@ -574,46 +574,46 @@ void DateSelectMenu::stateListButtons() {
 
 void DateSelectMenu::stateListKnobHold() {
     if (gPad[0] & 1) {
-        unk_260.moveKnobByPad();
+        picker.moveKnobByPad();
         s32 b = getCursorTargetX();
         s32 c = getCursorTargetY();
-        ((MenuCursorBase *)&unk_98)->warpTo(b, c);
+        ((MenuCursorBase *)&cursor)->warpTo(b, c);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(7);
     }
 }
 
 void DateSelectMenu::stateListKnobRelease() {
-    if (unk_260.finishKnobRelease()) {
+    if (picker.finishKnobRelease()) {
         setMainState(5);
         releaseCursor();
     }
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
-    ((MenuCursorBase *)&unk_98)->warpTo(b, c);
+    ((MenuCursorBase *)&cursor)->warpTo(b, c);
 }
 
 void DateSelectMenu::updateCursorMove() {
-    if (!((MenuCursorBase *)&unk_98)->isMoving()) {
-        setMainState(unk_94);
+    if (!((MenuCursorBase *)&cursor)->isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void DateSelectMenu::updateCursorPress() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_98)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         if (testFlags(2)) {
-            if (unk_260.grabKnobByCursor()) {
+            if (picker.grabKnobByCursor()) {
                 setMainState(6);
-            } else if (unk_260.pickListCursorRow()) {
+            } else if (picker.pickListCursorRow()) {
                 decideList();
             } else {
                 setMainState(5);
                 releaseCursor();
             }
         } else {
-            u32 v = unk_95;
+            u32 v = cursorSlot;
             if (v == 3) {
                 confirm();
             } else if (v == 4) {
@@ -626,19 +626,19 @@ void DateSelectMenu::updateCursorPress() {
 }
 
 void DateSelectMenu::updateCursorRelease() {
-    if (_ZN10HandCursor10isAnimDoneEv(&unk_98)) {
+    if (_ZN10HandCursor10isAnimDoneEv(&cursor)) {
         refreshCursor();
-        setMainState(unk_94);
+        setMainState(returnState);
     }
 }
 
 void DateSelectMenu::stateExit() {
-    if (unk_fc.stepPress()) {
-        if (_ZN10HandCursor7getAnimEv(&unk_98)) {
-            s32 a = unk_fc.getPressOffset();
-            s32 b = unk_fc.getTargetX(-1);
-            s32 c = unk_fc.getTargetY(-1);
-            ((MenuCursorBase *)&unk_98)->warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (_ZN10HandCursor7getAnimEv(&cursor)) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            ((MenuCursorBase *)&cursor)->warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -647,18 +647,18 @@ void DateSelectMenu::stateExit() {
 }
 
 void DateSelectMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&unk_260)) {
+    if (DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void DateSelectMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&unk_260)) {
-        s32 r = DateTimePicker_GetCursorField(&unk_260);
+    if (DateTimePicker_UpdateListClose(&picker)) {
+        s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
-            unk_95 = 3;
+            cursorSlot = 3;
         } else {
-            unk_95 = r;
+            cursorSlot = r;
         }
         resumeInput();
     }
@@ -684,19 +684,19 @@ void DateSelectMenu::resumeInput() {
 }
 
 void DateSelectMenu::confirm() {
-    unk_fc.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(2);
     setMainState(0xb);
     u32 v[2];
     v[0] = 0;
     v[1] = 0;
-    DateTimePicker_GetDateTime(&unk_260, v);
+    DateTimePicker_GetDateTime(&picker, v);
     MenuCtrl_SetDateTime(v);
     MenuCtrl_SetResult(1);
 }
 
 void DateSelectMenu::cancel() {
-    unk_fc.setSelected(7);
+    bottomButtons.setSelected(7);
     setTransitionState(2);
     setMainState(0xb);
     MenuCtrl_SetResult(0);
@@ -704,21 +704,21 @@ void DateSelectMenu::cancel() {
 
 void DateSelectMenu::openFieldList(u32 a) {
     hideCursor();
-    DateTimePicker_OpenList(&unk_260, a);
+    DateTimePicker_OpenList(&picker, a);
     setMainState(0xc);
 }
 
 void DateSelectMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&unk_260);
+    DateTimePicker_DecideList(&picker);
     setMainState(0xd);
 }
 
 void DateSelectMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&unk_260);
+    DateTimePicker_CancelList(&picker);
     setMainState(0xd);
 }
 
@@ -728,8 +728,8 @@ void DateSelectMenu::enterListTouchMode() {
 }
 
 void DateSelectMenu::enterListButtonMode() {
-    s32 t = unk_260.getListCursorY();
-    unk_260.setListCursorFromY(t);
+    s32 t = picker.getListCursorY();
+    picker.setListCursorFromY(t);
     setFlags(2);
     showCursor();
     restartKeyRepeat();
@@ -747,12 +747,12 @@ void DateSelectMenu::enterListInputMode() {
 void DateSelectMenu::showCursor() {
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
-    ((MenuCursorBase *)&unk_98)->warpTo(b, c);
+    ((MenuCursorBase *)&cursor)->warpTo(b, c);
     if (testFlags(2) != 0) {
         goto els;
     }
     {
-        u32 v = unk_95;
+        u32 v = cursorSlot;
         if (v == 3) {
             goto hit;
         }
@@ -761,45 +761,45 @@ void DateSelectMenu::showCursor() {
         }
     }
 els:
-    ((MenuCursor *)&unk_98)->setAnimIfChanged(1);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     goto out;
 hit:
-    ((MenuCursor *)&unk_98)->setAnimIfChanged(7);
+    ((MenuCursor *)&cursor)->setAnimIfChanged(7);
 out:
     refreshCursor();
 }
 
 s32 DateSelectMenu::getCursorTargetX() {
     if (testFlags(2)) {
-        return unk_260.getListCursorX();
+        return picker.getListCursorX();
     }
-    switch (unk_95) {
+    switch (cursorSlot) {
     case 3:
-        return unk_fc.getTargetX(6);
+        return bottomButtons.getTargetX(6);
     case 4:
-        return unk_fc.getTargetX(7);
+        return bottomButtons.getTargetX(7);
     default:
-        return sDateSelectCursorXTable[unk_95];
+        return sDateSelectCursorXTable[cursorSlot];
     }
 }
 
 s32 DateSelectMenu::getCursorTargetY() {
     if (testFlags(2)) {
-        return unk_260.getListCursorY();
+        return picker.getListCursorY();
     }
-    switch (unk_95) {
+    switch (cursorSlot) {
     case 3:
-        return unk_fc.getTargetY(6);
+        return bottomButtons.getTargetY(6);
     case 4:
-        return unk_fc.getTargetY(7);
+        return bottomButtons.getTargetY(7);
     default:
-        return sDateSelectCursorYTable[unk_95];
+        return sDateSelectCursorYTable[cursorSlot];
     }
 }
 
 void DateSelectMenu::hideCursor() {
-    ((MenuCursor *)&unk_98)->setAnimIfChanged(0);
-    unk_98.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void DateSelectMenu::moveCursorToTarget() {
@@ -807,7 +807,7 @@ void DateSelectMenu::moveCursorToTarget() {
         goto els;
     }
     {
-        u32 c = unk_95;
+        u32 c = cursorSlot;
         if (c == 3) {
             goto hit;
         }
@@ -816,10 +816,10 @@ void DateSelectMenu::moveCursorToTarget() {
         }
     }
 els:
-    ((MenuCursor *)&unk_98)->switchToAnim01();
+    ((MenuCursor *)&cursor)->switchToAnim01();
     goto out;
 hit:
-    ((MenuCursor *)&unk_98)->switchToAnim07();
+    ((MenuCursor *)&cursor)->switchToAnim07();
 out:
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
@@ -828,62 +828,62 @@ out:
 
 void DateSelectMenu::startCursorMove(s32 a, s32 b) {
     if (testFlags(4)) {
-        ((MenuCursorBase *)&unk_98)->moveToEase(a, b, 2, 1);
+        ((MenuCursorBase *)&cursor)->moveToEase(a, b, 2, 1);
     } else {
-        ((MenuCursorBase *)&unk_98)->moveToEase(a, b, 3, 1);
+        ((MenuCursorBase *)&cursor)->moveToEase(a, b, 3, 1);
     }
-    unk_94 = unk_8d;
+    returnState = mainState;
     setMainState(8);
     clearFlags(4);
 }
 
 void DateSelectMenu::refreshCursor() {
-    ((MenuCursorBase *)&unk_98)->setPoseIdle();
-    unk_98.vfunc_0c();
+    ((MenuCursorBase *)&cursor)->setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void DateSelectMenu::pressCursor() {
-    ((MenuCursor *)&unk_98)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(9);
 }
 
 void DateSelectMenu::releaseCursor() {
-    ((MenuCursorBase *)&unk_98)->setPoseRelease();
-    unk_94 = unk_8d;
+    ((MenuCursorBase *)&cursor)->setPoseRelease();
+    returnState = mainState;
     setMainState(0xa);
 }
 
 BOOL DateSelectMenu::moveCursorByPad(u32 pad) {
-    u32 old = unk_95;
+    u32 old = cursorSlot;
     if (MenuKeys_HasLeft(pad)) {
-        unk_95 = sDateSelectCursorLeftTable[unk_95];
+        cursorSlot = sDateSelectCursorLeftTable[cursorSlot];
     } else if (MenuKeys_HasRight(pad)) {
-        unk_95 = sDateSelectCursorRightTable[unk_95];
+        cursorSlot = sDateSelectCursorRightTable[cursorSlot];
     }
-    if (old != unk_95) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     if (MenuKeys_HasUp(pad)) {
-        unk_95 = sDateSelectCursorUpTable[unk_95];
+        cursorSlot = sDateSelectCursorUpTable[cursorSlot];
     } else if (MenuKeys_HasDown(pad)) {
-        unk_95 = sDateSelectCursorDownTable[unk_95];
+        cursorSlot = sDateSelectCursorDownTable[cursorSlot];
     }
-    if (old != unk_95) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL DateSelectMenu::testFlags(u32 m) {
-    if (unk_92 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void DateSelectMenu::setFlags(u32 m) { unk_92 = unk_92 | m; }
+void DateSelectMenu::setFlags(u32 m) { flags = flags | m; }
 
-void DateSelectMenu::clearFlags(u32 m) { unk_92 = unk_92 & ~m; }
+void DateSelectMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" const u8 sDateSelectCursorDownTable[5] __attribute__((aligned(4))) = {3, 3, 3, 3, 4};
 

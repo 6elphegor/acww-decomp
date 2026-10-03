@@ -37,10 +37,10 @@ public:
     MenuSlideView();
     ~MenuSlideView();
     /* 0x00 */ u8 unk_00[0xc];
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ u8 unk_18;
+    /* 0x0c */ s32 offset;
+    /* 0x10 */ s32 extent;
+    /* 0x14 */ s32 edgeDistance;
+    /* 0x18 */ u8 direction;
 };
 
 class MenuProc : public GameProc {
@@ -64,16 +64,16 @@ public:
     virtual BOOL execPhase4();
     virtual BOOL execClosed();
 
-    /* 0x50 */ Unk_ov002_022013a0 unk_50;
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlideView unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x50 */ Unk_ov002_022013a0 keyRepeat;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlideView slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Vtable 0x0229aea8 (ov096 class; ov097 functions are free functions on it)
@@ -82,9 +82,9 @@ public:
     void requestCameraPop();
 
     /* 0x91 */ u8 unk_91[0x25];
-    /* 0xb6 */ u8 unk_b6;
+    /* 0xb6 */ u8 actionTarget;
     /* 0xb7 */ u8 unk_b7[0xc4 - 0xb7];
-    /* 0xc4 */ s32 unk_c4;
+    /* 0xc4 */ s32 fieldRequest;
     /* 0xc8 */ u8 unk_c8[0x27f0 - 0xc8];
     /* 0x27f0 */ u8 unk_27f0[0x114];
 };
@@ -116,7 +116,7 @@ extern "C" void _ZN10PocketMenu15actionUseCarpetEv(PocketMenu *self) {
     } else {
     u16 v0;
     volatile u16 v1;
-    u32 k = self->unk_b6;
+    u32 k = self->actionTarget;
     v0 = PocketMenu_GetItem(self, k);
     self->requestCameraPop();
     v1 = *RoomWallFloor_SetCarpet(&v0, 0, 1, 1);
@@ -142,7 +142,7 @@ extern "C" void _ZN10PocketMenu18actionUseWallpaperEv(PocketMenu *self) {
     } else {
     u16 v0;
     volatile u16 v1;
-    u32 k = self->unk_b6;
+    u32 k = self->actionTarget;
     v0 = PocketMenu_GetItem(self, k);
     self->requestCameraPop();
     v1 = *RoomWallFloor_SetWallpaper(&v0, 0, 1, 1);
@@ -205,8 +205,8 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
             break;
         }
     } else {
-    self->unk_c4 = FieldAction_RequestDrop(gCommManager->unk_64, a);
-    if (self->unk_c4 == -1) {
+    self->fieldRequest = FieldAction_RequestDrop(gCommManager->unk_64, a);
+    if (self->fieldRequest == -1) {
         PocketMenu_ReturnToIdle(self);
         PocketMenu_ShowMessage(self, 3, 0xff, 0);
         Snd_PlaySe(0x73);

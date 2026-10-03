@@ -253,22 +253,22 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 class HandCursor : public UiWidget {
@@ -286,16 +286,16 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 class ScrollKnob : public UiWidget {
@@ -310,12 +310,12 @@ public:
     void setState(s32 idx);
     void getAnimOffset(s32 *a, s32 *b);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -377,7 +377,7 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 // 8-byte animation record
 struct Unk_ov002_02203c5c_Rec {
     u32 unk_00;
-    u32 unk_04 : 10;
+    u32 charName : 10;
     u32 unk_04_hi : 22;
 };
 
@@ -412,9 +412,9 @@ public:
     BOOL hide(s32 a);
     s32 updatePrompt();
 
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ volatile u8 unk_be;
+    /* 0xbc */ u8 promptState;
+    /* 0xbd */ u8 openQueued;
+    /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
 // vptr-only class (vtable 0x022044d4)
@@ -428,14 +428,14 @@ public:
 class KeyRepeatView {
 public:
     u32 unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0a;
-    s16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    s16 delay;
+    s16 minInterval;
+    s16 intervalStep;
+    s16 interval;
+    s16 countdown;
+    u8 heldKeys;
+    u8 pendingKeys;
+    u8 takenKeys;
     void init(s32 a, s32 b, s32 c);
     BOOL isRight();
     BOOL isLeft();
@@ -450,8 +450,8 @@ class MenuTween {
 public:
     MenuTween();
     virtual ~MenuTween();
-    s32 unk_04;
-    s32 unk_08;
+    s32 stepSize;
+    s32 progress;
     s32 scaleLinear(s32 v);
     s32 scaleQuadratic(s32 v);
     BOOL step();
@@ -463,10 +463,10 @@ class MenuSlide : public MenuTween {
 public:
     MenuSlide();
     virtual ~MenuSlide();
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
+    s32 offset;
+    s32 extent;
+    s32 edgeDistance;
+    u8 direction;
     void updateSlideOutHorizontal(s32 mode);
     void updateSlideOutVertical(s32 mode);
     BOOL stepSlideIn(s32 mode);
@@ -541,17 +541,17 @@ public:
     BOOL isRepeatUp();
     u32 takeRepeatedKeys();
 
-    /* 0x50 */ KeyRepeat unk_50;
+    /* 0x50 */ KeyRepeat keyRepeat;
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlide unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlide slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Menu, vtable 0x02204770
@@ -615,13 +615,13 @@ public:
     BOOL stepPress();
     void drawAt(s32 x, s32 y, s32 c);
 
-    /* 0x04 */ LabelString unk_04;
-    /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
+    /* 0x04 */ LabelString caption;
+    /* 0x44 */ Unk_ov002_02203c5c_Rec *cells;
+    /* 0x48 */ u8 widthTiles;
+    /* 0x49 */ u8 pressStep;
+    /* 0x4a */ u8 frameCellCount;
+    /* 0x4b */ u8 msgId;
+    /* 0x4c */ u8 flags;
 };
 // Owner, vtable 0x022046cc
 class MenuBottomButtons {
@@ -641,9 +641,9 @@ public:
     void freeTexts();
 
     /* 0x004 */ MenuTextButton unk_04[2];
-    /* 0x0a4 */ MenuTitleBalloon unk_a4;
-    /* 0x160 */ u8 unk_160;
-    /* 0x161 */ u8 unk_161;
+    /* 0x0a4 */ MenuTitleBalloon title;
+    /* 0x160 */ u8 layout;
+    /* 0x161 */ u8 selectedTarget;
 };
 
 
@@ -701,13 +701,13 @@ public:
     void openHigh(u8 *a, s32 b, u32 c);
     void open(u8 *a, s32 b, u32 c);
 
-    /* 0x00 */ TouchPromptBalloon unk_00;
-    /* 0xc0 */ TalkMsgRequest unk_c0;
+    /* 0x00 */ TouchPromptBalloon prompt;
+    /* 0xc0 */ TalkMsgRequest talk;
     /* 0xe0 */ u8 unk_e0[0x1c];
     /* 0xfc */ TalkWindowState *unk_fc;
     /* 0x100 */ u8 unk_100[4];
-    /* 0x104 */ u8 unk_104;
-    /* 0x105 */ u8 unk_105;
+    /* 0x104 */ u8 state;
+    /* 0x105 */ u8 isFatal;
 };
 
 // Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
@@ -726,12 +726,12 @@ public:
     BOOL update();
     void reset();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x04 */ s32 posX;
+    /* 0x08 */ s32 posY;
+    /* 0x0c */ s32 stepX;
+    /* 0x10 */ s32 stepY;
+    /* 0x14 */ u8 framesLeft;
+    /* 0x15 */ u8 mode;
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
@@ -757,7 +757,7 @@ public:
     void setPoseIdle();
     void setPoseRelease();
 
-    /* 0x4c */ CursorMotion unk_4c;
+    /* 0x4c */ CursorMotion motion;
 };
 
 class MenuCursor : public MenuCursorBase {
@@ -809,16 +809,16 @@ public:
     void setup(u32 a, u16 b, u8 c, u8 d);
     void render(s32 v);
 
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 layer;
+    /* 0x43 */ u8 fgColor;
+    /* 0x44 */ u8 bgColor;
 };
 
 struct PopupChoiceIdList {
-    u8 unk_00[5];
-    u8 unk_05[5];
-    u8 unk_0a;
+    u8 msgIds[5];
+    u8 values[5];
+    u8 customMask;
 };
 
 // Menu/selection object, vtable 0x02204558
@@ -834,30 +834,30 @@ public:
     s32 placeCentered(s32 a, s32 b);
     void init(s32 a, s32 b, const char *path);
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u16 unk_14;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
-    /* 0x18 */ u8 unk_18;
-    /* 0x19 */ u8 unk_19;
-    /* 0x1a */ u8 unk_1a;
-    /* 0x1b */ u8 unk_1b;
-    /* 0x1c */ u8 unk_1c;
-    /* 0x1d */ u8 unk_1d;
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f;
-    /* 0x20 */ u8 unk_20;
-    /* 0x21 */ volatile u8 unk_21;
+    /* 0x04 */ u32 rowCharBase;
+    /* 0x08 */ s32 scrollX;
+    /* 0x0c */ s32 scrollY;
+    /* 0x10 */ u32 bgPriority;
+    /* 0x14 */ u16 flags;
+    /* 0x16 */ u8 state;
+    /* 0x17 */ u8 request;
+    /* 0x18 */ u8 stateStep;
+    /* 0x19 */ u8 openLeftward;
+    /* 0x1a */ u8 layer;
+    /* 0x1b */ u8 textWidthTiles;
+    /* 0x1c */ u8 numRows;
+    /* 0x1d */ u8 numPages;
+    /* 0x1e */ u8 decideDelay;
+    /* 0x1f */ u8 decidedRow;
+    /* 0x20 */ u8 addresseePage;
+    /* 0x21 */ volatile u8 titleRefreshDelay;
     /* 0x22 */ u8 pad_22[2];
-    /* 0x24 */ const char *unk_24;
-    /* 0x28 */ PopupChoiceRow unk_28[5];
-    /* 0x190 */ MenuLabelButton unk_190;
-    /* 0x200 */ MenuTitleBalloon unk_200;
-    /* 0x2bc */ MenuSlide unk_2bc;
-    /* 0x2d8 */ u8 unk_2d8[0x19];
+    /* 0x24 */ const char *screenFile;
+    /* 0x28 */ PopupChoiceRow rows[5];
+    /* 0x190 */ MenuLabelButton pageButton;
+    /* 0x200 */ MenuTitleBalloon title;
+    /* 0x2bc */ MenuSlide slide;
+    /* 0x2d8 */ u8 addresseeIds[0x19];
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -1015,47 +1015,47 @@ extern "C" const u8 sMenuButtonTextColors[4] = {0x5f, 0x7d, 0xc0, 0x50};
 
 
 MenuErrorMessage::MenuErrorMessage() {
-    unk_104 = 3;
-    unk_105 = 0;
+    state = 3;
+    isFatal = 0;
 }
 
 MenuErrorMessage::~MenuErrorMessage() {}
 
 void MenuErrorMessage::open(u8 *a, s32 b, u32 c) {
-    unk_105 = c;
+    isFatal = c;
     startTalk(a, b);
     LabelString s;
     String_Load2dMenu(&s, 0x64);
-    unk_00.setText((StrBuf *)&s);
-    unk_00.setPos(0, 0x40);
-    unk_00.queueOpen();
-    unk_00.enableObjWindow();
-    unk_00.func_ov002_022006ac(0);
+    prompt.setText((StrBuf *)&s);
+    prompt.setPos(0, 0x40);
+    prompt.queueOpen();
+    prompt.enableObjWindow();
+    prompt.func_ov002_022006ac(0);
 }
 
 void MenuErrorMessage::openHigh(u8 *a, s32 b, u32 c) {
-    unk_105 = c;
+    isFatal = c;
     startTalk(a, b);
     LabelString s;
     String_Load2dMenu(&s, 0x64);
-    unk_00.setText((StrBuf *)&s);
-    unk_00.setPos(0, 0x30);
-    unk_00.queueOpen();
-    unk_00.enableObjWindow();
-    unk_00.func_ov002_022006ac(0);
+    prompt.setText((StrBuf *)&s);
+    prompt.setPos(0, 0x30);
+    prompt.queueOpen();
+    prompt.enableObjWindow();
+    prompt.func_ov002_022006ac(0);
 }
 
 BOOL MenuErrorMessage::update(s32 a) {
-    switch (unk_104) {
+    switch (state) {
     case 0:
         if (isTalkWaiting()) {
-            unk_104 = 1;
-            unk_00.commitOpen();
-            if (unk_105 != 0) dimSubScreen();
+            state = 1;
+            prompt.commitOpen();
+            if (isFatal != 0) dimSubScreen();
         }
         break;
     case 1:
-        if (unk_105 != 0) for (;;) {}
+        if (isFatal != 0) for (;;) {}
         if (a == 0 || !MenuCtrl_IsForceCloseDue()) {
             BOOL k;
             if (gTouchHeld != 0 && gTouchChanged != 0) k = TRUE; else k = FALSE;
@@ -1065,21 +1065,21 @@ BOOL MenuErrorMessage::update(s32 a) {
             }
         }
         advanceTalk();
-        unk_104 = 2;
-        unk_00.hide(0);
+        state = 2;
+        prompt.hide(0);
         break;
     case 2:
         if (finishTalk()) {
             restoreBrightness();
-            unk_104 = 3;
+            state = 3;
         }
         break;
     case 3:
         return TRUE;
     }
-    unk_00.updatePrompt();
-    if (unk_105 == 0) {
-        TouchPromptBalloon *p = &unk_00;
+    prompt.updatePrompt();
+    if (isFatal == 0) {
+        TouchPromptBalloon *p = &prompt;
         p->draw();
     }
     return FALSE;
@@ -1087,22 +1087,22 @@ BOOL MenuErrorMessage::update(s32 a) {
 
 void MenuErrorMessage::startTalk(u8 *a, s32 b) {
     TalkWindowState *p = TalkWindow_Get(1);
-    unk_c0.vfunc_08();
-    unk_c0.setFileName("obj_etc_error");
-    unk_c0.unk_1e = *a;
-    p->attachRequest(&unk_c0);
+    talk.vfunc_08();
+    talk.setFileName("obj_etc_error");
+    talk.unk_1e = *a;
+    p->attachRequest(&talk);
     p->disableInput();
     if (b == 0) p->setKeepSe();
     p->unk_08 = 1;
     p->lockAdvance();
-    unk_104 = 0;
-    if (unk_105 == 0) dimSubScreen();
+    state = 0;
+    if (isFatal == 0) dimSubScreen();
 }
 
 BOOL MenuErrorMessage::stepOpen() {
-    if (unk_104 == 0) {
+    if (state == 0) {
         if (isTalkWaiting()) {
-            unk_104 = 1;
+            state = 1;
             return TRUE;
         }
         return FALSE;
@@ -1112,14 +1112,14 @@ BOOL MenuErrorMessage::stepOpen() {
 
 void MenuErrorMessage::beginClose() {
     advanceTalk();
-    unk_104 = 2;
+    state = 2;
 }
 
 BOOL MenuErrorMessage::stepClose() {
-    if (unk_104 == 2) {
+    if (state == 2) {
         if (finishTalk()) {
             restoreBrightness();
-            unk_104 = 3;
+            state = 3;
             return TRUE;
         }
         return FALSE;
@@ -1130,22 +1130,22 @@ BOOL MenuErrorMessage::stepClose() {
 void MenuErrorMessage::showPromptOnly() {
     LabelString s;
     String_Load2dMenu(&s, 0x64);
-    unk_00.setText((StrBuf *)&s);
-    unk_00.setPos(0, 0x40);
-    unk_00.queueOpen();
-    unk_00.enableObjWindow();
-    unk_00.func_ov002_022006ac(0);
+    prompt.setText((StrBuf *)&s);
+    prompt.setPos(0, 0x40);
+    prompt.queueOpen();
+    prompt.enableObjWindow();
+    prompt.func_ov002_022006ac(0);
     dimSubScreen();
-    unk_00.commitOpen();
+    prompt.commitOpen();
 }
 
 void MenuErrorMessage::updatePromptBalloon() {
-    unk_00.updatePrompt();
-    TouchPromptBalloon *p = &unk_00;
+    prompt.updatePrompt();
+    TouchPromptBalloon *p = &prompt;
     p->draw();
 }
 
-void MenuErrorMessage::hidePromptBalloon() { unk_00.hide(0); }
+void MenuErrorMessage::hidePromptBalloon() { prompt.hide(0); }
 
 void MenuErrorMessage::undim() { restoreBrightness(); }
 
@@ -1276,56 +1276,56 @@ MenuLabelButtonStyle1::MenuLabelButtonStyle1() : MenuLabelButtonBase(1, 0) {}
 MenuLabelButtonStyle1::~MenuLabelButtonStyle1() {}
 
 MenuTextButton::MenuTextButton() {
-    unk_44 = 0;
-    unk_49 = 0;
-    unk_4c = 0;
+    cells = 0;
+    pressStep = 0;
+    flags = 0;
 }
 
-MenuTextButton::~MenuTextButton() { unk_04.destroyLabel(); }
+MenuTextButton::~MenuTextButton() { caption.destroyLabel(); }
 
 void MenuTextButton::setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b) {
-    unk_44 = p;
-    unk_48 = a;
-    unk_4a = b;
+    cells = p;
+    widthTiles = a;
+    frameCellCount = b;
 }
 
 void MenuTextButton::setLabel(u8 v) {
-    unk_4b = v;
+    msgId = v;
     renderText(0xf, 0);
 }
 
 void MenuTextButton::setLabelWithShadow(u8 v) {
     setLabel(v);
-    unk_49 = 0;
+    pressStep = 0;
     clearFlags(1);
 }
 
 void MenuTextButton::setLabelNoShadow(u8 v) {
     setLabel(v);
-    unk_49 = 0;
+    pressStep = 0;
     setFlags(1);
 }
 
 void MenuTextButton::renderText(u8 a, u8 b) {
-    String_Load2dMenu(&unk_04, unk_4b);
-    unk_04.createLabel(8, unk_44->unk_04, unk_48, a, b, 0);
-    unk_04.redrawAligned(1, 0);
+    String_Load2dMenu(&caption, msgId);
+    caption.createLabel(8, cells->charName, widthTiles, a, b, 0);
+    caption.redrawAligned(1, 0);
 }
 
 BOOL MenuTextButton::testFlags(u32 m) {
-    if ((unk_4c & m) != 0) {
+    if ((flags & m) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void MenuTextButton::setFlags(u32 m) { unk_4c = unk_4c | m; }
+void MenuTextButton::setFlags(u32 m) { flags = flags | m; }
 
-void MenuTextButton::clearFlags(u32 m) { unk_4c = unk_4c & ~m; }
+void MenuTextButton::clearFlags(u32 m) { flags = flags & ~m; }
 
-void MenuTextButton::freeText() { unk_04.destroyLabel(); }
+void MenuTextButton::freeText() { caption.destroyLabel(); }
 
-u32 MenuTextButton::getPressOffset() { return sTextButtonPressOffsets[unk_49]; }
+u32 MenuTextButton::getPressOffset() { return sTextButtonPressOffsets[pressStep]; }
 
 void MenuTextButton::drawAt(s32 x, s32 y, s32 c) {
     u32 off = getPressOffset();
@@ -1335,25 +1335,25 @@ void MenuTextButton::drawAt(s32 x, s32 y, s32 c) {
     }
     s32 yy = y + 0x60 + off;
     s32 xx = x + 0x80 + off;
-    Oam_DrawCell(1, unk_44, xx, yy, pal, c, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, cells, xx, yy, pal, c, 0x1000, 0x1000, 0, -1, 0, 0);
     if (testFlags(2)) {
-        Oam_DrawCell(1, unk_44, xx, yy, -1, c, 0x1000, 0x1000, 0, 2, 0, 0);
+        Oam_DrawCell(1, cells, xx, yy, -1, c, 0x1000, 0x1000, 0, 2, 0, 0);
     }
     if (!testFlags(1)) {
-        if (unk_49 + 1 != 3) {
+        if (pressStep + 1 != 3) {
             x += 0x83;
             y += 0x63;
-            Oam_DrawCell(1, unk_44 + unk_4a, x, y, 1, c, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, cells + frameCellCount, x, y, 1, c, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
 
 BOOL MenuTextButton::stepPress() {
-    if (unk_49 == 0) {
+    if (pressStep == 0) {
         renderText(0xe, 0);
     }
-    if (unk_49 + 1 < 3) {
-        unk_49++;
+    if (pressStep + 1 < 3) {
+        pressStep++;
         goto yes;
     }
     return FALSE;
@@ -1395,7 +1395,7 @@ void MenuTitleBalloon::hideNow() {
     vfunc_0c();
 }
 
-MenuBottomButtons::MenuBottomButtons() { unk_160 = 0; }
+MenuBottomButtons::MenuBottomButtons() { layout = 0; }
 
 MenuBottomButtons::~MenuBottomButtons() {}
 
@@ -1408,7 +1408,7 @@ void MenuBottomButtons::freeTexts() {
 }
 
 void MenuBottomButtons::drawAt(s32 a) {
-    switch (unk_160) {
+    switch (layout) {
     case 0:
         break;
     case 1:
@@ -1436,12 +1436,12 @@ void MenuBottomButtons::drawAt(s32 a) {
     case 7:
     case 9:
     case 10: {
-        if (unk_160 != 10) {
-            unk_a4.setPos(0, -(a >> 2));
-            unk_a4.draw();
+        if (layout != 10) {
+            title.setPos(0, -(a >> 2));
+            title.draw();
         }
         s32 b = a >> 2;
-        if (unk_160 == 7) {
+        if (layout == 7) {
             unk_04[0].drawAt(0, b, -1);
             unk_04[1].drawAt(0, b, -1);
         } else {
@@ -1452,9 +1452,9 @@ void MenuBottomButtons::drawAt(s32 a) {
     }
     case 8: {
         s32 t = -(a >> 2);
-        if (unk_160 != 10) {
-            unk_a4.setPos(0, t - 8);
-            unk_a4.draw();
+        if (layout != 10) {
+            title.setPos(0, t - 8);
+            title.draw();
         }
         a = (a >> 1) - 0x1e;
         unk_04[0].drawAt(0, a, -1);
@@ -1463,24 +1463,24 @@ void MenuBottomButtons::drawAt(s32 a) {
     }
     case 11: {
         s32 b = a >> 1;
-        unk_a4.setPos(0, -b);
-        unk_a4.draw();
+        title.setPos(0, -b);
+        title.draw();
         unk_04[0].drawAt(-0x50, b + 0x44, -1);
         unk_04[1].drawAt(0x10, b + 0x44, -1);
         break;
     }
     case 12: {
         s32 b = a >> 1;
-        unk_a4.setPos(0, -b);
-        unk_a4.draw();
+        title.setPos(0, -b);
+        title.draw();
         unk_04[0].drawAt(-0x50, b + 0x24, -1);
         unk_04[1].drawAt(0x10, b + 0x24, -1);
         break;
     }
     case 13: {
         s32 b = a >> 1;
-        unk_a4.setPos(0, -b);
-        unk_a4.draw();
+        title.setPos(0, -b);
+        title.draw();
         unk_04[0].drawAt(-0x50, b + 0x36, -1);
         unk_04[1].drawAt(0x10, b + 0x36, -1);
         break;
@@ -1488,14 +1488,14 @@ void MenuBottomButtons::drawAt(s32 a) {
     }
 }
 
-void MenuBottomButtons::hide() { unk_160 = 0; }
+void MenuBottomButtons::hide() { layout = 0; }
 
 void MenuBottomButtons::setLayoutNeverMindConfirm() {
     unk_04[0].setup(sButtonCellsW8, 8, 2);
     unk_04[0].setLabelWithShadow(2);
     unk_04[1].setup(sButtonCellsW6Single, 6, 1);
     unk_04[1].setLabelWithShadow(0x21);
-    unk_160 = 2;
+    layout = 2;
 }
 
 void MenuBottomButtons::setLayoutChangeAddressee() {
@@ -1503,13 +1503,13 @@ void MenuBottomButtons::setLayoutChangeAddressee() {
     unk_04[0].setLabelWithShadow(0x20);
     unk_04[1].setup(sButtonCellsW6Single, 6, 1);
     unk_04[1].setLabelWithShadow(0x21);
-    unk_160 = 2;
+    layout = 2;
 }
 
 void MenuBottomButtons::setLayoutConfirm() {
     unk_04[1].setup(sButtonCellsW6Single, 6, 1);
     unk_04[1].setLabelWithShadow(0x21);
-    unk_160 = 1;
+    layout = 1;
 }
 
 void MenuBottomButtons::setLayoutConfirmQuit03() {
@@ -1517,7 +1517,7 @@ void MenuBottomButtons::setLayoutConfirmQuit03() {
     unk_04[1].setLabelWithShadow(0x21);
     unk_04[0].setup(sButtonCellsW6B, 6, 2);
     unk_04[0].setLabelWithShadow(0x65);
-    unk_160 = 3;
+    layout = 3;
 }
 
 void MenuBottomButtons::setLayoutConfirmQuit04() {
@@ -1525,13 +1525,13 @@ void MenuBottomButtons::setLayoutConfirmQuit04() {
     unk_04[1].setLabelWithShadow(0x21);
     unk_04[0].setup(sButtonCellsW6B, 6, 2);
     unk_04[0].setLabelWithShadow(0x65);
-    unk_160 = 4;
+    layout = 4;
 }
 
 void MenuBottomButtons::setLayoutSingle05(s32 v) {
     unk_04[1].setup(sButtonCellsW6A, 6, 2);
     unk_04[1].setLabelWithShadow(v);
-    unk_160 = 5;
+    layout = 5;
 }
 
 void MenuBottomButtons::setLayoutConfirmAnd06(u8 v) {
@@ -1539,29 +1539,29 @@ void MenuBottomButtons::setLayoutConfirmAnd06(u8 v) {
     unk_04[1].setLabelWithShadow(0x21);
     unk_04[0].setup(sButtonCellsW6B, 6, 2);
     unk_04[0].setLabelWithShadow(v);
-    unk_160 = 6;
+    layout = 6;
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo07(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 4);
-    unk_a4.hideLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 4);
+    title.hideLayer2();
     unk_04[0].setup(sButtonCellsW4B, 4, 1);
     unk_04[0].setLabelWithShadow(4);
     unk_04[1].setup(sButtonCellsW4A, 4, 1);
     unk_04[1].setLabelWithShadow(0x13);
-    unk_160 = 7;
+    layout = 7;
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo08(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x11);
-    unk_a4.hideLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x11);
+    title.hideLayer2();
     unk_04[0].setup(sButtonCellsW4B, 4, 1);
     unk_04[0].setLabelWithShadow(4);
     unk_04[1].setup(sButtonCellsW4A, 4, 1);
     unk_04[1].setLabelWithShadow(0x13);
-    unk_160 = 8;
+    layout = 8;
 }
 
 void MenuBottomButtonsBody::setYesNoButtons() {
@@ -1572,11 +1572,11 @@ void MenuBottomButtonsBody::setYesNoButtons() {
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo09(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 4);
-    unk_a4.hideLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 4);
+    title.hideLayer2();
     setYesNoButtons();
-    unk_160 = 9;
+    layout = 9;
 }
 
 void MenuBottomButtonsBody::setLayoutTossKeep() {
@@ -1584,35 +1584,35 @@ void MenuBottomButtonsBody::setLayoutTossKeep() {
     unk_04[0].setLabelWithShadow(0x15);
     unk_04[1].setup(sButtonCellsW6B, 6, 2);
     unk_04[1].setLabelWithShadow(0x19);
-    unk_160 = 0xa;
+    layout = 0xa;
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo0B(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x22);
-    unk_a4.hideLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x22);
+    title.hideLayer2();
     setYesNoButtons();
-    unk_160 = 0xb;
+    layout = 0xb;
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo0C(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x2a);
-    unk_a4.showLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x2a);
+    title.showLayer2();
     setYesNoButtons();
-    unk_160 = 0xc;
+    layout = 0xc;
 }
 
 void MenuBottomButtonsBody::setLayoutYesNo0D(s32 x) {
-    unk_a4.hideNow();
-    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x12);
-    unk_a4.showLayer2();
+    title.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&title, x, 0x80, 0x12);
+    title.showLayer2();
     setYesNoButtons();
-    unk_160 = 0xd;
+    layout = 0xd;
 }
 
 void MenuBottomButtonsBody::showTitleLayer2() {
-    unk_a4.showLayer2();
+    title.showLayer2();
 }
 
 BOOL MenuBottomButtonsBody::hitTest(s32 idx, s32 x, s32 y) {
@@ -1675,7 +1675,7 @@ BOOL MenuBottomButtonsBody::hitTest(s32 idx, s32 x, s32 y) {
 BOOL MenuBottomButtonsBody::isTouched(s32 idx) {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
-    switch (unk_160) {
+    switch (layout) {
     case 8:
         y += 0x1e;
         break;
@@ -1691,17 +1691,17 @@ BOOL MenuBottomButtonsBody::isTouched(s32 idx) {
 
 s32 MenuBottomButtonsBody::getTargetX(s32 idx) {
     if (idx == -1) {
-        idx = unk_161;
+        idx = selectedTarget;
     }
     return sBottomButtonTargetX[idx];
 }
 
 s32 MenuBottomButtonsBody::getTargetY(s32 idx) {
     if (idx == -1) {
-        idx = unk_161;
+        idx = selectedTarget;
     }
     s32 v = sBottomButtonTargetY[idx];
-    switch (unk_160) {
+    switch (layout) {
     case 8:
         v -= 0x1e;
         break;
@@ -1716,7 +1716,7 @@ s32 MenuBottomButtonsBody::getTargetY(s32 idx) {
 }
 
 void MenuBottomButtonsBody::setSelected(u8 v) {
-    unk_161 = v;
+    selectedTarget = v;
 }
 
 void MenuBottomButtonsBody::stepPress() {
@@ -1728,14 +1728,14 @@ void MenuBottomButtonsBody::getPressOffset() {
 }
 
 void MenuBottomButtonsBody::enableObjWindow() {
-    unk_a4.enableObjWindow();
+    title.enableObjWindow();
     for (s32 i = 0; i < 2; i++) {
         unk_04[i].enableObjWindow();
     }
 }
 
 void MenuBottomButtonsBody::disableObjWindow() {
-    unk_a4.disableObjWindow();
+    title.disableObjWindow();
     for (s32 i = 0; i < 2; i++) {
         unk_04[i].disableObjWindow();
     }
@@ -1743,7 +1743,7 @@ void MenuBottomButtonsBody::disableObjWindow() {
 
 s32 MenuBottomButtonsBody::getButtonOfTarget(s32 idx) {
     if (idx == -1) {
-        idx = unk_161;
+        idx = selectedTarget;
     }
     return sBottomButtonOfTarget[idx];
 }

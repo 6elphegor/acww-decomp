@@ -253,22 +253,22 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ SpriteAnim unk_20;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ s32 unk_38;
-    /* 0x3c */ s32 unk_3c;
+    /* 0x0c */ SpriteAnim layer1;
+    /* 0x20 */ SpriteAnim layer2;
+    /* 0x34 */ s32 state;
+    /* 0x38 */ s32 animTimer;
+    /* 0x3c */ s32 x;
     /* 0x40 */ s32 unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ s32 unk_48;
-    /* 0x4c */ s32 unk_4c;
-    /* 0x50 */ s32 unk_50;
+    /* 0x44 */ s32 priority;
+    /* 0x48 */ s32 popOffsetX;
+    /* 0x4c */ s32 popOffsetY;
+    /* 0x50 */ s32 clampOffsetX;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ LabelBalloonText unk_60;
-    /* 0x88 */ LabelBalloonText unk_88;
-    /* 0xb0 */ TextLabel *unk_b0;
-    /* 0xb4 */ TextLabel *unk_b4;
-    /* 0xb8 */ s32 unk_b8;
+    /* 0x60 */ LabelBalloonText text;
+    /* 0x88 */ LabelBalloonText text2;
+    /* 0xb0 */ TextLabel *label;
+    /* 0xb4 */ TextLabel *label2;
+    /* 0xb8 */ s32 textMode;
 };
 
 class HandCursor : public UiWidget {
@@ -286,16 +286,16 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 class ScrollKnob : public UiWidget {
@@ -310,12 +310,12 @@ public:
     void setState(s32 idx);
     void getAnimOffset(s32 *a, s32 *b);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -377,7 +377,7 @@ extern "C" TalkWindowState *TalkWindow_Get(s32 a);
 // 8-byte animation record
 struct Unk_ov002_02203c5c_Rec {
     u32 unk_00;
-    u32 unk_04 : 10;
+    u32 charName : 10;
     u32 unk_04_hi : 22;
 };
 
@@ -412,9 +412,9 @@ public:
     BOOL hide(s32 a);
     s32 updatePrompt();
 
-    /* 0xbc */ u8 unk_bc;
-    /* 0xbd */ u8 unk_bd;
-    /* 0xbe */ volatile u8 unk_be;
+    /* 0xbc */ u8 promptState;
+    /* 0xbd */ u8 openQueued;
+    /* 0xbe */ volatile u8 autoCloseTimer;
 };
 
 // vptr-only class (vtable 0x022044d4)
@@ -428,14 +428,14 @@ public:
 class KeyRepeatView {
 public:
     u32 unk_00;
-    s16 unk_04;
-    s16 unk_06;
-    s16 unk_08;
-    s16 unk_0a;
-    s16 unk_0c;
-    u8 unk_0e;
-    u8 unk_0f;
-    u8 unk_10;
+    s16 delay;
+    s16 minInterval;
+    s16 intervalStep;
+    s16 interval;
+    s16 countdown;
+    u8 heldKeys;
+    u8 pendingKeys;
+    u8 takenKeys;
     void init(s32 a, s32 b, s32 c);
     BOOL isRight();
     BOOL isLeft();
@@ -450,8 +450,8 @@ class MenuTween {
 public:
     MenuTween();
     virtual ~MenuTween();
-    s32 unk_04;
-    s32 unk_08;
+    s32 stepSize;
+    s32 progress;
     s32 scaleLinear(s32 v);
     s32 scaleQuadratic(s32 v);
     BOOL step();
@@ -463,10 +463,10 @@ class MenuSlide : public MenuTween {
 public:
     MenuSlide();
     virtual ~MenuSlide();
-    s32 unk_0c;
-    s32 unk_10;
-    s32 unk_14;
-    u8 unk_18;
+    s32 offset;
+    s32 extent;
+    s32 edgeDistance;
+    u8 direction;
     void updateSlideOutHorizontal(s32 mode);
     void updateSlideOutVertical(s32 mode);
     BOOL stepSlideIn(s32 mode);
@@ -541,17 +541,17 @@ public:
     BOOL isRepeatUp();
     u32 takeRepeatedKeys();
 
-    /* 0x50 */ KeyRepeat unk_50;
+    /* 0x50 */ KeyRepeat keyRepeat;
     /* 0x54 */ u8 unk_54[0x10];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
-    /* 0x70 */ MenuSlide unk_70;
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
+    /* 0x70 */ MenuSlide slide;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // 8-byte-aligned owner helpers of the menu: text elements
@@ -579,13 +579,13 @@ public:
     BOOL stepPress();
     void drawAt(s32 x, s32 y, s32 c);
 
-    /* 0x04 */ LabelString unk_04;
-    /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
+    /* 0x04 */ LabelString caption;
+    /* 0x44 */ Unk_ov002_02203c5c_Rec *cells;
+    /* 0x48 */ u8 widthTiles;
+    /* 0x49 */ u8 pressStep;
+    /* 0x4a */ u8 frameCellCount;
+    /* 0x4b */ u8 msgId;
+    /* 0x4c */ u8 flags;
 };
 
 // Menu, vtable 0x02204770
@@ -617,9 +617,9 @@ public:
     void freeTexts();
 
     /* 0x004 */ MenuTextButton unk_04[2];
-    /* 0x0a4 */ MenuTitleBalloon unk_a4;
-    /* 0x160 */ u8 unk_160;
-    /* 0x161 */ u8 unk_161;
+    /* 0x0a4 */ MenuTitleBalloon title;
+    /* 0x160 */ u8 layout;
+    /* 0x161 */ u8 selectedTarget;
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -701,13 +701,13 @@ public:
     void openHigh(u8 *a, s32 b, u32 c);
     void open(u8 *a, s32 b, u32 c);
 
-    /* 0x00 */ TouchPromptBalloon unk_00;
-    /* 0xc0 */ TalkMsgRequest unk_c0;
+    /* 0x00 */ TouchPromptBalloon prompt;
+    /* 0xc0 */ TalkMsgRequest talk;
     /* 0xe0 */ u8 unk_e0[0x1c];
     /* 0xfc */ TalkWindowState *unk_fc;
     /* 0x100 */ u8 unk_100[4];
-    /* 0x104 */ u8 unk_104;
-    /* 0x105 */ u8 unk_105;
+    /* 0x104 */ u8 state;
+    /* 0x105 */ u8 isFatal;
 };
 
 // Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
@@ -726,12 +726,12 @@ public:
     BOOL update();
     void reset();
 
-    /* 0x04 */ s32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ s32 unk_10;
-    /* 0x14 */ u8 unk_14;
-    /* 0x15 */ u8 unk_15;
+    /* 0x04 */ s32 posX;
+    /* 0x08 */ s32 posY;
+    /* 0x0c */ s32 stepX;
+    /* 0x10 */ s32 stepY;
+    /* 0x14 */ u8 framesLeft;
+    /* 0x15 */ u8 mode;
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
@@ -757,7 +757,7 @@ public:
     void setPoseIdle();
     void setPoseRelease();
 
-    /* 0x4c */ CursorMotion unk_4c;
+    /* 0x4c */ CursorMotion motion;
 };
 
 class MenuCursor : public MenuCursorBase {
@@ -809,16 +809,16 @@ public:
     void setup(u32 a, u16 b, u8 c, u8 d);
     void render(s32 v);
 
-    /* 0x40 */ u16 unk_40;
-    /* 0x42 */ u8 unk_42;
-    /* 0x43 */ u8 unk_43;
-    /* 0x44 */ u8 unk_44;
+    /* 0x40 */ u16 charBase;
+    /* 0x42 */ u8 layer;
+    /* 0x43 */ u8 fgColor;
+    /* 0x44 */ u8 bgColor;
 };
 
 struct PopupChoiceIdList {
-    u8 unk_00[5];
-    u8 unk_05[5];
-    u8 unk_0a;
+    u8 msgIds[5];
+    u8 values[5];
+    u8 customMask;
 };
 
 // Menu/selection object, vtable 0x02204558
@@ -834,30 +834,30 @@ public:
     s32 placeCentered(s32 a, s32 b);
     void init(s32 a, s32 b, const char *path);
 
-    /* 0x04 */ u32 unk_04;
-    /* 0x08 */ s32 unk_08;
-    /* 0x0c */ s32 unk_0c;
-    /* 0x10 */ u32 unk_10;
-    /* 0x14 */ u16 unk_14;
-    /* 0x16 */ u8 unk_16;
-    /* 0x17 */ u8 unk_17;
-    /* 0x18 */ u8 unk_18;
-    /* 0x19 */ u8 unk_19;
-    /* 0x1a */ u8 unk_1a;
-    /* 0x1b */ u8 unk_1b;
-    /* 0x1c */ u8 unk_1c;
-    /* 0x1d */ u8 unk_1d;
-    /* 0x1e */ u8 unk_1e;
-    /* 0x1f */ u8 unk_1f;
-    /* 0x20 */ u8 unk_20;
-    /* 0x21 */ volatile u8 unk_21;
+    /* 0x04 */ u32 rowCharBase;
+    /* 0x08 */ s32 scrollX;
+    /* 0x0c */ s32 scrollY;
+    /* 0x10 */ u32 bgPriority;
+    /* 0x14 */ u16 flags;
+    /* 0x16 */ u8 state;
+    /* 0x17 */ u8 request;
+    /* 0x18 */ u8 stateStep;
+    /* 0x19 */ u8 openLeftward;
+    /* 0x1a */ u8 layer;
+    /* 0x1b */ u8 textWidthTiles;
+    /* 0x1c */ u8 numRows;
+    /* 0x1d */ u8 numPages;
+    /* 0x1e */ u8 decideDelay;
+    /* 0x1f */ u8 decidedRow;
+    /* 0x20 */ u8 addresseePage;
+    /* 0x21 */ volatile u8 titleRefreshDelay;
     /* 0x22 */ u8 pad_22[2];
-    /* 0x24 */ const char *unk_24;
-    /* 0x28 */ PopupChoiceRow unk_28[5];
-    /* 0x190 */ MenuLabelButton unk_190;
-    /* 0x200 */ MenuTitleBalloon unk_200;
-    /* 0x2bc */ MenuSlide unk_2bc;
-    /* 0x2d8 */ u8 unk_2d8[0x19];
+    /* 0x24 */ const char *screenFile;
+    /* 0x28 */ PopupChoiceRow rows[5];
+    /* 0x190 */ MenuLabelButton pageButton;
+    /* 0x200 */ MenuTitleBalloon title;
+    /* 0x2bc */ MenuSlide slide;
+    /* 0x2d8 */ u8 addresseeIds[0x19];
 };
 
 // Methods of the same object that the symbols list under another class name
@@ -954,27 +954,27 @@ extern "C" s32 sPopupChoicePopOffsets[3] = {-5, 1, 0};
 // ---- PopupChoiceRow ----
 
 PopupChoiceRow::PopupChoiceRow() {
-    unk_42 = 3;
-    unk_40 = 0;
-    unk_43 = 1;
-    unk_44 = 9;
+    layer = 3;
+    charBase = 0;
+    fgColor = 1;
+    bgColor = 9;
 }
 
 PopupChoiceRow::~PopupChoiceRow() {}
 
 void PopupChoiceRow::render(s32 v) {
-    u8 x = unk_43;
+    u8 x = fgColor;
     if (v >= 0) {
         x = v & 0xf;
     }
-    createLabel(unk_42, unk_40, 0xd, x, unk_44, 0);
+    createLabel(layer, charBase, 0xd, x, bgColor, 0);
 }
 
 void PopupChoiceRow::setup(u32 a, u16 b, u8 c, u8 d) {
-    unk_42 = a;
-    unk_40 = b;
-    unk_43 = c;
-    unk_44 = d;
+    layer = a;
+    charBase = b;
+    fgColor = c;
+    bgColor = d;
 }
 
 // ---- PopupChoiceMenu ----
@@ -984,40 +984,40 @@ PopupChoiceMenu::PopupChoiceMenu() {}
 PopupChoiceMenu::~PopupChoiceMenu() {}
 
 void PopupChoiceMenu::init(s32 a, s32 b, const char *path) {
-    unk_1a = a;
-    unk_10 = b;
-    unk_08 = 0;
-    unk_0c = 0;
-    unk_16 = 0;
-    unk_17 = 0;
-    unk_18 = 0;
-    unk_19 = 0;
-    unk_1b = 0xd;
-    unk_1c = 5;
+    layer = a;
+    bgPriority = b;
+    scrollX = 0;
+    scrollY = 0;
+    state = 0;
+    request = 0;
+    stateStep = 0;
+    openLeftward = 0;
+    textWidthTiles = 0xd;
+    numRows = 5;
     if (path == 0) {
-        unk_24 = (const char *)"menu/inventory/b_itm_bg_b.bsc";
+        screenFile = (const char *)"menu/inventory/b_itm_bg_b.bsc";
     } else {
-        unk_24 = path;
+        screenFile = path;
     }
     void *heap = gCurrentHeap;
-    u8 *buf = File_LoadAlloc(unk_24, heap, -4, 0);
-    unk_04 = *(u16 *)(buf + 0x44) & 0x3ff;
+    u8 *buf = File_LoadAlloc(screenFile, heap, -4, 0);
+    rowCharBase = *(u16 *)(buf + 0x44) & 0x3ff;
     Heap_Free(heap, buf);
-    u16 v = unk_04;
+    u16 v = rowCharBase;
     s32 i;
     for (i = 0; i < 5; i++) {
-        unk_28[i].setup(a, v, 1, 9);
+        rows[i].setup(a, v, 1, 9);
         v += 0x1a;
     }
-    unk_190.setOrigin(0x60, 0x8c);
-    unk_190.setPos(0, 0);
-    unk_190.hideLayer2();
-    unk_190.enableObjWindow();
-    unk_190.setState(1);
-    unk_200.hideNow();
-    unk_200.showText(0x1f, 0x80, 0xc);
-    unk_200.enableObjWindow();
-    unk_14 = 0;
+    pageButton.setOrigin(0x60, 0x8c);
+    pageButton.setPos(0, 0);
+    pageButton.hideLayer2();
+    pageButton.enableObjWindow();
+    pageButton.setState(1);
+    title.hideNow();
+    title.showText(0x1f, 0x80, 0xc);
+    title.enableObjWindow();
+    flags = 0;
 }
 
 s32 PopupChoiceMenu::placeCentered(s32 a, s32 b) {
@@ -1035,10 +1035,10 @@ void PopupChoiceMenu::placeNearPoint(s32 a, s32 b) {
     s32 h = PopupChoice_GetHeight((Self *)this);
     s32 x = a - w + 0x20;
     if (x > 0) {
-        unk_19 = 1;
+        openLeftward = 1;
     } else {
         x = a - 0x10;
-        unk_19 = 0;
+        openLeftward = 0;
     }
     s32 y = b - h - 4;
     if (y < 10) {
@@ -1057,7 +1057,7 @@ void PopupChoiceMenu::placeAbove(s32 a, s32 b) {
 }
 
 void PopupChoiceMenu::placeAboveBalloon(LabelBalloon *p) {
-    unk_19 = 0;
+    openLeftward = 0;
     s32 x = p->getPosX() + 0x80;
     s32 y = p->getPosY() + 0x60;
     s32 h = PopupChoice_GetHeight((Self *)this);
@@ -1083,13 +1083,13 @@ void PopupChoiceMenu::placeAboveBalloon(LabelBalloon *p) {
 }
 
 void PopupChoice_ApplyScroll(Self *self, s32 x, s32 y) {
-    Gfx2d_SetLayerOffset(self->unk_1a, x, y);
+    Gfx2d_SetLayerOffset(self->layer, x, y);
 }
 
 void PopupChoice_SetPos(Self *self, s32 x, s32 y) {
     PopupChoice_ApplyScroll(self, x, y);
-    self->unk_08 = -x;
-    self->unk_0c = -y;
+    self->scrollX = -x;
+    self->scrollY = -y;
 }
 
 void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y) {
@@ -1104,14 +1104,14 @@ void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y) {
 
 void PopupChoice_LoadChoiceBg(Self *self) {
     void *h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile("menu/inventory/b_itm.bpl", h, self->unk_1a, 0, 3, 3);
-    Gfx2d_LoadCharFile("menu/inventory/b_choice.bch", h, self->unk_1a, 0x242, 0x242, 0x2d7);
+    Gfx2d_LoadPaletteFile("menu/inventory/b_itm.bpl", h, self->layer, 0, 3, 3);
+    Gfx2d_LoadCharFile("menu/inventory/b_choice.bch", h, self->layer, 0x242, 0x242, 0x2d7);
 }
 
 void PopupChoice_LoadFriendBg(Self *self) {
     void *h = gCurrentHeap;
-    Gfx2d_LoadPaletteFile("menu/friend/bg1.bpl", h, self->unk_1a, 0xe, 0xe, 0xe);
-    Gfx2d_LoadCharFile("menu/friend/bg1.bch", h, self->unk_1a, 0x26e, 0x26e, 0x27d);
+    Gfx2d_LoadPaletteFile("menu/friend/bg1.bpl", h, self->layer, 0xe, 0xe, 0xe);
+    Gfx2d_LoadCharFile("menu/friend/bg1.bch", h, self->layer, 0x26e, 0x26e, 0x27d);
 }
 
 void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x) {
@@ -1121,8 +1121,8 @@ void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x) 
 }
 
 void PopupChoice_Open(Self *self, s32 x) {
-    self->unk_17 = 1;
-    Gfx2d_HideLayer(self->unk_1a);
+    self->request = 1;
+    Gfx2d_HideLayer(self->layer);
     if (x != 0) {
         self->setFlags(2);
     }
@@ -1131,7 +1131,7 @@ void PopupChoice_Open(Self *self, s32 x) {
 }
 
 void PopupChoice_Close(Self *self, s32 x) {
-    self->unk_17 = 2;
+    self->request = 2;
     if (x != 0) {
         self->setFlags(4);
     }
@@ -1150,16 +1150,16 @@ void PopupChoice_SetState(Self *self, u32 x) {
         x = 5;
         self->clearFlags(4);
     }
-    self->unk_16 = x;
-    self->unk_18 = 0;
+    self->state = x;
+    self->stateStep = 0;
 }
 
 void PopupChoice_BuildScreen(Self *self) {
-    Gfx2d_SetLayerPriority(self->unk_1a, self->unk_10);
-    Gfx2d_SetLayerControl(self->unk_1a, 0, 0, 0);
+    Gfx2d_SetLayerPriority(self->layer, self->bgPriority);
+    Gfx2d_SetLayerControl(self->layer, 0, 0, 0);
     void *heap = gCurrentHeap;
-    u8 *buf = File_LoadAlloc(self->unk_24, heap, -4, 0);
-    u32 n = self->unk_1c;
+    u8 *buf = File_LoadAlloc(self->screenFile, heap, -4, 0);
+    u32 n = self->numRows;
     if (n != 5) {
         u16 v = *(u16 *)(buf + 0x22);
         u16 *src = (u16 *)(buf + 0x280);
@@ -1168,22 +1168,22 @@ void PopupChoice_BuildScreen(Self *self) {
         dst[1] = src[1];
         dst[0xf] = src[0xf];
         dst[0x10] = src[0x10];
-        u8 *t = buf + (((self->unk_1c << 1) + 1) << 6);
+        u8 *t = buf + (((self->numRows << 1) + 1) << 6);
         u8 *q = buf + 0x2c0;
         MIi_CpuCopy16(q, t ? t : t, 0x40);
-        n = self->unk_1c;
+        n = self->numRows;
         volatile u16 tmp[1];
         tmp[0] = v;
         MIi_CpuClear16(tmp[0], buf + (((n << 1) + 2) << 6), (5 - n) << 7);
     }
-    if (self->unk_1b != 0xd) {
+    if (self->textWidthTiles != 0xd) {
         u8 *s;
         u8 *d;
         s32 i;
         s32 k;
-        d = buf + (self->unk_1b + 1) * 2;
+        d = buf + (self->textWidthTiles + 1) * 2;
         s = buf + 0x1c;
-        k = self->unk_1c * 2 + 2;
+        k = self->numRows * 2 + 2;
         MIi_CpuCopy16(s, d, 0x1e);
         d += 0x42;
         s += 0x42;
@@ -1194,85 +1194,85 @@ void PopupChoice_BuildScreen(Self *self) {
         }
         MIi_CpuCopy16(s - 2, d - 2, 0x1e);
     }
-    Gfx2d_LoadScreen(buf, self->unk_1a, 0x800, 0);
+    Gfx2d_LoadScreen(buf, self->layer, 0x800, 0);
     Heap_Free(heap, buf);
 }
 
 void PopupChoice_StepPopOpen(Self *self) {
-    if (self->unk_18 == 0) {
+    if (self->stateStep == 0) {
         PopupChoice_BuildScreen(self);
-        Gfx2d_ShowLayer(self->unk_1a);
+        Gfx2d_ShowLayer(self->layer);
     }
-    s32 d = sPopupChoicePopOffsets[self->unk_18];
+    s32 d = sPopupChoicePopOffsets[self->stateStep];
     s32 x;
-    if (self->unk_19 != 0) {
-        x = self->unk_08 - d;
+    if (self->openLeftward != 0) {
+        x = self->scrollX - d;
     } else {
-        x = self->unk_08 + d;
+        x = self->scrollX + d;
     }
     if (x > 0) x = 0;
     if (-x + PopupChoice_GetWidth(self) > 0xff) {
         x = PopupChoice_GetWidth(self) - 0xff;
     }
-    PopupChoice_ApplyScroll(self, x, self->unk_0c - d);
-    self->unk_18 = self->unk_18 + 1;
-    if (self->unk_18 >= 3) {
+    PopupChoice_ApplyScroll(self, x, self->scrollY - d);
+    self->stateStep = self->stateStep + 1;
+    if (self->stateStep >= 3) {
         PopupChoice_SetState(self, 3);
     }
 }
 
 void PopupChoice_StepPopClose(Self *self) {
-    if (self->unk_18 == 0) {
+    if (self->stateStep == 0) {
         s32 x;
-        if (self->unk_19 != 0) {
-            x = self->unk_08 - 0xb;
+        if (self->openLeftward != 0) {
+            x = self->scrollX - 0xb;
         } else {
-            x = self->unk_08 + 0xb;
+            x = self->scrollX + 0xb;
         }
         if (x > 0) x = 0;
         if (-x + PopupChoice_GetWidth(self) > 0xff) {
             x = PopupChoice_GetWidth(self) - 0xff;
         }
-        PopupChoice_ApplyScroll(self, x, self->unk_0c - 0xb);
-        self->unk_18 = self->unk_18 + 1;
+        PopupChoice_ApplyScroll(self, x, self->scrollY - 0xb);
+        self->stateStep = self->stateStep + 1;
     } else {
-        Gfx2d_HideLayer(self->unk_1a);
+        Gfx2d_HideLayer(self->layer);
         PopupChoice_SetState(self, 0);
     }
 }
 
 void PopupChoice_ApplySlide(Self *self) {
-    ((MenuSlideView *)&self->unk_2bc)->applyLayerOffset(self->unk_1a, -self->unk_08, -self->unk_0c);
-    s32 r = ((MenuSlideView *)&self->unk_2bc)->getOffsetY();
-    self->unk_190.setPos(0, r);
-    self->unk_200.setPos(0, -(r >> 2));
+    ((MenuSlideView *)&self->slide)->applyLayerOffset(self->layer, -self->scrollX, -self->scrollY);
+    s32 r = ((MenuSlideView *)&self->slide)->getOffsetY();
+    self->pageButton.setPos(0, r);
+    self->title.setPos(0, -(r >> 2));
 }
 
 void PopupChoice_StepSlideOpen(Self *self) {
-    if (self->unk_18 == 0) {
+    if (self->stateStep == 0) {
         PopupChoice_BuildScreen(self);
         Gfx2d_BeginSubObjWinBrightness();
-        Gfx2d_GetLayerBlendMask(self->unk_1a);
+        Gfx2d_GetLayerBlendMask(self->layer);
         Gfx2d_ExcludeSubBrightnessPlanes();
         Gfx2d_SetSubBrightness(-6);
-        s32 r = Gfx2d_GetLayerPlaneMask(self->unk_1a);
-        ((MenuSlideView *)&self->unk_2bc)->beginSubSlideIn(r, 5, 0, 0x30);
-        Gfx2d_ShowLayer(self->unk_1a);
+        s32 r = Gfx2d_GetLayerPlaneMask(self->layer);
+        ((MenuSlideView *)&self->slide)->beginSubSlideIn(r, 5, 0, 0x30);
+        Gfx2d_ShowLayer(self->layer);
         self->setFlags(1);
-        self->unk_21 = 2;
+        self->titleRefreshDelay = 2;
         PopupChoice_ApplySlide(self);
-        self->unk_18 = self->unk_18 + 1;
+        self->stateStep = self->stateStep + 1;
     } else {
-        if (((MenuSlideView *)&self->unk_2bc)->stepSlideIn(0)) {
+        if (((MenuSlideView *)&self->slide)->stepSlideIn(0)) {
             PopupChoice_SetState(self, 3);
-            if (self->unk_21 != 0) {
-                self->unk_21 = 1;
+            if (self->titleRefreshDelay != 0) {
+                self->titleRefreshDelay = 1;
             }
         }
-        if (self->unk_21 != 0) {
-            self->unk_21 = self->unk_21 - 1;
-            if (self->unk_21 == 0) {
-                self->unk_200.refreshText(0);
+        if (self->titleRefreshDelay != 0) {
+            self->titleRefreshDelay = self->titleRefreshDelay - 1;
+            if (self->titleRefreshDelay == 0) {
+                self->title.refreshText(0);
             }
         }
         PopupChoice_ApplySlide(self);
@@ -1280,16 +1280,16 @@ void PopupChoice_StepSlideOpen(Self *self) {
 }
 
 void PopupChoice_StepSlideClose(Self *self) {
-    if (self->unk_18 == 0) {
-        s32 r = Gfx2d_GetLayerPlaneMask(self->unk_1a);
-        ((MenuSlideView *)&self->unk_2bc)->beginSubSlideOut(r, 3, 0, 0x30);
+    if (self->stateStep == 0) {
+        s32 r = Gfx2d_GetLayerPlaneMask(self->layer);
+        ((MenuSlideView *)&self->slide)->beginSubSlideOut(r, 3, 0, 0x30);
         PopupChoice_ApplySlide(self);
-        self->unk_18 = self->unk_18 + 1;
+        self->stateStep = self->stateStep + 1;
     }
-    if (((MenuSlideView *)&self->unk_2bc)->stepSlideOut(0)) {
+    if (((MenuSlideView *)&self->slide)->stepSlideOut(0)) {
         Gfx2d_EndSubObjWinBrightness();
         self->clearFlags(1);
-        Gfx2d_HideLayer(self->unk_1a);
+        Gfx2d_HideLayer(self->layer);
         PopupChoice_SetState(self, 0);
     } else {
         PopupChoice_ApplySlide(self);
@@ -1297,42 +1297,42 @@ void PopupChoice_StepSlideClose(Self *self) {
 }
 
 s32 PopupChoice_GetWidth(Self *self) {
-    return (self->unk_1b + 4) << 3;
+    return (self->textWidthTiles + 4) << 3;
 }
 
 s32 PopupChoice_GetHeight(Self *self) {
-    return (self->unk_1c * 2 + 2) << 3;
+    return (self->numRows * 2 + 2) << 3;
 }
 
 void PopupChoice_FitWidth(Self *self) {
     s32 max = 0;
     s32 i = 0;
-    PopupChoiceRow *e = self->unk_28;
-    for (; i < self->unk_1c; i++) {
+    PopupChoiceRow *e = self->rows;
+    for (; i < self->numRows; i++) {
         s32 v = e[i].getTextWidth();
         if (v > max) max = v;
     }
-    self->unk_1b = (max + 7) >> 3;
+    self->textWidthTiles = (max + 7) >> 3;
 }
 
 void PopupChoice_Update(Self *self) {
     self->freeRowTexts();
     if (self->testFlags(8)) {
         self->clearFlags(8);
-        self->unk_28[self->unk_1f].render(0xf);
-        self->unk_28[self->unk_1f].redrawAligned(0, 0);
+        self->rows[self->decidedRow].render(0xf);
+        self->rows[self->decidedRow].redrawAligned(0, 0);
     }
-    switch (self->unk_17) {
+    switch (self->request) {
     case 1:
-        switch (self->unk_16) {
+        switch (self->state) {
         case 0:
             PopupChoice_SetState(self, 1);
-            self->unk_17 = 0;
+            self->request = 0;
             self->renderRows();
             break;
         case 1:
         case 2:
-            self->unk_17 = 0;
+            self->request = 0;
             break;
         case 3:
             PopupChoice_SetState(self, 4);
@@ -1340,24 +1340,24 @@ void PopupChoice_Update(Self *self) {
         }
         break;
     case 2:
-        switch (self->unk_16) {
+        switch (self->state) {
         case 3:
             PopupChoice_SetState(self, 4);
-            self->unk_17 = 0;
+            self->request = 0;
             break;
         case 1:
-            Gfx2d_HideLayer(self->unk_1a);
+            Gfx2d_HideLayer(self->layer);
             PopupChoice_SetState(self, 0);
-            self->unk_17 = 0;
+            self->request = 0;
             break;
         case 0:
         case 2:
-            self->unk_17 = 0;
+            self->request = 0;
             break;
         }
         break;
     }
-    switch (self->unk_16) {
+    switch (self->state) {
     case 1:
         PopupChoice_StepPopOpen(self);
         break;
@@ -1378,16 +1378,16 @@ void PopupChoice_Update(Self *self) {
 
 void PopupChoice_Draw(Self *self) {
     if (self->testFlags(1)) {
-        self->unk_190.draw();
-        self->unk_200.draw();
+        self->pageButton.draw();
+        self->title.draw();
     }
 }
 
 void PopupChoice_ForceClose(Self *self) {
-    self->unk_17 = 0;
-    if (self->unk_16 != 0) {
-        Gfx2d_HideLayer(self->unk_1a);
-        self->unk_16 = 0;
+    self->request = 0;
+    if (self->state != 0) {
+        Gfx2d_HideLayer(self->layer);
+        self->state = 0;
     }
     self->freeRowTexts();
 }
@@ -1395,18 +1395,18 @@ void PopupChoice_ForceClose(Self *self) {
 void PopupChoice_StartDecide(Self *self, s32 x) {
     self->setFlags(8);
     if (MenuCtrl_IsButtons()) {
-        self->unk_1e = 2;
+        self->decideDelay = 2;
     } else {
-        self->unk_1e = 5;
+        self->decideDelay = 5;
     }
-    self->unk_1f = x;
+    self->decidedRow = x;
 }
 
 void PopupChoice_DecideRow(Self *self, s32 a, s32 b) {
     PopupChoice_StartDecide(self, a);
     if (b == 0) {
         self->setFlags(0x10);
-    } else if (self->unk_1c - 1 == a) {
+    } else if (self->numRows - 1 == a) {
         Snd_PlaySe(0x2a);
     } else {
         Snd_PlaySe(0x29);
@@ -1414,7 +1414,7 @@ void PopupChoice_DecideRow(Self *self, s32 a, s32 b) {
 }
 
 u8 PopupChoice_DecideCancel(Self *self, s32 x) {
-    s32 t = self->unk_1c - 1;
+    s32 t = self->numRows - 1;
     PopupChoice_StartDecide(self, t);
     if (x == 0) {
         self->setFlags(0x10);
@@ -1426,7 +1426,7 @@ u8 PopupChoice_DecideCancel(Self *self, s32 x) {
 
 void PopupChoice_DecideAddressee(Self *self, u32 x) {
     PopupChoice_StartDecide(self, x);
-    if (self->pickAddressee(self->unk_20, (u8)x) == 0xf) {
+    if (self->pickAddressee(self->addresseePage, (u8)x) == 0xf) {
         Snd_PlaySe(0x2a);
     } else {
         Snd_PlaySe(0x29);
@@ -1434,9 +1434,9 @@ void PopupChoice_DecideAddressee(Self *self, u32 x) {
 }
 
 BOOL PopupChoice_TickDecideDelay(Self *self) {
-    u32 v = self->unk_1e;
+    u32 v = self->decideDelay;
     if (v != 0) {
-        self->unk_1e = v - 1;
+        self->decideDelay = v - 1;
         return FALSE;
     }
     return TRUE;
@@ -1448,13 +1448,13 @@ BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n) {
             if (*pos > n) {
                 *pos = *pos - 1;
             } else {
-                *pos = self->unk_1c - 1;
+                *pos = self->numRows - 1;
             }
             return TRUE;
         }
         if (MenuKeys_HasDown(p)) {
             s32 t = *pos + 1;
-            if (t < self->unk_1c) {
+            if (t < self->numRows) {
                 *pos = t;
             } else {
                 *pos = n;
@@ -1514,9 +1514,9 @@ void PopupChoiceMenuBody::buildAddresseeList()
     s32 i, n;
     s32 k, j;
     s32 g, t;
-    unk_1d = 0;
+    numPages = 0;
     for (i = 0; i < 0x19; i++) {
-        unk_2d8[i] = 0;
+        addresseeIds[i] = 0;
     }
     g = PlayerData_getPlayerId(PlayerData_GetCurrent());
     t = PlayerDataArray_FindById(gSavePlayers, g);
@@ -1526,7 +1526,7 @@ void PopupChoiceMenuBody::buildAddresseeList()
     do {
         if (t != j) {
             if (PlayerDataArray_IsUsed(gSavePlayers, j)) {
-                unk_2d8[n] = k;
+                addresseeIds[n] = k;
                 n++;
             }
         }
@@ -1534,7 +1534,7 @@ void PopupChoiceMenuBody::buildAddresseeList()
         j++;
     } while (k < 5);
     if (n % 5 == 4) {
-        unk_2d8[n] = 0xe;
+        addresseeIds[n] = 0xe;
         n++;
     }
     k = 5;
@@ -1542,38 +1542,38 @@ void PopupChoiceMenuBody::buildAddresseeList()
     do {
         if (SaveVillagers_IsOccupied(gSaveVillagers, j)) {
             if (Villager_FindMemory(SaveVillagers_Get(gSaveVillagers, j), g)) {
-                unk_2d8[n] = k;
+                addresseeIds[n] = k;
                 n++;
             }
         }
         if (n % 5 == 4) {
-            unk_2d8[n] = 0xe;
+            addresseeIds[n] = 0xe;
             n++;
         }
         k++;
         j++;
     } while (k < 0xd);
     if (n % 5 != 0) {
-        unk_2d8[n] = 0xe;
+        addresseeIds[n] = 0xe;
         n++;
     }
     while (n % 5 != 0) {
-        unk_2d8[n] = 0;
+        addresseeIds[n] = 0;
         n++;
     }
-    unk_2d8[n] = 0xd;
-    unk_2d8[n + 1] = 0xf;
+    addresseeIds[n] = 0xd;
+    addresseeIds[n + 1] = 0xf;
     n += 2;
     if (n > 2) {
-        unk_2d8[n] = 0xe;
+        addresseeIds[n] = 0xe;
         n++;
     }
-    unk_1d = (n + 4) / 5;
+    numPages = (n + 4) / 5;
 }
 
 BOOL PopupChoiceMenuBody::isOpen()
 {
-    if (unk_16 == 3) {
+    if (state == 3) {
         return TRUE;
     }
     return FALSE;
@@ -1581,7 +1581,7 @@ BOOL PopupChoiceMenuBody::isOpen()
 
 BOOL PopupChoiceMenuBody::isClosed()
 {
-    if (unk_16 == 0) {
+    if (state == 0) {
         return TRUE;
     }
     return FALSE;
@@ -1591,7 +1591,7 @@ void PopupChoiceMenuBody::freeRowTexts()
 {
     s32 i;
     for (i = 0; i < 5; i++) {
-        unk_28[i].destroyLabel();
+        rows[i].destroyLabel();
     }
 }
 
@@ -1599,7 +1599,7 @@ void PopupChoiceMenuBody::resetRowColors()
 {
     s32 i;
     for (i = 0; i < 5; i++) {
-        unk_28[i].render(-1);
+        rows[i].render(-1);
     }
 }
 
@@ -1607,8 +1607,8 @@ void PopupChoiceMenuBody::renderRows()
 {
     resetRowColors();
     s32 i;
-    for (i = 0; i < unk_1c; i++) {
-        unk_28[i].redrawAligned(0, 0);
+    for (i = 0; i < numRows; i++) {
+        rows[i].redrawAligned(0, 0);
     }
 }
 
@@ -1652,11 +1652,11 @@ s32 PopupChoiceMenuBody::addCustomRow(PopupChoiceIdList *r, void *s, u32 v)
 {
     s32 i;
     for (i = 0; i < 5; i++) {
-        u8 *q = &r->unk_00[i];
-        if (r->unk_00[i] == 0xff) {
-            MsgString_copy(&unk_28[i], s);
-            r->unk_05[i] = v;
-            r->unk_0a |= 1 << i;
+        u8 *q = &r->msgIds[i];
+        if (r->msgIds[i] == 0xff) {
+            MsgString_copy(&rows[i], s);
+            r->values[i] = v;
+            r->customMask |= 1 << i;
             q[0] = 0xfe;
             return 1;
         }
@@ -1669,13 +1669,13 @@ void PopupChoiceMenuBody::setRowsFromIds(PopupChoiceIdList *r, s32 f)
     s32 n = 0;
     s32 i = n;
     for (; i < 5; i++) {
-        u32 v = r->unk_00[i];
+        u32 v = r->msgIds[i];
         if (v == 0xff) {
             i = 5;
-        } else if ((1 << i) & r->unk_0a) {
+        } else if ((1 << i) & r->customMask) {
             n++;
         } else {
-            load2dString(&unk_28[n], v);
+            load2dString(&rows[n], v);
             n++;
         }
     }
@@ -1684,29 +1684,29 @@ void PopupChoiceMenuBody::setRowsFromIds(PopupChoiceIdList *r, s32 f)
     } else {
         clearFlags(0x20);
     }
-    unk_1c = n;
+    numRows = n;
     PopupChoice_FitWidth(this);
 }
 
 void PopupChoiceMenuBody::loadAddresseePage(PopupChoiceIdList *r)
 {
     s32 i;
-    s32 k = r->unk_00[0] * 5;
-    unk_1c = 0;
+    s32 k = r->msgIds[0] * 5;
+    numRows = 0;
     for (i = 0; i < 5; i++, k++) {
-        u32 v = unk_2d8[k];
+        u32 v = addresseeIds[k];
         if (v != 0) {
-            PopupChoice_SetAddresseeName((s32)this, (s32)&unk_28[i], v);
-            unk_1c++;
+            PopupChoice_SetAddresseeName((s32)this, (s32)&rows[i], v);
+            numRows++;
         } else {
             i = 5;
         }
     }
     PopupChoice_FitWidth(this);
     u8 buf[4];
-    buf[0] = r->unk_00[0] + 0x36;
+    buf[0] = r->msgIds[0] + 0x36;
     buf[1] = 0;
-    buf[2] = unk_1d + 0x35;
+    buf[2] = numPages + 0x35;
     buf[3] = 0;
     u32 a[16];
     u32 b[16];
@@ -1717,17 +1717,17 @@ void PopupChoiceMenuBody::loadAddresseePage(PopupChoiceIdList *r)
     MsgString_append(a, "/");
     String_FromEncodedBytes(b, buf + 2, 2);
     MsgString_appendString(a, b);
-    LabelButton_setLabelText(&unk_190, a);
-    unk_190.vfunc_0c();
-    unk_20 = r->unk_00[0];
+    LabelButton_setLabelText(&pageButton, a);
+    pageButton.vfunc_0c();
+    addresseePage = r->msgIds[0];
     func_0206fca8(b);
     func_0206fca8(a);
 }
 
 s32 PopupChoiceMenuBody::hitTestRowOr(s32 x, s32 y, s32 d)
 {
-    s32 l = -unk_08;
-    s32 t = -unk_0c;
+    s32 l = -scrollX;
+    s32 t = -scrollY;
     s32 r = l + PopupChoice_GetWidth((Self *)this);
     s32 b = t + PopupChoice_GetHeight((Self *)this);
     if (l > x || r < x) {
@@ -1738,7 +1738,7 @@ s32 PopupChoiceMenuBody::hitTestRowOr(s32 x, s32 y, s32 d)
     }
     t += 0x18;
     s32 i = 0;
-    s32 n = unk_1c - 1;
+    s32 n = numRows - 1;
     for (; i < n; i++) {
         if (t > y) {
             break;
@@ -1750,7 +1750,7 @@ s32 PopupChoiceMenuBody::hitTestRowOr(s32 x, s32 y, s32 d)
 
 s32 PopupChoiceMenuBody::hitTestRowOrLast(s32 x, s32 y)
 {
-    return hitTestRowOr(x, y, unk_1c - 1);
+    return hitTestRowOr(x, y, numRows - 1);
 }
 
 s32 PopupChoiceMenuBody::hitTestRow(s32 x, s32 y)
@@ -1760,27 +1760,27 @@ s32 PopupChoiceMenuBody::hitTestRow(s32 x, s32 y)
 
 s32 PopupChoiceMenuBody::getRowX()
 {
-    return 0x10 - unk_08;
+    return 0x10 - scrollX;
 }
 
 s32 PopupChoiceMenuBody::getRowY(s32 v)
 {
-    return ((v + 1) << 4) - unk_0c;
+    return ((v + 1) << 4) - scrollY;
 }
 
 u32 PopupChoiceMenuBody::getRowCount()
 {
-    return unk_1c;
+    return numRows;
 }
 
 u32 PopupChoiceMenuBody::getPageCount()
 {
-    return unk_1d;
+    return numPages;
 }
 
 u32 PopupChoiceMenuBody::pickAddressee(u32 a, u32 b)
 {
-    u32 t = unk_2d8[b + a * 5];
+    u32 t = addresseeIds[b + a * 5];
     if (t != 0xe) {
         setFlags(4);
     }
@@ -1833,7 +1833,7 @@ s32 PopupChoiceMenuBody::applyAddressee(void *p, u32 id)
 
 BOOL PopupChoiceMenuBody::testFlags(u32 m)
 {
-    if (unk_14 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
@@ -1841,12 +1841,12 @@ BOOL PopupChoiceMenuBody::testFlags(u32 m)
 
 void PopupChoiceMenuBody::setFlags(u32 m)
 {
-    unk_14 |= m;
+    flags |= m;
 }
 
 void PopupChoiceMenuBody::clearFlags(u32 m)
 {
-    unk_14 &= ~m;
+    flags &= ~m;
 }
 
 void PopupChoiceMenuBody::load2dString(void *buf, u32 c)

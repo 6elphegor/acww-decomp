@@ -145,28 +145,28 @@ public:
     void disableObjWindow();
     void enableObjWindow();
 
-    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x0c */ SpriteAnim layer1;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ SpriteAnim unk_2c;
-    /* 0x40 */ s32 unk_40;
+    /* 0x28 */ s32 priority;
+    /* 0x2c */ SpriteAnim layer2;
+    /* 0x40 */ s32 anim;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
+    /* 0x48 */ u8 onBufferA;
+    /* 0x49 */ u8 hasLayer2;
+    /* 0x4a */ u8 objWindow;
 };
 
 s32 HandCursor::getAnim() {
-    return unk_40;
+    return anim;
 }
 
 BOOL HandCursor::isAnimDone() {
     BOOL r = FALSE;
-    if (unk_0c.isFinished()) {
+    if (layer1.isFinished()) {
         BOOL t;
-        if (unk_49 != 0) {
-            t = unk_2c.isFinished();
+        if (hasLayer2 != 0) {
+            t = layer2.isFinished();
         } else {
             t = TRUE;
         }

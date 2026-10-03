@@ -244,7 +244,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    /* 0x12 */ u8 unk_12[3];
+    /* 0x12 */ u8 text[3];
 };
 
 class HudCountdown : public UiWidget {
@@ -276,35 +276,35 @@ public:
     void release();
     void reset();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ MsgString3 unk_34;
-    /* 0x4c */ MsgString3 unk_4c;
-    /* 0x64 */ MsgString3 unk_64;
-    /* 0x7c */ MsgString3 unk_7c;
-    /* 0x94 */ u8 unk_94;
-    /* 0x95 */ u8 unk_95;
-    /* 0x96 */ u8 unk_96;
-    /* 0x97 */ u8 unk_97;
-    /* 0x98 */ u8 unk_98;
-    /* 0x99 */ u8 unk_99;
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ s32 unk_a8;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
+    /* 0x24 */ s32 minutesLabel;
+    /* 0x28 */ s32 secondsLabel;
+    /* 0x2c */ s32 countALabel;
+    /* 0x30 */ s32 countBLabel;
+    /* 0x34 */ MsgString3 minutesText;
+    /* 0x4c */ MsgString3 secondsText;
+    /* 0x64 */ MsgString3 countAText;
+    /* 0x7c */ MsgString3 countBText;
+    /* 0x94 */ u8 minutesDirty;
+    /* 0x95 */ u8 secondsDirty;
+    /* 0x96 */ u8 countADirty;
+    /* 0x97 */ u8 countBDirty;
+    /* 0x98 */ u8 showRequested;
+    /* 0x99 */ u8 altLayout;
+    /* 0x9c */ s32 countA;
+    /* 0xa0 */ s32 countB;
+    /* 0xa4 */ s32 durationKind;
+    /* 0xa8 */ s32 endTime;
     /* 0xac */ s32 unk_ac;
-    /* 0xb0 */ s32 unk_b0;
+    /* 0xb0 */ s32 remaining;
     /* 0xb4 */ s32 unk_b4;
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ s32 unk_cc;
+    /* 0xb8 */ s32 finishTimer;
+    /* 0xbc */ s32 slideY;
+    /* 0xc0 */ s32 slideTarget;
+    /* 0xc4 */ s32 slideSpeed;
+    /* 0xc8 */ s32 slideDelay;
+    /* 0xcc */ s32 lastTickTime;
     /* 0xd0 */ s32 unk_d0;
 };
 
@@ -327,32 +327,32 @@ public:
     void createLabels();
 
     /* 0x00 */ u32 unk_00[9];
-    /* 0x24 */ TextLabel *unk_24;
-    /* 0x28 */ TextLabel *unk_28;
-    /* 0x2c */ TextLabel *unk_2c;
-    /* 0x30 */ TextLabel *unk_30;
-    /* 0x34 */ u32 unk_34[6];
-    /* 0x4c */ u32 unk_4c[6];
-    /* 0x64 */ u32 unk_64[6];
-    /* 0x7c */ u32 unk_7c[6];
-    /* 0x94 */ u8 unk_94;
-    /* 0x95 */ u8 unk_95;
-    /* 0x96 */ u8 unk_96;
-    /* 0x97 */ u8 unk_97;
-    /* 0x98 */ u8 unk_98;
-    /* 0x99 */ u8 unk_99;
+    /* 0x24 */ TextLabel *minutesLabel;
+    /* 0x28 */ TextLabel *secondsLabel;
+    /* 0x2c */ TextLabel *countALabel;
+    /* 0x30 */ TextLabel *countBLabel;
+    /* 0x34 */ u32 minutesText[6];
+    /* 0x4c */ u32 secondsText[6];
+    /* 0x64 */ u32 countAText[6];
+    /* 0x7c */ u32 countBText[6];
+    /* 0x94 */ u8 minutesDirty;
+    /* 0x95 */ u8 secondsDirty;
+    /* 0x96 */ u8 countADirty;
+    /* 0x97 */ u8 countBDirty;
+    /* 0x98 */ u8 showRequested;
+    /* 0x99 */ u8 altLayout;
     /* 0x9a */ u8 unk_9a[2];
-    /* 0x9c */ s32 unk_9c;
-    /* 0xa0 */ s32 unk_a0;
-    /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ u8 unk_a8[8];
-    /* 0xb0 */ u8 unk_b0[8];
-    /* 0xb8 */ s32 unk_b8;
-    /* 0xbc */ s32 unk_bc;
-    /* 0xc0 */ s32 unk_c0;
-    /* 0xc4 */ s32 unk_c4;
-    /* 0xc8 */ s32 unk_c8;
-    /* 0xcc */ u32 unk_cc;
+    /* 0x9c */ s32 countA;
+    /* 0xa0 */ s32 countB;
+    /* 0xa4 */ s32 durationKind;
+    /* 0xa8 */ u8 endTime[8];
+    /* 0xb0 */ u8 remaining[8];
+    /* 0xb8 */ s32 finishTimer;
+    /* 0xbc */ s32 slideY;
+    /* 0xc0 */ s32 slideTarget;
+    /* 0xc4 */ s32 slideSpeed;
+    /* 0xc8 */ s32 slideDelay;
+    /* 0xcc */ u32 lastTickTime;
     /* 0xd0 */ u32 unk_d0;
 };
 
@@ -387,13 +387,13 @@ public:
 class HudCameraGridStates {
 public:
     u32 unk_00[3];
-    SpriteAnim unk_0c[9];
-    s32 unk_c0;
-    s32 unk_c4;
-    s32 unk_c8;
-    s32 unk_cc;
-    s32 unk_d0;
-    u8 unk_d4;
+    SpriteAnim cellAnims[9];
+    s32 state;
+    s32 cell;
+    s32 cellX;
+    s32 cellY;
+    s32 activeCell;
+    u8 visible;
 
     void updateClosing();
     void enterClosing();
@@ -482,36 +482,36 @@ public:
     void release();
     void reset();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ MsgTextLabel *unk_28;
-    /* 0x2c */ MsgTextLabel *unk_2c;
-    /* 0x30 */ MsgTextLabel *unk_30;
-    /* 0x34 */ MsgTextLabel *unk_34;
-    /* 0x38 */ MsgTextLabel *unk_38;
-    /* 0x3c */ MsgTextLabel *unk_3c;
-    /* 0x40 */ MsgTextLabel *unk_40;
-    /* 0x44 */ u32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 unk_4d;
-    /* 0x4e */ u8 unk_4e;
-    /* 0x4f */ u8 unk_4f;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ s32 unk_58;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ u16 unk_60;
-    /* 0x62 */ u16 unk_62;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ MsgString3 unk_68;
-    /* 0x80 */ MsgString3 unk_80;
-    /* 0x98 */ MsgString3 unk_98;
-    /* 0xb0 */ MsgString3 unk_b0;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
+    /* 0x24 */ s32 showDelay;
+    /* 0x28 */ MsgTextLabel *monthLabel;
+    /* 0x2c */ MsgTextLabel *dayLabel;
+    /* 0x30 */ MsgTextLabel *weekdayLabel;
+    /* 0x34 */ MsgTextLabel *amPmLabel;
+    /* 0x38 */ MsgTextLabel *hourLabel;
+    /* 0x3c */ MsgTextLabel *minuteLabel;
+    /* 0x40 */ MsgTextLabel *colonLabel;
+    /* 0x44 */ u32 colonTimer;
+    /* 0x48 */ u8 monthDirty;
+    /* 0x49 */ u8 dayDirty;
+    /* 0x4a */ u8 weekdayDirty;
+    /* 0x4b */ u8 amPmDirty;
+    /* 0x4c */ u8 hourDirty;
+    /* 0x4d */ u8 minuteDirty;
+    /* 0x4e */ u8 showRequested;
+    /* 0x4f */ u8 altLayout;
+    /* 0x50 */ s32 slideY;
+    /* 0x54 */ s32 slideTarget;
+    /* 0x58 */ s32 slideSpeed;
+    /* 0x5c */ s32 slideDelay;
+    /* 0x60 */ u16 dayMonth;
+    /* 0x62 */ u16 minuteHour;
+    /* 0x64 */ s32 weekday;
+    /* 0x68 */ MsgString3 monthText;
+    /* 0x80 */ MsgString3 dayText;
+    /* 0x98 */ MsgString3 hourText;
+    /* 0xb0 */ MsgString3 minuteText;
 };
 
 class Unk_0208c478_Obj {
@@ -539,33 +539,33 @@ public:
     void refreshLabels();
 
     /* 0x00 */ u8 unk_00[0x28];
-    /* 0x28 */ TextLabel *unk_28;
-    /* 0x2c */ TextLabel *unk_2c;
-    /* 0x30 */ TextLabel *unk_30;
-    /* 0x34 */ TextLabel *unk_34;
-    /* 0x38 */ TextLabel *unk_38;
-    /* 0x3c */ TextLabel *unk_3c;
-    /* 0x40 */ TextLabel *unk_40;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ u8 unk_48;
-    /* 0x49 */ u8 unk_49;
-    /* 0x4a */ u8 unk_4a;
-    /* 0x4b */ u8 unk_4b;
-    /* 0x4c */ u8 unk_4c;
-    /* 0x4d */ u8 unk_4d;
-    /* 0x50 */ s32 unk_50;
-    /* 0x54 */ s32 unk_54;
-    /* 0x58 */ s32 unk_58;
-    /* 0x5c */ s32 unk_5c;
-    /* 0x60 */ u8 unk_60;
-    /* 0x61 */ u8 unk_61;
-    /* 0x62 */ u8 unk_62;
-    /* 0x63 */ u8 unk_63;
-    /* 0x64 */ s32 unk_64;
-    /* 0x68 */ Unk_0208c478_Obj unk_68;
-    /* 0x80 */ Unk_0208c478_Obj unk_80;
-    /* 0x98 */ Unk_0208c478_Obj unk_98;
-    /* 0xb0 */ Unk_0208c478_Obj unk_b0;
+    /* 0x28 */ TextLabel *monthLabel;
+    /* 0x2c */ TextLabel *dayLabel;
+    /* 0x30 */ TextLabel *weekdayLabel;
+    /* 0x34 */ TextLabel *amPmLabel;
+    /* 0x38 */ TextLabel *hourLabel;
+    /* 0x3c */ TextLabel *minuteLabel;
+    /* 0x40 */ TextLabel *colonLabel;
+    /* 0x44 */ s32 colonTimer;
+    /* 0x48 */ u8 monthDirty;
+    /* 0x49 */ u8 dayDirty;
+    /* 0x4a */ u8 weekdayDirty;
+    /* 0x4b */ u8 amPmDirty;
+    /* 0x4c */ u8 hourDirty;
+    /* 0x4d */ u8 minuteDirty;
+    /* 0x50 */ s32 slideY;
+    /* 0x54 */ s32 slideTarget;
+    /* 0x58 */ s32 slideSpeed;
+    /* 0x5c */ s32 slideDelay;
+    /* 0x60 */ u8 day;
+    /* 0x61 */ u8 month;
+    /* 0x62 */ u8 minute;
+    /* 0x63 */ u8 hour;
+    /* 0x64 */ s32 weekday;
+    /* 0x68 */ Unk_0208c478_Obj monthText;
+    /* 0x80 */ Unk_0208c478_Obj dayText;
+    /* 0x98 */ Unk_0208c478_Obj hourText;
+    /* 0xb0 */ Unk_0208c478_Obj minuteText;
 };
 
 class HudWallet : public UiWidget {
@@ -604,19 +604,19 @@ public:
     void release();
     void reset();
 
-    /* 0x0c */ SpriteAnim unk_0c;
-    /* 0x20 */ s32 unk_20;
-    /* 0x24 */ s32 unk_24;
-    /* 0x28 */ s32 unk_28;
-    /* 0x2c */ s32 unk_2c;
-    /* 0x30 */ s32 unk_30;
-    /* 0x34 */ s32 unk_34;
-    /* 0x38 */ TextLabel *unk_38;
-    /* 0x3c */ MsgString25 unk_3c;
-    /* 0x68 */ s32 unk_68;
-    /* 0x6c */ u8 unk_6c;
-    /* 0x6d */ u8 unk_6d;
-    /* 0x6e */ u8 unk_6e;
+    /* 0x0c */ SpriteAnim anim;
+    /* 0x20 */ s32 state;
+    /* 0x24 */ s32 baseY;
+    /* 0x28 */ s32 slideY;
+    /* 0x2c */ s32 slideTarget;
+    /* 0x30 */ s32 slideSpeed;
+    /* 0x34 */ s32 slideDelay;
+    /* 0x38 */ TextLabel *label;
+    /* 0x3c */ MsgString25 text;
+    /* 0x68 */ s32 shownBells;
+    /* 0x6c */ u8 showRequested;
+    /* 0x6d */ u8 rolling;
+    /* 0x6e */ u8 valueFrozen;
 };
 
 struct Unk_0208a328_Pa {
@@ -644,14 +644,14 @@ public:
     void exit();
     void init();
 
-    /* 0x004 */ s32 unk_04;
-    /* 0x008 */ HudClock unk_08;
-    /* 0x0d0 */ HudCountdown unk_d0;
-    /* 0x1a4 */ HudCameraButton unk_1a4;
-    /* 0x2a4 */ HudWallet unk_2a4;
-    /* 0x314 */ u8 unk_314;
-    /* 0x315 */ u8 unk_315;
-    /* 0x316 */ u8 unk_316;
+    /* 0x004 */ s32 state;
+    /* 0x008 */ HudClock clock;
+    /* 0x0d0 */ HudCountdown countdown;
+    /* 0x1a4 */ HudCameraButton cameraButton;
+    /* 0x2a4 */ HudWallet wallet;
+    /* 0x314 */ u8 hideRequest;
+    /* 0x315 */ u8 hideRequestB;
+    /* 0x316 */ u8 buttonLayout;
 };
 
 // State handlers that symbols.txt files under HudControllerStates (same object layout as HudController)
@@ -746,33 +746,33 @@ u32 MsgString3::capacity() {
 }
 
 u8 *MsgString3::data() {
-    return unk_12;
+    return text;
 }
 
 HudClock::HudClock()
-    : unk_20(0), unk_24(0), unk_28(NULL), unk_2c(NULL), unk_30(NULL), unk_34(NULL), unk_38(NULL), unk_3c(NULL),
-      unk_40(NULL), unk_44(0), unk_48(0), unk_49(0), unk_4a(0), unk_4b(0), unk_4c(0), unk_4d(0), unk_4e(0),
-      unk_4f(0), unk_50(0), unk_54(0), unk_58(0), unk_5c(-1), unk_64(0) {
-    unk_60 = 0;
-    unk_62 = 0;
+    : state(0), showDelay(0), monthLabel(NULL), dayLabel(NULL), weekdayLabel(NULL), amPmLabel(NULL), hourLabel(NULL), minuteLabel(NULL),
+      colonLabel(NULL), colonTimer(0), monthDirty(0), dayDirty(0), weekdayDirty(0), amPmDirty(0), hourDirty(0), minuteDirty(0), showRequested(0),
+      altLayout(0), slideY(0), slideTarget(0), slideSpeed(0), slideDelay(-1), weekday(0) {
+    dayMonth = 0;
+    minuteHour = 0;
 }
 
 HudClock::~HudClock() {
-    unk_0c.restart();
+    anim.restart();
     release();
 }
 
 void HudClock::draw() {
-    if (unk_20 != 0) {
-        void *a = unk_0c.getCell();
+    if (state != 0) {
+        void *a = anim.getCell();
         if (a != 0) {
-            s32 x = unk_0c.getFrameX(-1);
-            s32 y = unk_0c.getFrameY(-1);
+            s32 x = anim.getFrameX(-1);
+            s32 y = anim.getFrameY(-1);
             s32 bx = getOriginX();
-            s32 t = (unk_50 + 0x800) >> 12;
+            s32 t = (slideY + 0x800) >> 12;
             s32 g = getOriginY();
             s32 by = g + t;
-            s32 f = unk_64 == 0 ? 0xf : 9;
+            s32 f = weekday == 0 ? 0xf : 9;
             Oam_DrawCell(0, a, bx + x, by + y, f, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
@@ -781,16 +781,16 @@ void HudClock::draw() {
 void HudClock::vfunc_0c() {
     static Unk_020e0f64_Fn tbl[4] = {(Unk_020e0f64_Fn)&HudClock::updateHidden, (Unk_020e0f64_Fn)&HudClock::updateAppearing,
                                      (Unk_020e0f64_Fn)&HudClock::updateShown, (Unk_020e0f64_Fn)&HudClock::updateHiding};
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
     _ZN14HudClockLabels12pollDateTimeEv(this);
     _ZN14HudClockLabels13refreshLabelsEv(this);
-    if (unk_20 != 0) {
+    if (state != 0) {
         _ZN14HudClockLabels11updateSlideEv(this);
     }
 }
 
 void HudClock::reset() {
-    unk_4e = 0;
+    showRequested = 0;
     enterHidden();
 }
 
@@ -807,57 +807,57 @@ void HudClock::callDraw() {
 }
 
 void HudClock::show() {
-    unk_4e = 1;
+    showRequested = 1;
     BOOL v = TRUE;
     if (gFieldSceneKind != 1) {
         v = FALSE;
     }
-    unk_4f = v ? 1 : 0;
+    altLayout = v ? 1 : 0;
 }
 
 void HudClock::hide() {
-    unk_4e = 0;
+    showRequested = 0;
 }
 
 BOOL HudClock::isHidden() {
-    if (unk_20 == 0) {
+    if (state == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 void HudClock::enterHidden() {
-    unk_20 = 0;
+    state = 0;
 }
 
 void HudClock::updateHidden() {
     if (canShow() != 0) {
-        unk_24 = unk_24 - 1;
-        if (unk_24 <= 0) {
+        showDelay = showDelay - 1;
+        if (showDelay <= 0) {
             enterAppearing();
         }
     }
 }
 
 void HudClock::enterAppearing() {
-    unk_20 = 1;
+    state = 1;
     _ZN14HudClockLabels10resetSlideEv(this);
-    s32 i = unk_4f != 0 ? 0x29 : 4;
-    unk_0c.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    s32 i = altLayout != 0 ? 0x29 : 4;
+    anim.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
+    anim.setPlayOnce(1);
+    anim.restart();
     createLabels();
 }
 
 void HudClock::updateAppearing() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
+    anim.update();
+    if (anim.isFinished()) {
         enterShown();
     }
 }
 
 void HudClock::enterShown() {
-    unk_20 = 2;
+    state = 2;
 }
 
 void HudClock::updateShown() {
@@ -867,23 +867,23 @@ void HudClock::updateShown() {
 }
 
 void HudClock::enterHiding() {
-    unk_20 = 3;
-    s32 i = unk_4f != 0 ? 0x2a : 5;
-    unk_0c.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 3;
+    s32 i = altLayout != 0 ? 0x2a : 5;
+    anim.setSeq((SpriteAnimSeq *)((u8 *)data_020d467c + (i << 3)));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudClock::updateHiding() {
-    unk_0c.update();
-    if (unk_0c.isFinished()) {
+    anim.update();
+    if (anim.isFinished()) {
         freeLabels();
         enterHidden();
     }
 }
 
 u32 HudClock::canShow() {
-    u32 r = unk_4e;
+    u32 r = showRequested;
     if (r != 0) {
         BOOL t = TalkRequest_IsActive();
         BOOL a = PlayerActor_IsInAction(2, 4);
@@ -911,13 +911,13 @@ u32 HudClock::canShow() {
         if (f5 || f4 || f7) {
             r = 0;
             if (f5 || f4) {
-                unk_24 = 0x1e;
+                showDelay = 0x1e;
             } else {
-                unk_24 = 1;
+                showDelay = 1;
             }
         }
     } else {
-        unk_24 = 10;
+        showDelay = 10;
     }
     return r;
 }
@@ -933,153 +933,153 @@ void HudClock::createLabels() {
 }
 
 void HudClock::createMonthLabel() {
-    if (unk_28 == NULL) {
-        unk_28 = MsgTextLabel_CreateVram(unk_4f != 0 ? 0x94 : 0x80, 3, 2);
-        MsgTextLabel *o = unk_28;
+    if (monthLabel == NULL) {
+        monthLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x94 : 0x80, 3, 2);
+        MsgTextLabel *o = monthLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_28->unk_50 = 2;
-            unk_28->unk_55 = 1;
-            unk_28->unk_39 = 0;
-            unk_28->unk_38 = 0xc;
-            unk_28->unk_28 = &gFontC;
-            unk_28->requestRedraw();
-            unk_48 = 1;
+            monthLabel->unk_50 = 2;
+            monthLabel->unk_55 = 1;
+            monthLabel->unk_39 = 0;
+            monthLabel->unk_38 = 0xc;
+            monthLabel->unk_28 = &gFontC;
+            monthLabel->requestRedraw();
+            monthDirty = 1;
         }
     }
 }
 
 void HudClock::createDayLabel() {
-    if (unk_2c == NULL) {
-        unk_2c = MsgTextLabel_CreateVram(unk_4f != 0 ? 0x97 : 0x83, 3, 2);
-        MsgTextLabel *o = unk_2c;
+    if (dayLabel == NULL) {
+        dayLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x97 : 0x83, 3, 2);
+        MsgTextLabel *o = dayLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_2c->unk_50 = 2;
-            unk_2c->unk_55 = 1;
-            unk_2c->unk_39 = 0;
-            unk_2c->unk_38 = 0xc;
-            unk_2c->unk_28 = &gFontC;
-            unk_2c->requestRedraw();
-            unk_49 = 1;
+            dayLabel->unk_50 = 2;
+            dayLabel->unk_55 = 1;
+            dayLabel->unk_39 = 0;
+            dayLabel->unk_38 = 0xc;
+            dayLabel->unk_28 = &gFontC;
+            dayLabel->requestRedraw();
+            dayDirty = 1;
         }
     }
 }
 
 void HudClock::createWeekdayLabel() {
-    if (unk_30 == NULL) {
-        unk_30 = MsgTextLabel_CreateVram(unk_4f != 0 ? 0x9a : 0x86, 2, 2);
-        MsgTextLabel *o = unk_30;
+    if (weekdayLabel == NULL) {
+        weekdayLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x9a : 0x86, 2, 2);
+        MsgTextLabel *o = weekdayLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_30->unk_50 = 2;
-            unk_30->unk_55 = 1;
-            unk_30->unk_39 = 0;
-            unk_30->unk_38 = 0xa;
-            unk_30->unk_28 = &gFontC;
-            unk_30->requestRedraw();
-            unk_4a = 1;
+            weekdayLabel->unk_50 = 2;
+            weekdayLabel->unk_55 = 1;
+            weekdayLabel->unk_39 = 0;
+            weekdayLabel->unk_38 = 0xa;
+            weekdayLabel->unk_28 = &gFontC;
+            weekdayLabel->requestRedraw();
+            weekdayDirty = 1;
         }
     }
 }
 
 void HudClock::createAmPmLabel() {
-    if (unk_34 == NULL) {
-        unk_34 = MsgTextLabel_CreateVram(unk_4f != 0 ? 0xd4 : 0x88, 2, 1);
-        MsgTextLabel *o = unk_34;
+    if (amPmLabel == NULL) {
+        amPmLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xd4 : 0x88, 2, 1);
+        MsgTextLabel *o = amPmLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_34->unk_50 = 2;
-            unk_34->unk_55 = 1;
-            unk_34->unk_39 = 0;
-            unk_34->unk_38 = 9;
-            unk_34->unk_28 = &gFontD;
-            unk_34->requestRedraw();
-            unk_4b = 1;
+            amPmLabel->unk_50 = 2;
+            amPmLabel->unk_55 = 1;
+            amPmLabel->unk_39 = 0;
+            amPmLabel->unk_38 = 9;
+            amPmLabel->unk_28 = &gFontD;
+            amPmLabel->requestRedraw();
+            amPmDirty = 1;
         }
     }
 }
 
 void HudClock::createHourLabel() {
-    if (unk_38 == NULL) {
-        unk_38 = MsgTextLabel_CreateVram(unk_4f != 0 ? 0xf4 : 0xa8, 2, 1);
-        MsgTextLabel *o = unk_38;
+    if (hourLabel == NULL) {
+        hourLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xf4 : 0xa8, 2, 1);
+        MsgTextLabel *o = hourLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_38->unk_50 = 2;
-            unk_38->unk_55 = 1;
-            unk_38->unk_39 = 0;
-            unk_38->unk_38 = 9;
-            unk_38->unk_28 = &gFontD;
-            unk_38->requestRedraw();
-            unk_4c = 1;
+            hourLabel->unk_50 = 2;
+            hourLabel->unk_55 = 1;
+            hourLabel->unk_39 = 0;
+            hourLabel->unk_38 = 9;
+            hourLabel->unk_28 = &gFontD;
+            hourLabel->requestRedraw();
+            hourDirty = 1;
         }
     }
 }
 
 void HudClock::createMinuteLabel() {
-    if (unk_3c == NULL) {
-        unk_3c = MsgTextLabel_CreateVram(unk_4f != 0 ? 0xf6 : 0xaa, 2, 1);
-        MsgTextLabel *o = unk_3c;
+    if (minuteLabel == NULL) {
+        minuteLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xf6 : 0xaa, 2, 1);
+        MsgTextLabel *o = minuteLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_3c->unk_50 = 2;
-            unk_3c->unk_55 = 1;
-            unk_3c->unk_39 = 0;
-            unk_3c->unk_38 = 9;
-            unk_3c->unk_28 = &gFontD;
-            unk_3c->requestRedraw();
-            unk_4d = 1;
+            minuteLabel->unk_50 = 2;
+            minuteLabel->unk_55 = 1;
+            minuteLabel->unk_39 = 0;
+            minuteLabel->unk_38 = 9;
+            minuteLabel->unk_28 = &gFontD;
+            minuteLabel->requestRedraw();
+            minuteDirty = 1;
         }
     }
 }
 
 void HudClock::createColonLabel() {
-    if (unk_40 == NULL) {
-        unk_40 = MsgTextLabel_CreateVram(unk_4f != 0 ? 0xd8 : 0x8c, 1, 2);
-        MsgTextLabel *o = unk_40;
+    if (colonLabel == NULL) {
+        colonLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0xd8 : 0x8c, 1, 2);
+        MsgTextLabel *o = colonLabel;
         if (o != NULL) {
             o->unk_2c = 4;
-            unk_40->unk_10 = (u32)kHudColonString;
-            unk_40->unk_50 = 2;
-            unk_40->unk_55 = 1;
-            unk_40->unk_28 = &gFontC;
-            unk_40->alignCenter();
-            unk_40->unk_39 = 0;
-            unk_40->unk_38 = 9;
-            unk_40->requestClear(0);
+            colonLabel->unk_10 = (u32)kHudColonString;
+            colonLabel->unk_50 = 2;
+            colonLabel->unk_55 = 1;
+            colonLabel->unk_28 = &gFontC;
+            colonLabel->alignCenter();
+            colonLabel->unk_39 = 0;
+            colonLabel->unk_38 = 9;
+            colonLabel->requestClear(0);
         }
     }
 }
 
 void HudClock::freeLabels() {
-    if (unk_28 != NULL) {
-        MsgTextLabel_Destroy(unk_28);
-        unk_28 = NULL;
+    if (monthLabel != NULL) {
+        MsgTextLabel_Destroy(monthLabel);
+        monthLabel = NULL;
     }
-    if (unk_2c != NULL) {
-        MsgTextLabel_Destroy(unk_2c);
-        unk_2c = NULL;
+    if (dayLabel != NULL) {
+        MsgTextLabel_Destroy(dayLabel);
+        dayLabel = NULL;
     }
-    if (unk_30 != NULL) {
-        MsgTextLabel_Destroy(unk_30);
-        unk_30 = NULL;
+    if (weekdayLabel != NULL) {
+        MsgTextLabel_Destroy(weekdayLabel);
+        weekdayLabel = NULL;
     }
-    if (unk_34 != NULL) {
-        MsgTextLabel_Destroy(unk_34);
-        unk_34 = NULL;
+    if (amPmLabel != NULL) {
+        MsgTextLabel_Destroy(amPmLabel);
+        amPmLabel = NULL;
     }
-    if (unk_38 != NULL) {
-        MsgTextLabel_Destroy(unk_38);
-        unk_38 = NULL;
+    if (hourLabel != NULL) {
+        MsgTextLabel_Destroy(hourLabel);
+        hourLabel = NULL;
     }
-    if (unk_3c != NULL) {
-        MsgTextLabel_Destroy(unk_3c);
-        unk_3c = NULL;
+    if (minuteLabel != NULL) {
+        MsgTextLabel_Destroy(minuteLabel);
+        minuteLabel = NULL;
     }
-    if (unk_40 != NULL) {
-        MsgTextLabel_Destroy(unk_40);
-        unk_40 = NULL;
+    if (colonLabel != NULL) {
+        MsgTextLabel_Destroy(colonLabel);
+        colonLabel = NULL;
     }
 }
 
@@ -1094,82 +1094,82 @@ void HudClockLabels::refreshLabels() {
 }
 
 void HudClockLabels::refreshMonth() {
-    if (unk_28 != 0 && unk_48 != 0) {
-        unk_48 = 0;
-        String_FormatNumber(&unk_68, unk_61, 2, 0, 0, 1);
-        TextLabel *t = unk_28;
-        t->unk_10 = unk_68.vfunc_0c();
-        unk_28->alignRight();
-        unk_28->requestRedraw();
+    if (monthLabel != 0 && monthDirty != 0) {
+        monthDirty = 0;
+        String_FormatNumber(&monthText, month, 2, 0, 0, 1);
+        TextLabel *t = monthLabel;
+        t->unk_10 = monthText.vfunc_0c();
+        monthLabel->alignRight();
+        monthLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::refreshDay() {
-    if (unk_2c != 0 && unk_49 != 0) {
-        unk_49 = 0;
-        String_FormatNumber(&unk_80, unk_60, 2, 0, 0, 1);
-        TextLabel *t = unk_2c;
-        t->unk_10 = unk_80.vfunc_0c();
-        unk_2c->requestRedraw();
+    if (dayLabel != 0 && dayDirty != 0) {
+        dayDirty = 0;
+        String_FormatNumber(&dayText, day, 2, 0, 0, 1);
+        TextLabel *t = dayLabel;
+        t->unk_10 = dayText.vfunc_0c();
+        dayLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::refreshWeekday() {
-    if (unk_30 != 0 && unk_4a != 0) {
-        unk_4a = 0;
-        s32 i = *(volatile s32 *)&unk_64;
+    if (weekdayLabel != 0 && weekdayDirty != 0) {
+        weekdayDirty = 0;
+        s32 i = *(volatile s32 *)&weekday;
         const u16 *e = &kHudWeekdayGlyphs[i];
-        unk_30->unk_10 = (u32)e;
-        unk_30->alignCenter();
-        unk_30->requestRedraw();
+        weekdayLabel->unk_10 = (u32)e;
+        weekdayLabel->alignCenter();
+        weekdayLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::refreshAmPm() {
-    if (unk_34 != 0 && unk_4b != 0) {
-        unk_4b = 0;
+    if (amPmLabel != 0 && amPmDirty != 0) {
+        amPmDirty = 0;
         s32 i = 0;
-        if (unk_63 >= 12) i = 1;
-        unk_34->unk_10 = (u32)kHudAmPmStrings[i];
-        unk_34->alignCenter();
-        unk_34->requestRedraw();
+        if (hour >= 12) i = 1;
+        amPmLabel->unk_10 = (u32)kHudAmPmStrings[i];
+        amPmLabel->alignCenter();
+        amPmLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::refreshHour() {
-    if (unk_38 != 0 && unk_4c != 0) {
-        unk_4c = 0;
-        u8 c = unk_63;
+    if (hourLabel != 0 && hourDirty != 0) {
+        hourDirty = 0;
+        u8 c = hour;
         if (c >= 12) c = (u8)(c - 12);
         if (c == 0) c = 12;
-        String_FormatNumber(&unk_98, c, 2, 0, 0, 1);
-        TextLabel *t = unk_38;
-        t->unk_10 = unk_98.vfunc_0c();
-        unk_38->alignRight();
-        unk_38->requestRedraw();
+        String_FormatNumber(&hourText, c, 2, 0, 0, 1);
+        TextLabel *t = hourLabel;
+        t->unk_10 = hourText.vfunc_0c();
+        hourLabel->alignRight();
+        hourLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::refreshMinute() {
-    if (unk_3c != 0 && unk_4d != 0) {
-        unk_4d = 0;
-        String_FormatNumber(&unk_b0, unk_62, 2, 6, 0, 1);
-        TextLabel *t = unk_3c;
-        t->unk_10 = unk_b0.vfunc_0c();
-        unk_3c->alignCenter();
-        unk_3c->requestRedraw();
+    if (minuteLabel != 0 && minuteDirty != 0) {
+        minuteDirty = 0;
+        String_FormatNumber(&minuteText, minute, 2, 6, 0, 1);
+        TextLabel *t = minuteLabel;
+        t->unk_10 = minuteText.vfunc_0c();
+        minuteLabel->alignCenter();
+        minuteLabel->requestRedraw();
     }
 }
 
 void HudClockLabels::blinkColon() {
-    if (unk_40 != 0) {
-        unk_44 = unk_44 - 1;
-        s32 t = unk_44;
+    if (colonLabel != 0) {
+        colonTimer = colonTimer - 1;
+        s32 t = colonTimer;
         if (t <= 0) {
-            unk_44 = 0x14;
-            unk_40->requestRedraw();
+            colonTimer = 0x14;
+            colonLabel->requestRedraw();
         } else if (t == 8) {
-            unk_40->requestClear(0);
+            colonLabel->requestClear(0);
         }
     }
 }
@@ -1179,22 +1179,22 @@ void HudClockLabels::pollDateTime() {
     Clock_GetDayMonth(v);
     Clock_GetMinuteHour(&v[1]);
     s32 t = Clock_GetWeekday();
-    if (v[0] != *(u16 *)&unk_60) {
-        if (((u8 *)v)[1] != unk_61) unk_48 = 1;
-        if (((u8 *)v)[0] != unk_60) unk_49 = 1;
-        *(u16 *)&unk_60 = v[0];
+    if (v[0] != *(u16 *)&day) {
+        if (((u8 *)v)[1] != month) monthDirty = 1;
+        if (((u8 *)v)[0] != day) dayDirty = 1;
+        *(u16 *)&day = v[0];
     }
-    if (v[1] != *(u16 *)&unk_62) {
-        if (((u8 *)v)[3] != unk_63) {
-            unk_4c = 1;
-            unk_4b = 1;
+    if (v[1] != *(u16 *)&minute) {
+        if (((u8 *)v)[3] != hour) {
+            hourDirty = 1;
+            amPmDirty = 1;
         }
-        if (((u8 *)v)[2] != unk_62) unk_4d = 1;
-        *(u16 *)&unk_62 = v[1];
+        if (((u8 *)v)[2] != minute) minuteDirty = 1;
+        *(u16 *)&minute = v[1];
     }
-    if (t != unk_64) {
-        unk_4a = 1;
-        unk_64 = t;
+    if (t != weekday) {
+        weekdayDirty = 1;
+        weekday = t;
     }
 }
 
@@ -1203,65 +1203,65 @@ void HudClockLabels::updateSlide() {
     s32 b = _ZN8HudClock7canShowEv(this);
     s32 t;
     if (a != 0 && b != 0) t = -0x14000; else t = 0;
-    unk_58 = unk_58 + 0xa00;
-    s32 v = unk_58;
+    slideSpeed = slideSpeed + 0xa00;
+    s32 v = slideSpeed;
     if (v < 0x2300) v = 0x2300; else if (v > 0x5000) v = 0x5000;
-    unk_58 = v;
-    if (t != unk_54) {
-        s32 c = unk_5c;
-        if (c < 0 || b == 0 || (unk_5c = c + 1, unk_5c > 10)) {
-            unk_54 = t;
-            unk_5c = 0;
+    slideSpeed = v;
+    if (t != slideTarget) {
+        s32 c = slideDelay;
+        if (c < 0 || b == 0 || (slideDelay = c + 1, slideDelay > 10)) {
+            slideTarget = t;
+            slideDelay = 0;
         }
     } else {
-        unk_5c = 0;
+        slideDelay = 0;
     }
-    func_020e7870(&unk_50, unk_54, 0x600, unk_58, 0x2300);
+    func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
 void HudClockLabels::resetSlide() {
-    unk_50 = 0;
-    unk_54 = 0;
-    unk_5c = -1;
-    unk_58 = 0;
+    slideY = 0;
+    slideTarget = 0;
+    slideDelay = -1;
+    slideSpeed = 0;
 }
 
-HudCountdown::HudCountdown() : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_30(0) {
-    unk_94 = 0;
-    unk_95 = 0;
-    unk_96 = 0;
-    unk_97 = 0;
-    unk_98 = 0;
-    unk_99 = 0;
-    unk_9c = 0;
-    unk_a0 = 0;
-    unk_a4 = 0;
-    unk_a8 = 0;
+HudCountdown::HudCountdown() : state(0), minutesLabel(0), secondsLabel(0), countALabel(0), countBLabel(0) {
+    minutesDirty = 0;
+    secondsDirty = 0;
+    countADirty = 0;
+    countBDirty = 0;
+    showRequested = 0;
+    altLayout = 0;
+    countA = 0;
+    countB = 0;
+    durationKind = 0;
+    endTime = 0;
     unk_ac = 0;
-    unk_b0 = 0;
+    remaining = 0;
     unk_b4 = 0;
-    unk_b8 = 0;
-    unk_bc = 0;
-    unk_c0 = 0;
-    unk_c4 = 0;
-    unk_c8 = -1;
-    unk_cc = 0;
+    finishTimer = 0;
+    slideY = 0;
+    slideTarget = 0;
+    slideSpeed = 0;
+    slideDelay = -1;
+    lastTickTime = 0;
     unk_d0 = 0;
 }
 
 HudCountdown::~HudCountdown() {
-    unk_0c.restart();
+    anim.restart();
     release();
 }
 
 void HudCountdown::draw() {
-    if (unk_20 != 0) {
-        void *p = unk_0c.getCell();
+    if (state != 0) {
+        void *p = anim.getCell();
         if (p != 0) {
-            s32 a = unk_0c.getFrameX(-1);
-            s32 b = unk_0c.getFrameY(-1);
+            s32 a = anim.getFrameX(-1);
+            s32 b = anim.getFrameY(-1);
             s32 c = getOriginX();
-            s32 d = (unk_bc + 0x800) >> 12;
+            s32 d = (slideY + 0x800) >> 12;
             s32 e = getOriginY();
             e += d;
             Oam_DrawCell(0, p, c + a, e + b, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -1273,13 +1273,13 @@ void HudCountdown::vfunc_0c() {
     _ZN18HudCountdownLabels15updateRemainingEv(this);
     static Unk_020e0f10_Fn tbl[4] = {(Unk_020e0f10_Fn)&HudCountdown::updateHidden, (Unk_020e0f10_Fn)&HudCountdown::updateAppearing,
                                      (Unk_020e0f10_Fn)&HudCountdown::updateShown, (Unk_020e0f10_Fn)&HudCountdown::updateHiding};
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
     _ZN18HudCountdownLabels13refreshLabelsEv(this);
-    if (unk_20 != 0) _ZN18HudCountdownLabels11updateSlideEv(this);
+    if (state != 0) _ZN18HudCountdownLabels11updateSlideEv(this);
 }
 
 void HudCountdown::reset() {
-    unk_98 = 0;
+    showRequested = 0;
     enterHidden();
 }
 
@@ -1296,22 +1296,22 @@ void HudCountdown::callDraw() {
 }
 
 BOOL HudCountdown::isStopped() {
-    if (unk_a4 == 0) return TRUE;
+    if (durationKind == 0) return TRUE;
     return FALSE;
 }
 
 void HudCountdown::start(s32 a, s32 b) {
-    unk_a4 = a;
-    unk_b8 = 0;
+    durationKind = a;
+    finishTimer = 0;
     if (a != 0) {
-        Clock_GetRtcDateTime(&unk_a8);
-        DateTime_AddSeconds(&unk_a8, kHudCountdownSeconds[a]);
-        unk_9c = 0;
-        unk_a0 = 0;
-        unk_94 = 1;
-        unk_95 = 1;
-        unk_96 = 1;
-        unk_97 = 1;
+        Clock_GetRtcDateTime(&endTime);
+        DateTime_AddSeconds(&endTime, kHudCountdownSeconds[a]);
+        countA = 0;
+        countB = 0;
+        minutesDirty = 1;
+        secondsDirty = 1;
+        countADirty = 1;
+        countBDirty = 1;
     }
     if (b == 0) {
         FieldInfoBalloon_ShowTimerMsg(a == 0 ? 2 : 1);
@@ -1319,42 +1319,42 @@ void HudCountdown::start(s32 a, s32 b) {
 }
 
 void HudCountdown::incCountA() {
-    if (unk_a4 != 0) {
-        unk_9c = unk_9c + 1;
-        unk_96 = 1;
+    if (durationKind != 0) {
+        countA = countA + 1;
+        countADirty = 1;
     }
 }
 
 void HudCountdown::incCountB() {
-    if (unk_a4 != 0) {
-        unk_a0 = unk_a0 + 1;
-        unk_97 = 1;
+    if (durationKind != 0) {
+        countB = countB + 1;
+        countBDirty = 1;
     }
 }
 
 void HudCountdown::show() {
-    unk_98 = 1;
+    showRequested = 1;
     BOOL t = TRUE;
     if (gFieldSceneKind != 1) t = FALSE;
-    unk_99 = (t != 0) ? 1 : 0;
+    altLayout = (t != 0) ? 1 : 0;
 }
 
 void HudCountdown::hide() {
-    unk_98 = 0;
+    showRequested = 0;
 }
 
 BOOL HudCountdown::isHidden() {
-    if (unk_20 == 0) return TRUE;
+    if (state == 0) return TRUE;
     return FALSE;
 }
 
 BOOL HudCountdown::isFinished() {
-    if (isStopped() != 0 && unk_b8 <= 0) return TRUE;
+    if (isStopped() != 0 && finishTimer <= 0) return TRUE;
     return FALSE;
 }
 
 void HudCountdown::enterHidden() {
-    unk_20 = 0;
+    state = 0;
 }
 
 void HudCountdown::updateHidden() {
@@ -1362,23 +1362,23 @@ void HudCountdown::updateHidden() {
 }
 
 void HudCountdown::enterAppearing() {
-    unk_20 = 1;
+    state = 1;
     _ZN18HudCountdownLabels10resetSlideEv(this);
     s32 i;
-    if (unk_99 != 0) i = 0x2b; else i = 0x26;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    if (altLayout != 0) i = 0x2b; else i = 0x26;
+    anim.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
+    anim.setPlayOnce(1);
+    anim.restart();
     _ZN18HudCountdownLabels12createLabelsEv(this);
 }
 
 void HudCountdown::updateAppearing() {
-    unk_0c.update();
-    if (unk_0c.isFinished() != 0) enterShown();
+    anim.update();
+    if (anim.isFinished() != 0) enterShown();
 }
 
 void HudCountdown::enterShown() {
-    unk_20 = 2;
+    state = 2;
 }
 
 void HudCountdown::updateShown() {
@@ -1386,24 +1386,24 @@ void HudCountdown::updateShown() {
 }
 
 void HudCountdown::enterHiding() {
-    unk_20 = 3;
+    state = 3;
     s32 i;
-    if (unk_99 != 0) i = 0x2c; else i = 0x27;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    if (altLayout != 0) i = 0x2c; else i = 0x27;
+    anim.setSeq((SpriteAnimSeq *)(data_020d467c + i * 8));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudCountdown::updateHiding() {
-    unk_0c.update();
-    if (unk_0c.isFinished() != 0) {
+    anim.update();
+    if (anim.isFinished() != 0) {
         _ZN18HudCountdownLabels10freeLabelsEv(this);
         enterHidden();
     }
 }
 
 u8 HudCountdown::canShow() {
-    u8 r = unk_98;
+    u8 r = showRequested;
     if (r != 0) {
         s32 a = TalkRequest_IsActive();
         s32 b = MenuCtrl_IsMenuOpen();
@@ -1421,10 +1421,10 @@ u8 HudCountdown::canShow() {
         }
         if (c != 0 || d != 0) {
             r = 0;
-            if (c != 0) unk_b8 = r;
+            if (c != 0) finishTimer = r;
         }
     } else {
-        unk_b8 = 0;
+        finishTimer = 0;
     }
     return r;
 }
@@ -1437,81 +1437,81 @@ void HudCountdownLabels::createLabels() {
 }
 
 void HudCountdownLabels::createMinutesLabel() {
-    unk_24 = MsgTextLabel_CreateVram(unk_99 != 0 ? 0x114 : 0x80, 3, 2);
-    if (unk_24 != NULL) {
-        unk_24->unk_2c = 4;
-        unk_24->unk_50 = 2;
-        unk_24->unk_55 = 1;
-        unk_24->unk_39 = 0;
-        unk_24->unk_38 = 0xc;
-        unk_24->unk_28 = &gFontC;
-        TextLabel *t = unk_24;
-        t->unk_10 = (u32)((StrBuf *)unk_34)->data();
-        unk_94 = 1;
+    minutesLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x114 : 0x80, 3, 2);
+    if (minutesLabel != NULL) {
+        minutesLabel->unk_2c = 4;
+        minutesLabel->unk_50 = 2;
+        minutesLabel->unk_55 = 1;
+        minutesLabel->unk_39 = 0;
+        minutesLabel->unk_38 = 0xc;
+        minutesLabel->unk_28 = &gFontC;
+        TextLabel *t = minutesLabel;
+        t->unk_10 = (u32)((StrBuf *)minutesText)->data();
+        minutesDirty = 1;
     }
 }
 
 void HudCountdownLabels::createSecondsLabel() {
-    unk_28 = MsgTextLabel_CreateVram(unk_99 != 0 ? 0x117 : 0x83, 3, 2);
-    if (unk_28 != NULL) {
-        unk_28->unk_2c = 4;
-        unk_28->unk_50 = 2;
-        unk_28->unk_55 = 1;
-        unk_28->unk_39 = 0;
-        unk_28->unk_38 = 0xc;
-        unk_28->unk_28 = &gFontC;
-        TextLabel *t = unk_28;
-        t->unk_10 = (u32)((StrBuf *)unk_4c)->data();
-        unk_95 = 1;
+    secondsLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x117 : 0x83, 3, 2);
+    if (secondsLabel != NULL) {
+        secondsLabel->unk_2c = 4;
+        secondsLabel->unk_50 = 2;
+        secondsLabel->unk_55 = 1;
+        secondsLabel->unk_39 = 0;
+        secondsLabel->unk_38 = 0xc;
+        secondsLabel->unk_28 = &gFontC;
+        TextLabel *t = secondsLabel;
+        t->unk_10 = (u32)((StrBuf *)secondsText)->data();
+        secondsDirty = 1;
     }
 }
 
 void HudCountdownLabels::createCountALabel() {
-    unk_2c = MsgTextLabel_CreateVram(unk_99 != 0 ? 0x174 : 0xa8, 2, 1);
-    if (unk_2c != NULL) {
-        unk_2c->unk_2c = 4;
-        unk_2c->unk_50 = 2;
-        unk_2c->unk_55 = 1;
-        unk_2c->unk_39 = 0;
-        unk_2c->unk_38 = 5;
-        unk_2c->unk_28 = &gFontD;
-        TextLabel *t = unk_2c;
-        t->unk_10 = (u32)((StrBuf *)unk_64)->data();
-        unk_96 = 1;
+    countALabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x174 : 0xa8, 2, 1);
+    if (countALabel != NULL) {
+        countALabel->unk_2c = 4;
+        countALabel->unk_50 = 2;
+        countALabel->unk_55 = 1;
+        countALabel->unk_39 = 0;
+        countALabel->unk_38 = 5;
+        countALabel->unk_28 = &gFontD;
+        TextLabel *t = countALabel;
+        t->unk_10 = (u32)((StrBuf *)countAText)->data();
+        countADirty = 1;
     }
 }
 
 void HudCountdownLabels::createCountBLabel() {
-    unk_30 = MsgTextLabel_CreateVram(unk_99 != 0 ? 0x176 : 0xaa, 2, 1);
-    if (unk_30 != NULL) {
-        unk_30->unk_2c = 4;
-        unk_30->unk_50 = 2;
-        unk_30->unk_55 = 1;
-        unk_30->unk_39 = 0;
-        unk_30->unk_38 = 5;
-        unk_30->unk_28 = &gFontD;
-        TextLabel *t = unk_30;
-        t->unk_10 = (u32)((StrBuf *)unk_7c)->data();
-        unk_97 = 1;
+    countBLabel = MsgTextLabel_CreateVram(altLayout != 0 ? 0x176 : 0xaa, 2, 1);
+    if (countBLabel != NULL) {
+        countBLabel->unk_2c = 4;
+        countBLabel->unk_50 = 2;
+        countBLabel->unk_55 = 1;
+        countBLabel->unk_39 = 0;
+        countBLabel->unk_38 = 5;
+        countBLabel->unk_28 = &gFontD;
+        TextLabel *t = countBLabel;
+        t->unk_10 = (u32)((StrBuf *)countBText)->data();
+        countBDirty = 1;
     }
 }
 
 void HudCountdownLabels::freeLabels() {
-    if (unk_24 != NULL) {
-        MsgTextLabel_Destroy(unk_24);
-        unk_24 = NULL;
+    if (minutesLabel != NULL) {
+        MsgTextLabel_Destroy(minutesLabel);
+        minutesLabel = NULL;
     }
-    if (unk_28 != NULL) {
-        MsgTextLabel_Destroy(unk_28);
-        unk_28 = NULL;
+    if (secondsLabel != NULL) {
+        MsgTextLabel_Destroy(secondsLabel);
+        secondsLabel = NULL;
     }
-    if (unk_2c != NULL) {
-        MsgTextLabel_Destroy(unk_2c);
-        unk_2c = NULL;
+    if (countALabel != NULL) {
+        MsgTextLabel_Destroy(countALabel);
+        countALabel = NULL;
     }
-    if (unk_30 != NULL) {
-        MsgTextLabel_Destroy(unk_30);
-        unk_30 = NULL;
+    if (countBLabel != NULL) {
+        MsgTextLabel_Destroy(countBLabel);
+        countBLabel = NULL;
     }
 }
 
@@ -1523,37 +1523,37 @@ void HudCountdownLabels::refreshLabels() {
 }
 
 void HudCountdownLabels::refreshMinutes() {
-    if (unk_94 != 0 && unk_24 != NULL) {
-        String_FormatNumber(&unk_34, unk_b0[1], 2, 6, 0, 1);
-        unk_24->alignRight();
-        unk_24->requestRedraw();
-        unk_94 = 0;
+    if (minutesDirty != 0 && minutesLabel != NULL) {
+        String_FormatNumber(&minutesText, remaining[1], 2, 6, 0, 1);
+        minutesLabel->alignRight();
+        minutesLabel->requestRedraw();
+        minutesDirty = 0;
     }
 }
 
 void HudCountdownLabels::refreshSeconds() {
-    if (unk_95 != 0 && unk_28 != NULL) {
-        String_FormatNumber(&unk_4c, unk_b0[0], 2, 6, 0, 1);
-        unk_28->requestRedraw();
-        unk_95 = 0;
+    if (secondsDirty != 0 && secondsLabel != NULL) {
+        String_FormatNumber(&secondsText, remaining[0], 2, 6, 0, 1);
+        secondsLabel->requestRedraw();
+        secondsDirty = 0;
     }
 }
 
 void HudCountdownLabels::refreshCountA() {
-    if (unk_96 != 0 && unk_2c != NULL) {
-        String_FormatNumber(&unk_64, unk_9c, 2, 6, 0, 1);
-        unk_2c->alignCenter();
-        unk_2c->requestRedraw();
-        unk_96 = 0;
+    if (countADirty != 0 && countALabel != NULL) {
+        String_FormatNumber(&countAText, countA, 2, 6, 0, 1);
+        countALabel->alignCenter();
+        countALabel->requestRedraw();
+        countADirty = 0;
     }
 }
 
 void HudCountdownLabels::refreshCountB() {
-    if (unk_97 != 0 && unk_30 != NULL) {
-        String_FormatNumber(&unk_7c, unk_a0, 2, 6, 0, 1);
-        unk_30->alignCenter();
-        unk_30->requestRedraw();
-        unk_97 = 0;
+    if (countBDirty != 0 && countBLabel != NULL) {
+        String_FormatNumber(&countBText, countB, 2, 6, 0, 1);
+        countBLabel->alignCenter();
+        countBLabel->requestRedraw();
+        countBDirty = 0;
     }
 }
 
@@ -1565,11 +1565,11 @@ void HudCountdownLabels::updateRemaining() {
     BOOL y;
     BOOL t;
     s32 r;
-    if (unk_b8 > 0) {
-        unk_b8 = unk_b8 - 1;
+    if (finishTimer > 0) {
+        finishTimer = finishTimer - 1;
     }
-    if (unk_a4 != 0) {
-        MI_CpuCopy8(unk_a8, a, 8);
+    if (durationKind != 0) {
+        MI_CpuCopy8(endTime, a, 8);
         ((u32 *)b)[0] = 0;
         ((u32 *)b)[1] = 0;
         Clock_GetRtcDateTime(b);
@@ -1592,43 +1592,43 @@ void HudCountdownLabels::updateRemaining() {
             MI_CpuCopy8(b, c, 8);
             DateTime_Sub(a, c);
             k = x;
-            t = DateTime_Compare(unk_b0, a, 1) ? TRUE : FALSE;
+            t = DateTime_Compare(remaining, a, 1) ? TRUE : FALSE;
             x = (k | t) ? TRUE : FALSE;
-            r = DateTime_Compare(unk_b0, a, 2) ? TRUE : FALSE;
+            r = DateTime_Compare(remaining, a, 2) ? TRUE : FALSE;
             k |= r;
             y = k ? TRUE : FALSE;
         }
-        u8 *p95 = &unk_95;
-        *p95 = Unk_0208b9f0_Or(unk_95, x);
-        u8 *p94 = &unk_94;
-        *p94 = Unk_0208b9f0_Or(unk_94, y);
+        u8 *p95 = &secondsDirty;
+        *p95 = Unk_0208b9f0_Or(secondsDirty, x);
+        u8 *p94 = &minutesDirty;
+        *p94 = Unk_0208b9f0_Or(minutesDirty, y);
         if (x != 0 || y != 0) {
             u32 b0, b1;
-            MI_CpuCopy8(a, unk_b0, 8);
+            MI_CpuCopy8(a, remaining, 8);
             b0 = a[0];
             b1 = a[1];
             if (b1 == 0) {
                 if (b0 == 0) {
-                    unk_b8 = 0x258;
-                    unk_a4 = 0;
+                    finishTimer = 0x258;
+                    durationKind = 0;
                     if (Scene_GetCurrent() != 0x2e) {
                         Snd_PlaySe(0x65);
                     }
                     FieldInfoBalloon_ShowTimerMsg(3);
                 } else if (b0 <= 10) {
                     u64 now = OS_GetTick();
-                    u64 d = now - *(u64 *)&unk_cc;
+                    u64 d = now - *(u64 *)&lastTickTime;
                     u64 q = (d << 6) / 0x82ea;
                     if (q <= 0x44c) {
                         if (Scene_GetCurrent() != 0x2e) {
                             Snd_PlaySe(0x64);
                         }
                     }
-                    unk_cc = (u32)now;
+                    lastTickTime = (u32)now;
                     unk_d0 = (u32)(now >> 32);
                 } else if (b0 >= 0xb) {
                     u64 now = OS_GetTick();
-                    unk_cc = (u32)now;
+                    lastTickTime = (u32)now;
                     unk_d0 = (u32)(now >> 32);
                 }
             }
@@ -1646,35 +1646,35 @@ void HudCountdownLabels::updateSlide() {
     } else {
         t = 0;
     }
-    unk_c4 = unk_c4 + 0xa00;
-    c4 = unk_c4;
+    slideSpeed = slideSpeed + 0xa00;
+    c4 = slideSpeed;
     if (c4 < 0x2300) {
         c4 = 0x2300;
     } else if (c4 > 0x5000) {
         c4 = 0x5000;
     }
-    unk_c4 = c4;
-    if (t != unk_c0) {
-        if (unk_c8 >= 0 && b) {
-            unk_c8 = unk_c8 + 1;
-            if (unk_c8 <= 10) {
+    slideSpeed = c4;
+    if (t != slideTarget) {
+        if (slideDelay >= 0 && b) {
+            slideDelay = slideDelay + 1;
+            if (slideDelay <= 10) {
                 goto end;
             }
         }
-        unk_c0 = t;
-        unk_c8 = 0;
+        slideTarget = t;
+        slideDelay = 0;
     } else {
-        unk_c8 = 0;
+        slideDelay = 0;
     }
 end:
-    func_020e7870(&unk_bc, unk_c0, 0x600, unk_c4, 0x2300);
+    func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
 }
 
 void HudCountdownLabels::resetSlide() {
-    unk_bc = 0;
-    unk_c0 = 0;
-    unk_c8 = -1;
-    unk_c4 = 0;
+    slideY = 0;
+    slideTarget = 0;
+    slideDelay = -1;
+    slideSpeed = 0;
 }
 
 HudCameraGrid::HudCameraGrid() {
@@ -1800,38 +1800,38 @@ BOOL HudCameraGrid::pickCellByTouch() {
 }
 
 BOOL HudCameraGridStates::moveByDpad() {
-    s32 ox = unk_c8;
-    s32 oy = unk_cc;
+    s32 ox = cellX;
+    s32 oy = cellY;
     u32 k = gPad[1];
     if ((k & 0x10) != 0) {
-        unk_c8 = unk_c8 + 1;
+        cellX = cellX + 1;
     } else if ((k & 0x20) != 0) {
-        unk_c8 = unk_c8 - 1;
+        cellX = cellX - 1;
     } else if ((k & 0x40) != 0) {
-        unk_cc = unk_cc - 1;
+        cellY = cellY - 1;
     } else if ((k & 0x80) != 0) {
-        unk_cc = unk_cc + 1;
+        cellY = cellY + 1;
     }
-    s32 t = unk_c8;
+    s32 t = cellX;
     if (t < -1) t = -1;
     else if (t > 1) t = 1;
-    unk_c8 = t;
-    t = unk_cc;
+    cellX = t;
+    t = cellY;
     if (t < -1) t = -1;
     else if (t > 1) t = 1;
-    unk_cc = t;
+    cellY = t;
     setCellFromPos();
-    if (ox != unk_c8 || oy != unk_cc) {
+    if (ox != cellX || oy != cellY) {
         return TRUE;
     }
     return FALSE;
 }
 
 void HudCameraGridStates::applySelection() {
-    Camera_SetPresetCell((kHudCameraGridCells + 1)[unk_c4 * 2], kHudCameraGridCells[unk_c4 * 2]);
-    s32 p = unk_d0;
-    if (unk_c4 != p) {
-        s32 a = (kHudCameraGridDirs + 1)[unk_c4 * 2];
+    Camera_SetPresetCell((kHudCameraGridCells + 1)[cell * 2], kHudCameraGridCells[cell * 2]);
+    s32 p = activeCell;
+    if (cell != p) {
+        s32 a = (kHudCameraGridDirs + 1)[cell * 2];
         s32 b = (kHudCameraGridDirs + 1)[p * 2];
         s32 snd;
         if (a < b) {
@@ -1842,7 +1842,7 @@ void HudCameraGridStates::applySelection() {
             snd = 0x4e;
         }
         Snd_PlaySe(snd);
-        unk_d0 = unk_c4;
+        activeCell = cell;
     }
 }
 
@@ -1851,33 +1851,33 @@ void HudCameraGridStates::setCellFromPos() {
     while (i < 9) {
         s32 n = i * 2;
         const s8 *e = kHudCameraGridDirs + n;
-        if (unk_c8 == kHudCameraGridDirs[n] && unk_cc == e[1]) break;
+        if (cellX == kHudCameraGridDirs[n] && cellY == e[1]) break;
         i++;
     }
-    unk_c4 = i;
+    cell = i;
 }
 
 void HudCameraGridStates::setPosFromCell() {
-    unk_c8 = kHudCameraGridDirs[unk_c4 * 2];
-    unk_cc = (kHudCameraGridDirs + 1)[unk_c4 * 2];
+    cellX = kHudCameraGridDirs[cell * 2];
+    cellY = (kHudCameraGridDirs + 1)[cell * 2];
 }
 
 void HudCameraGridStates::enterClosed() {
-    unk_c0 = 0;
+    state = 0;
 }
 
 void HudCameraGridStates::updateClosed() {
-    if (unk_d4 != 0) {
+    if (visible != 0) {
         enterOpening();
     }
 }
 
 void HudCameraGridStates::enterOpening() {
     s32 one = 1;
-    unk_c0 = one;
+    state = one;
     s32 i;
     for (i = 0; i < 9; i++) {
-        SpriteAnim *o = &unk_0c[i];
+        SpriteAnim *o = &cellAnims[i];
         o->setSeq((SpriteAnimSeq *)(data_020d467c + (i + 0xe) * 8));
         o->setPlayOnce(one);
         o->restart();
@@ -1889,7 +1889,7 @@ void HudCameraGridStates::updateOpening() {
     BOOL r = TRUE;
     s32 i;
     for (i = 0; i < 9; i++) {
-        SpriteAnim *o = &unk_0c[i];
+        SpriteAnim *o = &cellAnims[i];
         o->update();
         if (!o->isFinished()) {
             r = z;
@@ -1901,11 +1901,11 @@ void HudCameraGridStates::updateOpening() {
 }
 
 void HudCameraGridStates::enterOpen() {
-    unk_c0 = 2;
+    state = 2;
 }
 
 void HudCameraGridStates::updateOpen() {
-    if (unk_d4 == 0) {
+    if (visible == 0) {
         enterClosing();
     } else if (!_ZN13HudCameraGrid22isOtherDeviceTriggeredEv(this)) {
         BOOL f = FALSE;
@@ -1925,10 +1925,10 @@ void HudCameraGridStates::updateOpen() {
 }
 
 void HudCameraGridStates::enterClosing() {
-    unk_c0 = 3;
+    state = 3;
     s32 i;
     for (i = 0; i < 9; i++) {
-        SpriteAnim *o = &unk_0c[i];
+        SpriteAnim *o = &cellAnims[i];
         o->setSeq((SpriteAnimSeq *)(data_020d467c + (i + 0x17) * 8));
         o->setPlayOnce(1);
         o->restart();
@@ -1940,7 +1940,7 @@ void HudCameraGridStates::updateClosing() {
     BOOL r = TRUE;
     s32 i;
     for (i = 0; i < 9; i++) {
-        SpriteAnim *o = &unk_0c[i];
+        SpriteAnim *o = &cellAnims[i];
         o->update();
         if (!o->isFinished()) {
             r = z;
@@ -2202,11 +2202,11 @@ void HudCameraButton::updateHiding() {
 }
 
 HudWallet::HudWallet()
-    : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_30(0), unk_34(-1), unk_38(NULL) {
-    unk_68 = 0;
-    unk_6c = 0;
-    unk_6d = 0;
-    unk_6e = 0;
+    : state(0), baseY(0), slideY(0), slideTarget(0), slideSpeed(0), slideDelay(-1), label(NULL) {
+    shownBells = 0;
+    showRequested = 0;
+    rolling = 0;
+    valueFrozen = 0;
 }
 
 HudWallet::~HudWallet() {
@@ -2214,16 +2214,16 @@ HudWallet::~HudWallet() {
 }
 
 void HudWallet::draw() {
-    if (unk_20 != 0) {
-        void *h = unk_0c.getCell();
+    if (state != 0) {
+        void *h = anim.getCell();
         if (h != 0) {
             s32 a = getOriginX();
-            s32 x = a + unk_0c.getFrameX(-1);
-            s32 b = (unk_28 + 0x800) >> 12;
+            s32 x = a + anim.getFrameX(-1);
+            s32 b = (slideY + 0x800) >> 12;
             s32 c = getOriginY();
-            s32 e = unk_0c.getFrameY(-1);
+            s32 e = anim.getFrameY(-1);
             s32 y = b;
-            y += unk_24 + (c + e);
+            y += baseY + (c + e);
             Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
@@ -2234,11 +2234,11 @@ void HudWallet::vfunc_0c() {
         (Fn)&HudWallet::updateHidden, (Fn)&HudWallet::updateAppearing,
         (Fn)&HudWallet::updateShown, (Fn)&HudWallet::updateHiding,
     };
-    (this->*tbl[unk_20])();
+    (this->*tbl[state])();
 }
 
 void HudWallet::reset() {
-    unk_6c = 0;
+    showRequested = 0;
     syncValue();
     resetSlide();
     enterHidden();
@@ -2246,7 +2246,7 @@ void HudWallet::reset() {
 
 void HudWallet::release() {
     setRolling(0);
-    unk_0c.restart();
+    anim.restart();
     freeLabel();
 }
 
@@ -2261,61 +2261,61 @@ void HudWallet::callDraw() {
 }
 
 void HudWallet::show() {
-    unk_6c = 1;
+    showRequested = 1;
 }
 
 void HudWallet::hide() {
-    unk_6c = 0;
+    showRequested = 0;
 }
 
 BOOL HudWallet::isHidden() {
-    if (unk_20 == 0) {
+    if (state == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 void HudWallet::freezeValue() {
-    unk_6e = 1;
+    valueFrozen = 1;
 }
 
 void HudWallet::unfreezeValue() {
-    unk_6e = 0;
+    valueFrozen = 0;
 }
 
 void HudWallet::enterHidden() {
-    unk_20 = 0;
+    state = 0;
 }
 
 void HudWallet::updateHidden() {
-    if (unk_6c != 0) {
+    if (showRequested != 0) {
         enterAppearing();
     }
 }
 
 void HudWallet::enterAppearing() {
-    unk_20 = 1;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d4794));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 1;
+    anim.setSeq((SpriteAnimSeq *)(data_020d4794));
+    anim.setPlayOnce(1);
+    anim.restart();
     syncValue();
     createLabel();
 }
 
 void HudWallet::updateAppearing() {
-    unk_0c.update();
-    if (unk_0c.isFinished() != 0) {
+    anim.update();
+    if (anim.isFinished() != 0) {
         enterShown();
     }
 }
 
 void HudWallet::enterShown() {
-    unk_20 = 2;
+    state = 2;
 }
 
 void HudWallet::updateShown() {
     BOOL r = rollTowardTarget();
-    if (unk_6c == 0) {
+    if (showRequested == 0) {
         enterHiding();
         r = FALSE;
     }
@@ -2323,68 +2323,68 @@ void HudWallet::updateShown() {
 }
 
 void HudWallet::enterHiding() {
-    unk_20 = 3;
-    unk_0c.setSeq((SpriteAnimSeq *)(data_020d479c));
-    unk_0c.setPlayOnce(1);
-    unk_0c.restart();
+    state = 3;
+    anim.setSeq((SpriteAnimSeq *)(data_020d479c));
+    anim.setPlayOnce(1);
+    anim.restart();
 }
 
 void HudWallet::updateHiding() {
-    unk_0c.update();
-    if (unk_0c.isFinished() != 0) {
+    anim.update();
+    if (anim.isFinished() != 0) {
         freeLabel();
         enterHidden();
     }
 }
 
 void HudWallet::createLabel() {
-    if (unk_38 == NULL) {
-        unk_38 = MsgTextLabel_CreateVram(0x80, 8, 1);
-        if (unk_38 != NULL) {
-            unk_38->unk_2c = 4;
-            unk_38->unk_50 = 2;
-            unk_38->unk_55 = 1;
-            unk_38->unk_39 = 0;
-            unk_38->unk_38 = 0xc;
-            TextLabel *o = unk_38;
-            StrBuf *s = &unk_3c;
+    if (label == NULL) {
+        label = MsgTextLabel_CreateVram(0x80, 8, 1);
+        if (label != NULL) {
+            label->unk_2c = 4;
+            label->unk_50 = 2;
+            label->unk_55 = 1;
+            label->unk_39 = 0;
+            label->unk_38 = 0xc;
+            TextLabel *o = label;
+            StrBuf *s = &text;
             o->unk_10 = (u32)s->data();
-            unk_38->unk_28 = &gFontD;
-            unk_38->alignRight();
-            unk_38->requestRedraw();
+            label->unk_28 = &gFontD;
+            label->alignRight();
+            label->requestRedraw();
         }
     }
 }
 
 void HudWallet::freeLabel() {
-    if (unk_38 != NULL) {
-        MsgTextLabel_Destroy(unk_38);
-        unk_38 = NULL;
+    if (label != NULL) {
+        MsgTextLabel_Destroy(label);
+        label = NULL;
     }
 }
 
 void HudWallet::syncValue() {
-    unk_68 = Hud_GetBells();
+    shownBells = Hud_GetBells();
     formatValue();
-    unk_6d = 0;
-    unk_6e = 0;
+    rolling = 0;
+    valueFrozen = 0;
 }
 
 BOOL HudWallet::rollTowardTarget() {
     BOOL r = FALSE;
-    if (unk_6e == 0) {
+    if (valueFrozen == 0) {
         s32 v = Unk_0208a814_NS::Hud_GetBells(this);
-        if (unk_68 != v) {
-            s32 d = v - unk_68;
+        if (shownBells != v) {
+            s32 d = v - shownBells;
             if (d < 0) {
                 d = -d;
             }
             s32 t = (d / 6 + 0x32) / 10;
-            func_020e759c(&unk_68, v, t * 10 + 7);
+            func_020e759c(&shownBells, v, t * 10 + 7);
             formatValue();
-            if (unk_38 != NULL) {
-                unk_38->alignRight();
-                unk_38->requestRedraw();
+            if (label != NULL) {
+                label->alignRight();
+                label->requestRedraw();
             }
             r = TRUE;
         }
@@ -2393,11 +2393,11 @@ BOOL HudWallet::rollTowardTarget() {
 }
 
 void HudWallet::formatValue() {
-    String_FormatNumber(&unk_3c, unk_68, 7, 1, 0, 1);
+    String_FormatNumber(&text, shownBells, 7, 1, 0, 1);
 }
 
 void HudWallet::setRolling(BOOL v) {
-    if (unk_6d != 0) {
+    if (rolling != 0) {
         if (v == 0) {
             func_02003edc();
             Snd_PlaySe(0x2e);
@@ -2405,7 +2405,7 @@ void HudWallet::setRolling(BOOL v) {
     } else if (v != 0) {
         func_02003eec();
     }
-    unk_6d = v;
+    rolling = v;
 }
 
 extern "C" s32 Hud_GetBells() {
@@ -2422,7 +2422,7 @@ void HudWallet::updateBaseY() {
     s32 v = MenuCtrl_GetTransitionProgressOrFull();
     s32 a = func_01ffcb0c(0, v);
     s32 b = func_01ffcb0c(0xc0000, 0x1000 - v);
-    unk_24 = (a + b) >> 12;
+    baseY = (a + b) >> 12;
 }
 
 void HudWallet::updateSlide() {
@@ -2433,39 +2433,39 @@ void HudWallet::updateSlide() {
         } else {
             r = 0;
         }
-        unk_30 = unk_30 + 0xa00;
-        s32 t = unk_30;
+        slideSpeed = slideSpeed + 0xa00;
+        s32 t = slideSpeed;
         if (t < 0x2300) {
             t = 0x2300;
         } else if (t > 0x5000) {
             t = 0x5000;
         }
-        unk_30 = t;
-        if (r != unk_2c) {
-            if (unk_34 < 0 || (unk_34 = unk_34 + 1, unk_34 > 5)) {
-                unk_2c = r;
-                unk_34 = 0;
+        slideSpeed = t;
+        if (r != slideTarget) {
+            if (slideDelay < 0 || (slideDelay = slideDelay + 1, slideDelay > 5)) {
+                slideTarget = r;
+                slideDelay = 0;
             }
         } else {
-            unk_34 = 0;
+            slideDelay = 0;
         }
-        func_020e7870(&unk_28, unk_2c, 0x600, unk_30, 0x2300);
+        func_020e7870(&slideY, slideTarget, 0x600, slideSpeed, 0x2300);
     } else {
         resetSlide();
     }
 }
 
 void HudWallet::resetSlide() {
-    unk_28 = 0;
-    unk_2c = 0;
-    unk_34 = -1;
-    unk_30 = 0;
+    slideY = 0;
+    slideTarget = 0;
+    slideDelay = -1;
+    slideSpeed = 0;
 }
 
-HudController::HudController() : unk_04(0) {
-    unk_314 = 0;
-    unk_315 = 0;
-    unk_316 = 0;
+HudController::HudController() : state(0) {
+    hideRequest = 0;
+    hideRequestB = 0;
+    buttonLayout = 0;
 }
 
 HudController::~HudController() {}
@@ -2484,26 +2484,26 @@ extern "C" void Hud_Show() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->unk_14 
 
 extern "C" void Hud_ClearHideB() { ((Unk_0208a328_Pa *)((u8 *)&gHud + 0x300))->unk_15 = 0; }
 
-extern "C" void *Hud_GetCountdown() { return &gHud.unk_d0; }
+extern "C" void *Hud_GetCountdown() { return &gHud.countdown; }
 
-extern "C" void *Hud_GetWallet() { return &gHud.unk_2a4; }
+extern "C" void *Hud_GetWallet() { return &gHud.wallet; }
 
 void HudController::init() {
     Hud_Show();
     Hud_ClearHideB();
     _ZN19HudControllerStates16enterModeForRoomEv(this);
-    _ZN8HudClock5resetEv(&unk_08);
-    _ZN12HudCountdown5resetEv(&unk_d0);
-    _ZN15HudCameraButton5resetEv(&unk_1a4);
-    unk_2a4.reset();
-    unk_316 = 0;
+    _ZN8HudClock5resetEv(&clock);
+    _ZN12HudCountdown5resetEv(&countdown);
+    _ZN15HudCameraButton5resetEv(&cameraButton);
+    wallet.reset();
+    buttonLayout = 0;
 }
 
 void HudController::exit() {
-    unk_2a4.release();
-    _ZN15HudCameraButton7releaseEv(&unk_1a4);
-    _ZN12HudCountdown7releaseEv(&unk_d0);
-    _ZN8HudClock7releaseEv(&unk_08);
+    wallet.release();
+    _ZN15HudCameraButton7releaseEv(&cameraButton);
+    _ZN12HudCountdown7releaseEv(&countdown);
+    _ZN8HudClock7releaseEv(&clock);
 }
 
 void HudController::update() {
@@ -2511,47 +2511,47 @@ void HudController::update() {
         (Fn)&HudController::updateOff, (Fn)&HudController::updateClock, (Fn)&HudControllerStates::updateCountdown,
         (Fn)&HudControllerStates::updateCameraButton, (Fn)&HudControllerStates::updateWallet, (Fn)&HudControllerStates::updateHidden,
     };
-    (this->*tbl[unk_04])();
-    _ZN8HudClock10callUpdateEv(&unk_08);
-    _ZN12HudCountdown10callUpdateEv(&unk_d0);
-    _ZN15HudCameraButton10callUpdateEv(&unk_1a4);
-    unk_2a4.callUpdate();
+    (this->*tbl[state])();
+    _ZN8HudClock10callUpdateEv(&clock);
+    _ZN12HudCountdown10callUpdateEv(&countdown);
+    _ZN15HudCameraButton10callUpdateEv(&cameraButton);
+    wallet.callUpdate();
     _ZN19HudControllerStates17updateInputLayoutEv(this);
 }
 
 void HudController::draw() {
-    _ZN8HudClock8callDrawEv(&unk_08);
-    _ZN12HudCountdown8callDrawEv(&unk_d0);
-    _ZN15HudCameraButton8callDrawEv(&unk_1a4);
-    unk_2a4.callDraw();
+    _ZN8HudClock8callDrawEv(&clock);
+    _ZN12HudCountdown8callDrawEv(&countdown);
+    _ZN15HudCameraButton8callDrawEv(&cameraButton);
+    wallet.callDraw();
 }
 
 void HudController::enterOff() {
-    unk_04 = 0;
+    state = 0;
 }
 
 void HudController::updateOff() {
-    if (unk_314 != 0 || unk_315 != 0) {
+    if (hideRequest != 0 || hideRequestB != 0) {
         _ZN19HudControllerStates11enterHiddenEv(this);
     }
 }
 
 void HudController::enterClock() {
-    unk_04 = 1;
+    state = 1;
 }
 
 void HudController::updateClock() {
     BOOL a;
     BOOL b;
-    if (unk_314 != 0 || unk_315 != 0) {
+    if (hideRequest != 0 || hideRequestB != 0) {
         a = TRUE;
     } else {
         a = FALSE;
     }
-    b = _ZN12HudCountdown10isFinishedEv(&unk_d0) == 0 ? TRUE : FALSE;
+    b = _ZN12HudCountdown10isFinishedEv(&countdown) == 0 ? TRUE : FALSE;
     if (a || b) {
-        _ZN8HudClock4hideEv(&unk_08);
-        if (_ZN8HudClock8isHiddenEv(&unk_08) != 0) {
+        _ZN8HudClock4hideEv(&clock);
+        if (_ZN8HudClock8isHiddenEv(&clock) != 0) {
             if (a) {
                 _ZN19HudControllerStates11enterHiddenEv(this);
             } else {
@@ -2559,27 +2559,27 @@ void HudController::updateClock() {
             }
         }
     } else {
-        _ZN8HudClock4showEv(&unk_08);
+        _ZN8HudClock4showEv(&clock);
     }
 }
 
 void HudController::enterCountdown() {
-    unk_04 = 2;
+    state = 2;
     HudObjGfx_SetCountdownVariant(1);
     HudObjGfx_LoadKind(1, 1);
 }
 
 void HudControllerStates::updateCountdown() {
     BOOL r5;
-    if (unk_314 != 0 || unk_315 != 0) {
+    if (hideRequest != 0 || hideRequestB != 0) {
         r5 = TRUE;
     } else {
         r5 = FALSE;
     }
-    BOOL r0 = _ZN12HudCountdown10isFinishedEv(&unk_d0);
+    BOOL r0 = _ZN12HudCountdown10isFinishedEv(&countdown);
     if (r5 || r0) {
-        _ZN12HudCountdown4hideEv(&unk_d0);
-        if (_ZN12HudCountdown8isHiddenEv(&unk_d0)) {
+        _ZN12HudCountdown4hideEv(&countdown);
+        if (_ZN12HudCountdown8isHiddenEv(&countdown)) {
             if (r5) {
                 enterHidden();
             } else {
@@ -2589,42 +2589,42 @@ void HudControllerStates::updateCountdown() {
             }
         }
     } else {
-        _ZN12HudCountdown4showEv(&unk_d0);
+        _ZN12HudCountdown4showEv(&countdown);
     }
 }
 
-void HudControllerStates::enterCameraButton() { unk_04 = 3; }
+void HudControllerStates::enterCameraButton() { state = 3; }
 
 void HudControllerStates::updateCameraButton() {
-    if (unk_314 != 0 || unk_315 != 0) {
-        _ZN15HudCameraButton7disableEv(&unk_1a4);
-        if (_ZN15HudCameraButton8isHiddenEv(&unk_1a4)) {
+    if (hideRequest != 0 || hideRequestB != 0) {
+        _ZN15HudCameraButton7disableEv(&cameraButton);
+        if (_ZN15HudCameraButton8isHiddenEv(&cameraButton)) {
             enterHidden();
         }
     } else {
-        _ZN15HudCameraButton6enableEv(&unk_1a4);
+        _ZN15HudCameraButton6enableEv(&cameraButton);
     }
     updateSharedPanels();
 }
 
-void HudControllerStates::enterWallet() { unk_04 = 4; }
+void HudControllerStates::enterWallet() { state = 4; }
 
 void HudControllerStates::updateWallet() {
-    _ZN9HudWallet4showEv(&unk_2a4);
+    _ZN9HudWallet4showEv(&wallet);
     updateSharedPanels();
 }
 
 void HudControllerStates::enterHidden() {
     HudObjGfx_LoadKind(3, 1);
-    unk_04 = 5;
+    state = 5;
 }
 
 void HudControllerStates::updateHidden() {
-    if (unk_314 != 0 || unk_315 != 0) {
-        _ZN9HudWallet4showEv(&unk_2a4);
+    if (hideRequest != 0 || hideRequestB != 0) {
+        _ZN9HudWallet4showEv(&wallet);
     } else {
-        _ZN9HudWallet4hideEv(&unk_2a4);
-        if (_ZN9HudWallet8isHiddenEv(&unk_2a4)) {
+        _ZN9HudWallet4hideEv(&wallet);
+        if (_ZN9HudWallet8isHiddenEv(&wallet)) {
             HudObjGfx_LoadKind(4, 1);
             enterModeForRoom();
         }
@@ -2635,15 +2635,15 @@ void HudControllerStates::updateHidden() {
 void HudControllerStates::updateSharedPanels() {
     if (Hud_GetSceneHudKind() != 0) {
         if (Unk_0208a150_IsOne(gFieldSceneKind)) {
-            if (_ZN12HudCountdown10isFinishedEv(&unk_d0)) {
-                _ZN12HudCountdown4hideEv(&unk_d0);
-                if (_ZN12HudCountdown8isHiddenEv(&unk_d0)) {
-                    _ZN8HudClock4showEv(&unk_08);
+            if (_ZN12HudCountdown10isFinishedEv(&countdown)) {
+                _ZN12HudCountdown4hideEv(&countdown);
+                if (_ZN12HudCountdown8isHiddenEv(&countdown)) {
+                    _ZN8HudClock4showEv(&clock);
                 }
             } else {
-                _ZN8HudClock4hideEv(&unk_08);
-                if (_ZN8HudClock8isHiddenEv(&unk_08)) {
-                    _ZN12HudCountdown4showEv(&unk_d0);
+                _ZN8HudClock4hideEv(&clock);
+                if (_ZN8HudClock8isHiddenEv(&clock)) {
+                    _ZN12HudCountdown4showEv(&countdown);
                 }
             }
         }
@@ -2669,7 +2669,7 @@ void HudControllerStates::enterModeForRoom() {
 
 void HudControllerStates::updateInputLayout() {
     BOOL r = FALSE;
-    if (unk_316 != 0) {
+    if (buttonLayout != 0) {
         if (InputMode_IsButtons()) {
             r = TRUE;
         }
@@ -2679,9 +2679,9 @@ void HudControllerStates::updateInputLayout() {
         }
     }
     if (r) {
-        unk_316 = unk_316 == 0 ? 1 : 0;
-        if (unk_04 == 3) {
-            HudObjGfx_LoadCameraButton(unk_316, 1, 1);
+        buttonLayout = buttonLayout == 0 ? 1 : 0;
+        if (state == 3) {
+            HudObjGfx_LoadCameraButton(buttonLayout, 1, 1);
         }
     }
 }

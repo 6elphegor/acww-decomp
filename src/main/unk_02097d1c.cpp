@@ -273,20 +273,20 @@ public:
 class Unk_02097ff4 {
 public:
     u8 unk_00[0x21e4];
-    u8 unk_21e4[8];
-    u8 unk_21ec[0x10];
-    u32 unk_21fc[2];
-    u8 unk_2204[0x10];
-    u16 unk_2214;
+    u8 bank[8];
+    u8 emotions[0x10];
+    u32 flags[2];
+    u8 dayUpdateDate[0x10];
+    u16 inventoryBackground;
     u8 unk_2216[2];
-    u8 unk_2218;
+    u8 birthday;
     u8 unk_2219;
     u8 unk_221a[0x37];
-    u8 unk_2251;
-    u8 unk_2252;
-    u8 unk_2253;
+    u8 arbeitTalkCount;
+    u8 skyShotHits;
+    u8 birthdayTalkYear;
     u8 unk_2254[8];
-    u8 unk_225c[10];
+    u8 foreignVillagerRecord[10];
     u8 unk_2266[12];
     u16 unk_2272;
 
@@ -606,12 +606,12 @@ void Unk_02097ff4::resetForNewTown()
 
 void *Unk_02097ff4::func_020983cc()
 {
-    return &unk_2214;
+    return &inventoryBackground;
 }
 
 void Unk_02097ff4::func_020983c0(u16 *p)
 {
-    unk_2214 = *p;
+    inventoryBackground = *p;
 }
 
 s32 Unk_02097ff4::pickOtherResident()
@@ -649,43 +649,43 @@ s32 Unk_02097ff4::findUnusedSlot(s32 n)
 
 u8 *Unk_02097ff4::getDayUpdateDate()
 {
-    return unk_2204;
+    return dayUpdateDate;
 }
 
 void *Unk_02097ff4::getBankAccount()
 {
-    return unk_21e4;
+    return bank;
 }
 
 void *Unk_02097ff4::getEmotions()
 {
-    return unk_21ec;
+    return emotions;
 }
 
 void *Unk_02097ff4::getBirthday()
 {
-    return &unk_2218;
+    return &birthday;
 }
 
 void Unk_02097ff4::setBirthday(u32 a, u32 b)
 {
     unk_2219 = a;
-    unk_2218 = b;
+    birthday = b;
 }
 
 void Unk_02097ff4::clearBirthday()
 {
-    *(u16 *)&unk_2218 = 0;
+    *(u16 *)&birthday = 0;
 }
 
 void Unk_02097ff4::setBirthdayTalkYear(u32 v)
 {
-    unk_2253 = v;
+    birthdayTalkYear = v;
 }
 
 u32 Unk_02097ff4::getBirthdayTalkYear()
 {
-    return unk_2253;
+    return birthdayTalkYear;
 }
 
 extern "C" void PlayerData_UpdateDay()
@@ -725,28 +725,28 @@ extern "C" void PlayerData_UpdateDay()
 
 u32 Unk_02097ff4::getArbeitTalkCount()
 {
-    return unk_2251;
+    return arbeitTalkCount;
 }
 
 void Unk_02097ff4::advanceArbeitTalkCount()
 {
-    unk_2251 += 1;
-    if (unk_2251 == 1) {
-        unk_2251 = 2;
+    arbeitTalkCount += 1;
+    if (arbeitTalkCount == 1) {
+        arbeitTalkCount = 2;
     }
-    if (unk_2251 > 10) {
-        unk_2251 = 10;
+    if (arbeitTalkCount > 10) {
+        arbeitTalkCount = 10;
     }
 }
 
 u32 Unk_02097ff4::getSkyShotHits()
 {
-    return unk_2252;
+    return skyShotHits;
 }
 
 void Unk_02097ff4::setSkyShotHits(u32 v)
 {
-    unk_2252 = v;
+    skyShotHits = v;
 }
 
 u32 Unk_02097ff4::func_02098198(u32 idx)
@@ -766,14 +766,14 @@ void Unk_02097ff4::func_02098188(u32 idx, u32 v)
 
 void *Unk_02097ff4::getForeignVillagerRecord()
 {
-    return unk_225c;
+    return foreignVillagerRecord;
 }
 
 void Unk_02097ff4::sendForeignVillagerLetter()
 {
     void *r8 = ((PlayerData *)this)->getPlayerId();
     if (_ZN8PlayerId7isValidEv()) {
-        if (_ZN21ForeignVillagerRecord5isSetEv(unk_225c)) {
+        if (_ZN21ForeignVillagerRecord5isSetEv(foreignVillagerRecord)) {
             u8 *r7 = unk_2266;
             s32 a;
             u8 *l10 = (u8 *)&unk_2272;
@@ -805,10 +805,10 @@ void Unk_02097ff4::sendForeignVillagerLetter()
                 String_LoadResolveAltText(o58, &c, r);
                 MailText_SetSlot(i + 2, o58);
             }
-            TownId_GetNameString(unk_225c, o3c);
+            TownId_GetNameString(foreignVillagerRecord, o3c);
             MailText_SetSlot(8, o3c);
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
-                _ZN21ForeignVillagerRecord5clearEv(unk_225c);
+                _ZN21ForeignVillagerRecord5clearEv(foreignVillagerRecord);
             }
             _ZN11MsgString33D1Ev(o58);
             _ZN11MsgString9CD1Ev(o3c);
@@ -824,7 +824,7 @@ BOOL Unk_02097ff4::testFlag(u32 bit)
     BOOL r;
     if (idx < 2) {
         r = TRUE;
-        if (((1 << b) & unk_21fc[idx]) != 0) {
+        if (((1 << b) & flags[idx]) != 0) {
             goto end;
         }
     }
@@ -838,7 +838,7 @@ void Unk_02097ff4::setFlag(u32 bit)
     s32 idx = bit >> 5;
     u32 b = bit & 31;
     if (idx < 2) {
-        u32 *q = unk_21fc;
+        u32 *q = flags;
         u32 m = 1 << b;
         *(volatile u32 *)&q[idx] = m | *(volatile u32 *)&q[idx];
     }
@@ -849,7 +849,7 @@ void Unk_02097ff4::clearFlag(u32 bit)
     s32 idx = bit >> 5;
     u32 b = bit & 31;
     if (idx < 2) {
-        u32 *q = unk_21fc;
+        u32 *q = flags;
         u32 m = ~(1 << b);
         *(volatile u32 *)&q[idx] = m & *(volatile u32 *)&q[idx];
     }

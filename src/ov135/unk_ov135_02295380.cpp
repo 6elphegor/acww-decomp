@@ -111,15 +111,15 @@ public:
     void func_ov002_02200a68();
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Menu cursor sub-object hierarchy (src/ov002/unk_02202200.cpp, unk_02202b68.cpp)
@@ -211,7 +211,7 @@ static inline BOOL Unk_ov135_Both() {
 // Vtable 0x022964b0, size 0x2824 (scene overlay on MenuProc)
 class ClockAdjustMenu : public MenuProc {
 public:
-    ClockAdjustMenu() : unk_98(), unk_fc(), unk_260() {}
+    ClockAdjustMenu() : cursor(), bottomButtons(), picker() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
@@ -279,13 +279,13 @@ public:
     void stateOpen();
 
     /* 0x091 */ u8 unk_91;
-    /* 0x092 */ u16 unk_92;
-    /* 0x094 */ u8 unk_94;
-    /* 0x095 */ u8 unk_95;
+    /* 0x092 */ u16 flags;
+    /* 0x094 */ u8 returnState;
+    /* 0x095 */ u8 cursorSlot;
     /* 0x096 */ u8 unk_96[2];
-    /* 0x098 */ MenuCursorBuf0 unk_98;
-    /* 0x0fc */ MenuBottomButtons unk_fc;
-    /* 0x260 */ DateTimePicker unk_260;
+    /* 0x098 */ MenuCursorBuf0 cursor;
+    /* 0x0fc */ MenuBottomButtons bottomButtons;
+    /* 0x260 */ DateTimePicker picker;
 };
 
 extern "C" ClockAdjustMenu *ClockAdjustMenu_Create() { return new ClockAdjustMenu(); }
@@ -300,7 +300,7 @@ extern "C" Unk_ov135_SceneEntry sClockAdjustMenuProfile = {ClockAdjustMenu_Creat
 
 BOOL ClockAdjustMenu::vfunc_00() {
     initPicker();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -313,15 +313,15 @@ BOOL ClockAdjustMenu::vfunc_0c() {
 
 BOOL ClockAdjustMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        unk_98.drawWrapped();
+        cursor.drawWrapped();
     }
     if (!testFlags(1)) {
         return FALSE;
     }
     s32 r = getSlideOffsetY();
-    DateTimePicker_Draw(&unk_260, 0, r);
+    DateTimePicker_Draw(&picker, 0, r);
     s32 r2 = getSlideOffsetY();
-    unk_fc.drawAt(r2);
+    bottomButtons.drawAt(r2);
     return TRUE;
 }
 
@@ -332,7 +332,7 @@ BOOL ClockAdjustMenu::execTransition() {
         &ClockAdjustMenu::stateClose,
         &ClockAdjustMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -355,7 +355,7 @@ void ClockAdjustMenu::runMainState() {
         &ClockAdjustMenu::stateExit,
         &ClockAdjustMenu::stateListOpening,
         &ClockAdjustMenu::stateListClosing};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL ClockAdjustMenu::execMain() {
@@ -383,7 +383,7 @@ void ClockAdjustMenu::stateOpen() {
     Gfx2d_ShowLayer(4);
     updateLayerSlide();
     setFlags(1);
-    unk_fc.setLayoutConfirmAnd06(0x65);
+    bottomButtons.setLayoutConfirmAnd06(0x65);
     setTransitionState(1);
 }
 
@@ -418,22 +418,22 @@ void ClockAdjustMenu::updateLayerSlide() {
 }
 
 void ClockAdjustMenu::initPicker() {
-    DateTimePicker_Init(&unk_260, 0, 6, 4, 3);
+    DateTimePicker_Init(&picker, 0, 6, 4, 3);
     if (MenuCtrl_GetMode() == 0x33) {
-        DateTimePicker_EnableMinLimit(&unk_260);
+        DateTimePicker_EnableMinLimit(&picker);
     }
-    unk_95 = 0;
-    unk_92 = 0;
+    cursorSlot = 0;
+    flags = 0;
 }
 
 void ClockAdjustMenu::releaseResources() {
-    DateTimePicker_Shutdown(&unk_260);
-    unk_fc.freeTexts();
+    DateTimePicker_Shutdown(&picker);
+    bottomButtons.freeTexts();
 }
 
 void ClockAdjustMenu::preInputUpdate() {
     preStateUpdate();
-    unk_98.vfunc_0c();
+    cursor.vfunc_0c();
 }
 
 void ClockAdjustMenu::postInputUpdate() {
@@ -441,12 +441,12 @@ void ClockAdjustMenu::postInputUpdate() {
 }
 
 void ClockAdjustMenu::preStateUpdate() {
-    unk_fc.freeTexts();
-    DateTimePicker_BeginFrame(&unk_260);
+    bottomButtons.freeTexts();
+    DateTimePicker_BeginFrame(&picker);
 }
 
 void ClockAdjustMenu::postStateUpdate() {
-    DateTimePicker_EndFrame(&unk_260);
+    DateTimePicker_EndFrame(&picker);
 }
 
 void ClockAdjustMenu::setupBgLayers() {
@@ -460,13 +460,13 @@ void ClockAdjustMenu::setupBgLayers() {
 }
 
 void ClockAdjustMenu::loadBgGfx() {
-    DateTimePicker_LoadBgGraphics(&unk_260);
-    DateTimePicker_DrawTitleAndFields(&unk_260, 0x6b);
+    DateTimePicker_LoadBgGraphics(&picker);
+    DateTimePicker_DrawTitleAndFields(&picker, 0x6b);
 }
 
 void ClockAdjustMenu::loadObjGfx() {
-    DateTimePicker_LoadObjGraphics(&unk_260);
-    MenuButtons_LoadTextColors(&unk_fc);
+    DateTimePicker_LoadObjGraphics(&picker);
+    MenuButtons_LoadTextColors(&bottomButtons);
 }
 
 void ClockAdjustMenu::updateTouch() {
@@ -474,18 +474,18 @@ void ClockAdjustMenu::updateTouch() {
         startButtonInput();
     } else {
         if (Unk_ov135_Both()) {
-            if (unk_fc.isTouched(6)) {
+            if (bottomButtons.isTouched(6)) {
                 confirm();
-            } else if (unk_fc.isTouched(7)) {
+            } else if (bottomButtons.isTouched(7)) {
                 cancel();
             } else {
                 u8 a = gTouchCurX;
                 u8 b = gTouchCurY;
-                if (DateTimePicker_GrabHand(&unk_260, b ? a : a, b)) {
+                if (DateTimePicker_GrabHand(&picker, b ? a : a, b)) {
                     MenuCtrl_SetClockEdited();
                     setMainState(1);
                 }
-                s32 r = DateTimePicker_HitTestField(&unk_260, a, b);
+                s32 r = DateTimePicker_HitTestField(&picker, a, b);
                 if (r != 6) {
                     openFieldList(r);
                 }
@@ -496,18 +496,18 @@ void ClockAdjustMenu::updateTouch() {
 
 void ClockAdjustMenu::stateHandDrag() {
     if (gTouchHeld == 0) {
-        if (DateTimePicker_EndHandDrag(&unk_260)) {
+        if (DateTimePicker_EndHandDrag(&picker)) {
             setMainState(2);
         } else {
             setMainState(0);
         }
     } else {
-        DateTimePicker_UpdateHandDrag(&unk_260, gTouchCurX, gTouchCurY);
+        DateTimePicker_UpdateHandDrag(&picker, gTouchCurX, gTouchCurY);
     }
 }
 
 void ClockAdjustMenu::stateHandAnim() {
-    if (DateTimePicker_UpdateHandAnim(&unk_260)) {
+    if (DateTimePicker_UpdateHandAnim(&picker)) {
         setMainState(0);
     }
 }
@@ -517,7 +517,7 @@ void ClockAdjustMenu::stateListTouch() {
         enterListButtonMode();
     } else {
         if (Unk_ov135_Both()) {
-            switch (DateTimePicker_HitTestList(&unk_260, gTouchCurX, gTouchCurY)) {
+            switch (DateTimePicker_HitTestList(&picker, gTouchCurX, gTouchCurY)) {
             case 0:
                 decideList();
                 break;
@@ -537,18 +537,18 @@ void ClockAdjustMenu::stateListTouch() {
 
 void ClockAdjustMenu::stateListKnobDrag() {
     if (gTouchHeld) {
-        unk_260.dragKnob(gTouchCurY);
+        picker.dragKnob(gTouchCurY);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(3);
     }
 }
 
 void ClockAdjustMenu::stateListTrackDrag() {
     if (gTouchHeld) {
-        unk_260.dragKnobToward(gTouchCurY);
+        picker.dragKnobToward(gTouchCurY);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(3);
     }
 }
@@ -580,7 +580,7 @@ void ClockAdjustMenu::stateListButtons() {
         enterListTouchMode();
         return;
     }
-    s32 r = unk_260.navigateList(takeRepeatedKeys());
+    s32 r = picker.navigateList(takeRepeatedKeys());
     switch (r) {
     case 0:
         goto zero;
@@ -590,7 +590,7 @@ void ClockAdjustMenu::stateListButtons() {
     case 3: {
         s32 b = getCursorTargetX();
         s32 c = getCursorTargetY();
-        unk_98.warpTo(b, c);
+        cursor.warpTo(b, c);
         return;
     }
     default:
@@ -610,46 +610,46 @@ zero: {
 
 void ClockAdjustMenu::stateListKnobHold() {
     if (gPad[0] & 1) {
-        unk_260.moveKnobByPad();
+        picker.moveKnobByPad();
         s32 b = getCursorTargetX();
         s32 c = getCursorTargetY();
-        unk_98.warpTo(b, c);
+        cursor.warpTo(b, c);
     } else {
-        unk_260.releaseKnob();
+        picker.releaseKnob();
         setMainState(9);
     }
 }
 
 void ClockAdjustMenu::stateListKnobRelease() {
-    if (unk_260.finishKnobRelease()) {
+    if (picker.finishKnobRelease()) {
         setMainState(7);
         releaseCursor();
     }
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
-    unk_98.warpTo(b, c);
+    cursor.warpTo(b, c);
 }
 
 void ClockAdjustMenu::updateCursorMove() {
-    if (!unk_98.isMoving()) {
-        setMainState(unk_94);
+    if (!cursor.isMoving()) {
+        setMainState(returnState);
         runMainState();
     }
 }
 
 void ClockAdjustMenu::updateCursorPress() {
-    if (unk_98.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         if (testFlags(2)) {
-            if (unk_260.grabKnobByCursor()) {
+            if (picker.grabKnobByCursor()) {
                 setMainState(8);
-            } else if (unk_260.pickListCursorRow()) {
+            } else if (picker.pickListCursorRow()) {
                 decideList();
             } else {
                 setMainState(7);
                 releaseCursor();
             }
         } else {
-            u32 v = unk_95;
+            u32 v = cursorSlot;
             if (v == 5) {
                 confirm();
             } else if (v == 6) {
@@ -662,19 +662,19 @@ void ClockAdjustMenu::updateCursorPress() {
 }
 
 void ClockAdjustMenu::updateCursorRelease() {
-    if (unk_98.isAnimDone()) {
+    if (cursor.isAnimDone()) {
         refreshCursor();
-        setMainState(unk_94);
+        setMainState(returnState);
     }
 }
 
 void ClockAdjustMenu::stateExit() {
-    if (unk_fc.stepPress()) {
-        if (unk_98.getAnim()) {
-            s32 a = unk_fc.getPressOffset();
-            s32 b = unk_fc.getTargetX(-1);
-            s32 c = unk_fc.getTargetY(-1);
-            unk_98.warpTo(a + b, a + c);
+    if (bottomButtons.stepPress()) {
+        if (cursor.getAnim()) {
+            s32 a = bottomButtons.getPressOffset();
+            s32 b = bottomButtons.getTargetX(-1);
+            s32 c = bottomButtons.getTargetY(-1);
+            cursor.warpTo(a + b, a + c);
         }
     } else {
         hideCursor();
@@ -683,18 +683,18 @@ void ClockAdjustMenu::stateExit() {
 }
 
 void ClockAdjustMenu::stateListOpening() {
-    if (DateTimePicker_UpdateListOpen(&unk_260)) {
+    if (DateTimePicker_UpdateListOpen(&picker)) {
         enterListInputMode();
     }
 }
 
 void ClockAdjustMenu::stateListClosing() {
-    if (DateTimePicker_UpdateListClose(&unk_260)) {
-        s32 r = DateTimePicker_GetCursorField(&unk_260);
+    if (DateTimePicker_UpdateListClose(&picker)) {
+        s32 r = DateTimePicker_GetCursorField(&picker);
         if (r == 6) {
-            unk_95 = 5;
+            cursorSlot = 5;
         } else {
-            unk_95 = r;
+            cursorSlot = r;
         }
         resumeInput();
     }
@@ -720,17 +720,17 @@ void ClockAdjustMenu::resumeInput() {
 }
 
 void ClockAdjustMenu::confirm() {
-    unk_fc.setSelected(6);
+    bottomButtons.setSelected(6);
     setTransitionState(2);
     setMainState(0xd);
     MenuCtrl_SetResult(1);
     u32 v[2];
     v[0] = 0;
     v[1] = 0;
-    DateTimePicker_GetDateTime(&unk_260, v);
+    DateTimePicker_GetDateTime(&picker, v);
     MenuCtrl_SetDateTime(v);
     u8 *g = gSaveData;
-    if (DateTimePicker_IsBeforeStart(&unk_260)) {
+    if (DateTimePicker_IsBeforeStart(&picker)) {
         MenuCtrl_SetClockMovedBack();
     } else {
         MenuCtrl_SetClockMovedForward();
@@ -747,7 +747,7 @@ void ClockAdjustMenu::confirm() {
 }
 
 void ClockAdjustMenu::cancel() {
-    unk_fc.setSelected(7);
+    bottomButtons.setSelected(7);
     setTransitionState(2);
     setMainState(0xd);
     MenuCtrl_SetResult(0);
@@ -755,7 +755,7 @@ void ClockAdjustMenu::cancel() {
 
 void ClockAdjustMenu::openFieldList(u32 a) {
     hideCursor();
-    DateTimePicker_OpenList(&unk_260, a);
+    DateTimePicker_OpenList(&picker, a);
     setMainState(0xe);
     MenuCtrl_SetClockEdited();
 }
@@ -763,14 +763,14 @@ void ClockAdjustMenu::openFieldList(u32 a) {
 void ClockAdjustMenu::decideList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_DecideList(&unk_260);
+    DateTimePicker_DecideList(&picker);
     setMainState(0xf);
 }
 
 void ClockAdjustMenu::cancelList() {
     hideCursor();
     clearFlags(2);
-    DateTimePicker_CancelList(&unk_260);
+    DateTimePicker_CancelList(&picker);
     setMainState(0xf);
 }
 
@@ -780,8 +780,8 @@ void ClockAdjustMenu::enterListTouchMode() {
 }
 
 void ClockAdjustMenu::enterListButtonMode() {
-    s32 t = unk_260.getListCursorY();
-    unk_260.setListCursorFromY(t);
+    s32 t = picker.getListCursorY();
+    picker.setListCursorFromY(t);
     setFlags(2);
     showCursor();
     restartKeyRepeat();
@@ -799,55 +799,55 @@ void ClockAdjustMenu::enterListInputMode() {
 void ClockAdjustMenu::showCursor() {
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
-    unk_98.warpTo(b, c);
+    cursor.warpTo(b, c);
     u32 v;
-    if (testFlags(2) != 0 || ((v = unk_95) != 5 && v != 6)) {
-        ((MenuCursor *)&unk_98)->setAnimIfChanged(1);
+    if (testFlags(2) != 0 || ((v = cursorSlot) != 5 && v != 6)) {
+        ((MenuCursor *)&cursor)->setAnimIfChanged(1);
     } else {
-        ((MenuCursor *)&unk_98)->setAnimIfChanged(7);
+        ((MenuCursor *)&cursor)->setAnimIfChanged(7);
     }
     refreshCursor();
 }
 
 s32 ClockAdjustMenu::getCursorTargetX() {
     if (testFlags(2)) {
-        return unk_260.getListCursorX();
+        return picker.getListCursorX();
     }
-    switch (unk_95) {
+    switch (cursorSlot) {
     case 5:
-        return unk_fc.getTargetX(6);
+        return bottomButtons.getTargetX(6);
     case 6:
-        return unk_fc.getTargetX(7);
+        return bottomButtons.getTargetX(7);
     default:
-        return sClockAdjustCursorXTable[unk_95];
+        return sClockAdjustCursorXTable[cursorSlot];
     }
 }
 
 s32 ClockAdjustMenu::getCursorTargetY() {
     if (testFlags(2)) {
-        return unk_260.getListCursorY();
+        return picker.getListCursorY();
     }
-    switch (unk_95) {
+    switch (cursorSlot) {
     case 5:
-        return unk_fc.getTargetY(6);
+        return bottomButtons.getTargetY(6);
     case 6:
-        return unk_fc.getTargetY(7);
+        return bottomButtons.getTargetY(7);
     default:
-        return sClockAdjustCursorYTable[unk_95];
+        return sClockAdjustCursorYTable[cursorSlot];
     }
 }
 
 void ClockAdjustMenu::hideCursor() {
-    ((MenuCursor *)&unk_98)->setAnimIfChanged(0);
-    unk_98.vfunc_0c();
+    ((MenuCursor *)&cursor)->setAnimIfChanged(0);
+    cursor.vfunc_0c();
 }
 
 void ClockAdjustMenu::moveCursorToTarget() {
     u32 k;
-    if (testFlags(2) != 0 || ((k = unk_95) != 5 && k != 6)) {
-        ((MenuCursor *)&unk_98)->switchToAnim01();
+    if (testFlags(2) != 0 || ((k = cursorSlot) != 5 && k != 6)) {
+        ((MenuCursor *)&cursor)->switchToAnim01();
     } else {
-        ((MenuCursor *)&unk_98)->switchToAnim07();
+        ((MenuCursor *)&cursor)->switchToAnim07();
     }
     s32 b = getCursorTargetX();
     s32 c = getCursorTargetY();
@@ -856,62 +856,62 @@ void ClockAdjustMenu::moveCursorToTarget() {
 
 void ClockAdjustMenu::startCursorMove(s32 a, s32 b) {
     if (testFlags(4)) {
-        unk_98.moveToEase(a, b, 2, 1);
+        cursor.moveToEase(a, b, 2, 1);
     } else {
-        unk_98.moveToEase(a, b, 3, 1);
+        cursor.moveToEase(a, b, 3, 1);
     }
-    unk_94 = unk_8d;
+    returnState = mainState;
     setMainState(0xa);
     clearFlags(4);
 }
 
 void ClockAdjustMenu::refreshCursor() {
-    unk_98.setPoseIdle();
-    unk_98.vfunc_0c();
+    cursor.setPoseIdle();
+    cursor.vfunc_0c();
 }
 
 void ClockAdjustMenu::pressCursor() {
-    ((MenuCursor *)&unk_98)->setPosePress();
+    ((MenuCursor *)&cursor)->setPosePress();
     setMainState(0xb);
 }
 
 void ClockAdjustMenu::releaseCursor() {
-    unk_98.setPoseRelease();
-    unk_94 = unk_8d;
+    cursor.setPoseRelease();
+    returnState = mainState;
     setMainState(0xc);
 }
 
 BOOL ClockAdjustMenu::moveCursorByPad(u32 pad) {
-    u32 old = unk_95;
+    u32 old = cursorSlot;
     if (MenuKeys_HasLeft(pad)) {
-        unk_95 = sClockAdjustCursorLeftTable[unk_95];
+        cursorSlot = sClockAdjustCursorLeftTable[cursorSlot];
     } else if (MenuKeys_HasRight(pad)) {
-        unk_95 = sClockAdjustCursorRightTable[unk_95];
+        cursorSlot = sClockAdjustCursorRightTable[cursorSlot];
     }
-    if (old != unk_95) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     if (MenuKeys_HasUp(pad)) {
-        unk_95 = sClockAdjustCursorUpTable[unk_95];
+        cursorSlot = sClockAdjustCursorUpTable[cursorSlot];
     } else if (MenuKeys_HasDown(pad)) {
-        unk_95 = sClockAdjustCursorDownTable[unk_95];
+        cursorSlot = sClockAdjustCursorDownTable[cursorSlot];
     }
-    if (old != unk_95) {
+    if (old != cursorSlot) {
         return TRUE;
     }
     return FALSE;
 }
 
 BOOL ClockAdjustMenu::testFlags(u32 m) {
-    if (unk_92 & m) {
+    if (flags & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void ClockAdjustMenu::setFlags(u32 m) { unk_92 = unk_92 | m; }
+void ClockAdjustMenu::setFlags(u32 m) { flags = flags | m; }
 
-void ClockAdjustMenu::clearFlags(u32 m) { unk_92 = unk_92 & ~m; }
+void ClockAdjustMenu::clearFlags(u32 m) { flags = flags & ~m; }
 
 extern "C" const s32 sClockAdjustCursorXTable[7] = {0xd6, 0x68, 0xa6, 0x68, 0xb0, 0};
 

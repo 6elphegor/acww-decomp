@@ -82,15 +82,15 @@ public:
     void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
-    /* 0x64 */ u32 unk_64;
-    /* 0x68 */ u32 unk_68;
-    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x64 */ u32 openMenuPrev;
+    /* 0x68 */ u32 openMenuNext;
+    /* 0x6c */ MenuProc *openMenuOwner;
     /* 0x70 */ u8 unk_70[0x1c];
-    /* 0x8c */ u8 unk_8c;
-    /* 0x8d */ u8 unk_8d;
+    /* 0x8c */ u8 transitionState;
+    /* 0x8d */ u8 mainState;
     /* 0x8e */ u8 unk_8e;
-    /* 0x8f */ u8 unk_8f;
-    /* 0x90 */ u8 unk_90;
+    /* 0x8f */ u8 phase;
+    /* 0x90 */ u8 menuId;
 };
 
 // Text window, 0x40 bytes (src/main/unk_0206f53c.cpp)
@@ -359,7 +359,7 @@ extern "C" DistantTownsMenu *DistantTownsMenu_Create() { return new DistantTowns
 
 BOOL DistantTownsMenu::vfunc_00() {
     initDistantTowns();
-    unk_8c = 0;
+    transitionState = 0;
     setPhase(0);
     return TRUE;
 }
@@ -419,7 +419,7 @@ BOOL DistantTownsMenu::execTransition() {
         &DistantTownsMenu::stateClose,
         &DistantTownsMenu::stateClosing};
     preStateUpdate();
-    (this->*tbl[unk_8c])();
+    (this->*tbl[transitionState])();
     postStateUpdate();
     return TRUE;
 }
@@ -434,7 +434,7 @@ void DistantTownsMenu::runMainState() {
         &DistantTownsMenu::updateCloseDelay,
         &DistantTownsMenu::updatePageFadeOut,
         &DistantTownsMenu::updatePageFadeIn};
-    (this->*tbl[unk_8d])();
+    (this->*tbl[mainState])();
 }
 
 BOOL DistantTownsMenu::execMain() {
@@ -824,7 +824,7 @@ void DistantTownsMenu::moveCursorTo(s32 a, s32 b) {
     } else {
         unk_f0c.moveToEase(a, b, 3, 1);
     }
-    unk_8ae = unk_8d;
+    unk_8ae = mainState;
     setMainState(2);
 }
 
@@ -840,7 +840,7 @@ void DistantTownsMenu::pressCursor() {
 
 void DistantTownsMenu::releaseCursor() {
     unk_f0c.setPoseRelease();
-    unk_8ae = unk_8d;
+    unk_8ae = mainState;
     setMainState(4);
 }
 

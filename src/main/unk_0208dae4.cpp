@@ -55,12 +55,12 @@ public:
     void setPriority(s32 v);
     void moveTo(s32 x, s32 y);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -126,9 +126,9 @@ extern "C" BOOL HudUnkIcon_CanShow() {
     return FALSE;
 }
 
-ScrollKnob::ScrollKnob(u32 flag) : unk_0c(0), unk_10(0) {
+ScrollKnob::ScrollKnob(u32 flag) : layer1(0), unk_10(0) {
     unk_3c = 0;
-    unk_40 = flag;
+    anim = flag;
     unk_44 = -1;
     setState(0);
 }
@@ -139,14 +139,14 @@ ScrollKnob::~ScrollKnob() {
 void ScrollKnob::draw() {
     if (unk_3c != 0) {
         void *h0 = unk_14.getCell();
-        void *h1 = unk_28.getCell();
+        void *h1 = priority.getCell();
         s32 a = unk_14.getFrameX(-1);
         s32 b = unk_14.getFrameY(-1);
-        s32 c = unk_28.getFrameX(-1);
-        s32 d = unk_28.getFrameY(-1);
-        s32 bx = unk_0c + getOriginX();
+        s32 c = priority.getFrameX(-1);
+        s32 d = priority.getFrameY(-1);
+        s32 bx = layer1 + getOriginX();
         s32 by = unk_10 + getOriginY();
-        if (unk_40 != 0) {
+        if (anim != 0) {
             Oam_DrawCell(0, h0, bx + a, by + b, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
             Oam_DrawCell(0, h1, bx + c, by + d, -1, unk_44, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
@@ -159,11 +159,11 @@ void ScrollKnob::draw() {
 void ScrollKnob::vfunc_0c() {
     if (unk_3c != 0) {
         unk_14.update();
-        unk_28.update();
+        priority.update();
     }
 }
 
-void ScrollKnob::moveTo(s32 x, s32 y) { unk_0c = x; unk_10 = y; }
+void ScrollKnob::moveTo(s32 x, s32 y) { layer1 = x; unk_10 = y; }
 
 void ScrollKnob::setPriority(s32 v) { unk_44 = v; }
 

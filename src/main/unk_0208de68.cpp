@@ -95,12 +95,12 @@ public:
     void setPriority(s32 v);
     void moveTo(s32 x, s32 y);
 
-    /* 0x0c */ s32 unk_0c;
+    /* 0x0c */ s32 layer1;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ SpriteAnim unk_14;
-    /* 0x28 */ SpriteAnim unk_28;
+    /* 0x28 */ SpriteAnim priority;
     /* 0x3c */ s32 unk_3c;
-    /* 0x40 */ u8 unk_40;
+    /* 0x40 */ u8 anim;
     /* 0x44 */ s32 unk_44;
 };
 
@@ -144,19 +144,19 @@ public:
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ s32 unk_14;
-    /* 0x18 */ s32 unk_18;
-    /* 0x1c */ SpriteAnim unk_1c;
-    /* 0x30 */ SpriteAnim unk_30;
-    /* 0x44 */ s32 unk_44;
-    /* 0x48 */ TextLabel *unk_48;
-    /* 0x4c */ StrBuf unk_4c;
+    /* 0x14 */ s32 palette;
+    /* 0x18 */ s32 kind;
+    /* 0x1c */ SpriteAnim layer1;
+    /* 0x30 */ SpriteAnim layer2;
+    /* 0x44 */ s32 state;
+    /* 0x48 */ TextLabel *label;
+    /* 0x4c */ StrBuf text;
     /* 0x50 */ u32 unk_50[6];
-    /* 0x68 */ u16 unk_68;
-    /* 0x6a */ u8 unk_6a;
-    /* 0x6b */ u8 unk_6b;
-    /* 0x6c */ u8 unk_6c;
-    /* 0x6d */ u8 unk_6d;
+    /* 0x68 */ u16 textColor;
+    /* 0x6a */ u8 onBufferA;
+    /* 0x6b */ u8 objWindow;
+    /* 0x6c */ u8 layer2Hidden;
+    /* 0x6d */ u8 textColorDirty;
 };
 // forward declarations
 extern "C" void HudUnkIcon_Reset();
