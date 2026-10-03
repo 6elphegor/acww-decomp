@@ -564,6 +564,8 @@ extern "C" s32 data_ov067_02262264 = 0;
 
 #pragma thumb off
 
+// Count leading zeros: the NitroSDK form of MATH_CountLeadingZeros (math.h), a one-instruction inline asm in the
+// SDK itself. mwcc 1.2 has no intrinsic for clz. Kept by decision (see the project's assembly policy).
 static inline u32 Clz(u32 x) {
     u32 r;
     asm { clz r, x }
