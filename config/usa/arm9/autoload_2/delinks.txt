@@ -963,7 +963,7 @@ src/autoload_2/unk_02132c74.c:
     complete
     .text       start:0x02132c74 end:0x02132ef8
 
-src/autoload_2/unk_02132ef8.c:
+src/autoload_2/unk_02132ef8.s:
     complete
     .text       start:0x02132ef8 end:0x02133100
 
