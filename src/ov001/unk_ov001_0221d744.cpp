@@ -58,92 +58,92 @@ s32 MIi_CpuClear16(s32, void *, s32);
 s32 WM_Initialize(void *, void *, s32);
 s32 WM_GetDispersionScanPeriod();
 u32 WM_GetAllowedChannel();
-void func_ov001_02225d58(void *);
-void *func_ov001_02225db0(s32, s32);
+void WfcHeap_FreeAndClear(void *);
+void *WfcHeap_AllocClear(s32, s32);
 
-void func_ov001_0221d744(Unk_ov001_0221d744_List *);
-void func_ov001_0221d970(u16 *);
-s32 func_ov001_0221da0c(Unk_ov001_0221d744_Ent **out);
-BOOL func_ov001_0221da70();
-BOOL func_ov001_0221db28();
-BOOL func_ov001_0221db6c();
-void func_ov001_0221dc60();
-void func_ov001_0221dca4();
+void WfcApScan_StoreResults(Unk_ov001_0221d744_List *);
+void WfcApScan_WmCallback(u16 *);
+s32 WfcApScan_GetResults(Unk_ov001_0221d744_Ent **out);
+BOOL WfcApScan_Stop();
+BOOL WfcApScan_StartScan();
+BOOL WfcApScan_Start();
+void WfcApScan_Free();
+void WfcApScan_Alloc();
 }
 
-extern "C" const u8 data_ov001_0222a2ac[4] = { 0x00, 0x50, 0xf2, 0x01 };
-extern "C" const u8 data_ov001_0222a2b0[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-extern "C" const u32 data_ov001_0222a2b8[17] = { 0, 0x3fff0400, 0xffff0000, 0xffffffff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-u8 *data_ov001_0222deec;
+extern "C" const u8 sWfcWpaOui[4] = { 0x00, 0x50, 0xf2, 0x01 };
+extern "C" const u8 sWfcApScanEmptyBssid[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+extern "C" const u32 sWfcApScanParam[17] = { 0, 0x3fff0400, 0xffff0000, 0xffffffff, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+u8 *sWfcApScan;
 
-void func_ov001_0221dca4() {
-    if (data_ov001_0222deec != 0) return;
-    data_ov001_0222deec = (u8 *)func_ov001_02225db0(0x1e60, 0x20);
+void WfcApScan_Alloc() {
+    if (sWfcApScan != 0) return;
+    sWfcApScan = (u8 *)WfcHeap_AllocClear(0x1e60, 0x20);
 }
 
-void func_ov001_0221dc60() {
-    if (data_ov001_0222deec == 0) return;
+void WfcApScan_Free() {
+    if (sWfcApScan == 0) return;
     do {
     } while (WM_GetAllowedChannel() != 0x8000);
-    func_ov001_02225d58(&data_ov001_0222deec);
+    WfcHeap_FreeAndClear(&sWfcApScan);
 }
 
-BOOL func_ov001_0221db6c() {
+BOOL WfcApScan_Start() {
     volatile u16 z = 0;
-    MIi_CpuClear16(z, data_ov001_0222deec + 0x1300, 0x348);
-    if (WM_Initialize(data_ov001_0222deec, (void *)func_ov001_0221d970, 3) != 2) return FALSE;
+    MIi_CpuClear16(z, sWfcApScan + 0x1300, 0x348);
+    if (WM_Initialize(sWfcApScan, (void *)WfcApScan_WmCallback, 3) != 2) return FALSE;
     u8 *g;
     do {
-        WM_ReadStatus(data_ov001_0222deec + 0x168c);
-        g = data_ov001_0222deec;
+        WM_ReadStatus(sWfcApScan + 0x168c);
+        g = sWfcApScan;
     } while (*(u16 *)(g + 0x168c) != 2);
-    *(Unk_ov001_0221db6c_Blob *)(g + 0x1648) = *(const Unk_ov001_0221db6c_Blob *)data_ov001_0222a2b8;
+    *(Unk_ov001_0221db6c_Blob *)(g + 0x1648) = *(const Unk_ov001_0221db6c_Blob *)sWfcApScanParam;
     *(u32 *)(g + 0x1648) = (u32)(g + 0xf00);
-    *(u16 *)(data_ov001_0222deec + 0x1650) = WM_GetDispersionScanPeriod();
-    if (func_ov001_0221db28() != 0) return TRUE;
+    *(u16 *)(sWfcApScan + 0x1650) = WM_GetDispersionScanPeriod();
+    if (WfcApScan_StartScan() != 0) return TRUE;
     return FALSE;
 }
 
-BOOL func_ov001_0221db28() {
-    if (WM_StartScanEx((void *)func_ov001_0221d970, data_ov001_0222deec + 0x1648) == 2) return TRUE;
+BOOL WfcApScan_StartScan() {
+    if (WM_StartScanEx((void *)WfcApScan_WmCallback, sWfcApScan + 0x1648) == 2) return TRUE;
     return FALSE;
 }
 
-BOOL func_ov001_0221da70() {
-    data_ov001_0222deec[0x1e48] = 1;
-    WM_ReadStatus(data_ov001_0222deec + 0x168c);
-    if (*(u16 *)(data_ov001_0222deec + 0x168c) != 2) {
-        if (WM_Reset((void *)func_ov001_0221d970) != 2) return FALSE;
+BOOL WfcApScan_Stop() {
+    sWfcApScan[0x1e48] = 1;
+    WM_ReadStatus(sWfcApScan + 0x168c);
+    if (*(u16 *)(sWfcApScan + 0x168c) != 2) {
+        if (WM_Reset((void *)WfcApScan_WmCallback) != 2) return FALSE;
         do {
-            WM_ReadStatus(data_ov001_0222deec + 0x168c);
-        } while (*(u16 *)(data_ov001_0222deec + 0x168c) != 2);
+            WM_ReadStatus(sWfcApScan + 0x168c);
+        } while (*(u16 *)(sWfcApScan + 0x168c) != 2);
     }
-    if (WM_End((void *)func_ov001_0221d970) != 2) return FALSE;
+    if (WM_End((void *)WfcApScan_WmCallback) != 2) return FALSE;
     return TRUE;
 }
 
-s32 func_ov001_0221da0c(Unk_ov001_0221d744_Ent **out) {
+s32 WfcApScan_GetResults(Unk_ov001_0221d744_Ent **out) {
     s32 cnt = 0;
     s32 i = 0;
-    *out = (Unk_ov001_0221d744_Ent *)(data_ov001_0222deec + 0x1300);
+    *out = (Unk_ov001_0221d744_Ent *)(sWfcApScan + 0x1300);
     Unk_ov001_0221d744_Ent *e = *out;
     for (; i < 20; i++, e++) {
-        if (memcmp(e->unk_20, data_ov001_0222a2b0, 6) != 0) cnt++;
+        if (memcmp(e->unk_20, sWfcApScanEmptyBssid, 6) != 0) cnt++;
     }
     return cnt;
 }
 
-void func_ov001_0221d970(u16 *p) {
+void WfcApScan_WmCallback(u16 *p) {
     if (p[1] != 0) return;
-    if (data_ov001_0222deec[0x1e48] != 0) return;
+    if (sWfcApScan[0x1e48] != 0) return;
     if (p[0] != 0x26) return;
     switch (p[4]) {
     case 5:
-        func_ov001_0221d744((Unk_ov001_0221d744_List *)p);
-        func_ov001_0221db28();
+        WfcApScan_StoreResults((Unk_ov001_0221d744_List *)p);
+        WfcApScan_StartScan();
         break;
     case 4:
-        func_ov001_0221db28();
+        WfcApScan_StartScan();
         break;
     default:
         Fatal_Trap(p);
@@ -151,12 +151,12 @@ void func_ov001_0221d970(u16 *p) {
     }
 }
 
-void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
+void WfcApScan_StoreResults(Unk_ov001_0221d744_List *p) {
     Unk_ov001_0221d744_Ent *tbl;
     Unk_ov001_0221d744_Buf buf;
     s32 i;
-    tbl = (Unk_ov001_0221d744_Ent *)(data_ov001_0222deec + 0x1300);
-    DC_InvalidateRange(data_ov001_0222deec + 0xf00, 0x400);
+    tbl = (Unk_ov001_0221d744_Ent *)(sWfcApScan + 0x1300);
+    DC_InvalidateRange(sWfcApScan + 0xf00, 0x400);
     for (i = 0; i < p->unk_0e; i++) {
         Unk_ov001_0221d744_Node *n = p->unk_10[i];
         if (n->unk_0c != 0 && n->unk_3c == 0) {
@@ -171,7 +171,7 @@ void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
                 j = 0;
                 e = tbl;
                 do {
-                    if (memcmp(e->unk_20, data_ov001_0222a2b0, 6) == 0) break;
+                    if (memcmp(e->unk_20, sWfcApScanEmptyBssid, 6) == 0) break;
                     e++;
                     j++;
                 } while (j < 20);
@@ -193,7 +193,7 @@ void func_ov001_0221d744(Unk_ov001_0221d744_List *p) {
                         e->unk_28 = 2;
                         break;
                     }
-                    if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && memcmp(buf.v[k].data, data_ov001_0222a2ac, 4) == 0) {
+                    if (buf.v[k].type == 0xdd && buf.v[k].len >= 4 && memcmp(buf.v[k].data, sWfcWpaOui, 4) == 0) {
                         e->unk_28 = 2;
                         break;
                     }

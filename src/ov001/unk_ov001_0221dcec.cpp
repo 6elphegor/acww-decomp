@@ -47,9 +47,9 @@ s32 func_020fefb0(void *);
 
 extern "C" {
 extern u32 WM_GetAllowedChannel();
-extern void func_ov001_02225d58(void *);
-extern void *func_ov001_02225db0(s32, s32);
-extern void *func_ov001_02225dd8(s32, s32);
+extern void WfcHeap_FreeAndClear(void *);
+extern void *WfcHeap_AllocClear(s32, s32);
+extern void *WfcHeap_Alloc(s32, s32);
 extern void MI_CpuFill8(void *, s32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern void MIi_CpuClear16(u32, void *, u32);
@@ -62,186 +62,186 @@ extern u32 func_020fee84(void *);
 extern void func_020fee5c(u32, void *);
 extern s32 memcmp(void *, const void *, u32);
 extern void OS_SPrintf(void *, const char *, u32, u32, u32, u32);
-extern s32 func_ov001_02226c24(void *, u32);
+extern s32 WfcUtil_StrNLen(void *, u32);
 extern void MATHi_CRC16InitTableRev(void *, u32);
 
-u32 func_ov001_0221dcec(u32 c);
-void func_ov001_0221dd08(u8 *s, u8 *out);
-void func_ov001_0221dd9c(s32 idx);
-void func_ov001_0221df10();
-void func_ov001_0221dfcc(s32 idx);
-Unk_ov001_0221dd9c_Data *func_ov001_0221e014();
-void func_ov001_0221e024(u8 *src);
-void func_ov001_0221e140(u8 *src);
-void func_ov001_0221e25c();
-void func_ov001_0221e348(s32 idx);
-u32 func_ov001_0221e434(s32 idx);
-void func_ov001_0221e44c(void *p);
-void func_ov001_0221e49c(void *p);
-void func_ov001_0221e4ec(void *p);
-void func_ov001_0221e53c(void *p);
-void func_ov001_0221e584(s32 a);
-void func_ov001_0221e5cc(void *src);
-void func_ov001_0221e5f0(s32 a);
-void func_ov001_0221e614(s32 a);
-void func_ov001_0221e638(s32 a);
-void func_ov001_0221e65c(s32 a);
-void func_ov001_0221e678(s32 a);
-void func_ov001_0221e694(u8 *s);
-void func_ov001_0221e850(void *a);
-void func_ov001_0221e88c(u32 v);
-void func_ov001_0221e8a0(u32 v);
-u8 *func_ov001_0221e8b4();
-void func_ov001_0221e8c8();
-void func_ov001_0221e8dc();
+u32 WfcUtil_HexDigitValue(u32 c);
+void WfcUtil_ParseIpDigits(u8 *s, u8 *out);
+void WfcConfig_WriteSlot(s32 idx);
+void WfcConfig_EraseAll();
+void WfcConfig_EraseSlot(s32 idx);
+Unk_ov001_0221dd9c_Data *WfcConfig_Get();
+void WfcConfig_StoreAoss(u8 *src);
+void WfcConfig_StoreSimpleStart(u8 *src);
+void WfcConfig_CommitEdit();
+void WfcConfig_BeginEdit(s32 idx);
+u32 WfcConfig_GetSlotStatus(s32 idx);
+void WfcConfig_FormatEditDns2(void *p);
+void WfcConfig_FormatEditDns1(void *p);
+void WfcConfig_FormatEditGateway(void *p);
+void WfcConfig_FormatEditSubnetMask(void *p);
+void WfcConfig_FormatEditIp(s32 a);
+void WfcConfig_GetEditSsid(void *src);
+void WfcConfig_SetEditDns2(s32 a);
+void WfcConfig_SetEditDns1(s32 a);
+void WfcConfig_SetEditGateway(s32 a);
+void WfcConfig_SetEditSubnetMask(s32 a);
+void WfcConfig_SetEditIp(s32 a);
+void WfcConfig_SetEditWepKey(u8 *s);
+void WfcConfig_SetEditSsid(void *a);
+void WfcConfig_SetEditAutoDns(u32 v);
+void WfcConfig_SetEditAutoIp(u32 v);
+u8 *WfcConfig_GetEdit();
+void WfcConfig_Shutdown();
+void WfcConfig_Init();
 }
 
-extern "C" const u8 data_ov001_0222a2fc[4] = { 0, 0, 0, 0 };
-Unk_ov001_0221dd9c_Data *data_ov001_0222def0;
+extern "C" const u8 sWfcZeroIp[4] = { 0, 0, 0, 0 };
+Unk_ov001_0221dd9c_Data *sWfcConfig;
 
 #pragma thumb off
 
-void func_ov001_0221e8dc()
+void WfcConfig_Init()
 {
-    u8 *g = (u8 *)func_ov001_02225dd8(0x6f8, 0x20);
-    data_ov001_0222def0 = (Unk_ov001_0221dd9c_Data *)g;
+    u8 *g = (u8 *)WfcHeap_Alloc(0x6f8, 0x20);
+    sWfcConfig = (Unk_ov001_0221dd9c_Data *)g;
     MATHi_CRC16InitTableRev(g + 0x4f8, 0xa001);
-    func_020fefb0(data_ov001_0222def0);
+    func_020fefb0(sWfcConfig);
 }
 
-void func_ov001_0221e8c8() { func_ov001_02225d58(&data_ov001_0222def0); }
+void WfcConfig_Shutdown() { WfcHeap_FreeAndClear(&sWfcConfig); }
 
-u8 *func_ov001_0221e8b4() { return (u8 *)data_ov001_0222def0 + 0x400; }
+u8 *WfcConfig_GetEdit() { return (u8 *)sWfcConfig + 0x400; }
 
-void func_ov001_0221e8a0(u32 v) { ((u8 *)data_ov001_0222def0)[0x4f5] = v; }
+void WfcConfig_SetEditAutoIp(u32 v) { ((u8 *)sWfcConfig)[0x4f5] = v; }
 
-void func_ov001_0221e88c(u32 v) { ((u8 *)data_ov001_0222def0)[0x4f6] = v; }
+void WfcConfig_SetEditAutoDns(u32 v) { ((u8 *)sWfcConfig)[0x4f6] = v; }
 
-void func_ov001_0221e850(void *a)
+void WfcConfig_SetEditSsid(void *a)
 {
-    MI_CpuCopy8(a, (u8 *)data_ov001_0222def0 + 0x440, 0x20);
-    ((u8 *)data_ov001_0222def0)[0x4e7] = 0;
+    MI_CpuCopy8(a, (u8 *)sWfcConfig + 0x440, 0x20);
+    ((u8 *)sWfcConfig)[0x4e7] = 0;
 }
 
-void func_ov001_0221e694(u8 *s)
+void WfcConfig_SetEditWepKey(u8 *s)
 {
     s32 i;
     s32 n;
     u8 *d;
-    MI_CpuFill8((u8 *)data_ov001_0222def0 + 0x480, 0, 0x10);
-    n = func_ov001_02226c24(s, 0x20);
+    MI_CpuFill8((u8 *)sWfcConfig + 0x480, 0, 0x10);
+    n = WfcUtil_StrNLen(s, 0x20);
     switch (n) {
     case 0:
     case 10:
     case 0x1a:
     case 0x20:
-        ((u8 *)data_ov001_0222def0)[0x4e6] = ((u8 *)data_ov001_0222def0)[0x4e6] & ~0xfc;
-        d = (u8 *)data_ov001_0222def0 + 0x480;
+        ((u8 *)sWfcConfig)[0x4e6] = ((u8 *)sWfcConfig)[0x4e6] & ~0xfc;
+        d = (u8 *)sWfcConfig + 0x480;
         for (i = 0; i < n; i += 2, d++) {
-            s32 hi = func_ov001_0221dcec(s[i]);
-            *d = func_ov001_0221dcec(s[i + 1]) + (hi << 4);
+            s32 hi = WfcUtil_HexDigitValue(s[i]);
+            *d = WfcUtil_HexDigitValue(s[i + 1]) + (hi << 4);
         }
         break;
     default: {
-        u8 *g = (u8 *)data_ov001_0222def0;
+        u8 *g = (u8 *)sWfcConfig;
         g[0x4e6] = (g[0x4e6] & ~0xfc) | 4;
-        MI_CpuCopy8(s, (u8 *)data_ov001_0222def0 + 0x480, 0x10);
+        MI_CpuCopy8(s, (u8 *)sWfcConfig + 0x480, 0x10);
         break;
     }
     }
     switch (n) {
     case 0: {
-        u8 *g = (u8 *)data_ov001_0222def0;
+        u8 *g = (u8 *)sWfcConfig;
         g[0x4e6] = g[0x4e6] & ~3;
         return;
     }
     case 5:
     case 10: {
-        u8 *g = (u8 *)data_ov001_0222def0;
+        u8 *g = (u8 *)sWfcConfig;
         g[0x4e6] = (g[0x4e6] & ~3) | 1;
         return;
     }
     case 0xd:
     case 0x1a: {
-        u8 *g = (u8 *)data_ov001_0222def0;
+        u8 *g = (u8 *)sWfcConfig;
         g[0x4e6] = (g[0x4e6] & ~3) | 2;
         return;
     }
     default: {
-        u8 *g = (u8 *)data_ov001_0222def0;
+        u8 *g = (u8 *)sWfcConfig;
         g[0x4e6] = (g[0x4e6] & ~3) | 3;
         return;
     }
     }
 }
 
-void func_ov001_0221e678(s32 a) { func_ov001_0221dd08((u8 *)a, (u8 *)data_ov001_0222def0 + 0x4c0); }
+void WfcConfig_SetEditIp(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c0); }
 
-void func_ov001_0221e65c(s32 a) { func_ov001_0221dd08((u8 *)a, (u8 *)data_ov001_0222def0 + 0x4f0); }
+void WfcConfig_SetEditSubnetMask(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4f0); }
 
-void func_ov001_0221e638(s32 a) { func_ov001_0221dd08((u8 *)a, (u8 *)data_ov001_0222def0 + 0x4c4); }
+void WfcConfig_SetEditGateway(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c4); }
 
-void func_ov001_0221e614(s32 a) { func_ov001_0221dd08((u8 *)a, (u8 *)data_ov001_0222def0 + 0x4c8); }
+void WfcConfig_SetEditDns1(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4c8); }
 
-void func_ov001_0221e5f0(s32 a) { func_ov001_0221dd08((u8 *)a, (u8 *)data_ov001_0222def0 + 0x4cc); }
+void WfcConfig_SetEditDns2(s32 a) { WfcUtil_ParseIpDigits((u8 *)a, (u8 *)sWfcConfig + 0x4cc); }
 
-void func_ov001_0221e5cc(void *src)
+void WfcConfig_GetEditSsid(void *src)
 {
-    MI_CpuCopy8((u8 *)data_ov001_0222def0 + 0x440, src, 0x20);
+    MI_CpuCopy8((u8 *)sWfcConfig + 0x440, src, 0x20);
 }
 
-void func_ov001_0221e584(s32 a)
+void WfcConfig_FormatEditIp(s32 a)
 {
-    u8 *g = (u8 *)data_ov001_0222def0;
+    u8 *g = (u8 *)sWfcConfig;
     u8 *p = g + 0x4c0;
     OS_SPrintf((void *)a, "%3d%3d%3d%3d", p[0], p[1], p[2], p[3]);
 }
 
-void func_ov001_0221e53c(void *p) {
-    u8 *ip = data_ov001_0222def0->unk_400.unk_f0;
+void WfcConfig_FormatEditSubnetMask(void *p) {
+    u8 *ip = sWfcConfig->unk_400.unk_f0;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
-void func_ov001_0221e4ec(void *p) {
-    u8 *ip = (u8 *)data_ov001_0222def0 + 0x4c4;
+void WfcConfig_FormatEditGateway(void *p) {
+    u8 *ip = (u8 *)sWfcConfig + 0x4c4;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
-void func_ov001_0221e49c(void *p) {
-    u8 *ip = (u8 *)data_ov001_0222def0 + 0x4c8;
+void WfcConfig_FormatEditDns1(void *p) {
+    u8 *ip = (u8 *)sWfcConfig + 0x4c8;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
-void func_ov001_0221e44c(void *p) {
-    u8 *ip = (u8 *)data_ov001_0222def0 + 0x4cc;
+void WfcConfig_FormatEditDns2(void *p) {
+    u8 *ip = (u8 *)sWfcConfig + 0x4cc;
     OS_SPrintf(p, "%3d%3d%3d%3d", ip[0], ip[1], ip[2], ip[3]);
 }
 
-u32 func_ov001_0221e434(s32 idx) {
-    return data_ov001_0222def0->unk_000[idx].unk_e7;
+u32 WfcConfig_GetSlotStatus(s32 idx) {
+    return sWfcConfig->unk_000[idx].unk_e7;
 }
 
-void func_ov001_0221e348(s32 idx) {
-    Unk_ov001_0221dd9c_Data *d = data_ov001_0222def0;
+void WfcConfig_BeginEdit(s32 idx) {
+    Unk_ov001_0221dd9c_Data *d = sWfcConfig;
     Unk_ov001_0221dd9c_Slot *s = &d->unk_000[idx];
     *(Unk_ov001_0221dd9c_Body *)&d->unk_400 = *(Unk_ov001_0221dd9c_Body *)s;
     d->unk_400.unk_f4 = idx;
-    if (memcmp(s->unk_c0, data_ov001_0222a2fc, 4) != 0) {
-        data_ov001_0222def0->unk_400.unk_f5 = 0;
+    if (memcmp(s->unk_c0, sWfcZeroIp, 4) != 0) {
+        sWfcConfig->unk_400.unk_f5 = 0;
     } else {
-        data_ov001_0222def0->unk_400.unk_f5 = 1;
+        sWfcConfig->unk_400.unk_f5 = 1;
     }
-    if (memcmp(s->unk_c8, data_ov001_0222a2fc, 4) != 0 ||
-        memcmp(&s->unk_c8[4], data_ov001_0222a2fc, 4) != 0) {
-        data_ov001_0222def0->unk_400.unk_f6 = 0;
+    if (memcmp(s->unk_c8, sWfcZeroIp, 4) != 0 ||
+        memcmp(&s->unk_c8[4], sWfcZeroIp, 4) != 0) {
+        sWfcConfig->unk_400.unk_f6 = 0;
     } else {
-        data_ov001_0222def0->unk_400.unk_f6 = 1;
+        sWfcConfig->unk_400.unk_f6 = 1;
     }
-    func_020fee5c(s->unk_d0, data_ov001_0222def0->unk_400.unk_f0);
+    func_020fee5c(s->unk_d0, sWfcConfig->unk_400.unk_f0);
 }
 
-void func_ov001_0221e25c() {
-    Unk_ov001_0221dd9c_Data *d = data_ov001_0222def0;
+void WfcConfig_CommitEdit() {
+    Unk_ov001_0221dd9c_Data *d = sWfcConfig;
     Unk_ov001_0221dd9c_Slot *b = &d->unk_400;
     Unk_ov001_0221dd9c_Slot *s = &d->unk_000[b->unk_f4];
     *(Unk_ov001_0221dd9c_Body *)s = *(Unk_ov001_0221dd9c_Body *)b;
@@ -259,11 +259,11 @@ void func_ov001_0221e25c() {
     } else {
         MI_CpuCopy8(b->unk_c8, s->unk_c8, 8);
     }
-    func_ov001_0221dd9c(b->unk_f4);
+    WfcConfig_WriteSlot(b->unk_f4);
 }
 
-void func_ov001_0221e140(u8 *src) {
-    Unk_ov001_0221dd9c_Slot *b = &data_ov001_0222def0->unk_400;
+void WfcConfig_StoreSimpleStart(u8 *src) {
+    Unk_ov001_0221dd9c_Slot *b = &sWfcConfig->unk_400;
     u32 n;
     s32 i;
     u8 *d;
@@ -297,11 +297,11 @@ void func_ov001_0221e140(u8 *src) {
     MI_CpuFill8(b->unk_f0, 0, 4);
     b->unk_f5 = 1;
     b->unk_f6 = 1;
-    func_ov001_0221e25c();
+    WfcConfig_CommitEdit();
 }
 
-void func_ov001_0221e024(u8 *src) {
-    Unk_ov001_0221dd9c_Slot *b = &data_ov001_0222def0->unk_400;
+void WfcConfig_StoreAoss(u8 *src) {
+    Unk_ov001_0221dd9c_Slot *b = &sWfcConfig->unk_400;
     MI_CpuFill8(b, 0, 0xef);
     MI_CpuCopy8(src, &b->unk_d1[0], 5);
     MI_CpuCopy8(src + 0x6, &b->unk_d1[5], 5);
@@ -319,43 +319,43 @@ void func_ov001_0221e024(u8 *src) {
     MI_CpuFill8(b->unk_f0, 0, 4);
     b->unk_f5 = 1;
     b->unk_f6 = 1;
-    func_ov001_0221e25c();
+    WfcConfig_CommitEdit();
 }
 
-Unk_ov001_0221dd9c_Data *func_ov001_0221e014() {
-    return data_ov001_0222def0;
+Unk_ov001_0221dd9c_Data *WfcConfig_Get() {
+    return sWfcConfig;
 }
 
-void func_ov001_0221dfcc(s32 idx) {
-    Unk_ov001_0221dd9c_Slot *s = &data_ov001_0222def0->unk_000[idx];
+void WfcConfig_EraseSlot(s32 idx) {
+    Unk_ov001_0221dd9c_Slot *s = &sWfcConfig->unk_000[idx];
     MI_CpuFill8(s, 0, 0xef);
     s->unk_e7 = 0xff;
-    func_ov001_0221dd9c(idx);
+    WfcConfig_WriteSlot(idx);
 }
 
-void func_ov001_0221df10() {
+void WfcConfig_EraseAll() {
     volatile u16 z = 0;
     u32 rtc[5];
     void *r8;
     s32 i;
     s32 off;
-    MIi_CpuClear16(z, data_ov001_0222def0, 0x400);
+    MIi_CpuClear16(z, sWfcConfig, 0x400);
     for (i = 0; i < 3; i++) {
-        data_ov001_0222def0->unk_000[i].unk_e7 = 0xff;
+        sWfcConfig->unk_000[i].unk_e7 = 0xff;
     }
     func_020ff770(rtc);
     r8 = func_020fe850(rtc);
     i = 0;
     off = i;
     for (; i < 2; i++, off += 0x100) {
-        MI_CpuCopy8(r8, (u8 *)data_ov001_0222def0 + off + 0xf0, 0xe);
+        MI_CpuCopy8(r8, (u8 *)sWfcConfig + off + 0xf0, 0xe);
     }
     for (i = 0; i < 4; i++) {
-        func_ov001_0221dd9c(i);
+        WfcConfig_WriteSlot(i);
     }
 }
 
-void func_ov001_0221dd9c(s32 idx) {
+void WfcConfig_WriteSlot(s32 idx) {
     s32 flags[4];
     u32 st;
     u32 bit;
@@ -363,22 +363,22 @@ void func_ov001_0221dd9c(s32 idx) {
     s32 i;
     s32 off;
     void *p;
-    st = data_ov001_0222def0->unk_000[idx].unk_e7;
+    st = sWfcConfig->unk_000[idx].unk_e7;
     on = FALSE;
     bit = 1 << idx;
     MI_CpuFill8(flags, on, 0x10);
     flags[idx] = 1;
     if (idx <= 2) {
-        Unk_ov001_0221dd9c_Data *d = data_ov001_0222def0;
+        Unk_ov001_0221dd9c_Data *d = sWfcConfig;
         if ((d->unk_000[0].unk_ef & bit) != 0) on = TRUE;
         if (st == 0xff && on) {
             d->unk_000[0].unk_ef &= ~bit;
-            data_ov001_0222def0->unk_000[1].unk_ef &= ~bit;
+            sWfcConfig->unk_000[1].unk_ef &= ~bit;
             flags[1] = 1;
             flags[0] = 1;
         } else if (st != 0xff && !on) {
             d->unk_000[0].unk_ef |= bit;
-            data_ov001_0222def0->unk_000[1].unk_ef |= bit;
+            sWfcConfig->unk_000[1].unk_ef |= bit;
             flags[1] = 1;
             flags[0] = 1;
         }
@@ -387,17 +387,17 @@ void func_ov001_0221dd9c(s32 idx) {
     off = i;
     for (; i < 4; i++, off += 0x100) {
         if (flags[i] != 0) {
-            Unk_ov001_0221dd9c_Data *d = data_ov001_0222def0;
+            Unk_ov001_0221dd9c_Data *d = sWfcConfig;
             u32 r = MATH_CalcCRC16(&d->unk_400.unk_f8, (u8 *)d + off, 0xfe);
-            data_ov001_0222def0->unk_000[i].unk_fe = r;
+            sWfcConfig->unk_000[i].unk_fe = r;
         }
     }
-    p = func_ov001_02225dd8(0x100, 0x20);
-    func_020fef40(data_ov001_0222def0, flags, p);
-    func_ov001_02225d58(&p);
+    p = WfcHeap_Alloc(0x100, 0x20);
+    func_020fef40(sWfcConfig, flags, p);
+    WfcHeap_FreeAndClear(&p);
 }
 
-void func_ov001_0221dd08(u8 *s, u8 *out) {
+void WfcUtil_ParseIpDigits(u8 *s, u8 *out) {
     u32 tmp;
     s32 i;
     s32 off;
@@ -419,7 +419,7 @@ void func_ov001_0221dd08(u8 *s, u8 *out) {
     }
 }
 
-u32 func_ov001_0221dcec(u32 c) {
+u32 WfcUtil_HexDigitValue(u32 c) {
     if (c <= 0x39) return c - 0x30;
     if (c <= 0x46) return c - 0x37;
     return c - 0x57;

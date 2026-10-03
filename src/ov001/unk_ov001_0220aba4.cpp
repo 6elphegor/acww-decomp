@@ -21,14 +21,14 @@ extern "C" const u16 data_ov001_02229eec[10][2] = {
     {0x92, 0x7a}, {0x52, 0x91},
 };
 extern "C" const u8 data_ov001_02229e90[2] = {0x37, 0x38};
-extern "C" { void *data_ov001_0222dde0; }
+extern "C" { void *sWfcNumPad; }
 extern "C" const u16 data_ov001_02229f14[14][2] = {
     {0x50, 0x4a}, {0x70, 0x4a}, {0x90, 0x4a}, {0x50, 0x61},
     {0x70, 0x61}, {0x90, 0x61}, {0x50, 0x78}, {0x70, 0x78},
     {0x90, 0x78}, {0x50, 0x8f}, {0x70, 0x8f}, {0x90, 0x8f},
     {0x2, 0xa8}, {0x82, 0xa8},
 };
-extern "C" const s8 data_ov001_02229f4c[14][4] = {
+extern "C" const s8 sWfcNumPadNavTable[14][4] = {
     {2, 12, 1, 3},
     {0, 13, 2, 4},
     {1, 13, 0, 5},
@@ -98,45 +98,45 @@ struct Unk_ov001_0222dde0 {
 };
 
 extern "C" {
-extern Unk_ov001_0222dddc *data_ov001_0222dddc;
-extern Unk_ov001_0222dde0 *data_ov001_0222dde0;
+extern Unk_ov001_0222dddc *sWfcTextKb;
+extern Unk_ov001_0222dde0 *sWfcNumPad;
 extern u16 data_ov001_02229bf4[];
 extern u8 data_ov001_02229be8[];
 extern u8 data_ov001_02229be0[];
 extern u16 data_ov001_02229bec[];
-extern u16 *data_ov001_0222a868[];
+extern u16 *sWfcTextKbGlyphMaps[];
 extern u16 data_ov001_02229f14[];
-extern s8 data_ov001_02229f4c[][4];
+extern s8 sWfcNumPadNavTable[][4];
 
-extern void *func_ov001_02225db0(s32, s32);
-extern Unk_ov001_0220a7f0_Reg *func_ov001_02224b60(s32, s32);
-extern void *func_ov001_02224b14(s32, s32, s32);
-extern void func_ov001_02224704(void *, s32, s32, s32);
-extern void func_ov001_022244d8(void *, s32, s32);
-extern void func_ov001_02224558(void *, s32, s32, s32);
-extern void *func_ov001_02225748(s32, s32, s32, s32, void *, s32);
-extern void func_ov001_02225254(void *, u32, u32, u32, u32, s32, u32, void *);
-extern void *func_ov001_02224870(s32, s32, s32);
-extern void *func_ov001_022247d4(void *, s32);
-extern void func_ov001_022247e0(void *);
-extern void func_ov001_02225718(void *);
-extern void func_ov001_022267c8(void *);
-extern void func_ov001_02225d58(void *);
-extern void func_ov001_02226fdc(s32, s32);
-extern void func_ov001_02226ffc(s32, void *);
-extern u32 func_ov001_02227094(s32, void *, s32, s32);
-extern void func_ov001_02209698(u32, s32, s32);
-extern void func_ov001_02208f20();
-extern void func_ov001_0220a6a0();
-extern void func_ov001_0220b148(s32, s32);
-extern void func_ov001_02224b9c(s32, u32, u32);
-extern void func_ov001_0221e9a0(s32);
-void func_ov001_0220afcc();
-void func_ov001_0220aba4(s32);
-void func_ov001_0220ac6c(s32);
-void func_ov001_0220acec(s32);
-void func_ov001_0220ad6c(s32);
-void func_ov001_0220adec(s32);
+extern void *WfcHeap_AllocClear(s32, s32);
+extern Unk_ov001_0220a7f0_Reg *WfcObj_CreateSingle(s32, s32);
+extern void *WfcObj_Create(s32, s32, s32);
+extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
+extern void WfcObj_SetPriority(void *, s32, s32);
+extern void WfcObj_SetPos(void *, s32, s32, s32);
+extern void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
+extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
+extern void *WfcObj_Alloc(s32, s32, s32);
+extern void *WfcObj_GetOam(void *, s32);
+extern void WfcObj_Free(void *);
+extern void WfcText_DestroyObjCanvas(void *);
+extern void WfcOam_FreeEntry(void *);
+extern void WfcHeap_FreeAndClear(void *);
+extern void WfcTask_RequestDelete(s32, s32);
+extern void WfcTask_SetFunc(s32, void *);
+extern u32 WfcTask_Add(s32, void *, s32, s32);
+extern void WfcTextKb_SetRowY(u32, s32, s32);
+extern void WfcTextKb_SlideOutStep0();
+extern void WfcTextKb_SlideInStep0();
+extern void WfcNumPad_SetRowY(s32, s32);
+extern void WfcCell_Copy(s32, u32, u32);
+extern void WfcSound_Play(s32);
+void WfcNumPad_UpdateCursor();
+void WfcNumPad_Destroy(s32);
+void WfcNumPad_SlideOutStep4(s32);
+void WfcNumPad_SlideOutStep3(s32);
+void WfcNumPad_SlideOutStep2(s32);
+void WfcNumPad_SlideOutStep1(s32);
 
 
 }
@@ -174,7 +174,7 @@ struct Unk_ov001_0220b618_Pt {
 };
 
 extern "C" {
-extern Unk_ov001_0222dde0 *data_ov001_0222dde0;
+extern Unk_ov001_0222dde0 *sWfcNumPad;
 extern u8 data_ov001_02229e98[];
 extern u8 data_ov001_02229e8c[];
 extern u8 data_ov001_02229e9c[];
@@ -183,31 +183,31 @@ extern u8 data_ov001_02229ec4[];
 extern Unk_ov001_0220b618_Pt data_ov001_02229eec[];
 extern Unk_ov001_0220b618_Pt data_ov001_02229eb4[];
 extern Unk_ov001_0220b618_Pt data_ov001_02229ebc[];
-extern u8 data_ov001_0222a460[];
+extern u8 gWfcScreenRect[];
 extern u8 data_ov001_02229ea4[];
 extern u8 data_ov001_02229eac[];
 extern u8 data_ov001_02229eb0[];
 
-extern void func_ov001_02224670(void *, s32, s32, u32);
-extern void func_ov001_0222519c(void *, u32, s32, void *, s32);
-extern void func_ov001_02224704(void *, s32, s32, s32);
-extern void func_ov001_02224558(void *, s32, u32, s32);
-extern void func_ov001_02225924(void *, void *, void *);
-extern s32 func_ov001_02226118(void *);
-extern s32 func_ov001_02225fd4(void *);
-extern s32 func_ov001_022261a8(u32);
-extern s32 func_ov001_022261cc(u32);
-extern s32 func_ov001_02226184(u32);
-extern void func_ov001_0220aef4(s32);
-extern void func_ov001_0221e9a0(s32);
-extern void func_ov001_0220afcc();
+extern void WfcObj_SetModePalette(void *, s32, s32, u32);
+extern void WfcText_ArrangeObj(void *, u32, s32, void *, s32);
+extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
+extern void WfcObj_SetPos(void *, s32, u32, s32);
+extern void WfcUtil_RectFromPosSize(void *, void *, void *);
+extern s32 WfcInput_IsTouchHeldIn(void *);
+extern s32 WfcInput_IsTouchReleasedIn(void *);
+extern s32 WfcInput_IsKeyRepeat(u32);
+extern s32 WfcInput_IsKeyPressed(u32);
+extern s32 WfcInput_IsKeyReleased(u32);
+extern void WfcNumPad_MoveCursor(s32);
+extern void WfcSound_Play(s32);
+extern void WfcNumPad_UpdateCursor();
 
-void func_ov001_0220b05c(s32 a, u32 b);
-void func_ov001_0220b148(s32 a, s32 b);
-void func_ov001_0220b3e4();
-void func_ov001_0220b5c4(s32 a);
-void func_ov001_0220b618();
-void func_ov001_0220b818();
+void WfcNumPad_SetKeyHighlight(s32 a, u32 b);
+void WfcNumPad_SetRowY(s32 a, s32 b);
+void WfcNumPad_HandlePad();
+void WfcNumPad_SetPressedKey(s32 a);
+void WfcNumPad_HandleTouchHold();
+void WfcNumPad_HandleTouchRelease();
 
 
 }
@@ -241,8 +241,8 @@ struct Unk_ov001_0222dde0 {
 };
 
 extern "C" {
-extern Unk_ov001_0222dde0 *data_ov001_0222dde0;
-extern u8 data_ov001_0222a460[];
+extern Unk_ov001_0222dde0 *sWfcNumPad;
+extern u8 gWfcScreenRect[];
 extern u32 data_ov001_02229eec[];
 extern u32 data_ov001_02229eb4[];
 extern u32 data_ov001_02229ebc[];
@@ -256,35 +256,35 @@ extern u8 data_ov001_02229e94[];
 extern u16 data_ov001_02229ea8[];
 extern u16 data_ov001_02229ed0[];
 
-extern void func_ov001_02225924(void *, void *, void *);
-extern s32 func_ov001_022260ac(void *);
-extern void func_ov001_0221e9a0(s32);
-extern void func_ov001_0222449c(void *, s32, s32 *, s32 *);
-extern void func_ov001_0220b148(s32, s32);
-extern void func_ov001_0220afcc();
-extern s32 func_ov001_02226ffc(void *, void *);
-extern void func_ov001_0220b818();
-extern void func_ov001_0220b618();
-extern void func_ov001_0220b3e4();
-extern void func_ov001_022247e0(void *);
-extern void func_ov001_0220ae6c(void *);
-extern void *func_ov001_02225db0(s32, s32);
-extern void *func_ov001_02224b60(s32, s32);
-extern void *func_ov001_02224b14(s32, s32, s32);
-extern void func_ov001_02224704(void *, s32, s32, s32);
-extern void func_ov001_022244d8(void *, s32, s32);
-extern void *func_ov001_02225748(s32, s32, s32, s32, void *, s32);
-extern void func_ov001_02225254(void *, u32, u32, u32, u32, s32, u32, void *);
-extern void *func_ov001_02224870(s32, s32, s32);
-extern void *func_ov001_02227094(s32, void *, s32, s32);
+extern void WfcUtil_RectFromPosSize(void *, void *, void *);
+extern s32 WfcInput_IsTouchPressedIn(void *);
+extern void WfcSound_Play(s32);
+extern void WfcObj_GetPos(void *, s32, s32 *, s32 *);
+extern void WfcNumPad_SetRowY(s32, s32);
+extern void WfcNumPad_UpdateCursor();
+extern s32 WfcTask_SetFunc(void *, void *);
+extern void WfcNumPad_HandleTouchRelease();
+extern void WfcNumPad_HandleTouchHold();
+extern void WfcNumPad_HandlePad();
+extern void WfcObj_Free(void *);
+extern void WfcNumPad_SlideOutStep0(void *);
+extern void *WfcHeap_AllocClear(s32, s32);
+extern void *WfcObj_CreateSingle(s32, s32);
+extern void *WfcObj_Create(s32, s32, s32);
+extern void WfcObj_SetAffineMode(void *, s32, s32, s32);
+extern void WfcObj_SetPriority(void *, s32, s32);
+extern void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
+extern void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, u32, void *);
+extern void *WfcObj_Alloc(s32, s32, s32);
+extern void *WfcTask_Add(s32, void *, s32, s32);
 
-void func_ov001_0220ba08();
-void func_ov001_0220bc00();
-void func_ov001_0220bc24(void *self);
-void func_ov001_0220bcb0(void *self);
-void func_ov001_0220bd54(void *self);
-void func_ov001_0220bdf8(void *self);
-void func_ov001_0220be9c(void *self);
+void WfcNumPad_HandleTouchPress();
+void WfcNumPad_InputTask();
+void WfcNumPad_SlideInStep4(void *self);
+void WfcNumPad_SlideInStep3(void *self);
+void WfcNumPad_SlideInStep2(void *self);
+void WfcNumPad_SlideInStep1(void *self);
+void WfcNumPad_SlideInStep0(void *self);
 
 
 }
@@ -299,78 +299,78 @@ struct Unk_ov001_0220bfec_Rect { Unk_ov001_0220bfec_Pair p; Unk_ov001_0220bfec_P
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bfec();
-void func_ov001_0220bfac();
-u32 func_ov001_0220bf98();
-void func_ov001_0220bf84(u32 v);
-void func_ov001_0220bf70(u32 v);
-void func_ov001_0220bf5c(u32 v);
-BOOL func_ov001_0220bf40();
-void func_ov001_0220be9c(void *self);
-void func_ov001_0220bdf8(void *self);
-void func_ov001_0220bd54(void *self);
-void func_ov001_0220bcb0(void *self);
-void func_ov001_0220bc24(void *self);
-void func_ov001_0220bc00();
-void func_ov001_0220ba08();
+void WfcNumPad_Create();
+void WfcNumPad_Close();
+u32 WfcNumPad_GetKey();
+void WfcNumPad_SetDeleteEnabled(u32 v);
+void WfcNumPad_SetInsertEnabled(u32 v);
+void WfcNumPad_SetDotEnabled(u32 v);
+BOOL WfcNumPad_Exists();
+void WfcNumPad_SlideInStep0(void *self);
+void WfcNumPad_SlideInStep1(void *self);
+void WfcNumPad_SlideInStep2(void *self);
+void WfcNumPad_SlideInStep3(void *self);
+void WfcNumPad_SlideInStep4(void *self);
+void WfcNumPad_InputTask();
+void WfcNumPad_HandleTouchPress();
 }
 }
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b818();
-void func_ov001_0220b618();
-void func_ov001_0220b5c4(s32 a);
-void func_ov001_0220b3e4();
-void func_ov001_0220b148(s32 a, s32 b);
-void func_ov001_0220b05c(s32 a, u32 b);
+void WfcNumPad_HandleTouchRelease();
+void WfcNumPad_HandleTouchHold();
+void WfcNumPad_SetPressedKey(s32 a);
+void WfcNumPad_HandlePad();
+void WfcNumPad_SetRowY(s32 a, s32 b);
+void WfcNumPad_SetKeyHighlight(s32 a, u32 b);
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220afcc();
-void func_ov001_0220aef4(s32 a);
-void func_ov001_0220ae6c(s32 a);
-void func_ov001_0220adec(s32 a);
-void func_ov001_0220ad6c(s32 a);
-void func_ov001_0220acec(s32 a);
-void func_ov001_0220ac6c(s32 a);
-void func_ov001_0220aba4(s32 a);
+void WfcNumPad_UpdateCursor();
+void WfcNumPad_MoveCursor(s32 a);
+void WfcNumPad_SlideOutStep0(s32 a);
+void WfcNumPad_SlideOutStep1(s32 a);
+void WfcNumPad_SlideOutStep2(s32 a);
+void WfcNumPad_SlideOutStep3(s32 a);
+void WfcNumPad_SlideOutStep4(s32 a);
+void WfcNumPad_Destroy(s32 a);
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bfec() {
+void WfcNumPad_Create() {
     Unk_ov001_0220bfec_Rect pos;
     u32 t;
     u16 v[2];
     s32 i, j, k;
     pos = *(Unk_ov001_0220bfec_Rect *)data_ov001_0222aa58;
     pos.s = *(Unk_ov001_0220bfec_Pair *)data_ov001_02229ea4;
-    data_ov001_0222dde0 = (Unk_ov001_0222dde0 *)func_ov001_02225db0(0x6c, 4);
-    data_ov001_0222dde0->unk_60 = 0x1f;
-    data_ov001_0222dde0->unk_63 = 0;
-    data_ov001_0222dde0->unk_66 = 1;
-    data_ov001_0222dde0->unk_67 = 1;
-    data_ov001_0222dde0->unk_68 = 1;
+    sWfcNumPad = (Unk_ov001_0222dde0 *)WfcHeap_AllocClear(0x6c, 4);
+    sWfcNumPad->unk_60 = 0x1f;
+    sWfcNumPad->unk_63 = 0;
+    sWfcNumPad->unk_66 = 1;
+    sWfcNumPad->unk_67 = 1;
+    sWfcNumPad->unk_68 = 1;
     for (i = 0; i < 10; i++) {
-        data_ov001_0222dde0->unk_10[i] = (Unk_ov001_0220ba08_Reg *)func_ov001_02224b60(0, 0x36);
-        data_ov001_0222dde0->unk_10[i]->w0 = (data_ov001_0222dde0->unk_10[i]->w0 & 0xc1fffcff) | 0x200;
-        data_ov001_0222dde0->unk_10[i]->h4 = (data_ov001_0222dde0->unk_10[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->unk_10[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, 0x36);
+        sWfcNumPad->unk_10[i]->w0 = (sWfcNumPad->unk_10[i]->w0 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->unk_10[i]->h4 = (sWfcNumPad->unk_10[i]->h4 & ~0xc00) | 0xc00;
     }
     u8 *p = data_ov001_02229e90;
     for (i = 0; i < 2; i++) {
-        data_ov001_0222dde0->unk_38[i] = (Unk_ov001_0220ba08_Reg *)func_ov001_02224b60(0, *p);
+        sWfcNumPad->unk_38[i] = (Unk_ov001_0220ba08_Reg *)WfcObj_CreateSingle(0, *p);
         p++;
-        data_ov001_0222dde0->unk_38[i]->w0 = (data_ov001_0222dde0->unk_38[i]->w0 & 0xc1fffcff) | 0x200;
-        data_ov001_0222dde0->unk_38[i]->h4 = (data_ov001_0222dde0->unk_38[i]->h4 & ~0xc00) | 0xc00;
+        sWfcNumPad->unk_38[i]->w0 = (sWfcNumPad->unk_38[i]->w0 & 0xc1fffcff) | 0x200;
+        sWfcNumPad->unk_38[i]->h4 = (sWfcNumPad->unk_38[i]->h4 & ~0xc00) | 0xc00;
     }
     for (i = 0; i < 2; i++) {
-        data_ov001_0222dde0->unk_40[i] = func_ov001_02224b14(0, data_ov001_02229e94[i], 1);
-        func_ov001_02224704(data_ov001_0222dde0->unk_40[i], -1, 0x200, 0);
-        func_ov001_022244d8(data_ov001_0222dde0->unk_40[i], -1, 3);
+        sWfcNumPad->unk_40[i] = WfcObj_Create(0, data_ov001_02229e94[i], 1);
+        WfcObj_SetAffineMode(sWfcNumPad->unk_40[i], -1, 0x200, 0);
+        WfcObj_SetPriority(sWfcNumPad->unk_40[i], -1, 3);
     }
     u32 bh = data_ov001_02229ea8[1];
     u32 bw = data_ov001_02229ea8[0];
@@ -379,80 +379,80 @@ void func_ov001_0220bfec() {
     n = i;
     v[1] = i;
     for (; i < 4; i++) {
-        data_ov001_0222dde0->unk_00[i] = func_ov001_02225748(0, bw, bh, 0, &t, 0);
+        sWfcNumPad->unk_00[i] = WfcText_CreateObjCanvas(0, bw, bh, 0, &t, 0);
         pos.p.a = 0;
         s32 idx = n;
         s32 kk;
         for (kk = 0; kk < 3; kk++, idx++, pos.p.a += 0x20) {
             v[0] = data_ov001_02229ed0[idx];
-            func_ov001_02225254(data_ov001_0222dde0->unk_00[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
+            WfcText_DrawTextRect(sWfcNumPad->unk_00[i], pos.p.a, pos.p.b, pos.s.a, pos.s.b, 2, 0x480, (void *)v);
         }
-        data_ov001_0222dde0->unk_48[i] = func_ov001_02224870(0, t, 0);
+        sWfcNumPad->unk_48[i] = WfcObj_Alloc(0, t, 0);
         n += 3;
     }
-    data_ov001_0222dde0->unk_58 = func_ov001_02224b14(0, 0x44, 1);
-    func_ov001_02224704(data_ov001_0222dde0->unk_58, -1, 0x200, 0);
-    func_ov001_022244d8(data_ov001_0222dde0->unk_58, -1, 2);
-    data_ov001_0222dde0->unk_5c = func_ov001_02227094(0, (void *)func_ov001_0220be9c, 0, 0x78);
-    func_ov001_0220b148(0, 0xc0);
+    sWfcNumPad->unk_58 = WfcObj_Create(0, 0x44, 1);
+    WfcObj_SetAffineMode(sWfcNumPad->unk_58, -1, 0x200, 0);
+    WfcObj_SetPriority(sWfcNumPad->unk_58, -1, 2);
+    sWfcNumPad->unk_5c = WfcTask_Add(0, (void *)WfcNumPad_SlideInStep0, 0, 0x78);
+    WfcNumPad_SetRowY(0, 0xc0);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bfac() {
-    func_ov001_022247e0(data_ov001_0222dde0->unk_58);
-    func_ov001_02226ffc(data_ov001_0222dde0->unk_5c, (void *)func_ov001_0220ae6c);
+void WfcNumPad_Close() {
+    WfcObj_Free(sWfcNumPad->unk_58);
+    WfcTask_SetFunc(sWfcNumPad->unk_5c, (void *)WfcNumPad_SlideOutStep0);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-u32 func_ov001_0220bf98() {
-    return data_ov001_0222dde0->unk_60;
+u32 WfcNumPad_GetKey() {
+    return sWfcNumPad->unk_60;
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bf84(u32 v) {
-    data_ov001_0222dde0->unk_66 = v;
+void WfcNumPad_SetDeleteEnabled(u32 v) {
+    sWfcNumPad->unk_66 = v;
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bf70(u32 v) {
-    data_ov001_0222dde0->unk_67 = v;
+void WfcNumPad_SetInsertEnabled(u32 v) {
+    sWfcNumPad->unk_67 = v;
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bf5c(u32 v) {
-    data_ov001_0222dde0->unk_68 = v;
+void WfcNumPad_SetDotEnabled(u32 v) {
+    sWfcNumPad->unk_68 = v;
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-BOOL func_ov001_0220bf40() {
-    return data_ov001_0222dde0 != NULL ? TRUE : FALSE;
+BOOL WfcNumPad_Exists() {
+    return sWfcNumPad != NULL ? TRUE : FALSE;
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220be9c(void *self) {
+void WfcNumPad_SlideInStep0(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)data_ov001_0222dde0->unk_10[0];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[0];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -460,21 +460,21 @@ void func_ov001_0220be9c(void *self) {
     b = c;
     u32 h = ((u16 *)data_ov001_02229eec)[0x2 / 2];
     if (c > (s32)h) {
-        func_ov001_0220b148(0, c);
+        WfcNumPad_SetRowY(0, c);
         return;
     }
-    func_ov001_0220b148(0, h);
-    func_ov001_0220b148(1, 0xc0);
-    func_ov001_02226ffc(self, (void *)func_ov001_0220bdf8);
+    WfcNumPad_SetRowY(0, h);
+    WfcNumPad_SetRowY(1, 0xc0);
+    WfcTask_SetFunc(self, (void *)WfcNumPad_SlideInStep1);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bdf8(void *self) {
+void WfcNumPad_SlideInStep1(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)data_ov001_0222dde0->unk_10[3];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[3];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -482,21 +482,21 @@ void func_ov001_0220bdf8(void *self) {
     b = c;
     u32 h = ((u16 *)data_ov001_02229eec)[0xe / 2];
     if (c > (s32)h) {
-        func_ov001_0220b148(1, c);
+        WfcNumPad_SetRowY(1, c);
         return;
     }
-    func_ov001_0220b148(1, h);
-    func_ov001_0220b148(2, 0xc0);
-    func_ov001_02226ffc(self, (void *)func_ov001_0220bd54);
+    WfcNumPad_SetRowY(1, h);
+    WfcNumPad_SetRowY(2, 0xc0);
+    WfcTask_SetFunc(self, (void *)WfcNumPad_SlideInStep2);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bd54(void *self) {
+void WfcNumPad_SlideInStep2(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)data_ov001_0222dde0->unk_10[6];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[6];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -504,21 +504,21 @@ void func_ov001_0220bd54(void *self) {
     b = c;
     u32 h = ((u16 *)data_ov001_02229eec)[0x1a / 2];
     if (c > (s32)h) {
-        func_ov001_0220b148(2, c);
+        WfcNumPad_SetRowY(2, c);
         return;
     }
-    func_ov001_0220b148(2, h);
-    func_ov001_0220b148(3, 0xc0);
-    func_ov001_02226ffc(self, (void *)func_ov001_0220bcb0);
+    WfcNumPad_SetRowY(2, h);
+    WfcNumPad_SetRowY(3, 0xc0);
+    WfcTask_SetFunc(self, (void *)WfcNumPad_SlideInStep3);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bcb0(void *self) {
+void WfcNumPad_SlideInStep3(void *self) {
     volatile s32 a, b;
-    volatile u32 *ip = (volatile u32 *)data_ov001_0222dde0->unk_10[9];
+    volatile u32 *ip = (volatile u32 *)sWfcNumPad->unk_10[9];
     a = (*ip & 0x1ff0000) >> 16;
     s32 c = *ip & 0xff;
     b = c;
@@ -526,83 +526,83 @@ void func_ov001_0220bcb0(void *self) {
     b = c;
     u32 h = ((u16 *)data_ov001_02229eec)[0x26 / 2];
     if (c > (s32)h) {
-        func_ov001_0220b148(3, c);
+        WfcNumPad_SetRowY(3, c);
         return;
     }
-    func_ov001_0220b148(3, h);
-    func_ov001_0220b148(4, 0xc0);
-    func_ov001_02226ffc(self, (void *)func_ov001_0220bc24);
+    WfcNumPad_SetRowY(3, h);
+    WfcNumPad_SetRowY(4, 0xc0);
+    WfcTask_SetFunc(self, (void *)WfcNumPad_SlideInStep4);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bc24(void *self) {
+void WfcNumPad_SlideInStep4(void *self) {
     s32 a, b;
-    func_ov001_0222449c(data_ov001_0222dde0->unk_40[0], 0, &a, &b);
+    WfcObj_GetPos(sWfcNumPad->unk_40[0], 0, &a, &b);
     b -= 12;
     u32 h = ((u16 *)data_ov001_02229ebc)[1];
     if (b > (s32)h) {
-        func_ov001_0220b148(4, b);
+        WfcNumPad_SetRowY(4, b);
         return;
     }
-    func_ov001_0220b148(4, h);
-    func_ov001_0220afcc();
-    func_ov001_02226ffc(self, (void *)func_ov001_0220bc00);
+    WfcNumPad_SetRowY(4, h);
+    WfcNumPad_UpdateCursor();
+    WfcTask_SetFunc(self, (void *)WfcNumPad_InputTask);
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220bc00() {
-    func_ov001_0220ba08();
-    func_ov001_0220b818();
-    func_ov001_0220b618();
-    func_ov001_0220b3e4();
+void WfcNumPad_InputTask() {
+    WfcNumPad_HandleTouchPress();
+    WfcNumPad_HandleTouchRelease();
+    WfcNumPad_HandleTouchHold();
+    WfcNumPad_HandlePad();
 }
 }
 }
 
 namespace N_0ba08 {
 extern "C" {
-void func_ov001_0220ba08() {
+void WfcNumPad_HandleTouchPress() {
     u32 out[3];
     s32 i;
-    if (func_ov001_022260ac(data_ov001_0222a460) == 0) return;
-    data_ov001_0222dde0->unk_61 = -1;
+    if (WfcInput_IsTouchPressedIn(gWfcScreenRect) == 0) return;
+    sWfcNumPad->unk_61 = -1;
     for (i = 0; i < 10; i++) {
-        func_ov001_02225924(&data_ov001_02229eec[i], data_ov001_02229ea4, out);
-        if (func_ov001_022260ac(out) != 0) {
-            if (data_ov001_0222dde0->unk_67 == 0) {
-                func_ov001_0221e9a0(9);
+        WfcUtil_RectFromPosSize(&data_ov001_02229eec[i], data_ov001_02229ea4, out);
+        if (WfcInput_IsTouchPressedIn(out) != 0) {
+            if (sWfcNumPad->unk_67 == 0) {
+                WfcSound_Play(9);
                 return;
             }
-            func_ov001_0221e9a0(0);
-            data_ov001_0222dde0->unk_61 = i;
+            WfcSound_Play(0);
+            sWfcNumPad->unk_61 = i;
             return;
         }
     }
     for (i = 0; i < 2; i++) {
-        func_ov001_02225924(&data_ov001_02229eb4[i], data_ov001_02229eac, out);
-        if (func_ov001_022260ac(out) != 0) {
-            if (i == 0 && data_ov001_0222dde0->unk_66 == 0) goto fail;
-            if (i == 1 && data_ov001_0222dde0->unk_68 == 0) {
+        WfcUtil_RectFromPosSize(&data_ov001_02229eb4[i], data_ov001_02229eac, out);
+        if (WfcInput_IsTouchPressedIn(out) != 0) {
+            if (i == 0 && sWfcNumPad->unk_66 == 0) goto fail;
+            if (i == 1 && sWfcNumPad->unk_68 == 0) {
             fail:
-                func_ov001_0221e9a0(9);
+                WfcSound_Play(9);
                 return;
             }
-            func_ov001_0221e9a0(0);
-            data_ov001_0222dde0->unk_61 = i + 10;
+            WfcSound_Play(0);
+            sWfcNumPad->unk_61 = i + 10;
             return;
         }
     }
     for (i = 0; i < 2; i++) {
-        func_ov001_02225924(&data_ov001_02229ebc[i], data_ov001_02229eb0, out);
-        if (func_ov001_022260ac(out) != 0) {
-            func_ov001_0221e9a0(0);
-            data_ov001_0222dde0->unk_61 = i + 12;
+        WfcUtil_RectFromPosSize(&data_ov001_02229ebc[i], data_ov001_02229eb0, out);
+        if (WfcInput_IsTouchPressedIn(out) != 0) {
+            WfcSound_Play(0);
+            sWfcNumPad->unk_61 = i + 12;
             return;
         }
     }
@@ -612,39 +612,39 @@ void func_ov001_0220ba08() {
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b818() {
+void WfcNumPad_HandleTouchRelease() {
     Unk_ov001_0220b618_Pt *p;
     s32 i;
     u32 buf[3];
-    data_ov001_0222dde0->unk_60 = 0;
-    if (!func_ov001_02225fd4(data_ov001_0222a460)) return;
+    sWfcNumPad->unk_60 = 0;
+    if (!WfcInput_IsTouchReleasedIn(gWfcScreenRect)) return;
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229ea4, buf);
-        if (func_ov001_02225fd4(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i) return;
-            data_ov001_0222dde0->unk_60 = data_ov001_02229ec4[i];
-            data_ov001_0222dde0->unk_63 = i;
-            func_ov001_0220afcc();
+        WfcUtil_RectFromPosSize(p, data_ov001_02229ea4, buf);
+        if (WfcInput_IsTouchReleasedIn(buf)) {
+            if (sWfcNumPad->unk_61 != i) return;
+            sWfcNumPad->unk_60 = data_ov001_02229ec4[i];
+            sWfcNumPad->unk_63 = i;
+            WfcNumPad_UpdateCursor();
             return;
         }
     }
     for (p = data_ov001_02229eb4, i = 0; i < 2; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229eac, buf);
-        if (func_ov001_02225fd4(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i + 10) return;
-            data_ov001_0222dde0->unk_60 = data_ov001_02229ea0[i];
-            data_ov001_0222dde0->unk_63 = i + 10;
-            func_ov001_0220afcc();
+        WfcUtil_RectFromPosSize(p, data_ov001_02229eac, buf);
+        if (WfcInput_IsTouchReleasedIn(buf)) {
+            if (sWfcNumPad->unk_61 != i + 10) return;
+            sWfcNumPad->unk_60 = data_ov001_02229ea0[i];
+            sWfcNumPad->unk_63 = i + 10;
+            WfcNumPad_UpdateCursor();
             return;
         }
     }
     for (p = data_ov001_02229ebc, i = 0; i < 2; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229eb0, buf);
-        if (func_ov001_02225fd4(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i + 12) return;
-            data_ov001_0222dde0->unk_60 = data_ov001_02229e9c[i];
-            data_ov001_0222dde0->unk_63 = i + 12;
-            func_ov001_0220afcc();
+        WfcUtil_RectFromPosSize(p, data_ov001_02229eb0, buf);
+        if (WfcInput_IsTouchReleasedIn(buf)) {
+            if (sWfcNumPad->unk_61 != i + 12) return;
+            sWfcNumPad->unk_60 = data_ov001_02229e9c[i];
+            sWfcNumPad->unk_63 = i + 12;
+            WfcNumPad_UpdateCursor();
             return;
         }
     }
@@ -654,84 +654,84 @@ void func_ov001_0220b818() {
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b618() {
+void WfcNumPad_HandleTouchHold() {
     s32 i;
     Unk_ov001_0220b618_Pt *p;
     u32 buf[3];
-    if (!func_ov001_02226118(data_ov001_0222a460)) goto fail;
+    if (!WfcInput_IsTouchHeldIn(gWfcScreenRect)) goto fail;
     for (p = data_ov001_02229eec, i = 0; i < 10; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229ea4, buf);
-        if (func_ov001_02226118(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i) goto fail;
-            func_ov001_0220b5c4(i);
+        WfcUtil_RectFromPosSize(p, data_ov001_02229ea4, buf);
+        if (WfcInput_IsTouchHeldIn(buf)) {
+            if (sWfcNumPad->unk_61 != i) goto fail;
+            WfcNumPad_SetPressedKey(i);
             goto end;
         }
     }
     for (p = data_ov001_02229eb4, i = 0; i < 2; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229eac, buf);
-        if (func_ov001_02226118(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i + 10) goto fail;
-            func_ov001_0220b5c4(i + 10);
+        WfcUtil_RectFromPosSize(p, data_ov001_02229eac, buf);
+        if (WfcInput_IsTouchHeldIn(buf)) {
+            if (sWfcNumPad->unk_61 != i + 10) goto fail;
+            WfcNumPad_SetPressedKey(i + 10);
             if (i != 0) goto end;
-            data_ov001_0222dde0->unk_65++;
-            if (data_ov001_0222dde0->unk_65 < 0x28) return;
-            if (data_ov001_0222dde0->unk_66 == 0) {
-                func_ov001_0221e9a0(9);
-                data_ov001_0222dde0->unk_61 = -1;
+            sWfcNumPad->unk_65++;
+            if (sWfcNumPad->unk_65 < 0x28) return;
+            if (sWfcNumPad->unk_66 == 0) {
+                WfcSound_Play(9);
+                sWfcNumPad->unk_61 = -1;
                 return;
             }
-            data_ov001_0222dde0->unk_60 = 0x10;
-            data_ov001_0222dde0->unk_65 -= 7;
+            sWfcNumPad->unk_60 = 0x10;
+            sWfcNumPad->unk_65 -= 7;
             return;
         }
     }
     for (p = data_ov001_02229ebc, i = 0; i < 2; p++, i++) {
-        func_ov001_02225924(p, data_ov001_02229eb0, buf);
-        if (func_ov001_02226118(buf)) {
-            if (data_ov001_0222dde0->unk_61 != i + 12) goto fail;
-            func_ov001_0220b5c4(i + 12);
+        WfcUtil_RectFromPosSize(p, data_ov001_02229eb0, buf);
+        if (WfcInput_IsTouchHeldIn(buf)) {
+            if (sWfcNumPad->unk_61 != i + 12) goto fail;
+            WfcNumPad_SetPressedKey(i + 12);
             goto end;
         }
     }
 fail:
-    func_ov001_0220b5c4(-1);
+    WfcNumPad_SetPressedKey(-1);
 end:
-    data_ov001_0222dde0->unk_65 = 0;
+    sWfcNumPad->unk_65 = 0;
 }
 }
 }
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b5c4(s32 a) {
-    if (a == data_ov001_0222dde0->unk_62) return;
-    func_ov001_0220b05c(a, 1);
-    func_ov001_0220b05c(data_ov001_0222dde0->unk_62, 0);
-    data_ov001_0222dde0->unk_62 = a;
+void WfcNumPad_SetPressedKey(s32 a) {
+    if (a == sWfcNumPad->unk_62) return;
+    WfcNumPad_SetKeyHighlight(a, 1);
+    WfcNumPad_SetKeyHighlight(sWfcNumPad->unk_62, 0);
+    sWfcNumPad->unk_62 = a;
 }
 }
 }
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b3e4() {
-    if (func_ov001_022261a8(0x20)) func_ov001_0220aef4(0);
-    if (func_ov001_022261a8(0x40)) func_ov001_0220aef4(1);
-    if (func_ov001_022261a8(0x10)) func_ov001_0220aef4(2);
-    if (func_ov001_022261a8(0x80)) func_ov001_0220aef4(3);
-    if (func_ov001_022261cc(1)) {
-        Unk_ov001_0222dde0 *o = data_ov001_0222dde0;
+void WfcNumPad_HandlePad() {
+    if (WfcInput_IsKeyRepeat(0x20)) WfcNumPad_MoveCursor(0);
+    if (WfcInput_IsKeyRepeat(0x40)) WfcNumPad_MoveCursor(1);
+    if (WfcInput_IsKeyRepeat(0x10)) WfcNumPad_MoveCursor(2);
+    if (WfcInput_IsKeyRepeat(0x80)) WfcNumPad_MoveCursor(3);
+    if (WfcInput_IsKeyPressed(1)) {
+        Unk_ov001_0222dde0 *o = sWfcNumPad;
         s32 c = o->unk_63;
         if (c < 10) {
             if (o->unk_67 != 0) {
                 o->unk_60 = data_ov001_02229ec4[c];
                 return;
             }
-            func_ov001_0221e9a0(9);
+            WfcSound_Play(9);
             return;
         } else if (c - 10 < 2) {
             if ((c - 10 == 0 && o->unk_66 == 0) || (c - 10 == 1 && o->unk_68 == 0)) {
-                func_ov001_0221e9a0(9);
+                WfcSound_Play(9);
                 return;
             }
             o->unk_60 = data_ov001_02229ea0[c - 10];
@@ -740,19 +740,19 @@ void func_ov001_0220b3e4() {
             o->unk_60 = data_ov001_02229e9c[c - 12];
         }
     }
-    if (func_ov001_022261a8(2)) {
-        Unk_ov001_0222dde0 *o = data_ov001_0222dde0;
+    if (WfcInput_IsKeyRepeat(2)) {
+        Unk_ov001_0222dde0 *o = sWfcNumPad;
         if (o->unk_66 == 0) {
             if (o->unk_69 != 0) return;
-            func_ov001_0221e9a0(9);
-            data_ov001_0222dde0->unk_69 = 1;
+            WfcSound_Play(9);
+            sWfcNumPad->unk_69 = 1;
             return;
         }
         o->unk_60 = 0x10;
         return;
     }
-    if (func_ov001_02226184(2)) {
-        data_ov001_0222dde0->unk_69 = 0;
+    if (WfcInput_IsKeyReleased(2)) {
+        sWfcNumPad->unk_69 = 0;
     }
 }
 }
@@ -760,33 +760,33 @@ void func_ov001_0220b3e4() {
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b148(s32 a, s32 b) {
+void WfcNumPad_SetRowY(s32 a, s32 b) {
     u8 x[5] = {3, 3, 3, 1, 0};
     u8 y[5] = {0, 0, 0, 2, 0};
     u8 z[5] = {0, 0, 0, 0, 2};
     s32 k = a * 3;
     s32 i;
     for (i = 0; i < x[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_10[k];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_10[k];
         r->w0 &= 0xc1fffcff;
         u32 t = data_ov001_02229eec[k].x;
-        r = data_ov001_0222dde0->unk_10[k];
+        r = sWfcNumPad->unk_10[k];
         r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
         k++;
     }
     if (a < 4) {
-        func_ov001_0222519c(data_ov001_0222dde0->unk_00[a], data_ov001_02229eec[a * 3].x, b, data_ov001_0222dde0->unk_48[a], 2);
+        WfcText_ArrangeObj(sWfcNumPad->unk_00[a], data_ov001_02229eec[a * 3].x, b, sWfcNumPad->unk_48[a], 2);
     }
     for (i = 0; i < y[a]; i++) {
-        Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_38[i];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_38[i];
         r->w0 &= 0xc1fffcff;
         u32 t = data_ov001_02229eb4[i].x;
-        r = data_ov001_0222dde0->unk_38[i];
+        r = sWfcNumPad->unk_38[i];
         r->w0 = (r->w0 & 0xfe00ff00) | (u8)b | ((t & 0x1ff) << 16);
     }
     for (i = 0; i < z[a]; i++) {
-        func_ov001_02224704(data_ov001_0222dde0->unk_40[i], -1, 0, 0);
-        func_ov001_02224558(data_ov001_0222dde0->unk_40[i], -1, data_ov001_02229ebc[i].x, b);
+        WfcObj_SetAffineMode(sWfcNumPad->unk_40[i], -1, 0, 0);
+        WfcObj_SetPos(sWfcNumPad->unk_40[i], -1, data_ov001_02229ebc[i].x, b);
     }
 }
 }
@@ -794,18 +794,18 @@ void func_ov001_0220b148(s32 a, s32 b) {
 
 namespace N_0b05c {
 extern "C" {
-void func_ov001_0220b05c(s32 a, u32 b) {
+void WfcNumPad_SetKeyHighlight(s32 a, u32 b) {
     if (a < 0) return;
     if (a < 10) {
-        Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_10[a];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_10[a];
         r->w0 = r->w0 & ~0xc00;
         r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else if (a - 10 < 2) {
-        Unk_ov001_0220b05c_Reg *r = data_ov001_0222dde0->unk_38[a - 10];
+        Unk_ov001_0220b05c_Reg *r = sWfcNumPad->unk_38[a - 10];
         r->w0 = r->w0 & ~0xc00;
         r->h4 = (r->h4 & ~0xf000) | (data_ov001_02229e98[b] << 12);
     } else {
-        func_ov001_02224670(data_ov001_0222dde0->unk_40[a - 12], -1, 0, data_ov001_02229e8c[b]);
+        WfcObj_SetModePalette(sWfcNumPad->unk_40[a - 12], -1, 0, data_ov001_02229e8c[b]);
     }
 }
 }
@@ -813,27 +813,27 @@ void func_ov001_0220b05c(s32 a, u32 b) {
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220afcc() {
+void WfcNumPad_UpdateCursor() {
     s32 t;
-    s32 idx = data_ov001_0222dde0->unk_063;
+    s32 idx = sWfcNumPad->unk_063;
     if (idx <= 0xb) t = 0x44;
     else t = 0x45;
-    void *r = func_ov001_022247d4(data_ov001_0222dde0->unk_058, 0);
-    func_ov001_02224b9c(0, t, (u32)r);
-    func_ov001_022244d8(data_ov001_0222dde0->unk_058, -1, 2);
-    s32 i2 = data_ov001_0222dde0->unk_063 << 2;
-    func_ov001_02224558(data_ov001_0222dde0->unk_058, -1, *(u16 *)((u8 *)data_ov001_02229f14 + i2), *(u16 *)((u8 *)data_ov001_02229f16 + i2));
+    void *r = WfcObj_GetOam(sWfcNumPad->unk_058, 0);
+    WfcCell_Copy(0, t, (u32)r);
+    WfcObj_SetPriority(sWfcNumPad->unk_058, -1, 2);
+    s32 i2 = sWfcNumPad->unk_063 << 2;
+    WfcObj_SetPos(sWfcNumPad->unk_058, -1, *(u16 *)((u8 *)data_ov001_02229f14 + i2), *(u16 *)((u8 *)data_ov001_02229f16 + i2));
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220aef4(s32 a) {
-    Unk_ov001_0222dde0 *g = data_ov001_0222dde0;
+void WfcNumPad_MoveCursor(s32 a) {
+    Unk_ov001_0222dde0 *g = sWfcNumPad;
     s32 old = g->unk_063;
-    g->unk_063 = data_ov001_02229f4c[old][a];
-    g = data_ov001_0222dde0;
+    g->unk_063 = sWfcNumPadNavTable[old][a];
+    g = sWfcNumPad;
     s32 n = g->unk_063;
     if (n == 0xd && (a == 1 || a == 3)) {
         g->unk_064 = old;
@@ -850,121 +850,121 @@ void func_ov001_0220aef4(s32 a) {
             g->unk_063 = 2;
         }
     }
-    func_ov001_0220afcc();
-    func_ov001_0221e9a0(8);
+    WfcNumPad_UpdateCursor();
+    WfcSound_Play(8);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220ae6c(s32 a) {
+void WfcNumPad_SlideOutStep0(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = (Unk_ov001_0220a7f0_Reg *)func_ov001_022247d4(data_ov001_0222dde0->unk_040[0], 0);
+    Unk_ov001_0220a7f0_Reg *r = (Unk_ov001_0220a7f0_Reg *)WfcObj_GetOam(sWfcNumPad->unk_040[0], 0);
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
-    func_ov001_0220b148(4, t);
+    WfcNumPad_SetRowY(4, t);
     if (s[1] < 0xc0) return;
-    func_ov001_02226ffc(a, (void *)func_ov001_0220adec);
+    WfcTask_SetFunc(a, (void *)WfcNumPad_SlideOutStep1);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220adec(s32 a) {
+void WfcNumPad_SlideOutStep1(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = data_ov001_0222dde0->unk_010[9];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[9];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
-    func_ov001_0220b148(3, t);
+    WfcNumPad_SetRowY(3, t);
     if (s[1] < 0xc0) return;
-    func_ov001_02226ffc(a, (void *)func_ov001_0220ad6c);
+    WfcTask_SetFunc(a, (void *)WfcNumPad_SlideOutStep2);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220ad6c(s32 a) {
+void WfcNumPad_SlideOutStep2(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = data_ov001_0222dde0->unk_010[6];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[6];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
-    func_ov001_0220b148(2, t);
+    WfcNumPad_SetRowY(2, t);
     if (s[1] < 0xc0) return;
-    func_ov001_02226ffc(a, (void *)func_ov001_0220acec);
+    WfcTask_SetFunc(a, (void *)WfcNumPad_SlideOutStep3);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220acec(s32 a) {
+void WfcNumPad_SlideOutStep3(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = data_ov001_0222dde0->unk_010[3];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[3];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
-    func_ov001_0220b148(1, t);
+    WfcNumPad_SetRowY(1, t);
     if (s[1] < 0xc0) return;
-    func_ov001_02226ffc(a, (void *)func_ov001_0220ac6c);
+    WfcTask_SetFunc(a, (void *)WfcNumPad_SlideOutStep4);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220ac6c(s32 a) {
+void WfcNumPad_SlideOutStep4(s32 a) {
     volatile s32 s[2];
-    Unk_ov001_0220a7f0_Reg *r = data_ov001_0222dde0->unk_010[0];
+    Unk_ov001_0220a7f0_Reg *r = sWfcNumPad->unk_010[0];
     s32 t;
     s[0] = (*(volatile u32 *)&r->w0 & 0x1ff0000) >> 16;
     t = *(volatile u32 *)&r->w0 & 0xff;
     s[1] = t;
     t += 0xc;
     s[1] = t;
-    func_ov001_0220b148(0, t);
+    WfcNumPad_SetRowY(0, t);
     if (s[1] < 0xc0) return;
-    func_ov001_02226ffc(a, (void *)func_ov001_0220aba4);
+    WfcTask_SetFunc(a, (void *)WfcNumPad_Destroy);
 }
 }
 }
 
 namespace N_0a758 {
 extern "C" {
-void func_ov001_0220aba4(s32 a) {
+void WfcNumPad_Destroy(s32 a) {
     s32 i;
-    func_ov001_02226fdc(0, a);
+    WfcTask_RequestDelete(0, a);
     for (i = 0; i < 4; i++) {
-        func_ov001_022247e0(data_ov001_0222dde0->unk_048[i]);
-        func_ov001_02225718(data_ov001_0222dde0->unk_000[i]);
+        WfcObj_Free(sWfcNumPad->unk_048[i]);
+        WfcText_DestroyObjCanvas(sWfcNumPad->unk_000[i]);
     }
     for (i = 0; i < 2; i++) {
-        func_ov001_022247e0(data_ov001_0222dde0->unk_040[i]);
+        WfcObj_Free(sWfcNumPad->unk_040[i]);
     }
     for (i = 0; i < 2; i++) {
-        func_ov001_022267c8(data_ov001_0222dde0->unk_038[i]);
+        WfcOam_FreeEntry(sWfcNumPad->unk_038[i]);
     }
     for (i = 0; i < 10; i++) {
-        func_ov001_022267c8(data_ov001_0222dde0->unk_010[i]);
+        WfcOam_FreeEntry(sWfcNumPad->unk_010[i]);
     }
-    func_ov001_02225d58(&data_ov001_0222dde0);
+    WfcHeap_FreeAndClear(&sWfcNumPad);
 }
 }
 }

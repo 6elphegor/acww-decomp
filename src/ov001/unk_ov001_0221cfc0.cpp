@@ -22,166 +22,166 @@ struct Unk_ov001_0221d2f0_State {
 };
 
 extern "C" {
-extern u8 data_ov001_0222a460[];
-void func_ov001_02225f40(void *);
-s32 func_ov001_02226118(void *);
-s32 func_ov001_02226040(void *);
-s32 func_ov001_022260ac(void *);
-void func_ov001_0221e93c();
-void func_ov001_0221e9a0(s32);
-void func_ov001_0221e980(s32);
-void func_ov001_0221e95c(s32, s32);
-void func_ov001_02226fd0(s32, s32);
-void func_ov001_022247e0(s32);
-void func_ov001_02225d58(void *);
-void *func_ov001_02225db0(s32, s32);
-void func_ov001_02225970(s32, s32, void *);
-s32 func_ov001_02224b14(s32, s32, s32);
-void func_ov001_02224558(s32, s32, u32, u32);
-void func_ov001_022244d8(s32, s32, s32);
-s32 func_ov001_02227094(s32, void *, s32, s32);
+extern u8 gWfcScreenRect[];
+void WfcInput_GetTouchPos(void *);
+s32 WfcInput_IsTouchHeldIn(void *);
+s32 WfcInput_IsTouchRepeatIn(void *);
+s32 WfcInput_IsTouchPressedIn(void *);
+void WfcSound_Stop();
+void WfcSound_Play(s32);
+void WfcSound_SetVolume(s32);
+void WfcSound_SetTrackPitch(s32, s32);
+void WfcTask_Delete(s32, s32);
+void WfcObj_Free(s32);
+void WfcHeap_FreeAndClear(void *);
+void *WfcHeap_AllocClear(s32, s32);
+void WfcUtil_SetPoint(s32, s32, void *);
+s32 WfcObj_Create(s32, s32, s32);
+void WfcObj_SetPos(s32, s32, u32, u32);
+void WfcObj_SetPriority(s32, s32, s32);
+s32 WfcTask_Add(s32, void *, s32, s32);
 s32 FX_DivS32(s32, s32);
 
-void func_ov001_0221cfc0(u32 a);
-void func_ov001_0221d000(s32 a, u16 *out);
-s32 func_ov001_0221d0e0(s32 unused);
-s32 func_ov001_0221d134();
-void func_ov001_0221d1cc();
-void func_ov001_0221d244(s32 a);
-void func_ov001_0221d270(s32 a);
-void func_ov001_0221d2f0();
-void func_ov001_0221d3c8();
-void func_ov001_0221d5b8();
-void func_ov001_0221d5d0();
-void func_ov001_0221d5e8(s32 a);
-u32 func_ov001_0221d5f4();
-u32 func_ov001_0221d608();
-void func_ov001_0221d61c();
-void func_ov001_0221d660(u32 a, u32 b, s32 c, s32 d, u32 e);
+void WfcScrollBar_SetThumbPos(u32 a);
+void WfcScrollBar_GetPartRect(s32 a, u16 *out);
+s32 WfcScrollBar_HitTestArrowHeld(s32 unused);
+s32 WfcScrollBar_HitTest();
+void WfcScrollBar_JumpToTouch();
+void WfcScrollBar_StartArrow(s32 a);
+void WfcScrollBar_UpdateDragSound(s32 a);
+void WfcScrollBar_UpdateDrag();
+void WfcScrollBar_Task();
+void WfcScrollBar_Disable();
+void WfcScrollBar_Enable();
+void WfcScrollBar_SetPos(s32 a);
+u32 WfcScrollBar_GetEvent();
+u32 WfcScrollBar_GetPos();
+void WfcScrollBar_Destroy();
+void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e);
 }
 
-extern "C" const u8 data_ov001_0222a2a8[4] = { 0x55, 0x36, 0x1e, 0x00 };
-extern "C" const u8 data_ov001_0222a2a4[4] = { 0x10, 0x0f, 0x0e, 0x00 };
-Unk_ov001_0221d2f0_State *data_ov001_0222dee8;
+extern "C" const u8 sWfcScrollBarThumbSizes[4] = { 0x55, 0x36, 0x1e, 0x00 };
+extern "C" const u8 sWfcScrollBarThumbCells[4] = { 0x10, 0x0f, 0x0e, 0x00 };
+Unk_ov001_0221d2f0_State *sWfcScrollBar;
 
-void func_ov001_0221d660(u32 a, u32 b, s32 c, s32 d, u32 e) {
-    data_ov001_0222dee8 = (Unk_ov001_0221d2f0_State *)func_ov001_02225db0(0x20, 4);
-    data_ov001_0222dee8->unk_1b = a;
-    data_ov001_0222dee8->unk_19 = b;
-    data_ov001_0222dee8->unk_1a = e;
-    func_ov001_02225970(c, d, &data_ov001_0222dee8->unk_10);
-    data_ov001_0222dee8->unk_00 = func_ov001_02224b14(0, data_ov001_0222a2a4[a], 1);
-    func_ov001_02224558(data_ov001_0222dee8->unk_00, -1, c, d + e);
-    func_ov001_022244d8(data_ov001_0222dee8->unk_00, -1, 1);
-    data_ov001_0222dee8->unk_0c = func_ov001_02227094(0, (void *)func_ov001_0221d3c8, 0, 0x80);
+void WfcScrollBar_Create(u32 a, u32 b, s32 c, s32 d, u32 e) {
+    sWfcScrollBar = (Unk_ov001_0221d2f0_State *)WfcHeap_AllocClear(0x20, 4);
+    sWfcScrollBar->unk_1b = a;
+    sWfcScrollBar->unk_19 = b;
+    sWfcScrollBar->unk_1a = e;
+    WfcUtil_SetPoint(c, d, &sWfcScrollBar->unk_10);
+    sWfcScrollBar->unk_00 = WfcObj_Create(0, sWfcScrollBarThumbCells[a], 1);
+    WfcObj_SetPos(sWfcScrollBar->unk_00, -1, c, d + e);
+    WfcObj_SetPriority(sWfcScrollBar->unk_00, -1, 1);
+    sWfcScrollBar->unk_0c = WfcTask_Add(0, (void *)WfcScrollBar_Task, 0, 0x80);
 }
 
-void func_ov001_0221d61c() {
-    func_ov001_02226fd0(0, data_ov001_0222dee8->unk_0c);
-    func_ov001_022247e0(data_ov001_0222dee8->unk_00);
-    func_ov001_02225d58(&data_ov001_0222dee8);
+void WfcScrollBar_Destroy() {
+    WfcTask_Delete(0, sWfcScrollBar->unk_0c);
+    WfcObj_Free(sWfcScrollBar->unk_00);
+    WfcHeap_FreeAndClear(&sWfcScrollBar);
 }
 
-u32 func_ov001_0221d608() {
-    return data_ov001_0222dee8->unk_1a;
+u32 WfcScrollBar_GetPos() {
+    return sWfcScrollBar->unk_1a;
 }
 
-u32 func_ov001_0221d5f4() {
-    return data_ov001_0222dee8->unk_1d;
+u32 WfcScrollBar_GetEvent() {
+    return sWfcScrollBar->unk_1d;
 }
 
-void func_ov001_0221d5e8(s32 a) {
-    func_ov001_0221cfc0(a);
+void WfcScrollBar_SetPos(s32 a) {
+    WfcScrollBar_SetThumbPos(a);
 }
 
-void func_ov001_0221d5d0() {
-    data_ov001_0222dee8->unk_1e = 0;
+void WfcScrollBar_Enable() {
+    sWfcScrollBar->unk_1e = 0;
 }
 
-void func_ov001_0221d5b8() {
-    data_ov001_0222dee8->unk_1e = 1;
+void WfcScrollBar_Disable() {
+    sWfcScrollBar->unk_1e = 1;
 }
 
-void func_ov001_0221d3c8() {
-    data_ov001_0222dee8->unk_1d = 0;
-    Unk_ov001_0221d2f0_State *s = data_ov001_0222dee8;
+void WfcScrollBar_Task() {
+    sWfcScrollBar->unk_1d = 0;
+    Unk_ov001_0221d2f0_State *s = sWfcScrollBar;
     switch (s->unk_1c) {
     case 0:
         if (s->unk_1e != 0) return;
-        switch (func_ov001_0221d134()) {
+        switch (WfcScrollBar_HitTest()) {
         case 1:
-            if (data_ov001_0222dee8->unk_1b == 0) return;
-            func_ov001_0221e9a0(0x16);
-            func_ov001_0221e980(0);
-            data_ov001_0222dee8->unk_1d = 1;
-            func_ov001_02225f40(&data_ov001_0222dee8->unk_14);
+            if (sWfcScrollBar->unk_1b == 0) return;
+            WfcSound_Play(0x16);
+            WfcSound_SetVolume(0);
+            sWfcScrollBar->unk_1d = 1;
+            WfcInput_GetTouchPos(&sWfcScrollBar->unk_14);
             {
-                Unk_ov001_0221d2f0_State *t = data_ov001_0222dee8;
+                Unk_ov001_0221d2f0_State *t = sWfcScrollBar;
                 t->unk_18 = t->unk_1a;
             }
-            data_ov001_0222dee8->unk_1c = 1;
+            sWfcScrollBar->unk_1c = 1;
             break;
         case 2:
-            func_ov001_0221d244(2);
+            WfcScrollBar_StartArrow(2);
             break;
         case 3:
-            func_ov001_0221d244(3);
+            WfcScrollBar_StartArrow(3);
             break;
         case 4:
-            func_ov001_0221d1cc();
+            WfcScrollBar_JumpToTouch();
             break;
         }
         break;
     case 1:
-        func_ov001_0221d2f0();
+        WfcScrollBar_UpdateDrag();
         break;
     case 2:
-        if (func_ov001_0221d0e0(2) != 2) {
-            data_ov001_0222dee8->unk_1d = 5;
-            data_ov001_0222dee8->unk_1c = 0;
+        if (WfcScrollBar_HitTestArrowHeld(2) != 2) {
+            sWfcScrollBar->unk_1d = 5;
+            sWfcScrollBar->unk_1c = 0;
             return;
         }
-        if (func_ov001_0221d134() != 2) return;
-        func_ov001_0221d244(2);
+        if (WfcScrollBar_HitTest() != 2) return;
+        WfcScrollBar_StartArrow(2);
         break;
     case 3:
-        if (func_ov001_0221d0e0(3) != 3) {
-            data_ov001_0222dee8->unk_1d = 7;
-            data_ov001_0222dee8->unk_1c = 0;
+        if (WfcScrollBar_HitTestArrowHeld(3) != 3) {
+            sWfcScrollBar->unk_1d = 7;
+            sWfcScrollBar->unk_1c = 0;
             return;
         }
-        if (func_ov001_0221d134() != 3) return;
-        func_ov001_0221d244(3);
+        if (WfcScrollBar_HitTest() != 3) return;
+        WfcScrollBar_StartArrow(3);
         break;
     }
 }
 
-void func_ov001_0221d2f0() {
+void WfcScrollBar_UpdateDrag() {
     u16 pt[2];
-    if (func_ov001_02226118(data_ov001_0222a460) != 0) {
-        func_ov001_02225f40(pt);
-        Unk_ov001_0221d2f0_State *s = data_ov001_0222dee8;
+    if (WfcInput_IsTouchHeldIn(gWfcScreenRect) != 0) {
+        WfcInput_GetTouchPos(pt);
+        Unk_ov001_0221d2f0_State *s = sWfcScrollBar;
         if ((s32)pt[0] >= (s32)s->unk_10 - 0x1e) {
             s32 v = s->unk_18 + ((s32)pt[1] - (s32)s->unk_16);
             if (v < 0) {
                 v = 0;
             } else {
-                s32 m = s->unk_19 - data_ov001_0222a2a8[s->unk_1b];
+                s32 m = s->unk_19 - sWfcScrollBarThumbSizes[s->unk_1b];
                 if (v >= m) v = m;
             }
-            func_ov001_0221d270(v);
-            func_ov001_0221cfc0(v);
-            data_ov001_0222dee8->unk_1d = 2;
+            WfcScrollBar_UpdateDragSound(v);
+            WfcScrollBar_SetThumbPos(v);
+            sWfcScrollBar->unk_1d = 2;
             return;
         }
     }
-    func_ov001_0221e93c();
-    data_ov001_0222dee8->unk_1c = 0;
-    data_ov001_0222dee8->unk_1d = 3;
+    WfcSound_Stop();
+    sWfcScrollBar->unk_1c = 0;
+    sWfcScrollBar->unk_1d = 3;
 }
 
-void func_ov001_0221d270(s32 a) {
-    s32 r4 = data_ov001_0222dee8->unk_1a - a;
+void WfcScrollBar_UpdateDragSound(s32 a) {
+    s32 r4 = sWfcScrollBar->unk_1a - a;
     s32 r0, r1;
     if (r4 < 0) r4 = -r4;
     if (r4 < 2) {
@@ -191,7 +191,7 @@ void func_ov001_0221d270(s32 a) {
     } else {
         r0 = FX_DivS32(0x7f, 6 - r4);
     }
-    func_ov001_0221e980(r0);
+    WfcSound_SetVolume(r0);
     if (r4 < 2) {
         r1 = -0x100;
     } else if (r4 >= 6) {
@@ -199,81 +199,81 @@ void func_ov001_0221d270(s32 a) {
     } else {
         r1 = FX_DivS32(0x200, 6 - r4) - 0x100;
     }
-    func_ov001_0221e95c(0xffff, r1);
+    WfcSound_SetTrackPitch(0xffff, r1);
 }
 
-void func_ov001_0221d244(s32 a) {
-    data_ov001_0222dee8->unk_1c = a;
-    data_ov001_0222dee8->unk_1d = (a == 2) ? 4 : 6;
+void WfcScrollBar_StartArrow(s32 a) {
+    sWfcScrollBar->unk_1c = a;
+    sWfcScrollBar->unk_1d = (a == 2) ? 4 : 6;
 }
 
-void func_ov001_0221d1cc() {
+void WfcScrollBar_JumpToTouch() {
     u16 buf[2];
     s32 v;
-    func_ov001_02225f40(buf);
-    u32 t = data_ov001_0222a2a8[data_ov001_0222dee8->unk_1b];
-    v = buf[1] - data_ov001_0222dee8->unk_12 - (t >> 1);
+    WfcInput_GetTouchPos(buf);
+    u32 t = sWfcScrollBarThumbSizes[sWfcScrollBar->unk_1b];
+    v = buf[1] - sWfcScrollBar->unk_12 - (t >> 1);
     if (v < 0) {
         v = 0;
     } else {
-        s32 m = data_ov001_0222dee8->unk_19 - t;
+        s32 m = sWfcScrollBar->unk_19 - t;
         if (v >= m) v = m;
     }
-    func_ov001_0221cfc0(v);
-    data_ov001_0222dee8->unk_1d = 3;
+    WfcScrollBar_SetThumbPos(v);
+    sWfcScrollBar->unk_1d = 3;
 }
 
-s32 func_ov001_0221d134() {
+s32 WfcScrollBar_HitTest() {
     u16 buf[6];
     s32 i;
-    func_ov001_0221d000(1, buf);
-    if (func_ov001_02226040(buf) != 0) return 1;
+    WfcScrollBar_GetPartRect(1, buf);
+    if (WfcInput_IsTouchRepeatIn(buf) != 0) return 1;
     for (i = 2; i <= 3; i++) {
-        func_ov001_0221d000(i, buf);
-        if (func_ov001_02226040(buf) != 0) return i;
+        WfcScrollBar_GetPartRect(i, buf);
+        if (WfcInput_IsTouchRepeatIn(buf) != 0) return i;
     }
-    func_ov001_0221d000(4, buf);
-    if (func_ov001_022260ac(buf) != 0) return 4;
+    WfcScrollBar_GetPartRect(4, buf);
+    if (WfcInput_IsTouchPressedIn(buf) != 0) return 4;
     return 0;
 }
 
-s32 func_ov001_0221d0e0(s32 unused) {
+s32 WfcScrollBar_HitTestArrowHeld(s32 unused) {
     u16 buf[6];
     s32 i;
     for (i = 2; i <= 3; i++) {
-        func_ov001_0221d000(i, buf);
-        if (func_ov001_02226118(buf) != 0) return i;
+        WfcScrollBar_GetPartRect(i, buf);
+        if (WfcInput_IsTouchHeldIn(buf) != 0) return i;
     }
     return 0;
 }
 
-void func_ov001_0221d000(s32 a, u16 *out) {
-    out[0] = data_ov001_0222dee8->unk_10;
+void WfcScrollBar_GetPartRect(s32 a, u16 *out) {
+    out[0] = sWfcScrollBar->unk_10;
     out[2] = out[0] + 0xc;
     switch (a) {
     case 0:
         break;
     case 1:
-        out[1] = data_ov001_0222dee8->unk_12 + data_ov001_0222dee8->unk_1a;
-        out[3] = out[1] + data_ov001_0222a2a8[data_ov001_0222dee8->unk_1b];
+        out[1] = sWfcScrollBar->unk_12 + sWfcScrollBar->unk_1a;
+        out[3] = out[1] + sWfcScrollBarThumbSizes[sWfcScrollBar->unk_1b];
         break;
     case 2:
-        out[1] = data_ov001_0222dee8->unk_12 - 0xd;
-        out[3] = data_ov001_0222dee8->unk_12;
+        out[1] = sWfcScrollBar->unk_12 - 0xd;
+        out[3] = sWfcScrollBar->unk_12;
         break;
     case 3:
-        out[1] = data_ov001_0222dee8->unk_12 + data_ov001_0222dee8->unk_19;
+        out[1] = sWfcScrollBar->unk_12 + sWfcScrollBar->unk_19;
         out[3] = out[1] + 0xd;
         break;
     case 4:
-        out[1] = data_ov001_0222dee8->unk_12;
-        out[3] = out[1] + data_ov001_0222dee8->unk_19;
+        out[1] = sWfcScrollBar->unk_12;
+        out[3] = out[1] + sWfcScrollBar->unk_19;
         break;
     }
 }
 
-void func_ov001_0221cfc0(u32 a) {
-    func_ov001_02224558(data_ov001_0222dee8->unk_00, -1, data_ov001_0222dee8->unk_10, a + data_ov001_0222dee8->unk_12);
-    data_ov001_0222dee8->unk_1a = a;
+void WfcScrollBar_SetThumbPos(u32 a) {
+    WfcObj_SetPos(sWfcScrollBar->unk_00, -1, sWfcScrollBar->unk_10, a + sWfcScrollBar->unk_12);
+    sWfcScrollBar->unk_1a = a;
 }
 

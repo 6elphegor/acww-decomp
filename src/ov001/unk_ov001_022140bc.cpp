@@ -24,42 +24,42 @@ struct Unk_ov001_02214dd8_Ids { u8 v[5]; };
 extern "C" {
 extern u8 GX_LoadOBJPltt[];
 
-s32 func_ov001_022206f8();
-s32 func_ov001_02220714();
-s32 func_ov001_02220728();
-s32 func_ov001_02220778(u32 a, u32 b, u32 c, s32 d, u32 e);
-s32 func_ov001_0220c668(void *p);
-s32 func_ov001_0220c5f0(void *p, void *q);
-s32 func_ov001_0220c654(u32 a, u32 b);
-s32 func_ov001_0220c618(u32 a, u32 b);
-s32 func_ov001_0221e9a0(u32 a);
-s32 func_ov001_0221dd08(void *a, void *b);
-s32 func_ov001_02225238(u32 a, u32 b);
-s32 func_ov001_02225254(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
-s32 func_ov001_0222516c(u32 a);
-s32 func_ov001_02208244();
-s32 func_ov001_022267c8(void *a);
-s32 func_ov001_022253d4(u32 a);
-s32 func_ov001_02208594(const char *a, void *b);
-s32 func_ov001_02225c58(u32 a, u32 b);
-s32 func_ov001_02225d58(void *a);
-s32 func_ov001_0220bf40();
-s32 func_ov001_022250e0(u32 a);
-s32 func_ov001_0220bfac();
-s32 func_ov001_02224e4c(u32 a);
-s32 func_ov001_0220bf98();
-s32 func_ov001_0220bf84(u32 a);
-s32 func_ov001_0220bf70(u32 a);
-s32 func_ov001_0220bf5c(u32 a);
-s32 func_ov001_0220bfec();
-s32 func_ov001_02224ff8(s32, s32, s32, s32);
-s32 func_ov001_02225cb4(s32, s32);
-s32 func_ov001_02225db0(s32, s32);
-s32 func_ov001_0220891c(s32);
-s32 func_ov001_02208290(s32, s32, s32);
-s32 func_ov001_02208538(s32);
-s32 func_ov001_0222558c(s32, s32);
-s32 func_ov001_02224b60(s32, s32);
+s32 WfcDialog_IsOpen();
+s32 WfcDialog_GetResult();
+s32 WfcDialog_Close();
+s32 WfcDialog_Open(u32 a, u32 b, u32 c, s32 d, u32 e);
+s32 WfcUtil_SetScene(void *p);
+s32 WfcUtil_GetEditParams(void *p, void *q);
+s32 WfcUtil_SetScreenFlags(u32 a, u32 b);
+s32 WfcUtil_SetEditParams(u32 a, u32 b);
+s32 WfcSound_Play(u32 a);
+s32 WfcUtil_ParseIpDigits(void *a, void *b);
+s32 WfcText_Clear(u32 a, u32 b);
+s32 WfcText_DrawTextRect(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g, void *h);
+s32 WfcText_RequestTransfer(u32 a);
+s32 WfcUtil_HideTopMessage();
+s32 WfcOam_FreeEntry(void *a);
+s32 WfcText_DestroyBgCanvas(u32 a);
+s32 WfcUtil_LoadFileTo(const char *a, void *b);
+s32 WfcGx_HidePlanes(u32 a, u32 b);
+s32 WfcHeap_FreeAndClear(void *a);
+s32 WfcNumPad_Exists();
+s32 WfcFade_IsBusy(u32 a);
+s32 WfcNumPad_Close();
+s32 WfcFade_StartWait(u32 a);
+s32 WfcNumPad_GetKey();
+s32 WfcNumPad_SetDeleteEnabled(u32 a);
+s32 WfcNumPad_SetInsertEnabled(u32 a);
+s32 WfcNumPad_SetDotEnabled(u32 a);
+s32 WfcNumPad_Create();
+s32 WfcFade_Start(s32, s32, s32, s32);
+s32 WfcGx_ShowPlanes(s32, s32);
+s32 WfcHeap_AllocClear(s32, s32);
+s32 WfcHighlight_Set(s32);
+s32 WfcUtil_ShowTopMessage(s32, s32, s32);
+s32 WfcUtil_ShowStepIndicator(s32);
+s32 WfcText_CreateBgCanvas(s32, s32);
+s32 WfcObj_CreateSingle(s32, s32);
 s32 func_020fedcc(void *a);
 s32 MI_CpuCopy8(void *a, void *b, u32 c);
 s32 MI_CpuFill8(void *a, u32 b, u32 c);
@@ -69,80 +69,80 @@ s32 GX_LoadBG2Char(void);
 s32 GX_LoadBGPltt(void);
 s32 GX_LoadBG2Scr(void);
 
-void func_ov001_02217e40();
-void func_ov001_0221e44c();
-void func_ov001_0221e49c();
-void func_ov001_0221e4ec();
-void func_ov001_0221e53c();
-void func_ov001_0221e584();
-void func_ov001_0221e5f0();
-void func_ov001_0221e614();
-void func_ov001_0221e638();
-void func_ov001_0221e65c();
-void func_ov001_0221e678();
-void func_ov001_02214ba4();
-void func_ov001_02214bc0();
-void func_ov001_02214bf4();
-void func_ov001_02214c9c();
-void func_ov001_02214cfc();
-void func_ov001_02214dd8();
-void func_ov001_022140bc();
-void func_ov001_02214114();
-s32 func_ov001_02214154();
-void func_ov001_022142c8();
-void func_ov001_02214358();
-void func_ov001_02214418();
-void func_ov001_02214488();
-void func_ov001_022144e8();
-void func_ov001_022145d0();
-void func_ov001_0221467c();
-void func_ov001_02214738();
-void func_ov001_0221477c();
-void func_ov001_022147a4();
-s32 func_ov001_022147a8(s32 a);
-void func_ov001_0221484c();
+void WfcManualSetup_Enter();
+void WfcConfig_FormatEditDns2();
+void WfcConfig_FormatEditDns1();
+void WfcConfig_FormatEditGateway();
+void WfcConfig_FormatEditSubnetMask();
+void WfcConfig_FormatEditIp();
+void WfcConfig_SetEditDns2();
+void WfcConfig_SetEditDns1();
+void WfcConfig_SetEditGateway();
+void WfcConfig_SetEditSubnetMask();
+void WfcConfig_SetEditIp();
+void WfcAddrEdit_Update();
+void WfcAddrEdit_WaitKeypad();
+void WfcAddrEdit_OpenKeypad();
+void WfcAddrEdit_FadeIn();
+void WfcAddrEdit_LoadBg();
+void WfcAddrEdit_Enter();
+void WfcAddrEdit_ReturnToInput();
+void WfcAddrEdit_WaitErrorDialog();
+s32 WfcAddrEdit_ValidateAddress();
+void WfcAddrEdit_NormalizeOctets();
+void WfcAddrEdit_ApplyAndExit();
+void WfcAddrEdit_WaitConfirmDialog();
+void WfcAddrEdit_UpdateCaret();
+void WfcAddrEdit_DrawText();
+void WfcAddrEdit_Exit();
+void WfcAddrEdit_WaitKeypadClosed();
+void WfcAddrEdit_CloseKeypad();
+void WfcAddrEdit_StartExit();
+void WfcAddrEdit_Idle();
+s32 WfcAddrEdit_IsOctetFull(s32 a);
+void WfcAddrEdit_HandleKey();
 
 const u16 data_ov001_0222a070[2] = {0x0b, 0x10};
 const u8 data_ov001_0222a074[12] = {0x31, 0x3d, 0x49, 0x5a, 0x66, 0x72, 0x83, 0x8f, 0x9b, 0xac, 0xb8, 0xc4};
 u8 data_ov001_0222af7c[4] = {0x32, 0x35, 0x35, 0};
-u8 data_ov001_0222af80[8] = {0x91, 0x92, 0x93, 0x94, 0x95, 0, 0, 0};
+u8 sWfcAddrEditTitleMsgs[8] = {0x91, 0x92, 0x93, 0x94, 0x95, 0, 0, 0};
 u16 data_ov001_0222af88[4] = {0, 0x29, 0, 0};
-void *data_ov001_0222af90[5] = {(void *)func_ov001_0221e584, (void *)func_ov001_0221e53c, (void *)func_ov001_0221e4ec, (void *)func_ov001_0221e49c, (void *)func_ov001_0221e44c};
-void *data_ov001_0222afa4[5] = {(void *)func_ov001_0221e678, (void *)func_ov001_0221e65c, (void *)func_ov001_0221e638, (void *)func_ov001_0221e614, (void *)func_ov001_0221e5f0};
-Unk_ov001_02214154_S *data_ov001_0222de7c;
+void *sWfcAddrEditLoadFuncs[5] = {(void *)WfcConfig_FormatEditIp, (void *)WfcConfig_FormatEditSubnetMask, (void *)WfcConfig_FormatEditGateway, (void *)WfcConfig_FormatEditDns1, (void *)WfcConfig_FormatEditDns2};
+void *sWfcAddrEditStoreFuncs[5] = {(void *)WfcConfig_SetEditIp, (void *)WfcConfig_SetEditSubnetMask, (void *)WfcConfig_SetEditGateway, (void *)WfcConfig_SetEditDns1, (void *)WfcConfig_SetEditDns2};
+Unk_ov001_02214154_S *sWfcAddrEdit;
 
-void func_ov001_02214dd8() {
-    Unk_ov001_02214dd8_Fns fns = *(Unk_ov001_02214dd8_Fns *)data_ov001_0222af90;
-    Unk_ov001_02214dd8_Ids ids = *(Unk_ov001_02214dd8_Ids *)data_ov001_0222af80;
+void WfcAddrEdit_Enter() {
+    Unk_ov001_02214dd8_Fns fns = *(Unk_ov001_02214dd8_Fns *)sWfcAddrEditLoadFuncs;
+    Unk_ov001_02214dd8_Ids ids = *(Unk_ov001_02214dd8_Ids *)sWfcAddrEditTitleMsgs;
     s32 idx;
-    data_ov001_0222de7c = (Unk_ov001_02214154_S *)func_ov001_02225db0(0x18, 4);
-    func_ov001_0220c5f0(&idx, 0);
-    fns.v[idx](data_ov001_0222de7c->name);
-    Unk_ov001_02214154_S *o = data_ov001_0222de7c;
+    sWfcAddrEdit = (Unk_ov001_02214154_S *)WfcHeap_AllocClear(0x18, 4);
+    WfcUtil_GetEditParams(&idx, 0);
+    fns.v[idx](sWfcAddrEdit->name);
+    Unk_ov001_02214154_S *o = sWfcAddrEdit;
     if (memcmp(o->name, "  0", 3) != 0) {
         o->unk_14 = 3;
     } else {
         MI_CpuFill8(o->name, 0, 12);
-        data_ov001_0222de7c->unk_14 = 0;
+        sWfcAddrEdit->unk_14 = 0;
     }
-    func_ov001_02214cfc();
-    func_ov001_0220891c(idx + 0xb);
-    func_ov001_02208290(ids.v[idx], -1, 0);
-    func_ov001_02208538(2);
-    data_ov001_0222de7c->unk_00 = func_ov001_0222558c(0, 0);
-    data_ov001_0222de7c->unk_04 = (u32 *)func_ov001_02224b60(0, 0x3f);
-    u16 *p = (u16 *)((u32)data_ov001_0222de7c->unk_04 + 4);
+    WfcAddrEdit_LoadBg();
+    WfcHighlight_Set(idx + 0xb);
+    WfcUtil_ShowTopMessage(ids.v[idx], -1, 0);
+    WfcUtil_ShowStepIndicator(2);
+    sWfcAddrEdit->unk_00 = WfcText_CreateBgCanvas(0, 0);
+    sWfcAddrEdit->unk_04 = (u32 *)WfcObj_CreateSingle(0, 0x3f);
+    u16 *p = (u16 *)((u32)sWfcAddrEdit->unk_04 + 4);
     *p = (*p & ~0xc00) | 0xc00;
-    func_ov001_02214488();
-    func_ov001_022144e8();
-    func_ov001_0220c668((void *)func_ov001_02214c9c);
+    WfcAddrEdit_UpdateCaret();
+    WfcAddrEdit_DrawText();
+    WfcUtil_SetScene((void *)WfcAddrEdit_FadeIn);
 }
 
-void func_ov001_02214cfc() {
-    func_ov001_02208594("char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
-    func_ov001_02208594("char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
-    func_ov001_02208594("char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
-    func_ov001_02208594("char/xb4EditAddr.nsc.l", (void *)GX_LoadBG2Scr);
+void WfcAddrEdit_LoadBg() {
+    WfcUtil_LoadFileTo("char/ybObjKb.ncl.l", (void *)GX_LoadOBJPltt);
+    WfcUtil_LoadFileTo("char/jbBgStep3.ncg.l", (void *)GX_LoadBG2Char);
+    WfcUtil_LoadFileTo("char/ybBgStep3.ncl.l", (void *)GX_LoadBGPltt);
+    WfcUtil_LoadFileTo("char/xb4EditAddr.nsc.l", (void *)GX_LoadBG2Scr);
     volatile u16 *r1 = (volatile u16 *)0x4001008;
     volatile u16 *r2 = (volatile u16 *)0x400100a;
     volatile u16 *r3 = (volatile u16 *)0x4000008;
@@ -155,100 +155,100 @@ void func_ov001_02214cfc() {
     *r5 = (*r5 & ~3) | 3;
 }
 
-void func_ov001_02214c9c() {
-    func_ov001_02224ff8(2, 1, 1, 8);
-    func_ov001_02224ff8(2, 0, 0x15, 8);
-    func_ov001_02225cb4(1, 1);
-    func_ov001_02225cb4(0, 0x15);
-    func_ov001_0220c668((void *)func_ov001_02214bf4);
+void WfcAddrEdit_FadeIn() {
+    WfcFade_Start(2, 1, 1, 8);
+    WfcFade_Start(2, 0, 0x15, 8);
+    WfcGx_ShowPlanes(1, 1);
+    WfcGx_ShowPlanes(0, 0x15);
+    WfcUtil_SetScene((void *)WfcAddrEdit_OpenKeypad);
 }
 
-void func_ov001_02214bf4() {
-    if (func_ov001_022250e0(1) != 0) return;
-    if (func_ov001_022250e0(0) != 0) return;
-    func_ov001_0220bfec();
-    func_ov001_0221e9a0(0x14);
-    if (data_ov001_0222de7c->unk_14 == 0) {
-        func_ov001_0220bf84(0);
-        func_ov001_0220bf5c(0);
+void WfcAddrEdit_OpenKeypad() {
+    if (WfcFade_IsBusy(1) != 0) return;
+    if (WfcFade_IsBusy(0) != 0) return;
+    WfcNumPad_Create();
+    WfcSound_Play(0x14);
+    if (sWfcAddrEdit->unk_14 == 0) {
+        WfcNumPad_SetDeleteEnabled(0);
+        WfcNumPad_SetDotEnabled(0);
     } else {
-        if (func_ov001_022147a8(0x1a) != 0) {
-            func_ov001_0220bf70(0);
+        if (WfcAddrEdit_IsOctetFull(0x1a) != 0) {
+            WfcNumPad_SetInsertEnabled(0);
         }
-        func_ov001_0220bf5c(0);
+        WfcNumPad_SetDotEnabled(0);
     }
-    func_ov001_0220c668((void *)func_ov001_02214bc0);
+    WfcUtil_SetScene((void *)WfcAddrEdit_WaitKeypad);
 }
 
-void func_ov001_02214bc0() {
-    if (func_ov001_0220bf98() == 0x1f) return;
-    func_ov001_0220c668((void *)func_ov001_02214ba4);
+void WfcAddrEdit_WaitKeypad() {
+    if (WfcNumPad_GetKey() == 0x1f) return;
+    WfcUtil_SetScene((void *)WfcAddrEdit_Update);
 }
 
-void func_ov001_02214ba4() {
-    func_ov001_0221484c();
-    func_ov001_022147a4();
+void WfcAddrEdit_Update() {
+    WfcAddrEdit_HandleKey();
+    WfcAddrEdit_Idle();
 }
 
-void func_ov001_0221484c() {
-    s32 r = func_ov001_0220bf98();
+void WfcAddrEdit_HandleKey() {
+    s32 r = WfcNumPad_GetKey();
     Unk_ov001_02214154_S *g;
     switch (r) {
     case 0:
         return;
     case 0x10:
-        g = data_ov001_0222de7c;
+        g = sWfcAddrEdit;
         if (g->unk_14 == 0 && g->name[2] == 0) goto end;
-        func_ov001_0221e9a0(3);
+        WfcSound_Play(3);
         {
-            u32 k = data_ov001_0222de7c->unk_14;
-            if (data_ov001_0222de7c->name[k * 3 + 2] == 0) data_ov001_0222de7c->unk_14 = k - 1;
+            u32 k = sWfcAddrEdit->unk_14;
+            if (sWfcAddrEdit->name[k * 3 + 2] == 0) sWfcAddrEdit->unk_14 = k - 1;
         }
-        MI_CpuFill8(&data_ov001_0222de7c->name[data_ov001_0222de7c->unk_14 * 3], 0, 3);
-        g = data_ov001_0222de7c;
-        if (g->unk_14 == 0 && g->name[2] == 0) func_ov001_0220bf84(0);
-        func_ov001_0220bf70(1);
-        func_ov001_0220bf5c(0);
+        MI_CpuFill8(&sWfcAddrEdit->name[sWfcAddrEdit->unk_14 * 3], 0, 3);
+        g = sWfcAddrEdit;
+        if (g->unk_14 == 0 && g->name[2] == 0) WfcNumPad_SetDeleteEnabled(0);
+        WfcNumPad_SetInsertEnabled(1);
+        WfcNumPad_SetDotEnabled(0);
         goto end;
     case 0x11: {
-        g = data_ov001_0222de7c;
+        g = sWfcAddrEdit;
         u32 k = g->unk_14;
         if (k >= 3) goto end;
         if (g->name[k * 3 + 2] == 0) goto end;
-        func_ov001_0221e9a0(1);
-        data_ov001_0222de7c->unk_14 = data_ov001_0222de7c->unk_14 + 1;
-        func_ov001_0220bf5c(0);
+        WfcSound_Play(1);
+        sWfcAddrEdit->unk_14 = sWfcAddrEdit->unk_14 + 1;
+        WfcNumPad_SetDotEnabled(0);
         goto end;
     }
     case 0x12:
-        data_ov001_0222de7c->unk_15 = 0;
-        func_ov001_0221e9a0(7);
-        func_ov001_0220c668((void *)func_ov001_0221477c);
+        sWfcAddrEdit->unk_15 = 0;
+        WfcSound_Play(7);
+        WfcUtil_SetScene((void *)WfcAddrEdit_StartExit);
         return;
     case 0x13:
-        if (func_ov001_02214154()) {
-            func_ov001_0221e9a0(6);
-            data_ov001_0222de7c->unk_15 = 1;
+        if (WfcAddrEdit_ValidateAddress()) {
+            WfcSound_Play(6);
+            sWfcAddrEdit->unk_15 = 1;
         } else {
-            data_ov001_0222de7c->unk_15 = 2;
-            func_ov001_0221e9a0(9);
+            sWfcAddrEdit->unk_15 = 2;
+            WfcSound_Play(9);
         }
-        data_ov001_0222de7c->unk_14 = 3;
+        sWfcAddrEdit->unk_14 = 3;
         {
-            volatile u32 *reg = data_ov001_0222de7c->unk_04;
+            volatile u32 *reg = sWfcAddrEdit->unk_04;
             *reg = (*reg & 0xc1fffcff) | 0x200;
         }
-        func_ov001_02214488();
-        func_ov001_022142c8();
-        func_ov001_0220c668((void *)func_ov001_0221477c);
+        WfcAddrEdit_UpdateCaret();
+        WfcAddrEdit_NormalizeOctets();
+        WfcUtil_SetScene((void *)WfcAddrEdit_StartExit);
         return;
     default: {
-        if (data_ov001_0222de7c->unk_14 == 3) {
-            if (func_ov001_022147a8(0x1a) != 0) goto end;
+        if (sWfcAddrEdit->unk_14 == 3) {
+            if (WfcAddrEdit_IsOctetFull(0x1a) != 0) goto end;
         }
-        func_ov001_0221e9a0(1);
+        WfcSound_Play(1);
         {
-            Unk_ov001_02214154_S *h = data_ov001_0222de7c;
+            Unk_ov001_02214154_S *h = sWfcAddrEdit;
             u32 idx = h->unk_14;
             u8 *base = h->name;
             u32 lr = idx * 3;
@@ -262,37 +262,37 @@ void func_ov001_0221484c() {
                 if (c == 0) {
                     *p1 = t;
                     *ip = r;
-                    if (func_ov001_022147a8(0x1a) != 0) {
-                        if (data_ov001_0222de7c->unk_14 < 3) data_ov001_0222de7c->unk_14++;
+                    if (WfcAddrEdit_IsOctetFull(0x1a) != 0) {
+                        if (sWfcAddrEdit->unk_14 < 3) sWfcAddrEdit->unk_14++;
                     }
                 } else {
                     base[lr] = c;
                     *p1 = *ip;
                     *ip = r;
-                    if (data_ov001_0222de7c->unk_14 < 3) data_ov001_0222de7c->unk_14++;
+                    if (sWfcAddrEdit->unk_14 < 3) sWfcAddrEdit->unk_14++;
                 }
             }
         }
-        func_ov001_0220bf84(1);
-        if (data_ov001_0222de7c->unk_14 < 3) {
-            func_ov001_0220bf5c(1);
+        WfcNumPad_SetDeleteEnabled(1);
+        if (sWfcAddrEdit->unk_14 < 3) {
+            WfcNumPad_SetDotEnabled(1);
         } else {
-            func_ov001_0220bf5c(0);
+            WfcNumPad_SetDotEnabled(0);
         }
-        if (data_ov001_0222de7c->unk_14 == 3) {
-            if (func_ov001_022147a8(0x1a) != 0) func_ov001_0220bf70(0);
+        if (sWfcAddrEdit->unk_14 == 3) {
+            if (WfcAddrEdit_IsOctetFull(0x1a) != 0) WfcNumPad_SetInsertEnabled(0);
         }
     }
     }
 end:
-    func_ov001_022144e8();
-    func_ov001_02214488();
+    WfcAddrEdit_DrawText();
+    WfcAddrEdit_UpdateCaret();
 }
 
-s32 func_ov001_022147a8(s32 n) {
+s32 WfcAddrEdit_IsOctetFull(s32 n) {
     u8 buf[4];
     s32 i;
-    Unk_ov001_02214154_S *g = data_ov001_0222de7c;
+    Unk_ov001_02214154_S *g = sWfcAddrEdit;
     u8 *p = &g->name[g->unk_14 * 3];
     u32 c = *p;
     u8 *q;
@@ -308,54 +308,54 @@ s32 func_ov001_022147a8(s32 n) {
     return 0;
 }
 
-void func_ov001_022147a4() {
+void WfcAddrEdit_Idle() {
 }
 
-void func_ov001_0221477c() {
-    func_ov001_02224e4c(8);
-    func_ov001_0220c668((void *)func_ov001_02214738);
+void WfcAddrEdit_StartExit() {
+    WfcFade_StartWait(8);
+    WfcUtil_SetScene((void *)WfcAddrEdit_CloseKeypad);
 }
 
-void func_ov001_02214738() {
-    if (func_ov001_022250e0(1)) return;
-    func_ov001_0220bfac();
-    func_ov001_0221e9a0(0x15);
-    func_ov001_0220c668((void *)func_ov001_0221467c);
+void WfcAddrEdit_CloseKeypad() {
+    if (WfcFade_IsBusy(1)) return;
+    WfcNumPad_Close();
+    WfcSound_Play(0x15);
+    WfcUtil_SetScene((void *)WfcAddrEdit_WaitKeypadClosed);
 }
 
-void func_ov001_0221467c() {
-    if (func_ov001_0220bf40()) return;
-    u32 t = data_ov001_0222de7c->unk_15;
+void WfcAddrEdit_WaitKeypadClosed() {
+    if (WfcNumPad_Exists()) return;
+    u32 t = sWfcAddrEdit->unk_15;
     if (t == 0) {
-        func_ov001_0220c668((void *)func_ov001_022145d0);
+        WfcUtil_SetScene((void *)WfcAddrEdit_Exit);
         return;
     }
     if (t == 2) {
-        func_ov001_02220778(0x2f, 3, 1, -1, 0);
-        func_ov001_0220c668((void *)func_ov001_02214114);
+        WfcDialog_Open(0x2f, 3, 1, -1, 0);
+        WfcUtil_SetScene((void *)WfcAddrEdit_WaitErrorDialog);
         return;
     }
-    func_ov001_02220778(0x9b, 2, 1, -1, 0);
-    func_ov001_0220c668((void *)func_ov001_02214418);
+    WfcDialog_Open(0x9b, 2, 1, -1, 0);
+    WfcUtil_SetScene((void *)WfcAddrEdit_WaitConfirmDialog);
 }
 
-void func_ov001_022145d0() {
+void WfcAddrEdit_Exit() {
     s32 v;
-    func_ov001_02208244();
-    func_ov001_022267c8((void *)data_ov001_0222de7c->unk_04);
-    func_ov001_022253d4(0);
-    func_ov001_02208594("char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
-    func_ov001_02225c58(1, 1);
-    func_ov001_02225c58(0, 0x15);
-    func_ov001_0220c5f0(&v, 0);
+    WfcUtil_HideTopMessage();
+    WfcOam_FreeEntry((void *)sWfcAddrEdit->unk_04);
+    WfcText_DestroyBgCanvas(0);
+    WfcUtil_LoadFileTo("char/ybObjMain.ncl.l", (void *)GX_LoadOBJPltt);
+    WfcGx_HidePlanes(1, 1);
+    WfcGx_HidePlanes(0, 0x15);
+    WfcUtil_GetEditParams(&v, 0);
     if (v >= 3) v = v + 1;
-    func_ov001_0220c654(2, 1);
-    func_ov001_0220c618(0, v + 3);
-    func_ov001_0220c668((void *)func_ov001_02217e40);
-    func_ov001_02225d58((void *)&data_ov001_0222de7c);
+    WfcUtil_SetScreenFlags(2, 1);
+    WfcUtil_SetEditParams(0, v + 3);
+    WfcUtil_SetScene((void *)WfcManualSetup_Enter);
+    WfcHeap_FreeAndClear((void *)&sWfcAddrEdit);
 }
 
-void func_ov001_022144e8() {
+void WfcAddrEdit_DrawText() {
     u16 v[6];
     s32 i;
     const u8 *q;
@@ -365,66 +365,66 @@ void func_ov001_022144e8() {
     v[3] = data_ov001_0222af88[3];
     v[2] = data_ov001_0222a070[0];
     v[3] = data_ov001_0222a070[1];
-    func_ov001_02225238(data_ov001_0222de7c->unk_00, 0);
+    WfcText_Clear(sWfcAddrEdit->unk_00, 0);
     v[5] = 0;
     q = data_ov001_0222a074;
     for (i = 0; i < 12; i++, q++) {
-        Unk_ov001_02214154_S *g = data_ov001_0222de7c;
+        Unk_ov001_02214154_S *g = sWfcAddrEdit;
         u32 t;
         v[4] = g->name[i];
         t = *q;
         v[0] = t;
-        func_ov001_02225254(g->unk_00, t, v[1], v[2], v[3], 2, 0x480, &v[4]);
+        WfcText_DrawTextRect(g->unk_00, t, v[1], v[2], v[3], 2, 0x480, &v[4]);
     }
-    func_ov001_0222516c(data_ov001_0222de7c->unk_00);
+    WfcText_RequestTransfer(sWfcAddrEdit->unk_00);
 }
 
-void func_ov001_02214488() {
-    s32 idx = data_ov001_0222de7c->unk_14;
+void WfcAddrEdit_UpdateCaret() {
+    s32 idx = sWfcAddrEdit->unk_14;
     if (idx > 3) idx = 3;
     u32 t = data_ov001_0222a074[idx * 3 + 2];
-    u32 *reg = data_ov001_0222de7c->unk_04;
+    u32 *reg = sWfcAddrEdit->unk_04;
     *reg = ((t & 0x1ff) << 16) | ((*reg & 0xfe00ff00) | 0x28);
 }
 
-void func_ov001_02214418() {
-    data_ov001_0222de7c->unk_15 = func_ov001_02220714();
-    switch (data_ov001_0222de7c->unk_15) {
+void WfcAddrEdit_WaitConfirmDialog() {
+    sWfcAddrEdit->unk_15 = WfcDialog_GetResult();
+    switch (sWfcAddrEdit->unk_15) {
     case 0:
-        func_ov001_0221e9a0(7);
+        WfcSound_Play(7);
         break;
     case 1:
-        func_ov001_0221e9a0(0xe);
+        WfcSound_Play(0xe);
         break;
     default:
         return;
     }
-    func_ov001_02220728();
-    func_ov001_0220c668((void *)func_ov001_02214358);
+    WfcDialog_Close();
+    WfcUtil_SetScene((void *)WfcAddrEdit_ApplyAndExit);
 }
 
-void func_ov001_02214358() {
-    Unk_ov001_02214358_T t = *(Unk_ov001_02214358_T *)data_ov001_0222afa4;
+void WfcAddrEdit_ApplyAndExit() {
+    Unk_ov001_02214358_T t = *(Unk_ov001_02214358_T *)sWfcAddrEditStoreFuncs;
     s32 v;
-    if (func_ov001_022206f8()) return;
-    if (data_ov001_0222de7c->unk_15 == 0) {
-        *data_ov001_0222de7c->unk_04 &= 0xc1fffcff;
-        func_ov001_0220c668((void *)func_ov001_02214bf4);
+    if (WfcDialog_IsOpen()) return;
+    if (sWfcAddrEdit->unk_15 == 0) {
+        *sWfcAddrEdit->unk_04 &= 0xc1fffcff;
+        WfcUtil_SetScene((void *)WfcAddrEdit_OpenKeypad);
         return;
     }
-    func_ov001_0220c5f0(&v, 0);
-    ((void (*)(void *))t.v[v])(data_ov001_0222de7c->name);
-    func_ov001_0220c668((void *)func_ov001_022145d0);
+    WfcUtil_GetEditParams(&v, 0);
+    ((void (*)(void *))t.v[v])(sWfcAddrEdit->name);
+    WfcUtil_SetScene((void *)WfcAddrEdit_Exit);
 }
 
-void func_ov001_022142c8() {
+void WfcAddrEdit_NormalizeOctets() {
     u8 *p;
     s32 i;
     s32 j;
     s32 off;
     i = 0; off = i;
     for (; i < 4; i++, off += 3) {
-        p = data_ov001_0222de7c->name + off;
+        p = sWfcAddrEdit->name + off;
         for (j = 0; j < 3; j++) {
             u32 c = p[j];
             if (c == 0x30 || c == 0x20 || c == 0) {
@@ -434,16 +434,16 @@ void func_ov001_022142c8() {
             }
         }
     }
-    func_ov001_022144e8();
+    WfcAddrEdit_DrawText();
 }
 
-s32 func_ov001_02214154() {
+s32 WfcAddrEdit_ValidateAddress() {
     u8 *p;
     s32 i, off, j;
     Unk_ov001_02214154_Tbl tbl = *(Unk_ov001_02214154_Tbl *)data_ov001_0222af7c;
     s32 v;
     u8 out[4];
-    Unk_ov001_02214154_S *g = data_ov001_0222de7c;
+    Unk_ov001_02214154_S *g = sWfcAddrEdit;
     for (i = 0, off = 0; i < 4; i++, off += 3) {
         p = g->name + off;
         if (*p != 0x20) {
@@ -453,8 +453,8 @@ s32 func_ov001_02214154() {
             }
         }
     }
-    func_ov001_0221dd08(g->name, out);
-    func_ov001_0220c5f0(&v, 0);
+    WfcUtil_ParseIpDigits(g->name, out);
+    WfcUtil_GetEditParams(&v, 0);
     if (v == 1) {
         BOOL seen = FALSE;
         for (i = 0; i < 4; i++) {
@@ -472,17 +472,17 @@ s32 func_ov001_02214154() {
     return 0;
 }
 
-void func_ov001_02214114() {
-    if (func_ov001_02220714()) return;
-    func_ov001_0221e9a0(6);
-    func_ov001_02220728();
-    func_ov001_0220c668((void *)func_ov001_022140bc);
+void WfcAddrEdit_WaitErrorDialog() {
+    if (WfcDialog_GetResult()) return;
+    WfcSound_Play(6);
+    WfcDialog_Close();
+    WfcUtil_SetScene((void *)WfcAddrEdit_ReturnToInput);
 }
 
-void func_ov001_022140bc() {
-    if (func_ov001_022206f8()) return;
-    *data_ov001_0222de7c->unk_04 &= 0xc1fffcff;
-    func_ov001_0220c668((void *)func_ov001_02214bf4);
+void WfcAddrEdit_ReturnToInput() {
+    if (WfcDialog_IsOpen()) return;
+    *sWfcAddrEdit->unk_04 &= 0xc1fffcff;
+    WfcUtil_SetScene((void *)WfcAddrEdit_OpenKeypad);
 }
 }
 #pragma thumb reset

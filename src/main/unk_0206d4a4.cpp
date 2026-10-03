@@ -19,7 +19,7 @@ void OverlayMgr_Acquire(u32 id);
 void OverlayMgr_Release(u32 id);
 void *Mem_AllocAligned(u32 size, u32 align);
 void Mem_Free(void *p);
-void func_ov001_0220cb30(void *p, s32 a, s32 b);
+void WfcUtil_Run(void *p, s32 a, s32 b);
 s32 PXI_SendWordByFifo(s32 a, s32 b, s32 c);
 void WaitByLoop(s32 n);
 void Fatal_ExceptionCallback(void *arg, void *p);
@@ -65,7 +65,7 @@ extern "C" void Main_RunWifiUtility(void) {
     func_ov065_02277ba4(Main_DwcAlloc, Main_DwcFree);
     OverlayMgr_Acquire((u32)OVERLAY_1_ID);
     void *p = Mem_AllocAligned(0x40000, 0x20);
-    func_ov001_0220cb30(p, 1, 0x20);
+    WfcUtil_Run(p, 1, 0x20);
     Mem_Free(p);
     OverlayMgr_Release((u32)OVERLAY_1_ID);
     OverlayHandle_Unload(gOverlayHandle);

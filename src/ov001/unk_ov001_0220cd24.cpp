@@ -21,74 +21,74 @@ extern "C" char data_ov001_0222aa60[0x14] = "dwc:/move/child.srl";
 extern "C" char data_ov001_0222aa8c[0x18] = "dwc:/move/banner.char";
 extern "C" char data_ov001_0222aa74[0x18] = "dwc:/move/banner.plt";
 extern "C" Unk_ov001_0220d0e4_Init data_ov001_0222aaa4 = {{(s32)data_ov001_0222aa60, 0, 0, (s32)data_ov001_0222aa8c, (s32)data_ov001_0222aa74, 0x159, 0}};
-extern "C" Unk_ov001_0220cd24_Big *data_ov001_0222de14;
-Unk_ov001_0220cd24_Big *data_ov001_0222de14;
+extern "C" Unk_ov001_0220cd24_Big *sWfcTransfer;
+Unk_ov001_0220cd24_Big *sWfcTransfer;
 //ENDDEFS
 
 extern "C" {
-extern void *data_ov001_0222de1c;
+extern void *gWfcMsgBank;
 
 extern void Fatal_Trap();
 extern void MIi_CpuCopy16(void *, void *, u32);
 
-extern u32 func_ov001_0220c5e0();
-extern void *func_ov001_0220cc10(void *, s32);
-extern s32 func_ov001_02223d9c();
-extern void func_ov001_02223ecc(void *, void *);
-extern s32 func_ov001_02223ca8();
-extern void func_ov001_022237b4(void *);
-extern void func_ov001_0222376c(u8 *, u8 *);
-extern void *func_ov001_0222375c();
-extern void func_ov001_02223c60();
-extern void func_ov001_02225d58(void *);
-extern void *func_ov001_02225dd8(s32, s32);
-extern void func_ov001_02226fdc(s32, s32);
-extern void *func_ov001_02227094(s32, void *, s32, s32);
+extern u32 WfcUtil_GetLanguage();
+extern void *WfcMsg_GetString(void *, s32);
+extern s32 WfcMove_RequestCancel();
+extern void WfcMove_Init(void *, void *);
+extern s32 WfcMove_Start();
+extern void WfcMove_Update(void *);
+extern void WfcMove_GetState(u8 *, u8 *);
+extern void *WfcMove_GetChildUser();
+extern void WfcMove_StartDownload();
+extern void WfcHeap_FreeAndClear(void *);
+extern void *WfcHeap_Alloc(s32, s32);
+extern void WfcTask_RequestDelete(s32, s32);
+extern void *WfcTask_Add(s32, void *, s32, s32);
 
-void func_ov001_0220cd24(s32 a);
-void func_ov001_0220d080(s32 a);
+void WfcTransfer_Task(s32 a);
+void WfcTransfer_EndTask(s32 a);
 
 #pragma thumb off
 
-void func_ov001_0220d0e4(Unk_ov001_0220cd24_Fn a) {
-    data_ov001_0222de14 = (Unk_ov001_0220cd24_Big *)func_ov001_02225dd8(0x1e2a4, 0x20);
-    data_ov001_0222de14->unk_1e298 = a;
-    data_ov001_0222de14->unk_1e2a0 = 0;
-    data_ov001_0222de14->unk_1e2a1 = 0;
+void WfcTransfer_Start(Unk_ov001_0220cd24_Fn a) {
+    sWfcTransfer = (Unk_ov001_0220cd24_Big *)WfcHeap_Alloc(0x1e2a4, 0x20);
+    sWfcTransfer->unk_1e298 = a;
+    sWfcTransfer->unk_1e2a0 = 0;
+    sWfcTransfer->unk_1e2a1 = 0;
     Unk_ov001_0220d0e4_Init s = data_ov001_0222aaa4;
-    s.v[1] = (s32)func_ov001_0220cc10(data_ov001_0222de1c, 0xf);
-    s.v[2] = (s32)func_ov001_0220cc10(data_ov001_0222de1c, 0x10);
-    *(u8 *)&s.v[6] = func_ov001_0220c5e0() + 0x31;
-    func_ov001_02223ecc(data_ov001_0222de14, &s);
-    if (func_ov001_02223ca8() == 0) Fatal_Trap();
-    data_ov001_0222de14->unk_1e29c = func_ov001_02227094(0, (void *)func_ov001_0220cd24, 0, 0x78);
+    s.v[1] = (s32)WfcMsg_GetString(gWfcMsgBank, 0xf);
+    s.v[2] = (s32)WfcMsg_GetString(gWfcMsgBank, 0x10);
+    *(u8 *)&s.v[6] = WfcUtil_GetLanguage() + 0x31;
+    WfcMove_Init(sWfcTransfer, &s);
+    if (WfcMove_Start() == 0) Fatal_Trap();
+    sWfcTransfer->unk_1e29c = WfcTask_Add(0, (void *)WfcTransfer_Task, 0, 0x78);
 }
 
-void func_ov001_0220d0c4() {
-    func_ov001_02227094(0, (void *)func_ov001_0220d080, 0, 0x78);
+void WfcTransfer_RequestEnd() {
+    WfcTask_Add(0, (void *)WfcTransfer_EndTask, 0, 0x78);
 }
 
-void func_ov001_0220d080(s32 a) {
-    if (func_ov001_02223d9c() != 0) {
-        data_ov001_0222de14->unk_1e2a1 = 1;
-        func_ov001_02226fdc(0, a);
+void WfcTransfer_EndTask(s32 a) {
+    if (WfcMove_RequestCancel() != 0) {
+        sWfcTransfer->unk_1e2a1 = 1;
+        WfcTask_RequestDelete(0, a);
     }
 }
 
-BOOL func_ov001_0220d064() {
-    return data_ov001_0222de14 == 0;
+BOOL WfcTransfer_IsFinished() {
+    return sWfcTransfer == 0;
 }
 
-void func_ov001_0220d04c(Unk_ov001_0220cd24_Fn f) {
-    data_ov001_0222de14->unk_1e298 = f;
+void WfcTransfer_SetCallback(Unk_ov001_0220cd24_Fn f) {
+    sWfcTransfer->unk_1e298 = f;
 }
 
-void func_ov001_0220d040() {
-    func_ov001_02223c60();
+void WfcTransfer_StartSend() {
+    WfcMove_StartDownload();
 }
 
-u8 *func_ov001_0220d024() {
-    return data_ov001_0222de14->unk_1e280;
+u8 *WfcTransfer_GetChildUser() {
+    return sWfcTransfer->unk_1e280;
 }
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
@@ -96,16 +96,16 @@ u8 *func_ov001_0220d024() {
 // NONMATCHING is the closest known attempt (2 bytes differ: the jump-table guard comes out as
 // `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge`).
 #ifdef NONMATCHING
-void func_ov001_0220cd24(s32 a) {
+void WfcTransfer_Task(s32 a) {
     u8 t[2];
     s32 x;
-    func_ov001_022237b4((void *)a);
-    if (data_ov001_0222de14->unk_1e2a0 != 0 && data_ov001_0222de14->unk_1e2a1 == 0) {
-        Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
+    WfcMove_Update((void *)a);
+    if (sWfcTransfer->unk_1e2a0 != 0 && sWfcTransfer->unk_1e2a1 == 0) {
+        Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
         if (f != 0) f(0);
         return;
     }
-    func_ov001_0222376c(&t[0], &t[1]);
+    WfcMove_GetState(&t[0], &t[1]);
     x = t[0];
     if (x > 26) goto high;
     if (x >= 26) goto b26;
@@ -146,55 +146,55 @@ high34:
     goto end;
 b5:
         if (t[1] != 0) {
-            u8 *d = data_ov001_0222de14->unk_1e280;
-            void *q = func_ov001_0222375c();
+            u8 *d = sWfcTransfer->unk_1e280;
+            void *q = WfcMove_GetChildUser();
             MIi_CpuCopy16(q, d, 0x16);
-            Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
-            if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
+            Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
+            if (f == 0) sWfcTransfer->unk_1e2a0 = 1;
             else f(0);
         }
     goto end;
 b13:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
-            if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
+            Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
+            if (f == 0) sWfcTransfer->unk_1e2a0 = 1;
             else f(1);
         }
     goto end;
 b20:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
-            if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
+            Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
+            if (f == 0) sWfcTransfer->unk_1e2a0 = 1;
             else f(3);
         }
     goto end;
 b26:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
-            if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
+            Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
+            if (f == 0) sWfcTransfer->unk_1e2a0 = 1;
             else f(4);
         }
     goto end;
 b12:
         if (t[1] != 0) {
-            Unk_ov001_0220cd24_Fn f = data_ov001_0222de14->unk_1e298;
-            if (f == 0) data_ov001_0222de14->unk_1e2a0 = 1;
+            Unk_ov001_0220cd24_Fn f = sWfcTransfer->unk_1e298;
+            if (f == 0) sWfcTransfer->unk_1e2a0 = 1;
             else f(2);
         }
     goto end;
 b34:
-        func_ov001_02226fdc(0, a);
-        func_ov001_02225d58(&data_ov001_0222de14);
+        WfcTask_RequestDelete(0, a);
+        WfcHeap_FreeAndClear(&sWfcTransfer);
     goto end;
 end:;
 }
 #else
-asm void func_ov001_0220cd24(s32 a) {
+asm void WfcTransfer_Task(s32 a) {
     stmfd sp!, {r4, lr}
     sub sp, sp, #8
     mov r4, r0
-    bl func_ov001_022237b4
-    ldr r0, =data_ov001_0222de14
+    bl WfcMove_Update
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldrb r1, [r0, #0x2a0]
@@ -216,7 +216,7 @@ asm void func_ov001_0220cd24(s32 a) {
 dispatch:
     add r0, sp, #0
     add r1, sp, #1
-    bl func_ov001_0222376c
+    bl WfcMove_GetState
     ldrb r0, [sp]
     cmp r0, #26
     bgt high
@@ -274,15 +274,15 @@ b5:
     addeq sp, sp, #8
     ldmeqfd sp!, {r4, lr}
     bxeq lr
-    ldr r1, =data_ov001_0222de14
+    ldr r1, =sWfcTransfer
     ldr r0, =0x1e280
     ldr r1, [r1]
     add r4, r1, r0
-    bl func_ov001_0222375c
+    bl WfcMove_GetChildUser
     mov r1, r4
     mov r2, #22
     bl MIi_CpuCopy16
-    ldr r0, =data_ov001_0222de14
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldr r1, [r0, #0x298]
@@ -303,7 +303,7 @@ b13:
     addeq sp, sp, #8
     ldmeqfd sp!, {r4, lr}
     bxeq lr
-    ldr r0, =data_ov001_0222de14
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldr r1, [r0, #0x298]
@@ -324,7 +324,7 @@ b20:
     addeq sp, sp, #8
     ldmeqfd sp!, {r4, lr}
     bxeq lr
-    ldr r0, =data_ov001_0222de14
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldr r1, [r0, #0x298]
@@ -345,7 +345,7 @@ b26:
     addeq sp, sp, #8
     ldmeqfd sp!, {r4, lr}
     bxeq lr
-    ldr r0, =data_ov001_0222de14
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldr r1, [r0, #0x298]
@@ -366,7 +366,7 @@ b12:
     addeq sp, sp, #8
     ldmeqfd sp!, {r4, lr}
     bxeq lr
-    ldr r0, =data_ov001_0222de14
+    ldr r0, =sWfcTransfer
     ldr r0, [r0]
     add r0, r0, #0x1e000
     ldr r1, [r0, #0x298]
@@ -384,9 +384,9 @@ b12:
 b34:
     mov r1, r4
     mov r0, #0
-    bl func_ov001_02226fdc
-    ldr r0, =data_ov001_0222de14
-    bl func_ov001_02225d58
+    bl WfcTask_RequestDelete
+    ldr r0, =sWfcTransfer
+    bl WfcHeap_FreeAndClear
 end:
     add sp, sp, #8
     ldmfd sp!, {r4, lr}

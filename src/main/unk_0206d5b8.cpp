@@ -234,7 +234,7 @@ void Mem_Free(void *p);
 }
 
 extern "C" {
-void func_ov001_0220cb30(void *p, s32 a, s32 b);
+void WfcUtil_Run(void *p, s32 a, s32 b);
 }
 
 extern "C" {

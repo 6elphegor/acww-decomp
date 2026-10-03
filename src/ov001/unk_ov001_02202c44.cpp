@@ -42,20 +42,20 @@ struct Unk_ov001_02203258_Ent {
     u16 mask;
     u8 val;
 };
-#define data_ov001_0222c6ce (data_ov001_0222c6cc + 2)
+#define data_ov001_0222c6ce (sAossWepDesc + 2)
 
-extern "C" void *data_ov001_0222c694 = 0;
-extern "C" Unk_ov001_02202b3c_Free data_ov001_0222c698 = 0;
-extern "C" Unk_ov001_02202b3c_Alloc data_ov001_0222c68c = 0;
-extern "C" s32 (*data_ov001_0222c690)(void *) = 0;
-extern "C" u32 data_ov001_0222c6ac[8] = {0};
-extern "C" Unk_ov001_02203258_Ent data_ov001_0222a4fc[12] = {
+extern "C" void *sAossWlanWork = 0;
+extern "C" Unk_ov001_02202b3c_Free sAossFreeFunc = 0;
+extern "C" Unk_ov001_02202b3c_Alloc sAossAllocFunc = 0;
+extern "C" s32 (*sAossProgressCb)(void *) = 0;
+extern "C" u32 sAossMsgQueue[8] = {0};
+extern "C" Unk_ov001_02203258_Ent sAossRateTable[12] = {
     {0x1, 2}, {0x2, 4}, {0x4, 0xb}, {0x8, 0xc}, {0x10, 0x12}, {0x20, 0x16}, {0x40, 0x18}, {0x80, 0x24},
     {0x100, 0x30}, {0x200, 0x48}, {0x400, 0x60}, {0x800, 0x6c},
 };
-extern "C" u32 data_ov001_0222c69c[4] = {0};
-extern "C" u8 data_ov001_0222c740[0xc0] = {0};
-extern "C" u8 data_ov001_0222c6cc[0x74] = {0};
+extern "C" u32 sAossMsgArray[4] = {0};
+extern "C" u8 sAossBssDesc[0xc0] = {0};
+extern "C" u8 sAossWepDesc[0x74] = {0};
 
 extern "C" {
 u32 OS_DisableInterrupts();
@@ -73,35 +73,35 @@ void MIi_CpuCopy32(void *, void *, u32);
 void MI_CpuFill8(void *, s32, u32);
 void MI_CpuCopy8(void *, void *, u32);
 
-void func_ov001_02203224(void *, void *);
-s32 func_ov001_022032f8(void *, void *, u32);
-s32 func_ov001_022033f0(void *, void *, u32);
-void func_ov001_02203214(void *, void *, s32);
-s32 func_ov001_02201ff8();
-s32 func_ov001_02201c14(s32);
-s32 func_ov001_02202050(void *);
-void func_ov001_022007c4(s32);
-s32 func_ov001_0220358c(s32, void *, s32, s32);
-s32 func_ov001_022036a0(void *, s32);
-s32 func_ov001_022036ec();
-s32 func_ov001_02203548();
-s32 func_ov001_02203508();
-s32 func_ov001_022034a0();
+void Aoss_SetBssDescSsid(void *, void *);
+s32 Aoss_WcmInit(void *, void *, u32);
+s32 Aoss_WcmConnect(void *, void *, u32);
+void Aoss_StoreConnectResult(void *, void *, s32);
+s32 Aoss_FreeScanBuffers();
+s32 Aoss_SetProgress(s32);
+s32 Aoss_RunProtocol(void *);
+void Aoss_SocketClose(s32);
+s32 Aoss_WcmStartSearch(s32, void *, s32, s32);
+s32 Aoss_WcmReadApList(void *, s32);
+s32 Aoss_WcmToIdle();
+s32 Aoss_WcmEndSearch();
+s32 Aoss_WcmDisconnect();
+s32 Aoss_WcmCleanup();
 s32 func_ov065_0226a934();
 s32 func_ov065_0226a510(void *, s32);
 s32 func_ov065_0226a33c(void *, void *);
 s32 func_ov065_02269f24(void *, void *, s32);
 s32 func_ov065_0226a284();
-void func_ov001_02203770(void);
-void func_ov001_022031ec(s32);
-void func_ov001_02203200(s32);
-void func_ov001_02203258(Unk_ov001_02203258_Src *, Unk_ov001_02203258_Dst *);
+void Aoss_WcmCallback(void);
+void Aoss_PostAlarmMsg(s32);
+void Aoss_PostWcmMsg(s32);
+void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *, Unk_ov001_02203258_Dst *);
 
 }
 
 enum Loop_02203004 { LOOP_02203004_0 = 0 };
 
-extern "C" void func_ov001_02203258(Unk_ov001_02203258_Src *a, Unk_ov001_02203258_Dst *b) {
+extern "C" void Aoss_ConvertBssDesc(Unk_ov001_02203258_Src *a, Unk_ov001_02203258_Dst *b) {
     b->unk_00 = a->unk_0a;
     MIi_CpuCopy16(a->unk_0c, b->unk_04, 0x20);
     b->unk_24 = a->unk_36;
@@ -110,7 +110,7 @@ extern "C" void func_ov001_02203258(Unk_ov001_02203258_Src *a, Unk_ov001_0220325
     s32 n;
     n = 0;
     i = 0;
-    Unk_ov001_02203258_Ent *e = data_ov001_0222a4fc;
+    Unk_ov001_02203258_Ent *e = sAossRateTable;
     for (; i < 12; e++, i++) {
         if (a->unk_30 & e->mask) {
             b->unk_3c[n] = e->val;
@@ -132,49 +132,49 @@ extern "C" void func_ov001_02203258(Unk_ov001_02203258_Src *a, Unk_ov001_0220325
     }
 }
 
-extern "C" void func_ov001_02203224(void *a, void *b) {
+extern "C" void Aoss_SetBssDescSsid(void *a, void *b) {
     volatile u16 z = 0;
     MIi_CpuClear16(z, (u8 *)b + 0xc, 0x20);
     *(u16 *)((u8 *)b + 0xa) = *(u32 *)a;
     MI_CpuCopy8((u8 *)a + 4, (u8 *)b + 0xc, *(u16 *)((u8 *)b + 0xa));
 }
 
-extern "C" void func_ov001_02203214(void *a, void *b, s32 c) {
+extern "C" void Aoss_StoreConnectResult(void *a, void *b, s32 c) {
     *(s32 *)a = c;
-    func_ov001_02203258((Unk_ov001_02203258_Src *)b, (Unk_ov001_02203258_Dst *)((u8 *)a + 4));
+    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)b, (Unk_ov001_02203258_Dst *)((u8 *)a + 4));
 }
 
-extern "C" void func_ov001_02203200(s32 a) {
-    OS_SendMessage(data_ov001_0222c6ac, a, 0);
+extern "C" void Aoss_PostWcmMsg(s32 a) {
+    OS_SendMessage(sAossMsgQueue, a, 0);
 }
 
-extern "C" void func_ov001_022031ec(s32 a) {
-    OS_SendMessage(data_ov001_0222c6ac, a, 0);
+extern "C" void Aoss_PostAlarmMsg(s32 a) {
+    OS_SendMessage(sAossMsgQueue, a, 0);
 }
 
-extern "C" s32 func_ov001_022030fc(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3c_Free b) {
+extern "C" s32 Aoss_WlanStartup(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3c_Free b) {
     s32 ok = 1;
     s32 msg;
     void *p;
-    OS_InitMessageQueue(data_ov001_0222c6ac, data_ov001_0222c69c, 4);
+    OS_InitMessageQueue(sAossMsgQueue, sAossMsgArray, 4);
     if (a == 0 || b == 0) {
         return -1;
     }
     u32 irq = OS_DisableInterrupts();
-    data_ov001_0222c68c = a;
-    data_ov001_0222c698 = b;
+    sAossAllocFunc = a;
+    sAossFreeFunc = b;
     OS_RestoreInterrupts(irq);
-    p = data_ov001_0222c68c(0x5890);
-    data_ov001_0222c694 = p;
+    p = sAossAllocFunc(0x5890);
+    sAossWlanWork = p;
     if (p == 0) {
         return -1;
     }
-    if (func_ov001_022032f8((void *)func_ov001_02203200, p, 0x5890) == 0) {
+    if (Aoss_WcmInit((void *)Aoss_PostWcmMsg, p, 0x5890) == 0) {
         ok = 0;
     }
     if (ok != 0) {
         do {
-            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
             switch (msg) {
             case 4:
             case 5:
@@ -200,27 +200,27 @@ extern "C" s32 func_ov001_022030fc(Unk_ov001_02202b3c_Alloc a, Unk_ov001_02202b3
             }
         } while (ok != 0);
     }
-    data_ov001_0222c698(data_ov001_0222c694);
+    sAossFreeFunc(sAossWlanWork);
     return -1;
 }
 
-extern "C" s32 func_ov001_02203040() {
+extern "C" s32 Aoss_WlanShutdown() {
     s32 r4 = 1;
     s32 res = -1;
     s32 msg;
-    if (data_ov001_0222c698 == 0) {
+    if (sAossFreeFunc == 0) {
         return res;
     }
-    if (func_ov001_022034a0() == 0) {
+    if (Aoss_WcmCleanup() == 0) {
         return -1;
     }
     do {
-        OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
+        OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
         switch (msg) {
         case 20:
             r4 = 0;
             res = r4;
-            data_ov001_0222c698(data_ov001_0222c694);
+            sAossFreeFunc(sAossWlanWork);
             break;
         case 4:
         case 5:
@@ -249,20 +249,20 @@ extern "C" s32 func_ov001_02203040() {
         }
     } while (r4 != 0);
     u32 irq = OS_DisableInterrupts();
-    data_ov001_0222c68c = 0;
-    data_ov001_0222c698 = 0;
+    sAossAllocFunc = 0;
+    sAossFreeFunc = 0;
     OS_RestoreInterrupts(irq);
     return res;
 }
 
-extern "C" s32 func_ov001_02203004() {
+extern "C" s32 Aoss_WlanDisconnect() {
     Loop_02203004 loop;
     s32 res = -1;
     s32 msg;
-    if (func_ov001_02203508()) {
+    if (Aoss_WcmDisconnect()) {
         loop = LOOP_02203004_0;
         do {
-            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
             switch (msg) {
             case 14:
                 res = loop;
@@ -275,7 +275,7 @@ extern "C" s32 func_ov001_02203004() {
     return res;
 }
 
-extern "C" s32 func_ov001_02202e74(void **out) {
+extern "C" s32 Aoss_ScanAps(void **out) {
     s32 r6 = 0;
     s32 res = -1;
     s32 loop = 1;
@@ -285,26 +285,26 @@ extern "C" s32 func_ov001_02202e74(void **out) {
     u8 *r4;
     s32 msg;
     u32 thr[11];
-    if (data_ov001_0222c68c == 0 || data_ov001_0222c698 == 0) {
+    if (sAossAllocFunc == 0 || sAossFreeFunc == 0) {
         return -1;
     }
-    r4 = (u8 *)data_ov001_0222c68c(0x3000);
+    r4 = (u8 *)sAossAllocFunc(0x3000);
     if (r4 == 0) {
         return -1;
     }
     buf = r4;
-    if (func_ov001_0220358c(r6, (void *)r6, r6, 0x30bffe)) {
+    if (Aoss_WcmStartSearch(r6, (void *)r6, r6, 0x30bffe)) {
         OS_CreateAlarm(thr);
-        OS_SetAlarm(thr, 0x3fec42, r6, (void *)func_ov001_022031ec, 0x13);
+        OS_SetAlarm(thr, 0x3fec42, r6, (void *)Aoss_PostAlarmMsg, 0x13);
         do {
-            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
             switch (msg) {
             case 19:
                 if (r6 == 0) {
                     if (r5 != 0) {
-                        r7 = func_ov001_022036a0(r4, 0x40);
+                        r7 = Aoss_WcmReadApList(r4, 0x40);
                     }
-                    if (func_ov001_02203548() == 0) {
+                    if (Aoss_WcmEndSearch() == 0) {
                         goto done;
                     }
                     r6 = 1;
@@ -315,8 +315,8 @@ extern "C" s32 func_ov001_02202e74(void **out) {
                     if (r5 < 8) {
                         r5++;
                     } else {
-                        r7 = func_ov001_022036a0(r4, 0x40);
-                        if (func_ov001_02203548() == 0) {
+                        r7 = Aoss_WcmReadApList(r4, 0x40);
+                        if (Aoss_WcmEndSearch() == 0) {
                             goto done;
                         }
                         r6 = 1;
@@ -352,12 +352,12 @@ extern "C" s32 func_ov001_02202e74(void **out) {
         {
             u8 *p;
             if (r7 != 0) {
-                p = (u8 *)data_ov001_0222c68c((r7 - 1) * 0x54 + 0x58);
+                p = (u8 *)sAossAllocFunc((r7 - 1) * 0x54 + 0x58);
                 if (p == 0) {
                     goto done;
                 }
             } else {
-                p = (u8 *)data_ov001_0222c68c(0x58);
+                p = (u8 *)sAossAllocFunc(0x58);
                 if (p == 0) {
                     goto done;
                 }
@@ -368,7 +368,7 @@ extern "C" s32 func_ov001_02202e74(void **out) {
             if (r7 > 0) {
                 u8 *q = p + 4;
                 do {
-                    func_ov001_02203258((Unk_ov001_02203258_Src *)r4, (Unk_ov001_02203258_Dst *)q);
+                    Aoss_ConvertBssDesc((Unk_ov001_02203258_Src *)r4, (Unk_ov001_02203258_Dst *)q);
                     r4 += 0xc0;
                     q += 0x54;
                     r6++;
@@ -378,13 +378,13 @@ extern "C" s32 func_ov001_02202e74(void **out) {
     done:
         OS_CancelAlarm(thr);
         do {
-        } while (OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 0) == 1);
+        } while (OS_ReceiveMessage(sAossMsgQueue, &msg, 0) == 1);
     }
-    data_ov001_0222c698(buf);
+    sAossFreeFunc(buf);
     return res;
 }
 
-extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
+extern "C" s32 Aoss_ConnectAp(Unk_ov001_02202c90_In *a, void *b) {
     s32 r4;
     s32 res;
     s32 cnt;
@@ -398,29 +398,29 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
     } else if (a->unk_24 == 1) {
         r6 = 0xc0000;
     }
-    MI_CpuFill8(data_ov001_0222c6cc, 0, 0x60);
+    MI_CpuFill8(sAossWepDesc, 0, 0x60);
     if (a->unk_28 == 5) {
-        data_ov001_0222c6cc[0] = 1;
+        sAossWepDesc[0] = 1;
     } else if (a->unk_28 == 0xd) {
-        data_ov001_0222c6cc[0] = 2;
+        sAossWepDesc[0] = 2;
     } else if (a->unk_28 == 0x10) {
-        data_ov001_0222c6cc[0] = 3;
+        sAossWepDesc[0] = 3;
     } else {
         return -1;
     }
-    data_ov001_0222c6cc[1] = 0;
+    sAossWepDesc[1] = 0;
     MI_CpuCopy8(a->unk_2c, data_ov001_0222c6ce, a->unk_28);
     func_ov065_0226a934();
-    if (func_ov001_0220358c(0, a->unk_04, a->unk_00, 0x30bffe)) {
+    if (Aoss_WcmStartSearch(0, a->unk_04, a->unk_00, 0x30bffe)) {
         s32 msg;
         u32 thr[12];
         cnt = 0;
         OS_CreateAlarm(thr);
-        OS_SetAlarm(thr, 0x3fec42, 0, (void *)func_ov001_022031ec, 0x12);
+        OS_SetAlarm(thr, 0x3fec42, 0, (void *)Aoss_PostAlarmMsg, 0x12);
         r6 = r6 | 0x30000;
         s32 r5 = 0;
         do {
-            OS_ReceiveMessage(data_ov001_0222c6ac, &msg, 1);
+            OS_ReceiveMessage(sAossMsgQueue, &msg, 1);
             switch (msg) {
             case 18:
                 if (got == 0) {
@@ -430,11 +430,11 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
             case 5:
                 if (got == 0) {
                     OS_CancelAlarm(thr);
-                    if (func_ov001_022036a0(data_ov001_0222c740, 1) != 1) {
+                    if (Aoss_WcmReadApList(sAossBssDesc, 1) != 1) {
                         r4 = r5;
                     } else {
-                        func_ov001_02203224(a, data_ov001_0222c740);
-                        if (func_ov001_022033f0(data_ov001_0222c740, data_ov001_0222c6cc, r6) == 0) {
+                        Aoss_SetBssDescSsid(a, sAossBssDesc);
+                        if (Aoss_WcmConnect(sAossBssDesc, sAossWepDesc, r6) == 0) {
                             r4 = r5;
                         } else {
                             got = 1;
@@ -443,8 +443,8 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
                 }
                 break;
             case 10:
-                func_ov001_02203224(a, data_ov001_0222c740);
-                if (func_ov001_022033f0(data_ov001_0222c740, data_ov001_0222c6cc, r6) == 0) {
+                Aoss_SetBssDescSsid(a, sAossBssDesc);
+                if (Aoss_WcmConnect(sAossBssDesc, sAossWepDesc, r6) == 0) {
                     r4 = r5;
                 }
                 break;
@@ -455,7 +455,7 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
             case 13:
                 cnt++;
                 if (cnt < 3) {
-                    if (func_ov001_022033f0(data_ov001_0222c740, data_ov001_0222c6cc, r6) == 0) {
+                    if (Aoss_WcmConnect(sAossBssDesc, sAossWepDesc, r6) == 0) {
                         r4 = r5;
                     }
                 } else {
@@ -473,32 +473,32 @@ extern "C" s32 func_ov001_02202c90(Unk_ov001_02202c90_In *a, void *b) {
         } while (r4 != 0);
         OS_CancelAlarm(thr);
         do {
-        } while (OS_ReceiveMessage(data_ov001_0222c6ac, &msg, r5) == 1);
+        } while (OS_ReceiveMessage(sAossMsgQueue, &msg, r5) == 1);
     }
-    func_ov001_02203214(b, data_ov001_0222c740, res == 0);
+    Aoss_StoreConnectResult(b, sAossBssDesc, res == 0);
     return res;
 }
 
-extern "C" s32 func_ov001_02202c88(s32 a, s32 b, s32 c) {
+extern "C" s32 Aoss_Sleep(s32 a, s32 b, s32 c) {
     return OS_Sleep(a, b, c);
 }// Declarations for data defined further down (definition order sets the data layout)
 
 
 
 
-extern "C" s32 func_ov001_02202c6c(void *a) {
-    if (data_ov001_0222c690) {
-        data_ov001_0222c690(a);
+extern "C" s32 Aoss_NotifyProgress(void *a) {
+    if (sAossProgressCb) {
+        sAossProgressCb(a);
     }
     return 0;
 }
 
-extern "C" void *func_ov001_02202c58(u32 a) {
-    return data_ov001_0222c68c(a);
+extern "C" void *Aoss_Alloc(u32 a) {
+    return sAossAllocFunc(a);
 }
 
-extern "C" void func_ov001_02202c44(void *a) {
-    data_ov001_0222c698(a);
+extern "C" void Aoss_Free(void *a) {
+    sAossFreeFunc(a);
 }
 
 

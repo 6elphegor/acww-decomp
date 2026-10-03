@@ -26,13 +26,13 @@ public:
     virtual ~ProcBase();
 };
 
-struct Unk_ov055_022593b0_Out {
+struct TalkStartMsg {
     const void *unk_00;
     u8 unk_04;
 };
 
 struct Unk_0201bc1c;
-class Unk_ov055_02259994;
+class SpNpcRover;
 
 struct TalkWindowState {
     void setNextMessage(u8 *a, void *b);
@@ -70,7 +70,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov055_022593b0_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_84();
@@ -305,10 +305,10 @@ extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gScreenTransition;
-extern const void *data_ov055_02259820;
-extern u8 data_ov055_02259880[];
-extern u8 data_ov055_022598b0[];
-extern Unk_ov055_02259994 *data_ov055_02259a40;
+extern const void *sSpNpcRoverMsgKey;
+extern u8 sSpNpcRoverModelPath[];
+extern u8 sSpNpcRoverTexturePath[];
+extern SpNpcRover *sSpNpcRoverInstance;
 
 s32 _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void OverlayHandle_Unload(void *p);
@@ -342,26 +342,26 @@ void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, s32 b, s32 c
 void func_ov004_0223f894(void *p);
 }
 void *NetOverlay_AssertOv067();
-class Unk_ov055_02259904;
-typedef void (Unk_ov055_02259904::*Unk_ov055_02259904_Fn)();
+class SpNpcRoverTalk;
+typedef void (SpNpcRoverTalk::*Unk_ov055_02259904_Fn)();
 
-class Unk_ov055_02259904 : public SpNpcTalkRequest {
+class SpNpcRoverTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov055_02259904();
-    virtual ~Unk_ov055_02259904();
+    SpNpcRoverTalk();
+    virtual ~SpNpcRoverTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov055_022593b0_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_80();
     virtual void vfunc_84();
 
-    void func_ov055_022590b0();
-    void func_ov055_02259128();
-    void func_ov055_0225915c();
-    void func_ov055_022593c0(Unk_ov055_02259994 *owner);
-    void func_ov055_0225922c(s32 v);
+    void waitTagModeStop();
+    void waitLidOpen();
+    void runTagMode();
+    void attachOwner(SpNpcRover *owner);
+    void setScript(s32 v);
 
-    /* 0xac */ Unk_ov055_02259994 *unk_ac;
+    /* 0xac */ SpNpcRover *unk_ac;
     /* 0xb0 */ s32 unk_b0;
 };
 
@@ -387,17 +387,17 @@ struct Unk_0208f0a0 {
 extern "C" void _ZN12Unk_0208f238C1Ev(void *self);
 extern "C" void _ZN12Unk_0208f0a0C1Ev(void *self);
 
-class Unk_ov055_02259994;
-typedef BOOL (Unk_ov055_02259994::*Unk_ov055_02259994_Fn)();
+class SpNpcRover;
+typedef BOOL (SpNpcRover::*Unk_ov055_02259994_Fn)();
 
 struct Unk_ov055_022594e0_Ent {
     Unk_ov055_02259994_Fn enter;
     Unk_ov055_02259994_Fn exit;
 };
 
-class Unk_ov055_02259994 : public Unk_020d8bc8 {
+class SpNpcRover : public Unk_020d8bc8 {
 public:
-    Unk_ov055_02259994() {
+    SpNpcRover() {
         u8 *p = (u8 *)&unk_710;
         _ZN12Unk_0208f238C1Ev(p);
         _ZN12Unk_0208f0a0C1Ev(p + 0x84c);
@@ -415,22 +415,22 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    void func_ov055_02258e94();
-    void func_ov055_02258eb4();
-    void func_ov055_02258ed4();
-    void func_ov055_02258f04();
-    void func_ov055_02259028();
-    void func_ov055_0225904c();
-    BOOL func_ov055_0225942c();
-    BOOL func_ov055_02259430();
-    BOOL func_ov055_02259434();
-    BOOL func_ov055_02259468();
-    BOOL func_ov055_02259484();
-    BOOL func_ov055_022594ac();
-    void func_ov055_022594e0(s32 state);
+    void restoreOv068();
+    void loadTagModeOverlay();
+    void saveTagData();
+    void prepareTagData();
+    void restoreOwnTransfer();
+    void applyReceivedData();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ Unk_ov055_02259904 unk_658;
+    /* 0x658 */ SpNpcRoverTalk unk_658;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 pad_70e[2];
@@ -441,57 +441,57 @@ public:
 };
 
 struct Unk_ov055_SceneEntry {
-    Unk_ov055_02259994 *(*factory)();
+    SpNpcRover *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
 
 extern "C" {
-Unk_ov055_02259994 *func_ov055_02259624();
-extern Unk_ov055_022594e0_Ent data_ov055_02259a44[3];
-#define data_ov055_02259a4c ((Unk_ov055_022594e0_Ent *)((u8 *)data_ov055_02259a44 + 8))
-extern Unk_ov055_02259234_Ent data_ov055_022598cc[4];
-#define data_ov055_022598d4 ((Unk_ov055_02259234_Flag *)((u8 *)data_ov055_022598cc + 8))
-extern u8 data_ov055_02259880[];
-extern u8 data_ov055_022598b0[];
-extern Unk_ov055_SceneEntry data_ov055_02259898;
-void _ZN18Unk_ov055_0225990419func_ov055_022590b0Ev();
-void _ZN18Unk_ov055_0225990419func_ov055_02259128Ev();
-void _ZN18Unk_ov055_0225990419func_ov055_0225915cEv();
-void _ZN18Unk_ov055_0225999419func_ov055_02259468Ev();
-void _ZN18Unk_ov055_0225999419func_ov055_022594acEv();
-void _ZN18Unk_ov055_0225999419func_ov055_0225942cEv();
-void _ZN18Unk_ov055_0225999419func_ov055_02259430Ev();
-void _ZN18Unk_ov055_0225999419func_ov055_02259484Ev();
-void _ZN18Unk_ov055_0225999419func_ov055_02259434Ev();
+SpNpcRover *SpNpcRover_Create();
+extern Unk_ov055_022594e0_Ent sSpNpcRoverActTable[3];
+#define data_ov055_02259a4c ((Unk_ov055_022594e0_Ent *)((u8 *)sSpNpcRoverActTable + 8))
+extern Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4];
+#define data_ov055_022598d4 ((Unk_ov055_02259234_Flag *)((u8 *)sSpNpcRoverTalkScripts + 8))
+extern u8 sSpNpcRoverModelPath[];
+extern u8 sSpNpcRoverTexturePath[];
+extern Unk_ov055_SceneEntry sSpNpcRoverProfile;
+void _ZN14SpNpcRoverTalk15waitTagModeStopEv();
+void _ZN14SpNpcRoverTalk11waitLidOpenEv();
+void _ZN14SpNpcRoverTalk10runTagModeEv();
+void _ZN10SpNpcRover10setupAct01Ev();
+void _ZN10SpNpcRover10setupAct00Ev();
+void _ZN10SpNpcRover9mainAct02Ev();
+void _ZN10SpNpcRover10setupAct02Ev();
+void _ZN10SpNpcRover9mainAct00Ev();
+void _ZN10SpNpcRover9mainAct01Ev();
 }
 
-extern "C" void *data_ov055_0225984c[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_02259430Ev, 0};
-extern "C" void *data_ov055_02259844[2] = {(void *)_ZN18Unk_ov055_0225990419func_ov055_0225915cEv, 0};
-extern "C" void *data_ov055_02259854[2] = {(void *)_ZN18Unk_ov055_0225990419func_ov055_02259128Ev, 0};
-extern "C" void *data_ov055_02259834[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_022594acEv, 0};
-extern "C" void *data_ov055_02259824[2] = {(void *)_ZN18Unk_ov055_0225990419func_ov055_022590b0Ev, 0};
-extern "C" void *data_ov055_0225983c[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_0225942cEv, 0};
-extern "C" void *data_ov055_0225985c[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_02259484Ev, 0};
-extern "C" void *data_ov055_02259864[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_02259434Ev, 0};
-extern "C" void *data_ov055_0225982c[2] = {(void *)_ZN18Unk_ov055_0225999419func_ov055_02259468Ev, 0};
-extern "C" char data_ov055_0225986c[] = "sp_etc_sequence1";
-extern "C" const void *data_ov055_02259820 = data_ov055_0225986c;
-extern "C" u8 data_ov055_02259880[] = "npc_sp/model/xct.nsbmd";
-extern "C" u8 data_ov055_022598b0[] = "npc_sp/model/xct_tex.nsbtx";
-extern "C" Unk_ov055_SceneEntry data_ov055_02259898 = {func_ov055_02259624, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" Unk_ov055_02259234_Ent data_ov055_022598cc[4] = {
+extern "C" void *data_ov055_0225984c[2] = {(void *)_ZN10SpNpcRover10setupAct02Ev, 0};
+extern "C" void *data_ov055_02259844[2] = {(void *)_ZN14SpNpcRoverTalk10runTagModeEv, 0};
+extern "C" void *data_ov055_02259854[2] = {(void *)_ZN14SpNpcRoverTalk11waitLidOpenEv, 0};
+extern "C" void *data_ov055_02259834[2] = {(void *)_ZN10SpNpcRover10setupAct00Ev, 0};
+extern "C" void *data_ov055_02259824[2] = {(void *)_ZN14SpNpcRoverTalk15waitTagModeStopEv, 0};
+extern "C" void *data_ov055_0225983c[2] = {(void *)_ZN10SpNpcRover9mainAct02Ev, 0};
+extern "C" void *data_ov055_0225985c[2] = {(void *)_ZN10SpNpcRover9mainAct00Ev, 0};
+extern "C" void *data_ov055_02259864[2] = {(void *)_ZN10SpNpcRover9mainAct01Ev, 0};
+extern "C" void *data_ov055_0225982c[2] = {(void *)_ZN10SpNpcRover10setupAct01Ev, 0};
+extern "C" char sSpNpcRoverKey[] = "sp_etc_sequence1";
+extern "C" const void *sSpNpcRoverMsgKey = sSpNpcRoverKey;
+extern "C" u8 sSpNpcRoverModelPath[] = "npc_sp/model/xct.nsbmd";
+extern "C" u8 sSpNpcRoverTexturePath[] = "npc_sp/model/xct_tex.nsbtx";
+extern "C" Unk_ov055_SceneEntry sSpNpcRoverProfile = {SpNpcRover_Create, 0x5e, 0x65, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov055_02259234_Ent sSpNpcRoverTalkScripts[4] = {
     {0, 0},
     {*(Unk_ov055_02259904_Fn *)data_ov055_02259844, 1},
     {*(Unk_ov055_02259904_Fn *)data_ov055_02259854, 1},
     {*(Unk_ov055_02259904_Fn *)data_ov055_02259824, 1},
 };
-extern "C" Unk_ov055_022594e0_Ent data_ov055_02259a44[3] = {
+extern "C" Unk_ov055_022594e0_Ent sSpNpcRoverActTable[3] = {
     {*(Unk_ov055_02259994_Fn *)data_ov055_02259834, *(Unk_ov055_02259994_Fn *)data_ov055_0225985c},
     {*(Unk_ov055_02259994_Fn *)data_ov055_0225982c, *(Unk_ov055_02259994_Fn *)data_ov055_02259864},
     {*(Unk_ov055_02259994_Fn *)data_ov055_0225984c, *(Unk_ov055_02259994_Fn *)data_ov055_0225983c},
 };
-extern "C" Unk_ov055_02259994 *data_ov055_02259a40 = 0;
+extern "C" SpNpcRover *sSpNpcRoverInstance = 0;
 
 static inline BOOL Unk_ov055_02259484_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
 
@@ -499,107 +499,107 @@ static inline BOOL Unk_ov055_0225915c_Both() {
     return (gTouchHeld != 0 && gTouchChanged != 0) ? TRUE : FALSE;
 }
 
-extern "C" Unk_ov055_02259994 *func_ov055_02259624() { return new Unk_ov055_02259994; }
+extern "C" SpNpcRover *SpNpcRover_Create() { return new SpNpcRover; }
 
-BOOL Unk_ov055_02259994::vfunc_04() {
+BOOL SpNpcRover::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov055_022593c0(this);
+    unk_658.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::vfunc_00() {
+BOOL SpNpcRover::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    data_ov055_02259a40 = this;
-    func_ov055_02258eb4();
-    func_ov055_022594e0(0);
+    sSpNpcRoverInstance = this;
+    loadTagModeOverlay();
+    changeAct(0);
     func_ov004_0223f894(&unk_5c);
     func_0203d990();
-    func_ov055_02258f04();
+    prepareTagData();
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::vfunc_0c() {
+BOOL SpNpcRover::vfunc_0c() {
     if (!Unk_020d8bc8::vfunc_0c()) {
         return FALSE;
     }
-    data_ov055_02259a40 = 0;
-    func_ov055_02258e94();
+    sSpNpcRoverInstance = 0;
+    restoreOv068();
     func_0203d984();
-    func_ov055_02258ed4();
+    saveTagData();
     return TRUE;
 }
 
-u8 *Unk_ov055_02259994::getTexturePath() { return data_ov055_022598b0; }
+u8 *SpNpcRover::getTexturePath() { return sSpNpcRoverTexturePath; }
 
-u8 *Unk_ov055_02259994::getModelPath() { return data_ov055_02259880; }
+u8 *SpNpcRover::getModelPath() { return sSpNpcRoverModelPath; }
 
-BOOL Unk_ov055_02259994::updateAct() {
+BOOL SpNpcRover::updateAct() {
     BOOL r = FALSE;
     if (data_ov055_02259a4c[unk_654].enter) {
-        r = (this->*data_ov055_02259a44[unk_654].exit)();
+        r = (this->*sSpNpcRoverActTable[unk_654].exit)();
     }
     return r;
 }
 
-void Unk_ov055_02259994::func_ov055_022594e0(s32 state) {
+void SpNpcRover::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov055_02259a44[state].enter) {
-        ok = (this->*data_ov055_02259a44[state].enter)();
+    if (sSpNpcRoverActTable[state].enter) {
+        ok = (this->*sSpNpcRoverActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov055_02259994::func_ov055_022594ac() {
+BOOL SpNpcRover::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::func_ov055_02259484() {
+BOOL SpNpcRover::mainAct00() {
     if (Unk_ov055_02259484_IsTwo(gScreenTransition)) {
-        func_ov055_022594e0(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::func_ov055_02259468() {
+BOOL SpNpcRover::setupAct01() {
     _ZN12Unk_02013b1013func_02014198Ehh(&unk_618, 0, 1);
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::func_ov055_02259434() {
+BOOL SpNpcRover::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         func_020b4f58(func_020b4934(), 0x2c, 2, 2);
-        func_ov055_022594e0(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::func_ov055_02259430() { return TRUE; }
+BOOL SpNpcRover::setupAct02() { return TRUE; }
 
-BOOL Unk_ov055_02259994::func_ov055_0225942c() { return TRUE; }
+BOOL SpNpcRover::mainAct02() { return TRUE; }
 
-Unk_ov055_02259904::Unk_ov055_02259904() {}
+SpNpcRoverTalk::SpNpcRoverTalk() {}
 
-Unk_ov055_02259904::~Unk_ov055_02259904() {}
+SpNpcRoverTalk::~SpNpcRoverTalk() {}
 
-void Unk_ov055_02259904::func_ov055_022593c0(Unk_ov055_02259994 *owner) {
+void SpNpcRoverTalk::attachOwner(SpNpcRover *owner) {
     vfunc_08();
     unk_ac = owner;
 }
 
-void Unk_ov055_02259904::vfunc_78(Unk_ov055_022593b0_Out *out) {
-    out->unk_00 = data_ov055_02259820;
+void SpNpcRoverTalk::vfunc_78(TalkStartMsg *out) {
+    out->unk_00 = sSpNpcRoverMsgKey;
     out->unk_04 = 0x38;
 }
 
-void Unk_ov055_02259904::vfunc_14() {
+void SpNpcRoverTalk::vfunc_14() {
     u8 m[4];
     void *r6 = unk_3c;
     switch (unk_1e) {
@@ -607,58 +607,58 @@ void Unk_ov055_02259904::vfunc_14() {
         if (func_020e9a18(NetOverlay_AssertOv067()) == 0) {
             if (unk_ac->unk_70c != 0) {
                 m[0] = 0x36;
-                _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], data_ov055_02259820);
+                _ZN15TalkWindowState14setNextMessageEPhPv(r6, &m[0], sSpNpcRoverMsgKey);
                 break;
             }
             Comm_StartOv067Mode();
             MI_CpuFill8(&unk_ac->unk_1058, 0, 0x948);
-            Unk_ov055_02259994 *r4 = unk_ac;
+            SpNpcRover *r4 = unk_ac;
             NetOverlay_AssertOv067();
             func_020e9a54(&r4->unk_710, &r4->unk_1058, 0x948);
             func_020e9a48(NetOverlay_AssertOv067());
         }
         func_020e9a48(NetOverlay_AssertOv067());
         _ZN15TalkWindowState11lockAdvanceEv(r6);
-        func_ov055_0225922c(1);
+        setScript(1);
         break;
     case 0x3c:
-        unk_ac->func_ov055_0225904c();
+        unk_ac->applyReceivedData();
         break;
     case 0x3b:
-        unk_ac->func_ov055_02259028();
+        unk_ac->restoreOwnTransfer();
         break;
     }
 }
 
-void Unk_ov055_02259904::vfunc_18() {
+void SpNpcRoverTalk::vfunc_18() {
     s32 t = _ZN10ChoiceList9getResultEv(_ZN15TalkWindowState13getChoiceListEv(unk_3c));
     if (unk_1e == 0x3a && t == 1) {
         Comm_EndOv067Mode();
     }
 }
 
-void Unk_ov055_02259904::vfunc_80() {
+void SpNpcRoverTalk::vfunc_80() {
     u32 i = unk_b0;
     if (data_ov055_022598d4[i].flag != 0) {
-        if (data_ov055_022598cc[i].fn) {
-            (this->*data_ov055_022598cc[i].fn)();
+        if (sSpNpcRoverTalkScripts[i].fn) {
+            (this->*sSpNpcRoverTalkScripts[i].fn)();
         }
     }
 }
 
-void Unk_ov055_02259904::vfunc_84() {
+void SpNpcRoverTalk::vfunc_84() {
     u32 i = unk_b0;
     if (data_ov055_022598d4[i].flag == 0) {
-        if (data_ov055_022598cc[i].fn) {
-            (this->*data_ov055_022598cc[i].fn)();
-            func_ov055_0225922c(0);
+        if (sSpNpcRoverTalkScripts[i].fn) {
+            (this->*sSpNpcRoverTalkScripts[i].fn)();
+            setScript(0);
         }
     }
 }
 
-void Unk_ov055_02259904::func_ov055_0225922c(s32 v) { unk_b0 = v; }
+void SpNpcRoverTalk::setScript(s32 v) { unk_b0 = v; }
 
-void Unk_ov055_02259904::func_ov055_0225915c() {
+void SpNpcRoverTalk::runTagMode() {
     u8 m[2];
     BOOL k;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) != 0) {
@@ -667,7 +667,7 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
         k = FALSE;
     }
     BOOL r5 = FALSE;
-    Unk_ov055_02259994 *own = unk_ac;
+    SpNpcRover *own = unk_ac;
     if (own->unk_70d == 1 && k == 0) {
         r5 = TRUE;
     }
@@ -675,38 +675,38 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
     if (func_020e9a08(NetOverlay_AssertOv067())) {
         Comm_EndOv067Mode();
         m[0] = 0x3c;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[0], data_ov055_02259820);
-        func_ov055_0225922c(2);
+        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[0], sSpNpcRoverMsgKey);
+        setScript(2);
     } else {
         if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
             return;
         }
         func_020e9a3c(NetOverlay_AssertOv067());
         m[1] = 0x3a;
-        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[1], data_ov055_02259820);
-        func_ov055_0225922c(3);
+        _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m[1], sSpNpcRoverMsgKey);
+        setScript(3);
     }
 }
 
-void Unk_ov055_02259904::func_ov055_02259128() {
+void SpNpcRoverTalk::waitLidOpen() {
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         Snd_PlaySe(0x69);
         _ZN15TalkWindowState13unlockAdvanceEv(unk_3c);
-        func_ov055_0225922c(0);
+        setScript(0);
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov055_02259904
+// SpNpcRoverTalk
 
-void Unk_ov055_02259904::func_ov055_022590b0() {
+void SpNpcRoverTalk::waitTagModeStop() {
     void *r4 = unk_3c;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         if (func_020e9a08(NetOverlay_AssertOv067())) {
             Snd_PlaySe(0x69);
             Comm_EndOv067Mode();
             u8 m = 0x3c;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, data_ov055_02259820);
+            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &m, sSpNpcRoverMsgKey);
         } else {
             if (func_020e9a18(NetOverlay_AssertOv067()) != 1) {
                 func_020e9a3c(NetOverlay_AssertOv067());
@@ -714,16 +714,16 @@ void Unk_ov055_02259904::func_ov055_022590b0() {
             }
         }
         _ZN15TalkWindowState13unlockAdvanceEv(r4);
-        func_ov055_0225922c(0);
+        setScript(0);
     }
 }
 
-void Unk_ov055_02259994::func_ov055_0225904c() {
+void SpNpcRover::applyReceivedData() {
     Unk_0208f238 *r4 = func_0208f0b0(4);
     u32 st = unk_18a4.unk_f8;
     if (st == 2) {
         MI_CpuCopy8(&unk_18a4, data_021ecfa8, 0xf8);
-        func_ov055_02259028();
+        restoreOwnTransfer();
     } else if (st == 1) {
         MI_CpuCopy8(&unk_1058, r4, 0x84c);
         r4->func_0208f174();
@@ -731,43 +731,43 @@ void Unk_ov055_02259994::func_ov055_0225904c() {
     }
 }
 
-void Unk_ov055_02259994::func_ov055_02259028() {
+void SpNpcRover::restoreOwnTransfer() {
     MI_CpuCopy8(&unk_710, func_0208f0b0(4), 0x84c);
 }
 
-BOOL Unk_ov055_02259994::vfunc_48() {
+BOOL SpNpcRover::vfunc_48() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_ov055_02259994::vfunc_58() {
+BOOL SpNpcRover::vfunc_58() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void Unk_ov055_02259994::vfunc_4c(s32 a) {
+void SpNpcRover::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_658.vfunc_08();
         _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, getPlayerActor(4));
-        func_ov055_022594e0(1);
+        changeAct(1);
         break;
     case 1:
         unk_658.vfunc_08();
         _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, getPlayerActor(4));
-        func_ov055_022594e0(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov055_022594e0(0);
+        changeAct(0);
         break;
     }
 }
 
-void Unk_ov055_02259994::func_ov055_02258f04() {
+void SpNpcRover::prepareTagData() {
     func_020b013c();
     Unk_0208f238 *r4 = func_0208f0b0(4);
     MI_CpuCopy8(r4, &unk_710, 0x84c);
@@ -781,7 +781,7 @@ void Unk_ov055_02259994::func_ov055_02258f04() {
     }
 }
 
-void Unk_ov055_02259994::func_ov055_02258ed4() {
+void SpNpcRover::saveTagData() {
     if (unk_70c == 0) {
         func_0208f0b0(4);
         s32 r = Save_WriteVillagerTransfer();
@@ -791,17 +791,17 @@ void Unk_ov055_02259994::func_ov055_02258ed4() {
     }
 }
 
-void Unk_ov055_02259994::func_ov055_02258eb4() {
+void SpNpcRover::loadTagModeOverlay() {
     OverlayHandle_Unload(gOverlayHandle);
     OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_67_ID);
 }
 
-void Unk_ov055_02259994::func_ov055_02258e94() {
+void SpNpcRover::restoreOv068() {
     OverlayHandle_Unload(gOverlayHandle);
     OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_68_ID);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_ov055_02259994
+// SpNpcRover
 
 

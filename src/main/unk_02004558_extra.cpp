@@ -237,7 +237,7 @@ public:
     void func_ov004_0222381c(s32 idx);
     void func_0200bd18(s32 idx);
     void PlayerActor_NetAct11(s32 idx);
-    void func_ov001_02223688(s32 idx);
+    void WfcMove_StepMeasureChannel(s32 idx);
     void func_0200bb48(s32 idx);
     void func_0200b9cc(s32 idx);
     void func_0200b848(s32 idx);
@@ -253,7 +253,7 @@ public:
     void func_ov004_02222838(s32 idx);
     void func_ov004_022226c0(s32 idx);
     void func_ov004_02222550(s32 idx);
-    void func_ov001_022223c0(s32 idx);
+    void WfcMoveWh_StateInReset(s32 idx);
     void func_ov004_022222a4(s32 idx);
     void func_ov004_02221ffc(s32 idx);
     void func_ov004_02221d4c(s32 idx);

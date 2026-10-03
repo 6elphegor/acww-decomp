@@ -8,12 +8,12 @@ struct Unk_ov001_0220c5c8_Bits {
 
 extern "C" {
 //DEFS
-u8 data_ov001_0222ddec;
-u32 data_ov001_0222ddf8;
-u8 data_ov001_0222ddf0;
-u32 data_ov001_0222ddf4;
-void (*data_ov001_0222ddfc)();
-u32 data_ov001_0222de00[4];
+u8 sWfcLanguage;
+u32 sWfcParams;
+u8 sWfcExitRequested;
+u32 sWfcWorkArea;
+void (*sWfcSceneFunc)();
+u32 sWfcScreenFlags[4];
 //ENDDEFS
 
 extern void Fatal_Trap();
@@ -21,19 +21,19 @@ extern void func_020ff2e4();
 extern void VBlankIntrWait();
 
 
-extern void func_ov001_02225d08();
-void func_ov001_0220d570();
-void func_ov001_0220c668(void (*)());
-s32 func_ov001_0220c9d8();
-s32 func_ov001_0220c6d4();
-s32 func_ov001_0220c678();
-s32 func_ov001_0220caac(s32, u32);
-void func_ov001_0220c37c();
-void *func_ov001_0220c388(s32);
-extern void *func_ov001_02225dd8(s32, s32);
-extern void *func_ov001_02225db0(s32, s32);
-extern void func_ov001_02225d58(void *);
-extern void func_ov001_0221e024(void *);
+extern void WfcHeap_Free();
+void WfcBoot_Enter();
+void WfcUtil_SetScene(void (*)());
+s32 WfcUtil_InitSystem();
+s32 WfcUtil_InitDisplay();
+s32 WfcUtil_Shutdown();
+s32 WfcUtil_CheckParams(s32, u32);
+void WfcAoss_Free();
+void *WfcAoss_Alloc(s32);
+extern void *WfcHeap_Alloc(s32, s32);
+extern void *WfcHeap_AllocClear(s32, s32);
+extern void WfcHeap_FreeAndClear(void *);
+extern void WfcConfig_StoreAoss(void *);
 extern void MIi_CpuClear16(u32, void *, u32);
 extern void MI_CpuCopy8(void *, void *);
 extern void OS_GetMacAddress(void *);
@@ -54,78 +54,78 @@ extern void func_01ffcb28();
 extern void FS_Init(s32);
 extern void TP_Init();
 extern void RTC_Init();
-extern void func_ov001_02226c50();
-extern void func_ov001_022264f4();
-extern void func_ov001_022265e0();
-extern void func_ov001_0221e9c4();
-extern void func_ov001_022249e8();
-extern void func_ov001_0222685c();
-extern void func_ov001_02225828();
-extern void func_ov001_02225104();
-extern void func_ov001_02224258();
-extern void func_ov001_0222718c();
-extern s32 func_ov001_02225e28();
-extern void func_ov001_02226d68();
-extern void func_ov001_0222587c();
-extern void func_ov001_022268e4();
-extern void func_ov001_02226b60();
-extern void func_ov001_02224a3c();
-extern void func_ov001_02226ea8();
-extern void func_ov001_02225e58(u32);
-extern void func_ov001_0222662c();
-extern void func_ov001_022271dc();
-extern void func_ov001_022242e8();
-extern void func_ov001_0222652c();
-extern void func_ov001_02225118();
-extern void func_ov001_0221e9f8();
-extern void func_ov001_022264d8();
-extern void func_ov001_022270b4(s32);
-extern void func_ov001_02225ea0();
-extern void func_ov001_02226c60();
-extern void func_ov001_02224038(void *);
-extern void *func_ov001_02224ca0(void *);
-extern void func_ov001_02224cfc(void *, void *);
-extern void *func_ov001_02224074(void *, void *, u32);
+extern void WfcUtil_RestoreLed();
+extern void WfcInput_Shutdown();
+extern void WfcIrq_Restore();
+extern void WfcSound_Shutdown();
+extern void WfcObj_Shutdown();
+extern void WfcOam_Shutdown();
+extern void WfcText_Shutdown();
+extern void WfcFade_Shutdown();
+extern void WfcFs_UnmountArchive();
+extern void WfcTask_Shutdown();
+extern s32 WfcHeap_Destroy();
+extern void WfcGx_RestoreVramBanks();
+extern void WfcText_Init();
+extern void WfcOam_Init();
+extern void WfcVram_Init();
+extern void WfcObj_Init();
+extern void WfcGx_SaveVramBanks();
+extern void WfcHeap_Init(u32);
+extern void WfcIrq_Init();
+extern void WfcTask_Init();
+extern void WfcFs_MountArchive();
+extern void WfcInput_Init();
+extern void WfcFade_Init();
+extern void WfcSound_Init();
+extern void WfcInput_Update();
+extern void WfcTask_RunList(s32);
+extern void WfcUtil_UpdateLidPower();
+extern void WfcUtil_UpdateLed();
+extern void WfcFs_FreeFile(void *);
+extern void *WfcPool_Get(void *);
+extern void WfcPool_Put(void *, void *);
+extern void *WfcFs_LoadFile(void *, void *, u32);
 
 
 #pragma thumb off
 
 
-s32 func_ov001_0220cb30(u32 a, s32 b, u32 c) {
-    data_ov001_0222ddf4 = a;
-    if (func_ov001_0220caac(b, c) == 0) return -1;
-    data_ov001_0222ddf0 = 0;
-    func_ov001_0220c9d8();
-    func_ov001_0220c6d4();
-    func_ov001_0221e9f8();
-    func_ov001_0220c668(func_ov001_0220d570);
+s32 WfcUtil_Run(u32 a, s32 b, u32 c) {
+    sWfcWorkArea = a;
+    if (WfcUtil_CheckParams(b, c) == 0) return -1;
+    sWfcExitRequested = 0;
+    WfcUtil_InitSystem();
+    WfcUtil_InitDisplay();
+    WfcSound_Init();
+    WfcUtil_SetScene(WfcBoot_Enter);
     do {
-        func_ov001_022264d8();
-        data_ov001_0222ddfc();
-        func_ov001_022270b4(0);
-        func_ov001_02225ea0();
-        func_ov001_02226c60();
+        WfcInput_Update();
+        sWfcSceneFunc();
+        WfcTask_RunList(0);
+        WfcUtil_UpdateLidPower();
+        WfcUtil_UpdateLed();
         VBlankIntrWait();
-    } while (data_ov001_0222ddf0 == 0);
-    func_ov001_0220c678();
+    } while (sWfcExitRequested == 0);
+    WfcUtil_Shutdown();
     return 0;
 }
 
-s32 func_ov001_0220caac(s32 a, u32 b) {
-    data_ov001_0222ddec = a;
-    data_ov001_0222ddf8 = b;
+s32 WfcUtil_CheckParams(s32 a, u32 b) {
+    sWfcLanguage = a;
+    sWfcParams = b;
     if (a < 0 || a > 5) return 0;
     if ((u32)(b << 28) >> 28 > 1) return 0;
     if (a != 0) {
         if (((b >> 4) & 1) != 0) return 0;
     }
     if (a == 0) {
-        if (((*(volatile u32 *)&data_ov001_0222ddf8 >> 4) & 1) == 0) return 0;
+        if (((*(volatile u32 *)&sWfcParams >> 4) & 1) == 0) return 0;
     }
     return 1;
 }
 
-s32 func_ov001_0220c9d8() {
+s32 WfcUtil_InitSystem() {
     volatile u16 *ime = (volatile u16 *)0x4000208;
     u16 old = *ime;
     *ime = 0;
@@ -140,19 +140,19 @@ s32 func_ov001_0220c9d8() {
     RTC_Init();
     GX_DispOff();
     *(volatile u32 *)0x4001000 &= ~0x10000;
-    func_ov001_02226ea8();
-    func_ov001_02225e58(data_ov001_0222ddf4);
-    func_ov001_0222662c();
-    func_ov001_022271dc();
-    func_ov001_022242e8();
-    func_ov001_0222652c();
-    func_ov001_02225118();
-    void *p = func_ov001_02225dd8(0x700, 0x20);
+    WfcGx_SaveVramBanks();
+    WfcHeap_Init(sWfcWorkArea);
+    WfcIrq_Init();
+    WfcTask_Init();
+    WfcFs_MountArchive();
+    WfcInput_Init();
+    WfcFade_Init();
+    void *p = WfcHeap_Alloc(0x700, 0x20);
     func_020ff2e4();
-    func_ov001_02225d58(&p);
+    WfcHeap_FreeAndClear(&p);
 }
 
-s32 func_ov001_0220c6d4() {
+s32 WfcUtil_InitDisplay() {
     GX_VBlankIntr(0);
     GX_SetBankForBG(1);
     GX_SetBankForOBJ(2);
@@ -195,71 +195,71 @@ s32 func_ov001_0220c6d4() {
     *(volatile u16 *)0x400100c = (*(volatile u16 *)0x400100c & 0x43) | 0xe00;
     *(volatile u16 *)0x400100e = (*(volatile u16 *)0x400100e & 0x43) | 0xf00;
     *(volatile u16 *)0x4000304 &= ~0x8000;
-    func_ov001_0222587c();
-    func_ov001_022268e4();
-    func_ov001_02226b60();
-    func_ov001_02224a3c();
+    WfcText_Init();
+    WfcOam_Init();
+    WfcVram_Init();
+    WfcObj_Init();
     GX_DispOn();
     *(volatile u32 *)0x4001000 |= 0x10000;
     GX_VBlankIntr(1);
 }
 
-s32 func_ov001_0220c678() {
+s32 WfcUtil_Shutdown() {
     GX_DispOff();
     *(volatile u32 *)0x4001000 &= ~0x10000;
-    func_ov001_02226c50();
-    func_ov001_022264f4();
-    func_ov001_022265e0();
-    func_ov001_0221e9c4();
-    func_ov001_022249e8();
-    func_ov001_0222685c();
-    func_ov001_02225828();
-    func_ov001_02225104();
-    func_ov001_02224258();
-    func_ov001_0222718c();
-    func_ov001_02225e28();
-    func_ov001_02226d68();
+    WfcUtil_RestoreLed();
+    WfcInput_Shutdown();
+    WfcIrq_Restore();
+    WfcSound_Shutdown();
+    WfcObj_Shutdown();
+    WfcOam_Shutdown();
+    WfcText_Shutdown();
+    WfcFade_Shutdown();
+    WfcFs_UnmountArchive();
+    WfcTask_Shutdown();
+    WfcHeap_Destroy();
+    WfcGx_RestoreVramBanks();
 }
 
-void func_ov001_0220c668(void (*f)()) {
-    data_ov001_0222ddfc = f;
+void WfcUtil_SetScene(void (*f)()) {
+    sWfcSceneFunc = f;
 }
 
-void func_ov001_0220c654(u32 a, u32 b) {
-    data_ov001_0222de00[0] = a;
-    data_ov001_0222de00[1] = b;
+void WfcUtil_SetScreenFlags(u32 a, u32 b) {
+    sWfcScreenFlags[0] = a;
+    sWfcScreenFlags[1] = b;
 }
 
-void func_ov001_0220c62c(u32 *a, u32 *b) {
-    if (a) *a = data_ov001_0222de00[0];
-    if (b) *b = data_ov001_0222de00[1];
+void WfcUtil_GetScreenFlags(u32 *a, u32 *b) {
+    if (a) *a = sWfcScreenFlags[0];
+    if (b) *b = sWfcScreenFlags[1];
 }
 
-void func_ov001_0220c618(u32 a, u32 b) {
-    data_ov001_0222de00[2] = a;
-    data_ov001_0222de00[3] = b;
+void WfcUtil_SetEditParams(u32 a, u32 b) {
+    sWfcScreenFlags[2] = a;
+    sWfcScreenFlags[3] = b;
 }
 
-void func_ov001_0220c5f0(u32 *a, u32 *b) {
-    if (a) *a = data_ov001_0222de00[2];
-    if (b) *b = data_ov001_0222de00[3];
+void WfcUtil_GetEditParams(u32 *a, u32 *b) {
+    if (a) *a = sWfcScreenFlags[2];
+    if (b) *b = sWfcScreenFlags[3];
 }
 
-u32 func_ov001_0220c5e0() {
-    return data_ov001_0222ddec;
+u32 WfcUtil_GetLanguage() {
+    return sWfcLanguage;
 }
 
-u32 func_ov001_0220c5c8() {
-    return ((Unk_ov001_0220c5c8_Bits *)&data_ov001_0222ddf8)->lo;
+u32 WfcUtil_GetStartMode() {
+    return ((Unk_ov001_0220c5c8_Bits *)&sWfcParams)->lo;
 }
 
-BOOL func_ov001_0220c5a8(u32 m) {
-    if (((data_ov001_0222ddf8 >> 4) & m) != 0) return TRUE;
+BOOL WfcUtil_TestOptionFlag(u32 m) {
+    if (((sWfcParams >> 4) & m) != 0) return TRUE;
     return FALSE;
 }
 
-void func_ov001_0220c594() {
-    data_ov001_0222ddf0 = 1;
+void WfcUtil_RequestExit() {
+    sWfcExitRequested = 1;
 }
 }
 #pragma thumb reset

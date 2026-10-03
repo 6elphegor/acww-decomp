@@ -31,8 +31,8 @@ struct Unk_ov001_02221734_B {
     u8 pad_1a[0x54 - 0x1a];
 };
 
-extern "C" Unk_ov001_02220ad8_S *data_ov001_0222df08;
-extern "C" u16 *data_ov001_0222df0c[6];
+extern "C" Unk_ov001_02220ad8_S *sWfcMoveMb;
+extern "C" u16 *sWfcMoveMbMaskPtrs[6];
 
 extern "C" {
 u32 OS_DisableInterrupts();
@@ -55,36 +55,36 @@ void OS_GetOwnerInfo(void *);
 s32 func_021251ac(void *, void *, s32, s32, s32);
 void MB_SetParentCommParam(u32, u32);
 void MB_CommSetParentStateCallback(void *);
-void func_ov001_02222e48(void *);
+void WfcMoveWh_SetWork(void *);
 
-u32 func_ov001_02220ad8(u8 *mac);
-u8 *func_ov001_02220ba0(u32 id);
-u32 func_ov001_02220bd4(u32 id);
-u32 func_ov001_02220cb8(u32 i);
-u32 func_ov001_02220d18();
-void func_ov001_02220d2c(u32 v);
-void func_ov001_02220d40(u32 id, u32 cmd, u8 *data);
-void func_ov001_022210d0();
-void func_ov001_022210f0();
-u32 func_ov001_02221200();
-void func_ov001_02221278();
-void func_ov001_02221368(u32 id);
-void func_ov001_02221454(u32 n);
-void func_ov001_02221540(u32 n);
-s32 func_ov001_022215f4(s32 *p);
-void func_ov001_022216d0(s32 *a, s32 b);
-void func_ov001_02221734(s32 a, s32 b);
-void func_ov001_02221854(void *p);
+u32 WfcMoveMb_FindAidByMac(u8 *mac);
+u8 *WfcMoveMb_GetChildInfo(u32 id);
+u32 WfcMoveMb_GetChildState(u32 id);
+u32 WfcMoveMb_GetChildMask(u32 i);
+u32 WfcMoveMb_GetState();
+void WfcMoveMb_SetState(u32 v);
+void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data);
+void WfcMoveMb_Cancel();
+void WfcMoveMb_StartRebootAll();
+u32 WfcMoveMb_IsAllBootable();
+void WfcMoveMb_StartDownloadAll();
+void WfcMoveMb_StartDownload(u32 id);
+void WfcMoveMb_KickChild(u32 n);
+void WfcMoveMb_AcceptChild(u32 n);
+s32 WfcMoveMb_RegisterFile(s32 *p);
+void WfcMoveMb_StartParent(s32 *a, s32 b);
+void WfcMoveMb_Init(s32 a, s32 b);
+void WfcMoveMb_SetWork(void *p);
 }
 
-void func_ov001_02221854(void *p) {
-    data_ov001_0222df08 = (Unk_ov001_02220ad8_S *)p;
-    func_ov001_02222e48((u8 *)p + 0x1b160);
-    data_ov001_0222df08->unk_1b140 = 0;
-    data_ov001_0222df08->unk_1b144 = 0;
+void WfcMoveMb_SetWork(void *p) {
+    sWfcMoveMb = (Unk_ov001_02220ad8_S *)p;
+    WfcMoveWh_SetWork((u8 *)p + 0x1b160);
+    sWfcMoveMb->unk_1b140 = 0;
+    sWfcMoveMb->unk_1b144 = 0;
 }
 
-void func_ov001_02221734(s32 a, s32 b) {
+void WfcMoveMb_Init(s32 a, s32 b) {
     Unk_ov001_02221734_D d;
     Unk_ov001_02221734_B buf;
     OS_GetOwnerInfo(&buf);
@@ -100,25 +100,25 @@ void func_ov001_02221734(s32 a, s32 b) {
     zp->v[4] = 0;
     zp->v[5] = 0;
     zp->v[6] = 0;
-    *(Unk_ov001_02221734_Z *)data_ov001_0222df08 = *zp;
-    data_ov001_0222df08->unk_1b140 = (u8 *)data_ov001_0222df08 + 0x10040;
-    if (func_021251ac(data_ov001_0222df08->unk_1b140, &d, a, b, 2) != 0) Fatal_Trap();
+    *(Unk_ov001_02221734_Z *)sWfcMoveMb = *zp;
+    sWfcMoveMb->unk_1b140 = (u8 *)sWfcMoveMb + 0x10040;
+    if (func_021251ac(sWfcMoveMb->unk_1b140, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
-    MB_CommSetParentStateCallback((void *)func_ov001_02220d40);
-    func_ov001_02220d2c(1);
+    MB_CommSetParentStateCallback((void *)WfcMoveMb_ParentStateCallback);
+    WfcMoveMb_SetState(1);
 }
 
-void func_ov001_022216d0(s32 *a, s32 b) {
-    func_ov001_02220d2c(2);
+void WfcMoveMb_StartParent(s32 *a, s32 b) {
+    WfcMoveMb_SetState(2);
     if (MB_StartParentFromIdle(b) != 0) {
-        func_ov001_02220d2c(7);
+        WfcMoveMb_SetState(7);
         return;
     }
-    if (func_ov001_022215f4(a) != 0) return;
+    if (WfcMoveMb_RegisterFile(a) != 0) return;
     Fatal_Trap();
 }
 
-s32 func_ov001_022215f4(s32 *p) {
+s32 WfcMoveMb_RegisterFile(s32 *p) {
     void *q;
     s32 r = 0;
     u8 buf[0x48];
@@ -130,11 +130,11 @@ s32 func_ov001_022215f4(s32 *p) {
         q = buf;
     }
     if (MB_GetSegmentLength(q) != 0) {
-        Unk_ov001_02220ad8_S *g = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *g = sWfcMoveMb;
         g->unk_1b144 = (u8 *)g + 0x2c;
-        if (data_ov001_0222df08->unk_1b144 != 0) {
-            if (MB_ReadSegment(q, data_ov001_0222df08->unk_1b144, 0x10000) != 0) {
-                if (MB_RegisterFile(p, data_ov001_0222df08->unk_1b144) != 0) r = 1;
+        if (sWfcMoveMb->unk_1b144 != 0) {
+            if (MB_ReadSegment(q, sWfcMoveMb->unk_1b144, 0x10000) != 0) {
+                if (MB_RegisterFile(p, sWfcMoveMb->unk_1b144) != 0) r = 1;
             }
         }
     }
@@ -142,141 +142,141 @@ s32 func_ov001_022215f4(s32 *p) {
     return r;
 }
 
-void func_ov001_02221540(u32 n) {
+void WfcMoveMb_AcceptChild(u32 n) {
     if (MB_CommResponseRequest(n, 1) != 0) return;
     u16 m = ~(1 << n);
     s32 e = OS_DisableInterrupts();
-    data_ov001_0222df08->m[0] &= m;
-    data_ov001_0222df08->m[1] &= m;
-    data_ov001_0222df08->m[2] &= m;
-    data_ov001_0222df08->m[3] &= m;
-    data_ov001_0222df08->m[4] &= m;
-    data_ov001_0222df08->m[5] &= m;
+    sWfcMoveMb->m[0] &= m;
+    sWfcMoveMb->m[1] &= m;
+    sWfcMoveMb->m[2] &= m;
+    sWfcMoveMb->m[3] &= m;
+    sWfcMoveMb->m[4] &= m;
+    sWfcMoveMb->m[5] &= m;
     OS_RestoreInterrupts(e);
     func_02124a94(n);
 }
 
-void func_ov001_02221454(u32 n) {
+void WfcMoveMb_KickChild(u32 n) {
     if (MB_CommResponseRequest(n, 0) == 0) {
         u16 m = ~(1 << n);
         s32 e = OS_DisableInterrupts();
-        data_ov001_0222df08->m[0] &= m;
-        data_ov001_0222df08->m[1] &= m;
-        data_ov001_0222df08->m[2] &= m;
-        data_ov001_0222df08->m[3] &= m;
-        data_ov001_0222df08->m[4] &= m;
-        data_ov001_0222df08->m[5] &= m;
+        sWfcMoveMb->m[0] &= m;
+        sWfcMoveMb->m[1] &= m;
+        sWfcMoveMb->m[2] &= m;
+        sWfcMoveMb->m[3] &= m;
+        sWfcMoveMb->m[4] &= m;
+        sWfcMoveMb->m[5] &= m;
         OS_RestoreInterrupts(e);
         func_02124a94(n);
     } else {
         s32 e = OS_DisableInterrupts();
         u32 m = ~(1 << n);
-        data_ov001_0222df08->m[1] &= m;
-        data_ov001_0222df08->m[0] &= m;
+        sWfcMoveMb->m[1] &= m;
+        sWfcMoveMb->m[0] &= m;
         OS_RestoreInterrupts(e);
     }
 }
 
-void func_ov001_02221368(u32 id)
+void WfcMoveMb_StartDownload(u32 id)
 {
     if (MB_CommResponseRequest(id, 2) == 0) {
         u16 k = ~(1 << id);
         u32 r = OS_DisableInterrupts();
-        data_ov001_0222df08->m[0] &= k;
-        data_ov001_0222df08->m[1] &= k;
-        data_ov001_0222df08->m[2] &= k;
-        data_ov001_0222df08->m[3] &= k;
-        data_ov001_0222df08->m[4] &= k;
-        data_ov001_0222df08->m[5] &= k;
+        sWfcMoveMb->m[0] &= k;
+        sWfcMoveMb->m[1] &= k;
+        sWfcMoveMb->m[2] &= k;
+        sWfcMoveMb->m[3] &= k;
+        sWfcMoveMb->m[4] &= k;
+        sWfcMoveMb->m[5] &= k;
         OS_RestoreInterrupts(r);
         func_02124a94(id);
     } else {
         u32 r = OS_DisableInterrupts();
         u32 one = 1;
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         s->m[2] = s->m[2] & ~(one << id);
-        s = data_ov001_0222df08;
+        s = sWfcMoveMb;
         s->m[3] = s->m[3] | (one << id);
         OS_RestoreInterrupts(r);
     }
 }
 
-void func_ov001_02221278()
+void WfcMoveMb_StartDownloadAll()
 {
-    func_ov001_02220d2c(3);
+    WfcMoveMb_SetState(3);
     u16 i;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (data_ov001_0222df08->m[0] & bit) {
-            if (!(data_ov001_0222df08->m[1] & bit)) {
-                if (!(data_ov001_0222df08->m[2] & bit)) {
+        if (sWfcMoveMb->m[0] & bit) {
+            if (!(sWfcMoveMb->m[1] & bit)) {
+                if (!(sWfcMoveMb->m[2] & bit)) {
                     u16 k = ~bit;
                     u32 r = OS_DisableInterrupts();
-                    data_ov001_0222df08->m[0] &= k;
-                    data_ov001_0222df08->m[1] &= k;
-                    data_ov001_0222df08->m[2] &= k;
-                    data_ov001_0222df08->m[3] &= k;
-                    data_ov001_0222df08->m[4] &= k;
-                    data_ov001_0222df08->m[5] &= k;
+                    sWfcMoveMb->m[0] &= k;
+                    sWfcMoveMb->m[1] &= k;
+                    sWfcMoveMb->m[2] &= k;
+                    sWfcMoveMb->m[3] &= k;
+                    sWfcMoveMb->m[4] &= k;
+                    sWfcMoveMb->m[5] &= k;
                     OS_RestoreInterrupts(r);
                     func_02124a94(i);
                 } else {
-                    func_ov001_02221368(i);
+                    WfcMoveMb_StartDownload(i);
                 }
             }
         }
     }
 }
 
-u32 func_ov001_02221200()
+u32 WfcMoveMb_IsAllBootable()
 {
-    if (data_ov001_0222df08->m[0] == 0) return 0;
+    if (sWfcMoveMb->m[0] == 0) return 0;
     u16 i;
     for (i = 1; i < 16; i++) {
-        if (data_ov001_0222df08->m[0] & (1 << i)) {
+        if (sWfcMoveMb->m[0] & (1 << i)) {
             if (MB_CommIsBootable(i) == 0) return 0;
         }
     }
     return 1;
 }
 
-void func_ov001_022210f0()
+void WfcMoveMb_StartRebootAll()
 {
     u16 i, ok;
     ok = 0;
     for (i = 1; i < 16; i++) {
         u32 bit = 1 << i;
-        if (data_ov001_0222df08->m[4] & bit) {
+        if (sWfcMoveMb->m[4] & bit) {
             if (MB_CommResponseRequest(i, 3)) {
                 ok = ok | bit;
             } else {
                 u16 k = ~bit;
                 u32 r = OS_DisableInterrupts();
-                data_ov001_0222df08->m[0] &= k;
-                data_ov001_0222df08->m[1] &= k;
-                data_ov001_0222df08->m[2] &= k;
-                data_ov001_0222df08->m[3] &= k;
-                data_ov001_0222df08->m[4] &= k;
-                data_ov001_0222df08->m[5] &= k;
+                sWfcMoveMb->m[0] &= k;
+                sWfcMoveMb->m[1] &= k;
+                sWfcMoveMb->m[2] &= k;
+                sWfcMoveMb->m[3] &= k;
+                sWfcMoveMb->m[4] &= k;
+                sWfcMoveMb->m[5] &= k;
                 OS_RestoreInterrupts(r);
                 func_02124a94(i);
             }
         }
     }
     if (ok == 0) {
-        func_ov001_02220d2c(7);
+        WfcMoveMb_SetState(7);
     } else {
-        func_ov001_02220d2c(4);
+        WfcMoveMb_SetState(4);
     }
 }
 
-void func_ov001_022210d0()
+void WfcMoveMb_Cancel()
 {
-    func_ov001_02220d2c(6);
+    WfcMoveMb_SetState(6);
     MB_End();
 }
 
-void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
+void WfcMoveMb_ParentStateCallback(u32 id, u32 cmd, u8 *data)
 {
     switch (cmd) {
     case 1:
@@ -287,85 +287,85 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
     case 11:
         break;
     case 2: {
-        if (func_ov001_02220d18() != 2) return;
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        if (WfcMoveMb_GetState() != 2) return;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         u32 r = OS_DisableInterrupts();
         s->m[0] = s->m[0] | (1 << id);
         OS_RestoreInterrupts(r);
-        u8 *e = (u8 *)data_ov001_0222df08 + 0x24 + (id - 1) * 0x1e;
+        u8 *e = (u8 *)sWfcMoveMb + 0x24 + (id - 1) * 0x1e;
         e[0] = data[0xa];
         e[1] = data[0xb];
         e[2] = data[0xc];
         e[3] = data[0xd];
         e[4] = data[0xe];
         e[5] = data[0xf];
-        *(u16 *)((u8 *)data_ov001_0222df08 + (id - 1) * 0x1e + 0x2a) = id;
+        *(u16 *)((u8 *)sWfcMoveMb + (id - 1) * 0x1e + 0x2a) = id;
         break;
     }
     case 3: {
-        if (func_ov001_02220bd4(id) == 6) return;
+        if (WfcMoveMb_GetChildState(id) == 6) return;
         u16 k = ~(1 << id);
         u32 r = OS_DisableInterrupts();
-        data_ov001_0222df08->m[0] &= k;
-        data_ov001_0222df08->m[1] &= k;
-        data_ov001_0222df08->m[2] &= k;
-        data_ov001_0222df08->m[3] &= k;
-        data_ov001_0222df08->m[4] &= k;
-        data_ov001_0222df08->m[5] &= k;
+        sWfcMoveMb->m[0] &= k;
+        sWfcMoveMb->m[1] &= k;
+        sWfcMoveMb->m[2] &= k;
+        sWfcMoveMb->m[3] &= k;
+        sWfcMoveMb->m[4] &= k;
+        sWfcMoveMb->m[5] &= k;
         OS_RestoreInterrupts(r);
         break;
     }
     case 10: {
-        if (func_ov001_02220d18() != 2) {
-            func_ov001_02221454(id);
+        if (WfcMoveMb_GetState() != 2) {
+            WfcMoveMb_KickChild(id);
             return;
         }
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         s->m[1] = s->m[1] | (1 << id);
-        func_ov001_02221540(id);
+        WfcMoveMb_AcceptChild(id);
         s32 r = MB_CommGetChildUser(id);
         if (r == 0) return;
-        MI_CpuCopy8((void *)r, (u8 *)data_ov001_0222df08 + 0xe + (id - 1) * 0x1e, 0x16);
+        MI_CpuCopy8((void *)r, (u8 *)sWfcMoveMb + 0xe + (id - 1) * 0x1e, 0x16);
         break;
     }
     case 14: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         u32 one = 1;
         s->m[1] = s->m[1] & ~(one << id);
-        s = data_ov001_0222df08;
+        s = sWfcMoveMb;
         s->m[2] = s->m[2] | (one << id);
-        if (func_ov001_02220d18() != 3) return;
-        func_ov001_02221368(id);
+        if (WfcMoveMb_GetState() != 3) return;
+        WfcMoveMb_StartDownload(id);
         break;
     }
     case 7: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         u32 one = 1;
         s->m[3] = s->m[3] & ~(one << id);
-        s = data_ov001_0222df08;
+        s = sWfcMoveMb;
         s->m[4] = s->m[4] | (one << id);
         break;
     }
     case 9: {
-        Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+        Unk_ov001_02220ad8_S *s = sWfcMoveMb;
         u32 one = 1;
         s->m[4] = s->m[4] & ~(one << id);
-        s = data_ov001_0222df08;
+        s = sWfcMoveMb;
         s->m[5] = s->m[5] | (one << id);
-        s = data_ov001_0222df08;
+        s = sWfcMoveMb;
         if (s->m[0] != s->m[5]) return;
         MB_End();
         break;
     }
     case 12: {
-        if (func_ov001_02220d18() == 4) {
-            func_ov001_02220d2c(5);
+        if (WfcMoveMb_GetState() == 4) {
+            WfcMoveMb_SetState(5);
         } else {
-            func_ov001_02220d2c(0);
+            WfcMoveMb_SetState(0);
         }
-        Unk_ov001_02220ad8_Z *z = (Unk_ov001_02220ad8_Z *)data_ov001_0222df08;
+        Unk_ov001_02220ad8_Z *z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
         if (z->unk_144 != 0) z->unk_144 = 0;
-        z = (Unk_ov001_02220ad8_Z *)data_ov001_0222df08;
+        z = (Unk_ov001_02220ad8_Z *)sWfcMoveMb;
         if (z->unk_140 != 0) z->unk_140 = 0;
         break;
     }
@@ -375,7 +375,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         case 1:
         case 2:
         case 9:
-            func_ov001_02220d2c(7);
+            WfcMoveMb_SetState(7);
             break;
         case 8:
             break;
@@ -388,34 +388,34 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
     }
 }
 
-void func_ov001_02220d2c(u32 v)
+void WfcMoveMb_SetState(u32 v)
 {
-    data_ov001_0222df08->state = v;
+    sWfcMoveMb->state = v;
 }
 
-u32 func_ov001_02220d18()
+u32 WfcMoveMb_GetState()
 {
-    return data_ov001_0222df08->state;
+    return sWfcMoveMb->state;
 }
 
-u32 func_ov001_02220cb8(u32 i)
+u32 WfcMoveMb_GetChildMask(u32 i)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
-    data_ov001_0222df0c[0] = &s->m[0];
-    data_ov001_0222df0c[1] = &s->m[1];
-    data_ov001_0222df0c[2] = &s->m[2];
-    data_ov001_0222df0c[3] = &s->m[3];
-    data_ov001_0222df0c[4] = &s->m[4];
-    data_ov001_0222df0c[5] = &s->m[5];
-    return *data_ov001_0222df0c[i];
+    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
+    sWfcMoveMbMaskPtrs[0] = &s->m[0];
+    sWfcMoveMbMaskPtrs[1] = &s->m[1];
+    sWfcMoveMbMaskPtrs[2] = &s->m[2];
+    sWfcMoveMbMaskPtrs[3] = &s->m[3];
+    sWfcMoveMbMaskPtrs[4] = &s->m[4];
+    sWfcMoveMbMaskPtrs[5] = &s->m[5];
+    return *sWfcMoveMbMaskPtrs[i];
 }
 
-u32 func_ov001_02220bd4(u32 id)
+u32 WfcMoveMb_GetChildState(u32 id)
 {
     u16 buf[7];
     u32 r = OS_DisableInterrupts();
     u16 bit = 1 << id;
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
     if (!(s->m[0] & bit)) {
         OS_RestoreInterrupts(r);
         return 0;
@@ -430,18 +430,18 @@ u32 func_ov001_02220bd4(u32 id)
     return 1;
 }
 
-u8 *func_ov001_02220ba0(u32 id)
+u8 *WfcMoveMb_GetChildInfo(u32 id)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
     if (s->m[0] & (1 << id)) {
         return (u8 *)s + 0xe + (id - 1) * 0x1e;
     }
     return 0;
 }
 
-u32 func_ov001_02220ad8(u8 *mac)
+u32 WfcMoveMb_FindAidByMac(u8 *mac)
 {
-    Unk_ov001_02220ad8_S *s = data_ov001_0222df08;
+    Unk_ov001_02220ad8_S *s = sWfcMoveMb;
     u16 i;
     u16 mask = s->m[0];
     for (i = 1; i < 2; i++) {
@@ -455,5 +455,5 @@ u32 func_ov001_02220ad8(u8 *mac)
     return 0;
 }
 
-extern "C" Unk_ov001_02220ad8_S *data_ov001_0222df08 = 0;
-extern "C" u16 *data_ov001_0222df0c[6] = {0, 0, 0, 0, 0, 0};
+extern "C" Unk_ov001_02220ad8_S *sWfcMoveMb = 0;
+extern "C" u16 *sWfcMoveMbMaskPtrs[6] = {0, 0, 0, 0, 0, 0};

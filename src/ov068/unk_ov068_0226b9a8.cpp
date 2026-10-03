@@ -15,7 +15,6 @@
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define G3dResAccess_findMatIdx _ZN12G3dResAccess10findMatIdxEi
 #define BlendAnimModel_getAnmRes _ZN14BlendAnimModel9getAnmResEv
-#define func_ov045_02258e34 _ZN22KatrinaEncodedString168vfunc_0cEv
 
 // shared_0224d4e8.h.txt -- final declaration of class Unk_ov004_0224d4e8 (defined in ov004 TU17, 0x0221e7a8-0x02225290).
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
@@ -332,8 +331,8 @@ void ModelAnim_addToRenderObj(void *p, void *q);
 void AnimModel_drawAnimated(void *p, u32 a);
 void AnimModel_stepAnim(void *p);
 void AnimFrameCtrl_step(void *p);
-s32 func_ov045_02258e34();
-s32 func_ov051_02258e50();
+s32 SpNpcKappn_GetAnimState();
+s32 SpNpcKappn_GetAnimFrame();
 void TaxiInterior_SetPartAnim(void *self, u8 k, void *a, void *b, u8 s0, u32 s1, u16 s2, u16 s3);
 void func_ov068_0226b9ec(void *p, u32 b, void *c);
 void NNS_G3dMdlSetMdlAlpha(u32 p, s32 a, u8 b);
@@ -437,8 +436,8 @@ BOOL TaxiInterior::onExecute() {
     if (unk_430) {
         AnimModel_stepAnim(&unk_2d0);
     }
-    s32 t = func_ov045_02258e34();
-    func_ov051_02258e50();
+    s32 t = SpNpcKappn_GetAnimState();
+    SpNpcKappn_GetAnimFrame();
     s32 k = 0;
     switch (t) {
     case 0xfb:

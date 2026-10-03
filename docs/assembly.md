@@ -78,8 +78,8 @@ and the DSi builds were tried. They behave like the missing 1.2/sp1 build that t
 
 | Function | Overlay, address, size | Closest C version |
 |---|---|---|
-| `func_ov001_0220cd24` (`src/ov001/unk_ov001_0220cd24.cpp`) | ov001, 0x0220cd24, 0x300, ARM | 2 bytes differ: the jump-table guard comes out as `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge` |
-| `Unk_ov054_0225b9c4::func_ov054_022595c4` (`src/ov054/unk_ov054_02258de0.cpp`) | ov054, 0x022595c4, 0x19c, Thumb | 246 bytes differ: mwcc builds a 17-entry table for cases 0..16 under a compare tree rooted at 0x52; the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39 |
+| `WfcTransfer_Task` (`src/ov001/unk_ov001_0220cd24.cpp`) | ov001, 0x0220cd24, 0x300, ARM | 2 bytes differ: the jump-table guard comes out as `cmp r0, #20` / `addls` instead of the original lower-bound-only `cmp r0, #0` / `addge` |
+| `SpNpcPellyPhyllisTalk::onPostOfficeChoice` (`src/ov054/unk_ov054_02258de0.cpp`) | ov054, 0x022595c4, 0x19c, Thumb | 246 bytes differ: mwcc builds a 17-entry table for cases 0..16 under a compare tree rooted at 0x52; the original has a 10-entry table for cases 0..9 under a tree rooted at 0x39 |
 | `SpNpcJoanTalk::vfunc_18` (`src/ov073/unk_ov073_022713c0.cpp`) | ov073, 0x02271484, 0x1e0, Thumb | 54 bytes differ: the original dispatches cases 0..12 through a table guarded only by `cmp #0; bge`; mwcc emits `cmp #12; bls`, extra zero-extension shifts and a different table layout |
 | `Unk_ov092_02291ec8::func_ov092_02291a44` (`src/ov092/unk_ov092_022918e0.cpp`) | ov092, 0x02291a44, 0x212, Thumb | 78 bytes differ: mwcc roots the first switch's tree at 0x18 with a bounds-checked 0x1a..0x27 table; the original roots it at 0x23 with a 0x1a..0x23 table that has only a lower-bound check |
 

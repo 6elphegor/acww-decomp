@@ -28,8 +28,8 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov052_0225a900;
-class Unk_ov052_0225a870;
+class SpNpcRedd;
+class SpNpcReddTalk;
 
 struct Unk_ov052_Vec {
     s32 x, y, z;
@@ -45,7 +45,7 @@ struct Unk_ov052_02258eac_Loc : Unk_ov052_Vec {
     Unk_ov052_02258eac_Loc() {}
 };
 
-struct Unk_ov052_022595dc_Out {
+struct TalkStartMsg {
     char *unk_00;
     u8 unk_04;
 };
@@ -172,7 +172,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov052_022595dc_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_88();
@@ -219,22 +219,22 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class Unk_ov052_0225a870 : public SpNpcTalkRequest {
+class SpNpcReddTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov052_0225a870();
-    virtual ~Unk_ov052_0225a870();
+    SpNpcReddTalk();
+    virtual ~SpNpcReddTalk();
     virtual void vfunc_08();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov052_022595dc_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
 
-    s32 func_ov052_02259a88();
-    void func_ov052_02259a90(s32 v);
-    void func_ov052_02259a98(s32 v);
-    void func_ov052_02259274();
+    s32 getTopic();
+    void setTopic(s32 v);
+    void attachOwner(s32 v);
+    void completePurchase();
 
     s32 unk_ac;
-    Unk_ov052_0225a900 *unk_b0;
+    SpNpcRedd *unk_b0;
     s32 unk_b4;
     s32 unk_b8;
     u8 unk_bc;
@@ -412,9 +412,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov052_0225a900 : public Unk_020d8bc8 {
+class SpNpcRedd : public Unk_020d8bc8 {
 public:
-    Unk_ov052_0225a900() : unk_71a(0xfff1), unk_724(0), unk_728(0) {}
+    SpNpcRedd() : unk_71a(0xfff1), unk_724(0), unk_728(0) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -424,36 +424,36 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov052_02258e60();
-    BOOL func_ov052_02258eac();
-    BOOL func_ov052_02258f14();
-    BOOL func_ov052_02258f34();
-    BOOL func_ov052_02259b70();
-    BOOL func_ov052_02259bb4();
-    BOOL func_ov052_02259c04();
-    BOOL func_ov052_02259d1c();
-    BOOL func_ov052_02259d5c();
-    BOOL func_ov052_02259d60();
-    BOOL func_ov052_02259d64();
-    BOOL func_ov052_02259d68();
-    BOOL func_ov052_02259d6c();
-    BOOL func_ov052_02259db0();
-    BOOL func_ov052_02259de8();
-    BOOL func_ov052_02259e30();
-    BOOL func_ov052_02259e68();
-    BOOL func_ov052_02259f68();
-    BOOL func_ov052_02259f9c();
-    BOOL func_ov052_0225a09c();
-    BOOL func_ov052_0225a0d0();
-    BOOL func_ov052_0225a198();
-    BOOL func_ov052_0225a1cc();
-    BOOL func_ov052_0225a26c();
-    BOOL func_ov052_0225a29c();
-    BOOL func_ov052_0225a2b0();
-    void func_ov052_0225a2cc(s32 state);
+    BOOL tryClosingTimeTalk();
+    BOOL tryFarewellTalk();
+    BOOL tryItemTalk();
+    BOOL pickDisplayItem();
+    BOOL mainAct0A();
+    BOOL setupAct0A();
+    BOOL mainAct09();
+    BOOL setupAct09();
+    BOOL mainAct08();
+    BOOL setupAct08();
+    BOOL mainAct07();
+    BOOL setupAct07();
+    BOOL mainAct06();
+    BOOL setupAct06();
+    BOOL mainAct05();
+    BOOL setupAct05();
+    BOOL mainAct04();
+    BOOL setupAct04();
+    BOOL mainAct03();
+    BOOL setupAct03();
+    BOOL mainAct02();
+    BOOL setupAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
-    Unk_ov052_0225a870 unk_658;
+    SpNpcReddTalk unk_658;
     u16 unk_718;
     u16 unk_71a;
     ItemId unk_71c[3];
@@ -467,12 +467,12 @@ public:
 };
 
 struct Unk_ov052_0225a2cc_Ent {
-    BOOL (Unk_ov052_0225a900::*enter)();
-    BOOL (Unk_ov052_0225a900::*exit)();
+    BOOL (SpNpcRedd::*enter)();
+    BOOL (SpNpcRedd::*exit)();
 };
 
 struct Unk_ov052_SceneEntry {
-    Unk_ov052_0225a900 *(*factory)();
+    SpNpcRedd *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
@@ -484,17 +484,17 @@ struct Unk_ov052_MsgRow {
 };
 
 extern "C" {
-extern char data_ov052_0225a810[];
-extern const Unk_ov052_MsgRow data_ov052_0225a5a4[13];
-extern Unk_ov052_0225a2cc_Ent data_ov052_0225a9c0[11];
-#define MSG_ID(i) (((u8 (*)[8])((u8 *)data_ov052_0225a5a4 + 4))[i][0])
-extern u8 data_ov052_0225a81c[];
-extern u8 data_ov052_0225a84c[];
-extern Unk_ov052_SceneEntry data_ov052_0225a834;
-Unk_ov052_0225a900 *func_ov052_0225a450();
-BOOL func_ov052_02259a18(void *self);
-s32 func_ov052_02259b1c(void *self, u8 *buf, s32 n);
-s32 func_ov052_02259b50(void *self, u8 *buf, s32 n);
+extern char sSpNpcReddKey[];
+extern const Unk_ov052_MsgRow sSpNpcReddTopicMsgs[13];
+extern Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11];
+#define MSG_ID(i) (((u8 (*)[8])((u8 *)sSpNpcReddTopicMsgs + 4))[i][0])
+extern u8 sSpNpcReddModelPath[];
+extern u8 sSpNpcReddTexturePath[];
+extern Unk_ov052_SceneEntry sSpNpcReddProfile;
+SpNpcRedd *SpNpcRedd_Create();
+BOOL SpNpcRedd_IsSoldOut(void *self);
+s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n);
+s32 SpNpcRedd_CountUnusedFlags(void *self, u8 *buf, s32 n);
 }
 
 static inline BOOL Unk_ov052_022595dc_Eq(u16 *p, u16 *k) {
@@ -545,16 +545,16 @@ static inline BOOL Unk_ov052_02258f34_Eq(u16 *p, u16 *k) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-Unk_ov052_0225a900 *func_ov052_0225a450() {
-    return new Unk_ov052_0225a900();
+SpNpcRedd *SpNpcRedd_Create() {
+    return new SpNpcRedd();
 }
 
-BOOL Unk_ov052_0225a900::vfunc_04() {
+BOOL SpNpcRedd::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov052_02259a98((s32)this);
+    unk_658.attachOwner((s32)this);
     unk_718 = data_020c6cc8;
     MI_CpuFill8(unk_72f, 0, 5);
     MI_CpuFill8(unk_734, 0, 5);
@@ -562,14 +562,14 @@ BOOL Unk_ov052_0225a900::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::vfunc_00() {
+BOOL SpNpcRedd::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
     if (func_020b50dc()) {
-        func_ov052_0225a2cc(1);
+        changeAct(1);
     } else {
-        func_ov052_0225a2cc(0);
+        changeAct(0);
     }
     func_0202ffb0(0);
     unk_71a = 0xfff1;
@@ -579,45 +579,45 @@ BOOL Unk_ov052_0225a900::vfunc_00() {
     return TRUE;
 }
 
-u8 *Unk_ov052_0225a900::getTexturePath() { return data_ov052_0225a84c; }
+u8 *SpNpcRedd::getTexturePath() { return sSpNpcReddTexturePath; }
 
-u8 *Unk_ov052_0225a900::getModelPath() { return data_ov052_0225a81c; }
+u8 *SpNpcRedd::getModelPath() { return sSpNpcReddModelPath; }
 
-BOOL Unk_ov052_0225a900::updateAct() {
+BOOL SpNpcRedd::updateAct() {
     BOOL r = FALSE;
-    if (data_ov052_0225a9c0[unk_654].exit != NULL) {
-        r = (this->*data_ov052_0225a9c0[unk_654].exit)();
+    if (sSpNpcReddActTable[unk_654].exit != NULL) {
+        r = (this->*sSpNpcReddActTable[unk_654].exit)();
     }
     return r;
 }
 
-void Unk_ov052_0225a900::func_ov052_0225a2cc(s32 state) {
+void SpNpcRedd::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov052_0225a9c0[state].enter) {
-        ok = (this->*data_ov052_0225a9c0[state].enter)();
+    if (sSpNpcReddActTable[state].enter) {
+        ok = (this->*sSpNpcReddActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a2b0() {
-    unk_658.func_ov052_02259a90(0);
+BOOL SpNpcRedd::setupAct00() {
+    unk_658.setTopic(0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a29c() {
+BOOL SpNpcRedd::mainAct00() {
     TalkRequest_AddPlayerTalk6(this, 0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a26c() {
+BOOL SpNpcRedd::setupAct01() {
     _ZN12Unk_0201985813func_02019614Ejt(&unk_564, 1, unk_718);
     unk_718 = data_020c6cc8;
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a1cc() {
+BOOL SpNpcRedd::mainAct01() {
     Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
@@ -629,33 +629,33 @@ BOOL Unk_ov052_0225a900::func_ov052_0225a1cc() {
     Unk_ov052_Vec out;
     func_0201ae00(&out, this, &v);
     if (r6 > 0x3000 && func_020e96ec(&out, &unk_5c)) {
-        func_ov052_0225a2cc(3);
+        changeAct(3);
     } else if (r4 > 0x2000) {
-        func_ov052_0225a2cc(2);
+        changeAct(2);
     }
-    if (func_ov052_02258eac()) {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258e60()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    func_ov052_02258f14();
+    tryItemTalk();
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a198() {
+BOOL SpNpcRedd::setupAct02() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a0d0() {
-    if (func_ov052_02258eac()) {
+BOOL SpNpcRedd::mainAct02() {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258e60()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258f14()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
     Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
@@ -670,32 +670,32 @@ BOOL Unk_ov052_0225a900::func_ov052_0225a0d0() {
     func_0201ae00(&out, this, &v);
     if (r6 > 0x3000) {
         if (func_020e96ec(&out, &unk_5c)) {
-            func_ov052_0225a2cc(3);
+            changeAct(3);
             return TRUE;
         }
     }
     _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, r4);
     if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 3) {
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
-            func_ov052_0225a2cc(1);
+            changeAct(1);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_0225a09c() {
+BOOL SpNpcRedd::setupAct03() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259f9c() {
-    if (func_ov052_02258eac()) {
+BOOL SpNpcRedd::mainAct03() {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258e60()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258f14()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
     Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
@@ -717,24 +717,24 @@ BOOL Unk_ov052_0225a900::func_ov052_02259f9c() {
     }
     _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(&unk_350, &out);
     if (t <= 0x3000 || func_020e972c(&out, &unk_5c) != 0) {
-        func_ov052_0225a2cc(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259f68() {
+BOOL SpNpcRedd::setupAct04() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259e68() {
-    if (func_ov052_02258eac()) {
+BOOL SpNpcRedd::mainAct04() {
+    if (tryFarewellTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258e60()) {
+    if (tryClosingTimeTalk()) {
         return TRUE;
     }
-    if (func_ov052_02258f14()) {
+    if (tryItemTalk()) {
         return TRUE;
     }
     Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
@@ -756,12 +756,12 @@ BOOL Unk_ov052_0225a900::func_ov052_02259e68() {
     }
     _ZN12Unk_0201a8c413func_0201a9ecEP17Unk_0201a334_Vec3(&unk_350, &out);
     if (t <= 0x3000 || func_020e972c(&out, &unk_5c) != 0) {
-        func_ov052_0225a2cc(1);
+        changeAct(1);
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259e30() {
+BOOL SpNpcRedd::setupAct05() {
     void *p = unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
@@ -771,7 +771,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02259e30() {
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259de8() {
+BOOL SpNpcRedd::mainAct05() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618)) {
         return TRUE;
     }
@@ -779,11 +779,11 @@ BOOL Unk_ov052_0225a900::func_ov052_02259de8() {
         return TRUE;
     }
     TalkRequest_EndTalkWith(this);
-    func_ov052_0225a2cc(7);
+    changeAct(7);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259db0() {
+BOOL SpNpcRedd::setupAct06() {
     void *p = unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
@@ -793,7 +793,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02259db0() {
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d6c() {
+BOOL SpNpcRedd::mainAct06() {
     Unk_ov052_02259d6c_Vec *pv = (Unk_ov052_02259d6c_Vec *)func_020947f0(4);
     Unk_ov052_02259d6c_Vec v;
     v.x = pv->x;
@@ -801,26 +801,26 @@ BOOL Unk_ov052_0225a900::func_ov052_02259d6c() {
     v.z = pv->z;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         func_020b4bbc(func_020b4934(), 0);
-        func_ov052_0225a2cc(7);
+        changeAct(7);
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d68() { return TRUE; }
+BOOL SpNpcRedd::setupAct07() { return TRUE; }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d64() { return TRUE; }
+BOOL SpNpcRedd::mainAct07() { return TRUE; }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d60() { return TRUE; }
+BOOL SpNpcRedd::setupAct08() { return TRUE; }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d5c() { return TRUE; }
+BOOL SpNpcRedd::mainAct08() { return TRUE; }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259d1c() {
+BOOL SpNpcRedd::setupAct09() {
     unk_72d = 0x32;
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259c04() {
+BOOL SpNpcRedd::mainAct09() {
     Unk_ov052_Vec *pv = (Unk_ov052_Vec *)func_020947f0(4);
     Unk_ov052_Vec v;
     v.x = pv->x;
@@ -843,18 +843,18 @@ BOOL Unk_ov052_0225a900::func_ov052_02259c04() {
     if (t <= 0x3000 || func_020e972c(&out, &unk_5c) != 0 || func_020e7518(&unk_72d) == 0) {
         unk_658.vfunc_08();
         unk_658.func_02015ab0(getPlayerActor(4));
-        func_ov052_0225a2cc(5);
+        changeAct(5);
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259bb4() {
+BOOL SpNpcRedd::setupAct0A() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     _ZN12Unk_0201a8c413func_0201a99cEs(&unk_350, getAngleToPlayer(4));
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02259b70() {
+BOOL SpNpcRedd::mainAct0A() {
     if (_ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 3) {
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
             _ZN12Unk_0201985813func_02019614Ejt(&unk_564, 1, unk_718);
@@ -864,7 +864,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02259b70() {
     return TRUE;
 }
 
-extern "C" s32 func_ov052_02259b50(void *self, u8 *buf, s32 n) {
+extern "C" s32 SpNpcRedd_CountUnusedFlags(void *self, u8 *buf, s32 n) {
     s32 c = 0;
     s32 i;
     for (i = 0; i < n; buf++, i++) {
@@ -875,9 +875,9 @@ extern "C" s32 func_ov052_02259b50(void *self, u8 *buf, s32 n) {
     return c;
 }
 
-extern "C" s32 func_ov052_02259b1c(void *self, u8 *buf, s32 n) {
+extern "C" s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n) {
     s32 k, i;
-    s32 cnt = func_ov052_02259b50(self, buf, n);
+    s32 cnt = SpNpcRedd_CountUnusedFlags(self, buf, n);
     s32 r = 0;
     k = func_02063b8c(cnt);
     for (i = r; i < n; buf++, i++) {
@@ -892,24 +892,24 @@ extern "C" s32 func_ov052_02259b1c(void *self, u8 *buf, s32 n) {
     return r;
 }
 
-Unk_ov052_0225a870::Unk_ov052_0225a870() {}
+SpNpcReddTalk::SpNpcReddTalk() {}
 
-Unk_ov052_0225a870::~Unk_ov052_0225a870() {}
+SpNpcReddTalk::~SpNpcReddTalk() {}
 
-void Unk_ov052_0225a870::vfunc_08() { ActorTalkRequest::vfunc_08(); }
+void SpNpcReddTalk::vfunc_08() { ActorTalkRequest::vfunc_08(); }
 
-void Unk_ov052_0225a870::func_ov052_02259a98(s32 v) {
+void SpNpcReddTalk::attachOwner(s32 v) {
     vfunc_08();
-    unk_b0 = (Unk_ov052_0225a900 *)v;
+    unk_b0 = (SpNpcRedd *)v;
     unk_b8 = -1;
     unk_bc = 0;
 }
 
-void Unk_ov052_0225a870::func_ov052_02259a90(s32 v) { unk_ac = v; }
+void SpNpcReddTalk::setTopic(s32 v) { unk_ac = v; }
 
-s32 Unk_ov052_0225a870::func_ov052_02259a88() { return unk_ac; }
+s32 SpNpcReddTalk::getTopic() { return unk_ac; }
 
-extern "C" BOOL func_ov052_02259a18(void *self) {
+extern "C" BOOL SpNpcRedd_IsSoldOut(void *self) {
     s32 i;
     for (i = 0; (u32)i < 3; i++) {
         u16 *p = func_020acfa8(data_021ed2c0, i, 0);
@@ -927,12 +927,12 @@ extern "C" BOOL func_ov052_02259a18(void *self) {
     return TRUE;
 }
 
-void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
+void SpNpcReddTalk::vfunc_78(TalkStartMsg *out) {
     u16 x, b, c, k1, k4, k2, k3;
     void *h = PlayerData_GetCurrent();
     if (unk_ac == 0xc) {
         out->unk_04 = MSG_ID(unk_ac);
-        out->unk_00 = (char *)data_ov052_0225a5a4[unk_ac].name;
+        out->unk_00 = (char *)sSpNpcReddTopicMsgs[unk_ac].name;
         return;
     }
     if (unk_ac != 0 && unk_ac != 1 && unk_ac != 2) {
@@ -945,7 +945,7 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
                 }
                 if (unk_b8 >= 0) {
                     unk_ac = 5;
-                } else if (func_ov052_02259a18(this)) {
+                } else if (SpNpcRedd_IsSoldOut(this)) {
                     unk_ac = 6;
                 } else if (func_0202e1cc(1, 1) == 0) {
                     unk_ac = 7;
@@ -1001,12 +1001,12 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
                 }
             }
             if (out->unk_04 != 0x1d) {
-                s32 idx = func_ov052_02259b1c(unk_b0, unk_b0->unk_72f, 5);
+                s32 idx = SpNpcRedd_PickUnusedFlag(unk_b0, unk_b0->unk_72f, 5);
                 if (unk_b0->unk_72f[idx] == 0) {
                     unk_b0->unk_72f[idx] = 1;
                     *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
                 }
-                if (func_ov052_02259b50(unk_b0, unk_b0->unk_72f, 5) == 0) {
+                if (SpNpcRedd_CountUnusedFlags(unk_b0, unk_b0->unk_72f, 5) == 0) {
                     MI_CpuFill8(unk_b0->unk_72f, 0, 5);
                     unk_b0->unk_72f[idx] = 1;
                     *(u16 *)((u8 *)unk_b0 + 0x71c + hit * 2) = unk_b0->unk_71a;
@@ -1015,11 +1015,11 @@ void Unk_ov052_0225a870::vfunc_78(Unk_ov052_022595dc_Out *out) {
             }
         }
     }
-    out->unk_00 = (char *)data_ov052_0225a5a4[unk_ac].name;
+    out->unk_00 = (char *)sSpNpcReddTopicMsgs[unk_ac].name;
 }
 
-void Unk_ov052_0225a870::vfunc_14() {
-    char *tbl = data_ov052_0225a810;
+void SpNpcReddTalk::vfunc_14() {
+    char *tbl = sSpNpcReddKey;
     u32 msg = 0xff;
     u16 v[4];
     void *h = PlayerData_GetCurrent();
@@ -1035,13 +1035,13 @@ void Unk_ov052_0225a870::vfunc_14() {
         break;
     case 6:
         if (_ZN12Unk_02097ff413func_02098044Ej(h, 0xc) == 0) {
-            func_ov052_02259a90(3);
+            setTopic(3);
         } else {
-            func_ov052_02259a90(10);
+            setTopic(10);
         }
         break;
     case 7:
-        func_ov052_02259a90(4);
+        setTopic(4);
         break;
     case 0x10:
         v[3] = 0x149d;
@@ -1049,7 +1049,7 @@ void Unk_ov052_0225a870::vfunc_14() {
         unk_b0->unk_71a = 0xfff1;
         msg = 0x11;
         NpcActor_ChargePlayer(unk_b0, 0xbb8);
-        func_ov052_02259a90(7);
+        setTopic(7);
         _ZN12Unk_02097ff413func_0209801cEj(h, 0xc);
         func_0202e1cc(1, 1);
         break;
@@ -1058,7 +1058,7 @@ void Unk_ov052_0225a870::vfunc_14() {
     case 0x26:
     case 0x27:
     case 0x28:
-        func_ov052_02259274();
+        completePurchase();
         break;
     }
     if (msg != 0xff) {
@@ -1067,9 +1067,9 @@ void Unk_ov052_0225a870::vfunc_14() {
     }
 }
 
-void Unk_ov052_0225a870::vfunc_18() {
+void SpNpcReddTalk::vfunc_18() {
     s32 t = getChoiceList()->getResult();
-    char *tbl = data_ov052_0225a810;
+    char *tbl = sSpNpcReddKey;
     u32 msg = 0xff;
     u16 v[2];
     switch (unk_1e) {
@@ -1110,9 +1110,9 @@ void Unk_ov052_0225a870::vfunc_18() {
         if (t == 0) {
             if (NpcActor_CanPlayerPay(unk_b0, unk_b4) != 0) {
                 if (func_02098ffc() >= 0) {
-                    s32 idx = func_ov052_02259b1c(unk_b0, unk_b0->unk_734, 5);
+                    s32 idx = SpNpcRedd_PickUnusedFlag(unk_b0, unk_b0->unk_734, 5);
                     unk_b0->unk_734[idx] = 1;
-                    if (func_ov052_02259b50(unk_b0, unk_b0->unk_734, 5) == 0) {
+                    if (SpNpcRedd_CountUnusedFlags(unk_b0, unk_b0->unk_734, 5) == 0) {
                         MI_CpuFill8(unk_b0->unk_734, 0, 5);
                         unk_b0->unk_734[idx] = 1;
                     }
@@ -1133,7 +1133,7 @@ void Unk_ov052_0225a870::vfunc_18() {
     }
 }
 
-void Unk_ov052_0225a870::func_ov052_02259274() {
+void SpNpcReddTalk::completePurchase() {
     NpcActor_ChargePlayer(unk_b0, unk_b4);
     func_02099014(&unk_b0->unk_71a, 0);
     func_020ac894(unk_b0->unk_724, unk_b0->unk_728, 0xf);
@@ -1145,57 +1145,57 @@ void Unk_ov052_0225a870::func_ov052_02259274() {
     unk_b0->unk_72e = 1;
 }
 
-BOOL Unk_ov052_0225a900::vfunc_48() {
-    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0 || func_ov052_02258f14() != 0) {
+BOOL SpNpcRedd::vfunc_48() {
+    if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0 || tryItemTalk() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::vfunc_58() {
+BOOL SpNpcRedd::vfunc_58() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) != 0 || func_0201b9bc() != 0) {
         return FALSE;
     }
     return TRUE;
 }
 
-void Unk_ov052_0225a900::vfunc_4c(u32 cmd, u32 arg) {
+void SpNpcRedd::vfunc_4c(u32 cmd, u32 arg) {
     unk_558.unk_08 = arg;
     switch (cmd) {
     case 3:
-        func_ov052_0225a2cc(8);
+        changeAct(8);
         break;
     case 1:
         unk_658.vfunc_08();
         unk_658.func_02015ab0(getPlayerActor(4));
-        if (unk_658.func_ov052_02259a88() == 0) {
-            func_ov052_0225a2cc(5);
-        } else if (unk_658.func_ov052_02259a88() == 1 || unk_658.func_ov052_02259a88() == 2 ||
-                   unk_658.func_ov052_02259a88() == 0xc) {
-            func_ov052_0225a2cc(6);
+        if (unk_658.getTopic() == 0) {
+            changeAct(5);
+        } else if (unk_658.getTopic() == 1 || unk_658.getTopic() == 2 ||
+                   unk_658.getTopic() == 0xc) {
+            changeAct(6);
         } else {
-            func_ov052_0225a2cc(9);
+            changeAct(9);
         }
         break;
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0(getPlayerActor(4));
-        func_ov052_0225a2cc(5);
+        changeAct(5);
         break;
     case 8:
-        if (unk_658.func_ov052_02259a88() == 1 || unk_658.func_ov052_02259a88() == 2) {
+        if (unk_658.getTopic() == 1 || unk_658.getTopic() == 2) {
             Unk_ov052_Vec v;
             Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
             v = *src;
             if (func_0202ff64(&v)) {
                 func_0202ff44();
             } else {
-                func_ov052_0225a2cc(1);
+                changeAct(1);
             }
-        } else if (unk_658.func_ov052_02259a88() == 0xc) {
+        } else if (unk_658.getTopic() == 0xc) {
             func_020b4bbc(func_020b4934(), 0);
         } else {
-            func_ov052_0225a2cc(1);
+            changeAct(1);
         }
         break;
     case 2:
@@ -1207,7 +1207,7 @@ void Unk_ov052_0225a900::vfunc_4c(u32 cmd, u32 arg) {
     }
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02258f34() {
+BOOL SpNpcRedd::pickDisplayItem() {
     u16 t[2];
     s32 bx, by;
     Unk_ov052_Vec v;
@@ -1254,32 +1254,32 @@ BOOL Unk_ov052_0225a900::func_ov052_02258f34() {
     return TRUE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02258f14() {
-    if (func_ov052_02258f34()) {
+BOOL SpNpcRedd::tryItemTalk() {
+    if (pickDisplayItem()) {
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02258eac() {
+BOOL SpNpcRedd::tryFarewellTalk() {
     Unk_ov052_02258eac_Loc v;
     Unk_ov052_Vec *src = (Unk_ov052_Vec *)func_020947f0(4);
     *(Unk_ov052_Vec *)&v = *src;
     if (func_0202ff64(&v)) {
         if (unk_72e == 0) {
-            unk_658.func_ov052_02259a90(1);
+            unk_658.setTopic(1);
         } else {
-            unk_658.func_ov052_02259a90(2);
+            unk_658.setTopic(2);
         }
         TalkRequest_AddPlayerTalk6(this, 0);
-        func_ov052_0225a2cc(0xa);
+        changeAct(0xa);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov052_0225a900::func_ov052_02258e60() {
+BOOL SpNpcRedd::tryClosingTimeTalk() {
     if (TalkRequest_IsActive()) {
         return FALSE;
     }
@@ -1288,7 +1288,7 @@ BOOL Unk_ov052_0225a900::func_ov052_02258e60() {
     buf[1] = 0;
     Clock_GetDateTime(buf);
     if (((u8 *)buf)[2] < 6) {
-        unk_658.func_ov052_02259a90(0xc);
+        unk_658.setTopic(0xc);
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }
@@ -1296,65 +1296,65 @@ BOOL Unk_ov052_0225a900::func_ov052_02258e60() {
 }
 
 // Data
-extern "C" char data_ov052_0225a810[] = "sp_npc_fox";
-extern "C" u8 data_ov052_0225a81c[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '.', 'n', 's', 'b', 'm', 'd', 0};
-extern "C" u8 data_ov052_0225a84c[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" Unk_ov052_SceneEntry data_ov052_0225a834 = {func_ov052_0225a450, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" char sSpNpcReddKey[] = "sp_npc_fox";
+extern "C" u8 sSpNpcReddModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcReddTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 'f', 'o', 'x', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" Unk_ov052_SceneEntry sSpNpcReddProfile = {SpNpcRedd_Create, 0x55, 0x5c, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" const Unk_ov052_MsgRow data_ov052_0225a5a4[13] = {
-    {data_ov052_0225a810, 0x06, {0, 0, 0}}, {data_ov052_0225a810, 0x1c, {0, 0, 0}}, {data_ov052_0225a810, 0x1b, {0, 0, 0}},
-    {data_ov052_0225a810, 0x07, {0, 0, 0}}, {data_ov052_0225a810, 0x12, {0, 0, 0}}, {data_ov052_0225a810, 0x2c, {0, 0, 0}},
-    {data_ov052_0225a810, 0x1a, {0, 0, 0}}, {data_ov052_0225a810, 0x14, {0, 0, 0}}, {data_ov052_0225a810, 0x16, {0, 0, 0}},
-    {data_ov052_0225a810, 0x15, {0, 0, 0}}, {data_ov052_0225a810, 0x17, {0, 0, 0}}, {data_ov052_0225a810, 0x1e, {0, 0, 0}},
-    {data_ov052_0225a810, 0x33, {0, 0, 0}},
+extern "C" const Unk_ov052_MsgRow sSpNpcReddTopicMsgs[13] = {
+    {sSpNpcReddKey, 0x06, {0, 0, 0}}, {sSpNpcReddKey, 0x1c, {0, 0, 0}}, {sSpNpcReddKey, 0x1b, {0, 0, 0}},
+    {sSpNpcReddKey, 0x07, {0, 0, 0}}, {sSpNpcReddKey, 0x12, {0, 0, 0}}, {sSpNpcReddKey, 0x2c, {0, 0, 0}},
+    {sSpNpcReddKey, 0x1a, {0, 0, 0}}, {sSpNpcReddKey, 0x14, {0, 0, 0}}, {sSpNpcReddKey, 0x16, {0, 0, 0}},
+    {sSpNpcReddKey, 0x15, {0, 0, 0}}, {sSpNpcReddKey, 0x17, {0, 0, 0}}, {sSpNpcReddKey, 0x1e, {0, 0, 0}},
+    {sSpNpcReddKey, 0x33, {0, 0, 0}},
 };
 
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259b70Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259bb4Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259c04Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d1cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d5cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d60Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d64Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d68Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259d6cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259db0Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259de8Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259e30Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259e68Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259f68Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_02259f9cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a09cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a0d0Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a198Ev();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a1ccEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a26cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a29cEv();
-extern "C" void _ZN18Unk_ov052_0225a90019func_ov052_0225a2b0Ev();
-extern "C" void *data_ov052_0225a788[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259db0Ev, 0};
-extern "C" void *data_ov052_0225a768[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a29cEv, 0};
-extern "C" void *data_ov052_0225a808[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a198Ev, 0};
-extern "C" void *data_ov052_0225a800[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a1ccEv, 0};
-extern "C" void *data_ov052_0225a7f8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a09cEv, 0};
-extern "C" void *data_ov052_0225a7f0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259f9cEv, 0};
-extern "C" void *data_ov052_0225a7e8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259f68Ev, 0};
-extern "C" void *data_ov052_0225a7e0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259e68Ev, 0};
-extern "C" void *data_ov052_0225a7d8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259e30Ev, 0};
-extern "C" void *data_ov052_0225a7d0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259de8Ev, 0};
-extern "C" void *data_ov052_0225a7b8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d68Ev, 0};
-extern "C" void *data_ov052_0225a7c0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259b70Ev, 0};
-extern "C" void *data_ov052_0225a7c8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a26cEv, 0};
-extern "C" void *data_ov052_0225a7b0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d64Ev, 0};
-extern "C" void *data_ov052_0225a7a8[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d60Ev, 0};
-extern "C" void *data_ov052_0225a7a0[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a0d0Ev, 0};
-extern "C" void *data_ov052_0225a798[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d1cEv, 0};
-extern "C" void *data_ov052_0225a790[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259c04Ev, 0};
-extern "C" void *data_ov052_0225a760[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_0225a2b0Ev, 0};
-extern "C" void *data_ov052_0225a780[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259bb4Ev, 0};
-extern "C" void *data_ov052_0225a778[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d6cEv, 0};
-extern "C" void *data_ov052_0225a770[2] = {(void *)_ZN18Unk_ov052_0225a90019func_ov052_02259d5cEv, 0};
-typedef BOOL (Unk_ov052_0225a900::*Unk_ov052_Fn)();
-extern "C" Unk_ov052_0225a2cc_Ent data_ov052_0225a9c0[11] = {
+extern "C" void _ZN9SpNpcRedd9mainAct0AEv();
+extern "C" void _ZN9SpNpcRedd10setupAct0AEv();
+extern "C" void _ZN9SpNpcRedd9mainAct09Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct09Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct08Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct08Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct07Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct07Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct06Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct06Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct05Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct05Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct04Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct04Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct03Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct03Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct02Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct02Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct01Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct01Ev();
+extern "C" void _ZN9SpNpcRedd9mainAct00Ev();
+extern "C" void _ZN9SpNpcRedd10setupAct00Ev();
+extern "C" void *data_ov052_0225a788[2] = {(void *)_ZN9SpNpcRedd10setupAct06Ev, 0};
+extern "C" void *data_ov052_0225a768[2] = {(void *)_ZN9SpNpcRedd9mainAct00Ev, 0};
+extern "C" void *data_ov052_0225a808[2] = {(void *)_ZN9SpNpcRedd10setupAct02Ev, 0};
+extern "C" void *data_ov052_0225a800[2] = {(void *)_ZN9SpNpcRedd9mainAct01Ev, 0};
+extern "C" void *data_ov052_0225a7f8[2] = {(void *)_ZN9SpNpcRedd10setupAct03Ev, 0};
+extern "C" void *data_ov052_0225a7f0[2] = {(void *)_ZN9SpNpcRedd9mainAct03Ev, 0};
+extern "C" void *data_ov052_0225a7e8[2] = {(void *)_ZN9SpNpcRedd10setupAct04Ev, 0};
+extern "C" void *data_ov052_0225a7e0[2] = {(void *)_ZN9SpNpcRedd9mainAct04Ev, 0};
+extern "C" void *data_ov052_0225a7d8[2] = {(void *)_ZN9SpNpcRedd10setupAct05Ev, 0};
+extern "C" void *data_ov052_0225a7d0[2] = {(void *)_ZN9SpNpcRedd9mainAct05Ev, 0};
+extern "C" void *data_ov052_0225a7b8[2] = {(void *)_ZN9SpNpcRedd10setupAct07Ev, 0};
+extern "C" void *data_ov052_0225a7c0[2] = {(void *)_ZN9SpNpcRedd9mainAct0AEv, 0};
+extern "C" void *data_ov052_0225a7c8[2] = {(void *)_ZN9SpNpcRedd10setupAct01Ev, 0};
+extern "C" void *data_ov052_0225a7b0[2] = {(void *)_ZN9SpNpcRedd9mainAct07Ev, 0};
+extern "C" void *data_ov052_0225a7a8[2] = {(void *)_ZN9SpNpcRedd10setupAct08Ev, 0};
+extern "C" void *data_ov052_0225a7a0[2] = {(void *)_ZN9SpNpcRedd9mainAct02Ev, 0};
+extern "C" void *data_ov052_0225a798[2] = {(void *)_ZN9SpNpcRedd10setupAct09Ev, 0};
+extern "C" void *data_ov052_0225a790[2] = {(void *)_ZN9SpNpcRedd9mainAct09Ev, 0};
+extern "C" void *data_ov052_0225a760[2] = {(void *)_ZN9SpNpcRedd10setupAct00Ev, 0};
+extern "C" void *data_ov052_0225a780[2] = {(void *)_ZN9SpNpcRedd10setupAct0AEv, 0};
+extern "C" void *data_ov052_0225a778[2] = {(void *)_ZN9SpNpcRedd9mainAct06Ev, 0};
+extern "C" void *data_ov052_0225a770[2] = {(void *)_ZN9SpNpcRedd9mainAct08Ev, 0};
+typedef BOOL (SpNpcRedd::*Unk_ov052_Fn)();
+extern "C" Unk_ov052_0225a2cc_Ent sSpNpcReddActTable[11] = {
     {*(Unk_ov052_Fn *)data_ov052_0225a760, *(Unk_ov052_Fn *)data_ov052_0225a768},
     {*(Unk_ov052_Fn *)data_ov052_0225a7c8, *(Unk_ov052_Fn *)data_ov052_0225a800},
     {*(Unk_ov052_Fn *)data_ov052_0225a808, *(Unk_ov052_Fn *)data_ov052_0225a7a0},

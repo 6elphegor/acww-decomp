@@ -8,18 +8,18 @@ typedef volatile u16 vu16;
 extern "C" {
 s32 PM_SetLCDPower(u32 a);
 
-void func_ov001_02225ea0();
+void WfcUtil_UpdateLidPower();
 
-u8 data_ov001_0222df4c;
+u8 sWfcLcdOff;
 }
 
-void func_ov001_02225ea0() {
-    if (data_ov001_0222df4c != 0) {
+void WfcUtil_UpdateLidPower() {
+    if (sWfcLcdOff != 0) {
         if (((*(vu16 *)0x27fffa8 & 0x8000) >> 15) != 0) return;
-        if (PM_SetLCDPower(1) != 0) data_ov001_0222df4c = 0;
+        if (PM_SetLCDPower(1) != 0) sWfcLcdOff = 0;
     } else {
         if (((*(vu16 *)0x27fffa8 & 0x8000) >> 15) == 0) return;
-        if (PM_SetLCDPower(0) != 0) data_ov001_0222df4c = 1;
+        if (PM_SetLCDPower(0) != 0) sWfcLcdOff = 1;
     }
 }
 

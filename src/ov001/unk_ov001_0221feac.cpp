@@ -23,90 +23,90 @@ struct Unk_ov001_0222a3f8 {
 };
 
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a38c;
-extern "C" const u8 data_ov001_0222a390[8];
-extern "C" const u8 data_ov001_0222a398[8];
+extern "C" const u8 sWfcDialogFrameCells[8];
+extern "C" const u8 sWfcDialogButtonCounts[8];
 extern "C" const u16 data_ov001_0222a3a0[4];
 extern "C" const u8 data_ov001_0222a3a8[6][2];
-extern "C" const s8 data_ov001_0222a3b4[12];
-extern "C" const u8 data_ov001_0222a3c0[6][2];
+extern "C" const s8 sWfcDialogKeyButtons[12];
+extern "C" const u8 sWfcDialogButtonCells[6][2];
 extern "C" const u8 data_ov001_0222a3cc[20];
 extern "C" const u16 data_ov001_0222a3e0[12];
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a3f8[6];
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a410[6];
-extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a428[5][2];
-#define data_ov001_0222a3b5 (data_ov001_0222a3b4 + 1)
+extern "C" const Unk_ov001_0222a3f8 sWfcDialogButtonPos[5][2];
+#define data_ov001_0222a3b5 (sWfcDialogKeyButtons + 1)
 #define data_ov001_0222a3e2 (data_ov001_0222a3e0 + 1)
 #define data_ov001_0222a3fa ((const Unk_ov001_0222a3f8 *)((const u8 *)data_ov001_0222a3f8 + 2))
 #define data_ov001_0222a412 ((const Unk_ov001_0222a3f8 *)((const u8 *)data_ov001_0222a410 + 2))
-#define data_ov001_0222a42a ((const u16 (*)[4])((const u8 *)data_ov001_0222a428 + 2))
-extern "C" Unk_ov001_0222df04 *data_ov001_0222df04;
+#define data_ov001_0222a42a ((const u16 (*)[4])((const u8 *)sWfcDialogButtonPos + 2))
+extern "C" Unk_ov001_0222df04 *sWfcDialog;
 
 extern "C" {
-extern void *data_ov001_0222de1c[];
+extern void *gWfcMsgBank[];
 
-s32 func_ov001_022247cc(void *);
-void func_ov001_0222449c(void *, s32, s32 *, s32 *);
-void func_ov001_02224558(void *, s32, s32, s32);
-void func_ov001_022244d8(void *, s32, s32);
-void func_ov001_02224704(void *, s32, s32, s32);
-void func_ov001_022247e0(void *);
-void *func_ov001_022247d4(void *, s32);
-void func_ov001_02225718(void *);
-void func_ov001_02225958(s32, s32, s32, s32, void *);
-void func_ov001_02225ae8(s32, s32, const void *);
-void func_ov001_02226fdc(s32, s32);
-void func_ov001_02226ffc(s32, void *);
-void *func_ov001_02227094(s32, void *, s32, s32);
-void func_ov001_02225924(const void *, const void *, void *);
-s32 func_ov001_022260ac(void *);
-s32 func_ov001_022261cc(s32);
-void *func_ov001_02224b14(s32, s32, s32);
-void func_ov001_02224b9c(s32, s32, void *);
-void *func_ov001_02225db0(s32, s32);
-void func_ov001_02225d58(void *);
-void *func_ov001_02225748(s32, s32, s32, s32, void *, s32);
-void *func_ov001_02224870(s32, s32, s32);
-void *func_ov001_02208388();
-void func_ov001_02225254(void *, u32, u32, u32, u32, s32, void *, s32);
-void func_ov001_0222519c(void *, u32, u32, void *, s32);
-void func_ov001_0222597c(s32, s32, s32, s32);
-void *func_ov001_0220cbd0(void *, s32, s32, s32);
+s32 WfcObj_GetCount(void *);
+void WfcObj_GetPos(void *, s32, s32 *, s32 *);
+void WfcObj_SetPos(void *, s32, s32, s32);
+void WfcObj_SetPriority(void *, s32, s32);
+void WfcObj_SetAffineMode(void *, s32, s32, s32);
+void WfcObj_Free(void *);
+void *WfcObj_GetOam(void *, s32);
+void WfcText_DestroyObjCanvas(void *);
+void WfcUtil_SetRect(s32, s32, s32, s32, void *);
+void WfcGx_SetWindowRect(s32, s32, const void *);
+void WfcTask_RequestDelete(s32, s32);
+void WfcTask_SetFunc(s32, void *);
+void *WfcTask_Add(s32, void *, s32, s32);
+void WfcUtil_RectFromPosSize(const void *, const void *, void *);
+s32 WfcInput_IsTouchPressedIn(void *);
+s32 WfcInput_IsKeyPressed(s32);
+void *WfcObj_Create(s32, s32, s32);
+void WfcCell_Copy(s32, s32, void *);
+void *WfcHeap_AllocClear(s32, s32);
+void WfcHeap_FreeAndClear(void *);
+void *WfcText_CreateObjCanvas(s32, s32, s32, s32, void *, s32);
+void *WfcObj_Alloc(s32, s32, s32);
+void *WfcUtil_GetTextFlags();
+void WfcText_DrawTextRect(void *, u32, u32, u32, u32, s32, void *, s32);
+void WfcText_ArrangeObj(void *, u32, u32, void *, s32);
+void WfcGx_SetWindowPlanes(s32, s32, s32, s32);
+void *WfcMsg_GetStringWithDigit(void *, s32, s32, s32);
 void G2x_ChangeBlendBrightness_(u32, s32);
 void G2x_SetBlendBrightness_(u32, s32, s32);
 
-void func_ov001_0221feac(s32 a);
-void func_ov001_0221ff64(s32 a);
-void func_ov001_0221ffc8(s32 a);
-void func_ov001_02220064(s32 a);
-void func_ov001_022200b4(s32 i);
-void func_ov001_02220178(void *a, s32 b);
-void func_ov001_0222020c(s32 r);
-void func_ov001_022203c4(s32 r);
-void func_ov001_02220444(s32 r);
-void func_ov001_022205a4(s32 r);
-void func_ov001_02220690(s32 r);
-BOOL func_ov001_022206f8();
-s32 func_ov001_02220714();
-void func_ov001_02220728();
-void func_ov001_02220778(s32 a, s32 b, s32 c, s32 d, s32 e);
+void WfcDialog_DestroyTask(s32 a);
+void WfcDialog_UndimTask(s32 a);
+void WfcDialog_SlideOutTask(s32 a);
+void WfcDialog_CloseDelayTask(s32 a);
+void WfcDialog_PressButton(s32 i);
+void WfcDialog_ClipObj(void *a, s32 b);
+void WfcDialog_SetY(s32 r);
+void WfcDialog_AutoCloseTask(s32 r);
+void WfcDialog_InputTask(s32 r);
+void WfcDialog_SlideInTask(s32 r);
+void WfcDialog_DimTask(s32 r);
+BOOL WfcDialog_IsOpen();
+s32 WfcDialog_GetResult();
+void WfcDialog_Close();
+void WfcDialog_Open(s32 a, s32 b, s32 c, s32 d, s32 e);
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" const u8 data_ov001_0222a3c0[6][2];
+extern "C" const u8 sWfcDialogButtonCells[6][2];
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a38c;
-extern "C" const u8 data_ov001_0222a390[8];
-extern "C" Unk_ov001_0222df04 *data_ov001_0222df04;
-extern "C" const u8 data_ov001_0222a398[8];
+extern "C" const u8 sWfcDialogFrameCells[8];
+extern "C" Unk_ov001_0222df04 *sWfcDialog;
+extern "C" const u8 sWfcDialogButtonCounts[8];
 extern "C" const u16 data_ov001_0222a3a0[4];
 extern "C" const u8 data_ov001_0222a3a8[6][2];
 extern "C" const u8 data_ov001_0222a3cc[20];
 extern "C" const u16 data_ov001_0222a3e0[12];
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a3f8[6];
-extern "C" const s8 data_ov001_0222a3b4[12];
+extern "C" const s8 sWfcDialogKeyButtons[12];
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a410[6];
-extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a428[5][2];
+extern "C" const Unk_ov001_0222a3f8 sWfcDialogButtonPos[5][2];
 
-extern "C" const u8 data_ov001_0222a3c0[6][2] = {{0x1b, 0x19}, {0x57, 0}, {0x23, 0x1d}, {0x59, 0}, {0x23, 0x1d}, {0, 0}};
+extern "C" const u8 sWfcDialogButtonCells[6][2] = {{0x1b, 0x19}, {0x57, 0}, {0x23, 0x1d}, {0x59, 0}, {0x23, 0x1d}, {0, 0}};
 
-void func_ov001_02220778(s32 a, s32 b, s32 c, s32 d, s32 e)
+void WfcDialog_Open(s32 a, s32 b, s32 c, s32 d, s32 e)
 {
     u8 buf[6] = {1, 1, 0, 0, 1, 1};
     Unk_ov001_0222df04 *g;
@@ -114,151 +114,151 @@ void func_ov001_02220778(s32 a, s32 b, s32 c, s32 d, s32 e)
     void *out;
     s32 i;
 
-    v = func_ov001_0220cbd0(*data_ov001_0222de1c, a, d, e);
-    g = (Unk_ov001_0222df04 *)func_ov001_02225db0(0x20, 4);
-    data_ov001_0222df04 = g;
+    v = WfcMsg_GetStringWithDigit(*gWfcMsgBank, a, d, e);
+    g = (Unk_ov001_0222df04 *)WfcHeap_AllocClear(0x20, 4);
+    sWfcDialog = g;
     g->unk_1c = b;
-    data_ov001_0222df04->unk_1b = -2;
-    data_ov001_0222df04->unk_1e = c;
+    sWfcDialog->unk_1b = -2;
+    sWfcDialog->unk_1e = c;
     G2x_SetBlendBrightness_(0x4000050, 0x1f, 0);
-    data_ov001_0222df04->unk_00 = func_ov001_02224b14(0, data_ov001_0222a390[b], 0);
-    func_ov001_02224558(data_ov001_0222df04->unk_00, -1, 0x100, 0);
-    func_ov001_022244d8(data_ov001_0222df04->unk_00, -1, 0);
-    for (i = 0; i < data_ov001_0222a398[b]; i++) {
-        data_ov001_0222df04->unk_08[i] = func_ov001_02224b14(0, data_ov001_0222a3c0[b][i], 0);
-        func_ov001_02224558(data_ov001_0222df04->unk_08[i], -1, 0x100, 0);
-        func_ov001_022244d8(data_ov001_0222df04->unk_08[i], -1, 0);
+    sWfcDialog->unk_00 = WfcObj_Create(0, sWfcDialogFrameCells[b], 0);
+    WfcObj_SetPos(sWfcDialog->unk_00, -1, 0x100, 0);
+    WfcObj_SetPriority(sWfcDialog->unk_00, -1, 0);
+    for (i = 0; i < sWfcDialogButtonCounts[b]; i++) {
+        sWfcDialog->unk_08[i] = WfcObj_Create(0, sWfcDialogButtonCells[b][i], 0);
+        WfcObj_SetPos(sWfcDialog->unk_08[i], -1, 0x100, 0);
+        WfcObj_SetPriority(sWfcDialog->unk_08[i], -1, 0);
     }
-    data_ov001_0222df04->unk_10 = func_ov001_02225748(0, 0x20, 0xc, 1, &out, 0);
-    data_ov001_0222df04->unk_04 = func_ov001_02224870(0, (s32)out, 0);
-    func_ov001_02225254(data_ov001_0222df04->unk_10, 0, 0, data_ov001_0222a3e0[b * 2], data_ov001_0222a3e2[b * 2], 2, func_ov001_02208388(), (s32)v);
-    func_ov001_0222519c(data_ov001_0222df04->unk_10, 0x100, 0, data_ov001_0222df04->unk_04, 0);
-    func_ov001_0222597c(0, 0, 0x1f, 0);
-    func_ov001_0222597c(0, 1, 0x1f, buf[data_ov001_0222df04->unk_1c]);
-    func_ov001_0222597c(0, 3, 0x1f, 1);
-    func_ov001_02225ae8(0, 1, data_ov001_0222a3a0);
-    func_ov001_0222020c(0xc0);
+    sWfcDialog->unk_10 = WfcText_CreateObjCanvas(0, 0x20, 0xc, 1, &out, 0);
+    sWfcDialog->unk_04 = WfcObj_Alloc(0, (s32)out, 0);
+    WfcText_DrawTextRect(sWfcDialog->unk_10, 0, 0, data_ov001_0222a3e0[b * 2], data_ov001_0222a3e2[b * 2], 2, WfcUtil_GetTextFlags(), (s32)v);
+    WfcText_ArrangeObj(sWfcDialog->unk_10, 0x100, 0, sWfcDialog->unk_04, 0);
+    WfcGx_SetWindowPlanes(0, 0, 0x1f, 0);
+    WfcGx_SetWindowPlanes(0, 1, 0x1f, buf[sWfcDialog->unk_1c]);
+    WfcGx_SetWindowPlanes(0, 3, 0x1f, 1);
+    WfcGx_SetWindowRect(0, 1, data_ov001_0222a3a0);
+    WfcDialog_SetY(0xc0);
     {
         volatile u32 *reg = (volatile u32 *)0x4000000;
         *reg = (*reg & ~0xe000) | 0x6000;
     }
     if (c != 0) {
-        data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(1, (void *)func_ov001_02220690, 0, 0x78);
+        sWfcDialog->unk_14 = (u32)WfcTask_Add(1, (void *)WfcDialog_DimTask, 0, 0x78);
     } else {
-        data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(1, (void *)func_ov001_022205a4, 0, 0x78);
+        sWfcDialog->unk_14 = (u32)WfcTask_Add(1, (void *)WfcDialog_SlideInTask, 0, 0x78);
     }
 }
 
-void func_ov001_02220728()
+void WfcDialog_Close()
 {
-    func_ov001_02226fdc(0, data_ov001_0222df04->unk_14);
-    data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(1, (void *)func_ov001_02220064, 0, 0x78);
+    WfcTask_RequestDelete(0, sWfcDialog->unk_14);
+    sWfcDialog->unk_14 = (u32)WfcTask_Add(1, (void *)WfcDialog_CloseDelayTask, 0, 0x78);
 }
 
-s32 func_ov001_02220714()
+s32 WfcDialog_GetResult()
 {
-    return data_ov001_0222df04->unk_1b;
+    return sWfcDialog->unk_1b;
 }
 
-BOOL func_ov001_022206f8()
+BOOL WfcDialog_IsOpen()
 {
-    if (data_ov001_0222df04 != 0) {
+    if (sWfcDialog != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov001_02220690(s32 r)
+void WfcDialog_DimTask(s32 r)
 {
-    data_ov001_0222df04->unk_1a = data_ov001_0222df04->unk_1a - 1;
-    G2x_ChangeBlendBrightness_(0x4000050, data_ov001_0222df04->unk_1a);
-    if (data_ov001_0222df04->unk_1a > -12) {
+    sWfcDialog->unk_1a = sWfcDialog->unk_1a - 1;
+    G2x_ChangeBlendBrightness_(0x4000050, sWfcDialog->unk_1a);
+    if (sWfcDialog->unk_1a > -12) {
         return;
     }
-    func_ov001_02226ffc(r, (void *)func_ov001_022205a4);
+    WfcTask_SetFunc(r, (void *)WfcDialog_SlideInTask);
 }
 
-void func_ov001_022205a4(s32 r)
+void WfcDialog_SlideInTask(s32 r)
 {
     s32 x, y;
     s32 k;
-    func_ov001_0222449c(data_ov001_0222df04->unk_00, 0, &x, &y);
+    WfcObj_GetPos(sWfcDialog->unk_00, 0, &x, &y);
     y -= 12;
-    k = data_ov001_0222a3fa[data_ov001_0222df04->unk_1c].a;
+    k = data_ov001_0222a3fa[sWfcDialog->unk_1c].a;
     if (y > k) {
-        func_ov001_0222020c(y);
+        WfcDialog_SetY(y);
         return;
     }
-    func_ov001_0222020c(k);
-    if (data_ov001_0222df04->unk_1c == 5) {
-        data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(0, (void *)func_ov001_022203c4, 0, 0x78);
+    WfcDialog_SetY(k);
+    if (sWfcDialog->unk_1c == 5) {
+        sWfcDialog->unk_14 = (u32)WfcTask_Add(0, (void *)WfcDialog_AutoCloseTask, 0, 0x78);
     } else {
-        data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(0, (void *)func_ov001_02220444, 0, 0x78);
+        sWfcDialog->unk_14 = (u32)WfcTask_Add(0, (void *)WfcDialog_InputTask, 0, 0x78);
     }
-    func_ov001_02226fdc(1, r);
+    WfcTask_RequestDelete(1, r);
 }
 
-void func_ov001_02220444(s32 r)
+void WfcDialog_InputTask(s32 r)
 {
     s32 i;
     u32 loc[2];
     Unk_ov001_0222df04 *g;
 
-    for (i = 0; i < data_ov001_0222a398[data_ov001_0222df04->unk_1c]; i++) {
-        u32 idx = data_ov001_0222a3a8[data_ov001_0222df04->unk_1c][i];
-        func_ov001_02225924(&data_ov001_0222a428[data_ov001_0222df04->unk_1c][idx],
-                            &data_ov001_0222a3cc[data_ov001_0222df04->unk_1c * 4], loc);
-        if (func_ov001_022260ac(loc) != 0) {
-            data_ov001_0222df04->unk_1b = i;
+    for (i = 0; i < sWfcDialogButtonCounts[sWfcDialog->unk_1c]; i++) {
+        u32 idx = data_ov001_0222a3a8[sWfcDialog->unk_1c][i];
+        WfcUtil_RectFromPosSize(&sWfcDialogButtonPos[sWfcDialog->unk_1c][idx],
+                            &data_ov001_0222a3cc[sWfcDialog->unk_1c * 4], loc);
+        if (WfcInput_IsTouchPressedIn(loc) != 0) {
+            sWfcDialog->unk_1b = i;
             break;
         }
     }
-    if (func_ov001_022261cc(1) != 0) {
-        data_ov001_0222df04->unk_1b = data_ov001_0222a3b4[data_ov001_0222df04->unk_1c * 2];
+    if (WfcInput_IsKeyPressed(1) != 0) {
+        sWfcDialog->unk_1b = sWfcDialogKeyButtons[sWfcDialog->unk_1c * 2];
     }
-    if (func_ov001_022261cc(2) != 0) {
-        data_ov001_0222df04->unk_1b = data_ov001_0222a3b5[data_ov001_0222df04->unk_1c * 2];
+    if (WfcInput_IsKeyPressed(2) != 0) {
+        sWfcDialog->unk_1b = data_ov001_0222a3b5[sWfcDialog->unk_1c * 2];
     }
-    g = data_ov001_0222df04;
-    for (i = 0; i < data_ov001_0222a398[*(volatile u8 *)&g->unk_1c]; i++) {
+    g = sWfcDialog;
+    for (i = 0; i < sWfcDialogButtonCounts[*(volatile u8 *)&g->unk_1c]; i++) {
         if (i == g->unk_1b) {
-            func_ov001_022200b4(i);
+            WfcDialog_PressButton(i);
             return;
         }
     }
     g->unk_1b = -1;
 }
 
-void func_ov001_022203c4(s32 r)
+void WfcDialog_AutoCloseTask(s32 r)
 {
-    Unk_ov001_0222df04 *g = data_ov001_0222df04;
+    Unk_ov001_0222df04 *g = sWfcDialog;
     g->unk_1b = -1;
-    data_ov001_0222df04->unk_18 = data_ov001_0222df04->unk_18 + 1;
-    if (data_ov001_0222df04->unk_18 < 0x78) {
+    sWfcDialog->unk_18 = sWfcDialog->unk_18 + 1;
+    if (sWfcDialog->unk_18 < 0x78) {
         return;
     }
-    func_ov001_02226fdc(0, r);
-    data_ov001_0222df04->unk_14 = (u32)func_ov001_02227094(1, (void *)func_ov001_02220064, 0, 0x78);
+    WfcTask_RequestDelete(0, r);
+    sWfcDialog->unk_14 = (u32)WfcTask_Add(1, (void *)WfcDialog_CloseDelayTask, 0, 0x78);
 }
 
-void func_ov001_0222020c(s32 r)
+void WfcDialog_SetY(s32 r)
 {
     s32 k;
     s32 i;
     Unk_ov001_0222df04 *g;
 
-    g = data_ov001_0222df04;
-    func_ov001_02224558(g->unk_00, -1, data_ov001_0222a3f8[g->unk_1c].a, r);
-    g = data_ov001_0222df04;
-    func_ov001_02224558(g->unk_04, -1, data_ov001_0222a38c.a + data_ov001_0222a3f8[g->unk_1c].a, r + data_ov001_0222a38c.b);
-    func_ov001_02220178(data_ov001_0222df04->unk_00, r);
-    func_ov001_02220178(data_ov001_0222df04->unk_04, r);
-    for (i = 0; i < data_ov001_0222a398[k = data_ov001_0222df04->unk_1c]; i++) {
-        g = data_ov001_0222df04;
+    g = sWfcDialog;
+    WfcObj_SetPos(g->unk_00, -1, data_ov001_0222a3f8[g->unk_1c].a, r);
+    g = sWfcDialog;
+    WfcObj_SetPos(g->unk_04, -1, data_ov001_0222a38c.a + data_ov001_0222a3f8[g->unk_1c].a, r + data_ov001_0222a38c.b);
+    WfcDialog_ClipObj(sWfcDialog->unk_00, r);
+    WfcDialog_ClipObj(sWfcDialog->unk_04, r);
+    for (i = 0; i < sWfcDialogButtonCounts[k = sWfcDialog->unk_1c]; i++) {
+        g = sWfcDialog;
         u32 idx = data_ov001_0222a3a8[g->unk_1c][i];
-        func_ov001_02224558(g->unk_08[i], -1, data_ov001_0222a428[g->unk_1c][idx].a,
-                            r + data_ov001_0222a428[g->unk_1c][idx].b - data_ov001_0222a3f8[g->unk_1c].b);
-        func_ov001_02220178(data_ov001_0222df04->unk_08[i], r);
+        WfcObj_SetPos(g->unk_08[i], -1, sWfcDialogButtonPos[g->unk_1c][idx].a,
+                            r + sWfcDialogButtonPos[g->unk_1c][idx].b - data_ov001_0222a3f8[g->unk_1c].b);
+        WfcDialog_ClipObj(sWfcDialog->unk_08[i], r);
     }
     {
         s32 t = r & 0xff;
@@ -274,97 +274,97 @@ void func_ov001_0222020c(s32 r)
         if (y2 > 0xc0) {
             y2 = 0xc0;
         }
-        func_ov001_02225958(data_ov001_0222a3f8[k].a, y1, data_ov001_0222a3f8[k].a + data_ov001_0222a410[k].a, y2, loc);
-        func_ov001_02225ae8(0, 0, loc);
+        WfcUtil_SetRect(data_ov001_0222a3f8[k].a, y1, data_ov001_0222a3f8[k].a + data_ov001_0222a410[k].a, y2, loc);
+        WfcGx_SetWindowRect(0, 0, loc);
     }
 }
 
-void func_ov001_02220178(void *a, s32 b)
+void WfcDialog_ClipObj(void *a, s32 b)
 {
-    s32 n = func_ov001_022247cc(a);
+    s32 n = WfcObj_GetCount(a);
     s32 i;
     s32 x, y;
     for (i = 0; i < n; i++) {
-        func_ov001_0222449c(a, i, &x, &y);
+        WfcObj_GetPos(a, i, &x, &y);
         s32 v;
         if (y >= b && y < 0xc0) {
             v = 0;
         } else {
             v = 0x200;
         }
-        func_ov001_02224704(a, i, v, 0);
+        WfcObj_SetAffineMode(a, i, v, 0);
     }
 }
 
-void func_ov001_022200b4(s32 i)
+void WfcDialog_PressButton(s32 i)
 {
-    void *o = func_ov001_022247d4(data_ov001_0222df04->unk_08[i], 0);
-    func_ov001_02224b9c(0, ((const u8 *)data_ov001_0222a3c0 + data_ov001_0222df04->unk_1c * 2)[i] + 1, o);
-    u32 t = data_ov001_0222df04->unk_1c;
-    void *p = data_ov001_0222df04->unk_08[i];
+    void *o = WfcObj_GetOam(sWfcDialog->unk_08[i], 0);
+    WfcCell_Copy(0, ((const u8 *)sWfcDialogButtonCells + sWfcDialog->unk_1c * 2)[i] + 1, o);
+    u32 t = sWfcDialog->unk_1c;
+    void *p = sWfcDialog->unk_08[i];
     u32 off = ((const u8 *)data_ov001_0222a3a8 + t * 2)[i] << 2;
-    func_ov001_02224558(p, -1, *(u16 *)(off + (u32)data_ov001_0222a428[t]), *(u16 *)(off + (u32)data_ov001_0222a42a[t]));
-    func_ov001_022244d8(data_ov001_0222df04->unk_08[i], -1, 0);
+    WfcObj_SetPos(p, -1, *(u16 *)(off + (u32)sWfcDialogButtonPos[t]), *(u16 *)(off + (u32)data_ov001_0222a42a[t]));
+    WfcObj_SetPriority(sWfcDialog->unk_08[i], -1, 0);
 }
 
-void func_ov001_02220064(s32 a)
+void WfcDialog_CloseDelayTask(s32 a)
 {
-    data_ov001_0222df04->unk_1d++;
-    if (data_ov001_0222df04->unk_1d < 8) {
+    sWfcDialog->unk_1d++;
+    if (sWfcDialog->unk_1d < 8) {
         return;
     }
-    func_ov001_02226ffc(a, (void *)func_ov001_0221ffc8);
+    WfcTask_SetFunc(a, (void *)WfcDialog_SlideOutTask);
 }
 
-void func_ov001_0221ffc8(s32 a)
+void WfcDialog_SlideOutTask(s32 a)
 {
     s32 x, y;
-    func_ov001_0222449c(data_ov001_0222df04->unk_00, 0, &x, &y);
+    WfcObj_GetPos(sWfcDialog->unk_00, 0, &x, &y);
     y += 0xc;
-    func_ov001_0222020c(y);
+    WfcDialog_SetY(y);
     if (y < 0xc0) {
         return;
     }
-    if (data_ov001_0222df04->unk_1e != 0) {
-        func_ov001_02226ffc(a, (void *)func_ov001_0221ff64);
+    if (sWfcDialog->unk_1e != 0) {
+        WfcTask_SetFunc(a, (void *)WfcDialog_UndimTask);
     } else {
-        func_ov001_02226ffc(a, (void *)func_ov001_0221feac);
+        WfcTask_SetFunc(a, (void *)WfcDialog_DestroyTask);
     }
 }
 
-void func_ov001_0221ff64(s32 a)
+void WfcDialog_UndimTask(s32 a)
 {
-    data_ov001_0222df04->unk_1a++;
-    G2x_ChangeBlendBrightness_(0x4000050, data_ov001_0222df04->unk_1a);
-    if (data_ov001_0222df04->unk_1a < 0) {
+    sWfcDialog->unk_1a++;
+    G2x_ChangeBlendBrightness_(0x4000050, sWfcDialog->unk_1a);
+    if (sWfcDialog->unk_1a < 0) {
         return;
     }
-    func_ov001_02226ffc(a, (void *)func_ov001_0221feac);
+    WfcTask_SetFunc(a, (void *)WfcDialog_DestroyTask);
 }
 
-void func_ov001_0221feac(s32 a)
+void WfcDialog_DestroyTask(s32 a)
 {
     s32 i;
     *(volatile u32 *)0x4000000 &= ~0xe000;
-    func_ov001_022247e0(data_ov001_0222df04->unk_00);
-    func_ov001_022247e0(data_ov001_0222df04->unk_04);
-    for (i = 0; i < data_ov001_0222a398[data_ov001_0222df04->unk_1c]; i++) {
-        if (data_ov001_0222df04->unk_08[i] != NULL) {
-            func_ov001_022247e0(data_ov001_0222df04->unk_08[i]);
+    WfcObj_Free(sWfcDialog->unk_00);
+    WfcObj_Free(sWfcDialog->unk_04);
+    for (i = 0; i < sWfcDialogButtonCounts[sWfcDialog->unk_1c]; i++) {
+        if (sWfcDialog->unk_08[i] != NULL) {
+            WfcObj_Free(sWfcDialog->unk_08[i]);
         }
     }
-    func_ov001_02225718(data_ov001_0222df04->unk_10);
-    func_ov001_02226fdc(1, a);
-    func_ov001_02225d58(&data_ov001_0222df04);
+    WfcText_DestroyObjCanvas(sWfcDialog->unk_10);
+    WfcTask_RequestDelete(1, a);
+    WfcHeap_FreeAndClear(&sWfcDialog);
 }
 
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a38c = {8, 8};
 
-extern "C" const u8 data_ov001_0222a390[8] = {0, 0, 0x46, 0x46, 0x4f, 0x2f, 0, 0};
+extern "C" const u8 sWfcDialogFrameCells[8] = {0, 0, 0x46, 0x46, 0x4f, 0x2f, 0, 0};
 
-extern "C" Unk_ov001_0222df04 *data_ov001_0222df04 = 0;
+extern "C" Unk_ov001_0222df04 *sWfcDialog = 0;
 
-extern "C" const u8 data_ov001_0222a398[8] = {2, 1, 2, 1, 2, 0, 0, 0};
+extern "C" const u8 sWfcDialogButtonCounts[8] = {2, 1, 2, 1, 2, 0, 0, 0};
 
 extern "C" const u16 data_ov001_0222a3a0[4] = {4, 0x1d, 0xfc, 0x44};
 
@@ -376,8 +376,8 @@ extern "C" const u16 data_ov001_0222a3e0[12] = {0xd8, 0x50, 0xd8, 0x50, 0xe6, 0x
 
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a3f8[6] = {{0xb, 0x27}, {0xb, 0x27}, {4, 0x4c}, {4, 0x4c}, {4, 0x54}, {0xb, 0x27}};
 
-extern "C" const s8 data_ov001_0222a3b4[12] = {1, 0, 0, -1, 1, 0, 0, -1, 1, 0, 0, 0};
+extern "C" const s8 sWfcDialogKeyButtons[12] = {1, 0, 0, -1, 1, 0, 0, -1, 1, 0, 0, 0};
 
 extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a410[6] = {{0xea, 0x72}, {0xea, 0x72}, {0xf8, 0x70}, {0xf8, 0x70}, {0x64, 0x70}, {0xea, 0x72}};
 
-extern "C" const Unk_ov001_0222a3f8 data_ov001_0222a428[5][2] = {{{0x10, 0x84}, {0x84, 0x84}}, {{0x10, 0x84}, {0x84, 0x84}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}};
+extern "C" const Unk_ov001_0222a3f8 sWfcDialogButtonPos[5][2] = {{{0x10, 0x84}, {0x84, 0x84}}, {{0x10, 0x84}, {0x84, 0x84}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}, {{9, 0xa7}, {0x83, 0xa7}}};
