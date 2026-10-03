@@ -258,10 +258,19 @@ class Layout:
             self.offset[i] = pick[0][1] & ~1 if pick else 0
         # dead-stripping: the build keeps every global of a compiled object that symbols.txt names
         # (tools/force_active.py), .ctor, and whatever those reference
+        # REALCLASS PATCH: mwcc emits the vtable and the implicit functions of a class without a key function as
+        # link-once objects (ELF binding 13). mwld keeps the first definition of such a name in link order and
+        # drops later copies (tested: realclass_work/lk). A link-once section whose name another module's
+        # symbols.txt places elsewhere (main, linked first) is therefore dropped; references bind to that copy.
+        self.dropped = set()
+        for idx, (name, value, size, typ, bind, shndx) in enumerate(o.syms):
+            if bind == 13 and 0 < shndx < nsec and name in syms and syms[name][0] != MOD:
+                self.dropped.add(shndx)
         keep = set()
         todo = []
         for idx, (name, value, size, typ, bind, shndx) in enumerate(o.syms):
-            if bind != 0 and 0 < shndx < nsec and name in known and idx not in redirect:
+            if bind != 0 and 0 < shndx < nsec and name in known and idx not in redirect \
+                    and shndx not in self.dropped:
                 todo.append(shndx)
         todo += [i for i in range(nsec) if o.secname[i] == ".ctor" and o.sh[i][5]]
         while True:
@@ -272,7 +281,7 @@ class Layout:
                 keep.add(i)
                 for idx in o.relsym.get(i, []):
                     shndx = o.syms[redirect.get(idx, idx)][5]
-                    if 0 < shndx < nsec and shndx not in keep:
+                    if 0 < shndx < nsec and shndx not in keep and shndx not in self.dropped:
                         todo.append(shndx)
             # an exception index entry (.exceptix, KEEP_SECTION) stays with its function and keeps its table
             for i in range(nsec):
@@ -548,7 +557,7 @@ def cmd_check(lp, objpath, unit):
             if 0 < shndx < len(o.sh) and in_home(o.secname[shndx]):
                 return lay.symaddr[idx], {"main"}  # a library unit's __sinit / .ctor word / exception table
             return lay.symaddr[idx], {MOD, BSS_MODULE}
-        if shndx == 0 and name in syms:
+        if (shndx == 0 or shndx in lay.dropped) and name in syms:
             mods = {m for m, a in [syms[name]]}
             return syms[name][1], mods
         return None, set()
