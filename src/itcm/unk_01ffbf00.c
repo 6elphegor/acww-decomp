@@ -1,0 +1,143 @@
+// mwcc-flags: -nothumb -O4,p
+// I003c: itcm 0x01ffbf00-0x01ffbf40, NitroSDK FX 4x3 matrix C (MTX_ScaleApply43), 1 function. ARM, mwcc 1.2/base, -O4,p.
+// NitroSDK types: s32/u32 are long (this matters: int and long operands are not folded together)
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned long u32;
+typedef unsigned long long u64;
+typedef signed char s8;
+typedef signed short s16;
+typedef signed long s32;
+typedef signed long long s64;
+typedef volatile u8 vu8;
+typedef volatile u16 vu16;
+typedef volatile u32 vu32;
+typedef volatile u64 vu64;
+typedef int BOOL;
+#define TRUE 1
+#define FALSE 0
+#define NULL 0
+
+typedef s32 fx32;
+typedef s16 fx16;
+typedef s64 fx64;
+typedef s64 fx64c;
+
+#define FX32_SHIFT 12
+#define FX32_ONE ((fx32)0x00001000L)
+#define FX64C_SHIFT 20
+
+typedef struct VecFx32 { fx32 x, y, z; } VecFx32;
+typedef struct VecFx16 { fx16 x, y, z; } VecFx16;
+typedef struct MtxFx33 {
+    fx32 _00, _01, _02;
+    fx32 _10, _11, _12;
+    fx32 _20, _21, _22;
+} MtxFx33;
+typedef struct MtxFx43 {
+    fx32 _00, _01, _02;
+    fx32 _10, _11, _12;
+    fx32 _20, _21, _22;
+    fx32 _30, _31, _32;
+} MtxFx43;
+typedef struct MtxFx44 {
+    fx32 _00, _01, _02, _03;
+    fx32 _10, _11, _12, _13;
+    fx32 _20, _21, _22, _23;
+    fx32 _30, _31, _32, _33;
+} MtxFx44;
+
+#define reg_CP_DIVCNT      (*(vu16 *)0x04000280)
+#define reg_CP_DIV_NUMER   (*(vu64 *)0x04000290)
+#define reg_CP_DIV_NUMER_L (*(vu32 *)0x04000290)
+#define reg_CP_DIV_DENOM   (*(vu64 *)0x04000298)
+#define reg_CP_DIV_RESULT  (*(vu64 *)0x040002a0)
+#define reg_CP_DIV_RESULT_L (*(vu32 *)0x040002a0)
+#define reg_CP_DIVREM_RESULT_L (*(vu32 *)0x040002a8)
+#define reg_CP_SQRTCNT     (*(vu16 *)0x040002b0)
+#define reg_CP_SQRT_RESULT (*(vu32 *)0x040002b4)
+#define reg_CP_SQRT_PARAM  (*(vu64 *)0x040002b8)
+
+#define CP_DIV_32_32_MODE 0
+#define CP_DIV_64_32_MODE 1
+#define CP_DIV_64_64_MODE 2
+#define CP_DIV_BUSY       0x8000
+#define CP_SQRT_32_MODE   0
+#define CP_SQRT_64_MODE   1
+#define CP_SQRT_BUSY      0x8000
+
+static inline fx32 FX_Mul(fx32 v1, fx32 v2) {
+    return (fx32)(((fx64)v1 * v2 + 0x800LL) >> FX32_SHIFT);
+}
+
+static inline fx32 FX_Mul32x64c(fx64c v64c, fx32 v32) {
+    return (fx32)(((fx64c)v32 * v64c + 0x80000LL) >> FX64C_SHIFT);
+}
+
+static inline void CP_SetDiv32_32(u32 numer, u32 denom) {
+    reg_CP_DIVCNT = CP_DIV_32_32_MODE;
+    reg_CP_DIV_NUMER_L = numer;
+    reg_CP_DIV_DENOM = (u64)denom;
+}
+
+static inline void CP_SetDiv64_32(u64 numer, u32 denom) {
+    reg_CP_DIVCNT = CP_DIV_64_32_MODE;
+    reg_CP_DIV_NUMER = numer;
+    reg_CP_DIV_DENOM = (u64)denom;
+}
+
+static inline void CP_SetDiv64_64(u64 numer, u64 denom) {
+    reg_CP_DIVCNT = CP_DIV_64_64_MODE;
+    reg_CP_DIV_NUMER = numer;
+    reg_CP_DIV_DENOM = denom;
+}
+
+static inline void CP_WaitDiv(void) {
+    while (reg_CP_DIVCNT & CP_DIV_BUSY) {
+    }
+}
+
+static inline u32 CP_GetDivResult32(void) {
+    CP_WaitDiv();
+    return (u32)reg_CP_DIV_RESULT_L;
+}
+
+static inline u32 CP_GetDivRemResult32(void) {
+    CP_WaitDiv();
+    return (u32)reg_CP_DIVREM_RESULT_L;
+}
+
+static inline u64 CP_GetDivResult64(void) {
+    CP_WaitDiv();
+    return reg_CP_DIV_RESULT;
+}
+
+static inline void CP_SetSqrt64(u64 param) {
+    reg_CP_SQRTCNT = CP_SQRT_64_MODE;
+    reg_CP_SQRT_PARAM = param;
+}
+
+static inline void CP_WaitSqrt(void) {
+    while (reg_CP_SQRTCNT & CP_SQRT_BUSY) {
+    }
+}
+
+static inline u32 CP_GetSqrtResult32(void) {
+    CP_WaitSqrt();
+    return reg_CP_SQRT_RESULT;
+}
+
+extern void func_01ffb708(const MtxFx33 *pSrc, MtxFx33 *pDst, fx32 x, fx32 y, fx32 z); // MTX_ScaleApply33 (I003a)
+/* PROTOS */
+void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z);
+
+/* END PROTOS */
+
+// MTX_ScaleApply43
+void func_01ffbf00(const MtxFx43 *pSrc, MtxFx43 *pDst, fx32 x, fx32 y, fx32 z) {
+    func_01ffb708((const MtxFx33 *)pSrc, (MtxFx33 *)pDst, x, y, z);
+    pDst->_30 = pSrc->_30;
+    pDst->_31 = pSrc->_31;
+    pDst->_32 = pSrc->_32;
+}
+
