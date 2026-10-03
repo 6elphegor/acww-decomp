@@ -188,7 +188,7 @@ struct BgmObj {
 };
 u64 func_01ffa6b4(void);
 u32 func_020ef150(u32 a, u32 b);
-u32 func_020ef6c8(BgmObj *o);
+u32 func_020ef6c8(BgmObj *o, u32 id);
 s32 func_020ef7a0(BgmObj *o, s32 v);
 void func_020f0858(BgmObj *o, u32 a, s32 b, s32 c);
 void func_020f0a68(void *p, u32 v);

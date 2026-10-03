@@ -33,7 +33,7 @@ extern u8 *func_02126cc4(void *, void *, u32);
 extern u32 func_02121c50(u32, u32);
 extern void func_02126e88(u32);
 extern void func_02121cc8(void);
-extern void func_021245ec(void *, void *, u32);
+extern void func_021245ec(void *, void *, u32, u32);
 extern u32 func_0212491c(void);
 extern u32 func_02124908(void);
 extern u32 func_021248a8(void);
