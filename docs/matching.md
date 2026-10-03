@@ -160,7 +160,7 @@ which ranges differ.
 
 ## 3. Naming
 
-* Free functions keep their `symbols.txt` name: declare them `extern "C"` (`func_0210f0e0`,
+* Free functions keep their `symbols.txt` name: declare them `extern "C"` (`GX_SetGraphicsMode`,
   `func_ov065_02261fd8`). Never leave a `func_` name C++-mangled.
 * Classes are named `Unk_<address>` after their vtable (the address objects store, 8 bytes into the vtable) or,
   without a vtable, after their first function. Overlay-only classes are `Unk_ovNNN_<address>`. Local helper
