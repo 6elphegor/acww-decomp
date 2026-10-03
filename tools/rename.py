@@ -782,6 +782,20 @@ class FileModel:
         self.undefs = defaultdict(list)
         for mo in re.finditer(r"^[ \t]*#[ \t]*undef[ \t]+([A-Za-z_]\w*)", m, re.M):
             self.undefs[mo[1]].append(mo.start())
+        # every #define with its body (continuation lines included): (start, body start, end, name)
+        self.define_spans = []
+        for mo in re.finditer(r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)", m, re.M):
+            end = m.find("\n", mo.end())
+            while end != -1 and m[:end].rstrip(" \t\r").endswith("\\"):
+                end = m.find("\n", end + 1)
+            self.define_spans.append((mo.start(), mo.end(), len(m) if end == -1 else end, mo[1]))
+
+    def define_body_at(self, pos):
+        """(macro name, end of the definition) if pos is in the body of a #define, else None"""
+        for start, body, end, name in self.define_spans:
+            if body <= pos < end:
+                return name, end
+        return None
 
     def macro(self, kind, name, pos):
         """the value of a macro (kind 'define': identifier body, 'cast': the cast's type) active at pos, or None"""
@@ -1281,6 +1295,45 @@ class Renamer:
             if subs else None
         self.define_cache = {}
         self.produced = defaultdict(set)   # new name written into a config file -> renames that made it
+        self.free = {r.ident: r for r in renames if r.kind == "free"}
+        self.mangled_needed = self.mangled_needed or bool(self.free)
+        self.call_macros = self.find_call_macros(idx)
+        subs |= set(self.free) | {name for _, name, _ in self.call_macros}
+        self.prefilter = re.compile("|".join(re.escape(s) for s in sorted(subs, key=len, reverse=True))) \
+            if subs else None
+
+    def find_call_macros(self, idx):
+        """Call macros `#define func_XXXX _ZN<Class><method>...` (or already `#define Class_method _ZN...`) whose method
+        or class is renamed: (path, macro name, body) -> (new macro name `<Class>_<method>`, rename). The new name is
+        unique; the bare method name would capture the class's own method declarations in that file."""
+        out = {}
+        if not (self.mangled_members or self.classes):
+            return out
+        for p, fm in idx.files.items():
+            for (kind, name), entries in fm.macro_ranges.items():
+                if kind != "define":
+                    continue
+                for _, body in entries:
+                    mm = parse_mangled(body) if body.startswith("_Z") else None
+                    for cpath, meth in (class_method_pairs(mm) if mm else ()):
+                        if not cpath or not all(cpath) or name not in (meth, "_".join(cpath) + "_" + meth):
+                            continue
+                        r = next((rr for mpath, rr in self.mangled_members.get(meth, ())
+                                  if cpath[-len(mpath):] == mpath), None)
+                        if r is None and name == meth:
+                            continue  # only the class is renamed; a bare-name macro stays as it is
+                        rc = r or next((self.classes[c] for c in cpath if c in self.classes), None)
+                        if rc is None:
+                            continue
+                        new = "_".join(self.classes[c].new if c in self.classes else c for c in cpath) + "_" + \
+                            (r.new if r else meth)
+                        if new == name:
+                            continue
+                        if re.search(r"\b" + re.escape(new) + r"\b", fm.masked):
+                            rc.unresolved.append(f"{p.relative_to(self.repo.root)}: call macro {name} would become "
+                                                 f"{new}, which the file already uses")
+                        out[(p, name, body)] = (new, rc)
+        return out
 
     @staticmethod
     def in_scope(r, module):
@@ -1296,6 +1349,8 @@ class Renamer:
         if m is None:
             return tok
         edits = []
+        if self.free and tok[2:3].isdigit() and m.names and m.names[0][0] == 2 and m.names[0][2] in self.free:
+            edits.append((2, m.names[0][1], self.free[m.names[0][2]]))  # `_Z<len><ident><params>`: a free function
         for a, b, text in m.names:
             r = self.classes.get(text)
             if r is not None and self.in_scope(r, module):
@@ -1370,7 +1425,8 @@ class Renamer:
                 r.counts["left (unqualified, comment/docs)"] += 1
             return None
         line_start = text.rfind("\n", 0, pos) + 1
-        if text[line_start:pos].lstrip().startswith("#"):
+        body_of = fm.define_body_at(pos)
+        if text[line_start:pos].lstrip().startswith("#") and not (body_of and body_of[0] != tok):
             # a preprocessor line (`#define vfunc_14() vfunc_14(s32 a)` around an #include): it is about the
             # classes of the headers the file includes
             for inc in fm.includes:
@@ -1380,6 +1436,10 @@ class Renamer:
                         return self.hit(pairs[c], "src (preprocessor)", path)
             return None
         cls, access = receiver_type(fm, idx, pos)
+        in_macro = fm.define_body_at(pos) if fm.enclosing_class(pos) is None else None
+        if in_macro and (not access or cls is None) and in_macro[0] != tok:
+            # an implicit-this (or this->) call in the body of a file-scope macro: the macro's uses decide
+            return self.decide_by_macro_uses(tok, pos, fm, fpath, pairs, path, *in_macro, access)
         if not access:
             cls = fm.enclosing_class(pos)
             if cls is not None:
@@ -1403,6 +1463,37 @@ class Renamer:
             r.unresolved.append(f"{where}: `{tok}` ({'receiver ' + cls if cls else 'receiver unknown'})")
         return None
 
+    def decide_by_macro_uses(self, tok, pos, fm, fpath, pairs, path, macro, end, access):
+        """a method name in the body of a file-scope #define: decided by the classes of the member functions that use
+        the macro (all uses must agree), else refused with file:line"""
+        idx = self.idx
+        where = f"{fm.path.relative_to(self.repo.root)}:{fm.line(pos)}"
+        uses = [mo.start() for mo in re.finditer(r"\b" + re.escape(macro) + r"\b", fm.masked)
+                if mo.start() > end and not fm.define_body_at(mo.start())]
+        if not uses:
+            for r in {id(x): x for x in pairs.values()}.values():
+                r.counts["left (body of an unused macro)"] += 1
+            return None
+        decisions = set()
+        for u in uses:
+            cls = fm.enclosing_class(u)
+            cls = resolve_type(fm, cls, idx) if cls else None
+            owner = idx.lookup(cls, tok, fpath) if cls else None
+            if owner is None:
+                decisions.add("unresolved")
+            else:
+                decisions.add(id(pairs[owner]) if owner in pairs else None)
+        if len(decisions) == 1 and "unresolved" not in decisions:
+            choice = decisions.pop()
+            if choice is None:
+                return None
+            r = next(x for x in pairs.values() if id(x) == choice)
+            return self.hit(r, "src (macro body, by its uses)", path)
+        for r in {id(x): x for x in pairs.values()}.values():
+            r.unresolved.append(f"{where}: `{tok}` in the body of macro {macro}, whose {len(uses)} use(s) "
+                                f"{'are in different classes' if 'unresolved' not in decisions else 'are not all in member functions of a known class'}")
+        return None
+
     def rewrite_text(self, text, spans, module, category, path, skip_files, fm=None):
         """spans: (start, end, is code); comments, docs and config fields are not code"""
         out, last = [], 0
@@ -1418,6 +1509,16 @@ class Renamer:
                     if r:
                         r.counts["skipped (file name)"] += 1
                     return tok
+                if fm is not None and self.call_macros and code:
+                    body = fm.macro("define", tok, a + m.start() + 1)
+                    hitm = self.call_macros.get((fm.path, tok, body)) if body else None
+                    if hitm:
+                        hitm[1].counts["src (call macro)"] += 1
+                        hitm[1].files.add(path)
+                        return hitm[0]
+                rf = self.free.get(tok)
+                if rf is not None:
+                    return self.hit(rf, category, path)
                 r = self.funcs.get(tok) or self.classes.get(tok)
                 if r is not None and self.in_scope(r, module):
                     if category.startswith("config"):
@@ -1543,6 +1644,16 @@ def normalize(r, idx):
         pairs = class_method_pairs(mm) if mm else []
         if len(pairs) == 1 and all(pairs[0][0]):
             target = pairs[0]
+        elif mm and not mm.nested and r.old[2:3].isdigit() and mm.names and mm.names[0][0] == 2:
+            # `_Z13func_020b22b0iii`: a C++ free function. The source identifier gets the new name and the symbol the
+            # re-mangled `_Z<len(new)><new><params>`
+            before = r.label()
+            r.kind = "free"
+            r.ident = mm.names[0][2]
+            r.new_mangled = f"_Z{len(r.new)}{r.new}{r.old[mm.names[0][1]:]}"
+            r.notes.append(f"`{before}` is a C++ free function: {r.ident} -> {r.new} in sources, symbol -> "
+                           f"{r.new_mangled}")
+            return
     elif r.old not in idx.symbols and r.old not in idx.other_config and len(idx.sym_methods.get(r.old, ())) == 1:
         (path,) = idx.sym_methods[r.old]
         if all(path):
@@ -1611,6 +1722,21 @@ def check_func(r, idx, allow_existing):
         r.notes.append("not in symbols.txt: a linker script name (lcf_symbols.txt / abs_symbols.txt)")
     elif not in_syms:
         r.notes.append("not in any symbols.txt: source-only name")
+    return errors
+
+
+def check_free(r, idx, allow_existing):
+    """a C++ free function `_Z<len><ident><params>` renamed to a plain identifier"""
+    errors = []
+    if r.ident in idx.symbols or r.ident in idx.other_config:
+        errors.append(f"{r.where}: {r.ident} is also a plain symbols.txt name; renaming the C++ function's source "
+                      f"identifier would be ambiguous")
+    if r.new_mangled in idx.symbols:
+        errors.append(f"{r.where}: {r.new_mangled} is already a symbol")
+    if not allow_existing and idx.used(r.new):
+        errors.append(f"{r.where}: {r.new} is already used ({describe_use(idx, r.new)}); --allow-existing to accept")
+    if r.ident in idx.methods:
+        r.notes.append(f"{r.ident} is also a method name inside mangled names (not renamed)")
     return errors
 
 
@@ -2046,7 +2172,8 @@ def validate(renames, idx, allow_existing):
         if r.qual not in (None, "*") and r.qual not in modules_known(idx):
             errs[r].append(f"{r.where}: unknown module {r.qual}")
             continue
-        check = {"func": check_func, "class": check_class, "member": check_member, "vfunc": check_vfunc}[r.kind]
+        check = {"func": check_func, "class": check_class, "member": check_member, "vfunc": check_vfunc,
+                 "free": check_free}[r.kind]
         errs[r] += check(r, idx, allow_existing)
     errs = defaultdict(list, {r: e for r, e in errs.items() if e})
     check_hierarchy_names(renames, idx, errs)
