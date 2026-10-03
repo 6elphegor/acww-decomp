@@ -554,9 +554,9 @@ extern "C" BOOL Insect_RollKind(u8 *out);
 extern "C" BOOL Insect_IsAtWateringPoint(void *p);
 }
 
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -698,11 +698,11 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag);
 extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 }
 
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -846,13 +846,13 @@ extern "C" V3 *HeldInsect_GetPos(s32 idx);
 extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 }
 
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -1012,11 +1012,11 @@ extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e);
 extern "C" void FieldInsect_UpdateAll(void *a);
 }
 
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -1255,27 +1255,27 @@ extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind);
 extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode);
 }
 
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -1379,16 +1379,16 @@ extern "C" // factory (allocates 0xa0 bytes)
 void *InsectManager_Create();
 }
 
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -1535,10 +1535,10 @@ extern "C" void Insect_Despawn(Rec *self);
 extern "C" void Insect_SetWanderBox(Rec *self);
 }
 
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -1699,9 +1699,9 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p);
 extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 }
 
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -1874,14 +1874,14 @@ extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c);
 extern "C" s32 Insect_GroundWalkNet(Rec *self);
 }
 
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -2019,12 +2019,12 @@ extern "C" void PillBug_Walk(Rec *self);
 extern "C" void PillBug_Curled(Rec *self);
 }
 
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -2157,10 +2157,10 @@ extern "C" void Ant_Update(Rec *self);
 extern "C" void Hoverer_Update(Rec *self);
 }
 
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -2309,13 +2309,13 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out);
 extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b);
 }
 
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -2424,8 +2424,8 @@ extern "C" void Insect_FlutterAltitude(Rec *self, s16 *cnt);
 extern "C" void Insect_FlyAwayArc(Rec *self, s32 a);
 }
 
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -2575,12 +2575,12 @@ extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a);
 extern "C" s32 Insect_GetSeId(s32 a, s32 b);
 }
 
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
 #define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
@@ -2713,13 +2713,13 @@ extern "C" u32 Insect_TestFeelers(Rec *o);
 extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 }
 
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2745,13 +2745,13 @@ extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b) {
     return 0;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2779,13 +2779,13 @@ extern "C" u32 Insect_TestFeelers(Rec *o) {
     return r;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2816,13 +2816,13 @@ extern "C" u32 Insect_TestFeelersHole(Rec *o) {
     return r;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2858,13 +2858,13 @@ extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b) {
     return TRUE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2886,13 +2886,13 @@ extern "C" void Insect_GetDirVec(V3 *o, s32 a) {
     func_020e93a0(o, a);
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2915,13 +2915,13 @@ extern "C" BOOL Insect_IsOverWater(s32 v) {
     return FALSE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2941,13 +2941,13 @@ extern "C" void Insect_CheckTurnCount(Rec *o, s32 n) {
     if (t > n) o->unk_251 = 9;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -2988,13 +2988,13 @@ extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d) {
     return TRUE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3054,13 +3054,13 @@ extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
     return FALSE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3100,13 +3100,13 @@ extern "C" Unk_02095204_Obj *Insect_FindNearestPlayer(V3 *pos) {
     return best;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3152,13 +3152,13 @@ extern "C" void Insect_UpdateRest(Rec *o) {
     }
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3206,13 +3206,13 @@ extern "C" BOOL Insect_LikesFlower(s32 a, s32 b) {
     return FALSE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3258,13 +3258,13 @@ extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     return FALSE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3299,13 +3299,13 @@ extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
     return FALSE;
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3331,13 +3331,13 @@ extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b) {
     }
 }
 }
-#undef func_02003c40
-#undef func_02003c50
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072970
-#undef func_02072e44
-#undef func_02072e88
+#undef Unk_02003c40_callRequest
+#undef Unk_02003c40_callRequestSustained
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_getSyncVar
+#undef CommManager_isOnline
+#undef CommManager_isSlotActive
 #undef func_02133150
 #undef func_ov003_02225ed0
 
@@ -3404,12 +3404,12 @@ extern "C" s32 Insect_GetSeId(s32 a, s32 b) {
     return -1;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3433,12 +3433,12 @@ extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a) {
     VEC_Add(r6, &v, r6);
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3457,12 +3457,12 @@ extern "C" void Insect_SetFlutterTurnDelay(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3492,12 +3492,12 @@ extern "C" s32 Insect_GetFlutterLeash(Rec *self) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3528,12 +3528,12 @@ extern "C" s32 Insect_GetFlutterRange(Rec *self) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3564,12 +3564,12 @@ extern "C" s32 Insect_GetFlutterTargetSpeed(Rec *self) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3659,12 +3659,12 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3685,12 +3685,12 @@ extern "C" void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3711,12 +3711,12 @@ extern "C" s32 Insect_CheckAlarm(Rec *self) {
     return r;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3742,12 +3742,12 @@ extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3765,12 +3765,12 @@ extern "C" void Insect_FlapWings(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3834,12 +3834,12 @@ extern "C" void Butterfly_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3917,12 +3917,12 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -3941,12 +3941,12 @@ extern "C" BOOL Insect_TickTimer(Rec *self) {
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
 #undef func_021329d0
-#undef func_ov068_022687e8
-#undef func_ov068_02268864
+#undef Unk_ov068_02268214_insectFleeFrom
+#undef Unk_ov068_02268214_insectWanderSteer
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -3972,8 +3972,8 @@ extern "C" void Insect_FlyAwayArc(Rec *self, s32 a) {
     VEC_Add(p, &v, p);
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4017,8 +4017,8 @@ extern "C" void Insect_FlutterAltitude(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4036,8 +4036,8 @@ extern "C" s32 Insect_GetFlowerSpeciesMask(s32 a) {
     return 0x3f;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4136,8 +4136,8 @@ extern "C" void Dragonfly_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4192,8 +4192,8 @@ extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt) {
     (*cnt)++;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4244,8 +4244,8 @@ extern "C" void Dragonfly_FlyToTarget(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4273,8 +4273,8 @@ extern "C" void Dragonfly_FlyOff(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4302,8 +4302,8 @@ extern "C" void Dragonfly_CheckObstacle(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4358,8 +4358,8 @@ tail:
     return a;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4409,8 +4409,8 @@ extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a) {
     return result;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -4456,13 +4456,13 @@ extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4533,13 +4533,13 @@ extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
     return r;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4600,13 +4600,13 @@ extern "C" void Hopper_Update(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4639,13 +4639,13 @@ extern "C" void Hopper_Rest(Rec *o, s16 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4667,13 +4667,13 @@ extern "C" s16 Insect_RandomTurn(s32 a, s32 b) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4752,13 +4752,13 @@ extern "C" void Hopper_Jump(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4784,13 +4784,13 @@ extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4811,13 +4811,13 @@ extern "C" void Locust_PlaySe(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4841,13 +4841,13 @@ extern "C" void Cricket_Chirp(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4884,13 +4884,13 @@ extern "C" void Pondskater_Update(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4927,13 +4927,13 @@ extern "C" void Mosquito_Update(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -4975,13 +4975,13 @@ extern "C" void Firefly_Update(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5008,13 +5008,13 @@ extern "C" void Firefly_Wander(Rec *o) {
     Insect_FlutterBob(o, *p, 0x1000, (Random_GlobalBelow(4) + 10) << 12);
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5067,13 +5067,13 @@ extern "C" void Bee_Update(Rec *o) {
     o->unk_249 = 1;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
 #undef func_02133150
-#undef func_ov068_022694c0
-#undef func_ov068_02269714
-#undef func_ov068_022697b8
-#undef func_ov068_02269840
+#undef Unk_ov068_02268214_beeChasePlayer
+#undef Unk_ov068_02268214_beeSwarmDescend
+#undef Unk_ov068_02268214_beeEnterSwarm
+#undef Unk_ov068_02268214_mosquitoChase
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5109,10 +5109,10 @@ extern "C" void Hoverer_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5163,10 +5163,10 @@ extern "C" void Ant_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5195,10 +5195,10 @@ extern "C" void MoleCricket_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5231,10 +5231,10 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5331,10 +5331,10 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5413,10 +5413,10 @@ extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
     *cnt = *cnt + 1;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5461,10 +5461,10 @@ extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5510,10 +5510,10 @@ extern "C" s32 Insect_SteerAroundObstacle(Rec *self) {
     return ret;
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
@@ -5550,10 +5550,10 @@ extern "C" void PillBug_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269d58
+#undef AnimModel_setFrame
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_hovererFly
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5591,12 +5591,12 @@ extern "C" void PillBug_Curled(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5644,12 +5644,12 @@ extern "C" void PillBug_Walk(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5694,12 +5694,12 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5730,12 +5730,12 @@ extern "C" void Moth_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5822,12 +5822,12 @@ extern "C" void Flea_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5917,12 +5917,12 @@ extern "C" void Stinger_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5951,12 +5951,12 @@ extern "C" void DungBeetle_Update(Rec *self) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -5977,12 +5977,12 @@ extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6053,12 +6053,12 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
     return result;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_ov068_02269b20
-#undef func_ov068_02269d18
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef Unk_ov068_02268214_dungBeetlePushSnowball
+#undef Unk_ov068_02268214_dungBeetleWalk
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6142,14 +6142,14 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     return ret;
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6191,14 +6191,14 @@ extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c) {
     }
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6284,14 +6284,14 @@ extern "C" void Spider_Update(Rec *self) {
     }
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6363,14 +6363,14 @@ extern "C" void TreeBug_Update(Rec *self) {
     }
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6425,14 +6425,14 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6471,14 +6471,14 @@ extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
     self->unk_23a = ang;
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6517,14 +6517,14 @@ extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
     self->unk_23a = ang;
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6570,14 +6570,14 @@ extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
     self->unk_23a = ang;
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define GroundInfoBase_isBelowWaterSurface _ZN14GroundInfoBase19isBelowWaterSurfaceEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
@@ -6628,14 +6628,14 @@ extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
     }
 }
 }
-#undef func_020338d0
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfoBase_isBelowWaterSurface
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 #undef func_02133150
-#undef func_ov068_02269a28
-#undef func_ov068_02269aa4
+#undef Unk_ov068_02268214_spiderSway
+#undef Unk_ov068_02268214_spiderCheckPlayerHit
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6676,9 +6676,9 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6707,9 +6707,9 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6759,9 +6759,9 @@ extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6829,9 +6829,9 @@ extern "C" void Crawler_Update(Rec *o) {
     *p = *p + 1;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6858,9 +6858,9 @@ extern "C" BOOL Insect_IsOnFlower(void *pp) {
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6925,9 +6925,9 @@ extern "C" void Crawler_Watch(Rec *o, s16 *p) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -6994,9 +6994,9 @@ extern "C" void Crawler_Wander(Rec *o) {
 #undef d
 #undef save
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
@@ -7016,9 +7016,9 @@ extern "C" void Insect_PlaceOnPlantSide(Rec *o) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7052,10 +7052,10 @@ extern "C" void Insect_SetWanderBox(Rec *self) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7068,10 +7068,10 @@ extern "C" void Insect_Despawn(Rec *self) {
     NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7125,10 +7125,10 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7176,10 +7176,10 @@ extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, 
     GroundInfo_Destruct(&b);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7195,10 +7195,10 @@ extern "C" s16 Insect_RandomAngle() {
     return (s16)(r * 0xaaa);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7210,10 +7210,10 @@ extern "C" void Insect_UpdateButterfly(Rec *self) {
     Butterfly_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7231,10 +7231,10 @@ extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) 
     self->unk_232 = 0;
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7274,10 +7274,10 @@ extern "C" void Insect_InitButterfly(Rec *self) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7289,10 +7289,10 @@ extern "C" void Insect_UpdateMoth(Rec *self) {
     Moth_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7314,10 +7314,10 @@ extern "C" void Insect_InitMoth(Rec *self) {
     Insect_SetAnimSpeed(self, 0x1000);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7332,10 +7332,10 @@ extern "C" void Insect_InitFirefly(Rec *self) {
     self->unk_252 = 0x3c;
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7347,10 +7347,10 @@ extern "C" void Insect_UpdateFirefly(Rec *self) {
     Firefly_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7362,10 +7362,10 @@ extern "C" void Insect_InitMosquito(Rec *self) {
     Insect_InitBehaviour(self, 0, 0, 0, 0, 0, 0x19, 0, 0x19, 0);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7377,10 +7377,10 @@ extern "C" void Insect_UpdateMosquito(Rec *self) {
     Mosquito_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7399,10 +7399,10 @@ extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7414,10 +7414,10 @@ extern "C" void Insect_UpdateTreeBug(Rec *self) {
     TreeBug_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7500,10 +7500,10 @@ extern "C" void Insect_InitTreeBug(Rec *self) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7518,10 +7518,10 @@ extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d) {
     self->unk_204.y = 0;
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7533,10 +7533,10 @@ extern "C" void Insect_UpdateHopper(Rec *self) {
     Hopper_Update(self);
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -7564,10 +7564,10 @@ extern "C" void Insect_InitHopper(Rec *self) {
     }
 }
 }
-#undef func_020339bc
-#undef func_020547a4
-#undef func_0205668c
-#undef func_0209c0ac
+#undef GroundInfo_initAtPos
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef PooledModel_getModel
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7587,16 +7587,16 @@ extern "C" void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32
     a->unk_259 = p5;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7624,16 +7624,16 @@ extern "C" void Insect_InitDragonfly(Unk_ov003_02228710_Act *a) {
     }
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7651,16 +7651,16 @@ extern "C" void Insect_UpdateDragonfly(Unk_ov003_02228710_Act *a) {
     Dragonfly_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7680,16 +7680,16 @@ extern "C" void Insect_InitPondskater(Unk_ov003_02228710_Act *a) {
     a->unk_232 = Random_GlobalBelow(0x14) * 3;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7707,16 +7707,16 @@ extern "C" void Insect_UpdatePondskater(Unk_ov003_02228710_Act *a) {
     Pondskater_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7740,16 +7740,16 @@ extern "C" void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 
     a->unk_21c = w;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7767,16 +7767,16 @@ extern "C" void Insect_UpdateCrawler(Unk_ov003_02228710_Act *a) {
     Crawler_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7809,16 +7809,16 @@ extern "C" void Insect_InitCrawler(Unk_ov003_02228710_Act *a) {
     }
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7844,16 +7844,16 @@ extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a) {
     }
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7871,16 +7871,16 @@ extern "C" void Insect_UpdateMoleCricket(Unk_ov003_02228710_Act *a) {
     MoleCricket_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7898,16 +7898,16 @@ extern "C" void Insect_UpdatePillBug(Unk_ov003_02228710_Act *a) {
     PillBug_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7929,16 +7929,16 @@ extern "C" void Insect_InitBee(Unk_ov003_02228710_Act *a) {
     a->unk_21c = 0;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7956,16 +7956,16 @@ extern "C" void Insect_UpdateBee(Unk_ov003_02228710_Act *a) {
     Bee_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -7984,16 +7984,16 @@ extern "C" void Insect_InitHoneybee(Unk_ov003_02228710_Act *a) {
     Insect_SetWanderBox(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8011,16 +8011,16 @@ extern "C" void Insect_UpdateHoneybee(Unk_ov003_02228710_Act *a) {
     Hoverer_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8039,16 +8039,16 @@ extern "C" void Insect_InitFly(Unk_ov003_02228710_Act *a) {
     Insect_SetWanderBox(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8066,16 +8066,16 @@ extern "C" void Insect_UpdateFly(Unk_ov003_02228710_Act *a) {
     Hoverer_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8095,16 +8095,16 @@ extern "C" void Insect_InitFlea(Unk_ov003_02228710_Act *a) {
     a->unk_228 = a->unk_204.y;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8122,16 +8122,16 @@ extern "C" void Insect_UpdateFlea(Unk_ov003_02228710_Act *a) {
     Flea_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8160,16 +8160,16 @@ extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a) {
     }
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8187,16 +8187,16 @@ extern "C" void Insect_UpdateSpider(Unk_ov003_02228710_Act *a) {
     Spider_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8214,16 +8214,16 @@ extern "C" void Insect_UpdateStinger(Unk_ov003_02228710_Act *a) {
     Stinger_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8242,16 +8242,16 @@ extern "C" void Insect_InitTarantula(Unk_ov003_02228710_Act *a) {
     a->unk_24c = 0;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8271,16 +8271,16 @@ extern "C" void Insect_InitScorpion(Unk_ov003_02228710_Act *a) {
     AnimFrameCtrl_setup(a->unk_ec, 3, 0, 0x1000, 0);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8298,16 +8298,16 @@ extern "C" void Insect_InitAnt(Unk_ov003_02228710_Act *a) {
     Insect_InitBehaviour(a, 0, 0x50, 0x50, 0, 0, 0, 0, 1, 0);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8325,16 +8325,16 @@ extern "C" void Insect_UpdateAnt(Unk_ov003_02228710_Act *a) {
     Ant_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8352,16 +8352,16 @@ extern "C" void Insect_InitDungBeetle(Unk_ov003_02228710_Act *a) {
     Insect_InitBehaviour(a, 0, 0x50, 0x50, 0, 0, 0, 0, 3, 0);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8379,16 +8379,16 @@ extern "C" void Insect_UpdateDungBeetle(Unk_ov003_02228710_Act *a) {
     DungBeetle_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8406,16 +8406,16 @@ extern "C" void Insect_InitKind38(Unk_ov003_02228710_Act *a) {
     Insect_InitTreeBug(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8433,16 +8433,16 @@ extern "C" void Insect_UpdateKind38(Unk_ov003_02228710_Act *a) {
     TreeBug_Update(a);
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8461,16 +8461,16 @@ void *InsectManager_Create() {
     return new InsectManager;
 }
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8486,16 +8486,16 @@ void *InsectManager_Create() {
 InsectManager::InsectManager() { using namespace s05;
     sWateringActive = 0;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8510,16 +8510,16 @@ InsectManager::InsectManager() { using namespace s05;
 // 0x2228a48
 InsectManager::~InsectManager() { using namespace s05;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8566,16 +8566,16 @@ BOOL InsectManager::allocHeldInsect(Unk_ov003_02228710_Act *e) { using namespace
     e->unk_249 = 1;
     return TRUE;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8602,16 +8602,16 @@ BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
     }
     return FALSE;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8634,16 +8634,16 @@ BOOL InsectManager::allocFieldInsect(Unk_ov003_02228710_Act *e) { using namespac
     }
     return FALSE;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8696,16 +8696,16 @@ void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using name
     }
     e->unk_170 = 0;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
@@ -8730,16 +8730,16 @@ BOOL InsectManager::vfunc_00() { using namespace s05;
     InsectSpawn_BuildMasks();
     return TRUE;
 }
-#undef func_02003c30
-#undef func_0205468c
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c0b4
-#undef func_0209c0c8
-#undef func_0209c1a4
-#undef func_0209c224
-#undef func_0209c25c
+#undef Unk_02003c30_callRelease
+#undef AnimModel_detachAnim
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef PooledModel_unload
+#undef PooledModel_reset
+#undef ModelSlotPool_init
+#undef ModelSlotPool_release
+#undef ModelSlotPool_acquire
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
 #define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
@@ -8896,27 +8896,27 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     }
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9010,27 +9010,27 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
     }
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9196,27 +9196,27 @@ L268:
     }
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9272,27 +9272,27 @@ BOOL InsectManager::onExecute() { using namespace s04;
     Insect_UpdateSpawning(self);
     return TRUE;
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9393,27 +9393,27 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
     }
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9473,27 +9473,27 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
     return r;
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9562,27 +9562,27 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
     return FALSE;
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9638,27 +9638,27 @@ extern "C" s32 FieldInsect_GetPosAndKind(Vec3 *out, u32 idx) {
     return e->unk_24d;
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9750,27 +9750,27 @@ if (Insect_Spawn(self, b[2], (u8)b[3], 2)) {
     }
 }
 }
-#undef func_02003c70
-#undef func_02003cbc
-#undef func_02054710
-#undef func_02054720
-#undef func_020547e4
-#undef func_02054800
-#undef func_020554c0
-#undef func_020555ec
-#undef func_02055a9c
-#undef func_02055b38
-#undef func_02055bcc
-#undef func_0205668c
-#undef func_020566bc
-#undef func_02072e88
-#undef func_02088b20
-#undef func_0209c0ac
-#undef func_0209c0d0
-#undef func_0209c25c
-#undef func_0209c348
+#undef Unk_02003c40_callUpdateRelative
+#undef Unk_02003c30_callReset
+#undef AnimModel_attachAnim
+#undef BlendAnimModel_initAnim
+#undef AnimModel_stepAnim
+#undef AnimModel_allocAnmObj
+#undef Model_getRenderObj
+#undef Model_setResource
+#undef ModelAnim_addToRenderObj
+#undef ModelAnim_init
+#undef ModelAnim_allocMatAnm
+#undef AnimFrameCtrl_setup
+#undef AnimFrameCtrl_step
+#undef CommManager_isSlotActive
+#undef BugNetTarget_submit
+#undef PooledModel_getModel
+#undef PooledModel_loadFromSlot
+#undef ModelSlotPool_acquire
+#undef ModelSlot_getHeap
 #undef func_ov003_022287c8
-#undef func_ov068_022687c0
+#undef Unk_ov068_02268214_antsAppear
 #undef sInsectPathFmt0x
 #undef sInsectPathFmt1x
 #undef sInsectPathFmt2x
@@ -9939,11 +9939,11 @@ test0:
     if (l.i < 8) goto loop0;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -9965,11 +9965,11 @@ extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
     return FALSE;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10006,11 +10006,11 @@ yes:
     return TRUE;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10044,11 +10044,11 @@ extern "C" void SpecialInsect_UpdateAll(void *a) {
     } while (i < 2);
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10102,11 +10102,11 @@ extern "C" void HeldInsect_UpdateAll(void *a) {
     } while (i < 4);
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10149,11 +10149,11 @@ yes:
     return TRUE;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10197,11 +10197,11 @@ extern "C" void HeldInsect_Release(s32 idx, s32 v) {
     }
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10223,11 +10223,11 @@ extern "C" u32 HeldInsect_GetStage(s32 idx) {
     return o->unk_250;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10260,11 +10260,11 @@ test0:
     return TRUE;
 }
 }
-#undef func_02003c70
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_02072e88
+#undef Unk_02003c40_callUpdateRelative
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isSlotActive
 #undef func_ov003_022287c8
 #undef func_ov003_0222898c
 
@@ -10308,13 +10308,13 @@ extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t) {
     return FALSE;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10332,13 +10332,13 @@ extern "C" V3 *HeldInsect_GetPos(s32 idx) {
     return &o->unk_204;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10385,13 +10385,13 @@ extern "C" void HeldInsect_Start(s32 t, s32 idx) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10421,13 +10421,13 @@ extern "C" void Insect_OnNetRemove(s32 id) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10454,13 +10454,13 @@ extern "C" BOOL Insect_CanHopAway(s32 t) {
     return FALSE;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10484,13 +10484,13 @@ extern "C" void Insect_OnClaimGranted(s32 id) {
     o->unk_251 = 0x10;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10519,13 +10519,13 @@ extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
     o->unk_251 = 10;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10565,13 +10565,13 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
     return c;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10613,13 +10613,13 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
     return (u8)r;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10643,13 +10643,13 @@ extern "C" void Insect_CancelCatch(s32 id) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10692,13 +10692,13 @@ extern "C" s32 Insect_TryCatch(u8 id) {
     return 1;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10724,13 +10724,13 @@ extern "C" void Insect_SetScale(Obj *o, s32 v) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10759,13 +10759,13 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10797,13 +10797,13 @@ extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
     return TRUE;
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10866,13 +10866,13 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
     }
 }
 }
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_drawAnimated _ZN9AnimModel12drawAnimatedEPv
@@ -10900,13 +10900,13 @@ BOOL InsectManager::onDraw() { using namespace s02;
 
 #undef sHeldInsects
 
-#undef func_020547cc
-#undef func_02072824
-#undef func_020728a4
-#undef func_020728d4
-#undef func_020729cc
-#undef func_02072e88
-#undef func_0209c0ac
+#undef AnimModel_drawAnimated
+#undef CommManager_endRecord
+#undef CommManager_writeRecord
+#undef CommManager_beginRecord
+#undef CommManager_isMyAid
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
 #undef data_ov003_02234b06
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -10958,11 +10958,11 @@ BOOL InsectManager::vfunc_0c() { using namespace s01;
 
 #undef sHeldInsects
 
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11028,11 +11028,11 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11099,11 +11099,11 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
     }
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11128,11 +11128,11 @@ extern "C" void Insect_EnableTrashFlies(void) {
     sTrashFlySpawnEnabled = 1;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11255,11 +11255,11 @@ fail:
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11303,11 +11303,11 @@ extern "C" s32 Insect_TrySpawnRandom(s32 a, s32 b, s8 c, u32 d) {
     return 0;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11335,11 +11335,11 @@ extern "C" void Insect_SpawnBeeSwarm(Vec3 *v) {
     data_ov003_02259594[0x11] = 4;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11428,11 +11428,11 @@ extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Unk_ov003_02226180_Blk
     return ret;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11469,11 +11469,11 @@ extern "C" BOOL Insect_NetClaim(s32 x) {
     return TRUE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11505,11 +11505,11 @@ extern "C" BOOL Insect_IsBeeSwarmOut(void) {
     return FALSE;
 }
 }
-#undef func_020547a4
-#undef func_0205668c
-#undef func_02072e88
-#undef func_0209c0ac
-#undef func_0209c15c
+#undef AnimModel_setFrame
+#undef AnimFrameCtrl_setup
+#undef CommManager_isSlotActive
+#undef PooledModel_getModel
+#undef ModelSlotPool_destroy
 #undef func_ov003_022287c8
 #undef func_ov003_022288dc
 #undef data_ov003_02259484
@@ -11538,9 +11538,9 @@ extern "C" BOOL Insect_IsAtWateringPoint(void *p)
     return FALSE;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11566,9 +11566,9 @@ extern "C" BOOL Insect_RollKind(u8 *out)
     return FALSE;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11603,9 +11603,9 @@ extern "C" s32 Insect_GetTimeSlot()
     return 0;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11625,9 +11625,9 @@ extern "C" void Insect_TickFrame(u8 *self)
     }
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11657,9 +11657,9 @@ Insect::Insect()
     unk_252 = 0;
     unk_22c = -1;
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11670,9 +11670,9 @@ Insect::Insect()
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ed0
 Insect::~Insect() { using namespace s00;}
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11688,9 +11688,9 @@ extern "C" void Insect_SetAnimSpeed(u8 *self, u32 v)
     *(u32 *)(self + 0xfc) = v;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11735,9 +11735,9 @@ extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c)
     return FALSE;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11772,9 +11772,9 @@ extern "C" BOOL Insect_IsAllowedOnline(s32 a)
     return TRUE;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11817,9 +11817,9 @@ extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out)
     return FALSE;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11850,9 +11850,9 @@ extern "C" void FieldInsect_PurgeStale()
     }
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11908,9 +11908,9 @@ extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b)
     return 3;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11921,9 +11921,9 @@ extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b)
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225be0
 InsectMatAnim::InsectMatAnim() { using namespace s00;}
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11934,9 +11934,9 @@ InsectMatAnim::InsectMatAnim() { using namespace s00;}
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ba8
 InsectMatAnim::~InsectMatAnim() { using namespace s00;}
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -11961,9 +11961,9 @@ extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t)
     }
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -12100,9 +12100,9 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
     return 0;
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -12126,9 +12126,9 @@ extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16])
     InsectSpawn_ClearLitUnits(arr);
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 
@@ -12174,9 +12174,9 @@ extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16])
     }
 }
 }
-#undef func_02072e88
-#undef func_020b2ae0
-#undef func_020b2b98
+#undef CommManager_isSlotActive
+#undef StrBSizeData_getLightUnit
+#undef StrBSizeData_getLightUnitCount
 #undef func_02133150
 #undef data_ov003_022595b0
 

@@ -28,6 +28,7 @@ Nothing is written unless every record validates, unless --partial (then refused
 rest is applied). -n writes nothing. See README.md.
 """
 import argparse
+import bisect
 import re
 import sys
 from collections import defaultdict
@@ -617,6 +618,7 @@ def parse_list(path):
 CLASS_HEAD = re.compile(r"\b(class|struct|union)\s+([A-Za-z_]\w*)\s*(?:final\s*)?(:\s*[^{};()]*)?\{")
 METHOD_DEF = re.compile(r"\b([A-Za-z_]\w*)\s*::\s*(~?\s*[A-Za-z_]\w*)\s*\(")
 DEFINE = re.compile(r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)[ \t]+([A-Za-z_]\w*)[ \t]*$", re.M)
+DEFINE_CALL = re.compile(r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)\([^)\n]*\)[ \t]+(_Z[A-Za-z0-9_]*)[ \t]*\(", re.M)
 ACCESS = re.compile(r"^\s*(?:(?:public|private|protected)\s*:\s*)+")
 
 
@@ -780,6 +782,46 @@ class FileModel:
         for mo in DEFINE.finditer(m):
             self.defines[mo[1]] = mo[2]
             self.macro_ranges.setdefault(("define", mo[1]), []).append((mo.start(), mo[2]))
+        # function-like call macros `#define func_X(a, b) _ZN8NpcActor13func_XEii(this, a, b)`: like the object-like
+        # ones, the macro stands for that mangled symbol (only `_Z` bodies; never used for typing)
+        for mo in DEFINE_CALL.finditer(m):
+            self.macro_ranges.setdefault(("define", mo[1]), []).append((mo.start(), mo[2]))
+        # token-pasting macros `#define PM(a) (... data_ov074_##a)`: (macro, prefix); `PM(02272538)` spells
+        # data_ov074_02272538, which a whole-word rename cannot see
+        self.paste_prefixes = [(mo[1], mo[2]) for mo in re.finditer(
+            r"^[ \t]*#[ \t]*define[ \t]+([A-Za-z_]\w*)\([^)\n]*\)[^\n]*?\b([A-Za-z_]\w*)[ \t]*##", m, re.M)]
+        # file-scope free functions (declarations and definitions, also inside namespace / extern "C" blocks):
+        # name -> first position. A bare call of such a name from a member function of a class that has no method
+        # of that name calls the free function (a `static inline` wrapper named like a method placeholder)
+        self.free_funcs = {}
+        transparent = {o for o, c, _ in self.namespaces}
+        transparent |= {mo.end() - 1 for mo in re.finditer(r"\bextern\s*\{", m)}
+        opaque = []
+        for o in sorted(braces):
+            if o in transparent or (opaque and o < opaque[-1][1]):
+                continue
+            opaque.append((o, braces[o]))
+        starts = [o for o, _ in opaque]
+        for mo in re.finditer(r"\b([A-Za-z_]\w*)\s*\(", m):
+            name, at = mo[1], mo.start()
+            if name in KEYWORDS or name in self.free_funcs:
+                continue
+            i = bisect.bisect_right(starts, at) - 1
+            if i >= 0 and at < opaque[i][1]:
+                continue  # inside a class, function or initializer body
+            ls = m.rfind("\n", 0, at) + 1
+            if m[ls:at].lstrip().startswith("#"):
+                continue
+            j = back_ws(m, at - 1)
+            if j < 0 or not (m[j].isalnum() or m[j] in "_*&"):
+                continue  # not preceded by a return type (a macro invocation, an initializer call)
+            k = j
+            while k > 0 and (m[k - 1].isalnum() or m[k - 1] == "_"):
+                k -= 1
+            if m[k:j + 1] in ("return", "sizeof", "new", "delete", "else", "case", "goto", "operator") or \
+                    m[max(0, k - 2):k] == "::" or m[max(0, k - 1):k] in (".", ">"):
+                continue
+            self.free_funcs[name] = at
         self.includes = re.findall(r'^[ \t]*#[ \t]*include[ \t]+"([^"]+)"', text, re.M)
         self.typedefs = {}
         for mo in re.finditer(r"\btypedef\s+(?:const\s+)?(?:struct\s+|class\s+)?([A-Za-z_]\w*)\s+([A-Za-z_]\w*)\s*;", m):
@@ -807,6 +849,14 @@ class FileModel:
             if body <= pos < end:
                 return name, end
         return None
+
+    def macro_pos(self, pos):
+        """where to look up the macro named by the identifier at pos: just after it, or, for the name of an `#undef`
+        line, just before that line (the #undef itself ends the macro, but names the macro that was active)"""
+        ls = self.masked.rfind("\n", 0, pos) + 1
+        if re.fullmatch(r"[ \t]*#[ \t]*undef[ \t]+", self.masked[ls:pos]):
+            return ls
+        return pos + 1
 
     def macro(self, kind, name, pos):
         """the value of a macro (kind 'define': identifier body, 'cast': the cast's type) active at pos, or None"""
@@ -1230,7 +1280,12 @@ def expression_type(fm, idx, j, pos, depth):
     # a member of another expression: `a.b->name`
     owner, access = receiver_type(fm, idx, k, depth + 1)
     if access:
-        return idx.field_type(owner, name, fm.vkey) if owner else None
+        if not owner:
+            return None
+        alias = fm.macro("define", name, k)
+        if alias and alias != name and not alias.startswith("_Z"):
+            name = alias  # a field renamed by a macro: `#define unk_13b0 unk_13b0_v16`
+        return idx.field_type(owner, name, fm.vkey)
     return variable_type(fm, idx, name, pos)
 
 
@@ -1286,7 +1341,14 @@ def variable_type_raw(fm, idx, name, pos):
             if o < pos < c:
                 head = o
     if head is not None:
-        local = [t for at, t in found if head <= at < pos]
+        local = [(at, t) for at, t in found if head <= at < pos]
+        # a local constructed with arguments: `TalkTagScannerView loc(this);`
+        ctor = re.compile(r"(?<![\w.>:])([A-Za-z_]\w*)\s+" + re.escape(name) + r"\s*\(")
+        for mo in ctor.finditer(m, head, pos):
+            t = resolve_type(fm, mo[1], idx, mo.start())
+            if t in idx.classes or t in idx.sym_components:
+                local.append((mo.start(), t))
+        local = [t for at, t in sorted(local)]
         if local:
             return local[-1]
     cls = fm.enclosing_class(pos)
@@ -1445,9 +1507,9 @@ class Renamer:
             owner = idx.lookup(qcls, tok, fpath) or qcls
             r = pairs.get(owner)
             return self.hit(r, "src" if code else "comment/docs", path) if r else None
-        if code and fm is not None and fm.macro("define", tok, pos + 1):
-            # `#define name _ZN...`: every use in the file follows the macro's mangled symbol
-            key = (fm.path, tok, fm.macro("define", tok, pos + 1))
+        if code and fm is not None and fm.macro("define", tok, fm.macro_pos(pos)):
+            # `#define name _ZN...`: every use in the file follows the macro's mangled symbol (its #undef too)
+            key = (fm.path, tok, fm.macro("define", tok, fm.macro_pos(pos)))
             if key not in self.define_cache:
                 owner = None
                 mm = parse_mangled(key[2])
@@ -1497,6 +1559,12 @@ class Renamer:
             return self.hit(r, "src", path) if r else None
         if free_fallback and not access:
             return None  # an unqualified name that no class of the chain declares: the free function of that name
+        if not access and self.free_in_scope(fm, tok, pos):
+            # no class of the chain declares it, and a free function of that name is declared before (e.g. a
+            # file-local `static inline` wrapper named like the method placeholder): the call is to that function
+            for r in {id(x): x for x in pairs.values()}.values():
+                r.counts["left (free function in scope)"] += 1
+            return None
         # unresolved: safe only if every class of this file's view that has this method name is renamed
         declared = {c for c, ci in idx.view(fm.vkey).items() if tok in ci.all_methods}
         if declared and declared <= set(pairs) and tok not in idx.field_names and tok not in idx.symbols:
@@ -1507,6 +1575,24 @@ class Renamer:
         for r in {id(x): x for x in pairs.values()}.values():
             r.unresolved.append(f"{where}: `{tok}` ({'receiver ' + cls if cls else 'receiver unknown'})")
         return None
+
+    def free_in_scope(self, fm, tok, pos):
+        """a file-scope free function named tok is declared in the file before pos, or in a header it includes"""
+        if fm.free_funcs.get(tok, pos) < pos:
+            return True
+        seen, todo = {fm.path}, [fm]
+        while todo:
+            f = todo.pop()
+            for inc in f.includes:
+                hp = self.idx.resolve_include(f.path, inc)
+                if hp is None or hp in seen:
+                    continue
+                seen.add(hp)
+                hf = self.idx.files[hp]
+                if tok in hf.free_funcs:
+                    return True
+                todo.append(hf)
+        return False
 
     def decide_by_macro_uses(self, tok, pos, fm, fpath, pairs, path, macro, end, access):
         """a method name in the body of a file-scope #define: decided by the classes of the member functions that use
@@ -1524,7 +1610,9 @@ class Renamer:
             cls = fm.enclosing_class(u)
             cls = resolve_type(fm, cls, idx, u) if cls else None
             owner = idx.lookup(cls, tok, fpath) if cls else None
-            if owner is None:
+            if owner is None and not access and cls and self.free_in_scope(fm, tok, pos):
+                decisions.add(None)  # the free function of that name
+            elif owner is None:
                 decisions.add("unresolved")
             else:
                 decisions.add(id(pairs[owner]) if owner in pairs else None)
@@ -1555,7 +1643,7 @@ class Renamer:
                         r.counts["skipped (file name)"] += 1
                     return tok
                 if fm is not None and self.call_macros and code:
-                    body = fm.macro("define", tok, a + m.start() + 1)
+                    body = fm.macro("define", tok, fm.macro_pos(a + m.start()))
                     hitm = self.call_macros.get((fm.path, tok, body)) if body else None
                     if hitm:
                         hitm[1].counts["src (call macro)"] += 1
@@ -1734,17 +1822,17 @@ def normalize(r, idx):
     r.notes.append(f"`{before}` names a method: treated as `{r.label()}`")
 
 
-def resolve_scope(r, global_mods, src_mods, what):
+def resolve_scope(r, global_mods, src_mods, what, cfg="symbols.txt"):
     src_mods = set(src_mods) - {"include", "src"}
     if global_mods:
         if len(global_mods) > 1:
             if r.qual in (None, "*"):
-                return [f"{r.where}: {what} {r.old} is in the symbols.txt of several modules "
+                return [f"{r.where}: {what} {r.old} is in the {cfg} of several modules "
                         f"({', '.join(sorted(global_mods))}); qualify it, e.g. `{sorted(global_mods)[0]}:{r.old}`"]
             if r.qual not in global_mods:
-                return [f"{r.where}: {r.old} is not in {r.qual}'s symbols.txt (it is in {', '.join(sorted(global_mods))})"]
+                return [f"{r.where}: {r.old} is not in {r.qual}'s {cfg} (it is in {', '.join(sorted(global_mods))})"]
             r.scope = r.qual
-            r.notes.append(f"in several modules' symbols.txt: only {r.qual}'s symbols.txt and src/{r.qual} renamed")
+            r.notes.append(f"in several modules' {cfg}: only {r.qual}'s {cfg} and src/{r.qual} renamed")
             return []
         (only,) = global_mods
         if r.qual not in (None, "*") and r.qual != only:
@@ -1770,16 +1858,31 @@ def resolve_scope(r, global_mods, src_mods, what):
 def check_func(r, idx, allow_existing):
     errors = []
     in_syms = idx.symbols.get(r.old, set())
-    in_src = idx.tokens.get(r.old, set()) | idx.other_config.get(r.old, set())
+    in_lcf = idx.other_config.get(r.old, set())
+    in_src = idx.tokens.get(r.old, set()) | in_lcf
     if not in_syms and not in_src:
         return [f"{r.where}: {r.old} exists in no symbols.txt and no source"]
     if not in_syms and r.old in idx.sym_methods:
         classes = ", ".join("::".join(p or "?" for p in path) for path in sorted(idx.sym_methods[r.old], key=str))
         return [f"{r.where}: {r.old} is not a symbols.txt name but a method of {classes}; use "
                 f"`member <Class>::{r.old} <new>` (or `vfunc` if virtual)"]
-    errors += resolve_scope(r, in_syms, in_src, "symbol")
+    # a name the linker script defines (lcf_symbols.txt / abs_symbols.txt: `data_021ed0a0 ... base:gSaveData`) is a
+    # global link-time symbol like a symbols.txt name: renamed in every module that uses it, no qualifier needed
+    if in_syms:
+        errors += resolve_scope(r, in_syms, in_src, "symbol")
+    else:
+        errors += resolve_scope(r, in_lcf, in_src, "symbol", "lcf_symbols.txt/abs_symbols.txt")
     if not allow_existing and idx.used(r.new):
         errors.append(f"{r.where}: {r.new} is already used ({describe_use(idx, r.new)}); --allow-existing to accept")
+    for p, fm in idx.files.items():
+        for macro, prefix in getattr(fm, "paste_prefixes", ()):
+            rest = r.old[len(prefix):]
+            if r.old.startswith(prefix) and rest:
+                mo = re.search(r"\b" + re.escape(macro) + r"\s*\(\s*" + re.escape(rest) + r"\s*\)", fm.masked)
+                if mo:
+                    errors.append(f"{r.where}: {r.old} is also spelled by token pasting, `{mo[0]}` with "
+                                  f"`#define {macro}(..) ..{prefix}##..` at {p.relative_to(idx.repo.root)}:"
+                                  f"{fm.line(mo.start())}; expand that use (or the macro) by hand first")
     if r.old.startswith("_Z"):
         r.notes.append("old name is mangled: only literal uses change (symbols.txt, extern \"C\" declarations)")
     if in_syms and r.old in idx.sym_methods:
@@ -2346,7 +2449,7 @@ def check_hierarchy_names(renames, idx, errs):
                 break
 
 
-def validate(renames, idx, allow_existing):
+def validate(renames, idx, allow_existing, allow_common=False):
     """{rename: [errors]}"""
     errs = defaultdict(list)
     for r in renames:
@@ -2363,6 +2466,11 @@ def validate(renames, idx, allow_existing):
         if r.qual not in (None, "*") and r.qual not in modules_known(idx):
             errs[r].append(f"{r.where}: unknown module {r.qual}")
             continue
+        if r.kind in ("func", "class") and not allow_common:
+            e = check_common_name(r, idx)
+            if e:
+                errs[r] += e
+                continue
         check = {"func": check_func, "class": check_class, "member": check_member, "vfunc": check_vfunc,
                  "free": check_free}[r.kind]
         errs[r] += check(r, idx, allow_existing)
@@ -2403,6 +2511,34 @@ def validate(renames, idx, allow_existing):
             errs[r].append(f"{r.where}: new name {r.new} is also renamed in this list (chains and swaps are refused; "
                            f"split them into two batches)")
     return {r: e for r, e in errs.items() if e}
+
+
+PLACEHOLDER = re.compile(r"(?:Unk|func|data|vfunc|unk|sub|lbl|ptr|jtbl)_\w+|_Z\w+|\w*[0-9a-fA-F]{8}\w*")
+
+
+def check_common_name(r, idx):
+    """func/class records are applied as whole-word replacements. An old name that is not a placeholder and is very
+    short, or is also spelled as a field / method / class / symbol elsewhere, would rewrite unrelated identifiers
+    (merge 1: B01's local classes A, B, D -> every local, label and comment spelled A, B or D, "D-pad")"""
+    old = r.old
+    if PLACEHOLDER.fullmatch(old):
+        return []
+    why = []
+    if len(old) <= 3:
+        why.append(f"is only {len(old)} character{'s' if len(old) > 1 else ''} long")
+    if old in idx.field_names:
+        why.append("is also a struct field name")
+    if idx.declarers.get(old, set()) - {old}:
+        why.append("is also a method name")
+    if r.kind == "func" and old in idx.classes:
+        why.append("is also a class name")
+    if r.kind == "class" and (old in idx.symbols or old in idx.other_config):
+        why.append("is also a symbol name")
+    if not why:
+        return []
+    return [f"{r.where}: old name {old} is not a placeholder (Unk_/func_/data_<addr>...) and {' and '.join(why)}; a "
+            f"{r.kind} record is a whole-word rename and would also rewrite unrelated identifiers and comments "
+            f"spelled {old}. Rename it by hand, or pass --allow-common-names if every occurrence is meant"]
 
 
 def modules_known(idx):
@@ -2495,6 +2631,8 @@ def main():
     ap.add_argument("-n", "--dry-run", action="store_true", help="report only, write nothing to the repository")
     ap.add_argument("-v", "--verbose", action="store_true", help="list the changed files of every rename")
     ap.add_argument("--allow-existing", action="store_true", help="accept new names that already occur")
+    ap.add_argument("--allow-common-names", action="store_true", help="accept func/class records whose old name is "
+                    "not a placeholder and is very short or also a field/method/class/symbol name")
     ap.add_argument("--partial", action="store_true", help="drop refused records and apply the rest")
     ap.add_argument("--min-confidence", choices=list(CONFIDENCE), help="skip batch records below this confidence")
     ap.add_argument("--report", type=Path, help="write a markdown report (default for batch files: "
@@ -2553,7 +2691,7 @@ def main():
         active = [r for r in active if r not in errs]
 
     while active:
-        errs = validate(active, idx, args.allow_existing)
+        errs = validate(active, idx, args.allow_existing, args.allow_common_names)
         if not errs:
             break
         drop(errs)
