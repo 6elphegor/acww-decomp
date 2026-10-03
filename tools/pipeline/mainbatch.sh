@@ -3,7 +3,7 @@
 # keep them if the ROM matches; otherwise revert and show why (then install them one at a time to find the culprit).
 #
 # Run from the repository root (the directory with build.ninja). Each <unit dir> holds a deliverable as
-# main_unit_instructions.md describes it: spec.txt, unit.cpp, optionally renames.txt and aliases.txt.
+# Each unit directory holds spec.txt, unit.cpp, optionally renames.txt and aliases.txt.
 #   --commit   commit the linked units (one commit for the batch) when the ROM matches
 #   --module M the units belong to the library module M (autoload_2 or itcm) instead of main; the source is the
 #              file the spec's `unit` line names (unit.c or unit.cpp); in any module a spec line `unit unit.s`

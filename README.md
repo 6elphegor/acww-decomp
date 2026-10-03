@@ -9,6 +9,30 @@ Supported version:
 | -------------- | --------- | ------------------------------------------ |
 | USA (Rev 1)    | `ADME`    | `77fde3e30e1e6068395d1f96ea63be569b61c351` |
 
+## Status
+
+Every overlay and all of main are built from source, and the build reproduces the original ROM byte for byte.
+
+| Module | Code built from source |
+|---|--:|
+| ARM9 main | 100% of functions |
+| Overlays (148) | 100% |
+| ITCM | 97.0% |
+| `autoload_2` (libraries) | 93.4% |
+| **Total** | **99.1%** |
+
+The 23 functions still taken from the original image, and the data no source file owns yet, are listed in
+[`docs/unmatched.md`](docs/unmatched.md). Most names are still placeholders (`func_<address>`, `Unk_<address>`);
+naming and documenting the game code is the main open work.
+
+## Documentation
+
+- [`docs/matching.md`](docs/matching.md): how to match a function, compiler settings and quirks, the tools.
+- [`docs/assembly.md`](docs/assembly.md): when code is kept as assembly, and the exceptions.
+- [`docs/unmatched.md`](docs/unmatched.md): what is left.
+- [`docs/layout.md`](docs/layout.md): where code and libraries live in the ROM.
+- [`tools/pipeline/linking.md`](tools/pipeline/linking.md): turning matched code into linked units.
+
 ## Setup
 
 Requirements:
@@ -29,7 +53,8 @@ Requirements:
    rebuilt `acww_usa.nds` against the original SHA-1.
 
 Other targets:
-- `ninja check`: verify every module and symbol address in the linked binary
+- `ninja check_modules`: verify every module's layout in the linked binary (`ninja check` also runs
+  `check_symbols`, which reports data inside compiled files under compiler-local `@NN` names)
 - `ninja objdiff`: generate `objdiff.json` for [objdiff](https://github.com/encounter/objdiff)
 - `ninja report`: generate a progress report
 
@@ -52,7 +77,9 @@ The game was built with Metrowerks CodeWarrior for DS 1.2 (`mwccarm` internal ve
   The other 5 are in overlay 65, which uses the 1.2/sp2p3 form and was likely built separately.
 - b56 and base haven't been told apart; `configure.py` uses `1.2/base`.
 
-Nearly all code, including NitroSDK, is Thumb and matches with `-O4,s`. Parts of the game are C++.
+The game code is mostly Thumb C/C++ and matches with `-O4,s`; the libraries in `autoload_2` (NitroSDK,
+NitroSystem, MSL, the C++ runtime) and the in-house ARM code use `-O4,p`. Per-file settings go in a
+`// mwcc-flags:` line at the top; [`docs/matching.md`](docs/matching.md) has the table.
 
 Quirks:
 - Functions are emitted in reverse order, so define them from highest to lowest address within a source file.
@@ -97,3 +124,8 @@ which helps find the extent of a source file.
 The dsd config in `config/` was generated with `dsd init` from dsd v0.12.1 plus a fix for Thumb functions whose
 second instruction is an unconditional branch (without it, `init` fails on this ROM). Building only needs the
 released v0.12.1, which `configure.py` downloads. To rerun `init`, use a dsd build with that fix.
+
+## Licence
+
+The project's own work (sources, tools, documentation) is under the MIT licence, see [`LICENSE`](LICENSE). The
+game and its ROM belong to Nintendo and are not included; you need your own dump to build.

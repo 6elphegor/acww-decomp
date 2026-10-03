@@ -1,17 +1,28 @@
-# Matching pipeline state
-
-Files used to run parallel matching agents over ARM9 main. The originals lived in a session scratch directory, so the paths inside `brief.md` point there. Copy these files into a fresh scratch dir, or update the paths, before reusing them.
-
-- `brief.md`: shared agent brief (tools, naming rules, every compiler quirk found so far).
-- `queue2.txt`: work groups `rNNN <first addr> <last addr> <count> <bytes>` over 0x02000c2c–0x020a6914. r000–r104, r106–r110, r114 and r116 are done. Next: r105, r111–r113, r115 and r117 onward. Partial work for the interrupted groups is in `../../../pipeline_wip/` (outside the repo).
-- `integrate.py <source.cpp> <pairs.txt> <unit>`: renames symbols in `symbols.txt`, copies the source to `src/main/<unit>.cpp` and adds an unlinked `delinks.txt` entry. Afterwards run `python3 tools/configure.py usa && ninja && ninja report`.
-- `nearmiss.txt`: functions that are close but not matching (`<orig> <scratch source>`). Sources are in `pipeline_wip/nearmiss/`.
-- `merge_notes.txt`: classes that different units named separately, plus call-site workarounds to clean up when units are merged into linkable translation units.
-
 # Linking tools
 
-`linking.md` is the playbook. Overlays: `linkprep.py`, `install_tu.py`, `install_units.py`, `ovdump.py`, `link_candidates.py`.
-Main module (see "Linking the main module" in `linking.md`): `install_tu.py main`, `linkprep.py ... main` (`mainprep.py`),
-`realnames.py`, `maindis.py`, `vtable_rename.py`, `mainbatch.sh`; build steps `tools/bss_units.py`, `tools/aliases.py`,
-`tools/object_order.py`, `tools/lcf_symbols.py` (names for addresses inside linked units, from `lcf_symbols.txt`). `maincheck.py` is the older per-function check; `linkprep.py check <o> main <spec>` replaces it.
-Library modules `autoload_2` and `itcm` (C sources, ARM code): the same tools with the module name in place of `main` (`linkprep.py check <o> autoload_2 <spec>`, `install_tu.py autoload_2 <spec>`, `mainbatch.sh --module autoload_2`, `maindis.py`); see "Library modules (autoload_2, itcm)" in `linking.md`.
+Tools for turning matched source into `complete` units of the build. Run everything from the repository root.
+[`linking.md`](linking.md) is the procedure (overlays, the main module, the library modules `autoload_2` and
+`itcm`, and assembly units); the [matching guide](../../docs/matching.md) covers the matching side.
+
+| Tool | What it does |
+|---|---|
+| `linkprep.py` | Main working tool for a unit: `compile` (with the build's flags and header lines), `reverse` (sort definitions by descending address), `check` (simulated link against the original: layout, bytes, targets, unresolved names), `data [--apply]` (reproduce the original data order), `undef`, `dump`, `diff` (after a failed build) |
+| `mainprep.py` | The main-module and library side of `linkprep.py` (`check`/`data`/`dump`/`diff ... main\|autoload_2\|itcm <spec>`); not run directly |
+| `install_tu.py` | Install one translation unit (`[--replace] <main\|autoload_2\|itcm\|ovNNN> <spec>`): writes the source, marks it `complete`, trims overlapping units, adds the bss placeholder, applies `renames.txt` / `aliases.txt` |
+| `install_units.py` | Install an overlay as several complete units from one spec |
+| `mainbatch.sh` | Install prepared units (`[--commit] [--module M] <unit dir>...`), reconfigure, build once, and keep them only if the ROM matches; otherwise revert and show why |
+| `maindis.py` | Disassemble original code of main, `autoload_2` or ITCM at an address, with relocation targets |
+| `ovdump.py` | Dump an overlay's `.data` as words with relocation targets and labels |
+| `realnames.py` | Rewrite `func_XXXXXXXX` callees in a unit to their current `symbols.txt` names (`-n` only reports) |
+| `vtable_rename.py` | Name a vtable at its real start and rewrite relocations to it (`to:<start> add:0x8`); `--interior` / `--section` record labels inside objects |
+| `alias.py` | Give an existing function symbol a second name (zero-size label), e.g. a C1/C2 constructor pair |
+| `alias_addr.py` | The same, finding the existing symbol by address |
+| `apply_aliases.py` | Apply a list of `<new name> <addr>` aliases to the first given `symbols.txt` with a function there |
+| `rename_impact.py` | For each line of a `renames.txt`, list the linked units whose objects reference the old name |
+| `disambiguate.py` | Resolve main's relocations into overlays that share a load address (`module:overlays(...)`) to the one overlay whose scene entry is at the target (`--write` to apply) |
+| `romdiff.py` | After a build, list which modules (main, autoloads, overlays) differ from the original |
+| `maincheck.py` | Older per-function byte check for main units; `linkprep.py check <obj> main <spec>` supersedes it |
+
+Build steps that support linked units (`bss_units.py`, `object_order.py`, `aliases.py`, `lcf_symbols.py`,
+`force_active.py`, `expand_incbin.py`) live in `tools/` and are wired into `build.ninja` by
+`tools/configure.py`.

@@ -3,8 +3,7 @@
 An overlay's units are *matched* when every function compiles to the original instructions, but the ROM is still
 built from the delinked original until the unit is marked `complete` in `delinks.txt`. Linking an overlay means
 turning all of its units into one compiled object that reproduces the overlay byte for byte: code, data and bss.
-ov140 and ov141 were linked this way. `tools/pipeline/link_candidates.py` lists the overlays that are ready
-(fully covered by matched units, no recorded near-misses).
+All 148 overlays are linked this way.
 
 Run every tool from the repository root. `tools/pipeline/linkprep.py` has the subcommands used below.
 
@@ -189,7 +188,6 @@ Their sources were generated from the original image, with the definition order 
   global keeps its `symbols.txt` name (ov069's empty initialiser object `data_ov069_02260cc0`).
 * Labels used from outside the unit: main's `data_020e4280` table names `data_ov005_0225b79c`, which is the fourth
   id of ov005's list `data_ov005_0225b790`: `ov005 0225b79c interior:0225b790` in the unit's renames.txt.
-* `link_candidates.py` lists such an overlay as `data-only` until a complete unit covers all its sections.
 
 ## Overlays that were two translation units
 
@@ -363,7 +361,7 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
   placeholder in autoload_3;
 * removes old non-complete files that lie inside the `.text` range (`git rm`), trims the ones that straddle it
   (a file covering both sides keeps the lower part). A trimmed file that has the name the unit needs is renamed
-  to `unk_<its new start>.cpp` (`git mv`). So **file names in `plan.md`/`tu/TUnnn.txt` go stale as units are
+  to `unk_<its new start>.cpp` (`git mv`). So **file names in plans and notes go stale as units are
   installed**: prepare units from a frozen copy of `src/main`, and take function addresses, not file names, as
   the reference;
 * `--replace`: complete units inside the range are removed too. This is how the early code-only units are
