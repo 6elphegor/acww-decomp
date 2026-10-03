@@ -1,4 +1,4 @@
-// ov122: scene overlay (class Unk_ov122_0229a1b8, vtable 0x0229a1b8, 0x4664 bytes): chat keyboard/text-entry list screen.
+// ov122: scene overlay (class LetterWriteMenu, vtable 0x0229a1b8, 0x4664 bytes): chat keyboard/text-entry list screen.
 #define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
@@ -69,58 +69,58 @@ class ScrollKnob : public HandCursor {
 public:
 };
 
-class Unk_ov002_022046b0 : public ScrollKnob {
+class MenuScrollKnob : public ScrollKnob {
 public:
-    Unk_ov002_022046b0();
-    virtual ~Unk_ov002_022046b0();
+    MenuScrollKnob();
+    virtual ~MenuScrollKnob();
     u32 unk_04[0x44 / 4];
 };
 
-class Unk_ov002_02202d98 : public HandCursor {
+class MenuCursorBase : public HandCursor {
 public:
 };
 
-class Unk_ov002_02204614 : public Unk_ov002_02202d98 {
+class MenuCursorBuf0 : public MenuCursorBase {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     u32 unk_04[0x60 / 4];
 };
 
-class Unk_ov002_022013ac {
+class PopupChoiceMenuBody {
 public:
     u32 unk_00[0x2f4 / 4];
 };
 
-class Unk_ov002_02204558 : public Unk_ov002_022013ac {
+class PopupChoiceMenu : public PopupChoiceMenuBody {
 public:
-    Unk_ov002_02204558();
-    ~Unk_ov002_02204558();
+    PopupChoiceMenu();
+    ~PopupChoiceMenu();
 };
 
-class Unk_ov002_02202fac {
+class MenuBottomButtonsBody {
 public:
     u32 unk_00[0x164 / 4];
 };
 
-class Unk_ov002_022046cc : public Unk_ov002_02202fac {
+class MenuBottomButtons : public MenuBottomButtonsBody {
 public:
-    Unk_ov002_022046cc();
-    ~Unk_ov002_022046cc();
+    MenuBottomButtons();
+    ~MenuBottomButtons();
 };
 
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
+    MenuErrorMessage();
+    ~MenuErrorMessage();
     u32 unk_00[0x108 / 4];
 };
 
 // Scene base class (declared in src/ov002/unk_ov002_02200680.cpp)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -131,34 +131,34 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 a);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_02200908(s32 a);
-    void func_ov002_022008c4(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_022008fc(s32 a);
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    BOOL func_ov002_022009a4();
-    u8 func_ov002_022009c8();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void setSlideExtent(s32 a);
+    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
+    BOOL stepSlideIn(s32 a);
+    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
+    BOOL stepSlideOut(s32 a);
+    s32 getSlideOffsetY();
+    void restartKeyRepeat();
+    BOOL isRepeatLeft();
+    u8 takeRepeatedKeys();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
     void func_ov002_02200a68();
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -168,17 +168,17 @@ public:
 };
 
 // 0xc0: ov095 list/text object, size 0x23bc
-class Unk_ov122_ov095_02293b60 {
+class Keyboard {
 public:
-    Unk_ov122_ov095_02293b60() : unk_22f4(), unk_233c() {}
-    inline ~Unk_ov122_ov095_02293b60() {}
+    Keyboard() : unk_22f4(), unk_233c() {}
+    inline ~Keyboard() {}
     u32 unk_00[0x22f4 / 4];
     BgVramTask unk_22f4[2];
     Unk_020e0488 unk_233c[2];
 };
 
-class Unk_ov122_0229a1b8;
-typedef void (Unk_ov122_0229a1b8::*Unk_ov122_0229a1b8_Fn)();
+class LetterWriteMenu;
+typedef void (LetterWriteMenu::*Unk_ov122_0229a1b8_Fn)();
 
 extern "C" {
 extern u8 gTouchCurX;
@@ -196,83 +196,83 @@ void _ZN10PlayerData13func_02098750Ev();
 void *_ZN15PlayerInventory9getUnk988Ev();
 void func_02065470(void *a, void *b);
 s32 _ZN12Unk_0206ce9813func_0206cf34Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202af0Ev(void *p);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(void *p);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(void *p, s32 a, s32 b);
-void _ZN18Unk_ov002_02202d9819func_ov002_0220298cEiiih(void *p, s32 a, s32 b, u32 c, u32 d);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202a18Eiii(void *p, s32 a, s32 b, u32 c);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(void *p, u32 v);
-void func_ov002_02202064(void *p, u32 v);
-void func_ov002_022020cc(void *p, u32 a, u32 b);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(void *p);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(void *p, u32 v);
-void _ZN18Unk_ov002_02202fac19func_ov002_022030acEh(void *p, u32 v);
-void func_ov002_02202e54(void *p);
-BOOL _ZN18Unk_ov002_022046b019func_ov002_02202f18Eii(void *p, u32 a, u32 b);
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
-void func_ov095_022924f0(void *s);
-s32 func_ov095_02292580(void *s);
-s32 func_ov095_02292544(void *s);
-s32 func_ov095_02295194(void *s);
+void _ZN14MenuCursorBase11setPoseIdleEv(void *p);
+void _ZN14MenuCursorBase14setPoseReleaseEv(void *p);
+void _ZN10MenuCursor12setPosePressEv(void *p);
+void _ZN14MenuCursorBase6warpToEii(void *p, s32 a, s32 b);
+void _ZN14MenuCursorBase10moveToNearEiiih(void *p, s32 a, s32 b, u32 c, u32 d);
+void _ZN14MenuCursorBase12moveToLinearEiii(void *p, s32 a, s32 b, u32 c);
+void _ZN10MenuCursor16setAnimIfChangedEi(void *p, u32 v);
+void PopupChoice_Close(void *p, u32 v);
+void PopupChoice_OpenAddresseePage(void *p, u32 a, u32 b);
+s32 _ZN19PopupChoiceMenuBody7getRowXEv(void *p);
+s32 _ZN19PopupChoiceMenuBody7getRowYEi(void *p, u32 v);
+void _ZN21MenuBottomButtonsBody11setSelectedEh(void *p, u32 v);
+void Menu_PlayScrollTickSe(void *p);
+BOOL _ZN14MenuScrollKnob7hitTestEii(void *p, u32 a, u32 b);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
+void Keyboard_ResetCursor(void *s);
+s32 Keyboard_GetCursorX(void *s);
+s32 Keyboard_GetCursorY(void *s);
+s32 Keyboard_ClearHighlight(void *s);
 extern u8 data_021edb68;
 s32 func_02051348(void *p, s32 v);
 s32 _ZN12Unk_0206ce9813func_0206cefcEi(void *p, s32 v);
 s32 *_ZN12Unk_0206ce9813func_0206cf40Ev(void *p);
 s32 _ZN12Unk_0206d0a013func_0206d2d4Ev(void *p);
 BOOL MenuCtrl_IsTouch();
-u32 func_ov095_02293fb4(void *st, u8 *a, u32 b, u32 c, s32 d);
-s32 func_ov095_02293f2c(void *st, void *a, s32 b, s32 c, u32 d, u8 *out);
-void func_ov095_022951e4(void *st);
-BOOL func_ov095_02295440(void *st, s32 v);
-void func_ov095_02294d40(void *st, s32 v);
-BOOL func_ov095_02295270(void *st, s32 v);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_02201494Ev(void *p);
-s32 _ZN18Unk_ov002_02202fac19func_ov002_022030f4Ei(void *p, s32 v);
-s32 _ZN18Unk_ov002_02202fac19func_ov002_022030b8Ei(void *p, s32 v);
-void _ZN18Unk_ov002_022040ec19func_ov002_02204340EPhij(void *p, void *q, s32 a, s32 b);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev(void *p);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202ca0Ev(void *p);
+u32 Keyboard_DeleteRange(void *st, u8 *a, u32 b, u32 c, s32 d);
+s32 Keyboard_HitTestText(void *st, void *a, s32 b, s32 c, u32 d, u8 *out);
+void Keyboard_ResetKeyPalettes(void *st);
+BOOL Keyboard_IsSlotDisabled(void *st, s32 v);
+void Keyboard_HighlightKey(void *st, s32 v);
+BOOL Keyboard_IsOnButtonKey(void *st, s32 v);
+s32 _ZN19PopupChoiceMenuBody11getRowCountEv(void *p);
+s32 _ZN21MenuBottomButtonsBody10getTargetXEi(void *p, s32 v);
+s32 _ZN21MenuBottomButtonsBody10getTargetYEi(void *p, s32 v);
+void _ZN16MenuErrorMessage8openHighEPhij(void *p, void *q, s32 a, s32 b);
+void _ZN10MenuCursor14switchToAnim01Ev(void *p);
+void _ZN10MenuCursor14switchToAnim07Ev(void *p);
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 s32 Mem_Clear(void *p, s32 n);
 s32 Mem_Copy(void *dst, void *src, u32 n);
 BOOL func_0206e61c();
-s32 func_ov095_02292404(void *st);
-u32 func_ov095_02292458(void *st, u32 v);
-s32 func_ov095_02293dc8(void *st, s32 k, s32 v);
-BOOL func_ov095_0229423c(void *st, s32 v);
-BOOL func_ov095_02295264(void *st);
-BOOL func_ov095_02295258(void *st);
-s32 func_ov095_02293dc0(void *st);
-s32 func_ov095_02293d94(void *st);
-s32 func_ov095_02293d88(void *st);
-s32 func_ov095_022923ec(void *st);
-s32 func_ov095_022923f8(void *st);
-BOOL func_ov095_02293ff0(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
-BOOL func_ov095_022940f0(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f);
-u8 *func_ov095_02293f90(void *st, u8 *p);
-u8 *func_ov095_02293f8c(void *st, u8 *p);
-u8 *func_ov095_02293f88(void *st, u8 *p);
-BOOL func_ov095_02293f94(void *st, u8 *a, u8 *b, s32 c, s32 d, s32 e);
-s32 func_ov095_02294a44(void *st, s32 a, s32 b);
-s32 func_ov095_02294864(void *st, s32 a, s32 b);
-s32 func_ov095_02294318(void *st);
-BOOL func_ov095_022942e8(void *st);
-s32 func_ov095_02294a40(void *st);
-BOOL func_ov095_02294324(void *st);
-BOOL func_ov095_02293990(void *st);
-s32 func_ov095_02294648(void *st, s32 a, s32 b, s32 c);
-void _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(void *p);
-void _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(void *p);
-void _ZN18Unk_ov002_022046b019func_ov002_02202f00Ev(void *p);
-s32 _ZN18Unk_ov002_02202fac19func_ov002_02203110Ei(void *p, s32 v);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022014acEii(void *p, s32 a, s32 b);
-void func_ov002_02201a3c(void *p, s32 v);
-u32 _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(void *p, s32 a, u32 b);
+s32 Keyboard_PressCursorKey(void *st);
+u32 Keyboard_MoveCursor(void *st, u32 v);
+s32 Keyboard_HandleModeKey(void *st, s32 k, s32 v);
+BOOL Keyboard_IsControlCode(void *st, s32 v);
+BOOL Keyboard_IsFull(void *st);
+BOOL Keyboard_IsTooWide(void *st);
+s32 Keyboard_ResetTypedRun(void *st);
+s32 Keyboard_BeginPaste(void *st);
+s32 Keyboard_EndPaste(void *st);
+s32 Keyboard_PlayPasteSe(void *st);
+s32 Keyboard_PlayCopySe(void *st);
+BOOL Keyboard_InsertCharMultiline(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
+BOOL Keyboard_InsertChar(void *st, u8 *a, s32 b, u8 *out, s32 c, s32 d, s32 e, s32 f);
+u8 *Keyboard_ModifyCharKey103(void *st, u8 *p);
+u8 *Keyboard_ModifyCharKey104(void *st, u8 *p);
+u8 *Keyboard_ModifyCharKey105(void *st, u8 *p);
+BOOL Keyboard_ReplaceCharBeforeCursor(void *st, u8 *a, u8 *b, s32 c, s32 d, s32 e);
+s32 Keyboard_TouchKey(void *st, s32 a, s32 b);
+s32 Keyboard_GetKeyCode(void *st, s32 a, s32 b);
+s32 Keyboard_StartKeyRepeat(void *st);
+BOOL Keyboard_TickKeyRepeat(void *st);
+s32 Keyboard_GetPressedKey(void *st);
+BOOL Keyboard_UpdatePressedKey(void *st);
+BOOL Keyboard_TouchPageTab(void *st);
+s32 Keyboard_SetMode(void *st, s32 a, s32 b, s32 c);
+void _ZN10MenuCursor14switchToAnim0DEv(void *p);
+void _ZN14MenuScrollKnob7releaseEv(void *p);
+void _ZN14MenuScrollKnob4grabEv(void *p);
+s32 _ZN21MenuBottomButtonsBody9isTouchedEi(void *p, s32 v);
+s32 _ZN19PopupChoiceMenuBody10hitTestRowEii(void *p, s32 a, s32 b);
+void PopupChoice_DecideAddressee(void *p, s32 v);
+u32 _ZN19PopupChoiceMenuBody13pickAddresseeEjj(void *p, s32 a, u32 b);
 extern u32 gCurrentHeap;
 void Gfx2d_HideLayer(s32 a);
 void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
@@ -283,29 +283,29 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void *func_02065c8c(void *p);
-void func_ov002_02202dd4(void *p, s32 a);
+void Menu_LoadPaperBg(void *p, s32 a);
 s32 func_0206ed68();
 s32 func_020655d8(void *p);
 void _ZN10ScrollKnob8setStateEi(void *p, s32 v);
-void func_ov095_02293cc0(void *p);
-void func_ov095_022942c0(void *p);
-void func_ov095_02294250(void *p, s32 a);
-void func_ov095_02294358(void *p, s32 a);
-void func_ov095_022943b4(void *p, s32 a);
-void func_ov095_022943dc(void *p, const char *q);
-void func_ov095_0229442c(void *p);
-void func_ov095_02294438(void *p);
-void func_ov095_02294478(void *p, s32 a);
-void func_ov095_02294624(void *p, s32 a);
-void func_ov095_0229483c(void *p, s32 a);
-void func_ov095_02295340(void *p, s32 a);
-void func_ov095_022953c0(void *p, s32 a);
-u32 func_ov095_02293da0(void *p);
+void Keyboard_LoadObjGfx(void *p);
+void Keyboard_DisableModifierKeys(void *p);
+void Keyboard_UpdateModifierKeys(void *p, s32 a);
+void Keyboard_EndFrame(void *p, s32 a);
+void Keyboard_LoadScreenNow(void *p, s32 a);
+void Keyboard_LoadScreenFile(void *p, const char *q);
+void Keyboard_SetAltWriteLayout(void *p);
+void Keyboard_Shutdown(void *p);
+void Keyboard_Init(void *p, s32 a);
+void Keyboard_Reload(void *p, s32 a);
+void Keyboard_RestoreLastPage(void *p, s32 a);
+void Keyboard_EnableKey(void *p, s32 a);
+void Keyboard_DisableKey(void *p, s32 a);
+u32 Keyboard_GetTypedRunLength(void *p);
 void ProcBase_RequestDelete(void *p);
 u32 ProcBase_GetParent();
-void _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(u32 a, u32 b);
-void _ZN18Unk_ov090_022921e019func_ov090_02291d2cEv(u32 a);
-void _ZN18Unk_ov090_022921e019func_ov090_02291a90Ev(u32 a);
+void _ZN10MenuTabBar9selectTabEj(u32 a, u32 b);
+void _ZN10MenuTabBar15onTabMenuClosedEv(u32 a);
+void _ZN10MenuTabBar8showTabsEv(u32 a);
 u32 func_0206ec48();
 void func_0206ec54(u32 a);
 void func_0206e63c();
@@ -318,7 +318,7 @@ void Gfx2d_SetWindowRect(u32 a, u32 b, u32 c, u32 d, u32 e);
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void func_02088730(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
 void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
-void func_ov002_02201b28(void *p);
+void PopupChoice_Draw(void *p);
 void func_0206fca8(void *p);
 void _ZN12Unk_0206d0a013func_0206d288EPv(void *p, u32 a);
 BOOL _ZN10HandCursor7getAnimEv(void *p);
@@ -328,17 +328,17 @@ void func_ov002_02200a58(void *self, s32 s);
 void func_ov002_02200a60(void *self, s32 s);
 s32 func_ov002_022009d4(void *self);
 s32 func_ov002_022009c8(void *self);
-void func_ov002_02202e48(void *p);
-BOOL _ZN18Unk_ov002_022040ec19func_ov002_02204234Ei(void *p, s32 a);
-BOOL _ZN18Unk_ov002_02202fac19func_ov002_0220308cEv(void *p);
-s32 _ZN18Unk_ov002_02202fac19func_ov002_0220306cEv(void *p);
-BOOL _ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev(void *p);
-s32 _ZN18Unk_ov002_022013ac19func_ov002_022013e4EPvj(void *p, u32 a, u32 b);
-u32 _ZN18Unk_ov002_022013ac19func_ov002_02201490Ev(void *p);
-BOOL func_ov002_02201a28(void *p);
-BOOL _ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev(void *p);
-BOOL func_ov002_022019d0(void *p, s32 a, void *b, s32 c);
-BOOL _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev(void *p);
+void Menu_PlayScrollGrabSe(void *p);
+BOOL _ZN16MenuErrorMessage6updateEi(void *p, s32 a);
+BOOL _ZN21MenuBottomButtonsBody9stepPressEv(void *p);
+s32 _ZN21MenuBottomButtonsBody14getPressOffsetEv(void *p);
+BOOL _ZN19PopupChoiceMenuBody8isClosedEv(void *p);
+s32 _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(void *p, u32 a, u32 b);
+u32 _ZN19PopupChoiceMenuBody12getPageCountEv(void *p);
+BOOL PopupChoice_TickDecideDelay(void *p);
+BOOL _ZN19PopupChoiceMenuBody6isOpenEv(void *p);
+BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
+BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
 void _ZN12Unk_0206ce9813func_0206d018Ejjj(void *self, s32 a, s32 b, s32 c);
 void _ZN12Unk_0206d0a013func_0206d0a0Ejj(void *self, s32 a, s32 b, s32 c);
 void _ZN12Unk_0206d0a013func_0206d0b8EPh(void *self, void *p);
@@ -348,179 +348,179 @@ void _ZN12Unk_0206d0a013func_0206d380Ev(void *self);
 void _ZN12Unk_0206d0a013func_0206d394Ev(void *self);
 void _ZN12Unk_0206d0a013func_0206d39cEi(void *self, s32 a);
 void _ZN12Unk_0206d0a013func_0206d3f4Ej(void *self, s32 a);
-void _ZN18Unk_ov002_022013ac19func_ov002_022017c4Ev(void *self);
-void _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev(void *self);
-void _ZN18Unk_ov002_02202fac19func_ov002_02203268Ev(void *self);
-void _ZN18Unk_ov002_02202fac19func_ov002_02203458Ei(void *self, s32 a);
-void _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc(void *self, s32 a, s32 b, s32 c);
-s32 _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev(void *self);
-s32 _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev(void *self);
-void _ZN18Unk_ov002_022046cc19func_ov002_022035d8Ev(void *self);
-void _ZN18Unk_ov002_022046cc19func_ov002_02203608Ev(void *self);
-void _ZN18Unk_ov002_022046cc19func_ov002_022036a4Ei(void *self, s32 a);
-void _ZN18Unk_ov002_022046cc19func_ov002_02203900Ev(void *self);
+void _ZN19PopupChoiceMenuBody18buildAddresseeListEv(void *self);
+void _ZN14MenuCursorBase11drawWrappedEv(void *self);
+void _ZN21MenuBottomButtonsBody15showTitleLayer2Ev(void *self);
+void _ZN21MenuBottomButtonsBody16setLayoutYesNo07Ei(void *self, s32 a);
+void _ZN15PopupChoiceMenu4initEiiPKc(void *self, s32 a, s32 b, s32 c);
+s32 _ZN14MenuScrollKnob8getGripYEv(void *self);
+s32 _ZN14MenuScrollKnob8getGripXEv(void *self);
+void _ZN17MenuBottomButtons16setLayoutConfirmEv(void *self);
+void _ZN17MenuBottomButtons24setLayoutChangeAddresseeEv(void *self);
+void _ZN17MenuBottomButtons6drawAtEi(void *self, s32 a);
+void _ZN17MenuBottomButtons9freeTextsEv(void *self);
 void func_0206d000(void *self, s32 a, s32 b, s32 c);
-void func_ov002_02201b04(void *self);
-void func_ov002_02201b58(void *self);
-void func_ov002_02202144(void *self);
-void func_ov095_0229253c(void *self, s32 a, s32 b);
-void func_ov095_022937d0(void *self, u32 a, void *b, u32 c);
-void func_ov095_02293824(void *self, u32 a, void *b);
-void func_ov095_022938f8(void *self, s32 a, s32 b, s32 c);
-void func_ov095_02293b60(void *self, u32 a, void *b, u32 c);
+void PopupChoice_ForceClose(void *self);
+void PopupChoice_Update(void *self);
+void PopupChoice_LoadChoiceBg(void *self);
+void Keyboard_SetTextFieldPos(void *self, s32 a, s32 b);
+void Keyboard_DrawLengthGaugeAt(void *self, u32 a, void *b, u32 c);
+void Keyboard_DrawCopyPasteKeys(void *self, u32 a, void *b);
+void Keyboard_DrawCaret(void *self, s32 a, s32 b, s32 c);
+void Keyboard_Draw(void *self, u32 a, void *b, u32 c);
 }
 
 // Vtable 0x0229a1b8, size 0x4664
-class Unk_ov122_0229a1b8 : public Unk_ov002_022044e4 {
+class LetterWriteMenu : public MenuProc {
 public:
-    Unk_ov122_0229a1b8()
+    LetterWriteMenu()
         : unk_c0(), unk_3c7c(), unk_3e8c(), unk_3ed4(), unk_3f38(), unk_3fcc(),
           unk_4104(), unk_43f8(), unk_455c() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov122_02296968(u32 mask);
-    void func_ov122_02296978(u32 mask);
-    BOOL func_ov122_02296988(u32 mask);
-    void func_ov122_0229699c();
-    void func_ov122_022969d4(u8 *src, u32 n);
-    void func_ov122_02296a28();
+    void clearFlags(u32 mask);
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    void censorLetter();
+    void censorField(u8 *src, u32 n);
+    void storeLetterDefaults();
     void func_ov122_02296a48();
     void func_ov122_02296a7c(u32 a);
     void func_ov122_02296aa4();
-    void func_ov122_02296af0();
-    void func_ov122_02296b10();
-    void func_ov122_02296b34();
-    void func_ov122_02296b54();
-    void func_ov122_02296bbc(s32 a, s32 b);
-    void func_ov122_02296bf0();
-    void func_ov122_02296c70();
-    void func_ov122_02296c94();
-    void func_ov122_02296ce8(u32 i);
-    void func_ov122_02296d28();
-    void func_ov122_02296d34();
-    void func_ov122_02296d68();
-    BOOL func_ov122_02296de4();
-    void func_ov122_02296df4(s32 v);
-    void func_ov122_02296e08(s32 v);
-    void func_ov122_02296e28();
-    void func_ov122_02296e80();
-    BOOL func_ov122_02296ee0();
-    void func_ov122_02296f30(u32 v);
-    u8 func_ov122_02296f40();
-    u32 func_ov122_02296f68();
-    u8 *func_ov122_02296f98();
-    u8 *func_ov122_02296fd4();
-    BOOL func_ov122_02297020(void *pad, s32 flag);
-    void func_ov122_02297238();
-    void func_ov122_022972dc();
-    BOOL func_ov122_022972f4();
-    u8 func_ov122_0229731c();
-    void func_ov122_02297340();
-    void func_ov122_02297380();
-    void func_ov122_022973cc();
-    void func_ov122_02297424();
-    void func_ov122_0229747c(s32 a, s32 b, s32 c);
-    BOOL func_ov122_022974e8();
-    void func_ov122_022975c0();
-    BOOL func_ov122_022975c4();
-    u8 func_ov122_02297630(u32 *p);
-    void func_ov122_02297690();
-    u8 func_ov122_022976c8(s32 idx, u32 *p);
-    void func_ov122_0229771c(s32 flag);
-    u8 func_ov122_022977bc(s32 a, u8 *p);
-    void func_ov122_02297838();
-    void func_ov122_02297870();
+    void refreshCursor();
+    void releaseCursor();
+    void pressCursor();
+    void snapCursor();
+    void moveCursorTo(s32 a, s32 b);
+    void moveCursorToTarget();
+    void hideCursor();
+    void showCursor();
+    void openDialog(u32 i);
+    void playErrorSe();
+    void scrollToCaret();
+    void updateScroll();
+    BOOL isScrolling();
+    void setScrollTarget(s32 v);
+    void setScroll(s32 v);
+    void scrollByPad();
+    void dragScrollKnob();
+    BOOL touchScrollKnob();
+    void setCursorIndex(u32 v);
+    u8 getFieldCursor();
+    u32 getFieldCapacity();
+    u8 *getFieldBuffer();
+    u8 *getPartText();
+    BOOL navigateText(void *pad, s32 flag);
+    void deleteSelection();
+    void clearSelection();
+    BOOL hasSelection();
+    u8 getCharBeforeCursor();
+    void updateCaretPos();
+    void updateCaretPosSignature();
+    void updateCaretPosBody();
+    void updateCaretPosGreeting();
+    void setCaretFromPoint(s32 a, s32 b, s32 c);
+    BOOL dragSelection();
+    void endTouch();
+    BOOL touchTextArea();
+    u8 hitTestSignature(u32 *p);
+    void moveCaretToSignature();
+    u8 hitTestBodyLine(s32 idx, u32 *p);
+    void moveCaretToBody(s32 flag);
+    u8 hitTestGreeting(s32 a, u8 *p);
+    void moveCaretToGreeting();
+    void resetTextCursor();
     void func_ov122_022978c0();
     void func_ov122_02297928();
     void func_ov122_02297940();
     void func_ov122_02297994();
-    void func_ov122_022979ac(u8 a, s32 b);
-    void func_ov122_022979e8();
-    void func_ov122_02297a08();
-    void func_ov122_02297a24();
-    BOOL func_ov122_02297a3c();
-    BOOL func_ov122_02297a68();
-    BOOL func_ov122_02297ac8();
-    BOOL func_ov122_02297b30();
-    BOOL func_ov122_02297bcc();
-    BOOL func_ov122_02297c14();
-    void func_ov122_02297c68();
-    void func_ov122_02297c90();
-    void func_ov122_02297d78();
-    void func_ov122_02297e50();
-    void func_ov122_02297e84();
-    void func_ov122_02297eb4();
-    void func_ov122_02297f04();
-    void func_ov122_02297f98();
-    void func_ov122_022980b0();
-    void func_ov122_022980dc();
-    void func_ov122_02298118();
-    void func_ov122_0229813c();
-    void func_ov122_0229816c();
-    void func_ov122_0229819c();
-    void func_ov122_02298210();
-    void func_ov122_02298320();
-    void func_ov122_0229836c();
-    void func_ov122_02298394();
-    void func_ov122_022983ec();
-    void func_ov122_022984c8();
-    void func_ov122_022984f4();
-    s32 func_ov122_022985d8(s32 key);
-    void func_ov122_02298714();
-    void func_ov122_022987ac();
-    void func_ov122_02298814();
-    void func_ov122_02298820();
-    void func_ov122_0229882c();
-    BOOL func_ov122_02298874(u32 key);
-    BOOL func_ov122_022988b8(u32 a, u32 b);
-    BOOL func_ov122_0229899c(u32 key);
-    BOOL func_ov122_02298a54(BOOL flag);
-    s32 func_ov122_02298b14();
-    void func_ov122_02298b70();
-    void func_ov122_02298c24();
-    void func_ov122_02298c94();
-    void func_ov122_02298cf4();
-    void func_ov122_02298d30();
-    void func_ov122_02298d84();
-    void func_ov122_02298ec4();
-    void func_ov122_02298fbc(u32 a, u32 b);
-    void func_ov122_02299130();
-    void func_ov122_02299150();
-    void func_ov122_0229917c();
-    void func_ov122_02299188();
-    void func_ov122_02299268();
-    void func_ov122_022992c4();
-    void func_ov122_022992d4();
-    void func_ov122_02299308();
-    void func_ov122_02299334();
-    void func_ov122_02299368();
-    void func_ov122_02299408();
-    void func_ov122_02299474();
-    void func_ov122_022994c8();
-    void func_ov122_022994f4();
-    void func_ov122_02299534();
-    void func_ov122_02299594();
-    void func_ov122_022995c0();
-    void func_ov122_022995d0();
-    void func_ov122_02299614();
-    void func_ov122_02299644();
-    void func_ov122_02299694();
-    void func_ov122_022996d8();
-    void func_ov122_02299738();
-    void func_ov122_02299774();
-    void func_ov122_022997d0();
-    void func_ov122_02299870();
-    BOOL func_ov122_022998b0(s32 a);
-    BOOL func_ov122_02299900();
-    void func_ov122_022999b0();
+    void showMessage(u8 a, s32 b);
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    BOOL tryStartFinish();
+    BOOL tryCopyButton();
+    BOOL tryPasteButton();
+    BOOL toggleTextFocus();
+    BOOL tryBackspaceButton();
+    BOOL tryPressKey();
+    void mainAct1A();
+    void mainAct19();
+    void mainAct18();
+    void mainAct17();
+    void mainAct16();
+    void mainAct15();
+    void mainAct14();
+    void mainAct13();
+    void mainAct12();
+    void mainAct11();
+    void mainAct10();
+    void mainAct0F();
+    void mainAct0E();
+    void mainAct0D();
+    void mainAct0C();
+    void mainAct0B();
+    void mainAct0A();
+    void mainAct09();
+    void mainAct08();
+    void mainAct07();
+    void mainAct06();
+    s32 pressKeyCode(s32 key);
+    void paste();
+    void copy();
+    void askOpenList();
+    void askFinish();
+    void closeKeyboard();
+    BOOL insertChar(u32 key);
+    BOOL insertCharRaw(u32 a, u32 b);
+    BOOL applyModifierKey(u32 key);
+    BOOL backspace(BOOL flag);
+    s32 touchKey();
+    void mainAct05();
+    void mainAct04();
+    void mainAct03();
+    void mainAct02();
+    void mainAct01();
+    void mainAct00();
+    void refreshKeys();
+    void redrawText(u32 a, u32 b);
+    void showFinishDialog();
+    void setupDialogButtons();
+    void loadKeyboardObjGfx();
+    void loadBg();
+    void postStateUpdate();
+    void preStateUpdate();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void init();
+    void transitionAct0E();
+    void transitionAct0D();
+    void transitionAct0C();
+    void transitionAct0B();
+    void transitionAct0A();
+    void transitionAct09();
+    void transitionAct08();
+    void transitionAct07();
+    void transitionAct06();
+    void transitionAct05();
+    void transitionAct04();
+    void transitionAct03();
+    void transitionAct02();
+    void transitionAct01();
+    void transitionAct00();
+    void forceClose();
+    BOOL requestTab(s32 a);
+    BOOL checkForcedClose();
+    void runMainState();
 
     /* 0x91 */ u8 unk_91[3];
     /* 0x94 */ u8 *unk_94;
@@ -546,167 +546,167 @@ public:
     /* 0xb8 */ u8 unk_b8;
     /* 0xb9 */ u8 unk_b9[3];
     /* 0xbc */ u8 *unk_bc;
-    /* 0xc0 */ Unk_ov122_ov095_02293b60 unk_c0;
+    /* 0xc0 */ Keyboard unk_c0;
     /* 0x247c */ u32 unk_247c[(0x3c7c - 0x247c) / 4];
     /* 0x3c7c */ Unk_0206d0a0 unk_3c7c;
-    /* 0x3e8c */ Unk_ov002_022046b0 unk_3e8c;
-    /* 0x3ed4 */ Unk_ov002_02204614 unk_3ed4;
+    /* 0x3e8c */ MenuScrollKnob unk_3e8c;
+    /* 0x3ed4 */ MenuCursorBuf0 unk_3ed4;
     /* 0x3f38 */ Unk_020ddefc unk_3f38;
     /* 0x3fcc */ Unk_020dd468 unk_3fcc;
-    /* 0x4104 */ Unk_ov002_02204558 unk_4104;
-    /* 0x43f8 */ Unk_ov002_022046cc unk_43f8;
-    /* 0x455c */ Unk_ov002_022040ec unk_455c;
+    /* 0x4104 */ PopupChoiceMenu unk_4104;
+    /* 0x43f8 */ MenuBottomButtons unk_43f8;
+    /* 0x455c */ MenuErrorMessage unk_455c;
 };
 
-extern "C" void func_ov122_02299220();
+extern "C" void LetterWriteMenu_SetupBgLayers();
 struct Unk_ov122_SceneEntry {
-    Unk_ov122_0229a1b8 *(*create)();
+    LetterWriteMenu *(*create)();
     u16 a;
     u16 b;
 };
-extern "C" Unk_ov122_0229a1b8 *func_ov122_02299f40();
+extern "C" LetterWriteMenu *LetterWriteMenu_Create();
 // Scene registration entry read by main: factory, then two ids
 // Named data: their definition order sets the .data order (compiler-generated constants would not reproduce it).
 extern "C" const u8 data_ov122_0229a004[4] = {3, 4, 0, 0};
 
 extern "C" const u16 data_ov122_0229a010[6] = {0x27, 0x29, 0x29, 0x27, 0x2a, 0};
 
-extern "C" Unk_ov122_SceneEntry data_ov122_0229a130 = {func_ov122_02299f40, 0xa5, 0xa9};
+extern "C" Unk_ov122_SceneEntry data_ov122_0229a130 = {LetterWriteMenu_Create, 0xa5, 0xa9};
 
 extern "C" const u8 data_ov122_0229a008[8] = {0, 9, 9, 3, 4, 0, 0, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299774Ev();
-extern "C" void *data_ov122_0229a178[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299774Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct01Ev();
+extern "C" void *data_ov122_0229a178[2] = {(void *)_ZN15LetterWriteMenu15transitionAct01Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022997d0Ev();
-extern "C" void *data_ov122_0229a170[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022997d0Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct00Ev();
+extern "C" void *data_ov122_0229a170[2] = {(void *)_ZN15LetterWriteMenu15transitionAct00Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022996d8Ev();
-extern "C" void *data_ov122_0229a168[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022996d8Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct03Ev();
+extern "C" void *data_ov122_0229a168[2] = {(void *)_ZN15LetterWriteMenu15transitionAct03Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299694Ev();
-extern "C" void *data_ov122_0229a160[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299694Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct04Ev();
+extern "C" void *data_ov122_0229a160[2] = {(void *)_ZN15LetterWriteMenu15transitionAct04Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299644Ev();
-extern "C" void *data_ov122_0229a158[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299644Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct05Ev();
+extern "C" void *data_ov122_0229a158[2] = {(void *)_ZN15LetterWriteMenu15transitionAct05Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299614Ev();
-extern "C" void *data_ov122_0229a150[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299614Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct06Ev();
+extern "C" void *data_ov122_0229a150[2] = {(void *)_ZN15LetterWriteMenu15transitionAct06Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022995d0Ev();
-extern "C" void *data_ov122_0229a148[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022995d0Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct07Ev();
+extern "C" void *data_ov122_0229a148[2] = {(void *)_ZN15LetterWriteMenu15transitionAct07Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022995c0Ev();
-extern "C" void *data_ov122_0229a140[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022995c0Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct08Ev();
+extern "C" void *data_ov122_0229a140[2] = {(void *)_ZN15LetterWriteMenu15transitionAct08Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299594Ev();
-extern "C" void *data_ov122_0229a138[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299594Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct09Ev();
+extern "C" void *data_ov122_0229a138[2] = {(void *)_ZN15LetterWriteMenu15transitionAct09Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299534Ev();
-extern "C" void *data_ov122_0229a090[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299534Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct0AEv();
+extern "C" void *data_ov122_0229a090[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0AEv, 0};
 
 extern "C" u32 data_ov122_0229a180[12] = {0x006880b4, 0x0000a0c0, 0x206880e4, 0x0000a0c0, 0x006800c4, 0x0000a0e0, 0x006800cc, 0x0000a0e0,
                                           0x006800d4, 0x0000a0e0, 0x006800dc, 0xffffa0e0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022994c8Ev();
-extern "C" void *data_ov122_0229a120[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022994c8Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct0CEv();
+extern "C" void *data_ov122_0229a120[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0CEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299474Ev();
-extern "C" void *data_ov122_0229a118[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299474Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct0DEv();
+extern "C" void *data_ov122_0229a118[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0DEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297c90Ev();
-extern "C" void *data_ov122_0229a080[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297c90Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct19Ev();
+extern "C" void *data_ov122_0229a080[2] = {(void *)_ZN15LetterWriteMenu9mainAct19Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298118Ev();
-extern "C" void *data_ov122_0229a108[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298118Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct10Ev();
+extern "C" void *data_ov122_0229a108[2] = {(void *)_ZN15LetterWriteMenu9mainAct10Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022980dcEv();
-extern "C" void *data_ov122_0229a100[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022980dcEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct11Ev();
+extern "C" void *data_ov122_0229a100[2] = {(void *)_ZN15LetterWriteMenu9mainAct11Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297d78Ev();
-extern "C" void *data_ov122_0229a078[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297d78Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct18Ev();
+extern "C" void *data_ov122_0229a078[2] = {(void *)_ZN15LetterWriteMenu9mainAct18Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298d84Ev();
-extern "C" void *data_ov122_0229a0f0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298d84Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct00Ev();
+extern "C" void *data_ov122_0229a0f0[2] = {(void *)_ZN15LetterWriteMenu9mainAct00Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298cf4Ev();
-extern "C" void *data_ov122_0229a0e8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298cf4Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct02Ev();
+extern "C" void *data_ov122_0229a0e8[2] = {(void *)_ZN15LetterWriteMenu9mainAct02Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298c94Ev();
-extern "C" void *data_ov122_0229a0e0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298c94Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct03Ev();
+extern "C" void *data_ov122_0229a0e0[2] = {(void *)_ZN15LetterWriteMenu9mainAct03Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298c24Ev();
-extern "C" void *data_ov122_0229a0d8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298c24Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct04Ev();
+extern "C" void *data_ov122_0229a0d8[2] = {(void *)_ZN15LetterWriteMenu9mainAct04Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297c68Ev();
-extern "C" void *data_ov122_0229a0d0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297c68Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct1AEv();
+extern "C" void *data_ov122_0229a0d0[2] = {(void *)_ZN15LetterWriteMenu9mainAct1AEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022984f4Ev();
-extern "C" void *data_ov122_0229a0c8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022984f4Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct06Ev();
+extern "C" void *data_ov122_0229a0c8[2] = {(void *)_ZN15LetterWriteMenu9mainAct06Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297eb4Ev();
-extern "C" void *data_ov122_0229a020[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297eb4Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct15Ev();
+extern "C" void *data_ov122_0229a020[2] = {(void *)_ZN15LetterWriteMenu9mainAct15Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022983ecEv();
-extern "C" void *data_ov122_0229a0b8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022983ecEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct08Ev();
+extern "C" void *data_ov122_0229a0b8[2] = {(void *)_ZN15LetterWriteMenu9mainAct08Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299738Ev();
-extern "C" void *data_ov122_0229a0b0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299738Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct02Ev();
+extern "C" void *data_ov122_0229a0b0[2] = {(void *)_ZN15LetterWriteMenu15transitionAct02Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_0229836cEv();
-extern "C" void *data_ov122_0229a0a8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_0229836cEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0AEv();
+extern "C" void *data_ov122_0229a0a8[2] = {(void *)_ZN15LetterWriteMenu9mainAct0AEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298320Ev();
-extern "C" void *data_ov122_0229a0a0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298320Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0BEv();
+extern "C" void *data_ov122_0229a0a0[2] = {(void *)_ZN15LetterWriteMenu9mainAct0BEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298210Ev();
-extern "C" void *data_ov122_0229a098[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298210Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0CEv();
+extern "C" void *data_ov122_0229a098[2] = {(void *)_ZN15LetterWriteMenu9mainAct0CEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297e50Ev();
-extern "C" void *data_ov122_0229a040[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297e50Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct17Ev();
+extern "C" void *data_ov122_0229a040[2] = {(void *)_ZN15LetterWriteMenu9mainAct17Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022994f4Ev();
-extern "C" void *data_ov122_0229a128[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022994f4Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct0BEv();
+extern "C" void *data_ov122_0229a128[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0BEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_0229819cEv();
-extern "C" void *data_ov122_0229a038[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_0229819cEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0DEv();
+extern "C" void *data_ov122_0229a038[2] = {(void *)_ZN15LetterWriteMenu9mainAct0DEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_0229813cEv();
-extern "C" void *data_ov122_0229a070[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_0229813cEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0FEv();
+extern "C" void *data_ov122_0229a070[2] = {(void *)_ZN15LetterWriteMenu9mainAct0FEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298d30Ev();
-extern "C" void *data_ov122_0229a0f8[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298d30Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct01Ev();
+extern "C" void *data_ov122_0229a0f8[2] = {(void *)_ZN15LetterWriteMenu9mainAct01Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022980b0Ev();
-extern "C" void *data_ov122_0229a068[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022980b0Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct12Ev();
+extern "C" void *data_ov122_0229a068[2] = {(void *)_ZN15LetterWriteMenu9mainAct12Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298b70Ev();
-extern "C" void *data_ov122_0229a060[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298b70Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct05Ev();
+extern "C" void *data_ov122_0229a060[2] = {(void *)_ZN15LetterWriteMenu9mainAct05Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297f04Ev();
-extern "C" void *data_ov122_0229a0c0[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297f04Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct14Ev();
+extern "C" void *data_ov122_0229a0c0[2] = {(void *)_ZN15LetterWriteMenu9mainAct14Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02298394Ev();
-extern "C" void *data_ov122_0229a050[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02298394Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct09Ev();
+extern "C" void *data_ov122_0229a050[2] = {(void *)_ZN15LetterWriteMenu9mainAct09Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297e84Ev();
-extern "C" void *data_ov122_0229a048[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297e84Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct16Ev();
+extern "C" void *data_ov122_0229a048[2] = {(void *)_ZN15LetterWriteMenu9mainAct16Ev, 0};
 
 extern "C" u32 data_ov122_0229a030[2] = {0x802a40e6, 0xffffc0c1};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_0229816cEv();
-extern "C" void *data_ov122_0229a088[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_0229816cEv, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct0EEv();
+extern "C" void *data_ov122_0229a088[2] = {(void *)_ZN15LetterWriteMenu9mainAct0EEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02299408Ev();
-extern "C" void *data_ov122_0229a110[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02299408Ev, 0};
+extern "C" void _ZN15LetterWriteMenu15transitionAct0EEv();
+extern "C" void *data_ov122_0229a110[2] = {(void *)_ZN15LetterWriteMenu15transitionAct0EEv, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_02297f98Ev();
-extern "C" void *data_ov122_0229a028[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_02297f98Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct13Ev();
+extern "C" void *data_ov122_0229a028[2] = {(void *)_ZN15LetterWriteMenu9mainAct13Ev, 0};
 
-extern "C" void _ZN18Unk_ov122_0229a1b819func_ov122_022984c8Ev();
-extern "C" void *data_ov122_0229a058[2] = {(void *)_ZN18Unk_ov122_0229a1b819func_ov122_022984c8Ev, 0};
+extern "C" void _ZN15LetterWriteMenu9mainAct07Ev();
+extern "C" void *data_ov122_0229a058[2] = {(void *)_ZN15LetterWriteMenu9mainAct07Ev, 0};
 
-#define C Unk_ov122_0229a1b8
+#define C LetterWriteMenu
 
 static inline BOOL Unk_ov122_02298b70_Both() {
     if (gTouchHeld != 0 && gTouchChanged != 0) {
@@ -715,83 +715,83 @@ static inline BOOL Unk_ov122_02298b70_Both() {
     return FALSE;
 }
 
-extern "C" Unk_ov122_0229a1b8 *func_ov122_02299f40() { return new Unk_ov122_0229a1b8(); }
+extern "C" LetterWriteMenu *LetterWriteMenu_Create() { return new LetterWriteMenu(); }
 
-BOOL Unk_ov122_0229a1b8::vfunc_00() {
-    func_ov122_02299368();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL LetterWriteMenu::vfunc_00() {
+    init();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::vfunc_0c() {
+BOOL LetterWriteMenu::vfunc_0c() {
     u32 t = ProcBase_GetParent();
-    _ZN18Unk_ov090_022921e019func_ov090_02291d2cEv(t);
-    _ZN18Unk_ov090_022921e019func_ov090_02291a90Ev(t);
-    func_ov122_02299334();
+    _ZN10MenuTabBar15onTabMenuClosedEv(t);
+    _ZN10MenuTabBar8showTabsEv(t);
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::onDraw() {
-    func_ov002_02201b28(&unk_4104);
-    if (func_ov122_02296988(1)) {
+BOOL LetterWriteMenu::onDraw() {
+    PopupChoice_Draw(&unk_4104);
+    if (testFlags(1)) {
         u8 *p = unk_94 + 0x60;
         Oam_DrawCell(1, data_ov122_0229a180, 0x80, p - 0x10, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_ov095_02293b60(&unk_c0, 0x80, p, 1);
-        func_ov095_02293824(&unk_c0, 0x80, p);
+        Keyboard_Draw(&unk_c0, 0x80, p, 1);
+        Keyboard_DrawCopyPasteKeys(&unk_c0, 0x80, p);
         if (MenuCtrl_IsButtons()) {
             func_02088730(1, data_ov122_0229a030, 0x80, p, -1, 1, 0);
         }
-        func_ov095_022937d0(&unk_c0, 0x80, p, unk_a4);
+        Keyboard_DrawLengthGaugeAt(&unk_c0, 0x80, p, unk_a4);
     }
-    if (func_ov122_02296de4()) {
-        func_ov122_02296d68();
+    if (isScrolling()) {
+        updateScroll();
         Gfx2d_SetLayerOffset(4, 0, unk_b2);
         Gfx2d_SetLayerOffset(3, 0, unk_b2);
         if (unk_b2 > 0x40) {
-            if (!func_ov122_02296988(0x20)) {
-                func_ov122_02296978(0x20);
+            if (!testFlags(0x20)) {
+                setFlags(0x20);
                 Gfx2d_EnableSubWindows(1);
                 Gfx2d_SetSubWin0Planes(0x1d, 1);
                 Gfx2d_SetSubWinOutPlanes(0x1f);
                 Gfx2d_SetWindowRect(2, 0, 0xb0, 0xfe, 0xc0);
             }
-        } else if (func_ov122_02296988(0x20)) {
-            func_ov122_02296968(0x20);
+        } else if (testFlags(0x20)) {
+            clearFlags(0x20);
             Gfx2d_DisableSubWindows(1);
         }
     }
-    if (func_ov122_02296988(1)) {
+    if (testFlags(1)) {
         _ZN10ScrollKnob6moveToEii(&unk_3e8c, 0x64, (u32)(unk_94 - 0x58) + (unk_b2 >> 1));
-        s32 t = _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev(&unk_3e8c);
-        func_ov095_0229253c(&unk_c0, t, _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev(&unk_3e8c));
+        s32 t = _ZN14MenuScrollKnob8getGripXEv(&unk_3e8c);
+        Keyboard_SetTextFieldPos(&unk_c0, t, _ZN14MenuScrollKnob8getGripYEv(&unk_3e8c));
         unk_3e8c.vfunc_08();
     }
     if (MenuCtrl_IsButtons()) {
-        if (func_ov122_02296988(0x200)) {
-            s32 t = _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev(&unk_3e8c);
-            _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, t, _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev(&unk_3e8c));
+        if (testFlags(0x200)) {
+            s32 t = _ZN14MenuScrollKnob8getGripXEv(&unk_3e8c);
+            _ZN14MenuCursorBase6warpToEii(&unk_3ed4, t, _ZN14MenuScrollKnob8getGripYEv(&unk_3e8c));
         }
-        _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev(&unk_3ed4);
+        _ZN14MenuCursorBase11drawWrappedEv(&unk_3ed4);
     }
-    if (func_ov122_02296988(1)) {
-        _ZN18Unk_ov002_022046cc19func_ov002_022036a4Ei(&unk_43f8, (s32)unk_94);
+    if (testFlags(1)) {
+        _ZN17MenuBottomButtons6drawAtEi(&unk_43f8, (s32)unk_94);
     }
-    if (func_ov122_02296988(2)) {
-        _ZN18Unk_ov002_022046cc19func_ov002_022036a4Ei(&unk_43f8, unk_98);
+    if (testFlags(2)) {
+        _ZN17MenuBottomButtons6drawAtEi(&unk_43f8, unk_98);
     }
-    if (func_ov122_02296988(4)) {
+    if (testFlags(4)) {
         s32 a = unk_9c;
         s32 b = unk_a0 - unk_b2;
         unk_ab = unk_ab + 1;
         if ((unk_ab & 0x10) != 0) {
-            func_ov095_022938f8(&unk_c0, a, b, 3);
+            Keyboard_DrawCaret(&unk_c0, a, b, 3);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::vfunc_4c() {
+BOOL LetterWriteMenu::execTransition() {
     static Unk_ov122_0229a1b8_Fn tbl[15] = {
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a170, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a178,
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0b0, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a168,
@@ -801,13 +801,13 @@ BOOL Unk_ov122_0229a1b8::vfunc_4c() {
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a090, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a128,
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a120, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a118,
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a110};
-    func_ov122_022992c4();
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov122_02299268();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022999b0() {
+void LetterWriteMenu::runMainState() {
     static Unk_ov122_0229a1b8_Fn tbl[27] = {
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0f0, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0f8,
         *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0e8, *(Unk_ov122_0229a1b8_Fn *)data_ov122_0229a0e0,
@@ -826,27 +826,27 @@ void Unk_ov122_0229a1b8::func_ov122_022999b0() {
     (this->*tbl[unk_8d])();
 }
 
-BOOL Unk_ov122_0229a1b8::vfunc_50() {
-    if (func_ov122_02299900()) {
+BOOL LetterWriteMenu::execMain() {
+    if (checkForcedClose()) {
         return TRUE;
     }
-    func_ov122_02299308();
-    func_ov122_022999b0();
-    func_ov122_022992d4();
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::vfunc_54() { return TRUE; }
+BOOL LetterWriteMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov122_0229a1b8::vfunc_58() { return TRUE; }
+BOOL LetterWriteMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov122_0229a1b8::vfunc_5c() {
-    func_ov122_02296a28();
+BOOL LetterWriteMenu::execClosed() {
+    storeLetterDefaults();
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02299900() {
+BOOL LetterWriteMenu::checkForcedClose() {
     func_0206e63c();
     if (func_0206e61c()) {
         switch (unk_8d) {
@@ -866,7 +866,7 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02299900() {
         case 17:
         case 18:
         case 19:
-            func_ov122_02299870();
+            forceClose();
             return TRUE;
         case 5:
         case 7:
@@ -878,118 +878,118 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02299900() {
     return FALSE;
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_022998b0(s32 a) {
+BOOL LetterWriteMenu::requestTab(s32 a) {
     u32 r6 = ProcBase_GetParent();
     if (a != -1 && a != 8) {
         u32 r7 = func_0206ec48();
-        _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(r6, (u8)a);
+        _ZN10MenuTabBar9selectTabEj(r6, (u8)a);
         func_0206ec54(r7);
         unk_8c = 2;
-        func_ov002_02200a60(1);
+        setPhase(1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299870() {
-    _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj(ProcBase_GetParent(), 7);
-    func_ov122_02296df4(0);
-    func_ov122_02296968(4);
+void LetterWriteMenu::forceClose() {
+    _ZN10MenuTabBar9selectTabEj(ProcBase_GetParent(), 7);
+    setScrollTarget(0);
+    clearFlags(4);
     unk_8c = 0xd;
-    func_ov002_02200a60(1);
-    func_ov122_02296c70();
-    func_ov122_0229699c();
+    setPhase(1);
+    hideCursor();
+    censorLetter();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022997d0() {
-    func_ov122_02299220();
-    func_ov122_02299188();
-    func_ov095_0229483c(&unk_c0, 6);
-    func_ov095_02294358(&unk_c0, 6);
-    func_ov002_022008e0(0xb, 0, 0, 0x30);
+void LetterWriteMenu::transitionAct00() {
+    LetterWriteMenu_SetupBgLayers();
+    loadBg();
+    Keyboard_RestoreLastPage(&unk_c0, 6);
+    Keyboard_EndFrame(&unk_c0, 6);
+    beginSubSlideIn(0xb, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
     Gfx2d_ShowLayer(4);
     Gfx2d_ShowLayer(3);
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, -16);
-    func_ov002_02200840(3, 0, -16);
-    func_ov122_0229917c();
-    func_ov122_02299150();
-    func_ov122_02296978(1);
-    unk_94 = (u8 *)func_ov002_02200920();
-    func_ov002_02200a50(1);
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, -16);
+    applySlideOffset(3, 0, -16);
+    loadKeyboardObjGfx();
+    setupDialogButtons();
+    setFlags(1);
+    unk_94 = (u8 *)getSlideOffsetY();
+    setTransitionState(1);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299774() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov122_02297870();
-        func_ov122_022979e8();
+void LetterWriteMenu::transitionAct01() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resetTextCursor();
+        resumeInput();
     }
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, -16);
-    func_ov002_02200840(3, 0, -16);
-    unk_94 = (u8 *)func_ov002_02200920();
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, -16);
+    applySlideOffset(3, 0, -16);
+    unk_94 = (u8 *)getSlideOffsetY();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299738() {
-    func_ov002_022008c4(3, 0, 0, 0x30);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200840(3, 0, 0);
-    func_ov002_02200a50(3);
+void LetterWriteMenu::transitionAct02() {
+    beginSubSlideOut(3, 0, 0, 0x30);
+    applySlideOffset(4, 0, 0);
+    applySlideOffset(3, 0, 0);
+    setTransitionState(3);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022996d8() {
-    if (func_ov002_022008fc(0)) {
+void LetterWriteMenu::transitionAct03() {
+    if (stepSlideOut(0)) {
         Gfx2d_HideLayer(4);
         Gfx2d_HideLayer(3);
         Gfx2d_SetLayerOffset(4, 0, 0);
         Gfx2d_SetLayerOffset(3, 0, 0);
-        func_ov002_02200a60(5);
+        setPhase(5);
     } else {
-        func_ov002_02200840(4, 0, 0);
-        func_ov002_02200840(3, 0, 0);
-        unk_98 = func_ov002_02200920();
+        applySlideOffset(4, 0, 0);
+        applySlideOffset(3, 0, 0);
+        unk_98 = getSlideOffsetY();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299694() {
-    if (func_ov122_02296988(0x20) == 0) {
-        func_ov002_022008c4(8, 0, 0, 0x30);
-        func_ov002_02200840(6, 0, 0);
+void LetterWriteMenu::transitionAct04() {
+    if (testFlags(0x20) == 0) {
+        beginSubSlideOut(8, 0, 0, 0x30);
+        applySlideOffset(6, 0, 0);
         unk_8c = 5;
     } else {
-        func_ov122_02296df4(0);
+        setScrollTarget(0);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299644() {
-    if (func_ov002_022008fc(0)) {
+void LetterWriteMenu::transitionAct05() {
+    if (stepSlideOut(0)) {
         Gfx2d_HideLayer(6);
         Gfx2d_SetLayerOffset(6, 0, 0);
-        func_ov122_02296968(1);
+        clearFlags(1);
         unk_8c = unk_b5;
     } else {
-        func_ov002_02200840(6, 0, 0);
-        unk_94 = (u8 *)func_ov002_02200920();
+        applySlideOffset(6, 0, 0);
+        unk_94 = (u8 *)getSlideOffsetY();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299614() {
-    if (func_ov122_02296de4() == 0) {
-        func_ov122_02299130();
-        func_ov122_02296978(2);
+void LetterWriteMenu::transitionAct06() {
+    if (isScrolling() == 0) {
+        showFinishDialog();
+        setFlags(2);
         unk_98 = 0xc0;
         unk_8c = 7;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022995d0() {
+void LetterWriteMenu::transitionAct07() {
     if (unk_98 > 0x20) {
         unk_98 = unk_98 - 0x20;
     } else {
         unk_98 = 0;
-        func_ov002_02200a60(2);
+        setPhase(2);
         if (MenuCtrl_IsTouch()) {
             func_ov122_02297994();
         } else {
@@ -998,126 +998,126 @@ void Unk_ov122_0229a1b8::func_ov122_022995d0() {
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022995c0() {
+void LetterWriteMenu::transitionAct08() {
     unk_98 = 0;
     unk_8c = 9;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299594() {
+void LetterWriteMenu::transitionAct09() {
     if (unk_98 < 0xa0) {
         unk_98 = unk_98 + 0x20;
     } else {
-        func_ov122_02296968(2);
+        clearFlags(2);
         unk_8c = 0xa;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299534() {
-    func_ov095_02294624(&unk_c0, 6);
+void LetterWriteMenu::transitionAct0A() {
+    Keyboard_Reload(&unk_c0, 6);
     Gfx2d_SetLayerPriority(6, 1);
-    func_ov002_022008e0(8, 0, 0, 0x30);
+    beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
-    func_ov002_02200840(6, 0, 0);
-    func_ov122_02299150();
-    func_ov122_02296978(1);
-    unk_94 = (u8 *)func_ov002_02200920();
+    applySlideOffset(6, 0, 0);
+    setupDialogButtons();
+    setFlags(1);
+    unk_94 = (u8 *)getSlideOffsetY();
     unk_8c = 0xb;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022994f4() {
-    if (func_ov002_02200908(0)) {
-        func_ov122_02297870();
-        func_ov002_02200a60(2);
-        func_ov122_022979e8();
+void LetterWriteMenu::transitionAct0B() {
+    if (stepSlideIn(0)) {
+        resetTextCursor();
+        setPhase(2);
+        resumeInput();
     }
-    func_ov002_02200840(6, 0, 0);
-    unk_94 = (u8 *)func_ov002_02200920();
+    applySlideOffset(6, 0, 0);
+    unk_94 = (u8 *)getSlideOffsetY();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022994c8() {
+void LetterWriteMenu::transitionAct0C() {
     unk_b7 = 0;
-    func_ov002_02202144(&unk_4104);
+    PopupChoice_LoadChoiceBg(&unk_4104);
     func_ov122_02296a7c(1);
-    func_ov002_02200a60(2);
+    setPhase(2);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299474() {
-    if (func_ov122_02296de4() == 0) {
-        func_ov002_022008c4(0xb, 0, 0, 0x30);
-        func_ov002_02200840(6, 0, 0);
-        func_ov002_02200840(4, 0, 0);
-        func_ov002_02200840(3, 0, 0);
-        func_ov002_02200a50(0xe);
+void LetterWriteMenu::transitionAct0D() {
+    if (isScrolling() == 0) {
+        beginSubSlideOut(0xb, 0, 0, 0x30);
+        applySlideOffset(6, 0, 0);
+        applySlideOffset(4, 0, 0);
+        applySlideOffset(3, 0, 0);
+        setTransitionState(0xe);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299408() {
-    if (func_ov002_022008fc(0)) {
+void LetterWriteMenu::transitionAct0E() {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(6);
         Gfx2d_ResetLayer(4);
         Gfx2d_ResetLayer(3);
-        func_ov002_02200a60(5);
+        setPhase(5);
     } else {
-        func_ov002_02200840(6, 0, 0);
-        func_ov002_02200840(4, 0, 0);
-        func_ov002_02200840(3, 0, 0);
-        unk_94 = (u8 *)func_ov002_02200920();
+        applySlideOffset(6, 0, 0);
+        applySlideOffset(4, 0, 0);
+        applySlideOffset(3, 0, 0);
+        unk_94 = (u8 *)getSlideOffsetY();
         unk_98 = (s32)unk_94;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299368() {
+void LetterWriteMenu::init() {
     unk_bc = (u8 *)func_0206ed68();
-    func_ov095_02294478(&unk_c0, 1);
+    Keyboard_Init(&unk_c0, 1);
     _ZN12Unk_0206d0a013func_0206d39cEi(&unk_3c7c, 3);
     _ZN12Unk_0206d0a013func_0206d288EPv(&unk_3c7c, (u32)unk_bc);
-    func_ov122_02296e08(0x10);
-    func_ov122_02296df4(0x10);
+    setScroll(0x10);
+    setScrollTarget(0x10);
     unk_a8 = 0;
     _ZN10ScrollKnob8setStateEi(&unk_3e8c, 1);
-    _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc(&unk_4104, 6, 1, 0);
-    _ZN18Unk_ov002_022013ac19func_ov002_022017c4Ev(&unk_4104);
+    _ZN15PopupChoiceMenu4initEiiPKc(&unk_4104, 6, 1, 0);
+    _ZN19PopupChoiceMenuBody18buildAddresseeListEv(&unk_4104);
     unk_a4 = 0;
     if (func_020655d8(unk_bc)) {
-        func_ov095_0229442c(&unk_c0);
-        func_ov122_02296978(0x10);
+        Keyboard_SetAltWriteLayout(&unk_c0);
+        setFlags(0x10);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299334() {
-    func_ov095_02294438(&unk_c0);
+void LetterWriteMenu::releaseResources() {
+    Keyboard_Shutdown(&unk_c0);
     _ZN12Unk_0206d0a013func_0206d394Ev(&unk_3c7c);
-    func_ov002_02201b04(&unk_4104);
-    _ZN18Unk_ov002_022046cc19func_ov002_02203900Ev(&unk_43f8);
+    PopupChoice_ForceClose(&unk_4104);
+    _ZN17MenuBottomButtons9freeTextsEv(&unk_43f8);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299308() {
-    func_ov122_022992c4();
+void LetterWriteMenu::preInputUpdate() {
+    preStateUpdate();
     unk_3e8c.vfunc_0c();
     unk_3ed4.vfunc_0c();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022992d4() {
+void LetterWriteMenu::postInputUpdate() {
     _ZN12Unk_0206d0a013func_0206d380Ev(&unk_3c7c);
-    func_ov095_02294358(&unk_c0, 6);
-    func_ov002_02201b58(&unk_4104);
-    func_ov122_02299268();
+    Keyboard_EndFrame(&unk_c0, 6);
+    PopupChoice_Update(&unk_4104);
+    postStateUpdate();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022992c4() { _ZN18Unk_ov002_022046cc19func_ov002_02203900Ev(&unk_43f8); }
+void LetterWriteMenu::preStateUpdate() { _ZN17MenuBottomButtons9freeTextsEv(&unk_43f8); }
 
-void Unk_ov122_0229a1b8::func_ov122_02299268() {
-    if (func_ov122_02296988(0x1000)) {
-        u32 n = func_ov122_02296f68();
-        unk_a4 = func_020512e0(func_ov122_02296f98(), n) * 0x1f / (s32)n;
+void LetterWriteMenu::postStateUpdate() {
+    if (testFlags(0x1000)) {
+        u32 n = getFieldCapacity();
+        unk_a4 = func_020512e0(getFieldBuffer(), n) * 0x1f / (s32)n;
         if (unk_a4 > 0x1f) {
             unk_a4 = 0x1f;
         }
-        func_ov122_02296968(0x1000);
+        clearFlags(0x1000);
     }
 }
 
-extern "C" void func_ov122_02299220() {
+extern "C" void LetterWriteMenu_SetupBgLayers() {
     Gfx2d_SetLayerPriority(6, 1);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
     Gfx2d_SetLayerPriority(4, 3);
@@ -1126,39 +1126,39 @@ extern "C" void func_ov122_02299220() {
     Gfx2d_SetLayerControl(3, 0, 0, 0);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299188() {
+void LetterWriteMenu::loadBg() {
     u32 h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/chat2/b_cht_bg.bpl", h, 6, 1, 1, 9);
-    func_ov095_022943dc(&unk_c0, "menu/chat2/b_key0.bsc");
-    func_ov122_02298ec4();
-    func_ov095_022943b4(&unk_c0, 6);
+    Keyboard_LoadScreenFile(&unk_c0, "menu/chat2/b_key0.bsc");
+    refreshKeys();
+    Keyboard_LoadScreenNow(&unk_c0, 6);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", h, 6, 0x13d, 0x13d, 0x1e9);
-    func_ov002_02202dd4(func_02065c8c(unk_bc), 4);
+    Menu_LoadPaperBg(func_02065c8c(unk_bc), 4);
     _ZN12Unk_0206d0a013func_0206d3f4Ej(&unk_3c7c, 3);
-    func_ov122_02298fbc(1, 1);
+    redrawText(1, 1);
     _ZN12Unk_0206d0a013func_0206d380Ev(&unk_3c7c);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229917c() { func_ov095_02293cc0(&unk_c0); }
+void LetterWriteMenu::loadKeyboardObjGfx() { Keyboard_LoadObjGfx(&unk_c0); }
 
-void Unk_ov122_0229a1b8::func_ov122_02299150() {
-    if (func_ov122_02296988(0x10)) {
-        _ZN18Unk_ov002_022046cc19func_ov002_022035d8Ev(&unk_43f8);
+void LetterWriteMenu::setupDialogButtons() {
+    if (testFlags(0x10)) {
+        _ZN17MenuBottomButtons16setLayoutConfirmEv(&unk_43f8);
     } else {
-        _ZN18Unk_ov002_022046cc19func_ov002_02203608Ev(&unk_43f8);
+        _ZN17MenuBottomButtons24setLayoutChangeAddresseeEv(&unk_43f8);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02299130() {
-    _ZN18Unk_ov002_02202fac19func_ov002_02203458Ei(&unk_43f8, 0x22);
-    _ZN18Unk_ov002_02202fac19func_ov002_02203268Ev(&unk_43f8);
+void LetterWriteMenu::showFinishDialog() {
+    _ZN21MenuBottomButtonsBody16setLayoutYesNo07Ei(&unk_43f8, 0x22);
+    _ZN21MenuBottomButtonsBody15showTitleLayer2Ev(&unk_43f8);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298fbc(u32 a, u32 b) {
+void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 lo;
     u32 n;
     u32 flag;
-    func_ov122_02296978(0x1000);
+    setFlags(0x1000);
     if (a != 0) {
         _ZN12Unk_0206d0a013func_0206d1d4EP16Unk_0206d1d4_SrcPh(&unk_3c7c, unk_bc, unk_3fcc.unk_90);
         _ZN12Unk_0206d0a013func_0206d0fcEPhi(&unk_3c7c, unk_bc + 0x4c, b);
@@ -1177,7 +1177,7 @@ void Unk_ov122_0229a1b8::func_ov122_02298fbc(u32 a, u32 b) {
             break;
         }
     }
-    if (func_ov122_022972f4()) {
+    if (hasSelection()) {
         flag = 0;
         u32 y = unk_ae;
         u32 x = unk_ad;
@@ -1190,7 +1190,7 @@ void Unk_ov122_0229a1b8::func_ov122_02298fbc(u32 a, u32 b) {
         }
     } else {
         flag = 1;
-        n = func_ov095_02293da0(&unk_c0);
+        n = Keyboard_GetTypedRunLength(&unk_c0);
         if (n != 0) {
             lo = unk_ac - n;
         }
@@ -1212,185 +1212,185 @@ void Unk_ov122_0229a1b8::func_ov122_02298fbc(u32 a, u32 b) {
             break;
         }
     }
-    func_ov122_02298ec4();
+    refreshKeys();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298ec4() {
+void LetterWriteMenu::refreshKeys() {
     if (unk_aa == 2) {
         u8 c = unk_ac;
-        if (func_ov095_02293ff0(&unk_c0, unk_bc + 0x4c, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
-            func_ov095_02295340(&unk_c0, 0);
+        if (Keyboard_InsertCharMultiline(&unk_c0, unk_bc + 0x4c, 0x86, &c, 0x80, 0x28, 4, 0x96, 1, 1)) {
+            Keyboard_EnableKey(&unk_c0, 0);
         } else {
-            func_ov095_022953c0(&unk_c0, 0);
+            Keyboard_DisableKey(&unk_c0, 0);
         }
     } else {
-        func_ov095_022953c0(&unk_c0, 0);
+        Keyboard_DisableKey(&unk_c0, 0);
     }
-    if (func_ov122_022972f4()) {
-        func_ov095_02295340(&unk_c0, 0xb);
+    if (hasSelection()) {
+        Keyboard_EnableKey(&unk_c0, 0xb);
     } else {
-        func_ov095_022953c0(&unk_c0, 0xb);
+        Keyboard_DisableKey(&unk_c0, 0xb);
     }
-    if (func_ov122_02296988(0x400)) {
-        func_ov095_02295340(&unk_c0, 0xc);
+    if (testFlags(0x400)) {
+        Keyboard_EnableKey(&unk_c0, 0xc);
     } else {
-        func_ov095_022953c0(&unk_c0, 0xc);
+        Keyboard_DisableKey(&unk_c0, 0xc);
     }
-    if (func_ov122_022972f4()) {
-        func_ov095_022942c0(&unk_c0);
-        func_ov095_02295340(&unk_c0, 6);
+    if (hasSelection()) {
+        Keyboard_DisableModifierKeys(&unk_c0);
+        Keyboard_EnableKey(&unk_c0, 6);
     } else if (unk_ac == 0) {
-        func_ov095_022942c0(&unk_c0);
+        Keyboard_DisableModifierKeys(&unk_c0);
     } else {
-        func_ov095_02294250(&unk_c0, func_ov122_0229731c());
+        Keyboard_UpdateModifierKeys(&unk_c0, getCharBeforeCursor());
     }
 }
 
-void C::func_ov122_02298d84() {
-    if (func_ov002_02200a14(1)) {
-        func_ov122_02297a08();
+void C::mainAct00() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
         return;
     }
     BOOL hit = FALSE;
-    if (func_ov095_02294324(&unk_c0)) {
+    if (Keyboard_UpdatePressedKey(&unk_c0)) {
         hit = TRUE;
     }
     if (Unk_ov122_02298b70_Both()) {
         s32 x = gTouchCurX;
         s32 y = gTouchCurY;
-        if (_ZN18Unk_ov002_02202fac19func_ov002_02203110Ei(&unk_43f8, 9)) {
-            func_ov122_02298820();
+        if (_ZN21MenuBottomButtonsBody9isTouchedEi(&unk_43f8, 9)) {
+            askFinish();
             return;
         }
-        if (!func_ov122_02296988(0x10)) {
-            if (_ZN18Unk_ov002_02202fac19func_ov002_02203110Ei(&unk_43f8, 0)) {
-                func_ov122_02298814();
+        if (!testFlags(0x10)) {
+            if (_ZN21MenuBottomButtonsBody9isTouchedEi(&unk_43f8, 0)) {
+                askOpenList();
                 return;
             }
         }
-        if (func_ov095_02293990(&unk_c0)) {
-            func_ov095_02294648(&unk_c0, 8, 6, 1);
-            func_ov122_02298fbc(0, 1);
+        if (Keyboard_TouchPageTab(&unk_c0)) {
+            Keyboard_SetMode(&unk_c0, 8, 6, 1);
+            redrawText(0, 1);
             return;
         }
         if (y < 0x48) {
             if (x < 0xe0) {
-                if (func_ov122_022975c4()) {
-                    func_ov002_02200a58(3);
-                    func_ov095_02293dc0(&unk_c0);
-                    func_ov122_02298fbc(1, 1);
+                if (touchTextArea()) {
+                    setMainState(3);
+                    Keyboard_ResetTypedRun(&unk_c0);
+                    redrawText(1, 1);
                     return;
                 }
             } else {
-                if (func_ov122_02296ee0()) {
-                    _ZN18Unk_ov002_022046b019func_ov002_02202f00Ev(&unk_3e8c);
-                    func_ov002_02200a58(2);
-                    func_ov122_022972dc();
-                    func_ov122_02298fbc(1, 1);
+                if (touchScrollKnob()) {
+                    _ZN14MenuScrollKnob4grabEv(&unk_3e8c);
+                    setMainState(2);
+                    clearSelection();
+                    redrawText(1, 1);
                     return;
                 }
             }
         }
         if (y >= 0x48) {
             if (!hit) {
-                s32 r = func_ov122_02298b14();
+                s32 r = touchKey();
                 if (r == 0) {
                 } else if (r == 1) {
-                    func_ov002_02200a58(1);
+                    setMainState(1);
                 }
             }
         }
     }
 }
 
-void C::func_ov122_02298d30() {
+void C::mainAct01() {
     if (gTouchHeld == 0) {
-        func_ov002_02200a58(0);
-    } else if (func_ov095_022942e8(&unk_c0)) {
-        s32 t = func_ov095_02294a40(&unk_c0);
-        s32 h = func_ov095_02294864(&unk_c0, t, 8);
-        func_ov122_022985d8(h);
-        func_ov095_02294d40(&unk_c0, t);
+        setMainState(0);
+    } else if (Keyboard_TickKeyRepeat(&unk_c0)) {
+        s32 t = Keyboard_GetPressedKey(&unk_c0);
+        s32 h = Keyboard_GetKeyCode(&unk_c0, t, 8);
+        pressKeyCode(h);
+        Keyboard_HighlightKey(&unk_c0, t);
     }
 }
 
-void C::func_ov122_02298cf4() {
+void C::mainAct02() {
     unk_ab = 0;
     if (gTouchHeld == 0) {
-        func_ov122_022975c0();
-        _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(&unk_3e8c);
-        func_ov122_02297a24();
+        endTouch();
+        _ZN14MenuScrollKnob7releaseEv(&unk_3e8c);
+        startTouchInput();
     } else {
-        func_ov122_02296e80();
+        dragScrollKnob();
     }
 }
 
-void C::func_ov122_02298c94() {
+void C::mainAct03() {
     BOOL r;
     if (gTouchHeld == 0) {
-        func_ov002_02200a58(0);
+        setMainState(0);
         if (unk_ad == unk_ae) {
-            func_ov122_02296968(8);
+            clearFlags(8);
         }
         r = TRUE;
     } else {
-        r = func_ov122_022974e8();
+        r = dragSelection();
         if (r) {
             Snd_PlaySe(0x15);
         }
     }
     if (r) {
-        func_ov122_02296d34();
-        func_ov122_02298fbc(0, 1);
+        scrollToCaret();
+        redrawText(0, 1);
     }
 }
 
-void C::func_ov122_02298c24() {
-    if (func_ov002_02200a14(1)) {
+void C::mainAct04() {
+    if (checkSwitchToButtons(1)) {
         func_ov122_02297940();
     } else if (Unk_ov122_02298b70_Both()) {
-        if (_ZN18Unk_ov002_02202fac19func_ov002_02203110Ei(&unk_43f8, 3)) {
-            func_ov122_02296ce8(3);
-        } else if (_ZN18Unk_ov002_02202fac19func_ov002_02203110Ei(&unk_43f8, 4)) {
-            func_ov122_02296ce8(4);
+        if (_ZN21MenuBottomButtonsBody9isTouchedEi(&unk_43f8, 3)) {
+            openDialog(3);
+        } else if (_ZN21MenuBottomButtonsBody9isTouchedEi(&unk_43f8, 4)) {
+            openDialog(4);
         }
     }
 }
 
-void C::func_ov122_02298b70() {
+void C::mainAct05() {
     if (func_0206e61c()) {
-        func_ov122_02296978(0x2000);
+        setFlags(0x2000);
         func_ov122_02296a48();
-    } else if (func_ov002_02200a14(1)) {
+    } else if (checkSwitchToButtons(1)) {
         func_ov122_022978c0();
     } else if (Unk_ov122_02298b70_Both()) {
-        s32 t = _ZN18Unk_ov002_022013ac19func_ov002_022014acEii(&unk_4104, gTouchCurX, gTouchCurY);
+        s32 t = _ZN19PopupChoiceMenuBody10hitTestRowEii(&unk_4104, gTouchCurX, gTouchCurY);
         if (t >= 0) {
-            func_ov002_02201a3c(&unk_4104, t);
-            unk_b6 = _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(&unk_4104, unk_b7, (u8)t);
-            func_ov002_02200a58(0x17);
+            PopupChoice_DecideAddressee(&unk_4104, t);
+            unk_b6 = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(&unk_4104, unk_b7, (u8)t);
+            setMainState(0x17);
         } else {
             func_ov122_02296a48();
         }
     }
 }
 
-s32 C::func_ov122_02298b14() {
-    func_ov095_02295194(&unk_c0);
-    s32 t = func_ov095_02294a44(&unk_c0, gTouchCurX, gTouchCurY);
+s32 C::touchKey() {
+    Keyboard_ClearHighlight(&unk_c0);
+    s32 t = Keyboard_TouchKey(&unk_c0, gTouchCurX, gTouchCurY);
     if (t == -1) {
         return 0;
     }
-    s32 h = func_ov095_02294864(&unk_c0, t, 8);
-    s32 r = func_ov122_022985d8(h);
-    func_ov095_02294d40(&unk_c0, t);
-    func_ov095_02294318(&unk_c0);
+    s32 h = Keyboard_GetKeyCode(&unk_c0, t, 8);
+    s32 r = pressKeyCode(h);
+    Keyboard_HighlightKey(&unk_c0, t);
+    Keyboard_StartKeyRepeat(&unk_c0);
     return r;
 }
 
-BOOL C::func_ov122_02298a54(BOOL flag) {
-    if (func_ov122_022972f4()) {
-        func_ov095_02293dc0(&unk_c0);
+BOOL C::backspace(BOOL flag) {
+    if (hasSelection()) {
+        Keyboard_ResetTypedRun(&unk_c0);
         Snd_PlaySe(0x35);
     } else {
         u8 a = unk_ac;
@@ -1399,11 +1399,11 @@ BOOL C::func_ov122_02298a54(BOOL flag) {
             unk_ae = unk_ac - 1;
             Snd_PlaySe(0x35);
         } else {
-            u8 *q = func_ov122_02296fd4();
+            u8 *q = getPartText();
             u8 m = unk_aa;
             if ((m == 0 && unk_bc[0xec] == 0) || (m == 1 && unk_bc[0xec] == 0x18) || q[0] == 0) {
                 if (flag) {
-                    func_ov122_02296d28();
+                    playErrorSe();
                 }
                 return FALSE;
             }
@@ -1412,51 +1412,51 @@ BOOL C::func_ov122_02298a54(BOOL flag) {
             Snd_PlaySe(0x35);
         }
     }
-    func_ov122_02297238();
-    func_ov122_02298fbc(0, 1);
-    func_ov122_02297340();
+    deleteSelection();
+    redrawText(0, 1);
+    updateCaretPos();
     return TRUE;
 }
 
-BOOL C::func_ov122_0229899c(u32 key) {
-    u8 *p = (u8 *)func_ov122_0229731c();
+BOOL C::applyModifierKey(u32 key) {
+    u8 *p = (u8 *)getCharBeforeCursor();
     if (p == 0) {
         return FALSE;
     }
     switch (key) {
     case 0x103:
-        p = func_ov095_02293f90(&unk_c0, p);
+        p = Keyboard_ModifyCharKey103(&unk_c0, p);
         break;
     case 0x104:
-        p = func_ov095_02293f8c(&unk_c0, p);
+        p = Keyboard_ModifyCharKey104(&unk_c0, p);
         break;
     case 0x105:
-        p = func_ov095_02293f88(&unk_c0, p);
+        p = Keyboard_ModifyCharKey105(&unk_c0, p);
         break;
     }
     if (p == 0) {
         return FALSE;
     }
-    u8 v = func_ov122_02296f40();
-    u8 *q = func_ov122_02296f98();
-    u32 sz = func_ov122_02296f68();
-    if (!func_ov095_02293f94(&unk_c0, q, p, v, sz, 0x2710)) {
+    u8 v = getFieldCursor();
+    u8 *q = getFieldBuffer();
+    u32 sz = getFieldCapacity();
+    if (!Keyboard_ReplaceCharBeforeCursor(&unk_c0, q, p, v, sz, 0x2710)) {
         return FALSE;
     }
-    func_ov122_02298fbc(0, 1);
-    func_ov122_02297340();
+    redrawText(0, 1);
+    updateCaretPos();
     return TRUE;
 }
 
-BOOL C::func_ov122_022988b8(u32 a, u32 b) {
+BOOL C::insertCharRaw(u32 a, u32 b) {
     u8 v;
-    v = func_ov122_02296f40();
+    v = getFieldCursor();
     u8 old = v;
-    u8 *p = func_ov122_02296f98();
-    u32 sz = func_ov122_02296f68();
+    u8 *p = getFieldBuffer();
+    u32 sz = getFieldCapacity();
     if (unk_aa == 2) {
-        if (func_ov095_02293ff0(&unk_c0, p, a, &v, 0x80, 0x28, 4, 0x96, 0, b)) {
-            func_ov122_02296f30(v);
+        if (Keyboard_InsertCharMultiline(&unk_c0, p, a, &v, 0x80, 0x28, 4, 0x96, 0, b)) {
+            setCursorIndex(v);
             goto ok;
         }
         return FALSE;
@@ -1465,7 +1465,7 @@ BOOL C::func_ov122_022988b8(u32 a, u32 b) {
     if (unk_aa != 3) {
         h = h - 0x40;
     }
-    if (func_ov095_022940f0(&unk_c0, p, a, &v, sz, h, 0, 1)) {
+    if (Keyboard_InsertChar(&unk_c0, p, a, &v, sz, h, 0, 1)) {
         switch (unk_aa) {
         case 0:
             if (old != v) {
@@ -1476,7 +1476,7 @@ BOOL C::func_ov122_022988b8(u32 a, u32 b) {
             v = v - unk_bc[0xec];
             break;
         }
-        func_ov122_02296f30(v);
+        setCursorIndex(v);
         goto ok;
     }
     return FALSE;
@@ -1484,34 +1484,34 @@ ok:
     return TRUE;
 }
 
-BOOL C::func_ov122_02298874(u32 key) {
-    if (func_ov122_022972f4()) {
-        func_ov122_02297238();
-        func_ov095_02293dc0(&unk_c0);
+BOOL C::insertChar(u32 key) {
+    if (hasSelection()) {
+        deleteSelection();
+        Keyboard_ResetTypedRun(&unk_c0);
     }
-    BOOL r = func_ov122_022988b8(key, 1);
-    func_ov122_02298fbc(0, 1);
-    func_ov122_02297340();
+    BOOL r = insertCharRaw(key, 1);
+    redrawText(0, 1);
+    updateCaretPos();
     return r;
 }
 
-void C::func_ov122_0229882c() {
+void C::closeKeyboard() {
     unk_8c = 4;
-    func_ov002_02200a60(1);
-    func_ov122_02296df4(0);
-    func_ov122_02296968(4);
-    func_ov122_022972dc();
-    func_ov095_02293dc0(&unk_c0);
-    func_ov122_02298fbc(1, 0);
-    func_ov122_02296c70();
+    setPhase(1);
+    setScrollTarget(0);
+    clearFlags(4);
+    clearSelection();
+    Keyboard_ResetTypedRun(&unk_c0);
+    redrawText(1, 0);
+    hideCursor();
 }
 
-void C::func_ov122_02298820() { func_ov122_02296ce8(1); }
+void C::askFinish() { openDialog(1); }
 
-void C::func_ov122_02298814() { func_ov122_02296ce8(0); }
+void C::askOpenList() { openDialog(0); }
 
-void C::func_ov122_022987ac() {
-    if (func_ov122_022972f4()) {
+void C::copy() {
+    if (hasSelection()) {
         u32 a = unk_ae;
         u32 b = unk_ad;
         u32 lo, n;
@@ -1523,86 +1523,86 @@ void C::func_ov122_022987ac() {
             n = a - b;
         }
         Mem_Clear(unk_3fcc.unk_b8, 0x80);
-        Mem_Copy(func_ov122_02296fd4() + lo, unk_3fcc.unk_b8, n);
-        func_ov122_02296978(0x400);
-        func_ov095_022923f8(&unk_c0);
-        func_ov122_02298ec4();
+        Mem_Copy(getPartText() + lo, unk_3fcc.unk_b8, n);
+        setFlags(0x400);
+        Keyboard_PlayCopySe(&unk_c0);
+        refreshKeys();
     }
 }
 
-void C::func_ov122_02298714() {
-    if (func_ov122_02296988(0x400)) {
-        if (func_ov122_022972f4()) {
-            func_ov122_02297238();
+void C::paste() {
+    if (testFlags(0x400)) {
+        if (hasSelection()) {
+            deleteSelection();
         }
-        func_ov095_02293dc0(&unk_c0);
-        func_ov095_02293d94(&unk_c0);
+        Keyboard_ResetTypedRun(&unk_c0);
+        Keyboard_BeginPaste(&unk_c0);
         s32 n = func_020512e0(unk_3fcc.unk_b8, 0x80);
         s32 i;
         for (i = 0; i < n; i++) {
-            if (!func_ov122_022988b8(*((u8 *)this + i + 0x4084), 0)) {
+            if (!insertCharRaw(*((u8 *)this + i + 0x4084), 0)) {
                 if (i == 0) {
-                    func_ov122_02296d28();
+                    playErrorSe();
                 }
                 i = n;
             }
         }
-        func_ov095_022923ec(&unk_c0);
-        func_ov122_02298fbc(0, 1);
-        func_ov122_02297340();
-        func_ov095_02293d88(&unk_c0);
+        Keyboard_PlayPasteSe(&unk_c0);
+        redrawText(0, 1);
+        updateCaretPos();
+        Keyboard_EndPaste(&unk_c0);
     }
 }
 
-s32 C::func_ov122_022985d8(s32 key) {
+s32 C::pressKeyCode(s32 key) {
     s32 r = 1;
-    s32 t = func_ov095_02293dc8(&unk_c0, key, 6);
+    s32 t = Keyboard_HandleModeKey(&unk_c0, key, 6);
     if (t != 0) {
-        func_ov122_02298fbc(0, r);
+        redrawText(0, r);
         return t;
     }
-    if (func_ov095_0229423c(&unk_c0, key)) {
+    if (Keyboard_IsControlCode(&unk_c0, key)) {
         switch (key) {
         case 0x100:
-            func_ov122_02298a54(r);
+            backspace(r);
             break;
         case 0x103:
         case 0x104:
         case 0x105:
-            if (!func_ov122_0229899c(key)) {
-                func_ov122_02296d28();
+            if (!applyModifierKey(key)) {
+                playErrorSe();
             }
             r = 2;
             break;
         case 0x113:
-            func_ov122_02298820();
+            askFinish();
             r = 3;
             break;
         case 0x114:
-            func_ov122_02298814();
+            askOpenList();
             r = 3;
             break;
         case 0x118:
-            func_ov122_022987ac();
+            copy();
             r = 2;
             break;
         case 0x119:
-            func_ov122_02298714();
+            paste();
             r = 2;
             break;
         }
     } else {
-        BOOL ok = func_ov122_02298874((u8)key);
-        if (func_ov095_02295264(&unk_c0)) {
-            func_ov122_022979ac(0x1c, r);
+        BOOL ok = insertChar((u8)key);
+        if (Keyboard_IsFull(&unk_c0)) {
+            showMessage(0x1c, r);
             return 4;
         }
-        if (func_ov095_02295258(&unk_c0)) {
-            func_ov122_022979ac(0x1c, r);
+        if (Keyboard_IsTooWide(&unk_c0)) {
+            showMessage(0x1c, r);
             return 4;
         }
         if (!ok) {
-            func_ov122_02296d28();
+            playErrorSe();
         }
         if (key == 0x86) {
             r = 2;
@@ -1611,53 +1611,53 @@ s32 C::func_ov122_022985d8(s32 key) {
     return r;
 }
 
-void C::func_ov122_022984f4() {
-    if (func_ov002_022009d4()) {
-        func_ov122_02297a24();
+void C::mainAct06() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
         return;
     }
-    u8 b = func_ov002_022009c8();
-    if (func_ov122_02296988(0x10) == 1) {
-        if (func_ov095_02292404(&unk_c0) == 0xd6) {
-            if (func_ov002_022009a4()) {
+    u8 b = takeRepeatedKeys();
+    if (testFlags(0x10) == 1) {
+        if (Keyboard_PressCursorKey(&unk_c0) == 0xd6) {
+            if (isRepeatLeft()) {
                 b &= ~0x20;
             }
         }
     }
-    switch (func_ov095_02292458(&unk_c0, b)) {
+    switch (Keyboard_MoveCursor(&unk_c0, b)) {
     case 1:
-        _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev(&unk_3ed4);
-        func_ov122_02296bf0();
+        _ZN10MenuCursor14switchToAnim01Ev(&unk_3ed4);
+        moveCursorToTarget();
         break;
     case 2:
-        _ZN18Unk_ov002_0220464c19func_ov002_02202be0Ev(&unk_3ed4);
-        func_ov122_02296bf0();
+        _ZN10MenuCursor14switchToAnim0DEv(&unk_3ed4);
+        moveCursorToTarget();
         break;
     case 3:
-        _ZN18Unk_ov002_0220464c19func_ov002_02202ca0Ev(&unk_3ed4);
-        func_ov122_02296bf0();
+        _ZN10MenuCursor14switchToAnim07Ev(&unk_3ed4);
+        moveCursorToTarget();
         break;
     case 0:
     default:
-        if (func_ov122_02297c14()) return;
-        if (func_ov122_02297bcc()) return;
-        if (func_ov122_02297b30()) return;
-        if (func_ov122_02297a68()) return;
-        if (func_ov122_02297ac8()) return;
-        if (func_ov122_02297a3c()) return;
+        if (tryPressKey()) return;
+        if (tryBackspaceButton()) return;
+        if (toggleTextFocus()) return;
+        if (tryCopyButton()) return;
+        if (tryPasteButton()) return;
+        if (tryStartFinish()) return;
         break;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022984c8()
+void LetterWriteMenu::mainAct07()
 {
-    if (!_ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev(&unk_3ed4)) {
-        func_ov002_02200a58(unk_b4);
-        func_ov122_022999b0();
+    if (!_ZN14MenuCursorBase8isMovingEv(&unk_3ed4)) {
+        setMainState(unk_b4);
+        runMainState();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022983ec()
+void LetterWriteMenu::mainAct08()
 {
     s32 r4;
     s32 t;
@@ -1666,260 +1666,260 @@ void Unk_ov122_0229a1b8::func_ov122_022983ec()
     if (!_ZN10HandCursor10isAnimDoneEv(&unk_3ed4)) {
         return;
     }
-    r4 = func_ov095_02292404(&unk_c0);
-    t = func_ov095_02294864(&unk_c0, r4, 8);
+    r4 = Keyboard_PressCursorKey(&unk_c0);
+    t = Keyboard_GetKeyCode(&unk_c0, r4, 8);
     if (t == 0x112) {
-        func_ov002_02200a58(0x10);
-        _ZN18Unk_ov002_022046b019func_ov002_02202f00Ev(&unk_3e8c);
-        func_ov002_02202e48(&unk_3e8c);
-        if (func_ov122_022972f4()) {
-            func_ov122_022972dc();
-            func_ov122_02298fbc(1, 1);
+        setMainState(0x10);
+        _ZN14MenuScrollKnob4grabEv(&unk_3e8c);
+        Menu_PlayScrollGrabSe(&unk_3e8c);
+        if (hasSelection()) {
+            clearSelection();
+            redrawText(1, 1);
         } else {
-            func_ov122_022972dc();
+            clearSelection();
         }
-        func_ov122_02296978(0x200);
+        setFlags(0x200);
         return;
     }
-    r = func_ov122_022985d8(t);
+    r = pressKeyCode(t);
     if (r == 1 && (gPad[0] & 1)) {
-        func_ov095_02294318(&unk_c0);
-        func_ov002_02200a58(9);
-        func_ov095_02294d40(&unk_c0, r4);
+        Keyboard_StartKeyRepeat(&unk_c0);
+        setMainState(9);
+        Keyboard_HighlightKey(&unk_c0, r4);
     } else if (r == 3) {
     } else if (r == 4) {
-        func_ov095_02295194(&unk_c0);
+        Keyboard_ClearHighlight(&unk_c0);
     } else {
-        func_ov122_02296b10();
+        releaseCursor();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298394()
+void LetterWriteMenu::mainAct09()
 {
     s32 r5;
 
     if ((gPad[0] & 1) == 0) {
-        func_ov122_02296b10();
-    } else if (func_ov095_022942e8(&unk_c0)) {
-        r5 = func_ov095_02294a40(&unk_c0);
-        func_ov122_022985d8(func_ov095_02294864(&unk_c0, r5, 8));
-        func_ov095_02294d40(&unk_c0, r5);
+        releaseCursor();
+    } else if (Keyboard_TickKeyRepeat(&unk_c0)) {
+        r5 = Keyboard_GetPressedKey(&unk_c0);
+        pressKeyCode(Keyboard_GetKeyCode(&unk_c0, r5, 8));
+        Keyboard_HighlightKey(&unk_c0, r5);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229836c()
+void LetterWriteMenu::mainAct0A()
 {
     if (_ZN10HandCursor10isAnimDoneEv(&unk_3ed4)) {
-        func_ov122_02296af0();
-        func_ov002_02200a58(6);
+        refreshCursor();
+        setMainState(6);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298320()
+void LetterWriteMenu::mainAct0B()
 {
     if ((gPad[0] & 2) == 0) {
-        func_ov002_02200a58(unk_b4);
-    } else if (func_ov095_022942e8(&unk_c0)) {
-        func_ov122_022985d8(0x100);
-        if (func_ov122_02296988(0x100)) {
-            func_ov122_02296b54();
+        setMainState(unk_b4);
+    } else if (Keyboard_TickKeyRepeat(&unk_c0)) {
+        pressKeyCode(0x100);
+        if (testFlags(0x100)) {
+            snapCursor();
         }
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298210()
+void LetterWriteMenu::mainAct0C()
 {
     u32 a;
     u32 b;
-    if (func_ov002_022009d4()) {
-        func_ov122_02297a24();
+    if (checkSwitchToTouch()) {
+        startTouchInput();
         return;
     }
-    if (func_ov122_02297020((void *)func_ov002_022009c8(), 1)) {
-        if (func_ov095_02293da0(&unk_c0) || func_ov122_022972f4()) {
-            func_ov095_02293dc0(&unk_c0);
-            func_ov122_022972dc();
-            func_ov122_02298fbc(1, 1);
+    if (navigateText((void *)takeRepeatedKeys(), 1)) {
+        if (Keyboard_GetTypedRunLength(&unk_c0) || hasSelection()) {
+            Keyboard_ResetTypedRun(&unk_c0);
+            clearSelection();
+            redrawText(1, 1);
         } else {
-            func_ov122_022972dc();
+            clearSelection();
         }
-        func_ov122_02297340();
-        func_ov122_02296b54();
-        func_ov122_02298ec4();
+        updateCaretPos();
+        snapCursor();
+        refreshKeys();
         Snd_PlaySe(0xb);
-    } else if (!func_ov122_02297b30()) {
+    } else if (!toggleTextFocus()) {
         a = unk_9c;
         b = unk_a0;
-        if (func_ov122_02297bcc()) {
+        if (tryBackspaceButton()) {
             if (a != unk_9c || b != unk_a0) {
-                func_ov122_02296b54();
+                snapCursor();
             }
         } else {
             if (gPad[1] & 1) {
-                func_ov002_02200a58(0xd);
-                func_ov122_02296978(8);
+                setMainState(0xd);
+                setFlags(8);
                 unk_ad = unk_ac;
                 unk_ae = unk_ac;
             }
-            if (func_ov122_02297a68()) {
+            if (tryCopyButton()) {
                 return;
             }
-            if (func_ov122_02297ac8()) {
+            if (tryPasteButton()) {
                 return;
             }
-            if (func_ov122_02297a3c()) {
+            if (tryStartFinish()) {
                 return;
             }
         }
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229819c()
+void LetterWriteMenu::mainAct0D()
 {
     if ((gPad[0] & 1) == 0) {
-        func_ov002_02200a58(0xc);
+        setMainState(0xc);
         if (unk_ad == unk_ae) {
-            func_ov122_02296968(8);
+            clearFlags(8);
         }
     } else {
-        if (func_ov122_02297020((void *)func_ov002_022009c8(), 0)) {
+        if (navigateText((void *)takeRepeatedKeys(), 0)) {
             unk_ae = unk_ac;
-            func_ov122_02298fbc(0, 1);
-            func_ov122_02297340();
-            func_ov122_02296b54();
+            redrawText(0, 1);
+            updateCaretPos();
+            snapCursor();
             Snd_PlaySe(0x15);
         }
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229816c()
+void LetterWriteMenu::mainAct0E()
 {
     if ((gPad[0] & 0x200) == 0) {
-        func_ov002_02200a58(unk_b4);
-        func_ov122_02298ec4();
+        setMainState(unk_b4);
+        refreshKeys();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229813c()
+void LetterWriteMenu::mainAct0F()
 {
     if ((gPad[0] & 0x100) == 0) {
-        func_ov002_02200a58(unk_b4);
-        func_ov122_02298ec4();
+        setMainState(unk_b4);
+        refreshKeys();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02298118()
+void LetterWriteMenu::mainAct10()
 {
     if (_ZN10ScrollKnob12areAnimsDoneEv(&unk_3e8c)) {
-        func_ov002_02200a58(0x11);
+        setMainState(0x11);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022980dc()
+void LetterWriteMenu::mainAct11()
 {
     if ((gPad[0] & 1) == 0) {
-        _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(&unk_3e8c);
-        func_ov002_02200a58(0x12);
-        func_ov122_022975c0();
+        _ZN14MenuScrollKnob7releaseEv(&unk_3e8c);
+        setMainState(0x12);
+        endTouch();
     } else {
-        func_ov122_02296e28();
+        scrollByPad();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022980b0()
+void LetterWriteMenu::mainAct12()
 {
     if (_ZN10ScrollKnob12areAnimsDoneEv(&unk_3e8c)) {
-        func_ov122_02296b10();
-        func_ov122_02296968(0x200);
+        releaseCursor();
+        clearFlags(0x200);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297f98()
+void LetterWriteMenu::mainAct13()
 {
     s32 r4;
     s32 r6;
     s32 r5;
     u32 f;
 
-    if (func_ov002_022009d4()) {
+    if (checkSwitchToTouch()) {
         func_ov122_02297994();
         return;
     }
-    r4 = func_ov002_022009c8();
+    r4 = takeRepeatedKeys();
     if (gPad[1] & 1) {
         switch (unk_b6) {
         case 0:
-            func_ov122_02296ce8(3);
+            openDialog(3);
             break;
         case 1:
-            func_ov122_02296ce8(4);
+            openDialog(4);
             break;
         }
-        _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(&unk_3ed4);
+        _ZN10MenuCursor12setPosePressEv(&unk_3ed4);
         return;
     }
     r6 = unk_b6;
-    if (func_ov002_0220126c((void *)r4)) {
+    if (MenuKeys_HasLeft((void *)r4)) {
         if (unk_b6 != 0) {
             unk_b6 = *(volatile u8 *)&unk_b6 - 1;
         }
-    } else if (func_ov002_0220125c((void *)r4)) {
+    } else if (MenuKeys_HasRight((void *)r4)) {
         if (unk_b6 < 1) {
             unk_b6 = *(volatile u8 *)&unk_b6 + 1;
         }
     }
     r4 = unk_b6;
     if (r6 != r4) {
-        r6 = _ZN18Unk_ov002_02202fac19func_ov002_022030f4Ei(&unk_43f8, data_ov122_0229a004[r4]);
-        r5 = _ZN18Unk_ov002_02202fac19func_ov002_022030b8Ei(&unk_43f8, *(u8 *)((u32)data_ov122_0229a004 + r4));
-        func_ov122_02296bbc(r6, r5);
+        r6 = _ZN21MenuBottomButtonsBody10getTargetXEi(&unk_43f8, data_ov122_0229a004[r4]);
+        r5 = _ZN21MenuBottomButtonsBody10getTargetYEi(&unk_43f8, *(u8 *)((u32)data_ov122_0229a004 + r4));
+        moveCursorTo(r6, r5);
     } else {
         f = gPad[1];
         if (f & 8) {
-            func_ov122_02296c70();
-            func_ov122_02296ce8(3);
+            hideCursor();
+            openDialog(3);
         } else if (f & 2) {
-            func_ov122_02296c70();
-            func_ov122_02296ce8(4);
+            hideCursor();
+            openDialog(4);
         }
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297f04()
+void LetterWriteMenu::mainAct14()
 {
     u32 f;
 
     if (func_0206e61c()) {
-        func_ov122_02296978(0x2000);
+        setFlags(0x2000);
         func_ov122_02296a48();
-    } else if (func_ov002_022009d4()) {
+    } else if (checkSwitchToTouch()) {
         func_ov122_02297928();
     } else {
-        if (func_ov002_022019d0(&unk_4104, func_ov002_022009c8(), &unk_b6, 0)) {
+        if (PopupChoice_MoveCursor(&unk_4104, takeRepeatedKeys(), &unk_b6, 0)) {
             func_ov122_02296aa4();
         }
         f = gPad[1];
         if (f & 1) {
-            _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(&unk_3ed4);
-            func_ov002_02200a58(0x15);
+            _ZN10MenuCursor12setPosePressEv(&unk_3ed4);
+            setMainState(0x15);
         } else if (f & 2) {
             func_ov122_02296a48();
         }
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297eb4()
+void LetterWriteMenu::mainAct15()
 {
     if (_ZN10HandCursor10isAnimDoneEv(&unk_3ed4)) {
-        func_ov002_02201a3c(&unk_4104, unk_b6);
-        unk_b6 = _ZN18Unk_ov002_022013ac19func_ov002_0220144cEjj(&unk_4104, unk_b7, unk_b6);
-        func_ov002_02200a58(0x17);
+        PopupChoice_DecideAddressee(&unk_4104, unk_b6);
+        unk_b6 = _ZN19PopupChoiceMenuBody13pickAddresseeEjj(&unk_4104, unk_b7, unk_b6);
+        setMainState(0x17);
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297e84()
+void LetterWriteMenu::mainAct16()
 {
-    if (_ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev(&unk_4104)) {
+    if (_ZN19PopupChoiceMenuBody6isOpenEv(&unk_4104)) {
         if (MenuCtrl_IsButtons()) {
             func_ov122_022978c0();
         } else {
@@ -1928,53 +1928,53 @@ void Unk_ov122_0229a1b8::func_ov122_02297e84()
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297e50()
+void LetterWriteMenu::mainAct17()
 {
-    if (func_ov002_02201a28(&unk_4104)) {
-        func_ov002_02202064(&unk_4104, 0);
-        func_ov002_02200a58(0x18);
-        func_ov122_02296c70();
+    if (PopupChoice_TickDecideDelay(&unk_4104)) {
+        PopupChoice_Close(&unk_4104, 0);
+        setMainState(0x18);
+        hideCursor();
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297d78()
+void LetterWriteMenu::mainAct18()
 {
     s32 r;
 
-    if (!_ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev(&unk_4104)) {
+    if (!_ZN19PopupChoiceMenuBody8isClosedEv(&unk_4104)) {
         return;
     }
-    r = _ZN18Unk_ov002_022013ac19func_ov002_022013e4EPvj(&unk_4104, (u32)unk_bc, unk_b6);
+    r = _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&unk_4104, (u32)unk_bc, unk_b6);
     switch (r) {
     case 1:
         _ZN12Unk_0206d0a013func_0206d288EPv(&unk_3c7c, (u32)unk_bc);
-        func_ov122_02298fbc(1, 0);
+        redrawText(1, 0);
         unk_8c = 0xa;
-        func_ov002_02200a60(1);
+        setPhase(1);
         break;
     case 2:
         unk_b7 = unk_b7 + 1;
-        if (unk_b7 >= _ZN18Unk_ov002_022013ac19func_ov002_02201490Ev(&unk_4104)) {
+        if (unk_b7 >= _ZN19PopupChoiceMenuBody12getPageCountEv(&unk_4104)) {
             unk_b7 = 0;
         }
         func_ov122_02296a7c(0);
         break;
     case 3:
-        if (func_ov122_02296988(0x2000)) {
-            func_ov122_02299870();
+        if (testFlags(0x2000)) {
+            forceClose();
         } else {
             unk_8c = 0xa;
-            func_ov002_02200a60(1);
+            setPhase(1);
         }
         break;
     default:
         unk_8c = 0xa;
-        func_ov002_02200a60(1);
+        setPhase(1);
         break;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297c90()
+void LetterWriteMenu::mainAct19()
 {
     s32 a;
     s32 b;
@@ -1985,209 +1985,209 @@ void Unk_ov122_0229a1b8::func_ov122_02297c90()
             return;
         }
     }
-    if (_ZN18Unk_ov002_02202fac19func_ov002_0220308cEv(&unk_43f8)) {
+    if (_ZN21MenuBottomButtonsBody9stepPressEv(&unk_43f8)) {
         if (!_ZN10HandCursor7getAnimEv(&unk_3ed4)) {
             return;
         }
-        a = _ZN18Unk_ov002_02202fac19func_ov002_0220306cEv(&unk_43f8);
-        b = _ZN18Unk_ov002_02202fac19func_ov002_022030f4Ei(&unk_43f8, -1);
-        c = _ZN18Unk_ov002_02202fac19func_ov002_022030b8Ei(&unk_43f8, -1);
-        _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, a + b, a + c);
+        a = _ZN21MenuBottomButtonsBody14getPressOffsetEv(&unk_43f8);
+        b = _ZN21MenuBottomButtonsBody10getTargetXEi(&unk_43f8, -1);
+        c = _ZN21MenuBottomButtonsBody10getTargetYEi(&unk_43f8, -1);
+        _ZN14MenuCursorBase6warpToEii(&unk_3ed4, a + b, a + c);
         return;
     }
     switch (unk_b8) {
     case 0:
         unk_b5 = 0xc;
-        func_ov122_0229882c();
+        closeKeyboard();
         break;
     case 1:
         unk_b5 = 6;
-        func_ov122_0229699c();
-        func_ov122_0229882c();
+        censorLetter();
+        closeKeyboard();
         break;
     case 2:
         break;
     case 3:
-        func_ov122_022998b0(0);
+        requestTab(0);
         break;
     case 4:
         unk_8c = 8;
-        func_ov002_02200a60(1);
-        func_ov122_02298fbc(1, 1);
+        setPhase(1);
+        redrawText(1, 1);
         break;
     }
-    func_ov122_02296c70();
+    hideCursor();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02297c68()
+void LetterWriteMenu::mainAct1A()
 {
-    func_ov095_02294324(&unk_c0);
-    if (_ZN18Unk_ov002_022040ec19func_ov002_02204234Ei(&unk_455c, 1)) {
-        func_ov122_022979e8();
+    Keyboard_UpdatePressedKey(&unk_c0);
+    if (_ZN16MenuErrorMessage6updateEi(&unk_455c, 1)) {
+        resumeInput();
     }
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02297c14()
+BOOL LetterWriteMenu::tryPressKey()
 {
     s32 r4;
 
     if ((gPad[1] & 1) == 0) {
         return FALSE;
     }
-    r4 = func_ov095_02292404(&unk_c0);
+    r4 = Keyboard_PressCursorKey(&unk_c0);
     if (r4 == -1) {
         return FALSE;
     }
-    func_ov095_02294864(&unk_c0, r4, 8);
-    func_ov095_02294d40(&unk_c0, r4);
-    func_ov122_02296b34();
+    Keyboard_GetKeyCode(&unk_c0, r4, 8);
+    Keyboard_HighlightKey(&unk_c0, r4);
+    pressCursor();
     return TRUE;
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02297bcc()
+BOOL LetterWriteMenu::tryBackspaceButton()
 {
     if ((gPad[0] & 2) == 0) {
         return FALSE;
     }
-    func_ov122_022985d8(0x100);
-    func_ov095_02294318(&unk_c0);
+    pressKeyCode(0x100);
+    Keyboard_StartKeyRepeat(&unk_c0);
     unk_b4 = unk_8d;
-    func_ov002_02200a58(0xb);
+    setMainState(0xb);
     return TRUE;
 }
 
-BOOL C::func_ov122_02297b30() {
+BOOL C::toggleTextFocus() {
     if ((gPad[1] & 0x800) == 0) return FALSE;
-    if (func_ov122_02296988(0x100)) {
-        func_ov122_02296968(0x100);
+    if (testFlags(0x100)) {
+        clearFlags(0x100);
     } else {
-        func_ov122_02296978(0x100);
-        func_ov122_02296d34();
+        setFlags(0x100);
+        scrollToCaret();
     }
-    if (func_ov095_02295270(&unk_c0, -1)) {
-        if (func_ov122_02296988(0x100)) {
-            _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev(&unk_3ed4);
-            func_ov002_02200a58(0xc);
+    if (Keyboard_IsOnButtonKey(&unk_c0, -1)) {
+        if (testFlags(0x100)) {
+            _ZN10MenuCursor14switchToAnim01Ev(&unk_3ed4);
+            setMainState(0xc);
         } else {
-            _ZN18Unk_ov002_0220464c19func_ov002_02202ca0Ev(&unk_3ed4);
-            func_ov002_02200a58(6);
+            _ZN10MenuCursor14switchToAnim07Ev(&unk_3ed4);
+            setMainState(6);
         }
-        func_ov122_02296bf0();
+        moveCursorToTarget();
     } else {
-        func_ov122_02296bf0();
+        moveCursorToTarget();
     }
     return TRUE;
 }
 
-BOOL C::func_ov122_02297ac8() {
+BOOL C::tryPasteButton() {
     if ((gPad[1] & 0x100) == 0) return FALSE;
-    if (func_ov095_02295440(&unk_c0, 0xc)) return FALSE;
-    func_ov122_022985d8(0x119);
-    func_ov095_02294d40(&unk_c0, 0xdc);
-    func_ov122_02296b54();
+    if (Keyboard_IsSlotDisabled(&unk_c0, 0xc)) return FALSE;
+    pressKeyCode(0x119);
+    Keyboard_HighlightKey(&unk_c0, 0xdc);
+    snapCursor();
     unk_b4 = unk_8d;
-    func_ov002_02200a58(0xf);
+    setMainState(0xf);
     return TRUE;
 }
 
-BOOL C::func_ov122_02297a68() {
+BOOL C::tryCopyButton() {
     if ((gPad[1] & 0x200) == 0) return FALSE;
-    if (func_ov095_02295440(&unk_c0, 0xb)) return FALSE;
-    func_ov122_022985d8(0x118);
-    func_ov095_02294d40(&unk_c0, 0xdb);
+    if (Keyboard_IsSlotDisabled(&unk_c0, 0xb)) return FALSE;
+    pressKeyCode(0x118);
+    Keyboard_HighlightKey(&unk_c0, 0xdb);
     unk_b4 = unk_8d;
-    func_ov002_02200a58(0xe);
+    setMainState(0xe);
     return TRUE;
 }
 
-BOOL C::func_ov122_02297a3c() {
+BOOL C::tryStartFinish() {
     if ((gPad[1] & 8) == 0) return FALSE;
-    func_ov122_02296c70();
-    func_ov122_02298820();
+    hideCursor();
+    askFinish();
     return TRUE;
 }
 
-void C::func_ov122_02297a24() {
-    func_ov122_02296c70();
-    func_ov002_02200a58(0);
+void C::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void C::func_ov122_02297a08() {
-    func_ov002_02200980();
-    func_ov122_02296c94();
-    func_ov002_02200a58(6);
+void C::startButtonInput() {
+    restartKeyRepeat();
+    showCursor();
+    setMainState(6);
 }
 
-void C::func_ov122_022979e8() {
+void C::resumeInput() {
     if (MenuCtrl_IsTouch()) {
-        func_ov122_02297a24();
+        startTouchInput();
     } else {
-        func_ov122_02297a08();
+        startButtonInput();
     }
 }
 
-void C::func_ov122_022979ac(u8 a, s32 b) {
+void C::showMessage(u8 a, s32 b) {
     volatile u8 buf[1];
     buf[0] = data_021edb68;
     buf[0] = a;
-    _ZN18Unk_ov002_022040ec19func_ov002_02204340EPhij(&unk_455c, (void *)buf, b, 0);
-    func_ov002_02200a58(0x1a);
-    func_ov122_02296c70();
+    _ZN16MenuErrorMessage8openHighEPhij(&unk_455c, (void *)buf, b, 0);
+    setMainState(0x1a);
+    hideCursor();
 }
 
 void C::func_ov122_02297994() {
-    func_ov122_02296c70();
-    func_ov002_02200a58(4);
+    hideCursor();
+    setMainState(4);
 }
 
 void C::func_ov122_02297940() {
-    func_ov002_02200980();
-    func_ov122_02296c94();
-    s32 a = _ZN18Unk_ov002_02202fac19func_ov002_022030f4Ei(&unk_43f8, 4);
-    s32 b = _ZN18Unk_ov002_02202fac19func_ov002_022030b8Ei(&unk_43f8, 4);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, a, b);
+    restartKeyRepeat();
+    showCursor();
+    s32 a = _ZN21MenuBottomButtonsBody10getTargetXEi(&unk_43f8, 4);
+    s32 b = _ZN21MenuBottomButtonsBody10getTargetYEi(&unk_43f8, 4);
+    _ZN14MenuCursorBase6warpToEii(&unk_3ed4, a, b);
     unk_b6 = 1;
-    func_ov002_02200a58(0x13);
+    setMainState(0x13);
 }
 
 void C::func_ov122_02297928() {
-    func_ov122_02296c70();
-    func_ov002_02200a58(5);
+    hideCursor();
+    setMainState(5);
 }
 
 void C::func_ov122_022978c0() {
-    func_ov002_02200980();
-    func_ov122_02296c94();
-    unk_b6 = _ZN18Unk_ov002_022013ac19func_ov002_02201494Ev(&unk_4104) - 1;
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(&unk_4104);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(&unk_4104, unk_b6);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, a, b);
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(&unk_3ed4, 7);
-    func_ov002_02200a58(0x14);
+    restartKeyRepeat();
+    showCursor();
+    unk_b6 = _ZN19PopupChoiceMenuBody11getRowCountEv(&unk_4104) - 1;
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(&unk_4104);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(&unk_4104, unk_b6);
+    _ZN14MenuCursorBase6warpToEii(&unk_3ed4, a, b);
+    _ZN10MenuCursor16setAnimIfChangedEi(&unk_3ed4, 7);
+    setMainState(0x14);
 }
 
-void C::func_ov122_02297870() {
-    func_ov122_02296978(4);
+void C::resetTextCursor() {
+    setFlags(4);
     unk_9c = 0x30;
     unk_a0 = 0x40;
     unk_aa = 2;
-    func_ov122_02296978(0x1000);
-    func_ov122_02296f30(0);
-    func_ov122_022972dc();
-    func_ov095_022951e4(&unk_c0);
-    func_ov122_02298ec4();
+    setFlags(0x1000);
+    setCursorIndex(0);
+    clearSelection();
+    Keyboard_ResetKeyPalettes(&unk_c0);
+    refreshKeys();
 }
 
-void C::func_ov122_02297838() {
-    u8 r = func_ov122_022977bc(unk_9c, &unk_aa);
-    func_ov122_02296978(0x1000);
-    func_ov122_02296f30(r);
-    func_ov122_02297424();
+void C::moveCaretToGreeting() {
+    u8 r = hitTestGreeting(unk_9c, &unk_aa);
+    setFlags(0x1000);
+    setCursorIndex(r);
+    updateCaretPosGreeting();
 }
 
-u8 C::func_ov122_022977bc(s32 a, u8 *p) {
+u8 C::hitTestGreeting(s32 a, u8 *p) {
     u8 out;
-    func_ov095_02293f2c(&unk_c0, unk_3fcc.unk_90, 0x28, 0xa0, (u8)(a - 0x30), &out);
+    Keyboard_HitTestText(&unk_c0, unk_3fcc.unk_90, 0x28, 0xa0, (u8)(a - 0x30), &out);
     s32 e = unk_bc[0xec];
     s32 s = e + _ZN12Unk_0206d0a013func_0206d2d4Ev(&unk_3c7c);
     s32 h = (e + s) >> 1;
@@ -2202,9 +2202,9 @@ u8 C::func_ov122_022977bc(s32 a, u8 *p) {
     return out;
 }
 
-void C::func_ov122_0229771c(s32 flag) {
+void C::moveCaretToBody(s32 flag) {
     unk_aa = 2;
-    func_ov122_02296978(0x1000);
+    setFlags(0x1000);
     if (unk_a0 < 0x40) unk_a0 = 0x40;
     if (unk_a0 >= 0x80) unk_a0 = 0x7f;
     s32 i = (unk_a0 - 0x40) >> 4;
@@ -2213,30 +2213,30 @@ void C::func_ov122_0229771c(s32 flag) {
     else flag = 0;
     unk_a0 = i * 16 + 0x40;
     if (flag != 0 && unk_a0 - unk_b2 < 8) {
-        func_ov122_02297690();
+        moveCaretToSignature();
     } else {
-        u8 r = func_ov122_022976c8(i, (u32 *)&unk_9c);
-        func_ov122_02296f30(r);
+        u8 r = hitTestBodyLine(i, (u32 *)&unk_9c);
+        setCursorIndex(r);
     }
 }
 
-u8 C::func_ov122_022976c8(s32 idx, u32 *p) {
+u8 C::hitTestBodyLine(s32 idx, u32 *p) {
     s32 o = _ZN12Unk_0206ce9813func_0206cf40Ev(&unk_3c7c)[idx];
     u8 out;
-    s32 t = func_ov095_02293f2c(&unk_c0, unk_bc + 0x4c + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
+    s32 t = Keyboard_HitTestText(&unk_c0, unk_bc + 0x4c + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
     *p = t + 0x30;
     return (u8)(out + o);
 }
 
-void C::func_ov122_02297690() {
+void C::moveCaretToSignature() {
     unk_aa = 3;
-    func_ov122_02296978(0x1000);
+    setFlags(0x1000);
     unk_a0 = 0x88;
-    u8 r = func_ov122_02297630((u32 *)&unk_9c);
-    func_ov122_02296f30(r);
+    u8 r = hitTestSignature((u32 *)&unk_9c);
+    setCursorIndex(r);
 }
 
-u8 C::func_ov122_02297630(u32 *p) {
+u8 C::hitTestSignature(u32 *p) {
     u8 v = (u8)(*p - 0x30);
     s32 r4 = 0xa0 - func_02051348(unk_bc + 0xcc, 0x20);
     u8 out;
@@ -2244,13 +2244,13 @@ u8 C::func_ov122_02297630(u32 *p) {
         out = 0;
         *p = r4 + 0x30;
     } else {
-        s32 t = func_ov095_02293f2c(&unk_c0, unk_bc + 0xcc, 0x20, 0xa0, (u8)(v - r4), &out);
+        s32 t = Keyboard_HitTestText(&unk_c0, unk_bc + 0xcc, 0x20, 0xa0, (u8)(v - r4), &out);
         *p = r4 + (t + 0x30);
     }
     return out;
 }
 
-BOOL C::func_ov122_022975c4() {
+BOOL C::touchTextArea() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     if (y < 0) return FALSE;
@@ -2258,17 +2258,17 @@ BOOL C::func_ov122_022975c4() {
     y += unk_b3;
     if (x < 0x20 || x >= 0xe0) return FALSE;
     if (x < 0x30) x = 0x30;
-    func_ov122_0229747c(x, y, 1);
-    func_ov122_02296978(8);
+    setCaretFromPoint(x, y, 1);
+    setFlags(8);
     unk_ad = unk_ac;
     unk_ae = unk_ac;
     return TRUE;
 }
 
-void C::func_ov122_022975c0() {
+void C::endTouch() {
 }
 
-BOOL C::func_ov122_022974e8() {
+BOOL C::dragSelection() {
     s32 a = gTouchCurX;
     s32 b = gTouchCurY;
     u8 old = unk_ac;
@@ -2279,26 +2279,26 @@ BOOL C::func_ov122_022974e8() {
     case 0:
     case 1:
         unk_9c = a;
-        func_ov122_02297838();
+        moveCaretToGreeting();
         if (unk_aa != m) {
             unk_aa = m;
-            func_ov122_02296978(0x1000);
+            setFlags(0x1000);
             if (m == 0) {
-                func_ov122_02296f30(unk_bc[0xec]);
+                setCursorIndex(unk_bc[0xec]);
             } else {
-                func_ov122_02296f30(0);
+                setCursorIndex(0);
             }
-            func_ov122_02297424();
+            updateCaretPosGreeting();
         }
         break;
     case 2:
         unk_9c = a;
         unk_a0 = b;
-        func_ov122_0229771c(0);
+        moveCaretToBody(0);
         break;
     case 3:
         unk_9c = a;
-        func_ov122_02297690();
+        moveCaretToSignature();
         break;
     }
     unk_ae = unk_ac;
@@ -2306,24 +2306,24 @@ BOOL C::func_ov122_022974e8() {
     return FALSE;
 }
 
-void C::func_ov122_0229747c(s32 a, s32 b, s32 c) {
-    if (!func_ov122_02296988(0x10) && b < 0x3c) {
+void C::setCaretFromPoint(s32 a, s32 b, s32 c) {
+    if (!testFlags(0x10) && b < 0x3c) {
         unk_9c = a;
-        func_ov122_02297838();
+        moveCaretToGreeting();
     } else if (b < 0x84) {
         if (b < 0x40) b = 0x40;
         else if (b >= 0x80) b = 0x7f;
         unk_9c = a;
         unk_a0 = b;
-        func_ov122_0229771c(c);
+        moveCaretToBody(c);
     } else {
         unk_9c = a;
-        func_ov122_02297690();
+        moveCaretToSignature();
     }
-    func_ov122_02296d34();
+    scrollToCaret();
 }
 
-void C::func_ov122_02297424() {
+void C::updateCaretPosGreeting() {
     u32 v = unk_ac;
     if (unk_aa == 1) {
         s32 t = _ZN12Unk_0206d0a013func_0206d2d4Ev(&unk_3c7c);
@@ -2333,53 +2333,53 @@ void C::func_ov122_02297424() {
     unk_a0 = 0x28;
 }
 
-void C::func_ov122_022973cc() {
+void C::updateCaretPosBody() {
     s32 t = _ZN12Unk_0206ce9813func_0206cefcEi(&unk_3c7c, unk_ac);
     unk_a0 = t * 16 + 0x40;
     s32 o = _ZN12Unk_0206ce9813func_0206cf40Ev(&unk_3c7c)[t];
     unk_9c = (u8)(func_02051348(unk_bc + 0x4c + o, unk_ac - o) + 0x30);
 }
 
-void C::func_ov122_02297380() {
+void C::updateCaretPosSignature() {
     u8 t = (u8)(func_02051348(unk_bc + 0xcc, unk_ac) + 0x30);
     unk_9c = t;
     unk_9c = unk_9c + (0xa0 - func_02051348(unk_bc + 0xcc, 0x20));
     unk_a0 = 0x88;
 }
 
-void C::func_ov122_02297340() {
+void C::updateCaretPos() {
     switch (unk_aa) {
     case 0:
     case 1:
-        func_ov122_02297424();
+        updateCaretPosGreeting();
         break;
     case 2:
-        func_ov122_022973cc();
+        updateCaretPosBody();
         break;
     case 3:
-        func_ov122_02297380();
+        updateCaretPosSignature();
         break;
     }
-    func_ov122_02296d34();
+    scrollToCaret();
 }
 
-u8 C::func_ov122_0229731c() {
+u8 C::getCharBeforeCursor() {
     if (unk_ac == 0) return 0;
-    return func_ov122_02296fd4()[unk_ac - 1];
+    return getPartText()[unk_ac - 1];
 }
 
-BOOL C::func_ov122_022972f4() {
-    if (!func_ov122_02296988(8) || unk_ad == unk_ae) return FALSE;
+BOOL C::hasSelection() {
+    if (!testFlags(8) || unk_ad == unk_ae) return FALSE;
     return TRUE;
 }
 
-void C::func_ov122_022972dc() {
+void C::clearSelection() {
     unk_ad = 0;
     unk_ae = 0;
-    func_ov122_02296968(8);
+    clearFlags(8);
 }
 
-void C::func_ov122_02297238() {
+void C::deleteSelection() {
     u32 a = unk_ae;
     u32 b = unk_ad;
     u32 lo, hi;
@@ -2390,8 +2390,8 @@ void C::func_ov122_02297238() {
         lo = b;
         hi = a;
     }
-    u8 *p = func_ov122_02296f98();
-    s32 q = func_ov122_02296f68();
+    u8 *p = getFieldBuffer();
+    s32 q = getFieldCapacity();
     switch (unk_aa) {
     case 0:
         unk_bc[0xec] = unk_bc[0xec] - (hi - lo);
@@ -2403,15 +2403,15 @@ void C::func_ov122_02297238() {
         break;
     }
     }
-    u8 r = (u8)func_ov095_02293fb4(&unk_c0, p, lo, hi, q);
+    u8 r = (u8)Keyboard_DeleteRange(&unk_c0, p, lo, hi, q);
     if (unk_aa == 1) {
         r = (u8)(r - unk_bc[0xec]);
     }
-    func_ov122_02296f30(r);
-    func_ov122_022972dc();
+    setCursorIndex(r);
+    clearSelection();
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02297020(void *pad, s32 flag) {
+BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
     if (pad == 0) {
         return FALSE;
     }
@@ -2427,16 +2427,16 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02297020(void *pad, s32 flag) {
     case 1:
         sel = -1;
         lim = sel;
-        if (func_ov002_0220127c(pad)) {
+        if (MenuKeys_HasDown(pad)) {
             sel = 0;
         }
         break;
     case 2:
         sel = (unk_a0 - 0x40) >> 4;
         lim = sel;
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             sel = sel - 1;
-        } else if (func_ov002_0220127c(pad)) {
+        } else if (MenuKeys_HasDown(pad)) {
             sel = sel + 1;
             if (sel > cnt) {
                 sel = 4;
@@ -2446,7 +2446,7 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02297020(void *pad, s32 flag) {
     case 3:
         sel = 4;
         lim = sel;
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             sel = sel - 1;
         }
         break;
@@ -2456,30 +2456,30 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02297020(void *pad, s32 flag) {
         break;
     }
     saved = unk_9c;
-    if (func_ov122_02296988(0x10)) {
+    if (testFlags(0x10)) {
         if (sel == -1) {
             sel = 0;
         }
     }
     if (sel != lim) {
         if (sel == -1) {
-            idx = func_ov122_022977bc(saved, &mode);
+            idx = hitTestGreeting(saved, &mode);
         } else if (sel >= 4) {
             mode = 3;
-            idx = func_ov122_02297630(&saved);
+            idx = hitTestSignature(&saved);
         } else {
             mode = 2;
-            idx = func_ov122_022976c8(sel, &saved);
+            idx = hitTestBodyLine(sel, &saved);
         }
     }
-    if (func_ov002_0220126c(pad)) {
+    if (MenuKeys_HasLeft(pad)) {
         if (idx != 0) {
             idx = idx - 1;
         } else if (mode == 1) {
             idx = unk_bc[0xec];
             mode = 0;
         }
-    } else if (func_ov002_0220125c(pad)) {
+    } else if (MenuKeys_HasRight(pad)) {
         switch (mode) {
         case 0:
             n = unk_bc[0xec];
@@ -2508,12 +2508,12 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02297020(void *pad, s32 flag) {
         return FALSE;
     }
     unk_aa = mode;
-    func_ov122_02296978(0x1000);
-    func_ov122_02296f30(idx);
+    setFlags(0x1000);
+    setCursorIndex(idx);
     return TRUE;
 }
 
-u8 *Unk_ov122_0229a1b8::func_ov122_02296fd4() {
+u8 *LetterWriteMenu::getPartText() {
     switch (unk_aa) {
     case 0:
         return unk_bc + 0x34;
@@ -2528,7 +2528,7 @@ u8 *Unk_ov122_0229a1b8::func_ov122_02296fd4() {
     }
 }
 
-u8 *Unk_ov122_0229a1b8::func_ov122_02296f98() {
+u8 *LetterWriteMenu::getFieldBuffer() {
     switch (unk_aa) {
     case 0:
     case 1:
@@ -2542,7 +2542,7 @@ u8 *Unk_ov122_0229a1b8::func_ov122_02296f98() {
     }
 }
 
-u32 Unk_ov122_0229a1b8::func_ov122_02296f68() {
+u32 LetterWriteMenu::getFieldCapacity() {
     switch (unk_aa) {
     case 0:
     case 1:
@@ -2556,20 +2556,20 @@ u32 Unk_ov122_0229a1b8::func_ov122_02296f68() {
     }
 }
 
-u8 Unk_ov122_0229a1b8::func_ov122_02296f40() {
+u8 LetterWriteMenu::getFieldCursor() {
     if (unk_aa == 1) {
         return unk_ac + unk_bc[0xec];
     }
     return unk_ac;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296f30(u32 v) {
+void LetterWriteMenu::setCursorIndex(u32 v) {
     unk_ac = v;
     unk_ab = 0x10;
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02296ee0() {
-    if (_ZN18Unk_ov002_022046b019func_ov002_02202f18Eii(&unk_3e8c, gTouchCurX, gTouchCurY)) {
+BOOL LetterWriteMenu::touchScrollKnob() {
+    if (_ZN14MenuScrollKnob7hitTestEii(&unk_3e8c, gTouchCurX, gTouchCurY)) {
         unk_b0 = gTouchCurY;
         unk_b1 = unk_b2;
         unk_af = unk_b2;
@@ -2578,7 +2578,7 @@ BOOL Unk_ov122_0229a1b8::func_ov122_02296ee0() {
     return FALSE;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296e80() {
+void LetterWriteMenu::dragScrollKnob() {
     s32 n = unk_b1 + (((s32)(gTouchCurY - unk_b0) >> 1) << 2);
     if (n < 0) {
         n = 0;
@@ -2586,15 +2586,15 @@ void Unk_ov122_0229a1b8::func_ov122_02296e80() {
     if (n > 0x58) {
         n = 0x58;
     }
-    func_ov122_02296e08(n);
+    setScroll(n);
     s32 d = unk_af - n;
     if (d >= 4 || d <= -4) {
-        func_ov002_02202e54(&unk_3e8c);
+        Menu_PlayScrollTickSe(&unk_3e8c);
         unk_af = n;
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296e28() {
+void LetterWriteMenu::scrollByPad() {
     s32 n;
     s32 old = unk_b2;
     n = old;
@@ -2611,29 +2611,29 @@ void Unk_ov122_0229a1b8::func_ov122_02296e28() {
         n = 0x58;
     }
     if (n != old) {
-        func_ov002_02202e54(&unk_3e8c);
+        Menu_PlayScrollTickSe(&unk_3e8c);
     }
-    func_ov122_02296e08(n);
+    setScroll(n);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296e08(s32 v) {
+void LetterWriteMenu::setScroll(s32 v) {
     unk_b2 = v;
     unk_b3 = unk_b2;
-    func_ov122_02296978(0x800);
+    setFlags(0x800);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296df4(s32 v) {
+void LetterWriteMenu::setScrollTarget(s32 v) {
     unk_b3 = v;
-    func_ov122_02296978(0x800);
+    setFlags(0x800);
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02296de4() { return func_ov122_02296988(0x800); }
+BOOL LetterWriteMenu::isScrolling() { return testFlags(0x800); }
 
-void Unk_ov122_0229a1b8::func_ov122_02296d68() {
+void LetterWriteMenu::updateScroll() {
     u32 b3 = unk_b3;
     u32 b2 = unk_b2;
     if (b2 == b3) {
-        func_ov122_02296968(0x800);
+        clearFlags(0x800);
     } else if (b2 < b3) {
         *(volatile u8 *)&unk_b2 = *(volatile u8 *)&unk_b2 + 8;
         u32 t3 = *(volatile u8 *)&unk_b3;
@@ -2651,113 +2651,113 @@ void Unk_ov122_0229a1b8::func_ov122_02296d68() {
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296d34() {
+void LetterWriteMenu::scrollToCaret() {
     s32 v = unk_a0 - unk_b3;
     if (v < 0x18) {
-        func_ov122_02296df4(unk_b3 - (0x18 - v));
+        setScrollTarget(unk_b3 - (0x18 - v));
     } else if (v > 0x30) {
-        func_ov122_02296df4(unk_b3 + (v - 0x30));
+        setScrollTarget(unk_b3 + (v - 0x30));
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296d28() { Snd_PlaySe(0x34); }
+void LetterWriteMenu::playErrorSe() { Snd_PlaySe(0x34); }
 
-void Unk_ov122_0229a1b8::func_ov122_02296ce8(u32 i) {
-    _ZN18Unk_ov002_02202fac19func_ov002_022030acEh(&unk_43f8, data_ov122_0229a008[i]);
+void LetterWriteMenu::openDialog(u32 i) {
+    _ZN21MenuBottomButtonsBody11setSelectedEh(&unk_43f8, data_ov122_0229a008[i]);
     unk_b8 = i;
-    func_ov002_02200a58(0x19);
+    setMainState(0x19);
     Snd_PlaySe(data_ov122_0229a010[i]);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296c94() {
-    func_ov122_02296968(0x100);
-    func_ov095_022924f0(&unk_c0);
-    s32 a = func_ov095_02292580(&unk_c0);
-    s32 b = func_ov095_02292544(&unk_c0);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, a, b);
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(&unk_3ed4, 1);
-    func_ov122_02296af0();
+void LetterWriteMenu::showCursor() {
+    clearFlags(0x100);
+    Keyboard_ResetCursor(&unk_c0);
+    s32 a = Keyboard_GetCursorX(&unk_c0);
+    s32 b = Keyboard_GetCursorY(&unk_c0);
+    _ZN14MenuCursorBase6warpToEii(&unk_3ed4, a, b);
+    _ZN10MenuCursor16setAnimIfChangedEi(&unk_3ed4, 1);
+    refreshCursor();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296c70() {
-    _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei(&unk_3ed4, 0);
+void LetterWriteMenu::hideCursor() {
+    _ZN10MenuCursor16setAnimIfChangedEi(&unk_3ed4, 0);
     unk_3ed4.vfunc_0c();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296bf0() {
-    if (func_ov122_02296988(0x100)) {
-        _ZN18Unk_ov002_02202d9819func_ov002_0220298cEiiih(&unk_3ed4, unk_9c, unk_a0 - unk_b3, 3, 2);
+void LetterWriteMenu::moveCursorToTarget() {
+    if (testFlags(0x100)) {
+        _ZN14MenuCursorBase10moveToNearEiiih(&unk_3ed4, unk_9c, unk_a0 - unk_b3, 3, 2);
         unk_b4 = 0xc;
     } else {
-        s32 a = func_ov095_02292580(&unk_c0);
-        s32 b = func_ov095_02292544(&unk_c0);
-        _ZN18Unk_ov002_02202d9819func_ov002_0220298cEiiih(&unk_3ed4, a, b, 3, 2);
+        s32 a = Keyboard_GetCursorX(&unk_c0);
+        s32 b = Keyboard_GetCursorY(&unk_c0);
+        _ZN14MenuCursorBase10moveToNearEiiih(&unk_3ed4, a, b, 3, 2);
         unk_b4 = 6;
     }
-    func_ov002_02200a58(7);
+    setMainState(7);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296bbc(s32 a, s32 b) {
-    _ZN18Unk_ov002_02202d9819func_ov002_0220298cEiiih(&unk_3ed4, a, b, 3, 2);
+void LetterWriteMenu::moveCursorTo(s32 a, s32 b) {
+    _ZN14MenuCursorBase10moveToNearEiiih(&unk_3ed4, a, b, 3, 2);
     unk_b4 = unk_8d;
-    func_ov002_02200a58(7);
+    setMainState(7);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296b54() {
-    if (func_ov122_02296988(0x100)) {
-        _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, unk_9c, unk_a0 - unk_b3);
+void LetterWriteMenu::snapCursor() {
+    if (testFlags(0x100)) {
+        _ZN14MenuCursorBase6warpToEii(&unk_3ed4, unk_9c, unk_a0 - unk_b3);
     } else {
-        s32 a = func_ov095_02292580(&unk_c0);
-        s32 b = func_ov095_02292544(&unk_c0);
-        _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii(&unk_3ed4, a, b);
+        s32 a = Keyboard_GetCursorX(&unk_c0);
+        s32 b = Keyboard_GetCursorY(&unk_c0);
+        _ZN14MenuCursorBase6warpToEii(&unk_3ed4, a, b);
     }
     unk_3ed4.vfunc_0c();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296b34() {
-    _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev(&unk_3ed4);
-    func_ov002_02200a58(8);
+void LetterWriteMenu::pressCursor() {
+    _ZN10MenuCursor12setPosePressEv(&unk_3ed4);
+    setMainState(8);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296b10() {
-    func_ov095_02295194(&unk_c0);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202af0Ev(&unk_3ed4);
-    func_ov002_02200a58(0xa);
+void LetterWriteMenu::releaseCursor() {
+    Keyboard_ClearHighlight(&unk_c0);
+    _ZN14MenuCursorBase14setPoseReleaseEv(&unk_3ed4);
+    setMainState(0xa);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296af0() {
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev(&unk_3ed4);
+void LetterWriteMenu::refreshCursor() {
+    _ZN14MenuCursorBase11setPoseIdleEv(&unk_3ed4);
     unk_3ed4.vfunc_0c();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296aa4() {
-    s32 a = _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev(&unk_4104);
-    s32 b = _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei(&unk_4104, unk_b6);
-    _ZN18Unk_ov002_02202d9819func_ov002_02202a18Eiii(&unk_3ed4, a, b, 2);
+void LetterWriteMenu::func_ov122_02296aa4() {
+    s32 a = _ZN19PopupChoiceMenuBody7getRowXEv(&unk_4104);
+    s32 b = _ZN19PopupChoiceMenuBody7getRowYEi(&unk_4104, unk_b6);
+    _ZN14MenuCursorBase12moveToLinearEiii(&unk_3ed4, a, b, 2);
     unk_b4 = 0x14;
-    func_ov002_02200a58(7);
+    setMainState(7);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296a7c(u32 a) {
-    func_ov002_022020cc(&unk_4104, unk_b7, a);
-    func_ov002_02200a58(0x16);
+void LetterWriteMenu::func_ov122_02296a7c(u32 a) {
+    PopupChoice_OpenAddresseePage(&unk_4104, unk_b7, a);
+    setMainState(0x16);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296a48() {
+void LetterWriteMenu::func_ov122_02296a48() {
     Snd_PlaySe(0x28);
     unk_b6 = 0xf;
-    func_ov002_02202064(&unk_4104, 1);
-    func_ov002_02200a58(0x18);
-    func_ov122_02296c70();
+    PopupChoice_Close(&unk_4104, 1);
+    setMainState(0x18);
+    hideCursor();
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296a28() {
+void LetterWriteMenu::storeLetterDefaults() {
     PlayerData_GetCurrent();
     _ZN10PlayerData13func_02098750Ev();
     func_02065470(_ZN15PlayerInventory9getUnk988Ev(), unk_bc);
 }
 
-void Unk_ov122_0229a1b8::func_ov122_022969d4(u8 *src, u32 n) {
+void LetterWriteMenu::censorField(u8 *src, u32 n) {
     func_020a78a4(&unk_3fcc);
     _ZN9MsgString11fromEncodedEP13EncodedStringii(&unk_3f38, &unk_3fcc, 0, 0);
     if (String_CensorTaboo(&unk_3f38)) {
@@ -2766,20 +2766,20 @@ void Unk_ov122_0229a1b8::func_ov122_022969d4(u8 *src, u32 n) {
     }
 }
 
-void Unk_ov122_0229a1b8::func_ov122_0229699c() {
-    func_ov122_022969d4(unk_bc + 0x34, 0x18);
-    func_ov122_022969d4(unk_bc + 0xcc, 0x20);
-    func_ov122_022969d4(unk_bc + 0x4c, 0x80);
+void LetterWriteMenu::censorLetter() {
+    censorField(unk_bc + 0x34, 0x18);
+    censorField(unk_bc + 0xcc, 0x20);
+    censorField(unk_bc + 0x4c, 0x80);
 }
 
-BOOL Unk_ov122_0229a1b8::func_ov122_02296988(u32 mask) {
+BOOL LetterWriteMenu::testFlags(u32 mask) {
     if (unk_a8 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov122_0229a1b8::func_ov122_02296978(u32 mask) { unk_a8 = unk_a8 | mask; }
+void LetterWriteMenu::setFlags(u32 mask) { unk_a8 = unk_a8 | mask; }
 
-void Unk_ov122_0229a1b8::func_ov122_02296968(u32 mask) { unk_a8 = unk_a8 & ~mask; }
+void LetterWriteMenu::clearFlags(u32 mask) { unk_a8 = unk_a8 & ~mask; }
 

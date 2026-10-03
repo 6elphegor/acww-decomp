@@ -40,27 +40,27 @@ BOOL MenuCtrl_IsTouch();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 s32 _s32_div_f(s32 a, s32 b);
-s32 func_ov090_02291a78(s32 v);
-s32 func_ov090_02291aa0();
-u32 func_ov090_02291a38(u32 v);
-u32 func_ov090_02291a58(u32 v);
-u32 func_ov090_02291944(u32 v);
-void func_ov002_02202e48(void *p);
-void func_ov002_02202e54(void *p);
-void func_ov117_02292c88(void *p);
-void func_ov117_022923a0(u32 v);
-void func_ov117_022923bc(u32 v);
-void func_ov117_022923d8();
-void func_ov094_02292360(void *a, void *b);
-s16 *func_ov117_02292c40(void *p, s32 i);
-u32 func_ov117_02292c2c(void *p, s32 i);
+s32 MenuTabBar_GetTabX(s32 v);
+s32 MenuTabBar_HitTestTouch();
+u32 MenuTabBar_NextTab(u32 v);
+u32 MenuTabBar_PrevTab(u32 v);
+u32 MenuTabBar_TabFromX(u32 v);
+void Menu_PlayScrollGrabSe(void *p);
+void Menu_PlayScrollTickSe(void *p);
+void TownMapMarkers_Clear(void *p);
+void TownMapImage_BuildMarkersGlobal(u32 v);
+void TownMapImage_DrawRowGlobal(u32 v);
+void TownMapImage_AllocGlobal();
+void InventoryBg_ClearDirty(void *a, void *b);
+s16 *TownMapMarkers_Get(void *p, s32 i);
+u32 TownMapMarkers_GetKind(void *p, s32 i);
 void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
-void func_ov002_022019a4(void *p, s32 a);
-void func_ov002_02201984(void *p, s32 a);
-void func_ov002_02201938(void *p, s32 a);
+void PopupChoice_CopyPlayerIdName(void *p, s32 a);
+void PopupChoice_CopyResidentName(void *p, s32 a);
+void PopupChoice_CopyVillagerName(void *p, s32 a);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Gfx2d_LoadPaletteFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void Gfx2d_LoadCharFile(const char *a, u32 b, u32 c, u32 d, u32 e, u32 f);
@@ -75,10 +75,10 @@ s32 func_020b4934();
 void *func_020b5010(void *p);
 void func_020638d0(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
 }
 
 // 0x40-byte element with ctor/dtor in main
@@ -101,11 +101,11 @@ public:
     u32 unk_00[0x24 / 4];
 };
 
-class Unk_ov090_022921e0 {
+class MenuTabBar {
 public:
-    BOOL func_ov090_02291934();
-    void func_ov090_02291d2c();
-    void func_ov090_02291d8c(u32 x);
+    BOOL isJustOpened();
+    void onTabMenuClosed();
+    void selectTab(u32 x);
 };
 
 class UiWidget {
@@ -118,31 +118,31 @@ public:
 };
 
 // object at +0x484 (size 0x64, vtable 0x02204614); methods split over two more ov002 classes
-class Unk_ov002_02202d98 {
+class MenuCursorBase {
 public:
-    void func_ov002_02202844();
-    u8 func_ov002_02202878();
-    u8 func_ov002_0220288c();
-    void func_ov002_02202af0();
-    void func_ov002_02202a78();
-    void func_ov002_022029e8(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_02202a40(s32 a, s32 b);
-    s32 func_ov002_022028f0();
+    void drawWrapped();
+    u8 getScreenY();
+    u8 getScreenX();
+    void setPoseRelease();
+    void setPoseIdle();
+    void moveToEase(s32 a, s32 b, s32 c, s32 d);
+    void warpTo(s32 a, s32 b);
+    s32 isMoving();
 };
 
-class Unk_ov002_0220464c {
+class MenuCursor {
 public:
-    void func_ov002_02202b68();
-    void func_ov002_02202be0();
-    void func_ov002_02202c40();
-    void func_ov002_02202ca0();
-    void func_ov002_02202d00(s32 v);
+    void setPosePress();
+    void switchToAnim0D();
+    void switchToAnim01();
+    void switchToAnim07();
+    void setAnimIfChanged(s32 v);
 };
 
-class Unk_ov002_02204614 {
+class MenuCursorBuf0 {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     u32 unk_04[0x60 / 4];
@@ -160,21 +160,21 @@ public:
     u32 unk_04[0x44 / 4];
 };
 
-class Unk_ov002_022046b0 : public ScrollKnob {
+class MenuScrollKnob : public ScrollKnob {
 public:
-    Unk_ov002_022046b0();
-    virtual ~Unk_ov002_022046b0();
-    s32 func_ov002_02202e84();
-    s32 func_ov002_02202e60();
-    void func_ov002_02202f00();
-    BOOL func_ov002_02202f18(s32 x, s32 y);
+    MenuScrollKnob();
+    virtual ~MenuScrollKnob();
+    s32 getGripX();
+    s32 getGripY();
+    void grab();
+    BOOL hitTest(s32 x, s32 y);
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -185,34 +185,34 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 a);
-    void func_ov002_022008a8(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008c4(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200914();
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    u32 func_ov002_022009c8();
-    s32 func_ov002_022009d4();
-    s32 func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void setSlideExtent(s32 a);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
+    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetX();
+    s32 getSlideOffsetY();
+    void restartKeyRepeat();
+    u32 takeRepeatedKeys();
+    s32 checkSwitchToTouch();
+    s32 checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -222,19 +222,19 @@ public:
 };
 
 // ov117 object (0x66 bytes) initialised and torn down by plain ov117 functions
-class Unk_ov117_02292c88 {
+class TownMapMarkers {
 public:
-    Unk_ov117_02292c88();
-    ~Unk_ov117_02292c88();
+    TownMapMarkers();
+    ~TownMapMarkers();
     u8 unk_00[0x66];
 };
 
 
 // 3-byte element with empty out-of-line ctor and dtor
-class Unk_ov118_02292df8 {
+class MapTabMarker {
 public:
-    Unk_ov118_02292df8();
-    ~Unk_ov118_02292df8();
+    MapTabMarker();
+    ~MapTabMarker();
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
@@ -243,113 +243,113 @@ public:
 #define A8V (*(volatile u8 *)&unk_a8)
 #define ACV (*(volatile u8 *)&unk_ac)
 
-typedef struct Unk_ov118_022955c8 Unk_ov118_022955c8_fwd;
-class Unk_ov118_022955c8;
-typedef void (Unk_ov118_022955c8::*Unk_ov118_022955c8_Fn)();
+typedef struct MapTab Unk_ov118_022955c8_fwd;
+class MapTab;
+typedef void (MapTab::*Unk_ov118_022955c8_Fn)();
 
 // Vtable 0x022955c8, size 0x459c
-class Unk_ov118_022955c8 : public Unk_ov002_022044e4 {
+class MapTab : public MenuProc {
 public:
-    Unk_ov118_022955c8() : unk_b4(), unk_fc(), unk_43c(), unk_484(), unk_44e8(), unk_4568(), unk_4571() {}
+    MapTab() : unk_b4(), unk_fc(), unk_43c(), unk_484(), unk_44e8(), unk_4568(), unk_4571() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov118_02292e00(u32 m);
-    void func_ov118_02292e10(u32 m);
-    BOOL func_ov118_02292e20(u32 m);
-    void func_ov118_02292e34(s32 a);
-    s32 func_ov118_02292e78();
-    s32 func_ov118_02292f7c(void *pad);
-    void func_ov118_02293214();
-    void func_ov118_02293234();
-    void func_ov118_02293254();
-    void func_ov118_02293274();
-    void func_ov118_022932ec();
-    s32 func_ov118_02293310();
-    s32 func_ov118_0229336c();
-    void func_ov118_022933cc();
-    void func_ov118_02293458();
-    void func_ov118_02293474();
-    void func_ov118_02293498();
-    s32 func_ov118_02293524();
-    void func_ov118_022935a0();
-    void func_ov118_02293604(s32 v);
-    BOOL func_ov118_02293660();
-    void func_ov118_022936e4();
-    BOOL func_ov118_02293794();
-    void func_ov118_022937a0(u32 v);
-    void func_ov118_022937b0(u32 v);
-    void func_ov118_022937cc();
-    void func_ov118_02293824();
-    u8 func_ov118_02293850(u32 v);
-    u8 func_ov118_022938b8(u32 v);
-    s32 func_ov118_02293924(u32 v);
-    void func_ov118_02293994(u8 v);
-    u8 func_ov118_02293a48(s32 x, s32 y);
-    BOOL func_ov118_02293aa8();
-    void func_ov118_02293ae0(void *p);
-    void func_ov118_02293c3c(s32 x, s32 y, s32 n, s32 flag, s32 pal);
-    BOOL func_ov118_02293cd0();
-    s32 func_ov118_02293d34();
-    u8 func_ov118_02293d50();
-    u8 *func_ov118_02293d70();
-    s32 func_ov118_02293d98();
-    void func_ov118_02293dfc();
-    void func_ov118_02293e14();
-    void func_ov118_02293e2c(Unk_020e0488 *p, u32 idx);
-    s32 func_ov118_02293e98(u8 *tbl);
-    void func_ov118_02293ef0();
-    void func_ov118_02293f24();
-    Unk_020e0488 *func_ov118_02293ff0();
-    void func_ov118_02294024();
-    s32 func_ov118_0229404c(u32 x, s32 idx);
-    void func_ov118_022940a0();
-    void func_ov118_02294138();
-    void func_ov118_022941f4();
-    void func_ov118_02294228();
-    void func_ov118_02294270();
-    void func_ov118_02294288();
-    void func_ov118_022943f4();
-    void func_ov118_02294420();
-    void func_ov118_02294458();
-    void func_ov118_0229447c();
-    void func_ov118_022944c0();
-    void func_ov118_02294508();
-    void func_ov118_02294534();
-    void func_ov118_0229463c();
-    void func_ov118_0229468c();
-    void func_ov118_022946d4();
-    void func_ov118_02294764();
-    void func_ov118_022947c4();
-    s32 func_ov118_02294814();
-    s32 func_ov118_0229482c();
-    void func_ov118_0229484c();
-    void func_ov118_022948fc();
-    void func_ov118_02294930();
-    void func_ov118_02294938();
-    void func_ov118_02294964();
-    void func_ov118_02294a30();
-    void func_ov118_02294a38();
-    void func_ov118_02294a58();
-    void func_ov118_02294b4c();
-    void func_ov118_02294bac();
-    void func_ov118_02294c00();
-    void func_ov118_02294c60();
-    void func_ov118_02294d1c();
-    void func_ov118_02294d38();
-    void func_ov118_02294d6c();
-    void func_ov118_02294d98();
-    void func_ov118_02294dc4();
-    BOOL func_ov118_02294df8(s32 x);
-    BOOL func_ov118_02294e38();
-    void func_ov118_02294f14();
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    void playSeAtMarker(s32 a);
+    s32 onCursorDecide();
+    s32 moveCursorByPad(void *pad);
+    void refreshCursor();
+    void releaseCursor();
+    void pressCursor();
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void showCursor();
+    void stopBlink();
+    void startBlink();
+    void updateBlink();
+    s32 touchListTabs();
+    void scrollListByPad();
+    void scrollListToKnob(s32 v);
+    BOOL touchScrollBar();
+    void updateListScroll();
+    BOOL isListScrolling();
+    void setListScrollTarget(u32 v);
+    void setListScroll(u32 v);
+    void ensureSelectionVisible();
+    void jumpToSelection();
+    u8 selectionToMarker(u32 v);
+    u8 selectionToListRow(u32 v);
+    s32 highlightListRow(u32 v);
+    void selectEntry(u8 v);
+    u8 findMarkerAt(s32 x, s32 y);
+    BOOL touchMarker();
+    void setupMarkers(void *p);
+    void drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal);
+    BOOL touchListRow();
+    s32 getListScrollMax();
+    u8 getListCount();
+    u8 *getListEntries();
+    s32 rebuildList();
+    void showPlacesList();
+    void showResidentsList();
+    void setEntryName(Unk_020e0488 *p, u32 idx);
+    s32 buildEntryLabels(u8 *tbl);
+    void layoutListLabels();
+    void buildEntryLists();
+    Unk_020e0488 *allocTextLabel();
+    void resetTextLabels();
+    s32 getEntryIconRow(u32 x, s32 idx);
+    void buildListScreen();
+    void clipListScreen();
+    void exitMapCursor();
+    void startButtonInput();
+    void startTouchInput();
+    void updateMapCursor();
+    void updateKnobRelease();
+    void updateKnobHold();
+    void updateKnobGrab();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void updateButtons();
+    void updateBarTap();
+    void updateKnobDrag();
+    void updateTouch();
+    void loadObjGfx();
+    void loadMapImage();
+    s32 loadMapStep2();
+    s32 loadMapStep1();
+    void loadBgGfx();
+    void setupBgLayers();
+    void postInputUpdate();
+    void preInputUpdate();
+    void postStateUpdate();
+    void preStateUpdate();
+    void releaseResources();
+    void initMapTab();
+    void stateClosing();
+    void stateClose();
+    void stateOpening();
+    void stateOpen();
+    void stateBuildList();
+    void stateLoadMap3();
+    void stateLoadMap2();
+    void stateLoadMap1();
+    void stateLoadBg();
+    BOOL requestTab(s32 x);
+    BOOL handleTabSwitch();
+    void runMainState();
 
     /* 0x0091 */ u8 unk_91[3];
     /* 0x0094 */ s32 unk_94;
@@ -379,18 +379,18 @@ public:
     /* 0x00b2 */ u8 unk_b2[2];
     /* 0x00b4 */ BgVramTask unk_b4[2];
     /* 0x00fc */ Unk_020e0488 unk_fc[13];
-    /* 0x043c */ Unk_ov002_022046b0 unk_43c;
-    /* 0x0484 */ Unk_ov002_02204614 unk_484;
+    /* 0x043c */ MenuScrollKnob unk_43c;
+    /* 0x0484 */ MenuCursorBuf0 unk_484;
     /* 0x04e8 */ u8 unk_4e8[0x800];
     /* 0x0ce8 */ u16 unk_ce8[0x400];
     /* 0x14e8 */ u16 unk_14e8[0x400];
     /* 0x1ce8 */ u16 unk_1ce8[0x400];
     /* 0x24e8 */ u8 unk_24e8[0x2000];
-    /* 0x44e8 */ Unk_ov117_02292c88 unk_44e8;
+    /* 0x44e8 */ TownMapMarkers unk_44e8;
     /* 0x454e */ u8 unk_454e[13];
     /* 0x455b */ u8 unk_455b[13];
-    /* 0x4568 */ Unk_ov118_02292df8 unk_4568[3];
-    /* 0x4571 */ Unk_ov118_02292df8 unk_4571[14];
+    /* 0x4568 */ MapTabMarker unk_4568[3];
+    /* 0x4571 */ MapTabMarker unk_4571[14];
 };
 
 struct Unk_ov118_02295500 {
@@ -404,34 +404,34 @@ struct Unk_ov118_02295500 {
 };
 
 struct Unk_ov118_SceneEntry {
-    Unk_ov118_022955c8 *(*create)();
+    MapTab *(*create)();
     u16 a;
     u16 b;
 };
 
-extern "C" Unk_ov118_022955c8 *func_ov118_022953a0();
+extern "C" MapTab *MapTab_Create();
 
 extern "C" {
-void _ZN18Unk_ov118_022955c819func_ov118_02294dc4Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294d98Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294d6cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_02294d38Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294d1cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_02294c60Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294c00Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294bacEv();
-void _ZN18Unk_ov118_022955c819func_ov118_02294b4cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_022946d4Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_0229468cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_0229463cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_02294534Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294508Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_022944c0Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_0229447cEv();
-void _ZN18Unk_ov118_022955c819func_ov118_02294458Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294420Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_022943f4Ev();
-void _ZN18Unk_ov118_022955c819func_ov118_02294288Ev();
+void _ZN6MapTab11stateLoadBgEv();
+void _ZN6MapTab13stateLoadMap1Ev();
+void _ZN6MapTab13stateLoadMap2Ev();
+void _ZN6MapTab13stateLoadMap3Ev();
+void _ZN6MapTab14stateBuildListEv();
+void _ZN6MapTab9stateOpenEv();
+void _ZN6MapTab12stateOpeningEv();
+void _ZN6MapTab10stateCloseEv();
+void _ZN6MapTab12stateClosingEv();
+void _ZN6MapTab11updateTouchEv();
+void _ZN6MapTab14updateKnobDragEv();
+void _ZN6MapTab12updateBarTapEv();
+void _ZN6MapTab13updateButtonsEv();
+void _ZN6MapTab16updateCursorMoveEv();
+void _ZN6MapTab17updateCursorPressEv();
+void _ZN6MapTab19updateCursorReleaseEv();
+void _ZN6MapTab14updateKnobGrabEv();
+void _ZN6MapTab14updateKnobHoldEv();
+void _ZN6MapTab17updateKnobReleaseEv();
+void _ZN6MapTab15updateMapCursorEv();
 }
 extern "C" void *data_ov118_02295520[2];
 extern "C" void *data_ov118_02295518[2];
@@ -453,14 +453,14 @@ extern "C" void *data_ov118_022954c0[2];
 extern "C" void *data_ov118_022954c8[2];
 extern "C" void *data_ov118_022954e0[2];
 extern "C" void *data_ov118_022954b0[2];
-extern "C" Unk_ov118_SceneEntry data_ov118_02295480;
-extern "C" Unk_ov118_02295500 data_ov118_02295500;
-extern "C" const u8 data_ov118_02295450[5];
-extern "C" const u8 data_ov118_02295458[5];
-extern "C" const u8 data_ov118_02295460[5];
-extern "C" u32 data_ov118_02295530[8];
-extern "C" u32 data_ov118_02295550[8];
-extern "C" u32 data_ov118_02295570[20];
+extern "C" Unk_ov118_SceneEntry sMapTabProfile;
+extern "C" Unk_ov118_02295500 sMapTabIconCell;
+extern "C" const u8 sMapTabPlaceMarkers[5];
+extern "C" const u8 sMapTabMarkerPlaceRows[5];
+extern "C" const u8 sMapTabFacilityCells[5];
+extern "C" u32 sMapTabPlacesButtonCells[8];
+extern "C" u32 sMapTabResidentsButtonCells[8];
+extern "C" u32 sMapTabFrameCells[20];
 
 
 
@@ -479,65 +479,65 @@ static inline BOOL Unk_ov118_02294a58_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
 }
 
-extern "C" Unk_ov118_022955c8 *func_ov118_022953a0() { return new Unk_ov118_022955c8(); }
+extern "C" MapTab *MapTab_Create() { return new MapTab(); }
 
-BOOL Unk_ov118_022955c8::vfunc_00() {
-    func_ov118_02294a58();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL MapTab::vfunc_00() {
+    initMapTab();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov118_022955c8::vfunc_0c() {
-    ((Unk_ov090_022921e0 *)ProcBase_GetParent(this))->func_ov090_02291d2c();
-    func_ov118_02294a38();
+BOOL MapTab::vfunc_0c() {
+    ((MenuTabBar *)ProcBase_GetParent(this))->onTabMenuClosed();
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov118_022955c8::onDraw() {
+BOOL MapTab::onDraw() {
     u32 base = unk_94 + 0x60;
     s32 i;
-    if (func_ov118_02292e20(4)) {
-        if (func_ov118_02292e20(8)) {
+    if (testFlags(4)) {
+        if (testFlags(8)) {
             unk_43c.moveTo(0x67, (unk_94 - 0x12) + unk_a4);
         }
         if (MenuCtrl_IsButtons()) {
-            if (func_ov118_02292e20(0x1000)) {
-                s32 a = unk_43c.func_ov002_02202e84();
-                s32 b = unk_43c.func_ov002_02202e60();
-                ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202a40(a, b);
+            if (testFlags(0x1000)) {
+                s32 a = unk_43c.getGripX();
+                s32 b = unk_43c.getGripY();
+                ((MenuCursorBase *)&unk_484)->warpTo(a, b);
             }
-            ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202844();
+            ((MenuCursorBase *)&unk_484)->drawWrapped();
         }
-        Oam_DrawCell(1, data_ov118_02295570, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, sMapTabFrameCells, 0x80, base, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 x0, x1;
-        if (func_ov118_02292e20(1)) {
+        if (testFlags(1)) {
             x1 = 0xc;
             x0 = 0xd;
         } else {
             x1 = 0xb;
             x0 = 0xe;
         }
-        Oam_DrawCell(1, data_ov118_02295530, 0x80, base, x0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, data_ov118_02295550, 0x80, base, x1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        if (MenuCtrl_IsButtons() && func_ov118_02292e20(0x800)) {
+        Oam_DrawCell(1, sMapTabPlacesButtonCells, 0x80, base, x0, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, sMapTabResidentsButtonCells, 0x80, base, x1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        if (MenuCtrl_IsButtons() && testFlags(0x800)) {
             u32 t = unk_ad;
             if (t != 0xe) {
                 u8 *e = (u8 *)this + t * 3;
                 if (e[0x4573] != 0xc) {
-                    func_ov118_02293c3c(e[0x4571], unk_94 + e[0x4572], 0xb, 0, -1);
+                    drawMapIcon(e[0x4571], unk_94 + e[0x4572], 0xb, 0, -1);
                 }
             }
         }
         unk_b1 = (unk_b1 + 1) & 0xf;
         if ((unk_b1 & 0xc) != 0) {
-            func_ov118_02293c3c(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
+            drawMapIcon(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
         }
         for (i = 0; i < 3; i++) {
             u8 *e = (u8 *)this + i * 3;
             u32 c = e[0x456a];
             if (c != 0xc) {
-                func_ov118_02293c3c(e[0x4568], unk_94 + e[0x4569], (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
+                drawMapIcon(e[0x4568], unk_94 + e[0x4569], (u8)(c & 0x7f), (c & 0x80) != 0 ? 1 : 0, -1);
             }
         }
         for (i = 0; i < 14; i++) {
@@ -545,123 +545,123 @@ BOOL Unk_ov118_022955c8::onDraw() {
             u8 *q = e + 0x4573;
             if (*q != 0xc) {
                 s32 f;
-                if (i == unk_a9 && !func_ov118_02292e20(0x100)) {
+                if (i == unk_a9 && !testFlags(0x100)) {
                     f = 8;
                 } else {
                     f = -1;
                 }
-                func_ov118_02293c3c(e[0x4571], unk_94 + e[0x4572], *q, 0, f);
+                drawMapIcon(e[0x4571], unk_94 + e[0x4572], *q, 0, f);
             }
         }
-        if (func_ov118_02292e20(8)) {
+        if (testFlags(8)) {
             unk_43c.vfunc_08();
         }
     }
     return TRUE;
 }
 
-extern "C" u32 data_ov118_02295550[8] = {0x404d00d3, 0x0000c1a5, 0x005d80d3, 0x0000c1a7, 0x004d40e3, 0x0000c1e5, 0x005d00e3, 0xffffc1e7};
+extern "C" u32 sMapTabResidentsButtonCells[8] = {0x404d00d3, 0x0000c1a5, 0x005d80d3, 0x0000c1a7, 0x004d40e3, 0x0000c1e5, 0x005d00e3, 0xffffc1e7};
 
-extern "C" const u8 data_ov118_02295458[5] = {0x02, 0x03, 0x00, 0x01, 0x04};
+extern "C" const u8 sMapTabMarkerPlaceRows[5] = {0x02, 0x03, 0x00, 0x01, 0x04};
 
-extern "C" void *data_ov118_022954f8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294c60Ev, 0};
+extern "C" void *data_ov118_022954f8[2] = {(void *)_ZN6MapTab9stateOpenEv, 0};
 
-extern "C" void *data_ov118_022954c0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294458Ev, 0};
+extern "C" void *data_ov118_022954c0[2] = {(void *)_ZN6MapTab14updateKnobGrabEv, 0};
 
-extern "C" void *data_ov118_02295490[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_0229447cEv, 0};
+extern "C" void *data_ov118_02295490[2] = {(void *)_ZN6MapTab19updateCursorReleaseEv, 0};
 
-extern "C" void *data_ov118_02295528[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294534Ev, 0};
+extern "C" void *data_ov118_02295528[2] = {(void *)_ZN6MapTab13updateButtonsEv, 0};
 
-extern "C" void *data_ov118_02295520[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294dc4Ev, 0};
+extern "C" void *data_ov118_02295520[2] = {(void *)_ZN6MapTab11stateLoadBgEv, 0};
 
-extern "C" void *data_ov118_02295518[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294d98Ev, 0};
+extern "C" void *data_ov118_02295518[2] = {(void *)_ZN6MapTab13stateLoadMap1Ev, 0};
 
-extern "C" void *data_ov118_02295510[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294d6cEv, 0};
+extern "C" void *data_ov118_02295510[2] = {(void *)_ZN6MapTab13stateLoadMap2Ev, 0};
 
-extern "C" void *data_ov118_02295508[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294d38Ev, 0};
+extern "C" void *data_ov118_02295508[2] = {(void *)_ZN6MapTab13stateLoadMap3Ev, 0};
 
-extern "C" Unk_ov118_02295500 data_ov118_02295500 = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
+extern "C" Unk_ov118_02295500 sMapTabIconCell = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
 
-extern "C" void *data_ov118_02295498[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294b4cEv, 0};
+extern "C" void *data_ov118_02295498[2] = {(void *)_ZN6MapTab12stateClosingEv, 0};
 
-extern "C" const u8 data_ov118_02295450[5] = {0x0b, 0x0c, 0x09, 0x0a, 0x0d};
+extern "C" const u8 sMapTabPlaceMarkers[5] = {0x0b, 0x0c, 0x09, 0x0a, 0x0d};
 
-extern "C" void *data_ov118_022954a0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294d1cEv, 0};
+extern "C" void *data_ov118_022954a0[2] = {(void *)_ZN6MapTab14stateBuildListEv, 0};
 
-extern "C" void *data_ov118_022954d0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_022946d4Ev, 0};
+extern "C" void *data_ov118_022954d0[2] = {(void *)_ZN6MapTab11updateTouchEv, 0};
 
-extern "C" void *data_ov118_022954d8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_0229468cEv, 0};
+extern "C" void *data_ov118_022954d8[2] = {(void *)_ZN6MapTab14updateKnobDragEv, 0};
 
-extern "C" void *data_ov118_022954e8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294bacEv, 0};
+extern "C" void *data_ov118_022954e8[2] = {(void *)_ZN6MapTab10stateCloseEv, 0};
 
-BOOL Unk_ov118_022955c8::vfunc_4c() {
+BOOL MapTab::execTransition() {
     static Unk_ov118_022955c8_Fn tbl[9] = {*(Unk_ov118_022955c8_Fn *)data_ov118_02295520, *(Unk_ov118_022955c8_Fn *)data_ov118_02295518, *(Unk_ov118_022955c8_Fn *)data_ov118_02295510, *(Unk_ov118_022955c8_Fn *)data_ov118_02295508, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954f0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295498};
-    func_ov118_02294a30();
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov118_02294964();
+    postStateUpdate();
     return TRUE;
 }
 
-extern "C" void *data_ov118_022954b8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_0229463cEv, 0};
+extern "C" void *data_ov118_022954b8[2] = {(void *)_ZN6MapTab12updateBarTapEv, 0};
 
-extern "C" u32 data_ov118_02295530[8] = {0x402a00d3, 0x0000e1a2, 0x003a80d3, 0x0000e1a4, 0x002a40e3, 0x0000e1e2, 0x003a00e3, 0xffffe1e4};
+extern "C" u32 sMapTabPlacesButtonCells[8] = {0x402a00d3, 0x0000e1a2, 0x003a80d3, 0x0000e1a4, 0x002a40e3, 0x0000e1e2, 0x003a00e3, 0xffffe1e4};
 
-extern "C" void *data_ov118_022954a8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294508Ev, 0};
+extern "C" void *data_ov118_022954a8[2] = {(void *)_ZN6MapTab16updateCursorMoveEv, 0};
 
-void Unk_ov118_022955c8::func_ov118_02294f14() {
+void MapTab::runMainState() {
     static Unk_ov118_022955c8_Fn tbl[11] = {*(Unk_ov118_022955c8_Fn *)data_ov118_022954d0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954d8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295528, *(Unk_ov118_022955c8_Fn *)data_ov118_022954a8, *(Unk_ov118_022955c8_Fn *)data_ov118_02295488, *(Unk_ov118_022955c8_Fn *)data_ov118_02295490, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954c8, *(Unk_ov118_022955c8_Fn *)data_ov118_022954e0, *(Unk_ov118_022955c8_Fn *)data_ov118_022954b0};
     (this->*tbl[unk_8d])();
 }
 
-extern "C" void *data_ov118_022954e0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_022943f4Ev, 0};
+extern "C" void *data_ov118_022954e0[2] = {(void *)_ZN6MapTab17updateKnobReleaseEv, 0};
 
-extern "C" void *data_ov118_022954c8[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294420Ev, 0};
+extern "C" void *data_ov118_022954c8[2] = {(void *)_ZN6MapTab14updateKnobHoldEv, 0};
 
-extern "C" Unk_ov118_SceneEntry data_ov118_02295480 = {func_ov118_022953a0, 0xa1, 0xa5};
+extern "C" Unk_ov118_SceneEntry sMapTabProfile = {MapTab_Create, 0xa1, 0xa5};
 
-extern "C" void *data_ov118_022954b0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294288Ev, 0};
+extern "C" void *data_ov118_022954b0[2] = {(void *)_ZN6MapTab15updateMapCursorEv, 0};
 
-extern "C" const u8 data_ov118_02295460[5] = {0x02, 0x03, 0x04, 0x05, 0x06};
+extern "C" const u8 sMapTabFacilityCells[5] = {0x02, 0x03, 0x04, 0x05, 0x06};
 
-extern "C" void *data_ov118_022954f0[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_02294c00Ev, 0};
+extern "C" void *data_ov118_022954f0[2] = {(void *)_ZN6MapTab12stateOpeningEv, 0};
 
-extern "C" void *data_ov118_02295488[2] = {(void *)_ZN18Unk_ov118_022955c819func_ov118_022944c0Ev, 0};
+extern "C" void *data_ov118_02295488[2] = {(void *)_ZN6MapTab17updateCursorPressEv, 0};
 
-extern "C" u32 data_ov118_02295570[20] = {
+extern "C" u32 sMapTabFrameCells[20] = {
     0x819d40b8, 0x000061ab, 0x81bd40b8, 0x000061af, 0x81dd40b8, 0x000061b3, 0x81fd40b8, 0x000061b7,
     0x401d00b8, 0x000061bb, 0x81f540b8, 0x000060d9, 0x81d540b8, 0x000060d9, 0x81b540b8, 0x000060d9,
     0x901540b8, 0x000060d8, 0x819540b8, 0xffff60d8};
 
-BOOL Unk_ov118_022955c8::vfunc_50() {
-    if (func_ov118_02294e38()) {
+BOOL MapTab::execMain() {
+    if (handleTabSwitch()) {
         return TRUE;
     }
-    func_ov118_02294938();
-    func_ov118_02294f14();
-    func_ov118_02294930();
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov118_022955c8::vfunc_54() { return TRUE; }
+BOOL MapTab::execPhase3() { return TRUE; }
 
-BOOL Unk_ov118_022955c8::vfunc_58() { return TRUE; }
+BOOL MapTab::execPhase4() { return TRUE; }
 
-BOOL Unk_ov118_022955c8::vfunc_5c() {
+BOOL MapTab::execClosed() {
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02294e38() {
+BOOL MapTab::handleTabSwitch() {
     func_0206e63c();
     if (func_0206e61c()) {
-        return func_ov118_02294df8(7);
+        return requestTab(7);
     }
     if (unk_8d != 0 && unk_8d != 3 && unk_8d != 10) {
         return FALSE;
     }
     s32 r = -1;
     if (MenuCtrl_IsTouch()) {
-        r = func_ov090_02291aa0();
+        r = MenuTabBar_HitTestTouch();
     } else {
         u16 k = gPad[1];
         if ((k & 0x400) != 0 || (k & 2) != 0) {
@@ -672,118 +672,118 @@ BOOL Unk_ov118_022955c8::func_ov118_02294e38() {
             r = 4;
         }
     }
-    return func_ov118_02294df8(r);
+    return requestTab(r);
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02294df8(s32 x) {
+BOOL MapTab::requestTab(s32 x) {
     void *r = ProcBase_GetParent(this);
     if (x != -1 && x != 5) {
-        ((Unk_ov090_022921e0 *)r)->func_ov090_02291d8c((u8)x);
+        ((MenuTabBar *)r)->selectTab((u8)x);
         unk_8c = 7;
-        func_ov002_02200a60(1);
+        setPhase(1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov118_022955c8::func_ov118_02294dc4() {
-    func_ov118_022948fc();
-    func_ov118_0229484c();
-    func_ov002_02200a50(1);
-    if (!func_ov118_02292e20(0x2000)) {
-        func_ov118_02294d98();
+void MapTab::stateLoadBg() {
+    setupBgLayers();
+    loadBgGfx();
+    setTransitionState(1);
+    if (!testFlags(0x2000)) {
+        stateLoadMap1();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294d98() {
-    func_ov118_0229482c();
-    func_ov002_02200a50(2);
-    if (!func_ov118_02292e20(0x2000)) {
-        func_ov118_02294d6c();
+void MapTab::stateLoadMap1() {
+    loadMapStep1();
+    setTransitionState(2);
+    if (!testFlags(0x2000)) {
+        stateLoadMap2();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294d6c() {
-    func_ov118_02294814();
-    func_ov002_02200a50(3);
-    if (!func_ov118_02292e20(0x2000)) {
-        func_ov118_02294d38();
+void MapTab::stateLoadMap2() {
+    loadMapStep2();
+    setTransitionState(3);
+    if (!testFlags(0x2000)) {
+        stateLoadMap3();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294d38() {
-    func_ov118_022947c4();
-    func_ov002_02200a50(4);
-    if (!func_ov118_02292e20(0x2000)) {
-        func_ov118_02294d1c();
-        func_ov118_02292e00(0x2000);
+void MapTab::stateLoadMap3() {
+    loadMapImage();
+    setTransitionState(4);
+    if (!testFlags(0x2000)) {
+        stateBuildList();
+        clearFlags(0x2000);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294d1c() {
-    func_ov118_02293e14();
-    func_ov118_02294138();
-    func_ov002_02200a50(5);
+void MapTab::stateBuildList() {
+    showResidentsList();
+    clipListScreen();
+    setTransitionState(5);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294c60() {
+void MapTab::stateOpen() {
     u32 buf[8];
-    func_ov118_02294764();
+    loadObjGfx();
     _ZN12Unk_020dd38cC2Ev(buf);
     func_020638d0(data_021d7352, buf);
     String_SetSlot(0, buf);
-    Unk_020e0488 *o = func_ov118_02293ff0();
+    Unk_020e0488 *o = allocTextLabel();
     o->func_0206fb9c(8, 0x1ab, 0x12, 0xf, 0, 0);
     func_0206f9fc(o, 0xa9);
     o->func_0206fab4(1, 0);
     _ZN12Unk_020dd38cD1Ev(buf);
-    func_ov002_022008e0(0xa, 3, 0, 0x30);
+    beginSubSlideIn(0xa, 3, 0, 0x30);
     Gfx2d_ShowLayer(4);
-    func_ov002_02200840(4, 0, 0);
+    applySlideOffset(4, 0, 0);
     Gfx2d_ShowLayer(6);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    func_ov118_02292e10(4);
-    unk_94 = func_ov002_02200920();
-    func_ov002_02200a50(6);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    setFlags(4);
+    unk_94 = getSlideOffsetY();
+    setTransitionState(6);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294c00() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
+void MapTab::stateOpening() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
         if (MenuCtrl_IsTouch()) {
-            func_ov118_02294270();
+            startTouchInput();
         } else {
-            func_ov118_02294228();
+            startButtonInput();
         }
     }
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    unk_94 = func_ov002_02200920();
+    applySlideOffset(4, 0, 0);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294bac() {
-    func_ov118_022932ec();
-    func_ov002_022008c4(0xa, 0, 0, 0x30);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    func_ov002_02200a50(8);
-    unk_94 = func_ov002_02200920();
+void MapTab::stateClose() {
+    hideCursor();
+    beginSubSlideOut(0xa, 0, 0, 0x30);
+    applySlideOffset(4, 0, 0);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    setTransitionState(8);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294b4c() {
-    if (func_ov002_022008fc(0)) {
+void MapTab::stateClosing() {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(4);
         Gfx2d_ResetLayer(6);
-        func_ov118_02292e00(4);
-        func_ov002_02200a60(5);
+        clearFlags(4);
+        setPhase(5);
     } else {
-        func_ov002_02200840(4, 0, 0);
-        func_ov002_02200840(6, 0, 0x50 - unk_98);
-        unk_94 = func_ov002_02200920();
+        applySlideOffset(4, 0, 0);
+        applySlideOffset(6, 0, 0x50 - unk_98);
+        unk_94 = getSlideOffsetY();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294a58() {
+void MapTab::initMapTab() {
     volatile Unk_ov118_02294a58_Vec v;
     Unk_ov118_02294a58_Vec *p;
     unk_a0 = 0;
@@ -797,8 +797,8 @@ void Unk_ov118_022955c8::func_ov118_02294a58() {
     unk_ae = 0x58;
     unk_af = 0x70;
     unk_ad = 0xe;
-    func_ov118_02293994(0);
-    func_ov118_02293f24();
+    selectEntry(0);
+    buildEntryLists();
     if (Unk_ov118_02294a58_IsZero(data_020e416c)) {
         p = (Unk_ov118_02294a58_Vec *)func_020947f0(4);
         v.x = p->x;
@@ -815,64 +815,64 @@ void Unk_ov118_022955c8::func_ov118_02294a58() {
     unk_9e = ((v.x + 0x800) >> 12) - 8;
     unk_9f = z + 13;
     unk_43c.setState(1);
-    if (((Unk_ov090_022921e0 *)ProcBase_GetParent(this))->func_ov090_02291934()) {
-        func_ov118_02292e10(0x2000);
+    if (((MenuTabBar *)ProcBase_GetParent(this))->isJustOpened()) {
+        setFlags(0x2000);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294a38() {
-    func_ov118_02294024();
+void MapTab::releaseResources() {
+    resetTextLabels();
     unk_b4[0].cancel();
     unk_b4[1].cancel();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294a30() {
-    func_ov118_02294024();
+void MapTab::preStateUpdate() {
+    resetTextLabels();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294964() {
-    if (func_ov118_02293794()) {
-        func_ov118_022936e4();
+void MapTab::postStateUpdate() {
+    if (isListScrolling()) {
+        updateListScroll();
         Gfx2d_SetLayerOffset(6, 0, unk_98 - 0x50);
         if (unk_a3 != (unk_98 >> 4)) {
-            func_ov118_02292e10(0x80);
+            setFlags(0x80);
         }
     }
-    func_ov118_02293498();
-    if (func_ov118_02292e20(0x80)) {
-        func_ov118_02294138();
-        func_ov118_02292e00(0x80);
+    updateBlink();
+    if (testFlags(0x80)) {
+        clipListScreen();
+        clearFlags(0x80);
     }
-    if (func_ov118_02292e20(0x20)) {
+    if (testFlags(0x20)) {
         if (unk_b4[1].requestScreen((u32)unk_4e8, 4, 0x800, 0)) {
-            func_ov118_02292e00(0x20);
+            clearFlags(0x20);
         }
     }
-    if (func_ov118_02292e20(2)) {
+    if (testFlags(2)) {
         if (unk_b4[0].requestScreen((u32)unk_ce8, 6, 0x800, 0)) {
-            func_ov118_02292e00(2);
+            clearFlags(2);
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294938() {
-    func_ov118_02294a30();
+void MapTab::preInputUpdate() {
+    preStateUpdate();
     unk_43c.vfunc_0c();
     unk_484.vfunc_0c();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294930() {
-    func_ov118_02294964();
+void MapTab::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov118_022955c8::func_ov118_022948fc() {
+void MapTab::setupBgLayers() {
     Gfx2d_SetLayerPriority(4, 2);
     Gfx2d_SetLayerPriority(6, 2);
     Gfx2d_SetLayerControl(4, 0, 0, 0);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
-void Unk_ov118_022955c8::func_ov118_0229484c() {
+void MapTab::loadBgGfx() {
     u32 p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", p, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", p, 4, 0x11, 0x11, 0x5f);
@@ -883,185 +883,185 @@ void Unk_ov118_022955c8::func_ov118_0229484c() {
     func_0206ee80(unk_1ce8, 0x13, 0, 0x1c, 1, 4);
 }
 
-s32 Unk_ov118_022955c8::func_ov118_0229482c() {
-    func_ov117_022923d8();
-    func_ov117_022923bc(0);
-    func_ov117_022923a0(0);
-    func_ov117_022923a0(1);
+s32 MapTab::loadMapStep1() {
+    TownMapImage_AllocGlobal();
+    TownMapImage_DrawRowGlobal(0);
+    TownMapImage_BuildMarkersGlobal(0);
+    TownMapImage_BuildMarkersGlobal(1);
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02294814() {
-    func_ov117_022923bc(1);
-    func_ov117_022923bc(2);
+s32 MapTab::loadMapStep2() {
+    TownMapImage_DrawRowGlobal(1);
+    TownMapImage_DrawRowGlobal(2);
 }
 
-void Unk_ov118_022955c8::func_ov118_022947c4() {
+void MapTab::loadMapImage() {
     u8 *a, *b;
-    func_ov117_022923bc(3);
+    TownMapImage_DrawRowGlobal(3);
     a = unk_24e8;
-    func_ov117_02292c88(&unk_44e8);
+    TownMapMarkers_Clear(&unk_44e8);
     b = (u8 *)&unk_44e8;
-    func_ov094_02292360(a, b);
+    InventoryBg_ClearDirty(a, b);
     Gfx2d_LoadCharRange(a, 4, 0x60, 0x60, 0x15f);
-    func_ov118_02293ae0(b);
+    setupMarkers(b);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294764() {
+void MapTab::loadObjGfx() {
     u32 p = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", p, 8, 6, 6, 0xe);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", p, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", p, 8, 0x180, 0x180, 0x1ff);
 }
 
-void Unk_ov118_022955c8::func_ov118_022946d4() {
-    if (func_ov002_02200a14(1)) {
-        func_ov118_02294228();
+void MapTab::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
         return;
     }
     if (Unk_ov118_022946d4_Both()) {
-        if (func_ov118_02293524()) {
+        if (touchListTabs()) {
             Snd_PlaySe(0x36);
-        } else if (func_ov118_02293660()) {
-            unk_43c.func_ov002_02202f00();
-        } else if (func_ov118_02293aa8()) {
-            func_ov118_02292e34(0x38);
-        } else if (func_ov118_02293cd0()) {
-            func_ov118_02292e34(0x37);
+        } else if (touchScrollBar()) {
+            unk_43c.grab();
+        } else if (touchMarker()) {
+            playSeAtMarker(0x38);
+        } else if (touchListRow()) {
+            playSeAtMarker(0x37);
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_0229468c() {
+void MapTab::updateKnobDrag() {
     if (gTouchHeld == 0) {
         unk_43c.setState(3);
-        func_ov118_02294270();
+        startTouchInput();
     }
-    func_ov118_02293604(unk_a7 + (gTouchCurY - unk_a5));
+    scrollListToKnob(unk_a7 + (gTouchCurY - unk_a5));
 }
 
-void Unk_ov118_022955c8::func_ov118_0229463c() {
+void MapTab::updateBarTap() {
     u32 v;
     if (gTouchHeld == 0) {
         unk_43c.setState(3);
-        func_ov118_02294270();
+        startTouchInput();
     }
     v = unk_a4;
     func_020e761c(&v, gTouchCurY - 0x54, 8);
-    func_ov118_02293604(v);
+    scrollListToKnob(v);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294534() {
-    if (func_ov002_022009d4()) {
-        func_ov118_02294270();
+void MapTab::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
         return;
     }
-    switch (func_ov118_02292f7c((void *)func_ov002_022009c8())) {
+    switch (moveCursorByPad((void *)takeRepeatedKeys())) {
     case 1:
-        if (func_ov118_02292e20(8)) {
+        if (testFlags(8)) {
             u8 t = unk_ac;
             if (t >= 0xa && t <= 0xf) {
-                func_ov118_022937a0(unk_98 & ~0xf);
+                setListScrollTarget(unk_98 & ~0xf);
             }
         }
-        func_ov118_02293274();
+        moveCursorToTarget();
         break;
     case 2:
-        func_ov118_02293994(0);
-        func_ov118_02293924(0xe);
-        unk_ad = func_ov118_02293a48(unk_ae, unk_af);
-        func_ov118_02292e10(0x800);
-        func_ov002_02200a58(0xa);
-        func_ov118_02293274();
+        selectEntry(0);
+        highlightListRow(0xe);
+        unk_ad = findMarkerAt(unk_ae, unk_af);
+        setFlags(0x800);
+        setMainState(0xa);
+        moveCursorToTarget();
         break;
     case 3:
-        func_ov118_02293274();
+        moveCursorToTarget();
         break;
     default: {
         u32 trg = gPad[1];
         if (trg & 1) {
-            func_ov118_02293254();
+            pressCursor();
         } else if (trg & 0x100) {
-            func_ov118_02294df8(func_ov090_02291a38(5));
+            requestTab(MenuTabBar_NextTab(5));
         } else if (trg & 0x200) {
-            func_ov118_02294df8(func_ov090_02291a58(5));
+            requestTab(MenuTabBar_PrevTab(5));
         }
         break;
     }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294508() {
-    if (((Unk_ov002_02202d98 *)&unk_484)->func_ov002_022028f0() == 0) {
-        func_ov002_02200a58(unk_ab);
-        func_ov118_02294f14();
+void MapTab::updateCursorMove() {
+    if (((MenuCursorBase *)&unk_484)->isMoving() == 0) {
+        setMainState(unk_ab);
+        runMainState();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_022944c0() {
+void MapTab::updateCursorPress() {
     if (_ZN10HandCursor10isAnimDoneEv(&unk_484)) {
-        s32 r = func_ov118_02292e78();
+        s32 r = onCursorDecide();
         if (r != 1) {
             if (r == 2) {
-                func_ov118_022937b0(0);
+                setListScroll(0);
                 unk_a3 = 0xff;
-                func_ov118_02293234();
+                releaseCursor();
             } else {
-                func_ov118_02293234();
+                releaseCursor();
             }
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_0229447c() {
+void MapTab::updateCursorRelease() {
     if (_ZN10HandCursor10isAnimDoneEv(&unk_484)) {
-        func_ov118_02293214();
-        if (func_ov118_02292e20(0x800)) {
-            func_ov002_02200a58(0xa);
+        refreshCursor();
+        if (testFlags(0x800)) {
+            setMainState(0xa);
         } else {
-            func_ov002_02200a58(3);
+            setMainState(3);
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294458() {
+void MapTab::updateKnobGrab() {
     if (unk_43c.areAnimsDone()) {
-        func_ov002_02200a58(8);
+        setMainState(8);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294420() {
+void MapTab::updateKnobHold() {
     if ((gPad[0] & 1) == 0) {
         unk_43c.setState(3);
-        func_ov002_02200a58(9);
+        setMainState(9);
     } else {
-        func_ov118_022935a0();
+        scrollListByPad();
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_022943f4() {
+void MapTab::updateKnobRelease() {
     if (unk_43c.areAnimsDone()) {
-        func_ov118_02293234();
-        func_ov118_02292e00(0x1000);
+        releaseCursor();
+        clearFlags(0x1000);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02294288() {
+void MapTab::updateMapCursor() {
     s32 trg, x, y, cur, ox, oy;
-    if (func_ov002_022009d4()) {
-        func_ov118_02294270();
+    if (checkSwitchToTouch()) {
+        startTouchInput();
         return;
     }
     trg = gPad[1];
     if ((trg & 1) && unk_ad != 0xe) {
-        func_ov118_02293254();
+        pressCursor();
         return;
     }
     if (trg & 0x100) {
-        func_ov118_02294df8(func_ov090_02291a38(5));
+        requestTab(MenuTabBar_NextTab(5));
         return;
     }
     if (trg & 0x200) {
-        func_ov118_02294df8(func_ov090_02291a58(5));
+        requestTab(MenuTabBar_PrevTab(5));
         return;
     }
     ox = unk_ae;
@@ -1075,9 +1075,9 @@ void Unk_ov118_022955c8::func_ov118_02294288() {
         y = oy + 4;
     }
     if (y < 0x30) {
-        unk_ac = func_ov090_02291944(ox);
-        ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202be0();
-        func_ov118_022941f4();
+        unk_ac = MenuTabBar_TabFromX(ox);
+        ((MenuCursor *)&unk_484)->switchToAnim0D();
+        exitMapCursor();
         return;
     }
     if (y > 0xb0) y = 0xb0;
@@ -1093,47 +1093,47 @@ void Unk_ov118_022955c8::func_ov118_02294288() {
             unk_ac = 9;
         } else {
             y = (y - 0x50) >> 4;
-            if (y >= func_ov118_02293d50()) {
-                y = func_ov118_02293d50() - 1;
+            if (y >= getListCount()) {
+                y = getListCount() - 1;
             }
             y += 0xa;
             unk_ac = y;
         }
-        func_ov118_022941f4();
+        exitMapCursor();
         return;
     }
     if (x == ox && y == oy) return;
     unk_ae = x;
     unk_af = y;
-    unk_ad = func_ov118_02293a48(unk_ae, unk_af);
-    ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202a40(unk_ae, unk_af);
+    unk_ad = findMarkerAt(unk_ae, unk_af);
+    ((MenuCursorBase *)&unk_484)->warpTo(unk_ae, unk_af);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294270() {
-    func_ov118_022932ec();
-    func_ov002_02200a58(0);
+void MapTab::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void Unk_ov118_022955c8::func_ov118_02294228() {
+void MapTab::startButtonInput() {
     unk_43c.setState(1);
-    func_ov118_022933cc();
-    func_ov002_02200980();
-    if (func_ov118_02292e20(0x800)) {
-        func_ov002_02200a58(0xa);
+    showCursor();
+    restartKeyRepeat();
+    if (testFlags(0x800)) {
+        setMainState(0xa);
     } else {
-        func_ov002_02200a58(3);
+        setMainState(3);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_022941f4() {
-    func_ov118_02293994(0);
-    func_ov118_02293924(0xe);
-    func_ov118_02292e00(0x800);
-    func_ov002_02200a58(3);
-    func_ov118_02293274();
+void MapTab::exitMapCursor() {
+    selectEntry(0);
+    highlightListRow(0xe);
+    clearFlags(0x800);
+    setMainState(3);
+    moveCursorToTarget();
 }
 
-void Unk_ov118_022955c8::func_ov118_02294138() {
+void MapTab::clipListScreen() {
     volatile u16 v0, v1, v2, v3;
     s32 off, j, i, n;
     MIi_CpuCopy16(unk_14e8, unk_ce8, 0x800);
@@ -1156,26 +1156,26 @@ void Unk_ov118_022955c8::func_ov118_02294138() {
         MIi_CpuClear16(v3, unk_ce8 + (off + 0x20), 0x14);
         off += 0x40;
     }
-    func_ov118_02292e10(2);
+    setFlags(2);
 }
 
-void Unk_ov118_022955c8::func_ov118_022940a0() {
+void MapTab::buildListScreen() {
     s32 i;
     u8 *tbl;
     MIi_CpuCopy16(unk_1ce8, unk_14e8, 0x800);
-    tbl = func_ov118_02293d70();
+    tbl = getListEntries();
     for (i = 0; i < 13; i++) {
-        s32 a = func_ov118_0229404c(tbl[i], i) * 0x40 + 0x13;
+        s32 a = getEntryIconRow(tbl[i], i) * 0x40 + 0x13;
         s32 b = i * 0x40 + 0x13;
         unk_14e8[b] = unk_1ce8[a];
         unk_14e8[b + 1] = unk_1ce8[a + 1];
         unk_14e8[b + 0x20] = unk_1ce8[a + 0x20];
         unk_14e8[b + 0x21] = unk_1ce8[a + 0x21];
     }
-    func_ov118_02292e10(2);
+    setFlags(2);
 }
 
-s32 Unk_ov118_022955c8::func_ov118_0229404c(u32 x, s32 idx) {
+s32 MapTab::getEntryIconRow(u32 x, s32 idx) {
     if (x == 0) return 7;
     if (x < 6) return 0;
     if (x >= 6 && x < 14) return 1;
@@ -1189,7 +1189,7 @@ s32 Unk_ov118_022955c8::func_ov118_0229404c(u32 x, s32 idx) {
     return 7;
 }
 
-void Unk_ov118_022955c8::func_ov118_02294024() {
+void MapTab::resetTextLabels() {
     s32 i = 0;
     unk_a0 = 0;
     Unk_020e0488 *p = unk_fc;
@@ -1199,7 +1199,7 @@ void Unk_ov118_022955c8::func_ov118_02294024() {
     } while (i < 13);
 }
 
-Unk_020e0488 *Unk_ov118_022955c8::func_ov118_02293ff0() {
+Unk_020e0488 *MapTab::allocTextLabel() {
     if (unk_a0 >= 13) {
         return &unk_fc[12];
     }
@@ -1207,7 +1207,7 @@ Unk_020e0488 *Unk_ov118_022955c8::func_ov118_02293ff0() {
     return &unk_fc[unk_a0 - 1];
 }
 
-void Unk_ov118_022955c8::func_ov118_02293f24() {
+void MapTab::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
     m = func_02097740(data_021d735c, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
@@ -1247,33 +1247,33 @@ void Unk_ov118_022955c8::func_ov118_02293f24() {
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293ef0() {
-    if (func_ov118_02292e20(1)) {
-        func_ov118_02293e98(unk_455b);
+void MapTab::layoutListLabels() {
+    if (testFlags(1)) {
+        buildEntryLabels(unk_455b);
     } else {
-        func_ov118_02293e98(unk_454e);
+        buildEntryLabels(unk_454e);
     }
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293e98(u8 *tbl) {
+s32 MapTab::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
-        Unk_020e0488 *w = func_ov118_02293ff0();
+        Unk_020e0488 *w = allocTextLabel();
         w->func_0206fb9c(6, (i << 4) + 0x160, 8, 1, 0xf, 0);
-        func_ov118_02293e2c(w, tbl[i]);
+        setEntryName(w, tbl[i]);
         w->func_0206fab4(0, 0);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293e2c(Unk_020e0488 *p, u32 idx) {
+void MapTab::setEntryName(Unk_020e0488 *p, u32 idx) {
     if (idx == 0) {
         _ZN9MsgString5clearEv(p);
     } else if (idx == 1) {
-        func_ov002_022019a4(p, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+        PopupChoice_CopyPlayerIdName(p, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     } else if (idx >= 2 && idx < 6) {
-        func_ov002_02201984(p, idx - 2);
+        PopupChoice_CopyResidentName(p, idx - 2);
     } else if (idx >= 6 && idx < 0xe) {
-        func_ov002_02201938(p, idx - 6);
+        PopupChoice_CopyVillagerName(p, idx - 6);
     } else if (idx >= 0xe && idx < 0x13) {
         func_0206f9fc(p, idx + 0x88);
     } else {
@@ -1281,55 +1281,55 @@ void Unk_ov118_022955c8::func_ov118_02293e2c(Unk_020e0488 *p, u32 idx) {
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293e14() {
-    func_ov118_02292e00(1);
-    func_ov118_02293d98();
+void MapTab::showResidentsList() {
+    clearFlags(1);
+    rebuildList();
 }
 
-void Unk_ov118_022955c8::func_ov118_02293dfc() {
-    func_ov118_02292e10(1);
-    func_ov118_02293d98();
+void MapTab::showPlacesList() {
+    setFlags(1);
+    rebuildList();
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293d98() {
+s32 MapTab::rebuildList() {
     s32 k;
-    func_ov118_022940a0();
-    func_ov118_02293ef0();
-    if (func_ov118_02293d34() == 0) {
-        func_ov118_02292e00(8);
+    buildListScreen();
+    layoutListLabels();
+    if (getListScrollMax() == 0) {
+        clearFlags(8);
         k = 4;
     } else {
-        func_ov118_02292e10(8);
+        setFlags(8);
         k = 3;
     }
     func_0206ee80(unk_4e8, 0x1d, 0xa, 0x1d, 0x15, k);
-    func_ov118_02292e10(0x20);
-    func_ov118_02293924(unk_aa);
+    setFlags(0x20);
+    highlightListRow(unk_aa);
 }
 
-u8 *Unk_ov118_022955c8::func_ov118_02293d70() {
-    if (func_ov118_02292e20(1)) {
+u8 *MapTab::getListEntries() {
+    if (testFlags(1)) {
         return unk_455b;
     }
     return unk_454e;
 }
 
-u8 Unk_ov118_022955c8::func_ov118_02293d50() {
-    if (func_ov118_02292e20(1)) {
+u8 MapTab::getListCount() {
+    if (testFlags(1)) {
         return unk_a2;
     }
     return unk_a1;
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293d34() {
-    u32 r = func_ov118_02293d50();
+s32 MapTab::getListScrollMax() {
+    u32 r = getListCount();
     if (r <= 6) {
         return 0;
     }
     return (r - 6) << 4;
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02293cd0() {
+BOOL MapTab::touchListRow() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     s32 idx;
@@ -1340,36 +1340,36 @@ BOOL Unk_ov118_022955c8::func_ov118_02293cd0() {
         return FALSE;
     }
     idx = (y + (unk_98 - 0x50)) >> 4;
-    if (func_ov118_02292e20(1) && idx == 5) {
+    if (testFlags(1) && idx == 5) {
         return FALSE;
     }
-    func_ov118_02293994(idx + 0xf);
+    selectEntry(idx + 0xf);
     return TRUE;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293c3c(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
+void MapTab::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
     u16 t;
-    data_ov118_02295500.tile = n * 2 + 0xc0;
+    sMapTabIconCell.tile = n * 2 + 0xc0;
     if (flag != 0) {
-        t = data_ov118_02295500.pal | 8;
-        data_ov118_02295500.pal = t;
+        t = sMapTabIconCell.pal | 8;
+        sMapTabIconCell.pal = t;
     }
-    func_02088730(1, &data_ov118_02295500, x, y, pal, 1, 0);
+    func_02088730(1, &sMapTabIconCell, x, y, pal, 1, 0);
     if (flag != 0) {
-        data_ov118_02295500.pal = t & 0x17;
+        sMapTabIconCell.pal = t & 0x17;
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293ae0(void *p) {
+void MapTab::setupMarkers(void *p) {
     s32 k, i;
     u32 j;
     s16 *rec;
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = func_ov117_02292c40(p, i);
+        rec = TownMapMarkers_Get(p, i);
         if (rec != 0) {
-            switch (func_ov117_02292c2c(p, i)) {
+            switch (TownMapMarkers_GetKind(p, i)) {
             case 0:
                 *((u8 *)this + k * 3 + 0x456a) = 8;
                 break;
@@ -1395,14 +1395,14 @@ void Unk_ov118_022955c8::func_ov118_02293ae0(void *p) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = func_ov117_02292c40(p, j);
+        rec = TownMapMarkers_Get(p, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 *((u8 *)this + k * 3 + 0x4573) = 0;
             } else if (j == 0xb) {
                 *((u8 *)this + k * 3 + 0x4573) = 1;
             } else {
-                *((u8 *)this + k * 3 + 0x4573) = *(data_ov118_02295460 + j - 0xc);
+                *((u8 *)this + k * 3 + 0x4573) = *(sMapTabFacilityCells + j - 0xc);
             }
             *((u8 *)this + k * 3 + 0x4571) = rec[0] - 8;
             *((u8 *)this + k * 3 + 0x4572) = rec[1] + 0x10;
@@ -1412,16 +1412,16 @@ void Unk_ov118_022955c8::func_ov118_02293ae0(void *p) {
     }
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02293aa8() {
-    u8 r = func_ov118_02293a48(gTouchCurX, gTouchCurY);
+BOOL MapTab::touchMarker() {
+    u8 r = findMarkerAt(gTouchCurX, gTouchCurY);
     if (r == 0xe) {
         return FALSE;
     }
-    func_ov118_02293994(r + 1);
+    selectEntry(r + 1);
     return TRUE;
 }
 
-u8 Unk_ov118_022955c8::func_ov118_02293a48(s32 x, s32 y) {
+u8 MapTab::findMarkerAt(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 0xe; i++) {
         u8 *e = (u8 *)this + i * 3;
@@ -1438,41 +1438,41 @@ u8 Unk_ov118_022955c8::func_ov118_02293a48(s32 x, s32 y) {
     return 0xe;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293994(u8 v) {
+void MapTab::selectEntry(u8 v) {
     if (v == 0) {
         unk_a9 = 0xe;
         unk_aa = 0xe;
-        func_ov118_02293458();
+        stopBlink();
         return;
     }
-    func_ov118_02293474();
-    unk_aa = func_ov118_022938b8(v);
-    unk_a9 = func_ov118_02293850(v);
+    startBlink();
+    unk_aa = selectionToListRow(v);
+    unk_a9 = selectionToMarker(v);
     if (v >= 1 && v < 0xf) {
-        func_ov118_02292e00(0x200);
-        if (func_ov118_02292e20(1)) {
+        clearFlags(0x200);
+        if (testFlags(1)) {
             if (v >= 1 && v <= 9) {
-                func_ov118_02293e14();
-                func_ov118_02293824();
+                showResidentsList();
+                jumpToSelection();
                 return;
             }
         } else {
             if (v < 1 || v > 9) {
-                func_ov118_02293dfc();
-                func_ov118_02293824();
+                showPlacesList();
+                jumpToSelection();
                 return;
             }
         }
     } else {
-        func_ov118_02292e10(0x200);
+        setFlags(0x200);
     }
-    func_ov118_022937cc();
-    func_ov118_02293924(0xe);
-    func_ov118_02293924(unk_aa);
+    ensureSelectionVisible();
+    highlightListRow(0xe);
+    highlightListRow(unk_aa);
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293924(u32 v) {
-    func_ov118_02292e10(0x80);
+s32 MapTab::highlightListRow(u32 v) {
+    setFlags(0x80);
     if (v == 0xe) {
         func_0206ee80(unk_14e8, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
@@ -1482,7 +1482,7 @@ s32 Unk_ov118_022955c8::func_ov118_02293924(u32 v) {
     }
 }
 
-u8 Unk_ov118_022955c8::func_ov118_022938b8(u32 v) {
+u8 MapTab::selectionToListRow(u32 v) {
     if (v == 9) {
         return 0xd;
     }
@@ -1498,7 +1498,7 @@ u8 Unk_ov118_022955c8::func_ov118_022938b8(u32 v) {
         return 0xe;
     }
     if (v < 0xf && v >= 0xa) {
-        return data_ov118_02295458[v - 0xa];
+        return sMapTabMarkerPlaceRows[v - 0xa];
     }
     if (v < 0x1c && v >= 0xf) {
         return (u8)(v - 0xf);
@@ -1506,12 +1506,12 @@ u8 Unk_ov118_022955c8::func_ov118_022938b8(u32 v) {
     return 0xe;
 }
 
-u8 Unk_ov118_022955c8::func_ov118_02293850(u32 v) {
+u8 MapTab::selectionToMarker(u32 v) {
     if (v >= 1 && v < 0xf) {
         return (u8)(v - 1);
     }
     if (v >= 0xf && v < 0x1c) {
-        u32 b = func_ov118_02293d70()[v - 0xf];
+        u32 b = getListEntries()[v - 0xf];
         if (b == 0) {
             return 0xe;
         }
@@ -1522,13 +1522,13 @@ u8 Unk_ov118_022955c8::func_ov118_02293850(u32 v) {
             return (u8)(b - 6);
         }
         if (b >= 0xe && b < 0x13) {
-            return data_ov118_02295450[b - 0xe];
+            return sMapTabPlaceMarkers[b - 0xe];
         }
     }
     return 0xe;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293824() {
+void MapTab::jumpToSelection() {
     u32 a = unk_aa;
     u32 v;
     if (a <= 5 || a == 0xd) {
@@ -1536,19 +1536,19 @@ void Unk_ov118_022955c8::func_ov118_02293824() {
     } else {
         v = (a - 5) << 4;
     }
-    func_ov118_022937b0(v);
+    setListScroll(v);
     unk_a3 = 0xff;
 }
 
-void Unk_ov118_022955c8::func_ov118_022937cc() {
+void MapTab::ensureSelectionVisible() {
     u32 c = unk_aa;
     if (c != 0xe) {
         if (c == 0xd) {
-            func_ov118_022937a0(0);
+            setListScrollTarget(0);
         } else {
             s32 t = (unk_98 + 0xf) >> 4;
             if ((s32)c < t) {
-                func_ov118_022937a0(c << 4);
+                setListScrollTarget(c << 4);
             }
             s32 h = unk_98 >> 4;
             u32 a = unk_aa;
@@ -1559,37 +1559,37 @@ void Unk_ov118_022955c8::func_ov118_022937cc() {
                 m = a - 5;
             }
             if (h < m) {
-                func_ov118_022937a0(m << 4);
+                setListScrollTarget(m << 4);
             }
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_022937b0(u32 v) {
+void MapTab::setListScroll(u32 v) {
     unk_98 = v;
     unk_9a = unk_98;
-    func_ov118_02292e10(0x10);
+    setFlags(0x10);
 }
 
-void Unk_ov118_022955c8::func_ov118_022937a0(u32 v) {
+void MapTab::setListScrollTarget(u32 v) {
     unk_9a = v;
-    func_ov118_02292e10(0x10);
+    setFlags(0x10);
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02293794() {
-    return func_ov118_02292e20(0x10);
+BOOL MapTab::isListScrolling() {
+    return testFlags(0x10);
 }
 
-void Unk_ov118_022955c8::func_ov118_022936e4() {
-    s32 n = func_ov118_02293d34();
+void MapTab::updateListScroll() {
+    s32 n = getListScrollMax();
     if (n == 0) {
-        func_ov118_02292e00(0x10);
+        clearFlags(0x10);
         unk_a4 = 0;
     } else {
-        u32 a = ((volatile Unk_ov118_022955c8 *)this)->unk_9a;
-        u32 b = ((volatile Unk_ov118_022955c8 *)this)->unk_98;
+        u32 a = ((volatile MapTab *)this)->unk_9a;
+        u32 b = ((volatile MapTab *)this)->unk_98;
         if (b == a) {
-            func_ov118_02292e00(0x10);
+            clearFlags(0x10);
         } else if (b < a) {
             unk_98 = unk_98 + 8;
             if (unk_98 > unk_9a) {
@@ -1607,27 +1607,27 @@ void Unk_ov118_022955c8::func_ov118_022936e4() {
     }
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02293660() {
+BOOL MapTab::touchScrollBar() {
     s32 x, y;
-    if (!func_ov118_02292e20(8)) {
+    if (!testFlags(8)) {
         return FALSE;
     }
     x = gTouchCurX;
     y = gTouchCurY;
-    if (unk_43c.func_ov002_02202f18(x, y)) {
+    if (unk_43c.hitTest(x, y)) {
         unk_a5 = y;
         unk_a7 = unk_a4;
         unk_a6 = unk_a7;
-        func_ov002_02200a58(1);
+        setMainState(1);
         return TRUE;
     } else if (x > 0xe8 && x < 0xf5 && y > 0x56 && y < 0xae) {
-        func_ov002_02200a58(2);
+        setMainState(2);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293604(s32 v) {
+void MapTab::scrollListToKnob(s32 v) {
     s32 t = v;
     if (t < 0) {
         t = 0;
@@ -1636,14 +1636,14 @@ void Unk_ov118_022955c8::func_ov118_02293604(s32 v) {
     }
     s32 d = t - unk_a6;
     if (d >= 4 || d <= -4) {
-        func_ov002_02202e54(&unk_43c);
+        Menu_PlayScrollTickSe(&unk_43c);
         unk_a6 = t;
     }
-    s32 m = func_ov118_02293d34();
-    func_ov118_022937b0(_s32_div_f(t * m, 0x58));
+    s32 m = getListScrollMax();
+    setListScroll(_s32_div_f(t * m, 0x58));
 }
 
-void Unk_ov118_022955c8::func_ov118_022935a0() {
+void MapTab::scrollListByPad() {
     s32 pos = unk_9a;
     u16 pad = gPad[0];
     if (pad & 0x40) {
@@ -1651,96 +1651,96 @@ void Unk_ov118_022955c8::func_ov118_022935a0() {
     } else if (pad & 0x80) {
         pos += 4;
     }
-    s32 m = func_ov118_02293d34();
+    s32 m = getListScrollMax();
     if (pos < 0) {
         pos = 0;
     } else if (pos > m) {
         pos = m;
     }
     if (pos != unk_9a) {
-        func_ov002_02202e54(&unk_43c);
+        Menu_PlayScrollTickSe(&unk_43c);
     }
-    func_ov118_022937b0(pos);
+    setListScroll(pos);
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293524() {
+s32 MapTab::touchListTabs() {
     s32 a = gTouchCurX;
     s32 b = gTouchCurY;
     if (b < 0x33 || b > 0x4b) {
         return 0;
     }
-    if (func_ov118_02292e20(1)) {
+    if (testFlags(1)) {
         if (a < 0xcd || a > 0xe5) {
             return 0;
         }
-        func_ov118_02293994(0);
-        func_ov118_02293e14();
+        selectEntry(0);
+        showResidentsList();
     } else {
         if (a < 0xaa || a > 0xc2) {
             return 0;
         }
-        func_ov118_02293994(0);
-        func_ov118_02293dfc();
+        selectEntry(0);
+        showPlacesList();
     }
-    func_ov118_022937b0(0);
+    setListScroll(0);
     unk_a3 = 0xff;
     return 1;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293498() {
-    if (func_ov118_02292e20(0x40)) {
+void MapTab::updateBlink() {
+    if (testFlags(0x40)) {
         if (A8V != 0) {
             A8V = A8V - 1;
         }
         u32 v = unk_a8;
         if (v == 0) {
-            if (func_ov118_02292e20(0x200)) {
-                func_ov118_02292e00(0x100);
+            if (testFlags(0x200)) {
+                clearFlags(0x100);
             } else {
-                func_ov118_02293924(unk_aa);
+                highlightListRow(unk_aa);
             }
             unk_a8 = 0xf;
         } else if (unk_a8 == 5) {
-            if (func_ov118_02292e20(0x200)) {
-                func_ov118_02292e10(0x100);
+            if (testFlags(0x200)) {
+                setFlags(0x100);
             } else {
-                func_ov118_02293924(0xe);
+                highlightListRow(0xe);
             }
         }
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293474() {
-    func_ov118_02292e10(0x40);
-    func_ov118_02292e00(0x100);
+void MapTab::startBlink() {
+    setFlags(0x40);
+    clearFlags(0x100);
     unk_a8 = 0xf;
 }
 
-void Unk_ov118_022955c8::func_ov118_02293458() {
-    func_ov118_02292e00(0x40);
-    func_ov118_02292e00(0x100);
+void MapTab::stopBlink() {
+    clearFlags(0x40);
+    clearFlags(0x100);
 }
 
-void Unk_ov118_022955c8::func_ov118_022933cc() {
-    if (!func_ov118_02292e20(8) && unk_ac == 0x10) {
+void MapTab::showCursor() {
+    if (!testFlags(8) && unk_ac == 0x10) {
         unk_ac = 8;
     }
-    s32 a = func_ov118_0229336c();
-    s32 b = func_ov118_02293310();
-    ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202a40(a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    ((MenuCursorBase *)&unk_484)->warpTo(a, b);
     if (unk_ac >= 0xa && unk_ac <= 0xf) {
-        func_ov118_022937a0(unk_98 & ~0xf);
+        setListScrollTarget(unk_98 & ~0xf);
     }
     if (unk_ac <= 7) {
-        ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202d00(0xd);
+        ((MenuCursor *)&unk_484)->setAnimIfChanged(0xd);
     } else {
-        ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202d00(1);
+        ((MenuCursor *)&unk_484)->setAnimIfChanged(1);
     }
-    func_ov118_02293214();
+    refreshCursor();
 }
 
-s32 Unk_ov118_022955c8::func_ov118_0229336c() {
-    if (func_ov118_02292e20(0x800)) {
+s32 MapTab::getCursorTargetX() {
+    if (testFlags(0x800)) {
         return unk_ae;
     }
     u32 c = unk_ac;
@@ -1748,7 +1748,7 @@ s32 Unk_ov118_022955c8::func_ov118_0229336c() {
         return 0xa0;
     }
     if (c <= 7) {
-        return func_ov090_02291a78(c);
+        return MenuTabBar_GetTabX(c);
     }
     if (c == 8) {
         return 0xd8;
@@ -1757,13 +1757,13 @@ s32 Unk_ov118_022955c8::func_ov118_0229336c() {
         return 0xb4;
     }
     if (c == 0x10) {
-        return unk_43c.func_ov002_02202e84();
+        return unk_43c.getGripX();
     }
     return 0x80;
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02293310() {
-    if (func_ov118_02292e20(0x800)) {
+s32 MapTab::getCursorTargetY() {
+    if (testFlags(0x800)) {
         return unk_af;
     }
     u32 c = unk_ac;
@@ -1777,55 +1777,55 @@ s32 Unk_ov118_022955c8::func_ov118_02293310() {
         return 8;
     }
     if (c == 0x10) {
-        return unk_43c.func_ov002_02202e60();
+        return unk_43c.getGripY();
     }
     return 0x60;
 }
 
-void Unk_ov118_022955c8::func_ov118_022932ec() {
-    ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202d00(0);
+void MapTab::hideCursor() {
+    ((MenuCursor *)&unk_484)->setAnimIfChanged(0);
     unk_484.vfunc_0c();
 }
 
-void Unk_ov118_022955c8::func_ov118_02293274() {
-    if (func_ov118_02292e20(0x4000)) {
-        s32 a = func_ov118_0229336c();
-        s32 b = func_ov118_02293310();
-        ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202a40(a, b);
-        func_ov118_02292e00(0x4000);
+void MapTab::moveCursorToTarget() {
+    if (testFlags(0x4000)) {
+        s32 a = getCursorTargetX();
+        s32 b = getCursorTargetY();
+        ((MenuCursorBase *)&unk_484)->warpTo(a, b);
+        clearFlags(0x4000);
     } else {
-        s32 a = func_ov118_0229336c();
-        s32 b = func_ov118_02293310();
-        ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_022029e8(a, b, 3, 1);
+        s32 a = getCursorTargetX();
+        s32 b = getCursorTargetY();
+        ((MenuCursorBase *)&unk_484)->moveToEase(a, b, 3, 1);
         unk_ab = unk_8d;
-        func_ov002_02200a58(4);
+        setMainState(4);
     }
 }
 
-void Unk_ov118_022955c8::func_ov118_02293254() {
-    ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202b68();
-    func_ov002_02200a58(5);
+void MapTab::pressCursor() {
+    ((MenuCursor *)&unk_484)->setPosePress();
+    setMainState(5);
 }
 
-void Unk_ov118_022955c8::func_ov118_02293234() {
-    ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202af0();
-    func_ov002_02200a58(6);
+void MapTab::releaseCursor() {
+    ((MenuCursorBase *)&unk_484)->setPoseRelease();
+    setMainState(6);
 }
 
-void Unk_ov118_022955c8::func_ov118_02293214() {
-    ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202a78();
+void MapTab::refreshCursor() {
+    ((MenuCursorBase *)&unk_484)->setPoseIdle();
     unk_484.vfunc_0c();
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02292f7c(void *pad) {
+s32 MapTab::moveCursorByPad(void *pad) {
     u32 old = unk_ac;
     if (old <= 7) {
-        if (func_ov002_0220127c(pad)) {
+        if (MenuKeys_HasDown(pad)) {
             s32 cv = unk_ac;
             if (cv <= 3) {
-                unk_ae = ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_0220288c();
+                unk_ae = ((MenuCursorBase *)&unk_484)->getScreenX();
                 unk_af = 0x30;
-                ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202c40();
+                ((MenuCursor *)&unk_484)->switchToAnim01();
                 return 2;
             }
             if (cv >= 5) {
@@ -1833,32 +1833,32 @@ s32 Unk_ov118_022955c8::func_ov118_02292f7c(void *pad) {
             } else {
                 unk_ac = 9;
             }
-            ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202c40();
-        } else if (func_ov002_0220126c(pad)) {
+            ((MenuCursor *)&unk_484)->switchToAnim01();
+        } else if (MenuKeys_HasLeft(pad)) {
             if (ACV != 0) {
                 ACV = ACV - 1;
             }
-        } else if (func_ov002_0220125c(pad)) {
+        } else if (MenuKeys_HasRight(pad)) {
             if (ACV < 7) {
                 ACV = ACV + 1;
             }
         }
     } else if (old >= 0xa && old <= 0xf) {
-        if (func_ov118_02292e20(8) && func_ov002_0220125c(pad)) {
+        if (testFlags(8) && MenuKeys_HasRight(pad)) {
             unk_ac = 0x10;
-        } else if (func_ov002_0220128c(pad)) {
+        } else if (MenuKeys_HasUp(pad)) {
             if (ACV > 0xa) {
                 ACV = ACV - 1;
             } else {
                 u32 h = unk_9a;
                 if (((s32)h >> 4) > 0) {
-                    func_ov118_022937a0(h - 0x10);
+                    setListScrollTarget(h - 0x10);
                     return 3;
                 }
                 unk_ac = 9;
             }
-        } else if (func_ov002_0220127c(pad)) {
-            s32 n = func_ov118_02293d50() - 1;
+        } else if (MenuKeys_HasDown(pad)) {
+            s32 n = getListCount() - 1;
             u8 c = unk_ac;
             if (c < 0xf) {
                 if (c < n + 0xa) {
@@ -1867,20 +1867,20 @@ s32 Unk_ov118_022955c8::func_ov118_02292f7c(void *pad) {
             } else {
                 u32 h = unk_9a;
                 if (((s32)h >> 4) + 5 < n) {
-                    func_ov118_022937a0(h + 0x10);
+                    setListScrollTarget(h + 0x10);
                     return 3;
                 }
             }
-        } else if (func_ov002_0220126c(pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             unk_ae = 0x98;
-            unk_af = ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202878();
+            unk_af = ((MenuCursorBase *)&unk_484)->getScreenY();
             return 2;
         }
     } else if (old == 0x10) {
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             unk_ac = 8;
-        } else if (func_ov002_0220126c(pad)) {
-            s32 v = unk_43c.func_ov002_02202e60();
+        } else if (MenuKeys_HasLeft(pad)) {
+            s32 v = unk_43c.getGripY();
             if (v < 0x50) {
                 v = 0x50;
             }
@@ -1890,20 +1890,20 @@ s32 Unk_ov118_022955c8::func_ov118_02292f7c(void *pad) {
             unk_ac = ((v - 0x50) >> 4) + 0xa;
         }
     } else if ((u8)(old + 0xf8) <= 1) {
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             unk_ac = 5;
-            ((Unk_ov002_0220464c *)&unk_484)->func_ov002_02202be0();
-        } else if (func_ov002_0220127c(pad)) {
+            ((MenuCursor *)&unk_484)->switchToAnim0D();
+        } else if (MenuKeys_HasDown(pad)) {
             unk_ac = 0xa;
-        } else if (func_ov002_0220126c(pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             if (unk_ac == 9) {
                 unk_ae = 0x98;
-                unk_af = ((Unk_ov002_02202d98 *)&unk_484)->func_ov002_02202878();
+                unk_af = ((MenuCursorBase *)&unk_484)->getScreenY();
                 return 2;
             }
             unk_ac = 9;
-        } else if (func_ov002_0220125c(pad)) {
-            if (unk_ac == 8 && func_ov118_02292e20(8)) {
+        } else if (MenuKeys_HasRight(pad)) {
+            if (unk_ac == 8 && testFlags(8)) {
                 unk_ac = 0x10;
             } else {
                 unk_ac = 8;
@@ -1916,49 +1916,49 @@ s32 Unk_ov118_022955c8::func_ov118_02292f7c(void *pad) {
     return 0;
 }
 
-s32 Unk_ov118_022955c8::func_ov118_02292e78() {
-    if (func_ov118_02292e20(0x800)) {
-        func_ov118_02293994(unk_ad + 1);
-        func_ov118_02292e34(0x38);
+s32 MapTab::onCursorDecide() {
+    if (testFlags(0x800)) {
+        selectEntry(unk_ad + 1);
+        playSeAtMarker(0x38);
         return 0;
     }
     u32 s = unk_ac;
     if (s == 0x10) {
-        func_ov002_02200a58(7);
-        unk_43c.func_ov002_02202f00();
-        func_ov118_02292e10(0x1000);
-        func_ov002_02202e48(&unk_43c);
+        setMainState(7);
+        unk_43c.grab();
+        setFlags(0x1000);
+        Menu_PlayScrollGrabSe(&unk_43c);
         return 1;
     } else if (s == 8) {
-        if (func_ov118_02292e20(1)) {
-            func_ov118_02293994(0);
-            func_ov118_02293e14();
+        if (testFlags(1)) {
+            selectEntry(0);
+            showResidentsList();
             Snd_PlaySe(0x36);
             return 2;
         }
         return 0;
     } else if (s == 9) {
-        if (!func_ov118_02292e20(1)) {
-            func_ov118_02293994(0);
-            func_ov118_02293dfc();
+        if (!testFlags(1)) {
+            selectEntry(0);
+            showPlacesList();
             Snd_PlaySe(0x36);
             return 2;
         }
         return 0;
     } else if (s <= 7) {
-        if (func_ov118_02294df8(s)) {
+        if (requestTab(s)) {
             return 1;
         }
         return 0;
     } else if (s >= 0xa && s <= 0xf) {
-        { u32 t = unk_a3; func_ov118_02293994(t + s + 5); };
-        func_ov118_02292e34(0x37);
+        { u32 t = unk_a3; selectEntry(t + s + 5); };
+        playSeAtMarker(0x37);
         return 0;
     }
     return 0;
 }
 
-void Unk_ov118_022955c8::func_ov118_02292e34(s32 a) {
+void MapTab::playSeAtMarker(s32 a) {
     u32 i = unk_a9;
     if (i != 0xe) {
         s32 v = (unk_4571[i].unk_00 - 0x18) * 2 - 0x7f;
@@ -1971,18 +1971,18 @@ void Unk_ov118_022955c8::func_ov118_02292e34(s32 a) {
     }
 }
 
-BOOL Unk_ov118_022955c8::func_ov118_02292e20(u32 m) {
+BOOL MapTab::testFlags(u32 m) {
     if (unk_9c & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov118_022955c8::func_ov118_02292e10(u32 m) { unk_9c = unk_9c | m; }
+void MapTab::setFlags(u32 m) { unk_9c = unk_9c | m; }
 
-void Unk_ov118_022955c8::func_ov118_02292e00(u32 m) { unk_9c = unk_9c & ~m; }
+void MapTab::clearFlags(u32 m) { unk_9c = unk_9c & ~m; }
 
-Unk_ov118_02292df8::Unk_ov118_02292df8() {}
+MapTabMarker::MapTabMarker() {}
 
-Unk_ov118_02292df8::~Unk_ov118_02292df8() {}
+MapTabMarker::~MapTabMarker() {}
 

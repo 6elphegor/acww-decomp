@@ -39,10 +39,10 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_ov002_02201194 {
+class MenuSlideView {
 public:
-    Unk_ov002_02201194();
-    ~Unk_ov002_02201194();
+    MenuSlideView();
+    ~MenuSlideView();
     /* 0x00 */ u8 unk_00[0xc];
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -50,10 +50,10 @@ public:
     /* 0x18 */ u8 unk_18;
 };
 
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -64,20 +64,20 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200a60(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ Unk_ov002_022013a0 unk_50;
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ Unk_ov002_02201194 unk_70;
+    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x70 */ MenuSlideView unk_70;
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
     /* 0x8e */ u8 unk_8e;
@@ -85,84 +85,84 @@ public:
     /* 0x90 */ u8 unk_90;
 };
 
-class Unk_ov092_02291ec8;
-typedef void (Unk_ov092_02291ec8::*Unk_ov092_02291ec8_Fn)();
+class MenuLauncher;
+typedef void (MenuLauncher::*Unk_ov092_02291ec8_Fn)();
 
 // Vtable 0x02291ec8
-class Unk_ov092_02291ec8 : public Unk_ov002_022044e4 {
+class MenuLauncher : public MenuProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov092_02291918();
-    void func_ov092_0229191c();
-    void func_ov092_02291a2c();
-    void func_ov092_02291a44();
-    void func_ov092_02291c58();
-    void func_ov092_02291c5c();
-    void func_ov092_02291ce4(s32 a, s32 b);
+    void releaseResources();
+    void initLauncher();
+    void stateStart();
+    void updateOpenRequested();
+    void updateIdle();
+    void onChildClosed();
+    void setNextRequest(s32 a, s32 b);
 
     /* 0x91 */ u8 unk_91;
 };
 
-extern "C" Unk_ov092_02291ec8 *func_ov092_02291e60() {
-    return new Unk_ov092_02291ec8();
+extern "C" MenuLauncher *MenuLauncher_Create() {
+    return new MenuLauncher();
 }
 
 struct Unk_ov092_SceneEntry {
-    Unk_ov092_02291ec8 *(*create)();
+    MenuLauncher *(*create)();
     u16 a;
     u16 b;
 };
 
-extern "C" Unk_ov092_SceneEntry data_ov092_02291ea0 = {func_ov092_02291e60, 0x90, 0x94};
+extern "C" Unk_ov092_SceneEntry sMenuLauncherProfile = {MenuLauncher_Create, 0x90, 0x94};
 
-BOOL Unk_ov092_02291ec8::vfunc_00() {
+BOOL MenuLauncher::vfunc_00() {
     func_0206e5fc();
-    func_ov092_0229191c();
+    initLauncher();
     Snd_BeginMenuDuck();
     MenuCtrl_SyncFromInputMode();
     return TRUE;
 }
 
-BOOL Unk_ov092_02291ec8::vfunc_0c() {
+BOOL MenuLauncher::vfunc_0c() {
     func_0206e5fc();
     MenuScreen_Reset();
-    func_ov092_02291918();
+    releaseResources();
     Snd_EndMenuDuck();
     return TRUE;
 }
 
-BOOL Unk_ov092_02291ec8::onDraw() { return TRUE; }
+BOOL MenuLauncher::onDraw() { return TRUE; }
 
-BOOL Unk_ov092_02291ec8::vfunc_4c() {
-    static Unk_ov092_02291ec8_Fn tbl[1] = {&Unk_ov092_02291ec8::func_ov092_02291a2c};
+BOOL MenuLauncher::execTransition() {
+    static Unk_ov092_02291ec8_Fn tbl[1] = {&MenuLauncher::stateStart};
     (this->*tbl[unk_8c])();
     return TRUE;
 }
 
-BOOL Unk_ov092_02291ec8::vfunc_50() {
-    static Unk_ov092_02291ec8_Fn tbl[2] = {&Unk_ov092_02291ec8::func_ov092_02291c58, &Unk_ov092_02291ec8::func_ov092_02291a44};
+BOOL MenuLauncher::execMain() {
+    static Unk_ov092_02291ec8_Fn tbl[2] = {&MenuLauncher::updateIdle, &MenuLauncher::updateOpenRequested};
     (this->*tbl[unk_8d])();
     return TRUE;
 }
 
-BOOL Unk_ov092_02291ec8::vfunc_54() { return TRUE; }
+BOOL MenuLauncher::execPhase3() { return TRUE; }
 
-BOOL Unk_ov092_02291ec8::vfunc_58() { return TRUE; }
+BOOL MenuLauncher::execPhase4() { return TRUE; }
 
-BOOL Unk_ov092_02291ec8::vfunc_5c() {
+BOOL MenuLauncher::execClosed() {
     ProcBase_RequestDelete();
     return TRUE;
 }
 
-void Unk_ov092_02291ec8::func_ov092_02291ce4(s32 a, s32 b) {
+void MenuLauncher::setNextRequest(s32 a, s32 b) {
     unk_91 = a;
     switch (a) {
     case 0:
@@ -184,13 +184,13 @@ void Unk_ov092_02291ec8::func_ov092_02291ce4(s32 a, s32 b) {
     }
 }
 
-void Unk_ov092_02291ec8::func_ov092_02291c5c() {
+void MenuLauncher::onChildClosed() {
     switch (unk_91) {
     case 0x43:
-        func_ov002_02200a60(5);
+        setPhase(5);
         break;
     case 0x44:
-        func_ov002_02200a60(0);
+        setPhase(0);
         Gfx2d_SetSubBgModeState(1);
         func_0206e03c();
         break;
@@ -210,7 +210,7 @@ void Unk_ov092_02291ec8::func_ov092_02291c5c() {
     }
 }
 
-void Unk_ov092_02291ec8::func_ov092_02291c58() {}
+void MenuLauncher::updateIdle() {}
 
 // NONMATCHING: the switch dispatch of this function cannot be reproduced from C with any available mwcc build
 // (see docs/assembly.md). The assembly below is the original code; the C version under
@@ -230,7 +230,7 @@ void Unk_ov092_02291ec8::func_ov092_02291c58() {}
 // dcd as well: written as instructions mwcc folds the pair into a far `bhi _end` and then rejects every later
 // dcd as misaligned. The `_arg_*` and `_in_range` names are the targets the table entries/constants encode.
 #ifdef NONMATCHING
-void Unk_ov092_02291ec8::func_ov092_02291a44() {
+void MenuLauncher::updateOpenRequested() {
     switch (unk_91) {
     case 0:
     case 1:
@@ -290,7 +290,7 @@ void Unk_ov092_02291ec8::func_ov092_02291a44() {
     unk_8d = 0;
 }
 #else
-void Unk_ov092_02291ec8::func_ov092_02291a44() {
+void MenuLauncher::updateOpenRequested() {
     asm {
         add r4, r0, #0
         add r0, #0x91
@@ -526,19 +526,19 @@ _end:
 }
 #endif
 
-void Unk_ov092_02291ec8::func_ov092_02291a2c() {
+void MenuLauncher::stateStart() {
     Gfx2d_SetSubBgModeState(0);
-    func_ov002_02200a60(2);
+    setPhase(2);
 }
 
-void Unk_ov092_02291ec8::func_ov092_0229191c() {
+void MenuLauncher::initLauncher() {
     unk_91 = func_0206ed50();
     unk_8d = 1;
     if (unk_91 == 0) {
-        func_ov002_02200a60(2);
+        setPhase(2);
     } else {
         unk_8c = 0;
-        func_ov002_02200a60(0);
+        setPhase(0);
         MenuScreen_BeginOpen();
     }
     switch (unk_91) {
@@ -584,4 +584,4 @@ void Unk_ov092_02291ec8::func_ov092_0229191c() {
     }
 }
 
-void Unk_ov092_02291ec8::func_ov092_02291918() {}
+void MenuLauncher::releaseResources() {}

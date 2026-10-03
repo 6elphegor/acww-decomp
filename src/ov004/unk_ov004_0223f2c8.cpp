@@ -37,25 +37,25 @@ extern void *data_021c6210;
 // linker-provided absolute symbol (overlay id 93), no relocation in the original
 extern u32 OVERLAY_93_ID[];
 
-// ov093 methods of Unk_ov093_022918e0, called through their real symbols (object passed first)
-s32 _ZN18Unk_ov093_022918e013func_02291dd8Ev(void *self);
-void _ZN18Unk_ov093_022918e013func_02291de4Ev(void *self);
-void _ZN18Unk_ov093_022918e013func_02291e6cEi(void *self, s32 a);
-void _ZN18Unk_ov093_022918e013func_02291f5cEv(void *self);
-void _ZN18Unk_ov093_022918e013func_02291f70Ev(void *self);
-void _ZN18Unk_ov093_022918e013func_02291ff0Ev(void *self);
-void _ZN18Unk_ov093_022918e013func_0229212cEv(void *self);
-void _ZN18Unk_ov093_022918e0D1Ev(void *self);
-void _ZN18Unk_ov093_022918e0C1Ev(void *self);
-#define func_ov093_02291dd8 _ZN18Unk_ov093_022918e013func_02291dd8Ev
-#define func_ov093_02291de4 _ZN18Unk_ov093_022918e013func_02291de4Ev
-#define func_ov093_02291e6c _ZN18Unk_ov093_022918e013func_02291e6cEi
-#define func_ov093_02291f5c _ZN18Unk_ov093_022918e013func_02291f5cEv
-#define func_ov093_02291f70 _ZN18Unk_ov093_022918e013func_02291f70Ev
-#define func_ov093_02291ff0 _ZN18Unk_ov093_022918e013func_02291ff0Ev
-#define func_ov093_0229212c _ZN18Unk_ov093_022918e013func_0229212cEv
-#define func_ov093_02292174 _ZN18Unk_ov093_022918e0D1Ev
-#define func_ov093_022921b8 _ZN18Unk_ov093_022918e0C1Ev
+// ov093 methods of StaffRoll, called through their real symbols (object passed first)
+s32 _ZN9StaffRoll10isFinishedEv(void *self);
+void _ZN9StaffRoll9startLogoEv(void *self);
+void _ZN9StaffRoll5startEi(void *self, s32 a);
+void _ZN9StaffRoll4stopEv(void *self);
+void _ZN9StaffRoll13uploadScreensEv(void *self);
+void _ZN9StaffRoll6updateEv(void *self);
+void _ZN9StaffRoll4initEv(void *self);
+void _ZN9StaffRollD1Ev(void *self);
+void _ZN9StaffRollC1Ev(void *self);
+#define func_ov093_02291dd8 _ZN9StaffRoll10isFinishedEv
+#define func_ov093_02291de4 _ZN9StaffRoll9startLogoEv
+#define func_ov093_02291e6c _ZN9StaffRoll5startEi
+#define func_ov093_02291f5c _ZN9StaffRoll4stopEv
+#define func_ov093_02291f70 _ZN9StaffRoll13uploadScreensEv
+#define func_ov093_02291ff0 _ZN9StaffRoll6updateEv
+#define func_ov093_0229212c _ZN9StaffRoll4initEv
+#define func_ov093_02292174 _ZN9StaffRollD1Ev
+#define func_ov093_022921b8 _ZN9StaffRollC1Ev
 void Heap_Free(void *heap, void *p);
 void *Heap_Alloc(void *heap, u32 size);
 void OverlayMgr_Release(u32 id);

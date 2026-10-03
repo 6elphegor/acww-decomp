@@ -108,41 +108,41 @@ public:
 };
 
 // Vtable 0x02204468
-class Unk_ov002_02204468 : public LabelBalloon {
+class TouchPromptBalloon : public LabelBalloon {
 public:
-    Unk_ov002_02204468();
-    virtual ~Unk_ov002_02204468();
+    TouchPromptBalloon();
+    virtual ~TouchPromptBalloon();
 
-    BOOL func_ov002_02200680();
-    void func_ov002_022006a4(u8 v);
+    BOOL isOpenOrOpening();
+    void setAutoCloseTimer(u8 v);
     void func_ov002_022006ac(s32 v);
-    void func_ov002_022006b0();
-    void func_ov002_022006b8();
-    void func_ov002_022006c0();
-    BOOL func_ov002_022006e4(s32 a);
-    s32 func_ov002_0220071c();
+    void cancelQueuedOpen();
+    void queueOpen();
+    void commitOpen();
+    BOOL hide(s32 a);
+    s32 updatePrompt();
 
     /* 0xbc */ u8 unk_bc;
     /* 0xbd */ u8 unk_bd;
     /* 0xbe */ volatile u8 unk_be;
 };
 
-// Sub-object at +0x70 of Unk_ov002_022044e4 (window / mask helper)
-class Unk_ov002_02201194 {
+// Sub-object at +0x70 of MenuProc (window / mask helper)
+class MenuSlideView {
 public:
-    Unk_ov002_02201194();
-    ~Unk_ov002_02201194();
+    MenuSlideView();
+    ~MenuSlideView();
 
-    void func_ov002_02200d04(s32 v);
-    void func_ov002_02200d08(s32 a);
-    void func_ov002_02200d78(s32 a, s32 b, s32 c);
-    void func_ov002_02200dd8(s32 a, s32 mode, s32 dist);
-    void func_ov002_02200e18(s32 a, s32 mode, s32 dist);
-    void func_ov002_02200e58(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200ea4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200edc(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200f18(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_02200f54(s32 a);
+    void setExtent(s32 v);
+    void applyWindow(s32 a);
+    void applyLayerOffset(s32 a, s32 b, s32 c);
+    void initSlideOut(s32 a, s32 mode, s32 dist);
+    void initSlideIn(s32 a, s32 mode, s32 dist);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
     void func_ov002_022011ec();
     BOOL func_ov002_022011cc();
     void func_ov002_02200fa8(s32 a);
@@ -158,7 +158,7 @@ public:
     /* 0x18 */ u8 unk_18;
 };
 
-// Sub-object at +0x50 of Unk_ov002_022044e4 (pad input)
+// Sub-object at +0x50 of MenuProc (pad input)
 class Unk_ov002_022013a0 {
 public:
     Unk_ov002_022013a0();
@@ -175,14 +175,14 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_ov002_022044e4;
-typedef void (Unk_ov002_022044e4::*Unk_ov002_02200a68_Fn)();
+class MenuProc;
+typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 // Vtable 0x022044e4
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -193,43 +193,43 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 v);
-    void func_ov002_0220085c(s32 a, s32 mode);
-    void func_ov002_02200874(s32 a, s32 mode);
-    void func_ov002_0220088c(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008a8(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200914();
-    s32 func_ov002_02200920();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-    void func_ov002_02200970(s32 a, s32 b, s32 c);
-    void func_ov002_02200980();
-    BOOL func_ov002_02200998();
-    BOOL func_ov002_022009a4();
-    BOOL func_ov002_022009b0();
-    BOOL func_ov002_022009bc();
-    u32 func_ov002_022009c8();
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void setSlideExtent(s32 v);
+    void initSlideOut(s32 a, s32 mode);
+    void initSlideIn(s32 a, s32 mode);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetX();
+    s32 getSlideOffsetY();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
+    void initKeyRepeat(s32 a, s32 b, s32 c);
+    void restartKeyRepeat();
+    BOOL isRepeatRight();
+    BOOL isRepeatLeft();
+    BOOL isRepeatDown();
+    BOOL isRepeatUp();
+    u32 takeRepeatedKeys();
 
     /* 0x50 */ Unk_ov002_022013a0 unk_50;
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ Unk_ov002_02201194 unk_70;
+    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x70 */ MenuSlideView unk_70;
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
     /* 0x8e */ u8 unk_8e;
@@ -316,12 +316,12 @@ public:
     BOOL requestCharPair(u32 a, u32 b, u8 c, u32 d, u32 e, u32 f, u32 g);
 };
 
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
-    void func_ov002_02204234(s32 a);
-    void func_ov002_02204394(u8 *p, s32 a, u32 b);
+    MenuErrorMessage();
+    ~MenuErrorMessage();
+    void update(s32 a);
+    void open(u8 *p, s32 a, u32 b);
 
     u32 unk_00[0x42];
 };
@@ -341,40 +341,40 @@ public:
 
 extern "C" Unk_02034518 *data_021c1b3c;
 
-class Unk_ov090_022921e0;
-typedef void (Unk_ov090_022921e0::*Unk_ov090_022921e0_Fn)();
+class MenuTabBar;
+typedef void (MenuTabBar::*Unk_ov090_022921e0_Fn)();
 
 // Vtable 0x022921e0
-class Unk_ov090_022921e0 : public Unk_ov002_022044e4 {
+class MenuTabBar : public MenuProc {
 public:
-    inline Unk_ov090_022921e0() {}
+    inline MenuTabBar() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    BOOL func_ov090_02291934();
-    void func_ov090_02291964();
-    void func_ov090_0229196c(u32 idx);
-    void func_ov090_02291a18();
-    void func_ov090_02291a88();
-    void func_ov090_02291a90();
-    void func_ov090_02291b14();
-    void func_ov090_02291b1c();
-    void func_ov090_02291b5c();
-    void func_ov090_02291b8c();
-    void func_ov090_02291ba0();
-    void func_ov090_02291c18();
-    void func_ov090_02291c2c();
-    void func_ov090_02291d08();
-    void func_ov090_02291d0c();
-    u8 func_ov090_02291d2c();
-    void func_ov090_02291d8c(u32 idx);
+    BOOL isJustOpened();
+    void requestSaveOnClose();
+    void showTab(u32 idx);
+    void cancelVramTasks();
+    void hideTabs();
+    void showTabs();
+    void releaseResources();
+    void initTabBar();
+    void stateSlideOut();
+    void stateSlideIn();
+    void stateLoad();
+    void updateSaving();
+    void updateOpenTabMenu();
+    void updateIdle();
+    void beginClose();
+    u8 onTabMenuClosed();
+    void selectTab(u32 idx);
 
     /* 0x91 */ u8 unk_91;
     /* 0x92 */ u8 unk_92;
@@ -388,20 +388,20 @@ public:
     /* 0x144 */ u32 unk_144[0x200];
     /* 0x944 */ u32 unk_944[0x200];
     /* 0x1144 */ u32 unk_1144[8];
-    /* 0x1164 */ Unk_ov002_022040ec unk_1164;
+    /* 0x1164 */ MenuErrorMessage unk_1164;
 };
 
 extern "C" {
-Unk_ov090_022921e0 *func_ov090_02292134();
-s32 func_ov090_02291944(s32 a);
-u8 func_ov090_02291a38(u8 a);
-u8 func_ov090_02291a58(u8 a);
-s32 func_ov090_02291a78(s32 a);
-s32 func_ov090_02291aa0();
+MenuTabBar *MenuTabBar_Create();
+s32 MenuTabBar_TabFromX(s32 a);
+u8 MenuTabBar_NextTab(u8 a);
+u8 MenuTabBar_PrevTab(u8 a);
+s32 MenuTabBar_GetTabX(s32 a);
+s32 MenuTabBar_HitTestTouch();
 }
 
-extern "C" u8 data_ov090_02292320;
-extern "C" u32 data_ov090_02292240[32];
+extern "C" u8 sTabSwitchCooldown;
+extern "C" u32 sTabBarOamCells[32];
 struct Unk_ov090_SceneEntry {
     void *factory;
     u16 a;
@@ -415,34 +415,34 @@ static inline BOOL Unk_ov090_02291aa0_Both() {
     return FALSE;
 }
 
-extern "C" Unk_ov090_022921e0 *func_ov090_02292134() { return new Unk_ov090_022921e0(); }
+extern "C" MenuTabBar *MenuTabBar_Create() { return new MenuTabBar(); }
 
-BOOL Unk_ov090_022921e0::vfunc_00() {
+BOOL MenuTabBar::vfunc_00() {
     unk_98 = 1;
     func_0206e60c();
-    func_ov090_02291b1c();
+    initTabBar();
     MenuScreen_BeginOpen();
     unk_96 = 0xff;
-    data_ov090_02292320 = 0;
+    sTabSwitchCooldown = 0;
     unk_97 = 0;
     unk_8d = 1;
     unk_8c = 0;
-    func_ov002_02200a60(0);
+    setPhase(0);
     func_0206ec60();
     Snd_BeginMenuDuck();
     MenuCtrl_SyncFromInputMode();
     return TRUE;
 }
 
-BOOL Unk_ov090_022921e0::vfunc_0c() {
+BOOL MenuTabBar::vfunc_0c() {
     MenuScreen_Reset();
-    func_ov090_02291b14();
+    releaseResources();
     Snd_EndMenuDuck();
     func_0206e5fc();
     return TRUE;
 }
 
-BOOL Unk_ov090_022921e0::onDraw() {
+BOOL MenuTabBar::onDraw() {
     if (unk_91 == 0) {
         return FALSE;
     }
@@ -450,46 +450,46 @@ BOOL Unk_ov090_022921e0::onDraw() {
     s32 j = 0;
     i = j;
     for (; i <= 7; i++, j += 2) {
-        func_02088730(1, &data_ov090_02292240[j * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
-        func_02088730(1, &data_ov090_02292240[(j + 1) * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
+        func_02088730(1, &sTabBarOamCells[j * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
+        func_02088730(1, &sTabBarOamCells[(j + 1) * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov090_SceneEntry data_ov090_022921a0;
-extern "C" u32 data_ov090_02292240[32];
+extern "C" Unk_ov090_SceneEntry sMenuTabBarProfile;
+extern "C" u32 sTabBarOamCells[32];
 
-extern "C" Unk_ov090_SceneEntry data_ov090_022921a0 = {(void *)func_ov090_02292134, 0x8f, 0x93};
+extern "C" Unk_ov090_SceneEntry sMenuTabBarProfile = {(void *)MenuTabBar_Create, 0x8f, 0x93};
 
-extern "C" u32 data_ov090_02292240[32] = {
+extern "C" u32 sTabBarOamCells[32] = {
     0x404900a1, 0x0000f092, 0x005980a1, 0x0000f094, 0x41b300a1, 0x0000f080, 0x01c380a1, 0x0000f082, 0x41cc00a1, 0x0000f083, 0x01dc80a1, 0x0000f085, 0x41e500a1, 0x0000f086, 0x01f580a1, 0x0000f088, 0x41fe00a1, 0x0000f089, 0x000e80a1, 0x0000f08b, 0x401700a1, 0x0000f08c, 0x002780a1, 0x0000f08e, 0x403000a1, 0x0000f08f, 0x004080a1, 0x0000f091, 0x406700a1, 0x0000f095, 0x007780a1, 0xfffff097
 };
 
-BOOL Unk_ov090_022921e0::vfunc_4c() {
-    static Unk_ov090_022921e0_Fn tbl[3] = {&Unk_ov090_022921e0::func_ov090_02291ba0, &Unk_ov090_022921e0::func_ov090_02291b8c,
-                                           &Unk_ov090_022921e0::func_ov090_02291b5c};
-    func_ov090_02291a18();
+BOOL MenuTabBar::execTransition() {
+    static Unk_ov090_022921e0_Fn tbl[3] = {&MenuTabBar::stateLoad, &MenuTabBar::stateSlideIn,
+                                           &MenuTabBar::stateSlideOut};
+    cancelVramTasks();
     (this->*tbl[unk_8c])();
     return TRUE;
 }
 
-BOOL Unk_ov090_022921e0::vfunc_50() {
-    static Unk_ov090_022921e0_Fn tbl[3] = {&Unk_ov090_022921e0::func_ov090_02291d08, &Unk_ov090_022921e0::func_ov090_02291c2c,
-                                           &Unk_ov090_022921e0::func_ov090_02291c18};
-    func_ov090_02291a18();
+BOOL MenuTabBar::execMain() {
+    static Unk_ov090_022921e0_Fn tbl[3] = {&MenuTabBar::updateIdle, &MenuTabBar::updateOpenTabMenu,
+                                           &MenuTabBar::updateSaving};
+    cancelVramTasks();
     if (unk_97 == 2) {
         if (Save_WritePlayerFriendList()) {
             u8 c;
             unk_8d = 2;
             c = 0x1f;
-            unk_1164.func_ov002_02204394(&c, 1, 1);
+            unk_1164.open(&c, 1, 1);
             unk_97 = 3;
         } else {
             unk_97 = 0;
             MenuScreen_BeginClose();
         }
     }
-    if (data_ov090_02292320 != 0) {
-        data_ov090_02292320 = data_ov090_02292320 - 1;
+    if (sTabSwitchCooldown != 0) {
+        sTabSwitchCooldown = sTabSwitchCooldown - 1;
     }
     (this->*tbl[unk_8d])();
     if (unk_94 != 0) {
@@ -510,30 +510,30 @@ BOOL Unk_ov090_022921e0::vfunc_50() {
     }
     if (unk_95 != 0) {
         if ((gPad[1] & 0x100) != 0) {
-            func_ov090_0229196c(func_ov090_02291a38(unk_93));
+            showTab(MenuTabBar_NextTab(unk_93));
             Snd_PlaySe(3);
         }
         if ((gPad[1] & 0x200) != 0) {
-            func_ov090_0229196c(func_ov090_02291a58(unk_93));
+            showTab(MenuTabBar_PrevTab(unk_93));
             Snd_PlaySe(3);
         }
     }
     return TRUE;
 }
 
-BOOL Unk_ov090_022921e0::vfunc_54() { return TRUE; }
+BOOL MenuTabBar::execPhase3() { return TRUE; }
 
-BOOL Unk_ov090_022921e0::vfunc_58() { return TRUE; }
+BOOL MenuTabBar::execPhase4() { return TRUE; }
 
-BOOL Unk_ov090_022921e0::vfunc_5c() {
+BOOL MenuTabBar::execClosed() {
     ProcBase_RequestDelete();
     return TRUE;
 }
 
-void Unk_ov090_022921e0::func_ov090_02291d8c(u32 idx) {
+void MenuTabBar::selectTab(u32 idx) {
     unk_98 = 0;
     u32 old = unk_93;
-    func_ov090_0229196c(idx);
+    showTab(idx);
     if (idx == 7) {
         unk_94 = 0;
         if (unk_97 == 1) {
@@ -557,12 +557,12 @@ void Unk_ov090_022921e0::func_ov090_02291d8c(u32 idx) {
     }
 }
 
-u8 Unk_ov090_022921e0::func_ov090_02291d2c() {
+u8 MenuTabBar::onTabMenuClosed() {
     switch (unk_93) {
     case 7:
         if (unk_97 == 0) {
             func_0206e03c();
-            func_ov090_02291d0c();
+            beginClose();
         }
         break;
     case 0:
@@ -585,16 +585,16 @@ u8 Unk_ov090_022921e0::func_ov090_02291d2c() {
     return unk_93;
 }
 
-void Unk_ov090_022921e0::func_ov090_02291d0c() {
+void MenuTabBar::beginClose() {
     unk_8c = 2;
-    func_ov002_02200a60(1);
+    setPhase(1);
     Gfx2d_SetSubBgModeState(1);
 }
 
-void Unk_ov090_022921e0::func_ov090_02291d08() {}
+void MenuTabBar::updateIdle() {}
 
-void Unk_ov090_022921e0::func_ov090_02291c2c() {
-    if (data_ov090_02292320 == 0) {
+void MenuTabBar::updateOpenTabMenu() {
+    if (sTabSwitchCooldown == 0) {
         unk_95 = 0;
         switch (unk_93) {
         case 0: {
@@ -649,34 +649,34 @@ void Unk_ov090_022921e0::func_ov090_02291c2c() {
     }
 }
 
-void Unk_ov090_022921e0::func_ov090_02291c18() { unk_1164.func_ov002_02204234(0); }
+void MenuTabBar::updateSaving() { unk_1164.update(0); }
 
-void Unk_ov090_022921e0::func_ov090_02291ba0() {
+void MenuTabBar::stateLoad() {
     Gfx2d_LoadPaletteFile((u32)"menu/tag/obj.bpl", gCurrentHeap, 8, 0xf, 0xf, 0xf);
     File_LoadToBuffer("menu/tag/obj1.bch", unk_144, 0x800);
     File_LoadToBuffer("menu/tag/obj2.bch", unk_944, 0x800);
-    func_ov090_0229196c(func_0206ed50());
+    showTab(func_0206ed50());
     unk_91 = 1;
     unk_92 = 0;
     unk_8c = 1;
     Gfx2d_SetSubBgModeState(0);
 }
 
-void Unk_ov090_022921e0::func_ov090_02291b8c() {
+void MenuTabBar::stateSlideIn() {
     unk_94 = 1;
-    func_ov002_02200a60(2);
+    setPhase(2);
 }
 
-void Unk_ov090_022921e0::func_ov090_02291b5c() {
+void MenuTabBar::stateSlideOut() {
     if (*(volatile u8 *)&unk_92 <= 4) {
         unk_91 = 0;
-        func_ov002_02200a60(0);
+        setPhase(0);
     } else {
         unk_92 = unk_92 - 4;
     }
 }
 
-void Unk_ov090_022921e0::func_ov090_02291b1c() {
+void MenuTabBar::initTabBar() {
     unk_91 = 0;
     unk_92 = 0;
     unk_94 = 0;
@@ -685,9 +685,9 @@ void Unk_ov090_022921e0::func_ov090_02291b1c() {
     data_021c1b3c->unk_1c4.func_02035bbc(0);
 }
 
-void Unk_ov090_022921e0::func_ov090_02291b14() { func_ov090_02291a18(); }
+void MenuTabBar::releaseResources() { cancelVramTasks(); }
 
-extern "C" s32 func_ov090_02291aa0() {
+extern "C" s32 MenuTabBar_HitTestTouch() {
     if (!Unk_ov090_02291aa0_Both()) {
         return -1;
     }
@@ -709,23 +709,23 @@ extern "C" s32 func_ov090_02291aa0() {
     return r;
 }
 
-void Unk_ov090_022921e0::func_ov090_02291a90() {
+void MenuTabBar::showTabs() {
     unk_94 = 1;
     unk_91 = 1;
 }
 
-void Unk_ov090_022921e0::func_ov090_02291a88() { unk_94 = 0; }
+void MenuTabBar::hideTabs() { unk_94 = 0; }
 
-extern "C" s32 func_ov090_02291a78(s32 a) {
+extern "C" s32 MenuTabBar_GetTabX(s32 a) {
     if (a == 7) {
         return 0xf3;
     }
     return a * 0x19 + 0x3f;
 }
 
-extern "C" u8 func_ov090_02291a58(u8 a) {
+extern "C" u8 MenuTabBar_PrevTab(u8 a) {
     if (a <= 6) {
-        data_ov090_02292320 = 10;
+        sTabSwitchCooldown = 10;
         if (a == 0) {
             return 6;
         }
@@ -734,8 +734,8 @@ extern "C" u8 func_ov090_02291a58(u8 a) {
     return a;
 }
 
-extern "C" u8 func_ov090_02291a38(u8 a) {
-    data_ov090_02292320 = 10;
+extern "C" u8 MenuTabBar_NextTab(u8 a) {
+    sTabSwitchCooldown = 10;
     if (a <= 6) {
         if (a == 6) {
             return 0;
@@ -745,14 +745,14 @@ extern "C" u8 func_ov090_02291a38(u8 a) {
     return a;
 }
 
-void Unk_ov090_022921e0::func_ov090_02291a18() {
+void MenuTabBar::cancelVramTasks() {
     s32 i;
     for (i = 0; i < 3; i++) {
         unk_9c[i].cancel();
     }
 }
 
-void Unk_ov090_022921e0::func_ov090_0229196c(u32 idx) {
+void MenuTabBar::showTab(u32 idx) {
     unk_93 = idx;
     if (idx <= 7) {
         if (idx != unk_96) {
@@ -769,9 +769,9 @@ void Unk_ov090_022921e0::func_ov090_0229196c(u32 idx) {
     }
 }
 
-void Unk_ov090_022921e0::func_ov090_02291964() { unk_97 = 1; }
+void MenuTabBar::requestSaveOnClose() { unk_97 = 1; }
 
-extern "C" s32 func_ov090_02291944(s32 a) {
+extern "C" s32 MenuTabBar_TabFromX(s32 a) {
     s32 r = (a - 0x33) / 0x19;
     if (r < 0) {
         r = 0;
@@ -782,12 +782,12 @@ extern "C" s32 func_ov090_02291944(s32 a) {
     return r;
 }
 
-// ---------------------------------------------------------------- Unk_ov090_022921e0
+// ---------------------------------------------------------------- MenuTabBar
 
-BOOL Unk_ov090_022921e0::func_ov090_02291934() {
+BOOL MenuTabBar::isJustOpened() {
     if (unk_98 != 0) {
         return TRUE;
     }
     return FALSE;
 }
-u8 data_ov090_02292320;
+u8 sTabSwitchCooldown;

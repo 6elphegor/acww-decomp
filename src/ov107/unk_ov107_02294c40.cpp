@@ -5,10 +5,10 @@
 #undef postCreate
 #undef vfunc_14
 
-// ov107: scene overlay (class Unk_ov107_02296e78, vtable 0x02296e78, 0x281c bytes).
+// ov107: scene overlay (class PocketsFullMenu, vtable 0x02296e78, 0x281c bytes).
 
-class Unk_ov107_02296e78;
-typedef void (Unk_ov107_02296e78::*Unk_ov107_02296e78_Fn)();
+class PocketsFullMenu;
+typedef void (PocketsFullMenu::*Unk_ov107_02296e78_Fn)();
 
 struct Unk_ov107_SceneEntry {
     void *factory;
@@ -17,51 +17,51 @@ struct Unk_ov107_SceneEntry {
 };
 
 // Other modules' methods, called with the object first (the real symbol is the mangled name).
-#define func_ov002_022006a4 _ZN18Unk_ov002_0220446819func_ov002_022006a4Eh
-#define func_ov002_022006b0 _ZN18Unk_ov002_0220446819func_ov002_022006b0Ev
-#define func_ov002_022006b8 _ZN18Unk_ov002_0220446819func_ov002_022006b8Ev
-#define func_ov002_022006c0 _ZN18Unk_ov002_0220446819func_ov002_022006c0Ev
-#define func_ov002_022006e4 _ZN18Unk_ov002_0220446819func_ov002_022006e4Ei
-#define func_ov002_0220071c _ZN18Unk_ov002_0220446819func_ov002_0220071cEv
-#define func_ov002_02200680 _ZN18Unk_ov002_0220446819func_ov002_02200680Ev
-#define func_ov002_02201498 _ZN18Unk_ov002_022013ac19func_ov002_02201498Ei
-#define func_ov002_022014a4 _ZN18Unk_ov002_022013ac19func_ov002_022014a4Ev
-#define func_ov002_022014c0 _ZN18Unk_ov002_022013ac19func_ov002_022014c0Eii
-#define func_ov002_0220160c _ZN18Unk_ov002_022013ac19func_ov002_0220160cEP22Unk_ov002_022013ac_Reci
-#define func_ov002_022017a4 _ZN18Unk_ov002_022013ac19func_ov002_022017a4Ev
-#define func_ov002_022017b4 _ZN18Unk_ov002_022013ac19func_ov002_022017b4Ev
-#define func_ov002_02202200 _ZN18Unk_ov002_0220455819func_ov002_02202200EP12LabelBalloon
-#define func_ov002_0220229c _ZN18Unk_ov002_0220455819func_ov002_0220229cEii
-#define func_ov002_02202310 _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc
-#define func_ov002_022027a4 _ZN18Unk_ov002_0220460419func_ov002_022027a4Ev
-#define func_ov002_02202844 _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev
-#define func_ov002_022028f0 _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev
-#define func_ov002_022029e8 _ZN18Unk_ov002_02202d9819func_ov002_022029e8Eiiii
-#define func_ov002_02202a18 _ZN18Unk_ov002_02202d9819func_ov002_02202a18Eiii
-#define func_ov002_02202a40 _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii
-#define func_ov002_02202a78 _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev
-#define func_ov002_02202b68 _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev
-#define func_ov002_02202c40 _ZN18Unk_ov002_0220464c19func_ov002_02202c40Ev
-#define func_ov002_02202ca0 _ZN18Unk_ov002_0220464c19func_ov002_02202ca0Ev
-#define func_ov002_02202d00 _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei
-#define func_ov002_0220306c _ZN18Unk_ov002_02202fac19func_ov002_0220306cEv
-#define func_ov002_0220308c _ZN18Unk_ov002_02202fac19func_ov002_0220308cEv
-#define func_ov002_022030ac _ZN18Unk_ov002_02202fac19func_ov002_022030acEh
-#define func_ov002_022030b8 _ZN18Unk_ov002_02202fac19func_ov002_022030b8Ei
-#define func_ov002_022030f4 _ZN18Unk_ov002_02202fac19func_ov002_022030f4Ei
-#define func_ov002_02203110 _ZN18Unk_ov002_02202fac19func_ov002_02203110Ei
-#define func_ov002_02203510 _ZN18Unk_ov002_022046cc19func_ov002_02203510Ei
-#define func_ov002_022036a4 _ZN18Unk_ov002_022046cc19func_ov002_022036a4Ei
-#define func_ov002_02203900 _ZN18Unk_ov002_022046cc19func_ov002_02203900Ev
-#define func_ov002_02204234 _ZN18Unk_ov002_022040ec19func_ov002_02204234Ei
-#define func_ov002_02204394 _ZN18Unk_ov002_022040ec19func_ov002_02204394EPhij
-#define func_ov094_022941a0 _ZN18Unk_ov094_02294bd419func_ov094_022941a0Eii
-#define func_ov094_022941f8 _ZN18Unk_ov094_02294bd419func_ov094_022941f8Ej
-#define func_ov094_022943f8 _ZN18Unk_ov094_02294bd419func_ov094_022943f8Ev
-#define func_ov094_0229462c _ZN18Unk_ov094_02294bd419func_ov094_0229462cEv
-#define func_ov094_02294644 _ZN18Unk_ov094_02294bd419func_ov094_02294644Ei
-#define func_ov092_02291c5c _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv
-#define func_ov092_02291ce4 _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii
+#define TouchPromptBalloon_setAutoCloseTimer _ZN18TouchPromptBalloon17setAutoCloseTimerEh
+#define TouchPromptBalloon_cancelQueuedOpen _ZN18TouchPromptBalloon16cancelQueuedOpenEv
+#define TouchPromptBalloon_queueOpen _ZN18TouchPromptBalloon9queueOpenEv
+#define TouchPromptBalloon_commitOpen _ZN18TouchPromptBalloon10commitOpenEv
+#define TouchPromptBalloon_hide _ZN18TouchPromptBalloon4hideEi
+#define TouchPromptBalloon_updatePrompt _ZN18TouchPromptBalloon12updatePromptEv
+#define TouchPromptBalloon_isOpenOrOpening _ZN18TouchPromptBalloon15isOpenOrOpeningEv
+#define PopupChoiceMenuBody_getRowY _ZN19PopupChoiceMenuBody7getRowYEi
+#define PopupChoiceMenuBody_getRowX _ZN19PopupChoiceMenuBody7getRowXEv
+#define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
+#define PopupChoiceMenuBody_setRowsFromIds _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi
+#define PopupChoiceMenuBody_isClosed _ZN19PopupChoiceMenuBody8isClosedEv
+#define PopupChoiceMenuBody_isOpen _ZN19PopupChoiceMenuBody6isOpenEv
+#define PopupChoiceMenu_placeAboveBalloon _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon
+#define PopupChoiceMenu_placeNearPoint _ZN15PopupChoiceMenu14placeNearPointEii
+#define PopupChoiceMenu_init _ZN15PopupChoiceMenu4initEiiPKc
+#define CursorMotion_reset _ZN12CursorMotion5resetEv
+#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
+#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
+#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
+#define MenuCursorBase_moveToLinear _ZN14MenuCursorBase12moveToLinearEiii
+#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
+#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
+#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
+#define MenuCursor_switchToAnim01 _ZN10MenuCursor14switchToAnim01Ev
+#define MenuCursor_switchToAnim07 _ZN10MenuCursor14switchToAnim07Ev
+#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
+#define MenuBottomButtonsBody_getPressOffset _ZN21MenuBottomButtonsBody14getPressOffsetEv
+#define MenuBottomButtonsBody_stepPress _ZN21MenuBottomButtonsBody9stepPressEv
+#define MenuBottomButtonsBody_setSelected _ZN21MenuBottomButtonsBody11setSelectedEh
+#define MenuBottomButtonsBody_getTargetY _ZN21MenuBottomButtonsBody10getTargetYEi
+#define MenuBottomButtonsBody_getTargetX _ZN21MenuBottomButtonsBody10getTargetXEi
+#define MenuBottomButtonsBody_isTouched _ZN21MenuBottomButtonsBody9isTouchedEi
+#define MenuBottomButtons_setLayoutSingle05 _ZN17MenuBottomButtons17setLayoutSingle05Ei
+#define MenuBottomButtons_drawAt _ZN17MenuBottomButtons6drawAtEi
+#define MenuBottomButtons_freeTexts _ZN17MenuBottomButtons9freeTextsEv
+#define MenuErrorMessage_update _ZN16MenuErrorMessage6updateEi
+#define MenuErrorMessage_open _ZN16MenuErrorMessage4openEPhij
+#define LetterGrid_drawPocketLetters _ZN10LetterGrid17drawPocketLettersEii
+#define LetterGrid_highlightLetterKinds _ZN10LetterGrid20highlightLetterKindsEj
+#define LetterGrid_clearCursorSlot _ZN10LetterGrid15clearCursorSlotEv
+#define LetterGrid_updateCursorLift _ZN10LetterGrid16updateCursorLiftEv
+#define LetterGrid_init _ZN10LetterGrid4initEi
+#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
+#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 #define CommManager_endRecord _ZN11CommManager9endRecordEjj
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
@@ -76,10 +76,10 @@ struct Unk_ov107_SceneEntry {
 #define PlayerData_getCatalog _ZN10PlayerData10getCatalogEv
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
 
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -90,31 +90,31 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_022008c4(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    u32 func_ov002_022009c8();
-    u32 func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
+    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetY();
+    void restartKeyRepeat();
+    u32 takeRepeatedKeys();
+    u32 checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -131,71 +131,71 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class Unk_ov094_02294a50 {
+class InventoryItemGrid {
 public:
-    Unk_ov094_02294a50();
-    ~Unk_ov094_02294a50();
+    InventoryItemGrid();
+    ~InventoryItemGrid();
     u32 unk_00[0xa60 / 4];
 };
 
-class Unk_ov094_02294bd4 {
+class LetterGrid {
 public:
-    Unk_ov094_02294bd4();
-    ~Unk_ov094_02294bd4();
+    LetterGrid();
+    ~LetterGrid();
     u32 unk_00[0x28 / 4];
 };
 
-class Unk_ov094_02292d6c {
+class InventoryBg {
 public:
-    Unk_ov094_02292d6c();
-    ~Unk_ov094_02292d6c();
+    InventoryBg();
+    ~InventoryBg();
     u32 unk_00[0x15e0 / 4];
 };
 
-class Unk_ov002_02204468 {
+class TouchPromptBalloon {
 public:
-    Unk_ov002_02204468();
-    virtual ~Unk_ov002_02204468();
+    TouchPromptBalloon();
+    virtual ~TouchPromptBalloon();
     virtual void vfunc_08();
     u32 unk_04[(0xc0 - 4) / 4];
 };
 
-class Unk_ov002_02204604 {
+class CursorMotion {
 public:
-    Unk_ov002_02204604();
-    ~Unk_ov002_02204604();
+    CursorMotion();
+    ~CursorMotion();
     u32 unk_00[0x18 / 4];
 };
 
-class Unk_ov002_02204614 {
+class MenuCursorBuf0 {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     u32 unk_04[0x60 / 4];
 };
 
-class Unk_ov002_02204558 {
+class PopupChoiceMenu {
 public:
-    Unk_ov002_02204558();
-    ~Unk_ov002_02204558();
+    PopupChoiceMenu();
+    ~PopupChoiceMenu();
     u32 unk_00[0x2f4 / 4];
     u8 unk_2f4[5];
     u8 unk_2f9[7];
 };
 
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
+    MenuErrorMessage();
+    ~MenuErrorMessage();
     u32 unk_00[0x108 / 4];
 };
 
-class Unk_ov002_022046cc {
+class MenuBottomButtons {
 public:
-    Unk_ov002_022046cc();
-    ~Unk_ov002_022046cc();
+    MenuBottomButtons();
+    ~MenuBottomButtons();
     u32 unk_00[0x164 / 4];
 };
 
@@ -262,22 +262,22 @@ s32 HandCursor_isAnimDone(void *p);
 s32 HandCursor_enableObjWindow(void *p);
 s32 func_0206e868();
 
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
-void func_ov002_022016e4(void *p, u32 v);
-void func_ov002_02201700(void *p, u32 a, u32 b);
-u32 func_ov002_02201a70(void *a, s32 b);
-BOOL func_ov002_022019d0(void *p, s32 a, void *q, s32 b);
-BOOL func_ov002_02201a28(void *p);
-void func_ov002_02201aa0(void *p, s32 a, s32 b);
-void func_ov002_02201b04(void *p);
-void func_ov002_02201b28(void *p);
-void func_ov002_02201b58(void *p);
-void func_ov002_02202064(void *p, s32 x);
-void func_ov002_02202098(void *a, s32 b);
-void func_ov002_02203920(void *p);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
+void ChoiceIdList_Clear(void *p, u32 v);
+void ChoiceIdList_Add(void *p, u32 a, u32 b);
+u32 PopupChoice_DecideCancel(void *a, s32 b);
+BOOL PopupChoice_MoveCursor(void *p, s32 a, void *q, s32 b);
+BOOL PopupChoice_TickDecideDelay(void *p);
+void PopupChoice_DecideRow(void *p, s32 a, s32 b);
+void PopupChoice_ForceClose(void *p);
+void PopupChoice_Draw(void *p);
+void PopupChoice_Update(void *p);
+void PopupChoice_Close(void *p, s32 x);
+void PopupChoice_Open(void *a, s32 b);
+void MenuButtons_LoadTextColors(void *p);
 
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 void HeldInsect_Remove(s32 a, s32 b);
@@ -289,82 +289,82 @@ void HeldInsect_Start(s32 a, s32 b);
 void HeldInsect_Release(s32 a, s32 b);
 void PlayerActor_LocalReleaseCatch(s32 a);
 
-void func_ov094_0229238c();
-BOOL func_ov094_022923a4(s32 a);
-void func_ov094_0229277c(void *p, s32 a);
-void func_ov094_02292a80(void *p);
-void func_ov094_02292aa4(void *p);
-void func_ov094_02292acc(void *p);
-void func_ov094_02292ae0(void *p);
-void func_ov094_02292d1c(void *p, s32 a);
-void func_ov094_02292d30(void *p, s32 a);
-BOOL func_ov094_0229311c(void *a, s32 b);
-void func_ov094_0229313c(void *a, s32 b, s32 c);
-void func_ov094_022932d0(void *p, s32 a, s32 b);
-void func_ov094_02293308(void *a, s32 b);
-BOOL func_ov094_0229333c(void *a, s32 b);
-void func_ov094_02293434(void *a, s32 b);
-void func_ov094_02293494(void *a, s32 b, s32 c, s32 d);
-u32 func_ov094_02293504(void *a, s32 b);
-u32 func_ov094_0229352c(void *a, s32 b);
-void func_ov094_0229359c(void *a, s32 b);
-void func_ov094_022935dc(void *a);
-s32 func_ov094_02293610(void *a, s32 b);
-s32 func_ov094_02293624(void *a, s32 b);
-void func_ov094_02293638(void *a, void *b, s32 c);
-void func_ov094_022937a0(void *p);
-u32 func_ov094_02293968(void *a);
-void func_ov094_02293998(void *p);
-void func_ov094_022939a0(void *p);
-void func_ov094_022939c0(void *p, s32 a);
-void func_ov094_02293d2c(void *p);
+void Inventory_PlayTouchSe();
+BOOL InvItem_IsNotFishInsectOrFlower(s32 a);
+void InventoryBg_DrawSprite(void *p, s32 a);
+void InventoryBg_Exit(void *p);
+void InventoryBg_Update(void *p);
+void InventoryBg_PreUpdate(void *p);
+void InventoryBg_LoadObjGraphics(void *p);
+void InventoryBg_Load(void *p, s32 a);
+void InventoryBg_Init(void *p, s32 a);
+BOOL InventoryItemGrid_IsSlotEmpty(void *a, s32 b);
+void InventoryItemGrid_DrawHeldItem(void *a, s32 b, s32 c);
+void InventoryItemGrid_DrawPockets(void *p, s32 a, s32 b);
+void InventoryItemGrid_DisableSlot(void *a, s32 b);
+BOOL InventoryItemGrid_IsSlotDisabled(void *a, s32 b);
+void InventoryItemGrid_RefreshSlot(void *a, s32 b);
+void InventoryItemGrid_SetSlotItem(void *a, s32 b, s32 c, s32 d);
+u32 InventoryItemGrid_GetSlotFlags(void *a, s32 b);
+u32 InventoryItemGrid_GetSlotItem(void *a, s32 b);
+void InventoryItemGrid_SetCursorSlot(void *a, s32 b);
+void InventoryItemGrid_ClearCursorSlot(void *a);
+s32 InventoryItemGrid_GetSlotY(void *a, s32 b);
+s32 InventoryItemGrid_GetSlotX(void *a, s32 b);
+void InventoryItemGrid_ShowSlotName(void *a, void *b, s32 c);
+void InventoryItemGrid_LoadPockets(void *p);
+u32 InventoryItemGrid_FindPocketSlotAt(void *a);
+void InventoryItemGrid_Exit(void *p);
+void InventoryItemGrid_PreUpdate(void *p);
+void InventoryItemGrid_Init(void *p, s32 a);
+void LetterGrid_LoadPocketLetters(void *p);
 
 // Macro'd (mangled) declarations: the object is the first argument.
-void func_ov002_022006a4(void *p, s32 a);
-void func_ov002_022006b0(void *p);
-void func_ov002_022006b8(void *p);
-void func_ov002_022006c0(void *p);
-void func_ov002_022006e4(void *p, s32 a);
-BOOL func_ov002_0220071c(void *p);
-BOOL func_ov002_02200680(void *p);
-s32 func_ov002_02201498(void *a, s32 b);
-s32 func_ov002_022014a4(void *a);
-s32 func_ov002_022014c0(void *p, s32 a, s32 b);
-void func_ov002_0220160c(void *a, void *b, s32 c);
-BOOL func_ov002_022017a4(void *p);
-BOOL func_ov002_022017b4(void *p);
-void func_ov002_02202200(void *a, void *b, s32 c);
-void func_ov002_0220229c(void *a, s32 b, s32 c);
-void func_ov002_02202310(void *p, s32 a, s32 b, s32 c);
-void func_ov002_022027a4(void *p);
-void func_ov002_02202844(void *p);
-BOOL func_ov002_022028f0(void *p);
-void func_ov002_022029e8(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_ov002_02202a18(void *a, s32 b, s32 c, s32 d);
-void func_ov002_02202a40(void *p, s32 x, s32 y);
-void func_ov002_02202a78(void *a);
-void func_ov002_02202b68(void *p);
-void func_ov002_02202c40(void *p);
-void func_ov002_02202ca0(void *p);
-void func_ov002_02202d00(void *a, s32 b);
-s32 func_ov002_0220306c(void *p);
-BOOL func_ov002_0220308c(void *p);
-void func_ov002_022030ac(void *p, s32 a);
-s32 func_ov002_022030b8(void *p, s32 a);
-s32 func_ov002_022030f4(void *p, s32 a);
-BOOL func_ov002_02203110(void *p, s32 a);
-void func_ov002_02203510(void *p, s32 a);
-void func_ov002_022036a4(void *p, s32 a);
-void func_ov002_02203900(void *p);
-BOOL func_ov002_02204234(void *p, s32 a);
-void func_ov002_02204394(void *a, void *b, s32 c, s32 d);
-void func_ov094_022941a0(void *p, s32 a, s32 b);
-void func_ov094_022941f8(void *p, s32 a);
-void func_ov094_022943f8(void *p);
-void func_ov094_0229462c(void *p);
-void func_ov094_02294644(void *p, s32 a);
-void func_ov092_02291c5c();
-void func_ov092_02291ce4(s32 a, s32 b, s32 c);
+void TouchPromptBalloon_setAutoCloseTimer(void *p, s32 a);
+void TouchPromptBalloon_cancelQueuedOpen(void *p);
+void TouchPromptBalloon_queueOpen(void *p);
+void TouchPromptBalloon_commitOpen(void *p);
+void TouchPromptBalloon_hide(void *p, s32 a);
+BOOL TouchPromptBalloon_updatePrompt(void *p);
+BOOL TouchPromptBalloon_isOpenOrOpening(void *p);
+s32 PopupChoiceMenuBody_getRowY(void *a, s32 b);
+s32 PopupChoiceMenuBody_getRowX(void *a);
+s32 PopupChoiceMenuBody_hitTestRowOrLast(void *p, s32 a, s32 b);
+void PopupChoiceMenuBody_setRowsFromIds(void *a, void *b, s32 c);
+BOOL PopupChoiceMenuBody_isClosed(void *p);
+BOOL PopupChoiceMenuBody_isOpen(void *p);
+void PopupChoiceMenu_placeAboveBalloon(void *a, void *b, s32 c);
+void PopupChoiceMenu_placeNearPoint(void *a, s32 b, s32 c);
+void PopupChoiceMenu_init(void *p, s32 a, s32 b, s32 c);
+void CursorMotion_reset(void *p);
+void MenuCursorBase_drawWrapped(void *p);
+BOOL MenuCursorBase_isMoving(void *p);
+void MenuCursorBase_moveToEase(void *a, s32 b, s32 c, s32 d, s32 e);
+void MenuCursorBase_moveToLinear(void *a, s32 b, s32 c, s32 d);
+void MenuCursorBase_warpTo(void *p, s32 x, s32 y);
+void MenuCursorBase_setPoseIdle(void *a);
+void MenuCursor_setPosePress(void *p);
+void MenuCursor_switchToAnim01(void *p);
+void MenuCursor_switchToAnim07(void *p);
+void MenuCursor_setAnimIfChanged(void *a, s32 b);
+s32 MenuBottomButtonsBody_getPressOffset(void *p);
+BOOL MenuBottomButtonsBody_stepPress(void *p);
+void MenuBottomButtonsBody_setSelected(void *p, s32 a);
+s32 MenuBottomButtonsBody_getTargetY(void *p, s32 a);
+s32 MenuBottomButtonsBody_getTargetX(void *p, s32 a);
+BOOL MenuBottomButtonsBody_isTouched(void *p, s32 a);
+void MenuBottomButtons_setLayoutSingle05(void *p, s32 a);
+void MenuBottomButtons_drawAt(void *p, s32 a);
+void MenuBottomButtons_freeTexts(void *p);
+BOOL MenuErrorMessage_update(void *p, s32 a);
+void MenuErrorMessage_open(void *a, void *b, s32 c, s32 d);
+void LetterGrid_drawPocketLetters(void *p, s32 a, s32 b);
+void LetterGrid_highlightLetterKinds(void *p, s32 a);
+void LetterGrid_clearCursorSlot(void *p);
+void LetterGrid_updateCursorLift(void *p);
+void LetterGrid_init(void *p, s32 a);
+void MenuLauncher_onChildClosed();
+void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
 void BgVramTask_cancel(void *p);
 }
 
@@ -375,116 +375,116 @@ static inline BOOL Unk_ov107_02296270_Both() {
     return FALSE;
 }
 
-class Unk_ov107_02296e78 : public Unk_ov002_022044e4 {
+class PocketsFullMenu : public MenuProc {
 public:
-    Unk_ov107_02296e78()
+    PocketsFullMenu()
         : unk_cc(0), unk_d0(0), unk_d4(), unk_10c(), unk_b6c(), unk_b94(), unk_2174(), unk_2234(), unk_224c(), unk_22b0(), unk_25b0(), unk_26b8() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov107_02294d54(u32 mask);
-    void func_ov107_02294d64(u32 mask);
-    BOOL func_ov107_02294d74(u32 mask);
-    void func_ov107_02294d88(BOOL flag);
-    u8 func_ov107_02294e14();
-    void func_ov107_02294e38();
-    void func_ov107_02294e84();
-    void func_ov107_02294ed4();
-    void func_ov107_02294f48(u8 v);
-    void func_ov107_02294fb0();
-    void func_ov107_02295048();
-    BOOL func_ov107_02295070();
-    void func_ov107_022950e8(u8 a, u8 b);
-    void func_ov107_02295130();
-    void func_ov107_022951e0();
-    void func_ov107_02295200();
-    void func_ov107_02295270();
-    BOOL func_ov107_022952e4(void *pad);
-    void func_ov107_02295354(void *pad);
-    void func_ov107_02295450(u32 idx, u32 flag);
-    void func_ov107_022954a4();
-    void func_ov107_02295568();
-    void func_ov107_022955d4();
-    void func_ov107_022955fc();
-    void func_ov107_02295638();
-    void func_ov107_02295664(s32 a);
-    void func_ov107_022956d4();
-    void func_ov107_02295768();
-    void func_ov107_02295788();
-    void func_ov107_022957a8();
-    void func_ov107_022957dc();
-    void func_ov107_02295828();
-    void func_ov107_0229588c();
-    void func_ov107_022958dc();
-    void func_ov107_02295950();
-    s32 func_ov107_02295974();
-    s32 func_ov107_02295984();
-    void func_ov107_022959c8();
-    void func_ov107_02295a18();
-    void func_ov107_02295a50();
-    void func_ov107_02295aa4();
-    void func_ov107_02295b14(s32 a);
-    void func_ov107_02295b58();
-    u32 func_ov107_02295b7c(s32 a);
-    u32 func_ov107_02295bb0(s32 a);
-    BOOL func_ov107_02295be8(s32 a);
-    BOOL func_ov107_02295c1c(s32 a);
-    BOOL func_ov107_02295c50(s32 a);
-    void func_ov107_02295ce4();
-    s32 func_ov107_02295d20(s32 a);
-    s32 func_ov107_02295d5c(s32 a);
-    void func_ov107_02295d98(s32 a, s32 b, s32 c);
-    u32 func_ov107_02295ddc(s32 a, s32 b, s32 c);
-    u32 func_ov107_02295e1c(s32 a);
-    u32 func_ov107_02295e2c(s32 a);
-    BOOL func_ov107_02295e48(s32 a);
-    void func_ov107_02295e54();
-    void func_ov107_02295e60(s32 a, u32 b);
-    void func_ov107_02295eb8(u32 a);
-    void func_ov107_02295f40();
-    void func_ov107_02295f60();
-    void func_ov107_02295f94();
-    void func_ov107_02295fb0();
-    void func_ov107_02295fc8();
-    void func_ov107_02295ff0();
-    void func_ov107_02296018();
-    void func_ov107_022960a0();
-    void func_ov107_022960d4();
-    void func_ov107_022960f4();
-    void func_ov107_02296144();
-    void func_ov107_02296180();
-    void func_ov107_022961a8();
-    void func_ov107_022961e0();
-    void func_ov107_02296224();
-    void func_ov107_02296270();
-    void func_ov107_022962e8();
-    void func_ov107_022963c8();
-    void func_ov107_02296460();
-    void func_ov107_022964a8();
-    void func_ov107_022964c4();
-    void func_ov107_02296564();
-    void func_ov107_022965e4();
-    void func_ov107_02296608();
-    void func_ov107_0229661c();
-    void func_ov107_0229663c();
-    void func_ov107_02296674();
-    void func_ov107_022966b4();
-    void func_ov107_022966bc();
-    void func_ov107_022966d8();
-    void func_ov107_02296718();
-    void func_ov107_0229679c();
-    void func_ov107_022967e8();
-    void func_ov107_02296848();
-    void func_ov107_02296884();
-    void func_ov107_02296914();
-    void func_ov107_02296964();
+    void clearFlags(u32 mask);
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    void endNewItemAction(BOOL flag);
+    u8 getLocalPlayerIndex();
+    void mainAct17();
+    void mainAct16();
+    void onChoiceBury();
+    void sendFishReleasePacket(u8 v);
+    void mainAct11();
+    void onChoiceReleaseFish();
+    BOOL canReleaseFish();
+    void sendInsectReleasePacket(u8 a, u8 b);
+    void mainAct10();
+    void onChoiceReleaseInsect();
+    void mainAct15();
+    void onChoiceDrop();
+    BOOL moveCursorByPad(void *pad);
+    void moveCursorInGrid(void *pad);
+    void selectPocket(u32 idx, u32 flag);
+    void setPopupChoices();
+    void storeNewItem();
+    void startCloseByTab();
+    void closeWithSelection();
+    void cancelPopupForButtons();
+    void openPopup(s32 a);
+    void onPopupChoice();
+    void pressCloseButton();
+    void refreshCursor();
+    void showCursorAtSlot();
+    void cursorToPopupTop();
+    void cancelPopup();
+    void moveCursorToPopupRow();
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void showCursor();
+    void drawHeldItem();
+    void updateBalloonForCursor();
+    void placeBalloon();
+    void setFocusSlot(s32 a);
+    void clearFocusSlot();
+    u32 getSlotItemFlags(s32 a);
+    u32 getSlotItem(s32 a);
+    BOOL isSlotEmpty(s32 a);
+    BOOL isSlotDisabled(s32 a);
+    BOOL isPocketLocked(s32 a);
+    void disableLockedPockets();
+    s32 getSlotY(s32 a);
+    s32 getSlotX(s32 a);
+    void putItemInSlot(s32 a, s32 b, s32 c);
+    u32 getSlotAt(s32 a, s32 b, s32 c);
+    u32 toSlotOrNone(s32 a);
+    u32 toPocketIndex(s32 a);
+    BOOL isPocketSlot(s32 a);
+    void cancelBgTasks();
+    void showMessage(s32 a, u32 b);
+    void beginTouchOnSlot(u32 a);
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    void mainAct14();
+    void mainAct13();
+    void mainAct12();
+    void mainAct0F();
+    void mainAct0E();
+    void mainAct0D();
+    void mainAct0C();
+    void mainAct0B();
+    void mainAct0A();
+    void mainAct09();
+    void mainAct08();
+    void mainAct07();
+    void mainAct06();
+    void mainAct05();
+    void mainAct04();
+    void mainAct03();
+    void mainAct02();
+    void mainAct01();
+    void mainAct00();
+    void loadObjGraphics();
+    void loadInventoryBg();
+    void setupBgLayer6();
+    void postStateUpdate();
+    void preStateUpdate();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void initParts();
+    void transitionAct04();
+    void transitionAct03();
+    void transitionAct02();
+    void transitionAct01();
+    void transitionAct00();
+    void runMainState();
 
     /* 0x94 */ u32 unk_94;
     /* 0x98 */ s32 unk_98;
@@ -512,15 +512,15 @@ public:
     /* 0xcc */ s32 unk_cc;
     /* 0xd0 */ s32 unk_d0;
     /* 0xd4 */ BgVramTaskPair unk_d4[1];
-    /* 0x10c */ Unk_ov094_02294a50 unk_10c;
-    /* 0xb6c */ Unk_ov094_02294bd4 unk_b6c;
-    /* 0xb94 */ Unk_ov094_02292d6c unk_b94;
-    /* 0x2174 */ Unk_ov002_02204468 unk_2174;
-    /* 0x2234 */ Unk_ov002_02204604 unk_2234;
-    /* 0x224c */ Unk_ov002_02204614 unk_224c;
-    /* 0x22b0 */ Unk_ov002_02204558 unk_22b0;
-    /* 0x25b0 */ Unk_ov002_022040ec unk_25b0;
-    /* 0x26b8 */ Unk_ov002_022046cc unk_26b8;
+    /* 0x10c */ InventoryItemGrid unk_10c;
+    /* 0xb6c */ LetterGrid unk_b6c;
+    /* 0xb94 */ InventoryBg unk_b94;
+    /* 0x2174 */ TouchPromptBalloon unk_2174;
+    /* 0x2234 */ CursorMotion unk_2234;
+    /* 0x224c */ MenuCursorBuf0 unk_224c;
+    /* 0x22b0 */ PopupChoiceMenu unk_22b0;
+    /* 0x25b0 */ MenuErrorMessage unk_25b0;
+    /* 0x26b8 */ MenuBottomButtons unk_26b8;
 };
 
 static inline BOOL Unk_ov107_InRange(u16 *p, u32 lo, u32 hi) {
@@ -531,511 +531,511 @@ static inline BOOL Unk_ov107_InRange(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" Unk_ov107_02296e78 *func_ov107_02296c8c();
+extern "C" PocketsFullMenu *PocketsFullMenu_Create();
 
-void Unk_ov107_02296e78::func_ov107_022966b4();
+void PocketsFullMenu::postInputUpdate();
 
-extern "C" Unk_ov107_02296e78 *func_ov107_02296c8c() { return new Unk_ov107_02296e78(); }
+extern "C" PocketsFullMenu *PocketsFullMenu_Create() { return new PocketsFullMenu(); }
 
-BOOL Unk_ov107_02296e78::vfunc_00() {
-    func_ov107_02296718();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(0);
+BOOL PocketsFullMenu::vfunc_00() {
+    initParts();
+    setTransitionState(0);
+    setPhase(0);
     return TRUE;
 }
 
-BOOL Unk_ov107_02296e78::vfunc_0c() {
+BOOL PocketsFullMenu::vfunc_0c() {
     ProcBase_GetParent();
-    func_ov092_02291c5c();
-    func_ov107_022966d8();
+    MenuLauncher_onChildClosed();
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov107_02296e78::onDraw() {
-    func_ov002_02201b28(&unk_22b0);
-    if (!func_ov107_02294d74(1)) {
+BOOL PocketsFullMenu::onDraw() {
+    PopupChoice_Draw(&unk_22b0);
+    if (!testFlags(1)) {
         return TRUE;
     }
     unk_2174.vfunc_08();
     if (MenuCtrl_IsButtons()) {
-        func_ov002_02202844(&unk_224c);
+        MenuCursorBase_drawWrapped(&unk_224c);
     }
-    func_ov107_02295a18();
-    if (func_ov107_02294d74(2)) {
-        func_ov002_022036a4(&unk_26b8, unk_98);
+    drawHeldItem();
+    if (testFlags(2)) {
+        MenuBottomButtons_drawAt(&unk_26b8, unk_98);
         s32 t = unk_98 - 0x10;
-        func_ov094_022932d0(&unk_10c, 0, t);
-        func_ov094_022941a0(&unk_b6c, 0, t);
-        func_ov094_0229277c(&unk_b94, t);
+        InventoryItemGrid_DrawPockets(&unk_10c, 0, t);
+        LetterGrid_drawPocketLetters(&unk_b6c, 0, t);
+        InventoryBg_DrawSprite(&unk_b94, t);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
-extern "C" Unk_ov107_SceneEntry data_ov107_02296d80;
-extern "C" const s16 data_ov107_02296d40[8];
+extern "C" Unk_ov107_SceneEntry sPocketsFullMenuProfile;
+extern "C" const s16 sFishReleaseProbeAngles[8];
 
-extern "C" Unk_ov107_SceneEntry data_ov107_02296d80 = {(void *)func_ov107_02296c8c, 0x9a, 0x9e};
+extern "C" Unk_ov107_SceneEntry sPocketsFullMenuProfile = {(void *)PocketsFullMenu_Create, 0x9a, 0x9e};
 
-BOOL Unk_ov107_02296e78::vfunc_4c() {
+BOOL PocketsFullMenu::execTransition() {
     static Unk_ov107_02296e78_Fn tbl[5] = {
-        &Unk_ov107_02296e78::func_ov107_02296914,
-        &Unk_ov107_02296e78::func_ov107_02296884,
-        &Unk_ov107_02296e78::func_ov107_02296848,
-        &Unk_ov107_02296e78::func_ov107_022967e8,
-        &Unk_ov107_02296e78::func_ov107_0229679c};
-    func_ov107_02296674();
+        &PocketsFullMenu::transitionAct00,
+        &PocketsFullMenu::transitionAct01,
+        &PocketsFullMenu::transitionAct02,
+        &PocketsFullMenu::transitionAct03,
+        &PocketsFullMenu::transitionAct04};
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov107_0229663c();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov107_02296e78::func_ov107_02296964() {
+void PocketsFullMenu::runMainState() {
     static Unk_ov107_02296e78_Fn tbl[24] = {
-        &Unk_ov107_02296e78::func_ov107_02296564,
-        &Unk_ov107_02296e78::func_ov107_022964c4,
-        &Unk_ov107_02296e78::func_ov107_022964a8,
-        &Unk_ov107_02296e78::func_ov107_02296460,
-        &Unk_ov107_02296e78::func_ov107_022963c8,
-        &Unk_ov107_02296e78::func_ov107_022962e8,
-        &Unk_ov107_02296e78::func_ov107_02296270,
-        &Unk_ov107_02296e78::func_ov107_02296224,
-        &Unk_ov107_02296e78::func_ov107_022961e0,
-        &Unk_ov107_02296e78::func_ov107_022961a8,
-        &Unk_ov107_02296e78::func_ov107_02296180,
-        &Unk_ov107_02296e78::func_ov107_02296144,
-        &Unk_ov107_02296e78::func_ov107_022960f4,
-        &Unk_ov107_02296e78::func_ov107_022960d4,
-        &Unk_ov107_02296e78::func_ov107_022960a0,
-        &Unk_ov107_02296e78::func_ov107_02296018,
-        &Unk_ov107_02296e78::func_ov107_02295130,
-        &Unk_ov107_02296e78::func_ov107_02294fb0,
-        &Unk_ov107_02296e78::func_ov107_02295ff0,
-        &Unk_ov107_02296e78::func_ov107_02295fc8,
-        &Unk_ov107_02296e78::func_ov107_02295fb0,
-        &Unk_ov107_02296e78::func_ov107_02295200,
-        &Unk_ov107_02296e78::func_ov107_02294e84,
-        &Unk_ov107_02296e78::func_ov107_02294e38};
+        &PocketsFullMenu::mainAct00,
+        &PocketsFullMenu::mainAct01,
+        &PocketsFullMenu::mainAct02,
+        &PocketsFullMenu::mainAct03,
+        &PocketsFullMenu::mainAct04,
+        &PocketsFullMenu::mainAct05,
+        &PocketsFullMenu::mainAct06,
+        &PocketsFullMenu::mainAct07,
+        &PocketsFullMenu::mainAct08,
+        &PocketsFullMenu::mainAct09,
+        &PocketsFullMenu::mainAct0A,
+        &PocketsFullMenu::mainAct0B,
+        &PocketsFullMenu::mainAct0C,
+        &PocketsFullMenu::mainAct0D,
+        &PocketsFullMenu::mainAct0E,
+        &PocketsFullMenu::mainAct0F,
+        &PocketsFullMenu::mainAct10,
+        &PocketsFullMenu::mainAct11,
+        &PocketsFullMenu::mainAct12,
+        &PocketsFullMenu::mainAct13,
+        &PocketsFullMenu::mainAct14,
+        &PocketsFullMenu::mainAct15,
+        &PocketsFullMenu::mainAct16,
+        &PocketsFullMenu::mainAct17};
     (this->*tbl[unk_8d])();
 }
 
-BOOL Unk_ov107_02296e78::vfunc_50() {
-    func_ov107_022966bc();
-    func_ov107_02296964();
-    func_ov107_022966b4();
+BOOL PocketsFullMenu::execMain() {
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov107_02296e78::vfunc_54() { return TRUE; }
+BOOL PocketsFullMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov107_02296e78::vfunc_58() { return TRUE; }
+BOOL PocketsFullMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov107_02296e78::vfunc_5c() {
+BOOL PocketsFullMenu::execClosed() {
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-void Unk_ov107_02296e78::func_ov107_02296914() {
-    func_ov107_0229661c();
-    func_ov107_02296608();
-    func_ov002_02200a50(1);
+void PocketsFullMenu::transitionAct00() {
+    setupBgLayer6();
+    loadInventoryBg();
+    setTransitionState(1);
 }
 
-void Unk_ov107_02296e78::func_ov107_02296884() {
-    func_ov107_022965e4();
-    func_ov002_02203510(&unk_26b8, 0x65);
-    func_ov094_022937a0(&unk_10c);
-    func_ov107_02295ce4();
-    func_ov094_02293d2c(&unk_b6c);
-    func_ov094_022941f8(&unk_b6c, 0xf);
-    func_ov002_022008e0(8, 0, 0, 0x30);
+void PocketsFullMenu::transitionAct01() {
+    loadObjGraphics();
+    MenuBottomButtons_setLayoutSingle05(&unk_26b8, 0x65);
+    InventoryItemGrid_LoadPockets(&unk_10c);
+    disableLockedPockets();
+    LetterGrid_LoadPocketLetters(&unk_b6c);
+    LetterGrid_highlightLetterKinds(&unk_b6c, 0xf);
+    beginSubSlideIn(8, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
-    func_ov002_02200840(6, 0, -16);
-    func_ov002_02200a50(2);
-    func_ov107_02294d64(1);
-    func_ov107_02294d64(2);
-    unk_98 = func_ov002_02200920();
+    applySlideOffset(6, 0, -16);
+    setTransitionState(2);
+    setFlags(1);
+    setFlags(2);
+    unk_98 = getSlideOffsetY();
 }
 
-void Unk_ov107_02296e78::func_ov107_02296848() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov107_02295f40();
+void PocketsFullMenu::transitionAct02() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
     }
-    func_ov002_02200840(6, 0, -16);
-    unk_98 = func_ov002_02200920();
+    applySlideOffset(6, 0, -16);
+    unk_98 = getSlideOffsetY();
 }
 
-void Unk_ov107_02296e78::func_ov107_022967e8() {
-    func_ov002_022006e4(&unk_2174, 1);
-    func_ov107_02295950();
-    func_ov092_02291ce4(ProcBase_GetParent(this), 0x44, 1);
-    func_ov002_022008c4(8, 0, 0, 0x30);
-    func_ov002_02200840(6, 0, -16);
-    func_ov002_02200a50(4);
-    unk_98 = func_ov002_02200920();
+void PocketsFullMenu::transitionAct03() {
+    TouchPromptBalloon_hide(&unk_2174, 1);
+    hideCursor();
+    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
+    beginSubSlideOut(8, 0, 0, 0x30);
+    applySlideOffset(6, 0, -16);
+    setTransitionState(4);
+    unk_98 = getSlideOffsetY();
 }
 
-void Unk_ov107_02296e78::func_ov107_0229679c()
+void PocketsFullMenu::transitionAct04()
 {
-    if (func_ov002_022008fc(0)) {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(6);
-        func_ov002_02200a60(5);
-        func_ov107_02294d54(1);
-        func_ov107_02294d54(2);
+        setPhase(5);
+        clearFlags(1);
+        clearFlags(2);
     } else {
-        func_ov002_02200840(6, 0, -16);
+        applySlideOffset(6, 0, -16);
     }
-    unk_98 = func_ov002_02200920();
+    unk_98 = getSlideOffsetY();
 }
 
-void Unk_ov107_02296e78::func_ov107_02296718()
+void PocketsFullMenu::initParts()
 {
     unk_94 = 0;
-    func_ov094_022939c0(&unk_10c, 2);
-    func_ov094_02294644(&unk_b6c, 2);
-    func_ov094_02292d30(&unk_b94, 6);
+    InventoryItemGrid_Init(&unk_10c, 2);
+    LetterGrid_init(&unk_b6c, 2);
+    InventoryBg_Init(&unk_b94, 6);
     unk_b7 = 0x10;
-    func_ov002_022027a4(&unk_2234);
+    CursorMotion_reset(&unk_2234);
     unk_b5 = 0;
     unk_b8 = 0;
-    func_ov002_02202310(&unk_22b0, 3, 1, 0);
-    if (func_ov107_02295070()) {
-        func_ov107_02294d64(0x40);
+    PopupChoiceMenu_init(&unk_22b0, 3, 1, 0);
+    if (canReleaseFish()) {
+        setFlags(0x40);
     }
     unk_bf = 0;
 }
 
-void Unk_ov107_02296e78::func_ov107_022966d8()
+void PocketsFullMenu::releaseResources()
 {
-    func_ov107_02295e54();
-    func_ov094_02292a80(&unk_b94);
-    func_ov094_02293998(&unk_10c);
-    func_ov002_02201b04(&unk_22b0);
-    func_ov002_02203900(&unk_26b8);
+    cancelBgTasks();
+    InventoryBg_Exit(&unk_b94);
+    InventoryItemGrid_Exit(&unk_10c);
+    PopupChoice_ForceClose(&unk_22b0);
+    MenuBottomButtons_freeTexts(&unk_26b8);
 }
 
-void Unk_ov107_02296e78::func_ov107_022966bc()
+void PocketsFullMenu::preInputUpdate()
 {
-    func_ov107_02296674();
+    preStateUpdate();
     unk_224c.vfunc_0c();
 }
 
-void Unk_ov107_02296e78::func_ov107_022966b4()
+void PocketsFullMenu::postInputUpdate()
 {
-    func_ov107_0229663c();
+    postStateUpdate();
 }
 
-void Unk_ov107_02296e78::func_ov107_02296674()
+void PocketsFullMenu::preStateUpdate()
 {
-    func_ov107_02295e54();
-    func_ov094_02292acc(&unk_b94);
-    func_ov094_022939a0(&unk_10c);
-    func_ov094_0229462c(&unk_b6c);
-    func_ov002_02203900(&unk_26b8);
+    cancelBgTasks();
+    InventoryBg_PreUpdate(&unk_b94);
+    InventoryItemGrid_PreUpdate(&unk_10c);
+    LetterGrid_updateCursorLift(&unk_b6c);
+    MenuBottomButtons_freeTexts(&unk_26b8);
 }
 
-void Unk_ov107_02296e78::func_ov107_0229663c()
+void PocketsFullMenu::postStateUpdate()
 {
-    func_ov002_02201b58(&unk_22b0);
-    func_ov094_02292aa4(&unk_b94);
-    if (func_ov002_0220071c(&unk_2174)) {
-        func_ov107_02295aa4();
+    PopupChoice_Update(&unk_22b0);
+    InventoryBg_Update(&unk_b94);
+    if (TouchPromptBalloon_updatePrompt(&unk_2174)) {
+        placeBalloon();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_0229661c()
+void PocketsFullMenu::setupBgLayer6()
 {
     Gfx2d_SetLayerPriority(6, 2);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
-void Unk_ov107_02296e78::func_ov107_02296608()
+void PocketsFullMenu::loadInventoryBg()
 {
-    func_ov094_02292d1c(&unk_b94, 0);
+    InventoryBg_Load(&unk_b94, 0);
 }
 
-void Unk_ov107_02296e78::func_ov107_022965e4()
+void PocketsFullMenu::loadObjGraphics()
 {
-    func_ov094_02292ae0(&unk_b94);
-    func_ov002_02203920(&unk_26b8);
+    InventoryBg_LoadObjGraphics(&unk_b94);
+    MenuButtons_LoadTextColors(&unk_26b8);
 }
 
-void Unk_ov107_02296e78::func_ov107_02296564()
+void PocketsFullMenu::mainAct00()
 {
-    if (func_ov002_02200a14(1)) {
-        func_ov107_02295f60();
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
     } else if (Unk_ov107_02296270_Both()) {
-        s32 r = func_ov107_02295ddc(gTouchCurX, gTouchCurY + 0x10, 1);
+        s32 r = getSlotAt(gTouchCurX, gTouchCurY + 0x10, 1);
         if (r != 0x10) {
-            func_ov107_02295eb8(r);
-        } else if (func_ov002_02203110(&unk_26b8, 9)) {
-            func_ov107_022955d4();
+            beginTouchOnSlot(r);
+        } else if (MenuBottomButtonsBody_isTouched(&unk_26b8, 9)) {
+            startCloseByTab();
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022964c4()
+void PocketsFullMenu::mainAct01()
 {
     if (gTouchHeld == 0) {
-        if (func_ov107_02295c1c(unk_b6)) {
-            func_ov002_02200a58(0);
-            func_ov002_022006a4(&unk_2174, 0x3c);
+        if (isSlotDisabled(unk_b6)) {
+            setMainState(0);
+            TouchPromptBalloon_setAutoCloseTimer(&unk_2174, 0x3c);
         } else {
-            func_ov002_02200a58(3);
-            func_ov107_02296964();
+            setMainState(3);
+            runMainState();
         }
-    } else if (func_ov107_02295c1c(unk_b6) == 0 && func_ov002_02200680(&unk_2174)) {
+    } else if (isSlotDisabled(unk_b6) == 0 && TouchPromptBalloon_isOpenOrOpening(&unk_2174)) {
         if (unk_bf != 0) {
             unk_bf = *(volatile u8 *)&unk_bf - 1;
         } else {
-            func_ov107_02295450(unk_b6, 1);
-            func_ov002_02200a58(2);
+            selectPocket(unk_b6, 1);
+            setMainState(2);
         }
     } else {
-        func_ov002_022006c0(&unk_2174);
+        TouchPromptBalloon_commitOpen(&unk_2174);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022964a8()
+void PocketsFullMenu::mainAct02()
 {
     if (gTouchHeld == 0) {
-        func_ov002_02200a58(4);
+        setMainState(4);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296460()
+void PocketsFullMenu::mainAct03()
 {
-    if (func_ov002_02200680(&unk_2174)) {
+    if (TouchPromptBalloon_isOpenOrOpening(&unk_2174)) {
         if (unk_bf != 0) {
             unk_bf = *(volatile u8 *)&unk_bf - 1;
         } else {
-            func_ov107_02295450(unk_b6, 1);
-            func_ov002_02200a58(2);
+            selectPocket(unk_b6, 1);
+            setMainState(2);
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022963c8()
+void PocketsFullMenu::mainAct04()
 {
-    if (func_ov002_022017b4(&unk_22b0)) {
-        if (func_ov002_02200a14(1)) {
-            func_ov107_02295638();
+    if (PopupChoiceMenuBody_isOpen(&unk_22b0)) {
+        if (checkSwitchToButtons(1)) {
+            cancelPopupForButtons();
         } else if (Unk_ov107_02296270_Both()) {
-            s32 r = func_ov002_022014c0(&unk_22b0, gTouchCurX, gTouchCurY);
+            s32 r = PopupChoiceMenuBody_hitTestRowOrLast(&unk_22b0, gTouchCurX, gTouchCurY);
             if (r >= 0) {
-                func_ov002_02201aa0(&unk_22b0, r, 1);
+                PopupChoice_DecideRow(&unk_22b0, r, 1);
                 unk_bc = unk_22b0.unk_2f9[r];
-                func_ov002_02200a58(0xc);
+                setMainState(0xc);
             }
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022962e8()
+void PocketsFullMenu::mainAct05()
 {
-    if (func_ov002_022009d4()) {
-        func_ov107_02295f94();
-        func_ov002_022006e4(&unk_2174, 1);
-    } else if (func_ov107_022952e4((void *)func_ov002_022009c8())) {
-        func_ov107_02295a50();
-        func_ov107_022958dc();
-        func_ov002_022006e4(&unk_2174, 0);
-    } else if (func_ov107_02295c1c(unk_b8) == 0 && (gPad[1] & 1) != 0) {
-        if (func_ov107_02295e48(unk_b8)) {
-            if (!func_ov107_02295be8(unk_b8)) {
-                func_ov107_02295450(unk_b8, 0);
+    if (checkSwitchToTouch()) {
+        startTouchInput();
+        TouchPromptBalloon_hide(&unk_2174, 1);
+    } else if (moveCursorByPad((void *)takeRepeatedKeys())) {
+        updateBalloonForCursor();
+        moveCursorToTarget();
+        TouchPromptBalloon_hide(&unk_2174, 0);
+    } else if (isSlotDisabled(unk_b8) == 0 && (gPad[1] & 1) != 0) {
+        if (isPocketSlot(unk_b8)) {
+            if (!isSlotEmpty(unk_b8)) {
+                selectPocket(unk_b8, 0);
             }
         } else if (unk_b8 == 0xf) {
-            func_ov107_02295768();
+            pressCloseButton();
         }
     } else if ((gPad[1] & 2) != 0) {
-        func_ov107_02295950();
-        func_ov107_022955d4();
-        func_ov002_022006e4(&unk_2174, 0);
+        hideCursor();
+        startCloseByTab();
+        TouchPromptBalloon_hide(&unk_2174, 0);
     } else {
-        func_ov002_022006c0(&unk_2174);
+        TouchPromptBalloon_commitOpen(&unk_2174);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296270()
+void PocketsFullMenu::mainAct06()
 {
-    if (func_ov002_022009d4()) {
-        func_ov107_02295638();
-    } else if (func_ov002_022019d0(&unk_22b0, func_ov002_022009c8(), &unk_bd, 0)) {
-        func_ov107_0229588c();
+    if (checkSwitchToTouch()) {
+        cancelPopupForButtons();
+    } else if (PopupChoice_MoveCursor(&unk_22b0, takeRepeatedKeys(), &unk_bd, 0)) {
+        moveCursorToPopupRow();
     } else {
         u16 f = gPad[1];
         if ((f & 1) != 0) {
-            func_ov002_02202b68(&unk_224c);
-            func_ov002_02200a58(7);
+            MenuCursor_setPosePress(&unk_224c);
+            setMainState(7);
         } else if ((f & 2) != 0) {
-            func_ov107_02295828();
+            cancelPopup();
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296224()
+void PocketsFullMenu::mainAct07()
 {
     if (HandCursor_isAnimDone(&unk_224c)) {
-        func_ov002_02201aa0(&unk_22b0, unk_bd, 1);
+        PopupChoice_DecideRow(&unk_22b0, unk_bd, 1);
         unk_bc = unk_22b0.unk_2f9[unk_bd];
-        func_ov002_02200a58(0xc);
+        setMainState(0xc);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022961e0()
+void PocketsFullMenu::mainAct08()
 {
-    if (!func_ov002_022028f0(&unk_224c)) {
-        func_ov002_02200a58(unk_bb);
+    if (!MenuCursorBase_isMoving(&unk_224c)) {
+        setMainState(unk_bb);
         if (unk_bb == 5) {
-            func_ov107_02295b14(unk_b8);
+            setFocusSlot(unk_b8);
         }
-        func_ov107_02296964();
+        runMainState();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022961a8()
+void PocketsFullMenu::mainAct09()
 {
     if (HandCursor_isAnimDone(&unk_224c)) {
-        func_ov002_022030ac(&unk_26b8, 9);
-        func_ov002_02200a58(0xf);
+        MenuBottomButtonsBody_setSelected(&unk_26b8, 9);
+        setMainState(0xf);
         Snd_PlaySe(0x28);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296180()
+void PocketsFullMenu::mainAct0A()
 {
     if (HandCursor_isAnimDone(&unk_224c)) {
-        func_ov107_02295788();
-        func_ov002_02200a58(5);
+        refreshCursor();
+        setMainState(5);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296144()
+void PocketsFullMenu::mainAct0B()
 {
-    if (func_ov002_022017b4(&unk_22b0)) {
+    if (PopupChoiceMenuBody_isOpen(&unk_22b0)) {
         if (MenuCtrl_IsButtons()) {
-            func_ov107_022957dc();
-            func_ov002_02200a58(6);
+            cursorToPopupTop();
+            setMainState(6);
         } else {
-            func_ov002_02200a58(4);
+            setMainState(4);
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022960f4()
+void PocketsFullMenu::mainAct0C()
 {
-    if (func_ov002_02201a28(&unk_22b0)) {
-        func_ov002_02202064(&unk_22b0, 0);
-        func_ov002_022006e4(&unk_2174, 1);
+    if (PopupChoice_TickDecideDelay(&unk_22b0)) {
+        PopupChoice_Close(&unk_22b0, 0);
+        TouchPromptBalloon_hide(&unk_2174, 1);
         if (HandCursor_getAnim(&unk_224c)) {
-            func_ov107_022957a8();
+            showCursorAtSlot();
         }
-        func_ov002_02200a58(0xd);
+        setMainState(0xd);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022960d4()
+void PocketsFullMenu::mainAct0D()
 {
-    if (func_ov002_022017a4(&unk_22b0)) {
-        func_ov107_022956d4();
+    if (PopupChoiceMenuBody_isClosed(&unk_22b0)) {
+        onPopupChoice();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022960a0()
+void PocketsFullMenu::mainAct0E()
 {
-    if (func_ov002_02204234(&unk_25b0, 0)) {
-        func_ov002_02200a58(unk_bb);
+    if (MenuErrorMessage_update(&unk_25b0, 0)) {
+        setMainState(unk_bb);
         HandCursor_enableObjWindow(&unk_224c);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02296018()
+void PocketsFullMenu::mainAct0F()
 {
-    if (func_ov002_0220308c(&unk_26b8)) {
+    if (MenuBottomButtonsBody_stepPress(&unk_26b8)) {
         if (HandCursor_getAnim(&unk_224c)) {
-            s32 a = func_ov002_0220306c(&unk_26b8);
-            s32 b = func_ov002_022030f4(&unk_26b8, -1);
-            s32 c = func_ov002_022030b8(&unk_26b8, -1);
-            func_ov002_02202a40(&unk_224c, a + b, a + c);
+            s32 a = MenuBottomButtonsBody_getPressOffset(&unk_26b8);
+            s32 b = MenuBottomButtonsBody_getTargetX(&unk_26b8, -1);
+            s32 c = MenuBottomButtonsBody_getTargetY(&unk_26b8, -1);
+            MenuCursorBase_warpTo(&unk_224c, a + b, a + c);
         }
     } else {
         func_0206ecf8(0);
         unk_8c = 3;
-        func_ov002_02200a60(1);
-        func_ov002_022006e4(&unk_2174, 1);
-        func_ov107_02295950();
+        setPhase(1);
+        TouchPromptBalloon_hide(&unk_2174, 1);
+        hideCursor();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295ff0()
+void PocketsFullMenu::mainAct12()
 {
-    func_ov107_02294e14();
+    getLocalPlayerIndex();
     if (HeldInsect_GetStage() != 3) {
         unk_be = 5;
-        func_ov002_02200a58(0x13);
+        setMainState(0x13);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295fc8()
+void PocketsFullMenu::mainAct13()
 {
     if (unk_be != 0) {
         unk_be = *(volatile u8 *)&unk_be - 1;
     } else {
-        func_ov107_022955fc();
+        closeWithSelection();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295fb0()
+void PocketsFullMenu::mainAct14()
 {
     if (func_020951a0()) {
-        func_ov107_022955fc();
+        closeWithSelection();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295f94()
+void PocketsFullMenu::startTouchInput()
 {
-    func_ov107_02295950();
-    func_ov107_02295b58();
-    func_ov002_02200a58(0);
+    hideCursor();
+    clearFocusSlot();
+    setMainState(0);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295f60()
+void PocketsFullMenu::startButtonInput()
 {
     unk_b7 = 0x10;
-    func_ov107_022959c8();
-    func_ov002_02200980();
-    func_ov107_02295a50();
-    func_ov002_02200a58(5);
-    func_ov107_02295b14(unk_b8);
+    showCursor();
+    restartKeyRepeat();
+    updateBalloonForCursor();
+    setMainState(5);
+    setFocusSlot(unk_b8);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295f40()
+void PocketsFullMenu::resumeInput()
 {
     if (MenuCtrl_IsTouch()) {
-        func_ov107_02295f94();
+        startTouchInput();
     } else {
-        func_ov107_02295f60();
+        startButtonInput();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295eb8(u32 a)
+void PocketsFullMenu::beginTouchOnSlot(u32 a)
 {
     unk_b6 = a;
-    func_ov002_02200a58(1);
+    setMainState(1);
     u32 x = gTouchCurX;
     u32 y = gTouchCurY;
-    unk_9c = func_ov107_02295d5c(unk_b6) - x;
-    unk_a0 = func_ov107_02295d20(unk_b6) - y;
+    unk_9c = getSlotX(unk_b6) - x;
+    unk_a0 = getSlotY(unk_b6) - y;
     unk_b7 = a;
-    func_ov002_022006b8(&unk_2174);
-    func_ov002_022006c0(&unk_2174);
+    TouchPromptBalloon_queueOpen(&unk_2174);
+    TouchPromptBalloon_commitOpen(&unk_2174);
     unk_bf = 2;
-    if (func_ov107_02295c1c(a) == 0) {
-        func_ov094_0229238c();
+    if (isSlotDisabled(a) == 0) {
+        Inventory_PlayTouchSe();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295e60(s32 a, u32 b) {
+void PocketsFullMenu::showMessage(s32 a, u32 b) {
     volatile u8 v[1];
     if (b == 0xff) {
         unk_bb = unk_8d;
@@ -1044,311 +1044,311 @@ void Unk_ov107_02296e78::func_ov107_02295e60(s32 a, u32 b) {
     }
     v[0] = data_021edb68;
     v[0] = a;
-    func_ov002_02204394(&unk_25b0, (void *)v, 1, 0);
-    func_ov002_02200a58(0xe);
+    MenuErrorMessage_open(&unk_25b0, (void *)v, 1, 0);
+    setMainState(0xe);
     HandCursor_disableObjWindow(&unk_224c);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295e54() {
+void PocketsFullMenu::cancelBgTasks() {
     BgVramTask_cancel(unk_d4);
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02295e48(s32 a) {
+BOOL PocketsFullMenu::isPocketSlot(s32 a) {
     if ((u32)a <= 0xe) return TRUE;
     return FALSE;
 }
 
-u32 Unk_ov107_02296e78::func_ov107_02295e2c(s32 a) {
-    if (func_ov107_02295e48(a)) return (u8)a;
+u32 PocketsFullMenu::toPocketIndex(s32 a) {
+    if (isPocketSlot(a)) return (u8)a;
     return 0;
 }
 
-u32 Unk_ov107_02296e78::func_ov107_02295e1c(s32 a) {
+u32 PocketsFullMenu::toSlotOrNone(s32 a) {
     if ((u32)a <= 0xe) return (u8)a;
     return 0x10;
 }
 
-u32 Unk_ov107_02296e78::func_ov107_02295ddc(s32 a, s32 b, s32 c) {
-    u32 t = func_ov094_02293968(&unk_10c);
+u32 PocketsFullMenu::getSlotAt(s32 a, s32 b, s32 c) {
+    u32 t = InventoryItemGrid_FindPocketSlotAt(&unk_10c);
     if (t != 0x23) {
         if (c != 0) {
-            if (func_ov094_0229311c(&unk_10c, t)) return 0x10;
+            if (InventoryItemGrid_IsSlotEmpty(&unk_10c, t)) return 0x10;
         }
-        return func_ov107_02295e1c(t);
+        return toSlotOrNone(t);
     }
     return 0x10;
 }
 
-void Unk_ov107_02296e78::func_ov107_02295d98(s32 a, s32 b, s32 c) {
-    if (func_ov107_02295e48(a)) {
-        s32 t = func_ov107_02295e2c(a);
-        func_ov094_02293494(&unk_10c, t, b, c);
-        func_ov094_02293434(&unk_10c, t);
+void PocketsFullMenu::putItemInSlot(s32 a, s32 b, s32 c) {
+    if (isPocketSlot(a)) {
+        s32 t = toPocketIndex(a);
+        InventoryItemGrid_SetSlotItem(&unk_10c, t, b, c);
+        InventoryItemGrid_RefreshSlot(&unk_10c, t);
     }
 }
 
-s32 Unk_ov107_02296e78::func_ov107_02295d5c(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_02293624(&unk_10c, func_ov107_02295e2c(a));
+s32 PocketsFullMenu::getSlotX(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_GetSlotX(&unk_10c, toPocketIndex(a));
     } else if (a == 0xf) {
         return 0xbc;
     }
     return 0;
 }
 
-s32 Unk_ov107_02296e78::func_ov107_02295d20(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_02293610(&unk_10c, func_ov107_02295e2c(a)) - 0x10;
+s32 PocketsFullMenu::getSlotY(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_GetSlotY(&unk_10c, toPocketIndex(a)) - 0x10;
     } else if (a == 0xf) {
         return 0xb6;
     }
     return 0;
 }
 
-void Unk_ov107_02296e78::func_ov107_02295ce4() {
+void PocketsFullMenu::disableLockedPockets() {
     u8 i = 0;
     do {
-        if (func_ov107_02295c50(i)) {
-            func_ov094_02293308(&unk_10c, func_ov107_02295e2c(i));
+        if (isPocketLocked(i)) {
+            InventoryItemGrid_DisableSlot(&unk_10c, toPocketIndex(i));
         }
         i++;
     } while (i <= 0xe);
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02295c50(s32 a) {
+BOOL PocketsFullMenu::isPocketLocked(s32 a) {
     u32 r;
-    if (func_ov107_02295be8(a)) return FALSE;
-    if (func_ov107_02295b7c(a)) return TRUE;
-    r = func_ov107_02295bb0(a);
+    if (isSlotEmpty(a)) return FALSE;
+    if (getSlotItemFlags(a)) return TRUE;
+    r = getSlotItem(a);
     if ((r >= 0x137c && r <= 0x137c) || (r >= 0x1408 && r <= 0x1428) || (r >= 0x1471 && r <= 0x1491)) {
         return TRUE;
     }
     if (r >= 0x12e8 && r <= 0x131f) {
-        if (!func_ov107_02294d74(0x40)) return TRUE;
+        if (!testFlags(0x40)) return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02295c1c(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_0229333c(&unk_10c, func_ov107_02295e2c(a));
+BOOL PocketsFullMenu::isSlotDisabled(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_IsSlotDisabled(&unk_10c, toPocketIndex(a));
     }
     return FALSE;
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02295be8(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_0229311c(&unk_10c, func_ov107_02295e2c(a));
+BOOL PocketsFullMenu::isSlotEmpty(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_IsSlotEmpty(&unk_10c, toPocketIndex(a));
     }
     return TRUE;
 }
 
-u32 Unk_ov107_02296e78::func_ov107_02295bb0(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_0229352c(&unk_10c, func_ov107_02295e2c(a));
+u32 PocketsFullMenu::getSlotItem(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_GetSlotItem(&unk_10c, toPocketIndex(a));
     }
     return 0xfff1;
 }
 
-u32 Unk_ov107_02296e78::func_ov107_02295b7c(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        return func_ov094_02293504(&unk_10c, func_ov107_02295e2c(a));
+u32 PocketsFullMenu::getSlotItemFlags(s32 a) {
+    if (isPocketSlot(a)) {
+        return InventoryItemGrid_GetSlotFlags(&unk_10c, toPocketIndex(a));
     }
     return 0xf1;
 }
 
-void Unk_ov107_02296e78::func_ov107_02295b58() {
-    func_ov094_022935dc(&unk_10c);
-    func_ov094_022943f8(&unk_b6c);
+void PocketsFullMenu::clearFocusSlot() {
+    InventoryItemGrid_ClearCursorSlot(&unk_10c);
+    LetterGrid_clearCursorSlot(&unk_b6c);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295b14(s32 a) {
-    if (func_ov107_02295e48(a)) {
-        func_ov094_0229359c(&unk_10c, func_ov107_02295e2c(a));
-        func_ov094_022943f8(&unk_b6c);
+void PocketsFullMenu::setFocusSlot(s32 a) {
+    if (isPocketSlot(a)) {
+        InventoryItemGrid_SetCursorSlot(&unk_10c, toPocketIndex(a));
+        LetterGrid_clearCursorSlot(&unk_b6c);
     } else {
-        func_ov107_02295b58();
+        clearFocusSlot();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295aa4() {
-    s32 r6 = func_ov107_02295d5c(unk_b7) - 0x6d;
-    s32 r4 = func_ov107_02295d20(unk_b7) - 0x78;
+void PocketsFullMenu::placeBalloon() {
+    s32 r6 = getSlotX(unk_b7) - 0x6d;
+    s32 r4 = getSlotY(unk_b7) - 0x78;
     if (MenuCtrl_IsButtons()) r4 -= 8;
     LabelBalloon_setPos(&unk_2174, r6, r4);
-    if (func_ov107_02295e48(unk_b7)) {
-        func_ov094_02293638(&unk_10c, &unk_2174, func_ov107_02295e2c(unk_b7));
+    if (isPocketSlot(unk_b7)) {
+        InventoryItemGrid_ShowSlotName(&unk_10c, &unk_2174, toPocketIndex(unk_b7));
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295a50() {
-    if (func_ov107_02295e48(unk_b8)) {
-        if (func_ov107_02295be8(unk_b8)) {
-            func_ov002_022006b0(&unk_2174);
+void PocketsFullMenu::updateBalloonForCursor() {
+    if (isPocketSlot(unk_b8)) {
+        if (isSlotEmpty(unk_b8)) {
+            TouchPromptBalloon_cancelQueuedOpen(&unk_2174);
         } else {
             unk_b7 = unk_b8;
-            func_ov002_022006b8(&unk_2174);
+            TouchPromptBalloon_queueOpen(&unk_2174);
         }
     } else {
-        func_ov002_022006b0(&unk_2174);
+        TouchPromptBalloon_cancelQueuedOpen(&unk_2174);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295a18() {
-    if (!func_ov107_02294d74(0x20)) {
+void PocketsFullMenu::drawHeldItem() {
+    if (!testFlags(0x20)) {
         if (unk_b5 != 0) {
             if (unk_b5 == 1) {
-                func_ov094_0229313c(&unk_10c, unk_a4, unk_a8);
+                InventoryItemGrid_DrawHeldItem(&unk_10c, unk_a4, unk_a8);
             }
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022959c8() {
-    s32 r4 = func_ov107_02295984();
-    s32 r2 = func_ov107_02295974();
-    func_ov002_02202a40(&unk_224c, r4, r2);
+void PocketsFullMenu::showCursor() {
+    s32 r4 = getCursorTargetX();
+    s32 r2 = getCursorTargetY();
+    MenuCursorBase_warpTo(&unk_224c, r4, r2);
     if (unk_b8 == 0xf) {
-        func_ov002_02202d00(&unk_224c, 7);
+        MenuCursor_setAnimIfChanged(&unk_224c, 7);
     } else {
-        func_ov002_02202d00(&unk_224c, 1);
+        MenuCursor_setAnimIfChanged(&unk_224c, 1);
     }
-    func_ov107_02295788();
+    refreshCursor();
 }
 
-s32 Unk_ov107_02296e78::func_ov107_02295984() {
-    s32 r4 = func_ov107_02295d5c(unk_b8);
-    if (func_ov107_02294d74(0x10)) {
+s32 PocketsFullMenu::getCursorTargetX() {
+    s32 r4 = getSlotX(unk_b8);
+    if (testFlags(0x10)) {
         r4 += 0x100;
-    } else if (func_ov107_02294d74(8)) {
+    } else if (testFlags(8)) {
         r4 -= 0x100;
     }
     r4 += 8;
     return r4;
 }
 
-s32 Unk_ov107_02296e78::func_ov107_02295974() {
-    return func_ov107_02295d20(unk_b8);
+s32 PocketsFullMenu::getCursorTargetY() {
+    return getSlotY(unk_b8);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295950() {
-    func_ov002_02202d00(&unk_224c, 0);
+void PocketsFullMenu::hideCursor() {
+    MenuCursor_setAnimIfChanged(&unk_224c, 0);
     unk_224c.vfunc_0c();
 }
 
-void Unk_ov107_02296e78::func_ov107_022958dc() {
-    if (func_ov107_02294d74(4)) {
-        s32 r5 = func_ov107_02295984();
-        s32 r2 = func_ov107_02295974();
-        func_ov002_02202a40(&unk_224c, r5, r2);
-        func_ov107_02294d54(4);
+void PocketsFullMenu::moveCursorToTarget() {
+    if (testFlags(4)) {
+        s32 r5 = getCursorTargetX();
+        s32 r2 = getCursorTargetY();
+        MenuCursorBase_warpTo(&unk_224c, r5, r2);
+        clearFlags(4);
     } else {
-        s32 r5 = func_ov107_02295984();
-        s32 r2 = func_ov107_02295974();
-        func_ov002_022029e8(&unk_224c, r5, r2, 3, 1);
+        s32 r5 = getCursorTargetX();
+        s32 r2 = getCursorTargetY();
+        MenuCursorBase_moveToEase(&unk_224c, r5, r2, 3, 1);
         unk_bb = unk_8d;
-        func_ov002_02200a58(8);
+        setMainState(8);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_0229588c() {
-    s32 r4 = func_ov002_022014a4(&unk_22b0);
-    s32 r2 = func_ov002_02201498(&unk_22b0, unk_bd);
-    func_ov002_02202a18(&unk_224c, r4, r2, 2);
+void PocketsFullMenu::moveCursorToPopupRow() {
+    s32 r4 = PopupChoiceMenuBody_getRowX(&unk_22b0);
+    s32 r2 = PopupChoiceMenuBody_getRowY(&unk_22b0, unk_bd);
+    MenuCursorBase_moveToLinear(&unk_224c, r4, r2, 2);
     unk_bb = unk_8d;
-    func_ov002_02200a58(8);
+    setMainState(8);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295828() {
+void PocketsFullMenu::cancelPopup() {
     s32 r4;
     s32 r2;
     unk_bc = 4;
-    unk_bd = func_ov002_02201a70(&unk_22b0, 1);
-    r4 = func_ov002_022014a4(&unk_22b0);
-    r2 = func_ov002_02201498(&unk_22b0, unk_bd);
-    func_ov002_02202a40(&unk_224c, r4, r2);
+    unk_bd = PopupChoice_DecideCancel(&unk_22b0, 1);
+    r4 = PopupChoiceMenuBody_getRowX(&unk_22b0);
+    r2 = PopupChoiceMenuBody_getRowY(&unk_22b0, unk_bd);
+    MenuCursorBase_warpTo(&unk_224c, r4, r2);
     HandCursor_setAnimAtEnd(&unk_224c, 8);
-    func_ov002_02200a58(0xc);
+    setMainState(0xc);
 }
 
-void Unk_ov107_02296e78::func_ov107_022957dc() {
+void PocketsFullMenu::cursorToPopupTop() {
     s32 r4;
     s32 r2;
     unk_bd = 0;
-    r4 = func_ov002_022014a4(&unk_22b0);
-    r2 = func_ov002_02201498(&unk_22b0, unk_bd);
-    func_ov002_02202a40(&unk_224c, r4, r2);
-    func_ov002_02202d00(&unk_224c, 7);
+    r4 = PopupChoiceMenuBody_getRowX(&unk_22b0);
+    r2 = PopupChoiceMenuBody_getRowY(&unk_22b0, unk_bd);
+    MenuCursorBase_warpTo(&unk_224c, r4, r2);
+    MenuCursor_setAnimIfChanged(&unk_224c, 7);
 }
 
-void Unk_ov107_02296e78::func_ov107_022957a8() {
-    s32 r4 = func_ov107_02295984();
-    s32 r2 = func_ov107_02295974();
-    func_ov002_02202a40(&unk_224c, r4, r2);
-    func_ov002_02202d00(&unk_224c, 1);
+void PocketsFullMenu::showCursorAtSlot() {
+    s32 r4 = getCursorTargetX();
+    s32 r2 = getCursorTargetY();
+    MenuCursorBase_warpTo(&unk_224c, r4, r2);
+    MenuCursor_setAnimIfChanged(&unk_224c, 1);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295788() {
-    func_ov002_02202a78(&unk_224c);
+void PocketsFullMenu::refreshCursor() {
+    MenuCursorBase_setPoseIdle(&unk_224c);
     unk_224c.vfunc_0c();
 }
 
-void Unk_ov107_02296e78::func_ov107_02295768() {
-    func_ov002_02202b68(&unk_224c);
-    func_ov002_02200a58(9);
+void PocketsFullMenu::pressCloseButton() {
+    MenuCursor_setPosePress(&unk_224c);
+    setMainState(9);
 }
 
-void Unk_ov107_02296e78::func_ov107_022956d4() {
+void PocketsFullMenu::onPopupChoice() {
     if (unk_bc == 4) {
-        func_ov107_02295f40();
+        resumeInput();
     } else {
         static Unk_ov107_02296e78_Fn tbl[4] = {
-            &Unk_ov107_02296e78::func_ov107_022951e0,
-            &Unk_ov107_02296e78::func_ov107_02295270,
-            &Unk_ov107_02296e78::func_ov107_02295048,
-            &Unk_ov107_02296e78::func_ov107_02294ed4,
+            &PocketsFullMenu::onChoiceReleaseInsect,
+            &PocketsFullMenu::onChoiceDrop,
+            &PocketsFullMenu::onChoiceReleaseFish,
+            &PocketsFullMenu::onChoiceBury,
         };
         (this->*tbl[unk_bc])();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295664(s32 a) {
+void PocketsFullMenu::openPopup(s32 a) {
     s32 r6, r2;
-    func_ov002_0220160c(&unk_22b0, (void *)&unk_22b0.unk_2f4, 0);
-    r6 = func_ov107_02295d5c(unk_b9);
-    r2 = func_ov107_02295d20(unk_b9);
+    PopupChoiceMenuBody_setRowsFromIds(&unk_22b0, (void *)&unk_22b0.unk_2f4, 0);
+    r6 = getSlotX(unk_b9);
+    r2 = getSlotY(unk_b9);
     if (a != 0) {
-        func_ov002_02202200(&unk_22b0, &unk_2174, r2);
+        PopupChoiceMenu_placeAboveBalloon(&unk_22b0, &unk_2174, r2);
     } else {
-        func_ov002_0220229c(&unk_22b0, r6, r2);
+        PopupChoiceMenu_placeNearPoint(&unk_22b0, r6, r2);
     }
-    func_ov002_02202098(&unk_22b0, 0);
-    func_ov002_02200a58(0xb);
+    PopupChoice_Open(&unk_22b0, 0);
+    setMainState(0xb);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295638() {
+void PocketsFullMenu::cancelPopupForButtons() {
     unk_bc = 4;
-    func_ov107_022957a8();
-    func_ov002_02202064(&unk_22b0, 0);
-    func_ov002_02200a58(0xd);
+    showCursorAtSlot();
+    PopupChoice_Close(&unk_22b0, 0);
+    setMainState(0xd);
 }
 
-void Unk_ov107_02296e78::func_ov107_022955fc() {
+void PocketsFullMenu::closeWithSelection() {
     func_0206ed2c(unk_b9);
     func_0206ecf8(1);
     unk_8c = 3;
-    func_ov002_02200a60(1);
-    func_ov002_022006e4(&unk_2174, 1);
-    func_ov107_02295950();
+    setPhase(1);
+    TouchPromptBalloon_hide(&unk_2174, 1);
+    hideCursor();
 }
 
-void Unk_ov107_02296e78::func_ov107_022955d4() {
-    func_ov002_022030ac(&unk_26b8, 9);
-    func_ov002_02200a58(0xf);
+void PocketsFullMenu::startCloseByTab() {
+    MenuBottomButtonsBody_setSelected(&unk_26b8, 9);
+    setMainState(0xf);
     Snd_PlaySe(0x28);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295568() {
+void PocketsFullMenu::storeNewItem() {
     u16 a;
     u16 b;
     u32 r6, r4;
@@ -1362,14 +1362,14 @@ void Unk_ov107_02296e78::func_ov107_02295568() {
     }
     PlayerData_GetCurrent();
     func_0203c42c(PlayerData_getCatalog(), &b, 0, 1);
-    func_ov107_02295bb0(unk_b9);
+    getSlotItem(unk_b9);
     func_0206e744();
-    func_ov107_02295d98(unk_b9, r6, r4);
+    putItemInSlot(unk_b9, r6, r4);
 }
 
-void Unk_ov107_02296e78::func_ov107_022954a4() {
+void PocketsFullMenu::setPopupChoices() {
     func_0206ea6c();
-    s32 r6 = func_ov107_02295bb0(unk_b9);
+    s32 r6 = getSlotItem(unk_b9);
     volatile u16 v = r6;
     s32 t = func_0206ed50();
     BOOL ok = FALSE;
@@ -1380,89 +1380,89 @@ void Unk_ov107_02296e78::func_ov107_022954a4() {
         ok = TRUE;
     }
     if (ok) {
-        func_ov002_02201700(&unk_22b0.unk_2f4, 0x10, 0);
+        ChoiceIdList_Add(&unk_22b0.unk_2f4, 0x10, 0);
     } else if (a >= 0x12e8 && a <= 0x131f) {
-        func_ov002_02201700(&unk_22b0.unk_2f4, 0x10, 2);
+        ChoiceIdList_Add(&unk_22b0.unk_2f4, 0x10, 2);
     } else if (t == 0x2a) {
-        func_ov002_02201700(&unk_22b0.unk_2f4, 0x10, 3);
+        ChoiceIdList_Add(&unk_22b0.unk_2f4, 0x10, 3);
     }
-    if (func_ov094_022923a4(r6)) {
+    if (InvItem_IsNotFishInsectOrFlower(r6)) {
         if (t == 0x2a) {
-            func_ov002_02201700(&unk_22b0.unk_2f4, 1, 1);
+            ChoiceIdList_Add(&unk_22b0.unk_2f4, 1, 1);
         } else {
-            func_ov002_02201700(&unk_22b0.unk_2f4, 0x10, 1);
+            ChoiceIdList_Add(&unk_22b0.unk_2f4, 0x10, 1);
         }
     }
-    func_ov002_02201700(&unk_22b0.unk_2f4, 2, 4);
+    ChoiceIdList_Add(&unk_22b0.unk_2f4, 2, 4);
 }
 
-void Unk_ov107_02296e78::func_ov107_02295450(u32 idx, u32 flag) {
+void PocketsFullMenu::selectPocket(u32 idx, u32 flag) {
     unk_b9 = idx;
-    func_ov002_022016e4(&unk_22b0.unk_2f4, 4);
-    if (func_ov107_02295e48(idx)) {
-        func_ov107_022954a4();
-        func_ov107_02295950();
+    ChoiceIdList_Clear(&unk_22b0.unk_2f4, 4);
+    if (isPocketSlot(idx)) {
+        setPopupChoices();
+        hideCursor();
         if (flag == 0) {
-            func_ov002_022006e4(&unk_2174, 1);
+            TouchPromptBalloon_hide(&unk_2174, 1);
         }
-        func_ov107_02295664(flag);
+        openPopup(flag);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295354(void *pad) {
+void PocketsFullMenu::moveCursorInGrid(void *pad) {
     s32 n = unk_b8;
     s32 q = 0;
     while (n >= 5) {
         n -= 5;
         q++;
     }
-    if (func_ov002_0220126c(pad)) {
-        if (func_ov002_0220128c(pad) == 0 || q == 0) {
+    if (MenuKeys_HasLeft(pad)) {
+        if (MenuKeys_HasUp(pad) == 0 || q == 0) {
             if (n == 0) {
                 unk_b8 = unk_b8 + 4;
-                func_ov107_02294d64(8);
+                setFlags(8);
             } else {
                 unk_b8 = unk_b8 - 1;
             }
         }
-    } else if (func_ov002_0220125c(pad)) {
-        if (func_ov002_0220127c(pad) == 0) {
+    } else if (MenuKeys_HasRight(pad)) {
+        if (MenuKeys_HasDown(pad) == 0) {
             if (n == 4) {
                 unk_b8 = unk_b8 - 4;
-                func_ov107_02294d64(0x10);
+                setFlags(0x10);
             } else {
                 unk_b8 = unk_b8 + 1;
             }
         }
     }
-    if (func_ov107_02294d74(0x18) == 0) {
-        if (func_ov002_0220128c(pad)) {
+    if (testFlags(0x18) == 0) {
+        if (MenuKeys_HasUp(pad)) {
             if (q > 0) {
                 unk_b8 = unk_b8 - 5;
             }
-        } else if (func_ov002_0220127c(pad)) {
+        } else if (MenuKeys_HasDown(pad)) {
             if (q < 2) {
                 unk_b8 = unk_b8 + 5;
             } else {
                 unk_b8 = 0xf;
-                func_ov002_02202ca0(&unk_224c);
+                MenuCursor_switchToAnim07(&unk_224c);
             }
         }
     }
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_022952e4(void *pad) {
+BOOL PocketsFullMenu::moveCursorByPad(void *pad) {
     u8 old = unk_b8;
-    func_ov107_02294d54(0x18);
+    clearFlags(0x18);
     if (pad == 0) {
         return FALSE;
     }
-    if (func_ov107_02295e48(unk_b8)) {
-        func_ov107_02295354(pad);
+    if (isPocketSlot(unk_b8)) {
+        moveCursorInGrid(pad);
     } else if (unk_b8 == 0xf) {
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             unk_b8 = 0xe;
-            func_ov002_02202c40(&unk_224c);
+            MenuCursor_switchToAnim01(&unk_224c);
         }
     }
     if (old == unk_b8) {
@@ -1471,51 +1471,51 @@ BOOL Unk_ov107_02296e78::func_ov107_022952e4(void *pad) {
     return TRUE;
 }
 
-void Unk_ov107_02296e78::func_ov107_02295270() {
-    s32 t = func_ov107_02295bb0(unk_b9);
+void PocketsFullMenu::onChoiceDrop() {
+    s32 t = getSlotItem(unk_b9);
     if (func_0206ed50() == 0x29) {
         unk_ac = func_02042c08(gCommManager->unk_64, t);
     } else {
         unk_ac = func_02042bd0(gCommManager->unk_64, t);
     }
     if (unk_ac == -1) {
-        func_ov107_02295f40();
-        func_ov107_02295e60(3, 0xff);
+        resumeInput();
+        showMessage(3, 0xff);
     } else {
-        func_ov002_02200a58(0x15);
+        setMainState(0x15);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02295200() {
+void PocketsFullMenu::mainAct15() {
     switch (func_02042830(unk_ac)) {
     case 1:
-        func_ov107_02294d88(0);
-        func_ov107_02295568();
+        endNewItemAction(0);
+        storeNewItem();
         func_02042820(unk_ac);
         unk_be = 10;
-        func_ov002_02200a58(0x13);
+        setMainState(0x13);
         unk_ac = -1;
         break;
     case 2:
         func_02042820(unk_ac);
-        func_ov107_02295f40();
-        func_ov107_02295e60(3, 0xff);
+        resumeInput();
+        showMessage(3, 0xff);
         unk_ac = -1;
         break;
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022951e0() {
-    func_ov107_02294d88(1);
-    func_ov002_02200a58(0x10);
-    func_ov107_02295130();
+void PocketsFullMenu::onChoiceReleaseInsect() {
+    endNewItemAction(1);
+    setMainState(0x10);
+    mainAct10();
 }
 
-void Unk_ov107_02296e78::func_ov107_02295130() {
-    s32 r7 = func_ov107_02294e14();
+void PocketsFullMenu::mainAct10() {
+    s32 r7 = getLocalPlayerIndex();
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
-        l.a = func_ov107_02295bb0(unk_b9);
+        l.a = getSlotItem(unk_b9);
         BOOL ok = FALSE;
         volatile u16 *pv = &l.a;
         u16 a = *pv;
@@ -1530,13 +1530,13 @@ void Unk_ov107_02296e78::func_ov107_02295130() {
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
-        func_ov107_022950e8((u8)r5, t);
-        func_ov002_02200a58(0x12);
-        func_ov107_02295568();
+        sendInsectReleasePacket((u8)r5, t);
+        setMainState(0x12);
+        storeNewItem();
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_022950e8(u8 a, u8 b) {
+void PocketsFullMenu::sendInsectReleasePacket(u8 a, u8 b) {
     u8 buf[3];
     if (CommManager_isOnline(gCommManager)) {
         buf[0] = 1;
@@ -1549,9 +1549,9 @@ void Unk_ov107_02296e78::func_ov107_022950e8(u8 a, u8 b) {
     }
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02295070() {
+BOOL PocketsFullMenu::canReleaseFish() {
     s32 t = func_0206ed50();
-    u8 k = func_ov107_02294e14();
+    u8 k = getLocalPlayerIndex();
     if (t == 0x2c) {
         return FishCatch_GetReelTarget(&unk_c0, k);
     }
@@ -1560,26 +1560,26 @@ BOOL Unk_ov107_02296e78::func_ov107_02295070() {
     s32 i = 0;
     s32 base = *(s16 *)(p + 0x8e);
     for (; i < 8; i++) {
-        if (func_02030d78(&unk_c0, q, (s16)(base + data_ov107_02296d40[i]), 0x7800, 0xa00, 0xc)) {
+        if (func_02030d78(&unk_c0, q, (s16)(base + sFishReleaseProbeAngles[i]), 0x7800, 0xa00, 0xc)) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-void Unk_ov107_02296e78::func_ov107_02295048() {
-    func_ov107_02294d88(1);
+void PocketsFullMenu::onChoiceReleaseFish() {
+    endNewItemAction(1);
     unk_be = 5;
-    func_ov002_02200a58(0x11);
-    func_ov107_02294fb0();
+    setMainState(0x11);
+    mainAct11();
 }
 
-void Unk_ov107_02296e78::func_ov107_02294fb0() {
+void PocketsFullMenu::mainAct11() {
     if (*(volatile u8 *)&unk_be != 0) {
         unk_be = unk_be - 1;
     } else {
-        u8 k = func_ov107_02294e14();
-        s32 t = func_ov107_02295bb0(unk_b9);
+        u8 k = getLocalPlayerIndex();
+        s32 t = getSlotItem(unk_b9);
         if (FishCatch_StartRelease(k, t, &unk_c0)) {
             volatile u16 v = t;
             BOOL ok = FALSE;
@@ -1595,15 +1595,15 @@ void Unk_ov107_02296e78::func_ov107_02294fb0() {
             } else {
                 idx = -1;
             }
-            func_ov107_02294f48((u8)idx);
+            sendFishReleasePacket((u8)idx);
             unk_be = 0x14;
-            func_ov002_02200a58(0x13);
-            func_ov107_02295568();
+            setMainState(0x13);
+            storeNewItem();
         }
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02294f48(u8 v) {
+void PocketsFullMenu::sendFishReleasePacket(u8 v) {
     u8 buf[7];
     u8 tmp[5];
     if (CommManager_isOnline(gCommManager)) {
@@ -1618,31 +1618,31 @@ void Unk_ov107_02296e78::func_ov107_02294f48(u8 v) {
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02294ed4() {
-    s32 t = func_ov107_02295bb0(unk_b9);
+void PocketsFullMenu::onChoiceBury() {
+    s32 t = getSlotItem(unk_b9);
     Unk_ov107_Comm *g = gCommManager;
     unk_ac = func_0204339c(g->unk_64, 2, 0, t);
     if (unk_ac == -1) {
-        func_ov107_02295f40();
-        func_ov107_02295e60(3, 0xff);
+        resumeInput();
+        showMessage(3, 0xff);
     } else {
         u16 *p = func_020451c4(g->unk_68);
         u32 w = *p;
         unk_cc = (s32)w >> 8;
         unk_d0 = w & 0xff;
-        func_ov002_02200a58(0x16);
+        setMainState(0x16);
     }
 }
 
-void Unk_ov107_02296e78::func_ov107_02294e84() {
+void PocketsFullMenu::mainAct16() {
     switch (func_02042d10(unk_ac)) {
     case 1:
-        func_ov002_02200a58(0x17);
-        func_ov107_02294e38();
+        setMainState(0x17);
+        mainAct17();
         break;
     case 2:
-        func_ov107_02295f40();
-        func_ov107_02295e60(3, 0xff);
+        resumeInput();
+        showMessage(3, 0xff);
         break;
     default:
         return;
@@ -1651,18 +1651,18 @@ void Unk_ov107_02296e78::func_ov107_02294e84() {
     unk_ac = -1;
 }
 
-void Unk_ov107_02296e78::func_ov107_02294e38() {
+void PocketsFullMenu::mainAct17() {
     u16 v;
     u32 buf[3];
     FieldPos_FromUnitCenter(buf, unk_cc, unk_d0);
-    v = func_ov107_02295bb0(unk_b9);
+    v = getSlotItem(unk_b9);
     if (PlayerActor_LocalRequestBuryItem(buf, &v)) {
-        func_ov107_02295568();
-        func_ov002_02200a58(0x14);
+        storeNewItem();
+        setMainState(0x14);
     }
 }
 
-u8 Unk_ov107_02296e78::func_ov107_02294e14() {
+u8 PocketsFullMenu::getLocalPlayerIndex() {
     Unk_ov107_Comm *g = gCommManager;
     u32 v = g->unk_64;
     if (CommManager_isSlotActive(g, v)) {
@@ -1671,10 +1671,10 @@ u8 Unk_ov107_02296e78::func_ov107_02294e14() {
     return 0;
 }
 
-void Unk_ov107_02296e78::func_ov107_02294d88(BOOL flag) {
+void PocketsFullMenu::endNewItemAction(BOOL flag) {
     u8 buf[2];
     s32 t = func_0206ed50();
-    u8 k = func_ov107_02294e14();
+    u8 k = getLocalPlayerIndex();
     switch (t) {
     case 0x29:
     case 0x2a:
@@ -1700,17 +1700,17 @@ void Unk_ov107_02296e78::func_ov107_02294d88(BOOL flag) {
     }
 }
 
-BOOL Unk_ov107_02296e78::func_ov107_02294d74(u32 mask) {
+BOOL PocketsFullMenu::testFlags(u32 mask) {
     if (unk_94 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov107_02296e78::func_ov107_02294d64(u32 mask) { unk_94 = unk_94 | mask; }
+void PocketsFullMenu::setFlags(u32 mask) { unk_94 = unk_94 | mask; }
 
 // ---------------------------------------------------------------------------------------------
 
-void Unk_ov107_02296e78::func_ov107_02294d54(u32 mask) { unk_94 = unk_94 & ~mask; }
+void PocketsFullMenu::clearFlags(u32 mask) { unk_94 = unk_94 & ~mask; }
 
-extern "C" const s16 data_ov107_02296d40[8] = {0, 0x2000, -0x2000, 0x4000, -0x4000, 0x6000, -0x6000, 0x7fff};
+extern "C" const s16 sFishReleaseProbeAngles[8] = {0, 0x2000, -0x2000, 0x4000, -0x4000, 0x6000, -0x6000, 0x7fff};

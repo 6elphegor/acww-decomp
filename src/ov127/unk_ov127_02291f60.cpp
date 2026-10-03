@@ -31,13 +31,13 @@ struct Unk_ov127_02291fcc {
     u16 unk_26[16];
 };
 
-extern "C" u8 data_ov127_022940a0[0x11];
-extern "C" u8 data_ov127_022940b4[0x11];
+extern "C" u8 sTestedConstellationStars[0x11];
+extern "C" u8 sSavedConstellationStars[0x11];
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const s32 data_ov127_02292abc[2];
-extern "C" const u8 data_ov127_02292ac4[328];
-extern "C" const u8 data_ov127_02292c0c[908];
-extern "C" const u16 data_ov127_02292f98[2048];
+extern "C" const u8 kStarPositions[328];
+extern "C" const u8 kStarLines[908];
+extern "C" const u16 kStarSkyCells[2048];
 extern "C" u8 data_ov127_02293fa4[8];
 extern "C" u8 data_ov127_02293fac[8];
 extern "C" s32 data_ov127_02293fb4[4];
@@ -76,38 +76,38 @@ s32 FX_Div(s32 a, s32 b);
 void func_01ffd070(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 
-void func_ov127_02291fcc(Unk_ov127_02291fcc *p, u8 *out);
-u8 *func_ov127_0229207c(u16 i);
-u32 func_ov127_02292088(s32 i);
-u32 func_ov127_02292098(s32 i);
-s32 func_ov127_022921c4(s32 x, s32 y);
-s32 func_ov127_02292198(s32 i);
-s32 func_ov127_022921d8(s32 i);
-void func_ov127_02292218(Unk_ov127_02291f60 *s, u32 m);
-void func_ov127_02292228(Unk_ov127_02291f60 *s, u32 m);
-BOOL func_ov127_02292238(Unk_ov127_02291f60 *s, u32 m);
-s32 func_ov127_02292250(Unk_ov127_02291f60 *s);
-s32 func_ov127_0229225c(Unk_ov127_02291f60 *s);
-s32 func_ov127_02292268(Unk_ov127_02291f60 *s);
-void func_ov127_02292274(Unk_ov127_02291f60 *s);
-BOOL func_ov127_02292410(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy);
-BOOL func_ov127_0229247c(Unk_ov127_02291f60 *s, s32 a, s32 b);
-void func_ov127_02292518(Unk_ov127_02291f60 *s, s32 a);
+void StarSky_CollectStars(Unk_ov127_02291fcc *p, u8 *out);
+u8 *StarSky_GetLineStars(u16 i);
+u32 StarSky_GetStarY(s32 i);
+u32 StarSky_GetStarX(s32 i);
+s32 StarSky_GetLineAt(s32 x, s32 y);
+s32 StarSky_GetLineAtCellIndex(s32 i);
+s32 StarSky_GetStarAtCellIndex(s32 i);
+void StarSky_ClearFlags(Unk_ov127_02291f60 *s, u32 m);
+void StarSky_SetFlags(Unk_ov127_02291f60 *s, u32 m);
+BOOL StarSky_HasFlags(Unk_ov127_02291f60 *s, u32 m);
+s32 StarSky_GetScrollY(Unk_ov127_02291f60 *s);
+s32 StarSky_GetScrollX(Unk_ov127_02291f60 *s);
+s32 StarSky_GetOverscroll(Unk_ov127_02291f60 *s);
+void StarSky_StepToTarget(Unk_ov127_02291f60 *s);
+BOOL StarSky_ScreenToCell(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy);
+BOOL StarSky_ScrollY(Unk_ov127_02291f60 *s, s32 a, s32 b);
+void StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a);
 namespace Unk_ov127_02292698_Ns {
-s32 func_ov127_02292518(Unk_ov127_02291f60 *s, s32 a);
+s32 StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a);
 }
-void func_ov127_02292698(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b);
+void StarSky_ScrollByDir(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b);
 }
 
-// Unk_ov127_02292aac's constructor and destructor (ov129 constructs this class as a member)
-extern "C" void *_ZN18Unk_ov127_02292aacC1Ev(void *s) {
+// StarSkyView's constructor and destructor (ov129 constructs this class as a member)
+extern "C" void *_ZN11StarSkyViewC1Ev(void *s) {
     _ZN10BgVramTaskC1Ev(s);
     return s;
 }
 
-extern "C" void _ZN18Unk_ov127_02292aacD1Ev() {}
+extern "C" void _ZN11StarSkyViewD1Ev() {}
 
-extern "C" void func_ov127_02292a7c(u8 *s) {
+extern "C" void StarSky_Reset(u8 *s) {
     *(u16 *)(s + 0x2830) = 0;
     *(u16 *)(s + 0x2824) = 0;
     *(u16 *)(s + 0x2826) = 0;
@@ -115,7 +115,7 @@ extern "C" void func_ov127_02292a7c(u8 *s) {
     *(u16 *)(s + 0x2828) = 0;
 }
 
-extern "C" void func_ov127_02292a0c(u8 *s, u32 v) {
+extern "C" void StarSky_LoadSkyBg(u8 *s, u32 v) {
     s[0x2832] = v;
     Gfx2d_SetLayerControl(s[0x2832], 1, 0, 0);
     Gfx2d_LoadCharFile("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
@@ -124,7 +124,7 @@ extern "C" void func_ov127_02292a0c(u8 *s, u32 v) {
     Gfx2d_LoadScreen(s + 0x24, s[0x2832], 0x1000, 0);
 }
 
-extern "C" void func_ov127_02292994(u8 *s, u32 v) {
+extern "C" void StarSky_LoadScopeBg(u8 *s, u32 v) {
     void *h = gCurrentHeap;
     s[0x2833] = v;
     Gfx2d_LoadPaletteFile("menu/star/b_scp_bg.bpl", h, s[0x2833], 4, 8, 0xb);
@@ -133,21 +133,21 @@ extern "C" void func_ov127_02292994(u8 *s, u32 v) {
     Gfx2d_LoadScreen(s + 0x2024, s[0x2833], 0x800, 0);
 }
 
-extern "C" void func_ov127_02292950() {
+extern "C" void StarSky_LoadObjGraphics() {
     void *h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/star/b_scp_obj.bpl", h, 8, 5, 5, 9);
     Gfx2d_LoadCharFile("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
 }
 
-extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_Update(Unk_ov127_02291f60 *s)
 {
-    if (func_ov127_02292238(s, 4)) {
-        func_ov127_02292274(s);
+    if (StarSky_HasFlags(s, 4)) {
+        StarSky_StepToTarget(s);
     }
-    if (func_ov127_02292238(s, 1)) {
+    if (StarSky_HasFlags(s, 1)) {
         s32 v;
         Gfx2d_SetLayerOffset(s->unk_2832, s->unk_2824, s->unk_2826);
-        func_ov127_02292218(s, 1);
+        StarSky_ClearFlags(s, 1);
         v = 0;
         s32 t = s->unk_2826;
         if (t < 0) {
@@ -157,10 +157,10 @@ extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
         }
         if (v != s->unk_282e) {
             s->unk_282e = v;
-            func_ov127_02292228(s, 2);
+            StarSky_SetFlags(s, 2);
         }
     }
-    if (func_ov127_02292238(s, 2)) {
+    if (StarSky_HasFlags(s, 2)) {
         s32 cnt;
         u16 *p1;
         u16 *p2;
@@ -192,16 +192,16 @@ extern "C" void func_ov127_02292824(Unk_ov127_02291f60 *s)
             }
         }
         _ZN10BgVramTask13requestScreenEjhjj(s, s->unk_1024, s->unk_2832, 0x1000, 0);
-        func_ov127_02292218(s, 2);
+        StarSky_ClearFlags(s, 2);
     }
 }
 
-extern "C" void func_ov127_0229281c(void *p)
+extern "C" void StarSky_CancelUpload(void *p)
 {
     _ZN10BgVramTask6cancelEv(p);
 }
 
-extern "C" void func_ov127_022927a8(Unk_ov127_02291f60 *s, s32 a, s32 b)
+extern "C" void StarSky_DrawArrows(Unk_ov127_02291f60 *s, s32 a, s32 b)
 {
     s32 i, pal;
     for (i = 0; i < 4; i++) {
@@ -211,27 +211,27 @@ extern "C" void func_ov127_022927a8(Unk_ov127_02291f60 *s, s32 a, s32 b)
     s->unk_2834 = 4;
 }
 
-extern "C" void func_ov127_02292780(void *s, s32 y)
+extern "C" void StarSky_DrawScopeSprite(void *s, s32 y)
 {
     func_02088730(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, 0);
 }
 
-extern "C" void func_ov127_02292724(Unk_ov127_02291f60 *s, s32 i)
+extern "C" void StarSky_DrawStarMarker(Unk_ov127_02291f60 *s, s32 i)
 {
-    s32 a = func_ov127_0229225c(s);
-    s32 t = func_ov127_02292098(i);
+    s32 a = StarSky_GetScrollX(s);
+    s32 t = StarSky_GetStarX(i);
     s32 x = -a;
     x += 4;
     x += t << 3;
-    s32 b = func_ov127_02292250(s);
-    t = func_ov127_02292088(i);
+    s32 b = StarSky_GetScrollY(s);
+    t = StarSky_GetStarY(i);
     s32 y = -b;
     y += 4;
     y += t << 3;
     func_02088730(1, data_ov127_02293fa4, x & 0x1ff, y, -1, 2, 0);
 }
 
-extern "C" s32 func_ov127_022926e0(void *s, s32 x, s32 y)
+extern "C" s32 StarSky_HitArrow(void *s, s32 x, s32 y)
 {
     s32 xs, ys;
     u8 i;
@@ -245,31 +245,31 @@ extern "C" s32 func_ov127_022926e0(void *s, s32 x, s32 y)
     return 4;
 }
 
-extern "C" void func_ov127_02292698(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b)
+extern "C" void StarSky_ScrollByDir(Unk_ov127_02291f60 *s, s32 mode, s32 a, s32 b)
 {
     switch (mode) {
     case 0:
-        Unk_ov127_02292698_Ns::func_ov127_02292518(s, -a);
+        Unk_ov127_02292698_Ns::StarSky_ScrollX(s, -a);
         break;
     case 1:
-        Unk_ov127_02292698_Ns::func_ov127_02292518(s, a);
+        Unk_ov127_02292698_Ns::StarSky_ScrollX(s, a);
         break;
     case 2:
-        func_ov127_0229247c(s, a, b);
+        StarSky_ScrollY(s, a, b);
         break;
     case 3:
-        func_ov127_0229247c(s, -a, b);
+        StarSky_ScrollY(s, -a, b);
         break;
     }
 }
 
-extern "C" void func_ov127_022925c8(Unk_ov127_02291f60 *s, s32 d, s32 e)
+extern "C" void StarSky_ScrollInDir(Unk_ov127_02291f60 *s, s32 d, s32 e)
 {
     s32 ox = s->unk_2828;
     s32 oy = s->unk_2824;
     s32 oz = s->unk_2826;
     BOOL ch;
-    func_ov127_02292698(s, d, 4, e);
+    StarSky_ScrollByDir(s, d, 4, e);
     s->unk_2834 = d;
     ch = FALSE;
     if (ox != s->unk_2828 || oy != s->unk_2824 || oz != s->unk_2826) {
@@ -282,37 +282,37 @@ extern "C" void func_ov127_022925c8(Unk_ov127_02291f60 *s, s32 d, s32 e)
         }
     }
     if (ch) {
-        if (!func_ov127_02292238(s, 8)) {
-            func_ov127_02292228(s, 8);
+        if (!StarSky_HasFlags(s, 8)) {
+            StarSky_SetFlags(s, 8);
             func_02004008(0x883);
         }
     } else {
-        if (func_ov127_02292238(s, 8) == 1) {
-            func_ov127_02292218(s, 8);
+        if (StarSky_HasFlags(s, 8) == 1) {
+            StarSky_ClearFlags(s, 8);
             Snd_StopSe(0x883, 1);
         }
     }
-    if (func_ov127_02292238(s, 8) && e != 0) {
+    if (StarSky_HasFlags(s, 8) && e != 0) {
         Snd_SetPanIfChanged(data_ov127_02293fa0[d]);
     }
 }
 
-extern "C" void func_ov127_0229257c(Unk_ov127_02291f60 *s, s32 d)
+extern "C" void StarSky_StartBounce(Unk_ov127_02291f60 *s, s32 d)
 {
-    if (func_ov127_02292238(s, 8)) {
-        func_ov127_02292218(s, 8);
+    if (StarSky_HasFlags(s, 8)) {
+        StarSky_ClearFlags(s, 8);
         Snd_StopSe(0x883, 1);
     }
-    func_ov127_02292698(s, d, 1, 0);
+    StarSky_ScrollByDir(s, d, 1, 0);
     s->unk_2836 = 2;
     s->unk_2835 = d;
 }
 
-extern "C" BOOL func_ov127_02292538(Unk_ov127_02291f60 *s)
+extern "C" BOOL StarSky_UpdateBounce(Unk_ov127_02291f60 *s)
 {
     if (s->unk_2836 != 0) {
         s->unk_2836--;
-        func_ov127_02292698(s, s->unk_2835, data_ov127_02292abc[s->unk_2836], 0);
+        StarSky_ScrollByDir(s, s->unk_2835, data_ov127_02292abc[s->unk_2836], 0);
     }
     if (s->unk_2836 == 0) {
         return TRUE;
@@ -320,13 +320,13 @@ extern "C" BOOL func_ov127_02292538(Unk_ov127_02291f60 *s)
     return FALSE;
 }
 
-extern "C" void func_ov127_02292518(Unk_ov127_02291f60 *s, s32 a)
+extern "C" void StarSky_ScrollX(Unk_ov127_02291f60 *s, s32 a)
 {
     s->unk_2824 = (s->unk_2824 + a) & 0x1ff;
-    func_ov127_02292228(s, 1);
+    StarSky_SetFlags(s, 1);
 }
 
-extern "C" BOOL func_ov127_0229247c(Unk_ov127_02291f60 *s, s32 a, s32 b)
+extern "C" BOOL StarSky_ScrollY(Unk_ov127_02291f60 *s, s32 a, s32 b)
 {
     s32 old = s->unk_2826;
     s32 t;
@@ -357,21 +357,21 @@ extern "C" BOOL func_ov127_0229247c(Unk_ov127_02291f60 *s, s32 a, s32 b)
             s->unk_2828 = a;
         }
     }
-    func_ov127_02292228(s, 1);
+    StarSky_SetFlags(s, 1);
     if (old != s->unk_2826) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_ov127_02292454(Unk_ov127_02291f60 *s, s32 x, s32 y)
+extern "C" void StarSky_SetScroll(Unk_ov127_02291f60 *s, s32 x, s32 y)
 {
     s->unk_2824 = (x - 0x80) & 0x1ff;
     s->unk_2826 = y - 0x60;
-    func_ov127_0229247c(s, 0, 0);
+    StarSky_ScrollY(s, 0, 0);
 }
 
-extern "C" BOOL func_ov127_02292410(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
+extern "C" BOOL StarSky_ScreenToCell(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
 {
     x = (x + s->unk_2824) & 0x1ff;
     y = y + s->unk_2826;
@@ -383,23 +383,23 @@ extern "C" BOOL func_ov127_02292410(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox
     return TRUE;
 }
 
-extern "C" s32 func_ov127_022923d8(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
+extern "C" s32 StarSky_ScreenToCellInScope(Unk_ov127_02291f60 *s, s32 x, s32 y, s32 *ox, s32 *oy)
 {
     s32 cx = x >> 3;
     s32 cy = y >> 3;
     if ((s->unk_2024[cx + (cy << 5)] & 0x3ff) == 0x20) {
-        return func_ov127_02292410(s, x, y, ox, oy);
+        return StarSky_ScreenToCell(s, x, y, ox, oy);
     }
     return 0;
 }
 
-extern "C" void func_ov127_022923c0(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_RebuildScreen(Unk_ov127_02291f60 *s)
 {
     func_020b0008(s->unk_24);
-    func_ov127_02292228(s, 2);
+    StarSky_SetFlags(s, 2);
 }
 
-extern "C" void func_ov127_02292380(Unk_ov127_02291f60 *s, s32 x, s32 y)
+extern "C" void StarSky_SetScrollTarget(Unk_ov127_02291f60 *s, s32 x, s32 y)
 {
     s->unk_282a = (x - 0x80) & 0x1ff;
     s->unk_282c = y - 0x60;
@@ -409,16 +409,16 @@ extern "C" void func_ov127_02292380(Unk_ov127_02291f60 *s, s32 x, s32 y)
     } else if (t > 0x54) {
         s->unk_282c = 0x54;
     }
-    func_ov127_02292228(s, 4);
+    StarSky_SetFlags(s, 4);
 }
 
-extern "C" void func_ov127_02292274(Unk_ov127_02291f60 *s)
+extern "C" void StarSky_StepToTarget(Unk_ov127_02291f60 *s)
 {
     struct {
         Unk_ov127_02291f60_Vec a, b, c, e, f;
     } l;
     s32 len, t, bx;
-    func_ov127_02292228(s, 1);
+    StarSky_SetFlags(s, 1);
     l.a.y = 0;
     l.a.x = s->unk_2824 << 12;
     l.a.z = s->unk_2826 << 12;
@@ -438,7 +438,7 @@ extern "C" void func_ov127_02292274(Unk_ov127_02291f60 *s)
     l.c.z = l.e.z;
     len = func_020e9688(&l.c);
     if (len <= 0x8000) {
-        func_ov127_02292218(s, 4);
+        StarSky_ClearFlags(s, 4);
         s->unk_2824 = s->unk_282a;
         s->unk_2826 = s->unk_282c;
     } else {
@@ -459,22 +459,22 @@ extern "C" void func_ov127_02292274(Unk_ov127_02291f60 *s)
     }
 }
 
-extern "C" s32 func_ov127_02292268(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetOverscroll(Unk_ov127_02291f60 *s)
 {
     return s->unk_2828;
 }
 
-extern "C" s32 func_ov127_0229225c(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetScrollX(Unk_ov127_02291f60 *s)
 {
     return s->unk_2824;
 }
 
-extern "C" s32 func_ov127_02292250(Unk_ov127_02291f60 *s)
+extern "C" s32 StarSky_GetScrollY(Unk_ov127_02291f60 *s)
 {
     return s->unk_2826;
 }
 
-extern "C" BOOL func_ov127_02292238(Unk_ov127_02291f60 *s, u32 m)
+extern "C" BOOL StarSky_HasFlags(Unk_ov127_02291f60 *s, u32 m)
 {
     if ((s->unk_2830 & m) != 0) {
         return TRUE;
@@ -482,24 +482,24 @@ extern "C" BOOL func_ov127_02292238(Unk_ov127_02291f60 *s, u32 m)
     return FALSE;
 }
 
-extern "C" void func_ov127_02292228(Unk_ov127_02291f60 *s, u32 m)
+extern "C" void StarSky_SetFlags(Unk_ov127_02291f60 *s, u32 m)
 {
     s->unk_2830 |= m;
 }
 
-extern "C" void func_ov127_02292218(Unk_ov127_02291f60 *s, u32 m)
+extern "C" void StarSky_ClearFlags(Unk_ov127_02291f60 *s, u32 m)
 {
     s->unk_2830 &= ~m;
 }
 
-extern "C" s32 func_ov127_02292204(s32 x, s32 y)
+extern "C" s32 StarSky_GetStarAt(s32 x, s32 y)
 {
-    return func_ov127_022921d8(func_020b005c(x, y));
+    return StarSky_GetStarAtCellIndex(func_020b005c(x, y));
 }
 
-extern "C" s32 func_ov127_022921d8(s32 i)
+extern "C" s32 StarSky_GetStarAtCellIndex(s32 i)
 {
-    u32 v = data_ov127_02292f98[i];
+    u32 v = kStarSkyCells[i];
     s32 t = v & 0xf000;
     if ((t >> 12) == 1) {
         return v & 0xfff;
@@ -507,14 +507,14 @@ extern "C" s32 func_ov127_022921d8(s32 i)
     return -1;
 }
 
-extern "C" s32 func_ov127_022921c4(s32 x, s32 y)
+extern "C" s32 StarSky_GetLineAt(s32 x, s32 y)
 {
-    return func_ov127_02292198(func_020b005c(x, y));
+    return StarSky_GetLineAtCellIndex(func_020b005c(x, y));
 }
 
-extern "C" s32 func_ov127_02292198(s32 i)
+extern "C" s32 StarSky_GetLineAtCellIndex(s32 i)
 {
-    u32 v = data_ov127_02292f98[i];
+    u32 v = kStarSkyCells[i];
     s32 t = v & 0xf000;
     if ((t >> 12) == 2) {
         return v & 0xfff;
@@ -522,7 +522,7 @@ extern "C" s32 func_ov127_02292198(s32 i)
     return -1;
 }
 
-extern "C" s32 func_ov127_022920a4(u16 *out, s32 x, s32 y)
+extern "C" s32 StarSky_GetLinesAround(u16 *out, s32 x, s32 y)
 {
     s32 n, t, a, b;
     volatile s32 c, d;
@@ -536,44 +536,44 @@ extern "C" s32 func_ov127_022920a4(u16 *out, s32 x, s32 y)
     d = y + 1;
     n = 0;
     if (c >= 0) {
-        t = func_ov127_022921c4(a, c);
+        t = StarSky_GetLineAt(a, c);
         if (t != -1) {
             out[n] = t;
             n++;
         }
-        t = func_ov127_022921c4(x, c);
+        t = StarSky_GetLineAt(x, c);
         if (t != -1) {
             out[n] = t;
             n++;
         }
-        t = func_ov127_022921c4(b, c);
+        t = StarSky_GetLineAt(b, c);
         if (t != -1) {
             out[n] = t;
             n++;
         }
     }
-    t = func_ov127_022921c4(a, y);
+    t = StarSky_GetLineAt(a, y);
     if (t != -1) {
         out[n] = t;
         n++;
     }
-    t = func_ov127_022921c4(b, y);
+    t = StarSky_GetLineAt(b, y);
     if (t != -1) {
         out[n] = t;
         n++;
     }
     if (d < 0x20) {
-        t = func_ov127_022921c4(a, d);
+        t = StarSky_GetLineAt(a, d);
         if (t != -1) {
             out[n] = t;
             n++;
         }
-        t = func_ov127_022921c4(x, d);
+        t = StarSky_GetLineAt(x, d);
         if (t != -1) {
             out[n] = t;
             n++;
         }
-        t = func_ov127_022921c4(b, d);
+        t = StarSky_GetLineAt(b, d);
         if (t != -1) {
             out[n] = t;
             n++;
@@ -585,22 +585,22 @@ extern "C" s32 func_ov127_022920a4(u16 *out, s32 x, s32 y)
     return n;
 }
 
-extern "C" u32 func_ov127_02292098(s32 i)
+extern "C" u32 StarSky_GetStarX(s32 i)
 {
-    return data_ov127_02292ac4[i * 2];
+    return kStarPositions[i * 2];
 }
 
-extern "C" u32 func_ov127_02292088(s32 i)
+extern "C" u32 StarSky_GetStarY(s32 i)
 {
-    return data_ov127_02292ac4[i * 2 + 1];
+    return kStarPositions[i * 2 + 1];
 }
 
-extern "C" u8 *func_ov127_0229207c(u16 i)
+extern "C" u8 *StarSky_GetLineStars(u16 i)
 {
-    return (u8 *)data_ov127_02292c0c + i * 2;
+    return (u8 *)kStarLines + i * 2;
 }
 
-extern "C" s32 func_ov127_02292040(u16 v)
+extern "C" s32 StarSky_FindConstellationByLine(u16 v)
 {
     s32 i, j;
     for (i = 0; i < 16; i++) {
@@ -617,7 +617,7 @@ extern "C" s32 func_ov127_02292040(u16 v)
     return -1;
 }
 
-extern "C" void func_ov127_02291fcc(Unk_ov127_02291fcc *p, u8 *out)
+extern "C" void StarSky_CollectStars(Unk_ov127_02291fcc *p, u8 *out)
 {
     s32 i, k, j, n;
     u8 *q;
@@ -630,7 +630,7 @@ extern "C" void func_ov127_02291fcc(Unk_ov127_02291fcc *p, u8 *out)
         if (v == 0xffff) {
             continue;
         }
-        q = func_ov127_0229207c(v);
+        q = StarSky_GetLineStars(v);
         for (k = 0; k < 2; k++) {
             u8 *pk;
             for (j = 0, pk = q + k; n >= j; j++) {
@@ -650,7 +650,7 @@ extern "C" const s32 data_ov127_02292abc[2] = {
     -1, 0,
 };
 
-extern "C" const u8 data_ov127_02292ac4[328] = {
+extern "C" const u8 kStarPositions[328] = {
     0x00, 0x00, 0x05, 0x00, 0x09, 0x00, 0x16, 0x00, 0x1a, 0x00, 0x0e, 0x01, 0x12, 0x01, 0x03, 0x02,
     0x1d, 0x02, 0x07, 0x03, 0x0a, 0x03, 0x19, 0x03, 0x01, 0x04, 0x10, 0x04, 0x14, 0x04, 0x04, 0x05,
     0x0d, 0x05, 0x1f, 0x05, 0x07, 0x06, 0x17, 0x06, 0x1b, 0x06, 0x02, 0x07, 0x0b, 0x07, 0x0f, 0x07,
@@ -674,7 +674,7 @@ extern "C" const u8 data_ov127_02292ac4[328] = {
     0x30, 0x1e, 0x34, 0x1f, 0x38, 0x1f, 0x00, 0x00,
 };
 
-extern "C" const u8 data_ov127_02292c0c[908] = {
+extern "C" const u8 kStarLines[908] = {
     0x00, 0x01, 0x01, 0x02, 0x02, 0x05, 0x05, 0x06, 0x03, 0x06, 0x03, 0x04, 0x04, 0x08, 0x58, 0x08,
     0x53, 0x58, 0x53, 0x59, 0x54, 0x55, 0x55, 0x5a, 0x5a, 0x5b, 0x56, 0x5b, 0x56, 0x57, 0x00, 0x57,
     0x00, 0x0c, 0x00, 0x07, 0x01, 0x07, 0x01, 0x09, 0x02, 0x09, 0x02, 0x0a, 0x05, 0x0a, 0x05, 0x10,
@@ -734,7 +734,7 @@ extern "C" const u8 data_ov127_02292c0c[908] = {
     0x81, 0x85, 0x85, 0x8b, 0x99, 0x9f, 0x9c, 0x9f, 0x54, 0x59, 0x54, 0x5e,
 };
 
-extern "C" const u16 data_ov127_02292f98[2048] = {
+extern "C" const u16 kStarSkyCells[2048] = {
     0x1000, 0x2000, 0x2000, 0x2000, 0x2000, 0x1001, 0x2001, 0x2001,
     0x2001, 0x1002, 0x2002, 0x2002, 0x0, 0x0, 0x0, 0x0,
     0x0, 0x0, 0x0, 0x0, 0x2004, 0x2004, 0x1003, 0x2005,
@@ -1014,20 +1014,20 @@ extern "C" u8 data_ov127_02293fd4[32] = {
     0x50, 0x40, 0xf0, 0xa1, 0xc2, 0x60, 0x00, 0x00, 0xa0, 0x40, 0xf0, 0x81, 0xc2, 0x60, 0xff, 0xff,
 };
 
-extern "C" BOOL func_ov127_02291f60(Unk_ov127_02291fcc *p)
+extern "C" BOOL StarSky_IsConstellationFree(Unk_ov127_02291fcc *p)
 {
     s32 i, j, k;
-    func_ov127_02291fcc(p, data_ov127_022940a0);
+    StarSky_CollectStars(p, sTestedConstellationStars);
     for (i = 0; i < 16; i++) {
         Unk_ov127_02291fcc *q = func_020b04a4(i);
         if (q == 0) {
             continue;
         }
-        func_ov127_02291fcc(q, data_ov127_022940b4);
-        for (j = 0; j < 0x11 && data_ov127_022940a0[j] != 0xff; j++) {
-            u8 *pj = data_ov127_022940a0 + j;
-            for (k = 0; k < 0x11 && data_ov127_022940b4[k] != 0xff; k++) {
-                if (*pj == data_ov127_022940b4[k]) {
+        StarSky_CollectStars(q, sSavedConstellationStars);
+        for (j = 0; j < 0x11 && sTestedConstellationStars[j] != 0xff; j++) {
+            u8 *pj = sTestedConstellationStars + j;
+            for (k = 0; k < 0x11 && sSavedConstellationStars[k] != 0xff; k++) {
+                if (*pj == sSavedConstellationStars[k]) {
                     return FALSE;
                 }
             }
@@ -1037,8 +1037,8 @@ extern "C" BOOL func_ov127_02291f60(Unk_ov127_02291fcc *p)
 }
 
 extern "C" {
-u8 data_ov127_022940a0[0x11];
-u8 data_ov127_022940b4[0x11];
+u8 sTestedConstellationStars[0x11];
+u8 sSavedConstellationStars[0x11];
 }
 
 extern "C" u8 data_ov127_02293fa0[4] = {

@@ -5,7 +5,7 @@
 #undef postCreate
 #undef vfunc_14
 
-#define func_ov002_02202844 _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev
+#define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
 #define func_02063870 _ZN12Unk_020dd38cD1Ev
 #define func_02063888 _ZN12Unk_020dd38cC2Ev
 #define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
@@ -19,26 +19,26 @@
 #define MsgString_clear _ZN9MsgString5clearEv
 #define BgVramTask_requestScreen _ZN10BgVramTask13requestScreenEjhjj
 #define BgVramTask_cancel _ZN10BgVramTask6cancelEv
-#define func_ov002_022028f0 _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev
-#define func_ov002_022029e8 _ZN18Unk_ov002_02202d9819func_ov002_022029e8Eiiii
-#define func_ov002_02202a40 _ZN18Unk_ov002_02202d9819func_ov002_02202a40Eii
-#define func_ov002_02202a78 _ZN18Unk_ov002_02202d9819func_ov002_02202a78Ev
-#define func_ov002_02202af0 _ZN18Unk_ov002_02202d9819func_ov002_02202af0Ev
-#define func_ov002_02202b68 _ZN18Unk_ov002_0220464c19func_ov002_02202b68Ev
-#define func_ov002_02202d00 _ZN18Unk_ov002_0220464c19func_ov002_02202d00Ei
-#define func_ov002_02202e60 _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev
-#define func_ov002_02202e84 _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev
-#define func_ov002_02202f18 _ZN18Unk_ov002_022046b019func_ov002_02202f18Eii
-#define func_ov092_02291c5c _ZN18Unk_ov092_02291ec819func_ov092_02291c5cEv
-#define func_ov092_02291ce4 _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii
+#define MenuCursorBase_isMoving _ZN14MenuCursorBase8isMovingEv
+#define MenuCursorBase_moveToEase _ZN14MenuCursorBase10moveToEaseEiiii
+#define MenuCursorBase_warpTo _ZN14MenuCursorBase6warpToEii
+#define MenuCursorBase_setPoseIdle _ZN14MenuCursorBase11setPoseIdleEv
+#define MenuCursorBase_setPoseRelease _ZN14MenuCursorBase14setPoseReleaseEv
+#define MenuCursor_setPosePress _ZN10MenuCursor12setPosePressEv
+#define MenuCursor_setAnimIfChanged _ZN10MenuCursor16setAnimIfChangedEi
+#define MenuScrollKnob_getGripY _ZN14MenuScrollKnob8getGripYEv
+#define MenuScrollKnob_getGripX _ZN14MenuScrollKnob8getGripXEv
+#define MenuScrollKnob_hitTest _ZN14MenuScrollKnob7hitTestEii
+#define MenuLauncher_onChildClosed _ZN12MenuLauncher13onChildClosedEv
+#define MenuLauncher_setNextRequest _ZN12MenuLauncher14setNextRequestEii
 
 extern "C" {
 s32 ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
 void func_020b8800(void *p);
 void func_0206fca8(void *p);
-void func_ov092_02291ce4(s32 a, s32 b, s32 c);
-void func_ov092_02291c5c();
+void MenuLauncher_setNextRequest(s32 a, s32 b, s32 c);
+void MenuLauncher_onChildClosed();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 extern u8 gTouchHeld;
@@ -70,9 +70,9 @@ void String_SetSlot(u32 a, void *b);
 void func_0206fb9c(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
 void func_0206f9fc(void *a, u32 b);
 void func_0206fab4(void *a, u32 b, u32 c);
-void func_ov117_02292408(void *a, void *b);
-void func_ov117_02292c88(void *p);
-void func_ov002_02202844(void *p);
+void TownMapImage_Build(void *a, void *b);
+void TownMapMarkers_Clear(void *p);
+void MenuCursorBase_drawWrapped(void *p);
 void func_ov117_02292cac();
 void *Heap_AllocTail(void *a, u32 b);
 void Heap_Free(void *a, void *b);
@@ -83,20 +83,20 @@ extern u16 gPad[];
 void ScrollKnob_setState(void *p, s32 v);
 s32 ScrollKnob_areAnimsDone(void *p);
 s32 HandCursor_isAnimDone(void *p);
-s32 func_ov002_022028f0(void *p);
-void func_ov002_02202a78(void *p);
-void func_ov002_02202af0(void *p);
-void func_ov002_02202b68(void *p);
-void func_ov002_02202a40(void *p, s32 a, s32 b);
-void func_ov002_022029e8(void *p, s32 a, s32 b, u32 c, u32 d);
-void func_ov002_02202d00(void *p, u32 v);
-s32 func_ov002_02202e60(void *p);
-s32 func_ov002_02202e84(void *p);
-BOOL func_ov002_02202f18(void *p, u32 a, u32 b);
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
+s32 MenuCursorBase_isMoving(void *p);
+void MenuCursorBase_setPoseIdle(void *p);
+void MenuCursorBase_setPoseRelease(void *p);
+void MenuCursor_setPosePress(void *p);
+void MenuCursorBase_warpTo(void *p, s32 a, s32 b);
+void MenuCursorBase_moveToEase(void *p, s32 a, s32 b, u32 c, u32 d);
+void MenuCursor_setAnimIfChanged(void *p, u32 v);
+s32 MenuScrollKnob_getGripY(void *p);
+s32 MenuScrollKnob_getGripX(void *p);
+BOOL MenuScrollKnob_hitTest(void *p, u32 a, u32 b);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
 struct Unk_ov120_02293a2c_Oam {
     u16 unk_0;
     u16 a : 9;
@@ -106,13 +106,13 @@ struct Unk_ov120_02293a2c_Oam {
     u16 c : 6;
     u16 unk_6;
 };
-extern Unk_ov120_02293a2c_Oam data_ov120_02294f18;
-extern const u8 data_ov120_02294ec0[5];
-extern const u8 data_ov120_02294ec8[5];
+extern Unk_ov120_02293a2c_Oam sMapViewIconCell;
+extern const u8 sMapViewFacilityCells[5];
+extern const u8 sMapViewPlaceMarkers[5];
 extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
-s16 *func_ov117_02292c40(void *p, s32 i);
-u32 func_ov117_02292c2c(void *p, s32 i);
+s16 *TownMapMarkers_Get(void *p, s32 i);
+u32 TownMapMarkers_GetKind(void *p, s32 i);
 void MsgString_clear(void *p);
 void func_0206fc44(void *p);
 void *PlayerData_GetCurrent();
@@ -123,9 +123,9 @@ BOOL SaveVillagers_IsOccupied(void *a, s32 b);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void MIi_CpuCopy16(void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
-void func_ov002_022019a4(void *p, s32 a);
-void func_ov002_02201984(void *p, s32 a);
-void func_ov002_02201938(void *p, s32 a);
+void PopupChoice_CopyPlayerIdName(void *p, s32 a);
+void PopupChoice_CopyResidentName(void *p, s32 a);
+void PopupChoice_CopyVillagerName(void *p, s32 a);
 }
 
 class BgVramTask {
@@ -142,46 +142,46 @@ public:
 };
 
 // sub-object at +0x438 (ctor func_ov002_02202f88), 0x48 bytes, polymorphic
-class Unk_ov002_022046b0 {
+class MenuScrollKnob {
 public:
-    Unk_ov002_022046b0();
-    virtual ~Unk_ov002_022046b0();
+    MenuScrollKnob();
+    virtual ~MenuScrollKnob();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     u32 unk_04[0x44 / 4];
 };
 
 // sub-object at +0x480 (ctor func_ov002_02202658), 0x64 bytes
-class Unk_ov002_02204614 {
+class MenuCursorBuf0 {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     u32 unk_04[0x60 / 4];
 };
 
 // 3-byte record, ctor func_ov120_02292de4, dtor func_ov120_02292de0
-class Unk_ov120_02292de0 {
+class MapViewMarker {
 public:
-    Unk_ov120_02292de0();
-    ~Unk_ov120_02292de0();
+    MapViewMarker();
+    ~MapViewMarker();
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
 };
 
-class Unk_ov117_02292c88 {
+class TownMapMarkers {
 public:
-    Unk_ov117_02292c88();
-    ~Unk_ov117_02292c88();
+    TownMapMarkers();
+    ~TownMapMarkers();
     u8 unk_00[0x66];
 };
 
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -192,31 +192,31 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-    void func_ov002_02200980();
-    u32 func_ov002_022009c8();
-    s32 func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 v);
-    s32 func_ov002_022008fc(s32 v);
-    s32 func_ov002_02200908(s32 v);
-    u32 func_ov002_02200920();
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_022008c4(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_022008e0(s32 a, s32 b, s32 c, s32 d);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
+    void restartKeyRepeat();
+    u32 takeRepeatedKeys();
+    s32 checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 v);
+    s32 stepSlideOut(s32 v);
+    s32 stepSlideIn(s32 v);
+    u32 getSlideOffsetY();
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void beginSubSlideOut(s32 a, s32 b, s32 c, s32 d);
+    void beginSubSlideIn(s32 a, s32 b, s32 c, s32 d);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -225,106 +225,106 @@ public:
     /* 0x90 */ u8 unk_90;
 };
 
-class Unk_ov120_02295010;
-typedef void (Unk_ov120_02295010::*Unk_ov120_02295010_Fn)();
+class MapViewerMenu;
+typedef void (MapViewerMenu::*Unk_ov120_02295010_Fn)();
 
 // Vtable 0x02295010, size 0x2534
-class Unk_ov120_02295010 : public Unk_ov002_022044e4 {
+class MapViewerMenu : public MenuProc {
 public:
-    Unk_ov120_02295010()
+    MapViewerMenu()
         : unk_b0(), unk_f8(), unk_438(), unk_480(), unk_24fe(), unk_2507() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov120_02292de8(u32 mask);
-    void func_ov120_02292df8(u32 mask);
-    BOOL func_ov120_02292e08(u32 mask);
-    void func_ov120_02292e1c();
-    s32 func_ov120_02292e7c();
-    BOOL func_ov120_02292f44(void *pad);
-    void func_ov120_02293090();
-    void func_ov120_022930b0();
-    void func_ov120_022930d0();
-    void func_ov120_022930f0();
-    void func_ov120_02293168();
-    s32 func_ov120_0229318c();
-    s32 func_ov120_022931dc();
-    void func_ov120_02293230();
-    void func_ov120_022932a8();
-    void func_ov120_022932c4();
-    void func_ov120_022932e8();
-    BOOL func_ov120_02293374();
-    void func_ov120_022933f0();
-    void func_ov120_02293440();
-    BOOL func_ov120_0229348c();
-    void func_ov120_022934e0();
-    BOOL func_ov120_02293590();
-    void func_ov120_0229359c(u32 v);
-    void func_ov120_022935ac(u32 v);
-    void func_ov120_022935c8();
-    u32 func_ov120_0229364c(u8 v);
-    void func_ov120_0229371c(u8 v);
-    void func_ov120_02293784(u8 v);
-    s32 func_ov120_02293b0c();
-    s32 func_ov120_02293b28();
-    void func_ov120_02293bd4();
-    void func_ov120_02293bec();
-    u32 func_ov120_022936b4(u8 v);
-    void func_ov120_02293620();
-    u32 func_ov120_02293838(s32 x, s32 y);
-    BOOL func_ov120_02293898();
-    void func_ov120_022938d0(void *src);
-    void func_ov120_02293a2c(s32 x, s32 y, s32 n, s32 flag, s32 pal);
-    BOOL func_ov120_02293ac0();
-    u8 *func_ov120_02293b48();
-    s32 func_ov120_02293b70();
-    void func_ov120_02293c04(void *p, u32 idx);
-    s32 func_ov120_02293c70(u8 *tbl);
-    void func_ov120_02293cc8();
-    void func_ov120_02293cfc();
-    void *func_ov120_02293dc0();
-    void func_ov120_02293df4();
-    u32 func_ov120_02293e1c(u32 a, s32 b);
-    void func_ov120_02293e70();
-    void func_ov120_02293f08();
-    void func_ov120_0229439c();
-    void func_ov120_02294428();
-    void func_ov120_022944d8();
-    void func_ov120_0229450c();
-    void func_ov120_02294514();
-    void func_ov120_02294540();
-    void func_ov120_0229460c();
-    void func_ov120_02294614();
-    void func_ov120_02294634();
-    void func_ov120_0229489c();
-    void func_ov120_02294024();
-    void func_ov120_02294078();
-    void func_ov120_022940a4();
-    void func_ov120_022940dc();
-    void func_ov120_02294100();
-    void func_ov120_02294144();
-    void func_ov120_0229418c();
-    void func_ov120_022941b8();
-    void func_ov120_02294290();
-    void func_ov120_022942c0();
-    void func_ov120_02294958();
-    void func_ov120_02294974();
-    void func_ov120_0229498c();
-    BOOL func_ov120_022949a8();
-    void func_ov120_02294a04();
-    void func_ov120_02293fc4();
-    void func_ov120_0229400c();
-    void func_ov120_0229433c();
-    void func_ov120_0229470c();
-    void func_ov120_0229476c();
-    void func_ov120_022947c0();
+    void clearFlags(u32 mask);
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    void moveMapCursorToRow();
+    s32 onCursorDecide();
+    BOOL moveCursorByPad(void *pad);
+    void refreshCursor();
+    void releaseCursor();
+    void pressCursor();
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void showCursor();
+    void stopBlink();
+    void startBlink();
+    void updateBlink();
+    BOOL touchListTabs();
+    void scrollListByPad();
+    void scrollListToTouch();
+    BOOL touchScrollKnob();
+    void updateListScroll();
+    BOOL isListScrolling();
+    void setListScrollTarget(u32 v);
+    void setListScroll(u32 v);
+    void ensureSelectionVisible();
+    u32 selectionToMarker(u8 v);
+    void highlightListRow(u8 v);
+    void selectEntry(u8 v);
+    s32 getListScrollMax();
+    s32 getListCount();
+    void showPlacesList();
+    void showResidentsList();
+    u32 selectionToListRow(u8 v);
+    void jumpToSelection();
+    u32 findMarkerAt(s32 x, s32 y);
+    BOOL touchMarker();
+    void setupMarkers(void *src);
+    void drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal);
+    BOOL touchListRow();
+    u8 *getListEntries();
+    s32 rebuildList();
+    void setEntryName(void *p, u32 idx);
+    s32 buildEntryLabels(u8 *tbl);
+    void layoutListLabels();
+    void buildEntryLists();
+    void *allocTextLabel();
+    void resetTextLabels();
+    u32 getEntryIconRow(u32 a, s32 b);
+    void buildListScreen();
+    void clipListScreen();
+    void loadMapImage();
+    void loadBgGfx();
+    void setupBgLayers();
+    void postInputUpdate();
+    void preInputUpdate();
+    void postStateUpdate();
+    void preStateUpdate();
+    void releaseResources();
+    void initMapViewer();
+    void stateOpen();
+    void updateWaitClose();
+    void updateKnobRelease();
+    void updateKnobHold();
+    void updateKnobGrab();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void updateButtons();
+    void updateKnobDrag();
+    void updateTouch();
+    void stateBuildList();
+    void stateLoadMap();
+    void stateLoadBg();
+    BOOL requestClose();
+    void runMainState();
+    void startButtonInput();
+    void startTouchInput();
+    void loadObjGfx();
+    void stateClosing();
+    void stateClose();
+    void stateOpening();
 
     /* 0x91 */ u8 unk_91[3];
     /* 0x94 */ u32 unk_94;
@@ -351,16 +351,16 @@ public:
     /* 0xaf */ u8 unk_af;
     /* 0xb0 */ BgVramTask unk_b0[2];
     /* 0xf8 */ Unk_020e0488 unk_f8[13];
-    /* 0x438 */ Unk_ov002_022046b0 unk_438;
-    /* 0x480 */ Unk_ov002_02204614 unk_480;
+    /* 0x438 */ MenuScrollKnob unk_438;
+    /* 0x480 */ MenuCursorBuf0 unk_480;
     /* 0x4e4 */ u16 unk_4e4[0x400];
     /* 0xce4 */ u16 unk_ce4[0x400];
     /* 0x14e4 */ u16 unk_14e4[0x400];
     /* 0x1ce4 */ u16 unk_1ce4[0x400];
     /* 0x24e4 */ u8 unk_24e4[13];
     /* 0x24f1 */ u8 unk_24f1[13];
-    /* 0x24fe */ Unk_ov120_02292de0 unk_24fe[3];
-    /* 0x2507 */ Unk_ov120_02292de0 unk_2507[14];
+    /* 0x24fe */ MapViewMarker unk_24fe[3];
+    /* 0x2507 */ MapViewMarker unk_2507[14];
 };
 
 static inline BOOL IsZero(u8 v) {
@@ -378,25 +378,25 @@ struct Unk_ov120_02294634_V {
 };
 
 // Forward declarations (definition order sets the data layout)
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_0229498cEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294974Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294958Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_0229489cEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_022947c0Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_0229476cEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_0229470cEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_022942c0Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294290Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_022941b8Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_0229418cEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294144Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294100Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_022940dcEv();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_022940a4Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294078Ev();
-extern "C" void _ZN18Unk_ov120_0229501019func_ov120_02294024Ev();
-extern const u8 data_ov120_02294ec0[5];
-extern const u8 data_ov120_02294ec8[5];
+extern "C" void _ZN13MapViewerMenu11stateLoadBgEv();
+extern "C" void _ZN13MapViewerMenu12stateLoadMapEv();
+extern "C" void _ZN13MapViewerMenu14stateBuildListEv();
+extern "C" void _ZN13MapViewerMenu9stateOpenEv();
+extern "C" void _ZN13MapViewerMenu12stateOpeningEv();
+extern "C" void _ZN13MapViewerMenu10stateCloseEv();
+extern "C" void _ZN13MapViewerMenu12stateClosingEv();
+extern "C" void _ZN13MapViewerMenu11updateTouchEv();
+extern "C" void _ZN13MapViewerMenu14updateKnobDragEv();
+extern "C" void _ZN13MapViewerMenu13updateButtonsEv();
+extern "C" void _ZN13MapViewerMenu16updateCursorMoveEv();
+extern "C" void _ZN13MapViewerMenu17updateCursorPressEv();
+extern "C" void _ZN13MapViewerMenu19updateCursorReleaseEv();
+extern "C" void _ZN13MapViewerMenu14updateKnobGrabEv();
+extern "C" void _ZN13MapViewerMenu14updateKnobHoldEv();
+extern "C" void _ZN13MapViewerMenu17updateKnobReleaseEv();
+extern "C" void _ZN13MapViewerMenu15updateWaitCloseEv();
+extern const u8 sMapViewFacilityCells[5];
+extern const u8 sMapViewPlaceMarkers[5];
 extern void *data_ov120_02294f68[2];
 extern void *data_ov120_02294f70[2];
 extern void *data_ov120_02294f08[2];
@@ -414,68 +414,68 @@ extern void *data_ov120_02294ef0[2];
 extern void *data_ov120_02294ef8[2];
 extern void *data_ov120_02294f00[2];
 extern void *data_ov120_02294f30[2];
-extern u8 data_ov120_02294f78[32];
-extern u8 data_ov120_02294f98[32];
-extern u8 data_ov120_02294fb8[80];
-extern "C" Unk_ov120_02295010 *func_ov120_02294e1c();
+extern u8 sMapViewPlacesButtonCells[32];
+extern u8 sMapViewResidentsButtonCells[32];
+extern u8 sMapViewFrameCells[80];
+extern "C" MapViewerMenu *MapViewerMenu_Create();
 // Scene registration entry read by main: factory, then two ids
 struct Unk_ov120_SceneEntry {
-    Unk_ov120_02295010 *(*create)();
+    MapViewerMenu *(*create)();
     u16 a;
     u16 b;
 };
 
 
-extern "C" Unk_ov120_02295010 *func_ov120_02294e1c() { return new Unk_ov120_02295010(); }
+extern "C" MapViewerMenu *MapViewerMenu_Create() { return new MapViewerMenu(); }
 
-BOOL Unk_ov120_02295010::vfunc_00() {
-    func_ov120_02294634();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL MapViewerMenu::vfunc_00() {
+    initMapViewer();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov120_02295010::vfunc_0c() {
+BOOL MapViewerMenu::vfunc_0c() {
     ProcBase_GetParent(this);
-    func_ov092_02291c5c();
-    func_ov120_02294614();
+    MenuLauncher_onChildClosed();
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov120_02295010::onDraw() {
+BOOL MapViewerMenu::onDraw() {
     u32 h = unk_94 + 0x60;
-    if (func_ov120_02292e08(4)) {
-        if (func_ov120_02292e08(8)) {
+    if (testFlags(4)) {
+        if (testFlags(8)) {
             ScrollKnob_moveTo(&unk_438, 0x67, unk_94 - 0x12 + unk_a4);
         }
-        func_ov002_02202844(&unk_480);
-        Oam_DrawCell(1, data_ov120_02294fb8, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        MenuCursorBase_drawWrapped(&unk_480);
+        Oam_DrawCell(1, sMapViewFrameCells, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 a, b;
-        if (func_ov120_02292e08(1)) {
+        if (testFlags(1)) {
             b = 0xc;
             a = 0xd;
         } else {
             b = 0xb;
             a = 0xe;
         }
-        Oam_DrawCell(1, data_ov120_02294f78, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        Oam_DrawCell(1, data_ov120_02294f98, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, sMapViewPlacesButtonCells, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, sMapViewResidentsButtonCells, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         u32 t = unk_ac;
         if (t != 0xe) {
             u8 *e = (u8 *)this + t * 3;
             if (e[0x2509] != 0xc) {
-                func_ov120_02293a2c(e[0x2507], unk_94 + e[0x2508], 0xb, 0, -1);
+                drawMapIcon(e[0x2507], unk_94 + e[0x2508], 0xb, 0, -1);
             }
         }
         unk_af = (unk_af + 1) & 0xf;
         if ((unk_af & 0xc) != 0) {
-            func_ov120_02293a2c(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
+            drawMapIcon(unk_9e, unk_9f + unk_94, 0xa, 0, -1);
         }
         for (s32 i = 0; i < 3; i++) {
             u8 *e = (u8 *)this + i * 3;
             u32 c = e[0x2500];
             if (c != 0xc) {
-                func_ov120_02293a2c(e[0x24fe], unk_94 + e[0x24ff], (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
+                drawMapIcon(e[0x24fe], unk_94 + e[0x24ff], (u8)(c & 0x7f), (c & 0x80) ? 1 : 0, -1);
             }
         }
         for (s32 i = 0; i < 14; i++) {
@@ -483,36 +483,36 @@ BOOL Unk_ov120_02295010::onDraw() {
             u8 *q = e + 0x2509;
             if (*q != 0xc) {
                 s32 v;
-                if (i == unk_a8 && !func_ov120_02292e08(0x100)) {
+                if (i == unk_a8 && !testFlags(0x100)) {
                     v = 8;
                 } else {
                     v = -1;
                 }
-                func_ov120_02293a2c(e[0x2507], unk_94 + e[0x2508], *q, 0, v);
+                drawMapIcon(e[0x2507], unk_94 + e[0x2508], *q, 0, v);
             }
         }
-        if (func_ov120_02292e08(8)) {
+        if (testFlags(8)) {
             unk_438.vfunc_08();
         }
     }
     return TRUE;
 }
 
-extern "C" void *data_ov120_02294f28[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_022942c0Ev, 0};
-extern "C" const u8 data_ov120_02294ec0[5] = {2, 3, 4, 5, 6};
-extern "C" u8 data_ov120_02294f78[32] = {0xd3, 0x00, 0x2a, 0x40, 0xa2, 0xe1, 0x00, 0x00, 0xd3, 0x80, 0x3a, 0x00, 0xa4, 0xe1, 0x00, 0x00, 0xe3, 0x40, 0x2a, 0x00, 0xe2, 0xe1, 0x00, 0x00, 0xe3, 0x00, 0x3a, 0x00, 0xe4, 0xe1, 0xff, 0xff};
-extern "C" void *data_ov120_02294f68[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_0229498cEv, 0};
-extern "C" const u8 data_ov120_02294ec8[5] = {0xb, 0xc, 9, 0xa, 0xd};
-extern "C" void *data_ov120_02294ee0[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294144Ev, 0};
-extern "C" void *data_ov120_02294ef0[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_022940dcEv, 0};
-extern "C" void *data_ov120_02294f70[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294974Ev, 0};
-extern "C" void *data_ov120_02294f08[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294958Ev, 0};
-extern "C" void *data_ov120_02294f60[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_022941b8Ev, 0};
-extern "C" void *data_ov120_02294f58[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_022947c0Ev, 0};
-extern "C" void *data_ov120_02294f50[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_0229476cEv, 0};
-extern "C" void *data_ov120_02294f48[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_0229470cEv, 0};
+extern "C" void *data_ov120_02294f28[2] = {(void *)_ZN13MapViewerMenu11updateTouchEv, 0};
+extern "C" const u8 sMapViewFacilityCells[5] = {2, 3, 4, 5, 6};
+extern "C" u8 sMapViewPlacesButtonCells[32] = {0xd3, 0x00, 0x2a, 0x40, 0xa2, 0xe1, 0x00, 0x00, 0xd3, 0x80, 0x3a, 0x00, 0xa4, 0xe1, 0x00, 0x00, 0xe3, 0x40, 0x2a, 0x00, 0xe2, 0xe1, 0x00, 0x00, 0xe3, 0x00, 0x3a, 0x00, 0xe4, 0xe1, 0xff, 0xff};
+extern "C" void *data_ov120_02294f68[2] = {(void *)_ZN13MapViewerMenu11stateLoadBgEv, 0};
+extern "C" const u8 sMapViewPlaceMarkers[5] = {0xb, 0xc, 9, 0xa, 0xd};
+extern "C" void *data_ov120_02294ee0[2] = {(void *)_ZN13MapViewerMenu17updateCursorPressEv, 0};
+extern "C" void *data_ov120_02294ef0[2] = {(void *)_ZN13MapViewerMenu14updateKnobGrabEv, 0};
+extern "C" void *data_ov120_02294f70[2] = {(void *)_ZN13MapViewerMenu12stateLoadMapEv, 0};
+extern "C" void *data_ov120_02294f08[2] = {(void *)_ZN13MapViewerMenu14stateBuildListEv, 0};
+extern "C" void *data_ov120_02294f60[2] = {(void *)_ZN13MapViewerMenu13updateButtonsEv, 0};
+extern "C" void *data_ov120_02294f58[2] = {(void *)_ZN13MapViewerMenu12stateOpeningEv, 0};
+extern "C" void *data_ov120_02294f50[2] = {(void *)_ZN13MapViewerMenu10stateCloseEv, 0};
+extern "C" void *data_ov120_02294f48[2] = {(void *)_ZN13MapViewerMenu12stateClosingEv, 0};
 
-BOOL Unk_ov120_02295010::vfunc_4c() {
+BOOL MapViewerMenu::execTransition() {
     static Unk_ov120_02295010_Fn tbl[7] = {
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f68,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f70,
@@ -521,27 +521,27 @@ BOOL Unk_ov120_02295010::vfunc_4c() {
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f58,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f50,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f48};
-    func_ov120_0229460c();
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov120_02294540();
+    postStateUpdate();
     return TRUE;
 }
 
 
 
 
-extern "C" void *data_ov120_02294f30[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294024Ev, 0};
-extern "C" void *data_ov120_02294f38[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294290Ev, 0};
-extern "C" void *data_ov120_02294f20[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_0229418cEv, 0};
-extern "C" Unk_ov120_02293a2c_Oam data_ov120_02294f18 = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
-extern "C" void *data_ov120_02294f10[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294100Ev, 0};
-extern "C" void *data_ov120_02294ee8[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_0229489cEv, 0};
-extern "C" void *data_ov120_02294ef8[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_022940a4Ev, 0};
-extern "C" u8 data_ov120_02294fb8[80] = {0xb8, 0x40, 0x9d, 0x81, 0xab, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xbd, 0x81, 0xaf, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xdd, 0x81, 0xb3, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xfd, 0x81, 0xb7, 0x61, 0x00, 0x00, 0xb8, 0x00, 0x1d, 0x40, 0xbb, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xf5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xd5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xb5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x15, 0x90, 0xd8, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x95, 0x81, 0xd8, 0x60, 0xff, 0xff};
-extern "C" u8 data_ov120_02294f98[32] = {0xd3, 0x00, 0x4d, 0x40, 0xa5, 0xc1, 0x00, 0x00, 0xd3, 0x80, 0x5d, 0x00, 0xa7, 0xc1, 0x00, 0x00, 0xe3, 0x40, 0x4d, 0x00, 0xe5, 0xc1, 0x00, 0x00, 0xe3, 0x00, 0x5d, 0x00, 0xe7, 0xc1, 0xff, 0xff};
-extern "C" Unk_ov120_SceneEntry data_ov120_02294f40 = {func_ov120_02294e1c, 0xa3, 0xa7};
+extern "C" void *data_ov120_02294f30[2] = {(void *)_ZN13MapViewerMenu15updateWaitCloseEv, 0};
+extern "C" void *data_ov120_02294f38[2] = {(void *)_ZN13MapViewerMenu14updateKnobDragEv, 0};
+extern "C" void *data_ov120_02294f20[2] = {(void *)_ZN13MapViewerMenu16updateCursorMoveEv, 0};
+extern "C" Unk_ov120_02293a2c_Oam sMapViewIconCell = {0xf8, 0x1f8, 0, 1, 0xc0, 0x1c, 0xffff};
+extern "C" void *data_ov120_02294f10[2] = {(void *)_ZN13MapViewerMenu19updateCursorReleaseEv, 0};
+extern "C" void *data_ov120_02294ee8[2] = {(void *)_ZN13MapViewerMenu9stateOpenEv, 0};
+extern "C" void *data_ov120_02294ef8[2] = {(void *)_ZN13MapViewerMenu14updateKnobHoldEv, 0};
+extern "C" u8 sMapViewFrameCells[80] = {0xb8, 0x40, 0x9d, 0x81, 0xab, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xbd, 0x81, 0xaf, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xdd, 0x81, 0xb3, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xfd, 0x81, 0xb7, 0x61, 0x00, 0x00, 0xb8, 0x00, 0x1d, 0x40, 0xbb, 0x61, 0x00, 0x00, 0xb8, 0x40, 0xf5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xd5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0xb5, 0x81, 0xd9, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x15, 0x90, 0xd8, 0x60, 0x00, 0x00, 0xb8, 0x40, 0x95, 0x81, 0xd8, 0x60, 0xff, 0xff};
+extern "C" u8 sMapViewResidentsButtonCells[32] = {0xd3, 0x00, 0x4d, 0x40, 0xa5, 0xc1, 0x00, 0x00, 0xd3, 0x80, 0x5d, 0x00, 0xa7, 0xc1, 0x00, 0x00, 0xe3, 0x40, 0x4d, 0x00, 0xe5, 0xc1, 0x00, 0x00, 0xe3, 0x00, 0x5d, 0x00, 0xe7, 0xc1, 0xff, 0xff};
+extern "C" Unk_ov120_SceneEntry sMapViewerMenuProfile = {MapViewerMenu_Create, 0xa3, 0xa7};
 
-void Unk_ov120_02295010::func_ov120_02294a04() {
+void MapViewerMenu::runMainState() {
     static Unk_ov120_02295010_Fn tbl[10] = {
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f28,
         *(Unk_ov120_02295010_Fn *)data_ov120_02294f38,
@@ -556,70 +556,70 @@ void Unk_ov120_02295010::func_ov120_02294a04() {
     (this->*tbl[unk_8d])();
 }
 
-BOOL Unk_ov120_02295010::vfunc_50() {
-    func_ov120_02294514();
-    func_ov120_02294a04();
-    func_ov120_0229450c();
+BOOL MapViewerMenu::execMain() {
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov120_02295010::vfunc_54() { return TRUE; }
+BOOL MapViewerMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov120_02295010::vfunc_58() { return TRUE; }
+BOOL MapViewerMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov120_02295010::vfunc_5c() {
+BOOL MapViewerMenu::execClosed() {
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov120_02295010::func_ov120_022949a8() {
-    func_ov092_02291ce4(ProcBase_GetParent(this), 0x44, 1);
+BOOL MapViewerMenu::requestClose() {
+    MenuLauncher_setNextRequest(ProcBase_GetParent(this), 0x44, 1);
     unk_8c = 5;
-    func_ov002_02200a60(1);
+    setPhase(1);
     return TRUE;
 }
 
-void Unk_ov120_02295010::func_ov120_0229498c() {
-    func_ov120_022944d8();
-    func_ov120_02294428();
-    func_ov002_02200a50(1);
+void MapViewerMenu::stateLoadBg() {
+    setupBgLayers();
+    loadBgGfx();
+    setTransitionState(1);
 }
 
-void Unk_ov120_02295010::func_ov120_02294974() {
-    func_ov120_0229439c();
-    func_ov002_02200a50(2);
+void MapViewerMenu::stateLoadMap() {
+    loadMapImage();
+    setTransitionState(2);
 }
 
-void Unk_ov120_02295010::func_ov120_02294958() {
-    func_ov120_02293bec();
-    func_ov120_02293f08();
-    func_ov002_02200a50(3);
+void MapViewerMenu::stateBuildList() {
+    showResidentsList();
+    clipListScreen();
+    setTransitionState(3);
 }
 
-void Unk_ov120_02295010::func_ov120_0229489c() {
+void MapViewerMenu::stateOpen() {
     u32 buf[8];
-    func_ov120_0229433c();
+    loadObjGfx();
     func_02063888(buf);
     func_020638d0(data_021d7352, buf);
     String_SetSlot(0, buf);
-    void *q = func_ov120_02293dc0();
+    void *q = allocTextLabel();
     func_0206fb9c(q, 8, 0x1ab, 0x12, 0xf, 0, 0);
     func_0206f9fc(q, 0xa9);
     func_0206fab4(q, 1, 0);
     func_02063870(buf);
-    func_ov002_022008e0(0xa, 0, 0, 0x30);
+    beginSubSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(4);
-    func_ov002_02200840(4, 0, 0);
+    applySlideOffset(4, 0, 0);
     Gfx2d_ShowLayer(6);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    func_ov120_02292df8(4);
-    unk_94 = func_ov002_02200920();
-    func_ov002_02200a50(4);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    setFlags(4);
+    unk_94 = getSlideOffsetY();
+    setTransitionState(4);
 }
 
-void Unk_ov120_02295010::func_ov120_022947c0() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
+void MapViewerMenu::stateOpening() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
         unk_ac = 8;
         unk_ad = unk_2507[unk_ac].unk_00;
         unk_ae = unk_2507[unk_ac].unk_01;
@@ -633,37 +633,37 @@ void Unk_ov120_02295010::func_ov120_022947c0() {
         } else {
             unk_ad = 0xff;
         }
-        func_ov120_02292df8(0x800);
-        func_ov120_02293fc4();
+        setFlags(0x800);
+        startButtonInput();
     }
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    unk_94 = func_ov002_02200920();
+    applySlideOffset(4, 0, 0);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov120_02295010::func_ov120_0229476c() {
-    func_ov120_02293168();
-    func_ov002_022008c4(0xa, 0, 0, 0x30);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200840(6, 0, 0x50 - unk_98);
-    func_ov002_02200a50(6);
-    unk_94 = func_ov002_02200920();
+void MapViewerMenu::stateClose() {
+    hideCursor();
+    beginSubSlideOut(0xa, 0, 0, 0x30);
+    applySlideOffset(4, 0, 0);
+    applySlideOffset(6, 0, 0x50 - unk_98);
+    setTransitionState(6);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov120_02295010::func_ov120_0229470c() {
-    if (func_ov002_022008fc(0)) {
+void MapViewerMenu::stateClosing() {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(4);
         Gfx2d_ResetLayer(6);
-        func_ov120_02292de8(4);
-        func_ov002_02200a60(5);
+        clearFlags(4);
+        setPhase(5);
     } else {
-        func_ov002_02200840(4, 0, 0);
-        func_ov002_02200840(6, 0, 0x50 - unk_98);
-        unk_94 = func_ov002_02200920();
+        applySlideOffset(4, 0, 0);
+        applySlideOffset(6, 0, 0x50 - unk_98);
+        unk_94 = getSlideOffsetY();
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294634() {
+void MapViewerMenu::initMapViewer() {
     volatile Unk_ov120_02294634_V v;
     unk_a0 = 0;
     unk_9c = 0;
@@ -676,8 +676,8 @@ void Unk_ov120_02295010::func_ov120_02294634() {
     unk_ad = 0x58;
     unk_ae = 0x70;
     unk_ac = 0xe;
-    func_ov120_02293784(0);
-    func_ov120_02293cfc();
+    selectEntry(0);
+    buildEntryLists();
     if (IsZero(data_020e416c)) {
         s32 *p = func_020947f0(4);
         v.x = p[0];
@@ -697,59 +697,59 @@ void Unk_ov120_02295010::func_ov120_02294634() {
     ScrollKnob_setState(&unk_438, 1);
 }
 
-void Unk_ov120_02295010::func_ov120_02294614() {
-    func_ov120_02293df4();
+void MapViewerMenu::releaseResources() {
+    resetTextLabels();
     BgVramTask_cancel(unk_b0);
     BgVramTask_cancel((unk_b0 + 1));
 }
 
-void Unk_ov120_02295010::func_ov120_0229460c() {
-    func_ov120_02293df4();
+void MapViewerMenu::preStateUpdate() {
+    resetTextLabels();
 }
 
-void Unk_ov120_02295010::func_ov120_02294540() {
-    if (func_ov120_02293590()) {
-        func_ov120_022934e0();
+void MapViewerMenu::postStateUpdate() {
+    if (isListScrolling()) {
+        updateListScroll();
         Gfx2d_SetLayerOffset(6, 0, unk_98 - 0x50);
         if (unk_a3 != (unk_98 >> 4)) {
-            func_ov120_02292df8(0x80);
+            setFlags(0x80);
         }
     }
-    func_ov120_022932e8();
-    if (func_ov120_02292e08(0x80)) {
-        func_ov120_02293f08();
-        func_ov120_02292de8(0x80);
+    updateBlink();
+    if (testFlags(0x80)) {
+        clipListScreen();
+        clearFlags(0x80);
     }
-    if (func_ov120_02292e08(0x20)) {
+    if (testFlags(0x20)) {
         if (BgVramTask_requestScreen((unk_b0 + 1), unk_4e4, 4, 0x800, 0)) {
-            func_ov120_02292de8(0x20);
+            clearFlags(0x20);
         }
     }
-    if (func_ov120_02292e08(2)) {
+    if (testFlags(2)) {
         if (BgVramTask_requestScreen(unk_b0, unk_ce4, 6, 0x800, 0)) {
-            func_ov120_02292de8(2);
+            clearFlags(2);
         }
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294514() {
-    func_ov120_0229460c();
+void MapViewerMenu::preInputUpdate() {
+    preStateUpdate();
     unk_438.vfunc_0c();
     unk_480.vfunc_0c();
 }
 
-void Unk_ov120_02295010::func_ov120_0229450c() {
-    func_ov120_02294540();
+void MapViewerMenu::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov120_02295010::func_ov120_022944d8() {
+void MapViewerMenu::setupBgLayers() {
     Gfx2d_SetLayerPriority(4, 2);
     Gfx2d_SetLayerPriority(6, 2);
     Gfx2d_SetLayerControl(4, 0, 0, 0);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
-void Unk_ov120_02295010::func_ov120_02294428() {
+void MapViewerMenu::loadBgGfx() {
     u32 h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_bg.bpl", h, 4, 1, 1, 0xf);
     Gfx2d_LoadCharFile("menu/map/b_map_bg_0.bch", h, 4, 0x11, 0x11, 0x5f);
@@ -760,38 +760,38 @@ void Unk_ov120_02295010::func_ov120_02294428() {
     func_0206ee80(unk_1ce4, 0x13, 0, 0x1c, 1, 4);
 }
 
-extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294078Ev, 0};
+extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN13MapViewerMenu17updateKnobReleaseEv, 0};
 
-void Unk_ov120_02295010::func_ov120_0229439c() {
+void MapViewerMenu::loadMapImage() {
     u32 h = gCurrentHeap;
     void *p = Heap_AllocTail((void *)h, 0x2000);
-    static Unk_ov117_02292c88 obj;
-    func_ov117_02292c88(&obj);
-    func_ov117_02292408(p, &obj);
+    static TownMapMarkers obj;
+    TownMapMarkers_Clear(&obj);
+    TownMapImage_Build(p, &obj);
     Gfx2d_LoadCharRange(p, 4, 0x60, 0x60, 0x15f);
-    func_ov120_022938d0(&obj);
+    setupMarkers(&obj);
     Heap_Free((void *)h, p);
 }
 
-void Unk_ov120_02295010::func_ov120_0229433c() {
+void MapViewerMenu::loadObjGfx() {
     u32 h = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/map/b_map_obj.bpl", h, 8, 6, 6, 0xe);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_0.bch", h, 8, 0xc0, 0xc0, 0xff);
     Gfx2d_LoadCharFile("menu/map/b_map_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
 }
 
-void Unk_ov120_02295010::func_ov120_022942c0() {
-    if (func_ov002_02200a14(1)) {
-        func_ov120_02293fc4();
+void MapViewerMenu::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
         return;
     }
     if (Unk_ov120_022942c0_Both()) {
-        if (func_ov120_02293374() == 0) {
-            if (func_ov120_0229348c()) {
+        if (touchListTabs() == 0) {
+            if (touchScrollKnob()) {
                 ScrollKnob_setState(&unk_438, 2);
-                func_ov002_02200a58(1);
-            } else if (func_ov120_02293898() == 0) {
-                s32 t = func_ov120_02293ac0();
+                setMainState(1);
+            } else if (touchMarker() == 0) {
+                s32 t = touchListRow();
                 if (t != 0) {
                     return;
                 }
@@ -800,99 +800,99 @@ void Unk_ov120_02295010::func_ov120_022942c0() {
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294290() {
+void MapViewerMenu::updateKnobDrag() {
     if (gTouchHeld == 0) {
         ScrollKnob_setState(&unk_438, 3);
-        func_ov120_0229400c();
+        startTouchInput();
     }
-    func_ov120_02293440();
+    scrollListToTouch();
 }
 
-void Unk_ov120_02295010::func_ov120_022941b8() {
-    if (func_ov002_022009d4()) {
-        func_ov120_0229400c();
+void MapViewerMenu::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
         return;
     }
-    if (func_ov120_02292f44((void *)func_ov002_022009c8())) {
-        if (func_ov120_02292e08(8)) {
+    if (moveCursorByPad((void *)takeRepeatedKeys())) {
+        if (testFlags(8)) {
             if (unk_ab >= 2 && unk_ab <= 7) {
-                func_ov120_0229359c(unk_98 & ~0xf);
+                setListScrollTarget(unk_98 & ~0xf);
             }
         }
-        func_ov120_022930f0();
+        moveCursorToTarget();
         return;
     }
     u32 k = gPad[1];
     if ((k & 1) != 0) {
-        func_ov120_022930d0();
+        pressCursor();
     } else if ((k & 0x800) != 0) {
-        func_ov120_02293784(0);
-        func_ov120_0229371c(0xe);
+        selectEntry(0);
+        highlightListRow(0xe);
         if (unk_ab >= 2 && unk_ab <= 7) {
-            func_ov120_02292e1c();
+            moveMapCursorToRow();
         }
-        unk_ac = func_ov120_02293838(unk_ad, unk_ae);
-        func_ov120_02292df8(0x800);
-        func_ov002_02200a58(9);
-        func_ov120_022930f0();
+        unk_ac = findMarkerAt(unk_ad, unk_ae);
+        setFlags(0x800);
+        setMainState(9);
+        moveCursorToTarget();
     }
 }
 
-void Unk_ov120_02295010::func_ov120_0229418c() {
-    if (func_ov002_022028f0(&unk_480) == 0) {
-        func_ov002_02200a58(unk_aa);
-        func_ov120_02294a04();
+void MapViewerMenu::updateCursorMove() {
+    if (MenuCursorBase_isMoving(&unk_480) == 0) {
+        setMainState(unk_aa);
+        runMainState();
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294144() {
+void MapViewerMenu::updateCursorPress() {
     if (HandCursor_isAnimDone(&unk_480)) {
-        s32 r = func_ov120_02292e7c();
+        s32 r = onCursorDecide();
         if (r == 1) {
         } else if (r == 2) {
-            func_ov120_022935ac(0);
+            setListScroll(0);
             unk_a3 = 0xff;
-            func_ov120_022930b0();
+            releaseCursor();
         } else {
-            func_ov120_022930b0();
+            releaseCursor();
         }
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294100() {
+void MapViewerMenu::updateCursorRelease() {
     if (HandCursor_isAnimDone(&unk_480)) {
-        func_ov120_02293090();
-        if (func_ov120_02292e08(0x800)) {
-            func_ov002_02200a58(9);
+        refreshCursor();
+        if (testFlags(0x800)) {
+            setMainState(9);
         } else {
-            func_ov002_02200a58(2);
+            setMainState(2);
         }
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022940dc() {
+void MapViewerMenu::updateKnobGrab() {
     if (ScrollKnob_areAnimsDone(&unk_438)) {
-        func_ov002_02200a58(7);
+        setMainState(7);
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022940a4() {
+void MapViewerMenu::updateKnobHold() {
     if ((gPad[0] & 1) == 0) {
         ScrollKnob_setState(&unk_438, 3);
-        func_ov002_02200a58(8);
+        setMainState(8);
     } else {
-        func_ov120_022933f0();
+        scrollListByPad();
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294078() {
+void MapViewerMenu::updateKnobRelease() {
     if (ScrollKnob_areAnimsDone(&unk_438)) {
-        func_ov120_022930b0();
-        func_ov120_02292de8(0x1000);
+        releaseCursor();
+        clearFlags(0x1000);
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02294024() {
+void MapViewerMenu::updateWaitClose() {
     u32 v = gPad[1];
     BOOL r = TRUE;
     if ((v & 1) != 0) goto call;
@@ -901,27 +901,27 @@ void Unk_ov120_02295010::func_ov120_02294024() {
     if (gTouchHeld == 0 || gTouchChanged == 0) r = FALSE;
     if (r) {
     call:
-        func_ov120_022949a8();
+        requestClose();
     }
 }
 
-void Unk_ov120_02295010::func_ov120_0229400c() {
-    func_ov120_02293168();
-    func_ov002_02200a58(0);
+void MapViewerMenu::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void Unk_ov120_02295010::func_ov120_02293fc4() {
+void MapViewerMenu::startButtonInput() {
     ScrollKnob_setState(&unk_438, 1);
-    func_ov120_02293230();
-    func_ov002_02200980();
-    if (func_ov120_02292e08(0x800)) {
-        func_ov002_02200a58(9);
+    showCursor();
+    restartKeyRepeat();
+    if (testFlags(0x800)) {
+        setMainState(9);
     } else {
-        func_ov002_02200a58(2);
+        setMainState(2);
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02293f08() {
+void MapViewerMenu::clipListScreen() {
     volatile u16 v0, v1, v2, v3;
     s32 off, j, i, n;
     MIi_CpuCopy16(unk_14e4, unk_ce4, 0x800);
@@ -944,26 +944,26 @@ void Unk_ov120_02295010::func_ov120_02293f08() {
         MIi_CpuClear16(v3, unk_ce4 + (off + 0x20), 0x14);
         off += 0x40;
     }
-    func_ov120_02292df8(2);
+    setFlags(2);
 }
 
-void Unk_ov120_02295010::func_ov120_02293e70() {
+void MapViewerMenu::buildListScreen() {
     s32 i;
     u8 *tbl;
     MIi_CpuCopy16(unk_1ce4, unk_14e4, 0x800);
-    tbl = func_ov120_02293b48();
+    tbl = getListEntries();
     for (i = 0; i < 13; i++) {
-        s32 a = func_ov120_02293e1c(tbl[i], i) * 0x40 + 0x13;
+        s32 a = getEntryIconRow(tbl[i], i) * 0x40 + 0x13;
         s32 b = i * 0x40 + 0x13;
         unk_14e4[b] = unk_1ce4[a];
         unk_14e4[b + 1] = unk_1ce4[a + 1];
         unk_14e4[b + 0x20] = unk_1ce4[a + 0x20];
         unk_14e4[b + 0x21] = unk_1ce4[a + 0x21];
     }
-    func_ov120_02292df8(2);
+    setFlags(2);
 }
 
-u32 Unk_ov120_02295010::func_ov120_02293e1c(u32 x, s32 idx) {
+u32 MapViewerMenu::getEntryIconRow(u32 x, s32 idx) {
     if (x == 0) return 7;
     if (x < 6) return 0;
     if (x >= 6 && x < 14) return 1;
@@ -977,7 +977,7 @@ u32 Unk_ov120_02295010::func_ov120_02293e1c(u32 x, s32 idx) {
     return 7;
 }
 
-void Unk_ov120_02295010::func_ov120_02293df4() {
+void MapViewerMenu::resetTextLabels() {
     s32 i = 0;
     unk_a0 = 0;
     do {
@@ -986,7 +986,7 @@ void Unk_ov120_02295010::func_ov120_02293df4() {
     } while (i < 13);
 }
 
-void *Unk_ov120_02295010::func_ov120_02293dc0() {
+void *MapViewerMenu::allocTextLabel() {
     if (unk_a0 >= 13) {
         return &unk_f8[12];
     }
@@ -994,7 +994,7 @@ void *Unk_ov120_02295010::func_ov120_02293dc0() {
     return &unk_f8[unk_a0 - 1];
 }
 
-void Unk_ov120_02295010::func_ov120_02293cfc() {
+void MapViewerMenu::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
     m = func_02097740(data_021d735c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
@@ -1033,33 +1033,33 @@ void Unk_ov120_02295010::func_ov120_02293cfc() {
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02293cc8() {
-    if (func_ov120_02292e08(1)) {
-        func_ov120_02293c70(unk_24f1);
+void MapViewerMenu::layoutListLabels() {
+    if (testFlags(1)) {
+        buildEntryLabels(unk_24f1);
     } else {
-        func_ov120_02293c70(unk_24e4);
+        buildEntryLabels(unk_24e4);
     }
 }
 
-s32 Unk_ov120_02295010::func_ov120_02293c70(u8 *tbl) {
+s32 MapViewerMenu::buildEntryLabels(u8 *tbl) {
     s32 i;
     for (i = 0; i < 0xd; i++) {
-        void *w = func_ov120_02293dc0();
+        void *w = allocTextLabel();
         func_0206fb9c(w, 6, (i << 4) + 0x160, 8, 1, 0xf, 0);
-        func_ov120_02293c04(w, tbl[i]);
+        setEntryName(w, tbl[i]);
         func_0206fab4(w, 0, 0);
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02293c04(void *p, u32 idx) {
+void MapViewerMenu::setEntryName(void *p, u32 idx) {
     if (idx == 0) {
         MsgString_clear(p);
     } else if (idx == 1) {
-        func_ov002_022019a4(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+        PopupChoice_CopyPlayerIdName(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     } else if (idx >= 2 && idx < 6) {
-        func_ov002_02201984(p, idx - 2);
+        PopupChoice_CopyResidentName(p, idx - 2);
     } else if (idx >= 6 && idx < 0xe) {
-        func_ov002_02201938(p, idx - 6);
+        PopupChoice_CopyVillagerName(p, idx - 6);
     } else if (idx >= 0xe && idx < 0x13) {
         func_0206f9fc(p, idx + 0x88);
     } else {
@@ -1067,55 +1067,55 @@ void Unk_ov120_02295010::func_ov120_02293c04(void *p, u32 idx) {
     }
 }
 
-void Unk_ov120_02295010::func_ov120_02293bec() {
-    func_ov120_02292de8(1);
-    func_ov120_02293b70();
+void MapViewerMenu::showResidentsList() {
+    clearFlags(1);
+    rebuildList();
 }
 
-void Unk_ov120_02295010::func_ov120_02293bd4() {
-    func_ov120_02292df8(1);
-    func_ov120_02293b70();
+void MapViewerMenu::showPlacesList() {
+    setFlags(1);
+    rebuildList();
 }
 
-s32 Unk_ov120_02295010::func_ov120_02293b70() {
+s32 MapViewerMenu::rebuildList() {
     s32 k;
-    func_ov120_02293e70();
-    func_ov120_02293cc8();
-    if (func_ov120_02293b0c() == 0) {
-        func_ov120_02292de8(8);
+    buildListScreen();
+    layoutListLabels();
+    if (getListScrollMax() == 0) {
+        clearFlags(8);
         k = 4;
     } else {
-        func_ov120_02292df8(8);
+        setFlags(8);
         k = 3;
     }
     func_0206ee80(unk_4e4, 0x1d, 0xa, 0x1d, 0x15, k);
-    func_ov120_02292df8(0x20);
-    func_ov120_0229371c(unk_a9);
+    setFlags(0x20);
+    highlightListRow(unk_a9);
 }
 
-u8 *Unk_ov120_02295010::func_ov120_02293b48() {
-    if (func_ov120_02292e08(1)) {
+u8 *MapViewerMenu::getListEntries() {
+    if (testFlags(1)) {
         return unk_24f1;
     }
     return unk_24e4;
 }
 
-s32 Unk_ov120_02295010::func_ov120_02293b28() {
-    if (func_ov120_02292e08(1)) {
+s32 MapViewerMenu::getListCount() {
+    if (testFlags(1)) {
         return unk_a2;
     }
     return unk_a1;
 }
 
-s32 Unk_ov120_02295010::func_ov120_02293b0c() {
-    u32 r = func_ov120_02293b28();
+s32 MapViewerMenu::getListScrollMax() {
+    u32 r = getListCount();
     if (r <= 6) {
         return 0;
     }
     return (r - 6) << 4;
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02293ac0() {
+BOOL MapViewerMenu::touchListRow() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     if (x < 0x98 || x > 0xe8) {
@@ -1124,33 +1124,33 @@ BOOL Unk_ov120_02295010::func_ov120_02293ac0() {
     if (y < 0x50 || y >= 0xb0) {
         return FALSE;
     }
-    func_ov120_02293784(((y + (unk_98 - 0x50)) >> 4) + 0xf);
+    selectEntry(((y + (unk_98 - 0x50)) >> 4) + 0xf);
     return TRUE;
 }
 
-void Unk_ov120_02295010::func_ov120_02293a2c(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
+void MapViewerMenu::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
     u16 t;
-    data_ov120_02294f18.tile = n * 2 + 0xc0;
+    sMapViewIconCell.tile = n * 2 + 0xc0;
     if (flag != 0) {
-        t = data_ov120_02294f18.pal | 8;
-        data_ov120_02294f18.pal = t;
+        t = sMapViewIconCell.pal | 8;
+        sMapViewIconCell.pal = t;
     }
-    func_02088730(1, &data_ov120_02294f18, x, y, pal, 1, 0);
+    func_02088730(1, &sMapViewIconCell, x, y, pal, 1, 0);
     if (flag != 0) {
-        data_ov120_02294f18.pal = t & 0x17;
+        sMapViewIconCell.pal = t & 0x17;
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022938d0(void *src) {
+void MapViewerMenu::setupMarkers(void *src) {
     s32 k, i;
     u32 j;
     s16 *rec;
     i = 0;
     k = i;
     for (; k < 3; i++, k++) {
-        rec = func_ov117_02292c40(src, i);
+        rec = TownMapMarkers_Get(src, i);
         if (rec != 0) {
-            switch (func_ov117_02292c2c(src, i)) {
+            switch (TownMapMarkers_GetKind(src, i)) {
             case 0:
                 *((u8 *)this + k * 3 + 0x2500) = 8;
                 break;
@@ -1176,14 +1176,14 @@ void Unk_ov120_02295010::func_ov120_022938d0(void *src) {
     j = 3;
     k = 0;
     for (; k < 0xe; j++, k++) {
-        rec = func_ov117_02292c40(src, j);
+        rec = TownMapMarkers_Get(src, j);
         if (rec != 0) {
             if (j >= 3 && j <= 0xa) {
                 *((u8 *)this + k * 3 + 0x2509) = 0;
             } else if (j == 0xb) {
                 *((u8 *)this + k * 3 + 0x2509) = 1;
             } else {
-                *((u8 *)this + k * 3 + 0x2509) = *(data_ov120_02294ec0 + j - 0xc);
+                *((u8 *)this + k * 3 + 0x2509) = *(sMapViewFacilityCells + j - 0xc);
             }
             *((u8 *)this + k * 3 + 0x2507) = rec[0] - 8;
             *((u8 *)this + k * 3 + 0x2508) = rec[1] + 0x10;
@@ -1193,16 +1193,16 @@ void Unk_ov120_02295010::func_ov120_022938d0(void *src) {
     }
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02293898() {
-    u32 r = func_ov120_02293838(gTouchCurX, gTouchCurY);
+BOOL MapViewerMenu::touchMarker() {
+    u32 r = findMarkerAt(gTouchCurX, gTouchCurY);
     if (r == 0xe) {
         return FALSE;
     }
-    func_ov120_02293784(r + 1);
+    selectEntry(r + 1);
     return TRUE;
 }
 
-u32 Unk_ov120_02295010::func_ov120_02293838(s32 x, s32 y) {
+u32 MapViewerMenu::findMarkerAt(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 0xe; i++) {
         u8 *e = (u8 *)this + i * 3;
@@ -1219,41 +1219,41 @@ u32 Unk_ov120_02295010::func_ov120_02293838(s32 x, s32 y) {
     return 0xe;
 }
 
-void Unk_ov120_02295010::func_ov120_02293784(u8 v) {
+void MapViewerMenu::selectEntry(u8 v) {
     if (v == 0) {
         unk_a8 = 0xe;
         unk_a9 = 0xe;
-        func_ov120_022932a8();
+        stopBlink();
         return;
     }
-    func_ov120_022932c4();
-    unk_a9 = func_ov120_022936b4(v);
-    unk_a8 = func_ov120_0229364c(v);
+    startBlink();
+    unk_a9 = selectionToListRow(v);
+    unk_a8 = selectionToMarker(v);
     if (v >= 1 && v < 0xf) {
-        func_ov120_02292de8(0x200);
-        if (func_ov120_02292e08(1)) {
+        clearFlags(0x200);
+        if (testFlags(1)) {
             if (v >= 1 && v <= 9) {
-                func_ov120_02293bec();
-                func_ov120_02293620();
+                showResidentsList();
+                jumpToSelection();
                 return;
             }
         } else {
             if (v < 1 || v > 9) {
-                func_ov120_02293bd4();
-                func_ov120_02293620();
+                showPlacesList();
+                jumpToSelection();
                 return;
             }
         }
     } else {
-        func_ov120_02292df8(0x200);
+        setFlags(0x200);
     }
-    func_ov120_022935c8();
-    func_ov120_0229371c(0xe);
-    func_ov120_0229371c(unk_a9);
+    ensureSelectionVisible();
+    highlightListRow(0xe);
+    highlightListRow(unk_a9);
 }
 
-void Unk_ov120_02295010::func_ov120_0229371c(u8 v) {
-    func_ov120_02292df8(0x80);
+void MapViewerMenu::highlightListRow(u8 v) {
+    setFlags(0x80);
     if (v == 0xe) {
         func_0206ee80(unk_14e4, 0x13, 0, 0x1c, 0x19, 4);
     } else if (v == 0xd) {
@@ -1263,7 +1263,7 @@ void Unk_ov120_02295010::func_ov120_0229371c(u8 v) {
     }
 }
 
-u32 Unk_ov120_02295010::func_ov120_022936b4(u8 v) {
+u32 MapViewerMenu::selectionToListRow(u8 v) {
     if (v == 9) {
         return 0xd;
     }
@@ -1287,12 +1287,12 @@ u32 Unk_ov120_02295010::func_ov120_022936b4(u8 v) {
     return 0xe;
 }
 
-u32 Unk_ov120_02295010::func_ov120_0229364c(u8 v) {
+u32 MapViewerMenu::selectionToMarker(u8 v) {
     if (v >= 1 && v < 0xf) {
         return (u8)(v - 1);
     }
     if (v >= 0xf && v < 0x1c) {
-        u32 b = func_ov120_02293b48()[v - 0xf];
+        u32 b = getListEntries()[v - 0xf];
         if (b == 0) {
             return 0xe;
         }
@@ -1303,13 +1303,13 @@ u32 Unk_ov120_02295010::func_ov120_0229364c(u8 v) {
             return (u8)(b - 6);
         }
         if (b >= 0xe && b < 0x13) {
-            return data_ov120_02294ec8[b - 0xe];
+            return sMapViewPlaceMarkers[b - 0xe];
         }
     }
     return 0xe;
 }
 
-void Unk_ov120_02295010::func_ov120_02293620() {
+void MapViewerMenu::jumpToSelection() {
     u32 a = unk_a9;
     u32 v;
     if (a <= 5 || a == 0xd) {
@@ -1317,18 +1317,18 @@ void Unk_ov120_02295010::func_ov120_02293620() {
     } else {
         v = (a - 5) << 4;
     }
-    func_ov120_022935ac(v);
+    setListScroll(v);
     unk_a3 = 0xff;
 }
 
-void Unk_ov120_02295010::func_ov120_022935c8() {
+void MapViewerMenu::ensureSelectionVisible() {
     u32 a = unk_a9;
     if (a != 0xe) {
         if (a == 0xd) {
-            func_ov120_0229359c(0);
+            setListScrollTarget(0);
         } else {
             if ((s32)a < (unk_98 + 0xf) >> 4) {
-                func_ov120_0229359c(a << 4);
+                setListScrollTarget(a << 4);
             }
             s32 h = unk_98 >> 4;
             s32 lo;
@@ -1338,35 +1338,35 @@ void Unk_ov120_02295010::func_ov120_022935c8() {
                 lo = unk_a9 - 5;
             }
             if (h < lo) {
-                func_ov120_0229359c(lo << 4);
+                setListScrollTarget(lo << 4);
             }
         }
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022935ac(u32 v) {
+void MapViewerMenu::setListScroll(u32 v) {
     unk_98 = v;
     unk_9a = unk_98;
-    func_ov120_02292df8(0x10);
+    setFlags(0x10);
 }
 
-void Unk_ov120_02295010::func_ov120_0229359c(u32 v) {
+void MapViewerMenu::setListScrollTarget(u32 v) {
     unk_9a = v;
-    func_ov120_02292df8(0x10);
+    setFlags(0x10);
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02293590() { return func_ov120_02292e08(0x10); }
+BOOL MapViewerMenu::isListScrolling() { return testFlags(0x10); }
 
-void Unk_ov120_02295010::func_ov120_022934e0() {
-    s32 n = func_ov120_02293b0c();
+void MapViewerMenu::updateListScroll() {
+    s32 n = getListScrollMax();
     if (n == 0) {
-        func_ov120_02292de8(0x10);
+        clearFlags(0x10);
         unk_a4 = 0;
     } else {
         u32 tg = unk_9a;
         u32 cur = unk_98;
         if (cur == tg) {
-            func_ov120_02292de8(0x10);
+            clearFlags(0x10);
         } else if (cur < tg) {
             unk_98 = *(volatile u16 *)&unk_98 + 8;
             if (unk_98 > unk_9a) {
@@ -1384,11 +1384,11 @@ void Unk_ov120_02295010::func_ov120_022934e0() {
     }
 }
 
-BOOL Unk_ov120_02295010::func_ov120_0229348c() {
-    if (!func_ov120_02292e08(8)) {
+BOOL MapViewerMenu::touchScrollKnob() {
+    if (!testFlags(8)) {
         return FALSE;
     }
-    if (func_ov002_02202f18(&unk_438, gTouchCurX, gTouchCurY)) {
+    if (MenuScrollKnob_hitTest(&unk_438, gTouchCurX, gTouchCurY)) {
         unk_a5 = gTouchCurY;
         unk_a6 = unk_a4;
         return TRUE;
@@ -1396,17 +1396,17 @@ BOOL Unk_ov120_02295010::func_ov120_0229348c() {
     return FALSE;
 }
 
-void Unk_ov120_02295010::func_ov120_02293440() {
+void MapViewerMenu::scrollListToTouch() {
     s32 t = unk_a6 + (gTouchCurY - unk_a5);
     if (t < 0) {
         t = 0;
     } else if (t > 0x58) {
         t = 0x58;
     }
-    func_ov120_022935ac(t * func_ov120_02293b0c() / 0x58);
+    setListScroll(t * getListScrollMax() / 0x58);
 }
 
-void Unk_ov120_02295010::func_ov120_022933f0() {
+void MapViewerMenu::scrollListByPad() {
     s32 t = unk_9a;
     u32 keys = gPad[0];
     if (keys & 0x40) {
@@ -1414,88 +1414,88 @@ void Unk_ov120_02295010::func_ov120_022933f0() {
     } else if (keys & 0x80) {
         t = t + 4;
     }
-    s32 m = func_ov120_02293b0c();
+    s32 m = getListScrollMax();
     if (t < 0) {
         t = 0;
     } else if (t > m) {
         t = m;
     }
-    func_ov120_022935ac(t);
+    setListScroll(t);
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02293374() {
+BOOL MapViewerMenu::touchListTabs() {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     if (y < 0x38 || y > 0x4c) {
         return FALSE;
     }
-    if (func_ov120_02292e08(1)) {
+    if (testFlags(1)) {
         if (x < 0xcc || x > 0xe4) {
             return FALSE;
         }
-        func_ov120_02293784(0);
-        func_ov120_02293bec();
+        selectEntry(0);
+        showResidentsList();
     } else {
         if (x < 0xb0 || x > 0xc8) {
             return FALSE;
         }
-        func_ov120_02293784(0);
-        func_ov120_02293bd4();
+        selectEntry(0);
+        showPlacesList();
     }
-    func_ov120_022935ac(0);
+    setListScroll(0);
     unk_a3 = 0xff;
     return TRUE;
 }
 
-void Unk_ov120_02295010::func_ov120_022932e8() {
-    if (func_ov120_02292e08(0x40)) {
+void MapViewerMenu::updateBlink() {
+    if (testFlags(0x40)) {
         if (unk_a7 != 0) {
             unk_a7 = *(volatile u8 *)&unk_a7 - 1;
         }
         if (unk_a7 == 0) {
-            if (func_ov120_02292e08(0x200)) {
-                func_ov120_02292de8(0x100);
+            if (testFlags(0x200)) {
+                clearFlags(0x100);
             } else {
-                func_ov120_0229371c(unk_a9);
+                highlightListRow(unk_a9);
             }
             unk_a7 = 0xf;
         } else if (unk_a7 == 5) {
-            if (func_ov120_02292e08(0x200)) {
-                func_ov120_02292df8(0x100);
+            if (testFlags(0x200)) {
+                setFlags(0x100);
             } else {
-                func_ov120_0229371c(0xe);
+                highlightListRow(0xe);
             }
         }
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022932c4() {
-    func_ov120_02292df8(0x40);
-    func_ov120_02292de8(0x100);
+void MapViewerMenu::startBlink() {
+    setFlags(0x40);
+    clearFlags(0x100);
     unk_a7 = 0xf;
 }
 
-void Unk_ov120_02295010::func_ov120_022932a8() {
-    func_ov120_02292de8(0x40);
-    func_ov120_02292de8(0x100);
+void MapViewerMenu::stopBlink() {
+    clearFlags(0x40);
+    clearFlags(0x100);
 }
 
-void Unk_ov120_02295010::func_ov120_02293230() {
-    if (!func_ov120_02292e08(8) && unk_ab == 8) {
+void MapViewerMenu::showCursor() {
+    if (!testFlags(8) && unk_ab == 8) {
         unk_ab = 0;
     }
-    s32 a = func_ov120_022931dc();
-    s32 b = func_ov120_0229318c();
-    func_ov002_02202a40(&unk_480, a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    MenuCursorBase_warpTo(&unk_480, a, b);
     if (unk_ab >= 2 && unk_ab <= 7) {
-        func_ov120_0229359c(unk_98 & ~0xf);
+        setListScrollTarget(unk_98 & ~0xf);
     }
-    func_ov002_02202d00(&unk_480, 1);
-    func_ov120_02293090();
+    MenuCursor_setAnimIfChanged(&unk_480, 1);
+    refreshCursor();
 }
 
-s32 Unk_ov120_02295010::func_ov120_022931dc() {
-    if (func_ov120_02292e08(0x800)) {
+s32 MapViewerMenu::getCursorTargetX() {
+    if (testFlags(0x800)) {
         return unk_ad;
     }
     u32 t = unk_ab;
@@ -1509,13 +1509,13 @@ s32 Unk_ov120_02295010::func_ov120_022931dc() {
         return 0xbc;
     }
     if (t == 8) {
-        return func_ov002_02202e84(&unk_438);
+        return MenuScrollKnob_getGripX(&unk_438);
     }
     return 0x80;
 }
 
-s32 Unk_ov120_02295010::func_ov120_0229318c() {
-    if (func_ov120_02292e08(0x800)) {
+s32 MapViewerMenu::getCursorTargetY() {
+    if (testFlags(0x800)) {
         return unk_ae;
     }
     u32 t = unk_ab;
@@ -1526,68 +1526,68 @@ s32 Unk_ov120_02295010::func_ov120_0229318c() {
         return 0x40;
     }
     if (t == 8) {
-        return func_ov002_02202e60(&unk_438);
+        return MenuScrollKnob_getGripY(&unk_438);
     }
     return 0x60;
 }
 
-void Unk_ov120_02295010::func_ov120_02293168() {
-    func_ov002_02202d00(&unk_480, 0);
+void MapViewerMenu::hideCursor() {
+    MenuCursor_setAnimIfChanged(&unk_480, 0);
     unk_480.vfunc_0c();
 }
 
-void Unk_ov120_02295010::func_ov120_022930f0() {
-    if (func_ov120_02292e08(0x4000)) {
-        s32 a = func_ov120_022931dc();
-        s32 b = func_ov120_0229318c();
-        func_ov002_02202a40(&unk_480, a, b);
-        func_ov120_02292de8(0x4000);
+void MapViewerMenu::moveCursorToTarget() {
+    if (testFlags(0x4000)) {
+        s32 a = getCursorTargetX();
+        s32 b = getCursorTargetY();
+        MenuCursorBase_warpTo(&unk_480, a, b);
+        clearFlags(0x4000);
     } else {
-        s32 a = func_ov120_022931dc();
-        s32 b = func_ov120_0229318c();
-        func_ov002_022029e8(&unk_480, a, b, 3, 1);
+        s32 a = getCursorTargetX();
+        s32 b = getCursorTargetY();
+        MenuCursorBase_moveToEase(&unk_480, a, b, 3, 1);
         unk_aa = unk_8d;
-        func_ov002_02200a58(3);
+        setMainState(3);
     }
 }
 
-void Unk_ov120_02295010::func_ov120_022930d0() {
-    func_ov002_02202b68(&unk_480);
-    func_ov002_02200a58(4);
+void MapViewerMenu::pressCursor() {
+    MenuCursor_setPosePress(&unk_480);
+    setMainState(4);
 }
 
-void Unk_ov120_02295010::func_ov120_022930b0() {
-    func_ov002_02202af0(&unk_480);
-    func_ov002_02200a58(5);
+void MapViewerMenu::releaseCursor() {
+    MenuCursorBase_setPoseRelease(&unk_480);
+    setMainState(5);
 }
 
-void Unk_ov120_02295010::func_ov120_02293090() {
-    func_ov002_02202a78(&unk_480);
+void MapViewerMenu::refreshCursor() {
+    MenuCursorBase_setPoseIdle(&unk_480);
     unk_480.vfunc_0c();
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02292f44(void *pad) {
+BOOL MapViewerMenu::moveCursorByPad(void *pad) {
     u32 old = unk_ab;
     if (old >= 2 && old <= 7) {
-        if (func_ov120_02292e08(8) && func_ov002_0220125c(pad)) {
+        if (testFlags(8) && MenuKeys_HasRight(pad)) {
             unk_ab = 8;
-        } else if (func_ov002_0220128c(pad)) {
+        } else if (MenuKeys_HasUp(pad)) {
             if (*(volatile u8 *)&unk_ab > 2) {
                 unk_ab = *(volatile u8 *)&unk_ab - 1;
             } else {
                 unk_ab = 1;
             }
-        } else if (func_ov002_0220127c(pad)) {
-            s32 n = func_ov120_02293b28() - 1;
+        } else if (MenuKeys_HasDown(pad)) {
+            s32 n = getListCount() - 1;
             if (unk_ab < 7 && unk_ab < n + 2) {
                 unk_ab = *(volatile u8 *)&unk_ab + 1;
             }
         }
     } else if (old == 8) {
-        if (func_ov002_0220128c(pad)) {
+        if (MenuKeys_HasUp(pad)) {
             unk_ab = 0;
-        } else if (func_ov002_0220126c(pad)) {
-            s32 v = func_ov002_02202e60(&unk_438);
+        } else if (MenuKeys_HasLeft(pad)) {
+            s32 v = MenuScrollKnob_getGripY(&unk_438);
             if (v < 0x50) {
                 v = 0x50;
             }
@@ -1597,12 +1597,12 @@ BOOL Unk_ov120_02295010::func_ov120_02292f44(void *pad) {
             unk_ab = ((v - 0x50) >> 4) + 2;
         }
     } else if (old <= 1) {
-        if (func_ov002_0220127c(pad)) {
+        if (MenuKeys_HasDown(pad)) {
             unk_ab = 2;
-        } else if (func_ov002_0220126c(pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             unk_ab = 1;
-        } else if (func_ov002_0220125c(pad)) {
-            if (unk_ab == 0 && func_ov120_02292e08(8)) {
+        } else if (MenuKeys_HasRight(pad)) {
+            if (unk_ab == 0 && testFlags(8)) {
                 unk_ab = 8;
             } else {
                 unk_ab = 0;
@@ -1615,40 +1615,40 @@ BOOL Unk_ov120_02295010::func_ov120_02292f44(void *pad) {
     return FALSE;
 }
 
-s32 Unk_ov120_02295010::func_ov120_02292e7c() {
-    if (func_ov120_02292e08(0x800)) {
-        func_ov120_02293784(unk_ac + 1);
+s32 MapViewerMenu::onCursorDecide() {
+    if (testFlags(0x800)) {
+        selectEntry(unk_ac + 1);
         return 0;
     }
     u32 t = unk_ab;
     if (t == 8) {
-        func_ov002_02200a58(6);
+        setMainState(6);
         ScrollKnob_setState(&unk_438, 2);
-        func_ov120_02292df8(0x1000);
+        setFlags(0x1000);
         return 1;
     } else if (t == 0) {
-        if (func_ov120_02292e08(1)) {
-            func_ov120_02293784(0);
-            func_ov120_02293bec();
+        if (testFlags(1)) {
+            selectEntry(0);
+            showResidentsList();
             return 2;
         }
         return 0;
     } else if (t == 1) {
-        if (!func_ov120_02292e08(1)) {
-            func_ov120_02293784(0);
-            func_ov120_02293bd4();
+        if (!testFlags(1)) {
+            selectEntry(0);
+            showPlacesList();
             return 2;
         }
         return 0;
     } else if (t >= 2 && t <= 7) {
-        func_ov120_02293784(unk_a3 + t + 0xd);
+        selectEntry(unk_a3 + t + 0xd);
         return 0;
     }
     return 0;
 }
 
-void Unk_ov120_02295010::func_ov120_02292e1c() {
-    u32 idx = func_ov120_0229364c(unk_a3 + unk_ab + 0xd);
+void MapViewerMenu::moveMapCursorToRow() {
+    u32 idx = selectionToMarker(unk_a3 + unk_ab + 0xd);
     u8 *e = (u8 *)this + idx * 3;
     if (e[0x2509] == 0xc) {
         unk_ad = 0x58;
@@ -1659,20 +1659,20 @@ void Unk_ov120_02295010::func_ov120_02292e1c() {
     }
 }
 
-BOOL Unk_ov120_02295010::func_ov120_02292e08(u32 mask) {
+BOOL MapViewerMenu::testFlags(u32 mask) {
     if (unk_9c & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov120_02295010::func_ov120_02292df8(u32 mask) { unk_9c = unk_9c | mask; }
+void MapViewerMenu::setFlags(u32 mask) { unk_9c = unk_9c | mask; }
 
-void Unk_ov120_02295010::func_ov120_02292de8(u32 mask) { unk_9c = unk_9c & ~mask; }
+void MapViewerMenu::clearFlags(u32 mask) { unk_9c = unk_9c & ~mask; }
 
-Unk_ov120_02292de0::Unk_ov120_02292de0() {}
+MapViewMarker::MapViewMarker() {}
 
-Unk_ov120_02292de0::~Unk_ov120_02292de0() {}
+MapViewMarker::~MapViewMarker() {}
 
 
 

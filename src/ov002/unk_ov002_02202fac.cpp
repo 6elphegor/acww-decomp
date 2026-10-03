@@ -25,7 +25,7 @@
 extern "C" {
 BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
 void _ZN8GameProc10postCreateEv(void *self, s32 a);
-void _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(void *self, s32 x, s32 a, s32 b);
+void _ZN16MenuTitleBalloon8showTextEhii(void *self, s32 x, s32 a, s32 b);
 void VillagerId_getName(s32 a, void *buf);
 s32 VillagerData_getVillagerId(void *self);
 void func_02094018(void *p);
@@ -121,23 +121,23 @@ void operator delete(void *p);
 // Constructors / destructors that the symbols name differently from what the compiler generates (base-object C2 without
 // the unused C1, ctor/dtor of the 0x0220464c family) are defined as extern "C" functions with their real mangled names.
 extern "C" {
-extern char _ZTV18Unk_ov002_022044c4[];
-extern char _ZTV18Unk_ov002_022044e4[];
-extern char _ZTV18Unk_ov002_02204754[];
-extern void *_ZTV18Unk_ov002_0220464c[7];
-extern void *_ZTV18Unk_ov002_02204614[7];
-extern void *_ZTV18Unk_ov002_02204630[7];
+extern char _ZTV9MenuTween[];
+extern char _ZTV8MenuProc[];
+extern char _ZTV19MenuLabelButtonBase[];
+extern void *_ZTV10MenuCursor[7];
+extern void *_ZTV14MenuCursorBuf0[7];
+extern void *_ZTV14MenuCursorBuf1[7];
 extern char _ZTV8GameProc[];
 void *_ZN8ProcBaseC2Ev(void *self);
 void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
 void *_ZN10HandCursorC2Ei(void *self, s32 flag);
 void *_ZN10HandCursorD2Ev(void *self);
-void *_ZN18Unk_ov002_022044d4C1Ev(void *self);
-void *_ZN18Unk_ov002_022044b4C1Ev(void *self);
-void *_ZN18Unk_ov002_02204604C1Ev(void *self);
-void *_ZN18Unk_ov002_02204604D1Ev(void *self);
+void *_ZN9KeyRepeatC1Ev(void *self);
+void *_ZN9MenuSlideC1Ev(void *self);
+void *_ZN12CursorMotionC1Ev(void *self);
+void *_ZN12CursorMotionD1Ev(void *self);
 void _ZN10HandCursor4drawEv();
-void _ZN18Unk_ov002_02202d988vfunc_0cEv();
+void _ZN14MenuCursorBase8vfunc_0cEv();
 void _ZN8UiWidget9setOriginEii();
 }
 
@@ -382,35 +382,35 @@ struct Unk_ov002_02203c5c_Rec {
 };
 
 extern "C" {
-extern const u8 data_ov002_0220442c[];
-extern const u8 data_ov002_02204430[];
-extern const u8 data_ov002_02204434[];
-extern const u8 data_ov002_02204440[];
-extern const u8 data_ov002_0220444c[];
-extern s32 data_ov002_02204544[];
-extern Unk_ov002_02203c5c_Rec data_ov002_022046e4[];
-extern Unk_ov002_02203c5c_Rec data_ov002_022046fc[];
-extern Unk_ov002_02203c5c_Rec data_ov002_02204784[];
-extern Unk_ov002_02203c5c_Rec data_ov002_022047a4[];
-extern Unk_ov002_02203c5c_Rec data_ov002_022047cc[];
-extern Unk_ov002_02203c5c_Rec data_ov002_022047fc[];
-extern Unk_ov002_02203c5c_Rec data_ov002_0220482c[];
+extern const u8 sTextButtonPressOffsets[];
+extern const u8 sMenuButtonTextColors[];
+extern const u8 sBottomButtonTargetX[];
+extern const u8 sBottomButtonTargetY[];
+extern const u8 sBottomButtonOfTarget[];
+extern s32 sPopupChoicePopOffsets[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW4A[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW4B[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW6Single[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW8[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW6A[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW6B[];
+extern Unk_ov002_02203c5c_Rec sButtonCellsW12[];
 }
 
 // Vtable 0x02204468
-class Unk_ov002_02204468 : public LabelBalloon {
+class TouchPromptBalloon : public LabelBalloon {
 public:
-    Unk_ov002_02204468();
-    virtual ~Unk_ov002_02204468();
+    TouchPromptBalloon();
+    virtual ~TouchPromptBalloon();
 
-    BOOL func_ov002_02200680();
-    void func_ov002_022006a4(u8 v);
+    BOOL isOpenOrOpening();
+    void setAutoCloseTimer(u8 v);
     void func_ov002_022006ac(s32 v);
-    void func_ov002_022006b0();
-    void func_ov002_022006b8();
-    void func_ov002_022006c0();
-    BOOL func_ov002_022006e4(s32 a);
-    s32 func_ov002_0220071c();
+    void cancelQueuedOpen();
+    void queueOpen();
+    void commitOpen();
+    BOOL hide(s32 a);
+    s32 updatePrompt();
 
     /* 0xbc */ u8 unk_bc;
     /* 0xbd */ u8 unk_bd;
@@ -418,14 +418,14 @@ public:
 };
 
 // vptr-only class (vtable 0x022044d4)
-class Unk_ov002_022044d4 {
+class KeyRepeat {
 public:
-    Unk_ov002_022044d4();
-    virtual ~Unk_ov002_022044d4();
+    KeyRepeat();
+    virtual ~KeyRepeat();
 };
 
-// cursor / input repeat state (view of the object at +0x50 of Unk_ov002_022044e4; the vptr is a Unk_ov002_022044d4)
-class Unk_ov002_02201240 {
+// cursor / input repeat state (view of the object at +0x50 of MenuProc; the vptr is a KeyRepeat)
+class KeyRepeatView {
 public:
     u32 unk_00;
     s16 unk_04;
@@ -436,69 +436,69 @@ public:
     u8 unk_0e;
     u8 unk_0f;
     u8 unk_10;
-    void func_ov002_02201240(s32 a, s32 b, s32 c);
-    BOOL func_ov002_0220129c();
-    BOOL func_ov002_022012b0();
-    BOOL func_ov002_022012c4();
-    BOOL func_ov002_022012d8();
-    u32 func_ov002_022012ec();
-    void func_ov002_022012f8();
+    void init(s32 a, s32 b, s32 c);
+    BOOL isRight();
+    BOOL isLeft();
+    BOOL isDown();
+    BOOL isUp();
+    u32 take();
+    void update();
 };
 
 // slider base class (vtable 0x022044c4)
-class Unk_ov002_022044c4 {
+class MenuTween {
 public:
-    Unk_ov002_022044c4();
-    virtual ~Unk_ov002_022044c4();
+    MenuTween();
+    virtual ~MenuTween();
     s32 unk_04;
     s32 unk_08;
-    s32 func_ov002_022011ac(s32 v);
-    s32 func_ov002_022011b4(s32 v);
-    BOOL func_ov002_022011cc();
-    void func_ov002_022011ec(u32 n);
+    s32 scaleLinear(s32 v);
+    s32 scaleQuadratic(s32 v);
+    BOOL step();
+    void start(u32 n);
 };
 
 // slider class (vtable 0x022044b4)
-class Unk_ov002_022044b4 : public Unk_ov002_022044c4 {
+class MenuSlide : public MenuTween {
 public:
-    Unk_ov002_022044b4();
-    virtual ~Unk_ov002_022044b4();
+    MenuSlide();
+    virtual ~MenuSlide();
     s32 unk_0c;
     s32 unk_10;
     s32 unk_14;
     u8 unk_18;
-    void func_ov002_02200fa8(s32 mode);
-    void func_ov002_02200fe0(s32 mode);
-    BOOL func_ov002_0220102c(s32 mode);
-    void func_ov002_02201090(s32 mode);
-    void func_ov002_022010c4(s32 mode);
-    s32 func_ov002_02201124();
-    s32 func_ov002_02201140();
+    void updateSlideOutHorizontal(s32 mode);
+    void updateSlideOutVertical(s32 mode);
+    BOOL stepSlideIn(s32 mode);
+    void updateSlideInHorizontal(s32 mode);
+    void updateSlideInVertical(s32 mode);
+    s32 getOffsetX();
+    s32 getOffsetY();
 };
 
 // methods of the same slider object that the symbols list under another class name
-class Unk_ov002_02201194 : public Unk_ov002_022044b4 {
+class MenuSlideView : public MenuSlide {
 public:
-    void func_ov002_02200d04(s32 v);
-    void func_ov002_02200d08(s32 a);
-    void func_ov002_02200d78(s32 a, s32 b, s32 c);
-    void func_ov002_02200dd8(s32 a, s32 mode, s32 dist);
-    void func_ov002_02200e18(s32 a, s32 mode, s32 dist);
-    void func_ov002_02200e58(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200ea4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200edc(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_02200f18(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_02200f54(s32 a);
+    void setExtent(s32 v);
+    void applyWindow(s32 a);
+    void applyLayerOffset(s32 a, s32 b, s32 c);
+    void initSlideOut(s32 a, s32 mode, s32 dist);
+    void initSlideIn(s32 a, s32 mode, s32 dist);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
 };
 
-class Unk_ov002_022044e4;
-typedef void (Unk_ov002_022044e4::*Unk_ov002_02200a68_Fn)();
+class MenuProc;
+typedef void (MenuProc::*Unk_ov002_02200a68_Fn)();
 
 // Vtable 0x022044e4
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -509,44 +509,44 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 v);
-    void func_ov002_0220085c(s32 a, s32 mode);
-    void func_ov002_02200874(s32 a, s32 mode);
-    void func_ov002_0220088c(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008a8(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200914();
-    s32 func_ov002_02200920();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
-    void func_ov002_02200970(s32 a, s32 b, s32 c);
-    void func_ov002_02200980();
-    BOOL func_ov002_02200998();
-    BOOL func_ov002_022009a4();
-    BOOL func_ov002_022009b0();
-    BOOL func_ov002_022009bc();
-    u32 func_ov002_022009c8();
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void setSlideExtent(s32 v);
+    void initSlideOut(s32 a, s32 mode);
+    void initSlideIn(s32 a, s32 mode);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetX();
+    s32 getSlideOffsetY();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
+    void initKeyRepeat(s32 a, s32 b, s32 c);
+    void restartKeyRepeat();
+    BOOL isRepeatRight();
+    BOOL isRepeatLeft();
+    BOOL isRepeatDown();
+    BOOL isRepeatUp();
+    u32 takeRepeatedKeys();
 
-    /* 0x50 */ Unk_ov002_022044d4 unk_50;
+    /* 0x50 */ KeyRepeat unk_50;
     /* 0x54 */ u8 unk_54[0x10];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ Unk_ov002_022044b4 unk_70;
+    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x70 */ MenuSlide unk_70;
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
     /* 0x8e */ u8 unk_8e;
@@ -555,65 +555,65 @@ public:
 };
 
 // Menu, vtable 0x02204770
-class Unk_ov002_02204770 : public LabelBalloon {
+class MenuTitleBalloon : public LabelBalloon {
 public:
-    Unk_ov002_02204770();
-    virtual ~Unk_ov002_02204770();
+    MenuTitleBalloon();
+    virtual ~MenuTitleBalloon();
     virtual void setOrigin(s32 a, s32 b);
 
-    void func_ov002_022039d8();
-    void func_ov002_022039f8(u8 a, s32 b, s32 c);
+    void hideNow();
+    void showText(u8 a, s32 b, s32 c);
 };
 // Base of the 0x0220471c / 0x02204738 classes
-class Unk_ov002_02204754 : public LabelButton {
+class MenuLabelButtonBase : public LabelButton {
 public:
-    Unk_ov002_02204754(u8 a, s32 b);
-    virtual ~Unk_ov002_02204754();
+    MenuLabelButtonBase(u8 a, s32 b);
+    virtual ~MenuLabelButtonBase();
     virtual void setOrigin(s32 a, s32 b);
 };
 // Vtable 0x02204738
-class Unk_ov002_02204738 : public Unk_ov002_02204754 {
+class MenuLabelButton : public MenuLabelButtonBase {
 public:
-    Unk_ov002_02204738();
-    virtual ~Unk_ov002_02204738();
+    MenuLabelButton();
+    virtual ~MenuLabelButton();
 
-    BOOL func_ov002_02203e24();
-    void func_ov002_02203e88(s32 v, s32 x, s32 y);
-    void func_ov002_02203ec8(s32 v);
-    void func_ov002_02203edc(s32 v);
-    BOOL func_ov002_02203f08();
-    s32 func_ov002_02203f28(s32 k);
-    s32 func_ov002_02203f78(s32 k);
+    BOOL isTouched();
+    void showAt(s32 v, s32 x, s32 y);
+    void showDefault(s32 v);
+    void setLabel2d(s32 v);
+    BOOL stepAnim();
+    s32 getAnchorY(s32 k);
+    s32 getAnchorX(s32 k);
 };
-class Unk_ov002_0220471c : public Unk_ov002_02204754 {
+class MenuLabelButtonStyle1 : public MenuLabelButtonBase {
 public:
-    Unk_ov002_0220471c();
-    virtual ~Unk_ov002_0220471c();
+    MenuLabelButtonStyle1();
+    virtual ~MenuLabelButtonStyle1();
 };
 // 8-byte-aligned owner helpers of the menu: text elements
 // Sprite/text pair element (0x50 bytes), vtable 0x022046dc
-class Unk_ov002_022046dc {
+class MenuTextButton {
 public:
-    Unk_ov002_022046dc();
-    virtual ~Unk_ov002_022046dc();
+    MenuTextButton();
+    virtual ~MenuTextButton();
 
-    u32 func_ov002_02203c0c();
-    void func_ov002_02203c1c();
-    void func_ov002_02203c28(u32 m);
-    void func_ov002_02203c38(u32 m);
-    BOOL func_ov002_02203c48(u32 m);
-    void func_ov002_02203c5c(u8 a, u8 b);
-    void func_ov002_02203ca4(u8 v);
-    void func_ov002_02203cc4(u8 v);
-    void func_ov002_02203ce4(u8 v);
-    void func_ov002_02203cf8(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
-    void func_ov002_02203ab8();
-    void func_ov002_02203ac4();
-    void func_ov002_02203ad0();
-    void func_ov002_02203adc();
-    void func_ov002_02203ae8();
-    BOOL func_ov002_02203af4();
-    void func_ov002_02203b30(s32 x, s32 y, s32 c);
+    u32 getPressOffset();
+    void freeText();
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    void renderText(u8 a, u8 b);
+    void setLabelNoShadow(u8 v);
+    void setLabelWithShadow(u8 v);
+    void setLabel(u8 v);
+    void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
+    void isDisabled();
+    void setEnabled();
+    void setDisabled();
+    void disableObjWindow();
+    void enableObjWindow();
+    BOOL stepPress();
+    void drawAt(s32 x, s32 y, s32 c);
 
     /* 0x04 */ Unk_020e0488 unk_04;
     /* 0x44 */ Unk_ov002_02203c5c_Rec *unk_44;
@@ -624,24 +624,24 @@ public:
     /* 0x4c */ u8 unk_4c;
 };
 // Owner, vtable 0x022046cc
-class Unk_ov002_022046cc {
+class MenuBottomButtons {
 public:
-    Unk_ov002_022046cc();
-    virtual ~Unk_ov002_022046cc();
+    MenuBottomButtons();
+    virtual ~MenuBottomButtons();
 
-    void func_ov002_022034c4(u8 v);
-    void func_ov002_02203510(s32 v);
-    void func_ov002_02203548();
-    void func_ov002_02203590();
-    void func_ov002_022035d8();
-    void func_ov002_02203608();
-    void func_ov002_02203650();
-    void func_ov002_02203698();
-    void func_ov002_022036a4(s32 a);
-    void func_ov002_02203900();
+    void setLayoutConfirmAnd06(u8 v);
+    void setLayoutSingle05(s32 v);
+    void setLayoutConfirmQuit04();
+    void setLayoutConfirmQuit03();
+    void setLayoutConfirm();
+    void setLayoutChangeAddressee();
+    void setLayoutNeverMindConfirm();
+    void hide();
+    void drawAt(s32 a);
+    void freeTexts();
 
-    /* 0x004 */ Unk_ov002_022046dc unk_04[2];
-    /* 0x0a4 */ Unk_ov002_02204770 unk_a4;
+    /* 0x004 */ MenuTextButton unk_04[2];
+    /* 0x0a4 */ MenuTitleBalloon unk_a4;
     /* 0x160 */ u8 unk_160;
     /* 0x161 */ u8 unk_161;
 };
@@ -649,59 +649,59 @@ public:
 
 
 // Methods of the same object that the symbols list under another class name
-class Unk_ov002_02202fac : public Unk_ov002_022046cc {
+class MenuBottomButtonsBody : public MenuBottomButtons {
 public:
-    void func_ov002_02202fac(s32 idx);
-    void func_ov002_02202fc8(s32 idx);
-    void func_ov002_02202fe4(s32 idx);
-    s32 func_ov002_02203000(s32 idx);
-    void func_ov002_0220301c();
-    void func_ov002_02203044();
-    void func_ov002_0220306c();
-    void func_ov002_0220308c();
-    void func_ov002_022030ac(u8 v);
-    s32 func_ov002_022030b8(s32 idx);
-    s32 func_ov002_022030f4(s32 idx);
-    BOOL func_ov002_02203110(s32 idx);
-    BOOL func_ov002_0220314c(s32 idx, s32 x, s32 y);
-    void func_ov002_02203268();
-    void func_ov002_02203274(s32 x);
-    void func_ov002_022032b0(s32 x);
-    void func_ov002_022032ec(s32 x);
-    void func_ov002_02203328();
-    void func_ov002_02203370(s32 x);
-    void func_ov002_022033ac();
-    void func_ov002_022033ec(s32 x);
-    void func_ov002_02203458(s32 x);
+    void isButtonDisabled(s32 idx);
+    void enableButton(s32 idx);
+    void disableButton(s32 idx);
+    s32 getButtonOfTarget(s32 idx);
+    void disableObjWindow();
+    void enableObjWindow();
+    void getPressOffset();
+    void stepPress();
+    void setSelected(u8 v);
+    s32 getTargetY(s32 idx);
+    s32 getTargetX(s32 idx);
+    BOOL isTouched(s32 idx);
+    BOOL hitTest(s32 idx, s32 x, s32 y);
+    void showTitleLayer2();
+    void setLayoutYesNo0D(s32 x);
+    void setLayoutYesNo0C(s32 x);
+    void setLayoutYesNo0B(s32 x);
+    void setLayoutTossKeep();
+    void setLayoutYesNo09(s32 x);
+    void setYesNoButtons();
+    void setLayoutYesNo08(s32 x);
+    void setLayoutYesNo07(s32 x);
 };
 
 
 
 
 // Non-polymorphic holder object (members at +0x00 and +0xc0)
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
+    MenuErrorMessage();
+    ~MenuErrorMessage();
 
-    BOOL func_ov002_0220403c();
-    s32 func_ov002_02204044();
-    BOOL func_ov002_0220405c();
-    void func_ov002_0220407c();
-    BOOL func_ov002_022040a4();
-    void func_ov002_022040c0();
-    void func_ov002_022040c8();
-    void func_ov002_022040d4();
-    void func_ov002_022040ec();
-    BOOL func_ov002_02204140();
-    void func_ov002_02204174();
-    BOOL func_ov002_0220418c();
-    void func_ov002_022041b8(u8 *a, s32 b);
-    BOOL func_ov002_02204234(s32 a);
-    void func_ov002_02204340(u8 *a, s32 b, u32 c);
-    void func_ov002_02204394(u8 *a, s32 b, u32 c);
+    BOOL restoreBrightness();
+    s32 dimSubScreen();
+    BOOL finishTalk();
+    void advanceTalk();
+    BOOL isTalkWaiting();
+    void undim();
+    void hidePromptBalloon();
+    void updatePromptBalloon();
+    void showPromptOnly();
+    BOOL stepClose();
+    void beginClose();
+    BOOL stepOpen();
+    void startTalk(u8 *a, s32 b);
+    BOOL update(s32 a);
+    void openHigh(u8 *a, s32 b, u32 c);
+    void open(u8 *a, s32 b, u32 c);
 
-    /* 0x00 */ Unk_ov002_02204468 unk_00;
+    /* 0x00 */ TouchPromptBalloon unk_00;
     /* 0xc0 */ TalkMsgRequest unk_c0;
     /* 0xe0 */ u8 unk_e0[0x1c];
     /* 0xfc */ TalkWindowState *unk_fc;
@@ -710,21 +710,21 @@ public:
     /* 0x105 */ u8 unk_105;
 };
 
-// Scroll/move helper embedded at +0x4c of Unk_ov002_02202d98 (vtable 0x02204604)
-class Unk_ov002_02204604 {
+// Scroll/move helper embedded at +0x4c of MenuCursorBase (vtable 0x02204604)
+class CursorMotion {
 public:
-    Unk_ov002_02204604();
-    virtual ~Unk_ov002_02204604();
+    CursorMotion();
+    virtual ~CursorMotion();
 
-    BOOL func_ov002_02202674();
-    void func_ov002_02202694(s32 x, s32 y, s32 n);
-    void func_ov002_022026c4(s32 x, s32 y, s32 n);
-    void func_ov002_022026f4(s32 x, s32 y);
-    void func_ov002_02202700();
-    s32 func_ov002_02202708();
-    s32 func_ov002_02202710();
-    BOOL func_ov002_02202718();
-    void func_ov002_022027a4();
+    BOOL isMoving();
+    void startEase(s32 x, s32 y, s32 n);
+    void startLinear(s32 x, s32 y, s32 n);
+    void setPos(s32 x, s32 y);
+    void stop();
+    s32 getY();
+    s32 getX();
+    BOOL update();
+    void reset();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -735,79 +735,79 @@ public:
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
-class Unk_ov002_02202d98 : public HandCursor {
+class MenuCursorBase : public HandCursor {
 public:
-    Unk_ov002_02202d98(BOOL flag);
-    ~Unk_ov002_02202d98();
+    MenuCursorBase(BOOL flag);
+    ~MenuCursorBase();
     virtual void vfunc_0c();
 
-    void func_ov002_02202844();
-    s32 func_ov002_02202878();
-    s32 func_ov002_0220288c();
-    s32 func_ov002_022028a0();
-    s32 func_ov002_022028c8();
-    BOOL func_ov002_022028f0();
+    void drawWrapped();
+    s32 getScreenY();
+    s32 getScreenX();
+    s32 getFrameScreenY();
+    s32 getFrameScreenX();
+    BOOL isMoving();
     BOOL func_ov002_022028fc();
     BOOL func_ov002_02202928();
-    void func_ov002_0220298c(s32 x, s32 y, s32 n, u8 e);
-    void func_ov002_022029e8(s32 x, s32 y, s32 n, s32 f);
-    void func_ov002_02202a18(s32 x, s32 y, s32 n);
-    void func_ov002_02202a40(s32 x, s32 y);
-    void func_ov002_02202a6c(s32 x, s32 y);
-    void func_ov002_02202a78();
-    void func_ov002_02202af0();
+    void moveToNear(s32 x, s32 y, s32 n, u8 e);
+    void moveToEase(s32 x, s32 y, s32 n, s32 f);
+    void moveToLinear(s32 x, s32 y, s32 n);
+    void warpTo(s32 x, s32 y);
+    void setScreenPos(s32 x, s32 y);
+    void setPoseIdle();
+    void setPoseRelease();
 
-    /* 0x4c */ Unk_ov002_02204604 unk_4c;
+    /* 0x4c */ CursorMotion unk_4c;
 };
 
-class Unk_ov002_0220464c : public Unk_ov002_02202d98 {
+class MenuCursor : public MenuCursorBase {
 public:
-    Unk_ov002_0220464c(BOOL flag);
-    virtual ~Unk_ov002_0220464c();
+    MenuCursor(BOOL flag);
+    virtual ~MenuCursor();
 
-    void func_ov002_02202b68();
-    void func_ov002_02202be0();
-    void func_ov002_02202c40();
-    void func_ov002_02202ca0();
-    void func_ov002_02202d00(s32 idx);
+    void setPosePress();
+    void switchToAnim0D();
+    void switchToAnim01();
+    void switchToAnim07();
+    void setAnimIfChanged(s32 idx);
 };
 
-class Unk_ov002_02204614 : public Unk_ov002_0220464c {
+class MenuCursorBuf0 : public MenuCursor {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
 };
 
-class Unk_ov002_02204630 : public Unk_ov002_0220464c {
+class MenuCursorBuf1 : public MenuCursor {
 public:
-    Unk_ov002_02204630();
-    virtual ~Unk_ov002_02204630();
+    MenuCursorBuf1();
+    virtual ~MenuCursorBuf1();
 };
 
-class Unk_ov002_022046b0 : public ScrollKnob {
+class MenuScrollKnob : public ScrollKnob {
 public:
-    Unk_ov002_022046b0();
-    virtual ~Unk_ov002_022046b0();
+    MenuScrollKnob();
+    virtual ~MenuScrollKnob();
 
-    s32 func_ov002_02202e60();
-    s32 func_ov002_02202e84();
-    s32 func_ov002_02202ea8();
-    s32 func_ov002_02202ebc();
-    s32 func_ov002_02202ed0();
-    void func_ov002_02202ef4();
-    void func_ov002_02202f00();
-    void func_ov002_02202f0c();
-    BOOL func_ov002_02202f18(s32 x, s32 y);
+    s32 getGripY();
+    s32 getGripX();
+    s32 getScreenY();
+    s32 getScreenX();
+    s32 updateRelease();
+    void release();
+    void grab();
+    void show();
+    BOOL hitTest(s32 x, s32 y);
 };
 
 // Element of the 5-entry array at +0x28 of the menu (0x48 bytes)
-class Unk_ov002_02204568 : public Unk_020e0488 {
+class PopupChoiceRow : public Unk_020e0488 {
 public:
-    Unk_ov002_02204568();
-    virtual ~Unk_ov002_02204568();
+    PopupChoiceRow();
+    virtual ~PopupChoiceRow();
 
-    void func_ov002_022024f8(u32 a, u16 b, u8 c, u8 d);
-    void func_ov002_02202520(s32 v);
+    void setup(u32 a, u16 b, u8 c, u8 d);
+    void render(s32 v);
 
     /* 0x40 */ u16 unk_40;
     /* 0x42 */ u8 unk_42;
@@ -815,24 +815,24 @@ public:
     /* 0x44 */ u8 unk_44;
 };
 
-struct Unk_ov002_022013ac_Rec {
+struct PopupChoiceIdList {
     u8 unk_00[5];
     u8 unk_05[5];
     u8 unk_0a;
 };
 
 // Menu/selection object, vtable 0x02204558
-class Unk_ov002_02204558 {
+class PopupChoiceMenu {
 public:
-    Unk_ov002_02204558();
-    virtual ~Unk_ov002_02204558();
+    PopupChoiceMenu();
+    virtual ~PopupChoiceMenu();
 
-    void func_ov002_02202200(LabelBalloon *p);
-    void func_ov002_02202278(s32 a, s32 b);
-    void func_ov002_02202294(s32 a, s32 b);
-    void func_ov002_0220229c(s32 a, s32 b);
-    s32 func_ov002_022022e0(s32 a, s32 b);
-    void func_ov002_02202310(s32 a, s32 b, const char *path);
+    void placeAboveBalloon(LabelBalloon *p);
+    void placeAbove(s32 a, s32 b);
+    void placeAt(s32 a, s32 b);
+    void placeNearPoint(s32 a, s32 b);
+    s32 placeCentered(s32 a, s32 b);
+    void init(s32 a, s32 b, const char *path);
 
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -853,42 +853,42 @@ public:
     /* 0x21 */ volatile u8 unk_21;
     /* 0x22 */ u8 pad_22[2];
     /* 0x24 */ const char *unk_24;
-    /* 0x28 */ Unk_ov002_02204568 unk_28[5];
-    /* 0x190 */ Unk_ov002_02204738 unk_190;
-    /* 0x200 */ Unk_ov002_02204770 unk_200;
-    /* 0x2bc */ Unk_ov002_022044b4 unk_2bc;
+    /* 0x28 */ PopupChoiceRow unk_28[5];
+    /* 0x190 */ MenuLabelButton unk_190;
+    /* 0x200 */ MenuTitleBalloon unk_200;
+    /* 0x2bc */ MenuSlide unk_2bc;
     /* 0x2d8 */ u8 unk_2d8[0x19];
 };
 
 // Methods of the same object that the symbols list under another class name
-class Unk_ov002_022013ac : public Unk_ov002_02204558 {
+class PopupChoiceMenuBody : public PopupChoiceMenu {
 public:
-    void func_ov002_022013ac(void *buf, u32 c);
-    void func_ov002_022013c4(u32 m);
-    void func_ov002_022013cc(u32 m);
-    BOOL func_ov002_022013d4(u32 m);
-    s32 func_ov002_022013e4(void *p, u32 id);
-    s32 func_ov002_02201438(u32 id);
-    u32 func_ov002_0220144c(u32 a, u32 b);
-    u32 func_ov002_02201490();
-    u32 func_ov002_02201494();
-    s32 func_ov002_02201498(s32 v);
-    s32 func_ov002_022014a4();
-    s32 func_ov002_022014ac(s32 x, s32 y);
-    s32 func_ov002_022014c0(s32 x, s32 y);
-    s32 func_ov002_022014d4(s32 x, s32 y, s32 d);
-    void func_ov002_02201534(Unk_ov002_022013ac_Rec *r);
-    void func_ov002_0220160c(Unk_ov002_022013ac_Rec *r, s32 f);
-    s32 func_ov002_02201680(Unk_ov002_022013ac_Rec *r, void *s, u32 v);
-    void func_ov002_02201728();
-    void func_ov002_0220175c();
-    void func_ov002_02201784();
-    BOOL func_ov002_022017a4();
-    BOOL func_ov002_022017b4();
-    void func_ov002_022017c4();
+    void load2dString(void *buf, u32 c);
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    s32 applyAddressee(void *p, u32 id);
+    s32 getAddresseeKind(u32 id);
+    u32 pickAddressee(u32 a, u32 b);
+    u32 getPageCount();
+    u32 getRowCount();
+    s32 getRowY(s32 v);
+    s32 getRowX();
+    s32 hitTestRow(s32 x, s32 y);
+    s32 hitTestRowOrLast(s32 x, s32 y);
+    s32 hitTestRowOr(s32 x, s32 y, s32 d);
+    void loadAddresseePage(PopupChoiceIdList *r);
+    void setRowsFromIds(PopupChoiceIdList *r, s32 f);
+    s32 addCustomRow(PopupChoiceIdList *r, void *s, u32 v);
+    void renderRows();
+    void resetRowColors();
+    void freeRowTexts();
+    BOOL isClosed();
+    BOOL isOpen();
+    void buildAddresseeList();
 };
 
-typedef Unk_ov002_022013ac Self;
+typedef PopupChoiceMenuBody Self;
 
 struct Unk_ov002_022018e4_Arg {
     u8 v;
@@ -896,49 +896,49 @@ struct Unk_ov002_022018e4_Arg {
 
 // Plain functions of the menu (they take the menu object first)
 extern "C" {
-void func_ov002_022018e4(s32 unused, s32 x, u32 id);
-void func_ov002_02201938(s32 x, s32 y);
-void func_ov002_02201958(s32 a, s32 b);
-void func_ov002_02201984(s32 x, s32 y);
-void func_ov002_022019a4(s32 a, s32 b);
-BOOL func_ov002_022019d0(Self *self, s32 p, u8 *pos, u32 n);
-BOOL func_ov002_02201a28(Self *self);
-void func_ov002_02201a3c(Self *self, u32 x);
-u8 func_ov002_02201a70(Self *self, s32 x);
-void func_ov002_02201aa0(Self *self, s32 a, s32 b);
-void func_ov002_02201ad8(Self *self, s32 x);
-void func_ov002_02201b04(Self *self);
-void func_ov002_02201b28(Self *self);
-void func_ov002_02201b58(Self *self);
-void func_ov002_02201c6c(Self *self);
-s32 func_ov002_02201ca4(Self *self);
-s32 func_ov002_02201cb0(Self *self);
-void func_ov002_02201cb8(Self *self);
-void func_ov002_02201d24(Self *self);
-void func_ov002_02201df0(Self *self);
-void func_ov002_02201e40(Self *self);
-void func_ov002_02201ea4(Self *self);
-void func_ov002_02201f18(Self *self);
-void func_ov002_02202018(Self *self, u32 x);
-void func_ov002_02202064(Self *self, s32 x);
-void func_ov002_02202098(Self *self, s32 x);
-void func_ov002_022020cc(Self *self, Unk_ov002_022018e4_Arg a, s32 x);
-void func_ov002_022020fc(Self *self);
-void func_ov002_02202144(Self *self);
-void func_ov002_02202190(Self *self, s32 x, s32 y);
-void func_ov002_022021d8(Self *self, s32 x, s32 y);
-void func_ov002_022021f4(Self *self, s32 x, s32 y);
-BOOL func_ov002_0220125c(u32 v);
-BOOL func_ov002_0220126c(u32 v);
-BOOL func_ov002_0220127c(u32 v);
-BOOL func_ov002_0220128c(u32 v);
-s32 func_ov002_022016cc(u8 *p);
-void func_ov002_022016e4(u8 *p, u8 v);
-BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
-void func_ov002_02202dd4(s32 a, void *b);
-void func_ov002_02202e48();
-void func_ov002_02202e54();
-void func_ov002_02203920();
+void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id);
+void PopupChoice_CopyVillagerName(s32 x, s32 y);
+void PopupChoice_CopyVillagerIdName(s32 a, s32 b);
+void PopupChoice_CopyResidentName(s32 x, s32 y);
+void PopupChoice_CopyPlayerIdName(s32 a, s32 b);
+BOOL PopupChoice_MoveCursor(Self *self, s32 p, u8 *pos, u32 n);
+BOOL PopupChoice_TickDecideDelay(Self *self);
+void PopupChoice_DecideAddressee(Self *self, u32 x);
+u8 PopupChoice_DecideCancel(Self *self, s32 x);
+void PopupChoice_DecideRow(Self *self, s32 a, s32 b);
+void PopupChoice_StartDecide(Self *self, s32 x);
+void PopupChoice_ForceClose(Self *self);
+void PopupChoice_Draw(Self *self);
+void PopupChoice_Update(Self *self);
+void PopupChoice_FitWidth(Self *self);
+s32 PopupChoice_GetHeight(Self *self);
+s32 PopupChoice_GetWidth(Self *self);
+void PopupChoice_StepSlideClose(Self *self);
+void PopupChoice_StepSlideOpen(Self *self);
+void PopupChoice_ApplySlide(Self *self);
+void PopupChoice_StepPopClose(Self *self);
+void PopupChoice_StepPopOpen(Self *self);
+void PopupChoice_BuildScreen(Self *self);
+void PopupChoice_SetState(Self *self, u32 x);
+void PopupChoice_Close(Self *self, s32 x);
+void PopupChoice_Open(Self *self, s32 x);
+void PopupChoice_OpenAddresseePage(Self *self, Unk_ov002_022018e4_Arg a, s32 x);
+void PopupChoice_LoadFriendBg(Self *self);
+void PopupChoice_LoadChoiceBg(Self *self);
+void PopupChoice_SetPosClamped(Self *self, s32 x, s32 y);
+void PopupChoice_SetPos(Self *self, s32 x, s32 y);
+void PopupChoice_ApplyScroll(Self *self, s32 x, s32 y);
+BOOL MenuKeys_HasRight(u32 v);
+BOOL MenuKeys_HasLeft(u32 v);
+BOOL MenuKeys_HasDown(u32 v);
+BOOL MenuKeys_HasUp(u32 v);
+s32 ChoiceIdList_Count(u8 *p);
+void ChoiceIdList_Clear(u8 *p, u8 v);
+BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
+void Menu_LoadPaperBg(s32 a, void *b);
+void Menu_PlayScrollGrabSe();
+void Menu_PlayScrollTickSe();
+void MenuButtons_LoadTextColors();
 }
 
 static inline BOOL Unk_ov002_022009d4_Both() {
@@ -949,20 +949,20 @@ static inline BOOL Unk_ov002_022009d4_Both() {
 }
 
 // ---- .rodata
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_022047a4[5] = {
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW8[5] = {
     {0x81f440a0, 0x14c, 0x30},
     {0x801440a0, 0x150, 0x30},
     {0x800440a0, 0xd0, 0x2c},
     {0x901c40a0, 0xcf, 0x2c},
     {0x81ec40a0, 0xcf, 0x3fffec},
 };
-extern "C" const u8 data_ov002_02204440[12] = {0xb6, 0x9e, 0xb2, 0xa9, 0xa9, 0xb6, 0xb6, 0xb6, 0xb6, 0xb6, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_022046e4[3] = {
+extern "C" const u8 sBottomButtonTargetY[12] = {0xb6, 0x9e, 0xb2, 0xa9, 0xa9, 0xb6, 0xb6, 0xb6, 0xb6, 0xb6, 0x00, 0x00};
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW4A[3] = {
     {0x80204044, 0x146, 0x30},
     {0x90284044, 0xcf, 0x2c},
     {0x80184044, 0xcf, 0x3fffec},
 };
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_022047cc[6] = {
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6A[6] = {
     {0x80084000, 0x14, 0x1},
     {0x40280000, 0x18, 0x1},
     {0x90204000, 0x5b, 0x1},
@@ -970,8 +970,8 @@ extern "C" Unk_ov002_02203c5c_Rec data_ov002_022047cc[6] = {
     {0x90244004, 0x5b, 0x5},
     {0x80044004, 0x5b, 0x3fffc5},
 };
-extern "C" const u8 data_ov002_0220444c[12] = {0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_022047fc[6] = {
+extern "C" const u8 sBottomButtonOfTarget[12] = {0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00};
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6B[6] = {
     {0x80084000, 0x1a, 0x1},
     {0x40280000, 0x1e, 0x1},
     {0x90204000, 0x5b, 0x1},
@@ -979,9 +979,9 @@ extern "C" Unk_ov002_02203c5c_Rec data_ov002_022047fc[6] = {
     {0x90244004, 0x5b, 0x5},
     {0x80044004, 0x5b, 0x3fffc5},
 };
-extern "C" const u8 data_ov002_0220442c[4] = {0x00, 0x02, 0x03, 0x00};
-extern "C" const u8 data_ov002_02204434[12] = {0x58, 0xca, 0xca, 0x62, 0xc2, 0x3e, 0xc4, 0x7c, 0x74, 0xc4, 0x00, 0x00};
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_0220482c[7] = {
+extern "C" const u8 sTextButtonPressOffsets[4] = {0x00, 0x02, 0x03, 0x00};
+extern "C" const u8 sBottomButtonTargetX[12] = {0x58, 0xca, 0xca, 0x62, 0xc2, 0x3e, 0xc4, 0x7c, 0x74, 0xc4, 0x00, 0x00};
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW12[7] = {
     {0x81d440a0, 0x14c, 0x30},
     {0x81f440a0, 0x150, 0x30},
     {0x801440a0, 0x154, 0x30},
@@ -990,18 +990,18 @@ extern "C" Unk_ov002_02203c5c_Rec data_ov002_0220482c[7] = {
     {0x901c40a0, 0xcf, 0x2c},
     {0x81cc40a0, 0xcf, 0x3fffec},
 };
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_02204784[4] = {
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW6Single[4] = {
     {0x804840a0, 0x140, 0x30},
     {0x406800a0, 0x144, 0x30},
     {0x905e40a0, 0xcf, 0x2c},
     {0x804040a0, 0xcf, 0x3fffec},
 };
-extern "C" Unk_ov002_02203c5c_Rec data_ov002_022046fc[3] = {
+extern "C" Unk_ov002_02203c5c_Rec sButtonCellsW4B[3] = {
     {0x81c04044, 0x142, 0x30},
     {0x91c84044, 0xcf, 0x2c},
     {0x81b84044, 0xcf, 0x3fffec},
 };
-extern "C" const u8 data_ov002_02204430[4] = {0x5f, 0x7d, 0xc0, 0x50};
+extern "C" const u8 sMenuButtonTextColors[4] = {0x5f, 0x7d, 0xc0, 0x50};
 
 
 
@@ -1014,44 +1014,44 @@ extern "C" const u8 data_ov002_02204430[4] = {0x5f, 0x7d, 0xc0, 0x50};
 
 
 
-Unk_ov002_022040ec::Unk_ov002_022040ec() {
+MenuErrorMessage::MenuErrorMessage() {
     unk_104 = 3;
     unk_105 = 0;
 }
 
-Unk_ov002_022040ec::~Unk_ov002_022040ec() {}
+MenuErrorMessage::~MenuErrorMessage() {}
 
-void Unk_ov002_022040ec::func_ov002_02204394(u8 *a, s32 b, u32 c) {
+void MenuErrorMessage::open(u8 *a, s32 b, u32 c) {
     unk_105 = c;
-    func_ov002_022041b8(a, b);
+    startTalk(a, b);
     Unk_020e0488 s;
     func_0206f9fc(&s, 0x64);
     unk_00.setText((StrBuf *)&s);
     unk_00.setPos(0, 0x40);
-    unk_00.func_ov002_022006b8();
+    unk_00.queueOpen();
     unk_00.enableObjWindow();
     unk_00.func_ov002_022006ac(0);
 }
 
-void Unk_ov002_022040ec::func_ov002_02204340(u8 *a, s32 b, u32 c) {
+void MenuErrorMessage::openHigh(u8 *a, s32 b, u32 c) {
     unk_105 = c;
-    func_ov002_022041b8(a, b);
+    startTalk(a, b);
     Unk_020e0488 s;
     func_0206f9fc(&s, 0x64);
     unk_00.setText((StrBuf *)&s);
     unk_00.setPos(0, 0x30);
-    unk_00.func_ov002_022006b8();
+    unk_00.queueOpen();
     unk_00.enableObjWindow();
     unk_00.func_ov002_022006ac(0);
 }
 
-BOOL Unk_ov002_022040ec::func_ov002_02204234(s32 a) {
+BOOL MenuErrorMessage::update(s32 a) {
     switch (unk_104) {
     case 0:
-        if (func_ov002_022040a4()) {
+        if (isTalkWaiting()) {
             unk_104 = 1;
-            unk_00.func_ov002_022006c0();
-            if (unk_105 != 0) func_ov002_02204044();
+            unk_00.commitOpen();
+            if (unk_105 != 0) dimSubScreen();
         }
         break;
     case 1:
@@ -1064,28 +1064,28 @@ BOOL Unk_ov002_022040ec::func_ov002_02204234(s32 a) {
                 if ((v & 1) == 0 && (v & 2) == 0 && (v & 0x400) == 0 && (v & 0x800) == 0) break;
             }
         }
-        func_ov002_0220407c();
+        advanceTalk();
         unk_104 = 2;
-        unk_00.func_ov002_022006e4(0);
+        unk_00.hide(0);
         break;
     case 2:
-        if (func_ov002_0220405c()) {
-            func_ov002_0220403c();
+        if (finishTalk()) {
+            restoreBrightness();
             unk_104 = 3;
         }
         break;
     case 3:
         return TRUE;
     }
-    unk_00.func_ov002_0220071c();
+    unk_00.updatePrompt();
     if (unk_105 == 0) {
-        Unk_ov002_02204468 *p = &unk_00;
+        TouchPromptBalloon *p = &unk_00;
         p->draw();
     }
     return FALSE;
 }
 
-void Unk_ov002_022040ec::func_ov002_022041b8(u8 *a, s32 b) {
+void MenuErrorMessage::startTalk(u8 *a, s32 b) {
     TalkWindowState *p = TalkWindow_Get(1);
     unk_c0.vfunc_08();
     unk_c0.setFileName("obj_etc_error");
@@ -1096,12 +1096,12 @@ void Unk_ov002_022040ec::func_ov002_022041b8(u8 *a, s32 b) {
     p->unk_08 = 1;
     p->lockAdvance();
     unk_104 = 0;
-    if (unk_105 == 0) func_ov002_02204044();
+    if (unk_105 == 0) dimSubScreen();
 }
 
-BOOL Unk_ov002_022040ec::func_ov002_0220418c() {
+BOOL MenuErrorMessage::stepOpen() {
     if (unk_104 == 0) {
-        if (func_ov002_022040a4()) {
+        if (isTalkWaiting()) {
             unk_104 = 1;
             return TRUE;
         }
@@ -1110,15 +1110,15 @@ BOOL Unk_ov002_022040ec::func_ov002_0220418c() {
     return TRUE;
 }
 
-void Unk_ov002_022040ec::func_ov002_02204174() {
-    func_ov002_0220407c();
+void MenuErrorMessage::beginClose() {
+    advanceTalk();
     unk_104 = 2;
 }
 
-BOOL Unk_ov002_022040ec::func_ov002_02204140() {
+BOOL MenuErrorMessage::stepClose() {
     if (unk_104 == 2) {
-        if (func_ov002_0220405c()) {
-            func_ov002_0220403c();
+        if (finishTalk()) {
+            restoreBrightness();
             unk_104 = 3;
             return TRUE;
         }
@@ -1127,42 +1127,42 @@ BOOL Unk_ov002_022040ec::func_ov002_02204140() {
     return TRUE;
 }
 
-void Unk_ov002_022040ec::func_ov002_022040ec() {
+void MenuErrorMessage::showPromptOnly() {
     Unk_020e0488 s;
     func_0206f9fc(&s, 0x64);
     unk_00.setText((StrBuf *)&s);
     unk_00.setPos(0, 0x40);
-    unk_00.func_ov002_022006b8();
+    unk_00.queueOpen();
     unk_00.enableObjWindow();
     unk_00.func_ov002_022006ac(0);
-    func_ov002_02204044();
-    unk_00.func_ov002_022006c0();
+    dimSubScreen();
+    unk_00.commitOpen();
 }
 
-void Unk_ov002_022040ec::func_ov002_022040d4() {
-    unk_00.func_ov002_0220071c();
-    Unk_ov002_02204468 *p = &unk_00;
+void MenuErrorMessage::updatePromptBalloon() {
+    unk_00.updatePrompt();
+    TouchPromptBalloon *p = &unk_00;
     p->draw();
 }
 
-void Unk_ov002_022040ec::func_ov002_022040c8() { unk_00.func_ov002_022006e4(0); }
+void MenuErrorMessage::hidePromptBalloon() { unk_00.hide(0); }
 
-void Unk_ov002_022040ec::func_ov002_022040c0() { func_ov002_0220403c(); }
+void MenuErrorMessage::undim() { restoreBrightness(); }
 
-BOOL Unk_ov002_022040ec::func_ov002_022040a4() {
+BOOL MenuErrorMessage::isTalkWaiting() {
     TalkWindowState *p = TalkWindow_Get(1);
     if (p->unk_04 == 2) return TRUE;
     return FALSE;
 }
 
-void Unk_ov002_022040ec::func_ov002_0220407c() {
+void MenuErrorMessage::advanceTalk() {
     TalkWindowState *p = TalkWindow_Get(1);
     p->setNextMessageIfUnset(gTalkMsgIndexEnd, 0);
     p->setAdvancePending();
     p->unlockAdvance();
 }
 
-BOOL Unk_ov002_022040ec::func_ov002_0220405c() {
+BOOL MenuErrorMessage::finishTalk() {
     TalkWindowState *o = unk_fc;
     if (o->unk_04 == 0) {
         o->detachRequest();
@@ -1171,24 +1171,24 @@ BOOL Unk_ov002_022040ec::func_ov002_0220405c() {
     return FALSE;
 }
 
-s32 Unk_ov002_022040ec::func_ov002_02204044() {
+s32 MenuErrorMessage::dimSubScreen() {
     Gfx2d_BeginSubObjWinBrightness();
     Gfx2d_SetSubBrightness(-10);
 }
 
-BOOL Unk_ov002_022040ec::func_ov002_0220403c() { return Gfx2d_EndSubObjWinBrightness(); }
+BOOL MenuErrorMessage::restoreBrightness() { return Gfx2d_EndSubObjWinBrightness(); }
 
-extern "C" void *_ZN18Unk_ov002_02204754C2Ehi(Unk_ov002_02204754 *self, u8 a, s32 b) {
+extern "C" void *_ZN19MenuLabelButtonBaseC2Ehi(MenuLabelButtonBase *self, u8 a, s32 b) {
     _ZN11LabelButtonC2Ehi(self, a, b);
-    *(void **)self = _ZTV18Unk_ov002_02204754 + 8;
+    *(void **)self = _ZTV19MenuLabelButtonBase + 8;
     return self;
 }
 
-Unk_ov002_02204754::~Unk_ov002_02204754() {}
+MenuLabelButtonBase::~MenuLabelButtonBase() {}
 
-void Unk_ov002_02204754::setOrigin(s32 a, s32 b) { UiWidget::setOrigin(a - 0x80, b - 0x60); }
+void MenuLabelButtonBase::setOrigin(s32 a, s32 b) { UiWidget::setOrigin(a - 0x80, b - 0x60); }
 
-s32 Unk_ov002_02204738::func_ov002_02203f78(s32 k) {
+s32 MenuLabelButton::getAnchorX(s32 k) {
     s32 r = getOriginX();
     s32 x, y;
     if (getState() == 2) {
@@ -1207,7 +1207,7 @@ s32 Unk_ov002_02204738::func_ov002_02203f78(s32 k) {
     return r;
 }
 
-s32 Unk_ov002_02204738::func_ov002_02203f28(s32 k) {
+s32 MenuLabelButton::getAnchorY(s32 k) {
     s32 r = getOriginY();
     s32 x, y;
     if (getState() == 2) {
@@ -1227,7 +1227,7 @@ s32 Unk_ov002_02204738::func_ov002_02203f28(s32 k) {
     return r;
 }
 
-BOOL Unk_ov002_02204738::func_ov002_02203f08() {
+BOOL MenuLabelButton::stepAnim() {
     if (isAnimDone() == 0) {
         vfunc_0c();
         return TRUE;
@@ -1235,18 +1235,18 @@ BOOL Unk_ov002_02204738::func_ov002_02203f08() {
     return FALSE;
 }
 
-void Unk_ov002_02204738::func_ov002_02203edc(s32 v) {
+void MenuLabelButton::setLabel2d(s32 v) {
     Unk_020e0488 s;
     func_0206f9fc(&s, v);
     LabelButton_setLabelText(this, &s);
 }
 
-void Unk_ov002_02204738::func_ov002_02203ec8(s32 v) {
-    func_ov002_02203e88(v, 0x98, 0xac);
+void MenuLabelButton::showDefault(s32 v) {
+    showAt(v, 0x98, 0xac);
 }
 
-void Unk_ov002_02204738::func_ov002_02203e88(s32 v, s32 x, s32 y) {
-    func_ov002_02203edc(v);
+void MenuLabelButton::showAt(s32 v, s32 x, s32 y) {
+    setLabel2d(v);
     setOrigin(x, y);
     setPos(0, 0);
     showLayer2();
@@ -1254,7 +1254,7 @@ void Unk_ov002_02204738::func_ov002_02203e88(s32 v, s32 x, s32 y) {
     vfunc_0c();
 }
 
-BOOL Unk_ov002_02204738::func_ov002_02203e24() {
+BOOL MenuLabelButton::isTouched() {
     BOOL c;
     if (gTouchHeld != 0 && gTouchChanged != 0) c = TRUE; else c = FALSE;
     if (c) {
@@ -1267,79 +1267,79 @@ BOOL Unk_ov002_02204738::func_ov002_02203e24() {
     return FALSE;
 }
 
-Unk_ov002_02204738::Unk_ov002_02204738() : Unk_ov002_02204754(0, 0) {}
+MenuLabelButton::MenuLabelButton() : MenuLabelButtonBase(0, 0) {}
 
-Unk_ov002_02204738::~Unk_ov002_02204738() {}
+MenuLabelButton::~MenuLabelButton() {}
 
-Unk_ov002_0220471c::Unk_ov002_0220471c() : Unk_ov002_02204754(1, 0) {}
+MenuLabelButtonStyle1::MenuLabelButtonStyle1() : MenuLabelButtonBase(1, 0) {}
 
-Unk_ov002_0220471c::~Unk_ov002_0220471c() {}
+MenuLabelButtonStyle1::~MenuLabelButtonStyle1() {}
 
-Unk_ov002_022046dc::Unk_ov002_022046dc() {
+MenuTextButton::MenuTextButton() {
     unk_44 = 0;
     unk_49 = 0;
     unk_4c = 0;
 }
 
-Unk_ov002_022046dc::~Unk_ov002_022046dc() { unk_04.func_0206fc44(); }
+MenuTextButton::~MenuTextButton() { unk_04.func_0206fc44(); }
 
-void Unk_ov002_022046dc::func_ov002_02203cf8(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b) {
+void MenuTextButton::setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b) {
     unk_44 = p;
     unk_48 = a;
     unk_4a = b;
 }
 
-void Unk_ov002_022046dc::func_ov002_02203ce4(u8 v) {
+void MenuTextButton::setLabel(u8 v) {
     unk_4b = v;
-    func_ov002_02203c5c(0xf, 0);
+    renderText(0xf, 0);
 }
 
-void Unk_ov002_022046dc::func_ov002_02203cc4(u8 v) {
-    func_ov002_02203ce4(v);
+void MenuTextButton::setLabelWithShadow(u8 v) {
+    setLabel(v);
     unk_49 = 0;
-    func_ov002_02203c28(1);
+    clearFlags(1);
 }
 
-void Unk_ov002_022046dc::func_ov002_02203ca4(u8 v) {
-    func_ov002_02203ce4(v);
+void MenuTextButton::setLabelNoShadow(u8 v) {
+    setLabel(v);
     unk_49 = 0;
-    func_ov002_02203c38(1);
+    setFlags(1);
 }
 
-void Unk_ov002_022046dc::func_ov002_02203c5c(u8 a, u8 b) {
+void MenuTextButton::renderText(u8 a, u8 b) {
     func_0206f9fc(&unk_04, unk_4b);
     unk_04.func_0206fb9c(8, unk_44->unk_04, unk_48, a, b, 0);
     unk_04.func_0206fab4(1, 0);
 }
 
-BOOL Unk_ov002_022046dc::func_ov002_02203c48(u32 m) {
+BOOL MenuTextButton::testFlags(u32 m) {
     if ((unk_4c & m) != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov002_022046dc::func_ov002_02203c38(u32 m) { unk_4c = unk_4c | m; }
+void MenuTextButton::setFlags(u32 m) { unk_4c = unk_4c | m; }
 
-void Unk_ov002_022046dc::func_ov002_02203c28(u32 m) { unk_4c = unk_4c & ~m; }
+void MenuTextButton::clearFlags(u32 m) { unk_4c = unk_4c & ~m; }
 
-void Unk_ov002_022046dc::func_ov002_02203c1c() { unk_04.func_0206fc44(); }
+void MenuTextButton::freeText() { unk_04.func_0206fc44(); }
 
-u32 Unk_ov002_022046dc::func_ov002_02203c0c() { return data_ov002_0220442c[unk_49]; }
+u32 MenuTextButton::getPressOffset() { return sTextButtonPressOffsets[unk_49]; }
 
-void Unk_ov002_022046dc::func_ov002_02203b30(s32 x, s32 y, s32 c) {
-    u32 off = func_ov002_02203c0c();
+void MenuTextButton::drawAt(s32 x, s32 y, s32 c) {
+    u32 off = getPressOffset();
     s32 pal = -1;
-    if (func_ov002_02203c48(4)) {
+    if (testFlags(4)) {
         pal = 2;
     }
     s32 yy = y + 0x60 + off;
     s32 xx = x + 0x80 + off;
     Oam_DrawCell(1, unk_44, xx, yy, pal, c, 0x1000, 0x1000, 0, -1, 0, 0);
-    if (func_ov002_02203c48(2)) {
+    if (testFlags(2)) {
         Oam_DrawCell(1, unk_44, xx, yy, -1, c, 0x1000, 0x1000, 0, 2, 0, 0);
     }
-    if (!func_ov002_02203c48(1)) {
+    if (!testFlags(1)) {
         if (unk_49 + 1 != 3) {
             x += 0x83;
             y += 0x63;
@@ -1348,9 +1348,9 @@ void Unk_ov002_022046dc::func_ov002_02203b30(s32 x, s32 y, s32 c) {
     }
 }
 
-BOOL Unk_ov002_022046dc::func_ov002_02203af4() {
+BOOL MenuTextButton::stepPress() {
     if (unk_49 == 0) {
-        func_ov002_02203c5c(0xe, 0);
+        renderText(0xe, 0);
     }
     if (unk_49 + 1 < 3) {
         unk_49++;
@@ -1361,23 +1361,23 @@ yes:
     return TRUE;
 }
 
-void Unk_ov002_022046dc::func_ov002_02203ae8() { func_ov002_02203c38(2); }
+void MenuTextButton::enableObjWindow() { setFlags(2); }
 
-void Unk_ov002_022046dc::func_ov002_02203adc() { func_ov002_02203c28(2); }
+void MenuTextButton::disableObjWindow() { clearFlags(2); }
 
-void Unk_ov002_022046dc::func_ov002_02203ad0() { func_ov002_02203c38(4); }
+void MenuTextButton::setDisabled() { setFlags(4); }
 
-void Unk_ov002_022046dc::func_ov002_02203ac4() { func_ov002_02203c28(4); }
+void MenuTextButton::setEnabled() { clearFlags(4); }
 
-void Unk_ov002_022046dc::func_ov002_02203ab8() { func_ov002_02203c48(4); }
+void MenuTextButton::isDisabled() { testFlags(4); }
 
-Unk_ov002_02204770::Unk_ov002_02204770() : LabelBalloon(0) { disablePopAnim(); }
+MenuTitleBalloon::MenuTitleBalloon() : LabelBalloon(0) { disablePopAnim(); }
 
-Unk_ov002_02204770::~Unk_ov002_02204770() {}
+MenuTitleBalloon::~MenuTitleBalloon() {}
 
-void Unk_ov002_02204770::setOrigin(s32 a, s32 b) { UiWidget::setOrigin(a - 0x80, b - 0x60); }
+void MenuTitleBalloon::setOrigin(s32 a, s32 b) { UiWidget::setOrigin(a - 0x80, b - 0x60); }
 
-void Unk_ov002_02204770::func_ov002_022039f8(u8 a, s32 b, s32 c) {
+void MenuTitleBalloon::showText(u8 a, s32 b, s32 c) {
     setOrigin(b, c);
     setPos(0, 0);
     Unk_020e0488 t;
@@ -1389,49 +1389,49 @@ void Unk_ov002_02204770::func_ov002_022039f8(u8 a, s32 b, s32 c) {
     vfunc_0c();
 }
 
-void Unk_ov002_02204770::func_ov002_022039d8() {
+void MenuTitleBalloon::hideNow() {
     requestClose();
     vfunc_0c();
     vfunc_0c();
 }
 
-Unk_ov002_022046cc::Unk_ov002_022046cc() { unk_160 = 0; }
+MenuBottomButtons::MenuBottomButtons() { unk_160 = 0; }
 
-Unk_ov002_022046cc::~Unk_ov002_022046cc() {}
+MenuBottomButtons::~MenuBottomButtons() {}
 
-extern "C" void func_ov002_02203920() { GXS_LoadOBJPltt(data_ov002_02204430, 0x1c, 4); }
+extern "C" void MenuButtons_LoadTextColors() { GXS_LoadOBJPltt(sMenuButtonTextColors, 0x1c, 4); }
 
-void Unk_ov002_022046cc::func_ov002_02203900() {
+void MenuBottomButtons::freeTexts() {
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].func_ov002_02203c1c();
+        unk_04[i].freeText();
     }
 }
 
-void Unk_ov002_022046cc::func_ov002_022036a4(s32 a) {
+void MenuBottomButtons::drawAt(s32 a) {
     switch (unk_160) {
     case 0:
         break;
     case 1:
-        unk_04[1].func_ov002_02203b30(0, a + 0xac, -1);
+        unk_04[1].drawAt(0, a + 0xac, -1);
         break;
     case 2:
-        unk_04[0].func_ov002_02203b30(0, a + 0xac, -1);
-        unk_04[1].func_ov002_02203b30(0, a + 0xac, -1);
+        unk_04[0].drawAt(0, a + 0xac, -1);
+        unk_04[1].drawAt(0, a + 0xac, -1);
         break;
     case 3:
-        unk_04[1].func_ov002_02203b30(0x3c, a + 0x35, -1);
-        unk_04[0].func_ov002_02203b30(0x3c, a + 0x48, -1);
+        unk_04[1].drawAt(0x3c, a + 0x35, -1);
+        unk_04[0].drawAt(0x3c, a + 0x48, -1);
         break;
     case 4:
-        unk_04[1].func_ov002_02203b30(0x3c, a + 0x4c, -1);
-        unk_04[0].func_ov002_02203b30(-0x7c, a + 0x4c, -1);
+        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
+        unk_04[0].drawAt(-0x7c, a + 0x4c, -1);
         break;
     case 5:
-        unk_04[1].func_ov002_02203b30(0x3c, a + 0x4c, -1);
+        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
         break;
     case 6:
-        unk_04[1].func_ov002_02203b30(0x3c, a + 0x4c, -1);
-        unk_04[0].func_ov002_02203b30(-0xc, a + 0x4c, -1);
+        unk_04[1].drawAt(0x3c, a + 0x4c, -1);
+        unk_04[0].drawAt(-0xc, a + 0x4c, -1);
         break;
     case 7:
     case 9:
@@ -1442,11 +1442,11 @@ void Unk_ov002_022046cc::func_ov002_022036a4(s32 a) {
         }
         s32 b = a >> 2;
         if (unk_160 == 7) {
-            unk_04[0].func_ov002_02203b30(0, b, -1);
-            unk_04[1].func_ov002_02203b30(0, b, -1);
+            unk_04[0].drawAt(0, b, -1);
+            unk_04[1].drawAt(0, b, -1);
         } else {
-            unk_04[0].func_ov002_02203b30(-0x50, b + 0x44, -1);
-            unk_04[1].func_ov002_02203b30(0x10, b + 0x44, -1);
+            unk_04[0].drawAt(-0x50, b + 0x44, -1);
+            unk_04[1].drawAt(0x10, b + 0x44, -1);
         }
         break;
     }
@@ -1457,165 +1457,165 @@ void Unk_ov002_022046cc::func_ov002_022036a4(s32 a) {
             unk_a4.draw();
         }
         a = (a >> 1) - 0x1e;
-        unk_04[0].func_ov002_02203b30(0, a, -1);
-        unk_04[1].func_ov002_02203b30(0, a, -1);
+        unk_04[0].drawAt(0, a, -1);
+        unk_04[1].drawAt(0, a, -1);
         break;
     }
     case 11: {
         s32 b = a >> 1;
         unk_a4.setPos(0, -b);
         unk_a4.draw();
-        unk_04[0].func_ov002_02203b30(-0x50, b + 0x44, -1);
-        unk_04[1].func_ov002_02203b30(0x10, b + 0x44, -1);
+        unk_04[0].drawAt(-0x50, b + 0x44, -1);
+        unk_04[1].drawAt(0x10, b + 0x44, -1);
         break;
     }
     case 12: {
         s32 b = a >> 1;
         unk_a4.setPos(0, -b);
         unk_a4.draw();
-        unk_04[0].func_ov002_02203b30(-0x50, b + 0x24, -1);
-        unk_04[1].func_ov002_02203b30(0x10, b + 0x24, -1);
+        unk_04[0].drawAt(-0x50, b + 0x24, -1);
+        unk_04[1].drawAt(0x10, b + 0x24, -1);
         break;
     }
     case 13: {
         s32 b = a >> 1;
         unk_a4.setPos(0, -b);
         unk_a4.draw();
-        unk_04[0].func_ov002_02203b30(-0x50, b + 0x36, -1);
-        unk_04[1].func_ov002_02203b30(0x10, b + 0x36, -1);
+        unk_04[0].drawAt(-0x50, b + 0x36, -1);
+        unk_04[1].drawAt(0x10, b + 0x36, -1);
         break;
     }
     }
 }
 
-void Unk_ov002_022046cc::func_ov002_02203698() { unk_160 = 0; }
+void MenuBottomButtons::hide() { unk_160 = 0; }
 
-void Unk_ov002_022046cc::func_ov002_02203650() {
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047a4, 8, 2);
-    unk_04[0].func_ov002_02203cc4(2);
-    unk_04[1].func_ov002_02203cf8(data_ov002_02204784, 6, 1);
-    unk_04[1].func_ov002_02203cc4(0x21);
+void MenuBottomButtons::setLayoutNeverMindConfirm() {
+    unk_04[0].setup(sButtonCellsW8, 8, 2);
+    unk_04[0].setLabelWithShadow(2);
+    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
+    unk_04[1].setLabelWithShadow(0x21);
     unk_160 = 2;
 }
 
-void Unk_ov002_022046cc::func_ov002_02203608() {
-    unk_04[0].func_ov002_02203cf8(data_ov002_0220482c, 0xc, 3);
-    unk_04[0].func_ov002_02203cc4(0x20);
-    unk_04[1].func_ov002_02203cf8(data_ov002_02204784, 6, 1);
-    unk_04[1].func_ov002_02203cc4(0x21);
+void MenuBottomButtons::setLayoutChangeAddressee() {
+    unk_04[0].setup(sButtonCellsW12, 0xc, 3);
+    unk_04[0].setLabelWithShadow(0x20);
+    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
+    unk_04[1].setLabelWithShadow(0x21);
     unk_160 = 2;
 }
 
-void Unk_ov002_022046cc::func_ov002_022035d8() {
-    unk_04[1].func_ov002_02203cf8(data_ov002_02204784, 6, 1);
-    unk_04[1].func_ov002_02203cc4(0x21);
+void MenuBottomButtons::setLayoutConfirm() {
+    unk_04[1].setup(sButtonCellsW6Single, 6, 1);
+    unk_04[1].setLabelWithShadow(0x21);
     unk_160 = 1;
 }
 
-void Unk_ov002_022046cc::func_ov002_02203590() {
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(0x21);
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047fc, 6, 2);
-    unk_04[0].func_ov002_02203cc4(0x65);
+void MenuBottomButtons::setLayoutConfirmQuit03() {
+    unk_04[1].setup(sButtonCellsW6A, 6, 2);
+    unk_04[1].setLabelWithShadow(0x21);
+    unk_04[0].setup(sButtonCellsW6B, 6, 2);
+    unk_04[0].setLabelWithShadow(0x65);
     unk_160 = 3;
 }
 
-void Unk_ov002_022046cc::func_ov002_02203548() {
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(0x21);
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047fc, 6, 2);
-    unk_04[0].func_ov002_02203cc4(0x65);
+void MenuBottomButtons::setLayoutConfirmQuit04() {
+    unk_04[1].setup(sButtonCellsW6A, 6, 2);
+    unk_04[1].setLabelWithShadow(0x21);
+    unk_04[0].setup(sButtonCellsW6B, 6, 2);
+    unk_04[0].setLabelWithShadow(0x65);
     unk_160 = 4;
 }
 
-void Unk_ov002_022046cc::func_ov002_02203510(s32 v) {
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(v);
+void MenuBottomButtons::setLayoutSingle05(s32 v) {
+    unk_04[1].setup(sButtonCellsW6A, 6, 2);
+    unk_04[1].setLabelWithShadow(v);
     unk_160 = 5;
 }
 
-void Unk_ov002_022046cc::func_ov002_022034c4(u8 v) {
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(0x21);
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047fc, 6, 2);
-    unk_04[0].func_ov002_02203cc4(v);
+void MenuBottomButtons::setLayoutConfirmAnd06(u8 v) {
+    unk_04[1].setup(sButtonCellsW6A, 6, 2);
+    unk_04[1].setLabelWithShadow(0x21);
+    unk_04[0].setup(sButtonCellsW6B, 6, 2);
+    unk_04[0].setLabelWithShadow(v);
     unk_160 = 6;
 }
 
-void Unk_ov002_02202fac::func_ov002_02203458(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 4);
+void MenuBottomButtonsBody::setLayoutYesNo07(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 4);
     unk_a4.hideLayer2();
-    unk_04[0].func_ov002_02203cf8(data_ov002_022046fc, 4, 1);
-    unk_04[0].func_ov002_02203cc4(4);
-    unk_04[1].func_ov002_02203cf8(data_ov002_022046e4, 4, 1);
-    unk_04[1].func_ov002_02203cc4(0x13);
+    unk_04[0].setup(sButtonCellsW4B, 4, 1);
+    unk_04[0].setLabelWithShadow(4);
+    unk_04[1].setup(sButtonCellsW4A, 4, 1);
+    unk_04[1].setLabelWithShadow(0x13);
     unk_160 = 7;
 }
 
-void Unk_ov002_02202fac::func_ov002_022033ec(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 0x11);
+void MenuBottomButtonsBody::setLayoutYesNo08(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x11);
     unk_a4.hideLayer2();
-    unk_04[0].func_ov002_02203cf8(data_ov002_022046fc, 4, 1);
-    unk_04[0].func_ov002_02203cc4(4);
-    unk_04[1].func_ov002_02203cf8(data_ov002_022046e4, 4, 1);
-    unk_04[1].func_ov002_02203cc4(0x13);
+    unk_04[0].setup(sButtonCellsW4B, 4, 1);
+    unk_04[0].setLabelWithShadow(4);
+    unk_04[1].setup(sButtonCellsW4A, 4, 1);
+    unk_04[1].setLabelWithShadow(0x13);
     unk_160 = 8;
 }
 
-void Unk_ov002_02202fac::func_ov002_022033ac() {
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[0].func_ov002_02203cc4(4);
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047fc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(0x13);
+void MenuBottomButtonsBody::setYesNoButtons() {
+    unk_04[0].setup(sButtonCellsW6A, 6, 2);
+    unk_04[0].setLabelWithShadow(4);
+    unk_04[1].setup(sButtonCellsW6B, 6, 2);
+    unk_04[1].setLabelWithShadow(0x13);
 }
 
-void Unk_ov002_02202fac::func_ov002_02203370(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 4);
+void MenuBottomButtonsBody::setLayoutYesNo09(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 4);
     unk_a4.hideLayer2();
-    func_ov002_022033ac();
+    setYesNoButtons();
     unk_160 = 9;
 }
 
-void Unk_ov002_02202fac::func_ov002_02203328() {
-    unk_04[0].func_ov002_02203cf8(data_ov002_022047cc, 6, 2);
-    unk_04[0].func_ov002_02203cc4(0x15);
-    unk_04[1].func_ov002_02203cf8(data_ov002_022047fc, 6, 2);
-    unk_04[1].func_ov002_02203cc4(0x19);
+void MenuBottomButtonsBody::setLayoutTossKeep() {
+    unk_04[0].setup(sButtonCellsW6A, 6, 2);
+    unk_04[0].setLabelWithShadow(0x15);
+    unk_04[1].setup(sButtonCellsW6B, 6, 2);
+    unk_04[1].setLabelWithShadow(0x19);
     unk_160 = 0xa;
 }
 
-void Unk_ov002_02202fac::func_ov002_022032ec(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 0x22);
+void MenuBottomButtonsBody::setLayoutYesNo0B(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x22);
     unk_a4.hideLayer2();
-    func_ov002_022033ac();
+    setYesNoButtons();
     unk_160 = 0xb;
 }
 
-void Unk_ov002_02202fac::func_ov002_022032b0(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 0x2a);
+void MenuBottomButtonsBody::setLayoutYesNo0C(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x2a);
     unk_a4.showLayer2();
-    func_ov002_022033ac();
+    setYesNoButtons();
     unk_160 = 0xc;
 }
 
-void Unk_ov002_02202fac::func_ov002_02203274(s32 x) {
-    unk_a4.func_ov002_022039d8();
-    _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(&unk_a4, x, 0x80, 0x12);
+void MenuBottomButtonsBody::setLayoutYesNo0D(s32 x) {
+    unk_a4.hideNow();
+    _ZN16MenuTitleBalloon8showTextEhii(&unk_a4, x, 0x80, 0x12);
     unk_a4.showLayer2();
-    func_ov002_022033ac();
+    setYesNoButtons();
     unk_160 = 0xd;
 }
 
-void Unk_ov002_02202fac::func_ov002_02203268() {
+void MenuBottomButtonsBody::showTitleLayer2() {
     unk_a4.showLayer2();
 }
 
-BOOL Unk_ov002_02202fac::func_ov002_0220314c(s32 idx, s32 x, s32 y) {
+BOOL MenuBottomButtonsBody::hitTest(s32 idx, s32 x, s32 y) {
     switch (idx) {
     case 1:
         if (x >= 0xc0 && y >= 0x95 && y < 0xa5) {
@@ -1672,7 +1672,7 @@ BOOL Unk_ov002_02202fac::func_ov002_0220314c(s32 idx, s32 x, s32 y) {
     }
 }
 
-BOOL Unk_ov002_02202fac::func_ov002_02203110(s32 idx) {
+BOOL MenuBottomButtonsBody::isTouched(s32 idx) {
     s32 x = gTouchCurX;
     s32 y = gTouchCurY;
     switch (unk_160) {
@@ -1686,21 +1686,21 @@ BOOL Unk_ov002_02202fac::func_ov002_02203110(s32 idx) {
         y += 0xe;
         break;
     }
-    return func_ov002_0220314c(idx, x, y);
+    return hitTest(idx, x, y);
 }
 
-s32 Unk_ov002_02202fac::func_ov002_022030f4(s32 idx) {
+s32 MenuBottomButtonsBody::getTargetX(s32 idx) {
     if (idx == -1) {
         idx = unk_161;
     }
-    return data_ov002_02204434[idx];
+    return sBottomButtonTargetX[idx];
 }
 
-s32 Unk_ov002_02202fac::func_ov002_022030b8(s32 idx) {
+s32 MenuBottomButtonsBody::getTargetY(s32 idx) {
     if (idx == -1) {
         idx = unk_161;
     }
-    s32 v = data_ov002_02204440[idx];
+    s32 v = sBottomButtonTargetY[idx];
     switch (unk_160) {
     case 8:
         v -= 0x1e;
@@ -1715,47 +1715,47 @@ s32 Unk_ov002_02202fac::func_ov002_022030b8(s32 idx) {
     return v;
 }
 
-void Unk_ov002_02202fac::func_ov002_022030ac(u8 v) {
+void MenuBottomButtonsBody::setSelected(u8 v) {
     unk_161 = v;
 }
 
-void Unk_ov002_02202fac::func_ov002_0220308c() {
-    unk_04[func_ov002_02203000(-1)].func_ov002_02203af4();
+void MenuBottomButtonsBody::stepPress() {
+    unk_04[getButtonOfTarget(-1)].stepPress();
 }
 
-void Unk_ov002_02202fac::func_ov002_0220306c() {
-    unk_04[func_ov002_02203000(-1)].func_ov002_02203c0c();
+void MenuBottomButtonsBody::getPressOffset() {
+    unk_04[getButtonOfTarget(-1)].getPressOffset();
 }
 
-void Unk_ov002_02202fac::func_ov002_02203044() {
+void MenuBottomButtonsBody::enableObjWindow() {
     unk_a4.enableObjWindow();
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].func_ov002_02203ae8();
+        unk_04[i].enableObjWindow();
     }
 }
 
-void Unk_ov002_02202fac::func_ov002_0220301c() {
+void MenuBottomButtonsBody::disableObjWindow() {
     unk_a4.disableObjWindow();
     for (s32 i = 0; i < 2; i++) {
-        unk_04[i].func_ov002_02203adc();
+        unk_04[i].disableObjWindow();
     }
 }
 
-s32 Unk_ov002_02202fac::func_ov002_02203000(s32 idx) {
+s32 MenuBottomButtonsBody::getButtonOfTarget(s32 idx) {
     if (idx == -1) {
         idx = unk_161;
     }
-    return data_ov002_0220444c[idx];
+    return sBottomButtonOfTarget[idx];
 }
 
-void Unk_ov002_02202fac::func_ov002_02202fe4(s32 idx) {
-    unk_04[func_ov002_02203000(idx)].func_ov002_02203ad0();
+void MenuBottomButtonsBody::disableButton(s32 idx) {
+    unk_04[getButtonOfTarget(idx)].setDisabled();
 }
 
-void Unk_ov002_02202fac::func_ov002_02202fc8(s32 idx) {
-    unk_04[func_ov002_02203000(idx)].func_ov002_02203ac4();
+void MenuBottomButtonsBody::enableButton(s32 idx) {
+    unk_04[getButtonOfTarget(idx)].setEnabled();
 }
 
-void Unk_ov002_02202fac::func_ov002_02202fac(s32 idx) {
-    unk_04[func_ov002_02203000(idx)].func_ov002_02203ab8();
+void MenuBottomButtonsBody::isButtonDisabled(s32 idx) {
+    unk_04[getButtonOfTarget(idx)].isDisabled();
 }

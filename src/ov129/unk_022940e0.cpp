@@ -48,101 +48,101 @@ void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
 void func_ov004_02224844();
 
-BOOL func_ov002_0220126c(s32 k);
-BOOL func_ov002_0220125c(s32 k);
-BOOL func_ov002_0220128c(s32 k);
-BOOL func_ov002_0220127c(s32 k);
-void func_ov002_02203920(void *p);
+BOOL MenuKeys_HasLeft(s32 k);
+BOOL MenuKeys_HasRight(s32 k);
+BOOL MenuKeys_HasUp(s32 k);
+BOOL MenuKeys_HasDown(s32 k);
+void MenuButtons_LoadTextColors(void *p);
 
-u8 *func_ov127_0229207c(s32 i);
-u32 func_ov127_02292088(s32 i);
-u32 func_ov127_02292098(s32 i);
-s32 func_ov127_022920a4(u16 *out, s32 x, s32 y);
-s32 func_ov127_02292204(s32 x, s32 y);
-s32 func_ov127_022921c4(s32 x, s32 y);
-s32 func_ov127_022923d8(void *s, s32 x, s32 y, s32 *ox, s32 *oy);
-void func_ov127_02292454(void *s, s32 x, s32 y);
-void func_ov127_022923c0(void *s, s32 i, u32 v);
-void func_ov127_02292380(void *p, s32 x, s32 y);
-s32 func_ov127_02292538(void *a);
-void func_ov127_0229257c(void *a, s32 b);
-void func_ov127_022925c8(void *a, s32 b, s32 c);
-s32 func_ov127_022926e0(void *a, s32 b, s32 c);
-void func_ov127_02292518(void *a, s32 b);
-s32 func_ov127_0229247c(void *a, s32 b, s32 c);
-void func_ov127_02292a0c(void *a, s32 b);
-void func_ov127_02292994(void *a, s32 b, s32 c);
-void func_ov127_02292950(void *a);
-void func_ov127_02292824(void *a);
-void func_ov127_0229281c(void *a);
-void func_ov127_02292a7c(void *a);
-void func_ov127_02292724(void *s, s32 a);
-void func_ov127_02292780(void *s, s32 a);
-void func_ov127_022927a8(void *s, s32 a, s32 b);
+u8 *StarSky_GetLineStars(s32 i);
+u32 StarSky_GetStarY(s32 i);
+u32 StarSky_GetStarX(s32 i);
+s32 StarSky_GetLinesAround(u16 *out, s32 x, s32 y);
+s32 StarSky_GetStarAt(s32 x, s32 y);
+s32 StarSky_GetLineAt(s32 x, s32 y);
+s32 StarSky_ScreenToCellInScope(void *s, s32 x, s32 y, s32 *ox, s32 *oy);
+void StarSky_SetScroll(void *s, s32 x, s32 y);
+void StarSky_RebuildScreen(void *s, s32 i, u32 v);
+void StarSky_SetScrollTarget(void *p, s32 x, s32 y);
+s32 StarSky_UpdateBounce(void *a);
+void StarSky_StartBounce(void *a, s32 b);
+void StarSky_ScrollInDir(void *a, s32 b, s32 c);
+s32 StarSky_HitArrow(void *a, s32 b, s32 c);
+void StarSky_ScrollX(void *a, s32 b);
+s32 StarSky_ScrollY(void *a, s32 b, s32 c);
+void StarSky_LoadSkyBg(void *a, s32 b);
+void StarSky_LoadScopeBg(void *a, s32 b, s32 c);
+void StarSky_LoadObjGraphics(void *a);
+void StarSky_Update(void *a);
+void StarSky_CancelUpload(void *a);
+void StarSky_Reset(void *a);
+void StarSky_DrawStarMarker(void *s, s32 a);
+void StarSky_DrawScopeSprite(void *s, s32 a);
+void StarSky_DrawArrows(void *s, s32 a, s32 b);
 
-void _ZN18Unk_ov129_022965f819func_ov129_02295654Ev();
+void _ZN23ConstellationEditorMenu9mainAct04Ev();
 extern void *data_ov129_02296518[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295914Ev();
+void _ZN23ConstellationEditorMenu9mainAct02Ev();
 extern void *data_ov129_02296520[2];
-void _ZN18Unk_ov129_022965f819func_ov129_022959c0Ev();
+void _ZN23ConstellationEditorMenu9mainAct00Ev();
 extern void *data_ov129_02296528[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295604Ev();
+void _ZN23ConstellationEditorMenu9mainAct05Ev();
 extern void *data_ov129_02296530[2];
-void _ZN18Unk_ov129_022965f819func_ov129_022955c0Ev();
+void _ZN23ConstellationEditorMenu9mainAct06Ev();
 extern void *data_ov129_02296538[2];
-void _ZN18Unk_ov129_022965f819func_ov129_022954c0Ev();
+void _ZN23ConstellationEditorMenu17updateCursorPressEv();
 extern void *data_ov129_02296540[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295494Ev();
+void _ZN23ConstellationEditorMenu19updateCursorReleaseEv();
 extern void *data_ov129_02296548[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295fd0Ev();
+void _ZN23ConstellationEditorMenu15transitionAct03Ev();
 extern void *data_ov129_02296550[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295f40Ev();
+void _ZN23ConstellationEditorMenu15transitionAct04Ev();
 extern void *data_ov129_02296558[2];
-void _ZN18Unk_ov129_022965f819func_ov129_0229609cEv();
+void _ZN23ConstellationEditorMenu15transitionAct00Ev();
 extern void *data_ov129_02296560[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295594Ev();
+void _ZN23ConstellationEditorMenu16updateCursorMoveEv();
 extern void *data_ov129_02296568[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295428Ev();
+void _ZN23ConstellationEditorMenu9mainAct0AEv();
 extern void *data_ov129_02296570[2];
-void _ZN18Unk_ov129_022965f819func_ov129_022953bcEv();
+void _ZN23ConstellationEditorMenu9mainAct0BEv();
 extern void *data_ov129_02296578[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295e70Ev();
+void _ZN23ConstellationEditorMenu15transitionAct08Ev();
 extern void *data_ov129_02296580[2];
-void _ZN18Unk_ov129_022965f819func_ov129_0229570cEv();
+void _ZN23ConstellationEditorMenu9mainAct03Ev();
 extern void *data_ov129_02296588[2];
-void _ZN18Unk_ov129_022965f819func_ov129_022952a4Ev();
+void _ZN23ConstellationEditorMenu9mainAct0CEv();
 extern void *data_ov129_02296590[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295980Ev();
+void _ZN23ConstellationEditorMenu9mainAct01Ev();
 extern void *data_ov129_02296598[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295270Ev();
+void _ZN23ConstellationEditorMenu9mainAct0DEv();
 extern void *data_ov129_022965a0[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295db0Ev();
+void _ZN23ConstellationEditorMenu15transitionAct0BEv();
 extern void *data_ov129_022965a8[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295248Ev();
+void _ZN23ConstellationEditorMenu9mainAct0EEv();
 extern void *data_ov129_022965b0[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02296054Ev();
+void _ZN23ConstellationEditorMenu15transitionAct01Ev();
 extern void *data_ov129_022965b8[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295df8Ev();
+void _ZN23ConstellationEditorMenu15transitionAct0AEv();
 extern void *data_ov129_022965c0[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295e48Ev();
+void _ZN23ConstellationEditorMenu15transitionAct09Ev();
 extern void *data_ov129_022965c8[2];
-void _ZN18Unk_ov129_022965f819func_ov129_0229600cEv();
+void _ZN23ConstellationEditorMenu15transitionAct02Ev();
 extern void *data_ov129_022965d0[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295e8cEv();
+void _ZN23ConstellationEditorMenu15transitionAct07Ev();
 extern void *data_ov129_022965d8[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295eb8Ev();
+void _ZN23ConstellationEditorMenu15transitionAct06Ev();
 extern void *data_ov129_022965e0[2];
-void _ZN18Unk_ov129_022965f819func_ov129_02295f0cEv();
+void _ZN23ConstellationEditorMenu15transitionAct05Ev();
 extern void *data_ov129_022965e8[2];
-extern const u8 data_ov129_02296498[4];
+extern const u8 sStarStateColours[4];
 extern const u8 data_ov129_0229649c[8];
 extern const u8 data_ov129_022964a4[8];
 extern const u8 data_ov129_022964ac[8];
 extern const u8 data_ov129_022964b4[8];
 extern const s32 data_ov129_022964bc[5];
 extern const s32 data_ov129_022964d0[5];
-extern u8 data_ov129_02296500[8];
-extern u8 data_ov129_02296508[8];
+extern u8 sEditorArrowCursorX[8];
+extern u8 sEditorArrowCursorY[8];
 }
 
 static inline BOOL Unk_ov129_02295000_Both() {
@@ -150,10 +150,10 @@ static inline BOOL Unk_ov129_02295000_Both() {
     return FALSE;
 }
 
-class Unk_ov092_02291ec8 {
+class MenuLauncher {
 public:
-    void func_ov092_02291c5c();
-    void func_ov092_02291ce4(s32 a, s32 b);
+    void onChildClosed();
+    void setNextRequest(s32 a, s32 b);
 };
 
 // Menu cursor sub-object hierarchy
@@ -168,66 +168,66 @@ public:
     void enableObjWindow();
 };
 
-class Unk_ov002_02202d98 : public HandCursor {
+class MenuCursorBase : public HandCursor {
 public:
-    void func_ov002_02202844();
-    s32 func_ov002_0220288c();
-    BOOL func_ov002_022028f0();
-    void func_ov002_022029e8(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_02202a40(s32 a, s32 b);
-    void func_ov002_02202a78();
-    void func_ov002_02202af0();
+    void drawWrapped();
+    s32 getScreenX();
+    BOOL isMoving();
+    void moveToEase(s32 a, s32 b, s32 c, s32 d);
+    void warpTo(s32 a, s32 b);
+    void setPoseIdle();
+    void setPoseRelease();
 };
 
-// Same object as Unk_ov002_02202d98 under the name used by src/ov002/unk_02202b68.cpp
-class Unk_ov002_0220464c : public HandCursor {
+// Same object as MenuCursorBase under the name used by src/ov002/unk_02202b68.cpp
+class MenuCursor : public HandCursor {
 public:
-    void func_ov002_02202b68();
-    void func_ov002_02202be0();
-    void func_ov002_02202c40();
-    void func_ov002_02202ca0();
-    void func_ov002_02202d00(s32 a);
+    void setPosePress();
+    void switchToAnim0D();
+    void switchToAnim01();
+    void switchToAnim07();
+    void setAnimIfChanged(s32 a);
 };
 
-class Unk_ov002_02204614 : public Unk_ov002_02202d98 {
+class MenuCursorBuf0 : public MenuCursorBase {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     u32 unk_04[0x60 / 4];
 };
 
-class Unk_ov002_02202fac {
+class MenuBottomButtonsBody {
 public:
-    s32 func_ov002_0220306c();
-    BOOL func_ov002_0220308c();
-    void func_ov002_022030ac(u8 v);
-    s32 func_ov002_022030b8(s32 idx);
-    s32 func_ov002_022030f4(s32 idx);
-    BOOL func_ov002_02203110(s32 a);
-    BOOL func_ov002_02202fac(s32 idx);
-    void func_ov002_02202fc8(s32 idx);
-    void func_ov002_02202fe4(s32 idx);
-    void func_ov002_02203370(s32 a);
+    s32 getPressOffset();
+    BOOL stepPress();
+    void setSelected(u8 v);
+    s32 getTargetY(s32 idx);
+    s32 getTargetX(s32 idx);
+    BOOL isTouched(s32 a);
+    BOOL isButtonDisabled(s32 idx);
+    void enableButton(s32 idx);
+    void disableButton(s32 idx);
+    void setLayoutYesNo09(s32 a);
 };
 
 // Menu list sub-object, 0x164 bytes
-class Unk_ov002_022046cc : public Unk_ov002_02202fac {
+class MenuBottomButtons : public MenuBottomButtonsBody {
 public:
-    Unk_ov002_022046cc();
-    ~Unk_ov002_022046cc();
-    void func_ov002_02203548();
-    void func_ov002_022036a4(s32 a);
-    void func_ov002_02203900();
+    MenuBottomButtons();
+    ~MenuBottomButtons();
+    void setLayoutConfirmQuit04();
+    void drawAt(s32 a);
+    void freeTexts();
     u32 unk_00[0x164 / 4];
 };
 
 // Object at +0xb8 (0x108 bytes)
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
-    BOOL func_ov002_02204234(s32 a);
-    void func_ov002_02204394(u8 *a, s32 b, u32 c);
+    MenuErrorMessage();
+    ~MenuErrorMessage();
+    BOOL update(s32 a);
+    void open(u8 *a, s32 b, u32 c);
     u32 unk_00[0x108 / 4];
 };
 
@@ -240,18 +240,18 @@ public:
 };
 
 // sub-object at +0x6b8 (ov127 state, ctor func_ov127_02292aac, dtor func_ov127_02292aa8), 0x2838 bytes
-class Unk_ov127_02292aac {
+class StarSkyView {
 public:
-    Unk_ov127_02292aac();
-    ~Unk_ov127_02292aac();
+    StarSkyView();
+    ~StarSkyView();
     u32 unk_00[0x2838 / 4];
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -262,33 +262,33 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_0220085c(s32 a, s32 b);
-    void func_ov002_02200874(s32 a, s32 b);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    void func_ov002_02200980();
-    s32 func_ov002_022009c8();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void initSlideOut(s32 a, s32 b);
+    void initSlideIn(s32 a, s32 b);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetY();
+    void restartKeyRepeat();
+    s32 takeRepeatedKeys();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -313,28 +313,28 @@ public:
     u16 unk_26[0x10];
 };
 
-class Unk_ov129_022965f8;
-typedef void (Unk_ov129_022965f8::*Unk_ov129_022965f8_Fn)();
+class ConstellationEditorMenu;
+typedef void (ConstellationEditorMenu::*Unk_ov129_022965f8_Fn)();
 
 // Vtable 0x022965f8, size 0x30e8
-class Unk_ov129_022965f8 : public Unk_ov002_022044e4 {
+class ConstellationEditorMenu : public MenuProc {
 public:
-    Unk_ov129_022965f8()
+    ConstellationEditorMenu()
         : unk_b8(), unk_1c0(), unk_324(), unk_388(), unk_6b8() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov129_0229418c(u32 mask);
-    void func_ov129_0229419c(u32 mask);
-    BOOL func_ov129_022941ac(u32 mask);
-    s32 func_ov129_022941c0();
+    void clearFlags(u32 mask);
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    s32 tapStar();
     s32 func_ov129_0229421c();
     s32 func_ov129_022942d0();
     void func_ov129_02294360();
@@ -350,80 +350,80 @@ public:
     void func_ov129_02294818(u32 a, u32 b);
     BOOL func_ov129_0229483c(u32 a, u32 b);
     void func_ov129_022948a4(BOOL flag);
-    void func_ov129_022948d0();
-    void func_ov129_022948f0(s32 i);
+    void updateAllStarSprites();
+    void updateStarSprite(s32 i);
     void func_ov129_02294914();
     s32 func_ov129_02294948();
     void func_ov129_0229497c();
     void func_ov129_02294a50();
     void func_ov129_02294aa4();
-    void func_ov129_02294ad4();
-    void func_ov129_02294afc();
-    void func_ov129_02294b2c();
-    void func_ov129_02294b90();
-    void func_ov129_02294bb4();
-    void func_ov129_02294c94();
-    void func_ov129_02294cb8();
-    void func_ov129_02294ce4();
-    void func_ov129_02294d04();
-    void func_ov129_02294d24(u32 a, u32 b);
-    void func_ov129_02294d58();
-    void func_ov129_02294db0();
-    s32 func_ov129_02294dd4();
-    s32 func_ov129_02294e24();
-    void func_ov129_02294e74();
+    void clearStarStates();
+    void updateTappedStarFlash();
+    void flashTappedStar();
+    void clearTappedStar();
+    void updateHoverStar();
+    void clearHoverStar();
+    void releaseCursor();
+    void pressCursor();
+    void refreshCursor();
+    void moveCursorToPos(u32 a, u32 b);
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getCursorTargetY();
+    s32 getCursorTargetX();
+    void showCursor();
     BOOL func_ov129_02294edc();
     BOOL func_ov129_02294f04();
-    BOOL func_ov129_02294f30(s32 k);
-    void func_ov129_02294fcc(u32 v);
-    void func_ov129_02295000();
-    void func_ov129_02295040();
-    void func_ov129_02295110();
-    void func_ov129_02295154();
-    void func_ov129_022951d8();
-    void func_ov129_02295200();
-    void func_ov129_0229522c();
-    void func_ov129_02295248();
-    void func_ov129_02295270();
-    void func_ov129_022952a4();
-    void func_ov129_022953bc();
-    void func_ov129_02295428();
-    void func_ov129_02295494();
-    void func_ov129_022954c0();
-    void func_ov129_02295594();
-    void func_ov129_022955c0();
-    void func_ov129_02295604();
-    void func_ov129_02295654();
-    void func_ov129_0229570c();
-    void func_ov129_02295914();
-    void func_ov129_02295980();
-    void func_ov129_022959c0();
-    void func_ov129_02295ac8();
-    void func_ov129_02295b38();
-    void func_ov129_02295b70();
-    void func_ov129_02295bd0();
-    void func_ov129_02295bfc();
-    void func_ov129_02295c04();
-    void func_ov129_02295c20();
-    void func_ov129_02295c88();
+    BOOL moveCursorByPad(s32 k);
+    void openMessage(u32 v);
+    void rejectConfirmation();
+    void acceptConfirmation();
+    void startQuit();
+    void startFinish();
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    void mainAct0E();
+    void mainAct0D();
+    void mainAct0C();
+    void mainAct0B();
+    void mainAct0A();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void mainAct06();
+    void mainAct05();
+    void mainAct04();
+    void mainAct03();
+    void mainAct02();
+    void mainAct01();
+    void mainAct00();
+    void setupSkyView();
+    void setupBgLayers();
+    void postStateUpdate();
+    void preStateUpdate();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void initMembers();
     void func_ov129_02295d18();
     void func_ov129_02295d38();
     void func_ov129_02295d98();
-    void func_ov129_02295db0();
-    void func_ov129_02295df8();
-    void func_ov129_02295e48();
-    void func_ov129_02295e70();
-    void func_ov129_02295e8c();
-    void func_ov129_02295eb8();
-    void func_ov129_02295f0c();
-    void func_ov129_02295f40();
-    void func_ov129_02295f5c();
-    void func_ov129_02295fa4();
-    void func_ov129_02295fd0();
-    void func_ov129_0229600c();
-    void func_ov129_02296054();
-    void func_ov129_0229609c();
-    void func_ov129_02296138();
+    void transitionAct0B();
+    void transitionAct0A();
+    void transitionAct09();
+    void transitionAct08();
+    void transitionAct07();
+    void transitionAct06();
+    void transitionAct05();
+    void transitionAct04();
+    void updateSlideWindow();
+    void updateLayerSlide();
+    void transitionAct03();
+    void transitionAct02();
+    void transitionAct01();
+    void transitionAct00();
+    void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
     /* 0x094 */ s32 unk_94;
@@ -444,55 +444,55 @@ public:
     /* 0x0b3 */ u8 unk_b3;
     /* 0x0b4 */ u8 unk_b4;
     /* 0x0b5 */ u8 unk_b5[3];
-    /* 0x0b8 */ Unk_ov002_022040ec unk_b8;
-    /* 0x1c0 */ Unk_ov002_022046cc unk_1c0;
-    /* 0x324 */ Unk_ov002_02204614 unk_324;
+    /* 0x0b8 */ MenuErrorMessage unk_b8;
+    /* 0x1c0 */ MenuBottomButtons unk_1c0;
+    /* 0x324 */ MenuCursorBuf0 unk_324;
     /* 0x388 */ Unk_020b08b4 unk_388;
-    /* 0x6b8 */ Unk_ov127_02292aac unk_6b8;
+    /* 0x6b8 */ StarSkyView unk_6b8;
     /* 0x2ef0 */ u8 unk_2ef0[16];
     /* 0x2f00 */ u16 unk_2f00[16];
     /* 0x2f20 */ u8 unk_2f20[0x1c8];
 };
 
 struct Unk_ov129_SceneEntry {
-    Unk_ov129_022965f8 *(*create)();
+    ConstellationEditorMenu *(*create)();
     u16 a;
     u16 b;
 };
 
-extern "C" Unk_ov129_022965f8 *func_ov129_02296438() { return new Unk_ov129_022965f8(); }
+extern "C" ConstellationEditorMenu *ConstellationEditorMenu_Create() { return new ConstellationEditorMenu(); }
 
-BOOL Unk_ov129_022965f8::vfunc_00() {
-    func_ov129_02295c88();
+BOOL ConstellationEditorMenu::vfunc_00() {
+    initMembers();
     unk_8c = 0;
-    func_ov002_02200a60(0);
+    setPhase(0);
     return TRUE;
 }
 
-BOOL Unk_ov129_022965f8::vfunc_0c() {
-    ((Unk_ov092_02291ec8 *)ProcBase_GetParent())->func_ov092_02291c5c();
-    func_ov129_02295c20();
+BOOL ConstellationEditorMenu::vfunc_0c() {
+    ((MenuLauncher *)ProcBase_GetParent())->onChildClosed();
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov129_022965f8::onDraw() {
+BOOL ConstellationEditorMenu::onDraw() {
     if (MenuCtrl_IsButtons()) {
-        unk_324.func_ov002_02202844();
+        unk_324.drawWrapped();
     }
-    if (func_ov129_022941ac(8)) {
-        unk_1c0.func_ov002_022036a4(unk_a0);
+    if (testFlags(8)) {
+        unk_1c0.drawAt(unk_a0);
     }
     if (MenuCtrl_IsButtons()) {
-        if (func_ov129_022941ac(0x10)) {
-            func_ov127_02292780(&unk_6b8, 0);
+        if (testFlags(0x10)) {
+            StarSky_DrawScopeSprite(&unk_6b8, 0);
         }
     }
-    if (func_ov129_022941ac(1)) {
-        func_ov127_022927a8(&unk_6b8, unk_9c, 5);
+    if (testFlags(1)) {
+        StarSky_DrawArrows(&unk_6b8, unk_9c, 5);
     }
     if (unk_b3 != 0xff) {
-        if (func_ov129_022941ac(0x80)) {
-            func_ov127_02292724(&unk_6b8, unk_b3);
+        if (testFlags(0x80)) {
+            StarSky_DrawStarMarker(&unk_6b8, unk_b3);
         }
     }
     return TRUE;
@@ -511,11 +511,11 @@ extern "C" void *data_ov129_022965a8[2];
 extern "C" void *data_ov129_022965a0[2];
 extern "C" const s32 data_ov129_022964bc[5];
 extern "C" void *data_ov129_02296578[2];
-extern "C" Unk_ov129_SceneEntry data_ov129_02296510;
+extern "C" Unk_ov129_SceneEntry sConstellationEditorMenuProfile;
 extern "C" void *data_ov129_02296568[2];
 extern "C" void *data_ov129_02296560[2];
 extern "C" void *data_ov129_02296558[2];
-extern "C" const u8 data_ov129_02296498[4];
+extern "C" const u8 sStarStateColours[4];
 extern "C" void *data_ov129_02296548[2];
 extern "C" const s32 data_ov129_022964d0[5];
 extern "C" void *data_ov129_022965c8[2];
@@ -524,38 +524,38 @@ extern "C" void *data_ov129_02296528[2];
 extern "C" void *data_ov129_02296598[2];
 extern "C" void *data_ov129_02296580[2];
 extern "C" const u8 data_ov129_0229649c[8];
-extern "C" u8 data_ov129_02296508[8];
+extern "C" u8 sEditorArrowCursorY[8];
 extern "C" const u8 data_ov129_022964b4[8];
 extern "C" void *data_ov129_02296530[2];
 extern "C" void *data_ov129_02296590[2];
 extern "C" void *data_ov129_02296520[2];
 extern "C" void *data_ov129_02296588[2];
-extern "C" u8 data_ov129_02296500[8];
+extern "C" u8 sEditorArrowCursorX[8];
 extern "C" void *data_ov129_02296540[2];
 extern "C" void *data_ov129_02296518[2];
 extern "C" void *data_ov129_022965b0[2];
 
-extern "C" void *data_ov129_02296538[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_022955c0Ev, 0};
+extern "C" void *data_ov129_02296538[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct06Ev, 0};
 
-extern "C" void *data_ov129_022965b8[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02296054Ev, 0};
+extern "C" void *data_ov129_022965b8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct01Ev, 0};
 
 extern "C" const u8 data_ov129_022964a4[8] = {5, 4, 2, 2, 4, 5, 0, 0};
 
-extern "C" void *data_ov129_022965c0[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295df8Ev, 0};
+extern "C" void *data_ov129_022965c0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct0AEv, 0};
 
 extern "C" const u8 data_ov129_022964ac[8] = {1, 1, 4, 1, 4, 2, 0, 0};
 
-extern "C" void *data_ov129_02296550[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295fd0Ev, 0};
+extern "C" void *data_ov129_02296550[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct03Ev, 0};
 
-extern "C" void *data_ov129_022965e8[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295f0cEv, 0};
+extern "C" void *data_ov129_022965e8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct05Ev, 0};
 
-extern "C" void *data_ov129_022965e0[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295eb8Ev, 0};
+extern "C" void *data_ov129_022965e0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct06Ev, 0};
 
-extern "C" void *data_ov129_022965d8[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295e8cEv, 0};
+extern "C" void *data_ov129_022965d8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct07Ev, 0};
 
-extern "C" void *data_ov129_022965d0[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_0229600cEv, 0};
+extern "C" void *data_ov129_022965d0[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct02Ev, 0};
 
-BOOL Unk_ov129_022965f8::vfunc_4c() {
+BOOL ConstellationEditorMenu::execTransition() {
     static Unk_ov129_022965f8_Fn tbl[12] = {
         *(Unk_ov129_022965f8_Fn *)data_ov129_02296560,
         *(Unk_ov129_022965f8_Fn *)data_ov129_022965b8,
@@ -569,13 +569,13 @@ BOOL Unk_ov129_022965f8::vfunc_4c() {
         *(Unk_ov129_022965f8_Fn *)data_ov129_022965c8,
         *(Unk_ov129_022965f8_Fn *)data_ov129_022965c0,
         *(Unk_ov129_022965f8_Fn *)data_ov129_022965a8};
-    func_ov129_02295bd0();
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov129_02295b70();
+    postStateUpdate();
     return TRUE;
 }
 
-void Unk_ov129_022965f8::func_ov129_02296138() {
+void ConstellationEditorMenu::runMainState() {
     static Unk_ov129_022965f8_Fn tbl[15] = {
         *(Unk_ov129_022965f8_Fn *)data_ov129_02296528,
         *(Unk_ov129_022965f8_Fn *)data_ov129_02296598,
@@ -595,83 +595,83 @@ void Unk_ov129_022965f8::func_ov129_02296138() {
     (this->*tbl[unk_8d])();
 }
 
-BOOL Unk_ov129_022965f8::vfunc_50() {
-    func_ov129_02295c04();
-    func_ov129_02296138();
-    func_ov129_02295bfc();
+BOOL ConstellationEditorMenu::execMain() {
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov129_022965f8::vfunc_54() { return TRUE; }
+BOOL ConstellationEditorMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov129_022965f8::vfunc_58() { return TRUE; }
+BOOL ConstellationEditorMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov129_022965f8::vfunc_5c() {
+BOOL ConstellationEditorMenu::execClosed() {
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-void Unk_ov129_022965f8::func_ov129_0229609c() {
-    func_ov129_02295b38();
-    func_ov129_02295ac8();
-    func_ov129_022948d0();
-    func_ov002_022008e0(9, 4, 0, 0x30);
+void ConstellationEditorMenu::transitionAct00() {
+    setupBgLayers();
+    setupSkyView();
+    updateAllStarSprites();
+    beginSubSlideIn(9, 4, 0, 0x30);
     Gfx2d_SetSubWin1Planes(0x1e, 1);
-    func_ov129_02295f5c();
+    updateSlideWindow();
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(6);
-    func_ov129_0229419c(1);
-    func_ov129_0229419c(8);
-    func_ov129_02295fa4();
-    func_ov002_02200a50(1);
+    setFlags(1);
+    setFlags(8);
+    updateLayerSlide();
+    setTransitionState(1);
 }
 
-void Unk_ov129_022965f8::func_ov129_02296054() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov129_022951d8();
-        func_ov129_0229419c(0x10);
+void ConstellationEditorMenu::transitionAct01() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
+        setFlags(0x10);
         func_ov129_022948a4(1);
         Gfx2d_DisableSubWindows(2);
     } else {
-        func_ov129_02295f5c();
+        updateSlideWindow();
     }
-    func_ov129_02295fa4();
+    updateLayerSlide();
 }
 
-void Unk_ov129_022965f8::func_ov129_0229600c() {
-    ((Unk_ov092_02291ec8 *)ProcBase_GetParent())->func_ov092_02291ce4(0x44, 1);
-    func_ov002_022008c4(9, 0, 0, 0x30);
+void ConstellationEditorMenu::transitionAct02() {
+    ((MenuLauncher *)ProcBase_GetParent())->setNextRequest(0x44, 1);
+    beginSubSlideOut(9, 0, 0, 0x30);
     Gfx2d_SetSubWin1Planes(0x1e, 1);
-    func_ov129_02295f5c();
-    func_ov129_02295fa4();
-    func_ov002_02200a50(3);
+    updateSlideWindow();
+    updateLayerSlide();
+    setTransitionState(3);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295fd0() {
-    if (func_ov002_022008fc(0)) {
+void ConstellationEditorMenu::transitionAct03() {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(3);
         Gfx2d_ResetLayer(6);
         Gfx2d_DisableSubWindows(2);
-        func_ov002_02200a60(5);
+        setPhase(5);
     } else {
-        func_ov129_02295f5c();
-        func_ov129_02295fa4();
+        updateSlideWindow();
+        updateLayerSlide();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295fa4() {
-    func_ov002_02200840(6, 0, 0);
-    unk_9c = func_ov002_02200920();
-    unk_a0 = func_ov002_02200920();
+void ConstellationEditorMenu::updateLayerSlide() {
+    applySlideOffset(6, 0, 0);
+    unk_9c = getSlideOffsetY();
+    unk_a0 = getSlideOffsetY();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295f5c() {
-    s32 a = func_ov002_02200920() - 0x40;
+void ConstellationEditorMenu::updateSlideWindow() {
+    s32 a = getSlideOffsetY() - 0x40;
     if (a < 0) {
         a = 0;
     }
-    s32 b = func_ov002_02200920() - 0x30;
+    s32 b = getSlideOffsetY() - 0x30;
     if (b <= 0) {
         Gfx2d_DisableSubWindows(2);
     } else {
@@ -680,90 +680,90 @@ void Unk_ov129_022965f8::func_ov129_02295f5c() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295f40() {
-    func_ov002_0220085c(0, 0);
-    func_ov002_02200a50(5);
+void ConstellationEditorMenu::transitionAct04() {
+    initSlideOut(0, 0);
+    setTransitionState(5);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295f0c() {
-    if (func_ov002_022008fc(-1)) {
-        func_ov129_02295eb8();
+void ConstellationEditorMenu::transitionAct05() {
+    if (stepSlideOut(-1)) {
+        transitionAct06();
     }
-    unk_a0 = func_ov002_02200920();
-    unk_9c = func_ov002_02200920();
+    unk_a0 = getSlideOffsetY();
+    unk_9c = getSlideOffsetY();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295eb8() {
-    func_ov002_02200874(0, 0);
-    unk_1c0.func_ov002_02202fc8(6);
-    if (func_ov129_022941ac(4)) {
-        unk_1c0.func_ov002_02203370(0x87);
+void ConstellationEditorMenu::transitionAct06() {
+    initSlideIn(0, 0);
+    unk_1c0.enableButton(6);
+    if (testFlags(4)) {
+        unk_1c0.setLayoutYesNo09(0x87);
     } else {
-        unk_1c0.func_ov002_02203370(0x22);
+        unk_1c0.setLayoutYesNo09(0x22);
     }
-    func_ov129_0229418c(1);
-    func_ov002_02200a50(7);
+    clearFlags(1);
+    setTransitionState(7);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295e8c() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
+void ConstellationEditorMenu::transitionAct07() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
         func_ov129_02295d18();
     }
-    unk_a0 = func_ov002_02200920();
+    unk_a0 = getSlideOffsetY();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295e70() {
-    func_ov002_0220085c(0, 0);
-    func_ov002_02200a50(9);
+void ConstellationEditorMenu::transitionAct08() {
+    initSlideOut(0, 0);
+    setTransitionState(9);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295e48() {
-    if (func_ov002_022008fc(-1)) {
-        func_ov129_02295df8();
+void ConstellationEditorMenu::transitionAct09() {
+    if (stepSlideOut(-1)) {
+        transitionAct0A();
     }
-    unk_a0 = func_ov002_02200920();
+    unk_a0 = getSlideOffsetY();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295df8() {
-    func_ov002_02200874(0, 0);
-    unk_1c0.func_ov002_02203548();
+void ConstellationEditorMenu::transitionAct0A() {
+    initSlideIn(0, 0);
+    unk_1c0.setLayoutConfirmQuit04();
     if (unk_b1 == 2) {
-        unk_1c0.func_ov002_02202fc8(6);
+        unk_1c0.enableButton(6);
     } else {
-        unk_1c0.func_ov002_02202fe4(6);
+        unk_1c0.disableButton(6);
     }
-    func_ov002_02200a50(0xb);
-    func_ov129_0229419c(1);
+    setTransitionState(0xb);
+    setFlags(1);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295db0() {
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov129_022951d8();
-        func_ov129_0229419c(0x10);
+void ConstellationEditorMenu::transitionAct0B() {
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
+        setFlags(0x10);
         func_ov129_022948a4(1);
     }
-    unk_a0 = func_ov002_02200920();
-    unk_9c = func_ov002_02200920();
+    unk_a0 = getSlideOffsetY();
+    unk_9c = getSlideOffsetY();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295d98() {
-    func_ov129_02294db0();
-    func_ov002_02200a58(0xb);
+void ConstellationEditorMenu::func_ov129_02295d98() {
+    hideCursor();
+    setMainState(0xb);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295d38() {
-    func_ov002_02200980();
+void ConstellationEditorMenu::func_ov129_02295d38() {
+    restartKeyRepeat();
     unk_af = 1;
-    ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202d00(1);
+    ((MenuCursor *)&unk_324)->setAnimIfChanged(1);
     unk_324.vfunc_0c();
-    s32 t = unk_1c0.func_ov002_022030f4(4);
-    unk_324.func_ov002_02202a40(t, unk_1c0.func_ov002_022030b8(4));
-    func_ov002_02200a58(0xc);
+    s32 t = unk_1c0.getTargetX(4);
+    unk_324.warpTo(t, unk_1c0.getTargetY(4));
+    setMainState(0xc);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295d18() {
+void ConstellationEditorMenu::func_ov129_02295d18() {
     if (MenuCtrl_IsTouch()) {
         func_ov129_02295d98();
     } else {
@@ -771,16 +771,16 @@ void Unk_ov129_022965f8::func_ov129_02295d18() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295c88() {
+void ConstellationEditorMenu::initMembers() {
     unk_a4 = 0;
-    func_ov127_02292a7c(&unk_6b8);
+    StarSky_Reset(&unk_6b8);
     unk_94 = 0x80;
     unk_98 = 0x60;
     unk_ae = 4;
     unk_a6 = 0xffff;
     unk_a8 = 0xffff;
     unk_b4 = 0;
-    func_ov129_02294ad4();
+    clearStarStates();
     func_ov129_02294a50();
     unk_b0 = 0xff;
     unk_aa = 0xffff;
@@ -790,44 +790,44 @@ void Unk_ov129_022965f8::func_ov129_02295c88() {
     func_02034f98(data_021c1b3c + 0x2f0);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295c20() {
+void ConstellationEditorMenu::releaseResources() {
     func_020b0780(&unk_388);
-    func_ov127_0229281c(&unk_6b8);
-    unk_1c0.func_ov002_02203900();
+    StarSky_CancelUpload(&unk_6b8);
+    unk_1c0.freeTexts();
     func_02094960();
     func_02034f80(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295c04() {
-    func_ov129_02295bd0();
+void ConstellationEditorMenu::preInputUpdate() {
+    preStateUpdate();
     unk_324.vfunc_0c();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295bfc() {
-    func_ov129_02295b70();
+void ConstellationEditorMenu::postInputUpdate() {
+    postStateUpdate();
 }
 
-void Unk_ov129_022965f8::func_ov129_02295bd0() {
+void ConstellationEditorMenu::preStateUpdate() {
     func_020b080c(&unk_388);
-    unk_1c0.func_ov002_02203900();
-    func_ov129_0229418c(0x40);
+    unk_1c0.freeTexts();
+    clearFlags(0x40);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295b70() {
-    func_ov127_02292824(&unk_6b8);
-    if (func_ov129_022941ac(0x40)) {
-        if (func_ov129_022941ac(0x20) == 0) {
-            func_ov129_0229419c(0x20);
+void ConstellationEditorMenu::postStateUpdate() {
+    StarSky_Update(&unk_6b8);
+    if (testFlags(0x40)) {
+        if (testFlags(0x20) == 0) {
+            setFlags(0x20);
             func_02004008(0x883);
         }
-    } else if (func_ov129_022941ac(0x20)) {
-        func_ov129_0229418c(0x20);
+    } else if (testFlags(0x20)) {
+        clearFlags(0x20);
         Snd_StopSe(0x883, 1);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295b38() {
+void ConstellationEditorMenu::setupBgLayers() {
     Gfx2d_SetSubBgModeState(0);
     Gfx2d_SetLayerPriority(3, 2);
     Gfx2d_SetLayerControl(3, 1, 0, 0);
@@ -835,45 +835,45 @@ void Unk_ov129_022965f8::func_ov129_02295b38() {
     Gfx2d_SetLayerControl(6, 0, 0, 0);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295ac8() {
-    func_ov127_02292a0c(&unk_6b8, 3);
-    func_ov127_02292994(&unk_6b8, 6, 1);
+void ConstellationEditorMenu::setupSkyView() {
+    StarSky_LoadSkyBg(&unk_6b8, 3);
+    StarSky_LoadScopeBg(&unk_6b8, 6, 1);
     func_020b0788(&unk_388, 3);
-    func_ov127_02292950(&unk_6b8);
-    func_ov002_02203920(&unk_1c0);
-    unk_1c0.func_ov002_02203548();
+    StarSky_LoadObjGraphics(&unk_6b8);
+    MenuButtons_LoadTextColors(&unk_1c0);
+    unk_1c0.setLayoutConfirmQuit04();
     if (unk_b1 == 2) {
-        unk_1c0.func_ov002_02202fc8(6);
+        unk_1c0.enableButton(6);
     } else {
-        unk_1c0.func_ov002_02202fe4(6);
+        unk_1c0.disableButton(6);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022959c0() {
-    if (func_ov002_02200a14(1)) {
-        func_ov129_02295200();
-        func_ov129_02294b90();
+void ConstellationEditorMenu::mainAct00() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
+        clearTappedStar();
     } else if (Unk_ov129_02295000_Both()) {
         s32 a = gTouchCurX;
         s32 b = gTouchCurY;
-        unk_ad = func_ov127_022926e0(&unk_6b8, a, b);
+        unk_ad = StarSky_HitArrow(&unk_6b8, a, b);
         if (unk_ad != 4) {
-            func_ov127_022925c8(&unk_6b8, unk_ad, 0);
-            func_ov002_02200a58(1);
-            func_ov129_02294b90();
-        } else if (unk_1c0.func_ov002_02202fac(6) == 0 && unk_1c0.func_ov002_02203110(6)) {
-            func_ov129_02295154();
-            func_ov129_02294b90();
-        } else if (unk_1c0.func_ov002_02203110(5)) {
-            func_ov129_02295110();
-            func_ov129_02294b90();
+            StarSky_ScrollInDir(&unk_6b8, unk_ad, 0);
+            setMainState(1);
+            clearTappedStar();
+        } else if (unk_1c0.isButtonDisabled(6) == 0 && unk_1c0.isTouched(6)) {
+            startFinish();
+            clearTappedStar();
+        } else if (unk_1c0.isTouched(5)) {
+            startQuit();
+            clearTappedStar();
         } else {
             if (func_ov129_0229470c(a, b)) {
-                switch (func_ov129_022941c0()) {
+                switch (tapStar()) {
                 case 1:
                     return;
                 case 2:
-                    func_ov129_02294b2c();
+                    flashTappedStar();
                     return;
                 case 3:
                     return;
@@ -883,61 +883,61 @@ void Unk_ov129_022965f8::func_ov129_022959c0() {
         }
     } else {
     fallback:
-        func_ov129_02294afc();
+        updateTappedStarFlash();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295980() {
+void ConstellationEditorMenu::mainAct01() {
     if (gTouchHeld == 0) {
-        func_ov127_0229257c(&unk_6b8, unk_ad);
-        func_ov002_02200a58(2);
+        StarSky_StartBounce(&unk_6b8, unk_ad);
+        setMainState(2);
     } else {
-        func_ov127_022925c8(&unk_6b8, unk_ad, 0);
+        StarSky_ScrollInDir(&unk_6b8, unk_ad, 0);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295914() {
-    if (func_ov127_02292538(&unk_6b8)) {
+void ConstellationEditorMenu::mainAct02() {
+    if (StarSky_UpdateBounce(&unk_6b8)) {
         if (gTouchHeld != 0) {
-            unk_ad = func_ov127_022926e0(&unk_6b8, gTouchPressX, gTouchPressY);
+            unk_ad = StarSky_HitArrow(&unk_6b8, gTouchPressX, gTouchPressY);
             if (unk_ad != 4) {
-                func_ov127_022925c8(&unk_6b8, unk_ad, 0);
-                func_ov002_02200a58(1);
+                StarSky_ScrollInDir(&unk_6b8, unk_ad, 0);
+                setMainState(1);
                 return;
             }
         }
-        func_ov002_02200a58(0);
+        setMainState(0);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_0229570c() {
+void ConstellationEditorMenu::mainAct03() {
     u32 j;
     u32 k;
-    if (func_ov002_022009d4()) {
-        func_ov129_0229522c();
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
         k = gPad[1];
         if (k & 1) {
-            func_ov129_02294ce4();
+            pressCursor();
         } else if (k & 0x800) {
-            func_ov129_0229418c(2);
-            func_ov002_02200a58(4);
-            func_ov129_02294d58();
-            func_ov129_02294c94();
+            clearFlags(2);
+            setMainState(4);
+            moveCursorToTarget();
+            clearHoverStar();
         } else if (k & 8) {
-            if (unk_1c0.func_ov002_02202fac(6) == 0) {
-                func_ov129_0229418c(2);
+            if (unk_1c0.isButtonDisabled(6) == 0) {
+                clearFlags(2);
                 unk_ae = 4;
-                func_ov129_02294c94();
-                func_ov129_02294db0();
-                func_ov129_02295154();
+                clearHoverStar();
+                hideCursor();
+                startFinish();
             }
         } else if (k & 2) {
-            func_ov129_0229418c(2);
+            clearFlags(2);
             unk_ae = 5;
-            func_ov129_02294c94();
-            func_ov129_02294db0();
-            func_ov129_02295110();
+            clearHoverStar();
+            hideCursor();
+            startQuit();
         } else {
             s32 ox = unk_94;
             s32 oy = unk_98;
@@ -957,277 +957,277 @@ void Unk_ov129_022965f8::func_ov129_0229570c() {
             if (ox != nx || oy != unk_98) {
                 if (nx < 0x30) {
                     unk_94 = 0x30;
-                    func_ov127_02292518(&unk_6b8, -4);
-                    func_ov129_0229419c(0x40);
+                    StarSky_ScrollX(&unk_6b8, -4);
+                    setFlags(0x40);
                 } else if (nx > 0xd0) {
                     unk_94 = 0xd0;
-                    func_ov127_02292518(&unk_6b8, 4);
-                    func_ov129_0229419c(0x40);
+                    StarSky_ScrollX(&unk_6b8, 4);
+                    setFlags(0x40);
                 }
                 if (unk_98 < 0x1c) {
                     unk_98 = 0x1c;
-                    if (func_ov127_0229247c(&unk_6b8, -4, 0)) {
-                        func_ov129_0229419c(0x40);
+                    if (StarSky_ScrollY(&unk_6b8, -4, 0)) {
+                        setFlags(0x40);
                     }
                 } else if (unk_98 > 0xac) {
                     unk_98 = 0xac;
-                    if (func_ov127_0229247c(&unk_6b8, 4, 0)) {
-                        func_ov129_0229419c(0x40);
+                    if (StarSky_ScrollY(&unk_6b8, 4, 0)) {
+                        setFlags(0x40);
                     }
                 }
-                func_ov129_02294bb4();
-                unk_324.func_ov002_02202a40(unk_94, unk_98);
+                updateHoverStar();
+                unk_324.warpTo(unk_94, unk_98);
             }
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295654() {
-    if (func_ov002_022009d4()) {
-        func_ov129_0229522c();
+void ConstellationEditorMenu::mainAct04() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
         u32 k = gPad[1];
         if (k & 1) {
-            func_ov129_02294ce4();
+            pressCursor();
         } else if (k & 0x800) {
-            func_ov129_0229419c(2);
-            func_ov129_02294bb4();
-            func_ov002_02200a58(3);
-            func_ov129_02294d58();
+            setFlags(2);
+            updateHoverStar();
+            setMainState(3);
+            moveCursorToTarget();
         } else if (k & 8) {
-            if (unk_1c0.func_ov002_02202fac(6) == 0) {
-                func_ov129_02294db0();
-                func_ov129_02295154();
+            if (unk_1c0.isButtonDisabled(6) == 0) {
+                hideCursor();
+                startFinish();
             }
         } else if (k & 2) {
-            func_ov129_02294db0();
-            func_ov129_02295110();
+            hideCursor();
+            startQuit();
         } else {
-            if (func_ov129_02294f30(func_ov002_022009c8())) {
-                func_ov129_02294d58();
+            if (moveCursorByPad(takeRepeatedKeys())) {
+                moveCursorToTarget();
             }
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295604() {
+void ConstellationEditorMenu::mainAct05() {
     if ((gPad[0] & 1) == 0) {
-        func_ov002_02200a58(4);
-        func_ov129_02294cb8();
-        func_ov002_02200a58(6);
-        func_ov127_0229257c(&unk_6b8, unk_ad);
+        setMainState(4);
+        releaseCursor();
+        setMainState(6);
+        StarSky_StartBounce(&unk_6b8, unk_ad);
     } else {
-        func_ov127_022925c8(&unk_6b8, unk_ad, 0);
+        StarSky_ScrollInDir(&unk_6b8, unk_ad, 0);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022955c0() {
-    if (func_ov127_02292538(&unk_6b8)) {
-        func_ov129_02294d04();
-        func_ov002_02200a58(unk_ac);
+void ConstellationEditorMenu::mainAct06() {
+    if (StarSky_UpdateBounce(&unk_6b8)) {
+        refreshCursor();
+        setMainState(unk_ac);
     }
     if (unk_324.isAnimDone()) {
-        func_ov129_02294d04();
+        refreshCursor();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295594() {
-    if (unk_324.func_ov002_022028f0() == 0) {
-        func_ov002_02200a58(unk_ac);
-        func_ov129_02296138();
+void ConstellationEditorMenu::updateCursorMove() {
+    if (unk_324.isMoving() == 0) {
+        setMainState(unk_ac);
+        runMainState();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022954c0() {
+void ConstellationEditorMenu::updateCursorPress() {
     if (unk_324.isAnimDone()) {
-        if (func_ov129_022941ac(2)) {
+        if (testFlags(2)) {
             if (func_ov129_0229470c(unk_94, unk_98)) {
-                if (func_ov129_022941c0() == 3) return;
+                if (tapStar() == 3) return;
             }
-            func_ov129_02294bb4();
-            func_ov002_02200a58(3);
-            func_ov129_02294cb8();
+            updateHoverStar();
+            setMainState(3);
+            releaseCursor();
         } else {
             u32 v = unk_ae;
             switch (v) {
             case 4:
-                if (unk_1c0.func_ov002_02202fac(6) == 0) {
-                    func_ov129_02295154();
+                if (unk_1c0.isButtonDisabled(6) == 0) {
+                    startFinish();
                 } else {
-                    func_ov002_02200a58(4);
-                    func_ov129_02294cb8();
+                    setMainState(4);
+                    releaseCursor();
                 }
                 break;
             case 5:
-                func_ov129_02295110();
+                startQuit();
                 break;
             case 0:
             case 1:
             case 2:
             case 3:
                 unk_ad = v;
-                func_ov127_022925c8(&unk_6b8, unk_ad, 0);
-                func_ov002_02200a58(5);
+                StarSky_ScrollInDir(&unk_6b8, unk_ad, 0);
+                setMainState(5);
                 break;
             }
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295494() {
+void ConstellationEditorMenu::updateCursorRelease() {
     if (unk_324.isAnimDone()) {
-        func_ov129_02294d04();
-        func_ov002_02200a58(unk_ac);
+        refreshCursor();
+        setMainState(unk_ac);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295428() {
-    if (unk_1c0.func_ov002_0220308c()) {
+void ConstellationEditorMenu::mainAct0A() {
+    if (unk_1c0.stepPress()) {
         if (unk_324.getAnim()) {
-            s32 a = unk_1c0.func_ov002_0220306c();
-            s32 b = unk_1c0.func_ov002_022030f4(-1);
-            s32 c = unk_1c0.func_ov002_022030b8(-1);
-            unk_324.func_ov002_02202a40(a + b, a + c);
+            s32 a = unk_1c0.getPressOffset();
+            s32 b = unk_1c0.getTargetX(-1);
+            s32 c = unk_1c0.getTargetY(-1);
+            unk_324.warpTo(a + b, a + c);
         }
     } else {
-        func_ov129_02294db0();
-        func_ov002_02200a60(1);
+        hideCursor();
+        setPhase(1);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022953bc() {
-    if (func_ov002_02200a14(1)) {
+void ConstellationEditorMenu::mainAct0B() {
+    if (checkSwitchToButtons(1)) {
         func_ov129_02295d38();
     } else if (Unk_ov129_02295000_Both()) {
-        if (unk_1c0.func_ov002_02203110(3)) {
-            func_ov129_02295040();
-        } else if (unk_1c0.func_ov002_02203110(4)) {
-            func_ov129_02295000();
+        if (unk_1c0.isTouched(3)) {
+            acceptConfirmation();
+        } else if (unk_1c0.isTouched(4)) {
+            rejectConfirmation();
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022952a4() {
-    if (func_ov002_022009d4()) {
+void ConstellationEditorMenu::mainAct0C() {
+    if (checkSwitchToTouch()) {
         func_ov129_02295d98();
         return;
     }
     u32 keys = gPad[1];
     if (keys & 1) {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202b68();
-        func_ov002_02200a58(0xd);
+        ((MenuCursor *)&unk_324)->setPosePress();
+        setMainState(0xd);
         return;
     }
     if (keys & 2) {
-        func_ov129_02294db0();
-        func_ov129_02295000();
+        hideCursor();
+        rejectConfirmation();
         return;
     }
     if (keys & 8) {
-        func_ov129_02294db0();
-        func_ov129_02295040();
+        hideCursor();
+        acceptConfirmation();
         return;
     }
     u8 old = unk_af;
-    s32 k = func_ov002_022009c8();
-    if (func_ov002_0220126c(k)) {
+    s32 k = takeRepeatedKeys();
+    if (MenuKeys_HasLeft(k)) {
         if (unk_af != 0) {
             unk_af = *(volatile u8 *)&unk_af - 1;
         }
-    } else if (func_ov002_0220125c(k)) {
+    } else if (MenuKeys_HasRight(k)) {
         if (unk_af < 1) {
             unk_af = *(volatile u8 *)&unk_af + 1;
         }
     }
     if (old != unk_af) {
         if (unk_af != 0) {
-            s32 a = unk_1c0.func_ov002_022030f4(4);
-            s32 b = unk_1c0.func_ov002_022030b8(4);
-            func_ov129_02294d24(a, b);
+            s32 a = unk_1c0.getTargetX(4);
+            s32 b = unk_1c0.getTargetY(4);
+            moveCursorToPos(a, b);
         } else {
-            s32 a = unk_1c0.func_ov002_022030f4(3);
-            s32 b = unk_1c0.func_ov002_022030b8(3);
-            func_ov129_02294d24(a, b);
+            s32 a = unk_1c0.getTargetX(3);
+            s32 b = unk_1c0.getTargetY(3);
+            moveCursorToPos(a, b);
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295270() {
+void ConstellationEditorMenu::mainAct0D() {
     if (unk_324.isAnimDone()) {
         if (unk_af != 0) {
-            func_ov129_02295000();
+            rejectConfirmation();
         } else {
-            func_ov129_02295040();
+            acceptConfirmation();
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295248() {
-    if (unk_b8.func_ov002_02204234(0)) {
-        func_ov129_022951d8();
+void ConstellationEditorMenu::mainAct0E() {
+    if (unk_b8.update(0)) {
+        resumeInput();
         unk_324.enableObjWindow();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_0229522c() {
-    func_ov129_02294db0();
-    func_ov129_02294c94();
-    func_ov002_02200a58(0);
+void ConstellationEditorMenu::startTouchInput() {
+    hideCursor();
+    clearHoverStar();
+    setMainState(0);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295200() {
-    func_ov129_0229419c(2);
-    func_ov129_02294e74();
-    func_ov002_02200980();
-    func_ov129_02294bb4();
-    func_ov002_02200a58(3);
+void ConstellationEditorMenu::startButtonInput() {
+    setFlags(2);
+    showCursor();
+    restartKeyRepeat();
+    updateHoverStar();
+    setMainState(3);
 }
 
-void Unk_ov129_022965f8::func_ov129_022951d8() {
-    func_ov129_0229419c(0x80);
+void ConstellationEditorMenu::resumeInput() {
+    setFlags(0x80);
     if (MenuCtrl_IsTouch()) {
-        func_ov129_0229522c();
+        startTouchInput();
     } else {
-        func_ov129_02295200();
+        startButtonInput();
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295154() {
+void ConstellationEditorMenu::startFinish() {
     s32 a, b;
-    func_ov129_0229418c(4);
-    unk_1c0.func_ov002_022030ac(6);
-    func_ov002_02200a50(4);
-    func_ov002_02200a58(0xa);
-    func_ov129_0229418c(0x10);
+    clearFlags(4);
+    unk_1c0.setSelected(6);
+    setTransitionState(4);
+    setMainState(0xa);
+    clearFlags(0x10);
     func_ov129_022948a4(0);
     func_020b05c4(unk_2f00, &a, &b);
     a = a & 0xfffc;
     b = b & 0xfffc;
-    func_ov127_02292380(&unk_6b8, a, b);
+    StarSky_SetScrollTarget(&unk_6b8, a, b);
     Snd_PlaySe(0x87f);
-    func_ov129_0229418c(0x80);
+    clearFlags(0x80);
 }
 
-void Unk_ov129_022965f8::func_ov129_02295110() {
-    func_ov129_0229419c(4);
-    unk_1c0.func_ov002_022030ac(5);
-    func_ov002_02200a50(4);
-    func_ov002_02200a58(0xa);
-    func_ov129_0229418c(0x10);
+void ConstellationEditorMenu::startQuit() {
+    setFlags(4);
+    unk_1c0.setSelected(5);
+    setTransitionState(4);
+    setMainState(0xa);
+    clearFlags(0x10);
     Snd_PlaySe(0x2a);
-    func_ov129_0229418c(0x80);
+    clearFlags(0x80);
 }
-extern "C" void *data_ov129_022965a8[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295db0Ev, 0};
+extern "C" void *data_ov129_022965a8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct0BEv, 0};
 
-extern "C" void *data_ov129_022965a0[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295270Ev, 0};
+extern "C" void *data_ov129_022965a0[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0DEv, 0};
 
 extern "C" const s32 data_ov129_022964bc[5] = {0, 0, 0, -4, 4};
 
-void Unk_ov129_022965f8::func_ov129_02295040() {
-    unk_1c0.func_ov002_022030ac(3);
-    func_ov002_02200a50(2);
-    func_ov002_02200a58(0xa);
-    if (func_ov129_022941ac(4)) {
+void ConstellationEditorMenu::acceptConfirmation() {
+    unk_1c0.setSelected(3);
+    setTransitionState(2);
+    setMainState(0xa);
+    if (testFlags(4)) {
         func_0206ecf8(0);
         Snd_PlaySe(0x28);
     } else {
@@ -1248,41 +1248,41 @@ void Unk_ov129_022965f8::func_ov129_02295040() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02295000() {
-    if (func_ov129_022941ac(4)) {
+void ConstellationEditorMenu::rejectConfirmation() {
+    if (testFlags(4)) {
         Snd_PlaySe(0x29);
     } else {
         Snd_PlaySe(0x2a);
     }
-    unk_1c0.func_ov002_022030ac(4);
-    func_ov002_02200a50(8);
-    func_ov002_02200a58(0xa);
+    unk_1c0.setSelected(4);
+    setTransitionState(8);
+    setMainState(0xa);
 }
 
-void Unk_ov129_022965f8::func_ov129_02294fcc(u32 v) {
+void ConstellationEditorMenu::openMessage(u32 v) {
     u8 buf[1];
     buf[0] = v;
-    unk_b8.func_ov002_02204394(buf, 1, 0);
-    func_ov002_02200a58(0xe);
+    unk_b8.open(buf, 1, 0);
+    setMainState(0xe);
     unk_324.disableObjWindow();
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_02294f30(s32 k) {
+BOOL ConstellationEditorMenu::moveCursorByPad(s32 k) {
     u8 old = unk_ae;
-    if (func_ov002_0220126c(k)) {
+    if (MenuKeys_HasLeft(k)) {
         unk_ae = data_ov129_0229649c[unk_ae];
-    } else if (func_ov002_0220125c(k)) {
+    } else if (MenuKeys_HasRight(k)) {
         unk_ae = data_ov129_022964ac[unk_ae];
-    } else if (func_ov002_0220128c(k)) {
+    } else if (MenuKeys_HasUp(k)) {
         unk_ae = data_ov129_022964b4[unk_ae];
-    } else if (func_ov002_0220127c(k)) {
+    } else if (MenuKeys_HasDown(k)) {
         unk_ae = data_ov129_022964a4[unk_ae];
     }
     return old != unk_ae ? TRUE : FALSE;
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_02294f04() {
-    if (func_ov129_022941ac(2)) {
+BOOL ConstellationEditorMenu::func_ov129_02294f04() {
+    if (testFlags(2)) {
         return TRUE;
     }
     if ((u8)(unk_ae + 0xfd) <= 1) {
@@ -1291,8 +1291,8 @@ BOOL Unk_ov129_022965f8::func_ov129_02294f04() {
     return TRUE;
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_02294edc() {
-    if (func_ov129_022941ac(2)) {
+BOOL ConstellationEditorMenu::func_ov129_02294edc() {
+    if (testFlags(2)) {
         return FALSE;
     }
     if (unk_ae == 4) {
@@ -1301,96 +1301,96 @@ BOOL Unk_ov129_022965f8::func_ov129_02294edc() {
     return FALSE;
 }
 
-void Unk_ov129_022965f8::func_ov129_02294e74() {
-    s32 a = func_ov129_02294e24();
-    s32 b = func_ov129_02294dd4();
-    unk_324.func_ov002_02202a40(a, b);
+void ConstellationEditorMenu::showCursor() {
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    unk_324.warpTo(a, b);
     if (func_ov129_02294f04()) {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202d00(1);
+        ((MenuCursor *)&unk_324)->setAnimIfChanged(1);
     } else if (func_ov129_02294edc()) {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202d00(7);
+        ((MenuCursor *)&unk_324)->setAnimIfChanged(7);
     } else {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202d00(0xd);
+        ((MenuCursor *)&unk_324)->setAnimIfChanged(0xd);
     }
-    func_ov129_02294d04();
+    refreshCursor();
 }
 
-s32 Unk_ov129_022965f8::func_ov129_02294e24() {
-    if (func_ov129_022941ac(2)) {
+s32 ConstellationEditorMenu::getCursorTargetX() {
+    if (testFlags(2)) {
         return unk_94;
     }
     switch (unk_ae) {
     case 4:
-        return unk_1c0.func_ov002_022030f4(6);
+        return unk_1c0.getTargetX(6);
     case 5:
-        return unk_1c0.func_ov002_022030f4(5);
+        return unk_1c0.getTargetX(5);
     default:
-        return data_ov129_02296500[unk_ae];
+        return sEditorArrowCursorX[unk_ae];
     }
 }
 
-s32 Unk_ov129_022965f8::func_ov129_02294dd4() {
-    if (func_ov129_022941ac(2)) {
+s32 ConstellationEditorMenu::getCursorTargetY() {
+    if (testFlags(2)) {
         return unk_98;
     }
     switch (unk_ae) {
     case 4:
-        return unk_1c0.func_ov002_022030b8(6);
+        return unk_1c0.getTargetY(6);
     case 5:
-        return unk_1c0.func_ov002_022030b8(5);
+        return unk_1c0.getTargetY(5);
     default:
-        return data_ov129_02296508[unk_ae];
+        return sEditorArrowCursorY[unk_ae];
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294db0() {
-    ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202d00(0);
+void ConstellationEditorMenu::hideCursor() {
+    ((MenuCursor *)&unk_324)->setAnimIfChanged(0);
     unk_324.vfunc_0c();
 }
 
-void Unk_ov129_022965f8::func_ov129_02294d58() {
+void ConstellationEditorMenu::moveCursorToTarget() {
     if (func_ov129_02294f04()) {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202c40();
+        ((MenuCursor *)&unk_324)->switchToAnim01();
     } else if (func_ov129_02294edc()) {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202ca0();
+        ((MenuCursor *)&unk_324)->switchToAnim07();
     } else {
-        ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202be0();
+        ((MenuCursor *)&unk_324)->switchToAnim0D();
     }
-    s32 a = func_ov129_02294e24();
-    s32 b = func_ov129_02294dd4();
-    func_ov129_02294d24(a, b);
+    s32 a = getCursorTargetX();
+    s32 b = getCursorTargetY();
+    moveCursorToPos(a, b);
 }
 
-void Unk_ov129_022965f8::func_ov129_02294d24(u32 a, u32 b) {
-    unk_324.func_ov002_022029e8(a, b, 3, 1);
+void ConstellationEditorMenu::moveCursorToPos(u32 a, u32 b) {
+    unk_324.moveToEase(a, b, 3, 1);
     unk_ac = unk_8d;
-    func_ov002_02200a58(7);
+    setMainState(7);
 }
 
-void Unk_ov129_022965f8::func_ov129_02294d04() {
-    unk_324.func_ov002_02202a78();
+void ConstellationEditorMenu::refreshCursor() {
+    unk_324.setPoseIdle();
     unk_324.vfunc_0c();
 }
 
-void Unk_ov129_022965f8::func_ov129_02294ce4() {
-    ((Unk_ov002_0220464c *)&unk_324)->func_ov002_02202b68();
-    func_ov002_02200a58(8);
+void ConstellationEditorMenu::pressCursor() {
+    ((MenuCursor *)&unk_324)->setPosePress();
+    setMainState(8);
 }
 
-void Unk_ov129_022965f8::func_ov129_02294cb8() {
-    unk_324.func_ov002_02202af0();
+void ConstellationEditorMenu::releaseCursor() {
+    unk_324.setPoseRelease();
     unk_ac = unk_8d;
-    func_ov002_02200a58(9);
+    setMainState(9);
 }
 
-void Unk_ov129_022965f8::func_ov129_02294c94() {
+void ConstellationEditorMenu::clearHoverStar() {
     if (unk_a6 != 0xffff) {
-        func_ov129_022948f0(unk_a6);
+        updateStarSprite(unk_a6);
         unk_a6 = 0xffff;
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294bb4() {
+void ConstellationEditorMenu::updateHoverStar() {
     u32 r4;
     if (func_ov129_0229470c(unk_94, unk_98)) {
         if (unk_b0 != 0xff && unk_b3 != 0xff && unk_b0 != unk_b3) {
@@ -1419,49 +1419,49 @@ void Unk_ov129_022965f8::func_ov129_02294bb4() {
         r4 = 0xffff;
     }
     if (r4 != unk_a6) {
-        func_ov129_02294c94();
+        clearHoverStar();
     }
     if (r4 != 0xffff) {
         u32 t = unk_2f20[r4];
         if (t == 2) {
-            func_ov127_022923c0(&unk_6b8, r4, 0xb);
+            StarSky_RebuildScreen(&unk_6b8, r4, 0xb);
         } else if (t == 3) {
-            func_ov127_022923c0(&unk_6b8, r4, 8);
+            StarSky_RebuildScreen(&unk_6b8, r4, 8);
         }
     }
     unk_a6 = r4;
 }
 
-void Unk_ov129_022965f8::func_ov129_02294b90() {
+void ConstellationEditorMenu::clearTappedStar() {
     if (unk_a8 != 0xffff) {
-        func_ov129_022948f0(unk_a8);
+        updateStarSprite(unk_a8);
         unk_a8 = 0xffff;
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294b2c() {
+void ConstellationEditorMenu::flashTappedStar() {
     unk_b4 = 5;
     if (unk_aa != unk_a8) {
-        func_ov129_02294b90();
+        clearTappedStar();
     }
     if (unk_aa != 0xffff) {
         if ((u8)(unk_2f20[unk_aa] + 0xfe) <= 1) {
-            func_ov127_022923c0(&unk_6b8, unk_aa, 10);
+            StarSky_RebuildScreen(&unk_6b8, unk_aa, 10);
         }
     }
     unk_a8 = unk_aa;
 }
 
-void Unk_ov129_022965f8::func_ov129_02294afc() {
+void ConstellationEditorMenu::updateTappedStarFlash() {
     if (unk_b4 != 0) {
         unk_b4 = *(volatile u8 *)&unk_b4 - 1;
         if (*(volatile u8 *)&unk_b4 == 0) {
-            func_ov129_02294b90();
+            clearTappedStar();
         }
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294ad4() {
+void ConstellationEditorMenu::clearStarStates() {
     s32 i, z;
     i = 0;
     z = i;
@@ -1470,7 +1470,7 @@ void Unk_ov129_022965f8::func_ov129_02294ad4() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294aa4() {
+void ConstellationEditorMenu::func_ov129_02294aa4() {
     s32 i;
     u8 *p = unk_2f20;
     for (i = 0; i < 0x1c6; p++, i++) {
@@ -1480,7 +1480,7 @@ void Unk_ov129_022965f8::func_ov129_02294aa4() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294a50() {
+void ConstellationEditorMenu::func_ov129_02294a50() {
     s32 n = func_0206ed38();
     s32 i = 0;
     do {
@@ -1500,7 +1500,7 @@ void Unk_ov129_022965f8::func_ov129_02294a50() {
     } while (i < 16);
 }
 
-void Unk_ov129_022965f8::func_ov129_0229497c() {
+void ConstellationEditorMenu::func_ov129_0229497c() {
     Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)func_020b053c(func_0206ed38());
     s32 i;
     u16 *p = unk_2f00;
@@ -1514,12 +1514,12 @@ void Unk_ov129_022965f8::func_ov129_0229497c() {
             }
         }
         unk_b1 = 2;
-        unk_b3 = func_ov127_0229207c(first)[0];
-        u32 x = func_ov127_02292098(unk_b3) << 3;
-        u32 y = func_ov127_02292088(unk_b3) << 3;
+        unk_b3 = StarSky_GetLineStars(first)[0];
+        u32 x = StarSky_GetStarX(unk_b3) << 3;
+        u32 y = StarSky_GetStarY(unk_b3) << 3;
         x = (x + 4) & 0xfffc;
         y = (y + 4) & 0xfffc;
-        func_ov127_02292454(&unk_6b8, x, y);
+        StarSky_SetScroll(&unk_6b8, x, y);
         for (i = 0; i < 16; i++) {
             unk_2ef0[i] = t->unk_16[i];
         }
@@ -1536,7 +1536,7 @@ void Unk_ov129_022965f8::func_ov129_0229497c() {
     func_ov129_02294948();
 }
 
-s32 Unk_ov129_022965f8::func_ov129_02294948() {
+s32 ConstellationEditorMenu::func_ov129_02294948() {
     s32 i;
     u16 *p = unk_2f00;
     for (i = 0; i < 16; p++, i++) {
@@ -1546,7 +1546,7 @@ s32 Unk_ov129_022965f8::func_ov129_02294948() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_02294914() {
+void ConstellationEditorMenu::func_ov129_02294914() {
     switch (unk_b1) {
     case 0:
         break;
@@ -1559,36 +1559,36 @@ void Unk_ov129_022965f8::func_ov129_02294914() {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022948f0(s32 i) {
-    func_ov127_022923c0(&unk_6b8, i, data_ov129_02296498[unk_2f20[i]]);
+void ConstellationEditorMenu::updateStarSprite(s32 i) {
+    StarSky_RebuildScreen(&unk_6b8, i, sStarStateColours[unk_2f20[i]]);
 }
 
-void Unk_ov129_022965f8::func_ov129_022948d0() {
+void ConstellationEditorMenu::updateAllStarSprites() {
     s32 i;
     for (i = 0; i < 0x1c6; i++) {
-        func_ov129_022948f0(i);
+        updateStarSprite(i);
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022948a4(BOOL flag) {
+void ConstellationEditorMenu::func_ov129_022948a4(BOOL flag) {
     func_ov129_02294aa4();
     func_ov129_02294948();
     if (flag) {
         func_ov129_02294914();
     }
-    func_ov129_022948d0();
+    updateAllStarSprites();
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_0229483c(u32 a, u32 b) {
-    u8 *q = func_ov127_0229207c(a);
+BOOL ConstellationEditorMenu::func_ov129_0229483c(u32 a, u32 b) {
+    u8 *q = StarSky_GetLineStars(a);
     s32 i;
     for (i = 0; i < 2; i++) {
         u32 c = q[i];
         if (b != c) {
-            u32 x = func_ov127_02292098(c);
-            u32 y = func_ov127_02292088(c);
+            u32 x = StarSky_GetStarX(c);
+            u32 y = StarSky_GetStarY(c);
             u16 nb[8];
-            s32 n = func_ov127_022920a4(nb, x, y);
+            s32 n = StarSky_GetLinesAround(nb, x, y);
             s32 j;
             for (j = 0; j < n; j++) {
                 if (unk_2f20[nb[j]] == 1) {
@@ -1600,7 +1600,7 @@ BOOL Unk_ov129_022965f8::func_ov129_0229483c(u32 a, u32 b) {
     return FALSE;
 }
 
-void Unk_ov129_022965f8::func_ov129_02294818(u32 a, u32 b) {
+void ConstellationEditorMenu::func_ov129_02294818(u32 a, u32 b) {
     if (unk_2f20[a] == 0) {
         if (func_ov129_0229483c(a, b) == 0) {
             unk_2f20[a] = 3;
@@ -1608,13 +1608,13 @@ void Unk_ov129_022965f8::func_ov129_02294818(u32 a, u32 b) {
     }
 }
 
-void Unk_ov129_022965f8::func_ov129_022947c4(u32 id) {
+void ConstellationEditorMenu::func_ov129_022947c4(u32 id) {
     if (id != 0xff) {
         if (func_ov129_022946dc() != -1) {
-            u32 x = func_ov127_02292098(id);
-            u32 y = func_ov127_02292088(id);
+            u32 x = StarSky_GetStarX(id);
+            u32 y = StarSky_GetStarY(id);
             u16 nb[8];
-            s32 n = func_ov127_022920a4(nb, x, y);
+            s32 n = StarSky_GetLinesAround(nb, x, y);
             s32 i;
             for (i = 0; i < n; i++) {
                 func_ov129_02294818(nb[i], id);
@@ -1623,7 +1623,7 @@ void Unk_ov129_022965f8::func_ov129_022947c4(u32 id) {
     }
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_0229470c(s32 x, s32 y) {
+BOOL ConstellationEditorMenu::func_ov129_0229470c(s32 x, s32 y) {
     unk_b0 = 0xff;
     unk_aa = 0xffff;
     s32 z1 = 0;
@@ -1631,15 +1631,15 @@ BOOL Unk_ov129_022965f8::func_ov129_0229470c(s32 x, s32 y) {
     s32 i;
     for (i = 0; i < 5; i++) {
         s32 ox, oy;
-        if (func_ov127_022923d8(&unk_6b8, x + data_ov129_022964bc[i], y + data_ov129_022964d0[i], &ox, &oy)) {
+        if (StarSky_ScreenToCellInScope(&unk_6b8, x + data_ov129_022964bc[i], y + data_ov129_022964d0[i], &ox, &oy)) {
             if (unk_b0 == 0xff) {
-                s32 r = func_ov127_02292204(ox, oy);
+                s32 r = StarSky_GetStarAt(ox, oy);
                 if (r != ~z1) {
                     unk_b0 = r;
                 }
             }
             if (unk_aa == 0xffff) {
-                s32 r = func_ov127_022921c4(ox, oy);
+                s32 r = StarSky_GetLineAt(ox, oy);
                 if (r != ~z2) {
                     unk_aa = r;
                 }
@@ -1652,7 +1652,7 @@ BOOL Unk_ov129_022965f8::func_ov129_0229470c(s32 x, s32 y) {
     return FALSE;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022946dc() {
+s32 ConstellationEditorMenu::func_ov129_022946dc() {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (unk_2f00[i] == 0xffff) {
@@ -1662,7 +1662,7 @@ s32 Unk_ov129_022965f8::func_ov129_022946dc() {
     return -1;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022946b0(u32 v) {
+s32 ConstellationEditorMenu::func_ov129_022946b0(u32 v) {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (v == unk_2f00[i]) {
@@ -1672,11 +1672,11 @@ s32 Unk_ov129_022965f8::func_ov129_022946b0(u32 v) {
     return -1;
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_02294664(u32 id) {
-    u32 x = func_ov127_02292098(id);
-    u32 y = func_ov127_02292088(id);
+BOOL ConstellationEditorMenu::func_ov129_02294664(u32 id) {
+    u32 x = StarSky_GetStarX(id);
+    u32 y = StarSky_GetStarY(id);
     u16 nb[8];
-    s32 n = func_ov127_022920a4(nb, x, y);
+    s32 n = StarSky_GetLinesAround(nb, x, y);
     s32 i;
     for (i = 0; i < n; i++) {
         if (unk_2f20[nb[i]] == 2) {
@@ -1686,11 +1686,11 @@ BOOL Unk_ov129_022965f8::func_ov129_02294664(u32 id) {
     return FALSE;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022945f4(u32 id) {
-    u32 x = func_ov127_02292098(id);
-    u32 y = func_ov127_02292088(id);
+s32 ConstellationEditorMenu::func_ov129_022945f4(u32 id) {
+    u32 x = StarSky_GetStarX(id);
+    u32 y = StarSky_GetStarY(id);
     u16 nb[8];
-    s32 n = func_ov127_022920a4(nb, x, y);
+    s32 n = StarSky_GetLinesAround(nb, x, y);
     s32 i;
     for (i = 0; i < n; i++) {
         if (unk_2f20[nb[i]] == 1) {
@@ -1705,14 +1705,14 @@ s32 Unk_ov129_022965f8::func_ov129_022945f4(u32 id) {
     return 3;
 }
 
-u32 Unk_ov129_022965f8::func_ov129_02294598(u32 id, u32 val) {
-    u32 x = func_ov127_02292098(id);
-    u32 y = func_ov127_02292088(id);
+u32 ConstellationEditorMenu::func_ov129_02294598(u32 id, u32 val) {
+    u32 x = StarSky_GetStarX(id);
+    u32 y = StarSky_GetStarY(id);
     u16 nb[8];
-    s32 n = func_ov127_022920a4(nb, x, y);
+    s32 n = StarSky_GetLinesAround(nb, x, y);
     s32 i;
     for (i = 0; i < n; i++) {
-        u8 *q = func_ov127_0229207c(nb[i]);
+        u8 *q = StarSky_GetLineStars(nb[i]);
         s32 j;
         for (j = 0; j < 2; j++) {
             if (val == q[j]) {
@@ -1723,7 +1723,7 @@ u32 Unk_ov129_022965f8::func_ov129_02294598(u32 id, u32 val) {
     return 0xffff;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022943ec() {
+s32 ConstellationEditorMenu::func_ov129_022943ec() {
     volatile u8 *q;
     u8 *pi;
     u16 *slot;
@@ -1751,7 +1751,7 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
         }
     }
     if (cnt == 0) {
-        unk_1c0.func_ov002_02202fe4(6);
+        unk_1c0.disableButton(6);
         unk_b1 = 0;
         unk_b3 = 0xff;
         Snd_PlaySe(0x882);
@@ -1762,13 +1762,13 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
         for (i = 0; i < 16; i++) {
             pi = &st[i];
             if (*pi == 1) {
-                q = func_ov127_0229207c(unk_2f00[i]);
+                q = StarSky_GetLineStars(unk_2f00[i]);
                 s32 j;
                 for (j = 0; j < 2; j++) {
-                    u32 x = func_ov127_02292098(q[j]);
-                    u32 y = func_ov127_02292088(q[j]);
+                    u32 x = StarSky_GetStarX(q[j]);
+                    u32 y = StarSky_GetStarY(q[j]);
                     u16 nb[8];
-                    n = func_ov127_022920a4(nb, x, y);
+                    n = StarSky_GetLinesAround(nb, x, y);
                     s32 m;
                     for (m = 0; m < n; m++) {
                         s32 t = func_ov129_022946b0(nb[m]);
@@ -1792,7 +1792,7 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
             return 0;
         }
     }
-    u8 *q2 = func_ov127_0229207c(unk_aa);
+    u8 *q2 = StarSky_GetLineStars(unk_aa);
     u32 r = 0xff;
     u32 c = unk_b3;
     u32 q0 = q2[0];
@@ -1811,13 +1811,13 @@ s32 Unk_ov129_022965f8::func_ov129_022943ec() {
     return 2;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_02294398() {
+s32 ConstellationEditorMenu::func_ov129_02294398() {
     s32 r = 0;
     if (unk_b0 != 0xff) {
         r = func_ov129_022945f4(unk_b0);
         if (r != 1) {
             if (r == 3) {
-                func_ov129_02294fcc(0x16);
+                openMessage(0x16);
             }
         } else {
             unk_b1 = 1;
@@ -1828,9 +1828,9 @@ s32 Unk_ov129_022965f8::func_ov129_02294398() {
     return r;
 }
 
-void Unk_ov129_022965f8::func_ov129_02294360() {
+void ConstellationEditorMenu::func_ov129_02294360() {
     Snd_PlaySe(0x881);
-    u8 *q = func_ov127_0229207c(unk_aa);
+    u8 *q = StarSky_GetLineStars(unk_aa);
     u32 c = q[0];
     if (c == unk_b3) {
         unk_b3 = q[1];
@@ -1839,7 +1839,7 @@ void Unk_ov129_022965f8::func_ov129_02294360() {
     }
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022942d0() {
+s32 ConstellationEditorMenu::func_ov129_022942d0() {
     u32 a = unk_b0;
     u32 b = unk_b2;
     if (b != a) {
@@ -1857,14 +1857,14 @@ s32 Unk_ov129_022965f8::func_ov129_022942d0() {
     if (cur != 0xffff && unk_2f20[cur] == 3) {
         unk_b1 = 2;
         unk_2f00[0] = unk_aa;
-        unk_1c0.func_ov002_02202fc8(6);
+        unk_1c0.enableButton(6);
         func_ov129_02294360();
         return 2;
     }
     return 0;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_0229421c() {
+s32 ConstellationEditorMenu::func_ov129_0229421c() {
     u32 a = unk_b0;
     if (a != 0xff) {
         u32 b = unk_b3;
@@ -1899,7 +1899,7 @@ s32 Unk_ov129_022965f8::func_ov129_0229421c() {
     return 0;
 }
 
-s32 Unk_ov129_022965f8::func_ov129_022941c0() {
+s32 ConstellationEditorMenu::tapStar() {
     s32 r = 0;
     switch (unk_b1) {
     case 0:
@@ -1925,61 +1925,61 @@ s32 Unk_ov129_022965f8::func_ov129_022941c0() {
     return r;
 }
 
-BOOL Unk_ov129_022965f8::func_ov129_022941ac(u32 mask) {
+BOOL ConstellationEditorMenu::testFlags(u32 mask) {
     if (unk_a4 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov129_022965f8::func_ov129_0229419c(u32 mask) { unk_a4 = unk_a4 | mask; }
+void ConstellationEditorMenu::setFlags(u32 mask) { unk_a4 = unk_a4 | mask; }
 
-void Unk_ov129_022965f8::func_ov129_0229418c(u32 mask) { unk_a4 = unk_a4 & ~mask; }
+void ConstellationEditorMenu::clearFlags(u32 mask) { unk_a4 = unk_a4 & ~mask; }
 
-extern "C" void *data_ov129_02296578[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_022953bcEv, 0};
+extern "C" void *data_ov129_02296578[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0BEv, 0};
 
-extern "C" Unk_ov129_SceneEntry data_ov129_02296510 = {func_ov129_02296438, 0xad, 0xb1};
+extern "C" Unk_ov129_SceneEntry sConstellationEditorMenuProfile = {ConstellationEditorMenu_Create, 0xad, 0xb1};
 
-extern "C" void *data_ov129_02296568[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295594Ev, 0};
+extern "C" void *data_ov129_02296568[2] = {(void *)_ZN23ConstellationEditorMenu16updateCursorMoveEv, 0};
 
-extern "C" void *data_ov129_02296560[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_0229609cEv, 0};
+extern "C" void *data_ov129_02296560[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct00Ev, 0};
 
-extern "C" void *data_ov129_02296558[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295f40Ev, 0};
+extern "C" void *data_ov129_02296558[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct04Ev, 0};
 
-extern "C" const u8 data_ov129_02296498[4] = {4, 7, 6, 5};
+extern "C" const u8 sStarStateColours[4] = {4, 7, 6, 5};
 
-extern "C" void *data_ov129_02296548[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295494Ev, 0};
+extern "C" void *data_ov129_02296548[2] = {(void *)_ZN23ConstellationEditorMenu19updateCursorReleaseEv, 0};
 
 extern "C" const s32 data_ov129_022964d0[5] = {0, 4, -4, 0, 0};
 
-extern "C" void *data_ov129_022965c8[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295e48Ev, 0};
+extern "C" void *data_ov129_022965c8[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct09Ev, 0};
 
-extern "C" void *data_ov129_02296570[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295428Ev, 0};
+extern "C" void *data_ov129_02296570[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0AEv, 0};
 
-extern "C" void *data_ov129_02296528[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_022959c0Ev, 0};
+extern "C" void *data_ov129_02296528[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct00Ev, 0};
 
-extern "C" void *data_ov129_02296598[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295980Ev, 0};
+extern "C" void *data_ov129_02296598[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct01Ev, 0};
 
-extern "C" void *data_ov129_02296580[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295e70Ev, 0};
+extern "C" void *data_ov129_02296580[2] = {(void *)_ZN23ConstellationEditorMenu15transitionAct08Ev, 0};
 
 extern "C" const u8 data_ov129_0229649c[8] = {0, 0, 5, 0, 2, 5, 0, 0};
 
-extern "C" u8 data_ov129_02296508[8] = {0x60, 0x60, 0xb8, 0x08, 0, 0, 0, 0};
+extern "C" u8 sEditorArrowCursorY[8] = {0x60, 0x60, 0xb8, 0x08, 0, 0, 0, 0};
 
 extern "C" const u8 data_ov129_022964b4[8] = {3, 3, 3, 3, 1, 0, 0, 0};
 
-extern "C" void *data_ov129_02296530[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295604Ev, 0};
+extern "C" void *data_ov129_02296530[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct05Ev, 0};
 
-extern "C" void *data_ov129_02296590[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_022952a4Ev, 0};
+extern "C" void *data_ov129_02296590[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0CEv, 0};
 
-extern "C" void *data_ov129_02296520[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295914Ev, 0};
+extern "C" void *data_ov129_02296520[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct02Ev, 0};
 
-extern "C" void *data_ov129_02296588[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_0229570cEv, 0};
+extern "C" void *data_ov129_02296588[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct03Ev, 0};
 
-extern "C" u8 data_ov129_02296500[8] = {0x10, 0xf0, 0x80, 0x80, 0, 0, 0, 0};
+extern "C" u8 sEditorArrowCursorX[8] = {0x10, 0xf0, 0x80, 0x80, 0, 0, 0, 0};
 
-extern "C" void *data_ov129_02296540[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_022954c0Ev, 0};
+extern "C" void *data_ov129_02296540[2] = {(void *)_ZN23ConstellationEditorMenu17updateCursorPressEv, 0};
 
-extern "C" void *data_ov129_02296518[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295654Ev, 0};
+extern "C" void *data_ov129_02296518[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct04Ev, 0};
 
-extern "C" void *data_ov129_022965b0[2] = {(void *)_ZN18Unk_ov129_022965f819func_ov129_02295248Ev, 0};
+extern "C" void *data_ov129_022965b0[2] = {(void *)_ZN23ConstellationEditorMenu9mainAct0EEv, 0};

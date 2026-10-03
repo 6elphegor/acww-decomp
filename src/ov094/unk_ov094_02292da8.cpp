@@ -41,7 +41,7 @@ struct Unk_ov094_02292d6c_Rec {
     u32 hi : 16;
 };
 
-struct Unk_ov094_02292d6c {
+struct InventoryBg {
     /* 0x000 */ u32 unk_00;
     /* 0x004 */ u8 unk_04[0x4];
     /* 0x008 */ u16 unk_08;
@@ -72,26 +72,26 @@ struct Unk_ov094_02292d6c {
     /* 0xa5c */ u8 unk_a5c;
 };
 
-typedef Unk_ov094_02292d6c S;
+typedef InventoryBg S;
 typedef Unk_ov094_02292d6c_Ent8 Ent8;
 typedef Unk_ov094_02292d6c_Rec Rec;
 
 void operator delete(void *p);
 
-struct Unk_ov094_02294a40 {
+struct ItemIconCache {
     u8 unk_04[0x800];
     u8 unk_804;
 
-    Unk_ov094_02294a40();
-    virtual ~Unk_ov094_02294a40();
-    u8 *func_ov094_02293ac8(s32 idx);
-    u8 *func_ov094_02293b08(s32 idx);
-    void func_ov094_02293b54();
+    ItemIconCache();
+    virtual ~ItemIconCache();
+    u8 *getPresentChars(s32 idx);
+    u8 *getIconChars(s32 idx);
+    void invalidate();
 };
 
-struct Unk_ov094_02294a50 {
+struct InventoryItemGrid {
     u8 unk_04[0x180];
-    Unk_ov094_02294a40 unk_184;
+    ItemIconCache unk_184;
     u8 unk_98c[0xa8];
     u16 *unk_a34;
     u8 unk_a38[8];
@@ -106,8 +106,8 @@ struct Unk_ov094_02294a50 {
     u8 unk_a5a[2];
     u8 unk_a5c;
 
-    Unk_ov094_02294a50();
-    virtual ~Unk_ov094_02294a50();
+    InventoryItemGrid();
+    virtual ~InventoryItemGrid();
 };
 
 struct Unk_ov094_02293c04_Rec {
@@ -136,42 +136,42 @@ struct Unk_ov094_Bits8 {
 };
 
 // Vtable 0x02294bd4
-class Unk_ov094_02294bd4 {
+class LetterGrid {
 public:
-    Unk_ov094_02294bd4();
-    virtual ~Unk_ov094_02294bd4();
+    LetterGrid();
+    virtual ~LetterGrid();
 
-    void func_ov094_02293f34(s32 a, s32 b, s32 c);
-    void func_ov094_02293f64(s32 a, s32 b, s32 c, void *d);
-    void func_ov094_02293f94(s32 a, s32 b);
-    void func_ov094_02293fc4(s32 a, s32 b, u32 c, void *e, void *f);
-    s32 func_ov094_0229403c(void *o);
-    void func_ov094_0229405c(s32 a, s32 b, void *o);
-    void func_ov094_02294104(s32 a, s32 b);
-    void func_ov094_02294138(s32 a, s32 b);
-    void func_ov094_0229416c(s32 a, s32 b);
-    void func_ov094_022941a0(s32 a, s32 b);
-    void func_ov094_022941e0(s32 i);
-    BOOL func_ov094_022941ec(s32 i);
-    void func_ov094_022941f8(u32 flags);
-    void func_ov094_022942f4(s32 i);
+    void drawFocus(s32 a, s32 b, s32 c);
+    void drawUnderlay(s32 a, s32 b, s32 c, void *d);
+    void drawMark(s32 a, s32 b);
+    void drawLetterIcon(s32 a, s32 b, u32 c, void *e, void *f);
+    s32 getLetterPalette(void *o);
+    void drawHeldLetter(s32 a, s32 b, void *o);
+    void drawLetters2D(s32 a, s32 b);
+    void drawLetters23(s32 a, s32 b);
+    void drawLetters0A(s32 a, s32 b);
+    void drawPocketLetters(s32 a, s32 b);
+    void setHighlighted(s32 i);
+    BOOL isHighlighted(s32 i);
+    void highlightLetterKinds(u32 flags);
+    void clearLetter(s32 i);
     void func_ov094_02294318(s32 i, s32 x);
-    void *func_ov094_0229433c(s32 i);
-    void func_ov094_022943a4(s32 i);
-    void func_ov094_022943b0();
-    void func_ov094_022943bc(u32 v);
-    void func_ov094_022943f8();
-    u32 func_ov094_02294400();
-    BOOL func_ov094_02294410(s32 v);
-    void func_ov094_02294420(void *out, s32 idx);
-    void func_ov094_02294440(void *out, void *o);
-    u32 func_ov094_02294570(s32 a, s32 b, s32 start, u8 end);
-    u32 func_ov094_022945c8(s32 a, s32 b);
-    u32 func_ov094_022945dc(s32 a, s32 b);
-    u32 func_ov094_022945f0(s32 a, s32 b);
-    u32 func_ov094_02294610(s32 a, s32 b);
-    void func_ov094_0229462c();
-    void func_ov094_02294644(s32 x);
+    void *getLetter(s32 i);
+    void markSlot(s32 i);
+    void clearMarks();
+    void setCursorSlot(u32 v);
+    void clearCursorSlot();
+    u32 getCursorLift();
+    BOOL isCursorSlot(s32 v);
+    void showLetterName(void *out, s32 idx);
+    void setBalloonLetterText(void *out, void *o);
+    u32 findLetterInRange(s32 a, s32 b, s32 start, u8 end);
+    u32 findLetterAt23(s32 a, s32 b);
+    u32 findLetterAt0A(s32 a, s32 b);
+    u32 findLetterAt2D(s32 a, s32 b);
+    u32 findPocketLetterAt(s32 a, s32 b);
+    void updateCursorLift();
+    void init(s32 x);
 
     /* 0x04 */ u8 *unk_04;
     /* 0x08 */ Unk_ov094_Bits8 unk_08;
@@ -291,146 +291,146 @@ void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
 s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
 extern u32 gCurrentHeap;
-s32 _ZN18Unk_ov094_02294a4019func_ov094_02293ac8Ei(void *self, s32 i, s32 j);
+s32 _ZN13ItemIconCache15getPresentCharsEi(void *self, s32 i, s32 j);
 
-extern const u8 data_ov094_022946b4[];
-extern const u8 data_ov094_022946bc[];
-extern const u32 data_ov094_022946c4[];
-extern const s32 data_ov094_022946d0[];
-extern const u8 data_ov094_022946f8[];
-extern const u8 data_ov094_02294848[];
-extern const u32 data_ov094_0229484c[];
-extern const u8 data_ov094_02294858[];
-extern u8 data_ov094_02294880[];
-extern u8 data_ov094_02294a30[];
-extern u8 data_ov094_02294a58[];
-extern Unk_ov094_02292d6c_Ent8 data_ov094_02294a70[];
-extern u8 data_ov094_02294bac[];
-extern u8 data_ov094_02294bb4[];
-extern u8 data_ov094_02294bbc[];
-extern u8 data_ov094_02294bdc[];
-extern u16 data_ov094_02294bf4[];
+extern const u8 sPresentAnimScales[];
+extern const u8 sPresentAnimFrames[];
+extern const u32 sItemCursorLift[];
+extern const s32 sItemScaleTable[];
+extern const u8 sItemIconPalettes[];
+extern const u8 sLetterPopScales[];
+extern const u32 sLetterCursorLift[];
+extern const u8 sLetterKindMsgIds[];
+extern u8 sInventoryBgSprite[];
+extern u8 sHeldItemSprite[];
+extern u8 sItemGridMarkSprites[];
+extern Unk_ov094_02292d6c_Ent8 sItemGridSlotSprites[];
+extern u8 sLetterGridColumnX[];
+extern u8 sLetterIconSprite[];
+extern u8 sLetterIconPalettes[];
+extern u8 sLetterMarkSprites[];
+extern u16 sLetterIconChars[];
 }
 
 extern "C" {
-void func_ov094_02292c84(S *s, s32 flag);
-void func_ov094_02292d1c(S *s, s32 flag);
-void func_ov094_02292d30(S *s, u32 v);
-S *_ZN18Unk_ov094_02292d6cD1Ev(S *s);
-S *_ZN18Unk_ov094_02292d6cC1Ev(S *s);
-BOOL func_ov094_02292da8(u32 *bits, s32 i);
-void func_ov094_02292dcc(u32 *bits, s32 i);
-void func_ov094_02292dec(u32 *bits, s32 i);
-void func_ov094_02292e0c(u32 *bits);
-s32 func_ov094_02292e1c(S *s);
-BOOL func_ov094_02292e30(S *s);
-void func_ov094_02292ee4(S *s);
-void func_ov094_02292efc(S *s, u32 v, s32 m);
-u32 func_ov094_02292f40(S *s);
-void func_ov094_02292f58(S *s);
-u32 func_ov094_02292f8c(u32 i);
-Ent8 *func_ov094_02292fa4(S *s, s32 i);
-void func_ov094_02292fb0(S *s, Ent8 *e, s32 idx, s32 x, s32 y);
-void func_ov094_02293080(S *s, s32 a, s32 b);
-void func_ov094_022930b4(S *s, s32 a, s32 b, s32 c);
-void func_ov094_022930e8(S *s, s32 a, s32 b);
-BOOL func_ov094_0229311c(S *s, s32 i);
-void func_ov094_0229313c(S *s, s32 x, s32 y);
-void func_ov094_022931e8(S *s, s32 x, s32 y);
-void func_ov094_0229324c(S *s, s32 x, s32 y);
-void func_ov094_02293284(S *s, s32 x, s32 y, s32 w);
-void func_ov094_022932d0(S *s, s32 x, s32 y);
-void func_ov094_02293308(S *s, s32 i);
-void func_ov094_02293318(S *s, u8 i, u8 e);
-BOOL func_ov094_0229333c(S *s, s32 i);
-void func_ov094_0229334c(S *s, Rec *r, void *dst, s32 c);
-void func_ov094_022933d8(S *s, Rec *r, u32 v, s32 m);
-void func_ov094_0229341c(S *s, Rec *r, s32 m);
-void func_ov094_02293434(S *s, s32 i);
-void func_ov094_02293494(S *s, s32 i, u32 v, s32 x);
-void func_ov094_022934d8(S *s, s32 i);
-u32 func_ov094_02293504(S *s, s32 i);
-u16 func_ov094_0229352c(S *s, s32 i);
-void func_ov094_0229357c(S *s, s32 i);
-void func_ov094_0229358c(S *s);
-void func_ov094_0229359c(Unk_ov094_02294a50 *o, u32 v);
-void func_ov094_022935dc(Unk_ov094_02294a50 *o);
-s32 func_ov094_022935e8(Unk_ov094_02294a50 *o);
-BOOL func_ov094_022935fc(Unk_ov094_02294a50 *o, s32 v);
-s32 func_ov094_02293610(void *o, s32 i);
-s32 func_ov094_02293624(void *o, s32 i);
-void func_ov094_02293638(void *o, s32 a, s32 b);
-void func_ov094_02293678(void *o, void *dst, u16 *p, s32 mode);
-s32 func_ov094_02293730(void *o, u16 *p, s32 mode);
-void func_ov094_02293764(Unk_ov094_02294a50 *o, u16 *arr);
-void func_ov094_022937a0(Unk_ov094_02294a50 *o);
-void func_ov094_022937e4(Unk_ov094_02294a50 *o, s32 k, u16 *p, s32 a);
-s32 func_ov094_02293890(void *o, s32 a, s32 b, s32 c);
-u32 func_ov094_022938d4(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e);
-s32 func_ov094_02293928(void *o, s32 a, s32 b);
-u32 func_ov094_02293938(void *o, s32 a, s32 b);
-u32 func_ov094_02293968(void *o, s32 a, s32 b);
-void func_ov094_02293998(void *o);
-void func_ov094_022939a0(Unk_ov094_02294a50 *o);
-void func_ov094_022939c0(Unk_ov094_02294a50 *o, u32 a);
-u8 func_ov094_02293abc(void *o, s32 i);
-BOOL func_ov094_02293b90(u32 *bits, s32 i);
-void func_ov094_02293bb4(u32 *bits, s32 i);
-void func_ov094_02293bd4(u32 *bits, s32 i);
-void func_ov094_02293bf4(u32 *bits);
-u8 func_ov094_02293c04(Unk_ov094_02293c04_Rec *o);
-BOOL func_ov094_02293c1c(Unk_ov094_02293c04_Rec *o);
-void func_ov094_02293c50(Unk_ov094_02293c04_Rec *o);
-void func_ov094_02293c58(Unk_ov094_02293c04_Rec *o);
-s32 func_ov094_02293c68(void *o, s32 h);
-void func_ov094_02293ca0(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n);
-void func_ov094_02293cf0(void *o, u8 *p);
-void func_ov094_02293d04(void *o, u8 *p);
-void func_ov094_02293d18(void *o, u8 *p);
-void func_ov094_02293d2c(Unk_ov094_02293ca0_Obj *o);
-BOOL func_ov094_02293d80(Unk_ov094_02293ca0_Obj *o, s32 i);
-s32 func_ov094_02293d9c(void *o, s32 i);
-s32 func_ov094_02293df8(void *o, s32 i);
-void func_ov094_02293e64(Unk_ov094_02294a50 *o, s32 a1, s32 idx, s32 x, s32 y0);
-void func_ov094_02292360(void *o, u32 m);
-void func_ov094_02292368(void *o, u32 m);
-s32 func_ov094_02292370(void *o, u32 m);
-void func_ov094_02292380();
-void func_ov094_0229238c();
-void func_ov094_02292398();
-BOOL func_ov094_022923a4(u32 v);
+void InventoryBg_LoadBg(S *s, s32 flag);
+void InventoryBg_Load(S *s, s32 flag);
+void InventoryBg_Init(S *s, u32 v);
+S *_ZN11InventoryBgD1Ev(S *s);
+S *_ZN11InventoryBgC1Ev(S *s);
+BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i);
+void InventoryItemGrid_ClearBit(u32 *bits, s32 i);
+void InventoryItemGrid_SetBit(u32 *bits, s32 i);
+void InventoryItemGrid_ClearBits(u32 *bits);
+s32 InventoryItemGrid_GetPresentAnimScale(S *s);
+BOOL InventoryItemGrid_UpdatePresentAnim(S *s);
+void InventoryItemGrid_EndPresentAnim(S *s);
+void InventoryItemGrid_StartPresentAnim(S *s, u32 v, s32 m);
+u32 InventoryItemGrid_AllocUpload(S *s);
+void InventoryItemGrid_CancelUploads(S *s);
+u32 InventoryItemGrid_GetScale(u32 i);
+Ent8 *InventoryItemGrid_GetSlotSprite(S *s, s32 i);
+void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y);
+void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b);
+void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c);
+void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b);
+BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i);
+void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y);
+void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y);
+void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y);
+void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w);
+void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y);
+void InventoryItemGrid_DisableSlot(S *s, s32 i);
+void InventoryItemGrid_DisableSlotRange(S *s, u8 i, u8 e);
+BOOL InventoryItemGrid_IsSlotDisabled(S *s, s32 i);
+void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c);
+void InventoryItemGrid_SetSpriteItem(S *s, Rec *r, u32 v, s32 m);
+void InventoryItemGrid_SetHeldItem(S *s, Rec *r, s32 m);
+void InventoryItemGrid_RefreshSlot(S *s, s32 i);
+void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x);
+void InventoryItemGrid_ClearSlot(S *s, s32 i);
+u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i);
+u16 InventoryItemGrid_GetSlotItem(S *s, s32 i);
+void InventoryItemGrid_MarkSlot(S *s, s32 i);
+void InventoryItemGrid_ClearMarks(S *s);
+void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v);
+void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o);
+s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o);
+BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v);
+s32 InventoryItemGrid_GetSlotY(void *o, s32 i);
+s32 InventoryItemGrid_GetSlotX(void *o, s32 i);
+void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b);
+void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode);
+s32 InventoryItemGrid_GetIconIndex(void *o, u16 *p, s32 mode);
+void InventoryItemGrid_LoadBox(InventoryItemGrid *o, u16 *arr);
+void InventoryItemGrid_LoadPockets(InventoryItemGrid *o);
+void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a);
+s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c);
+u32 InventoryItemGrid_FindSlotInRange(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e);
+s32 InventoryItemGrid_HitTestSlot21(void *o, s32 a, s32 b);
+u32 InventoryItemGrid_FindBoxSlotAt(void *o, s32 a, s32 b);
+u32 InventoryItemGrid_FindPocketSlotAt(void *o, s32 a, s32 b);
+void InventoryItemGrid_Exit(void *o);
+void InventoryItemGrid_PreUpdate(InventoryItemGrid *o);
+void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a);
+u8 InventoryItemGrid_GetIconPalette(void *o, s32 i);
+BOOL LetterGrid_TestBit(u32 *bits, s32 i);
+void LetterGrid_ClearBit(u32 *bits, s32 i);
+void LetterGrid_SetBit(u32 *bits, s32 i);
+void LetterGrid_ClearBits(u32 *bits);
+u8 LetterGrid_GetPopScale(Unk_ov094_02293c04_Rec *o);
+BOOL LetterGrid_UpdatePopAnim(Unk_ov094_02293c04_Rec *o);
+void LetterGrid_ResetScale(Unk_ov094_02293c04_Rec *o);
+void LetterGrid_StartPopAnim(Unk_ov094_02293c04_Rec *o);
+s32 LetterGrid_GetIconIndex(void *o, s32 h);
+void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n);
+void LetterGrid_SetLetters23(void *o, u8 *p);
+void LetterGrid_SetLetters0A(void *o, u8 *p);
+void LetterGrid_SetLetters2D(void *o, u8 *p);
+void LetterGrid_LoadPocketLetters(Unk_ov094_02293ca0_Obj *o);
+BOOL LetterGrid_IsSlotEmpty(Unk_ov094_02293ca0_Obj *o, s32 i);
+s32 LetterGrid_GetSlotY(void *o, s32 i);
+s32 LetterGrid_GetSlotX(void *o, s32 i);
+void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0);
+void InventoryBg_ClearDirty(void *o, u32 m);
+void InventoryBg_SetDirty(void *o, u32 m);
+s32 InventoryBg_IsDirty(void *o, u32 m);
+void Inventory_PlayPickUpSe();
+void Inventory_PlayTouchSe();
+void Inventory_PlayPutDownSe();
+BOOL InvItem_IsNotFishInsectOrFlower(u32 v);
 BOOL func_ov094_02292414(u32 v);
-BOOL func_ov094_02292430(u32 v);
-BOOL func_ov094_02292450(u32 v);
-void func_ov094_02292484(void *o);
-void func_ov094_0229248c(void *o, u32 v);
-void func_ov094_02292490(void *o);
-BOOL func_ov094_022924c4(u32 v);
-void func_ov094_02292534(void *o);
-void func_ov094_0229260c(void *o);
-s32 func_ov094_02292628();
-void func_ov094_02292640(void *o, u32 n);
-void func_ov094_022926c8(void *o, u32 v);
-void func_ov094_0229272c(void *o);
-BOOL func_ov094_02292738(void *o);
-void func_ov094_02292774(void *o, u32 v);
-void func_ov094_0229277c(s32 a, void *o);
-void func_ov094_022927a4(void *o);
-void func_ov094_022927d4(void *o);
-void func_ov094_02292814(void *o, s32 a, s32 b);
-void func_ov094_02292864(void *o);
-void func_ov094_02292988(void *o);
-void func_ov094_022929ac(void *o);
-void func_ov094_022929d0(void *o);
-void func_ov094_02292a00(void *o);
-void func_ov094_02292a40(void *o);
-void func_ov094_02292a60(void *o);
-void func_ov094_02292a80(void *o);
-void func_ov094_02292aa4(void *o);
-void func_ov094_02292acc(void *o);
-void func_ov094_02292ae0();
-void func_ov094_02292b58(void *o);
-void func_ov094_02292c08(void *o);
+BOOL InvItem_IsDeliveryParcel(u32 v);
+BOOL InvItem_IsDeliveryItem(u32 v);
+void InventoryBg_ResetHighlight(void *o);
+void InventoryBg_SetHighlight(void *o, u32 v);
+void InventoryBg_UpdateHighlight(void *o);
+BOOL InvItem_IsTurnipFishOrInsect(u32 v);
+void InventoryBg_UpdateBells(void *o);
+void InventoryBg_ResetBells(void *o);
+s32 InventoryBg_GetTotalBells();
+void InventoryBg_SetBellsPanelMode(void *o, u32 n);
+void InventoryBg_StartBellRoll(void *o, u32 v);
+void InventoryBg_StopBlink(void *o);
+BOOL InventoryBg_UpdateBlink(void *o);
+void InventoryBg_StartBlink(void *o, u32 v);
+void InventoryBg_DrawSprite(s32 a, void *o);
+void InventoryBg_UploadPalette(void *o);
+void InventoryBg_UploadPicture(void *o);
+void InventoryBg_LoadPicture(void *o, s32 a, s32 b);
+void InventoryBg_LoadPictureForHeldItem(void *o);
+void InventoryBg_PaintHighlight1(void *o);
+void InventoryBg_PaintHighlight0(void *o);
+void InventoryBg_PaintNormal(void *o);
+void InventoryBg_UploadScreen(void *o);
+void InventoryBg_ClearTextWindows(void *o);
+void InventoryBg_CancelUploads(void *o);
+void InventoryBg_Exit(void *o);
+void InventoryBg_Update(void *o);
+void InventoryBg_PreUpdate(void *o);
+void InventoryBg_LoadObjGraphics();
+void InventoryBg_SetupTextWindows(void *o);
+void InventoryBg_LoadGraphics(void *o);
 }
 
 struct Unk_ov094_0229313c_L {
@@ -467,30 +467,30 @@ static inline void Unk_ov094_SetName(Unk_ov094_02294bb4_Bits *o, s32 name) {
 #define data_ov094_02294a14 "menu/inventory/b_itm1.bch"
 #define data_ov094_02294b80 "menu/icon/pre%d.bch"
 #define data_ov094_02294b94 "menu/icon/icon%02d.bch"
-#define data_ov094_02294a60 (data_ov094_02294a58 + 8)
-#define data_ov094_02294a68 (data_ov094_02294a58 + 16)
-#define data_ov094_02294be4 (data_ov094_02294bdc + 8)
-#define data_ov094_02294bec (data_ov094_02294bdc + 16)
+#define data_ov094_02294a60 (sItemGridMarkSprites + 8)
+#define data_ov094_02294a68 (sItemGridMarkSprites + 16)
+#define data_ov094_02294be4 (sLetterMarkSprites + 8)
+#define data_ov094_02294bec (sLetterMarkSprites + 16)
 
-extern "C" u8 data_ov094_02294a30[8] = {0x00, 0x00, 0x00, 0x40, 0x1c, 0x61, 0xff, 0xff};
-extern "C" const u8 data_ov094_022946b4[8] = {0x08, 0x04, 0x00, 0x03, 0x07, 0x0a, 0x00, 0x00};
-extern "C" const u8 data_ov094_022946bc[8] = {0x00, 0xff, 0x01, 0x02, 0x03, 0xff, 0x00, 0x00};
-extern "C" const u32 data_ov094_022946c4[3] = {0xfffffffe, 0xfffffffd, 0xfffffffb};
-extern "C" const s32 data_ov094_022946d0[10] = {0x0, 0xa000, 0x5000, 0x3555, 0x2800, 0x2000, 0x1aaa, 0x16db, 0x1400, 0x11c7};
-extern "C" u8 data_ov094_02294a58[24] = {0x00, 0x00, 0x00, 0x80, 0x44, 0x51, 0x00, 0x00, 0x02, 0x00, 0x02, 0x80, 0x44, 0x11, 0xff, 0xff, 0x00, 0x00, 0x00, 0x80, 0x4c, 0x61, 0xff, 0xff};
-extern "C" const u8 data_ov094_022946f8[336] = {0x07, 0x0c, 0x07, 0x0c, 0x08, 0x07, 0x07, 0x07, 0x07, 0x09, 0x0a, 0x0a, 0x08, 0x07, 0x08, 0x07, 0x07, 0x07, 0x08, 0x09, 0x08, 0x07, 0x08, 0x07, 0x08, 0x0c, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0a, 0x08, 0x08, 0x0d, 0x0b, 0x07, 0x0c, 0x07, 0x0c, 0x0c, 0x0c, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x09, 0x0c, 0x0c, 0x09, 0x09, 0x0c, 0x0c, 0x0c, 0x09, 0x0c, 0x0c, 0x0b, 0x0c, 0x0c, 0x08, 0x0c, 0x08, 0x08, 0x08, 0x0c, 0x08, 0x07, 0x09, 0x07, 0x0a, 0x0c, 0x0d, 0x0c, 0x0c, 0x0a, 0x0c, 0x08, 0x0a, 0x0a, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x07, 0x07, 0x07, 0x08, 0x0c, 0x0d, 0x0d, 0x0c, 0x0c, 0x0a, 0x07, 0x0c, 0x0c, 0x0b, 0x0c, 0x0c, 0x0c, 0x07, 0x0c, 0x0d, 0x0b, 0x07, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0b, 0x0c, 0x0b, 0x0b, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x09, 0x0c, 0x09, 0x0d, 0x0c, 0x0c, 0x0c, 0x0a, 0x0d, 0x0d, 0x0c, 0x0a, 0x07, 0x0c, 0x0c, 0x0c, 0x0c, 0x0d, 0x0a, 0x0d, 0x0d, 0x0c, 0x0d, 0x0d, 0x0c, 0x0d, 0x0c, 0x09, 0x0b, 0x08, 0x0c, 0x0d, 0x0a, 0x0a, 0x0c, 0x0d, 0x0d, 0x0b, 0x0a, 0x08, 0x08, 0x0c, 0x09, 0x0c, 0x0d, 0x0a, 0x0c, 0x07, 0x09, 0x0a, 0x0c, 0x09, 0x09, 0x0c, 0x0c, 0x0c, 0x0d, 0x0a, 0x0c, 0x08, 0x09, 0x08, 0x09, 0x08, 0x08, 0x0a, 0x08, 0x08, 0x0a, 0x0a, 0x08, 0x0a, 0x09, 0x08, 0x09, 0x0a, 0x0c, 0x08, 0x09, 0x0a, 0x08, 0x09, 0x0a, 0x08, 0x07, 0x08, 0x07, 0x07, 0x09, 0x0a, 0x08};
-extern "C" Unk_ov094_02292d6c_Ent8 data_ov094_02294a70[34] = {{{0x14, 0x00, 0x8c, 0x41, 0xc0, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xac, 0x41, 0xc2, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xcc, 0x41, 0xc4, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xec, 0x41, 0xc6, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0x0c, 0x40, 0xc8, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0x9c, 0x41, 0xca, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xbc, 0x41, 0xcc, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xdc, 0x41, 0xce, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xfc, 0x41, 0xd0, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0x1c, 0x40, 0xd2, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xac, 0x41, 0xd4, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xcc, 0x41, 0xd6, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xec, 0x41, 0xd8, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0x0c, 0x40, 0xda, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0x2c, 0x40, 0xdc, 0x70, 0x00, 0x00}}, {{0xb4, 0x00, 0x8c, 0x41, 0xde, 0x70, 0x00, 0x00}}, {{0xb4, 0x00, 0xac, 0x41, 0x00, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0xcc, 0x41, 0x02, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0xec, 0x41, 0x04, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0x0c, 0x40, 0x06, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0x9c, 0x41, 0x08, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xbc, 0x41, 0x0a, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xdc, 0x41, 0x0c, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xfc, 0x41, 0x0e, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0x1c, 0x40, 0x10, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xac, 0x41, 0x12, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xcc, 0x41, 0x14, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xec, 0x41, 0x16, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0x0c, 0x40, 0x18, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0x2c, 0x40, 0x1a, 0x71, 0x00, 0x00}}, {{0xef, 0x00, 0xf7, 0x41, 0x1e, 0x71, 0x00, 0x00}}, {{0xef, 0x00, 0x2a, 0x40, 0x1e, 0x71, 0x00, 0x00}}, {{0xd8, 0x00, 0x10, 0x40, 0x1e, 0x71, 0x00, 0x00}}, {{0xf0, 0x00, 0xa0, 0x41, 0x1e, 0x61, 0xff, 0xff}}};
+extern "C" u8 sHeldItemSprite[8] = {0x00, 0x00, 0x00, 0x40, 0x1c, 0x61, 0xff, 0xff};
+extern "C" const u8 sPresentAnimScales[8] = {0x08, 0x04, 0x00, 0x03, 0x07, 0x0a, 0x00, 0x00};
+extern "C" const u8 sPresentAnimFrames[8] = {0x00, 0xff, 0x01, 0x02, 0x03, 0xff, 0x00, 0x00};
+extern "C" const u32 sItemCursorLift[3] = {0xfffffffe, 0xfffffffd, 0xfffffffb};
+extern "C" const s32 sItemScaleTable[10] = {0x0, 0xa000, 0x5000, 0x3555, 0x2800, 0x2000, 0x1aaa, 0x16db, 0x1400, 0x11c7};
+extern "C" u8 sItemGridMarkSprites[24] = {0x00, 0x00, 0x00, 0x80, 0x44, 0x51, 0x00, 0x00, 0x02, 0x00, 0x02, 0x80, 0x44, 0x11, 0xff, 0xff, 0x00, 0x00, 0x00, 0x80, 0x4c, 0x61, 0xff, 0xff};
+extern "C" const u8 sItemIconPalettes[336] = {0x07, 0x0c, 0x07, 0x0c, 0x08, 0x07, 0x07, 0x07, 0x07, 0x09, 0x0a, 0x0a, 0x08, 0x07, 0x08, 0x07, 0x07, 0x07, 0x08, 0x09, 0x08, 0x07, 0x08, 0x07, 0x08, 0x0c, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0a, 0x08, 0x08, 0x0d, 0x0b, 0x07, 0x0c, 0x07, 0x0c, 0x0c, 0x0c, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x09, 0x0c, 0x0c, 0x09, 0x09, 0x0c, 0x0c, 0x0c, 0x09, 0x0c, 0x0c, 0x0b, 0x0c, 0x0c, 0x08, 0x0c, 0x08, 0x08, 0x08, 0x0c, 0x08, 0x07, 0x09, 0x07, 0x0a, 0x0c, 0x0d, 0x0c, 0x0c, 0x0a, 0x0c, 0x08, 0x0a, 0x0a, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x07, 0x07, 0x07, 0x08, 0x0c, 0x0d, 0x0d, 0x0c, 0x0c, 0x0a, 0x07, 0x0c, 0x0c, 0x0b, 0x0c, 0x0c, 0x0c, 0x07, 0x0c, 0x0d, 0x0b, 0x07, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0b, 0x0c, 0x0b, 0x0b, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x0c, 0x09, 0x0c, 0x09, 0x0d, 0x0c, 0x0c, 0x0c, 0x0a, 0x0d, 0x0d, 0x0c, 0x0a, 0x07, 0x0c, 0x0c, 0x0c, 0x0c, 0x0d, 0x0a, 0x0d, 0x0d, 0x0c, 0x0d, 0x0d, 0x0c, 0x0d, 0x0c, 0x09, 0x0b, 0x08, 0x0c, 0x0d, 0x0a, 0x0a, 0x0c, 0x0d, 0x0d, 0x0b, 0x0a, 0x08, 0x08, 0x0c, 0x09, 0x0c, 0x0d, 0x0a, 0x0c, 0x07, 0x09, 0x0a, 0x0c, 0x09, 0x09, 0x0c, 0x0c, 0x0c, 0x0d, 0x0a, 0x0c, 0x08, 0x09, 0x08, 0x09, 0x08, 0x08, 0x0a, 0x08, 0x08, 0x0a, 0x0a, 0x08, 0x0a, 0x09, 0x08, 0x09, 0x0a, 0x0c, 0x08, 0x09, 0x0a, 0x08, 0x09, 0x0a, 0x08, 0x07, 0x08, 0x07, 0x07, 0x09, 0x0a, 0x08};
+extern "C" Unk_ov094_02292d6c_Ent8 sItemGridSlotSprites[34] = {{{0x14, 0x00, 0x8c, 0x41, 0xc0, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xac, 0x41, 0xc2, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xcc, 0x41, 0xc4, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0xec, 0x41, 0xc6, 0x70, 0x00, 0x00}}, {{0x14, 0x00, 0x0c, 0x40, 0xc8, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0x9c, 0x41, 0xca, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xbc, 0x41, 0xcc, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xdc, 0x41, 0xce, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0xfc, 0x41, 0xd0, 0x70, 0x00, 0x00}}, {{0x2c, 0x00, 0x1c, 0x40, 0xd2, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xac, 0x41, 0xd4, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xcc, 0x41, 0xd6, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0xec, 0x41, 0xd8, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0x0c, 0x40, 0xda, 0x70, 0x00, 0x00}}, {{0x44, 0x00, 0x2c, 0x40, 0xdc, 0x70, 0x00, 0x00}}, {{0xb4, 0x00, 0x8c, 0x41, 0xde, 0x70, 0x00, 0x00}}, {{0xb4, 0x00, 0xac, 0x41, 0x00, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0xcc, 0x41, 0x02, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0xec, 0x41, 0x04, 0x71, 0x00, 0x00}}, {{0xb4, 0x00, 0x0c, 0x40, 0x06, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0x9c, 0x41, 0x08, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xbc, 0x41, 0x0a, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xdc, 0x41, 0x0c, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0xfc, 0x41, 0x0e, 0x71, 0x00, 0x00}}, {{0xcc, 0x00, 0x1c, 0x40, 0x10, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xac, 0x41, 0x12, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xcc, 0x41, 0x14, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0xec, 0x41, 0x16, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0x0c, 0x40, 0x18, 0x71, 0x00, 0x00}}, {{0xe4, 0x00, 0x2c, 0x40, 0x1a, 0x71, 0x00, 0x00}}, {{0xef, 0x00, 0xf7, 0x41, 0x1e, 0x71, 0x00, 0x00}}, {{0xef, 0x00, 0x2a, 0x40, 0x1e, 0x71, 0x00, 0x00}}, {{0xd8, 0x00, 0x10, 0x40, 0x1e, 0x71, 0x00, 0x00}}, {{0xf0, 0x00, 0xa0, 0x41, 0x1e, 0x61, 0xff, 0xff}}};
 
-Unk_ov094_02294a40::Unk_ov094_02294a40() {}
+ItemIconCache::ItemIconCache() {}
 
-Unk_ov094_02294a40::~Unk_ov094_02294a40() {}
+ItemIconCache::~ItemIconCache() {}
 
-void Unk_ov094_02294a40::func_ov094_02293b54()
+void ItemIconCache::invalidate()
 {
     unk_804 = 0xff;
 }
 
-u8 *Unk_ov094_02294a40::func_ov094_02293b08(s32 idx)
+u8 *ItemIconCache::getIconChars(s32 idx)
 {
     char buf[0x28];
     s32 page = idx >> 4;
@@ -504,7 +504,7 @@ u8 *Unk_ov094_02294a40::func_ov094_02293b08(s32 idx)
     return r;
 }
 
-u8 *Unk_ov094_02294a40::func_ov094_02293ac8(s32 idx)
+u8 *ItemIconCache::getPresentChars(s32 idx)
 {
     char buf[0x28];
     func_020639e8(buf, (const char *)data_ov094_02294b80);
@@ -515,12 +515,12 @@ u8 *Unk_ov094_02294a40::func_ov094_02293ac8(s32 idx)
     return r;
 }
 
-u8 func_ov094_02293abc(void *o, s32 i)
+u8 InventoryItemGrid_GetIconPalette(void *o, s32 i)
 {
-    return data_ov094_022946f8[i];
+    return sItemIconPalettes[i];
 }
 
-Unk_ov094_02294a50::Unk_ov094_02294a50()
+InventoryItemGrid::InventoryItemGrid()
 {
     u8 *e = unk_98c;
     do {
@@ -529,14 +529,14 @@ Unk_ov094_02294a50::Unk_ov094_02294a50()
     } while (e != (u8 *)&unk_a34);
 }
 
-Unk_ov094_02294a50::~Unk_ov094_02294a50() {}
+InventoryItemGrid::~InventoryItemGrid() {}
 
-void func_ov094_022939c0(Unk_ov094_02294a50 *o, u32 a)
+void InventoryItemGrid_Init(InventoryItemGrid *o, u32 a)
 {
-    o->unk_184.func_ov094_02293b54();
-    func_ov094_02292e0c((u32 *)(o->unk_a38));
-    func_ov094_02292e0c((u32 *)(o->unk_a40));
-    func_ov094_02292e0c((u32 *)(o->unk_a48));
+    o->unk_184.invalidate();
+    InventoryItemGrid_ClearBits((u32 *)(o->unk_a38));
+    InventoryItemGrid_ClearBits((u32 *)(o->unk_a40));
+    InventoryItemGrid_ClearBits((u32 *)(o->unk_a48));
     o->unk_a56 = 0x23;
     o->unk_a57 = 0;
     o->unk_a50 = a;
@@ -545,46 +545,46 @@ void func_ov094_022939c0(Unk_ov094_02294a50 *o, u32 a)
     o->unk_a5c = 1;
 }
 
-void func_ov094_022939a0(Unk_ov094_02294a50 *o)
+void InventoryItemGrid_PreUpdate(InventoryItemGrid *o)
 {
-    func_ov094_02292f58((S *)o);
+    InventoryItemGrid_CancelUploads((S *)o);
     u8 v = o->unk_a57;
     if (v != 0) {
         o->unk_a57 = v - 1;
     }
 }
 
-void func_ov094_02293998(void *o)
+void InventoryItemGrid_Exit(void *o)
 {
-    func_ov094_02292f58((S *)o);
+    InventoryItemGrid_CancelUploads((S *)o);
 }
 
-u32 func_ov094_02293968(void *o, s32 a, s32 b)
+u32 InventoryItemGrid_FindPocketSlotAt(void *o, s32 a, s32 b)
 {
     if (b < 0x68) {
         return 0x23;
     }
-    return func_ov094_022938d4(o, a - 0x94, b - 0x74, a - 0x7c, b - 0x5c, 0, 0xe);
+    return InventoryItemGrid_FindSlotInRange(o, a - 0x94, b - 0x74, a - 0x7c, b - 0x5c, 0, 0xe);
 }
 
-u32 func_ov094_02293938(void *o, s32 a, s32 b)
+u32 InventoryItemGrid_FindBoxSlotAt(void *o, s32 a, s32 b)
 {
     if (b > 0x68) {
         return 0x23;
     }
-    return func_ov094_022938d4(o, a - 0x94, b - 0x74, a - 0x7c, b - 0x5c, 0xf, 0x1d);
+    return InventoryItemGrid_FindSlotInRange(o, a - 0x94, b - 0x74, a - 0x7c, b - 0x5c, 0xf, 0x1d);
 }
 
-s32 func_ov094_02293928(void *o, s32 a, s32 b)
+s32 InventoryItemGrid_HitTestSlot21(void *o, s32 a, s32 b)
 {
-    return func_ov094_02293890(o, a, b, 0x21);
+    return InventoryItemGrid_HitTestSlot(o, a, b, 0x21);
 }
 
-u32 func_ov094_022938d4(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e)
+u32 InventoryItemGrid_FindSlotInRange(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e)
 {
     s32 i = s;
     for (; i <= e; i++) {
-        void *p = func_ov094_02292fa4((S *)o, i);
+        void *p = InventoryItemGrid_GetSlotSprite((S *)o, i);
         s32 x = func_02087e14(p);
         if (a < x && x < c) {
             s32 y = func_02087e0c(p);
@@ -596,12 +596,12 @@ u32 func_ov094_022938d4(void *o, s32 a, s32 b, s32 c, s32 d, u8 s, u8 e)
     return 0x23;
 }
 
-s32 func_ov094_02293890(void *o, s32 a, s32 b, s32 c)
+s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c)
 {
     s32 a1 = a - 0x7c;
     s32 b1 = b - 0x74;
     s32 b2 = b - 0x5c;
-    void *e = func_ov094_02292fa4((S *)o, c);
+    void *e = InventoryItemGrid_GetSlotSprite((S *)o, c);
     s32 x = func_02087e14(e);
     if (a - 0x94 < x && x < a1) {
         s32 y = func_02087e0c(e);
@@ -612,24 +612,24 @@ s32 func_ov094_02293890(void *o, s32 a, s32 b, s32 c)
     return FALSE;
 }
 
-void func_ov094_022937e4(Unk_ov094_02294a50 *o, s32 k, u16 *p, s32 a)
+void InventoryItemGrid_LoadSlotIcon(InventoryItemGrid *o, s32 k, u16 *p, s32 a)
 {
     if (*p == 0xfff1) {
-        func_ov094_02292dcc((u32 *)(o->unk_a38), k);
+        InventoryItemGrid_ClearBit((u32 *)(o->unk_a38), k);
     } else {
-        func_ov094_02292dec((u32 *)(o->unk_a38), k);
-        s32 r = func_ov094_02293730(o, p, a);
-        Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)func_ov094_02292fa4((S *)o, k);
+        InventoryItemGrid_SetBit((u32 *)(o->unk_a38), k);
+        s32 r = InventoryItemGrid_GetIconIndex(o, p, a);
+        Unk_ov094_022937e4_Ent *e = (Unk_ov094_022937e4_Ent *)InventoryItemGrid_GetSlotSprite((S *)o, k);
         s32 c = (u32)(e->unk_04 << 22) >> 22;
-        u8 *q = o->unk_184.func_ov094_02293b08(r);
+        u8 *q = o->unk_184.getIconChars(r);
         Gfx2d_LoadCharRange(q, 8, c, c, c + 1);
         Gfx2d_LoadCharRange(q + 0x400, 8, c + 0x20, c + 0x20, c + 0x21);
-        u32 n = func_ov094_02293abc(&o->unk_184, r);
+        u32 n = InventoryItemGrid_GetIconPalette(&o->unk_184, r);
         e->unk_04 = (e->unk_04 & 0xffff0fff) | ((n & 0xf) << 12);
     }
 }
 
-void func_ov094_022937a0(Unk_ov094_02294a50 *o)
+void InventoryItemGrid_LoadPockets(InventoryItemGrid *o)
 {
     s32 h = func_02098750(PlayerData_GetCurrent());
     s32 base = (s32)PlayerInventory_getPocket(h, 0);
@@ -638,13 +638,13 @@ void func_ov094_022937a0(Unk_ov094_02294a50 *o)
     k = 0;
     i = 0;
     do {
-        func_ov094_022937e4(o, k, (u16 *)(base + i * 2), PlayerInventory_getPocketFlags(h, i));
+        InventoryItemGrid_LoadSlotIcon(o, k, (u16 *)(base + i * 2), PlayerInventory_getPocketFlags(h, i));
         k++;
         i++;
     } while (i < 0xf);
 }
 
-void func_ov094_02293764(Unk_ov094_02294a50 *o, u16 *arr)
+void InventoryItemGrid_LoadBox(InventoryItemGrid *o, u16 *arr)
 {
     s32 i;
     s32 k;
@@ -653,20 +653,20 @@ void func_ov094_02293764(Unk_ov094_02294a50 *o, u16 *arr)
     i = 0;
     do {
         u16 v = arr[i];
-        func_ov094_022937e4(o, k, &v, z);
+        InventoryItemGrid_LoadSlotIcon(o, k, &v, z);
         k++;
         i++;
     } while (i < 0xf);
     o->unk_a34 = arr;
 }
 
-s32 func_ov094_02293730(void *o, u16 *p, s32 mode)
+s32 InventoryItemGrid_GetIconIndex(void *o, u16 *p, s32 mode)
 {
     switch (mode) {
     case 1:
         return 0xb3;
     case 2:
-        if (func_ov094_02292450(*p)) {
+        if (InvItem_IsDeliveryItem(*p)) {
             return Item_GetInfoUnk02(p);
         }
         return 0xb4;
@@ -675,7 +675,7 @@ s32 func_ov094_02293730(void *o, u16 *p, s32 mode)
     }
 }
 
-void func_ov094_02293678(void *o, void *dst, u16 *p, s32 mode)
+void InventoryItemGrid_SetBalloonItemName(void *o, void *dst, u16 *p, s32 mode)
 {
     u32 a[16];
     u32 b[10];
@@ -691,7 +691,7 @@ void func_ov094_02293678(void *o, void *dst, u16 *p, s32 mode)
         StrBuf_Copy(b, a);
         break;
     case 2:
-        if (func_ov094_02292430(*p)) {
+        if (InvItem_IsDeliveryParcel(*p)) {
             ItemName_setFromItem(c, p);
             StrBuf_Copy(b, c);
         } else {
@@ -714,27 +714,27 @@ void func_ov094_02293678(void *o, void *dst, u16 *p, s32 mode)
     func_0206fca8(a);
 }
 
-void func_ov094_02293638(void *o, s32 a, s32 b)
+void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b)
 {
-    u32 r = func_ov094_0229352c((S *)o, b);
+    u32 r = InventoryItemGrid_GetSlotItem((S *)o, b);
     volatile u16 t = 0xfff1;
     t = r;
     if (t != 0xfff1) {
-        func_ov094_02293678(o, (void *)a, (u16 *)&t, func_ov094_02293504((S *)o, b));
+        InventoryItemGrid_SetBalloonItemName(o, (void *)a, (u16 *)&t, InventoryItemGrid_GetSlotFlags((S *)o, b));
     }
 }
 
-s32 func_ov094_02293624(void *o, s32 i)
+s32 InventoryItemGrid_GetSlotX(void *o, s32 i)
 {
-    return func_02087e14(func_ov094_02292fa4((S *)o, i)) + 0x80;
+    return func_02087e14(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x80;
 }
 
-s32 func_ov094_02293610(void *o, s32 i)
+s32 InventoryItemGrid_GetSlotY(void *o, s32 i)
 {
-    return func_02087e0c(func_ov094_02292fa4((S *)o, i)) + 0x60;
+    return func_02087e0c(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x60;
 }
 
-BOOL func_ov094_022935fc(Unk_ov094_02294a50 *o, s32 v)
+BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v)
 {
     if (v == o->unk_a56) {
         return TRUE;
@@ -742,35 +742,35 @@ BOOL func_ov094_022935fc(Unk_ov094_02294a50 *o, s32 v)
     return FALSE;
 }
 
-s32 func_ov094_022935e8(Unk_ov094_02294a50 *o)
+s32 InventoryItemGrid_GetCursorLift(InventoryItemGrid *o)
 {
-    return data_ov094_022946c4[o->unk_a57];
+    return sItemCursorLift[o->unk_a57];
 }
 
-void func_ov094_022935dc(Unk_ov094_02294a50 *o)
+void InventoryItemGrid_ClearCursorSlot(InventoryItemGrid *o)
 {
     o->unk_a56 = 0x23;
 }
 
-void func_ov094_0229359c(Unk_ov094_02294a50 *o, u32 v)
+void InventoryItemGrid_SetCursorSlot(InventoryItemGrid *o, u32 v)
 {
-    if (func_ov094_0229333c((S *)o, (u8)v)) {
-        func_ov094_022935dc(o);
+    if (InventoryItemGrid_IsSlotDisabled((S *)o, (u8)v)) {
+        InventoryItemGrid_ClearCursorSlot(o);
     } else if (o->unk_a56 != v) {
         o->unk_a56 = v;
         o->unk_a57 = 2;
     }
 }
 
-void func_ov094_0229358c(S *s) {
-    func_ov094_02292e0c((u32 *)(s->unk_a40));
+void InventoryItemGrid_ClearMarks(S *s) {
+    InventoryItemGrid_ClearBits((u32 *)(s->unk_a40));
 }
 
-void func_ov094_0229357c(S *s, s32 i) {
-    func_ov094_02292dec((u32 *)(s->unk_a40), i);
+void InventoryItemGrid_MarkSlot(S *s, s32 i) {
+    InventoryItemGrid_SetBit((u32 *)(s->unk_a40), i);
 }
 
-u16 func_ov094_0229352c(S *s, s32 i) {
+u16 InventoryItemGrid_GetSlotItem(S *s, s32 i) {
     s32 t = func_02098750(PlayerData_GetCurrent());
     if (i >= 0 && i <= 0xe) {
         return PlayerInventory_getPocket(t, 0)[i];
@@ -784,19 +784,19 @@ u16 func_ov094_0229352c(S *s, s32 i) {
     return 0xfff1;
 }
 
-u32 func_ov094_02293504(S *s, s32 i) {
+u32 InventoryItemGrid_GetSlotFlags(S *s, s32 i) {
     if (i >= 0 && i <= 0xe) {
         return (u8)PlayerInventory_getPocketFlags(func_02098750(PlayerData_GetCurrent()), i);
     }
     return 0;
 }
 
-void func_ov094_022934d8(S *s, s32 i) {
-    func_ov094_02293494(s, i, 0xfff1, 0);
-    func_ov094_02292dcc((u32 *)(s->unk_a38), i);
+void InventoryItemGrid_ClearSlot(S *s, s32 i) {
+    InventoryItemGrid_SetSlotItem(s, i, 0xfff1, 0);
+    InventoryItemGrid_ClearBit((u32 *)(s->unk_a38), i);
 }
 
-void func_ov094_02293494(S *s, s32 i, u32 v, s32 x) {
+void InventoryItemGrid_SetSlotItem(S *s, s32 i, u32 v, s32 x) {
     volatile u16 w = 0xfff1;
     w = v;
     if (i >= 0 && i <= 0xe) {
@@ -806,34 +806,34 @@ void func_ov094_02293494(S *s, s32 i, u32 v, s32 x) {
     }
 }
 
-void func_ov094_02293434(S *s, s32 i) {
-    Ent8 *e = func_ov094_02292fa4(s, i);
-    u16 v = func_ov094_0229352c(s, i);
-    u32 c = func_ov094_02293504(s, i);
+void InventoryItemGrid_RefreshSlot(S *s, s32 i) {
+    Ent8 *e = InventoryItemGrid_GetSlotSprite(s, i);
+    u16 v = InventoryItemGrid_GetSlotItem(s, i);
+    u32 c = InventoryItemGrid_GetSlotFlags(s, i);
     volatile u16 t = v;
     if (t == 0xfff1) {
-        func_ov094_02292dcc((u32 *)(s->unk_a38), i);
+        InventoryItemGrid_ClearBit((u32 *)(s->unk_a38), i);
     } else {
-        func_ov094_02292dec((u32 *)(s->unk_a38), i);
-        func_ov094_022933d8(s, (Rec *)e, v, c);
+        InventoryItemGrid_SetBit((u32 *)(s->unk_a38), i);
+        InventoryItemGrid_SetSpriteItem(s, (Rec *)e, v, c);
     }
 }
 
-void func_ov094_0229341c(S *s, Rec *r, s32 m) {
-    func_ov094_022933d8(s, (Rec *)data_ov094_02294a30, (u32)r, m);
+void InventoryItemGrid_SetHeldItem(S *s, Rec *r, s32 m) {
+    InventoryItemGrid_SetSpriteItem(s, (Rec *)sHeldItemSprite, (u32)r, m);
 }
 
-void func_ov094_022933d8(S *s, Rec *r, u32 v, s32 m) {
+void InventoryItemGrid_SetSpriteItem(S *s, Rec *r, u32 v, s32 m) {
     u16 w = v;
-    s32 idx = func_ov094_02293730(s, &w, m);
-    void *d = ((Unk_ov094_02294a40 *)s->unk_184)->func_ov094_02293b08(idx);
-    u32 c = func_ov094_02293abc(s->unk_184, idx);
-    func_ov094_0229334c(s, r, d, c);
+    s32 idx = InventoryItemGrid_GetIconIndex(s, &w, m);
+    void *d = ((ItemIconCache *)s->unk_184)->getIconChars(idx);
+    u32 c = InventoryItemGrid_GetIconPalette(s->unk_184, idx);
+    InventoryItemGrid_UploadIcon(s, r, d, c);
 }
 
-void func_ov094_0229334c(S *s, Rec *r, void *dst, s32 c) {
+void InventoryItemGrid_UploadIcon(S *s, Rec *r, void *dst, s32 c) {
     u32 t = r->id;
-    u32 k = func_ov094_02292f40(s);
+    u32 k = InventoryItemGrid_AllocUpload(s);
     Unk_ov094_0229334c_Blk *e = (Unk_ov094_0229334c_Blk *)((u8 *)s + 4) + k;
     u8 *p = e->a;
     u8 *q = e->b;
@@ -845,84 +845,84 @@ void func_ov094_0229334c(S *s, Rec *r, void *dst, s32 c) {
     ((u32 *)r)[1] = (((u32 *)r)[1] & 0xffff0fff) | (c << 12);
 }
 
-BOOL func_ov094_0229333c(S *s, s32 i) {
-    return func_ov094_02292da8((u32 *)(s->unk_a48), i);
+BOOL InventoryItemGrid_IsSlotDisabled(S *s, s32 i) {
+    return InventoryItemGrid_TestBit((u32 *)(s->unk_a48), i);
 }
 
-void func_ov094_02293318(S *s, u8 i, u8 e) {
+void InventoryItemGrid_DisableSlotRange(S *s, u8 i, u8 e) {
     while (i <= e) {
-        func_ov094_02293308(s, i);
+        InventoryItemGrid_DisableSlot(s, i);
         i++;
     }
 }
 
-void func_ov094_02293308(S *s, s32 i) {
-    func_ov094_02292dec((u32 *)(s->unk_a48), i);
+void InventoryItemGrid_DisableSlot(S *s, s32 i) {
+    InventoryItemGrid_SetBit((u32 *)(s->unk_a48), i);
 }
 
-void func_ov094_022932d0(S *s, s32 x, s32 y) {
-    Ent8 *e = func_ov094_02292fa4(s, 0);
+void InventoryItemGrid_DrawPockets(S *s, s32 x, s32 y) {
+    Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0);
     s32 i;
     for (i = 0; i <= 0xe; e++, i++) {
-        func_ov094_02292fb0(s, e, i, x + 0x80, y + 0x60);
+        InventoryItemGrid_DrawSlot(s, e, i, x + 0x80, y + 0x60);
     }
 }
 
-void func_ov094_02293284(S *s, s32 x, s32 y, s32 w) {
-    Ent8 *e = func_ov094_02292fa4(s, 0);
+void InventoryItemGrid_DrawPocketsClipped(S *s, s32 x, s32 y, s32 w) {
+    Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0);
     s32 i;
     for (i = 0; i <= 0xe; e++, i++) {
-        if (func_ov094_02293624(s, (u8)i) + 0x18 > w) {
-            func_ov094_02292fb0(s, e, i, x + 0x80, y + 0x60);
+        if (InventoryItemGrid_GetSlotX(s, (u8)i) + 0x18 > w) {
+            InventoryItemGrid_DrawSlot(s, e, i, x + 0x80, y + 0x60);
         }
     }
 }
 
-void func_ov094_0229324c(S *s, s32 x, s32 y) {
-    Ent8 *e = func_ov094_02292fa4(s, 0xf);
+void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y) {
+    Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0xf);
     s32 i;
     for (i = 0xf; i <= 0x1d; e++, i++) {
-        func_ov094_02292fb0(s, e, i, x + 0x80, y + 0x60);
+        InventoryItemGrid_DrawSlot(s, e, i, x + 0x80, y + 0x60);
     }
 }
 
-void func_ov094_022931e8(S *s, s32 x, s32 y) {
-    if (func_ov094_02292da8((u32 *)(s->unk_a40), 0x21)) {
-        Ent8 *e = func_ov094_02292fa4(s, 0x21);
+void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x21)) {
+        Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0x21);
         s32 a = x + func_02087e14(e) + 0x80;
         s32 b = y + func_02087e0c(e) + 0x60;
-        func_ov094_022930e8(s, a, b);
+        InventoryItemGrid_DrawMark(s, a, b);
     }
-    if (func_ov094_02292da8((u32 *)(s->unk_a40), 0x22)) {
-        func_ov094_022930e8(s, x + 4, y + 0xac);
+    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x22)) {
+        InventoryItemGrid_DrawMark(s, x + 4, y + 0xac);
     }
 }
 
-void func_ov094_0229313c(S *s, s32 x, s32 y) {
-    s32 a = x + func_02087e14(data_ov094_02294a30);
-    s32 b = y + func_02087e0c(data_ov094_02294a30);
-    u32 v = func_ov094_02292f8c(s->unk_a59);
+void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y) {
+    s32 a = x + func_02087e14(sHeldItemSprite);
+    s32 b = y + func_02087e0c(sHeldItemSprite);
+    u32 v = InventoryItemGrid_GetScale(s->unk_a59);
     if (v != 0) {
         if (v == 0x1000) {
-            func_02088730(1, data_ov094_02294a30, x, y, -1, s->unk_a50, 0);
+            func_02088730(1, sHeldItemSprite, x, y, -1, s->unk_a50, 0);
         } else {
             Unk_ov094_0229313c_L l;
             l.v[0] = v;
             l.v[1] = 0;
             l.v[2] = 0;
             l.v[3] = v;
-            func_02088730(1, data_ov094_02294a30, x, y, -1, s->unk_a50, &l);
+            func_02088730(1, sHeldItemSprite, x, y, -1, s->unk_a50, &l);
         }
     }
-    func_ov094_022930b4(s, a, b, -1);
+    InventoryItemGrid_DrawUnderlay(s, a, b, -1);
     if (s->unk_a5c) {
-        func_ov094_02293080(s, a, b);
+        InventoryItemGrid_DrawFocus(s, a, b);
     }
 }
 
-BOOL func_ov094_0229311c(S *s, s32 i) {
+BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i) {
     BOOL r;
-    if (func_ov094_02292da8((u32 *)(s->unk_a38), i)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a38), i)) {
         r = FALSE;
     } else {
         r = TRUE;
@@ -930,55 +930,55 @@ BOOL func_ov094_0229311c(S *s, s32 i) {
     return r;
 }
 
-void func_ov094_022930e8(S *s, s32 a, s32 b) {
+void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b) {
     func_02088730(1, data_ov094_02294a68, a - 8, b - 8, -1, s->unk_a50, 0);
 }
 
-void func_ov094_022930b4(S *s, s32 a, s32 b, s32 c) {
-    func_02088730(1, data_ov094_02294a58, a - 8, b - 8, c, s->unk_a50, 0);
+void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c) {
+    func_02088730(1, sItemGridMarkSprites, a - 8, b - 8, c, s->unk_a50, 0);
 }
 
-void func_ov094_02293080(S *s, s32 a, s32 b) {
+void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b) {
     func_02088730(1, data_ov094_02294a60, a - 8, b - 8, -1, s->unk_a50, 0);
 }
 
-void func_ov094_02292fb0(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
+void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
     s32 a = x + func_02087e14(e);
     s32 b = y + func_02087e0c(e);
     s32 off = 0;
-    if (func_ov094_022935fc((Unk_ov094_02294a50 *)s, idx)) {
-        off = func_ov094_022935e8((Unk_ov094_02294a50 *)s);
+    if (InventoryItemGrid_IsCursorSlot((InventoryItemGrid *)s, idx)) {
+        off = InventoryItemGrid_GetCursorLift((InventoryItemGrid *)s);
         a += off;
         b += off;
     }
-    if (func_ov094_02292da8((u32 *)(s->unk_a40), idx)) {
-        func_ov094_022930e8(s, a, b);
+    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), idx)) {
+        InventoryItemGrid_DrawMark(s, a, b);
     }
-    if (func_ov094_02292da8((u32 *)(s->unk_a38), idx)) {
+    if (InventoryItemGrid_TestBit((u32 *)(s->unk_a38), idx)) {
         s32 c = -1;
-        if (func_ov094_0229333c(s, (u8)idx)) {
+        if (InventoryItemGrid_IsSlotDisabled(s, (u8)idx)) {
             c = 0xe;
         }
         func_02088730(1, e, x + off, y + off, c, s->unk_a50, 0);
-        func_ov094_022930b4(s, a, b, c);
-        if (func_ov094_022935fc((Unk_ov094_02294a50 *)s, idx)) {
-            func_ov094_02293080(s, a, b);
+        InventoryItemGrid_DrawUnderlay(s, a, b, c);
+        if (InventoryItemGrid_IsCursorSlot((InventoryItemGrid *)s, idx)) {
+            InventoryItemGrid_DrawFocus(s, a, b);
         }
     }
 }
 
-Ent8 *func_ov094_02292fa4(S *s, s32 i) {
-    return &data_ov094_02294a70[i];
+Ent8 *InventoryItemGrid_GetSlotSprite(S *s, s32 i) {
+    return &sItemGridSlotSprites[i];
 }
 
-u32 func_ov094_02292f8c(u32 i) {
+u32 InventoryItemGrid_GetScale(u32 i) {
     if (i >= 10) {
         return 0x1000;
     }
-    return data_ov094_022946d0[i];
+    return sItemScaleTable[i];
 }
 
-void func_ov094_02292f58(S *s) {
+void InventoryItemGrid_CancelUploads(S *s) {
     s32 i;
     for (i = 0; i < 3; i++) {
         BgVramTask_cancel(&s->unk_98c[i]);
@@ -986,7 +986,7 @@ void func_ov094_02292f58(S *s) {
     s->unk_a58 = 0;
 }
 
-u32 func_ov094_02292f40(S *s) {
+u32 InventoryItemGrid_AllocUpload(S *s) {
     u32 v = s->unk_a58;
     if (v >= 3) {
         return 2;
@@ -995,7 +995,7 @@ u32 func_ov094_02292f40(S *s) {
     return v;
 }
 
-void func_ov094_02292efc(S *s, u32 v, s32 m) {
+void InventoryItemGrid_StartPresentAnim(S *s, u32 v, s32 m) {
     s->unk_a54 = v;
     s->unk_a5a = 0;
     if (m == 1) {
@@ -1008,42 +1008,42 @@ void func_ov094_02292efc(S *s, u32 v, s32 m) {
     }
 }
 
-void func_ov094_02292ee4(S *s) {
+void InventoryItemGrid_EndPresentAnim(S *s) {
     s->unk_a59 = 10;
     s->unk_a5c = 1;
 }
 
-BOOL func_ov094_02292e30(S *s) {
+BOOL InventoryItemGrid_UpdatePresentAnim(S *s) {
     u32 st = s->unk_a5a;
     if (st < 6) {
-        u32 v = data_ov094_022946bc[st];
+        u32 v = sPresentAnimFrames[st];
         if (v != 0xff) {
-            s32 r = _ZN18Unk_ov094_02294a4019func_ov094_02293ac8Ei(s->unk_184, v, s->unk_a5b);
-            func_ov094_0229334c(s, (Rec *)data_ov094_02294a30, (void *)r, 8);
+            s32 r = _ZN13ItemIconCache15getPresentCharsEi(s->unk_184, v, s->unk_a5b);
+            InventoryItemGrid_UploadIcon(s, (Rec *)sHeldItemSprite, (void *)r, 8);
         }
         s->unk_a5a++;
     } else if (st < 8) {
-        s->unk_a59 = func_ov094_02292e1c(s);
+        s->unk_a59 = InventoryItemGrid_GetPresentAnimScale(s);
         s->unk_a5a++;
     } else if (st == 8) {
-        func_ov094_0229341c(s, (Rec *)s->unk_a54, 0);
+        InventoryItemGrid_SetHeldItem(s, (Rec *)s->unk_a54, 0);
         s->unk_a59 = 0;
         s->unk_a5a++;
     } else if (st < 0xc) {
-        s->unk_a59 = func_ov094_02292e1c(s);
+        s->unk_a59 = InventoryItemGrid_GetPresentAnimScale(s);
         s->unk_a5a++;
     } else {
-        func_ov094_02292ee4(s);
+        InventoryItemGrid_EndPresentAnim(s);
         return TRUE;
     }
     return FALSE;
 }
 
-s32 func_ov094_02292e1c(S *s) {
-    return data_ov094_022946b4[s->unk_a5a - 6];
+s32 InventoryItemGrid_GetPresentAnimScale(S *s) {
+    return sPresentAnimScales[s->unk_a5a - 6];
 }
 
-void func_ov094_02292e0c(u32 *bits) {
+void InventoryItemGrid_ClearBits(u32 *bits) {
     s32 i;
     u32 z;
     i = 0;
@@ -1053,15 +1053,15 @@ void func_ov094_02292e0c(u32 *bits) {
     }
 }
 
-void func_ov094_02292dec(u32 *bits, s32 i) {
+void InventoryItemGrid_SetBit(u32 *bits, s32 i) {
     bits[i >> 5] |= 1 << (i & 0x1f);
 }
 
-void func_ov094_02292dcc(u32 *bits, s32 i) {
+void InventoryItemGrid_ClearBit(u32 *bits, s32 i) {
     bits[i >> 5] &= ~(1 << (i & 0x1f));
 }
 
-BOOL func_ov094_02292da8(u32 *bits, s32 i) {
+BOOL InventoryItemGrid_TestBit(u32 *bits, s32 i) {
     BOOL r = TRUE;
     if (((1 << (i & 0x1f)) & bits[i >> 5]) == 0) {
         r = FALSE;

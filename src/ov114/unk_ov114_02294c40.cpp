@@ -77,9 +77,9 @@ extern u8 data_ov114_02296598[];
 extern u8 data_ov114_022965a0[];
 extern u8 data_ov114_022965c0[0x20];
 extern u8 data_ov114_022965e0[];
-extern char *data_ov114_022967a0;
-extern char *data_ov114_022967a4;
-extern char data_ov114_022967a8[];
+extern char *sCreaturePicDir;
+extern char *sCreatureBgPaletteName;
+extern char sCreaturePicPath[];
 extern u32 *gCurrentHeap;
 extern u16 gPad;
 
@@ -87,15 +87,15 @@ void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getCatalogEv(void *p);
 BOOL Catalog_HasItem(void *p, u16 *v);
 void Snd_PlaySe(s32 v);
-BOOL func_ov002_0220125c(void *pad);
-BOOL func_ov002_0220126c(void *pad);
-BOOL func_ov002_0220127c(void *pad);
-BOOL func_ov002_0220128c(void *pad);
-void _ZN18Unk_ov002_022046b019func_ov002_02202f00Ev(void *p);
-void func_ov002_02202e48(void *p);
-s32 _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev(void *p);
-s32 _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev(void *p);
-s32 func_ov090_02291a78(s32 v);
+BOOL MenuKeys_HasRight(void *pad);
+BOOL MenuKeys_HasLeft(void *pad);
+BOOL MenuKeys_HasDown(void *pad);
+BOOL MenuKeys_HasUp(void *pad);
+void _ZN14MenuScrollKnob4grabEv(void *p);
+void Menu_PlayScrollGrabSe(void *p);
+s32 _ZN14MenuScrollKnob8getGripYEv(void *p);
+s32 _ZN14MenuScrollKnob8getGripXEv(void *p);
+s32 MenuTabBar_GetTabX(s32 v);
 s32 _s32_div_f(s32 a, s32 b);
 void Gfx2d_ShowLayer(u32 v);
 void Gfx2d_SetSubAlphaBlend(void *a, void *b, u32 c);
@@ -108,8 +108,8 @@ s32 Item_GetInfoUnk02(u32 v);
 void *func_02087e0c(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h);
-void *_ZN18Unk_ov094_02294a4019func_ov094_02293b08Ei(S *s, s32 v);
-s32 func_ov094_02293abc(S *s, s32 v);
+void *_ZN13ItemIconCache12getIconCharsEi(S *s, s32 v);
+s32 InventoryItemGrid_GetIconPalette(S *s, s32 v);
 
 void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN8ItemNameC1Ev(void *p);
@@ -125,9 +125,9 @@ void _ZN12Unk_020e048813func_0206fc44Ev(void *p);
 void _ZN10BgVramTask6cancelEv(void *p);
 void String_Load(void *p, u8 *q, const char *name);
 BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
-void _ZN18Unk_ov002_022046b019func_ov002_02202f0cEv(void *p);
-void _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(void *p);
-void func_ov002_02202e54(void *p);
+void _ZN14MenuScrollKnob4showEv(void *p);
+void _ZN14MenuScrollKnob7releaseEv(void *p);
+void Menu_PlayScrollTickSe(void *p);
 void func_020e761c(void *p, s32 a, s32 b);
 
 s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
@@ -146,49 +146,49 @@ void func_0206fca8(void *p);
 void func_02135714(void *, s32, s32, void (*)(void *), void (*)(void *));
 void func_021355f0(void *, s32, s32, void (*)(void *));
 
-void func_ov114_02294c40(S *s, u32 m);
-void func_ov114_02294c50(S *s, u32 m);
-BOOL func_ov114_02294c60(S *s, u32 m);
-BOOL func_ov114_02294c78(S *s, s32 i);
-void func_ov114_02294ca4(S *s);
-BOOL func_ov114_02294d88(S *s);
-u8 func_ov114_02294e30(S *s);
-void func_ov114_02294e6c(S *s);
-BOOL func_ov114_02294ed0(S *s, void *pad);
-BOOL func_ov114_022950b4(S *s);
-s32 func_ov114_022950cc(S *s);
-s32 func_ov114_022950e8(S *s);
-s32 func_ov114_02295150(S *s);
-void func_ov114_022951b8(S *s, u8 v);
-void func_ov114_022951e0(S *s);
-void func_ov114_02295290(S *s);
-void func_ov114_02295350(S *s);
-void func_ov114_02295374(S *s);
-void func_ov114_0229539c(S *s);
-void func_ov114_022953e4(S *s, u32 a, s32 idx);
-void func_ov114_0229549c(S *s);
-BOOL func_ov114_02295510(S *s, s32 x, s32 y);
-void func_ov114_0229559c(S *s);
-BOOL func_ov114_0229563c(S *s, s32 v);
-void func_ov114_022956a4(S *s, s32 a);
-void func_ov114_02295780(S *s, u32 a);
-void *func_ov114_02295830(S *s);
-void func_ov114_02295860(S *s);
-u32 func_ov114_0229588c(S *s);
-void func_ov114_022958a4(S *s);
-void func_ov114_022958d8(S *s, s32 a, s32 b);
-BOOL func_ov114_022959a0(S *s);
-BOOL func_ov114_022959d8(S *s);
-void func_ov114_02295a18(S *s);
-u8 func_ov114_02295af0(S *s);
-void func_ov114_02295b48(S *s);
-void func_ov114_02295c28(S *s);
-BOOL func_ov114_02295c9c(S *s);
-void func_ov114_02295ce0(S *s);
-void func_ov114_02295d04(S *s);
-s32 func_ov114_02295d98(S *s);
-void func_ov114_02295dc4(S *s);
-void func_ov114_02295dec(S *s, s32 a);
+void CreatureBook_ClearFlags(S *s, u32 m);
+void CreatureBook_SetFlags(S *s, u32 m);
+BOOL CreatureBook_HasFlags(S *s, u32 m);
+BOOL CreatureBook_IsCaught(S *s, s32 i);
+void CreatureBook_BuildCaughtMask(S *s);
+BOOL CreatureBook_ActivateFocus(S *s);
+u8 CreatureBook_GetRowFocusAtCursor(S *s);
+void CreatureBook_ClampFocusToView(S *s);
+BOOL CreatureBook_MoveFocus(S *s, void *pad);
+BOOL CreatureBook_IsFocusOnPageArrow(S *s);
+s32 CreatureBook_GetFocusedTab(S *s);
+s32 CreatureBook_GetFocusY(S *s);
+s32 CreatureBook_GetFocusX(S *s);
+void CreatureBook_SelectEntry(S *s, u8 v);
+void CreatureBook_UpdatePictureFade(S *s);
+void CreatureBook_LoadPicture(S *s);
+void CreatureBook_ShowSelected(S *s);
+void CreatureBook_StopPictureFade(S *s);
+void CreatureBook_InitPictureView(S *s);
+void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx);
+void CreatureBook_InitRows(S *s);
+BOOL CreatureBook_TouchRow(S *s, s32 x, s32 y);
+void CreatureBook_RefreshRowIcons(S *s);
+BOOL CreatureBook_SetScroll(S *s, s32 v);
+void CreatureBook_DrawRows(S *s, s32 a);
+void CreatureBook_SetNameLabel(S *s, u32 a);
+void *CreatureBook_AllocLabel(S *s);
+void CreatureBook_ClearLabels(S *s);
+u32 CreatureBook_AllocIconTask(S *s);
+void CreatureBook_CancelIconTasks(S *s);
+void CreatureBook_SetBgFadeColor(S *s, s32 a, s32 b);
+BOOL CreatureBook_PrevDescPage(S *s);
+BOOL CreatureBook_NextDescPage(S *s);
+void CreatureBook_ShowDescPage(S *s);
+u8 CreatureBook_CountDescPages(S *s);
+void CreatureBook_LoadDescription(S *s);
+void CreatureBook_ApplyScrollInertia(S *s);
+BOOL CreatureBook_FinishScrollHold(S *s);
+void CreatureBook_ReleaseKnob(S *s);
+void CreatureBook_UpdateScrollHold(S *s);
+s32 CreatureBook_WaitScrollHoldStart(S *s);
+void CreatureBook_EndScrollTouch(S *s);
+void CreatureBook_UpdateScrollTouch(S *s, s32 a);
 }
 
 class MsgStringBase {
@@ -217,10 +217,10 @@ public:
     MsgStringAttr unk_08;
 };
 
-class Unk_ov114_022965b0 : public MsgString {
+class MsgString406 : public MsgString {
 public:
-    Unk_ov114_022965b0();
-    virtual ~Unk_ov114_022965b0();
+    MsgString406();
+    virtual ~MsgString406();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -228,11 +228,11 @@ public:
 };
 
 // Base (vtable 0x02294a40 in ov094)
-class Unk_ov094_02294a40 {
+class ItemIconCache {
 public:
-    Unk_ov094_02294a40();
-    virtual ~Unk_ov094_02294a40();
-    void func_ov094_02293b54();
+    ItemIconCache();
+    virtual ~ItemIconCache();
+    void invalidate();
     u8 unk_04[0x800];
     u8 unk_804;
 };
@@ -261,46 +261,46 @@ public:
 };
 
 // sub-object at +0x11f8 (ctor func_ov002_02202f88, dtor func_ov002_02202f70)
-class Unk_ov002_022046b0 {
+class MenuScrollKnob {
 public:
-    Unk_ov002_022046b0();
-    virtual ~Unk_ov002_022046b0();
+    MenuScrollKnob();
+    virtual ~MenuScrollKnob();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    BOOL func_ov002_02202f18(s32 x, s32 y);
-    void func_ov002_02202f00();
-    void func_ov002_02202ed0();
-    void func_ov002_02202f0c();
+    BOOL hitTest(s32 x, s32 y);
+    void grab();
+    void updateRelease();
+    void show();
     u32 unk_04[(0x54 - 4) / 4];
 };
 
-class Unk_ov114_02294c40 {
+class CreatureBookPanel {
 public:
-    Unk_ov114_02294c40();
-    ~Unk_ov114_02294c40();
+    CreatureBookPanel();
+    ~CreatureBookPanel();
 
-    BOOL func_ov114_02295eb4(s32 x, s32 y);
-    void func_ov114_02295f80();
-    void func_ov114_02295fc0();
-    void func_ov114_02295fec(s32 x);
-    void func_ov114_0229600c();
-    BOOL func_ov114_02296024(s32 x, s32 y);
-    void func_ov114_02296078(s32 y);
-    void func_ov114_02296148();
-    void func_ov114_022961c0();
-    void func_ov114_022962e4();
-    void func_ov114_0229633c();
-    void func_ov114_0229636c();
-    void func_ov114_02296390(u8 a, u8 b, u8 c, u8 d);
+    BOOL beginScrollTouch(s32 x, s32 y);
+    void syncScrollToKnob();
+    void syncKnobToScroll();
+    void placeScrollKnob(s32 x);
+    void drawScrollKnob();
+    BOOL hitDescPageButtons(s32 x, s32 y);
+    void drawButtons(s32 y);
+    void loadObjGraphics();
+    void loadBgGraphics();
+    void postUpdate();
+    void preUpdate();
+    void cleanup();
+    void init(u8 a, u8 b, u8 c, u8 d);
 
-    /* 0x000 */ Unk_ov094_02294a40 unk_00;
-    /* 0x808 */ Unk_ov114_022965b0 unk_808;
+    /* 0x000 */ ItemIconCache unk_00;
+    /* 0x808 */ MsgString406 unk_808;
     /* 0x828 */ u8 unk_828[0x9b0 - 0x828];
     /* 0x9b0 */ BgVramTask unk_9b0;
     /* 0xe94 */ BgVramTaskPair unk_e94[9];
     /* 0x108c */ u8 unk_108c[0x10f8 - 0x108c];
     /* 0x10f8 */ Unk_020e0488 unk_10f8[4];
-    /* 0x11f8 */ Unk_ov002_022046b0 unk_11f8;
+    /* 0x11f8 */ MenuScrollKnob unk_11f8;
     /* 0x124c */ s32 unk_124c;
     /* 0x1250 */ s32 unk_1250;
     /* 0x1254 */ s32 unk_1254;
@@ -326,11 +326,11 @@ public:
     /* 0x1299 */ u8 unk_1299;
 };
 
-Unk_ov114_02294c40::Unk_ov114_02294c40() {}
+CreatureBookPanel::CreatureBookPanel() {}
 
-Unk_ov114_02294c40::~Unk_ov114_02294c40() {}
+CreatureBookPanel::~CreatureBookPanel() {}
 
-void Unk_ov114_02294c40::func_ov114_02296390(u8 a, u8 b, u8 c, u8 d) {
+void CreatureBookPanel::init(u8 a, u8 b, u8 c, u8 d) {
     unk_1288 = 0;
     unk_128d = a;
     unk_128e = b;
@@ -338,8 +338,8 @@ void Unk_ov114_02294c40::func_ov114_02296390(u8 a, u8 b, u8 c, u8 d) {
     unk_1280 = Gfx2d_GetLayerBlendMask(b);
     unk_1284 = Gfx2d_GetLayerBlendMask(c);
     unk_1293 = d;
-    unk_00.func_ov094_02293b54();
-    func_ov114_0229549c((S *)this);
+    unk_00.invalidate();
+    CreatureBook_InitRows((S *)this);
     switch (d) {
     case 0:
         unk_1270 = 0x38;
@@ -354,11 +354,11 @@ void Unk_ov114_02294c40::func_ov114_02296390(u8 a, u8 b, u8 c, u8 d) {
         unk_1299 = 0;
         break;
     }
-    func_ov114_02294ca4((S *)this);
+    CreatureBook_BuildCaughtMask((S *)this);
     unk_1298 = 0x10;
     unk_1274 = (unk_1270 - 8) * 0x1b;
     unk_125c = 0;
-    unk_11f8.func_ov002_02202f0c();
+    unk_11f8.show();
     u8 *p = &unk_128a[1];
     *p = 0;
     unk_128a[0] = *p;
@@ -366,31 +366,31 @@ void Unk_ov114_02294c40::func_ov114_02296390(u8 a, u8 b, u8 c, u8 d) {
     unk_1297 = 4;
 }
 
-void Unk_ov114_02294c40::func_ov114_0229636c() {
+void CreatureBookPanel::cleanup() {
     unk_9b0.cancel();
-    func_ov114_022958a4((S *)this);
-    func_ov114_02295860((S *)this);
+    CreatureBook_CancelIconTasks((S *)this);
+    CreatureBook_ClearLabels((S *)this);
 }
 
-void Unk_ov114_02294c40::func_ov114_0229633c() {
+void CreatureBookPanel::preUpdate() {
     unk_9b0.cancel();
-    func_ov114_022958a4((S *)this);
+    CreatureBook_CancelIconTasks((S *)this);
     unk_11f8.vfunc_0c();
-    func_ov114_02295860((S *)this);
+    CreatureBook_ClearLabels((S *)this);
 }
 
-void Unk_ov114_02294c40::func_ov114_022962e4() {
-    func_ov114_02295c28((S *)this);
-    unk_11f8.func_ov002_02202ed0();
-    func_ov114_022951e0((S *)this);
-    if (func_ov114_02294c60((S *)this, 1)) {
+void CreatureBookPanel::postUpdate() {
+    CreatureBook_ApplyScrollInertia((S *)this);
+    unk_11f8.updateRelease();
+    CreatureBook_UpdatePictureFade((S *)this);
+    if (CreatureBook_HasFlags((S *)this, 1)) {
         if (unk_9b0.requestPalette((u32)unk_9b0.unk_44, unk_128d, 4)) {
-            func_ov114_02294c40((S *)this, 1);
+            CreatureBook_ClearFlags((S *)this, 1);
         }
     }
 }
 
-void Unk_ov114_02294c40::func_ov114_022961c0() {
+void CreatureBookPanel::loadBgGraphics() {
     s32 h = (s32)gCurrentHeap;
     Gfx2d_LoadCharFile("menu/fish/bg0.bch", (u32 *)h, unk_128d, 0x109, 0x109, 0x153);
     Gfx2d_LoadCharFile("menu/fish/bg1.bch", (u32 *)h, unk_128d, 0x154, 0x154, 0x19f);
@@ -399,13 +399,13 @@ void Unk_ov114_02294c40::func_ov114_022961c0() {
     }
     switch (unk_1293) {
     case 0:
-        data_ov114_022967a4 = "menu/fish/bg.bpl";
+        sCreatureBgPaletteName = "menu/fish/bg.bpl";
         break;
     case 1:
-        data_ov114_022967a4 = "menu/fish/bug_bg.bpl";
+        sCreatureBgPaletteName = "menu/fish/bug_bg.bpl";
         break;
     }
-    Gfx2d_LoadPaletteFile(data_ov114_022967a4, h, unk_128d, 1, 1, 6);
+    Gfx2d_LoadPaletteFile(sCreatureBgPaletteName, h, unk_128d, 1, 1, 6);
     File_LoadToBuffer("menu/fish/bg4.bpl", unk_9b0.unk_24, 0x20);
     MIi_CpuCopy16(unk_9b0.unk_24, unk_9b0.unk_44, 0x20);
     Gfx2d_LoadScreenFile("menu/fish/a_bg.bsc", h, unk_128d);
@@ -413,7 +413,7 @@ void Unk_ov114_02294c40::func_ov114_022961c0() {
     Gfx2d_LoadScreenFile("menu/fish/c_bg.bsc", h, unk_128f);
 }
 
-void Unk_ov114_02294c40::func_ov114_02296148() {
+void CreatureBookPanel::loadObjGraphics() {
     s32 h = (s32)gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/icon/b_obj_itm.bpl", h, 8, 7, 7, 0xe);
     Gfx2d_LoadPaletteFile("menu/fish/obj.bpl", h, 8, 4, 4, 6);
@@ -421,7 +421,7 @@ void Unk_ov114_02294c40::func_ov114_02296148() {
     Gfx2d_LoadCharFile("menu/fish/obj1.bch", (u32 *)h, 8, 0x141, 0x141, 0x1bf);
 }
 
-void Unk_ov114_02294c40::func_ov114_02296078(s32 y) {
+void CreatureBookPanel::drawButtons(s32 y) {
     s32 py = y + 0x60;
     s32 i = 0;
     s32 z = i;
@@ -446,41 +446,41 @@ void Unk_ov114_02294c40::func_ov114_02296078(s32 y) {
     Oam_DrawCell(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-BOOL Unk_ov114_02294c40::func_ov114_02296024(s32 x, s32 y) {
+BOOL CreatureBookPanel::hitDescPageButtons(s32 x, s32 y) {
     s32 xs = x - 0x80;
     s32 ys = y - 0x60;
     if (func_02087dac(data_ov114_02296588, xs, ys, 2, 2)) {
-        return func_ov114_022959d8((S *)this);
+        return CreatureBook_NextDescPage((S *)this);
     }
     if (func_02087dac(data_ov114_02296590, xs, ys, 2, 2)) {
-        return func_ov114_022959a0((S *)this);
+        return CreatureBook_PrevDescPage((S *)this);
     }
     return FALSE;
 }
 
-void Unk_ov114_02294c40::func_ov114_0229600c() {
+void CreatureBookPanel::drawScrollKnob() {
     unk_11f8.vfunc_08();
 }
 
-void Unk_ov114_02294c40::func_ov114_02295fec(s32 x) {
+void CreatureBookPanel::placeScrollKnob(s32 x) {
     _ZN10ScrollKnob6moveToEii(&unk_11f8, unk_124c - 0x4e, x + 0x4a);
 }
 
-void Unk_ov114_02294c40::func_ov114_02295fc0() {
+void CreatureBookPanel::syncKnobToScroll() {
     unk_124c = _s32_div_f(unk_1258 * 0x8c, unk_1274);
 }
 
-void Unk_ov114_02294c40::func_ov114_02295f80() {
-    if (func_ov114_0229563c((S *)this, _s32_div_f(unk_124c * unk_1274, 0x8c))) {
-        func_ov114_0229559c((S *)this);
+void CreatureBookPanel::syncScrollToKnob() {
+    if (CreatureBook_SetScroll((S *)this, _s32_div_f(unk_124c * unk_1274, 0x8c))) {
+        CreatureBook_RefreshRowIcons((S *)this);
     }
     unk_125c = 0;
 }
 
-BOOL Unk_ov114_02294c40::func_ov114_02295eb4(s32 x, s32 y) {
-    if (unk_11f8.func_ov002_02202f18(x, y)) {
+BOOL CreatureBookPanel::beginScrollTouch(s32 x, s32 y) {
+    if (unk_11f8.hitTest(x, y)) {
         unk_1250 = unk_124c - x;
-        unk_11f8.func_ov002_02202f00();
+        unk_11f8.grab();
         unk_1297 = 2;
         unk_1254 = unk_124c;
         return TRUE;
@@ -496,7 +496,7 @@ BOOL Unk_ov114_02294c40::func_ov114_02295eb4(s32 x, s32 y) {
         return TRUE;
     }
     if (x > 0x3a && x < 0xc6 && y > 0xac && y < 0xb8) {
-        unk_11f8.func_ov002_02202f00();
+        unk_11f8.grab();
         unk_1297 = 3;
         unk_1254 = unk_124c;
         return TRUE;
@@ -504,7 +504,7 @@ BOOL Unk_ov114_02294c40::func_ov114_02295eb4(s32 x, s32 y) {
     return FALSE;
 }
 
-void func_ov114_02295dec(S *s, s32 a)
+void CreatureBook_UpdateScrollTouch(S *s, s32 a)
 {
     s32 *p = &s->unk_124c;
     s32 old = *p;
@@ -528,36 +528,36 @@ void func_ov114_02295dec(S *s, s32 a)
     if (s->unk_124c > 0x8c) {
         s->unk_124c = 0x8c;
     }
-    ((Unk_ov114_02294c40 *)s)->func_ov114_02295f80();
+    ((CreatureBookPanel *)s)->syncScrollToKnob();
     if (s->unk_1297 == 2) {
         s32 d = s->unk_1254 - s->unk_124c;
         if (d >= 4 || d <= -4) {
-            func_ov002_02202e54(s->unk_11f8);
+            Menu_PlayScrollTickSe(s->unk_11f8);
             s->unk_1254 = s->unk_124c;
         }
     } else if (s->unk_124c != old) {
-        func_ov002_02202e54(s->unk_11f8);
+        Menu_PlayScrollTickSe(s->unk_11f8);
     }
 }
 
-void func_ov114_02295dc4(S *s)
+void CreatureBook_EndScrollTouch(S *s)
 {
     if (s->unk_1297 == 2) {
-        _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(s->unk_11f8);
+        _ZN14MenuScrollKnob7releaseEv(s->unk_11f8);
     }
     s->unk_1297 = 4;
 }
 
-s32 func_ov114_02295d98(S *s)
+s32 CreatureBook_WaitScrollHoldStart(S *s)
 {
     if (s->unk_1297 == 2) {
         return _ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8);
     }
-    func_ov114_02295d04(s);
+    CreatureBook_UpdateScrollHold(s);
     return TRUE;
 }
 
-void func_ov114_02295d04(S *s)
+void CreatureBook_UpdateScrollHold(S *s)
 {
     s32 old = s->unk_124c;
     switch (s->unk_1297) {
@@ -584,23 +584,23 @@ void func_ov114_02295d04(S *s)
         s->unk_124c = 0x8c;
     }
     if (s->unk_124c != old) {
-        func_ov002_02202e54(s->unk_11f8);
+        Menu_PlayScrollTickSe(s->unk_11f8);
     }
-    ((Unk_ov114_02294c40 *)s)->func_ov114_02295f80();
+    ((CreatureBookPanel *)s)->syncScrollToKnob();
 }
 
-void func_ov114_02295ce0(S *s)
+void CreatureBook_ReleaseKnob(S *s)
 {
     if (s->unk_1297 == 2) {
-        _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(s->unk_11f8);
+        _ZN14MenuScrollKnob7releaseEv(s->unk_11f8);
     }
 }
 
-BOOL func_ov114_02295c9c(S *s)
+BOOL CreatureBook_FinishScrollHold(S *s)
 {
     if (s->unk_1297 == 2) {
         if (_ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8)) {
-            _ZN18Unk_ov002_022046b019func_ov002_02202f0cEv(s->unk_11f8);
+            _ZN14MenuScrollKnob4showEv(s->unk_11f8);
             s->unk_1297 = 4;
             return TRUE;
         }
@@ -611,7 +611,7 @@ BOOL func_ov114_02295c9c(S *s)
     return FALSE;
 }
 
-void func_ov114_02295c28(S *s)
+void CreatureBook_ApplyScrollInertia(S *s)
 {
     s32 pos = s->unk_1258;
     s32 r = s->unk_125c;
@@ -635,22 +635,22 @@ void func_ov114_02295c28(S *s)
         }
     }
     if (pos != s->unk_1258) {
-        ((Unk_ov114_02294c40 *)s)->func_ov114_02295fc0();
-        if (func_ov114_0229563c(s, pos)) {
-            func_ov114_0229559c(s);
+        ((CreatureBookPanel *)s)->syncKnobToScroll();
+        if (CreatureBook_SetScroll(s, pos)) {
+            CreatureBook_RefreshRowIcons(s);
         }
     }
 }
 
-Unk_ov114_022965b0::Unk_ov114_022965b0() { clear(); }
+MsgString406::MsgString406() { clear(); }
 
-Unk_ov114_022965b0::~Unk_ov114_022965b0() {}
+MsgString406::~MsgString406() {}
 
-u32 Unk_ov114_022965b0::vfunc_08() { return 0x196; }
+u32 MsgString406::vfunc_08() { return 0x196; }
 
-u8 *Unk_ov114_022965b0::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString406::vfunc_0c() { return (u8 *)this + 0x12; }
 
-void func_ov114_02295b48(S *s)
+void CreatureBook_LoadDescription(S *s)
 {
     u8 v = s->unk_1294;
     const char *name;
@@ -668,13 +668,13 @@ void func_ov114_02295b48(S *s)
     } else {
         u8 key = v;
         String_Load(s->unk_808, &key, name);
-        s->unk_128c = func_ov114_02295af0(s);
+        s->unk_128c = CreatureBook_CountDescPages(s);
     }
     s->unk_1291 = 0;
-    func_ov114_02295a18(s);
+    CreatureBook_ShowDescPage(s);
 }
 
-u8 func_ov114_02295af0(S *s)
+u8 CreatureBook_CountDescPages(S *s)
 {
     s32 n = 0;
     s32 k = n;
@@ -690,7 +690,7 @@ u8 func_ov114_02295af0(S *s)
     return 5;
 }
 
-void func_ov114_02295a18(S *s)
+void CreatureBook_ShowDescPage(S *s)
 {
     void *o[3];
     s32 z10 = 0;
@@ -698,9 +698,9 @@ void func_ov114_02295a18(S *s)
     s32 k = (u8)s->unk_1291 * 3;
     s32 y;
     s32 i;
-    o[0] = func_ov114_02295830(s);
-    o[1] = func_ov114_02295830(s);
-    o[2] = func_ov114_02295830(s);
+    o[0] = CreatureBook_AllocLabel(s);
+    o[1] = CreatureBook_AllocLabel(s);
+    o[2] = CreatureBook_AllocLabel(s);
     y = 0xbb;
     i = 0;
     do {
@@ -731,33 +731,33 @@ void func_ov114_02295a18(S *s)
     }
 }
 
-BOOL func_ov114_022959d8(S *s)
+BOOL CreatureBook_NextDescPage(S *s)
 {
     s32 n = s->unk_1291 + 1;
     if (n < s->unk_128c) {
         s->unk_1291 = n;
         s->unk_128a = 5;
-        func_ov114_02295a18(s);
+        CreatureBook_ShowDescPage(s);
         Snd_PlaySe(0x39);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL func_ov114_022959a0(S *s)
+BOOL CreatureBook_PrevDescPage(S *s)
 {
     u32 c = s->unk_1291;
     if (c != 0) {
         s->unk_1291 = c - 1;
         s->unk_128b = 5;
-        func_ov114_02295a18(s);
+        CreatureBook_ShowDescPage(s);
         Snd_PlaySe(0x39);
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov114_022958d8(S *s, s32 a, s32 b)
+void CreatureBook_SetBgFadeColor(S *s, s32 a, s32 b)
 {
     s32 c1 = s->unk_9da;
     u8 r = c1 & 0x1f;
@@ -769,10 +769,10 @@ void func_ov114_022958d8(S *s, s32 a, s32 b)
     g = ((u8)((c2 & 0x3e0) >> 5) * a + g * d) / b;
     bl = ((u8)((c2 & 0x7c00) >> 10) * a + bl * d) / b;
     s->unk_9f8 = r | (g << 5) | (bl << 10);
-    func_ov114_02294c50(s, 1);
+    CreatureBook_SetFlags(s, 1);
 }
 
-void func_ov114_022958a4(S *s)
+void CreatureBook_CancelIconTasks(S *s)
 {
     s32 i;
     for (i = 0; i < 9; i++) {
@@ -781,7 +781,7 @@ void func_ov114_022958a4(S *s)
     s->unk_1290 = 0;
 }
 
-u32 func_ov114_0229588c(S *s)
+u32 CreatureBook_AllocIconTask(S *s)
 {
     u32 c = s->unk_1290;
     if (c >= 9) {
@@ -791,7 +791,7 @@ u32 func_ov114_0229588c(S *s)
     return c;
 }
 
-void func_ov114_02295860(S *s)
+void CreatureBook_ClearLabels(S *s)
 {
     s32 i;
     s->unk_1292 = 0;
@@ -801,7 +801,7 @@ void func_ov114_02295860(S *s)
     }
 }
 
-void *func_ov114_02295830(S *s)
+void *CreatureBook_AllocLabel(S *s)
 {
     u8 *p = &s->unk_1292;
     u32 c = *p;
@@ -812,7 +812,7 @@ void *func_ov114_02295830(S *s)
     return &s->unk_10f8[(*p - 1) << 6];
 }
 
-void func_ov114_02295780(S *s, u32 a)
+void CreatureBook_SetNameLabel(S *s, u32 a)
 {
     u32 obj[9];
     u16 col;
@@ -835,14 +835,14 @@ void func_ov114_02295780(S *s, u32 a)
         col = v;
         _ZN8ItemName11setFromItemEPt(obj, &col);
     }
-    void *t = func_ov114_02295830(s);
+    void *t = CreatureBook_AllocLabel(s);
     _ZN9MsgString4copyEPS_(t, obj);
     _ZN12Unk_020e048813func_0206fb9cEjjjhhi(t, s->unk_128d, 0xa1, 0xd, 1, 3, 0);
     _ZN12Unk_020e048813func_0206fab4Eii(t, 1, 0);
     _ZN8ItemNameD1Ev(obj);
 }
 
-void func_ov114_022956a4(S *s, s32 a)
+void CreatureBook_DrawRows(S *s, s32 a)
 {
     s32 z18 = 0, z1c = 0, z20 = 0, z24 = 0;
     s32 i;
@@ -855,7 +855,7 @@ void func_ov114_022956a4(S *s, s32 a)
     i = 0;
     m1 = -1;
     do {
-        if (func_ov114_02294c78(s, s->unk_1268 + i)) {
+        if (CreatureBook_IsCaught(s, s->unk_1268 + i)) {
             src = (u8 *)s->unk_108c + idx * 12;
             t14 = m1;
         } else {
@@ -876,7 +876,7 @@ void func_ov114_022956a4(S *s, s32 a)
     } while (i < 9);
 }
 
-BOOL func_ov114_0229563c(S *s, s32 v)
+BOOL CreatureBook_SetScroll(S *s, s32 v)
 {
     if (v < 0) {
         v = 0;
@@ -898,7 +898,7 @@ BOOL func_ov114_0229563c(S *s, s32 v)
     return FALSE;
 }
 
-void func_ov114_0229559c(S *s)
+void CreatureBook_RefreshRowIcons(S *s)
 {
     s32 zero;
     u16 col;
@@ -923,7 +923,7 @@ loop0:
     default:
         return;
     }
-    func_ov114_022953e4(s, (u32)&col, idx);
+    CreatureBook_SetRowIcon(s, (u32)&col, idx);
     idx++;
     if (idx >= 9) {
         idx = zero;
@@ -937,7 +937,7 @@ test0:
     if (i < 9) goto loop0;
 }
 
-BOOL func_ov114_02295510(S *s, s32 x, s32 y) {
+BOOL CreatureBook_TouchRow(S *s, s32 x, s32 y) {
     if (y < 0x90 || y >= 0xb0) {
         return FALSE;
     }
@@ -958,17 +958,17 @@ BOOL func_ov114_02295510(S *s, s32 x, s32 y) {
     if (q >= s->unk_1270) {
         q = s->unk_1270 - 1;
     }
-    if (func_ov114_02294c78(s, q)) {
+    if (CreatureBook_IsCaught(s, q)) {
         if (s->unk_1295 != q) {
             Snd_PlaySe(0x29);
         }
-        func_ov114_022951b8(s, (u8)q);
+        CreatureBook_SelectEntry(s, (u8)q);
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov114_0229549c(S *s) {
+void CreatureBook_InitRows(S *s) {
     s32 i;
     for (i = 0; i < 9; i++) {
         Unk_ov114_02294c40_Entry *e = &s->unk_108c[i];
@@ -977,48 +977,48 @@ void func_ov114_0229549c(S *s) {
         e->unk_08 = -1;
     }
     s->unk_1264 = (s32)func_02087e0c(data_ov114_022965e0) + 0x70;
-    func_ov114_0229563c(s, 0);
+    CreatureBook_SetScroll(s, 0);
 }
 
-void func_ov114_022953e4(S *s, u32 a, s32 idx) {
+void CreatureBook_SetRowIcon(S *s, u32 a, s32 idx) {
     Unk_ov114_02294c40_Entry *e = &s->unk_108c[idx];
     s32 key = Item_GetInfoUnk02(a);
     if (key != e->unk_08) {
         e->unk_08 = key;
         u32 lo = e->unk_04.idx;
-        void *dst = _ZN18Unk_ov094_02294a4019func_ov094_02293b08Ei(s, key);
-        s32 n = func_ov114_0229588c(s);
+        void *dst = _ZN13ItemIconCache12getIconCharsEi(s, key);
+        s32 n = CreatureBook_AllocIconTask(s);
         u8 *src = s->unk_0a14 + n * 0x80;
         u8 *src2 = src + 0x40;
         MI_CpuCopy8(dst, src, 0x40);
         MI_CpuCopy8((u8 *)dst + 0x400, src2, 0x40);
         _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(s->unk_0e94 + n * 0x38, src, src2, 8, lo, lo + 1, lo + 0x20, lo + 0x21);
-        e->unk_04.pal = func_ov094_02293abc(s, key);
+        e->unk_04.pal = InventoryItemGrid_GetIconPalette(s, key);
     }
 }
 
-void func_ov114_0229539c(S *s) {
+void CreatureBook_InitPictureView(S *s) {
     s->unk_1295 = 0xff;
     s->unk_1296 = 0;
-    func_ov114_02295780(s, 0xff);
-    func_ov114_02295350(s);
-    func_ov114_022958d8(s, 0, 0x10);
+    CreatureBook_SetNameLabel(s, 0xff);
+    CreatureBook_ShowSelected(s);
+    CreatureBook_SetBgFadeColor(s, 0, 0x10);
     Gfx2d_SetSubAlphaBlend(s->unk_1284, s->unk_1280, 0);
 }
 
-void func_ov114_02295374(S *s) {
+void CreatureBook_StopPictureFade(S *s) {
     s->unk_1295 = s->unk_1294;
     Gfx2d_ResetSubBlend();
     s->unk_1296 = 0x10;
 }
 
-void func_ov114_02295350(S *s) {
+void CreatureBook_ShowSelected(S *s) {
     s->unk_1294 = s->unk_1295;
-    func_ov114_02295290(s);
-    func_ov114_02295b48(s);
+    CreatureBook_LoadPicture(s);
+    CreatureBook_LoadDescription(s);
 }
 
-void func_ov114_02295290(S *s) {
+void CreatureBook_LoadPicture(S *s) {
     u32 c = s->unk_1294;
     if (c == 0xff) {
         return;
@@ -1027,21 +1027,21 @@ void func_ov114_02295290(S *s) {
     u32 *font = gCurrentHeap;
     switch (s->unk_1293) {
     case 0:
-        data_ov114_022967a0 = "menu/fish_pic";
+        sCreaturePicDir = "menu/fish_pic";
         break;
     case 1:
-        data_ov114_022967a0 = "menu/bug_pic";
+        sCreaturePicDir = "menu/bug_pic";
         break;
     default:
         return;
     }
-    func_020639e8(data_ov114_022967a8, "%s/%d/%d_%02d.bch", data_ov114_022967a0, q, q, c);
-    Gfx2d_LoadCharFile(data_ov114_022967a8, font, s->unk_128f, 0x11, 0x11, 0xa0);
-    func_020639e8(data_ov114_022967a8, "%s/%d/%d.bpl", data_ov114_022967a0, q, q, c);
-    Gfx2d_LoadPaletteFileSlot(data_ov114_022967a8, font, s->unk_128f, (s32)c % 12, 5);
+    func_020639e8(sCreaturePicPath, "%s/%d/%d_%02d.bch", sCreaturePicDir, q, q, c);
+    Gfx2d_LoadCharFile(sCreaturePicPath, font, s->unk_128f, 0x11, 0x11, 0xa0);
+    func_020639e8(sCreaturePicPath, "%s/%d/%d.bpl", sCreaturePicDir, q, q, c);
+    Gfx2d_LoadPaletteFileSlot(sCreaturePicPath, font, s->unk_128f, (s32)c % 12, 5);
 }
 
-void func_ov114_022951e0(S *s) {
+void CreatureBook_UpdatePictureFade(S *s) {
     u8 old = s->unk_1296;
     u32 a = s->unk_1294;
     if (a == s->unk_1295) {
@@ -1057,7 +1057,7 @@ void func_ov114_022951e0(S *s) {
             }
         }
     } else if (old == 0) {
-        func_ov114_02295350(s);
+        CreatureBook_ShowSelected(s);
     } else if (old > 4) {
         s->unk_1296 = old - 4;
         Gfx2d_SetSubAlphaBlend(s->unk_1284, s->unk_1280, s->unk_1296);
@@ -1066,25 +1066,25 @@ void func_ov114_022951e0(S *s) {
         Gfx2d_HideLayer(s->unk_128f);
     }
     if (old != s->unk_1296) {
-        func_ov114_022958d8(s, s->unk_1296, 0x10);
+        CreatureBook_SetBgFadeColor(s, s->unk_1296, 0x10);
     }
 }
 
-void func_ov114_022951b8(S *s, u8 v) {
+void CreatureBook_SelectEntry(S *s, u8 v) {
     s->unk_1295 = v;
     if (s->unk_1295 != s->unk_1294) {
-        func_ov114_02295780(s, v);
+        CreatureBook_SetNameLabel(s, v);
     }
 }
 
-s32 func_ov114_02295150(S *s) {
+s32 CreatureBook_GetFocusX(S *s) {
     s32 r;
-    if (func_ov114_022950cc(s) != -1) {
-        r = func_ov090_02291a78(s->unk_1298 - 5);
+    if (CreatureBook_GetFocusedTab(s) != -1) {
+        r = MenuTabBar_GetTabX(s->unk_1298 - 5);
     } else {
         u32 t = s->unk_1298;
         if (t == 4) {
-            r = _ZN18Unk_ov002_022046b019func_ov002_02202e84Ev(s->unk_11f8);
+            r = _ZN14MenuScrollKnob8getGripXEv(s->unk_11f8);
         } else if (t < 4) {
             r = data_ov114_02296554[t];
         } else {
@@ -1094,14 +1094,14 @@ s32 func_ov114_02295150(S *s) {
     return r;
 }
 
-s32 func_ov114_022950e8(S *s) {
+s32 CreatureBook_GetFocusY(S *s) {
     s32 r;
-    if (func_ov114_022950cc(s) != -1) {
+    if (CreatureBook_GetFocusedTab(s) != -1) {
         return 8;
     }
     u32 t = s->unk_1298;
     if (t == 4) {
-        return _ZN18Unk_ov002_022046b019func_ov002_02202e60Ev(s->unk_11f8);
+        return _ZN14MenuScrollKnob8getGripYEv(s->unk_11f8);
     }
     if (t < 4) {
         r = data_ov114_02296564[t];
@@ -1116,7 +1116,7 @@ s32 func_ov114_022950e8(S *s) {
     return r;
 }
 
-s32 func_ov114_022950cc(S *s) {
+s32 CreatureBook_GetFocusedTab(S *s) {
     u8 v = s->unk_1298;
     if (v >= 5 && v <= 0xc) {
         return v - 5;
@@ -1124,7 +1124,7 @@ s32 func_ov114_022950cc(S *s) {
     return -1;
 }
 
-BOOL func_ov114_022950b4(S *s) {
+BOOL CreatureBook_IsFocusOnPageArrow(S *s) {
     BOOL r = TRUE;
     u8 v = s->unk_1298;
     if (v != 0 && v != 1) {
@@ -1133,19 +1133,19 @@ BOOL func_ov114_022950b4(S *s) {
     return r;
 }
 
-BOOL func_ov114_02294ed0(S *s, void *pad) {
+BOOL CreatureBook_MoveFocus(S *s, void *pad) {
     if (pad == 0) {
         return FALSE;
     }
     u8 old = s->unk_1298;
-    if (func_ov114_022950cc(s) != -1) {
-        if (func_ov002_0220127c(pad)) {
+    if (CreatureBook_GetFocusedTab(s) != -1) {
+        if (MenuKeys_HasDown(pad)) {
             s->unk_1298 = 0;
-        } else if (func_ov002_0220126c(pad)) {
+        } else if (MenuKeys_HasLeft(pad)) {
             if (s->unk_1298 > 5) {
                 s->unk_1298 = s->unk_1298 - 1;
             }
-        } else if (func_ov002_0220125c(pad)) {
+        } else if (MenuKeys_HasRight(pad)) {
             if (s->unk_1298 < 0xc) {
                 s->unk_1298 = s->unk_1298 + 1;
             }
@@ -1153,27 +1153,27 @@ BOOL func_ov114_02294ed0(S *s, void *pad) {
     } else {
         s32 c = s->unk_1298;
         if ((u32)c <= 1) {
-            if (func_ov002_0220128c(pad)) {
+            if (MenuKeys_HasUp(pad)) {
                 s->unk_1298 = s->unk_1299;
-            } else if (func_ov002_0220127c(pad)) {
-                s->unk_1298 = func_ov114_02294e30(s);
-            } else if (func_ov002_0220126c(pad)) {
+            } else if (MenuKeys_HasDown(pad)) {
+                s->unk_1298 = CreatureBook_GetRowFocusAtCursor(s);
+            } else if (MenuKeys_HasLeft(pad)) {
                 s->unk_1298 = 1;
             } else {
-                if (func_ov002_0220125c(pad)) {
+                if (MenuKeys_HasRight(pad)) {
                     s->unk_1298 = 0;
                 }
             }
         } else if ((u32)c >= 0xd) {
             s32 d = c - 0xd;
-            if (func_ov002_0220128c(pad)) {
-                if (func_ov114_02295150(s) < 0x48) {
+            if (MenuKeys_HasUp(pad)) {
+                if (CreatureBook_GetFocusX(s) < 0x48) {
                     s->unk_1298 = 1;
                 } else {
                     s->unk_1298 = 0;
                 }
-            } else if (func_ov002_0220127c(pad)) {
-                s32 r = func_ov114_02295150(s);
+            } else if (MenuKeys_HasDown(pad)) {
+                s32 r = CreatureBook_GetFocusX(s);
                 if (r < 0x40) {
                     s->unk_1298 = 2;
                 } else if (r >= 0xc0) {
@@ -1181,18 +1181,18 @@ BOOL func_ov114_02294ed0(S *s, void *pad) {
                 } else {
                     s->unk_1298 = 4;
                 }
-            } else if (func_ov002_0220125c(pad)) {
+            } else if (MenuKeys_HasRight(pad)) {
                 if (d < s->unk_1270 - 1) {
                     s->unk_1298 = s->unk_1298 + 1;
-                    s32 r = func_ov114_02295150(s);
+                    s32 r = CreatureBook_GetFocusX(s);
                     if (r > 0xe0) {
                         s->unk_125c = r - 0xe0;
                     }
                 }
-            } else if (func_ov002_0220126c(pad)) {
+            } else if (MenuKeys_HasLeft(pad)) {
                 if (d > 0) {
                     s->unk_1298 = s->unk_1298 - 1;
-                    s32 r = func_ov114_02295150(s);
+                    s32 r = CreatureBook_GetFocusX(s);
                     if (r < 0x20) {
                         s->unk_125c = r - 0x20;
                     }
@@ -1200,11 +1200,11 @@ BOOL func_ov114_02294ed0(S *s, void *pad) {
             }
         } else {
             s32 d = c - 2;
-            if (func_ov002_0220128c(pad)) {
-                s->unk_1298 = func_ov114_02294e30(s);
-            } else if (func_ov002_0220126c(pad)) {
+            if (MenuKeys_HasUp(pad)) {
+                s->unk_1298 = CreatureBook_GetRowFocusAtCursor(s);
+            } else if (MenuKeys_HasLeft(pad)) {
                 s->unk_1298 = data_ov114_02296550[d];
-            } else if (func_ov002_0220125c(pad)) {
+            } else if (MenuKeys_HasRight(pad)) {
                 s->unk_1298 = data_ov114_0229654c[d];
             }
         }
@@ -1215,25 +1215,25 @@ BOOL func_ov114_02294ed0(S *s, void *pad) {
     return FALSE;
 }
 
-void func_ov114_02294e6c(S *s) {
+void CreatureBook_ClampFocusToView(S *s) {
     if (s->unk_1298 >= 0xd) {
-        s32 r = func_ov114_02295150(s);
+        s32 r = CreatureBook_GetFocusX(s);
         if (r < 0x20) {
             s->unk_1298 = s->unk_1268 + 0xd;
-            if (func_ov114_02295150(s) < 0x20) {
+            if (CreatureBook_GetFocusX(s) < 0x20) {
                 s->unk_1298 = s->unk_1298 + 1;
             }
         } else if (r > 0xe0) {
             s->unk_1298 = s->unk_1268 + 0x14;
-            if (func_ov114_02295150(s) > 0xe0) {
+            if (CreatureBook_GetFocusX(s) > 0xe0) {
                 s->unk_1298 = s->unk_1298 - 1;
             }
         }
     }
 }
 
-u8 func_ov114_02294e30(S *s) {
-    s32 t = func_ov114_02295150(s) - (0x15 - s->unk_1258);
+u8 CreatureBook_GetRowFocusAtCursor(S *s) {
+    s32 t = CreatureBook_GetFocusX(s) - (0x15 - s->unk_1258);
     if (t < 0) {
         t = 0;
     }
@@ -1244,24 +1244,24 @@ u8 func_ov114_02294e30(S *s) {
     return q + 0xd;
 }
 
-BOOL func_ov114_02294d88(S *s) {
+BOOL CreatureBook_ActivateFocus(S *s) {
     u32 t = s->unk_1298;
     if (t >= 0xd) {
         u32 k = t - 0xd;
-        if (func_ov114_02294c78(s, k)) {
+        if (CreatureBook_IsCaught(s, k)) {
             if (s->unk_1295 != k) {
                 Snd_PlaySe(0x29);
             }
-            func_ov114_022951b8(s, (u8)k);
+            CreatureBook_SelectEntry(s, (u8)k);
         }
         return FALSE;
     } else {
         switch (t) {
         case 1:
-            func_ov114_022959a0(s);
+            CreatureBook_PrevDescPage(s);
             return FALSE;
         case 0:
-            func_ov114_022959d8(s);
+            CreatureBook_NextDescPage(s);
             return FALSE;
         case 2:
             s->unk_1297 = 0;
@@ -1271,8 +1271,8 @@ BOOL func_ov114_02294d88(S *s) {
             return TRUE;
         case 4:
             s->unk_1297 = 2;
-            _ZN18Unk_ov002_022046b019func_ov002_02202f00Ev(s->unk_11f8);
-            func_ov002_02202e48(s->unk_11f8);
+            _ZN14MenuScrollKnob4grabEv(s->unk_11f8);
+            Menu_PlayScrollGrabSe(s->unk_11f8);
             return TRUE;
         default:
             return FALSE;
@@ -1280,7 +1280,7 @@ BOOL func_ov114_02294d88(S *s) {
     }
 }
 
-void func_ov114_02294ca4(S *s) {
+void CreatureBook_BuildCaughtMask(S *s) {
     s32 i;
     u16 v;
     for (i = 0; i < 3; i++) {
@@ -1305,7 +1305,7 @@ void func_ov114_02294ca4(S *s) {
     }
 }
 
-BOOL func_ov114_02294c78(S *s, s32 i) {
+BOOL CreatureBook_IsCaught(S *s, s32 i) {
     BOOL r = TRUE;
     if (((1 << (i & 0x1f)) & s->unk_1240[i >> 5]) == 0) {
         r = FALSE;
@@ -1313,16 +1313,16 @@ BOOL func_ov114_02294c78(S *s, s32 i) {
     return r;
 }
 
-BOOL func_ov114_02294c60(S *s, u32 m) {
+BOOL CreatureBook_HasFlags(S *s, u32 m) {
     if (s->unk_1288 & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void func_ov114_02294c50(S *s, u32 m) { s->unk_1288 = s->unk_1288 | m; }
+void CreatureBook_SetFlags(S *s, u32 m) { s->unk_1288 = s->unk_1288 | m; }
 
-void func_ov114_02294c40(S *s, u32 m) { s->unk_1288 = s->unk_1288 & ~m; }
+void CreatureBook_ClearFlags(S *s, u32 m) { s->unk_1288 = s->unk_1288 & ~m; }
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" const u8 data_ov114_02296550[4];
@@ -1336,9 +1336,9 @@ extern "C" u8 data_ov114_022965a0[8];
 extern "C" const u8 data_ov114_0229654c[4];
 extern "C" u8 data_ov114_022965c0[32];
 extern "C" u8 data_ov114_022965e0[72];
-extern "C" char *data_ov114_022967a0;
-extern "C" char *data_ov114_022967a4;
-extern "C" char data_ov114_022967a8[0x38];
+extern "C" char *sCreaturePicDir;
+extern "C" char *sCreatureBgPaletteName;
+extern "C" char sCreaturePicPath[0x38];
 
 extern "C" const u8 data_ov114_02296550[4] = {0x02, 0x04, 0x02, 0x00};
 
@@ -1362,8 +1362,8 @@ extern "C" u8 data_ov114_022965c0[32] = {0x49, 0x00, 0xa4, 0x41, 0x02, 0x51, 0x0
 
 extern "C" u8 data_ov114_022965e0[72] = {0x2e, 0x00, 0x84, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x9f, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0xba, 0x81, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0xd5, 0x81, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0xf0, 0x81, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0x0b, 0x80, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x26, 0x80, 0x44, 0x55, 0x00, 0x00, 0x2e, 0x00, 0x41, 0x80, 0x44, 0x45, 0x00, 0x00, 0x2e, 0x00, 0x5c, 0x80, 0x44, 0x55, 0xff, 0xff};
 
-extern "C" char *data_ov114_022967a0 = 0;
+extern "C" char *sCreaturePicDir = 0;
 
-extern "C" char *data_ov114_022967a4 = 0;
+extern "C" char *sCreatureBgPaletteName = 0;
 
-extern "C" char data_ov114_022967a8[0x38] = {0};
+extern "C" char sCreaturePicPath[0x38] = {0};

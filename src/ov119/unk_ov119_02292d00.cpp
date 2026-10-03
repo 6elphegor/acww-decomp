@@ -19,15 +19,15 @@
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define func_02094104 _ZN8PlayerId13func_02094104Ev
-#define func_ov090_02291964 _ZN18Unk_ov090_022921e019func_ov090_02291964Ev
-#define func_ov090_02291a88 _ZN18Unk_ov090_022921e019func_ov090_02291a88Ev
-#define func_ov090_02291d8c _ZN18Unk_ov090_022921e019func_ov090_02291d8cEj
-#define func_ov090_02291d2c _ZN18Unk_ov090_022921e019func_ov090_02291d2cEv
-#define func_ov002_02202278 _ZN18Unk_ov002_0220455819func_ov002_02202278Eii
-#define func_ov002_02202310 _ZN18Unk_ov002_0220455819func_ov002_02202310EiiPKc
-#define func_ov002_0220160c _ZN18Unk_ov002_022013ac19func_ov002_0220160cEP22Unk_ov002_022013ac_Reci
-#define func_ov002_02201680 _ZN18Unk_ov002_022013ac19func_ov002_02201680EP22Unk_ov002_022013ac_RecPvj
-#define func_ov002_022014c0 _ZN18Unk_ov002_022013ac19func_ov002_022014c0Eii
+#define MenuTabBar_requestSaveOnClose _ZN10MenuTabBar18requestSaveOnCloseEv
+#define MenuTabBar_hideTabs _ZN10MenuTabBar8hideTabsEv
+#define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
+#define MenuTabBar_onTabMenuClosed _ZN10MenuTabBar15onTabMenuClosedEv
+#define PopupChoiceMenu_placeAbove _ZN15PopupChoiceMenu10placeAboveEii
+#define PopupChoiceMenu_init _ZN15PopupChoiceMenu4initEiiPKc
+#define PopupChoiceMenuBody_setRowsFromIds _ZN19PopupChoiceMenuBody14setRowsFromIdsEP17PopupChoiceIdListi
+#define PopupChoiceMenuBody_addCustomRow _ZN19PopupChoiceMenuBody12addCustomRowEP17PopupChoiceIdListPvj
+#define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
 
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
@@ -40,8 +40,8 @@ extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u32 gCurrentHeap;
 
-void func_ov119_02294c5c();
-void _ZN18Unk_ov119_0229584019func_ov119_0229305cEh(void *self, u32 m);
+void FriendRosterTab_SetupLayers();
+void _ZN15FriendRosterTab7setPageEh(void *self, u32 m);
 
 void *ProcBase_GetParent(void *p);
 void ProcBase_RequestDelete(void *p);
@@ -104,28 +104,28 @@ s32 Gfx2d_LoadPaletteFile(const char *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 s32 Gfx2d_LoadScreenFile(const char *a, u32 b, s32 c);
 BOOL File_LoadToBuffer(const char *a, void *b, s32 c);
 
-s32 func_ov090_02291a78(s32 a);
-u8 func_ov090_02291a38(u8 a);
-u8 func_ov090_02291a58(u8 a);
-s32 func_ov090_02291aa0();
+s32 MenuTabBar_GetTabX(s32 a);
+u8 MenuTabBar_NextTab(u8 a);
+u8 MenuTabBar_PrevTab(u8 a);
+s32 MenuTabBar_HitTestTouch();
 
-BOOL func_ov002_0220125c(u32 v);
-BOOL func_ov002_0220126c(u32 v);
-BOOL func_ov002_0220127c(u32 v);
-BOOL func_ov002_0220128c(u32 v);
-void func_ov002_02202064(void *p, u32 v);
-void func_ov002_02202098(void *p, u32 v);
-void func_ov002_02202278(void *self, u32 a, u32 b);
-BOOL func_ov002_02201a28(void *self);
-u8 func_ov002_02201a70(void *self, s32 x);
-void func_ov002_02201aa0(void *p, s32 a, s32 b);
-void func_ov002_022016e4(void *p, s32 a);
-void func_ov002_02201700(void *p, s32 a, s32 b);
-BOOL func_ov002_022019d0(void *p, u32 idx, void *q, u8 flag);
-s32 func_ov002_02201b58(void *p);
-s32 func_ov002_02201b04(void *p);
-void func_ov002_022020fc(void *p);
-void func_ov002_02201b28(void *p);
+BOOL MenuKeys_HasRight(u32 v);
+BOOL MenuKeys_HasLeft(u32 v);
+BOOL MenuKeys_HasDown(u32 v);
+BOOL MenuKeys_HasUp(u32 v);
+void PopupChoice_Close(void *p, u32 v);
+void PopupChoice_Open(void *p, u32 v);
+void PopupChoiceMenu_placeAbove(void *self, u32 a, u32 b);
+BOOL PopupChoice_TickDecideDelay(void *self);
+u8 PopupChoice_DecideCancel(void *self, s32 x);
+void PopupChoice_DecideRow(void *p, s32 a, s32 b);
+void ChoiceIdList_Clear(void *p, s32 a);
+void ChoiceIdList_Add(void *p, s32 a, s32 b);
+BOOL PopupChoice_MoveCursor(void *p, u32 idx, void *q, u8 flag);
+s32 PopupChoice_Update(void *p);
+s32 PopupChoice_ForceClose(void *p);
+void PopupChoice_LoadFriendBg(void *p);
+void PopupChoice_Draw(void *p);
 
 void func_0206fab4(void *self, s32 a, s32 b);
 void func_0206fb9c(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f);
@@ -140,14 +140,14 @@ void MsgString_clear(void *self);
 void MsgString_copy(void *self, void *b);
 BOOL CommManager_isOnline(void *self);
 void *func_02094104(void *self);
-void func_ov090_02291964(void *self);
-void func_ov090_02291a88(void *self);
-void func_ov090_02291d8c(void *self, u32 idx);
-void func_ov090_02291d2c(void *self);
-void func_ov002_02202310(void *self, s32 a, s32 b, const char *c);
-void func_ov002_0220160c(void *self, void *rec, u32 v);
-void func_ov002_02201680(void *self, void *rec, void *p, u32 v);
-s32 func_ov002_022014c0(void *self, u32 a, u32 b);
+void MenuTabBar_requestSaveOnClose(void *self);
+void MenuTabBar_hideTabs(void *self);
+void MenuTabBar_selectTab(void *self, u32 idx);
+void MenuTabBar_onTabMenuClosed(void *self);
+void PopupChoiceMenu_init(void *self, s32 a, s32 b, const char *c);
+void PopupChoiceMenuBody_setRowsFromIds(void *self, void *rec, u32 v);
+void PopupChoiceMenuBody_addCustomRow(void *self, void *rec, void *p, u32 v);
+s32 PopupChoiceMenuBody_hitTestRowOrLast(void *self, u32 a, u32 b);
 void _ZN12Unk_020dd38cC2Ev(void *self);
 void _ZN12Unk_020dd38cD1Ev(void *self);
 void _ZN12Unk_020dd374C2Ev(void *self);
@@ -204,46 +204,46 @@ public:
     u32 unk_00[0x24 / 4];
 };
 
-struct Unk_ov002_022013ac_Rec;
+struct PopupChoiceIdList;
 
 // cursor object at +0xdc (size 0x300)
-class Unk_ov002_022013ac {
+class PopupChoiceMenuBody {
 public:
-    s32 func_ov002_02201498(s32 v);
-    s32 func_ov002_022014a4();
-    BOOL func_ov002_022017a4();
-    BOOL func_ov002_022017b4();
+    s32 getRowY(s32 v);
+    s32 getRowX();
+    BOOL isClosed();
+    BOOL isOpen();
     u8 unk_00[0x2f4];
 };
 
-class Unk_ov002_02204558 : public Unk_ov002_022013ac {
+class PopupChoiceMenu : public PopupChoiceMenuBody {
 public:
-    Unk_ov002_02204558();
-    ~Unk_ov002_02204558();
+    PopupChoiceMenu();
+    ~PopupChoiceMenu();
     u8 unk_2f4[0xc];
 };
 
 // object at +0x970 (size 0x64, vtable 0x02204614); methods split over more ov002 / main classes
-class Unk_ov002_02202d98 {
+class MenuCursorBase {
 public:
-    void func_ov002_02202844();
-    s32 func_ov002_02202878();
-    s32 func_ov002_0220288c();
-    void func_ov002_02202af0();
-    void func_ov002_02202a78();
-    void func_ov002_022029e8(s32 a, s32 b, s32 c, s32 d);
-    void func_ov002_02202a40(s32 a, s32 b);
-    void func_ov002_02202a18(s32 a, s32 b, s32 c);
-    s32 func_ov002_022028f0();
+    void drawWrapped();
+    s32 getScreenY();
+    s32 getScreenX();
+    void setPoseRelease();
+    void setPoseIdle();
+    void moveToEase(s32 a, s32 b, s32 c, s32 d);
+    void warpTo(s32 a, s32 b);
+    void moveToLinear(s32 a, s32 b, s32 c);
+    s32 isMoving();
 };
 
-class Unk_ov002_0220464c {
+class MenuCursor {
 public:
-    void func_ov002_02202b68();
-    void func_ov002_02202be0();
-    void func_ov002_02202c40();
-    void func_ov002_02202ca0();
-    void func_ov002_02202d00(s32 v);
+    void setPosePress();
+    void switchToAnim0D();
+    void switchToAnim01();
+    void switchToAnim07();
+    void setAnimIfChanged(s32 v);
 };
 
 class HandCursor {
@@ -253,34 +253,34 @@ public:
     void setAnimAtEnd(s32 a);
 };
 
-class Unk_ov002_02204614 {
+class MenuCursorBuf0 {
 public:
-    Unk_ov002_02204614();
-    virtual ~Unk_ov002_02204614();
+    MenuCursorBuf0();
+    virtual ~MenuCursorBuf0();
     virtual void vfunc_08();
     virtual void vfunc_0c();
     u32 unk_04[0x60 / 4];
 };
 
-#define U970_A ((Unk_ov002_02202d98 *)&unk_970)
-#define U970_B ((Unk_ov002_0220464c *)&unk_970)
+#define U970_A ((MenuCursorBase *)&unk_970)
+#define U970_B ((MenuCursor *)&unk_970)
 #define U970_C ((HandCursor *)&unk_970)
 
 // +0x1ac4 sub-object
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    Unk_ov002_022040ec();
-    ~Unk_ov002_022040ec();
-    BOOL func_ov002_02204234(s32 a);
-    void func_ov002_02204394(u8 *a, s32 b, u32 c);
+    MenuErrorMessage();
+    ~MenuErrorMessage();
+    BOOL update(s32 a);
+    void open(u8 *a, s32 b, u32 c);
     u32 unk_00[0x108 / 4];
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -291,42 +291,42 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_02200850(s32 v);
-    void func_ov002_0220085c(s32 a, s32 mode);
-    void func_ov002_02200874(s32 a, s32 mode);
-    void func_ov002_0220088c(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008a8(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008c4(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008e0(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200914();
-    s32 func_ov002_02200920();
-    void func_ov002_02200970(s32 a, s32 b, s32 c);
-    void func_ov002_02200980();
-    BOOL func_ov002_02200998();
-    BOOL func_ov002_022009a4();
-    BOOL func_ov002_022009b0();
-    BOOL func_ov002_022009bc();
-    u32 func_ov002_022009c8();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void setSlideExtent(s32 v);
+    void initSlideOut(s32 a, s32 mode);
+    void initSlideIn(s32 a, s32 mode);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginSubSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetX();
+    s32 getSlideOffsetY();
+    void initKeyRepeat(s32 a, s32 b, s32 c);
+    void restartKeyRepeat();
+    BOOL isRepeatRight();
+    BOOL isRepeatLeft();
+    BOOL isRepeatDown();
+    BOOL isRepeatUp();
+    u32 takeRepeatedKeys();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -352,56 +352,56 @@ struct Unk_ov119_C {
     ~Unk_ov119_C() { _ZN12Unk_020dd374D1Ev(this); }
 };
 
-class Unk_ov119_02295840;
-typedef void (Unk_ov119_02295840::*Unk_ov119_02295840_Fn)();
+class FriendRosterTab;
+typedef void (FriendRosterTab::*Unk_ov119_02295840_Fn)();
 
 #define U3D0 ((u8 *)this + 0x3d0)
 extern "C" {
-void _ZN18Unk_ov119_0229584019func_ov119_02294af0Ev();
+void _ZN15FriendRosterTab11updateTouchEv();
 extern void *data_ov119_02295608[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294a44Ev();
+void _ZN15FriendRosterTab9mainAct01Ev();
 extern void *data_ov119_022955a8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_022949bcEv();
+void _ZN15FriendRosterTab13updateButtonsEv();
 extern void *data_ov119_022955e8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294990Ev();
+void _ZN15FriendRosterTab16updateCursorMoveEv();
 extern void *data_ov119_022955f0[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294958Ev();
+void _ZN15FriendRosterTab17updateCursorPressEv();
 extern void *data_ov119_022955a0[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294930Ev();
+void _ZN15FriendRosterTab19updateCursorReleaseEv();
 extern void *data_ov119_022955b0[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294894Ev();
+void _ZN15FriendRosterTab9mainAct06Ev();
 extern void *data_ov119_02295610[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294840Ev();
+void _ZN15FriendRosterTab9mainAct07Ev();
 extern void *data_ov119_02295580[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294804Ev();
+void _ZN15FriendRosterTab9mainAct08Ev();
 extern void *data_ov119_022955c8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_022947a4Ev();
+void _ZN15FriendRosterTab9mainAct09Ev();
 extern void *data_ov119_022955c0[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294770Ev();
+void _ZN15FriendRosterTab9mainAct0AEv();
 extern void *data_ov119_02295618[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294734Ev();
+void _ZN15FriendRosterTab9mainAct0BEv();
 extern void *data_ov119_02295600[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294718Ev();
+void _ZN15FriendRosterTab9mainAct0CEv();
 extern void *data_ov119_02295598[2];
-void _ZN18Unk_ov119_0229584019func_ov119_022946f4Ev();
+void _ZN15FriendRosterTab9mainAct0DEv();
 extern void *data_ov119_022955f8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_022946b4Ev();
+void _ZN15FriendRosterTab9mainAct0EEv();
 extern void *data_ov119_022955d8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294670Ev();
+void _ZN15FriendRosterTab9mainAct0FEv();
 extern void *data_ov119_02295590[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294634Ev();
+void _ZN15FriendRosterTab9mainAct10Ev();
 extern void *data_ov119_022955b8[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294608Ev();
+void _ZN15FriendRosterTab9mainAct11Ev();
 extern void *data_ov119_022955e0[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294f4cEv();
+void _ZN15FriendRosterTab9stateLoadEv();
 extern void *data_ov119_02295640[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294ee8Ev();
+void _ZN15FriendRosterTab9stateOpenEv();
 extern void *data_ov119_02295638[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294e88Ev();
+void _ZN15FriendRosterTab12stateOpeningEv();
 extern void *data_ov119_02295630[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294e3cEv();
+void _ZN15FriendRosterTab10stateCloseEv();
 extern void *data_ov119_02295628[2];
-void _ZN18Unk_ov119_0229584019func_ov119_02294de8Ev();
+void _ZN15FriendRosterTab12stateClosingEv();
 extern void *data_ov119_02295620[2];
 }
 #define A0V (*(volatile u8 *)&unk_a0)
@@ -409,119 +409,119 @@ extern void *data_ov119_02295620[2];
 #define B1V (*(volatile u8 *)&unk_b1)
 
 // Vtable 0x02295840, size 0x1bcc
-class Unk_ov119_02295840 : public Unk_ov002_022044e4 {
+class FriendRosterTab : public MenuProc {
 public:
-    Unk_ov119_02295840() : unk_dc(), unk_3dc(), unk_89c(), unk_970(), unk_1a58(), unk_1ac4() {}
+    FriendRosterTab() : unk_dc(), unk_3dc(), unk_89c(), unk_970(), unk_1a58(), unk_1ac4() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov119_02292dc0(u32 mask);
-    void func_ov119_02292dd0(u32 mask);
-    BOOL func_ov119_02292de0(u32 mask);
-    void func_ov119_02292df4();
-    void func_ov119_02292e2c();
-    void func_ov119_02292e5c();
-    void func_ov119_02292ea4();
-    void func_ov119_02292ecc(u32 x);
-    void func_ov119_02292f20();
-    u8 func_ov119_02292f8c(u32 idx);
-    void func_ov119_02292f98();
-    u32 func_ov119_02293010(s32 idx);
-    void func_ov119_0229305c(u8 s);
-    void func_ov119_022930d4();
-    void func_ov119_02293124();
-    void func_ov119_022932ac(u16 *p, u32 v);
-    void func_ov119_02293328();
-    void func_ov119_022933d8();
-    void func_ov119_0229348c();
-    BOOL func_ov119_022935fc(void *p);
+    void clearFlags(u32 mask);
+    void setFlags(u32 mask);
+    BOOL testFlags(u32 mask);
+    void updateRowMarkBlink();
+    void clearRowMarks();
+    void drawRowMarks();
+    void cancelChoice();
+    void openPopup(u32 x);
+    void onPopupChoice();
+    u8 getPopupRowValue(u32 idx);
+    void loadOwnFriendCode();
+    u32 getPageOfFriend(s32 idx);
+    void setPage(u8 s);
+    void refreshPage();
+    void drawRosterPage();
+    void setRowIcon(u16 *p, u32 v);
+    void drawFriendCodeHelp();
+    void drawOwnCodePage();
+    void drawPresentPage();
+    BOOL isInRoster(void *p);
 
-    s32 func_ov119_02293640();
-    BOOL func_ov119_02293674();
-    void func_ov119_0229371c();
-    BOOL func_ov119_02293744();
-    void func_ov119_02293784();
-    u32 func_ov119_022937d0();
-    void *func_ov119_022937e8();
-    void *func_ov119_02293810();
-    BOOL func_ov119_02293828();
-    void func_ov119_02293844(s32 x);
-    u16 func_ov119_02293924(s32 c1, s32 c2, s32 t, s32 n);
-    void func_ov119_022939cc();
-    u8 func_ov119_02293ab8(s32 x, s32 y);
-    BOOL func_ov119_02293b48();
-    void func_ov119_02293c08(s32 x);
-    void func_ov119_02293c44();
-    void func_ov119_02293d4c();
-    void func_ov119_02293d9c(s32 x);
-    void func_ov119_02293dc8();
-    void func_ov119_02293e10();
-    void func_ov119_02293e5c();
-    void func_ov119_02293ed0();
+    s32 findFreeEntry();
+    BOOL syncFromWifiFriendList();
+    void compactRoster();
+    BOOL hasGaps();
+    void buildFriendIndex();
+    u32 getFocusedFriendIndex();
+    void *getFocusedFriendEntry();
+    void *getFriendEntries();
+    BOOL isWifiMode();
+    void setPaletteFade(s32 x);
+    u16 blendColor(s32 c1, s32 c2, s32 t, s32 n);
+    void uploadScreen();
+    u8 hitTest(s32 x, s32 y);
+    BOOL activateFocus();
+    void showFriend(s32 x);
+    void registerPresentPlayer();
+    void useCodeEntry();
+    void openFriendEditor(s32 x);
+    void removeFriend();
+    void openRemoveConfirm();
+    void openFriendChoices();
+    void openRegisterChoices();
 
-    BOOL func_ov119_02293f68(u32 keys);
-    void func_ov119_02294188();
-    void func_ov119_022941a8();
-    void func_ov119_022941c8();
-    void func_ov119_022941e8();
-    void func_ov119_02294244();
-    void func_ov119_022942a4();
-    void func_ov119_022942f0();
-    void func_ov119_02294364();
-    s32 func_ov119_02294388();
-    s32 func_ov119_022943c0();
-    void func_ov119_022943fc();
-    void func_ov119_0229448c(u32 id);
-    void func_ov119_022944cc();
-    void *func_ov119_02294504();
-    void func_ov119_0229453c();
-    void func_ov119_02294568(u8 v);
-    void func_ov119_022945a4();
-    void func_ov119_022945d4();
-    void func_ov119_022945f0();
-    void func_ov119_02294608();
-    void func_ov119_02294634();
-    void func_ov119_02294670();
-    void func_ov119_022946b4();
-    void func_ov119_022946f4();
-    void func_ov119_02294718();
-    void func_ov119_02294734();
-    void func_ov119_02294770();
-    void func_ov119_022947a4();
-    void func_ov119_02294804();
-    void func_ov119_02294840();
+    BOOL moveFocus(u32 keys);
+    void refreshCursor();
+    void releaseCursor();
+    void pressCursor();
+    void cursorToPopupTop();
+    void cancelPopup();
+    void moveCursorToPopupRow();
+    void moveCursorToTarget();
+    void hideCursor();
+    s32 getFocusY();
+    s32 getFocusX();
+    void showCursor();
+    void addTitleLabel(u32 id);
+    void addRegisterLabel();
+    void *allocTextLabel();
+    void resetTextLabels();
+    void showError(u8 v);
+    void resumeInput();
+    void startButtonInput();
+    void startTouchInput();
+    void mainAct11();
+    void mainAct10();
+    void mainAct0F();
+    void mainAct0E();
+    void mainAct0D();
+    void mainAct0C();
+    void mainAct0B();
+    void mainAct0A();
+    void mainAct09();
+    void mainAct08();
+    void mainAct07();
 
-    void func_ov119_02294894();
-    void func_ov119_02294930();
-    void func_ov119_02294958();
-    void func_ov119_02294990();
-    void func_ov119_022949bc();
-    void func_ov119_02294a44();
-    void func_ov119_02294af0();
-    void func_ov119_02294b54();
-    void func_ov119_02294bcc();
-    void func_ov119_02294c90();
-    void func_ov119_02294c98();
-    void func_ov119_02294cb4();
-    void func_ov119_02294ccc();
-    void func_ov119_02294d00();
-    void func_ov119_02294d3c();
-    void func_ov119_02294de8();
-    void func_ov119_02294e3c();
-    void func_ov119_02294e88();
-    void func_ov119_02294ee8();
-    void func_ov119_02294f4c();
+    void mainAct06();
+    void updateCursorRelease();
+    void updateCursorPress();
+    void updateCursorMove();
+    void updateButtons();
+    void mainAct01();
+    void updateTouch();
+    void loadObjGfx();
+    void loadBgGfx();
+    void postInputUpdate();
+    void preInputUpdate();
+    void postStateUpdate();
+    void preStateUpdate();
+    void releaseResources();
+    void initFriendRoster();
+    void stateClosing();
+    void stateClose();
+    void stateOpening();
+    void stateOpen();
+    void stateLoad();
     void func_ov119_02294fa8();
-    BOOL func_ov119_02294fbc(s32 idx);
-    BOOL func_ov119_02294ffc();
-    void func_ov119_02295110();
+    BOOL requestTab(s32 idx);
+    BOOL handleTabSwitch();
+    void runMainState();
 
     /* 0x091 */ u8 unk_91[3];
     /* 0x094 */ u32 unk_94;
@@ -544,10 +544,10 @@ public:
     /* 0x0b5 */ u8 unk_b5[3];
     /* 0x0b8 */ s32 unk_b8;
     /* 0x0bc */ u8 unk_bc[0x20];
-    /* 0x0dc */ Unk_ov002_02204558 unk_dc;
+    /* 0x0dc */ PopupChoiceMenu unk_dc;
     /* 0x3dc */ Unk_020e0488 unk_3dc[0x13];
     /* 0x89c */ Unk_020e0574 unk_89c;
-    /* 0x970 */ Unk_ov002_02204614 unk_970;
+    /* 0x970 */ MenuCursorBuf0 unk_970;
     /* 0x9d4 */ u16 unk_9d4[0x800];
     /* 0x19d4 */ void *unk_19d4;
     /* 0x19d8 */ u16 unk_19d8[16];
@@ -555,7 +555,7 @@ public:
     /* 0x1a18 */ u16 unk_1a18[16];
     /* 0x1a38 */ u16 unk_1a38[16];
     /* 0x1a58 */ BgVramTask unk_1a58[3];
-    /* 0x1ac4 */ Unk_ov002_022040ec unk_1ac4;
+    /* 0x1ac4 */ MenuErrorMessage unk_1ac4;
 };
 
 static inline BOOL Unk_ov119_02294a44_Both() {
@@ -565,30 +565,30 @@ static inline BOOL Unk_ov119_02294a44_Both() {
     return FALSE;
 }
 
-extern "C" Unk_ov119_02295840 *func_ov119_022954e8() { return new Unk_ov119_02295840(); }
+extern "C" FriendRosterTab *FriendRosterTab_Create() { return new FriendRosterTab(); }
 
-BOOL Unk_ov119_02295840::vfunc_00() {
-    func_ov119_02294d3c();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL FriendRosterTab::vfunc_00() {
+    initFriendRoster();
+    setTransitionState(0);
+    setPhase(1);
     return TRUE;
 }
 
-BOOL Unk_ov119_02295840::vfunc_0c() {
-    func_ov090_02291d2c(ProcBase_GetParent(this));
-    func_ov119_02294d00();
+BOOL FriendRosterTab::vfunc_0c() {
+    MenuTabBar_onTabMenuClosed(ProcBase_GetParent(this));
+    releaseResources();
     return TRUE;
 }
 
-BOOL Unk_ov119_02295840::onDraw() {
+BOOL FriendRosterTab::onDraw() {
     u8 *p = (u8 *)unk_94 + 0x60;
     s32 i;
-    if (!func_ov119_02292de0(1)) {
+    if (!testFlags(1)) {
         return TRUE;
     }
-    func_ov002_02201b28(&unk_dc);
+    PopupChoice_Draw(&unk_dc);
     if (MenuCtrl_IsButtons()) {
-        U970_A->func_ov002_02202844();
+        U970_A->drawWrapped();
     }
     Oam_DrawCell(1, data_ov119_02295660, 0x80, (s32)p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     for (i = 0; i < 6; i++) {
@@ -627,12 +627,12 @@ extern "C" void *data_ov119_02295580[2];
 extern "C" void *data_ov119_02295600[2];
 extern "C" u32 data_ov119_02295680[10];
 struct Unk_ov119_SceneEntry {
-    Unk_ov119_02295840 *(*create)();
+    FriendRosterTab *(*create)();
     u16 a;
     u16 b;
 };
-extern "C" Unk_ov119_02295840 *func_ov119_022954e8();
-extern "C" Unk_ov119_SceneEntry data_ov119_022955d0;
+extern "C" FriendRosterTab *FriendRosterTab_Create();
+extern "C" Unk_ov119_SceneEntry sFriendRosterTabProfile;
 extern "C" void *data_ov119_02295638[2];
 extern "C" void *data_ov119_02295630[2];
 extern "C" u32 data_ov119_022956d0[10];
@@ -658,59 +658,59 @@ extern "C" void *data_ov119_022955f0[2];
 extern "C" void *data_ov119_022955c8[2];
 extern "C" u32 data_ov119_022957a8[12];
 
-extern "C" void *data_ov119_022955e0[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294608Ev, 0};
+extern "C" void *data_ov119_022955e0[2] = {(void *)_ZN15FriendRosterTab9mainAct11Ev, 0};
 
-extern "C" void *data_ov119_022955e8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_022949bcEv, 0};
+extern "C" void *data_ov119_022955e8[2] = {(void *)_ZN15FriendRosterTab13updateButtonsEv, 0};
 
-extern "C" void *data_ov119_022955b0[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294930Ev, 0};
+extern "C" void *data_ov119_022955b0[2] = {(void *)_ZN15FriendRosterTab19updateCursorReleaseEv, 0};
 
 extern "C" u8 *data_ov119_02295648[6] = {(u8 *)data_ov119_02295720, (u8 *)data_ov119_02295680, (u8 *)data_ov119_022956a8, (u8 *)data_ov119_022956d0, (u8 *)data_ov119_022956f8, (u8 *)data_ov119_02295748};
 
-extern "C" void *data_ov119_022955f8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_022946f4Ev, 0};
+extern "C" void *data_ov119_022955f8[2] = {(void *)_ZN15FriendRosterTab9mainAct0DEv, 0};
 
 extern "C" u32 data_ov119_02295660[8] = {0x81b440bb, 0x00004560, 0x81d440bb, 0x00004564, 0x81f440bb, 0x00004568, 0x001480bb, 0xffff456c};
 
 extern "C" u32 data_ov119_022957d8[24] = {0x00314000, 0x0000a1ba, 0x00234000, 0x0000a1ba, 0x00154000, 0x0000a1ba, 0x00074000, 0x0000a1ba, 0x01f94000, 0x0000a1b8, 0x01eb4000, 0x0000a1b8, 0x01dd4000, 0x0000a1b8, 0x01cf4000, 0x0000a1b8, 0x01c14000, 0x0000a1b6, 0x01b34000, 0x0000a1b6, 0x01a54000, 0x0000a1b6, 0x01974000, 0xffffa1b6};
 
-extern "C" void *data_ov119_022955a0[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294958Ev, 0};
+extern "C" void *data_ov119_022955a0[2] = {(void *)_ZN15FriendRosterTab17updateCursorPressEv, 0};
 
-BOOL Unk_ov119_02295840::vfunc_4c() {
+BOOL FriendRosterTab::execTransition() {
     static Unk_ov119_02295840_Fn tbl[5] = {
         *(Unk_ov119_02295840_Fn *)data_ov119_02295640, *(Unk_ov119_02295840_Fn *)data_ov119_02295638,
         *(Unk_ov119_02295840_Fn *)data_ov119_02295630, *(Unk_ov119_02295840_Fn *)data_ov119_02295628,
         *(Unk_ov119_02295840_Fn *)data_ov119_02295620};
-    func_ov119_02294ccc();
+    preStateUpdate();
     (this->*tbl[unk_8c])();
-    func_ov119_02294cb4();
+    postStateUpdate();
     return TRUE;
 }
-extern "C" void *data_ov119_02295580[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294840Ev, 0};
+extern "C" void *data_ov119_02295580[2] = {(void *)_ZN15FriendRosterTab9mainAct07Ev, 0};
 
-extern "C" void *data_ov119_02295600[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294734Ev, 0};
+extern "C" void *data_ov119_02295600[2] = {(void *)_ZN15FriendRosterTab9mainAct0BEv, 0};
 
 extern "C" u32 data_ov119_02295680[10] = {0x404d00e7, 0x000044c2, 0x804240e5, 0x0000450b, 0x006280e5, 0x0000450f, 0x404240f5, 0x0000454b, 0x006200f5, 0xffff454f};
 
-extern "C" Unk_ov119_SceneEntry data_ov119_022955d0 = {func_ov119_022954e8, 0xa2, 0xa6};
+extern "C" Unk_ov119_SceneEntry sFriendRosterTabProfile = {FriendRosterTab_Create, 0xa2, 0xa6};
 
-extern "C" void *data_ov119_02295638[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294ee8Ev, 0};
+extern "C" void *data_ov119_02295638[2] = {(void *)_ZN15FriendRosterTab9stateOpenEv, 0};
 
-extern "C" void *data_ov119_02295630[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294e88Ev, 0};
+extern "C" void *data_ov119_02295630[2] = {(void *)_ZN15FriendRosterTab12stateOpeningEv, 0};
 
 extern "C" u32 data_ov119_022956d0[10] = {0x404d0007, 0x000044c6, 0x80424005, 0x0000450b, 0x00628005, 0x0000450f, 0x40424015, 0x0000454b, 0x00620015, 0xffff454f};
 
-extern "C" void *data_ov119_02295620[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294de8Ev, 0};
+extern "C" void *data_ov119_02295620[2] = {(void *)_ZN15FriendRosterTab12stateClosingEv, 0};
 
-extern "C" void *data_ov119_02295618[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294770Ev, 0};
+extern "C" void *data_ov119_02295618[2] = {(void *)_ZN15FriendRosterTab9mainAct0AEv, 0};
 
-extern "C" void *data_ov119_02295610[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294894Ev, 0};
+extern "C" void *data_ov119_02295610[2] = {(void *)_ZN15FriendRosterTab9mainAct06Ev, 0};
 
 extern "C" u32 data_ov119_022956f8[10] = {0x404d0017, 0x000040c8, 0x80424015, 0x0000450b, 0x00628015, 0x0000450f, 0x40424025, 0x0000454b, 0x00620025, 0xffff454f};
 
 extern "C" u32 data_ov119_02295720[10] = {0x404d00d7, 0x000054c0, 0x804240d5, 0x0000550b, 0x006280d5, 0x0000550f, 0x404240e5, 0x0000454b, 0x006200e5, 0xffff454f};
 
-extern "C" void *data_ov119_02295608[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294af0Ev, 0};
+extern "C" void *data_ov119_02295608[2] = {(void *)_ZN15FriendRosterTab11updateTouchEv, 0};
 
-void Unk_ov119_02295840::func_ov119_02295110() {
+void FriendRosterTab::runMainState() {
     static Unk_ov119_02295840_Fn tbl[18] = {
         *(Unk_ov119_02295840_Fn *)data_ov119_02295608, *(Unk_ov119_02295840_Fn *)data_ov119_022955a8,
         *(Unk_ov119_02295840_Fn *)data_ov119_022955e8, *(Unk_ov119_02295840_Fn *)data_ov119_022955f0,
@@ -724,26 +724,26 @@ void Unk_ov119_02295840::func_ov119_02295110() {
     (this->*tbl[unk_8d])();
 }
 
-BOOL Unk_ov119_02295840::vfunc_50() {
-    if (func_ov119_02294ffc()) {
+BOOL FriendRosterTab::execMain() {
+    if (handleTabSwitch()) {
         return TRUE;
     }
-    func_ov119_02294c98();
-    func_ov119_02295110();
-    func_ov119_02294c90();
+    preInputUpdate();
+    runMainState();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov119_02295840::vfunc_54() { return TRUE; }
+BOOL FriendRosterTab::execPhase3() { return TRUE; }
 
-BOOL Unk_ov119_02295840::vfunc_58() { return TRUE; }
+BOOL FriendRosterTab::execPhase4() { return TRUE; }
 
-BOOL Unk_ov119_02295840::vfunc_5c() {
+BOOL FriendRosterTab::execClosed() {
     ProcBase_RequestDelete(this);
     return TRUE;
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02294ffc() {
+BOOL FriendRosterTab::handleTabSwitch() {
     func_0206e63c();
     if (func_0206e61c()) {
         switch (unk_8d) {
@@ -754,7 +754,7 @@ BOOL Unk_ov119_02295840::func_ov119_02294ffc() {
         case 8:
         case 14:
         case 15:
-            return func_ov119_02294fbc(7);
+            return requestTab(7);
         }
     }
     if (unk_8d != 0 && unk_8d != 2) {
@@ -762,7 +762,7 @@ BOOL Unk_ov119_02295840::func_ov119_02294ffc() {
     }
     s32 r5 = -1;
     if (MenuCtrl_IsTouch()) {
-        r5 = func_ov090_02291aa0();
+        r5 = MenuTabBar_HitTestTouch();
     } else {
         u32 k = gPad[1];
         if (k & 2) {
@@ -775,98 +775,98 @@ BOOL Unk_ov119_02295840::func_ov119_02294ffc() {
             r5 = 4;
         }
     }
-    return func_ov119_02294fbc(r5);
+    return requestTab(r5);
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02294fbc(s32 idx) {
+BOOL FriendRosterTab::requestTab(s32 idx) {
     void *o = ProcBase_GetParent(this);
     if (idx != -1 && idx != 6) {
-        func_ov090_02291d8c(o, (u8)idx);
+        MenuTabBar_selectTab(o, (u8)idx);
         unk_8c = 3;
-        func_ov002_02200a60(1);
+        setPhase(1);
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov119_02295840::func_ov119_02294fa8() {
-    func_ov090_02291a88(ProcBase_GetParent(this));
+void FriendRosterTab::func_ov119_02294fa8() {
+    MenuTabBar_hideTabs(ProcBase_GetParent(this));
 }
 
-void Unk_ov119_02295840::func_ov119_02294f4c() {
-    func_ov119_02294c5c();
-    func_ov119_02294bcc();
-    func_ov119_02294b54();
-    func_ov119_022944cc();
-    func_ov002_022020fc(&unk_dc);
+void FriendRosterTab::stateLoad() {
+    FriendRosterTab_SetupLayers();
+    loadBgGfx();
+    loadObjGfx();
+    addRegisterLabel();
+    PopupChoice_LoadFriendBg(&unk_dc);
     u32 v;
     if (func_0206e5dc()) {
         v = func_0206ed38(func_0206e5bc());
     } else {
         v = 0;
     }
-    _ZN18Unk_ov119_0229584019func_ov119_0229305cEh(this, func_ov119_02293010(v));
-    func_ov002_02200a50(1);
-    func_ov119_02294ee8();
+    _ZN15FriendRosterTab7setPageEh(this, getPageOfFriend(v));
+    setTransitionState(1);
+    stateOpen();
 }
 
-void Unk_ov119_02295840::func_ov119_02294ee8() {
-    func_ov002_022008e0(0xa, 0, 0, 0x30);
+void FriendRosterTab::stateOpen() {
+    beginSubSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(6);
-    func_ov002_02200840(6, 0, 0);
+    applySlideOffset(6, 0, 0);
     Gfx2d_ShowLayer(4);
-    func_ov002_02200840(4, 0, 0);
-    func_ov119_02292dd0(1);
-    unk_94 = func_ov002_02200920();
-    func_ov119_02292dd0(8);
-    func_ov002_02200a50(2);
+    applySlideOffset(4, 0, 0);
+    setFlags(1);
+    unk_94 = getSlideOffsetY();
+    setFlags(8);
+    setTransitionState(2);
 }
 
-void Unk_ov119_02295840::func_ov119_02294e88() {
-    if (func_ov119_02292de0(8)) {
-        func_ov119_02292dc0(8);
-        func_ov119_02293328();
+void FriendRosterTab::stateOpening() {
+    if (testFlags(8)) {
+        clearFlags(8);
+        drawFriendCodeHelp();
     }
-    if (func_ov002_02200908(0)) {
-        func_ov002_02200a60(2);
-        func_ov119_022945a4();
+    if (stepSlideIn(0)) {
+        setPhase(2);
+        resumeInput();
     }
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, 0);
-    unk_94 = func_ov002_02200920();
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, 0);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov119_02295840::func_ov119_02294e3c() {
-    func_ov119_02294364();
-    func_ov002_022008c4(0xa, 0, 0, 0x30);
-    func_ov002_02200840(6, 0, 0);
-    func_ov002_02200840(4, 0, 0);
-    func_ov002_02200a50(4);
-    unk_94 = func_ov002_02200920();
+void FriendRosterTab::stateClose() {
+    hideCursor();
+    beginSubSlideOut(0xa, 0, 0, 0x30);
+    applySlideOffset(6, 0, 0);
+    applySlideOffset(4, 0, 0);
+    setTransitionState(4);
+    unk_94 = getSlideOffsetY();
 }
 
-void Unk_ov119_02295840::func_ov119_02294de8() {
-    if (func_ov002_022008fc(0)) {
+void FriendRosterTab::stateClosing() {
+    if (stepSlideOut(0)) {
         Gfx2d_ResetLayer(6);
         Gfx2d_ResetLayer(4);
-        func_ov119_02292dc0(1);
-        func_ov002_02200a60(5);
+        clearFlags(1);
+        setPhase(5);
     } else {
-        func_ov002_02200840(6, 0, 0);
-        func_ov002_02200840(4, 0, 0);
-        unk_94 = func_ov002_02200920();
+        applySlideOffset(6, 0, 0);
+        applySlideOffset(4, 0, 0);
+        unk_94 = getSlideOffsetY();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294d3c() {
-    if (!func_ov119_02293828()) {
-        if (func_ov119_02293744()) {
-            func_ov119_0229371c();
-            func_ov090_02291964(ProcBase_GetParent(this));
+void FriendRosterTab::initFriendRoster() {
+    if (!isWifiMode()) {
+        if (hasGaps()) {
+            compactRoster();
+            MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
         }
     } else {
-        if (func_ov119_02293674()) {
-            func_ov090_02291964(ProcBase_GetParent(this));
+        if (syncFromWifiFriendList()) {
+            MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
         }
     }
     unk_9e = 0;
@@ -878,46 +878,46 @@ void Unk_ov119_02295840::func_ov119_02294d3c() {
     unk_af = 0;
     unk_b0 = 7;
     unk_b8 = 5;
-    func_ov119_02292f98();
-    func_ov002_02202310(&unk_dc, 3, 1, "menu/friend/c_bg.bsc");
-    func_ov119_02293784();
+    loadOwnFriendCode();
+    PopupChoiceMenu_init(&unk_dc, 3, 1, "menu/friend/c_bg.bsc");
+    buildFriendIndex();
 }
 
-void Unk_ov119_02295840::func_ov119_02294d00() {
-    func_ov002_02201b04(&unk_dc);
-    func_ov119_0229453c();
+void FriendRosterTab::releaseResources() {
+    PopupChoice_ForceClose(&unk_dc);
+    resetTextLabels();
     unk_1a58[0].cancel();
     unk_1a58[1].cancel();
     unk_1a58[2].cancel();
 }
 
-void Unk_ov119_02295840::func_ov119_02294ccc() {
-    func_ov119_0229453c();
+void FriendRosterTab::preStateUpdate() {
+    resetTextLabels();
     unk_1a58[0].cancel();
     unk_1a58[1].cancel();
     unk_1a58[2].cancel();
 }
 
-void Unk_ov119_02295840::func_ov119_02294cb4() {
-    func_ov119_022939cc();
-    func_ov002_02201b58(&unk_dc);
+void FriendRosterTab::postStateUpdate() {
+    uploadScreen();
+    PopupChoice_Update(&unk_dc);
 }
 
-void Unk_ov119_02295840::func_ov119_02294c98() {
-    func_ov119_02294ccc();
+void FriendRosterTab::preInputUpdate() {
+    preStateUpdate();
     unk_970.vfunc_0c();
 }
 
-void Unk_ov119_02295840::func_ov119_02294c90() { func_ov119_02294cb4(); }
+void FriendRosterTab::postInputUpdate() { postStateUpdate(); }
 
-extern "C" void func_ov119_02294c5c() {
+extern "C" void FriendRosterTab_SetupLayers() {
     Gfx2d_SetLayerPriority(6, 2);
     Gfx2d_SetLayerPriority(4, 2);
     Gfx2d_SetLayerControl(6, 0, 0, 0);
     Gfx2d_SetLayerControl(4, 0, 0, 0);
 }
 
-void Unk_ov119_02295840::func_ov119_02294bcc() {
+void FriendRosterTab::loadBgGfx() {
     u32 r4 = gCurrentHeap;
     Gfx2d_LoadPaletteFile("menu/friend/bg0.bpl", r4, 6, 1, 1, 5);
     File_LoadToBuffer("menu/friend/bg2.bpl", unk_19f8, 0x20);
@@ -927,7 +927,7 @@ void Unk_ov119_02295840::func_ov119_02294bcc() {
     File_LoadToBuffer("menu/friend/d_bg.bsc", unk_9d4 + 0x400, 0x800);
 }
 
-void Unk_ov119_02295840::func_ov119_02294b54() {
+void FriendRosterTab::loadObjGfx() {
     u32 r4 = gCurrentHeap;
     Gfx2d_LoadCharFile("menu/friend/obj0.bch", r4, 8, 0xc0, 0xc0, 0x15d);
     Gfx2d_LoadCharFile("menu/friend/obj1.bch", r4, 8, 0x1a0, 0x1a0, 0x1df);
@@ -935,250 +935,250 @@ void Unk_ov119_02295840::func_ov119_02294b54() {
     File_LoadToBuffer("menu/friend/obj1.bpl", unk_19d8, 0x20);
 }
 
-void Unk_ov119_02295840::func_ov119_02294af0() {
-    if (func_ov002_02200a14(1)) {
-        func_ov119_022945d4();
+void FriendRosterTab::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
     } else if (Unk_ov119_02294a44_Both()) {
-        u32 r = func_ov119_02293ab8(gTouchCurX, gTouchCurY);
+        u32 r = hitTest(gTouchCurX, gTouchCurY);
         if (r != 0x17) {
             unk_a0 = r;
-            func_ov119_02293b48();
+            activateFocus();
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294a44() {
+void FriendRosterTab::mainAct01() {
     if (func_0206e61c()) {
-        func_ov119_02292ea4();
-    } else if (func_ov002_02200a14(1)) {
-        func_ov119_022941e8();
-        func_ov002_02200a58(6);
+        cancelChoice();
+    } else if (checkSwitchToButtons(1)) {
+        cursorToPopupTop();
+        setMainState(6);
     } else if (Unk_ov119_02294a44_Both()) {
-        s32 r5 = func_ov002_022014c0(&unk_dc, gTouchCurX, gTouchCurY);
+        s32 r5 = PopupChoiceMenuBody_hitTestRowOrLast(&unk_dc, gTouchCurX, gTouchCurY);
         if (r5 >= 0) {
-            if (!(func_ov119_02292de0(0x10) && r5 == 0)) {
-                func_ov002_02201aa0(&unk_dc, r5, 1);
-                unk_ad = func_ov119_02292f8c(r5);
-                func_ov002_02200a58(0xb);
+            if (!(testFlags(0x10) && r5 == 0)) {
+                PopupChoice_DecideRow(&unk_dc, r5, 1);
+                unk_ad = getPopupRowValue(r5);
+                setMainState(0xb);
             }
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022949bc() {
-    if (func_ov002_022009d4()) {
-        func_ov119_022945f0();
+void FriendRosterTab::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
-        u32 r = func_ov002_022009c8();
-        if (func_ov119_02293f68(r)) {
-            func_ov119_022942f0();
+        u32 r = takeRepeatedKeys();
+        if (moveFocus(r)) {
+            moveCursorToTarget();
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                func_ov119_022941c8();
+                pressCursor();
             } else if (k & 0x100) {
-                func_ov119_02294fbc(func_ov090_02291a38(6));
+                requestTab(MenuTabBar_NextTab(6));
             } else if (k & 0x200) {
-                func_ov119_02294fbc(func_ov090_02291a58(6));
+                requestTab(MenuTabBar_PrevTab(6));
             }
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294990() {
-    if (!U970_A->func_ov002_022028f0()) {
-        func_ov002_02200a58(unk_9f);
-        func_ov119_02295110();
+void FriendRosterTab::updateCursorMove() {
+    if (!U970_A->isMoving()) {
+        setMainState(unk_9f);
+        runMainState();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294958() {
+void FriendRosterTab::updateCursorPress() {
     if (U970_C->isAnimDone()) {
-        s32 r = func_ov119_02293b48();
+        s32 r = activateFocus();
         switch (r) {
         case 1:
             break;
         case 2:
-            func_ov119_022941a8();
+            releaseCursor();
             break;
         default:
-            func_ov119_022941a8();
+            releaseCursor();
             break;
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294930() {
+void FriendRosterTab::updateCursorRelease() {
     if (U970_C->isAnimDone()) {
-        func_ov119_02294188();
-        func_ov002_02200a58(2);
+        refreshCursor();
+        setMainState(2);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294894() {
+void FriendRosterTab::mainAct06() {
     if (func_0206e61c()) {
-        func_ov119_02292ea4();
-    } else if (func_ov002_022009d4()) {
-        func_ov119_02294364();
-        func_ov002_02200a58(1);
+        cancelChoice();
+    } else if (checkSwitchToTouch()) {
+        hideCursor();
+        setMainState(1);
     } else {
-        u32 r4 = func_ov002_022009c8();
-        u8 f = func_ov119_02292de0(0x10);
-        if (func_ov002_022019d0(&unk_dc, r4, &unk_ae, f)) {
-            func_ov119_022942a4();
+        u32 r4 = takeRepeatedKeys();
+        u8 f = testFlags(0x10);
+        if (PopupChoice_MoveCursor(&unk_dc, r4, &unk_ae, f)) {
+            moveCursorToPopupRow();
         } else {
             u32 k = gPad[1];
             if (k & 1) {
-                U970_B->func_ov002_02202b68();
-                func_ov002_02200a58(7);
+                U970_B->setPosePress();
+                setMainState(7);
             } else if (k & 2) {
-                func_ov119_02294244();
+                cancelPopup();
             }
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294840() {
+void FriendRosterTab::mainAct07() {
     if (func_0206e61c()) {
-        func_ov119_02292ea4();
+        cancelChoice();
     } else if (U970_C->isAnimDone()) {
-        func_ov002_02201aa0(&unk_dc, unk_ae, 1);
-        unk_ad = func_ov119_02292f8c(unk_ae);
-        func_ov002_02200a58(0xb);
+        PopupChoice_DecideRow(&unk_dc, unk_ae, 1);
+        unk_ad = getPopupRowValue(unk_ae);
+        setMainState(0xb);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294804() {
+void FriendRosterTab::mainAct08() {
     if (B1V != 0) {
         B1V = B1V - 1;
     } else {
-        func_ov119_02294364();
+        hideCursor();
         if (A0V == 0x16) {
-            func_ov119_02293ed0();
+            openRegisterChoices();
         } else {
-            func_ov119_02293e5c();
+            openFriendChoices();
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022947a4() {
+void FriendRosterTab::mainAct09() {
     if (B1V != 0) {
         B1V = 0;
-        func_ov119_0229371c();
-        func_ov090_02291964(ProcBase_GetParent(this));
-        if (func_ov119_02293828()) {
+        compactRoster();
+        MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
+        if (isWifiMode()) {
             if (!Net_WifiDeleteFriend(unk_b4)) {
-                func_ov002_02200a58(0x11);
+                setMainState(0x11);
             }
         }
     } else {
-        func_ov119_02292dd0(2);
-        func_ov119_022930d4();
-        func_ov119_022945a4();
+        setFlags(2);
+        refreshPage();
+        resumeInput();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294770() {
-    if (unk_dc.func_ov002_022017b4()) {
+void FriendRosterTab::mainAct0A() {
+    if (unk_dc.isOpen()) {
         if (MenuCtrl_IsButtons()) {
-            func_ov119_022941e8();
-            func_ov002_02200a58(6);
+            cursorToPopupTop();
+            setMainState(6);
         } else {
-            func_ov002_02200a58(1);
+            setMainState(1);
         }
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294734() {
-    if (func_ov002_02201a28(&unk_dc)) {
-        func_ov002_02202064(&unk_dc, 0);
+void FriendRosterTab::mainAct0B() {
+    if (PopupChoice_TickDecideDelay(&unk_dc)) {
+        PopupChoice_Close(&unk_dc, 0);
         if (U970_C->getAnim()) {
-            func_ov119_02294364();
+            hideCursor();
         }
-        func_ov002_02200a58(0xc);
+        setMainState(0xc);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294718() {
-    if (unk_dc.func_ov002_022017a4()) {
-        func_ov119_02292f20();
+void FriendRosterTab::mainAct0C() {
+    if (unk_dc.isClosed()) {
+        onPopupChoice();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022946f4() {
-    if (unk_1ac4.func_ov002_02204234(1)) {
-        func_ov119_022945a4();
+void FriendRosterTab::mainAct0D() {
+    if (unk_1ac4.update(1)) {
+        resumeInput();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022946b4() {
+void FriendRosterTab::mainAct0E() {
     if (unk_b8 > 0) {
         unk_b8 = unk_b8 - 1;
-        func_ov119_02293844(unk_b8);
+        setPaletteFade(unk_b8);
     } else {
-        func_ov119_0229305c(unk_9d);
-        func_ov002_02200a58(0xf);
+        setPage(unk_9d);
+        setMainState(0xf);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294670() {
+void FriendRosterTab::mainAct0F() {
     if (unk_b8 < 5) {
         unk_b8 = unk_b8 + 1;
-        func_ov119_02293844(unk_b8);
+        setPaletteFade(unk_b8);
     } else if (MenuCtrl_IsTouch()) {
-        func_ov119_022945f0();
+        startTouchInput();
     } else {
-        func_ov119_022941a8();
+        releaseCursor();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294634() {
-    u8 *base = (u8 *)func_ov119_02293810();
+void FriendRosterTab::mainAct10() {
+    u8 *base = (u8 *)getFriendEntries();
     void *r = DwcFriendData_GetBytes(FriendEntry_GetFriendData(base + unk_b4 * 0x1c));
     if (Net_WifiAddFriend(unk_b4, r)) {
-        func_ov119_02293c08(unk_b4);
+        showFriend(unk_b4);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294608() {
+void FriendRosterTab::mainAct11() {
     if (Net_WifiDeleteFriend(unk_b4)) {
-        func_ov119_02292dd0(2);
-        func_ov119_022930d4();
-        func_ov119_022945a4();
+        setFlags(2);
+        refreshPage();
+        resumeInput();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022945f0() {
-    func_ov119_02294364();
-    func_ov002_02200a58(0);
+void FriendRosterTab::startTouchInput() {
+    hideCursor();
+    setMainState(0);
 }
 
-void Unk_ov119_02295840::func_ov119_022945d4() {
-    func_ov119_022943fc();
-    func_ov002_02200980();
-    func_ov002_02200a58(2);
+void FriendRosterTab::startButtonInput() {
+    showCursor();
+    restartKeyRepeat();
+    setMainState(2);
 }
 
-void Unk_ov119_02295840::func_ov119_022945a4() {
+void FriendRosterTab::resumeInput() {
     unk_9a = -1;
-    func_ov119_02292dd0(4);
+    setFlags(4);
     if (MenuCtrl_IsTouch()) {
-        func_ov119_022945f0();
+        startTouchInput();
     } else {
-        func_ov119_022945d4();
+        startButtonInput();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02294568(u8 v) {
+void FriendRosterTab::showError(u8 v) {
     volatile u8 buf[1];
     buf[0] = data_021edb68;
     buf[0] = v;
-    unk_1ac4.func_ov002_02204394((u8 *)buf, 1, 0);
-    func_ov002_02200a58(0xd);
-    func_ov119_02294364();
+    unk_1ac4.open((u8 *)buf, 1, 0);
+    setMainState(0xd);
+    hideCursor();
 }
 
-void Unk_ov119_02295840::func_ov119_0229453c() {
+void FriendRosterTab::resetTextLabels() {
     s32 i;
     i = 0;
     E9V = i;
@@ -1187,7 +1187,7 @@ void Unk_ov119_02295840::func_ov119_0229453c() {
     }
 }
 
-void *Unk_ov119_02295840::func_ov119_02294504() {
+void *FriendRosterTab::allocTextLabel() {
     if (E9V >= 0x13) {
         return &unk_3dc[0x12];
     }
@@ -1195,21 +1195,21 @@ void *Unk_ov119_02295840::func_ov119_02294504() {
     return &unk_3dc[E9V - 1];
 }
 
-void Unk_ov119_02295840::func_ov119_022944cc() {
-    void *e = func_ov119_02294504();
+void FriendRosterTab::addRegisterLabel() {
+    void *e = allocTextLabel();
     func_0206f9fc(e, 0xd6);
     func_0206fb9c(e, 8, 0xca, 6, 0xf, 0, 0);
     func_0206fab4(e, 1, 0);
 }
 
-void Unk_ov119_02295840::func_ov119_0229448c(u32 id) {
-    void *e = func_ov119_02294504();
+void FriendRosterTab::addTitleLabel(u32 id) {
+    void *e = allocTextLabel();
     func_0206f9fc(e, id);
     func_0206fb9c(e, 8, 0x160, 0xd, 0xf, 0, 0);
     func_0206fab4(e, 1, 0);
 }
 
-void Unk_ov119_02295840::func_ov119_022943fc() {
+void FriendRosterTab::showCursor() {
     u32 c = A0V;
     if (c <= 7) {
         s32 n = unk_af;
@@ -1219,27 +1219,27 @@ void Unk_ov119_02295840::func_ov119_022943fc() {
             A0V = n - 1;
         }
     }
-    s32 a = func_ov119_022943c0();
-    s32 b = func_ov119_02294388();
-    U970_A->func_ov002_02202a40(a, b);
+    s32 a = getFocusX();
+    s32 b = getFocusY();
+    U970_A->warpTo(a, b);
     u32 v = A0V;
     if (v <= 7) {
-        U970_B->func_ov002_02202d00(7);
+        U970_B->setAnimIfChanged(7);
     } else if (v >= 0xe && v <= 0x15) {
-        U970_B->func_ov002_02202d00(0xd);
+        U970_B->setAnimIfChanged(0xd);
     } else {
-        U970_B->func_ov002_02202d00(1);
+        U970_B->setAnimIfChanged(1);
     }
-    func_ov119_02294188();
+    refreshCursor();
 }
 
-s32 Unk_ov119_02295840::func_ov119_022943c0() {
+s32 FriendRosterTab::getFocusX() {
     u32 v = A0V;
     if (v <= 7) {
         return 0x20;
     }
     if (v >= 0xe && v <= 0x15) {
-        return func_ov090_02291a78(v - 0xe);
+        return MenuTabBar_GetTabX(v - 0xe);
     }
     if (v >= 8 && v <= 0xd) {
         return 0xd6;
@@ -1250,7 +1250,7 @@ s32 Unk_ov119_02295840::func_ov119_022943c0() {
     return 0x80;
 }
 
-s32 Unk_ov119_02295840::func_ov119_02294388() {
+s32 FriendRosterTab::getFocusY() {
     u32 v = A0V;
     if (v <= 7) {
         return v * 16 + 0x38;
@@ -1267,90 +1267,90 @@ s32 Unk_ov119_02295840::func_ov119_02294388() {
     return 0x60;
 }
 
-void Unk_ov119_02295840::func_ov119_02294364() {
-    U970_B->func_ov002_02202d00(0);
+void FriendRosterTab::hideCursor() {
+    U970_B->setAnimIfChanged(0);
     unk_970.vfunc_0c();
 }
 
-void Unk_ov119_02295840::func_ov119_022942f0() {
+void FriendRosterTab::moveCursorToTarget() {
     u32 v = A0V;
     if (v <= 7) {
-        U970_B->func_ov002_02202ca0();
+        U970_B->switchToAnim07();
     } else if (v >= 0xe && v <= 0x15) {
-        U970_B->func_ov002_02202be0();
+        U970_B->switchToAnim0D();
     } else {
-        U970_B->func_ov002_02202c40();
+        U970_B->switchToAnim01();
     }
-    s32 a = func_ov119_022943c0();
-    s32 b = func_ov119_02294388();
-    U970_A->func_ov002_022029e8(a, b, 3, 1);
+    s32 a = getFocusX();
+    s32 b = getFocusY();
+    U970_A->moveToEase(a, b, 3, 1);
     unk_9f = unk_8d;
-    func_ov002_02200a58(3);
+    setMainState(3);
 }
 
-void Unk_ov119_02295840::func_ov119_022942a4() {
-    s32 a = unk_dc.func_ov002_022014a4();
-    s32 b = unk_dc.func_ov002_02201498(unk_ae);
-    U970_A->func_ov002_02202a18(a, b, 2);
+void FriendRosterTab::moveCursorToPopupRow() {
+    s32 a = unk_dc.getRowX();
+    s32 b = unk_dc.getRowY(unk_ae);
+    U970_A->moveToLinear(a, b, 2);
     unk_9f = unk_8d;
-    func_ov002_02200a58(3);
+    setMainState(3);
 }
 
-void Unk_ov119_02295840::func_ov119_02294244() {
+void FriendRosterTab::cancelPopup() {
     unk_ad = 10;
-    unk_ae = func_ov002_02201a70(&unk_dc, 1);
-    s32 a = unk_dc.func_ov002_022014a4();
-    s32 b = unk_dc.func_ov002_02201498(unk_ae);
-    U970_A->func_ov002_02202a40(a, b);
+    unk_ae = PopupChoice_DecideCancel(&unk_dc, 1);
+    s32 a = unk_dc.getRowX();
+    s32 b = unk_dc.getRowY(unk_ae);
+    U970_A->warpTo(a, b);
     U970_C->setAnimAtEnd(8);
-    func_ov002_02200a58(0xb);
+    setMainState(0xb);
 }
 
-void Unk_ov119_02295840::func_ov119_022941e8() {
-    if (func_ov119_02292de0(0x10)) {
+void FriendRosterTab::cursorToPopupTop() {
+    if (testFlags(0x10)) {
         unk_ae = 2;
     } else {
         unk_ae = 0;
     }
-    s32 a = unk_dc.func_ov002_022014a4();
-    s32 b = unk_dc.func_ov002_02201498(unk_ae);
-    U970_A->func_ov002_02202a40(a, b);
-    U970_B->func_ov002_02202d00(7);
+    s32 a = unk_dc.getRowX();
+    s32 b = unk_dc.getRowY(unk_ae);
+    U970_A->warpTo(a, b);
+    U970_B->setAnimIfChanged(7);
 }
 
-void Unk_ov119_02295840::func_ov119_022941c8() {
-    U970_B->func_ov002_02202b68();
-    func_ov002_02200a58(4);
+void FriendRosterTab::pressCursor() {
+    U970_B->setPosePress();
+    setMainState(4);
 }
 
-void Unk_ov119_02295840::func_ov119_022941a8() {
-    U970_A->func_ov002_02202af0();
-    func_ov002_02200a58(5);
+void FriendRosterTab::releaseCursor() {
+    U970_A->setPoseRelease();
+    setMainState(5);
 }
 
-void Unk_ov119_02295840::func_ov119_02294188() {
-    U970_A->func_ov002_02202a78();
+void FriendRosterTab::refreshCursor() {
+    U970_A->setPoseIdle();
     unk_970.vfunc_0c();
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02293f68(u32 keys) {
+BOOL FriendRosterTab::moveFocus(u32 keys) {
     u32 old = A0V;
     if (keys == 0) {
         return FALSE;
     }
     if (old <= 7) {
-        if (func_ov002_0220127c(keys)) {
+        if (MenuKeys_HasDown(keys)) {
             if (A0V + 1 < unk_af) {
                 A0V = A0V + 1;
             }
-        } else if (func_ov002_0220128c(keys)) {
+        } else if (MenuKeys_HasUp(keys)) {
             if (A0V != 0) {
                 A0V = A0V - 1;
             } else {
                 A0V = 0x14;
             }
-        } else if (func_ov002_0220125c(keys)) {
-            s32 t = U970_A->func_ov002_02202878();
+        } else if (MenuKeys_HasRight(keys)) {
+            s32 t = U970_A->getScreenY();
             if (t > 0x94) {
                 A0V = 0x16;
             } else {
@@ -1362,16 +1362,16 @@ BOOL Unk_ov119_02295840::func_ov119_02293f68(u32 keys) {
             }
         }
     } else if (old >= 0xe && old <= 0x15) {
-        if (func_ov002_0220126c(keys)) {
+        if (MenuKeys_HasLeft(keys)) {
             if (A0V > 0xe) {
                 A0V = A0V - 1;
             }
-        } else if (func_ov002_0220125c(keys)) {
+        } else if (MenuKeys_HasRight(keys)) {
             if (A0V < 0x15) {
                 A0V = A0V + 1;
             }
-        } else if (func_ov002_0220127c(keys)) {
-            s32 t = U970_A->func_ov002_0220288c();
+        } else if (MenuKeys_HasDown(keys)) {
+            s32 t = U970_A->getScreenX();
             if (unk_af != 0 && t < 0x80) {
                 A0V = 0;
             } else {
@@ -1379,21 +1379,21 @@ BOOL Unk_ov119_02295840::func_ov119_02293f68(u32 keys) {
             }
         }
     } else if (old >= 8 && old <= 0xd) {
-        if (func_ov002_0220128c(keys)) {
+        if (MenuKeys_HasUp(keys)) {
             if (A0V > 8) {
                 A0V = A0V - 1;
             } else {
                 A0V = 0x14;
             }
-        } else if (func_ov002_0220127c(keys)) {
+        } else if (MenuKeys_HasDown(keys)) {
             if (A0V < 0xd) {
                 A0V = A0V + 1;
             } else {
                 A0V = 0x16;
             }
-        } else if (func_ov002_0220126c(keys)) {
+        } else if (MenuKeys_HasLeft(keys)) {
             if (unk_af != 0) {
-                s32 t = U970_A->func_ov002_02202878();
+                s32 t = U970_A->getScreenY();
                 t -= 0x30;
                 if (t < 0) t = 0;
                 t >>= 4;
@@ -1403,10 +1403,10 @@ BOOL Unk_ov119_02295840::func_ov119_02293f68(u32 keys) {
             }
         }
     } else if (old == 0x16) {
-        if (func_ov002_0220128c(keys)) {
+        if (MenuKeys_HasUp(keys)) {
             A0V = 0xd;
         }
-        if (func_ov002_0220126c(keys)) {
+        if (MenuKeys_HasLeft(keys)) {
             u32 n = unk_af;
             if (n != 0) {
                 A0V = n - 1;
@@ -1419,10 +1419,10 @@ BOOL Unk_ov119_02295840::func_ov119_02293f68(u32 keys) {
     return FALSE;
 }
 
-void Unk_ov119_02295840::func_ov119_02293ed0()
+void FriendRosterTab::openRegisterChoices()
 {
     unk_b0 = 7;
-    func_ov002_022016e4(U3D0, 0xa);
+    ChoiceIdList_Clear(U3D0, 0xa);
     Unk_ov119_Comm *g = gCommManager;
     if (CommManager_isOnline(g)) {
         s32 skip = g->unk_64;
@@ -1434,90 +1434,90 @@ void Unk_ov119_02295840::func_ov119_02293ed0()
                 void *p = PlayerData_GetBySessionSlot(i);
                 if (p) {
                     func_020940d0(PlayerData_getPlayerId(p), tmp);
-                    func_ov002_02201680(&unk_dc, U3D0, tmp, (u8)(i + 6));
+                    PopupChoiceMenuBody_addCustomRow(&unk_dc, U3D0, tmp, (u8)(i + 6));
                 }
             }
         }
         _ZN12Unk_020e1c64D1Ev(tmp);
     }
-    func_ov002_02201700(U3D0, 0xce, 5);
-    func_ov002_02201700(U3D0, 2, 0xa);
-    func_ov119_02292ecc(0);
+    ChoiceIdList_Add(U3D0, 0xce, 5);
+    ChoiceIdList_Add(U3D0, 2, 0xa);
+    openPopup(0);
 }
 
-void Unk_ov119_02295840::func_ov119_02293e5c()
+void FriendRosterTab::openFriendChoices()
 {
-    func_ov002_022016e4(U3D0, 0xa);
-    func_ov002_02201700(U3D0, 0xcf, 3);
-    func_ov002_02201700(U3D0, 0xd0, 2);
-    void *rec = func_ov119_022937e8();
+    ChoiceIdList_Clear(U3D0, 0xa);
+    ChoiceIdList_Add(U3D0, 0xcf, 3);
+    ChoiceIdList_Add(U3D0, 0xd0, 2);
+    void *rec = getFocusedFriendEntry();
     if (rec) {
         if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec)) == 0) {
-            func_ov002_02201700(U3D0, 0xd1, 4);
+            ChoiceIdList_Add(U3D0, 0xd1, 4);
         }
     }
-    func_ov002_02201700(U3D0, 0xd2, 0);
-    func_ov002_02201700(U3D0, 2, 0xa);
-    func_ov119_02292ecc(0);
+    ChoiceIdList_Add(U3D0, 0xd2, 0);
+    ChoiceIdList_Add(U3D0, 2, 0xa);
+    openPopup(0);
 }
 
-void Unk_ov119_02295840::func_ov119_02293e10()
+void FriendRosterTab::openRemoveConfirm()
 {
-    func_ov002_022016e4(U3D0, 0xa);
-    func_ov002_02201700(U3D0, 0xd3, 0xa);
-    func_ov002_02201700(U3D0, 4, 1);
-    func_ov002_02201700(U3D0, 0x13, 0xa);
-    func_ov119_02292ecc(1);
-    func_ov119_02292dd0(0x10);
+    ChoiceIdList_Clear(U3D0, 0xa);
+    ChoiceIdList_Add(U3D0, 0xd3, 0xa);
+    ChoiceIdList_Add(U3D0, 4, 1);
+    ChoiceIdList_Add(U3D0, 0x13, 0xa);
+    openPopup(1);
+    setFlags(0x10);
 }
 
-void Unk_ov119_02295840::func_ov119_02293dc8()
+void FriendRosterTab::removeFriend()
 {
-    void *rec = func_ov119_022937e8();
+    void *rec = getFocusedFriendEntry();
     if (rec) {
         FriendEntry_Clear(rec);
         unk_9a = -1;
-        func_ov119_02292dd0(2);
-        func_ov119_022930d4();
+        setFlags(2);
+        refreshPage();
         unk_b1 = 1;
-        func_ov002_02200a58(9);
-        unk_b4 = func_ov119_022937d0();
+        setMainState(9);
+        unk_b4 = getFocusedFriendIndex();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02293d9c(s32 x)
+void FriendRosterTab::openFriendEditor(s32 x)
 {
-    func_0206ed2c((u8)func_ov119_022937d0());
-    func_ov119_02294fbc(x);
+    func_0206ed2c((u8)getFocusedFriendIndex());
+    requestTab(x);
     func_ov119_02294fa8();
 }
 
-void Unk_ov119_02295840::func_ov119_02293d4c()
+void FriendRosterTab::useCodeEntry()
 {
-    s32 i = func_ov119_02293640();
+    s32 i = findFreeEntry();
     if (i == -1) {
-        func_ov119_02294568(0x13);
+        showError(0x13);
     } else {
-        FriendEntry_Clear((u8 *)func_ov119_02293810() + i * 0x1c);
+        FriendEntry_Clear((u8 *)getFriendEntries() + i * 0x1c);
         func_0206ed2c((u8)i);
-        func_ov119_02294fbc(0xe);
+        requestTab(0xe);
         func_ov119_02294fa8();
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02293c44()
+void FriendRosterTab::registerPresentPlayer()
 {
-    s32 i = func_ov119_02293640();
+    s32 i = findFreeEntry();
     if (i == -1) {
-        func_ov119_02294568(0x13);
+        showError(0x13);
         return;
     }
     void *a = PlayerData_GetBySessionSlot(unk_ad - 6);
-    if (func_ov119_022935fc(PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)))) {
-        func_ov119_02294568(0x14);
+    if (isInRoster(PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)))) {
+        showError(0x14);
         return;
     }
-    u8 *b = (u8 *)func_ov119_02293810();
+    u8 *b = (u8 *)getFriendEntries();
     void *c = PlayerData_getPlayerId(a);
     u8 *rec = b + i * 0x1c;
     void *d = FriendEntry_GetFriendData(rec);
@@ -1526,34 +1526,34 @@ void Unk_ov119_02295840::func_ov119_02293c44()
     Mem_Copy(e, func_02076cec(rec), 8);
     void *f = func_02063964(func_0209409c(c));
     Mem_Copy(f, func_02076ce8(rec), 8);
-    func_ov090_02291964(ProcBase_GetParent(this));
+    MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
     unk_b4 = i;
-    if (func_ov119_02293828()) {
+    if (isWifiMode()) {
         if (Net_WifiAddFriend(unk_b4, DwcFriendData_GetBytes(FriendEntry_GetFriendData(b + unk_b4 * 0x1c))) == 0) {
-            func_ov002_02200a58(0x10);
+            setMainState(0x10);
             return;
         }
     }
-    func_ov119_02293c08(i);
+    showFriend(i);
 }
 
-void Unk_ov119_02295840::func_ov119_02293c08(s32 x)
+void FriendRosterTab::showFriend(s32 x)
 {
-    func_ov119_02293784();
-    u32 t = func_ov119_02293010(x);
+    buildFriendIndex();
+    u32 t = getPageOfFriend(x);
     if (t != unk_9d) {
-        _ZN18Unk_ov119_0229584019func_ov119_0229305cEh(this, t);
+        _ZN15FriendRosterTab7setPageEh(this, t);
     } else {
-        func_ov119_022930d4();
+        refreshPage();
     }
-    func_ov119_022945a4();
+    resumeInput();
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02293b48()
+BOOL FriendRosterTab::activateFocus()
 {
     u32 m = unk_a0;
     if (m >= 0xe && m <= 0x15) {
-        if (func_ov119_02294fbc(m - 0xe)) {
+        if (requestTab(m - 0xe)) {
             return TRUE;
         }
         return FALSE;
@@ -1562,7 +1562,7 @@ BOOL Unk_ov119_02295840::func_ov119_02293b48()
         u8 k = m - 8;
         if (k != unk_9d) {
             unk_9d = k;
-            func_ov002_02200a58(0xe);
+            setMainState(0xe);
             if (k == 4) {
                 Snd_PlaySe(0xf);
             } else {
@@ -1575,22 +1575,22 @@ BOOL Unk_ov119_02295840::func_ov119_02293b48()
     if (m == 0x16) {
         unk_b0 = 8;
         unk_b1 = 3;
-        func_ov002_02200a58(8);
+        setMainState(8);
         Snd_PlaySe(0x2b);
         return TRUE;
     }
     if (m <= 7) {
         unk_9a = m;
-        func_ov119_02292dd0(4);
+        setFlags(4);
         unk_b1 = 3;
-        func_ov002_02200a58(8);
+        setMainState(8);
         Snd_PlaySe(0x2b);
         return TRUE;
     }
     return FALSE;
 }
 
-u8 Unk_ov119_02295840::func_ov119_02293ab8(s32 x, s32 y)
+u8 FriendRosterTab::hitTest(s32 x, s32 y)
 {
     s32 i;
     s32 t = func_02087e14((u8 *)data_ov119_02295648[0] + 8) + 0x83;
@@ -1614,10 +1614,10 @@ u8 Unk_ov119_02295840::func_ov119_02293ab8(s32 x, s32 y)
     return 0x17;
 }
 
-void Unk_ov119_02295840::func_ov119_022939cc()
+void FriendRosterTab::uploadScreen()
 {
-    func_ov119_02292df4();
-    if (func_ov119_02292de0(4)) {
+    updateRowMarkBlink();
+    if (testFlags(4)) {
         if (unk_9c <= 3) {
             func_0206ee80(unk_9d4, 5, 6, 0x17, 0x15, 3);
             s32 v = unk_9a;
@@ -1626,21 +1626,21 @@ void Unk_ov119_02295840::func_ov119_022939cc()
                 func_0206ee80(unk_9d4, 5, y, 0x17, y + 1, 4);
             }
         }
-        func_ov119_02292dc0(4);
-        func_ov119_02292dd0(2);
+        clearFlags(4);
+        setFlags(2);
     }
-    if (func_ov119_02292de0(2)) {
+    if (testFlags(2)) {
         if (unk_1a58[0].requestScreen((u32)unk_19d4, 4, 0x800, 0)) {
-            func_ov119_02292dc0(2);
+            clearFlags(2);
         }
     }
-    if (func_ov119_02292de0(0x20)) {
+    if (testFlags(0x20)) {
         unk_1a58[1].requestPalette((u32)unk_1a38, 6, 3);
         unk_1a58[2].requestPalette((u32)unk_1a18, 8, 10);
     }
 }
 
-u16 Unk_ov119_02295840::func_ov119_02293924(s32 c1, s32 c2, s32 t, s32 n)
+u16 FriendRosterTab::blendColor(s32 c1, s32 c2, s32 t, s32 n)
 {
     u8 r = c2 & 0x1f;
     u8 g = (c2 & 0x3e0) >> 5;
@@ -1652,7 +1652,7 @@ u16 Unk_ov119_02295840::func_ov119_02293924(s32 c1, s32 c2, s32 t, s32 n)
     return r | (g << 5) | (b << 10);
 }
 
-void Unk_ov119_02295840::func_ov119_02293844(s32 x)
+void FriendRosterTab::setPaletteFade(s32 x)
 {
     s32 v = x;
     s32 i;
@@ -1661,20 +1661,20 @@ void Unk_ov119_02295840::func_ov119_02293844(s32 x)
     } else if (v > 5) {
         v = 5;
     }
-    func_ov119_02292dd0(0x20);
+    setFlags(0x20);
     MIi_CpuCopy16(unk_19d8, unk_1a18, 0x20);
     MIi_CpuCopy16(unk_19f8, unk_1a38, 0x20);
     for (i = 2; i <= 5; i++) {
-        unk_1a38[i] = func_ov119_02293924(unk_19f8[i], unk_19f8[14], v, 5);
+        unk_1a38[i] = blendColor(unk_19f8[i], unk_19f8[14], v, 5);
     }
-    unk_1a38[15] = func_ov119_02293924(unk_19f8[15], unk_19f8[14], v, 5);
+    unk_1a38[15] = blendColor(unk_19f8[15], unk_19f8[14], v, 5);
     for (i = 1; i <= 3; i++) {
-        unk_1a18[i] = func_ov119_02293924(unk_19d8[i], unk_19d8[14], v, 5);
+        unk_1a18[i] = blendColor(unk_19d8[i], unk_19d8[14], v, 5);
     }
-    unk_1a18[15] = func_ov119_02293924(unk_1a18[15], unk_19d8[14], v, 5);
+    unk_1a18[15] = blendColor(unk_1a18[15], unk_19d8[14], v, 5);
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02293828()
+BOOL FriendRosterTab::isWifiMode()
 {
     s32 t = Net_GetMode();
     switch (t) {
@@ -1685,29 +1685,29 @@ BOOL Unk_ov119_02295840::func_ov119_02293828()
     return FALSE;
 }
 
-void *Unk_ov119_02295840::func_ov119_02293810()
+void *FriendRosterTab::getFriendEntries()
 {
     return FriendList_GetEntries(PlayerData_getFriendList(PlayerData_GetCurrent()));
 }
 
-void *Unk_ov119_02295840::func_ov119_022937e8()
+void *FriendRosterTab::getFocusedFriendEntry()
 {
-    u8 *b = (u8 *)func_ov119_02293810();
-    s32 v = func_ov119_022937d0();
+    u8 *b = (u8 *)getFriendEntries();
+    s32 v = getFocusedFriendIndex();
     if (v >= 0x20) {
         return 0;
     }
     return b + v * 0x1c;
 }
 
-u32 Unk_ov119_02295840::func_ov119_022937d0()
+u32 FriendRosterTab::getFocusedFriendIndex()
 {
     return unk_bc[unk_a0 + (unk_9c << 3)];
 }
 
-void Unk_ov119_02295840::func_ov119_02293784()
+void FriendRosterTab::buildFriendIndex()
 {
-    u8 *b = (u8 *)func_ov119_02293810();
+    u8 *b = (u8 *)getFriendEntries();
     s32 i;
     s32 n = 0;
     for (i = 0; i < 0x20; i++) {
@@ -1721,9 +1721,9 @@ void Unk_ov119_02295840::func_ov119_02293784()
     }
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02293744()
+BOOL FriendRosterTab::hasGaps()
 {
-    u8 *b = (u8 *)func_ov119_02293810();
+    u8 *b = (u8 *)getFriendEntries();
     s32 flag = 0;
     s32 i;
     for (i = 0; i < 0x20; i++) {
@@ -1738,19 +1738,19 @@ BOOL Unk_ov119_02295840::func_ov119_02293744()
     return FALSE;
 }
 
-void Unk_ov119_02295840::func_ov119_0229371c()
+void FriendRosterTab::compactRoster()
 {
-    if (func_ov119_02293828()) {
-        func_ov119_02293784();
+    if (isWifiMode()) {
+        buildFriendIndex();
     } else {
         FriendList_Compact(PlayerData_getFriendList(PlayerData_GetCurrent()));
     }
 }
 
-s32 Unk_ov119_02295840::func_ov119_02293674()
+s32 FriendRosterTab::syncFromWifiFriendList()
 {
     u8 *a = (u8 *)Net_GetWifiFriendList();
-    u8 *b = (u8 *)func_ov119_02293810();
+    u8 *b = (u8 *)getFriendEntries();
     s32 i;
     s32 result = 0;
     u32 tmp[3];
@@ -1774,10 +1774,10 @@ s32 Unk_ov119_02295840::func_ov119_02293674()
     return result;
 }
 
-s32 Unk_ov119_02295840::func_ov119_02293640()
+s32 FriendRosterTab::findFreeEntry()
 {
     s32 i;
-    u8 *p = (u8 *)func_ov119_02293810();
+    u8 *p = (u8 *)getFriendEntries();
     for (i = 0; i < 0x20; p += 0x1c, i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(p)) == 0) {
             return i;
@@ -1786,8 +1786,8 @@ s32 Unk_ov119_02295840::func_ov119_02293640()
     return -1;
 }
 
-BOOL Unk_ov119_02295840::func_ov119_022935fc(void *p) {
-    u8 *r = (u8 *)func_ov119_02293810();
+BOOL FriendRosterTab::isInRoster(void *p) {
+    u8 *r = (u8 *)getFriendEntries();
     s32 i;
     for (i = 0; i < 0x20; i++) {
         if (DwcFriendData_IsValid(FriendEntry_GetFriendData(r))) {
@@ -1800,7 +1800,7 @@ BOOL Unk_ov119_02295840::func_ov119_022935fc(void *p) {
     return FALSE;
 }
 
-void Unk_ov119_02295840::func_ov119_0229348c() {
+void FriendRosterTab::drawPresentPage() {
     s32 x = 0x1ce;
     s32 i;
     s32 y = 0x14e;
@@ -1818,8 +1818,8 @@ void Unk_ov119_02295840::func_ov119_0229348c() {
     _ZN12Unk_020dd38cC2Ev(LampLights);
     _ZN12Unk_020e1c64C1Ev(LightLevel);
     for (i = 0; i < 8; i++) {
-        a = func_ov119_02294504();
-        b = func_ov119_02294504();
+        a = allocTextLabel();
+        b = allocTextLabel();
         rec = 0;
         if (CommManager_isOnline(g)) {
             if (cur == n) {
@@ -1837,12 +1837,12 @@ void Unk_ov119_02295840::func_ov119_0229348c() {
             func_0206f9fc(a, 0x66);
             func_020940d0(g2, &LightLevel);
             MsgString_copy(b, &LightLevel);
-            func_ov119_022932ac(&unk_9d4[pos], 0x58);
+            setRowIcon(&unk_9d4[pos], 0x58);
             unk_b2 = unk_b2 | (1 << i);
         } else {
             MsgString_clear(a);
             MsgString_clear(b);
-            func_ov119_022932ac(&unk_9d4[pos], 0x10);
+            setRowIcon(&unk_9d4[pos], 0x10);
         }
         func_0206fb9c(a, 4, x, 10, 0xf, 0, 0);
         func_0206fab4(a, 0, 0);
@@ -1857,9 +1857,9 @@ void Unk_ov119_02295840::func_ov119_0229348c() {
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
 
-void Unk_ov119_02295840::func_ov119_022933d8() {
+void FriendRosterTab::drawOwnCodePage() {
     void *g = PlayerData_getPlayerId(PlayerData_GetCurrent());
-    void *a = func_ov119_02294504();
+    void *a = allocTextLabel();
     u32 LampLights[7];
     _ZN12Unk_020dd38cC2Ev(LampLights);
     func_020638d0(func_0209409c(g), &LampLights);
@@ -1867,7 +1867,7 @@ void Unk_ov119_02295840::func_ov119_022933d8() {
     func_0206f9fc(a, 0x66);
     func_0206fb9c(a, 4, 0x102, 10, 0xf, 0, 0);
     func_0206fab4(a, 0, 0);
-    void *b = func_ov119_02294504();
+    void *b = allocTextLabel();
     u32 LightLevel[7];
     _ZN12Unk_020e1c64C1Ev(LightLevel);
     func_020940d0(g, &LightLevel);
@@ -1878,7 +1878,7 @@ void Unk_ov119_02295840::func_ov119_022933d8() {
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
 
-void Unk_ov119_02295840::func_ov119_02293328() {
+void FriendRosterTab::drawFriendCodeHelp() {
     u8 ch = data_021edb68;
     void *p = PlayerData_GetCurrent();
     s32 i;
@@ -1891,14 +1891,14 @@ void Unk_ov119_02295840::func_ov119_02293328() {
     }
     String_Load2d(&unk_89c, &ch, 0);
     for (i = 0; i < 3; i++) {
-        void *o = func_ov119_02294504();
+        void *o = allocTextLabel();
         MsgString_setLine(o, Msg_SkipLines((u8 *)this + 0x8ae, i));
         func_0206fb9c(o, 4, i * 0x28 + 0x8a, 0x14, 0xf, 0, 0);
         func_0206fab4(o, 0, 0);
     }
 }
 
-void Unk_ov119_02295840::func_ov119_022932ac(u16 *p, u32 v) {
+void FriendRosterTab::setRowIcon(u16 *p, u32 v) {
     p[0] = p[0] & ~0x3ff;
     p[0] = p[0] | v;
     if (v != 0x10) {
@@ -1918,12 +1918,12 @@ void Unk_ov119_02295840::func_ov119_022932ac(u16 *p, u32 v) {
     p[0x21] = p[0x21] | v;
 }
 
-void Unk_ov119_02295840::func_ov119_02293124() {
+void FriendRosterTab::drawRosterPage() {
     s32 i;
     u8 *recs;
     void *a;
     void *b;
-    recs = (u8 *)func_ov119_02293810();
+    recs = (u8 *)getFriendEntries();
     s32 base = unk_9c << 3;
     s32 x = 0x1ce;
     s32 y = 0x14e;
@@ -1933,8 +1933,8 @@ void Unk_ov119_02295840::func_ov119_02293124() {
     _ZN12Unk_020dd38cC2Ev(LampLights);
     _ZN12Unk_020dd374C2Ev(LightLevel);
     for (i = 0; i < 8; i++) {
-        a = func_ov119_02294504();
-        b = func_ov119_02294504();
+        a = allocTextLabel();
+        b = allocTextLabel();
         s32 idx = unk_bc[base];
         u8 *rec;
         if (idx < 0x20) {
@@ -1950,14 +1950,14 @@ void Unk_ov119_02295840::func_ov119_02293124() {
             func_0206f994(b, (void *)func_02076cec(rec), 8);
             unk_af = unk_af + 1;
             if (DwcFriendData_IsNotFriendKey(FriendEntry_GetFriendData(rec))) {
-                func_ov119_022932ac(&unk_9d4[pos], 0x50);
+                setRowIcon(&unk_9d4[pos], 0x50);
             } else {
-                func_ov119_022932ac(&unk_9d4[pos], 0x54);
+                setRowIcon(&unk_9d4[pos], 0x54);
             }
         } else {
             MsgString_clear(a);
             MsgString_clear(b);
-            func_ov119_022932ac(&unk_9d4[pos], 0x10);
+            setRowIcon(&unk_9d4[pos], 0x10);
         }
         func_0206fb9c(a, 4, x, 10, 0xf, 0, 0);
         func_0206fab4(a, 0, 0);
@@ -1972,48 +1972,48 @@ void Unk_ov119_02295840::func_ov119_02293124() {
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
 
-void Unk_ov119_02295840::func_ov119_022930d4() {
+void FriendRosterTab::refreshPage() {
     unk_b2 = 0;
     unk_b3 = 0;
-    func_ov119_02292e2c();
+    clearRowMarks();
     unk_af = 0;
     u8 t = unk_9c;
     switch (t) {
     case 5:
-        func_ov119_0229348c();
+        drawPresentPage();
         break;
     case 4:
-        func_ov119_022933d8();
+        drawOwnCodePage();
         break;
     default:
-        func_ov119_02292dd0(4);
-        func_ov119_02293124();
+        setFlags(4);
+        drawRosterPage();
         break;
     }
 }
 
-void Unk_ov119_02295840::func_ov119_0229305c(u8 s) {
+void FriendRosterTab::setPage(u8 s) {
     if (s != unk_9c) {
         unk_9d = s;
         unk_9c = s;
         u8 t = unk_9c;
         if (t == 5) {
-            func_ov119_0229448c(0xeb);
+            addTitleLabel(0xeb);
             unk_19d4 = unk_9d4;
         } else if (t == 4) {
-            func_ov119_0229448c(0xea);
+            addTitleLabel(0xea);
             unk_19d4 = &unk_9d4[0x400];
         } else {
-            func_ov119_0229448c(0xcd);
+            addTitleLabel(0xcd);
             unk_19d4 = unk_9d4;
         }
-        func_ov119_02292dd0(2);
-        func_ov119_022930d4();
+        setFlags(2);
+        refreshPage();
     }
 }
 
-u32 Unk_ov119_02295840::func_ov119_02293010(s32 idx) {
-    u8 *base = (u8 *)func_ov119_02293810();
+u32 FriendRosterTab::getPageOfFriend(s32 idx) {
+    u8 *base = (u8 *)getFriendEntries();
     s32 cnt = 0;
     s32 i;
     for (i = 0; i < 0x20; i++) {
@@ -2030,7 +2030,7 @@ u32 Unk_ov119_02295840::func_ov119_02293010(s32 idx) {
     return 0;
 }
 
-void Unk_ov119_02295840::func_ov119_02292f98() {
+void FriendRosterTab::loadOwnFriendCode() {
     void *p = PlayerData_GetCurrent();
     s32 i;
     if ((func_02076c8c(PlayerData_getWifiUserData(p)) & func_02076c84(PlayerData_getWifiUserData(p))) == 0) {
@@ -2046,65 +2046,65 @@ void Unk_ov119_02295840::func_ov119_02292f98() {
     }
 }
 
-u8 Unk_ov119_02295840::func_ov119_02292f8c(u32 idx) { return *((u8 *)this + idx + 0x3d5); }
+u8 FriendRosterTab::getPopupRowValue(u32 idx) { return *((u8 *)this + idx + 0x3d5); }
 
-void Unk_ov119_02295840::func_ov119_02292f20() {
+void FriendRosterTab::onPopupChoice() {
     switch (unk_ad) {
     case 1:
-        func_ov119_02293dc8();
+        removeFriend();
         break;
     case 0:
-        func_ov119_02293e10();
+        openRemoveConfirm();
         break;
     case 2:
-        func_ov119_02293d9c(9);
+        openFriendEditor(9);
         break;
     case 3:
-        func_ov119_02293d9c(0xb);
+        openFriendEditor(0xb);
         break;
     case 4:
-        func_ov119_02293d9c(0xd);
+        openFriendEditor(0xd);
         break;
     case 5:
-        func_ov119_02293d4c();
+        useCodeEntry();
         break;
     case 6:
     case 7:
     case 8:
     case 9:
-        func_ov119_02293c44();
+        registerPresentPlayer();
         break;
     case 10:
     default:
-        func_ov119_022945a4();
+        resumeInput();
         break;
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02292ecc(u32 x) {
-    func_ov002_0220160c(&unk_dc, (u8 *)this + 0x3d0, x);
+void FriendRosterTab::openPopup(u32 x) {
+    PopupChoiceMenuBody_setRowsFromIds(&unk_dc, (u8 *)this + 0x3d0, x);
     u32 r;
     if (unk_a0 == 0x16) {
         r = 0x9c;
     } else {
         r = 0xb8;
     }
-    func_ov002_02202278(&unk_dc, 0x100, r);
-    func_ov002_02202098(&unk_dc, 0);
-    func_ov002_02200a58(10);
-    func_ov119_02292dc0(0x10);
+    PopupChoiceMenu_placeAbove(&unk_dc, 0x100, r);
+    PopupChoice_Open(&unk_dc, 0);
+    setMainState(10);
+    clearFlags(0x10);
 }
 
-void Unk_ov119_02295840::func_ov119_02292ea4() {
+void FriendRosterTab::cancelChoice() {
     unk_ad = 10;
-    func_ov119_02294364();
-    func_ov002_02202064(&unk_dc, 0);
-    func_ov002_02200a58(0xc);
+    hideCursor();
+    PopupChoice_Close(&unk_dc, 0);
+    setMainState(0xc);
 }
 
-void Unk_ov119_02295840::func_ov119_02292e5c() {
+void FriendRosterTab::drawRowMarks() {
     s32 i;
-    func_ov119_02292e2c();
+    clearRowMarks();
     for (i = 0; i < 8; i++) {
         if (unk_b2 & (1 << i)) {
             func_0206ee80(unk_9d4, 3, i * 2 + 6, 4, i * 2 + 7, 5);
@@ -2112,59 +2112,59 @@ void Unk_ov119_02295840::func_ov119_02292e5c() {
     }
 }
 
-void Unk_ov119_02295840::func_ov119_02292e2c() {
+void FriendRosterTab::clearRowMarks() {
     func_0206ee80(unk_9d4, 3, 6, 4, 0x15, 3);
-    func_ov119_02292dd0(2);
+    setFlags(2);
 }
 
-void Unk_ov119_02295840::func_ov119_02292df4() {
+void FriendRosterTab::updateRowMarkBlink() {
     unk_b3 = unk_b3 + 1;
     u8 c = unk_b3;
     if (c == 10) {
-        func_ov119_02292e5c();
+        drawRowMarks();
     } else if (c >= 0x19) {
-        func_ov119_02292e2c();
+        clearRowMarks();
         unk_b3 = 0;
     }
 }
 
-BOOL Unk_ov119_02295840::func_ov119_02292de0(u32 mask) {
+BOOL FriendRosterTab::testFlags(u32 mask) {
     if (unk_98 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov119_02295840::func_ov119_02292dd0(u32 mask) { unk_98 = unk_98 | mask; }
+void FriendRosterTab::setFlags(u32 mask) { unk_98 = unk_98 | mask; }
 
-void Unk_ov119_02295840::func_ov119_02292dc0(u32 mask) { unk_98 = unk_98 & ~mask; }
+void FriendRosterTab::clearFlags(u32 mask) { unk_98 = unk_98 & ~mask; }
 
-extern "C" void *data_ov119_02295590[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294670Ev, 0};
+extern "C" void *data_ov119_02295590[2] = {(void *)_ZN15FriendRosterTab9mainAct0FEv, 0};
 
-extern "C" void *data_ov119_022955d8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_022946b4Ev, 0};
+extern "C" void *data_ov119_022955d8[2] = {(void *)_ZN15FriendRosterTab9mainAct0EEv, 0};
 
-extern "C" void *data_ov119_02295640[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294f4cEv, 0};
+extern "C" void *data_ov119_02295640[2] = {(void *)_ZN15FriendRosterTab9stateLoadEv, 0};
 
 extern "C" u32 data_ov119_022956a8[10] = {0x404d00f7, 0x000044c4, 0x804240f5, 0x0000450b, 0x006280f5, 0x0000450f, 0x40424005, 0x0000454b, 0x00620005, 0xffff454f};
 
-extern "C" void *data_ov119_02295628[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294e3cEv, 0};
+extern "C" void *data_ov119_02295628[2] = {(void *)_ZN15FriendRosterTab10stateCloseEv, 0};
 
-extern "C" void *data_ov119_022955b8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294634Ev, 0};
+extern "C" void *data_ov119_022955b8[2] = {(void *)_ZN15FriendRosterTab9mainAct10Ev, 0};
 
 extern "C" u32 data_ov119_02295748[12] = {0x40490027, 0x0000b0d0, 0x00598027, 0x0000b0d2, 0x80424025, 0x0000b50b, 0x00628025, 0x0000b50f, 0x40424035, 0x0000b54b, 0x00620035, 0xffffb54f};
 
 extern "C" Unk_ov119_02295588 data_ov119_02295588 = {0x419700f0, 0xa1a0, 0xffff};
 
-extern "C" void *data_ov119_022955a8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294a44Ev, 0};
+extern "C" void *data_ov119_022955a8[2] = {(void *)_ZN15FriendRosterTab9mainAct01Ev, 0};
 
-extern "C" void *data_ov119_02295598[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294718Ev, 0};
+extern "C" void *data_ov119_02295598[2] = {(void *)_ZN15FriendRosterTab9mainAct0CEv, 0};
 
-extern "C" void *data_ov119_022955c0[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_022947a4Ev, 0};
+extern "C" void *data_ov119_022955c0[2] = {(void *)_ZN15FriendRosterTab9mainAct09Ev, 0};
 
 extern "C" u32 data_ov119_02295778[12] = {0x80454041, 0x000074ca, 0x40650041, 0x000074ce, 0x8059403f, 0x00007502, 0x4059404f, 0x00007542, 0x8041403f, 0x00007500, 0x4041404f, 0xffff7540};
 
-extern "C" void *data_ov119_022955f0[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294990Ev, 0};
+extern "C" void *data_ov119_022955f0[2] = {(void *)_ZN15FriendRosterTab16updateCursorMoveEv, 0};
 
-extern "C" void *data_ov119_022955c8[2] = {(void *)_ZN18Unk_ov119_0229584019func_ov119_02294804Ev, 0};
+extern "C" void *data_ov119_022955c8[2] = {(void *)_ZN15FriendRosterTab9mainAct08Ev, 0};
 
 extern "C" u32 data_ov119_022957a8[12] = {0x419840ed, 0x00005530, 0x402040ed, 0x00005530, 0x400040ed, 0x00005530, 0x41e840ed, 0x00005530, 0x41c840ed, 0x00005530, 0x41a840ed, 0xffff5530};

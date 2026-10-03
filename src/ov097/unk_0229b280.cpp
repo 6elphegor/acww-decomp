@@ -15,7 +15,7 @@ u16 *func_02034250(void *a, s32 b, s32 c, s32 d);
 u32 func_020b0f54();
 s32 func_ov004_02233f08(void *out, void *in, s32 n);
 s32 func_ov004_02235028(s32 p);
-BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
+BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
 struct CommManager {
@@ -32,10 +32,10 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_ov002_02201194 {
+class MenuSlideView {
 public:
-    Unk_ov002_02201194();
-    ~Unk_ov002_02201194();
+    MenuSlideView();
+    ~MenuSlideView();
     /* 0x00 */ u8 unk_00[0xc];
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -43,10 +43,10 @@ public:
     /* 0x18 */ u8 unk_18;
 };
 
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -57,18 +57,18 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
     /* 0x50 */ Unk_ov002_022013a0 unk_50;
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
-    /* 0x70 */ Unk_ov002_02201194 unk_70;
+    /* 0x6c */ MenuProc *unk_6c;
+    /* 0x70 */ MenuSlideView unk_70;
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
     /* 0x8e */ u8 unk_8e;
@@ -77,9 +77,9 @@ public:
 };
 
 // Vtable 0x0229aea8 (ov096 class; ov097 functions are free functions on it)
-class Unk_ov096_0229aea8 : public Unk_ov002_022044e4 {
+class PocketMenu : public MenuProc {
 public:
-    void func_ov096_02294ed4();
+    void requestCameraPop();
 
     /* 0x91 */ u8 unk_91[0x25];
     /* 0xb6 */ u8 unk_b6;
@@ -90,14 +90,14 @@ public:
 };
 
 extern "C" {
-void func_ov096_0229865c(class Unk_ov096_0229aea8 *self);
-void func_ov096_02298334(class Unk_ov096_0229aea8 *self, s32 a, s32 b, s32 c);
-u16 func_ov096_02297b9c(class Unk_ov096_0229aea8 *self, u32 a);
-void func_ov096_022980a0(class Unk_ov096_0229aea8 *self, u32 k, u32 x, u32 y);
-void func_ov096_0229806c(class Unk_ov096_0229aea8 *self, u32 a);
+void PocketMenu_ReturnToIdle(class PocketMenu *self);
+void PocketMenu_ShowMessage(class PocketMenu *self, s32 a, s32 b, s32 c);
+u16 PocketMenu_GetItem(class PocketMenu *self, u32 a);
+void PocketMenu_SetSlotItem(class PocketMenu *self, u32 k, u32 x, u32 y);
+void PocketMenu_ClearSlotItem(class PocketMenu *self, u32 a);
 }
 
-extern "C" BOOL func_ov097_0229b280();
+extern "C" BOOL PocketMenu_CanEditRoom();
 
 static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -109,16 +109,16 @@ static inline BOOL Unk_ov097_Range(volatile u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b4a4Ev(Unk_ov096_0229aea8 *self) {
-    if (!func_ov097_0229b280()) {
-        func_ov096_0229865c(self);
-        func_ov096_02298334(self, 23, 0xff, 1);
+extern "C" void _ZN10PocketMenu15actionUseCarpetEv(PocketMenu *self) {
+    if (!PocketMenu_CanEditRoom()) {
+        PocketMenu_ReturnToIdle(self);
+        PocketMenu_ShowMessage(self, 23, 0xff, 1);
     } else {
     u16 v0;
     volatile u16 v1;
     u32 k = self->unk_b6;
-    v0 = func_ov096_02297b9c(self, k);
-    self->func_ov096_02294ed4();
+    v0 = PocketMenu_GetItem(self, k);
+    self->requestCameraPop();
     v1 = *func_02034250(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
@@ -127,24 +127,24 @@ extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b4a4Ev(Unk_ov096_0229aea
         r = TRUE;
     }
     if (r) {
-        func_ov096_022980a0(self, k, x, 0);
+        PocketMenu_SetSlotItem(self, k, x, 0);
     } else {
-        func_ov096_0229806c(self, k);
+        PocketMenu_ClearSlotItem(self, k);
     }
-    func_ov096_0229865c(self);
+    PocketMenu_ReturnToIdle(self);
     }
 }
 
-extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b414Ev(Unk_ov096_0229aea8 *self) {
-    if (!func_ov097_0229b280()) {
-        func_ov096_0229865c(self);
-        func_ov096_02298334(self, 24, 0xff, 1);
+extern "C" void _ZN10PocketMenu18actionUseWallpaperEv(PocketMenu *self) {
+    if (!PocketMenu_CanEditRoom()) {
+        PocketMenu_ReturnToIdle(self);
+        PocketMenu_ShowMessage(self, 24, 0xff, 1);
     } else {
     u16 v0;
     volatile u16 v1;
     u32 k = self->unk_b6;
-    v0 = func_ov096_02297b9c(self, k);
-    self->func_ov096_02294ed4();
+    v0 = PocketMenu_GetItem(self, k);
+    self->requestCameraPop();
     v1 = *func_020342cc(&v0, 0, 1, 1);
     BOOL r = FALSE;
     u32 x = v1;
@@ -153,16 +153,16 @@ extern "C" void _ZN18Unk_ov096_0229aea819func_ov097_0229b414Ev(Unk_ov096_0229aea
         r = TRUE;
     }
     if (r) {
-        func_ov096_022980a0(self, k, x, 0);
+        PocketMenu_SetSlotItem(self, k, x, 0);
     } else {
-        func_ov096_0229806c(self, k);
+        PocketMenu_ClearSlotItem(self, k);
     }
-    func_ov096_0229865c(self);
+    PocketMenu_ReturnToIdle(self);
     }
 }
 
-extern "C" void func_ov097_0229b3a4(Unk_ov096_0229aea8 *self, s32 a) {
-    if (func_ov097_0229b280()) {
+extern "C" void PocketMenu_AddRoomItemOptions(PocketMenu *self, s32 a) {
+    if (PocketMenu_CanEditRoom()) {
         volatile u16 v = a;
         BOOL r = FALSE;
         u32 x = v;
@@ -171,14 +171,14 @@ extern "C" void func_ov097_0229b3a4(Unk_ov096_0229aea8 *self, s32 a) {
             r = TRUE;
         }
         if (r) {
-            func_ov002_02201700(self->unk_27f0, 0xc, 0x13);
+            ChoiceIdList_Add(self->unk_27f0, 0xc, 0x13);
         } else if (x >= 0x1100 && x <= 0x1143) {
-            func_ov002_02201700(self->unk_27f0, 0xb, 0x12);
+            ChoiceIdList_Add(self->unk_27f0, 0xb, 0x12);
         }
     }
 }
 
-extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
+extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
     u16 in = a;
     u16 v;
     s32 out;
@@ -186,18 +186,18 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
     if (Item_IsFurniture(&v)) {
         switch (func_ov004_02233f08(&out, &v, 1)) {
         case 0:
-            func_ov096_0229865c(self);
-            func_ov096_02298334(self, 3, 0xff, 0);
+            PocketMenu_ReturnToIdle(self);
+            PocketMenu_ShowMessage(self, 3, 0xff, 0);
             Snd_PlaySe(0x73);
             return 0;
         case 1:
-            func_ov096_0229865c(self);
-            func_ov096_02298334(self, 5, 0xff, 1);
+            PocketMenu_ReturnToIdle(self);
+            PocketMenu_ShowMessage(self, 5, 0xff, 1);
             Snd_PlaySe(0x73);
             return 0;
         case 2:
-            func_ov096_0229865c(self);
-            func_ov096_02298334(self, 3, 0xff, 0);
+            PocketMenu_ReturnToIdle(self);
+            PocketMenu_ShowMessage(self, 3, 0xff, 0);
             Snd_PlaySe(0x73);
             return 0;
         default:
@@ -207,8 +207,8 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
     } else {
     self->unk_c4 = func_02042c64(gCommManager->unk_64, a);
     if (self->unk_c4 == -1) {
-        func_ov096_0229865c(self);
-        func_ov096_02298334(self, 3, 0xff, 0);
+        PocketMenu_ReturnToIdle(self);
+        PocketMenu_ShowMessage(self, 3, 0xff, 0);
         Snd_PlaySe(0x73);
         return 0;
     }
@@ -217,7 +217,7 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
     return 1;
 }
 
-extern "C" BOOL func_ov097_0229b280() {
+extern "C" BOOL PocketMenu_CanEditRoom() {
     CommManager *g = gCommManager;
     if (g->isOnline()) {
         if (g->unk_64 != 0 || func_020b0f54() > 1) {

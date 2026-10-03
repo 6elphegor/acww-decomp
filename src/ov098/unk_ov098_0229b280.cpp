@@ -35,7 +35,7 @@ extern u8 data_021e7f8c[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];
-extern "C" s16 data_ov098_0229bd00[16] = {0, 0x1800, -0x1800, 0};
+extern "C" s16 sBuryHoleAngles[16] = {0, 0x1800, -0x1800, 0};
 
 // other overlays
 BOOL PlayerActor_ConfirmReleaseCreature();
@@ -50,7 +50,7 @@ void HeldInsect_Release(void *p, s32 a);
 void PlayerActor_LocalReleaseCatch(s32 a);
 BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
-BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
+BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
 }
 
 struct CommManager {
@@ -63,16 +63,16 @@ struct CommManager {
 };
 extern "C" CommManager *gCommManager;
 
-class Unk_ov096_0229aea8;
+class PocketMenu;
 extern "C" {
-void *func_ov096_0229567c(Unk_ov096_0229aea8 *self);
-s32 func_ov096_02297b14(Unk_ov096_0229aea8 *self, u32 a);
-s32 func_ov096_02297b9c(Unk_ov096_0229aea8 *self, u32 a);
-s32 func_ov096_0229803c(Unk_ov096_0229aea8 *self, u32 a);
-s32 func_ov096_0229806c(Unk_ov096_0229aea8 *self, u32 a);
-s32 func_ov096_02298320(Unk_ov096_0229aea8 *self);
-s32 func_ov096_02298334(Unk_ov096_0229aea8 *self, s32 a, s32 b, s32 c);
-s32 func_ov096_0229865c(Unk_ov096_0229aea8 *self);
+void *PocketMenu_GetPlayerSlot(PocketMenu *self);
+s32 PocketMenu_GetLetter(PocketMenu *self, u32 a);
+s32 PocketMenu_GetItem(PocketMenu *self, u32 a);
+s32 PocketMenu_ClearLetter(PocketMenu *self, u32 a);
+s32 PocketMenu_ClearSlotItem(PocketMenu *self, u32 a);
+s32 func_ov096_02298320(PocketMenu *self);
+s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
+s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
 struct Unk_0208f238 {
     void func_0208f168();
@@ -86,20 +86,20 @@ struct PlayerData {
 };
 
 // +0x27fc sub-object (0x108 bytes, opaque here)
-class Unk_ov002_022040ec {
+class MenuErrorMessage {
 public:
-    void func_ov002_022040c0();
-    void func_ov002_022040c8();
-    void func_ov002_022040d4();
-    void func_ov002_022040ec();
+    void undim();
+    void hidePromptBalloon();
+    void updatePromptBalloon();
+    void showPromptOnly();
     u8 unk_00[0x108];
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -110,21 +110,21 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -134,43 +134,43 @@ public:
 };
 
 // Vtable 0x0229aea8, size 0x2d80
-class Unk_ov096_0229aea8 : public Unk_ov002_022044e4 {
+class PocketMenu : public MenuProc {
 public:
-    virtual ~Unk_ov096_0229aea8();
+    virtual ~PocketMenu();
 
     // this group (ov098_000)
-    void func_ov098_0229b280();
-    void func_ov098_0229b2b0();
-    void func_ov098_0229b2d8();
-    void func_ov098_0229b344();
-    void func_ov098_0229b36c();
-    void func_ov098_0229b390();
-    void func_ov098_0229b3ac();
-    void func_ov098_0229b44c();
-    void func_ov098_0229b468();
-    void func_ov098_0229b488();
-    void func_ov098_0229b4c4();
-    void func_ov098_0229b580();
-    void func_ov098_0229b5d4();
-    void func_ov098_0229b624();
-    BOOL func_ov098_0229b6b4();
-    s32 *func_ov098_0229b790(s16 a);
-    void func_ov098_0229b864(u8 a, u32 b);
-    void func_ov098_0229b8ac();
-    void func_ov098_0229b954();
-    void func_ov098_0229b96c(u8 a);
-    void func_ov098_0229b978(u8 a, u8 b);
-    void func_ov098_0229b9e4();
-    void func_ov098_0229ba60();
-    BOOL func_ov098_0229ba78(s32 flag);
-    void func_ov098_0229bb18();
-    void func_ov098_0229bb5c(u16 v);
+    void mainAct39();
+    void mainAct38();
+    void mainAct37();
+    void mainAct36();
+    void mainAct35();
+    void actionAct21();
+    void sendBottleLetter();
+    void mainAct34();
+    void mainAct33();
+    void actionThrowBottle();
+    void actionPlantItem();
+    void mainAct2E();
+    void mainAct2D();
+    void actionBuryItem();
+    BOOL findBuryHole();
+    s32 *getDirOffset(s16 a);
+    void sendInsectReleasePacket(u8 a, u32 b);
+    void mainAct2C();
+    void actionReleaseInsect();
+    void sendFishReleasePacket(u8 a);
+    void sendReleasePacket(u8 a, u8 b);
+    void mainAct30();
+    void actionReleaseFish();
+    BOOL findWaterNearPlayer(s32 flag);
+    void addBottleOption();
+    void addFieldOptions(u16 v);
 
     // other groups of this overlay (declarations only)
-    s32 func_ov096_02294ed4();
-    s32 func_ov096_02296898();
-    s32 func_ov096_02294d9c(u32 a);
-    s32 func_ov096_02294dac(u32 a);
+    s32 requestCameraPop();
+    s32 hideCursor();
+    s32 clearFlags(u32 a);
+    s32 setFlags(u32 a);
 
     /* 0x094 */ u32 unk_94;
     /* 0x098 */ u32 unk_98;
@@ -196,7 +196,7 @@ public:
     /* 0x0c4 */ s32 unk_c4;
     /* 0x0c8 */ u8 unk_c8[0x27f0 - 0xc8];
     /* 0x27f0 */ u8 unk_27f0[0xc];
-    /* 0x27fc */ Unk_ov002_022040ec unk_27fc;
+    /* 0x27fc */ MenuErrorMessage unk_27fc;
     /* 0x2904 */ u8 unk_2904[0x2b84 - 0x2904];
     /* 0x2b84 */ s32 unk_2b84;
     /* 0x2b88 */ s32 unk_2b88;
@@ -239,20 +239,20 @@ struct Unk_0229bc90_Pad {
 
 extern "C" {
 void *PlayerData_GetCurrent();
-s32 func_ov094_022923a4(u32);
+s32 InvItem_IsNotFishInsectOrFlower(u32);
 }
 
-extern "C" s32 func_ov098_0229bc90(s32 a, u32 b) {
+extern "C" s32 PocketMenu_CanDropOutdoor(s32 a, u32 b) {
     Unk_0229bc90_Pad pad;
     if (((Unk_02097ff4 *)PlayerData_GetCurrent())->func_02098044(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
         }
     }
-    return func_ov094_022923a4(b);
+    return InvItem_IsNotFishInsectOrFlower(b);
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229bb5c(u16 v) {
+void PocketMenu::addFieldOptions(u16 v) {
     struct {
         u16 a;
     } l;
@@ -264,7 +264,7 @@ void Unk_ov096_0229aea8::func_ov098_0229bb5c(u16 v) {
         f1 = TRUE;
     }
     if (f1 || (a >= 0x12e8 && a <= 0x131f)) {
-        func_ov002_02201700(unk_27f0, 0x1b, 0x21);
+        ChoiceIdList_Add(unk_27f0, 0x1b, 0x21);
     }
     BOOL f2 = FALSE;
     u16 c = *(volatile u16 *)&l.a;
@@ -273,30 +273,30 @@ void Unk_ov096_0229aea8::func_ov098_0229bb5c(u16 v) {
         f2 = TRUE;
     }
     if (f2) {
-        func_ov002_02201700(unk_27f0, 8, 0x15);
+        ChoiceIdList_Add(unk_27f0, 8, 0x15);
     } else if (c >= 0x12e8 && c <= 0x131f) {
-        if (func_ov098_0229ba78(0)) {
-            func_ov002_02201700(unk_27f0, 8, 0x18);
+        if (findWaterNearPlayer(0)) {
+            ChoiceIdList_Add(unk_27f0, 8, 0x18);
         }
     } else if ((c >= 0x137c && c <= 0x137c) || (c >= 0x1408 && c <= 0x1428) || (c >= 0x1471 && c <= 0x1491) ||
                (c >= 0x14fe && c <= 0x1517) || (c >= 0x151d && c <= 0x151e) || (c >= 0x1567 && c <= 0x1567)) {
-        func_ov002_02201700(unk_27f0, 6, 0x17);
-    } else if (func_ov098_0229b6b4()) {
-        func_ov002_02201700(unk_27f0, 7, 0x16);
+        ChoiceIdList_Add(unk_27f0, 6, 0x17);
+    } else if (findBuryHole()) {
+        ChoiceIdList_Add(unk_27f0, 7, 0x16);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229bb18() {
-    func_ov096_02294d9c(8);
+void PocketMenu::addBottleOption() {
+    clearFlags(8);
     if (!gCommManager->isOnline()) {
-        if (func_ov098_0229ba78(1)) {
-            func_ov002_02201700(unk_27f0, 0x11, 0x19);
-            func_ov096_02294dac(8);
+        if (findWaterNearPlayer(1)) {
+            ChoiceIdList_Add(unk_27f0, 0x11, 0x19);
+            setFlags(8);
         }
     }
 }
 
-BOOL Unk_ov096_0229aea8::func_ov098_0229ba78(s32 flag) {
+BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
     u8 *p = func_02095204(4);
     s32 base;
     u8 *q;
@@ -318,14 +318,14 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229ba78(s32 flag) {
     return func_02030d78(&unk_2b84, q, *(s16 *)(p + 0x8e), 0x7800, base, 0xc);
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229ba60() {
-    func_ov002_02200a58(0x30);
-    func_ov098_0229b9e4();
+void PocketMenu::actionReleaseFish() {
+    setMainState(0x30);
+    mainAct30();
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b9e4() {
-    void *r6 = func_ov096_0229567c(this);
-    s32 a = func_ov096_02297b9c(this, unk_b6);
+void PocketMenu::mainAct30() {
+    void *r6 = PocketMenu_GetPlayerSlot(this);
+    s32 a = PocketMenu_GetItem(this, unk_b6);
     if (FishCatch_StartRelease(r6, a, &unk_2b84)) {
         struct {
             u16 a;
@@ -344,13 +344,13 @@ void Unk_ov096_0229aea8::func_ov098_0229b9e4() {
         } else {
             r1 = -1;
         }
-        func_ov098_0229b96c((u8)r1);
+        sendFishReleasePacket((u8)r1);
         PlayerActor_LocalReleaseCatch(1);
         func_ov096_02298320(this);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b978(u8 a, u8 b) {
+void PocketMenu::sendReleasePacket(u8 a, u8 b) {
     if (gCommManager->isOnline()) {
         u8 pkt[12];
         pkt[0] = b;
@@ -364,20 +364,20 @@ void Unk_ov096_0229aea8::func_ov098_0229b978(u8 a, u8 b) {
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b96c(u8 a) {
-    func_ov098_0229b978(a, 2);
+void PocketMenu::sendFishReleasePacket(u8 a) {
+    sendReleasePacket(a, 2);
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b954() {
-    func_ov002_02200a58(0x2c);
-    func_ov098_0229b8ac();
+void PocketMenu::actionReleaseInsect() {
+    setMainState(0x2c);
+    mainAct2C();
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
-    void *r7 = func_ov096_0229567c(this);
+void PocketMenu::mainAct2C() {
+    void *r7 = PocketMenu_GetPlayerSlot(this);
     if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
-        l.a = func_ov096_02297b9c(this, unk_b6);
+        l.a = PocketMenu_GetItem(this, unk_b6);
         BOOL ok = FALSE;
         volatile u16 *pv = &l.a;
         u16 a = *pv;
@@ -392,12 +392,12 @@ void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
-        func_ov098_0229b864((u8)r5, t);
+        sendInsectReleasePacket((u8)r5, t);
         func_ov096_02298320(this);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b864(u8 a, u32 b) {
+void PocketMenu::sendInsectReleasePacket(u8 a, u32 b) {
     if (gCommManager->isOnline()) {
         u8 buf[3];
         buf[0] = 1;
@@ -410,7 +410,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b864(u8 a, u32 b) {
     }
 }
 
-s32 *Unk_ov096_0229aea8::func_ov098_0229b790(s16 a) {
+s32 *PocketMenu::getDirOffset(s16 a) {
     static Unk_ov098_0229b790_Pt tbl[16] = {
         Unk_ov098_0229b790_Pt(0, 1),   Unk_ov098_0229b790_Pt(1, 1),   Unk_ov098_0229b790_Pt(1, 1),
         Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, 0),   Unk_ov098_0229b790_Pt(1, -1),
@@ -422,7 +422,7 @@ s32 *Unk_ov096_0229aea8::func_ov098_0229b790(s16 a) {
     return &tbl[(a >> 12) & 15].x;
 }
 
-BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
+BOOL PocketMenu::findBuryHole() {
     u16 *pv = ((PlayerData *)PlayerData_GetCurrent())->getHeldItem();
     BOOL r = FALSE;
     u32 v = *pv;
@@ -442,7 +442,7 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
     s32 zero1 = 0, zero2 = 0;
     s16 base = *(s16 *)(q + 0x8e);
     for (s32 i = 0; i < 3; i++) {
-        s32 *p = func_ov098_0229b790(base + data_ov098_0229bd00[i]);
+        s32 *p = getDirOffset(base + sBuryHoleAngles[i]);
         s32 x = px + p[0];
         s32 y = py + p[1];
         s32 hx = x >> 4;
@@ -463,97 +463,97 @@ BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
     return FALSE;
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b624() {
-    if (func_ov098_0229b6b4() == 0) {
-        func_ov096_0229865c(this);
-        func_ov096_02298334(this, 0xd, 0xff, 1);
+void PocketMenu::actionBuryItem() {
+    if (findBuryHole() == 0) {
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
     } else {
-        s32 a = func_ov096_02297b9c(this, unk_b6);
+        s32 a = PocketMenu_GetItem(this, unk_b6);
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
         unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 == -1) {
-            func_ov096_0229865c(this);
-            func_ov096_02298334(this, 0xd, 0xff, 1);
+            PocketMenu_ReturnToIdle(this);
+            PocketMenu_ShowMessage(this, 0xd, 0xff, 1);
         } else {
-            func_ov002_02200a58(0x2d);
+            setMainState(0x2d);
         }
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b5d4() {
+void PocketMenu::mainAct2D() {
     switch (func_02042d10(unk_c4)) {
     case 1:
-        func_ov002_02200a58(0x2e);
-        func_ov098_0229b580();
+        setMainState(0x2e);
+        mainAct2E();
         goto done;
     case 2:
-        func_ov096_0229865c(this);
-        func_ov096_02298334(this, 3, 0xff, 1);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 3, 0xff, 1);
     done:
         func_02042820(unk_c4);
         unk_c4 = -1;
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b580() {
+void PocketMenu::mainAct2E() {
     u16 v;
     s32 out[3];
     FieldPos_FromUnitCenter(out, unk_2b90, unk_2b94);
-    v = func_ov096_02297b9c(this, unk_b6);
+    v = PocketMenu_GetItem(this, unk_b6);
     if (PlayerActor_LocalRequestBuryItem(out, &v)) {
-        func_ov096_0229806c(this, unk_b6);
-        func_ov002_02200a58(0x2f);
+        PocketMenu_ClearSlotItem(this, unk_b6);
+        setMainState(0x2f);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b4c4() {
-    s32 a = func_ov096_02297b9c(this, unk_b6);
-    if (func_ov098_0229b6b4()) {
+void PocketMenu::actionPlantItem() {
+    s32 a = PocketMenu_GetItem(this, unk_b6);
+    if (findBuryHole()) {
         s32 pair[2];
         pair[0] = unk_2b90;
         pair[1] = unk_2b94;
         unk_c4 = func_0204341c(gCommManager->unk_64, pair, 2, 0, a);
         if (unk_c4 != -1) {
-            func_ov002_02200a58(0x2d);
+            setMainState(0x2d);
             return;
         }
     }
     unk_c4 = func_02042c9c(gCommManager->unk_64, 0x18, a);
     if (unk_c4 == -1) {
-        func_ov096_0229865c(this);
-        func_ov096_02298334(this, 8, 0xff, 0);
+        PocketMenu_ReturnToIdle(this);
+        PocketMenu_ShowMessage(this, 8, 0xff, 0);
         Snd_PlaySe(0x73);
     } else {
-        func_ov002_02200a58(0x29);
-        func_ov096_02294dac(0x1000);
+        setMainState(0x29);
+        setFlags(0x1000);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b488() {
-    func_ov098_0229b3ac();
+void PocketMenu::actionThrowBottle() {
+    sendBottleLetter();
     PlayerActor_LocalRequestAct89();
-    BottleThrow_SetTarget(&unk_2b84, func_ov096_0229567c(this));
-    func_ov096_0229803c(this, unk_b6);
-    func_ov002_02200a58(0x33);
+    BottleThrow_SetTarget(&unk_2b84, PocketMenu_GetPlayerSlot(this));
+    PocketMenu_ClearLetter(this, unk_b6);
+    setMainState(0x33);
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b468() {
-    if (BottleThrow_IsActive(func_ov096_0229567c(this)) == 1) {
-        func_ov002_02200a58(0x34);
+void PocketMenu::mainAct33() {
+    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot(this)) == 1) {
+        setMainState(0x34);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b44c() {
-    if (BottleThrow_IsActive(func_ov096_0229567c(this)) == 0) {
-        func_ov096_0229865c(this);
+void PocketMenu::mainAct34() {
+    if (BottleThrow_IsActive(PocketMenu_GetPlayerSlot(this)) == 0) {
+        PocketMenu_ReturnToIdle(this);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
-    func_ov098_0229b978(0, 5);
-    s32 p = func_ov096_02297b14(this, unk_b6);
+void PocketMenu::sendBottleLetter() {
+    sendReleasePacket(0, 5);
+    s32 p = PocketMenu_GetLetter(this, unk_b6);
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->unk_64 == 0) {
         u8 *const d = data_021e7f8c;
@@ -573,46 +573,46 @@ void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b390() {
-    func_ov002_02200a58(0x35);
-    func_ov096_02294ed4();
-    func_ov096_02296898();
+void PocketMenu::actionAct21() {
+    setMainState(0x35);
+    requestCameraPop();
+    hideCursor();
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b36c() {
-    func_ov096_02297b9c(this, unk_b6);
+void PocketMenu::mainAct35() {
+    PocketMenu_GetItem(this, unk_b6);
     if (PlayerActor_LocalRequestReleaseCreature()) {
-        func_ov002_02200a58(0x36);
+        setMainState(0x36);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b344() {
+void PocketMenu::mainAct36() {
     if (PlayerActor_IsLocalReleaseWaiting()) {
-        func_ov002_02200a58(0x37);
-        unk_27fc.func_ov002_022040ec();
+        setMainState(0x37);
+        unk_27fc.showPromptOnly();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b2d8() {
-    unk_27fc.func_ov002_022040d4();
+void PocketMenu::mainAct37() {
+    unk_27fc.updatePromptBalloon();
     if (func_0206e61c() != 0 || Unk_ov098_0229b2d8_Both() || (gPad[1] & 1) || (gPad[1] & 2)) {
-        func_ov002_02200a58(0x38);
-        unk_27fc.func_ov002_022040c8();
+        setMainState(0x38);
+        unk_27fc.hidePromptBalloon();
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b2b0() {
-    unk_27fc.func_ov002_022040d4();
+void PocketMenu::mainAct38() {
+    unk_27fc.updatePromptBalloon();
     if (PlayerActor_ConfirmReleaseCreature()) {
-        func_ov002_02200a58(0x39);
+        setMainState(0x39);
     }
 }
 
-void Unk_ov096_0229aea8::func_ov098_0229b280() {
-    unk_27fc.func_ov002_022040d4();
+void PocketMenu::mainAct39() {
+    unk_27fc.updatePromptBalloon();
     if (PlayerActor_IsInAction(6, 4) == 0) {
-        unk_27fc.func_ov002_022040c0();
-        func_ov096_0229865c(this);
+        unk_27fc.undim();
+        PocketMenu_ReturnToIdle(this);
     }
 }
 

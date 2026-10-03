@@ -114,14 +114,14 @@ public:
     /* 0x0c */ u8 unk_0c[0xb0];
 };
 
-class Unk_ov002_02204770 : public LabelBalloon {
+class MenuTitleBalloon : public LabelBalloon {
 public:
-    Unk_ov002_02204770();
-    virtual ~Unk_ov002_02204770();
+    MenuTitleBalloon();
+    virtual ~MenuTitleBalloon();
     virtual void setOrigin(s32 a, s32 b);
 
-    void func_ov002_022039d8();
-    void func_ov002_022039f8(u8 a, s32 b, s32 c);
+    void hideNow();
+    void showText(u8 a, s32 b, s32 c);
 };
 
 // Button/sound helper (size 0x24)
@@ -159,7 +159,7 @@ extern "C" u32 data_ov139_022926a0[12];
 extern "C" u32 data_ov139_022926d0[84];
 
 
-extern "C" u32 data_ov139_02292680[8] = {(u32)data_ov139_022926d0, (u32)data_ov139_022926a0, (u32)data_ov139_022925c0, (u32)data_ov139_022925e0, (u32)data_ov139_02292620, (u32)data_ov139_02292640, (u32)data_ov139_02292600, (u32)data_ov139_02292660};
+extern "C" u32 sTownListCellLists[8] = {(u32)data_ov139_022926d0, (u32)data_ov139_022926a0, (u32)data_ov139_022925c0, (u32)data_ov139_022925e0, (u32)data_ov139_02292620, (u32)data_ov139_02292640, (u32)data_ov139_02292600, (u32)data_ov139_02292660};
 extern "C" u32 data_ov139_022925c0[8] = {0x81bf4047, 0x00008893, 0x41df0047, 0x00008897, 0x81d50040, 0x00008882, 0x81b90040, 0xffff8880};
 extern "C" u32 data_ov139_022925e0[8] = {0x80114047, 0x0000888d, 0x40310047, 0x00008891, 0x80270040, 0x00008882, 0x800b0040, 0xffff8880};
 extern "C" u32 data_ov139_02292600[8] = {0x81e44048, 0x00008893, 0x40040048, 0x00008897, 0x81fa0041, 0x00008882, 0x81de0041, 0xffff8880};
@@ -168,33 +168,33 @@ extern "C" u32 data_ov139_02292640[8] = {0x81a34048, 0x00008899, 0x41c30048, 0x0
 extern "C" u32 data_ov139_022926d0[84] = {0x81a800a8, 0x0000b17b, 0x41c880a8, 0x0000b17f, 0x41a840c8, 0x0000b1fb, 0x01c800c8, 0x0000b1ff, 0x4030403e, 0x000048e6, 0x4010403e, 0x000048e6, 0x41e8403e, 0x000048e6, 0x41c8403e, 0x000048e6, 0x41a8403e, 0x000048e6, 0x4030402e, 0x000048e6, 0x4010402e, 0x000048e6, 0x41e8402e, 0x000048e6, 0x41c8402e, 0x000048e6, 0x41a8402e, 0x000048e6, 0x4030401e, 0x000048e6, 0x4010401e, 0x000048e6, 0x41e8401e, 0x000048e6, 0x41c8401e, 0x000048e6, 0x41a8401e, 0x000048e6, 0x4030400e, 0x000048e6, 0x4010400e, 0x000048e6, 0x41e8400e, 0x000048e6, 0x41c8400e, 0x000048e6, 0x41a8400e, 0x000048e6, 0x403040fe, 0x000048e6, 0x401040fe, 0x000048e6, 0x41e840fe, 0x000048e6, 0x41c840fe, 0x000048e6, 0x41a840fe, 0x000048e6, 0x403040ee, 0x000048e6, 0x401040ee, 0x000048e6, 0x41e840ee, 0x000048e6, 0x41c840ee, 0x000048e6, 0x41a840ee, 0x000048e6, 0x41bc40d6, 0x000058cd, 0x01dc40d6, 0x000058d1, 0x401440d6, 0x000058ed, 0x003440d6, 0x000058f1, 0x902840d5, 0x00005888, 0x801040d5, 0x00005888, 0x91d040d5, 0x00005888, 0x81b840d5, 0xffff5888};
 extern "C" u32 data_ov139_022926a0[12] = {0x403040ee, 0x000058c6, 0x41a400df, 0x00005886, 0x401040ee, 0x000058c6, 0x41e840ee, 0x000058c6, 0x41c840ee, 0x000058c6, 0x41a840ee, 0xffff58c6};
 
-class Unk_ov139_02291f60 {
+class MenuTownListPanel {
 public:
-    Unk_ov139_02291f60();
-    ~Unk_ov139_02291f60();
+    MenuTownListPanel();
+    ~MenuTownListPanel();
 
-    void func_ov139_02291f60(u32 m);
-    void func_ov139_02291f70(u32 m);
-    BOOL func_ov139_02291f80(u32 m);
-    u32 func_ov139_02291f98(s32 i);
-    void func_ov139_02291fa4(s32 i, u8 *str, u8 pal);
-    void func_ov139_0229200c(s32 i, u8 *str, u8 pal);
-    Unk_020e0488 *func_ov139_02292104();
-    void func_ov139_0229212c();
-    void func_ov139_02292154(s32 i);
-    void func_ov139_0229217c(s32 i, u8 *str);
-    void func_ov139_022921ac();
-    void func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e);
-    void func_ov139_0229237c();
-    void func_ov139_022923dc();
-    void func_ov139_02292410();
-    void func_ov139_02292480(s32 a, s32 b);
-    void func_ov139_02292498();
-    void func_ov139_022924d8();
-    void func_ov139_022924f4();
-    void func_ov139_02292510(u8 id, u8 v);
+    void clearFlags(u32 m);
+    void setFlags(u32 m);
+    BOOL testFlags(u32 m);
+    u32 getCellList(s32 i);
+    void setRowPlayerName(s32 i, u8 *str, u8 pal);
+    void setRowTownName(s32 i, u8 *str, u8 pal);
+    Unk_020e0488 *allocTextLabel();
+    void resetTextLabels();
+    void clearRow(s32 i);
+    void setRow(s32 i, u8 *str);
+    void createLabels();
+    void setRowFadeColor(s32 a, s32 x, s32 n, s32 e);
+    void loadObjGfx();
+    void clearAllRows();
+    void loadBgGfx();
+    void drawTitle(s32 a, s32 b);
+    void flushPalette();
+    void preStateUpdate();
+    void release();
+    void init(u8 id, u8 v);
 
-    /* 0x000 */ Unk_ov002_02204770 unk_00;
+    /* 0x000 */ MenuTitleBalloon unk_00;
     /* 0x0bc */ Unk_020e0488 unk_bc[20];
     /* 0x5bc */ BgVramTask unk_5bc;
     /* 0x5e0 */ u16 unk_5e0[16];
@@ -204,42 +204,42 @@ public:
     /* 0x623 */ u8 unk_623;
 };
 
-Unk_ov139_02291f60::Unk_ov139_02291f60() {}
+MenuTownListPanel::MenuTownListPanel() {}
 
-Unk_ov139_02291f60::~Unk_ov139_02291f60() {}
+MenuTownListPanel::~MenuTownListPanel() {}
 
-void Unk_ov139_02291f60::func_ov139_02292510(u8 id, u8 v) {
+void MenuTownListPanel::init(u8 id, u8 v) {
     unk_622 = id;
     unk_620 = 0;
-    unk_00.func_ov002_022039d8();
-    unk_00.func_ov002_022039f8(v, 0x90, 0x18);
+    unk_00.hideNow();
+    unk_00.showText(v, 0x90, 0x18);
     unk_00.showLayer2();
 }
 
-void Unk_ov139_02291f60::func_ov139_022924f4() {
-    func_ov139_0229212c();
+void MenuTownListPanel::release() {
+    resetTextLabels();
     unk_5bc.cancel();
 }
 
-void Unk_ov139_02291f60::func_ov139_022924d8() {
-    func_ov139_0229212c();
+void MenuTownListPanel::preStateUpdate() {
+    resetTextLabels();
     unk_5bc.cancel();
 }
 
-void Unk_ov139_02291f60::func_ov139_02292498() {
-    if (func_ov139_02291f80(1)) {
+void MenuTownListPanel::flushPalette() {
+    if (testFlags(1)) {
         if (unk_5bc.requestPalette((u32)unk_600, unk_622, 7)) {
-            func_ov139_02291f60(1);
+            clearFlags(1);
         }
     }
 }
 
-void Unk_ov139_02291f60::func_ov139_02292480(s32 a, s32 b) {
+void MenuTownListPanel::drawTitle(s32 a, s32 b) {
     unk_00.setPos(a, b);
     unk_00.draw();
 }
 
-void Unk_ov139_02291f60::func_ov139_02292410() {
+void MenuTownListPanel::loadBgGfx() {
     u32 h = gCurrentHeap;
     Gfx2d_LoadCharFile((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
     Gfx2d_LoadPaletteFile((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
@@ -247,22 +247,22 @@ void Unk_ov139_02291f60::func_ov139_02292410() {
     MIi_CpuCopy16(unk_5e0, unk_600, 0x20);
 }
 
-void Unk_ov139_02291f60::func_ov139_022923dc() {
+void MenuTownListPanel::clearAllRows() {
     s32 i;
     for (i = 0; i < 6; i++) {
-        func_ov139_0229200c(i, NULL, 0xe);
-        func_ov139_02291fa4(i, NULL, 0xe);
+        setRowTownName(i, NULL, 0xe);
+        setRowPlayerName(i, NULL, 0xe);
     }
 }
 
-void Unk_ov139_02291f60::func_ov139_0229237c() {
+void MenuTownListPanel::loadObjGfx() {
     u32 h = gCurrentHeap;
     Gfx2d_LoadCharFile((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
     Gfx2d_LoadCharFile((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
     Gfx2d_LoadPaletteFile((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
 }
 
-void Unk_ov139_02291f60::func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e) {
+void MenuTownListPanel::setRowFadeColor(s32 a, s32 x, s32 n, s32 e) {
     u16 c1 = unk_5e0[15];
     u8 r = c1 & 0x1f;
     u8 g = (c1 & 0x3e0) >> 5;
@@ -273,46 +273,46 @@ void Unk_ov139_02291f60::func_ov139_022922a0(s32 a, s32 x, s32 n, s32 e) {
     g = ((u8)((c2 & 0x3e0) >> 5) * x + g * d) / n;
     b = ((u8)((c2 & 0x7c00) >> 10) * x + b * d) / n;
     unk_600[(u8)(0xe - a)] = r | (g << 5) | (b << 10);
-    func_ov139_02291f70(1);
+    setFlags(1);
 }
 
-void Unk_ov139_02291f60::func_ov139_022921ac() {
+void MenuTownListPanel::createLabels() {
     Unk_020e0488 *t;
-    t = func_ov139_02292104();
+    t = allocTextLabel();
     func_0206f9fc(t, 0x65);
     t->func_0206fb9c(8, 0x93, 6, 0xf, 0, 0);
     t->func_0206fab4(1, 0);
-    t = func_ov139_02292104();
+    t = allocTextLabel();
     func_0206f9fc(t, 0xc2);
     t->func_0206fb9c(8, 0x8d, 6, 0xf, 0, 0);
     t->func_0206fab4(1, 0);
-    t = func_ov139_02292104();
+    t = allocTextLabel();
     func_0206f9fc(t, 0xc1);
     t->func_0206fb9c(8, 0x99, 6, 0xf, 0, 0);
     t->func_0206fab4(1, 0);
-    t = func_ov139_02292104();
+    t = allocTextLabel();
     func_0206f9fc(t, 0xbc);
     t->func_0206fb48(8, 0xcd, 6, 0xe, 0, 0);
     t->func_0206fab4(1, 0);
-    t = func_ov139_02292104();
+    t = allocTextLabel();
     func_0206f9fc(t, 0xbd);
     t->func_0206fb48(8, 0xed, 6, 0xe, 0, 0);
     t->func_0206fab4(1, 0);
 }
 
-void Unk_ov139_02291f60::func_ov139_0229217c(s32 i, u8 *str) {
+void MenuTownListPanel::setRow(s32 i, u8 *str) {
     u8 t = 0xe - i;
-    func_ov139_0229200c(i, str, t);
-    func_ov139_02291fa4(i, str + 8, t);
+    setRowTownName(i, str, t);
+    setRowPlayerName(i, str + 8, t);
 }
 
-void Unk_ov139_02291f60::func_ov139_02292154(s32 i) {
+void MenuTownListPanel::clearRow(s32 i) {
     u8 t = 0xe - i;
-    func_ov139_0229200c(i, NULL, t);
-    func_ov139_02291fa4(i, NULL, t);
+    setRowTownName(i, NULL, t);
+    setRowPlayerName(i, NULL, t);
 }
 
-void Unk_ov139_02291f60::func_ov139_0229212c() {
+void MenuTownListPanel::resetTextLabels() {
     s32 i;
     unk_623 = 0;
     for (i = 0; i < 0x14; i++) {
@@ -320,7 +320,7 @@ void Unk_ov139_02291f60::func_ov139_0229212c() {
     }
 }
 
-Unk_020e0488 *Unk_ov139_02291f60::func_ov139_02292104() {
+Unk_020e0488 *MenuTownListPanel::allocTextLabel() {
     if (unk_623 >= 0x14) {
         return &unk_bc[19];
     }
@@ -331,8 +331,8 @@ Unk_020e0488 *Unk_ov139_02291f60::func_ov139_02292104() {
 
 
 
-void Unk_ov139_02291f60::func_ov139_0229200c(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = func_ov139_02292104();
+void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
+    Unk_020e0488 *t = allocTextLabel();
     static Unk_020dd374 sA;
     static Unk_020dd38c sB;
     if (str == NULL) {
@@ -358,8 +358,8 @@ void Unk_ov139_02291f60::func_ov139_0229200c(s32 i, u8 *str, u8 pal) {
 
 extern "C" u32 data_ov139_02292660[8] = {0x80254048, 0x0000888d, 0x40450048, 0x00008891, 0x803b0041, 0x00008882, 0x801f0041, 0xffff8880};
 
-void Unk_ov139_02291f60::func_ov139_02291fa4(s32 i, u8 *str, u8 pal) {
-    Unk_020e0488 *t = func_ov139_02292104();
+void MenuTownListPanel::setRowPlayerName(s32 i, u8 *str, u8 pal) {
+    Unk_020e0488 *t = allocTextLabel();
     if (str == NULL) {
         t->clear();
     } else {
@@ -376,18 +376,18 @@ void Unk_ov139_02291f60::func_ov139_02291fa4(s32 i, u8 *str, u8 pal) {
     t->func_0206fab4(1, 0);
 }
 
-u32 Unk_ov139_02291f60::func_ov139_02291f98(s32 i) { return data_ov139_02292680[i]; }
+u32 MenuTownListPanel::getCellList(s32 i) { return sTownListCellLists[i]; }
 
-BOOL Unk_ov139_02291f60::func_ov139_02291f80(u32 m) {
+BOOL MenuTownListPanel::testFlags(u32 m) {
     if (unk_620 & m) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_ov139_02291f60::func_ov139_02291f70(u32 m) { unk_620 |= m; }
+void MenuTownListPanel::setFlags(u32 m) { unk_620 |= m; }
 
-void Unk_ov139_02291f60::func_ov139_02291f60(u32 m) { unk_620 &= ~m; }
+void MenuTownListPanel::clearFlags(u32 m) { unk_620 &= ~m; }
 
 
 

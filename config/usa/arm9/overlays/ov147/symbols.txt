@@ -1,96 +1,96 @@
-_ZN18Unk_ov147_022933e819func_ov147_022918e0EPjii kind:function(thumb,size=0x34) addr:0x022918e0
-_ZN18Unk_ov147_022933e819func_ov147_02291914EPji kind:function(thumb,size=0x34) addr:0x02291914
-_ZN18Unk_ov147_022933e819func_ov147_02291948Ev kind:function(thumb,size=0x80) addr:0x02291948
-_ZN18Unk_ov147_022933e819func_ov147_022919c8Ev kind:function(thumb,size=0x10) addr:0x022919c8
-_ZN18Unk_ov147_022933e819func_ov147_022919d8Ev kind:function(thumb,size=0xc4) addr:0x022919d8
-_ZN18Unk_ov147_022933e819func_ov147_02291a9cEv kind:function(thumb,size=0x3c) addr:0x02291a9c
-_ZN18Unk_ov147_022933e819func_ov147_02291ad8Ev kind:function(thumb,size=0x1c) addr:0x02291ad8
-_ZN18Unk_ov147_022933e819func_ov147_02291af4Ev kind:function(thumb,size=0x1e) addr:0x02291af4
-_ZN18Unk_ov147_022933e819func_ov147_02291b14Ev kind:function(thumb,size=0x12) addr:0x02291b14
-_ZN18Unk_ov147_022933e819func_ov147_02291b28Ev kind:function(thumb,size=0xe0) addr:0x02291b28
-_ZN18Unk_ov147_022933e819func_ov147_02291c08Ev kind:function(thumb,size=0xd8) addr:0x02291c08
-_ZN18Unk_ov147_022934a419func_ov147_02291ce0Ev kind:function(thumb,size=0x18) addr:0x02291ce0
-_ZN18Unk_ov147_022934a419func_ov147_02291cf8Ev kind:function(thumb,size=0x3c) addr:0x02291cf8
-_ZN18Unk_ov147_022934a419func_ov147_02291d34Ev kind:function(thumb,size=0x88) addr:0x02291d34
-_ZN18Unk_ov147_022934a419func_ov147_02291dbcEv kind:function(thumb,size=0xc) addr:0x02291dbc
-_ZN18Unk_ov147_022934a419func_ov147_02291dc8Ev kind:function(thumb,size=0xc) addr:0x02291dc8
-_ZN18Unk_ov147_022934a419func_ov147_02291dd4Ev kind:function(thumb,size=0x16) addr:0x02291dd4
-_ZN18Unk_ov147_022934a48vfunc_18Ev kind:function(thumb,size=0x26c) addr:0x02291dec
-_ZN18Unk_ov147_022934a48vfunc_70Ev kind:function(thumb,size=0x1a) addr:0x02292058
-_ZN18Unk_ov147_022934a419func_ov147_02292074Ev kind:function(thumb,size=0xc8) addr:0x02292074
-_ZN18Unk_ov147_022934a419func_ov147_0229213cEP23Unk_ov147_0229213c_Desc kind:function(thumb,size=0x70) addr:0x0229213c
-_ZN18Unk_ov147_022934a48vfunc_14Ev kind:function(thumb,size=0x2c0) addr:0x022921ac
-_ZN18Unk_ov147_022934a419func_ov147_0229246cEPv kind:function(thumb,size=0x4) addr:0x0229246c
-_ZN18Unk_ov147_022934a4D0Ev kind:function(thumb,size=0x20) addr:0x02292470
-_ZN18Unk_ov147_022934a4D1Ev kind:function(thumb,size=0x18) addr:0x02292490
-_ZN18Unk_ov147_022934a4C1Ev kind:function(thumb,size=0x18) addr:0x022924a8
-_ZN18Unk_ov147_022933e819func_ov147_022924c0Ev kind:function(thumb,size=0x44) addr:0x022924c0
-_ZN18Unk_ov147_022933e819func_ov147_02292504Ev kind:function(thumb,size=0x8) addr:0x02292504
-_ZN18Unk_ov147_022933e819func_ov147_0229250cEv kind:function(thumb,size=0x44) addr:0x0229250c
-_ZN18Unk_ov147_022933e819func_ov147_02292550Ev kind:function(thumb,size=0x8) addr:0x02292550
-_ZN18Unk_ov147_022933e819func_ov147_02292558Ev kind:function(thumb,size=0x48) addr:0x02292558
-_ZN18Unk_ov147_022933e819func_ov147_022925a0Ev kind:function(thumb,size=0x8) addr:0x022925a0
-_ZN18Unk_ov147_022933e819func_ov147_022925a8Ev kind:function(thumb,size=0x44) addr:0x022925a8
-_ZN18Unk_ov147_022933e819func_ov147_022925ecEv kind:function(thumb,size=0x8) addr:0x022925ec
-_ZN18Unk_ov147_022933e819func_ov147_022925f4Ev kind:function(thumb,size=0x44) addr:0x022925f4
-_ZN18Unk_ov147_022933e819func_ov147_02292638Ev kind:function(thumb,size=0x8) addr:0x02292638
-_ZN18Unk_ov147_022933e819func_ov147_02292640Ev kind:function(thumb,size=0x48) addr:0x02292640
-_ZN18Unk_ov147_022933e819func_ov147_02292688Ev kind:function(thumb,size=0x8) addr:0x02292688
-_ZN18Unk_ov147_022933e819func_ov147_02292690Ev kind:function(thumb,size=0x48) addr:0x02292690
-_ZN18Unk_ov147_022933e819func_ov147_022926d8Ev kind:function(thumb,size=0x8) addr:0x022926d8
-_ZN18Unk_ov147_022933e819func_ov147_022926e0Ev kind:function(thumb,size=0x2c) addr:0x022926e0
-_ZN18Unk_ov147_022933e819func_ov147_0229270cEv kind:function(thumb,size=0x2) addr:0x0229270c
-_ZN18Unk_ov147_022933e819func_ov147_02292710Ev kind:function(thumb,size=0x2) addr:0x02292710
-_ZN18Unk_ov147_022933e819func_ov147_02292714Ev kind:function(thumb,size=0x2) addr:0x02292714
-_ZN18Unk_ov147_022933e819func_ov147_02292718Ev kind:function(thumb,size=0xd0) addr:0x02292718
-_ZN18Unk_ov147_022933e819func_ov147_022927e8Ev kind:function(thumb,size=0x2) addr:0x022927e8
-_ZN18Unk_ov147_022933e819func_ov147_022927ecEv kind:function(thumb,size=0x2c) addr:0x022927ec
-_ZN18Unk_ov147_022933e819func_ov147_02292818Ev kind:function(thumb,size=0x2) addr:0x02292818
-_ZN18Unk_ov147_022933e819func_ov147_0229281cEv kind:function(thumb,size=0x160) addr:0x0229281c
-_ZN18Unk_ov147_022933e819func_ov147_0229297cEv kind:function(thumb,size=0xc) addr:0x0229297c
-_ZN18Unk_ov147_022933e819func_ov147_02292988Ei kind:function(thumb,size=0x38) addr:0x02292988
-_ZN18Unk_ov147_022933e819func_ov147_022929c0Ev kind:function(thumb,size=0x1c) addr:0x022929c0
-_ZN18Unk_ov147_022933e819func_ov147_022929dcEv kind:function(thumb,size=0x38) addr:0x022929dc
-_ZN18Unk_ov147_022933e819func_ov147_02292a14Ei kind:function(thumb,size=0x3a) addr:0x02292a14
-_ZN18Unk_ov147_022933e89onExecuteEv kind:function(thumb,size=0x50) addr:0x02292a50
-_ZN18Unk_ov147_022933e88vfunc_0cEv kind:function(thumb,size=0x2e) addr:0x02292aa0
-_ZN18Unk_ov147_022933e88vfunc_00Ev kind:function(thumb,size=0x84) addr:0x02292ad0
-_ZN18Unk_ov147_022933e8D0Ev kind:function(thumb,size=0x38) addr:0x02292b54
-_ZN18Unk_ov147_022933e8D1Ev kind:function(thumb,size=0x34) addr:0x02292b8c
-_ZN18Unk_ov147_022933e8C1Ev kind:function(thumb,size=0x38) addr:0x02292bc0
-func_ov147_02292bf8 kind:function(thumb,size=0x18) addr:0x02292bf8
-_ZN18Unk_ov147_022935e819func_ov147_02292c10Ev kind:function(thumb,size=0x2e) addr:0x02292c10
-_ZN18Unk_ov147_022935e819func_ov147_02292c40Ev kind:function(thumb,size=0x26) addr:0x02292c40
-_ZN18Unk_ov147_022935e819func_ov147_02292c68Ev kind:function(thumb,size=0x28) addr:0x02292c68
-_ZN18Unk_ov147_022935e819func_ov147_02292c90Ev kind:function(thumb,size=0xa) addr:0x02292c90
-_ZN18Unk_ov147_022935e819func_ov147_02292c9cEv kind:function(thumb,size=0x16) addr:0x02292c9c
-_ZN18Unk_ov147_022935e819func_ov147_02292cb4Ev kind:function(thumb,size=0xa) addr:0x02292cb4
-_ZN18Unk_ov147_022935e819func_ov147_02292cc0Ev kind:function(thumb,size=0x1c) addr:0x02292cc0
-_ZN18Unk_ov147_022935e819func_ov147_02292cdcEv kind:function(thumb,size=0x58) addr:0x02292cdc
-func_ov147_02292d34 kind:function(thumb,size=0x2c) addr:0x02292d34
-func_ov147_02292d60 kind:function(thumb,size=0xc) addr:0x02292d60
-func_ov147_02292d6c kind:function(thumb,size=0x38) addr:0x02292d6c
-func_ov147_02292da4 kind:function(thumb,size=0x20) addr:0x02292da4
-func_ov147_02292dc4 kind:function(thumb,size=0x1a) addr:0x02292dc4
-func_ov147_02292de0 kind:function(thumb,size=0x20) addr:0x02292de0
-func_ov147_02292e00 kind:function(thumb,size=0x28) addr:0x02292e00
-func_ov147_02292e28 kind:function(thumb,size=0x24) addr:0x02292e28
-func_ov147_02292e4c kind:function(thumb,size=0x28) addr:0x02292e4c
-func_ov147_02292e74 kind:function(thumb,size=0xc4) addr:0x02292e74
-func_ov147_02292f38 kind:function(thumb,size=0x12) addr:0x02292f38
-func_ov147_02292f4c kind:function(thumb,size=0x8) addr:0x02292f4c
-_ZN18Unk_ov147_022935e819func_ov147_02292f54Ev kind:function(thumb,size=0x72) addr:0x02292f54
-_ZN18Unk_ov147_022935e819func_ov147_02292fc8Ev kind:function(thumb,size=0xa) addr:0x02292fc8
-_ZN18Unk_ov147_022935e819func_ov147_02292fd4Ev kind:function(thumb,size=0x14) addr:0x02292fd4
-_ZN18Unk_ov147_022935e819func_ov147_02292fe8Ev kind:function(thumb,size=0x6) addr:0x02292fe8
-_ZN18Unk_ov147_022935e819func_ov147_02292ff0Ei kind:function(thumb,size=0x4) addr:0x02292ff0
-_ZN18Unk_ov147_022935e819func_ov147_02292ff4Ev kind:function(thumb,size=0x74) addr:0x02292ff4
-_ZN18Unk_ov147_022935e819func_ov147_02293068Ev kind:function(thumb,size=0x2) addr:0x02293068
-_ZN18Unk_ov147_022935e819func_ov147_0229306cEv kind:function(thumb,size=0x20) addr:0x0229306c
-_ZN18Unk_ov147_022935e8D0Ev kind:function(thumb,size=0x18) addr:0x0229308c
-_ZN18Unk_ov147_022935e8D1Ev kind:function(thumb,size=0xc) addr:0x022930a4
-_ZN18Unk_ov147_022935e8C1Ev kind:function(thumb,size=0xc) addr:0x022930b0
-data_ov147_022930bc kind:data(any) addr:0x022930bc
+_ZN11TitleScreen12maskLogoCellEPjii kind:function(thumb,size=0x34) addr:0x022918e0
+_ZN11TitleScreen12maskLogoCharEPji kind:function(thumb,size=0x34) addr:0x02291914
+_ZN11TitleScreen12stepLogoHideEv kind:function(thumb,size=0x80) addr:0x02291948
+_ZN11TitleScreen13startLogoHideEv kind:function(thumb,size=0x10) addr:0x022919c8
+_ZN11TitleScreen14stepLogoRevealEv kind:function(thumb,size=0xc4) addr:0x022919d8
+_ZN11TitleScreen15startLogoRevealEv kind:function(thumb,size=0x3c) addr:0x02291a9c
+_ZN11TitleScreen8hideLogoEv kind:function(thumb,size=0x1c) addr:0x02291ad8
+_ZN11TitleScreen11dismissLogoEv kind:function(thumb,size=0x1e) addr:0x02291af4
+_ZN11TitleScreen14skipLogoRevealEv kind:function(thumb,size=0x12) addr:0x02291b14
+_ZN11TitleScreen10updateLogoEv kind:function(thumb,size=0xe0) addr:0x02291b28
+_ZN11TitleScreen8loadLogoEv kind:function(thumb,size=0xd8) addr:0x02291c08
+_ZN9TitleTalk14getGreetingMsgEv kind:function(thumb,size=0x18) addr:0x02291ce0
+_ZN9TitleTalk13chooseTagModeEv kind:function(thumb,size=0x3c) addr:0x02291cf8
+_ZN9TitleTalk14chooseResidentEv kind:function(thumb,size=0x88) addr:0x02291d34
+_ZN9TitleTalk15chooseNeverMindEv kind:function(thumb,size=0xc) addr:0x02291dbc
+_ZN9TitleTalk14chooseContinueEv kind:function(thumb,size=0xc) addr:0x02291dc8
+_ZN9TitleTalk13chooseNewGameEv kind:function(thumb,size=0x16) addr:0x02291dd4
+_ZN9TitleTalk8vfunc_18Ev kind:function(thumb,size=0x26c) addr:0x02291dec
+_ZN9TitleTalk8vfunc_70Ev kind:function(thumb,size=0x1a) addr:0x02292058
+_ZN9TitleTalk19openResidentChoicesEv kind:function(thumb,size=0xc8) addr:0x02292074
+_ZN9TitleTalk13openChoiceSetEP14TitleChoiceSet kind:function(thumb,size=0x70) addr:0x0229213c
+_ZN9TitleTalk8vfunc_14Ev kind:function(thumb,size=0x2c0) addr:0x022921ac
+_ZN9TitleTalk8setOwnerEPv kind:function(thumb,size=0x4) addr:0x0229246c
+_ZN9TitleTalkD0Ev kind:function(thumb,size=0x20) addr:0x02292470
+_ZN9TitleTalkD1Ev kind:function(thumb,size=0x18) addr:0x02292490
+_ZN9TitleTalkC1Ev kind:function(thumb,size=0x18) addr:0x022924a8
+_ZN11TitleScreen18updateWifiSettingsEv kind:function(thumb,size=0x44) addr:0x022924c0
+_ZN11TitleScreen17enterWifiSettingsEv kind:function(thumb,size=0x8) addr:0x02292504
+_ZN11TitleScreen13updateTagModeEv kind:function(thumb,size=0x44) addr:0x0229250c
+_ZN11TitleScreen12enterTagModeEv kind:function(thumb,size=0x8) addr:0x02292550
+_ZN11TitleScreen17updateImmigrationEv kind:function(thumb,size=0x48) addr:0x02292558
+_ZN11TitleScreen16enterImmigrationEv kind:function(thumb,size=0x8) addr:0x022925a0
+_ZN11TitleScreen15updateStartGameEv kind:function(thumb,size=0x44) addr:0x022925a8
+_ZN11TitleScreen14enterStartGameEv kind:function(thumb,size=0x8) addr:0x022925ec
+_ZN11TitleScreen14updateContinueEv kind:function(thumb,size=0x44) addr:0x022925f4
+_ZN11TitleScreen13enterContinueEv kind:function(thumb,size=0x8) addr:0x02292638
+_ZN11TitleScreen15updateEraseTownEv kind:function(thumb,size=0x48) addr:0x02292640
+_ZN11TitleScreen14enterEraseTownEv kind:function(thumb,size=0x8) addr:0x02292688
+_ZN11TitleScreen19updateEraseResidentEv kind:function(thumb,size=0x48) addr:0x02292690
+_ZN11TitleScreen18enterEraseResidentEv kind:function(thumb,size=0x8) addr:0x022926d8
+_ZN11TitleScreen17updateBackToTitleEv kind:function(thumb,size=0x2c) addr:0x022926e0
+_ZN11TitleScreen16enterBackToTitleEv kind:function(thumb,size=0x2) addr:0x0229270c
+_ZN11TitleScreen13updateTalkingEv kind:function(thumb,size=0x2) addr:0x02292710
+_ZN11TitleScreen12enterTalkingEv kind:function(thumb,size=0x2) addr:0x02292714
+_ZN11TitleScreen14updateOpenMenuEv kind:function(thumb,size=0xd0) addr:0x02292718
+_ZN11TitleScreen13enterOpenMenuEv kind:function(thumb,size=0x2) addr:0x022927e8
+_ZN11TitleScreen17updateIdleTimeoutEv kind:function(thumb,size=0x2c) addr:0x022927ec
+_ZN11TitleScreen16enterIdleTimeoutEv kind:function(thumb,size=0x2) addr:0x02292818
+_ZN11TitleScreen15updateWaitStartEv kind:function(thumb,size=0x160) addr:0x0229281c
+_ZN11TitleScreen14enterWaitStartEv kind:function(thumb,size=0xc) addr:0x0229297c
+_ZN11TitleScreen11changeStateEi kind:function(thumb,size=0x38) addr:0x02292988
+_ZN11TitleScreen19func_ov147_022929c0Ev kind:function(thumb,size=0x1c) addr:0x022929c0
+_ZN11TitleScreen7stopBgmEv kind:function(thumb,size=0x38) addr:0x022929dc
+_ZN11TitleScreen8startBgmEi kind:function(thumb,size=0x3a) addr:0x02292a14
+_ZN11TitleScreen9onExecuteEv kind:function(thumb,size=0x50) addr:0x02292a50
+_ZN11TitleScreen8vfunc_0cEv kind:function(thumb,size=0x2e) addr:0x02292aa0
+_ZN11TitleScreen8vfunc_00Ev kind:function(thumb,size=0x84) addr:0x02292ad0
+_ZN11TitleScreenD0Ev kind:function(thumb,size=0x38) addr:0x02292b54
+_ZN11TitleScreenD1Ev kind:function(thumb,size=0x34) addr:0x02292b8c
+_ZN11TitleScreenC1Ev kind:function(thumb,size=0x38) addr:0x02292bc0
+TitleScreen_Create kind:function(thumb,size=0x18) addr:0x02292bf8
+_ZN14TitleBlinkText11updateShownEv kind:function(thumb,size=0x2e) addr:0x02292c10
+_ZN14TitleBlinkText4showEv kind:function(thumb,size=0x26) addr:0x02292c40
+_ZN14TitleBlinkText11updateDelayEv kind:function(thumb,size=0x28) addr:0x02292c68
+_ZN14TitleBlinkText10startDelayEv kind:function(thumb,size=0xa) addr:0x02292c90
+_ZN14TitleBlinkText10updateIdleEv kind:function(thumb,size=0x16) addr:0x02292c9c
+_ZN14TitleBlinkText7setIdleEv kind:function(thumb,size=0xa) addr:0x02292cb4
+_ZN14TitleBlinkText10clearBlendEv kind:function(thumb,size=0x1c) addr:0x02292cc0
+_ZN14TitleBlinkText15applyBlendAlphaEv kind:function(thumb,size=0x58) addr:0x02292cdc
+TitleBlinkText_HideBg3 kind:function(thumb,size=0x2c) addr:0x02292d34
+TitleBlinkText_ShowBg3 kind:function(thumb,size=0xc) addr:0x02292d60
+TitleBlinkText_SetupBg3 kind:function(thumb,size=0x38) addr:0x02292d6c
+TitleBlinkText_UploadScreen kind:function(thumb,size=0x20) addr:0x02292da4
+TitleBlinkText_UploadPalette kind:function(thumb,size=0x1a) addr:0x02292dc4
+TitleBlinkText_UploadChars kind:function(thumb,size=0x20) addr:0x02292de0
+TitleBlinkText_ReadScreen kind:function(thumb,size=0x28) addr:0x02292e00
+TitleBlinkText_ReadPalette kind:function(thumb,size=0x24) addr:0x02292e28
+TitleBlinkText_ReadChars kind:function(thumb,size=0x28) addr:0x02292e4c
+TitleBlinkText_LoadGraphics kind:function(thumb,size=0xc4) addr:0x02292e74
+TitleBlinkText_Free kind:function(thumb,size=0x12) addr:0x02292f38
+TitleBlinkText_Alloc kind:function(thumb,size=0x8) addr:0x02292f4c
+_ZN14TitleBlinkText9stepBlinkEv kind:function(thumb,size=0x72) addr:0x02292f54
+_ZN14TitleBlinkText10resetBlinkEv kind:function(thumb,size=0xa) addr:0x02292fc8
+_ZN14TitleBlinkText8isHiddenEv kind:function(thumb,size=0x14) addr:0x02292fd4
+_ZN14TitleBlinkText11requestHideEv kind:function(thumb,size=0x6) addr:0x02292fe8
+_ZN14TitleBlinkText14requestVariantEi kind:function(thumb,size=0x4) addr:0x02292ff0
+_ZN14TitleBlinkText6updateEv kind:function(thumb,size=0x74) addr:0x02292ff4
+_ZN14TitleBlinkText8shutdownEv kind:function(thumb,size=0x2) addr:0x02293068
+_ZN14TitleBlinkText4initEv kind:function(thumb,size=0x20) addr:0x0229306c
+_ZN14TitleBlinkTextD0Ev kind:function(thumb,size=0x18) addr:0x0229308c
+_ZN14TitleBlinkTextD1Ev kind:function(thumb,size=0xc) addr:0x022930a4
+_ZN14TitleBlinkTextC1Ev kind:function(thumb,size=0xc) addr:0x022930b0
+sTitleGreetingMsgs kind:data(any) addr:0x022930bc
 __sinit_ov147_022930c0 kind:function(thumb,size=0x160) addr:0x022930c0
 .p__sinit_ov147_022930c0 kind:data(word) addr:0x02293220
 data_ov147_02293240 kind:data(any) addr:0x02293240
@@ -105,7 +105,7 @@ data_ov147_02293260 kind:data(any) addr:0x02293260
 data_ov147_02293264 kind:data(any) addr:0x02293264
 data_ov147_02293268 kind:data(any) addr:0x02293268
 data_ov147_0229326c kind:data(any) addr:0x0229326c
-data_ov147_02293270 kind:data(any) addr:0x02293270
+sTitleTalkFilePtr kind:data(any) addr:0x02293270
 data_ov147_02293274 kind:data(any) addr:0x02293274
 data_ov147_02293278 kind:data(any) addr:0x02293278
 data_ov147_0229327c kind:data(any) addr:0x0229327c
@@ -120,7 +120,7 @@ data_ov147_022932bc kind:data(any) addr:0x022932bc
 data_ov147_022932c4 kind:data(any) addr:0x022932c4
 data_ov147_022932cc kind:data(any) addr:0x022932cc
 data_ov147_022932d4 kind:data(any) addr:0x022932d4
-data_ov147_022932dc kind:data(any) addr:0x022932dc ambiguous
+sTitleScreenProfile kind:data(any) addr:0x022932dc ambiguous
 data_ov147_022932e4 kind:data(any) addr:0x022932e4
 data_ov147_022932ec kind:data(any) addr:0x022932ec
 data_ov147_022932f4 kind:data(any) addr:0x022932f4
@@ -150,7 +150,7 @@ data_ov147_022933a4 kind:data(any) addr:0x022933a4
 data_ov147_022933ac kind:data(any) addr:0x022933ac
 data_ov147_022933b4 kind:data(any) addr:0x022933b4
 data_ov147_022933bc kind:data(any) addr:0x022933bc
-data_ov147_022933cc kind:data(any) addr:0x022933cc
+sTitleTalkFile kind:data(any) addr:0x022933cc
 data_ov147_022933e8 kind:data(any) addr:0x022933e8
 data_ov147_02293430 kind:data(any) addr:0x02293430
 data_ov147_0229343c kind:data(any) addr:0x0229343c
@@ -191,16 +191,16 @@ data_ov147_022936a4 kind:bss addr:0x022936a4
 data_ov147_022936c4 kind:bss addr:0x022936c4
 data_ov147_022936e4 kind:bss addr:0x022936e4
 data_ov147_02293704 kind:bss addr:0x02293704
-data_ov147_0229372c kind:bss addr:0x0229372c
+sTitleStates kind:bss addr:0x0229372c
 data_ov147_02293734 kind:bss addr:0x02293734
 data_ov147_02293758 kind:bss addr:0x02293758 ambiguous
 data_ov147_022937ac kind:bss addr:0x022937ac
-data_ov147_022937ec kind:bss addr:0x022937ec
-data_ov147_022938cc kind:bss addr:0x022938cc
+sTitleLogoHideMasks kind:bss addr:0x022937ec
+sTitleLogoMask2 kind:bss addr:0x022938cc
 data_ov147_02293900 kind:bss addr:0x02293900 ambiguous
 data_ov147_02293918 kind:bss addr:0x02293918 ambiguous
-data_ov147_02293aac kind:bss addr:0x02293aac
-data_ov147_02293c8c kind:bss addr:0x02293c8c
+sTitleLogoRevealMasks kind:bss addr:0x02293aac
+sTitleLogoScreen kind:bss addr:0x02293c8c
 data_ov147_02293cc1 kind:bss addr:0x02293cc1 ambiguous
 data_ov147_02293ce0 kind:bss addr:0x02293ce0 ambiguous
 data_ov147_02293d10 kind:bss addr:0x02293d10 ambiguous
@@ -208,7 +208,7 @@ data_ov147_02293e68 kind:bss addr:0x02293e68 ambiguous
 data_ov147_02294290 kind:bss addr:0x02294290 ambiguous
 data_ov147_02294328 kind:bss addr:0x02294328 ambiguous
 data_ov147_02294359 kind:bss addr:0x02294359 ambiguous
-data_ov147_0229448c kind:bss addr:0x0229448c
+sTitleLogoChars kind:bss addr:0x0229448c
 data_ov147_022948e5 kind:bss addr:0x022948e5 ambiguous
 data_ov147_02294c88 kind:bss addr:0x02294c88 ambiguous
 data_ov147_02294cc0 kind:bss addr:0x02294cc0 ambiguous
@@ -236,7 +236,7 @@ data_ov147_02296d80 kind:bss addr:0x02296d80 ambiguous
 data_ov147_02297318 kind:bss addr:0x02297318 ambiguous
 data_ov147_022974a8 kind:bss addr:0x022974a8 ambiguous
 data_ov147_02297690 kind:bss addr:0x02297690 ambiguous
-data_ov147_02297c8c kind:bss addr:0x02297c8c
+sTitleLogoCharsWork kind:bss addr:0x02297c8c
 data_ov147_02297fe0 kind:bss addr:0x02297fe0 ambiguous
 data_ov147_02298020 kind:bss addr:0x02298020 ambiguous
 data_ov147_02298348 kind:bss addr:0x02298348 ambiguous

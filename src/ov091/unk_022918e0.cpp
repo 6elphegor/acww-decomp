@@ -21,7 +21,7 @@ extern u8 *data_021c1b3c;
 extern u16 gPad[];
 }
 
-class Unk_ov091_02291ef0;
+class LetterViewMenu;
 
 struct Unk_0206d1d4_Src;
 
@@ -81,35 +81,35 @@ public:
 };
 
 // +0x2a4 sub-object (0x70 bytes)
-class Unk_ov002_0220471c : public LabelButton {
+class MenuLabelButtonStyle1 : public LabelButton {
 public:
-    Unk_ov002_0220471c();
-    virtual ~Unk_ov002_0220471c();
+    MenuLabelButtonStyle1();
+    virtual ~MenuLabelButtonStyle1();
 };
 
-class Unk_ov002_02204738 {
+class MenuLabelButton {
 public:
-    BOOL func_ov002_02203e24();
-    void func_ov002_02203ec8(s32 v);
-    BOOL func_ov002_02203f08();
-    s32 func_ov002_02203f28(s32 k);
-    s32 func_ov002_02203f78(s32 k);
+    BOOL isTouched();
+    void showDefault(s32 v);
+    BOOL stepAnim();
+    s32 getAnchorY(s32 k);
+    s32 getAnchorX(s32 k);
 };
 
 // +0x314 sub-object (0x64 bytes)
-class Unk_ov002_02204630 : public HandCursor {
+class MenuCursorBuf1 : public HandCursor {
 public:
-    Unk_ov002_02204630();
-    virtual ~Unk_ov002_02204630();
+    MenuCursorBuf1();
+    virtual ~MenuCursorBuf1();
 
     u8 unk_4b[0x64 - 0x4b];
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public GameProc {
+class MenuProc : public GameProc {
 public:
-    Unk_ov002_022044e4();
-    virtual ~Unk_ov002_022044e4();
+    MenuProc();
+    virtual ~MenuProc();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
 
@@ -120,29 +120,29 @@ public:
     virtual BOOL onExecute();
     virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_48();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execWaitScreen();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov002_02200840(s32 a, s32 b, s32 c);
-    void func_ov002_0220088c(s32 a, s32 b, s32 mode, s32 dist);
-    void func_ov002_022008a8(s32 a, s32 b, s32 mode, s32 dist);
-    BOOL func_ov002_022008fc(s32 a);
-    BOOL func_ov002_02200908(s32 a);
-    s32 func_ov002_02200920();
-    BOOL func_ov002_022009d4();
-    BOOL func_ov002_02200a14(s32 a);
-    void func_ov002_02200a50(u8 v);
-    void func_ov002_02200a58(u8 v);
-    void func_ov002_02200a60(u8 v);
+    void applySlideOffset(s32 a, s32 b, s32 c);
+    void beginMainSlideOut(s32 a, s32 b, s32 mode, s32 dist);
+    void beginMainSlideIn(s32 a, s32 b, s32 mode, s32 dist);
+    BOOL stepSlideOut(s32 a);
+    BOOL stepSlideIn(s32 a);
+    s32 getSlideOffsetY();
+    BOOL checkSwitchToTouch();
+    BOOL checkSwitchToButtons(s32 a);
+    void setTransitionState(u8 v);
+    void setMainState(u8 v);
+    void setPhase(u8 v);
 
     /* 0x50 */ u8 unk_50[0x14];
     /* 0x64 */ u32 unk_64;
     /* 0x68 */ u32 unk_68;
-    /* 0x6c */ Unk_ov002_022044e4 *unk_6c;
+    /* 0x6c */ MenuProc *unk_6c;
     /* 0x70 */ u8 unk_70[0x1c];
     /* 0x8c */ u8 unk_8c;
     /* 0x8d */ u8 unk_8d;
@@ -151,227 +151,227 @@ public:
     /* 0x90 */ u8 unk_90;
 };
 
-class Unk_ov002_02202d98 {
+class MenuCursorBase {
 public:
-    void func_ov002_02202844();
-    void func_ov002_02202a40(s32 x, s32 y);
+    void drawWrapped();
+    void warpTo(s32 x, s32 y);
 };
 
-class Unk_ov002_0220464c {
+class MenuCursor {
 public:
-    void func_ov002_02202b68();
-    void func_ov002_02202d00(s32 idx);
+    void setPosePress();
+    void setAnimIfChanged(s32 idx);
 };
 
-typedef void (Unk_ov091_02291ef0::*Unk_ov091_02291ef0_Fn)();
+typedef void (LetterViewMenu::*Unk_ov091_02291ef0_Fn)();
 
-class Unk_ov091_02291ef0 : public Unk_ov002_022044e4 {
+class LetterViewMenu : public MenuProc {
 public:
-    Unk_ov091_02291ef0()
+    LetterViewMenu()
         : unk_94(), unk_2a4(), unk_314() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onDraw();
-    virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
-    virtual BOOL vfunc_58();
-    virtual BOOL vfunc_5c();
+    virtual BOOL execTransition();
+    virtual BOOL execMain();
+    virtual BOOL execPhase3();
+    virtual BOOL execPhase4();
+    virtual BOOL execClosed();
 
-    void func_ov091_02291974();
-    void func_ov091_022919c4();
-    void func_ov091_02291a70();
-    void func_ov091_02291ab4();
-    void func_ov091_02291b0c();
-    void func_ov091_02291b70();
-    void func_ov091_02291ba8();
-    void func_ov091_02291c04();
-    void func_ov091_0229195c();
-    void func_ov091_02291968();
-    void func_ov091_02291a10();
-    void func_ov091_02291a14();
-    void func_ov091_02291a18();
-    void func_ov091_02291a24();
+    void updateButtons();
+    void updateTouch();
+    void stateWaitSlideOut();
+    void stateSlideOut();
+    void stateWaitButton();
+    void statePressButton();
+    void stateWaitSlideIn();
+    void stateLoad();
+    void startButtonInput();
+    void startTouchInput();
+    void postInputUpdate();
+    void preInputUpdate();
+    void releaseResources();
+    void initLetterView();
 
     /* 0x094 */ Unk_0206d0a0 unk_94;
-    /* 0x2a4 */ Unk_ov002_0220471c unk_2a4;
-    /* 0x314 */ Unk_ov002_02204630 unk_314;
+    /* 0x2a4 */ MenuLabelButtonStyle1 unk_2a4;
+    /* 0x314 */ MenuCursorBuf1 unk_314;
 };
 
-extern "C" Unk_ov091_02291ef0 *func_ov091_02291e54() { return new Unk_ov091_02291ef0(); }
+extern "C" LetterViewMenu *LetterViewMenu_Create() { return new LetterViewMenu(); }
 
 struct Unk_ov091_SceneEntry {
-    Unk_ov091_02291ef0 *(*create)();
+    LetterViewMenu *(*create)();
     u16 a;
     u16 b;
 };
 
-extern "C" Unk_ov091_SceneEntry data_ov091_02291eb8 = {func_ov091_02291e54, 0xa8, 0xac};
+extern "C" Unk_ov091_SceneEntry sLetterViewMenuProfile = {LetterViewMenu_Create, 0xa8, 0xac};
 
-BOOL Unk_ov091_02291ef0::vfunc_00() {
-    func_ov091_02291a24();
-    func_ov002_02200a50(0);
-    func_ov002_02200a60(1);
+BOOL LetterViewMenu::vfunc_00() {
+    initLetterView();
+    setTransitionState(0);
+    setPhase(1);
     Snd_BeginMenuDuck();
     return TRUE;
 }
 
-BOOL Unk_ov091_02291ef0::vfunc_0c() {
-    func_ov091_02291a18();
+BOOL LetterViewMenu::vfunc_0c() {
+    releaseResources();
     Snd_EndMenuDuck();
     return TRUE;
 }
 
-BOOL Unk_ov091_02291ef0::onDraw() {
+BOOL LetterViewMenu::onDraw() {
     unk_314.vfunc_0c();
-    s32 r = func_ov002_02200920();
+    s32 r = getSlideOffsetY();
     unk_2a4.setPos(0, r);
     unk_2a4.draw();
     if (MenuCtrl_IsButtons()) {
-        ((Unk_ov002_02202d98 *)&unk_314)->func_ov002_02202844();
+        ((MenuCursorBase *)&unk_314)->drawWrapped();
     }
     return TRUE;
 }
 
-BOOL Unk_ov091_02291ef0::vfunc_4c() {
+BOOL LetterViewMenu::execTransition() {
     static Unk_ov091_02291ef0_Fn tbl[6] = {
-        &Unk_ov091_02291ef0::func_ov091_02291c04, &Unk_ov091_02291ef0::func_ov091_02291ba8,
-        &Unk_ov091_02291ef0::func_ov091_02291b70, &Unk_ov091_02291ef0::func_ov091_02291b0c,
-        &Unk_ov091_02291ef0::func_ov091_02291ab4, &Unk_ov091_02291ef0::func_ov091_02291a70};
+        &LetterViewMenu::stateLoad, &LetterViewMenu::stateWaitSlideIn,
+        &LetterViewMenu::statePressButton, &LetterViewMenu::stateWaitButton,
+        &LetterViewMenu::stateSlideOut, &LetterViewMenu::stateWaitSlideOut};
     (this->*tbl[unk_8c])();
     return TRUE;
 }
 
-BOOL Unk_ov091_02291ef0::vfunc_50() {
-    func_ov091_02291a14();
-    static Unk_ov091_02291ef0_Fn tbl[2] = {&Unk_ov091_02291ef0::func_ov091_022919c4,
-                                           &Unk_ov091_02291ef0::func_ov091_02291974};
+BOOL LetterViewMenu::execMain() {
+    preInputUpdate();
+    static Unk_ov091_02291ef0_Fn tbl[2] = {&LetterViewMenu::updateTouch,
+                                           &LetterViewMenu::updateButtons};
     (this->*tbl[unk_8d])();
-    func_ov091_02291a10();
+    postInputUpdate();
     return TRUE;
 }
 
-BOOL Unk_ov091_02291ef0::vfunc_54() { return TRUE; }
+BOOL LetterViewMenu::execPhase3() { return TRUE; }
 
-BOOL Unk_ov091_02291ef0::vfunc_58() { return TRUE; }
+BOOL LetterViewMenu::execPhase4() { return TRUE; }
 
-BOOL Unk_ov091_02291ef0::vfunc_5c() {
+BOOL LetterViewMenu::execClosed() {
     ProcBase_RequestDelete();
     return TRUE;
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291c04() {
+void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
     ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bbc(0);
     Gfx2d_SetMainBgModeState(0);
     unk_94.func_0206d2e0((Unk_0206d1d4_Src *)func_0206ed68(), 0, (void *)2, 1);
-    func_ov002_022008a8(0xa, 0, 0, 0x30);
+    beginMainSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(0);
-    func_ov002_02200840(0, 0, 0);
+    applySlideOffset(0, 0, 0);
     Gfx2d_SetLayerControl(0, 0, 0, 0);
     Gfx2d_ShowLayer(2);
-    func_ov002_02200840(2, 0, 0);
+    applySlideOffset(2, 0, 0);
     Gfx2d_SetLayerControl(2, 0, 0, 0);
-    func_ov002_02200a50(1);
+    setTransitionState(1);
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291ba8() {
-    if (func_ov002_02200908(1)) {
-        func_ov002_02200a60(2);
-        ((Unk_ov002_0220464c *)&unk_314)->func_ov002_02202d00(1);
+void LetterViewMenu::stateWaitSlideIn() {
+    if (stepSlideIn(1)) {
+        setPhase(2);
+        ((MenuCursor *)&unk_314)->setAnimIfChanged(1);
         if (MenuCtrl_IsTouch()) {
-            func_ov002_02200a58(0);
+            setMainState(0);
         } else {
-            func_ov002_02200a58(1);
+            setMainState(1);
         }
     }
-    func_ov002_02200840(0, 0, 0);
-    func_ov002_02200840(2, 0, 0);
+    applySlideOffset(0, 0, 0);
+    applySlideOffset(2, 0, 0);
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291b70() {
+void LetterViewMenu::statePressButton() {
     if (unk_314.isAnimDone()) {
         unk_2a4.setState(2);
-        func_ov002_02200a50(3);
+        setTransitionState(3);
         Snd_PlaySe(0x27);
     }
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291b0c() {
-    if (((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203f08()) {
+void LetterViewMenu::stateWaitButton() {
+    if (((MenuLabelButton *)&unk_2a4)->stepAnim()) {
         if (unk_314.getAnim()) {
-            s32 a = ((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203f78(1);
-            s32 b = ((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203f28(1);
-            ((Unk_ov002_02202d98 *)&unk_314)->func_ov002_02202a40(a, b);
+            s32 a = ((MenuLabelButton *)&unk_2a4)->getAnchorX(1);
+            s32 b = ((MenuLabelButton *)&unk_2a4)->getAnchorY(1);
+            ((MenuCursorBase *)&unk_314)->warpTo(a, b);
         }
     } else {
-        ((Unk_ov002_0220464c *)&unk_314)->func_ov002_02202d00(0);
-        func_ov002_02200a50(4);
+        ((MenuCursor *)&unk_314)->setAnimIfChanged(0);
+        setTransitionState(4);
     }
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291ab4() {
+void LetterViewMenu::stateSlideOut() {
     Snd_PlaySe(2);
     ((Unk_02035758 *)(data_021c1b3c + 0x1c4))->func_02035bb4();
-    func_ov002_0220088c(0xa, 0, 0, 0x30);
-    func_ov002_02200840(0, 0, 0);
-    func_ov002_02200840(2, 0, 0);
-    func_ov002_02200a50(5);
+    beginMainSlideOut(0xa, 0, 0, 0x30);
+    applySlideOffset(0, 0, 0);
+    applySlideOffset(2, 0, 0);
+    setTransitionState(5);
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291a70() {
-    if (func_ov002_022008fc(1)) {
+void LetterViewMenu::stateWaitSlideOut() {
+    if (stepSlideOut(1)) {
         Gfx2d_ResetLayer(0);
         Gfx2d_ResetLayer(2);
-        func_ov002_02200a60(5);
+        setPhase(5);
     } else {
-        func_ov002_02200840(0, 0, 0);
-        func_ov002_02200840(2, 0, 0);
+        applySlideOffset(0, 0, 0);
+        applySlideOffset(2, 0, 0);
     }
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291a24() {
+void LetterViewMenu::initLetterView() {
     unk_94.func_0206d39c(0);
-    ((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203ec8(0x65);
-    s32 a = ((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203f78(1);
-    s32 b = ((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203f28(1);
-    ((Unk_ov002_02202d98 *)&unk_314)->func_ov002_02202a40(a, b);
+    ((MenuLabelButton *)&unk_2a4)->showDefault(0x65);
+    s32 a = ((MenuLabelButton *)&unk_2a4)->getAnchorX(1);
+    s32 b = ((MenuLabelButton *)&unk_2a4)->getAnchorY(1);
+    ((MenuCursorBase *)&unk_314)->warpTo(a, b);
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291a18() { unk_94.func_0206d394(); }
+void LetterViewMenu::releaseResources() { unk_94.func_0206d394(); }
 
-void Unk_ov091_02291ef0::func_ov091_02291a14() {}
+void LetterViewMenu::preInputUpdate() {}
 
-void Unk_ov091_02291ef0::func_ov091_02291a10() {}
+void LetterViewMenu::postInputUpdate() {}
 
-void Unk_ov091_02291ef0::func_ov091_022919c4() {
-    if (func_ov002_02200a14(1)) {
-        func_ov091_0229195c();
-    } else if (((Unk_ov002_02204738 *)&unk_2a4)->func_ov002_02203e24()) {
+void LetterViewMenu::updateTouch() {
+    if (checkSwitchToButtons(1)) {
+        startButtonInput();
+    } else if (((MenuLabelButton *)&unk_2a4)->isTouched()) {
         unk_2a4.setState(2);
         unk_8c = 3;
-        func_ov002_02200a60(1);
+        setPhase(1);
         Snd_PlaySe(0x27);
     }
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291974() {
-    if (func_ov002_022009d4()) {
-        func_ov091_02291968();
+void LetterViewMenu::updateButtons() {
+    if (checkSwitchToTouch()) {
+        startTouchInput();
     } else {
         u16 v = gPad[1];
         if ((v & 1) != 0 || (v & 2) != 0) {
-            ((Unk_ov002_0220464c *)&unk_314)->func_ov002_02202b68();
+            ((MenuCursor *)&unk_314)->setPosePress();
             unk_8c = 2;
-            func_ov002_02200a60(1);
+            setPhase(1);
         }
     }
 }
 
-void Unk_ov091_02291ef0::func_ov091_02291968() { func_ov002_02200a58(0); }
+void LetterViewMenu::startTouchInput() { setMainState(0); }
 
-void Unk_ov091_02291ef0::func_ov091_0229195c() { func_ov002_02200a58(1); }
+void LetterViewMenu::startButtonInput() { setMainState(1); }
 
 // ---------------------------------------------------------------------------------------------
 

@@ -14,7 +14,7 @@ void Gfx2d_SetLayerPriority(void *p, s32 v);
 void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
 void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
 void *func_02065c8c(void *p);
-void func_ov002_02202dd4(void *a, void *b);
+void Menu_LoadPaperBg(void *a, void *b);
 void Mem_Clear(void *p, s32 n);
 void func_02065604(void *dst, void *src);
 s32 func_02051348(void *p, s32 n);
@@ -180,7 +180,7 @@ void Unk_0206d0a0::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c)
     Gfx2d_HideLayer(b);
     Gfx2d_SetLayerPriority(b, 1);
     Gfx2d_SetLayerControl(b, 0, 0, 0);
-    func_ov002_02202dd4(func_02065c8c(src), b);
+    Menu_LoadPaperBg(func_02065c8c(src), b);
     Gfx2d_SetLayerOffset(b, 0, 0);
     Gfx2d_HideLayer(a);
     Gfx2d_SetLayerPriority(a, c);

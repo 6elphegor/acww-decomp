@@ -16,8 +16,8 @@ s32 func_020639e8(char *buf, const char *fmt, ...);
 
 extern void *gCurrentHeap;
 extern char data_ov124_02296e70[],data_ov124_02296e84[],data_ov124_02296e98[],data_ov124_02296eac[],data_ov124_02296ec0[],data_ov124_02296ed4[],data_ov124_02296ee8[],data_ov124_02296efc[],data_ov124_02296f10[],data_ov124_02296f24[];
-extern void *data_ov124_02296e60[];
-extern void *data_ov124_02296f38[];
+extern void *sGeneralHeaderObjChars[];
+extern void *sGeneralHeaderScreens[];
 extern u8 data_ov124_02296f50[];
 extern u8 data_ov124_02296f70[];
 extern u8 data_ov124_02296f90[];
@@ -41,53 +41,53 @@ public:
 struct Unk_ov002_02203c5c_Rec;
 
 // Sprite/text pair element (0x50 bytes), vtable 0x022046dc (src/ov002 / scratch ov002_005)
-class Unk_ov002_022046dc {
+class MenuTextButton {
 public:
-    Unk_ov002_022046dc();
-    virtual ~Unk_ov002_022046dc();
+    MenuTextButton();
+    virtual ~MenuTextButton();
 
-    void func_ov002_02203c1c();
-    void func_ov002_02203ca4(u8 v);
-    void func_ov002_02203cf8(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
-    void func_ov002_02203b30(s32 x, s32 y, s32 c);
+    void freeText();
+    void setLabelNoShadow(u8 v);
+    void setup(Unk_ov002_02203c5c_Rec *p, u8 a, u8 b);
+    void drawAt(s32 x, s32 y, s32 c);
 
     u32 unk_04[0x4c / 4];
 };
 
 // Non-polymorphic menu sub-object: 1 text buffer at +0, a sprite/text pair at +0x40, state bytes at +0x90/0x91
-class Unk_ov124_02296840 {
+class GeneralMenuHeader {
 public:
-    Unk_ov124_02296840();
-    ~Unk_ov124_02296840();
+    GeneralMenuHeader();
+    ~GeneralMenuHeader();
 
-    void func_ov124_02296840();
-    void func_ov124_02296858(s32 x, s32 y);
-    void func_ov124_022968a8(s32 x, s32 y);
-    void func_ov124_022968ec(s32 v);
-    void func_ov124_02296a8c(s32 a, s32 b);
+    void resetFrame();
+    void drawWithIcon(s32 x, s32 y);
+    void drawPlain(s32 x, s32 y);
+    void loadObjGfx(s32 v);
+    void loadBgGfx(s32 a, s32 b);
     void func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d);
-    void func_ov124_02296c90(void *s, s32 n);
+    void setTitleText(void *s, s32 n);
     void func_ov124_02296c98();
-    void func_ov124_02296cd4();
-    void func_ov124_02296d2c(s32 a);
-    void func_ov124_02296d4c(s32 a, s32 b);
+    void placeTitleText();
+    void loadBgGfxForStyle(s32 a);
+    void loadTitleBg(s32 a, s32 b);
 
     /* 0x00 */ Unk_020e0488 unk_00[1];
-    /* 0x40 */ Unk_ov002_022046dc unk_40;
+    /* 0x40 */ MenuTextButton unk_40;
     /* 0x90 */ u8 unk_90;
     /* 0x91 */ u8 unk_91;
 };
 
 extern "C" {
-s32 func_ov124_02296c30();
+s32 GeneralMenuHeader_GetStyle();
 }
 
-Unk_ov124_02296840::Unk_ov124_02296840() : unk_00(), unk_40() {}
+GeneralMenuHeader::GeneralMenuHeader() : unk_00(), unk_40() {}
 
-Unk_ov124_02296840::~Unk_ov124_02296840() {}
+GeneralMenuHeader::~GeneralMenuHeader() {}
 
-void Unk_ov124_02296840::func_ov124_02296d4c(s32 a, s32 b) {
-    func_ov124_02296a8c(a, 5);
+void GeneralMenuHeader::loadTitleBg(s32 a, s32 b) {
+    loadBgGfx(a, 5);
     Gfx2d_LoadScreenFile("menu/han/b_bg.bsc", gCurrentHeap, b);
     switch (func_0206ed50()) {
     case 4:
@@ -103,13 +103,13 @@ void Unk_ov124_02296840::func_ov124_02296d4c(s32 a, s32 b) {
     unk_00[0].func_0206fab4(1, 0);
 }
 
-void Unk_ov124_02296840::func_ov124_02296d2c(s32 a) {
-    func_ov124_02296a8c(a, func_ov124_02296c30());
+void GeneralMenuHeader::loadBgGfxForStyle(s32 a) {
+    loadBgGfx(a, GeneralMenuHeader_GetStyle());
 }
 
-void Unk_ov124_02296840::func_ov124_02296cd4() {
+void GeneralMenuHeader::placeTitleText() {
     s32 v;
-    switch (func_ov124_02296c30()) {
+    switch (GeneralMenuHeader_GetStyle()) {
     case 0: v = 0xd; break;
     case 1: v = 8; break;
     case 2: v = 0x14; break;
@@ -119,9 +119,9 @@ void Unk_ov124_02296840::func_ov124_02296cd4() {
     unk_00[0].func_0206fb9c(3, 0x11, v, 4, 1, 0);
 }
 
-void Unk_ov124_02296840::func_ov124_02296c98() {
+void GeneralMenuHeader::func_ov124_02296c98() {
     s32 v;
-    switch (func_ov124_02296c30()) {
+    switch (GeneralMenuHeader_GetStyle()) {
     case 0:
     case 1: v = 0; break;
     case 2:
@@ -131,15 +131,15 @@ void Unk_ov124_02296840::func_ov124_02296c98() {
     unk_00[0].func_0206fa28(v);
 }
 
-void Unk_ov124_02296840::func_ov124_02296c90(void *s, s32 n) {
+void GeneralMenuHeader::setTitleText(void *s, s32 n) {
     func_0206f994(this, s, n);
 }
 
-void Unk_ov124_02296840::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
+void GeneralMenuHeader::func_ov124_02296c7c(u8 a, u8 b, u32 c, u32 d) {
     unk_00[0].func_0206f904(a, b, c, d);
 }
 
-extern "C" s32 func_ov124_02296c30() {
+extern "C" s32 GeneralMenuHeader_GetStyle() {
     switch (func_0206ed50()) {
     case 0xf:
     case 0x10:
@@ -154,7 +154,7 @@ extern "C" s32 func_ov124_02296c30() {
     }
 }
 
-void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
+void GeneralMenuHeader::loadBgGfx(s32 a, s32 b) {
     void *heap = gCurrentHeap;
     char buf[0x20];
     Gfx2d_LoadCharFile("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
@@ -193,14 +193,14 @@ void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
     }
     Gfx2d_LoadCharFile(buf, heap, a, 0x113, 0x113, 0x126);
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_bg.bpl", heap, a, unk_90, 0xe);
-    Gfx2d_LoadScreenFile((const char *)data_ov124_02296f38[b], heap, a);
+    Gfx2d_LoadScreenFile((const char *)sGeneralHeaderScreens[b], heap, a);
 }
 
-void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
+void GeneralMenuHeader::loadObjGfx(s32 v) {
     s32 st = unk_90;
     s32 loc;
     void *heap = gCurrentHeap;
-    char *buf = (char *)File_LoadAlloc(data_ov124_02296e60[st / 5], heap, -4, &loc);
+    char *buf = (char *)File_LoadAlloc(sGeneralHeaderObjChars[st / 5], heap, -4, &loc);
     char *p = buf + (st % 5) * 0xc0;
     s32 i;
     s32 k = 0x15a;
@@ -214,47 +214,47 @@ void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
     Heap_Free(heap, buf);
     Gfx2d_LoadPaletteFileSlot("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
     unk_91 = v;
-    unk_40.func_ov002_02203cf8((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
+    unk_40.setup((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
     switch (func_0206ed50()) {
-    case 0xb: unk_40.func_ov002_02203ca4(0x3b); break;
-    case 0xf: unk_40.func_ov002_02203ca4(0xe6); break;
-    case 0x10: unk_40.func_ov002_02203ca4(0xe7); break;
+    case 0xb: unk_40.setLabelNoShadow(0x3b); break;
+    case 0xf: unk_40.setLabelNoShadow(0xe6); break;
+    case 0x10: unk_40.setLabelNoShadow(0xe7); break;
     case 0x18:
-    case 0x19: unk_40.func_ov002_02203ca4(0xe9); break;
+    case 0x19: unk_40.setLabelNoShadow(0xe9); break;
     case 0x1a:
-    case 0x1b: unk_40.func_ov002_02203ca4(0xe8); break;
-    case 0xc: unk_40.func_ov002_02203ca4(0x42); break;
-    case 0xd: unk_40.func_ov002_02203ca4(0x44); break;
-    case 0xe: unk_40.func_ov002_02203ca4(0x48); break;
-    case 0x12: unk_40.func_ov002_02203ca4(0x4e); break;
-    case 0x13: unk_40.func_ov002_02203ca4(0x4d); break;
-    case 0x14: unk_40.func_ov002_02203ca4(0x4f); break;
-    case 0x15: unk_40.func_ov002_02203ca4(0x45); break;
-    case 0x16: unk_40.func_ov002_02203ca4(0x46); break;
-    case 0x11: unk_40.func_ov002_02203ca4(0x4c); break;
-    case 0x17: unk_40.func_ov002_02203ca4(0x41); break;
+    case 0x1b: unk_40.setLabelNoShadow(0xe8); break;
+    case 0xc: unk_40.setLabelNoShadow(0x42); break;
+    case 0xd: unk_40.setLabelNoShadow(0x44); break;
+    case 0xe: unk_40.setLabelNoShadow(0x48); break;
+    case 0x12: unk_40.setLabelNoShadow(0x4e); break;
+    case 0x13: unk_40.setLabelNoShadow(0x4d); break;
+    case 0x14: unk_40.setLabelNoShadow(0x4f); break;
+    case 0x15: unk_40.setLabelNoShadow(0x45); break;
+    case 0x16: unk_40.setLabelNoShadow(0x46); break;
+    case 0x11: unk_40.setLabelNoShadow(0x4c); break;
+    case 0x17: unk_40.setLabelNoShadow(0x41); break;
     }
 }
 
-void Unk_ov124_02296840::func_ov124_022968a8(s32 x, s32 y) {
+void GeneralMenuHeader::drawPlain(s32 x, s32 y) {
     Oam_DrawCell(1, data_ov124_02296f50, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-void Unk_ov124_02296840::func_ov124_02296858(s32 x, s32 y) {
-    unk_40.func_ov002_02203b30(x, y, -1);
+void GeneralMenuHeader::drawWithIcon(s32 x, s32 y) {
+    unk_40.drawAt(x, y, -1);
     Oam_DrawCell(1, data_ov124_02296f70, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
-void Unk_ov124_02296840::func_ov124_02296840() {
+void GeneralMenuHeader::resetFrame() {
     unk_00[0].func_0206fc44();
-    unk_40.func_ov002_02203c1c();
+    unk_40.freeText();
 }
 
-extern "C" void *data_ov124_02296f38[6] = {(void *)data_ov124_02296eac, (void *)data_ov124_02296f10, (void *)data_ov124_02296efc, (void *)data_ov124_02296ee8, (void *)data_ov124_02296e84, (void *)data_ov124_02296ec0};
+extern "C" void *sGeneralHeaderScreens[6] = {(void *)data_ov124_02296eac, (void *)data_ov124_02296f10, (void *)data_ov124_02296efc, (void *)data_ov124_02296ee8, (void *)data_ov124_02296e84, (void *)data_ov124_02296ec0};
 extern "C" char data_ov124_02296ec0[20] = "menu/han/e_bg.bsc";
 extern "C" char data_ov124_02296e70[20] = "menu/han/obj2.bch";
 extern "C" char data_ov124_02296f24[20] = "menu/han/obj3.bch";
-extern "C" void *data_ov124_02296e60[4] = {(void *)data_ov124_02296e98, (void *)data_ov124_02296ed4, (void *)data_ov124_02296e70, (void *)data_ov124_02296f24};
+extern "C" void *sGeneralHeaderObjChars[4] = {(void *)data_ov124_02296e98, (void *)data_ov124_02296ed4, (void *)data_ov124_02296e70, (void *)data_ov124_02296f24};
 extern "C" u8 data_ov124_02296f90[64] = {0xb0, 0x40, 0xdb, 0x81, 0x4c, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0xfb, 0x81, 0x50, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0x1b, 0x80, 0x54, 0xc1, 0x0, 0x0, 0xb0, 0x0, 0x3b, 0x40, 0x58, 0xc1, 0x0, 0x0, 0xb0, 0x40, 0x13, 0x80, 0xd0, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0xf3, 0x81, 0xd0, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0x33, 0x90, 0xcf, 0xb0, 0x0, 0x0, 0xb0, 0x40, 0xd3, 0x81, 0xcf, 0xb0, 0xff, 0xff};
 extern "C" char data_ov124_02296ee8[20] = "menu/han/f_bg.bsc";
 extern "C" char data_ov124_02296e84[20] = "menu/han/g_bg.bsc";

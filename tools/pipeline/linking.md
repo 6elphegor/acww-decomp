@@ -24,21 +24,21 @@ they cannot be split across files. Start from the unit files in `src/ovNNN/`.
   `grep "addr:0x0206fcc8" config/usa/arm9/symbols.txt` (main), `config/usa/arm9/overlays/ov002/symbols.txt`,
   `config/usa/arm9/autoload_2/symbols.txt` (runtime and `func_020e...`/`func_0213...`), `itcm`, other overlays.
   Then declare the class/function so it mangles to that name:
-  * a method `_ZN18Unk_ov139_02291f6019func_ov139_02292154Ei` → class `Unk_ov139_02291f60`, method
+  * a method `_ZN17MenuTownListPanel8clearRowEi` → class `MenuTownListPanel`, method
     `func_ov139_02292154(s32)`; parameter letters: `h` u8, `t` u16, `j` u32, `i` s32, `s` s16, `a` s8,
     `Ph` u8*, `Pv` void*. Return types are not mangled: keep whatever the function matched with.
   * a plain `func_XXXXXXXX` → `extern "C"`. LampLights `_Z25NetOverlay_AssertWirelessv` → C++ linkage, declared outside `extern "C"`.
   * a call the unit wrote as a free function taking the object (`f(&unk_94, i)`) becomes a method call
     (`unk_94.f(i)`) when the real symbol is a method; the code is the same.
-  * methods of one object split across several classes in ov002 (known case: `Unk_ov002_02202d98` and
-    `Unk_ov002_0220464c` are the same cursor object) — declare both classes and call the second through a cast
-    `((Unk_ov002_0220464c *)&unk_6b8)->func_ov002_02202b68()`.
+  * methods of one object split across several classes in ov002 (known case: `MenuCursorBase` and
+    `MenuCursor` are the same cursor object) — declare both classes and call the second through a cast
+    `((MenuCursor *)&unk_6b8)->func_ov002_02202b68()`.
   * a callee reached through a returned singleton (`ProcBase_GetParent()` then `func_ov092_02291c5c()` with r0
-    unchanged) is `((Unk_ov092_02291ec8 *)ProcBase_GetParent())->func_ov092_02291c5c()`.
+    unchanged) is `((MenuLauncher *)ProcBase_GetParent())->func_ov092_02291c5c()`.
   * Never rename a symbol of another module to change its signature: other overlays call it too. If a call site
     needs a different argument list than the symbol's mangled signature (e.g. the original passes an extra
     argument), declare an `extern "C"` function whose *name is the mangled symbol* and pass the object first:
-    `extern "C" void _ZN18Unk_ov002_0220455819func_ov002_02202200EP12LabelBalloon(void *self, void *p, s32 x);`
+    `extern "C" void _ZN15PopupChoiceMenu17placeAboveBalloonEP12LabelBalloon(void *self, void *p, s32 x);`
     — the call compiles exactly like the method call. Renames are only for your own overlay's symbols and for
     agreed shared names (constructors/destructors; see the renames already committed in symbols.txt).
   * Runtime helpers the compiler calls implicitly must exist by name in `autoload_2/symbols.txt`
@@ -58,7 +58,7 @@ all of it:
   `extern "C" u32 data_ov140_02293da4[10] = {...};` (copy the words from the dump; pointers as the symbol).
 * The scene registration entry `{factory, u16, u16}` near the start of `.data` (referenced from main by
   address only) is a named definition too, e.g.
-  `extern "C" Unk_ov140_SceneEntry data_ov140_02293d10 = {func_ov140_02293c6c, 0xb5, 0xb9};`.
+  `extern "C" Unk_ov140_SceneEntry sDistantTownsMenuProfile = {DistantTownsMenu_Create, 0xb5, 0xb9};`.
   Words are little-endian: the dump word `00b900b5` is the u16 `0xb5` followed by `0xb9`. The entry is 8 bytes;
   two zero words right before a vtable are the vtable's own header (offset-to-top and typeinfo), not padding.
 * `linkprep.py data` checks each object's contents; an `ERROR ... match nowhere` means a wrong initializer.
@@ -116,8 +116,8 @@ inline helpers above them. This is the original file's definition order, so inli
 * `check` must report 0 layout problems, 0 wrong targets and 0 unresolved symbols. EXTRA functions are ones the
   original does not have (e.g. an out-of-line copy of an inline function); ORDER means a definition is out of
   place; TARGET means a call or pointer names a symbol that exists but at a different address than the
-  original's (typically a sub-object declared with a similar but wrong class, e.g. `Unk_ov002_02204738` instead
-  of `Unk_ov002_0220471c`) — use the class whose symbols live at the address the check prints.
+  original's (typically a sub-object declared with a similar but wrong class, e.g. `MenuLabelButton` instead
+  of `MenuLabelButtonStyle1`) — use the class whose symbols live at the address the check prints.
 * `data` maps each data/bss object to its original address and reports whether the object's data order matches.
   mwcc heapsorts a file's data by size over the reverse of creation order, so the order depends on where each
   named object is *defined* relative to the functions. `--apply` searches for a placement that reproduces the
@@ -594,7 +594,7 @@ address words in the code that uses the objects.
   `extern "C"` function taking the object first). Rename only the unit's own symbols, and only when nothing
   compiled references the old name (`rename_impact.py`).
 * **LampLights callee whose address exists in several overlays** (`relocs.txt`: `module:overlays(113,123,...)`): name the
-  symbol of the first overlay in the list (TU210: `_ZN18Unk_ov113_02293640D1Ev`). The link resolves it to the
+  symbol of the first overlay in the list (TU210: `_ZN11BbsReadMenuD1Ev`). The link resolves it to the
   shared address; `check` verifies address and module.
 * **Empty `__sinit`** (2 bytes, `bx lr`; nos. 23, 28, 50, 59): mwcc emits one for a file-scope object of a class
   whose constructor is inline and empty (`struct LampLights { LampLights() {} ... }; LampLights obj;`), also through an empty base

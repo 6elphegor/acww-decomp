@@ -154,7 +154,7 @@ void *func_02065c8c(void *p);
 }
 
 extern "C" {
-void func_ov002_02202dd4(void *a, void *b);
+void Menu_LoadPaperBg(void *a, void *b);
 }
 
 extern "C" {
