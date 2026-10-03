@@ -452,8 +452,8 @@ public:
     s32 queueLetterForDelivery(void *p);
     u32 queueLetters(void *p);
     u32 checkSendLetters(void *p, s32 flag);
-    u32 takeOtherTownLetter(void *p);
-    BOOL hasOtherTownLetter(void *p);
+    u32 takeFutureLetter(void *p);
+    BOOL hasFutureLetter(void *p);
     void pressCancelButton();
     void pressSendButton();
     void returnUnsentLetters(s32 flag);
@@ -772,7 +772,7 @@ BOOL PostOfficeMenu::execClosed() {
         if (((Unk_02097ff4 *)PlayerData_GetCurrent())->testFlag(1)) {
             r4 |= deliverVillagerLettersNow(unk_2b0c);
         }
-        r4 |= takeOtherTownLetter(unk_2b0c);
+        r4 |= takeFutureLetter(unk_2b0c);
         r4 |= checkSendLetters(unk_2b0c, 0);
         if ((r4 & 4) != 0) {
             MenuCtrl_SetResult(0);
@@ -2159,7 +2159,7 @@ void PostOfficeMenu::pressCancelButton() {
     clearFlags(0x100);
 }
 
-BOOL PostOfficeMenu::hasOtherTownLetter(void *p) {
+BOOL PostOfficeMenu::hasFutureLetter(void *p) {
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < 10; q += 0xf4, i++) {
@@ -2170,7 +2170,7 @@ BOOL PostOfficeMenu::hasOtherTownLetter(void *p) {
     return FALSE;
 }
 
-u32 PostOfficeMenu::takeOtherTownLetter(void *p) {
+u32 PostOfficeMenu::takeFutureLetter(void *p) {
     u16 r = 0;
     s32 t = -1;
     u8 *q = (u8 *)p;
@@ -2357,7 +2357,7 @@ void PostOfficeMenu::beginOnlineSend() {
             clearFlags(0x1000);
             return;
         }
-        if (hasOtherTownLetter(unk_2b0c)) {
+        if (hasFutureLetter(unk_2b0c)) {
             unk_b0 |= 0x800;
         }
         if (g->unk_64 != 0) {

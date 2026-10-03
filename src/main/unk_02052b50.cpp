@@ -65,7 +65,7 @@ struct Unk_02052c88_Rec {
 
 extern "C" {
 s32 FtrInfo_TestIndoorFlag2(s32 n);
-s32 FtrInfo_TestIndoorFlag0(s32 n);
+s32 FtrInfo_IsLucky(s32 n);
 s32 FtrInfo_GetDmaUnk04(s32 n);
 s32 Ftr_GetUnk06(s32 n);
 s32 FtrInfo_GetUnk06(s32 n);
@@ -74,8 +74,8 @@ s32 FtrInfo_GetFlagPairB(s32 n);
 s32 Ftr_GetFlagPairA(s32 n);
 s32 FtrInfo_GetFlagPairA(s32 n);
 s32 FtrInfo_TestAlwaysFlag4(s32 n);
-s32 Ftr_GetUnk03(s32 n);
-s32 FtrInfo_GetUnk03(s32 n);
+s32 Ftr_GetCollectionGroup(s32 n);
+s32 FtrInfo_GetCollectionGroup(s32 n);
 s32 Ftr_GetUnk05(s32 n);
 s32 FtrInfo_GetUnk05(s32 n);
 s32 Ftr_GetClass(s32 n);
@@ -288,7 +288,7 @@ s32 FtrInfo_GetDmaUnk08(s32 n)
     return v;
 }
 
-s32 FtrInfo_GetUnk01(s32 n)
+s32 FtrInfo_GetColor1(s32 n)
 {
     CLAMP(n)
     u8 *r = gFtrInfo.getAlways()->getRecord(n);
@@ -298,7 +298,7 @@ s32 FtrInfo_GetUnk01(s32 n)
     return 0;
 }
 
-s32 FtrInfo_GetUnk02(s32 n)
+s32 FtrInfo_GetColor2(s32 n)
 {
     CLAMP(n)
     u8 *r = gFtrInfo.getAlways()->getRecord(n);
@@ -362,7 +362,7 @@ s32 Ftr_GetUnk05(s32 n)
     return 0;
 }
 
-s32 FtrInfo_GetUnk03(s32 n)
+s32 FtrInfo_GetCollectionGroup(s32 n)
 {
     CLAMP(n)
     u8 *r = gFtrInfo.getAlways()->getRecord(n);
@@ -372,10 +372,10 @@ s32 FtrInfo_GetUnk03(s32 n)
     return 0;
 }
 
-s32 Ftr_GetUnk03(s32 n)
+s32 Ftr_GetCollectionGroup(s32 n)
 {
     if (Item_IsFurniture((void *)n)) {
-        return FtrInfo_GetUnk03(Item_GetFurnitureIndex((void *)n));
+        return FtrInfo_GetCollectionGroup(Item_GetFurnitureIndex((void *)n));
     }
     return 0;
 }
@@ -490,7 +490,7 @@ s32 FtrInfo_GetDmaUnk04(s32 n)
     return 0;
 }
 
-s32 FtrInfo_TestIndoorFlag0(s32 n)
+s32 FtrInfo_IsLucky(s32 n)
 {
     CLAMP(n)
     u8 *r = gFtrInfo.getIndoor()->getRecord(n);

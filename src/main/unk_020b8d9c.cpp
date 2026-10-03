@@ -97,9 +97,9 @@ struct Unk_020c010c_Ent;
 struct Unk_020c0538_Out;
 class SpNpcTalkRequest;
 struct Unk_020c0408_Obj;
-class SpNpcMissing1Talk;
+class SpNpcKatieTalk;
 class SpNpcActor;
-class SpNpcMissing1;
+class SpNpcKatie;
 struct Unk_021f4400 { u8 pad[9]; u8 unk_09; };
 struct Unk_021f4420 { u8 pad[0x10]; u8 unk_10; };
 struct Unk_021f44a0 { u8 pad[6]; u8 unk_06; u8 unk_07; u8 unk_08; };
@@ -1049,11 +1049,11 @@ struct Unk_020c0408_Obj {
     u8 unk_0c[8];
     s32 unk_14;
 };
-// Sub-object at 0x658 of SpNpcMissing1
-class SpNpcMissing1Talk : public SpNpcTalkRequest {
+// Sub-object at 0x658 of SpNpcKatie
+class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
-    SpNpcMissing1Talk();
-    virtual ~SpNpcMissing1Talk();
+    SpNpcKatieTalk();
+    virtual ~SpNpcKatieTalk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -1065,14 +1065,14 @@ public:
     /* 0x1f */ u8 unk_1f[0x1d];
     /* 0x3c */ Unk_020c0408_Obj *unk_3c;
     /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ SpNpcMissing1 *unk_ac;
+    /* 0xac */ SpNpcKatie *unk_ac;
     /* 0xb0 */ s32 unk_b0;
 
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(SpNpcMissing1 *owner);
+    void attachOwner(SpNpcKatie *owner);
 };
-// Base of SpNpcMissing1; its dtor is out of line.
+// Base of SpNpcKatie; its dtor is out of line.
 class SpNpcActor : public ProcBase {
 public:
     virtual ~SpNpcActor();
@@ -1085,12 +1085,12 @@ public:
     /* 0x564 */ u8 unk_564[0x618 - 0x564];
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
-class SpNpcMissing1 : public SpNpcActor {
+class SpNpcKatie : public SpNpcActor {
 public:
-    virtual ~SpNpcMissing1();
+    virtual ~SpNpcKatie();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcMissing1Talk unk_658;
+    /* 0x658 */ SpNpcKatieTalk unk_658;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];
@@ -1751,7 +1751,7 @@ extern "C" {
 extern u8 gScreenTransition;
 }
 extern "C" {
-extern Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
+extern Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
 }
 extern "C" {
 extern u16 data_020c6cc8;
@@ -1788,7 +1788,7 @@ extern "C" {
 extern s32 sWeatherRolledAtLoad;
 }
 extern "C" {
-extern SpNpcMissing1 *sSpNpcMissing1Instance;
+extern SpNpcKatie *sSpNpcKatieInstance;
 }
 extern "C" {
 extern u8 sWeatherPatternWeights[];
@@ -1797,7 +1797,7 @@ extern "C" {
 extern CommManager *gCommManager;
 }
 extern "C" {
-extern u32 sSpNpcMissing1MsgKey;
+extern u32 sSpNpcKatieMsgKey;
 }
 // ---------------------------------------------------------------------------------------------------------------------
 static inline void Unk_020bfe38_Add(s32 *dst, s32 v) {

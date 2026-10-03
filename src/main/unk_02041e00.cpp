@@ -1190,7 +1190,7 @@ extern char gSaveRecycleBin[];
 extern char gSaveTownMap[];
 extern char data_021e58a7[];
 extern char data_021ed104[];
-extern char gSaveGameStats[];
+extern char gSaveBlancaFace[];
 extern char gSaveVillagers[];
 extern char sFieldActions[];
 extern u8 gSaveTownEventDate[];
@@ -5514,7 +5514,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         NookShop_UpdateDaily(data_021ed104, 0);
         LostChild_AdvanceDays(n);
         if (n > 0) {
-            char *g2 = gSaveGameStats;
+            char *g2 = gSaveBlancaFace;
             if (_ZN16BlancaFaceRecord8getStateEv(g2) == 1) _ZN16BlancaFaceRecord8setStateEj(g2, 2);
         }
         SaveVillagers_OnNewDay(gSaveVillagers, c);

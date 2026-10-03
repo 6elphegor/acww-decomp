@@ -1180,8 +1180,8 @@ public:
     s32 runCustomFn0();
     void setConstellationSlots();
     s32 attrOpenBirthdayEntry();
-    s32 setPlayerOptionUnkOff();
-    s32 setPlayerOptionUnkOn();
+    s32 setHiraganaOff();
+    s32 setHiraganaOn();
     s32 giveItemToPlayer();
     void showMoneyItem();
     s32 sellItemToPlayer();
@@ -2181,7 +2181,7 @@ s32 _ZN14VillagerMemory11isGiftGivenEv(void *);
 void _ZN14VillagerMemory12setGiftGivenEv(void *);
 u8 _ZN14VillagerMemory15pickUnusedTopicEv(void *);
 u8 _ZN14VillagerMemory13getImpressionEv(void *);
-s32 _ZN14VillagerMemory7hasTimeEv(void *);
+s32 _ZN14VillagerMemory11hasTownTuneEv(void *);
 u16 * _ZN14VillagerMemory15getReceivedItemEv(void *);
 s32 _ZN14VillagerMemory15setReceivedItemEPt(void *, void *);
 void _ZN14VillagerMemory11setGreetingEPvi(void *, u32, s32);
@@ -2391,7 +2391,7 @@ void Talk_PickErrandItem(u16 *, s32);
 void Talk_PickItemFromSpecs(u16 *, u32 *, s32, s32);
 void Talk_PickRandomTradeItem(u16 *);
 s32 Talk_PickWeightedIndex(u8 *, s32);
-void * Talk_FindLetterKind7or8(void *);
+void * Talk_FindLetterState7or8(void *);
 s32 Talk_FindFlaggedPocketItem(void *, u16 *);
 void VillagerTalk_EnsureMemory(u8 *, s32 *, s32 *, s32, s32);
 void Talk_SelectTopicMessage(void *, void *, void *, s32, u8, u32, u8, s32, u8);
@@ -3388,8 +3388,8 @@ void _ZN12VillagerTalk12runCustomFn1Ev(void);
 void _ZN12VillagerTalk12runCustomFn0Ev(void);
 void _ZN12VillagerTalk21setConstellationSlotsEv(void);
 void _ZN12VillagerTalk21attrOpenBirthdayEntryEv(void);
-void _ZN12VillagerTalk21setPlayerOptionUnkOffEv(void);
-void _ZN12VillagerTalk20setPlayerOptionUnkOnEv(void);
+void _ZN12VillagerTalk14setHiraganaOffEv(void);
+void _ZN12VillagerTalk13setHiraganaOnEv(void);
 void _ZN12VillagerTalk16giveItemToPlayerEv(void);
 void _ZN12VillagerTalk13showMoneyItemEv(void);
 void _ZN12VillagerTalk16sellItemToPlayerEv(void);
@@ -4710,7 +4710,7 @@ extern "C" s32 Talk_FindFlaggedPocketItem(void *p, u16 *q) {
     return -1;
 }
 
-extern "C" void *Talk_FindLetterKind7or8(void *p) {
+extern "C" void *Talk_FindLetterState7or8(void *p) {
     u8 *e = (u8 *)_ZN15PlayerInventory9getLetterEi(p, 0);
     void *r = NULL;
     s32 i;
@@ -5994,7 +5994,7 @@ void VillagerTalkTopics::continueAfterGreeting() {
                             }
                             break;
                         case 19:
-                            r4 = Talk_FindLetterKind7or8(_ZN10PlayerData12getInventoryEv(r6));
+                            r4 = Talk_FindLetterState7or8(_ZN10PlayerData12getInventoryEv(r6));
                             if (r4 != 0 && _ZN10LetterView8getStateEv(r4) == 8) {
                                 Letter_Clear(r4);
                                 ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[9]));
@@ -8201,7 +8201,7 @@ void VillagerTalkTopics::continueLateLetterShown() {
     u8 b;
     void *r5 = _ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent());
     if (_ZN12ErrandRecord7getKindEv(((void *)((VillagerTalk *)this)->getUnk150())) == 19) {
-        r5 = Talk_FindLetterKind7or8(r5);
+        r5 = Talk_FindLetterState7or8(r5);
         if (r5 != 0) {
             if (_ZN10LetterView8getStateEv(r5) == 7) {
                 ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[7]));
@@ -8437,7 +8437,7 @@ void VillagerTalkTopics::continueDeliveryReceived() {
         ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d8018));
         break;
     case 19:
-        r4 = Talk_FindLetterKind7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
+        r4 = Talk_FindLetterState7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
         if (r4 != 0) {
             if (_ZN10LetterView8getStateEv(r4) == 7) {
                 ((VillagerTalk *)this)->setTopicFns((Unk_020d8938_Tbl *)((u8 *)&nZ::sRequestTopicsA[18]));
@@ -8611,7 +8611,7 @@ void VillagerTalkTopics::closeLetter() {
 }
 
 void VillagerTalkTopics::showLetter() {
-    _ZN12Unk_020d771012setMenu12ArgEjj(this, Talk_FindLetterKind7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent())), 1);
+    _ZN12Unk_020d771012setMenu12ArgEjj(this, Talk_FindLetterState7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent())), 1);
     _ZN12Unk_020d771012openSubSceneEi(this, 5);
     ((VillagerTalk *)this)->setQueuedFn((*(Unk_020d8938_Fn *)&data_020d7fc8));
 }
@@ -8627,7 +8627,7 @@ void VillagerTalkTopics::selectDeliveryFin(Unk_0201d2d0_Out *out) {
         }
         break;
     case 0x13:
-        r7 = Talk_FindLetterKind7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
+        r7 = Talk_FindLetterState7or8(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
         _ZN12ErrandRecord7setStepEh(PlayerErrandSlot_GetRecord((void *)unk_15c_w), 1);
         d = &sTalkTopicQ07Fin;
         if (r7 != 0) {
@@ -10865,7 +10865,7 @@ char sTalkKeyQ06Con[8] = "q06_con";
 char sTalkKeyQ01Req3[9] = "q01_req3";
 char sTalkKeyQ07Report[11] = "q07_report";
 void * data_020d7bd0[2] = {
-    (void *)_ZN12VillagerTalk20setPlayerOptionUnkOnEv, 0,
+    (void *)_ZN12VillagerTalk13setHiraganaOnEv, 0,
 };
 const void *const sTalkTopicQ07Fin[2] = {
     (void *)sTalkKeyQ07Fin, (void *)0x3,
@@ -11746,7 +11746,7 @@ void *VillagerTalkRumorTopics::func_02021448(void **arr, s32 n) {
 }
 
 extern "C" BOOL Talk_MemoryHasTime(void *ctx, void *item) {
-    if (_ZN14VillagerMemory7hasTimeEv(item) == 1) {
+    if (_ZN14VillagerMemory11hasTownTuneEv(item) == 1) {
         return TRUE;
     }
     return FALSE;
@@ -14163,13 +14163,13 @@ s32 VillagerTalk::giveItemToPlayer() {
     return 0;
 }
 
-s32 VillagerTalk::setPlayerOptionUnkOn() {
+s32 VillagerTalk::setHiraganaOn() {
     PlayerOptions_SetHiragana(1);
     PlayerOptions_Commit();
     return 1;
 }
 
-s32 VillagerTalk::setPlayerOptionUnkOff() {
+s32 VillagerTalk::setHiraganaOff() {
     PlayerOptions_SetHiragana(0);
     PlayerOptions_Commit();
     return 1;
@@ -14698,7 +14698,7 @@ void * data_020d7a18[2] = {
 };
 char sTalkKeyQ07Show[9] = "q07_show";
 void * data_020d7fd8[2] = {
-    (void *)_ZN12VillagerTalk21setPlayerOptionUnkOffEv, 0,
+    (void *)_ZN12VillagerTalk14setHiraganaOffEv, 0,
 };
 char sTalkKeyQPreitem[10] = "q_preitem";
 void * data_020d7bb8[2] = {

@@ -302,7 +302,7 @@ extern CommManager *gCommManager;
 extern Unk_02082e80_Grid *gSceneBlockMap;
 extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
 extern s32 sVisitorSpawnTableCount;
-extern u8 data_021ed315, gSaveGameStats;
+extern u8 data_021ed315, gSaveBlancaFace;
 void FieldPos_SnapToUnitCenter(void *g, void *v);
 void *TownSessionState_Get();
 void *TownSessionState_GetVisitorFlags(void *p);
@@ -2042,7 +2042,7 @@ extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
-    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::gSaveGameStats) == 0) goto fail;
+    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::gSaveBlancaFace) == 0) goto fail;
     v = 0xd020;
     return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:

@@ -120,7 +120,7 @@ public:
 #define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
 
 extern "C" {
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 extern u32 *data_ov074_022724e4;
 extern u32 *gCurrentHeap;
 extern u16 data_020c6cc8;
@@ -939,7 +939,7 @@ void SpNpcBlancaTalk::onFaceDrawn() {
 BOOL SpNpcBlancaTalk::onConceptChosen() {
     if (MenuCtrl_IsResultOk() != 0) {
         void *p = unk_3c;
-        u8 *const g = gSaveGameStats;
+        u8 *const g = gSaveBlancaFace;
         u8 buf[1];
         BlancaFaceRecord_setConcept(g, Impression_Evaluate(PlayerData_GetCurrent(), 0, 0));
         BlancaFaceRecord_setState(g, 3);
@@ -966,7 +966,7 @@ void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
     u32 obj[9];
 
     out->unk_00 = ((char *)"sp_npc_mysterycat");
-    u8 *const g = gSaveGameStats;
+    u8 *const g = gSaveBlancaFace;
     BlancaFaceRecord_getPattern(g);
     l = *Pattern_getInfo();
     m = *PatternInfo_getAuthor(&l);
@@ -1039,7 +1039,7 @@ void SpNpcBlancaTalk::vfunc_18() {
 
     getChoiceList();
     r5 = ChoiceList_getResult();
-    BlancaFaceRecord_getPattern(gSaveGameStats);
+    BlancaFaceRecord_getPattern(gSaveBlancaFace);
     l = *Pattern_getInfo();
     m = *PatternInfo_getAuthor(&l);
     char *name = ((char *)"sp_npc_mysterycat");
@@ -1128,7 +1128,7 @@ void SpNpcBlancaFaceTexture::apply(void *e) {
     Unk_ov074_02271450_Ent *ent = (Unk_ov074_02271450_Ent *)e;
     void *t;
     u32 h;
-    t = BlancaFaceRecord_getPattern(gSaveGameStats);
+    t = BlancaFaceRecord_getPattern(gSaveBlancaFace);
     if (t != 0) {
         if (ClothTex_LoadPatternThunk(unk_00, t) != 0) {
             h = getTextureData();

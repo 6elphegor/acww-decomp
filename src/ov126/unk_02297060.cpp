@@ -77,7 +77,7 @@
 
 extern "C" {
 extern u16 gPad[];
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 extern u8 gSaveTownId[];
 extern u8 gSavePlayers[];
 extern u8 gU8None;
@@ -2054,7 +2054,7 @@ void NameEntryMenu::func_ov126_02297328() {
 
 void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
-    void *p = BlancaFaceRecord_getPattern(gSaveGameStats);
+    void *p = BlancaFaceRecord_getPattern(gSaveBlancaFace);
     Mem_Copy(unk_4088, buf, 0x10);
     PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }

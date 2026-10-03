@@ -176,8 +176,8 @@ struct VillagerMemory {
     s32 pickUnusedTopic();
     void setImpression(s32 v);
     u32 getImpression();
-    void setTime(long long *src);
-    BOOL hasTime();
+    void setTownTune(long long *src);
+    BOOL hasTownTune();
     u16 *getReceivedItem();
     void setReceivedItem(u16 *p);
     void setGreeting(void *src, s32 n);
@@ -2471,7 +2471,7 @@ extern u8 sVillagerInfoTable[];
 extern u8 gNpcActorRegistry[];
 extern CommManager *gCommManager;
 void _ZN14VillagerMemory13addFriendshipEi(void *p, s32 v);
-void _ZN14VillagerMemory7setTimeEPx(void *p, void *q);
+void _ZN14VillagerMemory11setTownTuneEPx(void *p, void *q);
 s32 DateTime_IsInvalid();
 s32 DateTime_Compare(void *a, void *b, s32 c);
 s32 DateTime_DiffDays(void *a, void *b);
@@ -3801,7 +3801,7 @@ extern "C" void VillagerMemory_RecordTalk(Unk_02080e20_Obj *self, void *a, u8 *b
     if (VillagerMemory_UpdateTalkStreak(self, c)) VillagerMemory_AddStreakFriendship(self);
     TownId_Assign(VillagerMemory_GetTownId((u8 *)self), b);
     MI_CpuCopy8(c, VillagerMemory_GetTalkDate((u8 *)self), 8);
-    _ZN14VillagerMemory7setTimeEPx(self, gSaveTownTune);
+    _ZN14VillagerMemory11setTownTuneEPx(self, gSaveTownTune);
 }
 }
 
@@ -3977,10 +3977,10 @@ void VillagerMemory::setReceivedItem(u16 *p) {
 u16 *VillagerMemory::getReceivedItem() {
     using namespace nP; return &unk_52; }
 
-BOOL VillagerMemory::hasTime() {
+BOOL VillagerMemory::hasTownTune() {
     using namespace nP; if (unk_64.f2 == 1) return TRUE; return FALSE; }
 
-void VillagerMemory::setTime(long long *src) {
+void VillagerMemory::setTownTune(long long *src) {
     using namespace nP;
     unk_64.f2 = 1;
     unk_5c = *src;

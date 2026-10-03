@@ -190,7 +190,7 @@ data_021e935c addr:0x021e935c base:gSaveData
 data_021eb98c addr:0x021eb98c base:gSaveData
 data_021ec31c addr:0x021ec31c base:gSaveData
 gSaveDressers addr:0x021ec780 base:gSaveData
-gSaveGameStats addr:0x021eca50 base:gSaveData
+gSaveBlancaFace addr:0x021eca50 base:gSaveData
 gSaveTownFlag addr:0x021ecc7c base:gSaveData
 data_021eceac addr:0x021eceac base:gSaveData
 data_021ecfa8 addr:0x021ecfa8 base:gSaveData

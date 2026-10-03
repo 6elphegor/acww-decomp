@@ -103,7 +103,7 @@ public:
 extern "C" {
 extern u8 gSaveData[];
 extern u8 gSaveEventWeekSlots[];
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 extern u8 gBackup[];
 extern u32 gCommManager;
 }
@@ -769,7 +769,7 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
         if (LostChild_IsKatieDue() || LostChild_IsKaitlinDue()) return 1;
     }
     if (kind >= 3) {
-        if (_ZN16BlancaFaceRecord11isBlancaDueEv(gSaveGameStats)) return 1;
+        if (_ZN16BlancaFaceRecord11isBlancaDueEv(gSaveBlancaFace)) return 1;
     }
     switch (e->id) {
     case 0x3c:

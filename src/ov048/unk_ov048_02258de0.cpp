@@ -142,8 +142,8 @@ void Wifi_StoreFriendList();
 BOOL Save_WritePlayerFriendList();
 BOOL SaveManager_HasAct13Failed();
 BOOL SaveManager_IsIdleAfterAct13();
-void SpNpcMissing1_ChangeAct05();
-s32 SpNpcMissing1_ResetAct();
+void SpNpcKatie_ChangeAct05();
+s32 SpNpcKatie_ResetAct();
 void SaveManager_RequestAct13();
 BOOL GameStats_PollDownload();
 BOOL GameStats_Download();
@@ -273,7 +273,7 @@ s32 _ZN10SpNpcActor8vfunc_04Ev();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *, s32);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *, s32);
-BOOL SpNpcMissing1_IsIdle();
+BOOL SpNpcKatie_IsIdle();
 BOOL TalkRequest_IsActive();
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *);
 s32 Net_GetMyAid();
@@ -3128,7 +3128,7 @@ void SpNpcCopperTalk::requestSave() {
         SaveManager_RequestAct13();
         setScript(0x16);
     } else {
-        SpNpcMissing1_ResetAct();
+        SpNpcKatie_ResetAct();
     }
 }
 
@@ -3146,7 +3146,7 @@ void SpNpcCopperTalk::waitSaveDone() {
         unlockWindow();
         b = unk_aa;
         _ZN15TalkWindowState14setNextMessageEPhPv(t, &b, sSpNpcCopperMsgKey);
-        SpNpcMissing1_ChangeAct05();
+        SpNpcKatie_ChangeAct05();
         setScript(0);
     }
 }
@@ -3622,7 +3622,7 @@ BOOL SpNpcCopper::canPlayTalkMelody() {
 // ---- 8de0
 
 BOOL SpNpcCopper::canStartSave() {
-    if (_ZN11NpcFaceAnim12getMouthAnimEv(&unk_2ac) == 0xba && SpNpcMissing1_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
+    if (_ZN11NpcFaceAnim12getMouthAnimEv(&unk_2ac) == 0xba && SpNpcKatie_IsIdle() && unk_658.unk_3c->unk_04 == 2) {
         return TRUE;
     }
     return FALSE;

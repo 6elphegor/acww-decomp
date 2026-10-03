@@ -253,11 +253,11 @@ s16 *DebugVar_GetPtr(s32 a, s32 b);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-BOOL FtrInfo_TestIndoorFlag0(s32 v);
+BOOL FtrInfo_IsLucky(s32 v);
 BOOL FtrInfo_TestAlwaysFlag4(s32 v);
 s32 Item_GetFurnitureDirection(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
-s32 Ftr_GetUnk03(u16 *p);
+s32 Ftr_GetCollectionGroup(u16 *p);
 s32 Ftr_GetFlagPairA(u16 *p);
 s32 Ftr_GetFlagPairB(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
@@ -270,8 +270,8 @@ s32 FtrInfo_GetClass(s32 v);
 s32 FtrClass_GetBasePoints(s32 v);
 s32 FtrInfo_GetUnk06(s32 v);
 s32 FtrInfo_GetSeries(s32 v);
-s32 FtrInfo_GetUnk01(s32 v);
-s32 FtrInfo_GetUnk02(s32 v);
+s32 FtrInfo_GetColor1(s32 v);
+s32 FtrInfo_GetColor2(s32 v);
 s32 Ftr_GetSeries(u16 *p);
 u32 Ftr_GetIndexInSeries(u16 *p);
 u32 FtrInfo_CountInSeries(u32 v);
@@ -493,8 +493,8 @@ u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s
                         }
                     }
                     if (ok) {
-                        if (FtrInfo_GetUnk01(f) == kind) cnt++;
-                        if (FtrInfo_GetUnk02(f) == kind) cnt++;
+                        if (FtrInfo_GetColor1(f) == kind) cnt++;
+                        if (FtrInfo_GetColor2(f) == kind) cnt++;
                     }
                     FtrFootprint_Destruct(&buf);
                 }
@@ -1186,8 +1186,8 @@ s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
                             break;
                         }
                     }
-                    t = FtrInfo_GetUnk01(id);
-                    u = FtrInfo_GetUnk02(id);
+                    t = FtrInfo_GetColor1(id);
+                    u = FtrInfo_GetColor2(id);
                     counts[t]++;
                     counts[u]++;
                     n++;
@@ -1342,7 +1342,7 @@ s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
                 s32 hy = (s32)y >> 4;
                 u16 *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
-                    s32 k = Ftr_GetUnk03(p);
+                    s32 k = Ftr_GetCollectionGroup(p);
                     counts[k] = counts[k] + 1;
                 }
             }
@@ -1420,7 +1420,7 @@ void RoomScoreEvaluator::collectLuckyItems(void *grid)
                 u16 *p = BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), layer);
                 if (p && Item_IsFurniture(p)) {
                     s32 v = Item_GetFurnitureIndex(p);
-                    if (FtrInfo_TestIndoorFlag0(v)) {
+                    if (FtrInfo_IsLucky(v)) {
                         sHappyRoomLuckyFtr.b[v >> 3] |= 1 << (v & 7);
                     }
                 }

@@ -1059,10 +1059,10 @@ s32 Item_GetFossilGroup(u16 *p);
 s32 Item_IsFurniture(void *p);
 void *Item_GetFurnitureIndex(void *p);
 s32 Ftr_GetFlagPairB(void *p);
-s32 FtrInfo_GetUnk01(void *p);
-s32 FtrInfo_GetUnk02(void *p);
+s32 FtrInfo_GetColor1(void *p);
+s32 FtrInfo_GetColor2(void *p);
 s32 Ftr_GetFlagPairA(void *p);
-s32 Ftr_GetUnk03(void *p);
+s32 Ftr_GetCollectionGroup(void *p);
 s32 Ftr_GetSeries(void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)(void *));
@@ -1394,14 +1394,14 @@ extern "C" s32 Furniture_ScoreAttribute(void *self, u32 kind, s32 val) {
                 break;
             case 1:
                 self = Item_GetFurnitureIndex(self);
-                if (val == FtrInfo_GetUnk01(self)) r = 1;
-                if (val == FtrInfo_GetUnk02(self)) r++;
+                if (val == FtrInfo_GetColor1(self)) r = 1;
+                if (val == FtrInfo_GetColor2(self)) r++;
                 break;
             case 2:
                 if (val == Ftr_GetFlagPairA(self)) r = 2;
                 break;
             case 3:
-                if (val == Ftr_GetUnk03(self)) r = 2;
+                if (val == Ftr_GetCollectionGroup(self)) r = 2;
                 break;
             case 4:
                 if (val == Ftr_GetSeries(self)) r = 2;

@@ -38,7 +38,7 @@ public:
     BOOL testFlag(u32 a);
 };
 
-class SpNpcMissing1;
+class SpNpcKatie;
 
 extern "C" {
 void SkySprite_Release(void *p);
@@ -261,7 +261,7 @@ void func_02067a78(void *p);
 }
 
 extern "C" {
-void SpNpcMissing2_ChangeAct04(void);
+void SpNpcKaitlin_ChangeAct04(void);
 }
 
 extern "C" {
@@ -293,7 +293,7 @@ void PlayerActor_RequestTurnTo(s32 a, s32 b);
 }
 
 extern "C" {
-void SpNpcMissing2_ChangeAct06(void);
+void SpNpcKaitlin_ChangeAct06(void);
 }
 
 extern "C" {
@@ -333,7 +333,7 @@ extern u8 gScreenTransition;
 }
 
 extern "C" {
-extern Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
+extern Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
 }
 
 extern "C" {
@@ -385,7 +385,7 @@ s32 sWeatherRolledAtLoad;
 }
 
 extern "C" {
-extern SpNpcMissing1 *sSpNpcMissing1Instance;
+extern SpNpcKatie *sSpNpcKatieInstance;
 }
 
 // 0x020d1a28: first .rodata object of this file; read by the previous unit (0x020be9e4, src/main/unk_020b8d9c.cpp)
@@ -440,7 +440,7 @@ extern CommManager *gCommManager;
 }
 
 extern "C" {
-extern u32 sSpNpcMissing1MsgKey;
+extern u32 sSpNpcKatieMsgKey;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -711,11 +711,11 @@ struct Unk_020c0408_Obj {
     s32 unk_14;
 };
 
-// Sub-object at 0x658 of SpNpcMissing1
-class SpNpcMissing1Talk : public SpNpcTalkRequest {
+// Sub-object at 0x658 of SpNpcKatie
+class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
-    SpNpcMissing1Talk();
-    virtual ~SpNpcMissing1Talk();
+    SpNpcKatieTalk();
+    virtual ~SpNpcKatieTalk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -727,15 +727,15 @@ public:
     /* 0x1f */ u8 unk_1f[0x1d];
     /* 0x3c */ Unk_020c0408_Obj *unk_3c;
     /* 0x40 */ u8 unk_40[0x6c];
-    /* 0xac */ SpNpcMissing1 *unk_ac;
+    /* 0xac */ SpNpcKatie *unk_ac;
     /* 0xb0 */ s32 unk_b0;
 
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(SpNpcMissing1 *owner);
+    void attachOwner(SpNpcKatie *owner);
 };
 
-// Base of SpNpcMissing1; its dtor is out of line.
+// Base of SpNpcKatie; its dtor is out of line.
 class SpNpcActor : public ProcBase {
 public:
     virtual ~SpNpcActor();
@@ -749,12 +749,12 @@ public:
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
 
-class SpNpcMissing1 : public SpNpcActor {
+class SpNpcKatie : public SpNpcActor {
 public:
-    virtual ~SpNpcMissing1();
+    virtual ~SpNpcKatie();
 
     /* 0x654 */ s32 unk_654;
-    /* 0x658 */ SpNpcMissing1Talk unk_658;
+    /* 0x658 */ SpNpcKatieTalk unk_658;
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 unk_70e[0x724 - 0x70e];

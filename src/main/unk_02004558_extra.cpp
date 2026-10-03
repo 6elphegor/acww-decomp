@@ -320,14 +320,14 @@ public:
     void PlayerActor_NetFillHole(s32 idx);
     void PlayerActor_NetWateringCan(s32 idx);
     void PlayerActor_NetSlingshot(s32 idx);
-    void PlayerActor_NetAct65(s32 idx);
+    void PlayerActor_NetSlingshotWatch(s32 idx);
     void PlayerActor_NetAct66(s32 idx);
     void PlayerActor_NetAct67(s32 idx);
-    void PlayerActor_NetAct68(s32 idx);
-    void PlayerActor_NetAct69(s32 idx);
-    void PlayerActor_NetAct6A(s32 idx);
-    void PlayerActor_NetAct6B(s32 idx);
-    void PlayerActor_NetAct6C(s32 idx);
+    void PlayerActor_NetTreeShake(s32 idx);
+    void PlayerActor_NetTreeShakeRelease(s32 idx);
+    void PlayerActor_NetMailboxOpen(s32 idx);
+    void PlayerActor_NetMailboxWait(s32 idx);
+    void PlayerActor_NetMailboxClose(s32 idx);
     void PlayerActor_NetFaint(s32 idx);
     void PlayerActor_NetAct6E(s32 idx);
     void func_020092c4(s32 idx);
@@ -348,7 +348,7 @@ public:
     void PlayerActor_NetPhoneHold(s32 idx);
     void PlayerActor_NetPhoneHangUp(s32 idx);
     void PlayerActor_NetAct80(s32 idx);
-    void PlayerActor_NetAct81(s32 idx);
+    void PlayerActor_NetFirework(s32 idx);
     void PlayerActor_NetAct82(s32 idx);
     void func_020083dc(s32 idx);
     void func_020082ac(s32 idx);
@@ -356,7 +356,7 @@ public:
     void func_02007dc8(s32 idx);
     void func_ov068_0226a93c(s32 idx);
     void func_ov068_0226a838(s32 idx);
-    void PlayerActor_NetAct89(s32 idx);
+    void PlayerActor_NetThrowBottle(s32 idx);
     void PlayerActor_NetDrinkCoffee(s32 idx);
     void PlayerActor_NetDoorWalkIn(s32 idx);
     void PlayerActor_NetDoorWalkOut(s32 idx);
@@ -1108,7 +1108,7 @@ s32 PlayerActor_GetSlotAction(s32 *out, s32 a, s32 b);
 u8 *PlayerActor_GetNetStateVar(s32 v);
 s32 NetBuf_ReadS16(void *p);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
-void PlayerActor_RequestAct68(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
+void PlayerActor_RequestTreeShake(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void PlayerActor_RequestPluck(void *p, void *v, s32 a, s32 b);
 void PlayerActor_RequestAxeBreak(void *p, s32 a, void *v, s32 b, s32 c);
 void PlayerActor_RequestAxeChop(void *p, s32 a, s32 b, void *v, s32 c, s32 d);
@@ -5320,7 +5320,7 @@ void Unk_02005e7c::handleNetEvent() {
                 return;
             }
         }
-        PlayerActor_RequestAct68(this, w.x, w.z, type != 1, 1, 6, -1);
+        PlayerActor_RequestTreeShake(this, w.x, w.z, type != 1, 1, 6, -1);
         break;
     }
     case 3:

@@ -311,10 +311,10 @@ void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d
 void _ZN9AnimModel8stepAnimEv(void *self);
 void _ZN9ModelAnim7replaceEiiiit(void *self, void *a, void *b, s32 c, s32 d, u16 e);
 BOOL MenuCtrl_IsFinished();
-BOOL PlayerActor_LocalRequestAct6BOr6C(s32 a);
+BOOL PlayerActor_LocalRequestMailboxWaitOrClose(s32 a);
 BOOL MenuCtrl_OpenLauncher(u32 a);
 s32 Ground_GetDefaultY(s32 a);
-BOOL PlayerActor_LocalRequestAct6A(void *p);
+BOOL PlayerActor_LocalRequestMailboxOpen(void *p);
 u32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8528(void *m, s32 a, s32 b, s32 c);
 void *PlayerData_GetCurrent();
@@ -571,7 +571,7 @@ s32 Mailbox::enterUseOpen() {
     v.a = unk_5c[0];
     v.b = Ground_GetDefaultY(0);
     v.c = unk_5c[2] + 0x2000;
-    if (PlayerActor_LocalRequestAct6A(&v)) {
+    if (PlayerActor_LocalRequestMailboxOpen(&v)) {
         Building_RequestState(this, 3);
     }
     return TRUE;
@@ -600,7 +600,7 @@ s32 Mailbox::enterUseMenuWait() {
 
 s32 Mailbox::execUseMenuWait() {
     if (MenuCtrl_IsFinished()) {
-        if (PlayerActor_LocalRequestAct6BOr6C(2)) {
+        if (PlayerActor_LocalRequestMailboxWaitOrClose(2)) {
             setUseState(4);
         }
     }

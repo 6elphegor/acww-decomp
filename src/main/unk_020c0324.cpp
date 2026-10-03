@@ -10,7 +10,7 @@ struct CommManager {
     s32 unk_68;
 };
 
-class SpNpcMissing1;
+class SpNpcKatie;
 
 extern "C" {
 void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
@@ -98,8 +98,8 @@ extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern CommManager *gCommManager;
 }
-void SpNpcMissing2_ChangeAct04(void);
-void SpNpcMissing2_ChangeAct06(void);
+void SpNpcKaitlin_ChangeAct04(void);
+void SpNpcKaitlin_ChangeAct06(void);
 static inline BOOL Unk_020c06a0_IsMode2() {
     return gScreenTransition == 2;
 }
@@ -131,7 +131,7 @@ public:
     virtual ~ProcBase();
 };
 
-// ---- SpNpcMissing1Talk and its bases (vtable 0x020ddcf0 chain) ----
+// ---- SpNpcKatieTalk and its bases (vtable 0x020ddcf0 chain) ----
 struct Unk_020c0408_Obj {
     u8 unk_00[4];
     s32 unk_04;
@@ -217,10 +217,10 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class SpNpcMissing1Talk : public SpNpcTalkRequest {
+class SpNpcKatieTalk : public SpNpcTalkRequest {
 public:
-    SpNpcMissing1Talk();
-    virtual ~SpNpcMissing1Talk();
+    SpNpcKatieTalk();
+    virtual ~SpNpcKatieTalk();
     virtual void vfunc_10();
     virtual void vfunc_14();
     virtual void vfunc_18();
@@ -229,13 +229,13 @@ public:
 
     s32 getTopic();
     void setTopic(s32 v);
-    void attachOwner(SpNpcMissing1 *owner);
+    void attachOwner(SpNpcKatie *owner);
 
-    SpNpcMissing1 *unk_ac;
+    SpNpcKatie *unk_ac;
     s32 unk_b0;
 };
 
-// ---- SpNpcMissing1 and its bases (scene object derived from NpcActor) ----
+// ---- SpNpcKatie and its bases (scene object derived from NpcActor) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -382,19 +382,19 @@ public:
     u8 unk_651;
 };
 
-typedef BOOL (SpNpcMissing1::*Unk_020c11b8_Fn)();
+typedef BOOL (SpNpcKatie::*Unk_020c11b8_Fn)();
 struct Unk_020c11b8_Ent {
     Unk_020c11b8_Fn a;
     Unk_020c11b8_Fn b;
 };
 
-class SpNpcMissing1 : public SpNpcActor {
+class SpNpcKatie : public SpNpcActor {
 public:
-    SpNpcMissing1() {}
+    SpNpcKatie() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual ~SpNpcMissing1() {}
+    virtual ~SpNpcKatie() {}
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a);
     virtual BOOL updateAct();
@@ -422,7 +422,7 @@ public:
     void changeAct(s32 state);
 
     s32 unk_654;
-    SpNpcMissing1Talk unk_658;
+    SpNpcKatieTalk unk_658;
     u8 unk_70c;
     u8 unk_70d;
     u16 unk_70e;
@@ -432,20 +432,20 @@ public:
     u8 unk_724;
 };
 
-extern Unk_020c11b8_Ent sSpNpcMissing1ActTable[9];
-extern SpNpcMissing1 *sSpNpcMissing1Instance;
-extern char sSpNpcMissing1Key[16];
-extern char sSpNpcMissing1ModelPath[23];
-extern char sSpNpcMissing1TexPath[27];
-extern char *sSpNpcMissing1MsgKey;
-extern const Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos;
-extern "C" SpNpcMissing1 *SpNpcMissing1_Create(void);
+extern Unk_020c11b8_Ent sSpNpcKatieActTable[9];
+extern SpNpcKatie *sSpNpcKatieInstance;
+extern char sSpNpcKatieKey[16];
+extern char sSpNpcKatieModelPath[23];
+extern char sSpNpcKatieTexPath[27];
+extern char *sSpNpcKatieMsgKey;
+extern const Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos;
+extern "C" SpNpcKatie *SpNpcKatie_Create(void);
 
-extern "C" SpNpcMissing1 *SpNpcMissing1_Create(void) {
-    return new SpNpcMissing1();
+extern "C" SpNpcKatie *SpNpcKatie_Create(void) {
+    return new SpNpcKatie();
 }
 
-BOOL SpNpcMissing1::vfunc_04() {
+BOOL SpNpcKatie::vfunc_04() {
     if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
@@ -472,12 +472,12 @@ BOOL SpNpcMissing1::vfunc_04() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::vfunc_00() {
+BOOL SpNpcKatie::vfunc_00() {
     void *p;
     if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
-    sSpNpcMissing1Instance = this;
+    sSpNpcKatieInstance = this;
     unk_720 = -1;
     p = PlayerData_GetCurrent();
     if (Scene_GetCurrent() == 0) {
@@ -529,29 +529,29 @@ BOOL SpNpcMissing1::vfunc_00() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::vfunc_0c() {
+BOOL SpNpcKatie::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    sSpNpcMissing1Instance = NULL;
+    sSpNpcKatieInstance = NULL;
     if (Scene_GetCurrent() == 0x2f) {
         TalkRequestFlags_ClearSceneHold();
     }
     return TRUE;
 }
 
-void *SpNpcMissing1::getTexturePath() {
-    return sSpNpcMissing1TexPath;
+void *SpNpcKatie::getTexturePath() {
+    return sSpNpcKatieTexPath;
 }
 
-void *SpNpcMissing1::getModelPath() {
-    return sSpNpcMissing1ModelPath;
+void *SpNpcKatie::getModelPath() {
+    return sSpNpcKatieModelPath;
 }
 
-BOOL SpNpcMissing1::updateAct() {
+BOOL SpNpcKatie::updateAct() {
     s32 r = 0;
-    if (sSpNpcMissing1ActTable[unk_654].b != 0) {
-        r = (this->*(sSpNpcMissing1ActTable[unk_654].b))();
+    if (sSpNpcKatieActTable[unk_654].b != 0) {
+        r = (this->*(sSpNpcKatieActTable[unk_654].b))();
     }
     if (Scene_GetCurrent() == 0) {
         _ZN12Unk_02086f846setPosEP17Unk_02086ec4_Vec3(TownSessionState_GetKatieState(TownSessionState_Get()), &unk_5c);
@@ -564,11 +564,11 @@ BOOL SpNpcMissing1::updateAct() {
     return r;
 }
 
-BOOL SpNpcMissing1::vfunc_48() {
+BOOL SpNpcKatie::vfunc_48() {
     return _ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0;
 }
 
-void SpNpcMissing1::vfunc_4c(s32 state) {
+void SpNpcKatie::vfunc_4c(s32 state) {
     switch (state) {
     case 0:
     case 1:
@@ -591,9 +591,9 @@ void SpNpcMissing1::vfunc_4c(s32 state) {
     }
 }
 
-void SpNpcMissing1::changeAct(s32 state) {
+void SpNpcKatie::changeAct(s32 state) {
     BOOL result = TRUE;
-    Unk_020c11b8_Ent *e = &sSpNpcMissing1ActTable[state];
+    Unk_020c11b8_Ent *e = &sSpNpcKatieActTable[state];
     if (e->a != 0) {
         result = (this->*(e->a))();
     }
@@ -606,18 +606,18 @@ void SpNpcMissing1::changeAct(s32 state) {
     }
 }
 
-BOOL SpNpcMissing1::setupAct00() {
+BOOL SpNpcKatie::setupAct00() {
     unk_4cc.unk_1c |= 2;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct00() {
+BOOL SpNpcKatie::mainAct00() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct01() {
+BOOL SpNpcKatie::setupAct01() {
     Unk_020c0acc_Vec a, b;
     unk_4cc.unk_1c |= 2;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
@@ -633,7 +633,7 @@ BOOL SpNpcMissing1::setupAct01() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct01() {
+BOOL SpNpcKatie::mainAct01() {
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&unk_334, 0x53, &unk_2a0) && _ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
         _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0x54);
@@ -648,13 +648,13 @@ BOOL SpNpcMissing1::mainAct01() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct02() {
+BOOL SpNpcKatie::setupAct02() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xab, 1, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct02() {
+BOOL SpNpcKatie::mainAct02() {
     unk_4cc.unk_1c |= 2;
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&unk_334, 0xab, &unk_2a0) && _ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -664,7 +664,7 @@ BOOL SpNpcMissing1::mainAct02() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct03() {
+BOOL SpNpcKatie::setupAct03() {
     s32 p, r4;
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     p = _ZN16ActorTalkRequest13func_02015aacEv(&unk_658);
@@ -678,7 +678,7 @@ BOOL SpNpcMissing1::setupAct03() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct03() {
+BOOL SpNpcKatie::mainAct03() {
     if (_ZN11NpcTalkCtrl6isBusyEv(&unk_618) == 0) {
         TalkRequest_SetTargetDone(this);
         changeAct(7);
@@ -686,35 +686,35 @@ BOOL SpNpcMissing1::mainAct03() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct07() {
+BOOL SpNpcKatie::setupAct07() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct07() {
+BOOL SpNpcKatie::mainAct07() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct04() {
+BOOL SpNpcKatie::setupAct04() {
     unk_4cc.unk_1c &= ~2;
     unk_710 = 0x28;
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct04() {
+BOOL SpNpcKatie::mainAct04() {
     if (func_020e7500(&unk_710) == 0) {
         changeAct(5);
     }
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct05() {
+BOOL SpNpcKatie::setupAct05() {
     unk_4cc.unk_1c &= ~2;
     unk_70e = 0x28;
     unk_714 = unk_5c;
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct05() {
+BOOL SpNpcKatie::mainAct05() {
     Unk_020c0acc_Vec a, b, c, d;
     void *p = PlayerData_GetCurrent();
     void *q;
@@ -770,7 +770,7 @@ BOOL SpNpcMissing1::mainAct05() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct06() {
+BOOL SpNpcKatie::setupAct06() {
     if (Scene_GetCurrent() == 0) {
         _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
     }
@@ -780,7 +780,7 @@ BOOL SpNpcMissing1::setupAct06() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct06() {
+BOOL SpNpcKatie::mainAct06() {
     Unk_020c0acc_Vec v;
     s16 a;
     if (_ZN11NpcAnimCtrl13isPlayingAnimEiPv(&unk_334, 0x122, &unk_2a0)) {
@@ -805,12 +805,12 @@ BOOL SpNpcMissing1::mainAct06() {
     return TRUE;
 }
 
-BOOL SpNpcMissing1::setupAct08() {
+BOOL SpNpcKatie::setupAct08() {
     unk_724 = 0;
     return TRUE;
 }
 
-BOOL SpNpcMissing1::mainAct08() {
+BOOL SpNpcKatie::mainAct08() {
     u8 buf;
     Unk_020bfe30_Vec vec24;
     Unk_020bfe30_Vec vec30;
@@ -827,7 +827,7 @@ BOOL SpNpcMissing1::mainAct08() {
         }
         break;
     case 1:
-        vec30 = sSpNpcMissing1ReunionWalkPos;
+        vec30 = sSpNpcKatieReunionWalkPos;
         PlayerActor_RequestWalkTo(&vec30, 0x35c, r5);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
         unk_724 = 2;
@@ -848,7 +848,7 @@ BOOL SpNpcMissing1::mainAct08() {
         if (unk_658.unk_3c->unk_04 == 5) {
             _ZN15TalkWindowState11lockAdvanceEv(unk_658.unk_3c);
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
-            SpNpcMissing2_ChangeAct04();
+            SpNpcKaitlin_ChangeAct04();
             Camera_SetMode19();
             unk_724 = 4;
         }
@@ -862,7 +862,7 @@ BOOL SpNpcMissing1::mainAct08() {
                 _ZN16ActorTalkRequest15setPartnerActorEP18Unk_02015b8c_Scene(&unk_658, t);
             }
             buf = 10;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_658.unk_3c, &buf, (u32)sSpNpcMissing1MsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(unk_658.unk_3c, &buf, (u32)sSpNpcKatieMsgKey);
             unk_658.unk_3c->unk_08 = 1;
             _ZN15TalkWindowState13unlockAdvanceEv(unk_658.unk_3c);
             unk_724 = 5;
@@ -882,7 +882,7 @@ BOOL SpNpcMissing1::mainAct08() {
         if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
             PlayerActor_RequestTurnTo(0, r5);
-            SpNpcMissing2_ChangeAct06();
+            SpNpcKaitlin_ChangeAct06();
             unk_724 = 7;
         }
         break;
@@ -932,32 +932,32 @@ BOOL SpNpcMissing1::mainAct08() {
     return TRUE;
 }
 
-SpNpcMissing1Talk::SpNpcMissing1Talk() {}
+SpNpcKatieTalk::SpNpcKatieTalk() {}
 
-SpNpcMissing1Talk::~SpNpcMissing1Talk() {}
+SpNpcKatieTalk::~SpNpcKatieTalk() {}
 
-void SpNpcMissing1Talk::attachOwner(SpNpcMissing1 *owner) {
+void SpNpcKatieTalk::attachOwner(SpNpcKatie *owner) {
     vfunc_08();
     unk_ac = owner;
 }
 
-void SpNpcMissing1Talk::setTopic(s32 v) {
+void SpNpcKatieTalk::setTopic(s32 v) {
     unk_b0 = v;
 }
 
-s32 SpNpcMissing1Talk::getTopic() {
+s32 SpNpcKatieTalk::getTopic() {
     return unk_b0;
 }
 
-void SpNpcMissing1Talk::vfunc_38(void *p) {
+void SpNpcKatieTalk::vfunc_38(void *p) {
     _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_ac->unk_2a0, 0);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&unk_ac->unk_2a0, 1);
     _ZN16ActorTalkRequest8vfunc_38Ej(this, p);
 }
 
-void SpNpcMissing1Talk::vfunc_78(Unk_020c0538_Out *out) {
+void SpNpcKatieTalk::vfunc_78(Unk_020c0538_Out *out) {
     void *t = PlayerData_GetCurrent();
-    out->unk_00 = (u32)sSpNpcMissing1MsgKey;
+    out->unk_00 = (u32)sSpNpcKatieMsgKey;
     switch (getTopic()) {
     case 0:
         _ZN12Unk_02097ff47setFlagEj(t, 0x33);
@@ -987,19 +987,19 @@ void SpNpcMissing1Talk::vfunc_78(Unk_020c0538_Out *out) {
     unk_ac->unk_70d = 0;
 }
 
-void SpNpcMissing1Talk::vfunc_10() {
+void SpNpcKatieTalk::vfunc_10() {
     s32 a = _ZN10PlayerData18getLostChildRecordEv(PlayerData_GetCurrent());
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 0);
     _ZN16ActorTalkRequest15setTownNameSlotEjj(this, _ZN15LostChildRecord9getTownIdEv((void *)a), 1);
 }
 
-void SpNpcMissing1Talk::vfunc_14() {
+void SpNpcKatieTalk::vfunc_14() {
     if (unk_1e == 0x14) {
         unk_3c->unk_14 = 0;
     }
 }
 
-void SpNpcMissing1Talk::vfunc_18() {
+void SpNpcKatieTalk::vfunc_18() {
     switch (unk_1e) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
     case 25: case 26: case 27:
@@ -1009,12 +1009,12 @@ void SpNpcMissing1Talk::vfunc_18() {
         switch (_ZN10ChoiceList9getResultEv()) {
         case 0:
             v[0] = Random_GlobalBelow(3) + 0x1c;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcMissing1MsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcKatieMsgKey);
             _ZN12Unk_02086f8412setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             break;
         case 1:
             v[1] = Random_GlobalBelow(3) + 0x1f;
-            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcMissing1MsgKey);
+            _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcKatieMsgKey);
             if (Scene_GetCurrent() == 0) {
                 _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             }
@@ -1029,10 +1029,10 @@ void SpNpcMissing1Talk::vfunc_18() {
     }
 }
 
-extern "C" BOOL SpNpcMissing1_IsIdle() {
-    SpNpcMissing1 *p = sSpNpcMissing1Instance;
+extern "C" BOOL SpNpcKatie_IsIdle() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
-        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->unk_2ac) == 0xba && sSpNpcMissing1Instance->unk_654 == 0) {
+        if (_ZN11NpcFaceAnim12getMouthAnimEv(&p->unk_2ac) == 0xba && sSpNpcKatieInstance->unk_654 == 0) {
             return TRUE;
         }
         return FALSE;
@@ -1040,8 +1040,8 @@ extern "C" BOOL SpNpcMissing1_IsIdle() {
     return TRUE;
 }
 
-extern "C" void SpNpcMissing1_ResetAct() {
-    SpNpcMissing1 *p = sSpNpcMissing1Instance;
+extern "C" void SpNpcKatie_ResetAct() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
         if (p->unk_654 != 0) {
             p->changeAct(0);
@@ -1049,8 +1049,8 @@ extern "C" void SpNpcMissing1_ResetAct() {
     }
 }
 
-extern "C" void SpNpcMissing1_ChangeAct05() {
-    SpNpcMissing1 *p = sSpNpcMissing1Instance;
+extern "C" void SpNpcKatie_ChangeAct05() {
+    SpNpcKatie *p = sSpNpcKatieInstance;
     if (p) {
         if (p->unk_654 != 5) {
             p->changeAct(5);
@@ -1073,25 +1073,25 @@ Unk_021f458c_Color data_021f4584(31, 31, 20, 31);
 Unk_021f458c_Color data_021f457c(20, 31, 20, 31);
 Unk_021f458c_Color data_021f4590(20, 31, 31, 31);
 Unk_021f458c_Color data_021f4588(20, 24, 24, 31);
-const Unk_020bfe30_Vec sSpNpcMissing1ReunionWalkPos = { 0x10000, 0, 0x11800 };
-Unk_020c11b8_Ent sSpNpcMissing1ActTable[9] = {
-    { &SpNpcMissing1::setupAct00, &SpNpcMissing1::mainAct00 },
-    { &SpNpcMissing1::setupAct01, &SpNpcMissing1::mainAct01 },
-    { &SpNpcMissing1::setupAct02, &SpNpcMissing1::mainAct02 },
-    { &SpNpcMissing1::setupAct03, &SpNpcMissing1::mainAct03 },
-    { &SpNpcMissing1::setupAct04, &SpNpcMissing1::mainAct04 },
-    { &SpNpcMissing1::setupAct05, &SpNpcMissing1::mainAct05 },
-    { &SpNpcMissing1::setupAct06, &SpNpcMissing1::mainAct06 },
-    { &SpNpcMissing1::setupAct07, &SpNpcMissing1::mainAct07 },
-    { &SpNpcMissing1::setupAct08, &SpNpcMissing1::mainAct08 },
+const Unk_020bfe30_Vec sSpNpcKatieReunionWalkPos = { 0x10000, 0, 0x11800 };
+Unk_020c11b8_Ent sSpNpcKatieActTable[9] = {
+    { &SpNpcKatie::setupAct00, &SpNpcKatie::mainAct00 },
+    { &SpNpcKatie::setupAct01, &SpNpcKatie::mainAct01 },
+    { &SpNpcKatie::setupAct02, &SpNpcKatie::mainAct02 },
+    { &SpNpcKatie::setupAct03, &SpNpcKatie::mainAct03 },
+    { &SpNpcKatie::setupAct04, &SpNpcKatie::mainAct04 },
+    { &SpNpcKatie::setupAct05, &SpNpcKatie::mainAct05 },
+    { &SpNpcKatie::setupAct06, &SpNpcKatie::mainAct06 },
+    { &SpNpcKatie::setupAct07, &SpNpcKatie::mainAct07 },
+    { &SpNpcKatie::setupAct08, &SpNpcKatie::mainAct08 },
 };
-SpNpcMissing1 *sSpNpcMissing1Instance;
-char sSpNpcMissing1Key[] = "sp_npc_missing1";
-char *sSpNpcMissing1MsgKey = sSpNpcMissing1Key;
-char sSpNpcMissing1TexPath[] = "npc_sp/model/los_tex.nsbtx";
-char sSpNpcMissing1ModelPath[] = "npc_sp/model/los.nsbmd";
+SpNpcKatie *sSpNpcKatieInstance;
+char sSpNpcKatieKey[] = "sp_npc_missing1";
+char *sSpNpcKatieMsgKey = sSpNpcKatieKey;
+char sSpNpcKatieTexPath[] = "npc_sp/model/los_tex.nsbtx";
+char sSpNpcKatieModelPath[] = "npc_sp/model/los.nsbmd";
 struct Unk_020e6858_Rec {
-    SpNpcMissing1 *(*fn)();
+    SpNpcKatie *(*fn)();
     u32 w[5];
 };
-Unk_020e6858_Rec sSpNpcMissing1Profile = { SpNpcMissing1_Create, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };
+Unk_020e6858_Rec sSpNpcKatieProfile = { SpNpcKatie_Create, { 0x0082007e, 2, 0x5000, 0x5000, 0x3e800 } };

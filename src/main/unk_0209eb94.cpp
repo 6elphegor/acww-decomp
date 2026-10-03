@@ -294,7 +294,7 @@ extern u8 sAxMailReceived;
 extern u8 sAxMailBuf[];
 extern u8 sGameStatsReceived;
 extern u8 sGameStatsBuf[];
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 extern u8 sAxBbsReceived;
 extern char *sAxMailBaseUrl;
 extern char *sAxBbsFileName;
@@ -5267,7 +5267,7 @@ extern "C" s32 Wifi_EndSession(void) {
 }
 
 extern "C" BOOL GameStats_Upload(void) {
-    u8 *p = NB::gSaveGameStats;
+    u8 *p = NB::gSaveBlancaFace;
     if (NB::_ZN16BlancaFaceRecord8getStateEv(p) == 3) {
         s32 v = NB::_ZN16BlancaFaceRecord13func_02087224Ev(p);
         NB::_ZN16BlancaFaceRecord13func_02087230Ej(p, NB::Save_CalcChecksum(p, 0x22c, v));
@@ -5280,7 +5280,7 @@ extern "C" BOOL GameStats_Upload(void) {
 }
 
 extern "C" BOOL GameStats_Download(void) {
-    if (NB::_ZN16BlancaFaceRecord8getStateEv(NB::gSaveGameStats) == 0) {
+    if (NB::_ZN16BlancaFaceRecord8getStateEv(NB::gSaveBlancaFace) == 0) {
         u32 t = NB::sNetRegion;
         NB::_Z21NetOverlay_AssertWifiv();
         if (NB::Net_GameStatsDownload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", NB::sGameStatsBuf, 0x22c, t) != 0) {
@@ -5355,7 +5355,7 @@ extern "C" BOOL AxMail_PollBbs(void) {
 
 extern "C" BOOL GameStats_PollUpload(void) {
     if (NB::Net_IsUploadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
-        NB::_ZN16BlancaFaceRecord5resetEv(NB::gSaveGameStats);
+        NB::_ZN16BlancaFaceRecord5resetEv(NB::gSaveBlancaFace);
         return TRUE;
     }
     return FALSE;
@@ -5365,7 +5365,7 @@ extern "C" void GameStats_ApplyDownload(void) {
     if (NB::sGameStatsReceived != 0) {
         NB::sGameStatsReceived = 0;
         s32 r = NB::Save_Sum16(NB::sGameStatsBuf, 0x22c);
-        u8 *dst = NB::gSaveGameStats;
+        u8 *dst = NB::gSaveBlancaFace;
         if (r == 0) {
             NB::_ZN16BlancaFaceRecord8setStateEj(NB::sGameStatsBuf, 1);
             NB::MI_CpuCopy8(NB::sGameStatsBuf, dst, 0x22c);

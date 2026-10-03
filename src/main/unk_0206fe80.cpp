@@ -25,7 +25,7 @@ extern u8 *sAblePatternVramTasks;
 extern u8 *sPlayerPatternTexWork;
 extern u8 *sPlayerPatternVramTasks;
 extern u8 gSaveAbleSistersPatterns[];
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 extern u8 gSaveVillagers[];
 extern u8 gSaveTownFlag[];
 extern s32 (*sPatternSourceGetters[])(s32);

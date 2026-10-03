@@ -142,7 +142,7 @@ extern s32 sVisitorSpawnTableCount;
 }
 
 extern "C" {
-extern u8 data_021ed315, gSaveGameStats;
+extern u8 data_021ed315, gSaveBlancaFace;
 }
 
 extern "C" {

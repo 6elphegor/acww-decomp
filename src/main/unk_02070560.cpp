@@ -1927,7 +1927,7 @@ extern "C" {
 extern u8 gSaveAbleSistersPatterns[];
 }
 extern "C" {
-extern u8 gSaveGameStats[];
+extern u8 gSaveBlancaFace[];
 }
 extern "C" {
 extern u8 gSaveVillagers[];
@@ -2070,7 +2070,7 @@ extern "C" s32 PatternSrc_GetPreset(s32 x) {
     return _ZN15PatternTexCache16getPresetPatternEv(t);
 }
 extern "C" s32 PatternSrc_GetBlancaFace() {
-    return _ZN16BlancaFaceRecord10getPatternEv(gSaveGameStats);
+    return _ZN16BlancaFaceRecord10getPatternEv(gSaveBlancaFace);
 }
 extern "C" void *PatternSrc_GetCurrentPlayer(s32 i) {
     void *p = PlayerData_GetCurrent();

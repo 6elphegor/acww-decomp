@@ -43,7 +43,7 @@ BOOL PlayerActor_IsLocalReleaseWaiting();
 BOOL PlayerActor_LocalRequestReleaseCreature();
 BOOL BottleThrow_IsActive(void *p);
 void BottleThrow_SetTarget(void *p, void *q);
-void PlayerActor_LocalRequestAct89();
+void PlayerActor_LocalRequestThrowBottle();
 BOOL HeldInsect_GetStage(void *p);
 void HeldInsect_Start(u32 a, void *p);
 void HeldInsect_Release(void *p, s32 a);
@@ -533,7 +533,7 @@ void PocketMenu::actionPlantItem() {
 
 void PocketMenu::actionThrowBottle() {
     sendBottleLetter();
-    PlayerActor_LocalRequestAct89();
+    PlayerActor_LocalRequestThrowBottle();
     BottleThrow_SetTarget(&unk_2b84, PocketMenu_GetPlayerSlot(this));
     PocketMenu_ClearLetter(this, unk_b6);
     setMainState(0x33);

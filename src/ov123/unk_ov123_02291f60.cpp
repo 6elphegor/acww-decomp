@@ -6,7 +6,7 @@
 #undef vfunc_14
 
 extern "C" {
-extern u8 gSaveGameStats;
+extern u8 gSaveBlancaFace;
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchHeld;
@@ -1424,7 +1424,7 @@ void PatternEditorMenu::saveToPlayerPattern()
 
 void PatternEditorMenu::loadFromExternalPattern()
 {
-    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveGameStats);
+    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
     MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_a04, 0x200);
     MIi_CpuCopy32(_ZN7Pattern9getPixelsEv(o), unk_c04, 0x200);
     u8 r = _ZN11PatternInfo10getPaletteEv(_ZN7Pattern7getInfoEv(o));
@@ -1433,7 +1433,7 @@ void PatternEditorMenu::loadFromExternalPattern()
 
 void PatternEditorMenu::saveToExternalPattern()
 {
-    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveGameStats);
+    void *o = _ZN16BlancaFaceRecord10getPatternEv(&gSaveBlancaFace);
     _ZN7Pattern9setPixelsEPv(o, getCanvas());
     _ZN11PatternInfo24setAuthorToCurrentPlayerEv(_ZN7Pattern7getInfoEv(o));
     _ZN11PatternInfo10setPaletteEj(_ZN7Pattern7getInfoEv(o), unk_a1);

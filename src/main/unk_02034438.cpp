@@ -305,14 +305,14 @@ public:
     void updateRequestVolume(BgmVolumeChannel *e);
     void updateSceneDuck(BgmVolumeChannel *e);
     void updatePositionDuck(BgmVolumeChannel *e);
-    void updateAct81Duck(BgmVolumeChannel *e);
+    void updateFireworkDuck(BgmVolumeChannel *e);
     void updateFishDuck(BgmVolumeChannel *e);
     void updateTalkDuck(BgmVolumeChannel *e);
     void updateMenuDuck(BgmVolumeChannel *e);
     void updateChannel0(BgmVolumeChannel *e);
     void updateChannels();
-    void endAct81Duck();
-    void startAct81Duck();
+    void endFireworkDuck();
+    void startFireworkDuck();
     void endFishDuck();
     void startFishDuck();
     void endMenuDuck();
@@ -1733,9 +1733,9 @@ void BgmVolumeMixer::startFishDuck() { unk_04[3].unk_0c = 0xa; }
 
 void BgmVolumeMixer::endFishDuck() { unk_04[3].unk_0c = 0xc; }
 
-void BgmVolumeMixer::startAct81Duck() { unk_04[4].unk_0c = 0xd; }
+void BgmVolumeMixer::startFireworkDuck() { unk_04[4].unk_0c = 0xd; }
 
-void BgmVolumeMixer::endAct81Duck() { unk_04[4].unk_0c = 0xf; }//DEF sSceneBgmTable
+void BgmVolumeMixer::endFireworkDuck() { unk_04[4].unk_0c = 0xf; }//DEF sSceneBgmTable
 const u16 sSceneBgmTable[0x3a] = {
     0x1a, 0x4d, 0x1b, 0x4e, 0x1c, 0x4f, 0x1d, 0x50,
     0x1e, 0x50, 0xa, 0x58, 0xb, 0x53, 0xc, 0x53,
@@ -1762,7 +1762,7 @@ Unk_020d8dbc_Rec sBgmProcProfile = {&BgmProc::create, 0xcf, 0xcb};
 void BgmVolumeMixer::updateChannels() {
     static Unk_02035758_Fn tbl[8] = {
         &BgmVolumeMixer::updateChannel0, &BgmVolumeMixer::updateMenuDuck, &BgmVolumeMixer::updateTalkDuck,
-        &BgmVolumeMixer::updateFishDuck, &BgmVolumeMixer::updateAct81Duck, &BgmVolumeMixer::updatePositionDuck,
+        &BgmVolumeMixer::updateFishDuck, &BgmVolumeMixer::updateFireworkDuck, &BgmVolumeMixer::updatePositionDuck,
         &BgmVolumeMixer::updateSceneDuck, &BgmVolumeMixer::updateRequestVolume,
     };
     for (s32 i = 0; i < 8; i++) {
@@ -1825,7 +1825,7 @@ void BgmVolumeMixer::updateFishDuck(BgmVolumeChannel *e) {
     }
 }
 
-void BgmVolumeMixer::updateAct81Duck(BgmVolumeChannel *e) {
+void BgmVolumeMixer::updateFireworkDuck(BgmVolumeChannel *e) {
     s32 st = e->unk_0c;
     if (st == 0xd) {
         e->set(0x28, 0xf, 1);
