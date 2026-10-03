@@ -190,7 +190,7 @@ BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 z);
 void *PlayerActor_GetActor(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-s32 func_02063ba4(s32 a);
+s32 Math_AngleToDir8(s32 a);
 u8 *PendingUnit_Get();
 
 s32 FieldItemFxTable_StartForPlayer(void *tbl, s32 a, P2 p, V3 q, s32 k, s32 v, s32 w, s32 x);
@@ -7879,7 +7879,7 @@ extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c)
     FieldPos_FromUnitCenter(tmp, c.x, c.z);
     u8 *obj = (u8 *)PlayerActor_GetActor(4);
     if (obj != NULL) {
-        r = (s32)(func_02063ba4(*(s16 *)(obj + 0x8e)) << 29) >> 16;
+        r = (s32)(Math_AngleToDir8(*(s16 *)(obj + 0x8e)) << 29) >> 16;
     }
     FieldItemFxTable_Start(sFieldItemFxTable, a, c, V3(tmp[0], tmp[1], tmp[2]), 0xb, b, r, 0);
 }

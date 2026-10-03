@@ -388,7 +388,7 @@ s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
 s32 func_020e7b98(s32, s32);
 s32 NpcLookAt_setTarget(void *, s32, s32, void *, void *, s32, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 s32 func_020e96ec(void *, void *);
@@ -412,10 +412,10 @@ void *VillagerMemory_getFriendship(void *);
 void VillagerMemory_addFriendship(void *, s8);
 void ActorTalkRequest_setItemNameSlot(void *, void *, s32, s32);
 void ItemPickSpec_set(void *, s32, s32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
 void *PlayerData_GetCurrent();
-void func_0206277c(u16 *, void *, s32);
+void ItemPick_FtrWallCarpetByClass(u16 *, void *, s32);
 void *VillagerData_getVillagerId(void *);
 void VillagerId_makeFileName(void *, void *, s32, void *);
 void ActorTalkRequest_setVillagerNameSlot(void *, void *, s32);
@@ -800,7 +800,7 @@ void BirthdayHostVillagerTalk::vfunc_80() {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
                 unk_3c->unk_08 = 1;
-                b0 = func_02063b8c(2) + 7;
+                b0 = Random_GlobalBelow(2) + 7;
                 TalkWindowState_setNextMessage(unk_3c, &b0, 0);
                 unk_1a0->changeAct(6);
             } else {
@@ -810,7 +810,7 @@ void BirthdayHostVillagerTalk::vfunc_80() {
                 Pocket_RemoveItem(r6);
                 ActorTalkRequest_setItemNameSlot(this, &x, 0, 7);
                 if (isLikedGift(&x)) {
-                    b1 = func_02063b8c(2) + 0xd;
+                    b1 = Random_GlobalBelow(2) + 0xd;
                     TalkWindowState_setNextMessage(unk_3c, &b1, 0);
                     addFriendship(5);
                     if (r4 >= 1000) addFriendship(5);
@@ -818,7 +818,7 @@ void BirthdayHostVillagerTalk::vfunc_80() {
                     Unk_02014420_requestTakeItem(this, &x, 0, 5, 0);
                     unk_1a0->changeAct(12);
                 } else {
-                    b2 = func_02063b8c(2) + 0xb;
+                    b2 = Random_GlobalBelow(2) + 0xb;
                     TalkWindowState_setNextMessage(unk_3c, &b2, 0);
                     addFriendship(2);
                     if (r4 >= 1000) addFriendship(5);
@@ -841,7 +841,7 @@ void BirthdayHostVillagerTalk::vfunc_78(void *arg) {
     VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), sBirthdayHostMsgFile, 0x28, (void *)"ev_nbirth");
     *(u32 *)out = (u32)sBirthdayHostMsgFile;
     if (unk_1a0->unk_894 == 9) {
-        out[4] = func_02063b8c(2);
+        out[4] = Random_GlobalBelow(2);
     } else {
         s32 k = 3;
         if (this->isNotTalkedYet()) {
@@ -852,13 +852,13 @@ void BirthdayHostVillagerTalk::vfunc_78(void *arg) {
         this->setTalked();
         switch (k) {
         case 1:
-            out[4] = func_02063b8c(2) + 2;
+            out[4] = Random_GlobalBelow(2) + 2;
             break;
         case 2:
-            out[4] = func_02063b8c(4) + 0x13;
+            out[4] = Random_GlobalBelow(4) + 0x13;
             break;
         default:
-            out[4] = func_02063b8c(2) + 4;
+            out[4] = Random_GlobalBelow(2) + 4;
             break;
         }
         BirthdayHostVillager *p = unk_1a0;
@@ -894,33 +894,33 @@ extern "C" u16 BirthdayHost_PickReturnGift(s32 n) {
         ItemPickSpec_set(o, 1, 0);
         ItemPick_One(&w1, &o, 0, 0, 1, 1, 0);
         u16 r = w1;
-        func_02063388(o);
+        ItemPickSpec_Destruct(o);
         return r;
     }
     if (n <= 0x3f) {
-        if (func_02063b8c(2) == 0) {
+        if (Random_GlobalBelow(2) == 0) {
             u32 o[2];
         ItemPickSpec_set(o, 0, 0);
             ItemPick_One(&w2, &o, 0, 0, 1, 1, 0);
             u16 r = w2;
-            func_02063388(o);
+            ItemPickSpec_Destruct(o);
             return r;
         } else {
             u32 o[2];
         ItemPickSpec_set(o, 2, 0);
             ItemPick_One(&w3, &o, 0, 0, 1, 1, 0);
             u16 r = w3;
-            func_02063388(o);
+            ItemPickSpec_Destruct(o);
             return r;
         }
     }
-    func_0206277c(&w0, PlayerData_GetCurrent(), 0);
+    ItemPick_FtrWallCarpetByClass(&w0, PlayerData_GetCurrent(), 0);
     if (w0 == 0xfff1) {
         u32 o[2];
         ItemPickSpec_set(o, 0, 0);
         ItemPick_One(&w4, &o, 0, 0, 1, 1, 0);
         u16 r = w4;
-        func_02063388(o);
+        ItemPickSpec_Destruct(o);
         return r;
     }
     return w0;
@@ -959,7 +959,7 @@ void BirthdayHostVillagerTalk::vfunc_14() {
     case 12:
     case 13:
     case 14:
-        b[1] = func_02063b8c(2) + 0xf;
+        b[1] = Random_GlobalBelow(2) + 0xf;
         TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[1], 0);
         break;
     case 15:
@@ -990,14 +990,14 @@ void BirthdayHostVillagerTalk::vfunc_18() {
     case 5:
         if (r == 0) {
             if (MenuCtrl_BuildPocketMask((void *)BirthdayHost_GiftFilter)) {
-                b[0] = func_02063b8c(2) + 9;
+                b[0] = Random_GlobalBelow(2) + 9;
                 TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[0], 0);
             } else {
                 b[1] = 6;
                 TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[1], 0);
             }
         } else {
-            b[2] = func_02063b8c(2) + 7;
+            b[2] = Random_GlobalBelow(2) + 7;
             TalkWindowState_setNextMessage(unk_1a0->unk_89c.unk_3c, &b[2], 0);
         }
         break;
@@ -1078,11 +1078,11 @@ void BirthdayHostVillager::mainAct00() {
             unk_a50[2] = unk_a5c[2];
             if (unk_a4c != unk_8e) {
                 if (NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, unk_a4c, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = func_02063b8c(0x46) + 0x14;
+                    unk_a4e = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
                 if (NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0) != 0) {
-                    unk_a4e = func_02063b8c(0x50) + 0x14;
+                    unk_a4e = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
@@ -1168,7 +1168,7 @@ void BirthdayHostVillager::mainAct03() {
     }
     switch (unk_a4b) {
     case 0x28:
-        if (func_02063b8c(2) == 0) {
+        if (Random_GlobalBelow(2) == 0) {
             NpcActionCtrl_requestEmotion(unk_564, 1, 0xa, data_020c6cc8);
         } else {
             NpcActionCtrl_requestEmotion(unk_564, 1, 0x17, data_020c6cc8);
@@ -1301,7 +1301,7 @@ BOOL BirthdayHostVillager::setupAct0D() { return TRUE; }
 
 void BirthdayHostVillager::mainAct0D() {
     u8 buf[1];
-    buf[0] = func_02063b8c(2) + 0x11;
+    buf[0] = Random_GlobalBelow(2) + 0x11;
     TalkWindowState_setNextMessage(unk_89c.unk_3c, buf, 0);
     changeAct(6);
 }

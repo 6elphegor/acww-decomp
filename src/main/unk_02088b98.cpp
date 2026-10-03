@@ -4,74 +4,74 @@ struct Vec3 {
     s32 x, y, z;
 };
 
-// Declaration-only twins (same layout and virtuals as Unk_020e0d08 / Unk_020e0cf4): the original vtable order in .data
+// Declaration-only twins (same layout and virtuals as ActorCollider / ActorFollowCollider): the original vtable order in .data
 // is a heapsort of the class declaration order that cannot be reached with the real bases declared first.
 // aliases.txt maps the twins' constructor/destructor/method names onto the real functions.
-class Unk_020e0d08b {
+class ActorColliderView {
 public:
-    Unk_020e0d08b();
-    ~Unk_020e0d08b();
+    ActorColliderView();
+    ~ActorColliderView();
     virtual Vec3 *vfunc_00() = 0;
     virtual u32 vfunc_04() = 0;
     virtual void vfunc_08(u32 a, u32 b, u32 c);
-    void func_02089078(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
+    void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
     u8 pad[0x3c];
 };
 
-class Unk_020e0cf4b : public Unk_020e0d08b {
+class ActorFollowColliderView : public ActorColliderView {
 public:
-    Unk_020e0cf4b();
-    ~Unk_020e0cf4b();
+    ActorFollowColliderView();
+    ~ActorFollowColliderView();
     virtual Vec3 *vfunc_00();
     virtual u32 vfunc_04();
-    void func_02088c98(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
 
-class Unk_020e0d30 : public Unk_020e0cf4b {
+class ActorPlacedCollider : public ActorFollowColliderView {
 public:
-    Unk_020e0d30();
-    ~Unk_020e0d30();
+    ActorPlacedCollider();
+    ~ActorPlacedCollider();
     virtual Vec3 *vfunc_00();
     virtual u32 vfunc_04();
-    void func_02088bf8(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    void setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x44 */ Vec3 unk_44;
 };
 
-class Unk_020e0d1c : public Unk_020e0d08b {
+class StaticCollider : public ActorColliderView {
 public:
-    Unk_020e0d1c();
-    ~Unk_020e0d1c();
+    StaticCollider();
+    ~StaticCollider();
     virtual Vec3 *vfunc_00();
     virtual u32 vfunc_04();
-    void func_02088c64(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    void setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ Vec3 unk_40;
 };
 
-class Unk_020e0cf4 : public Unk_020e0d08b {
+class ActorFollowCollider : public ActorColliderView {
 public:
-    Unk_020e0cf4();
-    ~Unk_020e0cf4();
+    ActorFollowCollider();
+    ~ActorFollowCollider();
     virtual Vec3 *vfunc_00();
     virtual u32 vfunc_04();
-    void func_02088c98(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
 
-class Unk_020e0d08 {
+class ActorCollider {
 public:
-    Unk_020e0d08();
-    ~Unk_020e0d08();
+    ActorCollider();
+    ~ActorCollider();
     virtual Vec3 *vfunc_00() = 0;
     virtual u32 vfunc_04() = 0;
     virtual void vfunc_08(u32 a, u32 b, u32 c);
-    void func_02089040();
-    void func_0208905c();
-    BOOL func_02088d38(u32 mask);
-    BOOL func_02088fe8(Unk_020e0d08 *o);
-    void func_02089078(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
-    s32 func_02089098();
-    BOOL func_020890b0(s32 a);
+    void submit();
+    void resetHit();
+    BOOL isHitByGroup(u32 mask);
+    BOOL canCollideWith(ActorCollider *o);
+    void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
+    s32 getHitActor();
+    BOOL isPushedFromAngle(s32 a);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -89,7 +89,7 @@ public:
     /* 0x2c */ u32 unk_2c;
     /* 0x30 */ s32 unk_30;
     /* 0x34 */ s32 unk_34;
-    /* 0x38 */ Unk_020e0d08 *unk_38;
+    /* 0x38 */ ActorCollider *unk_38;
     /* 0x3c */ u8 unk_3c;
 };
 
@@ -122,15 +122,15 @@ extern "C" {
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
-void _ZN12Unk_020e0cf48vfunc_04Ev(void *p);
-void func_02089118(void);
+void _ZN19ActorFollowCollider8vfunc_04Ev(void *p);
+void ActorCollider_ClearList(void);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e9688(Vec3 *v);
 }
 
-Unk_020e0d08 *data_021ce638;
+ActorCollider *gActorColliderList;
 
 void SpriteAnim::update() {
     if (unk_10 == 0) {
@@ -160,27 +160,27 @@ void SpriteAnim::update() {
     }
 }
 
-u32 Unk_020e0d1c::vfunc_04() { return FALSE; }
+u32 StaticCollider::vfunc_04() { return FALSE; }
 
-Vec3 *Unk_020e0d1c::vfunc_00() { return &unk_40; }
+Vec3 *StaticCollider::vfunc_00() { return &unk_40; }
 
-u32 Unk_020e0d30::vfunc_04() { _ZN12Unk_020e0cf48vfunc_04Ev(this); }
+u32 ActorPlacedCollider::vfunc_04() { _ZN19ActorFollowCollider8vfunc_04Ev(this); }
 
-Vec3 *Unk_020e0d30::vfunc_00() { return &unk_44; }
+Vec3 *ActorPlacedCollider::vfunc_00() { return &unk_44; }
 
-extern "C" void func_02089124(void) { func_02089118(); }
+extern "C" void ActorCollider_InitList(void) { ActorCollider_ClearList(); }
 
-extern "C" void func_02089118(void) { data_021ce638 = 0; }
+extern "C" void ActorCollider_ClearList(void) { gActorColliderList = 0; }
 
-Unk_020e0d08::Unk_020e0d08() {
-    func_0208905c();
+ActorCollider::ActorCollider() {
+    resetHit();
 }
 
-Unk_020e0d08::~Unk_020e0d08() {}
+ActorCollider::~ActorCollider() {}
 
-void Unk_020e0d08::vfunc_08(u32 a, u32 b, u32 c) {}
+void ActorCollider::vfunc_08(u32 a, u32 b, u32 c) {}
 
-BOOL Unk_020e0d08::func_020890b0(s32 a) {
+BOOL ActorCollider::isPushedFromAngle(s32 a) {
     if (unk_3c != 0) {
         s32 t = func_020e7b98(unk_10, unk_18);
         if (func_020e780c(t, (s16)(a + 0x8000)) <= 0x2000) {
@@ -191,14 +191,14 @@ BOOL Unk_020e0d08::func_020890b0(s32 a) {
     return FALSE;
 }
 
-s32 Unk_020e0d08::func_02089098() {
+s32 ActorCollider::getHitActor() {
     if (unk_2c != 0) {
         return _ZN5Actor8findByIdEj(unk_2c);
     }
     return 0;
 }
 
-void Unk_020e0d08::func_02089078(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g) {
+void ActorCollider::setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g) {
     unk_04 = a;
     unk_08 = b;
     unk_1c = c;
@@ -208,7 +208,7 @@ void Unk_020e0d08::func_02089078(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g)
     unk_34 = g;
 }
 
-void Unk_020e0d08::func_0208905c() {
+void ActorCollider::resetHit() {
     unk_38 = 0;
     unk_10 = 0;
     unk_14 = 0;
@@ -220,13 +220,13 @@ void Unk_020e0d08::func_0208905c() {
     unk_0f = 0xff;
 }
 
-void Unk_020e0d08::func_02089040() {
-    func_0208905c();
-    unk_38 = data_021ce638;
-    data_021ce638 = this;
+void ActorCollider::submit() {
+    resetHit();
+    unk_38 = gActorColliderList;
+    gActorColliderList = this;
 }
 
-BOOL Unk_020e0d08::func_02088fe8(Unk_020e0d08 *o) {
+BOOL ActorCollider::canCollideWith(ActorCollider *o) {
     BOOL r;
     if ((unk_1c & o->unk_20) && (unk_20 & o->unk_1c)) {
         r = TRUE;
@@ -248,30 +248,30 @@ BOOL Unk_020e0d08::func_02088fe8(Unk_020e0d08 *o) {
     return FALSE;
 }
 
-extern "C" void func_02088d58() {
-    Unk_020e0d08 *o;
+extern "C" void ActorCollider_ResolveAll() {
+    ActorCollider *o;
     Vec3 *cv;
     Vec3 d;
     s32 len;
     s32 pen;
     s32 t;
     s32 sumM, w1, k, w0;
-    for (o = data_021ce638; o; o = o->unk_38) {
+    for (o = gActorColliderList; o; o = o->unk_38) {
         if (o->unk_1c & 1) {
             o->unk_30 = -0x1000;
         }
     }
-    while (data_021ce638) {
-        cv = data_021ce638->vfunc_00();
-        for (o = data_021ce638->unk_38; o; o = o->unk_38) {
-            if (!data_021ce638->func_02088fe8(o)) {
+    while (gActorColliderList) {
+        cv = gActorColliderList->vfunc_00();
+        for (o = gActorColliderList->unk_38; o; o = o->unk_38) {
+            if (!gActorColliderList->canCollideWith(o)) {
                 continue;
             }
             func_020e9960(&d, o->vfunc_00(), cv);
             if (d.y < 0) {
                 t = o->unk_08 + d.y;
             } else {
-                t = data_021ce638->unk_08 - d.y;
+                t = gActorColliderList->unk_08 - d.y;
             }
             if (t <= 0) {
                 continue;
@@ -281,82 +281,82 @@ extern "C" void func_02088d58() {
                 d.x = 0x1000;
                 len = 0x1000;
             }
-            pen = data_021ce638->unk_04 + o->unk_04 - len;
+            pen = gActorColliderList->unk_04 + o->unk_04 - len;
             if (pen <= 0) {
                 continue;
             }
             o->unk_3c = 1;
-            data_021ce638->unk_3c = o->unk_3c;
-            if (data_021ce638->unk_1c & 1) {
-                if (pen >= data_021ce638->unk_30) {
-                    data_021ce638->unk_30 = pen;
-                    data_021ce638->unk_28 = o->unk_1c;
-                    data_021ce638->unk_2c = o->vfunc_04();
-                    data_021ce638->unk_0e = o->unk_0c;
-                    data_021ce638->unk_0f = o->unk_0d;
+            gActorColliderList->unk_3c = o->unk_3c;
+            if (gActorColliderList->unk_1c & 1) {
+                if (pen >= gActorColliderList->unk_30) {
+                    gActorColliderList->unk_30 = pen;
+                    gActorColliderList->unk_28 = o->unk_1c;
+                    gActorColliderList->unk_2c = o->vfunc_04();
+                    gActorColliderList->unk_0e = o->unk_0c;
+                    gActorColliderList->unk_0f = o->unk_0d;
                 }
             } else {
-                data_021ce638->unk_28 = o->unk_1c;
-                data_021ce638->unk_2c = o->vfunc_04();
-                data_021ce638->unk_0e = o->unk_0c;
-                data_021ce638->unk_0f = o->unk_0d;
+                gActorColliderList->unk_28 = o->unk_1c;
+                gActorColliderList->unk_2c = o->vfunc_04();
+                gActorColliderList->unk_0e = o->unk_0c;
+                gActorColliderList->unk_0f = o->unk_0d;
             }
             if (o->unk_1c & 1) {
                 if (pen >= o->unk_30) {
-                    o->unk_28 = data_021ce638->unk_1c;
-                    o->unk_2c = data_021ce638->vfunc_04();
-                    o->unk_0e = data_021ce638->unk_0c;
-                    o->unk_0f = data_021ce638->unk_0d;
+                    o->unk_28 = gActorColliderList->unk_1c;
+                    o->unk_2c = gActorColliderList->vfunc_04();
+                    o->unk_0e = gActorColliderList->unk_0c;
+                    o->unk_0f = gActorColliderList->unk_0d;
                 }
             } else {
-                o->unk_28 = data_021ce638->unk_1c;
-                o->unk_2c = data_021ce638->vfunc_04();
-                o->unk_0e = data_021ce638->unk_0c;
-                o->unk_0f = data_021ce638->unk_0d;
+                o->unk_28 = gActorColliderList->unk_1c;
+                o->unk_2c = gActorColliderList->vfunc_04();
+                o->unk_0e = gActorColliderList->unk_0c;
+                o->unk_0f = gActorColliderList->unk_0d;
             }
-            data_021ce638->vfunc_08(o->unk_0c, o->unk_0d, o->unk_1c);
-            o->vfunc_08(data_021ce638->unk_0c, data_021ce638->unk_0d, data_021ce638->unk_1c);
-            if (data_021ce638->unk_1c & 1) {
+            gActorColliderList->vfunc_08(o->unk_0c, o->unk_0d, o->unk_1c);
+            o->vfunc_08(gActorColliderList->unk_0c, gActorColliderList->unk_0d, gActorColliderList->unk_1c);
+            if (gActorColliderList->unk_1c & 1) {
                 continue;
             }
             if (o->unk_1c & 1) {
                 continue;
             }
-            if (data_021ce638->unk_1c & 2) {
+            if (gActorColliderList->unk_1c & 2) {
                 if (o->unk_1c & 2) {
                     continue;
                 }
             }
-            if (data_021ce638->unk_1c & 2) {
+            if (gActorColliderList->unk_1c & 2) {
                 o->unk_14 = 0;
                 pen = FX_Div(pen, len);
                 o->unk_10 += func_01ffcb0c(d.x, pen);
                 o->unk_18 += func_01ffcb0c(d.z, pen);
             } else if (o->unk_1c & 2) {
-                data_021ce638->unk_14 = 0;
+                gActorColliderList->unk_14 = 0;
                 pen = FX_Div(pen, len);
-                data_021ce638->unk_10 -= func_01ffcb0c(d.x, pen);
-                data_021ce638->unk_18 -= func_01ffcb0c(d.z, pen);
+                gActorColliderList->unk_10 -= func_01ffcb0c(d.x, pen);
+                gActorColliderList->unk_18 -= func_01ffcb0c(d.z, pen);
             } else {
-                w0 = data_021ce638->unk_34;
+                w0 = gActorColliderList->unk_34;
                 w1 = o->unk_34;
                 k = FX_Div(pen, len) >> 1;
                 sumM = w0 + w1;
                 s32 f1 = func_01ffcb0c(k, FX_Div(w1, sumM));
                 pen = func_01ffcb0c(k, FX_Div(w0, sumM));
                 o->unk_14 = 0;
-                data_021ce638->unk_14 = 0;
-                data_021ce638->unk_10 -= func_01ffcb0c(d.x, f1);
-                data_021ce638->unk_18 -= func_01ffcb0c(d.z, f1);
+                gActorColliderList->unk_14 = 0;
+                gActorColliderList->unk_10 -= func_01ffcb0c(d.x, f1);
+                gActorColliderList->unk_18 -= func_01ffcb0c(d.z, f1);
                 o->unk_10 += func_01ffcb0c(d.x, pen);
                 o->unk_18 += func_01ffcb0c(d.z, pen);
             }
         }
-        data_021ce638 = data_021ce638->unk_38;
+        gActorColliderList = gActorColliderList->unk_38;
     }
 }
 
-BOOL Unk_020e0d08::func_02088d38(u32 mask) {
+BOOL ActorCollider::isHitByGroup(u32 mask) {
     if (unk_3c) {
         if (unk_28 & mask) {
             return TRUE;
@@ -366,41 +366,41 @@ BOOL Unk_020e0d08::func_02088d38(u32 mask) {
     return FALSE;
 }
 
-Unk_020e0cf4::Unk_020e0cf4() {
+ActorFollowCollider::ActorFollowCollider() {
     unk_40 = 0;
 }
 
-Unk_020e0cf4::~Unk_020e0cf4() {
+ActorFollowCollider::~ActorFollowCollider() {
 }
 
-Vec3 *Unk_020e0cf4::vfunc_00() { return (Vec3 *)(unk_40 + 0x5c); }
+Vec3 *ActorFollowCollider::vfunc_00() { return (Vec3 *)(unk_40 + 0x5c); }
 
-u32 Unk_020e0cf4::vfunc_04() { return *(u32 *)(unk_40 + 4); }
+u32 ActorFollowCollider::vfunc_04() { return *(u32 *)(unk_40 + 4); }
 
-void Unk_020e0cf4::func_02088c98(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
+void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     unk_40 = (u8 *)p;
-    func_02089078(a, b, c, d, e, f, g);
+    setup(a, b, c, d, e, f, g);
 }
 
-void Unk_020e0d1c::func_02088c64(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
+void StaticCollider::setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     unk_40 = *v;
-    func_02089078(a, b, c, d, e, f, g);
+    setup(a, b, c, d, e, f, g);
 }
 
-Unk_020e0d30::Unk_020e0d30() {
+ActorPlacedCollider::ActorPlacedCollider() {
 }
 
-Unk_020e0d30::~Unk_020e0d30() {
+ActorPlacedCollider::~ActorPlacedCollider() {
 }
 
-void Unk_020e0d30::func_02088bf8(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
-    func_02088c98(p, a, b, c, d, e, f, g);
+void ActorPlacedCollider::setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
+    setupForActor(p, a, b, c, d, e, f, g);
     unk_44 = *v;
 }
 
-Unk_020e0d1c::Unk_020e0d1c() {
+StaticCollider::StaticCollider() {
 }
 
-Unk_020e0d1c::~Unk_020e0d1c() {
+StaticCollider::~StaticCollider() {
 }
 

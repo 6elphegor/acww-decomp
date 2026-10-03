@@ -14,8 +14,8 @@ void _ZN10FishBobber9isInWaterEv(void *p);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
-void func_02063a1c(void *, void *, void *, void *);
-void func_02063a5c(void *, void *, void *, void *);
+void G3dRes_CopyPlttByName(void *, void *, void *, void *);
+void G3dRes_CopyTexByName(void *, void *, void *, void *);
 void _ZN16CharaClothTexRef8loadItemEPtiii(void *, void *, s32, s32, s32);
 void *CharaClothTexPool_GetOwnRef();
 s32 CharaClothTexRef_GetBuffer(void *);
@@ -394,8 +394,8 @@ extern "C" s32 PlayerHead_Load(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
                     _ZN16CharaClothTexRef8loadItemEPtiii(x, c, d, 0, 0);
                     void *m = NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(x));
                     void *n = NNS_G3dGetTex(buf);
-                    func_02063a5c(m, n, (void *)"cloth", (void *)"myD");
-                    func_02063a1c(m, n, (void *)"cloth", (void *)"myD");
+                    G3dRes_CopyTexByName(m, n, (void *)"cloth", (void *)"myD");
+                    G3dRes_CopyPlttByName(m, n, (void *)"cloth", (void *)"myD");
                 }
             } else {
                 PlayerHead_SetModelId(p, 1, 0x9e);

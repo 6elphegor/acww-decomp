@@ -149,7 +149,7 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
+MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 struct NpcActionCtrl {
     NpcActionCtrl();
@@ -165,7 +165,7 @@ struct NpcTalkCtrl {
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -218,7 +218,7 @@ struct NpcActor : Character {
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     CollisionState unk_49c;
-    Unk_020e0cf4 unk_4cc;
+    ActorFollowCollider unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
@@ -269,7 +269,7 @@ public:
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;

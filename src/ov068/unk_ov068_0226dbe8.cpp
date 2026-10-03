@@ -570,7 +570,7 @@ extern s32 data_020c8cbc;
 
 void func_020e761c(void *dst, s32 v, s32 n);
 void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e96ec(void *a, void *b);
 void *PlayerActor_GetActor(s32 n);
@@ -634,7 +634,7 @@ extern u8 data_021be810[];
 extern u8 gTalkMsgIndexEnd;
 void VillagerId_makeFileName(void *, void *, u32, void *);
 void *VillagerData_getVillagerId(void *);
-u32 func_02063b8c(s32);
+u32 Random_GlobalBelow(s32);
 void Snd_PlaySe(s32);
 s32 VillagerId_GetPersonality(void *);
 s32 FtrMgr_PickFurnitureComment(s32);
@@ -652,7 +652,7 @@ void *PlayerData_GetCurrent();
 u8 *PlayerData_getErrands(void *);
 s32 ErrandRecord_setStep(void *, s32);
 s32 ErrandRecord_getStep(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void MI_CpuCopy8(void *, void *, u32);
 void DateTime_AddMinutes(void *, s32);
 void Clock_GetDateTime(void *);
@@ -722,15 +722,15 @@ BOOL HouseVisitVillager::vfunc_00() {
     } else if (HouseVisit_IsCalled(&unk_898) != 0) {
         u32 buf[6];
         HouseVisitor_SetPresent();
-        unk_a56 = (func_02063b8c(0x14) + 0x28) * 0x3c;
-        unk_a54 = func_02063b8c(4) + 2;
+        unk_a56 = (Random_GlobalBelow(0x14) + 0x28) * 0x3c;
+        unk_a54 = Random_GlobalBelow(4) + 2;
         RoomScoreEvaluator_Construct(buf);
         unk_a4c = (u32)HappyRoom_RateMainRoom(buf, &unk_a44);
         setVisitState(6);
         RoomScoreEvaluator_Destruct(buf);
     } else {
-        unk_a56 = (func_02063b8c(0x28) + 0x3c) * 0x3c;
-        unk_a54 = func_02063b8c(4) + 7;
+        unk_a56 = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
+        unk_a54 = Random_GlobalBelow(4) + 7;
         setVisitState(0);
     }
     return TRUE;
@@ -853,7 +853,7 @@ void HouseVisitVillager::vfunc_4c(u32 idx, u32 v) {
         unk_558.unk_08 = v;
         if (unk_894 != 0) {
             if (unk_894 == 5) {
-                unk_a56 = (func_02063b8c(0x28) + 0x3c) * 0x3c;
+                unk_a56 = (Random_GlobalBelow(0x28) + 0x3c) * 0x3c;
             }
             setVisitState(7);
         }
@@ -947,7 +947,7 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
     if (unk_1a0->unk_894 == 1) {
         unk_1a0->unk_a52 = 1;
         SPEAK((void *)"q10_call");
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
         HouseVisit_SetCalled(this);
         return;
     }
@@ -958,20 +958,20 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
         unk_1a0->unk_a52 = 6;
         SPEAK((void *)"q10_back");
         out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
         return;
     }
     if (unk_1a0->unk_a51 != 0) {
         unk_1a0->unk_a52 = 8;
         SPEAK((void *)"q10_wait");
         out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = func_02063b8c(2);
+        out->unk_04 = Random_GlobalBelow(2);
         return;
     }
     if (HouseVisit_IsDoorTalkDone(this) == 0) {
         unk_1a0->unk_a52 = 2;
         SPEAK((void *)"q10_door");
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
         HouseVisit_SetDoorTalkDone(this);
         return;
     }
@@ -979,14 +979,14 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
         unk_1a0->unk_a52 = 5;
         SPEAK((void *)"q10_first");
         out->unk_00 = sHouseVisitMsgFileName;
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
         HouseVisit_SetFirstTalkDone(this);
         return;
     }
     if (unk_1a0->unk_a54 != 0) {
         unk_1a0->unk_a54 = unk_1a0->unk_a54 - 1;
     }
-    u32 rnd = func_02063b8c(100);
+    u32 rnd = Random_GlobalBelow(100);
     s32 v = FtrMgr_PickFurnitureComment(VillagerId_GetPersonality(VillagerData_getVillagerId(unk_1a0->unk_82c)));
     u32 n = unk_1a0->unk_a44;
     if (n >= 5) {
@@ -1013,17 +1013,17 @@ void HouseVisitVillagerTalk::vfunc_78(void *arg) {
         out->unk_00 = sHouseVisitMsgFileName;
         u32 f = unk_1a0->unk_a4c;
         if (f & 1) {
-            out->unk_04 = func_02063b8c(2);
+            out->unk_04 = Random_GlobalBelow(2);
         } else if (f & 2) {
-            out->unk_04 = func_02063b8c(2) + 2;
+            out->unk_04 = Random_GlobalBelow(2) + 2;
         } else if ((f & 4) == 0) {
-            out->unk_04 = func_02063b8c(2) + 4;
+            out->unk_04 = Random_GlobalBelow(2) + 4;
         } else if (f & 0x10) {
             out->unk_04 = 10;
         } else if (f & 0x20) {
-            out->unk_04 = func_02063b8c(2) + 8;
+            out->unk_04 = Random_GlobalBelow(2) + 8;
         } else {
-            out->unk_04 = func_02063b8c(2) + 6;
+            out->unk_04 = Random_GlobalBelow(2) + 6;
         }
         ((Unk_ov068_02270a6c_Bits *)((u8 *)PlayerData_getErrands(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
@@ -1057,7 +1057,7 @@ void HouseVisitVillagerTalk::vfunc_14(u32 a) {
         } else if (st == 6 || st == 8) {
             o->unk_a52 = 7;
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov068_022712b8, 0x28, (void *)"q_bye");
-            buf[0] = func_02063b8c(3);
+            buf[0] = Random_GlobalBelow(3);
             unk_1a0->unk_898.unk_3c->setNextMessageIfUnset(buf, data_ov068_022712b8);
         } else if (st == 7) {
             buf[1] = gTalkMsgIndexEnd;
@@ -1382,12 +1382,12 @@ void HouseVisitVillager::execVisitWander() {
                 if (!NpcActionCtrl_requestAction(&unk_564, 3, 1, 0, 0, 0, unk_a5a, 0, 0, data_020c6cc8, 0)) {
                     return;
                 }
-                unk_a4a = func_02063b8c(0x46) + 0x14;
+                unk_a4a = Random_GlobalBelow(0x46) + 0x14;
             } else {
                 if (!NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a68, unk_a70, 0, 0, 0, 0, data_020c6cc8, 0)) {
                     return;
                 }
-                unk_a4a = func_02063b8c(0x50) + 0x14;
+                unk_a4a = Random_GlobalBelow(0x50) + 0x14;
             }
         } else {
             if (NpcActionCtrl_isActionDone(&unk_564)) {

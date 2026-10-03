@@ -164,10 +164,10 @@ public:
     virtual u8 *vfunc_0c() = 0;
 };
 
-class Unk_020e0d80 : public MsgStringBase {
+class LabelBalloonText : public MsgStringBase {
 public:
-    Unk_020e0d80();
-    virtual ~Unk_020e0d80();
+    LabelBalloonText();
+    virtual ~LabelBalloonText();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -264,8 +264,8 @@ public:
     /* 0x4c */ s32 unk_4c;
     /* 0x50 */ s32 unk_50;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ Unk_020e0d80 unk_60;
-    /* 0x88 */ Unk_020e0d80 unk_88;
+    /* 0x60 */ LabelBalloonText unk_60;
+    /* 0x88 */ LabelBalloonText unk_88;
     /* 0xb0 */ TextLabel *unk_b0;
     /* 0xb4 */ TextLabel *unk_b4;
     /* 0xb8 */ s32 unk_b8;

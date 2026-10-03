@@ -39,14 +39,14 @@ BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 s32 PlayerData_GetCurrentIndex();
 u8 *BbsPost_GetText(void *p);
-s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
+s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 void String_SetSlot(s32 a, void *buf);
 s32 Gfx2d_LoadPaletteFile(void *, void *, u32, u32, u32, u32);
 BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
 s32 Gfx2d_LoadCharFile(void *, void *, u32, u32, u32, u32);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void G2x_SetBlendBrightnessExt_(u32 a, u32 b, u32 c, u32 d, u32 e, u32 f);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -305,7 +305,7 @@ void BbsReadMenu::drawPageDots(s32 a, s32 *p) {
     u8 i;
     s32 z = 0;
     for (i = 0; i < unk_9d; i++) {
-        func_02088730(z, (void *)(data_ov113_022936a0 + (i + 8) * 8), a, (s32)p, i == unk_9a ? 11 : 10, 1, (s32 *)z);
+        Oam_DrawObj(z, (void *)(data_ov113_022936a0 + (i + 8) * 8), a, (s32)p, i == unk_9a ? 11 : 10, 1, (s32 *)z);
     }
 }
 
@@ -666,7 +666,7 @@ void BbsReadMenu::showPostText(void *unused) {
     s32 i;
     s32 z1 = 0;
     s32 z2 = 0;
-    func_0206cf4c(BbsPost_GetText(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
+    Text_SplitLines(BbsPost_GetText(p), starts, &cnt, 0xc0, 0x28, 0x96, 6);
     for (i = 0; i < 6; i++) {
         s32 len = starts[i + 1] - starts[i];
         LabelString *o = &unk_27e8[i];

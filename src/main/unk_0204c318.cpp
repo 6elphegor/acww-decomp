@@ -60,7 +60,7 @@ void TownState_ClearEvents(void *p);
 void TownState_PickNextWeekDate(void *p, void *q);
 void Town_ReplaceSouthCedars(void *p);
 void Town_InitNew();
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 
 extern const u16 sNativeFruitTrees[6];
@@ -80,7 +80,7 @@ extern "C" void Town_SetNativeFruitTrees(TownState *p);
 
 extern "C" void TownState_InitNew(TownState *p) {
     Clock_GetDate(p);
-    p->unk_04 = func_02063b8c(5);
+    p->unk_04 = Random_GlobalBelow(5);
     Date_GetWeekday(p->unk_00.unk_02, p->unk_00.unk_01, p->unk_00.unk_00);
     TownState_PickNextWeekDate(p, p);
     TownState_ClearUnk0c(p);

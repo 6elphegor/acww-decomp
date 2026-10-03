@@ -2,8 +2,8 @@
 
 extern "C" {
 extern u32 gSaveTownId;
-void func_02063990(void *p, void *s);
-u32 func_02063954(void *p);
+void TownId_Assign(void *p, void *s);
+u32 TownId_IsValid(void *p);
 void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 VillagerId_IsValidSpecies(u32 id);
@@ -31,7 +31,7 @@ extern const u32 sPersonalityVoiceTypes[];
 extern char *sPersonalityPrefixes[6];
 
 u32 VillagerId::isValid() {
-    if (func_02063954(this) == 1 && VillagerId_IsValidSpecies(unk_0b) == 1) return TRUE;
+    if (TownId_IsValid(this) == 1 && VillagerId_IsValidSpecies(unk_0b) == 1) return TRUE;
     return FALSE;
 }
 
@@ -39,7 +39,7 @@ void VillagerId::set(u32 id, u32 type, void *s) {
     unk_0b = id;
     unk_0a = type;
     if (s == 0) s = &gSaveTownId;
-    func_02063990(this, s);
+    TownId_Assign(this, s);
 }
 
 extern "C" u32 VillagerId_GetPersonality(VillagerId *o) { return o->unk_0a; }

@@ -4,7 +4,7 @@
 // (members of the 4-byte record class SaveRecord4 whose first methods are in U193, and of SaveChecksum).
 
 extern "C" {
-u32 func_02063b8c(s32 n);
+u32 Random_GlobalBelow(s32 n);
 }
 
 class SaveRecord4 {
@@ -74,7 +74,7 @@ BOOL SaveRecord4::isStateUnset() {
 
 void SaveRecord4::newStamp() {
     u8 old = unk_03;
-    unk_03 = func_02063b8c(0xff);
+    unk_03 = Random_GlobalBelow(0xff);
     if (unk_03 == old) {
         if (unk_03 < 0xff) {
             unk_03++;

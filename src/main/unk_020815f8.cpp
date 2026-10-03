@@ -54,7 +54,7 @@ s32 SaveVillagers_IsValidIndex(s32);
 s32 Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 s32 FieldPos_ToUnit(s32 *, s32 *, u32 *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 NpcRegistry_GetSlotCount();
 s32 NpcRegistry_FindSpNpcByHandle(void *a);
 s32 NpcRegistry_FindVillagerByHandle(void *a);
@@ -246,7 +246,7 @@ NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
         }
     }
     if (cnt > 0) {
-        s32 n = func_02063b8c(cnt);
+        s32 n = Random_GlobalBelow(cnt);
         for (i = 0; i < 8; i++) {
             NpcRegistryVillagerSlot *s = &unk_00[i];
             if (isVillagerSlotUsed(s) && s->unk_00->vfunc_a8()) {

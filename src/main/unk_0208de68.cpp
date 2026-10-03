@@ -47,11 +47,11 @@ extern u8 data_020d468c[];
 struct Unk_0208e13c_Rec { u32 unk_00; u32 unk_04; };
 extern Unk_0208e13c_Rec data_020d5b0c[];
 extern u16 sLabelButtonColorCache[];
-extern u8 data_020cf6ec[];
-extern u32 data_020cf6f0[];
-extern u8 data_020cf6e8[];
-extern s32 data_020cf708[];
-extern s32 data_020cf6f8[];
+extern u8 sLabelButtonKindTextColors[];
+extern u32 sLabelButtonKindLabelVram[];
+extern u8 sLabelButtonKindSeqOffsets[];
+extern s32 sLabelButtonStateSeqIds[];
+extern s32 sLabelButtonStatePlayOnce[];
 
 class SpriteAnim {
 public:

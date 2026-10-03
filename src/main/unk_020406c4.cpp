@@ -4,7 +4,7 @@ struct Unk_0203ff50_Slot { u8 pad[0x10]; u8 unk_10, unk_11; u8 unk_12, unk_13; u
 
 extern "C" {
 
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectAtNoon(void *, s32, void *);
@@ -40,7 +40,7 @@ extern "C" s32 WeekVisitors_FindFreeDays(void *, s32 *out, s32 x)
 
 extern "C" s32 WeekVisitors_PickFreeDay(void *, s32 *arr, s32 n)
 {
-    s32 r = func_02063b8c(n);
+    s32 r = Random_GlobalBelow(n);
     s32 i = 0;
     s32 res = -1;
     for (; i < 5; arr++, i++) {
@@ -93,7 +93,7 @@ extern "C" s32 WeekVisitors_PickRandom(Unk_0203ff50_Slot *s, u8 *a) {
         }
     }
     if (sum > 0) {
-        r = func_02063b8c(sum);
+        r = Random_GlobalBelow(sum);
         for (m = 0; m < k; m++) {
             r -= wts[m];
             if (r < 0) {

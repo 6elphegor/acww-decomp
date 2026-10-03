@@ -121,7 +121,7 @@ s32 TalkRequest_IsSaveMenuRunning();
 void PlayerActor_GetHeldItem(void *out, Unk_02006d14 *o);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-s32 func_02063c18(s32 v);
+s32 Math_AngleToDir4(s32 v);
 void *Scene_GetWarpRequest();
 void SceneExit_GetDoor(void *a, s32 b, void *c, void *d);
 s32 PlayerActor_RequestStowItem(Unk_02006d14 *o, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, s32 g);
@@ -995,7 +995,7 @@ extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
             if (r5 != -1) {
                 SceneExit_GetDoor(Scene_GetWarpRequest(), r5, &pad, &h);
             }
-            s32 t = func_02063c18(h);
+            s32 t = Math_AngleToDir4(h);
             Unk_02006d14_Vec *pv = &o->unk_5c;
             v.x = o->unk_5c.x;
             v.y = pv->y;

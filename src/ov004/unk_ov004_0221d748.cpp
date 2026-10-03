@@ -185,7 +185,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -290,7 +290,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -426,7 +426,7 @@ s32 LostAndFound_HasAny(void);
 s32 LostAndFound_Count(void);
 s32 Talk_IsInOwnTown(void);
 s32 GameStart_IsActive(void);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 Unk_02097ff4_testFlag(void *p, s32 n);
 void Unk_02097ff4_setFlag(void *p, s32 n);
 s32 CommManager_isOnline(void *p);
@@ -693,12 +693,12 @@ void SpNpcBookerTalk::vfunc_78(void *arg) {
     Msg *out = (Msg *)arg;
     void *g = PlayerData_GetCurrent();
     if (Talk_IsInOwnTown() == 0 || GameStart_IsActive() != 0) {
-        out->unk_04 = func_02063b8c(3) + 8;
+        out->unk_04 = Random_GlobalBelow(3) + 8;
     } else if (Unk_02097ff4_testFlag(g, 0x1b) == 0) {
         out->unk_04 = 0;
         Unk_02097ff4_setFlag(g, 0x1b);
     } else {
-        out->unk_04 = func_02063b8c(4) + 4;
+        out->unk_04 = Random_GlobalBelow(4) + 4;
     }
     out->unk_00 = sSpNpcBookerMsgFiles[0];
 }

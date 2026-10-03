@@ -29,9 +29,9 @@ class LetterRenderer {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void func_0206d394();
-    void func_0206d39c(s32 v);
+    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
+    void release();
+    void setLayer(s32 v);
 
     u32 unk_00[0x210 / 4];
 };
@@ -265,7 +265,7 @@ void LetterViewMenu::stateLoad() {
     Snd_PlaySe(1);
     ((BgmVolumeMixer *)(data_021c1b3c + 0x1c4))->setMenuDuck(0);
     Gfx2d_SetMainBgModeState(0);
-    unk_94.func_0206d2e0((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
+    unk_94.show((Unk_0206d1d4_Src *)MenuCtrl_GetArg(), 0, (void *)2, 1);
     beginMainSlideIn(0xa, 0, 0, 0x30);
     Gfx2d_ShowLayer(0);
     applySlideOffset(0, 0, 0);
@@ -332,14 +332,14 @@ void LetterViewMenu::stateWaitSlideOut() {
 }
 
 void LetterViewMenu::initLetterView() {
-    unk_94.func_0206d39c(0);
+    unk_94.setLayer(0);
     ((MenuLabelButton *)&unk_2a4)->showDefault(0x65);
     s32 a = ((MenuLabelButton *)&unk_2a4)->getAnchorX(1);
     s32 b = ((MenuLabelButton *)&unk_2a4)->getAnchorY(1);
     ((MenuCursorBase *)&unk_314)->warpTo(a, b);
 }
 
-void LetterViewMenu::releaseResources() { unk_94.func_0206d394(); }
+void LetterViewMenu::releaseResources() { unk_94.release(); }
 
 void LetterViewMenu::preInputUpdate() {}
 

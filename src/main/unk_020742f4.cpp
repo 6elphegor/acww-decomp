@@ -1312,7 +1312,7 @@ extern "C" {
 void StrBuf_GetBytes(void *p, void *q, u32 n);
 }
 extern "C" {
-s32 _ZN15EncodedString4113func_0206f828Ev(void *p);
+s32 _ZN15EncodedString419getLengthEv(void *p);
 }
 extern "C" {
 void MailText_LoadBbs(void *a, void *b, u32 c);
@@ -1452,7 +1452,7 @@ extern "C" BOOL BbsPost_SetTextFromMsg(void *self, void *r1) {
             _ZN9MsgString7setLineEPh(&o1, e);
             _ZN13EncodedString13fromMsgStringEP9MsgString(&o2, &o1);
             StrBuf_GetBytes(&o2, buf + n, 0x28);
-            n = n + _ZN15EncodedString4113func_0206f828Ev(&o2);
+            n = n + _ZN15EncodedString419getLengthEv(&o2);
             buf[n] = 0x86;
             n = n + 1;
         } else {
@@ -1986,7 +1986,7 @@ extern "C" {
 void Heap_Free(void *g, void *p);
 }
 extern "C" {
-void func_0206f804(void *p, u32 a);
+void CommSub_Dispatch(void *p, u32 a);
 }
 extern "C" {
 void PatternSrc_ApplyNetMove(void *p);
@@ -2007,7 +2007,7 @@ extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 extern "C" {
-s32 func_02063a04(void *a, void *b, u32 n);
+s32 Mem_Differs(void *a, void *b, u32 n);
 }
 extern "C" {
 void NpcNetRecord_PackSpNpc(u32 a, u32 b);
@@ -2229,7 +2229,7 @@ extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
         _ZN11CommManager15setSyncVarDirtyEij(g, a, 1);
     } else if (r == 0) {
         CommManager *h = gCommManager;
-        s32 v = func_02063a04(obj, h->unk_70, sz);
+        s32 v = Mem_Differs(obj, h->unk_70, sz);
         _ZN11CommManager15setSyncVarDirtyEij(h, a, v);
     }
 }
@@ -2257,7 +2257,7 @@ extern "C" void CommRecv_SubCommand(u32 a, u32 b, u32 c, u32 d) {
     void *g = gCurrentHeap;
     void *r = Heap_AllocTail(g, a);
     _ZN11CommManager10readRecordEPhj(gCommManager, r, a);
-    func_0206f804(r, d);
+    CommSub_Dispatch(r, d);
     Heap_Free(g, r);
 }
 extern "C" void CommRecv_CharInteract(u32 a, u32 b, u32 c, u32 d) {
@@ -3059,13 +3059,13 @@ extern "C" {
 void func_02133ef8(void *, u32);
 }
 extern "C" {
-void *func_0208f0b0(u32);
+void *TownExchange_GetForAid(u32);
 }
 extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *);
+BOOL _ZN18TownExchangeRecord7isValidEv(void *);
 }
 extern "C" {
 void *SaveManager_GetTownCompressBuf();
@@ -3352,8 +3352,8 @@ extern "C" void CommSend_TownChunk(u8 *p, u32 v) {
     CommSend_Chunked(p, d, sz, 1, v);
 }
 extern "C" BOOL CommSend_VillagerTransfer(u8 *p) {
-    void *d = func_0208f0b0(4);
-    if (_ZN12Unk_0208f23813func_0208f1c0Ev(d)) {
+    void *d = TownExchange_GetForAid(4);
+    if (_ZN18TownExchangeRecord7isValidEv(d)) {
         return CommSend_Chunked(p, d, 0x84c, 2, 1);
     }
     _Z20NetOverlay_AssertAnyv();
@@ -3398,7 +3398,7 @@ extern "C" BOOL CommSend_VillagerTransferReply(s32 a, void *b, s32 c, void *d, s
                 bb[1] = 1;
                 offs[i] = offs[i] + 1;
             } else {
-                MI_CpuCopy8(func_0208f0b0((u32)ptrs[i]), bb + 1, 0x84c);
+                MI_CpuCopy8(TownExchange_GetForAid((u32)ptrs[i]), bb + 1, 0x84c);
                 offs[i] = offs[i] + 0x84c;
             }
             masks[i] = 1 << (i + 1);
@@ -3593,10 +3593,10 @@ extern "C" {
 s32 PlayerData_Get(s32);
 }
 extern "C" {
-s32 func_0208f0b0(s32);
+s32 TownExchange_GetForAid(s32);
 }
 extern "C" {
-s32 func_0208f1dc(s32);
+s32 TownExchange_Clear(s32);
 }
 extern "C" {
 s32 _ZN15SaveManagerTalk19setTransferReceivedEjh(s32, s32, s32);
@@ -3818,10 +3818,10 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
     u32 n;
     if (b != 0) {
         MI_CpuCopy8(a, &n, 4);
-        s32 q = func_0208f0b0(c);
+        s32 q = TownExchange_GetForAid(c);
         MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
     } else {
-        func_0208f1dc(func_0208f0b0(c));
+        TownExchange_Clear(TownExchange_GetForAid(c));
     }
     if (Scene_GetCurrent() == 0xd || Scene_GetCurrent() == 0x2f) {
         if (SaveManager_Get() != 0) {
@@ -3832,10 +3832,10 @@ extern "C" void CommCtrl_RecvVillagerTransfer(u8 *a, s32 b, s32 c) {
 extern "C" void CommCtrl_RecvVillagerTransferReply(u8 *a, s32 b) {
     if (b == 1) {
         if (*a != 0) {
-            func_0208f1dc(func_0208f0b0(4));
+            TownExchange_Clear(TownExchange_GetForAid(4));
         }
     } else {
-        MI_CpuCopy8(a, (void *)func_0208f0b0(4), 0x84c);
+        MI_CpuCopy8(a, (void *)TownExchange_GetForAid(4), 0x84c);
     }
     if (Scene_GetCurrent() == 0x2e) {
         if (SaveManager_Get() != 0) {

@@ -11,11 +11,11 @@ struct Unk_020030d8 {
 
 extern "C" {
 void MI_CpuCopy8(void *src, void *dst, u32 size);
-void func_020639a0(Unk_020030d8 *p);
-void func_020639b8(Unk_020030d8 *p);
-void func_020639bc(Unk_020030d8 *p);
-void func_02063968(Unk_020030d8 *p, Unk_020030d8 *other);
-void func_0206397c(Unk_020030d8 *p, Unk_020030d8 *other);
+void TownId_Clear(Unk_020030d8 *p);
+void TownId_Destruct(Unk_020030d8 *p);
+void TownId_Construct(Unk_020030d8 *p);
+void TownId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other);
+void TownId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other);
 void HudObjGfx_LoadSlideIcon(u32 a);
 void HudObjGfx_LoadLinkIcon(u32 v);
 BOOL MenuCtrl_IsTransitionActive();
@@ -483,35 +483,35 @@ void HudUnkSlideIcon::applyVariantRequest() {
 }
 
 extern "C" void VillagerId_CopyFrom(Unk_020030d8 *p, Unk_020030d8 *other) {
-    func_0206397c(p, other);
+    TownId_CopyFrom(p, other);
     p->unk_0b = other->unk_0b;
     p->unk_0a = other->unk_0a;
 }
 
 extern "C" void VillagerId_CopyTo(Unk_020030d8 *p, Unk_020030d8 *other) {
-    func_02063968(p, other);
+    TownId_CopyTo(p, other);
     other->unk_0b = p->unk_0b;
     other->unk_0a = p->unk_0a;
 }
 
 extern "C" Unk_020030d8 *VillagerId_Construct(Unk_020030d8 *p) {
-    func_020639bc(p);
+    TownId_Construct(p);
     return p;
 }
 
 extern "C" Unk_020030d8 *VillagerId_ConstructCopy(Unk_020030d8 *p, Unk_020030d8 *other) {
-    func_020639bc(p);
+    TownId_Construct(p);
     VillagerId_CopyFrom(p, other);
     return p;
 }
 
 extern "C" Unk_020030d8 *VillagerId_Destruct(Unk_020030d8 *p) {
-    func_020639b8(p);
+    TownId_Destruct(p);
     return p;
 }
 
 extern "C" void VillagerId_Clear(Unk_020030d8 *p) {
-    func_020639a0(p);
+    TownId_Clear(p);
     p->unk_0b = 0xff;
     p->unk_0a = 6;
 }

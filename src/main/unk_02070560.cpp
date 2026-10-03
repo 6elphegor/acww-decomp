@@ -52,8 +52,8 @@ public:
     void markFormerResident(u16 *id);
     void clearEntry(u16 *id);
     void clear();
-    void func_0207054c();
-    MuseumData *func_02070550();
+    void destruct();
+    MuseumData *construct();
 
     u8 unk_00[0x1b];
     u8 unk_1b[0x1d];
@@ -348,7 +348,7 @@ extern "C" {
 Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
-void func_02063950(Unk_020942c8 *p, u32 v);
+void TownId_SetId(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
 void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
@@ -671,7 +671,7 @@ void AbleSistersPatterns::initDefaultPatterns() {
             AblePatternDefaults_Extract(t, getPattern(i)->getPixels(), i);
             void *tbl = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(tbl, getPattern(i)->getInfo(), i + 8);
-            func_02063950(PlayerId_GetTownId(getPattern(i)->getInfo()->getAuthor()), g1);
+            TownId_SetId(PlayerId_GetTownId(getPattern(i)->getInfo()->getAuthor()), g1);
             _ZN8PlayerId5setIdEt(getPattern(i)->getInfo()->getAuthor(), g2);
         }
         Mem_Free(t);
@@ -817,7 +817,7 @@ extern "C" {
 void *PlayerId_GetTownId(void *p);
 }
 extern "C" {
-void func_02063950(u16 *p, u16 v);
+void TownId_SetId(u16 *p, u16 v);
 }
 extern "C" {
 void _ZN8PlayerId5setIdEt(void *p, u16 v);
@@ -850,7 +850,7 @@ extern "C" {
 void _ZN6TownId7setTownEPS_(void *a, void *b);
 }
 extern "C" {
-void func_020638a0(void *a, void *b);
+void TownId_SetNameString(void *a, void *b);
 }
 extern "C" {
 void _ZN11MsgString9BC1Ev(void *);
@@ -865,16 +865,16 @@ extern "C" {
 void _ZN8PlayerIdC1Ev(void *);
 }
 extern "C" {
-void func_020639bc(void *);
+void TownId_Construct(void *);
 }
 extern "C" {
-void func_020639b8(void *);
+void TownId_Destruct(void *);
 }
 extern "C" {
-void _ZN12Unk_020dd38cC2Ev(void *);
+void _ZN11MsgString9CC2Ev(void *);
 }
 extern "C" {
-void _ZN12Unk_020dd38cD1Ev(void *);
+void _ZN11MsgString9CD1Ev(void *);
 }
 extern "C" {
 void _ZN8ItemNameC1Ev(void *);
@@ -967,7 +967,7 @@ extern "C" s32 PatternTexCache_ClearDirty(void *p);
 }
 namespace Unk_02071a50_Calls {
 extern "C" void *TownFlagPattern_GetPattern(void *p);
-extern "C" void func_02063990(void *p, void *q);
+extern "C" void TownId_Assign(void *p, void *q);
 extern "C" u16 data_020d03d4;
 struct Unk_021d7350 {
     u16 unk_00;
@@ -1013,7 +1013,7 @@ extern "C" void TownFlagPattern_InitDefault(void *self) {
         TownFlagPatternDefault_Extract(buf, _ZN7Pattern9getPixelsEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)));
         void *g = PatternPresetInfo_Get();
         PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)), 0x10);
-        Unk_02071a50_Calls::func_02063990(
+        Unk_02071a50_Calls::TownId_Assign(
             PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)))),
             Unk_02071a50_Calls::gSaveData.unk_02);
         _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self))),
@@ -1052,7 +1052,7 @@ BOOL PatternTexCache::loadPresetPattern(s32 n) {
             PresetPatternFile_Extract(buf, _ZN7Pattern9getPixelsEv(getPresetPattern()));
             void *g = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(getPresetPattern()), n + 0x12);
-            func_02063950((u16 *)PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern()))), data_020cb6f4);
+            TownId_SetId((u16 *)PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern()))), data_020cb6f4);
             _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern())), data_020d03d0);
             Mem_Free(buf);
         }
@@ -1298,20 +1298,20 @@ extern "C" BOOL PatternPresetInfo_Apply(void *tbl, void *dst, s32 idx) {
             _ZN11PatternInfo8setTitleEPv(dst, l.o0);
             _ZN11PatternInfo10setPaletteEj(dst, rec[0]);
             _ZN11PatternInfo8setTasteEj(dst, rec[1]);
-            _ZN12Unk_020dd38cC2Ev(l.o1);
+            _ZN11MsgString9CC2Ev(l.o1);
             _ZN9MsgString3setEPh(l.o1, rec + 0x1e);
             _ZN11MsgString9BC1Ev(l.o2);
             _ZN9MsgString3setEPh(l.o2, rec + 0x13);
-            func_020639bc(l.o3);
-            func_020638a0(l.o3, l.o1);
+            TownId_Construct(l.o3);
+            TownId_SetNameString(l.o3, l.o1);
             _ZN8PlayerIdC1EPv(l.o4);
             _ZN8PlayerId13setNameStringEP9MsgString(l.o4, l.o2);
             _ZN6TownId7setTownEPS_(l.o4, l.o3);
             _ZN11PatternInfo9setAuthorEP12Unk_020942c8(dst, l.o4);
             _ZN8PlayerIdC1Ev(l.o4);
-            func_020639b8(l.o3);
+            TownId_Destruct(l.o3);
             _ZN11MsgString9BD1Ev(l.o2);
-            _ZN12Unk_020dd38cD1Ev(l.o1);
+            _ZN11MsgString9CD1Ev(l.o1);
             _ZN8ItemNameD1Ev(l.o0);
             return TRUE;
         }
@@ -1477,7 +1477,7 @@ extern "C" {
 s32 _ZN12VillagerPlan8getStateEv(s32 p);
 }
 extern "C" {
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 }
 extern "C" {
 void AbleShop_GetItem(void *tbl, s32 i, u16 *out);
@@ -1567,7 +1567,7 @@ extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) != 0) {
             u32 val = *Villager_GetFashionTaste(p);
             s32 mode = _ZN12VillagerPlan8getStateEv(VillagerPlanBlock_GetPlan(Villager_GetPlan(p)));
-            u32 rnd = func_02063b8c(100);
+            u32 rnd = Random_GlobalBelow(100);
             s32 fa, fb, fc;
             u16 bufw[2];
             fb = 0;
@@ -1628,7 +1628,7 @@ extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
                     }
                 }
                 if (cnt > 0) {
-                    s32 pick = func_02063b8c(cnt);
+                    s32 pick = Random_GlobalBelow(cnt);
                     s32 k = 0;
                     s32 j;
                     for (j = 0; (u32)j < 8; j++) {
@@ -1900,7 +1900,7 @@ extern "C" {
 extern u8 data_020e049c[];
 }
 extern "C" {
-extern u8 data_020e04a0[];
+extern u8 sMuseumOwlMailName[];
 }
 extern "C" {
 extern u8 data_020e0498[];
@@ -1972,7 +1972,7 @@ extern "C" {
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
 }
 extern "C" {
-void func_020638d0(void *a, void *b);
+void TownId_GetNameString(void *a, void *b);
 }
 extern "C" {
 void MailText_SetSlot(s32 i, void *p);

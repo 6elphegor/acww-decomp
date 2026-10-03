@@ -183,7 +183,7 @@ s32 NpcActor_findAvoidPos(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e9650(void *, void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 u16 Room_PickRandomWalkTarget(void *, void *, s32);
 void *SaveVillagers_GetUnk3830(void *);
 void *SickVillagerRecord_getTodaysVisitor(void *);
@@ -783,13 +783,13 @@ void SickVillagerTalk::vfunc_80() {
         if (MenuCtrl_IsFinished()) {
             if (MenuCtrl_IsResultOk() == 0) {
                 ((Unk_ov004_0221afc4_Msg *)unk_3c)->unk_08 = 1;
-                buf[0] = func_02063b8c(3) + 13;
+                buf[0] = Random_GlobalBelow(3) + 13;
                 TalkWindowState_setNextMessage(unk_3c, buf, 0);
                 unk_1a4->changeAct(4);
             } else {
                 MenuCtrl_GetIndex();
                 Pocket_RemoveItem();
-                buf[1] = func_02063b8c(3) + 16;
+                buf[1] = Random_GlobalBelow(3) + 16;
                 TalkWindowState_setNextMessage(unk_3c, &buf[1], 0);
                 *(u16 *)(buf + 2) = 0x155e;
                 Unk_02014420_requestTakeItem(this, buf + 2, 0, 6, 0);
@@ -809,10 +809,10 @@ void SickVillagerTalk::vfunc_78(Unk_ov004_0221af1c_Out *out) {
     }
     unk_1a4->unk_895 = 0;
     if (SickVillager_HasCurrentVisitor(this)) {
-        out->unk_04 = func_02063b8c(3) + 3;
+        out->unk_04 = Random_GlobalBelow(3) + 3;
         unk_1a4->unk_894 = 1;
     } else {
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
         unk_1a4->unk_894 = 0;
     }
 }
@@ -841,7 +841,7 @@ void SickVillagerTalk::vfunc_14() {
             ChoiceList_setEntry(h, 0, &b[0], 0, gTalkMsgIndexNone, 0, 0);
             b[1] = 0x16;
             ChoiceList_setEntry(h, 1, &b[1], 0, gTalkMsgIndexNone, 0, 0);
-            b[2] = func_02063b8c(10) + 10;
+            b[2] = Random_GlobalBelow(10) + 10;
             ChoiceList_setEntry(h, 2, &b[2], 0, gTalkMsgIndexNone, 0, 0);
             ChoiceList_loadTexts(h);
             TalkWindowState_openChoices(unk_3c, 1);
@@ -855,7 +855,7 @@ void SickVillagerTalk::vfunc_14() {
             ChoiceList_reset(h, 2, 1);
             b[3] = 0x17;
             ChoiceList_setEntry(h, 0, &b[3], 0, gTalkMsgIndexNone, 0, 0);
-            b[4] = func_02063b8c(10) + 0x78;
+            b[4] = Random_GlobalBelow(10) + 0x78;
             ChoiceList_setEntry(h, 1, &b[4], 0, gTalkMsgIndexNone, 0, 0);
             ChoiceList_loadTexts(h);
             TalkWindowState_openChoices(unk_3c, 1);
@@ -899,28 +899,28 @@ s32 SickVillagerTalk::vfunc_18() {
         switch (t) {
         case 0:
             if (MenuCtrl_BuildPocketMask((void *)SickVillager_IsMedicine) != 0) {
-                buf[0] = func_02063b8c(3) + 7;
+                buf[0] = Random_GlobalBelow(3) + 7;
                 TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[0], data_ov004_02250984);
             } else {
-                buf[1] = func_02063b8c(3) + 10;
+                buf[1] = Random_GlobalBelow(3) + 10;
                 TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[1], data_ov004_02250984);
             }
             break;
         case 1:
-            buf[2] = func_02063b8c(4);
+            buf[2] = Random_GlobalBelow(4);
             TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[2], data_ov004_02250984);
             break;
         default:
-            buf[3] = func_02063b8c(3) + 4;
+            buf[3] = Random_GlobalBelow(3) + 4;
             TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[3], data_ov004_02250984);
             break;
         }
     } else {
         if (t == 0) {
-            buf[4] = func_02063b8c(3) + 0x13;
+            buf[4] = Random_GlobalBelow(3) + 0x13;
             TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[4], data_ov004_02250984);
         } else {
-            buf[5] = func_02063b8c(3) + 4;
+            buf[5] = Random_GlobalBelow(3) + 4;
             TalkWindowState_setNextMessage(unk_1a4->unk_89c.unk_3c, &buf[5], data_ov004_02250984);
         }
     }
@@ -1001,18 +1001,18 @@ void SickVillager::mainAct00() {
                     return;
                 }
                 if (unk_838.unk_5b != 0) {
-                    unk_a6e = func_02063b8c(0x46) + 0x32;
+                    unk_a6e = Random_GlobalBelow(0x46) + 0x32;
                 } else {
-                    unk_a6e = func_02063b8c(0x46) + 0x14;
+                    unk_a6e = Random_GlobalBelow(0x46) + 0x14;
                 }
             } else {
                 if (NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0) == 0) {
                     return;
                 }
                 if (unk_838.unk_5b != 0) {
-                    unk_a6e = func_02063b8c(0x46) + 0x32;
+                    unk_a6e = Random_GlobalBelow(0x46) + 0x32;
                 } else {
-                    unk_a6e = func_02063b8c(0x50) + 0x14;
+                    unk_a6e = Random_GlobalBelow(0x50) + 0x14;
                 }
             }
         } else {
@@ -1062,7 +1062,7 @@ void SickVillager::mainAct01() {
         break;
     case 1:
         NpcActionCtrl_requestEmotion(&unk_564, 1, 0, data_020c6cc8);
-        unk_a6e = func_02063b8c(0x14) + 0x14;
+        unk_a6e = Random_GlobalBelow(0x14) + 0x14;
         break;
     case 0:
         if (changeAct(0)) {

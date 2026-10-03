@@ -29,8 +29,8 @@
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
-#define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
-#define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
+#define StaticCollider_setupAtPos _ZN14StaticCollider10setupAtPosEP4Vec3iijjjhi
+#define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define PooledModel_unload _ZN11PooledModel6unloadEv
 #define PooledModel_reset _ZN11PooledModel5resetEv
@@ -112,11 +112,11 @@ public:
     virtual void vfunc_00();
 };
 
-// ---- collision sub-object chain (main: Unk_020e0d08 <- Unk_020e0d1c), derived class in this overlay
-class Unk_020e0d08 {
+// ---- collision sub-object chain (main: ActorCollider <- StaticCollider), derived class in this overlay
+class ActorCollider {
 public:
-    Unk_020e0d08();
-    ~Unk_020e0d08();
+    ActorCollider();
+    ~ActorCollider();
     virtual void *vfunc_00() = 0;
     virtual u32 vfunc_04() = 0;
     virtual void vfunc_08(u32 a, u32 b, u32 c);
@@ -137,14 +137,14 @@ public:
     /* 0x2c */ u32 unk_2c;
     /* 0x30 */ s32 unk_30;
     /* 0x34 */ s32 unk_34;
-    /* 0x38 */ Unk_020e0d08 *unk_38;
+    /* 0x38 */ ActorCollider *unk_38;
     /* 0x3c */ u8 unk_3c;
 };
 
-class Unk_020e0d1c : public Unk_020e0d08 {
+class StaticCollider : public ActorCollider {
 public:
-    Unk_020e0d1c();
-    ~Unk_020e0d1c();
+    StaticCollider();
+    ~StaticCollider();
     virtual void *vfunc_00();
     virtual u32 vfunc_04();
     /* 0x40 */ V3 unk_40;
@@ -313,7 +313,7 @@ public:
 };
 
 // vtable 0x0224e6e8: 0x50-byte collision sub-object of every actor
-class AquariumFishHitBox : public Unk_020e0d1c {
+class AquariumFishHitBox : public StaticCollider {
 public:
     AquariumFishHitBox();
     ~AquariumFishHitBox();
@@ -675,11 +675,11 @@ BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
 void MuseumAquariumHeap_Destroy(void);
 void MuseumAquariumHeap_Create(void);
 s32 func_020639e8(char *, char *, ...);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 File_LoadAlloc(char *, s32, s32, s32);
 s32 MuseumData_isDonated(void *, u16 *);
-void func_02088c64(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
-void func_02089040(void *a);
+void StaticCollider_setupAtPos(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
+void ActorCollider_submit(void *a);
 P *PlayerActor_GetBodyPos(s32 n);
 P *PlayerActor_GetActor(s32 n);
 s32 PooledModel_getModel(void *);
@@ -1516,7 +1516,7 @@ extern "C" s16 Aquarium_RandAngle(s32 a, s32 b)
 
 extern "C" s32 Aquarium_RandRange(s32 a, s32 b)
 {
-    return a + func_02063b8c(b - a);
+    return a + Random_GlobalBelow(b - a);
 }
 
 extern "C" BOOL Aquarium_TurnTowardHome(void *obj, void *a, void *b, s32 max)
@@ -2310,8 +2310,8 @@ extern "C" void _ZN15AquariumPiranha8vfunc_04Ev(E75c *o) {
     s32 t = (sAquariumFishParams[30].unk_03 << 12) >> 7;
     o->unk_256 = Collision_ClampToRect(&o->unk_1a8, t, &sAquariumTankCenterB, 0x11c00, 0x5c00);
     s32 g = func_02133150(o->unk_164 << 12, 10);
-    func_02088c64(o->unk_04, &o->unk_1a8, t, (sAquariumFishParams[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
-    func_02089040(o->unk_04);
+    StaticCollider_setupAtPos(o->unk_04, &o->unk_1a8, t, (sAquariumFishParams[30].unk_02 << 12) >> 7, 0x100, 0x140, 0, 0xff, g);
+    ActorCollider_submit(o->unk_04);
     o->unk_1b4.x = o->unk_1a8.x;
     o->unk_1b4.y = o->unk_1a8.y;
     o->unk_1b4.z = o->unk_1a8.z;
@@ -4041,12 +4041,12 @@ extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n) {
         s32 off = i * 0x64;
         u8 *s = (u8 *)o + off;
         void *obj = (u8 *)o + 0x50 + off;
-        func_02088c64(obj, (u8 *)o + 0xa0 + off, *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
-        func_02089040(obj);
+        StaticCollider_setupAtPos(obj, (u8 *)o + 0xa0 + off, *(s32 *)(s + 0xac), *(s32 *)(s + 0xb0), 0x102, 0x140, z, 0xff, 0x1000);
+        ActorCollider_submit(obj);
     }
     if (sAquariumRoom == 1) {
-        func_02088c64((u8 *)o + 0x244, (u8 *)o + 0x294, *(s32 *)((u8 *)o + 0x2a0), *(s32 *)((u8 *)o + 0x2a4), 0x202, 0x140, 0, 0xff, 0x1000);
-        func_02089040((u8 *)o + 0x244);
+        StaticCollider_setupAtPos((u8 *)o + 0x244, (u8 *)o + 0x294, *(s32 *)((u8 *)o + 0x2a0), *(s32 *)((u8 *)o + 0x2a4), 0x202, 0x140, 0, 0xff, 0x1000);
+        ActorCollider_submit((u8 *)o + 0x244);
     }
 }
 
@@ -4274,25 +4274,25 @@ extern "C" void MuseumAquarium_ConfineFish(void *self, R **ctx, s32 type) {
     }
     s32 h = (sAquariumFishParams[type].unk_02 << 12) >> 7;
     if (sAquariumRoom == 0) {
-        func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+        StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
     } else if (sAquariumRoom == 1) {
         if (type == 0x24) {
             u8 *g = (u8 *)sAquariumJellyfish;
             if (g != NULL) {
-                func_02088c64(&o1->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                StaticCollider_setupAtPos(&o1->unk_04, g + 0x26c, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x23) {
             u8 *g = (u8 *)sAquariumSeaButterfly;
             if (g != NULL) {
-                func_02088c64(&o1->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+                StaticCollider_setupAtPos(&o1->unk_04, g + 0x264, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
             }
         } else if (type == 0x26) {
-            func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
+            StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x140, 0x14, type, (c164 << 12) >> 3);
         } else {
-            func_02088c64(&o1->unk_04, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
+            StaticCollider_setupAtPos(&o1->unk_04, v, w, h, 0x100, 0x340, 0x14, type, (c164 << 12) >> 3);
         }
     }
-    func_02089040(&(*ctx)->unk_04);
+    ActorCollider_submit(&(*ctx)->unk_04);
     len = (sAquariumFishParams[type].unk_10 << 12) >> 7;
     base = w - (len >> 1);
     s32 k;

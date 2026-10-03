@@ -1532,7 +1532,7 @@ extern "C" {
 Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 Unk_020bffc0_Mtx *Camera_GetViewMatrix(void);
@@ -1846,15 +1846,15 @@ extern "C" void Sky_ProjectToScreenX(s32 *out, Unk_020bfe30_Vec *in) {
 void Unk_020bfe30::initRainDrop(BOOL flag) {
     using namespace n13;
     s32 idx;
-    s32 x = (sRainSideToggle * func_02063b8c(0x8a) + 0x80) << 12;
+    s32 x = (sRainSideToggle * Random_GlobalBelow(0x8a) + 0x80) << 12;
     sRainSideToggle *= -1;
-    s32 y = -0x14000 - (func_02063b8c(0x10) << 12);
+    s32 y = -0x14000 - (Random_GlobalBelow(0x10) << 12);
     Unk_020bfe30_Vec *p34 = &unk_34;
     p34->x = x;
     p34->y = y;
     p34->z = 0;
     s32 mul = data_021f43e0.unk_54;
-    s32 rr = func_02063b8c(0xaac) - 0x556;
+    s32 rr = Random_GlobalBelow(0xaac) - 0x556;
     s32 sh = ((mul * (rr + data_021f1448[0x38 / 2])) << 4) >> 16;
     idx = ((u16)sh >> 4) * 2;
     Unk_020bfe30_Vec *p40 = &unk_40;
@@ -1864,23 +1864,23 @@ void Unk_020bfe30::initRainDrop(BOOL flag) {
     p40->z = 0;
     unk_50 = 0x800;
     unk_54 = (u16)sh;
-    s32 r = func_02063b8c(3);
+    s32 r = Random_GlobalBelow(3);
     unk_0c = r + 2;
     s32 v;
     switch (r) {
     case 0:
-        v = func_02063b8c(0x40) + 0x80;
+        v = Random_GlobalBelow(0x40) + 0x80;
         break;
     case 1:
-        v = func_02063b8c(0x40) + 0x40;
+        v = Random_GlobalBelow(0x40) + 0x40;
         break;
     default:
-        v = func_02063b8c(0x40);
+        v = Random_GlobalBelow(0x40);
         break;
     }
     unk_60 = v;
     if (flag == 1) {
-        unk_34.y += func_02063b8c(v + 0x101) << 12;
+        unk_34.y += Random_GlobalBelow(v + 0x101) << 12;
     }
     unk_58 = 2;
 }
@@ -2006,7 +2006,7 @@ extern "C" {
 void _ZN15SkyShotSequence9setTargetEiiih(void *, s32, s32, s32, s32);
 }
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 }
 extern "C" {
 void SkySprite_BeginCrossing(void *, s32, s32);
@@ -2148,8 +2148,8 @@ extern "C" void SkySprite_UpdateSnowFlake(Unk_020bf4b4 *this_);
 extern "C" void SkySprite_InitSnowFlake(Unk_020bf4b4 *this_, s32 arg);
 
 extern "C" void SkySprite_InitSnowFlake(Unk_020bf4b4 *this_, s32 arg) {
-    s32 a = func_02063b8c(3);
-    s32 b = func_02063b8c(0x80);
+    s32 a = Random_GlobalBelow(3);
+    s32 b = Random_GlobalBelow(0x80);
     s32 g = sSnowSideToggle;
     s32 x = (g * b + 0x80) << 12;
     Unk_020bf4b4_Vec *pos, *vel;
@@ -2162,15 +2162,15 @@ extern "C" void SkySprite_InitSnowFlake(Unk_020bf4b4 *this_, s32 arg) {
     this_->unk_40 = 0;
     vel->y = sSnowFallSpeeds[a];
     vel->z = 0;
-    this_->unk_60 = func_02063b8c(0x300) + 0x180;
-    this_->unk_64 = func_02063b8c(0x10000);
+    this_->unk_60 = Random_GlobalBelow(0x300) + 0x180;
+    this_->unk_64 = Random_GlobalBelow(0x10000);
     this_->unk_68 = a;
     this_->unk_6c = x;
-    this_->unk_70 = func_02063b8c(2) + 0x5000;
+    this_->unk_70 = Random_GlobalBelow(2) + 0x5000;
     this_->unk_0c = sSnowAnimIds[a];
     this_->unk_58 = 2;
     if (arg == 1) {
-        this_->unk_38 = this_->unk_38 + (func_02063b8c(0x1c1) << 12);
+        this_->unk_38 = this_->unk_38 + (Random_GlobalBelow(0x1c1) << 12);
     }
 }
 
@@ -2273,14 +2273,14 @@ extern "C" void SkySprite_InitShootingStar(Unk_020bf4b4 *this_) {
     s32 ang, x, y, sn, cs, k, nx, ny;
     this_->unk_4c = 0x1000;
     this_->unk_50 = 0x800;
-    if (func_02063b8c(2) == 0) {
-        x = (func_02063b8c(0x3c) + 0xc4) << 12;
+    if (Random_GlobalBelow(2) == 0) {
+        x = (Random_GlobalBelow(0x3c) + 0xc4) << 12;
         y = 0;
     } else {
         x = 0x100000;
-        y = func_02063b8c(0x30) << 12;
+        y = Random_GlobalBelow(0x30) << 12;
     }
-    ang = func_020e7b98((func_02063b8c(0x17) + 0x80 << 12) - y, -x);
+    ang = func_020e7b98((Random_GlobalBelow(0x17) + 0x80 << 12) - y, -x);
     k = ((u16)ang >> 4) * 2;
     sn = data_02135f44[k];
     cs = data_02135f44[k + 1];
@@ -2471,7 +2471,7 @@ extern "C" void SkySprite_EndMoon(Unk_020bf4b4 *this_) {
 }
 
 extern "C" void SkySprite_InitBalloon(Unk_020bf4b4 *this_, u32 arg) {
-    SkySprite_BeginCrossing(this_, func_02063b8c(2) == 0 ? 1 : 0, 0x3e8);
+    SkySprite_BeginCrossing(this_, Random_GlobalBelow(2) == 0 ? 1 : 0, 0x3e8);
     this_->unk_0c = 1;
     this_->unk_58 = 2;
     this_->unk_60 = 0;
@@ -2547,7 +2547,7 @@ extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 }
 extern "C" {
 s32 _ZN10SpriteAnim13getFrameIndexEv(void *p);
@@ -2666,11 +2666,11 @@ void Unk_020be018::spawnUfoDebris()
     if (unk_64 > 0) {
         if (unk_64 == 1) {
             s32 r4, scale, y, q, idx;
-            unk_64 = func_02063b8c(2) + 1;
-            r4 = func_02063b8c(2) + 2;
+            unk_64 = Random_GlobalBelow(2) + 1;
+            r4 = Random_GlobalBelow(2) + 2;
             scale = unk_4c;
-            q = FX_Div(func_02063b8c(0x10) << 12, scale);
-            idx = ((u16)(s16)func_02063b8c(0x10000) >> 4) << 1;
+            q = FX_Div(Random_GlobalBelow(0x10) << 12, scale);
+            idx = ((u16)(s16)Random_GlobalBelow(0x10000) >> 4) << 1;
             y = unk_34.y + func_01ffcb0c(q, data_02135f44[idx]);
             Unk_020be018_Vec pos;
             pos.x = unk_34.x + func_01ffcb0c(q, data_02135f44[idx + 1]);
@@ -2692,7 +2692,7 @@ namespace n11 {
 void Unk_020be018::initUfo()
 {
     using namespace n11;
-    beginCrossing(func_02063b8c(2) == 0 ? 1 : 0, 0x1000);
+    beginCrossing(Random_GlobalBelow(2) == 0 ? 1 : 0, 0x1000);
     unk_0c = 0x16;
     unk_58 = 2;
     _ZN8SaveData7setFlagEj(gSaveData, 9);
@@ -2872,13 +2872,13 @@ namespace n11 {
 void Unk_020be018::initLightning()
 {
     using namespace n11;
-    s32 a = (func_02063b8c(0x80) * (func_02063b8c(2) * 2 - 1) + 0x80) << 12;
-    s32 c = (func_02063b8c(0x50) + 0x50) << 12;
+    s32 a = (Random_GlobalBelow(0x80) * (Random_GlobalBelow(2) * 2 - 1) + 0x80) << 12;
+    s32 c = (Random_GlobalBelow(0x50) + 0x50) << 12;
     Unk_020be018_Vec *p = &unk_34;
     unk_34.x = a;
     p->y = c;
     p->z = 0;
-    unk_0c = func_02063b8c(8) + 8;
+    unk_0c = Random_GlobalBelow(8) + 8;
     unk_58 = 2;
 }
 namespace n11 {
@@ -3104,10 +3104,10 @@ extern "C" {
 void func_020e9888(Unk_020be204_Vec *v, s32 a);
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
-s32 func_02063b74(s32 n);
+s32 Random_GlobalBelow2(s32 n);
 }
 extern "C" {
 void _ZN10SpriteAnimC1Ev(void *p);
@@ -3197,16 +3197,16 @@ void Unk_020be204::initFireworkShell(u32 a) {
     BOOL b = Unk_020be204_Bit(a, 31);
     s32 x, y;
     if (b) {
-        x = func_02063b8c(0x60) + 0x50;
+        x = Random_GlobalBelow(0x60) + 0x50;
         if ((a >> 28) & 1) {
             y = 0;
         } else {
-            y = func_02063b8c(0x20);
+            y = Random_GlobalBelow(0x20);
         }
         y += 0x52;
     } else {
-        x = func_02063b8c(0xa0) + 0x30;
-        y = func_02063b8c(0x60) + 0x32;
+        x = Random_GlobalBelow(0xa0) + 0x30;
+        y = Random_GlobalBelow(0x60) + 0x32;
     }
     unk_6c = x << 12;
     unk_70 = 0xbf000;
@@ -3439,15 +3439,15 @@ void Unk_020be204::initBird(u32 a) {
     unk_64 = sBirdDelays[a & 3] + 0x14;
     unk_0c = 0x2c;
     unk_58 = 2;
-    s32 y = (func_02063b8c(0x38) + 0x90) << 12;
+    s32 y = (Random_GlobalBelow(0x38) + 0x90) << 12;
     unk_34.x = -0x8000;
     unk_34.y = y;
     unk_34.z = 0;
     unk_40.x = 0x1000;
     unk_40.y = 0x2000;
     unk_40.z = 0;
-    unk_40.x += func_02063b74(0x8000);
-    unk_40.y -= func_02063b74(0x2000);
+    unk_40.x += Random_GlobalBelow2(0x8000);
+    unk_40.y -= Random_GlobalBelow2(0x2000);
     unk_6c = -0x666;
     unk_70 = 0xcd;
     unk_6c += 0x8cd;
@@ -4425,7 +4425,7 @@ extern "C" {
 s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 BOOL SkyShot_HasMaxHits();
@@ -4474,7 +4474,7 @@ namespace n08 {
 }
 void SkyObjPalette::pickBalloonColor() {
     using namespace n08;
-    unk_00 = func_02063b8c(5);
+    unk_00 = Random_GlobalBelow(5);
     invalidate(data_020d18c8[0x1d]);
 }
 namespace n08 {
@@ -5063,7 +5063,7 @@ extern "C" {
 void SceneLights_StartFlash(s32 a);
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 void _ZN12Unk_020be0f49endByKindEv(Unk_020bc754_Slot *s);
@@ -5440,7 +5440,7 @@ void Unk_020bc58c::sendWishLetters() {
         if (o != NULL && _ZN12Unk_02097ff48testFlagEj(o, 0x32) != 0) {
             Letter ctx;
             Unk_020bc99c_Loc l;
-            l.a = func_02063b8c(3);
+            l.a = Random_GlobalBelow(3);
             Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.b, q, 0, 0, 1, 1, 0);
@@ -5500,7 +5500,7 @@ s32 Unk_020bc58c::getGfxIdForKind(s32 kind, s32 arg) {
     if (kind == 4) {
         r = SkySprites_GetMoonPhaseGfx();
     } else if (kind == 7) {
-        if (func_02063b8c(2) != 0) r = 0x28;
+        if (Random_GlobalBelow(2) != 0) r = 0x28;
     } else if (kind == 5) {
         if ((arg & 1) != 0) r = 0x21;
     } else if (kind == 9) {
@@ -5618,11 +5618,11 @@ void Unk_020bc58c::updateLightning() {
     if (unk_2f10 <= 0) unk_2f10 = 0x32;
     unk_2f10--;
     if (unk_2f10 <= 0) {
-        if (func_02063b8c(8) == 0) {
+        if (Random_GlobalBelow(8) == 0) {
             spawn(8, 0x3b, NULL, 0);
         }
         SceneLights_StartFlash(0);
-        unk_2f10 = func_02063b8c(200) + 10;
+        unk_2f10 = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
@@ -5634,7 +5634,7 @@ void Unk_020bc58c::updateThunderFlash() {
     unk_2f10--;
     if (unk_2f10 <= 0) {
         SceneLights_StartFlash(0);
-        unk_2f10 = func_02063b8c(200) + 10;
+        unk_2f10 = Random_GlobalBelow(200) + 10;
     }
 }
 namespace n07 {
@@ -5721,7 +5721,7 @@ extern "C" {
 s32 Event_GetState(s32, void *, s32);
 }
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 }
 extern "C" {
 s32 EventAnnounce_GetActiveEvent();
@@ -5784,7 +5784,7 @@ void Unk_020bbc28::updateRain() {
     } else {
         Unk_020d0f40 *t = &sRainSpawnRates[kind - 1];
         if (unk_2f00 == 0) {
-            unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
+            unk_2f00 = t->unk_00 + Random_GlobalBelow(t->unk_04);
         }
         if (b >= 3) {
             unk_2f08 += 2;
@@ -5802,7 +5802,7 @@ void Unk_020bbc28::updateRain() {
             spawn(0, 0x3c, 0, 0);
             unk_2f04 -= unk_2f00;
             if (unk_2f04 <= unk_2f00) {
-                unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
+                unk_2f00 = t->unk_00 + Random_GlobalBelow(t->unk_04);
                 if (unk_2f00 < 0x23) {
                     unk_2f00 = 0x23;
                 }
@@ -5888,7 +5888,7 @@ void Unk_020bbc28::updateSnow() {
                     unk_2f04 = 0;
                     break;
                 default:
-                    unk_2f00 = t->unk_00 + func_02063b8c(t->unk_04);
+                    unk_2f00 = t->unk_00 + Random_GlobalBelow(t->unk_04);
                     if (unk_2f0c < 0x32) {
                         unk_2f04 = 0x4b;
                     } else {
@@ -5931,8 +5931,8 @@ void Unk_020bbc28::updateShootingStar() {
                 spawn(3, 0x1e, 0, 0);
             }
         } else if (unk_2f1c == 0x1e && unk_2f1c != unk_2f20) {
-            if (!func_02063b8c(data_021ed2b0.unk_0a == 0 ? 4 : 0x100)) {
-                unk_2f4c = func_02063b8c(0x258);
+            if (!Random_GlobalBelow(data_021ed2b0.unk_0a == 0 ? 4 : 0x100)) {
+                unk_2f4c = Random_GlobalBelow(0x258);
             }
         }
     } else {
@@ -6369,7 +6369,7 @@ void Unk_020bbc28::updateFireworksShow() {
             s32 v;
             if (r6) {
                 v = 0x12;
-            } else if (func_02063b8c(2) == 0) {
+            } else if (Random_GlobalBelow(2) == 0) {
                 v = 0xe;
             } else {
                 v = 0x10;
@@ -6403,11 +6403,11 @@ void Unk_020bbc28::updateBalloon() {
                 if ((u32)unk_2f18 % 10 == 4) {
                     if (unk_1464 != 5) {
                         if (unk_2f24 == 0) {
-                            unk_2f24 = func_02063b8c(8) + 1;
+                            unk_2f24 = Random_GlobalBelow(8) + 1;
                         }
                         u8 c = unk_2f24;
-                        if (func_02063b8c(8) < c) {
-                            if (!_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !func_02063b8c(4)) {
+                        if (Random_GlobalBelow(8) < c) {
+                            if (!_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x30) && SkyShot_HasMaxHits() && !Random_GlobalBelow(4)) {
                                 spawn(5, 0x2d, 0, 1);
                             } else {
                                 spawn(5, 0x2d, 0, 0);
@@ -6460,10 +6460,10 @@ void Unk_020bbc28::updateUfo() {
                     if (!_ZN17VisitorSpawnFlags16isVisitorSpawnedEv()) {
                         if (unk_1464 != 6) {
                             if (unk_2f25 == 0) {
-                                unk_2f25 = func_02063b8c(8) + 1;
+                                unk_2f25 = Random_GlobalBelow(8) + 1;
                             }
                             u8 c = unk_2f25;
-                            if (func_02063b8c(8) < c) {
+                            if (Random_GlobalBelow(8) < c) {
                                 spawn(6, 0x2d, 0, 0);
                                 unk_2f25 = 1;
                             } else if (c < 8) {
@@ -6515,7 +6515,7 @@ namespace n06 {
 // ======== unk_020bb25c.cpp ========
 namespace n05 {
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 void SceneLights_StartFlash(s32 a);
@@ -6732,7 +6732,7 @@ void Unk_020bb25c::rollLaunchInterval(s32 *out) {
     using namespace n05;
     s32 r;
     if (unk_2f48 > 0) {
-        r = func_02063b8c(unk_2f48);
+        r = Random_GlobalBelow(unk_2f48);
     } else {
         r = 0;
     }
@@ -6745,7 +6745,7 @@ void Unk_020bb25c::tickBigLaunch() {
     using namespace n05;
     unk_2f34 = unk_2f34 - 1;
     if (unk_2f34 <= 0) {
-        s32 r = func_02063b8c(4);
+        s32 r = Random_GlobalBelow(4);
         if (canLaunchBig(r)) {
             launchFirework(r, 1, 0);
             rollLaunchInterval(&unk_2f34);
@@ -6759,7 +6759,7 @@ void Unk_020bb25c::tickLowBigLaunch() {
     using namespace n05;
     unk_2f34 = unk_2f34 - 1;
     if (unk_2f34 <= 0) {
-        s32 r = func_02063b8c(4);
+        s32 r = Random_GlobalBelow(4);
         if (canLaunchBig(r)) {
             launchFirework(r, 1, 1);
             rollLaunchInterval(&unk_2f34);
@@ -6814,12 +6814,12 @@ void Unk_020bb25c::tickPairLaunches() {
         }
     }
     if (all) {
-        s32 a = func_02063b8c(4);
-        s32 b = (a + 1 + func_02063b8c(3)) & 3;
+        s32 a = Random_GlobalBelow(4);
+        s32 b = (a + 1 + Random_GlobalBelow(3)) & 3;
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (a == i || b == i) {
-                *(*p2) = unk_2f48 + func_02063b8c(30);
+                *(*p2) = unk_2f48 + Random_GlobalBelow(30);
             }
         }
     }
@@ -6853,11 +6853,11 @@ void Unk_020bb25c::tickTripleLaunches() {
         }
     }
     if (all) {
-        s32 skip = func_02063b8c(4);
+        s32 skip = Random_GlobalBelow(4);
         s32 **p2 = ptrs;
         for (i = 0; i < 4; i++, p2++) {
             if (i != skip) {
-                *(*p2) = unk_2f48 + func_02063b8c(30);
+                *(*p2) = unk_2f48 + Random_GlobalBelow(30);
             }
         }
     }
@@ -6870,7 +6870,7 @@ void Unk_020bb25c::setFireworksTiming(s32 a, s32 b, s32 c) {
     unk_2f48 = a;
     s32 r;
     if (c > 0) {
-        r = func_02063b8c(c);
+        r = Random_GlobalBelow(c);
     } else {
         r = 0;
     }
@@ -6882,7 +6882,7 @@ namespace n05 {
 void Unk_020bb25c::selectFireworksPattern(s32 mode) {
     using namespace n05;
     if (mode == 0x14) {
-        u32 r = func_02063b8c(100);
+        u32 r = Random_GlobalBelow(100);
         u8 *p = data_020d0e51;
         s32 m = 5;
         s32 i;
@@ -6905,12 +6905,12 @@ void Unk_020bb25c::selectFireworksPattern(s32 mode) {
             flag = TRUE;
         }
         if (flag) {
-            unk_2f34 = func_02063b8c(cnt);
+            unk_2f34 = Random_GlobalBelow(cnt);
         } else {
-            unk_2f38[0] = func_02063b8c(cnt);
-            unk_2f38[1] = func_02063b8c(cnt);
-            unk_2f38[2] = func_02063b8c(cnt);
-            unk_2f38[3] = func_02063b8c(cnt);
+            unk_2f38[0] = Random_GlobalBelow(cnt);
+            unk_2f38[1] = Random_GlobalBelow(cnt);
+            unk_2f38[2] = Random_GlobalBelow(cnt);
+            unk_2f38[3] = Random_GlobalBelow(cnt);
         }
     }
 }
@@ -7753,13 +7753,13 @@ extern "C" {
 BOOL File_LoadToBuffer(u32 res, u8 *a, s32 b);
 }
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 extern "C" {
 s32 _s32_div_f(s32 a, s32 b);
 }
 extern "C" {
-void func_02063968(void *a, void *b);
+void TownId_CopyTo(void *a, void *b);
 }
 extern "C" {
 void Clock_GetDateTime(void *p);
@@ -7927,7 +7927,7 @@ void WeatherManager::rollRainSlant() {
     u32 seed;
     t.unk_00 = 0;
     t.unk_04 = 0;
-    func_02063968(gSaveTownId, buf);
+    TownId_CopyTo(gSaveTownId, buf);
     Clock_GetDateTime(&t);
     seed = ((u8 *)&t)[3] | ((((u8 *)&t)[4] << 5) | ((buf[0] << 16) | ((((u8 *)&t)[5] & 0x1f) << 9)));
     Random_SetSeed(&st, 1);
@@ -8067,7 +8067,7 @@ void WeatherManager::init() {
     unk_158c = 0;
     unk_152c = -1;
     unk_1530 = 2;
-    unk_1574 = func_02063b8c(2);
+    unk_1574 = Random_GlobalBelow(2);
     unk_1570 = unk_1574;
     unk_1520 = 0;
     unk_1578 = 0;
@@ -8154,7 +8154,7 @@ void WeatherManager::startTransition(s32 v) {
     } else {
         unk_1530 = 1;
     }
-    unk_1574 = func_02063b8c(2);
+    unk_1574 = Random_GlobalBelow(2);
 }
 namespace n03 {
 
@@ -8334,7 +8334,7 @@ extern "C" {
 Unk_020b9964_Obj *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
-s32 func_02064c84(u32 x);
+s32 SceneLights_GetLightParam(u32 x);
 }
 namespace L_021f1158 { extern "C" { extern struct S { u8 p[0x1210]; u16 v[1]; } gWeatherManager; } }
 #define data_021f1158 n02::L_021f1158::gWeatherManager.v
@@ -8692,7 +8692,7 @@ extern "C" void Sky_UpdateLineTables()
         }
     }
     i = 0;
-    u32 w = func_02064c84(1);
+    u32 w = SceneLights_GetLightParam(1);
     if (w != sSkyBlendLineCache[idx]) {
         sSkyBlendLineCache[idx] = w;
         u16 c = w | 0x1000;

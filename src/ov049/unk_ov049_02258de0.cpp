@@ -224,7 +224,7 @@ s32 NpcActor_CheckPayoutFits(void *, s32, s32);
 void NpcActor_PayPlayer(void *owner, s32 v);
 BOOL func_0204bab8(u16 *);
 void MenuCtrl_ReturnChosenItems(s32);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void Unk_020d7710_setSubSceneKind(void *self, u32 a, u32 b);
 BOOL GameStart_IsActive();
 u32 func_0212a438(const char *s);
@@ -241,7 +241,7 @@ s32 memcmp(const void *a, const void *b, u32 n);
 BOOL PlayerId_equals(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
 void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
-void func_020639b8(Unk_ov049_0225a714_P *p);
+void TownId_Destruct(Unk_ov049_0225a714_P *p);
 void func_020942c8(Unk_ov049_0225a714_Pair *p);
 void func_0206267c(Unk_ov049_0225a714_Q *p);
 void func_0206260c(Unk_ov049_0225a714_Q *p);
@@ -477,7 +477,7 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -597,7 +597,7 @@ public:
     virtual s32 vfunc_a8();
     void setColliderSize(s32 a, s32 b);
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -1049,7 +1049,7 @@ BOOL SpNpcMabel::setupAct01() {
     s32 v;
     NpcActionCtrl_requestStand(&unk_564, 1, unk_962);
     unk_962 = data_020c6cc8;
-    unk_960 = func_02063b8c(5) * 20 + 100;
+    unk_960 = Random_GlobalBelow(5) * 20 + 100;
     if (Talk_IsDramaPending(this, &v, 2)) {
         unk_965 = 1;
     } else {
@@ -1462,8 +1462,8 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
             out->unk_04 = 0x32;
         }
-        func_020639b8(&d);
-        func_020639b8(&c);
+        TownId_Destruct(&d);
+        TownId_Destruct(&c);
         func_020942c8(&b);
         func_020942c8(&a);
         func_0206260c(&q);
@@ -1764,13 +1764,13 @@ void SpNpcMabelTalk::onDesignConceptChoice(u32 a) {
     s32 idx = 0;
     switch (a) {
     case 0:
-        idx = func_02063b8c(3);
+        idx = Random_GlobalBelow(3);
         break;
     case 1:
-        idx = func_02063b8c(3) + 3;
+        idx = Random_GlobalBelow(3) + 3;
         break;
     case 2:
-        idx = func_02063b8c(4) + 6;
+        idx = Random_GlobalBelow(4) + 6;
         break;
     }
     unk_ac->setDesignConcept(sSpNpcMabelDesignConcepts[idx]);

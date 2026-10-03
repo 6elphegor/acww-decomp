@@ -91,7 +91,7 @@ s32 NpcRegistry_FindSpNpc(s32 a);
 void Camera_SetMode19(void);
 void _ZN11NpcTalkCtrl11requestTalkEhh(void *p, s32 a, s32 b);
 s32 _ZN15LostChildRecord9getTownIdEv(void *p);
-s32 func_02063b8c(u32 n);
+s32 Random_GlobalBelow(u32 n);
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -261,18 +261,18 @@ struct Unk_0201a13c {
     Unk_0201a13c();
 };
 MEMBER(CollisionState, 0x30);
-struct Unk_020e0cf4 {
+struct ActorFollowCollider {
     u8 unk_00[0x1c];
     u32 unk_1c;
     u8 pad_20[0x44 - 0x20];
     u8 unk_44;
     u8 pad_45[3];
-    Unk_020e0cf4();
+    ActorFollowCollider();
 };
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -324,7 +324,7 @@ struct NpcActor : Character {
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     CollisionState unk_49c;
-    Unk_020e0cf4 unk_4cc;
+    ActorFollowCollider unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
@@ -375,7 +375,7 @@ public:
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -965,20 +965,20 @@ void SpNpcMissing1Talk::vfunc_78(Unk_020c0538_Out *out) {
         break;
     case 1:
         _ZN12Unk_02097ff47setFlagEj(t, 0x33);
-        out->unk_04 = func_02063b8c(3) + 1;
+        out->unk_04 = Random_GlobalBelow(3) + 1;
         break;
     case 2:
-        out->unk_04 = func_02063b8c(3) + 4;
+        out->unk_04 = Random_GlobalBelow(3) + 4;
         Talk_CheckAndSetPlayerFlag(0x29, 1);
         break;
     case 3:
-        out->unk_04 = func_02063b8c(3) + 7;
+        out->unk_04 = Random_GlobalBelow(3) + 7;
         break;
     case 4:
-        out->unk_04 = func_02063b8c(3) + 0x19;
+        out->unk_04 = Random_GlobalBelow(3) + 0x19;
         break;
     case 5:
-        out->unk_04 = func_02063b8c(3) + 0x22;
+        out->unk_04 = Random_GlobalBelow(3) + 0x22;
         break;
     case 6:
         out->unk_04 = 0x14;
@@ -1008,12 +1008,12 @@ void SpNpcMissing1Talk::vfunc_18() {
         _ZN15TalkWindowState13getChoiceListEv(unk_3c);
         switch (_ZN10ChoiceList9getResultEv()) {
         case 0:
-            v[0] = func_02063b8c(3) + 0x1c;
+            v[0] = Random_GlobalBelow(3) + 0x1c;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[0], (u32)sSpNpcMissing1MsgKey);
             _ZN12Unk_02086f8412setFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));
             break;
         case 1:
-            v[1] = func_02063b8c(3) + 0x1f;
+            v[1] = Random_GlobalBelow(3) + 0x1f;
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &v[1], (u32)sSpNpcMissing1MsgKey);
             if (Scene_GetCurrent() == 0) {
                 _ZN12Unk_02086f8414clearFollowingEv(TownSessionState_GetKatieState(TownSessionState_Get()));

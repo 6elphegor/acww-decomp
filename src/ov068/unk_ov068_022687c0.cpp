@@ -222,7 +222,7 @@ void FieldFish_ScareAround(void *a, s32 b);
 void *_ZN11PooledModel8getModelEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s16 Math_AngleXZ(void *, void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 _s32_div_f(s32 a, s32 b);
 void Insect_GetDirVec(void *, s32);
 s32 Field_IsRafflesiaNear(void *a, void *b);
@@ -512,7 +512,7 @@ void Pondskater_Skate(DObj *o, s16 *p) {
         *p = 0;
     } else if (*p <= 0) {
         o->unk_251 = 0x13;
-        o->unk_232 = func_02063b8c(0x14) * 3;
+        o->unk_232 = Random_GlobalBelow(0x14) * 3;
     }
 }
 
@@ -530,17 +530,17 @@ void Pondskater_StartSkate(DObj *o, u16 *p) {
         r = a0 + o->unk_240;
     } else {
         k = 0;
-        for (; k < func_02063b8c(5); k++) {
+        for (; k < Random_GlobalBelow(5); k++) {
             r = r + 0xaaa;
         }
-        if (func_02063b8c(100) > 0x32) {
+        if (Random_GlobalBelow(100) > 0x32) {
             r = -r;
         }
         r += a;
     }
     o->unk_251 = 4;
     o->unk_23a = r;
-    *p = func_02063b8c(8) + 8;
+    *p = Random_GlobalBelow(8) + 8;
     DVec *pv = &o->unk_204;
     v.x = pv->x;
     v.y = pv->y;
@@ -628,7 +628,7 @@ void Moth_CircleLight(DObj *o) {
     s32 cnt;
 
     k24b = o->unk_24b;
-    rnd = (u8)func_02063b8c(100);
+    rnd = (u8)Random_GlobalBelow(100);
     pos = &o->unk_204;
     v1e0 = &o->unk_1e0;
     k24c = o->unk_24c;
@@ -793,10 +793,10 @@ void Unk_ov068_02268214::hovererFly() {
     insectWanderSteer(&h, 0xaaa, 0x1e, 0x46, unk_257 << 12);
     if (unk_24d == 10) {
         s32 x = FX_Div(0x12000, 0x10000);
-        Insect_FlutterBob(this, t, x, (func_02063b8c(8) + 10) << 12);
+        Insect_FlutterBob(this, t, x, (Random_GlobalBelow(8) + 10) << 12);
         unk_232 = t + 0xaaa;
     } else {
-        Insect_FlutterBob(this, t, 0x19a, (func_02063b8c(8) + 0x12) << 12);
+        Insect_FlutterBob(this, t, 0x19a, (Random_GlobalBelow(8) + 0x12) << 12);
         unk_232 = t + 0x1554;
     }
 }
@@ -870,12 +870,12 @@ void Unk_ov068_02268214::dungBeetlePushSnowball() {
         if (Snowball_TrySetPos(a, w) == 0) {
             unk_251 = 5;
             _ZN9AnimModel8setFrameEi((u8 *)this + 0x50, 0);
-            unk_232 = func_02063b8c(0x14) + 0x28;
+            unk_232 = Random_GlobalBelow(0x14) + 0x28;
         }
     } else {
         unk_251 = 5;
         _ZN9AnimModel8setFrameEi((u8 *)this + 0x50, 0);
-        unk_232 = func_02063b8c(0x14) + 0x28;
+        unk_232 = Random_GlobalBelow(0x14) + 0x28;
     }
 }
 
@@ -890,7 +890,7 @@ BOOL Unk_ov068_02268214::spiderCheckPlayerHit() {
             } else {
                 v[0] = v[0] + FX_Div(0x14000, 0x10000);
             }
-            if (func_02063b8c(0x64) > 0x32) {
+            if (Random_GlobalBelow(0x64) > 0x32) {
                 unk_24c = 0;
             } else {
                 unk_24c = 1;
@@ -944,7 +944,7 @@ void Unk_ov068_02268214::mosquitoChase(s16 *p) {
     if (tp != 0) {
         u8 *pp = tp + 0x5c;
         dist = func_020e9650(pp, pos);
-        rnd = (u8)func_02063b8c(0x64);
+        rnd = (u8)Random_GlobalBelow(0x64);
         s32 c = unk_254;
         s32 h = unk_23a;
         ang = (s16)(Math_AngleXZ(pos, pp) - h);
@@ -1000,7 +1000,7 @@ void Unk_ov068_02268214::mosquitoChase(s16 *p) {
     Insect_GetDirVec(v, na);
     pos[0] += func_01ffcb0c(v[0], 0x8000);
     pos[2] += func_01ffcb0c(v[2], 0x8000);
-    s32 r = func_02063b8c(8);
+    s32 r = Random_GlobalBelow(8);
     Insect_FlutterBob(this, *p, 0x2800, (r + 0x12) << 12);
 }
 
@@ -1226,11 +1226,11 @@ void Stinger_Walk(BObj *o, s16 *p, u32 mode) {
         Insect_PlaySe(o, 0, 1);
         if (Insect_TickTimer(o)) {
             o->unk_251 = 0x13;
-            o->unk_244 = (func_02063b8c(9) + 2) * 0x14;
+            o->unk_244 = (Random_GlobalBelow(9) + 2) * 0x14;
         }
     } else if (o->unk_251 == 5) {
         if (o->unk_24d == 0x36 &&
-            (*p > 0 || (o->unk_24f % 10 == 0 && func_02063b8c(100) > 0x4b))) {
+            (*p > 0 || (o->unk_24f % 10 == 0 && Random_GlobalBelow(100) > 0x4b))) {
             s32 t = *p;
             o->unk_204.y = o->unk_204.y + (func_01ffcb0c(FX_Div(0x1000, 0x12000), t << 12) + t * t * -10);
             if (*p == 0) {
@@ -1405,7 +1405,7 @@ s32 Insect_ApproachFlower(BObj *o, s16 *p) {
             if (b <= FX_Div(0x1000, 0x4000) && v->y <= c.y + FX_Div(0x1000, 0x8000) &&
                 v->y >= c.y - FX_Div(0x1000, 0x8000)) {
                 o->unk_251 = 6;
-                o->unk_244 = (func_02063b8c(5) + 0x10) * 0x14;
+                o->unk_244 = (Random_GlobalBelow(5) + 0x10) * 0x14;
                 o->unk_242 = 0;
                 if (o->unk_24d == 0x33) {
                     if (o->unk_21c != 1) {
@@ -1416,7 +1416,7 @@ s32 Insect_ApproachFlower(BObj *o, s16 *p) {
                 }
             } else {
                 u32 t = o->unk_252;
-                if (func_02063b8c(100) > (s32)(t - 0x14)) {
+                if (Random_GlobalBelow(100) > (s32)(t - 0x14)) {
                     BVec *d = &o->unk_1d4;
                     if (d->x != *(volatile s32 *)&c.x || d->z != *(volatile s32 *)&c.z) {
                         BVec *d2 = &o->unk_1d4;
@@ -1517,7 +1517,7 @@ extern "C" void Insect_AdjustFlowerLandingPos(s32 code, s32 *v) {
 
 void Unk_ov068_02268214::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc) {
     u32 flag = unk_24b;
-    u32 rnd = (u8)func_02063b8c(100);
+    u32 rnd = (u8)Random_GlobalBelow(100);
     s32 *d = unk_204;
     s32 vec[3];
     if (unk_24f % b == 0 && rnd > thr) {
@@ -1554,7 +1554,7 @@ void Unk_ov068_02268214::insectWanderSteer(s16 *p, s32 a, s32 b, u8 thr, s32 sc)
 void Unk_ov068_02268214::insectFleeFrom(s32 *p) {
     if (*p > 0 && unk_24a == 0 && unk_254 >= unk_255) {
         unk_240 = Math_AngleXZ(p, unk_204);
-        unk_244 = (func_02063b8c(4) + 7) * 20;
+        unk_244 = (Random_GlobalBelow(4) + 7) * 20;
         unk_251 = 7;
         unk_24a = 1;
         unk_220 = unk_228;

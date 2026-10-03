@@ -14,7 +14,7 @@ s32 Item_MakeFurniture(s32 a, s32 b);
 s32 FengShui_GetEastTotal(void);
 s32 FengShui_GetSouthTotal(void);
 s32 FX_Div(s32 a, s32 b);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void _ZN6ItemIdC1Ev(void *);
@@ -71,28 +71,28 @@ public:
     /* 0x0a */ u8 unk_0a;
 };
 
-// One-byte element (value 0..5), 3-byte rows in data_020cb62c
-class Unk_020635d8 {
+// One-byte element (value 0..5), 3-byte rows in sItemClassWeightOrders
+class ItemClassOrder {
 public:
-    Unk_020635d8();
-    ~Unk_020635d8();
-    u32 func_020635d8(u32 x);
-    u32 func_020635fc();
-    u32 func_02063654(s32 mode, RandomSource *rng);
-    u8 *func_020637a0();
-    void func_020637c8();
+    ItemClassOrder();
+    ~ItemClassOrder();
+    u32 getClassOfWeight(u32 x);
+    u32 getIndex();
+    u32 pickClass(s32 mode, RandomSource *rng);
+    u8 *getWeights();
+    void randomize();
 
     /* 0x00 */ u8 unk_00;
 };
 
-class Unk_02063578 {
+class ItemClassOrders {
 public:
-    Unk_02063578();
-    ~Unk_02063578();
-    void func_02063578();
-    Unk_020635d8 *func_02063570(s32 i);
+    ItemClassOrders();
+    ~ItemClassOrders();
+    void randomizeAll();
+    ItemClassOrder *get(s32 i);
 
-    /* 0x00 */ Unk_020635d8 unk_00[9];
+    /* 0x00 */ ItemClassOrder unk_00[9];
 };
 
 struct ItemPickSpec {
@@ -115,21 +115,21 @@ struct ItemPickList {
     s32 (*unk_10)(u16 *);
 };
 
-extern Unk_02063578 data_021ed30c;
-extern const u8 data_020cb62c[];
+extern ItemClassOrders data_021ed30c;
+extern const u8 sItemClassWeightOrders[];
 extern u8 gRandom[];
-extern const u32 data_020cb620[];
+extern const u32 sItemClassRanks[];
 extern const ItemPickList sItemPickLists[];
 extern u8 gSaveData[];
 
 extern "C" {
-BOOL func_020626a8(u16 *p);
-s32 func_020626cc(u16 *p, s32 mode);
+BOOL Item_IsClass4Furniture(u16 *p);
+s32 ItemList_GetTownClassRank(u16 *p, s32 mode);
 s32 ItemList_Find(u16 *p);
 void ItemPick_OneSimple(u16 *out, ItemPickSpec *o);
 void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 listLen, void *a5, s32 a6, s32 a7, RandomSource *rng, s32 a9);
 BOOL ItemPick_FillFromRange(u16 *arr, u32 n, s32 base, u32 cnt, void *a4, s32 a5, s32 a6, RandomSource *a7, s32 a8);
-void func_0206277c(u16 *out, u8 *a, RandomSource *rng);
+void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng);
 void ItemPick_OneEx(u16 *out, s32 one, ItemPickSpec *o, u8 *a, RandomSource *b, u8 c, u32 d, s32 *e);
 void ItemPick_One(u16 *out, ItemPickSpec *o, u8 *a, RandomSource *b, u8 c, u32 d, s32 *e);
 u32 ItemPick_FromLists(u16 *out, u32 n, ItemPickSpec *tbl, u32 x3, u8 *a4, RandomSource *rng, u32 a6, u32 a7, s32 *outp);
@@ -141,11 +141,11 @@ s32 ItemList_GetNoSeason(void);
 u16 ItemList_MakePaper(u32 a);
 s32 ItemList_MakeFurniture(s32 a);
 u32 ItemPick_CalcDateSeed(u32 a, u32 b, u32 c);
-u8 func_02063600(u32 idx);
+u8 ItemPick_GetClassWeight(u32 idx);
 }
 
-extern const u32 data_020cb620[3] = {1, 2, 3};
-extern const u8 data_020cb62c[18] = {
+extern const u32 sItemClassRanks[3] = {1, 2, 3};
+extern const u8 sItemClassWeightOrders[18] = {
     0x3c, 0x1e, 0x0a, 0x3c, 0x0a, 0x1e, 0x1e, 0x3c, 0x0a,
     0x0a, 0x3c, 0x1e, 0x1e, 0x0a, 0x3c, 0x0a, 0x1e, 0x3c,
 };
@@ -188,18 +188,18 @@ static inline BOOL Unk_0206277c_Bad2(u16 *p, u16 *e) {
     return r;
 }
 
-Unk_020635d8::Unk_020635d8() {}
+ItemClassOrder::ItemClassOrder() {}
 
-Unk_020635d8::~Unk_020635d8() {}
+ItemClassOrder::~ItemClassOrder() {}
 
-void Unk_020635d8::func_020637c8() { unk_00 = func_02063b8c(6); }
+void ItemClassOrder::randomize() { unk_00 = Random_GlobalBelow(6); }
 
-u8 *Unk_020635d8::func_020637a0() {
+u8 *ItemClassOrder::getWeights() {
     if (unk_00 >= 6) unk_00 = unk_00 % 6;
-    return (u8 *)data_020cb62c + unk_00 * 3;
+    return (u8 *)sItemClassWeightOrders + unk_00 * 3;
 }
 
-u32 Unk_020635d8::func_02063654(s32 mode, RandomSource *rng) {
+u32 ItemClassOrder::pickClass(s32 mode, RandomSource *rng) {
     u32 a = (u8)(60 - (u8)FX_Div(FengShui_GetEastTotal() + FengShui_GetSouthTotal(), 0xa000));
     u32 b = (u8)(70 - a);
     if (mode == 0) {
@@ -207,29 +207,29 @@ u32 Unk_020635d8::func_02063654(s32 mode, RandomSource *rng) {
         if (rng == NULL) rng = &local;
         u32 r = rng->random(100);
         if (r < a) {
-            return func_02063654(1, rng);
+            return pickClass(1, rng);
         } else if (r < a + b) {
-            return func_02063654(3, rng);
+            return pickClass(3, rng);
         } else {
-            return func_02063654(2, rng);
+            return pickClass(2, rng);
         }
     } else if (mode == 1) {
-        if (a >= 30 && a >= b) return func_020635d8(60);
-        if (a <= 30 && b <= 30) return func_020635d8(30);
-        return func_020635d8(10);
+        if (a >= 30 && a >= b) return getClassOfWeight(60);
+        if (a <= 30 && b <= 30) return getClassOfWeight(30);
+        return getClassOfWeight(10);
     } else if (mode == 2) {
-        if ((a <= 30 && a >= b) || (a >= 30 && a <= b)) return func_020635d8(60);
-        if ((a >= 30 && b <= 30) || (a <= 30 && b >= 30)) return func_020635d8(30);
-        return func_020635d8(10);
+        if ((a <= 30 && a >= b) || (a >= 30 && a <= b)) return getClassOfWeight(60);
+        if ((a >= 30 && b <= 30) || (a <= 30 && b >= 30)) return getClassOfWeight(30);
+        return getClassOfWeight(10);
     } else if (mode == 3) {
-        if (a <= 30 && a <= b) return func_020635d8(60);
-        if (a >= 30 && b >= 30) return func_020635d8(30);
-        return func_020635d8(10);
+        if (a <= 30 && a <= b) return getClassOfWeight(60);
+        if (a >= 30 && b >= 30) return getClassOfWeight(30);
+        return getClassOfWeight(10);
     }
     return mode;
 }
 
-extern "C" u8 func_02063600(u32 idx) {
+extern "C" u8 ItemPick_GetClassWeight(u32 idx) {
     u32 m = (u8)FX_Div(FengShui_GetEastTotal() + FengShui_GetSouthTotal(), 0xa000);
     u8 t[3] = {0, 30, 0};
     t[0] = 0x3c - m;
@@ -238,28 +238,28 @@ extern "C" u8 func_02063600(u32 idx) {
     return t[0];
 }
 
-u32 Unk_020635d8::func_020635fc() { return unk_00; }
+u32 ItemClassOrder::getIndex() { return unk_00; }
 
-u32 Unk_020635d8::func_020635d8(u32 x) {
-    u8 *p = func_020637a0();
+u32 ItemClassOrder::getClassOfWeight(u32 x) {
+    u8 *p = getWeights();
     for (u32 i = 0; i < 3; i++) {
         if (x == p[i]) return i + 1;
     }
     return 1;
 }
 
-Unk_02063578::Unk_02063578() {}
+ItemClassOrders::ItemClassOrders() {}
 
-Unk_02063578::~Unk_02063578() {}
+ItemClassOrders::~ItemClassOrders() {}
 
-void Unk_02063578::func_02063578() {
+void ItemClassOrders::randomizeAll() {
     for (u32 i = 0; i < 9; i++) {
-        unk_00[i].func_020637c8();
+        unk_00[i].randomize();
     }
 }
 
-Unk_020635d8 *Unk_02063578::func_02063570(s32 i) {
-    Unk_020635d8 *p = unk_00;
+ItemClassOrder *ItemClassOrders::get(s32 i) {
+    ItemClassOrder *p = unk_00;
     if (i < 9) p += i;
     return p;
 }
@@ -312,12 +312,12 @@ void DateSeededRandomSource::seedFromToday() {
 
 extern "C" u32 ItemPick_CalcDateSeed(u32 a, u32 b, u32 c) {
     u32 v0, v1, v6, v4, v3, v2;
-    v0 = (u8)data_021ed30c.func_02063570(0)->func_020635fc();
-    v4 = data_021ed30c.func_02063570(4)->func_020635fc() << 24;
-    v1 = (u8)data_021ed30c.func_02063570(1)->func_020635fc();
-    v6 = (u8)data_021ed30c.func_02063570(6)->func_020635fc();
-    v3 = (u8)data_021ed30c.func_02063570(3)->func_020635fc();
-    v2 = (u8)data_021ed30c.func_02063570(2)->func_020635fc();
+    v0 = (u8)data_021ed30c.get(0)->getIndex();
+    v4 = data_021ed30c.get(4)->getIndex() << 24;
+    v1 = (u8)data_021ed30c.get(1)->getIndex();
+    v6 = (u8)data_021ed30c.get(6)->getIndex();
+    v3 = (u8)data_021ed30c.get(3)->getIndex();
+    v2 = (u8)data_021ed30c.get(2)->getIndex();
     u32 x = a | ((c << 11) | (b << 7));
     return (c << 30) ^ ((v2 << 25) ^ ((v3 << 20) ^ ((v6 << 15) ^ ((v1 << 10) ^ ((v4 >> 19) ^ (v0 ^ (x | (x << 16))))))));
 }
@@ -426,10 +426,10 @@ extern "C" u32 ItemPick_FromLists(u16 *out, u32 n, ItemPickSpec *tbl, u32 x3, u8
         u32 idx = r->random(x3);
         ItemPickSpec *e = tbl + idx;
         s32 type = e->getList();
-        Unk_020635d8 *el = ((Unk_02063578 *)(g + 0x15fbc))->func_02063570(type);
+        ItemClassOrder *el = ((ItemClassOrders *)(g + 0x15fbc))->get(type);
         s32 kind;
         if (a7 == 1) {
-            kind = el->func_02063654(e->getClass(), r);
+            kind = el->pickClass(e->getClass(), r);
         } else {
             kind = e->getClass();
         }
@@ -672,7 +672,7 @@ extern "C" void ItemPick_FromRange(u16 *out, s32 base, u32 cnt, u16 *list, u32 l
     *out = 0xfff1;
 }
 
-extern "C" void func_0206277c(u16 *out, u8 *a, RandomSource *rng) {
+extern "C" void ItemPick_FtrWallCarpetByClass(u16 *out, u8 *a, RandomSource *rng) {
     u16 t0, t1, t2, t3, t4, t5, t6, t7, t8;
     u16 e1, e2;
     RandomSource dflt;
@@ -747,14 +747,14 @@ extern "C" void func_0206277c(u16 *out, u8 *a, RandomSource *rng) {
     for (;;) {
         count = 0;
         for (k = 0; k < 3; k++) {
-            if (mask[k]) count += func_02063600(k);
+            if (mask[k]) count += ItemPick_GetClassWeight(k);
         }
         if (count == 0) break;
         pick = obj->random(count);
         acc = 0;
         for (k = 0; k < 3; k++) {
             if (mask[k]) {
-                acc += func_02063600(k);
+                acc += ItemPick_GetClassWeight(k);
                 if (pick < acc) {
                     cnt = 0;
                     j = 0;
@@ -795,7 +795,7 @@ extern "C" s32 ItemList_Find(u16 *p) {
     return 9;
 }
 
-extern "C" s32 func_020626cc(u16 *p, s32 mode) {
+extern "C" s32 ItemList_GetTownClassRank(u16 *p, s32 mode) {
     s32 idx = ItemList_Find(p);
     if (idx != 9) {
         u8 *g = gSaveData;
@@ -803,10 +803,10 @@ extern "C" s32 func_020626cc(u16 *p, s32 mode) {
         s32 v = (t->unk_08)(p);
         if (mode != 0) return v;
         {
-            Unk_020635d8 *base = ((Unk_02063578 *)(g + 0x15fbc))->func_02063570(idx);
+            ItemClassOrder *base = ((ItemClassOrders *)(g + 0x15fbc))->get(idx);
             s32 z = 0;
             for (u32 i = 0; i < 3; i++) {
-                if (v == base->func_02063654(((volatile u32 *)data_020cb620)[i], (RandomSource *)z)) return ((volatile u32 *)data_020cb620)[i];
+                if (v == base->pickClass(((volatile u32 *)sItemClassRanks)[i], (RandomSource *)z)) return ((volatile u32 *)sItemClassRanks)[i];
             }
         }
         return v;
@@ -814,9 +814,9 @@ extern "C" s32 func_020626cc(u16 *p, s32 mode) {
     return 0x18;
 }
 
-extern "C" BOOL func_020626a8(u16 *p) {
+extern "C" BOOL Item_IsClass4Furniture(u16 *p) {
     if (Item_IsFurniture(p)) {
-        if (func_020626cc(p, 0) == 4) return TRUE;
+        if (ItemList_GetTownClassRank(p, 0) == 4) return TRUE;
     }
     return FALSE;
 }

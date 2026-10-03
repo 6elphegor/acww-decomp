@@ -6,8 +6,8 @@
 #undef vfunc_14
 
 #define MenuCursorBase_drawWrapped _ZN14MenuCursorBase11drawWrappedEv
-#define func_02063870 _ZN12Unk_020dd38cD1Ev
-#define func_02063888 _ZN12Unk_020dd38cC2Ev
+#define func_02063870 _ZN11MsgString9CD1Ev
+#define func_02063888 _ZN11MsgString9CC2Ev
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
 #define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
 #define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
@@ -64,7 +64,7 @@ void Gfx2d_ShowLayer(u32 a);
 s32 BgVramTask_requestScreen(void *a, void *b, u32 c, u32 d, u32 e);
 void BgVramTask_cancel(void *p);
 void func_02063888(void *p);
-void func_020638d0(void *a, void *b);
+void TownId_GetNameString(void *a, void *b);
 void func_02063870(void *p);
 void String_SetSlot(u32 a, void *b);
 void LabelString_createLabel(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
@@ -120,7 +120,7 @@ s32 PlayerData_getPlayerId(...);
 s32 PlayerDataArray_FindById(void *a, s32 b);
 BOOL PlayerDataArray_IsUsed(void *a, s32 b);
 BOOL SaveVillagers_IsOccupied(void *a, s32 b);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void MIi_CpuCopy16(void *src, void *dst, u32 n);
 void MIi_CpuClear16(u32 v, void *dst, u32 n);
 void PopupChoice_CopyPlayerIdName(void *p, s32 a);
@@ -600,7 +600,7 @@ void MapViewerMenu::stateOpen() {
     u32 buf[8];
     loadObjGfx();
     func_02063888(buf);
-    func_020638d0(gSaveTownId, buf);
+    TownId_GetNameString(gSaveTownId, buf);
     String_SetSlot(0, buf);
     void *q = allocTextLabel();
     LabelString_createLabel(q, 8, 0x1ab, 0x12, 0xf, 0, 0);
@@ -1135,7 +1135,7 @@ void MapViewerMenu::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
         t = sMapViewIconCell.pal | 8;
         sMapViewIconCell.pal = t;
     }
-    func_02088730(1, &sMapViewIconCell, x, y, pal, 1, 0);
+    Oam_DrawObj(1, &sMapViewIconCell, x, y, pal, 1, 0);
     if (flag != 0) {
         sMapViewIconCell.pal = t & 0x17;
     }

@@ -123,7 +123,7 @@ void PrioList_Init(void *);
 void MenuHeap_Create(u32, u32);
 void MenuScreen_ClearState();
 void PendingUnit_ClearActiveOfAid(u32);
-void func_0206f53c(u32);
+void HudCountdown_StartWithSe(u32);
 
 // functions of this unit
 void MenuCtrl_ClearChatDraft(void);
@@ -429,7 +429,7 @@ u16 kMenuProfileIds[46] = {
 };
 u32 kMenuOverlayList1D[3] = {0x88, 0x86, 0xffffffff};
 
-extern "C" void CommSub_StartCountdown(u8 *o) { func_0206f53c(o[0] - 0x12); }
+extern "C" void CommSub_StartCountdown(u8 *o) { HudCountdown_StartWithSe(o[0] - 0x12); }
 
 extern "C" void func_0206f4d8(u8 *o) { PendingUnit_ClearActiveOfAid(o[1]); }
 

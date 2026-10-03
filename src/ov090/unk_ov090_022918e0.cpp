@@ -54,10 +54,10 @@ public:
     virtual u8 *vfunc_0c() = 0;
 };
 
-class Unk_020e0d80 : public MsgStringBase {
+class LabelBalloonText : public MsgStringBase {
 public:
-    Unk_020e0d80();
-    virtual ~Unk_020e0d80();
+    LabelBalloonText();
+    virtual ~LabelBalloonText();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -100,8 +100,8 @@ public:
     /* 0x4c */ s32 unk_4c;
     /* 0x50 */ s32 unk_50;
     /* 0x54 */ u8 unk_54[9];
-    /* 0x60 */ Unk_020e0d80 unk_60;
-    /* 0x88 */ Unk_020e0d80 unk_88;
+    /* 0x60 */ LabelBalloonText unk_60;
+    /* 0x88 */ LabelBalloonText unk_88;
     /* 0xb0 */ TextLabel *unk_b0;
     /* 0xb4 */ TextLabel *unk_b4;
     /* 0xb8 */ s32 unk_b8;
@@ -248,7 +248,7 @@ void MenuCtrl_SetMode(u8 v);
 u32 MenuCtrl_GetMode();
 void MenuScreen_BeginClose();
 void MenuCtrl_ClearSavedSlot();
-void func_0206e03c();
+void MenuScreen_ReleaseCloseHold();
 BOOL Save_WritePlayerFriendList();
 void MenuScreen_Reset();
 void Snd_EndMenuDuck();
@@ -258,7 +258,7 @@ void MenuScreen_BeginOpen();
 void Snd_BeginMenuDuck();
 void MenuCtrl_SyncFromInputMode();
 void ProcBase_RequestDelete();
-s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 
 extern u32 gCurrentHeap;
 extern u8 gTouchCurX;
@@ -450,8 +450,8 @@ BOOL MenuTabBar::onDraw() {
     s32 j = 0;
     i = j;
     for (; i <= 7; i++, j += 2) {
-        func_02088730(1, &sTabBarOamCells[j * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
-        func_02088730(1, &sTabBarOamCells[(j + 1) * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
+        Oam_DrawObj(1, &sTabBarOamCells[j * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
+        Oam_DrawObj(1, &sTabBarOamCells[(j + 1) * 2], 0x80, unk_92 + 0x50, -1, 2, 0);
     }
     return TRUE;
 }// Declarations for data defined further down (definition order sets the data layout)
@@ -561,7 +561,7 @@ u8 MenuTabBar::onTabMenuClosed() {
     switch (unk_93) {
     case 7:
         if (unk_97 == 0) {
-            func_0206e03c();
+            MenuScreen_ReleaseCloseHold();
             beginClose();
         }
         break;

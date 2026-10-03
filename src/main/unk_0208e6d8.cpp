@@ -128,10 +128,10 @@ public:
 };
 
 // Vtable at 0x020e1164 belongs to the next unit; only the members used here
-class Unk_020e1164 : public UiWidget {
+class InputModeIcon : public UiWidget {
 public:
-    Unk_020e1164();
-    virtual ~Unk_020e1164();
+    InputModeIcon();
+    virtual ~InputModeIcon();
     virtual void draw();
     virtual void vfunc_0c();
 
@@ -168,7 +168,7 @@ struct Unk_020e10bc_Rec {
 };
 extern Unk_020e10bc_Rec sTransitionCommIconProfile;
 
-BOOL Unk_020e1164::isDrawBlocked() {
+BOOL InputModeIcon::isDrawBlocked() {
     BOOL r = FALSE;
     if (TalkRequestFlags_IsSceneHold()) {
         r = TRUE;
@@ -176,11 +176,11 @@ BOOL Unk_020e1164::isDrawBlocked() {
     return r;
 }
 
-void Unk_020e1164::init() {}
+void InputModeIcon::init() {}
 
-void Unk_020e1164::exit() {}
+void InputModeIcon::exit() {}
 
-void Unk_020e1164::startModeAnim() {
+void InputModeIcon::startModeAnim() {
     if (unk_0c == 0) {
         unk_28 = 0;
     } else {

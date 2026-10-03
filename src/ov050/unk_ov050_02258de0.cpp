@@ -298,7 +298,7 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -415,7 +415,7 @@ public:
     virtual s32 vfunc_a8();
     void setColliderSize(s32 a, s32 b);
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -717,8 +717,8 @@ s32 HouseData_getDebt(void *g);
 void HouseData_orderRoofPaint(void *g, u32 a);
 s32 HouseData_getLevel(void *m);
 BOOL HouseData_isUpgradePending(void *p);
-s32 func_020626a8(u16 *p);
-s32 func_02063b8c(s32 a);
+s32 Item_IsClass4Furniture(u16 *p);
+s32 Random_GlobalBelow(s32 a);
 void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
 void TalkWindowState_setSlot(void *self, s32 id, void *buf);
 void TalkWindowState_setNextMessage(void *o, void *p, void *q);
@@ -1264,7 +1264,7 @@ BOOL SpNpcNookShop::mainAct00() {
 BOOL SpNpcNookShop::setupAct01() {
     s32 v;
     NpcActionCtrl_requestStand(&unk_564, 1, unk_72c);
-    unk_72a = func_02063b8c(5) * 20 + 100;
+    unk_72a = Random_GlobalBelow(5) * 20 + 100;
     unk_72c = data_020c6cc8;
     if (isNook() && Talk_IsDramaPending(this, &v, 3)) {
         unk_728 = 1;
@@ -2455,13 +2455,13 @@ extern "C" BOOL SpNpcNookShop_IsEmptyItem(u16 *p) {
 
 void SpNpcNookShopTalk::givePlantingItems() {
     u16 l[6];
-    l[0] = 0x14fe + func_02063b8c(3);
+    l[0] = 0x14fe + Random_GlobalBelow(3);
     Pocket_AddItem(&l[0], 0);
-    l[1] = 0x1504 + func_02063b8c(3);
+    l[1] = 0x1504 + Random_GlobalBelow(3);
     Pocket_AddItem(&l[1], 0);
-    l[2] = 0x150a + func_02063b8c(3);
+    l[2] = 0x150a + Random_GlobalBelow(3);
     Pocket_AddItem(&l[2], 0);
-    l[3] = 0x1510 + func_02063b8c(3);
+    l[3] = 0x1510 + Random_GlobalBelow(3);
     Pocket_AddItem(&l[3], 0);
     s32 i;
     for (i = 0; i < 3; i++) {
@@ -4214,7 +4214,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
             } else {
                 kind = 3;
             }
-        } else if (func_020626a8(&t[0])) {
+        } else if (Item_IsClass4Furniture(&t[0])) {
             kind = 4;
         }
     }

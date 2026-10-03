@@ -25,8 +25,8 @@
 #define TexPatVramAnim_init _ZN14TexPatVramAnim4initEPhPKcS2_S0_S0_h
 #define func_02056d54 _ZN14TexPatVramAnimD1Ev
 #define func_02056d8c _ZN14TexPatVramAnimC1Ev
-#define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
-#define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
+#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi
+#define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
 #define func_02133150 _s32_div_f
@@ -636,10 +636,10 @@ void FurnitureHeap_Destroy();
 void FurnitureHeap_Create();
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 void *File_LoadAlloc(const char *a, void *b, s32 c, s32 d);
-s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 func_02089040(void *a);
+s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
+s32 ActorCollider_submit(void *a);
 FtrActor *PlayerActor_GetActor(s32 a);
 s32 PlayerData_GetCurrent(void);
 s32 PlayerDataArray_FindById(void *a, s32 b);
@@ -3815,7 +3815,7 @@ extern "C" s32 FtrMgr_CountSwitchedOn(BOOL (*f)(FtrActor *)) {
 extern "C" FtrActor *FtrMgr_SwitchOffRandom(BOOL (*f)(FtrActor *), s32 a) {
     s32 n = FtrMgr_CountSwitchedOn(f);
     if (n != 0) {
-        s32 pick = func_02063b8c(n);
+        s32 pick = Random_GlobalBelow(n);
         s32 cnt = 0;
         u32 i = 0;
         for (; i < FtrMgr_GetMaxFurniture(); i++) {
@@ -3854,7 +3854,7 @@ extern "C" s32 FtrMgr_PickFurnitureComment(u32 key) {
         }
     }
     if (cnt != 0) {
-        s32 pick = func_02063b8c(cnt);
+        s32 pick = Random_GlobalBelow(cnt);
         cnt = 0;
         i = 0;
         for (; i < n; i++) {

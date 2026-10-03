@@ -233,9 +233,9 @@ class LetterRenderer {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d2e0(Unk_0206d1d4_Src *, void *, void *, s32);
-    void func_0206d394();
-    void func_0206d39c(s32);
+    void show(Unk_0206d1d4_Src *, void *, void *, s32);
+    void release();
+    void setLayer(s32);
     u32 unk_00[0x210 / 4];
 };
 
@@ -871,7 +871,7 @@ void MailboxMenu::transitionAct07() {
     void *t = getSlotLetter(unk_b9);
     registerLetterPaper(t);
     Letter_MarkRead(t);
-    ((LetterRenderer *)&unk_26a4)->func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    ((LetterRenderer *)&unk_26a4)->show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -944,7 +944,7 @@ void MailboxMenu::initParts() {
     unk_b4 = 0;
     unk_b8 = 0xb;
     ((PopupChoiceMenu *)&unk_229c)->init(3, 0, 0);
-    ((LetterRenderer *)&unk_26a4)->func_0206d39c(3);
+    ((LetterRenderer *)&unk_26a4)->setLayer(3);
     for (i = 0; i < 10; i++) {
         Letter_Clear((u8 *)unk_2924 + i * 0xf4);
     }
@@ -963,7 +963,7 @@ void MailboxMenu::releaseResources() {
     InventoryBg_Exit(&unk_b80);
     InventoryItemGrid_Exit(&unk_f8);
     PopupChoice_ForceClose(&unk_229c);
-    ((LetterRenderer *)&unk_26a4)->func_0206d394();
+    ((LetterRenderer *)&unk_26a4)->release();
     ((MenuBottomButtons *)&unk_3c34)->freeTexts();
 }
 

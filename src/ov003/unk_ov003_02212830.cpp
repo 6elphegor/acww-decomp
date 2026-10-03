@@ -243,17 +243,17 @@ public:
 };
 typedef GroundInfo Loc;
 
-class Unk_020e0d08 {
+class ActorCollider {
 public:
-    Unk_020e0d08();
-    ~Unk_020e0d08();
+    ActorCollider();
+    ~ActorCollider();
     virtual Unk_ov003_Vec *vfunc_00() = 0;
     virtual u32 vfunc_04() = 0;
     virtual void vfunc_08(u32 a, u32 b, u32 c);
 
-    void *func_02089098();
-    void func_02089040();
-    s32 func_02088d38(u32 a);
+    void *getHitActor();
+    void submit();
+    s32 isHitByGroup(u32 a);
 
     /* 0x04 */ u8 pad_04[0xc];
     /* 0x10 */ s32 unk_10;
@@ -263,17 +263,17 @@ public:
     /* 0x3c */ u8 unk_3c;
 };
 
-class Unk_020e0cf4 : public Unk_020e0d08 {
+class ActorFollowCollider : public ActorCollider {
 public:
-    Unk_020e0cf4();
-    ~Unk_020e0cf4();
+    ActorFollowCollider();
+    ~ActorFollowCollider();
     virtual Unk_ov003_Vec *vfunc_00();
     virtual u32 vfunc_04();
-    s32 func_02088c98(void *o, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
+    s32 setupForActor(void *o, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
 
-class SnowballCollider : public Unk_020e0cf4 {
+class SnowballCollider : public ActorFollowCollider {
 public:
     SnowballCollider();
     ~SnowballCollider();
@@ -432,7 +432,7 @@ u16 *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 u16 Item_MakeSnowman(void *p);
 s32 Item_IsSnowman(u16 *c);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 Collision_GetUnitShape(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
 s32 Ground_CanPlaceItem(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
@@ -723,7 +723,7 @@ extern "C" void Snowball_UpdateCarry(Obj *o)
             o->unk_5c.x = o->unk_5c.x + o->unk_2a0.unk_10;
             o->unk_5c.z = o->unk_5c.z + o->unk_2a0.unk_18;
         }
-        if (o->unk_2a0.func_02088d38(4) != 0 && o->unk_268 < 0xa00) {
+        if (o->unk_2a0.isHitByGroup(4) != 0 && o->unk_268 < 0xa00) {
             if (o->unk_366 == 0) {
                 func_02003e70(o->unk_324, 0x81c, 0x7f, 0);
             }
@@ -766,8 +766,8 @@ extern "C" s32 Snowball_UpdateRolling(Obj *o)
     }
     s32 t2 = o->unk_268;
     s32 r2 = func_01ffcb0c(t2, s);
-    o->unk_2a0.func_02088c98(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->unk_2e8);
-    o->unk_2a0.func_02089040();
+    o->unk_2a0.setupForActor(o, r2, t2 * 2, fa, 0x2fc, fb, id, o->unk_2e8);
+    o->unk_2a0.submit();
     func_020e9960(&d, &o->unk_5c, &o->unk_68);
     s32 len = VEC_Mag(&d);
     s32 ang = (s16)((FX_Div(len, func_01ffcb0c(0x323d, o->unk_268)) >> 1) << 4);
@@ -1099,7 +1099,7 @@ extern "C" BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out) {
             }
         }
         if (n != 0) {
-            k = func_02063b8c(n);
+            k = Random_GlobalBelow(n);
             C = 0;
             j = 0;
             for (; (u32)j < 8; j++) {
@@ -1182,7 +1182,7 @@ BOOL Snowball::enterSnowmanBody() {
 void Snowball::execSnowmanBody() {
     unk_26c = unk_268;
     if (unk_2a0.unk_3c != 0) {
-        u8 *p = (u8 *)unk_2a0.func_02089098();
+        u8 *p = (u8 *)unk_2a0.getHitActor();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
                 Snowball_Break(this, 1);
@@ -1205,7 +1205,7 @@ BOOL Snowball::enterSnowmanHead() {
 void Snowball::execSnowmanHead() {
     unk_26c = unk_268;
     if (unk_2a0.unk_3c != 0) {
-        u8 *p = (u8 *)unk_2a0.func_02089098();
+        u8 *p = (u8 *)unk_2a0.getHitActor();
         if (p) {
             if (*(s32 *)(p + 0x98) > 0x666) {
                 Snowball_Break(this, 1);
@@ -1272,9 +1272,9 @@ BOOL Snowball::setupTalk() {
     _ZN9Character17attachTalkRequestEi(this, this);
     s32 r;
     if (unk_374.g) {
-        r = (unk_374.b & 3) * 3 + func_02063b8c(3);
+        r = (unk_374.b & 3) * 3 + Random_GlobalBelow(3);
     } else {
-        r = (unk_374.b & 3) * 3 + 12 + func_02063b8c(3);
+        r = (unk_374.b & 3) * 3 + 12 + Random_GlobalBelow(3);
     }
     setFileName("sp_npc_snowman");
     unk_1e = r;

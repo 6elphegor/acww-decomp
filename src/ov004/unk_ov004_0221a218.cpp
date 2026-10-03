@@ -70,7 +70,7 @@ extern u16 data_020c6cc8;
 extern Unk_ov004_0224c994_Ent sCafeVillagerActTable[3];
 extern u8 data_ov004_022508e0[0x28];
 
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void func_02015ab0(void *o, s32 a);
@@ -475,7 +475,7 @@ void CafeVillagerTalk::vfunc_78(void *arg) {
     Unk_ov004_0221a2d8_Out *out = (Unk_ov004_0221a2d8_Out *)arg;
     VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022508e0, 0x28, "ai_shop3");
     out->unk_00 = data_ov004_022508e0;
-    out->unk_04 = func_02063b8c(5);
+    out->unk_04 = Random_GlobalBelow(5);
 }
 
 void CafeVillagerTalk::vfunc_14() {}

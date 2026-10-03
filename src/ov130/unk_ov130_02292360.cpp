@@ -190,7 +190,7 @@ void _ZN11LabelString12destroyLabelEv(void *p);
 void Snd_PlaySe(s32 v);
 void Snd_PlayKeySe(u32 a);
 s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 BOOL MenuKeys_HasUp(u32 v);
 BOOL MenuKeys_HasDown(u32 v);
@@ -554,18 +554,18 @@ extern "C" void NumberPad_Draw(Ov130S *s, s32 y) {
     r4 += 0x60;
     if (s->unk_08 == 4) return;
     if (s->unk_08 == 0 || s->unk_08 == 2) {
-        if (s->unk_0c >= 1000) func_02088730(1, sSeparatorCellsWide, 0x80, r4, -1, 2, 0);
-        if (s->unk_0c >= 1000000) func_02088730(1, (sSeparatorCellsWide + 2), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000) func_02088730(1, (sSeparatorCellsWide + 4), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000000) func_02088730(1, (sSeparatorCellsWide + 6), 0x80, r4, -1, 2, 0);
-        if (s->unk_20 >= 1000) func_02088730(1, (sSeparatorCellsWide + 8), 0x80, r4, -1, 2, 0);
-        if (s->unk_20 >= 1000000) func_02088730(1, (sSeparatorCellsWide + 10), 0x80, r4, -1, 2, 0);
+        if (s->unk_0c >= 1000) Oam_DrawObj(1, sSeparatorCellsWide, 0x80, r4, -1, 2, 0);
+        if (s->unk_0c >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 2), 0x80, r4, -1, 2, 0);
+        if (s->unk_1c >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 4), 0x80, r4, -1, 2, 0);
+        if (s->unk_1c >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 6), 0x80, r4, -1, 2, 0);
+        if (s->unk_20 >= 1000) Oam_DrawObj(1, (sSeparatorCellsWide + 8), 0x80, r4, -1, 2, 0);
+        if (s->unk_20 >= 1000000) Oam_DrawObj(1, (sSeparatorCellsWide + 10), 0x80, r4, -1, 2, 0);
     } else {
         if (s->unk_08 == 5) r4 -= 8;
-        if (s->unk_0c >= 1000) func_02088730(1, (sSeparatorCells + 4), 0x80, r4, -1, 2, 0);
-        if (s->unk_0c >= 1000000) func_02088730(1, (sSeparatorCells + 6), 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000) func_02088730(1, sSeparatorCells, 0x80, r4, -1, 2, 0);
-        if (s->unk_1c >= 1000000) func_02088730(1, (sSeparatorCells + 2), 0x80, r4, -1, 2, 0);
+        if (s->unk_0c >= 1000) Oam_DrawObj(1, (sSeparatorCells + 4), 0x80, r4, -1, 2, 0);
+        if (s->unk_0c >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 6), 0x80, r4, -1, 2, 0);
+        if (s->unk_1c >= 1000) Oam_DrawObj(1, sSeparatorCells, 0x80, r4, -1, 2, 0);
+        if (s->unk_1c >= 1000000) Oam_DrawObj(1, (sSeparatorCells + 2), 0x80, r4, -1, 2, 0);
     }
 }
 

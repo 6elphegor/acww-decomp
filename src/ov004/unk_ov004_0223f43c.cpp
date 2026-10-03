@@ -102,7 +102,7 @@ extern const Unk_0223f44c_Vec data_ov004_0224682c;
 
 Unk_0223f44c_Vec *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetCurrent(void);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -496,10 +496,10 @@ void Camera_KkShowPickShot(Unk_021c3070 *o) {
     s32 lim[2];
     s32 i;
     m->v0 = 0;
-    if (func_02063b8c(2) == 1) {
-        m->v2 = func_02063b8c(m->vc - 2);
+    if (Random_GlobalBelow(2) == 1) {
+        m->v2 = Random_GlobalBelow(m->vc - 2);
     } else {
-        m->v2 = func_02063b8c(m->vc);
+        m->v2 = Random_GlobalBelow(m->vc);
     }
     {
         s32 b = m->v8;

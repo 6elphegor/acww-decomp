@@ -350,7 +350,7 @@ u32 BlockMap_GetBlockAttr(Map *m, s32 x, s32 y);
 void FieldUnit_FromBlockUnit(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 s32 _ZN12G3dResAccess10findMatIdxEi(Ctx *c, const char *name);
 void func_020639e8(char *buf, const char *fmt, ...);
-u32 func_02063b8c(...);
+u32 Random_GlobalBelow(...);
 void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
 void Melody_PlayAt(void *p, s32 a);
 void Pattern_CopyFields(void *p);
@@ -814,9 +814,9 @@ extern "C" void func_020b260c(void *p) {}
 extern "C" void func_020b2608(void *p) {}
 
 extern "C" void TownStyle_RollVillagerHouseStyles(u8 *out) {
-    s32 a = func_02063b8c(5);
+    s32 a = Random_GlobalBelow(5);
     s32 sel = 0;
-    s32 b = func_02063b8c(4);
+    s32 b = Random_GlobalBelow(4);
     s32 n = 0;
     u32 i;
     for (i = 0; i < 5; i++) {
@@ -836,7 +836,7 @@ extern "C" void TownStyle_RollVillagerHouseStyles(u8 *out) {
     s32 base = a % 5;
     base = base * 5;
     for (; k < 3; k++) {
-        s32 skip = func_02063b8c(5 - k);
+        s32 skip = Random_GlobalBelow(5 - k);
         s32 cnt = 0;
         for (u32 j = 0; j < 5; j++) {
             BOOL found = FALSE;
@@ -858,7 +858,7 @@ extern "C" void TownStyle_RollVillagerHouseStyles(u8 *out) {
             }
         }
     }
-    u32 r = func_02063b8c(5);
+    u32 r = Random_GlobalBelow(5);
     s32 s = sel % 5;
     u32 q = r % 5;
     s = s * 5;
@@ -882,7 +882,7 @@ Unk_020b246c_Sub::Unk_020b246c_Sub() {
 }
 
 TownFlag *TownFlag::initDefault() {
-    unk_228 = func_02063b8c(3);
+    unk_228 = Random_GlobalBelow(3);
     return (TownFlag *)TownFlagPattern_InitDefault(this);
 }
 
@@ -1356,7 +1356,7 @@ extern "C" u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v) {
 
 extern "C" BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v) {
     if (MapBlock_CountSigns(cell)) {
-        return MapBlock_ReplaceNthSign(cell, func_02063b8c(), v);
+        return MapBlock_ReplaceNthSign(cell, Random_GlobalBelow(), v);
     }
     return 0;
 }

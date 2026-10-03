@@ -95,7 +95,7 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern Unk_ov046_0225a11c_Vec gVec3Zero;
 
-s32 func_02063b8c(u32 v);
+s32 Random_GlobalBelow(u32 v);
 s32 Constellation_CountFreeSlots(void);
 s32 Constellation_FindFreeSlot(void);
 s32 Constellation_GetNewStatus(s32 *out);
@@ -288,7 +288,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -395,7 +395,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -1054,7 +1054,7 @@ void SpNpcCelesteTalk::startConstellationEditor() {
 }
 
 void SpNpcCelesteTalk::reactToConstellationName() {
-    s32 r = func_02063b8c(0x65);
+    s32 r = Random_GlobalBelow(0x65);
     if (r < 0x46) {
         unk_d8 = getFollowUpMenuMsg();
     } else if (r < 0x55) {

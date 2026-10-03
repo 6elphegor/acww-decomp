@@ -30,11 +30,11 @@
 #define CachedModel_loadCached _ZN11CachedModel10loadCachedEPvS0_
 #define Model_setAlpha _ZN5Model8setAlphaEj
 #define Model_setPolygonId _ZN5Model12setPolygonIdEj
-#define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
-#define func_02088c34 _ZN12Unk_020e0d30D2Ev
-#define func_02088c4c _ZN12Unk_020e0d30C1Ev
-#define func_02088d38 _ZN12Unk_020e0d0813func_02088d38Ej
-#define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
+#define ActorPlacedCollider_setupForActorAt _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi
+#define func_02088c34 _ZN19ActorPlacedColliderD2Ev
+#define func_02088c4c _ZN19ActorPlacedColliderC1Ev
+#define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
+#define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
 
@@ -263,7 +263,7 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
 BOOL Item_IsFurniture();
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void *PlayerActor_GetActor(u32 a);
 s32 func_020e9650(void *a, void *b);
 void ProcBase_RequestDelete(void *p);
@@ -289,12 +289,12 @@ void AnimModel_drawAnimated(void *p, u32 v);
 void AnimModel_stepAnim(void *p);
 void AnimModel_setFrame(void *p);
 void CharaShadow_Draw(void *p, s32 a, s32 b, s32 c);
-BOOL func_02088d38(void *p, u32 mask);
+BOOL ActorCollider_isHitByGroup(void *p, u32 mask);
 u32 WorldCurve_ToCurved(void *a, void *b);
 void Effect_PlayById(u32 a, void *v, s32 b, s32 c);
 s32 Math_AngleXZ(void *a, void *b);
-s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 func_02089040(void *a);
+s32 ActorPlacedCollider_setupForActorAt(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
+s32 ActorCollider_submit(void *a);
 
 void HouseRoach_FindVillager(void *self);
 BOOL HouseRoach_LoadCount(void *self);
@@ -486,7 +486,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
         loc.unk_08 = 0;
         t = cnt;
         cnt = (u8)(t - 1);
-        k = (u8)(func_02063b8c(t) + 1);
+        k = (u8)(Random_GlobalBelow(t) + 1);
         y2 = 0;
         goto yt1;
     yl1:
@@ -608,7 +608,7 @@ void HouseRoach::updateState() {
             break;
         }
         unk_10c = 0;
-        unk_22c = (func_02063b8c(10) + 3) * 20;
+        unk_22c = (Random_GlobalBelow(10) + 3) * 20;
         break;
     case 2:
         Effect_PlayById(0x50, &unk_5c, 0, 0);
@@ -617,12 +617,12 @@ void HouseRoach::updateState() {
         playSe(2);
         break;
     case 3:
-        if (func_02063b8c(100) > 0x32) {
+        if (Random_GlobalBelow(100) > 0x32) {
             unk_10c = 0;
-            unk_22c = (func_02063b8c(10) + 3) * 20;
+            unk_22c = (Random_GlobalBelow(10) + 3) * 20;
         } else {
             unk_10c = 1;
-            unk_22c = (func_02063b8c(4) + 3) * 20;
+            unk_22c = (Random_GlobalBelow(4) + 3) * 20;
         }
         break;
     }
@@ -789,7 +789,7 @@ BOOL HouseRoach::checkStomped() {
         if (unk_22a == 0) {
             if (pl != NULL) {
                 if (pl->unk_98 > 0) {
-                    if (func_02088d38(unk_1d8, 4) != 0) {
+                    if (ActorCollider_isHitByGroup(unk_1d8, 4) != 0) {
                         unk_10c = 2;
                         return TRUE;
                     }
@@ -797,7 +797,7 @@ BOOL HouseRoach::checkStomped() {
             }
             if (sHouseRoachVillager != NULL) {
                 if (sHouseRoachVillager->unk_98 > 0) {
-                    if (func_02088d38(unk_1d8, 8) != 0) {
+                    if (ActorCollider_isHitByGroup(unk_1d8, 8) != 0) {
                         unk_10c = 2;
                         return TRUE;
                     }
@@ -967,12 +967,12 @@ void HouseRoach::updateCrawl() {
             unk_98 = zero;
             if (unk_22c <= 0) {
                 unk_10c = 1;
-                unk_22c = (func_02063b8c(4) + 1) * 20;
+                unk_22c = (Random_GlobalBelow(4) + 1) * 20;
                 res = 1;
             } else if (*(s32 *)(o + 0x98) > 0) {
                 s32 d = func_020e9650(self0, q);
                 if (d < func_01ffcb0c(0x1000, 0x4000)) {
-                    unk_22c = (func_02063b8c(4) + 2) * 20;
+                    unk_22c = (Random_GlobalBelow(4) + 2) * 20;
                     unk_10c = 1;
                     res = 2;
                 }
@@ -990,8 +990,8 @@ void HouseRoach::updateCrawl() {
 }
 
 void HouseRoach::updateHitBox() {
-    func_02088bf8(unk_1d8, this, &unk_5c, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
-    func_02089040(unk_1d8);
+    ActorPlacedCollider_setupForActorAt(unk_1d8, this, &unk_5c, 0x19a, 0x333, 0x81, 0xc, 0, 0xff, 0x1000);
+    ActorCollider_submit(unk_1d8);
 }
 
 BOOL HouseRoach::move() {

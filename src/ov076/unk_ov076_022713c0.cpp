@@ -79,7 +79,7 @@ s32 _ZN12Unk_02015b8c9getAnimIdEj(void *self, s32 a);
 BOOL _ZN12Unk_02015b8c14isAnimFinishedEP18Unk_02015b8c_Scene(void *self, void *o);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Pocket_AddItem(u16 *, s32);
 void Pocket_RemoveItem();
@@ -90,7 +90,7 @@ s32 MenuCtrl_BuildPocketMask(BOOL (*cb)(u16 *, s32));
 s32 MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02063388(ItemPickSpec *o);
+void ItemPickSpec_Destruct(ItemPickSpec *o);
 void EventWeekSlots_MarkPlayer(u32 id);
 void TalkRequest_SetTargetDone(void *self);
 void func_020e7530(void *a, s32 b, s32 c);
@@ -265,7 +265,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -370,7 +370,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -688,7 +688,7 @@ void SpNpcPascalTalk::vfunc_78(void *a) {
     Unk_ov076_02271744_Out *out = (Unk_ov076_02271744_Out *)a;
     if (MenuCtrl_BuildPocketMask(SpNpcPascal_IsScallop)) {
         unk_ac = 0;
-    } else if (func_02063b8c(2) == 0) {
+    } else if (Random_GlobalBelow(2) == 0) {
         unk_ac = 1;
     } else {
         unk_ac = 2;
@@ -706,7 +706,7 @@ void SpNpcPascalTalk::vfunc_14() {
     u16 oa, ob, oc, v;
     s32 t0 = unk_1e;
     if (t0 == 0xfe || (t0 >= 0xf && t0 <= 0xfd)) {
-        code = (u8)(func_02063b8c(2) + 0xd);
+        code = (u8)(Random_GlobalBelow(2) + 0xd);
     }
     switch (unk_1e) {
     case 4:
@@ -759,25 +759,25 @@ void SpNpcPascalTalk::vfunc_14() {
     case 14:
         if (unk_b0->unk_718 == 0) {
             if (Pocket_FindEmpty() >= 0) {
-                s32 t = func_02063b8c(9);
+                s32 t = Random_GlobalBelow(9);
                 if (t <= 6) {
                     ItemPickSpec o0;
                     o0.set(0, 0x15);
                     ItemPick_One(&oa, &o0, 0, 0, 1, 1, 0);
                     unk_b4 = oa;
-                    func_02063388(&o0);
+                    ItemPickSpec_Destruct(&o0);
                 } else if (t == 7) {
                     ItemPickSpec o1;
                     o1.set(4, 0x15);
                     ItemPick_One(&ob, &o1, 0, 0, 1, 1, 0);
                     unk_b4 = ob;
-                    func_02063388(&o1);
+                    ItemPickSpec_Destruct(&o1);
                 } else {
                     ItemPickSpec o2;
                     o2.set(3, 0x15);
                     ItemPick_One(&oc, &o2, 0, 0, 1, 1, 0);
                     unk_b4 = oc;
-                    func_02063388(&o2);
+                    ItemPickSpec_Destruct(&o2);
                 }
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &unk_b4, 0, 5, 0);
                 Pocket_AddItem(&unk_b4, 0);
@@ -802,7 +802,7 @@ void SpNpcPascalTalk::vfunc_18() {
     case 0:
     case 1:
         if (mode == 0) {
-            code = (u8)(func_02063b8c(0xef) + 0xf);
+            code = (u8)(Random_GlobalBelow(0xef) + 0xf);
         } else {
             code = 5;
         }

@@ -177,19 +177,19 @@ extern s32 sHatClass1dCount;
 }
 
 extern "C" {
-extern u8 data_020dd2a8[];
+extern u8 sPathItemInfoAlways[];
 }
 
 extern "C" {
-extern u8 data_020dd2c0[];
+extern u8 sPathItemInfoIndoor[];
 }
 
 extern "C" {
-extern u8 data_020dd2d8[];
+extern u8 sPathItemInfoDma[];
 }
 
 extern "C" {
-extern u8 data_020dd2ec[];
+extern u8 sPathItemInfoSeries[];
 }
 
 extern "C" {

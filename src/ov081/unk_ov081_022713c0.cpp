@@ -100,7 +100,7 @@ void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_02063388(Unk_0202368c_Obj *o);
+void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
 void PlayerActor_GetSlotHeldItem(u16 *out, s32 v);
 s32 PlayerActor_GetLocalSessionSlot(u16 *p);
@@ -115,9 +115,9 @@ s32 MenuCtrl_GetIndex();
 s32 Pocket_GetItem();
 s32 Contest_GetCatchSize(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void ContestRecord_BeginContestDay(void *g, u32 a);
-u32 func_02060e24(u32 v);
+u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
@@ -301,7 +301,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -406,7 +406,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -518,7 +518,7 @@ BOOL SpNpcTortimerFishingTourney::vfunc_00() {
     ContestRecord_GetItem(&l.b, g);
     if (!Unk_ov081_InRange(&l.b, 0x12e8, 0x131f)) {
         _ZN13ContestRecord13func_020858acEv(g);
-        s32 r6 = func_02063b8c(2);
+        s32 r6 = Random_GlobalBelow(2);
         l.x = 0;
         l.y = 0;
         l.z = 0;
@@ -882,7 +882,7 @@ void SpNpcTortimerFishingTourneyTalk::vfunc_14() {
                 _ZN12ItemPickSpec3setEii(&o, 0, 0);
                 ItemPick_One(&h3, &o, 0, 0, 1, 1, 0);
                 h0 = h3;
-                func_02063388(&o);
+                ItemPickSpec_Destruct(&o);
                 _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
                 _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &h0, 0, 7);
                 Pocket_AddItem(&h0, 0);

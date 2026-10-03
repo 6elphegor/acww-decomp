@@ -207,9 +207,9 @@ void *_ZN11InventoryBgD1Ev(void *p);
 void *_ZN10LetterGridD1Ev(void *p);
 void *_ZN17InventoryItemGridD1Ev(void *p);
 void Letter_Copy(void *dst, void *src);
-void _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
-void _ZN14LetterRenderer13func_0206d394Ev(void *p);
-void _ZN14LetterRenderer13func_0206d39cEi(void *p, s32 a);
+void _ZN14LetterRenderer4showEP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer7releaseEv(void *p);
+void _ZN14LetterRenderer8setLayerEi(void *p, s32 a);
 void _ZN14LetterRendererC1Ev(void *p);
 void MenuScreen_UploadClothPattern(void *a, void *b, void *c, void *d);
 BOOL MenuCtrl_IsForceCloseDue();
@@ -221,8 +221,8 @@ void MenuCtrl_SetArg(void *p);
 s32 MenuCtrl_GetArg();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-s32 func_0206f53c(s32 a);
-s32 func_0206f604(u8 a, s32 b);
+s32 HudCountdown_StartWithSe(s32 a);
+s32 CommSub_Send(u8 a, s32 b);
 s32 _ZN11CommManager12isSlotActiveEi(void *obj, u32 v);
 void _ZN12LabelBalloon6setPosEii(void *p, s32 x, s32 y);
 s32 Hud_GetCountdown();
@@ -1186,7 +1186,7 @@ void PocketMenu::stateWaitSlideOut() {
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
     Letter_MarkRead();
-    _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
+    _ZN14LetterRenderer4showEP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);
@@ -1255,7 +1255,7 @@ void PocketMenu::initPocketMenu() {
     unk_b5 = MenuCtrl_GetSavedSlot();
     _ZN15PopupChoiceMenu4initEiiPKc(unk_24fc, 3, 1, 0);
     _ZN19PopupChoiceMenuBody18buildAddresseeListEv(unk_24fc);
-    _ZN14LetterRenderer13func_0206d39cEi(unk_2904, 3);
+    _ZN14LetterRenderer8setLayerEi(unk_2904, 3);
     unk_c2 = 0;
     ProcBase_GetParent(this);
     if (_ZN10MenuTabBar12isJustOpenedEv()) {
@@ -1268,7 +1268,7 @@ void PocketMenu::releaseResources() {
     InventoryBg_Exit(unk_de0);
     InventoryItemGrid_Exit(unk_358);
     PopupChoice_ForceClose(unk_24fc);
-    _ZN14LetterRenderer13func_0206d394Ev(unk_2904);
+    _ZN14LetterRenderer7releaseEv(unk_2904);
 }
 
 void PocketMenu::preInputUpdate() {
@@ -3849,14 +3849,14 @@ void PocketMenu::setCountdown(s32 n) {
                 z = FALSE;
             }
             if (z != _ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
-                func_0206f604((u8)(n + 0x12), 4);
-                func_0206f53c(n);
+                CommSub_Send((u8)(n + 0x12), 4);
+                HudCountdown_StartWithSe(n);
             }
         } else {
-            func_0206f604((u8)(n + 0xd), 0);
+            CommSub_Send((u8)(n + 0xd), 0);
         }
     } else {
-        func_0206f53c(n);
+        HudCountdown_StartWithSe(n);
     }
 }
 

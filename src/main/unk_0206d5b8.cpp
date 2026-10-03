@@ -29,10 +29,10 @@ public:
 };
 
 // local text buffer, vtable 0x020ddf5c (0x38 bytes)
-class Unk_020ddf5c : public EncodedString {
+class EncodedString40 : public EncodedString {
 public:
-    Unk_020ddf5c() {}
-    virtual ~Unk_020ddf5c() {}
+    EncodedString40() {}
+    virtual ~EncodedString40() {}
     virtual u32 capacity();
     virtual u8 *data();
     u8 pad_10[0x28];
@@ -51,7 +51,7 @@ public:
     void func_0206cdcc(u16 id, s32 arg);
     s32 func_0206ce98();
     void func_0206ced0();
-    void func_0206cfdc(u8 *src, s32 *offs, s32 *idx);
+    void LetterLayout_SplitBody(u8 *src, s32 *offs, s32 *idx);
 
     u8 pad_00[0x4c];
 };
@@ -442,7 +442,7 @@ s32 Melody_ApplyEditPattern(void);
 }
 
 extern "C" {
-void func_0206d4e8(s32 a, s32 b);
+void Main_PxiSendWordRetry(s32 a, s32 b);
 }
 
 extern "C" {
@@ -475,16 +475,16 @@ class LetterRenderer : public Unk_0206ce50 {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d0a0(u32 a, u32 b);
-    void func_0206d0b8(u8 *data);
-    void func_0206d0fc(u8 *src, BOOL flag);
-    void func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out);
-    void func_0206d288(void *src);
-    s32 func_0206d2d4();
-    void func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void func_0206d380();
-    void func_0206d394();
-    void func_0206d39c(s32 v);
+    void highlightGreeting(u32 a, u32 b);
+    void setSignature(u8 *data);
+    void setBody(u8 *src, BOOL flag);
+    void setGreeting(Unk_0206d1d4_Src *src, u8 *out);
+    void loadRecipientName(void *src);
+    s32 getRecipientNameLength();
+    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
+    void redraw();
+    void release();
+    void setLayer(s32 v);
     void loadLetterScreen(u32 v);
 
     /* 0x4c */ Unk_0206ce50 unk_4c;

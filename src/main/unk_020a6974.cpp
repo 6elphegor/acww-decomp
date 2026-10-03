@@ -114,19 +114,19 @@ void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" {
-void func_0208efd0(void);
+void InputModeIcon_Draw(void);
 }
 
 extern "C" {
-void func_0208efe0(void);
+void InputModeIcon_Update(void);
 }
 
 extern "C" {
-void func_0208eff0(void);
+void InputModeIcon_Exit(void);
 }
 
 extern "C" {
-void func_0208f000(void);
+void InputModeIcon_Init(void);
 }
 
 extern "C" {

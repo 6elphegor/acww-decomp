@@ -188,8 +188,8 @@ public:
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
-#define func_02063870 _ZN12Unk_020dd38cD1Ev
-#define func_02063888 _ZN12Unk_020dd38cC1Ev
+#define func_02063870 _ZN11MsgString9CD1Ev
+#define func_02063888 _ZN11MsgString9CC1Ev
 #define LetterView_getState _ZN10LetterView8getStateEv
 #define LetterView_getPresent _ZN10LetterView10getPresentEv
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -198,8 +198,8 @@ public:
 #define func_0206fca8 _ZN11LabelStringD1Ev
 #define func_0206fcc8 _ZN11LabelStringC1Ev
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
-#define func_02089f30 _ZN12Unk_020e0d80D1Ev
-#define func_02089f44 _ZN12Unk_020e0d80C1Ev
+#define func_02089f30 _ZN16LabelBalloonTextD1Ev
+#define func_02089f44 _ZN16LabelBalloonTextC1Ev
 #define func_02094018 _ZN11MsgString9BD1Ev
 #define func_02094030 _ZN11MsgString9BC1Ev
 #define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
@@ -238,7 +238,7 @@ void func_0206260c(void *p);
 void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
-void func_020638d0(s32 a, void *p);
+void TownId_GetNameString(s32 a, void *p);
 s32 func_020639e8(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 LetterView_getState(void *o);
@@ -258,9 +258,9 @@ void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_destroyLabel(void *p);
 void func_0206fca8(void *p);
 void func_0206fcc8(void *p);
-s32 func_02087e0c(void *p);
-s32 func_02087e14(void *p);
-s32 func_02088730(s32 a, const void *b, s32 c, s32 d, ...);
+s32 Oam_GetObjY(void *p);
+s32 Oam_GetObjX(void *p);
+s32 Oam_DrawObj(s32 a, const void *b, s32 c, s32 d, ...);
 void LabelBalloon_setText(void *a, void *b);
 void func_02089f30(void *p);
 void func_02089f44(void *p);
@@ -801,20 +801,20 @@ void LetterGrid::drawLetterIcon(s32 a, s32 b, u32 c, void *e, void *f) {
     if (idx != m1) {
         Unk_ov094_SetPal((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, (u8)c);
         Unk_ov094_SetName((Unk_ov094_02294bb4_Bits *)sLetterIconSprite, sLetterIconChars[idx]);
-        func_02088730(1, sLetterIconSprite, a, b, m1, unk_20, f);
+        Oam_DrawObj(1, sLetterIconSprite, a, b, m1, unk_20, f);
     }
 }
 
 void LetterGrid::drawMark(s32 a, s32 b) {
-    func_02088730(1, data_ov094_02294bec, a - 8, b - 8, -1, unk_20, 0);
+    Oam_DrawObj(1, data_ov094_02294bec, a - 8, b - 8, -1, unk_20, 0);
 }
 
 void LetterGrid::drawUnderlay(s32 a, s32 b, s32 c, void *d) {
-    func_02088730(1, sLetterMarkSprites, a - 8, b - 8, c, unk_20, d);
+    Oam_DrawObj(1, sLetterMarkSprites, a - 8, b - 8, c, unk_20, d);
 }
 
 void LetterGrid::drawFocus(s32 a, s32 b, s32 c) {
-    func_02088730(1, data_ov094_02294be4, a - 8, b - 8, -1, unk_20, c);
+    Oam_DrawObj(1, data_ov094_02294be4, a - 8, b - 8, -1, unk_20, c);
 }
 
 void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0)

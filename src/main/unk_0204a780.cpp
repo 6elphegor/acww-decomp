@@ -175,7 +175,7 @@ s32 ItemInfo_TestFlag4(u16 *p);
 BOOL ItemInfo_TestFlag3(u16 *p);
 BOOL Ftr_TestIndoorFlagC(u16 *p);
 BOOL Ftr_TestIndoorFlag7(u16 *p);
-u32 func_02060c70(u32 x);
+u32 Insect_GetBaseSize(u32 x);
 s32 Fish_GetBaseSize(s32 x);
 void Item_FromPlacedForm(void *p, u32 x);
 s32 Item_GetPrice(void *p);
@@ -367,7 +367,7 @@ s32 _s32_div_f(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Date_GetWeekday(u32 a, u32 b, u32 c);
 void DateTime_AddDays(void *p, s32 n);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 Unk_0204c290_W *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(Unk_0204c290_W *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
 void BlockMap_SetItemAtUnit(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
@@ -503,7 +503,7 @@ extern "C" void TownState_PickNextWeekDate(u8 *dst, u8 *src) {
     s32 d = Date_GetWeekday(src[2], src[1], src[0]);
     s32 r;
     do {
-        r = func_02063b8c(7);
+        r = Random_GlobalBelow(7);
     } while (r == 1 || r == 2);
     l[0] = 0;
     l[1] = 0;
@@ -883,7 +883,7 @@ extern "C" s32 Item_GetInsectIndex(u16 *p) { if (Item_IsInsect(p)) return Item_G
 
 namespace nB {
 extern "C" u16 Item_GetInsectBaseSize(u16 *p) {
-    if (Item_IsInsect(p)) return func_02060c70((u8)Item_GetInsectIndex(p));
+    if (Item_IsInsect(p)) return Insect_GetBaseSize((u8)Item_GetInsectIndex(p));
     return 0;
 }
 }

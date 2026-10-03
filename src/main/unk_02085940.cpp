@@ -26,7 +26,7 @@ void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
-s32 func_02063b8c(u32 n);
+s32 Random_GlobalBelow(u32 n);
 void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(void *p);
 void DateTime_SubDays(void *p, s32 v);
@@ -57,15 +57,15 @@ void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
 s32 MenuCtrl_IsClockMovedForward();
 s32 MenuCtrl_IsClockMovedBack();
-s32 func_02063b74(s32 a);
+s32 Random_GlobalBelow2(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void func_02063990(void *p);
-s32 func_020639a0(void *p);
-s32 func_020639b8(void *p);
+void TownId_Assign(void *p);
+s32 TownId_Clear(void *p);
+s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
 s32 TownMap_IsUnitWalkable();
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
@@ -83,7 +83,7 @@ extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
 extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
-void *func_020639bc(void *);
+void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
 void *_ZN10PlayerData14getDramaRecordEv(void *);
@@ -92,13 +92,13 @@ void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
 BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 s32 LetterPaper_PickRandom(s32, s32);
-s32 func_02087e14(void *);
-s32 func_02087e50(void *);
-s32 func_02087e0c(void *);
-s32 func_02087e30(void *);
+s32 Oam_GetObjX(void *);
+s32 Oam_GetObjWidth(void *);
+s32 Oam_GetObjY(void *);
+s32 Oam_GetObjHeight(void *);
 extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
@@ -642,7 +642,7 @@ void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
 s32 _ZN8PlayerId7isValidEv(void *p);
 void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
-s32 func_02063b8c(u32 n);
+s32 Random_GlobalBelow(u32 n);
 void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(void *p);
 void DateTime_SubDays(void *p, s32 v);
@@ -673,16 +673,16 @@ void MI_CpuCopy8(void *, void *, u32);
 s32 Date_GetWeekday(s32 a, s32 b, s32 c);
 s32 MenuCtrl_IsClockMovedForward();
 s32 MenuCtrl_IsClockMovedBack();
-s32 func_02063b74(s32 a);
+s32 Random_GlobalBelow2(s32 a);
 void *TownBlockMap_Get();
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
 s32 FieldPos_FromUnitCenter(Unk_020868cc_Vec3 *out, s32 x, s32 z);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void _ZN17VisitorSpawnFlags16rollGulliverSpotEv(void *);
 extern u8 gSaveData[];
-void func_02063990(void *p);
-s32 func_020639a0(void *p);
-s32 func_020639b8(void *p);
+void TownId_Assign(void *p);
+s32 TownId_Clear(void *p);
+s32 TownId_Destruct(void *p);
 s32 FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
 s32 TownMap_IsUnitWalkable();
 u16 *BlockMap_GetItemPtr(void *map, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
@@ -700,7 +700,7 @@ extern void *gSceneBlockMap;
 extern u8 data_021ed31a[];
 extern u32 sKatieSpotRows[];
 extern u8 data_021c47c4_dummy[];
-void *func_020639bc(void *);
+void *TownId_Construct(void *);
 s32 _ZN11CommManager8isOnlineEv(void *);
 BOOL _ZN12Unk_02097ff48testFlagEj(void *, s32);
 void *_ZN10PlayerData14getDramaRecordEv(void *);
@@ -709,13 +709,13 @@ void DateTime_AddDays(void *, s32);
 s32 _ZN10MuseumData10isCompleteEv(void *);
 BOOL LetterDelivery_QueueOutgoing(void *a, s32 b);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 s32 LetterPaper_PickRandom(s32, s32);
-s32 func_02087e14(void *);
-s32 func_02087e50(void *);
-s32 func_02087e0c(void *);
-s32 func_02087e30(void *);
+s32 Oam_GetObjX(void *);
+s32 Oam_GetObjWidth(void *);
+s32 Oam_GetObjY(void *);
+s32 Oam_GetObjHeight(void *);
 extern void *gCommManager;
 extern const u8 data_020cf288[];
 extern const u8 data_020cf328[];
@@ -777,14 +777,14 @@ void func_020877c0(void *a, void *b);
 namespace Ns_02086204 {
 extern "C" {
 u32 _ZN8PlayerId5clearEv(void *p);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 }
 
 namespace Ns_02086b7c {
 extern "C" {
 void *MI_CpuCopy8(void *dst, const void *src, u32 n);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void FieldPos_FromUnitCenter(Unk_02086ec4_Vec3 *out, s32 x, s32 y);
 s32 FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
@@ -797,7 +797,7 @@ void _ZN12Unk_02097ff49clearFlagEj(void *, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void MI_CpuFill8(void *, s32, s32);
 void Clock_GetDate(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 u32 _ZN10PlayerData11getPlayerIdEv(void *);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
@@ -852,12 +852,12 @@ static inline BOOL Unk_0208709c_In(u16 *p) {
 }
 
 extern "C" BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d) {
-    s32 r7 = func_02087e14(p) - c;
+    s32 r7 = Oam_GetObjX(p) - c;
     if (r7 > a) return FALSE;
-    if (r7 + (c * 2 + func_02087e50(p)) < a) return FALSE;
-    s32 t = func_02087e0c(p) - d;
+    if (r7 + (c * 2 + Oam_GetObjWidth(p)) < a) return FALSE;
+    s32 t = Oam_GetObjY(p) - d;
     if (t > b) return FALSE;
-    if (t + (d * 2 + func_02087e30(p)) >= b) return TRUE;
+    if (t + (d * 2 + Oam_GetObjHeight(p)) >= b) return TRUE;
     return FALSE;
 }
 
@@ -1031,14 +1031,14 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
     if (r4 != NULL && _ZN12Unk_02097ff48testFlagEj(r4, 0x36)) {
         _ZN6LetterC1Ev(big);
         l.a = 0;
-        l.a = Ns_020874d8::func_02063b8c(3);
+        l.a = Ns_020874d8::Random_GlobalBelow(3);
         Ns_020874d8::Clock_GetDate(l.c);
         l.b = LetterPaper_PickRandom(3, l.c[1]);
         Ns_020874d8::Letter_ComposeFromMail(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
         _ZN12ItemPickSpec3setEii(obj, 0, 0x1b);
         ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
         _ZN10LetterView10setPresentEtj(big, l.h, 1);
-        func_02063388(obj);
+        ItemPickSpec_Destruct(obj);
         if (LetterDelivery_QueueOutgoing(big, 0)) {
             Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(r4, 0x36);
         }
@@ -1077,14 +1077,14 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
     if (_ZN12Unk_02097ff48testFlagEj(obj, 0x17)) {
         if (_ZN12Unk_02097ff48testFlagEj(obj, 0x19)) {
             h[0] = 0x1492;
-            s32 r = Ns_020874d8::func_02063b8c(2);
+            s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r, &h[0])) {
                 Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(obj, 0x19);
             }
         }
         if (_ZN12Unk_02097ff48testFlagEj(obj, 0x1a)) {
             h[1] = 0x1492;
-            s32 r = Ns_020874d8::func_02063b8c(2);
+            s32 r = Ns_020874d8::Random_GlobalBelow(2);
             if (sendInsuranceLetter(r + 2, &h[1])) {
                 Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(obj, 0x1a);
             }
@@ -1094,7 +1094,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
         if (r7->getInsuranceClaims() >= 1) {
             String_FormatNumber(bufA, r7->getInsuranceClaims(), 10, 0, 0, 0);
             MailText_SetSlot(3, bufA);
-            r6 = Ns_020874d8::func_02063b8c(2) + 4;
+            r6 = Ns_020874d8::Random_GlobalBelow(2) + 4;
             u32 cnt = r7->getInsuranceClaims();
             if (cnt >= 10) {
                 cnt = 10;
@@ -1310,12 +1310,12 @@ extern "C" BOOL func_020874e8(s32 a, s32 b, s32 c, Unk_020874e8_Bits *d) {
 }
 
 extern "C" void *LostChildRecord_Construct(void *p) {
-    func_020639bc(p);
+    TownId_Construct(p);
     return p;
 }
 
 extern "C" void *LostChildRecord_Destruct(void *p) {
-    func_020639b8(p);
+    TownId_Destruct(p);
     return p;
 }
 
@@ -1371,7 +1371,7 @@ extern "C" void LostChild_LoadFromTown() {
 }
 
 void LostChildRecord::clear() {
-    func_020639a0(this);
+    TownId_Clear(this);
     unk_0a_0 = 0;
     unk_0a_4 = 0;
     unk_0a_5 = 0;
@@ -1379,7 +1379,7 @@ void LostChildRecord::clear() {
 
 void LostChildRecord::getTownId() {}
 
-void LostChildRecord::setTownId() { func_02063990(this); }
+void LostChildRecord::setTownId() { TownId_Assign(this); }
 
 u32 LostChildRecord::getDaysLeft() { return unk_0a_0; }
 
@@ -1494,7 +1494,7 @@ void Unk_02086f84::pickKatiePos() {
             y++;
         } while (y < 32);
         if (cnt > 0) {
-            s32 x2, y2; s32 r = Ns_02086b7c::func_02063b8c(cnt);
+            s32 x2, y2; s32 r = Ns_02086b7c::Random_GlobalBelow(cnt);
             tbl = sKatieSpotRows;
             y2 = 0;
             goto testy2;
@@ -1670,7 +1670,7 @@ test1:
     if (k <= limit) goto loop1;
 done1:
     if (cnt > 0) {
-        r = Ns_02086b7c::func_02063b8c(cnt);
+        r = Ns_02086b7c::Random_GlobalBelow(cnt);
         bi = 0; ii = 0;
         goto test2;
 loop2:
@@ -1742,7 +1742,7 @@ loop:
     }
     if (f1 != 0) {
         if (f2 != 0) {
-            if (Ns_02086b7c::func_02063b8c(10) & 1) {
+            if (Ns_02086b7c::Random_GlobalBelow(10) & 1) {
                 sel = &p2;
                 goto done;
             }
@@ -1761,7 +1761,7 @@ done:
     if (sel != 0) {
         Ns_02086b7c::FieldPos_FromUnitCenter(&v, sel->a, sel->b);
         setPos(&v);
-        unk_08_2 = Ns_02086b7c::func_02063b8c(4);
+        unk_08_2 = Ns_02086b7c::Random_GlobalBelow(4);
         markFallPos();
         return TRUE;
     }
@@ -1776,8 +1776,8 @@ void VisitorSpawnFlags::func_02086bfc() {}
 void VisitorSpawnFlags::clear() { MI_CpuFill8(this, 0, 1); }
 
 void VisitorSpawnFlags::rollGulliverSpot() {
-    unk_00_2 = Ns_02086b7c::func_02063b8c(3);
-    unk_00_4 = Ns_02086b7c::func_02063b8c(4);
+    unk_00_2 = Ns_02086b7c::Random_GlobalBelow(3);
+    unk_00_4 = Ns_02086b7c::Random_GlobalBelow(4);
     unk_00_1 = 1;
 }
 
@@ -1850,7 +1850,7 @@ BOOL VisitorPos::pickFreeInAcre(Unk_020868cc_Vec3 *out, s32 *pos, void *ctx) {
         }
     }
     if (n > 0) {
-        s32 r = Ns_02086204::func_02063b8c(n);
+        s32 r = Ns_02086204::Random_GlobalBelow(n);
         for (x = 0; x < 16; x++) {
             u16 *qq;
             for (y = 0, qq = &arr[x]; y < 16; y++) {
@@ -1890,7 +1890,7 @@ BOOL VisitorPos::pickRandomPos() {
             }
         }
         if (n > 0) {
-            s32 r = Ns_02086204::func_02063b8c(n);
+            s32 r = Ns_02086204::Random_GlobalBelow(n);
             for (xy[1] = 1; xy[1] < h - 1; xy[1]++) {
                 for (xy[0] = 1; xy[0] < w - 1; xy[0]++) {
                     if ((buf[xy[1] - 1] >> (xy[0] - 1)) & 1) {
@@ -1947,7 +1947,7 @@ void TurnipMarket::init() {
 }
 
 u8 TurnipMarket::calcPrice(s32 k, s32 z) {
-    s32 t = func_02063b74(z);
+    s32 t = Random_GlobalBelow2(z);
     return (u8)((unk_0a[0] * (k + t)) >> 12);
 }
 
@@ -1971,7 +1971,7 @@ u8 TurnipMarket::calcHighPrice() {
 }
 
 void TurnipMarket::generateSmallSpike() {
-    s32 n = Ns_02086204::func_02063b8c(6) + 7;
+    s32 n = Ns_02086204::Random_GlobalBelow(6) + 7;
     fillDecreasing(2, n - 3);
     unk_0a[n - 3] = calcMidPrice();
     unk_0a[n - 2] = calcMidPrice();
@@ -1982,14 +1982,14 @@ void TurnipMarket::generateSmallSpike() {
 }
 
 s32 TurnipMarket::rollPeakPrice() {
-    s32 t = func_02063b74(0x419a);
+    s32 t = Random_GlobalBelow2(0x419a);
     unk_08 = (unk_0a[0] * (t + 0x2000)) >> 12;
     return 0;
 }
 
 void TurnipMarket::generateWeek(s32 flag) {
     if (unk_18 != 0xff) {
-        s32 r = Ns_02086204::func_02063b8c(0x65);
+        s32 r = Ns_02086204::Random_GlobalBelow(0x65);
         switch (unk_18) {
         case 0:
             if (r < 0x1e) unk_18 = 1;
@@ -2014,11 +2014,11 @@ void TurnipMarket::generateWeek(s32 flag) {
         }
         if (flag != 0) unk_18 = 2;
     } else {
-        unk_18 = Ns_02086204::func_02063b8c(4);
+        unk_18 = Ns_02086204::Random_GlobalBelow(4);
     }
     unk_08 = 0;
     MI_CpuFill8(&unk_0a[0], 0, 0xe);
-    unk_0a[0] = Ns_02086204::func_02063b8c(0x15) + 0x5a;
+    unk_0a[0] = Ns_02086204::Random_GlobalBelow(0x15) + 0x5a;
     unk_0a[1] = unk_0a[0];
     switch (unk_18) {
     case 0:
@@ -2036,7 +2036,7 @@ void TurnipMarket::generateWeek(s32 flag) {
         unk_0a[13] = calcMidPrice();
         break;
     case 1: {
-        s32 n = Ns_02086204::func_02063b8c(4) + 8;
+        s32 n = Ns_02086204::Random_GlobalBelow(4) + 8;
         unk_0a[n] = rollPeakPrice();
         fillDecreasing(2, n - 2);
         unk_0a[n - 1] = calcHighPrice();
@@ -2249,11 +2249,11 @@ extern "C" void RoostGuestRoll_Init(void *p) {
 
 void RoostGuestRoll::roll() {
     u32 a, b, c;
-    unk_00_0 = func_02063b8c(2);
+    unk_00_0 = Random_GlobalBelow(2);
     unk_00_3 = 1;
-    a = func_02063b8c(100);
-    b = func_02063b8c(100);
-    c = func_02063b8c(100);
+    a = Random_GlobalBelow(100);
+    b = Random_GlobalBelow(100);
+    c = Random_GlobalBelow(100);
     switch (Clock_GetWeekday()) {
     case 6:
         if (func_020e77cc(a, 0, 0x4a)) unk_00_1 = 0;
@@ -2331,8 +2331,8 @@ void ContestRecord::postResultNotice() {
         MailText_SetSlot(0, &rec);
     }
     s32 k;
-    if ((u8)(unk_37 + 0xff) <= 1) k = func_02063b8c(3);
-    else k = func_02063b8c(2);
+    if ((u8)(unk_37 + 0xff) <= 1) k = Random_GlobalBelow(3);
+    else k = Random_GlobalBelow(2);
     Bbs_PostMsgToday(k, sContestResultBbsFiles[unk_37]);
     _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
 }
@@ -2419,7 +2419,7 @@ void ContestRecord::sendResultLetters() {
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
             if ((unk_00.unk_00 == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
-                l.unk_00 = func_02063b8c(3);
+                l.unk_00 = Random_GlobalBelow(3);
                 _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
                 _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
                 MailText_SetSlot(z2c, &rec);
@@ -2430,9 +2430,9 @@ void ContestRecord::sendResultLetters() {
         if ((u8)(unk_37 + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
             if (unk_00.unk_00 == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
-                l.unk_00 = func_02063b8c(3);
+                l.unk_00 = Random_GlobalBelow(3);
             } else {
-                l.unk_00 = func_02063b8c(3) + 3;
+                l.unk_00 = Random_GlobalBelow(3) + 3;
             }
             _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
             MailText_SetSlot(4, &rec);

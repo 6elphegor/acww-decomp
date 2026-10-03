@@ -149,7 +149,7 @@ it matches; otherwise it saves `linkprep.py diff` output to `link_fail.txt` in t
 
 mwcc emits a complete-object (C1) and a base-object (C2) constructor, but the game keeps one body for
 both. Different linked units may call the same address by different names (e.g. ov048/ov118/ov120 call
-`_ZN12Unk_020dd38cC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
+`_ZN11MsgString9CC2Ev`, ov139's function-local statics call `C1`). symbols.txt holds one sized symbol per
 address and mwld aborts on two ("the sum of all symbol sizes exceed section size"), so add the second
 name as a zero-size label: `python3 tools/pipeline/alias.py config/usa/arm9/symbols.txt <existing> <new>`.
 Never rename a constructor that a linked unit already calls; alias it instead (`rename_impact.py` tells you).
@@ -374,7 +374,7 @@ Build chain: `dsd lcf` -> `bss_units.py` -> `object_order.py` -> `aliases.py` ->
 `renames.txt` (one per line, `#` comments):
 
     main 02050e84 _ZN8GameFontC1Ev     a symbol of the unit gets the name the object defines
-    main 020dd36c _ZTV12Unk_020dd374                vtable: named at its start, see below
+    main 020dd36c _ZTV15EncodedString8B                vtable: named at its start, see below
     autoload_3 021bdd80 interior:021bdb80           label inside an object, see "Interior labels"
     main 020d1dd8 section:.ctor                     name the linker script must define, see "Names the linker
                                                     script defines"
@@ -391,12 +391,12 @@ LampLights 64-bit division of the wrong signedness now links to a different addr
 ### Vtables
 
 dsd labelled 230 vtables of main 8 bytes into the object (`data_020dd374` = first slot of the vtable at
-0x020dd36c). The compiled unit emits `_ZTV12Unk_020dd374` at the start, so the label must become that symbol and
+0x020dd36c). The compiled unit emits `_ZTV15EncodedString8B` at the start, so the label must become that symbol and
 every relocation to it `to:<start> add:0x8`. LampLights `renames.txt` line `main <start> _ZTV<n><class>` does both
 (`tools/pipeline/vtable_rename.py`; standalone: `vtable_rename.py [-n] main <start or label> <class or _ZTV name>`).
 Do the same for the vtable that starts where the unit's `.data` range ends, even though it belongs to the next
 unit: the range must end on a symbol, and the vtable symbol is the right one (TU102: `main 020dd384
-_ZTV12Unk_020dd38c`). `check` prints a `BOUND` line for every boundary that still lacks a symbol.
+_ZTV11MsgString9C`). `check` prints a `BOUND` line for every boundary that still lacks a symbol.
 
 ### Interior labels
 
@@ -532,7 +532,7 @@ under `build/usa/aliases/`, and that copy is linked: an alias the object defines
 redirected to the primary name's section (the duplicate, now nameless, is dead-stripped); names the object does
 not define are added to it as real function symbols (correct for ARM callers too). Different code under two
 names is an error. Nothing to do in the source; `check` prints `ALIAS` lines saying what will happen.
-When a unit calls a constructor by the name symbols.txt does not have (`_ZN12Unk_020ddf44C2Ev` for a base class
+When a unit calls a constructor by the name symbols.txt does not have (`_ZN14LetterTextLineC2Ev` for a base class
 whose symbol is `...C1Ev`), add the missing one in `aliases.txt`; never rename (see "One constructor, two names").
 
 ## Preparing and checking a unit

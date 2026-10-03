@@ -376,7 +376,7 @@ extern "C" {
 void MailText_SetSlot(s32 a, void *b);
 }
 extern "C" {
-u8 *func_02063b8c(s32 a);
+u8 *Random_GlobalBelow(s32 a);
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *p);
@@ -750,7 +750,7 @@ extern "C" void Shop_RemoveSoldItem(u16 *p, u32 a, s32 b) {
 extern "C" void NookShop_PostPointSpecialNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(0, a);
     MailText_SetSlotDayOrdinal(1, b);
-    Bbs_PostMsgToday(func_02063b8c(2), "bbs_shopinfo");
+    Bbs_PostMsgToday(Random_GlobalBelow(2), "bbs_shopinfo");
 }
 extern "C" void NookShop_PostSaleNotice(s32 x) {
     MsgString25 o;
@@ -758,12 +758,12 @@ extern "C" void NookShop_PostSaleNotice(s32 x) {
     m = (u8)m;
     String_FormatNumber(&o, m, 10, 0, 0, 0);
     MailText_SetSlot(2, &o);
-    Bbs_PostMsgToday(func_02063b8c(2) + 2, "bbs_shopinfo");
+    Bbs_PostMsgToday(Random_GlobalBelow(2) + 2, "bbs_shopinfo");
 }
 extern "C" void NookShop_PostSpecialItemNotice(u16 *s) {
     ItemName str(s);
     MailText_SetSlot(3, &str);
-    Bbs_PostMsgToday(func_02063b8c(2) + 4, "bbs_shopinfo");
+    Bbs_PostMsgToday(Random_GlobalBelow(2) + 4, "bbs_shopinfo");
 }
 extern "C" void NookShop_PostRenovationNotice(s32 a, s32 b) {
     MailText_SetSlotMonth(2, a);
@@ -889,7 +889,7 @@ extern "C" {
 Z ItemPick_One(ItemPickSpec, int, void*, int, int, int);
 }
 extern "C" {
-int func_020626cc(u16*, int);
+int ItemList_GetTownClassRank(u16*, int);
 }
 extern "C" {
 int NookShop_GetReopenDateTime(WindowLight*);
@@ -1062,7 +1062,7 @@ extern "C" BOOL func_020aeac8(Obj* self) {
     for (i = 0; i < 0x25; i++) {
         u16 v = 0xfff1;
         u16* p = NookShop_GetItem(self, i, &v);
-        if (Item_IsFurniture(p) != 0 && func_020626cc(p, z) == 4) return TRUE;
+        if (Item_IsFurniture(p) != 0 && ItemList_GetTownClassRank(p, z) == 4) return TRUE;
     }
     return FALSE;
 }
@@ -1445,7 +1445,7 @@ extern "C" {
 u32 Item_GetFurnitureIndex(u16*);
 }
 extern "C" {
-u32 func_02063b8c(u32);
+u32 Random_GlobalBelow(u32);
 }
 extern "C" {
 void AbleShop_RestockEnd(S1*);
@@ -1739,7 +1739,7 @@ extern "C" void NookShop_StockTools(S *s, s32 *p) {
             if (m) cnt++;
         }
         if (cnt == 0) {
-            u16 *d = &s->str[start + func_02063b8c(2)];
+            u16 *d = &s->str[start + Random_GlobalBelow(2)];
             *d = 3;
         }
     }
@@ -1921,7 +1921,7 @@ extern "C" {
 s32 FengShui_GetSouthTotal();
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 Unk_02062f94_Ret ItemPick_One(ItemPickSpec *q, u32 a, u32 b, u32 c, u32 d, u32 e);
@@ -2174,7 +2174,7 @@ BOOL ReddPassword::pickPassword() {
     if (slot == -1) {
         u32 cnt = countUnused();
         if (cnt != 0) {
-            u32 target = func_02063b8c(cnt);
+            u32 target = Random_GlobalBelow(cnt);
             u32 n = 0;
             u32 i;
             for (i = 0; i < 32; i++) {
@@ -2469,7 +2469,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
     if (data_021ed2c0.getPassword()->needsLetter()) {
         if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             Letter ctx;
-            u8 r = func_02063b8c(3);
+            u8 r = Random_GlobalBelow(3);
             ReddPasswordString w;
             data_021ed2c0.getPassword()->getAnswerText(&w);
             MailText_SetSlot(2, &w);
@@ -2497,7 +2497,7 @@ void ReddShop::restock() {
     u32 i;
     clearStock();
     a = FengShui_GetTotal() / 10 + 0x32;
-    if (func_02063b8c(100) < a) {
+    if (Random_GlobalBelow(100) < a) {
         ItemPickSpec q(0, 0x26);
         arr[0].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
     } else {
@@ -2506,7 +2506,7 @@ void ReddShop::restock() {
     }
     b = (FengShui_GetEastTotal() + FengShui_GetSouthTotal()) / 10 + 0x32;
     for (i = 1; i < 3; i++) {
-        if (func_02063b8c(100) < b) {
+        if (Random_GlobalBelow(100) < b) {
             ItemPickSpec q(0, 5);
             arr[i].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
         } else {
@@ -2520,7 +2520,7 @@ void ReddShop::restock() {
     for (i = 0; i < 3; i++) {
         buf[i] = arr[i].v;
     }
-    u32 r = func_02063b8c(6);
+    u32 r = Random_GlobalBelow(6);
     for (i = 0; i < 3; i++) {
         arr[i].v = buf[n2::sReddStockOrders[r][i]];
     }
@@ -2673,7 +2673,7 @@ extern "C" {
 RGB SceneLights_GetFlashColor(void);
 }
 extern "C" {
-s32 func_02064c84(s32 a);
+s32 SceneLights_GetLightParam(s32 a);
 }
 extern "C" {
 void Clock_GetMinuteHour(void *p);
@@ -2805,7 +2805,7 @@ extern "C" {
 void NookShop_UpdateDaily(void *p, int v);
 }
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 extern "C" {
 u32 ShopAckCounter_Add(void *p);
@@ -3351,7 +3351,7 @@ extern "C" u32 Shop_OnPurchaseAck(void) {
 }
 
 extern "C" void NookShop_PickFlowerBag(u16 *p) {
-    *p = kNookFlowerBagItems[func_02063b8c(12)];
+    *p = kNookFlowerBagItems[Random_GlobalBelow(12)];
 }
 
 extern "C" BOOL NookShop_IsOpenHour(void) {

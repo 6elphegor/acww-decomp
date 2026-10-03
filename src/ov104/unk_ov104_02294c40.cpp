@@ -20,8 +20,8 @@ void Snd_PlaySe(s32 a);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *Heap_AllocTail(void *heap, u32 n);
 void Heap_Free(void *heap, void *p);
-void func_0206f638(s32 a);
-s32 func_0206f644();
+void CommSub_SetPostReply(s32 a);
+s32 CommSub_GetPostReply();
 void Letter_Clear(void *p);
 void Letter_Copy(void *dst, void *src);
 void Letter_MarkRead(u32 a);
@@ -172,9 +172,9 @@ class LetterRenderer {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d2e0(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
-    void func_0206d394();
-    void func_0206d39c(s32 a);
+    void show(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
+    void release();
+    void setLayer(s32 a);
     u32 unk_00[0x210 / 4];
 };
 
@@ -883,7 +883,7 @@ void PostOfficeMenu::transitionAct06() {
 void PostOfficeMenu::transitionAct07() {
     void *t = getSlotLetter(unk_b9);
     Letter_MarkRead((u32)t);
-    unk_288c.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    unk_288c.show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -949,7 +949,7 @@ void PostOfficeMenu_InitParts(S *s) {
     s->unk_b4 = 0;
     s->unk_b8 = 0xb;
     s->unk_2484.init(3, 0, 0);
-    s->unk_288c.func_0206d39c(3);
+    s->unk_288c.setLayer(3);
     for (i = 0; i < 10; i++) {
         Letter_Clear((u8 *)s->unk_2b0c + i * 0xf4);
     }
@@ -962,7 +962,7 @@ void PostOfficeMenu_ReleaseResources(S *s) {
     InventoryBg_Exit(&s->unk_d68);
     InventoryItemGrid_Exit(&s->unk_2e0);
     PopupChoice_ForceClose(&s->unk_2484);
-    s->unk_288c.func_0206d394();
+    s->unk_288c.release();
     s->unk_3e1c.freeTexts();
 }
 
@@ -2386,7 +2386,7 @@ void PostOfficeMenu::updateOnlineSend() {
     }
     s32 r6 = 0x18;
     if (testFlags(0x2000) != 0) {
-        r6 = func_0206f644();
+        r6 = CommSub_GetPostReply();
         switch (r6 - 8) {
         case 0:
             return;
@@ -2439,7 +2439,7 @@ BOOL PostOfficeMenu::sendLetterRecord(void *p) {
     g->writeRecord(buf, 0xf5);
     g->endRecord(0x16, 0);
     Heap_Free(heap, buf);
-    func_0206f638(8);
+    CommSub_SetPostReply(8);
     return TRUE;
 }
 

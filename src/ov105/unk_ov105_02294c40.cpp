@@ -20,8 +20,8 @@ void Snd_PlaySe(s32 a);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 void *Heap_AllocTail(void *heap, u32 n);
 void Heap_Free(void *heap, void *p);
-void func_0206f638(s32 a);
-s32 func_0206f644();
+void CommSub_SetPostReply(s32 a);
+s32 CommSub_GetPostReply();
 void Letter_Clear(void *p);
 void Letter_Copy(void *dst, void *src);
 void Letter_MarkRead(u32 a);
@@ -172,9 +172,9 @@ class LetterRenderer {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d2e0(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
-    void func_0206d394();
-    void func_0206d39c(s32 a);
+    void show(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
+    void release();
+    void setLayer(s32 a);
     u32 unk_00[0x210 / 4];
 };
 
@@ -440,9 +440,9 @@ void Gfx2d_SetSubBrightness(s32 a);
 void Gfx2d_EndSubObjWinBrightness();
 void Gfx2d_BeginSubObjWinBrightness();
 BOOL Cell_HitTest(void *r, s32 x, s32 y, s32 w, s32 h);
-s32 func_02087e0c(void *p);
-s32 func_02087e14(void *p);
-void func_02088730(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
+s32 Oam_GetObjY(void *p);
+s32 Oam_GetObjX(void *p);
+void Oam_DrawObj(s32 a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 void * PlayerData_GetLetterStorage(void *p);
 void LetterGrid_SetLetters0A(void *p, void *q);
 }
@@ -969,7 +969,7 @@ void LetterStorageMenu::transitionAct07() {
         break;
     }
     Letter_MarkRead((u32)p);
-    unk_2890.func_0206d2e0((Unk_0206d1d4_Src *)p, (void *)3, (void *)4, 1);
+    unk_2890.show((Unk_0206d1d4_Src *)p, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     Gfx2d_ShowLayer(4);
@@ -1115,7 +1115,7 @@ void LetterStorageMenu::initParts() {
     unk_29c = 0;
     unk_2a2 = 0x1a;
     unk_2488.init(3, 0, 0);
-    unk_2890.func_0206d39c(3);
+    unk_2890.setLayer(3);
     i = 0;
     unk_2a8 = 0;
     for (; i < 0x4b; i++) {
@@ -1138,7 +1138,7 @@ void LetterStorageMenu::releaseResources() {
     InventoryBg_Exit(&unk_d6c);
     InventoryItemGrid_Exit(&unk_2e4);
     PopupChoice_ForceClose(&unk_2488);
-    unk_2890.func_0206d394();
+    unk_2890.release();
     unk_728c.freeTexts();
 }
 
@@ -1994,7 +1994,7 @@ s32 LetterStorageMenu::getSlotX(u32 a) {
         return 0xbc;
     }
     if (isPageTabSlot(a)) {
-        return func_02087e14(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x80;
+        return Oam_GetObjX(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x80;
     }
     return 0;
 }
@@ -2007,7 +2007,7 @@ s32 LetterStorageMenu::getSlotY(u32 a) {
         return 0xb6;
     }
     if (isPageTabSlot(a)) {
-        return func_02087e0c(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x58;
+        return Oam_GetObjY(&data_ov105_02298544[(a - 0x3e) * 3]) + 0x58;
     }
     return 0;
 }
@@ -2582,9 +2582,9 @@ void LetterStorageMenu::drawPageTabs() {
             a = 0x50;
             b = 5;
         }
-        func_02088730(1, &data_ov105_02298544[j], p, a, -1, 1, z0);
-        func_02088730(1, &data_ov105_02298544[j + 1], p, a, b, 1, z1);
-        func_02088730(1, &data_ov105_02298544[j + 2], p, 0x50, -1, 1, z2);
+        Oam_DrawObj(1, &data_ov105_02298544[j], p, a, -1, 1, z0);
+        Oam_DrawObj(1, &data_ov105_02298544[j + 1], p, a, b, 1, z1);
+        Oam_DrawObj(1, &data_ov105_02298544[j + 2], p, 0x50, -1, 1, z2);
     }
 }
 

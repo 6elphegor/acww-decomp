@@ -37,7 +37,7 @@ struct Unk_02067c70_Z;
 class BmgMsgAttr;
 class MsgString25;
 class MsgString11;
-class Unk_020dd38c;
+class MsgString9C;
 class MsgString9B;
 class MsgString17;
 class MsgString17B;
@@ -893,7 +893,7 @@ class MsgString25 { public: u32 pad[0x2c / 4]; MsgString25(); };
 
 class MsgString11 { public: u32 pad[0x20 / 4]; MsgString11(); };
 
-class Unk_020dd38c { public: u32 pad[0x1c / 4]; Unk_020dd38c(); };
+class MsgString9C { public: u32 pad[0x1c / 4]; MsgString9C(); };
 
 class MsgString9B { public: u32 pad[0x1c / 4]; MsgString9B(); };
 
@@ -928,7 +928,7 @@ struct TalkWindow {
     MsgString33 unk_17a8;
     MsgString25 unk_17dc, unk_1808, unk_1834;
     MsgString11 unk_1860;
-    Unk_020dd38c unk_1880;
+    MsgString9C unk_1880;
     MsgString9B unk_189c, unk_18b8, unk_18d4, unk_18f0, unk_190c;
     MsgString33 unk_1928, unk_195c;
     MsgString9B unk_1990;
@@ -3010,7 +3010,7 @@ extern "C" { s32 _ZN10PlayerData11getPlayerIdEv(); }
 extern "C" { s32 _ZN8PlayerId9getGenderEv(); }
 extern "C" { s32 Villager_FindMemory(void *p, s32 v); }
 extern "C" { s32 _ZN14VillagerMemory13getFriendshipEv(); }
-extern "C" { s32 func_02063b8c(s32 v); }
+extern "C" { s32 Random_GlobalBelow(s32 v); }
 extern "C" { BOOL _ZN13TalkWindowMsg10buildTrendEv(u8 *c); }
 extern "C" { BOOL _ZN13TalkWindowMsg15buildComplimentEv(u8 *c); }
 extern "C" { BOOL _ZN13TalkWindowMsg13buildNicknameEv(u8 *c); }
@@ -3187,7 +3187,7 @@ void TalkParserCondTags::tagBranchRandom2() {
     Sel(unk_24)->vfunc_34(0, 2);
     unk_38.getArgs2(&r[1], &r[2]);
     u8 *q = &r[1];
-    r[0] = q[func_02063b8c(2)];
+    r[0] = q[Random_GlobalBelow(2)];
     jumpToMessage(r);
 }
 void TalkParserCondTags::tagBranchRandom3() {
@@ -3196,7 +3196,7 @@ void TalkParserCondTags::tagBranchRandom3() {
     Sel(unk_24)->vfunc_34(1, 3);
     unk_38.getArgs3(&r[1], &r[2], &r[3]);
     u8 *q = &r[1];
-    r[0] = q[func_02063b8c(3)];
+    r[0] = q[Random_GlobalBelow(3)];
     jumpToMessage(r);
 }
 void TalkParserCondTags::tagBranchFriendship() {
@@ -3345,9 +3345,9 @@ extern "C" { void *Mem_AllocTail(u32 size); }
 extern "C" { BOOL FS_OpenFile(void *self, const void *path); }
 extern "C" { s32 FS_ReadFile(void *self, void *dst, u32 size); }
 extern "C" { BOOL FS_CloseFile(void *self); }
-extern "C" { void _ZN12Unk_020e0d44C1Eh(void *p, s32 v); }
-extern "C" { void _ZN12Unk_020e0d4413func_02089328Ev(void *p); }
-extern "C" { void _ZN12Unk_020e0d44D1Ev(void *p); }
+extern "C" { void _ZN9TalkArrowC1Eh(void *p, s32 v); }
+extern "C" { void _ZN9TalkArrow11setAltStyleEv(void *p); }
+extern "C" { void _ZN9TalkArrowD1Ev(void *p); }
 extern "C" { void _ZN12TalkBusyIcon4exitEv(void *p); }
 extern "C" { void _ZN12TalkBusyIcon4initEv(void *p); }
 extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
@@ -3659,12 +3659,12 @@ TalkFrame *TalkFrame::construct() {
     unk_00 = NULL;
     unk_04 = NULL;
     unk_08 = NULL;
-    _ZN12Unk_020e0d44C1Eh(unk_0c, 1);
+    _ZN9TalkArrowC1Eh(unk_0c, 1);
     _ZN12TalkBusyIconC1Ev(unk_50);
     unk_74 = 0;
     unk_78 = 0;
     unk_7c = 0;
-    _ZN12Unk_020e0d4413func_02089328Ev(unk_0c);
+    _ZN9TalkArrow11setAltStyleEv(unk_0c);
     _ZN12TalkBusyIcon4initEv(unk_50);
     return this;
 }
@@ -3673,7 +3673,7 @@ TalkFrame *TalkFrame::destruct() {
     _ZN12TalkBusyIcon4exitEv(unk_50);
     freeBuffers();
     _ZN12TalkBusyIconD1Ev(unk_50);
-    _ZN12Unk_020e0d44D1Ev(unk_0c);
+    _ZN9TalkArrowD1Ev(unk_0c);
     return this;
 }
 void TalkFrame::update() {
@@ -3827,10 +3827,10 @@ extern "C" { void _ZN12TalkBusyIcon8callDrawEv(void *); }
 extern "C" { void _ZN12TalkBusyIcon10callUpdateEv(void *); }
 extern "C" { void _ZN12TalkBusyIcon11requestHideEv(void *); }
 extern "C" { void _ZN12TalkBusyIcon11requestShowEj(void *); }
-extern "C" { s32 _ZN12Unk_020e0d4413func_020892acEv(void *); }
-extern "C" { BOOL _ZN12Unk_020e0d4413func_02089284Ev(void *); }
-extern "C" { void _ZN12Unk_020e0d4413func_02089320Eii(void *, s32, s32); }
-extern "C" { void _ZN12Unk_020e0d4413func_020892b0Ei(void *, s32); }
+extern "C" { s32 _ZN9TalkArrow8getStateEv(void *); }
+extern "C" { BOOL _ZN9TalkArrow10isAnimDoneEv(void *); }
+extern "C" { void _ZN9TalkArrow9setOffsetEii(void *, s32, s32); }
+extern "C" { void _ZN9TalkArrow8setStateEi(void *, s32); }
 extern "C" { void Gfx2d_SetMainBg2Offset(s32, s32); }
 extern "C" { void Gfx2d_SetMainWin0Rect(s32, s32, s32, s32); }
 extern "C" { void Gfx2d_HideMainPlanes(s32); }
@@ -3897,17 +3897,17 @@ void TalkFrameView::setScroll(s32 a, s32 b)
     Gfx2d_SetMainWin0Rect(lo, 0x3c, hi, 0xc0);
 }
 void TalkFrameView::hideArrow() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 0); }
+    using namespace n8; _ZN9TalkArrow8setStateEi(&unk_0c, 0); }
 void TalkFrameView::showArrowWait() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 1); }
+    using namespace n8; _ZN9TalkArrow8setStateEi(&unk_0c, 1); }
 void TalkFrameView::showArrowNext() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 2); }
+    using namespace n8; _ZN9TalkArrow8setStateEi(&unk_0c, 2); }
 void TalkFrameView::showArrowEnd() {
-    using namespace n8; _ZN12Unk_020e0d4413func_020892b0Ei(&unk_0c, 3); }
+    using namespace n8; _ZN9TalkArrow8setStateEi(&unk_0c, 3); }
 void TalkFrameView::updateArrow()
 {
     using namespace n8;
-    _ZN12Unk_020e0d4413func_02089320Eii(&unk_0c, unk_74 + 0x55, unk_78 + 0x47);
+    _ZN9TalkArrow9setOffsetEii(&unk_0c, unk_74 + 0x55, unk_78 + 0x47);
     unk_0c.vfunc_0c();
 }
 void TalkFrameView::drawArrow() {
@@ -3915,25 +3915,25 @@ void TalkFrameView::drawArrow() {
 BOOL TalkFrameView::isArrowHidden()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 0) return TRUE;
+    if (unk_7c == 0 && _ZN9TalkArrow8getStateEv(&unk_0c) == 0) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowWaiting()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 1) return TRUE;
+    if (unk_7c == 0 && _ZN9TalkArrow8getStateEv(&unk_0c) == 1) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowNextDone()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 2 && _ZN12Unk_020e0d4413func_02089284Ev(&unk_0c)) return TRUE;
+    if (unk_7c == 0 && _ZN9TalkArrow8getStateEv(&unk_0c) == 2 && _ZN9TalkArrow10isAnimDoneEv(&unk_0c)) return TRUE;
     return FALSE;
 }
 BOOL TalkFrameView::isArrowEndDone()
 {
     using namespace n8;
-    if (unk_7c == 0 && _ZN12Unk_020e0d4413func_020892acEv(&unk_0c) == 3 && _ZN12Unk_020e0d4413func_02089284Ev(&unk_0c)) return TRUE;
+    if (unk_7c == 0 && _ZN9TalkArrow8getStateEv(&unk_0c) == 3 && _ZN9TalkArrow10isAnimDoneEv(&unk_0c)) return TRUE;
     return FALSE;
 }
 void TalkFrameView::showBusyIcon()
@@ -4212,7 +4212,7 @@ extern "C" { s32 Input_LoadMode(); }
 extern "C" { s32 _ZN12MsgString17BD1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString17D1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString9BD1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020dd38cD1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString9CD1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString11D1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString25D1Ev(void *p); }
 extern "C" { s32 _ZN9TalkVoiceD1Ev(void *p); }
@@ -4248,7 +4248,7 @@ TalkWindowState::~TalkWindowState() {
     _ZN11MsgString9BD1Ev(unk_18d4);
     _ZN11MsgString9BD1Ev(unk_18b8);
     _ZN11MsgString9BD1Ev(unk_189c);
-    _ZN12Unk_020dd38cD1Ev(unk_1880);
+    _ZN11MsgString9CD1Ev(unk_1880);
     _ZN11MsgString11D1Ev(unk_1860);
     _ZN11MsgString25D1Ev(unk_1834);
     _ZN11MsgString25D1Ev(unk_1808);
@@ -4670,7 +4670,7 @@ extern "C" { extern u8 gSaveData[]; }
 extern "C" { s32 strncmp(const char *a, const char *b, u32 n); }
 extern "C" { u32 func_0212a438(const char *s); }
 extern "C" { char *func_020639e8(char *buf, const char *fmt, ...); }
-extern "C" { void func_020638d0(void *dst, void *src); }
+extern "C" { void TownId_GetNameString(void *dst, void *src); }
 extern "C" { void Snd_PlaySe(void); }
 extern "C" { void _ZN13TalkMsgBuffer5clearEv(void *p); }
 extern "C" { void BmgMsgAttr_Copy(void *dst, void *src); }
@@ -4761,7 +4761,7 @@ void TalkWindowMsg::clearTownName() {
 BOOL TalkWindowMsg::buildTownName() {
     using namespace n5;
     _ZN9MsgString5clearEv(unk_1880);
-    func_020638d0((u8 *)((u32)gSaveData + 2), unk_1880);
+    TownId_GetNameString((u8 *)((u32)gSaveData + 2), unk_1880);
     return TRUE;
 }
 void TalkWindowMsg::clearPlayerName() {

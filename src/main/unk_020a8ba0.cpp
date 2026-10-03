@@ -114,19 +114,19 @@ void CommRecord_PackSource(void *p, int a, int b);
 }
 
 extern "C" {
-void func_0208efd0(void);
+void InputModeIcon_Draw(void);
 }
 
 extern "C" {
-void func_0208efe0(void);
+void InputModeIcon_Update(void);
 }
 
 extern "C" {
-void func_0208eff0(void);
+void InputModeIcon_Exit(void);
 }
 
 extern "C" {
-void func_0208f000(void);
+void InputModeIcon_Init(void);
 }
 
 extern "C" {
@@ -745,7 +745,7 @@ MsgUiProc::MsgUiProc() {}
 MsgUiProc::~MsgUiProc() {}
 
 BOOL MsgUiProc::vfunc_00() {
-    func_0208f000();
+    InputModeIcon_Init();
     Input_ResetMode();
     AbAllObjGfx_Upload();
     HudObjGfx_LoadForScene();
@@ -761,12 +761,12 @@ BOOL MsgUiProc::vfunc_0c() {
     FieldInfoBalloon_Release();
     TalkWindow_DestroyAll();
     HudObjGfx_ClearMsgUiActive();
-    func_0208eff0();
+    InputModeIcon_Exit();
     return TRUE;
 }
 
 BOOL MsgUiProc::onExecute() {
-    func_0208efe0();
+    InputModeIcon_Update();
     TalkWindow_UpdateAll();
     FieldInfoBalloon_Update();
     return TRUE;
@@ -775,7 +775,7 @@ BOOL MsgUiProc::onExecute() {
 BOOL MsgUiProc::onDraw() {
     FieldInfoBalloon_Draw();
     TalkWindow_DrawAll();
-    func_0208efd0();
+    InputModeIcon_Draw();
     return TRUE;
 }
 

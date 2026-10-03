@@ -65,11 +65,11 @@ MEMBER(Unk_0201a794, 0x418 - 0x3b0);
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-MEMBER(Unk_020e0cf4, 0x514 - 0x4cc);
+MEMBER(ActorFollowCollider, 0x514 - 0x4cc);
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); ~Unk_020135e4(); };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); ~Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); ~SpNpcAnimHeapHandle(); };
 
 extern "C" void func_020f43c8(void *p);
 
@@ -128,7 +128,7 @@ struct NpcActor : Character {
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     CollisionState unk_49c;
-    Unk_020e0cf4 unk_4cc;
+    ActorFollowCollider unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
@@ -171,13 +171,13 @@ void NpcRegistry_RemoveSpNpc(void *p);
 BOOL _ZN11CommManager8isOnlineEv(u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL func_020e96ec(void *a, void *b);
-void *_ZN12Unk_020e074013func_02081fb8Ev(void *p);
-BOOL _ZN12Unk_020e071813func_02082140Ev(void *p);
-void _ZN12Unk_020e071813func_0208211cEv(void *p);
+void *_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(void *p);
+BOOL _ZN12NpcResHandle7acquireEv(void *p);
+void _ZN12NpcResHandle7releaseEv(void *p);
 BOOL _ZN11NpcFaceAnim4loadEP18Unk_02019cac_Owner(void *p, void *q);
 BOOL _ZN11NpcAnimCtrl12initForActorEP16Unk_02015fe0_Obji(void *p, void *q, s32 r);
 void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
+void _ZN19ActorFollowCollider13setupForActorEPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
 BOOL NpcRegistry_AddSpNpc(void *p, void *q);
 void _ZN12Unk_0201347415enableFootstepsEv(void *p);
 s32 _ZN8NpcActor15netReadPositionEPiPh(void *self, void *a, void *b);
@@ -211,7 +211,7 @@ public:
     BOOL loadAnimSet();
     void setColliderSize(s32 a, s32 b);
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -220,7 +220,7 @@ public:
 SpNpcActor::~SpNpcActor() {}
 
 BOOL SpNpcActor::loadAnimSet() {
-    void *p = _ZN12Unk_020e074013func_02081fb8Ev(&unk_640);
+    void *p = _ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&unk_640);
     if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
     }
@@ -264,8 +264,8 @@ BOOL SpNpcActor::vfunc_00() {
             unk_94 = s;
         }
     }
-    if (!_ZN12Unk_020e074013func_02081fb8Ev(&unk_640)) {
-        if (!_ZN12Unk_020e071813func_02082140Ev(&unk_640)) {
+    if (!_ZN17NpcClothTexHandle19getSpNpcAnimHeapRefEv(&unk_640)) {
+        if (!_ZN12NpcResHandle7acquireEv(&unk_640)) {
             return FALSE;
         }
         if (!loadAnimSet()) {
@@ -279,7 +279,7 @@ BOOL SpNpcActor::vfunc_00() {
         return FALSE;
     }
     _ZN13NpcActionCtrl11startActionEPhiiiisii(&unk_564, this, 0, 1, 0, 0, 0, 0, 0);
-    _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
+    _ZN19ActorFollowCollider13setupForActorEPviijjjhi(&unk_4cc, this, unk_648, unk_64c, 8, 0x2fc, 3, (u8)getNpcIndex(), 0x1000);
     if (!NpcRegistry_AddSpNpc(this, &unk_ea)) {
         return FALSE;
     }
@@ -299,7 +299,7 @@ BOOL SpNpcActor::vfunc_0c() {
     if (!NpcActor::vfunc_0c()) {
         return FALSE;
     }
-    _ZN12Unk_020e071813func_0208211cEv(&unk_640);
+    _ZN12NpcResHandle7releaseEv(&unk_640);
     return TRUE;
 }
 

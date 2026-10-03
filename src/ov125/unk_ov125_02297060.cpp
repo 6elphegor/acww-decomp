@@ -37,7 +37,7 @@ void Gfx2d_ShowLayer(u32 x);
 void Gfx2d_SetSubBgModeState(u32 x);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
+void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
 s32 Snd_PlaySe(s32 a);
 void MenuCtrl_SetIndex(u32 a);
 void MenuCtrl_SetResult(u32 v);
@@ -48,8 +48,8 @@ void StrBuf_GameToAscii(void *p, void *q);
 
 void _ZN18EncodedString16BufC1Ev(void *p);
 void _ZN18EncodedString16BufD1Ev(void *p);
-void _ZN12Unk_020e0d80C1Ev(void *p);
-void _ZN12Unk_020e0d80D1Ev(void *p);
+void _ZN16LabelBalloonTextC1Ev(void *p);
+void _ZN16LabelBalloonTextD1Ev(void *p);
 void _ZN12LabelBalloon6setPosEii(void *self, s32 x, s32 y);
 void _ZN12LabelBalloon7setTextEP6StrBuf(void *self, void *b);
 
@@ -375,7 +375,7 @@ BOOL PatternSelectMenu::onDraw() {
     do {
         sPatternSelectIconCell[2] = (sPatternSelectIconCell[2] & 0xfffffc00) | ((u16)(j * 4 + 0xc0) & 0x3ff);
         s32 y = r7 + getSlotY(i);
-        func_02088730(1, sPatternSelectIconCell, getSlotX(i), y, j + 5, 2, z);
+        Oam_DrawObj(1, sPatternSelectIconCell, getSlotX(i), y, j + 5, 2, z);
         i++;
         j++;
     } while (j < 8);
@@ -787,10 +787,10 @@ void PatternSelectMenu::refreshNameLabel() {
     _ZN12LabelBalloon6setPosEii(&unk_428, getSlotX(unk_6b6) - 0x78, x);
     _ZN18EncodedString16BufC1Ev(a);
     _ZN11PatternInfo15getTitleEncodedEP18EncodedString16Buf(_ZN7Pattern7getInfoEv(_ZN14PlayerPatterns17getPatternByOrderEj(_ZN10PlayerData11getPatternsEv(PlayerData_GetCurrent()), unk_6b6)), a);
-    _ZN12Unk_020e0d80C1Ev(b);
+    _ZN16LabelBalloonTextC1Ev(b);
     StrBuf_GameToAscii(b, a);
     _ZN12LabelBalloon7setTextEP6StrBuf(&unk_428, b);
-    _ZN12Unk_020e0d80D1Ev(b);
+    _ZN16LabelBalloonTextD1Ev(b);
     _ZN18EncodedString16BufD1Ev(a);
 }
 

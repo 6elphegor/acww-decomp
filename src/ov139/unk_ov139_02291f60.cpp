@@ -51,20 +51,20 @@ public:
     /* 0x08 */ MsgStringAttr unk_08;
 };
 
-class Unk_020dd374 : public EncodedString {
+class EncodedString8B : public EncodedString {
 public:
-    Unk_020dd374();
-    virtual ~Unk_020dd374();
+    EncodedString8B();
+    virtual ~EncodedString8B();
     virtual u32 capacity();
     virtual u8 *data();
 
     /* 0x0e */ u8 unk_0e[10];
 };
 
-class Unk_020dd38c : public MsgString {
+class MsgString9C : public MsgString {
 public:
-    Unk_020dd38c();
-    virtual ~Unk_020dd38c();
+    MsgString9C();
+    virtual ~MsgString9C();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -333,8 +333,8 @@ LabelString *MenuTownListPanel::allocTextLabel() {
 
 void MenuTownListPanel::setRowTownName(s32 i, u8 *str, u8 pal) {
     LabelString *t = allocTextLabel();
-    static Unk_020dd374 sA;
-    static Unk_020dd38c sB;
+    static EncodedString8B sA;
+    static MsgString9C sB;
     if (str == NULL) {
         t->clear();
     } else {

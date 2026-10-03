@@ -62,9 +62,9 @@ public:
     u8 getState();
 };
 
-class Unk_0208f238 {
+class TownExchangeRecord {
 public:
-    s32 func_0208f15c();
+    s32 getCounter();
 };
 
 class BgVramTask {
@@ -110,7 +110,7 @@ void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
 void Snd_PlaySe(s32 a);
 u32 Clock_GetTimeOfDay();
-void *func_0208f158(void *p);
+void *TownExchange_GetLetter(void *p);
 BOOL PlayerDataArray_IsUsed(void *t, s32 i);
 s32 PlayerDataArray_CountUsed(void *t);
 void *PlayerData_GetResident(void *t, s32 i);
@@ -940,8 +940,8 @@ void TitleTalk::chooseResident() {
 
 void TitleTalk::chooseTagMode() {
     u8 *g = data_021e7f8c;
-    if (((LetterView *)func_0208f158(g))->getState()) {
-        if (((Unk_0208f238 *)g)->func_0208f15c() == 0) {
+    if (((LetterView *)TownExchange_GetLetter(g))->getState()) {
+        if (((TownExchangeRecord *)g)->getCounter() == 0) {
             u8 v = 0x35;
             unk_3c->setNextMessage(&v, 0);
         }

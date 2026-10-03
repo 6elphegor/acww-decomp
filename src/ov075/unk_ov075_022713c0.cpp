@@ -81,7 +81,7 @@ void *PlayerData_GetCurrent();
 s32 ChoiceList_getResult();
 s32 Unk_02097ff4_testFlag(void *p, s32 a);
 s32 Unk_02097ff4_setFlag(void *p, s32 a);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 void Unk_020d7710_requestCloseWindow(void *self, s32 a);
 s32 Unk_020d7710_requestReopenWindow(void *self);
@@ -285,7 +285,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -391,7 +391,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -794,7 +794,7 @@ BOOL SpNpcPete::mainAct05() {
                         r6 = Math_AngleXZ(&unk_5c, &a);
                         if (NpcActor_IsFrontAngle((s16)(r6 - unk_8e)) != 0) {
                             r6 = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
                             NpcActionCtrl_requestAction(r4, r6, 1, a.x, a.z, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -928,7 +928,7 @@ void SpNpcPeteTalk::scriptWakeUp() {
                     unk_3c->setNextMessage(buf, (void *)"sp_npc_mpelican");
                 } else {
                     Talk_CheckAndSetPlayerFlag(0x12, 1);
-                    buf[1] = func_02063b8c(12);
+                    buf[1] = Random_GlobalBelow(12);
                     unk_3c->setNextMessage(&buf[1], (void *)"sp_npc_mpelican");
                 }
                 setScript(0);
@@ -951,7 +951,7 @@ void SpNpcPeteTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_04 = 0x1a;
     if (unk_b4[0x714] != 0) {
         if (Unk_02097ff4_testFlag(PlayerData_GetCurrent(), 6) != 0) {
-            out->unk_04 = func_02063b8c(4) + 12;
+            out->unk_04 = Random_GlobalBelow(4) + 12;
         }
     }
     out->unk_00 = "sp_npc_mpelican";

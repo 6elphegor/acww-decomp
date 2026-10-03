@@ -21,7 +21,7 @@ void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void *File_LoadF(const char *fmt, ...);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
-void func_0206c92c(void);
+void MailCheck_LoadWordList(void);
 
 // autoload_2: copies of the tile buffer to VRAM, one per target
 void GX_LoadBG0Char(void *src, u32 offset, u32 size);
@@ -234,7 +234,7 @@ TextSystemModule::~TextSystemModule() {}
 
 BOOL TextSystemModule::vfunc_00() {
     Text_InitSystem();
-    func_0206c92c();
+    MailCheck_LoadWordList();
     return TRUE;
 }
 

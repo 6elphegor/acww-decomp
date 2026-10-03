@@ -41,9 +41,9 @@ s32 _ZN12Unk_02097ff48testFlagEj(s32, s32);
 s32 _ZN12Unk_02097ff49clearFlagEj(s32, s32);
 s32 _ZN12Unk_02097ff47setFlagEj(s32, s32);
 s32 MenuCtrl_IsClockMovedForward(void);
-void _ZN12Unk_020dd38cC2Ev(void *);
-void _ZN12Unk_020dd38cD1Ev(void *);
-void func_020638d0(void *, void *);
+void _ZN11MsgString9CC2Ev(void *);
+void _ZN11MsgString9CD1Ev(void *);
+void TownId_GetNameString(void *, void *);
 void MailText_SetSlot(s32, void *);
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
@@ -158,15 +158,15 @@ extern "C" void PlayerBank_SendMilestoneLetter(s32 n) {
                 ch = k + 0x15;
                 Letter e;
                 u32 buf[7];
-                _ZN12Unk_020dd38cC2Ev(buf);
-                func_020638d0(gSaveTownId, buf);
+                _ZN11MsgString9CC2Ev(buf);
+                TownId_GetNameString(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
                 Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
                 _ZN10LetterView10setPresentEtj(&e, col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                     _ZN12Unk_02097ff47setFlagEj(s, bit);
                 }
-                _ZN12Unk_020dd38cD1Ev(buf);
+                _ZN11MsgString9CD1Ev(buf);
             }
         }
     }

@@ -20,8 +20,8 @@ extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
 void String_Load2dMenu(void *self, u32 v);
-void _ZN12Unk_020dd38cC2Ev(void *self);
-void _ZN12Unk_020dd38cD1Ev(void *self);
+void _ZN11MsgString9CC2Ev(void *self);
+void _ZN11MsgString9CD1Ev(void *self);
 s32 _ZN10PlayerData11getPlayerIdEv(void *self);
 void _ZN9MsgString5clearEv(void *self);
 void func_02004018(u32 a, s32 b);
@@ -38,7 +38,7 @@ BOOL MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 s32 _s32_div_f(s32 a, s32 b);
 s32 MenuTabBar_GetTabX(s32 v);
 s32 MenuTabBar_HitTestTouch();
@@ -73,7 +73,7 @@ void func_020e761c(void *p, s32 a, s32 b);
 void *PlayerActor_GetBodyPos(s32 a);
 s32 Scene_GetWarpRequest();
 void *ScenePos_GetPos(void *p);
-void func_020638d0(void *a, void *b);
+void TownId_GetNameString(void *a, void *b);
 void String_SetSlot(s32 a, void *p);
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -729,14 +729,14 @@ void MapTab::stateBuildList() {
 void MapTab::stateOpen() {
     u32 buf[8];
     loadObjGfx();
-    _ZN12Unk_020dd38cC2Ev(buf);
-    func_020638d0(gSaveTownId, buf);
+    _ZN11MsgString9CC2Ev(buf);
+    TownId_GetNameString(gSaveTownId, buf);
     String_SetSlot(0, buf);
     LabelString *o = allocTextLabel();
     o->createLabel(8, 0x1ab, 0x12, 0xf, 0, 0);
     String_Load2dMenu(o, 0xa9);
     o->redrawAligned(1, 0);
-    _ZN12Unk_020dd38cD1Ev(buf);
+    _ZN11MsgString9CD1Ev(buf);
     beginSubSlideIn(0xa, 3, 0, 0x30);
     Gfx2d_ShowLayer(4);
     applySlideOffset(4, 0, 0);
@@ -1354,7 +1354,7 @@ void MapTab::drawMapIcon(s32 x, s32 y, s32 n, s32 flag, s32 pal) {
         t = sMapTabIconCell.pal | 8;
         sMapTabIconCell.pal = t;
     }
-    func_02088730(1, &sMapTabIconCell, x, y, pal, 1, 0);
+    Oam_DrawObj(1, &sMapTabIconCell, x, y, pal, 1, 0);
     if (flag != 0) {
         sMapTabIconCell.pal = t & 0x17;
     }

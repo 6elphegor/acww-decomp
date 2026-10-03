@@ -190,7 +190,7 @@ s32 Item_GetFurnitureIndex(void *p);
 }
 
 extern "C" {
-s32 func_02063c18(s32 v);
+s32 Math_AngleToDir4(s32 v);
 }
 
 extern "C" {

@@ -176,7 +176,7 @@ void *FtrActor_GetFtrIndex();
 s32 Pocket_FindEmpty();
 void TalkWindowState_setNextMessage(void *a, u8 *b, void *c);
 void Hud_Hide();
-u32 func_02063b8c(u32 a);
+u32 Random_GlobalBelow(u32 a);
 void *PlayerData_GetCurrent();
 void *PlayerData_getPlayerId(void *o);
 void *Villager_FindOrCreateMemory(void *o, void *a);
@@ -867,7 +867,7 @@ void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
     if (unk_1a0->unk_a4c == 3) {
         VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "ev_fmarket2");
         out->unk_00 = data_ov004_022506f0;
-        out->unk_04 = func_02063b8c(3) + 3;
+        out->unk_04 = Random_GlobalBelow(3) + 3;
         return;
     }
     u16 *q = &unk_1a0->unk_894;
@@ -920,20 +920,20 @@ void FleaMarketSellerVillagerTalk::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade3");
         }
         out->unk_00 = data_ov004_022506f0;
-        out->unk_04 = func_02063b8c(3);
+        out->unk_04 = Random_GlobalBelow(3);
     } else {
         switch (unk_1a0->unk_a4c) {
         case 0:
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "ev_fmarket2");
-            out->unk_04 = func_02063b8c(3);
+            out->unk_04 = Random_GlobalBelow(3);
             break;
         case 1:
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "q11_trade1");
-            out->unk_04 = func_02063b8c(3);
+            out->unk_04 = Random_GlobalBelow(3);
             break;
         case 2:
             VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506f0, 0x28, "ev_fmarket2");
-            out->unk_04 = func_02063b8c(3) + 6;
+            out->unk_04 = Random_GlobalBelow(3) + 6;
             break;
         }
         out->unk_00 = data_ov004_022506f0;
@@ -963,7 +963,7 @@ void FleaMarketSellerVillagerTalk::vfunc_18() {
         case 1:
         case 2:
             s = data_ov004_022506c8;
-            r4 = (u8)func_02063b8c(3);
+            r4 = (u8)Random_GlobalBelow(3);
             if (r6 == 0) {
                 VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q11_trade2");
                 Hud_Hide();
@@ -985,7 +985,7 @@ void FleaMarketSellerVillagerTalk::vfunc_18() {
                 VillagerId_makeFileName(VillagerData_getVillagerId(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q11_no");
             }
             s = data_ov004_022506c8;
-            r4 = (u8)func_02063b8c(3);
+            r4 = (u8)Random_GlobalBelow(3);
             break;
         }
     }

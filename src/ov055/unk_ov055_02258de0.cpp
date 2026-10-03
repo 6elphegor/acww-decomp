@@ -167,7 +167,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -281,18 +281,18 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
 };
 
-struct Unk_0208f238 {
+struct TownExchangeRecord {
     u8 unk_00[0x84c];
 
-    ~Unk_0208f238();
-    void func_0208f174();
-    void func_0208f1a8(u32 v);
+    ~TownExchangeRecord();
+    void incrementCounter();
+    void setUnkFlag(u32 v);
 };
 
 extern "C" {
@@ -313,8 +313,8 @@ extern SpNpcRover *sSpNpcRoverInstance;
 s32 _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void OverlayHandle_Unload(void *p);
 void OverlayHandle_Load(void *p, u32 v);
-Unk_0208f238 *func_0208f0b0(s32 i);
-void func_0208f1dc(void *p);
+TownExchangeRecord *TownExchange_GetForAid(s32 i);
+void TownExchange_Clear(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 s32 Constellation_PrepareExchange();
@@ -376,16 +376,16 @@ struct Unk_ov055_02259234_Flag {
     u8 pad[11];
 };
 
-struct Unk_0208f0a0 {
+struct ReceivedLetterBlock {
     u8 unk_00[0xf8];
     u8 unk_f8;
     u8 pad_f9[3];
 
-    ~Unk_0208f0a0();
+    ~ReceivedLetterBlock();
 };
 
-extern "C" void _ZN12Unk_0208f238C1Ev(void *self);
-extern "C" void _ZN12Unk_0208f0a0C1Ev(void *self);
+extern "C" void _ZN18TownExchangeRecordC1Ev(void *self);
+extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *self);
 
 class SpNpcRover;
 typedef BOOL (SpNpcRover::*Unk_ov055_02259994_Fn)();
@@ -399,11 +399,11 @@ class SpNpcRover : public SpNpcActor {
 public:
     SpNpcRover() {
         u8 *p = (u8 *)&unk_710;
-        _ZN12Unk_0208f238C1Ev(p);
-        _ZN12Unk_0208f0a0C1Ev(p + 0x84c);
+        _ZN18TownExchangeRecordC1Ev(p);
+        _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
         p = (u8 *)&unk_1058;
-        _ZN12Unk_0208f238C1Ev(p);
-        _ZN12Unk_0208f0a0C1Ev(p + 0x84c);
+        _ZN18TownExchangeRecordC1Ev(p);
+        _ZN19ReceivedLetterBlockC1Ev(p + 0x84c);
     }
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -434,10 +434,10 @@ public:
     /* 0x70c */ u8 unk_70c;
     /* 0x70d */ u8 unk_70d;
     /* 0x70e */ u8 pad_70e[2];
-    /* 0x710 */ Unk_0208f238 unk_710;
-    /* 0xf5c */ Unk_0208f0a0 unk_f5c;
-    /* 0x1058 */ Unk_0208f238 unk_1058;
-    /* 0x18a4 */ Unk_0208f0a0 unk_18a4;
+    /* 0x710 */ TownExchangeRecord unk_710;
+    /* 0xf5c */ ReceivedLetterBlock unk_f5c;
+    /* 0x1058 */ TownExchangeRecord unk_1058;
+    /* 0x18a4 */ ReceivedLetterBlock unk_18a4;
 };
 
 struct Unk_ov055_SceneEntry {
@@ -719,20 +719,20 @@ void SpNpcRoverTalk::waitTagModeStop() {
 }
 
 void SpNpcRover::applyReceivedData() {
-    Unk_0208f238 *r4 = func_0208f0b0(4);
+    TownExchangeRecord *r4 = TownExchange_GetForAid(4);
     u32 st = unk_18a4.unk_f8;
     if (st == 2) {
         MI_CpuCopy8(&unk_18a4, data_021ecfa8, 0xf8);
         restoreOwnTransfer();
     } else if (st == 1) {
         MI_CpuCopy8(&unk_1058, r4, 0x84c);
-        r4->func_0208f174();
-        r4->func_0208f1a8(1);
+        r4->incrementCounter();
+        r4->setUnkFlag(1);
     }
 }
 
 void SpNpcRover::restoreOwnTransfer() {
-    MI_CpuCopy8(&unk_710, func_0208f0b0(4), 0x84c);
+    MI_CpuCopy8(&unk_710, TownExchange_GetForAid(4), 0x84c);
 }
 
 BOOL SpNpcRover::vfunc_48() {
@@ -769,10 +769,10 @@ void SpNpcRover::vfunc_4c(s32 a) {
 
 void SpNpcRover::prepareTagData() {
     Constellation_PrepareExchange();
-    Unk_0208f238 *r4 = func_0208f0b0(4);
+    TownExchangeRecord *r4 = TownExchange_GetForAid(4);
     MI_CpuCopy8(r4, &unk_710, 0x84c);
     unk_f5c.unk_f8 = 1;
-    func_0208f1dc(r4);
+    TownExchange_Clear(r4);
     if (unk_70c == 0) {
         s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
@@ -783,7 +783,7 @@ void SpNpcRover::prepareTagData() {
 
 void SpNpcRover::saveTagData() {
     if (unk_70c == 0) {
-        func_0208f0b0(4);
+        TownExchange_GetForAid(4);
         s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
             unk_70c = 1;

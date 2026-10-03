@@ -21,7 +21,7 @@ extern Unk_0206fd10_Mtx data_021cb69c;
 s32 Item_GetFossilGroup(u16 *p);
 }
 
-Unk_0206fde4_Mtx data_021cb6cc[31];
+Unk_0206fde4_Mtx sCpuMtxStack[31];
 
 static inline u32 Unk_0206fe34_Id(u32 i) {
     if (i < 0x34) {
@@ -30,7 +30,7 @@ static inline u32 Unk_0206fe34_Id(u32 i) {
     return 0x450c;
 }
 
-extern "C" s32 func_0206fe34(u32 a, s32 b) {
+extern "C" s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b) {
     s32 cnt = 0;
     u32 i;
     for (i = 0; i < 0x34; i++) {
@@ -44,10 +44,10 @@ extern "C" s32 func_0206fe34(u32 a, s32 b) {
     return cnt;
 }
 
-extern "C" void func_0206fe0c(u32 i) {
-    data_021cb6cc[i] = *(Unk_0206fde4_Mtx *)&data_021cb69c;
+extern "C" void CpuMtx_StoreToStack(u32 i) {
+    sCpuMtxStack[i] = *(Unk_0206fde4_Mtx *)&data_021cb69c;
 }
 
-extern "C" void func_0206fde4(u32 i) {
-    *(Unk_0206fde4_Mtx *)&data_021cb69c = data_021cb6cc[i];
+extern "C" void CpuMtx_RestoreFromStack(u32 i) {
+    *(Unk_0206fde4_Mtx *)&data_021cb69c = sCpuMtxStack[i];
 }

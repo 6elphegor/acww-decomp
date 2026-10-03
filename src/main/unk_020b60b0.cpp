@@ -409,7 +409,7 @@ extern s32 data_020c8cb8;
 extern s32 data_020c7c1c;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
-extern Unk_020b60dc_Node *data_021ce638;
+extern Unk_020b60dc_Node *gActorColliderList;
 extern u8 gFieldSceneKind;
 }
 
@@ -633,7 +633,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
             self->unk_19 = n->unk_18;
         }
     }
-    for (Unk_020b60dc_Node *n = data_021ce638; n != 0; n = n->unk_38) {
+    for (Unk_020b60dc_Node *n = gActorColliderList; n != 0; n = n->unk_38) {
         if (TouchPickKind_HasTarget(n->unk_0c)) {
             if (TouchPick_HitCylinder(&p1, &p0, n->vfunc_00(), n->unk_04, n->unk_08)) {
                 Vec3 *vp = n->vfunc_00();

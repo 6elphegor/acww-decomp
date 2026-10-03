@@ -263,8 +263,8 @@ u32 CharaClothTexPool_GetOwnRef(void);
 void _ZN16CharaClothTexRef8loadItemEPtiii(u32 a, u16 *code, u32 b, u32 c, u32 d);
 u32 CharaClothTexRef_GetBuffer(u32 a);
 void HeldItemModel_GetJointMtx(Unk_0205dfb8_Out *out, Unk_0205dfb8_Obj *o, u32 a);
-void func_02063a5c(u32 a, u32 b, char *c, char *d);
-void func_02063a1c(u32 a, u32 b, char *c, char *d);
+void G3dRes_CopyTexByName(u32 a, u32 b, char *c, char *d);
+void G3dRes_CopyPlttByName(u32 a, u32 b, char *c, char *d);
 void _ZN11CachedModel11setFromFileEPv(void *slot, u32 a);
 void _ZN9AnimModel11allocAnmObjEPv(void *slot, u32 a);
 void _ZN11CachedModel16allocJointRecordEPv(void *slot, u32 a);
@@ -668,8 +668,8 @@ extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *cod
                 _ZN16CharaClothTexRef8loadItemEPtiii(f, code, a5, 0, 0);
                 u32 h = (u32)NNS_G3dGetTex((void *)CharaClothTexRef_GetBuffer(f));
                 u32 h2 = (u32)NNS_G3dGetTex((void *)s);
-                func_02063a5c(h, h2, (char *)"cloth", (char *)"myD");
-                func_02063a1c(h, h2, (char *)"cloth", (char *)"myD");
+                G3dRes_CopyTexByName(h, h2, (char *)"cloth", (char *)"myD");
+                G3dRes_CopyPlttByName(h, h2, (char *)"cloth", (char *)"myD");
             }
         }
         HeldItemModels_RelocateTexture(&sHeldItemModelBank, id);

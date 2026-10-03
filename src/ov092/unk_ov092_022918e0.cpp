@@ -8,14 +8,14 @@
 extern "C" {
 u32 MenuCtrl_GetMode();
 void MenuScreen_BeginOpen();
-void func_0206db88(s32 a);
+void MenuScreen_SetBackgroundKind(s32 a);
 void Snd_PlaySe(s32 a);
 void func_02003f5c(s32 a);
 void Gfx2d_SetSubBgModeState(s32 a);
 void func_0206e60c();
 void MenuCtrl_RequestOpenNested(s32 a);
 void MenuCtrl_SetMode(s32 a);
-void func_0206e03c();
+void MenuScreen_ReleaseCloseHold();
 void MenuScreen_BeginClose();
 void func_0206e5fc();
 void MenuScreen_Reset();
@@ -192,7 +192,7 @@ void MenuLauncher::onChildClosed() {
     case 0x44:
         setPhase(0);
         Gfx2d_SetSubBgModeState(1);
-        func_0206e03c();
+        MenuScreen_ReleaseCloseHold();
         break;
     case 0:
     case 1:
@@ -544,19 +544,19 @@ void MenuLauncher::initLauncher() {
     switch (unk_91) {
     case 0x2d:
     case 0x2e:
-        func_0206db88(3);
+        MenuScreen_SetBackgroundKind(3);
         break;
     case 0xf:
-        func_0206db88(1);
+        MenuScreen_SetBackgroundKind(1);
         break;
     case 0x10:
-        func_0206db88(2);
+        MenuScreen_SetBackgroundKind(2);
         break;
     case 0x30:
     case 0x31:
     case 0x32:
     case 0x33:
-        func_0206db88(0);
+        MenuScreen_SetBackgroundKind(0);
         break;
     }
     switch (unk_91) {

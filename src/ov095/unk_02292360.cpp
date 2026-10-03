@@ -72,17 +72,17 @@ s32 Text_MeasureWidth(u8 *s, s32 n);
 s32 Text_GetCharWidth(u32 c);
 s32 File_LoadToBuffer(void *name, void *buf, s32 size);
 s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
-s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
+s32 Text_SplitLines(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 s32 MenuCtrl_GetKeyboardPageMode(s32 a);
 s32 MenuCtrl_GetKeyboardPage(void);
 s32 String_Load2dMenu(void *a, s32 b);
 s32 _ZN11LabelString13redrawAlignedEii(void *a, s32 b, s32 c);
 s32 _ZN11LabelString16createSmallLabelEjjjhhi(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 Cell_HitTestList(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
-s32 func_02087e0c(void *p);
-s32 func_02087e14(void *p);
+s32 Oam_GetObjY(void *p);
+s32 Oam_GetObjX(void *p);
 s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-s32 func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+s32 Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 s32 _ZN8PlayerId9getGenderEv(void);
 s32 PlayerData_GetCurrent(void);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *a, void *b, s32 c, s32 d, s32 e);
@@ -1476,7 +1476,7 @@ BOOL Keyboard_InsertCharMultiline(Keyboard *s, void *p1, s32 p2, u8 *p3, s32 a4,
         Heap_Free(heap, buf);
         return FALSE;
     }
-    if (func_0206cf4c((u8 *)buf, &o28, &o24, a4, a5, a7, a6) == 0) {
+    if (Text_SplitLines((u8 *)buf, &o28, &o24, a4, a5, a7, a6) == 0) {
         if (s->unk_2d != saved) {
             s->unk_2d = saved;
         }
@@ -1707,9 +1707,9 @@ s32 Keyboard_Draw(Keyboard *s, s32 x, s32 y, s32 z)
     LampLights = i;
     for (; i < 3; i++) {
         if (sel == i) {
-            func_02088730(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, LampLights);
+            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, LampLights);
         } else {
-            func_02088730(1, s->unk_30 + (i << 3), x, y, 0xa, z, LightLevel);
+            Oam_DrawObj(1, s->unk_30 + (i << 3), x, y, 0xa, z, LightLevel);
         }
     }
     Oam_DrawCell(1, s->unk_30 + 0x18, x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -1746,16 +1746,16 @@ void Keyboard_DrawEmotionKeys(Keyboard *s, s32 x, s32 y)
             t10 = 0xb;
             t14 = y + 2;
         }
-        func_02088730(1, &data_ov095_02295e48[i], x, t14, -1, 2, z[0]);
-        func_02088730(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, z[1]);
-        func_02088730(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, z[2]);
+        Oam_DrawObj(1, &data_ov095_02295e48[i], x, t14, -1, 2, z[0]);
+        Oam_DrawObj(1, &data_ov095_02295e48[i + 4], x, t14, t10, 2, z[1]);
+        Oam_DrawObj(1, &data_ov095_02295e48[i + 8], x, y, -1, 2, z[2]);
     }
 }
 
 void Keyboard_DrawSendKey(void *s, s32 x, s32 y, s32 z, s32 w)
 {
-    func_02088730(1, data_ov095_02295588, x, y + w, z, 2, 0);
-    func_02088730(1, data_ov095_02295580, x, y, -1, 2, 0);
+    Oam_DrawObj(1, data_ov095_02295588, x, y + w, z, 2, 0);
+    Oam_DrawObj(1, data_ov095_02295580, x, y, -1, 2, 0);
 }
 
 BOOL Keyboard_TouchSendKey()
@@ -1822,7 +1822,7 @@ s32 Keyboard_GetSelectedEmotion(Keyboard *s)
 
 void Keyboard_DrawCaret(void *s, s32 x, s32 y, s32 z)
 {
-    func_02088730(1, data_ov095_02295590, x, y, -1, z, 0);
+    Oam_DrawObj(1, data_ov095_02295590, x, y, -1, z, 0);
 }
 
 void Keyboard_DrawCopyPasteKeysChat(Keyboard *s, s32 x, s32 y)
@@ -1854,7 +1854,7 @@ s32 Keyboard_GetTabKeyX(Keyboard *s, s32 a)
     case 0xca:
     case 0xcb:
     case 0xcc:
-        r = func_02087e14(s->unk_30 + ((a - 0xca) << 3)) + 0x88;
+        r = Oam_GetObjX(s->unk_30 + ((a - 0xca) << 3)) + 0x88;
         break;
     default:
         r = 0x80;
@@ -1870,7 +1870,7 @@ s32 Keyboard_CalcTabRowKeyPos(Keyboard *s)
     case 0xcb:
     case 0xcc:
         s->unk_18 = Keyboard_GetTabKeyX(s, v);
-        s->unk_1c = func_02087e0c(s->unk_30 + (v - 0xca) * 8) + 0x68;
+        s->unk_1c = Oam_GetObjY(s->unk_30 + (v - 0xca) * 8) + 0x68;
         return 1;
     case 0xdb:
         s->unk_18 = 0x18;
@@ -1893,7 +1893,7 @@ s32 Keyboard_CalcTabRowKeyPos(Keyboard *s)
 s32 Keyboard_GetEmotionKeyX(Keyboard *s, s32 a)
 {
     if (a >= 0xde && a <= 0xe1) {
-        return func_02087e14((u8 *)data_ov095_02295e48 + (a - 0xde) * 8) + 0x88;
+        return Oam_GetObjX((u8 *)data_ov095_02295e48 + (a - 0xde) * 8) + 0x88;
     }
     return 0x80;
 }
@@ -1902,13 +1902,13 @@ s32 Keyboard_CalcChatKeyPos(Keyboard *s)
 {
     s32 v = s->unk_14;
     if (v == 0xc9) {
-        s->unk_18 = func_02087e14(data_ov095_02295588) + 0x98;
-        s->unk_1c = func_02087e0c(data_ov095_02295588) + 0x70;
+        s->unk_18 = Oam_GetObjX(data_ov095_02295588) + 0x98;
+        s->unk_1c = Oam_GetObjY(data_ov095_02295588) + 0x70;
         return 1;
     }
     if (v >= 0xde && v <= 0xe1) {
         s->unk_18 = Keyboard_GetEmotionKeyX(s, v);
-        s->unk_1c = func_02087e0c(data_ov095_02295e48) + 0x68;
+        s->unk_1c = Oam_GetObjY(data_ov095_02295e48) + 0x68;
         return 1;
     }
     if (Keyboard_IsMenuTabKey(s, v) != 0) {

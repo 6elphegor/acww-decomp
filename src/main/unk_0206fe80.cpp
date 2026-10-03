@@ -1,8 +1,8 @@
 #include "types.h"
 
-struct Unk_020dd38c {
-    Unk_020dd38c();
-    virtual ~Unk_020dd38c();
+struct MsgString9C {
+    MsgString9C();
+    virtual ~MsgString9C();
     u32 pad[6];
 };
 struct Letter {
@@ -41,7 +41,7 @@ s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
 void _ZN8SaveData7setFlagEj(void *p, s32 i);
 s32 _ZN10PlayerData6isUsedEv(void *p);
 s32 LetterDelivery_PutInAddresseeMailbox(void *p);
-void func_020638d0(void *a, void *b);
+void TownId_GetNameString(void *a, void *b);
 void MailText_SetSlot(s32 i, void *p);
 void _ZN10LetterView10setPresentEtj(void *p, u32 a, s32 b);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
@@ -95,8 +95,8 @@ public:
     void markFormerResident(u16 *id);
     void clearEntry(u16 *id);
     void clear();
-    void func_0207054c();
-    MuseumData *func_02070550();
+    void destruct();
+    MuseumData *construct();
 
     u8 unk_00[0x1b];
     u8 unk_1b[0x1d];
@@ -116,12 +116,12 @@ static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     return r;
 }
 
-MuseumData *MuseumData::func_02070550() {
+MuseumData *MuseumData::construct() {
     clear();
     return this;
 }
 
-void MuseumData::func_0207054c() {}
+void MuseumData::destruct() {}
 
 void MuseumData::clear() {
     u32 i;
@@ -209,8 +209,8 @@ void MuseumData::checkCompletionLetters() {
 }
 
 BOOL MuseumData::sendCompletionLetters() {
-    Unk_020dd38c str;
-    func_020638d0(gSaveTownId, &str);
+    MsgString9C str;
+    TownId_GetNameString(gSaveTownId, &str);
     MailText_SetSlot(2, &str);
     BOOL r = FALSE;
     s32 i = 0;

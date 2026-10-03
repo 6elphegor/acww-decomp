@@ -315,7 +315,7 @@ void _ZN13PeteFallState6getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 s32 _ZN13PeteFallState9getFacingEv(void *a);
 void _ZN12Unk_02086f846getPosEP17Unk_02086ec4_Vec3(void *a, void *b);
 s32 _ZN12Unk_02086f8412pickKatiePosEv(void *a);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 PlayerData_GetCurrent();
 void *_ZN10PlayerData17getDailyTalkFlagsEv();
 s32 _ZN20PlayerDailyTalkFlags4testEj(void *a, s32 b);
@@ -391,7 +391,7 @@ s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s
 void FieldPos_FromBlockUnitCenter(void *, s32, s32, s32, s32);
 void FieldPos_FromBlockUnit(void *, s32, s32, s32, s32);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void OverlayMgr_Release(u32);
 void *VisitorTable_FindByNpc(u16 *, void *, s32);
 void *VisitorTable_FindByProfile(void *, void *, s32);
@@ -567,7 +567,7 @@ s32 Scene_GetVillagerHouse();
 void *SaveVillagers_Get(void *p, s32 i);
 void *NpcNetRecord_GetVillagerVar(void *p);
 s32 NetArea_IsLocalOwner();
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 VillagerStates_GetBirthdayGuest();
 s32 SaveVillagers_GetUnk3830Index(void *p);
 s32 SaveVillagers_GetUnk3830(void *p);
@@ -747,7 +747,7 @@ extern "C" s32 NpcSpawner_PickFreeRoomPos(u8 *a, void *out)
         }
         if (cnt > 0) {
             s32 y, x;
-            r6 = F4::func_02063b8c(cnt);
+            r6 = F4::Random_GlobalBelow(cnt);
             for (y = 0; y < 14; y++) {
                 for (x = 0; x < 16; x++) {
                     if (F4::RoomFreeUnitMap_Test(a + 0x50, x, y)) {
@@ -940,14 +940,14 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
     s32 r4;
     if (F4::NetArea_IsLocalOwner()) {
         r4 = F4::NpcSpawner_PickFreeRoomPos(a, &v);
-        h[3] = F4::func_02063b8c(4) << 14;
+        h[3] = F4::Random_GlobalBelow(4) << 14;
     } else if (e != 0 && e[0] != 0) {
         F4::NetBuf_UnpackPair20(e + 4, &v.x, &v.z);
         F4::MI_CpuCopy8(e + 9, &h[3], 2);
         r4 = 1;
     } else {
         r4 = F4::NpcSpawner_PickFreeRoomPos(a, &v);
-        h[3] = F4::func_02063b8c(4) << 14;
+        h[3] = F4::Random_GlobalBelow(4) << 14;
     }
     if (r4 != 0) {
         s32 c = 0x85;
@@ -973,7 +973,7 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
         if (r6 != 0xd8) {
             if (((s32)(h[1] & 0xf000) >> 12) == 0xe) {
                 F4::NpcSpawner_PickFreeRoomPos(a, &v);
-                h[3] = F4::func_02063b8c(4) << 14;
+                h[3] = F4::Random_GlobalBelow(4) << 14;
                 F4::_ZN5Actor5spawnEPvS0_S0_S0_S0_(r6, h[1], &v, &h[2], a);
             }
         }
@@ -1796,7 +1796,7 @@ extern "C" BOOL VisitorPlace_NearTownHall(s32 a, Unk_02083314_V3 *p, Unk_0208331
             bx -= 2;
             bz += 3;
             F2::FieldPos_FromUnitCenter(p, bx, bz);
-            q->b = F2::func_02063b8c(0xffff);
+            q->b = F2::Random_GlobalBelow(0xffff);
             return TRUE;
         }
     }
@@ -1819,7 +1819,7 @@ extern "C" BOOL VisitorPlace_NearPlayerHouse(s32 a, Unk_02083314_V3 *p, Unk_0208
             bx += 2;
             bz += 2;
             F2::FieldPos_FromUnitCenter(p, bx, bz);
-            q->b = F2::func_02063b8c(0xffff);
+            q->b = F2::Random_GlobalBelow(0xffff);
             return TRUE;
         }
     }
@@ -2165,7 +2165,7 @@ ytest:
     if (y < h) goto yloop;
 ybreak:
     if (count > 0) {
-        s32 i = F1::func_02063b8c(count);
+        s32 i = F1::Random_GlobalBelow(count);
         F1::FieldPos_FromUnitCenter(p1, list[i].x, list[i].y);
         return TRUE;
     }
@@ -2182,7 +2182,7 @@ extern "C" BOOL VisitorPlace_Pete(void *self, void *b, u16 *out) {
 
 extern "C" BOOL VisitorPlace_AtVisitorPos(void *self, void *b, u16 *out) {
     F1::_ZNK10VisitorPos6getPosEP17Unk_020868cc_Vec3(F1::TownSessionState_GetVisitorPos(F1::TownSessionState_Get()), b);
-    out[1] = F1::func_02063b8c(0xffff);
+    out[1] = F1::Random_GlobalBelow(0xffff);
     return TRUE;
 }
 

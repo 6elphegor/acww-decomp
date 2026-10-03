@@ -55,7 +55,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
@@ -239,7 +239,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -344,7 +344,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -581,7 +581,7 @@ void SpNpcTortimerFireworksTalk::vfunc_78(TalkStartMsg *out) {
         if (TownSessionState_TestFlag(TownSessionState_Get(), 3) == 0) {
             out->b = 7;
         } else {
-            out->b = func_02063b8c(4) + 0xd;
+            out->b = Random_GlobalBelow(4) + 0xd;
         }
     } else {
         if (TownSessionState_TestFlag(TownSessionState_Get(), 2) == 0) {
@@ -648,7 +648,7 @@ void SpNpcTortimerFireworksTalk::vfunc_14() {
                 if (t2 == -1) f2 = TRUE;
                 if (f2) {
                     h[0] = 0x137e;
-                    if (func_02063b8c(2) == 0) {
+                    if (Random_GlobalBelow(2) == 0) {
                         h[0] = 0x137f;
                     }
                     goto after;
@@ -735,7 +735,7 @@ void SpNpcTortimerFireworksTalk::vfunc_18() {
                     void *g = PlayerData_GetCurrent();
                     buf[0] = 2;
                     MsgString33 o;
-                    u32 base = func_02063b8c(4) + 8;
+                    u32 base = Random_GlobalBelow(4) + 8;
                     s32 i = 0;
                     u32 v = base;
                 loop0:
@@ -744,7 +744,7 @@ void SpNpcTortimerFireworksTalk::vfunc_18() {
                     String_Load(&o, &buf[0], (s32)((Unk_ov084_02271478_Ent *)sSpNpcTortimerFireworksFortuneLines)[i].a);
                     MailText_SetSlot((void *)((Unk_ov084_02271478_Ent *)v)->b, &o);
                     v = (base - 8) * 4;
-                    v = v + func_02063b8c(4);
+                    v = v + Random_GlobalBelow(4);
                     v = v + i * 16;
                     i++;
                     if (i < 4) goto loop0;

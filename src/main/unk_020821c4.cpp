@@ -1,9 +1,9 @@
 #include "types.h"
 
-struct Unk_02082d68 {
+struct NpcResSlot {
     u8 unk_00;
-    Unk_02082d68();
-    ~Unk_02082d68();
+    NpcResSlot();
+    ~NpcResSlot();
 };
 
 struct NpcResPool {
@@ -12,7 +12,7 @@ struct NpcResPool {
     virtual ~NpcResPool();
     virtual void occupySlot(u32 i) = 0;
     virtual void releaseSlot(u32 i);
-    virtual Unk_02082d68 *getSlot(u32 i) = 0;
+    virtual NpcResSlot *getSlot(u32 i) = 0;
     s32 findFreeSlot();
     void clearAllSlots();
 };
@@ -73,7 +73,7 @@ struct Unk_0205c3a4 {
 };
 
 // ---- 0x020e077c
-struct NpcFaceAnimSlot : Unk_02082d68 {
+struct NpcFaceAnimSlot : NpcResSlot {
     NpcFaceAnimSlot();
     ~NpcFaceAnimSlot();
     CharaFaceAnimRef unk_01;
@@ -93,7 +93,7 @@ extern NpcFaceAnimPool sNpcFaceAnimPool;
 extern "C" NpcFaceAnimPool *NpcFaceAnimPool_Get();
 
 // ---- 0x020e0798
-struct VillagerAnimHeapRefSlot : Unk_02082d68 {
+struct VillagerAnimHeapRefSlot : NpcResSlot {
     VillagerAnimHeapRefSlot();
     ~VillagerAnimHeapRefSlot();
     VillagerAnimHeapRef unk_04;
@@ -113,7 +113,7 @@ extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
 extern "C" VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 
 // ---- 0x020e07b4
-struct NpcTexPatBufRefSlot : Unk_02082d68 {
+struct NpcTexPatBufRefSlot : NpcResSlot {
     NpcTexPatBufRefSlot();
     ~NpcTexPatBufRefSlot();
     NpcTexPatBufRef unk_04;
@@ -133,7 +133,7 @@ extern NpcTexPatBufRefPool sNpcTexPatBufRefPool;
 extern "C" NpcTexPatBufRefPool *NpcTexPatBufRefPool_Get();
 
 // ---- 0x020e07d0
-struct NpcClothTexSlot : Unk_02082d68 {
+struct NpcClothTexSlot : NpcResSlot {
     NpcClothTexSlot();
     ~NpcClothTexSlot();
     CharaClothTexRef unk_01;
@@ -155,7 +155,7 @@ extern NpcClothTexPool sNpcClothTexPool;
 extern "C" NpcClothTexPool *NpcClothTexPool_Get();
 
 // ---- 0x020e07ec
-struct NpcHeldItemModelSlot : Unk_02082d68 {
+struct NpcHeldItemModelSlot : NpcResSlot {
     NpcHeldItemModelSlot();
     ~NpcHeldItemModelSlot();
     HeldItemModel unk_04;
@@ -178,7 +178,7 @@ extern NpcHeldItemModelPool sNpcHeldItemModelPool;
 extern "C" NpcHeldItemModelPool *NpcHeldItemModelPool_Get();
 
 // ---- 0x020e0808
-struct SpNpcAnimHeapRefSlot : Unk_02082d68 {
+struct SpNpcAnimHeapRefSlot : NpcResSlot {
     SpNpcAnimHeapRef unk_04;
     void assign();
     SpNpcAnimHeapRefSlot();
@@ -198,7 +198,7 @@ extern SpNpcAnimHeapRefPool sSpNpcAnimHeapRefPool;
 extern "C" SpNpcAnimHeapRefPool *SpNpcAnimHeapRefPool_Get();
 
 // ---- 0x020e0824
-struct NpcTexPatHeapSlot : Unk_02082d68 {
+struct NpcTexPatHeapSlot : NpcResSlot {
     NpcTexPatHeapSlot();
     ~NpcTexPatHeapSlot();
     CharaFaceAnimWorkRef unk_01;
@@ -218,7 +218,7 @@ extern NpcTexPatHeapPool sNpcTexPatHeapPool;
 extern "C" NpcTexPatHeapPool *NpcTexPatHeapPool_Get();
 
 // ---- 0x020e0840
-struct NpcBodyAnimSlot : Unk_02082d68 {
+struct NpcBodyAnimSlot : NpcResSlot {
     NpcBodyAnimSlot();
     ~NpcBodyAnimSlot();
     Unk_0205c3a4 unk_01[3];
@@ -242,14 +242,14 @@ const s32 sNpcBodyAnimLayerIdBases[3] = {4, 0xd, 0x12};
 
 void NpcResPool::clearAllSlots() {
     for (s32 i = 0; i < unk_04; i++) {
-        Unk_02082d68 *p = getSlot(i);
+        NpcResSlot *p = getSlot(i);
         if (p) p->unk_00 = 0;
     }
 }
 
 void NpcResPool::releaseSlot(u32 i) {
     if (i < (u32)unk_04) {
-        Unk_02082d68 *p = getSlot(i);
+        NpcResSlot *p = getSlot(i);
         if (p) p->unk_00 = 0;
     }
 }
@@ -257,7 +257,7 @@ void NpcResPool::releaseSlot(u32 i) {
 s32 NpcResPool::findFreeSlot() {
     s32 r = -1;
     for (s32 i = 0; i < unk_04; i++) {
-        Unk_02082d68 *p = getSlot(i);
+        NpcResSlot *p = getSlot(i);
         if (p && p->unk_00 == 0) {
             r = i;
             break;

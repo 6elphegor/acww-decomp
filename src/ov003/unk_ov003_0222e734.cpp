@@ -90,7 +90,7 @@ void FieldPos_FromBlockUnitCenter(Unk_ov003_0222ed20_V3 *out, s32 a, s32 b, s32 
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b);
 BOOL Ground_IsFreeGrass(s32 a, s32 b);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
 BOOL Item_IsSnowman(u16 *p);
@@ -329,7 +329,7 @@ extern "C" BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y) {
 
 extern "C" BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy) {
     if (c->cnt != 0) {
-        s32 r = func_02063b8c(c->cnt);
+        s32 r = Random_GlobalBelow(c->cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 16; i++) {
@@ -377,7 +377,7 @@ extern "C" void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y) {
 extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
     s32 cnt = UnitMaskPool_CountFreeChunks(pool);
     if (cnt != 0) {
-        s32 r = func_02063b8c(cnt);
+        s32 r = Random_GlobalBelow(cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 4; i++) {

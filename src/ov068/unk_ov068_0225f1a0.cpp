@@ -133,7 +133,7 @@
 #define ContestRecord_getSize _ZN13ContestRecord7getSizeEv
 #define ContestRecord_setSize _ZN13ContestRecord7setSizeEi
 #define ContestRecord_setHolderVillager _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec
-#define func_02088d38 _ZN12Unk_020e0d0813func_02088d38Ej
+#define ActorCollider_isHitByGroup _ZN13ActorCollider12isHitByGroupEj
 #define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -1136,7 +1136,7 @@ s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Effect_PlayById(s32, void *, s32, s32);
 }
 }
@@ -1397,7 +1397,7 @@ s32 NpcActor_getAngleTo(void *, void *);
 s32 func_020e96a4(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Unk_02015b8c_getAnimId(void *, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Effect_Create(u32, void *, void *, s32);
 void func_02003ddc(void *, s32, s32, s32);
 void Villager_HalveTalkUrge(s32);
@@ -1472,7 +1472,7 @@ s32 VillagerTalk_isInvitedByPartner(void *);
 s32 FieldVillagerAi_AddMood(void *, void *, s32, s32, s32);
 s32 FieldVillagerAi_AddRandomMood(void *, void *, void *, s32, s32, s32);
 s32 PlayerData_GetCurrent();
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 s32 FieldVillagerAi_GetPartnerRelationLevel(void *, void *);
@@ -1597,7 +1597,7 @@ void *PlayerData_getPlayerId(...);
 s32 PlayerId_isValid(void *);
 void *Villager_FindMemory(u32, void *);
 s32 VillagerMemory_getFriendship(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 VillagerMood_addMood(void *, s32, s32);
 void VillagerMood_requestApply(void *);
 s32 VillagerData_getVillagerId(void *);
@@ -1721,7 +1721,7 @@ void VillagerState_SetPresence(void *, s32);
 s32 Villager_IsAsleep(void *, s32);
 void Villager_PlaceReceivedItems(void *);
 void VillagerActor_setFlag834(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void VillagerMood_disableEffects(void *);
 s32 Unk_02015b8c_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1800,7 +1800,7 @@ s32 FieldAction_PollResult();
 void FieldAction_Release(s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 BlockMap_IsBuriedAtUnit(void *, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void VillagerTalk_setPartner(void *, void *);
 void VillagerTalk_setInvitedByPartner(void *, u32);
 void FieldVillagerAi_SaveResumeState(void *);
@@ -1949,7 +1949,7 @@ s32 Character_setTalkStartMode0(void *);
 s32 func_0201b08c(void *, u32, u32);
 void Villager_RemoveFlea(void *);
 s32 Villager_HasFlea(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Effect_PlayById(s32, void *, s32, s32);
 extern s32 sRandomRouteTypes[];
 extern u32 gCamera;
@@ -1973,7 +1973,7 @@ s32 VillagerId_isValid(void *);
 s32 VillagerState_GetActivity(void *);
 s32 VillagerRoute_start(void *, void *, s32, s32, void *);
 s32 VillagerRoute_isActive(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Unk_02012810_getStage(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void Unk_02013474_enableFootsteps(void *);
@@ -2106,10 +2106,10 @@ s32 Trend_IsValid(s32);
 s32 VillagerPlan_getState(void *);
 s32 VillagerPlan_isTrendOlderThan(void *, void *, s32);
 s32 VillagerTalk_getEventKind(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void VillagerState_SetActivity(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
-s32 func_02088d38(void *, s32);
+s32 ActorCollider_isHitByGroup(void *, s32);
 void *PlayerActor_GetCharacter(s32);
 s32 Math_AngleXZ(void *, void *);
 void *PlayerData_GetCurrent();
@@ -3486,7 +3486,7 @@ s32 FieldVillager::getPlayerMemory() {
 
 BOOL FieldVillager::isPlayerFacing() {
     using namespace ns_02265d34;
-    if (unk_508 != 0 && func_02088d38(unk_4cc, 4) != 0) {
+    if (unk_508 != 0 && ActorCollider_isHitByGroup(unk_4cc, 4) != 0) {
         Unk_ov068_02265ee8_Obj *p = (Unk_ov068_02265ee8_Obj *)PlayerActor_GetCharacter(4);
         if (p != NULL && p->unk_98 != 0) {
             s16 d = Math_AngleXZ(&p->unk_5c, &unk_5c) - p->unk_94;
@@ -3525,14 +3525,14 @@ void FieldVillager::chooseActivity() {
             s32 r5 = 8;
             void *p = VillagerPlanBlock_GetPlan(Villager_GetPlan(a));
             s32 r4 = VillagerPlan_getState(p);
-            s32 r7 = func_02063b8c(100);
+            s32 r7 = Random_GlobalBelow(100);
             Unk_ov068_02265d34_Vec2 buf;
             buf.a = 0;
             buf.b = 0;
             Clock_GetDateTime(&buf);
             if (r7 < 30) {
                 if (VillagerPlan_isTrendOlderThan(p, &buf, 3) != 0) {
-                    r4 = (u8)func_02063b8c(r5);
+                    r4 = (u8)Random_GlobalBelow(r5);
                 }
             }
             if (Trend_IsValid(r4) != 0 || r4 == 8) {
@@ -4015,7 +4015,7 @@ s32 FieldVillagerAi_IsState(FieldVillagerAi *self, s32 v) {
 namespace ns_02265324 {
 extern "C" {
 void FieldVillagerAi_InitTimers(FieldVillagerAi *self) {
-    self->unk_34 = func_02063b8c(0x1770);
+    self->unk_34 = Random_GlobalBelow(0x1770);
     self->unk_36 = -1;
 }
 }
@@ -4099,7 +4099,7 @@ s32 FieldVillagerAi_PickRandomRouteType(FieldVillagerAi *self) {
     } else {
         k = 3;
     }
-    s32 i = func_02063b8c(k);
+    s32 i = Random_GlobalBelow(k);
     s32 r5 = sRandomRouteTypes[i];
     if (r5 == Unk_02012810_getStage(self->unk_3c)) {
         s32 n = i + 1;
@@ -4382,7 +4382,7 @@ void *FieldVillagerAi_FindChatPartner(void *self, Unk_ov068_Owner_649 *o) {
 namespace ns_022649f4 {
 extern "C" {
 BOOL FieldVillagerAi_TryStartChat(FieldVillagerAiStates *self, Unk_ov068_Owner_649 *o) {
-    if (func_02063b8c(5) == 0) {
+    if (Random_GlobalBelow(5) == 0) {
         if (o->vfunc_b4() != 0) {
             Unk_ov068_Owner_649 *t = (Unk_ov068_Owner_649 *)FieldVillagerAi_FindChatPartner(self, o);
             if (t != 0) {
@@ -4751,7 +4751,7 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
                 s32 d = Math_AngleXZ(r7, &va);
                 if (NpcActor_IsFrontAngle((s16)(d - *(s16 *)((u8 *)o + 0x8e))) != 0) {
                     s32 m = 1;
-                    if (func_02063b8c(4) == 0 && FieldVillager_GetMood(o) == 0) {
+                    if (Random_GlobalBelow(4) == 0 && FieldVillager_GetMood(o) == 0) {
                         m = 2;
                     }
                     NpcActionCtrl_requestAction(r6, m, 1, va.x, va.z, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -4779,7 +4779,7 @@ BOOL FieldVillagerAiStates::execWander(Unk_ov068_Owner *o) {
             if (unk_de == 0 && *(u32 *)((u8 *)o + 0x894) == 0 && ((u8 *)0 + *(u32 *)((u8 *)o + 0x898)) <= (u8 *)1 &&
                 (s32)*(u16 *)((u8 *)o + 0x8a8) > 0xf) {
                 NpcActionCtrl_requestStand(r6, 1, data_020c6cc8);
-                unk_dc = func_02063b8c(200) + 0xa0;
+                unk_dc = Random_GlobalBelow(200) + 0xa0;
                 unk_de = 0x4b0;
                 goto end;
             }
@@ -4988,7 +4988,7 @@ BOOL FieldVillagerAiStates::enterInHouse(Unk_ov068_Owner *o) {
     }
     Villager_PlaceReceivedItems(a);
     VillagerActor_setFlag834(o);
-    unk_20 = func_02063b8c(0x28) + 0x258;
+    unk_20 = Random_GlobalBelow(0x28) + 0x258;
     *((u8 *)o + 0x562) = 0;
     unk_f8 = 0x384;
     VillagerMood_disableEffects((u8 *)o + 0x838);
@@ -5010,7 +5010,7 @@ void FieldVillagerAiInHouse::inHouseStep1(Unk_ov068_Owner *o) {
         if (Villager_IsAsleep(ow, r) == 0) {
             if (Villager_GetState(ow) != 0) {
                 VillagerState_SetPresence(Villager_GetState(ow), r);
-                unk_20 = func_02063b8c(0x28) + 0x258;
+                unk_20 = Random_GlobalBelow(0x28) + 0x258;
             }
             r = TRUE;
         }
@@ -5344,7 +5344,7 @@ void FieldVillagerAi_AddMood(void *a, void *o, s32 x, s32 y, u8 flag) {
 namespace ns_02263600 {
 extern "C" {
 void FieldVillagerAi_AddRandomMood(void *a, void *b, u8 *tbl, s32 n, u8 p5, u8 p6) {
-    u8 v = tbl[func_02063b8c(n)];
+    u8 v = tbl[Random_GlobalBelow(n)];
     if (v == 0) {
         p5 = 0;
     }
@@ -5373,7 +5373,7 @@ s32 FieldVillagerAi_OrderByFriendship(void *unused, u32 *a, u32 *b, u32 c, u32 d
         if (p2 != 0) {
             vb = VillagerMemory_getFriendship(p2);
         }
-        if (va > vb || (va == vb && func_02063b8c(2) == 0)) {
+        if (va > vb || (va == vb && Random_GlobalBelow(2) == 0)) {
             *a = c;
             *b = d;
             return 0;
@@ -5918,7 +5918,7 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
                     return;
                 }
                 if (PlayerData_GetCurrent() == 0) {
-                    if (func_02063b8c(2) == 0) {
+                    if (Random_GlobalBelow(2) == 0) {
                         FieldVillagerAi_AddRandomMood(this, o, sChatNoPlayerMoods, 4, 2, 1);
                         FieldVillagerAi_AddRandomMood(this, p, sChatNoPlayerMoods, 4, 2, 1);
                     }
@@ -5946,8 +5946,8 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
             }
         } else {
             if (a != 0) {
-                if (unk_20 >= 0x14 && func_02063b8c(0x20) == 0) {
-                    NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, sChatEmotions[func_02063b8c(8)], data_020c6cc8);
+                if (unk_20 >= 0x14 && Random_GlobalBelow(0x20) == 0) {
+                    NpcActionCtrl_requestEmotion((u8 *)o + 0x564, 1, sChatEmotions[Random_GlobalBelow(8)], data_020c6cc8);
                 }
             } else {
                 if (NpcActionCtrl_getAction((u8 *)o + 0x564) == 8 && NpcActionCtrl_getEmotionId((u8 *)o + 0x564) != 0) {
@@ -5964,8 +5964,8 @@ void FieldVillagerAiChat::chatStep1(Unk_ov068_Owner *o) {
                 skip2:;
                 }
             }
-            if (b != 0 && unk_20 >= 0x14 && func_02063b8c(0x20) == 0) {
-                NpcActionCtrl_requestEmotion((u8 *)p + 0x564, 1, sChatEmotions[func_02063b8c(8)], data_020c6cc8);
+            if (b != 0 && unk_20 >= 0x14 && Random_GlobalBelow(0x20) == 0) {
+                NpcActionCtrl_requestEmotion((u8 *)p + 0x564, 1, sChatEmotions[Random_GlobalBelow(8)], data_020c6cc8);
             }
         }
     } else {
@@ -6187,7 +6187,7 @@ void FieldVillagerAiPlayerStates::approachStep0(Unk_ov068_Owner *o) {
             v.y = *(s32 *)((u8 *)o + 0x47c);
             v.z = *(s32 *)((u8 *)o + 0x480);
             h = *(s16 *)((u8 *)o + 0x8e);
-            Unk_ov068_02262044_Ent *e = &sApproachAnimFx[func_02063b8c(2)];
+            Unk_ov068_02262044_Ent *e = &sApproachAnimFx[Random_GlobalBelow(2)];
             Effect_Create(e->a, &v, &h, 0);
             func_02003ddc((u8 *)o + 0x514, e->b + 0x84, 0x7f, 0);
         }
@@ -7502,13 +7502,13 @@ void FieldVillagerFxTimer::update(FieldVillager *o) {
         buf.c = o->unk_478.z;
         Effect_PlayById(0x81, &buf, 0, 0);
         if (Villager_HasFlea(o->unk_82c)) {
-            unk_00 = func_02063b8c(0xf) + 0xf;
+            unk_00 = Random_GlobalBelow(0xf) + 0xf;
         } else {
             unk_00 = -1;
         }
     } else if (unk_00 == -1) {
         if (Villager_HasFlea(o->unk_82c)) {
-            unk_00 = func_02063b8c(10) + 0xf;
+            unk_00 = Random_GlobalBelow(10) + 0xf;
         }
     }
 }

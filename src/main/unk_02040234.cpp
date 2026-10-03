@@ -114,7 +114,7 @@ s32 ReddShop_SendPasswordLetters(void);
 }
 
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 }
 
 extern "C" {

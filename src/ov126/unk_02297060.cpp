@@ -129,7 +129,7 @@ void PatternInfo_getTitleRaw(void *a, void *b);
 BOOL Constellation_IsNameTaken(void *a, s32 b);
 void Constellation_SetName(void *a, s32 b);
 void Constellation_CopyName(void *a, s32 b);
-s32 func_02063904(void *a, void *b);
+s32 TownId_InitWithName(void *a, void *b);
 s32 PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
 s32 PlayerDataArray_FindById(void *a, s32 b);
@@ -2041,7 +2041,7 @@ void NameEntryMenu::storePlayerName() {
 }
 
 s32 NameEntryMenu::storeTownName() {
-    return func_02063904(gSaveTownId, unk_4088);
+    return TownId_InitWithName(gSaveTownId, unk_4088);
 }
 
 void NameEntryMenu::func_ov126_02297328() {

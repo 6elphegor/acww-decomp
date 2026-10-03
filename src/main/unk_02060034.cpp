@@ -106,7 +106,7 @@ extern "C" {
 extern HouseData gSaveHouse;
 extern u8 gSaveSongSet[];
 extern u8 gSaveData[];
-extern void *data_020dcbd0[];
+extern void *gInsectSpawnTables[];
 extern u8 gSaveData[];
 s32 SceneId_GetHouseRoom(u32 x);
 s32 SceneId_IsHouseRoom(u32 x);

@@ -58,18 +58,18 @@ public:
 };
 
 // Two-cursor menu/sprite object; vtable 0x020e0d44 (ctor 0x020894c0)
-class Unk_020e0d44 : public UiWidget {
+class TalkArrow : public UiWidget {
 public:
-    Unk_020e0d44(u8 flag);
-    virtual ~Unk_020e0d44();
+    TalkArrow(u8 flag);
+    virtual ~TalkArrow();
     virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_02089284();
-    s32 func_020892ac();
-    void func_020892b0(s32 idx);
-    void func_02089320(s32 x, s32 y);
-    void func_02089328();
+    BOOL isAnimDone();
+    s32 getState();
+    void setState(s32 idx);
+    void setOffset(s32 x, s32 y);
+    void setAltStyle();
 
     /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ SpriteAnim unk_20;
@@ -80,18 +80,18 @@ public:
     /* 0x41 */ u8 unk_41;
 };
 
-Unk_020e0d44::Unk_020e0d44(u8 flag) {
+TalkArrow::TalkArrow(u8 flag) {
     unk_34 = 0;
     unk_38 = 0;
     unk_3c = 0;
     unk_40 = 0;
     unk_41 = flag;
-    func_020892b0(0);
+    setState(0);
 }
 
-Unk_020e0d44::~Unk_020e0d44() {}
+TalkArrow::~TalkArrow() {}
 
-void Unk_020e0d44::draw() {
+void TalkArrow::draw() {
     if (unk_34 != 0) {
         void *a = unk_0c.getCell();
         void *b = unk_20.getCell();
@@ -111,7 +111,7 @@ void Unk_020e0d44::draw() {
     }
 }
 
-void Unk_020e0d44::vfunc_0c() {
+void TalkArrow::vfunc_0c() {
     if (unk_34 != 0) {
         unk_0c.update();
         unk_20.update();

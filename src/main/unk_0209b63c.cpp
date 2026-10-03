@@ -18,7 +18,7 @@ public:
 };
 
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 AcreType_CountRiverBits(s32);
 s32 AcreType_GetAttr(s32);
 s32 AcreType_FindByAttr(s32);
@@ -82,7 +82,7 @@ BOOL TownAcreGrid::placeOnRandomGrass(s32 val)
             if (getCell(x, y)->getType() == 9) cnt++;
         }
     }
-    s32 r = func_02063b8c(cnt);
+    s32 r = Random_GlobalBelow(cnt);
     s32 k = 0;
     for (y = 1; y < 5; y++) {
         for (x = 1; x < 5; x++) {
@@ -119,7 +119,7 @@ BOOL TownAcreGrid::placeNextTo(s32 a, s32 b)
             if (getCell(x + dirs[i].x, y + dirs[i].y)->getType() == 9) cnt++;
         }
         if (cnt != 0) {
-            s32 r = func_02063b8c(cnt);
+            s32 r = Random_GlobalBelow(cnt);
             s32 k = 0;
             for (i = 0; i < 4; i++) {
                 Unk_0209ba90_Dir *d = &dirs[i];
@@ -151,7 +151,7 @@ BOOL TownAcreGrid::placeFacilities(u32 mode)
         if (getCell(x, 3)->getType() == 9) cnt++;
     }
     if (cnt != 0) {
-        s32 r = func_02063b8c(cnt);
+        s32 r = Random_GlobalBelow(cnt);
         s32 k = 0;
         for (x = 1; x < 5; x++) {
             if (getCell(x, 3)->getType() == 9) {
@@ -178,7 +178,7 @@ BOOL TownAcreGrid::placeRiverVariant()
         }
     }
     if (cnt != 0) {
-        r = func_02063b8c(cnt);
+        r = Random_GlobalBelow(cnt);
         k = 0;
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {
@@ -232,7 +232,7 @@ BOOL TownAcreGrid::setBorder()
     for (j = 2; j <= 3; j++) {
         if (AcreType_CountRiverBits(getCell(j, 1)->getType()) == 0) cnt++;
     }
-    s32 r = func_02063b8c(cnt);
+    s32 r = Random_GlobalBelow(cnt);
     s32 k = 0;
     for (j = 2; j <= 3; j++) {
         if (AcreType_CountRiverBits(getCell(j, 1)->getType()) == 0) {

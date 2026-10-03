@@ -238,7 +238,7 @@ void *AxBbsNotice_GetDigest(void *p);
 void func_0211a748(void *a, void *b, s32 c, s32 d, s32 e);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 AxMail_GetDigestKey();
-s32 func_02063a04(void *a, void *b, s32 n);
+s32 Mem_Differs(void *a, void *b, s32 n);
 void AxBbsNotice_Post(void *p);
 void AxBbsNotice_Destruct(void *p);
 }
@@ -318,7 +318,7 @@ s32 AxMail_GetDigestKey(void);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 void func_0211a748(void *a, void *b, u32 c, s32 d, u32 e);
-s32 func_02063a04(u8 *a, u8 *b, u32 n);
+s32 Mem_Differs(u8 *a, u8 *b, u32 n);
 s32 Save_Sum16(void *a, u32 n);
 void _ZN16BlancaFaceRecord8setStateEj(void *p, u32 v);
 void _ZN16BlancaFaceRecord13func_02087230Ej(void *p, s32 v);
@@ -443,9 +443,9 @@ void Wifi_EndSession(Unk_0209f638 *p);
 Unk_0209f898_Rec *TalkWindow_Get(s32 i);
 void OS_ResetSystem(s32 v);
 void CommSend_VillagerTransferReply(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void *func_0208f0b0(s32 a);
-BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *a);
-void *_ZN12Unk_0208f23813func_0208f18cEv(void *a);
+void *TownExchange_GetForAid(s32 a);
+BOOL _ZN18TownExchangeRecord7isValidEv(void *a);
+void *_ZN18TownExchangeRecord18getLostChildRecordEv(void *a);
 void _ZN15LostChildRecord5clearEv(void *a);
 s32 _ZN15LostChildRecord11getDaysLeftEv(void *a);
 void *_ZN15LostChildRecord9getTownIdEv(void *a);
@@ -454,16 +454,16 @@ void _ZN15LostChildRecord14setKaitlinRoleEh(void *a, u8 b);
 void _ZN15LostChildRecord9setTownIdEv(void *a, void *b);
 void _ZN15LostChildRecord11setDaysLeftEh(void *a, s32 b);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-void _ZN12Unk_020dd38cC2Ev(void *p);
-void _ZN12Unk_020dd38cD1Ev(void *p);
-void func_020638d0(void *a, void *b);
+void _ZN11MsgString9CC2Ev(void *p);
+void _ZN11MsgString9CD1Ev(void *p);
+void TownId_GetNameString(void *a, void *b);
 void *PlayerId_GetTownId(void *a);
 void *_ZN10PlayerData11getPlayerIdEv(void *a);
 void *_ZN10PlayerData18getLostChildRecordEv(void *a);
 void *PlayerData_GetCurrent();
 void *PlayerData_GetBySessionSlot(s32 i);
 void *DebugVar_GetPtr(s32 a, s32 b);
-BOOL func_02063b8c(s32 a);
+BOOL Random_GlobalBelow(s32 a);
 void *_ZN10PlayerData15getWifiUserDataEv(void *a);
 void *_ZN10PlayerData13getFriendListEv(void *a);
 void *PlayerWifiData_GetOwnFriendData(void *a);
@@ -551,13 +551,13 @@ extern u8 sSessionResidentIndex;
 extern u8 data_020e252c[];
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020cbb18_ff4c *, s32);
 void _ZN11CommManager14setMemberCountEj(Unk_020cbb18_ff4c *, u32);
-void func_0208f0b0(s32);
-void _ZN12Unk_0208f23813func_0208f18cEv();
+void TownExchange_GetForAid(s32);
+void _ZN18TownExchangeRecord18getLostChildRecordEv();
 void _ZN15LostChildRecord5clearEv();
 void LostChild_TryPair(void *, s32);
 s32 NetSession_GetLastSyncSlot();
 void _ZN11SaveManager15setTransferDestEjh(void *, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Comm_ResetNetSession(void *);
 void Wifi_EndSession(void *);
 void PlayerSession_ClearDataIndex(s32);
@@ -583,11 +583,11 @@ void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32, Unk_020a0088_Date
 void _ZN8SaveData5resetEv(void *);
 s32 PlayerDataArray_FindUnused(void *);
 void PlayerDataArray_CreateResident(void *, void *, s32, s32);
-s32 _ZN12Unk_0208f23811getChecksumEv(void *);
+s32 _ZN18TownExchangeRecord11getChecksumEv(void *);
 u32 Save_CalcChecksum(void *, u32, u32);
-void _ZN12Unk_0208f23811setChecksumEj(void *, u32);
-s32 _ZN12Unk_0208f23815getChecksumByteEv(void *);
-void _ZN12Unk_0208f23815setChecksumByteEj(void *, u32);
+void _ZN18TownExchangeRecord11setChecksumEj(void *, u32);
+s32 _ZN18TownExchangeRecord15getChecksumByteEv(void *);
+void _ZN18TownExchangeRecord15setChecksumByteEj(void *, u32);
 BOOL Backup_Write(void *, u32, void *, u32);
 s32 PlayerData_GetCurrentIndex();
 s32 PlayerData_GetCurrent();
@@ -685,10 +685,10 @@ u32 _ZN11SaveRecord48getStampEv(void *p);
 void _ZN11SaveRecord48setStampEh(void *p, u32 v);
 u32 _ZN12SaveChecksum3getEv(void *p);
 void _ZN12SaveChecksum3setEt(void *p, u32 v);
-u32 _ZN12Unk_0208f23811getChecksumEv(void *p);
-void _ZN12Unk_0208f23811setChecksumEj(void *p, u32 v);
-u32 _ZN12Unk_0208f23815getChecksumByteEv(void *p);
-void _ZN12Unk_0208f23815setChecksumByteEj(void *p, u32 v);
+u32 _ZN18TownExchangeRecord11getChecksumEv(void *p);
+void _ZN18TownExchangeRecord11setChecksumEj(void *p, u32 v);
+u32 _ZN18TownExchangeRecord15getChecksumByteEv(void *p);
+void _ZN18TownExchangeRecord15setChecksumByteEj(void *p, u32 v);
 void *PlayerData_GetResident(void *t, s32 i);
 void *_ZN10PlayerData15getWifiUserDataEv(void *p);
 void *_ZN10PlayerData13getFriendListEv(void *p);
@@ -748,7 +748,7 @@ s32 Net_IsReadyToSend(u32 x);
 u32 Net_GetConnectedMask(void);
 s32 Net_GetMyAid(s32 x);
 HudWallet *Hud_GetWallet(void);
-void _ZN12Unk_0208f23813func_0208f174Ev(void *p);
+void _ZN18TownExchangeRecord16incrementCounterEv(void *p);
 void *PlayerData_GetCurrent(void);
 u32 PlayerData_Get(u32 x);
 s32 PlayerData_GetCurrentIndex(void);
@@ -834,7 +834,7 @@ BOOL func_020e7500(void *p);
 BOOL Comm_SendEmpty();
 void Comm_Start(s32 a, u32 b, u32 c);
 void Comm_SetRecvBuffersAsHost();
-void *func_02063964(void *p);
+void *TownId_GetName(void *p);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void _Z25NetOverlay_AssertWirelessv();
 void func_020ea720(void *p, u32 n);
@@ -857,8 +857,8 @@ void NetOverlay_Restore();
 s32 NetSession_GetLastSyncSlot();
 void NetSession_RemoveSlot(u32 a);
 void Weather_RerollRainSlant();
-void *func_0208f0b0(u32 a);
-s32 func_0208f1dc(void *a);
+void *TownExchange_GetForAid(u32 a);
+s32 TownExchange_Clear(void *a);
 }
 }
 
@@ -919,9 +919,9 @@ BOOL _ZN12Unk_0209f30413func_0209f344Ev(Unk_020a25d8 *p);
 BOOL VillagerTransfer_SendReplies(Unk_020a25d8 *p);
 s32 NetSession_GetLastSyncSlot();
 u32 _ZN11SaveManager15getTransferDestEj(Unk_020a25d8 *p, s32 v);
-void *func_0208f0b0(u32 v);
+void *TownExchange_GetForAid(u32 v);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void func_0208f1dc(void *p);
+void TownExchange_Clear(void *p);
 void _ZN11SaveManager22backupVillagerTransferEv(Unk_020a25d8 *p);
 void JoinHistory_Remove(u32 v);
 void SaveManager_RunSyncedSaveHost(Unk_020a25d8 *p, u8 *st, u32 a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
@@ -2518,9 +2518,9 @@ extern "C" void SaveManager_ExecAct18(Unk_020a25d8 *p) {
         } else if (NH::VillagerTransfer_SendReplies(p)) {
             s32 r5 = NH::NetSession_GetLastSyncSlot();
             u32 r7 = NH::_ZN11SaveManager15getTransferDestEj(p, r5);
-            void *r6 = NH::func_0208f0b0(r5);
-            NH::MI_CpuCopy8(r6, NH::func_0208f0b0(r7), 0x84c);
-            NH::func_0208f1dc(r6);
+            void *r6 = NH::TownExchange_GetForAid(r5);
+            NH::MI_CpuCopy8(r6, NH::TownExchange_GetForAid(r7), 0x84c);
+            NH::TownExchange_Clear(r6);
             NH::_ZN11SaveManager22backupVillagerTransferEv(p);
             NH::JoinHistory_Remove((u8)r5);
             p->unk_9d = 5;
@@ -2779,14 +2779,14 @@ void Unk_020a1c88::execAct1A() {
             if (NG::VillagerTransfer_SendReplies(this)) {
                 s32 r5 = NG::_ZN11SaveManager15getTransferDestEj(this, 0);
                 if (r5 < 4) {
-                    void *dst = NG::func_0208f0b0(0);
-                    void *src = NG::func_0208f0b0(r5);
+                    void *dst = NG::TownExchange_GetForAid(0);
+                    void *src = NG::TownExchange_GetForAid(r5);
                     NG::MI_CpuCopy8(src, dst, 0x84c);
                 } else {
-                    NG::func_0208f1dc(NG::func_0208f0b0(0));
+                    NG::TownExchange_Clear(NG::TownExchange_GetForAid(0));
                 }
                 for (r5 = 2; r5 >= 0; r5--) {
-                    NG::func_0208f1dc(NG::func_0208f0b0(r5 + 1));
+                    NG::TownExchange_Clear(NG::TownExchange_GetForAid(r5 + 1));
                 }
                 NG::_ZN11SaveManager22backupVillagerTransferEv(this);
                 unk_9d = 5;
@@ -3078,7 +3078,7 @@ void Unk_020a1c88::enterAct1D() {
     unk_cc = 0x258;
     NG::Comm_Start(1, 2, 0);
     NG::Comm_SetRecvBuffersAsHost();
-    NG::MI_CpuCopy8(NG::func_02063964(NG::gSaveTownId), buf, 8);
+    NG::MI_CpuCopy8(NG::TownId_GetName(NG::gSaveTownId), buf, 8);
     buf[9] = 1;
     buf[8] = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
@@ -3505,7 +3505,7 @@ extern "C" void Save_StoreCurrentPlayerToResident(void) {
 
 void SaveManager::backupVillagerTransfer() {
     u8 *const g = NF::data_021e7f8c;
-    NF::_ZN12Unk_0208f23813func_0208f174Ev(g);
+    NF::_ZN18TownExchangeRecord16incrementCounterEv(g);
     Unk_020a14ac_Ns::MI_CpuCopy8(g, unk_bc, 0x84c);
 }
 
@@ -3857,9 +3857,9 @@ s32 SaveSlotWriter::stepChecksum(s32 mode) {
             NE::_ZN11SaveRecord48destructEv(&local);
         }
         u8 *p = buf + 0x10c3c;
-        NE::_ZN12Unk_0208f23811setChecksumEj(p, NE::Save_CalcChecksum(p, 0x84c, NE::_ZN12Unk_0208f23811getChecksumEv(p)));
+        NE::_ZN18TownExchangeRecord11setChecksumEj(p, NE::Save_CalcChecksum(p, 0x84c, NE::_ZN18TownExchangeRecord11getChecksumEv(p)));
         p = buf + 0x15c58;
-        NE::_ZN12Unk_0208f23815setChecksumByteEj(p, NE::Save_CalcChecksum(p, 0xf8, NE::_ZN12Unk_0208f23815getChecksumByteEv(p)));
+        NE::_ZN18TownExchangeRecord15setChecksumByteEj(p, NE::Save_CalcChecksum(p, 0xf8, NE::_ZN18TownExchangeRecord15getChecksumByteEv(p)));
         for (s32 i = 0; i < 4; i++) {
             void *e = NE::_ZN10PlayerData15getWifiUserDataEv(NE::PlayerData_GetResident(buf + 0xc, i));
             NE::PlayerWifiData_SetChecksum(e, NE::Save_CalcChecksum(e, 0x50, NE::PlayerWifiData_GetChecksum(e)));
@@ -4263,8 +4263,8 @@ extern "C" BOOL Save_WriteVillagerTransfer() {
     void *q = ND::data_021ecfa8;
     a = (u32)p - (u32)base;
     b = (u32)q - (u32)base;
-    ND::_ZN12Unk_0208f23811setChecksumEj(p, ND::Save_CalcChecksum(p, 0x84c, ND::_ZN12Unk_0208f23811getChecksumEv(p)));
-    ND::_ZN12Unk_0208f23815setChecksumByteEj(q, ND::Save_CalcChecksum(q, 0xf8, ND::_ZN12Unk_0208f23815getChecksumByteEv(q)));
+    ND::_ZN18TownExchangeRecord11setChecksumEj(p, ND::Save_CalcChecksum(p, 0x84c, ND::_ZN18TownExchangeRecord11getChecksumEv(p)));
+    ND::_ZN18TownExchangeRecord15setChecksumByteEj(q, ND::Save_CalcChecksum(q, 0xf8, ND::_ZN18TownExchangeRecord15getChecksumByteEv(q)));
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[0] + a, p, 0x84c) == 1) return TRUE;
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[1] + a, p, 0x84c) == 1) return TRUE;
     if (ND::Backup_Write(ND::gBackup, ND::sSaveSlotOffsets[0] + b, q, 0xf8) == 1) return TRUE;
@@ -4495,7 +4495,7 @@ extern "C" void VillagerTransfer_PlanSwap(void *a) {
             ND::_ZN11SaveManager15setTransferDestEjh(a, i, 4);
         }
     }
-    pick = list[ND::func_02063b8c(n)];
+    pick = list[ND::Random_GlobalBelow(n)];
     ND::_ZN11SaveManager15setTransferDestEjh(a, pick, cur);
     ND::_ZN11SaveManager15setTransferDestEjh(a, cur, pick);
 }
@@ -4527,8 +4527,8 @@ extern "C" void LostChild_ResetAndPairLast(void *a) {
     Unk_020cbb18_ff4c *g = ND::gCommManager;
     for (; i >= 0; i--) {
         if (ND::_ZN11CommManager12isSlotActiveEi(g, i)) {
-            ND::func_0208f0b0(i);
-            ND::_ZN12Unk_0208f23813func_0208f18cEv();
+            ND::TownExchange_GetForAid(i);
+            ND::_ZN18TownExchangeRecord18getLostChildRecordEv();
             ND::_ZN15LostChildRecord5clearEv();
         }
     }
@@ -4541,7 +4541,7 @@ extern "C" void LostChild_ResetAndPairAll(Unk_0209f638 *self) {
     o = NC::gCommManager;
     for (; i >= 0; i--) {
         if (o->isSlotActive(i)) {
-            NC::_ZN15LostChildRecord5clearEv(NC::_ZN12Unk_0208f23813func_0208f18cEv(NC::func_0208f0b0(i)));
+            NC::_ZN15LostChildRecord5clearEv(NC::_ZN18TownExchangeRecord18getLostChildRecordEv(NC::TownExchange_GetForAid(i)));
         }
     }
     for (i = 3; i >= 0; i--) {
@@ -4557,19 +4557,19 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     void *r7 = NC::PlayerData_GetBySessionSlot(idx);
     if (r7 == 0) return;
     u32 sa[7];
-    NC::_ZN12Unk_020dd38cC2Ev(sa);
-    NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
+    NC::_ZN11MsgString9CC2Ev(sa);
+    NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r7);
     if (NC::_ZN15LostChildRecord11getDaysLeftEv(r6)) {
         NC::func_0209fef8(self, r6);
-        NC::_ZN12Unk_020dd38cD1Ev(sa);
+        NC::_ZN11MsgString9CD1Ev(sa);
         return;
     }
     s32 found = 4;
     void *other = 0;
     void *other2 = 0;
     u32 sb[7];
-    NC::_ZN12Unk_020dd38cC2Ev(sb);
+    NC::_ZN11MsgString9CC2Ev(sb);
     s32 i = 0;
     CommManager *o = NC::gCommManager;
     for (; i < 4; i++) {
@@ -4577,7 +4577,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
         if (!o->isSlotActive(i)) continue;
         other = NC::PlayerData_GetBySessionSlot(i);
         if (!other) continue;
-        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
         other2 = NC::_ZN10PlayerData18getLostChildRecordEv(other);
         if (NC::_ZN15LostChildRecord11getDaysLeftEv(other2)) continue;
         if (NC::Net_GetMode() == 3 || NC::Net_GetMode() == 4) {
@@ -4588,17 +4588,17 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
         break;
     }
     if (found == 4) {
-        NC::_ZN12Unk_020dd38cD1Ev(sb);
-        NC::_ZN12Unk_020dd38cD1Ev(sa);
+        NC::_ZN11MsgString9CD1Ev(sb);
+        NC::_ZN11MsgString9CD1Ev(sa);
         return;
     }
     s16 *pp = (s16 *)NC::DebugVar_GetPtr(0, 0x49);
-    if (*pp == 0 && NC::func_02063b8c(0x10)) {
-        NC::_ZN12Unk_020dd38cD1Ev(sb);
-        NC::_ZN12Unk_020dd38cD1Ev(sa);
+    if (*pp == 0 && NC::Random_GlobalBelow(0x10)) {
+        NC::_ZN11MsgString9CD1Ev(sb);
+        NC::_ZN11MsgString9CD1Ev(sa);
         return;
     }
-    s32 r4 = NC::func_02063b8c(2);
+    s32 r4 = NC::Random_GlobalBelow(2);
     NC::_ZN15LostChildRecord14setKaitlinRoleEh(other2, r4 == 0 ? 1 : 0);
     NC::_ZN15LostChildRecord9setTownIdEv(other2, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
     NC::_ZN15LostChildRecord11setDaysLeftEh(other2, 0xa);
@@ -4610,25 +4610,25 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     void *h7 = NC::_ZN11SaveManager15getTransferDestEj(self, idx);
     void *h5 = NC::_ZN11SaveManager15getTransferDestEj(self, found);
     void *c4 = NC::PlayerData_GetBySessionSlot((s32)h7);
-    void *m7 = NC::func_0208f0b0((s32)h7);
+    void *m7 = NC::TownExchange_GetForAid((s32)h7);
     u32 sc[7];
-    NC::_ZN12Unk_020dd38cC2Ev(sc);
+    NC::_ZN11MsgString9CC2Ev(sc);
     if (c4) {
-        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
     }
-    NC::MI_CpuCopy8(r6, NC::_ZN12Unk_0208f23813func_0208f18cEv(m7), 0xc);
+    NC::MI_CpuCopy8(r6, NC::_ZN18TownExchangeRecord18getLostChildRecordEv(m7), 0xc);
     c4 = NC::PlayerData_GetBySessionSlot((s32)h5);
-    void *m5 = NC::func_0208f0b0((s32)h5);
+    void *m5 = NC::TownExchange_GetForAid((s32)h5);
     u32 sd[7];
-    NC::_ZN12Unk_020dd38cC2Ev(sd);
+    NC::_ZN11MsgString9CC2Ev(sd);
     if (c4) {
-        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
+        NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
     }
-    NC::MI_CpuCopy8(other2, NC::_ZN12Unk_0208f23813func_0208f18cEv(m5), 0xc);
-    NC::_ZN12Unk_020dd38cD1Ev(sd);
-    NC::_ZN12Unk_020dd38cD1Ev(sc);
-    NC::_ZN12Unk_020dd38cD1Ev(sb);
-    NC::_ZN12Unk_020dd38cD1Ev(sa);
+    NC::MI_CpuCopy8(other2, NC::_ZN18TownExchangeRecord18getLostChildRecordEv(m5), 0xc);
+    NC::_ZN11MsgString9CD1Ev(sd);
+    NC::_ZN11MsgString9CD1Ev(sc);
+    NC::_ZN11MsgString9CD1Ev(sb);
+    NC::_ZN11MsgString9CD1Ev(sa);
     return;
 }
 
@@ -4647,23 +4647,23 @@ extern "C" BOOL Wifi_IsInFriendList(Unk_0209f638 *self, void *a, void *b) {
 }
 
 extern "C" void LostChild_ApplyReceived(Unk_0209f638 *self) {
-    void *p5 = NC::func_0208f0b0(4);
+    void *p5 = NC::TownExchange_GetForAid(4);
     void *r4 = NC::PlayerData_GetCurrent();
     u32 s1[7];
-    NC::_ZN12Unk_020dd38cC2Ev(s1);
-    NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
+    NC::_ZN11MsgString9CC2Ev(s1);
+    NC::TownId_GetNameString(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r4);
-    void *q = NC::_ZN12Unk_0208f23813func_0208f18cEv(p5);
+    void *q = NC::_ZN18TownExchangeRecord18getLostChildRecordEv(p5);
     u32 s2[7];
-    NC::_ZN12Unk_020dd38cC2Ev(s2);
-    NC::func_020638d0(NC::_ZN15LostChildRecord9getTownIdEv(q), s2);
+    NC::_ZN11MsgString9CC2Ev(s2);
+    NC::TownId_GetNameString(NC::_ZN15LostChildRecord9getTownIdEv(q), s2);
     if (NC::_ZN15LostChildRecord11getDaysLeftEv(q)) {
         NC::MI_CpuCopy8(q, r6, 0xc);
         NC::_ZN15LostChildRecord13isKaitlinRoleEv(q);
     }
-    NC::_ZN15LostChildRecord5clearEv(NC::_ZN12Unk_0208f23813func_0208f18cEv(p5));
-    NC::_ZN12Unk_020dd38cD1Ev(s2);
-    NC::_ZN12Unk_020dd38cD1Ev(s1);
+    NC::_ZN15LostChildRecord5clearEv(NC::_ZN18TownExchangeRecord18getLostChildRecordEv(p5));
+    NC::_ZN11MsgString9CD1Ev(s2);
+    NC::_ZN11MsgString9CD1Ev(s1);
 }
 
 extern "C" void VillagerTransfer_SendReplies(Unk_0209f638 *self) {
@@ -4676,7 +4676,7 @@ extern "C" void VillagerTransfer_SendReplies(Unk_0209f638 *self) {
         if (o->isSlotActive(n)) {
             s32 q = (s32)NC::_ZN11SaveManager15getTransferDestEj(self, n);
             if (q < 4) {
-                if (NC::_ZN12Unk_0208f23813func_0208f1c0Ev(NC::func_0208f0b0(q))) {
+                if (NC::_ZN18TownExchangeRecord7isValidEv(NC::TownExchange_GetForAid(q))) {
                     a.v[i] = 2;
                     b.v[i] = q;
                 } else {
@@ -5384,7 +5384,7 @@ extern "C" void AxMail_ApplyMail(void) {
         NB::MI_CpuCopy8(NB::sAxMailBuf, obj, 0x108);
         NB::MI_CpuFill8(NB::AxMail_GetDigest((u8 *)obj), 0, 0x10);
         NB::func_0211a748(buf, obj, 0x108, NB::AxMail_GetDigestKey(), 0x10);
-        if (NB::func_02063a04(NB::AxMail_GetDigest(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
+        if (NB::Mem_Differs(NB::AxMail_GetDigest(NB::sAxMailBuf), (u8 *)buf, 0x10) == 0) {
             NB::AxMail_Deliver(NB::sAxMailBuf);
         }
         NB::MI_CpuFill8(NB::sAxMailBuf, 0, 0x108);
@@ -5401,7 +5401,7 @@ extern "C" void AxMail_ApplyBbs() {
         NA::MI_CpuCopy8(NA::sAxBbsBuf, b, 0xd2);
         NA::MI_CpuFill8(NA::AxBbsNotice_GetDigest(b), 0, 0x10);
         NA::func_0211a748(a, b, 0xd2, NA::AxMail_GetDigestKey(), 0x10);
-        if (NA::func_02063a04(NA::AxBbsNotice_GetDigest(NA::sAxBbsBuf), a, 0x10) == 0) {
+        if (NA::Mem_Differs(NA::AxBbsNotice_GetDigest(NA::sAxBbsBuf), a, 0x10) == 0) {
             NA::AxBbsNotice_Post(NA::sAxBbsBuf);
         }
         NA::MI_CpuFill8(NA::sAxBbsBuf, 0, 0xd2);

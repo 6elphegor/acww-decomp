@@ -110,9 +110,9 @@ class LetterRenderer {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d2e0(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
-    void func_0206d394();
-    void func_0206d39c(s32 a);
+    void show(Unk_0206d1d4_Src *a, void *b, void *c, s32 d);
+    void release();
+    void setLayer(s32 a);
     u32 unk_00[0x210 / 4];
 };
 
@@ -666,7 +666,7 @@ void PocketLettersMenu::transitionAct04() {
 void PocketLettersMenu::transitionAct05() {
     s32 t = getSlotLetter(unk_2afd);
     Letter_MarkRead();
-    unk_2678.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
+    unk_2678.show((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
     applySlideOffset(3, 0, 0);
@@ -720,7 +720,7 @@ void PocketLettersMenu::initParts() {
     unk_2af8 = 0;
     unk_2afc = 0xb;
     unk_2270.init(3, 1, 0);
-    unk_2678.func_0206d39c(3);
+    unk_2678.setLayer(3);
 }
 
 void PocketLettersMenu::releaseResources() {
@@ -728,7 +728,7 @@ void PocketLettersMenu::releaseResources() {
     InventoryBg_Exit(&unk_b54);
     InventoryItemGrid_Exit(&unk_cc);
     PopupChoice_ForceClose(&unk_2270);
-    unk_2678.func_0206d394();
+    unk_2678.release();
 }
 
 void PocketLettersMenu::preInputUpdate() {

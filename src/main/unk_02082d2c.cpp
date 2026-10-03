@@ -20,26 +20,26 @@ struct Unk_02082c54_Z {
     void AnimSlotRef_Assign();
 };
 
-struct Unk_02082d68 {
+struct NpcResSlot {
     u8 unk_00;
-    Unk_02082d68();
-    ~Unk_02082d68();
+    NpcResSlot();
+    ~NpcResSlot();
 };
 
 struct Unk_020829b0_Y_dummy;
-struct SpNpcAnimHeapRefSlot : public Unk_02082d68 {
+struct SpNpcAnimHeapRefSlot : public NpcResSlot {
     Unk_020829b0_Y unk_04;
     SpNpcAnimHeapRefSlot();
     ~SpNpcAnimHeapRefSlot();
     void assign();
 };
 
-struct VillagerAnimHeapRefSlot : public Unk_02082d68 {
+struct VillagerAnimHeapRefSlot : public NpcResSlot {
     Unk_02082af0_X unk_04;
     void assign(u32 x);
 };
 
-struct NpcBodyAnimSlot : public Unk_02082d68 {
+struct NpcBodyAnimSlot : public NpcResSlot {
     Unk_02082c54_Z unk_01[3];
     void assignLayer(s32 a, s32 i);
 };
@@ -198,7 +198,7 @@ s32 func_02086fd0(void *a);
 }
 
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 
 extern "C" {
@@ -290,9 +290,9 @@ static inline Unk_02082e80_Cell *Unk_02082e80_GetCell(Unk_02082e80_Grid *g, u32 
     return NULL;
 }
 
-Unk_02082d68::Unk_02082d68() { unk_00 = 0; }
+NpcResSlot::NpcResSlot() { unk_00 = 0; }
 
-Unk_02082d68::~Unk_02082d68() {}
+NpcResSlot::~NpcResSlot() {}
 
 NpcResPool::NpcResPool(s32 n) { unk_04 = n; }
 

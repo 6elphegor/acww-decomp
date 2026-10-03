@@ -32,28 +32,28 @@ public:
     BOOL addSphere(TouchPickSphere *o, Vec3 *a, Vec3 *b, s32 c, u8 d);
 };
 
-class Unk_02088b20 : public TouchPickSphere {
+class BugNetTarget : public TouchPickSphere {
 public:
-    Unk_02088b20();
-    ~Unk_02088b20();
-    void func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d);
-    /* 0x1c */ Unk_02088b20 *unk_1c;
+    BugNetTarget();
+    ~BugNetTarget();
+    void submit(Vec3 *a, s32 b, Vec3 *c, u8 d);
+    /* 0x1c */ BugNetTarget *unk_1c;
     /* 0x20 */ u8 unk_20;
     /* 0x24 */ s32 unk_24;
 };
 
 extern "C" {
-extern s32 data_020cf558[];
-extern s32 data_020cf588[];
+extern s32 sOamObjHeights[];
+extern s32 sOamObjWidths[];
 extern s16 data_02135f44[];
-extern Unk_02088b20 *data_021ce63c;
+extern BugNetTarget *data_021ce63c;
 
 BOOL Oam_UseBufferA(u32 mode);
 s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
 s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_02087e30(u32 *p);
-s32 func_02087e50(u32 *p);
+s32 Oam_GetObjHeight(u32 *p);
+s32 Oam_GetObjWidth(u32 *p);
 s32 WorldCurve_Apply(Vec3 *out, void *in);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 s64 func_01ffd028(void *v, void *p);
@@ -92,19 +92,19 @@ static inline void Unk_02087e70_SetAttr(Unk_02087e70_Oam *oam, s32 x, s32 y, s32
     oam->a2 = (cParam << 12) | (charName | (priority << 10));
 }
 
-Unk_02088b20::Unk_02088b20() {
+BugNetTarget::BugNetTarget() {
     _ZN15TouchPickSphereC2Ev(this);
     unk_1c = 0;
     unk_20 = 0;
 }
 
-Unk_02088b20::~Unk_02088b20() {
+BugNetTarget::~BugNetTarget() {
     _ZN15TouchPickSphereD2Ev(this);
 }
 
-void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
+void BugNetTarget::submit(Vec3 *a, s32 b, Vec3 *c, u8 d) {
     unk_1c = 0;
-    Unk_02088b20 *h = data_021ce63c;
+    BugNetTarget *h = data_021ce63c;
     if (h == 0) {
         data_021ce63c = this;
     } else {
@@ -116,9 +116,9 @@ void Unk_02088b20::func_02088b20(Vec3 *a, s32 b, Vec3 *c, u8 d) {
     Scene_GetTouchPicker()->addSphere(this, a, c, 4, d);
 }
 
-extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
+extern "C" BOOL BugNet_HitTest(void *a, void *b, s32 rad, u8 *out) {
     BOOL result = FALSE;
-    Unk_02088b20 *p = data_021ce63c;
+    BugNetTarget *p = data_021ce63c;
     Vec3 v1, v2, v3;
     Vec3 pts[6];
     u32 i;
@@ -173,7 +173,7 @@ extern "C" void Oam_ResetBuffers() {
     sOamAffineCountB = 0;
 }
 
-extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
+extern "C" s32 Oam_DrawObj(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
     Unk_02087e70_Oam *ent;
     s32 *cntp;
     s32 *othp;
@@ -204,8 +204,8 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     }
     x0 += x;
     y0 = *(s8 *)info + y;
-    w = func_02087e50(info);
-    h = func_02087e30(info);
+    w = Oam_GetObjWidth(info);
+    h = Oam_GetObjHeight(info);
     if (rect && ((info[0] << 22) >> 30) != 1) {
         x0 -= w >> 1;
         y0 -= h >> 1;
@@ -245,7 +245,7 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     return 1;
 }
 
-extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
+extern "C" Unk_02087e70_Oam *Oam_DrawObjRotated(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 scale, s32 rot, s32 sz)
 {
     Unk_02087e70_Oam *oam;
     s32 *cnt;
@@ -278,8 +278,8 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
         x -= 0x200;
     }
     y = *(s8 *)e;
-    w = func_02087e50(&e->w0);
-    h = func_02087e30(&e->w0);
+    w = Oam_GetObjWidth(&e->w0);
+    h = Oam_GetObjHeight(&e->w0);
     if (rot != 0) {
         if (sz != 0) {
             s32 s, ty, c, hw, hh, t;
@@ -443,8 +443,8 @@ top:
             x -= 0x200;
         }
         y = *(s8 *)e;
-        w = func_02087e50(&e->w0);
-        h = func_02087e30(&e->w0);
+        w = Oam_GetObjWidth(&e->w0);
+        h = Oam_GetObjHeight(&e->w0);
         if (use) {
             if (k3) {
                 w <<= 1;

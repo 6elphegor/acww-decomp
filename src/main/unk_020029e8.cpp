@@ -184,15 +184,15 @@ void VEC_Add(void *a, void *b, void *c);
 }
 
 extern "C" {
-void func_02063990(void *p, void *s);
+void TownId_Assign(void *p, void *s);
 }
 
 extern "C" {
-u32 func_02063954(void *p);
+u32 TownId_IsValid(void *p);
 }
 
 extern "C" {
-void func_020639a0(void *p);
+void TownId_Clear(void *p);
 }
 
 extern "C" {

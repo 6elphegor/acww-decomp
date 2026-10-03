@@ -92,8 +92,8 @@ extern u8 gTouchPressY;
 extern u8 gTouchPressX;
 extern s32 gCurrentHeap;
 // extra decls
-s32 func_02087e0c(void *p);
-s32 func_02087e14(void *p);
+s32 Oam_GetObjY(void *p);
+s32 Oam_GetObjX(void *p);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 void PlayerData_GetCurrent();
@@ -101,7 +101,7 @@ void PlayerData_GetDresser();
 s32 ChestStorage_GetItems();
 s32 func_020639e8(char *buf, char *fmt, ...);
 BOOL Cell_HitTest(void *p, s32 a, s32 b, s32 c, s32 d);
-void func_02088730(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
+void Oam_DrawObj(u32 a, void *p, u32 b, u32 c, s32 d, u32 e, u32 f);
 }
 
 class ChestMenu;
@@ -1357,7 +1357,7 @@ s32 ChestMenu_GetSlotX(S *s, u32 a)
         return 0xc4;
     }
     if (ChestMenu_IsTabSlot(s, a)) {
-        return func_02087e14(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x80;
+        return Oam_GetObjX(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x80;
     }
     return 0;
 }
@@ -1371,7 +1371,7 @@ s32 ChestMenu_GetSlotY(S *s, u32 a)
         return 0x70;
     }
     if (ChestMenu_IsTabSlot(s, a)) {
-        return func_02087e0c(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x68;
+        return Oam_GetObjY(&sChestPageTabSprites[(a - 0x1e) * 3]) + 0x68;
     }
     return 0;
 }
@@ -1938,9 +1938,9 @@ void ChestMenu::drawPageTabs() {
             p = p0;
             q = 5;
         }
-        func_02088730(1, &sChestPageTabSprites[j], 0x80, p, m, 1, z0);
-        func_02088730(1, &sChestPageTabSprites[j + 1], 0x80, p, q, 1, z1);
-        func_02088730(1, &sChestPageTabSprites[j + 2], 0x80, p0, m, 1, z2);
+        Oam_DrawObj(1, &sChestPageTabSprites[j], 0x80, p, m, 1, z0);
+        Oam_DrawObj(1, &sChestPageTabSprites[j + 1], 0x80, p, q, 1, z1);
+        Oam_DrawObj(1, &sChestPageTabSprites[j + 2], 0x80, p0, m, 1, z2);
         i++;
         j += 3;
     } while (i < 6);

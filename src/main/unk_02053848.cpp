@@ -239,8 +239,8 @@ void _ZN5Model10drawScaledEPi(void *p, void *q);
 void *Gfx3d_AllocAnmObj(void *a, void *b, void *c);
 extern u8 sJointAnmHeader2[];
 s32 _ZN9AnimModel12drawAnimatedEPv(void *p);
-void func_0206fde4(u32 v);
-void func_0206fe0c(u32 v);
+void CpuMtx_RestoreFromStack(u32 v);
+void CpuMtx_StoreToStack(u32 v);
 void CpuMtx_MultRotScaledTrans(void *a, void *b, void *c);
 void CpuMtx_MultTrans(void *a);
 void CpuMtx_MultRot(void *a);
@@ -611,9 +611,9 @@ extern "C" void JointCb_CalcCpuMatrix(void *unused, Unk_02054628_Obj *o, void *p
 {
     u32 t = *o->unk_00 & 0xe0;
     if (t == 0x40) {
-        func_0206fde4(o->unk_00[4]);
+        CpuMtx_RestoreFromStack(o->unk_00[4]);
     } else if (t == 0x60) {
-        func_0206fde4(o->unk_00[5]);
+        CpuMtx_RestoreFromStack(o->unk_00[5]);
     }
     if (p != 0) {
         Unk_02054584_Data *d = o->unk_b4;
@@ -632,7 +632,7 @@ extern "C" void JointCb_CalcCpuMatrix(void *unused, Unk_02054628_Obj *o, void *p
         }
     }
     if (t == 0x20 || t == 0x60) {
-        func_0206fe0c(o->unk_00[4]);
+        CpuMtx_StoreToStack(o->unk_00[4]);
     }
 }
 

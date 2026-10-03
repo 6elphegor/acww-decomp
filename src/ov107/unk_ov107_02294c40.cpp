@@ -237,7 +237,7 @@ u16 *PendingUnit_GetActivePosOfAid(s32 a);
 void NetBuf_PackPair20(void *dst, s32 a, s32 b);
 u8 *PlayerActor_GetActor(s32 a);
 s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
-u32 func_02063b8c(s32 a);
+u32 Random_GlobalBelow(s32 a);
 u16 MenuCtrl_GetPocketsFullItem();
 void Item_FromPlacedForm(void *a, void *b);
 u32 Item_PickRandomPresent();
@@ -1524,7 +1524,7 @@ void PocketsFullMenu::mainAct10() {
             ok = TRUE;
         }
         s32 r5 = ok ? a - 0x12b0 : -1;
-        u8 t = func_02063b8c(0x3c);
+        u8 t = Random_GlobalBelow(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);

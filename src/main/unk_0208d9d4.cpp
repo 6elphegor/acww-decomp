@@ -4,8 +4,8 @@ extern "C" {
 extern u8 data_020d5b0c[];
 }
 
-extern const s32 data_020cf6c8[4];
-extern const s32 data_020cf6d8[4];
+extern const s32 sScrollKnobPlayOnce[4];
+extern const s32 sScrollKnobSeqIds[4];
 
 struct SpriteAnimSeq;
 
@@ -79,9 +79,9 @@ void ScrollKnob::setState(s32 idx) {
     Unk_0208d9d4_E a;
     Unk_0208d9d4_E n;
     s32 f;
-    a = (Unk_0208d9d4_E)data_020cf6d8[idx];
+    a = (Unk_0208d9d4_E)sScrollKnobSeqIds[idx];
     n = (Unk_0208d9d4_E)(a + 1);
-    f = data_020cf6c8[idx];
+    f = sScrollKnobPlayOnce[idx];
     unk_3c = idx;
     unk_14.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
     unk_14.setPlayOnce(f);
@@ -95,5 +95,5 @@ void ScrollKnob::setState(s32 idx) {
     }
 }
 
-extern const s32 data_020cf6c8[4] = {1, 1, 1, 1};
-extern const s32 data_020cf6d8[4] = {0x2f, 0x2f, 0x2f, 0x31};
+extern const s32 sScrollKnobPlayOnce[4] = {1, 1, 1, 1};
+extern const s32 sScrollKnobSeqIds[4] = {0x2f, 0x2f, 0x2f, 0x31};

@@ -12,7 +12,7 @@ public:
 };
 
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 BOOL _ZN12TownAcreCell7setTypeEi(Unk_0209c060 *, s32);
 void *_ZN10RecordFile9getRecordEj(void *, s32);
 }
@@ -33,7 +33,7 @@ void TownAcreGrid::loadCandidate(s32 seed) {
     u32 y, x;
     s32 v;
     if (seed < 0) {
-        v = func_02063b8c(0x20c);
+        v = Random_GlobalBelow(0x20c);
     } else {
         v = (u32)seed % 0x20c;
     }

@@ -160,7 +160,7 @@ s32 _ZN12VillagerData13getVillagerIdEv();
 u32 VillagerId_GetSpecies();
 void Villager_GetSpeciesName(Unk_02041e00_Obj *o, u32 v);
 void MailText_SetSlot(s32 a, Unk_02041e00_Obj *o);
-s32 func_02063b8c(s32 v);
+s32 Random_GlobalBelow(s32 v);
 s32 Event_GetStateAt(u32 ty, Unk_02042104_Date *d, s32 v);
 void Bbs_PostMsgDated(s32 a, const char *fmt, u32 b, u32 c, u32 d);
 s32 TownBbs_UnpackUsedMask(void *o, u8 *dst, u8 *src, s32 n);
@@ -278,7 +278,7 @@ void FieldAction_Submit(u8, u32);
 void Town_ClearObjectFcFdAtPos(void *, void *);
 s32 Field_AidOrZero(void *);
 s32 FieldAction_RequestPlaceAtPending(s32, void *);
-s32 func_02063ba4(s32);
+s32 Math_AngleToDir8(s32);
 void FieldPos_ToUnit(void *, void *, void *);
 s32 PendingUnit_IndexAt(void *, s32);
 s32 Field_IsUnitClearOfOthers(void *, s32);
@@ -491,7 +491,7 @@ s32 FieldPlayer_GetHeldItem(s32 v);
 s32 TownState_IsPlayerDateNotToday(void *p);
 s32 Item_GetPrice(volatile u16 *p);
 s32 FengShui_GetWestTotal(void);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 TownState_SetPlayerDateToday(void *p);
 extern u8 gSaveData[];
 struct Unk_02043db8_G {
@@ -589,7 +589,7 @@ s32 _ZN11CommManager8isOnlineEv(void *g);
 s32 _ZN11CommManager7isMyAidEj(void *g, s32 a);
 void *TownBlockMap_Get(void);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 Item_IsFlower(void);
 s32 Scene_GetCurrent(void);
 s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
@@ -814,7 +814,7 @@ u16 *BlockMap_GetItemPtr(void *obj, s32 tx, s32 ty, s32 px, s32 py, s32 z);
 BOOL _ZN8BlockMap12canPlaceItemEii(void *obj, s32 x, s32 y);
 s32 PendingUnit_IndexAt(Unk_020449e8_Pos *p, s32 a);
 void _ZN12ItemPickSpec3setEii(Unk_02044aa8_Rng *r, s32 a, s32 b);
-void func_02063388(Unk_02044aa8_Rng *r);
+void ItemPickSpec_Destruct(Unk_02044aa8_Rng *r);
 void ItemPick_One(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 Tree_GetDropSide(u32 a, Unk_02044aa8_Vec3 *v);
 BOOL NetArea_IsLocalOwner();
@@ -1082,7 +1082,7 @@ void *PlayerData_GetResident(void *, s32);
 void *_ZN10PlayerData12getInventoryEv(void *);
 u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
 s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, s32, void *, s32);
 s32 Town_IsSandAt(void *);
 s32 Item_RandomSeashell(void *);
@@ -1202,7 +1202,7 @@ s32 PlayerActor_GetSlotPosXZ(void *, void *, void *, s32, s32);
 s32 SceneId_IsTown(u32);
 s32 SceneId_IsTownUnk31(u32);
 Unk_0204674c_P *TownBlockMap_Get();
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Town_SpawnSeashellsInAcre(void *, void *, s32);
 Unk_02046650_O *PlayerActor_GetActor(s32);
 void TownEval_EvaluateAcreAt(void *, void *, s32, s32);
@@ -1372,7 +1372,7 @@ u16 *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void FieldUnit_FromBlockUnit(s32 *, s32 *, s32, s32, s32, s32);
 s32 BlockMap_PlaceItem(void *m, s32 x, s32 z, u32 t, s32 f);
 s32 Item_IsTreeGrown(void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void LitCedarList_Add(s32, s32);
 void Town_SpawnVillagerHouseFlowers(void *, void *, s32, s32);
 s32 TownState_FindEvent(u32, s32);
@@ -1478,7 +1478,7 @@ extern u8 gSaveVillagers[];
 extern u16 data_020c912c[];
 extern u16 data_020c9754[];
 extern u8 data_020c96b8[];
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 _s32_div_f(s32 a, s32 b);
 Unk_02047798_Map *TownBlockMap_Get();
 u16 *BlockMap_GetItemPtr(void *map, s32 x, s32 y, s32 a, s32 b, s32 c);
@@ -1595,7 +1595,7 @@ struct Unk_02048104_Hdr {
     u8 v;
 };
 extern void *gCommManager;
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Town_MakeSpecialTree(void *a, void *b, s32 x, s32 y, s32 e);
 u16 *BlockMap_GetItemPtr(void *q, s32 a, s32 b, s32 c, s32 d, s32 e);
 void FieldUnit_FromBlockUnit(s32 *x, s32 *y, s32 a, s32 b, s32 c, s32 d);
@@ -1693,7 +1693,7 @@ BOOL Item_IsTreeStage0(u16 *p);
 void Town_WitherSapling(void *m, u32 id, s32 x, s32 y);
 BOOL _ZN8BlockMap12getPlantFlagEii(void *m, s32 x, s32 y);
 s32 BlockMap_PlaceItem(void *m, s32 x, s32 y, u32 id, s32 layer);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 _s32_div_f(s32 a, s32 b);
 s32 Town_IsPlantable(void *m, s32 x, s32 y);
 s32 Flower_GetSpecies(u16 *p);
@@ -1867,7 +1867,7 @@ struct Unk_020492fc_Cell {
     s32 count;
     Unk_020492fc_Entry *entries;
 };
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 extern Unk_020492fc_Cell *sFlowerHybridTable[][10];
 s32 Flower_GetColor(u16 *p);
 u16 *BlockMap_GetItemPtr(void *a, s32 x, s32 y, s32 lx, s32 ly, s32 z);
@@ -3667,7 +3667,7 @@ namespace nN {
 extern "C" u16 Flower_PickHybrid(u16 *a, u16 *b) {
     s32 kind, rnd;
     u16 result;
-    rnd = func_02063b8c(100);
+    rnd = Random_GlobalBelow(100);
     result = 0xfff1;
     kind = Flower_GetSpecies(a);
     s32 lo = Flower_GetColor(a);
@@ -3775,11 +3775,11 @@ extern "C" void Town_UpdateFlowers(u32 a, void *m) {
                         g = TRUE;
                     }
                     if (g) {
-                        if (func_02063b8c(100) < (s32)sFlowerParchChance[t]) {
+                        if (Random_GlobalBelow(100) < (s32)sFlowerParchChance[t]) {
                             id = (u16)(*cell + 0x6e);
                         }
                     } else if (t == 0x1d) {
-                        if (func_02063b8c(100) < 0x1e) {
+                        if (Random_GlobalBelow(100) < 0x1e) {
                             id = 0x1e;
                         }
                     } else if (t >= 0x8a && t <= 0xa4) {
@@ -3838,7 +3838,7 @@ extern "C" void Town_UpdateFlowersExtraDay(u32 a, void *m, s32 c) {
                     }
                 } else if (t == 0x1e) {
                     if (rem == 0) {
-                        if (func_02063b8c(100) < 0x1e) {
+                        if (Random_GlobalBelow(100) < 0x1e) {
                             id = 0xfff1;
                         }
                     }
@@ -3848,11 +3848,11 @@ extern "C" void Town_UpdateFlowersExtraDay(u32 a, void *m, s32 c) {
                         g = TRUE;
                     }
                     if (g) {
-                        if (func_02063b8c(100) < (s32)sFlowerParchChanceExtraDay[t]) {
+                        if (Random_GlobalBelow(100) < (s32)sFlowerParchChanceExtraDay[t]) {
                             id = (u16)(*cell + 0x6e);
                         }
                     } else if (t == 0x1d) {
-                        if (func_02063b8c(100) < 0x1e) {
+                        if (Random_GlobalBelow(100) < 0x1e) {
                             id = 0x1e;
                         }
                     }
@@ -3895,7 +3895,7 @@ extern "C" BOOL Town_ForEachNeighbor(void *m, Pos size, Pos pos, BOOL (*cb)(void
 namespace nM {
 extern "C" BOOL Town_SpawnFlowerNearby(void *m, Pos size, Pos pos, u16 v) {
     s32 result = 0;
-    s32 r = func_02063b8c(8);
+    s32 r = Random_GlobalBelow(8);
     s32 i;
     for (i = 0; i < 8; i++) {
         u8 b = sNeighborOffsets8[r];
@@ -4094,7 +4094,7 @@ extern "C" void TreeQuota_Apply(Unk_02048758_Slot *s) {
         s32 cnt = s->count;
         s32 m1 = -1;
         for (; n != 0; n--) {
-            s32 c = func_02063b8c(s->count);
+            s32 c = Random_GlobalBelow(s->count);
             s32 j;
             for (j = 0; j < cnt; j++) {
                 if (s->pos[j].x >= 0) {
@@ -4353,7 +4353,7 @@ extern "C" s32 Town_PlaceAtRandomUnit(void *a, void *b, s32 n, Unk_020481b8_Pos 
     Unk_020481b8_Pos *p;
     if (n > 0) {
         u16 t;
-        r = func_02063b8c(n);
+        r = Random_GlobalBelow(n);
         p = arr + r;
         if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             t = e;
@@ -4426,7 +4426,7 @@ extern "C" s32 Town_MakeSpecialTree(void *a, void *b, s32 x, s32 y, s32 e) {
         }
     }
     if (n > 0) {
-        s32 k = func_02063b8c(n);
+        s32 k = Random_GlobalBelow(n);
         BlockMap_PlaceItem(b, pos[k].x, pos[k].y, (u16)(e + id[k]), 0);
         result = 1;
     }
@@ -4447,7 +4447,7 @@ extern "C" void Town_SpawnBeeTrees(void *a, void *b, s32 w, s32 h) {
             }
         }
         if (ok) {
-            s32 r = func_02063b8c(h) + 1;
+            s32 r = Random_GlobalBelow(h) + 1;
             Town_MakeSpecialTree(a, b, x + 1, r, 1);
         }
     }
@@ -4458,8 +4458,8 @@ namespace nL {
 extern "C" void Town_SpawnFurnitureTrees(void *a, void *b, s32 c, s32 d) {
     s32 n = 2 - (*(Unk_02048104_Hdr *)&nZ::gTownEval.unk_18.unk_08).v;
     while (n != 0) {
-        s32 x = func_02063b8c(c);
-        s32 y = func_02063b8c(d);
+        s32 x = Random_GlobalBelow(c);
+        s32 y = Random_GlobalBelow(d);
         Town_MakeSpecialTree(a, b, x + 1, y + 1, 0);
         n--;
     }
@@ -4513,11 +4513,11 @@ extern "C" void Town_SpawnWeeds(void *a, void *b) {
     arr[2].x = 0; arr[2].y = 0;
     for (i = 0; i < 3; i++) {
         do {
-            r = func_02063b8c(16);
+            r = Random_GlobalBelow(16);
             pos.x = r % 4;
             pos.y = r / 4;
         } while (Pos_IsInList(a, &pos, arr, cnt));
-        Town_SpawnItemInAcre(a, b, pos.x + 1, pos.y + 1, (u16)(func_02063b8c(4) + 0x21), (void *)Town_CanSpawnWeedAt, z);
+        Town_SpawnItemInAcre(a, b, pos.x + 1, pos.y + 1, (u16)(Random_GlobalBelow(4) + 0x21), (void *)Town_CanSpawnWeedAt, z);
         arr[cnt].x = pos.x;
         arr[cnt].y = pos.y;
         cnt++;
@@ -4550,7 +4550,7 @@ extern "C" void Town_SpawnFlowersAroundHouse(void *a, void *b, Unk_02047830_Pos 
     }
     s32 n = d * 2;
     for (; cnt > 0; cnt--) {
-        i = Town_PlaceAtRandomUnit(a, b, cnt, arr, data_020c9754[func_02063b8c(12)], 0);
+        i = Town_PlaceAtRandomUnit(a, b, cnt, arr, data_020c9754[Random_GlobalBelow(12)], 0);
         n--;
         if (n <= 0) break;
         for (; i < 16; i++) {
@@ -4598,9 +4598,9 @@ extern "C" void Town_UpdateVillagerHouseFlowers(void *a, void *b, void *c, s32 d
 
 namespace nK {
 extern "C" void Town_SpawnRandomFlower(void *a, void *b, s32 c, s32 d) {
-    s32 x = func_02063b8c(c);
-    s32 y = func_02063b8c(d);
-    s32 i = func_02063b8c(12);
+    s32 x = Random_GlobalBelow(c);
+    s32 y = Random_GlobalBelow(d);
+    s32 i = Random_GlobalBelow(12);
     Town_SpawnItemInAcre(a, b, x + 1, y + 1, data_020c9754[i], (void *)Town_IsPlantable, 0);
 }
 }
@@ -4610,7 +4610,7 @@ extern "C" void Town_BreedFlowers(void *a, Unk_02047798_Map *b, s32 c, s32 d) {
     s32 cnt, y, x;
     for (y = 0; y < d; y++) {
         for (x = 0; x < c; x++) {
-            if (func_02063b8c(100) < 20) {
+            if (Random_GlobalBelow(100) < 20) {
                 s32 i, j, k;
                 s32 ox, oy;
                 Unk_02047830_Pos from, to;
@@ -4636,7 +4636,7 @@ extern "C" void Town_BreedFlowers(void *a, Unk_02047798_Map *b, s32 c, s32 d) {
                     }
                 }
                 if (cnt > 0) {
-                    k = func_02063b8c(cnt);
+                    k = Random_GlobalBelow(cnt);
                     Unk_02047830_Pos *bp = (Unk_02047830_Pos *)((u8 *)b + 4);
                     s32 fx = bp->x << 4;
                     s32 fy = bp->y << 4;
@@ -4654,17 +4654,17 @@ extern "C" void Town_BreedFlowers(void *a, Unk_02047798_Map *b, s32 c, s32 d) {
 
 namespace nK {
 extern "C" void Town_SpawnDandelion(void *a, void *b, s32 c, s32 d) {
-    s32 x = func_02063b8c(c);
-    s32 y = func_02063b8c(d);
+    s32 x = Random_GlobalBelow(c);
+    s32 y = Random_GlobalBelow(d);
     Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1d, (void *)Town_IsGrass, 0);
 }
 }
 
 namespace nK {
 extern "C" void Town_SpawnClover(void *a, void *b, s32 c, s32 d) {
-    s32 x = func_02063b8c(c);
-    s32 y = func_02063b8c(d);
-    s32 id = func_02063b8c(100) < 2 ? 0x20 : 0x1f;
+    s32 x = Random_GlobalBelow(c);
+    s32 y = Random_GlobalBelow(d);
+    s32 id = Random_GlobalBelow(100) < 2 ? 0x20 : 0x1f;
     Town_SpawnItemInAcre(a, b, x + 1, y + 1, id, (void *)Town_CanSpawnCloverAt, 0);
 }
 }
@@ -4673,7 +4673,7 @@ namespace nK {
 extern "C" void Town_PickJacobsLadderAcre(Unk_02047830_Pos *out, void *a, s32 c, s32 d) {
     s32 t = c * d - (*(Unk_021c40ec *)&nZ::gTownEval.unk_18.unk_08).unk_04;
     if (t > 0) {
-        s32 n = func_02063b8c(t);
+        s32 n = Random_GlobalBelow(t);
         s32 x, y;
         for (y = 0; y < d; y++) {
             for (x = 0; x < c; x++) {
@@ -4708,15 +4708,15 @@ extern "C" void Town_SpawnJacobsLadder(void *a, void *b, s32 c, s32 d) {
 namespace nK {
 extern "C" void Town_TrySpawnJacobsLadder(void *a, void *b, s32 c, s32 d) {
     if (gTownEval.unk_00 == 4) {
-        if (func_02063b8c(100) < 50) Town_SpawnJacobsLadder(a, b, c, d);
+        if (Random_GlobalBelow(100) < 50) Town_SpawnJacobsLadder(a, b, c, d);
     }
 }
 }
 
 namespace nK {
 extern "C" s32 Town_SpawnRafflesia(void *a, void *b, s32 c, s32 d) {
-    s32 x = func_02063b8c(c);
-    s32 y = func_02063b8c(d);
+    s32 x = Random_GlobalBelow(c);
+    s32 y = Random_GlobalBelow(d);
     Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1b, (void *)Town_CanSpawnWeedAt, 0);
 }
 }
@@ -4749,11 +4749,11 @@ extern "C" s32 Town_UpdateRafflesia(void *a, void *b, s32 c, s32 d) {
 namespace nK {
 extern "C" void Town_BuryFossils(void *a, void *b, s32 c, s32 d) {
     s32 n = 3 - (*(Unk_021c40ec *)&nZ::gTownEval.unk_18.unk_08).unk_0d;
-    s32 x = func_02063b8c(c - 1);
-    s32 y = func_02063b8c(d - 1);
+    s32 x = Random_GlobalBelow(c - 1);
+    s32 y = Random_GlobalBelow(d - 1);
     for (; n > 0; n--) {
-        x = (x + 1 + func_02063b8c(c - 1)) % c;
-        y = (y + 1 + func_02063b8c(d - 1)) % d;
+        x = (x + 1 + Random_GlobalBelow(c - 1)) % c;
+        y = (y + 1 + Random_GlobalBelow(d - 1)) % d;
         Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1549, (void *)Town_CanBuryAt, 1);
     }
 }
@@ -4762,8 +4762,8 @@ extern "C" void Town_BuryFossils(void *a, void *b, s32 c, s32 d) {
 namespace nK {
 extern "C" void Town_BuryPitfallSeed(void *a, void *b, s32 c, s32 d) {
     if (gTownEval.unk_30_5 == 0) {
-        s32 x = func_02063b8c(c - 1);
-        s32 y = func_02063b8c(d - 1);
+        s32 x = Random_GlobalBelow(c - 1);
+        s32 y = Random_GlobalBelow(d - 1);
         Town_SpawnItemInAcre(a, b, x + 1, y + 1, 0x1566, (void *)Town_CanSpawnWeedAt, 1);
     }
 }
@@ -4774,7 +4774,7 @@ extern "C" BOOL Town_ConvertRockInAcre(void *a, void *b, Unk_021c4110_Cell *cell
     s32 x, y;
     s32 ox, oy;
     s32 v = cell->unk_18;
-    s32 n = func_02063b8c(v);
+    s32 n = Random_GlobalBelow(v);
     cell->unk_18 = v - 1;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
@@ -4802,7 +4802,7 @@ extern "C" BOOL Town_ConvertRockInAcre(void *a, void *b, Unk_021c4110_Cell *cell
 
 namespace nK {
 extern "C" s32 Town_ConvertRandomRock(void *a, void *b, s32 c, s32 d, s32 e, s32 f) {
-    s32 r = func_02063b8c(f);
+    s32 r = Random_GlobalBelow(f);
     s32 x, y;
     for (y = 0; y < d; y++) {
         for (x = 0; x < c; x++) {
@@ -4934,8 +4934,8 @@ extern "C" void Town_UpdateRedTurnips(void *a, Unk_020475f8_Map *b, s32 c) {
 namespace nJ {
 extern "C" void Town_SpawnCoconut(void *a, void *b, s32 c) {
     if (((s32)(gTownEval[0x30 / 4] << 27) >> 31) == 0) {
-        if (func_02063b8c(100) < 10) {
-            s32 t = func_02063b8c(c) + 1;
+        if (Random_GlobalBelow(100) < 10) {
+            s32 t = Random_GlobalBelow(c) + 1;
             Town_SpawnItemInAcre(a, b, t, 4, 0x1548, (void *)Town_GetSandAttr, 0);
         }
     }
@@ -4953,13 +4953,13 @@ extern "C" void Town_BuryGyroids(void *a, void *b, s32 c, s32 d, u8 e) {
             u16 v[2];
             s32 px, py;
             v[0] = 0xfff1;
-            px = func_02063b8c(c - 1);
-            py = func_02063b8c(d - 1);
+            px = Random_GlobalBelow(c - 1);
+            py = Random_GlobalBelow(d - 1);
             for (s32 i = 0; i < 3; i++) {
                 ItemPick_FromRange(&v[1], 0x45dc, 0x7f, 0, 0, 0, 1, 10, 0, 1);
                 v[0] = v[1];
-                px = (px + 1 + func_02063b8c(c - 1)) % c;
-                py = (py + 1 + func_02063b8c(d - 1)) % d;
+                px = (px + 1 + Random_GlobalBelow(c - 1)) % c;
+                py = (py + 1 + Random_GlobalBelow(d - 1)) % d;
                 Town_SpawnItemInAcre(a, b, px + 1, py + 1, v[0], (void *)Town_CanBuryAt, 1);
             }
             break;
@@ -5023,7 +5023,7 @@ extern "C" s32 Town_CountEventDays(void *a, s32 b, u8 *c, u8 *d, s32 e, s32 f, s
 namespace nJ {
 extern "C" u32 Item_RandomAcorn(void *a) {
     u32 b = 0x1542;
-    b += func_02063b8c(5);
+    b += Random_GlobalBelow(5);
     return (u16)b;
 }
 }
@@ -5052,7 +5052,7 @@ extern "C" void Town_DropAcornsInAcre(void *a, void *b, s32 x, s32 z) {
         }
     }
     if (n > 0) {
-        s32 idx = func_02063b8c(n);
+        s32 idx = Random_GlobalBelow(n);
         Unk_020470b8_Pos *pick = arr + idx;
         u8 *d = data_020c910c;
         for (s32 k = 0; k < 3; d++, k++) {
@@ -5124,7 +5124,7 @@ extern "C" void Town_DecorateCedarsInAcre(void *a, void *m, s32 x, s32 z) {
     }
     for (s32 t = 3 - k; t != 0; t--) {
         if (n > 0) {
-            s32 idx = func_02063b8c(n);
+            s32 idx = Random_GlobalBelow(n);
             Unk_020470b8_Pos *pick = arr + idx;
             BlockMap_PlaceItem(m, arr[idx].x, pick->z, 0x6d, 0);
             LitCedarList_Add(arr[idx].x, pick->z);
@@ -5441,7 +5441,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
                 break;
             default:
                 Town_SpawnWeeds(a, p);
-                if (func_02063b8c(100) < 50) Town_SpawnClover(a, p, x, y);
+                if (Random_GlobalBelow(100) < 50) Town_SpawnClover(a, p, x, y);
                 break;
             }
             DateTime_AddDays(&s1, 1);
@@ -5462,7 +5462,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
             case 0x16:
                 break;
             default:
-                if (func_02063b8c(100) < 20) Town_SpawnDandelion(a, p, x, y);
+                if (Random_GlobalBelow(100) < 20) Town_SpawnDandelion(a, p, x, y);
                 break;
             }
             DateTime_AddDays(&s2, 1);
@@ -5532,7 +5532,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
 namespace nI {
 extern "C" u16 Item_RandomSeashell(void *a) {
     u16 n = 0x1554;
-    s32 r = func_02063b8c(100);
+    s32 r = Random_GlobalBelow(100);
     s32 *q = sSeashellWeights;
     s32 i;
     for (i = 0; i < 9; q++, i++) {
@@ -5564,7 +5564,7 @@ extern "C" void Town_UpdateSeashellsOffline(void *a) {
             if (o) {
                 Unk_0204674c_P *p = TownBlockMap_Get();
                 u32 *o2 = &o->f5c;
-                s32 r = func_02063b8c(4);
+                s32 r = Random_GlobalBelow(4);
                 s32 x = (s32)o2[0] >> 17;
                 if (!((s32)o2[2] >> 17 == 4 && x == r + 1)) {
                     Town_SpawnSeashellsInAcre(a, p, r);
@@ -5599,7 +5599,7 @@ extern "C" void Town_UpdateSeashellsOnline(void *a) {
                 }
                 if (!found) {
                     Unk_0204674c_P *p = TownBlockMap_Get();
-                    s32 r = func_02063b8c(4);
+                    s32 r = Random_GlobalBelow(4);
                     Town_SpawnSeashellsInAcre(a, p, r);
                 }
                 *(a ? gTownUpdater : gTownUpdater) = l.t;
@@ -5637,7 +5637,7 @@ extern "C" void Town_RefillSeashells(void *p, void *q) {
 
 namespace nH {
 extern "C" s32 Town_WashUpBottle(void *p) {
-    s32 r5 = func_02063b8c(4);
+    s32 r5 = Random_GlobalBelow(4);
     void *q = TownBlockMap_Get();
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -7040,7 +7040,7 @@ extern "C" void TreeDrop_SpawnSpecial(Unk_020449e8_Out *o, Unk_020449e8_Src *s, 
                 _ZN12ItemPickSpec3setEii(&rng, 0, 0);
                 ItemPick_One(&ret, &rng, 0, 0, 1, 1, 0);
                 v2 = ret;
-                func_02063388(&rng);
+                ItemPickSpec_Destruct(&rng);
                 code = v2;
             }
         } else {
@@ -7588,7 +7588,7 @@ extern "C" void Flower_Trample(Unk_02043f04_Pos *p) {
         s32 zh = z >> 4;
         void *r = BlockMap_GetItemPtr(m, xh, zh, x - (xh << 4), z - (zh << 4), 0);
         if (r) {
-            s32 f = func_02063b8c(0x50) < 0x46 ? 1 : 0;
+            s32 f = Random_GlobalBelow(0x50) < 0x46 ? 1 : 0;
             Unk_02043f04_Pos t;
             t.x = p->x;
             t.z = p->z;
@@ -7668,7 +7668,7 @@ extern "C" void FieldAction_TryMoneyTree(u16 *out, u8 *flag, u16 c) {
                 if (sum > 100) {
                     sum = 100;
                 }
-                if (func_02063b8c(100) < sum) {
+                if (Random_GlobalBelow(100) < sum) {
                     *out = 0x57;
                     TownState_SetPlayerDateToday((void *)(r7 + 0x15e54));
                 }
@@ -8521,7 +8521,7 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out
     o = (u8 *)PlayerActor_GetActor(4);
     res = 0;
     if (w != NULL && o != NULL) {
-        ent = (s32 *)&sDropUnitOrder[func_02063ba4(*(s16 *)(o + 0x8e))];
+        ent = (s32 *)&sDropUnitOrder[Math_AngleToDir8(*(s16 *)(o + 0x8e))];
         FieldPos_ToUnit(p, &p->y, o + 0x5c);
         i = 0;
         g = *(u8 **)&gCommManager;
@@ -9145,7 +9145,7 @@ extern "C" void TownBbs_PostSlogan(void *o, u8 *base, Unk_02042104_Date *d) {
         n = 0x54;
         MI_CpuFill8(buf, 0, n);
     }
-    n = func_02063b8c(n);
+    n = Random_GlobalBelow(n);
     MI_CpuCopy8(d, &tmp, 8);
     TownBbs_PostRandomUnused(o, n, "bbs_slogan", buf, 0x54, &tmp);
     TownBbs_PackUsedMask(o, base + 0x15e6a, buf, 11);
@@ -9161,7 +9161,7 @@ extern "C" void TownBbs_PostPelicanNotice(void *o, u8 *base, Unk_02042104_Date *
         n = 0x4c;
         MI_CpuFill8(buf, 0, n);
     }
-    n = func_02063b8c(n);
+    n = Random_GlobalBelow(n);
     MI_CpuCopy8(d, &tmp, 8);
     TownBbs_PostRandomUnused(o, n, "bbs_pelican", buf, 0x4c, &tmp);
     TownBbs_PackUsedMask(o, base + 0x15e60, buf, 10);
@@ -9195,7 +9195,7 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
             if (SaveVillagers_Get(gSaveVillagers, ty) != 0 && _ZN12VillagerData13getVillagerIdEv() != 0) {
                 Villager_GetSpeciesName(&obj, VillagerId_GetSpecies());
                 MailText_SetSlot(v0c, &obj);
-                t = func_02063b8c(3) + 0x1e;
+                t = Random_GlobalBelow(3) + 0x1e;
             }
             break;
         default:

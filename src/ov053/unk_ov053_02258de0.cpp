@@ -189,7 +189,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -305,7 +305,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -479,7 +479,7 @@ s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 Bgm_RequestSilence(s32 a, s32 b, s32 c);
 s32 _ZN12Unk_02097ff48testFlagEj(void *h, s32 v);
 void _ZN12Unk_02097ff47setFlagEj(void *h, s32 v);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void PlayerActor_LocalRequestSit();
 void _ZN17PlayerSpNpcRecord15addHaircutCountEj(void *p, u32 v);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
@@ -993,7 +993,7 @@ void SpNpcHarrietTalk::vfunc_78(TalkStartMsg *out) {
                         setTopic(2);
                     }
                 } else {
-                    setTopic(func_02063b8c(3) + 0xb);
+                    setTopic(Random_GlobalBelow(3) + 0xb);
                 }
             } else {
                 setTopic(6);

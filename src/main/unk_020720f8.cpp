@@ -482,7 +482,7 @@ extern "C" {
 void *_ZN8PlayerId7getNameEv();
 }
 extern "C" {
-void *func_02063964(void *);
+void *TownId_GetName(void *);
 }
 extern "C" {
 void _ZN10PlayerData15getWifiUserDataEv(u32);
@@ -647,7 +647,7 @@ extern "C" {
 void CharInteractSync_Reset();
 }
 extern "C" {
-void func_0206f81c();
+void CommSub_ResetPostReply();
 }
 extern "C" {
 void *Item_MakeBuilding(u32);
@@ -683,7 +683,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
     RoomObjSync_Reset();
     BuildingStates_Reset();
     CharInteractSync_Reset();
-    func_0206f81c();
+    CommSub_ResetPostReply();
     if (r4 < 0) {
         CommManager *o = gCommManager;
         if (_ZN11CommManager7isMyAidEj(o, 0) != 0 || _ZN11CommManager7isMyAidEj(o, 4) != 0) {
@@ -930,7 +930,7 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
         }
         _ZN10PlayerData11getPlayerIdEv(l18);
         MI_CpuCopy8(_ZN8PlayerId7getNameEv(), r6, 8);
-        MI_CpuCopy8(func_02063964((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
+        MI_CpuCopy8(TownId_GetName((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
         _ZN10PlayerData15getWifiUserDataEv(l18);
         MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);
         _Z21NetOverlay_AssertWifiv();
@@ -2527,7 +2527,7 @@ extern "C" {
 Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
-void func_02063950(Unk_020942c8 *p, u32 v);
+void TownId_SetId(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
 void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);

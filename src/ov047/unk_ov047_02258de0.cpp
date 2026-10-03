@@ -95,11 +95,11 @@ s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_GetFossilGroup(u16 *p);
 s32 Fossil_CountInGroup(s32 id);
 s32 ItemPick_FromRange(u16 *a, u32 b, u32 c, void *d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 BOOL MenuCtrl_BuildPocketMask(Unk_ov047_Cb cb);
 BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
-s32 func_0206fe34(void *g, s32 id);
+s32 Museum_CountDonatedFossilsInGroup(void *g, s32 id);
 void *TownSessionState_Get();
 s32 TownSessionState_TestFlag(void *p, s32 a);
 void TownSessionState_SetFlag(void *p, s32 a);
@@ -336,7 +336,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -448,7 +448,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -882,7 +882,7 @@ BOOL SpNpcBlathers::setupAct00() {
     NpcActionCtrl_requestStand(&unk_564, 1, unk_72c);
     if (unk_728 == 0) {
         if (Talk_IsDramaPending(this, buf, 1)) {
-            unk_72a = func_02063b8c(5) * 0x14 + 0x64;
+            unk_72a = Random_GlobalBelow(5) * 0x14 + 0x64;
         }
     }
     unk_732 = 0;
@@ -1080,7 +1080,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
                         unk_c8 = 0;
                         m.unk_00 = 0x25;
                     } else if (unk_ca >= 0x3894 && unk_ca <= 0x38e3) {
-                        m.unk_00 = func_02063b8c(3) + 0x2e;
+                        m.unk_00 = Random_GlobalBelow(3) + 0x2e;
                     } else if (unk_ca >= 0x12b0 && unk_ca <= 0x12e7) {
                         if (Unk_ov047_0225a5e8_Idx(unk_ca, 0x12b0, 0x12e7) != 0x34) {
                             m.unk_00 = 0x32;
@@ -1474,7 +1474,7 @@ test:
             }
             a = Item_GetFossilGroup(&unk_ca);
             b = Fossil_CountInGroup(a);
-            r = func_0206fe34(g, a);
+            r = Museum_CountDonatedFossilsInGroup(g, a);
             if (b == 1) {
                 if (unk_1e == 0x2d) {
                     if (!Unk_ov047_022596e8_IsNoneT(&unk_ca, *(u16 *)&tt[1])) {
@@ -1549,7 +1549,7 @@ void SpNpcBlathersTalk::appraiseFossil() {
         ItemPick_FromRange(&bufa, 0x450c, 0x34, &unk_ca, 1, 0, 1, 10, 0, 1);
         ActorTalkRequest_setItemNameSlot(this, &bufa, 1, 7);
     }
-    unk_cc = (u8)(func_02063b8c(3) + 0x1a);
+    unk_cc = (u8)(Random_GlobalBelow(3) + 0x1a);
 }
 
 void SpNpcBlathersTalk::afterFossilIdentified() {

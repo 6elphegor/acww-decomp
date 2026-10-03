@@ -66,7 +66,7 @@ void MI_CpuFill8(void *, s32, u32);
 void __cxa_vec_cleanup(void *, u32, u32, void (*)(void *));
 void ChestStorage_Destruct(void *);
 void _ZN13PlayerMailboxD1Ev(void *);
-void func_020639a0(void *);
+void TownId_Clear(void *);
 void PlayerDataArray_ResetAll(void *);
 void AbleShop_Reset(void *);
 void ReddShop_Reset(void *);
@@ -86,17 +86,17 @@ void LostAndFound_Clear(void *);
 void RecycleBin_Clear(void *);
 void ConstellationStore_Clear(void *);
 void _ZN18BottleLetterRecord11clearRecordEv(void *);
-void func_0208f088(void *);
+void ReceivedLetter_Clear(void *);
 void HappyRoomDate_SetToday(void *);
 void _ZN11SaveRecord49resetDateEv(void *);
 void _ZN14SnowmanRecords8clearAllEv(void *);
 void EventWeekSlots_Reset(void *);
 void _ZN15LostChildRecord5clearEv(void *);
 void _ZN12Unk_0208620c13func_0208620cEv(void *);
-void func_0208f1dc(void *);
+void TownExchange_Clear(void *);
 void PlayerDataArray_Destruct(void *);
 void SaveVillagers_Clear(void *);
-void func_020639b8(void *);
+void TownId_Destruct(void *);
 void RecycleBin_Destruct(void *);
 void LostAndFound_Destruct(void *);
 void EventWeekSlots_Destruct(void *);
@@ -104,8 +104,8 @@ void TownState_Destruct(void *);
 void _ZN7TownMapD1Ev(void *);
 void HappyRoomDate_Destruct(void *);
 void _ZN9HouseDataD1Ev(void *);
-void _ZN12Unk_02063578D2Ev(void *);
-void _ZN10MuseumData13func_0207054cEv(void *);
+void _ZN15ItemClassOrdersD2Ev(void *);
+void _ZN10MuseumData8destructEv(void *);
 void _ZN19AbleSistersPatternsD1Ev(void *);
 void _ZN8BbsBoardD1Ev(void *);
 void SaveVillagers_Destruct(void *);
@@ -116,8 +116,8 @@ void _ZN12ReddLastSaleD1Ev(void *);
 void func_020868c4(void *);
 void _ZN16BlancaFaceRecord8destructEv(void *);
 void LostChildRecord_Destruct(void *);
-void _ZN12Unk_0208f0a0D1Ev(void *);
-void _ZN12Unk_0208f238D1Ev(void *);
+void _ZN19ReceivedLetterBlockD1Ev(void *);
+void _ZN18TownExchangeRecordD1Ev(void *);
 void BottleLetterRecord_Destruct(void *);
 void _ZN12LetterOutboxD1Ev(void *);
 void SaveData_DestructDateRecord(void *);
@@ -195,7 +195,7 @@ SaveData::~SaveData() {
     _ZN11SaveRecord48destructEv(&f_15fdc);
     LostChildRecord_Destruct(&f_15fca);
     SaveData_DestructDateRecord(&f_15fc5);
-    _ZN12Unk_02063578D2Ev(&f_15fbc);
+    _ZN15ItemClassOrdersD2Ev(&f_15fbc);
     HappyRoomDate_Destruct(&f_15fb0);
     _ZN14SnowmanRecordsD1Ev(&f_15f96);
     AbleShop_Destruct(&f_15f84);
@@ -209,8 +209,8 @@ SaveData::~SaveData() {
     TownState_Destruct(&f_15e54);
     EventWeekSlots_Destruct(&f_15e18);
     _ZN12Unk_020aec00C1Ev(&f_15db4);
-    _ZN10MuseumData13func_0207054cEv(&f_15d50);
-    _ZN12Unk_0208f0a0D1Ev(&f_15c58);
+    _ZN10MuseumData8destructEv(&f_15d50);
+    _ZN19ReceivedLetterBlockD1Ev(&f_15c58);
     BottleLetterRecord_Destruct(&f_15b5c);
     _ZN15TownStyleRecordC2Ev(&f_1592c);
     _ZN16BlancaFaceRecord8destructEv(&f_15700);
@@ -219,7 +219,7 @@ SaveData::~SaveData() {
     _ZN12LetterOutboxD1Ev(&f_1463c);
     __cxa_vec_cleanup(&f_1200c, 4, 0x98c, _ZN13PlayerMailboxD1Ev);
     _ZN8BbsBoardD1Ev(&f_11488);
-    _ZN12Unk_0208f238D1Ev(&f_10c3c);
+    _ZN18TownExchangeRecordD1Ev(&f_10c3c);
     _ZN19AbleSistersPatternsD1Ev(&f_fafc);
     _ZN9HouseDataD1Ev(&f_e558);
     func_02086230(&f_e557);
@@ -227,7 +227,7 @@ SaveData::~SaveData() {
     _ZN7TownMapD1Ev(&f_c330);
     SaveVillagers_Destruct(&f_8a3c);
     PlayerDataArray_Destruct(&f_c);
-    func_020639b8(&f_2);
+    TownId_Destruct(&f_2);
 }
 
 BOOL SaveData::isValid() {
@@ -276,7 +276,7 @@ void SaveData::reset() {
     clear();
     s32 i;
     for (i = 0; i < 4; i++) resetPlayer(i);
-    func_020639a0(&f_2);
+    TownId_Clear(&f_2);
     PlayerDataArray_ResetAll(&f_c);
     SaveVillagers_Clear(&f_8a3c);
     AbleShop_Reset(&f_15f84);
@@ -297,14 +297,14 @@ void SaveData::reset() {
     RecycleBin_Clear(&f_15ede);
     ConstellationStore_Clear(&f_14fcc);
     _ZN18BottleLetterRecord11clearRecordEv(&f_15b5c);
-    func_0208f088(&f_15c58);
+    ReceivedLetter_Clear(&f_15c58);
     HappyRoomDate_SetToday(&f_15fb0);
     _ZN11SaveRecord49resetDateEv(&f_15fc5);
     _ZN14SnowmanRecords8clearAllEv(&f_15f96);
     EventWeekSlots_Reset(&f_15e18);
     _ZN15LostChildRecord5clearEv(&f_15fca);
     _ZN12Unk_0208620c13func_0208620cEv(&f_e557);
-    func_0208f1dc(&f_10c3c);
+    TownExchange_Clear(&f_10c3c);
 }
 
 void SaveData::resetPlayer(s32 i) {

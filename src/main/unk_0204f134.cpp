@@ -10,7 +10,7 @@ struct Unk_0204f178_Row {
 };
 
 extern "C" {
-u32 func_02063b8c(u32);
+u32 Random_GlobalBelow(u32);
 s32 _ZN11CommManager8isOnlineEv(void *);
 void Clock_GetDayMonth(void *p);
 void Clock_GetMinuteHour(void *p);
@@ -190,10 +190,10 @@ extern "C" s32 FishTable_Pick(u32 *out0, u32 *out1, s32 a, s32 b, s32 c) {
     s32 i;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         off = 3;
-        lim = func_02063b8c(0x60);
+        lim = Random_GlobalBelow(0x60);
     } else {
         off = 0;
-        lim = func_02063b8c(0x64);
+        lim = Random_GlobalBelow(0x64);
     }
     for (i = 0; i < sFishTablesByPeriod[b - 1][c][a].unk_04 - off; i++) {
         sum += sFishTablesByPeriod[b - 1][c][a].unk_00[i].unk_02;

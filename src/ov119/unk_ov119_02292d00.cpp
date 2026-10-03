@@ -70,8 +70,8 @@ void EncodedString_SetRaw(void *dst, void *src, s32 n);
 void String_SetSlot(s32 a, void *p);
 void String_Load2d(void *p, void *q, s32 a);
 void *Msg_SkipLines(void *p, s32 i);
-void func_020638d0(void *a, void *b);
-void *func_02063964(void *a);
+void TownId_GetNameString(void *a, void *b);
+void *TownId_GetName(void *a);
 void *PlayerId_GetTownId(void *a);
 void Mem_Copy(void *a, void *b, s32 c);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
@@ -84,10 +84,10 @@ void *Net_GetWifiFriendList();
 BOOL Net_WifiDeleteFriend(u32 a);
 BOOL Net_WifiAddFriend(u32 a, void *b);
 void Snd_PlaySe(u32 a);
-s32 func_02087e14(void *p);
-s32 func_02087e0c(void *p);
+s32 Oam_GetObjX(void *p);
+s32 Oam_GetObjY(void *p);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsButtons();
@@ -148,10 +148,10 @@ void PopupChoiceMenu_init(void *self, s32 a, s32 b, const char *c);
 void PopupChoiceMenuBody_setRowsFromIds(void *self, void *rec, u32 v);
 void PopupChoiceMenuBody_addCustomRow(void *self, void *rec, void *p, u32 v);
 s32 PopupChoiceMenuBody_hitTestRowOrLast(void *self, u32 a, u32 b);
-void _ZN12Unk_020dd38cC2Ev(void *self);
-void _ZN12Unk_020dd38cD1Ev(void *self);
-void _ZN12Unk_020dd374C2Ev(void *self);
-void _ZN12Unk_020dd374D1Ev(void *self);
+void _ZN11MsgString9CC2Ev(void *self);
+void _ZN11MsgString9CD1Ev(void *self);
+void _ZN15EncodedString8BC2Ev(void *self);
+void _ZN15EncodedString8BD1Ev(void *self);
 void _ZN11MsgString9BC1Ev(void *self);
 void _ZN11MsgString9BD1Ev(void *self);
 
@@ -338,8 +338,8 @@ public:
 // stack helper objects (ctor/dtor are plain calls into main)
 struct Unk_ov119_A {
     u32 pad[7];
-    Unk_ov119_A() { _ZN12Unk_020dd38cC2Ev(this); }
-    ~Unk_ov119_A() { _ZN12Unk_020dd38cD1Ev(this); }
+    Unk_ov119_A() { _ZN11MsgString9CC2Ev(this); }
+    ~Unk_ov119_A() { _ZN11MsgString9CD1Ev(this); }
 };
 struct Unk_ov119_B {
     u32 pad[7];
@@ -348,8 +348,8 @@ struct Unk_ov119_B {
 };
 struct Unk_ov119_C {
     u32 pad[6];
-    Unk_ov119_C() { _ZN12Unk_020dd374C2Ev(this); }
-    ~Unk_ov119_C() { _ZN12Unk_020dd374D1Ev(this); }
+    Unk_ov119_C() { _ZN15EncodedString8BC2Ev(this); }
+    ~Unk_ov119_C() { _ZN15EncodedString8BD1Ev(this); }
 };
 
 class FriendRosterTab;
@@ -600,7 +600,7 @@ BOOL FriendRosterTab::onDraw() {
     case 4:
         for (i = 0; i < 12; i++) {
             data_ov119_02295588.unk_04 = (data_ov119_02295588.unk_04 & 0xfffffc00) | (u16)(unk_a1[i] * 2 + 0x1a0) & 0x3ff;
-            func_02088730(1, &data_ov119_02295588, x, (s32)p, -1, 2, 0);
+            Oam_DrawObj(1, &data_ov119_02295588, x, (s32)p, -1, 2, 0);
             x += 14;
         }
         Oam_DrawCell(1, data_ov119_022957d8, 0x80, (s32)p, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -1524,7 +1524,7 @@ void FriendRosterTab::registerPresentPlayer()
     DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)));
     void *e = PlayerId_getName(c);
     Mem_Copy(e, FriendEntry_GetPlayerName(rec), 8);
-    void *f = func_02063964(PlayerId_GetTownId(c));
+    void *f = TownId_GetName(PlayerId_GetTownId(c));
     Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
     MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
     unk_b4 = i;
@@ -1593,10 +1593,10 @@ BOOL FriendRosterTab::activateFocus()
 u8 FriendRosterTab::hitTest(s32 x, s32 y)
 {
     s32 i;
-    s32 t = func_02087e14((u8 *)data_ov119_02295648[0] + 8) + 0x83;
+    s32 t = Oam_GetObjX((u8 *)data_ov119_02295648[0] + 8) + 0x83;
     if (t <= x && t + 0x22 >= x) {
         for (i = 0; i < 6; i++) {
-            s32 u = func_02087e0c((u8 *)data_ov119_02295648[i] + 8) + 0x61;
+            s32 u = Oam_GetObjY((u8 *)data_ov119_02295648[i] + 8) + 0x61;
             if (u <= y && u + 0x12 >= y) {
                 return (u8)(i + 8);
             }
@@ -1815,7 +1815,7 @@ void FriendRosterTab::drawPresentPage() {
     s32 n = 0;
     u32 LampLights[7];
     u32 LightLevel[7];
-    _ZN12Unk_020dd38cC2Ev(LampLights);
+    _ZN11MsgString9CC2Ev(LampLights);
     _ZN11MsgString9BC1Ev(LightLevel);
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
@@ -1832,7 +1832,7 @@ void FriendRosterTab::drawPresentPage() {
         }
         if (rec != 0) {
             void *g2 = PlayerData_getPlayerId(rec);
-            func_020638d0(PlayerId_GetTownId(g2), &LampLights);
+            TownId_GetNameString(PlayerId_GetTownId(g2), &LampLights);
             String_SetSlot(0, &LampLights);
             String_Load2dMenu(a, 0x66);
             PlayerId_getNameString(g2, &LightLevel);
@@ -1854,15 +1854,15 @@ void FriendRosterTab::drawPresentPage() {
     }
     BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 5);
     _ZN11MsgString9BD1Ev(LightLevel);
-    _ZN12Unk_020dd38cD1Ev(LampLights);
+    _ZN11MsgString9CD1Ev(LampLights);
 }
 
 void FriendRosterTab::drawOwnCodePage() {
     void *g = PlayerData_getPlayerId(PlayerData_GetCurrent());
     void *a = allocTextLabel();
     u32 LampLights[7];
-    _ZN12Unk_020dd38cC2Ev(LampLights);
-    func_020638d0(PlayerId_GetTownId(g), &LampLights);
+    _ZN11MsgString9CC2Ev(LampLights);
+    TownId_GetNameString(PlayerId_GetTownId(g), &LampLights);
     String_SetSlot(0, &LampLights);
     String_Load2dMenu(a, 0x66);
     LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
@@ -1875,7 +1875,7 @@ void FriendRosterTab::drawOwnCodePage() {
     LabelString_createLabel(b, 4, 0x116, 8, 0xf, 0, 0);
     LabelString_redrawAligned(b, 0, 0);
     _ZN11MsgString9BD1Ev(LightLevel);
-    _ZN12Unk_020dd38cD1Ev(LampLights);
+    _ZN11MsgString9CD1Ev(LampLights);
 }
 
 void FriendRosterTab::drawFriendCodeHelp() {
@@ -1930,8 +1930,8 @@ void FriendRosterTab::drawRosterPage() {
     s32 pos = 0xc3;
     u32 LampLights[7];
     u32 LightLevel[6];
-    _ZN12Unk_020dd38cC2Ev(LampLights);
-    _ZN12Unk_020dd374C2Ev(LightLevel);
+    _ZN11MsgString9CC2Ev(LampLights);
+    _ZN15EncodedString8BC2Ev(LightLevel);
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
@@ -1968,8 +1968,8 @@ void FriendRosterTab::drawRosterPage() {
         base++;
         pos += 0x40;
     }
-    _ZN12Unk_020dd374D1Ev(LightLevel);
-    _ZN12Unk_020dd38cD1Ev(LampLights);
+    _ZN15EncodedString8BD1Ev(LightLevel);
+    _ZN11MsgString9CD1Ev(LampLights);
 }
 
 void FriendRosterTab::refreshPage() {

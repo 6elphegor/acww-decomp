@@ -950,7 +950,7 @@ struct ItemName { ItemName(u16 *p); ~ItemName(); u32 pad[0x28 / 4]; };
 struct MsgString9B { MsgString9B(); ~MsgString9B(); u32 pad[0x20 / 4]; };
 
 // unk_020156ac.cpp
-struct Unk_020dd38c { Unk_020dd38c(); ~Unk_020dd38c(); u32 pad[0x20 / 4]; };
+struct MsgString9C { MsgString9C(); ~MsgString9C(); u32 pad[0x20 / 4]; };
 
 // unk_020156ac.cpp
 struct MsgString33 { MsgString33(); ~MsgString33(); u32 pad[0x38 / 4]; };
@@ -1744,16 +1744,16 @@ struct NpcActionCtrl {
 };
 
 // unk_02019998.cpp
-struct Unk_02063cfc { Unk_02063cfc(); ~Unk_02063cfc(); u32 unk_00; };
+struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); u32 unk_00; };
 
 // unk_02019998.cpp
-struct Unk_020e06c8 { Unk_020e06c8(); ~Unk_020e06c8(); u32 pad[2]; };
+struct NpcTexPatHeapHandle { NpcTexPatHeapHandle(); ~NpcTexPatHeapHandle(); u32 pad[2]; };
 
 // unk_02019998.cpp
-struct Unk_020e0768 { Unk_020e0768(); ~Unk_020e0768(); u32 pad[2]; };
+struct NpcTexPatBufRefHandle { NpcTexPatBufRefHandle(); ~NpcTexPatBufRefHandle(); u32 pad[2]; };
 
 // unk_02019998.cpp
-struct Unk_020e0754 { Unk_020e0754(); ~Unk_020e0754(); u32 pad[2]; };
+struct NpcFaceAnimHandle { NpcFaceAnimHandle(); ~NpcFaceAnimHandle(); u32 pad[2]; };
 
 // unk_02019998.cpp
 struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); u32 unk_00; u32 unk_04; u32 unk_08; u32 pad[0x20 / 4]; };
@@ -1793,10 +1793,10 @@ struct Unk_02019cac_Owner {
 };
 
 // unk_02019998.cpp
-struct NpcFaceAnim : Unk_02063cfc {
-    Unk_020e06c8 unk_04;
-    Unk_020e0768 unk_0c;
-    Unk_020e0754 unk_14;
+struct NpcFaceAnim : BlinkTimer {
+    NpcTexPatHeapHandle unk_04;
+    NpcTexPatBufRefHandle unk_0c;
+    NpcFaceAnimHandle unk_14;
     MatTexPatAnim unk_1c;
     MatTexPatAnim unk_48;
     s32 unk_74;
@@ -2397,7 +2397,7 @@ void NpcTalkCtrl_Destroy(void *p);
 void _ZN13NpcActionCtrl13func_02019854Ev(void *p);
 void _ZN12Unk_0201347413func_020135e0Ev(void *p);
 void func_020f43c8(void *p);
-void _ZN12Unk_020e0cf4D1Ev(void *p);
+void _ZN19ActorFollowColliderD1Ev(void *p);
 void _ZN14CollisionStateD1Ev(void *p);
 void _ZN12Unk_0201a13cD2Ev(void *p);
 void _ZN14NpcSpeechStateD2Ev(void *p);
@@ -2455,13 +2455,13 @@ void MI_CpuFill8(void *dst, u32 v, u32 n);
 s32 Hud_GetSceneHudKind(void);
 void HudObjGfx_InitFile(void *p);
 void func_020f43c8(void *p);
-Unk_02081d4c *_ZN12Unk_020821b413func_02081d4cEv(void *p);
+Unk_02081d4c *_ZN16NpcResHandleView16getHeldItemModelEv(void *p);
 void HeldItemModel_SetAnimSpeed(Unk_02081d4c *p, u32 v);
 Unk_0205dfa4 *HeldItemModel_GetModel(Unk_02081d4c *p);
 void Model_GetJointWorldMtx(MsgRequest *dst, void *src, u32 n);
 void HeldItemModel_Draw(Unk_02081d4c *p, void *src);
 void HeldItemModel_Update(Unk_02081d4c *p);
-void _ZN12Unk_020e071813func_0208211cEv(void *p);
+void _ZN12NpcResHandle7releaseEv(void *p);
 void HeldItemModel_PlayAnim(Unk_02081d4c *p, u32 a, u32 b, u32 c);
 inline BOOL Unk_02011c44_InRange(u32 id, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -2482,14 +2482,14 @@ s32 _ZN12Unk_020128109isArrivedEP16Unk_02012810_Vec(void *self, Unk_02011f74_Vec
 s32 _ZN12Unk_0201281016pickAdjacentUnitEP16Unk_02012810_VecP16Unk_02012f04_Obj(void *self);
 void _ZN13VillagerRoute16checkUnitChangedEj(void *self);
 void _ZN13VillagerRoute13markUnitUnsetEv(void *self);
-void *_ZN12Unk_020821b413func_02081d4cEv(void *);
+void *_ZN16NpcResHandleView16getHeldItemModelEv(void *);
 s32 HeldItemModel_PlayAnim(void *, u32, u32, u32);
 void HeldItemModel_SetItem(void *, void *, u32);
 void _ZN11NpcAnimCtrl16playHoldItemPoseEP16Unk_02015fe0_ObjPtPvt(void *, u32, void *, u32, u32);
-s32 _ZN12Unk_020e071813func_02082140Ev(void *);
-s32 _ZN12Unk_020821b413func_02081d6cEi(void *, u32);
-void _ZN12Unk_020e072cD1Ev(void *);
-void _ZN12Unk_020e072cC1Ev(void *);
+s32 _ZN12NpcResHandle7acquireEv(void *);
+s32 _ZN16NpcResHandleView12loadHeldItemEi(void *, u32);
+void _ZN22NpcHeldItemModelHandleD1Ev(void *);
+void _ZN22NpcHeldItemModelHandleC1Ev(void *);
 extern Unk_02011f74_World *gSceneBlockMap;
 extern u8 gSaveVillagers[];
 extern u8 gRandom[];
@@ -2498,7 +2498,7 @@ extern s32 sRouteDirs[];
 s32 MapBlock_HasAnyAttr(void *, u32);
 void *_ZN12MapBlockAcre8getUnk04Ev();
 s32 Random_PickSetBit(u32, s32, s32);
-s32 func_02063b8c(u32);
+s32 Random_GlobalBelow(u32);
 u8 *_ZN20VillagerDataItemView11getHousePosEv(...);
 s32 _ZN12VillagerData13getVillagerIdEv(void *);
 s32 SaveVillagers_PickRandomExcept(void *, void *, u32);
@@ -2555,7 +2555,7 @@ s32 TownMap_IsUnitWalkable(u32 x, u32 z, Unk_02012f04_Obj *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
 s32 _ZN8BlockMap12getWalkLinksEii(Unk_02012f04_Obj *o, u32 x, u32 z);
 void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void FieldPos_ToUnit(u32 *x, u32 *z, Unk_02012810_Vec *v);
 void FieldPos_FromUnitCenter(Unk_02012810_Vec *out, u32 x, u32 z);
 void *MI_CpuFill8(void *, int, u32);
@@ -2726,7 +2726,7 @@ s32 _ZN15TalkWindowState7setSlotEiPv(u32 a, u32 b, void *c);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
 void _ZN10VillagerId7getNameEj(u32 a, void *b);
 void _ZN8PlayerId13getNameStringEP9MsgString(u32 a, void *b);
-void func_020638d0(u32 a, void *b);
+void TownId_GetNameString(u32 a, void *b);
 void String_GetDayOrdinal(void *a, u32 b);
 void String_GetMonthName(void *a, u32 b);
 void String_FormatFixedPoint(void *a, s32 b, s32 c);
@@ -2749,8 +2749,8 @@ void _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(void *p, u32 a, u32 b, u32 c, 
 void _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(void *p, u32 a, u32 b);
 s32 *_ZN11NpcMoveCtrl13func_0201a8ccEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
-void *_ZN12Unk_020e071813func_020820a0Ej(void *p, u32 idx);
-s32 _ZN12Unk_020e071813func_0208211cEv(void *p);
+void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *p, u32 idx);
+s32 _ZN12NpcResHandle7releaseEv(void *p);
 s32 AnimSlotRef_GetAnimId(void *p);
 s32 AnimSlotRef_GetData(void *p);
 s32 AnimSlotRef_Load(void *p, u32 a, u32 b, u32 c);
@@ -2790,20 +2790,20 @@ void _ZN12Unk_02015b8c13syncMouthTypeEP18Unk_02015b8c_Scene(void *a, void *b);
 s32 _ZN12Unk_02015b8c9getAnimIdEj(void *a, s32 b);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *a);
 void _ZN11NpcFaceAnim16setFaceAnimsFromEPvii(void *a, s32 b, s32 c, s32 d);
-void *_ZN12Unk_020e071813func_020820a0Ej(void *a, s32 b);
+void *_ZN12NpcResHandle16getBodyAnimLayerEj(void *a, s32 b);
 void AnimSlotRef_Load(void *a, s32 b, s32 c, s32 d);
 void *AnimSlotRef_GetData(void *a);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 void _ZN12Unk_02015b8c17setAnimSpeedFixedEh(void *a, s32 b);
-BOOL _ZN12Unk_020e071813func_02082140Ev(void *a);
+BOOL _ZN12NpcResHandle7acquireEv(void *a);
 void _ZN9AnimModel10attachAnimEv(void *a);
 void _ZN5Model11setCallbackEiiiii(void *a, void *b, s32 c, s32 d, void *e, s32 f);
 s32 _ZN12Unk_02015b8c14hasTalkGestureEv(void *a);
 void _ZN12Unk_02015b8c15loadTalkGestureEv(void *a);
 void NpcActor_JointCalcLayer3Cb(void);
-void _ZN12Unk_020e0704D1Ev(void *a);
-void _ZN12Unk_020e0704C1Ev(void *a);
+void _ZN17NpcBodyAnimHandleD1Ev(void *a);
+void _ZN17NpcBodyAnimHandleC1Ev(void *a);
 BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, Unk_02015fe0_Vec *v, s16 *a);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(void *a, void *b);
 void _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(void *a, void *b, s32 c, s32 d, u32 e);
@@ -3030,7 +3030,7 @@ void _ZN12Unk_0201acf813func_0201acf8Et(void *p, s32 v);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *p);
 BOOL _ZN14NpcSpeechState10isSpeakingEv(void *p);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 v);
-BOOL func_02063ca0(void *p);
+BOOL BlinkTimer_Update(void *p);
 s32 _ZN13MatTexPatAnim6updateEv(void *p);
 extern u16 data_020c6cc8;
 extern u32 gVec3Zero[3];
@@ -3058,7 +3058,7 @@ BOOL NpcLookAt_GetHeadPos(void *self, void *a);
 extern s32 sNpcTalkMouthAnims[];
 s32 CharaAnim_GetEyeAnim(void *p);
 s32 CharaAnim_GetMouthAnim(void *p);
-void *_ZN12Unk_020e06c813func_02081e5cEv(void *p);
+void *_ZN19NpcTexPatHeapHandle11getFaceAnimEv(void *p);
 void _ZN16CharaFaceAnimRef8loadAnimEiii(void *h, s32 a, s32 b, s32 c);
 void *_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(void *h);
 void *_ZN16CharaFaceAnimRef18getMouthAnimBufferEv(void *h);
@@ -3066,23 +3066,23 @@ s32 NNS_G3dGetAnmByIdx(void *p, s32 v);
 void _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(void *p, void *a, s32 b, s32 c, s32 d, s32 e);
 void _ZN13MatTexPatAnim10applyFrameEv(void *p);
 void _ZN13MatTexPatAnim7releaseEv(void *p);
-void _ZN12Unk_020e071813func_0208211cEv(void *p);
-void func_02063c7c(void *p);
-void func_02063c94(void *p);
+void _ZN12NpcResHandle7releaseEv(void *p);
+void BlinkTimer_BlinkNow(void *p);
+void BlinkTimer_Clear(void *p);
 void MatTexPatAnim_ResumeMaterial(void *p, void *q);
 void _ZN13MatTexPatAnim13pauseMaterialEv(void *p, void *q);
 BOOL _ZN13MatTexPatAnim14setMaterialTexEij(void *p, void *q, u32 r);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-void *_ZN12Unk_020e075413func_02081ed0Ev(void *p);
-BOOL _ZN12Unk_020e071813func_02082140Ev(void *p);
-void *_ZN12Unk_020e072c13func_02081de8Ev(void *p);
+void *_ZN17NpcFaceAnimHandle15getTexPatBufRefEv(void *p);
+BOOL _ZN12NpcResHandle7acquireEv(void *p);
+void *_ZN22NpcHeldItemModelHandle16getTexPatHeapRefEv(void *p);
 BOOL _ZN13MatTexPatAnim4initEPvS0_jS0_(void *p, s32 a, s32 b, s32 c, s32 d);
 void NpcTexPatBufRef_LoadFile(void *a, s32 b);
 s32 NpcTexPatBufRef_GetBuffer(void *a);
 s32 _ZN20CharaFaceAnimWorkRef7getHeapEv(void *a);
 BOOL NpcLookAt_IsWithin(s32 a, s32 b);
 s32 NpcFace_PickTalkMouth();
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 func_02003efc();
 s32 Snd_SeEmitterPlayHeld(s32 a, s32 b, s32 c, s32 d);
 s32 func_02003e70(s32 a, s32 b, s32 c, s32 d);
@@ -3210,8 +3210,8 @@ void _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(void *p, void *q);
 u32 WorldCurve_ToCurved(void *a, void *b);
 s32 _ZN5Actor15calcModelMatrixEPv(void *p, void *buf);
 s32 _ZN8NpcActor15netIsTalkLockedEv(void *p);
-void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
-void _ZN12Unk_020e0d0813func_0208905cEv(void *p);
+void _ZN13ActorCollider6submitEv(void *p);
+void _ZN13ActorCollider8resetHitEv(void *p);
 void _ZN12Unk_02015b8c6updateEP18Unk_02015b8c_Scene(void *p, void *q);
 void _ZN19ThreeLayerAnimModel13updateLayers3Ev(void *p);
 void _ZN12Unk_02003c4013func_02003df4EP16Unk_02003a6c_Vec(void *p, Unk_020d77a4_Vec3 *v);
@@ -4330,9 +4330,9 @@ BOOL NpcActor::onExecute() {
         (*(u8 *)((u8 *)this + (0x62c))) = 0;
     }
     if ((*(u8 *)((u8 *)this + (0x510)))) {
-        _ZN12Unk_020e0d0813func_02089040Ev(((void *)((u8 *)this + (0x4cc))));
+        _ZN13ActorCollider6submitEv(((void *)((u8 *)this + (0x4cc))));
     } else {
-        _ZN12Unk_020e0d0813func_0208905cEv(((void *)((u8 *)this + (0x4cc))));
+        _ZN13ActorCollider8resetHitEv(((void *)((u8 *)this + (0x4cc))));
     }
     _ZN12Unk_02015b8c6updateEP18Unk_02015b8c_Scene(((void *)((u8 *)this + (0x334))), this);
     _ZN19ThreeLayerAnimModel13updateLayers3Ev(((void *)((u8 *)this + (0xec))));
@@ -5322,7 +5322,7 @@ s32 NpcSpeechState::getMouthType() {
 
 namespace nO {
 extern "C" s32 NpcFace_PickTalkMouth() {
-    s32 r = func_02063b8c(4);
+    s32 r = Random_GlobalBelow(4);
     s32 v = 1;
     if (r & v) {
         v = 0;
@@ -5517,16 +5517,16 @@ s32 NpcFaceAnim::getMouthAnim() {
 BOOL NpcFaceAnim::load(Unk_02019cac_Owner *o) {
     using namespace nO;
     void *r6 = o->vfunc_6c();
-    if (_ZN12Unk_020e075413func_02081ed0Ev(&unk_0c) == 0 && r6 != 0) {
-        if (!_ZN12Unk_020e071813func_02082140Ev(&unk_0c)) {
+    if (_ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&unk_0c) == 0 && r6 != 0) {
+        if (!_ZN12NpcResHandle7acquireEv(&unk_0c)) {
             return FALSE;
         }
-        void *a = _ZN12Unk_020e075413func_02081ed0Ev(&unk_0c);
+        void *a = _ZN17NpcFaceAnimHandle15getTexPatBufRefEv(&unk_0c);
         NpcTexPatBufRef_LoadFile(a, (s32)r6);
-        if (!_ZN12Unk_020e071813func_02082140Ev(&unk_04)) {
+        if (!_ZN12NpcResHandle7acquireEv(&unk_04)) {
             return FALSE;
         }
-        void *h = _ZN12Unk_020e072c13func_02081de8Ev(&unk_04);
+        void *h = _ZN22NpcHeldItemModelHandle16getTexPatHeapRefEv(&unk_04);
         s32 fl = o->unk_148;
         s32 x = NpcTexPatBufRef_GetBuffer(a);
         if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_1c, fl, x, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
@@ -5537,12 +5537,12 @@ BOOL NpcFaceAnim::load(Unk_02019cac_Owner *o) {
         if (!_ZN13MatTexPatAnim4initEPvS0_jS0_(&unk_48, fl2, y, 1, _ZN20CharaFaceAnimWorkRef7getHeapEv(h))) {
             return FALSE;
         }
-        if (!_ZN12Unk_020e071813func_02082140Ev(&unk_14)) {
+        if (!_ZN12NpcResHandle7acquireEv(&unk_14)) {
             return FALSE;
         }
         unk_74 = 0x16f;
         unk_78 = 0x16f;
-        func_02063c94(this);
+        BlinkTimer_Clear(this);
         unk_84 = 1;
     }
     return TRUE;
@@ -5607,7 +5607,7 @@ BOOL NpcFaceAnim::isMouthCycleDone() {
 void NpcFaceAnim::setMouthAnim(s32 v, u32 w) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = _ZN12Unk_020e06c813func_02081e5cEv(&unk_14);
+        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&unk_14);
         _ZN16CharaFaceAnimRef8loadAnimEiii(h, v, 1, 0);
         _ZN13MatTexPatAnim7setAnimEPvS0_jhS0_(&unk_48, _ZN16CharaFaceAnimRef18getMouthAnimBufferEv(h), 0, 0, w, 0x1000);
         unk_48.unk_08 = 0;
@@ -5639,7 +5639,7 @@ void NpcFaceAnim::restoreMouthAnim() {
 void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
     using namespace nO;
     if (isLoaded()) {
-        void *h = _ZN12Unk_020e06c813func_02081e5cEv(&unk_14);
+        void *h = _ZN19NpcTexPatHeapHandle11getFaceAnimEv(&unk_14);
         if (t != 0 || unk_74 != t) {
             _ZN16CharaFaceAnimRef8loadAnimEiii(h, t, 1, 0);
             NNS_G3dGetAnmByIdx(_ZN16CharaFaceAnimRef16getEyeAnimBufferEv(h), 0);
@@ -5695,23 +5695,23 @@ void NpcFaceAnim::resumeMouthMaterial() {
 
 void NpcFaceAnim::func_020199c8() {
     using namespace nO;
-    func_02063c7c(this);
+    BlinkTimer_BlinkNow(this);
 }
 
 void NpcFaceAnim::release() {
     using namespace nO;
     _ZN13MatTexPatAnim7releaseEv(&unk_1c);
     _ZN13MatTexPatAnim7releaseEv(&unk_48);
-    _ZN12Unk_020e071813func_0208211cEv(&unk_0c);
-    _ZN12Unk_020e071813func_0208211cEv(&unk_14);
-    _ZN12Unk_020e071813func_0208211cEv(&unk_04);
+    _ZN12NpcResHandle7releaseEv(&unk_0c);
+    _ZN12NpcResHandle7releaseEv(&unk_14);
+    _ZN12NpcResHandle7releaseEv(&unk_04);
 }
 
 void NpcFaceAnim::update(u8 *o) {
     using namespace nN;
     if (isLoaded()) {
         if (unk_74 == 0) {
-            if (!_ZN13AnimFrameCtrl14hasPassedFrameEi(&unk_1c, 0) || func_02063ca0(this)) {
+            if (!_ZN13AnimFrameCtrl14hasPassedFrameEi(&unk_1c, 0) || BlinkTimer_Update(this)) {
                 _ZN13MatTexPatAnim6updateEv(&unk_1c);
             }
         } else {
@@ -7727,19 +7727,19 @@ void Unk_02016360::mainAct15(Unk_02015fe0_Obj *o) {
 
 NpcAnimCtrl::NpcAnimCtrl() {
     using namespace nI;
-    _ZN12Unk_020e0704C1Ev(this);
+    _ZN17NpcBodyAnimHandleC1Ev(this);
 }
 
 NpcAnimCtrl::~NpcAnimCtrl() {
     using namespace nI;
-    _ZN12Unk_020e0704D1Ev(this);
+    _ZN17NpcBodyAnimHandleD1Ev(this);
 }
 
 BOOL NpcAnimCtrl::initForActor(Unk_02015fe0_Obj *o, s32 a) {
     using namespace nI;
     _ZN12Unk_02015b8c17setAnimSpeedFixedEh(this, 0);
     unk_14 = a;
-    if (!_ZN12Unk_020e071813func_02082140Ev(this)) return FALSE;
+    if (!_ZN12NpcResHandle7acquireEv(this)) return FALSE;
     playAnim(o, 0, 0, 0, 0x1000, 0, 0);
     _ZN9AnimModel10attachAnimEv(o->unk_ec);
     _ZN5Model11setCallbackEiiiii(o->unk_ec, (void *)NpcActor_JointCalcLayer3Cb, 6, 1, o, 0);
@@ -7751,7 +7751,7 @@ BOOL NpcAnimCtrl::initForActor(Unk_02015fe0_Obj *o, s32 a) {
 
 void *NpcAnimCtrl::getAnimResource(s32 a, s32 b) {
     using namespace nI;
-    void *p = _ZN12Unk_020e071813func_020820a0Ej(this, b);
+    void *p = _ZN12NpcResHandle16getBodyAnimLayerEj(this, b);
     void *r = 0;
     if (p) {
         AnimSlotRef_Load(p, a, 0, 0);
@@ -7881,7 +7881,7 @@ BOOL Unk_02015b8c::hasTalkGesture() {
 
 void Unk_02015b8c::loadTalkGesture() {
     using namespace nH;
-    void *p = _ZN12Unk_020e071813func_020820a0Ej(this, 2);
+    void *p = _ZN12NpcResHandle16getBodyAnimLayerEj(this, 2);
     if (p != NULL) {
         AnimSlotRef_Load(p, 0x143, 0, 0);
     }
@@ -7891,7 +7891,7 @@ u32 Unk_02015b8c::getTalkGestureData() {
     using namespace nH;
     u32 r = 0;
     if (hasTalkGesture()) {
-        void *p = _ZN12Unk_020e071813func_020820a0Ej(this, 2);
+        void *p = _ZN12NpcResHandle16getBodyAnimLayerEj(this, 2);
         if (p != NULL) {
             r = func_021065f8(func_021065dc(AnimSlotRef_GetData(p)), r);
         }
@@ -7944,8 +7944,8 @@ BOOL Unk_02015b8c::isAnimFinished(Unk_02015b8c_Scene *scene) {
 
 s32 Unk_02015b8c::getAnimId(u32 idx) {
     using namespace nH;
-    if (_ZN12Unk_020e071813func_020820a0Ej(this, idx) != NULL) {
-        return AnimSlotRef_GetAnimId(_ZN12Unk_020e071813func_020820a0Ej(this, idx));
+    if (_ZN12NpcResHandle16getBodyAnimLayerEj(this, idx) != NULL) {
+        return AnimSlotRef_GetAnimId(_ZN12NpcResHandle16getBodyAnimLayerEj(this, idx));
     }
     return 0x144;
 }
@@ -8017,7 +8017,7 @@ tail:
 
 s32 Unk_02015b8c::release() {
     using namespace nH;
-    return _ZN12Unk_020e071813func_0208211cEv(this);
+    return _ZN12NpcResHandle7releaseEv(this);
 }
 
 void Unk_02015b8c::syncMouthType(Unk_02015b8c_Scene *scene) {
@@ -8308,8 +8308,8 @@ void ActorTalkRequest::setDaySlot(u32 a, u32 b) {
 
 void ActorTalkRequest::setTownNameSlot(u32 a, u32 b) {
     using namespace nH;
-    Unk_020dd38c local;
-    func_020638d0(a, &local);
+    MsgString9C local;
+    TownId_GetNameString(a, &local);
     _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
 }
 
@@ -10438,7 +10438,7 @@ extern "C" void VillagerRoute_PickPathUnitInBlock(Unk_02012b94_Pair *out, s32 un
         }
     }
     if (cnt > 0) {
-        s32 k = func_02063b8c(cnt);
+        s32 k = Random_GlobalBelow(cnt);
         u16 *row;
         s32 xx, zz;
         for (zz = 0; zz < 16; zz++) {
@@ -10728,7 +10728,7 @@ BOOL Unk_02012164::stepAdjacentUnit(Unk_02011f74_Vec *p) {
 BOOL Unk_02012164::stepWander(Unk_02011f74_Vec *p) {
     using namespace nB;
     u16 mag = 0x7fff;
-    s32 mode = func_02063b8c(4);
+    s32 mode = Random_GlobalBelow(4);
     s32 base;
     volatile s32 i;
     volatile s32 len;
@@ -10749,9 +10749,9 @@ BOOL Unk_02012164::stepWander(Unk_02011f74_Vec *p) {
     zero0 = 0;
     zero1 = 0;
     for (; i < 10; i++) {
-        len = (func_02063b8c(5) + 3) << 13;
-        s32 r6 = (s16)func_02063b8c(mag);
-        if (func_02063b8c(2)) {
+        len = (Random_GlobalBelow(5) + 3) << 13;
+        s32 r6 = (s16)Random_GlobalBelow(mag);
+        if (Random_GlobalBelow(2)) {
             r6 = (s16)(r6 * ~zero1);
         }
         r6 = ((u16)(s16)(r6 + base) >> 4) << 1;
@@ -10906,7 +10906,7 @@ BOOL Unk_02012164::stepToDoor(Unk_02011f74_Vec *p) {
         FieldPos_FromUnitCenter(p, ((volatile Unk_02011f74_Pair &)unk_0c).a, ((volatile Unk_02011f74_Pair &)unk_0c).b);
     } else if (a >= unk_0c.a - 3 && a <= unk_0c.a + 4 && b >= unk_0c.b && b <= unk_0c.b + 5) {
         a = unk_0c.a;
-        b = unk_0c.b + func_02063b8c(2);
+        b = unk_0c.b + Random_GlobalBelow(2);
         FieldPos_FromUnitCenter(p, a, b);
     } else {
         stepWander(p);
@@ -10962,10 +10962,10 @@ extern "C" void VillagerRoute_PickRandomBlock(Unk_02011f74_Pair *out, void *self
         pos.a = 0;
         pos.b = 0;
         if (w >= 3) {
-            pos.a = func_02063b8c(w - 2) + 1;
+            pos.a = Random_GlobalBelow(w - 2) + 1;
         }
         if (h >= 3) {
-            pos.b = func_02063b8c(h - 2) + 1;
+            pos.b = Random_GlobalBelow(h - 2) + 1;
             Unk_02011f74_Pair t;
             VillagerRoute_PickPathUnitInBlock(&t, self, &pos, world);
             *out = t;
@@ -11029,28 +11029,28 @@ extern "C" void VillagerRoute_PickCoastBlock(Unk_02011f74_Pair *out, void *self,
 HeldToolModel *HeldToolModel::init() {
     using namespace nB;
     unk_00 = 0xfff1;
-    _ZN12Unk_020e072cC1Ev(&unk_04);
+    _ZN22NpcHeldItemModelHandleC1Ev(&unk_04);
     unk_00 = 0xfff1;
     return this;
 }
 
 HeldToolModel *HeldToolModel::destroy() {
     using namespace nB;
-    _ZN12Unk_020e072cD1Ev(&unk_04);
+    _ZN22NpcHeldItemModelHandleD1Ev(&unk_04);
     return this;
 }
 
 BOOL HeldToolModel::load(u32 a) {
     using namespace nB;
-    if (!_ZN12Unk_020e071813func_02082140Ev(&unk_04)) return FALSE;
-    if (!_ZN12Unk_020821b413func_02081d6cEi(&unk_04, a)) return FALSE;
+    if (!_ZN12NpcResHandle7acquireEv(&unk_04)) return FALSE;
+    if (!_ZN16NpcResHandleView12loadHeldItemEi(&unk_04, a)) return FALSE;
     unk_00 = 0xfff1;
     return TRUE;
 }
 
 BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
     using namespace nB;
-    void *p = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    void *p = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (p) {
         HeldItemModel_SetItem(p, b, 0);
         _ZN11NpcAnimCtrl16playHoldItemPoseEP16Unk_02015fe0_ObjPtPvt((void *)(a + 0x334), a, b, c, d);
@@ -11062,7 +11062,7 @@ BOOL HeldToolModel::attach(u32 a, u16 *b, u32 c, u16 d) {
 
 void HeldToolModel::playAnim(u32 a, u32 b, u32 c) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) HeldItemModel_PlayAnim(r, a, b, c);
 }
 
@@ -11139,11 +11139,11 @@ void HeldToolModel::func_02011c44(u32 a, u32 b) {
 }
 
 void HeldToolModel::release() {
-    using namespace nA; _ZN12Unk_020e071813func_0208211cEv(&unk_04); }
+    using namespace nA; _ZN12NpcResHandle7releaseEv(&unk_04); }
 
 void HeldToolModel::update(Unk_02006d14 *p) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) {
         u32 v = p->unk_198;
         Unk_0205dfa4_9c &s = *HeldItemModel_GetModel(r);
@@ -11155,7 +11155,7 @@ void HeldToolModel::update(Unk_02006d14 *p) {
 void HeldToolModel::draw(Unk_02006d14 *p) {
     using namespace nA;
     if (unk_3c != 0) {
-        Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+        Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
         if (p) {
             MsgRequest &s = *p;
             Model_GetJointWorldMtx(&s, unk_0c, 0xe);
@@ -11166,27 +11166,27 @@ void HeldToolModel::draw(Unk_02006d14 *p) {
 
 u32 HeldToolModel::getAnimSpeed() {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) return r->unk_04;
     return 0;
 }
 
 void HeldToolModel::setAnimSpeed(u32 v) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) r->unk_04 = v;
 }
 
 Unk_0205dfa4 *HeldToolModel::func_02011b7c() {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) return HeldItemModel_GetModel(r);
     return 0;
 }
 
 void HeldToolModel::func_02011b60(u32 v) {
     using namespace nA;
-    Unk_02081d4c *r = _ZN12Unk_020821b413func_02081d4cEv(&unk_04);
+    Unk_02081d4c *r = _ZN16NpcResHandleView16getHeldItemModelEv(&unk_04);
     if (r) HeldItemModel_SetAnimSpeed(r, v);
 }
 
@@ -11197,7 +11197,7 @@ inline NpcActor::~NpcActor() {
     _ZN12Unk_0201347413func_020135e0Ev((u8 *)this + 0x558);
     *(u32 *)((u8 *)this + 0x514) = (u32)data_020d6f54;
     func_020f43c8((u8 *)this + 0x514);
-    _ZN12Unk_020e0cf4D1Ev((u8 *)this + 0x4cc);
+    _ZN19ActorFollowColliderD1Ev((u8 *)this + 0x4cc);
     _ZN14CollisionStateD1Ev((u8 *)this + 0x49c);
     _ZN12Unk_0201a13cD2Ev((u8 *)this + 0x420);
     _ZN14NpcSpeechStateD2Ev((u8 *)this + 0x418);

@@ -18,10 +18,10 @@ public:
     virtual ~EncodedString();
 };
 
-class Unk_020ddefc : public MsgString {
+class MsgString129 : public MsgString {
 public:
-    Unk_020ddefc();
-    virtual ~Unk_020ddefc();
+    MsgString129();
+    virtual ~MsgString129();
     u32 unk_04[(0x94 - 4) / 4];
 };
 
@@ -195,7 +195,7 @@ void PlayerData_GetCurrent();
 void _ZN10PlayerData12getInventoryEv();
 void *_ZN15PlayerInventory9getUnk988Ev();
 void LetterDefaults_Store(void *a, void *b);
-s32 _ZN12Unk_0206ce9813func_0206cf34Ev(void *p);
+s32 _ZN12LetterLayout16getBodyLineCountEv(void *p);
 void _ZN14MenuCursorBase11setPoseIdleEv(void *p);
 void _ZN14MenuCursorBase14setPoseReleaseEv(void *p);
 void _ZN10MenuCursor12setPosePressEv(void *p);
@@ -220,9 +220,9 @@ s32 Keyboard_GetCursorY(void *s);
 s32 Keyboard_ClearHighlight(void *s);
 extern u8 gU8None;
 s32 Text_MeasureWidth(void *p, s32 v);
-s32 _ZN12Unk_0206ce9813func_0206cefcEi(void *p, s32 v);
-s32 *_ZN12Unk_0206ce9813func_0206cf40Ev(void *p);
-s32 _ZN14LetterRenderer13func_0206d2d4Ev(void *p);
+s32 _ZN12LetterLayout16getBodyLineOfPosEi(void *p, s32 v);
+s32 *_ZN12LetterLayout17getBodyLineStartsEv(void *p);
+s32 _ZN14LetterRenderer22getRecipientNameLengthEv(void *p);
 BOOL MenuCtrl_IsTouch();
 u32 Keyboard_DeleteRange(void *st, u8 *a, u32 b, u32 c, s32 d);
 s32 Keyboard_HitTestText(void *st, void *a, s32 b, s32 c, u32 d, u8 *out);
@@ -316,11 +316,11 @@ void Gfx2d_SetSubWin0Planes(u32 a, u32 b);
 void Gfx2d_SetSubWinOutPlanes(u32 a);
 void Gfx2d_SetWindowRect(u32 a, u32 b, u32 c, u32 d, u32 e);
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void func_02088730(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
+void Oam_DrawObj(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
 void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
 void PopupChoice_Draw(void *p);
 void func_0206fca8(void *p);
-void _ZN14LetterRenderer13func_0206d288EPv(void *p, u32 a);
+void _ZN14LetterRenderer17loadRecipientNameEPv(void *p, u32 a);
 BOOL _ZN10HandCursor7getAnimEv(void *p);
 BOOL _ZN10HandCursor10isAnimDoneEv(void *p);
 BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
@@ -339,14 +339,14 @@ BOOL PopupChoice_TickDecideDelay(void *p);
 BOOL _ZN19PopupChoiceMenuBody6isOpenEv(void *p);
 BOOL PopupChoice_MoveCursor(void *p, s32 a, void *b, s32 c);
 BOOL _ZN14MenuCursorBase8isMovingEv(void *p);
-void _ZN12Unk_0206ce9813func_0206d018Ejjj(void *self, s32 a, s32 b, s32 c);
-void _ZN14LetterRenderer13func_0206d0a0Ejj(void *self, s32 a, s32 b, s32 c);
-void _ZN14LetterRenderer13func_0206d0b8EPh(void *self, void *p);
-void _ZN14LetterRenderer13func_0206d0fcEPhi(void *self, void *p, u32 b);
-void _ZN14LetterRenderer13func_0206d1d4EP16Unk_0206d1d4_SrcPh(void *self, void *p, void *q);
-void _ZN14LetterRenderer13func_0206d380Ev(void *self);
-void _ZN14LetterRenderer13func_0206d394Ev(void *self);
-void _ZN14LetterRenderer13func_0206d39cEi(void *self, s32 a);
+void _ZN12LetterLayout18highlightBodyRangeEjjj(void *self, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer17highlightGreetingEjj(void *self, s32 a, s32 b, s32 c);
+void _ZN14LetterRenderer12setSignatureEPh(void *self, void *p);
+void _ZN14LetterRenderer7setBodyEPhi(void *self, void *p, u32 b);
+void _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(void *self, void *p, void *q);
+void _ZN14LetterRenderer6redrawEv(void *self);
+void _ZN14LetterRenderer7releaseEv(void *self);
+void _ZN14LetterRenderer8setLayerEi(void *self, s32 a);
 void _ZN14LetterRenderer16loadLetterScreenEj(void *self, s32 a);
 void _ZN19PopupChoiceMenuBody18buildAddresseeListEv(void *self);
 void _ZN14MenuCursorBase11drawWrappedEv(void *self);
@@ -359,7 +359,7 @@ void _ZN17MenuBottomButtons16setLayoutConfirmEv(void *self);
 void _ZN17MenuBottomButtons24setLayoutChangeAddresseeEv(void *self);
 void _ZN17MenuBottomButtons6drawAtEi(void *self, s32 a);
 void _ZN17MenuBottomButtons9freeTextsEv(void *self);
-void func_0206d000(void *self, s32 a, s32 b, s32 c);
+void LetterLayout_HighlightSignature(void *self, s32 a, s32 b, s32 c);
 void PopupChoice_ForceClose(void *self);
 void PopupChoice_Update(void *self);
 void PopupChoice_LoadChoiceBg(void *self);
@@ -551,7 +551,7 @@ public:
     /* 0x3c7c */ LetterRenderer unk_3c7c;
     /* 0x3e8c */ MenuScrollKnob unk_3e8c;
     /* 0x3ed4 */ MenuCursorBuf0 unk_3ed4;
-    /* 0x3f38 */ Unk_020ddefc unk_3f38;
+    /* 0x3f38 */ MsgString129 unk_3f38;
     /* 0x3fcc */ EncodedString128 unk_3fcc;
     /* 0x4104 */ PopupChoiceMenu unk_4104;
     /* 0x43f8 */ MenuBottomButtons unk_43f8;
@@ -740,7 +740,7 @@ BOOL LetterWriteMenu::onDraw() {
         Keyboard_Draw(&unk_c0, 0x80, p, 1);
         Keyboard_DrawCopyPasteKeys(&unk_c0, 0x80, p);
         if (MenuCtrl_IsButtons()) {
-            func_02088730(1, data_ov122_0229a030, 0x80, p, -1, 1, 0);
+            Oam_DrawObj(1, data_ov122_0229a030, 0x80, p, -1, 1, 0);
         }
         Keyboard_DrawLengthGaugeAt(&unk_c0, 0x80, p, unk_a4);
     }
@@ -1069,8 +1069,8 @@ void LetterWriteMenu::transitionAct0E() {
 void LetterWriteMenu::init() {
     unk_bc = (u8 *)MenuCtrl_GetArg();
     Keyboard_Init(&unk_c0, 1);
-    _ZN14LetterRenderer13func_0206d39cEi(&unk_3c7c, 3);
-    _ZN14LetterRenderer13func_0206d288EPv(&unk_3c7c, (u32)unk_bc);
+    _ZN14LetterRenderer8setLayerEi(&unk_3c7c, 3);
+    _ZN14LetterRenderer17loadRecipientNameEPv(&unk_3c7c, (u32)unk_bc);
     setScroll(0x10);
     setScrollTarget(0x10);
     unk_a8 = 0;
@@ -1086,7 +1086,7 @@ void LetterWriteMenu::init() {
 
 void LetterWriteMenu::releaseResources() {
     Keyboard_Shutdown(&unk_c0);
-    _ZN14LetterRenderer13func_0206d394Ev(&unk_3c7c);
+    _ZN14LetterRenderer7releaseEv(&unk_3c7c);
     PopupChoice_ForceClose(&unk_4104);
     _ZN17MenuBottomButtons9freeTextsEv(&unk_43f8);
 }
@@ -1098,7 +1098,7 @@ void LetterWriteMenu::preInputUpdate() {
 }
 
 void LetterWriteMenu::postInputUpdate() {
-    _ZN14LetterRenderer13func_0206d380Ev(&unk_3c7c);
+    _ZN14LetterRenderer6redrawEv(&unk_3c7c);
     Keyboard_EndFrame(&unk_c0, 6);
     PopupChoice_Update(&unk_4104);
     postStateUpdate();
@@ -1136,7 +1136,7 @@ void LetterWriteMenu::loadBg() {
     Menu_LoadPaperBg(Letter_GetPaper(unk_bc), 4);
     _ZN14LetterRenderer16loadLetterScreenEj(&unk_3c7c, 3);
     redrawText(1, 1);
-    _ZN14LetterRenderer13func_0206d380Ev(&unk_3c7c);
+    _ZN14LetterRenderer6redrawEv(&unk_3c7c);
 }
 
 void LetterWriteMenu::loadKeyboardObjGfx() { Keyboard_LoadObjGfx(&unk_c0); }
@@ -1160,20 +1160,20 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     u32 flag;
     setFlags(0x1000);
     if (a != 0) {
-        _ZN14LetterRenderer13func_0206d1d4EP16Unk_0206d1d4_SrcPh(&unk_3c7c, unk_bc, unk_3fcc.unk_90);
-        _ZN14LetterRenderer13func_0206d0fcEPhi(&unk_3c7c, unk_bc + 0x4c, b);
-        _ZN14LetterRenderer13func_0206d0b8EPh(&unk_3c7c, unk_bc + 0xcc);
+        _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&unk_3c7c, unk_bc, unk_3fcc.unk_90);
+        _ZN14LetterRenderer7setBodyEPhi(&unk_3c7c, unk_bc + 0x4c, b);
+        _ZN14LetterRenderer12setSignatureEPh(&unk_3c7c, unk_bc + 0xcc);
     } else {
         switch (unk_aa) {
         case 0:
         case 1:
-            _ZN14LetterRenderer13func_0206d1d4EP16Unk_0206d1d4_SrcPh(&unk_3c7c, unk_bc, unk_3fcc.unk_90);
+            _ZN14LetterRenderer11setGreetingEP16Unk_0206d1d4_SrcPh(&unk_3c7c, unk_bc, unk_3fcc.unk_90);
             break;
         case 2:
-            _ZN14LetterRenderer13func_0206d0fcEPhi(&unk_3c7c, unk_bc + 0x4c, b);
+            _ZN14LetterRenderer7setBodyEPhi(&unk_3c7c, unk_bc + 0x4c, b);
             break;
         case 3:
-            _ZN14LetterRenderer13func_0206d0b8EPh(&unk_3c7c, unk_bc + 0xcc);
+            _ZN14LetterRenderer12setSignatureEPh(&unk_3c7c, unk_bc + 0xcc);
             break;
         }
     }
@@ -1198,17 +1198,17 @@ void LetterWriteMenu::redrawText(u32 a, u32 b) {
     if (n != 0) {
         switch (unk_aa) {
         case 0:
-            _ZN14LetterRenderer13func_0206d0a0Ejj(&unk_3c7c, lo, n, flag);
+            _ZN14LetterRenderer17highlightGreetingEjj(&unk_3c7c, lo, n, flag);
             break;
         case 1:
-            lo += unk_bc[0xec] + _ZN14LetterRenderer13func_0206d2d4Ev(&unk_3c7c);
-            _ZN14LetterRenderer13func_0206d0a0Ejj(&unk_3c7c, lo, n, flag);
+            lo += unk_bc[0xec] + _ZN14LetterRenderer22getRecipientNameLengthEv(&unk_3c7c);
+            _ZN14LetterRenderer17highlightGreetingEjj(&unk_3c7c, lo, n, flag);
             break;
         case 2:
-            _ZN12Unk_0206ce9813func_0206d018Ejjj(&unk_3c7c, lo, n, flag);
+            _ZN12LetterLayout18highlightBodyRangeEjjj(&unk_3c7c, lo, n, flag);
             break;
         case 3:
-            func_0206d000(&unk_3c7c, lo, n, flag);
+            LetterLayout_HighlightSignature(&unk_3c7c, lo, n, flag);
             break;
         }
     }
@@ -1947,7 +1947,7 @@ void LetterWriteMenu::mainAct18()
     r = _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(&unk_4104, (u32)unk_bc, unk_b6);
     switch (r) {
     case 1:
-        _ZN14LetterRenderer13func_0206d288EPv(&unk_3c7c, (u32)unk_bc);
+        _ZN14LetterRenderer17loadRecipientNameEPv(&unk_3c7c, (u32)unk_bc);
         redrawText(1, 0);
         unk_8c = 0xa;
         setPhase(1);
@@ -2189,7 +2189,7 @@ u8 C::hitTestGreeting(s32 a, u8 *p) {
     u8 out;
     Keyboard_HitTestText(&unk_c0, unk_3fcc.unk_90, 0x28, 0xa0, (u8)(a - 0x30), &out);
     s32 e = unk_bc[0xec];
-    s32 s = e + _ZN14LetterRenderer13func_0206d2d4Ev(&unk_3c7c);
+    s32 s = e + _ZN14LetterRenderer22getRecipientNameLengthEv(&unk_3c7c);
     s32 h = (e + s) >> 1;
     if (out < h) {
         *p = 0;
@@ -2208,7 +2208,7 @@ void C::moveCaretToBody(s32 flag) {
     if (unk_a0 < 0x40) unk_a0 = 0x40;
     if (unk_a0 >= 0x80) unk_a0 = 0x7f;
     s32 i = (unk_a0 - 0x40) >> 4;
-    s32 m = _ZN12Unk_0206ce9813func_0206cf34Ev(&unk_3c7c);
+    s32 m = _ZN12LetterLayout16getBodyLineCountEv(&unk_3c7c);
     if (i > m) i = m;
     else flag = 0;
     unk_a0 = i * 16 + 0x40;
@@ -2221,7 +2221,7 @@ void C::moveCaretToBody(s32 flag) {
 }
 
 u8 C::hitTestBodyLine(s32 idx, u32 *p) {
-    s32 o = _ZN12Unk_0206ce9813func_0206cf40Ev(&unk_3c7c)[idx];
+    s32 o = _ZN12LetterLayout17getBodyLineStartsEv(&unk_3c7c)[idx];
     u8 out;
     s32 t = Keyboard_HitTestText(&unk_c0, unk_bc + 0x4c + o, 0x28, 0x96, (u8)(*p - 0x30), &out);
     *p = t + 0x30;
@@ -2326,7 +2326,7 @@ void C::setCaretFromPoint(s32 a, s32 b, s32 c) {
 void C::updateCaretPosGreeting() {
     u32 v = unk_ac;
     if (unk_aa == 1) {
-        s32 t = _ZN14LetterRenderer13func_0206d2d4Ev(&unk_3c7c);
+        s32 t = _ZN14LetterRenderer22getRecipientNameLengthEv(&unk_3c7c);
         v += unk_bc[0xec] + t;
     }
     unk_9c = (u8)(Text_MeasureWidth(unk_3fcc.unk_90, v) + 0x30);
@@ -2334,9 +2334,9 @@ void C::updateCaretPosGreeting() {
 }
 
 void C::updateCaretPosBody() {
-    s32 t = _ZN12Unk_0206ce9813func_0206cefcEi(&unk_3c7c, unk_ac);
+    s32 t = _ZN12LetterLayout16getBodyLineOfPosEi(&unk_3c7c, unk_ac);
     unk_a0 = t * 16 + 0x40;
-    s32 o = _ZN12Unk_0206ce9813func_0206cf40Ev(&unk_3c7c)[t];
+    s32 o = _ZN12LetterLayout17getBodyLineStartsEv(&unk_3c7c)[t];
     unk_9c = (u8)(Text_MeasureWidth(unk_bc + 0x4c + o, unk_ac - o) + 0x30);
 }
 
@@ -2417,7 +2417,7 @@ BOOL LetterWriteMenu::navigateText(void *pad, s32 flag) {
     }
     u8 mode = unk_aa;
     u8 idx = unk_ac;
-    s32 cnt = _ZN12Unk_0206ce9813func_0206cf34Ev(&unk_3c7c);
+    s32 cnt = _ZN12LetterLayout16getBodyLineCountEv(&unk_3c7c);
     s32 lim;
     s32 sel;
     s32 n;

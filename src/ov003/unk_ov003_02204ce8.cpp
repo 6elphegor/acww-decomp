@@ -94,7 +94,7 @@
 #define func_02062650 _ZN8ItemNameC1EPt
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
 #define CommManager_isLocalSlot _ZN11CommManager11isLocalSlotEj
-#define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
+#define ActorCollider_submit _ZN13ActorCollider6submitEv
 #define HudCountdown_incCountB _ZN12HudCountdown9incCountBEv
 #define HudCountdown_incCountA _ZN12HudCountdown9incCountAEv
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
@@ -2612,7 +2612,7 @@ void FieldPos_FromUnitCenter(V3 *out, u32 a, u32 b);
 void FieldPos_ToUnit(s32 *a, s32 *b, V3 *v);
 void FieldPos_SnapToUnitCenter(V3 *out, V3 *in);
 void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
-s32 func_02089040(void *p);
+s32 ActorCollider_submit(void *p);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
 void Unk_020102ec_setSpeed(Obj *o, s32 *a);
 s32 Effect_Create(u32 id, V3 *v, s16 *h, u32 z);
@@ -2629,7 +2629,7 @@ s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 void Character_detachTalkRequest(Obj *o, Sec *s);
 void TalkRequest_FinishPlayerMessage();
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 
 s32 PlayerActor_ShovelDispatch(Obj *o, V3C v, s32 a);
 void PlayerActor_ApplyHoldOffset(S30 *p, s32 a);
@@ -2845,7 +2845,7 @@ void Effect_SetPosition(s32 a, V3 *v, void *p, s32 b);
 void Effect_End(s32 a);
 s16 func_020e7b98(s32 a, s32 b);
 s32 func_020e9650(void *a, void *b);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 TalkRequest_AddPlayerMessage();
 void Character_attachTalkRequest(Obj *o, MsgRequest *b);
 void Character_detachTalkRequest(Obj *o, MsgRequest *b);
@@ -3197,7 +3197,7 @@ extern u8 data_ov003_02230ac8[];
 s32 AnimFrameCtrl_isFinished(void *p);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
-s32 func_02088a20(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
+s32 BugNet_HitTest(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
 void FieldInsect_GetPosAndKind(V3 *v, u32 a);
 u32 FieldInsect_IsTreeKind(u32 a);
 s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *v, u8 *b);
@@ -3209,7 +3209,7 @@ s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
-void func_02089040(void *p);
+void ActorCollider_submit(void *p);
 void Unk_02006d14_turnToward(Obj *o, s32 a);
 void Unk_020102ec_advanceAnim(Obj *o);
 void Unk_020102ec_startAnimOnce(Obj *o, s32 a, u32 b, u32 c);
@@ -4050,9 +4050,9 @@ s32 Unk_02006d14_getHeldHoldableIndex(Obj *o);
 void PlayerActor_GetFrontPoint(V3 *out, Obj *o);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 void Unk_020102ec_setSubCollider(Obj *o, V3 *v, s32 a, s32 b);
-void func_02089040(void *p);
+void ActorCollider_submit(void *p);
 s32 Effect_Create(s32 a, void *b, void *c, s32 d);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 Ground_GetHeightAt(V3 *a, s32 *b, s32 c);
 void Unk_02006d14_clearActionFlag(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
@@ -7165,7 +7165,7 @@ extern "C" s32 PlayerActor_SetupAxeSwing(Obj *o, Arg *a) {
     if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         Unk_02006d14_clearActionFlag(o, 0x14);
         if (Unk_02006d14_getHeldHoldableIndex(o) != 0xb) {
-            if (!func_02063b8c(8)) {
+            if (!Random_GlobalBelow(8)) {
                 Unk_02006d14_setActionFlag(o, 0x14);
             }
         }
@@ -7196,7 +7196,7 @@ extern "C" s32 PlayerActor_AxeSwingTrackTarget(Obj *o) {
     t.y = pv->y;
     t.z = pv->z;
     Unk_020102ec_setSubCollider(o, &t, 0xf33, 0x1000);
-    func_02089040(o->unk_1c0);
+    ActorCollider_submit(o->unk_1c0);
 }
 }
 
@@ -7275,7 +7275,7 @@ extern "C" s32 PlayerActor_AxeFollowThroughTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
-    func_02089040(o->unk_1c0);
+    ActorCollider_submit(o->unk_1c0);
 }
 }
 
@@ -9104,7 +9104,7 @@ extern "C" void PlayerActor_BugNetSwingTrackTarget(Obj *o) {
     V3 v;
     PlayerActor_GetFrontPoint(&v, o);
     Unk_020102ec_setSubCollider(o, &v, 0x99a, 0x1000);
-    func_02089040((u8 *)o + 0x1c0);
+    ActorCollider_submit((u8 *)o + 0x1c0);
 }
 }
 
@@ -9137,7 +9137,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
             id = 0xa00;
         else
             id = 0xd1f;
-        if (func_02088a20(&v18, &v24, id, &st.c, 0)) {
+        if (BugNet_HitTest(&v18, &v24, id, &st.c, 0)) {
             st.a = 1;
             FieldInsect_GetPosAndKind(&v3c, st.c);
             st.b = FieldInsect_IsTreeKind(st.c);
@@ -9824,7 +9824,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         if (rec->unk_00 != -1) {
             Effect_End(rec->unk_00);
         }
-        s16 ang = func_02063b8c(0x2aaa) - 0x1555;
+        s16 ang = Random_GlobalBelow(0x2aaa) - 0x1555;
         HeldInsect_Release((u8)r7, ang);
         PlayerActor_InsectShowCatchSetNetAngle(sub, ang);
         MsgRequest *sec = o;
@@ -10106,7 +10106,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             } else if (s < 0xf) {
                 goto tail;
             }
-            v = (s16)(func_02063b8c(0x2aaa) - 0x1555);
+            v = (s16)(Random_GlobalBelow(0x2aaa) - 0x1555);
             HeldInsect_Release(id, v);
             PlayerActor_InsectStoreSetNetAngle(p6, v);
             if (Unk_02006d14_testActionFlag(o, 0x11)) {
@@ -10322,7 +10322,7 @@ extern "C" void PlayerActor_ShovelReadyTrackTarget(Obj *o) {
     v.y = r->unk_00.y;
     v.z = r->unk_00.z;
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
-    func_02089040((u8 *)o + 0x1c0);
+    ActorCollider_submit((u8 *)o + 0x1c0);
 }
 }
 
@@ -10468,7 +10468,7 @@ extern "C" void PlayerActor_ShovelWaitTrackTarget(Obj *o) {
     u8 *p = (u8 *)&o->unk_7d0;
     FieldPos_FromUnitCenter(&v, p[0], p[1]);
     Unk_020102ec_setSubCollider(o, &v, 0xf33, 0x1000);
-    func_02089040((u8 *)o + 0x1c0);
+    ActorCollider_submit((u8 *)o + 0x1c0);
 }
 }
 

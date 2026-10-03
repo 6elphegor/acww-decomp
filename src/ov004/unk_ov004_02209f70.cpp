@@ -1694,7 +1694,7 @@ extern char data_ov004_0224bb50[];
 
 s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
-s32 func_02063b8c(s32 a, ...);
+s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL CarpetTex_Load(u32 a, u16 *p);
 s32 func_0203c234(s32 a);
@@ -7286,7 +7286,7 @@ BOOL _ZN9FtrSwitch4isOnEv(void *);
 void _ZN15FtrSoundEmitter8playOnceEjj(void *, u32, void *);
 void _ZN15FtrSoundEmitter8setPitchEj(void *, s32);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
-u32 func_02063b8c(s32 n);
+u32 Random_GlobalBelow(s32 n);
 void FtrSync_RequestAct(void *, u8, s32, s32);
 void _ZN8FtrActorC2Ev(void *);
 void _ZN8FtrActorD2Ev(void *);
@@ -7414,7 +7414,7 @@ BOOL FtrBasic::updateActive() {
 BOOL FtrBasic::initModel() {
     if (b25_unk_77c == 1) {
         s32 k = getAnimFrameCount(0);
-        u32 t = (b25_unk_768 == 1) ? 0 : p25::func_02063b8c(k);
+        u32 t = (b25_unk_768 == 1) ? 0 : p25::Random_GlobalBelow(k);
         initAnims(0, 0, 0x1000, (u16)t);
         unk_844.init(b25_unk_590, 1);
     }

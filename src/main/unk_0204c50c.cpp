@@ -136,7 +136,7 @@ void Town_InitNew();
 }
 
 extern "C" {
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 }
 
 extern "C" {

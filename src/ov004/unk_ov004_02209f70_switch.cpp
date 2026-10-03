@@ -1583,7 +1583,7 @@ extern char data_ov004_0224bb50[];
 
 s32 FtrSync_RequestAct(s32 a, s32 b, u8 c, u8 d);
 s32 FtrSync_ChangeAct(s32 a, s32 b, u8 c, u8 d);
-s32 func_02063b8c(s32 a, ...);
+s32 Random_GlobalBelow(s32 a, ...);
 s32 Item_MakeFurniture(s32 a, s32 b);
 BOOL CarpetTex_Load(u32 a, u16 *p);
 s32 func_0203c234(s32 a);
@@ -1787,11 +1787,11 @@ BOOL FtrSingingInsect::initModel() {
     unk_842 = 0;
     if (b11_unk_768 != 1) {
         if (t == 0x3fc) {
-            unk_842 = p11::func_02063b8c(0x3c, 0);
+            unk_842 = p11::Random_GlobalBelow(0x3c, 0);
         } else if ((u16)(t + 0xfc07) <= 2) {
-            unk_842 = p11::func_02063b8c(0xc8, 0);
+            unk_842 = p11::Random_GlobalBelow(0xc8, 0);
         } else {
-            unk_842 = p11::func_02063b8c(unk_840 * p11::_ZN8FtrActor17getAnimFrameCountEi(this));
+            unk_842 = p11::Random_GlobalBelow(unk_840 * p11::_ZN8FtrActor17getAnimFrameCountEi(this));
         }
     }
     return TRUE;

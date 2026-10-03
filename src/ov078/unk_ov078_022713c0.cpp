@@ -91,11 +91,11 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
-void func_02063388(Unk_0202368c_Obj *o);
+void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 void func_020e7518(void *p);
@@ -291,7 +291,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -396,7 +396,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -744,7 +744,7 @@ BOOL SpNpcSaharah::mainAct02() {
                         r6 = Math_AngleXZ(&unk_5c, &v);
                         if (NpcActor_IsFrontAngle((s16)(r6 - unk_8e))) {
                             r6 = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
                             if (r6 != unk_564.getAction()) {
@@ -935,12 +935,12 @@ void SpNpcSaharahTalk::vfunc_14() {
         _ZN12ItemPickSpec3setEii(&o1, 4, 0x23);
         ItemPick_One(&h[1], &o1, msg, msg, 1, 1, msg);
         unk_b4[0].unk_00 = h[1];
-        func_02063388(&o1);
+        ItemPickSpec_Destruct(&o1);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4[0].unk_00, 1, 7);
         _ZN12ItemPickSpec3setEii(&o2, 3, 0x23);
         ItemPick_One(&h[2], &o2, msg, msg, 1, 1, msg);
         unk_b4[1].unk_00 = h[2];
-        func_02063388(&o2);
+        ItemPickSpec_Destruct(&o2);
         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &unk_b4[1].unk_00, 2, 7);
         msg = 0xd;
         break;
@@ -954,7 +954,7 @@ void SpNpcSaharahTalk::vfunc_14() {
     case 0x16:
         h[0] = 0x37e0;
         msg = 0x17;
-        if (func_02063b8c(2) == 0) {
+        if (Random_GlobalBelow(2) == 0) {
             h[0] = 0x34a8;
             msg = 0x18;
         }

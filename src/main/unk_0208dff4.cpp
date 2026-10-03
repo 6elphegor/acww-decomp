@@ -48,11 +48,11 @@ extern u8 data_020d468c[];
 struct SpriteAnimSeq { u32 unk_00; u32 unk_04; };
 extern SpriteAnimSeq data_020d5b0c[];
 extern u16 sLabelButtonColorCache[2];
-extern const u8 data_020cf6ec[4];
-extern const u32 data_020cf6f0[2];
-extern const u8 data_020cf6e8[4];
-extern const s32 data_020cf708[4];
-extern const s32 data_020cf6f8[4];
+extern const u8 sLabelButtonKindTextColors[4];
+extern const u32 sLabelButtonKindLabelVram[2];
+extern const u8 sLabelButtonKindSeqOffsets[4];
+extern const s32 sLabelButtonStateSeqIds[4];
+extern const s32 sLabelButtonStatePlayOnce[4];
 
 class SpriteAnim {
 public:
@@ -194,9 +194,9 @@ void LabelButton::getAnimOffset(s32 *outx, s32 *outy) {
 }
 
 void LabelButton::setState(s32 v) {
-    s32 i = data_020cf6e8[unk_18] + data_020cf708[v];
+    s32 i = sLabelButtonKindSeqOffsets[unk_18] + sLabelButtonStateSeqIds[v];
     s32 j = i + 1;
-    s32 k = data_020cf6f8[v];
+    s32 k = sLabelButtonStatePlayOnce[v];
     unk_44 = v;
     unk_1c.setSeq(&data_020d5b0c[i]);
     unk_1c.setPlayOnce(k);
@@ -228,7 +228,7 @@ BOOL LabelButton::isAnimDone() {
 
 void LabelButton::createLabel() {
     if (unk_48 == NULL) {
-        unk_48 = MsgTextLabel_CreateVram(data_020cf6f0[unk_18], 6, 2);
+        unk_48 = MsgTextLabel_CreateVram(sLabelButtonKindLabelVram[unk_18], 6, 2);
         if (unk_48 != NULL) {
             unk_48->unk_2c = 4;
             TextLabel *t = unk_48;
@@ -239,7 +239,7 @@ void LabelButton::createLabel() {
             unk_48->unk_55 = 1;
             unk_48->alignCenter();
             unk_48->unk_39 = 0;
-            unk_48->unk_38 = data_020cf6ec[unk_18];
+            unk_48->unk_38 = sLabelButtonKindTextColors[unk_18];
             unk_48->requestRedraw();
             unk_6d = 1;
         }
@@ -263,7 +263,7 @@ void LabelButton::syncTextColor() {
         }
     }
     if (unk_6d != 0) {
-        u32 n = data_020cf6ec[unk_18] * 2;
+        u32 n = sLabelButtonKindTextColors[unk_18] * 2;
         DC_FlushRange(&unk_68, 2);
         GX_LoadOBJPltt(&unk_68, n, 2);
         GXS_LoadOBJPltt(&unk_68, n, 2);
@@ -273,21 +273,21 @@ void LabelButton::syncTextColor() {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const s32 data_020cf6f8[4];
-extern const s32 data_020cf708[4];
-extern const u32 data_020cf6f0[2];
-extern const u8 data_020cf6ec[4];
-extern const u8 data_020cf6e8[4];
+extern const s32 sLabelButtonStatePlayOnce[4];
+extern const s32 sLabelButtonStateSeqIds[4];
+extern const u32 sLabelButtonKindLabelVram[2];
+extern const u8 sLabelButtonKindTextColors[4];
+extern const u8 sLabelButtonKindSeqOffsets[4];
 extern u16 sLabelButtonColorCache[2];
 
-const s32 data_020cf6f8[4] = {1, 1, 1, 1};
+const s32 sLabelButtonStatePlayOnce[4] = {1, 1, 1, 1};
 
-const s32 data_020cf708[4] = {0x33, 0x33, 0x33, 0x35};
+const s32 sLabelButtonStateSeqIds[4] = {0x33, 0x33, 0x33, 0x35};
 
-const u32 data_020cf6f0[2] = {0x14, 0x1a};
+const u32 sLabelButtonKindLabelVram[2] = {0x14, 0x1a};
 
-const u8 data_020cf6ec[4] = {0xe, 0xf, 0, 0};
+const u8 sLabelButtonKindTextColors[4] = {0xe, 0xf, 0, 0};
 
-const u8 data_020cf6e8[4] = {0, 4, 0, 0};
+const u8 sLabelButtonKindSeqOffsets[4] = {0, 4, 0, 0};
 
 u16 sLabelButtonColorCache[2];

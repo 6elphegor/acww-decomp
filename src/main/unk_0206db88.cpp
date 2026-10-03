@@ -104,8 +104,8 @@ void MenuScreen_ClearState();
 BOOL MenuScreen_LoadBackground(u32);
 BOOL MenuScreen_LoadStdBackground(u32);
 BOOL MenuScreen_HasFlags(u32);
-void func_0206dbac(u32);
-void func_0206dbbc(u32);
+void MenuScreen_ClearFlags(u32);
+void MenuScreen_SetFlags(u32);
 void Gfx_LightenPalette16(u16 *, u16 *);
 }
 
@@ -114,14 +114,14 @@ union Slot8 { u8 v; u32 pad; };
 union Slot16 { u16 v; u32 pad; };
 union SlotS16 { s16 v; u32 pad; };
 
-Slot8 data_021cb460;
-s32 data_021cb47c;
-s32 data_021cb478;
+Slot8 sMenuScreenFlags;
+s32 sMenuScreenProgress;
+s32 sMenuScreenProgressStep;
 Slot16 sMenuScreenState;
 SlotS16 sMenuWipePos;
-Slot16 data_021cb46c;
-Slot8 data_021cb468;
-Slot8 data_021cb464;
+Slot16 sMenuScreenScroll;
+Slot8 sMenuScreenWipeFlags;
+Slot8 sMenuScreenBgKind;
 u32 sMenuWipeHBlankTask[7];
 
 BOOL (*sMenuScreenSteps[])() = {
@@ -138,7 +138,7 @@ extern "C" void MenuScreen_WipeInVBlank(void) {
         sMenuWipePos.v -= 20;
     } else {
         HBlank_Remove(sMenuWipeHBlankTask);
-        data_021cb468.v &= ~1;
+        sMenuScreenWipeFlags.v &= ~1;
         Gfx2d_SetMainWin1Rect(0, 0, 255, 192);
         *(volatile u16 *)0x4000042 = 0xff;
         sMenuWipePos.v = 0;
@@ -164,7 +164,7 @@ extern "C" void MenuScreen_WipeOutVBlank(void) {
         sMenuWipePos.v += 20;
     } else {
         HBlank_Remove(sMenuWipeHBlankTask);
-        data_021cb468.v &= ~1;
+        sMenuScreenWipeFlags.v &= ~1;
         sMenuWipePos.v = 0xfe;
         *(volatile u16 *)0x4000042 = 0xfeff;
     }
@@ -183,9 +183,9 @@ extern "C" void MenuScreen_WipeOutVBlank(void) {
 }
 
 extern "C" void MenuScreen_StopWipe(void) {
-    if (data_021cb468.v & 1) {
+    if (sMenuScreenWipeFlags.v & 1) {
         HBlank_Remove(sMenuWipeHBlankTask);
-        data_021cb468.v &= ~1;
+        sMenuScreenWipeFlags.v &= ~1;
     }
 }
 
@@ -193,7 +193,7 @@ extern "C" void MenuScreen_StartWipeIn(void) {
     s32 i;
     sMenuWipePos.v = 0x117;
     if (HBlank_Add(sMenuWipeHBlankTask, MenuScreen_WipeHBlank, (void (*)(void))MenuScreen_WipeInVBlank, 0)) {
-        data_021cb468.v |= 1;
+        sMenuScreenWipeFlags.v |= 1;
     }
     for (i = 0; i < 24; i++) {
         sMenuWipeEdge[i] = 0xfe;
@@ -206,7 +206,7 @@ extern "C" void MenuScreen_StartWipeOut(void) {
     s32 i;
     sMenuWipePos.v = 0;
     if (HBlank_Add(sMenuWipeHBlankTask, MenuScreen_WipeHBlank, (void (*)(void))MenuScreen_WipeOutVBlank, 0)) {
-        data_021cb468.v |= 1;
+        sMenuScreenWipeFlags.v |= 1;
     }
     for (i = 0; i < 24; i++) {
         sMenuWipeEdge[i] = 0;
@@ -216,7 +216,7 @@ extern "C" void MenuScreen_StartWipeOut(void) {
 }
 
 extern "C" BOOL MenuScreen_IsWiping(void) {
-    if (data_021cb468.v & 1) {
+    if (sMenuScreenWipeFlags.v & 1) {
         return TRUE;
     }
     return FALSE;
@@ -272,17 +272,17 @@ extern "C" BOOL MenuScreen_LoadStdBackground(u32 arg) {
     if (!Gfx2d_LoadScreenFile("menu/inventory/b_itm_back.bsc", heap, arg)) {
         return FALSE;
     }
-    func_020639e8(buf, "menu/bas/b_bas_%d.bpl", data_021cb464.v);
+    func_020639e8(buf, "menu/bas/b_bas_%d.bpl", sMenuScreenBgKind.v);
     if (!Gfx2d_LoadPaletteFile(buf, heap, arg, 0, 0, 0)) {
         return FALSE;
     }
-    func_020639e8(buf, "menu/bas/b_bas_%d.bch", data_021cb464.v);
+    func_020639e8(buf, "menu/bas/b_bas_%d.bch", sMenuScreenBgKind.v);
     Gfx2d_LoadCharFile(buf, heap, arg, 0, 0, 0xf);
     return TRUE;
 }
 
 extern "C" BOOL MenuScreen_LoadBackground(u32 arg) {
-    if (data_021cb464.v != 4) {
+    if (sMenuScreenBgKind.v != 4) {
         return MenuScreen_LoadStdBackground(arg);
     }
     BOOL ok;
@@ -324,14 +324,14 @@ extern "C" void MenuScreen_BeginClose() {
 extern "C" void MenuScreen_BeginOpen() {
     MenuScreen_SetupMainBg();
     sMenuScreenState.v = 1;
-    data_021cb464.v = 4;
+    sMenuScreenBgKind.v = 4;
     MenuCtrl_SetScreenChanging();
 }
 
-extern "C" void func_0206e03c() { func_0206dbac(1); }
+extern "C" void MenuScreen_ReleaseCloseHold() { MenuScreen_ClearFlags(1); }
 
 extern "C" void MenuScreen_ClearState() {
-    data_021cb46c.v = 0;
+    sMenuScreenScroll.v = 0;
     sMenuScreenState.v = 0;
     sMenuWipePos.v = 0;
 }
@@ -353,12 +353,12 @@ extern "C" void MenuScreen_Reset() {
 
 extern "C" void MenuScreen_Update() {
     if (sMenuScreenSteps[sMenuScreenState.v]()) {
-        data_021cb46c.v = (data_021cb46c.v + 1) & 0x1ff;
+        sMenuScreenScroll.v = (sMenuScreenScroll.v + 1) & 0x1ff;
         u16 s = sMenuScreenState.v;
         if (s == 2 || s == 4 || (u16)(s + 0xfff6) <= 1) {
-            Gfx2d_SetLayerOffset(1, data_021cb46c.v, data_021cb46c.v);
+            Gfx2d_SetLayerOffset(1, sMenuScreenScroll.v, sMenuScreenScroll.v);
         } else {
-            Gfx2d_SetLayerOffset(5, data_021cb46c.v, data_021cb46c.v);
+            Gfx2d_SetLayerOffset(5, sMenuScreenScroll.v, sMenuScreenScroll.v);
         }
     }
 }
@@ -393,8 +393,8 @@ extern "C" BOOL MenuScreen_StepAct03() {
     if (Camera_SetMode1()) {
         MenuCtrl_SetTransitionActive();
         MenuCtrl_SetTransitionProgress(0);
-        data_021cb47c = 0x1000;
-        data_021cb478 = 0x200;
+        sMenuScreenProgress = 0x1000;
+        sMenuScreenProgressStep = 0x200;
         sMenuScreenState.v = 4;
     }
     return TRUE;
@@ -418,7 +418,7 @@ extern "C" BOOL MenuScreen_StepAct04() {
 }
 
 extern "C" BOOL MenuScreen_StepAct05() {
-    if (data_021cb47c == 0) {
+    if (sMenuScreenProgress == 0) {
         sMenuScreenState.v = 6;
         if (Unk_0206dc9c_IsZero(gFieldSceneKind)) {
             Sky_Disable();
@@ -426,12 +426,12 @@ extern "C" BOOL MenuScreen_StepAct05() {
         Gfx2d_SetMainBgModeState(0);
         return TRUE;
     }
-    if (data_021cb47c > data_021cb478) {
-        data_021cb47c -= data_021cb478;
+    if (sMenuScreenProgress > sMenuScreenProgressStep) {
+        sMenuScreenProgress -= sMenuScreenProgressStep;
     } else {
-        data_021cb47c = 0;
+        sMenuScreenProgress = 0;
     }
-    MenuCtrl_SetTransitionProgress(0x1000 - func_01ffcb0c(data_021cb47c, data_021cb47c));
+    MenuCtrl_SetTransitionProgress(0x1000 - func_01ffcb0c(sMenuScreenProgress, sMenuScreenProgress));
     return TRUE;
 }
 
@@ -453,14 +453,14 @@ extern "C" BOOL MenuScreen_StepAct08() {
         Gfx2d_HideMainPlanes(8);
     }
     sMenuScreenState.v = 9;
-    data_021cb47c = 0x1000;
-    data_021cb478 = 0x200;
-    func_0206dbbc(1);
+    sMenuScreenProgress = 0x1000;
+    sMenuScreenProgressStep = 0x200;
+    MenuScreen_SetFlags(1);
     return TRUE;
 }
 
 extern "C" BOOL MenuScreen_StepAct09() {
-    if (data_021cb47c == 0) {
+    if (sMenuScreenProgress == 0) {
         if (!MenuScreen_HasFlags(1)) {
             Gfx2d_SetLayerPriority(5, 1);
             MenuScreen_LoadBackground(1);
@@ -478,12 +478,12 @@ extern "C" BOOL MenuScreen_StepAct09() {
             func_0203d4c4(0);
         }
     }
-    if (data_021cb47c > data_021cb478) {
-        data_021cb47c -= data_021cb478;
+    if (sMenuScreenProgress > sMenuScreenProgressStep) {
+        sMenuScreenProgress -= sMenuScreenProgressStep;
     } else {
-        data_021cb47c = 0;
+        sMenuScreenProgress = 0;
     }
-    MenuCtrl_SetTransitionProgress(func_01ffcb0c(data_021cb47c, data_021cb47c));
+    MenuCtrl_SetTransitionProgress(func_01ffcb0c(sMenuScreenProgress, sMenuScreenProgress));
     return TRUE;
 }
 
@@ -525,18 +525,18 @@ extern "C" void Gfx_LightenPalette16(u16 *src, u16 *dst) {
     }
 }
 
-extern "C" void func_0206dbbc(u32 a) { data_021cb460.v |= a; }
+extern "C" void MenuScreen_SetFlags(u32 a) { sMenuScreenFlags.v |= a; }
 
-extern "C" void func_0206dbac(u32 a) { data_021cb460.v &= ~a; }
+extern "C" void MenuScreen_ClearFlags(u32 a) { sMenuScreenFlags.v &= ~a; }
 
 extern "C" BOOL MenuScreen_HasFlags(u32 a) {
-    if (a == (a & data_021cb460.v)) {
+    if (a == (a & sMenuScreenFlags.v)) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0206db88(u32 a) { data_021cb464.v = a; }
+extern "C" void MenuScreen_SetBackgroundKind(u32 a) { sMenuScreenBgKind.v = a; }
 
 
 

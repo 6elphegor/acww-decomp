@@ -2,23 +2,23 @@
 #include "text/Unk_02050288.h"
 
 extern "C" {
-extern u8 data_021caabc[];
+extern u8 sMailCheckWords[];
 }
 
 extern "C" {
-extern s16 data_021ca9c8[];
+extern s16 sMailCheckWordEnds[];
 }
 
 extern "C" {
-extern u8 data_021ca9fc[];
+extern u8 sMailCheckWordUses[];
 }
 
 extern "C" {
-extern u8 data_020cbae8[];
+extern u8 sMailCheckSeparators[];
 }
 
 extern "C" {
-extern char data_020ddee4[];
+extern char sMailCheckBankName[];
 }
 
 extern "C" {
@@ -122,10 +122,10 @@ public:
 };
 
 // 0x200-byte destination buffer at +0xe
-class Unk_020ddebc : public EncodedString {
+class EncodedString512 : public EncodedString {
 public:
-    Unk_020ddebc();
-    virtual ~Unk_020ddebc();
+    EncodedString512();
+    virtual ~EncodedString512();
     virtual u32 capacity();
     virtual u8 *data();
 
@@ -133,72 +133,72 @@ public:
 };
 
 // 0x28-byte destination buffer at +0xe
-class Unk_020ddf5c : public EncodedString {
+class EncodedString40 : public EncodedString {
 public:
-    Unk_020ddf5c();
-    virtual ~Unk_020ddf5c();
+    EncodedString40();
+    virtual ~EncodedString40();
     virtual u32 capacity();
     virtual u8 *data();
 
     /* 0x0e */ u8 unk_0e[0x28];
 };
 
-class Unk_020dded4 : public MsgString {
+class MsgString513 : public MsgString {
 public:
-    Unk_020dded4();
-    virtual ~Unk_020dded4();
+    MsgString513();
+    virtual ~MsgString513();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x12 */ u8 unk_12[513];
 };
 
-class Unk_020ddf14 : public MsgString {
+class MsgString33B : public MsgString {
 public:
-    Unk_020ddf14();
-    virtual ~Unk_020ddf14();
+    MsgString33B();
+    virtual ~MsgString33B();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x12 */ u8 unk_12[33];
 };
 
-class Unk_020ddefc : public MsgString {
+class MsgString129 : public MsgString {
 public:
-    Unk_020ddefc();
-    virtual ~Unk_020ddefc();
+    MsgString129();
+    virtual ~MsgString129();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x12 */ u8 unk_12[129];
 };
 
-class Unk_020ddf2c : public MsgString {
+class MsgString25B : public MsgString {
 public:
-    Unk_020ddf2c();
-    virtual ~Unk_020ddf2c();
+    MsgString25B();
+    virtual ~MsgString25B();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x12 */ u8 unk_12[25];
 };
 
-class Unk_020ddf44 : public MsgString {
+class LetterTextLine : public MsgString {
 public:
-    Unk_020ddf44();
-    virtual ~Unk_020ddf44();
+    LetterTextLine();
+    virtual ~LetterTextLine();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
-    void func_0206cc14(u8 a, u8 b);
-    void func_0206cc20(u8 a, u8 b, u32 c);
-    void func_0206cc38();
-    void func_0206cc6c(EncodedString *src, BOOL b);
-    void func_0206cc84(EncodedString *src);
-    void func_0206cc9c(BOOL b);
-    void func_0206cce0();
-    void func_0206cdb0();
-    void func_0206cdcc(u16 v, u32 x);
+    void setNameHighlight(u8 a, u8 b);
+    void setHighlight(u8 a, u8 b, u32 c);
+    void clearText();
+    void setTextWithMarks(EncodedString *src, BOOL b);
+    void setText(EncodedString *src);
+    void redrawIfDirty(BOOL b);
+    void createLabel();
+    void freeLabel();
+    void setTarget(u16 v, u32 x);
 
     /* 0x12 */ u8 unk_12[0x2a];
     /* 0x3c */ TextLabel *unk_3c;
@@ -213,13 +213,13 @@ public:
     /* 0x49 */ u8 unk_49;
 };
 
-class Unk_0206ce98 {
+class LetterLayout {
 public:
-    void func_0206ce98();
-    void func_0206ced0();
-    s32 func_0206cefc(s32 v);
-    s32 func_0206cf34();
-    u8 *func_0206cf40();
+    void redrawAll();
+    void freeAllLabels();
+    s32 getBodyLineOfPos(s32 v);
+    s32 getBodyLineCount();
+    u8 *getBodyLineStarts();
 
     /* 0x000 */ u8 unk_000[0x98];
     /* 0x098 */ u8 unk_098[4][0x4c];
@@ -228,13 +228,13 @@ public:
     /* 0x204 */ s32 unk_204;
 };
 
-extern "C" BOOL func_0206ca40(MsgString *buf, const char *name, u32 key);
+extern "C" BOOL String_LoadByIndexB(MsgString *buf, const char *name, u32 key);
 
-Unk_020ddf2c::Unk_020ddf2c() { clear(); }
+MsgString25B::MsgString25B() { clear(); }
 
-Unk_020ddf2c::~Unk_020ddf2c() {}
+MsgString25B::~MsgString25B() {}
 
-u32 Unk_020ddf2c::vfunc_08() { return 0x19; }
+u32 MsgString25B::vfunc_08() { return 0x19; }
 
-u8 *Unk_020ddf2c::vfunc_0c() { return (u8 *)this + 0x12; }
+u8 *MsgString25B::vfunc_0c() { return (u8 *)this + 0x12; }
 

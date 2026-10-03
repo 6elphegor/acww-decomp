@@ -19,9 +19,9 @@ void _ZN7TownMap18updateGroundSeasonEv(void *);
 void FengShui_UpdateHouse(void);
 void HappyRoomDate_Reset(void *);
 void _ZN9HouseData9resetDebtEv(void *);
-void _ZN12Unk_0206357813func_02063578Ev(void *);
-void func_02063904(void *, const void *);
-void func_020639b8(void *);
+void _ZN15ItemClassOrders12randomizeAllEv(void *);
+void TownId_InitWithName(void *, const void *);
+void TownId_Destruct(void *);
 void Melody_ResetToDefault(void *);
 void _ZN19AbleSistersPatterns19initDefaultPatternsEv(void *);
 void _ZN14PlayerPatterns17replaceAuthorTownEP12Unk_020942c8S1_(void *, void *, void *);
@@ -46,7 +46,7 @@ void _ZN16BlancaFaceRecord4initEv(void *);
 void _ZN15LostChildRecord5clearEv(void *);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *);
 void _ZN17PlayerSpNpcRecord15resetAcornCountEv(void *);
-void func_0208f200(void *);
+void TownExchange_InitNop(void *);
 void _ZN6TownId7setTownEPS_(void *, void *);
 void *PlayerId_GetTownId(void);
 void *PlayerData_GetCurrent(void);
@@ -145,7 +145,7 @@ void SaveData::setupNoSave() {
     Clock_Init();
     TownMap_Generate(&f_c330, gCurrentHeap);
     SaveData_RefreshTownBlockMap(this);
-    func_02063904(&f_2, sFallbackTownName);
+    TownId_InitWithName(&f_2, sFallbackTownName);
     SaveData_InitNew((u8 *)this);
     LooseSnowballs_Get();
     _ZN14LooseSnowballs5resetEv();
@@ -246,7 +246,7 @@ void SaveData_InitCurrentPlayer(u8 *p) {
     _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(_ZN10PlayerData14getSpNpcRecordEv(r4));
     _ZN15LostChildRecord5clearEv(_ZN10PlayerData18getLostChildRecordEv(r4));
     _ZN12Unk_02097ff415resetForNewTownEv(r4);
-    func_020639b8(&l);
+    TownId_Destruct(&l);
 }
 
 void SaveData_InitNew(u8 *p) {
@@ -264,7 +264,7 @@ void SaveData_InitNew(u8 *p) {
     HouseRoomMaps_BindBg();
     _ZN19AbleSistersPatterns19initDefaultPatternsEv(p + 0xfafc);
     FengShui_UpdateHouse();
-    _ZN12Unk_0206357813func_02063578Ev(p + 0x15fbc);
+    _ZN15ItemClassOrders12randomizeAllEv(p + 0x15fbc);
     _ZN8BbsBoard5resetEv(p + 0x11488);
     NookShop_InitNew(p + 0x15db4);
     AbleShop_InitNew(p + 0x15f84);
@@ -281,7 +281,7 @@ void SaveData_InitNew(u8 *p) {
     Melody_ResetToDefault(p + 0x15fa8);
     LostAndFound_InitRandom(p + 0x15ec0);
     RoostGuestRoll_Init(p + 0xe557);
-    func_0208f200(p + 0x10c3c);
+    TownExchange_InitNop(p + 0x10c3c);
 }
 
 void SaveData_RefreshTownBlockMap(void *) {

@@ -87,7 +87,7 @@ s32 Ground_IsGrassUnit(s32 x, s32 y);
 s32 Ground_IsPond(s32 x, s32 y);
 s32 Ground_GetDigKind(s32 x, s32 y);
 s32 Insect_LikesFlower(s32 kind, u16 *c);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
 extern u8 sFishCatches[];

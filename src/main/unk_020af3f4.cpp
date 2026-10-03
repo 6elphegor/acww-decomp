@@ -6,7 +6,7 @@ extern "C" {
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData10getCatalogEv(void *a);
 BOOL Catalog_HasItem(void *a, void *b);
-u8 *func_02063b8c(s32 a);
+u8 *Random_GlobalBelow(s32 a);
 void MailText_SetSlot(s32 a, void *b);
 u32 _ZN10PlayerData11getPlayerIdEv(void *a);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
@@ -47,7 +47,7 @@ extern "C" void Snowman_SendPrizeLetter() {
             if (!Catalog_HasItem(_ZN10PlayerData10getCatalogEv(obj), &t)) count++;
         }
         if (count) {
-            u32 r = (u32)func_02063b8c(count);
+            u32 r = (u32)Random_GlobalBelow(count);
             u32 c = 0;
             for (u32 i = 0; i < 13; i++) {
                 u16 t = sSnowmanPrizeItems[i];
@@ -60,7 +60,7 @@ extern "C" void Snowman_SendPrizeLetter() {
                 }
             }
         }
-        Snowman_SendLetter((u32)func_02063b8c(13));
+        Snowman_SendLetter((u32)Random_GlobalBelow(13));
     }
 }
 

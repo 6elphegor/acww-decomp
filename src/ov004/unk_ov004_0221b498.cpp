@@ -184,7 +184,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -289,7 +289,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -382,7 +382,7 @@ void ActorTalkRequest_setPartnerActor(void *self, void *p);
 void PlayerSpNpcRecord_setSableTalkCount(void *self, u32 v);
 u32 PlayerSpNpcRecord_getSableTalkCount(void *self);
 void *PlayerData_GetCurrent();
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 BOOL NetArea_IsLocalOwner();
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL Talk_IsDramaPending(void *self, void *out, s32 x);
@@ -706,7 +706,7 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
             idx = 0;
         } else {
             if (idx > 0xc) {
-                out->unk_04 = func_02063b8c(5) + 0x28;
+                out->unk_04 = Random_GlobalBelow(5) + 0x28;
             } else {
                 s32 t = idx - 1;
                 if (t < 0) {
@@ -715,7 +715,7 @@ void SpNpcSableTalk::vfunc_78(Unk_ov004_0221b6d4_Out *out) {
                     t = 0xb;
                 }
                 u32 o = t << 3;
-                s32 r = func_02063b8c(*(s32 *)(sSpNpcSableTalkMsgs + 4 + o)) + 1;
+                s32 r = Random_GlobalBelow(*(s32 *)(sSpNpcSableTalkMsgs + 4 + o)) + 1;
                 out->unk_04 = r + sSpNpcSableTalkMsgs[o];
             }
             idx = 0;

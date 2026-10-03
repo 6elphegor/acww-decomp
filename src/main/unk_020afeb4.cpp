@@ -51,8 +51,8 @@ u64 OS_GetTick(void);
 BOOL Text_EqualsTrimmed(const u8 *a, const u8 *b, s32 len);
 void Mem_Clear(void *dst, u32 size);
 s32 Mem_Copy(const void *src, void *dst, u32 size);
-Entry *_ZN12Unk_0208f23813func_0208f154Ev(void *p);
-BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *p);
+Entry *_ZN18TownExchangeRecord16getConstellationEv(void *p);
+BOOL _ZN18TownExchangeRecord7isValidEv(void *p);
 void ConstellationRecord_Clear(void *e);
 BOOL ConstellationStore_IsUsed(Base *b, s32 i);
 void ConstellationStore_ClearUsed(Base *b, s32 i);
@@ -69,7 +69,7 @@ void Clock_GetDateTime(void *p);
 s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void File_LoadToBuffer(u32 a, void *b, u32 c);
 void *func_020b87d0(void *p);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void OverlayMgr_Release(u32 a);
 void OverlayMgr_Acquire(u32 a);
 void *PlayerData_GetCurrent(void);
@@ -407,7 +407,7 @@ void Constellation_PrepareExchange(void) {
     Entry *e;
     Base *base;
     s32 n, i;
-    e = _ZN12Unk_0208f23813func_0208f154Ev(data_021e7f8c);
+    e = _ZN18TownExchangeRecord16getConstellationEv(data_021e7f8c);
     ConstellationRecord_Clear(e);
     n = 0;
     base = Constellation_GetData();
@@ -417,7 +417,7 @@ void Constellation_PrepareExchange(void) {
         }
     }
     if (n != 0) {
-        n = func_02063b8c(n);
+        n = Random_GlobalBelow(n);
         for (i = 0; i < 16; i++) {
             if (ConstellationStore_IsUsed(base, i)) {
                 if (n > 0) {
@@ -436,8 +436,8 @@ void Constellation_ImportExchanged(void) {
     s32 i, j;
     s32 count;
     u8 *p = data_021e7f8c;
-    if (_ZN12Unk_0208f23813func_0208f1c0Ev(p)) {
-        e = _ZN12Unk_0208f23813func_0208f154Ev(p);
+    if (_ZN18TownExchangeRecord7isValidEv(p)) {
+        e = _ZN18TownExchangeRecord16getConstellationEv(p);
         count = 0;
         for (i = 0; i < 16; i++) {
             if (e->slots[i] != 0xffff) {

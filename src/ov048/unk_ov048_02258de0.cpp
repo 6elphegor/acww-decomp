@@ -106,14 +106,14 @@ void func_020ea72c();
 void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
-void _ZN12Unk_020dd38cC2Ev(void *);
-void _ZN12Unk_020dd374C2Ev(void *);
+void _ZN11MsgString9CC2Ev(void *);
+void _ZN15EncodedString8BC2Ev(void *);
 void _ZN11MsgString9BC1Ev(void *);
 void _ZN14EncodedString8C1Ev(void *);
 void _ZN14EncodedString8D1Ev(void *);
 void _ZN11MsgString9BD1Ev(void *);
-void _ZN12Unk_020dd374D1Ev(void *);
-void _ZN12Unk_020dd38cD1Ev(void *);
+void _ZN15EncodedString8BD1Ev(void *);
+void _ZN11MsgString9CD1Ev(void *);
 BOOL EncodedString_SetRaw(void *, const void *, s32);
 void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *, void *, s32, s32);
 BOOL func_020e7500(void *);
@@ -232,7 +232,7 @@ s32 func_020a03e4();
 s32 LostChild_IsKatieDue();
 void * _ZN10PlayerData18getLostChildRecordEv(void *);
 void * _ZN15LostChildRecord9getTownIdEv(void *);
-s32 func_02063954();
+s32 TownId_IsValid();
 s32 memcmp(void *, void *, u32);
 void _ZN15LostChildRecord14clearEscortingEv(void *);
 BOOL _ZN15LostChildRecord11isEscortingEv(void *);
@@ -247,7 +247,7 @@ s32 Snd_FadeOutScene();
 s32 _ZN13NpcActionCtrl9getActionEv(void *);
 void _ZN13NpcActionCtrl12requestStandEjt(void *, s32, s32);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Camera_SetMode15();
 s32 Camera_SetMode14();
 s32 PlayerActor_RequestTurnTo(s32, s32);
@@ -256,7 +256,7 @@ s32 Camera_IsBlending();
 void TalkRequest_SetTargetDone(void *);
 s32 Net_WifiStartHost(s32);
 s32 Comm_BeginHostSession();
-void * func_02063964(void *);
+void * TownId_GetName(void *);
 void * _ZN8PlayerId7getNameEv(void *);
 void func_020ea720(void *, s32);
 Unk_ov048_Vec * PlayerActor_GetBodyPos(s32);
@@ -547,7 +547,7 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -661,7 +661,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -1158,7 +1158,7 @@ BOOL SpNpcCopper::mainAct06() {
                 } else {
                     unk_658.startComm(1, 0);
                     h = PlayerData_GetCurrent();
-                    MI_CpuCopy8(func_02063964(gSaveTownId), buf, 8);
+                    MI_CpuCopy8(TownId_GetName(gSaveTownId), buf, 8);
                     MI_CpuCopy8(_ZN8PlayerId7getNameEv(_ZN10PlayerData11getPlayerIdEv(h)), buf + 8, 8);
                     buf[0x10] = 0;
                     NetOverlay_AssertWireless();
@@ -1221,7 +1221,7 @@ BOOL SpNpcCopper::act08Step1() {
     if (PlayerActor_IsScriptedWalking(4) == 0) {
         PlayerActor_RequestTurnTo((s32)0xffff8000, 4);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, (s32)0xffffc000, 0, 0, data_020c6cc8, 0);
-        unk_658.unk_7e6 = (u8)(func_02063b8c(5) + 5);
+        unk_658.unk_7e6 = (u8)(Random_GlobalBelow(5) + 5);
         return TRUE;
     }
     return FALSE;
@@ -1255,7 +1255,7 @@ BOOL SpNpcCopper::act08Step3() {
             v = sCopperSendOffExitPos;
             PlayerActor_RequestWalkTo(&v, 0x666, 4);
             _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0x81, 1, data_020c6cc8, 0);
-            unk_658.unk_7e8 = func_02063b8c(5) + 5;
+            unk_658.unk_7e8 = Random_GlobalBelow(5) + 5;
             unk_658.unk_7e6 = 0x16;
             Camera_SetMode15();
             return TRUE;
@@ -1310,7 +1310,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
     if (LostChild_IsKatieDue()) {
         r4 = _ZN10PlayerData18getLostChildRecordEv(h);
         _ZN15LostChildRecord9getTownIdEv(r4);
-        if (func_02063954()) {
+        if (TownId_IsValid()) {
             u16 *q = (u16 *)gSaveTownId;
             u16 *p = (u16 *)_ZN15LostChildRecord9getTownIdEv(r4);
             if (p[0] == q[0]) {
@@ -3027,8 +3027,8 @@ void SpNpcCopperTalk::scanForOpenTowns() {
       n = func_020eae78(Comm_SendEmpty());
       if (n > 0) {
         arr = (void **)Net_GetScanResults(NetOverlay_AssertWireless());
-        _ZN12Unk_020dd38cC2Ev(LampLights);
-        _ZN12Unk_020dd374C2Ev(LightLevel);
+        _ZN11MsgString9CC2Ev(LampLights);
+        _ZN15EncodedString8BC2Ev(LightLevel);
         _ZN11MsgString9BC1Ev(C);
         _ZN14EncodedString8C1Ev(WindowLight);
         r7 = unk_3c;
@@ -3060,8 +3060,8 @@ void SpNpcCopperTalk::scanForOpenTowns() {
         }
         _ZN14EncodedString8D1Ev(WindowLight);
         _ZN11MsgString9BD1Ev(C);
-        _ZN12Unk_020dd374D1Ev(LightLevel);
-        _ZN12Unk_020dd38cD1Ev(LampLights);
+        _ZN15EncodedString8BD1Ev(LightLevel);
+        _ZN11MsgString9CD1Ev(LampLights);
     }
     }
 }

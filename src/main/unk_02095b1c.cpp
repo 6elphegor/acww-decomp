@@ -210,7 +210,7 @@ s32 func_0208f1c0(void *p);
 }
 
 extern "C" {
-void *func_0208f158(void *p);
+void *TownExchange_GetLetter(void *p);
 }
 
 extern "C" {
@@ -226,7 +226,7 @@ s32 func_0208f15c(void *p);
 }
 
 extern "C" {
-s32 func_02063b8c(u32 n);
+s32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
@@ -306,7 +306,7 @@ void Catalog_SetItem(void *a, u16 *b, s32 c, s32 d);
 }
 
 extern "C" {
-void func_0206f604(s32 a, s32 b);
+void CommSub_Send(s32 a, s32 b);
 }
 
 extern "C" {
@@ -318,7 +318,7 @@ void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h,
 }
 
 extern "C" {
-void func_02063388(ItemPickSpec *o);
+void ItemPickSpec_Destruct(ItemPickSpec *o);
 }
 
 inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {

@@ -266,11 +266,11 @@ class TownId {
 public:
     TownId();
     TownId(void *o);
-    s32 func_02063954();
-    void func_02063968(TownId *o);
-    void func_0206397c(TownId *o);
-    void func_02063990(TownId *o);
-    void func_020639a0();
+    s32 TownId_IsValid();
+    void TownId_CopyTo(TownId *o);
+    void TownId_CopyFrom(TownId *o);
+    void TownId_Assign(TownId *o);
+    void TownId_Clear();
 
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ u8 unk_02[8];
@@ -327,7 +327,7 @@ s32 func_02002cf8(u32, u32, u32, u32, u32);
 }
 
 extern "C" {
-u32 func_02063b8c(u32);
+u32 Random_GlobalBelow(u32);
 }
 
 extern "C" {

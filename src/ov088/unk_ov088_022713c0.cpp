@@ -86,7 +86,7 @@ void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void EventWeekSlots_MarkPlayer(s32 v);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 u32 func_020e7518(void *p);
@@ -321,7 +321,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -426,7 +426,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -803,7 +803,7 @@ BOOL SpNpcShrunk::mainAct02() {
                         r6 = Math_AngleXZ(&unk_5c, &v);
                         if (NpcActor_IsFrontAngle((s16)(r6 - unk_8e))) {
                             r6 = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
                             if (r6 != unk_564.getAction()) {
@@ -886,7 +886,7 @@ s32 SpNpcShrunkTalk::pickRandomUnlearnedEmotion(u8 *p, s32 n) {
     if (c <= 0) {
         return -1;
     }
-    s32 k = func_02063b8c(c);
+    s32 k = Random_GlobalBelow(c);
     s32 i;
     for (i = 0; i <= n; p++, i++) {
         if (*p == 0) {
@@ -1067,11 +1067,11 @@ void SpNpcShrunkTalk::vfunc_78(TalkStartMsg *out) {
     out->b = 1;
     if (_ZN12Unk_02097ff48testFlagEj(PlayerData_GetCurrent(), 0x10) == 1) {
         if (Talk_CheckAndSetPlayerFlag(0xe, 0) == 0) {
-            out->b = func_02063b8c(2) + 0x13;
+            out->b = Random_GlobalBelow(2) + 0x13;
         } else if (Emotion_CountLearned() == 1) {
-            out->b = func_02063b8c(3) + 0xd;
+            out->b = Random_GlobalBelow(3) + 0xd;
         } else {
-            out->b = func_02063b8c(3) + 0x10;
+            out->b = Random_GlobalBelow(3) + 0x10;
         }
     }
 }

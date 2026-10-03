@@ -4,8 +4,8 @@ extern "C" {
 void GX_LoadOBJPltt(void *a, u32 b, u32 c);
 }
 
-extern const s32 data_020cf63c[];
-extern u8 data_020cf650[];
+extern const s32 kNameLabelBalloonKindAnims[];
+extern u8 sNameLabelBalloonKind4Color[];
 extern u8 data_020d467c[];
 
 struct SpriteAnimSeq;
@@ -35,7 +35,7 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-// Sub-object at +0x38 of Unk_020e0ff0 (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
+// Sub-object at +0x38 of NameLabelBalloon (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
 class MsgString {
 public:
     MsgString();
@@ -60,10 +60,10 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_0208d0bc {
+class NameLabelBalloonView {
 public:
-    void func_0208d0bc();
-    void func_0208d0d4();
+    void freeLabel();
+    void createLabel();
 };
 
 class Unk_0208d154_Sub {
@@ -77,32 +77,32 @@ public:
     /* 0x30 */ s32 unk_30;
 };
 
-class Unk_020e0ff0 : public UiWidget {
+class NameLabelBalloon : public UiWidget {
 public:
-    typedef void (Unk_020e0ff0::*Fn)();
+    typedef void (NameLabelBalloon::*Fn)();
 
-    Unk_020e0ff0();
-    virtual ~Unk_020e0ff0();
+    NameLabelBalloon();
+    virtual ~NameLabelBalloon();
     virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208d154();
-    void func_0208d1bc();
-    void func_0208d1ec();
-    void func_0208d214();
-    void func_0208d220();
-    void func_0208d234();
-    void func_0208d244();
-    void func_0208d278();
-    void func_0208d28c();
-    void func_0208d2b8();
-    static void func_0208d2c4();
-    BOOL func_0208d2d8();
-    BOOL func_0208d2f0();
-    void func_0208d308(void *p);
-    void func_0208d314(s32 a, s32 b);
-    void func_0208d31c();
-    void func_0208d324(s32 a);
+    void fitToLabel();
+    void applyKindAnim();
+    void updateHiding();
+    void enterHiding();
+    void updateShown();
+    void enterShown();
+    void updateAppearing();
+    void enterAppearing();
+    void updateHidden();
+    void enterHidden();
+    static void loadKind4Palette();
+    BOOL requestHide();
+    BOOL requestShow();
+    void setText(void *p);
+    void setOffset(s32 a, s32 b);
+    void release();
+    void setKind(s32 a);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -119,26 +119,26 @@ public:
     /* 0x7c */ u8 unk_7c;
 };
 
-void Unk_020e0ff0::func_0208d324(s32 a) {
+void NameLabelBalloon::setKind(s32 a) {
     unk_0c = a;
-    unk_10 = data_020cf63c[a];
-    func_0208d1bc();
+    unk_10 = kNameLabelBalloonKindAnims[a];
+    applyKindAnim();
 }
 
-void Unk_020e0ff0::func_0208d31c() {
-    ((Unk_0208d0bc *)this)->func_0208d0bc();
+void NameLabelBalloon::release() {
+    ((NameLabelBalloonView *)this)->freeLabel();
 }
 
-void Unk_020e0ff0::func_0208d314(s32 a, s32 b) {
+void NameLabelBalloon::setOffset(s32 a, s32 b) {
     unk_28 = a;
     unk_2c = b;
 }
 
-void Unk_020e0ff0::func_0208d308(void *p) {
+void NameLabelBalloon::setText(void *p) {
     unk_38.copy((MsgString *)p);
 }
 
-BOOL Unk_020e0ff0::func_0208d2f0() {
+BOOL NameLabelBalloon::requestShow() {
     BOOL r;
     if (unk_70 == 0) {
         r = TRUE;
@@ -151,7 +151,7 @@ BOOL Unk_020e0ff0::func_0208d2f0() {
     return r;
 }
 
-BOOL Unk_020e0ff0::func_0208d2d8() {
+BOOL NameLabelBalloon::requestHide() {
     BOOL r;
     if (unk_70 != 0) {
         r = TRUE;
@@ -164,34 +164,34 @@ BOOL Unk_020e0ff0::func_0208d2d8() {
     return r;
 }
 
-void Unk_020e0ff0::func_0208d2c4() {
-    GX_LoadOBJPltt(data_020cf650, 0xbc, 2);
+void NameLabelBalloon::loadKind4Palette() {
+    GX_LoadOBJPltt(sNameLabelBalloonKind4Color, 0xbc, 2);
 }
 
-void Unk_020e0ff0::func_0208d2b8() {
+void NameLabelBalloon::enterHidden() {
     unk_70 = 0;
     unk_7c = 0;
 }
 
-void Unk_020e0ff0::func_0208d28c() {
+void NameLabelBalloon::updateHidden() {
     if (unk_74 != 0) {
         if (unk_0c == 4) {
-            func_0208d2c4();
+            loadKind4Palette();
         }
-        ((Unk_0208d0bc *)this)->func_0208d0d4();
-        func_0208d154();
-        func_0208d278();
+        ((NameLabelBalloonView *)this)->createLabel();
+        fitToLabel();
+        enterAppearing();
     }
 }
 
-void Unk_020e0ff0::func_0208d278() {
+void NameLabelBalloon::enterAppearing() {
     unk_70 = 1;
     unk_7c = 1;
     unk_78 = 3;
     unk_30 = 5;
 }
 
-void Unk_020e0ff0::func_0208d244() {
+void NameLabelBalloon::updateAppearing() {
     if (unk_78 > 2) {
         unk_30 -= 6;
     } else {
@@ -200,43 +200,43 @@ void Unk_020e0ff0::func_0208d244() {
     unk_78 = unk_78 - 1;
     if (unk_78 <= 0) {
         unk_30 = 0;
-        func_0208d234();
+        enterShown();
     }
 }
 
-void Unk_020e0ff0::func_0208d234() {
+void NameLabelBalloon::enterShown() {
     unk_70 = 2;
     unk_7c = 1;
     unk_78 = 2;
 }
 
-void Unk_020e0ff0::func_0208d220() {
+void NameLabelBalloon::updateShown() {
     if (unk_74 == 0) {
-        func_0208d214();
+        enterHiding();
     }
 }
 
-void Unk_020e0ff0::func_0208d214() {
+void NameLabelBalloon::enterHiding() {
     unk_70 = 3;
     unk_7c = 1;
 }
 
-void Unk_020e0ff0::func_0208d1ec() {
+void NameLabelBalloon::updateHiding() {
     unk_30 += 11;
     unk_78 = unk_78 - 1;
     if (unk_78 <= 0) {
-        ((Unk_0208d0bc *)this)->func_0208d0bc();
-        func_0208d2b8();
+        ((NameLabelBalloonView *)this)->freeLabel();
+        enterHidden();
     }
 }
 
-void Unk_020e0ff0::func_0208d1bc() {
+void NameLabelBalloon::applyKindAnim() {
     unk_14.setSeq((SpriteAnimSeq *)(data_020d467c + unk_10 * 8));
     unk_14.setPlayOnce(1);
     unk_14.setSpeed(0);
 }
 
-void Unk_020e0ff0::func_0208d154() {
+void NameLabelBalloon::fitToLabel() {
     if (unk_6c != 0) {
         s32 len = unk_6c->vfunc_0c();
         u32 n = (u32)(len + 7) >> 3;

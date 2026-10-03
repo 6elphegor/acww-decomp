@@ -4,7 +4,7 @@ extern char *sStarTwinklePalettePaths[5];
 extern char sStarPalPathB4[0x14];
 
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 void File_LoadToBuffer(u32 a, void *b, u32 c);
 s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
@@ -179,11 +179,11 @@ void StarTwinkle_Update(u8 *p) {
             e[0x324]--;
         } else {
             if (e[0x328] == 0) {
-                e[0x328] = func_02063b8c(4) + 1;
-                e[0x324] = func_02063b8c(15) + 5;
+                e[0x328] = Random_GlobalBelow(4) + 1;
+                e[0x324] = Random_GlobalBelow(15) + 5;
             } else {
                 e[0x328] = 0;
-                e[0x324] = func_02063b8c(30) + 10;
+                e[0x324] = Random_GlobalBelow(30) + 10;
             }
             changed = TRUE;
             MI_CpuCopy8(p + 0xa4 + e[0x328] * 128 + i * 32, p + 0x24 + i * 32, 0x20);
@@ -198,7 +198,7 @@ void StarTwinkle_Init(u8 *self, s32 arg) {
     _ZN10BgVramTask6cancelEv(self);
     for (i = 0; i < 5; i++) {
         u8 *p = self + i;
-        p[0x324] = func_02063b8c(0x5a) + 10;
+        p[0x324] = Random_GlobalBelow(0x5a) + 10;
         p[0x328] = 0;
     }
     self[0x32c] = arg;

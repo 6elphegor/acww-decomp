@@ -139,7 +139,7 @@ void ProcBase_RequestDelete(void *p);
 void Gfx2d_ShowLayer(u32 x);
 void Gfx2d_ResetLayer(u32 x);
 void Oam_DrawCell(u32 a, const void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, const void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
+s32 Oam_DrawObj(s32 mode, const void *info, s32 x, s32 y, s32 pal, s32 pri, s32 rect);
 BOOL MenuCtrl_IsButtons();
 
 // Mangled-name declaration (macro'd above): the object is the first argument.
@@ -579,13 +579,13 @@ BOOL CatalogMenu::onDraw() {
         t = testFlags(0x800) ? 9 : 8;
         x = y;
         if (testFlags(0x2000)) x = y + 2;
-        func_02088730(1, data_ov142_02294d18, 0x80, x, t, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294d18, 0x80, x, t, 1, 0);
         t = testFlags(0x400) ? 9 : 8;
         x = y;
         if (testFlags(0x1000)) x = y + 2;
-        func_02088730(1, data_ov142_02294d28, 0x80, x, t, 1, 0);
-        func_02088730(1, data_ov142_02294d20, 0x80, y, -1, 1, 0);
-        func_02088730(1, data_ov142_02294d30, 0x80, y, -1, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294d28, 0x80, x, t, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294d20, 0x80, y, -1, 1, 0);
+        Oam_DrawObj(1, data_ov142_02294d30, 0x80, y, -1, 1, 0);
     }
     x = 0x10;
     for (i = 0; i < 9; i++, x -= 2) {
@@ -594,8 +594,8 @@ BOOL CatalogMenu::onDraw() {
         } else {
             pal = 7;
         }
-        func_02088730(1, (u8 *)data_ov142_02294e08 + x * 8, 0x80, y, pal, 1, 0);
-        func_02088730(1, (u8 *)data_ov142_02294e08 + (x + 1) * 8, 0x80, y, pal, 1, 0);
+        Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + x * 8, 0x80, y, pal, 1, 0);
+        Oam_DrawObj(1, (u8 *)data_ov142_02294e08 + (x + 1) * 8, 0x80, y, pal, 1, 0);
     }
     Oam_DrawCell(1, data_ov142_02294d38, 0x80, y, unk_bf, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     x = y - (unk_9c & 0xf);

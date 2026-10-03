@@ -32,29 +32,29 @@ public:
 };
 
 // local text buffer, vtable 0x020ddf5c (0x38 bytes)
-class Unk_020ddf5c : public EncodedString {
+class EncodedString40 : public EncodedString {
 public:
-    Unk_020ddf5c() {}
-    virtual ~Unk_020ddf5c() {}
+    EncodedString40() {}
+    virtual ~EncodedString40() {}
     virtual u32 capacity();
     virtual u8 *data();
     u8 pad_10[0x28];
 };
 
 // ---- 0x4c-byte object (ctor func_0206ce50, dtor func_0206ce30) ----
-class Unk_020ddf44 {
+class LetterTextLine {
 public:
-    Unk_020ddf44();
-    ~Unk_020ddf44();
-    s32 func_0206cc14(u8 a, u8 b);
-    s32 func_0206cc20(u8 a, u8 b);
-    void func_0206cc38();
-    void func_0206cc6c(EncodedString *buf, s32 flag);
-    void func_0206cc84(EncodedString *buf);
-    void func_0206cdcc(u16 id, s32 arg);
+    LetterTextLine();
+    ~LetterTextLine();
+    s32 setNameHighlight(u8 a, u8 b);
+    s32 setHighlight(u8 a, u8 b);
+    void clearText();
+    void setTextWithMarks(EncodedString *buf, s32 flag);
+    void setText(EncodedString *buf);
+    void setTarget(u16 id, s32 arg);
     s32 func_0206ce98();
     void func_0206ced0();
-    void func_0206cfdc(u8 *src, s32 *offs, s32 *idx);
+    void LetterLayout_SplitBody(u8 *src, s32 *offs, s32 *idx);
 
     u8 pad_00[0x4c];
 };
@@ -161,7 +161,7 @@ void File_ReadRangeById(Unk_0206d8b8_Pair p, void *dst, u32 n, s32 z);
 void *Snd_MelodyUpdate(void *p);
 void Snd_MelodyInit(void *p);
 s32 Melody_ApplyEditPattern(void);
-void func_0206d4e8(s32 a, s32 b);
+void Main_PxiSendWordRetry(s32 a, s32 b);
 void Fatal_ExceptionCallback(void *arg, void *p);
 void Main_DwcFree(u32 a, void *p);
 void *Main_DwcAlloc(u32 a, void *p, u32 n);
@@ -180,25 +180,25 @@ struct Unk_0206d1d4_Src {
     u8 cnt;
 };
 
-// ---- LetterRenderer : Unk_020ddf44 ----
-class LetterRenderer : public Unk_020ddf44 {
+// ---- LetterRenderer : LetterTextLine ----
+class LetterRenderer : public LetterTextLine {
 public:
     LetterRenderer();
     ~LetterRenderer();
-    void func_0206d0a0(u32 a, u32 b);
-    void func_0206d0b8(u8 *data);
-    void func_0206d0fc(u8 *src, BOOL flag);
-    void func_0206d1d4(Unk_0206d1d4_Src *src, u8 *out);
-    void func_0206d288(void *src);
-    s32 func_0206d2d4();
-    void func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
-    void func_0206d380();
-    void func_0206d394();
-    void func_0206d39c(s32 v);
+    void highlightGreeting(u32 a, u32 b);
+    void setSignature(u8 *data);
+    void setBody(u8 *src, BOOL flag);
+    void setGreeting(Unk_0206d1d4_Src *src, u8 *out);
+    void loadRecipientName(void *src);
+    s32 getRecipientNameLength();
+    void show(Unk_0206d1d4_Src *src, void *a, void *b, s32 c);
+    void redraw();
+    void release();
+    void setLayer(s32 v);
     void loadLetterScreen(u32 v);
 
-    /* 0x4c */ Unk_020ddf44 unk_4c;
-    /* 0x98 */ Unk_020ddf44 unk_98[4];
+    /* 0x4c */ LetterTextLine unk_4c;
+    /* 0x98 */ LetterTextLine unk_98[4];
     /* 0x1c8 */ u8 unk_1c8[0x28];
     /* 0x1f0 */ s32 unk_1f0[5];
     /* 0x204 */ s32 unk_204;

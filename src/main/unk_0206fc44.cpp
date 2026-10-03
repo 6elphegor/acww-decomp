@@ -64,7 +64,7 @@ public:
     virtual u32 capacity();
     virtual u8 *data();
 
-    s32 func_0206f828();
+    s32 getLength();
 
     /* 0x0e */ u8 unk_0e[0x29];
 };
@@ -117,11 +117,11 @@ struct Unk_0206fd10_Vec {
 };
 
 extern "C" {
-extern u8 data_020de390;
+extern u8 sCommSubPostReply;
 }
 
 extern "C" {
-extern u32 data_020de394[];
+extern u32 sCommCountdownKinds[];
 }
 
 extern "C" {
@@ -173,7 +173,7 @@ typedef void (*Unk_0206f804_Fn)(u8 *, u32);
 }
 
 extern "C" {
-extern Unk_0206f804_Fn data_020de3a8[];
+extern Unk_0206f804_Fn sCommSubHandlers[];
 }
 
 extern "C" {
@@ -193,7 +193,7 @@ extern Unk_0206fd10_Mtx data_021cb69c;
 }
 
 extern "C" {
-extern Unk_0206fde4_Mtx data_021cb6cc[];
+extern Unk_0206fde4_Mtx sCpuMtxStack[];
 }
 
 extern "C" {
@@ -261,7 +261,7 @@ void Letter_Clear();
 }
 
 extern "C" {
-void *func_0208f158(void *p);
+void *TownExchange_GetLetter(void *p);
 }
 
 extern "C" {
@@ -389,63 +389,63 @@ BOOL func_02070358(u32 a, u16 *p);
 }
 
 extern "C" {
-void func_0206f53c(u32 x);
+void HudCountdown_StartWithSe(u32 x);
 }
 
 extern "C" {
-void func_0206f56c(u8 *p);
+void CommSub_RecvTownTune(u8 *p);
 }
 
 extern "C" {
-void func_0206f5a0(u8 *p);
+void CommSub_RecvPostReply(u8 *p);
 }
 
 extern "C" {
-void func_0206f5ac(u8 *p, u32 code);
+void CommSub_RecvPostLetter(u8 *p, u32 code);
 }
 
 extern "C" {
-void func_0206f604(u32 a, u32 b, ...);
+void CommSub_Send(u32 a, u32 b, ...);
 }
 
 extern "C" {
-void func_0206f638(u8 v);
+void CommSub_SetPostReply(u8 v);
 }
 
 extern "C" {
-u8 func_0206f644();
+u8 CommSub_GetPostReply();
 }
 
 extern "C" {
-void func_0206f650();
+void CommSub_ClearBottleLetter();
 }
 
 extern "C" {
-void func_0206f668(u8 *p);
+void CommSub_RecvBottleLetter(u8 *p);
 }
 
 extern "C" {
-void func_0206f6b8(u8 *p);
+void CommSub_RecvItemList15(u8 *p);
 }
 
 extern "C" {
-void func_0206f6fc(u8 *p, u32 id);
+void CommSub_RecvReleaseOrThrow(u8 *p, u32 id);
 }
 
 extern "C" {
-void func_0206f770(u8 *p, u32 id);
+void CommSub_RecvInsectRelease(u8 *p, u32 id);
 }
 
 extern "C" {
-void func_0206f7d0(u8 *p);
+void CommSub_RecvBbsPost(u8 *p);
 }
 
 extern "C" {
-void func_0206f804(u8 *p, u32 x);
+void CommSub_Dispatch(u8 *p, u32 x);
 }
 
 extern "C" {
-void func_0206f81c();
+void CommSub_ResetPostReply();
 }
 
 extern "C" {
@@ -497,15 +497,15 @@ void CpuMtx_MultRotTrans(void *a, Unk_0206fd10_Vec *v);
 }
 
 extern "C" {
-void func_0206fde4(u32 i);
+void CpuMtx_RestoreFromStack(u32 i);
 }
 
 extern "C" {
-void func_0206fe0c(u32 i);
+void CpuMtx_StoreToStack(u32 i);
 }
 
 extern "C" {
-s32 func_0206fe34(u32 a, s32 b);
+s32 Museum_CountDonatedFossilsInGroup(u32 a, s32 b);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

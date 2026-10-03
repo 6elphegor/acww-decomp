@@ -12,13 +12,13 @@ extern "C" {
 void Snd_SetPanIfChanged(u8 v);
 }
 
-extern u8 data_020cf650[];
-extern s32 data_020cf63c[];
-extern s32 data_020cf67c[];
-extern u8 data_020cf668[];
-extern u8 data_020cf654[];
-extern s32 data_020cf6d8[];
-extern s32 data_020cf6c8[];
+extern u8 sNameLabelBalloonKind4Color[];
+extern s32 kNameLabelBalloonKindAnims[];
+extern s32 sHandCursorAnimSeqIds[];
+extern u8 sHandCursorAnimLoops[];
+extern u8 sHandCursorAnimHasLayer2[];
+extern s32 sScrollKnobSeqIds[];
+extern s32 sScrollKnobPlayOnce[];
 extern u8 data_020d5b0c[];
 extern u8 data_020d467c[];
 
@@ -47,7 +47,7 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-// Sub-object at +0x38 of Unk_020e0ff0 (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
+// Sub-object at +0x38 of NameLabelBalloon (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
 class ChatBalloonText {
 public:
     ChatBalloonText();
@@ -83,34 +83,34 @@ public:
     /* 0x30 */ s32 unk_30;
 };
 
-class Unk_020e0ff0 : public UiWidget {
+class NameLabelBalloon : public UiWidget {
 public:
-    typedef void (Unk_020e0ff0::*Fn)();
+    typedef void (NameLabelBalloon::*Fn)();
 
-    Unk_020e0ff0();
-    virtual ~Unk_020e0ff0();
+    NameLabelBalloon();
+    virtual ~NameLabelBalloon();
     virtual void draw();
     virtual void vfunc_0c();
 
     void func_0208d0bc();
     void func_0208d0d4();
-    void func_0208d154();
-    void func_0208d1bc();
-    void func_0208d1ec();
-    void func_0208d214();
-    void func_0208d220();
-    void func_0208d234();
-    void func_0208d244();
-    void func_0208d278();
-    void func_0208d28c();
-    void func_0208d2b8();
-    static void func_0208d2c4();
-    BOOL func_0208d2d8();
-    BOOL func_0208d2f0();
-    void func_0208d308(void *p);
-    void func_0208d314(s32 a, s32 b);
-    void func_0208d31c();
-    void func_0208d324(s32 a);
+    void fitToLabel();
+    void applyKindAnim();
+    void updateHiding();
+    void enterHiding();
+    void updateShown();
+    void enterShown();
+    void updateAppearing();
+    void enterAppearing();
+    void updateHidden();
+    void enterHidden();
+    static void loadKind4Palette();
+    BOOL requestHide();
+    BOOL requestShow();
+    void setText(void *p);
+    void setOffset(s32 a, s32 b);
+    void release();
+    void setKind(s32 a);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -177,7 +177,7 @@ BOOL HandCursor::isAnimDone() {
     return r;
 }
 
-Unk_020e0ff0::Unk_020e0ff0() : unk_0c(0), unk_10(10), unk_28(0), unk_2c(0), unk_30(0), unk_34(0) {
+NameLabelBalloon::NameLabelBalloon() : unk_0c(0), unk_10(10), unk_28(0), unk_2c(0), unk_30(0), unk_34(0) {
     unk_6c = 0;
     unk_70 = 0;
     unk_74 = 0;
@@ -185,11 +185,11 @@ Unk_020e0ff0::Unk_020e0ff0() : unk_0c(0), unk_10(10), unk_28(0), unk_2c(0), unk_
     unk_7c = 0;
 }
 
-Unk_020e0ff0::~Unk_020e0ff0() {
-    func_0208d31c();
+NameLabelBalloon::~NameLabelBalloon() {
+    release();
 }
 
-void Unk_020e0ff0::draw() {
+void NameLabelBalloon::draw() {
     if (unk_7c != 0) {
         void *h = unk_14.getCell();
         s32 a = getOriginX();
@@ -204,12 +204,12 @@ void Unk_020e0ff0::draw() {
     }
 }
 
-void Unk_020e0ff0::vfunc_0c() {
-    Fn p0 = &Unk_020e0ff0::func_0208d220;
-    static Fn tbl[4] = {&Unk_020e0ff0::func_0208d28c, &Unk_020e0ff0::func_0208d244, &Unk_020e0ff0::func_0208d220, &Unk_020e0ff0::func_0208d1ec};
-    Fn q0 = &Unk_020e0ff0::func_0208d220;
-    Fn q1 = &Unk_020e0ff0::func_0208d220;
-    Fn q2 = &Unk_020e0ff0::func_0208d220;
+void NameLabelBalloon::vfunc_0c() {
+    Fn p0 = &NameLabelBalloon::updateShown;
+    static Fn tbl[4] = {&NameLabelBalloon::updateHidden, &NameLabelBalloon::updateAppearing, &NameLabelBalloon::updateShown, &NameLabelBalloon::updateHiding};
+    Fn q0 = &NameLabelBalloon::updateShown;
+    Fn q1 = &NameLabelBalloon::updateShown;
+    Fn q2 = &NameLabelBalloon::updateShown;
     (this->*tbl[unk_70])();
     if (unk_70 != 0) {
         unk_14.update();

@@ -68,7 +68,7 @@ s32 memcmp(void *, void *, u32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 PlayerDataArray_FindById(u8 *base, u16 *p);
 u32 PlayerDataArray_CountUsed(u8 *base);
-u32 func_02063b8c();
+u32 Random_GlobalBelow();
 s32 _ZN12Unk_02097ff414findUnusedSlotEi(void *, s32);
 s32 _ZN10PlayerData8getIndexEv(void *);
 void _ZN13PlayerMailbox17setLastWifiMailIdEj(void *, s32);
@@ -302,7 +302,7 @@ extern "C" u8 *PlayerDataArray_GetRandomOther(u8 *base, u16 *p) {
     else n = PlayerDataArray_CountUsed(base) - 1;
     r = 0;
     if (n > 0) {
-        u32 t = func_02063b8c();
+        u32 t = Random_GlobalBelow();
         s32 i;
         for (i = 0; i < 4; i++) {
             u8 *e = base + i * 0x228c;

@@ -24,7 +24,7 @@ s32 NpcActor_IsFrontAngle(s16 a);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void func_020e7518(void *p);
 u32 Random_Next(void *p);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 s32 TownMap_IsPosWalkable(void *v, s32 a);
@@ -196,11 +196,11 @@ struct Unk_0201a794 {
 MEMBER(NpcSpeechState, 8);
 MEMBER(Unk_0201a13c, 0x49c - 0x420);
 MEMBER(CollisionState, 0x30);
-struct Unk_020e0cf4 {
+struct ActorFollowCollider {
     u8 unk_00[0x514 - 0x4cc - 4];
     u8 unk_44;
     u8 pad_45[3];
-    Unk_020e0cf4();
+    ActorFollowCollider();
 };
 struct Unk_020135e4 { u8 pad_00[0xb]; u8 unk_0b; Unk_020135e4(); };
 struct NpcActionCtrl {
@@ -213,7 +213,7 @@ struct NpcTalkCtrl {
 struct Unk_02014254 : NpcTalkCtrl {
     Unk_02014254();
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -268,7 +268,7 @@ struct NpcActor : Character {
     NpcSpeechState unk_418;
     Unk_0201a13c unk_420;
     CollisionState unk_49c;
-    Unk_020e0cf4 unk_4cc;
+    ActorFollowCollider unk_4cc;
     Unk_020f4080 unk_514;
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
@@ -319,7 +319,7 @@ public:
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -681,14 +681,14 @@ void SpNpcMissing2Talk::vfunc_78(void *outp) {
         break;
     case 1:
         _ZN12Unk_02097ff47setFlagEj(p, 0x33);
-        out->unk_04 = func_02063b8c(3) + 1;
+        out->unk_04 = Random_GlobalBelow(3) + 1;
         break;
     case 2:
-        out->unk_04 = func_02063b8c(3) + 4;
+        out->unk_04 = Random_GlobalBelow(3) + 4;
         Talk_CheckAndSetPlayerFlag(0x2a, 1);
         break;
     case 3:
-        out->unk_04 = func_02063b8c(3) + 7;
+        out->unk_04 = Random_GlobalBelow(3) + 7;
         break;
     }
 }
@@ -849,7 +849,7 @@ BOOL SpNpcMissing2::mainAct07() {
                         s32 ang = Math_AngleXZ(&unk_5c, &v1);
                         if (NpcActor_IsFrontAngle(ang - unk_8e)) {
                             s32 k = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 k = 2;
                             }
                             if (k != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {

@@ -205,8 +205,8 @@ void String_Load2dMenu(void *self, u32 id);
 s32 Comm_IsSeqConfirmed(s32 v);
 void SaveVillagers_ClearTuneRequester(void *a);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
-void func_02088378(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
+void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
+void Oam_DrawObjRotated(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
@@ -1178,7 +1178,7 @@ void MelodyMenu::drawPlayingNote(u32 idx, s32 x, s32 y) {
     u32 t = levelFromNote(idx);
     s32 ym = y - t * 2;
     if (idx == 0xf) {
-        func_02088378(1, data_ov143_022938c8, x - 0x5c, ym - 0x18, -1, 2, 0x1000, 0xeaab, 0);
+        Oam_DrawObjRotated(1, data_ov143_022938c8, x - 0x5c, ym - 0x18, -1, 2, 0x1000, 0xeaab, 0);
     } else {
         u32 n = e->w5.n;
         void *p;
@@ -1196,8 +1196,8 @@ void MelodyMenu::drawSelectedNote(u32 idx, s32 x, s32 y) {
     s32 ty;
     u32 t = levelFromNote(idx);
     ty = y - t * 2;
-    func_02088730(1, e, x, ty, 0xd, 2, 0);
-    func_02088730(1, e + 8, x, ty, 0xd, 2, 0);
+    Oam_DrawObj(1, e, x, ty, 0xd, 2, 0);
+    Oam_DrawObj(1, e + 8, x, ty, 0xd, 2, 0);
     Oam_DrawCell(1, e + 0x10, x, ty, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
@@ -1213,7 +1213,7 @@ void MelodyMenu::drawHighlightedNote(u32 idx, s32 x, s32 y) {
     } else {
         drawSelectedNote(unk_a0[idx], x, y);
     }
-    func_02088730(1, data_ov143_02293950, x, y, -1, -1, 0);
+    Oam_DrawObj(1, data_ov143_02293950, x, y, -1, -1, 0);
 }
 
 void MelodyMenu::drawNotes(s32 x, s32 y) {

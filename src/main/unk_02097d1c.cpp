@@ -22,8 +22,8 @@ void _ZN8SaveData9clearFlagEj(void *p, s32 v);
 extern u8 gSaveData[];
 extern u8 data_020e1e20[];
 extern u8 gSavePlayers[];
-void *_ZN12Unk_020dd38cC2Ev(void *p);
-void _ZN12Unk_020dd38cD1Ev(void *p);
+void *_ZN11MsgString9CC2Ev(void *p);
+void _ZN11MsgString9CD1Ev(void *p);
 void *_ZN11MsgString33C1Ev(void *p);
 void _ZN11MsgString33D1Ev(void *p);
 void MailText_SetSlot(s32 a, void *b);
@@ -31,7 +31,7 @@ void _ZN9MsgString5clearEv(void *p);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 TopicWord_PickRandom(s32 *p, s32 i);
 void String_LoadResolveAltText(void *a, u8 *b, s32 c);
-void func_020638d0(void *a, void *b);
+void TownId_GetNameString(void *a, void *b);
 s32 Villager_SendLetter4(const char *a, s32 b, s32 c, void *d, void *e, void *f);
 s32 PlayerDataArray_GetRandomOther(void *a, void *b);
 void *PlayerErrands_GetSlot(void *a, s32 b);
@@ -44,7 +44,7 @@ BOOL Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 void ItemPick_FromRange(void *a, s32 b, s32 c, s32 d, s32 e, void *f, s32 g, s32 h, s32 i, s32 j);
 void _ZN12ItemPickSpec3setEii(void *a, s32 b, s32 c);
-void func_02063388(void *a);
+void ItemPickSpec_Destruct(void *a);
 void _ZN8PlayerId3setEPvtaP6TownId(void *, u32, u32, u32, u32);
 void _ZN8PlayerId5clearEv(void *);
 void _ZN8PlayerIdC1Ev(void *);
@@ -101,14 +101,14 @@ void VillagerId_Copy(void *, void *);
 void VillagerId_Clear(void *);
 void VillagerId_Destruct(void *);
 void VillagerId_Construct(void *);
-void func_02063990(void *, void *);
-BOOL func_02063954(void *);
-void func_020639a0(void *);
-void func_020639b8(void *);
-void func_020639bc(void *);
-s32 func_02063b8c(s32);
+void TownId_Assign(void *, void *);
+BOOL TownId_IsValid(void *);
+void TownId_Clear(void *);
+void TownId_Destruct(void *);
+void TownId_Construct(void *);
+s32 Random_GlobalBelow(s32);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 extern u32 sForeignLetterPresentKinds[];
 void _ZN21ForeignVillagerRecordC1Ev(void *);
 void _ZN21ForeignVillagerRecordD1Ev(void *);
@@ -550,7 +550,7 @@ void Unk_02097ff4::func_020984a8()
                         _ZN12ItemPickSpec3setEii(&o5c, 4, z34);
                         ItemPick_One(&v2, &o5c, z38, z38, k, k, z38);
                         v0 = v2;
-                        func_02063388(&o5c);
+                        ItemPickSpec_Destruct(&o5c);
                     }
                 } else {
                     ItemPick_FromRange(&v3, 0x1144, 0x44, z3c, z3c, this, k, 10, z3c, k);
@@ -560,7 +560,7 @@ void Unk_02097ff4::func_020984a8()
                         _ZN12ItemPickSpec3setEii(&o64, 3, z40);
                         ItemPick_One(&v4, &o64, z44, z44, k, k, z44);
                         v0 = v4;
-                        func_02063388(&o64);
+                        ItemPickSpec_Destruct(&o64);
                     }
                 }
                 in->setPocket((u16 *)&v0, i, z48);
@@ -783,7 +783,7 @@ void Unk_02097ff4::sendForeignVillagerLetter()
             s32 b, t;
             u8 c;
             _ZN11MsgString9BC1Ev(o20);
-            _ZN12Unk_020dd38cC2Ev(o3c);
+            _ZN11MsgString9CC2Ev(o3c);
             _ZN11MsgString33C1Ev(o58);
             a = 0;
             b = 10;
@@ -805,13 +805,13 @@ void Unk_02097ff4::sendForeignVillagerLetter()
                 String_LoadResolveAltText(o58, &c, r);
                 MailText_SetSlot(i + 2, o58);
             }
-            func_020638d0(unk_225c, o3c);
+            TownId_GetNameString(unk_225c, o3c);
             MailText_SetSlot(8, o3c);
             if (Villager_SendLetter4("re_foreign", a, b, r8, r7, l10)) {
                 _ZN21ForeignVillagerRecord5clearEv(unk_225c);
             }
             _ZN11MsgString33D1Ev(o58);
-            _ZN12Unk_020dd38cD1Ev(o3c);
+            _ZN11MsgString9CD1Ev(o3c);
             _ZN11MsgString9BD1Ev(o20);
         }
     }

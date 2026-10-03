@@ -225,7 +225,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -330,7 +330,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -601,7 +601,7 @@ void NpcActionCtrl_requestStand(void *self, u32 a, u16 b);
 void ThreeLayerAnimModel_updateLayers3(void *self);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
 s32 *TalkWindow_Get(s32 a);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s16 *DebugVar_GetPtr(s32 a, s32 b);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void *MenuCtrl_GetText();
@@ -669,7 +669,7 @@ s32 RoostGuestRoll_getAfternoonGuest(void *p);
 s32 RoostGuestRoll_hasMorningGuest(void *p);
 s32 Actor_spawn(u32 a, u32 b, u32 c, u32 d, u32 e);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 Pocket_FindItem(u16 *p);
 s32 Unk_02097ff4_testFlag(void *p, s32 a);
 void Unk_02097ff4_setFlag(void *p, s32 a);
@@ -1079,9 +1079,9 @@ void SpNpcRoostGuestTalk::vfunc_78(Unk_ov068_0226ce70_Out *out) {
         }
     } else {
         if (Talk_CheckAndSetPlayerFlag(unk_b0->unk_72c + 0x21, 1) == 0) {
-            out->unk_04 = func_02063b8c(3);
+            out->unk_04 = Random_GlobalBelow(3);
         } else {
-            out->unk_04 = func_02063b8c(5) + 3;
+            out->unk_04 = Random_GlobalBelow(5) + 3;
         }
     }
 }
@@ -1341,7 +1341,7 @@ void SpNpcRoostGuestTalk::scriptStartPerformance() {
             RoomCamera_KkShowWideShot();
             unk_b0->unk_654 = 0;
             if (unk_b0->unk_743 != 0) {
-                unk_b0->unk_654 = func_02063b8c(3) + 0xa9;
+                unk_b0->unk_654 = Random_GlobalBelow(3) + 0xa9;
                 s16 *r = DebugVar_GetPtr(0, 0x4e);
                 if (*r != 0) {
                     r = DebugVar_GetPtr(0, 0x4e);

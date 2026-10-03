@@ -116,7 +116,7 @@ s32 Ground_GetDefaultY(s32 a);
 void WorldCurve_Apply(Vec3 *out, Vec3 *in);
 Col SceneLights_GetRoomColor(void);
 RGB SceneLights_GetFlashColor(void);
-s32 func_02064c84(s32 a);
+s32 SceneLights_GetLightParam(s32 a);
 void Clock_GetMinuteHour(void *p);
 extern s32 gCurrentHeap;
 extern s32 gBgHeap;
@@ -280,7 +280,7 @@ extern "C" void ObjShadow_Update() {
     RGB c1 = SceneLights_GetFlashColor();
     u8 s = c1.b + (c1.r + c1.g);
     u8 r4 = func_01ffcb0c(0x10000, FX_Div(s << 12, 0x5d000)) >> 12;
-    s32 base = func_02064c84(0);
+    s32 base = SceneLights_GetLightParam(0);
     u8 v = base + r4;
     if (v > 0x1f) {
         v = 0x1f;

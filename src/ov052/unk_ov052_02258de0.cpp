@@ -67,7 +67,7 @@ void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
@@ -292,7 +292,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -406,7 +406,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -879,7 +879,7 @@ extern "C" s32 SpNpcRedd_PickUnusedFlag(void *self, u8 *buf, s32 n) {
     s32 k, i;
     s32 cnt = SpNpcRedd_CountUnusedFlags(self, buf, n);
     s32 r = 0;
-    k = func_02063b8c(cnt);
+    k = Random_GlobalBelow(cnt);
     for (i = r; i < n; buf++, i++) {
         if (*buf == 0) {
             if (k == 0) {
@@ -976,7 +976,7 @@ void SpNpcReddTalk::vfunc_78(TalkStartMsg *out) {
     out->unk_04 = MSG_ID(unk_ac);
     if (_ZN12Unk_02097ff48testFlagEj(h, 0xc) != 0) {
         if (unk_ac == 0xa) {
-            out->unk_04 = func_02063b8c(4) + 0x17;
+            out->unk_04 = Random_GlobalBelow(4) + 0x17;
             if (out->unk_04 == 0x1a) {
                 out->unk_04 = 0x30;
             }

@@ -118,7 +118,7 @@ void TalkRequest_SetTargetDone(void *);
 void *func_02015aac(void *);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
-s32 func_02063b8c(u32);
+s32 Random_GlobalBelow(u32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_FromUnitCenter(s32 *, s32, s32);
 s32 RoomFreeUnitMap_TestUpper(void *, s32, s32);
@@ -579,19 +579,19 @@ BOOL HouseOwnerAi::updateState00(HouseOwnerVillager *o) {
     if (NpcActionCtrl_isActionDone(sub) != 0) {
         a = 0;
         b = 0;
-        if (func_02063b8c(7) == 0) {
+        if (Random_GlobalBelow(7) == 0) {
             if ((o->unk_8e & 0x3fff) != 0) {
-                s32 v = (s32)(func_02063b8c(4) << 30) >> 16;
+                s32 v = (s32)(Random_GlobalBelow(4) << 30) >> 16;
                 if (v == o->unk_8e) {
                     v = (s16)(v + 0x4000);
                 }
                 NpcActionCtrl_requestAction(sub, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
             } else {
-                if (func_02063b8c(3) != 0 && findStepTarget(&a, &b, o) != 0) {
+                if (Random_GlobalBelow(3) != 0 && findStepTarget(&a, &b, o) != 0) {
                     NpcActionCtrl_requestAction(sub, 1, 1, a, b, 0, 0, 0, 0, data_020c6cc8, 0);
                     unk_10 = 0x3c;
                 } else {
-                    s32 v = (s32)(func_02063b8c(4) << 30) >> 16;
+                    s32 v = (s32)(Random_GlobalBelow(4) << 30) >> 16;
                     if (v == o->unk_8e) {
                         v = (s16)(v + 0x4000);
                     }

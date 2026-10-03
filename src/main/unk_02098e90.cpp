@@ -259,7 +259,7 @@ const char data_020d05bc[10] = "re_normal";
 // ======== unk_0209b494.cpp ========
 namespace n6 {
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void *MI_CpuCopy8(void *, void *, s32);
 void *MI_CpuFill8(void *, s32, s32);
 extern const Unk_0209b570_Ent sTopicWordLists[];
@@ -278,7 +278,7 @@ extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx);
 
 extern "C" u32 TopicWord_PickRandom(u32 *out, s32 idx)
 {
-    *out = func_02063b8c(sTopicWordLists[idx].unk_04);
+    *out = Random_GlobalBelow(sTopicWordLists[idx].unk_04);
     return (u32)sTopicWordLists[idx].unk_00;
 }
 
@@ -321,7 +321,7 @@ u32 VillagerPlan::pickTopScore()
         }
     }
     if (cnt > 0) {
-        s32 r = func_02063b8c(cnt);
+        s32 r = Random_GlobalBelow(cnt);
         for (i = 0; i < 8; i++) {
             if (((mask >> i) & 1) != 0) {
                 if (r == 0) {
@@ -361,7 +361,7 @@ s32 DateTime_IsInvalid(void *p);
 s32 DateTime_DiffMinutes(void *p, void *q);
 s32 DateTime_Compare(void *p, void *q, s32 m);
 s32 DateTime_DiffDays(void *p, void *q);
-s32 func_02063b8c(s32 x);
+s32 Random_GlobalBelow(s32 x);
 void MI_CpuCopy8(void *a, void *b, s32 n);
 void MI_CpuFill8(void *a, s32 v, s32 n);
 s32 _s32_div_f(s32 a, s32 b);
@@ -712,7 +712,7 @@ BOOL VillagerPlan::addRandomScores(s16 *p) {
     s32 i;
     for (i = 0; i < 8; p++, i++) {
         if (unk_11.get((u8)i) < 0xff) {
-            s32 t = func_02063b8c(10);
+            s32 t = Random_GlobalBelow(10);
             if (t > 0) {
                 unk_11.add((u8)i, (u8)((*p * t) >> 12));
             }
@@ -1049,9 +1049,9 @@ void _ZN11MsgString33C1Ev(void *p);
 void _ZN11MsgString33D1Ev(void *p);
 void _ZN9MsgString5clearEv(void *p);
 s32 String_LoadResolveAltText(void *a, u8 *b, s32 c);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void _ZN12ItemPickSpec3setEii(void *p, s32 a, s32 b);
-void func_02063388(void *p);
+void ItemPickSpec_Destruct(void *p);
 void ItemPick_One(void *out, void *x, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Letter_ComposeVillagerToVillagerZ(void *a, u8 *b, u8 *c, u8 *d, u8 *e, void *f, const void *g, void *h, void *i, s32 j);
 s32 _ZN11CommManager8isOnlineEv(void *p);
@@ -1355,7 +1355,7 @@ extern "C" u8 FossilGroup_PickMissing(u16 *p, s32 n) {
             }
         }
     }
-    k = func_02063b8c(cnt);
+    k = Random_GlobalBelow(cnt);
     j = 0;
     while (k >= 0) {
         if (f[j] == 0) {
@@ -1579,7 +1579,7 @@ extern "C" BOOL ErrandSetup_RandomShirt(void *p) {
     u16 out;
     _ZN12ItemPickSpec3setEii(x, 2, 0);
     ItemPick_One(&out, x, 0, 0, 1, 1, 0);
-    func_02063388(x);
+    ItemPickSpec_Destruct(x);
     _ZN12ErrandRecord7setItemEPt(p, &out);
     return TRUE;
 }
@@ -1615,10 +1615,10 @@ extern "C" void PlayerErrandSlot_ComposeLetter(PlayerErrandSlot *self, void *arg
             MailText_SetSlot(i + 2, Y);
         }
         _ZN10VillagerId12makeFileNameEPvjj(self->unk_0c[0], buf, 0x1e, data_020d05bc);
-        b[1] = func_02063b8c(10);
-        b[2] = func_02063b8c(10);
-        b[3] = func_02063b8c(10);
-        b[4] = func_02063b8c(10);
+        b[1] = Random_GlobalBelow(10);
+        b[2] = Random_GlobalBelow(10);
+        b[3] = Random_GlobalBelow(10);
+        b[4] = Random_GlobalBelow(10);
         Letter_ComposeVillagerToVillagerZ(arg, &b[1], &b[2], &b[3], &b[4], buf, data_020e218c, self->unk_0c[0], self->unk_0c[1], 1);
         _ZN11MsgString33D1Ev(Y);
         _ZN11MsgString9BD1Ev(DoorLight);
@@ -1721,7 +1721,7 @@ void MI_CpuCopy8(void *src, void *dst, u32 n);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 s32 Npc_GetName(void *p, u16 *v);
 u32 _ZN10VillagerId7getNameEj(Unk_02003130 *r, u32 a);
 s32 _ZN10PlayerData11getPlayerIdEv(s32 v);
@@ -1773,7 +1773,7 @@ extern "C" s32 ParcelErrand_PickRecipient(ParcelErrand *z, s32 m) {
     }
     s32 n = ParcelErrand_CountPending(z, m);
     if (n > 0) {
-        s32 r = func_02063b8c(n);
+        s32 r = Random_GlobalBelow(n);
         for (s32 i = 0; i < 5; i++) {
             if ((m >> i) & 1) {
                 if (r == 0) {
@@ -1796,7 +1796,7 @@ extern "C" void ParcelErrand_RemoveRecipient(ParcelErrand *z, s32 i) {
 }
 
 extern "C" void ParcelErrand_Start(ParcelErrand *z) {
-    u32 r = func_02063b8c(10) & 1;
+    u32 r = Random_GlobalBelow(10) & 1;
     ParcelErrand_Clear(z);
     u16 v = sParcelItems[r];
     _ZN12ErrandRecord5startEhPth(z, 0x14, &v, 0);
@@ -1829,10 +1829,10 @@ extern "C" BOOL ParcelErrand_NextRecipient(ParcelErrand *z) {
             ParcelErrand_RemoveRecipient(z, r);
             z->unk_0c = r;
             _ZN12ErrandRecord7setStepEh(z, 0);
-            u16 v = sParcelItems[func_02063b8c(10) & 1];
+            u16 v = sParcelItems[Random_GlobalBelow(10) & 1];
             _ZN12ErrandRecord7setItemEPt(z, &v);
             r = ParcelErrand_CountPendingRecipients(z, z->unk_0d);
-            if ((r == 2 && (func_02063b8c(10) & 1)) || r == 1) {
+            if ((r == 2 && (Random_GlobalBelow(10) & 1)) || r == 1) {
                 z->unk_0d = 0;
             }
             return TRUE;
@@ -2206,14 +2206,14 @@ void Item_FromPlacedForm(u16 *, u16 *);
 void Catalog_SetItem(void *, u16 *, s32, s32);
 void *_ZN10PlayerData10getCatalogEv(void *);
 void _ZN12ItemPickSpec3setEii(void *, u32, u32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, u32, u32, u32, u32, u32);
 s32 func_01ffcb0c(s32, s32);
 s32 func_01ffc4c8(s32);
 void *MI_CpuFill8(void *, s32, u32);
 s32 memcmp(void *, void *, u32);
 s32 MI_CpuCopy8(void *, void *, u32);
-s32 func_02063b8c(u32);
+s32 Random_GlobalBelow(u32);
 BOOL _ZN8PlayerId7isValidEv(void *);
 BOOL _ZN8PlayerId6equalsEPS_(void *, void *);
 void _ZN8PlayerId5clearEv(void *);
@@ -2350,7 +2350,7 @@ void SickVillagerRecord::startSickness(Unk_020030d8_R256 *a, u8 *b) {
     MI_CpuCopy8(b, unk_86, 4);
     MI_CpuCopy8(b, unk_8a, 4);
     unk_8a[3] = 1;
-    unk_8e = func_02063b8c(2) + 1;
+    unk_8e = Random_GlobalBelow(2) + 1;
 }
 
 
@@ -2588,7 +2588,7 @@ extern "C" u16 Item_PickRandomPresent() {
     u8 obj[0xc];
     _ZN12ItemPickSpec3setEii(obj, 0, 3);
     ItemPick_One(out, obj, 0, 0, 1, 1, 0);
-    func_02063388(obj);
+    ItemPickSpec_Destruct(obj);
     return out[0];
 }
 

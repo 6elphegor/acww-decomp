@@ -320,7 +320,7 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 }
 
 extern "C" {
-u32 func_02063b8c(s32 n);
+u32 Random_GlobalBelow(s32 n);
 }
 
 extern "C" {
@@ -344,7 +344,7 @@ s32 AxMail_GetDigestKey();
 }
 
 extern "C" {
-s32 func_02063a04(void *a, void *b, s32 n);
+s32 Mem_Differs(void *a, void *b, s32 n);
 }
 
 extern "C" {

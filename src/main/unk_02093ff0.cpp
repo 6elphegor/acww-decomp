@@ -302,13 +302,13 @@ public:
 
 extern "C" {
 extern TownId gSaveTownId;
-s32 func_02063954(TownId *self);
-void func_02063968(TownId *self, TownId *o);
-void func_0206397c(TownId *self, TownId *o);
-void func_02063990(TownId *self, TownId *o);
-void func_020639a0(TownId *self);
-void func_020639b8(TownId *self);
-void func_020639bc(TownId *self, void *o);
+s32 TownId_IsValid(TownId *self);
+void TownId_CopyTo(TownId *self, TownId *o);
+void TownId_CopyFrom(TownId *self, TownId *o);
+void TownId_Assign(TownId *self, TownId *o);
+void TownId_Clear(TownId *self);
+void TownId_Destruct(TownId *self);
+void TownId_Construct(TownId *self, void *o);
 }
 
 extern "C" {
@@ -328,7 +328,7 @@ s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
 }
 
 extern "C" {
-u32 func_02063b8c(u32);
+u32 Random_GlobalBelow(u32);
 }
 
 extern "C" {
@@ -399,11 +399,11 @@ extern "C" s32 PlayerActor_Spawn(u32 a, u32 b, u32 c, u32 d)
     return _ZN5Actor5spawnEPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
 }
 
-PlayerId::PlayerId(void *o) { func_020639bc(this, o); }
+PlayerId::PlayerId(void *o) { TownId_Construct(this, o); }
 
-PlayerId::PlayerId(const PlayerId &o) { func_020639bc(this, (void *)&o); copyFrom((PlayerId *)&o); }
+PlayerId::PlayerId(const PlayerId &o) { TownId_Construct(this, (void *)&o); copyFrom((PlayerId *)&o); }
 
-PlayerId::PlayerId() { func_020639b8(this); }
+PlayerId::PlayerId() { TownId_Destruct(this); }
 
 void PlayerId::setRaw(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
@@ -412,7 +412,7 @@ void PlayerId::clear()
     MI_CpuFill8(unk_0c, 0, 8);
     unk_0a = 0;
     unk_14 = 2;
-    func_020639a0(this);
+    TownId_Clear(this);
 }
 
 void PlayerId::copyFrom(PlayerId *o)
@@ -420,7 +420,7 @@ void PlayerId::copyFrom(PlayerId *o)
     MI_CpuCopy8(o->unk_0c, unk_0c, 8);
     unk_0a = o->unk_0a;
     unk_14 = o->unk_14;
-    func_0206397c(this, o);
+    TownId_CopyFrom(this, o);
 }
 
 void PlayerId::copyTo(PlayerId *o)
@@ -428,12 +428,12 @@ void PlayerId::copyTo(PlayerId *o)
     MI_CpuCopy8(unk_0c, o->unk_0c, 8);
     o->unk_0a = unk_0a;
     o->unk_14 = unk_14;
-    func_02063968(this, o);
+    TownId_CopyTo(this, o);
 }
 
 BOOL PlayerId::isValid()
 {
-    if (func_02063954(this) == 1 && unk_0a != 0) return TRUE;
+    if (TownId_IsValid(this) == 1 && unk_0a != 0) return TRUE;
     return FALSE;
 }
 
@@ -449,7 +449,7 @@ void PlayerId::set(void *src, u16 a, s8 b, TownId *p)
     unk_0a = a;
     unk_14 = b;
     if (p == NULL) p = &gSaveTownId;
-    func_02063990(this, p);
+    TownId_Assign(this, p);
 }
 
 extern "C" BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n)
@@ -479,7 +479,7 @@ extern "C" u16 PlayerId_GenerateUniqueId(u16 *arr, s32 n)
 
 extern "C" u16 PlayerId_GenerateRandomId()
 {
-    return (u16)((u16)func_02063b8c(0x7ffc) | 0x8000);
+    return (u16)((u16)Random_GlobalBelow(0x7ffc) | 0x8000);
 }
 
 u16 PlayerId::getId() { return unk_0a; }
@@ -510,12 +510,12 @@ void PlayerId::setNameString(MsgString *x)
 
 extern "C" void PlayerId_GetTownId() {}
 
-void TownId::setTown(TownId *o) { func_02063990(this, o); }
+void TownId::setTown(TownId *o) { TownId_Assign(this, o); }
 
 s32 TownId::getTownRelation()
 {
     s32 r = 2;
-    if (func_02063954(this) != 0) {
+    if (TownId_IsValid(this) != 0) {
         TownId *p = &gSaveTownId;
         if (unk_00 == p->unk_00 && memcmp(unk_02, p->unk_02, 8) == 0) {
             r = 0;

@@ -675,10 +675,10 @@ public:
 
 extern "C" HudProc *HudProc_Create();
 
-class Unk_0208d0bc {
+class NameLabelBalloonView {
 public:
-    void func_0208d0bc();
-    void func_0208d0d4();
+    void freeLabel();
+    void createLabel();
 
     u32 pad_00[3];
     /* 0x0c */ s32 unk_0c;
@@ -701,7 +701,7 @@ typedef void (HudCountdown::*Unk_020e0f10_Fn)();
 
 typedef void (HudClock::*Unk_020e0f64_Fn)();
 
-void Unk_0208d0bc::func_0208d0d4() {
+void NameLabelBalloonView::createLabel() {
     if (unk_6c == NULL) {
         BOOL c = unk_0c == 4 ? TRUE : FALSE;
         s32 size = c ? 0x1c8 : (unk_0c << 6) + 0xc0;
@@ -721,7 +721,7 @@ void Unk_0208d0bc::func_0208d0d4() {
     }
 }
 
-void Unk_0208d0bc::func_0208d0bc() {
+void NameLabelBalloonView::freeLabel() {
     if (unk_6c != NULL) {
         MsgTextLabel_Destroy(unk_6c);
         unk_6c = NULL;
@@ -2720,12 +2720,12 @@ BOOL HudProc::onDraw() {
 // ---------------------------------------------------------------------------------------------------------------------
 // Data
 
-char data_020e0dc8[] = ":";
-char data_020e0dcc[] = "AM";
-char data_020e0dd0[] = "PM";
+char sHudColonStr[] = ":";
+char sHudAmStr[] = "AM";
+char sHudPmStr[] = "PM";
 
-const char *const kHudColonString = data_020e0dc8;
-const char *const kHudAmPmStrings[2] = {data_020e0dcc, data_020e0dd0};
+const char *const kHudColonString = sHudColonStr;
+const char *const kHudAmPmStrings[2] = {sHudAmStr, sHudPmStr};
 const s16 kHudCountdownSeconds[6] = {0, 180, 300, 600, 900, 0};
 const u16 kHudWeekdayGlyphs[8] = {'g', 'a', 'b', 'c', 'd', 'e', 'f', 0};
 const u8 kHudCameraGridTouchPos[18] = {0x5b, 0x3c, 0x49, 0x2b, 0x5b, 0x2b, 0x6c, 0x2b, 0x49,
@@ -2734,14 +2734,14 @@ const s8 kHudCameraGridDirs[18] = {0, 0, -1, -1, 0, -1, 1, -1, -1, 0, 1, 0, -1, 
 const u8 kHudCameraGridCells[18] = {1, 1, 0, 0, 1, 0, 2, 0, 0, 1, 2, 1, 0, 2, 1, 2, 2, 2};
 // 0x020cf63c: last .rodata object of this file (0x14 bytes, continues the ascending size run); read by the unit at
 // 0x0208d154 (0x0208d324)
-extern const s32 data_020cf63c[5];
-const s32 data_020cf63c[5] = {10, 11, 12, 13, 0x28};
+extern const s32 kNameLabelBalloonKindAnims[5];
+const s32 kNameLabelBalloonKindAnims[5] = {10, 11, 12, 13, 0x28};
 
 struct Unk_020e0e74_Rec {
     HudProc *(*unk_00)();
     s16 unk_04;
     s16 unk_06;
 };
-Unk_020e0e74_Rec data_020e0e74 = {HudProc_Create, 0xca, 0x8e};
+Unk_020e0e74_Rec sHudProcProfile = {HudProc_Create, 0xca, 0x8e};
 
 HudController gHud;

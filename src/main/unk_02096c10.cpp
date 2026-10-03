@@ -121,7 +121,7 @@ public:
 extern "C" {
 void LetterDelivery_Update(void *);
 s32 Scene_AllowsLetterDelivery(void);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void Letter_Clear(void *);
 void _ZN6LetterD1Ev(void *);
 void _ZN6LetterC1Ev(void *);
@@ -257,7 +257,7 @@ s32 BottleLetterRecord::pickUnusedMessage() {
         clearUsedMessages();
         cnt = 0x28;
     }
-    s32 r = func_02063b8c(cnt);
+    s32 r = Random_GlobalBelow(cnt);
     for (cnt = 0; cnt < 0x28; cnt++) {
         if (isMessageUsed(cnt) == 0) {
             if (r > 0) {

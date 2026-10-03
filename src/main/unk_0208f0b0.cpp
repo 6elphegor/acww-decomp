@@ -22,19 +22,19 @@ struct Unk_0208f238_Bits {
 };
 
 // Player-slot style record, 0x84c bytes (ctor 0x0208f238, dtor 0x0208f204)
-class Unk_0208f238 {
+class TownExchangeRecord {
 public:
-    Unk_0208f238();
-    ~Unk_0208f238();
-    void *func_0208f148();
-    void *func_0208f154();
-    u32 func_0208f15c();
-    void func_0208f168();
-    void func_0208f174();
-    void *func_0208f18c();
-    u32 func_0208f198();
-    void func_0208f1a8(u32 v);
-    s32 func_0208f1c0();
+    TownExchangeRecord();
+    ~TownExchangeRecord();
+    void *getVillager();
+    void *getConstellation();
+    u32 getCounter();
+    void resetCounter();
+    void incrementCounter();
+    void *getLostChildRecord();
+    u32 getUnkFlag();
+    void setUnkFlag(u32 v);
+    s32 isValid();
     u32 getChecksum();
     void setChecksum(u32 v);
 
@@ -48,53 +48,53 @@ public:
     /* 0x84a */ u16 unk_84a;
 };
 
-class Unk_021cebb8 {
+class TownExchangeRemoteRecords {
 public:
-    Unk_021cebb8();
-    ~Unk_021cebb8();
-    Unk_0208f238 unk_00[3];
+    TownExchangeRemoteRecords();
+    ~TownExchangeRemoteRecords();
+    TownExchangeRecord unk_00[3];
 };
 
-Unk_021cebb8 data_021cebb8;
+TownExchangeRemoteRecords sTownExchangeRemoteRecords;
 
-extern "C" void *func_0208f0b0(s32 i);
-extern "C" void *func_0208f0e8(s32 i);
+extern "C" void *TownExchange_GetForAid(s32 i);
+extern "C" void *TownExchange_GetRemote(s32 i);
 
-Unk_0208f238::Unk_0208f238() {
+TownExchangeRecord::TownExchangeRecord() {
     _ZN6LetterC1Ev(this);
     _ZN19ConstellationRecordC1Ev((u8 *)this + 0xf4);
     VillagerTransfer_ConstructVillager((u8 *)this + 0x13c);
     LostChildRecord_Construct((u8 *)this + 0x83e);
 }
 
-Unk_0208f238::~Unk_0208f238() {
+TownExchangeRecord::~TownExchangeRecord() {
     LostChildRecord_Destruct((u8 *)this + 0x83e);
     VillagerTransfer_DestructVillager((u8 *)this + 0x13c);
     _ZN19ConstellationRecordD1Ev((u8 *)this + 0xf4);
     _ZN6LetterD1Ev(this);
 }
 
-extern "C" void func_0208f200() {}
+extern "C" void TownExchange_InitNop() {}
 
-extern "C" void func_0208f1dc(void *p) {
+extern "C" void TownExchange_Clear(void *p) {
     MI_CpuFill8(p, 0, 0x84c);
     Letter_Clear(p);
     ConstellationRecord_Clear((u8 *)p + 0xf4);
 }
 
-void Unk_0208f238::setChecksum(u32 v) { unk_84a = v; }
+void TownExchangeRecord::setChecksum(u32 v) { unk_84a = v; }
 
-u32 Unk_0208f238::getChecksum() { return unk_84a; }
+u32 TownExchangeRecord::getChecksum() { return unk_84a; }
 
-s32 Unk_0208f238::func_0208f1c0() { return 1; }
+s32 TownExchangeRecord::isValid() { return 1; }
 
-void Unk_0208f238::func_0208f1a8(u32 v) { unk_83d = (unk_83d & ~1) | (v & 1); }
+void TownExchangeRecord::setUnkFlag(u32 v) { unk_83d = (unk_83d & ~1) | (v & 1); }
 
-u32 Unk_0208f238::func_0208f198() { return ((Unk_0208f238_Bits *)&unk_83d)->b0; }
+u32 TownExchangeRecord::getUnkFlag() { return ((Unk_0208f238_Bits *)&unk_83d)->b0; }
 
-void *Unk_0208f238::func_0208f18c() { return unk_83e; }
+void *TownExchangeRecord::getLostChildRecord() { return unk_83e; }
 
-void Unk_0208f238::func_0208f174() {
+void TownExchangeRecord::incrementCounter() {
     s32 v = unk_83c + 1;
     if (v > 5) {
         v = 5;
@@ -102,30 +102,30 @@ void Unk_0208f238::func_0208f174() {
     unk_83c = v;
 }
 
-void Unk_0208f238::func_0208f168() { unk_83c = 0; }
+void TownExchangeRecord::resetCounter() { unk_83c = 0; }
 
-u32 Unk_0208f238::func_0208f15c() { return unk_83c; }
+u32 TownExchangeRecord::getCounter() { return unk_83c; }
 
-extern "C" void func_0208f158() {}
+extern "C" void TownExchange_GetLetter() {}
 
-void *Unk_0208f238::func_0208f154() { return &unk_0f4; }
+void *TownExchangeRecord::getConstellation() { return &unk_0f4; }
 
-void *Unk_0208f238::func_0208f148() { return unk_13c; }
+void *TownExchangeRecord::getVillager() { return unk_13c; }
 
-Unk_021cebb8::Unk_021cebb8() {}
+TownExchangeRemoteRecords::TownExchangeRemoteRecords() {}
 
-Unk_021cebb8::~Unk_021cebb8() {}
+TownExchangeRemoteRecords::~TownExchangeRemoteRecords() {}
 
-extern "C" void *func_0208f0e8(s32 i) { return &data_021cebb8.unk_00[i]; }
+extern "C" void *TownExchange_GetRemote(s32 i) { return &sTownExchangeRemoteRecords.unk_00[i]; }
 
-extern "C" void *func_0208f0b0(s32 i) {
+extern "C" void *TownExchange_GetForAid(s32 i) {
     switch (i) {
     case 1:
-        return func_0208f0e8(0);
+        return TownExchange_GetRemote(0);
     case 2:
-        return func_0208f0e8(1);
+        return TownExchange_GetRemote(1);
     case 3:
-        return func_0208f0e8(2);
+        return TownExchange_GetRemote(2);
     default:
         return data_021e7f8c;
     }

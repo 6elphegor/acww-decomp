@@ -55,7 +55,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
@@ -236,7 +236,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -341,7 +341,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -593,7 +593,7 @@ void SpNpcCornimerTalk::vfunc_78(TalkStartMsg *out) {
         Talk_CheckAndSetPlayerFlag(0x19, 1);
     } else if (Talk_CheckAndSetPlayerFlag(0x19, 1) == 0) {
         out->b = 2;
-    } else if (func_02063b8c(2) == 0 || Talk_CheckAndSetPlayerFlag(0x1a, 0) != 0) {
+    } else if (Random_GlobalBelow(2) == 0 || Talk_CheckAndSetPlayerFlag(0x1a, 0) != 0) {
         out->b = 3;
     } else {
         out->b = 0x10;
@@ -735,7 +735,7 @@ void SpNpcCornimerTalk::vfunc_18() {
             }
             buf.s[0] = 0x1542;
             if (cntA == 0) {
-                k = (u8)(func_02063b8c(3) + 7);
+                k = (u8)(Random_GlobalBelow(3) + 7);
                 cntA = 1;
                 while (cntB > 0) {
                     _ZN17PlayerSpNpcRecord18addAcornsDeliveredEi(g, cntA);
@@ -759,7 +759,7 @@ void SpNpcCornimerTalk::vfunc_18() {
                     k = 0x13;
                     buf.a = 2;
                     MsgString33 o;
-                    u32 n = func_02063b8c(4) + 4;
+                    u32 n = Random_GlobalBelow(4) + 4;
                     s32 i = 0;
                     u32 r6 = n;
                     const Unk_ov087_02271cc4_Ent *ent;
@@ -769,7 +769,7 @@ void SpNpcCornimerTalk::vfunc_18() {
                     String_Load(&o, &buf.a, (s32)sSpNpcCornimerFortuneLines[i].a);
                     MailText_SetSlot((void *)ent->b, &o);
                     r6 = (n - 4) * 4;
-                    r6 += func_02063b8c(4);
+                    r6 += Random_GlobalBelow(4);
                     r6 += i * 16;
                     i++;
                     if (i < 4) goto loop16;

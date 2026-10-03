@@ -86,9 +86,9 @@ void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 s32 Pocket_FindItem(u16 *p);
 void Pocket_RemoveItem(s32 a);
 void Pocket_AddItem(u16 *p, s32 a);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void _ZN12ItemPickSpec3setEii(Unk_ov072_02271a58_Obj *o, s32 a, s32 b);
-void func_02063388(Unk_ov072_02271a58_Obj *o);
+void ItemPickSpec_Destruct(Unk_ov072_02271a58_Obj *o);
 void ItemPick_One(u16 *out, Unk_ov072_02271a58_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
@@ -282,7 +282,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -388,7 +388,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -626,7 +626,7 @@ BOOL SpNpcGulliver::setupAct01() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, (u32 *)gVec3Zero, 4, data_020c6d1c, 1);
     if (unk_714 != 0) {
         unk_718 = 0x190;
-        unk_718 += func_02063b8c(0x258);
+        unk_718 += Random_GlobalBelow(0x258);
     }
     return TRUE;
 }
@@ -642,7 +642,7 @@ BOOL SpNpcGulliver::mainAct01() {
             return TRUE;
         }
         if (SpNpcGulliver_TickTimer(this, &unk_718) == 0) {
-            switch (func_02063b8c(3)) {
+            switch (Random_GlobalBelow(3)) {
             case 0:
                 unk_564.requestEmotion(1, 0xc, data_020c6cc8);
                 break;
@@ -654,7 +654,7 @@ BOOL SpNpcGulliver::mainAct01() {
                 break;
             }
             unk_718 = 0x190;
-            unk_718 += func_02063b8c(0x258);
+            unk_718 += Random_GlobalBelow(0x258);
             unk_71c = 0x7a;
         }
     }
@@ -700,7 +700,7 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
     void *cell;
     u16 h;
     volatile s32 v[4];
-    k = func_02063b8c(*pe);
+    k = Random_GlobalBelow(*pe);
     v[0] = 0;
     v[1] = 0;
     v[2] = 0;
@@ -713,7 +713,7 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
                     if (cell != NULL) {
                         t = (u8 *)MapBlock_GetItemPtr(cell, 0, 0, 0);
                         if (t != NULL) {
-                            k2 = func_02063b8c(*cnt);
+                            k2 = Random_GlobalBelow(*cnt);
                             for (v[3] = 0; v[3] < 16; v[3]++) {
                                 for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
                                     if (*(u16 *)t == 0xfff1) {
@@ -882,7 +882,7 @@ void SpNpcGulliverTalk::scriptWakeUp() {
                 _ZN13GulliverQuest5startEv(&data_021e58a6);
                 requestReopenWindow();
                 Talk_CheckAndSetPlayerFlag(0x14, 1);
-                b = func_02063b8c(5) + 5;
+                b = Random_GlobalBelow(5) + 5;
                 unk_3c->setNextMessage(&b, sSpNpcGulliverKey);
                 setScript(0);
             }
@@ -953,9 +953,9 @@ void SpNpcGulliverTalk::vfunc_78(TalkStartMsg *out) {
     if (s >= 0 && s < 8) {
         out->unk_00 = sSpNpcGulliverTopicMsgs[s].unk_00;
         if (unk_b4 == 0) {
-            out->unk_04 = func_02063b8c(5);
+            out->unk_04 = Random_GlobalBelow(5);
         } else if (unk_b4 == 3) {
-            out->unk_04 = func_02063b8c(5) + 13;
+            out->unk_04 = Random_GlobalBelow(5) + 13;
         } else {
             out->unk_04 = *(u8 *)((u8 *)sSpNpcGulliverTopicMsgs + 4 + unk_b4 * 8);
         }
@@ -999,7 +999,7 @@ void SpNpcGulliverTalk::vfunc_14() {
         _ZN12ItemPickSpec3setEii(&o, 0, 0x13);
         ItemPick_One(&h2, &o, 0, 0, 1, 1, 0);
         h0 = h2;
-        func_02063388(&o);
+        ItemPickSpec_Destruct(&o);
         _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &h0, 0, 5, 0);
         Pocket_AddItem(&h0, 0);
         r = 0x19;

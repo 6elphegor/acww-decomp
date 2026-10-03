@@ -135,7 +135,7 @@ void _ZN16ResettiVisitFlag13func_02086f34Ev(void *);
 void _ZN17VisitorSpawnFlags13func_02086c00Ev(void *);
 void VillagerId_Clear(...);
 void _ZN8PlayerId5clearEv(...);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
 void FieldUnit_FromBlockUnit(s32 *out1, s32 *out2, s32 a, s32 b, s32 c, s32 d);
@@ -146,7 +146,7 @@ s32 Contest_GetFlowerKind(u32 *out, u16 *p);
 s32 Contest_IsNextToGroundAttr4(s32 *pos);
 s32 ContestRecord_ScoreVillagerGarden(void *obj, void *grid);
 s32 ContestRecord_ScorePlayerGarden(void *self, void *grid);
-s32 func_02063b74(s32);
+s32 Random_GlobalBelow2(s32);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 Item_GetFishBaseSize(u16 *);
@@ -277,7 +277,7 @@ extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
 extern "C" s32 Contest_GetCatchSize(u16 *p)
 {
     s32 r = 0;
-    s32 base = func_02063b74(0x666) + 0xccd;
+    s32 base = Random_GlobalBelow2(0x666) + 0xccd;
     BOOL in = r;
     u32 v = *p;
     if (v >= 0x12e8 && v <= 0x131f) {
@@ -475,7 +475,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
                 }
             }
             s32 w = ContestRecord_ScorePlayerGarden(self, grid);
-            if (cnt == 0 || w > best || (w > 0 && w == best && func_02063b8c(2) == 0)) {
+            if (cnt == 0 || w > best || (w > 0 && w == best && Random_GlobalBelow(2) == 0)) {
                 _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(self, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
             } else {
                 void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));

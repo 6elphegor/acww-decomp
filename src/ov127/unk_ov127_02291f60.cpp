@@ -64,7 +64,7 @@ void Constellation_SetLinePalette(void *p);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
-void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
+void Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
 s32 Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
 s32 Snd_SetPanIfChanged(s32 a);
@@ -206,14 +206,14 @@ extern "C" void StarSky_DrawArrows(Unk_ov127_02291f60 *s, s32 a, s32 b)
     s32 i, pal;
     for (i = 0; i < 4; i++) {
         pal = (i == s->unk_2834) ? 7 : b;
-        func_02088730(1, data_ov127_02293fd4 + i * 8, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fb4 + (i << 2)) + 0x80, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fc4 + (i << 2)) + 0x60, pal, 1, 0);
+        Oam_DrawObj(1, data_ov127_02293fd4 + i * 8, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fb4 + (i << 2)) + 0x80, (a >> 2) * *(s32 *)((u8 *)data_ov127_02293fc4 + (i << 2)) + 0x60, pal, 1, 0);
     }
     s->unk_2834 = 4;
 }
 
 extern "C" void StarSky_DrawScopeSprite(void *s, s32 y)
 {
-    func_02088730(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, 0);
+    Oam_DrawObj(1, data_ov127_02293fac, 0x80, y + 0x60, -1, 1, 0);
 }
 
 extern "C" void StarSky_DrawStarMarker(Unk_ov127_02291f60 *s, s32 i)
@@ -228,7 +228,7 @@ extern "C" void StarSky_DrawStarMarker(Unk_ov127_02291f60 *s, s32 i)
     s32 y = -b;
     y += 4;
     y += t << 3;
-    func_02088730(1, data_ov127_02293fa4, x & 0x1ff, y, -1, 2, 0);
+    Oam_DrawObj(1, data_ov127_02293fa4, x & 0x1ff, y, -1, 2, 0);
 }
 
 extern "C" s32 StarSky_HitArrow(void *s, s32 x, s32 y)

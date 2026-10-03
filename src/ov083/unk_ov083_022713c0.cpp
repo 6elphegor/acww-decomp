@@ -57,7 +57,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
@@ -243,7 +243,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -348,7 +348,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -613,10 +613,10 @@ void SpNpcTortimerFlowerFestTalk::vfunc_18() {
         }
     } else {
         if (unk_1e == 0xa && t == 0) {
-            if (func_02063b8c(3) == 0) {
+            if (Random_GlobalBelow(3) == 0) {
                 msg = 0xc;
             } else {
-                msg = func_02063b8c(0xb) + 0x1c;
+                msg = Random_GlobalBelow(0xb) + 0x1c;
             }
         }
         if (msg != 0xff) {

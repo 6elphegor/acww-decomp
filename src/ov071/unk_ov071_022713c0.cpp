@@ -104,7 +104,7 @@ s32 Date_DaysBetween(void *p, s32 v);
 void Hud_Hide();
 void Hud_Show();
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void MI_CpuFill8(void *dst, s32 v, s32 n);
 void EventWeek_SetLyleWeek(s32 a, s32 b);
 BOOL MenuCtrl_IsResultOk();
@@ -341,7 +341,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -447,7 +447,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -949,7 +949,7 @@ BOOL SpNpcLyle::mainAct03() {
                         s32 ang = Math_AngleXZ(&unk_5c, &v);
                         if (NpcActor_IsFrontAngle((s16)(ang - unk_8e)) != 0) {
                             s32 kind = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 kind = 2;
                             }
                             if (kind != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {
@@ -1166,7 +1166,7 @@ s32 SpNpcLyle::countUnaskedQuestions(u8 *p, s32 n) {
 s32 SpNpcLyle::pickUnaskedQuestion(u8 *p, s32 n) {
     s32 c = countUnaskedQuestions(p, n);
     s32 r = 0;
-    s32 k = func_02063b8c(c);
+    s32 k = Random_GlobalBelow(c);
     s32 i = r;
     for (; i < n; p++, i++) {
         if (*p == 0) {
@@ -1227,7 +1227,7 @@ void SpNpcLyleTalk::vfunc_78(TalkStartMsg *out) {
     if (unk_ac >= 0 && unk_ac < 3) {
         out->unk_04 = *((u8 *)&sSpNpcLyleTopicMsgs[0].unk_04 + unk_ac * 8);
         if (b) {
-            out->unk_04 = func_02063b8c(5) + 0x28;
+            out->unk_04 = Random_GlobalBelow(5) + 0x28;
         }
         out->unk_00 = (const char *)((u32 *)sSpNpcLyleTopicMsgs)[unk_ac * 2];
     }

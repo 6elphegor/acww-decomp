@@ -6,9 +6,9 @@ struct Unk_02039cf4_Obj {
 };
 
 extern "C" {
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void _ZN12ItemPickSpec3setEii(Unk_02039cf4_Obj *o, s32 a, s32 b);
-void func_02063388(Unk_02039cf4_Obj *o);
+void ItemPickSpec_Destruct(Unk_02039cf4_Obj *o);
 void ItemPick_One(u16 *a, Unk_02039cf4_Obj *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 BOOL Item_GetIfNotCreature(u16 *a, u16 *b);
 s32 MTX_MultVec43(void *v, void *m, void *out);
@@ -210,9 +210,9 @@ extern "C" void LostAndFound_InitRandom(u16 *p) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
         Unk_02039cf4_Obj o1;
-        _ZN12ItemPickSpec3setEii(&o1, tbl[func_02063b8c(3)], 0);
+        _ZN12ItemPickSpec3setEii(&o1, tbl[Random_GlobalBelow(3)], 0);
         ItemPick_One(out, &o1, 0, 0, 1, 1, 0);
-        func_02063388(&o1);
+        ItemPickSpec_Destruct(&o1);
         p[i] = out[0];
     }
 }
@@ -235,7 +235,7 @@ extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
         for (s32 j = 0; j < 15; j++) {
             u16 *e = &arr[j];
             if (*e == 0xfff1) {
-                s32 r = func_02063b8c(100);
+                s32 r = Random_GlobalBelow(100);
                 s32 idx = 0xff;
                 if (r >= 50 && r < 100) {
                 } else if (r >= 30 && r < 50) {
@@ -251,7 +251,7 @@ extern "C" void LostAndFound_AddDailyItems(u16 *arr, s32 n) {
                 if (idx != 0xff) {
                     _ZN12ItemPickSpec3setEii(&o1, tbl[idx], 0);
                     ItemPick_One((u16 *)&out, &o1, 0, 0, 1, 1, 0);
-                    func_02063388(&o1);
+                    ItemPickSpec_Destruct(&o1);
                     *e = *(u16 *)&out;
                     cnt++;
                 }

@@ -275,8 +275,8 @@ BOOL MenuKeys_HasDown(u32 v);
 BOOL MenuKeys_HasUp(u32 v);
 void Menu_PlayScrollGrabSe(void *p);
 void Menu_PlayScrollTickSe(void *p);
-void func_02088730(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g);
-void func_02088378(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
+void Oam_DrawObj(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g);
+void Oam_DrawObjRotated(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
 void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void String_FormatNumberWrapper(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 void String_LoadByIndex(void *a, const void *c, u32 v);
@@ -760,9 +760,9 @@ extern "C" void DateTimePicker_Draw(S *s, u8 *a, u8 *b) {
     if (s->unk_a1 == 0) {
         void *p = a + 0x38;
         u8 *q = b + 0x34;
-        func_02088730(1, data_ov134_02294e84, p, q, -1, 2, 0);
-        func_02088378(1, data_ov134_02294e84 + 2, p, q, -1, 2, 0x1000, s->unk_92, 0);
-        func_02088378(1, data_ov134_02294e84 + 4, p, q, -1, 2, 0x1000, s->unk_94, 0);
+        Oam_DrawObj(1, data_ov134_02294e84, p, q, -1, 2, 0);
+        Oam_DrawObjRotated(1, data_ov134_02294e84 + 2, p, q, -1, 2, 0x1000, s->unk_92, 0);
+        Oam_DrawObjRotated(1, data_ov134_02294e84 + 4, p, q, -1, 2, 0x1000, s->unk_94, 0);
     }
     Oam_DrawCell(1, data_ov134_02294d44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     if (s->testFlags(4)) {

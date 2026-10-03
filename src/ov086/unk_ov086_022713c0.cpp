@@ -55,7 +55,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_SetTargetDone(void *p);
 void NookShop_PickFlowerBag(u16 *p);
@@ -237,7 +237,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -342,7 +342,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -555,36 +555,36 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     f = FALSE;
     if (a.b1 == 0xc) {
         if (Clock_GetTimeOfDay() == 0) {
-            out->b = func_02063b8c(3);
+            out->b = Random_GlobalBelow(3);
         } else if (Clock_GetTimeOfDay() == 1) {
-            out->b = func_02063b8c(3);
+            out->b = Random_GlobalBelow(3);
             if (out->b != 0) {
                 out->b += 2;
             }
         } else if (t.b2 < 0x17) {
-            out->b = func_02063b8c(3);
+            out->b = Random_GlobalBelow(3);
             if (out->b != 0) {
                 out->b += 4;
             }
         } else if (t.b2 == 0x17 && t.b1 < 0x1e) {
-            out->b = func_02063b8c(3);
+            out->b = Random_GlobalBelow(3);
             if (out->b != 0) {
                 out->b += 6;
             }
         } else if (t.b2 == 0x17 && t.b1 < 0x37) {
-            out->b = func_02063b8c(3) + 9;
+            out->b = Random_GlobalBelow(3) + 9;
         } else if (t.b2 == 0x17 && t.b1 < 0x3b) {
-            out->b = func_02063b8c(2) + 0xc;
+            out->b = Random_GlobalBelow(2) + 0xc;
             f = TRUE;
         } else {
-            out->b = func_02063b8c(2) + 0xe;
+            out->b = Random_GlobalBelow(2) + 0xe;
             f = TRUE;
         }
     } else if (t.b2 < 6) {
-        out->b = func_02063b8c(3) + 0x10;
+        out->b = Random_GlobalBelow(3) + 0x10;
         f = TRUE;
     } else if (TownSessionState_TestFlag(TownSessionState_Get(), 4) != 0) {
-        out->b = func_02063b8c(3) + 0x16;
+        out->b = Random_GlobalBelow(3) + 0x16;
         f = TRUE;
     } else {
         out->b = 0x13;
@@ -592,8 +592,8 @@ void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     }
     if (!f) {
         if (Pocket_FindEmpty() != -1) {
-            if (func_02063b8c(2) == 0) {
-                out->b = func_02063b8c(3) + 0x19;
+            if (Random_GlobalBelow(2) == 0) {
+                out->b = Random_GlobalBelow(3) + 0x19;
             }
         }
     }
@@ -634,7 +634,7 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
                     g = PlayerData_GetCurrent();
                     l.bb[0] = 2;
                     MsgString33 obj;
-                    v = func_02063b8c(4);
+                    v = Random_GlobalBelow(4);
                     i = 0;
                     base = v << 2;
                     do {
@@ -642,7 +642,7 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
                         e = &sSpNpcTortimerCountdownFortuneLines[i];
                         String_Load(&obj, &l.bb[0], (s32)sSpNpcTortimerCountdownFortuneLines[i].a);
                         MailText_SetSlot((void *)e->b, &obj);
-                        v = base + func_02063b8c(4);
+                        v = base + Random_GlobalBelow(4);
                         v = v + (i << 4);
                         i++;
                     } while (i < 4);
@@ -666,7 +666,7 @@ void SpNpcTortimerCountdownTalk::vfunc_14() {
             _ZN12Unk_020d771015requestGiveItemEPtjjj(this, &l.h5, 0, 5, 0);
             l.h6 = 0x137d;
             Pocket_AddItem(&l.h6, 0);
-            msg = 0x1c + func_02063b8c(3);
+            msg = 0x1c + Random_GlobalBelow(3);
             break;
         }
         if (msg != 0xff) {

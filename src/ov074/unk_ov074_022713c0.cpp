@@ -145,7 +145,7 @@ PlayerData *PlayerData_GetCurrent();
 s32 Impression_Evaluate(void *a, s32 b, s32 c);
 void BlancaFaceRecord_setConcept(u8 *p, s32 v);
 void BlancaFaceRecord_setState(u8 *p, s32 v);
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 TalkWindowState_setNextMessage(void *self, u8 *b, char *c);
 void TalkWindowState_setSlotFromString(void *self, s32 a, u8 *b, char *c);
@@ -335,7 +335,7 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
     Unk_020f4080();
@@ -439,7 +439,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -766,7 +766,7 @@ BOOL SpNpcBlanca::mainAct02() {
                         r6 = Math_AngleXZ(P(0x5c), &v.v[0]);
                         if (NpcActor_IsFrontAngle(r6 - F(s16, 0x8e)) != 0) {
                             r6 = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 r6 = 2;
                             }
                             if (r6 != NpcActionCtrl_getAction(P(0x564))) {
@@ -943,7 +943,7 @@ BOOL SpNpcBlancaTalk::onConceptChosen() {
         u8 buf[1];
         BlancaFaceRecord_setConcept(g, Impression_Evaluate(PlayerData_GetCurrent(), 0, 0));
         BlancaFaceRecord_setState(g, 3);
-        buf[0] = func_02063b8c(3) + 5;
+        buf[0] = Random_GlobalBelow(3) + 5;
         Talk_CheckAndSetPlayerFlag(0x2b, 1);
         TalkWindowState_setNextMessage(p, buf, ((char *)"sp_npc_mysterycat"));
     }
@@ -970,18 +970,18 @@ void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
     BlancaFaceRecord_getPattern(g);
     l = *Pattern_getInfo();
     m = *PatternInfo_getAuthor(&l);
-    if (func_02063b8c(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
+    if (Random_GlobalBelow(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
         out->unk_04 = 3;
     } else {
         if (PlayerId_isValid(&m) != 0) {
             PlayerData *p = PlayerData_GetCurrent();
             u16 *q = (u16 *)p->getPlayerId();
             if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && PlayerId_equals(&m, q) != 0) {
-                out->unk_04 = func_02063b8c(4) + 0x18;
+                out->unk_04 = Random_GlobalBelow(4) + 0x18;
                 goto next;
             }
         }
-        out->unk_04 = func_02063b8c(4) + 0x11;
+        out->unk_04 = Random_GlobalBelow(4) + 0x11;
     }
 next:
     func_0206267c(obj);

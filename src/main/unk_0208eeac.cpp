@@ -7,7 +7,7 @@ s32 _ZN10LetterView8getStateEv();
 void Letter_Clear(void *p);
 }
 
-// Sub-object at +0x14 of Unk_020e1164 (ctor 0x02089270, dtor 0x0208926c)
+// Sub-object at +0x14 of InputModeIcon (ctor 0x02089270, dtor 0x0208926c)
 class SpriteAnim {
 public:
     SpriteAnim();
@@ -38,11 +38,11 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-// Vtable at 0x020e1164; singleton data_021ceb80
-class Unk_020e1164 : public UiWidget {
+// Vtable at 0x020e1164; singleton sInputModeIcon
+class InputModeIcon : public UiWidget {
 public:
-    Unk_020e1164();
-    virtual ~Unk_020e1164();
+    InputModeIcon();
+    virtual ~InputModeIcon();
     virtual void draw();
     virtual void vfunc_0c();
 
@@ -57,10 +57,10 @@ public:
     /* 0x28 */ u8 unk_28;
 };
 
-Unk_020e1164 data_021ceb80;
+InputModeIcon sInputModeIcon;
 
 // Player-slot style record (full definition in the next unit)
-class Unk_0208f238 {
+class TownExchangeRecord {
 public:
     u8 getChecksumByte();
     void setChecksumByte(u32 v);
@@ -75,60 +75,60 @@ public:
     ~Letter();
 };
 
-class Unk_0208f0a0 : public Letter {
+class ReceivedLetterBlock : public Letter {
 public:
-    Unk_0208f0a0();
-    ~Unk_0208f0a0();
+    ReceivedLetterBlock();
+    ~ReceivedLetterBlock();
 };
 
-Unk_0208f0a0::Unk_0208f0a0() {}
+ReceivedLetterBlock::ReceivedLetterBlock() {}
 
-Unk_0208f0a0::~Unk_0208f0a0() {}
+ReceivedLetterBlock::~ReceivedLetterBlock() {}
 
-extern "C" void func_0208f088(void *p) { Letter_Clear(p); }
+extern "C" void ReceivedLetter_Clear(void *p) { Letter_Clear(p); }
 
-extern "C" BOOL func_0208f070() {
+extern "C" BOOL ReceivedLetter_HasLetter() {
     if (_ZN10LetterView8getStateEv()) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_0208f238::setChecksumByte(u32 v) { unk_0f4 = v; }
+void TownExchangeRecord::setChecksumByte(u32 v) { unk_0f4 = v; }
 
-u8 Unk_0208f238::getChecksumByte() { return unk_0f4; }
+u8 TownExchangeRecord::getChecksumByte() { return unk_0f4; }
 
-extern "C" void func_0208f05c() {}
+extern "C" void ReceivedLetter_GetLetter() {}
 
-extern "C" void InputMode_Clear() { data_021ceb80.unk_0c = 0; }
+extern "C" void InputMode_Clear() { sInputModeIcon.unk_0c = 0; }
 
-extern "C" void InputMode_SetButtons() { data_021ceb80.unk_0c = 1; }
+extern "C" void InputMode_SetButtons() { sInputModeIcon.unk_0c = 1; }
 
-extern "C" void InputMode_SetTouch() { data_021ceb80.unk_0c = 2; }
+extern "C" void InputMode_SetTouch() { sInputModeIcon.unk_0c = 2; }
 
 extern "C" BOOL InputMode_IsButtons() {
-    if (data_021ceb80.unk_0c == 1) {
+    if (sInputModeIcon.unk_0c == 1) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" BOOL InputMode_IsTouch() {
-    if (data_021ceb80.unk_0c == 2) {
+    if (sInputModeIcon.unk_0c == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0208f000() { data_021ceb80.init(); }
+extern "C" void InputModeIcon_Init() { sInputModeIcon.init(); }
 
-extern "C" void func_0208eff0() { data_021ceb80.exit(); }
+extern "C" void InputModeIcon_Exit() { sInputModeIcon.exit(); }
 
-extern "C" void func_0208efe0() { data_021ceb80.vfunc_0c(); }
+extern "C" void InputModeIcon_Update() { sInputModeIcon.vfunc_0c(); }
 
-extern "C" void func_0208efd0() { data_021ceb80.draw(); }
+extern "C" void InputModeIcon_Draw() { sInputModeIcon.draw(); }
 
-void Unk_020e1164::draw() {
+void InputModeIcon::draw() {
     if (unk_28 != 0) {
         if (!isDrawBlocked()) {
             void *h = unk_14.getCell();
@@ -139,7 +139,7 @@ void Unk_020e1164::draw() {
     }
 }
 
-void Unk_020e1164::vfunc_0c() {
+void InputModeIcon::vfunc_0c() {
     if (unk_28 != 0) {
         unk_14.update();
     }
@@ -149,10 +149,10 @@ void Unk_020e1164::vfunc_0c() {
     }
 }
 
-Unk_020e1164::Unk_020e1164() : unk_0c(0), unk_10(0) {
+InputModeIcon::InputModeIcon() : unk_0c(0), unk_10(0) {
     unk_28 = 0;
 }
 
-Unk_020e1164::~Unk_020e1164() {
+InputModeIcon::~InputModeIcon() {
 }
 

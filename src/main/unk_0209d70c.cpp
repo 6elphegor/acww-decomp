@@ -11,15 +11,15 @@ void MI_CpuCopy8(void *src, void *dst, u32 size);
 
 extern "C" void _ZN7TownMapC1Ev(void *);
 extern "C" void _ZN9HouseDataC1Ev(void *);
-extern "C" void _ZN12Unk_02063578C2Ev(void *);
-extern "C" void _ZN10MuseumData13func_02070550Ev(void *);
+extern "C" void _ZN15ItemClassOrdersC2Ev(void *);
+extern "C" void _ZN10MuseumData9constructEv(void *);
 extern "C" void _ZN19AbleSistersPatternsC1Ev(void *);
 extern "C" void _ZN8BbsBoardC1Ev(void *);
 extern "C" void _ZN13ContestRecord9constructEv(void *);
 extern "C" void _ZN12ReddLastSaleC1Ev(void *);
 extern "C" void _ZN16BlancaFaceRecord9constructEv(void *);
-extern "C" void _ZN12Unk_0208f0a0C1Ev(void *);
-extern "C" void _ZN12Unk_0208f238C1Ev(void *);
+extern "C" void _ZN19ReceivedLetterBlockC1Ev(void *);
+extern "C" void _ZN18TownExchangeRecordC1Ev(void *);
 extern "C" void _ZN12LetterOutboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxD1Ev(void *);
@@ -36,7 +36,7 @@ extern "C" void ChestStorage_Construct(void *);
 extern "C" void EventWeekSlots_Construct(void *);
 extern "C" void TownState_Construct(void *);
 extern "C" void HappyRoomDate_Construct(void *);
-extern "C" void func_020639bc(void *);
+extern "C" void TownId_Construct(void *);
 extern "C" void SaveVillagers_Construct(void *);
 extern "C" void func_02086234(void *);
 extern "C" void func_02086294(void *);
@@ -58,7 +58,7 @@ class SaveData {
 public:
     SaveData() {
         u8 *p = (u8 *)this;
-        func_020639bc((void *)0x021d7352);
+        TownId_Construct((void *)0x021d7352);
         PlayerDataArray_Construct((void *)0x021d735c);
         SaveVillagers_Construct(p + 0x8a3c);
         _ZN7TownMapC1Ev(p + 0xc330);
@@ -66,7 +66,7 @@ public:
         func_02086234(p + 0xe557);
         _ZN9HouseDataC1Ev(p + 0xe558);
         _ZN19AbleSistersPatternsC1Ev(p + 0xfafc);
-        _ZN12Unk_0208f238C1Ev(p + 0x10c3c);
+        _ZN18TownExchangeRecordC1Ev(p + 0x10c3c);
         _ZN8BbsBoardC1Ev(p + 0x11488);
         __cxa_vec_ctor(p + 0x1200c, 4, 0x98c, (void *)_ZN13PlayerMailboxC1Ev, (void *)_ZN13PlayerMailboxD1Ev);
         _ZN12LetterOutboxC1Ev(p + 0x1463c);
@@ -75,8 +75,8 @@ public:
         _ZN16BlancaFaceRecord9constructEv(p + 0x15700);
         _ZN15TownStyleRecordD2Ev(p + 0x1592c);
         BottleLetterRecord_Construct(p + 0x15b5c);
-        _ZN12Unk_0208f0a0C1Ev(p + 0x15c58);
-        _ZN10MuseumData13func_02070550Ev(p + 0x15d50);
+        _ZN19ReceivedLetterBlockC1Ev(p + 0x15c58);
+        _ZN10MuseumData9constructEv(p + 0x15d50);
         _ZN8NookShopC1Ev(p + 0x15db4);
         EventWeekSlots_Construct(p + 0x15e18);
         TownState_Construct(p + 0x15e54);
@@ -90,7 +90,7 @@ public:
         AbleShop_Construct(p + 0x15f84);
         _ZN14SnowmanRecordsC1Ev(p + 0x15f96);
         HappyRoomDate_Construct(p + 0x15fb0);
-        _ZN12Unk_02063578C2Ev(p + 0x15fbc);
+        _ZN15ItemClassOrdersC2Ev(p + 0x15fbc);
         SaveData_ConstructDateRecord(p + 0x15fc5);
         LostChildRecord_Construct(p + 0x15fca);
         _ZN11SaveRecord49constructEv(p + 0x15fdc);

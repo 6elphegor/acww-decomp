@@ -83,7 +83,7 @@ s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 s32 TalkRequest_SetTargetDone(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 s32 NpcActor_IsFrontAngle(s16 a);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void func_020e7518(void *p);
 s32 Random_Next(void *p);
 void *TownSessionState_Get();
@@ -275,7 +275,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -380,7 +380,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -660,7 +660,7 @@ BOOL SpNpcJoan::mainAct02() {
                         s32 t = Math_AngleXZ(&unk_5c, &va);
                         if (NpcActor_IsFrontAngle(t - unk_8e)) {
                             u32 k = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 k = 2;
                             }
                             if (k != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {

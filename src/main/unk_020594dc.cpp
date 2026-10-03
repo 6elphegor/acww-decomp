@@ -219,7 +219,7 @@ void *SaveVillagers_Find(void *tbl, s32 id);
 void *Villager_GetBirthday(void *p);
 void MailText_SetSlotMonth(s32 slot, s32 v);
 void MailText_SetSlotDayOrdinal(s32 slot, s32 v);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 void _ZN10VillagerId12makeFileNameEPvjj(s32 a, void *b, s32 c, s32 d);
 void VillagerId_GetPersonality(s32 a);
 s32 LetterPaper_PickForPersonality();
@@ -747,7 +747,7 @@ test0:
         total += v;
     }
     if (cntA != 0) {
-        pick = func_02063b8c(cntA);
+        pick = Random_GlobalBelow(cntA);
         n = 0;
         for (i = 0; i < 0x4a; i++) {
             u32 v;
@@ -763,7 +763,7 @@ test0:
         }
     }
     if (cntB != 0) {
-        pick2 = func_02063b8c(cntB);
+        pick2 = Random_GlobalBelow(cntB);
         n2 = 0;
         for (i = 0; i < 0x4a; i++) {
             u32 v;
@@ -846,7 +846,7 @@ test0:
             {
                 BOOL ok;
                 if (nb != 0) {
-                    if (func_02063b8c(2) == 0) ok = TRUE;
+                    if (Random_GlobalBelow(2) == 0) ok = TRUE;
                     else ok = FALSE;
                 } else {
                     ok = TRUE;
@@ -858,7 +858,7 @@ test0:
                     else if (total <= 0x1869f) kind = 9;
                     else kind = 10;
                 } else {
-                    s32 pk = func_02063b8c(nb);
+                    s32 pk = Random_GlobalBelow(nb);
                     nb = 0;
                     for (q = 0; q < 13; q++) {
                         if (b & (1 << q)) {
@@ -1594,7 +1594,7 @@ extern "C" BOOL Villager_SendBirthdayNoticeLetter(s32 a, s32 b)
     if (r) {
         MailText_SetSlotMonth(2, *(u8 *)Villager_GetBirthday(r));
         MailText_SetSlotDayOrdinal(3, ((u8 *)Villager_GetBirthday(r))[1]);
-        return Villager_SendLetterWithPaper("ev_nbirth", func_02063b8c(3), a, b, 0, 0x1a);
+        return Villager_SendLetterWithPaper("ev_nbirth", Random_GlobalBelow(3), a, b, 0, 0x1a);
     }
     return FALSE;
 }
@@ -1608,33 +1608,33 @@ extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
         return 0;
     }
     Unk_020594dc_H res(0xfff1);
-    func_02063b8c(3);
-    func_02063b8c(3);
+    Random_GlobalBelow(3);
+    Random_GlobalBelow(3);
     switch (a) {
     case 1:
         res = ItemPick_One(ItemPickSpec(0, 0), 0, 0, 1, 1, 0);
         break;
     case 2: {
         static ItemPickSpec t[3] = { ItemPickSpec(0, 1), ItemPickSpec(0, 2), ItemPickSpec(0, 3) };
-        res = ItemPick_One(t[func_02063b8c(3)], 0, 0, 1, 1, 0);
+        res = ItemPick_One(t[Random_GlobalBelow(3)], 0, 0, 1, 1, 0);
         break;
     }
     case 3: {
         static ItemPickSpec t[3] = { ItemPickSpec(0, 0), ItemPickSpec(4, 0), ItemPickSpec(3, 0) };
-        res = ItemPick_One(t[func_02063b8c(3)], 0, 0, 1, 1, 0);
+        res = ItemPick_One(t[Random_GlobalBelow(3)], 0, 0, 1, 1, 0);
         break;
     }
     case 4: {
         static ItemPickSpec t[9] = { ItemPickSpec(0, 1), ItemPickSpec(0, 2), ItemPickSpec(0, 3),
                                      ItemPickSpec(4, 1), ItemPickSpec(4, 2), ItemPickSpec(4, 3),
                                      ItemPickSpec(3, 1), ItemPickSpec(3, 2), ItemPickSpec(3, 3) };
-        res = ItemPick_One(t[func_02063b8c(9)], 0, 0, 1, 1, 0);
+        res = ItemPick_One(t[Random_GlobalBelow(9)], 0, 0, 1, 1, 0);
         break;
     }
     case 0:
     default: {
         s32 r6 = PlayerDataArray_GetById(gSavePlayers, b);
-        u32 r4 = sHouseVisitGiftKinds[func_02063b8c(3)];
+        u32 r4 = sHouseVisitGiftKinds[Random_GlobalBelow(3)];
         ItemPickSpec o(r4, 0);
         s32 x;
         res = ItemPick_One(o, r6, 0, 1, 1, (s32)&x);
@@ -1644,6 +1644,6 @@ extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
         break;
     }
     }
-    return Villager_SendLetterWithPaper("re_q10", func_02063b8c(3), b, c, (u16 *)&res, -1);
+    return Villager_SendLetterWithPaper("re_q10", Random_GlobalBelow(3), b, c, (u16 *)&res, -1);
 }
 

@@ -262,7 +262,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -367,7 +367,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -452,8 +452,8 @@ void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, cons
 u16 Item_MakePaper(u32 a, s32 b);
 void Catalog_AddItem(void *a, u16 *p, s32 c);
 void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
-s32 func_020626cc(u16 *p, s32 mode);
-u32 func_02063b8c(u32 a);
+s32 ItemList_GetTownClassRank(u16 *p, s32 mode);
+u32 Random_GlobalBelow(u32 a);
 void Hud_Hide();
 void Hud_Show();
 void EventWeekSlots_MarkPlayer(u32 id);
@@ -461,7 +461,7 @@ void PlayerActor_RequestWearHatAlt(u16 *p);
 void PlayerActor_RequestWearFaceItemAlt(u16 *p);
 void PlayerActor_RequestWearShirtAlt(u16 *p);
 void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-void func_02063388(ItemPickSpec *o);
+void ItemPickSpec_Destruct(ItemPickSpec *o);
 void Pocket_AddItem(u16 *, s32);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
@@ -715,7 +715,7 @@ extern "C" s32 SpNpcGracie_CountUnaskedQuestions(void *unused, u8 *p, s32 n) {
 extern "C" s32 SpNpcGracie_PickUnaskedQuestion(void *unused, u8 *p, s32 n) {
     s32 z = SpNpcGracie_CountUnaskedQuestions(unused, p, n);
     s32 pos = 0;
-    s32 r = func_02063b8c(z);
+    s32 r = Random_GlobalBelow(z);
     s32 i = pos;
     for (; i < n; p++, i++) {
         if (*p == 0) {
@@ -784,33 +784,33 @@ extern "C" u8 SpNpcGracie_ScoreByPrice(void *unused, s32 a, s32 kind) {
     switch (kind) {
     case 0:
         if (a == 0) {
-            r = func_02063b8c(3) + 1;
+            r = Random_GlobalBelow(3) + 1;
         } else if (a < 200) {
-            r = func_02063b8c(3) + 3;
+            r = Random_GlobalBelow(3) + 3;
         } else if (a < 1000) {
-            r = func_02063b8c(3) + 5;
+            r = Random_GlobalBelow(3) + 5;
         } else {
-            r = func_02063b8c(4) + 7;
+            r = Random_GlobalBelow(4) + 7;
         }
         break;
     case 1:
         if (a == 0) {
-            r = func_02063b8c(3) + 1;
+            r = Random_GlobalBelow(3) + 1;
         } else if (a < 160) {
-            r = func_02063b8c(3) + 3;
+            r = Random_GlobalBelow(3) + 3;
         } else if (a < 600) {
-            r = func_02063b8c(3) + 5;
+            r = Random_GlobalBelow(3) + 5;
         } else {
-            r = func_02063b8c(4) + 7;
+            r = Random_GlobalBelow(4) + 7;
         }
         break;
     case 2:
         if (a < 350) {
-            r = func_02063b8c(3) + 1;
+            r = Random_GlobalBelow(3) + 1;
         } else if (a < 400) {
-            r = func_02063b8c(3) + 4;
+            r = Random_GlobalBelow(3) + 4;
         } else {
-            r = func_02063b8c(4) + 7;
+            r = Random_GlobalBelow(4) + 7;
         }
         break;
     }
@@ -830,18 +830,18 @@ void SpNpcGracieTalk::scoreOutfit() {
         if (!r) {
             r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[0].unk_00), 0)));
         } else {
-            t = func_02063b8c(10);
+            t = Random_GlobalBelow(10);
             r4->addStyleScore(Unk_ov070_02271bf8_Sh(t + 1));
         }
     } else {
-        t = func_02063b8c(3);
+        t = Random_GlobalBelow(3);
         r4->addStyleScore(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
     }
     unk_c0[1].unk_00 = *r6->getFaceItem();
     if (!Unk_ov070_IsNone(&unk_c0[1].unk_00)) {
         r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[1].unk_00), 1)));
     } else {
-        t = func_02063b8c(3);
+        t = Random_GlobalBelow(3);
         r4->addStyleScore(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
     }
     unk_c0[2].unk_00 = *r6->getShirt();
@@ -853,7 +853,7 @@ void SpNpcGracieTalk::scoreOutfit() {
         if (!r) {
             r4->addStyleScore(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[2].unk_00), 2)));
         } else {
-            t = func_02063b8c(10);
+            t = Random_GlobalBelow(10);
             r4->addStyleScore(Unk_ov070_02271bf8_Sh(t + 1));
         }
     }
@@ -900,7 +900,7 @@ BOOL SpNpcGracieTalk::hasPocketRoomForOutfit() {
 }
 
 BOOL SpNpcGracieTalk::dressUpPlayer() {
-    u8 t4 = func_02063b8c(4);
+    u8 t4 = Random_GlobalBelow(4);
     u8 idx = 6;
     u16 a = 0xfff1;
     BOOL res;
@@ -950,19 +950,19 @@ BOOL SpNpcGracieTalk::dressUpPlayer() {
     }
     u16 o;
     u16 pp;
-    if ((&sSpNpcGracieOutfitTiers[0].unk_09)[idx * 16] >= (u8)func_02063b8c(0x65)) {
+    if ((&sSpNpcGracieOutfitTiers[0].unk_09)[idx * 16] >= (u8)Random_GlobalBelow(0x65)) {
         ItemPickSpec o1;
         o1.set(2, 0x22);
         ItemPick_One(&o, &o1, 0, 0, 1, 1, 0);
         a = o;
-        func_02063388(&o1);
+        ItemPickSpec_Destruct(&o1);
         res = TRUE;
     } else {
         ItemPickSpec o2;
         o2.set(2, 0);
         ItemPick_One(&pp, &o2, 0, 0, 1, 1, 0);
         a = pp;
-        func_02063388(&o2);
+        ItemPickSpec_Destruct(&o2);
         res = FALSE;
     }
     if (!Unk_ov070_IsNone(&a)) {
@@ -1045,22 +1045,22 @@ void SpNpcGracieTalk::vfunc_14() {
     c = unk_1e;
     switch (c) {
     case 0:
-        if (func_020626cc(r7->getShirt(), 0) == 0x22) {
+        if (ItemList_GetTownClassRank(r7->getShirt(), 0) == 0x22) {
             if (((PlayerId *)r7->getPlayerId())->getGender() == 0) {
-                code = func_02063b8c(2) + 1;
+                code = Random_GlobalBelow(2) + 1;
             } else {
-                code = func_02063b8c(2) + 3;
+                code = Random_GlobalBelow(2) + 3;
             }
         } else {
             if (((PlayerId *)r7->getPlayerId())->getGender() == 0) {
-                code = func_02063b8c(2) + 5;
+                code = Random_GlobalBelow(2) + 5;
             } else {
-                code = func_02063b8c(2) + 7;
+                code = Random_GlobalBelow(2) + 7;
             }
         }
         break;
     case 0x25:
-        code = func_02063b8c(10) + 0x3a;
+        code = Random_GlobalBelow(10) + 0x3a;
         unk_b0->unk_658.unk_dc = 0;
         break;
     case 0x28:

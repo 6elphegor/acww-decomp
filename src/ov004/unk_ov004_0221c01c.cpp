@@ -188,7 +188,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -293,7 +293,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -439,7 +439,7 @@ void Bgm_ReleasePriority(u32 a);
 void Bgm_Release(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Request(u32 a, u32 b, u32 c, u32 d);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 Talk_CheckAndSetPlayerFlag(...);
 s32 GameStart_IsActive(void);
 s32 NetArea_IsLocalOwner(void);
@@ -819,13 +819,13 @@ void SpNpcBrewsterTalk::vfunc_78(void *arg) {
         out->unk_00 = sSpNpcBrewsterMsgFiles[0];
         void *o = Actor_findByProfile(0x66, 0);
         if (CommManager_isOnline(gCommManager) != 0 || *DebugVar_GetPtr(0, 0x4a) != 0) {
-            out->unk_04 = func_02063b8c(3) + 0x55;
+            out->unk_04 = Random_GlobalBelow(3) + 0x55;
         } else if (Talk_CheckAndSetPlayerFlag(0x17) != 0) {
             if (o != 0 && SpNpcRoostGuest_getGuest(o) == 7) {
                 out->unk_04 = 0x58;
             } else {
                 s32 c = PlayerSpNpcRecord_getCafeVisits(h) >> 2;
-                out->unk_04 = data_ov004_0224cec8[c] + func_02063b8c(3);
+                out->unk_04 = data_ov004_0224cec8[c] + Random_GlobalBelow(3);
             }
         } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (Talk_CheckAndSetPlayerFlag(0x16, 1) == 0) {
@@ -852,7 +852,7 @@ void SpNpcBrewsterTalk::vfunc_14() {
     if (GameStart_IsActive() == 0) {
         if ((s32)unk_1e >= 0x1c && (s32)unk_1e <= 0x23) {
             if ((u32)PlayerSpNpcRecord_getCafeVisits(h) >= 5) {
-                if (func_02063b8c(3) == 0) {
+                if (Random_GlobalBelow(3) == 0) {
                     r = 0x2c;
                     goto next0;
                 }
@@ -905,7 +905,7 @@ void SpNpcBrewsterTalk::vfunc_18() {
                 r = 0x2f;
             } else {
                 NpcActor_ChargePlayer((s32)unk_b0, 200);
-                r = func_02063b8c(2);
+                r = Random_GlobalBelow(2);
                 r = (u8)(r + (((PlayerSpNpcRecord_getCafeVisits(h) >> 2) << 1) + 0x1c));
             }
         } else {
@@ -1089,7 +1089,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             if (unk_b5 != 0) {
                 r4 = 0x30;
             } else {
-                r4 = (u8)(func_02063b8c(0xb) + 0x31);
+                r4 = (u8)(Random_GlobalBelow(0xb) + 0x31);
             }
             Bgm_ReleasePriority(0x10);
             Bgm_RequestSilence(0xc, 0, 0xa);
@@ -1099,7 +1099,7 @@ void SpNpcBrewsterTalk::runDrinkScript() {
             r6->unk_08 = 1;
             Talk_CheckAndSetPlayerFlag(0x17, 1);
             void *p = PlayerData_getSpNpcRecord(PlayerData_GetCurrent());
-            if (func_02063b8c(0xa) < 5) {
+            if (Random_GlobalBelow(0xa) < 5) {
                 PlayerSpNpcRecord_setCafeVisits(p, PlayerSpNpcRecord_getCafeVisits(p) + 1);
             }
             setScript(0);

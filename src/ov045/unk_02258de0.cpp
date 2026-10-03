@@ -25,7 +25,7 @@ class SpNpcKatrinaTalk;
 
 extern "C" {
 void *PlayerData_GetCurrent();
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void TalkRequest_SetTargetDone(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void *PlayerActor_GetBodyPos(s32);
@@ -288,7 +288,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -395,7 +395,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -996,13 +996,13 @@ extern "C" u32 SpNpcKatrina_GetAnimFrame() {
 }
 
 void SpNpcKatrina::drawFortuneCard() {
-    unk_748 = func_02063b8c(0x16);
-    if (func_02063b8c(2) == 0) {
+    unk_748 = Random_GlobalBelow(0x16);
+    if (Random_GlobalBelow(2) == 0) {
         unk_74c = 0;
     } else {
         unk_74c = 1;
     }
-    s32 t = func_02063b8c(2);
+    s32 t = Random_GlobalBelow(2);
     s32 k = unk_748 * 2 + 0x1a;
     k += t;
     unk_740 = k + unk_74c * 0x2c;

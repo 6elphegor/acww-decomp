@@ -15,19 +15,19 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e0ff0 : public UiWidget {
+class NameLabelBalloon : public UiWidget {
 public:
-    Unk_020e0ff0();
-    virtual ~Unk_020e0ff0();
+    NameLabelBalloon();
+    virtual ~NameLabelBalloon();
     virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208d2d8();
-    BOOL func_0208d2f0();
-    void func_0208d308(void *p);
-    void func_0208d314(s32 a, s32 b);
-    void func_0208d31c();
-    void func_0208d324(s32 a);
+    BOOL requestHide();
+    BOOL requestShow();
+    void setText(void *p);
+    void setOffset(s32 a, s32 b);
+    void release();
+    void setKind(s32 a);
 
     /* 0x0c */ u8 unk_0c[0x74];
 };
@@ -201,7 +201,7 @@ public:
     void changeState(s32 state);
 
     /* 0x050 */ HandCursor unk_50;
-    /* 0x09c */ Unk_020e0ff0 unk_9c[5];
+    /* 0x09c */ NameLabelBalloon unk_9c[5];
     /* 0x31c */ u8 unk_31c;
     /* 0x31d */ u8 unk_31d;
     /* 0x31e */ u8 pad_31e[2];
@@ -269,7 +269,7 @@ BOOL ResidentSelect::vfunc_00() {
         }
     }
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d324(i);
+        unk_9c[i].setKind(i);
     }
     c = 0x81;
     String_Load2d(&unk_338, &c, 0);
@@ -289,7 +289,7 @@ BOOL ResidentSelect::vfunc_0c() {
     TalkRequestFlags_ClearSceneHold();
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d31c();
+        unk_9c[i].release();
     }
     if (MenuCtrl_IsClockEdited()) {
         s32 l[2];
@@ -319,7 +319,7 @@ BOOL ResidentSelect::onDraw() {
     unk_50.draw();
     u8 i;
     for (i = 0; i < 5; i++) {
-        Unk_020e0ff0 *e = &unk_9c[i];
+        NameLabelBalloon *e = &unk_9c[i];
         e->draw();
     }
     return TRUE;
@@ -336,7 +336,7 @@ void ResidentSelect::enterWait() {
     unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d2d8();
+        unk_9c[i].requestHide();
     }
 }
 
@@ -354,7 +354,7 @@ void ResidentSelect::enterTouchSelect() {
     unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d2f0();
+        unk_9c[i].requestShow();
     }
 }
 
@@ -385,7 +385,7 @@ void ResidentSelect::enterPadSelect() {
     unk_50.setAnim(7);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d2f0();
+        unk_9c[i].requestShow();
     }
 }
 
@@ -522,7 +522,7 @@ void ResidentSelect::enterDecided() {
     unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
-        unk_9c[i].func_0208d2d8();
+        unk_9c[i].requestHide();
     }
     unk_324 = 0x19;
 }
@@ -585,16 +585,16 @@ void ResidentSelect::updateNameLabels() {
                 Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += sResidentLabelOffsets[i].a;
                 y += sResidentLabelOffsets[i].b;
-                Unk_020e0ff0 *e = &unk_9c[i];
-                e->func_0208d314(x, y);
-                e->func_0208d308(&o);
+                NameLabelBalloon *e = &unk_9c[i];
+                e->setOffset(x, y);
+                e->setText(&o);
                 e->vfunc_0c();
             }
         }
     }
-    unk_9c[4].func_0208d314(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
-    unk_9c[4].func_0208d308(&unk_338);
-    Unk_020e0ff0 *e4 = &unk_9c[4];
+    unk_9c[4].setOffset(sResidentExtraLabelPos.a, sResidentExtraLabelPos.b);
+    unk_9c[4].setText(&unk_338);
+    NameLabelBalloon *e4 = &unk_9c[4];
     e4->vfunc_0c();
 }
 

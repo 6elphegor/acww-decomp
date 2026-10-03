@@ -52,7 +52,7 @@ void _ZN14NpcMoveAnimSet12setStandAnimEi(void *self, s32 a);
 void TalkRequestFlags_ClearResetti();
 void TalkRequestFlags_SetResetti();
 s32 func_020e77cc(void *p, u32 lo, u32 hi);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
 void Bgm_Release(s32 a);
 void Bgm_RequestSilence(s32 a, s32 b, s32 c);
@@ -275,7 +275,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -382,7 +382,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -804,7 +804,7 @@ void SpNpcResettiTalk::scriptCheckApology() {
     if (MenuCtrl_IsFinished()) {
         u8 v = 0x18;
         if (MenuCtrl_IsResultOk()) {
-            if (func_02063b8c(2) == 0) {
+            if (Random_GlobalBelow(2) == 0) {
                 v = 0x1a;
             } else {
                 v = 0x19;
@@ -867,7 +867,7 @@ void SpNpcResettiTalk::vfunc_78(TalkStartMsg *out) {
         t = 5;
     }
     if (t == 5) {
-        t = func_02063b8c(4) + 1;
+        t = Random_GlobalBelow(4) + 1;
     }
     if (t < 0) {
         t = 0;
@@ -880,7 +880,7 @@ void SpNpcResettiTalk::vfunc_78(TalkStartMsg *out) {
 
 void SpNpcResettiTalk::vfunc_10() {
     if (unk_1e == 0x17) {
-        u8 n = func_02063b8c(0x10);
+        u8 n = Random_GlobalBelow(0x10);
         u8 c;
         if (n == unk_b4->unk_714) {
             n = n + 1;
@@ -915,19 +915,19 @@ void SpNpcResettiTalk::vfunc_18() {
     switch (unk_1e) {
     case 0xb:
         if (r == 0) {
-            cmd = func_02063b8c(2) == 0 ? 0xe : 0xd;
+            cmd = Random_GlobalBelow(2) == 0 ? 0xe : 0xd;
         } else {
-            cmd = func_02063b8c(2) == 0 ? 0xe : 0xc;
+            cmd = Random_GlobalBelow(2) == 0 ? 0xe : 0xc;
         }
         break;
     case 0x1f:
     case 0x20:
     case 0x21: {
-        u32 n = func_02063b8c(0xd);
+        u32 n = Random_GlobalBelow(0xd);
         if (func_020e77cc(getChoiceList()->getSliderValue(), n, n + 5) != 0) {
             cmd = 0x22;
         } else {
-            cmd = func_02063b8c(2) == 0 ? 0x20 : 0x21;
+            cmd = Random_GlobalBelow(2) == 0 ? 0x20 : 0x21;
         }
         break;
     }

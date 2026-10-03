@@ -22,11 +22,11 @@ u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 u32 BlockMap_GetBlockAttr(void *grid, s32 x, s32 z);
 BOOL Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void NetBuf_PackPair20(void *out, s32 a, s32 b);
-u32 func_02063b8c(u32 a);
+u32 Random_GlobalBelow(u32 a);
 void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
-void *func_0208f158(void *p);
+void *TownExchange_GetLetter(void *p);
 void Letter_Copy(void *a, void *b);
 
 extern void *gMenuHeap;
@@ -74,9 +74,9 @@ s32 func_ov096_02298320(PocketMenu *self);
 s32 PocketMenu_ShowMessage(PocketMenu *self, s32 a, s32 b, s32 c);
 s32 PocketMenu_ReturnToIdle(PocketMenu *self);
 }
-struct Unk_0208f238 {
-    void func_0208f168();
-    void func_0208f1a8(u32 v);
+struct TownExchangeRecord {
+    void resetCounter();
+    void setUnkFlag(u32 v);
 };
 struct Unk_02097ff4 {
     s32 testFlag(u32 v);
@@ -386,7 +386,7 @@ void PocketMenu::mainAct2C() {
             ok = TRUE;
         }
         s32 r5 = ok ? a - 0x12b0 : -1;
-        u32 t = (u8)func_02063b8c(0x3c);
+        u32 t = (u8)Random_GlobalBelow(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
         x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
@@ -557,9 +557,9 @@ void PocketMenu::sendBottleLetter() {
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->unk_64 == 0) {
         u8 *const d = data_021e7f8c;
-        Letter_Copy(func_0208f158(d), (void *)p);
-        ((Unk_0208f238 *)d)->func_0208f168();
-        ((Unk_0208f238 *)d)->func_0208f1a8(0);
+        Letter_Copy(TownExchange_GetLetter(d), (void *)p);
+        ((TownExchangeRecord *)d)->resetCounter();
+        ((TownExchangeRecord *)d)->setUnkFlag(0);
     } else {
         void *heap = gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);

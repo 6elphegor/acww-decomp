@@ -53,23 +53,23 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-extern const u32 data_020cf5b8[];
-extern const u32 data_020cf5c8[];
+extern const u32 sTalkArrowPlayOnce[];
+extern const u32 sTalkArrowSeqIds[];
 extern u8 data_020d5b0c[];
 
 // Two-cursor menu/sprite object; vtable 0x020e0d44 (ctor 0x020894c0)
-class Unk_020e0d44 : public UiWidget {
+class TalkArrow : public UiWidget {
 public:
-    Unk_020e0d44(u8 flag);
-    virtual ~Unk_020e0d44();
+    TalkArrow(u8 flag);
+    virtual ~TalkArrow();
     virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_02089284();
-    s32 func_020892ac();
-    void func_020892b0(s32 idx);
-    void func_02089320(s32 x, s32 y);
-    void func_02089328();
+    BOOL isAnimDone();
+    s32 getState();
+    void setState(s32 idx);
+    void setOffset(s32 x, s32 y);
+    void setAltStyle();
 
     /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ SpriteAnim unk_20;
@@ -82,23 +82,23 @@ public:
 
 enum Unk_020892b0_E { Unk_020892b0_E0 = 0 };
 
-void Unk_020e0d44::func_02089328() { unk_40 = 1; }
+void TalkArrow::setAltStyle() { unk_40 = 1; }
 
-void Unk_020e0d44::func_02089320(s32 x, s32 y) {
+void TalkArrow::setOffset(s32 x, s32 y) {
     unk_38 = x;
     unk_3c = y;
 }
 
-void Unk_020e0d44::func_020892b0(s32 idx) {
+void TalkArrow::setState(s32 idx) {
     Unk_020892b0_E a;
     Unk_020892b0_E b;
     u32 c;
-    a = (Unk_020892b0_E)((u32 *)data_020cf5c8)[idx];
+    a = (Unk_020892b0_E)((u32 *)sTalkArrowSeqIds)[idx];
     if (unk_40 != 0) {
         a = (Unk_020892b0_E)(a + 6);
     }
     b = (Unk_020892b0_E)(a + 1);
-    c = ((u32 *)data_020cf5b8)[idx];
+    c = ((u32 *)sTalkArrowPlayOnce)[idx];
     unk_34 = idx;
     unk_0c.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
     unk_0c.setPlayOnce(c);
@@ -108,9 +108,9 @@ void Unk_020e0d44::func_020892b0(s32 idx) {
     unk_20.restart();
 }
 
-s32 Unk_020e0d44::func_020892ac() { return unk_34; }
+s32 TalkArrow::getState() { return unk_34; }
 
-BOOL Unk_020e0d44::func_02089284() {
+BOOL TalkArrow::isAnimDone() {
     if (unk_0c.isFinished() && unk_20.isFinished()) {
         return TRUE;
     }
@@ -181,5 +181,5 @@ void SpriteAnim::restart() {
     setFrame(0, 0);
 }
 
-const u32 data_020cf5b8[] = {0, 0, 1, 1};
-const u32 data_020cf5c8[] = {0x23, 0x23, 0x25, 0x27};
+const u32 sTalkArrowPlayOnce[] = {0, 0, 1, 1};
+const u32 sTalkArrowSeqIds[] = {0x23, 0x23, 0x25, 0x27};

@@ -175,7 +175,7 @@ void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s32 Math_AngleXZ(void *, void *);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 func_02133150(s32 a, s32 b);
 void Insect_GetDirVec(void *v, s32 a);
 s32 Field_IsRafflesiaNear(void *a, void *b);

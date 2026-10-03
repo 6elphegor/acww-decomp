@@ -79,7 +79,7 @@ s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s
 void FieldPos_FromBlockUnitCenter(Unk_ov068_02266680_Vec *out, s32 a, s32 b, s32 c, s32 d);
 s32 func_020e7500(void *);
 s32 func_01ffcb0c(s32, s32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c);
 void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx);
 void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx);
@@ -327,7 +327,7 @@ extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
         c->unk_224 = 0;
     }
     c->unk_220 = kCameraSwayPatterns[c->unk_224].a;
-    c->unk_220 += func_02063b8c(kCameraSwayPatterns[c->unk_224].b);
+    c->unk_220 += Random_GlobalBelow(kCameraSwayPatterns[c->unk_224].b);
     c->unk_21c = 0;
 }
 
@@ -337,7 +337,7 @@ extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
         c->unk_225 = 0;
     }
     c->unk_222 = kCameraSwayPatterns[c->unk_225].a;
-    c->unk_222 += func_02063b8c(kCameraSwayPatterns[c->unk_225].b);
+    c->unk_222 += Random_GlobalBelow(kCameraSwayPatterns[c->unk_225].b);
     c->unk_21e = 0;
 }
 
@@ -350,7 +350,7 @@ extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
         if (a < 0x100) {
             u8 s = c->unk_224;
             if (s == 0) {
-                if (func_02063b8c(100) < 80) {
+                if (Random_GlobalBelow(100) < 80) {
                     c->unk_224 = 1;
                 } else {
                     c->unk_224 = 2;

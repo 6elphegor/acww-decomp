@@ -318,12 +318,12 @@ s32 _ZN9ModelAnim14addToRenderObjEj(void *, void *);
 void _ZN22DateSeededRandomSourceC2Ev(void *);
 void _ZN22DateSeededRandomSourceD2Ev(void *);
 void _ZN12ItemPickSpec3setEii(void *, s32, s32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *out, void *p, u32 a, void *q, u32 b, u32 c, u32 d);
 s32 ClothTex_LoadItem(void *p, void *q, u32 a);
 void *ClothTex_GetTex(void *p);
 s32 _ZN14MatTexVramTask7requestEPvjS0_jj(void *p, u32 a, const char *b, void *c, u32 d, u32 e);
-s32 func_02063a9c(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 Math_EaseRampProgress(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
 BOOL MenuCtrl_IsMenuOpen();
 void _ZN9AnimModelC1Ev(void *);
@@ -399,7 +399,7 @@ BOOL SewingMachine::vfunc_00() {
         _ZN22DateSeededRandomSourceC2Ev(x);
         _ZN12ItemPickSpec3setEii(y, 2, 0);
         ItemPick_One(&z, y, 0, x, 1, 1, 0);
-        func_02063388(y);
+        ItemPickSpec_Destruct(y);
         ClothTex_LoadItem(&sSewingMachineCloth, &z, 0);
         u32 r5 = F(u32, 0x2ec);
         void *t = ClothTex_GetTex(&sSewingMachineCloth);
@@ -504,7 +504,7 @@ BOOL SewingMachine::enterState03() {
 }
 
 void SewingMachine::updateState03() {
-    s32 r = 0x1000 - func_02063a9c(F(s32, 0x43c), 0, 0x28000, 0xa000, 0xa000);
+    s32 r = 0x1000 - Math_EaseRampProgress(F(s32, 0x43c), 0, 0x28000, 0xa000, 0xa000);
     F(s32, 0x198) = r;
     F(s32, 0x428) = r;
     F(s32, 0x43c) += 0x1000;

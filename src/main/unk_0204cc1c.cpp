@@ -321,7 +321,7 @@ void TownState_ClearEvents(void *p);
 void TownState_PickNextWeekDate(void *p, void *q);
 void Town_ReplaceSouthCedars(void *p);
 void Town_InitNew();
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 BOOL Item_IsTreeStage0(u16 *p);
 s32 FengShui_UpdateHouse();
 s32 func_0204e2cc(void *a, void *heap);
@@ -557,7 +557,7 @@ void *_ZN9HouseData19buildRoomBlockEntryEiPv(u32 *a, s32 b, void *heap);
 namespace Ns_0204d560 {
 extern "C" {
 void FgData_ApplyLayoutGlobal(u16 *t, s32 a, s32 b, s32 c);
-u32 func_02063b8c(u32 a);
+u32 Random_GlobalBelow(u32 a);
 extern u8 gSaveTownMap[];
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
@@ -1432,7 +1432,7 @@ extern "C" void TownMap_ApplyAcreLayouts(void *ov, s32 arg) {
 
 extern "C" void TownMap_Generate(Unk_0204dd20_Obj *o, s32 arg) {
     _ZN7TownMap5clearEv(o);
-    o->f = Ns_0204d560::func_02063b8c(3);
+    o->f = Ns_0204d560::Random_GlobalBelow(3);
     do {
         Town_GenerateAcres(o);
         TownMap_ApplyAcreLayouts(o, arg);

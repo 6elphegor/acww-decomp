@@ -254,9 +254,9 @@ void G3X_SetFog(u32, u32, u32, u32);
 void G3X_SetFogTable(const void *);
 void NNS_G3dGeFlushBuffer();
 void FieldScene_DebugDraw();
-void func_02088d58();
+void ActorCollider_ResolveAll();
 void Collision_UpdateDigHoles();
-void func_02089118();
+void ActorCollider_ClearList();
 u64 OS_GetTick();
 void Comm_ProcessReceived(s32);
 void NetSession_Update();
@@ -269,10 +269,10 @@ void TalkRequestQueue_StartInitial();
 void ChatBalloon_DismissAll();
 void Bgm_StartSceneBgm();
 void Effect_ResetAll();
-void func_02089124();
+void ActorCollider_InitList();
 void Bgm_EndSceneBgm();
 void PlayerActorHeap_Destroy();
-void func_02081d00();
+void NpcResPools_ClearOnSceneDelete();
 void NpcHeapPools_DestroyAll();
 void NpcRegistry_Clear();
 void FishBobberPool_Destroy();
@@ -310,7 +310,7 @@ void FishBobberPool_Create(u32);
 void ObjShadow_Init(s32);
 void CharaShadow_Load();
 void NpcHeapPools_CreateAll();
-void func_02081d08();
+void NpcResPools_ClearOnSceneCreate();
 void PlayerActorHeap_Create(u32);
 void RoomEntry_OnSceneLoad();
 void NookShop_OnSceneLoad();
@@ -796,7 +796,7 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     ObjShadow_Init(gCurSceneInfo->f4 == 1 ? TRUE : FALSE);
     CharaShadow_Load();
     NpcHeapPools_CreateAll();
-    func_02081d08();
+    NpcResPools_ClearOnSceneCreate();
     NpcRegistry_Clear();
     PlayerActorHeap_Create(gCurrentHeap);
     RoomEntry_OnSceneLoad();
@@ -820,7 +820,7 @@ BOOL FieldSceneSteps::stepFinish(u32, u32) {
     Fog_InitDefault((s32)this);
     Effect_ResetAll();
     reg_4000008 = (reg_4000008 & ~3) | 2;
-    func_02089124();
+    ActorCollider_InitList();
     data_021ce63c = 0;
     SceneWarp_Clear((u8*)&sSceneWarpRequest);
     gVBlanksPerFrame = 3;
@@ -872,7 +872,7 @@ BOOL FieldScene::vfunc_0c() {
     _ZN11TouchPicker5resetEv();
     gGfxFrameHooks = 0;
     PlayerActorHeap_Destroy();
-    func_02081d00();
+    NpcResPools_ClearOnSceneDelete();
     NpcHeapPools_DestroyAll();
     NpcRegistry_Clear();
     FishBobberPool_Destroy();
@@ -928,7 +928,7 @@ BOOL FieldScene::vfunc_0c() {
 
 BOOL FieldScene::onExecute() {
     Collision_UpdateDigHoles();
-    func_02089118();
+    ActorCollider_ClearList();
     BOOL b;
     if (gScreenTransition == 2) b = TRUE; else b = FALSE;
     if (!b && data_021c3cb8 == 0) return TRUE;
@@ -945,7 +945,7 @@ BOOL FieldScene::onDraw() {
     s32 r0 = (s32)Scene_GetTouchPicker();
     TouchPick_Cast(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
     FieldScene_DebugDraw();
-    func_02088d58();
+    ActorCollider_ResolveAll();
     return TRUE;
 }
 

@@ -105,13 +105,13 @@ s32 func_020639e8(char *buf, const char *fmt, ...);
 void Gfx2d_LoadCharFile(const char *buf, u32 *font, u32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadPaletteFileSlot(const char *buf, u32 *font, u32 a, u8 b, s32 c);
 s32 Item_GetInfoUnk02(u32 v);
-void *func_02087e0c(void *p);
+void *Oam_GetObjY(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN14BgVramTaskPair15requestCharPairEjjhjjjj(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void *_ZN13ItemIconCache12getIconCharsEi(S *s, s32 v);
 s32 InventoryItemGrid_GetIconPalette(S *s, s32 v);
 
-void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void _ZN8ItemNameC1Ev(void *p);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN8ItemName11setFromItemEPt(void *p, u16 *c);
@@ -434,15 +434,15 @@ void CreatureBookPanel::drawButtons(s32 y) {
             *q = v - 1;
             pal = 6;
         }
-        func_02088730(1, data_ov114_02296588 + i * 8, 0x80, py, pal, 1, z);
+        Oam_DrawObj(1, data_ov114_02296588 + i * 8, 0x80, py, pal, 1, z);
         i++;
     } while (i < 2);
     s32 py1 = py;
     if (unk_1297 == 0) py1 = py + 2;
-    func_02088730(1, data_ov114_022965c0, 0x80, py1, -1, 1, 0);
+    Oam_DrawObj(1, data_ov114_022965c0, 0x80, py1, -1, 1, 0);
     s32 py2 = py;
     if (unk_1297 == 1) py2 = py + 2;
-    func_02088730(1, (data_ov114_022965c0 + 8), 0x80, py2, -1, 1, 0);
+    Oam_DrawObj(1, (data_ov114_022965c0 + 8), 0x80, py2, -1, 1, 0);
     Oam_DrawCell(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
@@ -862,11 +862,11 @@ void CreatureBook_DrawRows(S *s, s32 a)
             src = data_ov114_02296580;
             t14 = 4;
         }
-        func_02088730(1, src, rowY, x, m1, 2, z18);
+        Oam_DrawObj(1, src, rowY, x, m1, 2, z18);
         if (*(u8 *)((u8 *)s + 0x1295) == s->unk_1268 + i) {
-            func_02088730(1, data_ov114_022965a0, rowY, x, m1, 2, z1c);
+            Oam_DrawObj(1, data_ov114_022965a0, rowY, x, m1, 2, z1c);
         }
-        func_02088730(1, data_ov114_02296598, rowY, x, t14, 2, z20);
+        Oam_DrawObj(1, data_ov114_02296598, rowY, x, t14, 2, z20);
         rowY += 0x1b;
         idx++;
         if (idx >= 9) {
@@ -976,7 +976,7 @@ void CreatureBook_InitRows(S *s) {
         e->unk_04.idx = i * 2 + 0xc0;
         e->unk_08 = -1;
     }
-    s->unk_1264 = (s32)func_02087e0c(data_ov114_022965e0) + 0x70;
+    s->unk_1264 = (s32)Oam_GetObjY(data_ov114_022965e0) + 0x70;
     CreatureBook_SetScroll(s, 0);
 }
 

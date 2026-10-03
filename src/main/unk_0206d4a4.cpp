@@ -32,7 +32,7 @@ struct Unk_021cb3c4_Col {
     Unk_021cb3c4_Col(u8 r_, u8 g_, u8 b_, u8 a_) : r(r_), g(g_), b(b_), a(a_) {}
 };
 
-// 4-byte object seeded with Random_SetSeed(this, 1); its destructor is the empty func_02060b98 (alias)
+// 4-byte object seeded with Random_SetSeed(this, 1); its destructor is the empty Random_Destruct (alias)
 class Random {
 public:
     Random() { Random_SetSeed(this, 1); }
@@ -43,7 +43,7 @@ public:
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n);
 extern "C" void Main_DwcFree(u32 a, void *p);
 extern "C" void Main_RunWifiUtility(void);
-extern "C" void func_0206d4e8(s32 a, s32 b);
+extern "C" void Main_PxiSendWordRetry(s32 a, s32 b);
 extern "C" void Fatal_Handler(void *arg);
 
 extern "C" void *Main_DwcAlloc(u32 a, void *p, u32 n) {
@@ -74,7 +74,7 @@ extern "C" void Main_RunWifiUtility(void) {
     OS_RestoreInterrupts(ime);
 }
 
-extern "C" void func_0206d4e8(s32 a, s32 b) {
+extern "C" void Main_PxiSendWordRetry(s32 a, s32 b) {
     while (PXI_SendWordByFifo(0xe, a, 0) != 0) {
         WaitByLoop(b);
     }
@@ -82,7 +82,7 @@ extern "C" void func_0206d4e8(s32 a, s32 b) {
 
 extern "C" void Fatal_Handler(void *arg) {
     OS_DisableInterrupts();
-    func_0206d4e8(1, 1);
+    Main_PxiSendWordRetry(1, 1);
     if (sFatalEntered == 0) {
         sFatalEntered = 1;
         Fatal_ExceptionCallback(arg, data_021fccfc);

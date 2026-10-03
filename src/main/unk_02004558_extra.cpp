@@ -142,7 +142,7 @@ public:
 };
 
 // ---- member objects of PlayerActor (classes of other units; constructor / destructor only)
-struct Unk_020e0d30 { Unk_020e0d30(); ~Unk_020e0d30(); };
+struct ActorPlacedCollider { ActorPlacedCollider(); ~ActorPlacedCollider(); };
 struct TouchPickCylinder { TouchPickCylinder(); ~TouchPickCylinder(); };
 struct TwoLayerAnimModel { TwoLayerAnimModel(); ~TwoLayerAnimModel(); };
 struct PlayerBodyWorkRef { PlayerBodyWorkRef(); ~PlayerBodyWorkRef(); };
@@ -156,7 +156,7 @@ struct PlayerFaceTexRef { PlayerFaceTexRef(); ~PlayerFaceTexRef(); };
 struct CharaFaceAnimRef { CharaFaceAnimRef(); ~CharaFaceAnimRef(); };
 struct CharaFaceAnimWorkRef { CharaFaceAnimWorkRef(); ~CharaFaceAnimWorkRef(); };
 struct MatTexPatAnim { MatTexPatAnim(); ~MatTexPatAnim(); };
-struct Unk_02063cfc { Unk_02063cfc(); ~Unk_02063cfc(); };
+struct BlinkTimer { BlinkTimer(); ~BlinkTimer(); };
 struct CharaClothTexRef { CharaClothTexRef(); ~CharaClothTexRef(); };
 struct MatTexVramTask { MatTexVramTask(); };
 struct Unk_0205ef98 { Unk_0205ef98(); ~Unk_0205ef98(); };
@@ -2551,7 +2551,7 @@ s32 PlayerActor_DecelerateSkid(s32 a, u32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *PlayerData_GetCurrent();
 u32 _ZN10PlayerData10getFortuneEv(void *p);
-BOOL func_02063b8c(u32 a);
+BOOL Random_GlobalBelow(u32 a);
 s32 func_020e780c(s32 a, s32 b);
 void PlayerActor_RequestTrip(Unk_02007694 *o, u32 a, s32 b);
 extern u32 gCommManager;
@@ -2934,8 +2934,8 @@ void HeldItemModel_SetItem(void *p, u16 *q, s32 r);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 void HeldItemModel_Update(void *p);
-s32 func_02063c18(s16 a);
-s32 func_02063c54(s16 a);
+s32 Math_AngleToDir4(s16 a);
+s32 Math_AngleToSide(s16 a);
 s32 _ZN12Unk_020d93b86getYawEv(void *p);
 s32 Scene_NoPlayerInUnsharedScene();
 void FieldInfoBalloon_ClearNetMsg();
@@ -3369,7 +3369,7 @@ BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, s32 b, s32 c);
 s32 func_02003e70(void *p, u32 a, s32 b, s32 c);
-s32 func_02063c18(s32 a);
+s32 Math_AngleToDir4(s32 a);
 s32 FieldPos_FromUnitCenter(Unk_02006d14_Vec3 *out, s32 x, s32 z);
 s32 func_020e7870(s32 *p, s32 a, s32 b, s32 c, s32 d);
 void PlayerActor_CalcHandItemPos(Unk_02006d14_Vec3 *out, Unk_02006d14 *p, void *args);
@@ -3559,8 +3559,8 @@ s32 PlayerActor_FieldUseTool(void *);
 s32 func_020e9650(void *);
 s32 func_020e7b98(s32, s32);
 s32 func_020e780c(s32, s32);
-void func_02063a1c(void *, void *, void *, void *);
-void func_02063a5c(void *, void *, void *, void *);
+void G3dRes_CopyPlttByName(void *, void *, void *, void *);
+void G3dRes_CopyTexByName(void *, void *, void *, void *);
 BOOL PlayerHead_PollTexUpload(void *);
 s32 PlayerHead_GetModelIds(s32, u32, u16 *, s32 *, s32 *);
 void PlayerHead_Load(void *, s32, s32, u16 *, s32);
@@ -3602,8 +3602,8 @@ void _ZN16CharaClothTexRef8loadItemEPtiii(void *, s32, void *, u32, u32);
 void PlayerPaletteRef_LoadSkin(void *);
 void PlayerPaletteRef_LoadHair(void *, s32);
 s32 func_01ffcb0c(s32, s32);
-BOOL _ZN12Unk_020e0d0813func_02088d38Ej(void *, s32);
-BOOL _ZN12Unk_020e0d0813func_020890b0Ei(void *, s32);
+BOOL _ZN13ActorCollider12isHitByGroupEj(void *, s32);
+BOOL _ZN13ActorCollider17isPushedFromAngleEi(void *, s32);
 s32 HeldItem_GetHandPose(u16 *);
 s32 CharaAnim_GetHoldPoseMode(s32);
 void AnimSlotRef_Load(void *, s32, s32, s32);
@@ -3765,11 +3765,11 @@ s32 _ZN13MatTexPatAnim6updateEv(void *a);
 s32 _ZN16PlayerFaceTexRef9getBufferEv(void *a);
 s32 _ZN20CharaFaceAnimWorkRef7getHeapEv(void *a);
 void _ZN13MatTexPatAnim4initEPvS0_jS0_(void *a, s32 b, s32 c, u32 d, s32 e);
-void _ZN12Unk_020e0d0813func_02089040Ev(void *a);
-void _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
+void _ZN13ActorCollider6submitEv(void *a);
+void _ZN19ActorPlacedCollider15setupForActorAtEPvP4Vec3iijjjhi(void *a, void *b, u32 c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 u32 Ground_GetDefaultY(u32 a);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *a, u32 b);
-BOOL func_02063ca0(void *a);
+BOOL BlinkTimer_Update(void *a);
 BOOL _ZN11PlayerActor18getRemoteTransformEPhPiS1_Pt(Unk_020102ec *a, Unk_02010924_Msg *b, u32 *c, u32 *d, s16 *e);
 BOOL PlayerActor_TurnAngleSlow(s16 *a, s32 b);
 void PlayerActor_ApproachCoord(void *a, u32 b);
@@ -4169,9 +4169,9 @@ public:
     BOOL getRemoteTransform(u8 *a, s32 *b, s32 *c, u16 *d);
     u8 isLocomotionAction(u32 i);
 
-    Unk_020e0d30 unk_170;
+    ActorPlacedCollider unk_170;
     u8 pad_171[0x4f];
-    Unk_020e0d30 unk_1c0;
+    ActorPlacedCollider unk_1c0;
     u8 pad_1c1[0x4f];
     TouchPickCylinder unk_210;
     u8 pad_211[0x1f];
@@ -4205,7 +4205,7 @@ public:
     u8 pad_70d[0x2b];
     MatTexPatAnim unk_738;
     u8 pad_739[0x2b];
-    Unk_02063cfc unk_764;
+    BlinkTimer unk_764;
     u8 pad_765[0x3];
     s32 unk_768;
     s32 unk_76c;
@@ -4264,7 +4264,7 @@ public:
 
 void Unk_02006d14::nudgeForward() {
     using namespace nP;
-    switch (func_02063c18(((nP::Unk_02006d14 *)this)->unk_8e)) {
+    switch (Math_AngleToDir4(((nP::Unk_02006d14 *)this)->unk_8e)) {
     case 2: ((nP::Unk_02006d14 *)this)->unk_5c.z -= 1; break;
     case 0: ((nP::Unk_02006d14 *)this)->unk_5c.z += 1; break;
     case 3: ((nP::Unk_02006d14 *)this)->unk_5c.x -= 1; break;
@@ -4274,7 +4274,7 @@ void Unk_02006d14::nudgeForward() {
 
 void Unk_02006d14::offsetSpawnBySlot() {
     using namespace nP;
-    s32 r = func_02063c18(((nP::Unk_02006d14 *)this)->unk_8e);
+    s32 r = Math_AngleToDir4(((nP::Unk_02006d14 *)this)->unk_8e);
     s32 step = ((nP::Unk_02006d14 *)this)->unk_7fc;
     switch (r) {
     case 2: ((nP::Unk_02006d14 *)this)->unk_5c.z -= step; break;

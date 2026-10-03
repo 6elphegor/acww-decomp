@@ -94,7 +94,7 @@ s32 func_020e7500(void *p);
 s32 func_020e7518(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 void Camera_SetSwayPattern3();
 void ScreenTransition_StartFadeOut(s32 a, s32 b);
 void Snd_FadeOutScene();
@@ -240,7 +240,7 @@ struct Unk_02014254 {
     ~Unk_02014254();
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -345,7 +345,7 @@ public:
     virtual u32 getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -682,7 +682,7 @@ BOOL SpNpcKappn::setupAct04() { return TRUE; }
 // Owner SpNpcKappn
 BOOL SpNpcKappn::mainAct04() {
     if (TalkWindow_Get(0)->unk_04 == 0) {
-        if (func_02063b8c(4) == 0) {
+        if (Random_GlobalBelow(4) == 0) {
             TaxiInterior_StartDriverAnim();
             Camera_SetSwayPattern3();
             unk_716 = 10;

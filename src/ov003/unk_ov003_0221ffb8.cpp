@@ -938,7 +938,7 @@ BOOL AnimModel_allocAnmObj(void *o, void *t);
 s32 FishBobber_setState(void *p, s32 a);
 void FishBobber_setFish(void *e, void *o);
 void *FishBobber_GetFloating();
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void CommManager_endRecord(void *g, s32 a, s32 b);
 void CommManager_writeRecord(void *g, void *buf, s32 n);
@@ -4971,14 +4971,14 @@ extern "C" BOOL FieldFish_HasPassed1D(s32 a, s32 b, s32 c) {
 
 //@ 0x22202ec
 extern "C" s32 FieldFish_RandRange(s32 a, u16 b) {
-    return a + ((BOOL (*)(s32))func_02063b8c)(b - a);
+    return a + ((BOOL (*)(s32))Random_GlobalBelow)(b - a);
 }
 
 
 //@ 0x22202cc
 extern "C" s32 FieldFish_RandRangeSigned(s32 a, u16 b) {
     s32 r = FieldFish_RandRange(a, b);
-    if (((BOOL (*)(s32))func_02063b8c)(2) == 0) {
+    if (((BOOL (*)(s32))Random_GlobalBelow)(2) == 0) {
         r *= -1;
     }
     return r;

@@ -34,7 +34,7 @@ BOOL MenuKeys_HasLeft(void *pad);
 BOOL MenuKeys_HasDown(void *pad);
 BOOL MenuKeys_HasUp(void *pad);
 void BgScreen_SetRectPalette(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
+void Oam_DrawObj(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void String_FromEncodedBytes(void *p, void *s, s32 n);
 void MenuCtrl_SetResult(u32 v);
@@ -696,7 +696,7 @@ BOOL PatternEditorMenu::onDraw() {
     if (testFlags(1)) {
         s32 y = unk_98 + (unk_94 + 0x60);
         if (MenuCtrl_IsButtons()) {
-            func_02088730(1, (void *)data_ov123_02295828, 0x80, y, -1, -1, 0);
+            Oam_DrawObj(1, (void *)data_ov123_02295828, 0x80, y, -1, -1, 0);
             Oam_DrawCell(1, (void *)data_ov123_0229591c, 0x80, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
         Oam_DrawCell(1, (void *)data_ov123_0229596c, unk_a3 + 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
@@ -2229,13 +2229,13 @@ void PatternEditorMenu::drawShapeCorner(s32 x, s32 y, u32 i) {
     t &= ~0x18;
     t |= data_ov123_02295840[i];
     data_ov123_022958c0.b = t;
-    func_02088730(1, &data_ov123_022958c0, a, b, -1, -1, 0);
+    Oam_DrawObj(1, &data_ov123_022958c0, a, b, -1, -1, 0);
 }
 
 void PatternEditorMenu::drawPreviewDot(s32 x, s32 y) {
     s32 a = canvasToScreenX(x);
     s32 b = canvasToScreenY(y);
-    func_02088730(1, data_ov123_022958a8, a, b, -1, -1, 0);
+    Oam_DrawObj(1, data_ov123_022958a8, a, b, -1, -1, 0);
 }
 
 void PatternEditorMenu::drawCanvasCursor(s32 x, s32 y) {
@@ -2257,7 +2257,7 @@ void PatternEditorMenu::drawCanvasCursor(s32 x, s32 y) {
 void PatternEditorMenu::drawLineEndMarker(s32 x, s32 y) {
     s32 a = canvasToScreenX(x);
     s32 b = canvasToScreenY(y);
-    func_02088730(1, data_ov123_02295850, a, b, -1, -1, 0);
+    Oam_DrawObj(1, data_ov123_02295850, a, b, -1, -1, 0);
 }
 
 void PatternEditorMenu::drawShapePreview() {

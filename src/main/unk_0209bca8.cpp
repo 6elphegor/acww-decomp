@@ -4,7 +4,7 @@ extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020639e8(char *dst, const char *fmt, ...);
 s32 File_GetDecodedSizeByPath(const char *s);
-s32 func_02063b8c(s32 n);
+s32 Random_GlobalBelow(s32 n);
 s32 AcreAttr_GetType(s32 n);
 extern const u32 sPondAcreIds[6];
 }
@@ -198,7 +198,7 @@ BOOL TownAcreGrid::assignAcreIds() {
                 if (v == AcreAttr_GetType(i) && used[i] == 0) n++;
             }
             if (n != 0) {
-                u32 r1 = func_02063b8c(n);
+                u32 r1 = Random_GlobalBelow(n);
                 i = 0;
                 n = i;
                 for (; n < 0x86; n++) {
@@ -218,7 +218,7 @@ BOOL TownAcreGrid::assignAcreIds() {
                     if (v == AcreAttr_GetType(i)) n++;
                 }
                 if (n != 0) {
-                    u32 r2 = func_02063b8c(n);
+                    u32 r2 = Random_GlobalBelow(n);
                     i = 0;
                     n = i;
                     for (; n < 0x86; n++) {

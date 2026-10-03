@@ -214,7 +214,7 @@ struct Unk_020135e4 {
 };
 MEMBER(NpcActionCtrl, 0x618 - 0x564);
 MEMBER(Unk_02014254, 0x28);
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -329,7 +329,7 @@ public:
     virtual s32 vfunc_a8();
     void setColliderSize(s32 a, s32 b);
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -502,10 +502,10 @@ struct Unk_ov054_SceneEntry {
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
 #define HouseData_getDebt _ZN9HouseData7getDebtEv
-#define func_02063818 _ZN12Unk_020dd374D1Ev
-#define func_02063830 _ZN12Unk_020dd374C1Ev
-#define func_02063870 _ZN12Unk_020dd38cD1Ev
-#define func_02063888 _ZN12Unk_020dd38cC1Ev
+#define func_02063818 _ZN15EncodedString8BD1Ev
+#define func_02063830 _ZN15EncodedString8BC1Ev
+#define func_02063870 _ZN11MsgString9CD1Ev
+#define func_02063888 _ZN11MsgString9CC1Ev
 #define TalkWindowState_hideBusyIcon _ZN15TalkWindowState12hideBusyIconEv
 #define TalkWindowState_showBusyIcon _ZN15TalkWindowState12showBusyIconEv
 #define TalkWindowState_openChoices _ZN15TalkWindowState11openChoicesEi
@@ -653,7 +653,7 @@ BOOL GameStart_IsNewResident();
 BOOL Comm_End();
 s32 NetOverlay_Restore();
 
-s32 func_02063b8c(s32 a);
+s32 Random_GlobalBelow(s32 a);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
 s32 PlayerActor_IsScriptedWalking(s32 a);
@@ -1119,7 +1119,7 @@ BOOL SpNpcPellyPhyllis::setupAct02() {
     if (unk_810 == 0) {
         s32 v;
         if (Talk_IsDramaPending(this, &v, 0)) {
-            unk_80c = func_02063b8c(5) * 20 + 100;
+            unk_80c = Random_GlobalBelow(5) * 20 + 100;
         }
     }
     unk_80e = data_020c6cc8;

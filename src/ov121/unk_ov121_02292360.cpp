@@ -19,8 +19,8 @@
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define LabelBalloon_setPos _ZN12LabelBalloon6setPosEii
-#define func_02089f30 _ZN12Unk_020e0d80D1Ev
-#define func_02089f44 _ZN12Unk_020e0d80C1Ev
+#define func_02089f30 _ZN16LabelBalloonTextD1Ev
+#define func_02089f44 _ZN16LabelBalloonTextC1Ev
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
 #define HandCursor_setAnimAtEnd _ZN10HandCursor12setAnimAtEndEi
@@ -137,7 +137,7 @@ s32 FieldAction_PollDrop(s32 h);
 void FieldAction_Release(s32 h);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
+s32 Oam_DrawObj(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete();
 void MIi_CpuCopy16(s32 a, void *b, s32 c);
@@ -595,7 +595,7 @@ BOOL DesignTab::onDraw() {
         u8 *q = unk_1074;
         u8 s = unk_ae;
         sDesignTabIconCell.unk_04 = (sDesignTabIconCell.unk_04 & 0xfffffc00) | (u16)(q[s] * 4 + 0xc0) & 0x3ff;
-        func_02088730(1, &sDesignTabIconCell, unk_a4, unk_a6, q[s] + 4, 2, 0);
+        Oam_DrawObj(1, &sDesignTabIconCell, unk_a4, unk_a6, q[s] + 4, 2, 0);
     }
     if (testFlags(8)) {
         u8 k = unk_af;
@@ -613,7 +613,7 @@ BOOL DesignTab::onDraw() {
             pal = e[0x1074] + 4;
             y = (s32)(p + getSlotY(i));
             s32 x = getSlotX(i);
-            func_02088730(1, &sDesignTabIconCell, x, y, pal, 2, zero);
+            Oam_DrawObj(1, &sDesignTabIconCell, x, y, pal, 2, zero);
         }
         i = (u8)(i + 1);
     }

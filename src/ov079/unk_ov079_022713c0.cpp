@@ -81,7 +81,7 @@ void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void _ZN12ItemPickSpec3setEii(Unk_0202368c_Obj *o, s32 a, s32 b);
 void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_02063388(Unk_0202368c_Obj *o);
+void ItemPickSpec_Destruct(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
 void PlayerActor_GetSlotHeldItem(u16 *out, void *p);
 void *PlayerActor_GetLocalSessionSlot();
@@ -94,9 +94,9 @@ BOOL MenuCtrl_IsResultOk();
 s32 MenuCtrl_GetIndex();
 s32 Contest_GetCatchSize(u16 *p);
 s32 memcmp(void *a, void *b, u32 n);
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 void ContestRecord_BeginContestDay(void *g, u32 a);
-u32 func_02060e24(u32 v);
+u32 Insect_GetSpawnTable(u32 v);
 s32 InsectPick_PickAnyHour(u16 *a, s32 *b, s32 *c, s32 d, void *tbl, s32 *arr, s32 cnt);
 s32 SaveVillagers_PickRandomExcept(void *p, u32 a, u32 b);
 void *_ZN12VillagerData13getVillagerIdEv();
@@ -282,7 +282,7 @@ struct Unk_02014254 {
     void func_020141b4(u32 a, u32 b, u32 c);
     u8 unk_00[0x28];
 };
-struct Unk_020e06dc { u8 unk_00[8]; Unk_020e06dc(); };
+struct SpNpcAnimHeapHandle { u8 unk_00[8]; SpNpcAnimHeapHandle(); };
 
 struct Unk_020f4080 {
     u8 unk_00[0x558 - 0x514];
@@ -387,7 +387,7 @@ public:
     virtual void getSpecies();
     virtual s32 vfunc_a8();
 
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     s32 unk_648;
     s32 unk_64c;
     u8 unk_650;
@@ -768,7 +768,7 @@ BOOL SpNpcWendell::mainAct02() {
                         s32 t = Math_AngleXZ(&unk_5c, &v);
                         if (NpcActor_IsFrontAngle((s16)(t - unk_8e))) {
                             t = 1;
-                            if (func_02063b8c(4) == 0) {
+                            if (Random_GlobalBelow(4) == 0) {
                                 t = 2;
                             }
                             if (t != _ZN13NpcActionCtrl9getActionEv(&unk_564)) {
@@ -1050,9 +1050,9 @@ void SpNpcWendellTalk::onPatternSlotPicked() {
             } else if (v >= 0x1531 && v <= 0x153a) {
                 r4 = 0xa;
             } else if (Item_GetFishWaterClass(&unk_c0) == 0) {
-                r4 = (u8)func_02063b8c(8);
+                r4 = (u8)Random_GlobalBelow(8);
             } else if (Item_GetFishWaterClass(&unk_c0) == 1) {
-                r4 = (u8)(func_02063b8c(9) + 0xc);
+                r4 = (u8)(Random_GlobalBelow(9) + 0xc);
             } else if (Item_GetFishWaterClass(&unk_c0) == 2) {
                 r4 = 0x1c;
             } else if (Unk_ov079_Rng(&unk_c0, 0x1518, 0x151c)) {
@@ -1137,7 +1137,7 @@ void SpNpcWendellTalk::vfunc_78(TalkStartMsg *out) {
     if (!Talk_CheckAndSetPlayerFlag(0xa, 0)) {
         out->b = 0;
     } else {
-        out->b = func_02063b8c(3) + 6;
+        out->b = Random_GlobalBelow(3) + 6;
     }
 }
 
@@ -1162,7 +1162,7 @@ void SpNpcWendellTalk::vfunc_14() {
         r = 4;
         if (Unk_ov079_Rng(&unk_c0, 0x153b, 0x1541)) {
             unk_c0 = 0x13ac;
-            if (func_02063b8c(2)) {
+            if (Random_GlobalBelow(2)) {
                 unk_c0 = 0x3530;
             }
             r = 9;

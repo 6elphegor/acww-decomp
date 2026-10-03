@@ -20,7 +20,7 @@ s32 _ZN20SpNpcAnimHeapRefPool10getHeapRefEj(void *, s32);
 s32 _ZN23VillagerAnimHeapRefPool10getHeapRefEj(void *, s32);
 s32 _ZN15NpcBodyAnimPool8getLayerEjj(void *, s32, u32);
 s32 _ZN10NpcResPool12findFreeSlotEv(void *);
-void func_02081d10();
+void NpcResPools_ClearAll();
 }
 
 struct NpcResPool {
@@ -31,86 +31,86 @@ struct NpcResPool {
     virtual void *getSlot(u32 i) = 0;
 };
 
-// Same object as Unk_020e0718 (symbols.txt names two of its methods after the class Unk_020821b4); declaration only.
-struct Unk_020821b4 {
+// Same object as NpcResHandle (symbols.txt names two of its methods after the class NpcResHandleView); declaration only.
+struct NpcResHandleView {
     s8 unk_04;
-    Unk_020821b4();
-    virtual ~Unk_020821b4();
-    virtual NpcResPool *vfunc_08() = 0;
-    void *func_02081d4c();
-    void *func_02081d6c(s32 a);
+    NpcResHandleView();
+    virtual ~NpcResHandleView();
+    virtual NpcResPool *getPool() = 0;
+    void *getHeldItemModel();
+    void *loadHeldItem(s32 a);
 };
 
-struct Unk_020e0768 : Unk_020821b4 {
-    Unk_020e0768();
-    virtual ~Unk_020e0768();
-    virtual NpcResPool *vfunc_08();
-    void *func_02081f44();
+struct NpcTexPatBufRefHandle : NpcResHandleView {
+    NpcTexPatBufRefHandle();
+    virtual ~NpcTexPatBufRefHandle();
+    virtual NpcResPool *getPool();
+    void *getClothTex();
 };
 
-struct Unk_020e06c8 : Unk_020821b4 {
-    Unk_020e06c8();
-    virtual ~Unk_020e06c8();
-    virtual NpcResPool *vfunc_08();
-    void *func_02081e5c();
+struct NpcTexPatHeapHandle : NpcResHandleView {
+    NpcTexPatHeapHandle();
+    virtual ~NpcTexPatHeapHandle();
+    virtual NpcResPool *getPool();
+    void *getFaceAnim();
 };
 
-struct Unk_020e06dc : Unk_020821b4 {
-    Unk_020e06dc();
-    virtual ~Unk_020e06dc();
-    virtual NpcResPool *vfunc_08();
-    void *func_0208202c();
+struct SpNpcAnimHeapHandle : NpcResHandleView {
+    SpNpcAnimHeapHandle();
+    virtual ~SpNpcAnimHeapHandle();
+    virtual NpcResPool *getPool();
+    void *getVillagerAnimHeapRef();
 };
 
-struct Unk_020e06f0 : Unk_020821b4 {
-    Unk_020e06f0();
-    virtual ~Unk_020e06f0();
-    virtual NpcResPool *vfunc_08();
+struct VillagerAnimHeapHandle : NpcResHandleView {
+    VillagerAnimHeapHandle();
+    virtual ~VillagerAnimHeapHandle();
+    virtual NpcResPool *getPool();
 };
 
-struct Unk_020e0704 : Unk_020821b4 {
-    Unk_020e0704();
-    virtual ~Unk_020e0704();
-    virtual NpcResPool *vfunc_08();
+struct NpcBodyAnimHandle : NpcResHandleView {
+    NpcBodyAnimHandle();
+    virtual ~NpcBodyAnimHandle();
+    virtual NpcResPool *getPool();
 };
 
-struct Unk_020e0718 {
+struct NpcResHandle {
     s8 unk_04;
-    Unk_020e0718();
-    virtual ~Unk_020e0718();
-    virtual NpcResPool *vfunc_08() = 0;
-    void *func_020820a0(u32 off);
-    void func_0208211c();
-    BOOL func_02082140();
+    NpcResHandle();
+    virtual ~NpcResHandle();
+    virtual NpcResPool *getPool() = 0;
+    void *getBodyAnimLayer(u32 off);
+    void release();
+    BOOL acquire();
 };
 
-struct Unk_020e072c : Unk_020e0718 {
-    Unk_020e072c();
-    virtual ~Unk_020e072c();
-    virtual NpcResPool *vfunc_08();
-    void *func_02081de8();
+struct NpcHeldItemModelHandle : NpcResHandle {
+    NpcHeldItemModelHandle();
+    virtual ~NpcHeldItemModelHandle();
+    virtual NpcResPool *getPool();
+    void *getTexPatHeapRef();
 };
 
-struct Unk_020e0740 : Unk_020e0718 {
-    Unk_020e0740();
-    virtual ~Unk_020e0740();
-    virtual NpcResPool *vfunc_08();
-    void *func_02081fb8();
+struct NpcClothTexHandle : NpcResHandle {
+    NpcClothTexHandle();
+    virtual ~NpcClothTexHandle();
+    virtual NpcResPool *getPool();
+    void *getSpNpcAnimHeapRef();
 };
 
-struct Unk_020e0754 : Unk_020e0718 {
-    Unk_020e0754();
-    virtual ~Unk_020e0754();
-    virtual NpcResPool *vfunc_08();
-    void *func_02081ed0();
+struct NpcFaceAnimHandle : NpcResHandle {
+    NpcFaceAnimHandle();
+    virtual ~NpcFaceAnimHandle();
+    virtual NpcResPool *getPool();
+    void *getTexPatBufRef();
 };
 
-Unk_020e0718::Unk_020e0718() : unk_04(-1) {}
+NpcResHandle::NpcResHandle() : unk_04(-1) {}
 
-Unk_020e0718::~Unk_020e0718() {}
+NpcResHandle::~NpcResHandle() {}
 
-BOOL Unk_020e0718::func_02082140() {
-    NpcResPool *c = vfunc_08();
+BOOL NpcResHandle::acquire() {
+    NpcResPool *c = getPool();
     BOOL r = FALSE;
     if (c) {
         if (unk_04 == -1) {
@@ -127,20 +127,20 @@ BOOL Unk_020e0718::func_02082140() {
     return r;
 }
 
-void Unk_020e0718::func_0208211c() {
-    NpcResPool *c = vfunc_08();
+void NpcResHandle::release() {
+    NpcResPool *c = getPool();
     if (c) {
         c->releaseSlot(unk_04);
         unk_04 = -1;
     }
 }
 
-Unk_020e0704::Unk_020e0704() {}
+NpcBodyAnimHandle::NpcBodyAnimHandle() {}
 
-Unk_020e0704::~Unk_020e0704() {}
+NpcBodyAnimHandle::~NpcBodyAnimHandle() {}
 
-void *Unk_020e0718::func_020820a0(u32 off) {
-    NpcResPool *c = vfunc_08();
+void *NpcResHandle::getBodyAnimLayer(u32 off) {
+    NpcResPool *c = getPool();
     void *r = 0;
     if (c) {
         r = (void *)_ZN15NpcBodyAnimPool8getLayerEjj(c, unk_04, off);
@@ -148,12 +148,12 @@ void *Unk_020e0718::func_020820a0(u32 off) {
     return r;
 }
 
-Unk_020e06f0::Unk_020e06f0() {}
+VillagerAnimHeapHandle::VillagerAnimHeapHandle() {}
 
-Unk_020e06f0::~Unk_020e06f0() {}
+VillagerAnimHeapHandle::~VillagerAnimHeapHandle() {}
 
-void *Unk_020e06dc::func_0208202c() {
-    void *p = vfunc_08();
+void *SpNpcAnimHeapHandle::getVillagerAnimHeapRef() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN23VillagerAnimHeapRefPool10getHeapRefEj(p, (s8)unk_04);
@@ -161,12 +161,12 @@ void *Unk_020e06dc::func_0208202c() {
     return r;
 }
 
-Unk_020e06dc::Unk_020e06dc() {}
+SpNpcAnimHeapHandle::SpNpcAnimHeapHandle() {}
 
-Unk_020e06dc::~Unk_020e06dc() {}
+SpNpcAnimHeapHandle::~SpNpcAnimHeapHandle() {}
 
-void *Unk_020e0740::func_02081fb8() {
-    void *p = vfunc_08();
+void *NpcClothTexHandle::getSpNpcAnimHeapRef() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN20SpNpcAnimHeapRefPool10getHeapRefEj(p, (s8)unk_04);
@@ -174,12 +174,12 @@ void *Unk_020e0740::func_02081fb8() {
     return r;
 }
 
-Unk_020e0740::Unk_020e0740() {}
+NpcClothTexHandle::NpcClothTexHandle() {}
 
-Unk_020e0740::~Unk_020e0740() {}
+NpcClothTexHandle::~NpcClothTexHandle() {}
 
-void *Unk_020e0768::func_02081f44() {
-    void *p = vfunc_08();
+void *NpcTexPatBufRefHandle::getClothTex() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN15NpcClothTexPool11getClothTexEj(p, (s8)unk_04);
@@ -187,12 +187,12 @@ void *Unk_020e0768::func_02081f44() {
     return r;
 }
 
-Unk_020e0768::Unk_020e0768() {}
+NpcTexPatBufRefHandle::NpcTexPatBufRefHandle() {}
 
-Unk_020e0768::~Unk_020e0768() {}
+NpcTexPatBufRefHandle::~NpcTexPatBufRefHandle() {}
 
-void *Unk_020e0754::func_02081ed0() {
-    void *p = vfunc_08();
+void *NpcFaceAnimHandle::getTexPatBufRef() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN19NpcTexPatBufRefPool9getBufRefEj(p, (s8)unk_04);
@@ -200,12 +200,12 @@ void *Unk_020e0754::func_02081ed0() {
     return r;
 }
 
-Unk_020e0754::Unk_020e0754() {}
+NpcFaceAnimHandle::NpcFaceAnimHandle() {}
 
-Unk_020e0754::~Unk_020e0754() {}
+NpcFaceAnimHandle::~NpcFaceAnimHandle() {}
 
-void *Unk_020e06c8::func_02081e5c() {
-    void *p = vfunc_08();
+void *NpcTexPatHeapHandle::getFaceAnim() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN15NpcFaceAnimPool11getFaceAnimEj(p, (s8)unk_04);
@@ -213,12 +213,12 @@ void *Unk_020e06c8::func_02081e5c() {
     return r;
 }
 
-Unk_020e06c8::Unk_020e06c8() {}
+NpcTexPatHeapHandle::NpcTexPatHeapHandle() {}
 
-Unk_020e06c8::~Unk_020e06c8() {}
+NpcTexPatHeapHandle::~NpcTexPatHeapHandle() {}
 
-void *Unk_020e072c::func_02081de8() {
-    void *p = vfunc_08();
+void *NpcHeldItemModelHandle::getTexPatHeapRef() {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN17NpcTexPatHeapPool10getHeapRefEj(p, (s8)unk_04);
@@ -226,12 +226,12 @@ void *Unk_020e072c::func_02081de8() {
     return r;
 }
 
-Unk_020e072c::Unk_020e072c() {}
+NpcHeldItemModelHandle::NpcHeldItemModelHandle() {}
 
-Unk_020e072c::~Unk_020e072c() {}
+NpcHeldItemModelHandle::~NpcHeldItemModelHandle() {}
 
-void *Unk_020821b4::func_02081d6c(s32 a) {
-    void *p = vfunc_08();
+void *NpcResHandleView::loadHeldItem(s32 a) {
+    void *p = getPool();
     void *r = 0;
     if (p) {
         r = (void *)_ZN20NpcHeldItemModelPool8loadItemEjPt(p, (s8)unk_04, a);
@@ -239,15 +239,15 @@ void *Unk_020821b4::func_02081d6c(s32 a) {
     return r;
 }
 
-void *Unk_020821b4::func_02081d4c() {
-    void *p = vfunc_08();
+void *NpcResHandleView::getHeldItemModel() {
+    void *p = getPool();
     if (p) {
         return (void *)_ZN20NpcHeldItemModelPool8getModelEj(p, (s8)unk_04);
     }
     return 0;
 }
 
-extern "C" void func_02081d10() {
+extern "C" void NpcResPools_ClearAll() {
     NpcBodyAnimPool_Get();
     _ZN10NpcResPool13clearAllSlotsEv();
     NpcClothTexPool_Get();
@@ -262,23 +262,23 @@ extern "C" void func_02081d10() {
     _ZN10NpcResPool13clearAllSlotsEv();
 }
 
-extern "C" void func_02081d08() { func_02081d10(); }
+extern "C" void NpcResPools_ClearOnSceneCreate() { NpcResPools_ClearAll(); }
 
-extern "C" void func_02081d00() { func_02081d10(); }
+extern "C" void NpcResPools_ClearOnSceneDelete() { NpcResPools_ClearAll(); }
 
-NpcResPool *Unk_020e072c::vfunc_08() { return (NpcResPool *)NpcHeldItemModelPool_Get(); }
+NpcResPool *NpcHeldItemModelHandle::getPool() { return (NpcResPool *)NpcHeldItemModelPool_Get(); }
 
-NpcResPool *Unk_020e06c8::vfunc_08() { return (NpcResPool *)NpcTexPatHeapPool_Get(); }
+NpcResPool *NpcTexPatHeapHandle::getPool() { return (NpcResPool *)NpcTexPatHeapPool_Get(); }
 
-NpcResPool *Unk_020e0754::vfunc_08() { return (NpcResPool *)NpcFaceAnimPool_Get(); }
+NpcResPool *NpcFaceAnimHandle::getPool() { return (NpcResPool *)NpcFaceAnimPool_Get(); }
 
-NpcResPool *Unk_020e0768::vfunc_08() { return (NpcResPool *)NpcTexPatBufRefPool_Get(); }
+NpcResPool *NpcTexPatBufRefHandle::getPool() { return (NpcResPool *)NpcTexPatBufRefPool_Get(); }
 
-NpcResPool *Unk_020e0740::vfunc_08() { return (NpcResPool *)NpcClothTexPool_Get(); }
+NpcResPool *NpcClothTexHandle::getPool() { return (NpcResPool *)NpcClothTexPool_Get(); }
 
-NpcResPool *Unk_020e06dc::vfunc_08() { return (NpcResPool *)SpNpcAnimHeapRefPool_Get(); }
+NpcResPool *SpNpcAnimHeapHandle::getPool() { return (NpcResPool *)SpNpcAnimHeapRefPool_Get(); }
 
-NpcResPool *Unk_020e06f0::vfunc_08() { return (NpcResPool *)VillagerAnimHeapRefPool_Get(); }
+NpcResPool *VillagerAnimHeapHandle::getPool() { return (NpcResPool *)VillagerAnimHeapRefPool_Get(); }
 
-NpcResPool *Unk_020e0704::vfunc_08() { return (NpcResPool *)NpcBodyAnimPool_Get(); }
+NpcResPool *NpcBodyAnimHandle::getPool() { return (NpcResPool *)NpcBodyAnimPool_Get(); }
 

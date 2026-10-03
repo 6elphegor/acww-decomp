@@ -53,7 +53,7 @@ Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
 }
 
 extern "C" {
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {
@@ -644,7 +644,7 @@ extern "C" BOOL Weather_UpdateDaily(WeatherRecord *self, void *arg) {
 extern "C" u8 Weather_PickPattern(void *self, void *p) {
     u8 result = 0;
     s32 idx = DateTime_GetWeatherPeriod(p);
-    s32 r = func_02063b8c(100);
+    s32 r = Random_GlobalBelow(100);
     s32 i = result;
     const u8 *tab = sWeatherPatternWeights + idx * 0x20;
     for (; i < 0x20; i++) {

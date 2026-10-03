@@ -76,7 +76,7 @@ void MailText_SetSlot(s32 a, void *b);
 }
 
 extern "C" {
-u8 *func_02063b8c(s32 a);
+u8 *Random_GlobalBelow(s32 a);
 }
 
 extern "C" {

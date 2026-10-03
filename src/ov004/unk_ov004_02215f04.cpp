@@ -352,7 +352,7 @@ s32 NpcActionCtrl_requestAction(void *, u32, s32, s32, s32, s16, s16, s32, s32, 
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 NpcActor_findAvoidPos(void *, void *);
 s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void Unk_02013474_enableFootsteps(void *);
 void Camera_FocusOnPoint(void *);
@@ -397,9 +397,9 @@ void *func_02080dd8(void *);
 void func_02080da4(void *, s8);
 void func_0201578c(void *, void *, s32, s32);
 void func_0206338c(void *, s32, s32);
-void func_02063388(void *);
+void ItemPickSpec_Destruct(void *);
 void ItemPick_One(u16 *, void *, s32, s32, s32, s32, s32);
-void func_0206277c(u16 *, void *, s32);
+void ItemPick_FtrWallCarpetByClass(u16 *, void *, s32);
 void *NpcRegistry_GetVillager(s32);
 s32 NpcRegistry_GetSlotCount();
 s32 MenuCtrl_IsFinished();
@@ -509,7 +509,7 @@ extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in
     out->y = in->y;
     out->z = in->z;
     if (count != 0) {
-        s32 pick = func_02063b8c(count);
+        s32 pick = Random_GlobalBelow(count);
         s32 k = 0;
         for (y = 0; y < 14; y++) {
             for (x = 0; x < 16; x++) {
@@ -701,13 +701,13 @@ void BirthdayGuestVillagerTalk::vfunc_78(void *arg) {
     setTalked();
     switch (r6) {
     case 0:
-        ((u8 *)arg)[4] = func_02063b8c(2) + 0x1a;
+        ((u8 *)arg)[4] = Random_GlobalBelow(2) + 0x1a;
         break;
     case 1:
-        ((u8 *)arg)[4] = func_02063b8c(4) + 0x1e;
+        ((u8 *)arg)[4] = Random_GlobalBelow(4) + 0x1e;
         break;
     default:
-        ((u8 *)arg)[4] = func_02063b8c(2) + 0x1c;
+        ((u8 *)arg)[4] = Random_GlobalBelow(2) + 0x1c;
         break;
     }
     o = unk_1a0;
@@ -804,7 +804,7 @@ void BirthdayGuestVillager::mainAct00() {
             unk_a4c.x = unk_a58.x;
             unk_a4c.y = unk_a58.y;
             unk_a4c.z = unk_a58.z;
-            if (a && d >= 0x6000 && func_02063b8c(2) == 0) {
+            if (a && d >= 0x6000 && Random_GlobalBelow(2) == 0) {
                 d = func_020e7b98(a->pos.x - unk_5c[0], a->pos.z - unk_5c[2]);
                 s32 df = func_020e780c(unk_8e, d);
                 Unk_ov004_Vec3 *pa = &a->pos;
@@ -825,12 +825,12 @@ void BirthdayGuestVillager::mainAct00() {
                 if (!NpcActionCtrl_requestAction(unk_564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
-                unk_a4a = func_02063b8c(0x46) + 0x14;
+                unk_a4a = Random_GlobalBelow(0x46) + 0x14;
             } else {
                 if (!NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a58.x, unk_a58.z, 0, 0, 0, 0, data_020c6cc8, 0)) {
                     goto end;
                 }
-                unk_a4a = func_02063b8c(0x50) + 0x14;
+                unk_a4a = Random_GlobalBelow(0x50) + 0x14;
             }
         } else {
             if (NpcActionCtrl_isActionDone(unk_564)) {
@@ -903,7 +903,7 @@ void BirthdayGuestVillager::mainAct01() {
         s32 da = func_020e780c(a, unk_8e);
         s32 db = func_020e780c(b, o->unk_8e);
         if (da <= 0x500 && db <= 0x500) {
-            if (func_02063b8c(2)) {
+            if (Random_GlobalBelow(2)) {
                 if (changeAct(3)) {
                     unk_a46 = 0x12c;
                 }

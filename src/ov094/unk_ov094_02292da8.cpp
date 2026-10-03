@@ -188,8 +188,8 @@ public:
 #define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
-#define func_02063870 _ZN12Unk_020dd38cD1Ev
-#define func_02063888 _ZN12Unk_020dd38cC1Ev
+#define func_02063870 _ZN11MsgString9CD1Ev
+#define func_02063888 _ZN11MsgString9CC1Ev
 #define LetterView_getState _ZN10LetterView8getStateEv
 #define LetterView_getPresent _ZN10LetterView10getPresentEv
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
@@ -198,8 +198,8 @@ public:
 #define func_0206fca8 _ZN11LabelStringD1Ev
 #define func_0206fcc8 _ZN11LabelStringC1Ev
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
-#define func_02089f30 _ZN12Unk_020e0d80D1Ev
-#define func_02089f44 _ZN12Unk_020e0d80C1Ev
+#define func_02089f30 _ZN16LabelBalloonTextD1Ev
+#define func_02089f44 _ZN16LabelBalloonTextC1Ev
 #define func_02094018 _ZN11MsgString9BD1Ev
 #define func_02094030 _ZN11MsgString9BC1Ev
 #define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
@@ -238,7 +238,7 @@ void func_0206260c(void *p);
 void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
-void func_020638d0(s32 a, void *p);
+void TownId_GetNameString(s32 a, void *p);
 s32 func_020639e8(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 LetterView_getState(void *o);
@@ -258,9 +258,9 @@ void LabelString_createLabel(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_destroyLabel(void *p);
 void func_0206fca8(void *p);
 void func_0206fcc8(void *p);
-s32 func_02087e0c(void *p);
-s32 func_02087e14(void *p);
-s32 func_02088730(s32 a, const void *b, s32 c, s32 d, ...);
+s32 Oam_GetObjY(void *p);
+s32 Oam_GetObjX(void *p);
+s32 Oam_DrawObj(s32 a, const void *b, s32 c, s32 d, ...);
 void LabelBalloon_setText(void *a, void *b);
 void func_02089f30(void *p);
 void func_02089f44(void *p);
@@ -585,9 +585,9 @@ u32 InventoryItemGrid_FindSlotInRange(void *o, s32 a, s32 b, s32 c, s32 d, u8 s,
     s32 i = s;
     for (; i <= e; i++) {
         void *p = InventoryItemGrid_GetSlotSprite((S *)o, i);
-        s32 x = func_02087e14(p);
+        s32 x = Oam_GetObjX(p);
         if (a < x && x < c) {
-            s32 y = func_02087e0c(p);
+            s32 y = Oam_GetObjY(p);
             if (b < y && y < d) {
                 return (u8)i;
             }
@@ -602,9 +602,9 @@ s32 InventoryItemGrid_HitTestSlot(void *o, s32 a, s32 b, s32 c)
     s32 b1 = b - 0x74;
     s32 b2 = b - 0x5c;
     void *e = InventoryItemGrid_GetSlotSprite((S *)o, c);
-    s32 x = func_02087e14(e);
+    s32 x = Oam_GetObjX(e);
     if (a - 0x94 < x && x < a1) {
-        s32 y = func_02087e0c(e);
+        s32 y = Oam_GetObjY(e);
         if (b1 < y && y < b2) {
             return TRUE;
         }
@@ -726,12 +726,12 @@ void InventoryItemGrid_ShowSlotName(void *o, s32 a, s32 b)
 
 s32 InventoryItemGrid_GetSlotX(void *o, s32 i)
 {
-    return func_02087e14(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x80;
+    return Oam_GetObjX(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x80;
 }
 
 s32 InventoryItemGrid_GetSlotY(void *o, s32 i)
 {
-    return func_02087e0c(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x60;
+    return Oam_GetObjY(InventoryItemGrid_GetSlotSprite((S *)o, i)) + 0x60;
 }
 
 BOOL InventoryItemGrid_IsCursorSlot(InventoryItemGrid *o, s32 v)
@@ -889,8 +889,8 @@ void InventoryItemGrid_DrawBox(S *s, s32 x, s32 y) {
 void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y) {
     if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x21)) {
         Ent8 *e = InventoryItemGrid_GetSlotSprite(s, 0x21);
-        s32 a = x + func_02087e14(e) + 0x80;
-        s32 b = y + func_02087e0c(e) + 0x60;
+        s32 a = x + Oam_GetObjX(e) + 0x80;
+        s32 b = y + Oam_GetObjY(e) + 0x60;
         InventoryItemGrid_DrawMark(s, a, b);
     }
     if (InventoryItemGrid_TestBit((u32 *)(s->unk_a40), 0x22)) {
@@ -899,19 +899,19 @@ void InventoryItemGrid_DrawExtraMarks(S *s, s32 x, s32 y) {
 }
 
 void InventoryItemGrid_DrawHeldItem(S *s, s32 x, s32 y) {
-    s32 a = x + func_02087e14(sHeldItemSprite);
-    s32 b = y + func_02087e0c(sHeldItemSprite);
+    s32 a = x + Oam_GetObjX(sHeldItemSprite);
+    s32 b = y + Oam_GetObjY(sHeldItemSprite);
     u32 v = InventoryItemGrid_GetScale(s->unk_a59);
     if (v != 0) {
         if (v == 0x1000) {
-            func_02088730(1, sHeldItemSprite, x, y, -1, s->unk_a50, 0);
+            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->unk_a50, 0);
         } else {
             Unk_ov094_0229313c_L l;
             l.v[0] = v;
             l.v[1] = 0;
             l.v[2] = 0;
             l.v[3] = v;
-            func_02088730(1, sHeldItemSprite, x, y, -1, s->unk_a50, &l);
+            Oam_DrawObj(1, sHeldItemSprite, x, y, -1, s->unk_a50, &l);
         }
     }
     InventoryItemGrid_DrawUnderlay(s, a, b, -1);
@@ -931,20 +931,20 @@ BOOL InventoryItemGrid_IsSlotEmpty(S *s, s32 i) {
 }
 
 void InventoryItemGrid_DrawMark(S *s, s32 a, s32 b) {
-    func_02088730(1, data_ov094_02294a68, a - 8, b - 8, -1, s->unk_a50, 0);
+    Oam_DrawObj(1, data_ov094_02294a68, a - 8, b - 8, -1, s->unk_a50, 0);
 }
 
 void InventoryItemGrid_DrawUnderlay(S *s, s32 a, s32 b, s32 c) {
-    func_02088730(1, sItemGridMarkSprites, a - 8, b - 8, c, s->unk_a50, 0);
+    Oam_DrawObj(1, sItemGridMarkSprites, a - 8, b - 8, c, s->unk_a50, 0);
 }
 
 void InventoryItemGrid_DrawFocus(S *s, s32 a, s32 b) {
-    func_02088730(1, data_ov094_02294a60, a - 8, b - 8, -1, s->unk_a50, 0);
+    Oam_DrawObj(1, data_ov094_02294a60, a - 8, b - 8, -1, s->unk_a50, 0);
 }
 
 void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
-    s32 a = x + func_02087e14(e);
-    s32 b = y + func_02087e0c(e);
+    s32 a = x + Oam_GetObjX(e);
+    s32 b = y + Oam_GetObjY(e);
     s32 off = 0;
     if (InventoryItemGrid_IsCursorSlot((InventoryItemGrid *)s, idx)) {
         off = InventoryItemGrid_GetCursorLift((InventoryItemGrid *)s);
@@ -959,7 +959,7 @@ void InventoryItemGrid_DrawSlot(S *s, Ent8 *e, s32 idx, s32 x, s32 y) {
         if (InventoryItemGrid_IsSlotDisabled(s, (u8)idx)) {
             c = 0xe;
         }
-        func_02088730(1, e, x + off, y + off, c, s->unk_a50, 0);
+        Oam_DrawObj(1, e, x + off, y + off, c, s->unk_a50, 0);
         InventoryItemGrid_DrawUnderlay(s, a, b, c);
         if (InventoryItemGrid_IsCursorSlot((InventoryItemGrid *)s, idx)) {
             InventoryItemGrid_DrawFocus(s, a, b);

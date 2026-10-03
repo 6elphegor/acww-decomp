@@ -6,9 +6,9 @@ void Snd_SetPanIfChanged(u8 v);
 
 extern u8 data_020d5b0c[];
 
-extern const u8 data_020cf654[0x14];
-extern const u8 data_020cf668[0x14];
-extern const s32 data_020cf67c[0x13];
+extern const u8 sHandCursorAnimHasLayer2[0x14];
+extern const u8 sHandCursorAnimLoops[0x14];
+extern const s32 sHandCursorAnimSeqIds[0x13];
 
 struct Unk_02089240_Rec {
     /* 0x00 */ s32 unk_00;
@@ -99,10 +99,10 @@ void HandCursor::setPos(s32 a, s32 b) {
 }
 
 void HandCursor::setAnim(s32 idx) {
-    s32 a = data_020cf67c[idx];
+    s32 a = sHandCursorAnimSeqIds[idx];
     s32 n = a + 1;
     BOOL f;
-    switch (data_020cf668[idx]) {
+    switch (sHandCursorAnimLoops[idx]) {
     default:
         f = FALSE;
         break;
@@ -113,7 +113,7 @@ void HandCursor::setAnim(s32 idx) {
     unk_0c.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
     unk_0c.setPlayOnce(f);
     unk_0c.restart();
-    unk_49 = data_020cf654[idx];
+    unk_49 = sHandCursorAnimHasLayer2[idx];
     if (unk_49 != 0) {
         unk_2c.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
         unk_2c.setPlayOnce(f);
@@ -132,15 +132,15 @@ void HandCursor::setAnimAtEnd(s32 idx) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const u8 data_020cf668[0x14];
-extern const u8 data_020cf654[0x14];
-extern const s32 data_020cf67c[0x13];
+extern const u8 sHandCursorAnimLoops[0x14];
+extern const u8 sHandCursorAnimHasLayer2[0x14];
+extern const s32 sHandCursorAnimSeqIds[0x13];
 
-extern const u8 data_020cf668[0x14] = {1,1,0,0, 0,0,0,1, 0,0,0,0, 0,1,0,0, 1,0,0,0};
+extern const u8 sHandCursorAnimLoops[0x14] = {1,1,0,0, 0,0,0,1, 0,0,0,0, 0,1,0,0, 1,0,0,0};
 
-extern const u8 data_020cf654[0x14] = {1,1,1,1, 1,1,0,1, 1,1,1,1, 0,0,0,0, 0,0,0,0};
+extern const u8 sHandCursorAnimHasLayer2[0x14] = {1,1,1,1, 1,1,0,1, 1,1,1,1, 0,0,0,0, 0,0,0,0};
 
-extern const s32 data_020cf67c[0x13] = {1,1,3,5,7,9,11,12,14,16,18,20,22,23,25,27,29,31,33};
+extern const s32 sHandCursorAnimSeqIds[0x13] = {1,1,3,5,7,9,11,12,14,16,18,20,22,23,25,27,29,31,33};
 
 // 0x020cf650: first .rodata object of this file (bytes 7b 6f 00 00); read by the unit at 0x0208d154 (0x0208d2d0)
-extern const u8 data_020cf650[4] = {0x7b, 0x6f, 0x00, 0x00};
+extern const u8 sNameLabelBalloonKind4Color[4] = {0x7b, 0x6f, 0x00, 0x00};

@@ -158,7 +158,7 @@ struct Unk_020f4080 { Unk_020f4080(); u32 pad[0x44 / 4]; };
 struct Unk_020135e4 { Unk_020135e4(); u8 pad[0xb]; u8 unk_0b; };
 struct NpcActionCtrl { NpcActionCtrl(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); u32 pad[0x28 / 4]; };
-struct Unk_020e06dc { Unk_020e06dc(); u32 pad[0x14 / 4]; };
+struct SpNpcAnimHeapHandle { SpNpcAnimHeapHandle(); u32 pad[0x14 / 4]; };
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Scene object (vtable 0x0226ff34). The class chain declares every slot after the class that names it in the vtable symbols.
@@ -253,7 +253,7 @@ public:
     virtual void onTalkMelodyPlayed();
     virtual u16 getSpecies();
     virtual BOOL vfunc_a8();
-    Unk_020e06dc unk_640;
+    SpNpcAnimHeapHandle unk_640;
     u32 unk_654;
 };
 

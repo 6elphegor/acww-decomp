@@ -3,7 +3,7 @@ inline void *operator new(unsigned long, void *p) { return p; }
 
 extern "C" {
 // Other files
-u32 func_02063b8c(u32 n);
+u32 Random_GlobalBelow(u32 n);
 }
 
 extern "C" {

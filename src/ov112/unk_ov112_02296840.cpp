@@ -446,7 +446,7 @@ void Snd_PlaySe(s32 a);
 void func_020e76f8(void *p, u32 v, u32 n);
 s32 Text_GetLength(void *p, s32 n);
 void String_FromEncodedBytesEx(void *p, void *q, u32 n, u32 a, u32 b);
-void func_0206cf4c(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
+void Text_SplitLines(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g);
 BOOL MenuCtrl_IsTouch();
 void Bbs_AddPost(void *p);
 PlayerData *PlayerData_GetCurrent();
@@ -523,7 +523,7 @@ void String_SetSlot(s32 a, void *p);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void Gfx2d_SetLayerOffset(u32 a, u32 b, u32 c);
 void Oam_DrawCell(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
-void func_02088730(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
+void Oam_DrawObj(u32 a, void *b, u32 c, void *d, s32 e, s32 f, s32 g);
 BOOL MenuCtrl_IsButtons();
 s32 Comm_IsSeqConfirmed(s32 a);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
@@ -657,7 +657,7 @@ BOOL BbsWriteMenu::onDraw() {
         Keyboard_Draw(&unk_370, 0x80, p, 1);
         Keyboard_DrawCopyPasteKeys(&unk_370, 0x80, p);
         if (MenuCtrl_IsButtons()) {
-            func_02088730(1, data_ov112_02299ac0, 0x80, p, -1, 1, 0);
+            Oam_DrawObj(1, data_ov112_02299ac0, 0x80, p, -1, 1, 0);
         }
         Keyboard_DrawLengthGaugeAt(&unk_370, 0x80, p, unk_b0);
         ((ScrollKnob *)(&unk_40ac))->moveTo(0x5d, unk_b8 + (u32)(unk_a0 - 0x50));
@@ -1857,7 +1857,7 @@ extern "C" void BbsWriteMenu_RedrawText(S *s) {
     u32 r6;
     u8 zb;
     u32 z14, z18;
-    func_0206cf4c(s->unk_0c3, s->unk_6a60, &s->unk_094, 0xc0, 0x28, 0x96, 6);
+    Text_SplitLines(s->unk_0c3, s->unk_6a60, &s->unk_094, 0xc0, 0x28, 0x96, 6);
     if (BbsWriteMenu_HasFlags(s, 0x10)) {
         r6 = 0;
     } else if (BbsWriteMenu_HasFlags(s, 0x400)) {

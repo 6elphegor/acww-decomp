@@ -65,7 +65,7 @@ struct Unk_02040d80_Obj {
 };
 
 extern "C" {
-s32 func_02063b8c(s32);
+s32 Random_GlobalBelow(s32);
 void DateTime_AddDays(s32, s32);
 void MI_CpuCopy8(void *, void *, u32);
 s32 EventSchedule_CollectAtNoon(void *, s32, void *);
@@ -657,7 +657,7 @@ extern "C" void EventWeekSlots_InitNew(u8 *p)
     p[13] = 1;
     p[14] = 0;
     p[15] = 0;
-    p[16] = func_02063b8c(5) + 1;
+    p[16] = Random_GlobalBelow(5) + 1;
     p[17] = 99;
     *(s32 *)(p + 0x34) = 0;
     *(s32 *)(p + 0x38) = 0;

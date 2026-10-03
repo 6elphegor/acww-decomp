@@ -31,24 +31,24 @@ public:
 };
 
 // Classes of other units (constructed by this unit's __sinit).
-class Unk_020ddf2c {
+class MsgString25B {
 public:
-    Unk_020ddf2c();
-    virtual ~Unk_020ddf2c();
+    MsgString25B();
+    virtual ~MsgString25B();
     /* 0x04 */ u8 unk_04[0x28];
 };
 
-class Unk_020ddf14 {
+class MsgString33B {
 public:
-    Unk_020ddf14();
-    virtual ~Unk_020ddf14();
+    MsgString33B();
+    virtual ~MsgString33B();
     /* 0x04 */ u8 unk_04[0x30];
 };
 
-class Unk_020ddefc {
+class MsgString129 {
 public:
-    Unk_020ddefc();
-    virtual ~Unk_020ddefc();
+    MsgString129();
+    virtual ~MsgString129();
     /* 0x04 */ u8 unk_04[0x90];
 };
 
@@ -140,9 +140,9 @@ struct Unk_02065a1c_Str {
     ~Unk_02065a1c_Str() { _ZN15EncodedString41D1Ev(this); }
 };
 
-extern Unk_020ddf2c sMailGreeting;
-extern Unk_020ddefc sMailBody;
-extern Unk_020ddf14 sMailSignature;
+extern MsgString25B sMailGreeting;
+extern MsgString129 sMailBody;
+extern MsgString33B sMailSignature;
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
@@ -649,6 +649,6 @@ u8 *EncodedString128::data() {
 }
 
 // ---- bss (in __sinit construction order)
-Unk_020ddf2c sMailGreeting;
-Unk_020ddefc sMailBody;
-Unk_020ddf14 sMailSignature;
+MsgString25B sMailGreeting;
+MsgString129 sMailBody;
+MsgString33B sMailSignature;

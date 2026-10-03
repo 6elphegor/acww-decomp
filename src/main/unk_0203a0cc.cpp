@@ -385,7 +385,7 @@ void FieldCamera_UpdateFocusZoom(void *self);
 BOOL func_020e94f8(void *v);
 void func_020e92f4(void *v, s32 a);
 s32 WorldCurve_GetHorizonAngle(void *p);
-s32 func_02063a9c(s32, s32, s32, s32, s32);
+s32 Math_EaseRampProgress(s32, s32, s32, s32, s32);
 s32 FX_Inv(s32);
 s32 Ground_GetFloorBounds(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
@@ -965,7 +965,7 @@ void Unk_020d93b8::updateBlend()
         b = getBlendEnd();
         c = getBlendEaseIn();
         d = getBlendEaseOut();
-        a = func_02063a9c(M(s32, 0xc8), a, b, c, d);
+        a = Math_EaseRampProgress(M(s32, 0xc8), a, b, c, d);
         func_020e9960(&t1, (V3 *)&M(u8, 0x110), (V3 *)&M(u8, 0x15c));
         func_020e9888(&t1, a);
         func_01ffd070(&o1, (V3 *)&M(u8, 0x15c), &t1);

@@ -473,7 +473,7 @@ BOOL Scene_InUnk6To8(void);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 s32 _ZN11PlayerActor20getInputSideRelativeEv(Obj *o);
 s32 _ZN11PlayerActor20getEffectivePriorityEv(Obj *o);
-s32 func_02063c54(s16 a);
+s32 Math_AngleToSide(s16 a);
 s32 PlayerActor_GetGender(Obj *o);
 void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
 void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
@@ -766,7 +766,7 @@ extern "C" s32 PlayerActor_LocalRequestBedApproach(u32 *a, u32 *b, s16 *c, s32 d
         if (k <= _ZN11PlayerActor20getEffectivePriorityEv(o)) {
             return 0;
         }
-        u32 f = func_02063c54(*c - d) == 1 ? 1 : 0;
+        u32 f = Math_AngleToSide(*c - d) == 1 ? 1 : 0;
         return PlayerActor_RequestBedApproach(o, *a, *b, *c, f, k, -1);
     }
     return 0;
@@ -1130,7 +1130,7 @@ u16 *DebugVar_GetPtr(s32 a, s32 b);
 s32 Ground_GetDefaultY(u32 a);
 void _ZN12Unk_020102ec24updateCollidersAtDrawPosEPj(Obj *o, V3 *v);
 void _ZN12Unk_020102ec14setSubColliderEjjj(Obj *o, V3 *v, s32 a, s32 b);
-void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
+void _ZN13ActorCollider6submitEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 BedSpot_GetRollResult(void);
 void BedSpot_RequestRoll(V3 *v);
@@ -1238,7 +1238,7 @@ extern "C" void PlayerActor_GetOutOfBedCheckTurn(Obj *o) {
     v.y = s->y;
     v.z = s->z;
     _ZN12Unk_020102ec14setSubColliderEjjj(o, &v, 0x1000, 0x1000);
-    _ZN12Unk_020e0d0813func_02089040Ev(o->unk_1c0);
+    _ZN13ActorCollider6submitEv(o->unk_1c0);
 }
 
 extern "C" void PlayerActor_GetOutOfBedCheckResult(Obj *o) {
@@ -1759,7 +1759,7 @@ void _ZN12Unk_02006d1418turnAwayFromCameraEi(Obj *o, s32 a);
 void PlayerActor_StepTowardXZ(Obj *o, s32 a, s32 b);
 void PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 s32 Camera_SnapToFocus(V3 *v);
-s32 func_02063c18(s16 a);
+s32 Math_AngleToDir4(s16 a);
 s32 BedSpot_GetApproachResult(void);
 void BedSpot_RequestApproach(V3 *v);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
@@ -1970,7 +1970,7 @@ extern "C" void PlayerActor_SetupGetIntoBed(Obj *o, Msg *m) {
     _ZN12Unk_020102ec13startAnimOnceEijt(o, k == 0 ? 8 : 7, 3, 0);
     _ZN12Unk_02006d146playSeEj(o, 0x4c5);
     r = &o->unk_7d0;
-    t = func_02063c18(o->unk_8e);
+    t = Math_AngleToDir4(o->unk_8e);
     t = (t << 30) >> 16;
     x = pl->c;
     z = *(s32 *)((u8 *)pl + 8);
@@ -3597,7 +3597,7 @@ s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 s32 _ZN11PlayerActor13getInputAngleEv(Obj *o);
-s32 func_02063c18(s16 a);
+s32 Math_AngleToDir4(s16 a);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 NetBuf_ReadS16B(void *a);
@@ -4009,7 +4009,7 @@ extern "C" void PlayerActor_SitUpdateAnim(Obj *o) {
 extern "C" void PlayerActor_SitReadInput(Obj *o) {
     if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
         s32 t = _ZN11PlayerActor13getInputAngleEv(o);
-        switch (func_02063c18((s16)(o->unk_8e - t))) {
+        switch (Math_AngleToDir4((s16)(o->unk_8e - t))) {
         case 0:
             if (FtrMgr_CanStepForward(&o->unk_5c, o->unk_8e)) {
                 PlayerActor_RequestStandUpCheck(o, 0, 6, -1);
@@ -4144,7 +4144,7 @@ s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, u32 a);
 void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 void _ZN12Unk_020102ec17setBodyColliderAtEP16Unk_020107c8_BlkPj(Obj *o, V3 *v, void *p);
 void _ZN12Unk_020102ec14setSubColliderEjjj(Obj *o, V3 *v, s32 a, s32 b);
-void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
+void _ZN13ActorCollider6submitEv(void *p);
 void SpotSync_Release(s32 a);
 s32 SpotSync_GetStandUpSpotResult();
 void SpotSync_RequestStandUpSpot(V3 *v);
@@ -4311,7 +4311,7 @@ extern "C" void PlayerActor_StandUpCheckTurn(Obj *o) {
     v.y = s->y;
     v.z = s->z;
     _ZN12Unk_020102ec14setSubColliderEjjj(o, &v, 0x1000, 0x1000);
-    _ZN12Unk_020e0d0813func_02089040Ev(o->unk_1c0);
+    _ZN13ActorCollider6submitEv(o->unk_1c0);
 }
 
 extern "C" void PlayerActor_StandUpCheckResult(Obj *o) {
@@ -4417,7 +4417,7 @@ extern "C" void PlayerActor_StandUpFrontMoveRemote(Obj *o) {
         v.y = s->y;
         v.z = s->z;
         _ZN12Unk_020102ec17setBodyColliderAtEP16Unk_020107c8_BlkPj(o, &v, &o->unk_7ec);
-        _ZN12Unk_020e0d0813func_02089040Ev(o->unk_170);
+        _ZN13ActorCollider6submitEv(o->unk_170);
     }
 }
 
@@ -4768,7 +4768,7 @@ void SceneWarp_RequestExit(s32 a, s32 b);
 void SceneExit_SnapPos(s32 a, s32 b, V3 *v, V3 *w);
 s32 SceneExit_GetDoor(s32 a, s32 b, s32 *c, s16 *d);
 s32 Scene_GetCurrent(void);
-s32 func_02063c18(s32 a);
+s32 Math_AngleToDir4(s32 a);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void _ZN12Unk_02006d1412requestAct10Esji(Obj *o, u32 a, u32 b, s32 c);
@@ -5006,7 +5006,7 @@ extern "C" void PlayerActor_SetupLeaveRoom(Obj *o, Unk_ov004_02220314_Msgp *m) {
     s32 mode = pay->unk_00;
     s32 ang = pay->unk_04;
     if (mode == 2) {
-        switch (func_02063c18(ang)) {
+        switch (Math_AngleToDir4(ang)) {
         case 2:
             v.z += 0x1000;
             break;
@@ -5793,7 +5793,7 @@ s32 PlayerActor_StepTowardPose(Obj *o, s32 a, s32 b, s32 c);
 void PlayerActor_GetFrontUnitCenter(V3 *out, Obj *o);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 s32 _ZN11PlayerActor13getInputAngleEv(Obj *o);
-s32 func_02063c18(s16 a);
+s32 Math_AngleToDir4(s16 a);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 
@@ -5834,7 +5834,7 @@ extern "C" void PlayerActor_HaircutFinishCheckEnd(Obj *o) {
     if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
             s32 t = _ZN11PlayerActor13getInputAngleEv(o) - o->unk_8e;
-            if (func_02063c18((s16)t) == 0) {
+            if (Math_AngleToDir4((s16)t) == 0) {
                 PlayerActor_RequestStandUpFront(o, 6, -1);
             }
         }
@@ -6327,7 +6327,7 @@ void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
 void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
 s32 _ZN12Unk_02006d1415getHeldToolKindEv(Obj *o);
 s32 _ZN12Unk_02006d1410interactAtEi(Obj *o, s32 a);
-s32 func_02063c18(s16 a);
+s32 Math_AngleToDir4(s16 a);
 void NetBuf_UnpackPair20(void *a, s32 *b, s32 *c);
 void NetBuf_PackPair20(void *a, s32 b, s32 c);
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
@@ -6518,7 +6518,7 @@ extern "C" void PlayerActor_SetupExitWalkIn(Obj *o, Obj *arg) {
     w.y = 0;
     w.z = 0;
     void *r7 = &o->unk_8ec;
-    switch (func_02063c18(o->unk_8e)) {
+    switch (Math_AngleToDir4(o->unk_8e)) {
     case 2:
         w.z = w.z + 0x6000;
         break;
