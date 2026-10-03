@@ -240,7 +240,13 @@ from:0x01ffcfb4 kind:load to:0x021ef908 module:autoload(3)
 from:0x01ffcfb8 kind:load to:0x021eff48 module:autoload(3)
 from:0x01ffd010 kind:arm_call to:0x01ffcfc0 module:itcm
 from:0x01ffd130 kind:arm_call to:0x01ffd44c module:itcm
+from:0x01ffd140 kind:load to:0x01ffd0dc module:itcm
+from:0x01ffd144 kind:load to:0x01ffd0c4 module:itcm
+from:0x01ffd148 kind:load to:0x01ffd0bc module:itcm
 from:0x01ffd198 kind:arm_call to:0x01ffd44c module:itcm
+from:0x01ffd1a8 kind:load to:0x01ffd0b4 module:itcm
+from:0x01ffd1ac kind:load to:0x01ffd0d4 module:itcm
+from:0x01ffd1b0 kind:load to:0x01ffd0cc module:itcm
 from:0x01ffd1ec kind:arm_call to:0x020e79a0 module:autoload(2)
 from:0x01ffd1f8 kind:arm_call to:0x020e79a0 module:autoload(2)
 from:0x01ffd208 kind:arm_call to:0x020e79a0 module:autoload(2)

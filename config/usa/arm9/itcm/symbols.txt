@@ -138,6 +138,12 @@ func_01ffcfc0 kind:function(arm,size=0x3c) addr:0x01ffcfc0
 func_01ffcffc kind:function(arm,size=0x2c) addr:0x01ffcffc
 func_01ffd028 kind:function(arm,size=0x48) addr:0x01ffd028
 func_01ffd070 kind:function(arm,size=0x44) addr:0x01ffd070
+data_01ffd0b4 kind:data(any) addr:0x01ffd0b4
+data_01ffd0bc kind:data(any) addr:0x01ffd0bc
+data_01ffd0c4 kind:data(any) addr:0x01ffd0c4
+data_01ffd0cc kind:data(any) addr:0x01ffd0cc
+data_01ffd0d4 kind:data(any) addr:0x01ffd0d4
+data_01ffd0dc kind:data(any) addr:0x01ffd0dc
 func_01ffd0e4 kind:function(arm,size=0x68) addr:0x01ffd0e4
 func_01ffd14c kind:function(arm,size=0x68) addr:0x01ffd14c
 func_01ffd1b4 kind:function(arm,size=0x230) addr:0x01ffd1b4
