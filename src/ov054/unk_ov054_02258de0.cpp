@@ -222,7 +222,7 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-// Owner base chain (main): ProcBase <- Actor <- Character <- Unk_020d77a4 <- Unk_020d8bc8.
+// Owner base chain (main): ProcBase <- Actor <- Character <- NpcActor <- SpNpcActor.
 class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
@@ -253,10 +253,10 @@ public:
     u8 pad_96[0xea - 0x96];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -290,7 +290,7 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 id);
     s32 getAngleToPlayer(u32 id);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     void setCollisionRadius(s32 v);
     void setNpcHandle(u16 *p);
 
@@ -313,10 +313,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -412,7 +412,7 @@ public:
     /* 0xc6 */ u8 pad_c6[0x1a8 - 0xc6];
 };
 
-class SpNpcPellyPhyllis : public Unk_020d8bc8 {
+class SpNpcPellyPhyllis : public SpNpcActor {
 public:
     SpNpcPellyPhyllis() : unk_658() {}
     virtual BOOL vfunc_00();
@@ -500,7 +500,7 @@ struct Unk_ov054_SceneEntry {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define func_0201b9e8 _ZN12Unk_020d77a413func_0201b9e8Eii
+#define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
 #define func_02060388 _ZN9HouseData13func_02060388Ev
 #define func_02063818 _ZN12Unk_020dd374D1Ev
 #define func_02063830 _ZN12Unk_020dd374C1Ev
@@ -926,7 +926,7 @@ extern "C" SpNpcPellyPhyllis *SpNpcPellyPhyllis_Create() { return new SpNpcPelly
 BOOL SpNpcPellyPhyllis::vfunc_04() {
     Unk_ov054_0225b0ac_Local l;
     Unk_ov054_0225ba54_Vec vec;
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -987,7 +987,7 @@ BOOL SpNpcPellyPhyllis::vfunc_04() {
 }
 
 BOOL SpNpcPellyPhyllis::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     void *r = PlayerData_GetCurrent();
@@ -1017,7 +1017,7 @@ BOOL SpNpcPellyPhyllis::vfunc_00() {
 }
 
 BOOL SpNpcPellyPhyllis::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (unk_804 == 0) {

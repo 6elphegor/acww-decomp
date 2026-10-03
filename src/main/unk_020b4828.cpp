@@ -110,10 +110,10 @@ struct Unk_020b5d5c_Rec {
 };
 
 // 0x5c-byte object (constructor/destructor in another unit)
-class Unk_020d9248 {
+class ViewFrustum {
 public:
-    Unk_020d9248();
-    virtual ~Unk_020d9248();
+    ViewFrustum();
+    virtual ~ViewFrustum();
     u8 d[0x58];
 };
 
@@ -439,7 +439,7 @@ extern Unk_020b50a4 data_021ef360;
 extern Unk_020b4fc4 data_021ef378;
 extern S394 sFogState;
 extern Unk_020b6960 data_021ef3bc;
-extern Unk_020d9248 gViewFrustum;
+extern ViewFrustum gViewFrustum;
 
 
 
@@ -478,7 +478,7 @@ u8 sDefaultFogTable[0x20] = {
 
 GfxFrameHooks sFieldGfxFrameHooks;
 
-Unk_020d9248 gViewFrustum;
+ViewFrustum gViewFrustum;
 
 TileData *data_020e4280[51] = {
     (TileData *)data_ov006_0225b7b4,

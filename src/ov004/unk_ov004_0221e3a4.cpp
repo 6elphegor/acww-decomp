@@ -222,10 +222,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -274,10 +274,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -315,8 +315,8 @@ struct Unk_ov004_0221e56c_Ent {
 #define NpcActionCtrl_requestAction _ZN13NpcActionCtrl13requestActionEjiiissiitt
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
 #define NpcAnimCtrl_isPlayingAnim _ZN11NpcAnimCtrl13isPlayingAnimEiPv
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
@@ -341,7 +341,7 @@ s32 func_020e7518(void *self);
 s32 SaveManager_IsIdle();
 }
 
-class SpNpcTortimer2 : public Unk_020d8bc8 {
+class SpNpcTortimer2 : public SpNpcActor {
 public:
     SpNpcTortimer2() {}
     virtual BOOL vfunc_00();
@@ -370,7 +370,7 @@ struct Unk_ov004_SceneEntry {
 extern "C" SpNpcTortimer2 *SpNpcTortimer2_Create() { return new SpNpcTortimer2; }
 
 BOOL SpNpcTortimer2::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     NpcMoveAnimSet_setStandAnim(&unk_2a0, 0xff);
@@ -378,7 +378,7 @@ BOOL SpNpcTortimer2::vfunc_04() {
 }
 
 BOOL SpNpcTortimer2::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     sSpNpcTortimer2 = this;
@@ -389,7 +389,7 @@ BOOL SpNpcTortimer2::vfunc_00() {
 }
 
 BOOL SpNpcTortimer2::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     sSpNpcTortimer2 = 0;

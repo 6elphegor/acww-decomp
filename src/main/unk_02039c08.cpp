@@ -25,7 +25,7 @@ extern s16 data_02135f44[];
 extern "C" BOOL func_02039d94(u32 i, u16 v);
 extern "C" u16 func_02039dd4(u32 i);
 
-class Unk_02039eb8 {
+class ViewFrustum {
 public:
     s32 testSphere(void *m, void *v, s32 r, s32 *out);
     void calcPlanes();
@@ -42,7 +42,7 @@ public:
     /* 0x58 */ u16 unk_58;
 };
 
-void Unk_02039eb8::calcPlanes() {
+void ViewFrustum::calcPlanes() {
     s32 v[12];
     s32 idx = unk_58 >> 4;
     s32 s = FX_Div(data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
@@ -70,7 +70,7 @@ void Unk_02039eb8::calcPlanes() {
     VEC_Normalize(&unk_28[0], &unk_28[0]);
 }
 
-s32 Unk_02039eb8::testSphere(void *m, void *v, s32 r, s32 *out) {
+s32 ViewFrustum::testSphere(void *m, void *v, s32 r, s32 *out) {
     MTX_MultVec43(v, m, out);
     s32 t = -out[2];
     if (t < unk_50 - r) {

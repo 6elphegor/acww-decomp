@@ -98,7 +98,7 @@ struct Unk_020c0538_Out;
 class SpNpcTalkRequest;
 struct Unk_020c0408_Obj;
 class SpNpcMissing1Talk;
-class Unk_0202e5a8;
+class SpNpcActor;
 class SpNpcMissing1;
 struct Unk_021f4400 { u8 pad[9]; u8 unk_09; };
 struct Unk_021f4420 { u8 pad[0x10]; u8 unk_10; };
@@ -1073,9 +1073,9 @@ public:
     void attachOwner(SpNpcMissing1 *owner);
 };
 // Base of SpNpcMissing1; its dtor is out of line.
-class Unk_0202e5a8 : public ProcBase {
+class SpNpcActor : public ProcBase {
 public:
-    virtual ~Unk_0202e5a8();
+    virtual ~SpNpcActor();
 
     /* 0x004 */ u8 unk_004[0x5c - 4];
     /* 0x05c */ u8 unk_05c[0x2a0 - 0x5c];
@@ -1085,7 +1085,7 @@ public:
     /* 0x564 */ u8 unk_564[0x618 - 0x564];
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
-class SpNpcMissing1 : public Unk_0202e5a8 {
+class SpNpcMissing1 : public SpNpcActor {
 public:
     virtual ~SpNpcMissing1();
 
@@ -1607,7 +1607,7 @@ extern "C" {
 void Clock_GetDate(void *p);
 }
 extern "C" {
-void _ZN12Unk_020d8bc8D2Ev(void *p);
+void _ZN10SpNpcActorD2Ev(void *p);
 }
 extern "C" {
 s32 _ZN11NpcFaceAnim12getMouthAnimEv(void *p);
@@ -5671,7 +5671,7 @@ extern "C" {
 BOOL NpcRegistry_FindSpNpc(s32);
 }
 extern "C" {
-BOOL _ZN12Unk_020d77a410isUpdatingEv();
+BOOL _ZN8NpcActor10isUpdatingEv();
 }
 extern "C" {
 BOOL _ZN11CommManager12isSlotActiveEi(CommManager *, s32);
@@ -6483,7 +6483,7 @@ void Unk_020bbc28::updatePete() {
     using namespace n06;
     if (unk_2f27 != 0) {
         if (NpcRegistry_FindSpNpc(8)) {
-            if (_ZN12Unk_020d77a410isUpdatingEv()) {
+            if (_ZN8NpcActor10isUpdatingEv()) {
                 unk_2f27 = 0;
             }
         }

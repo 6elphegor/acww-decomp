@@ -99,7 +99,7 @@ public:
 #define NpcMoveCtrl_getDestination _ZN11NpcMoveCtrl14getDestinationEv
 #define NpcMoveCtrl_setDestination _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
 #define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
@@ -163,7 +163,7 @@ void func_020942c8(Unk_ov074_02271564_B *a);
 s32 memcmp(void *a, void *b, s32 n);
 void func_0206267c(void *p);
 void func_0206260c(void *p);
-u32 Unk_020d77a4_getAngleTo(void *p, u32 x);
+u32 NpcActor_getAngleTo(void *p, u32 x);
 void TalkRequest_EndTalkWith(void *p);
 void func_020e7518(void *p);
 s32 Random_Next(u8 *p);
@@ -373,10 +373,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -424,10 +424,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -445,7 +445,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcBlanca : public Unk_020d8bc8 {
+class SpNpcBlanca : public SpNpcActor {
 public:
     SpNpcBlanca() {}
     virtual BOOL vfunc_00();
@@ -566,7 +566,7 @@ extern "C" SpNpcBlanca *SpNpcBlanca_Create() {
 s32 SpNpcBlanca::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcBlanca::vfunc_04() {
-    if (Unk_020d8bc8::vfunc_04() == 0) {
+    if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -575,7 +575,7 @@ BOOL SpNpcBlanca::vfunc_04() {
 }
 
 BOOL SpNpcBlanca::vfunc_00() {
-    if (Unk_020d8bc8::vfunc_00() == 0) {
+    if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
     unk_710.init(gCurrentHeap, (u8 *)this + 0xec);
@@ -584,7 +584,7 @@ BOOL SpNpcBlanca::vfunc_00() {
 }
 
 BOOL SpNpcBlanca::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c() == 0) {
+    if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
     unk_710.release(gCurrentHeap);
@@ -841,7 +841,7 @@ BOOL SpNpcBlanca::setupAct04() {
     u32 a = unk_658.func_02015aac();
     s32 b = unk_8e;
     if (a != 0) {
-        b = Unk_020d77a4_getAngleTo(this, a);
+        b = NpcActor_getAngleTo(this, a);
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, b, 0);
     return TRUE;

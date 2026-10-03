@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
+void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN11NpcMoveCtrl11setTurnModeEh(void *self, s32 a);
 s32 func_020b50e8(void);
@@ -36,8 +36,8 @@ s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 a);
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, s32 a);
 s32 Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 BOOL TalkRequest_EndTalkWith(void *p);
-u32 _ZN12Unk_020d77a414getPlayerActorEj(void *p, s32 n);
-u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
+u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, s32 a, s32 b, s32 c);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 extern u16 data_020c6cc8;
@@ -51,7 +51,7 @@ extern s32 data_020c6cf0;
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::postCreate(int).
+// NpcActor::postCreate(int).
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -173,7 +173,7 @@ public:
     s32 unk_b0;
 };
 
-// ---- SpNpcMissing2 / SpNpcMissing1 and their bases (scene object derived from Unk_020d77a4) ----
+// ---- SpNpcMissing2 / SpNpcMissing1 and their bases (scene object derived from NpcActor) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -255,7 +255,7 @@ struct Character : Actor {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Character {
+struct NpcActor : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -273,7 +273,7 @@ struct Unk_020d77a4 : Character {
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual void postCreate(int a);
@@ -304,10 +304,10 @@ struct Unk_020d77a4 : Character {
     virtual BOOL vfunc_a8();
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -337,7 +337,7 @@ struct Unk_020c2194_Entry {
     Unk_020c2194_Fn b;
 };
 
-class SpNpcMissing2 : public Unk_020d8bc8 {
+class SpNpcMissing2 : public SpNpcActor {
 public:
     SpNpcMissing2() {}
     virtual BOOL vfunc_00();
@@ -423,11 +423,11 @@ extern "C" SpNpcMissing2 *func_020c2454() {
 }
 
 BOOL SpNpcMissing2::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     sSpNpcMissing2Instance = this;
-    _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
     unk_658.attachOwner(this);
     if (func_020b50e8()) {
         _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
@@ -439,13 +439,13 @@ BOOL SpNpcMissing2::vfunc_04() {
 
 BOOL SpNpcMissing2::vfunc_a8() {
     if (func_020b50e8()) {
-        return Unk_020d8bc8::vfunc_a8();
+        return SpNpcActor::vfunc_a8();
     }
     return data_020c6cf0;
 }
 
 BOOL SpNpcMissing2::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     PlayerData_GetCurrent();
@@ -460,7 +460,7 @@ BOOL SpNpcMissing2::vfunc_00() {
 }
 
 BOOL SpNpcMissing2::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     sSpNpcMissing2Instance = NULL;
@@ -506,7 +506,7 @@ void SpNpcMissing2::vfunc_4c(s32 a) {
     switch (a) {
     case 1:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN12Unk_020d77a414getPlayerActorEj(this, 4));
+        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 0:
@@ -514,7 +514,7 @@ void SpNpcMissing2::vfunc_4c(s32 a) {
         break;
     case 3:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN12Unk_020d77a414getPlayerActorEj(this, 4));
+        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(9);
         break;
     case 8:
@@ -562,7 +562,7 @@ BOOL SpNpcMissing2::setupAct09() {
     void *p = unk_658.func_02015aac();
     x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

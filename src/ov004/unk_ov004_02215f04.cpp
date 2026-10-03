@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU07: .text 0x02215f04-0x02216ccc (classes BirthdayGuestVillager and its member BirthdayGuestVillagerTalk)
 #include "types.h"
-// The no-argument vfunc_08 of the base is widened locally: Unk_020d77a4::postCreate takes one argument.
+// The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #define postCreate() postCreate(s32 a)
 #include "Unk_020d8c7c.h"
 #undef postCreate
@@ -48,7 +48,7 @@ public:
     u8 pad_90[0xe0 - 0x90];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
     virtual BOOL onDraw();
     virtual void postCreate(s32 a);
@@ -87,7 +87,7 @@ public:
     u8 unk_618[0x640 - 0x618];
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -323,9 +323,9 @@ struct Unk_ov004_022162f0_Actor {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 #define VillagerMemory_isTalkedToday _ZN14VillagerMemory13isTalkedTodayEv
@@ -350,7 +350,7 @@ s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_requestStand(void *, u32, u32);
 s32 NpcActionCtrl_requestAction(void *, u32, s32, s32, s32, s16, s16, s32, s32, u16, u16);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-s32 Unk_020d77a4_findAvoidPos(void *, void *);
+s32 NpcActor_findAvoidPos(void *, void *);
 s32 NpcLookAt_setTarget(void *, u32, s32, s32, void *, s32, s32, u32);
 s32 func_02063b8c(s32);
 s32 NpcTalkCtrl_isBusy(void *);
@@ -379,7 +379,7 @@ s32 func_0201bd20(void *, u32);
 s32 Math_AngleXZ(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void *func_02095204(s32);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void func_02067a84(void *, void *, s32);
 s32 MenuCtrl_BuildPocketMask(void *);
@@ -418,7 +418,7 @@ s32 func_0202d948(void *self);
 s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
 void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
-void Unk_020d77a4_setTalkRequest(void *self, void *p);
+void NpcActor_setTalkRequest(void *self, void *p);
 void *func_0201bc4c(void *self, s32 n);
 void func_02015ab0(void *p, void *q);
 s32 func_02080a64(void *p);
@@ -537,7 +537,7 @@ BOOL BirthdayGuestVillager::vfunc_04() {
         return FALSE;
     }
     sBirthdayGuestVillager = this;
-    Unk_020d77a4_setTalkRequest(this, &unk_898);
+    NpcActor_setTalkRequest(this, &unk_898);
     unk_898.attachOwner(this);
     changeAct(0);
     return TRUE;
@@ -554,7 +554,7 @@ BOOL BirthdayGuestVillager::vfunc_00() {
 }
 
 BOOL BirthdayGuestVillager::drawModel() {
-    if (Unk_020d77a4::onDraw()) {
+    if (NpcActor::onDraw()) {
         return TRUE;
     }
     return FALSE;
@@ -843,7 +843,7 @@ void BirthdayGuestVillager::mainAct00() {
                 NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a58.x, unk_a58.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
         } else if (NpcActionCtrl_getAction(unk_564) == 1) {
-            switch (Unk_020d77a4_findAvoidPos(this, &v)) {
+            switch (NpcActor_findAvoidPos(this, &v)) {
             case 1:
                 NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
                 break;
@@ -988,7 +988,7 @@ void BirthdayGuestVillager::mainAct04() {}
 BOOL BirthdayGuestVillager::setupAct05() {
     void *p = func_02095204(4);
     if (p != NULL) {
-        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, Unk_020d77a4_getAngleTo(this, p), 0);
+        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, NpcActor_getAngleTo(this, p), 0);
         return TRUE;
     }
     return FALSE;

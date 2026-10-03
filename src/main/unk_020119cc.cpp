@@ -2215,7 +2215,7 @@ public:
     /* 0xa4 */ u8 pad_a4[0xea - 0xa4];
     /* 0xea */ u16 unk_ea;
 };
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -2224,7 +2224,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     virtual void vfunc_30();
-    virtual ~Unk_020d77a4();
+    virtual ~NpcActor();
     virtual void vfunc_4c(s32 v);
     virtual BOOL vfunc_5c(Unk_020d77a4_Vec3 *out);
     virtual s32 vfunc_60();
@@ -2263,13 +2263,13 @@ public:
     Unk_0201bc1c *getTalkRequest();
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 id);
-    s16 getRelativeAngleTo(Unk_020d77a4 *other);
+    s16 getRelativeAngleTo(NpcActor *other);
     s32 getAngleToPlayer(u32 id);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     BOOL isPlayerNear(s32 n, u32 id);
-    BOOL isNear(Unk_020d77a4 *other, s32 n);
+    BOOL isNear(NpcActor *other, s32 n);
     s32 getDistanceToPlayer(u32 id);
-    s32 getDistanceTo(Unk_020d77a4 *other);
+    s32 getDistanceTo(NpcActor *other);
     BOOL isPosInFront(s16 *out, Unk_020d77a4_Vec *pos);
     void setCollisionRadius(s32 v);
     void setNpcHandle(u16 *p);
@@ -2331,7 +2331,7 @@ struct Unk_0201be44_Hdr {
 // unk_0201b690.cpp
 struct Unk_0201be44_Owner {
     u8 pad_00[0x2c];
-    Unk_020d77a4 *unk_2c;
+    NpcActor *unk_2c;
 };
 
 // unk_0201b690.cpp
@@ -2586,7 +2586,7 @@ Unk_020133cc_Player* _ZN16ActorTalkRequest15getSpeakerActorEv(void *self);
 void _ZN16ActorTalkRequest11playEmotionEjj(void *self, u32 a, u32 b);
 Unk_020133cc_Player* _ZN16ActorTalkRequest15getPartnerActorEv(void *self);
 void _ZN16ActorTalkRequest4tickEv(void *self);
-Unk_020133cc_Player* _ZN12Unk_020d77a414getTalkRequestEv(void *self);
+Unk_020133cc_Player* _ZN8NpcActor14getTalkRequestEv(void *self);
 void _ZN9Character13func_0203e47cEi(void *self, Unk_020133cc_Player* o);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
 void Snd_SeEmitterPlayAlternate(void *self, s32 a, u32 b);
@@ -2597,7 +2597,7 @@ void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
 BOOL _ZN12Unk_0201281011scanForPathEP16Unk_02012810_VecP17Unk_02012b94_PairP16Unk_020130f0_DiriS3_iP16Unk_02012f04_Obj(void* unused, void* p1, u32* pos, u32* step, s32 n, u32* bound, s32 flag, void* q);
 extern Unk_02013260_Entry sVillagerRouteTypes[];
-s32 _ZN12Unk_020d77a419getTeachableEmotionEv();
+s32 _ZN8NpcActor19getTeachableEmotionEv();
 s32 func_0203f048(u32 v);
 void Effect_Create(u32 a, void* b, void* c, u32 d);
 static inline BOOL Unk_02013568_IsSet(u32 v, u32 m)
@@ -2644,7 +2644,7 @@ void Camera_FocusOnPair(Unk_02013b10_Vec *a, Unk_02013b10_Vec *b);
 void Camera_FocusOnPoint(Unk_02013b10_Vec *a);
 void Camera_SetModeDefault(void);
 s32 func_02094574(s32 a, s32 b, s32 c);
-u8 *_ZN12Unk_020d77a416getSpeakerGenderEv(void *p);
+u8 *_ZN8NpcActor16getSpeakerGenderEv(void *p);
 extern u16 data_020c6cc8;
 extern Unk_02014040_Ent sNpcTalkCtrlStates[5];
 void NpcTalkCtrl_Destroy(void);
@@ -2703,11 +2703,11 @@ void func_02094574(u32 a, s16 b, u32 c);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
 void func_02094f48(u32 a, u32 b);
 Unk_020155e4_Ret *func_020951ec(u32 a);
-s32 _ZN12Unk_020d77a410getAngleToEPS_(u8 *a, u8 *b);
-s32 _ZN12Unk_020d77a416getAngleToPlayerEj(u8 *a, u32 b);
+s32 _ZN8NpcActor10getAngleToEPS_(u8 *a, u8 *b);
+s32 _ZN8NpcActor16getAngleToPlayerEj(u8 *a, u32 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(u8 *p, u32 a, u32 b, u8 *c, u8 *d, u32 e, u32 f, u32 g);
-Unk_0201bc1c *_ZN12Unk_020d77a414getTalkRequestEv();
+Unk_0201bc1c *_ZN8NpcActor14getTalkRequestEv();
 }
 }
 
@@ -2762,7 +2762,7 @@ s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 func_021065dc(s32 a);
 s32 func_021065f8(s32 a, s32 b);
-ActorTalkRequest *_ZN12Unk_020d77a414getTalkRequestEv(void);
+ActorTalkRequest *_ZN8NpcActor14getTalkRequestEv(void);
 s32 TalkRequest_GetPlayerId(void);
 }
 }
@@ -2804,7 +2804,7 @@ void _ZN12Unk_02015b8c15loadTalkGestureEv(void *a);
 void NpcActor_JointCalcLayer3Cb(void);
 void _ZN12Unk_020e0704D1Ev(void *a);
 void _ZN12Unk_020e0704C1Ev(void *a);
-BOOL _ZN12Unk_020d77a415netReadPositionEPiPh(void *o, Unk_02015fe0_Vec *v, s16 *a);
+BOOL _ZN8NpcActor15netReadPositionEPiPh(void *o, Unk_02015fe0_Vec *v, s16 *a);
 void _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(void *a, void *b);
 void _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(void *a, void *b, s32 c, s32 d, u32 e);
 s32 _ZN11NpcMoveCtrl11getMoveModeEv(void *a);
@@ -2837,7 +2837,7 @@ extern volatile u16 data_020c6cc8;
 extern u8 gVec3Zero[];
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_020e7b98(s32 a, s32 b);
-BOOL _ZN12Unk_020d77a415netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
+BOOL _ZN8NpcActor15netReadPositionEPiPh(Unk_02006d14 *o, s32 *v, s16 *a);
 BOOL NpcActor_IsFrontAngle(s16 a);
 void _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(Unk_02016a44_S350 *p, Unk_02006d14 *o, u32 a, u32 b, u32 c);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(Unk_02016a44_S350 *p, s32 a);
@@ -3003,7 +3003,7 @@ s32 _ZN11NpcMoveCtrl12getTurnSpeedEv(void *a);
 s32 _ZN11NpcMoveCtrl15getDestinationBEv(void *a);
 BOOL _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei(void *a, void *b, u32 c);
 BOOL _ZN11NpcMoveCtrl10hasNextLegEv(void *a);
-BOOL _ZN12Unk_020d77a412isPosInFrontEPsP16Unk_020d77a4_Vec(void *a, s16 *out, s32 c);
+BOOL _ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(void *a, s16 *out, s32 c);
 BOOL NpcActor_IsFrontAngle(s16 v);
 Unk_02018698_Ent *Emotion_GetEntry(u32 i);
 }
@@ -3176,17 +3176,17 @@ s32 _ZN11CommManager8isOnlineEv(u8 *g);
 Unk_020d77a4_Vec3 *func_020947f0(u32 n);
 s32 func_02094f48(s32 a, s32 b);
 void WorldCurve_FromCurved(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
-void _ZN12Unk_020d77a412releaseModelEv(void *p);
+void _ZN8NpcActor12releaseModelEv(void *p);
 void _ZN11NpcFaceAnim7releaseEv(void *p);
 void _ZN12Unk_02015b8c7releaseEv(void *p);
 void _ZN12Unk_02003c3013func_02003dccEv(void *p);
-void _ZN12Unk_020d77a412netSendStateEjz(void *p, s32 v);
+void _ZN8NpcActor12netSendStateEjz(void *p, s32 v);
 s32 _ZN17TwoLayerAnimModel11drawLayeredEj(void *p, s32 v);
 void _ZN11NpcMoveCtrl12storeHeadMtxEP12Unk_02006d14(void *p, void *q);
 s32 Model_GetJointWorldMtx(void *p, void *q, s32 v);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
-s32 _ZN12Unk_020d77a410isNetOwnerEv(void *p);
-s32 _ZN12Unk_020d77a413netReadActionEPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
+s32 _ZN8NpcActor10isNetOwnerEv(void *p);
+s32 _ZN8NpcActor13netReadActionEPiS0_Ph(void *p, s32 *a, s32 *b, void *buf);
 s32 _ZN13NpcActionCtrl9getActionEv(void *p);
 s32 _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void _ZN13NpcActionCtrl12requestStandEjt(void *p, s32 a, s32 b);
@@ -3209,7 +3209,7 @@ void _ZN16NpcObstacleProbe5clearEv(void *p);
 void _ZN16NpcObstacleProbe5probeEP18Unk_0201a334_Scene(void *p, void *q);
 u32 WorldCurve_ToCurved(void *a, void *b);
 s32 _ZN5Actor15calcModelMatrixEPv(void *p, void *buf);
-s32 _ZN12Unk_020d77a415netIsTalkLockedEv(void *p);
+s32 _ZN8NpcActor15netIsTalkLockedEv(void *p);
 void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
 void _ZN12Unk_020e0d0813func_0208905cEv(void *p);
 void _ZN12Unk_02015b8c6updateEP18Unk_02015b8c_Scene(void *p, void *q);
@@ -3224,7 +3224,7 @@ void NpcActor_PayPlayer(void *self, s32 v);
 s32 NpcActor_CheckPayoutFits(void *self, s32 v, s32 w);
 void NpcActor_ChargePlayer(void *self, s32 v);
 void NpcActor_CanPlayerPay(void *self, s32 v);
-void NpcActor_FindFreeUnitNear(V3 *out, Unk_020d77a4 *self, V3 *in);
+void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in);
 }
 }
 
@@ -3736,7 +3736,7 @@ extern void *data_020d7704[2];
 namespace nR {
 extern "C" void NpcActor_OnJointCalc(Unk_0201be34 *self) {
     u32 idx = self->unk_00->unk_01;
-    Unk_020d77a4 *p = self->unk_04->unk_2c;
+    NpcActor *p = self->unk_04->unk_2c;
     u16 tmp[2];
     Unk_0201be34_Mtx mB;
     Unk_0201be34_Mtx mA;
@@ -3822,7 +3822,7 @@ extern "C" void NpcActor_SetJointCallbackNext(Unk_0201be34 *self) {
 }
 }
 
-BOOL Unk_020d77a4::loadModel() {
+BOOL NpcActor::loadModel() {
     using namespace nR;
     s32 t = getModelPath();
     BOOL r = FALSE;
@@ -3832,29 +3832,29 @@ BOOL Unk_020d77a4::loadModel() {
     return r;
 }
 
-void Unk_020d77a4::releaseModel() {
+void NpcActor::releaseModel() {
     using namespace nR;
     _ZN11CachedModel7releaseEv(unk_ec);
 }
 
-u16 Unk_020d77a4::getNpcIndex() {
+u16 NpcActor::getNpcIndex() {
     using namespace nR;
     return unk_632;
 }
 
-void Unk_020d77a4::setNpcIndex(u16 v) {
+void NpcActor::setNpcIndex(u16 v) {
     using namespace nR;
     unk_632 = v;
 }
 
-void Unk_020d77a4::setNpcHandle(u16 *p) {
+void NpcActor::setNpcHandle(u16 *p) {
     using namespace nR;
     unk_ea = *p;
     setNpcIndex(unk_ea & 0xfff);
     _ZN9Character9setCharIdEj(this, getNpcIndex());
 }
 
-void Unk_020d77a4::setCollisionRadius(s32 v) {
+void NpcActor::setCollisionRadius(s32 v) {
     using namespace nR;
     unk_638 = v;
 }
@@ -3871,13 +3871,13 @@ extern "C" BOOL NpcActor_IsFrontAngle(s32 x) {
 }
 }
 
-BOOL Unk_020d77a4::isPosInFront(s16 *out, Unk_020d77a4_Vec *pos) {
+BOOL NpcActor::isPosInFront(s16 *out, Unk_020d77a4_Vec *pos) {
     using namespace nR;
     *out = Math_AngleXZ(&unk_5c, pos);
     return NpcActor_IsFrontAngle((s16)(*out - unk_8e));
 }
 
-s32 Unk_020d77a4::getDistanceTo(Unk_020d77a4 *other) {
+s32 NpcActor::getDistanceTo(NpcActor *other) {
     using namespace nR;
     s32 r = 0;
     if (other != NULL) {
@@ -3886,12 +3886,12 @@ s32 Unk_020d77a4::getDistanceTo(Unk_020d77a4 *other) {
     return r;
 }
 
-s32 Unk_020d77a4::getDistanceToPlayer(u32 id) {
+s32 NpcActor::getDistanceToPlayer(u32 id) {
     using namespace nR;
-    return getDistanceTo((Unk_020d77a4 *)func_020951ec(id));
+    return getDistanceTo((NpcActor *)func_020951ec(id));
 }
 
-BOOL Unk_020d77a4::isNear(Unk_020d77a4 *other, s32 n) {
+BOOL NpcActor::isNear(NpcActor *other, s32 n) {
     using namespace nR;
     BOOL r = FALSE;
     if (other != NULL) {
@@ -3906,12 +3906,12 @@ BOOL Unk_020d77a4::isNear(Unk_020d77a4 *other, s32 n) {
     return r;
 }
 
-BOOL Unk_020d77a4::isPlayerNear(s32 n, u32 id) {
+BOOL NpcActor::isPlayerNear(s32 n, u32 id) {
     using namespace nR;
-    return isNear((Unk_020d77a4 *)func_020951ec(id), n);
+    return isNear((NpcActor *)func_020951ec(id), n);
 }
 
-s32 Unk_020d77a4::getAngleTo(Unk_020d77a4 *other) {
+s32 NpcActor::getAngleTo(NpcActor *other) {
     using namespace nR;
     s32 r = 0;
     if (other != NULL) {
@@ -3920,7 +3920,7 @@ s32 Unk_020d77a4::getAngleTo(Unk_020d77a4 *other) {
     return r;
 }
 
-s32 Unk_020d77a4::getAngleToPlayer(u32 id) {
+s32 NpcActor::getAngleToPlayer(u32 id) {
     using namespace nR;
     s32 result = 0;
     u8 flag;
@@ -3931,23 +3931,23 @@ s32 Unk_020d77a4::getAngleToPlayer(u32 id) {
     } else {
         s32 p = func_020951ec(id);
         if (p != 0) {
-            result = getAngleTo((Unk_020d77a4 *)p);
+            result = getAngleTo((NpcActor *)p);
         }
     }
     return result;
 }
 
-s16 Unk_020d77a4::getRelativeAngleTo(Unk_020d77a4 *other) {
+s16 NpcActor::getRelativeAngleTo(NpcActor *other) {
     using namespace nR;
     return getAngleTo(other) - unk_8e;
 }
 
-s32 Unk_020d77a4::getPlayerActor(u32 id) {
+s32 NpcActor::getPlayerActor(u32 id) {
     using namespace nR;
     return func_020951ec(id);
 }
 
-void Unk_020d77a4::setTalkRequest(Unk_0201bc1c *p) {
+void NpcActor::setTalkRequest(Unk_0201bc1c *p) {
     using namespace nR;
     unk_634 = p;
     if (unk_634 != NULL) {
@@ -3955,12 +3955,12 @@ void Unk_020d77a4::setTalkRequest(Unk_0201bc1c *p) {
     }
 }
 
-Unk_0201bc1c *Unk_020d77a4::getTalkRequest() {
+Unk_0201bc1c *NpcActor::getTalkRequest() {
     using namespace nR;
     return unk_634;
 }
 
-s32 Unk_020d77a4::getSpeakerGender() {
+s32 NpcActor::getSpeakerGender() {
     using namespace nR;
     s32 r = 2;
     s32 v = getGender();
@@ -3975,16 +3975,16 @@ s32 Unk_020d77a4::getSpeakerGender() {
     return r;
 }
 
-void Unk_020d77a4::setShirt() {
+void NpcActor::setShirt() {
     using namespace nR;}
 
-void Unk_020d77a4::onJoinTalk() {
+void NpcActor::onJoinTalk() {
     using namespace nR;}
 
-void Unk_020d77a4::onLeaveTalk() {
+void NpcActor::onLeaveTalk() {
     using namespace nR;}
 
-BOOL Unk_020d77a4::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
+BOOL NpcActor::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
     using namespace nR;
     BOOL result = FALSE;
     Unk_020d77a4_Vec v;
@@ -3998,7 +3998,7 @@ BOOL Unk_020d77a4::getFreeOffsetPos(Unk_020d77a4_Vec *out, void *p) {
     return result;
 }
 
-s32 Unk_020d77a4::findAvoidPos(Unk_020d77a4_Vec *out) {
+s32 NpcActor::findAvoidPos(Unk_020d77a4_Vec *out) {
     using namespace nR;
     s32 r = _ZN9NpcLookAt15getObstacleBitsEv(unk_3a8);
     s32 result = 0;
@@ -4026,7 +4026,7 @@ s32 Unk_020d77a4::findAvoidPos(Unk_020d77a4_Vec *out) {
     return result;
 }
 
-s32 Unk_020d77a4::getAct0BAnimA() {
+s32 NpcActor::getAct0BAnimA() {
     using namespace nR;
     s32 i = getGender();
     if (i >= 2) {
@@ -4035,7 +4035,7 @@ s32 Unk_020d77a4::getAct0BAnimA() {
     return data_020c6d48[i];
 }
 
-s32 Unk_020d77a4::getAct0BAnimB() {
+s32 NpcActor::getAct0BAnimB() {
     using namespace nR;
     s32 i = getGender();
     if (i >= 2) {
@@ -4044,15 +4044,15 @@ s32 Unk_020d77a4::getAct0BAnimB() {
     return data_020c6d60[i];
 }
 
-u16 Unk_020d77a4::vfunc_9c() {
+u16 NpcActor::vfunc_9c() {
     using namespace nR;
     return data_020c6cc8;
 }
 
-void Unk_020d77a4::addMood() {
+void NpcActor::addMood() {
     using namespace nR;}
 
-BOOL Unk_020d77a4::isNetOwner() {
+BOOL NpcActor::isNetOwner() {
     using namespace nR;
     Unk_020d77a4_Global *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) != 0 && unk_563 == 0) {
@@ -4068,12 +4068,12 @@ BOOL Unk_020d77a4::isNetOwner() {
     return TRUE;
 }
 
-s32 Unk_020d77a4::netSetSlots(s32 a, s32 b, s32 c) {
+s32 NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
     using namespace nR;
     return func_0208419c(a, b, c, &unk_ea);
 }
 
-void Unk_020d77a4::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
+void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
     func_02084228(&unk_ea, b, c);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
@@ -4088,12 +4088,12 @@ void Unk_020d77a4::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     }
 }
 
-s32 Unk_020d77a4::func_0201b9e8(s32 a, s32 b) {
+s32 NpcActor::func_0201b9e8(s32 a, s32 b) {
     using namespace nR;
     return func_0208416c(a, b, &unk_ea);
 }
 
-BOOL Unk_020d77a4::netIsTalkLocked() {
+BOOL NpcActor::netIsTalkLocked() {
     using namespace nR;
     s32 a = 4;
     s32 b = 4;
@@ -4106,7 +4106,7 @@ BOOL Unk_020d77a4::netIsTalkLocked() {
     return FALSE;
 }
 
-BOOL Unk_020d77a4::getNetUserBytes(u8 *src, u32 n) {
+BOOL NpcActor::getNetUserBytes(u8 *src, u32 n) {
     using namespace nR;
     if (unk_563 == 0) {
         u8 *p = func_020841fc(&unk_ea);
@@ -4121,7 +4121,7 @@ BOOL Unk_020d77a4::getNetUserBytes(u8 *src, u32 n) {
     return FALSE;
 }
 
-void Unk_020d77a4::setNetUserBytes(void *dst, s32 n) {
+void NpcActor::setNetUserBytes(void *dst, s32 n) {
     using namespace nR;
     if (n > 4) {
         n = 4;
@@ -4129,7 +4129,7 @@ void Unk_020d77a4::setNetUserBytes(void *dst, s32 n) {
     MI_CpuCopy8(dst, unk_62d, n);
 }
 
-void Unk_020d77a4::netSendState(u32 a, ...) {
+void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
     func_02084254(&unk_ea, func_020b50e8(), &unk_5c, unk_8e, unk_568, unk_62d);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
@@ -4144,7 +4144,7 @@ void Unk_020d77a4::netSendState(u32 a, ...) {
     }
 }
 
-BOOL Unk_020d77a4::netReadPosition(s32 *a, u8 *b) {
+BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
     using namespace nR;
     if (unk_563 == 0) {
         u8 *p = func_020841fc(&unk_ea);
@@ -4157,7 +4157,7 @@ BOOL Unk_020d77a4::netReadPosition(s32 *a, u8 *b) {
     return FALSE;
 }
 
-BOOL Unk_020d77a4::netReadAction(s32 *a, s32 *b, u8 *c) {
+BOOL NpcActor::netReadAction(s32 *a, s32 *b, u8 *c) {
     using namespace nR;
     u8 *p = func_020841fc(&unk_ea);
     if (p != NULL) {
@@ -4169,12 +4169,12 @@ BOOL Unk_020d77a4::netReadAction(s32 *a, s32 *b, u8 *c) {
     return FALSE;
 }
 
-u8 Unk_020d77a4::isUpdating() {
+u8 NpcActor::isUpdating() {
     using namespace nR;
     return unk_561;
 }
 
-BOOL Unk_020d77a4::vfunc_04() {
+BOOL NpcActor::vfunc_04() {
     using namespace nR;
     u16 tmp;
     if (_ZN9Character8vfunc_04Ev(this) == 0) {
@@ -4204,7 +4204,7 @@ BOOL Unk_020d77a4::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_020d77a4::vfunc_00() {
+BOOL NpcActor::vfunc_00() {
     using namespace nR;
     if (NetArea_IsLocalOwner() != 0) {
         netSetSlots(1, gCommManager->unk_64, 4);
@@ -4219,7 +4219,7 @@ BOOL Unk_020d77a4::vfunc_00() {
     return TRUE;
 }
 
-void Unk_020d77a4::postCreate(s32 x) {
+void NpcActor::postCreate(s32 x) {
     using namespace nR;
     if (x == 2) {
         if (NetArea_IsLocalOwner() == 0) {
@@ -4235,12 +4235,12 @@ void Unk_020d77a4::postCreate(s32 x) {
     _ZN9Character10postCreateEi(this, x);
 }
 
-BOOL Unk_020d77a4::updateAct() {
+BOOL NpcActor::updateAct() {
     using namespace nR;
     return TRUE;
 }
 
-BOOL Unk_020d77a4::onExecute() {
+BOOL NpcActor::onExecute() {
     using namespace nQ;
     Unk_0201b2b8_S s;
     struct Unk_0201b2b8_L { s32 a, b, x, y, z; } L;
@@ -4254,10 +4254,10 @@ BOOL Unk_020d77a4::onExecute() {
     if ((*(u8 *)((u8 *)this + (0x561))) == 0) {
         return TRUE;
     }
-    if (!_ZN12Unk_020d77a410isNetOwnerEv(this)) {
+    if (!_ZN8NpcActor10isNetOwnerEv(this)) {
         L.a = 0x16;
         L.b = 0;
-        if (_ZN12Unk_020d77a413netReadActionEPiS0_Ph(this, &L.a, &L.b, buf)) {
+        if (_ZN8NpcActor13netReadActionEPiS0_Ph(this, &L.a, &L.b, buf)) {
             if (L.b == 1 && (u32)L.a <= 2) {
                 if (_ZN13NpcActionCtrl9getActionEv(((void *)((u8 *)this + (0x564)))) != 0x15) {
                     _ZN13NpcActionCtrl13requestActionEjiiissiitt(((void *)((u8 *)this + (0x564))), 0x15, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
@@ -4320,7 +4320,7 @@ BOOL Unk_020d77a4::onExecute() {
     (*(u16 *)((u8 *)this + (0xd0))) = WorldCurve_ToCurved(((void *)((u8 *)this + (0xc4))), ((void *)((u8 *)this + (0x5c))));
     _ZN5Actor15calcModelMatrixEPv(this, &t);
     (*(Unk_0201b2b8_T30 *)((u8 *)this + (0x150))) = t;
-    if (_ZN12Unk_020d77a415netIsTalkLockedEv(this)) {
+    if (_ZN8NpcActor15netIsTalkLockedEv(this)) {
         if (((*(u32 *)((u8 *)this + (0x4e8))) & 2) == 0 && NetArea_IsLocalOwner()) {
             (*(u32 *)((u8 *)this + (0x4e8))) |= 2;
             (*(u8 *)((u8 *)this + (0x62c))) = 1;
@@ -4348,12 +4348,12 @@ BOOL Unk_020d77a4::onExecute() {
     _ZN11NpcFaceAnim6updateEPh(((void *)((u8 *)this + (0x2ac))), this);
     _ZN13NpcActionCtrl10postUpdateEPh(((void *)((u8 *)this + (0x564))), this);
     if ((*(u8 *)((u8 *)this + (0x563))) == 0) {
-        _ZN12Unk_020d77a412netSendStateEjz(this, 1);
+        _ZN8NpcActor12netSendStateEjz(this, 1);
     }
     return TRUE;
 }
 
-BOOL Unk_020d77a4::onDraw() {
+BOOL NpcActor::onDraw() {
     using namespace nQ;
     Unk_0201b138_Buf buf;
     Unk_020d77a4_Vec3 t0, t1, t2;
@@ -4401,22 +4401,22 @@ BOOL Unk_020d77a4::onDraw() {
     return TRUE;
 }
 
-void Unk_020d77a4::vfunc_30() {
+void NpcActor::vfunc_30() {
     using namespace nQ;}
 
-BOOL Unk_020d77a4::vfunc_0c() {
+BOOL NpcActor::vfunc_0c() {
     using namespace nQ;
-    _ZN12Unk_020d77a412releaseModelEv(this);
+    _ZN8NpcActor12releaseModelEv(this);
     _ZN11NpcFaceAnim7releaseEv(((void *)((u8 *)this + (0x2ac))));
     _ZN12Unk_02015b8c7releaseEv(((void *)((u8 *)this + (0x334))));
     _ZN12Unk_02003c3013func_02003dccEv(((void *)((u8 *)this + (0x514))));
     if ((*(u8 *)((u8 *)this + (0x563))) == 0) {
-        _ZN12Unk_020d77a412netSendStateEjz(this, 1);
+        _ZN8NpcActor12netSendStateEjz(this, 1);
     }
     return TRUE;
 }
 
-BOOL Unk_020d77a4::vfunc_5c(Unk_020d77a4_Vec3 *out) {
+BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
     using namespace nQ;
     s32 a = (*(s32 *)((u8 *)this + (0x46c)));
     if (a == 0 && (*(s32 *)((u8 *)this + (0x470))) == 0 && (*(s32 *)((u8 *)this + (0x474))) == 0) {
@@ -4429,21 +4429,21 @@ BOOL Unk_020d77a4::vfunc_5c(Unk_020d77a4_Vec3 *out) {
     return TRUE;
 }
 
-void Unk_020d77a4::vfunc_4c(s32 v) {
+void NpcActor::vfunc_4c(s32 v) {
     using namespace nQ;
     if (v == 8) {
         func_02094f48(0, 4);
     }
 }
 
-s32 Unk_020d77a4::vfunc_60() {
+s32 NpcActor::vfunc_60() {
     using namespace nQ; return 0; }
 
-s32 Unk_020d77a4::vfunc_64() {
+s32 NpcActor::vfunc_64() {
     using namespace nQ; return 0; }
 
 namespace nQ {
-extern "C" void NpcActor_FindFreeUnitNear(V3 *out, Unk_020d77a4 *self, V3 *in) {
+extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
     V3 a, b, cand1, cand2, arr[4], tmp, t1, t2, t3, t4;
     u32 m0, m1;
     s32 best, bestDist, d1, i1, dir0, dir1, best2, d, d0, i, j;
@@ -6318,7 +6318,7 @@ s32 Unk_02018698::setupMoveTurnFirst(C_8698 *c, s32 a, s16 b) {
     unk_a0 = b;
     _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(c->unk_350, &v1);
     _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(c->unk_350, &v2);
-    if (_ZN12Unk_020d77a412isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(c->unk_350))) {
+    if (_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, _ZN11NpcMoveCtrl15getDestinationBEv(c->unk_350))) {
         _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, unk_9c, d->unk_1a, d->unk_1c);
         unk_98 = 1;
     } else {
@@ -6355,7 +6355,7 @@ void Unk_02018698::act05Step1(C_8698 *c) {
         } else {
             _ZN13NpcActionCtrl13setActionDoneEi(this, 1);
         }
-    } else if (!_ZN12Unk_020d77a412isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, r)) {
+    } else if (!_ZN8NpcActor12isPosInFrontEPsP16Unk_020d77a4_Vec(c, &out, r)) {
         u16 v = data_020c6cc8;
         s32 t = _ZN11NpcMoveCtrl12getTurnSpeedEv(c->unk_350);
         _ZN11NpcMoveCtrl11setMoveModeEP18Unk_0201a334_Sceneist(c->unk_350, c, 3, t, data_020c6cc8);
@@ -7469,7 +7469,7 @@ BOOL Unk_02016a44::setupAct15(Unk_02006d14 *o) {
     v[1] = 0;
     v[2] = 0;
     ang = o->unk_8e;
-    if (_ZN12Unk_020d77a415netReadPositionEPiPh(o, v, &ang)) {
+    if (_ZN8NpcActor15netReadPositionEPiPh(o, v, &ang)) {
         s32 dx = v[0] - o->unk_5c;
         s32 dz = v[2] - o->unk_64;
         s32 d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -7519,7 +7519,7 @@ void Unk_02016360::act15Step0(Unk_02015fe0_Obj *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->unk_8e;
-    if (_ZN12Unk_020d77a415netReadPositionEPiPh(o, &pos, &ang)) {
+    if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -7564,7 +7564,7 @@ void Unk_02016360::act15Step1(Unk_02015fe0_Obj *o) {
     pos.z = 0;
     ang = o->unk_8e;
     _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->unk_350, o);
-    if (_ZN12Unk_020d77a415netReadPositionEPiPh(o, &pos, &ang)) {
+    if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -7617,7 +7617,7 @@ void Unk_02016360::act15Step2(Unk_02015fe0_Obj *o) {
     pos.y = 0;
     pos.z = 0;
     ang = o->unk_8e;
-    if (_ZN12Unk_020d77a415netReadPositionEPiPh(o, &pos, &ang)) {
+    if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -7666,7 +7666,7 @@ void Unk_02016360::act15Step3(Unk_02015fe0_Obj *o) {
     pos.z = 0;
     ang = o->unk_8e;
     _ZN11NpcMoveCtrl16aimAtDestinationEP18Unk_0201a334_Scene(o->unk_350, o);
-    if (_ZN12Unk_020d77a415netReadPositionEPiPh(o, &pos, &ang)) {
+    if (_ZN8NpcActor15netReadPositionEPiPh(o, &pos, &ang)) {
         dx = pos.x - o->unk_5c;
         dz = pos.z - o->unk_64;
         d = func_01ffcb0c(dx, dx) + func_01ffcb0c(dz, dz);
@@ -8171,7 +8171,7 @@ void ActorTalkRequest::setPartnerActor(Unk_02015b8c_Scene *p) {
     using namespace nH;
     unk_4c = p;
     if (unk_4c != NULL) {
-        ActorTalkRequest *q = _ZN12Unk_020d77a414getTalkRequestEv();
+        ActorTalkRequest *q = _ZN8NpcActor14getTalkRequestEv();
         if (q != NULL) {
             q->vfunc_08();
             unk_4c->vfunc_8c();
@@ -8219,7 +8219,7 @@ void ActorTalkRequest::playEmotion(u32 a, u32 b) {
     using namespace nH;
     Unk_02015b8c_Scene *o = getActor(b);
     if (o != NULL) {
-        ActorTalkRequest *p = _ZN12Unk_020d77a414getTalkRequestEv();
+        ActorTalkRequest *p = _ZN8NpcActor14getTalkRequestEv();
         if (p != NULL) {
             if (!p->isItemActionBusy()) {
                 if (p->unk_58 == a) {
@@ -8415,9 +8415,9 @@ void Unk_020d7710::vfunc_50() {
     using namespace nG;
     u8 *p5 = nG::_ZN16ActorTalkRequest8getActorEj(this, unk_50);
     if (p5 != NULL) {
-        Unk_0201bc1c *h = _ZN12Unk_020d77a414getTalkRequestEv();
+        Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
         u32 u = TalkRequest_GetPlayerId();
-        s32 v = _ZN12Unk_020d77a416getAngleToPlayerEj(p5, u);
+        s32 v = _ZN8NpcActor16getAngleToPlayerEj(p5, u);
         if (h != NULL) {
             h->vfunc_38(0);
         }
@@ -8478,8 +8478,8 @@ void Unk_020d7710::vfunc_58() {
         case 1: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p4 != NULL) {
-                Unk_0201bc1c *h = _ZN12Unk_020d77a414getTalkRequestEv();
-                s32 v = _ZN12Unk_020d77a410getAngleToEPS_(p4, p7);
+                Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
+                s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
                 vfunc_50();
                 if (h != NULL) {
                     h->vfunc_38(0);
@@ -8524,8 +8524,8 @@ void Unk_020d7710::vfunc_60() {
         case 0: {
             u8 *p4 = nG::_ZN16ActorTalkRequest8getActorEj(this, s);
             if (p4 != NULL) {
-                Unk_0201bc1c *h = _ZN12Unk_020d77a414getTalkRequestEv();
-                s32 v = _ZN12Unk_020d77a410getAngleToEPS_(p4, p7);
+                Unk_0201bc1c *h = _ZN8NpcActor14getTalkRequestEv();
+                s32 v = _ZN8NpcActor10getAngleToEPS_(p4, p7);
                 vfunc_58();
                 if (h != NULL) {
                     h->vfunc_38(0);
@@ -9390,7 +9390,7 @@ BOOL Unk_02014258::switchSpeakerSwap() {
             if (n != 0) {
                 Unk_020140d0_X x;
                 n->vfunc_74(&x);
-                _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(this, &x, _ZN12Unk_020d77a416getSpeakerGenderEv(n));
+                _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(this, &x, _ZN8NpcActor16getSpeakerGenderEv(n));
                 unk_3c->unk_08 = 1;
                 unk_a8 = 3;
                 return TRUE;
@@ -9492,7 +9492,7 @@ void NpcTalkCtrl::startTalkMessage(Unk_02013b10_Ctx *ctx) {
         ctx->vfunc_74(&x);
         Unk_020140d0_X *px = &x;
         s32 r = px->vfunc_0c();
-        _ZN14TalkMsgRequest14setSpeakerNameEPhj(o, r, _ZN12Unk_020d77a416getSpeakerGenderEv(ctx));
+        _ZN14TalkMsgRequest14setSpeakerNameEPhj(o, r, _ZN8NpcActor16getSpeakerGenderEv(ctx));
         _ZN9Character13func_0203e488Ei(ctx, o);
         o->vfunc_78(&out.a);
         _ZN10MsgRequest11setFileNameEPKc(o, out.a);
@@ -10046,7 +10046,7 @@ s32 Unk_020133cc_Player::getNewEmotionToLearn() {
     s32 result = -1;
     if (nD::_ZN11NpcTalkCtrl6isBusyEv(&unk_618)) {
         if (nD::_ZN13NpcActionCtrl9getActionEv(&unk_564) == 8) {
-            if (nD::_ZN12Unk_020d77a414getTalkRequestEv(this) != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(nD::_ZN12Unk_020d77a414getTalkRequestEv(this)) == NULL) {
+            if (nD::_ZN8NpcActor14getTalkRequestEv(this) != NULL && nD::_ZN16ActorTalkRequest15getPartnerActorEv(nD::_ZN8NpcActor14getTalkRequestEv(this)) == NULL) {
                 s32 v = nD::_ZN13NpcActionCtrl12getEmotionIdEv(&unk_564);
                 if (v > 0 && v < 0x3c && v != getLastTaughtEmotion()) {
                     if (func_0203f048((u8)v) == -1) {
@@ -10060,7 +10060,7 @@ s32 Unk_020133cc_Player::getNewEmotionToLearn() {
     return result;
 }
 
-s32 Unk_020d77a4::getTeachableEmotion() {
+s32 NpcActor::getTeachableEmotion() {
     using namespace nD;
     return -1;
 }
@@ -11190,7 +11190,7 @@ void HeldToolModel::func_02011b60(u32 v) {
     if (r) func_0205e184(r, v);
 }
 
-inline Unk_020d77a4::~Unk_020d77a4() {
+inline NpcActor::~NpcActor() {
     using namespace nDtor;
     NpcTalkCtrl_Destroy((u8 *)this + 0x618);
     _ZN13NpcActionCtrl13func_02019854Ev((u8 *)this + 0x564);

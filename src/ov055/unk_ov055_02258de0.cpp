@@ -212,10 +212,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -266,10 +266,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -395,7 +395,7 @@ struct Unk_ov055_022594e0_Ent {
     Unk_ov055_02259994_Fn exit;
 };
 
-class SpNpcRover : public Unk_020d8bc8 {
+class SpNpcRover : public SpNpcActor {
 public:
     SpNpcRover() {
         u8 *p = (u8 *)&unk_710;
@@ -502,7 +502,7 @@ static inline BOOL Unk_ov055_0225915c_Both() {
 extern "C" SpNpcRover *SpNpcRover_Create() { return new SpNpcRover; }
 
 BOOL SpNpcRover::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -511,7 +511,7 @@ BOOL SpNpcRover::vfunc_04() {
 }
 
 BOOL SpNpcRover::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     sSpNpcRoverInstance = this;
@@ -524,7 +524,7 @@ BOOL SpNpcRover::vfunc_00() {
 }
 
 BOOL SpNpcRover::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     sSpNpcRoverInstance = 0;

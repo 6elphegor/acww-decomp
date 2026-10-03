@@ -54,10 +54,10 @@ public:
 #define func_02086eb0 _ZN12Unk_02086c0413func_02086eb0Ev
 #define func_02086ec4 _ZN12Unk_02086c0413func_02086ec4EP17Unk_02086ec4_Vec3
 #define func_02086edc _ZN12Unk_02086c0413func_02086edcEv
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleToPlayer _ZN12Unk_020d77a416getAngleToPlayerEj
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
 #define Unk_ov075_0227188c_CallA() NpcActionCtrl_requestAction(r4, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0)
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 
 class SpNpcPete;
 class SpNpcPeteTalk;
@@ -107,9 +107,9 @@ void Npc_RotateOffsetXZ(void *out, void *a, void *b, s32 c);
 s32 Npc_IsPosBlocked(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
-u32 Unk_020d77a4_getPlayerActor(void *p, s32 n);
-u32 Unk_020d77a4_getAngleToPlayer(void *p, s32 n);
-s32 Unk_020d77a4_getAngleTo(void *self, void *a);
+u32 NpcActor_getPlayerActor(void *p, s32 n);
+u32 NpcActor_getAngleToPlayer(void *p, s32 n);
+s32 NpcActor_getAngleTo(void *self, void *a);
 void func_020e7518(void *p);
 s32 Random_Next(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -326,10 +326,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -376,10 +376,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -397,7 +397,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcPete : public Unk_020d8bc8 {
+class SpNpcPete : public SpNpcActor {
 public:
     SpNpcPete() {}
     virtual BOOL vfunc_00();
@@ -555,7 +555,7 @@ extern "C" SpNpcPete *SpNpcPete_Create() {
 }
 
 BOOL SpNpcPete::vfunc_04() {
-    if (Unk_020d8bc8::vfunc_04() == 0) {
+    if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -564,7 +564,7 @@ BOOL SpNpcPete::vfunc_04() {
 }
 
 BOOL SpNpcPete::vfunc_00() {
-    if (Unk_020d8bc8::vfunc_00() == 0) {
+    if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
     if (func_02086eb0(func_02085174(func_020850e0())) != 0) {
@@ -579,7 +579,7 @@ BOOL SpNpcPete::vfunc_00() {
 s32 SpNpcPete::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcPete::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c() == 0) {
+    if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
     if (func_02040c88() == 0) {
@@ -840,7 +840,7 @@ BOOL SpNpcPete::setupAct01() {
         unk_4cc.unk_1c &= ~2;
     }
     if (r4 != 0) {
-        r6 = Unk_020d77a4_getAngleTo(this, r4);
+        r6 = NpcActor_getAngleTo(this, r4);
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, r6, 0);
     return TRUE;
@@ -908,7 +908,7 @@ void SpNpcPeteTalk::scriptWakeUp() {
     case 1:
         if (Unk_02015b8c_getAnimId(unk_b4 + 0x334, 0) == 0xd5) {
             if (NpcActionCtrl_isActionDone(unk_b4 + 0x564) != 0) {
-                u32 r = Unk_020d77a4_getAngleToPlayer(unk_b4, 4);
+                u32 r = NpcActor_getAngleToPlayer(unk_b4, 4);
                 NpcActionCtrl_requestAction(unk_b4 + 0x564, 3, 2, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
                 unk_b0 = unk_b0 + 1;
             }
@@ -988,7 +988,7 @@ void SpNpcPete::vfunc_4c(s32 a) {
         break;
     case 3:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0(Unk_020d77a4_getPlayerActor(this, 4));
+        unk_658.func_02015ab0(NpcActor_getPlayerActor(this, 4));
         if (unk_714 != 0) {
             SpNpcPete_ChangeAct(this, 1);
         }

@@ -68,7 +68,7 @@ void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void Clock_GetDateTime(void *p);
@@ -337,10 +337,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -391,10 +391,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -412,7 +412,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcRedd : public Unk_020d8bc8 {
+class SpNpcRedd : public SpNpcActor {
 public:
     SpNpcRedd() : unk_71a(0xfff1), unk_724(0), unk_728(0) {}
     virtual BOOL vfunc_00();
@@ -550,7 +550,7 @@ SpNpcRedd *SpNpcRedd_Create() {
 }
 
 BOOL SpNpcRedd::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -563,7 +563,7 @@ BOOL SpNpcRedd::vfunc_04() {
 }
 
 BOOL SpNpcRedd::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     if (func_020b50dc()) {
@@ -765,7 +765,7 @@ BOOL SpNpcRedd::setupAct05() {
     void *p = unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
-        r = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        r = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r, 0);
     return TRUE;
@@ -787,7 +787,7 @@ BOOL SpNpcRedd::setupAct06() {
     void *p = unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
-        r = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        r = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r, 1);
     return TRUE;

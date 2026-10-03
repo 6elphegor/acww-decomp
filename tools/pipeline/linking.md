@@ -93,10 +93,10 @@ pairs, e.g. `Ent sSpNpcTortimerFlowerFestActTable[3] = {{&C::f824,&C::f7d8},{&C:
   `autoload_2 0213a740 __ptmf_null` to renames.txt until it is committed.
 * Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;
   the default `-str noreuse` makes one copy per use. `#pragma reuse_strings` is ignored.
-* The overlays built on main's `Unk_020d77a4`/`Unk_020d8bc8` scene classes (ov080, ov083, ...) share a set of
+* The overlays built on main's `NpcActor`/`SpNpcActor` scene classes (ov080, ov083, ...) share a set of
   main renames and class chains: reuse the class declarations of the linked ov083 units rather than inventing new
   names. Their inline constructors store
-  `_ZTV12Unk_020d77a4` / `_ZTV12Unk_020d8bc8` (being added to main's symbols.txt).
+  `_ZTV8NpcActor` / `_ZTV10SpNpcActor` (being added to main's symbols.txt).
 
 ## 3. Order the functions
 

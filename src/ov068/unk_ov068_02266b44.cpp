@@ -40,10 +40,10 @@ class SpNpcNookIntroTalk;
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
-#define Unk_020d77a4_setNpcHandle _ZN12Unk_020d77a412setNpcHandleEPt
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
+#define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define func_02060388 _ZN9HouseData13func_02060388Ev
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define func_02097ff4 _ZN12Unk_02097ff413func_02097ff4Ej
@@ -120,10 +120,10 @@ void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void func_02015ab0(void *self, s32 a);
 void *func_02015aac(void *self);
-s32 Unk_020d77a4_getPlayerActor(void *self, s32 a);
-u32 Unk_020d77a4_getAngleTo(void *self, void *q);
-void Unk_020d77a4_setTalkRequest(void *self, void *q);
-void Unk_020d77a4_setNpcHandle(void *self, u16 *q);
+s32 NpcActor_getPlayerActor(void *self, s32 a);
+u32 NpcActor_getAngleTo(void *self, void *q);
+void NpcActor_setTalkRequest(void *self, void *q);
+void NpcActor_setNpcHandle(void *self, u16 *q);
 s32 NpcActionCtrl_isActionDone(void *self);
 s32 NpcActionCtrl_getAction(void *self);
 void NpcActionCtrl_requestAction(void *self, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -192,9 +192,9 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -239,10 +239,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -370,7 +370,7 @@ struct Unk_ov068_0226fea4_Ent {
     u8 pad[3];
 };
 
-class SpNpcNookIntro : public Unk_020d8bc8 {
+class SpNpcNookIntro : public SpNpcActor {
 public:
     SpNpcNookIntro() {}
     virtual BOOL vfunc_00();
@@ -463,11 +463,11 @@ BOOL SpNpcNookIntro::vfunc_04() {
         ItemId(0xd019), ItemId(0xd01a),
         ItemId(0xd01b), ItemId(0xd01c)
     };
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    Unk_020d77a4_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
-    Unk_020d77a4_setTalkRequest(this, &unk_658);
+    NpcActor_setNpcHandle(this, &tbl[NookShop_GetLevel(&data_021ed104)].v);
+    NpcActor_setTalkRequest(this, &unk_658);
     unk_658.attachOwner((FieldVillager *)this);
     NpcMoveCtrl_setSpeedPreset(&unk_350, 2, 0x399, 0x133, 0x199);
     return TRUE;
@@ -509,7 +509,7 @@ extern "C" Unk_ov068_SceneEntry sSpNpcNookIntroProfile = {(void *(*)())SpNpcNook
 extern "C" void *data_ov068_0226fd20[2] = {(void *)_ZN14SpNpcNookIntro10setupAct04Ev, 0};
 
 BOOL SpNpcNookIntro::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(0);
@@ -569,7 +569,7 @@ BOOL SpNpcNookIntro::setupAct01() {
     void *p = func_02015aac(&unk_658);
     x = 0;
     if (p != NULL) {
-        x = Unk_020d77a4_getAngleTo(this, p);
+        x = NpcActor_getAngleTo(this, p);
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, x, 1);
     return TRUE;
@@ -599,7 +599,7 @@ BOOL SpNpcNookIntro::setupAct02() {
 BOOL SpNpcNookIntro::mainAct02() {
     if (func_020951b8(4) == 0) {
         unk_658.vfunc_08();
-        func_02015ab0(&unk_658, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
     }
     return TRUE;

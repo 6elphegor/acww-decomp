@@ -328,10 +328,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -360,7 +360,7 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
     void *getPlayerActor(u32 v);
     BOOL netIsTalkLocked();
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
 
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
@@ -381,10 +381,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -467,7 +467,7 @@ public:
     /* 0xd8 */ s32 unk_d8;
 };
 
-class SpNpcCeleste : public Unk_020d8bc8 {
+class SpNpcCeleste : public SpNpcActor {
 public:
     SpNpcCeleste() {}
     virtual BOOL vfunc_00();
@@ -553,7 +553,7 @@ extern "C" void *SpNpcCeleste_Create() {
 }
 
 BOOL SpNpcCeleste::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -563,7 +563,7 @@ BOOL SpNpcCeleste::vfunc_04() {
 }
 
 BOOL SpNpcCeleste::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     unk_736 = unk_8e;
@@ -580,7 +580,7 @@ BOOL SpNpcCeleste::vfunc_00() {
 }
 
 BOOL SpNpcCeleste::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (unk_73c != -1) {
@@ -669,7 +669,7 @@ BOOL SpNpcCeleste::mainAct02() {
 }
 
 BOOL SpNpcCeleste::setupAct03() {
-    Unk_020d77a4 *p = (Unk_020d77a4 *)unk_658.func_02015aac();
+    NpcActor *p = (NpcActor *)unk_658.func_02015aac();
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);

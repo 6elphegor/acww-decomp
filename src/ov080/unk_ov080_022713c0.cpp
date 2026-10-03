@@ -243,10 +243,10 @@ public:
     u8 pad_96[0xea - 0x96];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 a);
     BOOL onExecute();
     BOOL onDraw();
@@ -274,7 +274,7 @@ public:
 
     void setTalkRequest(Unk_0201bc1c *p);
     u32 getPlayerActor(u32 a);
-    BOOL getAngleTo(Unk_020d77a4 *p);
+    BOOL getAngleTo(NpcActor *p);
 
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
@@ -295,10 +295,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -316,7 +316,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcTortimer : public Unk_020d8bc8 {
+class SpNpcTortimer : public SpNpcActor {
 public:
     SpNpcTortimer() {}
     virtual BOOL vfunc_00();
@@ -386,7 +386,7 @@ extern "C" SpNpcTortimer *SpNpcTortimer_Create() {
 }
 
 BOOL SpNpcTortimer::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -395,7 +395,7 @@ BOOL SpNpcTortimer::vfunc_04() {
 }
 
 BOOL SpNpcTortimer::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(0);
@@ -409,7 +409,7 @@ BOOL SpNpcTortimer::vfunc_00() {
 }
 
 BOOL SpNpcTortimer::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c()) {
+    if (SpNpcActor::vfunc_0c()) {
         return TRUE;
     }
     return FALSE;
@@ -448,7 +448,7 @@ BOOL SpNpcTortimer::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
-        x = getAngleTo((Unk_020d77a4 *)p);
+        x = getAngleTo((NpcActor *)p);
     }
     unk_618_func_020141b4(&unk_618, 0, x, 0);
     return TRUE;

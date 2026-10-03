@@ -57,7 +57,7 @@ struct Unk_020767f8_Tag {
     u16 h;
 };
 
-struct Unk_02076c24_S {
+struct OverlayHandleView {
     s32 unk_00;
     u8 unk_04;
     u8 pad[3];
@@ -190,12 +190,12 @@ struct Unk_020781ec_Data {
     s8 unk_16c;
 };
 
-class Unk_021cc7d0 {
+class OverlayHandle {
 public:
     s32 unk_00;
     u8 pad_04[0x78];
-    Unk_021cc7d0() { unk_00 = -1; }
-    ~Unk_021cc7d0();
+    OverlayHandle() { unk_00 = -1; }
+    ~OverlayHandle();
 };
 
 // ======== unk_02077a54.cpp ========
@@ -1657,15 +1657,15 @@ extern "C" void PlayerWifiData_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x4c) = 
 extern "C" u16 PlayerWifiData_GetChecksum(u8 *p) { return *(u16 *)(p + 0x4c); }
 
 }
-Unk_021cc7d0::~Unk_021cc7d0() {}
+OverlayHandle::~OverlayHandle() {}
 namespace n5 {
 
-extern "C" void OverlayHandle_Unload(Unk_02076c24_S *s) {
+extern "C" void OverlayHandle_Unload(OverlayHandleView *s) {
     FS_EndOverlay(s->unk_08);
     s->unk_00 = -1;
 }
 
-extern "C" void OverlayHandle_Load(Unk_02076c24_S *s, s32 v) {
+extern "C" void OverlayHandle_Load(OverlayHandleView *s, s32 v) {
     s->unk_04 = 1;
     s->unk_00 = v;
     OverlayMgr_GetInfo(s->unk_08);
@@ -4377,7 +4377,7 @@ const FPT_data_020cbc60 sCommRecvHandlers[64] = {
 };
 }
 }
-Unk_021cc7d0 gOverlayHandle;
+OverlayHandle gOverlayHandle;
 namespace n0 {
 extern "C" {
 extern const FPT_data_020cbe78 sCommSyncVarPackHandlers[70];

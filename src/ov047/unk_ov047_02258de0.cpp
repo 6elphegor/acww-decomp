@@ -28,7 +28,7 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_020d77a4;
+class NpcActor;
 class SpNpcBlathers;
 class SpNpcBlathersTalk;
 
@@ -133,7 +133,7 @@ void _ZN12Unk_020d771015setPocketFilterEjjj(void *self, Unk_ov047_Cb cb, u32 a, 
 void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *self, u16 *p, s32 a, s32 b);
 void _ZN16ActorTalkRequest13getChoiceListEv(void *self);
-Unk_020d77a4 *_ZN16ActorTalkRequest13func_02015aacEv(void *self);
+NpcActor *_ZN16ActorTalkRequest13func_02015aacEv(void *self);
 void _ZN16ActorTalkRequest13func_02015ab0Ej(void *self, u32 v);
 void _ZN13NpcActionCtrl15requestPlayAnimEiijtt(void *self, s32 a, s32 b, u32 c, u16 d, u16 e);
 void _ZN13NpcActionCtrl12requestStandEjt(void *self, s32 a, u16 b);
@@ -161,9 +161,9 @@ u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
 void _ZN12Unk_0209ada413func_0209abb4Eh(u32 a, s32 b);
 void _ZN8SaveData7setFlagEj(void *g, u32 n);
 BOOL _ZN8SaveData8testFlagEj(void *g, u32 n);
-BOOL _ZN12Unk_020d77a413func_0201b9e8Eii(void *self, s32 *a, s32 *b);
+BOOL _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
 }
-#define func_0201b9e8(a, b) _ZN12Unk_020d77a413func_0201b9e8Eii(this, a, b)
+#define func_0201b9e8(a, b) _ZN8NpcActor13func_0201b9e8Eii(this, a, b)
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
@@ -375,10 +375,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -411,7 +411,7 @@ public:
     BOOL isNetOwner();
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 id);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     void setCollisionRadius(s32 v);
 
     u16 unk_ea;
@@ -433,10 +433,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -519,7 +519,7 @@ public:
     /* 0xcc */ s32 unk_cc;
 };
 
-class SpNpcBlathers : public Unk_020d8bc8 {
+class SpNpcBlathers : public SpNpcActor {
 public:
     SpNpcBlathers() {}
     virtual BOOL vfunc_00();
@@ -801,7 +801,7 @@ extern "C" void *SpNpcBlathers_Create() {
 }
 
 BOOL SpNpcBlathers::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -812,7 +812,7 @@ BOOL SpNpcBlathers::vfunc_04() {
 }
 
 BOOL SpNpcBlathers::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     u8 buf[8];
@@ -843,7 +843,7 @@ BOOL SpNpcBlathers::vfunc_00() {
 }
 
 BOOL SpNpcBlathers::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (unk_738 != -1) {
@@ -941,7 +941,7 @@ BOOL SpNpcBlathers::mainAct02() {
 }
 
 BOOL SpNpcBlathers::setupAct03() {
-    Unk_020d77a4 *p = func_02015aac(&unk_658);
+    NpcActor *p = func_02015aac(&unk_658);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);

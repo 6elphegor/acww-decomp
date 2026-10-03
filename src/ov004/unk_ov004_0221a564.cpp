@@ -46,11 +46,11 @@ class SickVillager;
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define func_0201b138 _ZN12Unk_020d77a46onDrawEv
-#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define func_0201b138 _ZN8NpcActor6onDrawEv
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerMood_playMood3Effect _ZN12VillagerMood15playMood3EffectEP12VillagerTalk
 #define VillagerMood_updateSoundPos _ZN12VillagerMood14updateSoundPosEP12VillagerTalk
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
@@ -171,7 +171,7 @@ s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_EndTalkWith(void *);
 void *func_02095204(u32);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActionCtrl_requestEmotion(void *, u32, u32, u32);
 s32 NpcActionCtrl_requestStand(void *, u32, u32);
@@ -179,7 +179,7 @@ s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void VillagerMood_playMood3Effect(void *, void *);
-s32 Unk_020d77a4_findAvoidPos(void *, void *);
+s32 NpcActor_findAvoidPos(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e9650(void *, void *);
@@ -203,7 +203,7 @@ void SickVillagerRecord_setTodaysVisitor(void *, void *);
 s32 SickVillagerRecord_hasTodaysVisitor(void *);
 void VillagerTalk_begin(void *, void *, u32);
 void func_02015ab0(void *, s32);
-s32 Unk_020d77a4_getPlayerActor(void *, s32);
+s32 NpcActor_getPlayerActor(void *, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *Villager_FindOrCreateMemory(void *, void *);
 void VillagerMemory_RecordTalk(void *, s32, s32, s32);
@@ -216,7 +216,7 @@ s32 func_0202d948(void *);
 s32 func_0202dab0(void *);
 void Unk_02013474_enableFootsteps(void *);
 s32 func_0201b138(void *);
-void Unk_020d77a4_setTalkRequest(void *, void *);
+void NpcActor_setTalkRequest(void *, void *);
 s32 NpcMoveAnimSet_setWalkAnim(void *, s32);
 s32 NpcMoveAnimSet_setStandAnim(void *, s32);
 void NpcMoveCtrl_setSpeedPreset(void *, s32, s32, s32, s32);
@@ -315,9 +315,9 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -361,7 +361,7 @@ public:
     Unk_02014254 unk_618;
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -627,7 +627,7 @@ BOOL SickVillager::vfunc_04() {
         return FALSE;
     }
     sSickVillager = this;
-    Unk_020d77a4_setTalkRequest(this, &unk_89c);
+    NpcActor_setTalkRequest(this, &unk_89c);
     unk_89c.attachOwner(this);
     u8 *p = (u8 *)SaveVillagers_GetUnk3830(data_021dfd8c);
     *((u8 *)this + 0xa3c) = p[0x8e];
@@ -737,7 +737,7 @@ void SickVillager::vfunc_4c(u32 idx, u32 v) {
         break;
     case 0:
         unk_558.unk_08 = v;
-        func_02015ab0(&unk_89c, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
         changeAct(3);
         break;
     case 8:
@@ -1026,7 +1026,7 @@ void SickVillager::mainAct00() {
                 NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a7c.x, unk_a7c.z, 0, 0, 0, 0, data_020c6cc8, 0);
             }
         } else if (NpcActionCtrl_getAction(&unk_564) == 1) {
-            switch (Unk_020d77a4_findAvoidPos(this, &v)) {
+            switch (NpcActor_findAvoidPos(this, &v)) {
             case 1:
                 NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8);
                 break;
@@ -1088,7 +1088,7 @@ BOOL SickVillager::setupAct03() {
     BOOL r;
     void *o = func_02095204(4);
     if (o != 0) {
-        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, Unk_020d77a4_getAngleTo(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;

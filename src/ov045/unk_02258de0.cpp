@@ -327,10 +327,10 @@ public:
     u8 pad_96[0xea - 0x96];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 a);
     BOOL onExecute();
     BOOL onDraw();
@@ -358,7 +358,7 @@ public:
 
     void setTalkRequest(Unk_0201bc1c *p);
     u32 getPlayerActor(u32 a);
-    BOOL getAngleTo(Unk_020d77a4 *p);
+    BOOL getAngleTo(NpcActor *p);
     void setCollisionRadius(s32 v);
 
     u16 unk_ea;
@@ -380,10 +380,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -416,7 +416,7 @@ struct Unk_ov045_02258fd8_Bits {
     u32 hi : 4;
 };
 
-class SpNpcKatrina : public Unk_020d8bc8 {
+class SpNpcKatrina : public SpNpcActor {
 public:
     SpNpcKatrina() {}
     virtual BOOL vfunc_00();
@@ -531,7 +531,7 @@ const Unk_ov045_02258ee4_Ent sSpNpcKatrinaBadFortuneCards[21] = {
 SpNpcKatrina *sSpNpcKatrinaInstance;
 extern "C" Unk_ov045_SceneEntry sSpNpcKatrinaProfile = {SpNpcKatrina_Create, 0x70, 0x76, 2, 0x5000, 0x5000, 0x3e800};
 BOOL SpNpcKatrina::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_68c);
@@ -544,7 +544,7 @@ BOOL SpNpcKatrina::vfunc_04() {
 }
 
 BOOL SpNpcKatrina::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     sSpNpcKatrinaInstance = this;
@@ -556,7 +556,7 @@ BOOL SpNpcKatrina::vfunc_00() {
 }
 
 BOOL SpNpcKatrina::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     sSpNpcKatrinaInstance = 0;
@@ -564,7 +564,7 @@ BOOL SpNpcKatrina::vfunc_0c() {
 }
 
 BOOL SpNpcKatrina::onDraw() {
-    if (!Unk_020d77a4::onDraw()) {
+    if (!NpcActor::onDraw()) {
         return FALSE;
     }
     Model_GetJointWorldMtx(&unk_ec, &unk_65c, 0xe);
@@ -623,7 +623,7 @@ BOOL SpNpcKatrina::mainAct00() {
 }
 
 BOOL SpNpcKatrina::setupAct01() {
-    Unk_020d77a4 *p = (Unk_020d77a4 *)unk_68c.func_02015aac();
+    NpcActor *p = (NpcActor *)unk_68c.func_02015aac();
     if (p) {
         getAngleTo(p);
     }

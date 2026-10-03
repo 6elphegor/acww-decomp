@@ -82,7 +82,7 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_020d77a4;
+class NpcActor;
 class SpNpcMabel;
 class SpNpcMabelTalk;
 
@@ -127,8 +127,8 @@ struct Unk_ov049_022594e0_Rec {
 };
 
 extern "C" {
-void _ZN12Unk_020d77a48vfunc_4cEi(void *self, u32 cmd, s32 arg);
-s32 _ZN12Unk_020d77a413func_0201b9e8Eii(void *self, s32 *a, s32 *b);
+void _ZN8NpcActor8vfunc_4cEi(void *self, u32 cmd, s32 arg);
+s32 _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
 extern Unk_020cbb18_Ov049 *gCommManager;
 extern u8 gTouchPrevHeld[];
 extern u8 gTouchPrevChanged[];
@@ -251,7 +251,7 @@ BOOL NpcActionCtrl_isActionDone(void *self);
 void NpcActionCtrl_requestAction(void *self, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, u16 i, u16 j);
 void NpcActionCtrl_requestStand(void *self, s32 a, u32 b);
 void NpcTalkCtrl_requestTurnAndTalk(void *self, s32 a, s32 b, s32 c);
-Unk_020d77a4 *func_02015aac(void *self);
+NpcActor *func_02015aac(void *self);
 void TalkRequest_EndTalkWith(void *self);
 void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
@@ -522,10 +522,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -558,7 +558,7 @@ public:
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 v);
     s32 getAngleToPlayer(u32 v);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     s32 getDistanceToPlayer(u32 v);
     void setCollisionRadius(s32 v);
 
@@ -581,10 +581,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -603,7 +603,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcMabel : public Unk_020d8bc8 {
+class SpNpcMabel : public SpNpcActor {
 public:
     typedef BOOL (SpNpcMabel::*Fn)();
 
@@ -964,7 +964,7 @@ struct Unk_ov049_0225a714_Bits {
 extern "C" SpNpcMabel *SpNpcMabel_Create() { return new SpNpcMabel; }
 
 BOOL SpNpcMabel::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -978,7 +978,7 @@ BOOL SpNpcMabel::vfunc_04() {
 
 BOOL SpNpcMabel::vfunc_00() {
     s32 v;
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     if (CommManager_isOnline(gCommManager) || *func_0209c37c(0, 0x4a) != 0) {
@@ -1164,7 +1164,7 @@ BOOL SpNpcMabel::mainAct03() {
 }
 
 BOOL SpNpcMabel::setupAct04() {
-    Unk_020d77a4 *p = func_02015aac(&unk_658);
+    NpcActor *p = func_02015aac(&unk_658);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -1186,7 +1186,7 @@ BOOL SpNpcMabel::mainAct04() {
 }
 
 BOOL SpNpcMabel::setupAct05() {
-    Unk_020d77a4 *p = func_02015aac(&unk_658);
+    NpcActor *p = func_02015aac(&unk_658);
     s32 r = 0;
     if (p) {
         r = getAngleTo(p);
@@ -1235,7 +1235,7 @@ BOOL SpNpcMabel::mainAct08() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
+        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
@@ -1275,7 +1275,7 @@ BOOL SpNpcMabel::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
             changeAct(0xa);
         }
@@ -2303,7 +2303,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b)) {
+                if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b)) {
                     if (arg == 4) goto x4;
                     if (arg == b) goto y4;
                 x4:
@@ -2316,7 +2316,7 @@ void SpNpcMabel::vfunc_4c(u32 cmd, s32 arg) {
         }
         break;
     }
-    _ZN12Unk_020d77a48vfunc_4cEi(this, cmd, arg);
+    _ZN8NpcActor8vfunc_4cEi(this, cmd, arg);
 }
 
 void SpNpcMabel::setDesignConcept(u32 y) {

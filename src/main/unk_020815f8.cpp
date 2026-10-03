@@ -1,7 +1,7 @@
 #include "types.h"
 
-struct Unk_02081974_Obj {
-    Unk_02081974_Obj();
+struct NpcActor {
+    NpcActor();
     virtual void vfunc_00();
     virtual void vfunc_04();
     virtual void vfunc_08();
@@ -61,14 +61,14 @@ s32 NpcRegistry_FindVillagerByHandle(void *a);
 }
 
 struct NpcRegistrySpNpcSlot {
-    Unk_02081974_Obj *unk_00;
+    NpcActor *unk_00;
     u16 unk_04;
     ~NpcRegistrySpNpcSlot();
     NpcRegistrySpNpcSlot();
 };
 
 struct NpcRegistryVillagerSlot {
-    Unk_02081974_Obj *unk_00;
+    NpcActor *unk_00;
     u16 unk_04;
     ~NpcRegistryVillagerSlot();
     NpcRegistryVillagerSlot();
@@ -86,19 +86,19 @@ struct NpcActorRegistry {
     void clearVillagerSlots(NpcRegistryVillagerSlot *s, s32 n);
     s32 findSpNpcSlot(u16 *p);
     s32 findVillagerSlot(u16 *p);
-    Unk_02081974_Obj *getSpNpc(s32 i);
-    Unk_02081974_Obj *findSpNpcByHandle(u16 *p);
-    Unk_02081974_Obj *findSpNpcAt(s32 a, s32 b);
-    Unk_02081974_Obj *findSpNpcByIndex(u32 v);
+    NpcActor *getSpNpc(s32 i);
+    NpcActor *findSpNpcByHandle(u16 *p);
+    NpcActor *findSpNpcAt(s32 a, s32 b);
+    NpcActor *findSpNpcByIndex(u32 v);
     BOOL removeSpNpc(u16 *p);
-    BOOL addSpNpc(Unk_02081974_Obj *o, u16 *p);
-    Unk_02081974_Obj *pickRandomVillager(s32 *idx);
-    Unk_02081974_Obj *getVillager(s32 i);
-    Unk_02081974_Obj *findVillagerByHandle(u16 *p);
-    Unk_02081974_Obj *findVillagerAt(s32 a, s32 b);
-    Unk_02081974_Obj *findVillagerByIndex(u32 v);
+    BOOL addSpNpc(NpcActor *o, u16 *p);
+    NpcActor *pickRandomVillager(s32 *idx);
+    NpcActor *getVillager(s32 i);
+    NpcActor *findVillagerByHandle(u16 *p);
+    NpcActor *findVillagerAt(s32 a, s32 b);
+    NpcActor *findVillagerByIndex(u32 v);
     BOOL removeVillager(u16 *p);
-    BOOL addVillager(Unk_02081974_Obj *o, u16 *p);
+    BOOL addVillager(NpcActor *o, u16 *p);
 };
 
 NpcActorRegistry gNpcActorRegistry;
@@ -158,7 +158,7 @@ s32 NpcActorRegistry::findVillagerSlot(u16 *p) {
     return found;
 }
 
-BOOL NpcActorRegistry::addVillager(Unk_02081974_Obj *o, u16 *p) {
+BOOL NpcActorRegistry::addVillager(NpcActor *o, u16 *p) {
     BOOL r = FALSE;
     if (findVillagerSlot(p) == -1) {
         u16 t = 0xfff1;
@@ -183,8 +183,8 @@ BOOL NpcActorRegistry::removeVillager(u16 *p) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findVillagerByIndex(u32 v) {
-    Unk_02081974_Obj *r;
+NpcActor *NpcActorRegistry::findVillagerByIndex(u32 v) {
+    NpcActor *r;
     u16 t = 0xfff1;
     r = 0;
     t = (v & 0xfff) | 0xe000;
@@ -195,8 +195,8 @@ Unk_02081974_Obj *NpcActorRegistry::findVillagerByIndex(u32 v) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
+    NpcActor *r = 0;
     NpcRegistryVillagerSlot *s = unk_00;
     s32 x = 0;
     s32 y = 0;
@@ -213,8 +213,8 @@ Unk_02081974_Obj *NpcActorRegistry::findVillagerAt(s32 a, s32 b) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findVillagerByHandle(u16 *p) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::findVillagerByHandle(u16 *p) {
+    NpcActor *r = 0;
     if (((*p & 0xf000) >> 12) == 0xe) {
         s32 i = findVillagerSlot(p);
         if (i >= 0 && i < 8) {
@@ -224,8 +224,8 @@ Unk_02081974_Obj *NpcActorRegistry::findVillagerByHandle(u16 *p) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::getVillager(s32 i) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::getVillager(s32 i) {
+    NpcActor *r = 0;
     if (SaveVillagers_IsValidIndex(i)) {
         NpcRegistryVillagerSlot *s = &unk_00[i];
         if (isVillagerSlotUsed(s)) {
@@ -235,9 +235,9 @@ Unk_02081974_Obj *NpcActorRegistry::getVillager(s32 i) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::pickRandomVillager(s32 *idx) {
+NpcActor *NpcActorRegistry::pickRandomVillager(s32 *idx) {
     s32 cnt = 0;
-    Unk_02081974_Obj *r = 0;
+    NpcActor *r = 0;
     s32 i = cnt;
     for (; i < 8; i++) {
         NpcRegistryVillagerSlot *s = &unk_00[i];
@@ -301,7 +301,7 @@ s32 NpcActorRegistry::findSpNpcSlot(u16 *p) {
     return found;
 }
 
-BOOL NpcActorRegistry::addSpNpc(Unk_02081974_Obj *o, u16 *p) {
+BOOL NpcActorRegistry::addSpNpc(NpcActor *o, u16 *p) {
     if (findSpNpcSlot(p) == -1) {
         u16 t = 0xfff1;
         s32 i = findSpNpcSlot(&t);
@@ -325,8 +325,8 @@ BOOL NpcActorRegistry::removeSpNpc(u16 *p) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findSpNpcByIndex(u32 v) {
-    Unk_02081974_Obj *r;
+NpcActor *NpcActorRegistry::findSpNpcByIndex(u32 v) {
+    NpcActor *r;
     u16 t = 0xfff1;
     r = 0;
     t = (v & 0xfff) | 0xd000;
@@ -337,8 +337,8 @@ Unk_02081974_Obj *NpcActorRegistry::findSpNpcByIndex(u32 v) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
+    NpcActor *r = 0;
     NpcRegistrySpNpcSlot *s = unk_40;
     s32 x = 0;
     s32 y = 0;
@@ -355,8 +355,8 @@ Unk_02081974_Obj *NpcActorRegistry::findSpNpcAt(s32 a, s32 b) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::findSpNpcByHandle(u16 *p) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::findSpNpcByHandle(u16 *p) {
+    NpcActor *r = 0;
     if (((*p & 0xf000) >> 12) == 0xd) {
         s32 i = findSpNpcSlot(p);
         if (i >= 0 && i < 4) {
@@ -366,8 +366,8 @@ Unk_02081974_Obj *NpcActorRegistry::findSpNpcByHandle(u16 *p) {
     return r;
 }
 
-Unk_02081974_Obj *NpcActorRegistry::getSpNpc(s32 i) {
-    Unk_02081974_Obj *r = 0;
+NpcActor *NpcActorRegistry::getSpNpc(s32 i) {
+    NpcActor *r = 0;
     if (i >= 0 && i < 4) {
         NpcRegistrySpNpcSlot *s = &unk_40[i];
         if (isSpNpcSlotUsed(s)) {
@@ -381,7 +381,7 @@ extern "C" void NpcRegistry_Clear() { gNpcActorRegistry.clear(); }
 
 extern "C" s32 NpcRegistry_GetSlotCount() { return 12; }
 
-extern "C" Unk_02081974_Obj *NpcRegistry_GetVillager(s32 i) {
+extern "C" NpcActor *NpcRegistry_GetVillager(s32 i) {
     if (SaveVillagers_IsValidIndex(i)) {
         return gNpcActorRegistry.getVillager(i);
     }
@@ -449,7 +449,7 @@ extern "C" s32 NpcRegistry_PickRandomVillager(void *a) {
 }
 
 extern "C" s32 NpcRegistry_AddVillager(void *a, void *b) {
-    return gNpcActorRegistry.addVillager((Unk_02081974_Obj *)a, (u16 *)b);
+    return gNpcActorRegistry.addVillager((NpcActor *)a, (u16 *)b);
 }
 
 extern "C" s32 NpcRegistry_RemoveVillager(void *a) {
@@ -457,7 +457,7 @@ extern "C" s32 NpcRegistry_RemoveVillager(void *a) {
 }
 
 extern "C" s32 NpcRegistry_AddSpNpc(void *a, void *b) {
-    return gNpcActorRegistry.addSpNpc((Unk_02081974_Obj *)a, (u16 *)b);
+    return gNpcActorRegistry.addSpNpc((NpcActor *)a, (u16 *)b);
 }
 
 extern "C" s32 NpcRegistry_RemoveSpNpc(void *a) {

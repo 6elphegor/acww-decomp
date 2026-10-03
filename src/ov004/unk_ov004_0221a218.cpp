@@ -38,9 +38,9 @@ class CafeVillager;
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 typedef BOOL (CafeVillager::*Unk_ov004_0224c994_Fn)();
@@ -74,16 +74,16 @@ s32 func_02063b8c(s32 a);
 void *VillagerData_getVillagerId(void *o);
 void VillagerId_makeFileName(void *a, const void *b, u32 c, const void *d);
 void func_02015ab0(void *o, s32 a);
-s32 Unk_020d77a4_getPlayerActor(void *o, s32 a);
+s32 NpcActor_getPlayerActor(void *o, s32 a);
 s32 NpcTalkCtrl_isBusy(void *o);
 void TalkRequest_EndTalkWith(void *o);
 void *func_02015aac(void *o);
-s32 Unk_020d77a4_getAngleTo(void *o, void *p);
+s32 NpcActor_getAngleTo(void *o, void *p);
 void NpcTalkCtrl_requestTurnAndTalk(void *o, s32 a, s32 b, s32 c);
 void NpcMoveAnimSet_setStandAnim(void *o, s32 a);
 void NpcMoveAnimSet_setWalkAnim(void *o, s32 a);
 void NpcMoveAnimSet_setRunAnim(void *o, s32 a);
-void Unk_020d77a4_setTalkRequest(void *, void *);
+void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 }
@@ -172,9 +172,9 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -218,7 +218,7 @@ public:
     Unk_02014254 unk_618;
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -403,7 +403,7 @@ BOOL CafeVillager::vfunc_04() {
     NpcMoveAnimSet_setStandAnim(&unk_2a0, 0x1e);
     NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0x1e);
     NpcMoveAnimSet_setRunAnim(&unk_2a0, 0x1e);
-    Unk_020d77a4_setTalkRequest(this, &unk_898);
+    NpcActor_setTalkRequest(this, &unk_898);
     unk_898.attachOwner(this);
     return TRUE;
 }
@@ -445,7 +445,7 @@ BOOL CafeVillager::setupAct00() {
     void *p = func_02015aac(&unk_898);
     s32 v = 0;
     if (p) {
-        v = Unk_020d77a4_getAngleTo(this, p);
+        v = NpcActor_getAngleTo(this, p);
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, v, 0);
     return TRUE;
@@ -493,7 +493,7 @@ void CafeVillager::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_898.vfunc_08();
-        func_02015ab0(&unk_898, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_898, NpcActor_getPlayerActor(this, 4));
         changeAct(0);
         break;
     case 8:

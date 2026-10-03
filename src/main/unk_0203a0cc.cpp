@@ -389,7 +389,7 @@ s32 func_02063a9c(s32, s32, s32, s32, s32);
 s32 FX_Inv(s32);
 s32 func_0202fe84(s32 *, s32 *, s32 *, s32 *);
 s32 _ZN12MapBlockAcre9getAcreIdEv(u32);
-void _ZN12Unk_020d924814setPerspectiveEitii(void *, s32, s32, s32, s32);
+void _ZN11ViewFrustum14setPerspectiveEitii(void *, s32, s32, s32, s32);
 void MTX_Inverse43(void *a, void *b);
 void func_020e98f4(void *out, void *a, s32 n);
 void G3i_PerspectiveW_(s32 a, s32 b, s32 c, s32 d, u32 e, u32 f, u32 g, u32 h);
@@ -805,7 +805,7 @@ void Unk_020d93b8::setFovy(s32 a)
     i = (u16)((s16)(M(s16, 0x1c8) + M(s16, 0x98)) >> 1) >> 4;
     M(s32, 0x1c0) = data_02135f44[i * 2 + 1];
     M(s32, 0x1c4) = func_01ffcb0c(M(s32, 0x1bc), FX_Inv(M(s32, 0x1c0)));
-    _ZN12Unk_020d924814setPerspectiveEitii(gViewFrustum, M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
+    _ZN11ViewFrustum14setPerspectiveEitii(gViewFrustum, M(s32, 0x1b0), (s16)(M(s16, 0x1c8) + M(s16, 0x98)), M(s32, 0x1b4) + M(s32, 0x90),
                   M(s32, 0x1b8) + M(s32, 0x94));
 }
 

@@ -1,18 +1,18 @@
 #include "types.h"
 
 extern "C" {
-u32 _ZN12Unk_020d77a414getPlayerActorEj(void *p, s32 n);
-s32 _ZN12Unk_020d77a46isNearEPS_i(void *p, void *q, s32 n);
+u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
+s32 _ZN8NpcActor6isNearEPS_i(void *p, void *q, s32 n);
 BOOL TalkRequest_EndTalkWith(void *p);
-void _ZN12Unk_020d77a412setNpcHandleEPt(void *p, u16 *q);
-u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
-void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
+void _ZN8NpcActor12setNpcHandleEPt(void *p, u16 *q);
+u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
+void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *p, void *q);
 extern u16 data_020c6cc8;
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::postCreate(int).
+// NpcActor::postCreate(int).
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -132,7 +132,7 @@ public:
     u32 unk_b0;
 };
 
-// ---- SpNpcTest and its bases (scene object derived from Unk_020d77a4) ----
+// ---- SpNpcTest and its bases (scene object derived from NpcActor) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -205,7 +205,7 @@ struct Character : Actor {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Character {
+struct NpcActor : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -223,7 +223,7 @@ struct Unk_020d77a4 : Character {
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual void postCreate(int a);
@@ -254,10 +254,10 @@ struct Unk_020d77a4 : Character {
     virtual BOOL vfunc_a8();
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -282,7 +282,7 @@ struct Unk_020c28b0_Entry {
     Unk_020c28b0_Fn b;
 };
 
-class SpNpcTest : public Unk_020d8bc8 {
+class SpNpcTest : public SpNpcActor {
 public:
     SpNpcTest() {}
     virtual BOOL vfunc_00();
@@ -522,18 +522,18 @@ extern "C" SpNpcTest *func_020c29ec() {
 
 BOOL SpNpcTest::vfunc_04() {
     u16 v = 0xfff1;
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     v = 0xd000;
-    _ZN12Unk_020d77a412setNpcHandleEPt(this, &v);
-    _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
+    _ZN8NpcActor12setNpcHandleEPt(this, &v);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
     unk_658.attachOwner((u32)this);
     return TRUE;
 }
 
 BOOL SpNpcTest::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(0);
@@ -542,7 +542,7 @@ BOOL SpNpcTest::vfunc_00() {
 }
 
 BOOL SpNpcTest::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c()) {
+    if (SpNpcActor::vfunc_0c()) {
         return TRUE;
     }
     return FALSE;
@@ -588,7 +588,7 @@ BOOL SpNpcTest::setupAct01() {
     void *p = unk_658.func_02015aac();
     x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     unk_658.setPhase(0);
@@ -674,7 +674,7 @@ void SpNpcTestTalk::vfunc_14(void *a) {
 
 BOOL SpNpcTest::vfunc_48(void *p) {
     BOOL r = FALSE;
-    if (_ZN12Unk_020d77a46isNearEPS_i(this, p, 0x2000) == 1) {
+    if (_ZN8NpcActor6isNearEPS_i(this, p, 0x2000) == 1) {
         r = TRUE;
     }
     return r;
@@ -684,7 +684,7 @@ void SpNpcTest::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_658.vfunc_08();
-        unk_658.func_02015ab0(_ZN12Unk_020d77a414getPlayerActorEj(this, 4));
+        unk_658.func_02015ab0(_ZN8NpcActor14getPlayerActorEj(this, 4));
         changeAct(1);
         break;
     case 8:

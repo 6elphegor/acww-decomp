@@ -16,8 +16,8 @@
 #define NpcMoveAnimSet_setRunAnim _ZN14NpcMoveAnimSet10setRunAnimEi
 #define NpcMoveAnimSet_setWalkAnim _ZN14NpcMoveAnimSet11setWalkAnimEi
 #define NpcMoveAnimSet_setStandAnim _ZN14NpcMoveAnimSet12setStandAnimEi
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_setNpcHandle _ZN12Unk_020d77a412setNpcHandleEPt
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
 #define ThreeLayerAnimModel_updateLayers3 _ZN19ThreeLayerAnimModel13updateLayers3Ev
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
@@ -265,10 +265,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -315,10 +315,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -398,7 +398,7 @@ public:
     /* 0xb8 */ BgmBeatPhase unk_b8;
 };
 
-class SpNpcRoostGuest : public Unk_020d8bc8 {
+class SpNpcRoostGuest : public SpNpcActor {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
@@ -632,8 +632,8 @@ namespace sB {
 extern "C" {
 void *PlayerData_GetCurrent();
 void TalkRequest_EndTalkWith(void *p);
-void Unk_020d77a4_setTalkRequest(void *p, void *q);
-void Unk_020d77a4_setNpcHandle(void *p, u16 *q);
+void NpcActor_setTalkRequest(void *p, void *q);
+void NpcActor_setNpcHandle(void *p, u16 *q);
 u32 NookShop_GetLevel(void *p);
 void ProcBase_RequestDelete(void *p);
 void Bgm_ReleasePriority(u32 a);
@@ -735,10 +735,10 @@ BOOL SpNpcRoostGuest::vfunc_04() {
     using namespace sB;
     Unk_ov068_0226ce70_Date d;
     u16 h;
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    Unk_020d77a4_setTalkRequest(this, &unk_65c);
+    NpcActor_setTalkRequest(this, &unk_65c);
     unk_65c.attachOwner((Unk_ov068_0226ccd4_Owner *)this);
     unk_4cc.unk_45 = 0;
     d.a = 0;
@@ -815,7 +815,7 @@ BOOL SpNpcRoostGuest::vfunc_04() {
         unk_72c = 0;
     }
     h = sRoostGuestNpcHandles[unk_72c];
-    Unk_020d77a4_setNpcHandle(this, &h);
+    NpcActor_setNpcHandle(this, &h);
     if (unk_72c == 7) {
         setInteractionRange(0x5000);
         unk_5c = 0xf000;
@@ -837,7 +837,7 @@ BOOL SpNpcRoostGuest::vfunc_04() {
 
 BOOL SpNpcRoostGuest::vfunc_00() {
     using namespace sB;
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     if (unk_72c == 7) {
@@ -854,7 +854,7 @@ BOOL SpNpcRoostGuest::vfunc_00() {
 
 BOOL SpNpcRoostGuest::vfunc_0c() {
     using namespace sB;
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (unk_72c == 7) {

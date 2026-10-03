@@ -301,10 +301,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -352,10 +352,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -404,7 +404,7 @@ public:
     u8 pad_dd[3];
 };
 
-class SpNpcGracie : public Unk_020d8bc8 {
+class SpNpcGracie : public SpNpcActor {
 public:
     SpNpcGracie() {}
     virtual BOOL vfunc_00();
@@ -478,7 +478,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_020d771015setSubSceneKindEjj(void *self, u32 a, u32 b);
 void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *self, u32 a, u32 b, u32 c);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -543,7 +543,7 @@ extern "C" SpNpcGracie *SpNpcGracie_Create() {
 }
 
 BOOL SpNpcGracie::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -553,7 +553,7 @@ BOOL SpNpcGracie::vfunc_04() {
 }
 
 BOOL SpNpcGracie::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(0);
@@ -595,7 +595,7 @@ BOOL SpNpcGracie::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

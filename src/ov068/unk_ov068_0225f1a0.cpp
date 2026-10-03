@@ -80,20 +80,20 @@
 #define NpcMoveCtrl_hasArrived _ZN11NpcMoveCtrl10hasArrivedEP18Unk_0201a334_Scenei
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define func_0201acfc _ZN12Unk_0201acf813func_0201acfcEv
-#define func_0201b08c _ZN12Unk_020d77a48vfunc_4cEi
-#define func_0201b138 _ZN12Unk_020d77a46onDrawEv
-#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getRelativeAngleTo _ZN12Unk_020d77a418getRelativeAngleToEPS_
-#define Unk_020d77a4_getAngleToPlayer _ZN12Unk_020d77a416getAngleToPlayerEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
-#define Unk_020d77a4_isPlayerNear _ZN12Unk_020d77a412isPlayerNearEij
-#define Unk_020d77a4_isNear _ZN12Unk_020d77a46isNearEPS_i
-#define Unk_020d77a4_getDistanceToPlayer _ZN12Unk_020d77a419getDistanceToPlayerEj
-#define Unk_020d77a4_getDistanceTo _ZN12Unk_020d77a413getDistanceToEPS_
-#define Unk_020d77a4_setCollisionRadius _ZN12Unk_020d77a418setCollisionRadiusEi
-#define Unk_020d77a4_getNpcIndex _ZN12Unk_020d77a411getNpcIndexEv
+#define func_0201b08c _ZN8NpcActor8vfunc_4cEi
+#define func_0201b138 _ZN8NpcActor6onDrawEv
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getRelativeAngleTo _ZN8NpcActor18getRelativeAngleToEPS_
+#define NpcActor_getAngleToPlayer _ZN8NpcActor16getAngleToPlayerEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
+#define NpcActor_isPlayerNear _ZN8NpcActor12isPlayerNearEij
+#define NpcActor_isNear _ZN8NpcActor6isNearEPS_i
+#define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
+#define NpcActor_getDistanceTo _ZN8NpcActor13getDistanceToEPS_
+#define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
+#define NpcActor_getNpcIndex _ZN8NpcActor11getNpcIndexEv
 #define VillagerMood_update _ZN12VillagerMood6updateEP12VillagerTalk
 #define VillagerMood_disableEffects _ZN12VillagerMood14disableEffectsEv
 #define VillagerMood_enableEffects _ZN12VillagerMood13enableEffectsEv
@@ -374,7 +374,7 @@ public:
     virtual void vfunc_58(void *p);
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
@@ -400,7 +400,7 @@ public:
     virtual void getTeachableEmotion();
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -1117,10 +1117,10 @@ void func_ov068_02265994(void *);
 void *X_func_ov068_02265f58(void *);
 void *PlayerData_GetCurrent();
 s32 VillagerMemory_IsUsed(void *);
-s32 Unk_020d77a4_isPlayerNear(void *, s32, u32);
+s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
-void *Unk_020d77a4_getPlayerActor(void *, s32);
+void *NpcActor_getPlayerActor(void *, s32);
 void func_02015ab0(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count();
@@ -1158,11 +1158,11 @@ void func_ov068_02265994(void *);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 s32 VillagerActor_isFlag834(void *);
 void VillagerActor_clearFlag834(void *);
-s32 Unk_020d77a4_isNear(void *, s32, s32);
+s32 NpcActor_isNear(void *, s32, s32);
 s32 Character_isInFacingArcOf(void *, s32, s32, s32);
 s32 NpcTalkCtrl_isBusy(void *);
 void *func_020951ec(s32);
-s32 Unk_020d77a4_getRelativeAngleTo(void *, void *);
+s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_getEmotionId(void *);
 s32 NpcActionCtrl_isActionDone(void *);
@@ -1173,8 +1173,8 @@ s32 Unk_02015b8c_getAnimId(void *, s32);
 void *func_02015aac(void *);
 void Unk_02013474_enableFootsteps(void *);
 s32 Unk_020133cc_Player_resetLastTaughtEmotion(void *);
-s32 Unk_020d77a4_getAngleToPlayer(void *, s32);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleToPlayer(void *, s32);
+s32 NpcActor_getAngleTo(void *, void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void VillagerMood_disableEffects(void *);
 void VillagerTalk_setPartner(void *, s32);
@@ -1252,7 +1252,7 @@ void func_02011d4c(void *, u32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void func_0203e42c(void *);
 void *func_020951ec(s32);
-s32 Unk_020d77a4_getRelativeAngleTo(void *, void *);
+s32 NpcActor_getRelativeAngleTo(void *, void *);
 void NpcActionCtrl_requestPlayAnim(void *, s32, s32, s32, u32, s32);
 void VillagerMood_disableEffects(void *);
 void Effect_End(s32);
@@ -1323,7 +1323,7 @@ void PlayerActor_SetSlotFlag(s32, s32);
 void Camera_SetModeDefault(void);
 s32 NpcTalkCtrl_isBusy(void *);
 void *func_02015aac(void *);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 void Unk_02013474_enableFootsteps(void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -1385,15 +1385,15 @@ void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32)
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_isActionDone(void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
-s32 Unk_020d77a4_getAngleToPlayer(void *, s32);
+s32 NpcActor_getAngleToPlayer(void *, s32);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void VillagerActor_clearFlag834(void *);
 void VillagerActor_setFlag834(void *);
 void VillagerMood_enableEffects(void *);
 s32 VillagerTalk_hasPartner(void *);
-s32 Unk_020d77a4_getDistanceTo(void *, void *);
-s32 Unk_020d77a4_getRelativeAngleTo(void *, void *);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getDistanceTo(void *, void *);
+s32 NpcActor_getRelativeAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 s32 func_020e96a4(void *, void *);
 void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Unk_02015b8c_getAnimId(void *, s32);
@@ -1448,7 +1448,7 @@ void *X_func_ov068_02265f58(void *);
 s32 VillagerMemory_getFriendship(void *);
 s32 VillagerData_getVillagerId(s32);
 s32 VillagerId_GetPersonality(s32);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 void func_ov068_02265994(void *);
 void PlayerActor_LocalRequestAct11();
 void NpcTalkCtrl_requestState4(void *, s32, s32, s32, s32);
@@ -1480,7 +1480,7 @@ s32 SaveVillagers_GetRelationLevelOf(void *, s32, s32);
 s32 PlayerData_getPlayerId(...);
 s32 func_02094218(s32);
 s32 Villager_FindMemory(s32, s32);
-s32 Unk_020d77a4_getDistanceTo(void *, void *);
+s32 NpcActor_getDistanceTo(void *, void *);
 s32 func_020e9650(void *, void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void VillagerMood_enableEffects(void *);
@@ -1617,11 +1617,11 @@ s32 VillagerTalk_hasPartner(void *);
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
 void X_func_ov068_0225f5f4(void *, void *, s32, s32, s32, void *, s32, u32, u32);
 void *func_02015aac(void *);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 s32 Unk_02015b8c_getAnimId(void *, s32);
 s32 NpcActionCtrl_isActionDone(void *);
-void Unk_020d77a4_setCollisionRadius(void *, s32);
+void NpcActor_setCollisionRadius(void *, s32);
 void Npc_GetStateHeldItem(void *, void *);
 s32 FieldVillagerAi_ChangeState(void *, void *, s32);
 s32 FieldVillagerAi_SetResumeState(void *, s32);
@@ -1643,7 +1643,7 @@ s32 Villager_GetWhereabouts(void *);
 s32 Villager_IsAsleep(void *, s32);
 s32 FieldVillager_IsNearCameraFocus(void *, void *);
 void *func_020951ec(s32);
-s32 Unk_020d77a4_isNear(void *, void *, s32);
+s32 NpcActor_isNear(void *, void *, s32);
 void VillagerRoute_reset(void *);
 void X_func_ov068_02265fb4(void *);
 void Villager_RaiseTalkUrge(void *, s32);
@@ -1788,13 +1788,13 @@ extern void *gSceneBlockMap;
 extern u8 gVec3Zero[];
 u32 func_ov068_0226594c(void *);
 u32 PlayerActor_GetLocalShownItem();
-s32 Unk_020d77a4_getDistanceToPlayer(void *, s32);
+s32 NpcActor_getDistanceToPlayer(void *, s32);
 s32 NpcLookAt_canSeeTarget(void *, void *);
 s32 Unk_0201a13c_isOnTarget(void *);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_SnapToUnitCenter(void *, void *);
 s32 func_020e9650(void *, void *);
-s32 Unk_020d77a4_getNpcIndex(void *);
+s32 NpcActor_getNpcIndex(void *);
 s32 FieldAction_RequestPitfallAt(s32, void *);
 s32 FieldAction_PollResult();
 void FieldAction_Release(s32);
@@ -1812,7 +1812,7 @@ s32 memcmp(void *, void *, s32);
 s32 Math_AngleXZ(void *, void *);
 s32 NpcLookAt_IsWithin(s32, s32);
 s32 NpcMoveCtrl_hasArrived(void *, void *, s32);
-s32 Unk_020d77a4_findAvoidPos(void *, void *);
+s32 NpcActor_findAvoidPos(void *, void *);
 void NpcActionCtrl_requestStand(void *, s32, u32);
 void NpcMoveCtrl_setDestination(void *, void *);
 s32 NpcMoveCtrl_hasNextLeg(void *);
@@ -1930,10 +1930,10 @@ void VillagerMood_requestApply(void *);
 void *X_func_ov068_02265f58(void *);
 void *PlayerData_GetCurrent();
 s32 VillagerMemory_IsUsed(void *);
-s32 Unk_020d77a4_isPlayerNear(void *, s32, u32);
+s32 NpcActor_isPlayerNear(void *, s32, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 s32 VillagerTalk_begin(void *, void *, s32);
-void *Unk_020d77a4_getPlayerActor(void *, s32);
+void *NpcActor_getPlayerActor(void *, s32);
 void func_02015ab0(void *, void *);
 void ActorTalkRequest_setPartnerActor(void *, void *);
 void TalkRepeat_Count();
@@ -1986,8 +1986,8 @@ void VillagerRoute_reset(void *);
 void *func_020951ec(s32);
 s32 Villager_IsTalkUrgeFull(void *, s32);
 s32 func_020b5164();
-s32 Unk_020d77a4_getDistanceTo(void *, void *);
-s32 Unk_020d77a4_getRelativeAngleTo(void *, void *);
+s32 NpcActor_getDistanceTo(void *, void *);
+s32 NpcActor_getRelativeAngleTo(void *, void *);
 s32 func_ov068_02264a64(void *, u32);
 s32 NpcTalkCtrl_isBusy(void *);
 void TalkRepeat_Tick(void *, s32);
@@ -2133,7 +2133,7 @@ s32 Villager_GetIndex(void *);
 s32 VillagerStates_GetBirthdayHost();
 u32 Villager_GetWhereabouts(void *);
 s32 func_0202dab0(void *);
-void Unk_020d77a4_setTalkRequest(void *, void *);
+void NpcActor_setTalkRequest(void *, void *);
 s32 HeldToolModel_load(void *, void *);
 s32 VillagerState_GetRole(void *);
 void HeldToolModel_init(void *);
@@ -3316,7 +3316,7 @@ BOOL FieldVillager::vfunc_04() {
     if (func_0202dab0(this) == 0) {
         return FALSE;
     }
-    Unk_020d77a4_setTalkRequest(this, &unk_680);
+    NpcActor_setTalkRequest(this, &unk_680);
     unk_680.vfunc_08();
     unk_9f4 = NULL;
     unk_9f8 = 0;
@@ -3968,8 +3968,8 @@ s32 FieldVillagerAi_CanSeePlayer(FieldVillagerAi *self, FieldVillager *o) {
     s32 res = 0;
     if (func_020b5164() == 0) {
         if (self->unk_f4 <= 0 && k != 0 && p != 0) {
-            if (Unk_020d77a4_getDistanceTo(o, p) <= 0x7000) {
-                s32 d = Unk_020d77a4_getRelativeAngleTo(o, p);
+            if (NpcActor_getDistanceTo(o, p) <= 0x7000) {
+                s32 d = NpcActor_getRelativeAngleTo(o, p);
                 s32 lim = data_ov068_02270c24;
                 if (d >= -lim && d <= lim) {
                     res = 1;
@@ -4321,7 +4321,7 @@ BOOL func_ov068_02264ffc(void *self, Unk_ov068_Owner_649 *o) {
     u8 buf[12];
     r = FALSE;
     if (NpcMoveCtrl_hasArrived(r6, o, 1) == 0) {
-        switch (Unk_020d77a4_findAvoidPos(o, buf)) {
+        switch (NpcActor_findAvoidPos(o, buf)) {
         case 1:
             NpcActionCtrl_requestStand(r7, 1, data_020c6cc8);
             r = TRUE;
@@ -4588,7 +4588,7 @@ BOOL func_ov068_02264ab4(void *self, Unk_ov068_Owner_649 *o) {
         if (func_020e9650(&t, p) <= 0xb00) {
             q.x = a;
             q.y = b;
-            s32 idx = FieldAction_RequestPitfallAt((s8)Unk_020d77a4_getNpcIndex(o), &q);
+            s32 idx = FieldAction_RequestPitfallAt((s8)NpcActor_getNpcIndex(o), &q);
             if (idx >= 0) {
                 if (FieldAction_PollResult() == 1) {
                     r = TRUE;
@@ -4635,7 +4635,7 @@ BOOL func_ov068_022649f4(Unk_ov068_0225fd54 *self, Unk_ov068_Owner_649 *o) {
         case 1:
             if (func_ov068_02264a64(self) != 0) {
                 if (o->unk_3b0[0] == 1) {
-                    if (Unk_020d77a4_getDistanceToPlayer(o, 4) <= 0x6000) {
+                    if (NpcActor_getDistanceToPlayer(o, 4) <= 0x6000) {
                         if (NpcLookAt_canSeeTarget(o->unk_3b0, o) != 0) {
                             if (Unk_0201a13c_isOnTarget(o->unk_3b0) != 0) {
                                 return TRUE;
@@ -5019,7 +5019,7 @@ void Unk_ov068_02263e4c::func_ov068_02263eb8(Unk_ov068_Owner *o) {
     }
     if (r != 0) {
         if (FieldVillager_IsNearCameraFocus(this, o) != 0) {
-            if (Unk_020d77a4_isNear(o, func_020951ec(4), 0x6000) == 0) {
+            if (NpcActor_isNear(o, func_020951ec(4), 0x6000) == 0) {
                 VillagerRoute_reset(unk_3c);
                 FieldVillagerAi_ChangeState(this, o, 4);
             }
@@ -5143,7 +5143,7 @@ void Unk_ov068_02263a40::func_ov068_02263b90(Unk_ov068_Owner *o) {
         VillagerState_SetPresence(r6, 0);
         *((u8 *)o + 0x561) = 1;
         *((u8 *)o + 0x562) = 1;
-        Unk_020d77a4_setCollisionRadius(o, 0);
+        NpcActor_setCollisionRadius(o, 0);
         unk_1c = 1;
     }
 }
@@ -5154,7 +5154,7 @@ void Unk_ov068_02263a40::func_ov068_02263aac(Unk_ov068_Owner *o) {
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             u16 buf;
             *((u8 *)o + 0x511) = 1;
-            Unk_020d77a4_setCollisionRadius(o, 0xd00);
+            NpcActor_setCollisionRadius(o, 0xd00);
             *(u32 *)((u8 *)o + 0x4e8) &= ~2;
             Npc_GetStateHeldItem(&buf, o);
             if (buf != 0xfff1) {
@@ -5215,7 +5215,7 @@ BOOL Unk_ov068_022638c0::func_ov068_02263978(Unk_ov068_Owner *o) {
         void *p = func_02015aac((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
-            v = Unk_020d77a4_getAngleTo(o, p);
+            v = NpcActor_getAngleTo(o, p);
         }
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
@@ -5760,7 +5760,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262c20(Unk_ov068_Owner *o) {
 BOOL Unk_ov068_02262414::func_ov068_02262b78(Unk_ov068_Owner *o) {
     using namespace ns_02262294;
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
-    s32 v = Unk_020d77a4_getAngleTo(o, p);
+    s32 v = NpcActor_getAngleTo(o, p);
     func_ov068_02265994(o);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, v, 0, 0, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 2, 0, (s32)p, gVec3Zero, 4, data_020c6d1c, 1);
@@ -5812,8 +5812,8 @@ s32 Unk_ov068_02262414::func_ov068_02262a58(Unk_ov068_Owner *o) {
     void *a = func_020951ec(4);
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     if (a != 0 && p != 0) {
-        r = Unk_020d77a4_getDistanceTo(o, a);
-        s32 b = Unk_020d77a4_getDistanceTo(p, a);
+        r = NpcActor_getDistanceTo(o, a);
+        s32 b = NpcActor_getDistanceTo(p, a);
         if (r >= b) {
             r = b;
         }
@@ -6094,7 +6094,7 @@ BOOL Unk_ov068_02262294::func_ov068_02262338(Unk_ov068_Owner *o) {
         }
     }
     if (p != 0) {
-        v = Unk_020d77a4_getAngleTo(o, p);
+        v = NpcActor_getAngleTo(o, p);
     }
     func_ov068_02265994(o);
     PlayerActor_LocalRequestAct11();
@@ -6155,8 +6155,8 @@ BOOL Unk_ov068_02261900::func_ov068_022621d4(Unk_ov068_Owner *o) {
 BOOL Unk_ov068_02261900::func_ov068_0226218c(Unk_ov068_Owner *o, s32 r) {
     using namespace ns_02261900;
     BOOL res = FALSE;
-    if (Unk_020d77a4_getDistanceTo(o, unk_e4) <= r) {
-        s32 v = Unk_020d77a4_getRelativeAngleTo(o, unk_e4);
+    if (NpcActor_getDistanceTo(o, unk_e4) <= r) {
+        s32 v = NpcActor_getRelativeAngleTo(o, unk_e4);
         s32 lim = data_ov068_02270c24;
         if (v >= -lim && v <= lim) {
             res = TRUE;
@@ -6240,7 +6240,7 @@ void Unk_ov068_02261900::func_ov068_02261e10(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
     if (unk_e4 != 0) {
         if (func_ov068_0226218c(o, 0x5000) == 0) {
-            s32 t = Unk_020d77a4_getAngleTo(o, unk_e4);
+            s32 t = NpcActor_getAngleTo(o, unk_e4);
             NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
             unk_1c = 3;
         } else if (*(u16 *)((u8 *)o + 0xa02) >= data_ov068_0226f0e4) {
@@ -6318,7 +6318,7 @@ BOOL Unk_ov068_02261900::func_ov068_02261b90(Unk_ov068_Owner *o) {
     if (VillagerTalk_hasPartner(o) != 0 || *(s32 *)((u8 *)o + 0xa08) != 3 || *(u8 *)((u8 *)o + 0xa00) != 0) {
         unk_1c = 1;
     } else {
-        s32 t = Unk_020d77a4_getAngleToPlayer(o, *(u8 *)((u8 *)o + 0x560));
+        s32 t = NpcActor_getAngleToPlayer(o, *(u8 *)((u8 *)o + 0x560));
         NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 2, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         unk_1c = 0;
@@ -6362,7 +6362,7 @@ s32 Unk_ov068_02261900::func_ov068_02261ab4(Unk_ov068_Owner *o) {
 
 BOOL Unk_ov068_02261900::func_ov068_02261a2c(Unk_ov068_Owner *o) {
     using namespace ns_02261900;
-    s32 t = Unk_020d77a4_getAngleToPlayer(o, 4);
+    s32 t = NpcActor_getAngleToPlayer(o, 4);
     func_ov068_02265994(o);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
@@ -6458,7 +6458,7 @@ BOOL Unk_ov068_02261574::func_ov068_02261714(Unk_ov068_Owner *o) {
     void *p = func_02015aac((u8 *)o + 0x680);
     s32 v = 0;
     if (p != 0) {
-        v = Unk_020d77a4_getAngleTo(o, p);
+        v = NpcActor_getAngleTo(o, p);
     }
     Unk_02013474_enableFootsteps((u8 *)o + 0x558);
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
@@ -7006,7 +7006,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022605f4(Unk_ov068_Owner *o) {
         v.z = pv->z;
         void *p = func_020951ec(4);
         if (p != 0) {
-            s32 d = Unk_020d77a4_getRelativeAngleTo(o, p);
+            s32 d = NpcActor_getRelativeAngleTo(o, p);
             if (d < 0) {
                 d = (s16)-d;
             }
@@ -7028,7 +7028,7 @@ void Unk_ov068_0225fd54::func_ov068_0226054c(Unk_ov068_Owner *o) {
         }
         if (NpcActionCtrl_isActionDone((u8 *)o + 0x564) != 0) {
             if (unk_38 >= 3) {
-                s32 t = Unk_020d77a4_getAngleToPlayer(o, 4);
+                s32 t = NpcActor_getAngleToPlayer(o, 4);
                 NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
                 unk_1c = 1;
             } else {
@@ -7083,7 +7083,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_02260374(Unk_ov068_Owner *o) {
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
     Unk_02013474_enableFootsteps((u8 *)o + 0x558);
-    s32 t = Unk_020d77a4_getAngleToPlayer(o, 4);
+    s32 t = NpcActor_getAngleToPlayer(o, 4);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     *(u16 *)((u8 *)o + 0xa02) = 0;
     TalkRequest_AddPlayerTalk6(o, 0);
@@ -7138,7 +7138,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_022601f0(Unk_ov068_Owner *o) {
         void *p = func_02015aac((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
-            v = Unk_020d77a4_getAngleTo(o, p);
+            v = NpcActor_getAngleTo(o, p);
         }
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
@@ -7155,7 +7155,7 @@ void Unk_ov068_0225fd54::func_ov068_02260160(Unk_ov068_Owner *o) {
         void *p = func_02015aac((u8 *)o + 0x680);
         s32 v = 0;
         if (p != 0) {
-            v = Unk_020d77a4_getAngleTo(o, p);
+            v = NpcActor_getAngleTo(o, p);
         }
         X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
@@ -7204,7 +7204,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_0225fff4(Unk_ov068_Owner *o) {
     s32 v = 0;
     Unk_020133cc_Player_resetLastTaughtEmotion(o);
     if (p != 0) {
-        v = Unk_020d77a4_getAngleTo(o, p);
+        v = NpcActor_getAngleTo(o, p);
     }
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     NpcTalkCtrl_requestTurnAndTalk((u8 *)o + 0x618, 0, v, 0);
@@ -7250,7 +7250,7 @@ BOOL Unk_ov068_0225fd54::func_ov068_0225fe70(Unk_ov068_Owner *o) {
     X_func_ov068_0225f5f4((u8 *)o + 0x894, o, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     VillagerActor_clearFlag834(o);
     Unk_02013474_enableFootsteps((u8 *)o + 0x558);
-    s32 t = Unk_020d77a4_getAngleToPlayer(o, 4);
+    s32 t = NpcActor_getAngleToPlayer(o, 4);
     NpcActionCtrl_requestAction((u8 *)o + 0x564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
     VillagerMood_disableEffects((u8 *)o + 0x838);
     unk_1c = 0;
@@ -7299,7 +7299,7 @@ BOOL _ZN13FieldVillager8vfunc_48Ev(u8 *o) {
     if (o[0xa00] != 0) {
         void *p = func_020951ec(4);
         if (p != 0) {
-            s32 v = Unk_020d77a4_getRelativeAngleTo(o, p);
+            s32 v = NpcActor_getRelativeAngleTo(o, p);
             if (v < 0) {
                 v = (s16)-v;
             }
@@ -7320,7 +7320,7 @@ BOOL _ZN13FieldVillager28acceptsInteractionOutOfRangeEPv(Unk_ov068_Owner *o, s32
     u32 v = func_ov068_0226594c(o);
     BOOL r = FALSE;
     if (o->vfunc_48(x) != 0 && VillagerActor_isFlag834(o) == 0 && FieldVillagerAi_IsState((u8 *)o + 0x8b4, r) != 0 && v <= 1 &&
-        Unk_020d77a4_isNear(o, x, 0x5000) == 0 && Unk_020d77a4_isNear(o, x, 0xe000) != 0 && Character_isInFacingArcOf(o, x, (s16)-k, k) != 0) {
+        NpcActor_isNear(o, x, 0x5000) == 0 && NpcActor_isNear(o, x, 0xe000) != 0 && Character_isInFacingArcOf(o, x, (s16)-k, k) != 0) {
         r = TRUE;
     }
     return r;
@@ -7400,14 +7400,14 @@ void FieldVillager::vfunc_4c(u32 idx, u32 v) {
             break;
         }
         VillagerTalk_begin((&unk_680), this, unk_9f8);
-        func_02015ab0((&unk_680), Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0((&unk_680), NpcActor_getPlayerActor(this, 4));
         FieldVillagerAi_ChangeState(&unk_8b4, this, r6);
         break;
     }
     case 0:
         unk_560 = v;
         VillagerTalk_begin((&unk_680), this, unk_9f8);
-        func_02015ab0((&unk_680), Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0((&unk_680), NpcActor_getPlayerActor(this, 4));
         if (unk_9f4) {
             ActorTalkRequest_setPartnerActor((&unk_680), unk_9f4);
         }
@@ -7535,7 +7535,7 @@ BOOL FieldVillager::vfunc_b4() {
     if (PlayerData_GetCurrent()) {
         p = (void *)getPlayerMemory();
     }
-    if ((p == NULL && Unk_020d77a4_isPlayerNear(this, 0x6000, 4) == 0) || (p != NULL && VillagerMemory_IsUsed(p) != 0)) {
+    if ((p == NULL && NpcActor_isPlayerNear(this, 0x6000, 4) == 0) || (p != NULL && VillagerMemory_IsUsed(p) != 0)) {
         if (NpcTalkCtrl_isBusy(unk_618) == 0) {
             if (FieldVillagerAi_IsFreeIdle(&unk_8b4) != 0) {
                 if (VillagerTalk_hasPartner(this) == 0) {

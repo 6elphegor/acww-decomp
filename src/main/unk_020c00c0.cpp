@@ -736,9 +736,9 @@ public:
 };
 
 // Base of SpNpcMissing1; its dtor is out of line.
-class Unk_0202e5a8 : public ProcBase {
+class SpNpcActor : public ProcBase {
 public:
-    virtual ~Unk_0202e5a8();
+    virtual ~SpNpcActor();
 
     /* 0x004 */ u8 unk_004[0x5c - 4];
     /* 0x05c */ u8 unk_05c[0x2a0 - 0x5c];
@@ -749,7 +749,7 @@ public:
     /* 0x618 */ u8 unk_618[0x654 - 0x618];
 };
 
-class SpNpcMissing1 : public Unk_0202e5a8 {
+class SpNpcMissing1 : public SpNpcActor {
 public:
     virtual ~SpNpcMissing1();
 

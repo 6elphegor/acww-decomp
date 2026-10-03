@@ -60,7 +60,7 @@ void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
 void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 _ZN8PlayerId13func_02094218Ev(void *p);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
@@ -321,10 +321,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -372,10 +372,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -417,7 +417,7 @@ struct FxVec3 {
     ~FxVec3();
 };
 
-class SpNpcWendell : public Unk_020d8bc8 {
+class SpNpcWendell : public SpNpcActor {
 public:
     SpNpcWendell() {}
     virtual BOOL vfunc_00();
@@ -574,7 +574,7 @@ SpNpcWendell *SpNpcWendell_Create() {
 s32 SpNpcWendell::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcWendell::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -583,7 +583,7 @@ BOOL SpNpcWendell::vfunc_04() {
 }
 
 BOOL SpNpcWendell::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(3);
@@ -591,7 +591,7 @@ BOOL SpNpcWendell::vfunc_00() {
 }
 
 BOOL SpNpcWendell::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (func_02040c88() == 0) {
@@ -826,7 +826,7 @@ BOOL SpNpcWendell::setupAct04() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

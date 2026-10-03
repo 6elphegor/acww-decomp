@@ -234,10 +234,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -267,7 +267,7 @@ public:
     BOOL netIsTalkLocked();
     s32 getPlayerActor(u32 v);
     s32 getAngleToPlayer(u32 v);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     void setCollisionRadius(s32 v);
     s32 getDistanceToPlayer(u32 v);
 
@@ -290,10 +290,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -339,7 +339,7 @@ public:
     /* 0xba */ u8 pad_ba[2];
 };
 
-class SpNpcHarriet : public Unk_020d8bc8 {
+class SpNpcHarriet : public SpNpcActor {
 public:
     SpNpcHarriet() {}
     virtual BOOL vfunc_00();
@@ -436,7 +436,7 @@ void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 
 s32 Math_AngleXZ(void *a, void *b);
 BOOL _ZN11NpcTalkCtrl6isBusyEv(void *self);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *p, s32 a, s32 b, s32 c);
-Unk_020d77a4 *func_02015aac(void *self);
+NpcActor *func_02015aac(void *self);
 s32 func_020e7518(void *);
 void Bgm_ReleasePriority(u32);
 void Hud_Show();
@@ -588,7 +588,7 @@ extern "C" const Unk_ov053_Vec sSpNpcHarrietReturnPos = {0x10000, 0, 0x1b000};
 SpNpcHarriet *SpNpcHarriet_Create() { return new SpNpcHarriet; }
 
 BOOL SpNpcHarriet::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -600,7 +600,7 @@ BOOL SpNpcHarriet::vfunc_04() {
 }
 
 BOOL SpNpcHarriet::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     void *g = gCommManager;
@@ -680,7 +680,7 @@ BOOL SpNpcHarriet::mainAct01() {
 
 BOOL SpNpcHarriet::setupAct02() {
     _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
-    Unk_020d77a4 *p = (Unk_020d77a4 *)unk_658.func_02015aac();
+    NpcActor *p = (NpcActor *)unk_658.func_02015aac();
     s32 r4 = 0;
     if (p) {
         r4 = getAngleTo(p);

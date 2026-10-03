@@ -27,7 +27,7 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_020d77a4;
+class NpcActor;
 class SpNpcCopper;
 class SpNpcCopperTalk;
 
@@ -194,7 +194,7 @@ s32 DwcFriendData_IsValid(void *);
 s32 NetOverlay_LoadWireless();
 s32 Comm_Start(s32, s32, s32);
 s32 Comm_End();
-s32 _ZN12Unk_020d77a413func_0201b9e8Eii(void *, s32 *, s32 *);
+s32 _ZN8NpcActor13func_0201b9e8Eii(void *, s32 *, s32 *);
 BOOL NetArea_IsLocalOwner();
 Unk_ov048_Rec * TalkWindow_Get(s32);
 void SaveManager_RequestAct02();
@@ -261,15 +261,15 @@ void * _ZN8PlayerId13func_02094104Ev(void *);
 void func_020ea720(void *, s32);
 Unk_ov048_Vec * func_020947f0(s32);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *, s32, s32, s32);
-s32 _ZN12Unk_020d8bc88vfunc_0cEv();
+s32 _ZN10SpNpcActor8vfunc_0cEv();
 s32 func_020b50e8();
 void func_0203d984();
-s32 _ZN12Unk_020d8bc88vfunc_00Ev();
+s32 _ZN10SpNpcActor8vfunc_00Ev();
 s32 _ZN15TownTravelState7getModeEv(void *);
 s32 _ZN15TownTravelState8getAngleEv(void *);
 void _ZN15TownTravelState9clearModeEv(void *);
 void func_0203d990();
-s32 _ZN12Unk_020d8bc88vfunc_04Ev();
+s32 _ZN10SpNpcActor8vfunc_04Ev();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *, s32);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *, s32);
@@ -330,7 +330,7 @@ public:
     virtual void vfunc_78(void *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
-    Unk_020d77a4 *func_02015aac();
+    NpcActor *func_02015aac();
     void func_02015ab0(u32 p);
     void setNumberSlot(s32 a, u32 b, s32 c, s32 d, s32 e);
     u8 pad_04[0x1a];
@@ -590,10 +590,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -624,7 +624,7 @@ public:
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
     void setTalkRequest(Unk_0201bc1c *p);
     s32 getPlayerActor(u32 v);
-    s32 getAngleTo(Unk_020d77a4 *other);
+    s32 getAngleTo(NpcActor *other);
     void setCollisionRadius(s32 v);
 
     u16 unk_ea;
@@ -646,10 +646,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -667,7 +667,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcCopper : public Unk_020d8bc8 {
+class SpNpcCopper : public SpNpcActor {
 public:
     typedef BOOL (SpNpcCopper::*Fn)();
 
@@ -936,7 +936,7 @@ extern "C" SpNpcCopper *SpNpcCopper_Create() {
 }
 
 BOOL SpNpcCopper::vfunc_04() {
-    if (Unk_020d8bc8::vfunc_04() == 0) {
+    if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -954,7 +954,7 @@ BOOL SpNpcCopper::vfunc_04() {
 }
 
 BOOL SpNpcCopper::vfunc_00() {
-    if (Unk_020d8bc8::vfunc_00() == 0) {
+    if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
     unk_658.unk_7e4 = unk_8e;
@@ -991,7 +991,7 @@ BOOL SpNpcCopper::vfunc_00() {
 }
 
 BOOL SpNpcCopper::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c() == 0) {
+    if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
     if (func_020b50e8() == 0xd || func_020b50e8() == 0xe) {
@@ -1047,7 +1047,7 @@ BOOL SpNpcCopper::mainAct01() {
 }
 
 BOOL SpNpcCopper::setupAct02() {
-    Unk_020d77a4 *o = unk_658.func_02015aac();
+    NpcActor *o = unk_658.func_02015aac();
     s32 r = 0;
     if (o) {
         r = getAngleTo(o);
@@ -2182,7 +2182,7 @@ BOOL SpNpcCopper::mainAct0F() {
         b = 4;
         s32 u;
         s32 x;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0 && (x = a, u = gCommManager->unk_64, x == u) && x == b) {
+        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) != 0 && (x = a, u = gCommManager->unk_64, x == u) && x == b) {
             netSetSlotsIfOwner(1, u, u);
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             unk_658.func_02015ab0(getPlayerActor(4));
@@ -2204,7 +2204,7 @@ BOOL SpNpcCopper::mainAct11() {
     if (isNetOwner() != 0) {
         a = 4;
         b = 4;
-        if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b) != 0) {
+        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
@@ -3570,7 +3570,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN12Unk_020d77a413func_0201b9e8Eii(this, &a, &b)) {
+                if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                         SpNpcCopper_ChangeAct(this, 1);
@@ -3616,7 +3616,7 @@ BOOL SpNpcCopper::vfunc_7c() {
     if (func_020b50e8() == 0xc) {
         return FALSE;
     }
-    return Unk_020d8bc8::vfunc_7c();
+    return SpNpcActor::vfunc_7c();
 }
 
 // ---- 8de0

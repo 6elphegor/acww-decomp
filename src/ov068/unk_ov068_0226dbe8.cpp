@@ -11,10 +11,10 @@
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define func_0201b138 _ZN12Unk_020d77a46onDrawEv
-#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define func_0201b138 _ZN8NpcActor6onDrawEv
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
 #define func_0202dab0 _ZN13VillagerActor8vfunc_04Ev
@@ -143,9 +143,9 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -189,7 +189,7 @@ public:
     Unk_02014254 unk_618;
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -576,8 +576,8 @@ s32 func_020e96ec(void *a, void *b);
 void *func_02095204(s32 n);
 void *func_020947f0(s32 n);
 BOOL func_0202ff64(void *v);
-u32 Unk_020d77a4_getAngleTo(void *p, void *q);
-s32 Unk_020d77a4_findAvoidPos(void *p, void *out);
+u32 NpcActor_getAngleTo(void *p, void *q);
+s32 NpcActor_findAvoidPos(void *p, void *out);
 void func_020b101c();
 void *func_020b4934();
 void func_020b4a08(void *o, s32 v);
@@ -676,7 +676,7 @@ void func_0205b120(void *);
 void *func_0205afdc(void *, void *);
 s32 func_0201b138(void *);
 s32 func_0202dab0(void *);
-void Unk_020d77a4_setTalkRequest(void *, void *);
+void NpcActor_setTalkRequest(void *, void *);
 }
 
 }
@@ -700,7 +700,7 @@ BOOL HouseVisitVillager::vfunc_04() {
         return FALSE;
     }
     sHouseVisitVillager = this;
-    Unk_020d77a4_setTalkRequest(this, &unk_898);
+    NpcActor_setTalkRequest(this, &unk_898);
     unk_898.attachOwner(this);
     return TRUE;
 }
@@ -1399,7 +1399,7 @@ void HouseVisitVillager::execVisitWander() {
             NpcActionCtrl_requestAction(&unk_564, 1, 1, unk_a68, unk_a70, 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else if (NpcActionCtrl_getAction(&unk_564) == 1) {
-        switch (Unk_020d77a4_findAvoidPos(this, &tmp)) {
+        switch (NpcActor_findAvoidPos(this, &tmp)) {
         case 1:
             if (NpcActionCtrl_requestStand(&unk_564, 1, data_020c6cc8)) {
                 func_ov068_0226ee18();
@@ -1438,7 +1438,7 @@ BOOL HouseVisitVillager::enterVisitTalk() {
     using namespace sA;
     void *p = func_02095204(4);
     if (p != NULL) {
-        u32 x = Unk_020d77a4_getAngleTo(this, p);
+        u32 x = NpcActor_getAngleTo(this, p);
         if (unk_a50 != 0 || unk_a51 != 0) {
             NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, x, 1);
         } else {

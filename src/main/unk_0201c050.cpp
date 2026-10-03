@@ -177,11 +177,11 @@ struct Unk_020e06f0;
 struct VillagerMood;
 struct Unk_02082014;
 class Character;
-class Unk_020d77a4;
+class NpcActor;
 struct Unk_0202e18c_Buf;
 class ActorTalkRequest;
 class SpNpcTalkRequest;
-class Unk_020d8bc8;
+class SpNpcActor;
 
 struct Unk_020ddf2c { Unk_020ddf2c(); ~Unk_020ddf2c(); u32 pad[0x2c / 4]; };
 
@@ -1247,8 +1247,8 @@ public:
 };
 
 // ---- class chain of VillagerActor (vtable 0x020d89c0):
-// ProcBase <- Actor <- Character <- Unk_020d77a4 <- VillagerActor (the bases as in the unit of
-// Unk_020d8bc8; all their members are functions of other units)
+// ProcBase <- Actor <- Character <- NpcActor <- VillagerActor (the bases as in the unit of
+// SpNpcActor; all their members are functions of other units)
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -1351,7 +1351,7 @@ struct Character : Actor {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Character {
+struct NpcActor : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -1369,8 +1369,8 @@ struct Unk_020d77a4 : Character {
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4() {}
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual void postCreate(int a);
@@ -1409,7 +1409,7 @@ struct Unk_0202d5e8 {
     u8 pad_1a1[3];
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -2269,9 +2269,9 @@ void _ZN16ActorTalkRequest18setNumberNamedSlotEijihii(void *, void *, u32, u32, 
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *, s32, u32, s32, s32, s32);
 void * _ZN16ActorTalkRequest13getChoiceListEv(void *);
 void _ZN16ActorTalkRequest8vfunc_80Ev(void *);
-s32 _ZN12Unk_020d77a411getNpcIndexEv(void *);
-s32 _ZN12Unk_020d77a48vfunc_00Ev(void *);
-s32 _ZN12Unk_020d77a48vfunc_0cEv(void *);
+s32 _ZN8NpcActor11getNpcIndexEv(void *);
+s32 _ZN8NpcActor8vfunc_00Ev(void *);
+s32 _ZN8NpcActor8vfunc_0cEv(void *);
 u32 _ZN12VillagerTalk9getUnk150Ev(void *);
 s32 _ZN9Character9preDeleteEv(void *);
 u32 _ZN11CachedModel16allocJointRecordEPv(void *, u32);
@@ -4283,7 +4283,7 @@ void VillagerActor::setShirt(u16 *p, BOOL flag) {
 }
 
 BOOL VillagerActor::vfunc_04() {
-    if (!Unk_020d77a4::vfunc_04()) {
+    if (!NpcActor::vfunc_04()) {
         return FALSE;
     }
     attachVillagerData();
@@ -4307,7 +4307,7 @@ BOOL VillagerActor::loadAnimSet() {
 
 BOOL VillagerActor::vfunc_00() {
     u16 h = 0x11a8;
-    if (!_ZN12Unk_020d77a48vfunc_00Ev(this)) {
+    if (!_ZN8NpcActor8vfunc_00Ev(this)) {
         return FALSE;
     }
     if (!_ZN12Unk_020e06dc13func_0208202cEv((u8 *)this + 0x824)) {
@@ -4331,7 +4331,7 @@ BOOL VillagerActor::vfunc_00() {
     if (!((VillagerClothModel *)((u8 *)this + 0x64c))->init(this, &h)) {
         return FALSE;
     }
-    _ZN12Unk_020e0cf413func_02088c98EPviijjjhi((u8 *)this + 0x4cc, this, 0x1000, 0x2000, 8, 0x2fc, 2, (u8)_ZN12Unk_020d77a411getNpcIndexEv(this), 0x1000);
+    _ZN12Unk_020e0cf413func_02088c98EPviijjjhi((u8 *)this + 0x4cc, this, 0x1000, 0x2000, 8, 0x2fc, 2, (u8)_ZN8NpcActor11getNpcIndexEv(this), 0x1000);
     if (NpcRegistry_AddVillager(this, (u8 *)this + 0xea)) {
     } else {
         return FALSE;
@@ -4348,7 +4348,7 @@ BOOL VillagerActor::preDelete() {
 }
 
 BOOL VillagerActor::vfunc_0c() {
-    if (!_ZN12Unk_020d77a48vfunc_0cEv(this)) {
+    if (!_ZN8NpcActor8vfunc_0cEv(this)) {
         return FALSE;
     }
     _ZN12Unk_020e071813func_0208211cEv((u8 *)this + 0x824);

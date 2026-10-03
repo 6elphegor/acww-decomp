@@ -90,7 +90,7 @@ u32 func_02063b8c(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 u32 func_020e7518(void *p);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -360,10 +360,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -411,10 +411,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -432,7 +432,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcShrunk : public Unk_020d8bc8 {
+class SpNpcShrunk : public SpNpcActor {
 public:
     SpNpcShrunk() {}
     virtual BOOL vfunc_00();
@@ -592,7 +592,7 @@ extern "C" SpNpcShrunk *SpNpcShrunk_Create() {
 s32 SpNpcShrunk::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcShrunk::vfunc_04() {
-    if (Unk_020d8bc8::vfunc_04() == 0) {
+    if (SpNpcActor::vfunc_04() == 0) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -601,7 +601,7 @@ BOOL SpNpcShrunk::vfunc_04() {
 }
 
 BOOL SpNpcShrunk::vfunc_00() {
-    if (Unk_020d8bc8::vfunc_00() == 0) {
+    if (SpNpcActor::vfunc_00() == 0) {
         return FALSE;
     }
     changeAct(3);
@@ -609,7 +609,7 @@ BOOL SpNpcShrunk::vfunc_00() {
 }
 
 BOOL SpNpcShrunk::vfunc_0c() {
-    if (Unk_020d8bc8::vfunc_0c() == 0) {
+    if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
     if (func_02040c88() == 0) {
@@ -860,7 +860,7 @@ BOOL SpNpcShrunk::setupAct04() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

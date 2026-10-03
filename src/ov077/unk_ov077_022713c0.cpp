@@ -62,7 +62,7 @@ s32 func_020e7518(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
 s32 func_020951ec(s32 v);
-u16 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+u16 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
 void Effect_End(s32 h);
 BOOL TalkRequest_EndTalkWith(void *p);
@@ -316,10 +316,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -367,10 +367,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -393,7 +393,7 @@ struct Unk_ov077_02271a84_Pt {
     Unk_ov077_02271a84_Pt(s32 a, s32 b) { x = a; y = b; }
 };
 
-class SpNpcResetti : public Unk_020d8bc8 {
+class SpNpcResetti : public SpNpcActor {
 public:
     SpNpcResetti() : unk_718(0), unk_71c(0) {}
     virtual BOOL vfunc_00();
@@ -525,7 +525,7 @@ SpNpcResetti *SpNpcResetti_Create() {
 }
 
 BOOL SpNpcResetti::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     unk_714 = 0xff;
@@ -539,7 +539,7 @@ BOOL SpNpcResetti::vfunc_04() {
 }
 
 BOOL SpNpcResetti::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     unk_4cc.unk_1c |= 2;
@@ -551,7 +551,7 @@ BOOL SpNpcResetti::vfunc_00() {
 }
 
 BOOL SpNpcResetti::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     func_0203d960();
@@ -560,7 +560,7 @@ BOOL SpNpcResetti::vfunc_0c() {
 
 BOOL SpNpcResetti::onDraw() {
     if (unk_654 != 3) {
-        Unk_020d77a4::onDraw();
+        NpcActor::onDraw();
     }
     return TRUE;
 }
@@ -595,7 +595,7 @@ BOOL SpNpcResetti::setupAct01() {
     void *p = unk_658.func_02015aac();
     u16 v = 0;
     if (p != NULL) {
-        v = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        v = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, v, 0);
     return TRUE;
@@ -661,7 +661,7 @@ BOOL SpNpcResetti::mainAct03() {
     dx = ax - unk_718;
     dz = az - unk_71c;
     {
-        u16 w = _ZN12Unk_020d77a410getAngleToEPS_(this, (void *)pl);
+        u16 w = _ZN8NpcActor10getAngleToEPS_(this, (void *)pl);
         unk_8e = w;
         unk_94 = w;
     }
@@ -709,7 +709,7 @@ BOOL SpNpcResetti::setupAct04() {
 
 BOOL SpNpcResetti::mainAct04() {
     s32 r = func_020951ec(4);
-    u16 v = _ZN12Unk_020d77a410getAngleToEPS_(this, (void *)r);
+    u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     unk_8e = v;
     unk_94 = v;
     if ((s16)unk_ec.unk_a4.b.mid == 0xc) {
@@ -738,7 +738,7 @@ BOOL SpNpcResetti::setupAct05() {
 BOOL SpNpcResetti::mainAct05() {
     s32 r = func_020951ec(4);
     s32 f;
-    u16 v = _ZN12Unk_020d77a410getAngleToEPS_(this, (void *)r);
+    u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     unk_8e = v;
     unk_94 = v;
     f = (s16)unk_ec.unk_a4.b.mid;

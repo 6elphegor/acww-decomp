@@ -103,7 +103,7 @@ void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *obj, void *buf, const char *name);
 s32 _ZN8SaveData8testFlagEj(void *p, s32 n);
 void _ZN8SaveData7setFlagEj(void *p, s32 n);
-u32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+u32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(void *p, s32 a, s32 b, s32 c);
 s32 _ZN11NpcTalkCtrl6isBusyEv(void *p);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
@@ -314,10 +314,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -365,10 +365,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -388,7 +388,7 @@ public:
 };
 
 // Scene class (vtable 0x022724c0); its destructor is implicit (D1 then D0 at the start of the overlay)
-class SpNpcJoan : public Unk_020d8bc8 {
+class SpNpcJoan : public SpNpcActor {
 public:
     SpNpcJoan() {}
     virtual BOOL vfunc_00();
@@ -474,7 +474,7 @@ extern "C" SpNpcJoan *SpNpcJoan_Create() {
 s32 SpNpcJoan::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcJoan::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -483,7 +483,7 @@ BOOL SpNpcJoan::vfunc_04() {
 }
 
 BOOL SpNpcJoan::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     _ZN10VisitorPos6setPosEii(func_0208516c(func_020850e0()), unk_5c.x, unk_5c.z);
@@ -491,7 +491,7 @@ BOOL SpNpcJoan::vfunc_0c() {
 }
 
 BOOL SpNpcJoan::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(3);
@@ -732,7 +732,7 @@ BOOL SpNpcJoan::setupAct04() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

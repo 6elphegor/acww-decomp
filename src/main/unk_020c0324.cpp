@@ -13,7 +13,7 @@ struct CommManager {
 class SpNpcMissing1;
 
 extern "C" {
-void _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
+void _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(void *a, void *b);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 s32 func_020b50e8(void);
 s32 func_020b50dc(void);
@@ -26,9 +26,9 @@ void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *a, s32 b, s32 c, s
 void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *a, void *b);
 void _ZN14NpcMoveAnimSet12setStandAnimEi(void *a, s32 b);
 void _ZN14NpcMoveAnimSet11setWalkAnimEi(void *a, s32 b);
-s32 _ZN12Unk_020d77a419getDistanceToPlayerEj(void *a, s32 b);
-u32 _ZN12Unk_020d77a414getPlayerActorEj(void *p, s32 n);
-s32 _ZN12Unk_020d77a410getAngleToEPS_(void *a, s32 b);
+s32 _ZN8NpcActor19getDistanceToPlayerEj(void *a, s32 b);
+u32 _ZN8NpcActor14getPlayerActorEj(void *p, s32 n);
+s32 _ZN8NpcActor10getAngleToEPS_(void *a, s32 b);
 s32 _ZN16ActorTalkRequest13func_02015aacEv(void *a);
 void _ZN16ActorTalkRequest13func_02015ab0Ej(void *a, s32 b);
 s32 _ZN16ActorTalkRequest8vfunc_38Ej(void *p, void *q);
@@ -105,7 +105,7 @@ static inline BOOL Unk_020c06a0_IsMode2() {
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::postCreate(int).
+// NpcActor::postCreate(int).
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -235,7 +235,7 @@ public:
     s32 unk_b0;
 };
 
-// ---- SpNpcMissing1 and its bases (scene object derived from Unk_020d77a4) ----
+// ---- SpNpcMissing1 and its bases (scene object derived from NpcActor) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -311,7 +311,7 @@ struct Character : Actor {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Character {
+struct NpcActor : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -329,7 +329,7 @@ struct Unk_020d77a4 : Character {
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual void postCreate(int a);
@@ -360,10 +360,10 @@ struct Unk_020d77a4 : Character {
     virtual BOOL vfunc_a8();
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -388,7 +388,7 @@ struct Unk_020c11b8_Ent {
     Unk_020c11b8_Fn b;
 };
 
-class SpNpcMissing1 : public Unk_020d8bc8 {
+class SpNpcMissing1 : public SpNpcActor {
 public:
     SpNpcMissing1() {}
     virtual BOOL vfunc_00();
@@ -446,10 +446,10 @@ extern "C" SpNpcMissing1 *func_020c1620(void) {
 }
 
 BOOL SpNpcMissing1::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
-    _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
+    _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c(this, &unk_658);
     unk_658.attachOwner(this);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 2, 0x333, 0xcc, 0x133);
     _ZN11NpcMoveCtrl14setSpeedPresetEiiii(&unk_350, 1, 0x1b3, 0xcc, 0x133);
@@ -474,7 +474,7 @@ BOOL SpNpcMissing1::vfunc_04() {
 
 BOOL SpNpcMissing1::vfunc_00() {
     void *p;
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     sSpNpcMissing1Instance = this;
@@ -530,7 +530,7 @@ BOOL SpNpcMissing1::vfunc_00() {
 }
 
 BOOL SpNpcMissing1::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     sSpNpcMissing1Instance = NULL;
@@ -573,7 +573,7 @@ void SpNpcMissing1::vfunc_4c(s32 state) {
     case 0:
     case 1:
         unk_658.vfunc_08();
-        _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, _ZN12Unk_020d77a414getPlayerActorEj(this, 4));
+        _ZN16ActorTalkRequest13func_02015ab0Ej(&unk_658, _ZN8NpcActor14getPlayerActorEj(this, 4));
         if (unk_658.getTopic() != 6) {
             changeAct(3);
         }
@@ -670,7 +670,7 @@ BOOL SpNpcMissing1::setupAct03() {
     p = _ZN16ActorTalkRequest13func_02015aacEv(&unk_658);
     r4 = 0;
     if (p != 0) {
-        r4 = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        r4 = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN14NpcMoveAnimSet12setStandAnimEi(&unk_2a0, 0xac);
     _ZN14NpcMoveAnimSet11setWalkAnimEi(&unk_2a0, 0xac);
@@ -740,7 +740,7 @@ BOOL SpNpcMissing1::mainAct05() {
     if (q == NULL) {
         return TRUE;
     }
-    t = _ZN12Unk_020d77a419getDistanceToPlayerEj(this, 4);
+    t = _ZN8NpcActor19getDistanceToPlayerEj(this, 4);
     if ((func_020b50e8() == 0 || (func_020b50e8() == 0xc && _ZN15LostChildRecord11isEscortingEv(_ZN10PlayerData13func_020986a4Ev(p)) == 0)) && _ZN13NpcActionCtrl9getActionEv(&unk_564) == 2) {
         s32 v, d2;
         if (t > 0x6000) {

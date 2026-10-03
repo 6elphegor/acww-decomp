@@ -99,7 +99,7 @@ u32 func_02063b8c(u32 n);
 s32 Math_AngleXZ(void *p, void *q);
 BOOL NpcActor_IsFrontAngle(s32 v);
 void func_020e7518(void *p);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 u32 Random_Next(void *p);
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
@@ -330,10 +330,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -381,10 +381,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -402,7 +402,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcSaharah : public Unk_020d8bc8 {
+class SpNpcSaharah : public SpNpcActor {
 public:
     SpNpcSaharah() {}
     virtual BOOL vfunc_00();
@@ -535,7 +535,7 @@ extern "C" SpNpcSaharah *SpNpcSaharah_Create() {
 s32 SpNpcSaharah::vfunc_a8() { return data_020c6cf0; }
 
 BOOL SpNpcSaharah::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -544,7 +544,7 @@ BOOL SpNpcSaharah::vfunc_04() {
 }
 
 BOOL SpNpcSaharah::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(3);
@@ -552,7 +552,7 @@ BOOL SpNpcSaharah::vfunc_00() {
 }
 
 BOOL SpNpcSaharah::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     func_0208516c(func_020850e0())->setPos(unk_5c, unk_64);
@@ -801,7 +801,7 @@ BOOL SpNpcSaharah::setupAct04() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

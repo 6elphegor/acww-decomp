@@ -47,9 +47,9 @@ class FleaMarketBuyerVillager;
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_disable _ZN9NpcLookAt7disableEv
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
@@ -152,7 +152,7 @@ void Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
 void func_020b1028();
 void func_02015ab0(void *, s32);
-s32 Unk_020d77a4_getPlayerActor(void *, s32);
+s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
 s32 ChoiceList_getResult();
 void *VillagerData_getVillagerId(void *);
@@ -206,7 +206,7 @@ s32 func_020e780c(s32, s32);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 s32 Math_AngleXZ(void *, void *);
 s32 func_02015aac(void *);
-s32 Unk_020d77a4_getAngleTo(void *, s32);
+s32 NpcActor_getAngleTo(void *, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
 u32 func_020e7518(void *);
@@ -222,7 +222,7 @@ void Unk_02013474_enableFootsteps(void *);
 void NpcLookAt_disable(void *);
 s32 func_02094218(void *);
 s32 VillagerMemory_isFleaMarketVisited(s32);
-void Unk_020d77a4_setTalkRequest(void *, void *);
+void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
 s32 FtrInfo_GetUnk05();
 void func_020b50dc();
@@ -312,9 +312,9 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
+    NpcActor() : unk_ea(0xfff1) {}
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -358,7 +358,7 @@ public:
     Unk_02014254 unk_618;
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -704,7 +704,7 @@ BOOL FleaMarketBuyerVillager::vfunc_04() {
     if (!VillagerActor::vfunc_04()) {
         return FALSE;
     }
-    Unk_020d77a4_setTalkRequest(this, &unk_914);
+    NpcActor_setTalkRequest(this, &unk_914);
     unk_914.attachOwner(this);
     return TRUE;
 }
@@ -772,7 +772,7 @@ BOOL FleaMarketBuyerVillager::vfunc_0c() {
 
 BOOL FleaMarketBuyerVillager::onDraw() {
     if (unk_ac0 != 0) {
-        Unk_020d77a4::onDraw();
+        NpcActor::onDraw();
     }
     return TRUE;
 }
@@ -1019,7 +1019,7 @@ BOOL FleaMarketBuyerVillager::setupAct07() {
     s32 a = func_02015aac(&unk_914);
     s32 b = 0;
     if (a) {
-        b = Unk_020d77a4_getAngleTo(this, a);
+        b = NpcActor_getAngleTo(this, a);
     }
     NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, b, 1);
     return TRUE;
@@ -1047,7 +1047,7 @@ BOOL FleaMarketBuyerVillager::setupAct06() {
     s32 a = func_02015aac(&unk_914);
     s32 b = 0;
     if (a) {
-        b = Unk_020d77a4_getAngleTo(this, a);
+        b = NpcActor_getAngleTo(this, a);
     }
     s32 z = 0;
     unk_ac4 = z;
@@ -1064,7 +1064,7 @@ BOOL FleaMarketBuyerVillager::mainAct06() {
             s32 a = func_02015aac(&unk_914);
             s32 b = 0;
             if (a) {
-                b = Unk_020d77a4_getAngleTo(this, a);
+                b = NpcActor_getAngleTo(this, a);
             }
             NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, b, 1);
         }
@@ -1412,7 +1412,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
     switch (cmd) {
     case 1:
         unk_914.vfunc_08();
-        func_02015ab0(&unk_914, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_914, NpcActor_getPlayerActor(this, 4));
         if (unk_ac0 == 5 || unk_ac0 == 3) {
             changeAct(7);
         } else {
@@ -1429,7 +1429,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
         break;
     case 0:
         unk_914.vfunc_08();
-        func_02015ab0(&unk_914, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_914, NpcActor_getPlayerActor(this, 4));
         changeAct(6);
         break;
     case 8:

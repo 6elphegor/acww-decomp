@@ -215,7 +215,7 @@ extern "C" {
 void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
-class Unk_02039eb8 {
+class ViewFrustum {
 public:
     s32 testSphere(void *m, void *v, s32 r, s32 *out);
 };
@@ -446,7 +446,7 @@ BOOL Actor::preExecute() {
         v[0] = unk_c4;
         v[1] = z;
         v[2] = x;
-        r4 = ((Unk_02039eb8 *)gViewFrustum)->testSphere(&gViewMtx, v, unk_b8, (s32 *)unk_74);
+        r4 = ((ViewFrustum *)gViewFrustum)->testSphere(&gViewMtx, v, unk_b8, (s32 *)unk_74);
     }
     unk_b0 &= ~4;
     if (unk_b0 & 3) {

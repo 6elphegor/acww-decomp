@@ -1,7 +1,7 @@
 #include "types.h"
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::postCreate(int).
+// NpcActor::postCreate(int).
 class ProcBase {
 public:
     static void *operator new(unsigned long size);
@@ -47,7 +47,7 @@ s32 SpNpc_GetInfoByte0(u16 *p);
 void Npc_GetName(u32 a, u16 *p);
 }
 
-// ---- Unk_020d8bc8 (scene object derived from Unk_020d77a4) ----
+// ---- SpNpcActor (scene object derived from NpcActor) ----
 #define MEMBER(name, size) \
     struct name { \
         u8 unk_00[size]; \
@@ -115,7 +115,7 @@ struct Character : Actor {
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Character {
+struct NpcActor : Character {
     u16 unk_ea;
     ThreeLayerAnimModel unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -133,8 +133,8 @@ struct Unk_020d77a4 : Character {
     Unk_020135e4 unk_558;
     NpcActionCtrl unk_564;
     Unk_02014254 unk_618;
-    Unk_020d77a4();
-    virtual ~Unk_020d77a4() {}
+    NpcActor();
+    virtual ~NpcActor() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual void postCreate(int a);
@@ -180,7 +180,7 @@ void _ZN13NpcActionCtrl11startActionEPhiiiisii(void *p, void *q, s32 a, s32 b, s
 void _ZN12Unk_020e0cf413func_02088c98EPviijjjhi(void *p, void *q, s32 a, s32 b, s32 c, s32 d, s32 e, u32 f, s32 g);
 BOOL NpcRegistry_AddSpNpc(void *p, void *q);
 void _ZN12Unk_0201347415enableFootstepsEv(void *p);
-s32 _ZN12Unk_020d77a415netReadPositionEPiPh(void *self, void *a, void *b);
+s32 _ZN8NpcActor15netReadPositionEPiPh(void *self, void *a, void *b);
 s32 SpNpcAnimHeapRef_GetHeap(void *p);
 BOOL _ZN11CachedModel16allocJointRecordEPv(void *p, s32 v);
 BOOL _ZN19ThreeLayerAnimModel16allocLayer3AnimsEj(void *p, s32 v);
@@ -193,10 +193,10 @@ static inline BOOL Unk_0202e318_IsOne(u8 v) {
     return FALSE;
 }
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8();
-    virtual ~Unk_020d8bc8();
+    SpNpcActor();
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -217,9 +217,9 @@ public:
     u8 unk_650;
 };
 
-Unk_020d8bc8::~Unk_020d8bc8() {}
+SpNpcActor::~SpNpcActor() {}
 
-BOOL Unk_020d8bc8::loadAnimSet() {
+BOOL SpNpcActor::loadAnimSet() {
     void *p = _ZN12Unk_020e074013func_02081fb8Ev(&unk_640);
     if (!_ZN11CachedModel16allocJointRecordEPv(&unk_ec, SpNpcAnimHeapRef_GetHeap(p))) {
         return FALSE;
@@ -230,13 +230,13 @@ BOOL Unk_020d8bc8::loadAnimSet() {
     return FALSE;
 }
 
-void Unk_020d8bc8::func_0202e548(s32 a, s32 b) {
+void SpNpcActor::func_0202e548(s32 a, s32 b) {
     unk_648 = a;
     unk_64c = b;
 }
 
-BOOL Unk_020d8bc8::vfunc_04() {
-    if (!Unk_020d77a4::vfunc_04()) {
+BOOL SpNpcActor::vfunc_04() {
+    if (!NpcActor::vfunc_04()) {
         return FALSE;
     }
     func_0202e548(0x1000, 0x2000);
@@ -244,8 +244,8 @@ BOOL Unk_020d8bc8::vfunc_04() {
     return TRUE;
 }
 
-BOOL Unk_020d8bc8::vfunc_00() {
-    if (!Unk_020d77a4::vfunc_00()) {
+BOOL SpNpcActor::vfunc_00() {
+    if (!NpcActor::vfunc_00()) {
         return FALSE;
     }
     if (!NetArea_IsLocalOwner() && _ZN11CommManager8isOnlineEv(gCommManager) && !unk_558.unk_0b) {
@@ -255,7 +255,7 @@ BOOL Unk_020d8bc8::vfunc_00() {
         v.y = 0;
         v.z = 0;
         s = 0;
-        if (_ZN12Unk_020d77a415netReadPositionEPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
+        if (_ZN8NpcActor15netReadPositionEPiPh(this, &v, &s) && func_020e96ec(&v, &gVec3Zero)) {
             Unk_0203e7a4_Vec *p = &unk_5c;
             p->x = v.x;
             p->y = v.y;
@@ -287,36 +287,36 @@ BOOL Unk_020d8bc8::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020d8bc8::preDelete() {
-    if (!Unk_020d77a4::preDelete()) {
+BOOL SpNpcActor::preDelete() {
+    if (!NpcActor::preDelete()) {
         return FALSE;
     }
     NpcRegistry_RemoveSpNpc(&unk_ea);
     return TRUE;
 }
 
-BOOL Unk_020d8bc8::vfunc_0c() {
-    if (!Unk_020d77a4::vfunc_0c()) {
+BOOL SpNpcActor::vfunc_0c() {
+    if (!NpcActor::vfunc_0c()) {
         return FALSE;
     }
     _ZN12Unk_020e071813func_0208211cEv(&unk_640);
     return TRUE;
 }
 
-void Unk_020d8bc8::getName(u32 a) { Npc_GetName(a, &unk_ea); }
+void SpNpcActor::getName(u32 a) { Npc_GetName(a, &unk_ea); }
 
-u32 Unk_020d8bc8::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
+u32 SpNpcActor::getGender() { return SpNpc_GetInfoByte0(&unk_ea); }
 
-BOOL Unk_020d8bc8::vfunc_7c() {
+BOOL SpNpcActor::vfunc_7c() {
     if (!Unk_0202e318_IsOne(data_020e416c) || unk_650 == 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020d8bc8::vfunc_80() { unk_650 = 1; }
+void SpNpcActor::vfunc_80() { unk_650 = 1; }
 
-u16 Unk_020d8bc8::getSpecies() {
+u16 SpNpcActor::getSpecies() {
     u16 v = unk_ea;
     if (((v & 0xf000) >> 12) == 0xd) {
         return (v & 0xfff) + 0xc8;
@@ -324,5 +324,5 @@ u16 Unk_020d8bc8::getSpecies() {
     return 0xffff;
 }
 
-BOOL Unk_020d8bc8::vfunc_a8() { return data_021bf97c; }
+BOOL SpNpcActor::vfunc_a8() { return data_021bf97c; }
 

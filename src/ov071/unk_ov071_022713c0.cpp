@@ -143,9 +143,9 @@ void _ZN11NpcMoveCtrl14setDestinationEP17Unk_0201a334_Vec3(void *self, Unk_ov071
 void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, Unk_ov071_02271f54_Vec *v);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, u8 a, s32 b, s32 c, u32 *v, s32 d, s32 e, u8 f);
-s32 _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
-s32 _ZN12Unk_020d77a413getDistanceToEPS_(void *self, void *p);
-s32 _ZN12Unk_020d77a418getRelativeAngleToEPS_(void *self, void *p);
+s32 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
+s32 _ZN8NpcActor13getDistanceToEPS_(void *self, void *p);
+s32 _ZN8NpcActor18getRelativeAngleToEPS_(void *self, void *p);
 void _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *self, void *owner, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN10VisitorPos13pickRandomPosEv();
 
@@ -380,10 +380,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -432,10 +432,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -454,7 +454,7 @@ public:
 };
 
 // Scene class (vtable 0x02272c38)
-class SpNpcLyle : public Unk_020d8bc8 {
+class SpNpcLyle : public SpNpcActor {
 public:
     SpNpcLyle() {}
     virtual BOOL vfunc_00();
@@ -584,7 +584,7 @@ extern "C" SpNpcLyle *SpNpcLyle_Create() {
 s32 SpNpcLyle::vfunc_a8() { return data_020c6cf0 - 0x1000; }
 
 BOOL SpNpcLyle::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -595,7 +595,7 @@ BOOL SpNpcLyle::vfunc_04() {
 }
 
 BOOL SpNpcLyle::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x141, 0, 0, 0x1000, 0, 1);
@@ -605,7 +605,7 @@ BOOL SpNpcLyle::vfunc_00() {
 }
 
 BOOL SpNpcLyle::vfunc_0c() {
-    if (!Unk_020d8bc8::vfunc_0c()) {
+    if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
     if (func_02040c88() == 0) {
@@ -723,7 +723,7 @@ BOOL SpNpcLyle::setupAct05() {
     void *p = unk_658.func_02015aac();
     s32 x = unk_8e;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;
@@ -742,8 +742,8 @@ BOOL SpNpcLyle::isNearChaseStart() {
 
 BOOL SpNpcLyle::isPlayerInFront(s32 mask) {
     BOOL r = FALSE;
-    if (_ZN12Unk_020d77a413getDistanceToEPS_(this, unk_730) <= mask) {
-        s32 t = _ZN12Unk_020d77a418getRelativeAngleToEPS_(this, unk_730);
+    if (_ZN8NpcActor13getDistanceToEPS_(this, unk_730) <= mask) {
+        s32 t = _ZN8NpcActor18getRelativeAngleToEPS_(this, unk_730);
         s32 lim = sSpNpcLyleFrontAngle;
         if (t >= -lim && t <= lim) {
             r = TRUE;
@@ -796,7 +796,7 @@ void SpNpcLyle::act01Step2() {
     if (unk_730 == NULL) {
         changeAct(3);
     } else if (tickTimer(&unk_728) == 0) {
-        s32 x = _ZN12Unk_020d77a410getAngleToEPS_(this, unk_730);
+        s32 x = _ZN8NpcActor10getAngleToEPS_(this, unk_730);
         _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 3, 1, 0, 0, 0, x, 0, 0, data_020c6cc8, 0);
         unk_72c = 200;
         changeAct(3);

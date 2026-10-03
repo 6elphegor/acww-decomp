@@ -67,7 +67,7 @@ void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN12Unk_020d771015requestGiveItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32 c);
 void _ZN12Unk_020d771015setPocketFilterEjjj(void *p, BOOL (*cb)(u16 *, s32), u32 a, u32 b);
 void _ZN12Unk_020d771012openSubSceneEi(void *p, s32 v);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 a);
 void _ZN9NpcLookAt7disableEv(void *self);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
@@ -304,10 +304,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -355,10 +355,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -376,7 +376,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcPascal : public Unk_020d8bc8 {
+class SpNpcPascal : public SpNpcActor {
 public:
     SpNpcPascal() {}
     virtual BOOL vfunc_00();
@@ -479,7 +479,7 @@ SpNpcPascal *SpNpcPascal_Create() {
 }
 
 BOOL SpNpcPascal::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -488,7 +488,7 @@ BOOL SpNpcPascal::vfunc_04() {
 }
 
 BOOL SpNpcPascal::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     unk_4cc.unk_1c |= 2;
@@ -530,7 +530,7 @@ BOOL SpNpcPascal::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 r = 0;
     if (p != NULL) {
-        r = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        r = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, r, 0);
     return TRUE;

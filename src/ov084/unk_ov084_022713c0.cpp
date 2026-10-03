@@ -56,7 +56,7 @@ void _ZN12Unk_0201442015requestTakeItemEPtjjj(void *p, u16 *q, s32 a, s32 b, s32
 void _ZN16ActorTalkRequest15setItemNameSlotEjjj(void *p, u16 *q, s32 a, s32 b);
 BOOL Talk_CheckAndSetPlayerFlag(s32 a, s32 b);
 u32 func_02063b8c(u32 n);
-BOOL _ZN12Unk_020d77a410getAngleToEPS_(void *p, void *q);
+BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 void TalkRequest_EndTalkWith(void *p);
 void NookShop_PickFlowerBag(u16 *p);
 void Clock_GetDateTime(void *p);
@@ -278,10 +278,10 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
-    Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual ~Unk_020d77a4();
+    NpcActor() : unk_ea(0xfff1) {}
+    virtual ~NpcActor();
     virtual void postCreate(s32 v);
     virtual BOOL onExecute();
     virtual BOOL onDraw();
@@ -329,10 +329,10 @@ public:
     Unk_02014254 unk_618;
 };
 
-class Unk_020d8bc8 : public Unk_020d77a4 {
+class SpNpcActor : public NpcActor {
 public:
-    Unk_020d8bc8() {}
-    virtual ~Unk_020d8bc8();
+    SpNpcActor() {}
+    virtual ~SpNpcActor();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
@@ -350,7 +350,7 @@ public:
     u8 unk_650;
 };
 
-class SpNpcTortimerFireworks : public Unk_020d8bc8 {
+class SpNpcTortimerFireworks : public SpNpcActor {
 public:
     SpNpcTortimerFireworks() {}
     virtual BOOL vfunc_00();
@@ -459,7 +459,7 @@ extern "C" SpNpcTortimerFireworks *SpNpcTortimerFireworks_Create() {
 }
 
 BOOL SpNpcTortimerFireworks::vfunc_04() {
-    if (!Unk_020d8bc8::vfunc_04()) {
+    if (!SpNpcActor::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
@@ -468,7 +468,7 @@ BOOL SpNpcTortimerFireworks::vfunc_04() {
 }
 
 BOOL SpNpcTortimerFireworks::vfunc_00() {
-    if (!Unk_020d8bc8::vfunc_00()) {
+    if (!SpNpcActor::vfunc_00()) {
         return FALSE;
     }
     changeAct(0);
@@ -518,7 +518,7 @@ BOOL SpNpcTortimerFireworks::setupAct01() {
     void *p = unk_658.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
-        x = _ZN12Unk_020d77a410getAngleToEPS_(this, p);
+        x = _ZN8NpcActor10getAngleToEPS_(this, p);
     }
     _ZN11NpcTalkCtrl18requestTurnAndTalkEssh(&unk_618, 0, x, 0);
     return TRUE;

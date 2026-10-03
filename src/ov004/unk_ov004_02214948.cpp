@@ -1,7 +1,7 @@
 // mwcc-version: 1.2/base
 // ov004 TU06: .text 0x02214948-0x02215f04 (classes BirthdayHostVillager and its member BirthdayHostVillagerTalk)
 #include "types.h"
-// The no-argument vfunc_08 of the base is widened locally: Unk_020d77a4::postCreate takes one argument.
+// The no-argument vfunc_08 of the base is widened locally: NpcActor::postCreate takes one argument.
 #define postCreate() postCreate(s32 a)
 #include "Unk_020d8c7c.h"
 #undef postCreate
@@ -48,7 +48,7 @@ public:
     u8 pad_90[0xe0 - 0x90];
 };
 
-class Unk_020d77a4 : public Character {
+class NpcActor : public Character {
 public:
     virtual void postCreate(s32 a);
     virtual BOOL onExecute();
@@ -86,7 +86,7 @@ public:
     u8 unk_618[0x640 - 0x618];
 };
 
-class VillagerActor : public Unk_020d77a4 {
+class VillagerActor : public NpcActor {
 public:
     VillagerActor();
     virtual ~VillagerActor();
@@ -343,12 +343,12 @@ u16 Room_PickRandomWalkTarget(void *, void *, s32);
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcLookAt_setTarget _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define func_0201b138 _ZN12Unk_020d77a46onDrawEv
-#define Unk_020d77a4_findAvoidPos _ZN12Unk_020d77a412findAvoidPosEP16Unk_020d77a4_Vec
-#define Unk_020d77a4_setTalkRequest _ZN12Unk_020d77a414setTalkRequestEP12Unk_0201bc1c
-#define Unk_020d77a4_getPlayerActor _ZN12Unk_020d77a414getPlayerActorEj
-#define Unk_020d77a4_getAngleTo _ZN12Unk_020d77a410getAngleToEPS_
-#define Unk_020d77a4_getDistanceToPlayer _ZN12Unk_020d77a419getDistanceToPlayerEj
+#define func_0201b138 _ZN8NpcActor6onDrawEv
+#define NpcActor_findAvoidPos _ZN8NpcActor12findAvoidPosEP16Unk_020d77a4_Vec
+#define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
+#define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
+#define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
+#define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
 #define func_0202d928 _ZN13VillagerActor9preDeleteEv
 #define func_0202d948 _ZN13VillagerActor8vfunc_00Ev
@@ -375,7 +375,7 @@ struct Unk_ov004_02214ab4_Vec {
 };
 extern "C" {
 Unk_ov004_02214ab4_Vec *func_020947f0(u32);
-s32 Unk_020d77a4_getDistanceToPlayer(void *, u32);
+s32 NpcActor_getDistanceToPlayer(void *, u32);
 s32 NpcActionCtrl_getAction(void *);
 s32 NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
@@ -383,14 +383,14 @@ s32 Math_AngleXZ(void *, void *);
 s32 func_020e780c(s32, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 void *func_02095204(s32);
-s32 Unk_020d77a4_getAngleTo(void *, void *);
+s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
 s32 func_020e7b98(s32, s32);
 s32 NpcLookAt_setTarget(void *, s32, s32, void *, void *, s32, s32, s32);
 s32 func_02063b8c(s32);
 s32 NpcActionCtrl_isActionDone(void *);
-s32 Unk_020d77a4_findAvoidPos(void *, void *);
+s32 NpcActor_findAvoidPos(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e9650(void *, void *);
 void TalkWindowState_setNextMessage(void *, void *, s32);
@@ -438,8 +438,8 @@ s32 func_0202dab0(void *self);
 s32 func_0202d928(void *self);
 void Unk_02013474_enableFootsteps(void *p);
 void func_01ffd070(Unk_ov004_02215c94_V *out, void *a, void *b);
-void Unk_020d77a4_setTalkRequest(void *self, void *p);
-void *Unk_020d77a4_getPlayerActor(void *self, s32 n);
+void NpcActor_setTalkRequest(void *self, void *p);
+void *NpcActor_getPlayerActor(void *self, s32 n);
 void func_02015ab0(void *p, void *q);
 void Camera_FocusOnPoint(void *p);
 void Camera_SetModeDefault();
@@ -565,7 +565,7 @@ BOOL BirthdayHostVillager::vfunc_04() {
         }
     }
     unk_8e = 0;
-    Unk_020d77a4_setTalkRequest(this, &unk_89c);
+    NpcActor_setTalkRequest(this, &unk_89c);
     unk_89c.attachOwner(this);
     if (!unk_89c.isPartyNotGreeted()) {
         changeAct(0);
@@ -657,13 +657,13 @@ void BirthdayHostVillager::vfunc_4c(s32 a, u32 b) {
         break;
     case 0:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(5);
         break;
     case 1:
         *((u8 *)this + 0x560) = b;
-        func_02015ab0(&unk_89c, Unk_020d77a4_getPlayerActor(this, 4));
+        func_02015ab0(&unk_89c, NpcActor_getPlayerActor(this, 4));
         Camera_FocusOnPoint(&v);
         changeAct(8);
         break;
@@ -1095,7 +1095,7 @@ void BirthdayHostVillager::mainAct00() {
             NpcActionCtrl_requestAction(unk_564, 1, 1, unk_a5c[0], unk_a5c[2], 0, 0, 0, 0, data_020c6cc8, 0);
         }
     } else if (NpcActionCtrl_getAction(unk_564) == 1) {
-        switch (Unk_020d77a4_findAvoidPos(this, c)) {
+        switch (NpcActor_findAvoidPos(this, c)) {
         case 1:
             NpcActionCtrl_requestStand(unk_564, 1, data_020c6cc8);
             break;
@@ -1196,7 +1196,7 @@ BOOL BirthdayHostVillager::setupAct05() {
     BOOL r;
     void *o = func_02095204(4);
     if (o != 0) {
-        NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, Unk_020d77a4_getAngleTo(this, o), 0);
+        NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;
     } else {
         r = FALSE;
@@ -1241,7 +1241,7 @@ void BirthdayHostVillager::mainAct08() {
     b.x = a.x;
     b.y = a.y;
     b.z = a.z;
-    v = Unk_020d77a4_getDistanceToPlayer(this, 4);
+    v = NpcActor_getDistanceToPlayer(this, 4);
     if (v > 0x4000) {
         if (NpcActionCtrl_getAction(unk_564) == 1) {
             NpcActionCtrl_requestAction(unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
