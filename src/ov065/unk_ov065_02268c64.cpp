@@ -2001,27 +2001,3 @@ void func_ov065_02268c64(Unk_ov065_02268c64_Msg *m)
 }
 }
 }  // namespace N_8470
-
-extern "C" {
-#pragma thumb off
-asm u32 func_ov065_02268c38(u32 v)
-{
-    mov r1, r0
-    mov r0, #0
-    mov r3, #1
-loop:
-    clz r2, r1
-    rsbs r2, r2, #0x1f
-    bxlo lr
-    bic r1, r1, r3, lsl r2
-    add r0, r0, #1
-    b loop
-}
-
-asm u32 func_ov065_02268c5c(u32 v)
-{
-    clz r0, r0
-    bx lr
-}
-#pragma thumb reset
-}

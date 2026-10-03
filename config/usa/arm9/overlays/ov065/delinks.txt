@@ -49,9 +49,13 @@ src/ov065/unk_ov065_0226795c.cpp:
     .text       start:0x0226795c end:0x02268c38
     .data       start:0x0228b630 end:0x0228b670
 
-src/ov065/unk_ov065_02268c38.cpp:
+src/ov065/unk_ov065_02268c38.s:
     complete
-    .text       start:0x02268c38 end:0x0226aca8
+    .text       start:0x02268c38 end:0x02268c64
+
+src/ov065/unk_ov065_02268c64.cpp:
+    complete
+    .text       start:0x02268c64 end:0x0226aca8
     .rodata     start:0x0228b2a4 end:0x0228b2cc
     .bss        start:0x022905a8 end:0x022905d8
 
