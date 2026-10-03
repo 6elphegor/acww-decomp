@@ -45,8 +45,9 @@ def import_d_file(in_file: str) -> str:
                 # lowercase drive letter
                 path = path[0].lower() + path[1:]
                 if path[0] == "z":
-                    # shortcut for z:
-                    path = path[2:].replace("\\", "/")
+                    # shortcut for z: (keep backslash-escaped spaces, which ninja's depfile parser understands;
+                    # turning them into "/ " made every dependency a missing file and forced full rebuilds)
+                    path = path[2:].replace("\\ ", "\0").replace("\\", "/").replace("\0", "\\ ")
                 elif in_wsl():
                     path = path[0:1] + path[2:]
                     path = os.path.join("/mnt", path.replace("\\", "/"))
