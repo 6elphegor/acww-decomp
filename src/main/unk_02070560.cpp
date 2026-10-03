@@ -1402,16 +1402,16 @@ extern "C" {
 extern Unk_02070790_Game *gCommManager;
 }
 extern "C" {
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 }
 extern "C" {
 extern u8 data_021ed2d4[];
 }
 extern "C" {
-extern u8 data_021e6e4c[];
+extern u8 gSaveAbleSistersPatterns[];
 }
 extern "C" {
-extern HouseData data_021e58a8;
+extern HouseData gSaveHouse;
 }
 extern "C" {
 BOOL _ZN11CommManager8isOnlineEv(void *p);
@@ -1562,7 +1562,7 @@ extern "C" s32 PatternSrc_GetSessionPlayer2(s32 x);
 extern "C" s32 PatternSrc_GetSessionPlayer3(s32 x);
 
 extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
-    void *p = SaveVillagers_Get(data_021dfd8c, a);
+    void *p = SaveVillagers_Get(gSaveVillagers, a);
     if (p != NULL) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(p)) != 0) {
             u32 val = *Villager_GetFashionTaste(p);
@@ -1617,7 +1617,7 @@ extern "C" BOOL Villager_MaybeCopyAblePattern(s32 a, s32 b) {
                 }
             }
             if (fa) {
-                void *tbl = data_021e6e4c;
+                void *tbl = gSaveAbleSistersPatterns;
                 s32 cnt = 0;
                 for (u32 j = 0; j < 8; j++) {
                     s32 x = _ZN11PatternInfo8getTasteEv(_ZN7Pattern7getInfoEv(_ZN19AbleSistersPatterns10getPatternEh(tbl, (u8)j)));
@@ -1825,7 +1825,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                 } while (y2 < 16);
             }
         }
-        HouseRoom *e = data_021e58a8.func_0206052c(m);
+        HouseRoom *e = gSaveHouse.func_0206052c(m);
         if (e != NULL) {
             u16 tmp[2];
             u16 *pv1 = e->func_02060850(NULL);
@@ -1888,10 +1888,10 @@ extern "C" s32 PatternSrc_GetSessionPlayer3(s32 x) { return PatternSrc_GetSessio
 // ======== unk_0206fe80.cpp ========
 namespace n1 {
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
-extern u16 data_021d7352[];
+extern u16 gSaveTownId[];
 }
 extern "C" {
 extern u8 gSaveData[];
@@ -1924,16 +1924,16 @@ extern "C" {
 extern u8 *sPlayerPatternVramTasks;
 }
 extern "C" {
-extern u8 data_021e6e4c[];
+extern u8 gSaveAbleSistersPatterns[];
 }
 extern "C" {
-extern u8 data_021eca50[];
+extern u8 gSaveGameStats[];
 }
 extern "C" {
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 }
 extern "C" {
-extern u8 data_021ecc7c[];
+extern u8 gSaveTownFlag[];
 }
 extern "C" {
 extern s32 (*sPatternSourceGetters[])(s32);
@@ -2054,13 +2054,13 @@ extern "C" BOOL PatternTex_UploadAble(u32 x);
 extern "C" void PatternSrc_ApplyNetMove(Unk_0206fe80_Bits *p);
 
 extern "C" s32 PatternSrc_GetAble(s32 x) {
-    return _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, x);
+    return _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x);
 }
 extern "C" void PatternSrc_GetTownFlag() {
-    func_020b249c(_ZN12Unk_020b23a013func_020b23a0Ev(data_021ecc7c));
+    func_020b249c(_ZN12Unk_020b23a013func_020b23a0Ev(gSaveTownFlag));
 }
 extern "C" s32 PatternSrc_GetVillager(s32 x) {
-    void *p = SaveVillagers_Get(data_021dfd8c, x);
+    void *p = SaveVillagers_Get(gSaveVillagers, x);
     if (p) return _ZN12VillagerData10getPatternEv(p);
     return 0;
 }
@@ -2070,7 +2070,7 @@ extern "C" s32 PatternSrc_GetPreset(s32 x) {
     return _ZN15PatternTexCache16getPresetPatternEv(t);
 }
 extern "C" s32 PatternSrc_GetBlancaFace() {
-    return _ZN16BlancaFaceRecord10getPatternEv(data_021eca50);
+    return _ZN16BlancaFaceRecord10getPatternEv(gSaveGameStats);
 }
 extern "C" void *PatternSrc_GetCurrentPlayer(s32 i) {
     void *p = PlayerData_GetCurrent();
@@ -2086,7 +2086,7 @@ extern "C" BOOL PatternTex_UploadPlayer(u32 a, u32 b) {
     u8 y = b & 7;
     u32 t = sPlayerPatternTexKeys[x][y];
     if (t && sPlayerPatternTexWork && sPlayerPatternVramTasks) {
-        void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetResident(data_021d735c, x)), y);
+        void *q = _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(PlayerData_GetResident(gSavePlayers, x)), y);
         s32 off = y * 0x2c4;
         func_0203c6f8(sPlayerPatternTexWork + off, (s32)q);
         _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sPlayerPatternVramTasks + y * 0x38, t, 0, 0, func_0203c6c8(sPlayerPatternTexWork + off), 0, 0);
@@ -2099,7 +2099,7 @@ extern "C" BOOL PatternTex_UploadAble(u32 x) {
     u32 t = sAblePatternTexKeys[i];
     if (t && sAblePatternTexWork && sAblePatternVramTasks) {
         s32 off = i * 0x2c4;
-        func_0203c6f8(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, x));
+        func_0203c6f8(sAblePatternTexWork + off, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x));
         _ZN18TexPatVramUploader11uploadByIdxEPhiiS0_ii(sAblePatternVramTasks + i * 0x38, t, 0, 0, func_0203c6c8(sAblePatternTexWork + off), 0, 0);
         return TRUE;
     }

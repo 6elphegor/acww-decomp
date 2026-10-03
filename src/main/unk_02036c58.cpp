@@ -41,7 +41,7 @@ extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {
 void *File_LoadAlloc(void *, void *, s32, void *);
-extern char data_021e3680[];
+extern char gSaveTownMap[];
 s32 Scene_GetCurrent(void);
 void _ZN7TownMap13func_0204df30Ev(char *);
 void BgHeap_Create(s32, s32);
@@ -193,7 +193,7 @@ void BgModelCacheObj::clearEntries() {
 BOOL BgModelCacheObj::setup(u32 flag) {
     s32 t = Scene_GetCurrent();
     if (t == 0x2c) {
-        _ZN7TownMap13func_0204df30Ev(data_021e3680);
+        _ZN7TownMap13func_0204df30Ev(gSaveTownMap);
     }
     clearEntries();
     unk_618 = flag;
@@ -217,7 +217,7 @@ BOOL BgModelCacheObj::setup(u32 flag) {
 
 extern "C" s32 BgModel_GetGrassType(void *)
 {
-    return (s32)_ZN7TownMap12getGrassTypeEv(data_021e3680);
+    return (s32)_ZN7TownMap12getGrassTypeEv(gSaveTownMap);
 }
 
 void BgModelCache::loadGroundTexture()

@@ -44,7 +44,7 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 extern u32 gVBlanksPerFrame;
 extern void *gCurrentHeap;
 extern u8 gSaveData;
-extern u8 data_021ed32c;
+extern u8 gSaveFooter;
 }
 
 // Intermediate game-state class with an inline constructor that sets flags
@@ -225,7 +225,7 @@ void BootLogoScene::func_020b41cc() {
     BgHeap_Create(0x5000, 0);
     if (unk_5e == 4 || unk_5e == 1) {
         if (unk_5e == 4) {
-            if (!_ZN11SaveRecord412isStateUnsetEv(&data_021ed32c)) func_0209f224(1);
+            if (!_ZN11SaveRecord412isStateUnsetEv(&gSaveFooter)) func_0209f224(1);
         }
         if (unk_5e == 4) Save_InvalidateLetterStorage();
         _ZN8SaveData5resetEv(&gSaveData);

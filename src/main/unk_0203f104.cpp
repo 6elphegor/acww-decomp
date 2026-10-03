@@ -102,8 +102,8 @@ public:
 
 extern "C" {
 extern u8 gSaveData[];
-extern u8 data_021ed168[];
-extern u8 data_021eca50[];
+extern u8 gSaveEventWeekSlots[];
+extern u8 gSaveGameStats[];
 extern u8 gBackup[];
 extern u32 gCommManager;
 }
@@ -298,7 +298,7 @@ extern "C" Unk_0203ff20_Entry *EventWeekSlots_GetToday(Unk_0203ff50_Slot *unused
 }
 
 extern "C" void EventWeekSlots_MarkPlayer(u32 id) {
-    Unk_0203ff50_Slot *s = (Unk_0203ff50_Slot *)data_021ed168;
+    Unk_0203ff50_Slot *s = (Unk_0203ff50_Slot *)gSaveEventWeekSlots;
     Unk_0203ff20_Entry *e = EventWeekSlots_Get(s, func_02040234(s, id));
     if (e) {
         if (id == 0x44) {
@@ -769,7 +769,7 @@ extern "C" s32 EventSchedule_IsBlocked(Unk_0203f554_Tbl *t, Unk_0203f554_Cal cal
         if (LostChild_IsKatieDue() || LostChild_IsKaitlinDue()) return 1;
     }
     if (kind >= 3) {
-        if (_ZN16BlancaFaceRecord11isBlancaDueEv(data_021eca50)) return 1;
+        if (_ZN16BlancaFaceRecord11isBlancaDueEv(gSaveGameStats)) return 1;
     }
     switch (e->id) {
     case 0x3c:

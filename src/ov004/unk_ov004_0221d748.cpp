@@ -367,7 +367,7 @@ extern "C" {
 extern Unk_ov004_0221b954_Global *gCommManager;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 *sSpNpcBookerModelPath;
 extern u8 *sSpNpcBookerTexturePath;
 extern u32 sSpNpcBookerMsgFiles[];
@@ -551,7 +551,7 @@ BOOL SpNpcBooker::vfunc_0c() {
     }
     Unk_ov004_0221b954_Global *g = gCommManager;
     if (CommManager_isSlotActive(g, g->unk_64) && !CommManager_isOnline(g)) {
-        void *p = data_021dfd8c;
+        void *p = gSaveVillagers;
         if (SaveVillagers_GetUnk3830Index(p) != -1) {
             SickVillagerRecord_resetRecord(SaveVillagers_GetUnk3830(p));
         }

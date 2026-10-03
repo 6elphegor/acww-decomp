@@ -116,7 +116,7 @@ struct Unk_02051a50_Bits {
 extern u8 gFieldSceneKind;
 extern void *gCommManager;
 extern void *gSceneBlockMap;
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern const Unk_0205242c_Ent data_020ca650;
 extern const Unk_0205242c_Ent data_020ca63c;
 extern const Unk_0205242c_Ent data_020ca664;
@@ -403,7 +403,7 @@ BOOL Unk_02052620::func_02052620(u32 a, u32 b) { return unk_40.func_02052860(a, 
 
 extern "C" Unk_02052620 *func_020525a8(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
-        if (_ZN9HouseData13func_0206052cEi(data_021e58a8, SceneId_GetHouseRoom(id))) {
+        if (_ZN9HouseData13func_0206052cEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
             return _ZN9HouseRoom13func_0206086cEv();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
@@ -539,7 +539,7 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
-        _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
+        _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
@@ -548,7 +548,7 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
         _ZN11CommManager11writeRecordEPhj(g, &t, 1);
         _ZN11CommManager9endRecordEjj(g, 0x19, 4);
     } else {
-        _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
+        _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
     }
 }
 
@@ -865,7 +865,7 @@ extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
 }
 
 extern "C" void func_020516e4(s32 a, s32 b) {
-    _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
+    _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
     func_0205170c(a, b, 4);
 }
 

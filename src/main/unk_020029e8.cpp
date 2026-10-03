@@ -44,7 +44,7 @@ extern u32 **gProfileTable;
 }
 
 extern "C" {
-extern u32 data_021d7352;
+extern u32 gSaveTownId;
 }
 
 extern "C" {

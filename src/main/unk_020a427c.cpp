@@ -284,7 +284,7 @@ extern u8 gScreenTransition;
 extern u8 data_021c3cb8;
 extern u8 data_021d726c;
 extern u32 data_021d72e8;
-extern Unk_020a4778_Id data_021d7352;
+extern Unk_020a4778_Id gSaveTownId;
 }
 
 static inline BOOL Unk_020a42c4_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
@@ -1686,7 +1686,7 @@ void NetSessionState::updateSyncClient() {
         if (getSyncKind() == 0) {
             s32 x = PlayerData_Get(getSyncRequester() + 3);
             u16 *p;
-            u8 *idb = (u8 *)&data_021d7352;
+            u8 *idb = (u8 *)&gSaveTownId;
             if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->isEscorting() && (p = _ZN10PlayerData13func_020986a4Ev(x)->getTownId(), p[0] == *(u16 *)idb) &&
                 memcmp(p + 1, idb + 2, 8) == 0) {
                 SceneWarp_RequestFade(Scene_GetWarpRequest(), 0x2f, 2, 2);

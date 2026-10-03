@@ -188,7 +188,7 @@ struct Unk_ov003_SceneEntry {
 };
 
 extern "C" {
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 u8 *SaveVillagers_Get(u8 *p, s32 i);
 VillagerId *_ZN12VillagerData13getVillagerIdEv(u8 *p);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
@@ -353,7 +353,7 @@ BOOL VillagerBoard::setupRead() {
     unk_1e = 0;
     ((TalkWindowState *)unk_3c)->unk_08 = 1;
     Unk_020e1c64 buf;
-    _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(data_021dfd8c, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
+    _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
     ((TalkWindowState *)unk_3c)->setSlot(0, &buf);
     return TRUE;
 }

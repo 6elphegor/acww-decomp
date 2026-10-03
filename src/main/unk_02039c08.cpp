@@ -18,8 +18,8 @@ void VEC_CrossProduct(void *dst, void *a, void *b);
 void VEC_Normalize(void *dst, void *src);
 }
 
-extern u16 data_021ed210[15];
-extern u16 data_021ed22e[15];
+extern u16 gSaveLostAndFound[15];
+extern u16 gSaveRecycleBin[15];
 extern s16 data_02135f44[];
 
 extern "C" BOOL func_02039d94(u32 i, u16 v);
@@ -115,7 +115,7 @@ s32 ViewFrustum::testSphere(void *m, void *v, s32 r, s32 *out) {
 }
 
 extern "C" void func_02039e6c(u16 v) {
-    u16 *p = data_021ed210;
+    u16 *p = gSaveLostAndFound;
     s32 idx = 15;
     for (s32 i = 0; i < 15; i++) {
         if (p[i] == 0xfff1) {
@@ -134,7 +134,7 @@ extern "C" void func_02039e6c(u16 v) {
 
 extern "C" BOOL func_02039e44() {
     s32 i;
-    u16 *p = data_021ed210;
+    u16 *p = gSaveLostAndFound;
     for (i = 0; i < 15; i++) {
         if (p[i] != 0xfff1) {
             return TRUE;
@@ -145,7 +145,7 @@ extern "C" BOOL func_02039e44() {
 
 extern "C" s32 func_02039e1c() {
     s32 n = 0;
-    u16 *p = data_021ed210;
+    u16 *p = gSaveLostAndFound;
     for (s32 i = 0; i < 15; i++) {
         if (p[i] != 0xfff1) {
             n++;
@@ -165,7 +165,7 @@ extern "C" BOOL func_02039dec(u16 v) {
 
 extern "C" u16 func_02039dd4(u32 i) {
     if (i < 15) {
-        return data_021ed22e[i];
+        return gSaveRecycleBin[i];
     }
     return 0xfff1;
 }
@@ -176,7 +176,7 @@ extern "C" BOOL func_02039d94(u32 i, u16 v) {
         t[0] = v;
         t[1] = 0xfff1;
         if (Item_GetIfNotCreature(&t[0], &t[1])) {
-            data_021ed22e[i] = t[1];
+            gSaveRecycleBin[i] = t[1];
         }
         return TRUE;
     }

@@ -374,7 +374,7 @@ void BlockMap_SetItemAtUnit(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
 extern void *gCommManager;
 extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
-extern Unk_0204c1fc_Entry data_021ed1c8[];
+extern Unk_0204c1fc_Entry gSaveTownEvents[];
 BOOL Item_IsFish(u16 *p);
 s32 Item_GetFishIndex(u16 *p);
 BOOL Item_IsGyroid(u16 *p);
@@ -526,7 +526,7 @@ extern "C" void TownState_ClearUnk16(Unk_0204c20c_S *p) { for (s32 i = 0; i < 11
 }
 
 namespace nC {
-extern "C" Unk_0204c1fc_Entry *TownState_GetEvent(s32 i) { return &data_021ed1c8[i]; }
+extern "C" Unk_0204c1fc_Entry *TownState_GetEvent(s32 i) { return &gSaveTownEvents[i]; }
 }
 
 namespace nC {

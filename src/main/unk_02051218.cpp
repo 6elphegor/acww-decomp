@@ -9,7 +9,7 @@ extern void *gSceneBlockMap;
 extern u32 data_021c4e38;
 extern void *gCommManager;
 extern u8 data_021c4ee4[];
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 
 u32 Msg_DecodeGameChar(u8 *buf, u32 c);
 u8 Msg_MeasureWidth(u8 *buf);

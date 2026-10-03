@@ -16,8 +16,8 @@ struct Unk_02034250_Id {
 extern "C" {
 extern u8 gFieldSceneKind;
 extern void *gCommManager;
-extern u8 data_021d735c[];
-extern u8 data_021e58a8[];
+extern u8 gSavePlayers[];
+extern u8 gSaveHouse[];
 
 void *RoomShell_GetPrevCarpet();
 void *RoomShell_GetPrevWallpaper();
@@ -69,7 +69,7 @@ extern "C" void func_020343b0(u16 *out, s32 a) {
     u32 x = a & 7;
     u32 y = 0;
     if (PlayerData_GetCurrent()) {
-        y = func_02097740(data_021d735c, _ZN10PlayerData11getPlayerIdEv()) & 3;
+        y = func_02097740(gSavePlayers, _ZN10PlayerData11getPlayerIdEv()) & 3;
     }
     Item_SetDesign(out, y, x);
 }
@@ -215,7 +215,7 @@ extern "C" void func_02034048(Unk_02034048_Pkt *p)
     if (p->id == Scene_GetCurrent()) {
         func_02034194(&tmp, f7, f6, f8, 0);
     } else if (SceneId_IsHouseRoom(id)) {
-        void *r = _ZN9HouseData13func_02060550Ei(data_021e58a8, id);
+        void *r = _ZN9HouseData13func_02060550Ei(gSaveHouse, id);
         if (r != NULL) {
             if (f6) {
                 _ZN9HouseRoom13func_02060808EPtj(r, &tmp, f7);

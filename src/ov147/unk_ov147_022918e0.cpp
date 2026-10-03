@@ -121,7 +121,7 @@ void GameStart_SetMode3();
 const void *Choice_GetBmgName(u32 i);
 
 extern u8 data_021e7f8c[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern SaveData gSaveData;
 extern u8 gTalkMsgIndexEnd;
 extern u8 gScreenTransition;
@@ -701,7 +701,7 @@ void TitleTalk::vfunc_14() {
         { s244, s240, 2 },
     };
     TalkWindowState *r5 = TalkWindow_Get(0);
-    s32 r6 = func_020978a4(data_021d735c);
+    s32 r6 = func_020978a4(gSavePlayers);
     s32 r0 = gSaveData.isValid();
     TitleScreen *r2 = unk_44;
     if (r2->unk_9e != 0) {
@@ -814,9 +814,9 @@ void TitleTalk::openResidentChoices() {
     s32 r4 = 0;
     u8 buf[3];
     for (r4 = 0; r4 < 4; r4++) {
-        if (func_020978c8(data_021d735c, r4)) {
+        if (func_020978c8(gSavePlayers, r4)) {
             Unk_020e1c64 o;
-            ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
+            ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
             ChoiceEntry *r7 = r6->getEntry(r5);
             buf[0] = 4;
             r7->setValue(&buf[0]);
@@ -846,7 +846,7 @@ void TitleTalk::vfunc_18() {
     typedef void (TitleTalk::*Fn)();
     TalkWindowState *sp0 = TalkWindow_Get(0);
     s32 r5 = sp0->getChoiceList()->getResult();
-    s32 sp4 = func_020978a4(data_021d735c);
+    s32 sp4 = func_020978a4(gSavePlayers);
     s32 sp8 = gSaveData.isValid();
     static Fn t0[4] = { 0, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
     static Fn t1[4] = { &TitleTalk::chooseNewGame, &TitleTalk::chooseTagMode, 0, &TitleTalk::chooseNeverMind };
@@ -921,11 +921,11 @@ void TitleTalk::chooseResident() {
     s32 r5 = 0;
     s32 r4;
     for (r4 = 0; r4 < 4; r4++) {
-        if (func_020978c8(data_021d735c, r4)) {
+        if (func_020978c8(gSavePlayers, r4)) {
             if (a == r5) {
                 SaveManager_SetEraseResidentSlot(r4);
                 Unk_020e1c64 o;
-                ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
+                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
                 r7->setSlot(0, &o);
                 r6 = 4;
             }

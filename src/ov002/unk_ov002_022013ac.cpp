@@ -107,8 +107,8 @@ extern void *gCurrentHeap;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern volatile u16 gPad[];
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 extern u8 gTouchCurX;
 extern u8 gTouchCurY;
 extern u8 gTouchPressX;
@@ -1474,7 +1474,7 @@ void PopupChoice_CopyPlayerIdName(s32 a, s32 b) {
 }
 
 void PopupChoice_CopyResidentName(s32 x, s32 y) {
-    PopupChoice_CopyPlayerIdName(x, PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, y)));
+    PopupChoice_CopyPlayerIdName(x, PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, y)));
 }
 
 void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
@@ -1486,7 +1486,7 @@ void PopupChoice_CopyVillagerIdName(s32 a, s32 b) {
 }
 
 void PopupChoice_CopyVillagerName(s32 x, s32 y) {
-    PopupChoice_CopyVillagerIdName(x, VillagerData_getVillagerId(SaveVillagers_Get(data_021dfd8c, y)));
+    PopupChoice_CopyVillagerIdName(x, VillagerData_getVillagerId(SaveVillagers_Get(gSaveVillagers, y)));
 }
 
 void PopupChoice_SetAddresseeName(s32 unused, s32 x, u32 id) {
@@ -1519,13 +1519,13 @@ void PopupChoiceMenuBody::buildAddresseeList()
         unk_2d8[i] = 0;
     }
     g = PlayerData_getPlayerId(PlayerData_GetCurrent());
-    t = func_02097740(data_021d735c, g);
+    t = func_02097740(gSavePlayers, g);
     n = 0;
     k = 1;
     j = n;
     do {
         if (t != j) {
-            if (func_020978c8(data_021d735c, j)) {
+            if (func_020978c8(gSavePlayers, j)) {
                 unk_2d8[n] = k;
                 n++;
             }
@@ -1540,8 +1540,8 @@ void PopupChoiceMenuBody::buildAddresseeList()
     k = 5;
     j = 0;
     do {
-        if (SaveVillagers_IsOccupied(data_021dfd8c, j)) {
-            if (Villager_FindMemory(SaveVillagers_Get(data_021dfd8c, j), g)) {
+        if (SaveVillagers_IsOccupied(gSaveVillagers, j)) {
+            if (Villager_FindMemory(SaveVillagers_Get(gSaveVillagers, j), g)) {
                 unk_2d8[n] = k;
                 n++;
             }

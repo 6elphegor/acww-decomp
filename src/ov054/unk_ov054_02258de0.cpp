@@ -536,9 +536,9 @@ s32 NetOverlay_AssertWireless();
 extern "C" {
 extern CommManager *gCommManager;
 extern u16 data_020c6cc8;
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 
 s32 CommManager_isOnline(void *g);
 s32 CommManager_isSlotActive(void *g, s32 v);
@@ -1545,7 +1545,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
     s32 r5;
     u16 v[2];
     if (MenuCtrl_IsResultOk()) {
-        r5 = func_02060388(data_021e58a8);
+        r5 = func_02060388(gSaveHouse);
         ActorTalkRequest_setNumberSlot(this, r5, 4, 10, 1, 0);
         if (r5 == 0) {
             r5 = 0x15;
@@ -1795,7 +1795,7 @@ void SpNpcPellyPhyllisTalk::vfunc_10() {
         }
         s32 cnt = 0;
         s32 i = cnt;
-        u8 *g = data_021d735c;
+        u8 *g = gSavePlayers;
         do {
             if (func_020978c8(g, i)) {
                 if (i != (s32)PlayerData_GetCurrentIndex()) {
@@ -2035,7 +2035,7 @@ void SpNpcPellyPhyllisTalk::onSequence4MsgEnd(s32 a) {
         Unk_020d7710_openSubScene(this, 2);
         break;
     case 0x13:
-        r4 = func_020978a4(data_021d735c);
+        r4 = func_020978a4(gSavePlayers);
         if (GameStart_IsNewTown()) {
             r4 = 2;
         } else {
@@ -2410,7 +2410,7 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     unk_b0 = 0;
     if (!Talk_IsInOwnTown()) {
         unk_b0 = 2;
-    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && func_02060388(data_021e58a8) != 0) {
+    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && func_02060388(gSaveHouse) != 0) {
         if (unk_ac->isLocalSlotActive()) {
             unk_b0 = 4;
         } else {
@@ -2460,7 +2460,7 @@ void SpNpcPellyPhyllisTalk::openLetterStorage() {
 }
 
 void SpNpcPellyPhyllisTalk::askLoanPayment() {
-    ActorTalkRequest_setNumberSlot(this, func_02060388(data_021e58a8), 4, 10, 1, 0);
+    ActorTalkRequest_setNumberSlot(this, func_02060388(gSaveHouse), 4, 10, 1, 0);
     u8 m = 0x12;
     TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
 }

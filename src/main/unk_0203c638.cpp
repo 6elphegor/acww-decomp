@@ -270,7 +270,7 @@ BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 }
 
 extern "C" {
-extern u8 data_021e6e4c[];
+extern u8 gSaveAbleSistersPatterns[];
 }
 
 extern "C" {
@@ -300,7 +300,7 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
         else i1 = -1;
         res = FALSE;
         if (i1 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i1));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i1));
             else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i1));
         }
     } else if (*p >= 0x1429 && *p <= 0x1430) {
@@ -308,7 +308,7 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
         else i2 = -1;
         res = FALSE;
         if (i2 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i2));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i2));
             else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i2));
         }
     } else if (*p >= 0x13a0 && *p <= 0x13a7) {
@@ -316,7 +316,7 @@ extern "C" BOOL func_0203c764(void *self, u16 *p, void *q) {
         else i3 = -1;
         res = FALSE;
         if (i3 != -1) {
-            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(data_021e6e4c, (u8)i3));
+            if (q == 0) res = func_0203c6f8(self, _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, (u8)i3));
             else res = func_0203c6f8(self, _ZN14PlayerPatterns10getPatternEh(_ZN10PlayerData13func_020986d4Ev(q), (u8)i3));
         }
     } else {

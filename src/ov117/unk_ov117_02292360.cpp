@@ -51,8 +51,8 @@ struct Unk_020b28ac { void func_020b28ac(s32 *, s32 *, s32 *, s32 *); };
 
 extern "C" {
 TownMapImage *sTownMapImage;
-extern u8 data_021e58a8[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveHouse[];
+extern u8 gSaveVillagers[];
 
 void Mem_Free(void *p);
 void *Mem_Alloc(u32 n);
@@ -195,7 +195,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
     s32 i;
     s32 zero = 0;
     for (i = 0; i < 8; i++) {
-        void *p = SaveVillagers_Get(data_021dfd8c, i);
+        void *p = SaveVillagers_Get(gSaveVillagers, i);
         if (HousePos_IsValid(((VillagerDataItemView *)p)->getHousePos())) {
             u16 t = Item_MakeNeighborHouse(i);
             s32 bx = ((VillagerDataItemView *)p)->getHousePos()[0];
@@ -219,7 +219,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
 extern "C" void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s) {
     Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
-        ((HouseData *)data_021e58a8)->func_020604c4();
+        ((HouseData *)gSaveHouse)->func_020604c4();
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
         t[0] = 0x5014;

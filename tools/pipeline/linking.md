@@ -421,9 +421,9 @@ section). Inside the unit itself use the member, not an extern of the label.
 Once a range belongs to a compiled unit, only the global symbols of its object exist there. Two kinds of names
 that other code uses are then defined by nobody:
 
-* an **interior label** that compiled sources of other units declare `extern` (`data_021d7352` =
+* an **interior label** that compiled sources of other units declare `extern` (`gSaveTownId` =
   `gSaveData + 2`; 106 linked files use the 49 labels inside the save object). The link stops with
-  `Undefined: "data_021d7352"`;
+  `Undefined: "gSaveTownId"`;
 * a name for a place the compiler gives only a **local symbol**: the first word of main's `.ctor` table is
   `.p__sinit_<file>` in the object, and the runtime in autoload_2 has a relocation to it (0x02135344). LampLights delinked
   object's references are weak: no message, the word is 0, `autoload_2.bin` differs.
@@ -431,13 +431,13 @@ that other code uses are then defined by nobody:
 Both are recorded in `lcf_symbols.txt` next to the module's `symbols.txt` (main: `config/usa/arm9/`, main's bss:
 `config/usa/arm9/autoload_3/`, overlays likewise):
 
-    data_021d7352      addr:0x021d7352  base:gSaveData
+    gSaveTownId      addr:0x021d7352  base:gSaveData
     p__sinit_020c2cd0  addr:0x020d1dd8  base:ARM9_CTOR_START
 
 `base` is a data/bss symbol of the same `symbols.txt` that a complete unit defines as a global object, or a
 section start of the module as dsd's script names it (`ARM9_CTOR_START`, `OV004_DATA_START`). The build step
 (after `aliases.py`, before `force_active.py`; only present when such a file has entries, so rerun
-`tools/configure.py`) appends `data_021d7352 = gSaveData + 0x2;` to the end of `SECTIONS`.
+`tools/configure.py`) appends `gSaveTownId = gSaveData + 0x2;` to the end of `SECTIONS`.
 
 What mwld does (tested with a miniature link of real mwcc objects, 1.2/base mwldarm):
 
@@ -457,7 +457,7 @@ a name that `symbols.txt` has at another address; duplicates; non-identifiers. `
 objects that use it. Every recorded name is defined, used or not.
 
 **Which references it is for.** Compiled sources that use a label as an extern object: always this (the literal
-`data_021d7352` and `gSaveData + 2` are the same bytes, and no source changes). Relocations of delinked code
+`gSaveTownId` and `gSaveData + 2` are the same bytes, and no source changes). Relocations of delinked code
 (`to:<label>` in a `relocs.txt`): rewrite them as `to:<object start> add:<offset>` whenever the object start has
 a global symbol, which is what `interior:` does: it needs no linker symbol, dsd resolves it against the real
 object, and it stays right when the label is forgotten. Use a linker script name for a delinked relocation only
@@ -467,7 +467,7 @@ it for the relocation and as the unit boundary), renames it to an identifier and
 section start. Function names never go here (`aliases.py`).
 
 `linkprep.py check` and `undef` read `lcf_symbols.txt` like `symbols.txt` (a later unit that uses
-`data_021d7352` as an extern resolves, and its TARGET test has the address); a `MISSING ... used from outside`
+`gSaveTownId` as an extern resolves, and its TARGET test has the address); a `MISSING ... used from outside`
 line is satisfied by a recorded name or by an `interior:`/`section:` line of the unit's `renames.txt`, which
 `check` validates (the object must define the base as a global there). Standalone:
 `vtable_rename.py [-n] --interior <module> <label> <object>` and `--section <module> <address> [.ctor]`.

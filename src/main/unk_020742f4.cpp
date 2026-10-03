@@ -2586,10 +2586,10 @@ extern "C" {
 extern void *gCommManager;
 }
 extern "C" {
-extern u32 data_021dfd8c[];
+extern u32 gSaveVillagers[];
 }
 extern "C" {
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 }
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -2762,12 +2762,12 @@ extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     CommVillager_UnpackHeader(&id, &x, &buf);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
             void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
-            VillagerMemory_InitForPlayer(r5, r1, data_021d7352, 0);
+            VillagerMemory_InitForPlayer(r5, r1, gSaveTownId, 0);
         }
     }
 }
@@ -2776,12 +2776,12 @@ extern "C" void CommRecv_VillagerMemorySetPlayer(s32 n, s32 b, s32 c, void *d) {
     u32 buf, id, x;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     CommVillager_UnpackHeader(&id, &x, &buf);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r5 = Villager_GetMemory(r0, x);
         if (r5 != NULL) {
             void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
-            VillagerMemory_RecordTalk(r5, r1, data_021d7352, 0);
+            VillagerMemory_RecordTalk(r5, r1, gSaveTownId, 0);
         }
     }
 }
@@ -2792,7 +2792,7 @@ extern "C" void CommRecv_VillagerImpression() {
     void *r5 = gCommManager;
     _ZN11CommManager10readRecordEPhj(r5, b, 1);
     CommVillager_UnpackHeader(&id, &x, b);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
@@ -2808,7 +2808,7 @@ extern "C" void CommRecv_VillagerFriendship() {
     void *r5 = gCommManager;
     _ZN11CommManager10readRecordEPhj(r5, b, 1);
     CommVillager_UnpackHeader(&id, &x, b);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, x);
         if (r4 != NULL) {
@@ -2825,7 +2825,7 @@ extern "C" void CommRecv_VillagerReceivedItem() {
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
     CommVillager_UnpackReceivedItem(&id, &k, &l.x, l.y);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         void *r4 = Villager_GetMemory(r0, k);
         if (r4 != NULL) {
@@ -2843,7 +2843,7 @@ extern "C" void CommRecv_Act3C() {
     l.b = 0;
     _ZN11CommManager10readRecordEPhj(gCommManager, &l.c, 2);
     CommVillager_UnpackAct3C(&id, &l.a, &l.b, &l.c);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         Villager_GetPlan();
         u8 *r4 = (u8 *)VillagerPlanBlock_GetErrand();
@@ -2890,7 +2890,7 @@ extern "C" void CommRecv_Act3D() {
     l.b = 0;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 4);
     CommVillager_UnpackAct3D(&id, &l.a, &l.c, &n, &l.b, &buf);
-    void *r6 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r6 = SaveVillagers_Get(gSaveVillagers, id);
     if (r6 != NULL) {
         Villager_GetPlan();
         void *r7 = VillagerPlanBlock_GetErrand();
@@ -2916,7 +2916,7 @@ extern "C" void CommRecv_Act3F() {
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 4);
     CommVillager_UnpackItem(&id, &l.x, l.y);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         Villager_GetPlan();
         void *r5 = VillagerPlanBlock_GetErrand();
@@ -2943,7 +2943,7 @@ extern "C" void CommRecv_VillagerShirt() {
     l.x = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, l.y, 3);
     CommVillager_UnpackItem(&id, &l.x, l.y);
-    void *r0 = SaveVillagers_Get(data_021dfd8c, id);
+    void *r0 = SaveVillagers_Get(gSaveVillagers, id);
     if (r0 != NULL) {
         BOOL r4 = Unk_02075680_R(&l.x, 0x11a8, 0x12a7);
         if (r4) _ZN23VillagerDataProfileView8setShirtEPt(r0, &l.x);
@@ -2962,7 +2962,7 @@ extern "C" void CommRecv_VillagerItems() {
     arr[3] = 0xfff1;
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, 9);
     CommVillager_UnpackItems(&id, arr, buf);
-    r5 = SaveVillagers_Get(data_021dfd8c, id);
+    r5 = SaveVillagers_Get(gSaveVillagers, id);
     if (r5 != NULL) {
         for (i = 0; i < 4; i++) {
             u16 *p = (u16 *)Villager_GetReceivedItem(r5, i);

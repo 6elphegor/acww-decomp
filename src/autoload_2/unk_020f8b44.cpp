@@ -10,7 +10,7 @@ struct Hd {
     u16 id;
 };
 
-// data_021f5bbc: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
+// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
 struct Q {
     u8 pad[0x16];
     s16 s16v;
@@ -19,7 +19,7 @@ struct Q {
 };
 
 struct Fo;
-// view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as data_021f5bbc)
+// view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as gSndBgmHandle)
 struct Mg {
     Fo *cur;
     u8 p4[0x28];

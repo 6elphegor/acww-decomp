@@ -45,7 +45,7 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 extern u32 gCurrentHeap;
 extern s32 *func_020947f0(s32 v);
 extern void Scene_GetWarpRequest();
@@ -109,8 +109,8 @@ struct Unk_ov120_02293a2c_Oam {
 extern Unk_ov120_02293a2c_Oam sMapViewIconCell;
 extern const u8 sMapViewFacilityCells[5];
 extern const u8 sMapViewPlaceMarkers[5];
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 s16 *TownMapMarkers_Get(void *p, s32 i);
 u32 TownMapMarkers_GetKind(void *p, s32 i);
 void MsgString_clear(void *p);
@@ -600,7 +600,7 @@ void MapViewerMenu::stateOpen() {
     u32 buf[8];
     loadObjGfx();
     func_02063888(buf);
-    func_020638d0(data_021d7352, buf);
+    func_020638d0(gSaveTownId, buf);
     String_SetSlot(0, buf);
     void *q = allocTextLabel();
     func_0206fb9c(q, 8, 0x1ab, 0x12, 0xf, 0, 0);
@@ -997,7 +997,7 @@ void *MapViewerMenu::allocTextLabel() {
 void MapViewerMenu::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = func_02097740(data_021d735c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
+    m = func_02097740(gSavePlayers, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (m != -1) {
         unk_24e4[0] = 1;
         n++;
@@ -1006,14 +1006,14 @@ void MapViewerMenu::buildEntryLists() {
         if (i == m) {
             continue;
         }
-        if (!func_020978c8(data_021d735c, i)) {
+        if (!func_020978c8(gSavePlayers, i)) {
             continue;
         }
         unk_24e4[n] = i + 2;
         n++;
     }
     for (i = 0; i < 8; i++) {
-        if (SaveVillagers_IsOccupied(data_021dfd8c, i)) {
+        if (SaveVillagers_IsOccupied(gSaveVillagers, i)) {
             unk_24e4[n] = i + 6;
             n++;
         }

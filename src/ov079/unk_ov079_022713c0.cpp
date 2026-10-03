@@ -109,7 +109,7 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u32 __ptmf_null[];
 }
 

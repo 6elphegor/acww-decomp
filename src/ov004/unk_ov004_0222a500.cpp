@@ -435,8 +435,8 @@ void Unk_02003c30_callReset(void *self);
 u16 *Sky_GetCurrentPalette();
 u16 Sky_GetLightColor(u32 v);
 
-extern u8 data_021e58a8[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveHouse[];
+extern u8 gSaveVillagers[];
 extern u8 data_021f47e0[];
 extern u8 data_0213b91c[];
 extern u32 data_020c8cc0;
@@ -602,13 +602,13 @@ extern "C" void RoomShell_GetSceneWallFloor(void *self, u16 *a, s32 *b, u16 *c, 
     *d = 0;
     *b = *d;
     if (SceneId_IsHouseRoom(r)) {
-        void *o = func_0206052c(data_021e58a8, SceneId_GetHouseRoom(r));
+        void *o = func_0206052c(gSaveHouse, SceneId_GetHouseRoom(r));
         if (o != NULL) {
             *a = *func_02060850(o, b);
             *c = *func_02060834(o, d);
         }
     } else if (SceneId_IsVillagerHouse(r)) {
-        void *o = SaveVillagers_Get(data_021dfd8c, SceneId_GetVillagerHouse(r));
+        void *o = SaveVillagers_Get(gSaveVillagers, SceneId_GetVillagerHouse(r));
         if (o != NULL) {
             u32 t = Villager_GetWallpaper(o);
             *a = t < 0x44 ? (u16)(t + 0x1100) : 0x1100;
@@ -762,7 +762,7 @@ void RoomWallpaper::applyDefault(u16 v, void *a, s32 b) {
 
 extern "C" void RoomWallpaper_SaveToHouseRoom(void *self, u16 *a, u32 b) {
     if (Scene_InHouseRoom()) {
-        void *r = func_0206052c(data_021e58a8, Scene_GetHouseRoom());
+        void *r = func_0206052c(gSaveHouse, Scene_GetHouseRoom());
         if (r != NULL) {
             func_02060808(r, a, b);
         }
@@ -868,7 +868,7 @@ BOOL RoomCarpet::applyDefault(u16 v, G3dResAccess *a, s32 key) {
 void RoomCarpet::saveToHouseRoom(u16 *q, u32 key) {
     if (Scene_InHouseRoom() != 0) {
         u32 t = Scene_GetHouseRoom();
-        void *o = func_0206052c(data_021e58a8, t);
+        void *o = func_0206052c(gSaveHouse, t);
         if (o != 0) {
             func_020607e0(o, q, key);
         }

@@ -4509,7 +4509,7 @@ namespace p18 {
 extern "C" {
 extern u8 data_ov004_02240028[];
 extern u16 sStereoSong;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 data_ov004_0224bbb0[];
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
@@ -4667,7 +4667,7 @@ BOOL FtrStereo::enterTalkAct04() {
     if (p18::Scene_InVillagerHouse()) {
         u32 t = 0;
         u32 r = p18::Scene_GetVillagerHouse();
-        if (p18::SaveVillagers_Get(p18::data_021dfd8c, r)) {
+        if (p18::SaveVillagers_Get(p18::gSaveVillagers, r)) {
             t = p18::Villager_GetInfo4d();
         }
         l.v = Unk_ov004_0220ec30_Val(t);
@@ -4853,7 +4853,7 @@ BOOL FtrStereo::initModel() {
         if (p18::Scene_InVillagerHouse()) {
             u32 t = 0;
             u32 r = p18::Scene_GetVillagerHouse();
-            if (p18::SaveVillagers_Get(p18::data_021dfd8c, r)) {
+            if (p18::SaveVillagers_Get(p18::gSaveVillagers, r)) {
                 t = p18::Villager_GetInfo4d();
             }
             BOOL f = FALSE;

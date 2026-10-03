@@ -1435,7 +1435,7 @@ extern "C" {
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
 extern u8 gVec3Zero[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 data_ov068_0226f100[];
 extern u8 data_ov068_0226f154[];
 extern u8 data_ov068_0226f15c[];
@@ -1518,7 +1518,7 @@ extern void *data_ov068_0226f9d8[2];
 
 namespace ns_02262c20 {
 extern "C" {
-extern u32 data_021dfd8c[];
+extern u32 gSaveVillagers[];
 extern u8 data_ov068_0226f0e8[];
 extern u8 data_ov068_0226f0f0[];
 extern u8 data_ov068_0226f0f8[];
@@ -1583,8 +1583,8 @@ static inline BOOL Unk_ov068_02262e5c_InRange(u16 *p) {
 
 namespace ns_02263600 {
 extern "C" {
-extern u8 data_021e6e4c[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveAbleSistersPatterns[];
+extern u8 gSaveVillagers[];
 extern u8 gVec3Zero[];
 extern u32 data_020c6d1c;
 extern u16 data_020c6cc8;
@@ -5254,7 +5254,7 @@ s32 Unk_ov068_022638c0::func_ov068_022638c0(Unk_ov068_Owner *o) {
 namespace ns_02263600 {
 extern "C" {
 s32 func_ov068_02263880(void *a, void *b) {
-    void *g = data_021dfd8c;
+    void *g = gSaveVillagers;
     s32 res = 2;
     if (g != 0) {
         s32 a1 = SaveVillagers_FindIndex(g, (s32)a);
@@ -5285,7 +5285,7 @@ s32 func_ov068_02263840(void *a, void *o) {
 namespace ns_02263600 {
 extern "C" {
 void func_ov068_02263808(void *a, void *r1, void *r2, s8 *t) {
-    void *g = data_021dfd8c;
+    void *g = gSaveVillagers;
     if (g != 0) {
         s32 k = func_ov068_02263880(r1, r2);
         if (k < 5) {
@@ -5312,7 +5312,7 @@ void func_ov068_022637c0(void *a, void *o, s8 *t) {
 namespace ns_02263600 {
 extern "C" {
 void func_ov068_02263768(void *a, s32 unused, s8 *t) {
-    void *g = data_021dfd8c;
+    void *g = gSaveVillagers;
     if (g != 0) {
         void *q = SaveVillagers_PickRandomExcept(g, 0, 0);
         if (q != 0) {
@@ -5392,11 +5392,11 @@ s32 func_ov068_02263668(void *unused, u32 *a, u32 *b, u32 c, u32 d) {
 namespace ns_02263600 {
 extern "C" {
 void *func_ov068_02263600(void *unused, void *x) {
-    if ((u32)data_021e6e4c != 0) {
+    if ((u32)gSaveAbleSistersPatterns != 0) {
         u32 i; u16 mask; u32 cnt; mask = 0; cnt = 0; i = 0;
         goto test0;
     loop0:
-        if (x == 0 || Pattern_equals(AbleSistersPatterns_getPattern(data_021e6e4c, i), x) == 0) {
+        if (x == 0 || Pattern_equals(AbleSistersPatterns_getPattern(gSaveAbleSistersPatterns, i), x) == 0) {
             mask |= 1 << i;
             cnt++;
         }
@@ -5405,7 +5405,7 @@ void *func_ov068_02263600(void *unused, void *x) {
         if (i < 8) goto loop0;
         u32 r = Random_PickSetBit(mask, cnt, 8);
         if (r < 8) {
-            return AbleSistersPatterns_getPattern(data_021e6e4c, r);
+            return AbleSistersPatterns_getPattern(gSaveAbleSistersPatterns, r);
         }
     }
     return 0;
@@ -5428,7 +5428,7 @@ BOOL Unk_ov068_02262414::func_ov068_02263518(Unk_ov068_Owner *o) {
     Villager_ShareTrendWith(b, a);
     Villagers_ShareNickname(b, a, 0);
     func_ov068_02263768(this, o, data_ov068_0226f10c);
-    switch (SaveVillagers_GetRelationLevelOf(data_021dfd8c, vx, vy)) {
+    switch (SaveVillagers_GetRelationLevelOf(gSaveVillagers, vx, vy)) {
     case 0:
     case 1:
         func_ov068_02263738(this, o, 1, 2, 1);
@@ -5485,12 +5485,12 @@ BOOL Unk_ov068_02262414::func_ov068_022632dc(Unk_ov068_Owner *o) {
         u8 *r6 = VillagerData_getVillagerId(a);
         u8 *r7 = VillagerData_getVillagerId(b);
         b = 0;
-        if ((u32)data_021dfd8c != 0) {
+        if ((u32)gSaveVillagers != 0) {
             void *e;
             u32 mask = 0, cnt = 0;
             s32 i = 0;
             for (i = 0; i < 8; i++) {
-                e = SaveVillagers_Get(data_021dfd8c, i);
+                e = SaveVillagers_Get(gSaveVillagers, i);
                 if (e != 0) {
                     u8 *q = VillagerData_getVillagerId(e);
                     if (VillagerId_isValid(q) != 0) {
@@ -5522,7 +5522,7 @@ BOOL Unk_ov068_02262414::func_ov068_022632dc(Unk_ov068_Owner *o) {
             }
             s32 m = Random_PickSetBit(mask, cnt, 8);
             if (SaveVillagers_IsValidIndex(m) != 0) {
-                b = SaveVillagers_Get(data_021dfd8c, m);
+                b = SaveVillagers_Get(gSaveVillagers, m);
             }
         }
     }
@@ -5561,12 +5561,12 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
         u8 *p10 = VillagerData_getVillagerId(b);
         ok = FALSE;
         b = 0;
-        if ((u32)data_021dfd8c != 0) {
+        if ((u32)gSaveVillagers != 0) {
             void *e;
             u32 mask = 0, cnt = 0;
             s32 i = 0;
             for (i = 0; i < 8; i++) {
-                e = SaveVillagers_Get(data_021dfd8c, i);
+                e = SaveVillagers_Get(gSaveVillagers, i);
                 if (e != 0) {
                     u8 *q = VillagerData_getVillagerId(e);
                     if (VillagerId_isValid(q) != 0) {
@@ -5600,7 +5600,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262fd8(Unk_ov068_Owner *o) {
             }
             s32 m = Random_PickSetBit(mask, cnt, 8);
             if (SaveVillagers_IsValidIndex(m) != 0) {
-                b = SaveVillagers_Get(data_021dfd8c, m);
+                b = SaveVillagers_Get(gSaveVillagers, m);
             }
         }
     }
@@ -5848,7 +5848,7 @@ BOOL Unk_ov068_02262414::func_ov068_02262994(Unk_ov068_Owner *o, s32 v) {
     Unk_ov068_Owner *p = VillagerTalk_getPartner(o);
     s32 a = (s32)o->vfunc_64();
     s32 b = (s32)p->vfunc_64();
-    if (SaveVillagers_GetRelationLevelOf(data_021dfd8c, a, b) >= 4) {
+    if (SaveVillagers_GetRelationLevelOf(gSaveVillagers, a, b) >= 4) {
         if (v < 0x6000) {
             return TRUE;
         }

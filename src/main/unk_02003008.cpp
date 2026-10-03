@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-extern u32 data_021d7352;
+extern u32 gSaveTownId;
 void func_02063990(void *p, void *s);
 u32 func_02063954(void *p);
 void func_020639e8(void *buf, void *fmt, u32 a, u32 b);
@@ -38,7 +38,7 @@ u32 VillagerId::isValid() {
 void VillagerId::set(u32 id, u32 type, void *s) {
     unk_0b = id;
     unk_0a = type;
-    if (s == 0) s = &data_021d7352;
+    if (s == 0) s = &gSaveTownId;
     func_02063990(this, s);
 }
 

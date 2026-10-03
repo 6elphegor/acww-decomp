@@ -53,7 +53,7 @@ class SaveData;
 extern SaveData gSaveData;
 
 // Game-wide state object (0x15fe0 bytes at 0x021d7350, one global constructed by __sinit and registered with its
-// destructor): every data_021d73xx..data_021ed32c label of symbols.txt is a member of it.
+// destructor): every data_021d73xx..gSaveFooter label of symbols.txt is a member of it.
 class SaveData {
 public:
     SaveData() {

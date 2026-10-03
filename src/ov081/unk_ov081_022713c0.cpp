@@ -130,7 +130,7 @@ void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *self, u32 a, u32 b, u32 
 extern u16 data_020c6cc8;
 extern u8 gContestRecord[];
 extern u8 gSaveData[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u32 __ptmf_null[];
 }
 
@@ -536,7 +536,7 @@ BOOL SpNpcTortimerFishingTourney::vfunc_00() {
         ContestRecord_SetItem(g, &l.a);
         unk_720 = Contest_GetCatchSize(&l.a);
         _ZN13ContestRecord7setSizeEi(g, *(volatile s32 *)&unk_720);
-        if (SaveVillagers_PickRandomExcept(data_021dfd8c, 0, 0) != 0) {
+        if (SaveVillagers_PickRandomExcept(gSaveVillagers, 0, 0) != 0) {
             _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(g, _ZN12VillagerData13getVillagerIdEv());
             _ZN13ContestRecord7setKindEj(g, 1);
             _ZN8SaveData7setFlagEj(gSaveData, 0xf);

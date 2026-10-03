@@ -52,7 +52,7 @@ public:
     /* 0x72 */ u8 unk_72[6];
 };
 
-// the sound manager (C linkage name as in symbols.txt; other files use data_021f5bbc / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
+// the sound manager (C linkage name as in symbols.txt; other files use gSndBgmHandle / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
 // recorded as linker-script names by renames.txt)
 SndMgr gSndMgr;
 

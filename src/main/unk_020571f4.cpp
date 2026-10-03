@@ -204,7 +204,7 @@ struct Unk_02063388 {
 // ---- externals ----
 extern "C" {
 extern u8 gFieldSceneKind[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 
 void func_0204f3b4(s32 a);
 s32 func_020e9650(void *a, void *b);
@@ -318,7 +318,7 @@ extern "C" u32 func_020593e8(Unk_020593e8_Obj *o)
     s32 t = (s32)(b & 0xf000) >> 12;
     if (t != 0xd) {
       if (t == 0xe) {
-        SaveVillagers_Get(data_021dfd8c, b & 0xfff);
+        SaveVillagers_Get(gSaveVillagers, b & 0xfff);
         switch (Villager_GetAnimalKind()) {
         case 0: case 5: case 6: case 10: case 12: case 15: case 16: case 21: case 25: case 31: case 32:
             r = 4; break;

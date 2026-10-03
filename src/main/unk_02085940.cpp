@@ -148,7 +148,7 @@ struct Unk_02085df0_Str {
     ~Unk_02085df0_Str() { _ZN8ItemNameD1Ev(this); }
 };
 
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 
 extern u8 data_020e0c48[];
 
@@ -2390,7 +2390,7 @@ void ContestRecord::sendResultLetters() {
     z1c = 0; z14 = 0; z20 = 0; z24 = 0; z2c = 0; z10 = 0;
     for (; i < 4; i++) {
         ok = z10;
-        void *r4 = PlayerData_GetResident(data_021d735c, i);
+        void *r4 = PlayerData_GetResident(gSavePlayers, i);
         if (r4 == 0) continue;
         if (_ZN10PlayerData13func_02098a48Ev(r4) == 0) continue;
         void *r7 = _ZN10PlayerData14getSpNpcRecordEv(r4);

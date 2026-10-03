@@ -143,8 +143,8 @@ struct Unk_02065a1c_Str {
 extern Unk_020ddf2c data_021c9fa4;
 extern Unk_020ddefc data_021ca094;
 extern Unk_020ddf14 data_021c9fd0;
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 
 extern "C" {
 void *MI_CpuFill8(void *dst, u32 v, u32 n);
@@ -323,13 +323,13 @@ extern "C" void func_02065bfc(Unk_02065554 *self) {
 }
 
 extern "C" void func_02065bd0(Unk_02065554 *self) {
-    void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(data_021dfd8c));
+    void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers));
     self->func_02065518();
     func_02065d24(&self->unk_04, r);
 }
 
 extern "C" void func_02065ba4(Unk_02065554 *self) {
-    void *r = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetResident(data_021d735c));
+    void *r = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetResident(gSavePlayers));
     self->func_02065518();
     func_02065d10(&self->unk_04, r);
 }

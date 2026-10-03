@@ -277,7 +277,7 @@ struct GateHouseFlagTexture {
 };
 
 extern "C" {
-extern u8 data_021ecc7c[];
+extern u8 gSaveTownFlag[];
 void func_0203c924(void *);
 void func_0203c928(void *);
 BOOL func_0203c6f8(void *a, void *b);
@@ -349,7 +349,7 @@ GateHouse::~GateHouse() {
 
 BOOL GateHouse::vfunc_70() {
     void *t = unk_194;
-    unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
+    unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(gSaveTownFlag)));
     s32 x;
     s32 y;
     FieldPos_ToUnit(&x, &y, unk_5c);
@@ -375,7 +375,7 @@ BOOL GateHouse::vfunc_0c() {
 }
 
 extern "C" s32 GateHouse_GetDesign() {
-    return func_020b24ac(func_020b23a0(data_021ecc7c));
+    return func_020b24ac(func_020b23a0(gSaveTownFlag));
 }
 
 extern "C" u32 GateHouse_GetModelName() {
@@ -411,7 +411,7 @@ BOOL GateHouse::vfunc_94() {
 
 extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
     void *t = self->unk_194;
-    self->unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(data_021ecc7c)));
+    self->unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(gSaveTownFlag)));
     return TRUE;
 }
 
@@ -426,7 +426,7 @@ GateHouseFlagTexture::~GateHouseFlagTexture() {
 BOOL GateHouseFlagTexture::apply(void *res, void *b) {
     if (func_0203c6f8(unk_28, b)) {
         if (unk_00.request(res, (u32) "w", func_0203c6c8(unk_28), 0, 0)) {
-            func_020b24a4((s32)func_020b23a0(data_021ecc7c), b);
+            func_020b24a4((s32)func_020b23a0(gSaveTownFlag), b);
             return TRUE;
         }
     }

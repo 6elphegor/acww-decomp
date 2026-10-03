@@ -4434,7 +4434,7 @@ extern "C" {
 void SkyShot_AddHit();
 }
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
 extern u8 data_021e58a6[];
@@ -4818,7 +4818,7 @@ void SkyShotSequence::actUfoCrashed() {
         PlayerActor_LocalEndWatch();
         Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
-            void* p = PlayerData_GetResident(data_021d735c, i);
+            void* p = PlayerData_GetResident(gSavePlayers, i);
             if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
                 _ZN20PlayerDailyTalkFlags5clearEj(_ZN10PlayerData17getDailyTalkFlagsEv(p), 0x14);
             }
@@ -5047,7 +5047,7 @@ namespace L_020d16f0 { extern "C" { extern struct S { u8 p[0x8]; s32 v[1]; } sSk
 namespace L_020d16f5 { extern "C" { extern struct S { u8 p[0xd]; s8 v[1]; } sSkyObjGfxTable; } }
 #define data_020d16f5 n07::L_020d16f5::sSkyObjGfxTable.v
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
 extern u8 gSaveData[];
@@ -5436,7 +5436,7 @@ void Unk_020bc58c::sendWishLetters() {
     using namespace n07;
     s32 i;
     for (i = 0; i < 4; i++) {
-        void *o = PlayerData_GetResident(data_021d735c, i);
+        void *o = PlayerData_GetResident(gSavePlayers, i);
         if (o != NULL && _ZN12Unk_02097ff48testFlagEj(o, 0x32) != 0) {
             Letter ctx;
             Unk_020bc99c_Loc l;
@@ -7825,7 +7825,7 @@ extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 }
 namespace L_021f14ac { extern "C" { extern struct S { u8 p[0x1564]; u16 * v[3]; } gWeatherManager; } }
 #define data_021f14ac n03::L_021f14ac::gWeatherManager.v
@@ -7927,7 +7927,7 @@ void WeatherManager::rollRainSlant() {
     u32 seed;
     t.unk_00 = 0;
     t.unk_04 = 0;
-    func_02063968(data_021d7352, buf);
+    func_02063968(gSaveTownId, buf);
     Clock_GetDateTime(&t);
     seed = ((u8 *)&t)[3] | ((((u8 *)&t)[4] << 5) | ((buf[0] << 16) | ((((u8 *)&t)[5] & 0x1f) << 9)));
     Random_SetSeed(&st, 1);

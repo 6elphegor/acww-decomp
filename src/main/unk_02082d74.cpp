@@ -302,7 +302,7 @@ extern CommManager *gCommManager;
 extern Unk_02082e80_Grid *gSceneBlockMap;
 extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitorSpawnTable[];
 extern s32 sVisitorSpawnTableCount;
-extern u8 data_021ed315, data_021eca50;
+extern u8 data_021ed315, gSaveGameStats;
 void FieldPos_SnapToUnitCenter(void *g, void *v);
 void *TownSessionState_Get();
 void *func_02085170(void *p);
@@ -436,7 +436,7 @@ extern Unk_02083c28_Vec gVec3Zero;
 extern Unk_02083c28_Rec data_021cd844[0x26];
 extern Unk_02083c28_Rec data_021cd654[8];
 extern u8 data_021cd640;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u16 *gSceneBlockMap;
 s32 Scene_GetCurrent();
 s32 Scene_InTown();
@@ -496,7 +496,7 @@ static inline BOOL Unk_02083c28_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 namespace F4 {
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 sVisitorSchedule[];
 extern u8 data_021cd654[];
 extern u8 gFieldSceneKind;
@@ -613,7 +613,7 @@ extern u8 data_021cd640;
 extern u8 data_021cd654[];
 extern u8 data_021cd844[];
 extern u8 sVisitorSchedule[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind;
 extern Unk_020cbb18_Data *gCommManager;
 void MI_CpuFill8(void *p, u32 v, u32 n);
@@ -715,7 +715,7 @@ extern "C" void func_02084ecc()
     s32 z = 0;
     F5::MI_CpuFill8(p, 0, 0xf0);
     for (i = 0; i < 8; p += 0x1e, i++) {
-        void *o = F5::SaveVillagers_Get(F5::data_021dfd8c, i);
+        void *o = F5::SaveVillagers_Get(F5::gSaveVillagers, i);
         if (o != NULL && F5::_ZN10VillagerId7isValidEv(F5::_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
             Unk_02084ecc_Vec v;
             v.x = 0;
@@ -868,10 +868,10 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
         i = cnt;
         goto test0;
     loop0:
-        void *r7 = F4::SaveVillagers_Get(F4::data_021dfd8c, i);
+        void *r7 = F4::SaveVillagers_Get(F4::gSaveVillagers, i);
         if (r7 == 0) goto next0;
         if (F4::_ZN10VillagerId7isValidEv(F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
-        if (F4::SaveVillagers_IsOutdoors(F4::data_021dfd8c, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
+        if (F4::SaveVillagers_IsOutdoors(F4::gSaveVillagers, F4::_ZN12VillagerData13getVillagerIdEv(r7)) == 0) goto next0;
         w.b = 0;
         v.x = 0;
         v.y = 0;
@@ -918,7 +918,7 @@ extern "C" void NpcSpawner_SpawnVillagers(void *a)
 extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
 {
     s32 r7 = F4::Scene_GetVillagerHouse();
-    void *obj = F4::SaveVillagers_Get(F4::data_021dfd8c, r7);
+    void *obj = F4::SaveVillagers_Get(F4::gSaveVillagers, r7);
     if (obj == 0) {
         return;
     }
@@ -959,8 +959,8 @@ extern "C" void NpcSpawner_SpawnHouseOwner(u8 *a)
                     h[1] = (F4::VillagerStates_GetBirthdayGuest() & 0xfff) | 0xe000;
                     r6 = 0x81;
                 }
-            } else if (r7 == F4::SaveVillagers_GetUnk3830Index(F4::data_021dfd8c)) {
-                if (F4::_ZN18SickVillagerRecord11isRecoveredEv(F4::SaveVillagers_GetUnk3830(F4::data_021dfd8c)) == 0) {
+            } else if (r7 == F4::SaveVillagers_GetUnk3830Index(F4::gSaveVillagers)) {
+                if (F4::_ZN18SickVillagerRecord11isRecoveredEv(F4::SaveVillagers_GetUnk3830(F4::gSaveVillagers)) == 0) {
                     c = 0x83;
                 }
             } else if (F4::VillagerEvent_GetTodayIndex() == 0xa) {
@@ -1016,11 +1016,11 @@ extern "C" void func_020847b0(void *a)
                 t = F4::DateTime_DiffMinutes(r7 + 0x18, vv);
                 if (F4::_ZN12ErrandRecord7getStepEv(r4) == 0) {
                     if (t <= 0x1e) {
-                        r5 = F4::SaveVillagers_FindIndex(F4::data_021dfd8c, r7);
+                        r5 = F4::SaveVillagers_FindIndex(F4::gSaveVillagers, r7);
                     }
                 } else if ((u32)F4::_ZN12ErrandRecord7getStepEv(r4) < 4) {
                     if (t <= 0x3c) {
-                        r5 = F4::SaveVillagers_FindIndex(F4::data_021dfd8c, r7);
+                        r5 = F4::SaveVillagers_FindIndex(F4::gSaveVillagers, r7);
                         if (F4::SaveVillagers_IsValidIndex(r5)) {
                             u8 *e = F4::data_021cd654 + r5 * 30;
                             if (e[0] != 0) {
@@ -1030,7 +1030,7 @@ extern "C" void func_020847b0(void *a)
                         }
                     } else {
                         F4::func_020b101c();
-                        if (F4::SaveVillagers_Find(F4::data_021dfd8c, r7)) {
+                        if (F4::SaveVillagers_Find(F4::gSaveVillagers, r7)) {
                             F4::Villager_GetState();
                             F4::VillagerState_ResetRole();
                         }
@@ -1045,7 +1045,7 @@ extern "C" void func_020847b0(void *a)
         }
     } else if (st == 0xa) {
         if (F4::SceneId_IsTown(F4::Scene_GetPrevious())) {
-            F4::SaveVillagers_PickFleaMarketBuyerNow(F4::data_021dfd8c);
+            F4::SaveVillagers_PickFleaMarketBuyerNow(F4::gSaveVillagers);
         }
         s32 r4 = F4::VillagerStates_GetFleaMarketBuyer();
         if (F4::SaveVillagers_IsValidIndex(r4)) {
@@ -1070,7 +1070,7 @@ BOOL NpcSpawner::vfunc_00()
 {
     u8 *a = (u8 *)this;
     u32 saved = F4::sVisitorSpawnTableCount;
-    u8 *g = F4::data_021dfd8c;
+    u8 *g = F4::gSaveVillagers;
     F4::_ZN13PeteFallState18clearVisitorActiveEv(F4::TownSessionState_GetPeteFall(F4::TownSessionState_Get()));
     F4::_ZN17VisitorSpawnFlags19clearVisitorSpawnedEv(F4::func_02085170(F4::TownSessionState_Get()));
     if (F4::Scene_InTown()) {
@@ -1148,7 +1148,7 @@ BOOL NpcSpawner::vfunc_0c()
     F4::VisitorSchedule_Clear(F4::sVisitorSchedule);
     F4::VillagerStates_ClearFleaVillager();
     if (F4::Scene_InTown()) {
-        void *g = F4::data_021dfd8c;
+        void *g = F4::gSaveVillagers;
         F4::SaveVillagers_UpdatePlansNow(g);
         s32 v = F4::Scene_GetRequestedScene();
         if (F4::SceneId_IsVillagerHouse()) {
@@ -1165,7 +1165,7 @@ BOOL NpcSpawner::vfunc_0c()
 
 BOOL NpcSpawner::onExecute()
 {
-    u8 *g = F3::data_021dfd8c;
+    u8 *g = F3::gSaveVillagers;
     void *a, *b;
     s32 i;
     u16 id;
@@ -2042,7 +2042,7 @@ extern "C" BOOL Visitor_FindBlanca(BOOL flag) {
     if (F1::Event_IsActive(0x42, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x43, loc) != 0) goto fail;
     if (F1::Event_IsActive(0x44, loc) != 0) goto fail;
-    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::data_021eca50) == 0) goto fail;
+    if (F1::_ZN16BlancaFaceRecord11isBlancaDueEv(&F1::gSaveGameStats) == 0) goto fail;
     v = 0xd020;
     return F1::VisitorTable_FindByNpc(&v, F1::sVisitorSpawnTable, F1::sVisitorSpawnTableCount);
 fail:

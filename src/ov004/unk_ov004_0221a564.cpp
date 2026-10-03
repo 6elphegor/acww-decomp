@@ -133,7 +133,7 @@ extern SickVillager *sSickVillager;
 extern "C" {
 extern u16 data_020c6cc8;
 extern u32 gFrameCounter;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gTalkMsgIndexNone[];
 extern u8 gVec3Zero[];
 extern s32 data_020c6d1c;
@@ -629,7 +629,7 @@ BOOL SickVillager::vfunc_04() {
     sSickVillager = this;
     NpcActor_setTalkRequest(this, &unk_89c);
     unk_89c.attachOwner(this);
-    u8 *p = (u8 *)SaveVillagers_GetUnk3830(data_021dfd8c);
+    u8 *p = (u8 *)SaveVillagers_GetUnk3830(gSaveVillagers);
     *((u8 *)this + 0xa3c) = p[0x8e];
     if (unk_89c.getSickStage() > 1) {
         NpcMoveAnimSet_setWalkAnim(&unk_2a0, 0xea);
@@ -753,14 +753,14 @@ void SickVillager::vfunc_4c(u32 idx, u32 v) {
 u8 SickVillagerTalk::getSickStage() { return unk_1a0; }
 
 extern "C" BOOL SickVillager_HasCurrentVisitor(void *o) {
-    if (SickVillagerRecord_hasTodaysVisitor(SaveVillagers_GetUnk3830(data_021dfd8c))) {
+    if (SickVillagerRecord_hasTodaysVisitor(SaveVillagers_GetUnk3830(gSaveVillagers))) {
         return TRUE;
     }
     return FALSE;
 }
 
 extern "C" void SickVillager_SetCurrentVisitor() {
-    void *p = SaveVillagers_GetUnk3830(data_021dfd8c);
+    void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     SickVillagerRecord_setTodaysVisitor(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
 }
 
@@ -818,7 +818,7 @@ void SickVillagerTalk::vfunc_78(Unk_ov004_0221af1c_Out *out) {
 }
 
 void SickVillagerTalk::vfunc_10() {
-    void *p = SaveVillagers_GetUnk3830(data_021dfd8c);
+    void *p = SaveVillagers_GetUnk3830(gSaveVillagers);
     if (p != 0) {
         if (SickVillagerRecord_getTodaysVisitor(p) != 0) {
             ActorTalkRequest_setPlayerNameSlot(this, SickVillagerRecord_getTodaysVisitor(p), 0);

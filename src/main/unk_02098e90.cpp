@@ -1675,7 +1675,7 @@ extern "C" u8 ParcelErrand_CountPendingRecipients(void *unused, s32 v) {
 // ======== unk_020998b8.cpp ========
 namespace n3 {
 extern "C" {
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u16 sParcelRecipients[];
 extern u16 sParcelItems[];
 extern u8 data_021ed104[];
@@ -2067,7 +2067,7 @@ extern "C" void Arbeit_StartGreetings(PlayerErrands *m) {
 
 extern "C" void Arbeit_StartFurnitureDelivery(PlayerErrands *m) {
     PlayerErrandSlot *e = PlayerErrands_GetSlot(m, 0);
-    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, 0, 0);
+    void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, 0, 0);
     PlayerErrandSlot_Start(e, 0xe, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[0], _ZN12VillagerData13getVillagerIdEv(t));
 }
@@ -2082,7 +2082,7 @@ extern "C" void Arbeit_StartLetterTask(PlayerErrands *m) {
         a[0] = &m->unk_50[0];
         n = 1;
     }
-    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
+    void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, a, n);
     PlayerErrandSlot_Start(e, 0xf, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[1], _ZN12VillagerData13getVillagerIdEv(t));
 }
@@ -2149,7 +2149,7 @@ extern "C" void Arbeit_StartCarpetDelivery(PlayerErrands *m) {
             n++;
         }
     }
-    void *t = SaveVillagers_PickRandomTalkPartner(data_021dfd8c, a, n);
+    void *t = SaveVillagers_PickRandomTalkPartner(gSaveVillagers, a, n);
     PlayerErrandSlot_Start(e, 0x10, 0, _ZN12VillagerData13getVillagerIdEv(t));
     func_020030d8(&m->unk_50[2], _ZN12VillagerData13getVillagerIdEv(t));
 }

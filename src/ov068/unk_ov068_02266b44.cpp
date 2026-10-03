@@ -134,8 +134,8 @@ extern u16 data_020c6cc8;
 extern u32 data_021ed104;
 extern u8 data_021edb68;
 extern u8 gTalkMsgIndexEnd[];
-extern u8 data_021e58a8[];
-extern u8 data_021d735c[];
+extern u8 gSaveHouse[];
+extern u8 gSavePlayers[];
 extern void *data_ov068_0226fcfc;
 extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
@@ -685,14 +685,14 @@ void SpNpcNookIntroTalk::vfunc_14() {
         break;
     case 10:
     case 13: {
-        void *p = func_02060388(data_021e58a8);
+        void *p = func_02060388(gSaveHouse);
         if (p == 0) {
             buf = 0xf;
         } else {
             ActorTalkRequest_setNumberSlot(this, p, 1, 0xa, 1, 0);
             if (GameStart_IsNewTown() != 0) {
                 buf = 0x1c;
-            } else if (func_020978a4(data_021d735c) <= 1) {
+            } else if (func_020978a4(gSavePlayers) <= 1) {
                 buf = 0x27;
             } else {
                 buf = 0xb;

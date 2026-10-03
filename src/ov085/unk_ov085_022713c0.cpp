@@ -433,7 +433,7 @@ void _ZN11ChoiceEntry8loadTextEv(void *p);
 void _ZN10ChoiceList8setCountEi(void *p, s32 i);
 void _ZN10ChoiceList15setCancelToLastEv(void *p);
 s32 SaveVillagers_Count(void *p);
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 sSpNpcTortimerBrightNightsModelPath[];
 extern u8 sSpNpcTortimerBrightNightsTexturePath[];
 extern Unk_ov085_02271aac_Ent sSpNpcTortimerBrightNightsActTable[3];
@@ -538,13 +538,13 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     for (i = 0; i < 5; i++) {
         unk_b8[i] = -1;
     }
-    if (!_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(data_021dfd8c, unk_b4)))) {
+    if (!_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, unk_b4)))) {
         unk_b4 = 0;
     }
     r6 = unk_b4;
     n = 0;
     for (; r6 < 8 && n < 4; r6++) {
-        void *g = SaveVillagers_Get(data_021dfd8c, r6);
+        void *g = SaveVillagers_Get(gSaveVillagers, r6);
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(g))) {
             _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(g), &o);
             _ZN9MsgString4copyEPS_(_ZN11ChoiceEntry7getTextEv(_ZN10ChoiceList8getEntryEi(r7, n)), &o);
@@ -556,7 +556,7 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
     if (unk_b4 >= 8) {
         unk_b4 = 0;
     }
-    if (SaveVillagers_Count(data_021dfd8c) > 4) {
+    if (SaveVillagers_Count(gSaveVillagers) > 4) {
         void *p = _ZN10ChoiceList8getEntryEi(r7, n);
         _ZN11ChoiceEntry11setMsgIndexEPKh(p, &b);
         _ZN11ChoiceEntry10setBmgNameEPKv(p, Choice_GetBmgName(0));
@@ -564,7 +564,7 @@ void SpNpcTortimerBrightNightsTalk::openVillagerPage() {
         n++;
     }
     _ZN10ChoiceList8setCountEi(r7, n);
-    if (SaveVillagers_Count(data_021dfd8c) > 4) {
+    if (SaveVillagers_Count(gSaveVillagers) > 4) {
         _ZN10ChoiceList15setCancelToLastEv(r7);
     }
     unk_3c->openChoices(1);
@@ -673,7 +673,7 @@ void SpNpcTortimerBrightNightsTalk::vfunc_14() {
             MailText_SetSlot(0, &o);
             unk_3c->setSlot(1, &o);
             Bbs_PostMsgToday(func_02063b8c(2), (u8 *)"bbs_snowfes");
-            SaveVillagers_ClearTalkedToday(data_021dfd8c);
+            SaveVillagers_ClearTalkedToday(gSaveVillagers);
             msg = 0x10;
         }
         switch (unk_1e) {
@@ -730,7 +730,7 @@ void SpNpcTortimerBrightNightsTalk::vfunc_18() {
             if (*p >= 0) {
                 u8 *g = gContestRecord;
                 Unk_020e1c64 o;
-                void *e = SaveVillagers_Get(data_021dfd8c, *p);
+                void *e = SaveVillagers_Get(gSaveVillagers, *p);
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(e))) {
                     _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(e), &o);
                     unk_3c->setSlot(0, &o);

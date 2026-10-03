@@ -96,7 +96,7 @@ extern u8 gSaveData[];
 }
 
 extern "C" {
-extern u8 data_021ec780[];
+extern u8 gSaveDressers[];
 }
 
 extern "C" {
@@ -408,7 +408,7 @@ extern "C" void Save_ConvertFakePaintings() {
         }
     }
     for (k = 0; k < 4; k++) {
-        q = func_02039d74(data_021ec780 + k * 0xb4);
+        q = func_02039d74(gSaveDressers + k * 0xb4);
         for (n = 0; n < 90; q++, n++) {
             t[6] = *q;
             Item_ConvertFakePainting(&t[7], &t[6]);

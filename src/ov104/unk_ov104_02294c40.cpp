@@ -106,7 +106,7 @@ extern u8 gTouchCurY;
 extern u8 gTouchPressX;
 extern u8 gTouchPressY;
 extern u32 gCurrentHeap;
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern void *data_021c6210;
 }
 
@@ -2307,7 +2307,7 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
         Unk_020e1c64 buf;
         for (j = 0; j < 4; j++) {
             if (mask & (1 << j)) {
-                ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, j))->getPlayerId())->func_020940d0(&buf);
+                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, j))->getPlayerId())->func_020940d0(&buf);
                 switch (z) {
                 case 0:
                     obj->setSlot(7, &buf);

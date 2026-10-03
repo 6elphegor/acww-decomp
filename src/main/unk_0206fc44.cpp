@@ -129,11 +129,11 @@ extern u32 gMelodyEditPattern[];
 }
 
 extern "C" {
-extern u32 data_021ed2f8[];
+extern u32 gSaveTownTune[];
 }
 
 extern "C" {
-extern u32 data_021dfd8c[];
+extern u32 gSaveVillagers[];
 }
 
 extern "C" {
@@ -153,11 +153,11 @@ extern u8 data_021e7f8c[];
 }
 
 extern "C" {
-extern u8 data_021ed210[];
+extern u8 gSaveLostAndFound[];
 }
 
 extern "C" {
-extern u8 data_021ed22e[];
+extern u8 gSaveRecycleBin[];
 }
 
 extern "C" {

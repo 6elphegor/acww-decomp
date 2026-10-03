@@ -53,10 +53,10 @@ public:
     ~GroundInfo();
 };
 
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind;
 extern u8 gSceneBlockMap[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 gSaveData[];
 
 // Neighbour offsets of the grid probes.
@@ -216,7 +216,7 @@ extern "C" void ContestRecord_BeginContestDay(u8 *self, u32 mode)
     }
     _ZN13ContestRecord10resetTodayEv(self);
     for (i = 0; i < 4; i++) {
-        void *o = PlayerData_GetResident(data_021d735c, i);
+        void *o = PlayerData_GetResident(gSavePlayers, i);
         if (o != NULL && _ZN10PlayerData13func_02098a48Ev(o) != 0) {
             switch (mode) {
             case 1:
@@ -259,7 +259,7 @@ extern "C" void ContestRecord_BeginFestival(u8 *self, u32 mode)
     case 0:
     case 2:
         for (i = 0; i < 4; i++) {
-            void *o = PlayerData_GetResident(data_021d735c, i);
+            void *o = PlayerData_GetResident(gSavePlayers, i);
             if (o != NULL && _ZN10PlayerData13func_02098a48Ev(o) != 0) {
                 if (mode == 2) {
                     _ZN17PlayerSpNpcRecord15resetAcornCountEv(_ZN10PlayerData14getSpNpcRecordEv(o));
@@ -461,7 +461,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
             best = -1;
             cnt = 0;
             for (i = 0; i < 8; i++) {
-                void *o = SaveVillagers_Get(data_021dfd8c, i);
+                void *o = SaveVillagers_Get(gSaveVillagers, i);
                 if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
                     s32 v = func_020854e0(o, grid);
                     if (v > best) {
@@ -478,7 +478,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
             if (cnt == 0 || w > best || (w > 0 && w == best && func_02063b8c(2) == 0)) {
                 _ZN13ContestRecord15setHolderPlayerEP17Unk_02085810_Base(self, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
             } else {
-                void *o = SaveVillagers_Get(data_021dfd8c, Random_PickSetBit(mask, cnt, 8));
+                void *o = SaveVillagers_Get(gSaveVillagers, Random_PickSetBit(mask, cnt, 8));
                 if (o != NULL && _ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o)) != 0) {
                     _ZN13ContestRecord17setHolderVillagerEP16Unk_02085810_Rec(self, _ZN12VillagerData13getVillagerIdEv(o));
                 }

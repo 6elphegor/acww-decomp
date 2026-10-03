@@ -21,7 +21,7 @@ void _ZN15LostChildRecord5clearEv(void *p);
 void _ZN8SaveData9clearFlagEj(void *p, s32 v);
 extern u8 gSaveData[];
 extern u8 data_020e1e20[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 void *_ZN12Unk_020dd38cC2Ev(void *p);
 void _ZN12Unk_020dd38cD1Ev(void *p);
 void *_ZN11MsgString33C1Ev(void *p);
@@ -324,7 +324,7 @@ BOOL Letter_IsValidIndex(s32 i);
 void func_0209875c(void *p, u32 flag);
 BOOL Pocket_IsValidIndex(s32 i);
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 
 struct Unk_020981f8_Pos { u8 a, b, c, d; };
@@ -616,7 +616,7 @@ void Unk_02097ff4::func_020983c0(u16 *p)
 
 s32 Unk_02097ff4::func_020983a4()
 {
-    return func_020977d0(data_021d735c, ((PlayerData *)this)->getPlayerId());
+    return func_020977d0(gSavePlayers, ((PlayerData *)this)->getPlayerId());
 }
 
 BOOL Unk_02097ff4::func_0209836c(void *q)

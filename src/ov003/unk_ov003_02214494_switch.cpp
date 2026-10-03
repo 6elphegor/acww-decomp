@@ -272,7 +272,7 @@ s32 func_020e780c(s32 a, s32 b);
 
 extern "C" {
 extern u8 data_021ed2c0[];
-extern u8 data_021ecc7c[];
+extern u8 gSaveTownFlag[];
 void _ZN18ReddPasswordStringC1Ev(void *);
 void _ZN18ReddPasswordStringD1Ev(void *);
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *);

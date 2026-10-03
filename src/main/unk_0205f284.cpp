@@ -97,7 +97,7 @@ extern "C" {
 extern u32 data_021c61b0;
 extern CommManager *gCommManager;
 extern u8 data_021e6e3c[];
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 
 s32 Effect_End(s32 h);
 s32 Effect_Create(u32 id, void *a, u32 b, u32 c);

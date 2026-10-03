@@ -816,7 +816,7 @@ extern "C" void NookShop_Clear(Unk_020aebbc *p) {
 // ======== unk_020ae290.cpp ========
 namespace n4 {
 extern "C" {
-extern u8 data_021ed2d4[], gCommManager[], data_021d735c[], sShopRandom[], data_021ee17c[], data_021ee180[],
+extern u8 data_021ed2d4[], gCommManager[], gSavePlayers[], sShopRandom[], data_021ee17c[], data_021ee180[],
     data_021ee20c[], gSaveData[], data_021ed104[];
 }
 extern "C" {
@@ -1284,10 +1284,10 @@ extern "C" void NookShop_UpdateDaily(Obj* self, int force) {
     NookShop_SetStockDate(self, &d);
     NookShop_Restock(self, d.f, d.e, d.d);
     ok = 1;
-    int cnt = func_020978a4(data_021d735c);
+    int cnt = func_020978a4(gSavePlayers);
     if (cnt != 0 && cnt != 1) {
         for (i = 0; i < 4; i++) {
-            p = PlayerData_GetResident(data_021d735c, i);
+            p = PlayerData_GetResident(gSavePlayers, i);
             if (p != 0 && _ZN10PlayerData13func_02098a48Ev(p) != 0 && _ZN12Unk_02097ff48testFlagEj(p, 1) == 0) {
                 ok = 0;
                 break;
@@ -2035,7 +2035,7 @@ extern "C" {
 extern u8 gSaveData[];
 }
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 extern "C" {
 extern u8 data_021ed284[];
@@ -2443,7 +2443,7 @@ extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
         if (_ZN6TownId13func_02094058Ev(q) == 1) {
             return ReddPassword_VisitorKnows();
         }
-        u8 v = func_02097740(data_021d735c, q) & 3;
+        u8 v = func_02097740(gSavePlayers, q) & 3;
         return data_021ed2c0.getPassword()->residentKnows(v);
     }
     return FALSE;
@@ -2456,7 +2456,7 @@ extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
         if (_ZN6TownId13func_02094058Ev(q) == 1) {
             return data_021ed2c0.getPassword()->setVisitorKnows();
         }
-        u8 v = func_02097740(data_021d735c, q) & 3;
+        u8 v = func_02097740(gSavePlayers, q) & 3;
         data_021ed2c0.getPassword()->setResidentKnows(v);
         return TRUE;
     }
@@ -2475,7 +2475,7 @@ extern "C" void ReddShop_SendPasswordLetters() {
             MailText_SetSlot(2, &w);
             s32 i;
             for (i = 0; i < 4; i++) {
-                void *p = PlayerData_GetResident(data_021d735c, i);
+                void *p = PlayerData_GetResident(gSavePlayers, i);
                 if (p != NULL && _ZN10PlayerData13func_02098a48Ev() != 0 && _ZN12Unk_02097ff48testFlagEj(p, 12) != 0) {
                     Letter_ComposeFromMail(&ctx, &r, "sp_npc_foxmail", &data_020e2e44, &data_020e2e48, _ZN10PlayerData11getPlayerIdEv(p));
                     if (LetterDelivery_PutInAddresseeMailbox(&ctx) == 0) {

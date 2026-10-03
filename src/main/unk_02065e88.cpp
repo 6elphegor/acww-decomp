@@ -3032,7 +3032,7 @@ extern "C" { ChoiceList *_ZN15TalkWindowState13getChoiceListEv(u8 *c); }
 extern "C" { u8 *Msg_GetColorTag(s32 i); }
 extern "C" { extern u8 gSaveData[]; }
 extern "C" { extern s32 data_020cbf90; }
-extern "C" { extern u8 data_021e58a8[]; }
+extern "C" { extern u8 gSaveHouse[]; }
 extern "C" { extern u8 data_020cba1c[]; }
 static inline Unk_02068f10_Obj *Sel(u8 *ctx) { return *(Unk_02068f10_Obj **)(ctx + 0x13b0); }
 static inline Unk_02068f10_Obj *At(u8 *ctx, u32 off) { return (Unk_02068f10_Obj *)(ctx + off); }
@@ -3239,7 +3239,7 @@ void TalkParserCondTags::tagBranchHouseUnk() {
     u8 r[5];
     Sel(unk_24)->vfunc_34(4, 4);
     unk_38.getArgs4(&r[1], &r[2], &r[3], &r[4]);
-    s32 t = ((HouseData *)data_021e58a8)->func_020604c4();
+    s32 t = ((HouseData *)gSaveHouse)->func_020604c4();
     s32 i;
     if (t == 0) i = 0;
     else if (t >= 1 && t <= 2) i = 1;

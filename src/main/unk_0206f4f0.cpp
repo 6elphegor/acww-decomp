@@ -10,14 +10,14 @@ struct Unk_0206f6fc_Pos {
 
 extern "C" {
 extern u32 gMelodyEditPattern[];
-extern u32 data_021ed2f8[];
-extern u32 data_021dfd8c[];
+extern u32 gSaveTownTune[];
+extern u32 gSaveVillagers[];
 extern void *gCurrentHeap;
 extern void *gCommManager;
 extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
-extern u8 data_021ed210[];
-extern u8 data_021ed22e[];
+extern u8 gSaveLostAndFound[];
+extern u8 gSaveRecycleBin[];
 extern u8 gFieldSceneKind;
 extern u32 data_020c7c1c;
 
@@ -129,10 +129,10 @@ extern "C" void func_0206f6b8(u8 *p) {
     MI_CpuCopy8(p + 1, tmp, 0x1e);
     switch (p[0]) {
     case 3:
-        MI_CpuCopy8(tmp, data_021ed210, 0x1e);
+        MI_CpuCopy8(tmp, gSaveLostAndFound, 0x1e);
         break;
     case 4:
-        MI_CpuCopy8(tmp, data_021ed22e, 0x1e);
+        MI_CpuCopy8(tmp, gSaveRecycleBin, 0x1e);
         break;
     }
 }
@@ -185,9 +185,9 @@ extern "C" void func_0206f5a0(u8 *p) { data_020de390 = *p; }
 
 extern "C" void func_0206f56c(u8 *p) {
     MI_CpuCopy8(p + 1, gMelodyEditPattern, 0x10);
-    Melody_Pack(data_021ed2f8, gMelodyEditPattern);
+    Melody_Pack(gSaveTownTune, gMelodyEditPattern);
     Melody_ApplyEditPattern();
-    SaveVillagers_ClearTuneRequester(data_021dfd8c);
+    SaveVillagers_ClearTuneRequester(gSaveVillagers);
 }
 
 extern "C" void func_0206f53c(u32 x) {

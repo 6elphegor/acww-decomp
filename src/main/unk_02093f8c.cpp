@@ -307,11 +307,11 @@ public:
 };
 
 extern "C" {
-extern TownId data_021d7352;
+extern TownId gSaveTownId;
 }
 
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 
 extern "C" {

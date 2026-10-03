@@ -151,7 +151,7 @@ void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 struct Unk_02041e00_Obj {
     u8 pad[0x1c];
 };
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u32 sBbsEventMsgs[];
 void _ZN12Unk_020e1c64C1Ev(Unk_02041e00_Obj *o);
 void _ZN12Unk_020e1c64D1Ev(Unk_02041e00_Obj *o);
@@ -1034,7 +1034,7 @@ extern u8 sFieldActionFxSlots[];
 extern u8 data_021c47bc[];
 extern void *gCommManager;
 extern Unk_02045d98_Src gTownEval;
-extern Unk_02045f6c_Rgb data_021ed1a4;
+extern Unk_02045f6c_Rgb gSaveTownState;
 extern u8 sLitCedars[];
 s32 FieldActions_Update(void *);
 s32 func_02041880(void *);
@@ -1074,8 +1074,8 @@ void Town_UpdateDay(s32);
 s32 FieldActionFx_ClearAll(void *);
 s32 MoneyRock_Init(void *);
 s32 MenuCtrl_IsClockMovedBack();
-extern u8 data_021ed22e[];
-extern u8 data_021d735c[];
+extern u8 gSaveRecycleBin[];
+extern u8 gSavePlayers[];
 void *HouseRoomMaps_Get(s32);
 s32 func_020978c8(void *, s32);
 void *PlayerData_GetResident(void *, s32);
@@ -1181,19 +1181,19 @@ extern void *gCommManager;
 extern u16 gTownUpdater[];
 extern char gTownEval[];
 extern s32 sSeashellWeights[];
-extern char data_021ed1a4[];
+extern char gSaveTownState[];
 extern char gContestRecord[];
 extern char data_021ed0a0[];
-extern char data_021e58a8[];
-extern char data_021ed210[];
-extern char data_021ed22e[];
-extern char data_021e3680[];
+extern char gSaveHouse[];
+extern char gSaveLostAndFound[];
+extern char gSaveRecycleBin[];
+extern char gSaveTownMap[];
 extern char data_021e58a7[];
 extern char data_021ed104[];
-extern char data_021eca50[];
-extern char data_021dfd8c[];
+extern char gSaveGameStats[];
+extern char gSaveVillagers[];
 extern char sFieldActions[];
-extern u8 data_021ed1f8[];
+extern u8 gSaveTownEventDate[];
 extern char gSaveData[];
 s32 _ZN11CommManager8isOnlineEv(void *);
 s32 _ZN11CommManager7isMyAidEj(void *, s32);
@@ -1353,7 +1353,7 @@ struct Unk_02046e90_Pair { u32 a, b; };
 struct Unk_02046f04_Entry { u16 type; u16 pad; u32 lo; u32 hi; };
 struct Unk_020470b8_Pos { s32 x, z; };
 extern u8 data_020da2a0[];
-extern u8 data_021ed1a4[];
+extern u8 gSaveTownState[];
 extern u8 data_020c910c[];
 extern volatile u32 gTownEval[];
 s32 _ZN11SaveRecord412isDateActiveEv(u32);
@@ -1474,7 +1474,7 @@ struct Unk_021c4110 {
 };
 extern volatile Unk_021c40cc gTownEval;
 extern u8 data_021c47bc[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u16 data_020c912c[];
 extern u16 data_020c9754[];
 extern u8 data_020c96b8[];
@@ -4563,12 +4563,12 @@ extern "C" void Town_SpawnFlowersAroundHouse(void *a, void *b, Unk_02047830_Pos 
 
 namespace nK {
 extern "C" void Town_SpawnVillagerHouseFlowers(void *a, void *b, s32 c, s32 d) {
-    s32 r = SaveVillagers_GetUnk3830Index(data_021dfd8c);
+    s32 r = SaveVillagers_GetUnk3830Index(gSaveVillagers);
     u8 *q;
     void *p;
     s32 i;
     for (i = 0; i < 8; i++) {
-        p = SaveVillagers_Get(data_021dfd8c, i);
+        p = SaveVillagers_Get(gSaveVillagers, i);
         if (func_0203fc10(p, r)) {
             if (c == 0) {
                 Villager_GetPlan(p);
@@ -5177,7 +5177,7 @@ extern "C" void Town_UndecorateCedars(void *a, void *b, s32 c) {
 
 namespace nJ {
 extern "C" void Town_MarkEventApplied(void *a, u32 b) {
-    TownState_AddEvent(data_021ed1a4, b);
+    TownState_AddEvent(gSaveTownState, b);
 }
 }
 
@@ -5313,7 +5313,7 @@ extern "C" void Town_UpdateEvents(void *a, void *p, s32 x, s32 y, void *c, s32 f
         s.b = 0;
         Clock_GetDateTimeCleared(&s);
         DateTime_SubHours(&s, 6);
-        q = data_021ed1f8;
+        q = gSaveTownEventDate;
         if (q[2] != s.bytes[5] || q[1] != s.bytes[4] || q[0] != s.bytes[3]) {
             Town_CleanupExpiredEvents(a, p, x, y, gSaveData);
             Town_ApplyDailyEvents(a, p, x, y, c, f, gSaveData);
@@ -5419,7 +5419,7 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Town_ClearBorderTrees(p);
         if (e) Town_WaterAll(a, p, x, y);
         TownEval_EvaluateAndClean(gTownEval, p, x, y);
-        TownState_UpdatePerfectStreak(data_021ed1a4, *(s32 *)gTownEval, n);
+        TownState_UpdatePerfectStreak(gSaveTownState, *(s32 *)gTownEval, n);
         lim1 = n;
         if (lim1 > 5) lim1 = 5;
         for (i = 0; i < lim1; i++) Town_UpdateTrees(a, p, x, y);
@@ -5497,16 +5497,16 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         Town_UpgradeBuriedShovels(a, p, x, y);
         _ZN13ContestRecord17sendResultLettersEv(gContestRecord);
         _ZN10MuseumData22checkCompletionLettersEv(data_021ed0a0);
-        char *const g = data_021e58a8;
+        char *const g = gSaveHouse;
         _ZN9HouseData13func_020605a8Ev(g);
         NookShop_ApplyRenovation();
         _ZN9HouseData13func_02060394Ei(g, n);
         Save_ConvertFakePaintings();
-        func_02039c08(data_021ed210, n);
-        func_02039b6c(data_021ed22e, c, n);
+        func_02039c08(gSaveLostAndFound, n);
+        func_02039b6c(gSaveRecycleBin, c, n);
         func_0205b124(&obj);
         func_0205afa0(&obj);
-        _ZN7TownMap13func_0204df30Ev(data_021e3680);
+        _ZN7TownMap13func_0204df30Ev(gSaveTownMap);
         Sky_OnDayChange(n);
         BottleLetter_OnNewDay(n);
         MotherLetter_OnNewDay(&t3, n);
@@ -5514,10 +5514,10 @@ extern "C" void Town_AdvanceDays(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         NookShop_UpdateDaily(data_021ed104, 0);
         LostChild_AdvanceDays(n);
         if (n > 0) {
-            char *g2 = data_021eca50;
+            char *g2 = gSaveGameStats;
             if (_ZN16BlancaFaceRecord8getStateEv(g2) == 1) _ZN16BlancaFaceRecord8setStateEj(g2, 2);
         }
-        SaveVillagers_OnNewDay(data_021dfd8c, c);
+        SaveVillagers_OnNewDay(gSaveVillagers, c);
         m = Date_GetWeekday(b[5], b[4], b[3]);
         s32 q2 = Date_GetWeekday(c[5], c[4], c[3]);
         s32 d = q2 - m;
@@ -5700,8 +5700,8 @@ extern "C" void Players_SpoilTurnips() {
     s32 z = 0;
     s32 z2 = 0;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(data_021d735c, i) != 0) {
-            void *q = PlayerData_GetResident(data_021d735c, i);
+        if (func_020978c8(gSavePlayers, i) != 0) {
+            void *q = PlayerData_GetResident(gSavePlayers, i);
             for (j = z; j < 15; j++) {
                 void *r = _ZN10PlayerData13func_02098750Ev(q);
                 u16 *e = _ZN15PlayerInventory9getPocketEi(r, j);
@@ -5747,7 +5747,7 @@ extern "C" void HouseRooms_SpoilTurnips(void *p) {
 namespace nH {
 extern "C" void RecycleBin_SpoilTurnips(void *unused) {
     u8 *base = gSaveData;
-    u16 *p = (u16 *)data_021ed22e;
+    u16 *p = (u16 *)gSaveRecycleBin;
     s32 i;
     for (i = 0; i < 15; p++, i++) {
         u32 v = *p;
@@ -5816,7 +5816,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
     l.t.w[2] = 0;
     l.t.w[3] = 0;
     Clock_GetDateTime(&l.t);
-    src = &data_021ed1a4;
+    src = &gSaveTownState;
     l.t.w[2] = 0;
     l.t.w[3] = 0;
     ((u8 *)&l.t)[0xd] = src->c;
@@ -5879,7 +5879,7 @@ extern "C" void Town_CheckDayChange() {
             t.w[1] = 0;
             t.w[2] = 0;
             t.w[3] = 0;
-            Unk_02045f6c_Rgb *const src = &data_021ed1a4;
+            Unk_02045f6c_Rgb *const src = &gSaveTownState;
             Clock_GetDateTime(&t);
             t.w[2] = 0;
             t.w[3] = 0;
@@ -5942,7 +5942,7 @@ extern "C" BOOL Town_IsClockBeforeLastUpdate() {
         t.w[2] = r;
         t.w[3] = r;
         Clock_GetDateTime(&t);
-        Unk_02045f6c_Rgb *const src = &data_021ed1a4;
+        Unk_02045f6c_Rgb *const src = &gSaveTownState;
         t.w[2] = r;
         t.w[3] = r;
         ((u8 *)&t)[0xd] = src->c;
@@ -9192,7 +9192,7 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
         case 5:
         case 6:
         case 7:
-            if (SaveVillagers_Get(data_021dfd8c, ty) != 0 && _ZN12VillagerData13getVillagerIdEv() != 0) {
+            if (SaveVillagers_Get(gSaveVillagers, ty) != 0 && _ZN12VillagerData13getVillagerIdEv() != 0) {
                 Villager_GetSpeciesName(&obj, VillagerId_GetSpecies());
                 MailText_SetSlot(v0c, &obj);
                 t = func_02063b8c(3) + 0x1e;

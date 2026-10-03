@@ -6,7 +6,7 @@
 #undef vfunc_14
 
 extern "C" {
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern u16 gPad[];
 extern u8 gTouchHeld[];
 extern u8 gTouchChanged[];
@@ -635,7 +635,7 @@ void AmountEntryMenu::setupAmounts() {
         break;
     }
     lo = 0;
-    void *g = data_021e58a8;
+    void *g = gSaveHouse;
     switch (m) {
     case 0x34:
         lo = _ZN9HouseData13func_02060388Ev(g);
@@ -694,7 +694,7 @@ void AmountEntryMenu::commitAmount() {
     }
     switch (m) {
     case 0x34:
-        _ZN9HouseData13func_02060370Ei(data_021e58a8, c - a);
+        _ZN9HouseData13func_02060370Ei(gSaveHouse, c - a);
         break;
     case 0x35:
         func_02097410(q, c + a);

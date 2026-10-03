@@ -294,7 +294,7 @@ extern u8 sAxMailReceived;
 extern u8 sAxMailBuf[];
 extern u8 sGameStatsReceived;
 extern u8 sGameStatsBuf[];
-extern u8 data_021eca50[];
+extern u8 gSaveGameStats[];
 extern u8 sAxBbsReceived;
 extern char *sAxMailBaseUrl;
 extern char *sAxBbsFileName;
@@ -306,7 +306,7 @@ extern u8 gOverlayHandle[];
 extern u8 data_021ed390;
 extern u8 data_021ed3a4;
 extern u8 *gCommManager;
-extern u8 data_021ed32c[];
+extern u8 gSaveFooter[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_65_ID[];
 extern u32 OVERLAY_66_ID[];
@@ -414,7 +414,7 @@ struct Unk_0209f898_Rec { u32 unk_00; u32 unk_04; };
 namespace NC {
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 data_021ed32c;
+extern u8 gSaveFooter;
 extern Unk_0209fb48_V3 data_020e2764;
 extern Unk_0209fb48_V3 data_020e2770;
 BOOL Comm_IsConnectionLost(s32 a);
@@ -541,10 +541,10 @@ extern s32 gTownTransferBuf;
 extern u8 sJoiningAid;
 extern s32 sEraseResidentSlot;
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 data_021e7f8c[];
 extern u8 data_021ecfa8[];
-extern u8 data_021ed32c[];
+extern u8 gSaveFooter[];
 extern u8 gBackup[];
 extern const u32 sSaveSlotOffsets[];
 extern u8 sSessionResidentIndex;
@@ -721,7 +721,7 @@ namespace NF {
 extern "C" {
 extern CommManager *gCommManager;
 extern u8 gSaveData[];
-extern u8 data_021ed32c[];
+extern u8 gSaveFooter[];
 extern u8 gTalkMsgIndexEnd[];
 extern u8 data_021e7f8c[];
 extern u8 sSessionResidentIndex;
@@ -803,8 +803,8 @@ public:
 namespace NG {
 extern "C" {
 extern u8 gSaveData[];
-extern u8 data_021d7352[];
-extern u8 data_021d735c[];
+extern u8 gSaveTownId[];
+extern u8 gSavePlayers[];
 extern u8 sSessionResidentIndex;
 extern CommManager *gCommManager;
 s32 func_020a0210(Unk_020a1c88 *self);
@@ -1043,11 +1043,11 @@ namespace NI {
 extern "C" {
 extern u8 gScreenTransition;
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u32 sEraseResidentSlot;
 extern Unk_020a3238_Vec data_020d0788;
 extern Unk_020a3238_Vec data_020d0770;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 s32 _ZN11SaveManager15verifySlotsStepEv(Unk_020a3238 *self);
 s32 _ZN14SaveSlotWriter12saveSlotStepEi(Unk_020a3238 *self, u32 n);
 s32 _ZN11SaveManager13func_020a15c8Ej(Unk_020a3238 *self, u32 n);
@@ -1113,8 +1113,8 @@ extern void *gSaveManager;
 extern void *gTownTransferBuf;
 extern u8 data_021ed398;
 extern void *gCurrentHeap;
-extern u8 data_021dfd8c[];
-extern u8 data_021ed1a4[];
+extern u8 gSaveVillagers[];
+extern u8 gSaveTownState[];
 extern Unk_020e27d4_Ent sSaveManagerStates[];
 s32 Scene_GetCurrent(void);
 void _ZN12Unk_020a09909startTalkEPKch(void *p, char *name, s32 id);
@@ -1356,7 +1356,7 @@ BOOL SaveManager::vfunc_00() {
 
 BOOL SaveManager::vfunc_0c() {
     if (NJ::Scene_GetCurrent() == 6) {
-        NJ::SaveVillagers_UpdateAllRoomInfo(NJ::data_021dfd8c);
+        NJ::SaveVillagers_UpdateAllRoomInfo(NJ::gSaveVillagers);
     }
     if (NJ::gCommManager->isOnline()) {
         if (NJ::Scene_GetCurrent() == 0xb || NJ::Scene_GetCurrent() == 9) {
@@ -1446,7 +1446,7 @@ void SaveManager::enterAct01() {
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_etc_sequence2", 1);
     NJ::MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
-    NJ::TownState_ClampDate(NJ::data_021ed1a4);
+    NJ::TownState_ClampDate(NJ::gSaveTownState);
     unk_9d = 0;
 }
 
@@ -1508,7 +1508,7 @@ void SaveManager::enterAct02() {
     NJ::_ZN12Unk_020a09909startTalkEPKch(this, (char *)"sp_npc_gatekeeper", 0x66);
     NJ::MenuCtrl_ClearClockChangeFlags();
     NJ::_ZN12Unk_02097ff49clearFlagEj(r5, 2);
-    NJ::TownState_ClampDate(NJ::data_021ed1a4);
+    NJ::TownState_ClampDate(NJ::gSaveTownState);
     unk_9d = 0;
 }
 
@@ -1580,7 +1580,7 @@ void Unk_020a3238::execAct03() {
         }
         break;
     case 1:
-        NI::SaveVillagers_DailyUpdate(NI::data_021dfd8c, 0);
+        NI::SaveVillagers_DailyUpdate(NI::gSaveVillagers, 0);
         unk_9d = unk_9d + 1;
         break;
     case 2:
@@ -1727,14 +1727,14 @@ void Unk_020a3238::enterAct06() {
     TalkWindowState *o = NI::TalkWindow_Get(0);
     u8 *d = NI::gSaveData;
     u8 buf[0x1c];
-    s32 h = NI::PlayerData_GetResident(NI::data_021d735c, NI::sEraseResidentSlot);
+    s32 h = NI::PlayerData_GetResident(NI::gSavePlayers, NI::sEraseResidentSlot);
     NI::_ZN12Unk_020e1c64C1Ev(buf);
     NI::_ZN8PlayerId13func_020940d0EP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
     o->setSlot(0, buf);
     NI::_ZN10PlayerData13func_02098a58Ev(h);
     NI::_ZN8SaveData11resetPlayerEi(d, NI::sEraseResidentSlot);
     NI::_ZN12Unk_020a09909startTalkEPKch(this, (u32 *)"sp_etc_sequence1", 7);
-    if (NI::func_020978a4(NI::data_021d735c) == 0) {
+    if (NI::func_020978a4(NI::gSavePlayers) == 0) {
         *(u8 *)(d + 0x15e76) = 0;
     }
     unk_9d = 0;
@@ -3078,7 +3078,7 @@ void Unk_020a1c88::enterAct1D() {
     unk_cc = 0x258;
     NG::Comm_Start(1, 2, 0);
     NG::Comm_SetRecvBuffersAsHost();
-    NG::MI_CpuCopy8(NG::func_02063964(NG::data_021d7352), buf, 8);
+    NG::MI_CpuCopy8(NG::func_02063964(NG::gSaveTownId), buf, 8);
     buf[9] = 1;
     buf[8] = 0;
     if (NG::_ZN8SaveData7isValidEv(NG::gSaveData) == 0) {
@@ -3086,7 +3086,7 @@ void Unk_020a1c88::enterAct1D() {
     }
     NG::_Z25NetOverlay_AssertWirelessv();
     NG::func_020ea720(buf, 10);
-    unk_fe = NG::func_020977a0(NG::data_021d735c);
+    unk_fe = NG::func_020977a0(NG::gSavePlayers);
 }
 
 void Unk_020a1c88::execAct1D() {
@@ -3192,7 +3192,7 @@ void SaveManager::execAct1E() {
             if (r == 1) {
                 unk_9d = 0xb;
             } else if (r != 3) {
-                NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
+                NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
                 unk_9d = 5;
             }
         }
@@ -3215,7 +3215,7 @@ void SaveManager::execAct1E() {
         } else {
             u32 t = unk_eb[NF::func_020a0210()];
             if (t == 1) {
-                NF::_ZN11SaveRecord416setStateValidAltEv(NF::data_021ed32c);
+                NF::_ZN11SaveRecord416setStateValidAltEv(NF::gSaveFooter);
                 unk_eb[NF::func_020a0210()] = 0;
                 NF::gCommManager->setErrorMode(2);
                 unk_9d = 7;
@@ -3237,7 +3237,7 @@ void SaveManager::execAct1E() {
     }
     case 8:
         if (NF::Comm_IsConnectionLost(-1)) {
-            NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
+            NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
             unk_9d = 0xa;
         } else {
             s32 i = NF::func_020a0210();
@@ -3366,7 +3366,7 @@ void SaveManager::execAct1F() {
     }
     case 7:
         if (NF::Comm_IsConnectionLost(1)) {
-            NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
+            NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
             unk_9d = 0xa;
         } else if (NF::CommCtrl_SendAct0E(1, 1)) {
             unk_9d = 8;
@@ -3374,7 +3374,7 @@ void SaveManager::execAct1F() {
         break;
     case 8:
         if (NF::Comm_IsConnectionLost(1)) {
-            NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
+            NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
             unk_9d = 0xa;
         } else if (NF::Net_IsReadyToSend(NF::_Z20NetOverlay_AssertAnyv())) {
             u32 t = unk_eb[0];
@@ -3382,7 +3382,7 @@ void SaveManager::execAct1F() {
                 NF::gCommManager->setErrorMode(0);
                 unk_9d = 9;
             } else if (t == 2) {
-                NF::_ZN11SaveRecord415markInterruptedEv(NF::data_021ed32c);
+                NF::_ZN11SaveRecord415markInterruptedEv(NF::gSaveFooter);
                 unk_9d = 0xa;
             }
         }
@@ -4191,7 +4191,7 @@ extern "C" BOOL Save_CheckFooterReadError(s32 idx) {
 extern "C" BOOL Save_CheckBackupError() { return ND::Save_CheckFooterReadError(0); }
 
 extern "C" s32 Save_ReadSlotFooter(s32 idx, SaveRecord4 *d) {
-    return ND::Backup_Read(ND::gBackup, d, 4, ((u32)ND::data_021ed32c - (u32)ND::gSaveData) + ND::sSaveSlotOffsets[idx]);
+    return ND::Backup_Read(ND::gBackup, d, 4, ((u32)ND::gSaveFooter - (u32)ND::gSaveData) + ND::sSaveSlotOffsets[idx]);
 }
 
 extern "C" BOOL Save_SlotStampsMatch() {
@@ -4211,7 +4211,7 @@ extern "C" BOOL Save_InvalidateLetterStorage() {
 
 extern "C" BOOL Save_InvalidateAll() {
     u32 r4 = ND::SaveManager_GetLetterStorage();
-    u8 *const r7 = ND::data_021ed32c;
+    u8 *const r7 = ND::gSaveFooter;
     u32 r6, r5;
     ND::_ZN11SaveRecord410clearStateEv(r7);
     ND::LetterStorage_MarkInterrupted(r4);
@@ -4227,7 +4227,7 @@ extern "C" BOOL Save_InvalidateAll() {
 extern "C" BOOL Save_WritePlayerWifiData() {
     u8 *q;
     u32 d;
-    ND::PlayerData_GetResident(ND::data_021d735c, ND::PlayerData_GetCurrentIndex());
+    ND::PlayerData_GetResident(ND::gSavePlayers, ND::PlayerData_GetCurrentIndex());
     q = ND::_ZN10PlayerData15getWifiUserDataEv();
     ND::PlayerWifiData_SetChecksum(q, ND::Save_CalcChecksum(q, 0x50, ND::PlayerWifiData_GetChecksum(q)));
     d = q - ND::gSaveData;
@@ -4280,7 +4280,7 @@ extern "C" void GameStart_SetupSave() {
             g->unk_68 = 0;
             ND::PlayerSession_SetDataIndex(g->unk_68, 0);
         } else {
-            void *p = ND::data_021d735c;
+            void *p = ND::gSavePlayers;
             s32 t = ND::func_020977a0(p);
             Unk_020cbb18_ff4c *g = ND::gCommManager;
             g->unk_68 = 0;
@@ -4857,7 +4857,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
             *st = a5;
         } else if (r == 3) {
         } else {
-            NC::_ZN11SaveRecord415markInterruptedEv(&NC::data_021ed32c);
+            NC::_ZN11SaveRecord415markInterruptedEv(&NC::gSaveFooter);
             if (a8) {
                 NC::_ZN11SaveManager23restoreVillagerTransferEv(self);
                 NC::LostChild_ApplyReceived(self);
@@ -4916,7 +4916,7 @@ extern "C" s32 SaveManager_RunSyncedSaveHost(Unk_0209f638 *self, u8 *st, s32 a2,
         if (NC::Net_IsReadyToSend()) {
             u32 m = NC::Comm_GetRemoteMask();
             if (NC::CommCtrl_SendAct0E(1, m)) {
-                NC::_ZN11SaveRecord416setStateValidAltEv(&NC::data_021ed32c);
+                NC::_ZN11SaveRecord416setStateValidAltEv(&NC::gSaveFooter);
                 *st = base + 4;
             }
         }
@@ -5005,7 +5005,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
                 NB::LostChild_ApplyReceived(this);
                 NB::LostChild_SaveToTown();
             }
-            NB::_ZN11SaveRecord415markInterruptedEv(NB::data_021ed32c);
+            NB::_ZN11SaveRecord415markInterruptedEv(NB::gSaveFooter);
             *p = base + 2;
         }
     } else if (v == base + 2) {
@@ -5034,7 +5034,7 @@ s32 Unk_0209f304::runSyncedSaveClient(u8 *p, u32 base, u32 fail, u8 a5, u8 a6, u
         }
         if (unk_eb == 1) {
             NB::func_020a0268(this);
-            NB::_ZN11SaveRecord416setStateValidAltEv(NB::data_021ed32c);
+            NB::_ZN11SaveRecord416setStateValidAltEv(NB::gSaveFooter);
             *p = base + 5;
         } else if (unk_eb == 2) {
             *p = a5;
@@ -5267,7 +5267,7 @@ extern "C" s32 Wifi_EndSession(void) {
 }
 
 extern "C" BOOL GameStats_Upload(void) {
-    u8 *p = NB::data_021eca50;
+    u8 *p = NB::gSaveGameStats;
     if (NB::_ZN16BlancaFaceRecord8getStateEv(p) == 3) {
         s32 v = NB::_ZN16BlancaFaceRecord13func_02087224Ev(p);
         NB::_ZN16BlancaFaceRecord13func_02087230Ej(p, NB::Save_CalcChecksum(p, 0x22c, v));
@@ -5280,7 +5280,7 @@ extern "C" BOOL GameStats_Upload(void) {
 }
 
 extern "C" BOOL GameStats_Download(void) {
-    if (NB::_ZN16BlancaFaceRecord8getStateEv(NB::data_021eca50) == 0) {
+    if (NB::_ZN16BlancaFaceRecord8getStateEv(NB::gSaveGameStats) == 0) {
         u32 t = NB::sNetRegion;
         NB::_Z21NetOverlay_AssertWifiv();
         if (NB::Net_GameStatsDownload((u8 *)"http://gamestats.gs.nintendowifi.net/acrossingds/download.asp", NB::sGameStatsBuf, 0x22c, t) != 0) {
@@ -5355,7 +5355,7 @@ extern "C" BOOL AxMail_PollBbs(void) {
 
 extern "C" BOOL GameStats_PollUpload(void) {
     if (NB::Net_IsUploadDone(NB::_Z21NetOverlay_AssertWifiv()) != 0) {
-        NB::_ZN16BlancaFaceRecord5resetEv(NB::data_021eca50);
+        NB::_ZN16BlancaFaceRecord5resetEv(NB::gSaveGameStats);
         return TRUE;
     }
     return FALSE;
@@ -5365,7 +5365,7 @@ extern "C" void GameStats_ApplyDownload(void) {
     if (NB::sGameStatsReceived != 0) {
         NB::sGameStatsReceived = 0;
         s32 r = NB::Save_Sum16(NB::sGameStatsBuf, 0x22c);
-        u8 *dst = NB::data_021eca50;
+        u8 *dst = NB::gSaveGameStats;
         if (r == 0) {
             NB::_ZN16BlancaFaceRecord8setStateEj(NB::sGameStatsBuf, 1);
             NB::MI_CpuCopy8(NB::sGameStatsBuf, dst, 0x22c);

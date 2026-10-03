@@ -338,7 +338,7 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
 extern u8 gSaveData[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern Unk_0204e858_Grid *gSceneBlockMap;
 BirthdayHostVillager *BirthdayHostVillager_Get(...);
 s32 func_020e9650(void *, void *);
@@ -714,7 +714,7 @@ void BirthdayGuestVillagerTalk::vfunc_78(void *arg) {
     if (*(void **)((u8 *)o + 0x8d4)) {
         u8 *const g = gSaveData;
         void *p = Scene_GetVillagerHouse();
-        if (SaveVillagers_IsOccupied(data_021dfd8c, p)) {
+        if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
             Unk_020e1c64 loc;
             ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
         }

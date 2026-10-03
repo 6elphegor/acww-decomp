@@ -41,7 +41,7 @@ s32 Pocket_FindEmpty();
 void *PlayerData_GetResident(void *tbl, s32 i);
 BOOL func_02098a48(void *p);
 extern u16 data_020c6cc8;
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 sSpNpcTortimerModelPath[];
 extern u8 sSpNpcTortimerTexturePath[];
 }
@@ -503,7 +503,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
-                    void *p = PlayerData_GetResident(data_021d735c, i);
+                    void *p = PlayerData_GetResident(gSavePlayers, i);
                     if (p != NULL && func_02098a48(p) && p != g && Unk_02097ff4_testFlag(p, 0x21)) {
                         out->b = 2;
                         break;
@@ -517,7 +517,7 @@ void SpNpcTortimerTalk::vfunc_78(TalkStartMsg *out) {
             } else {
                 s32 i;
                 for (i = 0; i < 4; i++) {
-                    void *p = PlayerData_GetResident(data_021d735c, i);
+                    void *p = PlayerData_GetResident(gSavePlayers, i);
                     if (p != NULL && func_02098a48(p) && p != g && Unk_02097ff4_testFlag(p, 0x22)) {
                         out->b = 5;
                         break;

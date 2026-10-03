@@ -267,7 +267,7 @@ public:
 extern "C" {
 extern u32 gCurrentHeap;
 extern void *data_021c6204;
-extern HouseData data_021e58a8;
+extern HouseData gSaveHouse;
 extern const s8 sHexDigits[];
 extern char data_ov003_02235358[];
 
@@ -357,7 +357,7 @@ BOOL PlayerHouse::onDraw() {
     return TRUE;
 }
 
-extern "C" u8 PlayerHouse_GetTexIndex() { return data_021e58a8.func_0206045c(); }
+extern "C" u8 PlayerHouse_GetTexIndex() { return gSaveHouse.func_0206045c(); }
 
 extern "C" char *PlayerHouse_GetTexPath() {
     u32 i = PlayerHouse_GetTexIndex();
@@ -393,7 +393,7 @@ BOOL PlayerHouse::vfunc_90() {
     return FALSE;
 }
 
-BOOL PlayerHouse::vfunc_9c() { return data_021e58a8.func_0206022c(); }
+BOOL PlayerHouse::vfunc_9c() { return gSaveHouse.func_0206022c(); }
 
 BOOL PlayerHouse::vfunc_8c() { return TRUE; }
 

@@ -196,9 +196,9 @@ extern const u32 sSeasonLetterPaperCounts[];
 extern const u8 *sSeasonLetterPapers[];
 extern const u32 sPersonalityLetterPaperCounts[];
 extern const u8 *sPersonalityLetterPapers[];
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
-extern u8 data_021d7352[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
+extern u8 gSaveTownId[];
 extern u8 data_020e1dfc[];
 extern u8 data_020e1e00[];
 extern u8 data_020e1e04[];
@@ -481,7 +481,7 @@ extern "C" BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e) {
 }
 
 extern "C" void LetterDelivery_SendToVillager(Letter *e) {
-    SaveVillagers_DeliverLetter(data_021dfd8c, e);
+    SaveVillagers_DeliverLetter(gSaveVillagers, e);
 }
 
 extern "C" BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag) {
@@ -523,7 +523,7 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
     if (r4 == 0) return -1;
     _ZN8PlayerIdC1EPv(tmp);
     _ZN8PlayerId13func_02094264EPS_(tmp, r4);
-    res = func_02097740(data_021d735c, tmp);
+    res = func_02097740(gSavePlayers, tmp);
     if (func_020978fc(res)) {
         _ZN8PlayerIdC1Ev(tmp);
         return res;
@@ -533,7 +533,7 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
 }
 
 extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *) {
-    void *r5 = data_021dfd8c;
+    void *r5 = gSaveVillagers;
     void *r4 = func_0206561c();
     u8 tmp[12];
     s32 res;
@@ -635,8 +635,8 @@ extern "C" void LetterDelivery_Update(void) {
     }
     z2 = 0; z1 = 0; z0 = 0;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(data_021d735c, i)) {
-            s0 = PlayerData_GetResident(data_021d735c, i);
+        if (func_020978c8(gSavePlayers, i)) {
+            s0 = PlayerData_GetResident(gSavePlayers, i);
             r6 = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(s0));
             s4 = FutureLetter_GetLetter(func_02097a3c(s0));
             if (((Unk_02065554 *)s4)->func_02065578()) {

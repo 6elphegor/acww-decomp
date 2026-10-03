@@ -77,9 +77,9 @@
 
 extern "C" {
 extern u16 gPad[];
-extern u8 data_021eca50[];
-extern u8 data_021d7352[];
-extern u8 data_021d735c[];
+extern u8 gSaveGameStats[];
+extern u8 gSaveTownId[];
+extern u8 gSavePlayers[];
 extern u8 data_021edb68;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -2027,11 +2027,11 @@ void NameEntryMenu::storePlayerName() {
     s32 t = PlayerData_GetCurrent();
     PlayerData_getPlayerId();
     s32 u = PlayerData_getPlayerId(t);
-    s32 n = func_02097740(data_021d735c, u);
+    s32 n = func_02097740(gSavePlayers, u);
     s32 i;
     for (i = 0; i < 4; i++) {
-        if (i != n && func_020978c8(data_021d735c, i)) {
-            if (func_02051218((void *)func_02094104(PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, i))), unk_4088, 8)) {
+        if (i != n && func_020978c8(gSavePlayers, i)) {
+            if (func_02051218((void *)func_02094104(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
                 MenuCtrl_SetResult(2);
                 return;
             }
@@ -2041,7 +2041,7 @@ void NameEntryMenu::storePlayerName() {
 }
 
 s32 NameEntryMenu::storeTownName() {
-    return func_02063904(data_021d7352, unk_4088);
+    return func_02063904(gSaveTownId, unk_4088);
 }
 
 void NameEntryMenu::func_ov126_02297328() {
@@ -2054,7 +2054,7 @@ void NameEntryMenu::func_ov126_02297328() {
 
 void NameEntryMenu::storeStatsPatternName() {
     u8 buf[0x10];
-    void *p = BlancaFaceRecord_getPattern(data_021eca50);
+    void *p = BlancaFaceRecord_getPattern(gSaveGameStats);
     Mem_Copy(unk_4088, buf, 0x10);
     PatternInfo_setTitleRaw(Pattern_getInfo(p), buf);
 }

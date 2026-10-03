@@ -224,7 +224,7 @@ public:
 
 extern "C" {
 extern CommManager *gCommManager;
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern Unk_ov004_0223717c_Grid *gSceneBlockMap;
 extern u32 gCurrentHeap;
 extern u8 data_0213b91c[];
@@ -343,7 +343,7 @@ HouseRoachManager::~HouseRoachManager() {
 
 BOOL HouseRoachManager::vfunc_0c() {
     if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
-    ((HouseData *)data_021e58a8)->func_020603b0(sHouseRoachTotal);
+    ((HouseData *)gSaveHouse)->func_020603b0(sHouseRoachTotal);
     sHouseRoachManager = 0;
     return TRUE;
 }
@@ -520,7 +520,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
 }
 
 extern "C" BOOL HouseRoach_LoadCount(void *self) {
-    sHouseRoachTotal = ((HouseData *)data_021e58a8)->func_020603bc();
+    sHouseRoachTotal = ((HouseData *)gSaveHouse)->func_020603bc();
     if (sHouseRoachTotal != 0) return TRUE;
     return FALSE;
 }

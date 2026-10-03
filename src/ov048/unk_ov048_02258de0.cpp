@@ -95,7 +95,7 @@ extern const Unk_ov048_Vec sCopperDepartWalkPos;
 extern Unk_ov048_Global *gCommManager;
 extern u8 gScreenTransition;
 extern u16 data_020c6cc8;
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 void _ZN15TalkWindowState14setNextMessageEPhPv(void *, u8 *, void *);
 void _ZN15TalkWindowState7setSlotEiPv(void *, s32, void *);
 void _ZN15TalkWindowState11lockAdvanceEv(void *);
@@ -1158,7 +1158,7 @@ BOOL SpNpcCopper::mainAct06() {
                 } else {
                     unk_658.startComm(1, 0);
                     h = PlayerData_GetCurrent();
-                    MI_CpuCopy8(func_02063964(data_021d7352), buf, 8);
+                    MI_CpuCopy8(func_02063964(gSaveTownId), buf, 8);
                     MI_CpuCopy8(_ZN8PlayerId13func_02094104Ev(_ZN10PlayerData11getPlayerIdEv(h)), buf + 8, 8);
                     buf[0x10] = 0;
                     NetOverlay_AssertWireless();
@@ -1311,7 +1311,7 @@ extern "C" BOOL SpNpcCopper_CheckKatieEscort() {
         r4 = _ZN10PlayerData13func_020986a4Ev(h);
         _ZN15LostChildRecord9getTownIdEv(r4);
         if (func_02063954()) {
-            u16 *q = (u16 *)data_021d7352;
+            u16 *q = (u16 *)gSaveTownId;
             u16 *p = (u16 *)_ZN15LostChildRecord9getTownIdEv(r4);
             if (p[0] == q[0]) {
                 if (memcmp(p + 1, q + 1, 8) == 0) {

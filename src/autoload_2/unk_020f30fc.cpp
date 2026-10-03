@@ -150,7 +150,7 @@ class SndPosList;
 
 extern "C" {
 extern SndPosList *gSndPosList;
-extern SndSeqHandle data_021f5bbc;
+extern SndSeqHandle gSndBgmHandle;
 extern u16 gSndPanTrackMask;
 void Fatal_Trap(void);
 void SndList_InitLink(void **p);
@@ -482,7 +482,7 @@ void SndPosNode::setPitch(s32 v) {
 
 void SndPosNode::setBgmPan(Vec3 *p) {
     s32 a;
-    SndSeqHandle *bh = &data_021f5bbc;
+    SndSeqHandle *bh = &gSndBgmHandle;
     if (!notNull(bh->p)) return;
     a = Snd_DistanceToVolume(func_020f4904(p, 0));
     s32 b = Snd_CalcPan(p, 0);
@@ -548,7 +548,7 @@ void SndPosList::update() {
         p->b1b = 0;
     }
     if (gSndMgr.f2c->id != 10) return;
-    SndSeqHandle *bh = (SndSeqHandle *)(void *)&data_021f5bbc;
+    SndSeqHandle *bh = (SndSeqHandle *)(void *)&gSndBgmHandle;
     if (!bh) return;
     u32 id = ((SeqHeader *)bh->p)->unk_38;
     if (id < 176 || id > 245) NNS_SndPlayerStopSeqBySeqNo(1, 0x107, 5);

@@ -172,8 +172,8 @@ extern u8 gTouchChanged;
 extern u16 gPad[];
 extern s32 data_020ddf8c;
 extern CommManager *gCommManager;
-extern u8 data_021ed2f8[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveTownTune[];
+extern u8 gSaveVillagers[];
 extern u8 gMelodyEditPattern[];
 extern void *gCurrentHeap;
 
@@ -557,7 +557,7 @@ void MelodyMenu::stateDialogBack() {
 void MelodyMenu::initMelody() {
     unk_98 = 0;
     unk_a0 = gMelodyEditPattern;
-    Melody_Unpack(data_021ed2f8, unk_a0);
+    Melody_Unpack(gSaveTownTune, unk_a0);
     data_ov143_02293a00.w5.lo = data_ov143_022939e8.w5.lo + 4;
     unk_9a = -1;
     unk_a4 = 0;
@@ -851,9 +851,9 @@ void MelodyMenu::confirmTune() {
     ((MenuBottomButtonsBody *)&unk_110)->setSelected(1);
     setTransitionState(2);
     setMainState(9);
-    Melody_Pack(data_021ed2f8, unk_a0);
+    Melody_Pack(gSaveTownTune, unk_a0);
     Melody_ApplyEditPattern();
-    SaveVillagers_ClearTuneRequester(data_021dfd8c);
+    SaveVillagers_ClearTuneRequester(gSaveVillagers);
     sendTune();
 }
 

@@ -81,8 +81,8 @@ void InventoryItemGrid_Exit(void *a);
 void InventoryItemGrid_PreUpdate(void *a);
 void InventoryItemGrid_Init(void *a, s32 b);
 extern void *gCommManager;
-extern u8 data_021ed210[];
-extern u8 data_021ed22e[];
+extern u8 gSaveLostAndFound[];
+extern u8 gSaveRecycleBin[];
 extern u16 gPad[];
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -717,10 +717,10 @@ extern "C" void ShopSellMenu_Init(S *s) {
         s->setFlags(0x200);
         break;
     case 0x1f:
-        MI_CpuCopy8(data_021ed210, s->unk_2714, 0x1e);
+        MI_CpuCopy8(gSaveLostAndFound, s->unk_2714, 0x1e);
         break;
     case 0x20:
-        MI_CpuCopy8(data_021ed22e, s->unk_2714, 0x1e);
+        MI_CpuCopy8(gSaveRecycleBin, s->unk_2714, 0x1e);
         break;
     }
     MI_CpuCopy8(s->unk_2714, s->unk_2732, 0x1e);
@@ -1975,13 +1975,13 @@ void ShopSellMenu::confirm() {
             MenuCtrl_SetResult(1);
             MenuCtrl_SetIndex((u8)n);
             MenuCtrl_SetChosenItems(unk_2732);
-            MI_CpuCopy8(unk_2714, data_021ed210, 0x1e);
+            MI_CpuCopy8(unk_2714, gSaveLostAndFound, 0x1e);
             sendItemsRecord(3);
         }
         break;
     }
     case 0x20:
-        MI_CpuCopy8(unk_2714, data_021ed22e, 0x1e);
+        MI_CpuCopy8(unk_2714, gSaveRecycleBin, 0x1e);
         sendItemsRecord(4);
         MenuCtrl_SetResult(1);
         break;

@@ -22,7 +22,7 @@ struct Hd {
     u16 id;
 };
 
-// data_021f5bbc: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
+// gSndBgmHandle: BGM info handle, first word = pointer to Hd, queried with func_0210a024(&handle, selector, &out)
 struct Hr {
     Hd *p;
 };
@@ -35,7 +35,7 @@ struct Q {
 };
 
 class BgmBeatSync;
-// view of gSndMgr (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= data_021f5bbc)
+// view of gSndMgr (the sound manager SndMgr, unk_020f0dec.cpp): +0 current animation object, +0x2c Q*, +0x3c Hd* (= gSndBgmHandle)
 struct Mg {
     BgmBeatSync *cur;
     u8 p4[0x28];
@@ -118,7 +118,7 @@ struct Rb {
 
 extern "C" {
 extern Mg gSndMgr;
-extern Hr data_021f5bbc;
+extern Hr gSndBgmHandle;
 s32 FX_Div(s32 a, s32 b);
 void func_0210a024(void *p, u32 sel, void *out);
 void func_0210a008(u32 sel, void *out);
@@ -406,16 +406,16 @@ void BgmTempoTracker::setMode(u8 v) {
         w4 = FX_Div(0x258000, (s32)h14 << 12);
     } else {
         h14 = 120;
-        Snd_StopHandle(&data_021f5bbc, 0);
+        Snd_StopHandle(&gSndBgmHandle, 0);
     }
 }
 
 void BgmTempoTracker::update() {
     s16 a[3];
-    if (!nz((u32)gSndMgr.h)) NNS_SndArcPlayerStartSeq(&data_021f5bbc, 248);
+    if (!nz((u32)gSndMgr.h)) NNS_SndArcPlayerStartSeq(&gSndBgmHandle, 248);
     func_0210a008(1, &a[0]);
     func_0210a008(2, &a[1]);
-    func_0210a024(&data_021f5bbc, 6, &a[2]);
+    func_0210a024(&gSndBgmHandle, 6, &a[2]);
     c10 = (a[1] != c16);
     c16 = a[1];
     h18 = a[2];
@@ -424,7 +424,7 @@ void BgmTempoTracker::update() {
 }
 
 void BgmTempoTracker::syncTempo() {
-    Hr *const h = &data_021f5bbc;
+    Hr *const h = &gSndBgmHandle;
     u16 buf[8];
     while (SND_RecvCommandReply(0) != 0)
         ;
@@ -470,7 +470,7 @@ void BgmBeatSync::update() {
     pickAnim();
     readTempo();
     if (sub.s0 == -1) {
-        Hr *h = &data_021f5bbc;
+        Hr *h = &gSndBgmHandle;
         s32 id;
         if (!nz((u32)h->p)) return;
         func_0210a024(h, 4, &v);
@@ -519,7 +519,7 @@ void BgmBeatSync::update() {
 }
 
 void BgmBeatSync::pickAnim() {
-    Hr *const h = &data_021f5bbc;
+    Hr *const h = &gSndBgmHandle;
     s32 i;
     u8 buf[28];
     sub.s1 = -1;
@@ -559,7 +559,7 @@ void BgmBeatSync::pickAnim() {
 }
 
 void BgmBeatSync::readTempo() {
-    Hr *const h = &data_021f5bbc;
+    Hr *const h = &gSndBgmHandle;
     s16 v[4];
     if (!nz((u32)h->p)) return;
     func_0210a024(h, 1, &v[0]);

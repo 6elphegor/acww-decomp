@@ -35,9 +35,9 @@ public:
 };
 
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 data_021e935c[];
-extern u8 data_021ec780[];
+extern u8 gSaveDressers[];
 extern Unk_020973e4_Pl *gCommManager;
 
 s32 func_020978fc(u32 idx);
@@ -241,7 +241,7 @@ extern "C" u8 *func_020979d8(void *p) {
 
 extern "C" u8 *func_020979b0(void *p) {
     s32 s = _ZN10PlayerData8getIndexEv(p);
-    if (s >= 0 && s < 4) return data_021ec780 + s * 0xb4;
+    if (s >= 0 && s < 4) return gSaveDressers + s * 0xb4;
     return 0;
 }
 
@@ -415,7 +415,7 @@ extern "C" u32 PlayerData_GetCurrentIndex() { return PlayerSession_GetDataIndex(
 extern "C" u32 PlayerData_Get(s32 idx) {
     u32 r = 0;
     if (func_020978fc(idx) == 1) {
-        if ((u32)data_021d735c != 0) r = (u32)PlayerData_GetResident(data_021d735c, idx);
+        if ((u32)gSavePlayers != 0) r = (u32)PlayerData_GetResident(gSavePlayers, idx);
     } else if (func_02097554(idx) == 1) {
         if (func_0209759c() != 0) {
             r = (u32)func_0209759c();
@@ -428,7 +428,7 @@ extern "C" u32 PlayerData_Get(s32 idx) {
 extern "C" s32 func_02097444(s32 idx) {
     s32 r = 0;
     if (func_020978fc(idx) == 1) {
-        if ((u32)data_021d735c != 0) r = func_020978c8(data_021d735c, idx);
+        if ((u32)gSavePlayers != 0) r = func_020978c8(gSavePlayers, idx);
     } else if (func_02097554(idx) == 1) {
         if (func_0209759c() != 0) {
             s32 t = func_02097534(idx);

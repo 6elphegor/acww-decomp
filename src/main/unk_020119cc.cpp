@@ -2491,7 +2491,7 @@ s32 _ZN12Unk_020821b413func_02081d6cEi(void *, u32);
 void _ZN12Unk_020e072cD1Ev(void *);
 void _ZN12Unk_020e072cC1Ev(void *);
 extern Unk_02011f74_World *gSceneBlockMap;
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gRandom[];
 extern s16 data_02135f44[];
 extern s32 sRouteDirs[];
@@ -10811,7 +10811,7 @@ extern "C" void VillagerRoute_PickOtherHouseDoor(Unk_02011f74_Pair *out, void *s
         s32 key;
         func_02133ef8(&key, 4);
         key = _ZN12VillagerData13getVillagerIdEv(obj->vfunc_64());
-        if (SaveVillagers_PickRandomExcept(data_021dfd8c, &key, 1)) {
+        if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
             s32 z = p[1] + 1;
             out->a = p[0];
@@ -10851,7 +10851,7 @@ extern "C" void VillagerRoute_PickOtherHouseBlock(Unk_02011f74_Pair *out, void *
         s32 key;
         func_02133ef8(&key, 4);
         key = _ZN12VillagerData13getVillagerIdEv(obj->vfunc_64());
-        if (SaveVillagers_PickRandomExcept(data_021dfd8c, &key, 1)) {
+        if (SaveVillagers_PickRandomExcept(gSaveVillagers, &key, 1)) {
             u8 *p = _ZN20VillagerDataItemView11getHousePosEv();
             Unk_02011f74_Pair pos;
             pos.a = 0;

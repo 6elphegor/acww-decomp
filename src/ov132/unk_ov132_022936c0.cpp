@@ -6,7 +6,7 @@
 #undef vfunc_14
 
 extern "C" {
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern u16 gPad[];
 extern u8 gTouchHeld[];
 extern u8 gTouchChanged[];

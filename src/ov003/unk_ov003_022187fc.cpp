@@ -70,7 +70,7 @@ public:
 
 extern "C" {
 extern void *data_021c6204;
-extern u8 data_021ecc7c[];
+extern u8 gSaveTownFlag[];
 extern void *gCurrentHeap;
 extern Unk_ov003_02218bc8_Ent *sBuildingList[0x20];
 extern Unk_ov003_02218c60_Grid *gSceneBlockMap;
@@ -139,7 +139,7 @@ void func_020b15d4();
 void func_020b278c(s32 a);
 void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
 void Gfx3d_LoadPltt(void *, s32);
-extern u32 data_021ed1a4[];
+extern u32 gSaveTownState[];
 s32 TownState_FindEvent(void *, s32);
 s32 func_02101340(char *, const char *, void *);
 void func_020639e8(char *, const char *, ...);
@@ -599,7 +599,7 @@ s32 VillagerHouseTex_Load(VillagerHouseTex *self) {
     s32 zb = 0;
     s32 za = 0;
     do {
-        s32 v = func_020b2514(func_020b23a4(data_021ecc7c), i);
+        s32 v = func_020b2514(func_020b23a4(gSaveTownFlag), i);
         s32 c = (s8)(v / 5 + 0x41);
         s32 rem = v % 5;
                 void *h2 = gCurrentHeap;
@@ -673,7 +673,7 @@ s32 HouseLightUpDeco_Load(HouseLightUpDeco *r) {
     u32 i;
     BOOL z;
     HouseLightUpDeco_Clear(r);
-    s32 c = TownState_FindEvent(data_021ed1a4, 0x11);
+    s32 c = TownState_FindEvent(gSaveTownState, 0x11);
     z = FALSE;
     if (c == ~z) {
         return z;

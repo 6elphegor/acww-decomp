@@ -308,7 +308,7 @@ public:
 #define VillagerDataProfileView_getInfo28 _ZN23VillagerDataProfileView9getInfo28Ev
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
 extern "C" {
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern void *gCommManager;
 extern void *data_021c6204;
 extern const u8 sVillagerHouseClosedMsgs[];
@@ -509,14 +509,14 @@ BOOL VillagerHouse::vfunc_0c() {
 }
 
 s32 VillagerHouse::getHouseStyle() {
-    u8 *g = data_021dfd8c;
+    u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f;
 }
 
 u8 VillagerHouse::getHouseVariant() {
-    u8 *g = data_021dfd8c;
+    u8 *g = gSaveVillagers;
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     Unk_ov003_02215fc0_Rec *r = (Unk_ov003_02215fc0_Rec *)VillagerDataProfileView_getInfo28(SaveVillagers_Get(g, idx));
     return r->f & 3;
@@ -558,7 +558,7 @@ s32 VillagerHouse::vfunc_68() {
 
 void VillagerHouse::vfunc_78() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    void *p = SaveVillagers_Get(data_021dfd8c, idx);
+    void *p = SaveVillagers_Get(gSaveVillagers, idx);
     setFileName("obj_etc_closed");
     if (func_0207e274(p) == 0) {
         unk_1e = 6;
@@ -581,7 +581,7 @@ void VillagerHouse::vfunc_78() {
 
 BOOL VillagerHouse::vfunc_8c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
-    void *p = SaveVillagers_Get(data_021dfd8c, idx);
+    void *p = SaveVillagers_Get(gSaveVillagers, idx);
     if (p) {
         if (func_0207e274(p) == 0) {
             return FALSE;
@@ -598,7 +598,7 @@ BOOL VillagerHouse::vfunc_8c() {
 BOOL VillagerHouse::vfunc_9c() {
     s32 idx = Unk_ov003_02215c7c_Idx(this);
     if (Building_IsNight(this)) {
-        void *p = SaveVillagers_Get(data_021dfd8c, idx);
+        void *p = SaveVillagers_Get(gSaveVillagers, idx);
         if (p) {
             if (func_0207e274(p) == 0) {
                 return FALSE;

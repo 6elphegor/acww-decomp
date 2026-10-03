@@ -10,7 +10,7 @@ extern void *gCommManager;
 extern u8 gFieldSceneKind;
 extern s16 data_02135f44[];
 extern void *gSceneBlockMap;
-extern u8 data_021dfd8c;
+extern u8 gSaveVillagers;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
 extern u8 gTownReturnPos;
@@ -1591,7 +1591,7 @@ extern "C" BOOL func_020b1454(Obj *o, s32 v) {
 }
 
 extern "C" u32 func_020b1428(s32 v) {
-    if (SaveVillagers_Get(&data_021dfd8c, v)) {
+    if (SaveVillagers_Get(&gSaveVillagers, v)) {
         if (Villager_GetWhereabouts() == 2) {
             return TRUE;
         }

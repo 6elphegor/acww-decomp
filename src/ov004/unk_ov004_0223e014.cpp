@@ -105,7 +105,7 @@ extern u8 gTouchChanged;
 extern u8 gTouchPrevHeld;
 extern u8 gTouchPrevChanged;
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern Unk_ov004_0223e2f4_Pad gPad;
 extern Unk_ov004_0223e2f4_G *gCommManager;
 extern const Unk_ov004_0223e10c_Pair sResidentLabelOffsets[];
@@ -571,7 +571,7 @@ void ResidentSelect::updateLeave() {
 void ResidentSelect::updateNameLabels() {
     u8 i;
     for (i = 0; i < 4; i++) {
-        if (func_020978c8(data_021d735c, i) != 0) {
+        if (func_020978c8(gSavePlayers, i) != 0) {
             u8 *a = func_020951ec(i);
             if (a != 0) {
                 s32 x, y;
@@ -581,7 +581,7 @@ void ResidentSelect::updateNameLabels() {
                 v[1] = pv[1];
                 v[2] = pv[2];
                 Unk_020e1c64 o;
-                func_020940d0(PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, i)), &o);
+                func_020940d0(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i)), &o);
                 Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += sResidentLabelOffsets[i].a;
                 y += sResidentLabelOffsets[i].b;

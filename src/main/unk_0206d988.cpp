@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-extern u8 data_021ed2f8[];
+extern u8 gSaveTownTune[];
 extern s32 data_020ddf8c;
 
 u8 *Snd_MelodyGetDefaultPattern(void *);
@@ -108,14 +108,14 @@ void Melody_PlayRandom(u32 a) { Snd_MelodyPlayRandom(&gMelodyPlayer, a); }
 void Melody_SaveRandomPattern() {
     u8 *p = Snd_MelodyApplyRandomPattern(&gMelodyPlayer);
     if (p) {
-        Melody_Pack((u32 *)data_021ed2f8, p);
+        Melody_Pack((u32 *)gSaveTownTune, p);
     }
 }
 
 void Melody_SaveDefaultPattern() {
     u8 *p = Snd_MelodyGetDefaultPattern(&gMelodyPlayer);
     if (p) {
-        Melody_Pack((u32 *)data_021ed2f8, p);
+        Melody_Pack((u32 *)gSaveTownTune, p);
     }
 }
 

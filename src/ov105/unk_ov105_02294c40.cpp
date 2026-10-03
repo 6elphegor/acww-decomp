@@ -106,7 +106,7 @@ extern u8 gTouchCurY;
 extern u8 gTouchPressX;
 extern u8 gTouchPressY;
 extern u32 gCurrentHeap;
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern void *data_021c6210;
 }
 

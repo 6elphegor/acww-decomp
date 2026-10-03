@@ -540,7 +540,7 @@ extern s16 data_02135f44[];
 extern Unk_ov004_02233f3c_World *gSceneBlockMap;
 extern u8 gBackup[];
 extern void *gBgHeap;
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern Unk_ov004_02233244_Src data_021ed2b0;
 extern s32 data_021f47e0[];
 extern void *gCurrentHeap;
@@ -4432,7 +4432,7 @@ extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
 // @0x2233ee0 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_GetCurPlayerIndex() {
     if (PlayerData_GetCurrent() != 0) {
-        return func_02097740(data_021d735c, PlayerData_getPlayerId());
+        return func_02097740(gSavePlayers, PlayerData_getPlayerId());
     }
     return -1;
 }

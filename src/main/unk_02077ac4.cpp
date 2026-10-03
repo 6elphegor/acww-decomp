@@ -706,7 +706,7 @@ struct Unk_02078948_Obj {
 struct Unk_02078864_T {
     s32 v[2];
 };
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern void *gCommManager;
 extern Unk_02078400 gVillagerStates;
 extern Unk_02078738_Grid *gSceneBlockMap;
@@ -1063,7 +1063,7 @@ s32 _ZN11CommManager12isSlotActiveEi(void *, s32);
 void Villager_HalveTalkUrge(void *);
 s32 SaveVillagers_FindBestFriendIndexOf(void *, void *);
 s32 SaveVillagers_PickFleaMarketBuyer(void *);
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern CommManager *gCommManager;
 struct Unk_020795c4_Buf {
     u32 v[5];
@@ -1131,7 +1131,7 @@ struct Unk_0207a3b8_Item {
 extern CommManager *gCommManager;
 extern u32 sVillagerEventIds[];
 extern u16 sMonthlySickRoll[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 sErrandKindTaken[];
 extern u8 sErrandVillagerDone[];
 extern u8 sReservedErrandKinds[];
@@ -1383,7 +1383,7 @@ struct Unk_0207b168 {
       u8 unk_38ee[0x20];
 };
 extern u8 data_021e7f8c[];
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 extern u8 sTransferVillager[];
 extern u8 sSpeciesCandidateBits[];
 s32 Villager_IsJustMovedIn(void *);
@@ -1589,8 +1589,8 @@ struct Unk_0207ccd0_Rec {
 };
 extern u8 sVillagerLetterPath[];
 extern u8 sVillagerLetter4Path[];
-extern u8 data_021d7352[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveTownId[];
+extern u8 gSaveVillagers[];
 s32 _ZN8PlayerId13func_02094218Ev(void *);
 s32 _ZN10VillagerId7isValidEv(void *);
 void _ZN6LetterC1Ev(void *);
@@ -1710,8 +1710,8 @@ struct Unk_0207d164_Entry {
     u8 pad_1[3];
     BOOL (*unk_4)(u32, u32, u32);
 };
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 extern Unk_0207d164_Entry sImpressionRules[];
 s32 PlayerData_GetResident(void *, s32);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
@@ -1885,7 +1885,7 @@ s32 func_02098778(u32 a, u32 b, u32 c);
 void *func_020947f0(u32 n);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
 void *BlockMap_GetItemPtr(void *m, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gFieldSceneKind[];
 extern void *gSceneBlockMap;
 BOOL ImpressionCond_HalfFishCaught(void);
@@ -1947,7 +1947,7 @@ struct Unk_0207e268 {
     u8 pad_6f1;
     u8 unk_6f2;
 };
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 data_020e05ac[];
 extern u16 sPackedFurnitureItems[];
 void *SaveVillagers_FindFriendOf(void *, void *);
@@ -2193,8 +2193,8 @@ void _ZN15EncodedString10C1Ev(void *);
 void StrBuf_ClearAlt(void *);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *, u32);
 void _ZN15EncodedString10D1Ev(void *);
-extern u16 data_021d7352[];
-extern u8 data_021d735c[];
+extern u16 gSaveTownId[];
+extern u8 gSavePlayers[];
 extern u32 data_021cc850;
 extern u8 data_021cc8fc[];
 extern u8 data_021cc868[];
@@ -2331,8 +2331,8 @@ s32 Villager_SendLetter4(void *a, s32 b, s32 c, void *d, void *e, u16 *f);
 s32 _ZN14VillagerMemory13addFriendshipEi(void *a, s32 b);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
 s32 memcmp(void *a, void *b, s32 n);
-extern u8 data_021d735c[];
-extern u8 data_021d7352[];
+extern u8 gSavePlayers[];
+extern u8 gSaveTownId[];
 extern void *sBirthdayGiftLists[];
 extern void *sLetterReplyGiftLists[];
 void Villager_SendByeLetter(void *t, void *p);
@@ -2429,7 +2429,7 @@ void _ZN12Unk_020e1c4c13func_02093f90EPvj(void *, void *, s32);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *, void *);
 s32 memcmp(void *, void *, u32);
 s32 _ZN8PlayerId13func_020941e8EPS_(void *, void *);
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 struct Unk_020805d0_Rec {
     u8 pad_00[6];
     u16 unk_06[10];
@@ -2460,12 +2460,12 @@ struct Unk_02080e20_Obj {
     u16 lvl : 3;
     u16 hi : 5;
 };
-extern u8 data_021d7352[];
-extern u8 data_021ed2f8[];
+extern u8 gSaveTownId[];
+extern u8 gSaveTownTune[];
 extern u8 sPersonalitySleepHours[][4];
 extern u8 sStarSignEndDates[];
 extern u8 sFurnitureTasteTextBase[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 sSpNpcInfoTable[];
 extern u8 sVillagerInfoTable[];
 extern u8 gNpcActorRegistry[];
@@ -3453,7 +3453,7 @@ extern "C" BOOL Npc_GetName(u8 *self, u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(data_021dfd8c, idx);
+            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
             if (q) r = _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(q), self);
         }
     } else {
@@ -3474,7 +3474,7 @@ extern "C" u32 Npc_GetVoiceType(u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(data_021dfd8c, idx);
+            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
             if (q) r = VillagerId_GetVoiceType(_ZN12VillagerData13getVillagerIdEv(q));
         }
     } else {
@@ -3492,7 +3492,7 @@ extern "C" u32 Npc_GetInfoByte2(u16 *p) {
     s32 t = (s32)(*p & 0xf000) >> 12;
     if (t != 13) {
         if (t == 14) {
-            u8 *q = SaveVillagers_Get(data_021dfd8c, idx);
+            u8 *q = SaveVillagers_Get(gSaveVillagers, idx);
             if (q) r = Villager_GetInfoByte2(q);
         }
     } else {
@@ -3793,7 +3793,7 @@ extern "C" void VillagerMemory_RecordTalk(Unk_02080e20_Obj *self, void *a, u8 *b
     buf[0] = 0;
     buf[1] = 0;
     if (a != 0 && _ZN8PlayerId13func_02094218Ev(a)) _ZN8PlayerId13func_020942b8EPv(self, a);
-    if (b == 0) b = data_021d7352;
+    if (b == 0) b = gSaveTownId;
     if (c == 0) {
         Clock_GetDateTime(buf);
         c = (u8 *)buf;
@@ -3801,7 +3801,7 @@ extern "C" void VillagerMemory_RecordTalk(Unk_02080e20_Obj *self, void *a, u8 *b
     if (VillagerMemory_UpdateTalkStreak(self, c)) VillagerMemory_AddStreakFriendship(self);
     func_02063990(VillagerMemory_GetTownId((u8 *)self), b);
     MI_CpuCopy8(c, VillagerMemory_GetTalkDate((u8 *)self), 8);
-    _ZN14VillagerMemory7setTimeEPx(self, data_021ed2f8);
+    _ZN14VillagerMemory7setTimeEPx(self, gSaveTownTune);
 }
 }
 
@@ -4196,7 +4196,7 @@ s32 VillagerData::receiveLetterFrom(u32 id) {
     if (e) {
         e->setLetterReceived();
         func_02065e70(unk_568, id);
-        func_02063990(unk_6f6, data_021d7352);
+        func_02063990(unk_6f6, gSaveTownId);
         v[0] = _ZN12Unk_0206555413func_020655d0Ev(id);
         if (v[0] != 0xfff1) {
             Item_ToPlacedForm((u16 *)&v[1], (u16 *)&v[0], 1);
@@ -4384,10 +4384,10 @@ extern "C" void Villager_SendBirthdayLetter(void *t, void *p, void *q) {
 
 void VillagerDataProfileView::sendBirthdayLetters(void *a) {
     using namespace nO;
-    if ((u32)data_021d735c != 0) {
+    if ((u32)gSavePlayers != 0) {
         s32 i;
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(data_021d735c, i);
+            void *p = PlayerData_GetResident(gSavePlayers, i);
             if (p) {
                 Villager_SendBirthdayLetter(this, p, a);
             }
@@ -4444,10 +4444,10 @@ extern "C" void Villager_SendNewYearLetter(void *t, void *p, void *q) {
 
 void VillagerDataProfileView::sendNewYearLetters(void *a) {
     using namespace nO;
-    if ((u32)data_021d735c != 0) {
+    if ((u32)gSavePlayers != 0) {
         s32 i;
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(data_021d735c, i);
+            void *p = PlayerData_GetResident(gSavePlayers, i);
             if (p) {
                 if (_ZN8PlayerId13func_02094218Ev(_ZN10PlayerData11getPlayerIdEv(p))) {
                     Villager_SendNewYearLetter(this, p, a);
@@ -4468,7 +4468,7 @@ extern "C" void Villager_SendByeLetter(void *t, void *p) {
                 if (!_ZN6TownId13func_02094058Ev(q)) {
                     if (Villager_FindMemory(t, q)) {
                         _ZN12Unk_020dd38cC2Ev(obj);
-                        u32 g = (u32)data_021d7352;
+                        u32 g = (u32)gSaveTownId;
                         if (g != 0) {
                             if (func_02063954((void *)g)) {
                                 func_020638d0((void *)g, obj);
@@ -4488,10 +4488,10 @@ extern "C" void Villager_SendByeLetter(void *t, void *p) {
 void VillagerDataProfileView::updateMemoriesFromPlayers() {
     using namespace nO;
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(this))) {
-        if ((u32)data_021d735c != 0) {
+        if ((u32)gSavePlayers != 0) {
             s32 i;
             for (i = 0; i < 4; i++) {
-                void *p = PlayerData_GetResident(data_021d735c, i);
+                void *p = PlayerData_GetResident(gSavePlayers, i);
                 if (p) {
                     if (_ZN8PlayerId13func_02094218Ev(_ZN10PlayerData11getPlayerIdEv(p))) {
                         Villager_SendByeLetter(this, p);
@@ -4936,12 +4936,12 @@ extern "C" s32 Villager_GetMinutesSinceLastTalk(Unk_0207f264_Entry *t, void *o) 
 namespace nN {
 extern "C" s32 Villager_PickMemoryToReplace(Unk_0207f264_Entry *t, s32 (*cb)(void *, void *, void *)) {
     s32 res = -1;
-    if (func_02063954(data_021d7352) != 0) {
+    if (func_02063954(gSaveTownId) != 0) {
         Unk_0207f264_Entry *best = NULL;
         s32 i = 0;
         do {
             if (VillagerMemory_IsUsed(t) != 0) {
-                if (cb((void *)VillagerMemory_GetPlayerId(t), data_021d7352, data_021d735c) != 0) {
+                if (cb((void *)VillagerMemory_GetPlayerId(t), gSaveTownId, gSavePlayers) != 0) {
                     if (best != NULL) {
                         if (_ZN14VillagerMemory16isLetterReceivedEv(best) == _ZN14VillagerMemory16isLetterReceivedEv(t)) {
                             if (_ZN14VillagerMemory13getFriendshipEv(best) > _ZN14VillagerMemory13getFriendshipEv(t)) {
@@ -5043,7 +5043,7 @@ extern "C" Unk_0207f264_Entry *Villager_FindOrCreateMemory(Unk_0207f264_Entry *t
 namespace nN {
 extern "C" s32 Villager_CollectOtherMemories(Unk_0207f264_Entry *t, Unk_0207f264_Entry **out, void *id, s32 mode) {
     s32 n = 0;
-    if ((u32)data_021d7352 != 0 && _ZN8PlayerId13func_02094218Ev(id) != 0) {
+    if ((u32)gSaveTownId != 0 && _ZN8PlayerId13func_02094218Ev(id) != 0) {
         s32 i = 0;
         do {
             Unk_0207f264_Entry *e = &t[i];
@@ -5051,7 +5051,7 @@ extern "C" s32 Villager_CollectOtherMemories(Unk_0207f264_Entry *t, Unk_0207f264
                 switch (mode) {
                 case 0: {
                     u16 *p = VillagerMemory_GetTownId(e);
-                    if (p[0] == data_021d7352[0] && memcmp(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) == 0) {
+                    if (p[0] == gSaveTownId[0] && memcmp(p + 1, (void *)((u8 *)gSaveTownId + 2), 8) == 0) {
                         out[n] = e;
                         n++;
                     }
@@ -5059,7 +5059,7 @@ extern "C" s32 Villager_CollectOtherMemories(Unk_0207f264_Entry *t, Unk_0207f264
                 }
                 case 1: {
                     u16 *p = VillagerMemory_GetTownId(e);
-                    if (p[0] != data_021d7352[0] || memcmp(p + 1, (void *)((u8 *)data_021d7352 + 2), 8) != 0) {
+                    if (p[0] != gSaveTownId[0] || memcmp(p + 1, (void *)((u8 *)gSaveTownId + 2), 8) != 0) {
                         out[n] = e;
                         n++;
                     }
@@ -5981,7 +5981,7 @@ extern "C" u32 Villager_GetInfo4d() {
 
 namespace nL {
 extern "C" s32 Villager_FindOwnIndex(Unk_0207e268 *a) {
-    u32 g = (u32)data_021dfd8c;
+    u32 g = (u32)gSaveVillagers;
     s32 r = -1;
     if (g != 0) {
         r = SaveVillagers_FindIndex((void *)g, _ZN12VillagerData13getVillagerIdEv(a));
@@ -6141,7 +6141,7 @@ extern "C" void Villager_SetMoveInKind(Unk_0207e268 *a, u32 b) { a->unk_6f0 = b;
 
 namespace nL {
 extern "C" void Villager_GetFriendName(void *a, u32 b) {
-    void *r = SaveVillagers_FindFriendOf(data_021dfd8c, a);
+    void *r = SaveVillagers_FindFriendOf(gSaveVillagers, a);
     if (r != 0) {
         if (_ZN12VillagerData13getVillagerIdEv(r)->isValid() != 0) {
             _ZN12VillagerData13getVillagerIdEv(r)->getName(b);
@@ -6152,7 +6152,7 @@ extern "C" void Villager_GetFriendName(void *a, u32 b) {
 
 namespace nK {
 extern "C" void Villager_GetEnemyName(u32 a, u32 b) {
-    void *r = SaveVillagers_FindEnemyOf(data_021dfd8c, a);
+    void *r = SaveVillagers_FindEnemyOf(gSaveVillagers, a);
     if (r) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(r))) {
             _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(r), b);
@@ -6166,7 +6166,7 @@ extern "C" void Villager_GetRandomOtherName(u32 a, u32 b) {
     u32 v;
     func_02133ef8(&v, 4);
     v = (u32)_ZN12VillagerData13getVillagerIdEv((void *)a);
-    void *r = SaveVillagers_PickRandomExcept(data_021dfd8c, &v, 1);
+    void *r = SaveVillagers_PickRandomExcept(gSaveVillagers, &v, 1);
     if (r) {
         if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(r))) {
             _ZN10VillagerId7getNameEj(_ZN12VillagerData13getVillagerIdEv(r), b);
@@ -6249,7 +6249,7 @@ extern "C" s32 ImpressionCond_FlowersAround(void) {
 namespace nK {
 extern "C" BOOL ImpressionCond_FewVillagers(void) {
     BOOL r = FALSE;
-    if (SaveVillagers_Count(data_021dfd8c) <= 4) r = TRUE;
+    if (SaveVillagers_Count(gSaveVillagers) <= 4) r = TRUE;
     return r;
 }
 }
@@ -6767,7 +6767,7 @@ extern "C" BOOL ImpressionCond_Hair7(u32 a, u32 b, u32 c) {                     
 
 namespace nJ {
 extern "C" BOOL ImpressionCond_FourResidents() {
-    if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv()) == 0 && func_020978a4(data_021d735c) == 4) {
+    if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv()) == 0 && func_020978a4(gSavePlayers) == 4) {
         return TRUE;
     }
     return FALSE;
@@ -6776,7 +6776,7 @@ extern "C" BOOL ImpressionCond_FourResidents() {
 
 namespace nJ {
 extern "C" BOOL ImpressionCond_TwoPlusResidents() {
-    if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv()) == 0 && func_020978a4(data_021d735c) >= 2) {
+    if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv()) == 0 && func_020978a4(gSavePlayers) >= 2) {
         return TRUE;
     }
     return FALSE;
@@ -7040,7 +7040,7 @@ extern "C" void Villager_GetMostValuableReceivedItem(u16 *out, Unk_0207cd94 *sel
 namespace nJ {
 extern "C" BOOL Villager_HasFlea(void *self) {
     s32 a = *(s8 *)(VillagerStates_Get() + 0x160);
-    s32 b = SaveVillagers_FindIndex(data_021dfd8c, _ZN12VillagerData13getVillagerIdEv(self));
+    s32 b = SaveVillagers_FindIndex(gSaveVillagers, _ZN12VillagerData13getVillagerIdEv(self));
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(self)) && a != -1 && b == a) {
         return TRUE;
     }
@@ -7059,7 +7059,7 @@ extern "C" void Villager_RemoveFlea(void *self) {
 namespace nJ {
 extern "C" BOOL Villager_IsGreeter(void *self) {
     s32 a = *(s8 *)(VillagerStates_Get() + 0x161);
-    s32 b = SaveVillagers_FindIndex(data_021dfd8c, _ZN12VillagerData13getVillagerIdEv(self));
+    s32 b = SaveVillagers_FindIndex(gSaveVillagers, _ZN12VillagerData13getVillagerIdEv(self));
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(self)) && b == a) {
         return TRUE;
     }
@@ -7084,7 +7084,7 @@ extern "C" void Villager_NextFurnitureTaste(Unk_0207cd94 *self) {
 
 namespace nJ {
 extern "C" BOOL Villager_IsFreeOfPlayerErrands(u32 a) {
-    u8 *g = data_021d735c;
+    u8 *g = gSavePlayers;
     s32 i;
     for (i = 0; i < 4; i++) {
         s32 t = PlayerData_GetResident(g, i);
@@ -7311,7 +7311,7 @@ extern "C" s32 Villager_CanGoOutdoors(void *a) {
     u16 *r5 = (u16 *)_ZN12VillagerData13getVillagerIdEv(a);
     s32 r = FALSE;
     if (_ZN10VillagerId7isValidEv(r5) && Villager_GetResidentStatus(a) == 3) {
-        SaveVillagers_GetUnk3830(data_021dfd8c);
+        SaveVillagers_GetUnk3830(gSaveVillagers);
         u16 *r4 = (u16 *)_ZN18SickVillagerRecord13getVillagerIdEv();
         if (r5[0] == r4[0] && memcmp(r5 + 1, r4 + 1, 8) == 0 && ((u8 *)r5)[0xb] == ((u8 *)r4)[0xb]) {
         } else {
@@ -7405,7 +7405,7 @@ extern "C" void Villager_SetFleaMarketVisited(void *a, void *b) {
 namespace nI {
 extern "C" s32 Villager_UpdateVisitorRecord(void *a, void *b) {
     if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(a))) {
-        u8 *tbl = data_021d7352;
+        u8 *tbl = gSaveTownId;
         if (b == 0) b = PlayerData_GetCurrent();
         if (b != 0 && (u32)tbl != 0) {
             void *r6;
@@ -8283,7 +8283,7 @@ namespace nG {
 extern "C" void SaveVillagers_MoveOut(Unk_0207b168 *self, void *a, void *b, s32 idx, void *out) {
     _ZN20VillagerDataItemView16placeHouseMarkerEv(b);
     _ZN20VillagerDataItemView13clearHousePosEv(b);
-    func_02063990(_ZN20VillagerDataItemView18getMovedFromTownIdEv(b), data_021d7352);
+    func_02063990(_ZN20VillagerDataItemView18getMovedFromTownIdEv(b), gSaveTownId);
     self->unk_38e8 = VillagerId_GetSpecies(_ZN12VillagerData13getVillagerIdEv(b));
     OutdoorSchedule_Remove(self->unk_381c, idx);
     VillagerRelations_ResetSlot(self->unk_3800, idx);
@@ -8312,7 +8312,7 @@ extern "C" void SaveVillagers_ProcessTransfer(Unk_0207b168 *self, void *arg) {
         goto nomatch;
     }
     {
-        Unk_0207b238_Id *g = (Unk_0207b238_Id *)data_021d7352;
+        Unk_0207b238_Id *g = (Unk_0207b238_Id *)gSaveTownId;
         Unk_0207b238_Id *h = (Unk_0207b238_Id *)_ZN20VillagerDataItemView18getMovedFromTownIdEv(r7);
         if (h->id == g->id && memcmp(h->name, g->name, 8) == 0) {
             if (r4 == 0) {
@@ -8974,7 +8974,7 @@ namespace nE {
 extern "C" void SaveVillagers_UpdatePlayerErrandKind15(s32 unused, s32 q) {
     s32 i;
     for (i = 0; i < 4; i++) {
-        void *e = PlayerData_GetResident(data_021d735c, i);
+        void *e = PlayerData_GetResident(gSavePlayers, i);
         if (_ZN8PlayerId13func_02094218Ev(_ZN10PlayerData11getPlayerIdEv(e))) {
             u8 *r4 = (u8 *)_ZN10PlayerData13func_0209865cEv(e) + 0x88;
             u8 *r6 = r4 + 0xc;
@@ -9459,7 +9459,7 @@ extern "C" void SaveVillagers_UpdateBirthdayNotices(u8 *self) {
             if (Villager_GetResidentStatus(self) == 3) {
                 s32 j;
                 for (j = 0; j < 4; j++) {
-                    void *r7 = PlayerData_GetResident(data_021d735c, j);
+                    void *r7 = PlayerData_GetResident(gSavePlayers, j);
                     if (r7 != NULL) {
                         void *a = _ZN10PlayerData11getPlayerIdEv(r7);
                         if (_ZN8PlayerId13func_02094218Ev(a) != 0) {
@@ -9761,7 +9761,7 @@ extern "C" s32 SaveVillagers_DeliverLetter(void *self, void *p) {
         if (t != NULL) {
             Unk_020795c4_Buf b(t);
             if (_ZN8PlayerId13func_02094218Ev(&b) != 0) {
-                void *q = func_0209788c(data_021d735c, &b);
+                void *q = func_0209788c(gSavePlayers, &b);
                 void *name = func_0206561c(p);
                 if (q != NULL) {
                     Arbeit_OnLetterSent(_ZN10PlayerData13func_0209865cEv(q), p);
@@ -10507,7 +10507,7 @@ extern "C" s32 Relation_CalcBaseScore(void *a, void *p, void *q) {
 
 namespace nB {
 extern "C" s32 VillagerRelations_GetScore(void *a, s32 b, s32 c) {
-    void *d = data_021dfd8c;
+    void *d = gSaveVillagers;
     void *r5 = SaveVillagers_Get(d, b);
     void *r4 = SaveVillagers_Get(d, c);
     s32 r = 0;
@@ -10568,7 +10568,7 @@ extern "C" BOOL Villager_IsActorInBox(u16 *h, s32 x0, s32 x1, s32 z0, s32 z1) {
 
 namespace nB {
 extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p) {
-    if ((u32)data_021dfd8c != 0) {
+    if ((u32)gSaveVillagers != 0) {
         s32 b[4];
         Unk_02078864_T t;
         s32 z1;
@@ -10591,7 +10591,7 @@ extern "C" void SaveVillagers_NotifyPlayerActivity(u32 kind, Unk_02078738_Pos *p
         for (i = 0; i < 8; i++) {
             void *o;
             b[3] = 1;
-            o = SaveVillagers_Get(data_021dfd8c, i);
+            o = SaveVillagers_Get(gSaveVillagers, i);
             if (o != NULL) {
                 if (_ZN10VillagerId7isValidEv(_ZN12VillagerData13getVillagerIdEv(o))) {
                     if (_ZN12VillagerPlan20isTrendOlderThanWeekEPv(VillagerPlanBlock_GetPlan(Villager_GetPlan(o)), &t)) {

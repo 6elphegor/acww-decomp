@@ -309,8 +309,8 @@ extern u16 sNativeFruitTrees[];
 extern u8 gFieldSceneKind;
 extern void *gCurrentHeap;
 extern void *gSceneBlockMap;
-extern u32 data_021e58a8[];
-extern u32 data_021e3680[];
+extern u32 gSaveHouse[];
+extern u32 gSaveTownMap[];
 s32 func_0204e300(void *m, s32 x, s32 y);
 void Clock_GetDate(void *p);
 s32 Date_IsAfterOrEqual(void *a, void *b);
@@ -341,7 +341,7 @@ u32 Scene_GetVillagerHouse();
 s32 SceneId_IsHouseRoom();
 void *_ZN7TownMap17buildBlockEntriesEi(void *p, void *heap);
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
-extern u32 data_021dfd8c;
+extern u32 gSaveVillagers;
 extern u32 data_021c621c;
 extern u32 data_020c8cbc;
 extern u32 data_020c8cb8;
@@ -547,7 +547,7 @@ s32 FgData_ReadVillagerLayout(void *a, s32 b, s32 c, s32 d);
 
 namespace Ns_0204cc48 {
 extern "C" {
-extern u32 data_021e58a8;
+extern u32 gSaveHouse;
 void FieldUnit_FromBlockUnit(u32 *a, u32 *b, u32 w, u32 h, u32 c, u32 d);
 Unk_0204d0f4_Info *MapBlockEntry_NewArray(s32 a, void *heap);
 void *_ZN9HouseData13func_020604f8EiPv(u32 *a, s32 b, void *heap);
@@ -558,7 +558,7 @@ namespace Ns_0204d560 {
 extern "C" {
 void FgData_ApplyLayoutGlobal(u16 *t, s32 a, s32 b, s32 c);
 u32 func_02063b8c(u32 a);
-extern u8 data_021e3680[];
+extern u8 gSaveTownMap[];
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
 s32 BlockMap_FindItemAnyAttr(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
@@ -1491,7 +1491,7 @@ BOOL TownBlockMap::build(void *heap) {
     result = FALSE;
     unk_1c = 1;
     if (!unk_00) unk_00 = (u8 *)Ns_0204d560::MapBlock_NewArray(0x24, (u32)heap, 4);
-    tbl = Ns_0204d560::_ZN7TownMap17buildBlockEntriesEi(Ns_0204d560::data_021e3680, heap);
+    tbl = Ns_0204d560::_ZN7TownMap17buildBlockEntriesEi(Ns_0204d560::gSaveTownMap, heap);
     if (unk_00 && tbl) {
         l.xy[0] = 0;
         l.xy[1] = 0;
@@ -1532,7 +1532,7 @@ void TownBlockMap::freeBlocks(void *heap) {
 
 void TownBlockMap::updateAcreIds() {
     s32 x; u8 *p; s32 y; u8 *c;
-    p = TownMap_GetAcres(Ns_0204d560::data_021e3680);
+    p = TownMap_GetAcres(Ns_0204d560::gSaveTownMap);
     if (p) {
         c = unk_00;
         for (y = 0; y < unk_08; y++) {
@@ -1750,7 +1750,7 @@ extern "C" void HouseRoomMaps_UpdateAll() {
 }
 
 extern "C" void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i) {
-    u32 v = _ZN9HouseData13func_020603f4Ei(&Ns_0204cc48::data_021e58a8);
+    u32 v = _ZN9HouseData13func_020603f4Ei(&Ns_0204cc48::gSaveHouse);
     if (p->unk_00) _ZN12MapBlockAcre9setAcreIdEj(p->unk_00, v);
 }
 
@@ -1791,7 +1791,7 @@ extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
     if (!p->unk_00) {
         p->unk_00 = MapBlock_NewArray(1, heap, 4);
     }
-    info = (Unk_0204d0f4_Info *)Ns_0204cc48::_ZN9HouseData13func_020604f8EiPv(&Ns_0204cc48::data_021e58a8, i, heap);
+    info = (Unk_0204d0f4_Info *)Ns_0204cc48::_ZN9HouseData13func_020604f8EiPv(&Ns_0204cc48::gSaveHouse, i, heap);
     if (p->unk_00 && info) {
         l.v.x = 0; l.v.y = 0; l.v.z = 0;
         p->unk_04 = 1;
@@ -1829,7 +1829,7 @@ extern "C" void VillagerRoomMap_Clear(Unk_0204d0a4 *p) {
 extern "C" Unk_0204d0f4_Info *VillagerRoom_BuildEntry(u16 *dst, u32 b, void *heap) {
     Unk_0204d0f4_Info *p = Ns_0204cc48::MapBlockEntry_NewArray(1, heap);
     if (p) {
-        u32 h = SaveVillagers_Get(&data_021dfd8c, b);
+        u32 h = SaveVillagers_Get(&gSaveVillagers, b);
         if (h) {
             p->a = _ZN20VillagerDataItemView13getInfo28ItemEv(h);
         } else {
@@ -1850,7 +1850,7 @@ extern "C" BOOL VillagerRoom_LoadLayout(u16 *dst, u32 b, void *heap) {
     x = 2;
     y = 0;
     r = FALSE;
-    h = SaveVillagers_Get(&data_021dfd8c, b);
+    h = SaveVillagers_Get(&gSaveVillagers, b);
     if (h) _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y);
     if (h) {
         if (FgData_ApplyLayoutGlobal(dst, x, y, heap)) {
@@ -2110,7 +2110,7 @@ extern "C" void *FgData_ReadLayoutEntries(void *a, s32 *b, s32 c, s32 d, void *h
 }
 
 extern "C" void *FgData_ReadVillagerLayout(void *a, s32 *b, s32 c, void *d) {
-    u32 h = SaveVillagers_Get(&data_021dfd8c, c);
+    u32 h = SaveVillagers_Get(&gSaveVillagers, c);
     s32 x = 2, y = 0;
     if (h && _ZN20VillagerDataItemView13getRoomLayoutEPiS0_(h, &x, &y)) {
         return FgData_ReadLayoutEntries(a, b, x, y, d);

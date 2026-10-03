@@ -38,7 +38,7 @@ extern u32 data_021c3c8c;
 }
 
 extern "C" {
-extern u8 data_021ed168[];
+extern u8 gSaveEventWeekSlots[];
 }
 
 extern "C" {
@@ -211,7 +211,7 @@ extern "C" void func_02040050(Unk_0203ff50_Slot *s);
 
 extern "C" void func_02040208(u32 id) {
     if (id >= 0x3e && id < 0x46) {
-        Unk_0203ff20_Entry *e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)data_021ed168);
+        Unk_0203ff20_Entry *e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)gSaveEventWeekSlots);
         if (e) {
             if (id == e->unk_02) e->unk_04 = 1;
         }
@@ -315,7 +315,7 @@ extern "C" void func_02040078(Unk_0203ff50_Slot *s) {
 extern "C" void func_02040050(Unk_0203ff50_Slot *s) {
     Unk_0203ff20_Entry *e;
     data_021c3c88 = 0xff;
-    e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)data_021ed168);
+    e = EventWeekSlots_GetToday((Unk_0203ff50_Slot *)gSaveEventWeekSlots);
     if (e) data_021c3c88 = e->unk_05;
 }
 

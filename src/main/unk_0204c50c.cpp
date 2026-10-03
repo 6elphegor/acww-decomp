@@ -68,11 +68,11 @@ extern void *gFgDataIndex;
 }
 
 extern "C" {
-extern u32 data_021e58a8[];
+extern u32 gSaveHouse[];
 }
 
 extern "C" {
-extern u32 data_021e3680[];
+extern u32 gSaveTownMap[];
 }
 
 extern "C" {
@@ -369,9 +369,9 @@ u32 *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
     u32 *r = NULL;
     s32 i;
     if (Scene_GetCurrent() == 0 || Scene_GetCurrent() == 0x31 || Scene_GetCurrent() == 0x2c) {
-        r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(data_021e3680, heap);
+        r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(gSaveTownMap, heap);
     } else if (Scene_InHouseRoom()) {
-        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(data_021e58a8, Scene_GetHouseRoom(), heap);
+        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(gSaveHouse, Scene_GetHouseRoom(), heap);
     } else if (Scene_InVillagerHouse()) {
         i = Scene_GetVillagerHouse();
         r = (u32 *)ItemGrid_Alloc(heap, 4);
@@ -466,7 +466,7 @@ test2:
 }
 
 void SceneMapModule::getHouseUnk(u32 *out, s32 n) {
-    if (Scene_InUnk6To8()) *out = func_020603c8(data_021e58a8);
+    if (Scene_InUnk6To8()) *out = func_020603c8(gSaveHouse);
 }
 
 s32 SceneMapModule::buildSceneMap(void *heap) {

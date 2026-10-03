@@ -38,7 +38,7 @@ u32 data_021c3c8c;
 }
 
 extern "C" {
-extern u8 data_021ed168[];
+extern u8 gSaveEventWeekSlots[];
 }
 
 extern "C" {
@@ -393,7 +393,7 @@ extern "C" void func_020402f8(Unk_0203ff50_Slot *s, s32 flag) {
 }
 
 extern "C" void func_020402e8(void) {
-    func_020402f8((Unk_0203ff50_Slot *)data_021ed168, 0);
+    func_020402f8((Unk_0203ff50_Slot *)gSaveEventWeekSlots, 0);
 }
 
 extern "C" void func_02040264(void) {

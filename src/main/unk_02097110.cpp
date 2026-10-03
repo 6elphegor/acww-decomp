@@ -25,7 +25,7 @@ struct Unk_020973ec_G {
 extern "C" {
 extern Unk_020973ec_G data_021e9350;
 extern u8 sFatalEntered;
-extern u8 data_021d7352[];
+extern u8 gSaveTownId[];
 
 extern s32 data_020e1df8;
 extern s32 data_020e1dfc;
@@ -159,7 +159,7 @@ extern "C" void func_02097214(s32 n) {
                 Letter e;
                 u32 buf[7];
                 _ZN12Unk_020dd38cC2Ev(buf);
-                func_020638d0(data_021d7352, buf);
+                func_020638d0(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
                 Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
                 _ZN12Unk_0206555410setPresentEtj(&e, col, 1);

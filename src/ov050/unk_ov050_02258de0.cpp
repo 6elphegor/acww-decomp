@@ -629,9 +629,9 @@ extern s16 data_02135f44[];
 extern u32 data_0213a740[];
 extern u8 *data_021c1b3c;
 extern u8 gSaveData[];
-extern u8 data_021d735c;
-extern u8 data_021dfd8c[];
-extern u8 data_021e58a8[];
+extern u8 gSavePlayers;
+extern u8 gSaveVillagers[];
+extern u8 gSaveHouse[];
 extern u8 data_021ed104[];
 extern u8 data_021ed29c[];
 extern u8 gTalkMsgIndexEnd[];
@@ -2390,7 +2390,7 @@ s32 SpNpcNookShopTalk::getTopic() {
 
 extern "C" s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self) {
     u8 *g = gSaveData;
-    u8 *const m = data_021e58a8;
+    u8 *const m = gSaveHouse;
     s32 r5 = func_02060388(m);
     s32 r4 = func_020604c4(m);
     s32 r6 = func_02060308(m);
@@ -2557,7 +2557,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0C(Unk_ov050_0225b908_Out *out) {
             }
         }
         unk_b0->unk_73a = 1;
-        if (Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(data_021dfd8c, PlayerData_getPlayerId(g)) &&
+        if (Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)) &&
             *func_02098308(PlayerData_GetCurrent()) != 0) {
             ErrandRecord_setStep(p, 1);
             out->unk_04 = 0x1a;
@@ -2571,7 +2571,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0D(Unk_ov050_0225b908_Out *out) {
     void *g = PlayerData_GetCurrent();
     Pocket_FindEmpty(PlayerErrandSlot_GetRecord(PlayerErrands_GetSlot(func_0209865c(g), 0)));
     if (!checkNotInUniform(out)) {
-        if (!(Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(data_021dfd8c, PlayerData_getPlayerId(g)))) {
+        if (!(Unk_02097ff4_testFlag(g, 10) && SaveVillagers_AllKnowPlayer(gSaveVillagers, PlayerData_getPlayerId(g)))) {
             if (unk_b0->unk_73a != 0) {
                 out->unk_04 = 0x13;
             } else {
@@ -2992,7 +2992,7 @@ void SpNpcNookShopTalk::onArbeitMsgEnd31(void *h) {
 
 void SpNpcNookShopTalk::arbeitReduceLoan(void *h) {
     u8 *const a = gSaveData;
-    u8 *const g = data_021e58a8;
+    u8 *const g = gSaveHouse;
     if (func_02060388(g) < 0x579) {
         unk_cc = 0x36;
     } else {
@@ -3384,7 +3384,7 @@ void SpNpcNookShopTalk::onPurchaseDone() {
         } else {
             idx = -1;
         }
-        func_02060430(data_021e58a8, (u8)idx);
+        func_02060430(gSaveHouse, (u8)idx);
     } else {
         unk_cc = 0x23;
     }
@@ -3436,7 +3436,7 @@ void SpNpcNookShopTalk::showFirstPurchaseHint() {
 }
 
 void SpNpcNookShopTalk::ackHouseUpgrade() {
-    func_02060340(data_021e58a8);
+    func_02060340(gSaveHouse);
 }
 
 void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
@@ -3444,7 +3444,7 @@ void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
     u8 v = q[col];
     u8 b = v;
     TalkWindowState_setSlotFromString(unk_3c, 2, &b, (void *)"st_roof_paint");
-    func_020602cc(data_021e58a8, v);
+    func_020602cc(gSaveHouse, v);
 }
 extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
 
@@ -3795,7 +3795,7 @@ void SpNpcNookShopTalk::onBuyPaintChoice(s32 p) {
             unk_b0->unk_738 = 1;
             NpcActor_ChargePlayer(unk_b0, (s32)unk_c0);
             PlayerData_GetCurrent();
-            func_02097740(&data_021d735c, PlayerData_getPlayerId());
+            func_02097740(&gSavePlayers, PlayerData_getPlayerId());
             o = unk_b0;
             NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, Scene_GetCurrent());
         }
@@ -3992,7 +3992,7 @@ s32 SpNpcNookShopTalk::buySelectedItem() {
     NpcActor_ChargePlayer(unk_b0, (s32)unk_c0);
     Pocket_AddItem(&unk_b0->unk_72e, 0);
     PlayerData_GetCurrent();
-    func_02097740(&data_021d735c, PlayerData_getPlayerId());
+    func_02097740(&gSavePlayers, PlayerData_getPlayerId());
     o = unk_b0;
     NookShop_BuyAt((void *)o->unk_730, (void *)o->unk_734, (void *)unk_c0, Scene_GetCurrent());
     VillagerTrend_OnFurnitureBought();

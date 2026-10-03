@@ -15,8 +15,8 @@ extern u32 data_020e0498;
 extern u32 data_020e049c;
 
 extern "C" {
-extern u8 data_021d735c[];
-extern u16 data_021d7352[];
+extern u8 gSavePlayers[];
+extern u16 gSaveTownId[];
 extern u8 gSaveData[];
 extern u32 sAblePatternTexKeys[];
 extern u32 sPlayerPatternTexKeys[8][8];
@@ -24,10 +24,10 @@ extern u8 *sAblePatternTexWork;
 extern u8 *sAblePatternVramTasks;
 extern u8 *sPlayerPatternTexWork;
 extern u8 *sPlayerPatternVramTasks;
-extern u8 data_021e6e4c[];
-extern u8 data_021eca50[];
-extern u8 data_021dfd8c[];
-extern u8 data_021ecc7c[];
+extern u8 gSaveAbleSistersPatterns[];
+extern u8 gSaveGameStats[];
+extern u8 gSaveVillagers[];
+extern u8 gSaveTownFlag[];
 extern s32 (*sPatternSourceGetters[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
@@ -210,13 +210,13 @@ void MuseumData::checkCompletionLetters() {
 
 BOOL MuseumData::sendCompletionLetters() {
     Unk_020dd38c str;
-    func_020638d0(data_021d7352, &str);
+    func_020638d0(gSaveTownId, &str);
     MailText_SetSlot(2, &str);
     BOOL r = FALSE;
     s32 i = 0;
     u8 b;
     for (; i < 4; i++) {
-        void *p = PlayerData_GetResident(data_021d735c, i);
+        void *p = PlayerData_GetResident(gSavePlayers, i);
         if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
             Letter big;
             b = 0;
@@ -273,7 +273,7 @@ void MuseumData::releasePlayerDonations(u32 v) {
 BOOL MuseumData::getDonorName(s32 x, u16 *id) {
     if (getDonationState(id) <= 1) {
         s32 q = (getDonor(id) - 1) & 3;
-        void *p = PlayerData_GetResident(data_021d735c, q);
+        void *p = PlayerData_GetResident(gSavePlayers, q);
         if (p) {
             _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), x);
             return TRUE;

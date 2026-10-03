@@ -191,7 +191,7 @@ struct Data020cbb18 {
     u32 unk_64;
 };
 extern Data020cbb18 *gCommManager;
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 
 class Unk_020afd04 {
@@ -219,7 +219,7 @@ public:
 BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
         s32 idx = PlayerSession_GetDataIndex(i);
-        if (idx < 4 && func_020978c8(data_021d735c, PlayerSession_GetDataIndex(i))) {
+        if (idx < 4 && func_020978c8(gSavePlayers, PlayerSession_GetDataIndex(i))) {
             if (!_ZN11CommManager11isLocalSlotEj(gCommManager, i) || SceneWarp_HasNoPos(Scene_GetWarpRequest())) {
                 (this + idx)->get(pos, rot_, out);
             } else {

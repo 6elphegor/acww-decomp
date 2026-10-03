@@ -103,7 +103,7 @@ public:
 };
 
 extern "C" {
-extern HouseData data_021e58a8;
+extern HouseData gSaveHouse;
 extern u8 data_021e6e3c[];
 extern u8 gSaveData[];
 extern void *data_020dcbd0[];
@@ -394,7 +394,7 @@ BOOL HouseData::func_02060430(u32 v) {
 
 u16 HouseData::func_020603f4(s32 x) {
     if (x != -1) {
-        s32 m = data_021e58a8.func_020604c4();
+        s32 m = gSaveHouse.func_020604c4();
         if (m < 7) return data_020cb57c[m][x];
         return 0x1002;
     }
@@ -402,7 +402,7 @@ u16 HouseData::func_020603f4(s32 x) {
 }
 
 extern "C" u16 func_020603c8() {
-    s32 m = data_021e58a8.func_020604c4();
+    s32 m = gSaveHouse.func_020604c4();
     if (m < 7) return data_020cb550[m];
     return 0x1003;
 }
@@ -484,7 +484,7 @@ BOOL HouseData::func_0206022c() {
 
 extern "C" u16 *func_020601cc()
 {
-    HouseRoom *r = data_021e58a8.func_02060550(Scene_GetCurrent());
+    HouseRoom *r = gSaveHouse.func_02060550(Scene_GetCurrent());
     if (r != 0) {
         return r->func_020607d4();
     }
@@ -494,7 +494,7 @@ extern "C" u16 *func_020601cc()
 
 extern "C" BOOL func_020601a4(s32 a, u16 *p)
 {
-    HouseRoom *r = data_021e58a8.func_02060550(a);
+    HouseRoom *r = gSaveHouse.func_02060550(a);
     if (r != 0) {
         r->func_020607c8(p);
         return TRUE;

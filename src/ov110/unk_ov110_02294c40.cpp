@@ -11,8 +11,8 @@ class LostFoundRecycleMenu;
 
 extern "C" {
 extern void *gCommManager;
-extern u8 data_021ed210[];
-extern u8 data_021ed22e[];
+extern u8 gSaveLostAndFound[];
+extern u8 gSaveRecycleBin[];
 extern u8 gTouchCurY;
 extern u8 gTouchCurX;
 extern u8 gTouchPressY;
@@ -890,10 +890,10 @@ extern "C" void LostFoundRecycleMenu_Init(S *s) {
         func_ov110_02294d78(s, 0x200);
         break;
     case 0x1f:
-        MI_CpuCopy8(data_021ed210, s->unk_b0, 0x1e);
+        MI_CpuCopy8(gSaveLostAndFound, s->unk_b0, 0x1e);
         break;
     case 0x20:
-        MI_CpuCopy8(data_021ed22e, s->unk_b0, 0x1e);
+        MI_CpuCopy8(gSaveRecycleBin, s->unk_b0, 0x1e);
         break;
     }
     MI_CpuCopy8(s->unk_b0, s->unk_ce, 0x1e);
@@ -2133,13 +2133,13 @@ void LostFoundRecycleMenu::confirm(s32 flag) {
             MenuCtrl_SetResult(1);
             MenuCtrl_SetIndex((u8)n);
             MenuCtrl_SetChosenItems(unk_ce);
-            MI_CpuCopy8(unk_b0, data_021ed210, 0x1e);
+            MI_CpuCopy8(unk_b0, gSaveLostAndFound, 0x1e);
             sendItemsRecord(3);
         }
         break;
     }
     case 0x20:
-        MI_CpuCopy8(unk_b0, data_021ed22e, 0x1e);
+        MI_CpuCopy8(unk_b0, gSaveRecycleBin, 0x1e);
         sendItemsRecord(4);
         MenuCtrl_SetResult(1);
         break;

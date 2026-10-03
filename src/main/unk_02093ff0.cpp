@@ -301,7 +301,7 @@ public:
 };
 
 extern "C" {
-extern TownId data_021d7352;
+extern TownId gSaveTownId;
 s32 func_02063954(TownId *self);
 void func_02063968(TownId *self, TownId *o);
 void func_0206397c(TownId *self, TownId *o);
@@ -312,7 +312,7 @@ void func_020639bc(TownId *self, void *o);
 }
 
 extern "C" {
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 }
 
 extern "C" {
@@ -448,7 +448,7 @@ void PlayerId::func_020941b4(void *src, u16 a, s8 b, TownId *p)
     MI_CpuCopy8(src, unk_0c, 8);
     unk_0a = a;
     unk_14 = b;
-    if (p == NULL) p = &data_021d7352;
+    if (p == NULL) p = &gSaveTownId;
     func_02063990(this, p);
 }
 
@@ -516,7 +516,7 @@ s32 TownId::func_02094058()
 {
     s32 r = 2;
     if (func_02063954(this) != 0) {
-        TownId *p = &data_021d7352;
+        TownId *p = &gSaveTownId;
         if (unk_00 == p->unk_00 && memcmp(unk_02, p->unk_02, 8) == 0) {
             r = 0;
         } else {
@@ -528,7 +528,7 @@ s32 TownId::func_02094058()
 
 extern "C" s32 func_02094048(void *x)
 {
-    return func_02097740(data_021d735c, x);
+    return func_02097740(gSavePlayers, x);
 }
 
 Unk_020e1c64::Unk_020e1c64() {}

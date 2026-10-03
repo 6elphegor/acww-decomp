@@ -15,9 +15,9 @@ extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u8 gFieldSceneKind;
 extern u8 gTownReturnPos[];
-extern u8 data_021d7352[];
-extern u8 data_021d735c[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveTownId[];
+extern u8 gSavePlayers[];
+extern u8 gSaveVillagers[];
 
 void func_0206f9fc(void *self, u32 v);
 void _ZN12Unk_020dd38cC2Ev(void *self);
@@ -730,7 +730,7 @@ void MapTab::stateOpen() {
     u32 buf[8];
     loadObjGfx();
     _ZN12Unk_020dd38cC2Ev(buf);
-    func_020638d0(data_021d7352, buf);
+    func_020638d0(gSaveTownId, buf);
     String_SetSlot(0, buf);
     Unk_020e0488 *o = allocTextLabel();
     o->func_0206fb9c(8, 0x1ab, 0x12, 0xf, 0, 0);
@@ -1210,7 +1210,7 @@ Unk_020e0488 *MapTab::allocTextLabel() {
 void MapTab::buildEntryLists() {
     s32 n = 0;
     s32 m, i;
-    m = func_02097740(data_021d735c, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
+    m = func_02097740(gSavePlayers, _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()));
     if (m != -1) {
         unk_454e[0] = 1;
         n++;
@@ -1219,7 +1219,7 @@ void MapTab::buildEntryLists() {
         if (i == m) {
             continue;
         }
-        if (!func_020978c8(data_021d735c, i)) {
+        if (!func_020978c8(gSavePlayers, i)) {
             continue;
         }
         unk_454e[n] = i + 2;
@@ -1227,7 +1227,7 @@ void MapTab::buildEntryLists() {
     }
     unk_b0 = n;
     for (i = 0; i < 8; i++) {
-        if (SaveVillagers_IsOccupied(data_021dfd8c, i)) {
+        if (SaveVillagers_IsOccupied(gSaveVillagers, i)) {
             unk_454e[n] = i + 6;
             n++;
         }

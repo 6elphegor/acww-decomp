@@ -119,11 +119,11 @@ public:
 extern "C" {
 extern const u16 data_020cab80[];
 extern const u16 data_020cab84[];
-extern u8 data_021dfd8c[];
+extern u8 gSaveVillagers[];
 extern u8 gSaveData[];
-extern u8 data_021d735c[];
+extern u8 gSavePlayers[];
 extern u8 data_021ed300[];
-extern u8 data_021e58a8[];
+extern u8 gSaveHouse[];
 extern void *gCurrentHeap;
 }
 
@@ -531,12 +531,12 @@ extern "C" void *Unk_020dc0b0::vfunc_00(s32 i) {
 }
 
 extern "C" void Unk_020dc0b0::vfunc_04(s32 a, s32 key) {
-    void *h = _ZN9HouseData13func_0206052cEi(data_021e58a8, key);
+    void *h = _ZN9HouseData13func_0206052cEi(gSaveHouse, key);
     *(u16 *)this = *_ZN9HouseRoom13func_02060850EPi(h, 0);
 }
 
 extern "C" void Unk_020dc0b0::vfunc_08(s32 a, s32 key) {
-    void *h = _ZN9HouseData13func_0206052cEi(data_021e58a8, key);
+    void *h = _ZN9HouseData13func_0206052cEi(gSaveHouse, key);
     *(u16 *)this = *_ZN9HouseRoom13func_02060834EPi(h, 0);
 }
 
@@ -550,7 +550,7 @@ extern "C" void *Unk_020dc09c::vfunc_00(s32 i) {
 
 extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
     u16 v;
-    if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
+    if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetWallpaper();
         if (t < 0x44) v = (u16)(t + 0x1100);
         else v = 0x1100;
@@ -562,7 +562,7 @@ extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
 
 extern "C" void Unk_020dc09c::vfunc_08(s32 a, s32 key) {
     u16 v;
-    if (SaveVillagers_Get(data_021dfd8c, key) != 0) {
+    if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetCarpet();
         if (t < 0x44) v = (u16)(t + 0x1144);
         else v = 0x1144;
@@ -606,7 +606,7 @@ extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
         func_02059a30((s32 *)p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
         p->unk_10 = 0x1100;
         p->unk_12 = 0x1144;
-        h = _ZN9HouseData13func_0206052cEi(data_021e58a8, 0);
+        h = _ZN9HouseData13func_0206052cEi(gSaveHouse, 0);
         if (h != NULL) {
             p->unk_10 = *_ZN9HouseRoom13func_02060850EPi(h, 0);
             p->unk_12 = *_ZN9HouseRoom13func_02060834EPi(h, 0);
@@ -815,7 +815,7 @@ test0:
             if (*func_0209c37c(0, 0x22) == 0) goto end;
         }
         {
-            x = _ZN9HouseData13func_020604c4Ev(data_021e58a8);
+            x = _ZN9HouseData13func_020604c4Ev(gSaveHouse);
             u16 b;
             s32 nb;
             u32 q;
@@ -1455,7 +1455,7 @@ extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
             _ZN11MsgString33D1Ev(objC);
         }
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(data_021d735c, i);
+            void *p = PlayerData_GetResident(gSavePlayers, i);
             if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
                 if (func_0209c37c(z, 0x22)[0] != 0 || _ZN12Unk_02097ff48testFlagEj(p, 0xe)) {
                     _ZN6LetterC1Ev(objD);
@@ -1493,7 +1493,7 @@ extern "C" void func_02059adc(void *self, s32 n)
         s32 i;
         s32 zero = 0;
         for (i = 0; i < 4; i++) {
-            void *p = PlayerData_GetResident(data_021d735c, i);
+            void *p = PlayerData_GetResident(gSavePlayers, i);
             u32 obj[0x3e];
             u8 b;
             if (p && _ZN10PlayerData13func_02098a48Ev(p) && _ZN12Unk_02097ff48testFlagEj(p, 0xe) && !LetterDelivery_IsMailboxFull(i)) {
@@ -1564,7 +1564,7 @@ extern "C" BOOL func_020599b0()
 
 extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v)
 {
-    if (SaveVillagers_Find(data_021dfd8c, r3)) {
+    if (SaveVillagers_Find(gSaveVillagers, r3)) {
         u8 buf[2];
         u32 obj[0x3d];
         _ZN10VillagerId12makeFileNameEPvjj(r3, data_021c5dec, 0x28, (s32)r0);
@@ -1590,7 +1590,7 @@ extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32
 
 extern "C" BOOL func_0205989c(s32 a, s32 b)
 {
-    void *r = SaveVillagers_Find(data_021dfd8c, b);
+    void *r = SaveVillagers_Find(gSaveVillagers, b);
     if (r) {
         MailText_SetSlotMonth(2, *(u8 *)Villager_GetBirthday(r));
         MailText_SetSlotDayOrdinal(3, ((u8 *)Villager_GetBirthday(r))[1]);
@@ -1633,7 +1633,7 @@ extern "C" s32 func_020594dc(u32 a, s32 b, s32 c)
     }
     case 0:
     default: {
-        s32 r6 = func_0209788c(data_021d735c, b);
+        s32 r6 = func_0209788c(gSavePlayers, b);
         u32 r4 = data_020cab74[func_02063b8c(3)];
         ItemPickSpec o(r4, 0);
         s32 x;

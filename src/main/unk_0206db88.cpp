@@ -8,7 +8,7 @@ public:
 
 extern "C" {
 extern u8 gMelodyPlayer[];
-extern u8 data_021ed2f8[];
+extern u8 gSaveTownTune[];
 extern u8 gMelodyEditPattern[];
 extern s32 sMelodyTimer;
 extern s32 gGfxMainOnTop;
