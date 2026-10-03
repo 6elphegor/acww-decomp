@@ -685,7 +685,7 @@ from:0x02004070 kind:load to:0x020f0e2c module:autoload(2)
 from:0x02004088 kind:thumb_call to:0x02035338 module:main
 from:0x020040bc kind:load to:0x0213c8ec module:autoload(3)
 from:0x020040c0 kind:load to:0x021c1b3c module:autoload(3)
-from:0x020040c8 kind:load to:0x021f5be0 module:autoload(3)
+from:0x020040c8 kind:load to:0x021f5b80 add:0x60 module:autoload(3)
 from:0x020040f2 kind:thumb_call_arm to:0x020ec86c module:autoload(2)
 from:0x020040fa kind:thumb_call_arm to:0x020f1044 module:autoload(2)
 from:0x02004106 kind:thumb_call to:0x0209cf18 module:main

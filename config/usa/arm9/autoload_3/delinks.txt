@@ -552,6 +552,10 @@ src/main/unk_020c256c.bss.cpp:
     complete
     .bss        start:0x021f4710 end:0x021f4768
 
+src/autoload_2/unk_020f0dec.bss.cpp:
+    complete
+    .bss        start:0x021f5b80 end:0x021f5bf8
+
 src/autoload_2/unk_020f30fc.bss.cpp:
     complete
     .bss        start:0x021f5bf8 end:0x021f5bfc

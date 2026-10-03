@@ -275,3 +275,6 @@ data_021f4420 addr:0x021f4420 base:data_021f14e0
 data_021f4488 addr:0x021f4488 base:data_021f14e0
 data_021f44a0 addr:0x021f44a0 base:data_021f14e0
 data_021f44ac addr:0x021f44ac base:data_021f14e0
+data_021f5bbc addr:0x021f5bbc base:data_021f5b80
+data_021f5bc0 addr:0x021f5bc0 base:data_021f5b80
+data_021f5be0 addr:0x021f5be0 base:data_021f5b80

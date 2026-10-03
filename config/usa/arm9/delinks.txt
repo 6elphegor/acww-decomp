@@ -1375,3 +1375,8 @@ src/autoload_2/unk_02133ad0.main.cpp:
 src/autoload_2/unk_02133b68.main.cpp:
     complete
     .exceptix   start:0x020c2bbc end:0x020c2bd4
+
+src/autoload_2/unk_020f0dec.main.cpp:
+    complete
+    .init       start:0x020c6080 end:0x020c6094
+    .ctor       start:0x020d1f50 end:0x020d1f54

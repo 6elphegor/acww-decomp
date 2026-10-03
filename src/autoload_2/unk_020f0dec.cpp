@@ -1,11 +1,25 @@
 // mwcc-flags: -nothumb -O4,p
-// G009a: autoload_2 0x020f0dec-0x020f0fb4 (8 functions). mwcc 1.2/base, C++, ARM, -O4,p.
-// The sound/BGM manager (object data_021f5b80, "SndMgr"): five tiny wrappers, the per-frame update (0x020f0e3c),
-// the initialiser (0x020f0e68) and the constructor (0x020f0f70, called from main's __sinit 0x020c6080).
-// PARTIAL unit: only extern "C" functions under their symbols.txt names, no data, all callees extern.
+// RC_020f0dec: autoload_2 0x020f0dec-0x020f0fb4 (8 functions) + bss 0x021f5b80-0x021f5bf8 (autoload_3) + main .init
+// 0x020c6080-0x020c6094 / .ctor 0x020d1f50-0x020d1f54 (its __sinit). mwcc 1.2/base, C++, ARM, -O4,p.
+// REAL-CLASS shape (pipeline_wip/realclass_work/PLAN.md #3): the sound/BGM manager SndMgr and its one object data_021f5b80, a
+// file-scope object with an out-of-line constructor, which mwcc builds in the file's __sinit (main .init 0x020c6080: a tail call of
+// the C1 constructor 0x020f0f70; the C2 is unreferenced and dead-stripped). Every member keeps its symbols.txt name (aliases.txt).
+// Extent: the text and the 0x78-byte object are certain; the 4-byte bss words before it (0x021f5b48-0x021f5b7c, used only by
+// func_020ee98c and G006 0x020ef150-0x020f0dec) are equal-or-smaller objects, so they may belong to this file too (then G006, and
+// perhaps func_020ee98c, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
 #include "types.h"
 
-struct SndMgr {
+class SndMgr {
+public:
+    SndMgr();                                // C1 0x020f0f70
+    void init(u32 a, u32 b, u32 c);          // 0x020f0e68
+    void update();                           // 0x020f0e3c
+    void volumeOff();                        // 0x020f0e2c
+    void volumeOn();                         // 0x020f0e1c
+    void setMode(u32 v);                     // 0x020f0e08
+    void applyMode();                        // 0x020f0df8
+    void stopAll();                          // 0x020f0dec
+
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ u8 unk_04[0x24];
     /* 0x28 */ void *unk_28;
@@ -35,7 +49,12 @@ struct SndMgr {
     /* 0x6e */ u16 unk_6e;
     /* 0x70 */ u8 unk_70;
     /* 0x71 */ u8 unk_71;
+    /* 0x72 */ u8 unk_72[6];
 };
+
+// the sound manager (C linkage name as in symbols.txt; other files use data_021f5bbc / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
+// recorded as linker-script names by renames.txt)
+SndMgr data_021f5b80;
 
 extern "C" {
 void func_0206d49c(void); // Thumb, in main: fatal stop
@@ -43,7 +62,6 @@ void *func_0210bfe8(u32 a, u32 b);
 void func_020edbbc(u32 a, u32 b, u32 c, u32 d);
 u32 func_0211d6e0(void);
 void func_0210b280(u32 a);
-void func_020f0df8(SndMgr *self);
 void func_021095ec(u32 a);
 void *func_020edc88(void);
 void func_0210e8bc(u32 a, void *b);
@@ -60,66 +78,65 @@ void func_0210ee4c(u32 a);
 void func_0210b31c(SndMgr *self);
 }
 
-extern "C" SndMgr *func_020f0f70(SndMgr *self) {
-    self->unk_54 = func_01ffa6b4();
-    self->unk_58 = 0x5d588b65;
-    self->unk_5c = 0x00269ec3;
-    self->unk_4d = 0;
-    self->unk_60 = 0;
-    self->unk_62 = 0;
-    return self;
+SndMgr::SndMgr() {
+    unk_54 = func_01ffa6b4();
+    unk_58 = 0x5d588b65;
+    unk_5c = 0x00269ec3;
+    unk_4d = 0;
+    unk_60 = 0;
+    unk_62 = 0;
 }
 
-extern "C" void func_020f0e68(SndMgr *self, u32 a, u32 b, u32 c) {
-    self->unk_28 = NULL;
-    if (self->unk_28 != NULL) func_0206d49c();
-    self->unk_28 = func_0210bfe8(a, 0x339c);
-    if (self->unk_28 == NULL) func_0206d49c();
+void SndMgr::init(u32 a, u32 b, u32 c) {
+    unk_28 = NULL;
+    if (unk_28 != NULL) func_0206d49c();
+    unk_28 = func_0210bfe8(a, 0x339c);
+    if (unk_28 == NULL) func_0206d49c();
     func_020edbbc(a + 0x339c, b - 0x339c, c, 0);
     func_0210b280(func_0211d6e0() - 1);
-    self->unk_50 = 1;
-    func_020f0df8(self);
+    unk_50 = 1;
+    applyMode();
     func_021095ec(127);
     func_0210e8bc(10, func_020edc88());
-    func_0210e6ac(&self->unk_34);
+    func_0210e6ac(&unk_34);
     func_020ed9c8(0);
-    func_020eda60(&self->unk_48);
-    func_020eda60(&self->unk_38);
-    func_020eda60(&self->unk_3c);
-    func_020eda60(&self->unk_40);
-    self->unk_00 = 0;
-    self->unk_64 = 0;
-    self->unk_68 = 0;
-    self->unk_6c = -1;
-    self->unk_6e = 0;
-    self->unk_70 = 0;
-    self->unk_71 = 0;
+    func_020eda60(&unk_48);
+    func_020eda60(&unk_38);
+    func_020eda60(&unk_3c);
+    func_020eda60(&unk_40);
+    unk_00 = 0;
+    unk_64 = 0;
+    unk_68 = 0;
+    unk_6c = -1;
+    unk_6e = 0;
+    unk_70 = 0;
+    unk_71 = 0;
 }
 
-extern "C" void func_020f0e3c(SndMgr *self) {
+void SndMgr::update() {
     func_020edb14();
-    func_020ef728(self);
-    func_020effd4(self);
-    func_020efe70(self);
+    func_020ef728(this);
+    func_020effd4(this);
+    func_020efe70(this);
 }
 
-extern "C" void func_020f0e2c(void) {
+void SndMgr::volumeOff() {
     func_021095ec(0);
 }
 
-extern "C" void func_020f0e1c(void) {
+void SndMgr::volumeOn() {
     func_021095ec(127);
 }
 
-extern "C" void func_020f0e08(SndMgr *self, u32 v) {
-    self->unk_50 = v;
-    func_0210ee4c(self->unk_50);
+void SndMgr::setMode(u32 v) {
+    unk_50 = v;
+    func_0210ee4c(unk_50);
 }
 
-extern "C" void func_020f0df8(SndMgr *self) {
-    func_020edb74(self->unk_50);
+void SndMgr::applyMode() {
+    func_020edb74(unk_50);
 }
 
-extern "C" void func_020f0dec(SndMgr *self) {
-    func_0210b31c(self);
+void SndMgr::stopAll() {
+    func_0210b31c(this);
 }
