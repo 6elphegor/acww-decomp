@@ -298,7 +298,7 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
   `lcf_symbols.txt`, see "Names the linker script defines"). LampLights pointer from another module into the middle of one of the
   unit's objects is handled as for any linked unit: name the object's start in `symbols.txt` and give the
   relocation `add:<offset>` (ov003 TU08: main's word at 0x020cdf4c points to 0x02231707, inside a vtable; it is
-  now `to:0x0223160c add:0xfb` with `_ZTV18Unk_ov003_02231614` at 0x0223160c). mwld does **not** report the
+  now `to:0x0223160c add:0xfb` with `_ZTV13CountdownSign` at 0x0223160c). mwld does **not** report the
   leftover undefined label: the word is linked as 0 and only the ROM checksum shows it
   (`tools/pipeline/romdiff.py` then names `arm9.bin`).
 * An object is placed in the range of its own section kind: an object the original keeps in `.rodata` must be
