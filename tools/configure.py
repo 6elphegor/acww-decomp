@@ -215,6 +215,15 @@ def main():
         )
         n.newline()
 
+        # Units with `.incbin` lines (bytes taken from the extracted ROM): expanded first by tools/expand_incbin.py,
+        # because mwasmarm's .incbin reads files in text mode.
+        n.rule(
+            name="mwasm_incbin",
+            command=f'{PYTHON} tools/expand_incbin.py $in $out.s && '
+                    f'{WINE} "$as" {AS_FLAGS} {CC_INCLUDES} $as_flags -c $out.s -o $out',
+        )
+        n.newline()
+
         n.rule(
             name="lcf",
             command=f"{DSD} lcf --config-path $config_path"
@@ -653,10 +662,13 @@ def add_mwasm_builds(n: ninja_syntax.Writer, project: Project, implicit: list[st
         if version is not None:
             assembler = os.path.join('.', str(mwcc_root / version / "mwasmarm.exe"))
         flags = source_header(source_file, "mwasm-flags")
+        # Units that `.incbin` bytes from the extracted ROM (the secure area's filler) wait for the extract step.
+        incbin = ".incbin" in source_file.read_text(errors="replace")
+        extract_dep = [str(project.baserom_config()), "tools/expand_incbin.py"] if incbin else []
         n.build(
             inputs=str(source_file),
-            implicit=[*implicit, assembler],
-            rule="mwasm",
+            implicit=[*implicit, assembler, *extract_dep],
+            rule="mwasm_incbin" if incbin else "mwasm",
             outputs=str((project.game_build / source_file).with_suffix(".o")),
             variables={
                 "as": assembler,
