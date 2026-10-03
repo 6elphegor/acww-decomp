@@ -15,6 +15,10 @@ src/autoload_2/unk_020e8c48.cpp:
     complete
     .text       start:0x020e8c48 end:0x020e914c
 
+src/autoload_2/unk_020e914c.cpp:
+    complete
+    .text       start:0x020e914c end:0x020e91cc
+
 src/autoload_2/unk_020e91cc.cpp:
     complete
     .text       start:0x020e91cc end:0x020ea0b4
@@ -62,6 +66,10 @@ src/autoload_2/unk_020edd58.cpp:
 src/autoload_2/unk_020ede18.cpp:
     complete
     .text       start:0x020ede18 end:0x020ee98c
+
+src/autoload_2/unk_020ee98c.cpp:
+    complete
+    .text       start:0x020ee98c end:0x020ef150
 
 src/autoload_2/unk_020ef150.cpp:
     complete
@@ -138,6 +146,10 @@ src/autoload_2/unk_020fe5c0.cpp:
 src/autoload_2/unk_020fe848.c:
     complete
     .text       start:0x020fe848 end:0x020fea34
+
+src/autoload_2/unk_020fea34.c:
+    complete
+    .text       start:0x020fea34 end:0x020fedcc
 
 src/autoload_2/unk_020fedcc.c:
     complete
@@ -639,6 +651,10 @@ src/autoload_2/unk_0211a6c0.c:
     complete
     .text       start:0x0211a6c0 end:0x0211a8d4
 
+src/autoload_2/unk_0211a8d4.c:
+    complete
+    .text       start:0x0211a8d4 end:0x0211acbc
+
 src/autoload_2/unk_0211acbc.c:
     complete
     .text       start:0x0211acbc end:0x0211ad80
@@ -682,6 +698,10 @@ src/autoload_2/unk_0211cc7c.c:
 src/autoload_2/unk_0211d20c.c:
     complete
     .text       start:0x0211d20c end:0x0211da74
+
+src/autoload_2/unk_0211da74.c:
+    complete
+    .text       start:0x0211da74 end:0x0211dc4c
 
 src/autoload_2/unk_0211dc4c.c:
     complete
@@ -727,9 +747,17 @@ src/autoload_2/unk_02120fe8.c:
     complete
     .text       start:0x02120fe8 end:0x02121e5c
 
+src/autoload_2/unk_02121e5c.c:
+    complete
+    .text       start:0x02121e5c end:0x02122114
+
 src/autoload_2/unk_02122114.c:
     complete
     .text       start:0x02122114 end:0x02122944
+
+src/autoload_2/unk_02122944.c:
+    complete
+    .text       start:0x02122944 end:0x02122e24
 
 src/autoload_2/unk_02122e24.c:
     complete
@@ -742,6 +770,10 @@ src/autoload_2/unk_02123444.c:
 src/autoload_2/unk_02123e58.c:
     complete
     .text       start:0x02123e58 end:0x02124408
+
+src/autoload_2/unk_02124408.c:
+    complete
+    .text       start:0x02124408 end:0x02124480
 
 src/autoload_2/unk_02124480.c:
     complete
