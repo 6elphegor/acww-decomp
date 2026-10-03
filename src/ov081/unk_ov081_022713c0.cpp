@@ -28,8 +28,8 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov081_0227217c;
-class Unk_ov081_022720ec;
+class SpNpcTortimerFishingTourney;
+class SpNpcTortimerFishingTourneyTalk;
 
 struct ChoiceList {
     s32 getResult();
@@ -45,7 +45,7 @@ struct Unk_020e1c64 {
     ~Unk_020e1c64();
 };
 
-struct Unk_ov081_0227186c_Out {
+struct TalkStartMsg {
     u32 a;
     u8 b;
 };
@@ -171,7 +171,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov081_0227186c_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     void *func_02015aac();
@@ -216,26 +216,26 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class Unk_ov081_022720ec : public SpNpcTalkRequest {
+class SpNpcTortimerFishingTourneyTalk : public SpNpcTalkRequest {
 public:
-    typedef void (Unk_ov081_022720ec::*Fn)();
+    typedef void (SpNpcTortimerFishingTourneyTalk::*Fn)();
 
-    Unk_ov081_022720ec();
-    virtual ~Unk_ov081_022720ec();
+    SpNpcTortimerFishingTourneyTalk();
+    virtual ~SpNpcTortimerFishingTourneyTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov081_0227186c_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_84();
 
-    s32 func_ov081_02271768();
-    void func_ov081_02271998(Unk_ov081_0227217c *owner);
-    void func_ov081_02271a20();
-    void func_ov081_02271a28();
-    void func_ov081_02271b0c(s32 i);
-    void func_ov081_02271b1c(s32 i);
-    void func_ov081_02271b2c(Fn *slot, s32 i);
+    s32 getRecordHolder();
+    void attachOwner(SpNpcTortimerFishingTourney *owner);
+    void scriptCloseItemSelect();
+    void scriptCatchChosen();
+    void setNextScript(s32 i);
+    void setScript(s32 i);
+    void pickScript(Fn *slot, s32 i);
 
-    Unk_ov081_0227217c *unk_ac;
+    SpNpcTortimerFishingTourney *unk_ac;
     Fn unk_b0;
     Fn unk_b8;
     u16 unk_c0;
@@ -412,9 +412,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov081_0227217c : public Unk_020d8bc8 {
+class SpNpcTortimerFishingTourney : public Unk_020d8bc8 {
 public:
-    Unk_ov081_0227217c() {}
+    SpNpcTortimerFishingTourney() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -423,23 +423,23 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov081_02271c00();
-    BOOL func_ov081_02271c04();
-    BOOL func_ov081_02271c30();
-    BOOL func_ov081_02271c68();
-    BOOL func_ov081_02271c6c();
-    void func_ov081_02271ca0(s32 state);
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    Unk_ov081_022720ec unk_658;
+    SpNpcTortimerFishingTourneyTalk unk_658;
     s32 unk_720;
 };
 
 struct Unk_ov081_02271ca0_Ent {
-    BOOL (Unk_ov081_0227217c::*enter)();
-    BOOL (Unk_ov081_0227217c::*exit)();
+    BOOL (SpNpcTortimerFishingTourney::*enter)();
+    BOOL (SpNpcTortimerFishingTourney::*exit)();
 };
 
 static inline BOOL Unk_ov081_InRange(volatile u16 *p, u32 lo, u32 hi) {
@@ -460,29 +460,29 @@ static inline BOOL Unk_ov081_Neg(s32 v) {
 }
 
 extern "C" {
-extern Unk_ov081_02271ca0_Ent data_ov081_02272274[3];
-extern u8 data_ov081_022720c8[];
-extern u8 data_ov081_02272098[];
-BOOL func_ov081_02271ae4(u16 *p, s32 x);
+extern Unk_ov081_02271ca0_Ent sSpNpcTortimerFishingTourneyActTable[3];
+extern u8 sSpNpcTortimerFishingTourneyTexturePath[];
+extern u8 sSpNpcTortimerFishingTourneyModelPath[];
+BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x);
 }
 
 struct Unk_ov081_SceneEntry {
-    Unk_ov081_0227217c *(*factory)();
+    SpNpcTortimerFishingTourney *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
-extern "C" Unk_ov081_0227217c *func_ov081_02271ec8();
+extern "C" SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create();
 
 extern "C" {
-void _ZN18Unk_ov081_0227217c19func_ov081_02271c6cEv();
-void _ZN18Unk_ov081_0227217c19func_ov081_02271c68Ev();
-void _ZN18Unk_ov081_0227217c19func_ov081_02271c30Ev();
-void _ZN18Unk_ov081_0227217c19func_ov081_02271c04Ev();
-void _ZN18Unk_ov081_0227217c19func_ov081_02271c00Ev();
-void _ZN18Unk_ov081_022720ec19func_ov081_02271a28Ev();
-void _ZN18Unk_ov081_022720ec19func_ov081_02271a20Ev();
+void _ZN27SpNpcTortimerFishingTourney10setupAct00Ev();
+void _ZN27SpNpcTortimerFishingTourney9mainAct00Ev();
+void _ZN27SpNpcTortimerFishingTourney10setupAct01Ev();
+void _ZN27SpNpcTortimerFishingTourney9mainAct01Ev();
+void _ZN27SpNpcTortimerFishingTourney9mainAct02Ev();
+void _ZN31SpNpcTortimerFishingTourneyTalk17scriptCatchChosenEv();
+void _ZN31SpNpcTortimerFishingTourneyTalk21scriptCloseItemSelectEv();
 }
-typedef BOOL (Unk_ov081_0227217c::*Unk_ov081_StateFn)();
+typedef BOOL (SpNpcTortimerFishingTourney::*Unk_ov081_StateFn)();
 
 extern "C" void *data_ov081_02272060[2];
 extern "C" void *data_ov081_02272068[2];
@@ -491,28 +491,28 @@ extern "C" void *data_ov081_02272078[2];
 extern "C" void *data_ov081_02272080[2];
 extern "C" void *data_ov081_02272088[2];
 extern "C" void *data_ov081_02272090[2];
-extern "C" Unk_ov081_SceneEntry data_ov081_022720b0;
+extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile;
 
 // ---------------------------------------------------------------------------------------------------------------------
-Unk_ov081_0227217c *func_ov081_02271ec8() {
-    return new Unk_ov081_0227217c();
+SpNpcTortimerFishingTourney *SpNpcTortimerFishingTourney_Create() {
+    return new SpNpcTortimerFishingTourney();
 }
 
-BOOL Unk_ov081_0227217c::vfunc_04() {
+BOOL SpNpcTortimerFishingTourney::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov081_02271998(this);
+    unk_658.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov081_0227217c::vfunc_00() {
+BOOL SpNpcTortimerFishingTourney::vfunc_00() {
     Unk_ov081_02271d40_Loc l;
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov081_02271ca0(0);
+    changeAct(0);
     void *g = data_021ed24c;
     func_02085784(g, 1);
     func_02085818(&l.b, g);
@@ -548,36 +548,36 @@ BOOL Unk_ov081_0227217c::vfunc_00() {
     return TRUE;
 }
 
-u8 *Unk_ov081_0227217c::getTexturePath() { return data_ov081_022720c8; }
+u8 *SpNpcTortimerFishingTourney::getTexturePath() { return sSpNpcTortimerFishingTourneyTexturePath; }
 
-u8 *Unk_ov081_0227217c::getModelPath() { return data_ov081_02272098; }
+u8 *SpNpcTortimerFishingTourney::getModelPath() { return sSpNpcTortimerFishingTourneyModelPath; }
 
-BOOL Unk_ov081_0227217c::updateAct() {
+BOOL SpNpcTortimerFishingTourney::updateAct() {
     BOOL result = FALSE;
-    if (data_ov081_02272274[unk_654].exit != NULL) {
-        result = (this->*data_ov081_02272274[unk_654].exit)();
+    if (sSpNpcTortimerFishingTourneyActTable[unk_654].exit != NULL) {
+        result = (this->*sSpNpcTortimerFishingTourneyActTable[unk_654].exit)();
     }
     return result;
 }
 
-void Unk_ov081_0227217c::func_ov081_02271ca0(s32 state) {
+void SpNpcTortimerFishingTourney::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov081_02272274[state].enter != NULL) {
-        ok = (this->*data_ov081_02272274[state].enter)();
+    if (sSpNpcTortimerFishingTourneyActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcTortimerFishingTourneyActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov081_0227217c::func_ov081_02271c6c() {
+BOOL SpNpcTortimerFishingTourney::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov081_0227217c::func_ov081_02271c68() { return TRUE; }
+BOOL SpNpcTortimerFishingTourney::mainAct00() { return TRUE; }
 
-BOOL Unk_ov081_0227217c::func_ov081_02271c30() {
+BOOL SpNpcTortimerFishingTourney::setupAct01() {
     void *p = unk_658.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
@@ -587,17 +587,17 @@ BOOL Unk_ov081_0227217c::func_ov081_02271c30() {
     return TRUE;
 }
 
-BOOL Unk_ov081_0227217c::func_ov081_02271c04() {
+BOOL SpNpcTortimerFishingTourney::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov081_02271ca0(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov081_0227217c::func_ov081_02271c00() { return TRUE; }
+BOOL SpNpcTortimerFishingTourney::mainAct02() { return TRUE; }
 
-void Unk_ov081_022720ec::vfunc_84() {
+void SpNpcTortimerFishingTourneyTalk::vfunc_84() {
     if (unk_b0) {
         (this->*unk_b0)();
         Fn t = *(Fn *)__ptmf_null;
@@ -609,51 +609,51 @@ void Unk_ov081_022720ec::vfunc_84() {
     }
 }
 
-extern "C" Unk_ov081_SceneEntry data_ov081_022720b0;
+extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile;
 
 
 
-extern "C" void *data_ov081_02272088[2] = {(void *)_ZN18Unk_ov081_0227217c19func_ov081_02271c04Ev, 0};
+extern "C" void *data_ov081_02272088[2] = {(void *)_ZN27SpNpcTortimerFishingTourney9mainAct01Ev, 0};
 
-extern "C" void *data_ov081_02272078[2] = {(void *)_ZN18Unk_ov081_0227217c19func_ov081_02271c68Ev, 0};
+extern "C" void *data_ov081_02272078[2] = {(void *)_ZN27SpNpcTortimerFishingTourney9mainAct00Ev, 0};
 
-extern "C" void *data_ov081_02272070[2] = {(void *)_ZN18Unk_ov081_022720ec19func_ov081_02271a28Ev, 0};
+extern "C" void *data_ov081_02272070[2] = {(void *)_ZN31SpNpcTortimerFishingTourneyTalk17scriptCatchChosenEv, 0};
 
-extern "C" Unk_ov081_SceneEntry data_ov081_022720b0 = {func_ov081_02271ec8, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov081_SceneEntry sSpNpcTortimerFishingTourneyProfile = {SpNpcTortimerFishingTourney_Create, 0x57, 0x5e, 2, 0x5000, 0x5000, 0x3e800};
 
-void Unk_ov081_022720ec::func_ov081_02271b2c(Fn *slot, s32 i) {
+void SpNpcTortimerFishingTourneyTalk::pickScript(Fn *slot, s32 i) {
     static Fn tbl[2] = {*(Fn *)data_ov081_02272070, *(Fn *)data_ov081_02272068};
     *slot = tbl[i];
 }
 
-extern "C" void *data_ov081_02272090[2] = {(void *)_ZN18Unk_ov081_0227217c19func_ov081_02271c30Ev, 0};
+extern "C" void *data_ov081_02272090[2] = {(void *)_ZN27SpNpcTortimerFishingTourney10setupAct01Ev, 0};
 
-extern "C" u8 data_ov081_022720c8[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" u8 sSpNpcTortimerFishingTourneyTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
-Unk_ov081_02271ca0_Ent data_ov081_02272274[3] = {
+Unk_ov081_02271ca0_Ent sSpNpcTortimerFishingTourneyActTable[3] = {
     {*(Unk_ov081_StateFn *)data_ov081_02272060, *(Unk_ov081_StateFn *)data_ov081_02272078},
     {*(Unk_ov081_StateFn *)data_ov081_02272090, *(Unk_ov081_StateFn *)data_ov081_02272088},
     {NULL, *(Unk_ov081_StateFn *)data_ov081_02272080},
 };
 
-extern "C" u8 data_ov081_02272098[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcTortimerFishingTourneyModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-extern "C" void *data_ov081_02272060[2] = {(void *)_ZN18Unk_ov081_0227217c19func_ov081_02271c6cEv, 0};
+extern "C" void *data_ov081_02272060[2] = {(void *)_ZN27SpNpcTortimerFishingTourney10setupAct00Ev, 0};
 
-extern "C" void *data_ov081_02272068[2] = {(void *)_ZN18Unk_ov081_022720ec19func_ov081_02271a20Ev, 0};
+extern "C" void *data_ov081_02272068[2] = {(void *)_ZN31SpNpcTortimerFishingTourneyTalk21scriptCloseItemSelectEv, 0};
 
-extern "C" void *data_ov081_02272080[2] = {(void *)_ZN18Unk_ov081_0227217c19func_ov081_02271c00Ev, 0};
+extern "C" void *data_ov081_02272080[2] = {(void *)_ZN27SpNpcTortimerFishingTourney9mainAct02Ev, 0};
 
 
-void Unk_ov081_022720ec::func_ov081_02271b1c(s32 i) {
-    func_ov081_02271b2c(&unk_b0, i);
+void SpNpcTortimerFishingTourneyTalk::setScript(s32 i) {
+    pickScript(&unk_b0, i);
 }
 
-void Unk_ov081_022720ec::func_ov081_02271b0c(s32 i) {
-    func_ov081_02271b2c(&unk_b8, i);
+void SpNpcTortimerFishingTourneyTalk::setNextScript(s32 i) {
+    pickScript(&unk_b8, i);
 }
 
-extern "C" BOOL func_ov081_02271ae4(u16 *p, s32 x) {
+extern "C" BOOL SpNpcTortimerFishingTourney_IsFish(u16 *p, s32 x) {
     if (x == 0) {
         BOOL r = FALSE;
         u32 v = *p;
@@ -665,7 +665,7 @@ extern "C" BOOL func_ov081_02271ae4(u16 *p, s32 x) {
     return FALSE;
 }
 
-void Unk_ov081_022720ec::func_ov081_02271a28() {
+void SpNpcTortimerFishingTourneyTalk::scriptCatchChosen() {
     TalkWindowState *p = unk_3c;
     u8 m;
     unk_c0 = 0xfff1;
@@ -676,7 +676,7 @@ void Unk_ov081_022720ec::func_ov081_02271a28() {
         unk_c0 = func_02099048();
         unk_ac->unk_720 = func_02085618(&unk_c0);
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &unk_c0, 0, 4, 0);
-        func_ov081_02271b0c(1);
+        setNextScript(1);
         _ZN16ActorTalkRequest13func_0201578cEjjj(this, &unk_c0, 2, 7);
         _ZN16ActorTalkRequest13func_020158a8Eiji(this, unk_ac->unk_720, 4, 1, 3);
         if (r4 >= 0) {
@@ -689,24 +689,24 @@ void Unk_ov081_022720ec::func_ov081_02271a28() {
     p->setNextMessage(&m, (void *)"sp_npc_turtle1");
 }
 
-void Unk_ov081_022720ec::func_ov081_02271a20() {
+void SpNpcTortimerFishingTourneyTalk::scriptCloseItemSelect() {
     _ZN12Unk_020d771013func_02014f74Ev(this);
 }
 
-Unk_ov081_022720ec::Unk_ov081_022720ec() {
+SpNpcTortimerFishingTourneyTalk::SpNpcTortimerFishingTourneyTalk() {
     unk_c0 = 0xfff1;
 }
 
-Unk_ov081_022720ec::~Unk_ov081_022720ec() {}
+SpNpcTortimerFishingTourneyTalk::~SpNpcTortimerFishingTourneyTalk() {}
 
-void Unk_ov081_022720ec::func_ov081_02271998(Unk_ov081_0227217c *owner) {
+void SpNpcTortimerFishingTourneyTalk::attachOwner(SpNpcTortimerFishingTourney *owner) {
     vfunc_08();
     unk_ac = owner;
     unk_c2 = 0;
     unk_c4 = -1;
 }
 
-void Unk_ov081_022720ec::vfunc_78(Unk_ov081_0227186c_Out *out) {
+void SpNpcTortimerFishingTourneyTalk::vfunc_78(TalkStartMsg *out) {
     struct {
         u16 h[5];
         Unk_0209d498_Obj o;
@@ -775,7 +775,7 @@ void Unk_ov081_022720ec::vfunc_78(Unk_ov081_0227186c_Out *out) {
     }
 }
 
-s32 Unk_ov081_022720ec::func_ov081_02271768() {
+s32 SpNpcTortimerFishingTourneyTalk::getRecordHolder() {
     u16 h[2];
     void *g = data_021ed24c;
     void *r4;
@@ -818,7 +818,7 @@ s32 Unk_ov081_022720ec::func_ov081_02271768() {
     return -1;
 }
 
-void Unk_ov081_022720ec::vfunc_14() {
+void SpNpcTortimerFishingTourneyTalk::vfunc_14() {
     u8 m1;
     u8 m2;
     u16 h0, h1, h2, h3, h4, h5;
@@ -853,17 +853,17 @@ void Unk_ov081_022720ec::vfunc_14() {
                 _ZN12Unk_02087ad813func_02087bb0Ei(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()), 1);
                 if (((unk_ac->unk_720 * 10) >> 12) > ((_ZN12Unk_0208581013func_02085810Ev(g) * 10) >> 12)) {
                     msg = 0x10;
-                } else if (func_ov081_02271768() == 0) {
+                } else if (getRecordHolder() == 0) {
                     msg = 0x16;
-                } else if (func_ov081_02271768() > 0) {
+                } else if (getRecordHolder() > 0) {
                     msg = 0xe;
                 }
                 break;
             case 0x10:
-                if (func_ov081_02271768() == 0) {
+                if (getRecordHolder() == 0) {
                     msg = 0x11;
                     unk_c2 = 1;
-                } else if (func_ov081_02271768() > 0) {
+                } else if (getRecordHolder() > 0) {
                     msg = 0x12;
                     unk_c2 = 0;
                 }
@@ -900,9 +900,9 @@ void Unk_ov081_022720ec::vfunc_14() {
             func_0202e1cc(0x1b, 1);
             break;
         case 0xb:
-            _ZN12Unk_020d771013func_0201517cEjjj(this, func_ov081_02271ae4, 0xd, 1);
+            _ZN12Unk_020d771013func_0201517cEjjj(this, SpNpcTortimerFishingTourney_IsFish, 0xd, 1);
             _ZN12Unk_020d771013func_020151d0Ei(this, 0);
-            func_ov081_02271b1c(0);
+            setScript(0);
             break;
         }
         if (msg != 0xff) {
@@ -912,7 +912,7 @@ void Unk_ov081_022720ec::vfunc_14() {
     }
 }
 
-void Unk_ov081_022720ec::vfunc_18() {
+void SpNpcTortimerFishingTourneyTalk::vfunc_18() {
     u8 b1;
     u8 b2;
     u16 h;
@@ -938,9 +938,9 @@ void Unk_ov081_022720ec::vfunc_18() {
     } else {
         if (unk_1e == 8) {
             if (t != 0) {
-                if (func_ov081_02271768() == 0) {
+                if (getRecordHolder() == 0) {
                     msg = 9;
-                } else if (func_ov081_02271768() > 0) {
+                } else if (getRecordHolder() > 0) {
                     msg = 0xa;
                 }
             } else {
@@ -954,7 +954,7 @@ void Unk_ov081_022720ec::vfunc_18() {
     }
 }
 
-BOOL Unk_ov081_0227217c::vfunc_48() {
+BOOL SpNpcTortimerFishingTourney::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -962,15 +962,15 @@ BOOL Unk_ov081_0227217c::vfunc_48() {
     return r;
 }
 
-void Unk_ov081_0227217c::vfunc_4c(s32 v) {
+void SpNpcTortimerFishingTourney::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov081_02271ca0(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov081_02271ca0(0);
+        changeAct(0);
         break;
     }
 }

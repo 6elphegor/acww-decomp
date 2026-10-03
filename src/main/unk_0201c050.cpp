@@ -2630,8 +2630,8 @@ void * MI_CpuFill8(void *, s32, u32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 memcmp(void *, void *, s32);
 void func_02133ef8(void *, u32);
-s32 func_ov003_0222612c();
-s32 func_ov003_02227e08(void *, u32);
+s32 Insect_IsBeeSwarmOut();
+s32 FieldInsect_GetPosAndKind(void *, u32);
 extern u32 __ptmf_null[2];
 extern u32 data_020c7aa4[5];
 extern u32 data_020c7ab8[5];
@@ -5413,7 +5413,7 @@ extern "C" s32 func_0202c094(void *a, void *b, s32 c, void *d, s32 e) {
     if (Unk_0202c094_IsZero(data_020e416c)) {
         s32 i;
         for (i = 0; i < 8; i++) {
-            s32 t = func_0202c0fc(func_ov003_02227e08(a, (u8)i), (s8 *)b, c);
+            s32 t = func_0202c0fc(FieldInsect_GetPosAndKind(a, (u8)i), (s8 *)b, c);
             if (t != -1) {
                 if (func_020e9650(d, a) < e) {
                     return t;
@@ -5655,7 +5655,7 @@ BOOL VillagerTalkTopics::func_0202bb84() {
 
 BOOL VillagerTalkTopics::func_0202bb54() {
     BOOL f = IsZero(data_020e416c);
-    if (f && func_ov003_0222612c() != 0) {
+    if (f && Insect_IsBeeSwarmOut() != 0) {
         return TRUE;
     }
     return FALSE;

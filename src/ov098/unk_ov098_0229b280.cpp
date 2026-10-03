@@ -41,14 +41,14 @@ extern "C" s16 data_ov098_0229bd00[16] = {0, 0x1800, -0x1800, 0};
 BOOL PlayerActor_ConfirmReleaseCreature();
 BOOL PlayerActor_IsLocalReleaseWaiting();
 BOOL PlayerActor_LocalRequestReleaseCreature();
-BOOL func_ov003_02224d14(void *p);
-void func_ov003_02224d58(void *p, void *q);
+BOOL BottleThrow_IsActive(void *p);
+void BottleThrow_SetTarget(void *p, void *q);
 void PlayerActor_LocalRequestAct89();
-BOOL func_ov003_02227434(void *p);
-void func_ov003_02227248(u32 a, void *p);
-void func_ov003_0222746c(void *p, s32 a);
+BOOL HeldInsect_GetStage(void *p);
+void HeldInsect_Start(u32 a, void *p);
+void HeldInsect_Release(void *p, s32 a);
 void PlayerActor_LocalReleaseCatch(s32 a);
-BOOL func_ov003_022201bc(void *p, s32 a, void *q);
+BOOL FishCatch_StartRelease(void *p, s32 a, void *q);
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
 BOOL func_ov002_02201700(u8 *p, u32 a, u32 b);
 }
@@ -326,7 +326,7 @@ void Unk_ov096_0229aea8::func_ov098_0229ba60() {
 void Unk_ov096_0229aea8::func_ov098_0229b9e4() {
     void *r6 = func_ov096_0229567c(this);
     s32 a = func_ov096_02297b9c(this, unk_b6);
-    if (func_ov003_022201bc(r6, a, &unk_2b84)) {
+    if (FishCatch_StartRelease(r6, a, &unk_2b84)) {
         struct {
             u16 a;
         } l;
@@ -375,7 +375,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b954() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
     void *r7 = func_ov096_0229567c(this);
-    if (func_ov003_02227434(r7) == 0) {
+    if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
         l.a = func_ov096_02297b9c(this, unk_b6);
         BOOL ok = FALSE;
@@ -389,8 +389,8 @@ void Unk_ov096_0229aea8::func_ov098_0229b8ac() {
         u32 t = (u8)func_02063b8c(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
         x += *(s16 *)(func_02095204(4) + 0x8e);
-        func_ov003_02227248((u8)r5, r7);
-        func_ov003_0222746c(r7, x);
+        HeldInsect_Start((u8)r5, r7);
+        HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
         func_ov098_0229b864((u8)r5, t);
         func_ov096_02298320(this);
@@ -534,19 +534,19 @@ void Unk_ov096_0229aea8::func_ov098_0229b4c4() {
 void Unk_ov096_0229aea8::func_ov098_0229b488() {
     func_ov098_0229b3ac();
     PlayerActor_LocalRequestAct89();
-    func_ov003_02224d58(&unk_2b84, func_ov096_0229567c(this));
+    BottleThrow_SetTarget(&unk_2b84, func_ov096_0229567c(this));
     func_ov096_0229803c(this, unk_b6);
     func_ov002_02200a58(0x33);
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b468() {
-    if (func_ov003_02224d14(func_ov096_0229567c(this)) == 1) {
+    if (BottleThrow_IsActive(func_ov096_0229567c(this)) == 1) {
         func_ov002_02200a58(0x34);
     }
 }
 
 void Unk_ov096_0229aea8::func_ov098_0229b44c() {
-    if (func_ov003_02224d14(func_ov096_0229567c(this)) == 0) {
+    if (BottleThrow_IsActive(func_ov096_0229567c(this)) == 0) {
         func_ov096_0229865c(this);
     }
 }

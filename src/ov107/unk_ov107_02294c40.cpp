@@ -280,13 +280,13 @@ void func_ov002_02202098(void *a, s32 b);
 void func_ov002_02203920(void *p);
 
 BOOL PlayerActor_LocalRequestBuryItem(void *a, void *b);
-void func_ov003_02227074(s32 a, s32 b);
-void func_ov003_02223498(s32 a);
-BOOL func_ov003_022201bc(s32 a, s32 b, void *c);
-BOOL func_ov003_02220290(void *a, s32 b);
-s32 func_ov003_02227434(...);
-void func_ov003_02227248(s32 a, s32 b);
-void func_ov003_0222746c(s32 a, s32 b);
+void HeldInsect_Remove(s32 a, s32 b);
+void FishCatch_EndForShadow(s32 a);
+BOOL FishCatch_StartRelease(s32 a, s32 b, void *c);
+BOOL FishCatch_GetReelTarget(void *a, s32 b);
+s32 HeldInsect_GetStage(...);
+void HeldInsect_Start(s32 a, s32 b);
+void HeldInsect_Release(s32 a, s32 b);
 void PlayerActor_LocalReleaseCatch(s32 a);
 
 void func_ov094_0229238c();
@@ -970,7 +970,7 @@ void Unk_ov107_02296e78::func_ov107_02296018()
 void Unk_ov107_02296e78::func_ov107_02295ff0()
 {
     func_ov107_02294e14();
-    if (func_ov003_02227434() != 3) {
+    if (HeldInsect_GetStage() != 3) {
         unk_be = 5;
         func_ov002_02200a58(0x13);
     }
@@ -1513,7 +1513,7 @@ void Unk_ov107_02296e78::func_ov107_022951e0() {
 
 void Unk_ov107_02296e78::func_ov107_02295130() {
     s32 r7 = func_ov107_02294e14();
-    if (func_ov003_02227434(r7) == 0) {
+    if (HeldInsect_GetStage(r7) == 0) {
         struct { u16 a; } l;
         l.a = func_ov107_02295bb0(unk_b9);
         BOOL ok = FALSE;
@@ -1527,8 +1527,8 @@ void Unk_ov107_02296e78::func_ov107_02295130() {
         u8 t = func_02063b8c(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
         x += *(s16 *)(func_02095204(4) + 0x8e);
-        func_ov003_02227248((u8)r5, r7);
-        func_ov003_0222746c(r7, x);
+        HeldInsect_Start((u8)r5, r7);
+        HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
         func_ov107_022950e8((u8)r5, t);
         func_ov002_02200a58(0x12);
@@ -1553,7 +1553,7 @@ BOOL Unk_ov107_02296e78::func_ov107_02295070() {
     s32 t = func_0206ed50();
     u8 k = func_ov107_02294e14();
     if (t == 0x2c) {
-        return func_ov003_02220290(&unk_c0, k);
+        return FishCatch_GetReelTarget(&unk_c0, k);
     }
     u8 *p = func_02095204(4);
     void *q = p + 0x5c;
@@ -1580,7 +1580,7 @@ void Unk_ov107_02296e78::func_ov107_02294fb0() {
     } else {
         u8 k = func_ov107_02294e14();
         s32 t = func_ov107_02295bb0(unk_b9);
-        if (func_ov003_022201bc(k, t, &unk_c0)) {
+        if (FishCatch_StartRelease(k, t, &unk_c0)) {
             volatile u16 v = t;
             BOOL ok = FALSE;
             u32 a = v;
@@ -1692,10 +1692,10 @@ void Unk_ov107_02296e78::func_ov107_02294d88(BOOL flag) {
         }
         break;
     case 0x2b:
-        func_ov003_02227074(k, 1);
+        HeldInsect_Remove(k, 1);
         break;
     case 0x2c:
-        func_ov003_02223498(func_0206e868());
+        FishCatch_EndForShadow(func_0206e868());
         break;
     }
 }

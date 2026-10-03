@@ -1878,7 +1878,7 @@ extern "C" {
 extern u8 data_020e416c;
 }
 extern "C" {
-extern u8 data_ov003_02258efc;
+extern u8 sInsectCatchResult;
 }
 extern "C" {
 extern void *gCurrentHeap;
@@ -1905,13 +1905,13 @@ extern "C" {
 s32 _ZN11CommManager10readRecordEPhj(CommManager *g, void *out, u32 idx);
 }
 extern "C" {
-void func_ov003_02226e70(u32 v);
+void Insect_CancelCatch(u32 v);
 }
 extern "C" {
-u32 func_ov003_02226180(u32 v);
+u32 Insect_NetClaim(u32 v);
 }
 extern "C" {
-s32 func_ov003_02227100(u32 v);
+s32 Insect_OnClaimGranted(u32 v);
 }
 extern "C" {
 s32 _ZN11CommManager14isSyncVarDirtyEi(CommManager *g, u32 i);
@@ -2025,7 +2025,7 @@ extern "C" {
 void func_02038828(u32 a, u32 b, u32 c);
 }
 extern "C" {
-void func_ov003_0222e640(u32 a, u32 b, u32 c);
+void InsectNetSync_PackVar(u32 a, u32 b, u32 c);
 }
 extern "C" {
 void NetBuf_WriteS16B(u32 a, s32 b);
@@ -2170,14 +2170,14 @@ extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { func_02038828(a, 0x14
 extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { func_02038828(a, 0x15, b); }
 extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { func_02038828(a, 0x16, b); }
 extern "C" void CommSyncVar_PackPlayerMsg3(u32 a, u32 b) { func_02038828(a, 0x17, b); }
-extern "C" void CommSyncVar_PackVar18(u32 a, u32 b) { func_ov003_0222e640(a, 0x18, b); }
-extern "C" void CommSyncVar_PackVar19(u32 a, u32 b) { func_ov003_0222e640(a, 0x19, b); }
-extern "C" void CommSyncVar_PackVar1A(u32 a, u32 b) { func_ov003_0222e640(a, 0x1a, b); }
-extern "C" void CommSyncVar_PackVar1B(u32 a, u32 b) { func_ov003_0222e640(a, 0x1b, b); }
-extern "C" void CommSyncVar_PackVar1C(u32 a, u32 b) { func_ov003_0222e640(a, 0x1c, b); }
-extern "C" void CommSyncVar_PackVar1D(u32 a, u32 b) { func_ov003_0222e640(a, 0x1d, b); }
-extern "C" void CommSyncVar_PackVar1E(u32 a, u32 b) { func_ov003_0222e640(a, 0x1e, b); }
-extern "C" void CommSyncVar_PackVar1F(u32 a, u32 b) { func_ov003_0222e640(a, 0x1f, b); }
+extern "C" void CommSyncVar_PackVar18(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x18, b); }
+extern "C" void CommSyncVar_PackVar19(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x19, b); }
+extern "C" void CommSyncVar_PackVar1A(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1a, b); }
+extern "C" void CommSyncVar_PackVar1B(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1b, b); }
+extern "C" void CommSyncVar_PackVar1C(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1c, b); }
+extern "C" void CommSyncVar_PackVar1D(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1d, b); }
+extern "C" void CommSyncVar_PackVar1E(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1e, b); }
+extern "C" void CommSyncVar_PackVar1F(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1f, b); }
 extern "C" void CommSyncVar_PackSpNpc00(u32 a) { func_020842c0(a, 0x20); }
 extern "C" void CommSyncVar_PackSpNpc01(u32 a) { func_020842c0(a, 0x21); }
 extern "C" void CommSyncVar_PackSpNpc02(u32 a) { func_020842c0(a, 0x22); }
@@ -2335,7 +2335,7 @@ extern "C" void CommRecv_FieldActorClaimRequest(u32 a, u32 b, u32 c, u32 d) {
     CommManager *g = gCommManager;
     _ZN11CommManager10readRecordEPhj(g, (void *)&l, a);
     if (Unk_02075e60_IsZero(data_020e416c)) {
-        l.f = func_ov003_02226180(l.b);
+        l.f = Insect_NetClaim(l.b);
     }
     _ZN11CommManager11beginRecordEv(g);
     if (l.f == 0) {
@@ -2361,14 +2361,14 @@ extern "C" void CommRecv_FieldActorClaimResult(u32 a) {
         n = (v & 0xf) | 0x10;
         u32 t = n;
         if (t == 1) {
-            data_ov003_02258efc = 1;
+            sInsectCatchResult = 1;
         } else {
             h--;
             if (h == (u32)g->unk_64) {
-                data_ov003_02258efc = 0;
-                func_ov003_02227100(t);
+                sInsectCatchResult = 0;
+                Insect_OnClaimGranted(t);
             } else {
-                data_ov003_02258efc = 1;
+                sInsectCatchResult = 1;
             }
         }
     }
@@ -2377,7 +2377,7 @@ extern "C" void CommRecv_FieldActorRelease(u32 a) {
     u8 b;
     _ZN11CommManager10readRecordEPhj(gCommManager, &b, a);
     if (Unk_02075e60_IsZero(data_020e416c)) {
-        func_ov003_02226e70(b);
+        Insect_CancelCatch(b);
     }
 }
 }
@@ -2559,10 +2559,10 @@ extern "C" {
 s32 func_020946f0(s32, void *);
 }
 extern "C" {
-void func_ov003_02227074(u32, s32);
+void HeldInsect_Remove(u32, s32);
 }
 extern "C" {
-void func_ov003_022271a8(u32);
+void Insect_OnNetRemove(u32);
 }
 extern "C" {
 void *TownBlockMap_Get();
@@ -2621,9 +2621,9 @@ extern "C" void CommRecv_FieldActorRemove(u32 n) {
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, n);
     if (Unk_02075e1c_IsZero(data_020e416c)) {
         if (buf < 4) {
-            func_ov003_02227074(buf, 0);
+            HeldInsect_Remove(buf, 0);
         } else {
-            func_ov003_022271a8(buf);
+            Insect_OnNetRemove(buf);
         }
     }
 }

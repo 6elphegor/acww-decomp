@@ -469,8 +469,8 @@ BOOL Snowball_CanBuildSnowmanAt(Pos *p);
 BOOL Snowball_PlaceSnowmanAt(void *a, Pos *p, u16 *out);
 BOOL Snowball_PlaceSnowmanNearby(void *a, void *pos, u16 *out);
 BOOL Snowball_DropDisplacedItem(u16 *q);
-void func_ov003_0222ebdc(Obj *o);
-s32 func_ov003_0222ec00(Obj *o);
+void Snowball_Unregister(Obj *o);
+s32 Snowball_Register(Obj *o);
 BOOL Snowball_IsInBallState(Obj *o);
 void Snowball_InitState(Obj *o);
 void Snowball_RunState(Obj *o);
@@ -594,7 +594,7 @@ BOOL Snowball::vfunc_00() {
     Snowball_UpdateMatrix(this, 0, 0);
     _ZN12Unk_02003c3013func_02003eccEv(unk_324);
     func_0203e42c();
-    func_ov003_0222ec00(this);
+    Snowball_Register(this);
 }
 
 BOOL Snowball::onExecute() {
@@ -677,7 +677,7 @@ BOOL Snowball::vfunc_0c() {
         r[i & 1].w = sv;
     }
     _ZN12Unk_02003c3013func_02003e50Ev(unk_324);
-    func_ov003_0222ebdc(this);
+    Snowball_Unregister(this);
 }
 
 extern "C" void Snowball_UpdateMatrix(Obj *o, s32 a, s32 b)

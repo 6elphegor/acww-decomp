@@ -3,7 +3,7 @@
 #include "Unk_020d8c7c.h"
 
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
-// Merged from ten unit files; every view of the shared objects (data_ov003_0225812c etc.) is reached through casts.
+// Merged from ten unit files; every view of the shared objects (sFishShadows etc.) is reached through casts.
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
 #define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
@@ -83,9 +83,9 @@ struct Unk_ov003_02257e9c_Rec {
     u8 pad_94[0x10];
 };
 
-struct Unk_ov003_0225812c {
-    Unk_ov003_0225812c();
-    ~Unk_ov003_0225812c();
+struct FishShadow {
+    FishShadow();
+    ~FishShadow();
     u8 pad_000[0x7f];
     u8 unk_7f;
     u8 pad_080[0x208 - 0x80];
@@ -162,7 +162,7 @@ struct Unk_ov003_02220a2c_O {
     u8 unk_84;
 };
 
-// 0x24c-byte entry, table at ((E_f3 *)(data_ov003_0225812c))
+// 0x24c-byte entry, table at ((E_f3 *)(sFishShadows))
 struct Unk_ov003_0225812c_f3 {
     u8 pad_00[0x7e];
     s8 unk_7e;
@@ -271,9 +271,9 @@ struct Unk_ov003_02221524_Slot {
     u8 pad_23d[0x24c - 0x23d];
 };
 
-struct Unk_ov003_02221ab0_Ent {
-    Unk_ov003_02221ab0_Ent();
-    ~Unk_ov003_02221ab0_Ent();
+struct FishCatch {
+    FishCatch();
+    ~FishCatch();
     u8 pad_00[0x40];
     s32 unk_40;
     s32 unk_44;
@@ -320,10 +320,10 @@ public:
     u32 unk_00[6];
 };
 
-class Unk_ov003_0223498c : public GameProc {
+class FieldFishManager : public GameProc {
 public:
-    Unk_ov003_0223498c();
-    virtual ~Unk_ov003_0223498c();
+    FieldFishManager();
+    virtual ~FieldFishManager();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -335,7 +335,7 @@ public:
     /* 0x84 */ u8 pad_84[4];
 };
 
-typedef void (Unk_ov003_0223498c::*Unk_ov003_0222144c_Fn_f4)(void *, void *);
+typedef void (FieldFishManager::*Unk_ov003_0222144c_Fn_f4)(void *, void *);
 
 struct Unk_ov003_0222144c_Ent {
     Unk_ov003_0222144c_Fn_f4 enter;
@@ -819,10 +819,10 @@ static inline BOOL Unk_ov003_02224bc4_Bit(u32 f, u32 m)
 }
 
 
-// 0x60-byte entry, table at data_ov003_02257d1c
-struct Unk_ov003_02257d1c {
-    Unk_ov003_02257d1c();
-    ~Unk_ov003_02257d1c();
+// 0x60-byte entry, table at sBottleThrows
+struct BottleThrow {
+    BottleThrow();
+    ~BottleThrow();
     u32 unk_00[0x30 / 4];
     u8 unk_30;
     u8 pad_31[3];
@@ -843,9 +843,9 @@ public:
     u32 unk_1c;
 };
 
-class Unk_ov003_02234a94 : public ModelAnim {
+class FishFinMatAnim : public ModelAnim {
 public:
-    virtual ~Unk_ov003_02234a94() {}
+    virtual ~FishFinMatAnim() {}
 };
 
 // ================= canonical classes of the objects built by the static initialiser =================
@@ -865,14 +865,14 @@ void _ZN12Unk_0209c0acD1Ev(void *p);
 void _ZN12Unk_0209c0ac13func_0209c0c8Ev(void *p);
 }
 
-// empty global object at data_ov003_02257a74 (out-of-line empty constructor and destructor)
-class Unk_ov003_02257a74 {
+// empty global object at sBottleThrowStateOwner (out-of-line empty constructor and destructor)
+class BottleThrowStateOwner {
 public:
-    Unk_ov003_02257a74();
-    ~Unk_ov003_02257a74();
+    BottleThrowStateOwner();
+    ~BottleThrowStateOwner();
 };
 
-// members of the 0x13c-byte object at data_ov003_02257be0 (constructors and destructors live in main)
+// members of the 0x13c-byte object at sFishFinModel (constructors and destructors live in main)
 class Unk_0209c364 {
 public:
     Unk_0209c364();
@@ -894,15 +894,15 @@ public:
     u8 raw[0xc4];
 };
 
-class Unk_ov003_02257be0 {
+class FishFinModel {
 public:
-    Unk_ov003_02257be0();
-    ~Unk_ov003_02257be0();
+    FishFinModel();
+    ~FishFinModel();
     u32 unk_00;
     Unk_0209c364 unk_04;
     Unk_0209c0ac unk_08;
     AnimModel unk_58;
-    Unk_ov003_02234a94 unk_11c;
+    FishFinMatAnim unk_11c;
 };
 
 extern "C" {
@@ -920,8 +920,8 @@ extern void * gSceneBlockMap;
 extern u8 gTouchHeld;
 extern u8 data_021f47e0[];
 extern void * gCurrentHeap;
-extern u8 data_ov003_02234a74[];
-extern u8 data_ov003_02234a80[];
+extern u8 sFishShadowPoolName[];
+extern u8 sFishFinPoolName[];
 extern u8 data_ov003_02234a94[];
 
 s32 Math_AngleXZ(void *a, void *b);
@@ -1044,164 +1044,164 @@ s32 PlayerActor_TestSlotFlag9(s32 a);
 void Field_DrawItemModel(s32 o, V3_f9 *a, V3_f9 *b, s32 c, s16 d, s16 e);
 
 // own functions
-BOOL func_ov003_02220030(u8 *self, void *a);
-u8 *func_ov003_02220004(s32 i);
-s32 func_ov003_0221ffe8(s32 id);
-BOOL func_ov003_0221ffb8(u32 *out, s32 id);
-void func_ov003_022209ec(s32 *p, s32 b);
-BOOL func_ov003_022209c8(s32 idx);
-BOOL func_ov003_02220994(void *self, s32 b, s32 idx);
-BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 flag);
-BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode);
-BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e);
-BOOL func_ov003_022203f8(void *self, Unk_ov003_02220844_Obj *e, s32 id);
-BOOL func_ov003_022203e0(void *self);
-void func_ov003_02220388(Unk_ov003_02220844_Obj *self);
-BOOL func_ov003_0222034c(s32 *a, s32 *b, s32 c, s32 d, s32 e);
-BOOL func_ov003_0222031c(s32 *a, s32 *b, s32 *c);
-BOOL func_ov003_02220300(s32 a, s32 b, s32 c);
-s32 func_ov003_022202ec(s32 a, u16 b);
-s32 func_ov003_022202cc(s32 a, u16 b);
-BOOL func_ov003_02220290(Unk_ov003_02220128_Vec3 *out, s32 idx);
-BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *pos);
-void func_ov003_022201ac(u8 *self, s32 v);
-BOOL func_ov003_02220128(u8 *self, void *p, s32 q);
-void func_ov003_02221294(O_f3 *o, E_f3 *e);
-void func_ov003_02221290(void);
-void func_ov003_022211fc(O_f3 *o, E_f3 *e, s32 idx);
-void func_ov003_022211f8(void);
-void func_ov003_02221134(O_f3 *o, E_f3 *e, s32 x);
-void func_ov003_022210a4(O_f3 *o, E_f3 *e);
-void func_ov003_0222105c(O_f3 *a, void *b, void *dstv, s32 ang);
+BOOL FishFinModel_Load(u8 *self, void *a);
+u8 *FishShadow_GetActive(s32 i);
+s32 FishShadow_GetFishId(s32 id);
+BOOL FishShadow_GetPos(u32 *out, s32 id);
+void FieldWater_ApplyFlow(s32 *p, s32 b);
+BOOL FieldFish_IsPlayerRunning(s32 idx);
+BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx);
+BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 flag);
+BOOL FieldFish_CollectHabitatBlocks(void *self, u8 *out, s32 *cnt, s32 mode);
+BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e);
+BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s32 id);
+BOOL FieldFish_IsRainOrSnow(void *self);
+void FishShadow_TickRespawnTimer(Unk_ov003_02220844_Obj *self);
+BOOL FieldFish_IsInBox(s32 *a, s32 *b, s32 c, s32 d, s32 e);
+BOOL FieldFish_HasPassed(s32 *a, s32 *b, s32 *c);
+BOOL FieldFish_HasPassed1D(s32 a, s32 b, s32 c);
+s32 FieldFish_RandRange(s32 a, u16 b);
+s32 FieldFish_RandRangeSigned(s32 a, u16 b);
+BOOL FishCatch_GetReelTarget(Unk_ov003_02220128_Vec3 *out, s32 idx);
+BOOL FishCatch_StartRelease(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *pos);
+void FishShadow_SetAnimSpeed(u8 *self, s32 v);
+BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q);
+void FishShadow_ExecAppear(O_f3 *o, E_f3 *e);
+void FishShadow_EnterOutOfView(void);
+void FishShadow_ExecOutOfView(O_f3 *o, E_f3 *e, s32 idx);
+void FishShadow_EnterSwim(void);
+void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x);
+void FishShadow_UpdateFin(O_f3 *o, E_f3 *e);
+void FieldFish_SetModelMatrix(O_f3 *a, void *b, void *dstv, s32 ang);
 BOOL func_ov003_0222101c(O_f3 *o);
-void func_ov003_02220fc8(O_f3 *o);
+void FieldFishManager_UpdatePlayers(O_f3 *o);
 BOOL func_ov003_02220eec(void);
 BOOL func_ov003_02220ed0(O_f3 *o);
-void func_ov003_02220e58(O_f3 *o);
-void func_ov003_02220e2c(s32 a);
-void func_ov003_02220e10(s32 a);
-BOOL func_ov003_02220db0(s32 a, s32 b);
-void func_ov003_02220d94(O_f3 *o, E_f3 *e, s32 idx);
-void func_ov003_02220d30(O_f3 *o, E_f3 *e, s32 idx);
-BOOL func_ov003_02220cf8(s32 a, E_f3 *e);
-BOOL func_ov003_02220c98(s32 a, s32 b, E_f3 *e);
-BOOL func_ov003_02220c68(E_f3 *e, s32 a);
-BOOL func_ov003_02220b00(E_f3 *e, s32 a);
-void func_ov003_02220a2c(O_f3 *o, E_f3 *e, s32 idx);
-void func_ov003_02221bfc(void *a);
-void func_ov003_02221b94(void *a, s32 idx);
-BOOL func_ov003_02221b78(void *a, u8 idx);
-BOOL func_ov003_02221b34(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p);
-BOOL func_ov003_02221ab0(void *a, u8 idx);
+void FieldFishManager_FreeShadows(O_f3 *o);
+void FieldFishManager_FreeCatches(s32 a);
+void FieldFishManager_ResetBottles(s32 a);
+BOOL FieldFish_ScareAround(s32 a, s32 b);
+void FishShadow_UpdateVisibility(O_f3 *o, E_f3 *e, s32 idx);
+void FishShadow_UpdateFade(O_f3 *o, E_f3 *e, s32 idx);
+BOOL FishShadow_CheckPlayerScare(s32 a, E_f3 *e);
+BOOL FieldFish_IsPlayerApproaching(s32 a, s32 b, E_f3 *e);
+BOOL FishShadow_TryFlee(E_f3 *e, s32 a);
+BOOL FishShadow_StartFlee(E_f3 *e, s32 a);
+void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx);
+void FishCatch_PollRemote(void *a);
+void FishCatch_StartRemoteHook(void *a, s32 idx);
+BOOL FishCatch_EndRemote(void *a, u8 idx);
+BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p);
+BOOL FishCatch_StartRemoteLift(void *a, u8 idx);
 u8 *func_ov003_022219dc(u8 *a);
 u8 *func_ov003_02221998(u8 *a);
 u8 *func_ov003_02221980(u8 *a);
 u8 *func_ov003_0222193c(u8 *a);
 u8 *func_ov003_02221904(u8 *a);
-void func_ov003_022218f8(u8 *p);
-void func_ov003_022218f4(void *p);
-Unk_ov003_02221ab0_Ent *func_ov003_02221884(Unk_ov003_02221ab0_Ent *a);
+void FishCroak_Init(u8 *p);
+void FishCroak_Destroy(void *p);
+FishCatch *func_ov003_02221884(FishCatch *a);
 u8 *func_ov003_02221874(u8 *a);
-BOOL func_ov003_022217ac(void *a, s32 idx);
-void func_ov003_022216f8(void *a, s32 idx);
-BOOL func_ov003_022216cc(u8 *a);
-void func_ov003_02221684(u8 *a);
+BOOL FishShadow_SetAppearing(void *a, s32 idx);
+void FishShadow_Despawn(void *a, s32 idx);
+BOOL FishFinModel_Attach(u8 *a);
+void FishFinModel_Release(u8 *a);
 BOOL func_ov003_02221524(u8 *a);
-void func_ov003_02221498(void *a, u8 *b, void *c);
-void func_ov003_0222144c(void *a, s32 idx, u8 *b, void *c);
-void func_ov003_02221448();
-void func_ov003_022213d0(u8 *a, u8 *b, s32 c);
-void func_ov003_022213cc();
-void func_ov003_02221364(u8 *a, u8 *b, s32 c);
-void func_ov003_02221360();
-BOOL func_ov003_022225b4(Self_f5 *self, u32 a);
-BOOL func_ov003_02222504(Self_f5 *self, u32 a);
-BOOL func_ov003_02222490(Self_f5 *self, u32 a);
-BOOL func_ov003_022223e8(Self_f5 *self, u32 a);
-BOOL func_ov003_02222368(Self_f5 *self, u32 a);
-BOOL func_ov003_022222a0(Self_f5 *self, u32 a);
-BOOL func_ov003_02222274(Self_f5 *self, s32 a);
-BOOL func_ov003_02222224(Self_f5 *self);
-void func_ov003_022221a0(Self_f5 *self, s32 a);
-s32 func_ov003_02221f40(Self_f5 *self, s32 a);
-void func_ov003_02221e64(Self_f5 *self, BOOL flag);
-BOOL func_ov003_02221dd8(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, s32 m);
-BOOL func_ov003_02221d60(Self_f5 *self, V3_f5 *p);
-void func_ov003_02221cec(Self_f5 *self, Ent_f5 *ent, V3_f5 *out);
-BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3);
-void func_ov003_02222f1c();
-BOOL func_ov003_02222f08();
-void func_ov003_02222ef4();
-BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k);
-BOOL func_ov003_02222d48(Obj_f6 *self);
-s32 func_ov003_02222d28(Obj_f6 *self);
-BOOL func_ov003_02222ce0(Obj_f6 *self);
-s32 func_ov003_02222b1c(Obj_f6 *self);
-BOOL func_ov003_02222a38(Obj_f6 *self);
-void func_ov003_022228dc(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3);
-void func_ov003_022228b0(Sub_f6 *s, Obj_f6 *o);
-void func_ov003_0222285c(Sub_f6 *s, Obj_f6 *o);
-void func_ov003_022227dc(Sub_f6 *s, Obj_f6 *o);
-void func_ov003_02222770(Sub_f6 *s, Obj_f6 *o);
-s32 func_ov003_02222764(Sub_f6 *s);
-s32 func_ov003_02222754(Obj_f6 *self);
-void func_ov003_02222658(Obj_f6 *self, void *arg);
-s32 func_ov003_02222654();
-BOOL func_ov003_022237dc(Obj_f7 *o);
-BOOL func_ov003_02223730(Obj_f7 *o);
-void func_ov003_022236dc(Obj_f7 *o);
-BOOL func_ov003_02223554(Obj_f7 *o);
-s32 func_ov003_022234fc(Obj_f7 *o);
-BOOL func_ov003_022234c4(Obj_f7 *o);
-BOOL func_ov003_02223498(Obj_f7 *o);
-void func_ov003_02223450(V3_f7 *out, s32 idx);
-BOOL func_ov003_02223400(Obj_f7 *o, V3_f7 *a, V3_f7 *b);
-BOOL func_ov003_02223310(s32 idx, s32 flag);
-BOOL func_ov003_022232e8(s32 idx);
-V3_f7 *func_ov003_022232c8(s32 idx);
-BOOL func_ov003_02223258(s32 idx);
-BOOL func_ov003_0222323c(Rec_f7 *self, u32 a);
-void func_ov003_0222316c(Rec_f7 *self, s32 a, s32 t);
-BOOL func_ov003_02223134(Obj_f7 *self);
-BOOL func_ov003_02222fe4(Obj_f7 *self);
-void func_ov003_02224148(Obj_f8 *self);
-void func_ov003_02224144();
-void func_ov003_022240f4(Obj_f8 *self);
-s32 func_ov003_022240d4(Obj_f8 *self);
-s32 func_ov003_02223f78(Obj_f8 *self);
-s32 func_ov003_02223dd8(Obj_f8 *self);
-s32 func_ov003_02223b64(Obj_f8 *self);
-s32 func_ov003_02223924(Obj_f8 *self);
-s32 func_ov003_02224b6c(s32 i);
-s32 func_ov003_02224b1c(E_f9 *e);
-void func_ov003_02224ae0(Unk_ov003_02224ae0_St *self, E_f9 *e);
-void func_ov003_02224adc();
-void func_ov003_02224990(void *self, E_f9 *e);
-void func_ov003_0222489c(void *self, E_f9 *e);
-void func_ov003_02224874(s32 *p, s32 a, s32 ang);
-void func_ov003_02224848(s32 *p, s32 a, s32 ang);
-void func_ov003_02224828(s32 *p, s32 a, s32 ang);
-void func_ov003_022247f0(Obj_f9 *o);
-void func_ov003_022247b8(Obj_f9 *o);
-void func_ov003_022246f0(Obj_f9 *o);
-void func_ov003_022244bc(Obj_f9 *o);
-void func_ov003_0222443c(Obj_f9 *o);
-void func_ov003_02224364(Obj_f9 *o);
-void func_ov003_02224310(Obj_f9 *o);
-void func_ov003_022242ac(Obj_f9 *o);
-void func_ov003_0222426c(Obj_f9 *o);
+void FishShadow_Run(void *a, u8 *b, void *c);
+void FishShadow_ChangeState(void *a, s32 idx, u8 *b, void *c);
+void FishShadow_EnterSpawn();
+void FishShadow_ExecSpawn(u8 *a, u8 *b, s32 c);
+void FishShadow_EnterWaitInView();
+void FishShadow_ExecWaitInView(u8 *a, u8 *b, s32 c);
+void FishShadow_EnterAppear();
+BOOL FishCatch_StateStart(Self_f5 *self, u32 a);
+BOOL FishCatch_SetupLine(Self_f5 *self, u32 a);
+BOOL FishCatch_StateHold(Self_f5 *self, u32 a);
+BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a);
+BOOL FishCatch_UpdateLocalReel(Self_f5 *self, u32 a);
+BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a);
+BOOL FishCatch_StateEnd(Self_f5 *self, s32 a);
+BOOL FishCatch_DetachShadow(Self_f5 *self);
+void FishCatch_Reset(Self_f5 *self, s32 a);
+s32 FishCatch_StartSwimAway(Self_f5 *self, s32 a);
+void FishCatch_UpdateArc(Self_f5 *self, BOOL flag);
+BOOL FieldFish_StepParabola(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, s32 m);
+BOOL FishCatch_UpdateSwimAway(Self_f5 *self, V3_f5 *p);
+void FishCatch_GetLineEnd(Self_f5 *self, Ent_f5 *ent, V3_f5 *out);
+BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3);
+void FieldFish_StartCastSplash();
+BOOL FieldFish_IsCastSplashActive();
+void FieldFish_TickCastSplash();
+BOOL FishShadow_Land(Obj_f6 *self, u32 k);
+BOOL FishShadow_LoseBobber(Obj_f6 *self);
+s32 FishShadow_GetEdgeColumn(Obj_f6 *self);
+BOOL FishShadow_IsSeaNorth(Obj_f6 *self);
+s32 FishShadow_CheckWaterBounds(Obj_f6 *self);
+BOOL FishShadow_IsProbeOutOfWater(Obj_f6 *self);
+void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3);
+void FishCroak_Update(Sub_f6 *s, Obj_f6 *o);
+void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o);
+void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o);
+void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o);
+s32 FishCroak_Clear(Sub_f6 *s);
+s32 FishShadow_ResetCroak(Obj_f6 *self);
+void FishCatch_Update(Obj_f6 *self, void *arg);
+s32 FishCatch_StateIdle();
+BOOL FishShadow_BiteHooked(Obj_f7 *o);
+BOOL FishShadow_BiteFlee(Obj_f7 *o);
+void FishShadow_OnRodPulled(Obj_f7 *o);
+BOOL FishShadow_TryHook(Obj_f7 *o);
+s32 FishShadow_CheckReelResult(Obj_f7 *o);
+BOOL FishCatch_IsLandedForShadow(Obj_f7 *o);
+BOOL FishCatch_EndForShadow(Obj_f7 *o);
+void Fish_GetDisplayScale(V3_f7 *out, s32 idx);
+BOOL FishCatch_SetDisplayPosScale(Obj_f7 *o, V3_f7 *a, V3_f7 *b);
+BOOL FishCatch_StartLift(s32 idx, s32 flag);
+BOOL FishCatch_IsActive(s32 idx);
+V3_f7 *FishCatch_GetPos(s32 idx);
+BOOL FishCatch_NetSendStored(s32 idx);
+BOOL FishCatch_IsDisplayReady(Rec_f7 *self, u32 a);
+void FishCatch_SetModelAngles(Rec_f7 *self, s32 a, s32 t);
+BOOL FishShadow_FleeFromPlayer(Obj_f7 *self);
+BOOL FishShadow_TryNoticeBobber(Obj_f7 *self);
+void FishShadow_MoveFlee(Obj_f8 *self);
+void FishShadow_AppearAttached();
+void FishShadow_ThinkBobber(Obj_f8 *self);
+s32 FishShadow_BiteIdle(Obj_f8 *self);
+s32 FishShadow_BiteApproach(Obj_f8 *self);
+s32 FishShadow_BiteInspect(Obj_f8 *self);
+s32 FishShadow_BiteNibble(Obj_f8 *self);
+s32 FishShadow_BiteTug(Obj_f8 *self);
+s32 BottleThrow_GetSeCue(s32 i);
+s32 BottleThrow_IsOffscreen(E_f9 *e);
+void BottleThrow_Run(Unk_ov003_02224ae0_St *self, E_f9 *e);
+void BottleThrow_StateIdle();
+void BottleThrow_StateFly(void *self, E_f9 *e);
+void BottleThrow_StateDrift(void *self, E_f9 *e);
+void FieldFish_AddSinX(s32 *p, s32 a, s32 ang);
+void FieldFish_AddCosZ(s32 *p, s32 a, s32 ang);
+void FieldFish_MoveXZ(s32 *p, s32 a, s32 ang);
+void FishShadow_RunAppearAi(Obj_f9 *o);
+void FishShadow_RunAi(Obj_f9 *o);
+void FishShadow_AppearFree(Obj_f9 *o);
+void FishShadow_ThinkFree(Obj_f9 *o);
+void FishShadow_MoveStart(Obj_f9 *o);
+void FishShadow_MoveAccelerate(Obj_f9 *o);
+void FishShadow_MoveCruise(Obj_f9 *o);
+void FishShadow_MoveDecelerate(Obj_f9 *o);
+void FishShadow_MoveRest(Obj_f9 *o);
 void func_ov003_02224e44();
 void func_ov003_02224e24();
 void func_ov003_02224e04();
-void func_ov003_02224dcc();
+void FieldFishManager_Create();
 void func_ov003_02224dc8();
 void func_ov003_02224dc4();
-Unk_ov003_02257d1c *func_ov003_02224d90(Unk_ov003_02257d1c *p);
+BottleThrow *func_ov003_02224d90(BottleThrow *p);
 void *func_ov003_02224d80(void *p);
-void func_ov003_02224d58(V3_f10 *v, s32 i);
-BOOL func_ov003_02224d14(s32 i);
-s32 func_ov003_02224bc4(s32 i);
-V3_f10 *func_ov003_02224ba4(s32 i);
+void BottleThrow_SetTarget(V3_f10 *v, s32 i);
+BOOL BottleThrow_IsActive(s32 i);
+s32 BottleThrow_Start(s32 i);
+V3_f10 *BottleThrow_GetPos(s32 i);
 }
 
 // ================= TU23 data definitions: types =================
@@ -1234,16 +1234,16 @@ struct Unk_ov003_02234860_Ent {
 
 // ================= objects defined by this unit, in creation order (see notes) =================
 extern "C" {
-Unk_ov003_0225812c data_ov003_0225812c[6];
-Unk_ov003_02257be0 data_ov003_02257be0;
-Unk_ov003_02221ab0_Ent data_ov003_02257e9c[4];
+FishShadow sFishShadows[6];
+FishFinModel sFishFinModel;
+FishCatch sFishCatches[4];
 void *data_ov003_02257a7c = (void *)gSceneBlockMap;
-Unk_ov003_02257a74 data_ov003_02257a74;
-Unk_ov003_02257d1c data_ov003_02257d1c[4];
+BottleThrowStateOwner sBottleThrowStateOwner;
+BottleThrow sBottleThrows[4];
 extern void *data_ov003_022348a0[2];
 extern void *data_ov003_02234868[2];
 extern void *data_ov003_022348a8[2];
-Unk_ov003_02224ae0_StMp data_ov003_02257ac0[3] = {
+Unk_ov003_02224ae0_StMp sBottleThrowStates[3] = {
     {*(StFn_f9 *)data_ov003_022348a0},
     {*(StFn_f9 *)data_ov003_02234868},
     {*(StFn_f9 *)data_ov003_022348a8},
@@ -1264,7 +1264,7 @@ extern u8 data_ov003_022348b0[16];
 extern u8 data_ov003_022348b0[16];
 extern u8 data_ov003_022348b0[16];
 extern u8 data_ov003_022348b0[16];
-Unk_ov003_022349d4_Rec data_ov003_022349d4[8] = {
+Unk_ov003_022349d4_Rec sFishSizeClassParams[8] = {
     {0x3c, 0x40, 0xa, 0x14, 0x28, 0x64, 0x14, 0xa, 0x5, 0x3e, 0x5d, data_ov003_022348b0[0], data_ov003_022348b0[1], 0xdc, 0x8c},
     {0x3c, 0x42, 0xf, 0x1e, 0x28, 0x64, 0x14, 0xa, 0x5, 0x48, 0x69, data_ov003_022348b0[2], data_ov003_022348b0[3], 0xe6, 0x82},
     {0x46, 0x48, 0x14, 0x28, 0x28, 0x64, 0x14, 0xa, 0x5, 0x50, 0x85, data_ov003_022348b0[4], data_ov003_022348b0[5], 0xf0, 0x82},
@@ -1279,35 +1279,35 @@ extern void *data_ov003_02234890[2];
 extern void *data_ov003_02234888[2];
 extern void *data_ov003_02234880[2];
 extern void *data_ov003_02234878[2];
-Unk_ov003_02222658_Mp data_ov003_02257af8[5] = {
+Unk_ov003_02222658_Mp sFishCatchStates[5] = {
     {*(Fn_f6 *)data_ov003_022347b0},
     {*(Fn_f6 *)data_ov003_02234890},
     {*(Fn_f6 *)data_ov003_02234888},
     {*(Fn_f6 *)data_ov003_02234880},
     {*(Fn_f6 *)data_ov003_02234878},
 };
-extern char data_ov003_02234968[];
-char *data_ov003_0223476c = data_ov003_02234968;
-extern char data_ov003_02234930[];
-char *data_ov003_0223477c = data_ov003_02234930;
-void *data_ov003_02234820[2] = {(void *)func_ov003_022240d4, 0};
-void *data_ov003_022347b0[2] = {(void *)func_ov003_02222654, 0};
+extern char sFishShadowAnimPathStr[];
+char *sFishShadowAnimPath = sFishShadowAnimPathStr;
+extern char sFishFinTexAnimPathStr[];
+char *sFishFinTexAnimPath = sFishFinTexAnimPathStr;
+void *data_ov003_02234820[2] = {(void *)FishShadow_BiteIdle, 0};
+void *data_ov003_022347b0[2] = {(void *)FishCatch_StateIdle, 0};
 extern void *data_ov003_02234838[2];
 extern void *data_ov003_02234840[2];
 extern void *data_ov003_02234808[2];
 extern void *data_ov003_02234800[2];
-Unk_ov003_0222426c_Mp2 data_ov003_02257ad8[2] = {
+Unk_ov003_0222426c_Mp2 sFishShadowAiTable[2] = {
     {*(Fn_f9 *)data_ov003_02234838, *(Fn_f9 *)data_ov003_02234840},
     {*(Fn_f9 *)data_ov003_02234808, *(Fn_f9 *)data_ov003_02234800},
 };
-s32 data_ov003_02234768 = 0x11f;
+s32 sBottleDriftSpeed = 0x11f;
 extern void *data_ov003_022347f0[2];
 extern void *data_ov003_022347e8[2];
 extern void *data_ov003_022347e0[2];
 extern void *data_ov003_022347b8[2];
 extern void *data_ov003_022347c8[2];
 extern void *data_ov003_022347d0[2];
-Unk_ov003_0222426c_Mp data_ov003_02257b20[6] = {
+Unk_ov003_0222426c_Mp sFishShadowMoveStates[6] = {
     {*(Fn_f9 *)data_ov003_022347f0},
     {*(Fn_f9 *)data_ov003_022347e8},
     {*(Fn_f9 *)data_ov003_022347e0},
@@ -1315,16 +1315,16 @@ Unk_ov003_0222426c_Mp data_ov003_02257b20[6] = {
     {*(Fn_f9 *)data_ov003_022347c8},
     {*(Fn_f9 *)data_ov003_022347d0},
 };
-void *data_ov003_02234830[2] = {(void *)func_ov003_02223f78, 0};
-void *data_ov003_02234838[2] = {(void *)func_ov003_022246f0, 0};
-void *data_ov003_02234898[2] = {(void *)func_ov003_02223924, 0};
-void *data_ov003_022348a0[2] = {(void *)func_ov003_02224adc, 0};
-void *data_ov003_022348a8[2] = {(void *)func_ov003_0222489c, 0};
+void *data_ov003_02234830[2] = {(void *)FishShadow_BiteApproach, 0};
+void *data_ov003_02234838[2] = {(void *)FishShadow_AppearFree, 0};
+void *data_ov003_02234898[2] = {(void *)FishShadow_BiteTug, 0};
+void *data_ov003_022348a0[2] = {(void *)BottleThrow_StateIdle, 0};
+void *data_ov003_022348a8[2] = {(void *)BottleThrow_StateDrift, 0};
 extern void *data_ov003_02234858[2];
 extern void *data_ov003_022347a0[2];
 extern void *data_ov003_02234810[2];
 extern void *data_ov003_022347f8[2];
-Unk_ov003_02223924_Mp data_ov003_02257b50[8] = {
+Unk_ov003_02223924_Mp sFishBiteStates[8] = {
     {*(Fn_f8 *)data_ov003_02234820},
     {*(Fn_f8 *)data_ov003_02234830},
     {*(Fn_f8 *)data_ov003_02234858},
@@ -1333,87 +1333,87 @@ Unk_ov003_02223924_Mp data_ov003_02257b50[8] = {
     {*(Fn_f8 *)data_ov003_02234810},
     {*(Fn_f8 *)data_ov003_022347f8},
 };
-void *data_ov003_022347a0[2] = {(void *)func_ov003_02223b64, 0};
-s32 data_ov003_02234764 = 0x14;
-void *data_ov003_02234888[2] = {(void *)func_ov003_02222490, 0};
-char data_ov003_02234968[] = "/fish/03/fish_shadow.nsbca";
-extern u16 data_ov003_022348d0[10];
-extern Unk_ov003_02234780_Rec data_ov003_02234788;
-extern u16 data_ov003_022348e4[10];
-extern Unk_ov003_02234780_Rec data_ov003_02234780;
-Unk_ov003_022348c0_Ent data_ov003_022348c0[2] = {
-    {(u8 *)data_ov003_022348d0, (void *)&data_ov003_02234788},
-    {(u8 *)data_ov003_022348e4, (void *)&data_ov003_02234780},
+void *data_ov003_022347a0[2] = {(void *)FishShadow_BiteNibble, 0};
+s32 sBottleSinkStep = 0x14;
+void *data_ov003_02234888[2] = {(void *)FishCatch_StateHold, 0};
+char sFishShadowAnimPathStr[] = "/fish/03/fish_shadow.nsbca";
+extern u16 sFishSightFishingRod[10];
+extern Unk_ov003_02234780_Rec sFishBiteWindowFishingRod;
+extern u16 sFishSightGoldenRod[10];
+extern Unk_ov003_02234780_Rec sFishBiteWindowGoldenRod;
+Unk_ov003_022348c0_Ent sFishRodParams[2] = {
+    {(u8 *)sFishSightFishingRod, (void *)&sFishBiteWindowFishingRod},
+    {(u8 *)sFishSightGoldenRod, (void *)&sFishBiteWindowGoldenRod},
 };
-void *data_ov003_02234870[2] = {(void *)func_ov003_022213cc, 0};
-void *data_ov003_022347c8[2] = {(void *)func_ov003_0222426c, 0};
-Unk_ov003_02234860_Ent data_ov003_02234860 = {(void *)func_ov003_02224dcc, 0xc1, 7};
-void *data_ov003_02234858[2] = {(void *)func_ov003_02223dd8, 0};
-void *data_ov003_02234850[2] = {(void *)func_ov003_022211f8, 0};
-char data_ov003_02234914[] = "/fish/03/fish_hire.nsbca";
-u16 data_ov003_022348e4[10] = {0x16, 0x2000, 0x16, 0x2aa8, 0x1a, 0x3556, 0x1e, 0x4000, 0x22, 0x5550};
-void *data_ov003_02234798[2] = {(void *)func_ov003_022211fc, 0};
-void *data_ov003_022347b8[2] = {(void *)func_ov003_022242ac, 0};
-Unk_ov003_02234780_Rec data_ov003_02234780 = {{9, 0xb, 0xd, 0x11}, 0x2a};
-Unk_ov003_02234780_Rec data_ov003_02234788 = {{8, 0xa, 0xb, 0xe}, 0x20};
-u16 data_ov003_02257a78;
-char data_ov003_0223494c[] = "/fish/03/fish_shadow.nsbmd";
-void *data_ov003_02234790[2] = {(void *)func_ov003_02221294, 0};
-void *data_ov003_02234800[2] = {(void *)func_ov003_022240f4, 0};
-void *data_ov003_022347f8[2] = {(void *)func_ov003_02223730, 0};
-void *data_ov003_02234890[2] = {(void *)func_ov003_022225b4, 0};
-void *data_ov003_022347e8[2] = {(void *)func_ov003_02224364, 0};
-void *data_ov003_022347e0[2] = {(void *)func_ov003_02224310, 0};
-void *data_ov003_022347d8[2] = {(void *)func_ov003_022213d0, 0};
-void *data_ov003_022347d0[2] = {(void *)func_ov003_02224148, 0};
-void *data_ov003_02234880[2] = {(void *)func_ov003_022223e8, 0};
-s32 data_ov003_02257a80;
-void *data_ov003_02234808[2] = {(void *)func_ov003_02224144, 0};
-char *data_ov003_02234774 = data_ov003_02234914;
-char data_ov003_02234930[] = "/fish/03/fish_hire.nsbta";
-void *data_ov003_02234828[2] = {(void *)func_ov003_02221360, 0};
-void *data_ov003_022347a8[2] = {(void *)func_ov003_02221364, 0};
-void *data_ov003_022347c0[2] = {(void *)func_ov003_02221448, 0};
-char *data_ov003_02234778 = data_ov003_0223494c;
-void *data_ov003_022347f0[2] = {(void *)func_ov003_0222443c, 0};
-u16 data_ov003_022348d0[10] = {0x14, 0x1554, 0x14, 0x1c72, 0x16, 0x238e, 0x19, 0x2aa8, 0x1e, 0x4000};
-char data_ov003_022348f8[] = "/fish/03/fish_hire.nsbmd";
-void *data_ov003_02234818[2] = {(void *)func_ov003_02221134, 0};
-void *data_ov003_02234848[2] = {(void *)func_ov003_02221290, 0};
-Unk_ov003_0222144c_Ent data_ov003_02257b90[5] = {
+void *data_ov003_02234870[2] = {(void *)FishShadow_EnterWaitInView, 0};
+void *data_ov003_022347c8[2] = {(void *)FishShadow_MoveRest, 0};
+Unk_ov003_02234860_Ent sFieldFishManagerProfile = {(void *)FieldFishManager_Create, 0xc1, 7};
+void *data_ov003_02234858[2] = {(void *)FishShadow_BiteInspect, 0};
+void *data_ov003_02234850[2] = {(void *)FishShadow_EnterSwim, 0};
+char sFishFinAnimPathStr[] = "/fish/03/fish_hire.nsbca";
+u16 sFishSightGoldenRod[10] = {0x16, 0x2000, 0x16, 0x2aa8, 0x1a, 0x3556, 0x1e, 0x4000, 0x22, 0x5550};
+void *data_ov003_02234798[2] = {(void *)FishShadow_ExecOutOfView, 0};
+void *data_ov003_022347b8[2] = {(void *)FishShadow_MoveDecelerate, 0};
+Unk_ov003_02234780_Rec sFishBiteWindowGoldenRod = {{9, 0xb, 0xd, 0x11}, 0x2a};
+Unk_ov003_02234780_Rec sFishBiteWindowFishingRod = {{8, 0xa, 0xb, 0xe}, 0x20};
+u16 sFishCastSplashTimer;
+char sFishShadowModelPathStr[] = "/fish/03/fish_shadow.nsbmd";
+void *data_ov003_02234790[2] = {(void *)FishShadow_ExecAppear, 0};
+void *data_ov003_02234800[2] = {(void *)FishShadow_ThinkBobber, 0};
+void *data_ov003_022347f8[2] = {(void *)FishShadow_BiteFlee, 0};
+void *data_ov003_02234890[2] = {(void *)FishCatch_StateStart, 0};
+void *data_ov003_022347e8[2] = {(void *)FishShadow_MoveAccelerate, 0};
+void *data_ov003_022347e0[2] = {(void *)FishShadow_MoveCruise, 0};
+void *data_ov003_022347d8[2] = {(void *)FishShadow_ExecSpawn, 0};
+void *data_ov003_022347d0[2] = {(void *)FishShadow_MoveFlee, 0};
+void *data_ov003_02234880[2] = {(void *)FishCatch_StateUpdate, 0};
+s32 sFishPullJitter;
+void *data_ov003_02234808[2] = {(void *)FishShadow_AppearAttached, 0};
+char *sFishFinAnimPath = sFishFinAnimPathStr;
+char sFishFinTexAnimPathStr[] = "/fish/03/fish_hire.nsbta";
+void *data_ov003_02234828[2] = {(void *)FishShadow_EnterAppear, 0};
+void *data_ov003_022347a8[2] = {(void *)FishShadow_ExecWaitInView, 0};
+void *data_ov003_022347c0[2] = {(void *)FishShadow_EnterSpawn, 0};
+char *sFishShadowModelPath = sFishShadowModelPathStr;
+void *data_ov003_022347f0[2] = {(void *)FishShadow_MoveStart, 0};
+u16 sFishSightFishingRod[10] = {0x14, 0x1554, 0x14, 0x1c72, 0x16, 0x238e, 0x19, 0x2aa8, 0x1e, 0x4000};
+char sFishFinModelPathStr[] = "/fish/03/fish_hire.nsbmd";
+void *data_ov003_02234818[2] = {(void *)FishShadow_ExecSwim, 0};
+void *data_ov003_02234848[2] = {(void *)FishShadow_EnterOutOfView, 0};
+Unk_ov003_0222144c_Ent sFishShadowStates[5] = {
     {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347c0, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347d8},
     {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234870, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_022347a8},
     {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234828, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234790},
     {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234850, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234818},
     {*(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234848, *(Unk_ov003_0222144c_Fn_f4 *)data_ov003_02234798},
 };
-char *data_ov003_02234770 = data_ov003_022348f8;
+char *sFishFinModelPath = sFishFinModelPathStr;
 u8 data_ov003_022348b0[16] = {0x1b, 0x21, 0x25, 0x35, 0x2f, 0x41, 0x39, 0x55, 0x3e, 0x5f, 0x48, 0x6b, 0x5e, 0x87, 0x23, 0x55};
-void *data_ov003_02234878[2] = {(void *)func_ov003_02222274, 0};
-void *data_ov003_02234840[2] = {(void *)func_ov003_022244bc, 0};
-void *data_ov003_02234810[2] = {(void *)func_ov003_022237dc, 0};
-void *data_ov003_02234868[2] = {(void *)func_ov003_02224990, 0};
+void *data_ov003_02234878[2] = {(void *)FishCatch_StateEnd, 0};
+void *data_ov003_02234840[2] = {(void *)FishShadow_ThinkFree, 0};
+void *data_ov003_02234810[2] = {(void *)FishShadow_BiteHooked, 0};
+void *data_ov003_02234868[2] = {(void *)BottleThrow_StateFly, 0};
 }
 
 //@ 0x2224dcc
-extern "C" void func_ov003_02224dcc()
+extern "C" void FieldFishManager_Create()
 {
-    new Unk_ov003_0223498c;
+    new FieldFishManager;
 }
 
 
 //@ 0x2224dc8
-Unk_ov003_02257a74::Unk_ov003_02257a74() {}
+BottleThrowStateOwner::BottleThrowStateOwner() {}
 
 
 //@ 0x2224dc4
-Unk_ov003_02257a74::~Unk_ov003_02257a74() {}
+BottleThrowStateOwner::~BottleThrowStateOwner() {}
 
 
 //@ 0x2224d90
-Unk_ov003_02257d1c::Unk_ov003_02257d1c()
+BottleThrow::BottleThrow()
 {
-    Unk_ov003_02257d1c *p = this;
+    BottleThrow *p = this;
     _ZN12Unk_02032238C1Ev(p);
     p->unk_30 = 0;
     p->unk_34.x = 0x1000;
@@ -1430,17 +1430,17 @@ Unk_ov003_02257d1c::Unk_ov003_02257d1c()
 
 
 //@ 0x2224d80
-Unk_ov003_02257d1c::~Unk_ov003_02257d1c()
+BottleThrow::~BottleThrow()
 {
     _ZN12Unk_02032238D1Ev(this);
 }
 
 
 //@ 0x2224d58
-extern "C" void func_ov003_02224d58(V3_f10 *v, s32 i)
+extern "C" void BottleThrow_SetTarget(V3_f10 *v, s32 i)
 {
     if (i >= 0 && i < 4) {
-        Unk_ov003_02257d1c *e = &data_ov003_02257d1c[i];
+        BottleThrow *e = &sBottleThrows[i];
         V3_f10 *pv = &e->unk_4c;
         pv->x = v->x;
         pv->y = v->y;
@@ -1450,18 +1450,18 @@ extern "C" void func_ov003_02224d58(V3_f10 *v, s32 i)
 
 
 //@ 0x2224d14
-extern "C" BOOL func_ov003_02224d14(s32 i)
+extern "C" BOOL BottleThrow_IsActive(s32 i)
 {
     if (i < 0 || i >= 4) {
         return FALSE;
     }
-    Unk_ov003_02257d1c *e = &data_ov003_02257d1c[i];
+    BottleThrow *e = &sBottleThrows[i];
     u32 st = e->unk_30;
     if (st == 0) goto zero;
     if (st == 2) {
         if (e->unk_58 > 0x64) goto zero;
     }
-    if (((s32 (*)(Unk_ov003_02257d1c *))func_ov003_02224b1c)(e) == 0) goto one;
+    if (((s32 (*)(BottleThrow *))BottleThrow_IsOffscreen)(e) == 0) goto one;
 zero:
     return FALSE;
 one:
@@ -1470,16 +1470,16 @@ one:
 
 
 //@ 0x2224bc4
-extern "C" s32 func_ov003_02224bc4(s32 i)
+extern "C" s32 BottleThrow_Start(s32 i)
 {
-    Unk_ov003_02257d1c *e;
+    BottleThrow *e;
     Unk_ov003_02224bc4_Actor *p;
     void *s;
     V3_f10 t;
     if (i < 0 || i >= 4) {
         return 0;
     }
-    e = &data_ov003_02257d1c[i];
+    e = &sBottleThrows[i];
     if (e->unk_30 != 0) {
         return 1;
     }
@@ -1519,23 +1519,23 @@ extern "C" s32 func_ov003_02224bc4(s32 i)
 
 
 //@ 0x2224ba4
-extern "C" V3_f10 *func_ov003_02224ba4(s32 i)
+extern "C" V3_f10 *BottleThrow_GetPos(s32 i)
 {
     if (i < 0 || i >= 4) {
-        return &(*(V3_f10 *)((u8 *)&data_ov003_02257d1c[0].unk_34));
+        return &(*(V3_f10 *)((u8 *)&sBottleThrows[0].unk_34));
     }
-    return &data_ov003_02257d1c[i].unk_34;
+    return &sBottleThrows[i].unk_34;
 }
 
 
 //@ 0x2224b6c
-extern "C" s32 func_ov003_02224b6c(s32 i)
+extern "C" s32 BottleThrow_GetSeCue(s32 i)
 {
     s32 r = 0;
     if (i < 0 || i >= 4) {
         return 0;
     }
-    E_f9 *e = &((E_f9 *)(data_ov003_02257d1c))[i];
+    E_f9 *e = &((E_f9 *)(sBottleThrows))[i];
     if (e->unk_30 == 1) {
         if (e->unk_58 == 0) {
             r = 1;
@@ -1548,14 +1548,14 @@ extern "C" s32 func_ov003_02224b6c(s32 i)
 
 
 //@ 0x2224b1c
-extern "C" s32 func_ov003_02224b1c(E_f9 *e)
+extern "C" s32 BottleThrow_IsOffscreen(E_f9 *e)
 {
     s32 r = 0;
     if (gCamera == 0) {
         return 1;
     }
     V3_f9 v = (*(V3_f9 *)&gCameraLookAt);
-    if (((s32 (*)(V3_f9 *, V3_f9 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_34, &v, 0x8000, 0x6000, 0x6000) == 0) {
+    if (((s32 (*)(V3_f9 *, V3_f9 *, s32, s32, s32))FieldFish_IsInBox)(&e->unk_34, &v, 0x8000, 0x6000, 0x6000) == 0) {
         r = 1;
     }
     return r;
@@ -1563,22 +1563,22 @@ extern "C" s32 func_ov003_02224b1c(E_f9 *e)
 
 
 //@ 0x2224ae0
-extern "C" void func_ov003_02224ae0(Unk_ov003_02224ae0_St *self, E_f9 *e)
+extern "C" void BottleThrow_Run(Unk_ov003_02224ae0_St *self, E_f9 *e)
 {
-    if (data_ov003_02257ac0[e->unk_30].f) {
-        (self->*data_ov003_02257ac0[e->unk_30].f)(e);
+    if (sBottleThrowStates[e->unk_30].f) {
+        (self->*sBottleThrowStates[e->unk_30].f)(e);
     }
 }
 
 
 //@ 0x2224adc
-extern "C" void func_ov003_02224adc()
+extern "C" void BottleThrow_StateIdle()
 {
 }
 
 
 //@ 0x2224990
-extern "C" void func_ov003_02224990(void *self, E_f9 *e)
+extern "C" void BottleThrow_StateFly(void *self, E_f9 *e)
 {
     V3_f9 *pos = &e->unk_34;
     s32 *cnt = &e->unk_58;
@@ -1589,21 +1589,21 @@ extern "C" void func_ov003_02224990(void *self, E_f9 *e)
     V3_f9 c30(*pos);
     V3_f9 c3c(*(V3_f9 *)&a);
     V3_f9 c48(*(V3_f9 *)&b);
-    if (((s32 (*)(V3_f9 *, V3_f9 *, V3_f9 *))func_ov003_0222031c)(&c30, &c3c, &c48) != 0) {
+    if (((s32 (*)(V3_f9 *, V3_f9 *, V3_f9 *))FieldFish_HasPassed)(&c30, &c3c, &c48) != 0) {
         e->unk_30 = 2;
         *cnt = 0;
         if (e->unk_5c != 0) {
-            ((void (*)(void *, s32))func_ov003_02220db0)(pos, 0x2800);
+            ((void (*)(void *, s32))FieldFish_ScareAround)(pos, 0x2800);
         }
     } else {
         V3_f9 x1(*(V3_f9 *)&a);
         V3_f9 x2(*(V3_f9 *)&b);
-        s32 ok = ((s32 (*)(V3_f9 *, V3_f9 *, V3_f9 *, s32, s32, s32))func_ov003_02221dd8)(pos, &x1, &x2, *cnt, 0x14cd, 0xf) == 0 ? 1 : 0;
+        s32 ok = ((s32 (*)(V3_f9 *, V3_f9 *, V3_f9 *, s32, s32, s32))FieldFish_StepParabola)(pos, &x1, &x2, *cnt, 0x14cd, 0xf) == 0 ? 1 : 0;
         if (ok != 0) {
             e->unk_30 = 2;
             *cnt = 0;
             if (e->unk_5c != 0) {
-                ((void (*)(void *, s32))func_ov003_02220db0)(pos, 0x2800);
+                ((void (*)(void *, s32))FieldFish_ScareAround)(pos, 0x2800);
             }
         }
         s32 t = (*cnt * 0x199a) >> 5;
@@ -1618,7 +1618,7 @@ extern "C" void func_ov003_02224990(void *self, E_f9 *e)
 
 
 //@ 0x222489c
-extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
+extern "C" void BottleThrow_StateDrift(void *self, E_f9 *e)
 {
     V3_f9 *pos = &e->unk_34;
     s32 *cnt = &e->unk_58;
@@ -1632,7 +1632,7 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
         b.y = 0x1000;
         b.z = 0x1000;
         Field_DrawItemModel(0x1520, &a1, &b, 0, 0, 0);
-        if (func_ov003_02224b1c(e) != 0) {
+        if (BottleThrow_IsOffscreen(e) != 0) {
             *cnt = 0x64;
         }
     } else if ((e->unk_58 & 1) != 0) {
@@ -1644,8 +1644,8 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
         b.z = 0x1000;
         Field_DrawItemModel(0x1520, &a2, &b, 0, 0, 0);
     }
-    ((void (*)(void *, s32))func_ov003_022209ec)(pos, data_ov003_02234768);
-    pos->y = pos->y - data_ov003_02234764;
+    ((void (*)(void *, s32))FieldWater_ApplyFlow)(pos, sBottleDriftSpeed);
+    pos->y = pos->y - sBottleSinkStep;
     t = (*cnt * 0x199a) >> 5;
     if (t > 0x199a) t = 0x199a;
     ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
@@ -1661,55 +1661,55 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
 
 
 //@ 0x2224874
-extern "C" void func_ov003_02224874(s32 *p, s32 a, s32 ang)
+extern "C" void FieldFish_AddSinX(s32 *p, s32 a, s32 ang)
 {
     *p += func_01ffcb0c(a, data_02135f44[((u16)ang >> 4) * 2]);
 }
 
 
 //@ 0x2224848
-extern "C" void func_ov003_02224848(s32 *p, s32 a, s32 ang)
+extern "C" void FieldFish_AddCosZ(s32 *p, s32 a, s32 ang)
 {
     *p += func_01ffcb0c(a, data_02135f44[((u16)ang >> 4) * 2 + 1]);
 }
 
 
 //@ 0x2224828
-extern "C" void func_ov003_02224828(s32 *p, s32 a, s32 ang)
+extern "C" void FieldFish_MoveXZ(s32 *p, s32 a, s32 ang)
 {
-    func_ov003_02224874(p, a, ang);
-    func_ov003_02224848(p + 2, a, ang);
+    FieldFish_AddSinX(p, a, ang);
+    FieldFish_AddCosZ(p + 2, a, ang);
 }
 
 
 //@ 0x22247f0
-extern "C" void func_ov003_022247f0(Obj_f9 *o)
+extern "C" void FishShadow_RunAppearAi(Obj_f9 *o)
 {
-    (o->*data_ov003_02257ad8[o->unk_23c].a)();
+    (o->*sFishShadowAiTable[o->unk_23c].a)();
 }
 
 
 //@ 0x22247b8
-extern "C" void func_ov003_022247b8(Obj_f9 *o)
+extern "C" void FishShadow_RunAi(Obj_f9 *o)
 {
-    (o->*data_ov003_02257ad8[o->unk_23c].b)();
+    (o->*sFishShadowAiTable[o->unk_23c].b)();
 }
 
 
 //@ 0x22246f0
-extern "C" void func_ov003_022246f0(Obj_f9 *o)
+extern "C" void FishShadow_AppearFree(Obj_f9 *o)
 {
     s32 r;
     o->unk_120.x = o->unk_12c;
     o->unk_120.y = o->unk_130;
     o->unk_120.z = o->unk_134;
-    (o->*data_ov003_02257b20[o->unk_200].f)();
-    r = ((s32 (*)(void *))func_ov003_02222b1c)(o);
+    (o->*sFishShadowMoveStates[o->unk_200].f)();
+    r = ((s32 (*)(void *))FishShadow_CheckWaterBounds)(o);
     if (r != 0 && r != 5) {
         if (o->unk_1fc == 0) {
             o->unk_138 = o->unk_138 + 0x2aa8;
         } else {
-            o->unk_138 = func_ov003_022202cc(0, 0xaaa);
+            o->unk_138 = FieldFish_RandRangeSigned(0, 0xaaa);
         }
         o->unk_201 = 0;
     } else {
@@ -1720,18 +1720,18 @@ extern "C" void func_ov003_022246f0(Obj_f9 *o)
 
 
 //@ 0x22244bc
-extern "C" void func_ov003_022244bc(Obj_f9 *o)
+extern "C" void FishShadow_ThinkFree(Obj_f9 *o)
 {
     s32 r;
     s32 x, y;
     if (o->unk_7e == 0xb) {
-        ((void (*)(void *, void *))func_ov003_022228b0)(&o->unk_248, o);
+        ((void (*)(void *, void *))FishCroak_Update)(&o->unk_248, o);
     }
-    (o->*data_ov003_02257b20[o->unk_200].f)();
+    (o->*sFishShadowMoveStates[o->unk_200].f)();
     if (o->unk_200 == 5) {
         r = 0;
     } else {
-        r = ((s32 (*)(void *))func_ov003_02222b1c)(o);
+        r = ((s32 (*)(void *))FishShadow_CheckWaterBounds)(o);
     }
     switch (r) {
     case 0:
@@ -1787,7 +1787,7 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
     }
     o->unk_13c = o->unk_13c + 1;
     if (o->unk_224 != 7 && o->unk_200 != 5) {
-        if (((s32 (*)(void *))func_ov003_02222fe4)(o) != 0) {
+        if (((s32 (*)(void *))FishShadow_TryNoticeBobber)(o) != 0) {
             o->unk_13c = 0;
             o->unk_224 = 0;
         }
@@ -1800,7 +1800,7 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
         case 3:
             FieldPos_ToUnit(&x, &y, &o->unk_120);
             if (func_020312a8(x, y) == 1) {
-                ((s32 (*)(void *, void *))func_ov003_02220c68)(o, &o->unk_218);
+                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
             }
             break;
         case 4:
@@ -1809,7 +1809,7 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
         case 6:
             FieldPos_ToUnit(&x, &y, &o->unk_120);
             if (func_020312a8(x, y) == 2) {
-                ((s32 (*)(void *, void *))func_ov003_02220c68)(o, &o->unk_218);
+                ((s32 (*)(void *, void *))FishShadow_TryFlee)(o, &o->unk_218);
             }
             break;
         }
@@ -1818,19 +1818,19 @@ extern "C" void func_ov003_022244bc(Obj_f9 *o)
 
 
 //@ 0x222443c
-extern "C" void func_ov003_0222443c(Obj_f9 *o)
+extern "C" void FishShadow_MoveStart(Obj_f9 *o)
 {
-    o->unk_138 = o->unk_138 + (s16)func_ov003_022202cc(0, 0x2aa8);
+    o->unk_138 = o->unk_138 + (s16)FieldFish_RandRangeSigned(0, 0x2aa8);
     o->unk_13c = 0;
-    o->unk_140 = (u8)func_ov003_022202ec(1, 3);
-    o->unk_142 = func_ov003_022202cc(0xaaa, 0x2000);
-    o->unk_210 = func_ov003_022202cc(0, 2) != 0 ? 1 : 0;
+    o->unk_140 = (u8)FieldFish_RandRange(1, 3);
+    o->unk_142 = FieldFish_RandRangeSigned(0xaaa, 0x2000);
+    o->unk_210 = FieldFish_RandRangeSigned(0, 2) != 0 ? 1 : 0;
     o->unk_200 = 1;
 }
 
 
 //@ 0x2224364
-extern "C" void func_ov003_02224364(Obj_f9 *o)
+extern "C" void FishShadow_MoveAccelerate(Obj_f9 *o)
 {
     s32 t;
     s32 a, b, x, q, z, c, d;
@@ -1846,9 +1846,9 @@ extern "C" void func_ov003_02224364(Obj_f9 *o)
     o->unk_120.x += x;
     o->unk_120.z += z;
     if (o->unk_13c >= 10) {
-        ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x20);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x20);
     } else {
-        ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x10);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x10);
     }
     if (t > 0x19a) {
         o->unk_200 = 2;
@@ -1857,10 +1857,10 @@ extern "C" void func_ov003_02224364(Obj_f9 *o)
 
 
 //@ 0x2224310
-extern "C" void func_ov003_02224310(Obj_f9 *o)
+extern "C" void FishShadow_MoveCruise(Obj_f9 *o)
 {
-    func_ov003_02224828((s32 *)&o->unk_120, 0x19a, o->unk_138);
-    ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x20);
+    FieldFish_MoveXZ((s32 *)&o->unk_120, 0x19a, o->unk_138);
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x20);
     o->unk_140--;
     if (o->unk_140 == 0) {
         o->unk_13c = 0;
@@ -1870,14 +1870,14 @@ extern "C" void func_ov003_02224310(Obj_f9 *o)
 
 
 //@ 0x22242ac
-extern "C" void func_ov003_022242ac(Obj_f9 *o)
+extern "C" void FishShadow_MoveDecelerate(Obj_f9 *o)
 {
     s32 t = 0x19a - (o->unk_13c << 3);
-    func_ov003_02224828((s32 *)&o->unk_120, t, o->unk_138);
+    FieldFish_MoveXZ((s32 *)&o->unk_120, t, o->unk_138);
     if (o->unk_13c >= 10) {
-        ((void (*)(void *, s32))func_ov003_022201ac)(o, 3);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 3);
     } else {
-        ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x10);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x10);
     }
     if (t <= 0) {
         o->unk_13c = 0;
@@ -1887,18 +1887,18 @@ extern "C" void func_ov003_022242ac(Obj_f9 *o)
 
 
 //@ 0x222426c
-extern "C" void func_ov003_0222426c(Obj_f9 *o)
+extern "C" void FishShadow_MoveRest(Obj_f9 *o)
 {
-    ((void (*)(void *, s32))func_ov003_022201ac)(o, 10);
-    ((void (*)(void *, s32))func_ov003_022209ec)(&o->unk_120, 0x40);
-    if (func_ov003_022202ec(0, 0x64) == 1 || o->unk_13c > 0x64) {
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 10);
+    ((void (*)(void *, s32))FieldWater_ApplyFlow)(&o->unk_120, 0x40);
+    if (FieldFish_RandRange(0, 0x64) == 1 || o->unk_13c > 0x64) {
         o->unk_200 = 0;
     }
 }
 
 
 //@ 0x2224148
-extern "C" void func_ov003_02224148(Obj_f8 *self)
+extern "C" void FishShadow_MoveFlee(Obj_f8 *self)
 {
     s32 a, x, y, sq;
     s32 t, s142, s138;
@@ -1922,14 +1922,14 @@ extern "C" void func_ov003_02224148(Obj_f8 *self)
     self->unk_120.z += y;
     if (self->unk_7f) {
         if (self->unk_13c >= 10) {
-            ((void (*)(void *, s32))func_ov003_022201ac)(self, 3);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 3);
         } else if (self->unk_13c >= 5) {
-            ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x10);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x10);
         } else {
-            ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x20);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x20);
         }
     } else {
-        ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x20);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x20);
     }
     {
         V3_f8 v;
@@ -1943,23 +1943,23 @@ extern "C" void func_ov003_02224148(Obj_f8 *self)
 
 
 //@ 0x2224144
-extern "C" void func_ov003_02224144()
+extern "C" void FishShadow_AppearAttached()
 {
 }
 
 
 //@ 0x22240f4
-extern "C" void func_ov003_022240f4(Obj_f8 *self)
+extern "C" void FishShadow_ThinkBobber(Obj_f8 *self)
 {
-    if ((self->*data_ov003_02257b50[self->unk_224].f)() == 0) {
-        ((s32 (*)(Obj_f8 *))func_ov003_02223134)(self);
+    if ((self->*sFishBiteStates[self->unk_224].f)() == 0) {
+        ((s32 (*)(Obj_f8 *))FishShadow_FleeFromPlayer)(self);
     }
     self->unk_13c = self->unk_13c + 1;
 }
 
 
 //@ 0x22240d4
-extern "C" s32 func_ov003_022240d4(Obj_f8 *self)
+extern "C" s32 FishShadow_BiteIdle(Obj_f8 *self)
 {
     if (self->unk_22c == 0) {
         return 0;
@@ -1970,7 +1970,7 @@ extern "C" s32 func_ov003_022240d4(Obj_f8 *self)
 
 
 //@ 0x2223f78
-extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
+extern "C" s32 FishShadow_BiteApproach(Obj_f8 *self)
 {
     u8 *p = (u8 *)self->unk_22c;
     s32 dv, s;
@@ -1978,16 +1978,16 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
         return 0;
     }
     p = (u8 *)((u32)p + 8);
-    dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
+    dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
     s = self->unk_23d << 4;
     if (s >= 0x100) {
         s = 0x100;
     }
     self->unk_138 = Math_AngleXZ(&self->unk_120, p);
-    ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, (s16)self->unk_138);
-    ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x18);
-    if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, p, dv, dv, dv)) {
-        s32 r = ((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, (s16)self->unk_138);
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
+    if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, p, dv, dv, dv)) {
+        s32 r = ((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100);
         s32 lim = 0x5f;
         s32 a, b;
         FieldPos_ToUnit(&a, &b, p);
@@ -2010,7 +2010,7 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
             break;
         }
         if (r <= lim) {
-            self->unk_240 = ((s32 (*)(s32, s32))func_ov003_022202ec)(4, 0xb4);
+            self->unk_240 = ((s32 (*)(s32, s32))FieldFish_RandRange)(4, 0xb4);
             self->unk_13c = 0;
             self->unk_23d = 0;
             self->unk_225 = 3;
@@ -2029,7 +2029,7 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
 
 
 //@ 0x2223dd8
-extern "C" s32 func_ov003_02223dd8(Obj_f8 *self)
+extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
 {
     u8 *p = (u8 *)self->unk_22c;
     u8 *q;
@@ -2040,14 +2040,14 @@ extern "C" s32 func_ov003_02223dd8(Obj_f8 *self)
     switch (self->unk_225) {
     case 0: {
         s32 s, dv;
-        dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
+        dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
         s = self->unk_23d << 4;
         if (s >= 0x100) {
             s = 0x100;
         }
         self->unk_138 = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, (s16)self->unk_138);
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, (s16)self->unk_138);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_23d = 0;
             func_0205fb40(p);
             self->unk_225 = 1;
@@ -2055,40 +2055,40 @@ extern "C" s32 func_ov003_02223dd8(Obj_f8 *self)
         break;
     }
     case 1: {
-        s32 lim = ((s32 (*)(s32, s32))func_ov003_022202ec)(10, 15);
-        if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 0x32) {
+        s32 lim = ((s32 (*)(s32, s32))FieldFish_RandRange)(10, 15);
+        if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 0x32) {
             self->unk_138 = Math_AngleXZ(q, &self->unk_120);
         } else {
             self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x100, (s16)self->unk_138);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x100, (s16)self->unk_138);
         self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         if (self->unk_23d > lim) {
             self->unk_23d = 0;
-            self->unk_138 = (s16)self->unk_138 + (s16)(func_ov003_022202cc(1, 2) * 0x1554);
+            self->unk_138 = (s16)self->unk_138 + (s16)(FieldFish_RandRangeSigned(1, 2) * 0x1554);
             self->unk_225 = 2;
         }
         break;
     }
     case 2: {
-        s32 dv = ((s32)*(u16 *)(((u8 *)((u8 *)&data_ov003_022349d4[0].d)) + self->unk_1ff * 0x14) << 12) / 100;
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x14c, (s16)self->unk_138);
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv) == 0) {
-            if (((s32 (*)(Obj_f8 *))func_ov003_02222d48)(self) == 0) {
-                ((s32 (*)(Obj_f8 *))func_ov003_02223134)(self);
+        s32 dv = ((s32)*(u16 *)(((u8 *)((u8 *)&sFishSizeClassParams[0].d)) + self->unk_1ff * 0x14) << 12) / 100;
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x14c, (s16)self->unk_138);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
+            if (((s32 (*)(Obj_f8 *))FishShadow_LoseBobber)(self) == 0) {
+                ((s32 (*)(Obj_f8 *))FishShadow_FleeFromPlayer)(self);
             }
         }
         break;
     }
     }
-    ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x18);
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
     self->unk_23d = self->unk_23d + 1;
     return 1;
 }
 
 
 //@ 0x2223b64
-extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
+extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
 {
     BOOL r = FALSE;
     u8 *p = (u8 *)self->unk_22c;
@@ -2100,8 +2100,8 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
     }
     q = p + 8;
     if (self->unk_13c >= self->unk_240) {
-        s32 dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
+        s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_13c = r;
             ((s32 (*)(void *, u32))func_0205f92c)(p, 5);
             func_02003e70(self, 0x84f, 0x7f, r);
@@ -2129,7 +2129,7 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
             return r;
         }
     }
-    base = (u32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12;
+    base = (u32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12;
     switch (self->unk_225) {
     case 3: {
         dv = base / 100;
@@ -2138,27 +2138,27 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
         if (s >= 0x100) {
             s = 0x100;
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, Math_AngleXZ(&self->unk_120, q));
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, Math_AngleXZ(&self->unk_120, q));
         d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->unk_23d = 0;
             func_0205fb40(p);
             self->unk_225 = 4;
         }
-        ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x18);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
         break;
     }
     case 4: {
-        s32 lim = ((s32 (*)(s32, s32))func_ov003_022202ec)(10, 0x14);
-        if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 0x32) {
+        s32 lim = ((s32 (*)(s32, s32))FieldFish_RandRange)(10, 0x14);
+        if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 0x32) {
             ang = Math_AngleXZ(q, &self->unk_120);
         } else {
             ang = Math_AngleXZ(&self->unk_120, q);
-            if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 5) {
+            if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 5) {
                 func_0205fb40(p);
             }
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x100, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x100, ang);
         if (self->unk_23d > lim) {
             self->unk_23d = 0;
             self->unk_225 = 5;
@@ -2166,17 +2166,17 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
         break;
     }
     case 5: {
-        s32 dv = ((s32)*(u16 *)(((u8 *)((u8 *)&data_ov003_022349d4[0].d)) + self->unk_1ff * 0x14) << 12) / 100;
+        s32 dv = ((s32)*(u16 *)(((u8 *)((u8 *)&sFishSizeClassParams[0].d)) + self->unk_1ff * 0x14) << 12) / 100;
         s32 s = 0x100 - (self->unk_23d << 4);
         if (s < 0) {
             s = 0;
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, Math_AngleXZ(q, &self->unk_120));
-        if (s == 0 || ((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv) == 0) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, Math_AngleXZ(q, &self->unk_120));
+        if (s == 0 || ((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
             self->unk_23d = 0;
             self->unk_225 = 3;
         }
-        ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x10);
+        ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x10);
         break;
     }
     }
@@ -2193,7 +2193,7 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
 
 
 //@ 0x2223924
-extern "C" s32 func_ov003_02223924(Obj_f8 *self)
+extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
 {
     u8 *p = (u8 *)self->unk_22c;
     u8 *q;
@@ -2205,7 +2205,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
         return 0;
     }
     q = p + 8;
-    ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x18);
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
     {
         u16 out[2];
         BOOL ok;
@@ -2230,7 +2230,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
     }
     {
         s32 cur = self->unk_13c;
-        u8 *lim = ((Unk_ov003_02223924_Tbl *)((u8 *)&data_ov003_022348c0[0].q))[idx].p;
+        u8 *lim = ((Unk_ov003_02223924_Tbl *)((u8 *)&sFishRodParams[0].q))[idx].p;
         if (cur >= lim[data_020ca316[self->unk_7e * 6]]) {
             self->unk_13c = 0;
             ((s32 (*)(void *, u32))func_0205f92c)(p, 4);
@@ -2239,11 +2239,11 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
     }
     switch (self->unk_225 - 6) {
     case 0: {
-        s32 dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
+        s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
         s32 ang = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0xc0, (s16)(ang + 0x4000));
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0xc0, (s16)(ang + 0x4000));
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_225 = 8;
         } else {
             self->unk_225 = 7;
@@ -2251,11 +2251,11 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
         break;
     }
     case 1: {
-        s32 dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
+        s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
         s32 ang = Math_AngleXZ(&self->unk_120, q);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0xc0, (s16)(ang - 0x4000));
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0xc0, (s16)(ang - 0x4000));
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_225 = 8;
         } else {
             self->unk_225 = 6;
@@ -2263,12 +2263,12 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
         break;
     }
     case 2: {
-        s32 dv = ((s32)((u8 *)((u8 *)&data_ov003_022349d4[0].a1))[self->unk_1ff * 0x14] << 12) / 100;
+        s32 dv = ((s32)((u8 *)((u8 *)&sFishSizeClassParams[0].a1))[self->unk_1ff * 0x14] << 12) / 100;
         s32 r;
         s32 ang = Math_AngleXZ(q, &self->unk_120);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
-        r = ((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100);
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv) == 0) {
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x180, ang);
+        r = ((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv) == 0) {
             if (r >= 0x46) {
                 self->unk_225 = 6;
             } else {
@@ -2278,7 +2278,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
         break;
     }
     case 3:
-        if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) <= 0x32) {
+        if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) <= 0x32) {
             self->unk_225 = 7;
         }
         break;
@@ -2289,7 +2289,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
 
 
 //@ 0x22237dc
-extern "C" BOOL func_ov003_022237dc(Obj_f7 *o) {
+extern "C" BOOL FishShadow_BiteHooked(Obj_f7 *o) {
     Ent_f7 *e = o->unk_22c;
     if (e == NULL) {
         return FALSE;
@@ -2314,16 +2314,16 @@ extern "C" BOOL func_ov003_022237dc(Obj_f7 *o) {
         o->unk_138 = o->unk_138 - step;
         ang = (s16)(o->unk_138 + 0x4000);
     }
-    s32 d = func_ov003_022202cc(3, 10);
-    s32 s = data_ov003_02257a80 + d;
-    data_ov003_02257a80 = s;
+    s32 d = FieldFish_RandRangeSigned(3, 10);
+    s32 s = sFishPullJitter + d;
+    sFishPullJitter = s;
     if (s < -12) {
-        data_ov003_02257a80 = -12;
+        sFishPullJitter = -12;
     } else if (s > 0x14) {
-        data_ov003_02257a80 = 0x14;
+        sFishPullJitter = 0x14;
     }
-    s32 d2 = func_ov003_022202cc(0, 0xf);
-    s32 sum = data_ov003_02257a80 + d2 + *(u16 *)&((u8 *)((u8 *)&data_ov003_022349d4[0].c1))[o->unk_1ff * 0x14];
+    s32 d2 = FieldFish_RandRangeSigned(0, 0xf);
+    s32 sum = sFishPullJitter + d2 + *(u16 *)&((u8 *)((u8 *)&sFishSizeClassParams[0].c1))[o->unk_1ff * 0x14];
     s32 sc = func_02133150(sum << 12, 100);
     V3_f7 v;
     V3_f7 *ps = &e->unk_08;
@@ -2332,19 +2332,19 @@ extern "C" BOOL func_ov003_022237dc(Obj_f7 *o) {
     v.z = ps->z;
     o->unk_120.x = v.x;
     o->unk_120.z = v.z;
-    ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&o->unk_120, sc, ang);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&o->unk_120, sc, ang);
     void *m = func_020947f0(4);
     if (m != NULL) {
         s32 a2 = Math_AngleXZ(m, &v);
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&o->unk_120, 0xa00, a2);
+        ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&o->unk_120, 0xa00, a2);
     }
     return TRUE;
 }
 
 
 //@ 0x2223730
-extern "C" BOOL func_ov003_02223730(Obj_f7 *o) {
-    ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x1c);
+extern "C" BOOL FishShadow_BiteFlee(Obj_f7 *o) {
+    ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x1c);
     s32 c = o->unk_13c;
     s32 v = (c + 10) * 25;
     if (v >= 0x180) {
@@ -2352,14 +2352,14 @@ extern "C" BOOL func_ov003_02223730(Obj_f7 *o) {
     }
     if (o->unk_7f != 0) {
         if (c >= 0x14) {
-            ((void (*)(void *, s32))func_ov003_022201ac)(o, 3);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 3);
         } else if (c >= 0xf) {
-            ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x10);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x10);
         } else {
-            ((void (*)(void *, s32))func_ov003_022201ac)(o, 0x20);
+            ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(o, 0x20);
         }
     }
-    ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&o->unk_120, v, o->unk_138);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&o->unk_120, v, o->unk_138);
     V3_f7 t;
     t.x = o->unk_120.x;
     t.y = o->unk_120.y;
@@ -2371,19 +2371,19 @@ extern "C" BOOL func_ov003_02223730(Obj_f7 *o) {
 
 
 //@ 0x22236dc
-extern "C" void func_ov003_022236dc(Obj_f7 *o) {
+extern "C" void FishShadow_OnRodPulled(Obj_f7 *o) {
     if (o->unk_23c == 1) {
         switch (o->unk_224) {
         case 3:
         case 4:
         case 5:
-            func_ov003_02223134(o);
+            FishShadow_FleeFromPlayer(o);
             break;
         case 6:
             break;
         default:
-            if (((BOOL (*)(Obj_f7 *))func_ov003_02222d48)(o) == 0) {
-                func_ov003_02223134(o);
+            if (((BOOL (*)(Obj_f7 *))FishShadow_LoseBobber)(o) == 0) {
+                FishShadow_FleeFromPlayer(o);
             }
             break;
         }
@@ -2392,14 +2392,14 @@ extern "C" void func_ov003_022236dc(Obj_f7 *o) {
 
 
 //@ 0x2223554
-extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
+extern "C" BOOL FishShadow_TryHook(Obj_f7 *o) {
     BOOL r = FALSE;
     if (o == NULL) {
         return r;
     }
     Ent_f7 *e = o->unk_22c;
     if (e == NULL) {
-        func_ov003_02223134(o);
+        FishShadow_FleeFromPlayer(o);
         return r;
     }
     switch (o->unk_224) {
@@ -2418,14 +2418,14 @@ extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
         } else if (a >= 0x1375 && a <= 0x1375) {
             m = 1;
         } else {
-            func_ov003_02223134(o);
+            FishShadow_FleeFromPlayer(o);
             return FALSE;
         }
         if (gTouchHeld == 0) {
             s32 cur = o->unk_13c;
-            u8 *tbl = ((u8 * *)((u8 *)&data_ov003_022348c0[0].q))[m * 2];
+            u8 *tbl = ((u8 * *)((u8 *)&sFishRodParams[0].q))[m * 2];
             if (cur > tbl[data_020ca316[o->unk_7e * 6]] - 1) {
-                func_ov003_02223134(o);
+                FishShadow_FleeFromPlayer(o);
                 return FALSE;
             }
         }
@@ -2433,8 +2433,8 @@ extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
         o->unk_225 = 10;
         o->unk_13c = 0;
         ((void (*)(Ent_f7 *, s32))func_0205f92c)(e, 6);
-        o->unk_23e = func_ov003_022202ec(0, 2) != 0;
-        o->unk_23f = func_ov003_022202ec(((u8 *)((u8 *)&data_ov003_022349d4[0].a2))[o->unk_1ff * 0x14], ((u8 *)((u8 *)&data_ov003_022349d4[0].a3))[o->unk_1ff * 0x14]);
+        o->unk_23e = FieldFish_RandRange(0, 2) != 0;
+        o->unk_23f = FieldFish_RandRange(((u8 *)((u8 *)&sFishSizeClassParams[0].a2))[o->unk_1ff * 0x14], ((u8 *)((u8 *)&sFishSizeClassParams[0].a3))[o->unk_1ff * 0x14]);
         V3_f7 *ps = &e->unk_08;
         V3_f7 *pd = &o->unk_230;
         pd->x = e->unk_08.x;
@@ -2449,13 +2449,13 @@ extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
         break;
     }
     case 3:
-        func_ov003_02223134(o);
+        FishShadow_FleeFromPlayer(o);
         break;
     case 6:
         break;
     default:
-        if (((BOOL (*)(Obj_f7 *))func_ov003_02222d48)(o) == 0) {
-            func_ov003_02223134(o);
+        if (((BOOL (*)(Obj_f7 *))FishShadow_LoseBobber)(o) == 0) {
+            FishShadow_FleeFromPlayer(o);
         }
         break;
     }
@@ -2464,7 +2464,7 @@ extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
 
 
 //@ 0x22234fc
-extern "C" s32 func_ov003_022234fc(Obj_f7 *o) {
+extern "C" s32 FishShadow_CheckReelResult(Obj_f7 *o) {
     s32 r = 0;
     if (o == NULL) {
         return r;
@@ -2473,10 +2473,10 @@ extern "C" s32 func_ov003_022234fc(Obj_f7 *o) {
         return r;
     }
     if (o->unk_13c >= o->unk_23f) {
-        if (((BOOL (*)(Obj_f7 *, u32))func_ov003_02222d9c)(o, o->unk_211)) {
+        if (((BOOL (*)(Obj_f7 *, u32))FishShadow_Land)(o, o->unk_211)) {
             r = 2;
         } else {
-            func_ov003_02223134(o);
+            FishShadow_FleeFromPlayer(o);
             r = 1;
         }
     }
@@ -2485,7 +2485,7 @@ extern "C" s32 func_ov003_022234fc(Obj_f7 *o) {
 
 
 //@ 0x22234c4
-extern "C" BOOL func_ov003_022234c4(Obj_f7 *o) {
+extern "C" BOOL FishCatch_IsLandedForShadow(Obj_f7 *o) {
     BOOL r = FALSE;
     if (o == NULL) {
         return r;
@@ -2494,7 +2494,7 @@ extern "C" BOOL func_ov003_022234c4(Obj_f7 *o) {
     if (i == -1) {
         return r;
     }
-    Rec_f7 *p = &((Rec_f7 *)(data_ov003_02257e9c))[i];
+    Rec_f7 *p = &((Rec_f7 *)(sFishCatches))[i];
     if (p->unk_80 != 0) {
         r = TRUE;
     }
@@ -2503,14 +2503,14 @@ extern "C" BOOL func_ov003_022234c4(Obj_f7 *o) {
 
 
 //@ 0x2223498
-extern "C" BOOL func_ov003_02223498(Obj_f7 *o) {
+extern "C" BOOL FishCatch_EndForShadow(Obj_f7 *o) {
     if (o == NULL) {
         return FALSE;
     }
     s32 i = o->unk_227;
     BOOL r = FALSE;
     if (i != -1) {
-        Rec_f7 *p = &((Rec_f7 *)(data_ov003_02257e9c))[i];
+        Rec_f7 *p = &((Rec_f7 *)(sFishCatches))[i];
         p->unk_40 = 4;
         r = TRUE;
     }
@@ -2519,13 +2519,13 @@ extern "C" BOOL func_ov003_02223498(Obj_f7 *o) {
 
 
 //@ 0x2223450
-extern "C" void func_ov003_02223450(V3_f7 *out, s32 idx) {
+extern "C" void Fish_GetDisplayScale(V3_f7 *out, s32 idx) {
     if (idx < 0 || idx >= 0x3b) {
         out->x = 0x1000;
         out->y = 0x1000;
         out->z = 0x1000;
     } else {
-        s32 v = func_02133150(((u8 *)((u8 *)&data_ov003_022349d4[0].h))[data_020ca314[idx * 6] * 0x14] << 12, 100);
+        s32 v = func_02133150(((u8 *)((u8 *)&sFishSizeClassParams[0].h))[data_020ca314[idx * 6] * 0x14] << 12, 100);
         out->x = v;
         out->y = v;
         out->z = v;
@@ -2534,7 +2534,7 @@ extern "C" void func_ov003_02223450(V3_f7 *out, s32 idx) {
 
 
 //@ 0x2223400
-extern "C" BOOL func_ov003_02223400(Obj_f7 *o, V3_f7 *a, V3_f7 *b) {
+extern "C" BOOL FishCatch_SetDisplayPosScale(Obj_f7 *o, V3_f7 *a, V3_f7 *b) {
     if (o == NULL) {
         return FALSE;
     }
@@ -2542,7 +2542,7 @@ extern "C" BOOL func_ov003_02223400(Obj_f7 *o, V3_f7 *a, V3_f7 *b) {
     if (i == -1) {
         return FALSE;
     }
-    Rec_f7 *r = &((Rec_f7 *)(data_ov003_02257e9c))[i];
+    Rec_f7 *r = &((Rec_f7 *)(sFishCatches))[i];
     V3_f7 *pd = &r->unk_54;
     pd->x = a->x;
     pd->y = a->y;
@@ -2556,7 +2556,7 @@ extern "C" BOOL func_ov003_02223400(Obj_f7 *o, V3_f7 *a, V3_f7 *b) {
 
 
 //@ 0x2223310
-extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
+extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
     s32 t;
     s32 ang;
     V3_f7 *pos;
@@ -2568,7 +2568,7 @@ extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
         return FALSE;
     }
     pos = (V3_f7 *)(ob + 0x5c);
-    Rec_f7 *rec = &((Rec_f7 *)(data_ov003_02257e9c))[idx];
+    Rec_f7 *rec = &((Rec_f7 *)(sFishCatches))[idx];
     t = rec->unk_90;
     if ((u32)(t - 0x38) <= 2) {
         if (flag != 0) {
@@ -2585,7 +2585,7 @@ extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
         q->y = tmp.y;
         q->z = tmp.z;
     }
-    func_ov003_0222316c(rec, ang, t);
+    FishCatch_SetModelAngles(rec, ang, t);
     if (flag != 0) {
         rec->unk_40 = 1;
     }
@@ -2605,11 +2605,11 @@ extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
 
 
 //@ 0x22232e8
-extern "C" BOOL func_ov003_022232e8(s32 idx) {
+extern "C" BOOL FishCatch_IsActive(s32 idx) {
     if (idx < 0 || idx >= 4) {
         return TRUE;
     }
-    Rec_f7 *p = &((Rec_f7 *)(data_ov003_02257e9c))[idx];
+    Rec_f7 *p = &((Rec_f7 *)(sFishCatches))[idx];
     if (p->unk_40 != 0) {
         return TRUE;
     }
@@ -2618,21 +2618,21 @@ extern "C" BOOL func_ov003_022232e8(s32 idx) {
 
 
 //@ 0x22232c8
-extern "C" V3_f7 *func_ov003_022232c8(s32 idx) {
+extern "C" V3_f7 *FishCatch_GetPos(s32 idx) {
     if (idx < 0 || idx >= 4) {
-        return &(*(V3_f7 *)((u8 *)&data_ov003_02257e9c[0].unk_54));
+        return &(*(V3_f7 *)((u8 *)&sFishCatches[0].unk_54));
     }
-    return &((Rec_f7 *)(data_ov003_02257e9c))[idx].unk_54;
+    return &((Rec_f7 *)(sFishCatches))[idx].unk_54;
 }
 
 
 //@ 0x2223258
-extern "C" BOOL func_ov003_02223258(s32 idx) {
+extern "C" BOOL FishCatch_NetSendStored(s32 idx) {
     BOOL r = FALSE;
     if (idx < 0 || idx >= 4) {
         return FALSE;
     }
-    Rec_f7 *p = &((Rec_f7 *)(data_ov003_02257e9c))[idx];
+    Rec_f7 *p = &((Rec_f7 *)(sFishCatches))[idx];
     if (p->unk_40 != 3 && p->unk_40 != 2) {
         return r;
     }
@@ -2650,7 +2650,7 @@ extern "C" BOOL func_ov003_02223258(s32 idx) {
 
 
 //@ 0x222323c
-extern "C" BOOL func_ov003_0222323c(Rec_f7 *self, u32 a) {
+extern "C" BOOL FishCatch_IsDisplayReady(Rec_f7 *self, u32 a) {
     BOOL r = FALSE;
     if (func_0204f364(self->unk_44, 1)) {
         r = TRUE;
@@ -2660,7 +2660,7 @@ extern "C" BOOL func_ov003_0222323c(Rec_f7 *self, u32 a) {
 
 
 //@ 0x222316c
-extern "C" void func_ov003_0222316c(Rec_f7 *self, s32 a, s32 t) {
+extern "C" void FishCatch_SetModelAngles(Rec_f7 *self, s32 a, s32 t) {
     s16 *p96 = &self->unk_96;
     s16 *p98 = &self->unk_98;
     s16 *p9a = &self->unk_9a;
@@ -2700,7 +2700,7 @@ extern "C" void func_ov003_0222316c(Rec_f7 *self, s32 a, s32 t) {
 
 
 //@ 0x2223134
-extern "C" BOOL func_ov003_02223134(Obj_f7 *self) {
+extern "C" BOOL FishShadow_FleeFromPlayer(Obj_f7 *self) {
     BOOL r = FALSE;
     if (self == NULL) {
         return r;
@@ -2709,7 +2709,7 @@ extern "C" BOOL func_ov003_02223134(Obj_f7 *self) {
     if (p == NULL) {
         return r;
     }
-    if (((BOOL (*)(Obj_f7 *, void *))func_ov003_02220b00)(self, p)) {
+    if (((BOOL (*)(Obj_f7 *, void *))FishShadow_StartFlee)(self, p)) {
         r = TRUE;
     }
     return r;
@@ -2717,7 +2717,7 @@ extern "C" BOOL func_ov003_02223134(Obj_f7 *self) {
 
 
 //@ 0x2222fe4
-extern "C" BOOL func_ov003_02222fe4(Obj_f7 *self) {
+extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
     s32 res = 0;
     Ent_f7 *e = ((Ent_f7 * (*)(void))func_0205ffe4)();
     s32 who;
@@ -2740,7 +2740,7 @@ extern "C" BOOL func_ov003_02222fe4(Obj_f7 *self) {
     } else {
         who = 0;
     }
-    p = ((Obj_f7 *)(data_ov003_0225812c));
+    p = ((Obj_f7 *)(sFishShadows));
     ok = 1;
     for (i = 0; i < 6; p++, i++) {
         if (self != p && who == p->unk_227) {
@@ -2755,17 +2755,17 @@ extern "C" BOOL func_ov003_02222fe4(Obj_f7 *self) {
         v14.x = p120->x;
         v14.y = p120->y;
         v14.z = p120->z;
-        if (((BOOL (*)(V3_f7 *, s32, s32, s32))func_ov003_02222f28)(&v14, self->unk_138, who, self->unk_7e)) {
-            s32 sc = func_02133150(((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12, 100);
+        if (((BOOL (*)(V3_f7 *, s32, s32, s32))FishShadow_CanSeeBobber)(&v14, self->unk_138, who, self->unk_7e)) {
+            s32 sc = func_02133150(((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12, 100);
             V3_f7 *pv = &e->unk_08;
             v8.x = e->unk_08.x;
             v8.y = pv->y;
             v8.z = pv->z;
-            if (func_ov003_02222f08() && ((BOOL (*)(V3_f7 *, V3_f7 *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, &v8, sc, sc, sc)) {
+            if (FieldFish_IsCastSplashActive() && ((BOOL (*)(V3_f7 *, V3_f7 *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, &v8, sc, sc, sc)) {
                 if (self->unk_200 != 2) {
                     self->unk_200 = 2;
                 }
-                s32 r = func_ov003_022202cc(0x5000, 0x7fff);
+                s32 r = FieldFish_RandRangeSigned(0x5000, 0x7fff);
                 self->unk_138 = self->unk_138 + (s16)r;
                 self->unk_140 = 0x14;
             } else {
@@ -2776,14 +2776,14 @@ extern "C" BOOL func_ov003_02222fe4(Obj_f7 *self) {
                 self->unk_23c = 1;
             }
         }
-        func_ov003_02222ef4();
+        FieldFish_TickCastSplash();
     }
     return res;
 }
 
 
 //@ 0x2222f28
-extern "C" BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3)
+extern "C" BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3)
 {
     volatile BOOL result = FALSE;
     u8 *p, *p2;
@@ -2818,9 +2818,9 @@ extern "C" BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3)
     p2 = p + 8;
     a3 = data_020ca315[a3 * 6] * 4;
     off = a3;
-    t = &((Unk_ov003_02222f28_Ent *)(data_ov003_022348c0))[idx];
+    t = &((Unk_ov003_02222f28_Ent *)(sFishRodParams))[idx];
     val = (t->p[off] << 12) / 10;
-    if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(self, p2, val, val, val)) {
+    if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(self, p2, val, val, val)) {
         s32 lim = *(s16 *)(t->p + off + 2);
         if (func_020e780c(Math_AngleXZ(self, p2), a1) <= lim) {
             result = TRUE;
@@ -2831,16 +2831,16 @@ extern "C" BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3)
 
 
 //@ 0x2222f1c
-extern "C" void func_ov003_02222f1c()
+extern "C" void FieldFish_StartCastSplash()
 {
-    data_ov003_02257a78 = 10;
+    sFishCastSplashTimer = 10;
 }
 
 
 //@ 0x2222f08
-extern "C" BOOL func_ov003_02222f08()
+extern "C" BOOL FieldFish_IsCastSplashActive()
 {
-    if (data_ov003_02257a78 != 0) {
+    if (sFishCastSplashTimer != 0) {
         return TRUE;
     }
     return FALSE;
@@ -2848,16 +2848,16 @@ extern "C" BOOL func_ov003_02222f08()
 
 
 //@ 0x2222ef4
-extern "C" void func_ov003_02222ef4()
+extern "C" void FieldFish_TickCastSplash()
 {
-    if (data_ov003_02257a78 != 0) {
-        data_ov003_02257a78--;
+    if (sFishCastSplashTimer != 0) {
+        sFishCastSplashTimer--;
     }
 }
 
 
 //@ 0x2222d9c
-extern "C" BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k)
+extern "C" BOOL FishShadow_Land(Obj_f6 *self, u32 k)
 {
     s32 idx;
     Ent_f6 *e;
@@ -2877,7 +2877,7 @@ extern "C" BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k)
     if (idx == -1) {
         return z;
     }
-    e = (Ent_f6 *)((u8 *)((Ent_f6 *)(data_ov003_02257e9c)) + idx * 0xa4);
+    e = (Ent_f6 *)((u8 *)((Ent_f6 *)(sFishCatches)) + idx * 0xa4);
     e->unk_40 = 1;
     e->unk_48 = 1;
     pv = &self->unk_120;
@@ -2931,7 +2931,7 @@ extern "C" BOOL func_ov003_02222d9c(Obj_f6 *self, u32 k)
 
 
 //@ 0x2222d48
-extern "C" BOOL func_ov003_02222d48(Obj_f6 *self)
+extern "C" BOOL FishShadow_LoseBobber(Obj_f6 *self)
 {
     void *p = self->unk_22c;
     if (p == 0) {
@@ -2949,7 +2949,7 @@ extern "C" BOOL func_ov003_02222d48(Obj_f6 *self)
 
 
 //@ 0x2222d28
-extern "C" s32 func_ov003_02222d28(Obj_f6 *self)
+extern "C" s32 FishShadow_GetEdgeColumn(Obj_f6 *self)
 {
     s32 r = 2;
     s32 t = self->unk_120.x >> 17;
@@ -2963,7 +2963,7 @@ extern "C" s32 func_ov003_02222d28(Obj_f6 *self)
 
 
 //@ 0x2222ce0
-extern "C" BOOL func_ov003_02222ce0(Obj_f6 *self)
+extern "C" BOOL FishShadow_IsSeaNorth(Obj_f6 *self)
 {
     BOOL r = FALSE;
     s32 x, y;
@@ -2982,7 +2982,7 @@ extern "C" BOOL func_ov003_02222ce0(Obj_f6 *self)
 
 
 //@ 0x2222b1c
-extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
+extern "C" s32 FishShadow_CheckWaterBounds(Obj_f6 *self)
 {
     s32 r = 0;
     s32 x, y;
@@ -2992,7 +2992,7 @@ extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
     case 1:
     case 2:
     case 3:
-        if (func_ov003_02222a38(self)) {
+        if (FishShadow_IsProbeOutOfWater(self)) {
             COPY();
             r = 1;
         } else if (func_020312a8(x, y) == 1) {
@@ -3004,18 +3004,18 @@ extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
         goto dflt;
     case 5:
     case 6: {
-        s32 t = func_ov003_02222d28(self);
+        s32 t = FishShadow_GetEdgeColumn(self);
         if (t == 0) {
             r = 6;
         } else if (t == 1) {
             r = 7;
-        } else if (func_ov003_02222a38(self)) {
+        } else if (FishShadow_IsProbeOutOfWater(self)) {
             COPY();
             r = 2;
         } else if (func_020312a8(x, y) != 1) {
             COPY();
             r = 4;
-        } else if (func_ov003_02222ce0(self)) {
+        } else if (FishShadow_IsSeaNorth(self)) {
             r = 5;
         }
         break;
@@ -3023,20 +3023,20 @@ extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
     default:
     dflt:
         if (func_020312a8(x, y) == 2) {
-            if (func_ov003_02222a38(self)) {
+            if (FishShadow_IsProbeOutOfWater(self)) {
                 COPY();
                 r = 1;
             }
         } else if (func_020312a8(x, y) == 1) {
-            s32 t = func_ov003_02222d28(self);
+            s32 t = FishShadow_GetEdgeColumn(self);
             if (t == 0) {
                 r = 6;
             } else if (t == 1) {
                 r = 7;
-            } else if (func_ov003_02222a38(self)) {
+            } else if (FishShadow_IsProbeOutOfWater(self)) {
                 COPY();
                 r = 2;
-            } else if (func_ov003_02222ce0(self)) {
+            } else if (FishShadow_IsSeaNorth(self)) {
                 r = 5;
             }
         } else {
@@ -3050,11 +3050,11 @@ extern "C" s32 func_ov003_02222b1c(Obj_f6 *self)
 
 
 //@ 0x2222a38
-extern "C" BOOL func_ov003_02222a38(Obj_f6 *self)
+extern "C" BOOL FishShadow_IsProbeOutOfWater(Obj_f6 *self)
 {
     BOOL r = TRUE;
     s32 a, b, c;
-    func_ov003_022228dc(self, &a, &b, &c);
+    FishShadow_GetProbeGroundKinds(self, &a, &b, &c);
     switch (self->unk_1fe) {
     case 0:
     case 1:
@@ -3096,7 +3096,7 @@ extern "C" BOOL func_ov003_02222a38(Obj_f6 *self)
 
 
 //@ 0x22228dc
-extern "C" void func_ov003_022228dc(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3)
+extern "C" void FishShadow_GetProbeGroundKinds(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3)
 {
     V3_f6 v0, v1, v2;
     Unk_0203398c g0, g1, g2;
@@ -3107,7 +3107,7 @@ extern "C" void func_ov003_022228dc(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3)
 
     ang = self->unk_138;
     i0 = ((u16)(s16)(ang + 0x2000) >> 4) * 2;
-    r = *(u16 *)(((u8 *)((u8 *)&data_ov003_022349d4[0].g)) + self->unk_1ff * 0x14);
+    r = *(u16 *)(((u8 *)((u8 *)&sFishSizeClassParams[0].g)) + self->unk_1ff * 0x14);
     z0 = self->unk_120.z + (r * data_02135f44[i0 + 1]) / 100;
     v0.x = self->unk_120.x + (r * data_02135f44[i0]) / 100;
     v0.y = -0x1333;
@@ -3132,24 +3132,24 @@ extern "C" void func_ov003_022228dc(Obj_f6 *self, s32 *o1, s32 *o2, s32 *o3)
 
 
 //@ 0x22228b0
-extern "C" void func_ov003_022228b0(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Update(Sub_f6 *s, Obj_f6 *o)
 {
     switch (s->b3) {
     case 0:
-        func_ov003_0222285c(s, o);
+        FishCroak_Idle(s, o);
         break;
     case 1:
-        func_ov003_022227dc(s, o);
+        FishCroak_Listen(s, o);
         break;
     case 2:
-        func_ov003_02222770(s, o);
+        FishCroak_Croak(s, o);
         break;
     }
 }
 
 
 //@ 0x222285c
-extern "C" void func_ov003_0222285c(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Idle(Sub_f6 *s, Obj_f6 *o)
 {
     s32 t;
     if (s->b0 != 0) {
@@ -3171,7 +3171,7 @@ extern "C" void func_ov003_0222285c(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x22227dc
-extern "C" void func_ov003_022227dc(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Listen(Sub_f6 *s, Obj_f6 *o)
 {
     s32 t;
     if (s->b2 != 0) {
@@ -3184,7 +3184,7 @@ extern "C" void func_ov003_022227dc(Sub_f6 *s, Obj_f6 *o)
             return;
         }
     }
-    if (((s32 (*)(s32))func_ov003_022209c8)(0)) {
+    if (((s32 (*)(s32))FieldFish_IsPlayerRunning)(0)) {
         s->b0 = s->b0 + 1;
         if (s->b0 >= 0xc8) {
             s->b0 = 0xc8;
@@ -3195,7 +3195,7 @@ extern "C" void func_ov003_022227dc(Sub_f6 *s, Obj_f6 *o)
         }
         if (s->b0 <= 0x96) {
             if (s->b2 == 0) {
-                s->b1 = ((s32 (*)(s32, s32))func_ov003_022202ec)(0x3c, 0x8c);
+                s->b1 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x3c, 0x8c);
                 s->b3 = 2;
             }
         }
@@ -3204,17 +3204,17 @@ extern "C" void func_ov003_022227dc(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x2222770
-extern "C" void func_ov003_02222770(Sub_f6 *s, Obj_f6 *o)
+extern "C" void FishCroak_Croak(Sub_f6 *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
         Unk_02003c40_callRequest(&o->unk_40, 0x82f);
     } else {
-        s->b2 = ((s32 (*)(s32, s32))func_ov003_022202ec)(0x14, 0x50);
+        s->b2 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x14, 0x50);
         s->b3 = 1;
     }
-    if (((s32 (*)(s32))func_ov003_022209c8)(0)) {
-        s->b2 = ((s32 (*)(s32, s32))func_ov003_022202ec)(0x14, 0x28);
+    if (((s32 (*)(s32))FieldFish_IsPlayerRunning)(0)) {
+        s->b2 = ((s32 (*)(s32, s32))FieldFish_RandRange)(0x14, 0x28);
         s->b3 = 1;
         s->b1 = 0;
         s->b0 = s->b0 + 1;
@@ -3228,7 +3228,7 @@ extern "C" void func_ov003_02222770(Sub_f6 *s, Obj_f6 *o)
 
 
 //@ 0x2222764
-extern "C" s32 func_ov003_02222764(Sub_f6 *s)
+extern "C" s32 FishCroak_Clear(Sub_f6 *s)
 {
     s->b0 = 0;
     s->b1 = 0;
@@ -3238,26 +3238,26 @@ extern "C" s32 func_ov003_02222764(Sub_f6 *s)
 
 
 //@ 0x2222754
-extern "C" s32 func_ov003_02222754(Obj_f6 *self)
+extern "C" s32 FishShadow_ResetCroak(Obj_f6 *self)
 {
-    return func_ov003_02222764(&self->unk_248);
+    return FishCroak_Clear(&self->unk_248);
 }
 
 
 //@ 0x2222658
-extern "C" void func_ov003_02222658(Obj_f6 *self, void *arg)
+extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
 {
     V3_f6 a, b;
-    if (((s32 (*)(void *))func_ov003_02224d14)(arg)) {
-        V3_f6 *p = ((V3_f6 * (*)(void *))func_ov003_02224ba4)(arg);
+    if (((s32 (*)(void *))BottleThrow_IsActive)(arg)) {
+        V3_f6 *p = ((V3_f6 * (*)(void *))BottleThrow_GetPos)(arg);
         a.x = p->x;
         a.y = p->y;
         a.z = p->z;
         b = a;
         ((void (*)(void *, V3_f6 *))func_02003e80)(self, &a);
-        if (((s32 (*)(void *))func_ov003_02224b6c)(arg) == 1) {
+        if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 1) {
             func_02003e70(self, 0x7e0, 0x7f, 0);
-        } else if (((s32 (*)(void *))func_ov003_02224b6c)(arg) == 2) {
+        } else if (((s32 (*)(void *))BottleThrow_GetSeCue)(arg) == 2) {
             func_02003e70(self, 0x7e1, 0x7f, 0);
             b.y = data_020c7c1c;
             ((s32 (*)(s32, V3_f6 *, s32, s32))func_02090330)(0x15, &b, 0, 0);
@@ -3268,8 +3268,8 @@ extern "C" void func_ov003_02222658(Obj_f6 *self, void *arg)
         a.z = self->unk_54.z;
         ((void (*)(void *, V3_f6 *))func_02003e80)(self, &a);
     }
-    if (data_ov003_02257af8[self->unk_40].f) {
-        (self->*data_ov003_02257af8[self->unk_40].f)(arg);
+    if (sFishCatchStates[self->unk_40].f) {
+        (self->*sFishCatchStates[self->unk_40].f)(arg);
     }
     {
         void *s = gCommManager;
@@ -3285,27 +3285,27 @@ extern "C" void func_ov003_02222658(Obj_f6 *self, void *arg)
 
 
 //@ 0x2222654
-extern "C" s32 func_ov003_02222654()
+extern "C" s32 FishCatch_StateIdle()
 {
     return 1;
 }
 
 
 //@ 0x22225b4
-extern "C" BOOL func_ov003_022225b4(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_StateStart(Self_f5 *self, u32 a) {
     if (self->unk_44 != -1) {
         return FALSE;
     }
     self->unk_44 = func_0204f49c();
     if (self->unk_48 != 5) {
-        ((void (*)(V3_f5 *, s32))func_ov003_02223450)(&self->unk_84, self->unk_90);
+        ((void (*)(V3_f5 *, s32))Fish_GetDisplayScale)(&self->unk_84, self->unk_90);
     }
     if (self->unk_48 == 1) {
-        if (!func_ov003_02222504(self, a)) {
+        if (!FishCatch_SetupLine(self, a)) {
             return FALSE;
         }
     } else if (self->unk_48 == 2) {
-        if (!func_ov003_02222504(self, a)) {
+        if (!FishCatch_SetupLine(self, a)) {
             return FALSE;
         }
         Ent_f5 *e = ((Ent_f5 * (*)(u32))func_02095204)(a);
@@ -3323,7 +3323,7 @@ extern "C" BOOL func_ov003_022225b4(Self_f5 *self, u32 a) {
 
 
 //@ 0x2222504
-extern "C" BOOL func_ov003_02222504(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_SetupLine(Self_f5 *self, u32 a) {
     struct {
         Unk_ov003_02221cec_Dead dead;
         T48_f5 t;
@@ -3359,7 +3359,7 @@ extern "C" BOOL func_ov003_02222504(Self_f5 *self, u32 a) {
 
 
 //@ 0x2222490
-extern "C" BOOL func_ov003_02222490(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_StateHold(Self_f5 *self, u32 a) {
     BOOL r = FALSE;
     struct Pad {
         s32 v[3];
@@ -3390,25 +3390,25 @@ extern "C" BOOL func_ov003_02222490(Self_f5 *self, u32 a) {
 
 
 //@ 0x22223e8
-extern "C" BOOL func_ov003_022223e8(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a) {
     s32 r5 = 0x1e;
     BOOL r6 = FALSE;
     switch (self->unk_48) {
     case 0:
         break;
     case 1:
-        func_ov003_02222368(self, a);
+        FishCatch_UpdateLocalReel(self, a);
         r6 = TRUE;
         break;
     case 2:
-        func_ov003_022222a0(self, a);
+        FishCatch_UpdateRemoteReel(self, a);
         r6 = TRUE;
         break;
     case 3:
-        func_ov003_02221e64(self, TRUE);
+        FishCatch_UpdateArc(self, TRUE);
         break;
     case 4:
-        func_ov003_02221e64(self, r6);
+        FishCatch_UpdateArc(self, r6);
         break;
     case 5: {
         Ent_f5 *e = ((Ent_f5 * (*)(u32))func_02095204)(a);
@@ -3416,7 +3416,7 @@ extern "C" BOOL func_ov003_022223e8(Self_f5 *self, u32 a) {
             self->unk_40 = 4;
             return r6;
         }
-        func_ov003_02221d60(self, &e->unk_5c);
+        FishCatch_UpdateSwimAway(self, &e->unk_5c);
         r5 = r5 - self->unk_7c;
         if (r5 < 1) {
             r5 = 1;
@@ -3430,7 +3430,7 @@ extern "C" BOOL func_ov003_022223e8(Self_f5 *self, u32 a) {
 
 
 //@ 0x2222368
-extern "C" BOOL func_ov003_02222368(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_UpdateLocalReel(Self_f5 *self, u32 a) {
     BOOL r = FALSE;
     if (self->unk_80 == 0) {
         Ent_f5 *e = ((Ent_f5 * (*)(u32))func_020951ec)(a);
@@ -3439,7 +3439,7 @@ extern "C" BOOL func_ov003_02222368(Self_f5 *self, u32 a) {
             return r;
         }
         V3_f5 t;
-        func_ov003_02221cec(self, e, &t);
+        FishCatch_GetLineEnd(self, e, &t);
         r = TRUE;
         V3_f5 u;
         CP(u, t);
@@ -3448,7 +3448,7 @@ extern "C" BOOL func_ov003_02222368(Self_f5 *self, u32 a) {
             CP(self->unk_6c, t);
         }
     } else if (self->unk_a0 == 0) {
-        ((void (*)(Self_f5 *, u32))func_ov003_0222323c)(self, a);
+        ((void (*)(Self_f5 *, u32))FishCatch_IsDisplayReady)(self, a);
         r = TRUE;
     }
     return r;
@@ -3456,7 +3456,7 @@ extern "C" BOOL func_ov003_02222368(Self_f5 *self, u32 a) {
 
 
 //@ 0x22222a0
-extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
+extern "C" BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a) {
     BOOL r;
     struct {
         V3_f5 t;
@@ -3470,7 +3470,7 @@ extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
         return FALSE;
     }
     if (self->unk_80 == 0) {
-        func_ov003_02221cec(self, e, &l.t);
+        FishCatch_GetLineEnd(self, e, &l.t);
         r = TRUE;
         CP(l.u, l.t);
         if (func_0205f1e8(&l.u, self->unk_4c, &self->unk_54.x, &self->unk_50, r)) {
@@ -3478,7 +3478,7 @@ extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
             CP(self->unk_6c, l.t);
         }
     } else {
-        ((void (*)(Self_f5 *, u32))func_ov003_0222323c)(self, a);
+        ((void (*)(Self_f5 *, u32))FishCatch_IsDisplayReady)(self, a);
         func_020944f8(&l.blk, a);
         l.tt = l.blk;
         PlayerActor_ApplyHoldOffset(&l.tt, 0);
@@ -3495,21 +3495,21 @@ extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
 
 
 //@ 0x2222274
-extern "C" BOOL func_ov003_02222274(Self_f5 *self, s32 a) {
+extern "C" BOOL FishCatch_StateEnd(Self_f5 *self, s32 a) {
     if (self->unk_48 == 1 || self->unk_48 == 3) {
-        func_ov003_02222224(self);
+        FishCatch_DetachShadow(self);
     }
-    func_ov003_022221a0(self, a);
+    FishCatch_Reset(self, a);
     return TRUE;
 }
 
 
 //@ 0x2222224
-extern "C" BOOL func_ov003_02222224(Self_f5 *self) {
+extern "C" BOOL FishCatch_DetachShadow(Self_f5 *self) {
     BOOL r = FALSE;
     s32 i = self->unk_78;
     if (i != -1) {
-        Unk_ov003_02222224_Rec *p = &((Unk_ov003_02222224_Rec *)(data_ov003_0225812c))[i];
+        Unk_ov003_02222224_Rec *p = &((Unk_ov003_02222224_Rec *)(sFishShadows))[i];
         if (p->unk_22c != 0) {
             p->unk_22c = r;
         }
@@ -3523,7 +3523,7 @@ extern "C" BOOL func_ov003_02222224(Self_f5 *self) {
 
 
 //@ 0x22221a0
-extern "C" void func_ov003_022221a0(Self_f5 *self, s32 a) {
+extern "C" void FishCatch_Reset(Self_f5 *self, s32 a) {
     func_0204f3b4(self->unk_44);
     self->unk_44 = -1;
     self->unk_40 = 0;
@@ -3540,21 +3540,21 @@ extern "C" void func_ov003_022221a0(Self_f5 *self, s32 a) {
     func_020902f8(self->unk_9c);
     self->unk_9c = -1;
     if (self->unk_94) {
-        func_ov003_02221f40(self, a);
+        FishCatch_StartSwimAway(self, a);
     }
 }
 
 
 //@ 0x2221f40
-extern "C" s32 func_ov003_02221f40(Self_f5 *self, s32 a) {
+extern "C" s32 FishCatch_StartSwimAway(Self_f5 *self, s32 a) {
     self->unk_40 = 1;
     self->unk_94 = 0;
     s32 k = self->unk_90 * 6;
     s32 t = data_020ca314[k];
     s32 r = t * 0x14;
-    self->unk_84.x = (((u8 *)((u8 *)&data_ov003_022349d4[0].e))[r] << 12) / 100;
+    self->unk_84.x = (((u8 *)((u8 *)&sFishSizeClassParams[0].e))[r] << 12) / 100;
     self->unk_84.y = 0x1000;
-    self->unk_84.z = (((u8 *)((u8 *)&data_ov003_022349d4[0].f))[r] << 12) / 100;
+    self->unk_84.z = (((u8 *)((u8 *)&sFishSizeClassParams[0].f))[r] << 12) / 100;
     self->unk_54.y = data_020c7c1c;
     self->unk_90 = 0x3b;
     V3_f5 v;
@@ -3608,16 +3608,16 @@ extern "C" s32 func_ov003_02221f40(Self_f5 *self, s32 a) {
     void *g = gCommManager;
     if (CommManager_isOnline(g)) {
         if (CommManager_isMyAid(g, a)) {
-            ((s32 (*)(void *, s32))func_ov003_02220db0)(&v, ((*(u8 * *)(data_ov003_022348c0))[data_020ca315[k] * 4] << 12) / 10);
+            ((s32 (*)(void *, s32))FieldFish_ScareAround)(&v, ((*(u8 * *)(sFishRodParams))[data_020ca315[k] * 4] << 12) / 10);
         }
     } else {
-        ((s32 (*)(void *, s32))func_ov003_02220db0)(&v, ((*(u8 * *)(data_ov003_022348c0))[data_020ca315[k] * 4] << 12) / 10);
+        ((s32 (*)(void *, s32))FieldFish_ScareAround)(&v, ((*(u8 * *)(sFishRodParams))[data_020ca315[k] * 4] << 12) / 10);
     }
 }
 
 
 //@ 0x2221e64
-extern "C" void func_ov003_02221e64(Self_f5 *self, BOOL flag) {
+extern "C" void FishCatch_UpdateArc(Self_f5 *self, BOOL flag) {
     struct {
         V3_f5 a, b, c, a2, b2, a3, b3;
     } l;
@@ -3636,13 +3636,13 @@ extern "C" void func_ov003_02221e64(Self_f5 *self, BOOL flag) {
     CP(l.c, self->unk_54);
     CP(l.a2, l.a);
     CP(l.b2, l.b);
-    if (((BOOL (*)(V3_f5 *, V3_f5 *, V3_f5 *))func_ov003_0222031c)(&l.c, &l.a2, &l.b2)) {
+    if (((BOOL (*)(V3_f5 *, V3_f5 *, V3_f5 *))FieldFish_HasPassed)(&l.c, &l.a2, &l.b2)) {
         self->unk_40 = 4;
         self->unk_94 = 1;
     } else {
         CP(l.a3, l.a);
         CP(l.b3, l.b);
-        if (!func_ov003_02221dd8(&self->unk_54, &l.a3, &l.b3, self->unk_7c, 0x14cd, n)) {
+        if (!FieldFish_StepParabola(&self->unk_54, &l.a3, &l.b3, self->unk_7c, 0x14cd, n)) {
             self->unk_40 = 4;
             self->unk_94 = 1;
         }
@@ -3652,7 +3652,7 @@ extern "C" void func_ov003_02221e64(Self_f5 *self, BOOL flag) {
 
 
 //@ 0x2221dd8
-extern "C" BOOL func_ov003_02221dd8(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, s32 m) {
+extern "C" BOOL FieldFish_StepParabola(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, s32 m) {
     s32 mm, y, ang;
     volatile s32 t, d;
     if (m <= n) {
@@ -3665,13 +3665,13 @@ extern "C" BOOL func_ov003_02221dd8(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, 
     ang = ((s32 (*)(V3_f5 *, V3_f5 *))Math_AngleXZ)(a, b);
     s32 nn = n * n;
     p->y = a->y + (n * ((y + ((mm * t) >> 1)) / m) - ((nn * t) >> 1));
-    ((s32 (*)(void *, s32, s32))func_ov003_02224828)(p, d / m, ang);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(p, d / m, ang);
     return TRUE;
 }
 
 
 //@ 0x2221d60
-extern "C" BOOL func_ov003_02221d60(Self_f5 *self, V3_f5 *p) {
+extern "C" BOOL FishCatch_UpdateSwimAway(Self_f5 *self, V3_f5 *p) {
     s32 c = self->unk_7c;
     s32 t = (c + 2) << 7;
     if (c == 0) {
@@ -3682,7 +3682,7 @@ extern "C" BOOL func_ov003_02221d60(Self_f5 *self, V3_f5 *p) {
     if (t > 0x214) {
         t = 0x214;
     }
-    ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_54, t, self->unk_98);
+    ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_54, t, self->unk_98);
     self->unk_7c = self->unk_7c + 1;
     V3_f5 v;
     v.x = self->unk_54.x;
@@ -3695,7 +3695,7 @@ extern "C" BOOL func_ov003_02221d60(Self_f5 *self, V3_f5 *p) {
 
 
 //@ 0x2221cec
-extern "C" void func_ov003_02221cec(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
+extern "C" void FishCatch_GetLineEnd(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
     if (ent->vfunc_5c(out) == 0) {
         V3_f5 *pv = &ent->unk_5c;
         out->x = pv->x;
@@ -3711,7 +3711,7 @@ extern "C" void func_ov003_02221cec(Self_f5 *self, Ent_f5 *ent, V3_f5 *out) {
 
 
 //@ 0x2221bfc
-extern "C" void func_ov003_02221bfc(void *a) {
+extern "C" void FishCatch_PollRemote(void *a) {
     s32 i = 0;
     void *net = gCommManager;
     volatile s32 zero = 0;
@@ -3725,24 +3725,24 @@ extern "C" void func_ov003_02221bfc(void *a) {
             }
             switch (t) {
             case 0:
-                func_ov003_02221b94(a, i);
+                FishCatch_StartRemoteHook(a, i);
                 break;
             case 6:
-                data_ov003_02257e9c[i].unk_80 = 1;
-                func_ov003_02221b94(a, i);
+                sFishCatches[i].unk_80 = 1;
+                FishCatch_StartRemoteHook(a, i);
                 break;
             case 1:
-                if (func_ov003_02221b78(a, i)) {
+                if (FishCatch_EndRemote(a, i)) {
                     ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(i, 8, m1, z, z);
                 } else {
-                    data_ov003_02257e9c[i].unk_40 = 4;
+                    sFishCatches[i].unk_40 = 4;
                 }
                 break;
             case 2:
-                if (func_ov003_02221ab0(a, i)) {
+                if (FishCatch_StartRemoteLift(a, i)) {
                     ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(i, 8, m1, zero, zero);
                 } else {
-                    data_ov003_02257e9c[i].unk_40 = 4;
+                    sFishCatches[i].unk_40 = 4;
                 }
                 break;
             case 3:
@@ -3759,15 +3759,15 @@ extern "C" void func_ov003_02221bfc(void *a) {
 
 
 //@ 0x2221b94
-extern "C" void func_ov003_02221b94(void *a, s32 idx) {
+extern "C" void FishCatch_StartRemoteHook(void *a, s32 idx) {
     u32 r = func_0204f4c8(idx);
     Unk_ov003_02221364_Vec v;
     v.y = -0x1333;
     if (func_0204f4a4(&v, &v.z, idx)) {
-        if (func_ov003_02221b34(a, idx, r, &v)) {
+        if (FishCatch_StartRemoteReel(a, idx, r, &v)) {
             ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(idx, 3, -1, 0, 0);
         } else {
-            Unk_ov003_02221ab0_Ent *e = data_ov003_02257e9c + idx;
+            FishCatch *e = sFishCatches + idx;
             e->unk_40 = 4;
         }
     }
@@ -3775,22 +3775,22 @@ extern "C" void func_ov003_02221b94(void *a, s32 idx) {
 
 
 //@ 0x2221b78
-extern "C" BOOL func_ov003_02221b78(void *a, u8 idx) {
+extern "C" BOOL FishCatch_EndRemote(void *a, u8 idx) {
     if (idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02221ab0_Ent *e = data_ov003_02257e9c + idx;
+    FishCatch *e = sFishCatches + idx;
     e->unk_40 = 4;
     return TRUE;
 }
 
 
 //@ 0x2221b34
-extern "C" BOOL func_ov003_02221b34(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p) {
+extern "C" BOOL FishCatch_StartRemoteReel(void *a, u8 idx, u32 v, Unk_ov003_02221364_Vec *p) {
     if (idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02221ab0_Ent *e = &data_ov003_02257e9c[idx];
+    FishCatch *e = &sFishCatches[idx];
     if (e->unk_40 != 0) {
         return FALSE;
     }
@@ -3807,11 +3807,11 @@ extern "C" BOOL func_ov003_02221b34(void *a, u8 idx, u32 v, Unk_ov003_02221364_V
 
 
 //@ 0x2221ab0
-extern "C" BOOL func_ov003_02221ab0(void *a, u8 idx) {
+extern "C" BOOL FishCatch_StartRemoteLift(void *a, u8 idx) {
     if (idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02221ab0_Ent *e = &data_ov003_02257e9c[idx];
+    FishCatch *e = &sFishCatches[idx];
     volatile Unk_ov003_02221364_Vec v;
     Unk_ov003_02221364_Vec *pv = &e->unk_60;
     v.x = pv->x;
@@ -3819,18 +3819,18 @@ extern "C" BOOL func_ov003_02221ab0(void *a, u8 idx) {
     v.z = pv->z;
     s32 st = e->unk_40;
     if (st == 3) {
-        if (((s32 (*)(s32, s32))func_ov003_02223310)(idx, 0) == 0) {
+        if (((s32 (*)(s32, s32))FishCatch_StartLift)(idx, 0) == 0) {
             e->unk_40 = 4;
             return FALSE;
         }
     } else if (st == 0) {
-        if (((s32 (*)(s32, s32))func_ov003_02223310)(idx, 1) == 0) {
+        if (((s32 (*)(s32, s32))FishCatch_StartLift)(idx, 1) == 0) {
             e->unk_40 = 4;
             return FALSE;
         }
     } else if (st == 2) {
         e->unk_40 = 3;
-        if (((s32 (*)(s32, s32))func_ov003_02223310)(idx, 0) == 0) {
+        if (((s32 (*)(s32, s32))FishCatch_StartLift)(idx, 0) == 0) {
             e->unk_40 = 4;
             return FALSE;
         }
@@ -3840,7 +3840,7 @@ extern "C" BOOL func_ov003_02221ab0(void *a, u8 idx) {
 
 
 //@ 0x22219dc
-Unk_ov003_0225812c::Unk_ov003_0225812c()
+FishShadow::FishShadow()
 {
     u8 *a = (u8 *)this;
     func_020f440c(a);
@@ -3852,7 +3852,7 @@ Unk_ov003_0225812c::Unk_ov003_0225812c()
     _ZN9AnimModelC1Ev(a + 0x144);
     *(u32 *)(a + 0x208) = 0;
     *(u32 *)(a + 0x20c) = 0;
-    func_ov003_022218f8(a + 0x248);
+    FishCroak_Init(a + 0x248);
     *(s8 *)(a + 0x7e) = -1;
     *(s32 *)(a + 0x244) = -1;
     *(s32 *)(a + 0x80) = 0;
@@ -3870,10 +3870,10 @@ Unk_ov003_0225812c::Unk_ov003_0225812c()
 
 
 //@ 0x2221998
-Unk_ov003_0225812c::~Unk_ov003_0225812c()
+FishShadow::~FishShadow()
 {
     u8 *a = (u8 *)this;
-    func_ov003_022218f4(a + 0x248);
+    FishCroak_Destroy(a + 0x248);
     _ZN9AnimModelD1Ev(a + 0x144);
     _ZN11CachedModelD1Ev(a + 0x84);
     func_0209c364(a + 0x7c);
@@ -3883,7 +3883,7 @@ Unk_ov003_0225812c::~Unk_ov003_0225812c()
 
 
 //@ 0x222193c
-Unk_ov003_02257be0::Unk_ov003_02257be0()
+FishFinModel::FishFinModel()
 {
     unk_00 = 0;
     _ZN12Unk_0209c0ac13func_0209c0c8Ev(&unk_08);
@@ -3891,13 +3891,13 @@ Unk_ov003_02257be0::Unk_ov003_02257be0()
 
 
 //@ 0x2221904
-Unk_ov003_02257be0::~Unk_ov003_02257be0()
+FishFinModel::~FishFinModel()
 {
 }
 
 
 //@ 0x22218f8
-extern "C" void func_ov003_022218f8(u8 *p) {
+extern "C" void FishCroak_Init(u8 *p) {
     p[0] = 0;
     p[1] = 0;
     p[2] = 0;
@@ -3906,14 +3906,14 @@ extern "C" void func_ov003_022218f8(u8 *p) {
 
 
 //@ 0x22218f4
-extern "C" void func_ov003_022218f4(void *p) {
+extern "C" void FishCroak_Destroy(void *p) {
 }
 
 
 //@ 0x2221884
-Unk_ov003_02221ab0_Ent::Unk_ov003_02221ab0_Ent()
+FishCatch::FishCatch()
 {
-    Unk_ov003_02221ab0_Ent *a = this;
+    FishCatch *a = this;
     func_020f440c(a);
     a->unk_40 = 0;
     a->unk_44 = -1;
@@ -3937,28 +3937,28 @@ Unk_ov003_02221ab0_Ent::Unk_ov003_02221ab0_Ent()
 
 
 //@ 0x2221874
-Unk_ov003_02221ab0_Ent::~Unk_ov003_02221ab0_Ent()
+FishCatch::~FishCatch()
 {
     func_020f43fc(this);
 }
 
 
 //@ 0x222183c
-Unk_ov003_0223498c::Unk_ov003_0223498c() {
+FieldFishManager::FieldFishManager() {
     unk_80 = 0;
 }
 
 
 //@ 0x22217d0
-Unk_ov003_0223498c::~Unk_ov003_0223498c() {
+FieldFishManager::~FieldFishManager() {
 }
 
 
 //@ 0x22217ac
-extern "C" BOOL func_ov003_022217ac(void *a, s32 idx) {
+extern "C" BOOL FishShadow_SetAppearing(void *a, s32 idx) {
     BOOL r = FALSE;
     if (idx >= 0 && idx < 6) {
-        Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(data_ov003_0225812c)) + idx;
+        Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows)) + idx;
         s->unk_80 = 2;
         r = TRUE;
     }
@@ -3967,9 +3967,9 @@ extern "C" BOOL func_ov003_022217ac(void *a, s32 idx) {
 
 
 //@ 0x22216f8
-extern "C" void func_ov003_022216f8(void *a, s32 idx) {
+extern "C" void FishShadow_Despawn(void *a, s32 idx) {
     if (idx >= 0 && idx < 6) {
-        Unk_ov003_02221524_Slot *s = &((Unk_ov003_02221524_Slot *)(data_ov003_0225812c))[idx];
+        Unk_ov003_02221524_Slot *s = &((Unk_ov003_02221524_Slot *)(sFishShadows))[idx];
         s->unk_80 = 0;
         func_020902f8(s->unk_204);
         s->unk_204 = -1;
@@ -3982,7 +3982,7 @@ extern "C" void func_ov003_022216f8(void *a, s32 idx) {
         p208[0] = idx;
         p208[1] = 0;
         if (s->unk_22c != 0) {
-            Unk_ov003_02221ab0_Ent *ent = data_ov003_02257e9c + s->unk_227;
+            FishCatch *ent = sFishCatches + s->unk_227;
             if (ent->unk_40 != 1) {
                 ((void (*)(void *, s32))func_0205fbbc)(s->unk_22c, 0);
                 s->unk_22c = 0;
@@ -3996,37 +3996,37 @@ extern "C" void func_ov003_022216f8(void *a, s32 idx) {
 
 
 //@ 0x22216cc
-extern "C" BOOL func_ov003_022216cc(u8 *a) {
-    (*(u32 *)((u8 *)&data_ov003_02257be0)) = 2;
-    ((void (*)(void *, void *))func_0209c25c)(a + 0x68, ((u8 *)((u8 *)&data_ov003_02257be0.unk_04.raw[0])));
-    func_0209c0c8(((u8 *)((u8 *)&data_ov003_02257be0.unk_08.raw[0])));
+extern "C" BOOL FishFinModel_Attach(u8 *a) {
+    (*(u32 *)((u8 *)&sFishFinModel)) = 2;
+    ((void (*)(void *, void *))func_0209c25c)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
+    func_0209c0c8(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
     return TRUE;
 }
 
 
 //@ 0x2221684
-extern "C" void func_ov003_02221684(u8 *a) {
-    (*(u32 *)((u8 *)&data_ov003_02257be0)) = 0;
-    AnimModel_detachJointAnim(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
-    CachedModel_release(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])));
-    func_0209c0b4(((u8 *)((u8 *)&data_ov003_02257be0.unk_08.raw[0])));
-    func_0209c224(a + 0x68, ((u8 *)((u8 *)&data_ov003_02257be0.unk_04.raw[0])));
-    data_ov003_02257be0.unk_11c.unk_18 = 0;
-    data_ov003_02257be0.unk_11c.unk_1c = 0;
+extern "C" void FishFinModel_Release(u8 *a) {
+    (*(u32 *)((u8 *)&sFishFinModel)) = 0;
+    AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])));
+    CachedModel_release(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])));
+    func_0209c0b4(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
+    func_0209c224(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
+    sFishFinModel.unk_11c.unk_18 = 0;
+    sFishFinModel.unk_11c.unk_1c = 0;
 }
 
 
 //@ 0x2221524
-BOOL Unk_ov003_0223498c::vfunc_00() {
+BOOL FieldFishManager::vfunc_00() {
     u8 *a = (u8 *)this;
     func_0209c1a4(a + 0x50, 6, 0, 0, 0x800, (void *)func_0205c020, (void *)func_0205c004, (void *)"fish_sdw");
     func_0209c1a4(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)func_0205bfec, (void *)func_0205bfd0, (void *)"fish_fin");
-    *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&data_ov003_0223476c)), gCurrentHeap, 4, 0);
-    Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(data_ov003_0225812c));
+    *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
+    Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows));
     s32 i = 0;
     s32 z = 0;
     do {
-        ((void (*)(void *, s32, void *))func_ov003_02220128)(s, *(s32 *)(a + 0x80), a + 0x50);
+        ((void (*)(void *, s32, void *))FishShadow_LoadModel)(s, *(s32 *)(a + 0x80), a + 0x50);
         if (i < 3) {
             s->unk_1fc = 3;
         } else if (i < 6) {
@@ -4042,7 +4042,7 @@ BOOL Unk_ov003_0223498c::vfunc_00() {
         s++;
         i++;
     } while (i < 6);
-    u8 *q = (u8 *)data_ov003_02257e9c;
+    u8 *q = (u8 *)sFishCatches;
     s32 k = 0;
     void *net = gCommManager;
     for (; k < 4; k++) {
@@ -4057,7 +4057,7 @@ BOOL Unk_ov003_0223498c::vfunc_00() {
 
 
 //@ 0x2221498
-extern "C" void func_ov003_02221498(void *a, u8 *b, void *c) {
+extern "C" void FishShadow_Run(void *a, u8 *b, void *c) {
     Unk_ov003_02221364_Vec v1;
     Unk_ov003_02221364_Vec *pv = (Unk_ov003_02221364_Vec *)(b + 0x120);
     v1.x = pv->x;
@@ -4070,46 +4070,46 @@ extern "C" void func_ov003_02221498(void *a, u8 *b, void *c) {
     v2.y = pv->y;
     v2.z = pv->z;
     Unk_02003c40_callUpdateRelative(b + 0x40, &v2);
-    if (data_ov003_02257b90[*(s32 *)(b + 0x80)].exit) {
-        (((Unk_ov003_0223498c *)a)->*(data_ov003_02257b90[*(s32 *)(b + 0x80)].exit))(b, c);
+    if (sFishShadowStates[*(s32 *)(b + 0x80)].exit) {
+        (((FieldFishManager *)a)->*(sFishShadowStates[*(s32 *)(b + 0x80)].exit))(b, c);
     }
-    ((void (*)(void *))func_ov003_02220388)(b);
+    ((void (*)(void *))FishShadow_TickRespawnTimer)(b);
 }
 
 
 //@ 0x222144c
-extern "C" void func_ov003_0222144c(void *a, s32 idx, u8 *b, void *c) {
+extern "C" void FishShadow_ChangeState(void *a, s32 idx, u8 *b, void *c) {
     if (idx >= 0 && idx < 5) {
         *(s32 *)(b + 0x80) = idx;
         s32 i = *(volatile s32 *)(b + 0x80);
-        Unk_ov003_0222144c_Ent *e = &data_ov003_02257b90[i];
+        Unk_ov003_0222144c_Ent *e = &sFishShadowStates[i];
         if (e->enter) {
-            (((Unk_ov003_0223498c *)a)->*(e->enter))(b, c);
+            (((FieldFishManager *)a)->*(e->enter))(b, c);
         }
     }
 }
 
 
 //@ 0x2221448
-extern "C" void func_ov003_02221448() {
+extern "C" void FishShadow_EnterSpawn() {
 }
 
 
 //@ 0x22213d0
-extern "C" void func_ov003_022213d0(u8 *a, u8 *b, s32 c) {
+extern "C" void FishShadow_ExecSpawn(u8 *a, u8 *b, s32 c) {
     if (a[0x84] == 0) {
         u32 t = b[0x1fc];
         if (t == 3) {
             if (b[0x23c] == 0) {
-                if (((s32 (*)(void *, void *, s32))func_ov003_02220844)(a, b, 0) != 0) {
-                    func_ov003_0222144c(a, 1, b, (void *)c);
+                if (((s32 (*)(void *, void *, s32))FishShadow_TrySpawn)(a, b, 0) != 0) {
+                    FishShadow_ChangeState(a, 1, b, (void *)c);
                 }
                 a[0x84] = 1;
             }
         } else if (t == 4) {
             if (b[0x23c] == 0) {
-                if (((s32 (*)(void *, void *, s32))func_ov003_02220844)(a, b, 1) != 0) {
-                    func_ov003_0222144c(a, 1, b, (void *)c);
+                if (((s32 (*)(void *, void *, s32))FishShadow_TrySpawn)(a, b, 1) != 0) {
+                    FishShadow_ChangeState(a, 1, b, (void *)c);
                 }
                 a[0x84] = 1;
             }
@@ -4119,19 +4119,19 @@ extern "C" void func_ov003_022213d0(u8 *a, u8 *b, s32 c) {
 
 
 //@ 0x22213cc
-extern "C" void func_ov003_022213cc() {
+extern "C" void FishShadow_EnterWaitInView() {
 }
 
 
 //@ 0x2221364
-extern "C" void func_ov003_02221364(u8 *a, u8 *b, s32 c) {
+extern "C" void FishShadow_ExecWaitInView(u8 *a, u8 *b, s32 c) {
     if ((*(void * *)&gCamera) != 0) {
         Unk_ov003_02221364_Vec v;
         v = (*(Unk_ov003_02221364_Vec *)&gCameraLookAt);
-        if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(b + 0x12c, &v, 0xa000, 0x10000, 0xa000)) {
-            func_ov003_022217ac(a, c);
+        if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(b + 0x12c, &v, 0xa000, 0x10000, 0xa000)) {
+            FishShadow_SetAppearing(a, c);
             if (b[0x7f] != 0) {
-                func_ov003_022216cc(a);
+                FishFinModel_Attach(a);
             }
         }
     }
@@ -4139,35 +4139,35 @@ extern "C" void func_ov003_02221364(u8 *a, u8 *b, s32 c) {
 
 
 //@ 0x2221360
-extern "C" void func_ov003_02221360() {
+extern "C" void FishShadow_EnterAppear() {
 }
 
 
 //@ 0x2221294
-extern "C" void func_ov003_02221294(O_f3 *o, E_f3 *e) {
+extern "C" void FishShadow_ExecAppear(O_f3 *o, E_f3 *e) {
     s32 ang;
     V3_f3 *pv;
     if (e->unk_7f != 0) {
-        u8 *p = ((u8 *)((u8 *)&data_ov003_02257be0));
-        if (((s32 (*)(void *, void *))func_ov003_02220030)(p, (u8 *)o + 0x68) != 0) {
-            ((s32 (*)(E_f3 *))func_ov003_022247f0)(e);
+        u8 *p = ((u8 *)((u8 *)&sFishFinModel));
+        if (((s32 (*)(void *, void *))FishFinModel_Load)(p, (u8 *)o + 0x68) != 0) {
+            ((s32 (*)(E_f3 *))FishShadow_RunAppearAi)(e);
             e->unk_80 = 3;
             e->unk_1fd = 0x1f;
             pv = &e->unk_120;
             ang = e->unk_138;
-            func_ov003_0222105c(o, pv, e->unk_144, ang);
+            FieldFish_SetModelMatrix(o, pv, e->unk_144, ang);
             p = p + 0x58;
-            func_ov003_0222105c(o, pv, p, ang);
+            FieldFish_SetModelMatrix(o, pv, p, ang);
         }
     } else {
-        ((s32 (*)(E_f3 *))func_ov003_022247f0)(e);
+        ((s32 (*)(E_f3 *))FishShadow_RunAppearAi)(e);
         if (e->unk_201 > 3 || e->unk_200 == 3) {
             e->unk_80 = 3;
             e->unk_1fd = 0x1f;
             e->unk_201 = 0;
-            func_ov003_0222105c(o, &e->unk_120, e->unk_144, e->unk_138);
+            FieldFish_SetModelMatrix(o, &e->unk_120, e->unk_144, e->unk_138);
             if (e->unk_7e == 11) {
-                ((s32 (*)(E_f3 *))func_ov003_02222754)(e);
+                ((s32 (*)(E_f3 *))FishShadow_ResetCroak)(e);
             }
         }
     }
@@ -4175,15 +4175,15 @@ extern "C" void func_ov003_02221294(O_f3 *o, E_f3 *e) {
 
 
 //@ 0x2221290
-extern "C" void func_ov003_02221290(void) {
+extern "C" void FishShadow_EnterOutOfView(void) {
 }
 
 
 //@ 0x22211fc
-extern "C" void func_ov003_022211fc(O_f3 *o, E_f3 *e, s32 idx) {
+extern "C" void FishShadow_ExecOutOfView(O_f3 *o, E_f3 *e, s32 idx) {
     if ((*(void * *)&gCamera) != NULL) {
         V3_f3 v = (*(V3_f3 *)&gCameraLookAt);
-        if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) != 0) {
+        if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))FieldFish_IsInBox)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) != 0) {
             e->unk_80 = 3;
             e->unk_244 = -1;
         } else {
@@ -4192,9 +4192,9 @@ extern "C" void func_ov003_022211fc(O_f3 *o, E_f3 *e, s32 idx) {
             if (t != m) {
                 if (t == 0) {
                     if (e->unk_7f != 0) {
-                        ((s32 (*)(O_f3 *))func_ov003_02221684)(o);
+                        ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
                     }
-                    ((s32 (*)(O_f3 *, s32))func_ov003_022216f8)(o, idx);
+                    ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, idx);
                 } else {
                     e->unk_244 = t - 1;
                 }
@@ -4205,16 +4205,16 @@ extern "C" void func_ov003_022211fc(O_f3 *o, E_f3 *e, s32 idx) {
 
 
 //@ 0x22211f8
-extern "C" void func_ov003_022211f8(void) {
+extern "C" void FishShadow_EnterSwim(void) {
 }
 
 
 //@ 0x2221134
-extern "C" void func_ov003_02221134(O_f3 *o, E_f3 *e, s32 x) {
-    ((s32 (*)(E_f3 *))func_ov003_022247b8)(e);
+extern "C" void FishShadow_ExecSwim(O_f3 *o, E_f3 *e, s32 x) {
+    ((s32 (*)(E_f3 *))FishShadow_RunAi)(e);
     V3_f3 *pb = &e->unk_218;
     V3_f3 *pa = &e->unk_120;
-    s32 t = func_02133150(((u8 *)((u8 *)&data_ov003_022349d4[0].c0))[e->unk_1ff * 0x14] << 12, 10);
+    s32 t = func_02133150(((u8 *)((u8 *)&sFishSizeClassParams[0].c0))[e->unk_1ff * 0x14] << 12, 10);
     func_020309d4((u8 *)e + 0x4c, pa, pb, e->unk_138, t, 0, 0xb);
     pb->x = e->unk_120.x;
     pb->y = pa->y;
@@ -4224,19 +4224,19 @@ extern "C" void func_ov003_02221134(O_f3 *o, E_f3 *e, s32 x) {
     v.y = pa->y;
     v.z = pa->z;
     v.y = -0x1333;
-    func_ov003_0222105c(o, &v, e->unk_144, e->unk_138);
+    FieldFish_SetModelMatrix(o, &v, e->unk_144, e->unk_138);
     if (e->unk_7f != 0) {
-        func_ov003_022210a4(o, e);
+        FishShadow_UpdateFin(o, e);
     } else {
         AnimModel_stepAnim(e->unk_144);
     }
-    func_ov003_02220d94(o, e, x);
+    FishShadow_UpdateVisibility(o, e, x);
 }
 
 
 //@ 0x22210a4
-extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
-    Unk_ov003_02257be0_f3 *p = (Unk_ov003_02257be0_f3 *)((u8 *)((u8 *)&data_ov003_02257be0));
+extern "C" void FishShadow_UpdateFin(O_f3 *o, E_f3 *e) {
+    Unk_ov003_02257be0_f3 *p = (Unk_ov003_02257be0_f3 *)((u8 *)((u8 *)&sFishFinModel));
     V3_f3 *pv = &e->unk_120;
     p->unk_48.x = pv->x;
     p->unk_48.y = pv->y;
@@ -4246,7 +4246,7 @@ extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
     u8 *q = p->unk_58;
     *(s32 *)(q + 0xac) = e->unk_1f0;
     *(u32 *)(q + 0xa4) = (u32)(u16)(((Unk_ov003_022210a4_Bits *)&e->unk_1e8)->mid + 1) << 12;
-    func_ov003_0222105c(o, pv, q, ang);
+    FieldFish_SetModelMatrix(o, pv, q, ang);
     AnimModel_stepAnim(e->unk_144);
     AnimModel_stepAnim(q);
     Unk_ov003_022210a4_R *r = &p->unk_11c;
@@ -4256,7 +4256,7 @@ extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
 
 
 //@ 0x222105c
-extern "C" void func_ov003_0222105c(O_f3 *a, void *b, void *dstv, s32 ang) {
+extern "C" void FieldFish_SetModelMatrix(O_f3 *a, void *b, void *dstv, s32 ang) {
     u8 *dst = (u8 *)dstv;
     V3_f3 v;
     s32 r = WorldCurve_Apply(&v);
@@ -4269,43 +4269,43 @@ extern "C" void func_ov003_0222105c(O_f3 *a, void *b, void *dstv, s32 ang) {
 
 
 //@ 0x222101c
-BOOL Unk_ov003_0223498c::onExecute() {
+BOOL FieldFishManager::onExecute() {
     O_f3 *o = (O_f3 *)this;
-    E_f3 *e = ((E_f3 *)(data_ov003_0225812c));
+    E_f3 *e = ((E_f3 *)(sFishShadows));
     s32 i;
     for (i = 0; i < 6; e = (E_f3 *)((u8 *)e + 0x24c), i++) {
-        ((s32 (*)(O_f3 *, E_f3 *, s32))func_ov003_02221498)(o, e, i);
+        ((s32 (*)(O_f3 *, E_f3 *, s32))FishShadow_Run)(o, e, i);
     }
     o->unk_84 = 0;
-    func_ov003_02220fc8(o);
+    FieldFishManager_UpdatePlayers(o);
     return TRUE;
 }
 
 
 //@ 0x2220fc8
-extern "C" void func_ov003_02220fc8(O_f3 *o) {
+extern "C" void FieldFishManager_UpdatePlayers(O_f3 *o) {
     if (((s32 (*)(void *))CommManager_isOnline)(gCommManager) != 0) {
-        ((s32 (*)(O_f3 *))func_ov003_02221bfc)(o);
+        ((s32 (*)(O_f3 *))FishCatch_PollRemote)(o);
     }
     s32 i;
-    u8 *p = ((u8 *)(data_ov003_02257e9c));
-    u8 *q = ((u8 *)(data_ov003_02257d1c));
+    u8 *p = ((u8 *)(sFishCatches));
+    u8 *q = ((u8 *)(sBottleThrows));
     for (i = 0; i < 4; i++) {
-        ((s32 (*)(void *, u8))func_ov003_02222658)(p, i);
+        ((s32 (*)(void *, u8))FishCatch_Update)(p, i);
         p += 0xa4;
-        ((s32 (*)(void *, void *))func_ov003_02224ae0)(((u8 *)((u8 *)&data_ov003_02257a74)), q);
+        ((s32 (*)(void *, void *))BottleThrow_Run)(((u8 *)((u8 *)&sBottleThrowStateOwner)), q);
         q += 0x60;
     }
 }
 
 
 //@ 0x2220eec
-BOOL Unk_ov003_0223498c::onDraw() {
-    E_f3 *e = ((E_f3 *)(data_ov003_0225812c));
+BOOL FieldFishManager::onDraw() {
+    E_f3 *e = ((E_f3 *)(sFishShadows));
     s32 i;
     for (i = 0; i < 6; i++) {
         if (e->unk_80 == 3) {
-            Unk_ov003_02220eec_Rec *rec = &((Unk_ov003_02220eec_Rec *)(data_ov003_022349d4))[e->unk_1ff];
+            Unk_ov003_02220eec_Rec *rec = &((Unk_ov003_02220eec_Rec *)(sFishSizeClassParams))[e->unk_1ff];
             V3_f3 v;
             v.x = func_02133150(rec->unk_0e << 12, 100);
             v.y = 0x1000;
@@ -4325,7 +4325,7 @@ BOOL Unk_ov003_0223498c::onDraw() {
                 v2.x = func_02133150(rec->unk_0e << 12, 100);
                 v2.y = 0x1000;
                 v2.z = func_02133150(rec->unk_0f << 12, 100);
-                AnimModel_drawAnimated(((u8 *)((u8 *)&data_ov003_02257be0.unk_58.raw[0])), &v2);
+                AnimModel_drawAnimated(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])), &v2);
             }
         }
         e = (E_f3 *)((u8 *)e + 0x24c);
@@ -4335,25 +4335,25 @@ BOOL Unk_ov003_0223498c::onDraw() {
 
 
 //@ 0x2220ed0
-BOOL Unk_ov003_0223498c::vfunc_0c() {
+BOOL FieldFishManager::vfunc_0c() {
     O_f3 *o = (O_f3 *)this;
-    func_ov003_02220e58(o);
-    func_ov003_02220e2c((s32)o);
-    func_ov003_02220e10((s32)o);
+    FieldFishManager_FreeShadows(o);
+    FieldFishManager_FreeCatches((s32)o);
+    FieldFishManager_ResetBottles((s32)o);
     return TRUE;
 }
 
 
 //@ 0x2220e58
-extern "C" void func_ov003_02220e58(O_f3 *o) {
+extern "C" void FieldFishManager_FreeShadows(O_f3 *o) {
     BOOL f = FALSE;
-    E_f3 *e = ((E_f3 *)(data_ov003_0225812c));
+    E_f3 *e = ((E_f3 *)(sFishShadows));
     s32 i;
     for (i = 0; i < 6; i++) {
         if (e->unk_7f != 0) {
             f = TRUE;
         }
-        ((s32 (*)(O_f3 *, s32))func_ov003_022216f8)(o, i);
+        ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, i);
         ((s32 (*)(void *, void *))func_0209c224)((u8 *)o + 0x50, (u8 *)e + 0x7c);
         func_02003e50(e);
         Unk_02003c30_callRelease((u8 *)e + 0x40);
@@ -4362,18 +4362,18 @@ extern "C" void func_ov003_02220e58(O_f3 *o) {
     Mem_Free(o->unk_80);
     func_0209c15c((u8 *)o + 0x50);
     if (f != FALSE) {
-        ((s32 (*)(O_f3 *))func_ov003_02221684)(o);
+        ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
     }
     func_0209c15c((u8 *)o + 0x68);
 }
 
 
 //@ 0x2220e2c
-extern "C" void func_ov003_02220e2c(s32 a) {
-    u8 *p = ((u8 *)(data_ov003_02257e9c));
+extern "C" void FieldFishManager_FreeCatches(s32 a) {
+    u8 *p = ((u8 *)(sFishCatches));
     s32 i;
     for (i = 0; i < 4; i++) {
-        ((s32 (*)(void *, u8))func_ov003_02222274)(p, i);
+        ((s32 (*)(void *, u8))FishCatch_StateEnd)(p, i);
         func_02003e50(p);
         p += 0xa4;
     }
@@ -4381,8 +4381,8 @@ extern "C" void func_ov003_02220e2c(s32 a) {
 
 
 //@ 0x2220e10
-extern "C" void func_ov003_02220e10(s32 a) {
-    u8 *p = ((u8 *)(data_ov003_02257d1c));
+extern "C" void FieldFishManager_ResetBottles(s32 a) {
+    u8 *p = ((u8 *)(sBottleThrows));
     s32 i;
     for (i = 0; i < 4; i++) {
         p[0x30] = 0;
@@ -4393,17 +4393,17 @@ extern "C" void func_ov003_02220e10(s32 a) {
 
 
 //@ 0x2220db0
-extern "C" BOOL func_ov003_02220db0(s32 a, s32 b) {
+extern "C" BOOL FieldFish_ScareAround(s32 a, s32 b) {
     s32 i;
     E_f3 *e;
     BOOL r = FALSE;
-    e = ((E_f3 *)(data_ov003_0225812c));
+    e = ((E_f3 *)(sFishShadows));
     i = 0;
     for (; i < 6; i++) {
         V3_f3 *pv = &e->unk_120;
         V3_f3 v = *pv;
         if (((s32 (*)(V3_f3 *, s32))func_020e9650)(&v, a) <= b) {
-            if (func_ov003_02220c68(e, a) != 0) {
+            if (FishShadow_TryFlee(e, a) != 0) {
                 r = TRUE;
             }
         }
@@ -4414,17 +4414,17 @@ extern "C" BOOL func_ov003_02220db0(s32 a, s32 b) {
 
 
 //@ 0x2220d94
-extern "C" void func_ov003_02220d94(O_f3 *o, E_f3 *e, s32 idx) {
-    func_ov003_02220d30(o, e, idx);
-    func_ov003_02220a2c(o, e, idx);
+extern "C" void FishShadow_UpdateVisibility(O_f3 *o, E_f3 *e, s32 idx) {
+    FishShadow_UpdateFade(o, e, idx);
+    FishShadow_CheckOffscreen(o, e, idx);
 }
 
 
 //@ 0x2220d30
-extern "C" void func_ov003_02220d30(O_f3 *o, E_f3 *e, s32 idx) {
+extern "C" void FishShadow_UpdateFade(O_f3 *o, E_f3 *e, s32 idx) {
     u32 t = e->unk_1fd;
     if (t == 0x1f) {
-        func_ov003_02220cf8((s32)o, e);
+        FishShadow_CheckPlayerScare((s32)o, e);
     } else if (t != 0x1f) {
         if (e->unk_7f == 0) {
             e->unk_1fd = t - 1;
@@ -4432,25 +4432,25 @@ extern "C" void func_ov003_02220d30(O_f3 *o, E_f3 *e, s32 idx) {
     }
     if (e->unk_1fd <= 1) {
         e->unk_1fd = 0x1f;
-        if (((s32 (*)(E_f3 *))func_ov003_022234fc)(e) == 2) {
+        if (((s32 (*)(E_f3 *))FishShadow_CheckReelResult)(e) == 2) {
             if (e->unk_7f != 0) {
-                ((s32 (*)(O_f3 *))func_ov003_02221684)(o);
+                ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
             }
         }
-        ((s32 (*)(O_f3 *, s32))func_ov003_022216f8)(o, idx);
+        ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, idx);
     }
 }
 
 
 //@ 0x2220cf8
-extern "C" BOOL func_ov003_02220cf8(s32 a, E_f3 *e) {
+extern "C" BOOL FishShadow_CheckPlayerScare(s32 a, E_f3 *e) {
     BOOL r = FALSE;
-    if (func_ov003_02220c98(a, 4, e) != 0) {
+    if (FieldFish_IsPlayerApproaching(a, 4, e) != 0) {
         s32 t = ((s32 (*)(s32))func_020947f0)(4);
         if (t == 0) {
             return r;
         }
-        func_ov003_02220c68(e, t);
+        FishShadow_TryFlee(e, t);
         r = TRUE;
     }
     return r;
@@ -4458,12 +4458,12 @@ extern "C" BOOL func_ov003_02220cf8(s32 a, E_f3 *e) {
 
 
 //@ 0x2220c98
-extern "C" BOOL func_ov003_02220c98(s32 a, s32 b, E_f3 *e) {
+extern "C" BOOL FieldFish_IsPlayerApproaching(s32 a, s32 b, E_f3 *e) {
     BOOL r = FALSE;
-    if (((s32 (*)(s32, V3_f3 *, s32))func_ov003_02220994)(a, &e->unk_120, b) != 0) {
+    if (((s32 (*)(s32, V3_f3 *, s32))FieldFish_IsPlayerNear)(a, &e->unk_120, b) != 0) {
         if (PlayerActor_TestSlotFlag9(b) != 0) {
             r = TRUE;
-        } else if (((s32 (*)(s32))func_ov003_022209c8)(b) != 0) {
+        } else if (((s32 (*)(s32))FieldFish_IsPlayerRunning)(b) != 0) {
             u8 *pc = &e->unk_214;
             u32 t = *pc;
             if (t != 0) {
@@ -4482,7 +4482,7 @@ extern "C" BOOL func_ov003_02220c98(s32 a, s32 b, E_f3 *e) {
 
 
 //@ 0x2220c68
-extern "C" BOOL func_ov003_02220c68(E_f3 *e, s32 a) {
+extern "C" BOOL FishShadow_TryFlee(E_f3 *e, s32 a) {
     BOOL r = FALSE;
     if (e == NULL) {
         return r;
@@ -4490,7 +4490,7 @@ extern "C" BOOL func_ov003_02220c68(E_f3 *e, s32 a) {
     if (e->unk_23c == 1) {
         return r;
     }
-    if (func_ov003_02220b00(e, a) != 0) {
+    if (FishShadow_StartFlee(e, a) != 0) {
         r = TRUE;
     }
     return r;
@@ -4498,7 +4498,7 @@ extern "C" BOOL func_ov003_02220c68(E_f3 *e, s32 a) {
 
 
 //@ 0x2220b00
-extern "C" BOOL func_ov003_02220b00(E_f3 *e, s32 a) {
+extern "C" BOOL FishShadow_StartFlee(E_f3 *e, s32 a) {
     if (e == NULL) {
         return FALSE;
     }
@@ -4539,19 +4539,19 @@ extern "C" BOOL func_ov003_02220b00(E_f3 *e, s32 a) {
 
 
 //@ 0x2220a2c
-extern "C" void func_ov003_02220a2c(O_f3 *o, E_f3 *e, s32 idx) {
+extern "C" void FishShadow_CheckOffscreen(O_f3 *o, E_f3 *e, s32 idx) {
     if (e->unk_23c == 0 || e->unk_224 == 6) {
         if ((*(void * *)&gCamera) != NULL) {
             V3_f3 v = (*(V3_f3 *)&gCameraLookAt);
-            if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) == 0) {
+            if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))FieldFish_IsInBox)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) == 0) {
                 if (e->unk_200 == 5 || e->unk_224 == 6) {
                     if (e->unk_7f != 0) {
-                        ((s32 (*)(O_f3 *))func_ov003_02221684)(o);
+                        ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
                     }
-                    ((s32 (*)(O_f3 *, s32))func_ov003_022216f8)(o, idx);
+                    ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, idx);
                 } else {
                     if ((u32)(e->unk_1fe - 4) <= 2) {
-                        if (((s32 (*)(E_f3 *))func_ov003_02222ce0)(e) != 0) {
+                        if (((s32 (*)(E_f3 *))FishShadow_IsSeaNorth)(e) != 0) {
                             e->unk_244 = 0x12c;
                         } else {
                             e->unk_244 = 0x4b0;
@@ -4568,7 +4568,7 @@ extern "C" void func_ov003_02220a2c(O_f3 *o, E_f3 *e, s32 idx) {
 
 
 //@ 0x22209ec
-extern "C" void func_ov003_022209ec(s32 *p, s32 b) {
+extern "C" void FieldWater_ApplyFlow(s32 *p, s32 b) {
     Unk_ov003_022209ec_Buf buf;
     func_020339bc(&buf, p, 0, 0);
     p[0] += func_01ffcb0c(b, buf.unk_24);
@@ -4578,7 +4578,7 @@ extern "C" void func_ov003_022209ec(s32 *p, s32 b) {
 
 
 //@ 0x22209c8
-extern "C" BOOL func_ov003_022209c8(s32 idx) {
+extern "C" BOOL FieldFish_IsPlayerRunning(s32 idx) {
     BOOL r = FALSE;
     u8 *o = ((u8 * (*)(s32))func_02095204)(idx);
     if (o != NULL) {
@@ -4591,7 +4591,7 @@ extern "C" BOOL func_ov003_022209c8(s32 idx) {
 
 
 //@ 0x2220994
-extern "C" BOOL func_ov003_02220994(void *self, s32 b, s32 idx) {
+extern "C" BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx) {
     u8 *o = ((u8 * (*)(s32))func_02095204)(idx);
     if (o == NULL) {
         return FALSE;
@@ -4604,7 +4604,7 @@ extern "C" BOOL func_ov003_02220994(void *self, s32 b, s32 idx) {
 
 
 //@ 0x2220844
-extern "C" BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 flag) {
+extern "C" BOOL FishShadow_TrySpawn(void *self, Unk_ov003_02220844_Obj *e, s32 flag) {
     BOOL r = FALSE;
     s32 a = -1, b = -1;
     Unk_ov003_02220128_Pos cd;
@@ -4622,8 +4622,8 @@ extern "C" BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 f
         break;
     }
     if (func_0204f134(&x, &y, fl)) {
-        if (func_ov003_02220460(self, &a, &b, &cd.a, &cd.b, y, flag, e)) {
-            if (func_ov003_022203f8(self, e, x)) {
+        if (FieldFish_PickSpawnUnit(self, &a, &b, &cd.a, &cd.b, y, flag, e)) {
+            if (FishShadow_CanSpawnFish(self, e, x)) {
                 FieldPos_FromUnitCenter(&v, a, b);
                 v.y = 0xffffeccd;
                 s32 t = x;
@@ -4662,7 +4662,7 @@ extern "C" BOOL func_ov003_02220844(void *self, Unk_ov003_02220844_Obj *e, s32 f
 
 
 //@ 0x222069c
-extern "C" BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode) {
+extern "C" BOOL FieldFish_CollectHabitatBlocks(void *self, u8 *out, s32 *cnt, s32 mode) {
     BOOL result = FALSE;
     Unk_ov003_0222069c_Grid *g = (*(Unk_ov003_0222069c_Grid * *)&gSceneBlockMap);
     if (g != NULL) {
@@ -4742,7 +4742,7 @@ extern "C" BOOL func_ov003_0222069c(void *self, u8 *out, s32 *cnt, s32 mode) {
 
 
 //@ 0x2220460
-extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e) {
+extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *a4, s32 mode, s32 flag, Unk_ov003_02220844_Obj *e) {
     s32 z = 0;
     s32 cnt = z;
     s32 sx, sz;
@@ -4757,19 +4757,19 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
     }
     v44 = gCameraLookAt;
     FieldPos_SnapToUnitCenter(&v50, &v44);
-    if (func_ov003_0222069c(self, grid, &cnt, mode) == 0) {
+    if (FieldFish_CollectHabitatBlocks(self, grid, &cnt, mode) == 0) {
         return z;
     }
-    s32 k = func_ov003_022202ec(z, (u16)cnt);
+    s32 k = FieldFish_RandRange(z, (u16)cnt);
     s32 k2 = k * 2;
     *a3 = ((s8 *)grid)[k2];
     *a4 = ((s8 *)&grid[1])[k2];
     s32 ax = *a3;
     s32 az = *a4;
     if (flag == 0) {
-        Unk_ov003_0225812c *p;
+        FishShadow *p;
         s32 i;
-        p = data_ov003_0225812c;
+        p = sFishShadows;
         for (i = z; i < 3; p++, i++) {
             if ((void *)e != (void *)p) {
                 Unk_ov003_02220128_Pos *q = &p->unk_208;
@@ -4779,9 +4779,9 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
             }
         }
     } else if (flag == 1) {
-        Unk_ov003_0225812c *p;
+        FishShadow *p;
         s32 i;
-        p = &data_ov003_0225812c[3];
+        p = &sFishShadows[3];
         for (i = 3; i < 6; p++, i++) {
             if ((void *)e != (void *)p) {
                 Unk_ov003_02220128_Pos *q = &p->unk_208;
@@ -4844,13 +4844,13 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
         *oz = -1;
         return FALSE;
     }
-    s32 kk = (s16)func_ov003_022202ec(0, (u16)z) * 2;
+    s32 kk = (s16)FieldFish_RandRange(0, (u16)z) * 2;
     s8 *cq = (s8 *)&cand[1];
     s32 rx, ry;
     ry = cq[kk];
     rx = ((s8 *)cand)[kk];
     FieldPos_FromUnitCenter(&v5c, rx, ry);
-    if (func_ov003_0222034c((s32 *)&v5c, (s32 *)&v50, 0xa000, 0x10000, 0xa000)) {
+    if (FieldFish_IsInBox((s32 *)&v5c, (s32 *)&v50, 0xa000, 0x10000, 0xa000)) {
         *ox = -1;
         *oz = -1;
         return FALSE;
@@ -4862,15 +4862,15 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
 
 
 //@ 0x22203f8
-extern "C" BOOL func_ov003_022203f8(void *self, Unk_ov003_02220844_Obj *e, s32 id) {
+extern "C" BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s32 id) {
     BOOL ok = Unk_ov003_022203f8_Chk(self, id);
     if (ok) {
         if (((u8 * (*)(s32))func_02095204)(4) == NULL) {
             return FALSE;
         }
         s32 i;
-        Unk_ov003_0225812c *p;
-        p = &data_ov003_0225812c[3];
+        FishShadow *p;
+        p = &sFishShadows[3];
         i = 3;
         for (; i < 6; p++, i++) {
             if ((void *)e != (void *)p && p->unk_7f != 0) {
@@ -4878,7 +4878,7 @@ extern "C" BOOL func_ov003_022203f8(void *self, Unk_ov003_02220844_Obj *e, s32 i
             }
         }
     } else if (id == 0x37) {
-        if (func_ov003_022203e0(self) == 0) {
+        if (FieldFish_IsRainOrSnow(self) == 0) {
             return FALSE;
         }
     }
@@ -4887,7 +4887,7 @@ extern "C" BOOL func_ov003_022203f8(void *self, Unk_ov003_02220844_Obj *e, s32 i
 
 
 //@ 0x22203e0
-extern "C" BOOL func_ov003_022203e0(void *self) {
+extern "C" BOOL FieldFish_IsRainOrSnow(void *self) {
     BOOL r = FALSE;
     u32 t = func_020b8fe8() - 1;
     if (t <= 1) {
@@ -4898,7 +4898,7 @@ extern "C" BOOL func_ov003_022203e0(void *self) {
 
 
 //@ 0x2220388
-extern "C" void func_ov003_02220388(Unk_ov003_02220844_Obj *self) {
+extern "C" void FishShadow_TickRespawnTimer(Unk_ov003_02220844_Obj *self) {
     if (func_020e7500(&self->unk_212) == 0) {
         if ((u32)self->unk_80 <= 1) {
             self->unk_80 = 0;
@@ -4915,7 +4915,7 @@ extern "C" void func_ov003_02220388(Unk_ov003_02220844_Obj *self) {
 
 
 //@ 0x222034c
-extern "C" BOOL func_ov003_0222034c(s32 *a, s32 *b, s32 c, s32 d, s32 e) {
+extern "C" BOOL FieldFish_IsInBox(s32 *a, s32 *b, s32 c, s32 d, s32 e) {
     BOOL r = FALSE;
     s32 dx = b[0] - a[0];
     if (dx < 0) {
@@ -4941,9 +4941,9 @@ extern "C" BOOL func_ov003_0222034c(s32 *a, s32 *b, s32 c, s32 d, s32 e) {
 
 
 //@ 0x222031c
-extern "C" BOOL func_ov003_0222031c(s32 *a, s32 *b, s32 *c) {
-    if (func_ov003_02220300(a[0], b[0], c[0])) {
-        if (func_ov003_02220300(a[2], b[2], c[2])) {
+extern "C" BOOL FieldFish_HasPassed(s32 *a, s32 *b, s32 *c) {
+    if (FieldFish_HasPassed1D(a[0], b[0], c[0])) {
+        if (FieldFish_HasPassed1D(a[2], b[2], c[2])) {
             return TRUE;
         }
     }
@@ -4952,7 +4952,7 @@ extern "C" BOOL func_ov003_0222031c(s32 *a, s32 *b, s32 *c) {
 
 
 //@ 0x2220300
-extern "C" BOOL func_ov003_02220300(s32 a, s32 b, s32 c) {
+extern "C" BOOL FieldFish_HasPassed1D(s32 a, s32 b, s32 c) {
     BOOL r = FALSE;
     a = a - b;
     if (a < 0) {
@@ -4970,14 +4970,14 @@ extern "C" BOOL func_ov003_02220300(s32 a, s32 b, s32 c) {
 
 
 //@ 0x22202ec
-extern "C" s32 func_ov003_022202ec(s32 a, u16 b) {
+extern "C" s32 FieldFish_RandRange(s32 a, u16 b) {
     return a + ((BOOL (*)(s32))func_02063b8c)(b - a);
 }
 
 
 //@ 0x22202cc
-extern "C" s32 func_ov003_022202cc(s32 a, u16 b) {
-    s32 r = func_ov003_022202ec(a, b);
+extern "C" s32 FieldFish_RandRangeSigned(s32 a, u16 b) {
+    s32 r = FieldFish_RandRange(a, b);
     if (((BOOL (*)(s32))func_02063b8c)(2) == 0) {
         r *= -1;
     }
@@ -4986,12 +4986,12 @@ extern "C" s32 func_ov003_022202cc(s32 a, u16 b) {
 
 
 //@ 0x2220290
-extern "C" BOOL func_ov003_02220290(Unk_ov003_02220128_Vec3 *out, s32 idx) {
+extern "C" BOOL FishCatch_GetReelTarget(Unk_ov003_02220128_Vec3 *out, s32 idx) {
     BOOL r = FALSE;
     if (idx < 0 || idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(data_ov003_02257e9c))[idx];
+    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(sFishCatches))[idx];
     if (rec->unk_48 == 1) {
         Unk_ov003_02220128_Vec3 *pv = &rec->unk_60;
         *out = *pv;
@@ -5002,7 +5002,7 @@ extern "C" BOOL func_ov003_02220290(Unk_ov003_02220128_Vec3 *out, s32 idx) {
 
 
 //@ 0x22201bc
-extern "C" BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *pos) {
+extern "C" BOOL FishCatch_StartRelease(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *pos) {
     volatile u16 id = id0;
     BOOL ok = FALSE;
     u32 v0 = id;
@@ -5016,7 +5016,7 @@ extern "C" BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *p
     if (idx < 0 || idx >= 4) {
         return FALSE;
     }
-    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(data_ov003_02257e9c))[idx];
+    Unk_ov003_02257e9c_Rec *rec = &((Unk_ov003_02257e9c_Rec *)(sFishCatches))[idx];
     if (rec->unk_40 != 0) {
         return FALSE;
     }
@@ -5029,7 +5029,7 @@ extern "C" BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *p
     v = *ps;
     s32 r6 = (u16)id - 0x12e8;
     rec->unk_90 = r6;
-    ((void (*)(void *, s32, s32))func_ov003_0222316c)(rec, ((s32 (*)(Unk_ov003_02220128_Vec3 *, Unk_ov003_02220128_Vec3 *))Math_AngleXZ)(&v, pos), r6);
+    ((void (*)(void *, s32, s32))FishCatch_SetModelAngles)(rec, ((s32 (*)(Unk_ov003_02220128_Vec3 *, Unk_ov003_02220128_Vec3 *))Math_AngleXZ)(&v, pos), r6);
     Unk_ov003_02220128_Vec3 *pd = &rec->unk_60;
     *pd = v;
     pd = &rec->unk_6c;
@@ -5044,16 +5044,16 @@ extern "C" BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *p
 
 
 //@ 0x22201ac
-extern "C" void func_ov003_022201ac(u8 *self, s32 v) {
+extern "C" void FishShadow_SetAnimSpeed(u8 *self, s32 v) {
     *(s32 *)(self + 0x1f0) = (v << 12) >> 4;
 }
 
 
 //@ 0x2220128
-extern "C" BOOL func_ov003_02220128(u8 *self, void *p, s32 q) {
+extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
     BOOL r = FALSE;
     u8 *o = self + 0x144;
-    CachedModel_loadCached(o, 0x66736477, (*(void * *)((u8 *)&data_ov003_02234778)));
+    CachedModel_loadCached(o, 0x66736477, (*(void * *)((u8 *)&sFishShadowModelPath)));
     if (p == NULL) {
         return r;
     }
@@ -5070,16 +5070,16 @@ extern "C" BOOL func_ov003_02220128(u8 *self, void *p, s32 q) {
 
 
 //@ 0x2220030
-extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
+extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
 {
     BOOL ok = FALSE;
     void *res = func_0209c25c(a, self + 4);
     u8 *m = self + 8;
-    if (func_0209c0d0(m, res, (*(void * *)((u8 *)&data_ov003_02234770)))) {
+    if (func_0209c0d0(m, res, (*(void * *)((u8 *)&sFishFinModelPath)))) {
         u8 *r4 = self + 0x58;
         Model_setResource(r4, func_0209c0ac(m), 0);
         void *nm = ((void * (*)(void *))func_0209c348)(res);
-        File_LoadAlloc((*(void * *)((u8 *)&data_ov003_02234774)), nm, 4, 0);
+        File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0);
         s32 v = func_021065f8(((s32 (*)(void))func_021065dc)(), 0);
         if (AnimModel_allocAnmObj(r4, nm)) {
             BlendAnimModel_initAnim(r4, v, 0, 0x1000, 1, 0);
@@ -5087,7 +5087,7 @@ extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
         } else {
             return FALSE;
         }
-        File_LoadAlloc((*(void * *)((u8 *)&data_ov003_0223477c)), nm, 4, 0);
+        File_LoadAlloc((*(void * *)((u8 *)&sFishFinTexAnimPath)), nm, 4, 0);
         s32 w = func_02106670(func_02106654(), 0);
         if (ModelAnim_allocMatAnm(self + 0x11c, *(void **)(r4 + 0x5c), nm)) {
             ModelAnim_init(self + 0x11c, w, 0, 0x1000, 1);
@@ -5102,12 +5102,12 @@ extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
 
 
 //@ 0x2220004
-extern "C" u8 *func_ov003_02220004(s32 i)
+extern "C" u8 *FishShadow_GetActive(s32 i)
 {
     if (i < 0 || i >= 6) {
         return NULL;
     }
-    u8 *p = ((u8 *)(data_ov003_0225812c)) + i * 0x24c;
+    u8 *p = ((u8 *)(sFishShadows)) + i * 0x24c;
     if ((u32)(*(s32 *)(p + 0x80) - 3) > 1) {
         p = NULL;
     }
@@ -5116,9 +5116,9 @@ extern "C" u8 *func_ov003_02220004(s32 i)
 
 
 //@ 0x221ffe8
-extern "C" s32 func_ov003_0221ffe8(s32 id)
+extern "C" s32 FishShadow_GetFishId(s32 id)
 {
-    u8 *p = func_ov003_02220004(id);
+    u8 *p = FishShadow_GetActive(id);
     if (p == NULL) {
         return -1;
     }
@@ -5127,9 +5127,9 @@ extern "C" s32 func_ov003_0221ffe8(s32 id)
 
 
 //@ 0x221ffb8
-extern "C" BOOL func_ov003_0221ffb8(u32 *out, s32 id)
+extern "C" BOOL FishShadow_GetPos(u32 *out, s32 id)
 {
-    u8 *p = func_ov003_02220004(id);
+    u8 *p = FishShadow_GetActive(id);
     if (p == NULL) {
         return FALSE;
     }

@@ -149,7 +149,7 @@ extern const char *sNookModelPaths[];
 extern const char *sNookTexPaths[];
 extern u8 *gSceneBlockMap;
 extern s16 data_02135f44[];
-void *func_ov003_0222ead4(void *self);
+void *Snowball_FindOtherInBallState(void *self);
 u8 *func_020af3f4();
 void FieldPos_SnapToUnitCenter(void *, void *);
 void func_02003e70(void *, s32, s32, s32);
@@ -171,17 +171,17 @@ Unk_ov068_022678c4_Rec *func_02095204(s32);
 extern s32 data_020c7c1c;
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void func_02090330(s32 a, void *v, s32 b, void *h);
-void func_ov003_02220db0(void *a, s32 b);
+void FieldFish_ScareAround(void *a, s32 b);
 void *func_0209c0ac(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s32 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
 s32 func_02133150(s32 a, s32 b);
-void func_ov003_0222e328(void *v, s32 a);
+void Insect_GetDirVec(void *v, s32 a);
 s32 Field_IsRafflesiaNear(void *a, void *b);
 s32 Field_FindFlowerNear(void *a, void *b, s32 c);
-s32 func_ov003_0222d1dc(s32 a);
-s32 func_ov003_0222dec8(s32 a, void *b);
+s32 Insect_GetFlowerSpeciesMask(s32 a);
+s32 Insect_LikesFlower(s32 a, void *b);
 s32 Flower_GetSpecies(void *cell);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e7b98(s32 x, s32 z);
@@ -367,7 +367,7 @@ void Unk_ov068_02268214::spawnSnowballSplash() {
     h = FX_Div(unk_268, 0x1000);
     func_02090330(0x3f, &v, 0, &h);
     func_02003e70(unk_324, 0x821, 0x7f, 0);
-    func_ov003_02220db0(&unk_5c, 0x5000);
+    FieldFish_ScareAround(&unk_5c, 0x5000);
 }
 
 BOOL Unk_ov068_02268214::enterSnowballRoll() {
@@ -388,7 +388,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
     s32 a = unk_2f0;
     s32 sum = func_01ffcb0c(unk_2ec, unk_2ec) + func_01ffcb0c(a, a);
     if (unk_39c == 0 && unk_398 == 0 && sum > 0 && unk_268 >= 0xa00 && fl_374.f6 != 0) {
-        u8 *o = (u8 *)func_ov003_0222ead4(this);
+        u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
         if (o != 0 && *(s32 *)(o + 0x268) >= 0xa00) {
             d = func_020e96a4(&unk_5c, o + 0x5c);
             t = FX_Div(0, 0x64000) + 0x400;
@@ -456,7 +456,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
         u16 *c = BlockMap_GetItemPtrAtPos(grid, &unk_5c, 0);
         if (c != 0 && Unk_ov068_02268214_InRange(c) != 0) {
             if (func_020e9650(objC, &unk_5c) < 0x1000) {
-                u8 *o = (u8 *)func_ov003_0222ead4(this);
+                u8 *o = (u8 *)Snowball_FindOtherInBallState(this);
                 if (o != 0 && *(s32 *)(o + 0x39c) == 0 && *(s32 *)(o + 0x398) == 4) {
                     if (func_020e9650(o + 0x5c, &unk_5c) > *(s32 *)(o + 0x268) + unk_268) {
                         if (Snowball_ChangeState(this, 4) != 0) {
@@ -769,7 +769,7 @@ void Unk_ov068_022678c4::execSnowballToSnowman() {
 s32 Unk_ov068_022678c4::enterSnowballStack() {
     unk_374_b4 = 0;
     unk_374_b5 = 1;
-    Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)func_ov003_0222ead4(this);
+    Unk_ov068_022678c4_Src *o = (Unk_ov068_022678c4_Src *)Snowball_FindOtherInBallState(this);
     FieldPos_SnapToUnitCenter(&unk_378, (u8 *)o + 0x5c);
     unk_37c += ((o->unk_268 * 2 - (o->unk_268 >> 3)) - (unk_268 >> 3)) - 0x400;
     unk_a8 = -(FX_Div(0, 0x3e8000) + 0x8f2);

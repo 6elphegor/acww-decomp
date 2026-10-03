@@ -491,7 +491,7 @@ extern u8 sFieldFrontDist[];
 
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 Item *NpcRegistry_FindByKind(u32 a, u32 b);
-Item *func_ov003_0222ebb0(u32 a);
+Item *Snowball_FindByParam(u32 a);
 BOOL func_0200e7c0(Obj *o);
 u16 *func_020952d0();
 u8 *func_020952c8();
@@ -693,8 +693,8 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, u32 a, u32 b, u32
 extern "C" {
 extern void *gCommManager;
 extern u8 *data_021c1b3c;
-extern u8 data_ov003_02258f00;
-extern V3 data_ov003_02258f18;
+extern u8 sWateringActive;
+extern V3 sWateringPos;
 
 s32 Unk_02006d14_getTargetWalkSpeed(Obj *o);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
@@ -739,11 +739,11 @@ void func_02035b94(void *p);
 void func_02035b9c(void *p);
 s32 PlayerActor_pushRequest(Obj *o, Msg *m);
 
-V3 *func_ov003_022232c8(s32 a);
-s32 func_ov003_022232e8(s32 a);
-s32 func_ov003_02224d14(s32 a);
-V3 *func_ov003_02224ba4(s32 a);
-void func_ov003_02224bc4(s32 a);
+V3 *FishCatch_GetPos(s32 a);
+s32 FishCatch_IsActive(s32 a);
+s32 BottleThrow_IsActive(s32 a);
+V3 *BottleThrow_GetPos(s32 a);
+void BottleThrow_Start(s32 a);
 
 s32 PlayerActor_ResumeWalkOrIdle(Obj *o);
 namespace ovcall {
@@ -1691,8 +1691,8 @@ extern "C" void _ZN19PlayerActionRequest6assignEiis(Msg *self, s32 a, s32 b, s16
 extern "C" {
 extern void *gCommManager;
 extern void *gSceneBlockMap;
-extern u8 data_ov003_02258f00;
-extern V3 data_ov003_02258f18;
+extern u8 sWateringActive;
+extern V3 sWateringPos;
 
 void Unk_020102ec_advanceAnim(Obj *o);
 void func_0201071c(Obj *o);
@@ -2633,11 +2633,11 @@ s32 func_02063b8c(s32 a);
 
 s32 PlayerActor_ShovelDispatch(Obj *o, V3C v, s32 a);
 void PlayerActor_ApplyHoldOffset(S30 *p, s32 a);
-void func_ov003_02227074(u8 id, s32 a);
-void func_ov003_0222746c(u8 id, s32 a);
-s32 func_ov003_02227434(u8 id);
-V3 *func_ov003_02227320(u8 id);
-void func_ov003_022261ec(u8 id, s16 *a, S30 *p, s32 f);
+void HeldInsect_Remove(u8 id, s32 a);
+void HeldInsect_Release(u8 id, s32 a);
+s32 HeldInsect_GetStage(u8 id);
+V3 *HeldInsect_GetPos(u8 id);
+void HeldInsect_SetHandMatrix(u8 id, s16 *a, S30 *p, s32 f);
 void PlayerActor_InsectStoreSetNetAngle(u8 *p, s32 a);
 void PlayerActor_InsectStoreSetNetState(u8 *p, s32 a);
 s32 PlayerActor_InsectStoreGetNetState(u8 *p);
@@ -2867,13 +2867,13 @@ void func_0207881c(void *p);
 u32 NetBuf_ReadS16B(u8 *p);
 void NetBuf_WriteS16B(u8 *p, u32 a);
 
-void func_ov003_02226fac(u32 a);
+void Insect_FinishCatch(u32 a);
 void PlayerActor_ApplyHoldOffset(T48 *t, V3 *d);
-void func_ov003_02227248(u32 a, u32 b);
-s32 func_ov003_0222746c(u32 a, s32 b);
-s32 func_ov003_02227434(u32 a);
-V3 *func_ov003_02227320(u8 a);
-void func_ov003_022261ec(u32 a, s16 *p, T48 *t, s32 b);
+void HeldInsect_Start(u32 a, u32 b);
+s32 HeldInsect_Release(u32 a, s32 b);
+s32 HeldInsect_GetStage(u32 a);
+V3 *HeldInsect_GetPos(u8 a);
+void HeldInsect_SetHandMatrix(u32 a, s16 *p, T48 *t, s32 b);
 u32 PlayerActor_InsectShowCatchGetNetState(u8 *p);
 s32 PlayerActor_InsectShowCatchGetNetAngle(u8 *p);
 void PlayerActor_InsectShowCatchSetNetAngle(u8 *p, s32 a);
@@ -3042,8 +3042,8 @@ s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 
-s32 func_ov003_02226ee8(s32 a, u32 b);
-s32 func_ov003_02226fac(s32 a);
+s32 Insect_GetCatchResult(s32 a, u32 b);
+s32 Insect_FinishCatch(s32 a);
 s32 PlayerActor_CheckToolHitActor(Obj *o);
 void PlayerActor_BugNetSwingTurn(Obj *o);
 void PlayerActor_BugNetSwingUpdate(Obj *o);
@@ -3188,9 +3188,9 @@ typedef Unk_ov003_0220d114_Act Act;
 
 extern "C" {
 extern void *gCommManager;
-// 0x022349e6 is byte 0x12 of the record table data_ov003_022349d4 (unit unk_ov003_0221ffb8)
-extern u8 data_ov003_022349d4[];
-#define data_ov003_022349e6 (data_ov003_022349d4 + 0x12)
+// 0x022349e6 is byte 0x12 of the record table sFishSizeClassParams (unit unk_ov003_0221ffb8)
+extern u8 sFishSizeClassParams[];
+#define data_ov003_022349e6 (sFishSizeClassParams + 0x12)
 extern u8 data_ov003_02230ac4[];
 extern u8 data_ov003_02230ac8[];
 
@@ -3198,12 +3198,12 @@ s32 AnimFrameCtrl_isFinished(void *p);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 void PlayerActor_GetHeldItem(u16 *out, Obj *o);
 s32 func_02088a20(V3 *a, V3 *b, s32 c, u8 *d, s32 e);
-void func_ov003_02227e08(V3 *v, u32 a);
-u32 func_ov003_02227e40(u32 a);
+void FieldInsect_GetPosAndKind(V3 *v, u32 a);
+u32 FieldInsect_IsTreeKind(u32 a);
 s32 PlayerActor_BugNetSwingCheckHit(Obj *o, u8 *a, V3 *v, u8 *b);
 s32 PlayerActor_BugNetSwingGetSweep(Obj *o, V3 *a, V3 *b, V3 *c);
 s32 PlayerActor_BugNetSwingCheckGround(Obj *o, V3 *a, V3 *b, V3 *c);
-s32 func_ov003_02226d54(u32 a);
+s32 Insect_TryCatch(u32 a);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
@@ -3225,9 +3225,9 @@ void func_0205fbbc(void *p, u32 a);
 void func_0205fb20(void *p);
 void func_0205fb08(void *p);
 void PlayerActor_ApplyHoldOffset(Blk *b, u32 a);
-void func_ov003_02223400(Act *a, V3 *b, V3 *c);
-void func_ov003_02223450(V3 *v, s32 a);
-void func_ov003_02223258(u32 a);
+void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
+void Fish_GetDisplayScale(V3 *v, s32 a);
+void FishCatch_NetSendStored(u32 a);
 void PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 void func_02099124(void *p);
 s32 func_0206e7a4(u32 a, Act *b);
@@ -3390,10 +3390,10 @@ extern u8 sFishEscapeSpeed[];
 
 void func_0200f4c0(Obj *o, s32 a);
 Act *func_0205fbb8(void *p);
-void func_ov003_02223450(V3 *v, s32 a);
+void Fish_GetDisplayScale(V3 *v, s32 a);
 void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-void func_ov003_02223400(Act *a, V3 *b, V3 *c);
+void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
 void Camera_SetMode4();
 s32 func_0203d820();
@@ -3613,8 +3613,8 @@ s32 NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 PlayerActor_RequestFishEscape(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishLand(Obj *o, s32 a, s32 b);
 s32 PlayerActor_RequestFishReelIn(Obj *o, s32 a, s32 b, s32 c);
-s32 func_ov003_022236dc();
-s32 func_ov003_02220db0(void *p, s32 a);
+s32 FishShadow_OnRodPulled();
+s32 FieldFish_ScareAround(void *p, s32 a);
 s32 PlayerActor_AxeBrokenMessageUpdate(Obj *o);
 
 void PlayerActor_FishReelInSetArgs(u8 *p, u32 v);
@@ -4759,10 +4759,10 @@ void func_020902f8(s32 a);
 void func_020902d4(s32 a, V3 *b, u32 c, u32 d);
 s32 func_02090268(s32 a, V3 *b, u32 c, u32 d);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
-void func_ov003_02223450(V3 *v, s32 a);
-void func_ov003_022261ec(u8 id, s16 *a, Blk *p, s32 f);
-void func_ov003_02227074(u8 a, s32 b);
-void func_ov003_02227248(u8 a, u8 b);
+void Fish_GetDisplayScale(V3 *v, s32 a);
+void HeldInsect_SetHandMatrix(u8 id, s16 *a, Blk *p, s32 f);
+void HeldInsect_Remove(u8 a, s32 b);
+void HeldInsect_Start(u8 a, u8 b);
 s32 func_0204f3e4(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 void func_0204f3b4(void *a);
 void *func_0204f49c();
@@ -5498,7 +5498,7 @@ extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
     r4->unk_0d = 0;
     if (r4->unk_0c == 0) {
         s32 i = Idx(&t, 0x12b0, 0x12e7);
-        func_ov003_02227248(i, o->unk_7fc);
+        HeldInsect_Start(i, o->unk_7fc);
         id = 0x9f;
     } else {
         r4->unk_08 = func_0204f49c();
@@ -5532,7 +5532,7 @@ extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
         func_020902f8(r4->unk_04);
     }
     if (r4->unk_0c == 0) {
-        func_ov003_02227074(o->unk_7fc, 1);
+        HeldInsect_Remove(o->unk_7fc, 1);
     } else {
         func_0204f3b4(r4->unk_08);
     }
@@ -5603,7 +5603,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         t.b = sc;
         t.c = sc;
         t.d = sc;
-        func_ov003_022261ec(o->unk_7fc, &t.b, &b, 0);
+        HeldInsect_SetHandMatrix(o->unk_7fc, &t.b, &b, 0);
     } else {
         float f = (float)sc / 100.0f;
         float g;
@@ -5614,7 +5614,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         }
         s32 k = (s32)g;
         s32 i = Idx(&t.a, 0x12e8, 0x131f);
-        func_ov003_02223450(&v68, i);
+        Fish_GetDisplayScale(&v68, i);
         v68.x = func_01ffcb0c(v68.x, k);
         v68.y = func_01ffcb0c(v68.y, k);
         v68.z = func_01ffcb0c(v68.z, k);
@@ -8313,9 +8313,9 @@ extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
     if (func_0205df98(o->unk_59c)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
             if (func_0205fbb8(o->unk_5c4)) {
-                func_ov003_022236dc();
+                FishShadow_OnRodPulled();
             } else {
-                func_ov003_02220db0(&o->unk_5cc, 0x1000);
+                FieldFish_ScareAround(&o->unk_5cc, 0x1000);
             }
             PlayerActor_RequestFishReelIn(o, 0, 6, -1);
         } else {
@@ -8659,7 +8659,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     a = func_0205fbb8(o->unk_5c4);
     if (a) {
         b = o->unk_694;
-        func_ov003_02223450(&v54, a->unk_7e);
+        Fish_GetDisplayScale(&v54, a->unk_7e);
         v48.x = 0x4cd;
         v48.y = 0;
         v48.z = 0;
@@ -8685,7 +8685,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
         v78.x = v54.x;
         v78.y = v54.y;
         v78.z = v54.z;
-        func_ov003_02223400(a, &v6c, &v78);
+        FishCatch_SetDisplayPosScale(a, &v6c, &v78);
     }
     r5 = &r6->unk_02;
     if (o->unk_700 == 0x59) {
@@ -8911,9 +8911,9 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
         b.x = vf.x;
         b.y = vf.y;
         b.z = vf.z;
-        func_ov003_02223400(p5, &a, &b);
+        FishCatch_SetDisplayPosScale(p5, &a, &b);
         v[0] = p5->unk_7e + 0x12e8;
-        if (f == 0) func_ov003_02223258(o->unk_7fc);
+        if (f == 0) FishCatch_NetSendStored(o->unk_7fc);
     }
     u8 *r6 = &o->unk_7d0.unk_00;
     u8 *r7 = &o->unk_8ec;
@@ -8970,14 +8970,14 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                 } else {
                     if (p5) {
                         V3 a, b;
-                        func_ov003_02223450(&vf, p5->unk_7e);
+                        Fish_GetDisplayScale(&vf, p5->unk_7e);
                         a.x = v48.x;
                         a.y = v48.y;
                         a.z = v48.z;
                         b.x = vf.x;
                         b.y = vf.y;
                         b.z = vf.z;
-                        func_ov003_02223400(p5, &a, &b);
+                        FishCatch_SetDisplayPosScale(p5, &a, &b);
                     }
                     PlayerActor_RequestFishRelease(o, data_ov003_02230ac8, 0, 6, -1);
                     PlayerActor_FishStoreSetNetState(r7, 2);
@@ -8994,14 +8994,14 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
             if (PlayerActor_FishStoreGetNetState(r7) == 2) {
                 if (p5) {
                     V3 a, b;
-                    func_ov003_02223450(&vf, p5->unk_7e);
+                    Fish_GetDisplayScale(&vf, p5->unk_7e);
                     a.x = v48.x;
                     a.y = v48.y;
                     a.z = v48.z;
                     b.x = vf.x;
                     b.y = vf.y;
                     b.z = vf.z;
-                    func_ov003_02223400(p5, &a, &b);
+                    FishCatch_SetDisplayPosScale(p5, &a, &b);
                 }
                 func_0205fb08(o->unk_5c4);
                 *r6 = 2;
@@ -9139,14 +9139,14 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
             id = 0xd1f;
         if (func_02088a20(&v18, &v24, id, &st.c, 0)) {
             st.a = 1;
-            func_ov003_02227e08(&v3c, st.c);
-            st.b = func_ov003_02227e40(st.c);
+            FieldInsect_GetPosAndKind(&v3c, st.c);
+            st.b = FieldInsect_IsTreeKind(st.c);
             if (st.b != 0) v3c.z += 0x100;
         }
     }
     switch (PlayerActor_BugNetSwingCheckHit(o, &st.a, &v3c, &st.b)) {
     case 1:
-        if (func_ov003_02226d54(st.c) == 0) return;
+        if (Insect_TryCatch(st.c) == 0) return;
         r5->unk_00 = 1;
         r5->unk_04 = st.c;
         Unk_02006d14_playSe(o, 0x847);
@@ -9179,7 +9179,7 @@ extern "C" void PlayerActor_BugNetSwingUpdate(Obj *o) {
         ang = 0x7fff;
     }
     if (func_020e780c(ang, 0) > 0x4000) {
-        if (func_ov003_02226d54(st.c) == 0) return;
+        if (Insect_TryCatch(st.c) == 0) return;
         r5->unk_00 = 1;
         r5->unk_04 = st.c;
         Unk_02006d14_playSe(o, 0x847);
@@ -9445,9 +9445,9 @@ extern "C" void PlayerActor_BugNetSwingCheckEnd(Obj *o) {
         if (id == 0xff) {
             PlayerActor_RequestInsectShowCatch(o, 0, id, 0x30, 6, -1);
         } else {
-            s32 r = func_ov003_02226ee8(id, (u8)o->unk_7fc);
+            s32 r = Insect_GetCatchResult(id, (u8)o->unk_7fc);
             if (r == 0) {
-                u32 t = (u8)func_ov003_02226fac(id);
+                u32 t = (u8)Insect_FinishCatch(id);
                 PlayerActor_RequestInsectShowCatch(o, 0, id, t, 6, -1);
             } else if (r == 1) {
                 p[0] = 0;
@@ -9647,7 +9647,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         } else {
             *st = 9;
             if (*p7 != 0xff) {
-                func_ov003_02226fac(*p7);
+                Insect_FinishCatch(*p7);
             }
         }
         u32 bt = b8;
@@ -9660,7 +9660,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             WorldCurve_FromCurved(&vv, &vv);
             rec->unk_00 = func_02090330(0x25, &vv, 0, 0);
         }
-        func_ov003_02227248(b8, (u8)r7);
+        HeldInsect_Start(b8, (u8)r7);
     }
     t2 = o->unk_694;
     d.x = 0x4cd;
@@ -9701,7 +9701,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         if (*st < 6 || *st == 9) {
             if (PlayerActor_InsectShowCatchGetNetState(sub) == 6) {
-                func_ov003_0222746c((u8)r7, PlayerActor_InsectShowCatchGetNetAngle(sub));
+                HeldInsect_Release((u8)r7, PlayerActor_InsectShowCatchGetNetAngle(sub));
                 Unk_020102ec_startAnim(o, 0, 3, 3);
                 *st = 7;
             }
@@ -9825,7 +9825,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             func_020902f8(rec->unk_00);
         }
         s16 ang = func_02063b8c(0x2aaa) - 0x1555;
-        func_ov003_0222746c((u8)r7, ang);
+        HeldInsect_Release((u8)r7, ang);
         PlayerActor_InsectShowCatchSetNetAngle(sub, ang);
         MsgRequest *sec = o;
         func_0203e47c(o, sec);
@@ -9838,7 +9838,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         return;
     }
     case 6: {
-        if (func_ov003_02227434((u8)r7) != 3) {
+        if (HeldInsect_GetStage((u8)r7) != 3) {
             if (o->unk_458 == 0 && o->unk_45a == 0) {
                 o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
                 switch (mode) {
@@ -9865,7 +9865,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
             func_02010dbc(&o->unk_45a, 0, 0x400, 0x1770000, 0xc0000);
             return;
         } else {
-            V3 *q = func_ov003_02227320(r7);
+            V3 *q = HeldInsect_GetPos(r7);
             V3 *pv = &o->unk_5c;
             pos.x = o->unk_5c.x;
             pos.y = pv->y;
@@ -9883,7 +9883,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
         }
     }
     case 7: {
-        s32 r = func_ov003_02227434((u8)r7);
+        s32 r = HeldInsect_GetStage((u8)r7);
         if (r == 3 || r == 0) {
             *st = 6;
         }
@@ -9906,7 +9906,7 @@ extern "C" void PlayerActor_InsectShowCatchUpdate(Obj *o) {
     }
     }
 tail:
-    func_ov003_022261ec((u8)r7, &L2.v[2], &t2, 0);
+    HeldInsect_SetHandMatrix((u8)r7, &L2.v[2], &t2, 0);
 }
 }
 
@@ -10056,7 +10056,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         if (AnimFrameCtrl_isFinished(o->unk_2cc) == 0) {
             goto tail;
         }
-        func_ov003_02227074(o->unk_7fc, 1);
+        HeldInsect_Remove(o->unk_7fc, 1);
         o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
         PlayerActor_requestWait(o, 6, 1, -1);
         if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
@@ -10107,7 +10107,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
                 goto tail;
             }
             v = (s16)(func_02063b8c(0x2aaa) - 0x1555);
-            func_ov003_0222746c(id, v);
+            HeldInsect_Release(id, v);
             PlayerActor_InsectStoreSetNetAngle(p6, v);
             if (Unk_02006d14_testActionFlag(o, 0x11)) {
                 Unk_02006d14_clearActionFlag(o, 0x11);
@@ -10121,14 +10121,14 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         } else {
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
             if (PlayerActor_InsectStoreGetNetState(p6) == 2) {
-                func_ov003_0222746c(id, PlayerActor_InsectStoreGetNetAngle(p6));
+                HeldInsect_Release(id, PlayerActor_InsectStoreGetNetAngle(p6));
                 *st = 2;
                 Unk_020102ec_startAnim(o, 0, 4, 4);
             }
             return;
         }
     case 2:
-        if (func_ov003_02227434(id) != 3) {
+        if (HeldInsect_GetStage(id) != 3) {
             if (o->unk_458 == 0 && o->unk_45a == 0) {
                 o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
                 PlayerActor_requestWait(o, 6, 1, -1);
@@ -10138,7 +10138,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
             }
             return;
         } else {
-            V3 *q = func_ov003_02227320(id);
+            V3 *q = HeldInsect_GetPos(id);
             V3 p3;
             V3 *pv2 = &o->unk_5c;
             p3.x = pv2->x;
@@ -10156,7 +10156,7 @@ extern "C" void PlayerActor_InsectStoreUpdate(Obj *o) {
         }
     default:
     tail:
-        func_ov003_022261ec(id, &w[1], &cp, flag);
+        HeldInsect_SetHandMatrix(id, &w[1], &cp, flag);
     }
 }
 }
@@ -11876,10 +11876,10 @@ extern "C" void PlayerActor_EndWateringCan(Obj *o) {
         func_020902f8(o->unk_7d0.unk_00);
     }
     func_0200f43c(&t, o);
-    data_ov003_02258f00 = 0;
-    data_ov003_02258f18.x = t.x;
-    data_ov003_02258f18.y = t.y;
-    data_ov003_02258f18.z = t.z;
+    sWateringActive = 0;
+    sWateringPos.x = t.x;
+    sWateringPos.y = t.y;
+    sWateringPos.z = t.z;
 }
 }
 
@@ -11902,10 +11902,10 @@ extern "C" void PlayerActor_WateringCanUpdate(Obj *o) {
             *h = func_02090330(0x26, &v, &o->unk_8e, 0);
             Unk_02006d14_playSe(o, 0x854);
             func_0200f43c(&t, o);
-            data_ov003_02258f00 = 1;
-            data_ov003_02258f18.x = t.x;
-            data_ov003_02258f18.y = t.y;
-            data_ov003_02258f18.z = t.z;
+            sWateringActive = 1;
+            sWateringPos.x = t.x;
+            sWateringPos.y = t.y;
+            sWateringPos.z = t.z;
         } else {
             func_020902d4(*h, &v, 0);
         }
@@ -13888,10 +13888,10 @@ extern "C" void PlayerActor_EndAct81(Obj *o) {
     }
     V3 v;
     func_0200f43c(&v, o);
-    data_ov003_02258f00 = 0;
-    data_ov003_02258f18.x = v.x;
-    data_ov003_02258f18.y = v.y;
-    data_ov003_02258f18.z = v.z;
+    sWateringActive = 0;
+    sWateringPos.x = v.x;
+    sWateringPos.y = v.y;
+    sWateringPos.z = v.z;
 }
 }
 
@@ -13918,10 +13918,10 @@ extern "C" void PlayerActor_Act81Update(Obj *o) {
                     Unk_02006d14_playSe(o, 0x859);
                 }
                 func_0200f43c(&w, o);
-                data_ov003_02258f00 = 1;
-                data_ov003_02258f18.x = w.x;
-                data_ov003_02258f18.y = w.y;
-                data_ov003_02258f18.z = w.z;
+                sWateringActive = 1;
+                sWateringPos.x = w.x;
+                sWateringPos.y = w.y;
+                sWateringPos.z = w.z;
             }
             PlayerActor_GetHeldItem(&t[1], o);
             if (t[1] == 0x137f) {
@@ -14100,7 +14100,7 @@ extern "C" void PlayerActor_Act89ShowItem(Obj *o) {
             o->unk_834 = v;
             if (f == 0x19) {
                 Unk_02006d14_clearActionFlag(o, 0xd);
-                func_ov003_02224bc4(o->unk_7fc);
+                BottleThrow_Start(o->unk_7fc);
             }
         }
     }
@@ -14112,13 +14112,13 @@ extern "C" void PlayerActor_Act89Look(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
         Unk_020102ec_startAnim(o, 0, 3, 3);
     } else if (o->unk_700 == 0) {
-        if (func_ov003_02224d14(o->unk_7fc) == 0) {
+        if (BottleThrow_IsActive(o->unk_7fc) == 0) {
             func_02094574(0, 0, 4);
             o->unk_7f8 = Unk_02007694_getActionDonePriority(o, o->unk_7ec);
             Unk_02007694_requestAct05(o, 3, 5, -1);
         } else {
             V3 a, b;
-            V3 *q = func_ov003_02224ba4(o->unk_7fc);
+            V3 *q = BottleThrow_GetPos(o->unk_7fc);
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
@@ -14205,9 +14205,9 @@ extern "C" void PlayerActor_FishReleaseLook(Obj *o) {
     u8 *p = (u8 *)&o->unk_7d0;
     if (p[0] != 0) {
         s32 t = o->unk_7fc;
-        if (func_ov003_022232e8(t)) {
+        if (FishCatch_IsActive(t)) {
             V3 a, b;
-            V3 *q = func_ov003_022232c8(t);
+            V3 *q = FishCatch_GetPos(t);
             a.x = q->x;
             a.y = q->y;
             a.z = q->z;
@@ -14610,7 +14610,7 @@ extern "C" BOOL PlayerActor_CheckToolHitActor(Obj *o) {
     }
     case 0x11:
     case 0x12: {
-        Item *it = func_ov003_0222ebb0(id);
+        Item *it = Snowball_FindByParam(id);
         if (it != NULL) {
             BOOL f = Unk_ov003_022052f4_Rng(buf, 0x1376, 0x1376);
             if (!f && !Unk_ov003_022052f4_Rng(buf, 0x1377, 0x1377)) o->unk_164 = it;

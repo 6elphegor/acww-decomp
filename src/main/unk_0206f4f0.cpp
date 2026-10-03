@@ -43,12 +43,12 @@ void func_02065e70(void *p, void *q);
 void _ZN12Unk_0208f23813func_0208f168Ev(void *p);
 void _ZN12Unk_0208f23813func_0208f1a8Ej(void *p, s32 v);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
-s32 func_ov003_022201bc(u8 a, u32 b, void *c);
-s32 func_ov003_02224d58(void *a, u8 b);
+s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
+s32 BottleThrow_SetTarget(void *a, u8 b);
 u8 *func_02095204(u8 x);
-BOOL func_ov003_02227434(u8 x);
-void func_ov003_02227248(u32 a, u8 b);
-s32 func_ov003_0222746c(u8 a, s32 b);
+BOOL HeldInsect_GetStage(u8 x);
+void HeldInsect_Start(u32 a, u8 b);
+s32 HeldInsect_Release(u8 a, s32 b);
 s32 func_02076f88(void *p);
 
 void func_0206f4f0(u8 *p);
@@ -93,9 +93,9 @@ extern "C" void func_0206f770(u8 *p, u32 id) {
         u8 *r = func_02095204(id8);
         if (r != NULL) {
             off = off + *(s16 *)(r + 0x8e);
-            if (func_ov003_02227434(id8) == 0) {
-                func_ov003_02227248(q[0], id8);
-                func_ov003_0222746c(id8, off);
+            if (HeldInsect_GetStage(id8) == 0) {
+                HeldInsect_Start(q[0], id8);
+                HeldInsect_Release(id8, off);
             }
         }
     }
@@ -117,9 +117,9 @@ extern "C" void func_0206f6fc(u8 *p, u32 id) {
             } else {
                 x = 0x12e8;
             }
-            func_ov003_022201bc(id8, x, &pos);
+            FishCatch_StartRelease(id8, x, &pos);
         } else {
-            func_ov003_02224d58(&pos, id8);
+            BottleThrow_SetTarget(&pos, id8);
         }
     }
 }

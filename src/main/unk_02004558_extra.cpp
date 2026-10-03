@@ -1571,12 +1571,12 @@ s32 _ZN12Unk_020102ec9startAnimEijt(Unk_02008040 *, u32, u32, u32);
 s32 _ZN11PlayerActor11requestWaitEjjj(Unk_02008040 *, u32, u32, s32);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Unk_02008040 *, s32);
 void _ZN12Unk_02006d1413func_0200e7f4Ev(Unk_02008040 *);
-void func_ov003_02226fac(u32);
-void func_ov003_02227248(u32, u32);
+void Insect_FinishCatch(u32);
+void HeldInsect_Start(u32, u32);
 void PlayerActor_ApplyHoldOffset(void *, void *);
-void func_ov003_022261ec(u32, void *, void *, u32);
-void func_ov003_02223450(void *, s32);
-void func_ov003_02223400(void *, void *, void *);
+void HeldInsect_SetHandMatrix(u32, void *, void *, u32);
+void Fish_GetDisplayScale(void *, s32);
+void FishCatch_SetDisplayPosScale(void *, void *, void *);
 void PlayerActor_RequestFishShowCatch(Unk_02008040 *, u32, u32, s32);
 void PlayerActor_RequestInsectShowCatch(Unk_02008040 *, u32, u32, u32, u32, s32);
 void PlayerActor_RequestStowItem(Unk_02008040 *, u32, u32, u32, u32, u32, u32, s32);
@@ -2758,7 +2758,7 @@ s32 PlayerActor_Decelerate(s32 a, s32 b);
 void func_02010d98(void *p, s32 a);
 void func_02010d74(void *p, s32 a);
 void func_02010e48(void *p, s32 a);
-void func_ov003_022247b8(void *t, s32 a, s32 b, s32 c);
+void FishShadow_RunAi(void *t, s32 a, s32 b, s32 c);
 void PlayerActor_RequestDoorExit(void *t, s32 a, s32 b);
 void PlayerActor_RequestFaint(void *t, s32 a, s32 b, s32 c);
 void PlayerActor_RequestAct3C(void *t, s32 a, s32 b);
@@ -5091,8 +5091,8 @@ void Unk_02008040::func_02008858() {
     case 0:
         if (*st == 3) {
             *st = 0;
-            func_ov003_02226fac(p[6]);
-            func_ov003_02227248(sub, (u8)unk_7fc);
+            Insect_FinishCatch(p[6]);
+            HeldInsect_Start(sub, (u8)unk_7fc);
         }
         if (sub == 9) {
             v1.unk_00 = 0x119a;
@@ -5109,7 +5109,7 @@ void Unk_02008040::func_02008858() {
         t[7] = 0x64;
         v1 = *(Unk_02008074_Vec *)&blk.w[9];
         WorldCurve_FromCurved(&v1, &v1);
-        func_ov003_022261ec((u8)unk_7fc, &t[5], &blk, 0);
+        HeldInsect_SetHandMatrix((u8)unk_7fc, &t[5], &blk, 0);
         break;
     case 1:
         void *o = _ZN12Unk_0205f8d413func_0205fbb8Ev(unk_5c4);
@@ -5120,10 +5120,10 @@ void Unk_02008040::func_02008858() {
             PlayerActor_ApplyHoldOffset(&blk, &v1);
             v2 = *(Unk_02008074_Vec *)&blk.w[9];
             WorldCurve_FromCurved(&v2, &v2);
-            func_ov003_02223450(&v3, *((s8 *)o + 0x7e));
+            Fish_GetDisplayScale(&v3, *((s8 *)o + 0x7e));
             v4 = v2;
             v5 = v3;
-            func_ov003_02223400(o, &v4, &v5);
+            FishCatch_SetDisplayPosScale(o, &v4, &v5);
         }
         break;
     }

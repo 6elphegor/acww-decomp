@@ -27,10 +27,10 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov070_0227280c;
-class Unk_ov070_0227277c;
+class SpNpcGracie;
+class SpNpcGracieTalk;
 
-struct Unk_ov070_02271f10_Out {
+struct TalkStartMsg {
     u32 a;
     u8 b;
 };
@@ -119,7 +119,7 @@ struct Unk_ov070_Color {
 };
 
 struct Unk_ov070_SceneEntry {
-    Unk_ov070_0227280c *(*factory)();
+    SpNpcGracie *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
@@ -160,7 +160,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov070_02271f10_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     void *func_02015aac();
@@ -373,28 +373,28 @@ public:
     u8 unk_650;
 };
 
-typedef void (Unk_ov070_0227277c::*Unk_ov070_0227277c_Fn)();
+typedef void (SpNpcGracieTalk::*Unk_ov070_0227277c_Fn)();
 
-class Unk_ov070_0227277c : public SpNpcTalkRequest {
+class SpNpcGracieTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov070_0227277c();
-    virtual ~Unk_ov070_0227277c();
+    SpNpcGracieTalk();
+    virtual ~SpNpcGracieTalk();
     virtual void vfunc_08();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_64(u32 a);
-    virtual void vfunc_78(Unk_ov070_02271f10_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_84();
 
-    void func_ov070_02272014(Unk_ov070_0227280c *owner);
-    void func_ov070_02272138();
-    void func_ov070_022721e0(s32 idx);
-    BOOL func_ov070_022717f0();
-    BOOL func_ov070_02271a8c();
-    void func_ov070_02271bf8();
+    void attachOwner(SpNpcGracie *owner);
+    void onFeeEntered();
+    void setResultHandler(s32 idx);
+    BOOL dressUpPlayer();
+    BOOL hasPocketRoomForOutfit();
+    void scoreOutfit();
 
     s32 unk_ac;
-    Unk_ov070_0227280c *unk_b0;
+    SpNpcGracie *unk_b0;
     Unk_ov070_0227277c_Fn unk_b4;
     s32 unk_bc;
     ItemId unk_c0[3];
@@ -404,9 +404,9 @@ public:
     u8 pad_dd[3];
 };
 
-class Unk_ov070_0227280c : public Unk_020d8bc8 {
+class SpNpcGracie : public Unk_020d8bc8 {
 public:
-    Unk_ov070_0227280c() {}
+    SpNpcGracie() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -415,28 +415,28 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov070_02272294();
-    BOOL func_ov070_02272298();
-    BOOL func_ov070_022722c4();
-    BOOL func_ov070_022722fc();
-    BOOL func_ov070_02272300();
-    void func_ov070_02272334(s32 state);
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
-    Unk_ov070_0227277c unk_658;
+    SpNpcGracieTalk unk_658;
 };
 
 struct Unk_ov070_02272334_Ent {
-    BOOL (Unk_ov070_0227280c::*enter)();
-    BOOL (Unk_ov070_0227280c::*exit)();
+    BOOL (SpNpcGracie::*enter)();
+    BOOL (SpNpcGracie::*exit)();
 };
 
 extern "C" {
-extern u8 data_ov070_02272718[];
-extern u8 data_ov070_02272728[];
-extern u8 data_ov070_02272758[];
-extern const Unk_ov070_Name data_ov070_02272568[];
-extern const Unk_ov070_022717f0_Ent data_ov070_022725a0[];
+extern u8 sSpNpcGracieKey[];
+extern u8 sSpNpcGracieModelPath[];
+extern u8 sSpNpcGracieTexturePath[];
+extern const Unk_ov070_Name sSpNpcGracieTopicMsgs[];
+extern const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[];
 extern u16 data_020c6cc8;
 
 PlayerData *PlayerData_GetCurrent();
@@ -486,21 +486,21 @@ void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, u32 b, u32 c
 
 // Declarations for data defined further down (definition order sets the data layout)
 extern "C" Unk_ov070_Color data_ov070_022728c8;
-extern "C" u8 data_ov070_02272758[];
-extern "C" Unk_ov070_SceneEntry data_ov070_02272740;
-extern "C" u8 data_ov070_02272728[];
+extern "C" u8 sSpNpcGracieTexturePath[];
+extern "C" Unk_ov070_SceneEntry sSpNpcGracieProfile;
+extern "C" u8 sSpNpcGracieModelPath[];
 extern "C" u32 data_ov070_022726e4[1];
 extern "C" u32 data_ov070_022726e0[1];
 extern "C" Unk_ov070_Color data_ov070_022728d4;
-extern "C" const Unk_ov070_022717f0_Ent data_ov070_022725a0[7];
-extern "C" Unk_ov070_02272334_Ent data_ov070_022728e4[3];
+extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7];
+extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3];
 extern "C" Unk_ov070_Color data_ov070_022728c4;
 extern "C" Unk_ov070_Color data_ov070_022728c0;
 extern "C" Unk_ov070_Color data_ov070_022728d8;
-extern "C" u8 data_ov070_02272718[];
-extern "C" const Unk_ov070_Name data_ov070_02272568[7];
+extern "C" u8 sSpNpcGracieKey[];
+extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7];
 extern "C" Unk_ov070_Color data_ov070_022728cc;
-extern "C" Unk_ov070_0227280c *func_ov070_02272450();
+extern "C" SpNpcGracie *SpNpcGracie_Create();
 
 static inline BOOL Unk_ov070_IsNone(u16 *p) {
     BOOL ok;
@@ -536,62 +536,62 @@ static inline BOOL Unk_ov070_IsNone2(u16 *p) {
     return ok;
 }
 
-extern "C" s32 func_ov070_02272118(void *unused, u8 *p, s32 n);
+extern "C" s32 SpNpcGracie_CountUnaskedQuestions(void *unused, u8 *p, s32 n);
 
-extern "C" Unk_ov070_0227280c *func_ov070_02272450() {
-    return new Unk_ov070_0227280c();
+extern "C" SpNpcGracie *SpNpcGracie_Create() {
+    return new SpNpcGracie();
 }
 
-BOOL Unk_ov070_0227280c::vfunc_04() {
+BOOL SpNpcGracie::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov070_02272014(this);
+    unk_658.attachOwner(this);
     MI_CpuFill8(unk_658.unk_c8, 0, 0x14);
     return TRUE;
 }
 
-BOOL Unk_ov070_0227280c::vfunc_00() {
+BOOL SpNpcGracie::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov070_02272334(0);
+    changeAct(0);
     unk_4cc.unk_1c |= 2;
     unk_658.unk_dc = 0;
     return TRUE;
 }
 
-u8 *Unk_ov070_0227280c::getTexturePath() { return data_ov070_02272758; }
+u8 *SpNpcGracie::getTexturePath() { return sSpNpcGracieTexturePath; }
 
-u8 *Unk_ov070_0227280c::getModelPath() { return data_ov070_02272728; }
+u8 *SpNpcGracie::getModelPath() { return sSpNpcGracieModelPath; }
 
-BOOL Unk_ov070_0227280c::updateAct() {
+BOOL SpNpcGracie::updateAct() {
     BOOL result = FALSE;
-    if (data_ov070_022728e4[unk_654].exit != NULL) {
-        result = (this->*data_ov070_022728e4[unk_654].exit)();
+    if (sSpNpcGracieActTable[unk_654].exit != NULL) {
+        result = (this->*sSpNpcGracieActTable[unk_654].exit)();
     }
     return result;
 }
 
-void Unk_ov070_0227280c::func_ov070_02272334(s32 state) {
+void SpNpcGracie::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov070_022728e4[state].enter != NULL) {
-        ok = (this->*data_ov070_022728e4[state].enter)();
+    if (sSpNpcGracieActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcGracieActTable[state].enter)();
     }
     if (ok == 1) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov070_0227280c::func_ov070_02272300() {
+BOOL SpNpcGracie::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov070_0227280c::func_ov070_022722fc() { return TRUE; }
+BOOL SpNpcGracie::mainAct00() { return TRUE; }
 
-BOOL Unk_ov070_0227280c::func_ov070_022722c4() {
+BOOL SpNpcGracie::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
@@ -601,22 +601,22 @@ BOOL Unk_ov070_0227280c::func_ov070_022722c4() {
     return TRUE;
 }
 
-BOOL Unk_ov070_0227280c::func_ov070_02272298() {
+BOOL SpNpcGracie::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov070_02272334(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov070_0227280c::func_ov070_02272294() { return TRUE; }
+BOOL SpNpcGracie::mainAct02() { return TRUE; }
 
-void Unk_ov070_0227277c::vfunc_08() {
+void SpNpcGracieTalk::vfunc_08() {
     ActorTalkRequest::vfunc_08();
     unk_b4 = NULL;
 }
 
-void Unk_ov070_0227277c::vfunc_84() {
+void SpNpcGracieTalk::vfunc_84() {
     if (unk_b4 != NULL) {
         (this->*unk_b4)();
         unk_b4 = NULL;
@@ -627,8 +627,8 @@ void Unk_ov070_0227277c::vfunc_84() {
 
 
 
-void Unk_ov070_0227277c::func_ov070_022721e0(s32 idx) {
-    static Unk_ov070_0227277c_Fn tbl[1] = {&Unk_ov070_0227277c::func_ov070_02272138};
+void SpNpcGracieTalk::setResultHandler(s32 idx) {
+    static Unk_ov070_0227277c_Fn tbl[1] = {&SpNpcGracieTalk::onFeeEntered};
     unk_b4 = tbl[idx];
 }
 
@@ -638,16 +638,16 @@ extern "C" Unk_ov070_Color data_ov070_022728c8 = Unk_ov070_Color(0x14, 0x14, 0x1
 
 extern "C" Unk_ov070_Color data_ov070_022728d8 = Unk_ov070_Color(0x1f, 0x1f, 0x14, 0x1f);
 
-extern "C" const Unk_ov070_Name data_ov070_02272568[7] = {
-    {data_ov070_02272718, 0x00}, {data_ov070_02272718, 0x09}, {data_ov070_02272718, 0x4c}, {data_ov070_02272718, 0x29},
-    {data_ov070_02272718, 0x28}, {data_ov070_02272718, 0x31}, {data_ov070_02272718, 0x27},
+extern "C" const Unk_ov070_Name sSpNpcGracieTopicMsgs[7] = {
+    {sSpNpcGracieKey, 0x00}, {sSpNpcGracieKey, 0x09}, {sSpNpcGracieKey, 0x4c}, {sSpNpcGracieKey, 0x29},
+    {sSpNpcGracieKey, 0x28}, {sSpNpcGracieKey, 0x31}, {sSpNpcGracieKey, 0x27},
 };
 
 extern "C" u32 data_ov070_022726e4[1] = {0x10};
 
 extern "C" Unk_ov070_Color data_ov070_022728d4 = Unk_ov070_Color(0x14, 0x1f, 0x14, 0x1f);
 
-extern "C" const Unk_ov070_022717f0_Ent data_ov070_022725a0[7] = {
+extern "C" const Unk_ov070_022717f0_Ent sSpNpcGracieOutfitTiers[7] = {
     {{0x144c, 0x13b7, 0x1452}, {1, 0, 1}, 0x05, {0, 0}, 200},
     {{0x1456, 0x13b0, 0x1450}, {1, 0, 1}, 0x0a, {0, 0}, 1000},
     {{0x144e, 0x13b8, 0x13f2}, {1, 0, 0}, 0x23, {0, 0}, 2000},
@@ -657,7 +657,7 @@ extern "C" const Unk_ov070_022717f0_Ent data_ov070_022725a0[7] = {
     {{0x13fd, 0x13d8, 0x13b7}, {0, 0, 0}, 0x50, {0, 0}, 10000},
 };
 
-extern "C" u8 data_ov070_02272758[] = "npc_sp/model/grf_tex.nsbtx";
+extern "C" u8 sSpNpcGracieTexturePath[] = "npc_sp/model/grf_tex.nsbtx";
 
 extern "C" u32 data_ov070_022726e0[1] = {5};
 
@@ -665,21 +665,21 @@ extern "C" Unk_ov070_Color data_ov070_022728cc = Unk_ov070_Color(0x14, 0x1f, 0x1
 
 extern "C" Unk_ov070_Color data_ov070_022728c4 = Unk_ov070_Color(0x14, 0x18, 0x18, 0x1f);
 
-extern "C" u8 data_ov070_02272728[] = "npc_sp/model/grf.nsbmd";
+extern "C" u8 sSpNpcGracieModelPath[] = "npc_sp/model/grf.nsbmd";
 
-extern "C" Unk_ov070_SceneEntry data_ov070_02272740 = {func_ov070_02272450, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov070_SceneEntry sSpNpcGracieProfile = {SpNpcGracie_Create, 0x6c, 0x72, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" Unk_ov070_02272334_Ent data_ov070_022728e4[3] = {
-    {&Unk_ov070_0227280c::func_ov070_02272300, &Unk_ov070_0227280c::func_ov070_022722fc},
-    {&Unk_ov070_0227280c::func_ov070_022722c4, &Unk_ov070_0227280c::func_ov070_02272298},
-    {NULL, &Unk_ov070_0227280c::func_ov070_02272294},
+extern "C" Unk_ov070_02272334_Ent sSpNpcGracieActTable[3] = {
+    {&SpNpcGracie::setupAct00, &SpNpcGracie::mainAct00},
+    {&SpNpcGracie::setupAct01, &SpNpcGracie::mainAct01},
+    {NULL, &SpNpcGracie::mainAct02},
 };
 
-extern "C" u8 data_ov070_02272718[] = "sp_npc_giraffe";
+extern "C" u8 sSpNpcGracieKey[] = "sp_npc_giraffe";
 
 
 
-void Unk_ov070_0227277c::func_ov070_02272138() {
+void SpNpcGracieTalk::onFeeEntered() {
     TalkWindowState *m = unk_3c;
     u8 v = 0x4b;
     unk_bc = 0;
@@ -698,10 +698,10 @@ void Unk_ov070_0227277c::func_ov070_02272138() {
         Hud_Show();
         func_020851a4(func_020850e0(), 10);
     }
-    m->setNextMessage(&v, data_ov070_02272718);
+    m->setNextMessage(&v, sSpNpcGracieKey);
 }
 
-extern "C" s32 func_ov070_02272118(void *unused, u8 *p, s32 n) {
+extern "C" s32 SpNpcGracie_CountUnaskedQuestions(void *unused, u8 *p, s32 n) {
     s32 cnt = 0;
     s32 i = 0;
     for (; i < n; p++, i++) {
@@ -712,8 +712,8 @@ extern "C" s32 func_ov070_02272118(void *unused, u8 *p, s32 n) {
     return cnt;
 }
 
-extern "C" s32 func_ov070_022720e4(void *unused, u8 *p, s32 n) {
-    s32 z = func_ov070_02272118(unused, p, n);
+extern "C" s32 SpNpcGracie_PickUnaskedQuestion(void *unused, u8 *p, s32 n) {
+    s32 z = SpNpcGracie_CountUnaskedQuestions(unused, p, n);
     s32 pos = 0;
     s32 r = func_02063b8c(z);
     s32 i = pos;
@@ -729,11 +729,11 @@ extern "C" s32 func_ov070_022720e4(void *unused, u8 *p, s32 n) {
     return pos;
 }
 
-Unk_ov070_0227277c::Unk_ov070_0227277c() {}
+SpNpcGracieTalk::SpNpcGracieTalk() {}
 
-Unk_ov070_0227277c::~Unk_ov070_0227277c() {}
+SpNpcGracieTalk::~SpNpcGracieTalk() {}
 
-void Unk_ov070_0227277c::func_ov070_02272014(Unk_ov070_0227280c *owner) {
+void SpNpcGracieTalk::attachOwner(SpNpcGracie *owner) {
     vfunc_08();
     unk_b0 = owner;
     for (s32 i = 0; i < 3; i++) {
@@ -742,7 +742,7 @@ void Unk_ov070_0227277c::func_ov070_02272014(Unk_ov070_0227280c *owner) {
     unk_ac = 0;
 }
 
-void Unk_ov070_0227277c::vfunc_78(Unk_ov070_02271f10_Out *out) {
+void SpNpcGracieTalk::vfunc_78(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent()->func_0209868c();
     if (!func_0202e1cc(7, 1)) {
         unk_ac = 0;
@@ -765,21 +765,21 @@ void Unk_ov070_0227277c::vfunc_78(Unk_ov070_02271f10_Out *out) {
         }
     }
     if (unk_ac >= 0 && unk_ac < 7) {
-        out->b = (&data_ov070_02272568[0].b_byte)[unk_ac * 8];
+        out->b = (&sSpNpcGracieTopicMsgs[0].b_byte)[unk_ac * 8];
         if (unk_ac == 2) {
             out->b = unk_b0->unk_658.unk_dc + 0x4c;
             unk_b0->unk_658.unk_dc++;
         }
-        out->a = *(u32 *)((u8 *)data_ov070_02272568 + unk_ac * 8);
+        out->a = *(u32 *)((u8 *)sSpNpcGracieTopicMsgs + unk_ac * 8);
     }
 }
 
-void Unk_ov070_0227277c::vfunc_64(u32 a) {
+void SpNpcGracieTalk::vfunc_64(u32 a) {
     ((Unk_02087ad8 *)PlayerData_GetCurrent()->func_0209868c())->func_02087bc8(a);
 }
 
 // ---- unit 2 ----
-extern "C" u8 func_ov070_02271e0c(void *unused, s32 a, s32 kind) {
+extern "C" u8 SpNpcGracie_ScoreByPrice(void *unused, s32 a, s32 kind) {
     u8 r = 0;
     switch (kind) {
     case 0:
@@ -817,7 +817,7 @@ extern "C" u8 func_ov070_02271e0c(void *unused, s32 a, s32 kind) {
     return r;
 }
 
-void Unk_ov070_0227277c::func_ov070_02271bf8() {
+void SpNpcGracieTalk::scoreOutfit() {
     s32 t;
     PlayerData *r6 = PlayerData_GetCurrent();
     Unk_02087ad8 *r4 = (Unk_02087ad8 *)r6->func_0209868c();
@@ -828,7 +828,7 @@ void Unk_ov070_0227277c::func_ov070_02271bf8() {
             r = TRUE;
         }
         if (!r) {
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(func_ov070_02271e0c(this, Item_GetPrice(&unk_c0[0].unk_00), 0)));
+            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[0].unk_00), 0)));
         } else {
             t = func_02063b8c(10);
             r4->func_02087bc8(Unk_ov070_02271bf8_Sh(t + 1));
@@ -839,7 +839,7 @@ void Unk_ov070_0227277c::func_ov070_02271bf8() {
     }
     unk_c0[1].unk_00 = *r6->getFaceItem();
     if (!Unk_ov070_IsNone(&unk_c0[1].unk_00)) {
-        r4->func_02087bc8(Unk_ov070_02271bf8_Sh(func_ov070_02271e0c(this, Item_GetPrice(&unk_c0[1].unk_00), 1)));
+        r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[1].unk_00), 1)));
     } else {
         t = func_02063b8c(3);
         r4->func_02087bc8(Unk_ov070_02271bf8_Sh((u8)(t + 1)));
@@ -851,7 +851,7 @@ void Unk_ov070_0227277c::func_ov070_02271bf8() {
             r = TRUE;
         }
         if (!r) {
-            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(func_ov070_02271e0c(this, Item_GetPrice(&unk_c0[2].unk_00), 2)));
+            r4->func_02087bc8(Unk_ov070_02271bf8_Sh(SpNpcGracie_ScoreByPrice(this, Item_GetPrice(&unk_c0[2].unk_00), 2)));
         } else {
             t = func_02063b8c(10);
             r4->func_02087bc8(Unk_ov070_02271bf8_Sh(t + 1));
@@ -859,19 +859,19 @@ void Unk_ov070_0227277c::func_ov070_02271bf8() {
     }
 }
 
-extern "C" BOOL func_ov070_02271be4(u16 *p) {
+extern "C" BOOL SpNpcGracie_IsEmptyItem(u16 *p) {
     if (*p == 0xfff1) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov070_0227277c::func_ov070_02271a8c() {
+BOOL SpNpcGracieTalk::hasPocketRoomForOutfit() {
     Unk_02098f30_Out o;
     u8 n;
-    func_02098f30(&o, func_ov070_02271be4);
+    func_02098f30(&o, SpNpcGracie_IsEmptyItem);
     n = 0;
-    func_ov070_02271bf8();
+    scoreOutfit();
     if (!Unk_ov070_IsNone(&unk_c0[0].unk_00)) {
         BOOL r = FALSE;
         if (unk_c0[0].unk_00 >= 0x1429 && unk_c0[0].unk_00 <= 0x1430) {
@@ -899,15 +899,15 @@ BOOL Unk_ov070_0227277c::func_ov070_02271a8c() {
     return FALSE;
 }
 
-BOOL Unk_ov070_0227277c::func_ov070_022717f0() {
+BOOL SpNpcGracieTalk::dressUpPlayer() {
     u8 t4 = func_02063b8c(4);
     u8 idx = 6;
     u16 a = 0xfff1;
     BOOL res;
-    func_ov070_02271bf8();
+    scoreOutfit();
     s32 i;
     for (i = 0; i < 7; i++) {
-        if (data_ov070_022725a0[i].unk_0c >= unk_bc) {
+        if (sSpNpcGracieOutfitTiers[i].unk_0c >= unk_bc) {
             idx = i;
             break;
         }
@@ -916,9 +916,9 @@ BOOL Unk_ov070_0227277c::func_ov070_022717f0() {
     if (t4 < 3) {
         u16 b = 0xfff1;
         r7->setFaceItem(&b);
-        const u8 *p6 = &data_ov070_022725a0[0].unk_06[0] + idx * 16;
+        const u8 *p6 = &sSpNpcGracieOutfitTiers[0].unk_06[0] + idx * 16;
         if (p6[t4] == 0) {
-            u16 val = ((const u16 *)((const u8 *)data_ov070_022725a0 + idx * 16))[t4];
+            u16 val = ((const u16 *)((const u8 *)sSpNpcGracieOutfitTiers + idx * 16))[t4];
             u16 g = val;
             PlayerActor_RequestWearHatAlt(&g);
             u16 h = val;
@@ -928,7 +928,7 @@ BOOL Unk_ov070_0227277c::func_ov070_022717f0() {
             u16 j = 0xfff1;
             r7->setFaceItem(&j);
         } else {
-            u16 val = ((const u16 *)((const u8 *)data_ov070_022725a0 + idx * 16))[t4];
+            u16 val = ((const u16 *)((const u8 *)sSpNpcGracieOutfitTiers + idx * 16))[t4];
             u16 k = val;
             PlayerActor_RequestWearFaceItemAlt(&k);
             u16 l = val;
@@ -950,7 +950,7 @@ BOOL Unk_ov070_0227277c::func_ov070_022717f0() {
     }
     u16 o;
     u16 pp;
-    if ((&data_ov070_022725a0[0].unk_09)[idx * 16] >= (u8)func_02063b8c(0x65)) {
+    if ((&sSpNpcGracieOutfitTiers[0].unk_09)[idx * 16] >= (u8)func_02063b8c(0x65)) {
         ItemPickSpec o1;
         o1.set(2, 0x22);
         ItemPick_One(&o, &o1, 0, 0, 1, 1, 0);
@@ -989,7 +989,7 @@ BOOL Unk_ov070_0227277c::func_ov070_022717f0() {
     return res;
 }
 
-void Unk_ov070_0227277c::vfunc_14() {
+void SpNpcGracieTalk::vfunc_14() {
     Unk_ov070_02271524_Out s;
     u8 code = 0xff;
     PlayerData *r7 = PlayerData_GetCurrent();
@@ -1001,7 +1001,7 @@ void Unk_ov070_0227277c::vfunc_14() {
         }
     }
     if (c == 0xe || (c >= 0x47 && c <= 0x4a)) {
-        s32 i = func_ov070_022720e4(unk_b0, unk_b0->unk_658.unk_c8, 0x14);
+        s32 i = SpNpcGracie_PickUnaskedQuestion(unk_b0, unk_b0->unk_658.unk_c8, 0x14);
         u8 *arr = unk_b0->unk_658.unk_c8;
         if (arr[i] == 0) {
             arr[i] = 1;
@@ -1017,7 +1017,7 @@ void Unk_ov070_0227277c::vfunc_14() {
                 MsgString25 str;
                 u32 lvl = 0;
                 s.unk_00 = 0;
-                func_ov070_02271bf8();
+                scoreOutfit();
                 if (p->func_02087bdc() > 0x15) {
                     lvl = (u8)_s32_div_f((u8)(p->func_02087bdc() - 0x15), 10);
                 }
@@ -1029,7 +1029,7 @@ void Unk_ov070_0227277c::vfunc_14() {
                 _ZN12Unk_020d771013func_02014e60EPtjjj(this, &s.unk_02, 0, 5, 0);
                 String_FormatNumber(&str, p->func_02087bdc(), 10, 0, 0, 0);
                 MailText_SetSlot(0, &str);
-                func_020656dc(obj, &s, data_ov070_02272718, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
+                func_020656dc(obj, &s, sSpNpcGracieKey, data_ov070_022726e0, data_ov070_022726e4, r7->getPlayerId());
                 if (r7 != NULL) {
                     s.unk_04 = Item_MakePaper(0x10, 4);
                     func_0203c41c(r7->getCatalog(), &s.unk_04, 0);
@@ -1065,7 +1065,7 @@ void Unk_ov070_0227277c::vfunc_14() {
         break;
     case 0x28:
     case 0x2b:
-        if (func_ov070_02271a8c()) {
+        if (hasPocketRoomForOutfit()) {
             code = 0x2c;
             Hud_Hide();
         } else {
@@ -1074,17 +1074,17 @@ void Unk_ov070_0227277c::vfunc_14() {
         break;
     case 0x2c:
     case 0x31:
-        if (func_ov070_02271a8c()) {
+        if (hasPocketRoomForOutfit()) {
             _ZN12Unk_020d771013func_02015170Ejj(this, 0x39, 0);
             _ZN12Unk_020d771013func_020151d0Ei(this, 2);
-            func_ov070_022721e0(0);
+            setResultHandler(0);
         } else {
             code = 0x39;
         }
         break;
     case 0x36:
         Hud_Show();
-        if (func_ov070_022717f0() == 0) {
+        if (dressUpPlayer() == 0) {
             code = 0x37;
         } else {
             code = 0x34;
@@ -1097,18 +1097,18 @@ void Unk_ov070_0227277c::vfunc_14() {
     }
     if (code != 0xff) {
         s.unk_01 = code;
-        unk_3c->setNextMessage(&s.unk_01, data_ov070_02272718);
+        unk_3c->setNextMessage(&s.unk_01, sSpNpcGracieKey);
     }
 }
 
-void Unk_ov070_0227277c::vfunc_18() {
+void SpNpcGracieTalk::vfunc_18() {
     s32 r4 = getChoiceList()->getResult();
-    u8 *r6 = data_ov070_02272718;
+    u8 *r6 = sSpNpcGracieKey;
     u8 code = 0xff;
     s32 c = unk_1e;
     if (c >= 0xf && c < 0x23) {
         if (unk_b0->unk_658.unk_dc < 5) {
-            s32 i = func_ov070_022720e4(unk_b0, unk_b0->unk_658.unk_c8, 0x14);
+            s32 i = SpNpcGracie_PickUnaskedQuestion(unk_b0, unk_b0->unk_658.unk_c8, 0x14);
             u8 *arr = unk_b0->unk_658.unk_c8;
             if (arr[i] == 0) {
                 arr[i] = 1;
@@ -1133,7 +1133,7 @@ void Unk_ov070_0227277c::vfunc_18() {
     }
 }
 
-BOOL Unk_ov070_0227280c::vfunc_48() {
+BOOL SpNpcGracie::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -1142,15 +1142,15 @@ BOOL Unk_ov070_0227280c::vfunc_48() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-void Unk_ov070_0227280c::vfunc_4c(s32 a) {
+void SpNpcGracie::vfunc_4c(s32 a) {
     switch (a) {
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov070_02272334(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov070_02272334(0);
+        changeAct(0);
         break;
     }
 }

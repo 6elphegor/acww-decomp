@@ -381,7 +381,7 @@ s32 func_020b51a4();
 s32 func_020b51fc();
 s32 Camera_UpdateSway(void *self);
 void func_ov004_0223fe00(void *self, s32 a);
-void func_ov003_0222ef10(void *self);
+void FieldCamera_UpdateFocusZoom(void *self);
 BOOL func_020e94f8(void *v);
 void func_020e92f4(void *v, s32 a);
 s32 func_0203edd0(void *p);
@@ -1244,7 +1244,7 @@ BOOL Unk_020d93b8::initModeFocus() {
         func_ov004_0223fe00(this, 0);
     } else {
         loadPose(0xa, 0);
-        func_ov003_0222ef10(this);
+        FieldCamera_UpdateFocusZoom(this);
     }
     setBlendPreset(0);
     if (unk_1fc == 1) {
@@ -1260,7 +1260,7 @@ void Unk_020d93b8::updateModeFocus() {
     if (data_021ef2f0->unk_04 == 0) {
         func_ov004_0223fe00(this, 0);
     } else {
-        func_ov003_0222ef10(this);
+        FieldCamera_UpdateFocusZoom(this);
     }
     Unk_0203a9b8_Vec v;
     R096_TAIL(v)

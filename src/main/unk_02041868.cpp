@@ -38,7 +38,7 @@ extern u32 data_021fcc2c[];
 extern CommManager *gCommManager;
 extern Unk_02041ac0_Glob gTownUpdater;
 extern u32 gCurrentHeap;
-extern u8 data_ov003_02258ef8;
+extern u8 sAntSpawnEnabled;
 extern volatile u32 gTownEval[];
 extern u8 gSaveData[];
 extern u8 data_021ed20c[];
@@ -58,7 +58,7 @@ void Town_GetEnvironmentRank();
 s32 _ZN11CommManager12isSlotActiveEi(u32, u32);
 s32 func_020b5184();
 s32 func_020b5164();
-void func_ov003_0222675c();
+void Insect_EnableTrashFlies();
 void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated();
 void OS_KillThread(u32, u32);
@@ -332,8 +332,8 @@ extern "C" void func_02041880(Unk_02041880_Pair *p) {
     if (func_020b5184() == 0) {
         if (func_020b5164() == 0) return;
     }
-    if (p->unk_01 != 0) data_ov003_02258ef8 = 1;
-    if (p->unk_01 != 0 || p->unk_00 != 0) func_ov003_0222675c();
+    if (p->unk_01 != 0) sAntSpawnEnabled = 1;
+    if (p->unk_01 != 0 || p->unk_00 != 0) Insect_EnableTrashFlies();
     p->unk_00 = 0;
     p->unk_01 = 0;
 }

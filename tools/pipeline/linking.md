@@ -88,7 +88,7 @@ all of it:
 
 Nothing special is needed in the source: mwcc generates `__sinit_<file>` (in `.init`) and its `.ctor` word itself
 from any file-scope object with a non-constant initialiser — typically a table of pointer-to-member-function
-pairs, e.g. `Ent data_ov083_02271d20[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
+pairs, e.g. `Ent sSpNpcTortimerFlowerFestActTable[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f764},{NULL,&C::f760}};`.
 * LampLights NULL member pointer is copied from the runtime constant `__ptmf_null` (autoload_2 0x0213a740): add
   `autoload_2 0213a740 __ptmf_null` to renames.txt until it is committed.
 * Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;

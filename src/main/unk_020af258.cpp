@@ -228,7 +228,7 @@ void func_02065cc8(void *a);
 }
 
 extern "C" {
-s32 func_ov003_0222eb68(s32 a, s32 b, s32 c, s32 d, s32 e);
+s32 Snowball_TryPushAny(s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
@@ -377,7 +377,7 @@ extern "C" void func_020af258(s32 m);
 
 extern "C" s32 func_020af3bc(s32 a, s32 b, s32 c, s32 d, s16 e) {
     BOOL z = data_020e416c == 0;
-    if (z && d > 0) return func_ov003_0222eb68(a, b, c, d, e);
+    if (z && d > 0) return Snowball_TryPushAny(a, b, c, d, e);
     return 0;
 }
 

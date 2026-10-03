@@ -28,8 +28,8 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov083_02271c4c;
-class Unk_ov083_02271bbc;
+class SpNpcTortimerFlowerFest;
+class SpNpcTortimerFlowerFestTalk;
 
 struct Unk_ov083_Vec {
     s32 x, y, z;
@@ -39,7 +39,7 @@ struct ChoiceList {
     s32 getResult();
 };
 
-struct Unk_ov083_02271620_Out {
+struct TalkStartMsg {
     u32 a;
     u8 b;
 };
@@ -116,7 +116,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov083_02271620_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_88();
@@ -170,17 +170,17 @@ struct Unk_ov083_02271bbc_Fill {
     u32 d;
 };
 
-class Unk_ov083_02271bbc : public SpNpcTalkRequest {
+class SpNpcTortimerFlowerFestTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov083_02271bbc();
-    virtual ~Unk_ov083_02271bbc();
+    SpNpcTortimerFlowerFestTalk();
+    virtual ~SpNpcTortimerFlowerFestTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov083_02271620_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
 
-    void func_ov083_022716e0(Unk_ov083_02271c4c *owner);
+    void attachOwner(SpNpcTortimerFlowerFest *owner);
 
-    Unk_ov083_02271c4c *unk_ac;
+    SpNpcTortimerFlowerFest *unk_ac;
     s32 unk_b0;
     u16 unk_b4;
 };
@@ -354,9 +354,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov083_02271c4c : public Unk_020d8bc8 {
+class SpNpcTortimerFlowerFest : public Unk_020d8bc8 {
 public:
-    Unk_ov083_02271c4c() {}
+    SpNpcTortimerFlowerFest() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -365,65 +365,65 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov083_02271760();
-    BOOL func_ov083_02271764();
-    BOOL func_ov083_02271790();
-    s32 func_ov083_022717c8(s32 *p);
-    BOOL func_ov083_022717d8();
-    BOOL func_ov083_02271824();
-    void func_ov083_02271858(s32 state);
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    s32 tickTimer(s32 *p);
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     s32 unk_654;
     s32 unk_658;
-    Unk_ov083_02271bbc unk_65c;
+    SpNpcTortimerFlowerFestTalk unk_65c;
     u8 unk_714;
 };
 
 struct Unk_ov083_02271858_Ent {
-    BOOL (Unk_ov083_02271c4c::*enter)();
-    BOOL (Unk_ov083_02271c4c::*exit)();
+    BOOL (SpNpcTortimerFlowerFest::*enter)();
+    BOOL (SpNpcTortimerFlowerFest::*exit)();
 };
 
 extern "C" {
-extern Unk_ov083_02271858_Ent data_ov083_02271d20[3];
+extern Unk_ov083_02271858_Ent sSpNpcTortimerFlowerFestActTable[3];
 }
 
-Unk_ov083_02271858_Ent data_ov083_02271d20[3] = {
-    {&Unk_ov083_02271c4c::func_ov083_02271824, &Unk_ov083_02271c4c::func_ov083_022717d8},
-    {&Unk_ov083_02271c4c::func_ov083_02271790, &Unk_ov083_02271c4c::func_ov083_02271764},
-    {NULL, &Unk_ov083_02271c4c::func_ov083_02271760},
+Unk_ov083_02271858_Ent sSpNpcTortimerFlowerFestActTable[3] = {
+    {&SpNpcTortimerFlowerFest::setupAct00, &SpNpcTortimerFlowerFest::mainAct00},
+    {&SpNpcTortimerFlowerFest::setupAct01, &SpNpcTortimerFlowerFest::mainAct01},
+    {NULL, &SpNpcTortimerFlowerFest::mainAct02},
 };
 
-extern "C" u8 data_ov083_02271b98[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
-extern "C" u8 data_ov083_02271b68[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcTortimerFlowerFestTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" u8 sSpNpcTortimerFlowerFestModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
 struct Unk_ov083_SceneEntry {
-    Unk_ov083_02271c4c *(*factory)();
+    SpNpcTortimerFlowerFest *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
-extern "C" Unk_ov083_02271c4c *func_ov083_022719a8();
-extern "C" Unk_ov083_SceneEntry data_ov083_02271b80 = {func_ov083_022719a8, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create();
+extern "C" Unk_ov083_SceneEntry sSpNpcTortimerFlowerFestProfile = {SpNpcTortimerFlowerFest_Create, 0x59, 0x60, 2, 0x5000, 0x5000, 0x3e800};
 
 
-extern "C" Unk_ov083_02271c4c *func_ov083_022719a8() {
-    return new Unk_ov083_02271c4c();
+extern "C" SpNpcTortimerFlowerFest *SpNpcTortimerFlowerFest_Create() {
+    return new SpNpcTortimerFlowerFest();
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_04() {
+BOOL SpNpcTortimerFlowerFest::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_65c);
-    unk_65c.func_ov083_022716e0(this);
+    unk_65c.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_00() {
+BOOL SpNpcTortimerFlowerFest::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov083_02271858(0);
+    changeAct(0);
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
@@ -432,35 +432,35 @@ BOOL Unk_ov083_02271c4c::vfunc_00() {
     return TRUE;
 }
 
-u8 *Unk_ov083_02271c4c::getTexturePath() { return data_ov083_02271b98; }
+u8 *SpNpcTortimerFlowerFest::getTexturePath() { return sSpNpcTortimerFlowerFestTexturePath; }
 
-u8 *Unk_ov083_02271c4c::getModelPath() { return data_ov083_02271b68; }
+u8 *SpNpcTortimerFlowerFest::getModelPath() { return sSpNpcTortimerFlowerFestModelPath; }
 
-BOOL Unk_ov083_02271c4c::updateAct() {
+BOOL SpNpcTortimerFlowerFest::updateAct() {
     BOOL result = FALSE;
-    if (data_ov083_02271d20[unk_658].exit != NULL) {
-        result = (this->*data_ov083_02271d20[unk_658].exit)();
+    if (sSpNpcTortimerFlowerFestActTable[unk_658].exit != NULL) {
+        result = (this->*sSpNpcTortimerFlowerFestActTable[unk_658].exit)();
     }
     return result;
 }
 
-void Unk_ov083_02271c4c::func_ov083_02271858(s32 state) {
+void SpNpcTortimerFlowerFest::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov083_02271d20[state].enter != NULL) {
-        ok = (this->*data_ov083_02271d20[state].enter)();
+    if (sSpNpcTortimerFlowerFestActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcTortimerFlowerFestActTable[state].enter)();
     }
     if (ok) {
         unk_658 = state;
     }
 }
 
-BOOL Unk_ov083_02271c4c::func_ov083_02271824() {
+BOOL SpNpcTortimerFlowerFest::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov083_02271c4c::func_ov083_022717d8() {
-    if (func_ov083_022717c8(&unk_654)) {
+BOOL SpNpcTortimerFlowerFest::mainAct00() {
+    if (tickTimer(&unk_654)) {
         return TRUE;
     }
     unk_654 = 0x258;
@@ -471,14 +471,14 @@ BOOL Unk_ov083_02271c4c::func_ov083_022717d8() {
     return TRUE;
 }
 
-s32 Unk_ov083_02271c4c::func_ov083_022717c8(s32 *p) {
+s32 SpNpcTortimerFlowerFest::tickTimer(s32 *p) {
     if (*p != 0) {
         *p = *p - 1;
     }
     return *p;
 }
 
-BOOL Unk_ov083_02271c4c::func_ov083_02271790() {
+BOOL SpNpcTortimerFlowerFest::setupAct01() {
     void *p = unk_65c.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
@@ -488,27 +488,27 @@ BOOL Unk_ov083_02271c4c::func_ov083_02271790() {
     return TRUE;
 }
 
-BOOL Unk_ov083_02271c4c::func_ov083_02271764() {
+BOOL SpNpcTortimerFlowerFest::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov083_02271858(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov083_02271c4c::func_ov083_02271760() { return TRUE; }
+BOOL SpNpcTortimerFlowerFest::mainAct02() { return TRUE; }
 
-Unk_ov083_02271bbc::Unk_ov083_02271bbc() : unk_b4(0xfff1) {}
+SpNpcTortimerFlowerFestTalk::SpNpcTortimerFlowerFestTalk() : unk_b4(0xfff1) {}
 
-Unk_ov083_02271bbc::~Unk_ov083_02271bbc() {}
+SpNpcTortimerFlowerFestTalk::~SpNpcTortimerFlowerFestTalk() {}
 
-void Unk_ov083_02271bbc::func_ov083_022716e0(Unk_ov083_02271c4c *owner) {
+void SpNpcTortimerFlowerFestTalk::attachOwner(SpNpcTortimerFlowerFest *owner) {
     vfunc_08();
     unk_ac = owner;
     unk_b0 = -1;
 }
 
-void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
+void SpNpcTortimerFlowerFestTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
     u32 w[2];
     _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
@@ -548,7 +548,7 @@ void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
     }
 }
 
-void Unk_ov083_02271bbc::vfunc_14() {
+void SpNpcTortimerFlowerFestTalk::vfunc_14() {
     u8 b1;
     u8 b2;
     u16 h1, h2, h3;
@@ -590,7 +590,7 @@ void Unk_ov083_02271bbc::vfunc_14() {
     }
 }
 
-void Unk_ov083_02271bbc::vfunc_18() {
+void SpNpcTortimerFlowerFestTalk::vfunc_18() {
     u8 b1;
     u8 b2;
     u16 h;
@@ -626,7 +626,7 @@ void Unk_ov083_02271bbc::vfunc_18() {
     }
 }
 
-BOOL Unk_ov083_02271c4c::vfunc_48() {
+BOOL SpNpcTortimerFlowerFest::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -634,15 +634,15 @@ BOOL Unk_ov083_02271c4c::vfunc_48() {
     return r;
 }
 
-void Unk_ov083_02271c4c::vfunc_4c(s32 v) {
+void SpNpcTortimerFlowerFest::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
         unk_65c.vfunc_08();
         unk_65c.func_02015ab0((u32)getPlayerActor(4));
-        func_ov083_02271858(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov083_02271858(0);
+        changeAct(0);
         break;
     }
 }

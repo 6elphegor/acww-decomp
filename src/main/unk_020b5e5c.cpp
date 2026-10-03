@@ -4,7 +4,7 @@ struct Vec3 {
     s32 x, y, z;
 };
 
-extern "C" s32 func_ov003_0222ebb0(s32 a);
+extern "C" s32 Snowball_FindByParam(s32 a);
 extern "C" s32 RoomBoardSign_GetByIndex(s32 a);
 extern "C" s32 func_ov004_0222a2c0(void);
 extern "C" s32 func_ov004_0222864c(void);
@@ -169,7 +169,7 @@ extern "C" s32 func_020b5ea8(s32 a) {
 
 extern "C" s32 func_020b5e80(s32 a) {
     if (IsMode0()) {
-        return func_ov003_0222ebb0(a);
+        return Snowball_FindByParam(a);
     }
     return 0;
 }

@@ -30,9 +30,9 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov087_02271eac;
-class Unk_ov087_02271e1c;
-struct Unk_ov087_022718ec_Out;
+class SpNpcCornimer;
+class SpNpcCornimerTalk;
+struct TalkStartMsg;
 
 struct Unk_ov087_Vec {
     s32 x, y, z;
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov087_022718ec_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_88();
@@ -160,22 +160,22 @@ public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
 };
-struct Unk_ov087_022718ec_Out {
+struct TalkStartMsg {
     u8 *a;
     u8 b;
 };
 
-class Unk_ov087_02271e1c : public SpNpcTalkRequest {
+class SpNpcCornimerTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov087_02271e1c();
-    virtual ~Unk_ov087_02271e1c();
+    SpNpcCornimerTalk();
+    virtual ~SpNpcCornimerTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov087_022718ec_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
 
-    void func_ov087_02271960(Unk_ov087_02271eac *owner);
+    void attachOwner(SpNpcCornimer *owner);
 
-    Unk_ov087_02271eac *unk_ac;
+    SpNpcCornimer *unk_ac;
 };
 
 #define MEMBER(name, size) \
@@ -347,9 +347,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov087_02271eac : public Unk_020d8bc8 {
+class SpNpcCornimer : public Unk_020d8bc8 {
 public:
-    Unk_ov087_02271eac() {}
+    SpNpcCornimer() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -358,20 +358,20 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov087_02271a34();
-    BOOL func_ov087_02271a38();
-    BOOL func_ov087_022719fc();
-    BOOL func_ov087_022719d0();
-    BOOL func_ov087_022719cc();
-    void func_ov087_02271a6c(s32 state);
+    BOOL mainAct00();
+    BOOL setupAct00();
+    BOOL setupAct01();
+    BOOL mainAct01();
+    BOOL mainAct02();
+    void changeAct(s32 state);
 
     s32 unk_654;
-    Unk_ov087_02271e1c unk_658;
+    SpNpcCornimerTalk unk_658;
 };
 
 struct Unk_ov087_02271a6c_Ent {
-    BOOL (Unk_ov087_02271eac::*enter)();
-    BOOL (Unk_ov087_02271eac::*exit)();
+    BOOL (SpNpcCornimer::*enter)();
+    BOOL (SpNpcCornimer::*exit)();
 };
 
 struct Unk_ov087_02271cc4_Ent {
@@ -404,52 +404,52 @@ u32 _ZN12Unk_02087ad813func_02087c20Ev(void *p);
 void _ZN12Unk_02087ad813func_02087c10Ei(void *p, s32 n);
 void _ZN12Unk_02087ad813func_02087bf8Ev(void *p);
 void _ZN16ActorTalkRequest13func_02015958Eijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
-BOOL func_ov087_022718c4(u16 *p, u32 m);
+BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m);
 s32 func_020991fc();
 void *func_020991e4();
-extern const u8 data_ov087_02271ce4[];
-extern u8 data_ov087_02271dc8[];
-extern u8 data_ov087_02271df8[];
+extern const u8 sSpNpcCornimerPrizeTable[];
+extern u8 sSpNpcCornimerModelPath[];
+extern u8 sSpNpcCornimerTexturePath[];
 extern u32 data_ov087_02271d80;
 extern u32 data_ov087_02271d84;
-extern const Unk_ov087_02271cc4_Ent data_ov087_02271cc4[4];
-extern Unk_ov087_02271a6c_Ent data_ov087_02271f80[3];
+extern const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4];
+extern Unk_ov087_02271a6c_Ent sSpNpcCornimerActTable[3];
 }
 
 struct Unk_ov087_SceneEntry {
-    Unk_ov087_02271eac *(*factory)();
+    SpNpcCornimer *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
-extern "C" Unk_ov087_02271eac *func_ov087_02271bac();
-extern "C" char data_ov087_02271db0[];
-extern "C" char data_ov087_02271dbc[];
+extern "C" SpNpcCornimer *SpNpcCornimer_Create();
+extern "C" char sSpNpcCornimerFortuneStrKey[];
+extern "C" char sSpNpcCornimerFortuneStr2Key[];
 extern "C" u32 data_ov087_02271d84 = 0xe;
-extern "C" u8 data_ov087_02271df8[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','_','t','e','x','.','n','s','b','t','x',0};
-extern "C" Unk_ov087_SceneEntry data_ov087_02271de0 = {func_ov087_02271bac, 0x5f, 0x66, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" char data_ov087_02271db0[] = "st_fortune";
-extern "C" const Unk_ov087_02271cc4_Ent data_ov087_02271cc4[4] = {
-    {data_ov087_02271db0, 0}, {data_ov087_02271dbc, 1}, {data_ov087_02271dbc, 2}, {data_ov087_02271dbc, 3},
+extern "C" u8 sSpNpcCornimerTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','_','t','e','x','.','n','s','b','t','x',0};
+extern "C" Unk_ov087_SceneEntry sSpNpcCornimerProfile = {SpNpcCornimer_Create, 0x5f, 0x66, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" char sSpNpcCornimerFortuneStrKey[] = "st_fortune";
+extern "C" const Unk_ov087_02271cc4_Ent sSpNpcCornimerFortuneLines[4] = {
+    {sSpNpcCornimerFortuneStrKey, 0}, {sSpNpcCornimerFortuneStr2Key, 1}, {sSpNpcCornimerFortuneStr2Key, 2}, {sSpNpcCornimerFortuneStr2Key, 3},
 };
-extern "C" const u8 data_ov087_02271ce4[0x30] = {24,50,5,0,32,50,10,0,36,50,25,0,20,50,40,0,12,50,60,0,16,50,80,0,40,50,100,0,28,50,120,0,44,50,140,0,8,50,170,0,13,17,200,0,81,17,230,0};
-extern "C" void _ZN18Unk_ov087_02271eac19func_ov087_02271a38Ev();
-extern "C" void _ZN18Unk_ov087_02271eac19func_ov087_02271a34Ev();
-extern "C" void _ZN18Unk_ov087_02271eac19func_ov087_022719fcEv();
-extern "C" void _ZN18Unk_ov087_02271eac19func_ov087_022719d0Ev();
-extern "C" void _ZN18Unk_ov087_02271eac19func_ov087_022719ccEv();
-extern "C" void *data_ov087_02271da8[2] = {(void *)_ZN18Unk_ov087_02271eac19func_ov087_022719fcEv, 0};
-extern "C" void *data_ov087_02271d90[2] = {(void *)_ZN18Unk_ov087_02271eac19func_ov087_022719ccEv, 0};
-extern "C" void *data_ov087_02271d88[2] = {(void *)_ZN18Unk_ov087_02271eac19func_ov087_02271a38Ev, 0};
-extern "C" void *data_ov087_02271da0[2] = {(void *)_ZN18Unk_ov087_02271eac19func_ov087_02271a34Ev, 0};
-extern "C" void *data_ov087_02271d98[2] = {(void *)_ZN18Unk_ov087_02271eac19func_ov087_022719d0Ev, 0};
-typedef BOOL (Unk_ov087_02271eac::*Unk_ov087_Fn)();
-Unk_ov087_02271a6c_Ent data_ov087_02271f80[3] = {
+extern "C" const u8 sSpNpcCornimerPrizeTable[0x30] = {24,50,5,0,32,50,10,0,36,50,25,0,20,50,40,0,12,50,60,0,16,50,80,0,40,50,100,0,28,50,120,0,44,50,140,0,8,50,170,0,13,17,200,0,81,17,230,0};
+extern "C" void _ZN13SpNpcCornimer10setupAct00Ev();
+extern "C" void _ZN13SpNpcCornimer9mainAct00Ev();
+extern "C" void _ZN13SpNpcCornimer10setupAct01Ev();
+extern "C" void _ZN13SpNpcCornimer9mainAct01Ev();
+extern "C" void _ZN13SpNpcCornimer9mainAct02Ev();
+extern "C" void *data_ov087_02271da8[2] = {(void *)_ZN13SpNpcCornimer10setupAct01Ev, 0};
+extern "C" void *data_ov087_02271d90[2] = {(void *)_ZN13SpNpcCornimer9mainAct02Ev, 0};
+extern "C" void *data_ov087_02271d88[2] = {(void *)_ZN13SpNpcCornimer10setupAct00Ev, 0};
+extern "C" void *data_ov087_02271da0[2] = {(void *)_ZN13SpNpcCornimer9mainAct00Ev, 0};
+extern "C" void *data_ov087_02271d98[2] = {(void *)_ZN13SpNpcCornimer9mainAct01Ev, 0};
+typedef BOOL (SpNpcCornimer::*Unk_ov087_Fn)();
+Unk_ov087_02271a6c_Ent sSpNpcCornimerActTable[3] = {
     {*(Unk_ov087_Fn *)data_ov087_02271d88, *(Unk_ov087_Fn *)data_ov087_02271da0},
     {*(Unk_ov087_Fn *)data_ov087_02271da8, *(Unk_ov087_Fn *)data_ov087_02271d98},
     {NULL, *(Unk_ov087_Fn *)data_ov087_02271d90},
 };
-extern "C" u8 data_ov087_02271dc8[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','.','n','s','b','m','d',0};
-extern "C" char data_ov087_02271dbc[] = "st_fortune2";
+extern "C" u8 sSpNpcCornimerModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','d','n','k','.','n','s','b','m','d',0};
+extern "C" char sSpNpcCornimerFortuneStr2Key[] = "st_fortune2";
 extern "C" u32 data_ov087_02271d80 = 0x1d;
 
 static inline BOOL Unk_ov087_02271478_Rng(volatile u16 *p, u32 lo, u32 hi) {
@@ -500,24 +500,24 @@ struct Unk_ov087_02271670_Buf {
     u16 v[6];
 };
 
-extern "C" Unk_ov087_02271eac *func_ov087_02271bac() {
-    return new Unk_ov087_02271eac();
+extern "C" SpNpcCornimer *SpNpcCornimer_Create() {
+    return new SpNpcCornimer();
 }
 
-BOOL Unk_ov087_02271eac::vfunc_04() {
+BOOL SpNpcCornimer::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov087_02271960(this);
+    unk_658.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov087_02271eac::vfunc_00() {
+BOOL SpNpcCornimer::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov087_02271a6c(0);
+    changeAct(0);
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
@@ -525,36 +525,36 @@ BOOL Unk_ov087_02271eac::vfunc_00() {
     return TRUE;
 }
 
-u8 *Unk_ov087_02271eac::getTexturePath() { return data_ov087_02271df8; }
+u8 *SpNpcCornimer::getTexturePath() { return sSpNpcCornimerTexturePath; }
 
-u8 *Unk_ov087_02271eac::getModelPath() { return data_ov087_02271dc8; }
+u8 *SpNpcCornimer::getModelPath() { return sSpNpcCornimerModelPath; }
 
-BOOL Unk_ov087_02271eac::updateAct() {
+BOOL SpNpcCornimer::updateAct() {
     BOOL result = FALSE;
-    if (data_ov087_02271f80[unk_654].exit != NULL) {
-        result = (this->*data_ov087_02271f80[unk_654].exit)();
+    if (sSpNpcCornimerActTable[unk_654].exit != NULL) {
+        result = (this->*sSpNpcCornimerActTable[unk_654].exit)();
     }
     return result;
 }
 
-void Unk_ov087_02271eac::func_ov087_02271a6c(s32 state) {
+void SpNpcCornimer::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov087_02271f80[state].enter != NULL) {
-        ok = (this->*data_ov087_02271f80[state].enter)();
+    if (sSpNpcCornimerActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcCornimerActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov087_02271eac::func_ov087_02271a38() {
+BOOL SpNpcCornimer::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov087_02271eac::func_ov087_02271a34() { return TRUE; }
+BOOL SpNpcCornimer::mainAct00() { return TRUE; }
 
-BOOL Unk_ov087_02271eac::func_ov087_022719fc() {
+BOOL SpNpcCornimer::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 x = 0;
     if (p != NULL) {
@@ -564,26 +564,26 @@ BOOL Unk_ov087_02271eac::func_ov087_022719fc() {
     return TRUE;
 }
 
-BOOL Unk_ov087_02271eac::func_ov087_022719d0() {
+BOOL SpNpcCornimer::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov087_02271a6c(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov087_02271eac::func_ov087_022719cc() { return TRUE; }
+BOOL SpNpcCornimer::mainAct02() { return TRUE; }
 
-Unk_ov087_02271e1c::Unk_ov087_02271e1c() {}
+SpNpcCornimerTalk::SpNpcCornimerTalk() {}
 
-Unk_ov087_02271e1c::~Unk_ov087_02271e1c() {}
+SpNpcCornimerTalk::~SpNpcCornimerTalk() {}
 
-void Unk_ov087_02271e1c::func_ov087_02271960(Unk_ov087_02271eac *owner) {
+void SpNpcCornimerTalk::attachOwner(SpNpcCornimer *owner) {
     vfunc_08();
     unk_ac = owner;
 }
 
-void Unk_ov087_02271e1c::vfunc_78(Unk_ov087_022718ec_Out *out) {
+void SpNpcCornimerTalk::vfunc_78(TalkStartMsg *out) {
     void *g = PlayerData_GetCurrent();
     _ZN10PlayerData13func_0209865cEv(g);
     out->a = (u8 *)"sp_npc_acorn";
@@ -600,7 +600,7 @@ void Unk_ov087_02271e1c::vfunc_78(Unk_ov087_022718ec_Out *out) {
     }
 }
 
-extern "C" BOOL func_ov087_022718c4(u16 *p, u32 m) {
+extern "C" BOOL SpNpcCornimer_IsAcorn(u16 *p, u32 m) {
     BOOL r;
     if (m == 0) {
         r = FALSE;
@@ -612,7 +612,7 @@ extern "C" BOOL func_ov087_022718c4(u16 *p, u32 m) {
     return FALSE;
 }
 
-void Unk_ov087_02271e1c::vfunc_14() {
+void SpNpcCornimerTalk::vfunc_14() {
     Unk_ov087_02271670_Buf buf;
     void *g = _ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent());
     u32 k;
@@ -621,7 +621,7 @@ void Unk_ov087_02271e1c::vfunc_14() {
     switch (unk_1e) {
     case 2:
     case 3:
-        if (func_0206ea84((u32)func_ov087_022718c4)) {
+        if (func_0206ea84((u32)SpNpcCornimer_IsAcorn)) {
             s32 i = 0;
             u32 cnt = 0;
             while (i < 15) {
@@ -638,7 +638,7 @@ void Unk_ov087_02271e1c::vfunc_14() {
         } else {
             u32 a = _ZN12Unk_02087ad813func_02087c0cEv(g);
             u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
-            s32 d = (data_ov087_02271ce4 + 2)[a * 4] - b;
+            s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4] - b;
             if (d > 0) {
                 _ZN16ActorTalkRequest13func_02015958Eijiii(this, d, 1, 3, 0, 0);
                 k = 4;
@@ -659,14 +659,14 @@ void Unk_ov087_02271e1c::vfunc_14() {
         break;
     case 10: {
         u32 t = _ZN12Unk_02087ad813func_02087c20Ev(g);
-        if (t >= (data_ov087_02271ce4 + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
-            buf.v[1] = *(u16 *)&data_ov087_02271ce4[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+        if (t >= (sSpNpcCornimerPrizeTable + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
+            buf.v[1] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
             _ZN16ActorTalkRequest13func_0201578cEjjj(this, &buf.v[1], 0, 7);
             k = 0xb;
         } else {
             u32 a = _ZN12Unk_02087ad813func_02087c0cEv(g);
             u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
-            s32 d = (data_ov087_02271ce4 + 2)[a * 4];
+            s32 d = (sSpNpcCornimerPrizeTable + 2)[a * 4];
             d -= b;
             _ZN16ActorTalkRequest13func_02015958Eijiii(this, d, 1, 3, 0, 0);
             k = 0xf;
@@ -675,17 +675,17 @@ void Unk_ov087_02271e1c::vfunc_14() {
     }
     case 11:
     case 13:
-        buf.v[2] = *(u16 *)&data_ov087_02271ce4[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+        buf.v[2] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
         if (Unk_ov087_02271670_Z(func_02099014(&buf.v[2], 0))) {
             k = 0xc;
         } else {
             _ZN12Unk_02087ad813func_02087bf8Ev(g);
-            buf.v[3] = *(u16 *)&data_ov087_02271ce4[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+            buf.v[3] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
             _ZN12Unk_020d771013func_02014e60EPtjjj(this, &buf.v[3], 0, 5, 0);
             if (_ZN12Unk_02087ad813func_02087c0cEv(g) < 12) {
                 u32 b = _ZN12Unk_02087ad813func_02087c20Ev(g);
-                if (b >= (data_ov087_02271ce4 + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
-                    buf.v[4] = *(u16 *)&data_ov087_02271ce4[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
+                if (b >= (sSpNpcCornimerPrizeTable + 2)[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4]) {
+                    buf.v[4] = *(u16 *)&sSpNpcCornimerPrizeTable[_ZN12Unk_02087ad813func_02087c0cEv(g) * 4];
                     _ZN16ActorTalkRequest13func_0201578cEjjj(this, &buf.v[4], 0, 7);
                     k = 0xd;
                     break;
@@ -706,7 +706,7 @@ void Unk_ov087_02271e1c::vfunc_14() {
     }
 }
 
-void Unk_ov087_02271e1c::vfunc_18() {
+void SpNpcCornimerTalk::vfunc_18() {
     Unk_ov087_02271478_Buf buf;
     u8 *sa = (u8 *)"sp_npc_acorn";
     s32 t5 = getChoiceList()->getResult();
@@ -765,8 +765,8 @@ void Unk_ov087_02271e1c::vfunc_18() {
                     const Unk_ov087_02271cc4_Ent *ent;
                 loop16:
                     buf.a = (u8)r6;
-                    ent = &data_ov087_02271cc4[i];
-                    String_Load(&o, &buf.a, (s32)data_ov087_02271cc4[i].a);
+                    ent = &sSpNpcCornimerFortuneLines[i];
+                    String_Load(&o, &buf.a, (s32)sSpNpcCornimerFortuneLines[i].a);
                     MailText_SetSlot((void *)ent->b, &o);
                     r6 = (n - 4) * 4;
                     r6 += func_02063b8c(4);
@@ -792,7 +792,7 @@ void Unk_ov087_02271e1c::vfunc_18() {
     }
 }
 
-BOOL Unk_ov087_02271eac::vfunc_48() {
+BOOL SpNpcCornimer::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -800,15 +800,15 @@ BOOL Unk_ov087_02271eac::vfunc_48() {
     return r;
 }
 
-void Unk_ov087_02271eac::vfunc_4c(u32 a, u32 b) {
+void SpNpcCornimer::vfunc_4c(u32 a, u32 b) {
     switch (a) {
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov087_02271a6c(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov087_02271a6c(0);
+        changeAct(0);
         break;
     }
 }

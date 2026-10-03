@@ -2,15 +2,15 @@
 #include "types.h"
 
 // TU27 of ov003: free functions (spawn-position search over a 4x4 pool of 16x16 bitmaps, object slot table)
-struct Unk_ov003_0222e734_Chunk {
+struct UnitMaskChunk {
     u16 bits[16];
     u16 cnt;
-    Unk_ov003_0222e734_Chunk() {}
-    ~Unk_ov003_0222e734_Chunk() {}
+    UnitMaskChunk() {}
+    ~UnitMaskChunk() {}
 };
 
-struct Unk_ov003_0222e734_Pool {
-    Unk_ov003_0222e734_Chunk c[4][4];
+struct UnitMaskPool {
+    UnitMaskChunk c[4][4];
 };
 
 struct Unk_ov003_0222e734_Cell {
@@ -107,26 +107,26 @@ void DateTime_SubDays(void *, s32);
 BOOL Snowball_IsInBallState(void *p);
 BOOL Snowball_TryPush(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 
-void func_ov003_0222e964(Unk_ov003_0222e734_Pool *pool, s32 x, s32 y);
-s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool);
-void func_ov003_0222e9d4(Unk_ov003_0222e734_Pool *pool);
-BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 *oy);
-void func_ov003_0222ea84(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y);
-BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y);
-BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *oy);
-void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c);
-Unk_ov003_0222eb10_Obj *func_ov003_0222ebb0(u32 id);
-BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d);
+void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y);
+s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool);
+void UnitMaskPool_Clear(UnitMaskPool *pool);
+BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy);
+void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y);
+BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y);
+BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy);
+void UnitMaskChunk_Clear(UnitMaskChunk *c);
+Unk_ov003_0222eb10_Obj *Snowball_FindByParam(u32 id);
+BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d);
 }
 
 // the eight actor slots
 extern "C" {
-Unk_ov003_0222eb10_Obj *data_ov003_0225b4f8[8];
+Unk_ov003_0222eb10_Obj *sSnowballs[8];
 }
 
 // ---- functions ----
 
-extern "C" void func_ov003_0222ed20(void *self) {
+extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || func_020b50bc() == 0) {
         func_020af3f4();
         func_020af514();
@@ -161,7 +161,7 @@ extern "C" void func_ov003_0222ed20(void *self) {
                 f.LampLights.y = s->a.y;
                 f.LampLights.z = s->a.z;
             } else {
-                func_ov003_0222e734(self, &f.LampLights, 0, 1);
+                Snowball_FindSpawnPos(self, &f.LampLights, 0, 1);
             }
             if (func_020af3f4()->b.x != 0) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
@@ -170,7 +170,7 @@ extern "C" void func_ov003_0222ed20(void *self) {
                 f.LightLevel.y = pv->y;
                 f.LightLevel.z = pv->z;
             } else {
-                func_ov003_0222e734(self, &f.LightLevel, (s32)&f.LampLights, 1);
+                Snowball_FindSpawnPos(self, &f.LightLevel, (s32)&f.LampLights, 1);
             }
             if (Actor_spawn(0xbd, 0, &f.LampLights, 0, self)) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
@@ -188,7 +188,7 @@ extern "C" void func_ov003_0222ed20(void *self) {
     }
 }
 
-extern "C" void func_ov003_0222ec20(void *self) {
+extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
     Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
     u32 by, bx;
     s32 lx, n;
@@ -228,8 +228,8 @@ extern "C" void func_ov003_0222ec20(void *self) {
     }
 }
 
-extern "C" BOOL func_ov003_0222ec00(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &data_ov003_0225b4f8[p->unk_08 & 7];
+extern "C" BOOL Snowball_Register(Unk_ov003_0222eb10_Obj *p) {
+    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->unk_08 & 7];
     if (*s != 0) {
         return FALSE;
     }
@@ -237,8 +237,8 @@ extern "C" BOOL func_ov003_0222ec00(Unk_ov003_0222eb10_Obj *p) {
     return TRUE;
 }
 
-extern "C" BOOL func_ov003_0222ebdc(Unk_ov003_0222eb10_Obj *p) {
-    Unk_ov003_0222eb10_Obj **s = &data_ov003_0225b4f8[p->unk_08 & 7];
+extern "C" BOOL Snowball_Unregister(Unk_ov003_0222eb10_Obj *p) {
+    Unk_ov003_0222eb10_Obj **s = &sSnowballs[p->unk_08 & 7];
     if (*s == p) {
         *s = 0;
         return TRUE;
@@ -246,10 +246,10 @@ extern "C" BOOL func_ov003_0222ebdc(Unk_ov003_0222eb10_Obj *p) {
     return FALSE;
 }
 
-extern "C" Unk_ov003_0222eb10_Obj *func_ov003_0222ebb0(u32 id) {
+extern "C" Unk_ov003_0222eb10_Obj *Snowball_FindByParam(u32 id) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = data_ov003_0225b4f8[i];
+        Unk_ov003_0222eb10_Obj *p = sSnowballs[i];
         if (p != 0 && id == p->unk_08) {
             return p;
         }
@@ -257,11 +257,11 @@ extern "C" Unk_ov003_0222eb10_Obj *func_ov003_0222ebb0(u32 id) {
     return 0;
 }
 
-extern "C" BOOL func_ov003_0222eb68(void *self, s32 a, s32 b, s32 c, s32 d) {
+extern "C" BOOL Snowball_TryPushAny(void *self, s32 a, s32 b, s32 c, s32 d) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        if (data_ov003_0225b4f8[i] != 0) {
-            if (Snowball_TryPush(data_ov003_0225b4f8[i], (s32)self, a, b, c, d)) {
+        if (sSnowballs[i] != 0) {
+            if (Snowball_TryPush(sSnowballs[i], (s32)self, a, b, c, d)) {
                 return TRUE;
             }
         }
@@ -269,8 +269,8 @@ extern "C" BOOL func_ov003_0222eb68(void *self, s32 a, s32 b, s32 c, s32 d) {
     return FALSE;
 }
 
-extern "C" void *func_ov003_0222eb10(u32 id) {
-    Unk_ov003_0222eb10_Obj *o = func_ov003_0222ebb0(id & 1);
+extern "C" void *Snowball_GetLooseBall(u32 id) {
+    Unk_ov003_0222eb10_Obj *o = Snowball_FindByParam(id & 1);
     if (o != 0) {
         if (o->unk_39c == 0) {
             if (o->unk_398 == 0) {
@@ -291,10 +291,10 @@ extern "C" void *func_ov003_0222eb10(u32 id) {
     return 0;
 }
 
-extern "C" void *func_ov003_0222ead4(void *self) {
+extern "C" void *Snowball_FindOtherInBallState(void *self) {
     u32 i;
     for (i = 0; i < 8; i++) {
-        Unk_ov003_0222eb10_Obj *p = data_ov003_0225b4f8[i];
+        Unk_ov003_0222eb10_Obj *p = sSnowballs[i];
         if (p != 0 && p != self && Snowball_IsInBallState(p)) {
             return p;
         }
@@ -302,7 +302,7 @@ extern "C" void *func_ov003_0222ead4(void *self) {
     return 0;
 }
 
-extern "C" void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c) {
+extern "C" void UnitMaskChunk_Clear(UnitMaskChunk *c) {
     u32 i;
     for (i = 0; i < 16; i++) {
         c->bits[i] = 0;
@@ -310,16 +310,16 @@ extern "C" void func_ov003_0222eabc(Unk_ov003_0222e734_Chunk *c) {
     c->cnt = 0x100;
 }
 
-extern "C" void func_ov003_0222ea84(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
+extern "C" void UnitMaskChunk_Mark(UnitMaskChunk *c, s32 x, s32 y) {
     u8 ux = x & 15;
     u8 uy = y & 15;
-    if (!func_ov003_0222ea64(c, x, y)) {
+    if (!UnitMaskChunk_IsMarked(c, x, y)) {
         c->bits[uy] |= 1 << ux;
         c->cnt--;
     }
 }
 
-extern "C" BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
+extern "C" BOOL UnitMaskChunk_IsMarked(UnitMaskChunk *c, s32 x, s32 y) {
     s32 v = c->bits[(u8)(y & 15)];
     if ((v >> (u8)(x & 15)) & 1) {
         return TRUE;
@@ -327,14 +327,14 @@ extern "C" BOOL func_ov003_0222ea64(Unk_ov003_0222e734_Chunk *c, s32 x, s32 y) {
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *oy) {
+extern "C" BOOL UnitMaskChunk_PickRandom(UnitMaskChunk *c, s32 *ox, s32 *oy) {
     if (c->cnt != 0) {
         s32 r = func_02063b8c(c->cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 16; i++) {
             for (j = 0; j < 16; j++) {
-                if (!func_ov003_0222ea64(c, j, i)) {
+                if (!UnitMaskChunk_IsMarked(c, j, i)) {
                     if (r == n) {
                         *ox = j;
                         *oy = i;
@@ -348,16 +348,16 @@ extern "C" BOOL func_ov003_0222ea08(Unk_ov003_0222e734_Chunk *c, s32 *ox, s32 *o
     return FALSE;
 }
 
-extern "C" void func_ov003_0222e9d4(Unk_ov003_0222e734_Pool *pool) {
+extern "C" void UnitMaskPool_Clear(UnitMaskPool *pool) {
     u32 i, j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            func_ov003_0222eabc(&pool->c[i][j]);
+            UnitMaskChunk_Clear(&pool->c[i][j]);
         }
     }
 }
 
-extern "C" s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool) {
+extern "C" s32 UnitMaskPool_CountFreeChunks(UnitMaskPool *pool) {
     s32 n = 0;
     u32 i, j;
     for (i = 0; i < 4; i++) {
@@ -370,23 +370,23 @@ extern "C" s32 func_ov003_0222e998(Unk_ov003_0222e734_Pool *pool) {
     return n;
 }
 
-extern "C" void func_ov003_0222e964(Unk_ov003_0222e734_Pool *pool, s32 x, s32 y) {
-    func_ov003_0222ea84(&pool->c[((y - 16) >> 4) & 3][((x - 16) >> 4) & 3], x & 15, y & 15);
+extern "C" void UnitMaskPool_Mark(UnitMaskPool *pool, s32 x, s32 y) {
+    UnitMaskChunk_Mark(&pool->c[((y - 16) >> 4) & 3][((x - 16) >> 4) & 3], x & 15, y & 15);
 }
 
-extern "C" BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 *oy) {
-    s32 cnt = func_ov003_0222e998(pool);
+extern "C" BOOL UnitMaskPool_PickRandom(UnitMaskPool *pool, s32 *ox, s32 *oy) {
+    s32 cnt = UnitMaskPool_CountFreeChunks(pool);
     if (cnt != 0) {
         s32 r = func_02063b8c(cnt);
         s32 n = 0;
         u32 i, j;
         for (i = 0; i < 4; i++) {
             for (j = 0; j < 4; j++) {
-                Unk_ov003_0222e734_Chunk *c = &pool->c[i][j];
+                UnitMaskChunk *c = &pool->c[i][j];
                 if (c->cnt != 0) {
                     if (r == n) {
                         s32 px, py;
-                        if (func_ov003_0222ea08(c, &px, &py)) {
+                        if (UnitMaskChunk_PickRandom(c, &px, &py)) {
                             *ox = ((j + 1) << 4) + px;
                             *oy = ((i + 1) << 4) + py;
                             return TRUE;
@@ -401,10 +401,10 @@ extern "C" BOOL func_ov003_0222e8e0(Unk_ov003_0222e734_Pool *pool, s32 *ox, s32 
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
+extern "C" BOOL Snowball_FindSpawnPos(void *a, void *b, s32 c, s32 d) {
     Unk_ov003_0222e734_Grid *g = gSceneBlockMap;
-    static Unk_ov003_0222e734_Pool pool;
-    func_ov003_0222e9d4(&pool);
+    static UnitMaskPool pool;
+    UnitMaskPool_Clear(&pool);
     u32 by, bx, ly, lx, k;
     for (by = 1; by < 6; by++) {
         for (bx = 1; bx < 6; bx++) {
@@ -413,7 +413,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
                     s32 x, y;
                     FieldUnit_FromBlockUnit(&x, &y, bx, by, lx, ly);
                     if (!func_02031130(x, y) || !func_020310f8(x, y + 1) || !func_020310f8(x, y + 2)) {
-                        func_ov003_0222e964(&pool, x, y);
+                        UnitMaskPool_Mark(&pool, x, y);
                     } else if (d != 0) {
                         s32 ex = *(volatile s32 *)&x;
                         s32 ey = *(volatile s32 *)&y;
@@ -421,7 +421,7 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
                         s32 hy = ey >> 4;
                         u16 *cell = BlockMap_GetItemPtr(g, hx, hy, ex - (hx << 4), ey - (hy << 4), 0);
                         if (cell != 0 && *cell != 0xfff1) {
-                            func_ov003_0222e964(&pool, x, y);
+                            UnitMaskPool_Mark(&pool, x, y);
                         }
                     }
                 }
@@ -434,16 +434,16 @@ extern "C" BOOL func_ov003_0222e734(void *a, void *b, s32 c, s32 d) {
         s32 yy, xx;
         for (yy = py - 7; yy <= py + 7; yy++) {
             for (xx = px - 7; xx <= px + 7; xx++) {
-                func_ov003_0222e964(&pool, xx, yy);
+                UnitMaskPool_Mark(&pool, xx, yy);
             }
         }
     }
     s32 ox, oy;
-    if (func_ov003_0222e8e0(&pool, &ox, &oy)) {
+    if (UnitMaskPool_PickRandom(&pool, &ox, &oy)) {
         FieldPos_FromUnitCenter(b, ox, oy);
         return TRUE;
     } else if (d != 0) {
-        return func_ov003_0222e734(a, b, c, 0);
+        return Snowball_FindSpawnPos(a, b, c, 0);
     }
     return FALSE;
 }

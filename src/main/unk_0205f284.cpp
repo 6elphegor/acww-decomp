@@ -103,12 +103,12 @@ s32 func_020902f8(s32 h);
 s32 func_02090330(u32 id, void *a, u32 b, u32 c);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_0205f92c_Buf *p, Unk_0205f8d4_Vec *v, s32 a, s32 b);
 void func_02033988(Unk_0205f92c_Buf *p);
-BOOL func_ov003_02223134(void *p);
-void func_ov003_02223310(void *p, s32 a);
-void func_ov003_02223498(void *p);
-void func_ov003_022234c4(void *p);
-BOOL func_ov003_022234fc(void *p);
-BOOL func_ov003_02223554(void *p);
+BOOL FishShadow_FleeFromPlayer(void *p);
+void FishCatch_StartLift(void *p, s32 a);
+void FishCatch_EndForShadow(void *p);
+void FishCatch_IsLandedForShadow(void *p);
+BOOL FishShadow_CheckReelResult(void *p);
+BOOL FishShadow_TryHook(void *p);
 void *NNS_G3dGetTex(void *p);
 void File_LoadToBuffer(char *name, void *p, u32 size);
 s32 func_020639e8(char *buf, char *fmt, ...);
@@ -165,7 +165,7 @@ void VEC_Subtract(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, Unk_0205f8d4_Vec *ou
 s32 func_020e9650(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void func_020e9768(Unk_0205f8d4_Vec *v, s32 n);
 void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
-void func_ov003_02222f1c();
+void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, Unk_0205f8d4_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void _ZN5Model10drawScaledEPi(void *e, s32 a);
@@ -535,7 +535,7 @@ BOOL Unk_0205f8d4::func_0205fb88()
         func_0205f92c(7);
         return FALSE;
     }
-    return func_ov003_02223554(unk_2c);
+    return FishShadow_TryHook(unk_2c);
 }
 
 BOOL Unk_0205f8d4::func_0205fb70()
@@ -543,7 +543,7 @@ BOOL Unk_0205f8d4::func_0205fb70()
     if (unk_2c == 0) {
         return TRUE;
     }
-    return func_ov003_022234fc(unk_2c);
+    return FishShadow_CheckReelResult(unk_2c);
 }
 
 void Unk_0205f8d4::func_0205fb40()
@@ -558,18 +558,18 @@ void Unk_0205f8d4::func_0205fb40()
 
 void Unk_0205f8d4::func_0205fb34()
 {
-    func_ov003_022234c4(unk_2c);
+    FishCatch_IsLandedForShadow(unk_2c);
 }
 
 void Unk_0205f8d4::func_0205fb20()
 {
-    func_ov003_02223498(unk_2c);
+    FishCatch_EndForShadow(unk_2c);
     unk_2c = 0;
 }
 
 void Unk_0205f8d4::func_0205fb08()
 {
-    func_ov003_02223310((void *)unk_3c, 0);
+    FishCatch_StartLift((void *)unk_3c, 0);
     unk_2c = 0;
 }
 
@@ -608,7 +608,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
     switch (state) {
     case 1:
         if (unk_2c != 0) {
-            if (func_ov003_02223134(unk_2c)) {
+            if (FishShadow_FleeFromPlayer(unk_2c)) {
                 unk_2c = 0;
             }
         }
@@ -797,7 +797,7 @@ void Unk_0205f360::func_0205f6b4()
                 v.y = y;
                 func_02090330(0xc, &v, 0, 0);
                 unk_38 = 1;
-                func_ov003_02222f1c();
+                FieldFish_StartCastSplash();
             }
         }
         func_02033988((Unk_0205f92c_Buf *)&o);

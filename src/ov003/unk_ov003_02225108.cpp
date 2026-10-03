@@ -41,8 +41,8 @@ public:
     BOOL isMyAid(s32 i);
 };
 
-// 0x60-byte entry, table at data_ov003_02257d1c
-struct Unk_ov003_02257d1c {
+// 0x60-byte entry, table at sBottleThrows
+struct BottleThrow {
     u32 unk_00[0x30 / 4];
     u8 unk_30;
     u8 pad_31[3];
@@ -61,7 +61,7 @@ struct Unk_ov003_02225238_Grid {
 };
 
 extern "C" {
-extern Unk_ov003_02257d1c data_ov003_02257d1c[4];
+extern BottleThrow sBottleThrows[4];
 extern V3 data_ov003_02257d50;
 extern CommManager *gCommManager;
 
@@ -69,7 +69,7 @@ Unk_ov003_02224bc4_Actor *func_020951ec();
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
-s32 func_ov003_02224b1c(Unk_ov003_02257d1c *e);
+s32 BottleThrow_IsOffscreen(BottleThrow *e);
 void func_ov003_02221874(void *p);
 void func_ov003_02221998(void *p);
 void FieldPos_FromBlockUnitCenter(V3 *out, s32 a, s32 b, s32 c, s32 d);
@@ -78,41 +78,41 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Item_IsBuildingOrOccupied();
 s32 func_020312a8(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
-extern u16 data_ov003_02259154[];
-extern u16 data_ov003_02258f54[];
-void func_ov003_02225108();
-BOOL func_ov003_02225238(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
+extern u16 sInsectSpawnMaskLand[];
+extern u16 sInsectSpawnMaskDry[];
+void InsectSpawn_BuildMasks();
+BOOL InsectSpawn_FindUnitInBlock(u16 *buf, s32 kind, s32 *px, s32 *py, Unk_ov003_02225238_Grid *grid, s32 mode);
 u32 MapBlock_GetAttr();
 s32 BlockMap_IsBuriedAtUnit(void *g, s32 x, s32 y);
 s32 func_020312d0(s32 x, s32 y);
 s32 func_020312ec(s32 x, s32 y);
 s32 func_02031218(s32 x, s32 y);
-s32 func_ov003_0222dec8(s32 kind, u16 *c);
+s32 Insect_LikesFlower(s32 kind, u16 *c);
 u32 func_02063b8c(u32 n);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-void func_ov003_02224e68(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
-extern u8 data_ov003_02257e9c[];
-extern u8 data_ov003_0225812c[];
+void SpawnMask_MarkRect(u16 *buf, s32 x, s32 y, s32 rad, u8 a, u8 b);
+extern u8 sFishCatches[];
+extern u8 sFishShadows[];
 
-V3 *func_ov003_02224ba4(s32 i);
-s32 func_ov003_02224bc4(s32 i);
-BOOL func_ov003_02224d14(s32 i);
-void func_ov003_02224d58(V3 *v, s32 i);
+V3 *BottleThrow_GetPos(s32 i);
+s32 BottleThrow_Start(s32 i);
+BOOL BottleThrow_IsActive(s32 i);
+void BottleThrow_SetTarget(V3 *v, s32 i);
 void *func_ov003_02224d80(void *p);
 void func_ov003_02224dc4();
 void func_ov003_02224dc8();
-void func_ov003_02224dcc();
+void FieldFishManager_Create();
 void func_ov003_02224e04();
 void func_ov003_02224e24();
 void func_ov003_02224e44();
-void func_ov003_0222503c(u32 n0, u16 *tbl, s32 *px, s32 *py);
-BOOL func_ov003_022250a0(u16 *p);
-BOOL func_ov003_022250b4(u16 *p);
-BOOL func_ov003_022250cc(u16 *p);
-Unk_ov003_02257d1c *func_ov003_02224d90(Unk_ov003_02257d1c *p);
+void SpawnMask_PickFreeUnit(u32 n0, u16 *tbl, s32 *px, s32 *py);
+BOOL Field_IsGrownPalmTreeItem(u16 *p);
+BOOL Field_IsGrownSpecialTreeItem(u16 *p);
+BOOL Field_IsGrownTreeItem(u16 *p);
+BottleThrow *func_ov003_02224d90(BottleThrow *p);
 }
 
-void func_ov003_02225108()
+void InsectSpawn_BuildMasks()
 {
     u8 ty;
     void *g;
@@ -136,14 +136,14 @@ void func_ov003_02225108()
     u8 tx;
     g = TownBlockMap_Get();
     if (g != 0) {
-        MI_CpuFill8(data_ov003_02259154, 0, 0x200);
-        MI_CpuFill8(data_ov003_02258f54, 0, 0x200);
+        MI_CpuFill8(sInsectSpawnMaskLand, 0, 0x200);
+        MI_CpuFill8(sInsectSpawnMaskDry, 0, 0x200);
         o1 = 0;
     l1:
         xo = (u8)((o1 + 1) << 4);
         o2 = 0;
-        pa = (u8 *)data_ov003_02259154 + (o1 << 5);
-        pb = (u8 *)data_ov003_02258f54 + (o1 << 5);
+        pa = (u8 *)sInsectSpawnMaskLand + (o1 << 5);
+        pb = (u8 *)sInsectSpawnMaskDry + (o1 << 5);
     l2:
         yo = (u8)((o2 + 1) << 4);
         ty = 0;

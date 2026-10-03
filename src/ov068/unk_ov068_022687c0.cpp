@@ -218,23 +218,23 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void func_02090330(s32 a, void *v, s32 b, void *h);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
-void func_ov003_02220db0(void *a, s32 b);
+void FieldFish_ScareAround(void *a, s32 b);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s16 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
 s32 _s32_div_f(s32 a, s32 b);
-void func_ov003_0222e328(void *, s32);
+void Insect_GetDirVec(void *, s32);
 s32 Field_IsRafflesiaNear(void *a, void *b);
 s32 Field_FindFlowerNear(void *a, void *b, s32 c);
-s32 func_ov003_0222d1dc(s32 a);
-s32 func_ov003_0222dec8(s32 a, void *b);
+s32 Insect_GetFlowerSpeciesMask(s32 a);
+s32 Insect_LikesFlower(s32 a, void *b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *pos);
 u16 *BlockMap_GetItemPtr(void *grid, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 s32 Flower_GetSpecies(void *cell);
 s32 func_020e9650(void *a, void *b);
 void func_ov068_022689c8(s32 code, s32 *v);
-void *func_ov003_0222ead4(void *self);
+void *Snowball_FindOtherInBallState(void *self);
 s32 Snowball_ChangeState(void *o, s32 st);
 s32 Snowball_Break(void *o, s32 a);
 s32 func_020e96a4(void *a, void *b);
@@ -250,40 +250,40 @@ void func_02033988(void *o);
 void FieldPos_SnapToUnitCenter(void *out, void *in);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
 extern u8 data_021ed2e6[];
-s32 func_ov003_0222d334(BObj *);
-s32 func_ov003_02229938(BObj *);
+s32 Insect_TickTimer(BObj *);
+s32 Insect_SetWanderBox(BObj *);
 s32 VEC_Subtract(void *, void *, void *);
 s32 VEC_Add(void *, void *, void *);
-s32 func_ov003_0222ab68(void *, void *, s32);
+s32 Insect_ClampStepXZ(void *, void *, s32);
 s32 func_02106020(s32, s32);
 s32 PlayerActor_LocalFaint(s32);
 s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
-s32 func_ov003_0222dd54(void *, s32, s32);
-s32 func_ov003_0222af48(BObj *, s32);
-s32 func_ov003_02229910(BObj *);
+s32 Insect_PlaySe(void *, s32, s32);
+s32 Insect_FadeOut(BObj *, s32);
+s32 Insect_Despawn(BObj *);
 void func_020e7530(s16 *, s32, s32);
 void *func_02095204(s32);
-s32 func_ov003_0222c7fc(BObj *, BVec *);
+s32 Insect_UpdateAlarm(BObj *, BVec *);
 s32 func_ov068_02268ce8(BObj *, u32, u32, s16 *);
 s32 func_ov068_02268e8c(BObj *, u32, u32);
-s32 func_ov003_0222adc4(void *);
-s32 func_ov003_0222e2fc(void *);
+s32 Insect_GroundWalk(void *);
+s32 Insect_IsOverWater(void *);
 s32 PlayerActor_LocalBeeSting();
 void func_02043b90();
 void func_ov068_02269424(BVec *, BS50 *, s32);
 void func_ov068_022696e4(s32 *, s32);
 s32 MenuCtrl_IsMenuOpen(void);
 s32 func_020e7870(s32 *, s32, s32, s32, s32);
-void func_ov003_0222d674(void *);
-s32 func_ov003_0222d720(void *);
-void func_ov003_0222d75c(void *, s32, s32, s32);
+void Insect_FlapWings(void *);
+s32 Insect_CheckAlarm(void *);
+void Insect_FlutterBob(void *, s32, s32, s32);
 s32 PlayerActor_IsLocalAct67HitAt(void *);
-void *func_ov003_0222eb10(s32);
+void *Snowball_GetLooseBall(s32);
 s32 Snowball_GetRadius(void *);
 s32 Snowball_TrySetPos(void *, void *);
 s32 Snowball_GetMaxRadius(void);
 s32 Snowball_GetMinRadius(void);
-s32 func_ov003_0222c620(s32, s32);
+s32 Insect_RandomTurn(s32, s32);
 s32 PlayerActor_RequestAct79(void);
 void func_02034d70(s32);
 void func_02034e10(s32, s32, s32, s32);
@@ -302,10 +302,10 @@ s32 _ZN13BuildingActor8getGridXEv(void *);
 s32 _ZN13BuildingActor8getGridZEv(void *);
 void func_020e9960(void *, void *, void *);
 void func_020e93a0(void *, s32);
-void func_ov003_02225ec8(void *, s32);
+void Insect_SetAnimSpeed(void *, s32);
 s32 func_020312a8(s32, s32);
 void func_0209028c(s32, void *, void *, s32);
-s32 func_ov003_0222e500(void *, s32, s32);
+s32 Insect_CheckObstacle(void *, s32, s32);
 void *NpcRegistry_GetBySlot(u32);
 s32 NpcRegistry_GetSlotCount();
 void func_ov068_0226a6ac(DObj *o, u8 *fp, DVec *out);
@@ -506,7 +506,7 @@ void func_ov068_0226a3d4(DObj *o, s16 *p) {
         pos->x = sv[0].x;
         pos->y = sv[0].y;
         pos->z = sv[0].z;
-        base += func_ov003_0222c620(0xc, 1);
+        base += Insect_RandomTurn(0xc, 1);
         o->unk_240 = base;
         o->unk_251 = 0xf;
         *p = 0;
@@ -551,9 +551,9 @@ void func_ov068_0226a320(DObj *o, u16 *p) {
 
 
 void func_ov068_0226a2dc(DObj *o, u16 *p) {
-    if (func_ov003_0222e500(o, 0xa0, 0xe38) != 0) {
+    if (Insect_CheckObstacle(o, 0xa0, 0xe38) != 0) {
         s32 base = -0x8000;
-        base += func_ov003_0222c620(0xc, 1);
+        base += Insect_RandomTurn(0xc, 1);
         o->unk_240 = base;
         o->unk_251 = 0xf;
         *p = 0;
@@ -597,7 +597,7 @@ void func_ov068_0226a1a0(DObj *o) {
     if (t > 0 && o->unk_24a == 0) {
         if (d > 0x266) {
             ang = Math_AngleXZ(pos, v1e0);
-            func_ov003_0222e328(&dv, ang);
+            Insect_GetDirVec(&dv, ang);
             o->unk_23a = ang;
             pos->x = pos->x + func_01ffcb0c(dv.x, 0xa000);
             pos->z = pos->z + func_01ffcb0c(dv.z, 0xa000);
@@ -635,7 +635,7 @@ void func_ov068_0226a004(DObj *o) {
     save.x = pos->x;
     save.y = pos->y;
     save.z = pos->z;
-    func_ov003_0222d720(o);
+    Insect_CheckAlarm(o);
     if (o->unk_24a != 0) {
         DVec *q = (DVec *)func_02095204(4);
         if (q != 0) {
@@ -649,7 +649,7 @@ void func_ov068_0226a004(DObj *o) {
                 }
                 o->unk_238 = 0;
                 o->unk_23a = v;
-                func_ov003_02225ec8(o, 0x119a);
+                Insect_SetAnimSpeed(o, 0x119a);
             }
         }
     } else {
@@ -694,7 +694,7 @@ s32 func_ov068_02269f60(DObj *o, u16 *p, DVec *out) {
         o->unk_23a = -0x8000;
         o->unk_238 = 1;
         o->unk_251 = 0;
-        func_ov003_02225ec8(o, 0x1000);
+        Insect_SetAnimSpeed(o, 0x1000);
     } else if (r > 0 && r < 5) {
         DVec t;
         func_020e9960(&t, pos, &a);
@@ -702,7 +702,7 @@ s32 func_ov068_02269f60(DObj *o, u16 *p, DVec *out) {
         out->y = t.y;
         out->z = t.z;
         out->y = 0;
-        func_ov003_0222ab68(out, out, 2);
+        Insect_ClampStepXZ(out, out, 2);
         VEC_Subtract(pos, out, pos);
         return 1;
     } else {
@@ -780,11 +780,11 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
 void Unk_ov068_02268214::func_ov068_02269d58() {
     s16 h = unk_23a;
     s32 t = unk_232;
-    func_ov003_0222d674(this);
-    if (func_ov003_0222d720(this) == 2) {
+    Insect_FlapWings(this);
+    if (Insect_CheckAlarm(this) == 2) {
         unk_24a = 0;
     }
-    func_ov003_0222dd54(this, 0, 1);
+    Insect_PlaySe(this, 0, 1);
     if (unk_24a == 0 && func_ov068_02268b70((BObj *)this, &h) == 0 && unk_24d == 10) {
         unk_242 = 0;
         unk_251 = 9;
@@ -793,10 +793,10 @@ void Unk_ov068_02268214::func_ov068_02269d58() {
     func_ov068_02268864(&h, 0xaaa, 0x1e, 0x46, unk_257 << 12);
     if (unk_24d == 10) {
         s32 x = FX_Div(0x12000, 0x10000);
-        func_ov003_0222d75c(this, t, x, (func_02063b8c(8) + 10) << 12);
+        Insect_FlutterBob(this, t, x, (func_02063b8c(8) + 10) << 12);
         unk_232 = t + 0xaaa;
     } else {
-        func_ov003_0222d75c(this, t, 0x19a, (func_02063b8c(8) + 0x12) << 12);
+        Insect_FlutterBob(this, t, 0x19a, (func_02063b8c(8) + 0x12) << 12);
         unk_232 = t + 0x1554;
     }
 }
@@ -804,7 +804,7 @@ void Unk_ov068_02268214::func_ov068_02269d58() {
 
 void Unk_ov068_02268214::func_ov068_02269d18() {
     s32 t = unk_232;
-    if (func_ov003_0222adc4(this) != 0) {
+    if (Insect_GroundWalk(this) != 0) {
         if (t <= 0) {
             unk_251 = 9;
             unk_242 = 0;
@@ -817,7 +817,7 @@ void Unk_ov068_02268214::func_ov068_02269d18() {
 
 namespace B20 { extern "C" s16 Math_AngleXZ(void *, void *); }
 void Unk_ov068_02268214::func_ov068_02269b20() {
-    u8 *a = (u8 *)func_ov003_0222eb10(unk_21c);
+    u8 *a = (u8 *)Snowball_GetLooseBall(unk_21c);
     s32 *pos = unk_204;
     s32 w2[3];
     s32 w[3];
@@ -838,7 +838,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         static s32 base = (tmp = Snowball_GetMaxRadius(), tmp - Snowball_GetMinRadius());
         r6 -= func_01ffcb0c(0x4cd, FX_Div(r6 - Snowball_GetMinRadius(), base));
         if (unk_24f % 0x14 == 0) {
-            s32 t = (s32)(func_ov003_0222c620(6, 1) << 17) >> 16;
+            s32 t = (s32)(Insect_RandomTurn(6, 1) << 17) >> 16;
             ang += t;
             unk_232 = t;
         } else {
@@ -853,7 +853,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
             rot = (s16)(rot - 0x38e);
         }
         unk_23a = rot;
-        func_ov003_0222e328(w2, ang);
+        Insect_GetDirVec(w2, ang);
         w[0] = w[0] - func_01ffcb0c(w2[0], 0x2666);
         w[2] = w[2] - func_01ffcb0c(w2[2], 0x2666);
         s32 d = func_020e9650(w, pos);
@@ -939,8 +939,8 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
     v[1] = ang;
     v[2] = ang;
     *p = *p + 0xaaa;
-    func_ov003_0222dd54(this, 0, 1);
-    func_ov003_0222d674(this);
+    Insect_PlaySe(this, 0, 1);
+    Insect_FlapWings(this);
     if (tp != 0) {
         u8 *pp = tp + 0x5c;
         dist = func_020e9650(pp, pos);
@@ -997,11 +997,11 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
     }
     s16 na = ang + unk_23a;
     unk_23a = na;
-    func_ov003_0222e328(v, na);
+    Insect_GetDirVec(v, na);
     pos[0] += func_01ffcb0c(v[0], 0x8000);
     pos[2] += func_01ffcb0c(v[2], 0x8000);
     s32 r = func_02063b8c(8);
-    func_ov003_0222d75c(this, *p, 0x2800, (r + 0x12) << 12);
+    Insect_FlutterBob(this, *p, 0x2800, (r + 0x12) << 12);
 }
 
 
@@ -1077,7 +1077,7 @@ void Unk_ov068_02268214::func_ov068_022694c0() {
     } else if (MenuCtrl_IsMenuOpen() != 0) {
         h = h + 0x1554;
         unk_23a = h;
-        func_ov003_0222e328(v, h);
+        Insect_GetDirVec(v, h);
         pos[0] += func_01ffcb0c(0x23000, v[0]);
         pos[2] += func_01ffcb0c(0x23000, v[2]);
         func_ov068_02269424((BVec *)unk_210, (BS50 *)((u8 *)this + 0x50), cur - h);
@@ -1119,7 +1119,7 @@ void Unk_ov068_02268214::func_ov068_022694c0() {
         unk_21c = r6;
     }
     unk_23a = hh;
-    func_ov003_0222e328(w, h);
+    Insect_GetDirVec(w, h);
     if (dist > 0xe000) {
         r6 <<= 12;
         pos[0] += FX_Div(func_01ffcb0c(r6, w[0]), 0x3800);
@@ -1168,17 +1168,17 @@ void func_ov068_02269250(BObj *o) {
             BVec vec;
             func_020e7530(&buf, Math_AngleXZ(r6, (u8 *)q + 0x5c), 0x1554);
             o->unk_23a = buf;
-            func_ov003_0222e328(&vec, buf);
+            Insect_GetDirVec(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
             r6->z = r6->z + func_01ffcb0c(0x23000, vec.z);
             func_ov068_02269424(&o->unk_210, &o->unk_50, c - buf);
         }
         if (*r7 == 0) {
             if (PlayerActor_LocalBeeSting()) {
-                func_ov003_0222dd54(o, 1, 0);
+                Insect_PlaySe(o, 1, 0);
                 *r7 = *r7 + 1;
             } else {
-                func_ov003_0222dd54(o, 0, 1);
+                Insect_PlaySe(o, 0, 1);
             }
         } else {
             *r7 = *r7 + 1;
@@ -1189,7 +1189,7 @@ void func_ov068_02269250(BObj *o) {
         }
     } else {
         BVec vec;
-        func_ov003_0222e328(&vec, o->unk_23a);
+        Insect_GetDirVec(&vec, o->unk_23a);
         if (st == 7) {
             r6->x = r6->x + func_01ffcb0c(vec.x, 0x64000);
             r6->z = r6->z + func_01ffcb0c(vec.z, 0x64000);
@@ -1204,7 +1204,7 @@ void func_ov068_02269250(BObj *o) {
             r4->y = r4->y + 0x333;
             r4->z = r4->z + 0x333;
         }
-        if (func_ov003_0222af48(o, 4)) {
+        if (Insect_FadeOut(o, 4)) {
             BVec *z;
             o->unk_251 = 0x13;
             o->unk_249 = 0;
@@ -1221,10 +1221,10 @@ void func_ov068_02269250(BObj *o) {
 
 
 void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
-    func_ov003_0222adc4(o);
+    Insect_GroundWalk(o);
     if (o->unk_251 == 4) {
-        func_ov003_0222dd54(o, 0, 1);
-        if (func_ov003_0222d334(o)) {
+        Insect_PlaySe(o, 0, 1);
+        if (Insect_TickTimer(o)) {
             o->unk_251 = 0x13;
             o->unk_244 = (func_02063b8c(9) + 2) * 0x14;
         }
@@ -1237,17 +1237,17 @@ void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
                 void *q = func_02095204(4);
                 if (q) {
                     o->unk_23a = Math_AngleXZ(&o->unk_204, (u8 *)q + 0x5c);
-                    func_ov003_0222dd54(o, 1, 0);
+                    Insect_PlaySe(o, 1, 0);
                 }
             }
             *p = *p + 3;
             if (*p > 3) {
-                if (func_ov003_0222e2fc(&o->unk_204) == 0 && o->unk_204.y <= 0) {
+                if (Insect_IsOverWater(&o->unk_204) == 0 && o->unk_204.y <= 0) {
                     *p = 0;
                 }
             }
         } else {
-            func_ov003_0222dd54(o, 0, 1);
+            Insect_PlaySe(o, 0, 1);
         }
         if (o->unk_24d == 0x37 || *p == 0) {
             if (mode != 2) {
@@ -1265,7 +1265,7 @@ s32 func_ov068_02269040(BObj *o, s16 *p) {
     if (q) {
         u32 qq = (u32)q + 0x5c;
         BVec vec;
-        s32 st = (s8)func_ov003_0222c7fc(o, &vec);
+        s32 st = (s8)Insect_UpdateAlarm(o, &vec);
         s16 c = o->unk_254;
         if (c > 0) {
             s32 lim = o->unk_224;
@@ -1302,7 +1302,7 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
         if (func_02106020((s32)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0) == 0x1f) {
             if (mode == 1) {
                 if (*r6 == 0) {
-                    func_ov003_0222dd54(o, 1, 0);
+                    Insect_PlaySe(o, 1, 0);
                     t23a = Math_AngleXZ(v, (void *)q);
                 }
                 *r6 = *r6 + 1;
@@ -1313,7 +1313,7 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
                 o->unk_232 = 0x3c;
                 if (o->unk_24d == 0x37) {
                     if ((u32)(s->unk_a4 << 4) >> 16 < 4 && (u32)(s->unk_a0 << 4) >> 16 < 0xb) {
-                        func_ov003_0222dd54(o, 1, 0);
+                        Insect_PlaySe(o, 1, 0);
                     }
                 }
             }
@@ -1378,12 +1378,12 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
         *p = 0x12c;
     } else {
         if (*p < 0x1f) {
-            if (func_ov003_0222af48(o, 1)) {
-                func_ov003_02229910(o);
+            if (Insect_FadeOut(o, 1)) {
+                Insect_Despawn(o);
             }
         } else if (o->unk_24b) {
             s16 t = o->unk_23a;
-            func_ov003_0222dd54(o, 0, 1);
+            Insect_PlaySe(o, 0, 1);
             func_020e7530(&t, Math_AngleXZ((void *)q, v), 0x666);
             o->unk_23a = t;
             o->unk_251 = 7;
@@ -1395,7 +1395,7 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
 }
 
 s32 func_ov068_02268b70(BObj *o, s16 *p) {
-    s32 inside = func_ov003_0222d334(o);
+    s32 inside = Insect_TickTimer(o);
     BVec *v = &o->unk_204;
     s16 a;
     s32 b;
@@ -1411,7 +1411,7 @@ s32 func_ov068_02268b70(BObj *o, s16 *p) {
                     if (o->unk_21c != 1) {
                         o->unk_251 = 0;
                     } else {
-                        func_ov003_02229938(o);
+                        Insect_SetWanderBox(o);
                     }
                 }
             } else {
@@ -1436,7 +1436,7 @@ s32 func_ov068_02268b70(BObj *o, s16 *p) {
                     }
                     *p = *p + a;
                     VEC_Subtract(&c, v, &c);
-                    func_ov003_0222ab68(&c, &c, 1);
+                    Insect_ClampStepXZ(&c, &c, 1);
                     VEC_Add(v, &c, v);
                 }
             }
@@ -1462,7 +1462,7 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
             ok = FALSE;
         }
     } else {
-        if (Field_FindFlowerNear(pos, p, func_ov003_0222d1dc((s8)t)) != 0) {
+        if (Field_FindFlowerNear(pos, p, Insect_GetFlowerSpeciesMask((s8)t)) != 0) {
             ok = TRUE;
         } else {
             ok = FALSE;
@@ -1478,7 +1478,7 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
     s32 hy = (s32)y >> 4;
     u16 *cell = BlockMap_GetItemPtr(gSceneBlockMap, hx, hy, x - (hx << 4), y - (hy << 4), 0);
     if ((u8)(t + 0xfe) <= 1) {
-        if (func_ov003_0222dec8((s8)t, cell) == 0) {
+        if (Insect_LikesFlower((s8)t, cell) == 0) {
             return FALSE;
         }
     }
@@ -1535,7 +1535,7 @@ void Unk_ov068_02268214::func_ov068_02268864(s16 *p, s32 a, s32 b, u8 thr, s32 s
             *p = *p - a;
         }
     }
-    func_ov003_0222e328(vec, *p);
+    Insect_GetDirVec(vec, *p);
     unk_23a = *p;
     if (unk_24a != 0) {
         float f = 1.25f;

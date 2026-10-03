@@ -1091,10 +1091,10 @@ namespace ns_0225f1a0 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 func_ov003_0221ffe8(s32);
-s32 func_ov003_0221ffb8(void *, s32);
-s32 func_ov003_02227ed4(u8 *, u8);
-s32 func_ov003_02227e08(void *, u8);
+s32 FishShadow_GetFishId(s32);
+s32 FishShadow_GetPos(void *, s32);
+s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
+s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 func_020e9650(void *, void *);
 s32 func_0201a5d0(void *, void *);
 void func_0201a6c0(void *, u32, s32, s32, void *, s32, s32, u8);
@@ -1913,10 +1913,10 @@ namespace ns_02265324 {
 extern "C" {
 extern s32 data_020c6d1c;
 extern u8 gVec3Zero[];
-s32 func_ov003_0221ffe8(s32);
-s32 func_ov003_0221ffb8(void *, s32);
-s32 func_ov003_02227ed4(u8 *, u8);
-s32 func_ov003_02227e08(void *, u8);
+s32 FishShadow_GetFishId(s32);
+s32 FishShadow_GetPos(void *, s32);
+s32 FieldInsect_GetKindAndAlarm(u8 *, u8);
+s32 FieldInsect_GetPosAndKind(void *, u8);
 s32 func_020e9650(void *, void *);
 s32 func_0201a5d0(void *, void *);
 void func_0201a6c0(void *, u32, s32, s32, void *, s32, s32, u8);
@@ -7644,7 +7644,7 @@ void FieldVillagerLook::setLookMode(FieldVillager *o, u32 idx, s32 a, s32 b, voi
 
 s32 FieldVillagerLook::func_ov068_0225f56c(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
-    s32 t = func_ov003_02227e08(v, i);
+    s32 t = FieldInsect_GetPosAndKind(v, i);
     if (t != -1 && func_020e9650(p, v) < lim) {
         return t;
     }
@@ -7671,7 +7671,7 @@ BOOL FieldVillagerLook::func_ov068_0225f4fc(u32 a, s32 b) {
     if (b != -1) {
         s32 t;
         buf[0] = 0;
-        t = func_ov003_02227ed4(buf, a);
+        t = FieldInsect_GetKindAndAlarm(buf, a);
         if (t == b) {
             return TRUE;
         }
@@ -7705,7 +7705,7 @@ void FieldVillagerLook::func_ov068_0225f460(FieldVillager *o) {
 
 BOOL FieldVillagerLook::func_ov068_0225f430(Unk_ov068_0225f23c_Vec *v, s32 i, Unk_ov068_0225f23c_Vec *p, s32 lim) {
     using namespace ns_0225f1a0;
-    if (func_ov003_0221ffb8(v, i) && func_020e9650(p, v) < lim) {
+    if (FishShadow_GetPos(v, i) && func_020e9650(p, v) < lim) {
         return TRUE;
     }
     return FALSE;
@@ -7716,7 +7716,7 @@ s32 FieldVillagerLook::func_ov068_0225f3e4(Unk_ov068_0225f23c_Vec *v, s32 *out, 
     s32 i;
     s32 t;
     for (i = 0; i < 6; i++) {
-        t = func_ov003_0221ffe8(i);
+        t = FishShadow_GetFishId(i);
         if (t != -1) {
             if (func_ov068_0225f430(v, i, p, lim)) {
                 *out = i;
@@ -7729,7 +7729,7 @@ s32 FieldVillagerLook::func_ov068_0225f3e4(Unk_ov068_0225f23c_Vec *v, s32 *out, 
 
 BOOL FieldVillagerLook::func_ov068_0225f3c0(s32 a, s32 b) {
     using namespace ns_0225f1a0;
-    s32 t = func_ov003_0221ffe8(a);
+    s32 t = FishShadow_GetFishId(a);
     if (t != -1 && b == t) {
         return TRUE;
     }

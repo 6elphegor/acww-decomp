@@ -281,11 +281,11 @@ void NetBuf_UnpackPair20(void *a, void *b, void *c);
 }
 
 extern "C" {
-s32 func_ov003_022201bc(u8 a, u32 b, void *c);
+s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
 }
 
 extern "C" {
-s32 func_ov003_02224d58(void *a, u8 b);
+s32 BottleThrow_SetTarget(void *a, u8 b);
 }
 
 extern "C" {
@@ -293,15 +293,15 @@ u8 *func_02095204(u8 x);
 }
 
 extern "C" {
-BOOL func_ov003_02227434(u8 x);
+BOOL HeldInsect_GetStage(u8 x);
 }
 
 extern "C" {
-void func_ov003_02227248(u32 a, u8 b);
+void HeldInsect_Start(u32 a, u8 b);
 }
 
 extern "C" {
-s32 func_ov003_0222746c(u8 a, s32 b);
+s32 HeldInsect_Release(u8 a, s32 b);
 }
 
 extern "C" {

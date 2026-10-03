@@ -70,10 +70,10 @@ public:
 };
 
 // ---- class with vtable 0x02234aac (derived from ModelAnim)
-class Unk_ov003_02234aac : public ModelAnim {
+class InsectMatAnim : public ModelAnim {
 public:
-    Unk_ov003_02234aac();
-    virtual ~Unk_ov003_02234aac();
+    InsectMatAnim();
+    virtual ~InsectMatAnim();
     static void *operator new(unsigned long, void *p) { return p; }
 };
 
@@ -134,13 +134,13 @@ public:
     virtual void vfunc_00();
 };
 
-// ---- static object holding a Unk_ov003_02234aac plus library sub-objects (no vtable)
-class Unk_ov003_02225ed0 {
+// ---- static object holding a InsectMatAnim plus library sub-objects (no vtable)
+class Insect {
 public:
-    Unk_ov003_02225ed0();
-    ~Unk_ov003_02225ed0();
+    Insect();
+    ~Insect();
 
-    /* 0x000 */ Unk_ov003_02234aac unk_00;
+    /* 0x000 */ InsectMatAnim unk_00;
     /* 0x020 */ Unk_02032238 unk_20;
     /* 0x050 */ AnimModel unk_50;
     /* 0x108 */ Unk_02088b20 unk_108;
@@ -178,7 +178,7 @@ struct Unk_ov003_02228710_Vec {
     s32 x, y, z;
 };
 
-// Actor object (entity), 0x25c bytes; table data_ov003_02259354.
+// Actor object (entity), 0x25c bytes; table sSpecialInsects.
 struct Unk_ov003_02228710_Act {
     u8 pad_00[0x18];
     s32 unk_18;
@@ -244,19 +244,19 @@ public:
     ~Unk_ov003_0222e708();
 };
 
-class Unk_ov003_02234abc : public GameProc, public Unk_ov003_0222e708 {
+class InsectManager : public GameProc, public Unk_ov003_0222e708 {
 public:
-    Unk_ov003_02234abc();
-    virtual ~Unk_ov003_02234abc();
+    InsectManager();
+    virtual ~InsectManager();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    BOOL func_022288dc(Unk_ov003_02228710_Act *e);
-    BOOL func_02228924(s32 id, s32 idx);
-    BOOL func_0222898c(Unk_ov003_02228710_Act *e);
-    void func_022287c8(Unk_ov003_02228710_Act *e, s32 mode);
+    BOOL allocFieldInsect(Unk_ov003_02228710_Act *e);
+    BOOL allocSpecialInsect(s32 id, s32 idx);
+    BOOL allocHeldInsect(Unk_ov003_02228710_Act *e);
+    void freeInsect(Unk_ov003_02228710_Act *e, s32 mode);
 
     /* 0x50 */ Unk_0209c15c unk_50;
     /* 0x68 */ Unk_0209c15c unk_68;
@@ -278,64 +278,64 @@ struct Unk_ov003_02234a9c_Entry {
     u16 unk_06;
 };
 
-extern "C" void func_ov003_02228b18();
+extern "C" void InsectManager_Create();
 extern "C" {
-void func_ov003_02228b30();
-void func_ov003_02228b38();
-void func_ov003_02228b40();
-void func_ov003_02228b48();
-void func_ov003_02228b6c();
-void func_ov003_02228b74();
-void func_ov003_02228b98();
-void func_ov003_02228bdc();
-void func_ov003_02228c0c();
-void func_ov003_02228c14();
-void func_ov003_02228c1c();
-void func_ov003_02228cbc();
-void func_ov003_02228cc4();
-void func_ov003_02228d0c();
-void func_ov003_02228d14();
-void func_ov003_02228d40();
-void func_ov003_02228d48();
-void func_ov003_02228d74();
-void func_ov003_02228d7c();
-void func_ov003_02228dd0();
-void func_ov003_02228dd8();
-void func_ov003_02228de0();
-void func_ov003_02228e60();
-void func_ov003_02228f04();
-void func_ov003_02228f64();
-void func_ov003_02228f6c();
-void func_ov003_02228fac();
-void func_ov003_02228fb4();
-void func_ov003_02229050();
-void func_ov003_022290dc();
-void func_ov003_02229144();
-void func_ov003_02229368();
-void func_ov003_022293f0();
-void func_ov003_022293f8();
-void func_ov003_0222941c();
-void func_ov003_02229424();
-void func_ov003_02229464();
-void func_ov003_022294f0();
-void func_ov003_022294f8();
-void func_ov003_02229668();
+void Insect_UpdateKind38();
+void Insect_InitKind38();
+void Insect_UpdateDungBeetle();
+void Insect_InitDungBeetle();
+void Insect_UpdateAnt();
+void Insect_InitAnt();
+void Insect_InitScorpion();
+void Insect_InitTarantula();
+void Insect_UpdateStinger();
+void Insect_UpdateSpider();
+void Insect_InitSpider();
+void Insect_UpdateFlea();
+void Insect_InitFlea();
+void Insect_UpdateFly();
+void Insect_InitFly();
+void Insect_UpdateHoneybee();
+void Insect_InitHoneybee();
+void Insect_UpdateBee();
+void Insect_InitBee();
+void Insect_UpdatePillBug();
+void Insect_UpdateMoleCricket();
+void Insect_InitBurrower();
+void Insect_InitCrawler();
+void Insect_UpdateCrawler();
+void Insect_UpdatePondskater();
+void Insect_InitPondskater();
+void Insect_UpdateDragonfly();
+void Insect_InitDragonfly();
+void Insect_InitHopper();
+void Insect_UpdateHopper();
+void Insect_InitTreeBug();
+void Insect_UpdateTreeBug();
+void Insect_UpdateMosquito();
+void Insect_InitMosquito();
+void Insect_UpdateFirefly();
+void Insect_InitFirefly();
+void Insect_InitMoth();
+void Insect_UpdateMoth();
+void Insect_InitButterfly();
+void Insect_UpdateButterfly();
 }
 
-extern "C" { Unk_ov003_02225ed0 data_ov003_0225a17c[8]; }
+extern "C" { Insect sFieldInsects[8]; }
 extern "C" { u16 data_ov003_02258f10; }
-extern "C" { u8 data_ov003_02258f00; }
-extern "C" { u8 data_ov003_02258f54[0x200]; }
-extern "C" { Unk_ov003_02225ed0 data_ov003_02259354[2]; }
-extern "C" { s8 data_ov003_02258f0c; }
-extern "C" { u8 data_ov003_02258ef8; }
-extern "C" { Unk_ov003_02225ed0 data_ov003_0225980c[4]; }
+extern "C" { u8 sWateringActive; }
+extern "C" { u8 sInsectSpawnMaskDry[0x200]; }
+extern "C" { Insect sSpecialInsects[2]; }
+extern "C" { s8 sTrashFlySpawnEnabled; }
+extern "C" { u8 sAntSpawnEnabled; }
+extern "C" { Insect sHeldInsects[4]; }
 extern "C" { u8 data_ov003_02258f08; }
 extern "C" { u8 data_ov003_02258f04; }
-extern "C" { u8 data_ov003_02258ef4; }
-extern "C" { u8 data_ov003_02259154[0x200]; }
+extern "C" { u8 sInsectSpawnTimer; }
+extern "C" { u8 sInsectSpawnMaskLand[0x200]; }
 // table of 60 six-byte records at 0x02234b04 (label 0x02234b06 = +2, 0x02234b08 = +4)
-extern "C" u16 data_ov003_02234b04[180] = {
+extern "C" u16 sInsectModelParams[180] = {
     0x0, 0x514, 0x640, 0x0, 0x514, 0x640,
     0x0, 0x6a4, 0x6a4, 0x0, 0x6a4, 0x6a4,
     0x0, 0x6a4, 0x6a4, 0x0, 0x708, 0x708,
@@ -367,81 +367,81 @@ extern "C" u16 data_ov003_02234b04[180] = {
     0x0, 0x3e8, 0x3e8, 0x1, 0x44c, 0x640,
     0x0, 0xbb8, 0xbb8, 0x0, 0x7d0, 0x9c4,
 };
-extern "C" { u16 data_ov003_02258f14; }
-extern "C" { u8 data_ov003_02258efc; }
-extern "C" Unk_ov003_02234a9c_Entry data_ov003_02234a9c = {(void *)func_ov003_02228b18, 0xbc, 0xc0};
-extern "C" void *data_ov003_02234c6c[120] = {
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_022294f8, (void *)func_ov003_02229668,
-    (void *)func_ov003_02229464, (void *)func_ov003_022294f0,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228d48, (void *)func_ov003_02228d40,
-    (void *)func_ov003_02228d7c, (void *)func_ov003_02228d74,
-    (void *)func_ov003_02229050, (void *)func_ov003_022290dc,
-    (void *)func_ov003_02229050, (void *)func_ov003_022290dc,
-    (void *)func_ov003_02228e60, (void *)func_ov003_02228f04,
-    (void *)func_ov003_02228e60, (void *)func_ov003_02228f04,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228fb4, (void *)func_ov003_02228fac,
-    (void *)func_ov003_02228fb4, (void *)func_ov003_02228fac,
-    (void *)func_ov003_02228fb4, (void *)func_ov003_02228fac,
-    (void *)func_ov003_02228b74, (void *)func_ov003_02228b6c,
-    (void *)func_ov003_02228f6c, (void *)func_ov003_02228f64,
-    (void *)func_ov003_02228e60, (void *)func_ov003_02228f04,
-    (void *)func_ov003_02229050, (void *)func_ov003_022290dc,
-    (void *)func_ov003_02229050, (void *)func_ov003_022290dc,
-    (void *)func_ov003_02229050, (void *)func_ov003_022290dc,
-    (void *)func_ov003_02228de0, (void *)func_ov003_02228dd8,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228e60, (void *)func_ov003_02228f04,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228b48, (void *)func_ov003_02228b40,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229424, (void *)func_ov003_0222941c,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228cc4, (void *)func_ov003_02228cbc,
-    (void *)func_ov003_02228de0, (void *)func_ov003_02228dd0,
-    (void *)func_ov003_022293f8, (void *)func_ov003_022293f0,
-    (void *)func_ov003_02228d14, (void *)func_ov003_02228d0c,
-    (void *)func_ov003_02229144, (void *)func_ov003_02229368,
-    (void *)func_ov003_02228c1c, (void *)func_ov003_02228c14,
-    (void *)func_ov003_02228bdc, (void *)func_ov003_02228c0c,
-    (void *)func_ov003_02228b98, (void *)func_ov003_02228c0c,
-    (void *)func_ov003_02228b38, (void *)func_ov003_02228b30,
-    (void *)func_ov003_02229424, (void *)func_ov003_0222941c,
-    (void *)func_ov003_02228d7c, (void *)func_ov003_02228d74,
-    (void *)func_ov003_02228b74, (void *)func_ov003_02228b6c,
+extern "C" { u16 sFieldInsectPurgeTimer; }
+extern "C" { u8 sInsectCatchResult; }
+extern "C" Unk_ov003_02234a9c_Entry sInsectManagerProfile = {(void *)InsectManager_Create, 0xbc, 0xc0};
+extern "C" void *sInsectBehaviours[120] = {
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitButterfly, (void *)Insect_UpdateButterfly,
+    (void *)Insect_InitMoth, (void *)Insect_UpdateMoth,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitHoneybee, (void *)Insect_UpdateHoneybee,
+    (void *)Insect_InitBee, (void *)Insect_UpdateBee,
+    (void *)Insect_InitHopper, (void *)Insect_UpdateHopper,
+    (void *)Insect_InitHopper, (void *)Insect_UpdateHopper,
+    (void *)Insect_InitCrawler, (void *)Insect_UpdateCrawler,
+    (void *)Insect_InitCrawler, (void *)Insect_UpdateCrawler,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitDragonfly, (void *)Insect_UpdateDragonfly,
+    (void *)Insect_InitDragonfly, (void *)Insect_UpdateDragonfly,
+    (void *)Insect_InitDragonfly, (void *)Insect_UpdateDragonfly,
+    (void *)Insect_InitAnt, (void *)Insect_UpdateAnt,
+    (void *)Insect_InitPondskater, (void *)Insect_UpdatePondskater,
+    (void *)Insect_InitCrawler, (void *)Insect_UpdateCrawler,
+    (void *)Insect_InitHopper, (void *)Insect_UpdateHopper,
+    (void *)Insect_InitHopper, (void *)Insect_UpdateHopper,
+    (void *)Insect_InitHopper, (void *)Insect_UpdateHopper,
+    (void *)Insect_InitBurrower, (void *)Insect_UpdateMoleCricket,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitCrawler, (void *)Insect_UpdateCrawler,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitDungBeetle, (void *)Insect_UpdateDungBeetle,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitFirefly, (void *)Insect_UpdateFirefly,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitFlea, (void *)Insect_UpdateFlea,
+    (void *)Insect_InitBurrower, (void *)Insect_UpdatePillBug,
+    (void *)Insect_InitMosquito, (void *)Insect_UpdateMosquito,
+    (void *)Insect_InitFly, (void *)Insect_UpdateFly,
+    (void *)Insect_InitTreeBug, (void *)Insect_UpdateTreeBug,
+    (void *)Insect_InitSpider, (void *)Insect_UpdateSpider,
+    (void *)Insect_InitTarantula, (void *)Insect_UpdateStinger,
+    (void *)Insect_InitScorpion, (void *)Insect_UpdateStinger,
+    (void *)Insect_InitKind38, (void *)Insect_UpdateKind38,
+    (void *)Insect_InitFirefly, (void *)Insect_UpdateFirefly,
+    (void *)Insect_InitBee, (void *)Insect_UpdateBee,
+    (void *)Insect_InitAnt, (void *)Insect_UpdateAnt,
 };
 
-extern "C" { Unk_ov003_02258f18 data_ov003_02258f18; }
+extern "C" { Unk_ov003_02258f18 sWateringPos; }
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
-// ---- record used by func_ov003_02225cb0
+// ---- record used by FieldInsect_PurgeStale
 struct Unk_ov003_02225cb0_Ent {
     /* 0x000 */ u8 pad_000[0x234];
     /* 0x234 */ s16 unk_234;
@@ -478,17 +478,17 @@ struct Unk_ov003_02226058_Buf {
 };
 
 extern "C" {
-extern u8 data_ov003_02258ef8;
-extern u8 data_ov003_02258f00;
+extern u8 sAntSpawnEnabled;
+extern u8 sWateringActive;
 extern u8 data_ov003_02258f04;
 extern u8 data_ov003_02258f08;
-extern s8 data_ov003_02258f0c;
+extern s8 sTrashFlySpawnEnabled;
 extern u16 data_ov003_02258f10;
-extern u16 data_ov003_02258f14;
-extern u32 data_ov003_02258f18[];
-extern u8 data_ov003_02258f54[];
-extern u8 data_ov003_02259154[];
-extern Unk_ov003_02225cb0_Ent data_ov003_0225a17c[];
+extern u16 sFieldInsectPurgeTimer;
+extern u32 sWateringPos[];
+extern u8 sInsectSpawnMaskDry[];
+extern u8 sInsectSpawnMaskLand[];
+extern Unk_ov003_02225cb0_Ent sFieldInsects[];
 extern Unk_ov003_02225d38_Ent *data_020dcbd0[];
 extern Unk_ov003_02225dbc_Data *gCommManager;
 extern u8 data_0213b91c[];
@@ -506,7 +506,7 @@ BuildingActor *BuildingList_FindByItem(u32 id);
 void func_02133150();
 void *TownBlockMap_Get();
 s32 func_02063b8c(s32 n);
-BOOL func_ov003_02225238(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
+BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
 void *func_02095204(s32 n);
 s32 func_020e9650(void *a, s32 *v);
 void *MI_CpuCopy8(void *dst, void *src, s32 n);
@@ -530,28 +530,28 @@ void func_020323b0(void *p);
 }
 
 extern "C" {
-s32 func_ov003_02225bf8(s32 a, s32 b);
-BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out);
-BOOL func_ov003_02225dbc(s32 a);
-s32 func_ov003_02226058();
-void func_ov003_02225800(u16 (*arr)[4][16]);
+s32 Insect_GetWeatherReaction(s32 a, s32 b);
+BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
+BOOL Insect_IsAllowedOnline(s32 a);
+s32 Insect_GetTimeSlot();
+void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02225800(u16 (*arr)[4][16]);
-extern "C" void func_ov003_022258cc(u16 (*arr)[4][16]);
-extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag);
-extern "C" s32 func_ov003_02225b6c(void *p, s32 t);
-extern "C" s32 func_ov003_02225bf8(s32 a, s32 b);
-extern "C" void func_ov003_02225cb0();
-extern "C" BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out);
-extern "C" BOOL func_ov003_02225dbc(s32 a);
-extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c);
-extern "C" void func_ov003_02225ec8(u8 *self, u32 v);
-extern "C" void func_ov003_0222603c(u8 *self);
-extern "C" s32 func_ov003_02226058();
-extern "C" BOOL func_ov003_022260ac(u8 *out);
-extern "C" BOOL func_ov003_022260e8(void *p);
+extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16]);
+extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16]);
+extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag);
+extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t);
+extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b);
+extern "C" void FieldInsect_PurgeStale();
+extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out);
+extern "C" BOOL Insect_IsAllowedOnline(s32 a);
+extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c);
+extern "C" void Insect_SetAnimSpeed(u8 *self, u32 v);
+extern "C" void Insect_TickFrame(u8 *self);
+extern "C" s32 Insect_GetTimeSlot();
+extern "C" BOOL Insect_RollKind(u8 *out);
+extern "C" BOOL Insect_IsAtWateringPoint(void *p);
 }
 
 #undef func_02072e88
@@ -565,12 +565,12 @@ extern "C" BOOL func_ov003_022260e8(void *p);
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 struct Unk_ov003_02226180_Vec {
     s32 x, y, z;
@@ -580,7 +580,7 @@ struct Unk_ov003_02226180_Blk {
     s64 v[6];
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 (2), 0225980c (4), 0225a17c (8)
+// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
 struct Unk_ov003_02226180_Rec {
     u32 unk_00[0x14];                  // 0x00
     u8 unk_50[0x9c];                   // 0x50
@@ -649,10 +649,10 @@ extern Unk_020cbb18_Ptr *gCommManager;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
 extern s16 data_02135f44[];
-extern Rec data_ov003_0225a17c[];
-extern Rec data_ov003_02259354[];
-extern Rec data_ov003_0225980c[];
-extern u8 data_ov003_02258f0c;
+extern Rec sFieldInsects[];
+extern Rec sSpecialInsects[];
+extern Rec sHeldInsects[];
+extern u8 sTrashFlySpawnEnabled;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 s32 func_0209c0ac(void *p);
 s32 func_02106020(s32 a, s32 b);
@@ -671,31 +671,31 @@ void Mem_Free(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 void func_0209c15c(void *p);
 void func_02043b90(void);
-s32 func_ov003_022260ac(s8 *p);
-void func_ov003_02226d08(Rec *e, s32 v);
-void func_ov003_02225b6c(Buf *b, s32 v);
-void func_ov003_022258cc(Buf *b);
-s32 func_ov003_02224e68(Buf *b, s32 x, s32 z, s32 a, s32 c, s32 d);
-BOOL func_ov003_02225910(Rec *e, Buf *b, s32 kind, s32 sub);
-s32 func_ov003_02225bf8(s32 kind, s32 h);
+s32 Insect_RollKind(s8 *p);
+void Insect_SetScale(Rec *e, s32 v);
+void InsectSpawn_CopyMask(Buf *b, s32 v);
+void InsectSpawn_BuildLightMask(Buf *b);
+s32 SpawnMask_MarkRect(Buf *b, s32 x, s32 z, s32 a, s32 c, s32 d);
+BOOL InsectSpawn_PickPos(Rec *e, Buf *b, s32 kind, s32 sub);
+s32 Insect_GetWeatherReaction(s32 kind, s32 h);
 s32 func_ov003_022287c8(void *obj, Rec *e, s32 v);
 void func_ov003_022288dc(void *obj, Rec *e);
-u8 *func_ov003_0222eb10(s32 i);
+u8 *Snowball_GetLooseBall(s32 i);
 s32 Snowball_GetRadius(void *o);
-s32 func_ov003_0222c620(s32 a, s32 b);
-BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag);
+s32 Insect_RandomTurn(s32 a, s32 b);
+BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag);
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL func_ov003_0222612c(void);
-extern "C" BOOL func_ov003_02226180(s32 x);
-extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, s32 flag);
-extern "C" void func_ov003_02226428(Vec3 *v);
-extern "C" s32 func_ov003_0222644c(s32 a, s32 b, s8 c, u32 d);
-extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag);
-extern "C" void func_ov003_0222675c(void);
-extern "C" void func_ov003_02226768(s32 obj, s32 flag);
-extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
+extern "C" BOOL Insect_IsBeeSwarmOut(void);
+extern "C" BOOL Insect_NetClaim(s32 x);
+extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, s32 flag);
+extern "C" void Insect_SpawnBeeSwarm(Vec3 *v);
+extern "C" s32 Insect_TrySpawnRandom(s32 a, s32 b, s8 c, u32 d);
+extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag);
+extern "C" void Insect_EnableTrashFlies(void);
+extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag);
+extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 }
 
 #undef func_020547a4
@@ -717,7 +717,7 @@ extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z);
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 struct Unk_ov003_0225980c_V3 {
     s32 x, y, z;
@@ -776,14 +776,14 @@ struct Unk_ov003_02226d54_Net {
 };
 
 extern "C" {
-extern Obj data_ov003_0225a17c[];
-extern Obj data_ov003_02259354[];
-extern Obj data_ov003_0225980c[];
-extern u8 data_ov003_02258efc;
+extern Obj sFieldInsects[];
+extern Obj sSpecialInsects[];
+extern Obj sHeldInsects[];
+extern u8 sInsectCatchResult;
 extern Unk_ov003_02226d54_Net *gCommManager;
 extern Blk data_021f47e0;
 extern s16 data_02135f44[];
-s32 func_ov003_022273b4(Obj *self, void *a, s32 n);
+s32 InsectPool_Draw(Obj *self, void *a, s32 n);
 s32 WorldCurve_ToCurved(V3 *out, void *in);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
 s32 func_020e8388(void *m, s32 x, s32 y, s32 z);
@@ -809,41 +809,41 @@ void CommManager_beginRecord(void *g);
 void CommManager_writeRecord(void *g, void *buf, s32 n);
 void CommManager_endRecord(void *g, s32 a, s32 b);
 s32 func_ov003_02226a5c(Obj *self);
-void func_ov003_02226a9c(void *a, Obj *o, s32 flag);
-BOOL func_ov003_02226c14(void *a, Obj *o);
-void func_ov003_02226c88(void *a, Obj *o);
-void func_ov003_02226d08(Obj *o, s32 v);
-s32 func_ov003_02226d54(u8 id);
-void func_ov003_02226e70(s32 id);
-s32 func_ov003_02226ee8(s32 id);
-s32 func_ov003_02226fac(u8 id);
-void func_ov003_02227074(u8 id, s32 flag);
-void func_ov003_02227100(s32 id);
-BOOL func_ov003_0222716c(s32 t);
-void func_ov003_022271a8(s32 id);
-void func_ov003_02227248(s32 t, s32 idx);
-V3 *func_ov003_02227320(s32 idx);
-BOOL func_ov003_0222733c(s32 a, s32 t);
+void Insect_SetModelMatrix(void *a, Obj *o, s32 flag);
+BOOL Insect_HasShadow(void *a, Obj *o);
+void Insect_Draw(void *a, Obj *o);
+void Insect_SetScale(Obj *o, s32 v);
+s32 Insect_TryCatch(u8 id);
+void Insect_CancelCatch(s32 id);
+s32 Insect_GetCatchResult(s32 id);
+s32 Insect_FinishCatch(u8 id);
+void HeldInsect_Remove(u8 id, s32 flag);
+void Insect_OnClaimGranted(s32 id);
+BOOL Insect_CanHopAway(s32 t);
+void Insect_OnNetRemove(s32 id);
+void HeldInsect_Start(s32 t, s32 idx);
+V3 *HeldInsect_GetPos(s32 idx);
+BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 }
 
 struct Unk_ov003_02226a9c_Pad { Unk_ov003_02226a9c_Pad() {} ~Unk_ov003_02226a9c_Pad() {} };
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02226a9c(void *a, Obj *o, s32 flag);
-extern "C" BOOL func_ov003_02226c14(void *a, Obj *o);
-extern "C" void func_ov003_02226c88(void *a, Obj *o);
-extern "C" void func_ov003_02226d08(Obj *o, s32 v);
-extern "C" s32 func_ov003_02226d54(u8 id);
-extern "C" void func_ov003_02226e70(s32 id);
-extern "C" s32 func_ov003_02226ee8(s32 id);
-extern "C" s32 func_ov003_02226fac(u8 id);
-extern "C" void func_ov003_02227074(u8 id, s32 flag);
-extern "C" void func_ov003_02227100(s32 id);
-extern "C" BOOL func_ov003_0222716c(s32 t);
-extern "C" void func_ov003_022271a8(s32 id);
-extern "C" void func_ov003_02227248(s32 t, s32 idx);
-extern "C" V3 *func_ov003_02227320(s32 idx);
-extern "C" BOOL func_ov003_0222733c(s32 a, s32 t);
+extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag);
+extern "C" BOOL Insect_HasShadow(void *a, Obj *o);
+extern "C" void Insect_Draw(void *a, Obj *o);
+extern "C" void Insect_SetScale(Obj *o, s32 v);
+extern "C" s32 Insect_TryCatch(u8 id);
+extern "C" void Insect_CancelCatch(s32 id);
+extern "C" s32 Insect_GetCatchResult(s32 id);
+extern "C" s32 Insect_FinishCatch(u8 id);
+extern "C" void HeldInsect_Remove(u8 id, s32 flag);
+extern "C" void Insect_OnClaimGranted(s32 id);
+extern "C" BOOL Insect_CanHopAway(s32 t);
+extern "C" void Insect_OnNetRemove(s32 id);
+extern "C" void HeldInsect_Start(s32 t, s32 idx);
+extern "C" V3 *HeldInsect_GetPos(s32 idx);
+extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t);
 }
 
 #undef func_020547cc
@@ -860,8 +860,8 @@ extern "C" BOOL func_ov003_0222733c(s32 a, s32 t);
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 struct Unk_ov003_0225980c_V3 {
     s32 x, y, z;
@@ -875,7 +875,7 @@ struct Unk_ov003_0225980c_V3 {
 
 typedef Unk_ov003_0225980c_V3 V3;
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 (2), 0225980c (4), 0225a17c (8)
+// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
 struct Unk_ov003_0225980c_Rec {
     u8 pad_000[0x20];
     u8 unk_20[0x174 - 0x20];
@@ -934,11 +934,11 @@ struct Unk_ov003_02227970_Loc {
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
-extern Rec data_ov003_0225a17c[];
-extern Rec data_ov003_02259354[];
-extern Rec data_ov003_0225980c[];
-extern Unk_ov003_02234c6c_Ent data_ov003_02234c6c[];
-extern Unk_ov003_02234b04_Ent data_ov003_02234b04[];
+extern Rec sFieldInsects[];
+extern Rec sSpecialInsects[];
+extern Rec sHeldInsects[];
+extern Unk_ov003_02234c6c_Ent sInsectBehaviours[];
+extern Unk_ov003_02234b04_Ent sInsectModelParams[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 s32 func_020a62a0(void);
 s32 func_020b8fe8(void);
@@ -955,18 +955,18 @@ void CommManager_endRecord(Unk_020cbb18_Ptr *g, s32 a, s32 b);
 void *TownBlockMap_Get(void);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-BOOL func_ov003_0222733c(void *a, s32 t);
-void func_ov003_02226c88(void *a, Rec *o);
-void func_ov003_02226d08(Rec *o, s32 v);
-void func_ov003_02227074(s32 id, s32 flag);
-void func_ov003_0222c9e0(Rec *o, s32 v);
+BOOL Insect_IsTreeKindForCulling(void *a, s32 t);
+void Insect_Draw(void *a, Rec *o);
+void Insect_SetScale(Rec *o, s32 v);
+void HeldInsect_Remove(s32 id, s32 flag);
+void Insect_TurnToTarget(Rec *o, s32 v);
 s32 func_ov003_022287c8(void *a, Rec *o, s32 v);
 s32 func_ov003_0222898c(void *a, Rec *o);
-s32 func_ov003_022283d0(void *a, Rec *o, s32 v);
-s32 func_ov003_02228060(void *a, Rec *o, s32 i, s32 v);
-s32 func_ov003_0222e694(void *a, s32 i, s32 t, void *p, s32 b, s32 c);
-s32 func_ov003_0222e5e0(void *a, s32 i, s8 *p, s32 *q, s32 *r, u8 *s);
-s32 func_ov003_02225bf8(s32 a, s32 b);
+s32 Insect_LoadModel(void *a, Rec *o, s32 v);
+s32 Insect_Update(void *a, Rec *o, s32 i, s32 v);
+s32 InsectNetSync_Set(void *a, s32 i, s32 t, void *p, s32 b, s32 c);
+s32 InsectNetSync_Get(void *a, s32 i, s8 *p, s32 *q, s32 *r, u8 *s);
+s32 Insect_GetWeatherReaction(s32 a, s32 b);
 }
 
 static inline BOOL Unk_ov003_022277c0_Chk(u16 *p) {
@@ -1001,15 +1001,15 @@ static inline BOOL Unk_ov003_022277c0_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 func_ov003_022273b4(void *a, Rec *o, s32 n);
-extern "C" u32 func_ov003_02227434(s32 idx);
-extern "C" void func_ov003_0222746c(s32 idx, s32 v);
-extern "C" BOOL func_ov003_02227544(void *a, Rec *o);
-extern "C" void func_ov003_02227624(void *a);
-extern "C" void func_ov003_02227740(void *a);
-extern "C" BOOL func_ov003_022277c0(void *a, Rec *o);
-extern "C" BOOL func_ov003_02227930(void *a, Rec *o, s32 c, s32 d, s32 e);
-extern "C" void func_ov003_02227970(void *a);
+extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n);
+extern "C" u32 HeldInsect_GetStage(s32 idx);
+extern "C" void HeldInsect_Release(s32 idx, s32 v);
+extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o);
+extern "C" void HeldInsect_UpdateAll(void *a);
+extern "C" void SpecialInsect_UpdateAll(void *a);
+extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o);
+extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e);
+extern "C" void FieldInsect_UpdateAll(void *a);
 }
 
 #undef func_02003c70
@@ -1039,19 +1039,19 @@ extern "C" void func_ov003_02227970(void *a);
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 struct Unk_ov003_02227cd0_Vec {
     s32 x, y, z;
@@ -1070,7 +1070,7 @@ struct Unk_ov003_02234b04_Rec {
     u16 unk_04;
 };
 
-// One 0x25c-byte entry of the table at data_ov003_0225a17c (8 entries)
+// One 0x25c-byte entry of the table at sFieldInsects (8 entries)
 struct Unk_ov003_02227cd0_Rec {
     u8 unk_00[8];                      // 0x00
     s32 unk_08;                        // 0x08
@@ -1185,11 +1185,11 @@ struct Unk_ov003_02234c6c_Ent {
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
-extern Unk_ov003_02234c6c_Ent data_ov003_02234c6c[];
-extern Rec data_ov003_0225a17c[];
-extern u8 data_ov003_02258ef4;
-extern u8 data_ov003_02258ef8;
-extern Unk_ov003_02234b04_Rec data_ov003_02234b04[];
+extern Unk_ov003_02234c6c_Ent sInsectBehaviours[];
+extern Rec sFieldInsects[];
+extern u8 sInsectSpawnTimer;
+extern u8 sAntSpawnEnabled;
+extern Unk_ov003_02234b04_Rec sInsectModelParams[];
 extern void *gCurrentHeap;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL func_020a62a0();
@@ -1227,32 +1227,32 @@ BOOL ModelAnim_allocMatAnm(Rec *e, void *a, void *b);
 void ModelAnim_init(Rec *e, s32 m, s32 a, s32 b, s32 c);
 void *Model_getRenderObj(void *o);
 void ModelAnim_addToRenderObj(Rec *e, void *a);
-void func_ov003_02225cb0();
-BOOL func_ov003_02225e34(s8 *a, s8 *b, s32 c);
+void FieldInsect_PurgeStale();
+BOOL Insect_PickSpecialSpawn(s8 *a, s8 *b, s32 c);
 BOOL PlayerActor_TestSlotFlag9(s32 a);
-s32 func_ov003_0222644c(void *a, s32 b, s32 c, s32 d);
-s32 func_ov003_022264f0(void *a, s32 kind, u32 sub, s32 flag);
-void func_ov003_02226768(void *a, s32 b);
-void func_ov003_02226874(void *a, s32 flag, s32 idx, s32 x, s32 z);
-void func_ov003_02226a9c(void *a, Rec *e, s32 flag);
-void func_ov003_0222603c(Rec *e);
-s32 func_ov003_02227544(void *a, Rec *e);
-void func_ov003_02227624(void *a);
-void func_ov003_02227740(void *a);
-void func_ov003_02227970(void *a);
-s32 func_ov003_02229910(Rec *e);
+s32 Insect_TrySpawnRandom(void *a, s32 b, s32 c, s32 d);
+s32 Insect_Spawn(void *a, s32 kind, u32 sub, s32 flag);
+void InsectPool_UpdateInView(void *a, s32 b);
+void InsectPool_UpdateInViewOfPlayer(void *a, s32 flag, s32 idx, s32 x, s32 z);
+void Insect_SetModelMatrix(void *a, Rec *e, s32 flag);
+void Insect_TickFrame(Rec *e);
+s32 Insect_UsesCollisionMove(void *a, Rec *e);
+void HeldInsect_UpdateAll(void *a);
+void SpecialInsect_UpdateAll(void *a);
+void FieldInsect_UpdateAll(void *a);
+s32 Insect_Despawn(Rec *e);
 void func_ov003_022287c8(void *a, Rec *e, s32 v);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02227cd0(void *self);
-extern "C" s32 func_ov003_02227e08(Vec3 *out, u32 idx);
-extern "C" BOOL func_ov003_02227e40(u32 idx);
-extern "C" s32 func_ov003_02227ed4(u8 *out, u32 idx);
-extern "C" void func_ov003_02227f20(void *a, Rec *e);
-extern "C" void func_ov003_02228308(void *a, Rec *e);
-extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind);
-extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode);
+extern "C" void Insect_UpdateSpawning(void *self);
+extern "C" s32 FieldInsect_GetPosAndKind(Vec3 *out, u32 idx);
+extern "C" BOOL FieldInsect_IsTreeKind(u32 idx);
+extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx);
+extern "C" void Insect_CheckDisturbance(void *a, Rec *e);
+extern "C" void Insect_UpdateHideTimer(void *a, Rec *e);
+extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind);
+extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode);
 }
 
 #undef func_02003c70
@@ -1276,16 +1276,16 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
@@ -1309,7 +1309,7 @@ void func_0205c0d4();
 void func_0205c0bc();
 void func_0205c0a0();
 BOOL CommManager_isSlotActive(void *p, u32 v);
-void func_ov003_02225108();
+void InsectSpawn_BuildMasks();
 void func_02041868();
 void AnimModel_detachAnim(void *p);
 void Unk_02003c30_callRelease(void *p);
@@ -1321,62 +1321,62 @@ void *func_0209c0ac(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 func_02063b8c(s32 n);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
-s16 func_ov003_02229670();
-void func_ov003_02229698(Unk_ov003_02228710_Act *a, s32 v1, s32 v2, s32 v3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-void func_ov003_022295ec(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 s0, s32 s1);
-s32 func_ov003_02229938(Unk_ov003_02228710_Act *a);
-s32 func_ov003_02229a3c(Unk_ov003_02228710_Act *a);
-void func_ov003_0222a7d4(Unk_ov003_02228710_Act *a);
-void func_ov003_02229144(Unk_ov003_02228710_Act *a);
-void func_ov003_0222af84(Unk_ov003_02228710_Act *a);
-void func_ov003_0222be88(Unk_ov003_02228710_Act *a);
-void func_ov003_0222aff0(Unk_ov003_02228710_Act *a);
-void func_ov003_0222a8d0(Unk_ov003_02228710_Act *a);
-void func_ov003_0222b224(Unk_ov003_02228710_Act *a);
-void func_ov003_0222bf7c(Unk_ov003_02228710_Act *a);
-void func_ov003_0222c024(Unk_ov003_02228710_Act *a);
-void func_ov003_0222b6e0(Unk_ov003_02228710_Act *a);
-void func_ov003_0222be0c(Unk_ov003_02228710_Act *a);
-void func_ov003_02229eac(Unk_ov003_02228710_Act *a);
-void func_ov003_0222c2e0(Unk_ov003_02228710_Act *a);
-void func_ov003_0222cfb0(Unk_ov003_02228710_Act *a);
-void func_ov003_02228f0c(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w);
-void func_ov003_02229010(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
+s16 Insect_RandomAngle();
+void Insect_InitBehaviour(Unk_ov003_02228710_Act *a, s32 v1, s32 v2, s32 v3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
+void Insect_InitFlutter(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 s0, s32 s1);
+s32 Insect_SetWanderBox(Unk_ov003_02228710_Act *a);
+s32 Insect_PlaceOnPlantSide(Unk_ov003_02228710_Act *a);
+void TreeBug_Update(Unk_ov003_02228710_Act *a);
+void Insect_InitTreeBug(Unk_ov003_02228710_Act *a);
+void DungBeetle_Update(Unk_ov003_02228710_Act *a);
+void Ant_Update(Unk_ov003_02228710_Act *a);
+void Stinger_Update(Unk_ov003_02228710_Act *a);
+void Spider_Update(Unk_ov003_02228710_Act *a);
+void Flea_Update(Unk_ov003_02228710_Act *a);
+void Hoverer_Update(Unk_ov003_02228710_Act *a);
+void Bee_Update(Unk_ov003_02228710_Act *a);
+void PillBug_Update(Unk_ov003_02228710_Act *a);
+void MoleCricket_Update(Unk_ov003_02228710_Act *a);
+void Crawler_Update(Unk_ov003_02228710_Act *a);
+void Pondskater_Update(Unk_ov003_02228710_Act *a);
+void Dragonfly_Update(Unk_ov003_02228710_Act *a);
+void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w);
+void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02228b30(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b38(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b40(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b6c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228c0c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228c14(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228cbc(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d0c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d40(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d74(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228dd0(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228dd8(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228f04(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228f64(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228fac(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b48(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b74(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228b98(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228bdc(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228c1c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228cc4(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d14(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d48(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228d7c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228de0(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228e60(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228f0c(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w);
-extern "C" void func_ov003_02228f6c(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02228fb4(Unk_ov003_02228710_Act *a);
-extern "C" void func_ov003_02229010(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
+extern "C" void Insect_UpdateKind38(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitKind38(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateDungBeetle(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateAnt(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateStinger(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateSpider(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateFlea(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateFly(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateHoneybee(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateBee(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdatePillBug(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateMoleCricket(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateCrawler(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdatePondskater(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_UpdateDragonfly(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitDungBeetle(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitAnt(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitScorpion(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitTarantula(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitFlea(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitFly(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitHoneybee(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitBee(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitCrawler(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w);
+extern "C" void Insect_InitPondskater(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitDragonfly(Unk_ov003_02228710_Act *a);
+extern "C" void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5);
 extern "C" // factory (allocates 0xa0 bytes)
-void *func_ov003_02228b18();
+void *InsectManager_Create();
 }
 
 #undef func_02003c30
@@ -1412,7 +1412,7 @@ struct Unk_ov003_02229698_Buf {
     s32 unk_3c;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_02229050_Rec {
     u8 unk_00[0xec];                   // 0x00
     u8 unk_ec[4];                      // 0xec
@@ -1477,62 +1477,62 @@ void func_020339bc(Buf *b, void *pos, s32 a, s32 c);
 void func_02033988(Buf *b);
 void *func_0209c0ac(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
-s32 func_ov003_02225ec8(Rec *self, s32 a);
-void func_ov003_0222a7d4(Rec *self);
-void func_ov003_0222c240(Rec *self);
-void func_ov003_0222c188(Rec *self);
-void func_ov003_0222b3f4(Rec *self);
-void func_ov003_0222c718(Rec *self);
-void func_ov003_0222d530(Rec *self);
-s32 func_ov003_0222e500(Rec *self, s32 a, s32 b);
-void func_ov003_0222e328(Vec3 *out, s32 a);
-void func_ov003_0222d674(Rec *self);
-void func_ov003_0222dd54(Rec *self, s32 a, s32 b);
-s32 func_ov003_0222af48(Rec *self, s32 a);
-s32 func_ov003_0222b928(Rec *self, s16 *cnt);
-void func_ov003_02229050(Rec *self);
-void func_ov003_022290dc(Rec *self);
-void func_ov003_022290e4(Rec *self, s32 a, s32 b, s32 c, u8 d);
-void func_ov003_02229144(Rec *self);
-void func_ov003_02229368(Rec *self);
-void func_ov003_02229370(Rec *self, s32 a, s32 b, s32 c, s32 d);
-void func_ov003_022293f0(Rec *self);
-void func_ov003_022293f8(Rec *self);
-void func_ov003_0222941c(Rec *self);
-void func_ov003_02229424(Rec *self);
-void func_ov003_02229464(Rec *self);
-void func_ov003_022294f0(Rec *self);
-void func_ov003_022294f8(Rec *self);
-void func_ov003_022295ec(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
-void func_ov003_02229668(Rec *self);
-s16 func_ov003_02229670();
-void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-void func_ov003_022297c8(Rec *self, s16 *pp);
-void func_ov003_02229910(Rec *self);
-void func_ov003_02229938(Rec *self);
+s32 Insect_SetAnimSpeed(Rec *self, s32 a);
+void TreeBug_Update(Rec *self);
+void Mosquito_Update(Rec *self);
+void Firefly_Update(Rec *self);
+void Moth_Update(Rec *self);
+void Hopper_Update(Rec *self);
+void Butterfly_Update(Rec *self);
+s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
+void Insect_GetDirVec(Vec3 *out, s32 a);
+void Insect_FlapWings(Rec *self);
+void Insect_PlaySe(Rec *self, s32 a, s32 b);
+s32 Insect_FadeOut(Rec *self, s32 a);
+s32 Insect_EscapeRun(Rec *self, s16 *cnt);
+void Insect_InitHopper(Rec *self);
+void Insect_UpdateHopper(Rec *self);
+void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d);
+void Insect_InitTreeBug(Rec *self);
+void Insect_UpdateTreeBug(Rec *self);
+void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d);
+void Insect_UpdateMosquito(Rec *self);
+void Insect_InitMosquito(Rec *self);
+void Insect_UpdateFirefly(Rec *self);
+void Insect_InitFirefly(Rec *self);
+void Insect_InitMoth(Rec *self);
+void Insect_UpdateMoth(Rec *self);
+void Insect_InitButterfly(Rec *self);
+void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
+void Insect_UpdateButterfly(Rec *self);
+s16 Insect_RandomAngle();
+void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
+void Crawler_Escape(Rec *self, s16 *pp);
+void Insect_Despawn(Rec *self);
+void Insect_SetWanderBox(Rec *self);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02229050(Rec *self);
-extern "C" void func_ov003_022290dc(Rec *self);
-extern "C" void func_ov003_022290e4(Rec *self, s32 a, s32 b, s32 c, u8 d);
-extern "C" void func_ov003_02229144(Rec *self);
-extern "C" void func_ov003_02229368(Rec *self);
-extern "C" void func_ov003_02229370(Rec *self, s32 a, s32 b, s32 c, s32 d);
-extern "C" void func_ov003_022293f0(Rec *self);
-extern "C" void func_ov003_022293f8(Rec *self);
-extern "C" void func_ov003_0222941c(Rec *self);
-extern "C" void func_ov003_02229424(Rec *self);
-extern "C" void func_ov003_02229464(Rec *self);
-extern "C" void func_ov003_022294f0(Rec *self);
-extern "C" void func_ov003_022294f8(Rec *self);
-extern "C" void func_ov003_022295ec(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
-extern "C" void func_ov003_02229668(Rec *self);
-extern "C" s16 func_ov003_02229670();
-extern "C" void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
-extern "C" void func_ov003_022297c8(Rec *self, s16 *pp);
-extern "C" void func_ov003_02229910(Rec *self);
-extern "C" void func_ov003_02229938(Rec *self);
+extern "C" void Insect_InitHopper(Rec *self);
+extern "C" void Insect_UpdateHopper(Rec *self);
+extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d);
+extern "C" void Insect_InitTreeBug(Rec *self);
+extern "C" void Insect_UpdateTreeBug(Rec *self);
+extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d);
+extern "C" void Insect_UpdateMosquito(Rec *self);
+extern "C" void Insect_InitMosquito(Rec *self);
+extern "C" void Insect_UpdateFirefly(Rec *self);
+extern "C" void Insect_InitFirefly(Rec *self);
+extern "C" void Insect_InitMoth(Rec *self);
+extern "C" void Insect_UpdateMoth(Rec *self);
+extern "C" void Insect_InitButterfly(Rec *self);
+extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e);
+extern "C" void Insect_UpdateButterfly(Rec *self);
+extern "C" s16 Insect_RandomAngle();
+extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5);
+extern "C" void Crawler_Escape(Rec *self, s16 *pp);
+extern "C" void Insect_Despawn(Rec *self);
+extern "C" void Insect_SetWanderBox(Rec *self);
 }
 
 #undef func_020339bc
@@ -1619,18 +1619,18 @@ u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Math_AngleXZ(void *a, void *b);
 void *func_0209c0ac(void *p);
 void NNS_G3dMdlSetMdlAlpha(void *a, s32 b, s32 c);
-void func_ov003_02229910(Rec *o);
-void func_ov003_022297c8(Rec *o, s16 *p);
-void func_ov003_0222bb28(Rec *o, s16 *p);
-void func_ov003_0222e328(V3 *v, s32 a);
-void func_ov003_0222d720(Rec *o);
-s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
-void func_ov003_0222c7fc(Rec *o, s32 *out);
-s32 func_ov003_0222af48(Rec *o, s32 a);
-void func_ov003_0222d674(Rec *o);
-BOOL func_ov003_02229dcc(void *p);
-void func_ov003_02229ab4(Rec *o);
-void func_ov003_02229c1c(Rec *o, s16 *p);
+void Insect_Despawn(Rec *o);
+void Crawler_Escape(Rec *o, s16 *p);
+void Insect_HopArc(Rec *o, s16 *p);
+void Insect_GetDirVec(V3 *v, s32 a);
+void Insect_CheckAlarm(Rec *o);
+s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_UpdateAlarm(Rec *o, s32 *out);
+s32 Insect_FadeOut(Rec *o, s32 a);
+void Insect_FlapWings(Rec *o);
+BOOL Insect_IsOnFlower(void *p);
+void Crawler_Wander(Rec *o);
+void Crawler_Watch(Rec *o, s16 *p);
 }
 
 static inline BOOL Unk_ov003_02229dcc_Chk(u16 *p) {
@@ -1689,14 +1689,14 @@ static inline BOOL Unk_ov003_02229dcc_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_02229a3c(Rec *o);
-extern "C" void func_ov003_02229ab4(Rec *o);
-extern "C" void func_ov003_02229c1c(Rec *o, s16 *p);
-extern "C" BOOL func_ov003_02229dcc(void *pp);
-extern "C" void func_ov003_02229eac(Rec *o);
-extern "C" void func_ov003_0222a090(Rec *o, s16 *p);
-extern "C" void func_ov003_0222a1c8(Rec *o, s16 *p);
-extern "C" void func_ov003_0222a24c(Rec *o, s16 *p);
+extern "C" void Insect_PlaceOnPlantSide(Rec *o);
+extern "C" void Crawler_Wander(Rec *o);
+extern "C" void Crawler_Watch(Rec *o, s16 *p);
+extern "C" BOOL Insect_IsOnFlower(void *pp);
+extern "C" void Crawler_Update(Rec *o);
+extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p);
+extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p);
+extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 }
 
 #undef func_020547a4
@@ -1724,7 +1724,7 @@ struct Unk_ov003_0225980c_V3 {
 
 typedef Unk_ov003_0225980c_V3 V3;
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 (2), 0225980c (4), 0225a17c (8)
+// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
 struct Unk_ov003_0225980c_Rec {
     u8 unk_00[0x50];
     u8 unk_50[0x9c];       // 0x50 model sub-object
@@ -1796,19 +1796,19 @@ s32 func_020338d0(Unk_ov003_0222abc0_Obj *o, s32 v);
 void func_02033988(Unk_ov003_0222abc0_Obj *o);
 s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 Math_AngleXZ(V3 *a, V3 *b);
-void func_ov003_0222e328(V3 *out, s32 ang);
-void func_ov003_0222dd54(Rec *self, s32 a, s32 b);
-s32 func_ov003_0222e500(Rec *self, s32 a, s32 b);
-s32 func_ov003_0222af48(Rec *self, s32 a);
-void func_ov003_02229910(Rec *self);
-void func_ov003_0222de04(Rec *self);
-s32 func_ov003_0222b784(Rec *self);
-s32 func_ov003_0222e1e0(Rec *self, s32 a, s32 b);
-void func_ov003_0222a1c8(Rec *self, s16 *cnt);
-void func_ov003_0222a090(Rec *self, s16 *cnt);
-void func_ov003_0222a24c(Rec *self, s16 *cnt);
-void func_ov003_0222b928(Rec *self, s16 *cnt);
-void func_ov003_0222bb28(Rec *self, s16 *cnt);
+void Insect_GetDirVec(V3 *out, s32 ang);
+void Insect_PlaySe(Rec *self, s32 a, s32 b);
+s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
+s32 Insect_FadeOut(Rec *self, s32 a);
+void Insect_Despawn(Rec *self);
+void Insect_SplashIfWater(Rec *self);
+s32 Insect_SteerAroundObstacle(Rec *self);
+s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
+void Walkingstick_CheckAlarm(Rec *self, s16 *cnt);
+void TreeBug_CheckAlarm(Rec *self, s16 *cnt);
+void TreeBug_DropAndFly(Rec *self, s16 *cnt);
+void Insect_EscapeRun(Rec *self, s16 *cnt);
+void Insect_HopArc(Rec *self, s16 *cnt);
 s32 func_ov068_02269a28(Rec *self);
 s32 func_ov068_02269aa4(Rec *self);
 }
@@ -1863,15 +1863,15 @@ static inline BOOL Unk_ov003_0222a8d0_Chk(u16 *p) {
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222a4a0(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222a594(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222a630(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222a6cc(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222a7d4(Rec *self);
-extern "C" void func_ov003_0222a8d0(Rec *self);
-extern "C" void func_ov003_0222ab68(V3 *out, V3 *in, s32 c);
-extern "C" s32 func_ov003_0222abc0(Rec *self);
+extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt);
+extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt);
+extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt);
+extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt);
+extern "C" void TreeBug_Idle(Rec *self, s16 *cnt);
+extern "C" void TreeBug_Update(Rec *self);
+extern "C" void Spider_Update(Rec *self);
+extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c);
+extern "C" s32 Insect_GroundWalkNet(Rec *self);
 }
 
 #undef func_020338d0
@@ -1902,7 +1902,7 @@ struct Unk_ov003_0222aff0_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222aff0_A {
     u8 pad_00[0x9c];
 };
@@ -1982,24 +1982,24 @@ s32 func_02063b8c(s32 n);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 BOOL PlayerActor_LocalHoldsNet();
 s32 PlayerActor_GetStrikeCountdownAt(V3 *a, s32 b);
-void func_ov003_02226d08(Rec *o, s32 v);
-void func_ov003_02229910(Rec *e);
-void func_ov003_0222a36c(Rec *o, s16 *p);
-BOOL func_ov003_0222abc0(Rec *o);
-void func_ov003_0222b928(Rec *o, s16 *p);
-void func_ov003_0222bb28(Rec *o, s16 *p);
-s32 func_ov003_0222b784(Rec *o);
-s32 func_ov003_0222c620(s32 a, s32 b);
-void func_ov003_0222c7fc(Rec *o, s32 *out);
-s32 func_ov003_0222d28c(Rec *o, s32 v, u8 *p);
-s32 func_ov003_0222d334(Rec *o);
-s32 func_ov003_0222d350(Rec *o);
-s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
-s32 func_ov003_0222dd90(Rec *o, V3 *p);
-void func_ov003_0222de04(Rec *o);
-void *func_ov003_0222e098(void *p);
-void func_ov003_0222e1e0(Rec *o, s32 a, s32 b);
-void func_ov003_0222e328(V3 *v, s32 a);
+void Insect_SetScale(Rec *o, s32 v);
+void Insect_Despawn(Rec *e);
+void TreeBug_FlyOff(Rec *o, s16 *p);
+BOOL Insect_GroundWalkNet(Rec *o);
+void Insect_EscapeRun(Rec *o, s16 *p);
+void Insect_HopArc(Rec *o, s16 *p);
+s32 Insect_SteerAroundObstacle(Rec *o);
+s32 Insect_RandomTurn(s32 a, s32 b);
+void Insect_UpdateAlarm(Rec *o, s32 *out);
+s32 Insect_FlyAwayArc(Rec *o, s32 v, u8 *p);
+s32 Insect_TickTimer(Rec *o);
+s32 Insect_FlutterFlight(Rec *o);
+s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+s32 Insect_CheckDigHit(Rec *o, V3 *p);
+void Insect_SplashIfWater(Rec *o);
+void *Insect_FindNearestPlayer(void *p);
+void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
+void Insect_GetDirVec(V3 *v, s32 a);
 s32 func_ov068_02269040(Rec *o, s16 *p);
 void func_ov068_02269110(Rec *o, s16 *p, s32 r);
 void func_ov068_02269b20(Rec *o);
@@ -2008,15 +2008,15 @@ void func_ov068_0226a004(Rec *o);
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL func_ov003_0222adc4(Rec *self);
-extern "C" BOOL func_ov003_0222af48(Rec *self, s32 a);
-extern "C" void func_ov003_0222af84(Rec *self);
-extern "C" void func_ov003_0222aff0(Rec *self);
-extern "C" void func_ov003_0222b224(Rec *self);
-extern "C" void func_ov003_0222b3f4(Rec *self);
-extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out);
-extern "C" void func_ov003_0222b518(Rec *self);
-extern "C" void func_ov003_0222b620(Rec *self);
+extern "C" BOOL Insect_GroundWalk(Rec *self);
+extern "C" BOOL Insect_FadeOut(Rec *self, s32 a);
+extern "C" void DungBeetle_Update(Rec *self);
+extern "C" void Stinger_Update(Rec *self);
+extern "C" void Flea_Update(Rec *self);
+extern "C" void Moth_Update(Rec *self);
+extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out);
+extern "C" void PillBug_Walk(Rec *self);
+extern "C" void PillBug_Curled(Rec *self);
 }
 
 #undef func_020547a4
@@ -2043,7 +2043,7 @@ struct Unk_ov003_0222b6e0_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222b6e0_Rec {
     u8 unk_00[0x50];                   // 0x00
     u8 unk_50[0xec - 0x50];            // 0x50
@@ -2119,42 +2119,42 @@ void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_0208fc88(u32 a, void *b, u32 c, void *d);
-void func_ov003_02229910(Rec *e);
-void func_ov003_02229ab4(Rec *o);
-BOOL func_ov003_022260e8(void *p);
-BOOL func_ov003_0222abc0(Rec *o);
-BOOL func_ov003_0222adc4(Rec *o);
-s32 func_ov003_0222af48(Rec *o, s32 a);
-void func_ov003_0222b450(Rec *o, s16 *p);
-void func_ov003_0222b518(Rec *o);
-void func_ov003_0222b620(Rec *o);
-s32 func_ov003_0222d28c(Rec *o, s32 v);
-void func_ov003_0222d674(Rec *o);
-s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
-s32 func_ov003_0222dd90(Rec *o, V3 *p);
-void func_ov003_0222de04(Rec *o);
-void func_ov003_0222df80(Rec *o);
-void *func_ov003_0222e098(void *p);
-void func_ov003_0222e1e0(Rec *o, s32 a, s32 b);
-void func_ov003_0222e328(V3 *v, s32 a);
-s32 func_ov003_0222e500(Rec *o, s32 a, s32 b);
+void Insect_Despawn(Rec *e);
+void Crawler_Wander(Rec *o);
+BOOL Insect_IsAtWateringPoint(void *p);
+BOOL Insect_GroundWalkNet(Rec *o);
+BOOL Insect_GroundWalk(Rec *o);
+s32 Insect_FadeOut(Rec *o, s32 a);
+void Insect_CheckRockStrike(Rec *o, s16 *p);
+void PillBug_Walk(Rec *o);
+void PillBug_Curled(Rec *o);
+s32 Insect_FlyAwayArc(Rec *o, s32 v);
+void Insect_FlapWings(Rec *o);
+s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+s32 Insect_CheckDigHit(Rec *o, V3 *p);
+void Insect_SplashIfWater(Rec *o);
+void Insect_UpdateRest(Rec *o);
+void *Insect_FindNearestPlayer(void *p);
+void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
+void Insect_GetDirVec(V3 *v, s32 a);
+s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 void func_ov068_02269d58(Rec *o);
-void func_ov003_0222b838(Rec *self, s16 *cnt);
-void func_ov003_0222b928(Rec *self, s16 *cnt);
-void func_ov003_0222bb28(Rec *self, s16 *cnt);
-void func_ov003_0222bd60(Rec *self, s16 *cnt);
+void MoleCricket_Burrow(Rec *self, s16 *cnt);
+void Insect_EscapeRun(Rec *self, s16 *cnt);
+void Insect_HopArc(Rec *self, s16 *cnt);
+void MoleCricket_CheckDugUp(Rec *self, s16 *cnt);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_0222b6e0(Rec *self);
-extern "C" s32 func_ov003_0222b784(Rec *self);
-extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222be0c(Rec *self);
-extern "C" void func_ov003_0222be88(Rec *self);
-extern "C" void func_ov003_0222bf7c(Rec *self);
+extern "C" void PillBug_Update(Rec *self);
+extern "C" s32 Insect_SteerAroundObstacle(Rec *self);
+extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt);
+extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt);
+extern "C" void Insect_HopArc(Rec *self, s16 *cnt);
+extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt);
+extern "C" void MoleCricket_Update(Rec *self);
+extern "C" void Ant_Update(Rec *self);
+extern "C" void Hoverer_Update(Rec *self);
 }
 
 #undef func_020547a4
@@ -2182,7 +2182,7 @@ struct Unk_ov003_0222aff0_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222adc4_Rec {
     u8 unk_00[0x50];                   // 0x00
     u8 unk_50[0xec - 0x50];            // 0x50
@@ -2258,24 +2258,24 @@ s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
 s32 func_020e7870(void *a, s32 b, s32 c, s32 d, s32 e);
 s32 func_020e9650(void *a, void *b);
 Unk_02095204_Obj *func_02095204(u32 n);
-void func_ov003_02225ec8(Rec *o, s32 a);
-void func_ov003_022297c8(Rec *o, s16 *p);
-void func_ov003_02229910(Rec *e);
-void func_ov003_0222a36c(Rec *o, s16 *p);
-s32 func_ov003_0222af48(Rec *o, s32 a);
-s32 func_ov003_0222c9e0(Rec *o, s32 a);
-s32 func_ov003_0222cb3c(s32 a, void *b);
-s32 func_ov003_0222d28c(Rec *o, s32 v);
-s32 func_ov003_0222d674(Rec *o);
-s32 func_ov003_0222d720(Rec *o);
-s32 func_ov003_0222d75c(Rec *o, s32 a, s32 b, s32 c);
-s32 func_ov003_0222d7d8(Rec *o, s16 *p, s32 a, s32 b, s32 c, s32 d);
-s32 func_ov003_0222da7c(Rec *o);
-s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
-void func_ov003_0222de04(Rec *o);
-void func_ov003_0222e1e0(Rec *o, s32 a, s32 b);
-void func_ov003_0222e2e0(Rec *o, s32 a);
-void *func_ov003_0222e500(Rec *o, s32 a, s32 b);
+void Insect_SetAnimSpeed(Rec *o, s32 a);
+void Crawler_Escape(Rec *o, s16 *p);
+void Insect_Despawn(Rec *e);
+void TreeBug_FlyOff(Rec *o, s16 *p);
+s32 Insect_FadeOut(Rec *o, s32 a);
+s32 Insect_TurnToTarget(Rec *o, s32 a);
+s32 Insect_ReflectAngle(s32 a, void *b);
+s32 Insect_FlyAwayArc(Rec *o, s32 v);
+s32 Insect_FlapWings(Rec *o);
+s32 Insect_CheckAlarm(Rec *o);
+s32 Insect_FlutterBob(Rec *o, s32 a, s32 b, s32 c);
+s32 Insect_FlutterSteer(Rec *o, s16 *p, s32 a, s32 b, s32 c, s32 d);
+s32 Insect_GetFlutterRange(Rec *o);
+s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+void Insect_SplashIfWater(Rec *o);
+void Insect_SetMoveTarget(Rec *o, s32 a, s32 b);
+void Insect_CheckTurnCount(Rec *o, s32 a);
+void *Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 void func_ov068_02269250(Rec *o);
 void func_ov068_022694c0(Rec *o);
 void func_ov068_022696e4(V3 *p, s32 a);
@@ -2289,24 +2289,24 @@ void func_ov068_0226a6ac(Rec *o, u8 *a, s32 *out);
 }
 
 namespace Unk_ov003_0222c7fc_Ns {
-extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, s32 a, s32 b);
+extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, s32 a, s32 b);
 }
 
 // prototypes of this segment's own functions
-extern "C" void func_ov003_0222c024(Rec *o);
-extern "C" void func_ov003_0222c0d0(Rec *o);
-extern "C" void func_ov003_0222c188(Rec *o);
-extern "C" void func_ov003_0222c240(Rec *o);
-extern "C" void func_ov003_0222c2e0(Rec *o);
-extern "C" void func_ov003_0222c36c(Rec *o);
-extern "C" void func_ov003_0222c3a0(Rec *o);
-extern "C" void *func_ov003_0222c3c4(Rec *o, s16 *p);
-extern "C" void func_ov003_0222c444(Rec *o);
-extern "C" s16 func_ov003_0222c620(s32 a, s32 b);
-extern "C" void func_ov003_0222c668(Rec *o, s16 *p);
-extern "C" void func_ov003_0222c718(Rec *o);
-extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out);
-extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b);
+extern "C" void Bee_Update(Rec *o);
+extern "C" void Firefly_Wander(Rec *o);
+extern "C" void Firefly_Update(Rec *o);
+extern "C" void Mosquito_Update(Rec *o);
+extern "C" void Pondskater_Update(Rec *o);
+extern "C" void Cricket_Chirp(Rec *o);
+extern "C" void Locust_PlaySe(Rec *o);
+extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p);
+extern "C" void Hopper_Jump(Rec *o);
+extern "C" s16 Insect_RandomTurn(s32 a, s32 b);
+extern "C" void Hopper_Rest(Rec *o, s16 *p);
+extern "C" void Hopper_Update(Rec *o);
+extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out);
+extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b);
 }
 
 #undef func_020547a4
@@ -2333,7 +2333,7 @@ struct Unk_ov003_0222c9e0_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 (2), 0225980c (4), 0225a17c (8)
+// One 0x25c-byte entry of the tables at sSpecialInsects (2), 0225980c (4), 0225a17c (8)
 struct Unk_ov003_0222c9e0_Rec {
     u8 unk_00[0x50];                   // 0x00
     u8 unk_50[0xf4 - 0x50];            // 0x50
@@ -2393,16 +2393,16 @@ void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 s32 func_020e7530(s16 *a, s32 b, s32 c);
 s32 func_020e7d4c(V3 *a, V3 *b, s32 c, s32 d, s32 e);
 s32 func_020e7870(s32 *a, s32 b, s32 c, s32 d, s32 e);
-s32 func_ov003_0222c620(u8 a, s32 b);
-void func_ov003_02229910(Rec *self);
-s32 func_ov003_0222af48(Rec *self, s32 a);
-void func_ov003_0222d674(Rec *self);
-void func_ov003_0222d720(Rec *self);
-s32 func_ov003_0222d334(Rec *self);
-s32 func_ov003_0222e1e0(Rec *self, s32 a, s32 b);
-void func_ov003_0222e2e0(Rec *self, s32 a);
-void func_ov003_0222e328(V3 *out, s32 ang);
-s32 func_ov003_0222e500(Rec *self, s32 a, s32 b);
+s32 Insect_RandomTurn(u8 a, s32 b);
+void Insect_Despawn(Rec *self);
+s32 Insect_FadeOut(Rec *self, s32 a);
+void Insect_FlapWings(Rec *self);
+void Insect_CheckAlarm(Rec *self);
+s32 Insect_TickTimer(Rec *self);
+s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
+void Insect_CheckTurnCount(Rec *self, s32 a);
+void Insect_GetDirVec(V3 *out, s32 ang);
+s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
 void func_ov068_0226a1a0(Rec *self);
 void func_ov068_0226a4f0(Rec *self);
 }
@@ -2412,16 +2412,16 @@ enum Unk_ov003_0222d1f0_K { K_300 = 0x300 };
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a);
-extern "C" s32 func_ov003_0222cb3c(s32 a, s32 mode);
-extern "C" void func_ov003_0222cc14(Rec *self);
-extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222cd58(Rec *self);
-extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222cfb0(Rec *self);
-extern "C" s32 func_ov003_0222d1dc(s32 a);
-extern "C" void func_ov003_0222d1f0(Rec *self, s16 *cnt);
-extern "C" void func_ov003_0222d28c(Rec *self, s32 a);
+extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a);
+extern "C" s32 Insect_ReflectAngle(s32 a, s32 mode);
+extern "C" void Dragonfly_CheckObstacle(Rec *self);
+extern "C" void Dragonfly_FlyOff(Rec *self, s16 *cnt);
+extern "C" void Dragonfly_FlyToTarget(Rec *self);
+extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt);
+extern "C" void Dragonfly_Update(Rec *self);
+extern "C" s32 Insect_GetFlowerSpeciesMask(s32 a);
+extern "C" void Insect_FlutterAltitude(Rec *self, s16 *cnt);
+extern "C" void Insect_FlyAwayArc(Rec *self, s32 a);
 }
 
 #undef func_020547a4
@@ -2447,7 +2447,7 @@ struct Unk_ov003_0222d350_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222d350_Rec {
     u8 unk_00[0x50];                   // 0x00
     u8 unk_50[0xec - 0x50];            // 0x50
@@ -2518,18 +2518,18 @@ s32 func_021329d0(s32 a);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
 s32 func_02063b8c(s32 n);
-s32 func_ov003_02225ec8(Rec *self, s32 a);
-s32 func_ov003_0222ab68(Vec3 *a, Vec3 *b, s32 c);
-s32 func_ov003_0222c620(s32 a, s32 b);
-s32 func_ov003_0222c7fc(Rec *self, Vec3 *out);
-s32 func_ov003_0222cb3c(s32 a, s32 b);
-s32 func_ov003_0222d1f0(Rec *self, s16 *p);
-s32 func_ov003_0222d28c(Rec *self, s32 v);
-s32 func_ov003_0222df80(Rec *self);
-s32 func_ov003_0222e098(void *p);
-s32 func_ov003_0222e1e0(Rec *self, s32 a, s32 b);
-void func_ov003_0222e328(Vec3 *out, s32 a);
-s32 func_ov003_0222e500(Rec *self, s32 a, s32 b);
+s32 Insect_SetAnimSpeed(Rec *self, s32 a);
+s32 Insect_ClampStepXZ(Vec3 *a, Vec3 *b, s32 c);
+s32 Insect_RandomTurn(s32 a, s32 b);
+s32 Insect_UpdateAlarm(Rec *self, Vec3 *out);
+s32 Insect_ReflectAngle(s32 a, s32 b);
+s32 Insect_FlutterAltitude(Rec *self, s16 *p);
+s32 Insect_FlyAwayArc(Rec *self, s32 v);
+s32 Insect_UpdateRest(Rec *self);
+s32 Insect_FindNearestPlayer(void *p);
+s32 Insect_SetMoveTarget(Rec *self, s32 a, s32 b);
+void Insect_GetDirVec(Vec3 *out, s32 a);
+s32 Insect_CheckObstacle(Rec *self, s32 a, s32 b);
 s32 func_ov068_022687e8(Rec *self, Vec3 *p);
 void func_ov068_02268864(Rec *self, s16 *p, s32 a, s32 b, s32 c, s32 d);
 s32 func_ov068_02268b70(Rec *self, s16 *p);
@@ -2537,20 +2537,20 @@ s32 func_ov068_02269f60(Rec *self, s16 *p, Vec3 *out);
 }
 
 extern "C" {
-BOOL func_ov003_0222d334(Rec *self);
-void func_ov003_0222d350(Rec *self);
-void func_ov003_0222d530(Rec *self);
-void func_ov003_0222d674(Rec *self);
-void func_ov003_0222d6a0(Rec *self, Vec3 *p);
-s32 func_ov003_0222d720(Rec *self);
-void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c);
-void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
-s32 func_ov003_0222da1c(Rec *self);
-s32 func_ov003_0222da7c(Rec *self);
-s32 func_ov003_0222dae0(Rec *self);
-void func_ov003_0222db34(Rec *self);
-void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a);
-s32 func_ov003_0222dbdc(s32 a, s32 b);
+BOOL Insect_TickTimer(Rec *self);
+void Insect_FlutterFlight(Rec *self);
+void Butterfly_Update(Rec *self);
+void Insect_FlapWings(Rec *self);
+void Insect_FleeIfAlarmed(Rec *self, Vec3 *p);
+s32 Insect_CheckAlarm(Rec *self);
+void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c);
+void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
+s32 Insect_GetFlutterTargetSpeed(Rec *self);
+s32 Insect_GetFlutterRange(Rec *self);
+s32 Insect_GetFlutterLeash(Rec *self);
+void Insect_SetFlutterTurnDelay(Rec *self);
+void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a);
+s32 Insect_GetSeId(s32 a, s32 b);
 }
 
 static inline BOOL Gt(s32 a, s32 b) {
@@ -2559,20 +2559,20 @@ static inline BOOL Gt(s32 a, s32 b) {
 }
 
 // prototypes of this segment's own functions
-extern "C" BOOL func_ov003_0222d334(Rec *self);
-extern "C" void func_ov003_0222d350(Rec *self);
-extern "C" void func_ov003_0222d530(Rec *self);
-extern "C" void func_ov003_0222d674(Rec *self);
-extern "C" void func_ov003_0222d6a0(Rec *self, Vec3 *p);
-extern "C" s32 func_ov003_0222d720(Rec *self);
-extern "C" void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c);
-extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
-extern "C" s32 func_ov003_0222da1c(Rec *self);
-extern "C" s32 func_ov003_0222da7c(Rec *self);
-extern "C" s32 func_ov003_0222dae0(Rec *self);
-extern "C" void func_ov003_0222db34(Rec *self);
-extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a);
-extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b);
+extern "C" BOOL Insect_TickTimer(Rec *self);
+extern "C" void Insect_FlutterFlight(Rec *self);
+extern "C" void Butterfly_Update(Rec *self);
+extern "C" void Insect_FlapWings(Rec *self);
+extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p);
+extern "C" s32 Insect_CheckAlarm(Rec *self);
+extern "C" void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c);
+extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f);
+extern "C" s32 Insect_GetFlutterTargetSpeed(Rec *self);
+extern "C" s32 Insect_GetFlutterRange(Rec *self);
+extern "C" s32 Insect_GetFlutterLeash(Rec *self);
+extern "C" void Insect_SetFlutterTurnDelay(Rec *self);
+extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a);
+extern "C" s32 Insect_GetSeId(s32 a, s32 b);
 }
 
 #undef func_020547a4
@@ -2590,7 +2590,7 @@ extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b);
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 struct Unk_ov003_0222dd54_V3 {
     s32 x, y, z;
@@ -2604,7 +2604,7 @@ struct Unk_ov003_0222dd54_Bits {
     u32 hi : 4;
 };
 
-// One 0x25c-byte entry of the tables at data_ov003_02259354 / 0225980c / 0225a17c
+// One 0x25c-byte entry of the tables at sSpecialInsects / 0225980c / 0225a17c
 struct Unk_ov003_0222dd54_Rec {
     u8 unk_00[0x50];                   // 0x00
     u8 unk_50[0xec - 0x50];            // 0x50
@@ -2654,10 +2654,10 @@ struct Unk_02095204_Obj {
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
 extern s16 data_02135f44[];
-extern u8 data_ov003_0225980c[];
-extern u8 data_ov003_02259354[];
-extern u8 data_ov003_0225a17c[];
-extern u8 data_ov003_0225b468[];
+extern u8 sHeldInsects[];
+extern u8 sSpecialInsects[];
+extern u8 sFieldInsects[];
+extern u8 sInsectNetSync[];
 extern u8 data_ov003_0225b470[];
 extern u8 data_ov003_0225b474[];
 extern u8 data_ov003_0225b475[];
@@ -2685,32 +2685,32 @@ void NetBuf_PackPair20(void *p, s32 a, s32 b);
 s32 CommSyncVar_GetVarSize(s32 a);
 void MI_CpuCopy8(void *, void *, s32);
 void *__cxa_vec_cleanup(void *, s32, s32, void *(*)(void *));
-s32 func_ov003_0222dbdc(s32 a);
+s32 Insect_GetSeId(s32 a);
 s32 PlayerActor_GetDigCountdownAt(s32 a, s32 b);
-void func_ov003_0222d720(Rec *o);
-s32 func_ov003_0222d334(Rec *o);
-void func_ov003_02229ab4(Rec *o);
-s32 func_ov003_02229dcc(V3 *p);
-void func_ov003_0222db34(Rec *o);
+void Insect_CheckAlarm(Rec *o);
+s32 Insect_TickTimer(Rec *o);
+void Crawler_Wander(Rec *o);
+s32 Insect_IsOnFlower(V3 *p);
+void Insect_SetFlutterTurnDelay(Rec *o);
 void *func_ov003_02225ed0(void *p);
 }
 
 // prototypes of this segment's own functions
-extern "C" s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b);
-extern "C" BOOL func_ov003_0222dd90(Rec *o, s32 a);
-extern "C" BOOL func_ov003_0222de04(Rec *o);
-extern "C" BOOL func_ov003_0222dec8(s32 a, s32 b);
-extern "C" void func_ov003_0222df80(Rec *o);
-extern "C" Unk_02095204_Obj *func_ov003_0222e098(V3 *pos);
-extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n);
-extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d);
-extern "C" void func_ov003_0222e2e0(Rec *o, s32 n);
-extern "C" BOOL func_ov003_0222e2fc(s32 v);
-extern "C" void func_ov003_0222e328(V3 *o, s32 a);
-extern "C" BOOL func_ov003_0222e33c(Rec *o, s32 a, s32 b);
-extern "C" u32 func_ov003_0222e420(Rec *o);
-extern "C" u32 func_ov003_0222e494(Rec *o);
-extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b);
+extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b);
+extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a);
+extern "C" BOOL Insect_SplashIfWater(Rec *o);
+extern "C" BOOL Insect_LikesFlower(s32 a, s32 b);
+extern "C" void Insect_UpdateRest(Rec *o);
+extern "C" Unk_02095204_Obj *Insect_FindNearestPlayer(V3 *pos);
+extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n);
+extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d);
+extern "C" void Insect_CheckTurnCount(Rec *o, s32 n);
+extern "C" BOOL Insect_IsOverWater(s32 v);
+extern "C" void Insect_GetDirVec(V3 *o, s32 a);
+extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b);
+extern "C" u32 Insect_TestFeelersHole(Rec *o);
+extern "C" u32 Insect_TestFeelers(Rec *o);
+extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b);
 }
 
 #undef func_02003c40
@@ -2731,16 +2731,16 @@ extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b);
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e500
-extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b) {
+extern "C" s32 Insect_CheckObstacle(Rec *o, s32 a, s32 b) {
     if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0() || o->unk_251 == 9 || o->unk_251 == 0xb) {
-        func_ov003_0222e33c(o, a, b);
+        Insect_SetFeelers(o, a, b);
         if ((u8)(s8)(o->unk_24d - 0x36) <= 1 && o->unk_251 == 4) {
-            return func_ov003_0222e420(o);
+            return Insect_TestFeelersHole(o);
         }
-        return func_ov003_0222e494(o);
+        return Insect_TestFeelers(o);
     }
     return 0;
 }
@@ -2763,10 +2763,10 @@ extern "C" s32 func_ov003_0222e500(Rec *o, s32 a, s32 b) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e494
-extern "C" u32 func_ov003_0222e494(Rec *o) {
+extern "C" u32 Insect_TestFeelers(Rec *o) {
     u8 r = 0;
     V3 *p = &o->unk_1ec[0];
     s32 y = o->unk_204.y;
@@ -2797,10 +2797,10 @@ extern "C" u32 func_ov003_0222e494(Rec *o) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e420
-extern "C" u32 func_ov003_0222e420(Rec *o) {
+extern "C" u32 Insect_TestFeelersHole(Rec *o) {
     u8 r = 0;
     V3 *p = &o->unk_1ec[0];
     s32 y = o->unk_204.y;
@@ -2834,10 +2834,10 @@ extern "C" u32 func_ov003_0222e420(Rec *o) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e33c
-extern "C" BOOL func_ov003_0222e33c(Rec *o, s32 a, s32 b) {
+extern "C" BOOL Insect_SetFeelers(Rec *o, s32 a, s32 b) {
     V3 *out;
     V3 *pos = &o->unk_204;
     s32 h;
@@ -2876,10 +2876,10 @@ extern "C" BOOL func_ov003_0222e33c(Rec *o, s32 a, s32 b) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e328
-extern "C" void func_ov003_0222e328(V3 *o, s32 a) {
+extern "C" void Insect_GetDirVec(V3 *o, s32 a) {
     o->x = 0;
     o->y = 0;
     o->z = 0x29;
@@ -2904,10 +2904,10 @@ extern "C" void func_ov003_0222e328(V3 *o, s32 a) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e2fc
-extern "C" BOOL func_ov003_0222e2fc(s32 v) {
+extern "C" BOOL Insect_IsOverWater(s32 v) {
     s32 x = 0;
     s32 y = 0;
     FieldPos_ToUnit(&x, &y, v);
@@ -2933,10 +2933,10 @@ extern "C" BOOL func_ov003_0222e2fc(s32 v) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e2e0
-extern "C" void func_ov003_0222e2e0(Rec *o, s32 n) {
+extern "C" void Insect_CheckTurnCount(Rec *o, s32 n) {
     s32 t = o->unk_21c & 0xf;
     if (t > n) o->unk_251 = 9;
 }
@@ -2959,23 +2959,23 @@ extern "C" void func_ov003_0222e2e0(Rec *o, s32 n) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e1e0
-extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
+extern "C" BOOL Insect_SetMoveTarget(Rec *o, u32 ang, s32 d) {
     V3 *dst;
     V3 *src;
     switch (o->unk_24d) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
     case 0x25:
-        return func_ov003_0222e0f0(o, ang, (u8)(d >> 12));
+        return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
     case 0x1e:
     case 0x31:
-        return func_ov003_0222e0f0(o, ang, (u8)(d >> 12));
+        return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
     case 0xc: case 0xd:
     case 0x1b: case 0x1c: case 0x1d:
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-            return func_ov003_0222e0f0(o, ang, (u8)(d >> 12));
+            return Insect_SetGroundMoveTarget(o, ang, (u8)(d >> 12));
         }
     default:
         break;
@@ -3006,10 +3006,10 @@ extern "C" BOOL func_ov003_0222e1e0(Rec *o, u32 ang, s32 d) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e0f0
-extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n) {
+extern "C" BOOL Insect_SetGroundMoveTarget(Rec *o, u32 ang, s32 n) {
     s32 lim;
     u8 i;
     s32 sx;
@@ -3048,7 +3048,7 @@ extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n) {
         s32 f = c << 12;
         dst->x = src->x + func_01ffcb0c(f, sx);
         dst->z = src->z + func_01ffcb0c(f, sz);
-        func_ov003_0222db34(o);
+        Insect_SetFlutterTurnDelay(o);
         return TRUE;
     }
     return FALSE;
@@ -3072,10 +3072,10 @@ extern "C" BOOL func_ov003_0222e0f0(Rec *o, u32 ang, s32 n) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222e098
-extern "C" Unk_02095204_Obj *func_ov003_0222e098(V3 *pos) {
+extern "C" Unk_02095204_Obj *Insect_FindNearestPlayer(V3 *pos) {
     Unk_02095204_Obj *best = 0;
     s32 bestd = 0xfffffff;
     u8 i;
@@ -3118,19 +3118,19 @@ extern "C" Unk_02095204_Obj *func_ov003_0222e098(V3 *pos) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222df80
-extern "C" void func_ov003_0222df80(Rec *o) {
-    func_ov003_0222d720(o);
-    if (func_ov003_0222d334(o) == 0) {
+extern "C" void Insect_UpdateRest(Rec *o) {
+    Insect_CheckAlarm(o);
+    if (Insect_TickTimer(o) == 0) {
         s32 st = o->unk_24d;
         if (st == 0xa || st == 0x33) {
             if (o->unk_f4.mid != 0) AnimModel_setFrame(o->unk_50, 0);
-            func_ov003_02229ab4(o);
+            Crawler_Wander(o);
         } else if (st == 0x33) {
         } else {
-            if (func_ov003_02229dcc(&o->unk_204) == 0) o->unk_254 = 0xfe;
+            if (Insect_IsOnFlower(&o->unk_204) == 0) o->unk_254 = 0xfe;
             if (o->unk_f0.mid < 0xc) {
                 AnimFrameCtrl_setup(o->unk_ec, 0x11, 1, 0x1000, 9);
             } else if (o->unk_f4.mid == 0x10) {
@@ -3170,10 +3170,10 @@ extern "C" void func_ov003_0222df80(Rec *o) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222dec8
-extern "C" BOOL func_ov003_0222dec8(s32 a, s32 b) {
+extern "C" BOOL Insect_LikesFlower(s32 a, s32 b) {
     u32 t = Flower_GetColor(b);
     u32 c = Flower_GetSpecies(b);
     if (a == 0xf) {
@@ -3224,10 +3224,10 @@ extern "C" BOOL func_ov003_0222dec8(s32 a, s32 b) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222de04
-extern "C" BOOL func_ov003_0222de04(Rec *o) {
+extern "C" BOOL Insect_SplashIfWater(Rec *o) {
     V3 v;
     Unk_0203398c g;
     V3 *pv = &o->unk_204;
@@ -3276,10 +3276,10 @@ extern "C" BOOL func_ov003_0222de04(Rec *o) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222dd90
-extern "C" BOOL func_ov003_0222dd90(Rec *o, s32 a) {
+extern "C" BOOL Insect_CheckDigHit(Rec *o, s32 a) {
     s8 i;
     s8 *p = &o->unk_24e;
     if (*p <= 0) {
@@ -3317,11 +3317,11 @@ extern "C" BOOL func_ov003_0222dd90(Rec *o, s32 a) {
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02133150 _s32_div_f
-#define func_ov003_02225ed0 _ZN18Unk_ov003_02225ed0D1Ev
+#define func_ov003_02225ed0 _ZN6InsectD1Ev
 namespace s14 {
 // 0x222dd54
-extern "C" s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b) {
-    s32 r = func_ov003_0222dbdc(o->unk_24d);
+extern "C" s32 Insect_PlaySe(Rec *o, s32 a, s32 b) {
+    s32 r = Insect_GetSeId(o->unk_24d);
     if (r >= 0) {
         if (b != 0) {
             Unk_02003c40_callRequest(o->unk_174, r);
@@ -3349,7 +3349,7 @@ extern "C" s32 func_ov003_0222dd54(Rec *o, s32 a, s32 b) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222dbdc
-extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b) {
+extern "C" s32 Insect_GetSeId(s32 a, s32 b) {
     switch (a) {
     case 51:
         return 0x823;
@@ -3419,7 +3419,7 @@ extern "C" s32 func_ov003_0222dbdc(s32 a, s32 b) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222db74
-extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a) {
+extern "C" void Insect_FlutterPullBack(Rec *self, Vec3 *p, s32 a) {
     s16 ang;
     Vec3 v;
     Vec3 *r6;
@@ -3429,7 +3429,7 @@ extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a) {
     func_020e7530(&ang, Math_AngleXZ(r6, p), a);
     self->unk_23a = ang;
     VEC_Subtract(&v, r6, &v);
-    func_ov003_0222ab68(&v, &v, 1);
+    Insect_ClampStepXZ(&v, &v, 1);
     VEC_Add(r6, &v, r6);
 }
 }
@@ -3448,7 +3448,7 @@ extern "C" void func_ov003_0222db74(Rec *self, Vec3 *p, s32 a) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222db34
-extern "C" void func_ov003_0222db34(Rec *self) {
+extern "C" void Insect_SetFlutterTurnDelay(Rec *self) {
     switch (self->unk_24d) {
     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
     case 0x25:
@@ -3472,7 +3472,7 @@ extern "C" void func_ov003_0222db34(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222dae0
-extern "C" s32 func_ov003_0222dae0(Rec *self) {
+extern "C" s32 Insect_GetFlutterLeash(Rec *self) {
     switch (self->unk_24d) {
     case 0:
     case 1:
@@ -3507,7 +3507,7 @@ extern "C" s32 func_ov003_0222dae0(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222da7c
-extern "C" s32 func_ov003_0222da7c(Rec *self) {
+extern "C" s32 Insect_GetFlutterRange(Rec *self) {
     switch (self->unk_24d) {
     case 0:
     case 1:
@@ -3543,7 +3543,7 @@ extern "C" s32 func_ov003_0222da7c(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222da1c
-extern "C" s32 func_ov003_0222da1c(Rec *self) {
+extern "C" s32 Insect_GetFlutterTargetSpeed(Rec *self) {
     switch (self->unk_24d) {
     case 0:
     case 1:
@@ -3579,22 +3579,22 @@ extern "C" s32 func_ov003_0222da1c(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d7d8
-extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f) {
+extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f) {
     s32 rnd;
     Vec3 *r6 = &self->unk_1c8;
     Vec3 *r10 = &self->unk_1d4;
     Vec3 *r4 = &self->unk_204;
-    s32 hit = func_ov003_0222e500(self, 0x50, 0xe38);
+    s32 hit = Insect_CheckObstacle(self, 0x50, 0xe38);
     u32 flag = self->unk_24b;
     rnd = func_02063b8c(100);
     Vec3 t;
     Vec3 d;
     if (hit != 0) {
-        self->unk_23a = func_ov003_0222cb3c(self->unk_23a, hit);
+        self->unk_23a = Insect_ReflectAngle(self->unk_23a, hit);
         *r6 = *r4;
         {
             s32 q = self->unk_23a;
-            func_ov003_0222e1e0(self, q, func_ov003_0222da7c(self));
+            Insect_SetMoveTarget(self, q, Insect_GetFlutterRange(self));
         }
         return;
     }
@@ -3610,7 +3610,7 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
             self->unk_23a = *p;
         }
     }
-    func_ov003_0222e328(&t, *p);
+    Insect_GetDirVec(&t, *p);
     if (self->unk_24a != 0) {
         s32 m = func_021329d0(0x45a00400);
         r4->x = r4->x + func_01ffcb0c(func_01ffcb0c(f, t.x), m);
@@ -3621,12 +3621,12 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
     }
     func_020e9960(&d, r6, r4);
     s32 len = func_020e9688(&d);
-    if (Gt(len, func_ov003_0222dae0(self))) {
-        func_ov003_0222db74(self, r6, 0xaaa);
+    if (Gt(len, Insect_GetFlutterLeash(self))) {
+        Insect_FlutterPullBack(self, r6, 0xaaa);
     }
     {
-        s32 k = func_ov003_0222da1c(self);
-        if (func_020e7d4c(r6, r10, 0x28, k + 0x19a, func_ov003_0222da1c(self)) == 0) {
+        s32 k = Insect_GetFlutterTargetSpeed(self);
+        if (func_020e7d4c(r6, r10, 0x28, k + 0x19a, Insect_GetFlutterTargetSpeed(self)) == 0) {
             if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
                 if (func_020a62a0() == 0) {
                     return;
@@ -3635,12 +3635,12 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
             u8 *q253 = &self->unk_253;
             if (*q253 == 0) {
                 s32 s = self->unk_23a;
-                self->unk_23a = s + func_ov003_0222c620(6, 1);
+                self->unk_23a = s + Insect_RandomTurn(6, 1);
                 *r6 = *r4;
                 if (self->unk_24a != 0) {
                     void *e2;
                     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-                        e2 = (void *)func_ov003_0222e098(r4);
+                        e2 = (void *)Insect_FindNearestPlayer(r4);
                     } else {
                         e2 = func_02095204(4);
                     }
@@ -3650,7 +3650,7 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                 }
                 {
                     s32 q = self->unk_23a;
-                    func_ov003_0222e1e0(self, q, func_ov003_0222da7c(self));
+                    Insect_SetMoveTarget(self, q, Insect_GetFlutterRange(self));
                 }
             } else {
                 *q253 = *q253 - 1;
@@ -3674,7 +3674,7 @@ extern "C" void func_ov003_0222d7d8(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d75c
-extern "C" void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c) {
+extern "C" void Insect_FlutterBob(Rec *self, s32 a, s32 b, s32 c) {
     Vec3 *r6 = &self->unk_204;
     s32 r4 = FX_Div(data_02135f44[((u16)a >> 4) * 2], c);
     if (self->unk_220 != self->unk_228) {
@@ -3700,11 +3700,11 @@ extern "C" void func_ov003_0222d75c(Rec *self, s32 a, s32 b, s32 c) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d720
-extern "C" s32 func_ov003_0222d720(Rec *self) {
+extern "C" s32 Insect_CheckAlarm(Rec *self) {
     Vec3 v;
-    s32 r = func_ov003_0222c7fc(self, &v);
+    s32 r = Insect_UpdateAlarm(self, &v);
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-        func_ov003_0222d6a0(self, &v);
+        Insect_FleeIfAlarmed(self, &v);
     } else {
         func_ov068_022687e8(self, &v);
     }
@@ -3726,7 +3726,7 @@ extern "C" s32 func_ov003_0222d720(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d6a0
-extern "C" void func_ov003_0222d6a0(Rec *self, Vec3 *p) {
+extern "C" void Insect_FleeIfAlarmed(Rec *self, Vec3 *p) {
     s32 c = self->unk_254;
     if (func_020a62a0()) {
         if (p->x != 0 && self->unk_24a == 0 && c >= self->unk_255) {
@@ -3757,7 +3757,7 @@ extern "C" void func_ov003_0222d6a0(Rec *self, Vec3 *p) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d674
-extern "C" void func_ov003_0222d674(Rec *self) {
+extern "C" void Insect_FlapWings(Rec *self) {
     if (self->unk_f4.mid == 1) {
         AnimModel_setFrame(&self->unk_50, 2);
     } else {
@@ -3780,28 +3780,28 @@ extern "C" void func_ov003_0222d674(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d530
-extern "C" void func_ov003_0222d530(Rec *self) {
+extern "C" void Butterfly_Update(Rec *self) {
     s32 c = self->unk_232;
     if (c > 0x8c) {
         self->unk_251 = 9;
-    } else if (func_ov003_0222e500(self, 0x50, 0xe38) != 0) {
+    } else if (Insect_CheckObstacle(self, 0x50, 0xe38) != 0) {
         self->unk_232 = c + 1;
     } else {
         self->unk_232 = 0;
     }
     switch (self->unk_251) {
     case 0:
-        func_ov003_0222d350(self);
+        Insect_FlutterFlight(self);
         break;
     case 6:
-        func_ov003_0222df80(self);
+        Insect_UpdateRest(self);
         break;
     case 9:
     case 11:
         if (self->unk_f0.mid > 9) {
             AnimFrameCtrl_setup(&self->unk_ec, 9, 0, 0x1000, 0);
         }
-        func_ov003_0222d28c(self, 0x1ccd);
+        Insect_FlyAwayArc(self, 0x1ccd);
         break;
     case 7: {
         s32 t;
@@ -3810,7 +3810,7 @@ extern "C" void func_ov003_0222d530(Rec *self) {
         self->unk_251 = 0;
         self->unk_23a = self->unk_23a + self->unk_240;
         t = self->unk_23a;
-        if (func_ov003_0222e1e0(self, t, func_ov003_0222da7c(self)) != 0) {
+        if (Insect_SetMoveTarget(self, t, Insect_GetFlutterRange(self)) != 0) {
             src = &self->unk_204;
             dst = &self->unk_1c8;
             *dst = *src;
@@ -3824,7 +3824,7 @@ extern "C" void func_ov003_0222d530(Rec *self) {
         self->unk_24a = 0;
         self->unk_251 = 0;
         t = self->unk_23a;
-        if (func_ov003_0222e1e0(self, t, func_ov003_0222da7c(self)) != 0) {
+        if (Insect_SetMoveTarget(self, t, Insect_GetFlutterRange(self)) != 0) {
             src = &self->unk_204;
             dst = &self->unk_1c8;
             *dst = *src;
@@ -3849,7 +3849,7 @@ extern "C" void func_ov003_0222d530(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d350
-extern "C" void func_ov003_0222d350(Rec *self) {
+extern "C" void Insect_FlutterFlight(Rec *self) {
     s16 ang;
     Vec3 v;
     Vec3 w;
@@ -3863,11 +3863,11 @@ extern "C" void func_ov003_0222d350(Rec *self) {
     if (self->unk_24d != 8 && self->unk_f0.mid > 9) {
         AnimFrameCtrl_setup(&self->unk_ec, 9, 0, self->unk_21c, 0);
     }
-    if (func_ov003_0222d720(self) == 2) {
+    if (Insect_CheckAlarm(self) == 2) {
         if (self->unk_24d != 8) {
-            func_ov003_02225ec8(self, self->unk_21c);
+            Insect_SetAnimSpeed(self, self->unk_21c);
         } else {
-            func_ov003_02225ec8(self, 0x1000);
+            Insect_SetAnimSpeed(self, 0x1000);
         }
         self->unk_24a = 0;
     }
@@ -3875,14 +3875,14 @@ extern "C" void func_ov003_0222d350(Rec *self) {
         if (self->unk_24d != 8) {
             s32 t = func_01ffcb0c(self->unk_21c, 0x1333);
             if (t != self->unk_fc) {
-                func_ov003_02225ec8(self, t);
+                Insect_SetAnimSpeed(self, t);
             }
         } else {
             void *e = func_02095204(4);
             if (e != NULL) {
                 func_020e9960(&w, r7, (u8 *)e + 0x5c);
                 v = w;
-                func_ov003_0222ab68(&v, &v, 3);
+                Insect_ClampStepXZ(&v, &v, 3);
                 VEC_Add(r7, &v, r7);
             }
         }
@@ -3893,7 +3893,7 @@ extern "C" void func_ov003_0222d350(Rec *self) {
             }
         } else {
             if (self->unk_21c != self->unk_fc) {
-                func_ov003_02225ec8(self, self->unk_21c);
+                Insect_SetAnimSpeed(self, self->unk_21c);
             }
             if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
                 func_ov068_02268b70(self, &ang);
@@ -3908,12 +3908,12 @@ extern "C" void func_ov003_0222d350(Rec *self) {
         r6 = -0x333;
     }
     *r4 = *r4 + 4;
-    func_ov003_0222d1f0(self, r4);
+    Insect_FlutterAltitude(self, r4);
     r7->y = r7->y + r6;
     if (self->unk_24d == 8) {
         func_ov068_02268864(self, &ang, 0xaaa, 0x14, 0x3c, self->unk_257 << 12);
     } else {
-        func_ov003_0222d7d8(self, &ang, 0x38e, 0x14, 0x3c, self->unk_257 << 12);
+        Insect_FlutterSteer(self, &ang, 0x38e, 0x14, 0x3c, self->unk_257 << 12);
     }
 }
 }
@@ -3932,7 +3932,7 @@ extern "C" void func_ov003_0222d350(Rec *self) {
 #define func_ov068_02268864 _ZN18Unk_ov068_0226821419func_ov068_02268864EPsiihi
 namespace s13 {
 // 0x222d334
-extern "C" BOOL func_ov003_0222d334(Rec *self) {
+extern "C" BOOL Insect_TickTimer(Rec *self) {
     if (self->unk_244 > 0) {
         self->unk_244--;
     } else {
@@ -3953,18 +3953,18 @@ extern "C" BOOL func_ov003_0222d334(Rec *self) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d28c
-extern "C" void func_ov003_0222d28c(Rec *self, s32 a) {
+extern "C" void Insect_FlyAwayArc(Rec *self, s32 a) {
     V3 *p = &self->unk_204;
     s16 *cnt = &self->unk_242;
     V3 v;
-    func_ov003_0222e328(&v, self->unk_23a);
-    if (func_ov003_0222af48(self, 1) != 0) {
-        func_ov003_02229910(self);
+    Insect_GetDirVec(&v, self->unk_23a);
+    if (Insect_FadeOut(self, 1) != 0) {
+        Insect_Despawn(self);
     }
     s32 c = *cnt;
     s32 t = func_01ffcb0c(a, (c * 0x44) << 12);
     v.y = t >> (FX_Div((c * c) << 12, 0x1000) + 12);
-    if (func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
+    if (Insect_CheckObstacle(self, 0x50, 0xe38) == 0) {
         v.x = func_01ffcb0c(v.x, 0x10000);
         v.z = func_01ffcb0c(v.z, 0x10000);
     }
@@ -3981,7 +3981,7 @@ extern "C" void func_ov003_0222d28c(Rec *self, s32 a) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d1f0
-extern "C" void func_ov003_0222d1f0(Rec *self, s16 *cnt) {
+extern "C" void Insect_FlutterAltitude(Rec *self, s16 *cnt) {
     s32 top;
     Unk_ov003_0222d1f0_K base = K_300;
     s32 a = self->unk_228;
@@ -4026,7 +4026,7 @@ extern "C" void func_ov003_0222d1f0(Rec *self, s16 *cnt) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222d1dc
-extern "C" s32 func_ov003_0222d1dc(s32 a) {
+extern "C" s32 Insect_GetFlowerSpeciesMask(s32 a) {
     if (a == 2) {
         return 0xf;
     }
@@ -4045,7 +4045,7 @@ extern "C" s32 func_ov003_0222d1dc(s32 a) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cfb0
-extern "C" void func_ov003_0222cfb0(Rec *self) {
+extern "C" void Dragonfly_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
     s32 lvl = ((s32)self->unk_21c & 0xf0) >> 4;
     BOOL flag = FALSE;
@@ -4058,21 +4058,21 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
                 AnimModel_setFrame(self->unk_50, 0);
             }
         } else if (self->unk_f4.mid != 0) {
-            func_ov003_0222d674(self);
+            Insect_FlapWings(self);
         }
     } else {
-        func_ov003_0222d674(self);
+        Insect_FlapWings(self);
     }
     if (self->unk_251 != 0xb && self->unk_251 != 9) {
-        func_ov003_0222d720(self);
+        Insect_CheckAlarm(self);
     }
-    func_ov003_0222e2e0(self, 5);
+    Insect_CheckTurnCount(self, 5);
     u8 *st = &self->unk_251;
     switch (*st) {
     case 15:
         flag = TRUE;
     case 3:
-        if (func_ov003_0222c9e0(self, 0) != 0) {
+        if (Insect_TurnToTarget(self, 0) != 0) {
             if (flag != FALSE) {
                 self->unk_251 = 0x12;
             }
@@ -4082,9 +4082,9 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
         if (lvl > 0) {
             func_ov068_0226a1a0(self);
         } else {
-            func_ov003_0222cd58(self);
+            Dragonfly_FlyToTarget(self);
         }
-        func_ov003_0222cc14(self);
+        Dragonfly_CheckObstacle(self);
         *cnt = 0;
         break;
     case 12:
@@ -4093,7 +4093,7 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
         if (self->unk_24d == 0x17) {
             *cnt = 100;
         }
-        func_ov003_0222ce78(self, cnt);
+        Dragonfly_Hover(self, cnt);
         break;
     case 7: {
         *st = 3;
@@ -4107,7 +4107,7 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
     }
     case 9:
     case 11:
-        func_ov003_0222cca8(self, cnt);
+        Dragonfly_FlyOff(self, cnt);
         break;
     default:
         if (lvl > 0) {
@@ -4119,7 +4119,7 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
                 self->unk_244 = 100;
             }
         } else {
-            s32 r = func_ov003_0222d334(self);
+            s32 r = Insect_TickTimer(self);
             *cnt = 0;
             if (self->unk_24a == 0 && r != 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
                 func_ov068_0226a4f0(self);
@@ -4145,7 +4145,7 @@ extern "C" void func_ov003_0222cfb0(Rec *self) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222ce78
-extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt) {
+extern "C" void Dragonfly_Hover(Rec *self, s16 *cnt) {
     V3 *p = &self->unk_204;
     s32 r = func_02063b8c(100);
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 && func_020a62a0() == 0) {
@@ -4166,7 +4166,7 @@ extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt) {
                     m = 0xd;
                 }
                 s32 old = self->unk_23a;
-                s32 g = func_ov003_0222c620(m, 1);
+                s32 g = Insect_RandomTurn(m, 1);
                 self->unk_240 = g + old;
                 V3 *s = &self->unk_204;
                 V3 *d = &self->unk_1d4;
@@ -4201,7 +4201,7 @@ extern "C" void func_ov003_0222ce78(Rec *self, s16 *cnt) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cd58
-extern "C" void func_ov003_0222cd58(Rec *self) {
+extern "C" void Dragonfly_FlyToTarget(Rec *self) {
     s32 r6, s;
     V3 *q = &self->unk_1d4;
     V3 *p = &self->unk_204;
@@ -4253,12 +4253,12 @@ extern "C" void func_ov003_0222cd58(Rec *self) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cca8
-extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt) {
+extern "C" void Dragonfly_FlyOff(Rec *self, s16 *cnt) {
     V3 *p = &self->unk_204;
     s32 t;
     V3 v;
-    if (self->unk_251 == 0xb && func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
-        func_ov003_0222e328(&v, self->unk_23a);
+    if (self->unk_251 == 0xb && Insect_CheckObstacle(self, 0x50, 0xe38) == 0) {
+        Insect_GetDirVec(&v, self->unk_23a);
         p->x += func_01ffcb0c(v.x, 0x10000);
         p->z += func_01ffcb0c(v.z, 0x10000);
     }
@@ -4268,8 +4268,8 @@ extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt) {
     s32 c = FX_Div(b, 0x2000);
     p->y += (a >> 12) + (c >> 12);
     (*cnt)++;
-    if (func_ov003_0222af48(self, 1) != 0) {
-        func_ov003_02229910(self);
+    if (Insect_FadeOut(self, 1) != 0) {
+        Insect_Despawn(self);
     }
 }
 }
@@ -4282,8 +4282,8 @@ extern "C" void func_ov003_0222cca8(Rec *self, s16 *cnt) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cc14
-extern "C" void func_ov003_0222cc14(Rec *self) {
-    s32 m = func_ov003_0222e500(self, 0x50, 0xe38);
+extern "C" void Dragonfly_CheckObstacle(Rec *self) {
+    s32 m = Insect_CheckObstacle(self, 0x50, 0xe38);
     if (m != 0) {
         if (self->unk_24a != 0) {
             self->unk_251 = 0xf;
@@ -4291,7 +4291,7 @@ extern "C" void func_ov003_0222cc14(Rec *self) {
         } else {
             self->unk_251 = 0xd;
         }
-        self->unk_240 = func_ov003_0222cb3c(self->unk_23a, m);
+        self->unk_240 = Insect_ReflectAngle(self->unk_23a, m);
         self->unk_21c++;
         self->unk_242 = 0;
         V3 *s = &self->unk_204;
@@ -4311,7 +4311,7 @@ extern "C" void func_ov003_0222cc14(Rec *self) {
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222cb3c
-extern "C" s32 func_ov003_0222cb3c(s32 a, s32 mode) {
+extern "C" s32 Insect_ReflectAngle(s32 a, s32 mode) {
     s32 orig = a;
     if (mode == 3) {
         s32 r = func_02063b8c(100);
@@ -4367,7 +4367,7 @@ tail:
 #define func_02133150 _s32_div_f
 namespace s12 {
 // 0x222c9e0
-extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
+extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a) {
     BOOL result = FALSE;
     s16 ang = self->unk_23a;
     if (self->unk_251 != 0xb) {
@@ -4386,7 +4386,7 @@ extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
                 if (self->unk_24a != 0) {
                     n = n + (u8)(func_02063b8c(2) + 2);
                 }
-                if (func_ov003_0222e1e0(self, self->unk_240, n << 12) != 0) {
+                if (Insect_SetMoveTarget(self, self->unk_240, n << 12) != 0) {
                     self->unk_240 = Math_AngleXZ(&self->unk_204, &self->unk_1d4);
                     fl &= 0xf0ff;
                     self->unk_21c = fl;
@@ -4403,7 +4403,7 @@ extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
             self->unk_23a = ang;
         }
     } else {
-        func_ov003_0222e1e0(self, self->unk_23a, ((u32)(self->unk_259 << 25) >> 24) << 12);
+        Insect_SetMoveTarget(self, self->unk_23a, ((u32)(self->unk_259 << 25) >> 24) << 12);
         self->unk_24c = a;
     }
     return result;
@@ -4422,7 +4422,7 @@ extern "C" s32 func_ov003_0222c9e0(Rec *self, u32 a) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c8f8
-extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b) {
+extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b) {
     Unk_02095204_Obj *p = func_02095204(a);
     if (p) {
         s32 r5 = o->unk_254;
@@ -4473,7 +4473,7 @@ extern "C" void func_ov003_0222c8f8(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, 
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c7fc
-extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out) {
+extern "C" s32 Insect_UpdateAlarm(Rec *o, s32 *out) {
     s32 r = 0;
     s32 best;
     s32 flagC;
@@ -4498,7 +4498,7 @@ extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out) {
         i = 0;
         zero = 0;
         do {
-            Unk_ov003_0222c7fc_Ns::func_ov003_0222c8f8(o, &v, &dist, &b[1], i, flagC);
+            Unk_ov003_0222c7fc_Ns::Insect_AccumAlarm(o, &v, &dist, &b[1], i, flagC);
             b[0] = (b[0] & b[1]) ? 1 : zero;
             if (best > dist) {
                 out[0] = v.x;
@@ -4550,37 +4550,37 @@ extern "C" s32 func_ov003_0222c7fc(Rec *o, s32 *out) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c718
-extern "C" void func_ov003_0222c718(Rec *o) {
+extern "C" void Hopper_Update(Rec *o) {
     s16 *p = &o->unk_242;
     u32 st = o->unk_251;
     if (st != 0xb && st != 9 && st != 4) {
-        func_ov003_0222d720(o);
+        Insect_CheckAlarm(o);
     }
-    func_ov003_0222e2e0(o, 4);
+    Insect_CheckTurnCount(o, 4);
     switch (st) {
     case 3:
     case 0xf:
-        func_ov003_0222c9e0(o, 1);
+        Insect_TurnToTarget(o, 1);
         break;
     case 7:
         o->unk_251 = 0xf;
         o->unk_21c |= 0xf00;
-        func_ov003_0222c3c4(o, p);
+        Hopper_CheckObstacle(o, p);
         break;
     case 9:
     case 0xb:
         o->unk_24a = 1;
     case 4:
     case 0x11:
-        func_ov003_0222c444(o);
+        Hopper_Jump(o);
         break;
     case 0x13:
-        func_ov003_0222c36c(o);
+        Cricket_Chirp(o);
         if (o->unk_f4.mid != 0) {
             AnimModel_setFrame((u8 *)o + 0x50, 0);
         }
-        if (func_ov003_0222c3c4(o, p) == 0) {
-            func_ov003_0222c668(o, p);
+        if (Hopper_CheckObstacle(o, p) == 0) {
+            Hopper_Rest(o, p);
             o->unk_21c = 0;
         }
         break;
@@ -4617,7 +4617,7 @@ extern "C" void func_ov003_0222c718(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c668
-extern "C" void func_ov003_0222c668(Rec *o, s16 *p) {
+extern "C" void Hopper_Rest(Rec *o, s16 *p) {
     *p = *p + 1;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && !func_020a62a0()) {
         V3 *a = &o->unk_204;
@@ -4630,7 +4630,7 @@ extern "C" void func_ov003_0222c668(Rec *o, s16 *p) {
     } else {
         if (*p >= o->unk_232) {
             s16 t = o->unk_23a;
-            s32 g = func_ov003_0222c620(0xc, 1);
+            s32 g = Insect_RandomTurn(0xc, 1);
             o->unk_240 = g + t;
             o->unk_21c |= 0xf00;
             o->unk_251 = 3;
@@ -4656,7 +4656,7 @@ extern "C" void func_ov003_0222c668(Rec *o, s16 *p) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c620
-extern "C" s16 func_ov003_0222c620(s32 a, s32 b) {
+extern "C" s16 Insect_RandomTurn(s32 a, s32 b) {
     u8 r = func_02063b8c(a);
     if (r != 0) {
         if (b != 0 && func_02063b8c(100) > 0x32) {
@@ -4684,7 +4684,7 @@ extern "C" s16 func_ov003_0222c620(s32 a, s32 b) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c444
-extern "C" void func_ov003_0222c444(Rec *o) {
+extern "C" void Hopper_Jump(Rec *o) {
     u32 st;
     V3 *dst = &o->unk_1d4;
     V3 *src = &o->unk_204;
@@ -4692,10 +4692,10 @@ extern "C" void func_ov003_0222c444(Rec *o) {
     s32 flag = 0;
     st = o->unk_251;
     if (o->unk_24a) {
-        func_ov003_0222d674(o);
-        func_ov003_0222c3a0(o);
+        Insect_FlapWings(o);
+        Locust_PlaySe(o);
     }
-    if (func_ov003_0222e500(o, 0x50, 0xe38) == 0) {
+    if (Insect_CheckObstacle(o, 0x50, 0xe38) == 0) {
         if (func_020e7d4c(src, dst, q, 0x14000, 0x333) == 0) {
             flag = 1;
         } else {
@@ -4718,9 +4718,9 @@ extern "C" void func_ov003_0222c444(Rec *o) {
         if (g.unk_30 != 0) {
             v = g.unk_3c;
             if (o->unk_251 == 0x11) {
-                func_ov003_0222de04(o);
+                Insect_SplashIfWater(o);
                 o->unk_242 = 0;
-                func_ov003_02229910(o);
+                Insect_Despawn(o);
                 return;
             }
         } else {
@@ -4736,9 +4736,9 @@ extern "C" void func_ov003_0222c444(Rec *o) {
             o->unk_251 = 0x13;
             AnimModel_setFrame((u8 *)o + 0x50, 0);
             if (v < 0) {
-                func_ov003_0222de04(o);
+                Insect_SplashIfWater(o);
                 o->unk_242 = 0;
-                func_ov003_02229910(o);
+                Insect_Despawn(o);
             } else if (o->unk_24a) {
                 o->unk_254 = o->unk_255 - 10;
                 o->unk_24a = 0;
@@ -4746,8 +4746,8 @@ extern "C" void func_ov003_0222c444(Rec *o) {
         }
     }
     if (st == 9 || st == 0xb) {
-        if (func_ov003_0222af48(o, 1)) {
-            func_ov003_02229910(o);
+        if (Insect_FadeOut(o, 1)) {
+            Insect_Despawn(o);
         }
     }
 }
@@ -4769,13 +4769,13 @@ extern "C" void func_ov003_0222c444(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c3c4
-extern "C" void *func_ov003_0222c3c4(Rec *o, s16 *p) {
+extern "C" void *Hopper_CheckObstacle(Rec *o, s16 *p) {
     if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
-        void *r = func_ov003_0222e500(o, 0x50, 0xe38);
+        void *r = Insect_CheckObstacle(o, 0x50, 0xe38);
         if (r) {
             *p = 0;
             o->unk_251 = 0xf;
-            o->unk_240 = func_ov003_0222cb3c(o->unk_23a, r);
+            o->unk_240 = Insect_ReflectAngle(o->unk_23a, r);
             o->unk_21c |= 0xf00;
             o->unk_21c++;
         }
@@ -4801,12 +4801,12 @@ extern "C" void *func_ov003_0222c3c4(Rec *o, s16 *p) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c3a0
-extern "C" void func_ov003_0222c3a0(Rec *o) {
+extern "C" void Locust_PlaySe(Rec *o) {
     s32 t = o->unk_24d;
     switch (t) {
     case 0xc:
     case 0xd:
-        func_ov003_0222dd54(o, 0, 1);
+        Insect_PlaySe(o, 0, 1);
         break;
     }
 }
@@ -4828,14 +4828,14 @@ extern "C" void func_ov003_0222c3a0(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c36c
-extern "C" void func_ov003_0222c36c(Rec *o) {
+extern "C" void Cricket_Chirp(Rec *o) {
     s32 t = o->unk_24d;
     switch (t) {
     case 0x1b:
     case 0x1c:
     case 0x1d:
         if (*(u8 *)((u8 *)o + 0x254) < 5) {
-            func_ov003_0222dd54(o, 0, 1);
+            Insect_PlaySe(o, 0, 1);
         }
         break;
     }
@@ -4858,7 +4858,7 @@ extern "C" void func_ov003_0222c36c(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c2e0
-extern "C" void func_ov003_0222c2e0(Rec *o) {
+extern "C" void Pondskater_Update(Rec *o) {
     s16 *p = &o->unk_242;
     u8 *st = &o->unk_251;
     switch (*st) {
@@ -4871,7 +4871,7 @@ extern "C" void func_ov003_0222c2e0(Rec *o) {
         func_ov068_0226a2dc(o, p);
         break;
     case 0xb:
-        func_ov003_022297c8(o, p);
+        Crawler_Escape(o, p);
         *p = *p + 1;
         break;
     case 0x13:
@@ -4901,7 +4901,7 @@ extern "C" void func_ov003_0222c2e0(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c240
-extern "C" void func_ov003_0222c240(Rec *o) {
+extern "C" void Mosquito_Update(Rec *o) {
     s16 *p = &o->unk_242;
     switch (o->unk_251) {
     case 0:
@@ -4912,13 +4912,13 @@ extern "C" void func_ov003_0222c240(Rec *o) {
         if (func_020e7530(&t, o->unk_240, 0x5b0)) {
             o->unk_251 = 0;
         }
-        func_ov003_0222dd54(o, 0, 1);
+        Insect_PlaySe(o, 0, 1);
         o->unk_23a = t;
         break;
     }
     case 9:
     case 0xb:
-        func_ov003_022297c8(o, p);
+        Crawler_Escape(o, p);
         *p = *p + 1;
         break;
     case 0x13:
@@ -4944,17 +4944,17 @@ extern "C" void func_ov003_0222c240(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c188
-extern "C" void func_ov003_0222c188(Rec *o) {
+extern "C" void Firefly_Update(Rec *o) {
     switch (o->unk_251) {
     case 0:
-        func_ov003_0222c0d0(o);
+        Firefly_Wander(o);
         break;
     case 9:
     case 0xb:
         if (o->unk_242 == 0) {
-            func_ov003_0222dd54(o, 1, 0);
+            Insect_PlaySe(o, 1, 0);
         }
-        func_ov003_0222a36c(o, &o->unk_242);
+        TreeBug_FlyOff(o, &o->unk_242);
         break;
     case 7:
         o->unk_251 = 0;
@@ -4964,7 +4964,7 @@ extern "C" void func_ov003_0222c188(Rec *o) {
         o->unk_24a = 0;
         o->unk_251 = 0;
         s16 t = o->unk_23a;
-        func_ov003_0222e1e0(o, t, func_ov003_0222da7c(o));
+        Insect_SetMoveTarget(o, t, Insect_GetFlutterRange(o));
         V3 *s = &o->unk_204;
         V3 *d = &o->unk_1c8;
         d->x = s->x;
@@ -4992,20 +4992,20 @@ extern "C" void func_ov003_0222c188(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c0d0
-extern "C" void func_ov003_0222c0d0(Rec *o) {
+extern "C" void Firefly_Wander(Rec *o) {
     s16 t = o->unk_23a;
     s16 *p = &o->unk_242;
     if (!CommManager_isSlotActive(gCommManager, gCommManager->unk_64) || func_020a62a0()) {
-        if (func_ov003_0222d720(o) == 2) {
-            func_ov003_02225ec8(o, 0x1000);
+        if (Insect_CheckAlarm(o) == 2) {
+            Insect_SetAnimSpeed(o, 0x1000);
             o->unk_24a = 0;
         }
     }
-    func_ov003_0222d7d8(o, &t, 0x38e, 0x28, 0x50, o->unk_257 << 12);
+    Insect_FlutterSteer(o, &t, 0x38e, 0x28, 0x50, o->unk_257 << 12);
     s32 r = func_02063b8c(4);
     r = FX_Div(0x2000, (r + 5) << 12);
     *p = *p + (s16)r;
-    func_ov003_0222d75c(o, *p, 0x1000, (func_02063b8c(4) + 10) << 12);
+    Insect_FlutterBob(o, *p, 0x1000, (func_02063b8c(4) + 10) << 12);
 }
 }
 #undef func_020547a4
@@ -5025,14 +5025,14 @@ extern "C" void func_ov003_0222c0d0(Rec *o) {
 #define func_ov068_02269840 _ZN18Unk_ov068_0226821419func_ov068_02269840EPs
 namespace s11 {
 // 0x222c024
-extern "C" void func_ov003_0222c024(Rec *o) {
+extern "C" void Bee_Update(Rec *o) {
     switch (o->unk_251) {
     case 0:
-        func_ov003_0222dd54(o, 0, 1);
+        Insect_PlaySe(o, 0, 1);
         func_ov068_022694c0(o);
         break;
     case 2:
-        func_ov003_0222dd54(o, 0, 1);
+        Insect_PlaySe(o, 0, 1);
         func_ov068_02269714(o);
         break;
     case 3:
@@ -5042,9 +5042,9 @@ extern "C" void func_ov003_0222c024(Rec *o) {
         func_ov068_02269250(o);
         break;
     case 0xb:
-        func_ov003_0222dd54(o, 0, 1);
-        func_ov003_0222d674(o);
-        func_ov003_0222d28c(o, 0x1333);
+        Insect_PlaySe(o, 0, 1);
+        Insect_FlapWings(o);
+        Insect_FlyAwayArc(o, 0x1333);
         break;
     case 4:
         func_ov068_022697b8(o);
@@ -5081,20 +5081,20 @@ extern "C" void func_ov003_0222c024(Rec *o) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bf7c
-extern "C" void func_ov003_0222bf7c(Rec *self) {
+extern "C" void Hoverer_Update(Rec *self) {
     switch (self->unk_251) {
     case 0:
         func_ov068_02269d58(self);
         break;
     case 6:
-        func_ov003_02229ab4(self);
-        func_ov003_0222df80(self);
+        Crawler_Wander(self);
+        Insect_UpdateRest(self);
         break;
     case 9:
     case 11:
-        func_ov003_0222d674(self);
-        func_ov003_0222dd54(self, 0, 1);
-        func_ov003_0222d28c(self, 0x1ccd);
+        Insect_FlapWings(self);
+        Insect_PlaySe(self, 0, 1);
+        Insect_FlyAwayArc(self, 0x1ccd);
         break;
     case 7:
         self->unk_251 = 0;
@@ -5120,17 +5120,17 @@ extern "C" void func_ov003_0222bf7c(Rec *self) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222be88
-extern "C" void func_ov003_0222be88(Rec *self) {
+extern "C" void Ant_Update(Rec *self) {
     switch (self->unk_251) {
     case 11:
-        func_ov003_0222bb28(self, &self->unk_242);
+        Insect_HopArc(self, &self->unk_242);
         break;
     case 9:
-        func_ov003_0222b928(self, &self->unk_242);
+        Insect_EscapeRun(self, &self->unk_242);
         break;
     case 7:
     case 8:
-        if (func_ov003_0222af48(self, 4)) {
+        if (Insect_FadeOut(self, 4)) {
             NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0);
             self->unk_251 = 0x13;
             V3 *p = &self->unk_204;
@@ -5155,7 +5155,7 @@ extern "C" void func_ov003_0222be88(Rec *self) {
         if (v >= 0x154a && v <= 0x1553) {
             r = TRUE;
         }
-        if (r == 0 || func_ov003_022260e8(pos) != 0) {
+        if (r == 0 || Insect_IsAtWateringPoint(pos) != 0) {
             self->unk_251 = 7;
         }
         break;
@@ -5174,23 +5174,23 @@ extern "C" void func_ov003_0222be88(Rec *self) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222be0c
-extern "C" void func_ov003_0222be0c(Rec *self) {
+extern "C" void MoleCricket_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
     switch (self->unk_251) {
     case 4:
     case 17:
-        func_ov003_0222dd54(self, 1, 1);
-        func_ov003_0222b838(self, cnt);
+        Insect_PlaySe(self, 1, 1);
+        MoleCricket_Burrow(self, cnt);
         break;
     case 5:
     case 11:
-        func_ov003_0222bb28(self, cnt);
+        Insect_HopArc(self, cnt);
         break;
     case 9:
-        func_ov003_0222b928(self, cnt);
+        Insect_EscapeRun(self, cnt);
         break;
     case 19:
-        func_ov003_0222bd60(self, cnt);
+        MoleCricket_CheckDugUp(self, cnt);
         break;
     }
 }
@@ -5206,10 +5206,10 @@ extern "C" void func_ov003_0222be0c(Rec *self) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bd60
-extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt) {
+extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
     V3 *pos = &self->unk_204;
-    void *o = func_ov003_0222e098(pos);
-    if (func_ov003_0222dd90(self, pos)) {
+    void *o = Insect_FindNearestPlayer(pos);
+    if (Insect_CheckDigHit(self, pos)) {
         if (o != 0) {
             s32 a = Math_AngleXZ(pos, (u8 *)o + 0x5c);
             self->unk_251 = 5;
@@ -5225,7 +5225,7 @@ extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt) {
         }
         s32 t = self->unk_252;
         if (t > 0) {
-            func_ov003_0222dd54(self, 0, 1);
+            Insect_PlaySe(self, 0, 1);
             self->unk_252 = t - 1;
         }
     }
@@ -5242,7 +5242,7 @@ extern "C" void func_ov003_0222bd60(Rec *self, s16 *cnt) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bb28
-extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
+extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
     V3 *pos = &self->unk_204;
     volatile V3 saved;
     saved.x = pos->x;
@@ -5254,11 +5254,11 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
     g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
     if (self->unk_24d == 0x35) {
         self->unk_23a = 0;
-        func_ov003_0222e328(&v, self->unk_23c);
+        Insect_GetDirVec(&v, self->unk_23c);
     } else {
-        func_ov003_0222e328(&v, self->unk_23a);
+        Insect_GetDirVec(&v, self->unk_23a);
     }
-    if (self->unk_251 == 5 || func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
+    if (self->unk_251 == 5 || Insect_CheckObstacle(self, 0x50, 0xe38) == 0) {
         pos->x += func_01ffcb0c((self->unk_257 + 2) << 12, v.x);
         pos->z += func_01ffcb0c((self->unk_257 + 2) << 12, v.z);
     }
@@ -5295,8 +5295,8 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
     }
     if (pos->y <= lim && *cnt > 0) {
         if (g.func_020338d0(pos->y)) {
-            func_ov003_02229910(self);
-            func_ov003_0222de04(self);
+            Insect_Despawn(self);
+            Insect_SplashIfWater(self);
         } else {
             if (self->unk_251 == 0xb) {
                 if (self->unk_24d == 0x1f) {
@@ -5315,7 +5315,7 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
                 }
                 if (self->unk_24d == 0x31 || self->unk_24d == 0x1e) {
                     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
-                        func_ov003_0222e1e0(self, self->unk_23a, 0xc000);
+                        Insect_SetMoveTarget(self, self->unk_23a, 0xc000);
                     }
                 }
             }
@@ -5342,7 +5342,7 @@ extern "C" void func_ov003_0222bb28(Rec *self, s16 *cnt) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b928
-extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
+extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
     V3 *pos = &self->unk_204;
     s32 mul = 2;
     s8 r7 = self->unk_24d;
@@ -5350,16 +5350,16 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
     s16 r6;
     Unk_0203398c g;
     g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
-    if (func_ov003_0222af48(self, 1)) {
-        func_ov003_02229910(self);
+    if (Insect_FadeOut(self, 1)) {
+        Insect_Despawn(self);
     }
-    if (func_ov003_0222b784(self)) {
+    if (Insect_SteerAroundObstacle(self)) {
         return;
     }
     if (g.unk_30 != 0) {
         if (g.func_020338d0(pos->y)) {
-            func_ov003_02229910(self);
-            func_ov003_0222de04(self);
+            Insect_Despawn(self);
+            Insect_SplashIfWater(self);
         } else {
             pos->y = pos->y - 0x100;
         }
@@ -5368,13 +5368,13 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
     pos->y = pos->y - 0x200;
     if (r7 == 0x35) {
         r6 = self->unk_23c;
-        func_ov003_0222e328(&v, r6);
+        Insect_GetDirVec(&v, r6);
     } else {
         if ((u8)(s8)(r7 - 0x36) <= 1) {
             mul = 4;
         }
         r6 = self->unk_23a;
-        func_ov003_0222e328(&v, r6);
+        Insect_GetDirVec(&v, r6);
     }
     if (r7 == 0x1f) {
         s32 c = *cnt;
@@ -5424,14 +5424,14 @@ extern "C" void func_ov003_0222b928(Rec *self, s16 *cnt) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b838
-extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
+extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
     s32 r4 = self->unk_232;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-        if (func_ov003_0222abc0(self) != 0) {
+        if (Insect_GroundWalkNet(self) != 0) {
             return;
         }
     } else {
-        if (func_ov003_0222adc4(self) == 0) {
+        if (Insect_GroundWalk(self) == 0) {
             return;
         }
     }
@@ -5457,7 +5457,7 @@ extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
             }
         }
         *cnt = 0;
-        func_ov003_02229910(self);
+        Insect_Despawn(self);
     }
 }
 }
@@ -5472,8 +5472,8 @@ extern "C" void func_ov003_0222b838(Rec *self, s16 *cnt) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b784
-extern "C" s32 func_ov003_0222b784(Rec *self) {
-    s32 t = func_ov003_0222e500(self, 0x50, 0xe38);
+extern "C" s32 Insect_SteerAroundObstacle(Rec *self) {
+    s32 t = Insect_CheckObstacle(self, 0x50, 0xe38);
     s32 ret = 0;
     u32 c = self->unk_252;
     if (t != 0) {
@@ -5521,28 +5521,28 @@ extern "C" s32 func_ov003_0222b784(Rec *self) {
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b6e0
-extern "C" void func_ov003_0222b6e0(Rec *self) {
+extern "C" void PillBug_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
     switch (self->unk_251) {
     case 4:
     case 17:
-        func_ov003_0222b518(self);
+        PillBug_Walk(self);
         break;
     case 11:
         if (self->unk_f4.mid == 1) {
             AnimModel_setFrame(self->unk_50, 0);
         }
     case 5:
-        func_ov003_0222bb28(self, cnt);
+        Insect_HopArc(self, cnt);
         break;
     case 9:
-        func_ov003_0222b928(self, cnt);
+        Insect_EscapeRun(self, cnt);
         break;
     case 7:
-        func_ov003_0222b620(self);
+        PillBug_Curled(self);
         break;
     case 19:
-        func_ov003_0222b450(self, cnt);
+        Insect_CheckRockStrike(self, cnt);
         if (self->unk_f4.mid != 0) {
             AnimModel_setFrame(self->unk_50, 0);
         }
@@ -5563,19 +5563,19 @@ extern "C" void func_ov003_0222b6e0(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222b620
-extern "C" void func_ov003_0222b620(Rec *self) {
+extern "C" void PillBug_Curled(Rec *self) {
     s32 r4 = self->unk_232;
     V3 *pos = &self->unk_204;
-    if (func_ov003_0222dd90(self, pos)) {
+    if (Insect_CheckDigHit(self, pos)) {
         r4 = 1;
     }
     if (r4 <= 0) {
-        if (func_ov003_0222af48(self, 1)) {
-            func_ov003_02229910(self);
+        if (Insect_FadeOut(self, 1)) {
+            Insect_Despawn(self);
         }
     } else {
         V3 out;
-        func_ov003_0222c7fc(self, &out.x);
+        Insect_UpdateAlarm(self, &out.x);
         if (out.x != 0) {
             self->unk_232 = r4 - 1;
             if (self->unk_254 < self->unk_255) {
@@ -5584,7 +5584,7 @@ extern "C" void func_ov003_0222b620(Rec *self) {
                 s32 a = Math_AngleXZ(pos, &out);
                 self->unk_23a = a + 0x8000;
                 if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) && func_020a62a0()) {
-                    func_ov003_0222e1e0(self, self->unk_23a, 0xc000);
+                    Insect_SetMoveTarget(self, self->unk_23a, 0xc000);
                 }
             }
         }
@@ -5606,20 +5606,20 @@ extern "C" void func_ov003_0222b620(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222b518
-extern "C" void func_ov003_0222b518(Rec *self) {
+extern "C" void PillBug_Walk(Rec *self) {
     V3 *pos = &self->unk_204;
     s32 r4 = self->unk_232;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-        if (func_ov003_0222abc0(self) != 0) {
+        if (Insect_GroundWalkNet(self) != 0) {
             return;
         }
     } else {
-        if (func_ov003_0222adc4(self) == 0) {
+        if (Insect_GroundWalk(self) == 0) {
             return;
         }
     }
     V3 out;
-    func_ov003_0222c7fc(self, &out.x);
+    Insect_UpdateAlarm(self, &out.x);
     if (self->unk_254 >= self->unk_255 &&
         (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0 || func_020a62a0() != 0 ||
          (self->unk_1d4.x == self->unk_204.x && self->unk_1d4.z == self->unk_204.z))) {
@@ -5633,11 +5633,11 @@ extern "C" void func_ov003_0222b518(Rec *self) {
             dst->z = src->z;
         }
     } else if (r4 <= 0) {
-        if (func_ov003_0222af48(self, 1)) {
-            func_ov003_02229910(self);
+        if (Insect_FadeOut(self, 1)) {
+            Insect_Despawn(self);
         }
     } else {
-        if (func_ov003_0222dd90(self, pos)) {
+        if (Insect_CheckDigHit(self, pos)) {
             r4 = 1;
         }
         self->unk_232 = r4 - 1;
@@ -5659,7 +5659,7 @@ extern "C" void func_ov003_0222b518(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222b450
-extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
+extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
     s8 *p = &self->unk_24e;
     V3 *sub = &self->unk_204;
     if (*p <= 0) {
@@ -5680,7 +5680,7 @@ extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
         c--;
         *p = c;
         if (*p == 0) {
-            void *o = func_ov003_0222e098(sub);
+            void *o = Insect_FindNearestPlayer(sub);
             if (o) {
                 s32 v = Math_AngleXZ(sub, (u8 *)o + 0x5c);
                 self->unk_251 = 5;
@@ -5709,7 +5709,7 @@ extern "C" BOOL func_ov003_0222b450(Rec *self, s16 *out) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222b3f4
-extern "C" void func_ov003_0222b3f4(Rec *self) {
+extern "C" void Moth_Update(Rec *self) {
     u8 *p;
     p = &self->unk_251;
     switch (*p) {
@@ -5718,10 +5718,10 @@ extern "C" void func_ov003_0222b3f4(Rec *self) {
         break;
     case 9:
     case 11:
-        func_ov003_0222d28c(self, 0x1ccd, p);
+        Insect_FlyAwayArc(self, 0x1ccd, p);
         break;
     case 7:
-        func_ov003_0222d350(self);
+        Insect_FlutterFlight(self);
         break;
     case 0x13:
         self->unk_24a = 0;
@@ -5745,12 +5745,12 @@ extern "C" void func_ov003_0222b3f4(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222b224
-extern "C" void func_ov003_0222b224(Rec *self) {
+extern "C" void Flea_Update(Rec *self) {
     u32 st = self->unk_251;
     switch (st) {
     case 6:
-        func_ov003_0222b784(self);
-        if (func_ov003_0222d334(self)) {
+        Insect_SteerAroundObstacle(self);
+        if (Insect_TickTimer(self)) {
             self->unk_251 = 0xb;
         }
         break;
@@ -5765,10 +5765,10 @@ extern "C" void func_ov003_0222b224(Rec *self) {
         s32 y0 = self->unk_228;
         Unk_0203398c g;
         g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, 1);
-        func_ov003_02226d08(self, 200);
-        if (func_ov003_0222b784(self) == 0) {
+        Insect_SetScale(self, 200);
+        if (Insect_SteerAroundObstacle(self) == 0) {
             V3 v;
-            func_ov003_0222e328(&v, self->unk_23a);
+            Insect_GetDirVec(&v, self->unk_23a);
             pos->x += func_01ffcb0c(self->unk_257 << 12, v.x);
             pos->z += func_01ffcb0c(self->unk_257 << 12, v.z);
         }
@@ -5798,8 +5798,8 @@ extern "C" void func_ov003_0222b224(Rec *self) {
             *p = 0;
             pos->y = y0;
             if (g.func_020338d0(pos->y)) {
-                func_ov003_02229910(self);
-                func_ov003_0222de04(self);
+                Insect_Despawn(self);
+                Insect_SplashIfWater(self);
             } else {
                 self->unk_251 = 6;
                 self->unk_244 = 4;
@@ -5814,8 +5814,8 @@ extern "C" void func_ov003_0222b224(Rec *self) {
         } else {
             *p = *p + 1;
         }
-        if (func_ov003_0222af48(self, 1)) {
-            func_ov003_02229910(self);
+        if (Insect_FadeOut(self, 1)) {
+            Insect_Despawn(self);
         }
         break;
     }
@@ -5837,7 +5837,7 @@ extern "C" void func_ov003_0222b224(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222aff0
-extern "C" void func_ov003_0222aff0(Rec *self) {
+extern "C" void Stinger_Update(Rec *self) {
     s32 r = 0;
     u8 st = self->unk_251;
     V3 *pos = &self->unk_204;
@@ -5873,11 +5873,11 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
         func_ov068_02269110(self, &self->unk_23e, r);
         break;
     case 11:
-        func_ov003_0222bb28(self, &self->unk_242);
+        Insect_HopArc(self, &self->unk_242);
         break;
     case 9:
-        func_ov003_0222dd54(self, 0, 1);
-        func_ov003_0222b928(self, &self->unk_242);
+        Insect_PlaySe(self, 0, 1);
+        Insect_EscapeRun(self, &self->unk_242);
         break;
     case 3: {
         volatile u32 w32;
@@ -5895,7 +5895,7 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
                 self->unk_251 = 3;
                 self->unk_244 = 100;
                 s32 j = self->unk_23a;
-                s32 t = func_ov003_0222c620(8, 1);
+                s32 t = Insect_RandomTurn(8, 1);
                 self->unk_240 = t + j + 0x8000;
                 *p23e = 0;
             } else if (pos->y > 0 && self->unk_24d == 0x36) {
@@ -5906,11 +5906,11 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
                     *p23e = 0;
                 }
             }
-        } else if (func_ov003_0222d334(self)) {
+        } else if (Insect_TickTimer(self)) {
             self->unk_251 = 3;
             self->unk_244 = func_02063b8c(3) * 20;
             s32 j = self->unk_23a;
-            s32 t = func_ov003_0222c620(16, 1);
+            s32 t = Insect_RandomTurn(16, 1);
             self->unk_240 = t + j;
         }
         break;
@@ -5932,7 +5932,7 @@ extern "C" void func_ov003_0222aff0(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222af84
-extern "C" void func_ov003_0222af84(Rec *self) {
+extern "C" void DungBeetle_Update(Rec *self) {
     switch (self->unk_251) {
     case 4:
         func_ov068_02269b20(self);
@@ -5942,7 +5942,7 @@ extern "C" void func_ov003_0222af84(Rec *self) {
         break;
     case 9:
     case 11:
-        func_ov003_0222a36c(self, &self->unk_242);
+        TreeBug_FlyOff(self, &self->unk_242);
         break;
     case 0x13:
         AnimModel_setFrame(&self->unk_50, 3);
@@ -5966,7 +5966,7 @@ extern "C" void func_ov003_0222af84(Rec *self) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222af48
-extern "C" BOOL func_ov003_0222af48(Rec *self, s32 a) {
+extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
     u8 *p = self->unk_130;
     s32 t = func_02106020((void *)func_0209c0ac(p), 0);
     if (t > 7) {
@@ -5992,7 +5992,7 @@ extern "C" BOOL func_ov003_0222af48(Rec *self, s32 a) {
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222adc4
-extern "C" BOOL func_ov003_0222adc4(Rec *self) {
+extern "C" BOOL Insect_GroundWalk(Rec *self) {
     BOOL result;
     s16 *cnt;
     V3 v;
@@ -6003,11 +6003,11 @@ extern "C" BOOL func_ov003_0222adc4(Rec *self) {
     result = TRUE;
     g.func_020339bc((Unk_0203389c_Vec *)(pos), 0, result);
     s8 r7 = self->unk_24d;
-    func_ov003_0222e328(&v, self->unk_23a);
+    Insect_GetDirVec(&v, self->unk_23a);
     if (g.unk_30 != 0) {
         if (g.func_020338d0(pos->y)) {
-            func_ov003_02229910(self);
-            func_ov003_0222de04(self);
+            Insect_Despawn(self);
+            Insect_SplashIfWater(self);
             result = FALSE;
         } else {
             pos->y -= 0x200;
@@ -6015,7 +6015,7 @@ extern "C" BOOL func_ov003_0222adc4(Rec *self) {
     } else {
         pos->y -= 0x200;
     }
-    if (func_ov003_0222b784(self)) {
+    if (Insect_SteerAroundObstacle(self)) {
         self->unk_24b = 0;
         return TRUE;
     }
@@ -6070,7 +6070,7 @@ extern "C" BOOL func_ov003_0222adc4(Rec *self) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222abc0
-extern "C" s32 func_ov003_0222abc0(Rec *self) {
+extern "C" s32 Insect_GroundWalkNet(Rec *self) {
     V3 *pos = &self->unk_204;
     s16 *cnt = &self->unk_242;
     s32 ret = 0;
@@ -6078,13 +6078,13 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
     func_020339bc(&o, pos, ret, 1);
     V3 *vel = &self->unk_1d4;
     V3 dir;
-    func_ov003_0222e328(&dir, self->unk_23a);
+    Insect_GetDirVec(&dir, self->unk_23a);
     s32 nang;
     if (func_020a62a0() != 0 || self->unk_251 == 0x11) {
         if (o.unk_30 != 0) {
             if (func_020338d0(&o, pos->y) != 0) {
-                func_ov003_02229910(self);
-                func_ov003_0222de04(self);
+                Insect_Despawn(self);
+                Insect_SplashIfWater(self);
                 ret = 2;
             } else {
                 pos->y = pos->y - 0x200;
@@ -6092,7 +6092,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
             }
         }
     }
-    if (func_ov003_0222b784(self) != 0) {
+    if (Insect_SteerAroundObstacle(self) != 0) {
         self->unk_24b = 0;
         s32 c = *cnt;
         if (c < 2) {
@@ -6105,7 +6105,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
                 nang = (s16)(self->unk_23a - 0xaaa);
             }
         }
-        func_ov003_0222e1e0(self, nang, 0xc000);
+        Insect_SetMoveTarget(self, nang, 0xc000);
         func_02033988(&o);
         return 0;
     }
@@ -6117,7 +6117,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
     }
     if (r == 0) {
         if (func_020a62a0() != 0) {
-            if (func_ov003_0222e1e0(self, self->unk_23a, 0xc000) == 0) {
+            if (Insect_SetMoveTarget(self, self->unk_23a, 0xc000) == 0) {
                 vel->x += data_02135f44[((u16)self->unk_23a >> 4) * 2];
                 vel->z += data_02135f44[(((u16)self->unk_23a >> 4) * 2 + 1)];
                 func_02033988(&o);
@@ -6161,7 +6161,7 @@ extern "C" s32 func_ov003_0222abc0(Rec *self) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222ab68
-extern "C" void func_ov003_0222ab68(V3 *out, V3 *in, s32 c) {
+extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c) {
     s32 lim = FX_Div(c << 12, 0x40000);
     out->x = in->x;
     out->y = in->y;
@@ -6210,7 +6210,7 @@ extern "C" void func_ov003_0222ab68(V3 *out, V3 *in, s32 c) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a8d0
-extern "C" void func_ov003_0222a8d0(Rec *self) {
+extern "C" void Spider_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
     func_02106020(func_0209c0ac(self->unk_130), 0);
     s32 st = self->unk_251;
@@ -6227,8 +6227,8 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
             u16 *cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 if (!Unk_ov003_0222a8d0_Chk(cell)) {
-                    if (func_ov003_0222af48(self, 3)) {
-                        func_ov003_02229910(self);
+                    if (Insect_FadeOut(self, 3)) {
+                        Insect_Despawn(self);
                         return;
                     }
                 }
@@ -6259,10 +6259,10 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
         }
         break;
     case 11:
-        func_ov003_0222bb28(self, cnt);
+        Insect_HopArc(self, cnt);
         break;
     case 9:
-        func_ov003_0222b928(self, cnt);
+        Insect_EscapeRun(self, cnt);
         break;
     case 0x12:
         if (func_ov068_02269a28(self)) {
@@ -6303,45 +6303,45 @@ extern "C" void func_ov003_0222a8d0(Rec *self) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a7d4
-extern "C" void func_ov003_0222a7d4(Rec *self) {
+extern "C" void TreeBug_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
     u32 st = self->unk_251;
     if (st != 0xb && st != 9 && st != 7) {
         if (self->unk_24d == 0x1f) {
-            func_ov003_0222a1c8(self, cnt);
+            Walkingstick_CheckAlarm(self, cnt);
         } else {
-            func_ov003_0222a090(self, cnt);
+            TreeBug_CheckAlarm(self, cnt);
             self->unk_24a = 0;
         }
     }
     switch (st) {
     case 3:
-        func_ov003_0222a4a0(self, cnt);
+        TreeBug_Wiggle(self, cnt);
         break;
     case 2:
-        func_ov003_0222a630(self, cnt);
+        TreeBug_ClimbUp(self, cnt);
         break;
     case 1:
-        func_ov003_0222a594(self, cnt);
+        TreeBug_ClimbDown(self, cnt);
         break;
     case 9:
-        func_ov003_0222b928(self, cnt);
+        Insect_EscapeRun(self, cnt);
         (*cnt)++;
         break;
     case 11:
         if (self->unk_24d != 0x1f) {
-            func_ov003_0222a36c(self, cnt);
+            TreeBug_FlyOff(self, cnt);
         } else {
-            func_ov003_0222bb28(self, cnt);
+            Insect_HopArc(self, cnt);
         }
         break;
     case 7:
         self->unk_24a = 1;
-        func_ov003_0222a24c(self, cnt);
+        TreeBug_DropAndFly(self, cnt);
         break;
     case 8:
-        if (func_ov003_0222af48(self, 2)) {
-            func_ov003_02229910(self);
+        if (Insect_FadeOut(self, 2)) {
+            Insect_Despawn(self);
         }
         break;
     case 0:
@@ -6358,7 +6358,7 @@ extern "C" void func_ov003_0222a7d4(Rec *self) {
     case 18:
         break;
     case 19:
-        func_ov003_0222a6cc(self, cnt);
+        TreeBug_Idle(self, cnt);
         break;
     }
 }
@@ -6382,13 +6382,13 @@ extern "C" void func_ov003_0222a7d4(Rec *self) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a6cc
-extern "C" void func_ov003_0222a6cc(Rec *self, s16 *cnt) {
+extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
     if ((u8)(s8)(self->unk_24d - 0x10) <= 4) {
         u8 f = self->unk_246;
         if (f != 0 && self->unk_254 < 10) {
             u8 c = self->unk_252;
             if (c == 0 && f != 0) {
-                func_ov003_0222dd54(self, 0, 1);
+                Insect_PlaySe(self, 0, 1);
             } else {
                 self->unk_252 = c - 1;
             }
@@ -6444,7 +6444,7 @@ extern "C" void func_ov003_0222a6cc(Rec *self, s16 *cnt) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a630
-extern "C" void func_ov003_0222a630(Rec *self, s16 *cnt) {
+extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
     s32 ang = self->unk_23a;
     s32 lim = self->unk_228 + 0x400;
     V3 *pos = &self->unk_204;
@@ -6490,7 +6490,7 @@ extern "C" void func_ov003_0222a630(Rec *self, s16 *cnt) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a594
-extern "C" void func_ov003_0222a594(Rec *self, s16 *cnt) {
+extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
     s32 ang = self->unk_23a;
     s32 lim = self->unk_228 - 0x100;
     V3 *pos = &self->unk_204;
@@ -6536,7 +6536,7 @@ extern "C" void func_ov003_0222a594(Rec *self, s16 *cnt) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a4a0
-extern "C" void func_ov003_0222a4a0(Rec *self, s16 *cnt) {
+extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
     s32 ang = self->unk_23a;
     s32 c = *cnt;
     if (c == 0) {
@@ -6589,7 +6589,7 @@ extern "C" void func_ov003_0222a4a0(Rec *self, s16 *cnt) {
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
 namespace s08 {
 // 0x222a36c
-extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
+extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
     s32 t, mode;
     V3 *pos;
     u32 st;
@@ -6599,12 +6599,12 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
     t = FX_Div(*cnt << 12, 0x4000);
     u8 *s = self->unk_50;
     V3 v;
-    func_ov003_0222e328(&v, self->unk_23a);
+    Insect_GetDirVec(&v, self->unk_23a);
     if (*cnt == 0) {
-        func_ov003_0222dd54(self, 1, 0);
+        Insect_PlaySe(self, 1, 0);
     }
     v.y = func_01ffcb0c(func_01ffcb0c(0x100, t), t);
-    if (func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
+    if (Insect_CheckObstacle(self, 0x50, 0xe38) == 0) {
         v.x = v.x << 4;
         v.z = v.z << 4;
     }
@@ -6623,8 +6623,8 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
     } else {
         AnimModel_setFrame(s, st == 1 ? 2 : 1);
     }
-    if (func_ov003_0222af48(self, 1)) {
-        func_ov003_02229910(self);
+    if (Insect_FadeOut(self, 1)) {
+        Insect_Despawn(self);
     }
 }
 }
@@ -6642,19 +6642,19 @@ extern "C" void func_ov003_0222a36c(Rec *self, s16 *cnt) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x222a24c
-extern "C" void func_ov003_0222a24c(Rec *o, s16 *p) {
+extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p) {
     V3 *pos = &o->unk_204;
     s32 st = o->unk_24d;
     if (st != 0x10 && st != 0x11 && st != 0x12 && st != 0x13) {
-        func_ov003_0222dd54(o, 0, 1);
+        Insect_PlaySe(o, 0, 1);
     }
     if (o->unk_23a >= 0) {
         pos->x += 0x200;
     } else {
         pos->x -= 0x200;
     }
-    if (func_ov003_0222af48(o, 1)) {
-        func_ov003_02229910(o);
+    if (Insect_FadeOut(o, 1)) {
+        Insect_Despawn(o);
     } else {
         s32 t = FX_Div(*p << 12, 0x4000);
         pos->y += func_01ffcb0c(func_01ffcb0c(0x100, t), t);
@@ -6671,7 +6671,7 @@ extern "C" void func_ov003_0222a24c(Rec *o, s16 *p) {
                 *(u32 *)&o->unk_f4 = 0x18000;
             }
         } else {
-            func_ov003_0222d674(o);
+            Insect_FlapWings(o);
         }
     }
 }
@@ -6685,16 +6685,16 @@ extern "C" void func_ov003_0222a24c(Rec *o, s16 *p) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x222a1c8
-extern "C" void func_ov003_0222a1c8(Rec *o, s16 *p) {
+extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
     if (o->unk_254 == 0xfe) {
         o->unk_251 = 8;
     } else {
         V3 tv;
-        func_ov003_0222c7fc(o, (s32 *)&tv);
+        Insect_UpdateAlarm(o, (s32 *)&tv);
         if (tv.x != 0) {
             s16 v = ((o->unk_255 - o->unk_254) * 31) / o->unk_255;
             if (v <= 0) {
-                func_ov003_02229910(o);
+                Insect_Despawn(o);
                 o->unk_24a = 1;
                 *p = 0;
             } else {
@@ -6716,11 +6716,11 @@ extern "C" void func_ov003_0222a1c8(Rec *o, s16 *p) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x222a090
-extern "C" void func_ov003_0222a090(Rec *o, s16 *p) {
+extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
     V3 *pos = &o->unk_204;
     s32 n = o->unk_254;
     V3 tv;
-    func_ov003_0222c7fc(o, (s32 *)&tv);
+    Insect_UpdateAlarm(o, (s32 *)&tv);
     if (tv.x != 0 && o->unk_24a == 0) {
         s32 lim = o->unk_255;
         if (n >= lim) {
@@ -6737,7 +6737,7 @@ extern "C" void func_ov003_0222a090(Rec *o, s16 *p) {
             AnimModel_setFrame(o->unk_50, 1);
             s32 z = 0;
             *p = z;
-            func_ov003_0222dd54(o, 1, z);
+            Insect_PlaySe(o, 1, z);
             if (o->unk_24d == 9) {
                 AnimFrameCtrl_setup(o->unk_ec, 9, 0, 0x1000, 0);
             }
@@ -6768,7 +6768,7 @@ extern "C" void func_ov003_0222a090(Rec *o, s16 *p) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229eac
-extern "C" void func_ov003_02229eac(Rec *o) {
+extern "C" void Crawler_Update(Rec *o) {
     s16 *p = &o->unk_242;
     if ((u8)(s8)(o->unk_24d - 0xe) <= 1 && o->unk_f4.mid != 0) {
         if (o->unk_251 == 4 || o->unk_251 == 0x13) {
@@ -6781,7 +6781,7 @@ extern "C" void func_ov003_02229eac(Rec *o) {
     }
     switch (o->unk_251) {
     case 4:
-        func_ov003_02229ab4(o);
+        Crawler_Wander(o);
         if (o->unk_24d == 0x1a) {
             if (*p > 0x140 || (*p % 20 == 0 && func_02063b8c(100) > 0x5a && *p > 0xa0)) {
                 o->unk_251 = 0x13;
@@ -6793,20 +6793,20 @@ extern "C" void func_ov003_02229eac(Rec *o) {
                 *p = 0;
             }
         }
-        func_ov003_02229c1c(o, p);
+        Crawler_Watch(o, p);
         break;
     case 7:
         o->unk_251 = 9;
         o->unk_23a = o->unk_240;
         *p = 0;
     case 9:
-        func_ov003_022297c8(o, p);
+        Crawler_Escape(o, p);
         break;
     case 11:
         if (o->unk_24d == 0x1a) {
-            func_ov003_0222bb28(o, p);
+            Insect_HopArc(o, p);
         } else {
-            func_ov003_022297c8(o, p);
+            Crawler_Escape(o, p);
         }
         break;
     case 0x13:
@@ -6823,7 +6823,7 @@ extern "C" void func_ov003_02229eac(Rec *o) {
                 *p = 0;
             }
         }
-        func_ov003_02229c1c(o, p);
+        Crawler_Watch(o, p);
         break;
     }
     *p = *p + 1;
@@ -6838,7 +6838,7 @@ extern "C" void func_ov003_02229eac(Rec *o) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229dcc
-extern "C" BOOL func_ov003_02229dcc(void *pp) {
+extern "C" BOOL Insect_IsOnFlower(void *pp) {
     void *g = TownBlockMap_Get();
     if (g != 0) {
         s32 xy[2];
@@ -6867,14 +6867,14 @@ extern "C" BOOL func_ov003_02229dcc(void *pp) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229c1c
-extern "C" void func_ov003_02229c1c(Rec *o, s16 *p) {
+extern "C" void Crawler_Watch(Rec *o, s16 *p) {
     void *r4 = func_02095204(4);
     V3 *q = &o->unk_204;
-    if (func_ov003_02229dcc(q) == 0) {
+    if (Insect_IsOnFlower(q) == 0) {
         o->unk_254 = 0xfe;
     }
     o->unk_24a = 0;
-    func_ov003_0222d720(o);
+    Insect_CheckAlarm(o);
     if (r4 != 0) {
         s32 d = func_020e9650((u8 *)r4 + 0x5c, q);
         s32 n = o->unk_254;
@@ -6934,7 +6934,7 @@ extern "C" void func_ov003_02229c1c(Rec *o, s16 *p) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229ab4
-extern "C" void func_ov003_02229ab4(Rec *o) {
+extern "C" void Crawler_Wander(Rec *o) {
     V3 *hi = &o->unk_1bc;
     V3 *lo = &o->unk_1b0;
     s16 a = o->unk_23a;
@@ -6972,7 +6972,7 @@ extern "C" void func_ov003_02229ab4(Rec *o) {
             }
         }
     }
-    func_ov003_0222e328(&d, a);
+    Insect_GetDirVec(&d, a);
     o->unk_23a = a;
     p->z += FX_Div(func_01ffcb0c(o->unk_257 << 12, d.z), 0x20000);
     p->x += FX_Div(func_01ffcb0c(o->unk_257 << 12, d.x), 0x20000);
@@ -7003,7 +7003,7 @@ extern "C" void func_ov003_02229ab4(Rec *o) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s07 {
 // 0x2229a3c
-extern "C" void func_ov003_02229a3c(Rec *o) {
+extern "C" void Insect_PlaceOnPlantSide(Rec *o) {
     V3 *p = &o->unk_204;
     if (func_02063b8c(2) == 0) {
         p->x += FX_Div(0x7000, 0x10000);
@@ -7026,7 +7026,7 @@ extern "C" void func_ov003_02229a3c(Rec *o) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229938
-extern "C" void func_ov003_02229938(Rec *self) {
+extern "C" void Insect_SetWanderBox(Rec *self) {
     Vec3 *r5 = &self->unk_204;
     Vec3 *r4 = &self->unk_1b0;
     Vec3 *r6 = &self->unk_1bc;
@@ -7063,7 +7063,7 @@ extern "C" void func_ov003_02229938(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229910
-extern "C" void func_ov003_02229910(Rec *self) {
+extern "C" void Insect_Despawn(Rec *self) {
     self->unk_250 = 4;
     NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0);
 }
@@ -7079,12 +7079,12 @@ extern "C" void func_ov003_02229910(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22297c8
-extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
+extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
     if (self->unk_24d != 0x1a) {
         Vec3 *r6 = &self->unk_204;
         Vec3 v;
-        if (func_ov003_0222e500(self, 0x50, 0xe38) == 0) {
-            func_ov003_0222e328(&v, self->unk_23a);
+        if (Insect_CheckObstacle(self, 0x50, 0xe38) == 0) {
+            Insect_GetDirVec(&v, self->unk_23a);
             if (self->unk_251 == 0xb) {
                 v.x = func_01ffcb0c(v.x, 0xa000);
                 v.z = func_01ffcb0c(v.z, 0xa000);
@@ -7105,17 +7105,17 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
                 *(u32 *)&self->unk_f4 = 0x9000;
             }
         } else {
-            func_ov003_0222d674(self);
+            Insect_FlapWings(self);
         }
         if (*pp == 0) {
-            func_ov003_0222dd54(self, 1, 0);
+            Insect_PlaySe(self, 1, 0);
         }
-        if (func_ov003_0222af48(self, 1)) {
-            func_ov003_02229910(self);
+        if (Insect_FadeOut(self, 1)) {
+            Insect_Despawn(self);
         }
         VEC_Add(r6, &v, r6);
     } else {
-        func_ov003_0222b928(self, pp);
+        Insect_EscapeRun(self, pp);
         u32 m = self->unk_f4.mid;
         if (m == 0) {
             AnimModel_setFrame((u8 *)self + 0x50, 1);
@@ -7136,7 +7136,7 @@ extern "C" void func_ov003_022297c8(Rec *self, s16 *pp) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229698
-extern "C" void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5) {
+extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5) {
     Buf b;
     Vec3 *p = &self->unk_204;
     func_020339bc(&b, p, 0, 0);
@@ -7187,7 +7187,7 @@ extern "C" void func_ov003_02229698(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229670
-extern "C" s16 func_ov003_02229670() {
+extern "C" s16 Insect_RandomAngle() {
     u32 r = (u8)func_02063b8c(0x10);
     if (r > 8) {
         r = -(r - 8);
@@ -7206,8 +7206,8 @@ extern "C" s16 func_ov003_02229670() {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229668
-extern "C" void func_ov003_02229668(Rec *self) {
-    func_ov003_0222d530(self);
+extern "C" void Insect_UpdateButterfly(Rec *self) {
+    Butterfly_Update(self);
 }
 }
 #undef func_020339bc
@@ -7221,9 +7221,9 @@ extern "C" void func_ov003_02229668(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22295ec
-extern "C" void func_ov003_022295ec(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) {
+extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) {
     s32 r = func_02063b8c(3);
-    func_ov003_02229698(self, (s16)((r + 5) * 0x14), a, b, 0, func_ov003_02229670(), c, 0, d, 0);
+    Insect_InitBehaviour(self, (s16)((r + 5) * 0x14), a, b, 0, Insect_RandomAngle(), c, 0, d, 0);
     self->unk_252 = 0x28;
     self->unk_256 = func_02063b8c(0x12);
     self->unk_24c = 1;
@@ -7242,34 +7242,34 @@ extern "C" void func_ov003_022295ec(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e)
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22294f8
-extern "C" void func_ov003_022294f8(Rec *self) {
+extern "C" void Insect_InitButterfly(Rec *self) {
     switch (self->unk_24d) {
     case 0:
-        func_ov003_022295ec(self, 0x64, 0x50, 0x25, 8, 0x119a);
+        Insect_InitFlutter(self, 0x64, 0x50, 0x25, 8, 0x119a);
         break;
     case 1:
-        func_ov003_022295ec(self, 0x64, 0x50, 0x25, 8, 0x119a);
+        Insect_InitFlutter(self, 0x64, 0x50, 0x25, 8, 0x119a);
         break;
     case 2:
-        func_ov003_022295ec(self, 0x50, 0x50, 0x28, 9, 0x1000);
+        Insect_InitFlutter(self, 0x50, 0x50, 0x28, 9, 0x1000);
         break;
     case 3:
-        func_ov003_022295ec(self, 0x50, 0x50, 0x28, 9, 0x1000);
+        Insect_InitFlutter(self, 0x50, 0x50, 0x28, 9, 0x1000);
         break;
     case 4:
-        func_ov003_022295ec(self, 0x3c, 0x50, 0x2f, 0xa, 0xe66);
+        Insect_InitFlutter(self, 0x3c, 0x50, 0x2f, 0xa, 0xe66);
         break;
     case 5:
-        func_ov003_022295ec(self, 0x46, 0x50, 0x14, 0xc, 0x1000);
+        Insect_InitFlutter(self, 0x46, 0x50, 0x14, 0xc, 0x1000);
         break;
     case 6:
-        func_ov003_022295ec(self, 0x64, 0x1e, 0x32, 0xf, 0x1000);
+        Insect_InitFlutter(self, 0x64, 0x1e, 0x32, 0xf, 0x1000);
         break;
     case 7:
-        func_ov003_022295ec(self, 0x3c, 0x50, 0x34, 0xc, 0x1000);
+        Insect_InitFlutter(self, 0x3c, 0x50, 0x34, 0xc, 0x1000);
         break;
     default:
-        func_ov003_022295ec(self, 0x3c, 0x50, 0x2d, 0xa, 0x1000);
+        Insect_InitFlutter(self, 0x3c, 0x50, 0x2d, 0xa, 0x1000);
         break;
     }
 }
@@ -7285,8 +7285,8 @@ extern "C" void func_ov003_022294f8(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22294f0
-extern "C" void func_ov003_022294f0(Rec *self) {
-    func_ov003_0222b3f4(self);
+extern "C" void Insect_UpdateMoth(Rec *self) {
+    Moth_Update(self);
 }
 }
 #undef func_020339bc
@@ -7300,9 +7300,9 @@ extern "C" void func_ov003_022294f0(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229464
-extern "C" void func_ov003_02229464(Rec *self) {
+extern "C" void Insect_InitMoth(Rec *self) {
     Vec3 *d = &self->unk_1e0;
-    func_ov003_02229698(self, 0x384, 0xc8, 0x28, 1, -0x8000, 0x2f, 0, 0xa, 0);
+    Insect_InitBehaviour(self, 0x384, 0xc8, 0x28, 1, -0x8000, 0x2f, 0, 0xa, 0);
     self->unk_252 = 0x3c;
     self->unk_256 = func_02063b8c(0x12);
     self->unk_24c = 1;
@@ -7311,7 +7311,7 @@ extern "C" void func_ov003_02229464(Rec *self) {
     self->unk_1e0.x = s->x;
     d->y = s->y;
     d->z = s->z;
-    func_ov003_02225ec8(self, 0x1000);
+    Insect_SetAnimSpeed(self, 0x1000);
 }
 }
 #undef func_020339bc
@@ -7325,9 +7325,9 @@ extern "C" void func_ov003_02229464(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229424
-extern "C" void func_ov003_02229424(Rec *self) {
+extern "C" void Insect_InitFirefly(Rec *self) {
     s32 t = self->unk_21c;
-    func_ov003_02229698(self, 0, 0x5a, 0x3c, 0, 0, 0x3c, 0, 6, 1);
+    Insect_InitBehaviour(self, 0, 0x5a, 0x3c, 0, 0, 0x3c, 0, 6, 1);
     self->unk_21c = t;
     self->unk_252 = 0x3c;
 }
@@ -7343,8 +7343,8 @@ extern "C" void func_ov003_02229424(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x222941c
-extern "C" void func_ov003_0222941c(Rec *self) {
-    func_ov003_0222c188(self);
+extern "C" void Insect_UpdateFirefly(Rec *self) {
+    Firefly_Update(self);
 }
 }
 #undef func_020339bc
@@ -7358,8 +7358,8 @@ extern "C" void func_ov003_0222941c(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22293f8
-extern "C" void func_ov003_022293f8(Rec *self) {
-    func_ov003_02229698(self, 0, 0, 0, 0, 0, 0x19, 0, 0x19, 0);
+extern "C" void Insect_InitMosquito(Rec *self) {
+    Insect_InitBehaviour(self, 0, 0, 0, 0, 0, 0x19, 0, 0x19, 0);
 }
 }
 #undef func_020339bc
@@ -7373,8 +7373,8 @@ extern "C" void func_ov003_022293f8(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22293f0
-extern "C" void func_ov003_022293f0(Rec *self) {
-    func_ov003_0222c240(self);
+extern "C" void Insect_UpdateMosquito(Rec *self) {
+    Mosquito_Update(self);
 }
 }
 #undef func_020339bc
@@ -7388,12 +7388,12 @@ extern "C" void func_ov003_022293f0(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229370
-extern "C" void func_ov003_02229370(Rec *self, s32 a, s32 b, s32 c, s32 d) {
+extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d) {
     Vec3 *v = &self->unk_204;
     if (self->unk_24d == 0x1f && self->unk_251 == 0xb) {
-        func_ov003_02229698(self, 0, a, b, 0, 0, 0, 0, 0, 0);
+        Insect_InitBehaviour(self, 0, a, b, 0, 0, 0, 0, 0, 0);
     } else {
-        func_ov003_02229698(self, 0, a, b, 0x3556, -0x8000, c, 0, 0, 0);
+        Insect_InitBehaviour(self, 0, a, b, 0x3556, -0x8000, c, 0, 0, 0);
         v->z += d;
         self->unk_246 = 1;
     }
@@ -7410,8 +7410,8 @@ extern "C" void func_ov003_02229370(Rec *self, s32 a, s32 b, s32 c, s32 d) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229368
-extern "C" void func_ov003_02229368(Rec *self) {
-    func_ov003_0222a7d4(self);
+extern "C" void Insect_UpdateTreeBug(Rec *self) {
+    TreeBug_Update(self);
 }
 }
 #undef func_020339bc
@@ -7425,77 +7425,77 @@ extern "C" void func_ov003_02229368(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229144
-extern "C" void func_ov003_02229144(Rec *self) {
+extern "C" void Insect_InitTreeBug(Rec *self) {
     switch (self->unk_24d) {
     case 0x2f:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x2e:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x2d:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x2c:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x28:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x29:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x2a:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x26:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x21:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x27:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x2b:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x22:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x24:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     case 0x1f:
-        func_ov003_02229370(self, 0xfa, 0x50, 0x16, 0x1f4);
+        Insect_PlaceOnTrunk(self, 0xfa, 0x50, 0x16, 0x1f4);
         self->unk_257 = 1;
         break;
     case 9:
-        func_ov003_02229370(self, 0x96, 0x46, 0x18, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x96, 0x46, 0x18, 0x3e8);
         self->unk_257 = 0xa;
         AnimFrameCtrl_setup(self->unk_ec, self->unk_f0.mid, 1, 0x1000, 0);
         break;
     case 0x10:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         break;
     case 0x11:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         break;
     case 0x12:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         break;
     case 0x13:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         break;
     case 0x14:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         self->unk_252 = 0;
         break;
     case 0x34:
-        func_ov003_02229370(self, 0x82, 0x3c, 0x16, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x82, 0x3c, 0x16, 0x3e8);
         break;
     default:
-        func_ov003_02229370(self, 0x64, 0x50, 0x19, 0x3e8);
+        Insect_PlaceOnTrunk(self, 0x64, 0x50, 0x19, 0x3e8);
         break;
     }
 }
@@ -7511,8 +7511,8 @@ extern "C" void func_ov003_02229144(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22290e4
-extern "C" void func_ov003_022290e4(Rec *self, s32 a, s32 b, s32 c, u8 d) {
-    func_ov003_02229698(self, 0x3b6, a, b, 0, func_ov003_02229670(), 0, 0, c, 0);
+extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d) {
+    Insect_InitBehaviour(self, 0x3b6, a, b, 0, Insect_RandomAngle(), 0, 0, c, 0);
     self->unk_232 = (func_02063b8c(9) + 2) * 0x14;
     self->unk_259 = d;
     self->unk_204.y = 0;
@@ -7529,8 +7529,8 @@ extern "C" void func_ov003_022290e4(Rec *self, s32 a, s32 b, s32 c, u8 d) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x22290dc
-extern "C" void func_ov003_022290dc(Rec *self) {
-    func_ov003_0222c718(self);
+extern "C" void Insect_UpdateHopper(Rec *self) {
+    Hopper_Update(self);
 }
 }
 #undef func_020339bc
@@ -7544,22 +7544,22 @@ extern "C" void func_ov003_022290dc(Rec *self) {
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 namespace s06 {
 // 0x2229050
-extern "C" void func_ov003_02229050(Rec *self) {
+extern "C" void Insect_InitHopper(Rec *self) {
     switch (self->unk_24d) {
     case 0x1d:
-        func_ov003_022290e4(self, 0x3c, 0x46, 6, 1);
+        Insect_InitHop(self, 0x3c, 0x46, 6, 1);
         break;
     case 0x1b:
-        func_ov003_022290e4(self, 0x3c, 0x46, 6, 1);
+        Insect_InitHop(self, 0x3c, 0x46, 6, 1);
         break;
     case 0xc:
-        func_ov003_022290e4(self, 0x3c, 0x50, 8, 2);
+        Insect_InitHop(self, 0x3c, 0x50, 8, 2);
         break;
     case 0xd:
-        func_ov003_022290e4(self, 0x3c, 0x50, 8, 3);
+        Insect_InitHop(self, 0x3c, 0x50, 8, 3);
         break;
     case 0x1c:
-        func_ov003_022290e4(self, 0x3c, 0x46, 8, 1);
+        Insect_InitHop(self, 0x3c, 0x46, 8, 1);
         break;
     }
 }
@@ -7581,9 +7581,9 @@ extern "C" void func_ov003_02229050(Rec *self) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2229010
-extern "C" void func_ov003_02229010(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5) {
-    s16 r = func_ov003_02229670();
-    func_ov003_02229698(a, 0, x, y, 0, r, z, 0, p4, 0);
+extern "C" void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5) {
+    s16 r = Insect_RandomAngle();
+    Insect_InitBehaviour(a, 0, x, y, 0, r, z, 0, p4, 0);
     a->unk_259 = p5;
 }
 }
@@ -7610,16 +7610,16 @@ extern "C" void func_ov003_02229010(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228fb4
-extern "C" void func_ov003_02228fb4(Unk_ov003_02228710_Act *a) {
+extern "C" void Insect_InitDragonfly(Unk_ov003_02228710_Act *a) {
     switch (a->unk_24d) {
     case 0x15:
-        func_ov003_02229010(a, 0xc8, 0x3c, 0x28, 0x14, 1);
+        Insect_InitDragonflyParams(a, 0xc8, 0x3c, 0x28, 0x14, 1);
         break;
     case 0x16:
-        func_ov003_02229010(a, 0xc8, 0x28, 0x2d, 0x1e, 3);
+        Insect_InitDragonflyParams(a, 0xc8, 0x28, 0x2d, 0x1e, 3);
         break;
     case 0x17:
-        func_ov003_02229010(a, 0x64, 0x46, 0x32, 0x78, 0x1e);
+        Insect_InitDragonflyParams(a, 0x64, 0x46, 0x32, 0x78, 0x1e);
         break;
     }
 }
@@ -7647,8 +7647,8 @@ extern "C" void func_ov003_02228fb4(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228fac
-extern "C" void func_ov003_02228fac(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222cfb0(a);
+extern "C" void Insect_UpdateDragonfly(Unk_ov003_02228710_Act *a) {
+    Dragonfly_Update(a);
 }
 }
 #undef func_02003c30
@@ -7674,9 +7674,9 @@ extern "C" void func_ov003_02228fac(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228f6c
-extern "C" void func_ov003_02228f6c(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x28, 0x50, 0, 0, 0, 0, 3, 1);
-    func_ov003_02229938(a);
+extern "C" void Insect_InitPondskater(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x28, 0x50, 0, 0, 0, 0, 3, 1);
+    Insect_SetWanderBox(a);
     a->unk_232 = func_02063b8c(0x14) * 3;
 }
 }
@@ -7703,8 +7703,8 @@ extern "C" void func_ov003_02228f6c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228f64
-extern "C" void func_ov003_02228f64(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222c2e0(a);
+extern "C" void Insect_UpdatePondskater(Unk_ov003_02228710_Act *a) {
+    Pondskater_Update(a);
 }
 }
 #undef func_02003c30
@@ -7730,12 +7730,12 @@ extern "C" void func_ov003_02228f64(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228f0c
-extern "C" void func_ov003_02228f0c(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w) {
-    s16 r = func_ov003_02229670();
-    func_ov003_02229698(a, 0, x, y, 0, r, 0xe, 0, z, 0);
-    func_ov003_02229938(a);
+extern "C" void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w) {
+    s16 r = Insect_RandomAngle();
+    Insect_InitBehaviour(a, 0, x, y, 0, r, 0xe, 0, z, 0);
+    Insect_SetWanderBox(a);
     if (a->unk_251 != 0xb) {
-        func_ov003_02229a3c(a);
+        Insect_PlaceOnPlantSide(a);
     }
     a->unk_21c = w;
 }
@@ -7763,8 +7763,8 @@ extern "C" void func_ov003_02228f0c(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228f04
-extern "C" void func_ov003_02228f04(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229eac(a);
+extern "C" void Insect_UpdateCrawler(Unk_ov003_02228710_Act *a) {
+    Crawler_Update(a);
 }
 }
 #undef func_02003c30
@@ -7790,20 +7790,20 @@ extern "C" void func_ov003_02228f04(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228e60
-extern "C" void func_ov003_02228e60(Unk_ov003_02228710_Act *a) {
+extern "C" void Insect_InitCrawler(Unk_ov003_02228710_Act *a) {
     switch (a->unk_24d) {
     case 0x1a:
-        func_ov003_02228f0c(a, 0xc8, 0x3c, 4, 0x38e);
+        Insect_InitOnPlant(a, 0xc8, 0x3c, 4, 0x38e);
         break;
     case 0x20:
-        func_ov003_02228f0c(a, 0x82, 0x3c, 0x10, 0x71c);
+        Insect_InitOnPlant(a, 0x82, 0x3c, 0x10, 0x71c);
         break;
     case 0xe:
-        func_ov003_02228f0c(a, 0x96, 0x32, 0x18, 0x71c);
+        Insect_InitOnPlant(a, 0x96, 0x32, 0x18, 0x71c);
         AnimFrameCtrl_setup(a->unk_ec, 0, 3, 0x1000, 1);
         break;
     case 0xf:
-        func_ov003_02228f0c(a, 0x96, 0x32, 0x18, 0x71c);
+        Insect_InitOnPlant(a, 0x96, 0x32, 0x18, 0x71c);
         AnimFrameCtrl_setup(a->unk_ec, 0, 3, 0x1000, 1);
         break;
     }
@@ -7832,11 +7832,11 @@ extern "C" void func_ov003_02228e60(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228de0
-extern "C" void func_ov003_02228de0(Unk_ov003_02228710_Act *a) {
+extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a) {
     if (a->unk_24d == 0x1e) {
-        func_ov003_02229698(a, 0, 0x28, 0x50, 0, 0, 0, 0, 4, 0);
+        Insect_InitBehaviour(a, 0, 0x28, 0x50, 0, 0, 0, 0, 4, 0);
     } else {
-        func_ov003_02229698(a, 0, 0xdc, 0x3c, 0, 0, 0, 0, 1, 0);
+        Insect_InitBehaviour(a, 0, 0xdc, 0x3c, 0, 0, 0, 0, 1, 0);
     }
     a->unk_232 = 0x168;
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
@@ -7867,8 +7867,8 @@ extern "C" void func_ov003_02228de0(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228dd8
-extern "C" void func_ov003_02228dd8(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222be0c(a);
+extern "C" void Insect_UpdateMoleCricket(Unk_ov003_02228710_Act *a) {
+    MoleCricket_Update(a);
 }
 }
 #undef func_02003c30
@@ -7894,8 +7894,8 @@ extern "C" void func_ov003_02228dd8(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228dd0
-extern "C" void func_ov003_02228dd0(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222b6e0(a);
+extern "C" void Insect_UpdatePillBug(Unk_ov003_02228710_Act *a) {
+    PillBug_Update(a);
 }
 }
 #undef func_02003c30
@@ -7921,11 +7921,11 @@ extern "C" void func_ov003_02228dd0(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d7c
-extern "C" void func_ov003_02228d7c(Unk_ov003_02228710_Act *a) {
+extern "C" void Insect_InitBee(Unk_ov003_02228710_Act *a) {
     if (a->unk_251 == 0x13) {
         NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
     }
-    func_ov003_02229698(a, 0, 0x5a, 0x3c, 0, 0, 2, 0, 0, 0);
+    Insect_InitBehaviour(a, 0, 0x5a, 0x3c, 0, 0, 2, 0, 0, 0);
     a->unk_21c = 0;
 }
 }
@@ -7952,8 +7952,8 @@ extern "C" void func_ov003_02228d7c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d74
-extern "C" void func_ov003_02228d74(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222c024(a);
+extern "C" void Insect_UpdateBee(Unk_ov003_02228710_Act *a) {
+    Bee_Update(a);
 }
 }
 #undef func_02003c30
@@ -7979,9 +7979,9 @@ extern "C" void func_ov003_02228d74(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d48
-extern "C" void func_ov003_02228d48(Unk_ov003_02228710_Act *a) {
-    func_ov003_022295ec(a, 0xc8, 0x3c, 0x25, 9, 0x1000);
-    func_ov003_02229938(a);
+extern "C" void Insect_InitHoneybee(Unk_ov003_02228710_Act *a) {
+    Insect_InitFlutter(a, 0xc8, 0x3c, 0x25, 9, 0x1000);
+    Insect_SetWanderBox(a);
 }
 }
 #undef func_02003c30
@@ -8007,8 +8007,8 @@ extern "C" void func_ov003_02228d48(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d40
-extern "C" void func_ov003_02228d40(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222bf7c(a);
+extern "C" void Insect_UpdateHoneybee(Unk_ov003_02228710_Act *a) {
+    Hoverer_Update(a);
 }
 }
 #undef func_02003c30
@@ -8034,9 +8034,9 @@ extern "C" void func_ov003_02228d40(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d14
-extern "C" void func_ov003_02228d14(Unk_ov003_02228710_Act *a) {
-    func_ov003_022295ec(a, 0x96, 0x1e, 0x25, 0x12, 0x1000);
-    func_ov003_02229938(a);
+extern "C" void Insect_InitFly(Unk_ov003_02228710_Act *a) {
+    Insect_InitFlutter(a, 0x96, 0x1e, 0x25, 0x12, 0x1000);
+    Insect_SetWanderBox(a);
 }
 }
 #undef func_02003c30
@@ -8062,8 +8062,8 @@ extern "C" void func_ov003_02228d14(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228d0c
-extern "C" void func_ov003_02228d0c(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222bf7c(a);
+extern "C" void Insect_UpdateFly(Unk_ov003_02228710_Act *a) {
+    Hoverer_Update(a);
 }
 }
 #undef func_02003c30
@@ -8089,8 +8089,8 @@ extern "C" void func_ov003_02228d0c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228cc4
-extern "C" void func_ov003_02228cc4(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x5a, 0x3c, 0, 0, 0x3c, 0, 8, 1);
+extern "C" void Insect_InitFlea(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x5a, 0x3c, 0, 0, 0x3c, 0, 8, 1);
     a->unk_21c = a->unk_257;
     a->unk_228 = a->unk_204.y;
 }
@@ -8118,8 +8118,8 @@ extern "C" void func_ov003_02228cc4(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228cbc
-extern "C" void func_ov003_02228cbc(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222b224(a);
+extern "C" void Insect_UpdateFlea(Unk_ov003_02228710_Act *a) {
+    Flea_Update(a);
 }
 }
 #undef func_02003c30
@@ -8145,11 +8145,11 @@ extern "C" void func_ov003_02228cbc(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228c1c
-extern "C" void func_ov003_02228c1c(Unk_ov003_02228710_Act *a) {
+extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a) {
     s16 t = func_02063b8c(0xb) + 5;
     Unk_ov003_02228710_Vec *p = &a->unk_204;
     t = t * 0x14;
-    func_ov003_02229698(a, t, 0x5a, 0x40, 0, 0, 0x28, 0, 3, 0);
+    Insect_InitBehaviour(a, t, 0x5a, 0x40, 0, 0, 0x28, 0, 3, 0);
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
         a->unk_21c = p->x;
         NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
@@ -8183,8 +8183,8 @@ extern "C" void func_ov003_02228c1c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228c14
-extern "C" void func_ov003_02228c14(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222a8d0(a);
+extern "C" void Insect_UpdateSpider(Unk_ov003_02228710_Act *a) {
+    Spider_Update(a);
 }
 }
 #undef func_02003c30
@@ -8210,8 +8210,8 @@ extern "C" void func_ov003_02228c14(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228c0c
-extern "C" void func_ov003_02228c0c(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222aff0(a);
+extern "C" void Insect_UpdateStinger(Unk_ov003_02228710_Act *a) {
+    Stinger_Update(a);
 }
 }
 #undef func_02003c30
@@ -8237,8 +8237,8 @@ extern "C" void func_ov003_02228c0c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228bdc
-extern "C" void func_ov003_02228bdc(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x64, 0x5a, 0, 0, 0, 0, 4, 0);
+extern "C" void Insect_InitTarantula(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x64, 0x5a, 0, 0, 0, 0, 4, 0);
     a->unk_24c = 0;
 }
 }
@@ -8265,8 +8265,8 @@ extern "C" void func_ov003_02228bdc(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b98
-extern "C" void func_ov003_02228b98(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x64, 0x50, 0, 0, 0, 0, 5, 0);
+extern "C" void Insect_InitScorpion(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x64, 0x50, 0, 0, 0, 0, 5, 0);
     a->unk_24c = 0;
     AnimFrameCtrl_setup(a->unk_ec, 3, 0, 0x1000, 0);
 }
@@ -8294,8 +8294,8 @@ extern "C" void func_ov003_02228b98(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b74
-extern "C" void func_ov003_02228b74(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x50, 0x50, 0, 0, 0, 0, 1, 0);
+extern "C" void Insect_InitAnt(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x50, 0x50, 0, 0, 0, 0, 1, 0);
 }
 }
 #undef func_02003c30
@@ -8321,8 +8321,8 @@ extern "C" void func_ov003_02228b74(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b6c
-extern "C" void func_ov003_02228b6c(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222be88(a);
+extern "C" void Insect_UpdateAnt(Unk_ov003_02228710_Act *a) {
+    Ant_Update(a);
 }
 }
 #undef func_02003c30
@@ -8348,8 +8348,8 @@ extern "C" void func_ov003_02228b6c(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b48
-extern "C" void func_ov003_02228b48(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229698(a, 0, 0x50, 0x50, 0, 0, 0, 0, 3, 0);
+extern "C" void Insect_InitDungBeetle(Unk_ov003_02228710_Act *a) {
+    Insect_InitBehaviour(a, 0, 0x50, 0x50, 0, 0, 0, 0, 3, 0);
 }
 }
 #undef func_02003c30
@@ -8375,8 +8375,8 @@ extern "C" void func_ov003_02228b48(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b40
-extern "C" void func_ov003_02228b40(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222af84(a);
+extern "C" void Insect_UpdateDungBeetle(Unk_ov003_02228710_Act *a) {
+    DungBeetle_Update(a);
 }
 }
 #undef func_02003c30
@@ -8402,8 +8402,8 @@ extern "C" void func_ov003_02228b40(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b38
-extern "C" void func_ov003_02228b38(Unk_ov003_02228710_Act *a) {
-    func_ov003_02229144(a);
+extern "C" void Insect_InitKind38(Unk_ov003_02228710_Act *a) {
+    Insect_InitTreeBug(a);
 }
 }
 #undef func_02003c30
@@ -8429,8 +8429,8 @@ extern "C" void func_ov003_02228b38(Unk_ov003_02228710_Act *a) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 namespace s05 {
 // 0x2228b30
-extern "C" void func_ov003_02228b30(Unk_ov003_02228710_Act *a) {
-    func_ov003_0222a7d4(a);
+extern "C" void Insect_UpdateKind38(Unk_ov003_02228710_Act *a) {
+    TreeBug_Update(a);
 }
 }
 #undef func_02003c30
@@ -8457,8 +8457,8 @@ extern "C" void func_ov003_02228b30(Unk_ov003_02228710_Act *a) {
 namespace s05 {
 // 0x2228b18
 extern "C" // factory (allocates 0xa0 bytes)
-void *func_ov003_02228b18() {
-    return new Unk_ov003_02234abc;
+void *InsectManager_Create() {
+    return new InsectManager;
 }
 }
 #undef func_02003c30
@@ -8483,8 +8483,8 @@ void *func_ov003_02228b18() {
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x2228ad0
-Unk_ov003_02234abc::Unk_ov003_02234abc() { using namespace s05;
-    data_ov003_02258f00 = 0;
+InsectManager::InsectManager() { using namespace s05;
+    sWateringActive = 0;
 }
 #undef func_02003c30
 #undef func_0205468c
@@ -8508,7 +8508,7 @@ Unk_ov003_02234abc::Unk_ov003_02234abc() { using namespace s05;
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x2228a48
-Unk_ov003_02234abc::~Unk_ov003_02234abc() { using namespace s05;
+InsectManager::~InsectManager() { using namespace s05;
 }
 #undef func_02003c30
 #undef func_0205468c
@@ -8532,7 +8532,7 @@ Unk_ov003_02234abc::~Unk_ov003_02234abc() { using namespace s05;
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x222898c
-BOOL Unk_ov003_02234abc::func_0222898c(Unk_ov003_02228710_Act *e) { using namespace s05;
+BOOL InsectManager::allocHeldInsect(Unk_ov003_02228710_Act *e) { using namespace s05;
     if (e->unk_250 != 0) {
         s8 a = e->unk_24d;
         u8 b = e->unk_251;
@@ -8547,7 +8547,7 @@ BOOL Unk_ov003_02234abc::func_0222898c(Unk_ov003_02228710_Act *e) { using namesp
         w.y = pv->y;
         w.z = pv->z;
         s16 c = e->unk_23a;
-        func_022287c8(e, 3);
+        freeInsect(e, 3);
         e->unk_24d = a;
         e->unk_251 = b;
         pv = &e->unk_204;
@@ -8588,8 +8588,8 @@ BOOL Unk_ov003_02234abc::func_0222898c(Unk_ov003_02228710_Act *e) { using namesp
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x2228924
-BOOL Unk_ov003_02234abc::func_02228924(s32 id, s32 idx) { using namespace s05;
-    Unk_ov003_02228710_Act *e = (Unk_ov003_02228710_Act *)&data_ov003_02259354[idx];
+BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
+    Unk_ov003_02228710_Act *e = (Unk_ov003_02228710_Act *)&sSpecialInsects[idx];
     if (e->unk_250 == 0) {
         func_0209c25c(&unk_68, e->unk_230);
         func_0209c0c8(e->unk_130);
@@ -8624,7 +8624,7 @@ BOOL Unk_ov003_02234abc::func_02228924(s32 id, s32 idx) { using namespace s05;
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x22288dc
-BOOL Unk_ov003_02234abc::func_022288dc(Unk_ov003_02228710_Act *e) { using namespace s05;
+BOOL InsectManager::allocFieldInsect(Unk_ov003_02228710_Act *e) { using namespace s05;
     if (e->unk_250 == 0) {
         e->unk_250 = 2;
         func_0209c25c(&unk_50, e->unk_230);
@@ -8656,7 +8656,7 @@ BOOL Unk_ov003_02234abc::func_022288dc(Unk_ov003_02228710_Act *e) { using namesp
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x22287c8
-void Unk_ov003_02234abc::func_022287c8(Unk_ov003_02228710_Act *e, s32 mode) { using namespace s05;
+void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using namespace s05;
     Unk_ov003_02228710_Vec *p = &e->unk_204;
     Unk_ov003_02228710_Vec *q = &e->unk_1d4;
     if (e->unk_24d == 0x33) {
@@ -8718,16 +8718,16 @@ void Unk_ov003_02234abc::func_022287c8(Unk_ov003_02228710_Act *e, s32 mode) { us
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x2228710
-BOOL Unk_ov003_02234abc::vfunc_00() { using namespace s05;
+BOOL InsectManager::vfunc_00() { using namespace s05;
     func_0209c1a4(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)func_0205c088, (void *)func_0205c06c, 0);
     func_0209c1a4(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)func_0205c0f0, (void *)func_0205c0d4, 0);
     func_0209c1a4(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)func_0205c0bc, (void *)func_0205c0a0, 0);
     u32 *g = gCommManager[0];
     if (CommManager_isSlotActive(g, g[0x64 / 4]) == 0) {
-        func_02228924(0x3a, 0);
-        func_02228924(0x3b, 1);
+        allocSpecialInsect(0x3a, 0);
+        allocSpecialInsect(0x3b, 1);
     }
-    func_ov003_02225108();
+    InsectSpawn_BuildMasks();
     return TRUE;
 }
 #undef func_02003c30
@@ -8760,22 +8760,22 @@ BOOL Unk_ov003_02234abc::vfunc_00() { using namespace s05;
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x22283d0
-extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
+extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     struct { char name[0x11]; char path[0x17]; } l;
     s32 m;
     void *h2;
@@ -8790,19 +8790,19 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
         return;
     }
     if (t4 < 10) {
-        func_020639e8(l.name, data_ov003_02234e4c, t4);
+        func_020639e8(l.name, sInsectPathFmt0x, t4);
     } else if (t4 < 0x14) {
-        func_020639e8(l.name, data_ov003_02234e60, t4);
+        func_020639e8(l.name, sInsectPathFmt1x, t4);
     } else if (t4 < 0x1e) {
-        func_020639e8(l.name, data_ov003_02234e74, t4);
+        func_020639e8(l.name, sInsectPathFmt2x, t4);
     } else if (t4 < 0x28) {
-        func_020639e8(l.name, data_ov003_02234e88, t4);
+        func_020639e8(l.name, sInsectPathFmt3x, t4);
     } else if (t4 < 0x32) {
-        func_020639e8(l.name, data_ov003_02234e9c, t4);
+        func_020639e8(l.name, sInsectPathFmt4x, t4);
     } else {
-        func_020639e8(l.name, data_ov003_02234eb0, t4);
+        func_020639e8(l.name, sInsectPathFmt5x, t4);
     }
-    func_020639e8(l.path, data_ov003_02234ec4, l.name);
+    func_020639e8(l.path, sInsectModelExtFmt, l.name);
     if (!File_Exists(l.path)) {
         return;
     }
@@ -8820,11 +8820,11 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
     }
     obj = e->unk_50;
     Model_setResource(obj, func_0209c0ac(p130), 0);
-    rec = &data_ov003_02234b04[t4];
+    rec = &sInsectModelParams[t4];
     if (rec->unk_00 != 0) {
-        func_020639e8(l.path, data_ov003_02234ed0, l.name);
+        func_020639e8(l.path, sInsectVisAnimExtFmt, l.name);
     } else {
-        func_020639e8(l.path, data_ov003_02234edc, l.name);
+        func_020639e8(l.path, sInsectJointAnimExtFmt, l.name);
     }
     if (!File_Exists(l.path)) {
         return;
@@ -8864,7 +8864,7 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
         AnimFrameCtrl_setup(&e->unk_ec, 9, 1, 0, 9);
     }
     if ((u32)(t4 - 0x3a) <= 1) {
-        func_020639e8(l.path, data_ov003_02234ee8, t4);
+        func_020639e8(l.path, sInsectTexAnimPathFmt, t4);
         ok = FALSE;
         if (File_Exists(l.path)) {
             File_LoadAlloc(l.path, h2, 4, 0);
@@ -8882,11 +8882,11 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
         Vec3 *pv = &e->unk_210;
         Vec3 sv = *pv;
         Unk_02003c30_callReset(e->unk_174);
-        data_ov003_02234c6c[t4].unk_00(e);
-        e->unk_170 = (void (*)(Rec *))data_ov003_02234c6c[t4].unk_04;
+        sInsectBehaviours[t4].unk_00(e);
+        e->unk_170 = (void (*)(Rec *))sInsectBehaviours[t4].unk_04;
         e->unk_250 = 3;
         e->unk_24a[0] = 0;
-        func_ov003_02226a9c(a, e, 0);
+        Insect_SetModelMatrix(a, e, 0);
         if (mode == 2) {
             pv = &e->unk_210;
             pv->x = sv.x;
@@ -8917,16 +8917,16 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -8948,22 +8948,22 @@ extern "C" void func_ov003_022283d0(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode)
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2228308
-extern "C" void func_ov003_02228308(void *a, Rec *e) {
+extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
     if (e->unk_170 != 0) {
         s32 t = e->unk_24d;
         switch (t) {
@@ -8973,7 +8973,7 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
                 if (v > 5) {
                     e->unk_232 = v - 1;
                 } else {
-                    func_ov003_02229910(e);
+                    Insect_Despawn(e);
                 }
             }
             break;
@@ -8987,7 +8987,7 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
                 if (v > 0) {
                     e->unk_232 = v - 1;
                 } else {
-                    func_ov003_02229910(e);
+                    Insect_Despawn(e);
                 }
                 break;
             }
@@ -9001,7 +9001,7 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
                 if (v > 0x1f) {
                     *p = v - 1;
                 } else {
-                    func_ov003_02229910(e);
+                    Insect_Despawn(e);
                 }
             }
             break;
@@ -9031,16 +9031,16 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9062,29 +9062,29 @@ extern "C" void func_ov003_02228308(void *a, Rec *e) {
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2228060
-extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
+extern "C" void Insect_Update(void *a, Rec *e, s32 flags, s32 kind) {
     u8 r4 = e->unk_249;
     s32 r7 = CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
     if (r7 != 0 && e->unk_258 != 0) {
         r4 = 1;
     }
     if (r4 == 0) {
-        func_ov003_02228308(a, e);
+        Insect_UpdateHideTimer(a, e);
     }
     if (kind == 1) {
         if (r7 == 0 || func_020a62a0() != 0) {
@@ -9109,7 +9109,7 @@ extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
     }
     s32 t4 = e->unk_24d;
     u32 t7 = e->unk_251;
-    func_ov003_0222603c(e);
+    Insect_TickFrame(e);
     if (t7 == 0x10 || t4 < 0) {
         goto L258;
     }
@@ -9125,9 +9125,9 @@ extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
         v1.y = pv->y;
         v1.z = pv->z;
         pp = &e->unk_108;
-        func_ov003_02227f20(a, e);
+        Insect_CheckDisturbance(a, e);
         e->unk_170(e);
-        if (func_ov003_02227544(a, e) != 0) {
+        if (Insect_UsesCollisionMove(a, e) != 0) {
             if (kind == 3) {
                 {
                     struct { u8 b[0x44]; } w;
@@ -9140,11 +9140,11 @@ extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
                     _ZN12Unk_0203398cD1Ev(&w);
                 }
                 if (big) {
-                    func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, data_ov003_02234b04[t4].unk_02, 0, 0xa);
+                    func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xa);
                     goto after;
                 }
             }
-            func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, data_ov003_02234b04[t4].unk_02, 0, 0xb);
+            func_020309d4(&e->unk_20, &e->unk_204, &v1, e->unk_23a, sInsectModelParams[t4].unk_02, 0, 0xb);
         }
     after:
         if (e->unk_24d == 0x33 && flags == 0) {
@@ -9161,10 +9161,10 @@ extern "C" void func_ov003_02228060(void *a, Rec *e, s32 flags, s32 kind) {
                 v2.y = v2.y - 0x1800;
             }
         }
-        func_02088b20(pp, &v2, data_ov003_02234b04[t4].unk_04, 0xd48, (u8)flags);
+        func_02088b20(pp, &v2, sInsectModelParams[t4].unk_04, 0xd48, (u8)flags);
     }
 L226:
-    if (data_ov003_02234b04[t4].unk_00 == 0) {
+    if (sInsectModelParams[t4].unk_00 == 0) {
         AnimModel_stepAnim(e->unk_50);
         if ((u8)(s8)(t4 - 0x3a) <= 1) {
             AnimFrameCtrl_step(e);
@@ -9182,9 +9182,9 @@ L268:
         return;
     }
     if (kind == 3 && t7 == 0x10) {
-        func_ov003_02226a9c(a, e, 1);
+        Insect_SetModelMatrix(a, e, 1);
     } else {
-        func_ov003_02226a9c(a, e, 0);
+        Insect_SetModelMatrix(a, e, 0);
     }
     {
         Vec3 v3;
@@ -9217,16 +9217,16 @@ L268:
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9248,28 +9248,28 @@ L268:
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 // 0x222802c
-BOOL Unk_ov003_02234abc::onExecute() { using namespace s04;
+BOOL InsectManager::onExecute() { using namespace s04;
     void *self = this;
-    func_ov003_02227970(self);
+    FieldInsect_UpdateAll(self);
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
-        func_ov003_02227740(self);
+        SpecialInsect_UpdateAll(self);
     }
-    func_ov003_02227624(self);
-    func_ov003_02227cd0(self);
+    HeldInsect_UpdateAll(self);
+    Insect_UpdateSpawning(self);
     return TRUE;
 }
 #undef func_02003c70
@@ -9293,16 +9293,16 @@ BOOL Unk_ov003_02234abc::onExecute() { using namespace s04;
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9324,22 +9324,22 @@ BOOL Unk_ov003_02234abc::onExecute() { using namespace s04;
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2227f20
-extern "C" void func_ov003_02227f20(void *a, Rec *e) {
+extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
     Unk_ov003_02227f20_Slot *o;
     u8 ok;
     s32 px, py;
@@ -9414,16 +9414,16 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9445,23 +9445,23 @@ extern "C" void func_ov003_02227f20(void *a, Rec *e) {
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2227ed4
-extern "C" s32 func_ov003_02227ed4(u8 *out, u32 idx) {
-    Rec *e = &data_ov003_0225a17c[(u8)(idx & 0xf)];
+extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
+    Rec *e = &sFieldInsects[(u8)(idx & 0xf)];
     s32 r = e->unk_24d;
     if (r >= 0) {
         if (e->unk_254 >= e->unk_255) {
@@ -9494,16 +9494,16 @@ extern "C" s32 func_ov003_02227ed4(u8 *out, u32 idx) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9525,23 +9525,23 @@ extern "C" s32 func_ov003_02227ed4(u8 *out, u32 idx) {
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2227e40
-extern "C" BOOL func_ov003_02227e40(u32 idx) {
-    Rec *e = &data_ov003_0225a17c[(u8)(idx & 0xf)];
+extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
+    Rec *e = &sFieldInsects[(u8)(idx & 0xf)];
     switch (e->unk_24d) {
     case 9:
     case 16: case 17: case 18: case 19: case 20:
@@ -9583,16 +9583,16 @@ extern "C" BOOL func_ov003_02227e40(u32 idx) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9614,23 +9614,23 @@ extern "C" BOOL func_ov003_02227e40(u32 idx) {
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2227e08
-extern "C" s32 func_ov003_02227e08(Vec3 *out, u32 idx) {
-    Rec *e = &data_ov003_0225a17c[(u8)(idx & 0xf)];
+extern "C" s32 FieldInsect_GetPosAndKind(Vec3 *out, u32 idx) {
+    Rec *e = &sFieldInsects[(u8)(idx & 0xf)];
     Vec3 *v = &e->unk_204;
     out->x = v->x;
     out->y = v->y;
@@ -9659,16 +9659,16 @@ extern "C" s32 func_ov003_02227e08(Vec3 *out, u32 idx) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9690,49 +9690,49 @@ extern "C" s32 func_ov003_02227e08(Vec3 *out, u32 idx) {
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
-#define data_ov003_02234e4c "/insect/01/bug0%d"
-#define data_ov003_02234e60 "/insect/11/bug%d"
-#define data_ov003_02234e74 "/insect/21/bug%d"
-#define data_ov003_02234e88 "/insect/31/bug%d"
-#define data_ov003_02234e9c "/insect/41/bug%d"
-#define data_ov003_02234eb0 "/insect/51/bug%d"
-#define data_ov003_02234ec4 "%s.nsbmd"
-#define data_ov003_02234ed0 "%s.nsbva"
-#define data_ov003_02234edc "%s.nsbca"
-#define data_ov003_02234ee8 "/insect/51/bug%d.nsbta"
-#define data_ov003_022595b0 (*(u8 *)&::data_ov003_02259354[1])
+#define sInsectPathFmt0x "/insect/01/bug0%d"
+#define sInsectPathFmt1x "/insect/11/bug%d"
+#define sInsectPathFmt2x "/insect/21/bug%d"
+#define sInsectPathFmt3x "/insect/31/bug%d"
+#define sInsectPathFmt4x "/insect/41/bug%d"
+#define sInsectPathFmt5x "/insect/51/bug%d"
+#define sInsectModelExtFmt "%s.nsbmd"
+#define sInsectVisAnimExtFmt "%s.nsbva"
+#define sInsectJointAnimExtFmt "%s.nsbca"
+#define sInsectTexAnimPathFmt "/insect/51/bug%d.nsbta"
+#define data_ov003_022595b0 (*(u8 *)&::sSpecialInsects[1])
 namespace s04 {
 // 0x2227cd0
-extern "C" void func_ov003_02227cd0(void *self) {
+extern "C" void Insect_UpdateSpawning(void *self) {
     s8 b[8];
     s32 px, py;
     s32 r4 = CommManager_isSlotActive(gCommManager, gCommManager->unk_64);
     if (r4 == 0 || func_020a62a0() != 0) {
-        if (data_ov003_02258ef4 % 20 == 0) {
-            func_ov003_02225cb0();
+        if (sInsectSpawnTimer % 20 == 0) {
+            FieldInsect_PurgeStale();
         }
-        data_ov003_02258ef4++;
-        u32 c = data_ov003_02258ef4;
+        sInsectSpawnTimer++;
+        u32 c = sInsectSpawnTimer;
         if (c == 0x3c) {
-            func_ov003_0222644c(self, 1, 0, -1);
-            data_ov003_02258ef4 = 0;
+            Insect_TrySpawnRandom(self, 1, 0, -1);
+            sInsectSpawnTimer = 0;
         } else if (c == 0x28 && r4 == 0) {
             b[0] = 0;
             b[1] = -1;
-            if (func_ov003_02225e34(&b[0], &b[1], 1)) {
-                if (func_ov003_0222644c(self, 1, b[0], b[1])) {
-                    data_ov003_02258ef4 = 0;
+            if (Insect_PickSpecialSpawn(&b[0], &b[1], 1)) {
+                if (Insect_TrySpawnRandom(self, 1, b[0], b[1])) {
+                    sInsectSpawnTimer = 0;
                 }
             }
         } else if (c == 0x14 && r4 == 0) {
             b[2] = 0;
             b[3] = -1;
-            if (func_ov003_02225e34(&b[2], &b[3], 0)) {
-if (func_ov003_022264f0(self, b[2], (u8)b[3], 2)) {
+            if (Insect_PickSpecialSpawn(&b[2], &b[3], 0)) {
+if (Insect_Spawn(self, b[2], (u8)b[3], 2)) {
                     func_ov068_022687c0(&data_ov003_022595b0);
-                    data_ov003_02258ef8 = 0;
+                    sAntSpawnEnabled = 0;
                 }
             }
         }
@@ -9741,12 +9741,12 @@ if (func_ov003_022264f0(self, b[2], (u8)b[3], 2)) {
         u8 i;
         for (i = 0; i < 4; i++) {
             if (PlayerActor_GetSlotPosXZ((u8 *)&b[4], &px, &py, -1, i) && (u8)b[4] == 0) {
-                func_ov003_02226874(self, 1, i, px, py);
+                InsectPool_UpdateInViewOfPlayer(self, 1, i, px, py);
             }
         }
     } else {
-        func_ov003_02226768(self, 1);
-        func_ov003_02226768(self, 2);
+        InsectPool_UpdateInView(self, 1);
+        InsectPool_UpdateInView(self, 2);
     }
 }
 }
@@ -9771,16 +9771,16 @@ if (func_ov003_022264f0(self, b[2], (u8)b[3], 2)) {
 #undef func_0209c348
 #undef func_ov003_022287c8
 #undef func_ov068_022687c0
-#undef data_ov003_02234e4c
-#undef data_ov003_02234e60
-#undef data_ov003_02234e74
-#undef data_ov003_02234e88
-#undef data_ov003_02234e9c
-#undef data_ov003_02234eb0
-#undef data_ov003_02234ec4
-#undef data_ov003_02234ed0
-#undef data_ov003_02234edc
-#undef data_ov003_02234ee8
+#undef sInsectPathFmt0x
+#undef sInsectPathFmt1x
+#undef sInsectPathFmt2x
+#undef sInsectPathFmt3x
+#undef sInsectPathFmt4x
+#undef sInsectPathFmt5x
+#undef sInsectModelExtFmt
+#undef sInsectVisAnimExtFmt
+#undef sInsectJointAnimExtFmt
+#undef sInsectTexAnimPathFmt
 #undef data_ov003_022595b0
 
 #define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
@@ -9788,17 +9788,17 @@ if (func_ov003_022264f0(self, b[2], (u8)b[3], 2)) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227970
-extern "C" void func_ov003_02227970(void *a) {
+extern "C" void FieldInsect_UpdateAll(void *a) {
     u32 k;
     Unk_020cbb18_Ptr *g;
     Unk_ov003_02227970_Loc l;
     s32 v18, v1c;
     V3 t1, t2;
-    Rec *o = data_ov003_0225a17c;
+    Rec *o = sFieldInsects;
     v18 = 0;
     v1c = 0;
     l.i = 0;
@@ -9814,9 +9814,9 @@ loop0:
             p204 = &o->unk_204;
             p1d4 = &o->unk_1d4;
             l.a = neg;
-            if (func_ov003_0222e694(a, l.i, o->unk_24d, p1d4, o->unk_254, 1) == 0) {
+            if (InsectNetSync_Set(a, l.i, o->unk_24d, p1d4, o->unk_254, 1) == 0) {
                 l.c = 0;
-                if (func_ov003_0222e5e0(a, l.i, &l.a, &v18, &v1c, &l.c)) {
+                if (InsectNetSync_Get(a, l.i, &l.a, &v18, &v1c, &l.c)) {
                     if (k == 0) {
                         if (v18 > 1) {
                             s32 t = l.a;
@@ -9867,28 +9867,28 @@ loop0:
                 if (l.a != o->unk_24d && v18 > 0) {
                     func_ov003_022287c8(a, o, 1);
                 } else {
-                    if (func_ov003_022277c0(a, o)) func_ov003_022283d0(a, o, 0);
+                    if (Insect_IsTreeStillThere(a, o)) Insect_LoadModel(a, o, 0);
                 }
             } else {
-                func_ov003_022283d0(a, o, 0);
+                Insect_LoadModel(a, o, 0);
             }
             break;
         case 3:
             if (CommManager_isSlotActive(g, g->unk_64)) {
                 if (func_020a62a0() == 0) {
-                    if (func_ov003_02227930(a, o, l.a, v18, v1c)) {
+                    if (Insect_IsNetKindMismatch(a, o, l.a, v18, v1c)) {
                         o->unk_251 = 10;
                         func_ov003_022287c8(a, o, 1);
                     }
                 }
                 s32 kind = o->unk_24d;
-                if (func_ov003_02225bf8(kind, func_020b8fe8()) == 5) {
+                if (Insect_GetWeatherReaction(kind, func_020b8fe8()) == 5) {
                     o->unk_246 = 0;
                 } else {
                     o->unk_246 = 1;
                 }
             }
-            func_ov003_02228060(a, o, l.i, 1);
+            Insect_Update(a, o, l.i, 1);
             break;
         case 4:
             if (CommManager_isSlotActive(g, g->unk_64) == 0) {
@@ -9952,11 +9952,11 @@ test0:
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227930
-extern "C" BOOL func_ov003_02227930(void *a, Rec *o, s32 c, s32 d, s32 e) {
+extern "C" BOOL Insect_IsNetKindMismatch(void *a, Rec *o, s32 c, s32 d, s32 e) {
     s32 t = o->unk_24d;
     if (d == 0) return FALSE;
     if (t < 0 || t != c) return TRUE;
@@ -9978,11 +9978,11 @@ extern "C" BOOL func_ov003_02227930(void *a, Rec *o, s32 c, s32 d, s32 e) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x22277c0
-extern "C" BOOL func_ov003_022277c0(void *a, Rec *o) {
+extern "C" BOOL Insect_IsTreeStillThere(void *a, Rec *o) {
     if (o->unk_24d < 0) return FALSE;
     switch (o->unk_24d) {
     case 0x9: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x1f: case 0x21: case 0x22: case 0x23: case 0x24: case 0x26: case 0x27: case 0x28: case 0x29: case 0x2a: case 0x2b: case 0x2c: case 0x2d: case 0x2e: case 0x2f: case 0x34:
@@ -10019,20 +10019,20 @@ yes:
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227740
-extern "C" void func_ov003_02227740(void *a) {
-    Rec *o = data_ov003_02259354;
+extern "C" void SpecialInsect_UpdateAll(void *a) {
+    Rec *o = sSpecialInsects;
     u8 i = 0;
     do {
         switch (o->unk_250) {
         case 2:
-            func_ov003_022283d0(a, o, 1);
+            Insect_LoadModel(a, o, 1);
             break;
         case 3:
-            if (o->unk_204.x > 0x1000) func_ov003_02228060(a, o, i, 2);
+            if (o->unk_204.x > 0x1000) Insect_Update(a, o, i, 2);
             break;
         case 4:
             o->unk_251 = 10;
@@ -10057,15 +10057,15 @@ extern "C" void func_ov003_02227740(void *a) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227624
-extern "C" void func_ov003_02227624(void *a) {
+extern "C" void HeldInsect_UpdateAll(void *a) {
     Unk_020cbb18_Ptr *g = gCommManager;
     u32 cur = g->unk_64;
     if (cur == 4) cur = 0;
-    Rec *o = data_ov003_0225980c;
+    Rec *o = sHeldInsects;
     u8 i = 0;
     s32 neg = -1;
     s32 zero = 0;
@@ -10085,11 +10085,11 @@ extern "C" void func_ov003_02227624(void *a) {
                 func_ov003_0222898c(a, o);
                 break;
             case 2:
-                func_ov003_022283d0(a, o, 2);
-                func_020309d4(&o->unk_20, &o->unk_204, &o->unk_204, o->unk_23a, data_ov003_02234b04[o->unk_24d].b, zero, 10);
+                Insect_LoadModel(a, o, 2);
+                func_020309d4(&o->unk_20, &o->unk_204, &o->unk_204, o->unk_23a, sInsectModelParams[o->unk_24d].b, zero, 10);
                 break;
             case 3:
-                func_ov003_02228060(a, o, i, 3);
+                Insect_Update(a, o, i, 3);
                 break;
             case 4:
                 o->unk_251 = 10;
@@ -10115,11 +10115,11 @@ extern "C" void func_ov003_02227624(void *a) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227544
-extern "C" BOOL func_ov003_02227544(void *a, Rec *o) {
+extern "C" BOOL Insect_UsesCollisionMove(void *a, Rec *o) {
     s32 t;
     u32 st;
     st = o->unk_251;
@@ -10162,27 +10162,27 @@ yes:
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x222746c
-extern "C" void func_ov003_0222746c(s32 idx, s32 v) {
-    Rec *o = &data_ov003_0225980c[idx];
+extern "C" void HeldInsect_Release(s32 idx, s32 v) {
+    Rec *o = &sHeldInsects[idx];
     o->unk_251 = 0xb;
     o->unk_238 = 0;
     o->unk_23c = 0;
-    func_ov003_02226d08(o, 100);
+    Insect_SetScale(o, 100);
     o->unk_23a = v;
     s32 st = o->unk_24d;
     if (st >= 0 && st < 0x3c) {
-        data_ov003_02234c6c[st].fn(o);
+        sInsectBehaviours[st].fn(o);
         switch (o->unk_24d) {
         case 0xc:
         case 0xd:
         case 0x1b:
         case 0x1c:
         case 0x1d:
-            func_ov003_0222c9e0(o, 1);
+            Insect_TurnToTarget(o, 1);
             break;
         case 0x39:
             if (o->unk_22c != -1) {
@@ -10192,7 +10192,7 @@ extern "C" void func_ov003_0222746c(s32 idx, s32 v) {
             break;
         }
     } else {
-        func_ov003_02227074(idx, 0);
+        HeldInsect_Remove(idx, 0);
         o->unk_250 = 4;
     }
 }
@@ -10210,12 +10210,12 @@ extern "C" void func_ov003_0222746c(s32 idx, s32 v) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x2227434
-extern "C" u32 func_ov003_02227434(s32 idx) {
-    Rec *o = &data_ov003_0225980c[idx];
+extern "C" u32 HeldInsect_GetStage(s32 idx) {
+    Rec *o = &sHeldInsects[idx];
     if (o->unk_24d < 0) {
         o->unk_251 = 10;
         o->unk_250 = 0;
@@ -10236,21 +10236,21 @@ extern "C" u32 func_ov003_02227434(s32 idx) {
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_0222898c _ZN18Unk_ov003_02234abc13func_0222898cEP22Unk_ov003_02228710_Act
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_0222898c _ZN13InsectManager15allocHeldInsectEP22Unk_ov003_02228710_Act
 namespace s03 {
 // 0x22273b4
-extern "C" s32 func_ov003_022273b4(void *a, Rec *o, s32 n) {
+extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n) {
     s32 i = 0;
     goto test0;
 loop0:
     if (o->unk_250 == 3 && o->unk_249 != 0) {
         if (n == 8) {
-            if (func_ov003_0222733c(a, *(u8 *)&o->unk_24d) == 0 || func_0203a4c4(&o->unk_204, 0x2000, 0x2000) == 0) {
-                func_ov003_02226c88(a, o);
+            if (Insect_IsTreeKindForCulling(a, *(u8 *)&o->unk_24d) == 0 || func_0203a4c4(&o->unk_204, 0x2000, 0x2000) == 0) {
+                Insect_Draw(a, o);
             }
         } else {
-            func_ov003_02226c88(a, o);
+            Insect_Draw(a, o);
         }
     }
     o++;
@@ -10275,10 +10275,10 @@ test0:
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x222733c
-extern "C" BOOL func_ov003_0222733c(s32 a, s32 t) {
+extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t) {
     switch (t) {
     case 9:
     case 16:
@@ -10324,11 +10324,11 @@ extern "C" BOOL func_ov003_0222733c(s32 a, s32 t) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227320
-extern "C" V3 *func_ov003_02227320(s32 idx) {
-    Obj *o = &data_ov003_0225980c[idx];
+extern "C" V3 *HeldInsect_GetPos(s32 idx) {
+    Obj *o = &sHeldInsects[idx];
     return &o->unk_204;
 }
 }
@@ -10348,11 +10348,11 @@ extern "C" V3 *func_ov003_02227320(s32 idx) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227248
-extern "C" void func_ov003_02227248(s32 t, s32 idx) {
-    Obj *o = &data_ov003_0225980c[idx];
+extern "C" void HeldInsect_Start(s32 t, s32 idx) {
+    Obj *o = &sHeldInsects[idx];
     u8 *e = (u8 *)func_02095204(idx);
     if (e != 0) {
         V3 *pv = (V3 *)(e + 0x5c);
@@ -10401,17 +10401,17 @@ extern "C" void func_ov003_02227248(s32 t, s32 idx) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x22271a8
-extern "C" void func_ov003_022271a8(s32 id) {
+extern "C" void Insect_OnNetRemove(s32 id) {
     Obj *o;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     o->unk_242 = 0;
     u32 st = o->unk_251;
-    if (func_ov003_0222716c(o->unk_24d) && o->unk_250 != 4 && st != 0x10 && st != 10) {
+    if (Insect_CanHopAway(o->unk_24d) && o->unk_250 != 4 && st != 0x10 && st != 10) {
         if (st != 0x11 && o->unk_232 > 6) {
             o->unk_232 = 6;
             o->unk_251 = 0x11;
@@ -10437,10 +10437,10 @@ extern "C" void func_ov003_022271a8(s32 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x222716c
-extern "C" BOOL func_ov003_0222716c(s32 t) {
+extern "C" BOOL Insect_CanHopAway(s32 t) {
     switch (t) {
     case 0xc:
     case 0xd:
@@ -10470,14 +10470,14 @@ extern "C" BOOL func_ov003_0222716c(s32 t) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227100
-extern "C" void func_ov003_02227100(s32 id) {
+extern "C" void Insect_OnClaimGranted(s32 id) {
     Obj *o;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     if (o->unk_250 == 3) {
         NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
     }
@@ -10500,11 +10500,11 @@ extern "C" void func_ov003_02227100(s32 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227074
-extern "C" void func_ov003_02227074(u8 id, s32 flag) {
-    Obj *o = &data_ov003_0225980c[id];
+extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
+    Obj *o = &sHeldInsects[id];
     Unk_ov003_02226d54_Net *g = gCommManager;
     if (CommManager_isSlotActive(g, g->unk_64) && flag && CommManager_isMyAid(g, id)) {
         Unk_ov003_02226d54_Net *g2 = gCommManager;
@@ -10535,14 +10535,14 @@ extern "C" void func_ov003_02227074(u8 id, s32 flag) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226fac
-extern "C" s32 func_ov003_02226fac(u8 id) {
+extern "C" s32 Insect_FinishCatch(u8 id) {
     Obj *o;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     o->unk_242 = 0;
     o->unk_250 = 4;
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
@@ -10581,25 +10581,25 @@ extern "C" s32 func_ov003_02226fac(u8 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226ee8
-extern "C" s32 func_ov003_02226ee8(s32 id) {
+extern "C" s32 Insect_GetCatchResult(s32 id) {
     Obj *o = 0;
     s32 r = 0;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     else r = 1;
     if (o == 0) r = 1;
     if (r != 1) {
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
-            if (!func_020a62a0()) r = data_ov003_02258efc;
+            if (!func_020a62a0()) r = sInsectCatchResult;
         }
     }
     if (r == 1) {
         u8 b;
-        func_ov003_02226e70(id);
+        Insect_CancelCatch(id);
         b = id;
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             if (!func_020a62a0()) {
@@ -10629,14 +10629,14 @@ extern "C" s32 func_ov003_02226ee8(s32 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226e70
-extern "C" void func_ov003_02226e70(s32 id) {
+extern "C" void Insect_CancelCatch(s32 id) {
     Obj *o;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     if (o->unk_251 == 0x10 && o->unk_24d >= 0) {
         o->unk_251 = 0x13;
         NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0x1f);
@@ -10659,14 +10659,14 @@ extern "C" void func_ov003_02226e70(s32 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226d54
-extern "C" s32 func_ov003_02226d54(u8 id) {
+extern "C" s32 Insect_TryCatch(u8 id) {
     Obj *o;
     s32 idx = (u8)(id & 0xf);
-    if ((id >> 4) & 1) o = &data_ov003_0225a17c[idx];
-    else if ((id >> 5) & 1) o = &data_ov003_02259354[idx];
+    if ((id >> 4) & 1) o = &sFieldInsects[idx];
+    else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     else return 0;
     u32 t6 = o->unk_251;
     u32 c4 = (u8)o->unk_24d;
@@ -10682,7 +10682,7 @@ extern "C" s32 func_ov003_02226d54(u8 id) {
     }
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         if (!func_020a62a0()) {
-            data_ov003_02258efc = 2;
+            sInsectCatchResult = 2;
             Unk_ov003_02226d54_Net *g = gCommManager;
             CommManager_beginRecord(g);
             CommManager_writeRecord(g, &id, 1);
@@ -10708,10 +10708,10 @@ extern "C" s32 func_ov003_02226d54(u8 id) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226d08
-extern "C" void func_ov003_02226d08(Obj *o, s32 v) {
+extern "C" void Insect_SetScale(Obj *o, s32 v) {
     if (v == 100) {
         o->unk_210 = 0x1000;
         o->unk_214 = 0x1000;
@@ -10740,10 +10740,10 @@ extern "C" void func_ov003_02226d08(Obj *o, s32 v) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226c88
-extern "C" void func_ov003_02226c88(void *a, Obj *o) {
+extern "C" void Insect_Draw(void *a, Obj *o) {
     s32 *p = &o->unk_210;
     if (*p > 0) {
         void *t = func_0209c0ac(&o->unk_130);
@@ -10753,7 +10753,7 @@ extern "C" void func_ov003_02226c88(void *a, Obj *o) {
         if (r > 31) c = 0;
         else c = 31 - r;
         AnimModel_drawAnimated(&o->unk_50, p);
-        if (func_ov003_02226c14(a, o)) {
+        if (Insect_HasShadow(a, o)) {
             func_020abdd0(&o->unk_204, data_ov003_02234b06[o->unk_24d].a, 0x9000, (u8)c);
         }
     }
@@ -10775,10 +10775,10 @@ extern "C" void func_ov003_02226c88(void *a, Obj *o) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226c14
-extern "C" BOOL func_ov003_02226c14(void *a, Obj *o) {
+extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
     s32 idx = o->unk_24d;
     if (data_ov003_02234b06[idx].a <= 1) return FALSE;
     switch (idx) {
@@ -10813,10 +10813,10 @@ extern "C" BOOL func_ov003_02226c14(void *a, Obj *o) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226a9c
-extern "C" void func_ov003_02226a9c(void *a, Obj *o, s32 flag) {
+extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
     V3 v;
     u8 *pb = (u8 *)&o->unk_50;
     s32 r6 = WorldCurve_ToCurved(&v, &o->unk_204);
@@ -10882,23 +10882,23 @@ extern "C" void func_ov003_02226a9c(void *a, Obj *o, s32 flag) {
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::data_ov003_02234b04[1])
-#define data_ov003_0225a17c (*(Obj (*)[1])&::data_ov003_0225a17c)
-#define data_ov003_02259354 (*(Obj (*)[1])&::data_ov003_02259354)
-#define data_ov003_0225980c (*(Obj (*)[1])&::data_ov003_0225980c)
+#define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
+#define sFieldInsects (*(Obj (*)[1])&::sFieldInsects)
+#define sSpecialInsects (*(Obj (*)[1])&::sSpecialInsects)
+#define sHeldInsects (*(Obj (*)[1])&::sHeldInsects)
 // 0x2226a5c
-BOOL Unk_ov003_02234abc::onDraw() { using namespace s02;
+BOOL InsectManager::onDraw() { using namespace s02;
     Obj *self = (Obj *)this;
-    s32 r = func_ov003_022273b4(self, data_ov003_0225a17c, 8);
-    r &= func_ov003_022273b4(self, data_ov003_02259354, 2);
-    r &= func_ov003_022273b4(self, data_ov003_0225980c, 4);
+    s32 r = InsectPool_Draw(self, sFieldInsects, 8);
+    r &= InsectPool_Draw(self, sSpecialInsects, 2);
+    r &= InsectPool_Draw(self, sHeldInsects, 4);
     return r;
 }
-#undef data_ov003_0225a17c
+#undef sFieldInsects
 
-#undef data_ov003_02259354
+#undef sSpecialInsects
 
-#undef data_ov003_0225980c
+#undef sHeldInsects
 
 #undef func_020547cc
 #undef func_02072824
@@ -10914,21 +10914,21 @@ BOOL Unk_ov003_02234abc::onDraw() { using namespace s02;
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
-#define data_ov003_0225a17c (*(Rec (*)[1])&::data_ov003_0225a17c)
-#define data_ov003_02259354 (*(Rec (*)[1])&::data_ov003_02259354)
-#define data_ov003_0225980c (*(Rec (*)[1])&::data_ov003_0225980c)
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
+#define sFieldInsects (*(Rec (*)[1])&::sFieldInsects)
+#define sSpecialInsects (*(Rec (*)[1])&::sSpecialInsects)
+#define sHeldInsects (*(Rec (*)[1])&::sHeldInsects)
 // 0x22269b8
-BOOL Unk_ov003_02234abc::vfunc_0c() { using namespace s01;
+BOOL InsectManager::vfunc_0c() { using namespace s01;
     Unk_ov003_022269b8_Obj *obj = (Unk_ov003_022269b8_Obj *)this;
-    Rec *pa = data_ov003_0225a17c;
-    Rec *pb = data_ov003_02259354;
-    Rec *pc = data_ov003_0225980c;
+    Rec *pa = sFieldInsects;
+    Rec *pb = sSpecialInsects;
+    Rec *pc = sHeldInsects;
     s32 i, j, k;
     for (i = 0; i < 8; i++) {
         func_ov003_022287c8(obj, pa++, 1);
@@ -10952,11 +10952,11 @@ BOOL Unk_ov003_02234abc::vfunc_0c() { using namespace s01;
     func_02043b90();
     return TRUE;
 }
-#undef data_ov003_0225a17c
+#undef sFieldInsects
 
-#undef data_ov003_02259354
+#undef sSpecialInsects
 
-#undef data_ov003_0225980c
+#undef sHeldInsects
 
 #undef func_020547a4
 #undef func_0205668c
@@ -10975,22 +10975,22 @@ BOOL Unk_ov003_02234abc::vfunc_0c() { using namespace s01;
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x2226874
-extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
+extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
     Rec *e;
     s32 n;
     if (flag == 1) {
-        e = data_ov003_0225a17c;
+        e = sFieldInsects;
         n = 8;
     } else {
-        e = data_ov003_02259354;
+        e = sSpecialInsects;
         n = 2;
     }
     s32 x0 = x - 0x10000;
@@ -11007,7 +11007,7 @@ extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
             s32 r;
             Vec3 *p = &e->unk_204;
             u32 bits = e->unk_258;
-            r = func_ov003_02225bf8(e->unk_24d, h);
+            r = Insect_GetWeatherReaction(e->unk_24d, h);
             if (func_020a62a0() == 0 && r == 4) {
                 r = 3;
             }
@@ -11045,23 +11045,23 @@ extern "C" void func_ov003_02226874(s32 obj, s32 flag, s32 idx, s32 x, s32 z) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x2226768
-extern "C" void func_ov003_02226768(s32 obj, s32 flag) {
+extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
     void *c = gCamera;
     Rec *e;
     s32 n;
     if (flag == 1) {
-        e = data_ov003_0225a17c;
+        e = sFieldInsects;
         n = 8;
     } else {
-        e = data_ov003_02259354;
+        e = sSpecialInsects;
         n = 2;
     }
     if (c) {
@@ -11079,7 +11079,7 @@ extern "C" void func_ov003_02226768(s32 obj, s32 flag) {
         for (i = 0; i < n; e++, i++) {
             if (e->unk_248 != 0 && e->unk_24d >= 0) {
                 Vec3 *p = &e->unk_204;
-                s32 r = func_ov003_02225bf8(e->unk_24d, h);
+                s32 r = Insect_GetWeatherReaction(e->unk_24d, h);
                 if (e->unk_249 == 0 && r == 4) {
                     func_ov003_022287c8((void *)obj, e, flag);
                 } else {
@@ -11116,16 +11116,16 @@ extern "C" void func_ov003_02226768(s32 obj, s32 flag) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x222675c
-extern "C" void func_ov003_0222675c(void) {
-    data_ov003_02258f0c = 1;
+extern "C" void Insect_EnableTrashFlies(void) {
+    sTrashFlySpawnEnabled = 1;
 }
 }
 #undef func_020547a4
@@ -11145,22 +11145,22 @@ extern "C" void func_ov003_0222675c(void) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x22264f0
-extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
-    Rec *e = data_ov003_0225a17c;
+extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
+    Rec *e = sFieldInsects;
     s32 found = -1;
     Buf buf;
     if (kind != 8) {
-        func_ov003_02225b6c(&buf, sub);
+        InsectSpawn_CopyMask(&buf, sub);
     } else {
-        func_ov003_022258cc(&buf);
+        InsectSpawn_BuildLightMask(&buf);
     }
     if (flag == 1) {
         u8 i;
@@ -11172,7 +11172,7 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
                         return FALSE;
                     }
                     if (kind != 8) {
-                        func_ov003_02224e68(&buf, v->x, v->z, 1, 1, 1);
+                        SpawnMask_MarkRect(&buf, v->x, v->z, 1, 1, 1);
                     }
                 }
             } else if (found < 0) {
@@ -11191,29 +11191,29 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
             s32 px, pz;
             for (k = 0; k < 4; k++) {
                 if (PlayerActor_GetSlotPosXZ(&b0, &px, &pz, -1, k) && b0 == 0) {
-                    func_ov003_02224e68(&buf, px, pz, 5, 8, 5);
+                    SpawnMask_MarkRect(&buf, px, pz, 5, 8, 5);
                 }
             }
         } else {
             Vec3 *pp = (Vec3 *)((u8 *)q + 0x5c);
-            func_ov003_02224e68(&buf, pp->x, pp->z, 5, 8, 5);
+            SpawnMask_MarkRect(&buf, pp->x, pp->z, 5, 8, 5);
         }
     }
     Rec *cur;
     if (flag == 1) {
-        cur = data_ov003_0225a17c + found;
+        cur = sFieldInsects + found;
     } else {
         cur = &data_ov003_022595b0;
     }
     if (kind == 0x23 && !CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
         u8 j;
         for (j = 0; j < 2; j++) {
-            u8 *o = func_ov003_0222eb10(j);
+            u8 *o = Snowball_GetLooseBall(j);
             if (o) {
                 Vec3 *pos = (Vec3 *)(o + 0x5c);
                 Vec3 *dst = &cur->unk_204;
                 s32 s24 = Snowball_GetRadius(o);
-                s32 s28 = func_ov003_0222c620(0x20, 1);
+                s32 s28 = Insect_RandomTurn(0x20, 1);
                 if (q) {
                     if (func_020e9650((u8 *)q + 0x5c, pos) > 0xc000) {
                         dst->x = pos->x;
@@ -11235,7 +11235,7 @@ extern "C" BOOL func_ov003_022264f0(s32 obj, s32 kind, u8 sub, s32 flag) {
         }
         goto fail;
     } else {
-        if (!func_ov003_02225910(cur, &buf, kind, sub)) {
+        if (!InsectSpawn_PickPos(cur, &buf, kind, sub)) {
             goto fail;
         }
         cur->unk_248 = 1;
@@ -11272,26 +11272,26 @@ fail:
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x222644c
-extern "C" s32 func_ov003_0222644c(s32 a, s32 b, s8 c, u32 d) {
+extern "C" s32 Insect_TrySpawnRandom(s32 a, s32 b, s8 c, u32 d) {
     Rec *e;
     s32 r;
     u8 i;
     r = 0;
-    e = data_ov003_0225a17c;
+    e = sFieldInsects;
     for (i = 0; i < 8; e++, i++) {
         if (e->unk_248 == 0) {
             if (c == 0x33) {
-                r = func_ov003_022264f0(a, c, (u8)d, b);
-            } else if (func_ov003_022260ac(&c)) {
-                r = func_ov003_022264f0(a, c, func_02060b9c(c), b);
+                r = Insect_Spawn(a, c, (u8)d, b);
+            } else if (Insect_RollKind(&c)) {
+                r = Insect_Spawn(a, c, func_02060b9c(c), b);
             }
             if (r == 0 && c != 0x33) {
                 e->unk_248 = 1;
@@ -11320,15 +11320,15 @@ extern "C" s32 func_ov003_0222644c(s32 a, s32 b, s8 c, u32 d) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x2226428
-extern "C" void func_ov003_02226428(Vec3 *v) {
+extern "C" void Insect_SpawnBeeSwarm(Vec3 *v) {
     u32 d = (u32)&data_ov003_02259558;
     data_ov003_02259594[9] = 1;
     *(Vec3 *)d = *v;
@@ -11352,21 +11352,21 @@ extern "C" void func_ov003_02226428(Vec3 *v) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x22261ec
-extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, s32 flag) {
-    Rec *e = data_ov003_0225980c + idx;
+extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, s32 flag) {
+    Rec *e = sHeldInsects + idx;
     Vec3 *v = &e->unk_204;
     BOOL ret = TRUE;
     e->unk_180 = *q;
     s32 *b = (s32 *)&e->unk_180;
-    func_ov003_02226d08(e, *p);
+    Insect_SetScale(e, *p);
     v->x = b[9];
     v->y = b[10];
     v->z = b[11];
@@ -11445,21 +11445,21 @@ extern "C" BOOL func_ov003_022261ec(s32 idx, s16 *p, Unk_ov003_02226180_Blk *q, 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x2226180
-extern "C" BOOL func_ov003_02226180(s32 x) {
+extern "C" BOOL Insect_NetClaim(s32 x) {
     u8 idx = x & 0xf;
     Rec *r = (Rec *)x;
     if ((x >> 4) & 1) {
-        r = data_ov003_0225a17c + idx;
+        r = sFieldInsects + idx;
     } else if ((x >> 5) & 1) {
-        r = data_ov003_02259354 + idx;
+        r = sSpecialInsects + idx;
     }
     u32 t = r->unk_251;
     if (t != 0xa && t != 0xb && t != 9 && t != 0x10 && r->unk_250 == 3) {
@@ -11486,18 +11486,18 @@ extern "C" BOOL func_ov003_02226180(s32 x) {
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
 #define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_ov003_022287c8 _ZN18Unk_ov003_02234abc13func_022287c8EP22Unk_ov003_02228710_Acti
-#define func_ov003_022288dc _ZN18Unk_ov003_02234abc13func_022288dcEP22Unk_ov003_02228710_Act
-#define data_ov003_02259484 ((u8 *)&::data_ov003_02259354[0].unk_130)
-#define data_ov003_02259558 (*(Vec3 *)&::data_ov003_02259354[0].unk_204)
-#define data_ov003_02259594 ((u8 *)&::data_ov003_02259354[0].unk_240)
-#define data_ov003_022595b0 (*(Rec *)&::data_ov003_02259354[1])
+#define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
+#define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
+#define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
+#define data_ov003_02259558 (*(Vec3 *)&::sSpecialInsects[0].unk_204)
+#define data_ov003_02259594 ((u8 *)&::sSpecialInsects[0].unk_240)
+#define data_ov003_022595b0 (*(Rec *)&::sSpecialInsects[1])
 namespace s01 {
 // 0x222612c
-extern "C" BOOL func_ov003_0222612c(void) {
+extern "C" BOOL Insect_IsBeeSwarmOut(void) {
     Unk_020cbb18_Ptr *p = gCommManager;
     if (CommManager_isSlotActive(p, p->unk_64) == 0) {
-        Rec *e = data_ov003_02259354;
+        Rec *e = sSpecialInsects;
         if (func_02106020(func_0209c0ac(data_ov003_02259484), 0) > 0x1e && e->unk_250 == 3 && e->unk_24d != 0x13) {
             return TRUE;
         }
@@ -11521,16 +11521,16 @@ extern "C" BOOL func_ov003_0222612c(void) {
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x22260e8
-extern "C" BOOL func_ov003_022260e8(void *p)
+extern "C" BOOL Insect_IsAtWateringPoint(void *p)
 {
     s32 c, d;
     s32 a, b;
-    if (data_ov003_02258f00 != 0) {
+    if (sWateringActive != 0) {
         FieldPos_ToUnit(&a, &b, p);
-        FieldPos_ToUnit(&c, &d, data_ov003_02258f18);
+        FieldPos_ToUnit(&c, &d, sWateringPos);
         if (c == a && d == b) {
             return TRUE;
         }
@@ -11548,10 +11548,10 @@ extern "C" BOOL func_ov003_022260e8(void *p)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x22260ac
-extern "C" BOOL func_ov003_022260ac(u8 *out)
+extern "C" BOOL Insect_RollKind(u8 *out)
 {
     Unk_ov003_02226058_Buf l;
     u8 v;
@@ -11560,7 +11560,7 @@ extern "C" BOOL func_ov003_022260ac(u8 *out)
     if (v > 11) {
         v = 0;
     }
-    if (func_ov003_02225d38(v, func_ov003_02226058(), out)) {
+    if (Insect_RollFromSpawnTable(v, Insect_GetTimeSlot(), out)) {
         return TRUE;
     }
     return FALSE;
@@ -11576,10 +11576,10 @@ extern "C" BOOL func_ov003_022260ac(u8 *out)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2226058
-extern "C" s32 func_ov003_02226058()
+extern "C" s32 Insect_GetTimeSlot()
 {
     Unk_ov003_02226058_Buf l;
     u32 b;
@@ -11613,10 +11613,10 @@ extern "C" s32 func_ov003_02226058()
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x222603c
-extern "C" void func_ov003_0222603c(u8 *self)
+extern "C" void Insect_TickFrame(u8 *self)
 {
     self += 0x24f;
     (*self)++;
@@ -11635,9 +11635,9 @@ extern "C" void func_ov003_0222603c(u8 *self)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225f2c
-Unk_ov003_02225ed0::Unk_ov003_02225ed0()
+Insect::Insect()
 { using namespace s00;
     unk_130.func_0209c0c8();
     unk_251 = 0x13;
@@ -11667,9 +11667,9 @@ Unk_ov003_02225ed0::Unk_ov003_02225ed0()
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ed0
-Unk_ov003_02225ed0::~Unk_ov003_02225ed0() { using namespace s00;}
+Insect::~Insect() { using namespace s00;}
 #undef func_02072e88
 #undef func_020b2ae0
 #undef func_020b2b98
@@ -11680,10 +11680,10 @@ Unk_ov003_02225ed0::~Unk_ov003_02225ed0() { using namespace s00;}
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225ec8
-extern "C" void func_ov003_02225ec8(u8 *self, u32 v)
+extern "C" void Insect_SetAnimSpeed(u8 *self, u32 v)
 {
     *(u32 *)(self + 0xfc) = v;
 }
@@ -11698,10 +11698,10 @@ extern "C" void func_ov003_02225ec8(u8 *self, u32 v)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225e34
-extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
+extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c)
 {
     s32 r = func_020b8fe8();
     u8 buf[16];
@@ -11712,7 +11712,7 @@ extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
                 *b = 8;
                 return TRUE;
             }
-            if (data_ov003_02258f0c > 0) {
+            if (sTrashFlySpawnEnabled > 0) {
                 if (func_02063b8c(100) < 20) {
                     *a = 0x33;
                     *b = 7;
@@ -11723,7 +11723,7 @@ extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
     } else {
         if (r != 1) {
             u8 *const g = data_ov003_022595b0;
-            if (data_ov003_02258ef8 != 0) {
+            if (sAntSpawnEnabled != 0) {
                 if (g[0x250] == 3 && g[0x251] == 0x13) {
                     *a = 0x3b;
                     *b = 7;
@@ -11745,10 +11745,10 @@ extern "C" BOOL func_ov003_02225e34(u8 *a, u8 *b, s32 c)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225dbc
-extern "C" BOOL func_ov003_02225dbc(s32 a)
+extern "C" BOOL Insect_IsAllowedOnline(s32 a)
 {
     Unk_ov003_02225dbc_Data *p = gCommManager;
     if (!CommManager_isSlotActive(p, p->unk_64)) {
@@ -11782,10 +11782,10 @@ extern "C" BOOL func_ov003_02225dbc(s32 a)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225d38
-extern "C" BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out)
+extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out)
 {
     u8 r;
     Unk_ov003_02225d38_Ent *t;
@@ -11807,7 +11807,7 @@ extern "C" BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out)
         u8 first = pp[i].unk_00;
         u8 second = pp[i].unk_01;
         if (second > r) {
-            if (first != 0x30 && func_ov003_02225dbc(first) && func_ov003_02225bf8((s8)first, v) != 4) {
+            if (first != 0x30 && Insect_IsAllowedOnline(first) && Insect_GetWeatherReaction((s8)first, v) != 4) {
                 *out = first;
                 return TRUE;
             }
@@ -11827,17 +11827,17 @@ extern "C" BOOL func_ov003_02225d38(u32 a, u32 b, u8 *out)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225cb0
-extern "C" void func_ov003_02225cb0()
+extern "C" void FieldInsect_PurgeStale()
 {
     Unk_ov003_02225cb0_Ent *e;
     s32 i;
-    data_ov003_02258f14++;
-    if (data_ov003_02258f14 > 0x78) {
-        e = data_ov003_0225a17c;
-        data_ov003_02258f14 = 0;
+    sFieldInsectPurgeTimer++;
+    if (sFieldInsectPurgeTimer > 0x78) {
+        e = sFieldInsects;
+        sFieldInsectPurgeTimer = 0;
         for (i = 0; i < 8; e++, i++) {
             if (e->unk_24d == -10) {
                 e->unk_24d = -1;
@@ -11860,10 +11860,10 @@ extern "C" void func_ov003_02225cb0()
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225bf8
-extern "C" s32 func_ov003_02225bf8(s32 a, s32 b)
+extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b)
 {
     switch (a) {
     case 16:
@@ -11918,9 +11918,9 @@ extern "C" s32 func_ov003_02225bf8(s32 a, s32 b)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225be0
-Unk_ov003_02234aac::Unk_ov003_02234aac() { using namespace s00;}
+InsectMatAnim::InsectMatAnim() { using namespace s00;}
 #undef func_02072e88
 #undef func_020b2ae0
 #undef func_020b2b98
@@ -11931,9 +11931,9 @@ Unk_ov003_02234aac::Unk_ov003_02234aac() { using namespace s00;}
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ba8
-Unk_ov003_02234aac::~Unk_ov003_02234aac() { using namespace s00;}
+InsectMatAnim::~InsectMatAnim() { using namespace s00;}
 #undef func_02072e88
 #undef func_020b2ae0
 #undef func_020b2b98
@@ -11944,19 +11944,19 @@ Unk_ov003_02234aac::~Unk_ov003_02234aac() { using namespace s00;}
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225b6c
-extern "C" s32 func_ov003_02225b6c(void *p, s32 t)
+extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t)
 {
     switch (t) {
     case 0:
     case 5:
     case 6:
-        MI_CpuCopy8(data_ov003_02259154, p, 0x200);
+        MI_CpuCopy8(sInsectSpawnMaskLand, p, 0x200);
         break;
     default:
-        MI_CpuCopy8(data_ov003_02258f54, p, 0x200);
+        MI_CpuCopy8(sInsectSpawnMaskDry, p, 0x200);
         break;
     }
 }
@@ -11971,10 +11971,10 @@ extern "C" s32 func_ov003_02225b6c(void *p, s32 t)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225910
-extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
+extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
 {
     u32 mask = 0;
     s32 x = 0;
@@ -12007,7 +12007,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
         x = n >> 2;
         y = n & 3;
         data_ov003_02258f08++;
-        if (func_ov003_02225238(a, code, &x, &y, obj, (u8)flag)) {
+        if (InsectSpawn_FindUnitInBlock(a, code, &x, &y, obj, (u8)flag)) {
             b = func_02095204(4);
             data_ov003_02258f04 = 1;
             if (b) {
@@ -12032,7 +12032,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
             if (data_ov003_02258f04 != 0) {
                 data_ov003_02258f04 = 0;
             } else {
-                data_ov003_02258ef8 = 0;
+                sAntSpawnEnabled = 0;
             }
         }
     } else if (code == 0x33) {
@@ -12053,7 +12053,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
             }
             x = n >> 2;
             y = n & 3;
-            if (func_ov003_02225238(a, code, &x, &y, obj, (u8)flag)) {
+            if (InsectSpawn_FindUnitInBlock(a, code, &x, &y, obj, (u8)flag)) {
                 void *b = func_02095204(4);
                 if (b) {
                     s32 v[3];
@@ -12071,7 +12071,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
             }
         }
         if (!found) {
-            data_ov003_02258f0c = 0;
+            sTrashFlySpawnEnabled = 0;
         }
     } else {
         s32 i;
@@ -12089,7 +12089,7 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
             }
             x = n >> 2;
             y = n & 3;
-            if (func_ov003_02225238(a, code, &x, &y, obj, (u8)flag)) {
+            if (InsectSpawn_FindUnitInBlock(a, code, &x, &y, obj, (u8)flag)) {
                 q = (s32 *)(self + 0x204);
                     q[0] = x;
                 q[2] = y;
@@ -12110,10 +12110,10 @@ extern "C" s32 func_ov003_02225910(u8 *self, void *a, s32 code, u32 flag)
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x22258cc
-extern "C" void func_ov003_022258cc(u16 (*arr)[4][16])
+extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16])
 {
     s32 i, j, k;
     for (i = 0; i < 4; i++) {
@@ -12123,7 +12123,7 @@ extern "C" void func_ov003_022258cc(u16 (*arr)[4][16])
             }
         }
     }
-    func_ov003_02225800(arr);
+    InsectSpawn_ClearLitUnits(arr);
 }
 }
 #undef func_02072e88
@@ -12136,10 +12136,10 @@ extern "C" void func_ov003_022258cc(u16 (*arr)[4][16])
 #define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
 #define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
 #define func_02133150 _s32_div_f
-#define data_ov003_022595b0 ((u8 *)&::data_ov003_02259354[1])
+#define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
 // 0x2225800
-extern "C" void func_ov003_02225800(u16 (*arr)[4][16])
+extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16])
 {
     u32 i;
     for (i = 0; i < 0x22; i++) {

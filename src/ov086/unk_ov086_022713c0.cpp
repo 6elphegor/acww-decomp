@@ -30,9 +30,9 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov086_02271d4c;
-class Unk_ov086_02271cbc;
-struct Unk_ov086_022716b0_Out;
+class SpNpcTortimerCountdown;
+class SpNpcTortimerCountdownTalk;
+struct TalkStartMsg;
 
 struct Unk_ov086_Vec {
     s32 x, y, z;
@@ -114,7 +114,7 @@ public:
     virtual void vfunc_6c();
     virtual void vfunc_70();
     virtual void vfunc_74();
-    virtual void vfunc_78(Unk_ov086_022716b0_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
     virtual void vfunc_7c();
     virtual void vfunc_80();
     virtual void vfunc_88();
@@ -160,22 +160,22 @@ public:
     SpNpcTalkRequest();
     virtual ~SpNpcTalkRequest();
 };
-struct Unk_ov086_022716b0_Out {
+struct TalkStartMsg {
     u32 a;
     u8 b;
 };
 
-class Unk_ov086_02271cbc : public SpNpcTalkRequest {
+class SpNpcTortimerCountdownTalk : public SpNpcTalkRequest {
 public:
-    Unk_ov086_02271cbc();
-    virtual ~Unk_ov086_02271cbc();
+    SpNpcTortimerCountdownTalk();
+    virtual ~SpNpcTortimerCountdownTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
-    virtual void vfunc_78(Unk_ov086_022716b0_Out *out);
+    virtual void vfunc_78(TalkStartMsg *out);
 
-    void func_ov086_0227182c(Unk_ov086_02271d4c *owner);
+    void attachOwner(SpNpcTortimerCountdown *owner);
 
-    Unk_ov086_02271d4c *unk_ac;
+    SpNpcTortimerCountdown *unk_ac;
     s32 unk_b0;
 };
 
@@ -348,9 +348,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov086_02271d4c : public Unk_020d8bc8 {
+class SpNpcTortimerCountdown : public Unk_020d8bc8 {
 public:
-    Unk_ov086_02271d4c() {}
+    SpNpcTortimerCountdown() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -359,21 +359,21 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov086_022718a0();
-    BOOL func_ov086_022718a4();
-    BOOL func_ov086_022718d0();
-    BOOL func_ov086_02271908();
-    BOOL func_ov086_0227190c();
-    void func_ov086_02271940(s32 state);
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     u8 unk_651;
     s32 unk_654;
-    Unk_ov086_02271cbc unk_658;
+    SpNpcTortimerCountdownTalk unk_658;
 };
 
 struct Unk_ov086_02271940_Ent {
-    BOOL (Unk_ov086_02271d4c::*enter)();
-    BOOL (Unk_ov086_02271d4c::*exit)();
+    BOOL (SpNpcTortimerCountdown::*enter)();
+    BOOL (SpNpcTortimerCountdown::*exit)();
 };
 
 struct Unk_ov086_022714e4_Ent {
@@ -401,44 +401,44 @@ void *func_020991e4();
 s32 func_020991fc();
 extern u32 data_ov086_02271c20;
 extern u32 data_ov086_02271c24;
-extern const Unk_ov086_022714e4_Ent data_ov086_02271b90[4];
-extern Unk_ov086_02271940_Ent data_ov086_02271e40[3];
+extern const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4];
+extern Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3];
 }
 
-extern "C" char data_ov086_02271c50[];
-extern "C" char data_ov086_02271c5c[];
+extern "C" char sSpNpcTortimerCountdownFortuneStrKey[];
+extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[];
 struct Unk_ov086_SceneEntry {
-    Unk_ov086_02271d4c *(*factory)();
+    SpNpcTortimerCountdown *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
-extern "C" Unk_ov086_02271d4c *func_ov086_02271a78();
+extern "C" SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create();
 extern "C" u32 data_ov086_02271c24 = 0x1d;
 extern "C" u32 data_ov086_02271c20 = 0xe;
-extern "C" char data_ov086_02271c50[] = "st_fortune";
-extern "C" const Unk_ov086_022714e4_Ent data_ov086_02271b90[4] = {
-    {data_ov086_02271c50, 0}, {data_ov086_02271c5c, 1}, {data_ov086_02271c5c, 2}, {data_ov086_02271c5c, 3},
+extern "C" char sSpNpcTortimerCountdownFortuneStrKey[] = "st_fortune";
+extern "C" const Unk_ov086_022714e4_Ent sSpNpcTortimerCountdownFortuneLines[4] = {
+    {sSpNpcTortimerCountdownFortuneStrKey, 0}, {sSpNpcTortimerCountdownFortuneStr2Key, 1}, {sSpNpcTortimerCountdownFortuneStr2Key, 2}, {sSpNpcTortimerCountdownFortuneStr2Key, 3},
 };
-extern "C" void _ZN18Unk_ov086_02271d4c19func_ov086_0227190cEv();
-extern "C" void _ZN18Unk_ov086_02271d4c19func_ov086_022718a0Ev();
-extern "C" void _ZN18Unk_ov086_02271d4c19func_ov086_022718a4Ev();
-extern "C" void _ZN18Unk_ov086_02271d4c19func_ov086_02271908Ev();
-extern "C" void _ZN18Unk_ov086_02271d4c19func_ov086_022718d0Ev();
-extern "C" void *data_ov086_02271c38[2] = {(void *)_ZN18Unk_ov086_02271d4c19func_ov086_022718a4Ev, 0};
-extern "C" void *data_ov086_02271c48[2] = {(void *)_ZN18Unk_ov086_02271d4c19func_ov086_022718d0Ev, 0};
-extern "C" void *data_ov086_02271c30[2] = {(void *)_ZN18Unk_ov086_02271d4c19func_ov086_022718a0Ev, 0};
-extern "C" void *data_ov086_02271c28[2] = {(void *)_ZN18Unk_ov086_02271d4c19func_ov086_0227190cEv, 0};
-extern "C" void *data_ov086_02271c40[2] = {(void *)_ZN18Unk_ov086_02271d4c19func_ov086_02271908Ev, 0};
-typedef BOOL (Unk_ov086_02271d4c::*Unk_ov086_Fn)();
-Unk_ov086_02271940_Ent data_ov086_02271e40[3] = {
+extern "C" void _ZN22SpNpcTortimerCountdown10setupAct00Ev();
+extern "C" void _ZN22SpNpcTortimerCountdown9mainAct02Ev();
+extern "C" void _ZN22SpNpcTortimerCountdown9mainAct01Ev();
+extern "C" void _ZN22SpNpcTortimerCountdown9mainAct00Ev();
+extern "C" void _ZN22SpNpcTortimerCountdown10setupAct01Ev();
+extern "C" void *data_ov086_02271c38[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct01Ev, 0};
+extern "C" void *data_ov086_02271c48[2] = {(void *)_ZN22SpNpcTortimerCountdown10setupAct01Ev, 0};
+extern "C" void *data_ov086_02271c30[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct02Ev, 0};
+extern "C" void *data_ov086_02271c28[2] = {(void *)_ZN22SpNpcTortimerCountdown10setupAct00Ev, 0};
+extern "C" void *data_ov086_02271c40[2] = {(void *)_ZN22SpNpcTortimerCountdown9mainAct00Ev, 0};
+typedef BOOL (SpNpcTortimerCountdown::*Unk_ov086_Fn)();
+Unk_ov086_02271940_Ent sSpNpcTortimerCountdownActTable[3] = {
     {*(Unk_ov086_Fn *)data_ov086_02271c28, *(Unk_ov086_Fn *)data_ov086_02271c40},
     {*(Unk_ov086_Fn *)data_ov086_02271c48, *(Unk_ov086_Fn *)data_ov086_02271c38},
     {NULL, *(Unk_ov086_Fn *)data_ov086_02271c30},
 };
-extern "C" char data_ov086_02271c5c[] = "st_fortune2";
-extern "C" u8 data_ov086_02271c68[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
-extern "C" Unk_ov086_SceneEntry data_ov086_02271c80 = {func_ov086_02271a78, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
-extern "C" u8 data_ov086_02271c98[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
+extern "C" char sSpNpcTortimerCountdownFortuneStr2Key[] = "st_fortune2";
+extern "C" u8 sSpNpcTortimerCountdownModelPath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','.','n','s','b','m','d',0};
+extern "C" Unk_ov086_SceneEntry sSpNpcTortimerCountdownProfile = {SpNpcTortimerCountdown_Create, 0x5c, 0x63, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" u8 sSpNpcTortimerCountdownTexturePath[] = {'n','p','c','_','s','p','/','m','o','d','e','l','/','t','t','l','_','t','e','x','.','n','s','b','t','x',0};
 
 struct Unk_ov086_022716b0_A {
     u8 b0, b1;
@@ -449,60 +449,60 @@ struct Unk_ov086_022716b0_B {
     u32 w;
 };
 
-extern "C" Unk_ov086_02271d4c *func_ov086_02271a78() {
-    return new Unk_ov086_02271d4c();
+extern "C" SpNpcTortimerCountdown *SpNpcTortimerCountdown_Create() {
+    return new SpNpcTortimerCountdown();
 }
 
-BOOL Unk_ov086_02271d4c::vfunc_04() {
+BOOL SpNpcTortimerCountdown::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov086_0227182c(this);
+    unk_658.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov086_02271d4c::vfunc_00() {
+BOOL SpNpcTortimerCountdown::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov086_02271940(0);
+    changeAct(0);
     _ZN12Unk_0201635013func_0201610cEP16Unk_02015fe0_Objiiiiti(&unk_334, this, 0x140, 0, 0, 0x1000, 0, 1);
     ThreeLayerAnimModel_AssignJointsToLayer2(&unk_ec, 0xc, 0xe);
     unk_4cc.unk_1c |= 2;
     return TRUE;
 }
 
-u8 *Unk_ov086_02271d4c::getTexturePath() { return data_ov086_02271c98; }
+u8 *SpNpcTortimerCountdown::getTexturePath() { return sSpNpcTortimerCountdownTexturePath; }
 
-u8 *Unk_ov086_02271d4c::getModelPath() { return data_ov086_02271c68; }
+u8 *SpNpcTortimerCountdown::getModelPath() { return sSpNpcTortimerCountdownModelPath; }
 
-BOOL Unk_ov086_02271d4c::updateAct() {
+BOOL SpNpcTortimerCountdown::updateAct() {
     BOOL result = FALSE;
-    if (data_ov086_02271e40[unk_654].exit != NULL) {
-        result = (this->*data_ov086_02271e40[unk_654].exit)();
+    if (sSpNpcTortimerCountdownActTable[unk_654].exit != NULL) {
+        result = (this->*sSpNpcTortimerCountdownActTable[unk_654].exit)();
     }
     return result;
 }
 
-void Unk_ov086_02271d4c::func_ov086_02271940(s32 state) {
+void SpNpcTortimerCountdown::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov086_02271e40[state].enter != NULL) {
-        ok = (this->*data_ov086_02271e40[state].enter)();
+    if (sSpNpcTortimerCountdownActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcTortimerCountdownActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov086_02271d4c::func_ov086_0227190c() {
+BOOL SpNpcTortimerCountdown::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov086_02271d4c::func_ov086_02271908() { return TRUE; }
+BOOL SpNpcTortimerCountdown::mainAct00() { return TRUE; }
 
-BOOL Unk_ov086_02271d4c::func_ov086_022718d0() {
+BOOL SpNpcTortimerCountdown::setupAct01() {
     void *p = unk_658.func_02015aac();
     s32 x = 0;
     if (p != NULL) {
@@ -512,27 +512,27 @@ BOOL Unk_ov086_02271d4c::func_ov086_022718d0() {
     return TRUE;
 }
 
-BOOL Unk_ov086_02271d4c::func_ov086_022718a4() {
+BOOL SpNpcTortimerCountdown::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov086_02271940(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov086_02271d4c::func_ov086_022718a0() { return TRUE; }
+BOOL SpNpcTortimerCountdown::mainAct02() { return TRUE; }
 
-Unk_ov086_02271cbc::Unk_ov086_02271cbc() {}
+SpNpcTortimerCountdownTalk::SpNpcTortimerCountdownTalk() {}
 
-Unk_ov086_02271cbc::~Unk_ov086_02271cbc() {}
+SpNpcTortimerCountdownTalk::~SpNpcTortimerCountdownTalk() {}
 
-void Unk_ov086_02271cbc::func_ov086_0227182c(Unk_ov086_02271d4c *owner) {
+void SpNpcTortimerCountdownTalk::attachOwner(SpNpcTortimerCountdown *owner) {
     vfunc_08();
     unk_ac = owner;
     unk_b0 = -1;
 }
 
-void Unk_ov086_02271cbc::vfunc_78(Unk_ov086_022716b0_Out *out) {
+void SpNpcTortimerCountdownTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
     Unk_ov086_022716b0_A a;
     Unk_ov086_022716b0_B t;
@@ -599,7 +599,7 @@ void Unk_ov086_02271cbc::vfunc_78(Unk_ov086_022716b0_Out *out) {
     }
 }
 
-void Unk_ov086_02271cbc::vfunc_14() {
+void SpNpcTortimerCountdownTalk::vfunc_14() {
     struct {
         u8 bb[6];
         u16 h1, h2, h3, h4, h5, h6;
@@ -639,8 +639,8 @@ void Unk_ov086_02271cbc::vfunc_14() {
                     base = v << 2;
                     do {
                         l.bb[0] = v;
-                        e = &data_ov086_02271b90[i];
-                        String_Load(&obj, &l.bb[0], (s32)data_ov086_02271b90[i].a);
+                        e = &sSpNpcTortimerCountdownFortuneLines[i];
+                        String_Load(&obj, &l.bb[0], (s32)sSpNpcTortimerCountdownFortuneLines[i].a);
                         MailText_SetSlot((void *)e->b, &obj);
                         v = base + func_02063b8c(4);
                         v = v + (i << 4);
@@ -676,7 +676,7 @@ void Unk_ov086_02271cbc::vfunc_14() {
     }
 }
 
-void Unk_ov086_02271cbc::vfunc_18() {
+void SpNpcTortimerCountdownTalk::vfunc_18() {
     u8 b;
     u16 h;
     u8 *s;
@@ -699,7 +699,7 @@ void Unk_ov086_02271cbc::vfunc_18() {
     }
 }
 
-BOOL Unk_ov086_02271d4c::vfunc_48() {
+BOOL SpNpcTortimerCountdown::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -707,15 +707,15 @@ BOOL Unk_ov086_02271d4c::vfunc_48() {
     return r;
 }
 
-void Unk_ov086_02271d4c::vfunc_4c(s32 v) {
+void SpNpcTortimerCountdown::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov086_02271940(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov086_02271940(0);
+        changeAct(0);
         break;
     }
 }

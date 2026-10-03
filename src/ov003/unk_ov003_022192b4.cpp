@@ -458,7 +458,7 @@ void *PlayerData_GetCurrent(void);
 void func_0209801c(void *p, s32 a);
 void Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
-void func_ov003_02226428(void *p);
+void Insect_SpawnBeeSwarm(void *p);
 s32 FieldItemFx_StartPop(u32 a, u32 b, void *p);
 void func_02043b9c(void);
 void FieldItemFx_SplashPosCallback(void *p);
@@ -1736,12 +1736,12 @@ extern "C" {
 extern void *sFieldObjectModelHeap;
 extern void *sFieldObjectAnimHeap;
 extern void *gFieldObjectManager;
-extern void *data_ov003_02234770;
-extern void *data_ov003_02234774;
-extern void *data_ov003_0223477c;
+extern void *sFishFinModelPath;
+extern void *sFishFinAnimPath;
+extern void *sFishFinTexAnimPath;
 extern void *gCurrentHeap;
 extern void *gSceneBlockMap;
-extern u8 data_ov003_0225812c[];
+extern u8 sFishShadows[];
 extern u32 data_ov003_0222f810[][3];
 extern void **data_ov003_022328a4[];
 extern void **data_ov003_022328bc[];
@@ -1802,7 +1802,7 @@ BOOL FieldObj_LoadStoneModels(FieldObjectManager *self);
 BOOL FieldObj_LoadPaletteFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n);
 BOOL FieldObj_LoadTextureFiles(void *self, u32 *a, u32 *b, u32 *names, s32 n);
 u8 *FieldObj_GetShapeRecord(u8 *p);
-u8 *func_ov003_02220004(s32 i);
+u8 *FishShadow_GetActive(s32 i);
 }
 // ---- prototypes of this file's functions
 extern "C" { void *FieldObjectManager_Create(); }
@@ -7100,7 +7100,7 @@ extern "C" void FieldItemFx_UpdateBeeHiveDrop(Unk_ov003_0221a4a0 *self)
     case 2:
         self->unk_50 = self->unk_50 - 1;
         if (self->unk_50 < 0) {
-            func_ov003_02226428(&self->unk_18);
+            Insect_SpawnBeeSwarm(&self->unk_18);
             self->unk_50 = 30;
             self->unk_4c = 3;
         }

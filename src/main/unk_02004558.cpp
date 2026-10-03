@@ -2070,12 +2070,12 @@ s32 _ZN12Unk_020102ec9startAnimEijt(Unk_02008040 *, u32, u32, u32);
 s32 _ZN11PlayerActor11requestWaitEjjj(Unk_02008040 *, u32, u32, s32);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Unk_02008040 *, s32);
 void _ZN12Unk_02006d1413func_0200e7f4Ev(Unk_02008040 *);
-void func_ov003_02226fac(u32);
-void func_ov003_02227248(u32, u32);
+void Insect_FinishCatch(u32);
+void HeldInsect_Start(u32, u32);
 void PlayerActor_ApplyHoldOffset(void *, void *);
-void func_ov003_022261ec(u32, void *, void *, u32);
-void func_ov003_02223450(void *, s32);
-void func_ov003_02223400(void *, void *, void *);
+void HeldInsect_SetHandMatrix(u32, void *, void *, u32);
+void Fish_GetDisplayScale(void *, s32);
+void FishCatch_SetDisplayPosScale(void *, void *, void *);
 void PlayerActor_RequestFishShowCatch(Unk_02008040 *, u32, u32, s32);
 void PlayerActor_RequestInsectShowCatch(Unk_02008040 *, u32, u32, u32, u32, s32);
 void PlayerActor_RequestStowItem(Unk_02008040 *, u32, u32, u32, u32, u32, u32, s32);
@@ -3257,7 +3257,7 @@ s32 PlayerActor_Decelerate(s32 a, s32 b);
 void func_02010d98(void *p, s32 a);
 void func_02010d74(void *p, s32 a);
 void func_02010e48(void *p, s32 a);
-void func_ov003_022247b8(void *t, s32 a, s32 b, s32 c);
+void FishShadow_RunAi(void *t, s32 a, s32 b, s32 c);
 void PlayerActor_RequestDoorExit(void *t, s32 a, s32 b);
 void PlayerActor_RequestFaint(void *t, s32 a, s32 b, s32 c);
 void PlayerActor_RequestAct3C(void *t, s32 a, s32 b);
@@ -4797,17 +4797,17 @@ void func_ov004_02222eac();
 void func_ov004_02222c54();
 void func_ov004_02222928();
 void func_ov004_02222724();
-void func_ov003_022225b4();
+void FishCatch_StateStart();
 void func_ov004_02222444();
 void func_ov004_02222328();
-void func_ov003_022221a0();
+void FishCatch_Reset();
 void func_ov004_02221ed8();
 void func_ov004_02221c90();
 void func_ov004_02221a48();
 void func_ov004_02221800();
 void func_ov004_022215e0();
 void func_ov004_02221514();
-void func_ov003_02221448();
+void FishShadow_EnterSpawn();
 void func_ov004_02221250();
 void func_ov004_02221058();
 void func_ov004_02220dd8();
@@ -5303,17 +5303,17 @@ PM_02005294 data_020d617c = {{(PMF)nPM::func_ov004_02222eac, 0}};
 PM_02005294 data_020d6174 = {{(PMF)nPM::func_ov004_02222c54, 0}};
 PM_02005294 data_020d616c = {{(PMF)nPM::func_ov004_02222928, 0}};
 PM_02005294 data_020d6164 = {{(PMF)nPM::func_ov004_02222724, 0}};
-PM_02005294 data_020d615c = {{(PMF)nPM::func_ov003_022225b4, 0}};
+PM_02005294 data_020d615c = {{(PMF)nPM::FishCatch_StateStart, 0}};
 PM_02005294 data_020d6154 = {{(PMF)nPM::func_ov004_02222444, 0}};
 PM_02005294 data_020d614c = {{(PMF)nPM::func_ov004_02222328, 0}};
-PM_02005294 data_020d6144 = {{(PMF)nPM::func_ov003_022221a0, 0}};
+PM_02005294 data_020d6144 = {{(PMF)nPM::FishCatch_Reset, 0}};
 PM_02005294 data_020d613c = {{(PMF)nPM::func_ov004_02221ed8, 0}};
 PM_02005294 data_020d6134 = {{(PMF)nPM::func_ov004_02221c90, 0}};
 PM_02005294 data_020d612c = {{(PMF)nPM::func_ov004_02221a48, 0}};
 PM_02005294 data_020d64bc = {{(PMF)nPM::func_ov004_02221800, 0}};
 PM_02005294 data_020d64ac = {{(PMF)nPM::func_ov004_022215e0, 0}};
 PM_02005294 data_020d6114 = {{(PMF)nPM::func_ov004_02221514, 0}};
-PM_02005294 data_020d5e5c = {{(PMF)nPM::func_ov003_02221448, 0}};
+PM_02005294 data_020d5e5c = {{(PMF)nPM::FishShadow_EnterSpawn, 0}};
 PM_02005294 data_020d6104 = {{(PMF)nPM::func_ov004_02221250, 0}};
 PM_02005294 data_020d60fc = {{(PMF)nPM::func_ov004_02221058, 0}};
 PM_02005294 data_020d60f4 = {{(PMF)nPM::func_ov004_02220dd8, 0}};
@@ -7749,12 +7749,12 @@ void PlayerActor::startFirstAction(s32 *p) {
         break;
     case 8:
         if (func_020b52d0()) {
-            func_ov003_022247b8(((nM::PlayerActor *)this), 0, 6, -1);
+            FishShadow_RunAi(((nM::PlayerActor *)this), 0, 6, -1);
         } else {
             if (!_ZN12Unk_02006d1414testActionFlagEj(this, 0x1b)) {
                 f = 1;
             }
-            func_ov003_022247b8(((nM::PlayerActor *)this), 1, 6, -1);
+            FishShadow_RunAi(((nM::PlayerActor *)this), 1, 6, -1);
         }
         break;
     case 0x3b:

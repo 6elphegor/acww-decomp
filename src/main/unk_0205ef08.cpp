@@ -83,7 +83,7 @@ void VEC_Subtract(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b, Unk_0205f1e8_Vec *ou
 s32 func_020e9650(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
 void func_020e9768(Unk_0205f1e8_Vec *v, s32 n);
 void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
-void func_ov003_02222f1c();
+void FieldFish_StartCastSplash();
 void *func_0205fd94(u8 *tbl, u32 idx);
 void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);

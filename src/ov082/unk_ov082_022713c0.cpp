@@ -28,8 +28,8 @@ public:
 };
 
 struct Unk_0201bc1c;
-class Unk_ov082_022721dc;
-class Unk_ov082_0227214c;
+class SpNpcTortimerBugOff;
+class SpNpcTortimerBugOffTalk;
 
 struct ChoiceList {
     s32 getResult();
@@ -196,26 +196,26 @@ public:
     virtual ~SpNpcTalkRequest();
 };
 
-class Unk_ov082_0227214c : public SpNpcTalkRequest {
+class SpNpcTortimerBugOffTalk : public SpNpcTalkRequest {
 public:
-    typedef void (Unk_ov082_0227214c::*Fn)();
+    typedef void (SpNpcTortimerBugOffTalk::*Fn)();
 
-    Unk_ov082_0227214c();
-    virtual ~Unk_ov082_0227214c();
+    SpNpcTortimerBugOffTalk();
+    virtual ~SpNpcTortimerBugOffTalk();
     virtual void vfunc_14();
     virtual void vfunc_18();
     virtual void vfunc_78(Unk_ov082_022718b0_Rec *out);
     virtual void vfunc_84();
 
-    s32 func_ov082_022717ac();
-    void func_ov082_022719d8(Unk_ov082_022721dc *owner);
-    void func_ov082_02271a60();
-    void func_ov082_02271a68();
-    void func_ov082_02271b50(s32 i);
-    void func_ov082_02271b60(s32 i);
-    void func_ov082_02271b70(Fn *slot, s32 i);
+    s32 getRecordHolder();
+    void attachOwner(SpNpcTortimerBugOff *owner);
+    void scriptCloseItemSelect();
+    void scriptCatchChosen();
+    void setNextScript(s32 i);
+    void setScript(s32 i);
+    void pickScript(Fn *slot, s32 i);
 
-    Unk_ov082_022721dc *unk_ac;
+    SpNpcTortimerBugOff *unk_ac;
     Fn unk_b0;
     Fn unk_b8;
     u16 unk_c0;
@@ -392,9 +392,9 @@ public:
     u8 unk_650;
 };
 
-class Unk_ov082_022721dc : public Unk_020d8bc8 {
+class SpNpcTortimerBugOff : public Unk_020d8bc8 {
 public:
-    Unk_ov082_022721dc() {}
+    SpNpcTortimerBugOff() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_48();
@@ -403,23 +403,23 @@ public:
     virtual u8 *getTexturePath();
     virtual u8 *getModelPath();
 
-    BOOL func_ov082_02271c44();
-    BOOL func_ov082_02271c48();
-    BOOL func_ov082_02271c74();
-    BOOL func_ov082_02271cac();
-    BOOL func_ov082_02271cb0();
-    void func_ov082_02271ce4(s32 state);
+    BOOL mainAct02();
+    BOOL mainAct01();
+    BOOL setupAct01();
+    BOOL mainAct00();
+    BOOL setupAct00();
+    void changeAct(s32 state);
 
     u8 unk_651;
     u8 pad_652[2];
     s32 unk_654;
-    Unk_ov082_0227214c unk_658;
+    SpNpcTortimerBugOffTalk unk_658;
     s32 unk_720;
 };
 
 struct Unk_ov082_02271ce4_Ent {
-    BOOL (Unk_ov082_022721dc::*enter)();
-    BOOL (Unk_ov082_022721dc::*exit)();
+    BOOL (SpNpcTortimerBugOff::*enter)();
+    BOOL (SpNpcTortimerBugOff::*exit)();
 };
 
 static inline BOOL Unk_ov082_InRange(volatile u16 *p, u32 lo, u32 hi) {
@@ -440,34 +440,34 @@ static inline BOOL Unk_ov082_Neg(s32 v) {
 }
 
 extern "C" {
-extern Unk_ov082_02271ce4_Ent data_ov082_022722d4[3];
-extern u8 data_ov082_02272128[];
-extern u8 data_ov082_022720f8[];
-BOOL func_ov082_02271b28(u16 *p, s32 x);
+extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
+extern u8 sSpNpcTortimerBugOffTexturePath[];
+extern u8 sSpNpcTortimerBugOffModelPath[];
+BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x);
 }
 
 struct Unk_ov082_SceneEntry {
-    Unk_ov082_022721dc *(*factory)();
+    SpNpcTortimerBugOff *(*factory)();
     u16 a, b;
     s32 c, d, e, f;
 };
-extern "C" Unk_ov082_022721dc *func_ov082_02271f2c();
+extern "C" SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create();
 
 // ---------------------------------------------------------------------------------------------------------------------
-Unk_ov082_022721dc *func_ov082_02271f2c() {
-    return new Unk_ov082_022721dc();
+SpNpcTortimerBugOff *SpNpcTortimerBugOff_Create() {
+    return new SpNpcTortimerBugOff();
 }
 
-BOOL Unk_ov082_022721dc::vfunc_04() {
+BOOL SpNpcTortimerBugOff::vfunc_04() {
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
     }
     setTalkRequest((Unk_0201bc1c *)&unk_658);
-    unk_658.func_ov082_022719d8(this);
+    unk_658.attachOwner(this);
     return TRUE;
 }
 
-BOOL Unk_ov082_022721dc::vfunc_00() {
+BOOL SpNpcTortimerBugOff::vfunc_00() {
     struct {
         u16 w0;
         u16 s2;
@@ -481,7 +481,7 @@ BOOL Unk_ov082_022721dc::vfunc_00() {
     if (!Unk_020d8bc8::vfunc_00()) {
         return FALSE;
     }
-    func_ov082_02271ce4(0);
+    changeAct(0);
     g = data_021ed24c;
     func_02085784(g, 2);
     func_02085818(&l.s2, g);
@@ -518,36 +518,36 @@ BOOL Unk_ov082_022721dc::vfunc_00() {
     return TRUE;
 }
 
-u8 *Unk_ov082_022721dc::getTexturePath() { return data_ov082_02272128; }
+u8 *SpNpcTortimerBugOff::getTexturePath() { return sSpNpcTortimerBugOffTexturePath; }
 
-u8 *Unk_ov082_022721dc::getModelPath() { return data_ov082_022720f8; }
+u8 *SpNpcTortimerBugOff::getModelPath() { return sSpNpcTortimerBugOffModelPath; }
 
-BOOL Unk_ov082_022721dc::updateAct() {
+BOOL SpNpcTortimerBugOff::updateAct() {
     BOOL result = FALSE;
-    if (data_ov082_022722d4[unk_654].exit != NULL) {
-        result = (this->*data_ov082_022722d4[unk_654].exit)();
+    if (sSpNpcTortimerBugOffActTable[unk_654].exit != NULL) {
+        result = (this->*sSpNpcTortimerBugOffActTable[unk_654].exit)();
     }
     return result;
 }
 
-void Unk_ov082_022721dc::func_ov082_02271ce4(s32 state) {
+void SpNpcTortimerBugOff::changeAct(s32 state) {
     BOOL ok = TRUE;
-    if (data_ov082_022722d4[state].enter != NULL) {
-        ok = (this->*data_ov082_022722d4[state].enter)();
+    if (sSpNpcTortimerBugOffActTable[state].enter != NULL) {
+        ok = (this->*sSpNpcTortimerBugOffActTable[state].enter)();
     }
     if (ok) {
         unk_654 = state;
     }
 }
 
-BOOL Unk_ov082_022721dc::func_ov082_02271cb0() {
+BOOL SpNpcTortimerBugOff::setupAct00() {
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
 
-BOOL Unk_ov082_022721dc::func_ov082_02271cac() { return TRUE; }
+BOOL SpNpcTortimerBugOff::mainAct00() { return TRUE; }
 
-BOOL Unk_ov082_022721dc::func_ov082_02271c74() {
+BOOL SpNpcTortimerBugOff::setupAct01() {
     void *p = unk_658.func_02015aac();
     u32 r = 0;
     if (p != NULL) {
@@ -557,17 +557,17 @@ BOOL Unk_ov082_022721dc::func_ov082_02271c74() {
     return TRUE;
 }
 
-BOOL Unk_ov082_022721dc::func_ov082_02271c48() {
+BOOL SpNpcTortimerBugOff::mainAct01() {
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         TalkRequest_EndTalkWith(this);
-        func_ov082_02271ce4(2);
+        changeAct(2);
     }
     return TRUE;
 }
 
-BOOL Unk_ov082_022721dc::func_ov082_02271c44() { return TRUE; }
+BOOL SpNpcTortimerBugOff::mainAct02() { return TRUE; }
 
-void Unk_ov082_0227214c::vfunc_84() {
+void SpNpcTortimerBugOffTalk::vfunc_84() {
     if (unk_b0) {
         (this->*unk_b0)();
         Fn t = *(Fn *)__ptmf_null;
@@ -578,39 +578,39 @@ void Unk_ov082_0227214c::vfunc_84() {
         }
     }
 }// Declarations for data defined further down (definition order sets the data layout)
-extern Unk_ov082_02271ce4_Ent data_ov082_022722d4[3];
-extern "C" u8 data_ov082_02272128[];
-extern "C" Unk_ov082_SceneEntry data_ov082_02272110;
-extern "C" u8 data_ov082_022720f8[];
+extern Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3];
+extern "C" u8 sSpNpcTortimerBugOffTexturePath[];
+extern "C" Unk_ov082_SceneEntry sSpNpcTortimerBugOffProfile;
+extern "C" u8 sSpNpcTortimerBugOffModelPath[];
 
-extern "C" Unk_ov082_SceneEntry data_ov082_02272110 = {func_ov082_02271f2c, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
+extern "C" Unk_ov082_SceneEntry sSpNpcTortimerBugOffProfile = {SpNpcTortimerBugOff_Create, 0x58, 0x5f, 2, 0x5000, 0x5000, 0x3e800};
 
-extern "C" u8 data_ov082_02272128[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
+extern "C" u8 sSpNpcTortimerBugOffTexturePath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '_', 't', 'e', 'x', '.', 'n', 's', 'b', 't', 'x', 0};
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
-extern "C" u8 data_ov082_022720f8[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
+extern "C" u8 sSpNpcTortimerBugOffModelPath[] = {'n', 'p', 'c', '_', 's', 'p', '/', 'm', 'o', 'd', 'e', 'l', '/', 't', 't', 'l', '.', 'n', 's', 'b', 'm', 'd', 0};
 
-Unk_ov082_02271ce4_Ent data_ov082_022722d4[3] = {
-    {&Unk_ov082_022721dc::func_ov082_02271cb0, &Unk_ov082_022721dc::func_ov082_02271cac},
-    {&Unk_ov082_022721dc::func_ov082_02271c74, &Unk_ov082_022721dc::func_ov082_02271c48},
-    {NULL, &Unk_ov082_022721dc::func_ov082_02271c44},
+Unk_ov082_02271ce4_Ent sSpNpcTortimerBugOffActTable[3] = {
+    {&SpNpcTortimerBugOff::setupAct00, &SpNpcTortimerBugOff::mainAct00},
+    {&SpNpcTortimerBugOff::setupAct01, &SpNpcTortimerBugOff::mainAct01},
+    {NULL, &SpNpcTortimerBugOff::mainAct02},
 };
 
-void Unk_ov082_0227214c::func_ov082_02271b70(Fn *slot, s32 i) {
-    static Fn tbl[2] = {&Unk_ov082_0227214c::func_ov082_02271a68, &Unk_ov082_0227214c::func_ov082_02271a60};
+void SpNpcTortimerBugOffTalk::pickScript(Fn *slot, s32 i) {
+    static Fn tbl[2] = {&SpNpcTortimerBugOffTalk::scriptCatchChosen, &SpNpcTortimerBugOffTalk::scriptCloseItemSelect};
     *slot = tbl[i];
 }
 
-void Unk_ov082_0227214c::func_ov082_02271b60(s32 i) {
-    func_ov082_02271b70(&unk_b0, i);
+void SpNpcTortimerBugOffTalk::setScript(s32 i) {
+    pickScript(&unk_b0, i);
 }
 
-void Unk_ov082_0227214c::func_ov082_02271b50(s32 i) {
-    func_ov082_02271b70(&unk_b8, i);
+void SpNpcTortimerBugOffTalk::setNextScript(s32 i) {
+    pickScript(&unk_b8, i);
 }
 
-extern "C" BOOL func_ov082_02271b28(u16 *p, s32 x) {
+extern "C" BOOL SpNpcTortimerBugOff_IsInsect(u16 *p, s32 x) {
     if (x == 0) {
         BOOL r = FALSE;
         u32 v = *p;
@@ -622,7 +622,7 @@ extern "C" BOOL func_ov082_02271b28(u16 *p, s32 x) {
     return FALSE;
 }
 
-void Unk_ov082_0227214c::func_ov082_02271a68() {
+void SpNpcTortimerBugOffTalk::scriptCatchChosen() {
     TalkWindowState *r6 = unk_3c;
     u8 b;
     unk_c0 = 0xfff1;
@@ -633,7 +633,7 @@ void Unk_ov082_0227214c::func_ov082_02271a68() {
         unk_c0 = func_02099048();
         unk_ac->unk_720 = func_02085618(&unk_c0);
         _ZN12Unk_0201442013func_02014ce4EPtjjj(this, &unk_c0, 0, 4, 0);
-        func_ov082_02271b50(1);
+        setNextScript(1);
         _ZN16ActorTalkRequest13func_0201578cEjjj(this, &unk_c0, 2, 7);
         _ZN16ActorTalkRequest13func_02015958Eijiii(this, unk_ac->unk_720 >> 12, 4, 3, 0, 0);
         if (r4 >= 0) {
@@ -646,24 +646,24 @@ void Unk_ov082_0227214c::func_ov082_02271a68() {
     r6->setNextMessage(&b, (void *)"sp_npc_turtle2");
 }
 
-void Unk_ov082_0227214c::func_ov082_02271a60() {
+void SpNpcTortimerBugOffTalk::scriptCloseItemSelect() {
     _ZN12Unk_020d771013func_02014f74Ev(this);
 }
 
-Unk_ov082_0227214c::Unk_ov082_0227214c() {
+SpNpcTortimerBugOffTalk::SpNpcTortimerBugOffTalk() {
     unk_c0 = 0xfff1;
 }
 
-Unk_ov082_0227214c::~Unk_ov082_0227214c() {}
+SpNpcTortimerBugOffTalk::~SpNpcTortimerBugOffTalk() {}
 
-void Unk_ov082_0227214c::func_ov082_022719d8(Unk_ov082_022721dc *owner) {
+void SpNpcTortimerBugOffTalk::attachOwner(SpNpcTortimerBugOff *owner) {
     vfunc_08();
     unk_ac = owner;
     unk_c2 = 0;
     unk_c4 = -1;
 }
 
-void Unk_ov082_0227214c::vfunc_78(Unk_ov082_022718b0_Rec *out) {
+void SpNpcTortimerBugOffTalk::vfunc_78(Unk_ov082_022718b0_Rec *out) {
     u16 x[4];
     Unk_ov082_022718b0_Rec rec;
     _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
@@ -710,7 +710,7 @@ void Unk_ov082_0227214c::vfunc_78(Unk_ov082_022718b0_Rec *out) {
     }
 }
 
-s32 Unk_ov082_0227214c::func_ov082_022717ac() {
+s32 SpNpcTortimerBugOffTalk::getRecordHolder() {
     u16 v, w;
     u8 *r7 = data_021ed24c;
     func_02085818(&v, r7);
@@ -739,7 +739,7 @@ s32 Unk_ov082_0227214c::func_ov082_022717ac() {
     return -1;
 }
 
-void Unk_ov082_0227214c::vfunc_14() {
+void SpNpcTortimerBugOffTalk::vfunc_14() {
     u8 b1, b2;
     u16 h0, ha, hb, x14, h16, hc, hd;
     Unk_0202368c_Obj o;
@@ -779,9 +779,9 @@ void Unk_ov082_0227214c::vfunc_14() {
                     break;
                 }
             }
-            if (func_ov082_022717ac() == 0) {
+            if (getRecordHolder() == 0) {
                 msg = 0x1d;
-            } else if (func_ov082_022717ac() > 0) {
+            } else if (getRecordHolder() > 0) {
                 msg = 0xe;
             }
             break;
@@ -789,10 +789,10 @@ void Unk_ov082_0227214c::vfunc_14() {
         case 0xf:
             break;
         case 0x10:
-            if (func_ov082_022717ac() == 0) {
+            if (getRecordHolder() == 0) {
                 msg = 0x11;
                 unk_c2 = 1;
-            } else if (func_ov082_022717ac() > 0) {
+            } else if (getRecordHolder() > 0) {
                 msg = 0x12;
                 unk_c2 = 0;
             }
@@ -834,9 +834,9 @@ void Unk_ov082_0227214c::vfunc_14() {
         func_0202e1cc(0x1c, 1);
         break;
     case 0xb:
-        _ZN12Unk_020d771013func_0201517cEjjj(this, func_ov082_02271b28, 0xd, 1);
+        _ZN12Unk_020d771013func_0201517cEjjj(this, SpNpcTortimerBugOff_IsInsect, 0xd, 1);
         _ZN12Unk_020d771013func_020151d0Ei(this, 0);
-        func_ov082_02271b60(0);
+        setScript(0);
         break;
     }
     if (msg != 0xff) {
@@ -845,7 +845,7 @@ void Unk_ov082_0227214c::vfunc_14() {
     }
 }
 
-void Unk_ov082_0227214c::vfunc_18() {
+void SpNpcTortimerBugOffTalk::vfunc_18() {
     u8 b1, b2;
     u16 h;
     s32 t = getChoiceList()->getResult();
@@ -868,7 +868,7 @@ void Unk_ov082_0227214c::vfunc_18() {
     } else {
         if (unk_1e == 8) {
             if (t != 0) {
-                s32 r = func_ov082_022717ac();
+                s32 r = getRecordHolder();
                 if (r == 0) {
                     msg = 9;
                 } else if (r > 0) {
@@ -887,7 +887,7 @@ void Unk_ov082_0227214c::vfunc_18() {
     }
 }
 
-BOOL Unk_ov082_022721dc::vfunc_48() {
+BOOL SpNpcTortimerBugOff::vfunc_48() {
     BOOL r = FALSE;
     if (_ZN12Unk_02013b1013func_02014220Ev(&unk_618) == 0) {
         r = TRUE;
@@ -895,15 +895,15 @@ BOOL Unk_ov082_022721dc::vfunc_48() {
     return r;
 }
 
-void Unk_ov082_022721dc::vfunc_4c(s32 v) {
+void SpNpcTortimerBugOff::vfunc_4c(s32 v) {
     switch (v) {
     case 0:
         unk_658.vfunc_08();
         unk_658.func_02015ab0((u32)getPlayerActor(4));
-        func_ov082_02271ce4(1);
+        changeAct(1);
         break;
     case 8:
-        func_ov082_02271ce4(0);
+        changeAct(0);
         break;
     }
 }

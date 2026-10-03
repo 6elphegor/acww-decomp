@@ -26,14 +26,14 @@ struct Unk_ov003_0225b738_Col {
     }
 };
 
-class Unk_ov003_02234f10 : public GameProc {
+class SnowballSpawner : public GameProc {
 public:
-    Unk_ov003_02234f10();
+    SnowballSpawner();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_ov003_02234f10();
+    virtual ~SnowballSpawner();
 };
 
 // ---- externs ----
@@ -46,9 +46,9 @@ s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
 s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
 s32 Unk_020d93b8_lerpPoses(void *self, s32 a, s32 b, s32 c);
-void func_ov003_0222ec20(void *self);
-void func_ov003_0222ed20(void *self);
-Unk_ov003_02234f10 *func_ov003_0222eef8();
+void SnowballSpawner_SpawnSnowmen(void *self);
+void SnowballSpawner_SpawnLooseBalls(void *self);
+SnowballSpawner *SnowballSpawner_Create();
 }
 
 // scene registration entry {factory, 0xf, 0x11}
@@ -59,7 +59,7 @@ struct Unk_ov003_02234f00_Entry {
 
 extern "C" {
 // Data order: this unit is placed object by object (see object_order.txt).
-Unk_ov003_02234f00_Entry data_ov003_02234f00 = {(void *)func_ov003_0222eef8, 0xf, 0x11};
+Unk_ov003_02234f00_Entry sSnowballSpawnerProfile = {(void *)SnowballSpawner_Create, 0xf, 0x11};
 Unk_ov003_0225b738_Col data_ov003_0225b748(31, 20, 20, 31);
 Unk_ov003_0225b738_Col data_ov003_0225b744(20, 20, 31, 31);
 Unk_ov003_0225b738_Col data_ov003_0225b740(31, 31, 20, 31);
@@ -70,7 +70,7 @@ Unk_ov003_0225b738_Col data_ov003_0225b74c(20, 24, 24, 31);
 
 // ---- functions ----
 
-extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
+extern "C" void FieldCamera_UpdateFocusZoom(Unk_ov003_0222ef10_Cam *cam) {
     void *c = func_020947f0(4);
     s32 t;
     s32 v;
@@ -90,20 +90,20 @@ extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
     Unk_020d93b8_lerpPoses(cam, 0xa, 0, q);
 }
 
-extern "C" Unk_ov003_02234f10 *func_ov003_0222eef8() {
-    return new Unk_ov003_02234f10;
+extern "C" SnowballSpawner *SnowballSpawner_Create() {
+    return new SnowballSpawner;
 }
 
-Unk_ov003_02234f10::Unk_ov003_02234f10() {}
+SnowballSpawner::SnowballSpawner() {}
 
-Unk_ov003_02234f10::~Unk_ov003_02234f10() {}
+SnowballSpawner::~SnowballSpawner() {}
 
-BOOL Unk_ov003_02234f10::vfunc_00() {
-    func_ov003_0222ec20(this);
-    func_ov003_0222ed20(this);
+BOOL SnowballSpawner::vfunc_00() {
+    SnowballSpawner_SpawnSnowmen(this);
+    SnowballSpawner_SpawnLooseBalls(this);
     return TRUE;
 }
 
-BOOL Unk_ov003_02234f10::onExecute() { return TRUE; }
-BOOL Unk_ov003_02234f10::onDraw() { return TRUE; }
-BOOL Unk_ov003_02234f10::vfunc_0c() { return TRUE; }
+BOOL SnowballSpawner::onExecute() { return TRUE; }
+BOOL SnowballSpawner::onDraw() { return TRUE; }
+BOOL SnowballSpawner::vfunc_0c() { return TRUE; }
