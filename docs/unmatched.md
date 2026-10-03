@@ -72,12 +72,12 @@ Most library units were linked with their code only, so most library data is sti
 | Range | Size | Contents |
 |---|--:|---|
 | `.text` 0x02000b48-0x02000b6c | 0x24 | `BuildInfo` (`_start_ModuleParams`, the SDK's module parameter block right after crt0) |
-| `.text` 0x02000b6c-0x02000b7c | 0x10 | A 16-byte key; `func_02000b7c` (built from source) returns its address |
+| `.text` 0x02000b6c-0x02000b7c | 0x10 | LampLights 16-byte key; `func_02000b7c` (built from source) returns its address |
 | `.text` 0x02000b84-0x02000c2c | 0xa8 | The `.version` block: the middleware tag strings `[SDK+...]` (DWC, BACKUP, Wi-Fi, CPS, SSL) that `OSi_ReferSymbol` callers pass to keep them linked |
-| `.init` 0x020c5f68-0x020c5fa4, 0x020c6094-0x020c6108; `.ctor` 0x020d1f40-0x020d1f4c, 0x020d1f54-0x020d1f58 | 0xb0 + 0x10 | Four ARM static initialisers of library-area files whose owners are not settled: `0x020c5f68` (empty), `0x020c5f6c` (constructs a global vector at bss 0x021f4880 and registers its destructor), `0x020c5fa0` (empty), `0x020c6094` (calls `func_020f46d4` and `FX_Div` three times; bss 0x021f5c00-0x021f5c0c) |
+| `.init` 0x020c5f68-0x020c5fa4, 0x020c6094-0x020c6108; `.ctor` 0x020d1f40-0x020d1f4c, 0x020d1f54-0x020d1f58 | 0xb0 + 0x10 | Four ARM static initialisers of library-area files whose owners are not settled: `0x020c5f68` (empty), `0x020c5f6c` (constructs a global vector at bss 0x021f4880 and registers its destructor), `0x020c5fa0` (empty), `0x020c6094` (calls `SndVolumeCurve_Clear` and `FX_Div` three times; bss 0x021f5c00-0x021f5c0c) |
 | `.exception` 0x020c2b2c-0x020c2b34, `.exceptix` 0x020c2c40-0x020c2c4c | 0x14 | Exception-table entries of `__NextAction` (above) |
 | `.rodata` 13 small ranges between 0x020c8b9c and 0x020d0c0c | 520 | Constants used by several units, not yet assigned to one |
-| `.data` 0x020d2024-0x020d5d44 | 15,648 | A block of cross-linked tables (354 labels) used by many game units, with no code of its own |
+| `.data` 0x020d2024-0x020d5d44 | 15,648 | LampLights block of cross-linked tables (354 labels) used by many game units, with no code of its own |
 | `.data` 0x020de408-0x020e0468 | 8,288 | Two objects |
 | `.data` 0x020e1e2c-0x020e218c | 864 | One object |
 | `.data` 13 small objects between units, and 0x020e74ec-0x020e7500 | 116 | Objects not yet assigned to a unit |
@@ -90,11 +90,11 @@ Most library units were linked with their code only, so most library data is sti
 * `autoload_3` (48,680 bytes): mostly library bss from 0x021f4768 to the end, plus a few small objects of main.
 * DTCM `.data` 0x027e0000-0x027e0460.
 * ITCM `.text` 0x01ff8ab4-0x01ff8ad4: a table of the eight NitroSystem texture-SRT functions inside `.text`.
-* ITCM `.text` 0x01ffd0b4-0x01ffd0e4: six pointer-to-member constants of `Unk_020d8c7c_Base`'s file (next section).
+* ITCM `.text` 0x01ffd0b4-0x01ffd0e4: six pointer-to-member constants of `ProcBase`'s file (next section).
 
-## `Unk_020d8c7c_Base`
+## `ProcBase`
 
-`Unk_020d8c7c_Base` is the in-house base class of the game's tasks and scene objects (vtable 0x0213b154 in
+`ProcBase` is the in-house base class of the game's tasks and scene objects (vtable 0x0213b154 in
 `autoload_2`; 16 virtual functions, a defined pure virtual destructor, class-specific `operator new`/`delete`).
 All of its code is built from source, but not yet as a real class:
 
@@ -106,8 +106,8 @@ All of its code is built from source, but not yet as a real class:
   `taskConnect` (`src/itcm/unk_01ffd0e4.cpp`, built) and the six pointer-to-member constants at 0x01ffd0b4-0x01ffd0e4
   (not owned).
 
-A real-class version of the `autoload_2` part compiles byte-identically, with the vtable and data in the original
+LampLights real-class version of the `autoload_2` part compiles byte-identically, with the vtable and data in the original
 order. mwcc sorts all data objects of a file together, including the ones placed in ITCM, and the original order
-has exactly one natural solution only when the six ITCM constants are part of the same file. A unit cannot yet
+has exactly one natural solution only when the six ITCM constants are part of the same file. LampLights unit cannot yet
 own a range in ITCM together with ranges in `autoload_2`. Until it can, the real-class version would need a
 declaration order that is an artefact of the split, so the current form stays.

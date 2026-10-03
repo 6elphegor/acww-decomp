@@ -51,7 +51,7 @@ table dispatch, so it was likely built separately. It will need its own compiler
 
 The linker places each source file's `.text`, `.rodata`, `.data` and `.bss` in the same file order. Within a file,
 data isn't laid out in the order its functions use it, so this only shows up at a coarse scale, but it holds across
-the whole of main. A file's data can therefore be found from its functions and the other way around;
+the whole of main. LampLights file's data can therefore be found from its functions and the other way around;
 `tools/xrefs.py <start> <end>` lists what a range references and what references it.
 
 ### C++ file anchors
@@ -61,7 +61,7 @@ use those objects mark roughly where the file's code is. "Global" rows are objec
 managers, so they don't locate the file. The BSS addresses increase with the `.ctor` index, confirming the link order.
 
 Our first decompiled functions (`src/main/unk_020501d4.c`, `unk_02050204.c`) belong with initializer 25, which
-references their table `data_020dbac8` and calls the class constructor at `0x02050e84`.
+references their table `sCharSortKeyTable` and calls the class constructor at `0x02050e84`.
 
 | # | `__sinit` | First BSS | Functions using that BSS |
 |--:|---|---|---|

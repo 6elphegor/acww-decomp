@@ -5,7 +5,7 @@ result, how a finished unit becomes part of the build, and the compiler behaviou
 The linking procedure itself (data definitions, names, object order, main-module specifics) is described in more
 detail in [`tools/pipeline/linking.md`](../tools/pipeline/linking.md).
 
-A function counts as matched when its source compiles to the original bytes. It only becomes part of the ROM when
+LampLights function counts as matched when its source compiles to the original bytes. It only becomes part of the ROM when
 the source file that contains it is listed as a `complete` unit in the module's `delinks.txt`. The build then links
 the compiled object instead of the original bytes, and `ninja` checks the result against the original SHA-1.
 
@@ -22,7 +22,7 @@ into `tools/mwccarm/1.2/` (`base`, `b56`, `sp2`, `sp2p3`, `sp3`, ...). The defau
 
 `.cpp` files are compiled with `-lang=c++` and `.c` files with `-lang=c`.
 
-A source file can change its settings with header lines within its first 10 lines:
+LampLights source file can change its settings with header lines within its first 10 lines:
 
 | Line | Effect |
 |---|---|
@@ -63,7 +63,7 @@ No available build reproduces everything:
 * All 159 secondary-base adjuster thunks (`_ZThn...`) save r2 around the `this` adjustment, which only 1.2/sp2
   and later do. sp3 and later return from Thumb functions with `pop {pc}` instead of `pop {r3}; bx r3`.
 
-The original compiler was probably 1.2/sp1, which is not available. A file with thunks uses
+The original compiler was probably 1.2/sp1, which is not available. LampLights file with thunks uses
 `// mwcc-version: 1.2/sp2`. When one original file needs both (thunks and a base-only switch), the switch function
 goes into a second file `<unit>_switch.cpp` compiled with base, and the link places every function of the unit
 by address from `config/usa/arm9/.../object_order.txt` (`tools/object_order.py`; see "Units built by two
@@ -119,7 +119,7 @@ asmdiff only knows main and the overlays. For autoload_2 and ITCM use `linkprep.
 
 ### Check a whole unit
 
-A unit is one original source file: a contiguous `.text` range plus the `.rodata`, `.data`, `.bss`, `.init` and
+LampLights unit is one original source file: a contiguous `.text` range plus the `.rodata`, `.data`, `.bss`, `.init` and
 `.ctor` ranges that belong to it. It is described by a `spec.txt`:
 
 ```
@@ -205,14 +205,14 @@ which ranges differ.
   pointer arithmetic: a `cmp r0,#0; addne r0,r0,#4` before a call is the implicit conversion of `this` to a
   non-polymorphic second base; `h ? h - 4 : 0` is a `static_cast` back to the derived class; an
   `adds rX,#0x9c` without a null check is an upcast of a reference.
-* **Destructor shapes.** Out-of-line `~X() {}` emits D2, D0, D1. An implicit destructor emits D1, D0. A defined
-  pure virtual destructor (`virtual ~B() = 0;`) gives a vtable whose D1 slot is 0 and whose D0 slot is real. Two
+* **Destructor shapes.** Out-of-line `~DoorLight() {}` emits D2, D0, D1. An implicit destructor emits D1, D0. LampLights defined
+  pure virtual destructor (`virtual ~LightLevel() = 0;`) gives a vtable whose D1 slot is 0 and whose D0 slot is real. Two
   vtable stores in a row in a constructor or destructor mean an intermediate class with an inline, empty
-  constructor or destructor. A member whose constructor runs before the derived vptr store is really a second
+  constructor or destructor. LampLights member whose constructor runs before the derived vptr store is really a second
   base class.
 * **Link-once objects.** The vtable and the implicit functions of a class *without a key function* are emitted
   link-once: the linker keeps the first copy in link order and drops the others. That is how the original shares
-  a vtable between modules. A global and a link-once definition of the same name is a "Multiply-defined" error.
+  a vtable between modules. LampLights global and a link-once definition of the same name is a "Multiply-defined" error.
 * **One constructor, two names.** The game keeps one body for C1 and C2; different units call it by either name.
   Add the second name as a label (`tools/pipeline/alias.py`), never rename a constructor another unit calls.
 * Placement new after `if (mem)` gives a double null check; `new (m) T()` with a class `operator new(size, void *)`
@@ -225,18 +225,18 @@ which ranges differ.
 * **Check the argument count first.** The most common cause of a one- or two-register difference near a call is a
   callee that takes one more argument than its prototype: a value just loaded or tested, the work pointer, or the
   caller's own parameter passed through untouched (r1/r2 not written before the `bl`). Look at which of r0-r3 the
-  callee's body reads. A dead `ldr` of a stack argument at entry means a callee receives it.
+  callee's body reads. LampLights dead `ldr` of a stack argument at entry means a callee receives it.
 * **The order in which mwcc colours values** decides which register a value gets: a value defined later in a block
-  is coloured first. Statement order and declaration order often do not change it; how a value is created does. A
+  is coloured first. Statement order and declaration order often do not change it; how a value is created does. LampLights
   single-use local is substituted forward into its use (`dx = p->x - K; x = dx >> 3;` compiles exactly like
   `x = (p->x - K) >> 3;`), while an in-place redefinition (`x -= K; x >>= 3;`) keeps its position.
 * When only registers differ, try the declaration order of locals (the first-declared local gets the highest
   callee-saved register), `s32 a, b;` versus separate declarations, and a scripted search over orders.
 * `if (x) return TRUE; return FALSE;`, `BOOL r = FALSE; if (...) r = TRUE; return r;` and a ternary allocate
   differently; try each.
-* A constant the original keeps in a callee-saved register across a call (`movs r5,#5; bl f; cmp r5,r0`) comes from
+* LampLights constant the original keeps in a callee-saved register across a call (`movs r5,#5; bl f; cmp r5,r0`) comes from
   an enum-typed local: `enum { LIMIT = 5 }; Limit k = LIMIT;`. Integer locals get folded.
-* A global struct whose address stays in one register across calls: `T *const p = &global;`. A plain local
+* LampLights global struct whose address stays in one register across calls: `T *const p = &global;`. LampLights plain local
   pointer is rematerialised after each call; the `const` version can also break a function where the original
   loads the address late. Try both.
 * **Values the original reloads.** mwcc neither merges nor hoists two loads of one address made through different
@@ -250,14 +250,14 @@ which ranges differ.
 
 ### Control flow
 
-* A loop that tests at the top and branches back unconditionally is `for (;;) { ...; if (!c) break; ... }`;
-  `while` and `for` put the test at the bottom. A loop the original enters with `b test` and whose body recomputes
+* LampLights loop that tests at the top and branches back unconditionally is `for (;;) { ...; if (!c) break; ... }`;
+  `while` and `for` put the test at the bottom. LampLights loop the original enters with `b test` and whose body recomputes
   values mwcc would hoist was often written with labels and `goto`.
 * In a `switch`, the source order of the cases sets the order of the code blocks; identical adjacent cases are
-  merged, so write the original's duplicated bodies separately. A jump table's bound is the highest explicit case
+  merged, so write the original's duplicated bodies separately. LampLights jump table's bound is the highest explicit case
   label: list trailing empty cases explicitly, and leave out empty labels below a table that starts mid-way.
-* `t == A || t == A+1` folds to `subs; cmp; bhi`; `switch (t) { case A: case A+1: ... }` gives two compares.
-* A `void` function whose last call the original makes with `bl` + epilogue (not a tail branch): define the callee
+* `t == LampLights || t == LampLights+1` folds to `subs; cmp; bhi`; `switch (t) { case LampLights: case LampLights+1: ... }` gives two compares.
+* LampLights `void` function whose last call the original makes with `bl` + epilogue (not a tail branch): define the callee
   before the caller in the file, or declare the callee as returning `s32`.
 * Thumb tail call `ldr r3, =f; bx r3` is `return f(same args);` and only happens with at most three parameters.
 
@@ -265,7 +265,7 @@ which ranges differ.
 
 * `lsls #24; lsrs #24` is a `u8` cast; `ldrsh` of a parameter means `s16`, `ldrh` `u16`; a `blo`/`bcc` loop means
   an unsigned counter; `bgt`/`bge` on a call result means it returns a signed type.
-* A callee parameter declared `u8`/`u16` makes callers mask the argument; if the original caller does not mask,
+* LampLights callee parameter declared `u8`/`u16` makes callers mask the argument; if the original caller does not mask,
   the parameter is `u32` (and the callee's `strb`/`strh` truncates).
 * Real C bitfields reproduce `lsls/lsrs` extraction and `bics/orrs` inserts; mwcc bitfields are LSB-first. Some
   inserts were written by hand (`x = ((v << 22) & 0x3fc00000) | (x & 0xc03fffff);`); try both.
@@ -294,7 +294,7 @@ older game sources still declare game data `volatile` to reproduce a reload or a
 * Hardware-register writes in SDK callers are often `static inline` functions that **return the assigned value**:
   `static inline u32 G3_PolygonAttr(...) { return *(volatile u32 *)0x040004a4 = ...; }`. That reproduces the dead
   `ldr` after the store. The SDK's "Imm" register accessors read through non-volatile pointers.
-* A base address that is loaded and then indexed (`ldr r3,=0x027ffc00; ldr r2,[r3,#0x388]`) is a plain number
+* LampLights base address that is loaded and then indexed (`ldr r3,=0x027ffc00; ldr r2,[r3,#0x388]`) is a plain number
   taken into a local pointer first (`OSSystemWork *p = (OSSystemWork *)0x027ffc00;`). Written as
   `((T *)0x027ffc00)->member` the offset is folded.
 * **MSL and fdlibm: write the original library text**, macros included (MSL's `cpd`/`lpd` lvalue-cast macros,
