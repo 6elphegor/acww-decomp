@@ -215,16 +215,16 @@ public:
     u8 unk_15;
     BOOL func_020941e8(Unk_020942c8 *o);
 };
-class Unk_020dd30c {
+class EncodedString16Buf {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    Unk_020dd30c();
-    virtual ~Unk_020dd30c();
-    void func_02062464(u8 *dst, s32 n);
-    void func_02050f7c(u8 *src, s32 n);
+    EncodedString16Buf();
+    virtual ~EncodedString16Buf();
+    void copyTo(u8 *dst, s32 n);
+    void StrBuf_SetBytes(u8 *src, s32 n);
     u8 unk_04[0x20];
 };
 class Unk_02071ed0 : public Unk_020942c8 {
@@ -241,10 +241,10 @@ public:
     void func_02071ed0(u32 v);
     u8 func_02071ee8();
     void func_02071ef4(u8 *src);
-    void func_02071f08(Unk_020dd30c *o);
+    void func_02071f08(EncodedString16Buf *o);
     void func_02071f1c(void *x);
     void func_02071f48(u8 *dst);
-    void func_02071f5c(Unk_020dd30c *o);
+    void func_02071f5c(EncodedString16Buf *o);
     void func_02071f70(void *x);
     Unk_020942c8 *func_02071fa0();
     void func_02071fa4(Unk_020942c8 *src);
@@ -254,10 +254,10 @@ public:
     void func_02072040();
     BOOL func_02072084(Unk_02071ed0 *o);
 };
-class Unk_02071e04 {
+class Pattern {
 public:
-    Unk_02071e04();
-    ~Unk_02071e04();
+    Pattern();
+    ~Pattern();
     u8 unk_00[0x200];
     Unk_02071ed0 unk_200;
 
@@ -265,9 +265,9 @@ public:
     void func_02071e10(u32 v);
     void func_02071e3c(void *dst);
     u8 *func_02071e58();
-    BOOL func_02071e8c(Unk_02071e04 *o);
+    BOOL func_02071e8c(Pattern *o);
 };
-class Unk_02071ae0 : public Unk_02071e04 {
+class Unk_02071ae0 : public Pattern {
 public:
     Unk_02071ae0();
     ~Unk_02071ae0();
@@ -281,25 +281,25 @@ public:
     void func_02071c2c(u32 a, u32 b);
     void func_02071c44();
 };
-class Unk_02071b00 {
+class AbleSistersPatterns {
 public:
-    Unk_02071b00();
-    ~Unk_02071b00();
-    Unk_02071e04 unk_00[8];
+    AbleSistersPatterns();
+    ~AbleSistersPatterns();
+    Pattern unk_00[8];
 
-    Unk_02071e04 *func_02071b00(u8 i);
+    Pattern *func_02071b00(u8 i);
     void func_02071b10();
 };
-class Unk_02071c5c {
+class PlayerPatterns {
 public:
-    Unk_02071c5c();
-    ~Unk_02071c5c();
-    Unk_02071e04 unk_00[8];
+    PlayerPatterns();
+    ~PlayerPatterns();
+    Pattern unk_00[8];
     Unk_02071c1c unk_1140;
 
     Unk_02071c1c *func_02071c5c();
-    Unk_02071e04 *func_02071c68(u32 i);
-    Unk_02071e04 *func_02071c88(u8 i);
+    Pattern *func_02071c68(u32 i);
+    Pattern *func_02071c88(u8 i);
     void func_02071c98(Unk_020942c8 *a, Unk_020942c8 *b);
     void func_02071d08(Unk_020942c8 *a);
 };
@@ -338,7 +338,7 @@ extern "C" {
 extern u32 *data_021c6218;
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
 s32 _ZN12Unk_020cbb1813func_02072e88Ei(Unk_020cbb18 *, s32);
@@ -458,10 +458,10 @@ extern "C" {
 void MI_CpuFill8(void *, u32, u32);
 }
 extern "C" {
-u32 func_0209750c();
+u32 PlayerData_GetCurrent();
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_02098674Ev();
+void _ZN10PlayerData13getFriendListEv();
 }
 extern "C" {
 u8 *func_02076db4();
@@ -476,16 +476,16 @@ extern "C" {
 void MI_CpuCopy8(const void *, void *, u32);
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_0209888cEv(u32);
+void _ZN10PlayerData11getPlayerIdEv(u32);
 }
 extern "C" {
-void *_ZN12Unk_020940a013func_02094104Ev();
+void *_ZN8PlayerId13func_02094104Ev();
 }
 extern "C" {
 void *func_02063964(void *);
 }
 extern "C" {
-void _ZN12Unk_0209865c13func_02098680Ev(u32);
+void _ZN10PlayerData15getWifiUserDataEv(u32);
 }
 extern "C" {
 void *func_02076c80();
@@ -650,7 +650,7 @@ extern "C" {
 void func_0206f81c();
 }
 extern "C" {
-void *func_0204b1cc(u32);
+void *Item_MakeBuilding(u32);
 }
 extern "C" {
 void func_020b1040(void *, u32);
@@ -689,7 +689,7 @@ extern "C" void func_020741b8(s32 r4) {
         if (_ZN12Unk_020cbb1813func_020729ccEj(o, 0) != 0 || _ZN12Unk_020cbb1813func_020729ccEj(o, 4) != 0) {
             if (r4 == -4) {
                 for (u32 i = 0; i < 0x22; i++) {
-                    void *r6 = func_0204b1cc(i);
+                    void *r6 = Item_MakeBuilding(i);
                     func_020b1040(r6, 1);
                     func_020b1040(r6, 2);
                     func_020b1040(r6, 3);
@@ -706,7 +706,7 @@ extern "C" void func_020741b8(s32 r4) {
             } else {
                 s32 r6 = -r4;
                 for (u32 i = 0; i < 0x22; i++) {
-                    func_020b1040(func_0204b1cc(i), r6);
+                    func_020b1040(Item_MakeBuilding(i), r6);
                 }
                 func_020514a4(r6);
                 for (u32 i = 0; i < 0x33; i++) {
@@ -920,18 +920,18 @@ extern "C" void func_02073bf8(s32 a, u32 b, u32 c) {
         u8 *r6 = (u8 *)_ZN12Unk_020cbb1813func_020721ecEv(p);
         MI_CpuFill8(r5, 0, 0x3e0);
         MI_CpuFill8(r6, 0, 0x50);
-        u32 l18 = func_0209750c();
-        _ZN12Unk_0209865c13func_02098674Ev();
+        u32 l18 = PlayerData_GetCurrent();
+        _ZN10PlayerData13getFriendListEv();
         u8 *l1c = func_02076db4();
         for (s32 i = 0; i < 0x20; i++) {
             func_02076cf0(l1c);
             MI_CpuCopy8(func_02076e1c(), r5 + i * 12, 12);
             l1c += 0x1c;
         }
-        _ZN12Unk_0209865c13func_0209888cEv(l18);
-        MI_CpuCopy8(_ZN12Unk_020940a013func_02094104Ev(), r6, 8);
-        MI_CpuCopy8(func_02063964((u8 *)((u32)data_021d7350 + 2)), r6 + 8, 8);
-        _ZN12Unk_0209865c13func_02098680Ev(l18);
+        _ZN10PlayerData11getPlayerIdEv(l18);
+        MI_CpuCopy8(_ZN8PlayerId13func_02094104Ev(), r6, 8);
+        MI_CpuCopy8(func_02063964((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
+        _ZN10PlayerData15getWifiUserDataEv(l18);
         MI_CpuCopy8(func_02076c80(), r6 + 0x10, 0x40);
         _Z13func_020721b4v();
         func_020eb8c0(a, (void *)func_02074104, (void *)func_02098e8c, r6, r5);
@@ -2491,13 +2491,13 @@ extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 }
 extern "C" {
-extern Unk_020720f8_Data data_021cc7d0;
+extern Unk_020720f8_Data gOverlayHandle;
 }
 extern "C" {
-void *func_020e8574(u32 n);
+void *Mem_Alloc(u32 n);
 }
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 extern "C" {
 void func_020712dc(void *p);
@@ -2530,10 +2530,10 @@ extern "C" {
 void func_02063950(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN12Unk_020940a013func_02094128Et(Unk_020942c8 *p, u32 v);
+void _ZN8PlayerId13func_02094128Et(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN12Unk_0206395413func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
+void _ZN6TownId13func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
 s32 memcmp(void *a, void *b, u32 n);
@@ -2548,10 +2548,10 @@ extern "C" {
 s32 func_02076b18();
 }
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 extern "C" {
-void *_ZN12Unk_0209865c13func_0209888cEv(void *p);
+void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
 void *func_020716cc();
@@ -2560,13 +2560,13 @@ extern "C" {
 void _ZN12Unk_020718a413func_020716d4Ei(void *p, u32 v);
 }
 extern "C" {
-s32 func_0206d49c();
+s32 Fatal_Trap();
 }
 extern "C" {
-void _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(Unk_020dd30c *o, void *x);
+void _ZN13EncodedString13fromMsgStringEP9MsgString(EncodedString16Buf *o, void *x);
 }
 extern "C" {
-void _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(void *dst, Unk_020dd30c *o, u32 a, u32 b);
+void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf *o, u32 a, u32 b);
 }
 
 }
@@ -2700,43 +2700,43 @@ namespace n1 {
 void func_020721b4() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
     BOOL ok;
     if ((u32)OVERLAY_65_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
 void func_0207217c() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
     BOOL ok;
     if ((u32)OVERLAY_66_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
 void func_02072144() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
     BOOL ok;
     if ((u32)OVERLAY_67_ID == x) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }
 void func_020720f8() {
     using namespace n1;
     u32 x;
-    if (data_021cc7d0.f) x = (u32)-1; else x = data_021cc7d0.v;
+    if (gOverlayHandle.f) x = (u32)-1; else x = gOverlayHandle.v;
     BOOL ok;
     Unk_020720f8_Id a = (Unk_020720f8_Id)(u32)OVERLAY_65_ID;
     Unk_020720f8_Id b = (Unk_020720f8_Id)(u32)OVERLAY_66_ID;
     Unk_020720f8_Id c = (Unk_020720f8_Id)(u32)OVERLAY_67_ID;
     if (x == a || x == b || x == c) ok = TRUE; else ok = FALSE;
-    if (!ok) func_0206d49c();
+    if (!ok) Fatal_Trap();
 }
 namespace n1 {
 }

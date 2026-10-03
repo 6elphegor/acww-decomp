@@ -2,12 +2,12 @@
 #include "Unk_020d8c7c.h"
 
 extern "C" {
-void func_02087e70(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, u32 h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_020016a4(u32 a);
 s32 func_020016cc(u32 a);
 s32 func_02001564(u32 a);
 s32 func_02001554(u32 a);
-s32 func_02003ff4(u32 a, u32 b);
+s32 Snd_StopSe(u32 a, u32 b);
 void func_02004008(u32 a);
 s32 func_0203d99c();
 extern u32 data_020d5b0c[][2];
@@ -25,7 +25,7 @@ struct Unk_0208e9d4_Ptr {
     u8 pad[0xc];
     u16 unk_0c;
 };
-extern "C" Unk_0208e9d4_Ptr *data_021eda68;
+extern "C" Unk_0208e9d4_Ptr *gActorDefaultParent;
 
 class Unk_020cbb18 {
 public:
@@ -33,39 +33,39 @@ public:
 };
 extern "C" Unk_020cbb18 *data_020cbb18;
 
-struct Unk_02089270_Tbl;
+struct SpriteAnimSeq;
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void *func_02089248();
-    void func_02089268(Unk_02089270_Tbl *p);
-    void func_02089264(s32 v);
-    void func_020891bc();
+    SpriteAnim();
+    ~SpriteAnim();
+    void *getCell();
+    void setSeq(SpriteAnimSeq *p);
+    void setPlayOnce(s32 v);
+    void restart();
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e10dc : public Unk_020e0db4 {
+class Unk_020e10dc : public UiWidget {
 public:
     Unk_020e10dc();
     virtual ~Unk_020e10dc();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
     void func_0208eb9c();
     void func_0208ebcc();
@@ -91,11 +91,11 @@ public:
     /* 0x20 */ u8 unk_20;
 };
 
-class Unk_020e10f8 : public Unk_020e0db4 {
+class Unk_020e10f8 : public UiWidget {
 public:
     Unk_020e10f8();
     virtual ~Unk_020e10f8();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
     void func_0208e7c0();
     void func_0208e798();
@@ -107,7 +107,7 @@ public:
     void func_0208e8fc();
     void func_0208e904();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
     /* 0x28 */ s32 unk_28;
@@ -117,22 +117,22 @@ public:
     /* 0x39 */ u8 unk_39;
 };
 
-class Unk_020e1114 : public Unk_020d8c7c {
+class Unk_020e1114 : public GameProc {
 public:
     Unk_020e1114();
     virtual ~Unk_020e1114();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 };
 
 // Vtable at 0x020e1164 belongs to the next unit; only the members used here
-class Unk_020e1164 : public Unk_020e0db4 {
+class Unk_020e1164 : public UiWidget {
 public:
     Unk_020e1164();
     virtual ~Unk_020e1164();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
 
     void func_0208ee40();
@@ -142,7 +142,7 @@ public:
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_02089270 unk_14;
+    /* 0x14 */ SpriteAnim unk_14;
     /* 0x28 */ u8 unk_28;
 };
 
@@ -190,9 +190,9 @@ void Unk_020e1164::func_0208ee40() {
         } else {
             i = 0x44;
         }
-        unk_14.func_02089268((Unk_02089270_Tbl *)data_020d5b0c[i]);
-        unk_14.func_02089264(1);
-        unk_14.func_020891bc();
+        unk_14.setSeq((SpriteAnimSeq *)data_020d5b0c[i]);
+        unk_14.setPlayOnce(1);
+        unk_14.restart();
         unk_28 = 1;
     }
 }
@@ -221,17 +221,17 @@ Unk_020e10dc::~Unk_020e10dc() {
     func_0208eb9c();
 }
 
-void Unk_020e10dc::vfunc_08() {
+void Unk_020e10dc::draw() {
     if (unk_0c != 0) {
-        s32 x = unk_14 + func_02089f68();
-        s32 y = unk_18 + func_02089f64();
+        s32 x = unk_14 + getOriginX();
+        s32 y = unk_18 + getOriginY();
         u32 h0 = *data_020d5d0c[0];
         u32 h1 = *data_020d5d0c[4];
-        func_02087e70(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, -1, 0, 0);
-        func_02087e70(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, -1, 0, 0);
+        Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         if (unk_12 != 0) {
-            func_02087e70(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, 2, 0, 0);
-            func_02087e70(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
+            Oam_DrawCell(0, h0, x, y, -1, -1, 0x1000, 0x1000, unk_10, 2, 0, 0);
+            Oam_DrawCell(0, h1, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }
     }
 }
@@ -249,7 +249,7 @@ void Unk_020e10dc::func_0208ec78() {}
 void Unk_020e10dc::func_0208ec68() { vfunc_0c(); }
 
 // ---- Unk_020e10dc ----
-void Unk_020e10dc::func_0208ec58() { vfunc_08(); }
+void Unk_020e10dc::func_0208ec58() { draw(); }
 
 void Unk_020e10dc::func_0208ec50(s32 a, s32 b) {
     unk_14 = a;
@@ -293,7 +293,7 @@ void Unk_020e10dc::func_0208eb9c() {
     u16 v = data_020cf720[unk_1c];
     if (unk_20 != 0) {
         unk_20 = 0;
-        func_02003ff4(v, 1);
+        Snd_StopSe(v, 1);
     }
 }
 
@@ -301,14 +301,14 @@ Unk_020e10f8::Unk_020e10f8() : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_3
 
 Unk_020e10f8::~Unk_020e10f8() {}
 
-void Unk_020e10f8::vfunc_08() {
+void Unk_020e10f8::draw() {
     if (unk_38 != 0) {
         if (unk_39 == 0) {
-            s32 x = func_02089f68();
-            s32 y = func_02089f64();
-            u32 h = (u32)unk_0c.func_02089248();
-            func_02087e70(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-            func_02087e70(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
+            s32 x = getOriginX();
+            s32 y = getOriginY();
+            u32 h = (u32)unk_0c.getCell();
+            Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, 2, 0, 0);
         }
     }
 }
@@ -323,7 +323,7 @@ void Unk_020e10f8::vfunc_0c() {
 }
 
 extern "C" void func_0208e9f4(u32 i) {
-    u32 t = data_021eda68->unk_0c;
+    u32 t = gActorDefaultParent->unk_0c;
     BOOL e = data_020cbb18->func_02072e44();
     if (t != 5 && e) {
         data_021ceb38.unk_24 = data_020cf718[i];
@@ -331,7 +331,7 @@ extern "C" void func_0208e9f4(u32 i) {
 }
 
 extern "C" void func_0208e9d4(u32 i) {
-    if (data_021eda68->unk_0c != 5) {
+    if (gActorDefaultParent->unk_0c != 5) {
         data_021ceb38.unk_28 = data_020cf71c[i];
     }
 }
@@ -378,7 +378,7 @@ void Unk_020e10f8::func_0208e8fc() { func_0208e8d0(); }
 void Unk_020e10f8::func_0208e8ec() { vfunc_0c(); }
 
 // ---- Unk_020e10f8 ----
-void Unk_020e10f8::func_0208e8dc() { vfunc_08(); }
+void Unk_020e10f8::func_0208e8dc() { draw(); }
 
 void Unk_020e10f8::func_0208e8d0() {
     unk_20 = 0;
@@ -437,9 +437,9 @@ void Unk_020e10f8::func_0208e7c0() {
 }
 
 void Unk_020e10f8::func_0208e798() {
-    unk_0c.func_02089268((Unk_02089270_Tbl *)data_020d5d34);
-    unk_0c.func_02089264(1);
-    unk_0c.func_020891bc();
+    unk_0c.setSeq((SpriteAnimSeq *)data_020d5d34);
+    unk_0c.setPlayOnce(1);
+    unk_0c.restart();
 }
 
 extern "C" Unk_020e1114 *func_0208e780() { return new Unk_020e1114(); }
@@ -458,12 +458,12 @@ BOOL Unk_020e1114::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_020e1114::vfunc_18() {
+BOOL Unk_020e1114::onExecute() {
     func_0208e938();
     return TRUE;
 }
 
-BOOL Unk_020e1114::vfunc_24() {
+BOOL Unk_020e1114::onDraw() {
     func_0208e928();
     return TRUE;
 }

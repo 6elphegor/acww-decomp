@@ -92,7 +92,7 @@ s32 func_0209cef4();
 s32 func_0209ce48(u32 y, u32 m);
 s32 func_0209ceac(u32 a, u32 b, u32 c);
 
-void _ZN12Unk_0209ea5013func_0209ea60Ev(void *);
+void _ZN11SaveRecord413func_0209ea60Ev(void *);
 void func_02084f48(void);
 void func_02084ecc(void);
 void func_02079c7c(void *);
@@ -107,7 +107,7 @@ void func_020407fc(void *);
 void func_020c0270(void *);
 void func_02045e98(void);
 void func_020ae3a4(void *, s32);
-void func_0206daec(void *);
+void Melody_SetPacked(void *);
 void func_02085178(void);
 void _ZN12Unk_02086f8413func_02086fd0Ev(void);
 void func_02085174(void);
@@ -115,13 +115,13 @@ void _ZN12Unk_02086c0413func_02086edcEv(void);
 void func_020850e8(void);
 void func_0208516c(void);
 void _ZN12Unk_020868cc13func_020868e4Ev(void);
-s32 func_0208a578(void);
-void _ZN12Unk_020e0f1013func_0208c134Eii(s32, s32, s32);
+s32 Hud_GetCountdown(void);
+void _ZN12HudCountdown5startEii(s32, s32, s32);
 void func_0202e8b0(void);
 void func_0207a038(void *);
 void func_0206e6c4(void);
 void func_020b101c(void);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 void func_02079f1c(void *, void *);
 void func_020781ec(void);
 void func_02078308(void);
@@ -164,8 +164,8 @@ public:
     u8 unk_11df0;
 };
 
-extern "C" void func_0209d624(u8 *p) {
-    _ZN12Unk_0209ea5013func_0209ea60Ev(p + 0x15fc5);
+extern "C" void SaveData_Apply(u8 *p) {
+    _ZN11SaveRecord413func_0209ea60Ev(p + 0x15fc5);
     func_02084f48();
     func_02084ecc();
     func_02079c7c(p + 0x8a3c);
@@ -180,7 +180,7 @@ extern "C" void func_0209d624(u8 *p) {
     func_020c0270(p + 0x15f66);
     func_02045e98();
     func_020ae3a4(p + 0x15db4, 0);
-    func_0206daec(p + 0x15fa8);
+    Melody_SetPacked(p + 0x15fa8);
     func_020850e0();
     func_02085178();
     _ZN12Unk_02086f8413func_02086fd0Ev();
@@ -192,30 +192,30 @@ extern "C" void func_0209d624(u8 *p) {
     func_020850e0();
     func_0208516c();
     _ZN12Unk_020868cc13func_020868e4Ev();
-    _ZN12Unk_020e0f1013func_0208c134Eii(func_0208a578(), 0, 1);
+    _ZN12HudCountdown5startEii(Hud_GetCountdown(), 0, 1);
     func_0202e8b0();
     func_0207a038(p + 0x8a3c);
     func_0206e6c4();
     func_020b101c();
-    func_02079f1c(p + 0x8a3c, func_0209750c());
+    func_02079f1c(p + 0x8a3c, PlayerData_GetCurrent());
     func_020781ec();
     func_02078308();
     func_020782e0();
     func_02078328();
 }
 
-extern "C" BOOL func_0209d610(Unk_0209d5f8 *p) {
+extern "C" BOOL LetterStorage_IsValid(Unk_0209d5f8 *p) {
     if (p->unk_11df0 == 2) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_0209d604(Unk_0209d5f8 *p) {
+extern "C" void LetterStorage_MarkInterrupted(Unk_0209d5f8 *p) {
     p->unk_11df0 = 0x1c;
 }
 
-extern "C" void func_0209d5f8(Unk_0209d5f8 *p) {
+extern "C" void LetterStorage_MarkValid(Unk_0209d5f8 *p) {
     p->unk_11df0 = 2;
 }
 

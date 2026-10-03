@@ -11,8 +11,8 @@ s32 func_01ffcb0c(s32, s32);
 void *func_0204da0c();
 void func_0204eb30(void *, void *, u32, u32, u32);
 void *func_02037558(void *, u32, u32, u32);
-BOOL func_0204b14c(void *);
-u32 func_0204b124(void *);
+BOOL Item_IsSnowman(void *);
+u32 Item_GetSnowmanIndex(void *);
 void func_0204edf8(u32 *, u32 *, u32, u32, u32, u32);
 }
 
@@ -83,8 +83,8 @@ struct Grid {
 };
 
 extern "C" {
-extern void *data_021eda68;
-void func_0202e880(u32, void *, u32, u32);
+extern void *gActorDefaultParent;
+void GameProc_CreateChild(u32, void *, u32, u32);
 u64 OS_GetTick();
 }
 
@@ -178,10 +178,10 @@ BOOL func_020b52ac();
 BOOL func_020b5184();
 BOOL _ZN12Unk_020cbb1813func_020729bcEj(void *, ...);
 void _ZN12Unk_020cbb1813func_02072e88Ei(void *, u32);
-s32 func_020952e0(u32);
+s32 PlayerSession_GetDataIndex(u32);
 BOOL func_020978c8(void *, s32);
-u32 func_0209521c();
-void func_0209524c(u32, u32);
+u32 PlayerSession_FindFreeGfxSlot();
+void PlayerSession_SetGfxSlot(u32, u32);
 void func_02094308(u32, Vec3 *, Vec3s *, u32);
 void func_020e93a0(Vec3 *, s32);
 void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
@@ -218,8 +218,8 @@ public:
 
 BOOL Unk_020afd04::func_020afd04(u32 i, BOOL mode, Vec3 *pos, Vec3s *rot_, u32 *out) {
     if (mode) {
-        s32 idx = func_020952e0(i);
-        if (idx < 4 && func_020978c8(data_021d735c, func_020952e0(i))) {
+        s32 idx = PlayerSession_GetDataIndex(i);
+        if (idx < 4 && func_020978c8(data_021d735c, PlayerSession_GetDataIndex(i))) {
             if (!_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, i) || func_020b4948(func_020b4934())) {
                 (this + idx)->get(pos, rot_, out);
             } else {
@@ -287,13 +287,13 @@ BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
                 u32 v;
                 Vec3 pos;
                 if (items->func_020afd04(i, FALSE, &pos, &rot, &v)) {
-                    func_0209524c(i, func_0209521c());
+                    PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
                     func_02094308(i, &pos, &rot, v);
                 }
             }
         }
     }
-    func_0202e880(0xb, data_021eda68, 0, 0);
+    GameProc_CreateChild(0xb, gActorDefaultParent, 0, 0);
     return TRUE;
 }
 
@@ -302,7 +302,7 @@ BOOL Unk_020afbb8::func_020afbb8(u8 *idx, u64 start) {
     EntryPair *p = (EntryPair *)ptr + i;
     BOOL ok = TRUE;
     for (;;) {
-        func_0202e880(p->a, data_021eda68, p->b, 0);
+        GameProc_CreateChild(p->a, gActorDefaultParent, p->b, 0);
         p++;
         i = (u8)(i + 1);
         if (idx != NULL) {
@@ -366,7 +366,7 @@ BOOL Unk_020afafc::func_020afafc(u8 *entryIdx, u8 *subIdx, u64 start) {
 }
 
 void Unk_020afadc::func_020afadc() {
-    func_0202e880(0xc, data_021eda68, unk_06, 0);
+    GameProc_CreateChild(0xc, gActorDefaultParent, unk_06, 0);
 }
 
 void Unk_020afaa4::func_020afad0() {
@@ -502,7 +502,7 @@ extern "C" BOOL func_020af768(u32 *a, u32 *b, u32 idx) {
                 for (s32 j = 0; j < 16; j++) {
                     for (s32 i = 0; i < 16; i++) {
                         void *o = func_02037558(cell, i, j, 0);
-                        if (o != NULL && func_0204b14c(o) && idx == func_0204b124(o)) {
+                        if (o != NULL && Item_IsSnowman(o) && idx == Item_GetSnowmanIndex(o)) {
                             func_0204edf8(a, b, x, y, i, j);
                             return TRUE;
                         }

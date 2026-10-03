@@ -7,7 +7,7 @@ struct Unk_0203bc68_Ent {
     s32 x, y, z;
 };
 
-struct Unk_0203bc68_Pos {
+struct CameraPose {
     s16 h0, h1;
     s32 w0;
     s32 x, y, z;
@@ -17,10 +17,10 @@ struct Unk_0203c0b0_Vec {
     s32 x, y, z;
 };
 
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c(u16 x) { v = x; }
-    ~Unk_0203442c();
+    ItemId(u16 x) { v = x; }
+    ~ItemId();
 };
 
 class Unk_0203be94_Obj {
@@ -70,18 +70,18 @@ public:
     virtual BOOL vfunc_a8();
 };
 
-class Unk_020e4590 : public Unk_020d8c7c {
+class CameraBase : public GameProc {
 public:
-    virtual ~Unk_020e4590();
-    virtual BOOL vfunc_24();
+    virtual ~CameraBase();
+    virtual BOOL onDraw();
 };
 
 extern "C" {
-extern void *data_021c3070;
+extern void *gCamera;
 }
 
 extern "C" {
-extern u32 data_021c3ba4[];
+extern u32 gWorldCurve[];
 }
 
 extern "C" {
@@ -97,11 +97,11 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern Unk_0203bc68_Ent data_020c8d9c[];
+extern Unk_0203bc68_Ent sCameraPoseTable[];
 }
 
 extern "C" {
-extern u32 data_020c8d3c[][4];
+extern u32 sCameraBlendTable[][4];
 }
 
 extern "C" {
@@ -133,7 +133,7 @@ void MTX_Inverse43(void *a, void *b);
 }
 
 extern "C" {
-void func_01ffcbb0(void *out, void *self);
+void Camera_GetLookAtPoint(void *out, void *self);
 }
 
 extern "C" {
@@ -161,11 +161,11 @@ void func_0203b768(void *self);
 }
 
 extern "C" {
-void func_0203ecec(void *a, void *b);
+void WorldCurve_Update(void *a, void *b);
 }
 
 extern "C" {
-Unk_0203bc68_Pos *func_020947f0(s32 id);
+CameraPose *func_020947f0(s32 id);
 }
 
 extern "C" {
@@ -185,7 +185,7 @@ Unk_0203be94_Obj *func_0208175c(s32 i);
 }
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -201,7 +201,7 @@ s32 func_020b530c(void *a);
 }
 
 extern "C" {
-void func_0203a468();
+void Camera_FinishBlend();
 }
 
 extern "C" {
@@ -213,11 +213,11 @@ void func_02135558(void *a, void *b, void *c);
 }
 
 extern "C" {
-BOOL func_02063fcc(u32 a, s32 b, void *s, s32 idx);
+BOOL File_LoadToBufferF(u32 a, s32 b, void *s, s32 idx);
 }
 
 extern "C" {
-void *_ZN12Unk_0209865c13func_020986c8Ev(void *s);
+void *_ZN10PlayerData10getCatalogEv(void *s);
 }
 
 extern "C" {
@@ -229,11 +229,11 @@ BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set);
 }
 
 extern "C" {
-BOOL func_0203c4cc(u8 *base, u16 *p);
+BOOL Catalog_HasItem(u8 *base, u16 *p);
 }
 
 extern "C" {
-u8 *func_0203c4f8(u8 *base, u8 *out, u16 *p);
+u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p);
 }
 
 extern "C" {
@@ -257,66 +257,66 @@ s32 func_0203c318();
 }
 
 extern "C" {
-void func_02061168(u16 *out, u16 *in, s32 n);
+void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 }
 
 extern "C" {
-BOOL func_0204b300(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
 }
 
 extern "C" {
-BOOL func_0204b2d4(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b354(u16 *p);
+s32 Item_GetPaperIndex(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b248(s32 a, s32 b);
+s32 Item_MakeFurniture(s32 a, s32 b);
 }
 
 extern "C" {
-BOOL func_0204b8ac(u16 *p);
+BOOL Item_TestInfoFlag3(u16 *p);
 }
 
-class Unk_01ffb7cc {
+class FxMtx43 {
 public:
-    Unk_01ffb7cc();
+    FxMtx43();
     u8 pad_00[0x30];
 };
 
-class Unk_020d93b8 : public Unk_020e4590, public Unk_01ffb7cc {
+class Unk_020d93b8 : public CameraBase, public FxMtx43 {
 public:
     Unk_020d93b8() {}
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
-    u8 *func_0203bc58();
-    s16 func_0203bc68();
-    s16 func_0203bc7c();
-    s16 func_0203bc90();
-    u8 *func_0203bc9c();
-    void func_0203bca8();
-    void func_0203c07c(u32 *src);
-    void func_0203c09c(s32 i);
-    void func_0203c0b0(s32 a, s32 b, s32 n);
-    void func_0203c1a4(s32 i, Unk_0203bc68_Pos *out);
-    BOOL func_0203b7ac(s32 st);
+    u8 *getFollowSlack();
+    s16 getYaw();
+    s16 getPitch();
+    s16 getEyeCurveAngle();
+    u8 *getEye();
+    void resetOffsets();
+    void setBlendParams(u32 *src);
+    void setBlendPreset(s32 i);
+    void lerpPoses(s32 a, s32 b, s32 n);
+    void loadPose(s32 i, CameraPose *out);
+    BOOL setMode(s32 st);
 
         /* 0x80 */ s32 unk_80, unk_84, unk_88, unk_8c, unk_90, unk_94;
     s16 unk_98, unk_9a, unk_9c, unk_9e;
     s32 unk_a0, unk_a4, unk_a8, unk_ac, unk_b0, unk_b4;
     s32 unk_b8, unk_bc, unk_c0, unk_c4;
     u8 pad_c8[0xfc - 0xc8];
-    Unk_0203bc68_Pos unk_fc;
+    CameraPose unk_fc;
     s32 unk_110, unk_114, unk_118;
     u8 pad_11c[0x148 - 0x11c];
     s16 unk_148, unk_14a;
@@ -359,12 +359,12 @@ static inline s32 Unk_0203c23c_None() {
     return Unk_0203c23c_Idx(0, 1, 0);
 }
 
-extern "C" u8 *func_0203c4f8(u8 *base, u8 *out, u16 *p) {
+extern "C" u8 *Catalog_GetBit(u8 *base, u8 *out, u16 *p) {
     u16 c;
     s32 n;
-    func_02061168(&c, p, 1);
-    if (func_0204b2d4(&c)) {
-        n = func_0204b25c(&c);
+    Item_ToPlacedForm(&c, p, 1);
+    if (Item_IsFurniture(&c)) {
+        n = Item_GetFurnitureIndex(&c);
         *out = 1 << (n & 7);
         return base + (n >> 3);
     }
@@ -384,7 +384,7 @@ extern "C" u8 *func_0203c4f8(u8 *base, u8 *out, u16 *p) {
         return base + 0x112 + (n >> 3);
     }
     if (c >= 0x1000 && c <= 0x10ff) {
-        n = func_0204b354(&c);
+        n = Item_GetPaperIndex(&c);
         *out = 1 << (n & 7);
         return base + 0x11b + (n >> 3);
     }
@@ -392,9 +392,9 @@ extern "C" u8 *func_0203c4f8(u8 *base, u8 *out, u16 *p) {
     return 0;
 }
 
-extern "C" BOOL func_0203c4cc(u8 *base, u16 *p) {
+extern "C" BOOL Catalog_HasItem(u8 *base, u16 *p) {
     u8 mask;
-    u8 *b = func_0203c4f8(base, &mask, p);
+    u8 *b = Catalog_GetBit(base, &mask, p);
     if (b) {
         if (*b & mask) return TRUE;
         return FALSE;
@@ -410,7 +410,7 @@ extern "C" BOOL func_0203c42c(u8 *base, u16 *p, s32 skip, s32 set) {
             (*p >= 0x4384 && *p <= 0x4463) || (*p >= 0x42a4 && *p <= 0x4383))
             return FALSE;
     }
-    b = func_0203c4f8(base, &mask, p);
+    b = Catalog_GetBit(base, &mask, p);
     if (b) {
         if (set) {
             *b |= mask;
@@ -427,33 +427,33 @@ extern "C" BOOL func_0203c41c(void *a, u16 *p, s32 c) {
 }
 
 extern "C" s32 func_0203c354(u16 base, u32 n) {
-    void *s = func_0209750c();
+    void *s = PlayerData_GetCurrent();
     s32 count = 0;
     u16 v[6];
     v[0] = base;
     if (!s) return count;
-    if (func_0204b300(&v[0])) {
+    if (Item_IsNormalItem(&v[0])) {
         u32 i;
         for (i = 0; i < n; i++) {
             v[1] = base + i;
-            func_02061168(&v[4], &v[1], 1);
+            Item_ToPlacedForm(&v[4], &v[1], 1);
             v[1] = v[4];
-            if (func_0204b8ac(&v[1])) {
-                if (func_0203c4cc((u8 *)_ZN12Unk_0209865c13func_020986c8Ev(s), &v[1])) count++;
+            if (Item_TestInfoFlag3(&v[1])) {
+                if (Catalog_HasItem((u8 *)_ZN10PlayerData10getCatalogEv(s), &v[1])) count++;
             }
         }
         return count;
     }
-    if (func_0204b2d4(&v[0])) {
+    if (Item_IsFurniture(&v[0])) {
         u32 i;
         s32 z;
         v[2] = base;
-        u8 *r = (u8 *)func_0204b25c(&v[2]);
+        u8 *r = (u8 *)Item_GetFurnitureIndex(&v[2]);
         z = 0;
         for (i = 0; i < n; i++) {
-            v[3] = func_0204b248((s32)r + i, z);
-            if (func_0204b8ac(&v[3])) {
-                if (func_0203c4cc((u8 *)_ZN12Unk_0209865c13func_020986c8Ev(s), &v[3])) count++;
+            v[3] = Item_MakeFurniture((s32)r + i, z);
+            if (Item_TestInfoFlag3(&v[3])) {
+                if (Catalog_HasItem((u8 *)_ZN10PlayerData10getCatalogEv(s), &v[3])) count++;
             }
         }
     }
@@ -487,8 +487,8 @@ extern "C" s32 func_0203c2f4() {
 }
 
 extern "C" BOOL func_0203c2d0(u16 *p) {
-    void *s = func_0209750c();
-    if (s) return func_0203c41c(_ZN12Unk_0209865c13func_020986c8Ev(s), p, 1);
+    void *s = PlayerData_GetCurrent();
+    if (s) return func_0203c41c(_ZN10PlayerData10getCatalogEv(s), p, 1);
     return FALSE;
 }
 
@@ -502,9 +502,9 @@ extern "C" BOOL func_0203c23c(u32 a, u16 *p) {
     if (ok) idx = c - 0x1144;
     else idx = -1;
     if (idx != -1) {
-        if (func_02063fcc(a, -1, (void *)"/carpet/floor_%d.nsbtx", idx)) return TRUE;
+        if (File_LoadToBufferF(a, -1, (void *)"/carpet/floor_%d.nsbtx", idx)) return TRUE;
         return FALSE;
     }
-    static Unk_0203442c s(0x1144);
+    static ItemId s(0x1144);
     return func_0203c23c(a, &s.v);
 }

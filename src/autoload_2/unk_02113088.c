@@ -100,7 +100,7 @@ u32 OS_IsRunOnEmulator(void);
 void OS_LoadContext(OSThread *t);
 BOOL OS_SaveContext(OSThread *t);
 void func_01ffa4ec(void *);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 u32 OS_GetLockID(void);
 u32 OS_ReadOwnerOfLockWord(u32 addr);
 u32 OS_TryLockCartridge(u32 id);
@@ -217,7 +217,7 @@ void OSi_ExitThread_Destroy(void) {
     OS_WakeupThread(&t->joinQueue);
     OS_EnableScheduler();
     OSi_RescheduleThread();
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 // OS_DestroyThread

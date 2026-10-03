@@ -4,13 +4,13 @@
 #include "Unk_020d8c7c.h"
 
 // main / runtime symbols by their real names
-#define func_02000c8c _ZN12Unk_02000c8cD1Ev
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
-#define func_02003c30 _ZN12Unk_02003c3013func_02003c30Ev
-#define func_02003c40 _ZN12Unk_02003c4013func_02003c40EPv
-#define func_02003c50 _ZN12Unk_02003c4013func_02003c50EPv
-#define func_02003c70 _ZN12Unk_02003c4013func_02003c70EP16Unk_02003a6c_Vec
-#define func_02003cbc _ZN12Unk_02003c3013func_02003cbcEv
+#define func_02000c8c _ZN6FxVec3D1Ev
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
+#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
+#define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
+#define Unk_02003c40_callRequestSustained _ZN12Unk_02003c4020callRequestSustainedEPv
+#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
+#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
 #define func_02031c10 _ZN12Unk_020d8cf4D2Ev
 #define func_02031c48 _ZN12Unk_020d8cf4C1Ev
 #define func_0203239c _ZN12Unk_02032238D1Ev
@@ -28,8 +28,8 @@
 #define func_020548d0 _ZN12Unk_020dbd54C1Ev
 #define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
 #define func_02054c2c _ZN12Unk_020dbd3413func_02054c2cEPvS0_
-#define func_020553f8 _ZN12Unk_020dbe3413func_020553f8Ej
-#define func_02055440 _ZN12Unk_020dbe3413func_02055440Ej
+#define Model_setAlpha _ZN5Model8setAlphaEj
+#define Model_setPolygonId _ZN5Model12setPolygonIdEj
 #define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
 #define func_02088c34 _ZN12Unk_020e0d30D2Ev
 #define func_02088c4c _ZN12Unk_020e0d30C1Ev
@@ -89,7 +89,7 @@ public:
     BOOL func_02072e44();
 };
 
-class Unk_0206022c {
+class HouseData {
 public:
     u8 func_020603bc();
     void func_020603b0(u8 v);
@@ -98,7 +98,7 @@ public:
 extern "C" {
 void func_02031c48(void *p);
 void func_02031c10(void *p);
-extern u8 data_0213c874[];
+extern u8 gActorList[];
 void func_020e79a0(void *list, void *node);
 }
 
@@ -108,21 +108,21 @@ struct Unk_ov004_02236950_Obj {
 };
 
 // Library actor base. Its constructor is out of line (func_02002f14) but its destructor is inline in this overlay.
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84() { func_020e79a0(data_0213c874, &unk_50); }
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor() { func_020e79a0(gActorList, &unk_50); }
 
-    void func_02002b84(void *out);
-    void func_02002bf4(Unk_02002cb0_Vec *v);
+    void calcModelMatrix(void *out);
+    void updatePosition(Unk_02002cb0_Vec *v);
 
     /* 0x50 */ Unk_02002f14_Node unk_50;
     /* 0x5c */ Unk_ov004_02236320_V3 unk_5c;
@@ -156,13 +156,13 @@ public:
 #define F08(o) (*(u32 *)((u8 *)(o) + 8))
 
 // vtable 0x0224ebe4, size 0x268
-class Unk_ov004_0224ebec : public Unk_020d5d84 {
+class Unk_ov004_0224ebec : public Actor {
 public:
     Unk_ov004_0224ebec();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_ov004_0224ebec();
 
     Unk_ov004_02236320_Ent *func_02236320();
@@ -213,12 +213,12 @@ public:
 };
 
 // vtable 0x0224eb9c, size 0x50
-class Unk_ov004_0224eb9c : public Unk_020d8c7c {
+class Unk_ov004_0224eb9c : public GameProc {
 public:
     Unk_ov004_0224eb9c();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual ~Unk_ov004_0224eb9c();
 };
 
@@ -226,7 +226,7 @@ extern "C" {
 extern Unk_020cbb18 *data_020cbb18;
 extern u8 data_021e58a8[];
 extern Unk_ov004_0223717c_Grid *data_021c47c4;
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
 extern s16 data_02135f44[];
@@ -236,17 +236,17 @@ Unk_ov004_0224ebec *func_ov004_0223740c();
 BOOL func_020b52f8();
 s32 func_020b5328();
 void func_02054c2c(void *p, u32 a, void *b);
-void *func_020e8698(u32 a, u32 b);
-void func_020ed1e4(void *a, void *b);
+void *FrameHeap_CreateAsCurrent(u32 a, u32 b);
+void ProcBase_SetHeap(void *a, void *b);
 void func_02054800(void *p, void *q);
-void *func_020641d8(const char *p);
+void *File_Load(const char *p);
 void func_020e877c(void *p);
-void func_020e8634();
+void Heap_RestoreCurrent();
 void *func_02106788(void *p);
 void *func_021067a4(void *p, u32 q);
 void func_02054720(void *p, void *a, s32 b, s32 c, u16 d, u16 e);
 void func_02054710(void *p);
-void func_02003cbc(void *p);
+void Unk_02003c30_callReset(void *p);
 void func_02088c34(void *p);
 void func_020548a0(void *p);
 void func_0203239c(void *p);
@@ -261,13 +261,13 @@ void *func_02081708(u32 i);
 BOOL func_0204e474(void *g, s32 x, s32 y);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void func_0204ed8c(void *p, s32 x, s32 y);
-void *func_0204b25c(void *p);
-BOOL func_0204b2d4();
+void *Item_GetFurnitureIndex(void *p);
+BOOL Item_IsFurniture();
 s32 func_02063b8c(s32 n);
 void *func_02095204(u32 a);
 s32 func_020e9650(void *a, void *b);
-void func_020ed188(void *p);
-void *func_02002cf8(u32 a, u32 b, void *c, void *d, void *e);
+void ProcBase_RequestDelete(void *p);
+void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
 void func_0209cf18(void *p);
 s32 func_020339bc(void *o, void *v, s32 a, s32 b);
 void func_02033988(void *o);
@@ -277,22 +277,22 @@ s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_02031908(void *p, s32 a, s32 b, s32 c, void *d, s32 e, s32 f);
 s32 func_020318cc(void *p);
-void func_02003c30(void *p);
-void func_02003c40(void *p, u32 id);
-void func_02003c50(void *p, u32 id);
-s32 func_02003c70(void *p, void *v);
+void Unk_02003c30_callRelease(void *p);
+void Unk_02003c40_callRequest(void *p, u32 id);
+void Unk_02003c40_callRequestSustained(void *p, u32 id);
+s32 Unk_02003c40_callUpdateRelative(void *p, void *v);
 void func_02054b14(void *p);
-void func_02055440(void *p, s32 a);
+void Model_setPolygonId(void *p, s32 a);
 void NNSi_G3dModifyPolygonAttrMask(u32 a, u32 b, u32 c);
-void func_020553f8(void *p, u32 v);
+void Model_setAlpha(void *p, u32 v);
 void func_020547cc(void *p, u32 v);
 void func_020547e4(void *p);
 void func_020547a4(void *p);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
 BOOL func_02088d38(void *p, u32 mask);
-u32 func_0203ef38(void *a, void *b);
+u32 WorldCurve_ToCurved(void *a, void *b);
 void func_020902b0(u32 a, void *v, s32 b, s32 c);
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02089040(void *a);
 
@@ -343,12 +343,12 @@ Unk_ov004_0224eb9c::~Unk_ov004_0224eb9c() {
 
 BOOL Unk_ov004_0224eb9c::vfunc_0c() {
     if (!func_020b52f8() || data_020cbb18->func_02072e44()) return TRUE;
-    ((Unk_0206022c *)data_021e58a8)->func_020603b0(data_ov004_022523cc);
+    ((HouseData *)data_021e58a8)->func_020603b0(data_ov004_022523cc);
     data_ov004_022523d0 = 0;
     return TRUE;
 }
 
-BOOL Unk_ov004_0224eb9c::vfunc_18() {
+BOOL Unk_ov004_0224eb9c::onExecute() {
     if (!func_020b52f8() || data_020cbb18->func_02072e44()) return TRUE;
     u8 mask = 0;
     s8 last = 0;
@@ -359,7 +359,7 @@ BOOL Unk_ov004_0224eb9c::vfunc_18() {
             if (*(s32 *)((u8 *)data_ov004_022523d8[i] + 8) == 0xffff) {
                 *(s32 *)((u8 *)*s + 8) = 0;
                 (*s)->func_02236d9c(0);
-                func_020ed188(*s);
+                ProcBase_RequestDelete(*s);
                 *s = 0;
                 u32 c = data_ov004_022523c8;
                 if (c != 0) {
@@ -418,7 +418,7 @@ extern "C" BOOL func_ov004_0223717c(u32 a, u32 b) {
             for (i = 0; i < 3; i++) {
                 Unk_ov004_0224ebec **s = &data_ov004_022523d8[i];
                 if (*s == 0) {
-                    *s = (Unk_ov004_0224ebec *)func_02002cf8(0xc0, 0, (void *)a, (void *)b, data_ov004_022523d0);
+                    *s = (Unk_ov004_0224ebec *)Actor_spawn(0xc0, 0, (void *)a, (void *)b, data_ov004_022523d0);
                     data_ov004_022523c8 = data_ov004_022523c8 + 1;
                     r = TRUE;
                     break;
@@ -461,10 +461,10 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         hy = y >> 4;
         cell = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (cell == 0) goto xn0;
-        if (func_0204b2d4() != 0) {
+        if (Item_IsFurniture() != 0) {
             u16 tmp = 0xfff1;
-            void *a = func_0204b25c(cell);
-            void *bb = func_0204b25c(&tmp);
+            void *a = Item_GetFurnitureIndex(cell);
+            void *bb = Item_GetFurnitureIndex(&tmp);
             ok = (a == bb) ? TRUE : FALSE;
         } else {
             if (*cell == 0xfff1) ok = TRUE;
@@ -513,14 +513,14 @@ extern "C" BOOL func_ov004_02236fe0(void *owner) {
         y2++;
     yt1:
         if (y2 < g->unk_10) goto yl1;
-        data_ov004_022523d8[i] = (Unk_ov004_0224ebec *)func_02002cf8(0xc0, 0x1f, &loc, 0, owner);
+        data_ov004_022523d8[i] = (Unk_ov004_0224ebec *)Actor_spawn(0xc0, 0x1f, &loc, 0, owner);
         data_ov004_022523c8 = data_ov004_022523c8 + 1;
     }
     return TRUE;
 }
 
 extern "C" BOOL func_ov004_02236fb8(void *self) {
-    data_ov004_022523cc = ((Unk_0206022c *)data_021e58a8)->func_020603bc();
+    data_ov004_022523cc = ((HouseData *)data_021e58a8)->func_020603bc();
     if (data_ov004_022523cc != 0) return TRUE;
     return FALSE;
 }
@@ -569,16 +569,16 @@ void Unk_ov004_0224ebec::func_02236d9c(s32 v) {
 
 BOOL Unk_ov004_0224ebec::func_02236cb8() {
     func_02054c2c(unk_120, 0x474f4b49, data_ov004_0224eb64);
-    void *h = func_020e8698(0x5000, data_021f482c);
-    func_020ed1e4(this, h);
+    void *h = FrameHeap_CreateAsCurrent(0x5000, gCurrentHeap);
+    ProcBase_SetHeap(this, h);
     func_02054800(unk_120, 0);
-    void *t = func_020641d8("/insect/51/bug52.nsbva");
+    void *t = File_Load("/insect/51/bug52.nsbva");
     func_020e877c(h);
-    func_020e8634();
+    Heap_RestoreCurrent();
     void *r = func_021067a4(func_02106788(t), 0);
     func_02054720(unk_120, r, 0, 0x1000, 0, 0);
     func_02054710(unk_120);
-    func_02003cbc(unk_114);
+    Unk_02003c30_callReset(unk_114);
     s16 *q = &unk_92;
     q[1] = unk_8e;
     unk_228 = q[1];
@@ -630,7 +630,7 @@ void Unk_ov004_0224ebec::func_02236bb8() {
     v.x = unk_5c.x;
     v.y = pv->y;
     v.z = pv->z;
-    func_02003c70(unk_114, &v);
+    Unk_02003c40_callUpdateRelative(unk_114, &v);
 }
 
 void Unk_ov004_0224ebec::func_02236950() {
@@ -702,7 +702,7 @@ void Unk_ov004_0224ebec::func_02236950() {
     if (unk_10c != 0) {
         func_02236004();
     }
-    func_02002bf4((Unk_02002cb0_Vec *)&unk_1d8);
+    updatePosition((Unk_02002cb0_Vec *)&unk_1d8);
     func_020309d4(&unk_dc, p, &unk_68, ang, 0x666, this, 0xf);
     for (i = 0; i < n; i++) {
         if (fr[i] != 0) {
@@ -724,7 +724,7 @@ void Unk_ov004_0224ebec::func_02236910() {
     v.x = unk_5c.x;
     v.y = pv->y;
     v.z = pv->z;
-    func_02003c70(unk_114, &v);
+    Unk_02003c40_callUpdateRelative(unk_114, &v);
 }
 
 BOOL Unk_ov004_0224ebec::func_02236838() {
@@ -756,8 +756,8 @@ BOOL Unk_ov004_0224ebec::func_02236838() {
     }
     if (F08(this) != 0) {
         Unk_ov004_02236320_Mtx buf;
-        unk_d0 = func_0203ef38(&unk_c4, &unk_5c);
-        func_02002b84(&buf);
+        unk_d0 = WorldCurve_ToCurved(&unk_c4, &unk_5c);
+        calcModelMatrix(&buf);
         unk_184 = buf;
     } else {
         func_02236694();
@@ -814,9 +814,9 @@ BOOL Unk_ov004_0224ebec::func_022366cc() {
         if (F08(this) > 0x1f) {
             F08(this) = 0x1f;
         }
-        func_02055440(unk_120, 3);
+        Model_setPolygonId(unk_120, 3);
         NNSi_G3dModifyPolygonAttrMask(unk_17c, 1, 0x1f0000);
-        func_020553f8(unk_120, (u8)F08(this));
+        Model_setAlpha(unk_120, (u8)F08(this));
         func_020547cc(unk_120, 0);
         if (F08(this) >= 0x1f && unk_110 == 1) {
             func_020abc10(pv, 0x400, 0x4000, 0x1000);
@@ -829,7 +829,7 @@ BOOL Unk_ov004_0224ebec::func_02236694() {
     func_02054b14(unk_120);
     unk_110 = 4;
     F08(this) = 0xffff;
-    func_02003c30(unk_114);
+    Unk_02003c30_callRelease(unk_114);
     return TRUE;
 }
 
@@ -838,16 +838,16 @@ void Unk_ov004_0224ebec::func_02236630(u32 sel) {
     case 0:
         unk_263 = 1;
         if (func_02236da8() == 2) {
-            func_02003c40(unk_114, 0x1d2);
+            Unk_02003c40_callRequest(unk_114, 0x1d2);
         } else {
             func_02236d9c(1);
         }
         break;
     case 1:
-        func_02003c50(unk_114, 0x1d3);
+        Unk_02003c40_callRequestSustained(unk_114, 0x1d3);
         break;
     default:
-        func_02003c50(unk_114, 0x1d4);
+        Unk_02003c40_callRequestSustained(unk_114, 0x1d4);
         break;
     }
 }
@@ -983,7 +983,7 @@ void Unk_ov004_0224ebec::func_02236244() {
         Unk_ov004_02236320_Ent *t = func_02236320();
         if (t) {
             s16 *q92 = &unk_92;
-            q92[1] = func_02002bdc(&t->unk_5c, self0);
+            q92[1] = Math_AngleXZ(&t->unk_5c, self0);
             unk_8e = q92[1];
         }
     }
@@ -1011,7 +1011,7 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
         if (o != 0 && hit == 0) {
             Unk_ov004_02236320_V3 *q = (Unk_ov004_02236320_V3 *)(o + 0x5c);
             if (func_020e9650(p6, q) < 0x1800) {
-                s32 d = func_02002bdc(p6, q);
+                s32 d = Math_AngleXZ(p6, q);
                 if ((d >= 0 && a >= 0) || (d <= 0 && a <= 0)) {
                     s32 t = d - a;
                     if (t < 0) {
@@ -1078,7 +1078,7 @@ BOOL Unk_ov004_0224ebec::func_02236004() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224ebec::vfunc_24() {
+BOOL Unk_ov004_0224ebec::onDraw() {
     return func_022366cc();
 }
 
@@ -1091,7 +1091,7 @@ BOOL Unk_ov004_0224ebec::vfunc_00() {
     return 1;
 }
 
-BOOL Unk_ov004_0224ebec::vfunc_18() {
+BOOL Unk_ov004_0224ebec::onExecute() {
     return func_02236838();
 }
 

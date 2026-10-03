@@ -4,8 +4,8 @@ extern "C" {
 void DC_FlushRange(void *p, u32 size);
 void GX_LoadOBJ(void *p, u32 src, u32 size);
 void GXS_LoadOBJ(void *p, u32 src, u32 size);
-void *func_020e8594(u32 size);
-void func_020e8558(void *p);
+void *Mem_AllocTail(u32 size);
+void Mem_Free(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);
@@ -111,7 +111,7 @@ BOOL Unk_0201106c::func_020111b0(s32 alt) {
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
     s32 i;
-    unk_4c = (u8 *)func_020e8594(0x200);
+    unk_4c = (u8 *)Mem_AllocTail(0x200);
     ok = TRUE;
     if (alt != 0) {
         src = 0x200;
@@ -149,7 +149,7 @@ BOOL Unk_0201106c::func_020110bc(s32 alt) {
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0;
     u32 src;
     s32 i;
-    unk_4c = (u8 *)func_020e8594(0x80);
+    unk_4c = (u8 *)Mem_AllocTail(0x80);
     ok = TRUE;
     src = data_020d6f68[alt];
     for (i = 0; (u32)i < 2; i++, src += 0x400) {

@@ -28,7 +28,7 @@ struct Unk_02055820_Slot {
     u32 unk_04;
 };
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
     u32 unk_04;
     u32 unk_08;
@@ -36,8 +36,8 @@ public:
     u8 unk_10;
     u8 unk_11;
 
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_020551f4(u32 a, u32 b, u32 c);
     void func_02055200(void);
     void func_02055210(void *p);
@@ -53,32 +53,32 @@ public:
 };
 
 // Declaration-only twin of Unk_020dbe14: the original vtable order (e14, e24, e34) is the heapsort of the declaration
-// order e24, e34, e14, which needs Unk_020dbe34 declared before its real base. aliases.txt maps the twin's names.
+// order e24, e34, e14, which needs Model declared before its real base. aliases.txt maps the twin's names.
 class Unk_020dbe14b {
 public:
     Unk_020dbe14b();
     virtual ~Unk_020dbe14b();
 };
 
-class Unk_020dbe34 : public Unk_020dbe14b {
+class Model : public Unk_020dbe14b {
 public:
-    Unk_020dbe34();
-    virtual ~Unk_020dbe34();
-    void func_020553f8(u32 v);
-    void func_02055440(u32 v);
+    Model();
+    virtual ~Model();
+    void setAlpha(u32 v);
+    void setPolygonId(u32 v);
     void func_02055488(s32 a, s32 b);
     void func_020554a0(s32 a, s32 b, s32 c, s32 d, s32 e);
-    void *func_020554c0();
-    void func_020554c4();
+    void *getRenderObj();
+    void draw();
     void func_020554d0(s32 *p);
     void func_02055524();
     void func_0205553c(s32 *p);
     void func_02055550(s32 *p);
     BOOL func_020555dc();
-    BOOL func_020555ec(Unk_020553f8_Res *a, u32 b);
-    BOOL func_02055600(Unk_020553f8_Res *a, u32 b);
-    void func_0205562c();
-    void func_0205568c();
+    BOOL setResource(Unk_020553f8_Res *a, u32 b);
+    BOOL setResourceAndBind(Unk_020553f8_Res *a, u32 b);
+    void initRenderObj();
+    void reset();
 
     /* 0x04 */ u16 unk_04;
     /* 0x06 */ u16 unk_06;
@@ -98,10 +98,10 @@ public:
     virtual ~Unk_020dbe14();
 };
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    inline Unk_020dbe7c() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
-    virtual ~Unk_020dbe7c();
+    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    virtual ~AnimFrameCtrl();
 
     u32 unk_04;
     u32 unk_08;
@@ -110,17 +110,17 @@ public:
     u32 unk_14;
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c {
+class ModelAnim : public AnimFrameCtrl {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
-    void func_02055a8c(u32 a);
-    void func_02055a9c(u32 a);
+    ModelAnim();
+    virtual ~ModelAnim();
+    void removeFromRenderObj(u32 a);
+    void addToRenderObj(u32 a);
     void func_02055aac(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f);
     void func_02055ae4(s32 a, s32 b, s32 c, s32 e, u16 f);
     void func_02055b00(s32 a, s32 b, s32 c, s32 e, u16 f);
     void func_02055b38(s32 a, s32 b, s32 c, u16 e);
-    void func_02055b58(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e);
+    void initFromResource(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e);
     BOOL func_02055b90(u32 a, void *c);
     BOOL func_02055bcc(u32 a, void *c);
 
@@ -164,21 +164,21 @@ void NNS_G3dRenderObjRemoveAnmObj(s32 a, u32 b);
 void NNS_G3dRenderObjAddAnmObj(s32 a, u32 b);
 void NNS_G3dAnmObjInit(void *p, void *q, u32 r, u32 s);
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
-void *func_020e8608(void *h, u32 n);
+void *Heap_Alloc(void *h, u32 n);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 u32 _ZN12Unk_02056fd813func_0205710cEv(void *p);
 s32 func_02057110(u32 p);
 void func_0205c1d8(void);
 void func_0205c1f4(u32 a, u32 b);
-void _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, u32 c, u32 d);
+void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 void func_02056714(void *p);
 s32 func_02105dcc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGlbGetInvV(void);
 void MTX_Concat43(void *a, void *b, void *c);
 extern void *data_021c6214;
 extern u8 data_020e416c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern u32 (*data_0213bc18)(u32, u32, u32);
 extern u32 (*data_0213bc10)(u32, u32, u32);
 }
@@ -195,37 +195,37 @@ void *func_0205588c(void *a, void *heap);
 void *func_02055928(u32 *a, void *heap);
 }
 
-void Unk_020dbe4c::func_02055b58(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e) {
-    _ZN12Unk_020dbe7c13func_0205668cEihit(this, *(u16 *)((u8 *)a + 4), c, d, e);
+void ModelAnim::initFromResource(Unk_020553f8_Res *a, void *b, u32 c, u32 d, u16 e) {
+    _ZN13AnimFrameCtrl5setupEihit(this, *(u16 *)((u8 *)a + 4), c, d, e);
     NNS_G3dAnmObjInit((void *)unk_18, a, unk_1c, (u32)b);
     *(u32 *)unk_18 = e << 12;
 }
 
-void Unk_020dbe4c::func_02055b38(s32 a, s32 b, s32 c, u16 e) {
-    func_02055b58((Unk_020553f8_Res *)a, NULL, b, c, e);
+void ModelAnim::func_02055b38(s32 a, s32 b, s32 c, u16 e) {
+    initFromResource((Unk_020553f8_Res *)a, NULL, b, c, e);
 }
 
-void Unk_020dbe4c::func_02055b00(s32 a, s32 b, s32 c, s32 e, u16 f) {
-    func_02055a8c(a);
-    func_02055b58((Unk_020553f8_Res *)b, NULL, c, e, f);
-    func_02055a9c(a);
+void ModelAnim::func_02055b00(s32 a, s32 b, s32 c, s32 e, u16 f) {
+    removeFromRenderObj(a);
+    initFromResource((Unk_020553f8_Res *)b, NULL, c, e, f);
+    addToRenderObj(a);
 }
 
-void Unk_020dbe4c::func_02055ae4(s32 a, s32 b, s32 c, s32 e, u16 f) {
-    func_02055b58((Unk_020553f8_Res *)a, (void *)b, c, e, f);
+void ModelAnim::func_02055ae4(s32 a, s32 b, s32 c, s32 e, u16 f) {
+    initFromResource((Unk_020553f8_Res *)a, (void *)b, c, e, f);
 }
 
-void Unk_020dbe4c::func_02055aac(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f) {
-    func_02055a8c(a);
-    func_02055b58((Unk_020553f8_Res *)b, (void *)c, d, e, f);
-    func_02055a9c(a);
+void ModelAnim::func_02055aac(s32 a, s32 b, s32 c, u8 d, s32 e, u16 f) {
+    removeFromRenderObj(a);
+    initFromResource((Unk_020553f8_Res *)b, (void *)c, d, e, f);
+    addToRenderObj(a);
 }
 
-void Unk_020dbe4c::func_02055a9c(u32 a) {
+void ModelAnim::addToRenderObj(u32 a) {
     NNS_G3dRenderObjAddAnmObj(a, unk_18);
 }
 
-void Unk_020dbe4c::func_02055a8c(u32 a) {
+void ModelAnim::removeFromRenderObj(u32 a) {
     NNS_G3dRenderObjRemoveAnmObj(a, unk_18);
 }
 
@@ -279,7 +279,7 @@ extern "C" u32 func_02055954(u32 key) {
 }
 
 extern "C" void *func_02055928(u32 *a, void *heap) {
-    void *p = func_020e8608(heap, *a);
+    void *p = Heap_Alloc(heap, *a);
     if (p == NULL) {
         return NULL;
     }
@@ -292,12 +292,12 @@ extern "C" void *func_020558bc(u32 *a, u32 key) {
     void *r;
     if (key == 0x4e554c4c || (r = (void *)func_0205598c(key)) == NULL) {
         if (data_021c5390 >= 0x96) {
-            func_0206d49c();
+            Fatal_Trap();
             return NULL;
         }
         r = func_02055928(a, heap);
         if (r == NULL) {
-            func_0206d49c();
+            Fatal_Trap();
             return NULL;
         }
         s32 n = data_021c5390;
@@ -310,7 +310,7 @@ extern "C" void *func_020558bc(u32 *a, u32 key) {
 
 extern "C" void *func_0205588c(void *a, void *heap) {
     u32 n = _ZN12Unk_02056fd813func_0205710cEv(a);
-    void *p = func_020e8608(heap, n);
+    void *p = Heap_Alloc(heap, n);
     if (p == NULL) {
         return NULL;
     }
@@ -323,12 +323,12 @@ extern "C" void *func_02055820(void *a, u32 key) {
     void *r;
     if (key == 0x4e554c4c || (r = (void *)func_02055954(key)) == NULL) {
         if (data_021c538c >= 0x3c) {
-            func_0206d49c();
+            Fatal_Trap();
             return NULL;
         }
         r = func_0205588c(a, heap);
         if (r == NULL) {
-            func_0206d49c();
+            Fatal_Trap();
             return NULL;
         }
         s32 n = data_021c538c;
@@ -350,8 +350,8 @@ extern "C" BOOL func_020557a0(Unk_02055744_Obj *a, u32 b) {
     u32 y = NNS_G3dTexGetRequiredSize(a);
     u32 z = NNS_G3dTex4x4GetRequiredSize(a);
     if (b != 0) {
-        y = ((Unk_020dbe24 *)b)->func_02055334(y);
-        z = ((Unk_020dbe24 *)b)->func_02055328(z);
+        y = ((TexVramSlot *)b)->func_02055334(y);
+        z = ((TexVramSlot *)b)->func_02055328(z);
     } else {
         y = data_0213bc10(y, 0, 0);
         z = data_0213bc10(z, 1, 0);
@@ -369,7 +369,7 @@ extern "C" BOOL func_02055780(Unk_02055744_Obj *a, u32 x) {
 extern "C" BOOL func_02055744(Unk_02055744_Obj *a, u32 b) {
     u32 x = NNS_G3dPlttGetRequiredSize(a);
     if (b != 0) {
-        x = ((Unk_020dbe24 *)b)->func_02055300(x);
+        x = ((TexVramSlot *)b)->func_02055300(x);
     } else {
         x = data_0213bc18(x, 0, 0);
     }
@@ -381,14 +381,14 @@ extern "C" BOOL func_02055724(Unk_02055744_Obj *a, u32 b) {
     return r | func_02055744(a, b);
 }
 
-Unk_020dbe34::Unk_020dbe34() {
-    func_0205568c();
+Model::Model() {
+    reset();
 }
 
-Unk_020dbe34::~Unk_020dbe34() {
+Model::~Model() {
 }
 
-void Unk_020dbe34::func_0205568c() {
+void Model::reset() {
     NNS_G3dRenderObjInit(unk_08, NULL);
     unk_5c = NULL;
     unk_60 = 0;
@@ -397,7 +397,7 @@ void Unk_020dbe34::func_0205568c() {
     unk_94 = 0;
 }
 
-void Unk_020dbe34::func_0205562c() {
+void Model::initRenderObj() {
     NNS_G3dRenderObjInit(unk_08, unk_5c);
     Unk_0205562c_Blk *b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
     s32 i;
@@ -414,30 +414,30 @@ void Unk_020dbe34::func_0205562c() {
     NNSi_G3dModifyMatFlag(unk_5c, 0, 0x400);
 }
 
-BOOL Unk_020dbe34::func_02055600(Unk_020553f8_Res *a, u32 b) {
+BOOL Model::setResourceAndBind(Unk_020553f8_Res *a, u32 b) {
     unk_5c = a;
     unk_60 = b;
     if (unk_60 != 0) {
         NNS_G3dBindMdlTex(unk_5c, unk_60);
         NNS_G3dBindMdlPltt(unk_5c, unk_60);
     }
-    func_0205562c();
+    initRenderObj();
     return TRUE;
 }
 
-BOOL Unk_020dbe34::func_020555ec(Unk_020553f8_Res *a, u32 b) {
+BOOL Model::setResource(Unk_020553f8_Res *a, u32 b) {
     unk_5c = a;
     unk_60 = b;
-    func_0205562c();
+    initRenderObj();
     return TRUE;
 }
 
-BOOL Unk_020dbe34::func_020555dc() {
-    func_0205568c();
+BOOL Model::func_020555dc() {
+    reset();
     return TRUE;
 }
 
-void Unk_020dbe34::func_02055550(s32 *p) {
+void Model::func_02055550(s32 *p) {
     s32 save;
     s32 v[3];
     u8 *hdr = (u8 *)unk_5c;
@@ -470,17 +470,17 @@ void Unk_020dbe34::func_02055550(s32 *p) {
     }
 }
 
-void Unk_020dbe34::func_0205553c(s32 *p) {
+void Model::func_0205553c(s32 *p) {
     func_020554d0(p);
-    func_020554c4();
+    draw();
 }
 
-void Unk_020dbe34::func_02055524() {
+void Model::func_02055524() {
     *(u32 *)unk_08 |= 2;
     NNS_G3dDraw(unk_08);
 }
 
-void Unk_020dbe34::func_020554d0(s32 *p) {
+void Model::func_020554d0(s32 *p) {
     s32 v[3];
     MI_Copy36B(unk_64, data_027e0184);
     data_027e0148[0x7c / 4] &= ~0xa4;
@@ -494,25 +494,25 @@ void Unk_020dbe34::func_020554d0(s32 *p) {
     NNS_G3dGlbFlushP();
 }
 
-void Unk_020dbe34::func_020554c4() {
+void Model::draw() {
     NNS_G3dDraw(unk_08);
 }
 
-void *Unk_020dbe34::func_020554c0() {
+void *Model::getRenderObj() {
     return unk_08;
 }
 
-void Unk_020dbe34::func_020554a0(s32 a, s32 b, s32 c, s32 d, s32 e) {
+void Model::func_020554a0(s32 a, s32 b, s32 c, s32 d, s32 e) {
     func_02103d50(unk_08, a, e, b, c);
     unk_34 = d;
 }
 
-void Unk_020dbe34::func_02055488(s32 a, s32 b) {
+void Model::func_02055488(s32 a, s32 b) {
     func_02103d48(unk_08, a);
     unk_34 = b;
 }
 
-void Unk_020dbe34::func_02055440(u32 v) {
+void Model::setPolygonId(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
     b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
@@ -528,7 +528,7 @@ void Unk_020dbe34::func_02055440(u32 v) {
     }
 }
 
-void Unk_020dbe34::func_020553f8(u32 v) {
+void Model::setAlpha(u32 v) {
     s32 i;
     Unk_0205562c_Blk *b;
     b = (Unk_0205562c_Blk *)((u8 *)unk_5c + unk_5c->unk_08);
@@ -552,13 +552,13 @@ extern "C" BOOL func_020553cc(u8 *p, void *a, s32 b) {
     return TRUE;
 }
 
-Unk_020dbe24::Unk_020dbe24() {
+TexVramSlot::TexVramSlot() {
     func_02055200();
 }
 
-Unk_020dbe24::~Unk_020dbe24() {}
+TexVramSlot::~TexVramSlot() {}
 
-void Unk_020dbe24::func_02055340(void *a, void *b, void *c) {
+void TexVramSlot::func_02055340(void *a, void *b, void *c) {
     if (a != NULL) {
         unk_04 = data_0213bc10((u32)a, 0, 0);
     }
@@ -571,31 +571,31 @@ void Unk_020dbe24::func_02055340(void *a, void *b, void *c) {
     unk_10 = 1;
 }
 
-u32 Unk_020dbe24::func_02055334(u32 a) {
+u32 TexVramSlot::func_02055334(u32 a) {
     return func_02055314(a, unk_04);
 }
 
-u32 Unk_020dbe24::func_02055328(u32 a) {
+u32 TexVramSlot::func_02055328(u32 a) {
     return func_02055314(a, unk_08);
 }
 
-u32 Unk_020dbe24::func_02055314(u32 a, u32 b) {
+u32 TexVramSlot::func_02055314(u32 a, u32 b) {
     return (b & 0x8000ffff) | ((a >> 4) << 16);
 }
 
-u32 Unk_020dbe24::func_02055300(u32 a) {
+u32 TexVramSlot::func_02055300(u32 a) {
     return (unk_0c & 0xffff) | ((a >> 3) << 16);
 }
 
-u32 Unk_020dbe24::func_020552ec(u32 a, u32 b) {
+u32 TexVramSlot::func_020552ec(u32 a, u32 b) {
     return func_02055298(b, unk_04, a);
 }
 
-u32 Unk_020dbe24::func_020552d8(u32 a, u32 b) {
+u32 TexVramSlot::func_020552d8(u32 a, u32 b) {
     return func_02055298(b, unk_08, a);
 }
 
-u32 Unk_020dbe24::func_02055298(u32 a, u32 b, u32 c) {
+u32 TexVramSlot::func_02055298(u32 a, u32 b, u32 c) {
     u32 v = (b & 0xffff) << 3;
     v += ((c & 0x7fff0000) >> 16) << 4;
     u32 top = (c & 0x80000000) >> 31;
@@ -604,14 +604,14 @@ u32 Unk_020dbe24::func_02055298(u32 a, u32 b, u32 c) {
     return top | (r | ((v >> 3) & 0xffff));
 }
 
-u32 Unk_020dbe24::func_0205526c(u32 a, u32 b) {
+u32 TexVramSlot::func_0205526c(u32 a, u32 b) {
     u32 v = (unk_0c & 0xffff) << 3;
     v += ((a & 0xffff0000) >> 16) << 3;
     u32 r = (b >> 3) << 16;
     return r | ((v >> 3) & 0xffff);
 }
 
-void Unk_020dbe24::func_02055210(void *p) {
+void TexVramSlot::func_02055210(void *p) {
     s32 a = NNS_G3dTexGetRequiredSize(p);
     s32 b = NNS_G3dTex4x4GetRequiredSize(p);
     s32 c = NNS_G3dPlttGetRequiredSize(p);
@@ -623,7 +623,7 @@ void Unk_020dbe24::func_02055210(void *p) {
     unk_10 = 1;
 }
 
-void Unk_020dbe24::func_02055200(void) {
+void TexVramSlot::func_02055200(void) {
     unk_04 = 0;
     unk_08 = 0;
     unk_0c = 0;

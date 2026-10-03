@@ -1,8 +1,8 @@
 // mwcc-flags: -nothumb -O4,p
 // G004c: autoload_2 0x020ed8cc-0x020edd58 (18 functions). mwcc 1.2/base, C++, ARM, -O4,p. PARTIAL unit: no data defined,
 // every function is extern "C" under its symbols.txt name. End of the command sequence object (Unk_Seq), then the
-// sound-system wrappers around data_021f59e8 (sound archive/system object: thin assert-and-forward helpers, system
-// start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = func_0206d49c (assert failure).
+// sound-system wrappers around gSndHeap (sound archive/system object: thin assert-and-forward helpers, system
+// start-up at 0x020edbbc) and the sound player object (Player) helpers. Fatal stop = Fatal_Trap (assert failure).
 #include "types.h"
 
 class Unk_Seq {
@@ -62,10 +62,10 @@ struct Player {
 };
 
 extern "C" {
-void func_0206d49c(void);
-extern void *data_021f59e8;
-extern void *data_021f59f0;
-extern u8 data_021f59ec[];
+void Fatal_Trap(void);
+extern void *gSndHeap;
+extern void *gSndCaptureBuffer;
+extern u8 gSndDefaultHandle[];
 extern u8 data_021f5aac[];
 extern u8 data_021f5a1c[];
 void NNS_SndHandleInit(void *p);
@@ -87,124 +87,124 @@ s32 NNS_SndMain(void);
 
 }
 extern "C" {
-void func_020edf9c(Group *g);
-void *func_020ee930(void **p);
-void *func_020ee944(void *list, void *obj);
+void SndSeGroup_Shutdown(Group *g);
+void *SndList_GetFirst(void **p);
+void *SndList_GetNext(void *list, void *obj);
 }
 
 // PROTOS-BEGIN
 extern "C" {
-void *func_020ed960(void);
-void *func_020ed978(u32 a);
-void func_020edad0(s32 a, void *b, void *c);
-void func_020edb20(void);
-void func_020edbb8(void);
-void *func_020edc88(void);
-void func_020edc98(FndList *o);
-void func_020edcec(Player *o);
+void *Snd_GetHeapLevel(void);
+void *Snd_RestoreHeapLevel(u32 a);
+void Snd_StartSeqArc(s32 a, void *b, void *c);
+void Snd_AllocCaptureBuffer(void);
+void Snd_CaptureBufferDisposeCallback(void);
+void *Snd_GetHeap(void);
+void SndSeGroupList_StopAll(FndList *o);
+void SndSeSystem_UnloadGroup(Player *o);
 }
 
-extern "C" void func_020edd20(Player *o, s32 flag) {
-    func_020edc98(&o->list);
-    if (flag != 0) func_020edcec(o);
+extern "C" void SndSeSystem_Shutdown(Player *o, s32 flag) {
+    SndSeGroupList_StopAll(&o->list);
+    if (flag != 0) SndSeSystem_UnloadGroup(o);
     o->unk_0c = 0;
 }
 
-extern "C" void func_020edcec(Player *o) {
-    if (o->unk_15.b0 == 255) func_0206d49c();
+extern "C" void SndSeSystem_UnloadGroup(Player *o) {
+    if (o->unk_15.b0 == 255) Fatal_Trap();
     if (o->unk_1c == 255) return;
-    func_020ed978(o->unk_1c);
+    Snd_RestoreHeapLevel(o->unk_1c);
 }
 
-extern "C" void func_020edc98(FndList *o) {
+extern "C" void SndSeGroupList_StopAll(FndList *o) {
     Group *p;
-    if (o == NULL) func_0206d49c();
-    p = (Group *)func_020ee930((void **)o);
+    if (o == NULL) Fatal_Trap();
+    p = (Group *)SndList_GetFirst((void **)o);
     if (p == NULL) return;
     do {
-        func_020edf9c(p);
-        p = (Group *)func_020ee944(o, p);
+        SndSeGroup_Shutdown(p);
+        p = (Group *)SndList_GetNext(o, p);
     } while (p != NULL);
 }
 
-extern "C" void *func_020edc88(void) {
-    return data_021f59e8;
+extern "C" void *Snd_GetHeap(void) {
+    return gSndHeap;
 }
 
-extern "C" void func_020edbbc(u32 a, u32 b, u32 c, u32 d) {
+extern "C" void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d) {
     NNS_SndInit();
-    if (data_021f59e8 != NULL) func_0206d49c();
-    data_021f59e8 = NNS_SndHeapCreate(a, b);
-    if (data_021f59e8 == NULL) func_0206d49c();
-    func_020edb20();
+    if (gSndHeap != NULL) Fatal_Trap();
+    gSndHeap = NNS_SndHeapCreate(a, b);
+    if (gSndHeap == NULL) Fatal_Trap();
+    Snd_AllocCaptureBuffer();
     if (c != 0) {
-        NNS_SndArcInit(data_021f5aac, c, data_021f59e8, 0);
+        NNS_SndArcInit(data_021f5aac, c, gSndHeap, 0);
     } else {
-        if (d == 0) func_0206d49c();
+        if (d == 0) Fatal_Trap();
         NNS_SndArcInitOnMemory(data_021f5a1c, d);
     }
-    if (NNS_SndArcPlayerSetup(data_021f59e8) == 0) func_0206d49c();
-    NNS_SndHandleInit(data_021f59ec);
+    if (NNS_SndArcPlayerSetup(gSndHeap) == 0) Fatal_Trap();
+    NNS_SndHandleInit(gSndDefaultHandle);
 }
 
-extern "C" void func_020edbb8(void) {
+extern "C" void Snd_CaptureBufferDisposeCallback(void) {
 }
 
-extern "C" void func_020edb74(u32 a) {
-    if (data_021f59f0 == NULL) func_0206d49c();
-    func_0210ef44(((u32)data_021f59f0 + 31) & ~31, 0x1000, a);
+extern "C" void Snd_StartOutputEffect(u32 a) {
+    if (gSndCaptureBuffer == NULL) Fatal_Trap();
+    func_0210ef44(((u32)gSndCaptureBuffer + 31) & ~31, 0x1000, a);
 }
 
-extern "C" void func_020edb20(void) {
-    data_021f59f0 = NNS_SndHeapAlloc(func_020edc88(), 0x1020, func_020edbb8, 0, 0);
-    if (data_021f59f0 == NULL) func_0206d49c();
+extern "C" void Snd_AllocCaptureBuffer(void) {
+    gSndCaptureBuffer = NNS_SndHeapAlloc(Snd_GetHeap(), 0x1020, Snd_CaptureBufferDisposeCallback, 0, 0);
+    if (gSndCaptureBuffer == NULL) Fatal_Trap();
 }
 
-extern "C" void func_020edb14(void) {
+extern "C" void Snd_Main(void) {
     NNS_SndMain();
 }
 
-extern "C" void func_020edb00(s32 a, void *b) {
-    func_020edad0(a, b, &data_021f59ec);
+extern "C" void Snd_StartSeqArcDefault(s32 a, void *b) {
+    Snd_StartSeqArc(a, b, &gSndDefaultHandle);
 }
 
-extern "C" void func_020edad0(s32 a, void *b, void *c) {
-    if (c == NULL) func_0206d49c();
+extern "C" void Snd_StartSeqArc(s32 a, void *b, void *c) {
+    if (c == NULL) Fatal_Trap();
     NNS_SndArcPlayerStartSeqArc(c, (u32)b, (void *)a);
 }
 
-extern "C" void func_020eda80(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
-    if (a == NULL) func_0206d49c();
+extern "C" void Snd_StartSeqArcEx(void *a, s32 b, s32 c, s32 d, s32 e, s32 f) {
+    if (a == NULL) Fatal_Trap();
     func_0210cebc(a, b, c, d, e, f);
 }
 
-extern "C" void func_020eda60(void *a) {
-    if (a == NULL) func_0206d49c();
+extern "C" void Snd_InitHandle(void *a) {
+    if (a == NULL) Fatal_Trap();
     NNS_SndHandleInit(a);
 }
 
-extern "C" void func_020eda30(void *a, u32 b) {
-    if (a == NULL) func_0206d49c();
+extern "C" void Snd_StopHandle(void *a, u32 b) {
+    if (a == NULL) Fatal_Trap();
     NNS_SndPlayerStopSeq(a, b);
 }
 
-extern "C" s32 func_020ed9c8(u32 a) {
-    s32 r = (s32)func_020ed960();
-    if (NNS_SndArcLoadGroup(a, data_021f59e8) == 0) return -1;
-    if (NNS_SndHeapSaveState(data_021f59e8) == -1) func_0206d49c();
+extern "C" s32 Snd_LoadGroup(u32 a) {
+    s32 r = (s32)Snd_GetHeapLevel();
+    if (NNS_SndArcLoadGroup(a, gSndHeap) == 0) return -1;
+    if (NNS_SndHeapSaveState(gSndHeap) == -1) Fatal_Trap();
     return r;
 }
 
-extern "C" void *func_020ed978(u32 a) {
-    if (a == 255) func_0206d49c();
-    if (a == 0) func_0206d49c();
-    NNS_SndHeapLoadState(data_021f59e8, a);
-    if (a != (u32)func_020ed960()) func_0206d49c();
-    return func_020ed960();
+extern "C" void *Snd_RestoreHeapLevel(u32 a) {
+    if (a == 255) Fatal_Trap();
+    if (a == 0) Fatal_Trap();
+    NNS_SndHeapLoadState(gSndHeap, a);
+    if (a != (u32)Snd_GetHeapLevel()) Fatal_Trap();
+    return Snd_GetHeapLevel();
 }
 
-extern "C" void *func_020ed960(void) {
-    return func_0210bd4c(data_021f59e8);
+extern "C" void *Snd_GetHeapLevel(void) {
+    return func_0210bd4c(gSndHeap);
 }
 
 // PROTOS-END

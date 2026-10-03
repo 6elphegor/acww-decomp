@@ -1,29 +1,29 @@
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 extern "C" {
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u16 data_021f47d8[];
-extern u8 data_021f4770;
-extern u8 data_021f4774;
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u16 gPad[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
 
 void func_020020b8(s32 a);
 void func_020021a0(s32 a);
 void func_0200226c(u32 n, u32 a, u32 b, u32 c);
 void func_02002398(u32 a, u32 b);
-void func_0200402c(u32 a);
+void Snd_PlaySe(u32 a);
 void func_02065e70(void *a, void *b);
 void func_0206ecf8(u32 a);
 void func_0206ed2c(u32 a);
-BOOL func_0206ef00();
-BOOL func_0206ef0c();
-void *func_020ed174(void *p);
-void func_020ed188();
+BOOL MenuCtrl_IsButtons();
+BOOL MenuCtrl_IsTouch();
+void *ProcBase_GetParent(void *p);
+void ProcBase_RequestDelete();
 BOOL func_ov002_0220125c(void *pad);
 BOOL func_ov002_0220126c(void *pad);
 BOOL func_ov002_0220127c(void *pad);
@@ -63,17 +63,17 @@ s32 func_ov094_02293df8(void *p, u32 a);
 
 // ---- external classes (method holders: the real symbols name the class that owns the method)
 
-class Unk_020e0d98 {
+class LabelBalloon {
 public:
-    void func_02089ad8(s32 a, s32 b);
+    void setPos(s32 a, s32 b);
 };
 
-class Unk_020e100c {
+class HandCursor {
 public:
-    BOOL func_0208d4fc();
-    s32 func_0208d534();
-    void func_0208d538(s32 a);
-    void func_0208d644();
+    BOOL isAnimDone();
+    s32 getAnim();
+    void setAnimAtEnd(s32 a);
+    void enableObjWindow();
 };
 
 class Unk_020e45f8 {
@@ -133,10 +133,10 @@ public:
 
 // ---- sub-objects with their own constructor/destructor
 
-class Unk_020dd458 {
+class Letter {
 public:
-    Unk_020dd458();
-    ~Unk_020dd458();
+    Letter();
+    ~Letter();
     u32 unk_00[0xf4 / 4];
 };
 
@@ -230,7 +230,7 @@ public:
     Unk_ov002_02204558();
     ~Unk_ov002_02204558();
 
-    void func_ov002_02202200(Unk_020e0d98 *a);
+    void func_ov002_02202200(LabelBalloon *a);
     void func_ov002_0220229c(s32 a, s32 b);
     void func_ov002_02202310(s32 a, s32 b, const char *c);
 
@@ -262,7 +262,7 @@ public:
 };
 
 // Vtable 0x022044e4
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -270,11 +270,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -315,7 +315,7 @@ typedef void (Unk_ov108_02296b58::*Unk_ov108_02296b58_Fn)();
 
 static inline BOOL Unk_ov108_022961d8_Both()
 {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -329,7 +329,7 @@ public:
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_4c();
     virtual BOOL vfunc_50();
     virtual BOOL vfunc_54();
@@ -442,8 +442,8 @@ public:
     /* 0x0a0 */ s32 unk_a0;
     /* 0x0a4 */ s32 unk_a4;
     /* 0x0a8 */ s32 unk_a8;
-    /* 0x0ac */ Unk_020dd458 unk_ac;
-    /* 0x1a0 */ Unk_020dd458 unk_1a0;
+    /* 0x0ac */ Letter unk_ac;
+    /* 0x1a0 */ Letter unk_1a0;
     /* 0x294 */ u8 unk_294;
     /* 0x295 */ u8 unk_295;
     /* 0x296 */ u8 unk_296;
@@ -488,19 +488,19 @@ BOOL Unk_ov108_02296b58::vfunc_00() {
 }
 
 BOOL Unk_ov108_02296b58::vfunc_0c() {
-    ((Unk_ov092_02291ec8 *)func_020ed174(this))->func_ov092_02291c5c();
+    ((Unk_ov092_02291ec8 *)ProcBase_GetParent(this))->func_ov092_02291c5c();
     func_ov108_022963e0();
     return TRUE;
 }
 
-BOOL Unk_ov108_02296b58::vfunc_24() {
+BOOL Unk_ov108_02296b58::onDraw() {
     s32 t;
     func_ov002_02201b28(&unk_247c);
     if (!func_ov108_02294d9c(1)) {
         return TRUE;
     }
     unk_2340.vfunc_08();
-    if (func_0206ef00()) {
+    if (MenuCtrl_IsButtons()) {
         ((Unk_ov002_02202d98 *)&unk_2418)->func_ov002_02202844();
     }
     func_ov108_02295458();
@@ -554,7 +554,7 @@ BOOL Unk_ov108_02296b58::vfunc_54() { return TRUE; }
 BOOL Unk_ov108_02296b58::vfunc_58() { return TRUE; }
 
 BOOL Unk_ov108_02296b58::vfunc_5c() {
-    func_020ed188();
+    ProcBase_RequestDelete();
     return TRUE;
 }
 
@@ -591,7 +591,7 @@ void Unk_ov108_02296b58::func_ov108_0229654c() {
 void Unk_ov108_02296b58::func_ov108_022964ec() {
     unk_2340.func_ov002_022006e4(1);
     func_ov108_02295254();
-    ((Unk_ov092_02291ec8 *)func_020ed174(this))->func_ov092_02291ce4(0x44, 1);
+    ((Unk_ov092_02291ec8 *)ProcBase_GetParent(this))->func_ov092_02291ce4(0x44, 1);
     func_ov002_022008c4(8, 0, 0, 0x30);
     func_ov002_02200840(6, 0, -16);
     func_ov002_02200a50(4);
@@ -675,7 +675,7 @@ void Unk_ov108_02296b58::func_ov108_0229626c() {
         func_ov108_02295a2c();
     } else {
         if (Unk_ov108_022961d8_Both()) {
-            s32 r = func_ov108_022957cc(data_021ef5f0, data_021ef5ec + 0x10, 1);
+            s32 r = func_ov108_022957cc(gTouchCurX, gTouchCurY + 0x10, 1);
             if (r != 0x16) {
                 func_ov108_02295974(r);
             } else {
@@ -688,7 +688,7 @@ void Unk_ov108_02296b58::func_ov108_0229626c() {
 }
 
 void Unk_ov108_02296b58::func_ov108_022961d8() {
-    if (data_021f4770 == 0) {
+    if (gTouchHeld == 0) {
         if (func_ov108_02294d9c(4)) {
             func_ov002_02200a58(3);
             func_ov108_0229665c();
@@ -711,7 +711,7 @@ void Unk_ov108_02296b58::func_ov108_022961d8() {
 }
 
 void Unk_ov108_02296b58::func_ov108_022961bc() {
-    if (data_021f4770 == 0) {
+    if (gTouchHeld == 0) {
         func_ov002_02200a58(5);
     }
 }
@@ -732,7 +732,7 @@ void Unk_ov108_02296b58::func_ov108_022960e0() {
     func_ov108_02295588();
     s32 r = func_ov108_022957cc(unk_a4 + 8, unk_a8 + 8, 0);
     if (r != 0x16) {
-        if (data_021f4770 == 0) {
+        if (gTouchHeld == 0) {
             if (func_ov108_02295648(r) != 0 || func_ov108_02295780(r) == 0) {
                 func_ov108_022958c0(unk_297, 4);
             } else {
@@ -742,7 +742,7 @@ void Unk_ov108_02296b58::func_ov108_022960e0() {
             func_ov108_02295558(r);
         }
     } else {
-        if (data_021f4770 == 0) {
+        if (gTouchHeld == 0) {
             func_ov108_022958c0(unk_297, 4);
         }
     }
@@ -753,7 +753,7 @@ void Unk_ov108_02296b58::func_ov108_02296048() {
         if (func_ov002_02200a14(1)) {
             func_ov108_02294f28();
         } else if (Unk_ov108_022961d8_Both()) {
-            s32 r = ((Unk_ov002_022013ac *)&unk_247c)->func_ov002_022014c0(data_021ef5f0, data_021ef5ec);
+            s32 r = ((Unk_ov002_022013ac *)&unk_247c)->func_ov002_022014c0(gTouchCurX, gTouchCurY);
             if (r >= 0) {
                 func_ov002_02201aa0(&unk_247c, r, 1);
                 unk_29c = unk_247c.unk_2f9[r];
@@ -771,7 +771,7 @@ void Unk_ov108_02296b58::func_ov108_02295f74() {
         func_ov108_02295498();
         func_ov108_022951ec();
         unk_2340.func_ov002_022006e4(0);
-    } else if (func_ov108_02295648(unk_298) == 0 && (data_021f47d8[1] & 1) != 0) {
+    } else if (func_ov108_02295648(unk_298) == 0 && (gPad[1] & 1) != 0) {
         if (func_ov108_02295830(unk_298)) {
             if (func_ov108_02295614(unk_298) == 0) {
                 func_ov108_02294ec4(unk_298, 0);
@@ -779,7 +779,7 @@ void Unk_ov108_02296b58::func_ov108_02295f74() {
         } else {
             func_ov108_02295074();
         }
-    } else if ((data_021f47d8[1] & 2) != 0) {
+    } else if ((gPad[1] & 2) != 0) {
         func_ov108_02295254();
         func_ov108_02295850();
         unk_2340.func_ov002_022006e4(0);
@@ -794,7 +794,7 @@ void Unk_ov108_02296b58::func_ov108_02295ed8() {
         func_ov108_022951ec();
         unk_2340.func_ov002_022006e4(0);
     } else {
-        u16 f = data_021f47d8[1];
+        u16 f = gPad[1];
         if ((f & 1) != 0) {
             if (func_ov108_02295614(unk_298)) {
                 func_ov108_02295038(unk_298);
@@ -816,7 +816,7 @@ void Unk_ov108_02296b58::func_ov108_02295e5c() {
     } else if (func_ov002_022019d0(&unk_247c, func_ov002_022009c8(), &unk_29d, 0)) {
         func_ov108_02295198();
     } else {
-        u16 f = data_021f47d8[1];
+        u16 f = gPad[1];
         if ((f & 1) != 0) {
             ((Unk_ov002_0220464c *)&unk_2418)->func_ov002_02202b68();
             func_ov002_02200a58(9);
@@ -827,7 +827,7 @@ void Unk_ov108_02296b58::func_ov108_02295e5c() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295e0c() {
-    if (((Unk_020e100c *)&unk_2418)->func_0208d4fc()) {
+    if (((HandCursor *)&unk_2418)->isAnimDone()) {
         func_ov002_02201aa0(&unk_247c, unk_29d, 1);
         unk_29c = unk_247c.unk_2f9[unk_29d];
         func_ov002_02200a58(0x14);
@@ -846,14 +846,14 @@ void Unk_ov108_02296b58::func_ov108_02295dc0() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295d90() {
-    if (((Unk_020e100c *)&unk_2418)->func_0208d4fc()) {
+    if (((HandCursor *)&unk_2418)->isAnimDone()) {
         ((Unk_ov002_02202fac *)&unk_2884)->func_ov002_022030ac(9);
         func_ov002_02200a58(0x17);
     }
 }
 
 void Unk_ov108_02296b58::func_ov108_02295d68() {
-    if (((Unk_020e100c *)&unk_2418)->func_0208d4fc()) {
+    if (((HandCursor *)&unk_2418)->isAnimDone()) {
         func_ov108_02295094();
         func_ov002_02200a58(6);
     }
@@ -867,7 +867,7 @@ void Unk_ov108_02296b58::func_ov108_02295d38() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295d08() {
-    if (((Unk_020e100c *)&unk_2418)->func_0208d4fc()) {
+    if (((HandCursor *)&unk_2418)->isAnimDone()) {
         func_ov002_02200a58(unk_29b);
     }
     func_ov108_02295400();
@@ -900,7 +900,7 @@ void Unk_ov108_02296b58::func_ov108_02295c6c() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295c28() {
-    if (((Unk_020e100c *)&unk_2418)->func_0208d4fc()) {
+    if (((HandCursor *)&unk_2418)->isAnimDone()) {
         func_ov002_02200a58(unk_29b);
     }
     if (((Unk_ov002_02202d98 *)&unk_2418)->func_ov002_02202928()) {
@@ -920,7 +920,7 @@ void Unk_ov108_02296b58::func_ov108_02295bf0() {
 
 void Unk_ov108_02296b58::func_ov108_02295bb4() {
     if (((Unk_ov002_022013ac *)&unk_247c)->func_ov002_022017b4()) {
-        if (func_0206ef00()) {
+        if (MenuCtrl_IsButtons()) {
             func_ov108_022950e8();
             func_ov002_02200a58(8);
         } else {
@@ -933,7 +933,7 @@ void Unk_ov108_02296b58::func_ov108_02295b64() {
     if (func_ov002_02201a28(&unk_247c)) {
         func_ov002_02202064(&unk_247c, 0);
         unk_2340.func_ov002_022006e4(1);
-        if (((Unk_020e100c *)&unk_2418)->func_0208d534()) {
+        if (((HandCursor *)&unk_2418)->getAnim()) {
             func_ov108_022950b4();
         }
         func_ov002_02200a58(0x15);
@@ -949,13 +949,13 @@ void Unk_ov108_02296b58::func_ov108_02295b44() {
 void Unk_ov108_02296b58::func_ov108_02295b0c() {
     if (unk_277c.func_ov002_02204234(0)) {
         func_ov002_02200a58(unk_29b);
-        ((Unk_020e100c *)&unk_2418)->func_0208d644();
+        ((HandCursor *)&unk_2418)->enableObjWindow();
     }
 }
 
 void Unk_ov108_02296b58::func_ov108_02295a84() {
     if (((Unk_ov002_02202fac *)&unk_2884)->func_ov002_0220308c()) {
-        if (((Unk_020e100c *)&unk_2418)->func_0208d534()) {
+        if (((HandCursor *)&unk_2418)->getAnim()) {
             s32 r4 = ((Unk_ov002_02202fac *)&unk_2884)->func_ov002_0220306c();
             s32 r6 = ((Unk_ov002_02202fac *)&unk_2884)->func_ov002_022030f4(-1);
             s32 r2 = ((Unk_ov002_02202fac *)&unk_2884)->func_ov002_022030b8(-1);
@@ -986,7 +986,7 @@ void Unk_ov108_02296b58::func_ov108_02295a2c() {
 }
 
 void Unk_ov108_02296b58::func_ov108_02295a0c() {
-    if (func_0206ef0c()) {
+    if (MenuCtrl_IsTouch()) {
         func_ov108_02295a68();
     } else {
         func_ov108_02295a2c();
@@ -996,8 +996,8 @@ void Unk_ov108_02296b58::func_ov108_02295a0c() {
 void Unk_ov108_02296b58::func_ov108_02295974(u32 b) {
     unk_295 = b;
     func_ov002_02200a58(1);
-    u32 r6 = data_021ef5f0;
-    u32 r7 = data_021ef5ec;
+    u32 r6 = gTouchCurX;
+    u32 r7 = gTouchCurY;
     unk_9c = func_ov108_022956e0(unk_295) - r6;
     unk_a0 = func_ov108_022956a4(unk_295) - r7;
     unk_296 = b;
@@ -1044,7 +1044,7 @@ void Unk_ov108_02296b58::func_ov108_02295878() {
 void Unk_ov108_02296b58::func_ov108_02295850() {
     ((Unk_ov002_02202fac *)&unk_2884)->func_ov002_022030ac(9);
     func_ov002_02200a58(0x17);
-    func_0200402c(0x28);
+    Snd_PlaySe(0x28);
 }
 
 void Unk_ov108_02296b58::func_ov108_02295840() {
@@ -1174,10 +1174,10 @@ void Unk_ov108_02296b58::func_ov108_02295558(u32 b) {
 void Unk_ov108_02296b58::func_ov108_022954ec() {
     s32 a = func_ov108_022956e0(unk_296) - 0x6d;
     s32 b = func_ov108_022956a4(unk_296) - 0x78;
-    if (func_0206ef00()) {
+    if (MenuCtrl_IsButtons()) {
         b -= 8;
     }
-    ((Unk_020e0d98 *)&unk_2340)->func_02089ad8(a, b);
+    ((LabelBalloon *)&unk_2340)->setPos(a, b);
     if (func_ov108_02295830(unk_296)) {
         s32 c = func_ov108_0229581c(unk_296);
         unk_d38.func_ov094_02294420(&unk_2340, c);
@@ -1208,8 +1208,8 @@ void Unk_ov108_02296b58::func_ov108_02295458() {
 }
 
 void Unk_ov108_02296b58::func_ov108_0229542c() {
-    unk_a4 = unk_9c + data_021ef5f0;
-    unk_a8 = unk_a0 + data_021ef5ec;
+    unk_a4 = unk_9c + gTouchCurX;
+    unk_a8 = unk_a0 + gTouchCurY;
 }
 
 void Unk_ov108_02296b58::func_ov108_02295400() {
@@ -1302,7 +1302,7 @@ void Unk_ov108_02296b58::func_ov108_02295134() {
     s32 a = ((Unk_ov002_022013ac *)&unk_247c)->func_ov002_022014a4();
     s32 b = ((Unk_ov002_022013ac *)&unk_247c)->func_ov002_02201498(unk_29d);
     ((Unk_ov002_02202d98 *)&unk_2418)->func_ov002_02202a40(a, b);
-    ((Unk_020e100c *)&unk_2418)->func_0208d538(8);
+    ((HandCursor *)&unk_2418)->setAnimAtEnd(8);
     func_ov002_02200a58(0x14);
 }
 
@@ -1363,7 +1363,7 @@ void Unk_ov108_02296b58::func_ov108_02294f58(u32 x) {
     s32 a = func_ov108_022956e0(unk_299);
     s32 b = func_ov108_022956a4(unk_299);
     if (x != 0) {
-        unk_247c.func_ov002_02202200((Unk_020e0d98 *)&unk_2340);
+        unk_247c.func_ov002_02202200((LabelBalloon *)&unk_2340);
     } else {
         unk_247c.func_ov002_0220229c(a, b);
     }

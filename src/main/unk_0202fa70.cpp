@@ -96,14 +96,14 @@ struct Unk_0202ea3c : Unk_0202f048 {
 };
 
 // ---- 3D vector with the destructor at 0x02000c8c
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 unk_00, unk_04, unk_08;
-    Unk_02000c8c();
-    Unk_02000c8c(s32 a, s32 b, s32 c) { unk_00 = a; unk_04 = b; unk_08 = c; }
-    ~Unk_02000c8c();
+    FxVec3();
+    FxVec3(s32 a, s32 b, s32 c) { unk_00 = a; unk_04 = b; unk_08 = c; }
+    ~FxVec3();
 };
-extern Unk_02000c8c data_021bfa4c;
-extern Unk_02000c8c data_021bfa70;
+extern FxVec3 data_021bfa4c;
+extern FxVec3 data_021bfa70;
 extern Unk_02033edc data_021bfab8;
 
 // ---- triangle (vtable 0x020d8cc4, unit at 0x0202e9d4)
@@ -354,7 +354,7 @@ struct Unk_020d8cf4X {
     s16 unk_28;
     s16 unk_2a;
     s32 unk_2c;
-    Unk_02000c8c unk_30[4];
+    FxVec3 unk_30[4];
     Unk_0202ea3c unk_60[4];
     u8 unk_80[0x18];
     u8 unk_98;
@@ -1052,9 +1052,9 @@ const Unk_020c7c4c_Ent data_020c7c4c[0x7c] = {
     {0x4b2, 0x4c2, 1, 1, -1, 0, 2, 0, 0, 123, 123, 123, 123, 123, 123, 123, 123, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
 s32 data_021bf9a0 = func_01ffcb0c(0x20000, 0x800);
-Unk_02000c8c data_021bfa4c(0, 0x1000, 0);
+FxVec3 data_021bfa4c(0, 0x1000, 0);
 Unk_020318cc_Node *data_021bf9b4;
-Unk_02000c8c data_021bfa70(0x1000, 0x1000, 0x1000);
+FxVec3 data_021bfa70(0x1000, 0x1000, 0x1000);
 Unk_02033f70 *data_020d8ce8 = &data_021bfab8.unk_04[0];
 const Unk_020c7c3c_Fn data_020c7c3c[4] = {func_02031414, func_0203142c, func_02031444, func_0203145c};
 const u32 data_020c7c20[3] = {0x800, 0xc00, 0x1000};
@@ -2273,7 +2273,7 @@ extern "C" void func_02031d5c(s32* a, s32 b, s32 c) {
 }
 
 void Unk_020d8cf4X::func_02031d04() {
-    Unk_02000c8c* a;
+    FxVec3* a;
     Unk_0202ea3c* b;
     s32 i;
     unk_2a = 0;
@@ -2815,7 +2815,7 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
 {
     s32 dy, dx;
     s32 r5;
-    volatile Unk_02030f10_Vec A;
+    volatile Unk_02030f10_Vec LampLights;
     Unk_02030f10_Vec Q;
     dx = a - c;
     if (dx < 0) dx = -dx;
@@ -2828,9 +2828,9 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
     } else {
         if (!func_02031284(c, d)) return FALSE;
     }
-    A.x = (a << 13) + 0x1000;
-    A.y = 0;
-    A.z = (b << 13) + 0x1000;
+    LampLights.x = (a << 13) + 0x1000;
+    LampLights.y = 0;
+    LampLights.z = (b << 13) + 0x1000;
     Q.x = (c << 13) + 0x1000;
     Q.y = 0;
     Q.z = (d << 13) + 0x1000;
@@ -2843,13 +2843,13 @@ extern "C" BOOL func_02030f10(s32 a, s32 b, s32 c, s32 d, u8 flag)
         s32 tR, tS;
         l.R.x = Q.x;
         l.R.y = 0;
-        l.R.z = A.z;
+        l.R.z = LampLights.z;
         tR = func_0203081c((Unk_0202ff44_V3 *)(&l.R), 0, 25);
         if (tR == 0 && r5 == tR) {
             _ZN12Unk_02033b3c13func_02033d2cEP16Unk_0203389c_Veci(&l.T, &l.R, 0);
             if (Unk_02030f10_Flat(&l.T)) return TRUE;
         }
-        l.S.x = A.x;
+        l.S.x = LampLights.x;
         l.S.y = 0;
         l.S.z = Q.z;
         tS = func_0203081c((Unk_0202ff44_V3 *)(&l.S), 0, 25);
@@ -2944,7 +2944,7 @@ Unk_02033b3c::~Unk_02033b3c()
 extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
 {
     s32 bx, bz, j, i;
-    Unk_02033b94 X, Y, Z;
+    Unk_02033b94 DoorLight, Y, Z;
     if (func_01ffcb5c(c, d) == 0) return 4;
     bx = c << 4;
     bz = d << 4;
@@ -2952,16 +2952,16 @@ extern "C" s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d)
         for (i = 0; i < 16; i++) {
             *a = bx + i;
             *b = bz + j;
-            _ZN12Unk_02033b3c13func_02033b94Eiii(&X, *a, *b, 0);
+            _ZN12Unk_02033b3c13func_02033b94Eiii(&DoorLight, *a, *b, 0);
             _ZN12Unk_02033b3c13func_02033b94Eiii(&Y, *a + 1, *b, 0);
-            if (Unk_02030be4_A(&X)) {
+            if (Unk_02030be4_A(&DoorLight)) {
                 if (Unk_02030be4_B(&Y)) {
                     _ZN12Unk_02033b3c13func_02033b94Eiii(&Z, *a + 2, *b, 0);
                     if (Unk_02030be4_B(&Z)) return 1;
                     return 0;
                 }
             }
-            if (X.unk_10[0] != 0x14 && X.unk_10[1] != 0x14 && X.unk_10[2] == 0x14 && X.unk_10[3] == 0x14
+            if (DoorLight.unk_10[0] != 0x14 && DoorLight.unk_10[1] != 0x14 && DoorLight.unk_10[2] == 0x14 && DoorLight.unk_10[3] == 0x14
                 && Y.unk_10[0] != 0x14 && Y.unk_10[1] == 0x14 && Y.unk_10[2] == 0x14 && Y.unk_10[3] != 0x14) {
                 s32 idx = Y.unk_10[3];
                 s32 v;
@@ -2984,86 +2984,86 @@ extern "C" s32 func_02030bc4()
 
 extern "C" void func_020309d4(Unk_020309d4_Owner *self, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u16 hh, s32 arg5, s32 arg6, u32 flags)
 {
-    struct { Unk_02030e48_Vec A, B, V1, C, D; } l;
+    struct { Unk_02030e48_Vec LampLights, LightLevel, V1, C, WindowLight; } l;
     s32 lim, dx, dz;
     BOOL fl;
-    l.A = *pos;
-    l.B = *tgt;
+    l.LampLights = *pos;
+    l.LightLevel = *tgt;
     lim = (data_021bfa70.unk_00 + arg5) * 2;
-    dx = l.A.x - tgt->x;
+    dx = l.LampLights.x - tgt->x;
     if (dx < 0) dx = -dx;
     if (lim + dx > 0xc000) goto reset;
-    dz = l.A.z - tgt->z;
+    dz = l.LampLights.z - tgt->z;
     if (dz < 0) dz = -dz;
     if (lim + dz > 0xc000) {
     reset:
-        l.B = l.A;
+        l.LightLevel = l.LampLights;
     }
     l.V1.x = arg5;
     l.V1.y = arg5;
     l.V1.z = arg5;
-    l.C = l.B;
-    l.D = l.B;
-    func_02031574((s32 *)(&l.C), (s32 *)(&l.A));
-    func_02031554((s32 *)(&l.D), (s32 *)(&l.A));
+    l.C = l.LightLevel;
+    l.WindowLight = l.LightLevel;
+    func_02031574((s32 *)(&l.C), (s32 *)(&l.LampLights));
+    func_02031554((s32 *)(&l.WindowLight), (s32 *)(&l.LampLights));
     VEC_Add(&l.C, &l.V1, &l.C);
-    VEC_Subtract(&l.D, &l.V1, &l.D);
+    VEC_Subtract(&l.WindowLight, &l.V1, &l.WindowLight);
     Unk_020d8d28 o;
     o.unk_04 = (Unk_02032238 *)self;
-    o.unk_08 = (Unk_020d8d28_Best *)&l.A;
-    o.unk_0c.x = l.B.x;
-    o.unk_0c.y = l.B.y;
-    o.unk_0c.z = l.B.z;
+    o.unk_08 = (Unk_020d8d28_Best *)&l.LampLights;
+    o.unk_0c.x = l.LightLevel.x;
+    o.unk_0c.y = l.LightLevel.y;
+    o.unk_0c.z = l.LightLevel.z;
     o.unk_18 = hh;
     o.unk_1c = arg5;
     o.unk_20 = arg6;
     o.unk_24 = flags;
     _ZN12Unk_0203223813func_020323d8Ev(self);
     fl = (self->unk_00 & 2) ? TRUE : FALSE;
-    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&l.D, &l.C, &o, flags, 0, fl);
-    if ((flags & 4) && func_02031304((Unk_02031304_Vec *)(&l.A))) {
-        l.A.x = tgt->x;
-        l.A.y = tgt->y;
-        l.A.z = tgt->z;
+    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&l.WindowLight, &l.C, &o, flags, 0, fl);
+    if ((flags & 4) && func_02031304((Unk_02031304_Vec *)(&l.LampLights))) {
+        l.LampLights.x = tgt->x;
+        l.LampLights.y = tgt->y;
+        l.LampLights.z = tgt->z;
     }
     if (flags & 1) {
         s32 r2 = 1;
         s32 r3;
         if (!(self->unk_00 & 2)) r2 = 0;
         r3 = (flags & 0x80) ? 1 : 0;
-        Unk_0203398c E((Unk_0203389c_Vec *)&l.A, r2, r3);
-        if (l.A.y < E.func_02033914(0) + 0x200) {
+        Unk_0203398c E((Unk_0203389c_Vec *)&l.LampLights, r2, r3);
+        if (l.LampLights.y < E.func_02033914(0) + 0x200) {
             self->unk_04 |= 1;
             self->unk_08 = E.unk_34;
-            l.A.y = E.func_02033914(0) + 0x200;
+            l.LampLights.y = E.func_02033914(0) + 0x200;
         }
-        if (E.func_020338d0(l.A.y)) self->unk_04 |= 2;
+        if (E.func_020338d0(l.LampLights.y)) self->unk_04 |= 2;
     }
     _ZN12Unk_0203223813func_02032238Ei(self, hh);
     Unk_02030e48_Vec F;
-    func_020e9960(&F, &l.A, pos);
+    func_020e9960(&F, &l.LampLights, pos);
     self->unk_24.x = F.x;
     self->unk_24.y = F.y;
     self->unk_24.z = F.z;
     if (flags & 8) {
-        pos->x = l.A.x;
-        pos->y = l.A.y;
-        pos->z = l.A.z;
+        pos->x = l.LampLights.x;
+        pos->y = l.LampLights.y;
+        pos->z = l.LampLights.z;
     }
-    if (arg6) func_02031d5c((s32 *)(&l.A), arg5, arg6);
+    if (arg6) func_02031d5c((s32 *)(&l.LampLights), arg5, arg6);
 }
 
 extern "C" u8 func_02030908(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_02030e48_Vec *tgt, u32 flags)
 {
-    Unk_02030e48_Vec A, B, C;
-    A = *pos;
-    B = *tgt;
+    Unk_02030e48_Vec LampLights, LightLevel, C;
+    LampLights = *pos;
+    LightLevel = *tgt;
     C = *tgt;
-    func_02031554((s32 *)(&B), (s32 *)(&A));
-    func_02031574((s32 *)(&C), (s32 *)(&A));
+    func_02031554((s32 *)(&LightLevel), (s32 *)(&LampLights));
+    func_02031574((s32 *)(&C), (s32 *)(&LampLights));
     Unk_020d8d14 o;
     o.unk_30 = 0;
-    o.unk_04 = (Unk_02031ed4_Vec *)&A;
+    o.unk_04 = (Unk_02031ed4_Vec *)&LampLights;
     o.unk_08.x = tgt->x;
     o.unk_08.y = tgt->y;
     o.unk_08.z = tgt->z;
@@ -3072,8 +3072,8 @@ extern "C" u8 func_02030908(Unk_02030908_D *out, Unk_02030e48_Vec *pos, Unk_0203
     o.unk_34 = 0;
     o.unk_38 = 0;
     o.unk_3c = 0;
-    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&B, &C, &o, flags, 1, 0);
-    if (flags & 8) *pos = A;
+    ((void (*)(void *, void *, void *, u32, s32, s32))func_02030608)(&LightLevel, &C, &o, flags, 1, 0);
+    if (flags & 8) *pos = LampLights;
     out->unk_08.x = o.unk_24.x;
     out->unk_08.y = o.unk_24.y;
     out->unk_08.z = o.unk_24.z;
@@ -3554,19 +3554,19 @@ BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 top = unk_00.y + unk_10;
     s32 t;
     s32 y, z;
-    struct { Unk_0202f7b8_V3 A, B, D, P; } l;
-    l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
-    if (l.A.y > top) {
-        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
-        if (l.B.y < top) {
-            func_020e9960(&l.D, &l.B, &l.A);
-            if (func_020e94f8(&l.D)) {
-                s32 dy = l.D.y;
+    struct { Unk_0202f7b8_V3 LampLights, LightLevel, WindowLight, P; } l;
+    l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
+    if (l.LampLights.y > top) {
+        l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);
+        if (l.LightLevel.y < top) {
+            func_020e9960(&l.WindowLight, &l.LightLevel, &l.LampLights);
+            if (func_020e94f8(&l.WindowLight)) {
+                s32 dy = l.WindowLight.y;
                 if ((dy < 0 ? -dy : dy) >= 4) {
-                    t = FX_Div(top - l.A.y, l.D.y);
-                    z = l.A.z + func_01ffcb0c(l.D.z, t);
-                    y = l.A.y + func_01ffcb0c(l.D.y, t);
-                    l.P.x = l.A.x + func_01ffcb0c(l.D.x, t);
+                    t = FX_Div(top - l.LampLights.y, l.WindowLight.y);
+                    z = l.LampLights.z + func_01ffcb0c(l.WindowLight.z, t);
+                    y = l.LampLights.y + func_01ffcb0c(l.WindowLight.y, t);
+                    l.P.x = l.LampLights.x + func_01ffcb0c(l.WindowLight.x, t);
                     l.P.y = y;
                     l.P.z = z;
                     if (func_0202fdf0(&l.P)) {
@@ -3583,23 +3583,23 @@ BOOL Unk_0202f7b8X::func_0202fc20(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
 BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
     s32 ymax, y1, z1, z2;
     if (!func_0202fdf0(a)) {
-        struct { Unk_0202f7b8_V3 A, B, C, D; u32 pad[6]; } l;
-        l.A = Unk_0202f7b8_V3(a->x, a->y, a->z);
-        l.B = Unk_0202f7b8_V3(out->x, out->y, out->z);
+        struct { Unk_0202f7b8_V3 LampLights, LightLevel, C, WindowLight; u32 pad[6]; } l;
+        l.LampLights = Unk_0202f7b8_V3(a->x, a->y, a->z);
+        l.LightLevel = Unk_0202f7b8_V3(out->x, out->y, out->z);
         l.C = Unk_0202f7b8_V3(unk_00.x, unk_00.y, unk_00.z);
         s32 r = unk_0c;
         s32 h = unk_10;
-        func_020e9960(&l.D, &l.B, &l.A);
-        s32 t = func_01ffcb0c(l.D.z, l.D.z);
-        s32 q = func_01ffcb0c(l.D.x, l.D.x);
+        func_020e9960(&l.WindowLight, &l.LightLevel, &l.LampLights);
+        s32 t = func_01ffcb0c(l.WindowLight.z, l.WindowLight.z);
+        s32 q = func_01ffcb0c(l.WindowLight.x, l.WindowLight.x);
         q += t;
         s32 aq = q < 0 ? -q : q;
         if (aq < 4) {
             return FALSE;
         }
-        s32 b = FX_Div(func_01ffcb0c(l.D.x, l.A.x - l.C.x) + func_01ffcb0c(l.D.z, l.A.z - l.C.z), q) << 1;
-        s32 zz = func_01ffcb0c(l.A.z - l.C.z, l.A.z - l.C.z);
-        s32 xx = func_01ffcb0c(l.A.x - l.C.x, l.A.x - l.C.x);
+        s32 b = FX_Div(func_01ffcb0c(l.WindowLight.x, l.LampLights.x - l.C.x) + func_01ffcb0c(l.WindowLight.z, l.LampLights.z - l.C.z), q) << 1;
+        s32 zz = func_01ffcb0c(l.LampLights.z - l.C.z, l.LampLights.z - l.C.z);
+        s32 xx = func_01ffcb0c(l.LampLights.x - l.C.x, l.LampLights.x - l.C.x);
         s32 c = FX_Div(xx + zz - func_01ffcb0c(r, r), q);
         s32 disc = func_01ffcb0c(b, b) - (c << 2);
         if (disc < 0) {
@@ -3613,9 +3613,9 @@ BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
         s32 t2 = (s - b) >> 1;
         ymax = l.C.y + h;
         if ((t1 < 0 ? -t1 : t1) < 4 || (t1 >= 0 && t1 <= 0x1000)) {
-            z1 = l.A.z + func_01ffcb0c(t1, l.D.z);
-            y1 = l.A.y + func_01ffcb0c(t1, l.D.y);
-            s32 x1 = l.A.x + func_01ffcb0c(t1, l.D.x);
+            z1 = l.LampLights.z + func_01ffcb0c(t1, l.WindowLight.z);
+            y1 = l.LampLights.y + func_01ffcb0c(t1, l.WindowLight.y);
+            s32 x1 = l.LampLights.x + func_01ffcb0c(t1, l.WindowLight.x);
             if (y1 <= ymax) {
                 out->x = x1;
                 out->y = y1;
@@ -3624,9 +3624,9 @@ BOOL Unk_0202f7b8X::func_0202fa70(Unk_0202f660_V3 *out, Unk_0202f660_V3 *a) {
             }
         }
         if ((t2 < 0 ? -t2 : t2) < 4 || (t2 >= 0 && t2 <= 0x1000)) {
-            z2 = a->z + func_01ffcb0c(t2, l.D.z);
-            s32 y2 = a->y + func_01ffcb0c(t2, l.D.y);
-            s32 x2 = a->x + func_01ffcb0c(t2, l.D.x);
+            z2 = a->z + func_01ffcb0c(t2, l.WindowLight.z);
+            s32 y2 = a->y + func_01ffcb0c(t2, l.WindowLight.y);
+            s32 x2 = a->x + func_01ffcb0c(t2, l.WindowLight.x);
             if (y2 <= ymax) {
                 out->x = x2;
                 out->y = y2;

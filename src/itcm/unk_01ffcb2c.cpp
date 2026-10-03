@@ -56,7 +56,7 @@ extern Grid *data_020d8ce8;
 extern Node *data_021c6190;
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 Chunk *func_01ffcb5c(s32 x, s32 z);
-void func_01ffcb9c(Vec3 *out, Cam *c);
+void Camera_GetLookAtOffset(Vec3 *out, Cam *c);
 }
 
 static inline Chunk *At(s32 x, s32 z) {
@@ -101,13 +101,13 @@ extern "C" BOOL func_01ffcbd8(CellGrid *g, s32 x, s32 z) {
     return TRUE;
 }
 
-extern "C" void func_01ffcbb0(Vec3 *out, Cam *c) {
+extern "C" void Camera_GetLookAtPoint(Vec3 *out, Cam *c) {
     Vec3 t;
-    func_01ffcb9c(&t, c);
+    Camera_GetLookAtOffset(&t, c);
     func_01ffd070(out, &c->unk_15c, &t);
 }
 
-extern "C" void func_01ffcb9c(Vec3 *out, Cam *c) {
+extern "C" void Camera_GetLookAtOffset(Vec3 *out, Cam *c) {
     func_01ffd070(out, &c->unk_150, &c->unk_84);
 }
 

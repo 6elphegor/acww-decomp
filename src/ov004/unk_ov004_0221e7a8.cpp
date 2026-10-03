@@ -3,9 +3,9 @@
 #include "types.h"
 
 extern "C" {
-void _ZN12Unk_0200e2c0C1Ev(void *self);
-void _ZN12Unk_0200e2c0D1Ev(void *self);
-void _ZN12Unk_0200e2c013func_0200e2c0Eiis(void *self, s32 a, s32 b, s32 c);
+void _ZN19PlayerActionRequestC1Ev(void *self);
+void _ZN19PlayerActionRequestD1Ev(void *self);
+void _ZN19PlayerActionRequest6assignEiis(void *self, s32 a, s32 b, s32 c);
 }
 
 extern "C" {
@@ -22,37 +22,37 @@ char data_ov004_0224d4c0[16] = "obj_etc_error";
 s32 data_ov004_0224d4b4 = 0x400;
 }
 
-// Library base class chain (header Unk_020d8c7c.h rebuilt so that the vtable names the real symbols:
-// slot 08 is Unk_020d9670::func_0203e678(s32), slot 20 takes a u32).
-class Unk_020d8c7c_Base {
+// Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
+// slot 08 is Character::postCreate(s32), slot 20 takes a u32).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -68,39 +68,39 @@ struct Unk_0203e5d0_Node {
     /* 0x0c */ void *unk_0c;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual void *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
     /* 0xe4 */ s32 unk_e4;
@@ -124,21 +124,21 @@ public:
     u32 unk_98;
 };
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    virtual ~Unk_020dbe7c();
-    inline Unk_020dbe7c() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
+    virtual ~AnimFrameCtrl();
+    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
     u32 unk_a0;
     s32 unk_a4;
     s32 unk_a8;
     s32 unk_ac;
     u32 unk_b0;
 
-    s32 func_02056654();
-    s32 func_020565e8(s32 a);
+    s32 isFinished();
+    s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public Unk_020dbe7c {
+class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
 public:
     Unk_020dbd54();
     virtual ~Unk_020dbd54();
@@ -215,18 +215,18 @@ extern "C" {
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_0209c3e0(u32 v);
 s32 func_0209c3f4(u32 v);
-void _ZN12Unk_020d5d848vfunc_20Ev(void *o, u32 v);
-void _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *m, void *r, u32 z);
+void _ZN5Actor8vfunc_20Ev(void *o, u32 v);
+void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *m, void *r, u32 z);
 void NNS_G3dBindMdlTex(void *a, u32 b);
 void NNS_G3dBindMdlPltt(void *a, u32 b);
 }
 
-class Unk_ov004_0224d4e8 : public Unk_020d9670 {
+class Unk_ov004_0224d4e8 : public Character {
 public:
     virtual ~Unk_ov004_0224d4e8();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
@@ -245,23 +245,23 @@ public:
 };
 
 extern "C" {
-void _ZN12Unk_020d9670C2Ev(void *self);
+void _ZN9CharacterC2Ev(void *self);
 void _ZN12Unk_020dbd54C1Ev(void *self);
 void _ZN18Unk_ov004_02224ee4C1Ev(void *self);
 extern char _ZTV18Unk_ov004_0224d4e8[];
 }
 
 typedef Unk_ov004_0224d4e8 M;
-typedef Unk_ov004_02224ee4 A;
-typedef Unk_ov004_02224d60 B;
+typedef Unk_ov004_02224ee4 LampLights;
+typedef Unk_ov004_02224d60 LightLevel;
 typedef Unk_ov004_02224ee4_Vec Vec;
 
-extern "C" void func_ov004_02224ff4(char *name, Unk_020dbd54 *m, A *a, B *b);
-extern "C" void func_ov004_02225034(char *a, char *b, Unk_020dbd54 *m, A *aa, B *bb);
-extern "C" void func_ov004_02224f7c(A *a, B *b);
+extern "C" void func_ov004_02224ff4(char *name, Unk_020dbd54 *m, LampLights *a, LightLevel *b);
+extern "C" void func_ov004_02225034(char *a, char *b, Unk_020dbd54 *m, LampLights *aa, LightLevel *bb);
+extern "C" void func_ov004_02224f7c(LampLights *a, LightLevel *b);
 
 extern "C" Unk_ov004_0224d4e8 *_ZN18Unk_ov004_0224d4e8C2Ev(Unk_ov004_0224d4e8 *self) {
-    _ZN12Unk_020d9670C2Ev(self);
+    _ZN9CharacterC2Ev(self);
     *(void **)self = _ZTV18Unk_ov004_0224d4e8 + 8;
     _ZN12Unk_020dbd54C1Ev(&self->unk_ec);
     _ZN18Unk_ov004_02224ee4C1Ev(&self->unk_1a4);
@@ -277,16 +277,16 @@ Unk_ov004_0224d4e8::~Unk_ov004_0224d4e8() {
 }
 
 BOOL Unk_ov004_0224d4e8::vfunc_04() {
-    if (Unk_020d9670::vfunc_04() == 0) {
+    if (Character::vfunc_04() == 0) {
         return FALSE;
     }
-    func_0203e624(0);
+    setCharId(0);
     unk_250.func_ov004_02224cdc();
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d4e8::vfunc_1c() {
-    if (Unk_020d9670::vfunc_1c() == 0) {
+BOOL Unk_ov004_0224d4e8::preExecute() {
+    if (Character::preExecute() == 0) {
         return FALSE;
     }
     if (unk_ea != 0xff) {
@@ -302,11 +302,11 @@ void Unk_ov004_0224d4e8::vfunc_20(u32 a) {
     Vec out;
     vfunc_64(&out);
     unk_250.func_ov004_02224cc0(&out);
-    _ZN12Unk_020d5d848vfunc_20Ev(this, a);
+    _ZN5Actor8vfunc_20Ev(this, a);
 }
 
-BOOL Unk_ov004_0224d4e8::vfunc_10() {
-    if (Unk_020d9670::vfunc_10() == 0) {
+BOOL Unk_ov004_0224d4e8::preDelete() {
+    if (Character::preDelete() == 0) {
         return FALSE;
     }
     unk_250.func_ov004_02224cb8();
@@ -323,17 +323,17 @@ BOOL Unk_ov004_0224d4e8::vfunc_60(u32 v) {
     return TRUE;
 }
 
-extern "C" void func_ov004_02225034(char *a, char *b, Unk_020dbd54 *m, A *aa, B *bb) {
+extern "C" void func_ov004_02225034(char *a, char *b, Unk_020dbd54 *m, LampLights *aa, LightLevel *bb) {
     aa->func_ov004_02224dbc(a);
     bb->func_ov004_02224d10(b);
-    _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(m, aa->func_ov004_02224d68(), 0);
+    _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, aa->func_ov004_02224d68(), 0);
     void *p = aa->func_ov004_02224d68();
     NNS_G3dBindMdlTex(p, bb->func_ov004_02224d04());
     void *q = aa->func_ov004_02224d68();
     NNS_G3dBindMdlPltt(q, bb->func_ov004_02224d04());
 }
 
-extern "C" void func_ov004_02224ff4(char *name, Unk_020dbd54 *m, A *a, B *b) {
+extern "C" void func_ov004_02224ff4(char *name, Unk_020dbd54 *m, LampLights *a, LightLevel *b) {
     char x[0x28];
     char y[0x28];
     func_020639e8(x, "/roomObj/%s.arc", name);
@@ -353,7 +353,7 @@ void Unk_ov004_0224d4e8::func_ov004_02224f90(char *name) {
     func_ov004_02224fc8(a, b);
 }
 
-extern "C" void func_ov004_02224f7c(A *a, B *b) {
+extern "C" void func_ov004_02224f7c(LampLights *a, LightLevel *b) {
     a->func_ov004_02224d9c();
     b->func_ov004_02224d08();
 }
@@ -409,8 +409,8 @@ struct Unk_ov004_022245ac_V3 {
 
 class Unk_ov004_022245ac_Msg {
 public:
-    inline Unk_ov004_022245ac_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_022245ac_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     u8 unk_0c;
     u8 pad_0d[0x1c - 0xd];
@@ -460,49 +460,49 @@ typedef Unk_ov004_02224d10 Res;
 extern "C" {
 extern void *data_020cbb18;
 extern void *data_021c620c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 
-Obj *func_02095774(u32 idx);
-s32 func_02095180(s32 a, s32 b);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+Obj *PlayerActor_Get(u32 idx);
+s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
 s32 _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
-s32 _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+s32 _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201065cEv(Obj *o);
 BOOL func_020b52d0(void);
-s32 _ZN12Unk_020d6df413func_0200d640Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d5e0Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200e1dcEv(Obj *o);
+s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
+s32 _ZN11PlayerActor13func_0200d5e0Ev(Obj *o);
+s32 _ZN11PlayerActor20getEffectivePriorityEv(Obj *o);
 s32 func_02063c54(s16 a);
-s32 func_02010cf8(Obj *o);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
+s32 PlayerActor_GetGender(Obj *o);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
 s32 func_0203d76c(void);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-s32 _ZN12Unk_02006d1413func_0200ebe8Ev(Obj *o);
-s32 _ZN12Unk_02006d1413func_0200ec44Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, u32 a);
-void func_02010cb0(u16 *p, Obj *o);
-void func_02010af0(u16 *p, Obj *o);
-s32 func_02010c9c(Obj *o);
-s32 func_02010c88(Obj *o);
-s32 _ZN12Unk_02006d1413func_0200fab8EPthhh(Obj *o, u16 *v, s32 a, s32 b, u32 c);
-void _ZN12Unk_02006d1413func_0200fd90EPt(Obj *o, u16 *v);
-s32 func_02003e60(s32 a, s32 b, s32 c, s32 d);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+s32 _ZN12Unk_02006d1413loadInputModeEv(Obj *o);
+s32 _ZN12Unk_02006d1414testActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
+void PlayerActor_GetHat(u16 *p, Obj *o);
+void PlayerActor_GetFaceItem(u16 *p, Obj *o);
+s32 PlayerActor_GetHairStyle(Obj *o);
+s32 PlayerActor_GetHairColor(Obj *o);
+s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Obj *o, u16 *v, s32 a, s32 b, u32 c);
+void _ZN12Unk_02006d1421requestFaceItemChangeEPt(Obj *o, u16 *v);
+s32 Snd_SeEmitterPlayHeld(s32 a, s32 b, s32 c, s32 d);
 s32 func_02003e70(s32 a, s32 b, s32 c, s32 d);
 s32 _ZN12Unk_02003c3013func_02003e50Ev(s32 a);
 s32 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(s32 a, V3 *v);
 s32 _ZN12Unk_02003c3013func_02003eccEv(s32 a);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
-s32 func_020641ec(u32 id, void *g, s32 a, u32 b);
+s32 File_LoadAlloc(u32 id, void *g, s32 a, u32 b);
 void *NNS_G3dGetTex(s32 a);
 void func_02055724(void *p, u32 a);
 u32 func_0205588c(void *p, void *g);
-void func_020e8558(s32 a);
-void func_020e85fc(void *g, u32 p);
+void Mem_Free(s32 a);
+void Heap_Free(void *g, u32 p);
 s32 func_020639e8(char *buf, char *fmt, ...);
 s32 func_02101340(void *buf, char *name, u32 data);
 void *func_021012bc(char *name);
@@ -557,7 +557,7 @@ extern "C" s32 func_ov004_02224dbc(Res *self, u32 id) {
     if (self->unk_00 == 0) {
         char buf[0x24];
         u8 res[0x68];
-        self->unk_00 = func_020641ec(id, data_021c620c, 4, 0);
+        self->unk_00 = File_LoadAlloc(id, data_021c620c, 4, 0);
         if (self->unk_00) {
             if (func_02101340(res, "RMO", self->unk_00)) {
                 u32 i, z;
@@ -606,7 +606,7 @@ extern "C" s32 func_ov004_02224dbc(Res *self, u32 id) {
 
 extern "C" void func_ov004_02224d9c(Res *p) {
     if (p->unk_00) {
-        func_020e85fc(data_021c620c, p->unk_00);
+        Heap_Free(data_021c620c, p->unk_00);
         p->unk_00 = 0;
     }
 }
@@ -644,12 +644,12 @@ extern "C" void func_ov004_02224d5c(void) {
 }
 
 extern "C" s32 func_ov004_02224d10(Res *self, u32 id) {
-    s32 r4 = func_020641ec(id, data_021f482c, -4, 0);
+    s32 r4 = File_LoadAlloc(id, gCurrentHeap, -4, 0);
     if (r4) {
         void *r6 = NNS_G3dGetTex(r4);
         func_02055724(r6, 0);
         self->unk_00 = func_0205588c(r6, data_021c620c);
-        func_020e8558(r4);
+        Mem_Free(r4);
         return 1;
     }
     return 0;
@@ -694,19 +694,19 @@ extern "C" s32 func_ov004_02224ca4(s32 a, s32 b) {
 }
 
 extern "C" s32 func_ov004_02224c90(s32 a, s32 b) {
-    return func_02003e60(a, b, 0x7f, 0);
+    return Snd_SeEmitterPlayHeld(a, b, 0x7f, 0);
 }
 
 extern "C" s32 func_ov004_02224c84(void) {
-    return func_02095180(15, 4);
+    return PlayerActor_TestSlotFlag(15, 4);
 }
 
 extern "C" s32 func_ov004_02224c78(void) {
-    return func_02095180(2, 4);
+    return PlayerActor_TestSlotFlag(2, 4);
 }
 
 extern "C" s32 func_ov004_02224c3c(V3 *out, u32 idx, s32 st) {
-    Obj *o = func_02095774(idx);
+    Obj *o = PlayerActor_Get(idx);
     if (o && o->unk_7ec == st) {
         V3 *pv = &o->unk_5c;
         out->x = o->unk_5c.x;
@@ -726,33 +726,33 @@ extern "C" s32 func_ov004_02224c24(V3 *out, u32 idx) {
 }
 
 extern "C" s32 func_ov004_02224b78(u32 a) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         u16 v[2];
         u16 t[2];
         if (a) {
-            if (_ZN12Unk_02006d1413func_0200ec44Ej(o, 0xc)) {
-                func_02010cb0(&t[0], o);
+            if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xc)) {
+                PlayerActor_GetHat(&t[0], o);
                 v[0] = t[0];
-                func_02010af0(&t[1], o);
+                PlayerActor_GetFaceItem(&t[1], o);
                 v[1] = t[1];
-                _ZN12Unk_02006d1413func_0200ec1cEj(o, 0xc);
+                _ZN12Unk_02006d1415clearActionFlagEj(o, 0xc);
             } else {
                 return 1;
             }
         } else {
-            if (!_ZN12Unk_02006d1413func_0200ec44Ej(o, 0xc)) {
+            if (!_ZN12Unk_02006d1414testActionFlagEj(o, 0xc)) {
                 v[1] = 0xfff1;
                 v[0] = 0xfff1;
-                _ZN12Unk_02006d1413func_0200ec30Ej(o, 0xc);
+                _ZN12Unk_02006d1413setActionFlagEj(o, 0xc);
             } else {
                 return 1;
             }
         }
-        s32 r4 = func_02010c9c(o);
-        s32 r3 = func_02010c88(o);
-        if (_ZN12Unk_02006d1413func_0200fab8EPthhh(o, v, r4, r3, 1)) {
-            _ZN12Unk_02006d1413func_0200fd90EPt(o, &v[1]);
+        s32 r4 = PlayerActor_GetHairStyle(o);
+        s32 r3 = PlayerActor_GetHairColor(o);
+        if (_ZN12Unk_02006d1416requestHatChangeEPthhh(o, v, r4, r3, 1)) {
+            _ZN12Unk_02006d1421requestFaceItemChangeEPt(o, &v[1]);
         }
         return 1;
     }
@@ -760,10 +760,10 @@ extern "C" s32 func_ov004_02224b78(u32 a) {
 }
 
 extern "C" s32 func_ov004_02224b14(u32 *a, u32 *b, s16 *c, s32 d) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         Unk_ov004_02224a80_Limit k = Unk_ov004_02224a80_LIMIT_6;
-        if (k <= _ZN12Unk_020d6df413func_0200e1dcEv(o)) {
+        if (k <= _ZN11PlayerActor20getEffectivePriorityEv(o)) {
             return 0;
         }
         u32 f = func_02063c54(*c - d) == 1 ? 1 : 0;
@@ -773,10 +773,10 @@ extern "C" s32 func_ov004_02224b14(u32 *a, u32 *b, s16 *c, s32 d) {
 }
 
 extern "C" s32 func_ov004_02224ad8(u32 a, u32 b) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         if (func_ov004_0222439c(o, a, b, 6, -1)) {
-            _ZN12Unk_02006d1413func_0200ebe8Ev(o);
+            _ZN12Unk_02006d1413loadInputModeEv(o);
             return 1;
         }
     }
@@ -784,10 +784,10 @@ extern "C" s32 func_ov004_02224ad8(u32 a, u32 b) {
 }
 
 extern "C" s32 func_ov004_02224a80(u32 *a, u32 *b, s16 *c, u8 *d) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         Unk_ov004_02224a80_Limit k = Unk_ov004_02224a80_LIMIT_6;
-        if (k <= _ZN12Unk_020d6df413func_0200e1dcEv(o)) {
+        if (k <= _ZN11PlayerActor20getEffectivePriorityEv(o)) {
             return 0;
         }
         return func_ov004_0222213c(o, *a, *b, *c + 0x8000, *d, k, -1);
@@ -796,7 +796,7 @@ extern "C" s32 func_ov004_02224a80(u32 *a, u32 *b, s16 *c, u8 *d) {
 }
 
 extern "C" s32 func_ov004_02224a38(s32 t) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         switch (t) {
         case 0:
@@ -814,7 +814,7 @@ extern "C" s32 func_ov004_02224a38(s32 t) {
 }
 
 extern "C" s32 func_ov004_022249f8(u32 *a, u32 *b, u32 *c, s16 *d) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_02220ff0(o, *a, *b, *c, *d, 6, -1);
     }
@@ -822,7 +822,7 @@ extern "C" s32 func_ov004_022249f8(u32 *a, u32 *b, u32 *c, s16 *d) {
 }
 
 extern "C" s32 func_ov004_022249d4(u32 *p) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_02220c88(o, *p, 6, -1);
     }
@@ -830,7 +830,7 @@ extern "C" s32 func_ov004_022249d4(u32 *p) {
 }
 
 extern "C" s32 func_ov004_0222497c(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         if (o->unk_804 == 4) {
             V3 v;
@@ -847,7 +847,7 @@ extern "C" s32 func_ov004_0222497c(void) {
 }
 
 extern "C" s32 func_ov004_0222493c(u32 a, u32 *b, u8 *c, u32 *d, u32 e) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_02220ac8(o, a, *b, *c, *d, e, 6, -1);
     }
@@ -855,7 +855,7 @@ extern "C" s32 func_ov004_0222493c(u32 a, u32 *b, u8 *c, u32 *d, u32 e) {
 }
 
 extern "C" s32 func_ov004_02224918(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_022209ac(o, 6, -1);
     }
@@ -863,7 +863,7 @@ extern "C" s32 func_ov004_02224918(void) {
 }
 
 extern "C" s32 func_ov004_022248e8(u8 *a, u8 *b) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_0221fcec(o, *a, *b, 6, -1);
     }
@@ -871,7 +871,7 @@ extern "C" s32 func_ov004_022248e8(u8 *a, u8 *b) {
 }
 
 extern "C" s32 func_ov004_022248c4(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_0221f96c(o, 6, -1);
     }
@@ -879,7 +879,7 @@ extern "C" s32 func_ov004_022248c4(void) {
 }
 
 extern "C" s32 func_ov004_022248a0(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_0221f7c4(o, 6, -1);
     }
@@ -887,7 +887,7 @@ extern "C" s32 func_ov004_022248a0(void) {
 }
 
 extern "C" s32 func_ov004_0222487c(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_022217c4(o, 10, 6, -1);
     }
@@ -895,16 +895,16 @@ extern "C" s32 func_ov004_0222487c(void) {
 }
 
 extern "C" s32 func_ov004_02224844(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         return func_ov004_022236b8(o, 5, -1);
     }
     return 0;
 }
 
 extern "C" s32 func_ov004_02224820(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         return func_ov004_0221f6dc(o, 6, -1);
     }
@@ -912,7 +912,7 @@ extern "C" s32 func_ov004_02224820(void) {
 }
 
 extern "C" BOOL func_ov004_022247fc(void) {
-    Obj *o = func_02095774(4);
+    Obj *o = PlayerActor_Get(4);
     if (o) {
         _ZN12Unk_020102ec13func_02010358Eijt(o, 0x98, 0, 0);
         return TRUE;
@@ -928,8 +928,8 @@ extern "C" s32 func_ov004_022247b8(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
     m.func_0200e2c0(8, b, c);
     func_ov004_022247f8(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -942,9 +942,9 @@ extern "C" void func_ov004_02224734(Obj *o, u8 *p, s32 c) {
     u8 *rec = &o->unk_7d0;
     if (o->unk_700 != 0x11) {
         if (c == 0xf || c == 0xd || !_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
-            _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x11, 0, 0);
+            _ZN12Unk_020102ec9startAnimEijt(o, 0x11, 0, 0);
         } else {
-            _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x11, 3, 0);
+            _ZN12Unk_020102ec9startAnimEijt(o, 0x11, 3, 0);
         }
     }
     func_ov004_022247b4(rec, *q);
@@ -963,10 +963,10 @@ extern "C" void func_ov004_02224708(Obj *o, s32 a) {
 
 extern "C" void func_ov004_022246bc(Obj *o, s32 a) {
     if (func_020b52d0() && a == 10 && o->unk_7d0 == 0) {
-        if (func_02010cf8(o)) {
-            _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4cd);
+        if (PlayerActor_GetGender(o)) {
+            _ZN12Unk_02006d146playSeEj(o, 0x4cd);
         } else {
-            _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4cc);
+            _ZN12Unk_02006d146playSeEj(o, 0x4cc);
         }
     }
 }
@@ -974,8 +974,8 @@ extern "C" void func_ov004_022246bc(Obj *o, s32 a) {
 extern "C" void func_ov004_02224628(Obj *o) {
     s32 r;
     if (!func_020b52d0()) {
-        if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0) {
-            s32 t = _ZN12Unk_020d6df413func_0200d5e0Ev(o);
+        if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
+            s32 t = _ZN11PlayerActor13func_0200d5e0Ev(o);
             if (o->unk_8e6 != t + 1) {
                 o->unk_8e6 = t + 1;
                 switch (t) {
@@ -998,7 +998,7 @@ extern "C" void func_ov004_02224628(Obj *o) {
 
 extern "C" void func_ov004_022245f0(Obj *o) {
     _ZN12Unk_02006d1413func_0200ef08Ev(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         func_ov004_02224628(o);
@@ -1013,8 +1013,8 @@ extern "C" s32 func_ov004_022245ac(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
     m.func_0200e2c0(9, b, c);
     func_ov004_022245ec(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1051,8 +1051,8 @@ struct Unk_ov004_02223c38_Rec {
 
 class Unk_ov004_02223c38_Msg {
 public:
-    inline Unk_ov004_02223c38_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02223c38_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     u8 unk_0c;
     u8 pad_0d[0x1c - 0xd];
@@ -1105,26 +1105,26 @@ extern u8 data_020e416c;
 extern s16 data_02135f44[];
 
 void _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
-void _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+void _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, u32 a);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
 s32 func_0200f3ec(V3 *out, Obj *o, V3 *pos, s16 *ang, s32 *d);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200bd60Esji(Obj *o, u32 a, u32 b, s32 c);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1412requestAct10Esji(Obj *o, u32 a, u32 b, s32 c);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 u16 *func_020952d0(void);
 Bits16 *func_020952d8(void);
 u8 *func_020952c8(void);
-u32 func_02010d20(Obj *o);
-u32 func_02010c74(Obj *o);
-u32 _ZN12Unk_0209865c13func_020987c4Ev(void);
+u32 PlayerActor_GetPlayerData(Obj *o);
+u32 PlayerActor_GetTan(Obj *o);
+u32 _ZN10PlayerData15getLastPlayDateEv(void);
 s32 func_0200f23c(Obj *o);
 u16 *func_0209c37c(s32 a, s32 b);
 s32 func_02030814(u32 a);
@@ -1246,10 +1246,10 @@ extern "C" void func_ov004_0222440c(Obj *o) {
     case 0:
         return;
     case 1:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         break;
     case 2:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         func_ov004_022247b8(o, 0, 6, -1);
         return;
     }
@@ -1262,7 +1262,7 @@ extern "C" void func_ov004_0222440c(Obj *o) {
 }
 
 extern "C" void func_ov004_022243ec(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_0222440c(o);
     func_ov004_02224494(o);
@@ -1277,8 +1277,8 @@ extern "C" s32 func_ov004_0222439c(Obj *o, u32 a, u32 b, s32 c, s32 d) {
     Msg m;
     m.func_0200e2c0(0xa, c, *(s16 *)&d);
     func_ov004_022243e4(&m.unk_0c, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1342,16 +1342,16 @@ extern "C" void func_ov004_02224224(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
     o->unk_68.x = o->unk_5c.x;
     o->unk_68.y = o->unk_5c.y;
     o->unk_68.z = o->unk_5c.z;
 }
 
 extern "C" void func_ov004_022241dc(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x15)) {
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c6);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x15)) {
+        _ZN12Unk_02006d146playSeEj(o, 0x4c6);
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             func_02051478();
         }
@@ -1368,19 +1368,19 @@ extern "C" void func_ov004_022241ac(Obj *o) {
 }
 
 extern "C" void func_ov004_022240d0(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         if (o->unk_7d0.unk_0a != 0) {
             volatile u16 t[2];
-            _ZN12Unk_02006d1413func_0200bd60Esji(o, 0, 5, -1);
+            _ZN12Unk_02006d1412requestAct10Esji(o, 0, 5, -1);
             *func_020952d0() = 0x4650;
-            func_02010d20(o);
-            t[0] = _ZN12Unk_0209865c13func_020987c4Ev();
+            PlayerActor_GetPlayerData(o);
+            t[0] = _ZN10PlayerData15getLastPlayDateEv();
             t[1] = t[0];
             *(u16 *)func_020952d8() = t[1];
             s32 r5 = func_0200f23c(o);
             u16 *r7 = func_0209c37c(0, 0x50);
-            u32 r4 = func_02010c74(o);
+            u32 r4 = PlayerActor_GetTan(o);
             Bits16 *r6 = func_020952d8();
             *r7 = r4 + r6->mid * 1000 + func_020952d8()->hi * 10;
             if (r5 == 0) {
@@ -1389,7 +1389,7 @@ extern "C" void func_ov004_022240d0(Obj *o) {
                 *func_020952c8() = 0;
             }
         } else {
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 0, 1, -1);
+            _ZN11PlayerActor11requestWaitEjjj(o, 0, 1, -1);
         }
     }
 }
@@ -1408,8 +1408,8 @@ extern "C" s32 func_ov004_02224070(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0xb, b, c);
     func_ov004_022240b0(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1452,9 +1452,9 @@ extern "C" void func_ov004_02223fa8(Obj *o, Msg *m) {
         w.y = v.y;
         w.z = v.z;
         func_02051470(&w);
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, k, 3, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, k, 3, 0);
     } else {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, k, 3, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, k, 3, 0);
     }
 }
 
@@ -1489,7 +1489,7 @@ extern "C" void func_ov004_02223f08(Obj *o) {
 
 extern "C" void func_ov004_02223eec(Obj *o) {
     _ZN12Unk_02006d1413func_0200ef08Ev(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_02223f08(o);
 }
 
@@ -1501,8 +1501,8 @@ extern "C" s32 func_ov004_02223ea8(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0xc, b, c);
     func_ov004_02223ee8(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1524,7 +1524,7 @@ extern "C" void func_ov004_02223e5c(Obj *o, Msg *m) {
         k = 0x10;
     }
     _ZN12Unk_020102ec13func_02010358Eijt(o, k, 3, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4a4);
+    _ZN12Unk_02006d146playSeEj(o, 0x4a4);
 }
 
 extern "C" void func_ov004_02223e30(Obj *o, s32 a) {
@@ -1534,13 +1534,13 @@ extern "C" void func_ov004_02223e30(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_02223e08(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         func_ov004_022247b8(o, 0, 6, -1);
     }
 }
 
 extern "C" void func_ov004_02223df4(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_02223e08(o);
 }
 
@@ -1552,8 +1552,8 @@ extern "C" s32 func_ov004_02223db0(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0xd, b, c);
     func_ov004_02223df0(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1602,7 +1602,7 @@ extern "C" void func_ov004_02223ce4(Obj *o, Msg *m) {
     w.z = tz;
     func_ov004_02223da8((s32 *)r, tx, tz);
     func_ov004_02223da4(o->unk_8ec, c);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x435);
+    _ZN12Unk_02006d146playSeEj(o, 0x435);
 }
 
 extern "C" void func_ov004_02223cb8(Obj *o, s32 a) {
@@ -1619,7 +1619,7 @@ extern "C" void func_ov004_02223ca0(Obj *o) {
 }
 
 extern "C" void func_ov004_02223c6c(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         if (func_ov004_022247b8(o, 0, 6, -1)) {
             o->unk_8e6 = 0;
         }
@@ -1628,7 +1628,7 @@ extern "C" void func_ov004_02223c6c(Obj *o) {
 
 extern "C" void func_ov004_02223c50(Obj *o) {
     _ZN12Unk_02006d1413func_0200ef08Ev(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_02223c6c(o);
 }
 
@@ -1681,8 +1681,8 @@ struct Unk_ov004_02223314_Pl {
 
 class Unk_ov004_02223314_Msg {
 public:
-    inline Unk_ov004_02223314_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, s32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02223314_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_02223314_Pl unk_0c;
     u8 pad_18[4];
@@ -1736,29 +1736,29 @@ extern void *data_020cbb18;
 extern void *data_021c47c4;
 extern s32 data_ov004_0224013c[];
 
-s32 _ZN12Unk_02006d1413func_0200ec44Ej(Obj *o, s32 a);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, s32 a);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, s32 a);
+s32 _ZN12Unk_02006d1414testActionFlagEj(Obj *o, s32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, s32 a);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, s32 a);
 void _ZN12Unk_02006d1413func_0200f004Ejz(Obj *o, s32 a);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
-s32 _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
+s32 _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
 void _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, s32 n);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, s32 n);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
 void func_02010e68(void *p, s32 a, u32 b, u32 c, u32 d);
 s32 func_0200f3ec(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
 void _ZN12Unk_02006d1413func_0200f478Ei(Obj *o, s32 a);
 void func_0200f528(Obj *o, s32 a, s32 b);
 void func_0200f594(Obj *o, s32 a, s32 b, s32 c);
-s32 func_0203a278(V3 *v);
+s32 Camera_SnapToFocus(V3 *v);
 s32 func_02063c18(s16 a);
 s32 func_02051494(void);
 void func_0205149c(V3 *v);
@@ -1771,8 +1771,8 @@ u16 *func_0204eba0(void *g, void *p, s32 a);
 s32 func_02098ffc(void);
 s32 func_020b52f8(void);
 u32 func_020b0f54(void);
-s32 func_0204b2d4(void *p);
-s32 func_0204b25c(void *p);
+s32 Item_IsFurniture(void *p);
+s32 Item_GetFurnitureIndex(void *p);
 void func_02045570(void *p, s32 a);
 
 s32 func_ov004_022344a4(void);
@@ -1825,8 +1825,8 @@ extern "C" s32 func_ov004_02223bdc(Obj *o, s32 x, s32 z, s32 h, u8 a, s32 b, s32
     Msg m;
     m.func_0200e2c0(0xe, b, *(s16 *)&c);
     func_ov004_02223c38(&m.unk_0c, x, z, h, a, b == 6 ? 1 : 0);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1877,7 +1877,7 @@ extern "C" void func_ov004_02223ac4(Obj *o, Msg *m) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(g, o->unk_7fc)) {
         func_0205149c(&v);
     }
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x1a, 3, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 0x1a, 3, 0);
 }
 
 extern "C" void func_ov004_02223a80(Obj *o, u32 a) {
@@ -1892,7 +1892,7 @@ extern "C" void func_ov004_02223a80(Obj *o, u32 a) {
 }
 
 extern "C" void func_ov004_02223a70(Obj *o) {
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &o->unk_7d0.unk_08);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &o->unk_7d0.unk_08);
 }
 
 extern "C" void func_ov004_02223a54(Obj *o) {
@@ -1902,14 +1902,14 @@ extern "C" void func_ov004_02223a54(Obj *o) {
 extern "C" void func_ov004_022239b8(Obj *o) {
     Rec *r = &o->unk_7d0;
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
     } else {
         switch (func_02051494()) {
         case 0:
             break;
         case 2:
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             break;
         case 1:
         default:
@@ -1923,7 +1923,7 @@ extern "C" void func_ov004_022239b8(Obj *o) {
 
 extern "C" void func_ov004_02223998(Obj *o) {
     func_ov004_02223a54(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_022239b8(o);
 }
@@ -1940,8 +1940,8 @@ extern "C" s32 func_ov004_02223934(Obj *o, u8 b, s32 x, s32 z, u8 e, s32 f, s32 
     Msg m;
     m.func_0200e2c0(0xf, f, *(s16 *)&g);
     func_ov004_02223984(&m.unk_0c, b, x, z, e);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -1968,7 +1968,7 @@ extern "C" void func_ov004_0222386c(Obj *o, Msg *m) {
     Rec *r;
     s32 t, h, x, z;
     _ZN12Unk_020102ec13func_02010358Eijt(o, k == 0 ? 8 : 7, 3, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c5);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c5);
     r = &o->unk_7d0;
     t = func_02063c18(o->unk_8e);
     t = (t << 30) >> 16;
@@ -1999,7 +1999,7 @@ extern "C" void func_ov004_022237fc(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->unk_00;
     p->z = r->unk_04;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->unk_08);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->unk_08);
 }
 
 extern "C" void func_ov004_02223794(Obj *o) {
@@ -2023,8 +2023,8 @@ extern "C" void func_ov004_02223794(Obj *o) {
 
 extern "C" void func_ov004_02223740(Obj *o) {
     V3 v;
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xd)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xd)) {
         if (Unk_ov004_02223314_IsOne(data_020e416c)) {
             Rec *r = &o->unk_7d0;
             s32 z = r->unk_04;
@@ -2039,7 +2039,7 @@ extern "C" void func_ov004_02223740(Obj *o) {
 }
 
 extern "C" void func_ov004_02223710(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         func_ov004_022247b8(o, o->unk_7d0.unk_0a, 6, -1);
     }
 }
@@ -2054,18 +2054,18 @@ extern "C" void func_ov004_022236f0(Obj *o) {
 extern "C" s32 func_ov004_022236b8(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x12, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_0222368c(Obj *o) {
     V3 v;
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x9b, 3, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 0x9b, 3, 0);
     v.x = data_ov004_0224013c[0];
     v.y = data_ov004_0224013c[1];
     v.z = data_ov004_0224013c[2];
-    func_0203a278(&v);
+    Camera_SnapToFocus(&v);
 }
 
 extern "C" void func_ov004_02223688(void) {
@@ -2077,7 +2077,7 @@ extern "C" void func_ov004_02223664(Obj *o) {
 }
 
 extern "C" void func_ov004_02223648(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_02223664(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
 }
@@ -2098,8 +2098,8 @@ extern "C" s32 func_ov004_022235ec(Obj *o, s32 *p, s32 c, u32 b, s16 d) {
     v.x = p[0];
     v.z = p[1];
     func_ov004_0222363c(&m.unk_0c, &v.x, c);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2123,8 +2123,8 @@ extern "C" void func_ov004_02223458(Obj *o, Msg *m) {
     if (b < 0) {
         p = func_0204eba0(data_021c47c4, &o->unk_820, 1);
         if (p == 0) {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             return;
         }
         o->unk_81e = *p;
@@ -2132,10 +2132,10 @@ extern "C" void func_ov004_02223458(Obj *o, Msg *m) {
     }
     if (func_02098ffc() == -1 && func_020b52f8()) {
         BOOL ok;
-        if (func_0204b2d4(&o->unk_81c)) {
+        if (Item_IsFurniture(&o->unk_81c)) {
             u16 t = 0xfff1;
-            s32 x = func_0204b25c(&o->unk_81c);
-            if (x == func_0204b25c(&t)) {
+            s32 x = Item_GetFurnitureIndex(&o->unk_81c);
+            if (x == Item_GetFurnitureIndex(&t)) {
                 ok = TRUE;
             } else {
                 ok = FALSE;
@@ -2148,7 +2148,7 @@ extern "C" void func_ov004_02223458(Obj *o, Msg *m) {
             }
         }
         if (!ok) {
-            _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 0);
+            _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 0);
             r->unk_05 = 6;
             o->unk_81e = 0xfff1;
             o->unk_81c = o->unk_81e;
@@ -2161,7 +2161,7 @@ extern "C" void func_ov004_02223458(Obj *o, Msg *m) {
                 s32 a;
                 s32 c;
             } v;
-            _ZN12Unk_02006d1413func_0200ec30Ej(o, 0xd);
+            _ZN12Unk_02006d1413setActionFlagEj(o, 0xd);
             v.a = a;
             v.c = c;
             func_02045570(&v, 1);
@@ -2169,10 +2169,10 @@ extern "C" void func_ov004_02223458(Obj *o, Msg *m) {
             func_ov004_022344e8(b, &o->unk_81c, &o->unk_81e);
         }
         _ZN12Unk_020102ec13func_02010358Eijt(o, 0x19, 3, 0);
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x52);
+        _ZN12Unk_02006d146playSeEj(o, 0x52);
     } else {
         r->unk_05 = 10;
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 0);
     }
 }
 
@@ -2182,13 +2182,13 @@ extern "C" void func_ov004_02223454(void) {
 extern "C" void func_ov004_022233bc(Obj *o) {
     Rec2 *r = (Rec2 *)&o->unk_7d0;
     if (r->unk_05 >= 6) {
-        _ZN12Unk_020102ec13func_02010914Ev(o);
+        _ZN12Unk_020102ec11advanceAnimEv(o);
         return;
     }
     if (r->unk_04 == 2) {
-        if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 7)) {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 7)) {
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             return;
         }
     } else if (r->unk_04 == 0) {
@@ -2197,21 +2197,21 @@ extern "C" void func_ov004_022233bc(Obj *o) {
                 r->unk_04 = 2;
             } else if (o->unk_814 == 1) {
                 r->unk_04 = 1;
-                _ZN12Unk_02006d1413func_0200ec30Ej(o, 0xd);
+                _ZN12Unk_02006d1413setActionFlagEj(o, 0xd);
             }
         }
     }
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
 }
 
 extern "C" void func_ov004_02223314(Obj *o) {
     s32 *p;
     s32 r;
-    if (_ZN12Unk_02006d1413func_0200ec44Ej(o, 0xd) == 0) {
+    if (_ZN12Unk_02006d1414testActionFlagEj(o, 0xd) == 0) {
         p = (s32 *)((u8 *)o + 0x7d0);
         if (*p < 0) return;
         if (func_ov004_022344a4() == 0) return;
-        _ZN12Unk_02006d1413func_0200ec30Ej(o, 0xd);
+        _ZN12Unk_02006d1413setActionFlagEj(o, 0xd);
         *p = -1;
     }
     if (o->unk_700 != 0x19) {
@@ -2224,7 +2224,7 @@ extern "C" void func_ov004_02223314(Obj *o) {
     r = 0x1000 - (s32)((o->unk_2d4.mid - 8) << 12) / 7;
     if (r < 0) {
         r = 0;
-        _ZN12Unk_02006d1413func_0200ec1cEj(o, 0xd);
+        _ZN12Unk_02006d1415clearActionFlagEj(o, 0xd);
     }
     o->unk_82c = r;
     o->unk_830 = r;
@@ -2254,8 +2254,8 @@ struct Unk_ov004_02222874_Rt {
 
 class Unk_ov004_02222874_Msg {
 public:
-    inline Unk_ov004_02222874_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02222874_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     union {
         Unk_ov004_02222874_Tgt t;
@@ -2332,40 +2332,40 @@ extern void *data_020cbb18;
 extern u8 data_ov004_0224d4c0[];
 extern u8 data_ov004_0224d4d0[];
 
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-s32 _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
-s32 _ZN12Unk_020102ec13func_020109c4Ev(Obj *o);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+s32 _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
+s32 _ZN12Unk_020102ec17moveWithCollisionEv(Obj *o);
 s32 _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
 s32 _ZN12Unk_020102ec13func_0201065cEv(Obj *o);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, s32 b, s32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-s32 _ZN12Unk_020d6df413func_0200d640Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d5c4Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
+s32 _ZN11PlayerActor13func_0200d5c4Ev(Obj *o);
+s32 _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 s32 func_020b0f54(void);
 s32 func_020b52f8(void);
 s32 func_0203d820(void);
 void func_0203d7f8(void);
-void _ZN12Unk_020d967013func_0203e47cEi(void *o, Sec *s);
-void _ZN12Unk_020d967013func_0203e488Ei(void *o, Sec *s);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, s32 a);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, s32 a);
-void _ZN12Unk_020e2a3013func_020a710cEPKc(Sec *s, void *d);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
+void _ZN9Character13func_0203e47cEi(void *o, Sec *s);
+void _ZN9Character13func_0203e488Ei(void *o, Sec *s);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, s32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, s32 a);
+void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *d);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 func_0200f594(Obj *o, s32 x, s32 z, s32 h);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
 s32 func_020769ac(void *a);
 void func_020769c4(void *a, s32 b);
-s32 func_0204b2d4(void *p);
-u32 func_0204b25c(void *p);
+s32 Item_IsFurniture(void *p);
+u32 Item_GetFurnitureIndex(void *p);
 s32 func_02098ffc(void);
 void func_02099124(void *p);
-s32 _ZN12Unk_02006d1413func_0200f5b0Ev(Obj *o);
+s32 _ZN12Unk_02006d1415getHeldToolKindEv(Obj *o);
 void func_0205e1a0(void *p, s32 a, s32 b, s32 c);
 s32 func_02042ba8(u32 a, u32 b);
 s32 func_0206e780(u32 a);
@@ -2425,7 +2425,7 @@ static inline BOOL Unk_ov004_02222874_IsOne(u8 v) {
 #define ECC_START_FAIL(c) \
     { \
         *p = 4; \
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 6, 6); \
+        _ZN12Unk_020102ec9startAnimEijt(o, 0, 6, 6); \
         o->unk_80c = func_02042ba8(o->unk_7fc, o->unk_81c); \
     }
 
@@ -2439,16 +2439,16 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
     s32 t;
     switch (*p) {
     case 0:
-        if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc) == 0) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc) == 0) {
             break;
         }
         {
             BOOL ok;
             if (func_02098ffc() == -1) {
-                if (func_0204b2d4(&o->unk_81c) != 0) {
+                if (Item_IsFurniture(&o->unk_81c) != 0) {
                     w.b = 0xfff1;
-                    u32 r6 = func_0204b25c(&o->unk_81c);
-                    if (r6 == func_0204b25c(&w.b)) {
+                    u32 r6 = Item_GetFurnitureIndex(&o->unk_81c);
+                    if (r6 == Item_GetFurnitureIndex(&w.b)) {
                         ok = TRUE;
                     } else {
                         ok = FALSE;
@@ -2464,19 +2464,19 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
                     if (func_0203d820() == 0) {
                         break;
                     }
-                    _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x6c, 3, 0);
-                    s32 r = _ZN12Unk_02006d1413func_0200f5b0Ev(o);
+                    _ZN12Unk_020102ec9startAnimEijt(o, 0x6c, 3, 0);
+                    s32 r = _ZN12Unk_02006d1415getHeldToolKindEv(o);
                     if (r == 4) {
                         func_0205e1a0(o->unk_59c, 0, 9, 0);
                     } else if (r == 3) {
                         func_0205e1a0(o->unk_59c, 0x13, 3, 0);
                     }
                     *p = 1;
-                    _ZN12Unk_020d967013func_0203e488Ei(o, o);
-                    _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x11);
+                    _ZN9Character13func_0203e488Ei(o, o);
+                    _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
                     {
                         Sec &s = *o;
-                        _ZN12Unk_020e2a3013func_020a710cEPKc(&s, data_ov004_0224d4d0);
+                        _ZN10MsgRequest11setFileNameEPKc(&s, data_ov004_0224d4d0);
                     }
                     o->unk_10a = 2;
                     o->unk_128->unk_08 = 1;
@@ -2515,8 +2515,8 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
                         o->unk_2dc = 0x1000;
                         if (func_0206ed18() != 0) {
                             *p = 5;
-                            _ZN12Unk_020d967013func_0203e47cEi(o, o);
-                            _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
+                            _ZN9Character13func_0203e47cEi(o, o);
+                            _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                             func_0203d7f8();
                         } else {
                             *p = 3;
@@ -2537,28 +2537,28 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
     case 4:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN12Unk_020d967013func_0203e47cEi(o, o);
-                _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
+                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 func_0203d7f8();
                 *p = 5;
-                _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 6, 6);
+                _ZN12Unk_020102ec9startAnimEijt(o, 0, 6, 6);
             }
         }
         break;
     case 5:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
-        _ZN12Unk_02006d1413func_0200ec1cEj(o, 0xd);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
+        _ZN12Unk_02006d1415clearActionFlagEj(o, 0xd);
         o->unk_818 = 0xf;
         break;
     case 6:
         if (func_0203d820() != 0) {
             *p = 7;
-            _ZN12Unk_020d967013func_0203e488Ei(o, o);
-            _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x11);
+            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
-                _ZN12Unk_020e2a3013func_020a710cEPKc(&s, data_ov004_0224d4d0);
+                _ZN10MsgRequest11setFileNameEPKc(&s, data_ov004_0224d4d0);
             }
             o->unk_10a = 0;
             o->unk_128->unk_08 = 1;
@@ -2574,26 +2574,26 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
     case 8:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN12Unk_020d967013func_0203e47cEi(o, o);
-                _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
+                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 func_0203d7f8();
                 *p = 9;
             }
         }
         break;
     case 9:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
-        _ZN12Unk_02006d1413func_0200ec1cEj(o, 0xd);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
+        _ZN12Unk_02006d1415clearActionFlagEj(o, 0xd);
         break;
     case 10:
         if (func_0203d820() != 0) {
             *p = 0xb;
-            _ZN12Unk_020d967013func_0203e488Ei(o, o);
-            _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x11);
+            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
-                _ZN12Unk_020e2a3013func_020a710cEPKc(&s, data_ov004_0224d4c0);
+                _ZN10MsgRequest11setFileNameEPKc(&s, data_ov004_0224d4c0);
             }
             o->unk_10a = 1;
             o->unk_128->unk_08 = 1;
@@ -2609,11 +2609,11 @@ extern "C" void func_ov004_02222ecc(Obj *o) {
     case 12:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN12Unk_020d967013func_0203e47cEi(o, o);
-                _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
+                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 func_0203d7f8();
-                o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-                _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+                o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+                _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             }
         }
         break;
@@ -2637,8 +2637,8 @@ extern "C" s32 func_ov004_02222e5c(Obj *o, s32 x, s32 z, s16 h, u32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x1d, a, *(s16 *)&b);
     func_ov004_02222ea4(&m.unk_0c.t, x, z, h);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2681,7 +2681,7 @@ extern "C" void func_ov004_02222d74(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void func_ov004_02222d58(Obj *o) {
@@ -2692,31 +2692,31 @@ extern "C" void func_ov004_02222d58(Obj *o) {
 extern "C" void func_ov004_02222cb0(Obj *o) {
     Rec *r = &o->unk_7d0.r;
     V3 *v = &o->unk_5c;
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc) && v->x == r->x && v->z == r->z && r->h == o->unk_8e) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc) && v->x == r->x && v->z == r->z && r->h == o->unk_8e) {
         func_ov004_02222c04(o, 1, 0, 5, -1);
     } else if (o->unk_13d == 0) {
         if (r->flag == 0) {
             r->flag = 1;
-            if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc) == 0) {
+            if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc) == 0) {
                 _ZN18Unk_ov004_022351bc19func_ov004_0223539cEv(func_ov004_022354d8());
             }
         } else {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         }
     }
 }
 
 extern "C" void func_ov004_02222c54(Obj *o) {
     func_ov004_02222d58(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    _ZN12Unk_020102ec13func_020109c4Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    _ZN12Unk_020102ec17moveWithCollisionEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         func_ov004_02222cb0(o);
     } else {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
     }
 }
 
@@ -2729,8 +2729,8 @@ extern "C" s32 func_ov004_02222c04(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Msg m;
     m.func_0200e2c0(0x1e, c, *(s16 *)&e);
     func_ov004_02222c4c(m.unk_0c.b, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -2758,15 +2758,15 @@ extern "C" void func_ov004_02222b74(Obj *o, Obj *arg) {
     u8 *r = &o->unk_7d0.b[0];
     u32 x = a[0];
     u32 y = a[1];
-    s32 t = _ZN12Unk_020d6df413func_0200d640Ev(o);
+    s32 t = _ZN11PlayerActor17getInputMagnitudeEv(o);
     if (x != 0) {
         t = 0;
     }
     func_ov004_02222be8(r, t);
     if (y != 0) {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x1a, 3, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0x1a, 3, 0);
     } else {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x1a, 0, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0x1a, 0, 0);
     }
     func_ov004_02222be0(o->unk_8ec, x, y);
 }
@@ -2784,17 +2784,17 @@ extern "C" void func_ov004_02222980(Obj *o) {
     switch (*q) {
     case 0:
         if (*p == 0) {
-            if (_ZN12Unk_020d6df413func_0200d640Ev(o) < 0x333) {
+            if (_ZN11PlayerActor17getInputMagnitudeEv(o) < 0x333) {
                 *p = 1;
             }
         }
         if (o->unk_13d == 0) {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
-        } else if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0x333) {
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
+        } else if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0x333) {
             if ((u32)func_020b0f54() <= 1) {
-                o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-                switch (_ZN12Unk_020d6df413func_0200d5c4Ev(o)) {
+                o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+                switch (_ZN11PlayerActor13func_0200d5c4Ev(o)) {
                 case 2:
                     func_ov004_0222257c(o, 6, -1);
                     break;
@@ -2826,11 +2826,11 @@ extern "C" void func_ov004_02222980(Obj *o) {
     case 1:
         if (func_0203d820() != 0) {
             (*q)++;
-            _ZN12Unk_020d967013func_0203e488Ei(o, o);
-            _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x11);
+            _ZN9Character13func_0203e488Ei(o, o);
+            _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
             {
                 Sec &s = *o;
-                _ZN12Unk_020e2a3013func_020a710cEPKc(&s, data_ov004_0224d4c0);
+                _ZN10MsgRequest11setFileNameEPKc(&s, data_ov004_0224d4c0);
             }
             o->unk_10a = 1;
             o->unk_128->unk_08 = 1;
@@ -2846,8 +2846,8 @@ extern "C" void func_ov004_02222980(Obj *o) {
     case 3:
         if (o->unk_128 != 0) {
             if (o->unk_128->unk_04 == 0) {
-                _ZN12Unk_020d967013func_0203e47cEi(o, o);
-                _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
+                _ZN9Character13func_0203e47cEi(o, o);
+                _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
                 func_0203d7f8();
                 *q = 0;
             }
@@ -2857,14 +2857,14 @@ extern "C" void func_ov004_02222980(Obj *o) {
 }
 
 extern "C" void func_ov004_02222928(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    _ZN12Unk_020102ec13func_020109c4Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    _ZN12Unk_020102ec17moveWithCollisionEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         func_ov004_02222980(o);
     } else {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
     }
 }
 
@@ -2885,12 +2885,12 @@ extern "C" s32 func_ov004_02222874(Obj *o, u32 a, s32 b, s32 c) {
         } else {
             _ZN18Unk_ov004_022351bc19func_ov004_0223533cEv(func_ov004_022354d8());
         }
-        s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-        _ZN12Unk_0200e2c0D1Ev(&m);
+        s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+        _ZN19PlayerActionRequestD1Ev(&m);
         return r;
     }
     if (func_020b52f8() != 0 && o->unk_7fc == 0) {
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x6d);
+        _ZN12Unk_02006d146playSeEj(o, 0x6d);
     }
     return 0;
 }
@@ -2936,8 +2936,8 @@ struct Unk_ov004_02221ed0_Bits {
 
 class Unk_ov004_02221ed0_Msg {
 public:
-    inline Unk_ov004_02221ed0_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02221ed0_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_02221ed0_Rec unk_0c;
     u8 pad_18[4];
@@ -2983,26 +2983,26 @@ extern u8 data_ov004_0224d4b8[];
 extern u8 data_ov004_0224d4bc[];
 extern s16 data_ov004_02240134[];
 
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-void _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+void _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201065cEv(Obj *o);
-void _ZN12Unk_020102ec13func_020109c4Ev(Obj *o);
+void _ZN12Unk_020102ec17moveWithCollisionEv(Obj *o);
 void _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
 s32 func_02051518(void);
 void func_02051524(V3 *v);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-s32 _ZN12Unk_020d6df413func_0200d5c4Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d640Ev(Obj *o);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+s32 _ZN11PlayerActor13func_0200d5c4Ev(Obj *o);
+s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 void func_0200f594(Obj *o, s32 a, s32 b, s32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, s32 a, s32 b, s32 c, u32 d);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+s32 _ZN13AnimFrameCtrl5setupEihit(void *p, s32 a, s32 b, s32 c, u32 d);
 s32 func_0200f3ec(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
@@ -3068,34 +3068,34 @@ extern "C" void func_ov004_02222744(Obj *o) {
         u8 *f = (u8 *)&o->unk_7d0;
         s32 t;
         if (*f == 0) {
-            if (_ZN12Unk_020d6df413func_0200d640Ev(o) < 0x19a) {
+            if (_ZN11PlayerActor17getInputMagnitudeEv(o) < 0x19a) {
                 func_ov004_02222870(f, 1);
             }
         }
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        t = _ZN12Unk_020d6df413func_0200d5c4Ev(o);
-        if (*f != 0 && _ZN12Unk_020d6df413func_0200d640Ev(o) > 0x19a) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        t = _ZN11PlayerActor13func_0200d5c4Ev(o);
+        if (*f != 0 && _ZN11PlayerActor17getInputMagnitudeEv(o) > 0x19a) {
             if (t == 3 || t == 1) {
                 func_ov004_02222c04(o, 1, 1, 5, -1);
                 return;
             }
         }
-        if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
             if (o->unk_13d) {
                 func_ov004_02222c04(o, 0, 1, 5, -1);
             } else {
-                _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+                _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
             }
         }
     } else {
-        if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
-            _ZN12Unk_020dbe7c13func_0205668cEihit(o->unk_2cc, 0, 3, 0x1000, o->unk_2d0.mid);
+        if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
+            _ZN13AnimFrameCtrl5setupEihit(o->unk_2cc, 0, 3, 0x1000, o->unk_2d0.mid);
         }
     }
 }
 
 extern "C" void func_ov004_02222724(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     func_ov004_02222744(o);
@@ -3104,8 +3104,8 @@ extern "C" void func_ov004_02222724(Obj *o) {
 extern "C" s32 func_ov004_022226ec(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x20, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3119,7 +3119,7 @@ extern "C" void func_ov004_022226c0(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_022225dc(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             u8 r4 = 0;
             func_ov004_022354d8();
@@ -3134,16 +3134,16 @@ extern "C" void func_ov004_022225dc(Obj *o) {
                 if (*f == 0) {
                     *f = 1;
                     if (r4 == 1) {
-                        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x6d);
+                        _ZN12Unk_02006d146playSeEj(o, 0x6d);
                     }
                 }
-                s32 t = _ZN12Unk_020d6df413func_0200d5c4Ev(o);
-                if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0) {
+                s32 t = _ZN11PlayerActor13func_0200d5c4Ev(o);
+                if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
                     if (t == 0) {
                         return;
                     }
                 }
-                o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+                o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
                 func_ov004_02222c04(o, 0, 1, 5, -1);
             } else {
                 func_ov004_0222240c(o, 6, -1);
@@ -3151,14 +3151,14 @@ extern "C" void func_ov004_022225dc(Obj *o) {
                 _ZN18Unk_ov004_022351bc19func_ov004_02235234Ev();
             }
         } else {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         }
     }
 }
 
 extern "C" void func_ov004_022225b4(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    _ZN12Unk_020102ec13func_020109c4Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    _ZN12Unk_020102ec17moveWithCollisionEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     func_ov004_022225dc(o);
@@ -3167,8 +3167,8 @@ extern "C" void func_ov004_022225b4(Obj *o) {
 extern "C" s32 func_ov004_0222257c(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x21, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3182,7 +3182,7 @@ extern "C" void func_ov004_02222550(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_0222246c(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             u8 r4 = 0;
             func_ov004_022354d8();
@@ -3197,16 +3197,16 @@ extern "C" void func_ov004_0222246c(Obj *o) {
                 if (*f == 0) {
                     *f = 1;
                     if (r4 == 1) {
-                        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x6d);
+                        _ZN12Unk_02006d146playSeEj(o, 0x6d);
                     }
                 }
-                s32 t = _ZN12Unk_020d6df413func_0200d5c4Ev(o);
-                if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0) {
+                s32 t = _ZN11PlayerActor13func_0200d5c4Ev(o);
+                if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
                     if (t == 2) {
                         return;
                     }
                 }
-                o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+                o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
                 func_ov004_02222c04(o, 0, 1, 5, -1);
             } else {
                 func_ov004_022222f0(o, 6, -1);
@@ -3214,14 +3214,14 @@ extern "C" void func_ov004_0222246c(Obj *o) {
                 _ZN18Unk_ov004_022351bc19func_ov004_022351e8Ev();
             }
         } else {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         }
     }
 }
 
 extern "C" void func_ov004_02222444(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    _ZN12Unk_020102ec13func_020109c4Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    _ZN12Unk_020102ec17moveWithCollisionEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     func_ov004_0222246c(o);
@@ -3230,8 +3230,8 @@ extern "C" void func_ov004_02222444(Obj *o) {
 extern "C" s32 func_ov004_0222240c(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x22, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3258,18 +3258,18 @@ extern "C" void func_ov004_022223a8(Obj *o) {
 }
 
 extern "C" void func_ov004_02222348(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         if (o->unk_13d) {
             func_ov004_02222c04(o, 1, 0, 5, -1);
         } else {
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         }
     }
 }
 
 extern "C" void func_ov004_02222328(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
     func_ov004_02222348(o);
@@ -3278,8 +3278,8 @@ extern "C" void func_ov004_02222328(Obj *o) {
 extern "C" s32 func_ov004_022222f0(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x23, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3324,7 +3324,7 @@ extern "C" void func_ov004_02222228(Obj *o) {
     o->unk_68.x = o->unk_5c.x;
     o->unk_68.y = o->unk_5c.y;
     o->unk_68.z = o->unk_5c.z;
-    _ZN12Unk_020102ec13func_020109c4Ev(o);
+    _ZN12Unk_020102ec17moveWithCollisionEv(o);
     s32 ox = old.x;
     if (ox == o->unk_6f0) {
         o->unk_5c.z = old.z;
@@ -3334,18 +3334,18 @@ extern "C" void func_ov004_02222228(Obj *o) {
 }
 
 extern "C" void func_ov004_022221c8(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         if (o->unk_13d) {
             func_ov004_02222c04(o, 1, 0, 5, -1);
         } else {
-            _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+            _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         }
     }
 }
 
 extern "C" void func_ov004_022221a0(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_02222228(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_020102ec13func_0201065cEv(o);
@@ -3363,8 +3363,8 @@ extern "C" s32 func_ov004_0222213c(Obj *o, s32 x, s32 z, s16 h, u8 d, s32 a, s32
     Msg m;
     m.func_0200e2c0(0x24, a, *(s16 *)&b);
     func_ov004_0222218c(&m.unk_0c, x, z, h, d);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3407,7 +3407,7 @@ extern "C" void func_ov004_02222040(Obj *o, Msg *m) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         func_02051524(&tmp);
     }
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x1a, 3, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 0x1a, 3, 0);
 }
 
 extern "C" void func_ov004_02221ffc(Obj *o, s32 a) {
@@ -3426,7 +3426,7 @@ extern "C" void func_ov004_02221fdc(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void func_ov004_02221fc0(Obj *o) {
@@ -3436,7 +3436,7 @@ extern "C" void func_ov004_02221fc0(Obj *o) {
 
 extern "C" void func_ov004_02221ef8(Obj *o) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         return;
     }
     switch (func_02051518()) {
@@ -3445,8 +3445,8 @@ extern "C" void func_ov004_02221ef8(Obj *o) {
     case 1:
         break;
     case 2:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         return;
     }
     Rec *r = &o->unk_7d0;
@@ -3472,7 +3472,7 @@ extern "C" void func_ov004_02221ef8(Obj *o) {
 
 extern "C" void func_ov004_02221ed8(Obj *o) {
     func_ov004_02221fc0(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02221ef8(o);
 }
@@ -3514,8 +3514,8 @@ struct Unk_ov004_022215a8_Bits {
 
 class Unk_ov004_022215a8_Msg {
 public:
-    inline Unk_ov004_022215a8_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_022215a8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     union {
         Unk_ov004_022215a8_Tgt t;
@@ -3577,26 +3577,26 @@ extern u8 data_020e416c;
 extern void *data_020cbb18;
 extern u8 data_ov004_0224013c[];
 
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 func_02034d2c(void);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
-u8 *func_02003bbc(void);
+u8 *Snd_GetBeatState(void);
 void _ZN12Unk_020dbe6c13func_02056520Ei(void *p, s32 n);
 void _ZN12Unk_020dbda413func_02053f20Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, s32 n);
-s32 _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, s32 n);
+s32 _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201065cEv(Obj *o);
 void _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, s32 b, s32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-s32 _ZN12Unk_020d6df413func_0200d640Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d5fcEv(Obj *o);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
+s32 _ZN11PlayerActor13getInputAngleEv(Obj *o);
 s32 func_02063c18(s16 a);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
@@ -3667,8 +3667,8 @@ extern "C" s32 func_ov004_02221e68(Obj *o, u32 a, u32 b) {
     m.func_0200e2c0(0x25, a, b);
     func_0200f3ec(&v, o, &o->unk_5c, &o->unk_8e, (u32)(data_ov004_0224013c + 12));
     func_ov004_02221ed0(&m.unk_0c.t, v.x, v.z, (s16)(o->unk_8e + 0x8000));
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3676,8 +3676,8 @@ extern "C" s32 func_ov004_02221e1c(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b)
     Msg m;
     m.func_0200e2c0(0x25, a, *(s16 *)&b);
     func_ov004_02221ed0(&m.unk_0c.t, *x, *z, *h);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3700,7 +3700,7 @@ extern "C" void func_ov004_02221ddc(void *p, s32 *x, s32 *z, s16 *h) {
 extern "C" void func_ov004_02221d80(Obj *o, Obj *arg) {
     s16 h;
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x21, 3, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c5);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
@@ -3723,13 +3723,13 @@ extern "C" void func_ov004_02221d2c(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->u.z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void func_ov004_02221cd8(Obj *o) {
     V3 v;
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(o->unk_230.unk_9c, 0xc)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->unk_230.unk_9c, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(data_020e416c)) {
             Rec *r = &o->unk_7d0;
             s32 z = r->u.z;
@@ -3744,7 +3744,7 @@ extern "C" void func_ov004_02221cd8(Obj *o) {
 }
 
 extern "C" void func_ov004_02221cb0(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_230.unk_9c)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_230.unk_9c)) {
         func_ov004_022217c4(o, 0, 6, -1);
     }
 }
@@ -3768,8 +3768,8 @@ extern "C" s32 func_ov004_02221c20(Obj *o, u32 a, u32 b) {
     m.func_0200e2c0(0x26, a, b);
     func_0200f3ec(&v, o, &o->unk_5c, &o->unk_8e, (u32)(data_ov004_0224013c + 12));
     func_ov004_02221c88(&m.unk_0c.t, v.x, v.z, (s16)(o->unk_8e + 0x4000));
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3777,8 +3777,8 @@ extern "C" s32 func_ov004_02221bd4(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b)
     Msg m;
     m.func_0200e2c0(0x26, a, *(s16 *)&b);
     func_ov004_02221c88(&m.unk_0c.t, *x, *z, *h);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3801,7 +3801,7 @@ extern "C" void func_ov004_02221b94(void *p, s32 *x, s32 *z, s16 *h) {
 extern "C" void func_ov004_02221b38(Obj *o, Obj *arg) {
     s16 h;
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x22, 0, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c5);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
@@ -3824,13 +3824,13 @@ extern "C" void func_ov004_02221ae4(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->u.z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void func_ov004_02221a90(Obj *o) {
     V3 v;
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(o->unk_230.unk_9c, 0xc)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->unk_230.unk_9c, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(data_020e416c)) {
             Rec *r = &o->unk_7d0;
             s32 z = r->u.z;
@@ -3845,7 +3845,7 @@ extern "C" void func_ov004_02221a90(Obj *o) {
 }
 
 extern "C" void func_ov004_02221a68(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_230.unk_9c)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_230.unk_9c)) {
         func_ov004_022217c4(o, 0, 6, -1);
     }
 }
@@ -3869,8 +3869,8 @@ extern "C" s32 func_ov004_022219d8(Obj *o, u32 a, u32 b) {
     m.func_0200e2c0(0x27, a, b);
     func_0200f3ec(&v, o, &o->unk_5c, &o->unk_8e, (u32)(data_ov004_0224013c + 12));
     func_ov004_02221a40(&m.unk_0c.t, v.x, v.z, (s16)(o->unk_8e - 0x4000));
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3878,8 +3878,8 @@ extern "C" s32 func_ov004_0222198c(Obj *o, s32 *x, s32 *z, s16 *h, u32 a, u32 b)
     Msg m;
     m.func_0200e2c0(0x27, a, *(s16 *)&b);
     func_ov004_02221a40(&m.unk_0c.t, *x, *z, *h);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -3902,7 +3902,7 @@ extern "C" void func_ov004_0222194c(void *p, s32 *x, s32 *z, s16 *h) {
 extern "C" void func_ov004_022218f0(Obj *o, Obj *arg) {
     s16 h;
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x23, 0, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c5);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c5);
     V3 *p = (V3 *)((u8 *)arg + 0xc);
     h = *(s16 *)((u8 *)p + 8);
     s32 z = p->y;
@@ -3925,13 +3925,13 @@ extern "C" void func_ov004_0222189c(Obj *o) {
     V3 *p = &o->unk_5c;
     p->x = r->x;
     p->z = r->u.z;
-    _ZN12Unk_020102ec13func_02010a58EPs(o, &r->h);
+    _ZN12Unk_020102ec9setAngleYEPs(o, &r->h);
 }
 
 extern "C" void func_ov004_02221848(Obj *o) {
     V3 v;
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(o->unk_230.unk_9c, 0xc)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(o->unk_230.unk_9c, 0xc)) {
         if (Unk_ov004_022215a8_IsOne(data_020e416c)) {
             Rec *r = &o->unk_7d0;
             s32 z = r->u.z;
@@ -3946,7 +3946,7 @@ extern "C" void func_ov004_02221848(Obj *o) {
 }
 
 extern "C" void func_ov004_02221820(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(o->unk_230.unk_9c)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(o->unk_230.unk_9c)) {
         func_ov004_022217c4(o, 0, 6, -1);
     }
 }
@@ -3962,15 +3962,15 @@ extern "C" s32 func_ov004_022217c4(Obj *o, u32 a, u32 b, u32 c) {
     Msg m;
     m.func_0200e2c0(0x28, b, c);
     m.unk_0c.h = a;
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_0222178c(Obj *o, Obj *arg) {
     u16 *r2 = (u16 *)((u8 *)arg + 0xc);
     if (o->unk_700 != 0x24) {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x24, *r2, 0);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0x24, *r2, 0);
     }
     Rec *r = &o->unk_7d0;
     r->x = o->unk_b0;
@@ -3987,7 +3987,7 @@ extern "C" void func_ov004_02221768(Obj *o) {
 
 extern "C" void func_ov004_022216dc(Obj *o) {
     u8 *p;
-    if (func_020e77cc(func_02034d2c(), 0x63, 0xab) != 0 && (p = func_02003bbc()) != 0 && (s8)p[3] != 1) {
+    if (func_020e77cc(func_02034d2c(), 0x63, 0xab) != 0 && (p = Snd_GetBeatState()) != 0 && (s8)p[3] != 1) {
         Sub *sb = &o->unk_230;
         Rec *r = &o->unk_7d0;
         if (r->u.flag == 0) {
@@ -4002,13 +4002,13 @@ extern "C" void func_ov004_022216dc(Obj *o) {
         sb->unk_ac = 0x1000;
         o->unk_b0 = 0;
     } else {
-        _ZN12Unk_020102ec13func_02010914Ev(o);
+        _ZN12Unk_020102ec11advanceAnimEv(o);
     }
 }
 
 extern "C" void func_ov004_0222164c(Obj *o) {
-    if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0) {
-        s32 t = _ZN12Unk_020d6df413func_0200d5fcEv(o);
+    if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
+        s32 t = _ZN11PlayerActor13getInputAngleEv(o);
         switch (func_02063c18((s16)(o->unk_8e - t))) {
         case 0:
             if (func_ov004_02234dd4(&o->unk_5c, o->unk_8e)) {
@@ -4038,15 +4038,15 @@ extern "C" void func_ov004_022215e0(Obj *o) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         func_ov004_0222164c(o);
     } else {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
     }
 }
 
 extern "C" s32 func_ov004_022215a8(Obj *o, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x29, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4070,8 +4070,8 @@ struct Unk_ov004_02220c78_Rec {
 
 class Unk_ov004_02220c78_Msg {
 public:
-    inline Unk_ov004_02220c78_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02220c78_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(s32 a, s32 b, s32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     u8 unk_0c;
     u8 pad_0d[0x1c - 0xd];
@@ -4128,27 +4128,27 @@ extern u8 data_020e416c[];
 extern u8 data_ov004_0224013c[];
 extern s16 data_ov004_02240134[];
 
-void _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+void _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
 void func_0200f594(Obj *o, u32 a, u32 b, s32 c);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, u32 a);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, u32 a);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, u32 a);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 void _ZN12Unk_020102ec13func_02010810EP16Unk_020107c8_BlkPj(Obj *o, V3 *v, void *p);
 void _ZN12Unk_020102ec13func_02010740Ejjj(Obj *o, V3 *v, s32 a, s32 b);
 void _ZN12Unk_020e0d0813func_02089040Ev(void *p);
 void func_020514a4(s32 a);
 s32 func_02051508();
 void func_02051510(V3 *v);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
 s32 func_0200f3ec(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
@@ -4206,7 +4206,7 @@ extern "C" void func_ov004_02221574(Obj *o) {
     t -= 0x4000;
     *(u16 *)&o->unk_7d0 = t;
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x26, 0, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c9);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c9);
 }
 
 extern "C" s32 func_ov004_02221568(Obj *o, s32 a) {
@@ -4214,17 +4214,17 @@ extern "C" s32 func_ov004_02221568(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_02221558(Obj *o) {
-    _ZN12Unk_020102ec13func_02010a58EPs(o, (s16 *)&o->unk_7d0);
+    _ZN12Unk_020102ec9setAngleYEPs(o, (s16 *)&o->unk_7d0);
 }
 
 extern "C" void func_ov004_02221530(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         func_ov004_02221218(o, 6, -1);
     }
 }
 
 extern "C" void func_ov004_02221514(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02221530(o);
 }
@@ -4232,8 +4232,8 @@ extern "C" void func_ov004_02221514(Obj *o) {
 extern "C" s32 func_ov004_022214dc(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x2a, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4242,7 +4242,7 @@ extern "C" void func_ov004_022214a8(Obj *o) {
     t += 0x4000;
     *(u16 *)&o->unk_7d0 = t;
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x25, 0, 0);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c9);
+    _ZN12Unk_02006d146playSeEj(o, 0x4c9);
 }
 
 extern "C" s32 func_ov004_0222149c(Obj *o, s32 a) {
@@ -4250,17 +4250,17 @@ extern "C" s32 func_ov004_0222149c(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_0222148c(Obj *o) {
-    _ZN12Unk_020102ec13func_02010a58EPs(o, (s16 *)&o->unk_7d0);
+    _ZN12Unk_020102ec9setAngleYEPs(o, (s16 *)&o->unk_7d0);
 }
 
 extern "C" void func_ov004_02221464(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         func_ov004_02221218(o, 6, -1);
     }
 }
 
 extern "C" void func_ov004_02221448(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02221464(o);
 }
@@ -4273,8 +4273,8 @@ extern "C" s32 func_ov004_02221404(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0x2b, b, c);
     func_ov004_02221444(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4320,10 +4320,10 @@ extern "C" void func_ov004_02221290(Obj *o) {
     case 0:
         return;
     case 1:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         break;
     case 2:
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         func_ov004_022217c4(o, 3, 6, -1);
         return;
     }
@@ -4349,7 +4349,7 @@ extern "C" void func_ov004_02221250(Obj *o) {
     if (Unk_ov004_022211ac_Flag()) {
         func_ov004_022330a0(&o->unk_5c);
     }
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02221290(o);
     func_ov004_02221340(o);
@@ -4358,8 +4358,8 @@ extern "C" void func_ov004_02221250(Obj *o) {
 extern "C" s32 func_ov004_02221218(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x2c, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4401,9 +4401,9 @@ extern "C" void func_ov004_0222113c(Obj *o) {
 }
 
 extern "C" void func_ov004_02221110(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xd)) {
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4c6);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xd)) {
+        _ZN12Unk_02006d146playSeEj(o, 0x4c6);
     }
 }
 
@@ -4422,9 +4422,9 @@ extern "C" void func_ov004_022210b0(Obj *o) {
 }
 
 extern "C" void func_ov004_02221074(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 0, 1, -1);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 0, 1, -1);
     }
 }
 
@@ -4446,8 +4446,8 @@ extern "C" s32 func_ov004_02220ff0(Obj *o, u8 b, u32 x, u32 y, s16 c, s32 d, s32
     Msg m;
     m.func_0200e2c0(0x2d, d, *(s16 *)&e);
     func_ov004_02221040(&m.unk_0c, b, x, y, c);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4499,7 +4499,7 @@ extern "C" void func_ov004_02220e48(Obj *o) {
     s32 k;
     if (o->unk_700 == 0x1a || o->unk_700 == 0) {
         if (Unk_ov004_02220e48_IsZero(o->unk_2d4.mid) < 6) {
-            _ZN12Unk_02006d1413func_0200ec30Ej(o, 2);
+            _ZN12Unk_02006d1413setActionFlagEj(o, 2);
             switch (o->unk_7d0.unk_0a) {
             case 0:
                 k = 0x3b;
@@ -4522,8 +4522,8 @@ extern "C" void func_ov004_02220e48(Obj *o) {
 extern "C" void func_ov004_02220e00(Obj *o) {
     if (o->unk_700 == 0x1a) return;
     if (o->unk_700 == 0) return;
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        _ZN12Unk_02006d1413func_0200ec1cEj(o, 2);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        _ZN12Unk_02006d1415clearActionFlagEj(o, 2);
         func_ov004_02220d94(o, o->unk_7d0.unk_0a, 6, -1);
     }
 }
@@ -4531,7 +4531,7 @@ extern "C" void func_ov004_02220e00(Obj *o) {
 extern "C" void func_ov004_02220dd8(Obj *o) {
     func_ov004_02220ed8(o);
     func_ov004_02220e48(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02220e00(o);
 }
@@ -4544,8 +4544,8 @@ extern "C" s32 func_ov004_02220d94(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0x2e, b, c);
     func_ov004_02220dd4(&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4577,7 +4577,7 @@ extern "C" void func_ov004_02220d0c(Obj *o, Msg *m) {
         k = 0x3d;
         break;
     }
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, k, 3, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, k, 3, 0);
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
         func_ov004_02233d00(&o->unk_5c, o->unk_8e);
     }
@@ -4590,7 +4590,7 @@ extern "C" void func_ov004_02220ce0(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_02220ccc(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
 }
 
@@ -4602,8 +4602,8 @@ extern "C" s32 func_ov004_02220c88(Obj *o, u32 a, s32 b, s32 c) {
     Msg m;
     m.func_0200e2c0(0x2f, b, c);
     func_ov004_02220cc8((u32 *)&m.unk_0c, a);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4685,8 +4685,8 @@ struct Unk_ov004_02220314_Msgp2 {
 
 class Unk_ov004_02220314_Msg {
 public:
-    inline Unk_ov004_02220314_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_02220314_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_02220314_V3 unk_0c;
     u8 pad_18[4];
@@ -4743,20 +4743,20 @@ extern u8 data_021c3cc0;
 extern u8 data_ov004_0224d4c0[];
 
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+void _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-void _ZN12Unk_020d967013func_0203e488Ei(Obj *o, Sec *s);
-void _ZN12Unk_020d967013func_0203e47cEi(Obj *o, Sec *s);
-void _ZN12Unk_020e2a3013func_020a710cEPKc(Sec *s, void *n);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+void _ZN9Character13func_0203e488Ei(Obj *o, Sec *s);
+void _ZN9Character13func_0203e47cEi(Obj *o, Sec *s);
+void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *n);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN12Unk_0200769413func_02007c50Ej(Obj *o, s32 a);
-void _ZN12Unk_02006d1413func_020093f4EP16Unk_02006d14_Vecjjs(Obj *o, V3 *v, u32 a, u32 b, s32 c);
+void _ZN12Unk_02006d1412requestAct6FEP16Unk_02006d14_Vecjjs(Obj *o, V3 *v, u32 a, u32 b, s32 c);
 s32 func_0209c60c(void);
 s32 func_0209c614(s32 a);
 s32 func_0209c874(s32 p);
@@ -4769,12 +4769,12 @@ void func_020b4aec(s32 a, s32 b, V3 *v, V3 *w);
 s32 func_020b4b68(s32 a, s32 b, s32 *c, s16 *d);
 s32 func_020b50e8(void);
 s32 func_02063c18(s32 a);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, u32 a);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-void _ZN12Unk_02006d1413func_0200bd60Esji(Obj *o, u32 a, u32 b, s32 c);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+void _ZN12Unk_02006d1412requestAct10Esji(Obj *o, u32 a, u32 b, s32 c);
 void func_02057278(u16 *p);
 void func_02057378(Obj *o);
-void _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, u32 c, u32 d);
+void _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 s32 func_020573b4(void);
 void func_020573cc(s32 a, Obj *o);
 void func_02057418(void *p, s32 a, u32 b, s32 c, Obj *o, s32 d);
@@ -4847,7 +4847,7 @@ extern "C" void func_ov004_02220bd4(Obj *o, Unk_ov004_02220314_Msgp *m) {
     }
     _ZN12Unk_020102ec13func_02010358Eijt(o, k, 3, 0);
     u32 mid = ((Bits *)&o->unk_2d0)->mid;
-    _ZN12Unk_020dbe7c13func_0205668cEihit(&o->unk_2cc, mid, 3, 0x1000, (u16)(mid - 1));
+    _ZN13AnimFrameCtrl5setupEihit(&o->unk_2cc, mid, 3, 0x1000, (u16)(mid - 1));
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
         func_ov004_02233cfc(&o->unk_5c, o->unk_8e);
     }
@@ -4860,16 +4860,16 @@ extern "C" void func_ov004_02220ba8(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_02220b54(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 3);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 3);
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-            o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+            o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         }
     }
 }
 
 extern "C" void func_ov004_02220b38(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_02220b54(o);
 }
@@ -4888,8 +4888,8 @@ extern "C" s32 func_ov004_02220ac8(Obj *o, u16 *a, s32 b, s32 c, s32 d, s32 e, s
     *p = *a;
     o->unk_81c = *p;
     func_ov004_02220b2c(&m.unk_0c, b, c, d, e);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -4899,7 +4899,7 @@ extern "C" void func_ov004_02220a78(Obj *o, Unk_ov004_02220314_Msgp2 *m) {
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x2e, 3, 0);
     func_020573cc(1, o);
     if (func_020b50e8() == 9) {
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4f);
+        _ZN12Unk_02006d146playSeEj(o, 0x4f);
     }
 }
 
@@ -4907,18 +4907,18 @@ extern "C" void func_ov004_02220a74(Obj *o) {
 }
 
 extern "C" void func_ov004_02220a40(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 8)) {
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 8)) {
         if (func_020b50e8() == 9) {
-            _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x63);
+            _ZN12Unk_02006d146playSeEj(o, 0x63);
         }
     }
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
 }
 
 extern "C" void func_ov004_02220a00(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_02006d1413func_0200bd60Esji(o, 3, 5, -1);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN12Unk_02006d1412requestAct10Esji(o, 3, 5, -1);
     }
 }
 
@@ -4931,26 +4931,26 @@ extern "C" void func_ov004_022209e4(Obj *o) {
 extern "C" s32 func_ov004_022209ac(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x37, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_02220958(Obj *o) {
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x2e, 3, 0);
     u32 mid = ((Bits *)&o->unk_2d0)->mid;
-    _ZN12Unk_020dbe7c13func_0205668cEihit(&o->unk_2cc, mid, 3, 0x1000, (u16)(mid - 1));
+    _ZN13AnimFrameCtrl5setupEihit(&o->unk_2cc, mid, 3, 0x1000, (u16)(mid - 1));
     func_020573cc(func_020573b4(), o);
-    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x52);
+    _ZN12Unk_02006d146playSeEj(o, 0x52);
 }
 
 extern "C" void func_ov004_02220954(Obj *o) {
 }
 
 extern "C" void func_ov004_022208ec(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_02006d1413func_0200bd60Esji(o, 3, 5, -1);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN12Unk_02006d1412requestAct10Esji(o, 3, 5, -1);
         u16 v;
         func_02057278(&v);
         if (v == 0x1379) {
@@ -4961,7 +4961,7 @@ extern "C" void func_ov004_022208ec(Obj *o) {
 }
 
 extern "C" void func_ov004_022208d0(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_022208ec(o);
 }
@@ -4982,8 +4982,8 @@ extern "C" s32 func_ov004_0222085c(Obj *o, s32 a, s32 b) {
         Msg m;
         m.func_0200e2c0(0x40, a, b);
         func_ov004_022208c8(&m.unk_0c, y, x);
-        s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-        _ZN12Unk_0200e2c0D1Ev(&m);
+        s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+        _ZN19PlayerActionRequestD1Ev(&m);
         return r;
     }
     return 0;
@@ -4998,7 +4998,7 @@ extern "C" void func_ov004_02220844(Rec *r, s32 a, s32 b, s32 c, s32 d, bool e) 
 }
 
 extern "C" void func_ov004_02220748(Obj *o, Unk_ov004_02220314_Msgp *m) {
-    _ZN12Unk_02006d1413func_0200ec30Ej(o, 3);
+    _ZN12Unk_02006d1413setActionFlagEj(o, 3);
     Unk_ov004_02220314_Pay *pay = &m->unk_0c;
     Rec *r = &o->unk_7d0;
     V3 v;
@@ -5037,7 +5037,7 @@ extern "C" void func_ov004_02220748(Obj *o, Unk_ov004_02220314_Msgp *m) {
             _ZN12Unk_020102ec13func_02010358Eijt(o, 0x3f, 3, 0);
         }
     } else {
-        _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x18);
+        _ZN12Unk_02006d1413setActionFlagEj(o, 0x18);
         _ZN12Unk_020102ec13func_02010358Eijt(o, 1, 3, 0);
     }
 }
@@ -5051,7 +5051,7 @@ extern "C" void func_ov004_02220728(Obj *o) {
 }
 
 extern "C" void func_ov004_02220678(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     if (o->unk_700 == 1) {
         V3 v;
         func_020e9960(&v, &o->unk_5c, (V3 *)((u8 *)o + 0x68));
@@ -5061,10 +5061,10 @@ extern "C" void func_ov004_02220678(Obj *o) {
         }
         _ZN12Unk_02006d1413func_0200f32cEv(o);
         if (t == 0) {
-            _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 0);
+            _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 0);
         }
     } else if (o->unk_700 != 0) {
-        if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xb) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x10)) {
             _ZN12Unk_02006d1413func_0200f258Ev(o);
         }
     }
@@ -5144,9 +5144,9 @@ extern "C" void func_ov004_022203c8(Obj *o) {
             case 1: {
                 Sec *s = (Sec *)o;
                 if (o) s = (Sec *)((u8 *)o + 0xec);
-                _ZN12Unk_020d967013func_0203e488Ei(o, s);
-                _ZN12Unk_02006d1413func_0200ec30Ej(o, 0x11);
-                _ZN12Unk_020e2a3013func_020a710cEPKc((Sec *)((u8 *)o + 0xec), data_ov004_0224d4c0);
+                _ZN9Character13func_0203e488Ei(o, s);
+                _ZN12Unk_02006d1413setActionFlagEj(o, 0x11);
+                _ZN10MsgRequest11setFileNameEPKc((Sec *)((u8 *)o + 0xec), data_ov004_0224d4c0);
                 o->unk_10a = 0x15;
                 o->unk_128->unk_08 = 1;
                 *st = *st + 1;
@@ -5175,13 +5175,13 @@ extern "C" void func_ov004_022203c8(Obj *o) {
                     l.a.z = v->z;
                     Sec *s = (Sec *)o;
                     if (o) s = (Sec *)((u8 *)o + 0xec);
-                    _ZN12Unk_020d967013func_0203e47cEi(o, s);
-                    _ZN12Unk_02006d1413func_0200ec1cEj(o, 0x11);
-                    o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
+                    _ZN9Character13func_0203e47cEi(o, s);
+                    _ZN12Unk_02006d1415clearActionFlagEj(o, 0x11);
+                    o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
                     l.b.x = l.a.x;
                     l.b.y = l.a.y;
                     l.b.z = l.a.z;
-                    _ZN12Unk_02006d1413func_020093f4EP16Unk_02006d14_Vecjjs(o, &l.b, 0x333, 5, -1);
+                    _ZN12Unk_02006d1412requestAct6FEP16Unk_02006d14_Vecjjs(o, &l.b, 0x333, 5, -1);
                 }
             }
             break;
@@ -5201,18 +5201,18 @@ extern "C" void func_ov004_022203a0(Obj *o) {
 extern "C" s32 func_ov004_02220368(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x41, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_02220320(Obj *o) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
         if (o->unk_700 != 0x3e) {
-            _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x3e, 3, 0);
+            _ZN12Unk_020102ec9startAnimEijt(o, 0x3e, 3, 0);
         }
     } else {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 3);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 3);
     }
 }
 
@@ -5242,8 +5242,8 @@ struct Unk_ov004_0221fa00_Pay {
 
 class Unk_ov004_0221fa00_Msg {
 public:
-    inline Unk_ov004_0221fa00_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_0221fa00_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_0221fa00_Pay unk_0c;
     u8 pad_0e[0x1c - 0xe];
@@ -5296,28 +5296,28 @@ extern u8 data_021c3cc0;
 extern u8 data_020e12cc[];
 
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+void _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 s32 _ZN12Unk_020102ec13func_02010924Ev(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *p, u32 a);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 void func_0208fc88(u32 a, void *b, u32 c, void *d);
-void func_02010cb0(u16 *p, Obj *o);
-s32 _ZN12Unk_02006d1413func_0200fab8EPthhh(Obj *o, u16 *p, u32 a, u32 b, s32 c);
-s32 func_02010d20(Obj *o);
-void _ZN12Unk_0209865c13func_02098824Eh(s32 p, u32 a);
-void _ZN12Unk_0209865c13func_020987fcEh(s32 p, u32 a);
-s32 func_02097520(u32 a);
-s32 _ZN12Unk_0209865c13func_02098840Ev(s32 p);
-s32 _ZN12Unk_0209865c13func_02098814Ev(s32 p);
-s32 func_02010c9c(Obj *o);
-s32 func_02010c88(Obj *o);
+void PlayerActor_GetHat(u16 *p, Obj *o);
+s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Obj *o, u16 *p, u32 a, u32 b, s32 c);
+s32 PlayerActor_GetPlayerData(Obj *o);
+void _ZN10PlayerData12setHairStyleEh(s32 p, u32 a);
+void _ZN10PlayerData12setHairColorEh(s32 p, u32 a);
+s32 PlayerData_GetBySessionSlot(u32 a);
+s32 _ZN10PlayerData12getHairStyleEv(s32 p);
+s32 _ZN10PlayerData12getHairColorEv(s32 p);
+s32 PlayerActor_GetHairStyle(Obj *o);
+s32 PlayerActor_GetHairColor(Obj *o);
 void _ZN12Unk_02006d1413func_0200ed9cEv(Obj *o);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 s32 func_0203d76c(void);
 void _ZN12Unk_02006d1413func_0200f258Ev(Obj *o);
 s32 func_020b4934(void);
@@ -5368,8 +5368,8 @@ void func_ov004_022202c4(Obj *o);
 }
 
 extern "C" void func_ov004_022202c4(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xb) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x10)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x10)) {
         _ZN12Unk_02006d1413func_0200f258Ev(o);
     }
 }
@@ -5380,9 +5380,9 @@ extern "C" void func_ov004_02220250(Obj *o, s32 a) {
             _ZN12Unk_020102ec13func_02010358Eijt(o, 0x3e, 3, 0);
         }
     }
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     if (o->unk_700 == 0x3e) {
-        if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xb) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x10)) {
             _ZN12Unk_02006d1413func_0200f258Ev(o);
         }
     }
@@ -5417,14 +5417,14 @@ extern "C" void func_ov004_02220194(Obj *o) {
 extern "C" s32 func_ov004_0222015c(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x42, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_0222012c(Obj *o) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-        _ZN12Unk_020102ec13func_020103b4Eijt(o, 0, 3, 3);
+        _ZN12Unk_020102ec9startAnimEijt(o, 0, 3, 3);
     }
 }
 
@@ -5433,8 +5433,8 @@ extern "C" s32 func_ov004_02220120(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_022200d0(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xb) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x10)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x10)) {
         _ZN12Unk_02006d1413func_0200f258Ev(o);
     }
 }
@@ -5445,9 +5445,9 @@ extern "C" void func_ov004_0222005c(Obj *o, s32 a) {
             _ZN12Unk_020102ec13func_02010358Eijt(o, 0x3f, 3, 0);
         }
     }
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     if (o->unk_700 == 0x3e) {
-        if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xb) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x10)) {
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xb) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x10)) {
             _ZN12Unk_02006d1413func_0200f258Ev(o);
         }
     }
@@ -5482,8 +5482,8 @@ extern "C" void func_ov004_0221ffa0(Obj *o) {
 extern "C" s32 func_ov004_0221ff68(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x43, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5497,17 +5497,17 @@ extern "C" s32 func_ov004_0221ff3c(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_0221feec(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xc) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x14)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x14)) {
         _ZN12Unk_02006d1413func_0200f258Ev(o);
     }
 }
 
 extern "C" void func_ov004_0221fe8c(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         _ZN12Unk_02006d1413func_0200ed9cEv(o);
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             func_0203d76c();
         }
@@ -5524,8 +5524,8 @@ extern "C" void func_ov004_0221fe68(Obj *o) {
 extern "C" s32 func_ov004_0221fe30(Obj *o, s32 a, s32 b) {
     Msg m;
     m.func_0200e2c0(0x44, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5539,17 +5539,17 @@ extern "C" s32 func_ov004_0221fe04(Obj *o, s32 a) {
 }
 
 extern "C" void func_ov004_0221fdb4(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 1) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 6) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0xc) || _ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 0x14)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 1) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 6) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0xc) || _ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 0x14)) {
         _ZN12Unk_02006d1413func_0200f258Ev(o);
     }
 }
 
 extern "C" void func_ov004_0221fd54(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         _ZN12Unk_02006d1413func_0200ed9cEv(o);
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             func_0203d76c();
         }
@@ -5569,8 +5569,8 @@ extern "C" s32 func_ov004_0221fcec(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Unk_ov004_0221fa00_Pay &q = m.unk_0c;
     q.unk_00 = a;
     q.unk_01 = b;
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5587,24 +5587,24 @@ extern "C" void func_ov004_0221fcb8(Obj *o) {
 }
 
 extern "C" void func_ov004_0221fc30(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         Rec *r = &o->unk_7d0;
         func_ov004_0221fbd8(o, r->unk_00, r->unk_01, 6, -1);
     } else if (((Bits *)&o->unk_2d4)->mid >= 3) {
-        if (func_02010c9c(o)) {
+        if (PlayerActor_GetHairStyle(o)) {
             u16 loc[2];
-            func_02010cb0(&loc[1], o);
+            PlayerActor_GetHat(&loc[1], o);
             loc[0] = loc[1];
-            s32 t = func_02010c88(o);
-            if (_ZN12Unk_02006d1413func_0200fab8EPthhh(o, loc, 0, t, 0)) {
-                _ZN12Unk_0209865c13func_02098824Eh(func_02010d20(o), 0);
+            s32 t = PlayerActor_GetHairColor(o);
+            if (_ZN12Unk_02006d1416requestHatChangeEPthhh(o, loc, 0, t, 0)) {
+                _ZN10PlayerData12setHairStyleEh(PlayerActor_GetPlayerData(o), 0);
             }
         }
     }
 }
 
 extern "C" void func_ov004_0221fc1c(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_0221fc30(o);
 }
 
@@ -5614,8 +5614,8 @@ extern "C" s32 func_ov004_0221fbd8(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Unk_ov004_0221fa00_Pay &q = m.unk_0c;
     q.unk_00 = a;
     q.unk_01 = b;
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5632,14 +5632,14 @@ extern "C" void func_ov004_0221fba4(Obj *o) {
 }
 
 extern "C" void func_ov004_0221fb6c(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         Rec *r = &o->unk_7d0;
         func_ov004_0221fb14(o, r->unk_00, r->unk_01, 6, -1);
     }
 }
 
 extern "C" void func_ov004_0221fb58(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_0221fb6c(o);
 }
 
@@ -5649,8 +5649,8 @@ extern "C" s32 func_ov004_0221fb14(Obj *o, u32 a, u32 b, u32 c, s32 e) {
     Unk_ov004_0221fa00_Pay &q = m.unk_0c;
     q.unk_00 = a;
     q.unk_01 = b;
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5669,28 +5669,28 @@ extern "C" void func_ov004_0221fadc(Obj *o) {
 
 extern "C" void func_ov004_0221fa98(Obj *o) {
     if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
-        s32 r4 = func_02097520(o->unk_7fc);
-        s32 r6 = _ZN12Unk_0209865c13func_02098840Ev(r4);
-        s32 r2 = _ZN12Unk_0209865c13func_02098814Ev(r4);
+        s32 r4 = PlayerData_GetBySessionSlot(o->unk_7fc);
+        s32 r6 = _ZN10PlayerData12getHairStyleEv(r4);
+        s32 r2 = _ZN10PlayerData12getHairColorEv(r4);
         func_ov004_0221e938(o, r6, r2);
     }
 }
 
 extern "C" void func_ov004_0221fa00(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
-    if (_ZN12Unk_020dbe7c13func_020565e8Ei(&o->unk_2cc, 10)) {
+    _ZN12Unk_020102ec11advanceAnimEv(o);
+    if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 10)) {
         func_0208fc88(0x60, (u8 *)o + 0x6dc, 0, data_020e12cc);
     }
     if (((Bits *)&o->unk_2d4)->mid >= 0xb) {
         Rec *r = &o->unk_7d0;
         if (r->unk_02 == 0) {
             u16 loc[2];
-            func_02010cb0(&loc[1], o);
+            PlayerActor_GetHat(&loc[1], o);
             loc[0] = loc[1];
-            if (_ZN12Unk_02006d1413func_0200fab8EPthhh(o, loc, r->unk_00, r->unk_01, 0)) {
-                s32 p = func_02010d20(o);
-                _ZN12Unk_0209865c13func_02098824Eh(p, r->unk_00);
-                _ZN12Unk_0209865c13func_020987fcEh(p, r->unk_01);
+            if (_ZN12Unk_02006d1416requestHatChangeEPthhh(o, loc, r->unk_00, r->unk_01, 0)) {
+                s32 p = PlayerActor_GetPlayerData(o);
+                _ZN10PlayerData12setHairStyleEh(p, r->unk_00);
+                _ZN10PlayerData12setHairColorEh(p, r->unk_01);
                 r->unk_02 = 1;
             }
         }
@@ -5716,8 +5716,8 @@ struct Unk_ov004_0221f0b8_Rec {
 
 class Unk_ov004_0221f0b8_Msg {
 public:
-    inline Unk_ov004_0221f0b8_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_0221f0b8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_0221f0b8_V3 unk_0c;
     u8 pad_18[4];
@@ -5762,18 +5762,18 @@ extern u8 data_ov004_0224d4b0[];
 extern u8 data_ov004_0224d4b4[];
 
 s32 func_01ffcb0c(s32 a, s32 b);
-void _ZN12Unk_020102ec13func_02010380Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec10switchAnimEijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN12Unk_020102ec13func_02010358Eijt(Obj *o, s32 a, u32 b, u32 c);
-void _ZN12Unk_020102ec13func_02010a34EPj(Obj *o, u8 *a);
-s32 _ZN12Unk_020102ec13func_02010914Ev(Obj *o);
+void _ZN12Unk_020102ec8setSpeedEPj(Obj *o, u8 *a);
+s32 _ZN12Unk_020102ec11advanceAnimEv(Obj *o);
 void _ZN12Unk_020102ec13func_020109acEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ec1cEj(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-void _ZN12Unk_020d6df413func_0200ce98Ejjj(Obj *o, s32 a, s32 b, s32 c);
-s32 _ZN12Unk_0200769413func_02007c08Ej(Obj *o, s32 a);
+void _ZN12Unk_02006d1415clearActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN12Unk_020cbb1813func_020729bcEj(void *g, u32 a);
 s32 func_0203d76c();
 s32 func_020b0ef4();
@@ -5783,16 +5783,16 @@ void func_020b4bbc(s32 a, s32 b);
 s32 func_020b52f8();
 s32 func_020b51a4();
 s32 _ZN12Unk_02006d1413func_0200e7c0Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020dbda413func_02053f20Ev(void *p);
 s32 _ZN12Unk_02006d1413func_0200f32cEv(Obj *o);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, u32 c, u32 d);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, u32 c, u32 d);
 s32 _ZN12Unk_02006d1413func_0200ef08Ev(Obj *o);
 s32 func_0200f594(Obj *o, s32 a, s32 b, s32 c);
 void func_0200f45c(V3 *out, Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d640Ev(Obj *o);
-s32 _ZN12Unk_020d6df413func_0200d5fcEv(Obj *o);
+s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
+s32 _ZN11PlayerActor13getInputAngleEv(Obj *o);
 s32 func_02063c18(s16 a);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
@@ -5831,9 +5831,9 @@ void func_ov004_0221f9b8(Obj *o);
 }
 
 extern "C" void func_ov004_0221f9b8(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        if (_ZN12Unk_020d6df413func_0200d640Ev(o) > 0) {
-            s32 t = _ZN12Unk_020d6df413func_0200d5fcEv(o) - o->unk_8e;
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0) {
+            s32 t = _ZN11PlayerActor13getInputAngleEv(o) - o->unk_8e;
             if (func_02063c18((s16)t) == 0) {
                 func_ov004_02221218(o, 6, -1);
             }
@@ -5849,8 +5849,8 @@ extern "C" void func_ov004_0221f9a4(Obj *o) {
 extern "C" s32 func_ov004_0221f96c(Obj *o, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x7d, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5884,14 +5884,14 @@ extern "C" void func_ov004_0221f8c0(Obj *o) {
 }
 
 extern "C" void func_ov004_0221f898(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         func_ov004_0221f840(o, 6, -1);
     }
 }
 
 extern "C" void func_ov004_0221f878(Obj *o) {
     func_ov004_0221f8c0(o);
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_0221f898(o);
 }
@@ -5899,13 +5899,13 @@ extern "C" void func_ov004_0221f878(Obj *o) {
 extern "C" s32 func_ov004_0221f840(Obj *o, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x7e, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_0221f824(Obj *o) {
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 0x79, 3, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 0x79, 3, 0);
     func_ov004_0222a2c0();
     func_ov004_02229660();
 }
@@ -5915,7 +5915,7 @@ extern "C" void func_ov004_0221f818(Obj *o, u32 a) {
 }
 
 extern "C" void func_ov004_0221f7fc(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     _ZN12Unk_02006d1413func_0200ef08Ev(o);
 }
@@ -5923,15 +5923,15 @@ extern "C" void func_ov004_0221f7fc(Obj *o) {
 extern "C" s32 func_ov004_0221f7c4(Obj *o, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x7f, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
 extern "C" void func_ov004_0221f77c(Obj *o) {
     _ZN12Unk_020102ec13func_02010358Eijt(o, 0x78, 3, 0);
     u32 t = (u32)(o->unk_2d0 << 4) >> 16;
-    _ZN12Unk_020dbe7c13func_0205668cEihit(&o->unk_2cc, t, 3, 0x1000, (u16)(t - 1));
+    _ZN13AnimFrameCtrl5setupEihit(&o->unk_2cc, t, 3, 0x1000, (u16)(t - 1));
     func_ov004_0222a2c0();
     func_ov004_022296ac();
 }
@@ -5941,14 +5941,14 @@ extern "C" void func_ov004_0221f770(Obj *o, u32 a) {
 }
 
 extern "C" s32 func_ov004_0221f730(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 1, -1);
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
     }
 }
 
 extern "C" void func_ov004_0221f714(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     _ZN12Unk_020102ec13func_0201071cEv(o);
     func_ov004_0221f730(o);
 }
@@ -5956,8 +5956,8 @@ extern "C" void func_ov004_0221f714(Obj *o) {
 extern "C" s32 func_ov004_0221f6dc(Obj *o, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x8a, a, b);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -5969,7 +5969,7 @@ extern "C" void func_ov004_0221f6c4() {
 }
 
 extern "C" void func_ov004_0221f65c(Obj *o) {
-    if (_ZN12Unk_020dbe7c13func_02056654Ev(&o->unk_2cc)) {
+    if (_ZN13AnimFrameCtrl10isFinishedEv(&o->unk_2cc)) {
         switch (o->unk_700) {
         case 0x95:
             _ZN12Unk_020102ec13func_02010358Eijt(o, 0x96, 0, 0);
@@ -5987,7 +5987,7 @@ extern "C" void func_ov004_0221f65c(Obj *o) {
 }
 
 extern "C" void func_ov004_0221f648(Obj *o) {
-    _ZN12Unk_020102ec13func_02010914Ev(o);
+    _ZN12Unk_020102ec11advanceAnimEv(o);
     func_ov004_0221f65c(o);
 }
 
@@ -6001,8 +6001,8 @@ extern "C" s32 func_ov004_0221f5f4(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x8b, a, b);
     func_ov004_0221f634(&m.unk_0c, *v);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -6028,7 +6028,7 @@ extern "C" void func_ov004_0221f474(Obj *o, Obj *arg) {
     V3 c;
     V3 *r6 = (V3 *)((u8 *)arg + 0xc);
     Rec *r0c = &o->unk_7d0;
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 1, 0, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 1, 0, 0);
     s32 r7 = 0;
     o->unk_2dc = r7;
     u32 r5 = r7;
@@ -6063,7 +6063,7 @@ extern "C" void func_ov004_0221f474(Obj *o, Obj *arg) {
         o->unk_5c.z = o->unk_5c.z + 0x6000;
     } else {
         if (r5 != 0) {
-            _ZN12Unk_02006d1413func_0200ecdcEj(o, r5);
+            _ZN12Unk_02006d146playSeEj(o, r5);
             if (r5 == 0x4cb) func_020b0e60();
         }
         c.x = r6->x;
@@ -6073,10 +6073,10 @@ extern "C" void func_ov004_0221f474(Obj *o, Obj *arg) {
     }
     func_ov004_0221f5d0(r0c, c, 0x400, r7, (u8)mode);
     if (o->unk_7f4 == 1) {
-        _ZN12Unk_020102ec13func_02010a34EPj(o, data_ov004_0224d4b4);
+        _ZN12Unk_020102ec8setSpeedEPj(o, data_ov004_0224d4b4);
         r0c->unk_0c = 0x400;
     }
-    _ZN12Unk_02006d1413func_0200ec30Ej(o, 5);
+    _ZN12Unk_02006d1413setActionFlagEj(o, 5);
 }
 
 extern "C" void func_ov004_0221f448(Obj *o, u32 a) {
@@ -6096,21 +6096,21 @@ extern "C" void func_ov004_0221f370(Obj *o) {
             if (*p != 0) return;
             if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
                 func_020b0e60();
-                _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4cb);
+                _ZN12Unk_02006d146playSeEj(o, 0x4cb);
             }
             o->unk_7f4 = 1;
-            _ZN12Unk_020102ec13func_02010a34EPj(o, data_ov004_0224d4b0);
+            _ZN12Unk_020102ec8setSpeedEPj(o, data_ov004_0224d4b0);
             r4->unk_0c = 0x400;
         } else {
             u32 c = *p;
             if (c > 0xa) return;
             if (c == 0xa) {
                 o->unk_7f4 = 1;
-                _ZN12Unk_020102ec13func_02010a34EPj(o, data_ov004_0224d4a4);
+                _ZN12Unk_020102ec8setSpeedEPj(o, data_ov004_0224d4a4);
                 r4->unk_0c = 0x400;
             } else if (c == 0) {
                 if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-                    _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4d3);
+                    _ZN12Unk_02006d146playSeEj(o, 0x4d3);
                 }
             }
         }
@@ -6128,9 +6128,9 @@ extern "C" void func_ov004_0221f2e8(Obj *o) {
     if (t < 0x800) t = 0x800;
     if (t <= o->unk_2d0) o->unk_2dc = t;
     if (r4 > 0x53f) {
-        if (o->unk_700 != 2) _ZN12Unk_020102ec13func_02010380Eijt(o, 2, 3, 0);
+        if (o->unk_700 != 2) _ZN12Unk_020102ec10switchAnimEijt(o, 2, 3, 0);
     } else {
-        if (o->unk_700 != 1) _ZN12Unk_020102ec13func_02010380Eijt(o, 1, 3, 0);
+        if (o->unk_700 != 1) _ZN12Unk_020102ec10switchAnimEijt(o, 1, 3, 0);
     }
     _ZN12Unk_020dbda413func_02053f20Ev((u8 *)o + 0x230);
     _ZN12Unk_02006d1413func_0200f32cEv(o);
@@ -6138,9 +6138,9 @@ extern "C" void func_ov004_0221f2e8(Obj *o) {
 
 extern "C" void func_ov004_0221f280(Obj *o) {
     if (o->unk_98 == 0 && o->unk_7f4 == 1) {
-        o->unk_7f8 = _ZN12Unk_0200769413func_02007c08Ej(o, o->unk_7ec);
-        _ZN12Unk_020d6df413func_0200ce98Ejjj(o, 3, 5, -1);
-        _ZN12Unk_02006d1413func_0200ec1cEj(o, 5);
+        o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
+        _ZN11PlayerActor11requestWaitEjjj(o, 3, 5, -1);
+        _ZN12Unk_02006d1415clearActionFlagEj(o, 5);
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc)) {
             func_0203d76c();
         }
@@ -6165,8 +6165,8 @@ extern "C" s32 func_ov004_0221f204(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x8c, a, b);
     func_ov004_0221f244(&m.unk_0c, *v);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -6191,7 +6191,7 @@ extern "C" void func_ov004_0221f1d0(void *a, s32 *b, s32 *c) {
 extern "C" void func_ov004_0221f0e4(Obj *o, Obj *arg) {
     V3 c;
     V3 *r6 = (V3 *)((u8 *)arg + 0xc);
-    if (o->unk_700 != 1) _ZN12Unk_020102ec13func_020103b4Eijt(o, 1, 3, 0);
+    if (o->unk_700 != 1) _ZN12Unk_020102ec9startAnimEijt(o, 1, 3, 0);
     u32 r5 = 0;
     s32 r7 = func_020b0ef4();
     switch (r7) {
@@ -6210,7 +6210,7 @@ extern "C" void func_ov004_0221f0e4(Obj *o, Obj *arg) {
     }
     if (r5 != 0) {
         if (_ZN12Unk_020cbb1813func_020729bcEj(data_020cbb18, o->unk_7fc) == 0) {
-            _ZN12Unk_02006d1413func_0200ecdcEj(o, r5);
+            _ZN12Unk_02006d146playSeEj(o, r5);
             if (r5 == 0x4cb) func_020b0e60();
         }
     }
@@ -6250,8 +6250,8 @@ struct Unk_ov004_0221e7a8_Pair {
 
 class Unk_ov004_0221e7a8_Msg {
 public:
-    inline Unk_ov004_0221e7a8_Msg() { _ZN12Unk_0200e2c0C1Ev(this); }
-    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN12Unk_0200e2c013func_0200e2c0Eiis(this, a, b, c); }
+    inline Unk_ov004_0221e7a8_Msg() { _ZN19PlayerActionRequestC1Ev(this); }
+    inline void func_0200e2c0(u32 a, u32 b, u32 c) { _ZN19PlayerActionRequest6assignEiis(this, a, b, c); }
     u8 pad_00[0xc];
     Unk_ov004_0221e7a8_V3 unk_0c;
     u8 pad_18[4];
@@ -6315,22 +6315,22 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *a, void *b, void *c);
 void func_02010e68(s32 *p, s32 a, s32 b, s32 c, s32 d);
-s32 func_02010d50(s32 a, s32 b);
-s32 func_02010d68(s32 a, s32 b);
+s32 PlayerActor_Decelerate(s32 a, s32 b);
+s32 PlayerActor_Accelerate(s32 a, s32 b);
 void func_02010d98(void *a, s32 b);
-void _ZN12Unk_020102ec13func_02010a58EPs(Obj *o, s16 *a);
-void _ZN12Unk_020102ec13func_02010a34EPj(Obj *o, s32 *a);
-void _ZN12Unk_020102ec13func_020103b4Eijt(Obj *o, s32 a, u32 b, u32 c);
+void _ZN12Unk_020102ec9setAngleYEPs(Obj *o, s16 *a);
+void _ZN12Unk_020102ec8setSpeedEPj(Obj *o, s32 *a);
+void _ZN12Unk_020102ec9startAnimEijt(Obj *o, s32 a, u32 b, u32 c);
 void _ZN12Unk_020102ec13func_020109acEv(Obj *o);
 void _ZN12Unk_020102ec13func_0201071cEv(Obj *o);
-void _ZN12Unk_02006d1413func_0200ec30Ej(Obj *o, u32 a);
-void _ZN12Unk_02006d1413func_0200ecdcEj(Obj *o, u32 a);
-s32 _ZN12Unk_02006d1413func_0200f5b0Ev(Obj *o);
+void _ZN12Unk_02006d1413setActionFlagEj(Obj *o, u32 a);
+void _ZN12Unk_02006d146playSeEj(Obj *o, u32 a);
+s32 _ZN12Unk_02006d1415getHeldToolKindEv(Obj *o);
 s32 _ZN12Unk_02006d1413func_0200f9d4Ei(Obj *o, s32 a);
 s32 func_02063c18(s16 a);
 void func_02076a2c(void *a, s32 *b, s32 *c);
 void func_02076a6c(void *a, s32 b, s32 c);
-s32 _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(Obj *o, Msg *m);
+s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
 void _ZN12Unk_020cbb1813func_020728d4Ev(void *g);
 void _ZN12Unk_020cbb1813func_020728a4EPhj(void *g, u8 *b, u32 n);
@@ -6343,9 +6343,9 @@ s32 func_020b4934();
 void func_020b4bbc(s32 a, s32 b);
 s32 func_02098ffc();
 s32 func_0204eba0(void *a, V3 *v, u32 b);
-s32 func_0204b300(s32 a);
+s32 Item_IsNormalItem(s32 a);
 void func_0204ee10(s32 *a, s32 *b, V3 *v);
-s32 _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(Obj *o, Pair *p, s32 a, u32 b, s32 c);
+s32 _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(Obj *o, Pair *p, s32 a, u32 b, s32 c);
 s32 func_0200f3ec(V3 *out, Obj *o, void *pos, void *ang, u32 arg);
 s32 _ZN12Unk_02006d1413func_0200fa2cEPij(Obj *o, V3 *v, u32 a);
 s32 _ZN12Unk_02006d1413func_0200f8f8Eiii(Obj *o, V3 *v, s32 a, s32 b);
@@ -6398,7 +6398,7 @@ extern "C" void func_ov004_0221eff8(Obj *o) {
     u8 r6 = q->unk_15;
     void *r7 = data_020cbb18;
     if (_ZN12Unk_020cbb1813func_020729bcEj(r7, o->unk_7fc) == 0 && *r4 == 0xf && r6 == 1) {
-        _ZN12Unk_02006d1413func_0200ecdcEj(o, 0x4d3);
+        _ZN12Unk_02006d146playSeEj(o, 0x4d3);
     }
     if (_ZN12Unk_020cbb1813func_020729bcEj(r7, o->unk_7fc) != 0) {
         if ((u32)(r6 - 1) <= 1 && *r4 == 0xa) {
@@ -6418,8 +6418,8 @@ extern "C" s32 func_ov004_0221efa4(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x8d, a, b);
     func_ov004_0221efe4(&m.unk_0c, *v);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -6442,7 +6442,7 @@ extern "C" void func_ov004_0221ef78(void *a, s32 *b, s32 *c) {
 extern "C" void func_ov004_0221ef14(Obj *o, Obj *arg) {
     V3 c;
     V3 *r4 = (V3 *)((u8 *)arg + 0xc);
-    if (o->unk_700 != 1) _ZN12Unk_020102ec13func_020103b4Eijt(o, 1, 3, 0);
+    if (o->unk_700 != 1) _ZN12Unk_020102ec9startAnimEijt(o, 1, 3, 0);
     c.x = r4->x;
     c.y = r4->y;
     c.z = r4->z;
@@ -6485,8 +6485,8 @@ extern "C" s32 func_ov004_0221ee1c(Obj *o, V3 *v, u32 a, u32 b) {
     Msg m;
     m.func_0200e2c0(0x8e, a, b);
     func_ov004_0221ee5c(&m.unk_0c, *v);
-    s32 r = _ZN12Unk_020d6df413func_0200e248EP12Unk_0200e2c0(o, &m);
-    _ZN12Unk_0200e2c0D1Ev(&m);
+    s32 r = _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(o, &m);
+    _ZN19PlayerActionRequestD1Ev(&m);
     return r;
 }
 
@@ -6512,7 +6512,7 @@ extern "C" void func_ov004_0221ece4(Obj *o, Obj *arg) {
     V3 tmp;
     V3 *r5 = (V3 *)((u8 *)arg + 0xc);
     Rec *r6 = &o->unk_7d0;
-    _ZN12Unk_020102ec13func_020103b4Eijt(o, 1, 0, 0);
+    _ZN12Unk_020102ec9startAnimEijt(o, 1, 0, 0);
     o->unk_2dc = 0;
     w.x = 0;
     w.y = 0;
@@ -6550,8 +6550,8 @@ extern "C" void func_ov004_0221ece4(Obj *o, Obj *arg) {
         pv->z = tmp.z;
     }
     func_ov004_0221ee04(r6, cur, 0x400);
-    _ZN12Unk_020102ec13func_02010a34EPj(o, (s32 *)data_ov004_0224d4a8);
-    _ZN12Unk_02006d1413func_0200ec30Ej(o, 5);
+    _ZN12Unk_020102ec8setSpeedEPj(o, (s32 *)data_ov004_0224d4a8);
+    _ZN12Unk_02006d1413setActionFlagEj(o, 5);
 }
 
 extern "C" void func_ov004_0221ecb8(Obj *o, u32 a) {
@@ -6606,7 +6606,7 @@ extern "C" s32 func_ov004_0221e980(Obj *o, s32 param) {
             if (func_ov004_02234550(r5) == 0) {
                 pa.a = 0;
                 pa.b = 0;
-                _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(o, &pa, r5, 6, -1);
+                _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(o, &pa, r5, 6, -1);
             } else {
                 pb.a = (u8)u;
                 pb.b = (u8)v;
@@ -6631,15 +6631,15 @@ extern "C" s32 func_ov004_0221e980(Obj *o, s32 param) {
         r5 = func_0204eba0(r6, &tgt, 1);
         if (func_02098ffc() == -1) {
             if (r5 == 0) goto second;
-            if (func_0204b300(r5) == 0) goto second;
+            if (Item_IsNormalItem(r5) == 0) goto second;
             func_0204ee10(&o1, &o2, &tgt);
             pc.a = o1;
             pc.b = o2;
-            _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(o, &pc, -1, 6, -1);
+            _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(o, &pc, -1, 6, -1);
             return 1;
         }
         if (r5 == 0) goto second;
-        if (func_0204b300(r5) == 0) goto second;
+        if (Item_IsNormalItem(r5) == 0) goto second;
         if ((u32)func_020b0f54() <= 1) {
             if (_ZN12Unk_02006d1413func_0200f8f8Eiii(o, &tgt, 0, param) == 0) goto second;
             if (_ZN12Unk_02006d1413func_0200f6d4Eii(o, &tgt, 1) == 0) goto second;
@@ -6648,7 +6648,7 @@ extern "C" s32 func_ov004_0221e980(Obj *o, s32 param) {
         func_0204ee10(&o1, &o2, &tgt);
         pd.a = o1;
         pd.b = o2;
-        _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(o, &pd, -3, 6, -1);
+        _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(o, &pd, -3, 6, -1);
         return 1;
     }
 second:
@@ -6666,13 +6666,13 @@ second:
     {
         s32 q = func_0204eba0(r6, &tgt, 0);
         if (q == 0) goto fail;
-        if (func_0204b300(q) == 0) goto fail;
+        if (Item_IsNormalItem(q) == 0) goto fail;
     }
     if (func_02098ffc() == -1) {
         func_0204ee10(&o1, &o2, &tgt);
         pe.a = o1;
         pe.b = o2;
-        _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(o, &pe, -1, 6, -1);
+        _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(o, &pe, -1, 6, -1);
         return 1;
     }
     if ((u32)func_020b0f54() <= 1) {
@@ -6683,7 +6683,7 @@ second:
     func_0204ee10(&o1, &o2, &tgt);
     pf.a = o1;
     pf.b = o2;
-    _ZN12Unk_02006d1413func_0200b76cE17Unk_0200b750_Pairijs(o, &pf, -3, 6, -1);
+    _ZN12Unk_02006d1412requestAct18E17Unk_0200b750_Pairijs(o, &pf, -3, 6, -1);
     return 1;
 fail:
     return 0;
@@ -6713,7 +6713,7 @@ extern "C" s32 func_ov004_0221e8c0(Obj *o) {
         return func_ov004_02222e5c(o, loc.x, loc.z, _ZN18Unk_ov004_022355ac19func_ov004_022354e0Ev(r4), 5, -1);
     }
     if (o->unk_144 != 0) {
-        return _ZN12Unk_02006d1413func_0200f9d4Ei(o, _ZN12Unk_02006d1413func_0200f5b0Ev(o));
+        return _ZN12Unk_02006d1413func_0200f9d4Ei(o, _ZN12Unk_02006d1415getHeldToolKindEv(o));
     }
     return 0;
 }
@@ -6741,21 +6741,21 @@ extern "C" void func_ov004_0221e7a8(Obj *o, V3 *tgt, s32 *out, s32 *lim) {
                 *pw = saved;
             }
         } else {
-            *out = func_02010d50(*out, *lim);
+            *out = PlayerActor_Decelerate(*out, *lim);
         }
     } else {
-        *out = func_02010d68(*out, *lim);
+        *out = PlayerActor_Accelerate(*out, *lim);
     }
     ang = func_020e7b98(d.x, d.z);
     h = o->unk_8e;
     if (*out != 0) {
         func_02010d98(&h, ang);
-        _ZN12Unk_020102ec13func_02010a58EPs(o, &h);
+        _ZN12Unk_020102ec9setAngleYEPs(o, &h);
     }
     s32 vt = func_01ffcb0c(*out, data_02135f44[(((u16)(s16)(h - ang)) >> 4) * 2 + 1]);
     if (vt < 0) vt = -vt;
     v = vt;
-    _ZN12Unk_020102ec13func_02010a34EPj(o, &v);
+    _ZN12Unk_020102ec8setSpeedEPj(o, &v);
 }
 
 

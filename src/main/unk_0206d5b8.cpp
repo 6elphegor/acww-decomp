@@ -4,32 +4,32 @@ extern u32 OVERLAY_1_ID[];
 extern u32 OVERLAY_65_ID[];
 
 // ---- buffer interface classes (defined elsewhere) ----
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
     s32 unk_04;
     u8 unk_08;
     u8 unk_09;
 };
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
-    Unk_020e2a08 unk_04;
+    MsgStringAttr unk_04;
 };
 
 // local text buffer, vtable 0x020ddf5c (0x38 bytes)
-class Unk_020ddf5c : public Unk_020e2a60 {
+class Unk_020ddf5c : public EncodedString {
 public:
     Unk_020ddf5c() {}
     virtual ~Unk_020ddf5c() {}
@@ -46,8 +46,8 @@ public:
     s32 func_0206cc14(u8 a, u8 b);
     s32 func_0206cc20(u8 a, u8 b);
     void func_0206cc38();
-    void func_0206cc6c(Unk_020e2a60 *buf, s32 flag);
-    void func_0206cc84(Unk_020e2a60 *buf);
+    void func_0206cc6c(EncodedString *buf, s32 flag);
+    void func_0206cc84(EncodedString *buf);
     void func_0206cdcc(u16 id, s32 arg);
     s32 func_0206ce98();
     void func_0206ced0();
@@ -66,7 +66,7 @@ extern char data_020ddf6c[];
 }
 
 extern "C" {
-extern u8 data_020ddf88;
+extern u8 sDwcInitResult;
 }
 
 extern "C" {
@@ -74,11 +74,11 @@ extern s32 data_020ddf8c;
 }
 
 extern "C" {
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 }
 
 extern "C" {
-extern u8 data_021cb3b8;
+extern u8 sFatalEntered;
 }
 
 extern "C" {
@@ -86,11 +86,11 @@ extern u8 data_021fccfc[];
 }
 
 extern "C" {
-extern u8 data_021cc7d0[];
+extern u8 gOverlayHandle[];
 }
 
 extern "C" {
-extern u16 data_021cb3c0;
+extern u16 gMainWaitingFrame;
 }
 
 extern "C" {
@@ -98,31 +98,31 @@ extern u32 data_020cbb18;
 }
 
 extern "C" {
-extern u32 data_021f4768;
+extern u32 gFrameCounter;
 }
 
 extern "C" {
-extern u8 data_021cb3ec[];
+extern u8 gFrameWaitQueue[];
 }
 
 extern "C" {
-extern u8 data_021cb3e4[];
+extern u8 gVBlankQueue[];
 }
 
 extern "C" {
-extern u32 data_0213c6dc;
+extern u32 sCrashContext;
 }
 
 extern "C" {
-extern u8 data_021c4890[];
+extern u8 gBackup[];
 }
 
 extern "C" {
-extern s32 data_021cb400;
+extern s32 sMelodyTimer;
 }
 
 extern "C" {
-extern u8 data_021cb420[];
+extern u8 gMelodyPlayer[];
 }
 
 extern "C" {
@@ -158,7 +158,7 @@ void func_ov002_02202dd4(void *a, void *b);
 }
 
 extern "C" {
-void func_0205125c(void *p, s32 n);
+void Mem_Clear(void *p, s32 n);
 }
 
 extern "C" {
@@ -178,7 +178,7 @@ void func_02002654(char *s, u32 a, u32 b);
 }
 
 extern "C" {
-s32 func_02000c9c(void);
+s32 CrashScreen_Run(void);
 }
 
 extern "C" {
@@ -206,11 +206,11 @@ void OS_ResetRequestIrqMask(s32 v);
 }
 
 extern "C" {
-void func_02076c24(void *p, s32 v);
+void OverlayHandle_Load(void *p, s32 v);
 }
 
 extern "C" {
-void func_02076c50(void *p);
+void OverlayHandle_Unload(void *p);
 }
 
 extern "C" {
@@ -218,19 +218,19 @@ void func_ov065_02277ba4(void *(*alloc)(u32, void *, u32), void (*free)(u32, voi
 }
 
 extern "C" {
-void func_0204ef2c(u32 id);
+void OverlayMgr_Acquire(u32 id);
 }
 
 extern "C" {
-void func_0204eee4(u32 id);
+void OverlayMgr_Release(u32 id);
 }
 
 extern "C" {
-void *func_020e85b4(u32 size, u32 align);
+void *Mem_AllocAligned(u32 size, u32 align);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
@@ -274,11 +274,11 @@ u32 _ZN12Unk_020cbb1813func_0207238cEv(u32 p);
 }
 
 extern "C" {
-void func_0206d720(u32 v);
+void Main_PreTaskUpdate(u32 v);
 }
 
 extern "C" {
-void func_0206d6a4(void);
+void Main_PreTaskHook(void);
 }
 
 extern "C" {
@@ -286,7 +286,7 @@ void func_02038148(s32 v);
 }
 
 extern "C" {
-void func_020ed64c(s32 v);
+void Task_RunFrame(s32 v);
 }
 
 extern "C" {
@@ -294,23 +294,23 @@ void func_02038138(void);
 }
 
 extern "C" {
-void func_0206d6ec(u32 v);
+void Main_PostTaskUpdate(u32 v);
 }
 
 extern "C" {
-void func_0206d69c(void);
+void Main_PostTaskHook(void);
 }
 
 extern "C" {
-void func_0206d750(void);
+void Main_WaitFrame(void);
 }
 
 extern "C" {
-void func_0206d6d4(void);
+void Main_PostFrameUpdate(void);
 }
 
 extern "C" {
-void func_0206d6ac(u32 v);
+void Main_LateUpdate(u32 v);
 }
 
 extern "C" {
@@ -322,7 +322,7 @@ void func_0203d4d0(void);
 }
 
 extern "C" {
-void func_0205046c(void);
+void TextLabel_FlushGroup0(void);
 }
 
 extern "C" {
@@ -338,7 +338,7 @@ void func_0205b740(void);
 }
 
 extern "C" {
-void func_020044e0(s32 v);
+void Snd_Update(s32 v);
 }
 
 extern "C" {
@@ -378,11 +378,11 @@ void func_020739b8(u32 v);
 }
 
 extern "C" {
-void func_020b7d84(void);
+void Touch_Update(void);
 }
 
 extern "C" {
-void func_020e8208(void);
+void Pad_Update(void);
 }
 
 extern "C" {
@@ -398,7 +398,7 @@ void OS_SleepThread(void *p);
 }
 
 extern "C" {
-void func_0204ff6c(void *p);
+void Backup_GetStatus(void *p);
 }
 
 extern "C" {
@@ -414,7 +414,7 @@ void FS_CloseFile(void *f);
 }
 
 extern "C" {
-void func_02063d18(void *f, void *dst, u32 sz, u32 off);
+void File_ReadRange(void *f, void *dst, u32 sz, u32 off);
 }
 
 extern "C" {
@@ -422,23 +422,23 @@ void FS_ConvertPathToFileID(void *p, void *q);
 }
 
 extern "C" {
-void *func_020e8574(u32 n);
+void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
-void func_02063eac(Unk_0206d8b8_Pair p, void *dst, u32 n, s32 z);
+void File_ReadRangeById(Unk_0206d8b8_Pair p, void *dst, u32 n, s32 z);
 }
 
 extern "C" {
-void *func_02003ae8(void *p);
+void *Snd_MelodyUpdate(void *p);
 }
 
 extern "C" {
-void func_02003b54(void *p);
+void Snd_MelodyInit(void *p);
 }
 
 extern "C" {
-s32 func_0206dad8(void);
+s32 Melody_ApplyEditPattern(void);
 }
 
 extern "C" {
@@ -446,15 +446,15 @@ void func_0206d4e8(s32 a, s32 b);
 }
 
 extern "C" {
-void func_0206d774(void *arg, void *p);
+void Fatal_ExceptionCallback(void *arg, void *p);
 }
 
 extern "C" {
-void func_0206d5a0(u32 a, void *p);
+void Main_DwcFree(u32 a, void *p);
 }
 
 extern "C" {
-void *func_0206d5ac(u32 a, void *p, u32 n);
+void *Main_DwcAlloc(u32 a, void *p, u32 n);
 }
 
 struct Unk_0206d0a0_Pad {
@@ -499,24 +499,24 @@ public:
 // ---- free functions ----
 
 extern "C" {
-void func_0206d4a4(void *arg);
+void Fatal_Handler(void *arg);
 }
 
 #pragma thumb off
 
 #pragma thumb reset
 
-// ---- Unk_0206d8b8: cached record table ----
-class Unk_0206d8b8 {
+// ---- RecordFile: cached record table ----
+class RecordFile {
 public:
-    Unk_0206d8b8();
-    ~Unk_0206d8b8();
-    void func_0206d828(u32 idx);
-    u8 *func_0206d86c(u32 idx);
-    void func_0206d8b8();
-    void func_0206d8ec();
-    void func_0206d904();
-    BOOL func_0206d940(void *path, s32 size, s32 count);
+    RecordFile();
+    ~RecordFile();
+    void loadPage(u32 idx);
+    u8 *getRecord(u32 idx);
+    void close();
+    void freeAll();
+    void loadAll();
+    BOOL open(void *path, s32 size, s32 count);
 
     /* 0x00 */ Unk_0206d8b8_Pair unk_00;
     /* 0x08 */ s32 unk_08;
@@ -526,35 +526,35 @@ public:
     /* 0x18 */ u8 *unk_18;
 };
 
-class Unk_0206d7cc {
+class InfoTableSet {
 public:
-    Unk_0206d8b8 *func_0206d794();
-    Unk_0206d8b8 *func_0206d798();
-    Unk_0206d8b8 *func_0206d79c();
-    BOOL func_0206d7a0();
-    BOOL func_0206d7b4(s32 v);
-    void func_0206d7cc();
-    BOOL func_0206d7ec(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count);
+    RecordFile *getDma();
+    RecordFile *getIndoor();
+    RecordFile *getAlways();
+    BOOL freeIndoor();
+    BOOL loadIndoor(s32 v);
+    void close();
+    BOOL open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count);
 
-    /* 0x00 */ Unk_0206d8b8 unk_00;
-    /* 0x1c */ Unk_0206d8b8 unk_1c;
-    /* 0x38 */ Unk_0206d8b8 unk_38;
+    /* 0x00 */ RecordFile unk_00;
+    /* 0x1c */ RecordFile unk_1c;
+    /* 0x38 */ RecordFile unk_38;
 };
-extern "C" void func_0206d774(void *arg, void *p);
+extern "C" void Fatal_ExceptionCallback(void *arg, void *p);
 extern "C" void func_0206d770(void);
-extern "C" void func_0206d760(void);
-extern "C" void func_0206d750(void);
-extern "C" void func_0206d720(u32 r);
-extern "C" void func_0206d6ec(u32 r);
-extern "C" void func_0206d6d4(void);
-extern "C" void func_0206d6ac(u32 r);
-extern "C" void func_0206d6a4(void);
-extern "C" void func_0206d69c(void);
-extern "C" void func_0206d610(void);
-extern "C" u32 func_0206d5c8(void);
-extern "C" u8 func_0206d5b8(void);
+extern "C" void Main_WaitVBlank(void);
+extern "C" void Main_WaitFrame(void);
+extern "C" void Main_PreTaskUpdate(u32 r);
+extern "C" void Main_PostTaskUpdate(u32 r);
+extern "C" void Main_PostFrameUpdate(void);
+extern "C" void Main_LateUpdate(u32 r);
+extern "C" void Main_PreTaskHook(void);
+extern "C" void Main_PostTaskHook(void);
+extern "C" void Main_Loop(void);
+extern "C" u32 Main_InitDwc(void);
+extern "C" u8 Main_TakeDwcInitResult(void);
 
-Unk_0206d8b8::Unk_0206d8b8() {
+RecordFile::RecordFile() {
     unk_00.a = 0;
     unk_14 = -1;
     unk_0c = 0;
@@ -563,50 +563,50 @@ Unk_0206d8b8::Unk_0206d8b8() {
     unk_08 = 0;
 }
 
-Unk_0206d8b8::~Unk_0206d8b8() {
-    func_0206d8b8();
+RecordFile::~RecordFile() {
+    close();
 }
 
-BOOL Unk_0206d8b8::func_0206d940(void *path, s32 size, s32 count) {
+BOOL RecordFile::open(void *path, s32 size, s32 count) {
     unk_08 = size;
     unk_0c = count;
     FS_ConvertPathToFileID(this, path);
-    unk_18 = (u8 *)func_020e8574(size << 3);
+    unk_18 = (u8 *)Mem_Alloc(size << 3);
     return TRUE;
 }
 
-void Unk_0206d8b8::func_0206d904() {
+void RecordFile::loadAll() {
     u32 size = unk_08 * unk_0c;
     if (unk_10 == 0) {
-        unk_10 = (u8 *)func_020e8574(size);
+        unk_10 = (u8 *)Mem_Alloc(size);
     }
-    func_0204ff6c(data_021c4890);
-    func_02063eac(unk_00, unk_10, size, 0);
+    Backup_GetStatus(gBackup);
+    File_ReadRangeById(unk_00, unk_10, size, 0);
 }
 
-void Unk_0206d8b8::func_0206d8ec() {
+void RecordFile::freeAll() {
     if (unk_10 != 0) {
-        func_020e8558(unk_10);
+        Mem_Free(unk_10);
         unk_10 = 0;
     }
 }
 
-void Unk_0206d8b8::func_0206d8b8() {
+void RecordFile::close() {
     unk_00.a = 0;
     unk_14 = -1;
     unk_0c = 0;
     unk_08 = 0;
     if (unk_10 != 0) {
-        func_020e8558(unk_10);
+        Mem_Free(unk_10);
         unk_10 = 0;
     }
     if (unk_18 != 0) {
-        func_020e8558(unk_18);
+        Mem_Free(unk_18);
         unk_18 = 0;
     }
 }
 
-u8 *Unk_0206d8b8::func_0206d86c(u32 idx) {
+u8 *RecordFile::getRecord(u32 idx) {
     if (unk_10 != 0) {
         return unk_10 + unk_08 * idx;
     }
@@ -615,7 +615,7 @@ u8 *Unk_0206d8b8::func_0206d86c(u32 idx) {
         return unk_18 + unk_08 * (idx & 7);
     }
     if (unk_18 != 0) {
-        func_0206d828(idx);
+        loadPage(idx);
         u32 off = unk_08 * (idx & 7);
         unk_14 = blk;
         return unk_18 + off;
@@ -623,162 +623,162 @@ u8 *Unk_0206d8b8::func_0206d86c(u32 idx) {
     return 0;
 }
 
-void Unk_0206d8b8::func_0206d828(u32 idx) {
+void RecordFile::loadPage(u32 idx) {
     u32 blk = idx >> 3;
     u8 file[0x4c];
-    func_0204ff6c(data_021c4890);
+    Backup_GetStatus(gBackup);
     FS_InitFile(file);
     if (FS_OpenFileFast(file, unk_00)) {
         u32 sz = unk_08 << 3;
-        func_02063d18(file, unk_18, sz, blk * sz);
+        File_ReadRange(file, unk_18, sz, blk * sz);
         FS_CloseFile(file);
     }
 }
 
-BOOL Unk_0206d7cc::func_0206d7ec(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count) {
-    unk_00.func_0206d940(a, n0, count);
-    unk_1c.func_0206d940(b, n1, count);
-    unk_38.func_0206d940(c, n2, count);
-    unk_00.func_0206d904();
+BOOL InfoTableSet::open(void *a, s32 n0, void *b, s32 n1, void *c, s32 n2, s32 count) {
+    unk_00.open(a, n0, count);
+    unk_1c.open(b, n1, count);
+    unk_38.open(c, n2, count);
+    unk_00.loadAll();
     return TRUE;
 }
 
-void Unk_0206d7cc::func_0206d7cc() {
-    unk_00.func_0206d8b8();
-    unk_1c.func_0206d8b8();
-    unk_38.func_0206d8b8();
+void InfoTableSet::close() {
+    unk_00.close();
+    unk_1c.close();
+    unk_38.close();
 }
 
-BOOL Unk_0206d7cc::func_0206d7b4(s32 v) {
+BOOL InfoTableSet::loadIndoor(s32 v) {
     if (v == 0) {
-        unk_1c.func_0206d904();
+        unk_1c.loadAll();
     }
     return TRUE;
 }
 
-BOOL Unk_0206d7cc::func_0206d7a0() {
-    unk_1c.func_0206d8ec();
+BOOL InfoTableSet::freeIndoor() {
+    unk_1c.freeAll();
     return TRUE;
 }
 
-Unk_0206d8b8 *Unk_0206d7cc::func_0206d79c() {
+RecordFile *InfoTableSet::getAlways() {
     return &unk_00;
 }
 
-Unk_0206d8b8 *Unk_0206d7cc::func_0206d798() {
+RecordFile *InfoTableSet::getIndoor() {
     return &unk_1c;
 }
 
-Unk_0206d8b8 *Unk_0206d7cc::func_0206d794() {
+RecordFile *InfoTableSet::getDma() {
     return &unk_38;
 }
 
-extern "C" void func_0206d774(void *arg, void *p) {
+extern "C" void Fatal_ExceptionCallback(void *arg, void *p) {
     func_02114cd8(0, 0);
-    data_0213c6dc = (u32)arg;
-    func_02000c9c();
+    sCrashContext = (u32)arg;
+    CrashScreen_Run();
 }
 
 extern "C" void func_0206d770(void) {}
 
-extern "C" void func_0206d760(void) {
-    OS_SleepThread(data_021cb3e4);
+extern "C" void Main_WaitVBlank(void) {
+    OS_SleepThread(gVBlankQueue);
 }
 
-extern "C" void func_0206d750(void) {
-    OS_SleepThread(data_021cb3ec);
+extern "C" void Main_WaitFrame(void) {
+    OS_SleepThread(gFrameWaitQueue);
 }
 
-extern "C" void func_0206d720(u32 r) {
+extern "C" void Main_PreTaskUpdate(u32 r) {
     func_020af33c();
     func_02053754();
     if (r != 0) {
         func_020739b8(r);
     }
-    func_020b7d84();
-    func_020e8208();
+    Touch_Update();
+    Pad_Update();
     func_0209c390();
     func_0209cfc8(r);
 }
 
-extern "C" void func_0206d6ec(u32 r) {
+extern "C" void Main_PostTaskUpdate(u32 r) {
     if (r == 0) {
         func_020a5c2c();
     }
     func_020733e4(r);
     func_02053730();
-    data_021f4768++;
+    gFrameCounter++;
     *(volatile u32 *)0x4000540 = 3;
 }
 
-extern "C" void func_0206d6d4(void) {
+extern "C" void Main_PostFrameUpdate(void) {
     func_020536dc();
     func_02038128();
     func_020b8340();
 }
 
-extern "C" void func_0206d6ac(u32 r) {
-    func_0205046c();
+extern "C" void Main_LateUpdate(u32 r) {
+    TextLabel_FlushGroup0();
     func_020118a4();
     func_020b8e44();
     func_0205b740();
-    func_020044e0(r != 0 ? 1 : 0);
+    Snd_Update(r != 0 ? 1 : 0);
 }
 
-extern "C" void func_0206d6a4(void) {
+extern "C" void Main_PreTaskHook(void) {
     func_0203d4d0();
 }
 
-extern "C" void func_0206d69c(void) {
+extern "C" void Main_PostTaskHook(void) {
     func_0203d4cc();
 }
 
-extern "C" void func_0206d610(void) {
+extern "C" void Main_Loop(void) {
     u32 r;
     s32 b;
     GX_DispOn();
     *(volatile u32 *)0x4001000 |= 0x10000;
     func_020af3a8();
     u32 v = data_020cbb18;
-    u16 *flag = &data_021cb3c0;
+    u16 *flag = &gMainWaitingFrame;
     for (;;) {
         func_020ebb00();
         _ZN12Unk_020cbb1813func_02072398Ej(v, _ZN12Unk_020cbb1813func_02072374Ev(v));
         r = _ZN12Unk_020cbb1813func_0207238cEv(v);
-        func_0206d720(r);
-        func_0206d6a4();
+        Main_PreTaskUpdate(r);
+        Main_PreTaskHook();
         if (r != 0) {
             b = 1;
         } else {
             b = 0;
         }
         func_02038148(b);
-        func_020ed64c(b);
+        Task_RunFrame(b);
         func_02038138();
-        func_0206d6ec(r);
-        func_0206d69c();
+        Main_PostTaskUpdate(r);
+        Main_PostTaskHook();
         *flag = 1;
-        func_0206d750();
+        Main_WaitFrame();
         *flag = 0;
-        func_0206d6d4();
-        func_0206d6ac(r);
+        Main_PostFrameUpdate();
+        Main_LateUpdate(r);
     }
 }
 
-extern "C" u32 func_0206d5c8(void) {
-    void *p = func_020e85b4(0x700, 0x20);
-    func_02076c24(data_021cc7d0, (s32)OVERLAY_65_ID);
+extern "C" u32 Main_InitDwc(void) {
+    void *p = Mem_AllocAligned(0x700, 0x20);
+    OverlayHandle_Load(gOverlayHandle, (s32)OVERLAY_65_ID);
     u32 r = func_021001e0(p);
-    data_020ddf88 = r;
-    func_02076c50(data_021cc7d0);
-    func_020e8558(p);
+    sDwcInitResult = r;
+    OverlayHandle_Unload(gOverlayHandle);
+    Mem_Free(p);
     return r;
 }
 
-extern "C" u8 func_0206d5b8(void) {
-    u8 old = data_020ddf88;
-    data_020ddf88 = 4;
+extern "C" u8 Main_TakeDwcInitResult(void) {
+    u8 old = sDwcInitResult;
+    sDwcInitResult = 4;
     return old;
 }
 
-u8 data_020ddf88 = 4;
+u8 sDwcInitResult = 4;

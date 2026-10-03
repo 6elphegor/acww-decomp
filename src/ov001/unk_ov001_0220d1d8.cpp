@@ -25,7 +25,7 @@ void *data_ov001_0222de1c;
 Unk_ov001_0220d1f4_V3 *data_ov001_0222de18;
 //ENDDEFS
 
-extern void func_0206d49c();
+extern void Fatal_Trap();
 extern void OS_Sleep(s32);
 extern void GXS_LoadBG1Char();
 extern void GXS_LoadBGPltt();
@@ -165,12 +165,12 @@ void func_ov001_0220d3b0() {
 
 void func_ov001_0220d340() {
     data_ov001_0222de18 = (Unk_ov001_0220d1f4_V3 *)func_ov001_02225db0(0xc, -4);
-    if (func_ov001_02203c48(0xf, 0x40, (void *)func_ov001_0220d1f4, (void *)func_ov001_0220d1e4, (void *)func_ov001_0220d1d8, 0x800) != 1) func_0206d49c();
+    if (func_ov001_02203c48(0xf, 0x40, (void *)func_ov001_0220d1f4, (void *)func_ov001_0220d1e4, (void *)func_ov001_0220d1d8, 0x800) != 1) Fatal_Trap();
     OS_Sleep(10);
 }
 
 void func_ov001_0220d310() {
-    if (func_ov001_02203b90() != 1) func_0206d49c();
+    if (func_ov001_02203b90() != 1) Fatal_Trap();
     func_ov001_02225d58(&data_ov001_0222de18);
 }
 
@@ -188,7 +188,7 @@ s32 func_ov001_0220d23c() {
     case 4:
         return 2;
     case 6:
-        if (func_ov001_02203b38(&buf) != 1) func_0206d49c();
+        if (func_ov001_02203b38(&buf) != 1) Fatal_Trap();
         if (buf.unk_20 >= 0 && buf.unk_20 <= 3) {
             if (buf.unk_24 == 1) return 3;
         }
@@ -202,7 +202,7 @@ s32 func_ov001_0220d23c() {
 
 void func_ov001_0220d20c() {
     u8 buf[0xec];
-    if (func_ov001_02203b38(buf) != 1) func_0206d49c();
+    if (func_ov001_02203b38(buf) != 1) Fatal_Trap();
     func_ov001_0221e140(buf);
 }
 

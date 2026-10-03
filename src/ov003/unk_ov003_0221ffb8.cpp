@@ -5,10 +5,10 @@
 // TU23 of ov003 (fish actors, scene classes 0223498c / 02234a94): 0x0221ffb8-0x02224e68, static initialiser 0x354 bytes.
 // Merged from ten unit files; every view of the shared objects (data_ov003_0225812c etc.) is reached through casts.
 
-#define func_02003c30 _ZN12Unk_02003c3013func_02003c30Ev
-#define func_02003c40 _ZN12Unk_02003c4013func_02003c40EPv
-#define func_02003c70 _ZN12Unk_02003c4013func_02003c70EP16Unk_02003a6c_Vec
-#define func_02003cbc _ZN12Unk_02003c3013func_02003cbcEv
+#define Unk_02003c30_callRelease _ZN12Unk_02003c3011callReleaseEv
+#define Unk_02003c40_callRequest _ZN12Unk_02003c4011callRequestEPv
+#define Unk_02003c40_callUpdateRelative _ZN12Unk_02003c4018callUpdateRelativeEP16Unk_02003a6c_Vec
+#define Unk_02003c30_callReset _ZN12Unk_02003c309callResetEv
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
@@ -28,15 +28,15 @@
 #define func_02054c2c _ZN12Unk_020dbd3413func_02054c2cEPvS0_
 #define func_02054e24 _ZN12Unk_020dbd34D1Ev
 #define func_02054e3c _ZN12Unk_020dbd34C1Ev
-#define func_020554c0 _ZN12Unk_020dbe3413func_020554c0Ev
-#define func_020555ec _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj
-#define func_02055a9c _ZN12Unk_020dbe4c13func_02055a9cEj
-#define func_02055b38 _ZN12Unk_020dbe4c13func_02055b38Eiiit
-#define func_02055bcc _ZN12Unk_020dbe4c13func_02055bccEjPv
-#define func_02055c38 _ZN12Unk_020dbe4cD2Ev
-#define func_02055cac _ZN12Unk_020dbe4cC2Ev
-#define func_020565e8 _ZN12Unk_020dbe7c13func_020565e8Ei
-#define func_020566bc _ZN12Unk_020dbe7c13func_020566bcEv
+#define Model_getRenderObj _ZN5Model12getRenderObjEv
+#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
+#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
+#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
+#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define func_02055c38 _ZN9ModelAnimD2Ev
+#define func_02055cac _ZN9ModelAnimC2Ev
+#define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
+#define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define func_0205f92c _ZN12Unk_0205f8d413func_0205f92cEi
 #define func_0205fb40 _ZN12Unk_0205f8d413func_0205fb40Ev
 #define func_0205fbbc _ZN12Unk_0205f8d413func_0205fbbcEPv
@@ -320,14 +320,14 @@ public:
     u32 unk_00[6];
 };
 
-class Unk_ov003_0223498c : public Unk_020d8c7c {
+class Unk_ov003_0223498c : public GameProc {
 public:
     Unk_ov003_0223498c();
     virtual ~Unk_ov003_0223498c();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     /* 0x50 */ Unk_0209c15c unk_50;
     /* 0x68 */ Unk_0209c15c unk_68;
@@ -797,7 +797,7 @@ struct Unk_ov003_02224ba4_V3 {
 typedef Unk_ov003_02224ba4_V3 V3_f10;
 
 // polymorphic actor returned by func_020951ec (only the slots used here)
-class Unk_ov003_02224bc4_Actor : public Unk_020d8c7c {
+class Unk_ov003_02224bc4_Actor : public GameProc {
 public:
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
@@ -834,16 +834,16 @@ struct Unk_ov003_02257d1c {
     u8 pad_5d[3];
 };
 
-class Unk_020dbe4c {
+class ModelAnim {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
+    ModelAnim();
+    virtual ~ModelAnim();
     u8 pad_04[0x14];
     u32 unk_18;
     u32 unk_1c;
 };
 
-class Unk_ov003_02234a94 : public Unk_020dbe4c {
+class Unk_ov003_02234a94 : public ModelAnim {
 public:
     virtual ~Unk_ov003_02234a94() {}
 };
@@ -914,17 +914,17 @@ extern void * data_020cbb18;
 extern s16 data_02135f44[];
 extern u8 data_0213b91c[];
 extern u8 data_0213b954[];
-extern u32 data_021c3070;
-extern Unk_ov003_02220128_Vec3 data_021c309c;
+extern u32 gCamera;
+extern Unk_ov003_02220128_Vec3 gCameraLookAt;
 extern void * data_021c47c4;
-extern u8 data_021f4770;
+extern u8 gTouchHeld;
 extern u8 data_021f47e0[];
-extern void * data_021f482c;
+extern void * gCurrentHeap;
 extern u8 data_ov003_02234a74[];
 extern u8 data_ov003_02234a80[];
 extern u8 data_ov003_02234a94[];
 
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 void func_02003e70(void *o, s32 a, s32 b, s32 c);
 void func_02003e80(void *self, void *v);
 s32 func_020309d4(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
@@ -939,7 +939,7 @@ s32 func_0205f92c(void *p, s32 a);
 void func_0205fbbc(void *e, void *o);
 void *func_0205ffe4();
 u32 func_02063b8c(u32 n);
-void *func_020641ec(void *a, void *b, s32 c, s32 d);
+void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void func_02072824(void *g, s32 a, s32 b);
 void func_020728a4(void *g, void *buf, s32 n);
 void func_020728d4(void *g);
@@ -960,10 +960,10 @@ s32 func_020e9650(void *a, void *b);
 s32 func_021065dc(s32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-s32 func_02003c30(void *p);
-void func_02003c40(void *, s32);
-void func_02003c70(void *self, Unk_ov003_02221364_Vec *v);
-void func_02003cbc(void *self);
+s32 Unk_02003c30_callRelease(void *p);
+void Unk_02003c40_callRequest(void *, s32);
+void Unk_02003c40_callUpdateRelative(void *self, Unk_ov003_02221364_Vec *v);
+void Unk_02003c30_callReset(void *self);
 s32 func_02003e50(void *p);
 void func_02003ecc(void *self);
 BOOL func_02030d78(V3_f7 *out, void *pos, s32 ang, s32 a, s32 b, s32 c);
@@ -973,8 +973,8 @@ void func_020323b0(void *p);
 void func_02033988(void *o);
 void func_020339bc(void *o, void *p, s32 a, s32 b);
 s32 func_020375bc(void *c);
-void func_0203ee38(V3_f5 *a, V3_f5 *b);
-s32 func_0203eeac(V3_f3 *v);
+void WorldCurve_FromCurved(V3_f5 *a, V3_f5 *b);
+s32 WorldCurve_Apply(V3_f3 *v);
 s32 func_020429d0(s32 a, s32 *p, s32 c);
 void func_0204ed8c(void *a, s32 x, s32 y);
 void func_0204edd8(void *a, void *b);
@@ -996,15 +996,15 @@ void func_02054b14(void *p);
 BOOL func_02054c2c(void *a, s32 b, void *c);
 void func_02054e24(void *p);
 void func_02054e3c(void *p);
-void *func_020554c0(void *a);
-void func_020555ec(void *a, void *b, s32 c);
-void func_02055a9c(void *a, void *b);
+void *Model_getRenderObj(void *a);
+void Model_setResource(void *a, void *b, s32 c);
+void ModelAnim_addToRenderObj(void *a, void *b);
 void func_02055b38(void *a, s32 b, s32 c, s32 d, s32 e);
 BOOL func_02055bcc(void *a, void *b, void *c);
 void func_02055c38(void *p);
 void func_02055cac(void *p);
-BOOL func_020565e8(void *o, s32 a);
-s32 func_020566bc(void *p);
+BOOL AnimFrameCtrl_hasPassedFrame(void *o, s32 a);
+s32 AnimFrameCtrl_step(void *p);
 void func_0205bfd0();
 void func_0205bfec();
 void func_0205c004();
@@ -1031,7 +1031,7 @@ s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e8388(void *m, s32 x, s32 y, s32 z);
 s32 func_020e8404(void *m, s32 a);
 s32 func_020e8434(void *m, s32 a);
-s32 func_020e8558(s32 a);
+s32 Mem_Free(s32 a);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 s32 func_021065f8(s32 a, s32 b);
@@ -1551,10 +1551,10 @@ extern "C" s32 func_ov003_02224b6c(s32 i)
 extern "C" s32 func_ov003_02224b1c(E_f9 *e)
 {
     s32 r = 0;
-    if (data_021c3070 == 0) {
+    if (gCamera == 0) {
         return 1;
     }
-    V3_f9 v = (*(V3_f9 *)&data_021c309c);
+    V3_f9 v = (*(V3_f9 *)&gCameraLookAt);
     if (((s32 (*)(V3_f9 *, V3_f9 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_34, &v, 0x8000, 0x6000, 0x6000) == 0) {
         r = 1;
     }
@@ -1608,7 +1608,7 @@ extern "C" void func_ov003_02224990(void *self, E_f9 *e)
         }
         s32 t = (*cnt * 0x199a) >> 5;
         if (t > 0x199a) t = 0x199a;
-        ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, func_02002bdc(&e->unk_4c, &e->unk_40), t, 0, 0xb);
+        ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
         V3_f9 t6c(*pos);
         V3_f9 b78(0x1000, 0x1000, 0x1000);
         func_ov003_0221cfdc(0x1520, &t6c, &b78, 0, 0, 0);
@@ -1648,7 +1648,7 @@ extern "C" void func_ov003_0222489c(void *self, E_f9 *e)
     pos->y = pos->y - data_ov003_02234764;
     t = (*cnt * 0x199a) >> 5;
     if (t > 0x199a) t = 0x199a;
-    ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, func_02002bdc(&e->unk_4c, &e->unk_40), t, 0, 0xb);
+    ((void (*)(void *, void *, void *, s32, s32, s32, s32))func_020309d4)(e, pos, pos, Math_AngleXZ(&e->unk_4c, &e->unk_40), t, 0, 0xb);
     *cnt = *cnt + 1;
     if (*cnt >= 0x78) {
         e->unk_30 = 0;
@@ -1983,7 +1983,7 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
     if (s >= 0x100) {
         s = 0x100;
     }
-    self->unk_138 = func_02002bdc(&self->unk_120, p);
+    self->unk_138 = Math_AngleXZ(&self->unk_120, p);
     ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, (s16)self->unk_138);
     ((void (*)(void *, s32))func_ov003_022201ac)(self, 0x18);
     if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, p, dv, dv, dv)) {
@@ -2015,12 +2015,12 @@ extern "C" s32 func_ov003_02223f78(Obj_f8 *self)
             self->unk_23d = 0;
             self->unk_225 = 3;
             self->unk_224 = 3;
-            self->unk_138 = func_02002bdc(&self->unk_120, p);
+            self->unk_138 = Math_AngleXZ(&self->unk_120, p);
         } else {
             self->unk_23d = 0;
             self->unk_225 = 0;
             self->unk_224 = 2;
-            self->unk_138 = func_02002bdc(&self->unk_120, p);
+            self->unk_138 = Math_AngleXZ(&self->unk_120, p);
         }
     }
     self->unk_23d = self->unk_23d + 1;
@@ -2045,7 +2045,7 @@ extern "C" s32 func_ov003_02223dd8(Obj_f8 *self)
         if (s >= 0x100) {
             s = 0x100;
         }
-        self->unk_138 = func_02002bdc(&self->unk_120, q);
+        self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, (s16)self->unk_138);
         if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_23d = 0;
@@ -2057,12 +2057,12 @@ extern "C" s32 func_ov003_02223dd8(Obj_f8 *self)
     case 1: {
         s32 lim = ((s32 (*)(s32, s32))func_ov003_022202ec)(10, 15);
         if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 0x32) {
-            self->unk_138 = func_02002bdc(q, &self->unk_120);
+            self->unk_138 = Math_AngleXZ(q, &self->unk_120);
         } else {
-            self->unk_138 = func_02002bdc(&self->unk_120, q);
+            self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         }
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x100, (s16)self->unk_138);
-        self->unk_138 = func_02002bdc(&self->unk_120, q);
+        self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         if (self->unk_23d > lim) {
             self->unk_23d = 0;
             self->unk_138 = (s16)self->unk_138 + (s16)(func_ov003_022202cc(1, 2) * 0x1554);
@@ -2138,7 +2138,7 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
         if (s >= 0x100) {
             s = 0x100;
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, func_02002bdc(&self->unk_120, q));
+        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, Math_AngleXZ(&self->unk_120, q));
         d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->unk_23d = 0;
@@ -2151,9 +2151,9 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
     case 4: {
         s32 lim = ((s32 (*)(s32, s32))func_ov003_022202ec)(10, 0x14);
         if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 0x32) {
-            ang = func_02002bdc(q, &self->unk_120);
+            ang = Math_AngleXZ(q, &self->unk_120);
         } else {
-            ang = func_02002bdc(&self->unk_120, q);
+            ang = Math_AngleXZ(&self->unk_120, q);
             if (((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100) < 5) {
                 func_0205fb40(p);
             }
@@ -2171,7 +2171,7 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
         if (s < 0) {
             s = 0;
         }
-        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, func_02002bdc(q, &self->unk_120));
+        ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, s, Math_AngleXZ(q, &self->unk_120));
         if (s == 0 || ((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv) == 0) {
             self->unk_23d = 0;
             self->unk_225 = 3;
@@ -2184,7 +2184,7 @@ extern "C" s32 func_ov003_02223b64(Obj_f8 *self)
         sq = base >> 9;
         s64 d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
         if (d >= (s64)func_01ffcb0c(sq, sq)) {
-            self->unk_138 = func_02002bdc(&self->unk_120, q);
+            self->unk_138 = Math_AngleXZ(&self->unk_120, q);
         }
     }
     self->unk_23d = self->unk_23d + 1;
@@ -2240,7 +2240,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
     switch (self->unk_225 - 6) {
     case 0: {
         s32 dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
-        s32 ang = func_02002bdc(&self->unk_120, q);
+        s32 ang = Math_AngleXZ(&self->unk_120, q);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0xc0, (s16)(ang + 0x4000));
         if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
@@ -2252,7 +2252,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
     }
     case 1: {
         s32 dv = ((s32)((u8 *)(data_ov003_022349d4))[self->unk_1ff * 0x14] << 12) / 100;
-        s32 ang = func_02002bdc(&self->unk_120, q);
+        s32 ang = Math_AngleXZ(&self->unk_120, q);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0xc0, (s16)(ang - 0x4000));
         if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv)) {
@@ -2265,7 +2265,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
     case 2: {
         s32 dv = ((s32)((u8 *)((u8 *)&data_ov003_022349d4[0].a1))[self->unk_1ff * 0x14] << 12) / 100;
         s32 r;
-        s32 ang = func_02002bdc(q, &self->unk_120);
+        s32 ang = Math_AngleXZ(q, &self->unk_120);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&self->unk_120, 0x180, ang);
         r = ((s32 (*)(s32, s32))func_ov003_022202ec)(0, 100);
         if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(&self->unk_120, q, dv, dv, dv) == 0) {
@@ -2283,7 +2283,7 @@ extern "C" s32 func_ov003_02223924(Obj_f8 *self)
         }
         break;
     }
-    self->unk_138 = func_02002bdc(&self->unk_120, q);
+    self->unk_138 = Math_AngleXZ(&self->unk_120, q);
     return 1;
 }
 
@@ -2302,13 +2302,13 @@ extern "C" BOOL func_ov003_022237dc(Obj_f7 *o) {
         step = 0x1249;
     }
     if (o->unk_23e != 0) {
-        if (func_020565e8(o->unk_1e0, 4)) {
+        if (AnimFrameCtrl_hasPassedFrame(o->unk_1e0, 4)) {
             o->unk_1e8 = 0x3000;
         }
         o->unk_138 = o->unk_138 + step;
         ang = (s16)(o->unk_138 - 0x4000);
     } else {
-        if (func_020565e8(o->unk_1e0, 0xb)) {
+        if (AnimFrameCtrl_hasPassedFrame(o->unk_1e0, 0xb)) {
             o->unk_1e8 = 0xa000;
         }
         o->unk_138 = o->unk_138 - step;
@@ -2335,7 +2335,7 @@ extern "C" BOOL func_ov003_022237dc(Obj_f7 *o) {
     ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&o->unk_120, sc, ang);
     void *m = func_020947f0(4);
     if (m != NULL) {
-        s32 a2 = func_02002bdc(m, &v);
+        s32 a2 = Math_AngleXZ(m, &v);
         ((s32 (*)(void *, s32, s32))func_ov003_02224828)(&o->unk_120, 0xa00, a2);
     }
     return TRUE;
@@ -2421,7 +2421,7 @@ extern "C" BOOL func_ov003_02223554(Obj_f7 *o) {
             func_ov003_02223134(o);
             return FALSE;
         }
-        if (data_021f4770 == 0) {
+        if (gTouchHeld == 0) {
             s32 cur = o->unk_13c;
             u8 *tbl = ((u8 * *)((u8 *)&data_ov003_022348c0[0].q))[m * 2];
             if (cur > tbl[data_020ca316[o->unk_7e * 6]] - 1) {
@@ -2578,7 +2578,7 @@ extern "C" BOOL func_ov003_02223310(s32 idx, s32 flag) {
         return TRUE;
     }
     V3_f7 *q = &rec->unk_60;
-    ang = func_02002bdc(&rec->unk_6c, q);
+    ang = Math_AngleXZ(&rec->unk_6c, q);
     V3_f7 tmp;
     if (func_02030d78(&tmp, pos, ang, 0x7800, 0x2000, 0xc)) {
         q->x = tmp.x;
@@ -2822,7 +2822,7 @@ extern "C" BOOL func_ov003_02222f28(void *self, s32 a1, s32 a2, s32 a3)
     val = (t->p[off] << 12) / 10;
     if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(self, p2, val, val, val)) {
         s32 lim = *(s16 *)(t->p + off + 2);
-        if (func_020e780c(func_02002bdc(self, p2), a1) <= lim) {
+        if (func_020e780c(Math_AngleXZ(self, p2), a1) <= lim) {
             result = TRUE;
         }
     }
@@ -3208,7 +3208,7 @@ extern "C" void func_ov003_02222770(Sub_f6 *s, Obj_f6 *o)
 {
     if (s->b1 != 0) {
         s->b1 = s->b1 - 1;
-        func_02003c40(&o->unk_40, 0x82f);
+        Unk_02003c40_callRequest(&o->unk_40, 0x82f);
     } else {
         s->b2 = ((s32 (*)(s32, s32))func_ov003_022202ec)(0x14, 0x50);
         s->b3 = 1;
@@ -3348,7 +3348,7 @@ extern "C" BOOL func_ov003_02222504(Self_f5 *self, u32 a) {
     l.w.x = ((V3_f5 *)((u8 *)&l.t + 0x24))->x;
     l.w.y = ((V3_f5 *)((u8 *)&l.t + 0x24))->y;
     l.w.z = ((V3_f5 *)((u8 *)&l.t + 0x24))->z;
-    func_0203ee38(&l.w, &l.w);
+    WorldCurve_FromCurved(&l.w, &l.w);
     CP(l.dead, l.w);
     CP(l.y, l.w);
     CP(l.z, self->unk_60);
@@ -3485,7 +3485,7 @@ extern "C" BOOL func_ov003_022222a0(Self_f5 *self, u32 a) {
         l.w.x = ((V3_f5 *)((u8 *)&l.tt + 0x24))->x;
         l.w.y = ((V3_f5 *)((u8 *)&l.tt + 0x24))->y;
         l.w.z = ((V3_f5 *)((u8 *)&l.tt + 0x24))->z;
-        func_0203ee38(&l.w, &l.w);
+        WorldCurve_FromCurved(&l.w, &l.w);
         CP(self->unk_54, l.w);
         CP(self->unk_6c, l.w);
         r = TRUE;
@@ -3662,7 +3662,7 @@ extern "C" BOOL func_ov003_02221dd8(V3_f5 *p, V3_f5 *a, V3_f5 *b, s32 n, s32 k, 
     mm = m * m;
     t = ((k - (y >> 1)) << 3) / mm;
     d = func_020e9650(a, b);
-    ang = ((s32 (*)(V3_f5 *, V3_f5 *))func_02002bdc)(a, b);
+    ang = ((s32 (*)(V3_f5 *, V3_f5 *))Math_AngleXZ)(a, b);
     s32 nn = n * n;
     p->y = a->y + (n * ((y + ((mm * t) >> 1)) / m) - ((nn * t) >> 1));
     ((s32 (*)(void *, s32, s32))func_ov003_02224828)(p, d / m, ang);
@@ -3675,7 +3675,7 @@ extern "C" BOOL func_ov003_02221d60(Self_f5 *self, V3_f5 *p) {
     s32 c = self->unk_7c;
     s32 t = (c + 2) << 7;
     if (c == 0) {
-        self->unk_98 = ((s32 (*)(V3_f5 *, V3_f5 *))func_02002bdc)(p, &self->unk_54);
+        self->unk_98 = ((s32 (*)(V3_f5 *, V3_f5 *))Math_AngleXZ)(p, &self->unk_54);
     } else if (c >= 0x1e) {
         self->unk_40 = 4;
     }
@@ -4021,7 +4021,7 @@ BOOL Unk_ov003_0223498c::vfunc_00() {
     u8 *a = (u8 *)this;
     func_0209c1a4(a + 0x50, 6, 0, 0, 0x800, (void *)func_0205c020, (void *)func_0205c004, (void *)"fish_sdw");
     func_0209c1a4(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)func_0205bfec, (void *)func_0205bfd0, (void *)"fish_fin");
-    *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))func_020641ec)((*(u32 *)((u8 *)&data_ov003_0223476c)), data_021f482c, 4, 0);
+    *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&data_ov003_0223476c)), gCurrentHeap, 4, 0);
     Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(data_ov003_0225812c));
     s32 i = 0;
     s32 z = 0;
@@ -4038,7 +4038,7 @@ BOOL Unk_ov003_0223498c::vfunc_00() {
         *((u8 *)s + 0x211) = i;
         *(u16 *)((u8 *)s + 0x212) = i * 0x190 + 0x960;
         func_02003ecc(s);
-        func_02003cbc((u8 *)s + 0x40);
+        Unk_02003c30_callReset((u8 *)s + 0x40);
         s++;
         i++;
     } while (i < 6);
@@ -4069,7 +4069,7 @@ extern "C" void func_ov003_02221498(void *a, u8 *b, void *c) {
     v2.x = pv->x;
     v2.y = pv->y;
     v2.z = pv->z;
-    func_02003c70(b + 0x40, &v2);
+    Unk_02003c40_callUpdateRelative(b + 0x40, &v2);
     if (data_ov003_02257b90[*(s32 *)(b + 0x80)].exit) {
         (((Unk_ov003_0223498c *)a)->*(data_ov003_02257b90[*(s32 *)(b + 0x80)].exit))(b, c);
     }
@@ -4125,9 +4125,9 @@ extern "C" void func_ov003_022213cc() {
 
 //@ 0x2221364
 extern "C" void func_ov003_02221364(u8 *a, u8 *b, s32 c) {
-    if ((*(void * *)&data_021c3070) != 0) {
+    if ((*(void * *)&gCamera) != 0) {
         Unk_ov003_02221364_Vec v;
-        v = (*(Unk_ov003_02221364_Vec *)&data_021c309c);
+        v = (*(Unk_ov003_02221364_Vec *)&gCameraLookAt);
         if (((s32 (*)(void *, void *, s32, s32, s32))func_ov003_0222034c)(b + 0x12c, &v, 0xa000, 0x10000, 0xa000)) {
             func_ov003_022217ac(a, c);
             if (b[0x7f] != 0) {
@@ -4181,8 +4181,8 @@ extern "C" void func_ov003_02221290(void) {
 
 //@ 0x22211fc
 extern "C" void func_ov003_022211fc(O_f3 *o, E_f3 *e, s32 idx) {
-    if ((*(void * *)&data_021c3070) != NULL) {
-        V3_f3 v = (*(V3_f3 *)&data_021c309c);
+    if ((*(void * *)&gCamera) != NULL) {
+        V3_f3 v = (*(V3_f3 *)&gCameraLookAt);
         if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) != 0) {
             e->unk_80 = 3;
             e->unk_244 = -1;
@@ -4250,7 +4250,7 @@ extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
     func_020547e4(e->unk_144);
     func_020547e4(q);
     Unk_ov003_022210a4_R *r = &p->unk_11c;
-    func_020566bc(r);
+    AnimFrameCtrl_step(r);
     *r->unk_18 = r->unk_08;
 }
 
@@ -4259,7 +4259,7 @@ extern "C" void func_ov003_022210a4(O_f3 *o, E_f3 *e) {
 extern "C" void func_ov003_0222105c(O_f3 *a, void *b, void *dstv, s32 ang) {
     u8 *dst = (u8 *)dstv;
     V3_f3 v;
-    s32 r = func_0203eeac(&v);
+    s32 r = WorldCurve_Apply(&v);
     func_020e8388(data_021f47e0, v.x, v.y, v.z);
     func_020e8434(data_021f47e0, r);
     func_020e8404(data_021f47e0, ang);
@@ -4269,7 +4269,7 @@ extern "C" void func_ov003_0222105c(O_f3 *a, void *b, void *dstv, s32 ang) {
 
 
 //@ 0x222101c
-BOOL Unk_ov003_0223498c::vfunc_18() {
+BOOL Unk_ov003_0223498c::onExecute() {
     O_f3 *o = (O_f3 *)this;
     E_f3 *e = ((E_f3 *)(data_ov003_0225812c));
     s32 i;
@@ -4300,7 +4300,7 @@ extern "C" void func_ov003_02220fc8(O_f3 *o) {
 
 
 //@ 0x2220eec
-BOOL Unk_ov003_0223498c::vfunc_24() {
+BOOL Unk_ov003_0223498c::onDraw() {
     E_f3 *e = ((E_f3 *)(data_ov003_0225812c));
     s32 i;
     for (i = 0; i < 6; i++) {
@@ -4356,10 +4356,10 @@ extern "C" void func_ov003_02220e58(O_f3 *o) {
         ((s32 (*)(O_f3 *, s32))func_ov003_022216f8)(o, i);
         ((s32 (*)(void *, void *))func_0209c224)((u8 *)o + 0x50, (u8 *)e + 0x7c);
         func_02003e50(e);
-        func_02003c30((u8 *)e + 0x40);
+        Unk_02003c30_callRelease((u8 *)e + 0x40);
         e = (E_f3 *)((u8 *)e + 0x24c);
     }
-    func_020e8558(o->unk_80);
+    Mem_Free(o->unk_80);
     func_0209c15c((u8 *)o + 0x50);
     if (f != FALSE) {
         ((s32 (*)(O_f3 *))func_ov003_02221684)(o);
@@ -4518,7 +4518,7 @@ extern "C" BOOL func_ov003_02220b00(E_f3 *e, s32 a) {
     if (e->unk_7f != 0) {
         *pa = 0;
     } else {
-        *pa = ((s32 (*)(s32, V3_f3 *))func_02002bdc)(a, &v);
+        *pa = ((s32 (*)(s32, V3_f3 *))Math_AngleXZ)(a, &v);
     }
     u32 k = e->unk_1ff;
     s32 *pr = &e->unk_204;
@@ -4541,8 +4541,8 @@ extern "C" BOOL func_ov003_02220b00(E_f3 *e, s32 a) {
 //@ 0x2220a2c
 extern "C" void func_ov003_02220a2c(O_f3 *o, E_f3 *e, s32 idx) {
     if (e->unk_23c == 0 || e->unk_224 == 6) {
-        if ((*(void * *)&data_021c3070) != NULL) {
-            V3_f3 v = (*(V3_f3 *)&data_021c309c);
+        if ((*(void * *)&gCamera) != NULL) {
+            V3_f3 v = (*(V3_f3 *)&gCameraLookAt);
             if (((s32 (*)(V3_f3 *, V3_f3 *, s32, s32, s32))func_ov003_0222034c)(&e->unk_120, &v, 0xa000, 0x10000, 0xa000) == 0) {
                 if (e->unk_200 == 5 || e->unk_224 == 6) {
                     if (e->unk_7f != 0) {
@@ -4752,10 +4752,10 @@ extern "C" BOOL func_ov003_02220460(void *self, s32 *ox, s32 *oz, s32 *a3, s32 *
     Unk_ov003_02220128_Vec3 v5c;
     u8 cand[0x204];
     s32 x, y;
-    if (data_021c3070 == 0) {
+    if (gCamera == 0) {
         return z;
     }
-    v44 = data_021c309c;
+    v44 = gCameraLookAt;
     func_0204edd8(&v50, &v44);
     if (func_ov003_0222069c(self, grid, &cnt, mode) == 0) {
         return z;
@@ -5029,7 +5029,7 @@ extern "C" BOOL func_ov003_022201bc(s32 idx, u16 id0, Unk_ov003_02220128_Vec3 *p
     v = *ps;
     s32 r6 = (u16)id - 0x12e8;
     rec->unk_90 = r6;
-    ((void (*)(void *, s32, s32))func_ov003_0222316c)(rec, ((s32 (*)(Unk_ov003_02220128_Vec3 *, Unk_ov003_02220128_Vec3 *))func_02002bdc)(&v, pos), r6);
+    ((void (*)(void *, s32, s32))func_ov003_0222316c)(rec, ((s32 (*)(Unk_ov003_02220128_Vec3 *, Unk_ov003_02220128_Vec3 *))Math_AngleXZ)(&v, pos), r6);
     Unk_ov003_02220128_Vec3 *pd = &rec->unk_60;
     *pd = v;
     pd = &rec->unk_6c;
@@ -5077,9 +5077,9 @@ extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
     u8 *m = self + 8;
     if (func_0209c0d0(m, res, (*(void * *)((u8 *)&data_ov003_02234770)))) {
         u8 *r4 = self + 0x58;
-        func_020555ec(r4, func_0209c0ac(m), 0);
+        Model_setResource(r4, func_0209c0ac(m), 0);
         void *nm = ((void * (*)(void *))func_0209c348)(res);
-        func_020641ec((*(void * *)((u8 *)&data_ov003_02234774)), nm, 4, 0);
+        File_LoadAlloc((*(void * *)((u8 *)&data_ov003_02234774)), nm, 4, 0);
         s32 v = func_021065f8(((s32 (*)(void))func_021065dc)(), 0);
         if (func_02054800(r4, nm)) {
             func_02054720(r4, v, 0, 0x1000, 1, 0);
@@ -5087,11 +5087,11 @@ extern "C" BOOL func_ov003_02220030(u8 *self, void *a)
         } else {
             return FALSE;
         }
-        func_020641ec((*(void * *)((u8 *)&data_ov003_0223477c)), nm, 4, 0);
+        File_LoadAlloc((*(void * *)((u8 *)&data_ov003_0223477c)), nm, 4, 0);
         s32 w = func_02106670(func_02106654(), 0);
         if (func_02055bcc(self + 0x11c, *(void **)(r4 + 0x5c), nm)) {
             func_02055b38(self + 0x11c, w, 0, 0x1000, 1);
-            func_02055a9c(self + 0x11c, func_020554c0(r4));
+            ModelAnim_addToRenderObj(self + 0x11c, Model_getRenderObj(r4));
         } else {
             return FALSE;
         }

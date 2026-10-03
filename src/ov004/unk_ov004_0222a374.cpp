@@ -23,7 +23,7 @@ struct Unk_ov004_SceneEntry {
     u16 b;
 };
 
-class Unk_ov004_0224e3f8 : public Unk_020d8c7c {
+class Unk_ov004_0224e3f8 : public GameProc {
 public:
     Unk_ov004_0224e3f8();
     virtual BOOL vfunc_00();
@@ -32,12 +32,12 @@ public:
 
 extern "C" {
 extern Unk_0204e858_Grid *data_021c47c4;
-void *func_020974a0(u32 i);
-u16 *_ZN12Unk_0209865c13func_020986e4Ev(void *self);
-s32 func_0204b2d4(Unk_ov004_0222a374_Loc *l);
-s32 func_0204b25c(u16 *p);
-void func_0204b220(Unk_ov004_0222a374_Loc *l, s32 v);
-s32 func_02053228(Unk_ov004_0222a374_Loc *l);
+void *PlayerData_Get(u32 i);
+u16 *_ZN10PlayerData6getBedEv(void *self);
+s32 Item_IsFurniture(Unk_ov004_0222a374_Loc *l);
+s32 Item_GetFurnitureIndex(u16 *p);
+void Item_SetFurnitureDirection(Unk_ov004_0222a374_Loc *l, s32 v);
+s32 Ftr_GetUnk05(Unk_ov004_0222a374_Loc *l);
 void func_0204eb30(Unk_0204e858_Grid *g, Unk_ov004_0222a374_Loc *l, s32 x, s32 y, s32 z);
 }
 
@@ -67,18 +67,18 @@ void func_ov004_0222a374() {
         s32 i;
         BOOL z1 = FALSE, z0 = FALSE, z2 = FALSE;
         for (i = 0; i < 4; i++) {
-            void *p = func_020974a0(i);
+            void *p = PlayerData_Get(i);
             if (p != 0) {
                 Unk_ov004_0222a374_Pair &e = tbl[i & 3];
                 s32 x = e.a;
                 s32 y = e.b;
                 Unk_ov004_0222a374_Loc l;
-                l.a = *_ZN12Unk_0209865c13func_020986e4Ev(p);
+                l.a = *_ZN10PlayerData6getBedEv(p);
                 BOOL r;
-                if (func_0204b2d4(&l) != 0) {
+                if (Item_IsFurniture(&l) != 0) {
                     l.b = 0xfff1;
-                    s32 t = func_0204b25c(&l.a);
-                    r = (t == func_0204b25c(&l.b)) ? 1 : z1;
+                    s32 t = Item_GetFurnitureIndex(&l.a);
+                    r = (t == Item_GetFurnitureIndex(&l.b)) ? 1 : z1;
                 } else {
                     if (l.a == 0xfff1) {
                         r = TRUE;
@@ -87,9 +87,9 @@ void func_ov004_0222a374() {
                     }
                 }
                 if (r == 0) {
-                    func_0204b220(&l, 3);
+                    Item_SetFurnitureDirection(&l, 3);
                     if (x < 8) {
-                        if (func_02053228(&l) == 2) {
+                        if (Ftr_GetUnk05(&l) == 2) {
                             x--;
                         }
                     }

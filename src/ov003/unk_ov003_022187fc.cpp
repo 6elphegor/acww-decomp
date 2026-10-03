@@ -55,9 +55,9 @@ public:
 };
 
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define func_020375d0 _ZN12Unk_020375d013func_020375d0Ev
-#define func_0204e114 _ZN12Unk_0204debc13func_0204e114EPtiih
+#define func_0204e114 _ZN7TownMap13func_0204e114EPtiih
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
 #define func_020b23a4 _ZN12Unk_020b23a013func_020b23a4Ev
 #define func_020b2a0c _ZN12Unk_020b28ac13func_020b2a0cEPiS0_S0_j
@@ -71,21 +71,21 @@ public:
 extern "C" {
 extern void *data_021c6204;
 extern u8 data_021ecc7c[];
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern Unk_ov003_02218bc8_Ent *data_ov003_022358b0[0x20];
 extern Unk_ov003_02218c60_Grid *data_021c47c4;
 extern u8 data_020d0a7c[];
-extern u32 *data_021eda68;
+extern u32 *gActorDefaultParent;
 extern u32 *data_020cbb18;
 }
 
-class Unk_ov003_022324ec : public Unk_020d8c7c {
+class Unk_ov003_022324ec : public GameProc {
 public:
     Unk_ov003_022324ec();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_ov003_022324ec();
 };
 
@@ -102,18 +102,18 @@ s32 func_0204da0c();
 s32 func_0204d5d8(s32 k, s32 *a, s32 *b, s32 *c);
 void *func_020b23a4(void *p);
 s32 func_020b2514(void *p, s32 i);
-void *func_02064020(void *heap, s32 a, const char *fmt, ...);
+void *File_LoadAllocF(void *heap, s32 a, const char *fmt, ...);
 void *NNS_G3dGetTex(...);
 s32 func_020557a0(void *p, s32 a);
 void *func_0205588c(void *p, void *heap);
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 s32 func_02055724(void *p, s32 a);
-void *func_020641ec(const char *s, void *heap, s32 a, s32 b);
+void *File_LoadAlloc(const char *s, void *heap, s32 a, s32 b);
 void *func_021065dc();
 void *func_021065f8(void *p, s32 a);
 u16 *func_ov009_0225b98c(void *p);
-s32 func_0204b2d4(u16 *p);
-s32 func_0204b25c(u16 *p);
+s32 Item_IsFurniture(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 s32 func_020b50bc();
 s32 func_ov009_0225b998(void *p);
 s32 func_ov009_0225b9fc(void *p);
@@ -123,7 +123,7 @@ void func_0204ee10(s32 *a, s32 *b, s32 c);
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 void func_0205c108(s32 a);
 void func_0205c124(s32 a, s32 b);
-void *func_020b27a4(s32 p);
+void *StrBSize_Get(s32 p);
 s32 func_020b2b28(void *self);
 s32 func_020b2a0c(void *self, s32 *a, s32 *b, s32 *c, u32 i);
 void func_0203006c(s32 x, s32 y, u32 v);
@@ -132,12 +132,12 @@ void func_020b16bc(void *o, void *p);
 s32 func_020b16ac(void *o);
 s32 func_020b16b4(void *o);
 void func_020b16b8(void *o);
-s32 func_02002cf8(s32 self, void *b, void *c, void *d, void *e);
+s32 Actor_spawn(s32 self, void *b, void *c, void *d, void *e);
 void func_0204e114(void *self, u16 *p, s32 x, s32 y, u8 z);
 void func_020b2774(s32 a);
 void func_020b15d4();
 void func_020b278c(s32 a);
-void func_0202e880(s32 a, u32 *b, s32 c, s32 d);
+void GameProc_CreateChild(s32 a, u32 *b, s32 c, s32 d);
 void func_02055744(void *, s32);
 extern u32 data_021ed1a4[];
 s32 func_0204c188(void *, s32);
@@ -216,13 +216,13 @@ BOOL Unk_ov003_022324ec::vfunc_00() {
     func_ov003_02219164((s32)this);
     func_ov003_02219160((s32)this);
     func_ov003_02218eec(this);
-    func_0202e880(0xf, data_021eda68, 0, 0);
+    GameProc_CreateChild(0xf, gActorDefaultParent, 0, 0);
     return TRUE;
 }
 
-BOOL Unk_ov003_022324ec::vfunc_18() { return TRUE; }
+BOOL Unk_ov003_022324ec::onExecute() { return TRUE; }
 
-BOOL Unk_ov003_022324ec::vfunc_24() { return TRUE; }
+BOOL Unk_ov003_022324ec::onDraw() { return TRUE; }
 
 BOOL Unk_ov003_022324ec::vfunc_0c() {
     func_ov003_02218aec();
@@ -317,10 +317,10 @@ s32 func_ov003_02218eec(void *self) {
                                 go = 0;
                             }
                             BOOL m;
-                            if (func_0204b2d4(p) != 0) {
+                            if (Item_IsFurniture(p) != 0) {
                                 buf[2] = 0x501e;
-                                s32 k = func_0204b25c(p);
-                                m = (k == func_0204b25c(&buf[2])) ? 1 : 0;
+                                s32 k = Item_GetFurnitureIndex(p);
+                                m = (k == Item_GetFurnitureIndex(&buf[2])) ? 1 : 0;
                             } else {
                                 m = (*p == 0x501e) ? 1 : 0;
                             }
@@ -383,7 +383,7 @@ s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
         q = data_020d0a7c;
     }
     func_020b16bc(obj, q);
-    if (func_02002cf8(func_020b16b4(obj), (void *)*pv, &vec, 0, 0) != 0) {
+    if (Actor_spawn(func_020b16b4(obj), (void *)*pv, &vec, 0, 0) != 0) {
         if (flag != 0) {
             func_0204e114(data_021c47c4, pv, x, y, 0);
             func_ov003_02218dd8((s32)self, pv, x, y);
@@ -397,7 +397,7 @@ s32 func_ov003_02218e2c(void *self, u16 *pv, s32 x, s32 y, u8 flag) {
 
 s32 func_ov003_02218dd8(s32 a, u16 *b, s32 x, s32 y) {
     s32 va, vb, vc;
-    void *p = func_020b27a4((s32)b);
+    void *p = StrBSize_Get((s32)b);
     if (p != 0) {
         u32 n = func_020b2b28(p);
         u32 i;
@@ -539,11 +539,11 @@ void *func_ov003_02218b40(u32 id) {
         if (e != 0) {
             u16 *r = func_ov009_0225b98c(e);
             BOOL ok;
-            if (func_0204b2d4(r) != 0) {
+            if (Item_IsFurniture(r) != 0) {
                 u16 tmp;
                 tmp = id;
-                s32 a = func_0204b25c(r);
-                ok = (a == func_0204b25c(&tmp)) ? 1 : z0;
+                s32 a = Item_GetFurnitureIndex(r);
+                ok = (a == Item_GetFurnitureIndex(&tmp)) ? 1 : z0;
             } else {
                 ok = (*r == id) ? 1 : z1;
             }
@@ -602,27 +602,27 @@ s32 func_ov003_022189b8(Unk_ov003_02218adc *self) {
         s32 v = func_020b2514(func_020b23a4(data_021ecc7c), i);
         s32 c = (s8)(v / 5 + 0x41);
         s32 rem = v % 5;
-                void *h2 = data_021f482c;
+                void *h2 = gCurrentHeap;
         s32 a = func_ov003_02218da8();
-        str = func_02064020(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
+        str = File_LoadAllocF(h2, m3, "/str/npcHsTex/%c/house_%c%d%c.nsbtx", c, c, rem, a);
         u32 off = i << 2;
         u32 *e = &self->unk_00[i];
         self->unk_00[i] = (u32)NNS_G3dGetTex(str);
         if (func_020557a0((void *)self->unk_00[i], za)) {
             *e = (u32)func_0205588c((void *)*e, data_021c6204);
         }
-        func_020e8558(str);
-        str = func_02064020(data_021f482c, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
+        Mem_Free(str);
+        str = File_LoadAllocF(gCurrentHeap, m3, "/str/npcHsTex/%c/light_%c%d.nsbtx", c, c, rem);
         e[4] = (u32)NNS_G3dGetTex(str);
         if (func_02055724((void *)e[4], zb)) {
             e[4] = (u32)func_0205588c((void *)e[4], heap);
         }
-        func_020e8558(str);
+        Mem_Free(str);
         i = i + 1;
     } while (i < 4);
-    func_020641ec("/str/obj_house_i.nsbca", heap, 4, 0);
+    File_LoadAlloc("/str/obj_house_i.nsbca", heap, 4, 0);
     self->unk_20 = (u32)func_021065f8(func_021065dc(), 0);
-    func_020641ec("/str/obj_house_o.nsbca", heap, 4, 0);
+    File_LoadAlloc("/str/obj_house_o.nsbca", heap, 4, 0);
     self->unk_24 = (u32)func_021065f8(func_021065dc(), 0);
     return 1;
 }
@@ -678,7 +678,7 @@ s32 func_ov003_0221888c(Unk_ov003_02218968 *r) {
     if (c == ~z) {
         return z;
     }
-    void *t = func_020641ec("/str/npcHsX.arc", data_021c6204, 4, z);
+    void *t = File_LoadAlloc("/str/npcHsX.arc", data_021c6204, 4, z);
     if (func_02101340((char *)buf, "STR", t) != 0) {
         for (i = 0; i < 5; i++) {
             func_020639e8(data_ov003_02235888, "STR:a/obj_x_house%d.nsbmd", i);
@@ -728,14 +728,14 @@ Unk_ov003_02218860::~Unk_ov003_02218860() {}
 extern "C" {
 
 s32 func_ov003_02218800(void **out) {
-    void *r4 = data_021f482c;
+    void *r4 = gCurrentHeap;
     s32 r3 = func_ov003_02218da8();
-    void *t = func_02064020(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
+    void *t = File_LoadAllocF(r4, -4, "/str/house_pl/house_pl_%c.nsbtx", r3);
     if (t != 0) {
         *out = NNS_G3dGetTex();
         func_02055744(*out, 0);
         *out = func_0205588c(*out, data_021c6204);
-        func_020e8558(t);
+        Mem_Free(t);
         return 1;
     }
     return 0;

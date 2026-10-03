@@ -610,7 +610,7 @@ extern u8 data_020d02b8[];
 
 extern u32 data_021d04a4;
 
-s32 func_020641d8(void *);
+s32 File_Load(void *);
 
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
 
@@ -988,7 +988,7 @@ extern Unk_021d0830 data_021d0830;
 
 extern Unk_02093914_Ent data_021d04b0[];
 
-extern Unk_02093748_Vec data_021f4880;
+extern Unk_02093748_Vec gVec3Zero;
 
 s32 func_02093d54(s32 kind, s32 a, void *b, void *c, s32 d, void *data);
 
@@ -1037,7 +1037,7 @@ extern Unk_02093c28_Entry data_021d04b0[];
 
 extern Unk_02093bb4_Scratch data_021d0830;
 
-extern Unk_02093aa8_Vec data_021f4880;
+extern Unk_02093aa8_Vec gVec3Zero;
 
 extern u32 data_020e17bc[];
 
@@ -1301,7 +1301,7 @@ extern "C" s32 func_02093aa8(Unk_02093aa8_Owner *o, s32 p1, s32 p2, s32 p3, s32 
     Unk_02093aa8_Vec pos;
     BOOL result;
     n = o->unk_08;
-    pos = data_021f4880;
+    pos = gVec3Zero;
     result = FALSE;
     if (n != NULL) {
         result = TRUE;
@@ -1342,9 +1342,9 @@ s32 Unk_0209355c::func_02093998(s32 id1, void *d1, s32 id2, void *d2, s32 id3, v
     BOOL result;
     Unk_02093998_Node *n;
     n = unk_08;
-    v.x = data_021f4880.x;
-    v.y = data_021f4880.y;
-    v.z = data_021f4880.z;
+    v.x = gVec3Zero.x;
+    v.y = gVec3Zero.y;
+    v.z = gVec3Zero.z;
     result = FALSE;
     if (n) {
         result = TRUE;

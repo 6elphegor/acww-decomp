@@ -20,9 +20,9 @@ public:
     u32 unk_98;
 };
 
-class Unk_020dbe34 : public Unk_020dbd34 {
+class Model : public Unk_020dbd34 {
 public:
-    void func_02055600(Unk_020553f8_Res *r, u32 a);
+    void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
 
 struct Unk_ov003_02217910_V3 {
@@ -66,17 +66,17 @@ public:
 // other modules' methods are reached through their real mangled symbols (object first)
 #define func_02036ce0 _ZN12Unk_02036cec13func_02036ce0Ev
 #define func_02036d54 _ZN12Unk_02036cec13func_02036d54Ei
-#define func_0203bc90 _ZN12Unk_020d93b813func_0203bc90Ev
+#define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
 
 extern "C" {
-extern void *data_021c3070;
+extern void *gCamera;
 extern s32 data_020c8cb4;
 extern u8 data_021f47e0[];
-extern Unk_ov003_02217910_V3 data_021c309c;
+extern Unk_ov003_02217910_V3 gCameraLookAt;
 
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
-s32 func_0203bc90(void *self);
+s32 Unk_020d93b8_getEyeCurveAngle(void *self);
 void *func_02036c58();
 void *func_02036d54(void *self, s32 i);
 s32 func_02036ce0(void *self);
@@ -109,20 +109,20 @@ BOOL Unk_ov003_02217b10::func_02217b78() {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)func_02036d54(func_02036c58(), 0x83);
     s32 t = func_02036ce0(func_02036c58());
     unk_9c = e->unk_08;
-    ((Unk_020dbe34 *)&unk_00)->func_02055600(unk_9c, t);
+    ((Model *)&unk_00)->setResourceAndBind(unk_9c, t);
     func_02217b10();
     return TRUE;
 }
 
 BOOL Unk_ov003_02217b10::func_02217b10() {
     Unk_ov003_02217910_V3D v;
-    void *cam = data_021c3070;
+    void *cam = gCamera;
     if (cam != 0) {
-        v.x = data_021c309c.x;
-        v.y = data_021c309c.y;
-        v.z = data_021c309c.z;
+        v.x = gCameraLookAt.x;
+        v.y = gCameraLookAt.y;
+        v.z = gCameraLookAt.z;
         func_020e8388(data_021f47e0, v.x - data_020c8cb4, 0, 0);
-        func_020e8434(data_021f47e0, func_0203bc90(cam));
+        func_020e8434(data_021f47e0, Unk_020d93b8_getEyeCurveAngle(cam));
         unk_00.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
         return TRUE;
     }

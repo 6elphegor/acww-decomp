@@ -151,7 +151,7 @@ extern void DC_FlushRange(void *addr, u32 len);
 extern void DC_WaitWriteBufferEmpty(void);
 extern void MI_CpuFill8(void *dst, u32 value, u32 size);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 size);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern u32 data_0213a3ec[3];
 extern void func_021235fc(MBSegInfo *dst, const MBRomHeader *rom);
 extern void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *limit);
@@ -310,7 +310,7 @@ void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *l
             out->start = out->addr;
             out->flags &= ~1;
         } else {
-            func_0206d49c();
+            Fatal_Trap();
         }
         break;
     }
@@ -331,7 +331,7 @@ void func_02123444(const MBRomHeader *rom, const u32 *mode, MBRange *out, u32 *l
         } else {
             bad = 1;
         }
-        if (bad == 1) func_0206d49c();
+        if (bad == 1) Fatal_Trap();
         out->size = p->size;
         out->addr = p->addr;
         if (wram == 0) {

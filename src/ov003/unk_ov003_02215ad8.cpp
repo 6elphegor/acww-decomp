@@ -4,23 +4,23 @@
 
 // shared_actor.h.txt -- declarations shared by the ov003 actor units (class family of ov009 Unk_ov009_0225e29c).
 // Written by the agent that owns ov003 TU06/07/09/10/11/12 (all 1.2/sp2).  Paste unchanged after `#include "types.h"`
-// (do NOT include Unk_020d8c7c.h: the chain below is an own copy whose slot names are the real symbol names).
+// (do NOT include GameProc.h: the chain below is an own copy whose slot names are the real symbol names).
 //
 // Vtable of every actor (original vtable symbol minus 8 bytes, 0x150 bytes):
 //   primary slots 0x00..0xb8 (0xbc bytes), then 8 bytes secondary header, then the secondary vtable of Unk_020ddcf0
 //   (D1, D0, 08..74).  Primary slot -> symbol:
-//     00 ov009::vfunc_00      04 Unk_020d9670::vfunc_04   08 Unk_020d9670::func_0203e678(s32)   0c Base::vfunc_0c
-//     10 ov009::vfunc_10      14 Unk_020d5d84::vfunc_14   18 Base::vfunc_18
+//     00 ov009::vfunc_00      04 Character::vfunc_04   08 Character::postCreate(s32)   0c Base::vfunc_0c
+//     10 ov009::vfunc_10      14 Actor::vfunc_14   18 Base::vfunc_18
 //     1c ov009::vfunc_1c   (symbols.txt names it vfunc_24, ALIAS NEEDED)   20 ov009::vfunc_20(u32) (symbols: vfunc_28Ej, ALIAS)
-//     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Unk_020d5d84::vfunc_2c   30..3c Base
-//     40 D1 44 D0   48 ov009::vfunc_48(Unk_020d9670*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
-//     54/58/5c Unk_020d9670   60 ov009::vfunc_60(u32,void*)   64/68 ov009   6c ov009::vfunc_6c(s32)   70 ov009::vfunc_70
+//     24 Base::vfunc_24       28 ov009::vfunc_28 (symbols: vfunc_30Ev, ALIAS)   2c Actor::postDraw   30..3c Base
+//     40 D1 44 D0   48 ov009::vfunc_48(Character*)   4c ov009::vfunc_4c(u32,u8)   50 ov009::vfunc_50
+//     54/58/5c Character   60 ov009::vfunc_60(u32,void*)   64/68 ov009   6c ov009::vfunc_6c(s32)   70 ov009::vfunc_70
 //     74 ov009::func_ov009_0225ca98   78..b0 ov009::vfunc_78..b0   b4 / b8 ov009::vfunc_b4/b8 (symbols: func_ov009_0225b884 /
 //     func_ov009_0225b880, ALIAS)
 // Aliases (zero-size labels, tools/pipeline/alias.py) the coordinator must add; <existing> -> <new>:
-//   ov009  _ZN18Unk_ov009_0225e29c8vfunc_24Ev           -> _ZN18Unk_ov009_0225e29c8vfunc_1cEv        (0x0225db04)
-//   ov009  _ZN18Unk_ov009_0225e29c8vfunc_28Ej           -> _ZN18Unk_ov009_0225e29c8vfunc_20Ej        (0x0225da90)
-//   ov009  _ZN18Unk_ov009_0225e29c8vfunc_30Ev           -> _ZN18Unk_ov009_0225e29c8vfunc_28Ev        (0x0225d9e4)
+//   ov009  _ZN18Unk_ov009_0225e29c10preExecuteEv           -> _ZN18Unk_ov009_0225e29c10preExecuteEv        (0x0225db04)
+//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEj           -> _ZN18Unk_ov009_0225e29c8vfunc_20Ej        (0x0225da90)
+//   ov009  _ZN18Unk_ov009_0225e29c7preDrawEv           -> _ZN18Unk_ov009_0225e29c7preDrawEv        (0x0225d9e4)
 //   ov009  func_ov009_0225b884                           -> _ZN18Unk_ov009_0225e29c8vfunc_b4Ev        (0x0225b884)
 //   ov009  func_ov009_0225b880                           -> _ZN18Unk_ov009_0225e29c8vfunc_b8Ev        (0x0225b880)
 //   main   Unk_020ddcf0 slots, one label each (the unit names them vfunc_sXX so that overrides in the primary chain
@@ -35,35 +35,35 @@
 //  * The ctor of a derived class calls Unk_ov009_0225e29c::Unk_ov009_0225e29c() (ov009 symbol C2 0x0225deec).
 //  * Names a derived class must not reuse for its own members: unk_130 .. unk_2a4 below.
 
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -72,39 +72,39 @@ struct Unk_ov003_Vec {
     s32 x, y, z;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
     /* 0xe4 */ s32 unk_e4;
@@ -114,13 +114,13 @@ public:
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14 (vfunc_88).
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_s08();
 
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
 
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -131,7 +131,7 @@ struct Unk_020660f8 {
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -188,18 +188,18 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Unk_020d9670, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
     virtual BOOL vfunc_00();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDraw();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *vfunc_50();
+    virtual Unk_ov003_Vec *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();
@@ -286,7 +286,7 @@ public:
 
     virtual void vfunc_78();
     virtual BOOL vfunc_8c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual BOOL vfunc_70();
 
     /* 0x2b0 */ u8 unk_2b0;
@@ -324,7 +324,7 @@ BOOL Unk_ov003_0223177c::vfunc_70() {
     return TRUE;
 }
 
-BOOL Unk_ov003_0223177c::vfunc_18() {
+BOOL Unk_ov003_0223177c::onExecute() {
     return TRUE;
 }
 
@@ -344,7 +344,7 @@ BOOL Unk_ov003_0223177c::vfunc_8c() {
 }
 
 void Unk_ov003_0223177c::vfunc_78() {
-    func_020a710c("sp_npc_panther");
+    setFileName("sp_npc_panther");
     if (vfunc_8c() == 0) {
         unk_1e = 0xf;
     } else {

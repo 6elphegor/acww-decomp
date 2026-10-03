@@ -73,7 +73,7 @@ void func_ov065_02267540(Unk_ov065_02267480_Md5 *ctx, const u8 *block);
 #define Unk_ov065_02267540_H(b, c, d) ((b) ^ (c) ^ (d))
 #define Unk_ov065_02267540_I(b, c, d) ((c) ^ ((b) | ~(d)))
 #define Unk_ov065_02267540_STEP(f, a, b, c, d, k, sh) \
-    a += f(b, c, d) + X[data_ov065_0228b4b0[k]] + data_ov065_0228b530[k]; \
+    a += f(b, c, d) + DoorLight[data_ov065_0228b4b0[k]] + data_ov065_0228b530[k]; \
     a = b + Unk_ov065_02267540_ROL(a, sh);
 
 void func_ov065_02267540(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
@@ -82,10 +82,10 @@ void func_ov065_02267540(Unk_ov065_02267480_Md5 *ctx, const u8 *block)
     u32 b = ctx->st[1];
     u32 c = ctx->st[2];
     u32 d = ctx->st[3];
-    u32 X[16];
+    u32 DoorLight[16];
     s32 t;
     s32 i;
-    func_ov065_0226795c(X, block, 0x40);
+    func_ov065_0226795c(DoorLight, block, 0x40);
     t = 0;
     for (i = 0; i < 4; i++) {
         Unk_ov065_02267540_STEP(Unk_ov065_02267540_F, a, b, c, d, t + 0, 7)

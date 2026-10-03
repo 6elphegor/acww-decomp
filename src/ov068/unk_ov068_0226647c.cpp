@@ -25,7 +25,7 @@ struct Unk_ov068_022667c4_Ent {
     u16 lo, hi;
 };
 
-// Camera object (data_021c3070); fields used by func_ov068_0226647c and friends
+// Camera object (gCamera); fields used by func_ov068_0226647c and friends
 struct Unk_ov068_0226647c_Cam {
     /* 0x000 */ u8 pad_000[0x174];
     /* 0x174 */ s16 unk_174;
@@ -57,7 +57,7 @@ struct Unk_ov068_02266680_Color {
 };
 
 extern "C" {
-extern Unk_ov068_02266680_Vec data_021f4880;
+extern Unk_ov068_02266680_Vec gVec3Zero;
 extern void *data_021c47c4;
 extern Unk_ov068_0226647c_Row data_020c8d0c[];
 extern s16 data_02135f44[];
@@ -68,9 +68,9 @@ extern u16 data_ov068_0226fc94[];
 extern const u32 data_ov068_0226f18c[];
 extern void *data_ov068_0226fcb0[];
 Unk_ov068_02266680_Vec *func_020947f0(s32 id);
-void func_0203a458();
-void func_0203a468();
-void func_01ffcbb0(Unk_ov068_02266680_Vec *out, Unk_ov068_02266680 *self);
+void Camera_StartBlend();
+void Camera_FinishBlend();
+void Camera_GetLookAtPoint(Unk_ov068_02266680_Vec *out, Unk_ov068_02266680 *self);
 void VEC_Add(Unk_ov068_02266680_Vec *a, void *b, Unk_ov068_02266680_Vec *c);
 void func_020e759c(void *a, s32 b, s32 c);
 s32 func_020e7d4c(void *a, Unk_ov068_02266680_Vec *v, s32 c, s32 d, s32 e);
@@ -105,23 +105,23 @@ public:
 };
 
 extern "C" {
-void _ZN12Unk_0203b35013func_0203b350EP14Unk_0203b350_V(void *self, Unk_ov068_02266680_Vec *v);
-void _ZN12Unk_0203b35013func_0203b484EP14Unk_0203b350_Viii(void *self, Unk_ov068_02266680_Vec *v, s32 a, s32 b, s32 c);
-void _ZN12Unk_0203b35013func_0203b56cEv(void *self);
-void _ZN12Unk_0203b35013func_0203bb0cEi(void *self, s32 a);
-s32 _ZN12Unk_0203b35013func_0203bc48Ev(void *self);
-s16 _ZN12Unk_020d93b813func_0203bc68Ev(void *self);
-s16 _ZN12Unk_020d93b813func_0203bc7cEv(void *self);
-void _ZN12Unk_020d93b813func_0203c09cEi(void *self, s32 a);
-void _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(void *self, s32 a, s32 b);
+void _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(void *self, Unk_ov068_02266680_Vec *v);
+void _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(void *self, Unk_ov068_02266680_Vec *v, s32 a, s32 b, s32 c);
+void _ZN12Unk_0203b35011updateBlendEv(void *self);
+void _ZN12Unk_0203b3507setFovyEi(void *self, s32 a);
+s32 _ZN12Unk_0203b35011getDistanceEv(void *self);
+s16 _ZN12Unk_020d93b86getYawEv(void *self);
+s16 _ZN12Unk_020d93b88getPitchEv(void *self);
+void _ZN12Unk_020d93b814setBlendPresetEi(void *self, s32 a);
+void _ZN12Unk_020d93b88loadPoseEiP10CameraPose(void *self, s32 a, s32 b);
 }
 
 #define R_TAIL(V) \
-    _ZN12Unk_0203b35013func_0203b56cEv(this); \
-    func_01ffcbb0(&V, this); \
-    s32 a = _ZN12Unk_020d93b813func_0203bc7cEv(this); \
-    s32 b = _ZN12Unk_020d93b813func_0203bc68Ev(this); \
-    _ZN12Unk_0203b35013func_0203b484EP14Unk_0203b350_Viii(this, &V, a, b, _ZN12Unk_0203b35013func_0203bc48Ev(this));
+    _ZN12Unk_0203b35011updateBlendEv(this); \
+    Camera_GetLookAtPoint(&V, this); \
+    s32 a = _ZN12Unk_020d93b88getPitchEv(this); \
+    s32 b = _ZN12Unk_020d93b86getYawEv(this); \
+    _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(this, &V, a, b, _ZN12Unk_0203b35011getDistanceEv(this));
 
 // Definition order below reproduces the original data order (heapsort model); colours = sinit store order.
 extern "C" Unk_ov068_02266680_Vec data_ov068_0226fc64;
@@ -156,9 +156,9 @@ extern "C" s32 data_ov068_0226fc40 = 1;
 extern "C" Unk_ov068_02266680_Color data_ov068_02270fcc(0x14, 0x18, 0x18, 0x1f);
 
 BOOL Unk_ov068_02266680::func_ov068_02266b24() {
-    _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(this, 0, 0);
-    _ZN12Unk_020d93b813func_0203c09cEi(this, 0);
-    func_0203a468();
+    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
+    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
+    Camera_FinishBlend();
     return TRUE;
 }
 
@@ -174,16 +174,16 @@ void Unk_ov068_02266680::func_ov068_02266ab8() {
         d.y = pv->y;
         d.z = pv->z;
     }
-    _ZN12Unk_0203b35013func_0203b350EP14Unk_0203b350_V(this, &d);
+    _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(this, &d);
     Unk_ov068_02266680_Vec v;
     R_TAIL(v)
 }
 
 BOOL Unk_ov068_02266680::func_ov068_022669c8() {
     u16 e[2];
-    _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(this, 0, 0);
-    _ZN12Unk_020d93b813func_0203c09cEi(this, 0);
-    func_0203a468();
+    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0, 0);
+    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
+    Camera_FinishBlend();
     void *g = data_021c47c4;
     s32 a = 0, b = 0, c = 0, d = 0;
     Unk_ov068_02266680_Sub *s = &unk_21c;
@@ -282,41 +282,41 @@ void Unk_ov068_02266680::func_ov068_022667c4() {
 }
 
 BOOL Unk_ov068_02266680::func_ov068_022667ac() {
-    _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(this, 0x1a, 0);
-    func_0203a468();
+    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x1a, 0);
+    Camera_FinishBlend();
     return TRUE;
 }
 
 void Unk_ov068_02266680::func_ov068_0226673c() {
     Unk_ov068_02266680_Vec d;
-    d = data_021f4880;
+    d = gVec3Zero;
     Unk_ov068_02266680_Vec *p = func_020947f0(4);
     if (p) {
         d = *p;
     }
-    _ZN12Unk_0203b35013func_0203b350EP14Unk_0203b350_V(this, &d);
+    _ZN12Unk_0203b35011dragFocusToEP14Unk_0203b350_V(this, &d);
     Unk_ov068_02266680_Vec v;
     R_TAIL(v)
 }
 
 BOOL Unk_ov068_02266680::func_ov068_022666f4() {
-    _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(this, 0x10, 0);
-    _ZN12Unk_020d93b813func_0203c09cEi(this, 0);
+    _ZN12Unk_020d93b88loadPoseEiP10CameraPose(this, 0x10, 0);
+    _ZN12Unk_020d93b814setBlendPresetEi(this, 0);
     if (unk_1fc == 2) {
-        func_0203a458();
+        Camera_StartBlend();
     } else {
-        func_0203a468();
+        Camera_FinishBlend();
     }
-    _ZN12Unk_0203b35013func_0203bb0cEi(this, 0x1c71);
+    _ZN12Unk_0203b3507setFovyEi(this, 0x1c71);
     func_ov068_02266624((Unk_ov068_0226647c_Cam *)this, 0);
     return TRUE;
 }
 
 void Unk_ov068_02266680::func_ov068_02266680() {
     Unk_ov068_02266680_Vec v;
-    unk_110 = data_021f4880.x;
-    unk_114 = data_021f4880.y;
-    unk_118 = data_021f4880.z;
+    unk_110 = gVec3Zero.x;
+    unk_114 = gVec3Zero.y;
+    unk_118 = gVec3Zero.z;
     unk_114 += func_ov068_0226647c((Unk_ov068_0226647c_Cam *)this);
     R_TAIL(v)
 }

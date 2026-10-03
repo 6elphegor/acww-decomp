@@ -79,7 +79,7 @@ extern u32 data_0213c1c8[];
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void func_02000b44(void *);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 void OS_UnlockCard(u32);
 void OS_LockCard(u32);
 void OS_SetThreadPriority(void *, u32);
@@ -152,7 +152,7 @@ void CARDi_LockResource(u32 id, u32 type) {
     CARDCommon *const c = &data_021fec00;
     u32 irq = OS_DisableInterrupts();
     if (c->lockOwner == id) {
-        if (c->lockType != type) func_0206d49c();
+        if (c->lockType != type) Fatal_Trap();
     } else {
         while (c->lockOwner != (u32)-3) OS_SleepThread(&c->queue);
         c->lockOwner = id;
@@ -168,9 +168,9 @@ void CARDi_UnlockResource(u32 id, u32 type) {
     CARDCommon *c = &data_021fec00;
     u32 irq = OS_DisableInterrupts();
     if (c->lockOwner != id || c->lockCount == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     } else {
-        if (c->lockType != type) func_0206d49c();
+        if (c->lockType != type) Fatal_Trap();
         c->lockCount--;
         if (c->lockCount == 0) {
             c->lockOwner = (u32)-3;
@@ -211,7 +211,7 @@ u32 CARD_IsEnabled(void) {
 // CARD_CheckEnabled
 void CARD_CheckEnabled(void) {
     if (CARD_IsEnabled()) return;
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 // CARD_Enable

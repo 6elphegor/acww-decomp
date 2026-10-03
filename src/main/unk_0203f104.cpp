@@ -92,28 +92,28 @@ union Unk_0203f42c_L {
     u8 b[16];
 };
 
-class Unk_020d96fc : public Unk_020d8c7c {
+class Unk_020d96fc : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 };
 
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 data_021ed168[];
 extern u8 data_021eca50[];
-extern u8 data_021c4890[];
+extern u8 gBackup[];
 extern u32 data_020cbb18;
 }
 
 extern "C" {
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(u32 v);
-s32 func_0204ff6c(void *p);
+s32 Backup_GetStatus(void *p);
 s32 func_02040264(s32 v);
 s32 func_020a032c(void);
-s32 func_0209750c();
+s32 PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 p, s32 v);
 s32 func_020400b0(...);
 s32 func_0209d374(void *a, void *b);
@@ -124,7 +124,7 @@ void func_0209d164(void *, s32);
 s32 func_0209ceac(u32, u32, u32);
 s32 func_0209ce48(u32, u32);
 s32 func_0209cef4(void);
-s32 func_020974f8(void);
+s32 PlayerData_GetCurrentIndex(void);
 s32 func_02040234(Unk_0203ff50_Slot *, u32);
 s32 func_02040188(Unk_0203f554_Cal);
 s32 func_020400f8(Unk_0203f554_Cal);
@@ -137,7 +137,7 @@ s32 func_0207e334(void *);
 void *func_0207bf60(void *, s32);
 s32 func_0207a484(void *);
 u8 *func_0207fae4(void *);
-void *_ZN12Unk_0208086013func_020805c4Ev(void *);
+void *_ZN12VillagerData13func_020805c4Ev(void *);
 u8 *_ZN12Unk_02097ff413func_02098308Ev(s32);
 
 void func_0203f4c0(s32);
@@ -283,7 +283,7 @@ extern "C" Unk_0203ff20_Entry *func_02040030(Unk_0203ff50_Slot *s, s32 idx) {
 }
 
 extern "C" Unk_0203ff20_Entry *func_0203ffe8(Unk_0203ff50_Slot *unused) {
-    u8 *g = data_021d7350;
+    u8 *g = gSaveData;
     Unk_0203ff20_Entry *r = 0;
     s32 r4 = func_0209cef4();
     if (r4) {
@@ -304,7 +304,7 @@ extern "C" void func_0203ffa4(u32 id) {
         if (id == 0x44) {
             e->unk_05 = 0xff;
         } else {
-            u32 m = 1 << func_020974f8();
+            u32 m = 1 << PlayerData_GetCurrentIndex();
             e->unk_05 = (e->unk_05 & ~m) | m;
         }
     }
@@ -315,14 +315,14 @@ extern "C" BOOL func_0203ff50(u32 id, s32 idx) {
     Unk_0203ff20_Entry *e;
     u8 *g;
     if (id == 0x45) return FALSE;
-    g = data_021d7350;
+    g = gSaveData;
     r = FALSE;
     if (id == 0x60) id = 0x40;
     e = func_02040030((Unk_0203ff50_Slot *)(g + 0x15e18), idx);
     if (e) {
         if (id != e->unk_02) {
             r = TRUE;
-        } else if ((u8)((e->unk_05 >> func_020974f8()) & 1) != 0) {
+        } else if ((u8)((e->unk_05 >> PlayerData_GetCurrentIndex()) & 1) != 0) {
             r = TRUE;
         }
     }
@@ -490,8 +490,8 @@ extern "C" u8 func_0203fc7c(Unk_0203f554_Sub *e, u32 year, Unk_0203f554_Cal cal,
 }
 
 extern "C" void func_0203fc4c(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
-    if (func_0209750c()) {
-        u8 *p = _ZN12Unk_02097ff413func_02098308Ev(func_0209750c());
+    if (PlayerData_GetCurrent()) {
+        u8 *p = _ZN12Unk_02097ff413func_02098308Ev(PlayerData_GetCurrent());
         if (p) {
             out->s.b3 = p[1];
             out->s.b2 = p[0];
@@ -502,7 +502,7 @@ extern "C" void func_0203fc4c(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out) {
 
 extern "C" BOOL func_0203fc10(void *a, s32 b) {
     BOOL r = FALSE;
-    if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12Unk_0208086013func_020805c4Ev(a))) {
+    if (_ZN12Unk_02002fc813func_020030b4Ev(_ZN12VillagerData13func_020805c4Ev(a))) {
         if (func_0207e1f0(a) == 3) {
             s32 x = func_0207e334(a);
             if (x != -1 && x != b) {
@@ -514,7 +514,7 @@ extern "C" BOOL func_0203fc10(void *a, s32 b) {
 }
 
 extern "C" void func_0203fbb0(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n) {
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     out->w = 0;
     if (n < 0 || n > 7) n -= 0x4b;
     void *r6 = func_0207bf60(base + 0x8a3c, n);
@@ -530,7 +530,7 @@ extern "C" void func_0203fbb0(Unk_0203f554_Sub *e, Unk_0203f554_Cal *out, s32 n)
 
 extern "C" Unk_0203f554_Cal func_0203fb1c(Unk_0203f554_Sub *e, u32 id, Unk_0203f554_Cal cal) {
     Unk_0203fb1c_Pair x, y;
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     Unk_0203f554_Cal ret;
     ret.w = 0;
     if (id == 0x45) {
@@ -1044,14 +1044,14 @@ BOOL Unk_020d96fc::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020d96fc::vfunc_18() {
-    if (func_0204ff6c(data_021c4890) != 3) {
+BOOL Unk_020d96fc::onExecute() {
+    if (Backup_GetStatus(gBackup) != 3) {
         func_02040264(((s32 (*)(void *))func_0203f484)(this));
     }
     return TRUE;
 }
 
-BOOL Unk_020d96fc::vfunc_24() { return TRUE; }
+BOOL Unk_020d96fc::onDraw() { return TRUE; }
 
 BOOL Unk_020d96fc::vfunc_0c() { return TRUE; }
 
@@ -1060,7 +1060,7 @@ extern "C" BOOL func_0203f14c(void) {
     if (func_020a032c()) {
         r = TRUE;
     } else {
-        s32 p = func_0209750c();
+        s32 p = PlayerData_GetCurrent();
         if (p == 0 || _ZN12Unk_02097ff413func_02098044Ej(p, 1) != 0) {
             r = TRUE;
         }

@@ -24,11 +24,11 @@ public:
 };
 
 extern "C" u8 data_020e416c;
-extern "C" u8 data_021ef5d0;
-extern "C" u8 data_021ef5cc;
+extern "C" u8 gTouchPrevHeld;
+extern "C" u8 gTouchPrevChanged;
 
 inline BOOL IsMode0() { return data_020e416c == 0; }
-inline BOOL IsBoth() { return data_021ef5d0 && data_021ef5cc; }
+inline BOOL IsBoth() { return gTouchPrevHeld && gTouchPrevChanged; }
 inline BOOL IsMode1() { return data_020e416c == 1; }
 
 extern "C" BOOL func_020b6080(u8 *obj, Vec3 *out, s32 *a, u8 *b);

@@ -80,13 +80,13 @@ extern u8 data_ov114_022965e0[];
 extern char *data_ov114_022967a0;
 extern char *data_ov114_022967a4;
 extern char data_ov114_022967a8[];
-extern u32 *data_021f482c;
-extern u16 data_021f47d8;
+extern u32 *gCurrentHeap;
+extern u16 gPad;
 
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_020986c8Ev(void *p);
-BOOL func_0203c4cc(void *p, u16 *v);
-void func_0200402c(s32 v);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData10getCatalogEv(void *p);
+BOOL Catalog_HasItem(void *p, u16 *v);
+void Snd_PlaySe(s32 v);
 BOOL func_ov002_0220125c(void *pad);
 BOOL func_ov002_0220126c(void *pad);
 BOOL func_ov002_0220127c(void *pad);
@@ -104,7 +104,7 @@ void func_0200212c(u32 v);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void func_0200261c(const char *buf, u32 *font, u32 a, s32 b, s32 c, s32 d);
 void func_02002688(const char *buf, u32 *font, u32 a, u8 b, s32 c);
-s32 func_0204bcb0(u32 v);
+s32 Item_GetInfoUnk02(u32 v);
 void *func_02087e0c(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN12Unk_020e460813func_020b851cEjjhjjjj(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h);
@@ -112,34 +112,34 @@ void *_ZN18Unk_ov094_02294a4019func_ov094_02293b08Ei(S *s, s32 v);
 s32 func_ov094_02293abc(S *s, s32 v);
 
 void func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-void _ZN12Unk_020dd324C1Ev(void *p);
-void _ZN12Unk_020dd324D1Ev(void *p);
-void _ZN12Unk_020dd32413func_02062564EPt(void *p, u16 *c);
-void _ZN12Unk_020e2a7813func_020a7c3cEv(void *p);
-void _ZN12Unk_020e2a7813func_020a7bd8EPS_(void *p, void *q);
-void _ZN12Unk_020e2a7813func_020a7a64EPh(void *p, s32 v);
-s32 func_020a6b9c(void *p, s32 i);
+void _ZN8ItemNameC1Ev(void *p);
+void _ZN8ItemNameD1Ev(void *p);
+void _ZN8ItemName11setFromItemEPt(void *p, u16 *c);
+void _ZN9MsgString5clearEv(void *p);
+void _ZN9MsgString4copyEPS_(void *p, void *q);
+void _ZN9MsgString7setLineEPh(void *p, s32 v);
+s32 Msg_SkipLines(void *p, s32 i);
 void _ZN12Unk_020e048813func_0206fb9cEjjjhhi(void *p, u32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12Unk_020e048813func_0206fab4Eii(void *p, s32 a, s32 b);
 void _ZN12Unk_020e048813func_0206fc44Ev(void *p);
 void _ZN12Unk_020e45f813func_020b87d0Ev(void *p);
-void func_020b35f8(void *p, u8 *q, const char *name);
-BOOL _ZN12Unk_020e102813func_0208d9a8Ev(void *p);
+void String_Load(void *p, u8 *q, const char *name);
+BOOL _ZN10ScrollKnob12areAnimsDoneEv(void *p);
 void _ZN18Unk_ov002_022046b019func_ov002_02202f0cEv(void *p);
 void _ZN18Unk_ov002_022046b019func_ov002_02202ef4Ev(void *p);
 void func_ov002_02202e54(void *p);
 void func_020e761c(void *p, s32 a, s32 b);
 
 s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void func_020026c4(const char *name, s32 h, s32 a, s32 b, s32 c, s32 d);
 void func_02002654(const char *name, s32 h, s32 a);
 s32 func_02002700(u32 v);
 s32 _ZN12Unk_020e45f813func_020b8670Ejhj(void *a, void *b, s32 c, s32 d);
 void func_020b8800(void *p);
 void func_020b85f8(void *p);
-void _ZN12Unk_020e102813func_0208dae8Eii(void *a, u32 b, u32 c);
-void func_020641b4(const void *src, void *dst, s32 n);
+void _ZN10ScrollKnob6moveToEii(void *a, u32 b, u32 c);
+void File_LoadToBuffer(const void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *, void *, u32);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
@@ -191,33 +191,33 @@ void func_ov114_02295dc4(S *s);
 void func_ov114_02295dec(S *s, s32 a);
 }
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
     s32 unk_04;
     u8 unk_08;
     u8 unk_09;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    void func_020a7c3c();
+    void clear();
 
     u32 unk_04;
-    Unk_020e2a08 unk_08;
+    MsgStringAttr unk_08;
 };
 
-class Unk_ov114_022965b0 : public Unk_020e2a78 {
+class Unk_ov114_022965b0 : public MsgString {
 public:
     Unk_ov114_022965b0();
     virtual ~Unk_ov114_022965b0();
@@ -362,7 +362,7 @@ void Unk_ov114_02294c40::func_ov114_02296390(u8 a, u8 b, u8 c, u8 d) {
     u8 *p = &unk_128a[1];
     *p = 0;
     unk_128a[0] = *p;
-    _ZN12Unk_020e2a7813func_020a7c3cEv(&unk_808);
+    _ZN9MsgString5clearEv(&unk_808);
     unk_1297 = 4;
 }
 
@@ -391,7 +391,7 @@ void Unk_ov114_02294c40::func_ov114_022962e4() {
 }
 
 void Unk_ov114_02294c40::func_ov114_022961c0() {
-    s32 h = (s32)data_021f482c;
+    s32 h = (s32)gCurrentHeap;
     func_0200261c("menu/fish/bg0.bch", (u32 *)h, unk_128d, 0x109, 0x109, 0x153);
     func_0200261c("menu/fish/bg1.bch", (u32 *)h, unk_128d, 0x154, 0x154, 0x19f);
     if (unk_1293 == 1) {
@@ -406,7 +406,7 @@ void Unk_ov114_02294c40::func_ov114_022961c0() {
         break;
     }
     func_020026c4(data_ov114_022967a4, h, unk_128d, 1, 1, 6);
-    func_020641b4("menu/fish/bg4.bpl", unk_9b0.unk_24, 0x20);
+    File_LoadToBuffer("menu/fish/bg4.bpl", unk_9b0.unk_24, 0x20);
     MIi_CpuCopy16(unk_9b0.unk_24, unk_9b0.unk_44, 0x20);
     func_02002654("menu/fish/a_bg.bsc", h, unk_128d);
     func_02002654("menu/fish/b_bg.bsc", h, unk_128e);
@@ -414,7 +414,7 @@ void Unk_ov114_02294c40::func_ov114_022961c0() {
 }
 
 void Unk_ov114_02294c40::func_ov114_02296148() {
-    s32 h = (s32)data_021f482c;
+    s32 h = (s32)gCurrentHeap;
     func_020026c4("menu/icon/b_obj_itm.bpl", h, 8, 7, 7, 0xe);
     func_020026c4("menu/fish/obj.bpl", h, 8, 4, 4, 6);
     func_0200261c("menu/fish/obj0.bch", (u32 *)h, 8, 0xc0, 0xc0, 0x140);
@@ -443,7 +443,7 @@ void Unk_ov114_02294c40::func_ov114_02296078(s32 y) {
     s32 py2 = py;
     if (unk_1297 == 1) py2 = py + 2;
     func_02088730(1, (data_ov114_022965c0 + 8), 0x80, py2, -1, 1, 0);
-    func_02087e70(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, (data_ov114_022965c0 + 16), 0x80, py, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 BOOL Unk_ov114_02294c40::func_ov114_02296024(s32 x, s32 y) {
@@ -463,7 +463,7 @@ void Unk_ov114_02294c40::func_ov114_0229600c() {
 }
 
 void Unk_ov114_02294c40::func_ov114_02295fec(s32 x) {
-    _ZN12Unk_020e102813func_0208dae8Eii(&unk_11f8, unk_124c - 0x4e, x + 0x4a);
+    _ZN10ScrollKnob6moveToEii(&unk_11f8, unk_124c - 0x4e, x + 0x4a);
 }
 
 void Unk_ov114_02294c40::func_ov114_02295fc0() {
@@ -551,7 +551,7 @@ void func_ov114_02295dc4(S *s)
 s32 func_ov114_02295d98(S *s)
 {
     if (s->unk_1297 == 2) {
-        return _ZN12Unk_020e102813func_0208d9a8Ev(s->unk_11f8);
+        return _ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8);
     }
     func_ov114_02295d04(s);
     return TRUE;
@@ -562,7 +562,7 @@ void func_ov114_02295d04(S *s)
     s32 old = s->unk_124c;
     switch (s->unk_1297) {
     case 2: {
-        u16 k = data_021f47d8;
+        u16 k = gPad;
         if (k & 0x20) {
             s->unk_124c = old - 2;
         } else if (k & 0x10) {
@@ -599,7 +599,7 @@ void func_ov114_02295ce0(S *s)
 BOOL func_ov114_02295c9c(S *s)
 {
     if (s->unk_1297 == 2) {
-        if (_ZN12Unk_020e102813func_0208d9a8Ev(s->unk_11f8)) {
+        if (_ZN10ScrollKnob12areAnimsDoneEv(s->unk_11f8)) {
             _ZN18Unk_ov002_022046b019func_ov002_02202f0cEv(s->unk_11f8);
             s->unk_1297 = 4;
             return TRUE;
@@ -642,7 +642,7 @@ void func_ov114_02295c28(S *s)
     }
 }
 
-Unk_ov114_022965b0::Unk_ov114_022965b0() { func_020a7c3c(); }
+Unk_ov114_022965b0::Unk_ov114_022965b0() { clear(); }
 
 Unk_ov114_022965b0::~Unk_ov114_022965b0() {}
 
@@ -663,11 +663,11 @@ void func_ov114_02295b48(S *s)
         break;
     }
     if (v == 0xff) {
-        _ZN12Unk_020e2a7813func_020a7c3cEv(s->unk_808);
+        _ZN9MsgString5clearEv(s->unk_808);
         s->unk_128c = 1;
     } else {
         u8 key = v;
-        func_020b35f8(s->unk_808, &key, name);
+        String_Load(s->unk_808, &key, name);
         s->unk_128c = func_ov114_02295af0(s);
     }
     s->unk_1291 = 0;
@@ -679,9 +679,9 @@ u8 func_ov114_02295af0(S *s)
     s32 n = 0;
     s32 k = n;
     for (; n < 5; n++) {
-        s32 a = func_020a6b9c(s->unk_81a, k);
-        s32 b = func_020a6b9c(s->unk_81a, k + 1);
-        s32 c = func_020a6b9c(s->unk_81a, k + 2);
+        s32 a = Msg_SkipLines(s->unk_81a, k);
+        s32 b = Msg_SkipLines(s->unk_81a, k + 1);
+        s32 c = Msg_SkipLines(s->unk_81a, k + 2);
         k += 3;
         if (a == 0 && b == 0 && c == 0) {
             return (u8)n;
@@ -704,14 +704,14 @@ void func_ov114_02295a18(S *s)
     y = 0xbb;
     i = 0;
     do {
-        s32 t = func_020a6b9c(s->unk_81a, k);
+        s32 t = Msg_SkipLines(s->unk_81a, k);
         void *ob;
         if (t != 0) {
             ob = o[i];
-            _ZN12Unk_020e2a7813func_020a7a64EPh(ob, t);
+            _ZN9MsgString7setLineEPh(ob, t);
         } else {
             ob = o[i];
-            _ZN12Unk_020e2a7813func_020a7c3cEv(ob);
+            _ZN9MsgString5clearEv(ob);
         }
         _ZN12Unk_020e048813func_0206fb9cEjjjhhi(ob, s->unk_128d, y, 0xd, 2, 3, z10);
         _ZN12Unk_020e048813func_0206fab4Eii(ob, z14, z14);
@@ -738,7 +738,7 @@ BOOL func_ov114_022959d8(S *s)
         s->unk_1291 = n;
         s->unk_128a = 5;
         func_ov114_02295a18(s);
-        func_0200402c(0x39);
+        Snd_PlaySe(0x39);
         return TRUE;
     }
     return FALSE;
@@ -751,7 +751,7 @@ BOOL func_ov114_022959a0(S *s)
         s->unk_1291 = c - 1;
         s->unk_128b = 5;
         func_ov114_02295a18(s);
-        func_0200402c(0x39);
+        Snd_PlaySe(0x39);
         return TRUE;
     }
     return FALSE;
@@ -817,9 +817,9 @@ void func_ov114_02295780(S *s, u32 a)
     u32 obj[9];
     u16 col;
     u32 v;
-    _ZN12Unk_020dd324C1Ev(obj);
+    _ZN8ItemNameC1Ev(obj);
     if (a == 0xff) {
-        _ZN12Unk_020e2a7813func_020a7c3cEv(obj);
+        _ZN9MsgString5clearEv(obj);
     } else {
         switch (s->unk_1293) {
         case 0:
@@ -829,17 +829,17 @@ void func_ov114_02295780(S *s, u32 a)
             v = a < 0x38 ? (u16)(a + 0x12b0) : 0x12b0;
             break;
         default:
-            _ZN12Unk_020dd324D1Ev(obj);
+            _ZN8ItemNameD1Ev(obj);
             return;
         }
         col = v;
-        _ZN12Unk_020dd32413func_02062564EPt(obj, &col);
+        _ZN8ItemName11setFromItemEPt(obj, &col);
     }
     void *t = func_ov114_02295830(s);
-    _ZN12Unk_020e2a7813func_020a7bd8EPS_(t, obj);
+    _ZN9MsgString4copyEPS_(t, obj);
     _ZN12Unk_020e048813func_0206fb9cEjjjhhi(t, s->unk_128d, 0xa1, 0xd, 1, 3, 0);
     _ZN12Unk_020e048813func_0206fab4Eii(t, 1, 0);
-    _ZN12Unk_020dd324D1Ev(obj);
+    _ZN8ItemNameD1Ev(obj);
 }
 
 void func_ov114_022956a4(S *s, s32 a)
@@ -960,7 +960,7 @@ BOOL func_ov114_02295510(S *s, s32 x, s32 y) {
     }
     if (func_ov114_02294c78(s, q)) {
         if (s->unk_1295 != q) {
-            func_0200402c(0x29);
+            Snd_PlaySe(0x29);
         }
         func_ov114_022951b8(s, (u8)q);
         return TRUE;
@@ -982,7 +982,7 @@ void func_ov114_0229549c(S *s) {
 
 void func_ov114_022953e4(S *s, u32 a, s32 idx) {
     Unk_ov114_02294c40_Entry *e = &s->unk_108c[idx];
-    s32 key = func_0204bcb0(a);
+    s32 key = Item_GetInfoUnk02(a);
     if (key != e->unk_08) {
         e->unk_08 = key;
         u32 lo = e->unk_04.idx;
@@ -1024,7 +1024,7 @@ void func_ov114_02295290(S *s) {
         return;
     }
     s32 q = (s32)c / 12;
-    u32 *font = data_021f482c;
+    u32 *font = gCurrentHeap;
     switch (s->unk_1293) {
     case 0:
         data_ov114_022967a0 = "menu/fish_pic";
@@ -1250,7 +1250,7 @@ BOOL func_ov114_02294d88(S *s) {
         u32 k = t - 0xd;
         if (func_ov114_02294c78(s, k)) {
             if (s->unk_1295 != k) {
-                func_0200402c(0x29);
+                Snd_PlaySe(0x29);
             }
             func_ov114_022951b8(s, (u8)k);
         }
@@ -1286,19 +1286,19 @@ void func_ov114_02294ca4(S *s) {
     for (i = 0; i < 3; i++) {
         s->unk_1240[i] = 0;
     }
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     v = 0xfff1;
     if (s->unk_1293 == 0) {
         for (i = 0; i < s->unk_1270; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12e8) : 0x12e8;
-            if (func_0203c4cc(_ZN12Unk_0209865c13func_020986c8Ev(p), &v)) {
+            if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
                 s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
             }
         }
     } else {
         for (i = 0; i < s->unk_1270; i++) {
             v = (u32)i < 0x38 ? (u16)(i + 0x12b0) : 0x12b0;
-            if (func_0203c4cc(_ZN12Unk_0209865c13func_020986c8Ev(p), &v)) {
+            if (Catalog_HasItem(_ZN10PlayerData10getCatalogEv(p), &v)) {
                 s->unk_1240[i >> 5] |= 1 << (i & 0x1f);
             }
         }

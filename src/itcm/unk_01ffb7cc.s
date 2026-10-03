@@ -2,7 +2,7 @@
 ; assembly policy.
 ; itcm 0x01ffb7cc-0x01ffb828: MTX_Identity43_, MTX_Copy43To44_ (ARM `asm` routines of fx_mtx43.c: straight runs of
 ; stmia/ldmia with writeback, constants kept in fixed registers, a hand-saved r4 with no stack frame).
-; symbols.txt also has the label _ZN12Unk_01ffb7ccC2Ev at 0x01ffb7cc (a game-side alias of MTX_Identity43_).
+; symbols.txt also has the label _ZN7FxMtx43C2Ev at 0x01ffb7cc (a game-side alias of MTX_Identity43_).
 ; Assembled with mwasmarm (tools/configure.py, rule mwasm).
 
 	.text

@@ -3,55 +3,55 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Declarations from other files
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
+    void reset();
+    void copyFrom(MsgStringAttr *other);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e2a78;
+class MsgString;
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
+    BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
-class Unk_020dd374 : public Unk_020e2a60 {
+class Unk_020dd374 : public EncodedString {
 public:
     Unk_020dd374();
     virtual ~Unk_020dd374();
@@ -61,7 +61,7 @@ public:
     /* 0x0e */ u8 unk_0e[10];
 };
 
-class Unk_020dd38c : public Unk_020e2a78 {
+class Unk_020dd38c : public MsgString {
 public:
     Unk_020dd38c();
     virtual ~Unk_020dd38c();
@@ -72,7 +72,7 @@ public:
 };
 
 // String buffer wrapping a text renderer at +0x3c (size 0x40)
-class Unk_020e0488 : public Unk_020e2a78 {
+class Unk_020e0488 : public MsgString {
 public:
     Unk_020e0488();
     virtual ~Unk_020e0488();
@@ -89,36 +89,36 @@ public:
 };
 
 // Menu layer (size 0xbc)
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e0d98 : public Unk_020e0db4 {
+class LabelBalloon : public UiWidget {
 public:
-    Unk_020e0d98(s32 flag);
-    virtual ~Unk_020e0d98();
-    virtual void vfunc_08();
+    LabelBalloon(s32 flag);
+    virtual ~LabelBalloon();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_02089ad8(s32 a, s32 b);
-    void func_02089ae8();
+    void setPos(s32 a, s32 b);
+    void showLayer2();
 
     /* 0x0c */ u8 unk_0c[0xb0];
 };
 
-class Unk_ov002_02204770 : public Unk_020e0d98 {
+class Unk_ov002_02204770 : public LabelBalloon {
 public:
     Unk_ov002_02204770();
     virtual ~Unk_ov002_02204770();
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 
     void func_ov002_022039d8();
     void func_ov002_022039f8(u8 a, s32 b, s32 c);
@@ -137,15 +137,15 @@ public:
 };
 
 extern "C" {
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 
 s32 func_0200261c(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f);
 s32 func_020026c4(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f);
-void func_0206f994(Unk_020e2a78 *dst, const void *s, s32 len);
+void func_0206f994(MsgString *dst, const void *s, s32 len);
 void func_0206f9fc(void *a, u8 v);
 BOOL func_020a78a4(void *, const void *, s32);
-u8 func_020b3544(u32 idx, Unk_020e2a78 *other);
-BOOL func_020641b4(void *a, void *b, s32 c);
+u8 String_SetSlot(u32 idx, MsgString *other);
+BOOL File_LoadToBuffer(void *a, void *b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 }
 
@@ -213,7 +213,7 @@ void Unk_ov139_02291f60::func_ov139_02292510(u8 id, u8 v) {
     unk_620 = 0;
     unk_00.func_ov002_022039d8();
     unk_00.func_ov002_022039f8(v, 0x90, 0x18);
-    unk_00.func_02089ae8();
+    unk_00.showLayer2();
 }
 
 void Unk_ov139_02291f60::func_ov139_022924f4() {
@@ -235,15 +235,15 @@ void Unk_ov139_02291f60::func_ov139_02292498() {
 }
 
 void Unk_ov139_02291f60::func_ov139_02292480(s32 a, s32 b) {
-    unk_00.func_02089ad8(a, b);
-    unk_00.vfunc_08();
+    unk_00.setPos(a, b);
+    unk_00.draw();
 }
 
 void Unk_ov139_02291f60::func_ov139_02292410() {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_0200261c((u32)"menu/res/bg.bch", h, unk_622, 0x11, 0x11, 0x36);
     func_020026c4((u32)"menu/res/bg.bpl", h, unk_622, 1, 1, 8);
-    func_020641b4((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
+    File_LoadToBuffer((void *)"menu/res/bg7.bpl", unk_5e0, 0x20);
     MIi_CpuCopy16(unk_5e0, unk_600, 0x20);
 }
 
@@ -256,7 +256,7 @@ void Unk_ov139_02291f60::func_ov139_022923dc() {
 }
 
 void Unk_ov139_02291f60::func_ov139_0229237c() {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_0200261c((u32)"menu/res/obj0.bch", h, 8, 0x80, 0x80, 0xff);
     func_0200261c((u32)"menu/res/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
     func_020026c4((u32)"menu/res/obj.bpl", h, 8, 4, 4, 0xd);
@@ -336,11 +336,11 @@ void Unk_ov139_02291f60::func_ov139_0229200c(s32 i, u8 *str, u8 pal) {
     static Unk_020dd374 sA;
     static Unk_020dd38c sB;
     if (str == NULL) {
-        t->func_020a7c3c();
+        t->clear();
     } else {
         func_020a78a4(&sA, str, 8);
-        sB.func_020a7aa0(&sA, 0, 0);
-        func_020b3544(0, &sB);
+        sB.fromEncoded(&sA, 0, 0);
+        String_SetSlot(0, &sB);
         func_0206f9fc(t, 0x66);
     }
     u32 a = i * 0x14 + 0x11e;
@@ -361,7 +361,7 @@ extern "C" u32 data_ov139_02292660[8] = {0x80254048, 0x0000888d, 0x40450048, 0x0
 void Unk_ov139_02291f60::func_ov139_02291fa4(s32 i, u8 *str, u8 pal) {
     Unk_020e0488 *t = func_ov139_02292104();
     if (str == NULL) {
-        t->func_020a7c3c();
+        t->clear();
     } else {
         func_0206f994(t, str, 8);
     }

@@ -60,7 +60,7 @@ extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
 extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];

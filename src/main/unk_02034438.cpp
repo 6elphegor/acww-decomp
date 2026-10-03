@@ -17,8 +17,8 @@ void *func_020342cc(u16 *id, s32 a, s32 b, s32 c);
 void func_02034320(u16 *id, s32 a, s32 b, s32 c);
 void func_020343b0(u16 *out, s32 a);
 void func_02004b60();
-s32 func_0204b640(u16 *out, s32 a, s32 b);
-BOOL func_0209750c();
+s32 Item_SetDesign(u16 *out, s32 a, s32 b);
+BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
@@ -29,7 +29,7 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL func_020b5364(s32 v);
 BOOL func_020b5184();
 BOOL func_020b0f0c();
-void func_0206da6c();
+void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 s32 func_020b8fbc(void);
 void func_020b8fc8(s32 *a, s32 *b);
@@ -37,20 +37,20 @@ s32 func_020b50dc(void);
 s32 func_020b5164(void);
 s32 func_020b4934(void);
 s32 func_020b49a8(void);
-s32 func_02003bcc(s32 a);
-void func_02003bdc(s32 a);
-void func_02003bec(s32 a);
+s32 Snd_SetBgmTrackVariant(s32 a);
+void Snd_FadeInBgmTracks(s32 a);
+void Snd_FadeOutBgmTracks(s32 a);
 void func_020947c0(void *p, s32 n);
-s32 func_0204b2d4(void *p);
-s32 func_0204b25c(void *p);
+s32 Item_IsFurniture(void *p);
+s32 Item_GetFurnitureIndex(void *p);
 s32 func_02094fec(void);
 s32 _ZN12Unk_020d8e3413func_02035ed0Ej(void *p, s32 a);
 s32 _ZN12Unk_020d8e4413func_02035fe0Ej(void *p, s32 a);
-void func_02003b8c(s32);
-void func_02003b7c(void);
-void func_02003bfc(s32 a, s32 b);
-void func_02003c10(s32 a);
-void func_02003c20(u32 a);
+void Snd_DuckSubPlayers(s32);
+void Snd_RestoreSubPlayers(void);
+void Snd_MoveBgmVolume(s32 a, s32 b);
+void Snd_StopBgm(s32 a);
+void Snd_PlayBgm(u32 a);
 s32 _ZN12Unk_02097ff413func_02098044Ej(void *p, s32 id);
 s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12Unk_020d8e1413func_02035284Ev(void *p);
@@ -61,7 +61,7 @@ void func_0209d498(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f2e0(u32, void *, u32);
 s32 func_020b0f30(void);
-s32 _ZN12Unk_0209865c13func_0209865cEv(s32 a);
+s32 _ZN10PlayerData13func_0209865cEv(s32 a);
 s32 func_02099c1c(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
@@ -72,7 +72,7 @@ s32 func_0209cf00(void);
 void func_0205c170(void);
 void func_020639e8(void *buf, const void *fmt, ...);
 void *func_02037244(void *, void *);
-void *func_020641ec(void *, void *, s32, s32);
+void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
 void *func_021012bc(const void *);
@@ -88,15 +88,15 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void func_02055724(void *, s32);
 void *func_0205588c(void *, void *);
-void func_020e8558(void *);
-void *func_020e8608(void *, u32);
+void Mem_Free(void *);
+void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
 extern u8 data_020d8ebc[], data_020d8ed0[], data_020d8ed4[], data_020d8ee4[], data_020d8ef4[];
 extern u8 data_020d8f04[], data_020d8f14[], data_020d8f24[], data_020d8f34[], data_020d8f44[];
 extern u8 data_020d8f58[], data_020d8f68[], data_020d8f7c[], data_020d8f90[], data_020d8fa0[];
 extern u8 data_020d8fb4[], data_020d8fc4[], data_020d8fd8[];
 extern void *data_021c620c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern u8 data_021e3680[];
 extern u8 data_021c1b90[];
 void *func_02036f24(s32 id, void *heap);
@@ -486,12 +486,12 @@ public:
 };
 
 // Vtable at 0x020d8e74.
-class Unk_020d8e74 : public Unk_020d8c7c {
+class Unk_020d8e74 : public GameProc {
 public:
     Unk_020d8e74();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual ~Unk_020d8e74();
     static Unk_020d8e74 *func_020344f8();
 
@@ -678,8 +678,8 @@ void *func_020342cc(u16 *id, s32 a, s32 b, s32 c);
 void func_02034320(u16 *id, s32 a, s32 b, s32 c);
 void func_020343b0(u16 *out, s32 a);
 void func_02004b60();
-s32 func_0204b640(u16 *out, s32 a, s32 b);
-BOOL func_0209750c();
+s32 Item_SetDesign(u16 *out, s32 a, s32 b);
+BOOL PlayerData_GetCurrent();
 u32 func_0209888c();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
@@ -690,7 +690,7 @@ void func_02072824(void *p, s32 a, s32 b);
 BOOL func_020b5364(s32 v);
 BOOL func_020b5184();
 BOOL func_020b0f0c();
-void func_0206da6c();
+void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern Unk_02034518 *data_021c1b3c;
 s32 _ZN12Unk_0203451813func_02034690Ev(Unk_02034ae8 *o);
@@ -703,21 +703,21 @@ s32 func_020b50dc(void);
 s32 func_020b5164(void);
 s32 func_020b4934(void);
 s32 func_020b49a8(void);
-s32 func_02003bcc(s32 a);
-void func_02003bdc(s32 a);
-void func_02003bec(s32 a);
+s32 Snd_SetBgmTrackVariant(s32 a);
+void Snd_FadeInBgmTracks(s32 a);
+void Snd_FadeOutBgmTracks(s32 a);
 void func_020947c0(void *p, s32 n);
-s32 func_0204b2d4(void *p);
-s32 func_0204b25c(void *p);
-extern Unk_020355dc_Data *data_021eda68;
+s32 Item_IsFurniture(void *p);
+s32 Item_GetFurnitureIndex(void *p);
+extern Unk_020355dc_Data *gActorDefaultParent;
 s32 func_02094fec(void);
 s32 _ZN12Unk_020d8e3413func_02035ed0Ej(void *p, s32 a);
 s32 _ZN12Unk_020d8e4413func_02035fe0Ej(void *p, s32 a);
-void func_02003b8c(s32);
-void func_02003b7c(void);
-void func_02003bfc(s32 a, s32 b);
-void func_02003c10(s32 a);
-void func_02003c20(u32 a);
+void Snd_DuckSubPlayers(s32);
+void Snd_RestoreSubPlayers(void);
+void Snd_MoveBgmVolume(s32 a, s32 b);
+void Snd_StopBgm(s32 a);
+void Snd_PlayBgm(u32 a);
 Unk_020358d4_Src *func_020947f0(u32 n);
 void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_020358d4_Buf *p, Unk_020358d4_Src *pos, s32 a, s32 b);
 void func_02033988(Unk_020358d4_Buf *p);
@@ -731,7 +731,7 @@ void func_0209d498(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f2e0(u32, void *, u32);
 s32 func_020b0f30(void);
-s32 _ZN12Unk_0209865c13func_0209865cEv(s32 a);
+s32 _ZN10PlayerData13func_0209865cEv(s32 a);
 s32 func_02099c1c(s32 a);
 extern u16 data_020c8b9c[];
 void func_02133ef8(void *, u32);
@@ -742,7 +742,7 @@ s32 func_0209cf00(void);
 void func_0205c170(void);
 void func_020639e8(void *buf, const void *fmt, ...);
 void *func_02037244(void *, void *);
-void *func_020641ec(void *, void *, s32, s32);
+void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_02101340(void *, const void *, void *);
 void func_02101310(void *);
 void *func_021012bc(const void *);
@@ -758,15 +758,15 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void func_02055724(void *, s32);
 void *func_0205588c(void *, void *);
-void func_020e8558(void *);
-void *func_020e8608(void *, u32);
+void Mem_Free(void *);
+void *Heap_Alloc(void *, u32);
 void *func_0204df64(void *);
 extern u8 data_020d8ebc[], data_020d8ed0[], data_020d8ed4[], data_020d8ee4[], data_020d8ef4[];
 extern u8 data_020d8f04[], data_020d8f14[], data_020d8f24[], data_020d8f34[], data_020d8f44[];
 extern u8 data_020d8f58[], data_020d8f68[], data_020d8f7c[], data_020d8f90[], data_020d8fa0[];
 extern u8 data_020d8fb4[], data_020d8fc4[], data_020d8fd8[];
 extern void *data_021c620c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern u8 data_021e3680[];
 extern u8 data_021c1b90[];
 void *func_02036f24(s32 id, void *heap);
@@ -847,7 +847,7 @@ s32 func_02034fb0(void *p);
 s32 func_0203507c(void *p);
 s32 func_02034f6c(void *p, u32 a);
 s32 func_020b50e8(void);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 }
 }
 
@@ -866,7 +866,7 @@ s32 func_02035d94(void);
 s32 _ZN12Unk_02036a6413func_02036ab8Ejjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 extern u32 data_020cbb18;
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(u32 a);
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 s32 func_020b0f0c(void);
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
 }
@@ -1202,13 +1202,13 @@ void Unk_020d8e64::func_020367e8()
 void Unk_020d8e64::func_02036738() {
     unk_0b = 1;
     if (unk_08 == 0xffff) {
-        s32 r5 = Ns_02035e2c::func_0209750c();
+        s32 r5 = Ns_02035e2c::PlayerData_GetCurrent();
         if (Ns_02035e2c::func_020b0f0c() != 0) {
             Ns_02035e2c::func_02034dd0(3, 0, 5);
             func_02036700(4, 0x45, 1);
         } else if (func_020b0f30() != 0) {
             func_02036700(0xd, 0x4a, 0);
-        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0 && func_02099c1c(_ZN12Unk_0209865c13func_0209865cEv(r5)) == 0))) {
+        } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0 && func_02099c1c(_ZN10PlayerData13func_0209865cEv(r5)) == 0))) {
             func_02036700(0x1c, 0x46, 0);
         } else if (r5 != 0 && Ns_02035e2c::_ZN12Unk_02097ff413func_02098044Ej(r5, 1) != 0) {
             func_02036700(0x1d, 0x48, 0);
@@ -1637,7 +1637,7 @@ extern "C" void *func_02035d94(void) { return Ns_020354d8::data_021c1b3c + 0x24c
 
 void Unk_02035cd0::func_02035cd0() {
     BOOL a;
-    void *p = Ns_020354d8::func_0209750c();
+    void *p = Ns_020354d8::PlayerData_GetCurrent();
     if (p) {
         if (_ZN12Unk_02097ff413func_02098044Ej(p, 0x23) != 0 || _ZN12Unk_02097ff413func_02098044Ej(p, 1) != 0) {
             a = TRUE;
@@ -1713,7 +1713,7 @@ void Unk_02035758::func_02035c0c() {
 
 void Unk_02035758::func_02035bdc() {
     if ((u32)(unk_04[2].unk_0c - 8) <= 1) {
-        func_02003b7c();
+        Snd_RestoreSubPlayers();
     }
     for (s32 i = 0; i < 8; i++) {
         unk_04[i].func_02035cac();
@@ -1797,7 +1797,7 @@ void Unk_02035758::func_020359ec(Unk_02035ca4 *e) {
         e->func_02035ca4(0x28, 5, 1);
         e->unk_0c = 8;
         unk_84 = 0;
-        func_02003b8c(0);
+        Snd_DuckSubPlayers(0);
     } else if (st != 8) {
         if (st == 9) {
             if (unk_84 > 0) {
@@ -1806,7 +1806,7 @@ void Unk_02035758::func_020359ec(Unk_02035ca4 *e) {
             if (unk_84 <= 0) {
                 e->func_02035ca4(0x7f, 5, 1);
                 e->unk_0c = 0;
-                func_02003b7c();
+                Snd_RestoreSubPlayers();
             }
         }
     }
@@ -2002,16 +2002,16 @@ void Unk_020356b8::func_0203570c() {
 void Unk_020356b8::func_020356b8() {
     if (unk_08 != 0) {
         unk_08 = 0;
-        func_02003c10(unk_0c);
+        Snd_StopBgm(unk_0c);
     }
     if (unk_04 != 0) {
         unk_04 = 0;
-        func_02003c20(unk_06);
+        Snd_PlayBgm(unk_06);
         Ns_020354d8::func_02034f6c(Ns_020354d8::data_021c1b3c + 0x2f0, unk_06);
     }
     if (unk_10 != 0) {
         unk_10 = 0;
-        func_02003bfc(unk_14, unk_18);
+        Snd_MoveBgmVolume(unk_14, unk_18);
     }
 }
 
@@ -2028,7 +2028,7 @@ Unk_020d8e14::Unk_020d8e14(u32 owner) {
 Unk_020d8e14::~Unk_020d8e14() {}
 
 void Unk_020d8e14::func_020355dc() {
-    if (data_021eda68->unk_0c != 5) {
+    if (gActorDefaultParent->unk_0c != 5) {
         if (unk_0b == 1) {
             Ns_020354d8::func_02034dd0(8, 0xf, 0);
             unk_0b = 2;
@@ -2061,7 +2061,7 @@ extern "C" void *func_020355b4(void) { return Ns_020354d8::data_021c1b3c + 0x264
 extern "C" void *func_020355a0(void) { return Ns_020354d8::data_021c1b3c + 0x2a0; }
 
 void Unk_020d8e14::func_02035518() {
-    if (data_021eda68->unk_0c != 5) {
+    if (gActorDefaultParent->unk_0c != 5) {
         if (unk_0c < 0) {
             s32 r = func_02094fec();
             if (r != 0x3c) {
@@ -2188,9 +2188,9 @@ void Unk_020d8e14::func_02035284() {
                 u16 buf[2];
                 BOOL ok;
                 func_020947c0(buf, 4);
-                if (func_0204b2d4(buf)) {
+                if (Item_IsFurniture(buf)) {
                     buf[1] = 0xfff1;
-                    if (func_0204b25c(buf) == func_0204b25c(&buf[1])) ok = TRUE;
+                    if (Item_GetFurnitureIndex(buf) == Item_GetFurnitureIndex(&buf[1])) ok = TRUE;
                     else ok = FALSE;
                 } else {
                     if (buf[0] == 0xfff1) ok = TRUE;
@@ -2281,7 +2281,7 @@ extern "C" void func_0203507c(void) {
     else if (a29 && e20) v = 2;
     else if (a25 && e20) v = 3;
     else if (a22 && e20) v = 4;
-    if (v) func_02003bec(v);
+    if (v) Snd_FadeOutBgmTracks(v);
 }
 
 extern "C" void func_02034fb0(void) {
@@ -2301,15 +2301,15 @@ extern "C" void func_02034fb0(void) {
     else if (b29 && e20) v = 2;
     else if (b25 && e20) v = 3;
     else if (b22 && e20) v = 4;
-    if (v) func_02003bdc(v);
+    if (v) Snd_FadeInBgmTracks(v);
 }
 
 extern "C" void func_02034f98(void) {
-    if (Ns_02034ae8::func_020b50e8() == 0x22) func_02003bec(5);
+    if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeOutBgmTracks(5);
 }
 
 extern "C" void func_02034f80(void) {
-    if (Ns_02034ae8::func_020b50e8() == 0x22) func_02003bdc(5);
+    if (Ns_02034ae8::func_020b50e8() == 0x22) Snd_FadeInBgmTracks(5);
 }
 
 extern "C" void func_02034f6c(s32 a, s32 b) {
@@ -2336,7 +2336,7 @@ extern "C" void func_02034e9c(void) {
     else if (a29) v = 0xc;
     else if (a25 || a26) v = 0xd;
     else if (a22) v = 0xe;
-    if (v) func_02003bec(v);
+    if (v) Snd_FadeOutBgmTracks(v);
 }
 
 extern "C" void func_02034e48(s32 x) {
@@ -2353,7 +2353,7 @@ extern "C" void func_02034e48(s32 x) {
     if (d) v = 0xc;
     else if (e) v = 0xd;
     else v = 0xb;
-    func_02003bcc(v);
+    Snd_SetBgmTrackVariant(v);
 }
 
 extern "C" void func_02034e10(s32 a, s32 b, s32 c, u8 d) {
@@ -2674,7 +2674,7 @@ void Unk_02034518::func_02034518() {
         }
         if (ok) {
             unk_24c.func_02036a98();
-            func_0206da6c();
+            Melody_StartTrackA();
         }
     }
 }
@@ -2692,7 +2692,7 @@ BOOL Unk_020d8e74::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020d8e74::vfunc_18() {
+BOOL Unk_020d8e74::onExecute() {
     unk_50.func_02034a90();
     return TRUE;
 }

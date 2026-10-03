@@ -1,29 +1,29 @@
 // mwcc-version: 1.2/base
 #include "types.h"
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 class Unk_ov004_0224c38c;
@@ -57,7 +57,7 @@ class Unk_ov004_0224c38c;
 #define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
 #define func_0207fd9c _ZN12Unk_0207fb8013func_0207fd9cEv
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
 class Unk_ov004_02216ff4;
 
 typedef BOOL (Unk_ov004_02216ff4::*Unk_ov004_02216ff4_Fn)(Unk_ov004_0224c38c *);
@@ -128,8 +128,8 @@ u32 func_02072e44(void *g);
 s32 func_02072e88(void *g, u32 v);
 void *func_0207fd9c(void *o);
 u16 *func_0202d648(void *o);
-s32 func_0204b2d4(void *p);
-u32 func_0204b25c(void *p);
+s32 Item_IsFurniture(void *p);
+u32 Item_GetFurnitureIndex(void *p);
 void func_0201c078(void *o, void *owner);
 void func_0202bcdc(void *o, const void *a, const void *b, u32 c);
 void func_0203d704(void *o, u32 a);
@@ -168,13 +168,13 @@ struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 
 struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f43c8 {
+class SndSeEmitter {
 public:
-    Unk_020f43c8();
-    virtual ~Unk_020f43c8();
+    SndSeEmitter();
+    virtual ~SndSeEmitter();
     u32 pad[0x40 / 4];
 };
-class Unk_020f4080 : public Unk_020f43c8 {
+class Unk_020f4080 : public SndSeEmitter {
 public:
     Unk_020f4080();
     ~Unk_020f4080() {}
@@ -197,25 +197,25 @@ public:
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct Unk_0201c078 { Unk_0201c078(); ~Unk_0201c078(); u32 pad[0x5c / 4]; };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
     u32 unk_5c;
@@ -227,12 +227,12 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -280,7 +280,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void *vfunc_64();
     virtual u8 *vfunc_6c();
     virtual u8 *vfunc_70();
@@ -356,7 +356,7 @@ class Unk_ov004_0224c38c : public Unk_020d89c8 {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual BOOL vfunc_68();
@@ -428,13 +428,13 @@ BOOL Unk_ov004_0224c38c::vfunc_00() {
 }
 
 BOOL Unk_ov004_0224c38c::func_ov004_02217708() {
-    if (Unk_020d77a4::vfunc_24()) {
+    if (Unk_020d77a4::onDraw()) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_ov004_0224c38c::vfunc_24() {
+BOOL Unk_ov004_0224c38c::onDraw() {
     BOOL r = TRUE;
     if (unk_894) {
         r = (this->*unk_894)();
@@ -459,8 +459,8 @@ BOOL Unk_ov004_0224c38c::vfunc_68() {
                 u16 *p = (u16 *)func_0207fd9c(vfunc_64());
                 u16 *q = func_0202d648(&unk_64c);
                 BOOL eq;
-                if (func_0204b2d4(q)) {
-                    eq = func_0204b25c(q) == func_0204b25c(p) ? TRUE : FALSE;
+                if (Item_IsFurniture(q)) {
+                    eq = Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(p) ? TRUE : FALSE;
                 } else {
                     eq = *q == *p ? TRUE : FALSE;
                 }

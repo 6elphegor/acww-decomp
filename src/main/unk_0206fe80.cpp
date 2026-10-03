@@ -5,9 +5,9 @@ struct Unk_020dd38c {
     virtual ~Unk_020dd38c();
     u32 pad[6];
 };
-struct Unk_020dd458 {
-    Unk_020dd458();
-    virtual ~Unk_020dd458();
+struct Letter {
+    Letter();
+    virtual ~Letter();
     u8 d[0xf0];
 };
 
@@ -17,7 +17,7 @@ extern u32 data_020e049c;
 extern "C" {
 extern u8 data_021d735c[];
 extern u16 data_021d7352[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u32 data_021cbd18[];
 extern u32 data_021cbd80[8][8];
 extern u8 *data_021cbca4;
@@ -31,18 +31,18 @@ extern u8 data_021ecc7c[];
 extern s32 (*data_020cbaf0[])(s32);
 
 s32 FX_Div(s32 a, s32 b);
-void *func_02097868(void *a, s32 i);
-s32 _ZN12Unk_0209865c13func_0209888cEv(void *p);
-void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(s32 a, s32 b);
-s32 func_020974f8();
+void *PlayerData_GetResident(void *a, s32 i);
+s32 _ZN10PlayerData11getPlayerIdEv(void *p);
+void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, s32 b);
+s32 PlayerData_GetCurrentIndex();
 s32 func_020978fc(s32 t);
 void func_0209d498(void *p);
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *p, s32 i);
-void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 i);
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void *p);
+s32 _ZN8SaveData8testFlagEj(void *p, s32 i);
+void _ZN8SaveData7setFlagEj(void *p, s32 i);
+s32 _ZN10PlayerData13func_02098a48Ev(void *p);
 s32 func_02096aac(void *p);
 void func_020638d0(void *a, void *b);
-void func_0203ce4c(s32 i, void *p);
+void MailText_SetSlot(s32 i, void *p);
 void _ZN12Unk_0206555413func_02065588Etj(void *p, u32 a, s32 b);
 void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, s32 f);
 void func_02070b68(u32 a, u8 b, u32 c, u8 d, s32 e);
@@ -53,7 +53,7 @@ s32 func_0203c6c8(void *p);
 void func_02056e88(void *a, u32 b, s32 c, s32 d, s32 e, s32 f, s32 g);
 void *func_020986d4(void *p);
 void *func_02071c88(void *p, s32 i);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 s32 func_02087298(void *p);
 s32 func_020718dc();
 s32 func_020718e8(s32 t, s32 x);
@@ -184,7 +184,7 @@ u32 Unk_0206fe80::func_02070370(u16 *id) {
     u32 v = func_020703ac(id);
     if (v == 0) return 3;
     if (v == 5) return 2;
-    s32 t = func_020974f8();
+    s32 t = PlayerData_GetCurrentIndex();
     if (func_020978fc(t) == 1 && v == t + 1) return 0;
     return 1;
 }
@@ -195,14 +195,14 @@ BOOL Unk_0206fe80::func_02070358(u16 *id) {
 }
 
 void Unk_0206fe80::func_020702ec() {
-    if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 3) == 0) {
+    if (_ZN8SaveData8testFlagEj(gSaveData, 3) == 0) {
         if (func_02070060()) {
             Unk_020702ec_Date t;
             ((u32 *)&t)[0] = 0;
             ((u32 *)&t)[1] = 0;
             func_0209d498(&t);
             if (unk_62 != t.b5 || unk_61 != t.b4 || unk_60 != t.b3) {
-                if (func_02070248()) _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 3);
+                if (func_02070248()) _ZN8SaveData7setFlagEj(gSaveData, 3);
             }
         }
     }
@@ -211,16 +211,16 @@ void Unk_0206fe80::func_020702ec() {
 BOOL Unk_0206fe80::func_02070248() {
     Unk_020dd38c str;
     func_020638d0(data_021d7352, &str);
-    func_0203ce4c(2, &str);
+    MailText_SetSlot(2, &str);
     BOOL r = FALSE;
     s32 i = 0;
     u8 b;
     for (; i < 4; i++) {
-        void *p = func_02097868(data_021d735c, i);
-        if (p && _ZN12Unk_0209865c13func_02098a48Ev(p)) {
-            Unk_020dd458 big;
+        void *p = PlayerData_GetResident(data_021d735c, i);
+        if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
+            Letter big;
             b = 0;
-            func_020656dc(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN12Unk_0209865c13func_0209888cEv(p));
+            func_020656dc(&big, &b, "sp_npc_owl", &data_020e0498, &data_020e049c, _ZN10PlayerData11getPlayerIdEv(p));
             _ZN12Unk_0206555413func_02065588Etj(&big, 0x3870, 1);
             if (func_02096aac(&big)) r = TRUE;
         }
@@ -234,7 +234,7 @@ void Unk_0206fe80::func_020701d0(u16 *id) {
     func_020704e4(id);
     u8 *p = func_020703d8(id, &idx);
     if (p) {
-        u32 e = func_020974f8() & 3;
+        u32 e = PlayerData_GetCurrentIndex() & 3;
         p[idx >> 1] |= (e + 1) << ((idx & 1) * 4);
     }
     if (func_02070060()) {
@@ -273,9 +273,9 @@ void Unk_0206fe80::func_020700e8(u32 v) {
 BOOL Unk_0206fe80::func_020700a4(s32 x, u16 *id) {
     if (func_02070370(id) <= 1) {
         s32 q = (func_020703ac(id) - 1) & 3;
-        void *p = func_02097868(data_021d735c, q);
+        void *p = PlayerData_GetResident(data_021d735c, q);
         if (p) {
-            _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(_ZN12Unk_0209865c13func_0209888cEv(p), x);
+            _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), x);
             return TRUE;
         }
     }

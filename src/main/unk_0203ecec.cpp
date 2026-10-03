@@ -19,10 +19,10 @@ struct Unk_0203ec0c {
     /* 0x08 */ u8 unk_08;
 };
 
-class Unk_0203ed90 {
+class WorldCurve {
 public:
-    Unk_0203ed90();
-    ~Unk_0203ed90();
+    WorldCurve();
+    ~WorldCurve();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -76,7 +76,7 @@ extern u8 data_021e87d8[];
 }
 
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 
 extern "C" {
@@ -88,7 +88,7 @@ extern s32 data_020c8cb8;
 }
 
 s32 data_021c3b94 = data_020c8cb8;
-Unk_0203ed90 data_021c3ba4;
+WorldCurve gWorldCurve;
 
 extern "C" {
 extern s16 data_02135f44[];
@@ -103,7 +103,7 @@ extern s32 data_021c3bbc;
 }
 
 extern "C" {
-extern u8 data_021c4890[];
+extern u8 gBackup[];
 }
 
 extern "C" {
@@ -147,7 +147,7 @@ void func_02065ac0(void *p);
 }
 
 extern "C" {
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
@@ -179,7 +179,7 @@ s32 func_02076f88(void *p);
 }
 
 extern "C" {
-s32 _ZN12Unk_020d93b813func_0203bc7cEv(void);
+s32 _ZN12Unk_020d93b88getPitchEv(void);
 }
 
 extern "C" {
@@ -235,7 +235,7 @@ s32 func_0203f4c0(s32 v);
 }
 
 extern "C" {
-s32 func_0204ff6c(void *p);
+s32 Backup_GetStatus(void *p);
 }
 
 extern "C" {
@@ -315,13 +315,13 @@ extern "C" void func_0203f094(s32 i, s32 v);
 extern "C" s32 func_0203f07c(s32 i);
 extern "C" s32 func_0203f048(u32 id);
 extern "C" u32 func_0203efec(u32 x);
-extern "C" s32 func_0203ef38(Unk_0203ed90 *out, Unk_0203ed90 *in);
-extern "C" s32 func_0203eeac(Unk_0203ed90 *out, Unk_0203ed90 *in);
-extern "C" s32 func_0203ee38(Unk_0203ed90 *out, Unk_0203ed90 *in);
-extern "C" s16 func_0203edd0(Unk_0203ed90 *o);
+extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in);
+extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in);
+extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in);
+extern "C" s16 func_0203edd0(WorldCurve *o);
 extern "C" s32 func_0203edc8(void);
-extern "C" s32 func_0203edc0(void);
-extern "C" void func_0203ecec(Unk_0203ed90 *o, Unk_0203ed90 *in);
+extern "C" s32 WorldCurve_GetRadius(void);
+extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in);
 
 extern "C" s32 func_0203f100(u8 *p, s32 i) { return p[i]; }
 
@@ -335,7 +335,7 @@ extern "C" void func_0203f0ec(u8 *p) {
 
 extern "C" s32 func_0203f0c0(void) {
     u8 *p; s32 i, n;
-    p = _ZN12Unk_02097ff413func_02098314Ev(func_0209750c());
+    p = _ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent());
     n = 0;
     for (i = 0; i < 4; i++) {
         if (func_0203f100(p, i) != 0xff) {
@@ -347,12 +347,12 @@ extern "C" s32 func_0203f0c0(void) {
 
 extern "C" s32 func_0203f0b4(void) { return func_0203f048(0xff); }
 
-extern "C" void func_0203f094(s32 i, s32 v) { func_0203f0fc(_ZN12Unk_02097ff413func_02098314Ev(func_0209750c()), i, v); }
+extern "C" void func_0203f094(s32 i, s32 v) { func_0203f0fc(_ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent()), i, v); }
 
-extern "C" s32 func_0203f07c(s32 i) { return func_0203f100(_ZN12Unk_02097ff413func_02098314Ev(func_0209750c()), i); }
+extern "C" s32 func_0203f07c(s32 i) { return func_0203f100(_ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent()), i); }
 
 extern "C" s32 func_0203f048(u32 id) {
-    u8 *p = _ZN12Unk_02097ff413func_02098314Ev(func_0209750c());
+    u8 *p = _ZN12Unk_02097ff413func_02098314Ev(PlayerData_GetCurrent());
     for (s32 i = 0; i < 4; i++) {
         if (id == (u32)func_0203f100(p, i)) {
             return i;
@@ -368,15 +368,15 @@ extern "C" u32 func_0203efec(u32 x) {
 }
 #pragma thumb on
 
-extern "C" s32 func_0203ef38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
+extern "C" s32 WorldCurve_ToCurved(WorldCurve *out, WorldCurve *in) {
     if (IsOne(data_021ef2f0->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
-        if (in->unk_08 <= (*(volatile s32 *)&data_021c3ba4.unk_08) - data_021c3ba4.unk_10) {
-            s32 t = in->unk_08 - ((*(volatile s32 *)&data_021c3ba4.unk_08) - data_021c3ba4.unk_10);
+        if (in->unk_08 <= (*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10) {
+            s32 t = in->unk_08 - ((*(volatile s32 *)&gWorldCurve.unk_08) - gWorldCurve.unk_10);
             if (t < 0) {
                 t = -t;
             }
-            base -= func_01ffcb0c(data_021c3ba4.unk_14, t);
+            base -= func_01ffcb0c(gWorldCurve.unk_14, t);
         }
         s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
         out->unk_00 = in->unk_00;
@@ -391,7 +391,7 @@ extern "C" s32 func_0203ef38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
     return 0;
 }
 
-extern "C" s32 func_0203eeac(Unk_0203ed90 *out, Unk_0203ed90 *in) {
+extern "C" s32 WorldCurve_Apply(WorldCurve *out, WorldCurve *in) {
     if (IsOne(data_021ef2f0->unk_04)) {
         s32 base = in->unk_04 + 0x1f576;
         s32 ang = (FX_Div(in->unk_08, data_021c3b94) * 0x2999) << 4 >> 16;
@@ -407,7 +407,7 @@ extern "C" s32 func_0203eeac(Unk_0203ed90 *out, Unk_0203ed90 *in) {
     return 0;
 }
 
-extern "C" s32 func_0203ee38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
+extern "C" s32 WorldCurve_FromCurved(WorldCurve *out, WorldCurve *in) {
     if (IsOne(data_021ef2f0->unk_04)) {
         s32 ang = func_020e7b98(in->unk_08, in->unk_04);
         out->unk_00 = in->unk_00;
@@ -423,7 +423,7 @@ extern "C" s32 func_0203ee38(Unk_0203ed90 *out, Unk_0203ed90 *in) {
     return 0;
 }
 
-extern "C" s16 func_0203edd0(Unk_0203ed90 *o) {
+extern "C" s16 func_0203edd0(WorldCurve *o) {
     if (IsOne(data_021ef2f0->unk_04)) {
         s32 a = func_01ffcb0c(o->unk_08, o->unk_08);
         s32 b = func_01ffcb0c(o->unk_04, o->unk_04);
@@ -438,9 +438,9 @@ extern "C" s16 func_0203edd0(Unk_0203ed90 *o) {
 
 extern "C" s32 func_0203edc8(void) { return 0x2999; }
 
-extern "C" s32 func_0203edc0(void) { return 0x1f576; }
+extern "C" s32 WorldCurve_GetRadius(void) { return 0x1f576; }
 
-Unk_0203ed90::Unk_0203ed90() {
+WorldCurve::WorldCurve() {
     unk_00 = 0;
     unk_04 = 0;
     unk_08 = 0;
@@ -449,14 +449,14 @@ Unk_0203ed90::Unk_0203ed90() {
     unk_10 = 0xe000;
 }
 
-Unk_0203ed90::~Unk_0203ed90() {}
+WorldCurve::~WorldCurve() {}
 
-extern "C" void func_0203ecec(Unk_0203ed90 *o, Unk_0203ed90 *in) {
+extern "C" void WorldCurve_Update(WorldCurve *o, WorldCurve *in) {
     o->unk_00 = in->unk_00;
     o->unk_04 = in->unk_04;
     o->unk_08 = in->unk_08;
-    if (data_021c3070) {
-        s32 v = _ZN12Unk_020d93b813func_0203bc7cEv();
+    if (gCamera) {
+        s32 v = _ZN12Unk_020d93b88getPitchEv();
         if (v > 0x27f7) {
             v = 0x27f7;
         } else if (v < 0x21fd) {
@@ -471,12 +471,12 @@ extern "C" void func_0203ecec(Unk_0203ed90 *o, Unk_0203ed90 *in) {
     }
 }
 
-class Unk_020d96fc : public Unk_020d8c7c {
+class Unk_020d96fc : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020d96fc();
 };
 

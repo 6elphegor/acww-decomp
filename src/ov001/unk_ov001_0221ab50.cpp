@@ -103,7 +103,7 @@ extern void func_ov001_0221b60c();
 extern void func_ov001_0220c5f0(s32, void *);
 extern void MIi_CpuCopy32(void *, void *, s32);
 extern s32 func_ov065_0226b27c(void *);
-extern void func_0206d49c();
+extern void Fatal_Trap();
 extern void func_ov065_0226b0ec(s32, void *);
 extern void func_ov001_02227094(s32, void *, s32, s32);
 extern void func_ov001_0221b470(s32);

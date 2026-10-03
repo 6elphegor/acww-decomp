@@ -18,8 +18,8 @@ void FS_OpenFile();
 void FS_ReadFile(void *a, void *b, u32 size);
 void FS_CloseFile(void *a);
 void FS_InitFile(void *a);
-void *func_020e8594(u32 size);
-s32 func_020e8558(void *p);
+void *Mem_AllocTail(u32 size);
+s32 Mem_Free(void *p);
 void func_ov147_02292d6c();
 void func_ov147_02292e74(s32 a);
 void func_ov147_02292d34();
@@ -143,12 +143,12 @@ BOOL Unk_ov147_022935e8::func_ov147_02292f54() {
 }
 
 extern "C" void *func_ov147_02292f4c(u32 size) {
-    return func_020e8594(size);
+    return Mem_AllocTail(size);
 }
 
 extern "C" s32 func_ov147_02292f38(void *p) {
     if (p) {
-        func_020e8558(p);
+        Mem_Free(p);
     }
 }
 

@@ -39,75 +39,75 @@ struct Unk_02000fc0_Thr {
 };
 
 extern "C" {
-extern u8 data_0213c6c0;
+extern u8 sCrashScreenState;
 }
 
 extern "C" {
-extern u32 data_0213c6c4;
+extern u32 sCrashPrevKeys;
 }
 
 extern "C" {
-extern u32 data_0213c6c8;
+extern u32 sCrashPC;
 }
 
 extern "C" {
-extern u32 data_0213c6cc;
+extern u32 sCrashScreenMain;
 }
 
 extern "C" {
-extern u32 data_0213c6d0;
+extern u32 sCrashTimeMs;
 }
 
 extern "C" {
-extern u32 data_0213c6d4;
+extern u32 sCrashSP;
 }
 
 extern "C" {
-extern u32 data_0213c6d8;
+extern u32 sCrashScreenSub;
 }
 
 extern "C" {
-extern u32 *data_0213c6dc;
+extern u32 *sCrashContext;
 }
 
 extern "C" {
-extern const char *data_0213c6e0;
+extern const char *sPanicMessage;
 }
 
 extern "C" {
-extern u32 data_0213c6e4;
+extern u32 sPanicLine;
 }
 
 extern "C" {
-extern u32 data_0213c6e8;
+extern u32 sPanicFile;
 }
 
 extern "C" {
-extern u32 data_0213b1a4;
+extern u32 gTaskPhase;
 }
 
 extern "C" {
-extern u32 data_021f4824;
+extern u32 gRootHeap;
 }
 
 extern "C" {
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 }
 
 extern "C" {
-extern u32 data_021f4818;
+extern u32 gProcHeap;
 }
 
 extern "C" {
-extern Unk_02000fc0_Ptr *data_021f5994;
+extern Unk_02000fc0_Ptr *gTaskCurrentNode;
 }
 
 extern "C" {
-extern u16 data_021f597c;
+extern u16 gProcCreateProfile;
 }
 
 extern "C" {
-extern u8 data_021f5974;
+extern u8 gProcCreateStep;
 }
 
 extern "C" {
@@ -125,51 +125,51 @@ extern char data_02135f44[];
 extern "C" {
 extern char data_020d1f60[], data_020d1f68[], data_020d1f78[], data_020d1f90[], data_020d1f9c[], data_020d1fa8[],
     data_020d1fb4[], data_020d1fc0[], data_020d1fcc[], data_020d1fd4[], data_020d1fe4[], data_020d1ff0[],
-    data_020d1ffc[], data_020d200c[], data_020d2018[], data_020d2020[], data_021c21e4[], data_020c6108[];
+    data_020d1ffc[], data_020d200c[], data_020d2018[], data_020d2020[], gBuildTime[], sCrashRegNames[];
 }
 
 extern "C" {
-extern u16 data_020de408[], data_020e0408[];
+extern u16 sCrashFontChars[], sCrashFontPalette[];
 }
 
 extern "C" {
-void func_02000cd4(void);
+void CrashScreen_Frame(void);
 }
 
 extern "C" {
-void func_02000fac(u32 a, u32 b, u32 c);
+void CrashScreen_Fill(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_02000e4c(void);
+void CrashScreen_WaitVBlank(void);
 }
 
 extern "C" {
-void func_02000e64(void);
+void CrashScreen_InitDisplay(void);
 }
 
 extern "C" {
-void func_02000f78(void);
+void CrashScreen_Clear(void);
 }
 
 extern "C" {
-void func_02000fc0(void);
+void CrashScreen_DrawMain(void);
 }
 
 extern "C" {
-void func_020011fc(void);
+void CrashScreen_DrawStack(void);
 }
 
 extern "C" {
-BOOL func_020012c0(u32 addr, u32 len);
+BOOL CrashScreen_IsValidAddress(u32 addr, u32 len);
 }
 
 extern "C" {
-void func_02001264(u8 *dst, u32 src, u32 size);
+void CrashScreen_DumpWords(u8 *dst, u32 src, u32 size);
 }
 
 extern "C" {
-void func_02001338(const char *a, u32 b, const char *c, void *d);
+void Fatal_PanicV(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
@@ -237,7 +237,7 @@ void func_020b82d8(Unk_02000fc0_Col *c, u8 *dst, const char *fmt);
 }
 
 extern "C" {
-u32 func_020ed754(u32 a);
+u32 Task_GetPhaseName(u32 a);
 }
 
 extern "C" {
@@ -269,7 +269,7 @@ void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 }
 
 extern "C" {
-s32 func_0206d49c(void);
+s32 Fatal_Trap(void);
 }
 
 extern "C" {
@@ -359,11 +359,11 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 }
 
 extern "C" {
-void *func_020641ec(u32 a, u32 b, s32 c, s32 *out);
+void *File_LoadAlloc(u32 a, u32 b, s32 c, s32 *out);
 }
 
 extern "C" {
-void func_020e85fc(u32 a, void *b);
+void Heap_Free(u32 a, void *b);
 }
 
 extern "C" {
@@ -559,35 +559,35 @@ extern "C" s32 func_02002700(u32 n) {
 }
 
 extern "C" s32 func_020026c4(u32 p0, u32 p1, u32 p2, s32 p3, u8 e, u8 f) {
-    u8 *buf = (u8 *)func_020641ec(p0, p1, -4, 0);
+    u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, 0);
     s32 r = func_02002580(buf, p2, p3, e, f);
-    func_020e85fc(p1, buf);
+    Heap_Free(p1, buf);
     return r;
 }
 
 extern "C" s32 func_02002688(u32 p0, u32 p1, u32 p2, s32 p3, u8 e) {
     s32 out;
-    u8 *buf = (u8 *)func_020641ec(p0, p1, -4, &out);
+    u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     u8 *q = buf;
     q += p3 * 32;
     s32 r = func_02002580(q, p2, e, e, e);
-    func_020e85fc(p1, buf);
+    Heap_Free(p1, buf);
     return r;
 }
 
 extern "C" s32 func_02002654(u32 p0, u32 p1, u32 p2) {
     s32 out;
-    u8 *buf = (u8 *)func_020641ec(p0, p1, -4, &out);
+    u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     s32 r = func_020024f0(buf, p2, out, 0);
-    func_020e85fc(p1, buf);
+    Heap_Free(p1, buf);
     return r;
 }
 
 extern "C" s32 func_0200261c(u32 p0, u32 p1, u32 p2, s32 p3, s32 e, s32 f) {
     s32 out;
-    u8 *buf = (u8 *)func_020641ec(p0, p1, -4, &out);
+    u8 *buf = (u8 *)File_LoadAlloc(p0, p1, -4, &out);
     s32 r = func_02002438(buf, p2, p3, e, f);
-    func_020e85fc(p1, buf);
+    Heap_Free(p1, buf);
     return r;
 }
 

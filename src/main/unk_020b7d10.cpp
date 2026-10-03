@@ -2,7 +2,7 @@
 #include "Unk_020d8c7c.h"
 
 // Vtable 0x020e4540
-class Unk_020e4540 : public Unk_020d8c7c {
+class Unk_020e4540 : public GameProc {
 public:
     Unk_020e4540() {}
 };

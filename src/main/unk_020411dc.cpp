@@ -80,7 +80,7 @@ s32 func_020e759c(void *, u32, s32);
 s32 FX_Div(s32, s32);
 void func_0208e9d4(u32);
 void func_0208e9f4(u32);
-void func_0200403c();
+void Snd_FadeOutScene();
 s32 FX_Sqrt(s32);
 void func_02001554(u32);
 void func_0200151c(u32);
@@ -285,7 +285,7 @@ extern "C" BOOL func_0204137c(u32 a, u32 b) {
         fn();
         ((Unk_020d8e14 *)(data_021c1b3c + 0x2d0))->func_020355dc();
         func_0208e9f4(a);
-        if (a == 2) func_0200403c();
+        if (a == 2) Snd_FadeOutScene();
     }
     if (b == 0 || a == 3) {
         data_021c3cc0.unk_08 = 0x1000;

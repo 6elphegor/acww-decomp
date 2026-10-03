@@ -64,123 +64,123 @@ struct Player {
 };
 
 extern "C" {
-void func_0206d49c(void);
+void Fatal_Trap(void);
 void NNS_SndHandleInit(void *p);
 void NNS_SndPlayerStopSeq(void *p, u32 x);
 void func_0210cebc(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void NNS_SndHandleReleaseSeq(void *p);
-BOOL func_020ee5d4(Ent *e);
-void func_020ee630(Ent *e, s32 a);
-BOOL func_020ee680(Ent *e, u32 a, u32 b);
-void func_020ee5e8(Ent *e, s32 bit, s32 on);
-void func_020ee748(Ent *e, s32 c, s32 d);
-s32 func_020ee514(Group *g);
-void func_020ee6b0(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void func_020ee6f4(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void func_020ee58c(Group *g, s32 bit, s32 on);
-void func_020ee754(Ent *e);
-void func_020ee784(PlayCtx *c);
+BOOL SndSeVoice_IsHeld(Ent *e);
+void SndSeVoice_Stop(Ent *e, s32 a);
+BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b);
+void SndSeVoice_SetFlag(Ent *e, s32 bit, s32 on);
+void SndSeVoice_SetParams(Ent *e, s32 c, s32 d);
+s32 SndSeGroup_FindFreeVoice(Group *g);
+void SndSeVoice_StartHeld(Ent *e, u32 a, u32 b, s32 c, s16 d);
+void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d);
+void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on);
+void SndSeVoice_Init(Ent *e);
+void SndSeGroup_EvalListener(PlayCtx *c);
 InfoB *func_0210b8a0(u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void func_0210a1e8(void *p, s32 v);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, s32 v);
 void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPitch(void *p, u32 a, s32 b);
-extern Cfg4 data_021f59f4;
+extern Cfg4 gSndSeSystem;
 void *NNS_FndGetPrevListObject(void *list, void *obj);
 void *NNS_FndGetNextListObject(void *list, void *obj);
 void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndAppendListObject(void *list, void *obj);
 
-extern s32 (*data_021f5b3c)(PlayCtx *);
-extern s32 (*data_021f5b44)(PlayCtx *);
-extern s32 (*data_021f5b40)(PlayCtx *);
-extern u16 data_0213b200;
-void func_020ee8d0(Group *g, s32 i, s32 v);
-void func_020ee87c(Group *g, s32 i);
+extern s32 (*gSndListenerDistanceCallback)(PlayCtx *);
+extern s32 (*gSndListenerVolumeCallback)(PlayCtx *);
+extern s32 (*gSndListenerPanCallback)(PlayCtx *);
+extern u16 gSndPanTrackMask;
+void SndSeGroup_StartVoice(Group *g, s32 i, s32 v);
+void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
 }
 extern "C" {
-s32 func_020ed9c8(u32 a);
+s32 Snd_LoadGroup(u32 a);
 }
 
 // PROTOS-BEGIN
 extern "C" {
-void func_020ede5c(Group *g, s32 a);
-void func_020edec8(Group *g, s32 a);
-void func_020edf10(Group *g, s32 i, s32 a);
-void func_020edf50(Group *g);
-void func_020edf9c(Group *g);
-s32 func_020ee514(Group *g);
-void func_020ee58c(Group *g, s32 bit, s32 on);
-BOOL func_020ee5d4(Ent *e);
-void func_020ee5e8(Ent *e, s32 bit, s32 on);
-void func_020ee630(Ent *e, s32 x);
-BOOL func_020ee680(Ent *e, u32 a, u32 b);
-void func_020ee6b0(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void func_020ee6f4(Ent *e, u32 a, u32 b, s32 c, s16 d);
-void func_020ee748(Ent *e, s32 c, s32 d);
-void func_020ee754(Ent *e);
-void func_020ee784(PlayCtx *p);
-void func_020ee87c(Group *g, s32 i);
-void func_020ee8d0(Group *g, s32 i, s32 v);
+void SndSeGroup_StopHeld(Group *g, s32 a);
+void SndSeGroup_StopAll(Group *g, s32 a);
+void SndSeGroup_StopVoice(Group *g, s32 i, s32 a);
+void SndSeGroup_ReleaseAll(Group *g);
+void SndSeGroup_Shutdown(Group *g);
+s32 SndSeGroup_FindFreeVoice(Group *g);
+void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on);
+BOOL SndSeVoice_IsHeld(Ent *e);
+void SndSeVoice_SetFlag(Ent *e, s32 bit, s32 on);
+void SndSeVoice_Stop(Ent *e, s32 x);
+BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b);
+void SndSeVoice_StartHeld(Ent *e, u32 a, u32 b, s32 c, s16 d);
+void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d);
+void SndSeVoice_SetParams(Ent *e, s32 c, s32 d);
+void SndSeVoice_Init(Ent *e);
+void SndSeGroup_EvalListener(PlayCtx *p);
+void SndSeGroup_ApplyVoiceParams(Group *g, s32 i);
+void SndSeGroup_StartVoice(Group *g, s32 i, s32 v);
 }
 
-extern "C" void func_020ee968(void **p) {
-    if (p == NULL) func_0206d49c();
+extern "C" void SndList_InitLink(void **p) {
+    if (p == NULL) Fatal_Trap();
     p[0] = NULL;
     p[1] = NULL;
 }
 
-extern "C" void func_020ee95c(void *list, void *obj) {
+extern "C" void SndList_Append(void *list, void *obj) {
     NNS_FndAppendListObject(list, obj);
 }
 
-extern "C" void func_020ee950(void *list, void *obj) {
+extern "C" void SndList_Remove(void *list, void *obj) {
     NNS_FndRemoveListObject(list, obj);
 }
 
-extern "C" void *func_020ee944(void *list, void *obj) {
+extern "C" void *SndList_GetNext(void *list, void *obj) {
     return NNS_FndGetNextListObject(list, obj);
 }
 
-extern "C" void *func_020ee938(void *list, void *obj) {
+extern "C" void *SndList_GetPrev(void *list, void *obj) {
     return NNS_FndGetPrevListObject(list, obj);
 }
 
-extern "C" void *func_020ee930(void **p) {
+extern "C" void *SndList_GetFirst(void **p) {
     return p[0];
 }
 
-extern "C" void *func_020ee928(void **p) {
+extern "C" void *SndList_GetLast(void **p) {
     return p[1];
 }
 
-extern "C" void func_020ee8d0(Group *g, s32 i, s32 v) {
+extern "C" void SndSeGroup_StartVoice(Group *g, s32 i, s32 v) {
     Ent *e = &g->unk_08[i];
-    if (g->unk_36 == 0) func_0206d49c();
+    if (g->unk_36 == 0) Fatal_Trap();
     func_0210cebc(e, -1, -1, v, e->unk_08, e->unk_06);
 }
 
-extern "C" void func_020ee87c(Group *g, s32 i) {
+extern "C" void SndSeGroup_ApplyVoiceParams(Group *g, s32 i) {
     Ent *e = &g->unk_08[i];
-    if (g->unk_36 == 0) func_0206d49c();
-    func_0210a148(e, data_0213b200, e->unk_0a);
-    NNS_SndPlayerSetTrackPitch(e, data_0213b200, e->unk_04);
+    if (g->unk_36 == 0) Fatal_Trap();
+    func_0210a148(e, gSndPanTrackMask, e->unk_0a);
+    NNS_SndPlayerSetTrackPitch(e, gSndPanTrackMask, e->unk_04);
 }
 
-extern "C" void func_020ee86c(s32 (*f)(PlayCtx *)) {
-    data_021f5b40 = f;
+extern "C" void Snd_SetListenerPanCallback(s32 (*f)(PlayCtx *)) {
+    gSndListenerPanCallback = f;
 }
 
-extern "C" void func_020ee85c(s32 (*f)(PlayCtx *)) {
-    data_021f5b3c = f;
+extern "C" void Snd_SetListenerDistanceCallback(s32 (*f)(PlayCtx *)) {
+    gSndListenerDistanceCallback = f;
 }
 
-extern "C" void func_020ee84c(s32 (*f)(PlayCtx *)) {
-    data_021f5b44 = f;
+extern "C" void Snd_SetListenerVolumeCallback(s32 (*f)(PlayCtx *)) {
+    gSndListenerVolumeCallback = f;
 }
 
-extern "C" void func_020ee784(PlayCtx *p) {
+extern "C" void SndSeGroup_EvalListener(PlayCtx *p) {
     if (p->unk_04 == NULL) {
         p->unk_10 = 0;
         p->unk_14 = 127;
@@ -188,16 +188,16 @@ extern "C" void func_020ee784(PlayCtx *p) {
         p->unk_18 = 0;
         return;
     }
-    if (data_021f5b3c == NULL) func_0206d49c();
-    if (data_021f5b44 == NULL) func_0206d49c();
-    if (data_021f5b40 == NULL) func_0206d49c();
-    p->unk_10 = data_021f5b3c(p);
-    p->unk_14 = data_021f5b44(p);
+    if (gSndListenerDistanceCallback == NULL) Fatal_Trap();
+    if (gSndListenerVolumeCallback == NULL) Fatal_Trap();
+    if (gSndListenerPanCallback == NULL) Fatal_Trap();
+    p->unk_10 = gSndListenerDistanceCallback(p);
+    p->unk_14 = gSndListenerVolumeCallback(p);
     p->unk_1c = p->unk_14;
-    p->unk_18 = data_021f5b40(p);
+    p->unk_18 = gSndListenerPanCallback(p);
 }
 
-extern "C" void func_020ee754(Ent *e) {
+extern "C" void SndSeVoice_Init(Ent *e) {
     NNS_SndHandleInit(e);
     e->unk_08 = 0;
     e->unk_06 = 0;
@@ -206,39 +206,39 @@ extern "C" void func_020ee754(Ent *e) {
     e->unk_0a = 127;
 }
 
-extern "C" void func_020ee748(Ent *e, s32 c, s32 d) {
+extern "C" void SndSeVoice_SetParams(Ent *e, s32 c, s32 d) {
     e->unk_0a = c;
     e->unk_04 = d;
 }
 
-extern "C" void func_020ee6f4(Ent *e, u32 a, u32 b, s32 c, s16 d) {
-    if (e == NULL) func_0206d49c();
+extern "C" void SndSeVoice_Start(Ent *e, u32 a, u32 b, s32 c, s16 d) {
+    if (e == NULL) Fatal_Trap();
     e->unk_08 = a;
     e->unk_06 = b;
-    func_020ee5e8(e, 1, 1);
-    func_020ee748(e, c, d);
+    SndSeVoice_SetFlag(e, 1, 1);
+    SndSeVoice_SetParams(e, c, d);
 }
 
-extern "C" void func_020ee6b0(Ent *e, u32 a, u32 b, s32 c, s16 d) {
-    func_020ee6f4(e, a, b, c, d);
-    func_020ee5e8(e, 2, 1);
-    func_020ee5e8(e, 3, 1);
+extern "C" void SndSeVoice_StartHeld(Ent *e, u32 a, u32 b, s32 c, s16 d) {
+    SndSeVoice_Start(e, a, b, c, d);
+    SndSeVoice_SetFlag(e, 2, 1);
+    SndSeVoice_SetFlag(e, 3, 1);
 }
 
-extern "C" BOOL func_020ee680(Ent *e, u32 a, u32 b) {
+extern "C" BOOL SndSeVoice_IsPlayingId(Ent *e, u32 a, u32 b) {
     if (e->unk_00 != NULL && e->unk_06 == b && e->unk_08 == a) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_020ee630(Ent *e, s32 x) {
+extern "C" void SndSeVoice_Stop(Ent *e, s32 x) {
     if (e->unk_00 != NULL) NNS_SndPlayerStopSeq(e, x);
-    func_020ee5e8(e, 2, 0);
-    func_020ee5e8(e, 3, 0);
-    func_020ee5e8(e, 1, 0);
+    SndSeVoice_SetFlag(e, 2, 0);
+    SndSeVoice_SetFlag(e, 3, 0);
+    SndSeVoice_SetFlag(e, 1, 0);
 }
 
-extern "C" void func_020ee5e8(Ent *e, s32 bit, s32 on) {
-    if (e == NULL) func_0206d49c();
+extern "C" void SndSeVoice_SetFlag(Ent *e, s32 bit, s32 on) {
+    if (e == NULL) Fatal_Trap();
     if (on == 1) {
         e->unk_09 |= (1 << bit);
     } else {
@@ -246,12 +246,12 @@ extern "C" void func_020ee5e8(Ent *e, s32 bit, s32 on) {
     }
 }
 
-extern "C" BOOL func_020ee5d4(Ent *e) {
+extern "C" BOOL SndSeVoice_IsHeld(Ent *e) {
     return (e->unk_09 & 4) != 0;
 }
 
-extern "C" void func_020ee58c(Group *g, s32 bit, s32 on) {
-    if (g == NULL) func_0206d49c();
+extern "C" void SndSeGroup_SetFlag(Group *g, s32 bit, s32 on) {
+    if (g == NULL) Fatal_Trap();
     if (on == 1) {
         g->unk_34 |= (1 << bit);
     } else {
@@ -259,12 +259,12 @@ extern "C" void func_020ee58c(Group *g, s32 bit, s32 on) {
     }
 }
 
-extern "C" void func_020ee558(Group *g, s32 x) {
-    if (g == NULL) func_0206d49c();
-    func_020ee58c(g, 0, x);
+extern "C" void SndSeGroup_SetEnabled(Group *g, s32 x) {
+    if (g == NULL) Fatal_Trap();
+    SndSeGroup_SetFlag(g, 0, x);
 }
 
-extern "C" s32 func_020ee514(Group *g) {
+extern "C" s32 SndSeGroup_FindFreeVoice(Group *g) {
     s32 i;
     s32 n = g->unk_36;
     u8 *p = (u8 *)g;
@@ -279,43 +279,43 @@ extern "C" s32 func_020ee514(Group *g) {
     return n;
 }
 
-extern "C" void func_020ee478(Group *g) {
+extern "C" void SndSeGroup_Init(Group *g) {
     s32 i;
     Ent *e;
     g->unk_36 = 3;
-    g->unk_2c = (GroupFn)func_020ee8d0;
-    g->unk_30 = (GroupFn)func_020ee87c;
-    if (g->unk_36 > 3) func_0206d49c();
+    g->unk_2c = (GroupFn)SndSeGroup_StartVoice;
+    g->unk_30 = (GroupFn)SndSeGroup_ApplyVoiceParams;
+    if (g->unk_36 > 3) Fatal_Trap();
     g->unk_34 = 0;
     i = 0;
     if ((s32)g->unk_36 > 0) {
         e = g->unk_08;
         do {
-            func_020ee754(e);
+            SndSeVoice_Init(e);
             i++;
             e++;
         } while (i < g->unk_36);
     }
-    Cfg4 *c = &data_021f59f4;
-    if (!(c->unk_0c >= 1 && c->unk_0c < 4)) func_0206d49c();
+    Cfg4 *c = &gSndSeSystem;
+    if (!(c->unk_0c >= 1 && c->unk_0c < 4)) Fatal_Trap();
 }
 
-extern "C" void func_020ee46c(Group *g) {
-    func_020edf9c(g);
+extern "C" void SndSeGroup_Finish(Group *g) {
+    SndSeGroup_Shutdown(g);
 }
 
-extern "C" void func_020ee1b0(Group *g, void *src) {
+extern "C" void SndSeGroup_Update(Group *g, void *src) {
     PlayCtx ctx;
     s32 vol;
     s32 x;
     s32 i;
     BOOL inited = FALSE;
     Ent *e;
-    if (g->unk_36 == 0) func_0206d49c();
+    if (g->unk_36 == 0) Fatal_Trap();
     if ((g->unk_34 & 1) == 0) {
         if ((g->unk_34 & 2) == 0) return;
-        func_020ede5c(g, 0);
-        func_020ee58c(g, 1, 0);
+        SndSeGroup_StopHeld(g, 0);
+        SndSeGroup_SetFlag(g, 1, 0);
         return;
     }
     i = 0;
@@ -330,23 +330,23 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
         do {
             vol = -1;
             x = 0;
-            if (func_020ee5d4(e) != 0) {
+            if (SndSeVoice_IsHeld(e) != 0) {
                 if ((e->unk_09 & 8) == 0) {
-                    func_020edf10(g, i, 0);
+                    SndSeGroup_StopVoice(g, i, 0);
                     goto next;
                 }
-                func_020ee5e8(e, 3, 0);
+                SndSeVoice_SetFlag(e, 3, 0);
                 x = 2;
             }
             if ((e->unk_09 & 2) != 0) {
                 if (!inited) {
-                    func_020ee784(&ctx);
+                    SndSeGroup_EvalListener(&ctx);
                     inited = TRUE;
                 }
                 if (ctx.unk_14 > 0) {
                     s32 base = ctx.unk_1c;
                     InfoB *inf = func_0210b8a0(e->unk_08, e->unk_06);
-                    if (inf == NULL) func_0206d49c();
+                    if (inf == NULL) Fatal_Trap();
                     vol = base + (inf->unk_04 - 64);
                     if (vol > 0) {
                         if (vol >= 127) vol = 127;
@@ -356,7 +356,7 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
                     g->unk_2c(g, i, vol);
                     x = 1;
                 }
-                func_020ee5e8(e, 1, 0);
+                SndSeVoice_SetFlag(e, 1, 0);
             }
             if (x == 0) {
                 if ((e->unk_09 & 1) != 0) {
@@ -367,13 +367,13 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
             }
             if (x != 0 && e->unk_00 != NULL) {
                 if (!inited) {
-                    func_020ee784(&ctx);
+                    SndSeGroup_EvalListener(&ctx);
                     inited = TRUE;
                 }
                 if (vol == -1) {
                     s32 base = ctx.unk_1c;
                     InfoB *inf = func_0210b8a0(e->unk_08, e->unk_06);
-                    if (inf == NULL) func_0206d49c();
+                    if (inf == NULL) Fatal_Trap();
                     vol = base + (inf->unk_04 - 64);
                     if (vol > 0) {
                         if (vol >= 127) vol = 127;
@@ -381,10 +381,10 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
                         vol = 0;
                     }
                 }
-                if (!inited) func_0206d49c();
+                if (!inited) Fatal_Trap();
                 NNS_SndPlayerSetVolume(e, ctx.unk_14);
                 func_0210a1e8(e, vol);
-                NNS_SndPlayerSetTrackPan(e, data_0213b200, ctx.unk_18);
+                NNS_SndPlayerSetTrackPan(e, gSndPanTrackMask, ctx.unk_18);
                 g->unk_30(g, i, vol);
             }
         next:
@@ -392,10 +392,10 @@ extern "C" void func_020ee1b0(Group *g, void *src) {
             i++;
         } while (i < g->unk_36);
     }
-    func_020ee58c(g, 1, 1);
+    SndSeGroup_SetFlag(g, 1, 1);
 }
 
-extern "C" s32 func_020ee0c4(Group *g, u32 a, u32 b, s32 c, s16 d) {
+extern "C" s32 SndSeGroup_Play(Group *g, u32 a, u32 b, s32 c, s16 d) {
     s32 r = 255;
     s32 i;
     Ent *e;
@@ -404,22 +404,22 @@ extern "C" s32 func_020ee0c4(Group *g, u32 a, u32 b, s32 c, s16 d) {
     if ((s32)g->unk_36 > 0) {
         e = g->unk_08;
         do {
-            if (func_020ee680(e, a, b) != 0) {
+            if (SndSeVoice_IsPlayingId(e, a, b) != 0) {
                 r = i;
-                func_020edf10(g, i, 0);
+                SndSeGroup_StopVoice(g, i, 0);
                 break;
             }
             i++;
             e++;
         } while (i < g->unk_36);
     }
-    if (r == 255) r = func_020ee514(g);
+    if (r == 255) r = SndSeGroup_FindFreeVoice(g);
     if (r == g->unk_36) return -1;
-    func_020ee6f4(&g->unk_08[r], a, b, c, d);
+    SndSeVoice_Start(&g->unk_08[r], a, b, c, d);
     return r;
 }
 
-extern "C" s32 func_020edfbc(Group *g, u32 a, u32 b, s32 c, s16 d) {
+extern "C" s32 SndSeGroup_PlayHeld(Group *g, u32 a, u32 b, s32 c, s16 d) {
     s32 i;
     Ent *e;
     s32 r;
@@ -428,10 +428,10 @@ extern "C" s32 func_020edfbc(Group *g, u32 a, u32 b, s32 c, s16 d) {
     if ((s32)g->unk_36 > 0) {
         e = g->unk_08;
         do {
-            if (func_020ee5d4(e) != 0) {
-                if (func_020ee680(e, a, b) != 0) {
-                    func_020ee5e8(e, 3, 1);
-                    func_020ee748(e, c, d);
+            if (SndSeVoice_IsHeld(e) != 0) {
+                if (SndSeVoice_IsPlayingId(e, a, b) != 0) {
+                    SndSeVoice_SetFlag(e, 3, 1);
+                    SndSeVoice_SetParams(e, c, d);
                     return i;
                 }
             }
@@ -439,21 +439,21 @@ extern "C" s32 func_020edfbc(Group *g, u32 a, u32 b, s32 c, s16 d) {
             e++;
         } while (i < g->unk_36);
     }
-    i = func_020ee514(g);
+    i = SndSeGroup_FindFreeVoice(g);
     if (i == g->unk_36) return -1;
-    func_020ee6b0(&g->unk_08[i], a, b, c, d);
+    SndSeVoice_StartHeld(&g->unk_08[i], a, b, c, d);
     return i;
 }
 
-extern "C" void func_020edf9c(Group *g) {
-    func_020edec8(g, 0);
-    func_020edf50(g);
+extern "C" void SndSeGroup_Shutdown(Group *g) {
+    SndSeGroup_StopAll(g, 0);
+    SndSeGroup_ReleaseAll(g);
 }
 
-extern "C" void func_020edf50(Group *g) {
+extern "C" void SndSeGroup_ReleaseAll(Group *g) {
     s32 i;
     Ent *e;
-    if (g == NULL) func_0206d49c();
+    if (g == NULL) Fatal_Trap();
     i = 0;
     if ((s32)g->unk_36 <= 0) return;
     e = g->unk_08;
@@ -464,28 +464,28 @@ extern "C" void func_020edf50(Group *g) {
     } while (i < g->unk_36);
 }
 
-extern "C" void func_020edf10(Group *g, s32 i, s32 a) {
+extern "C" void SndSeGroup_StopVoice(Group *g, s32 i, s32 a) {
     Ent *e = &g->unk_08[i];
-    if (i >= g->unk_36) func_0206d49c();
-    func_020ee630(e, a);
+    if (i >= g->unk_36) Fatal_Trap();
+    SndSeVoice_Stop(e, a);
 }
 
-extern "C" void func_020edec8(Group *g, s32 a) {
+extern "C" void SndSeGroup_StopAll(Group *g, s32 a) {
     s32 i = 0;
     if ((s32)g->unk_36 <= 0) return;
     do {
-        func_020edf10(g, i, a);
+        SndSeGroup_StopVoice(g, i, a);
         i++;
     } while (i < g->unk_36);
 }
 
-extern "C" void func_020ede5c(Group *g, s32 a) {
+extern "C" void SndSeGroup_StopHeld(Group *g, s32 a) {
     s32 i = 0;
     Ent *e;
     if ((s32)g->unk_36 <= 0) return;
     e = g->unk_08;
     do {
-        if (func_020ee5d4(e) != 0) func_020edf10(g, i, a);
+        if (SndSeVoice_IsHeld(e) != 0) SndSeGroup_StopVoice(g, i, a);
         i++;
         e++;
     } while (i < g->unk_36);
@@ -493,10 +493,10 @@ extern "C" void func_020ede5c(Group *g, s32 a) {
 
 // PROTOS-END
 
-extern "C" BOOL func_020ede18(Player *o) {
+extern "C" BOOL SndSeSystem_LoadGroup(Player *o) {
     u32 id;
     if (o->unk_15.b0 != 255) {
-        id = func_020ed9c8(o->unk_15.b0);
+        id = Snd_LoadGroup(o->unk_15.b0);
         if (id == (u32)-1) return FALSE;
     } else {
         id = 255;

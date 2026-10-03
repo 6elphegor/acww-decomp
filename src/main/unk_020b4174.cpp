@@ -12,8 +12,8 @@ void func_0200226c(u32 a, u32 b, u32 c, u32 d);
 void func_0200261c(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 void func_02002654(const char *path, void *heap, u32 a);
 void func_020026c4(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
-void func_0200402c(u32 x);
-void func_020040cc(void);
+void Snd_PlaySe(u32 x);
+void Snd_CreateScene(void);
 void func_0205c170(void);
 void func_0205c18c(u32 a, u32 b);
 void func_0205369c(void);
@@ -21,14 +21,14 @@ void func_02053780(void);
 void func_02078370(void);
 void func_0207835c(void);
 void func_02097564(void);
-void func_0209d624(void *p);
-void func_0209d70c(void *p, u32 x);
-void _ZN12Unk_0209da4413func_0209df9cEv(void *p);
-BOOL _ZN12Unk_0209ea5013func_0209eb48Ev(void *p);
+void SaveData_Apply(void *p);
+void SaveData_Setup(void *p, u32 x);
+void _ZN8SaveData5resetEv(void *p);
+BOOL _ZN11SaveRecord412isStateUnsetEv(void *p);
 void func_0209f224(u32 x);
-void func_020a06ec(void);
-u32 func_020a071c(void);
-u32 func_020a0a7c(u32 a, void *p);
+void Save_InvalidateLetterStorage(void);
+u32 Save_SlotStampsMatch(void);
+u32 Save_ReadSlotAsyncStep(u32 a, void *p);
 void func_020b4f78(void *p, u32 x);
 void func_020b4968(u32 a, u32 b);
 u8 *func_020b4934(void);
@@ -37,31 +37,31 @@ void func_020b8494(void);
 u64 OS_GetTick(void);
 void GX_SetBankForSubBG(u32 x);
 void GX_SetBankForBG(u32 x);
-void *func_020e8608(void *heap, u32 size);
-void func_020e85fc(void *heap, void *ptr);
+void *Heap_Alloc(void *heap, u32 size);
+void Heap_Free(void *heap, void *ptr);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
 
-extern u32 data_020dc520;
-extern void *data_021f482c;
-extern u8 data_021d7350;
+extern u32 gVBlanksPerFrame;
+extern void *gCurrentHeap;
+extern u8 gSaveData;
 extern u8 data_021ed32c;
 }
 
 // Intermediate game-state class with an inline constructor that sets flags
-class Unk_020e2988 : public Unk_020d8c7c {
+class Unk_020e2988 : public GameProc {
 public:
     Unk_020e2988() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual ~Unk_020e2988() {}
 };
 
@@ -69,7 +69,7 @@ class Unk_020e3fe4 : public Unk_020e2988 {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
 
     void func_020b41cc();
     void func_020b4248();
@@ -90,28 +90,28 @@ public:
 extern "C" Unk_020e3fe4 *func_020b459c(void) { return new Unk_020e3fe4; }
 
 BOOL Unk_020e3fe4::vfunc_00() {
-    data_020dc520 = 3;
-    func_020040cc();
+    gVBlanksPerFrame = 3;
+    Snd_CreateScene();
     unk_50 = 0;
-    unk_60 = data_021f482c;
-    unk_64 = func_020e8608(unk_60, 0x15fe0);
-    unk_68 = func_020e8608(unk_60, 0x15fe0);
+    unk_60 = gCurrentHeap;
+    unk_64 = Heap_Alloc(unk_60, 0x15fe0);
+    unk_68 = Heap_Alloc(unk_60, 0x15fe0);
     return TRUE;
 }
 
 BOOL Unk_020e3fe4::vfunc_0c() {
-    func_020e85fc(unk_60, unk_64);
-    func_020e85fc(unk_60, unk_68);
+    Heap_Free(unk_60, unk_64);
+    Heap_Free(unk_60, unk_68);
     return TRUE;
 }
 
-BOOL Unk_020e3fe4::vfunc_18() {
+BOOL Unk_020e3fe4::onExecute() {
     switch (unk_5f) {
     case 0:
         if (unk_50 == 1) unk_5f = 1;
         break;
     case 1: {
-        u32 r = func_020a0a7c(0, unk_64);
+        u32 r = Save_ReadSlotAsyncStep(0, unk_64);
         if (r != 3) {
             unk_5c = r;
             unk_5f = 2;
@@ -119,7 +119,7 @@ BOOL Unk_020e3fe4::vfunc_18() {
         break;
     }
     case 2: {
-        u32 r = func_020a0a7c(1, unk_68);
+        u32 r = Save_ReadSlotAsyncStep(1, unk_68);
         if (r != 3) {
             unk_5d = r;
             unk_5f = 3;
@@ -133,7 +133,7 @@ BOOL Unk_020e3fe4::vfunc_18() {
         func_0200145c(-16);
         unk_50 = 1;
         unk_51 = 0x10;
-        func_0200402c(0x88c);
+        Snd_PlaySe(0x88c);
         break;
     case 1:
         if (unk_51 != 0) {
@@ -187,7 +187,7 @@ void Unk_020e3fe4::func_020b42b8() {
     *(volatile u32 *)0x4000000 = *(volatile u32 *)0x4000000 & 0xc7ffffff;
     func_0200226c(6, 0, 0, 0);
     func_0200226c(2, 0, 0, 0);
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     func_0200261c("menu/nin/nin.bch", heap, 6, 0, 0, 0x2ff);
     func_020026c4("menu/nin/ninE.bpl", heap, 6, 0, 0, 0);
     func_02002654("menu/nin/nin.bsc", heap, 6);
@@ -210,12 +210,12 @@ void Unk_020e3fe4::func_020b4248() {
         } else if (unk_5d != 0) {
             r = 0;
         } else {
-            r = func_020a071c();
+            r = Save_SlotStampsMatch();
         }
         if (r == 0) {
-            MI_CpuCopy8(unk_64, &data_021d7350, 0x15fe0);
+            MI_CpuCopy8(unk_64, &gSaveData, 0x15fe0);
         } else {
-            MI_CpuCopy8(unk_68, &data_021d7350, 0x15fe0);
+            MI_CpuCopy8(unk_68, &gSaveData, 0x15fe0);
         }
         unk_5e = 0;
     }
@@ -225,17 +225,17 @@ void Unk_020e3fe4::func_020b41cc() {
     func_0205c18c(0x5000, 0);
     if (unk_5e == 4 || unk_5e == 1) {
         if (unk_5e == 4) {
-            if (!_ZN12Unk_0209ea5013func_0209eb48Ev(&data_021ed32c)) func_0209f224(1);
+            if (!_ZN11SaveRecord412isStateUnsetEv(&data_021ed32c)) func_0209f224(1);
         }
-        if (unk_5e == 4) func_020a06ec();
-        _ZN12Unk_0209da4413func_0209df9cEv(&data_021d7350);
+        if (unk_5e == 4) Save_InvalidateLetterStorage();
+        _ZN8SaveData5resetEv(&gSaveData);
         func_02097564();
         func_02078370();
-        func_0209d70c(&data_021d7350, 3);
+        SaveData_Setup(&gSaveData, 3);
     } else {
-        func_0209d70c(&data_021d7350, 4);
+        SaveData_Setup(&gSaveData, 4);
     }
-    func_0209d624(&data_021d7350);
+    SaveData_Apply(&gSaveData);
     func_0207835c();
     func_0205c170();
 }

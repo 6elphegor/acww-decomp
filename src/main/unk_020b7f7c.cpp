@@ -5,7 +5,7 @@ void NNS_GfdInitFrmTexVramManager(u32 a, u32 b);
 void NNS_GfdInitFrmPlttVramManager(u32 a, u32 b);
 u32 func_0210f460(void);
 u32 GX_GetBankForTex(void);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 void OS_VSNPrintf(char *buf, u32 size, const char *fmt, char *ap);
 }
 
@@ -79,7 +79,7 @@ extern "C" void func_020b81fc(u32 *o0, u32 *o1, u32 size) {
             data_021ef620 = data_021ef620 + (size >> 1);
         } else {
             func_020b7f7c();
-            func_0206d49c();
+            Fatal_Trap();
             *o0 = 0;
             *o1 = 0x20000;
         }
@@ -130,7 +130,7 @@ extern "C" void func_020b8130(u32 *o, u32 size) {
         return;
     }
     func_020b7f7c();
-    func_0206d49c();
+    Fatal_Trap();
     *o = 0;
 }
 
@@ -141,7 +141,7 @@ extern "C" u32 func_020b80f8(u32 a) {
     data_021ef608 = n;
     if (n >= data_021ef62c) {
         data_021ef608 = p;
-        func_0206d49c();
+        Fatal_Trap();
         return 0;
     }
     return p;
@@ -201,7 +201,7 @@ extern "C" void func_020b7f80(void) {
         data_021ef60c = 0x60000;
         break;
     default:
-        func_0206d49c();
+        Fatal_Trap();
         break;
     }
 }

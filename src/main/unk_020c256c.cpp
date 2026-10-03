@@ -12,30 +12,30 @@ void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::vfunc_08(int).
-class Unk_020d8c7c_Base {
+// Unk_020d77a4::postCreate(int).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 // ---- Unk_020e73b0 and its bases (vtable 0x020ddcf0 chain) ----
@@ -177,15 +177,15 @@ struct Unk_020d77a4_Vec3 {
 };
 typedef Unk_020d77a4_Vec3 Unk_0203e7a4_Vec;
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
-struct Unk_020d9670 : Unk_020d5d84 {
+struct Character : Actor {
     u8 pad_04[0x58];
     Unk_0203e7a4_Vec unk_5c;
     u8 pad_68[0x8e - 0x68];
@@ -193,19 +193,19 @@ struct Unk_020d9670 : Unk_020d5d84 {
     u8 pad_90[4];
     s16 unk_94;
     u8 pad_96[0xe6 - 0x92];
-    Unk_020d9670();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual ~Unk_020d9670();
+    Character();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
+    virtual ~Character();
     virtual BOOL vfunc_48(void *p);
     virtual void vfunc_4c(int a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Unk_020d9670 {
+struct Unk_020d77a4 : Character {
     u16 unk_ea;
     Unk_020dbd74 unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -226,10 +226,10 @@ struct Unk_020d77a4 : Unk_020d9670 {
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
@@ -261,7 +261,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 a);
     virtual u32 vfunc_78();
     virtual BOOL vfunc_7c();

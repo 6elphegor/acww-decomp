@@ -83,7 +83,7 @@ s32 WM_StartScanEx(void *, void *);
 u64 OS_GetTick();
 u32 WM_GetDispersionScanPeriod();
 void OS_GetOwnerInfo(void *);
-void func_0206d49c(void *);
+void Fatal_Trap(void *);
 void func_ov001_02225d58(void *);
 void *func_ov001_02225db0(s32, s32);
 void func_ov001_02226fd0(s32, u32);
@@ -197,7 +197,7 @@ void func_ov001_0221faf0(void *arg0)
         func_ov001_0221fcd0();
         break;
     default:
-        func_0206d49c(m);
+        Fatal_Trap(m);
         break;
     }
 }

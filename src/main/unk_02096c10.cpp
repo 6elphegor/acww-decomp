@@ -1,15 +1,15 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-class Unk_020dd458 {
+class Letter {
 public:
-    Unk_020dd458();
-    virtual ~Unk_020dd458();
+    Letter();
+    virtual ~Letter();
 
     u8 func_02065578();
     u32 func_02065588(u32 v, u32 w);
     void func_02065b28();
-    void func_02065e70(Unk_020dd458 *src);
+    void func_02065e70(Letter *src);
 
     /* 0x04 */ u8 unk_04[0xec];
     /* 0xf0 */ u16 unk_f0;
@@ -21,13 +21,13 @@ class Unk_02097020 {
 public:
     Unk_02097020();
     ~Unk_02097020();
-    Unk_020dd458 *func_02097020(s32 i);
+    Letter *func_02097020(s32 i);
     void func_02096fd4();
     BOOL func_02096fa0(u32 mask);
     void func_02096fb8(u32 mask);
     u8 *func_02096fc8();
 
-    /* 0x000 */ Unk_020dd458 unk_00[10];
+    /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u8 unk_988;
     /* 0x989 */ u8 unk_989;
     /* 0x98a */ u8 unk_98a;
@@ -40,12 +40,12 @@ class Unk_020970b8 {
 public:
     Unk_020970b8();
     ~Unk_020970b8();
-    Unk_020dd458 *func_020970b8(s32 i);
+    Letter *func_020970b8(s32 i);
     void func_02097078(u32 v);
     u32 func_02097084();
     void func_02097090();
 
-    /* 0x000 */ Unk_020dd458 unk_00[10];
+    /* 0x000 */ Letter unk_00[10];
     /* 0x988 */ u16 unk_988;
     /* 0x98a */ u16 pad_98a;
 };
@@ -71,7 +71,7 @@ public:
     /* 0x13 */ u8 pad_13;
 };
 
-class Unk_02096e28 : public Unk_020dd458 {
+class Unk_02096e28 : public Letter {
 public:
     void func_02096e28();
     u8 *func_02096e50();
@@ -82,7 +82,7 @@ public:
     /* 0xf7 */ u8 unk_f7;
 };
 
-class Unk_02096e78 : public Unk_020dd458 {
+class Unk_02096e78 : public Letter {
 public:
     s32 func_02096e78();
     void func_02096ed4();
@@ -93,21 +93,21 @@ public:
     /* 0xf4 */ u8 unk_f4[5];
 };
 
-class Unk_02096f68 {
+class LetterStorage {
 public:
     void func_02096f68();
-    Unk_020dd458 *func_02096f88(s32 i);
+    Letter *func_02096f88(s32 i);
 
-    /* 0x000 */ Unk_020dd458 unk_00[75];
+    /* 0x000 */ Letter unk_00[75];
 };
 
 // Vtable at 0x020e1db0.
-class Unk_020e1db0 : public Unk_020d8c7c {
+class Unk_020e1db0 : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     void func_02096c58(u32 mask);
     void func_02096c68(u32 mask);
@@ -123,15 +123,15 @@ void func_020966f8(void *);
 s32 func_020b50f4(void);
 s32 func_02063b8c(s32);
 void func_02065c94(void *);
-void _ZN12Unk_020dd458D1Ev(void *);
-void _ZN12Unk_020dd458C1Ev(void *);
+void _ZN6LetterD1Ev(void *);
+void _ZN6LetterC1Ev(void *);
 }
 
 Unk_020970b8::Unk_020970b8() {}
 
 Unk_020970b8::~Unk_020970b8() {}
 
-Unk_020dd458 *Unk_020970b8::func_020970b8(s32 i) {
+Letter *Unk_020970b8::func_020970b8(s32 i) {
     if (i >= 0 && i < 10) {
         return &unk_00[i];
     }
@@ -158,7 +158,7 @@ Unk_02097020::Unk_02097020() {}
 
 Unk_02097020::~Unk_02097020() {}
 
-Unk_020dd458 *Unk_02097020::func_02097020(s32 i) {
+Letter *Unk_02097020::func_02097020(s32 i) {
     if (i >= 0 && i < 10) {
         return &unk_00[i];
     }
@@ -192,27 +192,27 @@ BOOL Unk_02097020::func_02096fa0(u32 mask) {
     return FALSE;
 }
 
-Unk_020dd458 *Unk_02096f68::func_02096f88(s32 i) {
+Letter *LetterStorage::func_02096f88(s32 i) {
     if (i >= 0 && i < 3) {
         return &unk_00[i * 25];
     }
     return NULL;
 }
 
-void Unk_02096f68::func_02096f68() {
+void LetterStorage::func_02096f68() {
     s32 i;
     for (i = 0; i < 75; i++) {
         func_02065c94(&unk_00[i]);
     }
 }
 
-extern "C" Unk_020dd458 *func_02096f58(Unk_020dd458 *p) {
-    _ZN12Unk_020dd458C1Ev(p);
+extern "C" Letter *func_02096f58(Letter *p) {
+    _ZN6LetterC1Ev(p);
     return p;
 }
 
-extern "C" Unk_020dd458 *func_02096f48(Unk_020dd458 *p) {
-    _ZN12Unk_020dd458D1Ev(p);
+extern "C" Letter *func_02096f48(Letter *p) {
+    _ZN6LetterD1Ev(p);
     return p;
 }
 
@@ -270,13 +270,13 @@ s32 Unk_02096e78::func_02096e78() {
     return 0;
 }
 
-extern "C" Unk_020dd458 *func_02096e68(Unk_020dd458 *p) {
-    _ZN12Unk_020dd458C1Ev(p);
+extern "C" Letter *func_02096e68(Letter *p) {
+    _ZN6LetterC1Ev(p);
     return p;
 }
 
-extern "C" Unk_020dd458 *func_02096e58(Unk_020dd458 *p) {
-    _ZN12Unk_020dd458D1Ev(p);
+extern "C" Letter *func_02096e58(Letter *p) {
+    _ZN6LetterD1Ev(p);
     return p;
 }
 
@@ -377,7 +377,7 @@ BOOL Unk_020e1db0::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020e1db0::vfunc_18() {
+BOOL Unk_020e1db0::onExecute() {
     if (func_02096c78(1)) {
         if (func_020b50f4()) {
             func_02096c8c();
@@ -387,7 +387,7 @@ BOOL Unk_020e1db0::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_020e1db0::vfunc_24() {
+BOOL Unk_020e1db0::onDraw() {
     return TRUE;
 }
 

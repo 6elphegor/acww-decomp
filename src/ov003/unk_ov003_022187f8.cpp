@@ -20,9 +20,9 @@ struct Unk_020b4f8c_Vec {
 };
 
 // vector object with an out-of-line (main) destructor 0x02000c8c
-struct Unk_02000c8c : Unk_020b4f8c_Vec {
-    Unk_02000c8c(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
-    ~Unk_02000c8c();
+struct FxVec3 : Unk_020b4f8c_Vec {
+    FxVec3(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
+    ~FxVec3();
 };
 
 // 0x1c-byte entry: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main, see aliases.txt)
@@ -40,7 +40,7 @@ struct Unk_ov003_0223249c_Tbl {
 extern "C" {
 u32 data_ov003_022324a4[14] = {0xc9, 0xca, 0xd, 0xc4, 0x8a, 0xc1, 0x89, 7, 0x8c, 0x8e, 0xd5, 0xd1, 0xd2, 0x8d};
 u32 data_ov003_02232498 = 0xe;
-Unk_02000c8c data_ov003_022355a0(0x10000, 0x200, 0x1d000);
+FxVec3 data_ov003_022355a0(0x10000, 0x200, 0x1d000);
 Unk_020b4f8c data_ov003_022355c4[21] = {
     Unk_020b4f8c(0x11, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),
     Unk_020b4f8c(0x12, data_ov003_022355a0, 0x22c00000, -0x8000, 2, 2, 0, 0),

@@ -106,7 +106,7 @@ s32 MB_RegisterFile(void *, void *);
 void FS_CloseFile(void *);
 void func_ov001_02220d2c(u32);
 s32 MB_StartParentFromIdle(s32);
-void func_0206d49c();
+void Fatal_Trap();
 void OS_GetOwnerInfo(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_021251ac(void *, void *, s32, s32, s32);
@@ -624,7 +624,7 @@ extern "C" s32 func_ov001_0222205c(void *cb, s32 x) {
 }
 
 extern "C" u16 func_ov001_02221fd0() {
-    if (data_ov001_0222df28->unk_40 != 7) func_0206d49c();
+    if (data_ov001_0222df28->unk_40 != 7) Fatal_Trap();
     func_ov001_02222db8(1);
     data_ov001_0222df28->unk_5c = func_ov001_02221ecc(data_ov001_0222df28->unk_60);
     if (data_ov001_0222df24 != 0) data_ov001_0222df24(0x8000000, "decided channel = %d\n", data_ov001_0222df28->unk_5c);
@@ -673,7 +673,7 @@ extern "C" BOOL func_ov001_02221e48() {
 extern "C" void func_ov001_02221e14(Unk_ov001_02222088_A *a) {
     if (a->unk_02 != 8) return;
     func_ov001_02222db8(9);
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 extern "C" s32 func_ov001_02221db4() {
@@ -702,7 +702,7 @@ extern "C" void func_ov001_02221d48(u16 *p) {
 }
 
 extern "C" s32 func_ov001_02221bb4(s32 a, u32 b, u32 c) {
-    if (data_ov001_0222df28->unk_40 != 1) func_0206d49c();
+    if (data_ov001_0222df28->unk_40 != 1) Fatal_Trap();
     data_ov001_0222df28->unk_12a4 = 0x180;
     data_ov001_0222df28->unk_12a0 = 0xe0;
     if (data_ov001_0222df24 != 0) data_ov001_0222df24(0x8000000, "recv buffer size = %d\n", data_ov001_0222df28->unk_12a4);
@@ -793,7 +793,7 @@ extern "C" void func_ov001_02221908() {
 }
 
 extern "C" s32 func_ov001_022218a4() {
-    if (data_ov001_0222df28->unk_40 != 1) func_0206d49c();
+    if (data_ov001_0222df28->unk_40 != 1) Fatal_Trap();
     func_ov001_02222db8(3);
     if (WM_End((void *)func_ov001_02222348) == 2) return 1;
     func_ov001_02222db8(9);

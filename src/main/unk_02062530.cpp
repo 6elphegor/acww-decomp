@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-extern u8 data_021c7cc8[];
+extern u8 gItemInfo[];
 }
 
 extern "C" {
@@ -17,79 +17,79 @@ void *func_0206d86c(void *, s32);
 }
 
 extern "C" {
-s32 func_02061ec0(u16 *p);
+s32 ItemInfo_GetKind(u16 *p);
 }
 
 extern "C" {
-s32 func_02061d84(u16 *p);
+s32 ItemInfo_GetSeason(u16 *p);
 }
 
 extern "C" {
-s32 func_02061dd0(u16 *p);
+s32 ItemInfo_GetUnk07(u16 *p);
 }
 
 extern "C" {
-s32 func_02061e0c(u16 *p);
+s32 ItemInfo_GetClass(u16 *p);
 }
 
 extern "C" {
-extern s32 data_021c7ca4;
+extern s32 sFullHeadwearClass1dCount;
 }
 
 extern "C" {
-extern s32 data_021c7ca8;
+extern s32 sHoldableItemCount;
 }
 
 extern "C" {
-extern s32 data_021c7cac;
+extern s32 sHatClass1dCount;
 }
 
 extern "C" {
-extern u16 data_021c7c98[];
+extern u16 sFirstHoldableItem[];
 }
 
 extern "C" {
-BOOL func_02061cbc(u16 *p);
+BOOL ItemInfo_IsHoldable(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b2d4(u16 *p);
+s32 Item_IsFurniture(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
-extern s32 data_021c7ca0;
+extern s32 sFlowerAltCount;
 }
 
 extern "C" {
-extern s32 data_021c7c9c;
+extern s32 sFlowerItemCount;
 }
 
 extern "C" {
-BOOL func_0204b430(u16 *p);
+BOOL Item_IsFlowerItem(u16 *p);
 }
 
 extern "C" {
-BOOL func_0204b37c(u16 *p);
+BOOL Item_IsFlowerAltItem(u16 *p);
 }
 
 extern "C" {
-s32 func_02061fe8(u16 *p);
+s32 ItemInfo_GetSeries(u16 *p);
 }
 
 extern "C" {
-s32 func_02062024(u16 *p);
+s32 ItemInfo_GetNameAttrA(u16 *p);
 }
 
 extern "C" {
-s32 func_02062060(u16 *p);
+s32 ItemInfo_GetNameAttrB(u16 *p);
 }
 
 extern "C" {
-s32 func_020620a4(u16 *p);
+s32 ItemInfo_GetUnk02(u16 *p);
 }
 
 static inline u16 Unk_020621d8_Idx(u32 i, u32 n, u32 base) {
@@ -97,27 +97,27 @@ static inline u16 Unk_020621d8_Idx(u32 i, u32 n, u32 base) {
     return base;
 }
 
-extern "C" void func_020621d8();
+extern "C" void ItemInfo_CountClass1dHeadwear();
 
-extern "C" void func_02062258();
+extern "C" void ItemInfo_CountFlowerItems();
 
 static inline BOOL Unk_020622cc_IsFree(u16 *g, u16 *t) {
-    if (func_0204b2d4(g)) {
+    if (Item_IsFurniture(g)) {
         *t = 0xfff1;
-        s32 x = func_0204b25c(g);
-        if (x == func_0204b25c(t)) return TRUE;
+        s32 x = Item_GetFurnitureIndex(g);
+        if (x == Item_GetFurnitureIndex(t)) return TRUE;
         return FALSE;
     }
     if (*g == 0xfff1) return TRUE;
     return FALSE;
 }
 
-extern "C" void func_020622cc();
+extern "C" void ItemInfo_CountHoldable();
 
 static inline u8 *Unk_02061e0c_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)func_0206d86c(func_0206d79c(data_021c7cc8), i);
+    return (u8 *)func_0206d86c(func_0206d79c(gItemInfo), i);
 }
 
 static inline BOOL Unk_02061e0c_InRange(u16 *p) {
@@ -137,43 +137,43 @@ static inline u16 Unk_02061e0c_Conv(u16 *p) {
     return 0x1000;
 }
 
-extern "C" u32 func_02061efc(u16 *p);
+extern "C" u32 ItemInfo_GetPrice(u16 *p);
 
 static inline u8 *Unk_02062024_Lookup(u32 v) {
     u32 i = v & 0xfff;
     if (i >= 0x56e) i = 0x56d;
-    return (u8 *)func_0206d86c(func_0206d794(data_021c7cc8), i);
+    return (u8 *)func_0206d86c(func_0206d794(gItemInfo), i);
 }
 
-extern "C" s32 func_0206209c(u16 *);
+extern "C" s32 ItemInfo_GetNameForm(u16 *);
 
-extern "C" u16 *func_020620e0(u16 *p);
+extern "C" u16 *ItemInfo_GetName(u16 *p);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Item table setup / string buffers
 
 extern "C" {
-extern u16 data_021c7c98[];
+extern u16 sFirstHoldableItem[];
 }
 
 extern "C" {
-extern s32 data_021c7ca4;
+extern s32 sFullHeadwearClass1dCount;
 }
 
 extern "C" {
-extern s32 data_021c7ca8;
+extern s32 sHoldableItemCount;
 }
 
 extern "C" {
-extern s32 data_021c7ca0;
+extern s32 sFlowerAltCount;
 }
 
 extern "C" {
-extern s32 data_021c7c9c;
+extern s32 sFlowerItemCount;
 }
 
 extern "C" {
-extern s32 data_021c7cac;
+extern s32 sHatClass1dCount;
 }
 
 extern "C" {
@@ -193,27 +193,27 @@ extern u8 data_020dd2ec[];
 }
 
 extern "C" {
-BOOL func_02061cbc(u16 *p);
+BOOL ItemInfo_IsHoldable(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b2d4(u16 *p);
+s32 Item_IsFurniture(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
-BOOL func_0204b430(u16 *p);
+BOOL Item_IsFlowerItem(u16 *p);
 }
 
 extern "C" {
-BOOL func_0204b37c(u16 *p);
+BOOL Item_IsFlowerAltItem(u16 *p);
 }
 
 extern "C" {
-BOOL func_0204b300(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
 }
 
 extern "C" {
@@ -253,15 +253,15 @@ BOOL func_0206d7ec(void *, void *, s32, void *, s32, void *, s32, s32);
 }
 
 extern "C" {
-void func_02061478(u16 *out, u16 *in);
+void Item_FromPlacedForm(u16 *out, u16 *in);
 }
 
 extern "C" {
-u32 func_020618cc(s32);
+u32 Series_GetName(s32);
 }
 
 extern "C" {
-void func_02050fd0(void *);
+void StrBuf_ClearAlt(void *);
 }
 
 extern "C" {
@@ -269,54 +269,54 @@ void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 
 extern "C" {
-u32 func_02052e4c(s32);
+u32 FtrInfo_GetName(s32);
 }
 
 extern "C" {
-u32 func_02053464(s32);
+u32 FtrInfo_GetNameForm(s32);
 }
 
 extern "C" {
-u8 func_02053430(s32);
+u8 FtrInfo_GetNameAttrB(s32);
 }
 
 extern "C" {
-u8 func_020533fc(s32);
+u8 FtrInfo_GetNameAttrA(s32);
 }
 
 extern "C" {
-void func_02062354(void *);
+void ItemInfoTables_FreeIndoor(void *);
 }
 
 extern "C" {
-void func_0206235c(void *, s32);
+void ItemInfoTables_LoadIndoor(void *, s32);
 }
 
 extern "C" {
-s32 func_02062364(void *);
+s32 ItemInfoTables_Close(void *);
 }
 
 extern "C" {
-s32 func_0206237c(void *);
+s32 ItemInfoTables_Open(void *);
 }
 
 extern "C" {
-void func_020622cc();
+void ItemInfo_CountHoldable();
 }
 
 extern "C" {
-void func_02062258();
+void ItemInfo_CountFlowerItems();
 }
 
 extern "C" {
-void func_020621d8();
+void ItemInfo_CountClass1dHeadwear();
 }
 
-extern "C" void func_02062194();
-extern "C" void func_020621a4(s32 a);
-extern "C" s32 func_020621b4();
-extern "C" s32 func_020621c4();
-extern "C" BOOL func_020621d4();
+extern "C" void ItemInfo_FreeIndoor();
+extern "C" void ItemInfo_LoadIndoor(s32 a);
+extern "C" s32 ItemInfo_Exit();
+extern "C" s32 ItemInfo_Init();
+extern "C" BOOL ItemInfo_IsReady();
 
 extern "C" void *func_02062404(void *o);
 
@@ -325,49 +325,49 @@ extern "C" void *func_0206243c(void *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Buffer classes
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a78;
+class MsgString;
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    u8 func_020a7c04(u8 *str);
-    void func_020a7c3c();
+    u8 set(u8 *str);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 struct Unk_020dd30c_Buf {
@@ -375,83 +375,83 @@ struct Unk_020dd30c_Buf {
 };
 
 // 16-byte raw buffer (vtable 0x020dd30c)
-class Unk_020dd30c : public Unk_020e2a60 {
+class EncodedString16Buf : public EncodedString {
 public:
-    Unk_020dd30c();
-    Unk_020dd30c(u8 *src);
-    virtual ~Unk_020dd30c();
+    EncodedString16Buf();
+    EncodedString16Buf(u8 *src);
+    virtual ~EncodedString16Buf();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
-    BOOL func_02062464(u8 *out, s32 n);
+    BOOL copyTo(u8 *out, s32 n);
 
     /* 0x0e */ u8 unk_0e[16];
 };
 
 // buffer of 0x11 bytes (vtable 0x020dd324)
-class Unk_020dd324 : public Unk_020e2a78 {
+class ItemName : public MsgString {
 public:
-    Unk_020dd324();
-    Unk_020dd324(s32 idx);
-    Unk_020dd324(u16 *p);
-    virtual ~Unk_020dd324();
+    ItemName();
+    ItemName(s32 idx);
+    ItemName(u16 *p);
+    virtual ~ItemName();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
-    u8 func_02062538(u8 *str);
-    BOOL func_02062540(s32 idx);
-    BOOL func_02062564(u16 *p);
+    u8 setString(u8 *str);
+    BOOL setSeriesName(s32 idx);
+    BOOL setFromItem(u16 *p);
 
     /* 0x12 */ u8 unk_12[0x11];
 };
 
-Unk_020dd324::Unk_020dd324() {
-    func_020a7c3c();
+ItemName::ItemName() {
+    clear();
 }
 
-Unk_020dd324::Unk_020dd324(u16 *p) {
-    func_020a7c3c();
-    func_02062564(p);
+ItemName::ItemName(u16 *p) {
+    clear();
+    setFromItem(p);
 }
 
-Unk_020dd324::Unk_020dd324(s32 idx) {
-    func_020a7c3c();
-    func_02062540(idx);
+ItemName::ItemName(s32 idx) {
+    clear();
+    setSeriesName(idx);
 }
 
-Unk_020dd324::~Unk_020dd324() {}
+ItemName::~ItemName() {}
 
-BOOL Unk_020dd324::func_02062564(u16 *p) {
+BOOL ItemName::setFromItem(u16 *p) {
     struct { u32 pad; u16 t[2]; } l;
-    func_02061478(l.t, p);
-    Unk_020e2a08 *r = &unk_08;
-    if (func_0204b300(l.t)) {
-        func_02062538((u8 *)func_020620e0(l.t));
-        r->unk_04 = func_0206209c(l.t);
-        r->unk_09 = func_02062060(l.t);
-        r->unk_08 = func_02062024(l.t);
+    Item_FromPlacedForm(l.t, p);
+    MsgStringAttr *r = &unk_08;
+    if (Item_IsNormalItem(l.t)) {
+        setString((u8 *)ItemInfo_GetName(l.t));
+        r->unk_04 = ItemInfo_GetNameForm(l.t);
+        r->unk_09 = ItemInfo_GetNameAttrB(l.t);
+        r->unk_08 = ItemInfo_GetNameAttrA(l.t);
         return TRUE;
     }
-    if (func_0204b2d4(l.t)) {
-        s32 x = func_0204b25c(l.t);
-        func_02062538((u8 *)func_02052e4c(x));
-        r->unk_04 = func_02053464(x);
-        r->unk_09 = func_02053430(x);
-        r->unk_08 = func_020533fc(x);
+    if (Item_IsFurniture(l.t)) {
+        s32 x = Item_GetFurnitureIndex(l.t);
+        setString((u8 *)FtrInfo_GetName(x));
+        r->unk_04 = FtrInfo_GetNameForm(x);
+        r->unk_09 = FtrInfo_GetNameAttrB(x);
+        r->unk_08 = FtrInfo_GetNameAttrA(x);
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_020dd324::func_02062540(s32 idx) {
+BOOL ItemName::setSeriesName(s32 idx) {
     if (idx < 0x4a) {
-        func_02062538((u8 *)func_020618cc(idx));
+        setString((u8 *)Series_GetName(idx));
         return TRUE;
     }
     return FALSE;
 }
 
-u8 Unk_020dd324::func_02062538(u8 *str) { return func_020a7c04(str); }
+u8 ItemName::setString(u8 *str) { return set(str); }
 
-u32 Unk_020dd324::vfunc_08() { return 0x11; }
+u32 ItemName::vfunc_08() { return 0x11; }
 
-u8 *Unk_020dd324::vfunc_0c() { return unk_12; }
+u8 *ItemName::vfunc_0c() { return unk_12; }
 

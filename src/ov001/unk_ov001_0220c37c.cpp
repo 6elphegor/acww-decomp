@@ -28,7 +28,7 @@ Unk_ov001_0220c398_Obj *data_ov001_0222dde8;
 extern s32 func_ov001_02202b3c(void *);
 extern s32 func_ov001_02203040();
 extern s32 func_ov001_022030fc(void *, void *);
-extern void func_0206d49c();
+extern void Fatal_Trap();
 
 #pragma thumb off
 
@@ -62,7 +62,7 @@ void func_ov001_0220c474() {
     data_ov001_0222dde8->unk_10e = -1;
     OS_GetMacAddress(data_ov001_0222dde8->unk_110);
     if (func_ov001_022030fc((void *)func_ov001_0220c388, (void *)func_ov001_0220c37c) != 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
 }
 

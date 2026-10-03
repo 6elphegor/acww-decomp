@@ -38,7 +38,7 @@ extern u8 data_021c6450[];
 
 void func_0205bda8();
 void func_0205bdc4();
-void *func_020e8628(void *heap, u32 size, u32 align);
+void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
 u32 func_020b50e8();
@@ -46,7 +46,7 @@ u32 func_020b4928(u32 a);
 u32 func_020b491c(u32 a);
 u32 func_02084fbc();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
-s32 func_020641b4(void *name, void *buf, s32 size);
+s32 File_LoadToBuffer(void *name, void *buf, s32 size);
 void func_020639e8(void *buf, const char *fmt, u32 a, u32 b);
 
 u32 func_0205d16c(u32 x);
@@ -90,14 +90,14 @@ void Unk_0205cfb4::func_0205d0ac() {
     m = func_020b4928(func_020b50e8());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = (u32)func_020e8628(heap, func_0205d178(), 4);
+        ptr[i] = (u32)Heap_AllocAligned(heap, func_0205d178(), 4);
     }
     if (m == 0) m = 1;
     u32 q = func_020b491c(func_020b50e8());
     m = (q + func_02084fbc()) - m;
     u32 al = 4;
     for (i = al; i < m + 4; i++) {
-        ptr[i] = (u32)func_020e8628(heap, func_0205d178(), al);
+        ptr[i] = (u32)Heap_AllocAligned(heap, func_0205d178(), al);
     }
 }
 
@@ -174,7 +174,7 @@ s32 Unk_0205ce0c::func_0205ce78(s32 a, s32 b, s32 c) {
             }
         }
     }
-    s32 got = func_020641b4(func_0205d198(a), (void *)buf, size);
+    s32 got = File_LoadToBuffer(func_0205d198(a), (void *)buf, size);
     if (got != 0) {
         data_021c6464.func_0205d010(st, j, a);
         data_021c6464.func_0205cfb4(st, j, got);

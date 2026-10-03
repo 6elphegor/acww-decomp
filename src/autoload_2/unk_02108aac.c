@@ -21,13 +21,13 @@ typedef struct MatAnmResult {
 // NNS g3d texture SRT matrix: scale + translation
 void texmtxCalc_flagR___3dsmax(s32 *m, const MatAnmResult *anm)
 {
-    s32 A, B;
+    s32 LampLights, LightLevel;
     m[0] = anm->scaleS;
     m[5] = anm->scaleT;
     m[1] = 0;
-    A = (-(s32)anm->origWidth << 11) - anm->transS * anm->origWidth;
-    B = anm->transT * anm->origHeight + (-(s32)anm->origHeight << 11);
-    m[12] = (s32)(((s64)anm->scaleS * A) >> 8) + (anm->origWidth << 15);
-    m[13] = (s32)(((s64)anm->scaleT * B) >> 8) + (anm->origHeight << 15);
+    LampLights = (-(s32)anm->origWidth << 11) - anm->transS * anm->origWidth;
+    LightLevel = anm->transT * anm->origHeight + (-(s32)anm->origHeight << 11);
+    m[12] = (s32)(((s64)anm->scaleS * LampLights) >> 8) + (anm->origWidth << 15);
+    m[13] = (s32)(((s64)anm->scaleT * LightLevel) >> 8) + (anm->origHeight << 15);
     m[4] = 0;
 }

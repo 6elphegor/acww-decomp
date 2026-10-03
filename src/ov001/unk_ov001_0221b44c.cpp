@@ -204,7 +204,7 @@ extern void func_ov001_0221b60c();
 extern void func_ov001_0220c5f0(s32, void *);
 extern void MIi_CpuCopy32(void *, void *, s32);
 extern s32 func_ov065_0226b27c(void *);
-extern void func_0206d49c();
+extern void Fatal_Trap();
 extern void func_ov065_0226b0ec(s32, void *);
 extern void func_ov001_02227094(s32, void *, s32, s32);
 extern void func_ov001_0221b470(s32);
@@ -234,7 +234,7 @@ void func_ov001_0221b6f8() {
     func_ov001_0220c5f0(0, &l);
     if (l == 2) m.b[10] = 4;
     else m.b[10] = o[0xf4] + 1;
-    if (func_ov065_0226b27c(&m) == 0) func_0206d49c();
+    if (func_ov065_0226b27c(&m) == 0) Fatal_Trap();
     if (l == 0) func_ov065_0226b0ec(o[0xf4], o);
     func_ov001_02227094(0, (void *)func_ov001_0221b470, 0, 0x78);
 }

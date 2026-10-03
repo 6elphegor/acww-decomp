@@ -63,10 +63,10 @@ extern "C" void _ZN12Unk_020d8cccD1Ev(Unk_020d8ccc *self);
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
 extern s16 data_02135f44[];
-extern s32 data_021c3070;
+extern s32 gCamera;
 extern s32 data_020c8cb8;
-extern Mtx43 data_0213c7e0;
-s32 _ZN12Unk_0203b35013func_0203bc3cEv(s32 a);
+extern Mtx43 gViewMtx;
+s32 _ZN12Unk_0203b3509getFovTanEv(s32 a);
 s32 FX_Div(s32 a, s32 b);
 void func_020e94f8(Vec3 *v);
 void func_020e9888(Vec3 *v, s32 s);
@@ -76,7 +76,7 @@ void MTX_MultVec43(Vec3 *v, Mtx43 *m, Vec3 *out);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 void func_020e93a0(Vec3 *v, s32 angle);
 void func_020e944c(Vec3 *v, s32 angle);
-s32 func_0203ef38(Vec3 *out, Vec3 *in);
+s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 }
 
 struct Pair {
@@ -85,7 +85,7 @@ struct Pair {
 
 extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     Vec3 v28;
-    s32 ang = func_0203ef38(&v28, r);
+    s32 ang = WorldCurve_ToCurved(&v28, r);
     s32 sn, cs;
     s32 z;
     s32 y, y2, y3;
@@ -137,7 +137,7 @@ extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
     zero.x = 0;
     zero.y = 0;
     zero.z = 0;
-    s32 k = -FX_Div(0x60000, _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070));
+    s32 k = -FX_Div(0x60000, _ZN12Unk_0203b3509getFovTanEv(gCamera));
     t.p.x = (x << 12) - 0x80000;
     t.p.y = -((z << 12) - 0x60000);
     t.p.z = k;
@@ -145,7 +145,7 @@ extern "C" void func_020b6e38(Basis *out, s32 x, s32 z) {
     func_020e94f8(&t.q);
     func_020e9888(&t.q, data_020c8cb8);
     func_01ffd070(&c, &zero, &t.q);
-    m = data_0213c7e0;
+    m = gViewMtx;
     MTX_Inverse43(&m, &m);
     MTX_MultVec43(&zero, &m, &d);
     MTX_MultVec43(&c, &m, &e);

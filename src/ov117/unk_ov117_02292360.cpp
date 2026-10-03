@@ -45,7 +45,7 @@ static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_0229
     return NULL;
 }
 
-struct Unk_0206022c { void func_020604c4(); };
+struct HouseData { void func_020604c4(); };
 struct Unk_0207e940 { u8 *func_0207f170(); };
 struct Unk_020b28ac { void func_020b28ac(s32 *, s32 *, s32 *, s32 *); };
 
@@ -54,21 +54,21 @@ Unk_ov117_022924c8 *data_ov117_02292ce0;
 extern u8 data_021e58a8[];
 extern u8 data_021dfd8c[];
 
-void func_020e8558(void *p);
-void *func_020e8574(u32 n);
+void Mem_Free(void *p);
+void *Mem_Alloc(u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void func_02030598(s32 a);
 Unk_ov117_02292b54_Grid *func_0204da0c();
 s32 func_0204e9dc(void *m, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 g, s32 h);
 void func_0204edf8(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-void *func_020b27a4(u16 *t);
+void *StrBSize_Get(u16 *t);
 u32 func_020374e8(void *c);
 s32 func_02030be4(s32 *a, s32 *b, s32 c, s32 d);
 BOOL func_02031098(u8 *out, s32 a, s32 b);
 void *func_0207bf60(void *, s32);
 BOOL func_02081038(void *p);
-u16 func_0204b1b4(u32 x);
+u16 Item_MakeNeighborHouse(u32 x);
 
 void func_ov117_02292360(void *a, Unk_ov117_02292c88 *b);
 void func_ov117_022923a0(u32 i);
@@ -197,7 +197,7 @@ extern "C" void func_ov117_02292acc(Unk_ov117_02292c88 *s) {
     for (i = 0; i < 8; i++) {
         void *p = func_0207bf60(data_021dfd8c, i);
         if (func_02081038(((Unk_0207e940 *)p)->func_0207f170())) {
-            u16 t = func_0204b1b4(i);
+            u16 t = Item_MakeNeighborHouse(i);
             s32 bx = ((Unk_0207e940 *)p)->func_0207f170()[0];
             s32 by = ((Unk_0207e940 *)p)->func_0207f170()[1];
             s32 o1, o2, o3, o4;
@@ -205,7 +205,7 @@ extern "C" void func_ov117_02292acc(Unk_ov117_02292c88 *s) {
             s32 y = by << 1;
             x += 1;
             y += 1;
-            void *h = func_020b27a4(&t);
+            void *h = StrBSize_Get(&t);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -219,7 +219,7 @@ extern "C" void func_ov117_02292acc(Unk_ov117_02292c88 *s) {
 extern "C" void func_ov117_022929f4(Unk_ov117_02292c88 *s) {
     Unk_ov117_02292b54_Grid *g = func_0204da0c();
     if (g != NULL) {
-        ((Unk_0206022c *)data_021e58a8)->func_020604c4();
+        ((HouseData *)data_021e58a8)->func_020604c4();
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
         t[0] = 0x5014;
@@ -236,7 +236,7 @@ extern "C" void func_ov117_022929f4(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(cell);
+            void *h = StrBSize_Get(cell);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -258,7 +258,7 @@ extern "C" void func_ov117_0229294c(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(&t);
+            void *h = StrBSize_Get(&t);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -280,7 +280,7 @@ extern "C" void func_ov117_022928a8(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(&t);
+            void *h = StrBSize_Get(&t);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -302,7 +302,7 @@ extern "C" void func_ov117_02292804(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(&t);
+            void *h = StrBSize_Get(&t);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -324,7 +324,7 @@ extern "C" void func_ov117_0229275c(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(&t);
+            void *h = StrBSize_Get(&t);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -354,7 +354,7 @@ extern "C" void func_ov117_02292690(Unk_ov117_02292c88 *s) {
             z = z << 1;
             x += 1;
             z += 1;
-            void *h = func_020b27a4(cell);
+            void *h = StrBSize_Get(cell);
             if (h) {
                 ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
@@ -478,7 +478,7 @@ extern "C" void func_ov117_02292408(void *a, Unk_ov117_02292c88 *b) {
 
 extern "C" void func_ov117_022923d8() {
     if (data_ov117_02292ce0 == NULL) {
-        data_ov117_02292ce0 = (Unk_ov117_022924c8 *)func_020e8574(0x2066);
+        data_ov117_02292ce0 = (Unk_ov117_022924c8 *)Mem_Alloc(0x2066);
         if (data_ov117_02292ce0 != NULL) {
             new (data_ov117_02292ce0) Unk_ov117_022924c8();
         }
@@ -503,7 +503,7 @@ extern "C" void func_ov117_02292360(void *a, Unk_ov117_02292c88 *b) {
         if (b != NULL) {
             func_ov117_02292664(func_ov117_02292448(data_ov117_02292ce0), b);
         }
-        func_020e8558(data_ov117_02292ce0);
+        Mem_Free(data_ov117_02292ce0);
         data_ov117_02292ce0 = NULL;
     }
 }

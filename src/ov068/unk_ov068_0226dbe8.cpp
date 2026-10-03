@@ -11,43 +11,43 @@
 #define func_020197a8 _ZN12Unk_0201985813func_020197a8Ev
 #define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
 #define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
-#define func_0201b138 _ZN12Unk_020d77a48vfunc_24Ev
+#define func_0201b138 _ZN12Unk_020d77a46onDrawEv
 #define func_0201bb3c _ZN12Unk_020d77a413func_0201bb3cEP16Unk_020d77a4_Vec
 #define func_0201bc28 _ZN12Unk_020d77a413func_0201bc28EP12Unk_0201bc1c
 #define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
-#define func_0202d928 _ZN12Unk_020d89c88vfunc_10Ev
+#define func_0202d928 _ZN12Unk_020d89c89preDeleteEv
 #define func_0202d948 _ZN12Unk_020d89c88vfunc_00Ev
 #define func_0202dab0 _ZN12Unk_020d89c88vfunc_04Ev
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
-#define func_0209865c _ZN12Unk_0209865c13func_0209865cEv
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define func_0209865c _ZN10PlayerData13func_0209865cEv
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_0209abb4 _ZN12Unk_0209ada413func_0209abb4Eh
 #define func_0209abc4 _ZN12Unk_0209ada413func_0209abc4Ev
 #define func_02135558 __register_global_object
 #define func_ov003_02216ba4 _ZN18Unk_ov003_02231e4c19func_ov003_02216ba4Ev
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 class Unk_020660f8 {
@@ -81,13 +81,13 @@ struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 
 struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f43c8 {
+class SndSeEmitter {
 public:
-    Unk_020f43c8();
-    virtual ~Unk_020f43c8();
+    SndSeEmitter();
+    virtual ~SndSeEmitter();
     u32 pad[0x40 / 4];
 };
-class Unk_020f4080 : public Unk_020f43c8 {
+class Unk_020f4080 : public SndSeEmitter {
 public:
     Unk_020f4080();
     ~Unk_020f4080() {}
@@ -110,25 +110,25 @@ public:
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct Unk_0201c078 { Unk_0201c078(); ~Unk_0201c078(); u32 pad[0x5c / 4]; };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 a, u32 b);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
     s32 unk_5c;
@@ -143,12 +143,12 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -196,7 +196,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void *vfunc_64();
     virtual u8 *vfunc_6c();
     virtual u8 *vfunc_70();
@@ -380,33 +380,33 @@ struct Unk_ov068_Scene_Entry {
     s32 unk_08[4];
 };
 
-class Unk_020e2a60 {
+class EncodedString {
 public:
-    virtual ~Unk_020e2a60();
+    virtual ~EncodedString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 };
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
-    void func_020a7aa0(Unk_020e2a60 *dst, s32 a, s32 b);
+    void fromEncoded(EncodedString *dst, s32 a, s32 b);
 };
 
-class Unk_020dd30c : public Unk_020e2a60 {
+class EncodedString16Buf : public EncodedString {
 public:
-    Unk_020dd30c(u8 *src);
-    virtual ~Unk_020dd30c();
+    EncodedString16Buf(u8 *src);
+    virtual ~EncodedString16Buf();
     u8 pad[0x1c];
 };
 
-class Unk_020e2a48 : public Unk_020e2a78 {
+class MsgString33 : public MsgString {
 public:
-    Unk_020e2a48();
-    virtual ~Unk_020e2a48();
+    MsgString33();
+    virtual ~MsgString33();
     u8 pad[0x30];
 };
 
@@ -431,8 +431,8 @@ class Unk_ov068_02270afc : public Unk_020d89c8 {
 public:
     inline Unk_ov068_02270afc() {}    virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_24();
+    virtual BOOL preDelete();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual BOOL vfunc_68();
@@ -602,7 +602,7 @@ extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern s32 data_020c8cb4;
 extern s32 data_020c8cb8;
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 
 s32 func_02019614(void *, s32, u32);
 void func_0201a6c0(void *, u32, s32, s32, void *, s32, s32, u8);
@@ -635,10 +635,10 @@ extern u8 data_021edb5c;
 void func_0200301c(void *, void *, u32, void *);
 void *func_020805c4(void *);
 u32 func_02063b8c(s32);
-void func_0200402c(s32);
+void Snd_PlaySe(s32);
 s32 func_02003098(void *);
 s32 func_ov004_02234b0c(s32);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 void *func_0209865c(void *);
 }
 
@@ -648,7 +648,7 @@ extern "C" {
 extern Unk_ov068_0226ee74_Grid *data_021c47c4;
 
 
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 u8 *func_0209865c(void *);
 s32 func_0209abb4(void *, s32);
 s32 func_0209abc4(void *);
@@ -659,11 +659,11 @@ void func_0209d498(void *);
 s32 func_0209d3d0(void *, void *, s32);
 s32 func_0201a8d0(void *, s32, s32, s32, s32);
 s32 func_02014220(void *);
-void *func_0209888c(void *);
+void *PlayerData_getPlayerId(void *);
 void *func_0207f55c(void *, void *);
 void func_02080ecc(void *, s32, s32, s32);
 s32 func_02037558(void *, s32, s32, s32);
-s32 func_0204b288();
+s32 Item_IsFurnitureOrF031();
 void func_0203002c(s32, s32);
 s32 func_0202d928(void *);
 s32 func_0202d948(void *);
@@ -744,7 +744,7 @@ BOOL Unk_ov068_02270afc::func_ov068_0226ef58() {
     return FALSE;
 }
 
-BOOL Unk_ov068_02270afc::vfunc_24() {
+BOOL Unk_ov068_02270afc::onDraw() {
     using namespace sC;
     if (unk_a3c) {
         return (this->*unk_a3c)();
@@ -752,12 +752,12 @@ BOOL Unk_ov068_02270afc::vfunc_24() {
     return TRUE;
 }
 
-BOOL Unk_ov068_02270afc::vfunc_10() {
+BOOL Unk_ov068_02270afc::preDelete() {
     using namespace sC;
     if (func_0202d928(this) == 0) {
         return FALSE;
     }
-    Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)func_0209865c(func_0209750c());
+    Unk_ov068_0226eee0_Top *t = (Unk_ov068_0226eee0_Top *)func_0209865c(PlayerData_GetCurrent());
     Unk_ov068_0226eee0_Mid &m = *t;
     Unk_ov068_0226eee0_Q1 &q = m;
     if (func_0209abc4(&q) == 1) {
@@ -790,7 +790,7 @@ void Unk_ov068_02270afc::func_ov068_0226ee74() {
     for (; y < 16; y++) {
         for (x = 0; x < 16; x++) {
             if (func_02037558(grid, x, y, z) != 0) {
-                if (func_0204b288() != 0) {
+                if (Item_IsFurnitureOrF031() != 0) {
                     func_0203002c(x, y);
                 }
             }
@@ -800,10 +800,10 @@ void Unk_ov068_02270afc::func_ov068_0226ee74() {
 
 void Unk_ov068_02270afc::func_ov068_0226ee3c() {
     using namespace sC;
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         if (unk_82c != NULL) {
-            func_02080ecc(func_0207f55c(unk_82c, func_0209888c(p)), 0, 0, 0);
+            func_02080ecc(func_0207f55c(unk_82c, PlayerData_getPlayerId(p)), 0, 0, 0);
         }
     }
 }
@@ -816,7 +816,7 @@ void Unk_ov068_02270afc::func_ov068_0226ee18() {
 extern "C" BOOL func_ov068_0226eda4(void *) {
     using namespace sC;
     Unk_ov068_0226eda4_V a, b, c;
-    MI_CpuCopy8(func_0209865c(func_0209750c()) + 0xa0, &a, 8);
+    MI_CpuCopy8(func_0209865c(PlayerData_GetCurrent()) + 0xa0, &a, 8);
     MI_CpuCopy8(&a, &b, 8);
     func_0209d258(&b, 0x1e);
     c.a = 0;
@@ -832,7 +832,7 @@ extern "C" BOOL func_ov068_0226eda4(void *) {
 
 extern "C" void func_ov068_0226ed88(void *) {
     using namespace sC;
-    func_0209abb4(func_0209865c(func_0209750c()) + 0x94, 4);
+    func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 4);
 }
 
 BOOL Unk_ov068_02270afc::vfunc_48() {
@@ -892,7 +892,7 @@ void Unk_ov068_02270afc::vfunc_4c(u32 idx, u32 v) {
 
 extern "C" BOOL func_ov068_0226ec5c(void *) {
     using namespace sC;
-    if (func_0209abc4(func_0209865c(func_0209750c()) + 0x94) != 0) {
+    if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -901,13 +901,13 @@ extern "C" BOOL func_ov068_0226ec5c(void *) {
 extern "C" void func_ov068_0226ec38(void *p) {
     using namespace sC;
     if (func_ov068_0226ec5c(p) == 0) {
-        func_0209abb4(func_0209865c(func_0209750c()) + 0x94, 1);
+        func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 1);
     }
 }
 
 extern "C" BOOL func_ov068_0226ec14(void *) {
     using namespace sC;
-    if ((u32)func_0209abc4(func_0209865c(func_0209750c()) + 0x94) > 1) {
+    if ((u32)func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) > 1) {
         return TRUE;
     }
     return FALSE;
@@ -916,13 +916,13 @@ extern "C" BOOL func_ov068_0226ec14(void *) {
 extern "C" void func_ov068_0226ebf0(void *p) {
     using namespace sC;
     if (func_ov068_0226ec14(p) == 0) {
-        func_0209abb4(func_0209865c(func_0209750c()) + 0x94, 2);
+        func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 2);
     }
 }
 
 extern "C" BOOL func_ov068_0226ebcc(void *) {
     using namespace sC;
-    if (func_0209abc4(func_0209865c(func_0209750c()) + 0x94) == 2) {
+    if (func_0209abc4(func_0209865c(PlayerData_GetCurrent()) + 0x94) == 2) {
         return TRUE;
     }
     return FALSE;
@@ -930,7 +930,7 @@ extern "C" BOOL func_ov068_0226ebcc(void *) {
 
 extern "C" void func_ov068_0226ebb0(void *) {
     using namespace sC;
-    func_0209abb4(func_0209865c(func_0209750c()) + 0x94, 3);
+    func_0209abb4(func_0209865c(PlayerData_GetCurrent()) + 0x94, 3);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -996,9 +996,9 @@ void Unk_ov068_02270a6c::vfunc_78(void *arg) {
     for (u32 i = n; i < 16; i++) {
         buf.b[i] = 0;
     }
-    Unk_020dd30c obj1(buf.b);
-    Unk_020e2a48 obj2;
-    obj2.func_020a7aa0(&obj1, 0, 0);
+    EncodedString16Buf obj1(buf.b);
+    MsgString33 obj2;
+    obj2.fromEncoded(&obj1, 0, 0);
     unk_3c->func_02067a3c(3, &obj2);
     if (rnd < 30 && v != -1) {
         unk_1a0->unk_a52 = 3;
@@ -1025,7 +1025,7 @@ void Unk_ov068_02270a6c::vfunc_78(void *arg) {
         } else {
             out->unk_04 = func_02063b8c(2) + 6;
         }
-        ((Unk_ov068_02270a6c_Bits *)((u8 *)func_0209865c(func_0209750c()) + 0xa8))->lo = n;
+        ((Unk_ov068_02270a6c_Bits *)((u8 *)func_0209865c(PlayerData_GetCurrent()) + 0xa8))->lo = n;
     } else if (rnd < 70) {
         unk_1a0->unk_a52 = 0;
         func_0202d1d4((Unk_020d8938_Tbl *)data_021be7e0);
@@ -1063,7 +1063,7 @@ void Unk_ov068_02270a6c::vfunc_14(u32 a) {
             buf[1] = data_021edb5c;
             unk_1a0->unk_898.unk_3c->func_02067a84(&buf[1], 0);
             unk_1a0->func_ov068_0226e638(10);
-            func_0200402c(0x5f);
+            Snd_PlaySe(0x5f);
         }
     }
 }
@@ -1316,7 +1316,7 @@ void Unk_ov068_02270afc::func_ov068_0226e12c() {
 BOOL Unk_ov068_02270afc::func_ov068_0226e0cc() {
     using namespace sB;
     if (func_02019614(&unk_564, 1, data_020c6cc8)) {
-        func_0201a6c0(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+        func_0201a6c0(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
         func_0202ffb0(0);
         return TRUE;
     }

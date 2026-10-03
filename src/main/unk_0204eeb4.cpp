@@ -26,7 +26,7 @@ struct Unk_0204ee94 {
     Unk_0204ee94();
 };
 
-struct Unk_0204eeb4_Ent {
+struct OverlaySlot {
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
@@ -34,7 +34,7 @@ struct Unk_0204eeb4_Ent {
     u32 unk_08;
 };
 
-Unk_0204eeb4_Ent data_021c47fc[12];
+OverlaySlot sOverlaySlots[12];
 
 static inline Unk_0204e858_Cell *Unk_0204e858_GetCell(Unk_0204e858_Grid *g, u32 x, u32 y) {
     if (x < g->unk_04 && y < g->unk_08 && g->unk_00 != NULL) {
@@ -69,7 +69,7 @@ extern "C" u16 *func_0204ebd8(Unk_0204e858_Grid *g, s32 hx, s32 hy, s32 lx, s32 
 }
 
 namespace Unk_0204eee4_Ns {
-extern "C" s32 func_0204efe4(Unk_0204eeb4_Ent *e);
+extern "C" s32 OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
 extern "C" {
@@ -93,39 +93,39 @@ BOOL func_0204f0f4(u8 v);
 }
 
 extern "C" {
-void *func_020e8618(void *heap, u32 size);
+void *Heap_AllocTail(void *heap, u32 size);
 }
 
 extern "C" {
-void func_0206d49c();
+void Fatal_Trap();
 }
 
 extern "C" {
-void func_0204efe4(Unk_0204eeb4_Ent *e);
+void OverlayMgr_UnloadSlot(OverlaySlot *e);
 }
 
 extern "C" {
-void func_0204f010(Unk_0204eeb4_Ent *e, u32 id);
+void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
 }
 
 extern "C" {
-void func_0204f044(u32 id);
+void OverlayMgr_UnloadOverlay(u32 id);
 }
 
 extern "C" {
-void func_0204f04c(u32 id);
+void OverlayMgr_LoadOverlay(u32 id);
 }
 
 extern "C" {
-void func_0204f054(void *p, u32 id);
+void OverlayMgr_GetInfo(void *p, u32 id);
 }
 
 extern "C" {
-void func_02063d00(u32 id);
+void File_UnloadOverlay(u32 id);
 }
 
 extern "C" {
-void func_02063d0c(u32 id);
+void File_LoadOverlay(u32 id);
 }
 
 extern "C" {
@@ -208,14 +208,14 @@ extern "C" u32 func_0204f100(u32 r);
 extern "C" BOOL func_0204f0f4(u8 v);
 extern "C" u8 func_0204f084(u8 x);
 extern "C" s32 func_0204f060(s32 r);
-extern "C" void func_0204f054(void *p, u32 id);
-extern "C" void func_0204f04c(u32 id);
-extern "C" void func_0204f044(u32 id);
-extern "C" void func_0204f010(Unk_0204eeb4_Ent *e, u32 id);
-extern "C" void func_0204efe4(Unk_0204eeb4_Ent *e);
-extern "C" void func_0204ef2c(u32 id);
-extern "C" void func_0204eee4(u32 id);
-extern "C" void func_0204eeb4();
+extern "C" void OverlayMgr_GetInfo(void *p, u32 id);
+extern "C" void OverlayMgr_LoadOverlay(u32 id);
+extern "C" void OverlayMgr_UnloadOverlay(u32 id);
+extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id);
+extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e);
+extern "C" void OverlayMgr_Acquire(u32 id);
+extern "C" void OverlayMgr_Release(u32 id);
+extern "C" void OverlayMgr_Init();
 
 
 extern "C" u32 func_0204f100(u32 r) {
@@ -276,22 +276,22 @@ extern "C" s32 func_0204f060(s32 r) {
     return 1;
 }
 
-extern "C" void func_0204f054(void *p, u32 id) {
+extern "C" void OverlayMgr_GetInfo(void *p, u32 id) {
     FS_LoadOverlayInfo(p, 0, id);
 }
 
-extern "C" void func_0204f04c(u32 id) {
-    func_02063d0c(id);
+extern "C" void OverlayMgr_LoadOverlay(u32 id) {
+    File_LoadOverlay(id);
 }
 
-extern "C" void func_0204f044(u32 id) {
-    func_02063d00(id);
+extern "C" void OverlayMgr_UnloadOverlay(u32 id) {
+    File_UnloadOverlay(id);
 }
 
-extern "C" void func_0204f010(Unk_0204eeb4_Ent *e, u32 id) {
+extern "C" void OverlayMgr_LoadSlot(OverlaySlot *e, u32 id) {
     u32 buf[11];
-    func_0204f054(buf, id);
-    func_0204f04c(id);
+    OverlayMgr_GetInfo(buf, id);
+    OverlayMgr_LoadOverlay(id);
     e->unk_00 = id;
     e->unk_01 = 1;
     e->unk_02 = 0;
@@ -299,11 +299,11 @@ extern "C" void func_0204f010(Unk_0204eeb4_Ent *e, u32 id) {
     e->unk_08 = buf[2] + buf[3];
 }
 
-extern "C" void func_0204efe4(Unk_0204eeb4_Ent *e) {
+extern "C" void OverlayMgr_UnloadSlot(OverlaySlot *e) {
     u32 buf[11];
     u32 id = e->unk_00;
-    func_0204f044(id);
-    func_0204f054(buf, id);
+    OverlayMgr_UnloadOverlay(id);
+    OverlayMgr_GetInfo(buf, id);
     e->unk_00 = 0xff;
     e->unk_01 = 0;
     e->unk_02 = 0;
@@ -311,46 +311,46 @@ extern "C" void func_0204efe4(Unk_0204eeb4_Ent *e) {
     e->unk_08 = 0;
 }
 
-extern "C" void func_0204ef2c(u32 id) {
-    Unk_0204eeb4_Ent *free = NULL;
+extern "C" void OverlayMgr_Acquire(u32 id) {
+    OverlaySlot *free = NULL;
     s32 i;
     u32 lo, hi;
     u8 buf[8];
     u32 info[11];
     for (i = 0; (u32)i < 12; i++) {
-        Unk_0204eeb4_Ent *e = &data_021c47fc[i];
+        OverlaySlot *e = &sOverlaySlots[i];
         if (e->unk_00 == id) {
             e->unk_01++;
             return;
         }
-        if (((volatile Unk_0204eeb4_Ent *)e)->unk_00 == 0xff && free == NULL) {
+        if (((volatile OverlaySlot *)e)->unk_00 == 0xff && free == NULL) {
             free = e;
         }
     }
-    func_0204f054(info, id);
+    OverlayMgr_GetInfo(info, id);
     FS_GetOverlayFileID(buf, info);
     for (i = 0, lo = info[1], hi = lo + (info[2] + info[3]); (u32)i < 12; i++) {
-        Unk_0204eeb4_Ent *e = &data_021c47fc[i];
-        if (e->unk_00 != id && ((volatile Unk_0204eeb4_Ent *)e)->unk_00 != 0xff && e->unk_04 + e->unk_08 > lo && hi > e->unk_04) {
+        OverlaySlot *e = &sOverlaySlots[i];
+        if (e->unk_00 != id && ((volatile OverlaySlot *)e)->unk_00 != 0xff && e->unk_04 + e->unk_08 > lo && hi > e->unk_04) {
             if (e->unk_01 == 0) {
-                func_0204efe4(e);
+                OverlayMgr_UnloadSlot(e);
                 if (free == NULL) {
                     free = e;
                 }
             } else {
-                func_0206d49c();
+                Fatal_Trap();
             }
         }
     }
     if (free != NULL) {
-        func_0204f010(free, id);
+        OverlayMgr_LoadSlot(free, id);
     }
 }
 
-extern "C" void func_0204eee4(u32 id) {
-    Unk_0204eeb4_Ent *e = NULL;
+extern "C" void OverlayMgr_Release(u32 id) {
+    OverlaySlot *e = NULL;
     for (s32 i = 0; (u32)i < 12; i++) {
-        Unk_0204eeb4_Ent *c = &data_021c47fc[i];
+        OverlaySlot *c = &sOverlaySlots[i];
         if (c->unk_00 == id) {
             e = c;
             if (c->unk_01 != 0) {
@@ -359,20 +359,20 @@ extern "C" void func_0204eee4(u32 id) {
         }
     }
     if (e == NULL) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     if (e->unk_01 == 0) {
-        Unk_0204eee4_Ns::func_0204efe4(e);
+        Unk_0204eee4_Ns::OverlayMgr_UnloadSlot(e);
     }
 }
 
-extern "C" void func_0204eeb4() {
+extern "C" void OverlayMgr_Init() {
     for (s32 i = 0; (u32)i < 12; i++) {
-        data_021c47fc[i].unk_00 = 0xff;
-        data_021c47fc[i].unk_01 = 0;
-        data_021c47fc[i].unk_02 = 0;
-        data_021c47fc[i].unk_04 = 0;
-        data_021c47fc[i].unk_08 = 0;
+        sOverlaySlots[i].unk_00 = 0xff;
+        sOverlaySlots[i].unk_01 = 0;
+        sOverlaySlots[i].unk_02 = 0;
+        sOverlaySlots[i].unk_04 = 0;
+        sOverlaySlots[i].unk_08 = 0;
     }
 }
 

@@ -8,7 +8,7 @@ extern const s32 data_020cf63c[];
 extern u8 data_020cf650[];
 extern u8 data_020d467c[];
 
-struct Unk_02089270_Tbl;
+struct SpriteAnimSeq;
 
 struct Unk_02089240_Rec {
     /* 0x00 */ s32 unk_00;
@@ -16,45 +16,45 @@ struct Unk_02089240_Rec {
 };
 
 // Sub-object (ctor 0x02089270, dtor 0x0208926c)
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    BOOL func_020891d8();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    Unk_02089240_Rec *func_02089240();
-    void *func_02089248();
-    void func_02089258(s32 a, s32 b);
-    void func_02089260(s32 v);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    BOOL isFinished();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    Unk_02089240_Rec *getSeq();
+    void *getCell();
+    void setFrame(s32 a, s32 b);
+    void setSpeed(s32 v);
+    void setPlayOnce(s32 v);
+    void setSeq(SpriteAnimSeq *v);
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
 // Sub-object at +0x38 of Unk_020e0ff0 (0x34 bytes, ctor 0x02039b04, dtor 0x02039aec)
-class Unk_020e2a78 {
+class MsgString {
 public:
-    Unk_020e2a78();
-    ~Unk_020e2a78();
-    void func_020a7bd8(Unk_020e2a78 *p);
+    MsgString();
+    ~MsgString();
+    void copy(MsgString *p);
 
     /* 0x00 */ u32 unk_00[13];
 };
 
 // Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -77,13 +77,13 @@ public:
     /* 0x30 */ s32 unk_30;
 };
 
-class Unk_020e0ff0 : public Unk_020e0db4 {
+class Unk_020e0ff0 : public UiWidget {
 public:
     typedef void (Unk_020e0ff0::*Fn)();
 
     Unk_020e0ff0();
     virtual ~Unk_020e0ff0();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
 
     void func_0208d154();
@@ -106,12 +106,12 @@ public:
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_02089270 unk_14;
+    /* 0x14 */ SpriteAnim unk_14;
     /* 0x28 */ s32 unk_28;
     /* 0x2c */ s32 unk_2c;
     /* 0x30 */ s32 unk_30;
     /* 0x34 */ s32 unk_34;
-    /* 0x38 */ Unk_020e2a78 unk_38;
+    /* 0x38 */ MsgString unk_38;
     /* 0x6c */ Unk_0208d154_Sub *unk_6c;
     /* 0x70 */ s32 unk_70;
     /* 0x74 */ s32 unk_74;
@@ -135,7 +135,7 @@ void Unk_020e0ff0::func_0208d314(s32 a, s32 b) {
 }
 
 void Unk_020e0ff0::func_0208d308(void *p) {
-    unk_38.func_020a7bd8((Unk_020e2a78 *)p);
+    unk_38.copy((MsgString *)p);
 }
 
 BOOL Unk_020e0ff0::func_0208d2f0() {
@@ -231,23 +231,23 @@ void Unk_020e0ff0::func_0208d1ec() {
 }
 
 void Unk_020e0ff0::func_0208d1bc() {
-    unk_14.func_02089268((Unk_02089270_Tbl *)(data_020d467c + unk_10 * 8));
-    unk_14.func_02089264(1);
-    unk_14.func_02089260(0);
+    unk_14.setSeq((SpriteAnimSeq *)(data_020d467c + unk_10 * 8));
+    unk_14.setPlayOnce(1);
+    unk_14.setSpeed(0);
 }
 
 void Unk_020e0ff0::func_0208d154() {
     if (unk_6c != 0) {
         s32 len = unk_6c->vfunc_0c();
         u32 n = (u32)(len + 7) >> 3;
-        s32 idx = unk_14.func_02089240()->unk_04 - 1;
+        s32 idx = unk_14.getSeq()->unk_04 - 1;
         s32 t = n - 1;
         if (t < 0) {
             idx = 0;
         } else if (t <= idx) {
             idx = t;
         }
-        unk_14.func_02089258(idx, 0);
+        unk_14.setFrame(idx, 0);
         unk_6c->unk_30 = (u32)(n * 8 - len) >> 1;
         if (unk_0c == 0) {
             unk_34 = 0;

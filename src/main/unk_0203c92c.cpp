@@ -47,11 +47,11 @@ extern "C" void func_0203ca84();
 extern "C" void func_0203ca90();
 
 extern "C" {
-void func_0209750c();
+void PlayerData_GetCurrent();
 }
 
 extern "C" {
-Unk_0203c92c *_ZN12Unk_0209865c13func_02098668Ev();
+Unk_0203c92c *_ZN10PlayerData13func_02098668Ev();
 }
 
 extern "C" {
@@ -97,8 +97,8 @@ extern "C" void func_0203cb1c(u32 v) {
 extern "C" void func_0203ca94() {
     Unk_0203c92c *r5, *r4;
     u8 l;
-    func_0209750c();
-    r5 = _ZN12Unk_0209865c13func_02098668Ev();
+    PlayerData_GetCurrent();
+    r5 = _ZN10PlayerData13func_02098668Ev();
     r4 = func_0203cbb8();
     if (r4->func_0203c978()) {
         if (func_0203cba8() == 1) r5->func_0203ca2c();

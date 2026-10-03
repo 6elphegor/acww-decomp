@@ -10,13 +10,13 @@ struct Unk_0205f8d4_Vec {
     s32 x, y, z;
 };
 
-// Actor (see Unk_020d9670): virtual at 0x5c fills a position, position at +0x5c.
-class Unk_020d9670 : public Unk_020d8c7c {
+// Actor (see Character): virtual at 0x5c fills a position, position at +0x5c.
+class Character : public GameProc {
 public:
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
-    virtual BOOL vfunc_50();
-    virtual BOOL vfunc_54();
+    virtual BOOL getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange();
     virtual BOOL vfunc_58();
     virtual BOOL vfunc_5c(Unk_0205f8d4_Vec *out);
     u8 pad_50[0xc];
@@ -36,10 +36,10 @@ class Unk_0205fbc8;
 
 typedef void (Unk_0205f8d4::*Unk_0205f8d4_Fn)();
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_02055200(void);
     void func_02055340(void *a, void *b, void *c);
     void func_02055210(void *p);
@@ -110,7 +110,7 @@ void func_ov003_022234c4(void *p);
 BOOL func_ov003_022234fc(void *p);
 BOOL func_ov003_02223554(void *p);
 void *NNS_G3dGetTex(void *p);
-void func_020641b4(char *name, void *p, u32 size);
+void File_LoadToBuffer(char *name, void *p, u32 size);
 s32 func_020639e8(char *buf, char *fmt, ...);
 s32 func_020b50e8();
 u32 func_020b4928(s32 a);
@@ -118,7 +118,7 @@ u32 func_020b491c(s32 a);
 u32 func_02084fbc();
 void func_020e885c();
 void func_020e877c();
-void *func_020e8628(u32 heap, u32 size, u32 align);
+void *Heap_AllocAligned(u32 heap, u32 size, u32 align);
 s32 func_0205ba88();
 void func_0205baa4();
 void *func_02060550(void *a, s32 b);
@@ -166,9 +166,9 @@ s32 func_020e9650(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void func_020e9768(Unk_0205f8d4_Vec *v, s32 n);
 void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
 void func_ov003_02222f1c();
-void func_0203ee38(void *p, Unk_0205f8d4_Vec *v);
-void func_0203ef38(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
-void _ZN12Unk_020dbe3413func_0205553cEPi(void *e, s32 a);
+void WorldCurve_FromCurved(void *p, Unk_0205f8d4_Vec *v);
+void WorldCurve_ToCurved(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
+void _ZN5Model13func_0205553cEPi(void *e, s32 a);
 BOOL func_0205f1e8(Unk_0205f8d4_Vec *a, s32 k, Unk_0205f8d4_Vec *b, s32 *c, u8 flag);
 void func_0205f284(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode);
 }
@@ -191,7 +191,7 @@ public:
     void func_0205fbc0(s32 v);
     u8 func_0205fbc4();
     void func_0205fccc();
-    void func_0205fd0c(u32 id, Unk_020d9670 *actor, u32 n);
+    void func_0205fd0c(u32 id, Character *actor, u32 n);
     void func_0205fd7c();
     void func_0205fd80();
 
@@ -202,7 +202,7 @@ public:
     s32 unk_14;
     s32 unk_18;
     Unk_0205f8d4_Vec unk_1c;
-    Unk_020d9670 *unk_28;
+    Character *unk_28;
     void *unk_2c;
     s32 unk_30;
     s32 unk_34;
@@ -223,13 +223,13 @@ public:
     void func_0205fc98(s32 idx);
     Unk_020dbd34 *func_0205fd94(s32 idx);
     Unk_020e45ec *func_0205fda4(s32 idx);
-    Unk_020dbe24 *func_0205fdb0(s32 idx);
+    TexVramSlot *func_0205fdb0(s32 idx);
     void *func_0205fdbc(s32 idx);
     void func_0205fdc4();
     void func_0205fe14();
 
     void *unk_00[9];
-    Unk_020dbe24 unk_24[9];
+    TexVramSlot unk_24[9];
     Unk_020e45ec unk_d8[9];
     Unk_020dbd34 unk_1d4[9];
     Unk_0205f8d4 *unk_750[9];
@@ -365,12 +365,12 @@ void Unk_0205fbc8::func_0205fe14()
     }
     u32 heap = data_021c61b0;
     for (i = 0; i < n; i++) {
-        unk_00[i] = func_020e8628(heap, func_0205ffbc(), 4);
+        unk_00[i] = Heap_AllocAligned(heap, func_0205ffbc(), 4);
     }
     u32 j = 4;
     a = 4;
     for (; j < m + 4; j++) {
-        unk_00[j] = func_020e8628(heap, func_0205ffbc(), a);
+        unk_00[j] = Heap_AllocAligned(heap, func_0205ffbc(), a);
     }
 }
 
@@ -394,7 +394,7 @@ void *Unk_0205fbc8::func_0205fdbc(s32 idx)
     return unk_00[idx];
 }
 
-Unk_020dbe24 *Unk_0205fbc8::func_0205fdb0(s32 idx)
+TexVramSlot *Unk_0205fbc8::func_0205fdb0(s32 idx)
 {
     return &unk_24[idx];
 }
@@ -422,7 +422,7 @@ void Unk_0205f8d4::func_0205fd7c()
 {
 }
 
-void Unk_0205f8d4::func_0205fd0c(u32 id, Unk_020d9670 *actor, u32 n)
+void Unk_0205f8d4::func_0205fd0c(u32 id, Character *actor, u32 n)
 {
     unk_00 = id;
     if (n < 3) {
@@ -462,7 +462,7 @@ void Unk_0205fbc8::func_0205fc6c(s32 idx, u32 n)
 {
     char *name = func_0205ffc4(n);
     void *p = func_0205fdbc(idx);
-    func_020641b4(name, p, func_0205ffbc());
+    File_LoadToBuffer(name, p, func_0205ffbc());
 }
 
 void Unk_0205fbc8::func_0205fc48(s32 idx)
@@ -713,7 +713,7 @@ extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
             v.x = mt.v[9];
             v.y = mt.v[10];
             v.z = mt.v[11];
-            func_0203ee38(self + 8, &v);
+            WorldCurve_FromCurved(self + 8, &v);
         } else {
             v.x = *(s32 *)(self + 8);
             v.y = *(s32 *)(self + 12);
@@ -732,13 +732,13 @@ extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
                     VEC_Add(&v, &t, &v);
                 }
             }
-            func_0203ef38(&v, &v);
+            WorldCurve_ToCurved(&v, &v);
             Unk_0205f7f4_Mtx tmp;
             func_020e8388(&tmp, v.x, v.y, v.z);
             mt = tmp;
         }
         *(Unk_0205f7f4_Mtx *)(e + 0x64) = mt;
-        _ZN12Unk_020dbe3413func_0205553cEPi(e, arg);
+        _ZN5Model13func_0205553cEPi(e, arg);
     }
 }
 

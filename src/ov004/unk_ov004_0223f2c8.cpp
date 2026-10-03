@@ -56,10 +56,10 @@ void _ZN18Unk_ov093_022918e0C1Ev(void *self);
 #define func_ov093_0229212c _ZN18Unk_ov093_022918e013func_0229212cEv
 #define func_ov093_02292174 _ZN18Unk_ov093_022918e0D1Ev
 #define func_ov093_022921b8 _ZN18Unk_ov093_022918e0C1Ev
-void func_020e85fc(void *heap, void *p);
-void *func_020e8608(void *heap, u32 size);
-void func_0204eee4(u32 id);
-void func_0204ef2c(u32 id);
+void Heap_Free(void *heap, void *p);
+void *Heap_Alloc(void *heap, u32 size);
+void OverlayMgr_Release(u32 id);
+void OverlayMgr_Acquire(u32 id);
 }
 
 extern "C" {
@@ -68,8 +68,8 @@ extern u8 data_ov004_02258910;
 extern void *data_ov004_02258914;
 
 void func_ov004_0223f3f4(void) {
-    func_0204ef2c((u32)OVERLAY_93_ID);
-    data_ov004_02258914 = func_020e8608(data_021c6210, 0x1fc4);
+    OverlayMgr_Acquire((u32)OVERLAY_93_ID);
+    data_ov004_02258914 = Heap_Alloc(data_021c6210, 0x1fc4);
     if (data_ov004_02258914) {
         func_ov093_022921b8(data_ov004_02258914);
     }
@@ -94,9 +94,9 @@ void func_ov004_0223f350() {
         func_ov093_02291f5c(data_ov004_02258914);
         void *heap = data_021c6210;
         func_ov093_02292174(data_ov004_02258914);
-        func_020e85fc(heap, data_ov004_02258914);
+        Heap_Free(heap, data_ov004_02258914);
         data_ov004_02258914 = 0;
-        func_0204eee4((u32)OVERLAY_93_ID);
+        OverlayMgr_Release((u32)OVERLAY_93_ID);
     }
     data_ov004_02258910 = 0;
 }

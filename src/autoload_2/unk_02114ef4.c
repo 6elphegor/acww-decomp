@@ -68,7 +68,7 @@ void OS_EnableIrqMask(u32 mask);      // OS_EnableIrqMask
 void OS_SetIrqMask(u32 mask);
 void OS_ResetRequestIrqMask(u32 mask);
 void OSi_DoResetSystem(void);
-void func_0206d49c(void);          // OS_Terminate
+void Fatal_Trap(void);          // OS_Terminate
 void OSi_EnterTimerCallback(s32 n, void *callback, void *arg);
 void OSi_SetTimerReserved(s32 n);         // OSi_SetTimerReserved
 void OSi_AlarmHandler(void);
@@ -125,7 +125,7 @@ void OSi_CommonCallback(u32 tag, u32 data, s32 err) {
         data_021fcf50 = 1;
         return;
     }
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 // OSi_SendToPxi
@@ -136,7 +136,7 @@ void OSi_SendToPxi(u32 data) {
 
 // OS_ResetSystem
 void OS_ResetSystem(u32 parameter) {
-    if (*(volatile u16 *)0x027ffc40 == 2) func_0206d49c();
+    if (*(volatile u16 *)0x027ffc40 == 2) Fatal_Trap();
     CARD_LockRom((u16)OS_GetLockID());
     MI_StopDma(0);
     MI_StopDma(1);
@@ -245,7 +245,7 @@ void OSi_InsertAlarm(OSAlarm *alarm, u64 fire) {
 // OS_SetAlarm
 void OS_SetAlarm(OSAlarm *alarm, u64 tick, void (*handler)(void *), void *arg) {
     u32 enabled;
-    if (alarm == 0 || alarm->handler != 0) func_0206d49c();
+    if (alarm == 0 || alarm->handler != 0) Fatal_Trap();
     enabled = OS_DisableInterrupts();
     alarm->period = 0;
     alarm->handler = handler;

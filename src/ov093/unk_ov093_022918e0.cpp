@@ -12,9 +12,9 @@ public:
     u32 pad[0x10];
 };
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    void func_020a7a64(u8 *s);
+    void setLine(u8 *s);
 };
 
 class Unk_020e0574 {
@@ -48,13 +48,13 @@ void func_0200226c(s32 a, s32 b, s32 c, s32 d);
 void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_02002654(const char *a, void *b, s32 c);
 void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020641b4(const char *a, void *b, s32 c);
-void func_020b35f8(void *a, u8 *b, const char *c);
-s8 *func_020a6b9c(void *a, s32 b);
+void File_LoadToBuffer(const char *a, void *b, s32 c);
+void String_Load(void *a, u8 *b, const char *c);
+s8 *Msg_SkipLines(void *a, s32 b);
 void MIi_CpuCopy16(void *a, void *b, s32 c);
 void MIi_CpuClear16(u32 a, void *b, s32 c);
 
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern char *data_ov093_02292240;
 extern char *data_ov093_02292244;
 }
@@ -229,12 +229,12 @@ void Unk_ov093_022918e0::func_02291f5c()
 
 void Unk_ov093_022918e0::func_02291f3c()
 {
-    func_020641b4("menu/staff/bg.bsc", unk_1028, 0x800);
+    File_LoadToBuffer("menu/staff/bg.bsc", unk_1028, 0x800);
 }
 
 void Unk_ov093_022918e0::func_02291ed4()
 {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_020026c4(data_ov093_02292240, h, 4, 1, 1, 3);
     func_020026c4(data_ov093_02292240, h, 0, 1, 1, 3);
     func_0200261c(data_ov093_02292244, h, 4, 0x10, 0x10, 0x10);
@@ -317,8 +317,8 @@ s8 *Unk_ov093_022918e0::func_02291cf8(s32 i)
 {
     s32 q = i / 6;
     u8 b = q;
-    func_020b35f8((u8 *)&unk_1828 + 0, &b, "st_staffroll");
-    return func_020a6b9c((u8 *)this + 0x183a, i - q * 6);
+    String_Load((u8 *)&unk_1828 + 0, &b, "st_staffroll");
+    return Msg_SkipLines((u8 *)this + 0x183a, i - q * 6);
 }
 
 void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
@@ -376,7 +376,7 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
             s->func_022918f8(1);
             func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
             Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
+            ((MsgString *)e)->setLine((u8 *)p);
             e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
             e->func_0206fab4(0, 0);
             s->unk_04 = s->unk_04 + 1;
@@ -389,7 +389,7 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
             }
             func_02291d3c(s->unk_08, s->unk_04, s->unk_00 & 0x1f);
             e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
+            ((MsgString *)e)->setLine((u8 *)p);
             e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
             e->func_0206fab4(0, 0);
             s->unk_04 = s->unk_04 + 1;
@@ -397,7 +397,7 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
             s->unk_00 = s->unk_00 + 1;
         } else if (p[0] == 0x20 && p[1] == 0xa) {
             Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
+            ((MsgString *)e)->setLine((u8 *)p);
             e->func_0206fb48(a, s->unk_04 * 16 + 0x11, 0x10, 1, 0, 0);
             e->func_0206fab4(0, 0);
             s->unk_04 = s->unk_04 + 1;
@@ -411,7 +411,7 @@ void Unk_ov093_022918e0::func_02291a3c(s32 a, Unk_ov093_022918f8 *s)
             s->unk_00 = s->unk_00 + 1;
             s->unk_04 = s->unk_04 + 1;
             Unk_020e0488 *e = func_022919e4();
-            ((Unk_020e2a78 *)e)->func_020a7a64((u8 *)p);
+            ((MsgString *)e)->setLine((u8 *)p);
             e->func_0206fb9c(a, (s->unk_04 - 2) * 16 + 0x11, 0x10, 1, 0, 0);
             e->func_0206fa4c();
             s->unk_02 = s->unk_02 + 1;
@@ -456,7 +456,7 @@ extern "C" char *data_ov093_02292240;
 
 void Unk_ov093_022918e0::func_02291938()
 {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_02002654("menu/staff/logo.bsc", h, 0);
     func_0200261c(data_ov093_02292244, h, 0, 0x10, 0x10, 0x78);
     func_0200261c("menu/staff/logo1.bch", h, 0, 0x79, 0x79, 0xf0);

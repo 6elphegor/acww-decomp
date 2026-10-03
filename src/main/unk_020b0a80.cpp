@@ -63,7 +63,7 @@ u16 *func_ov004_0222aaa0(void);
 }
 
 extern "C" {
-u32 func_02061950(u16 *p);
+u32 ItemInfo_GetIndoorUnk1(u16 *p);
 }
 
 extern "C" {
@@ -71,7 +71,7 @@ void func_020b16bc(void *p, const void *q);
 }
 
 extern "C" {
-void func_0206da9c(void *p, s32 a);
+void Melody_PlayAt(void *p, s32 a);
 }
 
 extern "C" {
@@ -195,7 +195,7 @@ void func_020a7c58(void *p);
 }
 
 extern "C" {
-void func_0205125c(void *p, u32 n);
+void Mem_Clear(void *p, u32 n);
 }
 
 extern "C" {
@@ -251,15 +251,15 @@ void FS_Init(u32 a);
 }
 
 extern "C" {
-void func_0204eeb4(void);
+void OverlayMgr_Init(void);
 }
 
 extern "C" {
-void func_020e914c(void);
+void Heap_InitSystem(void);
 }
 
 extern "C" {
-void func_0204f054(void *p, void *a);
+void OverlayMgr_GetInfo(void *p, void *a);
 }
 
 extern "C" {
@@ -275,7 +275,7 @@ void OS_SetArenaHi(u32 a, u32 b);
 }
 
 extern "C" {
-void func_0206d49c(void);
+void Fatal_Trap(void);
 }
 
 extern "C" {
@@ -299,7 +299,7 @@ void func_01ffcc30(void);
 }
 
 extern "C" {
-void func_01ffcc60(void);
+void Main_VBlankCallback(void);
 }
 
 extern "C" {
@@ -315,23 +315,23 @@ void GX_HBlankIntr(u32 a);
 }
 
 extern "C" {
-void func_02050170(void);
+void Backup_InitDefault(void);
 }
 
 extern "C" {
-void func_020376c0(void);
+void Main_LoadBuildTime(void);
 }
 
 extern "C" {
-void func_02076c24(void *p, void *a);
+void OverlayHandle_Load(void *p, void *a);
 }
 
 extern "C" {
-void func_02076c50(void *p);
+void OverlayHandle_Unload(void *p);
 }
 
 extern "C" {
-void func_020b7eec(void);
+void Touch_Init(void);
 }
 
 extern "C" {
@@ -339,7 +339,7 @@ void func_020ec8b0(void);
 }
 
 extern "C" {
-void func_020e85d8(u32 a, u32 b);
+void Heap_CreateProcHeap(u32 a, u32 b);
 }
 
 extern "C" {
@@ -347,7 +347,7 @@ void func_020537a4(void);
 }
 
 extern "C" {
-void func_02004520(void);
+void Snd_Init(void);
 }
 
 extern "C" {
@@ -371,7 +371,7 @@ void func_02099214(void);
 }
 
 extern "C" {
-void func_02060b7c(void);
+void Random_SeedGlobal(void);
 }
 
 extern "C" {
@@ -384,7 +384,7 @@ void func_0209cb0c(void);
 
 extern "C" {
 // This file
-void func_020b0b18(void);
+void Startup_FillOverlayArea(void);
 }
 
 extern "C" {
@@ -400,7 +400,7 @@ void func_020b0c80(void);
 }
 
 extern "C" {
-void func_020b0c84(void);
+void Main_InitVBlank(void);
 }
 
 extern "C" {
@@ -446,31 +446,31 @@ extern u32 OVERLAY_69_ID[];
 volatile u8 data_021ee284;
 
 extern "C" {
-extern u8 data_0213af4c[];
+extern u8 gHeapCreateOption[];
 }
 
 extern "C" {
-extern u8 data_021cc7d0[];
+extern u8 gOverlayHandle[];
 }
 
 extern "C" {
-extern u8 data_020e1e2c[];
+extern u8 sProfileTableMain[];
 }
 
 extern "C" {
-extern u32 data_021f59e4;
+extern u32 gProfileTable;
 }
 
 extern "C" {
-extern u32 data_021cb3e4[2];
+extern u32 gVBlankQueue[2];
 }
 
 extern "C" {
-extern u32 data_021cb3ec[2];
+extern u32 gFrameWaitQueue[2];
 }
 
 extern "C" {
-extern u8 data_021cb3bc;
+extern u8 sVBlankReady;
 }
 
 inline BOOL isFlag1() {
@@ -516,7 +516,7 @@ extern "C" u32 func_020b0d60(u32 a) {
     if (a == 0x1a) {
         if (isFlag1()) {
             u16 v = *func_ov004_0222aaa0();
-            return func_02061950(&v);
+            return ItemInfo_GetIndoorUnk1(&v);
         }
     }
     return a;
@@ -554,23 +554,23 @@ extern "C" void func_020b0cbc(u32 a) {
     func_020b0d24(func_020b0d38(a));
 }
 
-extern "C" void func_020b0c84(void) {
-    data_021cb3e4[1] = 0;
-    data_021cb3e4[0] = 0;
-    data_021cb3ec[1] = 0;
-    data_021cb3ec[0] = 0;
-    OS_SetIrqFunction(1, func_01ffcc60);
-    data_021cb3bc = 1;
+extern "C" void Main_InitVBlank(void) {
+    gVBlankQueue[1] = 0;
+    gVBlankQueue[0] = 0;
+    gFrameWaitQueue[1] = 0;
+    gFrameWaitQueue[0] = 0;
+    OS_SetIrqFunction(1, Main_VBlankCallback);
+    sVBlankReady = 1;
 }
 
 extern "C" void func_020b0c80(void) {}
 
-extern "C" void func_020b0b90(void) {
+extern "C" void Main_Init(void) {
     func_020b0c80();
     func_01ffcb28();
     func_020e99a4();
     func_0205b794();
-    func_020b0c84();
+    Main_InitVBlank();
     OS_SetIrqFunction(2, func_01ffcc30);
     OS_EnableIrqMask(3);
     *(vu16 *)0x4000208;
@@ -578,34 +578,34 @@ extern "C" void func_020b0b90(void) {
     func_01ffa314();
     GX_VBlankIntr(1);
     GX_HBlankIntr(1);
-    func_02050170();
-    func_020376c0();
-    func_02076c24(data_021cc7d0, OVERLAY_69_ID);
-    func_02076c50(data_021cc7d0);
-    func_020b7eec();
+    Backup_InitDefault();
+    Main_LoadBuildTime();
+    OverlayHandle_Load(gOverlayHandle, OVERLAY_69_ID);
+    OverlayHandle_Unload(gOverlayHandle);
+    Touch_Init();
     func_020ec8b0();
-    func_020e85d8(0x13fc8, 0);
+    Heap_CreateProcHeap(0x13fc8, 0);
     func_020537a4();
-    func_02004520();
+    Snd_Init();
     func_020e7d2c();
     func_0209cfe4();
     func_02045c88();
     func_020380e0();
-    data_021f59e4 = (u32)data_020e1e2c;
+    gProfileTable = (u32)sProfileTableMain;
     func_02099214();
-    func_02060b7c();
+    Random_SeedGlobal();
     *(vu32 *)0x40004c8 = 0x296a5800;
     *(vu32 *)0x40004cc = 0x7fff;
     *(vu32 *)0x40004c0 = 0x7fff;
     *(vu32 *)0x40004c4 = 0;
     func_0206d770();
     func_0209cb0c();
-    func_02076c24(data_021cc7d0, OVERLAY_68_ID);
+    OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
 }
 
 extern "C" void func_020b0b74(u32 a, u32 b) {
     if (b != 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     data_021ee284 = 1;
 }
@@ -615,11 +615,11 @@ extern "C" void func_020b0b54(void) {
     OS_SetArenaHi(0, 0x23ff000);
 }
 
-extern "C" void func_020b0b18(void) {
+extern "C" void Startup_FillOverlayArea(void) {
     volatile u32 fill;
     u32 info[12];
     u32 start, size;
-    func_0204f054(info, OVERLAY_0_ID);
+    OverlayMgr_GetInfo(info, OVERLAY_0_ID);
     start = info[1];
     fill = 0xe7fee7fe;
     size = 0x229bdc0 - start;
@@ -627,7 +627,7 @@ extern "C" void func_020b0b18(void) {
     DC_FlushRange(start, size);
 }
 
-extern "C" void func_020b0a80(void) {
+extern "C" void NitroStartUp(void) {
     vu16 *ime = (vu16 *)0x4000208;
     volatile u32 zero;
     u32 r5;
@@ -652,9 +652,9 @@ extern "C" void func_020b0a80(void) {
     func_020b0b54();
     func_02097428();
     FS_Init(2);
-    func_020b0b18();
-    func_0204eeb4();
-    *(u16 *)data_0213af4c = 1;
-    func_020e914c();
+    Startup_FillOverlayArea();
+    OverlayMgr_Init();
+    *(u16 *)gHeapCreateOption = 1;
+    Heap_InitSystem();
 }
 

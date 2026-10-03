@@ -2,14 +2,14 @@
 
 extern "C" {
 extern volatile u32 data_021c5384;
-void func_020889cc();
-void func_020889f4();
+void Oam_FlushBuffers();
+void Oam_LoadBuffers();
 void func_02041220();
 void func_020027c4();
 void func_02001d04();
 void func_0200187c();
 void func_02041290();
-void func_02088960();
+void Oam_ResetBuffers();
 void func_02002870();
 void func_02001db8();
 void func_02001dbc();
@@ -86,7 +86,7 @@ extern "C" void func_0205377c()
 
 extern "C" void func_02053754()
 {
-    func_02088960();
+    Oam_ResetBuffers();
     if (data_021c5388) {
         data_021c5388->vfunc_00();
     }
@@ -111,8 +111,8 @@ extern "C" void func_020536dc()
     u32 v = data_021c5384;
     u16 *p = (u16 *)0x4000304;
     *p = (*p & 0xffff7fff) | (v << 15);
-    func_020889cc();
-    func_020889f4();
+    Oam_FlushBuffers();
+    Oam_LoadBuffers();
     func_02041220();
     func_020027c4();
     func_02001d04();

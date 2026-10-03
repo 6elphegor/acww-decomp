@@ -44,7 +44,7 @@ s32 _ZN12Unk_02086f8413func_02086fa8Ev(void *a);
 void _ZN12Unk_02086f8413func_02086fb8EP17Unk_02086ec4_Vec3(void *a, void *b);
 void _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(void *a, void *b);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 void *func_020850e0(void);
 void *func_02085178(void *a);
 void *func_020947f0(s32 a);
@@ -52,7 +52,7 @@ void *func_0204da0c(void);
 void func_0204d684(void *a, Unk_020c0acc_Vec *b, s32 c, s32 d);
 void func_0204edd8(Unk_020c0acc_Vec *a, Unk_020c0acc_Vec *b);
 void func_0204ed8c(Unk_020c0acc_Vec *a, s32 b, s32 c);
-s32 _ZN12Unk_0209865c13func_020986a4Ev(void *a);
+s32 _ZN10PlayerData13func_020986a4Ev(void *a);
 BOOL _ZN12Unk_020872fc13func_02087314Ev(s32 a);
 BOOL _ZN12Unk_02097ff413func_02098044Ej(void *a, s32 b);
 s32 _ZN12Unk_02097ff413func_0209801cEj(void *a, s32 b);
@@ -68,17 +68,17 @@ s32 func_020e9650(void *a, void *b);
 BOOL func_020e7500(void *a);
 s32 _ZN12Unk_02019dd813func_02019d8cEv(void *p);
 s32 _ZN12Unk_020660f813func_020679b4Ev(void *p);
-s32 _ZN12Unk_020aa3b813func_020aa514Ev(void);
+s32 _ZN10ChoiceList9getResultEv(void);
 void _ZN12Unk_020660f813func_02067a84EPhPv(void *a, void *b, u32 c);
 void _ZN12Unk_020660f813func_02067a78Ev(void *p);
 void _ZN12Unk_020660f813func_02067a6cEv(void *p);
-s32 func_02002bdc(void *a, void *b);
-void func_02094ae8(s32 a, s32 b);
-void func_02094b0c(void *v, s32 a, s32 b);
+s32 Math_AngleXZ(void *a, void *b);
+void PlayerActor_RequestAct70(s32 a, s32 b);
+void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
 BOOL func_02094f2c(s32 a, s32 b);
 BOOL func_020951b8(s32 a);
 s32 func_020a0414(void);
-s32 func_02097520(s32 a);
+s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL func_020a03c4(void);
 void func_020b78c4(void);
 BOOL _ZN12Unk_020cbb1813func_020729ccEj(Unk_020cbb18 *p, s32 a);
@@ -88,14 +88,14 @@ void _ZN12Unk_0208721013func_02087210Ev(void *a);
 s32 func_020b4934(void);
 void func_020b4bbc(s32 a, s32 b);
 s32 func_020816f8(s32 a);
-void func_0203a5d8(void);
+void Camera_SetMode19(void);
 void _ZN12Unk_02013b1013func_02014198Ehh(void *p, s32 a, s32 b);
 s32 _ZN12Unk_020872fc13func_02087364Ev(void *p);
 s32 func_02063b8c(u32 n);
 extern u8 data_021c3cc0;
 extern u16 data_020c6cc8;
 extern u32 data_020c6d1c;
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 extern Unk_020cbb18 *data_020cbb18;
 }
 void func_020c22fc(void);
@@ -105,30 +105,30 @@ static inline BOOL Unk_020c06a0_IsMode2() {
 }
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here: the slot is shared with
-// Unk_020d77a4::vfunc_08(int).
-class Unk_020d8c7c_Base {
+// Unk_020d77a4::postCreate(int).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 // ---- Unk_020e6894 and its bases (vtable 0x020ddcf0 chain) ----
@@ -283,15 +283,15 @@ struct Unk_020d77a4_Vec3 {
     s32 x, y, z;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
-struct Unk_020d9670 : Unk_020d5d84 {
+struct Character : Actor {
     u8 pad_04[0x58];
     Unk_020c0acc_Vec unk_5c;
     u8 pad_68[0x8e - 0x68];
@@ -299,19 +299,19 @@ struct Unk_020d9670 : Unk_020d5d84 {
     u8 pad_90[4];
     s16 unk_94;
     u8 pad_96[0xea - 0x96];
-    Unk_020d9670();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual ~Unk_020d9670();
+    Character();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
+    virtual ~Character();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(int a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
 };
 
-struct Unk_020d77a4 : Unk_020d9670 {
+struct Unk_020d77a4 : Character {
     u16 unk_ea;
     Unk_020dbd74 unk_ec;
     Unk_0201ad3c unk_2a0;
@@ -332,10 +332,10 @@ struct Unk_020d77a4 : Unk_020d9670 {
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_4c(int a);
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
@@ -367,7 +367,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 a);
     virtual u32 vfunc_78();
     virtual BOOL vfunc_7c();
@@ -479,7 +479,7 @@ BOOL Unk_020e6924::vfunc_00() {
     }
     data_021f4578 = this;
     unk_720 = -1;
-    p = func_0209750c();
+    p = PlayerData_GetCurrent();
     if (func_020b50e8() == 0) {
         func_0204edd8(&unk_5c, &unk_5c);
         if (func_02077e7c(&unk_5c, 1, 0, 0)) {
@@ -557,7 +557,7 @@ BOOL Unk_020e6924::vfunc_68() {
         _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
     }
     if (func_020b50e8() == 0xb) {
-        if (_ZN12Unk_020872fc13func_02087314Ev(_ZN12Unk_0209865c13func_020986a4Ev(func_0209750c()))) {
+        if (_ZN12Unk_020872fc13func_02087314Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()))) {
             _ZN12Unk_02086f8413func_02086fc4EP17Unk_02086ec4_Vec3(func_02085178(func_020850e0()), &unk_5c);
         }
     }
@@ -608,7 +608,7 @@ void Unk_020e6924::func_020c11b8(s32 state) {
 
 BOOL Unk_020e6924::func_020c1144() {
     unk_4cc.unk_1c |= 2;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -620,7 +620,7 @@ BOOL Unk_020e6924::func_020c1140() {
 BOOL Unk_020e6924::func_020c108c() {
     Unk_020c0acc_Vec a, b;
     unk_4cc.unk_1c |= 2;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0x53, 1, data_020c6cc8, 0);
     func_0204d684(func_0204da0c(), &a, 0, 0);
     func_0204edd8(&b, &unk_5c);
@@ -649,7 +649,7 @@ BOOL Unk_020e6924::func_020c0fdc() {
 }
 
 BOOL Unk_020e6924::func_020c0f80() {
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     _ZN12Unk_0201985813func_020195c8Eiijtt(&unk_564, 1, 0xab, 1, data_020c6cc8, 0);
     return TRUE;
 }
@@ -666,7 +666,7 @@ BOOL Unk_020e6924::func_020c0efc() {
 
 BOOL Unk_020e6924::func_020c0e7c() {
     s32 p, r4;
-    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+    _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
     p = _ZN12Unk_020d771413func_02015aacEv(&unk_658);
     r4 = 0;
     if (p != 0) {
@@ -716,7 +716,7 @@ BOOL Unk_020e6924::func_020c0dc8() {
 
 BOOL Unk_020e6924::func_020c0c08() {
     Unk_020c0acc_Vec a, b, c, d;
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     void *q;
     s32 t;
     if (p == NULL) {
@@ -741,7 +741,7 @@ BOOL Unk_020e6924::func_020c0c08() {
         return TRUE;
     }
     t = _ZN12Unk_020d77a413func_0201bd20Ej(this, 4);
-    if ((func_020b50e8() == 0 || (func_020b50e8() == 0xc && _ZN12Unk_020872fc13func_02087314Ev(_ZN12Unk_0209865c13func_020986a4Ev(p)) == 0)) && _ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 2) {
+    if ((func_020b50e8() == 0 || (func_020b50e8() == 0xc && _ZN12Unk_020872fc13func_02087314Ev(_ZN10PlayerData13func_020986a4Ev(p)) == 0)) && _ZN12Unk_0201985813func_020197a8Ev(&unk_564) == 2) {
         s32 v, d2;
         if (t > 0x6000) {
             func_020c11b8(6);
@@ -817,7 +817,7 @@ BOOL Unk_020e6924::func_020c06a0() {
     s32 r5 = func_020a0414();
     Unk_020cbb18 *r7 = data_020cbb18;
     s32 r6 = r7->unk_68;
-    s32 s = func_02097520(r5);
+    s32 s = PlayerData_GetBySessionSlot(r5);
     switch (unk_724) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
@@ -828,7 +828,7 @@ BOOL Unk_020e6924::func_020c06a0() {
         break;
     case 1:
         vec30 = data_020d1c8c;
-        func_02094b0c(&vec30, 0x35c, r5);
+        PlayerActor_RequestAct6F(&vec30, 0x35c, r5);
         _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xe000, 0x10800, 0, 0, 0, 0, data_020c6cc8, 0);
         unk_724 = 2;
         break;
@@ -839,7 +839,7 @@ BOOL Unk_020e6924::func_020c06a0() {
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
             unk_724 = 3;
             unk_658.func_020c062c(6);
-            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 0, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             _ZN12Unk_02013b1013func_02014198Ehh(&unk_618, 0, 1);
         }
@@ -849,14 +849,14 @@ BOOL Unk_020e6924::func_020c06a0() {
             _ZN12Unk_020660f813func_02067a78Ev(unk_658.unk_3c);
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 2, 2, 0xea00, 0x12e00, 0, 0, 0, 0, data_020c6cc8, 0);
             func_020c22fc();
-            func_0203a5d8();
+            Camera_SetMode19();
             unk_724 = 4;
         }
         break;
     case 4:
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 0, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
-            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, data_021f4880, 4, data_020c6d1c, 1);
+            _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih(&unk_3b0, 1, 0, 0, gVec3Zero, 4, data_020c6d1c, 1);
             s32 t = func_020816f8(0x23);
             if (t) {
                 _ZN12Unk_020d771413func_02015a80EP18Unk_02015b8c_Scene(&unk_658, t);
@@ -873,7 +873,7 @@ BOOL Unk_020e6924::func_020c06a0() {
             vec24.x = 0xde00;
             vec24.y = 0;
             vec24.z = 0x13a00;
-            s32 t = func_02002bdc(&unk_5c, &vec24);
+            s32 t = Math_AngleXZ(&unk_5c, &vec24);
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 3, 1, 0, 0, 0, t, 0, 0, data_020c6cc8, 0);
             unk_724 = 6;
         }
@@ -881,7 +881,7 @@ BOOL Unk_020e6924::func_020c06a0() {
     case 6:
         if (_ZN12Unk_0201985813func_02019790Ev(&unk_564)) {
             _ZN12Unk_0201985813func_020196b4Ejiiissiitt(&unk_564, 1, 1, 0xde00, 0x13a00, 0, 0, 0, 0, data_020c6cc8, 0);
-            func_02094ae8(0, r5);
+            PlayerActor_RequestAct70(0, r5);
             func_020c22e0();
             unk_724 = 7;
         }
@@ -909,19 +909,19 @@ BOOL Unk_020e6924::func_020c06a0() {
         break;
     case 10:
         if (_ZN12Unk_020cbb1813func_020729ccEj(r7, 0)) {
-            s32 x = _ZN12Unk_0209865c13func_020986a4Ev(func_0209750c());
+            s32 x = _ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent());
             if (_ZN12Unk_020872fc13func_0208733cEv() == 1) {
                 _ZN12Unk_020872fc13func_02087368Ev(x);
             }
-            _ZN12Unk_02097ff413func_0209801cEj(func_0209750c(), 0x39);
-            _ZN12Unk_020872fc13func_02087368Ev(_ZN12Unk_0209865c13func_020986a4Ev((void *)s));
+            _ZN12Unk_02097ff413func_0209801cEj(PlayerData_GetCurrent(), 0x39);
+            _ZN12Unk_020872fc13func_02087368Ev(_ZN10PlayerData13func_020986a4Ev((void *)s));
             _ZN12Unk_0208721013func_02087210Ev(func_02085178(func_020850e0()));
             func_020b4bbc(func_020b4934(), 1);
         }
         if (r5 == r6) {
-            _ZN12Unk_020872fc13func_02087368Ev(_ZN12Unk_0209865c13func_020986a4Ev(func_0209750c()));
+            _ZN12Unk_020872fc13func_02087368Ev(_ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent()));
             _ZN12Unk_0208721013func_02087210Ev(func_02085178(func_020850e0()));
-            _ZN12Unk_02097ff413func_0209801cEj(func_0209750c(), 0x31);
+            _ZN12Unk_02097ff413func_0209801cEj(PlayerData_GetCurrent(), 0x31);
             func_020b4bbc(func_020b4934(), 0);
         } else {
             func_020b4bbc(func_020b4934(), 1);
@@ -956,7 +956,7 @@ void Unk_020e6894::vfunc_38(void *p) {
 }
 
 void Unk_020e6894::vfunc_78(Unk_020c0538_Out *out) {
-    void *t = func_0209750c();
+    void *t = PlayerData_GetCurrent();
     out->unk_00 = (u32)data_020e679c;
     switch (func_020c0624()) {
     case 0:
@@ -988,7 +988,7 @@ void Unk_020e6894::vfunc_78(Unk_020c0538_Out *out) {
 }
 
 void Unk_020e6894::vfunc_10() {
-    s32 a = _ZN12Unk_0209865c13func_020986a4Ev(func_0209750c());
+    s32 a = _ZN10PlayerData13func_020986a4Ev(PlayerData_GetCurrent());
     _ZN12Unk_020d771413func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev((void *)a), 0);
     _ZN12Unk_020d771413func_02015818Ejj(this, _ZN12Unk_020872fc13func_02087364Ev((void *)a), 1);
 }
@@ -1006,7 +1006,7 @@ void Unk_020e6894::vfunc_18() {
     case 34: case 35: case 36: {
         u8 v[2];
         _ZN12Unk_020660f813func_020679b4Ev(unk_3c);
-        switch (_ZN12Unk_020aa3b813func_020aa514Ev()) {
+        switch (_ZN10ChoiceList9getResultEv()) {
         case 0:
             v[0] = func_02063b8c(3) + 0x1c;
             _ZN12Unk_020660f813func_02067a84EPhPv(unk_3c, &v[0], (u32)data_020e679c);

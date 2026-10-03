@@ -1,30 +1,30 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 class Unk_ov004_0224c740;
@@ -52,14 +52,14 @@ class Unk_ov004_0224c7d0;
 #define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
 #define func_0202d388 _ZN12Unk_020d893813func_0202d388EP12Unk_020d89c8j
 #define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
-#define func_02080950 _ZN12Unk_0208091c13func_02080950Ev
-#define func_02080b78 _ZN12Unk_0208091c13func_02080b78EPt
-#define func_02080dd8 _ZN12Unk_0208091c13func_02080dd8Ev
-#define func_02094218 _ZN12Unk_020940a013func_02094218Ev
-#define func_02098750 _ZN12Unk_0209865c13func_02098750Ev
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_020aa514 _ZN12Unk_020aa3b813func_020aa514Ev
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define func_02080950 _ZN14VillagerMemory13func_02080950Ev
+#define func_02080b78 _ZN14VillagerMemory13func_02080b78EPt
+#define func_02080dd8 _ZN14VillagerMemory13func_02080dd8Ev
+#define func_02094218 _ZN8PlayerId13func_02094218Ev
+#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define func_021319d0 _fadd
 #define func_021329d0 _ffix
 #define func_02132a4c _fflt
@@ -137,10 +137,10 @@ void func_ov004_022344dc(s32);
 void *func_ov004_02235718();
 s32 func_ov004_02235624(void *, s32, s32, s32);
 
-u32 func_0204b248(void *, u32);
-s32 func_0204b2d4(void *);
-u32 func_0204b25c(void *);
-u32 func_0204b718(void *, u32, u32);
+u32 Item_MakeFurniture(void *, u32);
+s32 Item_IsFurniture(void *);
+u32 Item_GetFurnitureIndex(void *);
+u32 Item_FindMoneyBagForAmount(void *, u32, u32);
 s32 func_02063b8c(s32);
 void *func_020947f0(s32);
 s32 func_0202ff64(void *);
@@ -154,20 +154,20 @@ void func_020b1028();
 void func_02015ab0(void *, s32);
 s32 func_0201bc4c(void *, s32);
 void *func_02015a5c(void *);
-s32 func_020aa514();
+s32 ChoiceList_getResult();
 void *func_020805c4(void *);
 void func_0200301c(void *, const void *, u32, const void *);
 void func_02015170(void *, s32, s32);
 void func_020151d0(void *, s32);
 void func_02014e60(void *, void *, s32, s32, s32);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 void *func_02098750(void *);
-void *func_0209888c(void *);
+void *PlayerData_getPlayerId(void *);
 s32 func_0201ad68(void *, void *, s32);
 void func_0201ad4c(void *, void *);
 s32 func_02097a90(void *, void *, s32, s32);
 void func_02067a84(void *, void *, const void *);
-void func_0208a58c();
+void Hud_Show();
 void func_0207c5e0(void *, void *);
 void *func_0207f55c(void *, void *);
 s32 func_02080ecc(void *, s32, s32, s32);
@@ -178,7 +178,7 @@ void func_02080b78(void *, void *);
 void func_0207cfb8(void *, void *);
 s32 func_0206ec6c();
 s32 func_0206ed18();
-s32 func_0204be70(void *);
+s32 Item_GetPrice(void *);
 s32 func_0207f854(void *, void *);
 s32 func_02080dd8(s32);
 s32 func_02132a4c(s32);
@@ -189,7 +189,7 @@ s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 s32 func_0206e8e8();
 void func_02015958(void *, s32, u32, s32, s32, s32);
-s32 func_0208a598();
+s32 Hud_Hide();
 void func_0203d67c(void *);
 void func_020b4bbc(s32, s32);
 s32 func_020b4934();
@@ -204,7 +204,7 @@ s32 func_020e972c(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e780c(s32, s32);
 void func_0204ee10(s32 *, s32 *, s32 *);
-s32 func_02002bdc(void *, void *);
+s32 Math_AngleXZ(void *, void *);
 s32 func_02015aac(void *);
 s32 func_0201bcbc(void *, s32);
 void func_020141b4(void *, s32, s32, s32);
@@ -224,7 +224,7 @@ s32 func_02094218(void *);
 s32 func_02080950(s32);
 void func_0201bc28(void *, void *);
 void func_0202d388(void *, void *, u32);
-s32 func_02053248();
+s32 FtrInfo_GetUnk05();
 void func_020b50dc();
 s32 func_020b5178();
 }
@@ -250,13 +250,13 @@ struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 
 struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f43c8 {
+class SndSeEmitter {
 public:
-    Unk_020f43c8();
-    virtual ~Unk_020f43c8();
+    SndSeEmitter();
+    virtual ~SndSeEmitter();
     u32 pad[0x40 / 4];
 };
-class Unk_020f4080 : public Unk_020f43c8 {
+class Unk_020f4080 : public SndSeEmitter {
 public:
     Unk_020f4080();
     ~Unk_020f4080() {}
@@ -279,25 +279,25 @@ public:
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct Unk_0201c078 { Unk_0201c078(); ~Unk_0201c078(); u32 pad[0x5c / 4]; };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u32 pad_04[0x58 / 4];
     u32 unk_5c;
@@ -312,12 +312,12 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -365,7 +365,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void *vfunc_64();
     virtual u8 *vfunc_6c();
     virtual u8 *vfunc_70();
@@ -504,7 +504,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
     virtual BOOL vfunc_58();
@@ -638,9 +638,9 @@ static inline BOOL Unk_ov004_02218a48_Range(volatile u16 *p, u32 lo, u32 hi) {
 
 static inline BOOL Unk_ov004_02218a48_Eq(u16 *p, u32 k) {
     u16 t;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         t = k;
-        if (func_0204b25c(p) == func_0204b25c(&t)) {
+        if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&t)) {
             return TRUE;
         }
         return FALSE;
@@ -660,9 +660,9 @@ static inline BOOL Unk_ov004_022191cc_Is1(u8 *p) {
 
 static inline BOOL Unk_ov004_02219378_Chk(u16 *p) {
     BOOL r;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         u16 v = 0xfff1;
-        if (func_0204b25c(p) == func_0204b25c(&v)) {
+        if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&v)) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -679,9 +679,9 @@ static inline BOOL Unk_ov004_02219378_Chk(u16 *p) {
 
 static inline BOOL Unk_ov004_0221946c_Chk(u16 *p, u16 *vp) {
     BOOL r;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         *vp = 0xfff1;
-        if (func_0204b25c(p) == func_0204b25c(vp)) {
+        if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(vp)) {
             r = TRUE;
         } else {
             r = FALSE;
@@ -725,8 +725,8 @@ BOOL Unk_ov004_0224c7d0::vfunc_00() {
     }
     func_0201a784(&unk_3b0);
     void *o;
-    if (func_0209750c()) {
-        o = func_0209888c(func_0209750c());
+    if (PlayerData_GetCurrent()) {
+        o = PlayerData_getPlayerId(PlayerData_GetCurrent());
     } else {
         o = 0;
     }
@@ -770,9 +770,9 @@ BOOL Unk_ov004_0224c7d0::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224c7d0::vfunc_24() {
+BOOL Unk_ov004_0224c7d0::onDraw() {
     if (unk_ac0 != 0) {
-        Unk_020d77a4::vfunc_24();
+        Unk_020d77a4::onDraw();
     }
     return TRUE;
 }
@@ -924,7 +924,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02219b60() {
         s32 r6 = func_020e9650(&unk_5c, unk_898);
         u32 loc0[3];
         func_0201ae00(loc0, this, unk_898);
-        s32 r1 = func_02002bdc(&unk_5c, unk_898);
+        s32 r1 = Math_AngleXZ(&unk_5c, unk_898);
         s32 r4 = func_020e780c(unk_8e, r1);
         if (r6 > unk_ad0 && func_020e96ec(loc0, &unk_5c)) {
             func_ov004_02219f18(5);
@@ -939,7 +939,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02219b00() {
     func_020e9650(&unk_5c, unk_898);
     u32 loc1c[3];
     func_0201ae00(loc1c, this, unk_898);
-    s32 r = func_02002bdc(&unk_5c, unk_898);
+    s32 r = Math_AngleXZ(&unk_5c, unk_898);
     func_020196b4(&unk_564, 3, 1, 0, 0, 0, r, 0, 0, data_020c6cc8, 0);
     return TRUE;
 }
@@ -999,14 +999,14 @@ BOOL Unk_ov004_0224c7d0::func_ov004_022198a8() {
     s32 r6 = func_ov004_02235624(func_ov004_02235718(), xy[0], xy[1], 1);
     if (func_ov004_02218a48(r6)) {
         void *o = func_ov004_02235720(func_ov004_0223584c(), r6);
-        unk_894 = func_0204b248(func_ov004_022087a4(), 0);
+        unk_894 = Item_MakeFurniture(func_ov004_022087a4(), 0);
         func_ov004_022088c0(o, unk_898);
         func_ov004_022189dc(o);
         func_ov004_02218a20(r6);
         unk_8a4 = r6;
     } else if (func_ov004_02218a48(r4b)) {
         void *o = func_ov004_02235720(func_ov004_0223584c(), r4b);
-        unk_894 = func_0204b248(func_ov004_022087a4(), 0);
+        unk_894 = Item_MakeFurniture(func_ov004_022087a4(), 0);
         func_ov004_022088c0(o, unk_898);
         func_ov004_022189dc(o);
         func_ov004_02218a20(r4b);
@@ -1129,9 +1129,9 @@ void Unk_ov004_0224c740::func_ov004_0221946c() {
             s32 r4 = r6;
             u16 *p = &unk_1a0->unk_894;
             if (!Unk_ov004_0221946c_Chk(p, &buf[1])) {
-                unk_1a4 = func_0204be70(&unk_1a0->unk_894);
-                if (func_0209750c()) {
-                    r6 = func_0207f854(unk_1a0->unk_82c, (void *)func_0209888c(func_0209750c()));
+                unk_1a4 = Item_GetPrice(&unk_1a0->unk_894);
+                if (PlayerData_GetCurrent()) {
+                    r6 = func_0207f854(unk_1a0->unk_82c, (void *)PlayerData_getPlayerId(PlayerData_GetCurrent()));
                 }
                 if (r6) {
                     r4 = func_02080dd8(r6);
@@ -1153,7 +1153,7 @@ void Unk_ov004_0224c740::func_ov004_0221946c() {
                 } else {
                     unk_1a4 = func_0206e8e8();
                     ((u8 *)buf)[0] = func_02063b8c(2) + 12;
-                    func_0208a598();
+                    Hud_Hide();
                 }
             }
         }
@@ -1190,7 +1190,7 @@ void Unk_ov004_0224c740::func_ov004_02219378() {
 void Unk_ov004_0224c740::vfunc_78(void *arg) {
     Unk_ov004_022191f8_Out *out = (Unk_ov004_022191f8_Out *)arg;
     u16 tmp;
-    void *q = func_0209888c(func_0209750c());
+    void *q = PlayerData_getPlayerId(PlayerData_GetCurrent());
     void *o = func_0207f55c(unk_1a0->unk_82c, q);
     if (o != 0) {
         func_02080ecc(o, 0, 0, 0);
@@ -1219,9 +1219,9 @@ void Unk_ov004_0224c740::vfunc_78(void *arg) {
             func_0200301c(func_020805c4(b->unk_82c), data_ov004_02250800, 0x28, "ev_fmarket3");
             u16 *p = &unk_1a0->unk_894;
             BOOL eq;
-            if (func_0204b2d4(p)) {
+            if (Item_IsFurniture(p)) {
                 tmp = 0xfff1;
-                if (func_0204b25c(p) == func_0204b25c(&tmp)) {
+                if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&tmp)) {
                     eq = TRUE;
                 } else {
                     eq = FALSE;
@@ -1279,8 +1279,8 @@ void Unk_ov004_0224c740::vfunc_14() {
                 func_02067a84(unk_3c, data_021edb5c, 0);
             } else if (st == 0) {
                 void *q;
-                if (func_0209750c() != 0) {
-                    q = func_0209888c(func_0209750c());
+                if (PlayerData_GetCurrent() != 0) {
+                    q = PlayerData_getPlayerId(PlayerData_GetCurrent());
                 } else {
                     q = 0;
                 }
@@ -1313,7 +1313,7 @@ void Unk_ov004_0224c740::vfunc_14() {
         case 17:
         case 18:
         case 19:
-            func_0208a58c();
+            Hud_Show();
             break;
         }
     }
@@ -1329,7 +1329,7 @@ void Unk_ov004_0224c740::vfunc_18() {
     u32 sel;
     s32 st;
     func_02015a5c(this);
-    st = func_020aa514();
+    st = ChoiceList_getResult();
     sel = 0xff;
     Unk_ov004_0224c7d0 *b = unk_1a0;
     if (b->unk_ac0 == 2) {
@@ -1355,9 +1355,9 @@ void Unk_ov004_0224c740::vfunc_18() {
         case 13:
             func_0200301c(func_020805c4(b->unk_82c), data_ov004_022507d8, 0x28, "ev_fmarket3");
             if (st == 0) {
-                void *r7 = func_02098750(func_0209750c());
+                void *r7 = func_02098750(PlayerData_GetCurrent());
                 st = func_0201ad68(unk_1a0, (void *)unk_1a4, 0);
-                tmp = func_0204b718((void *)unk_1a4, 0, 0);
+                tmp = Item_FindMoneyBagForAmount((void *)unk_1a4, 0, 0);
                 if (tmp == 0xfff1) {
                     tmp = 0x1492;
                 }
@@ -1506,7 +1506,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02218bd4() {
     do {
         if (func_ov004_02218a48(i)) {
             void *e = func_ov004_02235720(func_ov004_0223584c(), i);
-            unk_894 = func_0204b248(func_ov004_022087a4(e), 0);
+            unk_894 = Item_MakeFurniture(func_ov004_022087a4(e), 0);
             func_ov004_022088c0(e, unk_898);
             func_ov004_022189dc(e);
             func_ov004_02218a20(i);
@@ -1535,7 +1535,7 @@ BOOL Unk_ov004_0224c7d0::func_ov004_02218a48(s32 idx) {
     if (func_ov004_02234440(idx) == 0) {
         return FALSE;
     }
-    v = func_0204b248(func_ov004_022087a4(p), 0);
+    v = Item_MakeFurniture(func_ov004_022087a4(p), 0);
     BOOL r0 = FALSE;
     volatile u16 *pv = &v;
     u32 w = *pv;
@@ -1569,7 +1569,7 @@ void Unk_ov004_0224c7d0::func_ov004_02218a20(u32 v) {
 
 void Unk_ov004_0224c7d0::func_ov004_022189dc(void *arg) {
     func_ov004_022087a4(arg);
-    switch (func_02053248()) {
+    switch (FtrInfo_GetUnk05()) {
     case 0:
         unk_ad0 = 0x3000;
         break;

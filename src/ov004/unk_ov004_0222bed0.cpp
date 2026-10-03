@@ -6,7 +6,7 @@
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
 #define func_02003ecc _ZN12Unk_02003c3013func_02003eccEv
-#define func_02055550 _ZN12Unk_020dbe3413func_02055550EPi
+#define func_02055550 _ZN5Model13func_02055550EPi
 #define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
 #define func_02133150 _s32_div_f
 
@@ -117,13 +117,13 @@ struct Unk_ov004_0222c880_Model {
     Unk_ov004_0222c570_Mtx unk_64;
 };
 
-class Unk_ov004_0224e594 : public Unk_020d8c7c {
+class Unk_ov004_0224e594 : public GameProc {
 public:
     Unk_ov004_0224e594() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     BOOL func_ov004_0222c914();
     void func_ov004_0222c640(void *grid);
@@ -138,17 +138,17 @@ public:
 // ---------------------------------------------------------------- externs
 extern "C" {
 extern s32 data_021c47c4;
-extern void *data_021c3070;
+extern void *gCamera;
 extern Unk_ov004_0222c570_Comm *data_020cbb18;
 extern u8 data_021f47e0[];
-extern u8 data_021c309c[];
+extern u8 gCameraLookAt[];
 
 void *func_02095204(u32 a);
 s32 func_02072e44(void *g);
 void func_02054970(void *p);
 s32 func_020549e4(void *p, void *a, s32 b);
 void *func_020549ac(void *p, u32 a);
-u32 func_02061888(s32 a, s32 b);
+u32 Item_GetIconModelName(s32 a, s32 b);
 void func_02045df4();
 void func_0204ed8c(Unk_ov004_V3 *out, s32 a, s32 b);
 s32 func_ov004_02234f80(s32 a, s32 b);
@@ -160,8 +160,8 @@ void VEC_Add(void *a, void *b, void *c);
 void func_0204edd8(void *a, void *b);
 u16 *func_0204eba0(void *g, void *v, s32 z);
 s32 func_ov004_02234f6c(void *p);
-s32 func_0204bc34(u16 *p);
-u32 func_0203ef38(void *a, void *b);
+s32 Item_GetInfoUnk07(u16 *p);
+u32 WorldCurve_ToCurved(void *a, void *b);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
 void func_020e8464(void *m, s32 x, s32 y, s32 z);
@@ -174,7 +174,7 @@ void func_020b5184(void);
 void func_0204eb30(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 func_02133150(s32 a, s32 b);
 u32 func_020b50e8(void);
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 
 // the manager's methods called as plain functions with the object first (the symbols.txt names)
 void Unk_c788_call(s32 mgr, u32 id, Unk_ov004_V3 *a, Unk_ov004_V3 *b, s32 c, s32 d, s32 e);
@@ -218,7 +218,7 @@ BOOL Unk_ov004_0224e594::func_ov004_0222c914() {
     if (func_020549e4(&unk_174, d ? d : d, r)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            unk_50[i] = func_020549ac(&unk_174, func_02061888(i, r));
+            unk_50[i] = func_020549ac(&unk_174, Item_GetIconModelName(i, r));
         }
         r = TRUE;
     }
@@ -236,7 +236,7 @@ BOOL Unk_ov004_0224e594::vfunc_00() {
     return r;
 }
 
-BOOL Unk_ov004_0224e594::vfunc_18() {
+BOOL Unk_ov004_0224e594::onExecute() {
     func_ov004_0222c174((Unk_ov004_Entry *)&data_ov004_022514b4);
     return TRUE;
 }
@@ -256,7 +256,7 @@ Unk_ov004_0222c880_Model *Unk_ov004_0224e594::func_ov004_0222c7e0(u32 idx, const
     Unk_ov004_0222c880_Model *model = (Unk_ov004_0222c880_Model *)unk_50[idx];
     Unk_ov004_0222c570_Mtx m;
     s32 t[3];
-    u32 r = func_0203ef38(t, (void *)&pos);
+    u32 r = WorldCurve_ToCurved(t, (void *)&pos);
     func_020e8388(data_021f47e0, t[0], t[1], t[2]);
     func_020e8434(data_021f47e0, r);
     func_020e8464(data_021f47e0, rx, ry, rz);
@@ -271,11 +271,11 @@ void Unk_ov004_0224e594::func_ov004_0222c788(u16 id, const Unk_ov004_0222c570_Ve
     v = id;
     Unk_ov004_0222c570_Vec p = pos;
     Unk_ov004_0222c570_Vec q = scale;
-    func_ov004_0222c7e0(func_0204bc34((u16 *)&v), p, q, rx, ry, rz);
+    func_ov004_0222c7e0(Item_GetInfoUnk07((u16 *)&v), p, q, rx, ry, rz);
 }
 
 void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
-    if (data_021c3070 == NULL) {
+    if (gCamera == NULL) {
         return;
     }
     Unk_ov004_0222c570_Vec c;
@@ -288,16 +288,16 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
     Unk_ov004_0222c570_Vec e2;
     s32 hi = 8;
     s32 j, i;
-    a.x = ((Unk_ov004_0222c570_Vec *)data_021c309c)->x;
-    a.y = ((Unk_ov004_0222c570_Vec *)data_021c309c)->y;
-    a.z = ((Unk_ov004_0222c570_Vec *)data_021c309c)->z;
+    a.x = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->x;
+    a.y = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->y;
+    a.z = ((Unk_ov004_0222c570_Vec *)gCameraLookAt)->z;
     func_0204edd8(&out, &a);
     b.x = out.x + 0x10000;
     b.y = 0;
     b.z = out.z + 0x10000;
     for (i = hi; i >= -8; i--) {
         func_0204edd8(&c, &b);
-        u32 r = func_0203ef38(&d, &c);
+        u32 r = WorldCurve_ToCurved(&d, &c);
         func_020e8388(data_021f47e0, d.x, d.y, d.z);
         func_020e8434(data_021f47e0, r);
         for (j = hi; j >= -8; j--) {
@@ -327,9 +327,9 @@ void Unk_ov004_0224e594::func_ov004_0222c640(void *grid) {
     }
 }
 
-BOOL Unk_ov004_0224e594::vfunc_24() {
+BOOL Unk_ov004_0224e594::onDraw() {
     void *a = (void *)data_021c47c4;
-    void *b = data_021c3070;
+    void *b = gCamera;
     if (a != NULL && b != NULL) {
         func_ov004_0222c640(a);
         func_ov004_0222c0b8((Unk_ov004_Entry *)&data_ov004_022514b4);
@@ -546,7 +546,7 @@ extern "C" void func_ov004_0222c0b8(Unk_ov004_Entry *e) {
         if (e->unk_04 != 0 && id != 0xfff1) {
             Unk_ov004_V3 *q = &e->unk_3c;
             Unk_ov004_V3 v;
-            s32 r = func_0203ef38(&v, &e->unk_24);
+            s32 r = WorldCurve_ToCurved(&v, &e->unk_24);
             func_020e8388(data_021f47e0, v.x, v.y, v.z);
             func_020e8434(data_021f47e0, r);
             func_020e84f8(data_021f47e0, e->unk_3c.x, q->y, q->z);

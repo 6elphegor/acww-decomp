@@ -14,15 +14,15 @@ void func_020639e8(char *dst, const char *fmt, ...);
 }
 
 extern "C" {
-s32 func_02063f3c(const char *s);
+s32 File_GetDecodedSizeByPath(const char *s);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
-void *func_020e8574(u32 n);
+void *Mem_Alloc(u32 n);
 }
 
 extern "C" {
@@ -30,7 +30,7 @@ void func_020e885c(void *p);
 }
 
 extern "C" {
-void *func_020e8da0(u32 a, u32 b);
+void *FrameHeap_Create(u32 a, u32 b);
 }
 
 extern "C" {
@@ -82,7 +82,7 @@ extern u8 data_020d064c[];
 }
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 extern "C" {
@@ -202,14 +202,14 @@ public:
 };
 extern "C" Unk_020cbb18 *data_020cbb18;
 
-// ---- Unk_0206d8b8 (cached record table)
-class Unk_0206d8b8 {
+// ---- RecordFile (cached record table)
+class RecordFile {
 public:
-    Unk_0206d8b8();
-    ~Unk_0206d8b8();
-    void func_0206d8b8();
-    void func_0206d904();
-    BOOL func_0206d940(const char *path, s32 size, s32 count);
+    RecordFile();
+    ~RecordFile();
+    void close();
+    void loadAll();
+    BOOL open(const char *path, s32 size, s32 count);
     u8 pad[0x1c];
 };
 
@@ -247,7 +247,7 @@ public:
     BOOL func_0209bfa4();
 
     Unk_0209c040 unk_00[0x24];
-    Unk_0206d8b8 unk_120;
+    RecordFile unk_120;
 };
 
 // ---- row helper
@@ -289,7 +289,7 @@ public:
     BOOL func_020b89f0(u32 *a, u8 b);
 };
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
     u32 unk_04;
     u32 unk_08;
@@ -297,8 +297,8 @@ public:
     u8 unk_10;
     u8 unk_11;
 
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_020551f4(u32 a, u32 b, u32 c);
     void func_02055200(void);
     void func_02055210(void *p);
@@ -313,7 +313,7 @@ public:
     s32 func_02055340(void *a, void *b, void *c);
 };
 
-class Unk_020dbe04 {
+class ModelResource {
 public:
     u32 unk_04;
     void *unk_08;
@@ -323,10 +323,10 @@ public:
     u8 unk_30;
     u8 unk_31;
 
-    Unk_020dbe04();
-    virtual ~Unk_020dbe04();
-    u32 func_02055014(void *a, Unk_020dbe24 *b, void *c);
-    u32 func_02055090(void *res, Unk_020dbe24 *b, void *tex, void *heap);
+    ModelResource();
+    virtual ~ModelResource();
+    u32 func_02055014(void *a, TexVramSlot *b, void *c);
+    u32 func_02055090(void *res, TexVramSlot *b, void *tex, void *heap);
     void func_0205516c(void);
     void *func_0205500c(void);
     void *func_02055010(void);
@@ -338,15 +338,15 @@ public:
     Unk_0209c2f4();
     BOOL func_0209c2f4();
     BOOL func_0209c300(void *a, void *b, u32 size, void *extra);
-    Unk_020dbe24 *func_0209c344();
+    TexVramSlot *func_0209c344();
     void *func_0209c348();
 
     u8 unk_00;
     void *unk_04;
-    Unk_020dbe24 unk_08;
+    TexVramSlot unk_08;
 };
 
-// ---- model resource holder (derived from Unk_020dbe04)
+// ---- model resource holder (derived from ModelResource)
 class Unk_0209c0ac {
 public:
     Unk_0209c0ac();
@@ -356,7 +356,7 @@ public:
     void func_0209c0c8();
     s32 func_0209c0d0(Unk_0209c2f4 *e, const char *name);
 
-    Unk_020dbe04 unk_00;
+    ModelResource unk_00;
     u8 unk_34;
     void *unk_38;
     void *unk_3c;
@@ -411,13 +411,13 @@ void *Unk_0209c2f4::func_0209c348() {
     return unk_04;
 }
 
-Unk_020dbe24 *Unk_0209c2f4::func_0209c344() {
+TexVramSlot *Unk_0209c2f4::func_0209c344() {
     return &unk_08;
 }
 
 BOOL Unk_0209c2f4::func_0209c300(void *a, void *b, u32 size, void *extra) {
     if (size) {
-        unk_04 = func_020e8da0((size + 3) & ~3, (u32)extra);
+        unk_04 = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
     if (a != 0 || b != 0) {
         if (unk_08.func_02055340(a, 0, b)) return TRUE;
@@ -499,7 +499,7 @@ BOOL Unk_0209c15c::func_0209c1a4(u32 n, void *a, void *b, u32 size, Unk_0209c1a4
     mem = 0;
     unk_08 = 0;
     if (size) mem = unk_10(total, 0);
-    unk_0c = (Unk_0209c2f4 *)func_020e8574(unk_04 * 0x1c);
+    unk_0c = (Unk_0209c2f4 *)Mem_Alloc(unk_04 * 0x1c);
     Unk_0209c2f4 *e = unk_0c;
     if (e) {
         u32 i;
@@ -520,7 +520,7 @@ BOOL Unk_0209c15c::func_0209c15c() {
             e->func_0209c2f4();
             e++;
         }
-        func_020e8558(unk_0c);
+        Mem_Free(unk_0c);
     }
     if (unk_14) unk_14();
     unk_10 = 0;
@@ -544,9 +544,9 @@ Unk_0209c0ac::~Unk_0209c0ac() {
 s32 Unk_0209c0ac::func_0209c0d0(Unk_0209c2f4 *e, const char *name) {
     if (unk_38 == 0) unk_38 = e;
     if (unk_34 == 0) {
-        Unk_020dbe24 *r = e->func_0209c344();
+        TexVramSlot *r = e->func_0209c344();
         void *t = e->func_0209c348();
-        if (unk_00.func_02055090((void *)name, r, t, data_021f482c) == 3) unk_34 = 1;
+        if (unk_00.func_02055090((void *)name, r, t, gCurrentHeap) == 3) unk_34 = 1;
     }
     return unk_34;
 }

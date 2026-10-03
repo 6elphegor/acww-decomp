@@ -1,16 +1,16 @@
 #include "types.h"
 
 extern "C" {
-void *func_020e8608(u32 heap, u32 size);
+void *Heap_Alloc(u32 heap, u32 size);
 }
 
-class Unk_0213bac4 {
+class TvSound {
 public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void reset();
+    virtual void release();
     virtual void vfunc_08(s32 a, void *b);
-    virtual void vfunc_0c(s32 a);
-    virtual void vfunc_10();
+    virtual void turnOn(s32 a);
+    virtual void turnOff();
 };
 
 struct Unk_02003878_Obj {
@@ -34,9 +34,9 @@ extern u32 data_020c6190[];
 extern const u32 data_020c6160[];
 const u32 data_020c6160[] = {0x10, 0x10, 0x10, 0x10, 0x14, 0x10, 0x10, 0x18, 0x14, 0x10, 0x14, 0x10};
 
-#define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)func_020e8608(heap, sz); if (o) { o->unk_00 = data_0213bac4; o->unk_00 = vt; } return (Unk_0213bac4 *)o; }
+#define MK(sz, vt) { Unk_02003878_Obj *o = (Unk_02003878_Obj *)Heap_Alloc(heap, sz); if (o) { o->unk_00 = data_0213bac4; o->unk_00 = vt; } return (TvSound *)o; }
 
-extern "C" Unk_0213bac4 *func_02003878(u32 heap, s32 type) {
+extern "C" TvSound *TvSound_Create(u32 heap, s32 type) {
     switch (type) {
     case 0: MK(0x10, data_0213b9e4)
     case 1: MK(0x10, data_0213ba04)
@@ -54,7 +54,7 @@ extern "C" Unk_0213bac4 *func_02003878(u32 heap, s32 type) {
     }
 }
 
-extern "C" u32 func_02003850() {
+extern "C" u32 TvSound_GetMaxSize() {
     u32 m = 0;
     for (const u32 *p = data_020c6160; p < (const u32 *)data_020c6190; p++) {
         if (*p > m) {

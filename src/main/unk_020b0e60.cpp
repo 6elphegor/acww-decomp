@@ -14,8 +14,8 @@ extern u8 data_021dfd8c;
 extern u8 data_021e58a6;
 extern u8 data_021ed2e6[];
 extern u8 data_021ef360;
-extern u32 data_021f482c;
-extern s32 data_021f4768;
+extern u32 gCurrentHeap;
+extern s32 gFrameCounter;
 extern u32 data_027e0148[];
 }
 
@@ -98,20 +98,20 @@ public:
     virtual BOOL vfunc_6c(u32 a);
 };
 
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c(u16 x) : v(x) {}
-    ~Unk_0203442c();
+    ItemId(u16 x) : v(x) {}
+    ~ItemId();
 };
-typedef Unk_0203442c Marker2;
+typedef ItemId Marker2;
 
 // Info table of the next unit
 extern Info data_020d0a7c[];
 
-class Unk_02000c8c {
+class FxVec3 {
 public:
-    Unk_02000c8c() : unk_00(0x10000), unk_04(0), unk_08(0x1e000) {}
-    ~Unk_02000c8c();
+    FxVec3() : unk_00(0x10000), unk_04(0), unk_08(0x1e000) {}
+    ~FxVec3();
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
@@ -192,14 +192,14 @@ public:
     Obj_b4 *unk_b4;
 };
 
-class B {
+class LightLevel {
 public:
-    B();
-    ~B();
-    s32 func_020b22ac();
-    BOOL func_020b22c4(BOOL on, s32 a, s32 b, u32 param);
-    void func_020b231c();
-    BOOL func_020b2374(BOOL on);
+    LightLevel();
+    ~LightLevel();
+    s32 getLevel();
+    BOOL switchLight(BOOL on, s32 a, s32 b, u32 param);
+    void update();
+    BOOL switchLightAnimated(BOOL on);
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
@@ -209,49 +209,49 @@ public:
     /* 0x12 */ u16 unk_12;
 };
 
-class X {
+class DoorLight {
 public:
-    X();
-    ~X();
-    void func_020b223c(Ctx *c, s32 t);
-    void func_020b2288(Ctx *c);
+    DoorLight();
+    ~DoorLight();
+    void apply(Ctx *c, s32 t);
+    void bindMaterial(Ctx *c);
     /* 0x00 */ s8 unk_00;
 };
 
-class D {
+class WindowLight {
 public:
-    D();
-    ~D();
-    void func_020b21ec(Ctx *c, s32 t);
-    void func_020b2214(Ctx *c);
+    WindowLight();
+    ~WindowLight();
+    void apply(Ctx *c, s32 t);
+    void bindMaterial(Ctx *c);
     /* 0x00 */ s8 unk_00;
 };
 
-class A {
+class LampLights {
 public:
-    A();
-    ~A();
-    virtual const char *vfunc_00(s32 i);
-    void func_020b208c(Pal *p, s32 t);
-    BOOL func_020b2134(s32 v);
-    void func_020b2158(Ctx *c);
+    LampLights();
+    ~LampLights();
+    virtual const char *getMaterialName(s32 i);
+    void apply(Pal *p, s32 t);
+    BOOL isLampMaterial(s32 v);
+    void bindMaterials(Ctx *c);
 
     /* 0x04 */ s8 unk_04[3];
-    /* 0x08 */ B unk_08;
+    /* 0x08 */ LightLevel unk_08;
 };
 
-class Unk_020b1f64 : public B {
+class BuildingLights : public LightLevel {
 public:
-    Unk_020b1f64();
-    ~Unk_020b1f64();
-    BOOL func_020b1f64();
-    BOOL func_020b1f7c(BOOL on, s32 a, s32 b);
-    void func_020b1f94(Ctx *c);
-    void func_020b1fd4(Ctx *c, BOOL on);
+    BuildingLights();
+    ~BuildingLights();
+    BOOL isLit();
+    BOOL setLit(BOOL on, s32 a, s32 b);
+    void updateLights(Ctx *c);
+    void bind(Ctx *c, BOOL on);
 
-    /* 0x14 */ X unk_14;
-    /* 0x18 */ A unk_18;
-    /* 0x34 */ D unk_34;
+    /* 0x14 */ DoorLight unk_14;
+    /* 0x18 */ LampLights unk_18;
+    /* 0x34 */ WindowLight unk_34;
 };
 
 class Unk_020b23a0 {
@@ -320,7 +320,7 @@ public:
     virtual ~Unk_ov003_02232c08() {}
 };
 
-s32 func_020b22b0(s32 t, s32 lo, s32 hi);
+s32 Math_LerpFx(s32 t, s32 lo, s32 hi);
 
 extern "C" {
 void MTX_RotZ33_(void *m, s32 sn, s32 cs);
@@ -328,19 +328,19 @@ void MTX_Concat33(void *a, void *b, void *out);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 func_020374b0(u8 *cell, u32 mask);
-BOOL func_020374f4(u8 *cell, u32 *a, u32 *b, Unk_0203442c *m, Unk_0203442c *c, u32 d);
+BOOL func_020374f4(u8 *cell, u32 *a, u32 *b, ItemId *m, ItemId *c, u32 d);
 u16 *func_02037558(u8 *cell, s32 a, s32 b, s32 c);
 BOOL func_02037590(u8 *cell, u16 *t, u32 x, u32 y, u32 z);
 void func_02045ca8(u32 a);
-u16 func_0204b0e0(u32 a);
-BOOL func_0204b0f8(u16 *p);
-s32 func_0204b124(void *p);
-BOOL func_0204b14c(void *p);
-u16 func_0204b160(u32 a);
-BOOL func_0204b1a0(u16 *p);
-u32 func_0204b1cc(u32 v);
-s32 func_0204b25c(const u16 *p);
-BOOL func_0204b2d4(void);
+u16 Item_MakePlayerHouse(u32 a);
+BOOL Item_IsPlayerHouse(u16 *p);
+s32 Item_GetSnowmanIndex(void *p);
+BOOL Item_IsSnowman(void *p);
+u16 Item_MakeNookShop(u32 a);
+BOOL Item_IsNookShop(u16 *p);
+u32 Item_MakeBuilding(u32 v);
+s32 Item_GetFurnitureIndex(const u16 *p);
+BOOL Item_IsFurniture(void);
 BOOL func_0204d9b4(Grid *g, u32 x, u32 y, u32 a, u32 b, Marker2 *m);
 BOOL func_0204d9ec(Map *m, s32 x, s32 y, s32 z);
 void func_0204d9fc(Map *m, u16 *p, s32 x, s32 y);
@@ -351,8 +351,8 @@ void func_0204edf8(s32 *ox, s32 *oy, s32 x, s32 y, s32 a, s32 b);
 s32 _ZN12Unk_02056fd813func_02057110Ei(Ctx *c, const char *name);
 void func_020639e8(char *buf, const char *fmt, ...);
 u32 func_02063b8c(...);
-void *func_020641ec(const char *name, u32 a, u32 b, u32 c);
-void func_0206da9c(void *p, s32 a);
+void *File_LoadAlloc(const char *name, u32 a, u32 b, u32 c);
+void Melody_PlayAt(void *p, s32 a);
 void func_020719b0(void *p);
 void func_02071a4c(void *p);
 void *func_02071a50(void *p);
@@ -377,7 +377,7 @@ BOOL func_020b5184(void);
 BOOL func_020b51b8(u32 a);
 BOOL func_020b530c(u32 a);
 void func_020e761c(void *p, s32 a, s32 b);
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 void *func_021012bc(char *name);
 void func_02101310(void *file);
 BOOL func_02101340(void *file, const void *mode, void *arc);
@@ -393,13 +393,13 @@ BOOL _ZN18Unk_ov009_0225e29c19func_ov009_0225d650Ev(void);
 }
 
 
-extern const u32 data_020d09e8[11];
+extern const u32 sLightFlickerTable[11];
 extern const u16 data_020d0a14[52];
 extern s32 data_020e3db4;
 extern u8 data_021ee288;
 extern u8 data_021ee28c;
 extern u8 data_021ee290;
-extern void *data_021ee29c;
+extern void *sStrBSizeArchive;
 extern u32 data_021ee2a0;
 extern s32 data_021ee2a4;
 extern s32 data_021ee2ac;
@@ -409,15 +409,15 @@ extern u32 data_021ee2bc;
 extern char data_021ee2c4[12];
 extern u8 data_021ee30c[0x22];
 extern NibblePair data_021ee330[0x22];
-extern u32 data_021ee354[0x22];
+extern u32 sStrBSizeTable[0x22];
 
 // own prototypes
 extern "C" {
 u32 func_020b2c14(s32 v);
 s32 func_020b2bac(u32 arg);
-void func_020b2828(void);
-void func_020b27f4(void);
-u32 func_020b27a4(u16 *p);
+void StrBSize_Load(void);
+void StrBSize_Unload(void);
+u32 StrBSize_Get(u16 *p);
 BOOL func_020b278c(u32 v);
 BOOL func_020b2774(void);
 u32 func_020b2768(void);
@@ -505,11 +505,11 @@ extern "C" u32 func_020b2c14(s32 v) {
 
 extern "C" s32 func_020b2bac(u32 arg) {
     u16 v = arg;
-    if (func_0204b1a0(&v)) {
-        v = func_0204b160(0);
+    if (Item_IsNookShop(&v)) {
+        v = Item_MakeNookShop(0);
     }
-    if (func_0204b0f8(&v)) {
-        v = func_0204b0e0(0);
+    if (Item_IsPlayerHouse(&v)) {
+        v = Item_MakePlayerHouse(0);
     }
     BOOL in = FALSE;
     volatile u16 &vv = v;
@@ -694,40 +694,40 @@ void Unk_020b28ac::func_020b28ac(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
     *outH = h;
 }
 
-extern "C" void func_020b2828(void) {
+extern "C" void StrBSize_Load(void) {
     char name[0x20];
     u8 file[0x6c];
     u32 i;
     void *p;
-    p = func_020641ec("/str/bsize.arc", data_021f482c, 4, 0);
-    data_021ee29c = p;
+    p = File_LoadAlloc("/str/bsize.arc", gCurrentHeap, 4, 0);
+    sStrBSizeArchive = p;
     if (p != NULL) {
         if (func_02101340(file, "STR", p)) {
             for (i = 0; i < 0x22; i++) {
                 func_020639e8(name, "STR:a/%d.bsize", i);
-                data_021ee354[i] = (u32)func_021012bc(name);
+                sStrBSizeTable[i] = (u32)func_021012bc(name);
             }
             func_02101310(file);
         }
     } else {
         for (i = 0; i < 0x22; i++) {
-            data_021ee354[i] = 0;
+            sStrBSizeTable[i] = 0;
         }
     }
 }
 
-extern "C" void func_020b27f4(void) {
+extern "C" void StrBSize_Unload(void) {
     for (u32 i = 0; i < 0x22; i++) {
-        data_021ee354[i] = 0;
+        sStrBSizeTable[i] = 0;
     }
-    if (data_021ee29c != NULL) {
-        func_020e8558(data_021ee29c);
-        data_021ee29c = NULL;
+    if (sStrBSizeArchive != NULL) {
+        Mem_Free(sStrBSizeArchive);
+        sStrBSizeArchive = NULL;
     }
 }
 
-extern "C" u32 func_020b27a4(u16 *p) {
-    if (data_021ee29c != NULL) {
+extern "C" u32 StrBSize_Get(u16 *p) {
+    if (sStrBSizeArchive != NULL) {
         s32 idx;
         BOOL in = FALSE;
         u32 v = *p;
@@ -740,7 +740,7 @@ extern "C" u32 func_020b27a4(u16 *p) {
             idx = -1;
         }
         if (idx != -1) {
-            return data_021ee354[idx];
+            return sStrBSizeTable[idx];
         }
     }
     return 0;
@@ -786,8 +786,8 @@ BOOL Unk_020e3dcc::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32
                         *b = 0x2000;
                         *c = 10;
                         return TRUE;
-                    } else if (func_0204b14c(p)) {
-                        s32 t = func_0204b124(p);
+                    } else if (Item_IsSnowman(p)) {
+                        s32 t = Item_GetSnowmanIndex(p);
                         s32 u, w;
                         _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(data_021ed2e6, t, &u, &w, 0, 0, 0, 0);
                         *a = 0x1000;
@@ -942,18 +942,18 @@ void Unk_020b23a0::func_020b23a4() {}
 
 u8 *Unk_020b23a0::func_020b23a0() { return (u8 *)this + 4; }
 
-B::B()
+LightLevel::LightLevel()
 {
     unk_00 = 0;
     unk_04 = 0;
     unk_0c = 0;
 }
 
-B::~B() {}
+LightLevel::~LightLevel() {}
 
-BOOL B::func_020b2374(BOOL on) { return func_020b22c4(on, 0, 0, 0x800); }
+BOOL LightLevel::switchLightAnimated(BOOL on) { return switchLight(on, 0, 0, 0x800); }
 
-void B::func_020b231c()
+void LightLevel::update()
 {
     if (unk_0c == 1) {
         if (unk_12 != 0) {
@@ -962,7 +962,7 @@ void B::func_020b231c()
         }
         if (unk_12 == 0) {
             if (unk_10 < 0xb) {
-                unk_00 = data_020d09e8[unk_10];
+                unk_00 = sLightFlickerTable[unk_10];
                 unk_10++;
             } else {
                 unk_0c = 0;
@@ -974,7 +974,7 @@ void B::func_020b231c()
     }
 }
 
-BOOL B::func_020b22c4(BOOL on, s32 a, s32 b, u32 param)
+BOOL LightLevel::switchLight(BOOL on, s32 a, s32 b, u32 param)
 {
     unk_08 = param;
     if (on) {
@@ -1005,50 +1005,50 @@ BOOL B::func_020b22c4(BOOL on, s32 a, s32 b, u32 param)
     return FALSE;
 }
 
-s32 func_020b22b0(s32 t, s32 lo, s32 hi) { return lo + func_01ffcb0c(t, hi - lo); }
+s32 Math_LerpFx(s32 t, s32 lo, s32 hi) { return lo + func_01ffcb0c(t, hi - lo); }
 
-s32 B::func_020b22ac() { return unk_00; }
+s32 LightLevel::getLevel() { return unk_00; }
 
-X::X() { unk_00 = -1; }
+DoorLight::DoorLight() { unk_00 = -1; }
 
-X::~X() {}
+DoorLight::~DoorLight() {}
 
-void X::func_020b2288(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_door"); }
+void DoorLight::bindMaterial(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_door"); }
 
-void X::func_020b223c(Ctx *c, s32 t)
+void DoorLight::apply(Ctx *c, s32 t)
 {
     if (unk_00 != -1) {
         NNS_G3dMdlSetMdlDiff(c, unk_00, (u16)((u8)(t * 0xd >> 12) << 10 | ((u8)(t * 0x1f >> 12) | (u8)(t * 0x1b >> 12) << 5)));
     }
 }
 
-D::D() { unk_00 = -1; }
+WindowLight::WindowLight() { unk_00 = -1; }
 
-D::~D() { unk_00 = -1; }
+WindowLight::~WindowLight() { unk_00 = -1; }
 
-void D::func_020b2214(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_window"); }
+void WindowLight::bindMaterial(Ctx *c) { unk_00 = _ZN12Unk_02056fd813func_02057110Ei(c, "m_window"); }
 
-void D::func_020b21ec(Ctx *c, s32 t)
+void WindowLight::apply(Ctx *c, s32 t)
 {
     if (unk_00 != -1) {
         NNS_G3dMdlSetMdlAlpha(c, unk_00, (u8)((t * 0x1d >> 12) + 1));
     }
 }
 
-A::A()
+LampLights::LampLights()
 {
     for (u32 i = 0; i < 3; i++) {
         unk_04[i] = -1;
     }
 }
 
-A::~A() {}
+LampLights::~LampLights() {}
 
-void A::func_020b2158(Ctx *c)
+void LampLights::bindMaterials(Ctx *c)
 {
     for (u32 i = 0; i < 3; i++) {
-        if (vfunc_00(i)) {
-            s32 r = _ZN12Unk_02056fd813func_02057110Ei(c, vfunc_00(i));
+        if (getMaterialName(i)) {
+            s32 r = _ZN12Unk_02056fd813func_02057110Ei(c, getMaterialName(i));
             if (r != -1) {
                 unk_04[i] = r;
             } else {
@@ -1058,7 +1058,7 @@ void A::func_020b2158(Ctx *c)
     }
 }
 
-BOOL A::func_020b2134(s32 v)
+BOOL LampLights::isLampMaterial(s32 v)
 {
     for (s8 *p = unk_04; p < unk_04 + 3; p++) {
         if (*p == v) {
@@ -1068,17 +1068,17 @@ BOOL A::func_020b2134(s32 v)
     return FALSE;
 }
 
-void A::func_020b208c(Pal *p, s32 t)
+void LampLights::apply(Pal *p, s32 t)
 {
     if (t != 0) {
         NNSi_G3dModifyMatFlag(p, 1, 0x400);
         u16 col = func_020b207c();
-        s32 r7 = func_020b22b0(t, ((col >> 10) & 0x1f) << 12, 0x1f000);
-        s32 g = func_020b22b0(t, (col & 0x1f) << 12, 0x1f000);
-        s32 b = func_020b22b0(t, ((col >> 5) & 0x1f) << 12, 0x1f000);
+        s32 r7 = Math_LerpFx(t, ((col >> 10) & 0x1f) << 12, 0x1f000);
+        s32 g = Math_LerpFx(t, (col & 0x1f) << 12, 0x1f000);
+        s32 b = Math_LerpFx(t, ((col >> 5) & 0x1f) << 12, 0x1f000);
         u16 c2 = (r7 >> 12) << 10 | ((g >> 12) | (b >> 12) << 5);
         for (s32 i = 0; i < p->count; i++) {
-            NNS_G3dMdlSetMdlEmi(p, i, func_020b2134(i) ? c2 : col);
+            NNS_G3dMdlSetMdlEmi(p, i, isLampMaterial(i) ? c2 : col);
         }
     } else {
         NNSi_G3dModifyMatFlag(p, 0, 0x400);
@@ -1090,40 +1090,40 @@ extern "C" u16 func_020b207c(void)
     return (u16)(data_027e0148[6] >> 16);
 }
 
-const char *A::vfunc_00(s32 i)
+const char *LampLights::getMaterialName(s32 i)
 {
     func_020639e8(data_021ee2c4, "lp_m%d", i);
     return data_021ee2c4;
 }
 
-Unk_020b1f64::Unk_020b1f64() {}
+BuildingLights::BuildingLights() {}
 
-Unk_020b1f64::~Unk_020b1f64() {}
+BuildingLights::~BuildingLights() {}
 
-void Unk_020b1f64::func_020b1fd4(Ctx *c, BOOL on)
+void BuildingLights::bind(Ctx *c, BOOL on)
 {
-    func_020b2374(on);
+    switchLightAnimated(on);
     if (c) {
-        unk_14.func_020b2288(c);
-        unk_18.func_020b2158(c);
-        unk_34.func_020b2214(c);
+        unk_14.bindMaterial(c);
+        unk_18.bindMaterials(c);
+        unk_34.bindMaterial(c);
     }
 }
 
-void Unk_020b1f64::func_020b1f94(Ctx *c)
+void BuildingLights::updateLights(Ctx *c)
 {
-    func_020b231c();
-    s32 v = func_020b22ac();
+    update();
+    s32 v = getLevel();
     if (c) {
-        unk_18.func_020b208c((Pal *)c, v);
-        unk_34.func_020b21ec(c, v);
-        unk_14.func_020b223c(c, v);
+        unk_18.apply((Pal *)c, v);
+        unk_34.apply(c, v);
+        unk_14.apply(c, v);
     }
 }
 
-BOOL Unk_020b1f64::func_020b1f7c(BOOL on, s32 a, s32 b) { return func_020b22c4(on, a, b, 0x800); }
+BOOL BuildingLights::setLit(BOOL on, s32 a, s32 b) { return switchLight(on, a, b, 0x800); }
 
-BOOL Unk_020b1f64::func_020b1f64() { return func_020b22ac() ? TRUE : FALSE; }
+BOOL BuildingLights::isLit() { return getLevel() ? TRUE : FALSE; }
 
 void Unk_020b1ddc::func_020b1e74()
 {
@@ -1131,14 +1131,14 @@ void Unk_020b1ddc::func_020b1e74()
     u8 t[2];
     Mtx33 *m = &unk_b4->mtx;
     func_0209cf18(t);
-    if (data_021ee2ac != data_021f4768) {
+    if (data_021ee2ac != gFrameCounter) {
         s32 rem = t[1] % 0xc;
         s32 a = (s16)-(FX_Div(rem << 12, 0xc000) * 0xffff >> 12);
         s32 b = (FX_Div(t[0] << 12, 0x3c000) * 0x1555 << 4) >> 16;
         s32 idx = (u16)(s16)(a - b) >> 4;
         data_021ee2a4 = data_02135f44[idx * 2];
         data_020e3db4 = data_02135f44[idx * 2 + 1];
-        data_021ee2ac = data_021f4768;
+        data_021ee2ac = gFrameCounter;
     }
     MTX_RotZ33_(&tmp, data_021ee2a4, data_020e3db4);
     if (unk_b4->flags & 2) {
@@ -1277,9 +1277,9 @@ extern "C" BOOL func_020b1b8c(u16 id)
         u16 *p = func_020b1c8c(&x, &y);
         if (p) {
             BOOL eq;
-            if (func_0204b2d4()) {
+            if (Item_IsFurniture()) {
                 t[1] = id;
-                eq = func_0204b25c(p) == func_0204b25c(&t[1]);
+                eq = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&t[1]);
             } else {
                 eq = *p == id;
             }
@@ -1435,7 +1435,7 @@ extern "C" BOOL func_020b16e4(void) {
     if (g == NULL) {
         return FALSE;
     }
-    static Unk_0203442c m1(0x5020);
+    static ItemId m1(0x5020);
     for (y = 1; y <= 4; y++) {
         for (x = 1; x <= 4; x++) {
             u8 *cell = GetCell(g, x, y);
@@ -1621,7 +1621,7 @@ extern "C" u32 func_020b13e0(u32 v) {
 
 extern "C" BOOL func_020b1388(u16 *p) {
     Flags2 *f = (Flags2 *)p;
-    u32 a = func_0204b1cc(f->a);
+    u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
     if (IsEnabled()) {
         Obj *o = func_ov003_02218b40(a);
@@ -1661,7 +1661,7 @@ extern "C" void func_020b1260(Flags1 *p, s32 bit) {
         if (after > func_020b1690(&info)) {
             e->hi = 2;
         } else {
-            idx = func_0204b1cc(idx);
+            idx = Item_MakeBuilding(idx);
             if (func_020b13e0(idx) && before == 0) {
                 e->hi = 3;
             } else {
@@ -1826,7 +1826,7 @@ extern "C" u32 func_020b0ef4(void) {
 
 s32 data_021ee2ac;
 u32 data_021ee2a0;
-void *data_021ee29c;
+void *sStrBSizeArchive;
 u8 data_021ee28c;
 u32 data_021ee2b4;
 const u16 data_020d0a14[52] = {
@@ -1834,7 +1834,7 @@ const u16 data_020d0a14[52] = {
     0x500b, 0x500b, 0x5012, 0x5013, 0x5001, 0x5002, 0x5003, 0x5004, 0x5005, 0x5006, 0x5007, 0x5008, 0x5009,
     0x500d, 0x500e, 0x500f, 0x5010, 0x5010, 0x5010, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011,
     0x5011, 0x5011, 0x5011, 0xfff1, 0xfff1, 0xfff1, 0xfff1, 0xfff1, 0x500b, 0xfff1, 0xfff1, 0xfff1, 0x0000};
-const u32 data_020d09e8[11] = {0x0, 0x19a, 0x333, 0x4cd, 0x333, 0x19a, 0x4cd, 0x666, 0x800, 0x666, 0x4cd};
+const u32 sLightFlickerTable[11] = {0x0, 0x19a, 0x333, 0x4cd, 0x333, 0x19a, 0x4cd, 0x666, 0x800, 0x666, 0x4cd};
 NibblePair data_021ee330[0x22];
 char data_021ee2c4[12];
 Unk_ov003_02232c08 data_021ee2b0;
@@ -1852,8 +1852,8 @@ extern "C" void func_020b0e60(void) {
         r = 3;
     }
     if (r != -1) {
-        static Unk_02000c8c obj;
-        func_0206da9c(&obj, r);
+        static FxVec3 obj;
+        Melody_PlayAt(&obj, r);
     }
 }
 
@@ -1863,6 +1863,6 @@ u8 data_021ee30c[0x22];
 u32 data_021ee2bc;
 u8 data_021ee290;
 s32 data_020e3db4 = 0x1000;
-u32 data_021ee354[0x22];
+u32 sStrBSizeTable[0x22];
 u8 data_021ee288;
 s32 data_021ee2a4;

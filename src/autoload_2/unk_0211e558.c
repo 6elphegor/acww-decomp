@@ -131,7 +131,7 @@ extern int PXI_SendWordByFifo(u32, u32, u32);
 extern void PXI_Init(void);
 extern void PXI_SetFifoRecvCallback(u32, void *);
 extern void WaitByLoop(u32);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void PM_ForceToPowerOff(void);
 extern int OS_ReceiveMessage(void *, void *, u32);
 extern void OS_JamMessage(void *, void *, u32);
@@ -185,7 +185,7 @@ void func_0211eb4c(u32 tag, WMMsg *m, BOOL err) {
     if (m != (WMMsg *)data_021ff46c->f10) DC_InvalidateRange(m, 0x100);
     if (m->id >= 42) {
         if (m->id == 0x80) {
-            if (m->f2 == 19) func_0206d49c();
+            if (m->f2 == 19) Fatal_Trap();
             if (data_021ff46c->cbC0 != 0) data_021ff46c->cbC0(m);
         } else if (m->id == 0x82) {
             if (data_021ff46c->reqCb[m->f6] != 0) {
@@ -290,7 +290,7 @@ void CARDi_PulledOutCallback(u32 tag, u32 data, BOOL err) {
         if (ret == 0) return;
         func_0211ea0c();
     } else {
-        func_0206d49c();
+        Fatal_Trap();
     }
 }
 
@@ -301,7 +301,7 @@ void func_0211ea4c(int (*cb)(void)) {
 void func_0211ea0c(void) {
     if ((*(u16 *)0x027fffa8 & 0x8000) >> 15) PM_ForceToPowerOff();
     func_0211e9a8(1, 1);
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 void func_0211e9a8(u32 data, u32 n) {

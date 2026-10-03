@@ -1,12 +1,12 @@
 #include "types.h"
 
 
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c();
-    Unk_0203442c(u32 x);
-    Unk_0203442c(u16 *src);
-    ~Unk_0203442c();
+    ItemId();
+    ItemId(u32 x);
+    ItemId(u16 *src);
+    ~ItemId();
 };
 
 
@@ -20,140 +20,140 @@ struct Unk_0204b598_Elem {
 namespace nA {
 extern "C" {
 
-BOOL func_0204a7d0(u16 *p);
-BOOL func_0204a800(u16 *p);
-BOOL func_0204a830(u16 *p);
-BOOL func_0204a860(u16 *p);
-BOOL func_0204a890(u16 *p);
-BOOL func_0204a8c0(u16 *p);
-BOOL func_0204a8f0(u16 *p);
-BOOL func_0204a920(u16 *p);
-BOOL func_0204aa84(u16 *p, u32 lo, u32 hi);
-s32 func_0204aa24(u16 *p);
-BOOL func_0204aab0(u16 *p);
-BOOL func_0204aaa4(u16 *p);
-BOOL func_0204aa98(u16 *p);
-BOOL func_0204aa60(u16 *p);
-BOOL func_0204aa28(u16 *p);
-BOOL func_0204aabc(u16 *p);
-BOOL func_0204aaf4(u16 *p);
-BOOL func_0204ab18(u16 *p);
-BOOL func_0204ab24(u16 *p);
-BOOL func_0204ab30(u16 *p);
-BOOL func_0204ab3c(u16 *p);
-BOOL func_0204ab74(u16 *p);
-BOOL func_0204ab80(u16 *p);
-BOOL func_0204ab8c(u16 *p);
-BOOL func_0204ab98(u16 *p);
-BOOL func_0204abec(u16 *p);
-BOOL func_0204ac18(u16 *p);
-BOOL func_0204ac24(u16 *p);
-BOOL func_0204ac30(u16 *p);
-BOOL func_0204ac54(u16 *p);
-BOOL func_0204ac64(u16 *p);
-BOOL func_0204ac70(u16 *p);
-BOOL func_0204aca4(u16 *p);
-BOOL func_0204acd8(u16 *p);
-BOOL func_0204ad58(u16 *p);
-BOOL func_0204ad64(u16 *p);
-BOOL func_0204ad70(u16 *p);
-BOOL func_0204ad7c(u16 *p);
-BOOL func_0204ad88(u16 *p);
-BOOL func_0204adf0(u16 *p);
-BOOL func_0204ae58(u16 *p);
-BOOL func_0204ae64(u16 *p);
-BOOL func_0204ae74(u16 *p);
-BOOL func_0204ae80(u16 *p);
-BOOL func_0204ae90(u16 *p);
-BOOL func_0204ae9c(u16 *p);
-BOOL func_0204aea8(u16 *p);
-BOOL func_0204aeb4(u16 *p);
-BOOL func_0204aec0(u16 *p);
-BOOL func_0204af90(u16 *p);
-BOOL func_0204afe4(u16 *p);
-BOOL func_0204b038(u16 *p);
-BOOL func_0204b08c(u16 *p);
-u16 func_0204a780(u32 x);
-u16 func_0204a798(u32 x);
-u16 func_0204a7b0(u32 x);
-u16 func_0204a948(u32 x);
-u16 func_0204a97c(u32 x);
-u16 func_0204a994(u32 x);
-u16 func_0204a9ac(u32 x);
-u16 func_0204a960(u32 x);
+BOOL Item_IsFullHeadwear(u16 *p);
+BOOL Item_IsWallpaper(u16 *p);
+BOOL Item_IsUmbrella(u16 *p);
+BOOL Item_IsPaper(u16 *p);
+BOOL Item_IsAccessory(u16 *p);
+BOOL Item_IsShirt(u16 *p);
+BOOL Item_IsCarpet(u16 *p);
+BOOL Item_IsHat(u16 *p);
+BOOL Item_IsInRange(u16 *p, u32 lo, u32 hi);
+s32 Item_GetId(u16 *p);
+BOOL Item_IsWateredTulip(u16 *p);
+BOOL Item_IsWateredPansy(u16 *p);
+BOOL Item_IsWateredCosmos(u16 *p);
+BOOL Item_IsWateredRose(u16 *p);
+BOOL Item_IsFlowerWatered(u16 *p);
+BOOL Item_IsFlowerFresh(u16 *p);
+BOOL Item_IsRose(u16 *p);
+BOOL Item_IsCosmos(u16 *p);
+BOOL Item_IsPansy(u16 *p);
+BOOL Item_IsTulip(u16 *p);
+BOOL Item_IsFlowerParched(u16 *p);
+BOOL Item_IsParchedRose(u16 *p);
+BOOL Item_IsParchedCosmos(u16 *p);
+BOOL Item_IsParchedPansy(u16 *p);
+BOOL Item_IsParchedTulip(u16 *p);
+BOOL Item_IsStump(u16 *p);
+BOOL Item_IsPalmStump(u16 *p);
+BOOL Item_IsCedarStump(u16 *p);
+BOOL Item_IsTreeOrSpecialStump(u16 *p);
+BOOL Item_IsSpecialStump(u16 *p);
+BOOL Item_IsTreeStump(u16 *p);
+BOOL Item_IsLargeStump(u16 *p);
+BOOL Item_IsMediumStump(u16 *p);
+BOOL Item_IsSmallStump(u16 *p);
+BOOL Item_IsCherryTree(u16 *p);
+BOOL Item_IsPeachTree(u16 *p);
+BOOL Item_IsPearTree(u16 *p);
+BOOL Item_IsOrangeTree(u16 *p);
+BOOL Item_IsAppleTree(u16 *p);
+BOOL Item_IsTree(u16 *p);
+BOOL Item_IsPalmTree(u16 *p);
+BOOL Item_IsFestiveCedar(u16 *p);
+BOOL Item_IsSpecialCedar(u16 *p);
+BOOL Item_IsAcornTree(u16 *p);
+BOOL Item_IsSpecialTree(u16 *p);
+BOOL Item_IsMoneyTree(u16 *p);
+BOOL Item_IsFruitTree(u16 *p);
+BOOL Item_IsCedarPlain(u16 *p);
+BOOL Item_IsTreePlain(u16 *p);
+BOOL Item_IsTreeStage3(u16 *p);
+BOOL Item_IsTreeStage2(u16 *p);
+BOOL Item_IsTreeStage1(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
+u16 Item_MakeFullHeadwear(u32 x);
+u16 Item_MakeWallpaper(u32 x);
+u16 Item_MakeUmbrella(u32 x);
+u16 Item_MakeAccessory(u32 x);
+u16 Item_MakeCarpet(u32 x);
+u16 Item_MakeHat(u32 x);
+u16 Item_MakeInsect(u32 x);
+u16 Item_MakeShirt(u32 x);
 static inline BOOL Unk_0204a7d0_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
     return r;
 }
-BOOL func_0204a7c8(u16 *p);
-BOOL func_0204a7d0(u16 *p);
-BOOL func_0204a7f8(u16 *p);
-BOOL func_0204a800(u16 *p);
-BOOL func_0204a828(u16 *p);
-BOOL func_0204a830(u16 *p);
-BOOL func_0204a858(u16 *p);
-BOOL func_0204a860(u16 *p);
-BOOL func_0204a888(u16 *p);
-BOOL func_0204a890(u16 *p);
-BOOL func_0204a8b8(u16 *p);
-BOOL func_0204a8c0(u16 *p);
-BOOL func_0204a8e8(u16 *p);
-BOOL func_0204a8f0(u16 *p);
-BOOL func_0204a918(u16 *p);
-BOOL func_0204a920(u16 *p);
-void func_0204a9c4(u16 *p, u32 v);
-void func_0204ad94(u16 *p, u32 v);
-BOOL func_0204a9c8(u16 *p);
-s32 func_0204aa24(u16 *p);
-BOOL func_0204aa28(u16 *p);
-BOOL func_0204aa60(u16 *p);
-BOOL func_0204aa84(u16 *p, u32 lo, u32 hi);
-BOOL func_0204aa98(u16 *p);
-BOOL func_0204aaa4(u16 *p);
-BOOL func_0204aab0(u16 *p);
-BOOL func_0204aabc(u16 *p);
-BOOL func_0204aaf4(u16 *p);
-BOOL func_0204ab18(u16 *p);
-BOOL func_0204ab24(u16 *p);
-BOOL func_0204ab30(u16 *p);
-BOOL func_0204ab3c(u16 *p);
-BOOL func_0204ab74(u16 *p);
-BOOL func_0204ab80(u16 *p);
-BOOL func_0204ab8c(u16 *p);
-BOOL func_0204ab98(u16 *p);
-s32 func_0204aba4(u16 *p);
-BOOL func_0204abec(u16 *p);
-BOOL func_0204ac18(u16 *p);
-BOOL func_0204ac24(u16 *p);
-BOOL func_0204ac30(u16 *p);
-BOOL func_0204ac54(u16 *p);
-BOOL func_0204ac64(u16 *p);
-BOOL func_0204ac70(u16 *p);
-BOOL func_0204aca4(u16 *p);
-BOOL func_0204acd8(u16 *p);
-s32 func_0204ad08(u16 *p);
-BOOL func_0204ad58(u16 *p);
-BOOL func_0204ad64(u16 *p);
-BOOL func_0204ad70(u16 *p);
-BOOL func_0204ad7c(u16 *p);
-BOOL func_0204ad88(u16 *p);
-s32 func_0204ad98(u16 *p);
-BOOL func_0204adf0(u16 *p);
-BOOL func_0204ae58(u16 *p);
-BOOL func_0204ae64(u16 *p);
-BOOL func_0204ae74(u16 *p);
-BOOL func_0204ae80(u16 *p);
-BOOL func_0204ae90(u16 *p);
-BOOL func_0204ae9c(u16 *p);
-BOOL func_0204aea8(u16 *p);
-BOOL func_0204aeb4(u16 *p);
-BOOL func_0204aec0(u16 *p);
-BOOL func_0204aecc(u16 *p);
-BOOL func_0204af08(u16 *p);
-BOOL func_0204af90(u16 *p);
-BOOL func_0204afe4(u16 *p);
-BOOL func_0204b038(u16 *p);
+BOOL ItemList_IsFullHeadwear(u16 *p);
+BOOL Item_IsFullHeadwear(u16 *p);
+BOOL ItemList_IsWallpaper(u16 *p);
+BOOL Item_IsWallpaper(u16 *p);
+BOOL ItemList_IsUmbrella(u16 *p);
+BOOL Item_IsUmbrella(u16 *p);
+BOOL ItemList_IsPaper(u16 *p);
+BOOL Item_IsPaper(u16 *p);
+BOOL ItemList_IsAccessory(u16 *p);
+BOOL Item_IsAccessory(u16 *p);
+BOOL ItemList_IsShirt(u16 *p);
+BOOL Item_IsShirt(u16 *p);
+BOOL ItemList_IsCarpet(u16 *p);
+BOOL Item_IsCarpet(u16 *p);
+BOOL ItemList_IsHat(u16 *p);
+BOOL Item_IsHat(u16 *p);
+void Item_SetId(u16 *p, u32 v);
+void Item_Assign(u16 *p, u32 v);
+BOOL Item_IsFlower(u16 *p);
+s32 Item_GetId(u16 *p);
+BOOL Item_IsFlowerWatered(u16 *p);
+BOOL Item_IsWateredRose(u16 *p);
+BOOL Item_IsInRange(u16 *p, u32 lo, u32 hi);
+BOOL Item_IsWateredCosmos(u16 *p);
+BOOL Item_IsWateredPansy(u16 *p);
+BOOL Item_IsWateredTulip(u16 *p);
+BOOL Item_IsFlowerFresh(u16 *p);
+BOOL Item_IsRose(u16 *p);
+BOOL Item_IsCosmos(u16 *p);
+BOOL Item_IsPansy(u16 *p);
+BOOL Item_IsTulip(u16 *p);
+BOOL Item_IsFlowerParched(u16 *p);
+BOOL Item_IsParchedRose(u16 *p);
+BOOL Item_IsParchedCosmos(u16 *p);
+BOOL Item_IsParchedPansy(u16 *p);
+BOOL Item_IsParchedTulip(u16 *p);
+s32 Item_GetStumpSize(u16 *p);
+BOOL Item_IsStump(u16 *p);
+BOOL Item_IsPalmStump(u16 *p);
+BOOL Item_IsCedarStump(u16 *p);
+BOOL Item_IsTreeOrSpecialStump(u16 *p);
+BOOL Item_IsSpecialStump(u16 *p);
+BOOL Item_IsTreeStump(u16 *p);
+BOOL Item_IsLargeStump(u16 *p);
+BOOL Item_IsMediumStump(u16 *p);
+BOOL Item_IsSmallStump(u16 *p);
+s32 Item_GetFruitTreeFruit(u16 *p);
+BOOL Item_IsCherryTree(u16 *p);
+BOOL Item_IsPeachTree(u16 *p);
+BOOL Item_IsPearTree(u16 *p);
+BOOL Item_IsOrangeTree(u16 *p);
+BOOL Item_IsAppleTree(u16 *p);
+s32 Item_GetTreeStage(u16 *p);
+BOOL Item_IsTree(u16 *p);
+BOOL Item_IsPalmTree(u16 *p);
+BOOL Item_IsFestiveCedar(u16 *p);
+BOOL Item_IsSpecialCedar(u16 *p);
+BOOL Item_IsAcornTree(u16 *p);
+BOOL Item_IsSpecialTree(u16 *p);
+BOOL Item_IsMoneyTree(u16 *p);
+BOOL Item_IsFruitTree(u16 *p);
+BOOL Item_IsCedarPlain(u16 *p);
+BOOL Item_IsTreePlain(u16 *p);
+BOOL Item_IsFruitTreeLastNoFruit(u16 *p);
+BOOL Item_IsTreeGrown(u16 *p);
+BOOL Item_IsTreeStage3(u16 *p);
+BOOL Item_IsTreeStage2(u16 *p);
+BOOL Item_IsTreeStage1(u16 *p);
 }
 }
 
@@ -161,142 +161,142 @@ BOOL func_0204b038(u16 *p);
 namespace nB {
 extern "C" {
 
-BOOL func_0204a860(u16 *p);
-BOOL func_0204a8c0(u16 *p);
-BOOL func_0204aa84(u16 *p, u32 lo, u32 hi);
-s32 func_0204aa24(u16 *p);
-void func_0204a9c4(u16 *p, u32 v);
-void func_0204ad94(u16 *p, u32 v);
-u32 func_0206177c();
-u32 func_02061788();
-BOOL func_02061bf0(u16 *p);
-s32 func_02061914(u16 *p);
-s32 func_0206198c(u16 *p);
-BOOL func_02061a58(u16 *p);
-BOOL func_02052d2c(u16 *p);
-BOOL func_02052d8c(u16 *p);
+BOOL Item_IsPaper(u16 *p);
+BOOL Item_IsShirt(u16 *p);
+BOOL Item_IsInRange(u16 *p, u32 lo, u32 hi);
+s32 Item_GetId(u16 *p);
+void Item_SetId(u16 *p, u32 v);
+void Item_Assign(u16 *p, u32 v);
+u32 Item_GetFlowerAltCount();
+u32 Item_GetFlowerItemCount();
+BOOL ItemInfo_TestFlag1(u16 *p);
+s32 ItemInfo_GetIndoorUnk0(u16 *p);
+s32 ItemInfo_TestFlag4(u16 *p);
+BOOL ItemInfo_TestFlag3(u16 *p);
+BOOL Ftr_TestIndoorFlagC(u16 *p);
+BOOL Ftr_TestIndoorFlag7(u16 *p);
 u32 func_02060c70(u32 x);
 s32 func_0204f34c(s32 x);
-void func_02061478(void *p, u32 x);
-s32 func_0204be70(void *p);
-BOOL func_0204b08c(u16 *p);
-u16 func_0204b0e0(u32 x);
-BOOL func_0204b0f8(u16 *p);
-u16 func_0204b10c(u32 x);
-s32 func_0204b124(u16 *p);
-BOOL func_0204b14c(u16 *p);
-u16 func_0204b160(u32 x);
-s32 func_0204b178(u16 *p);
-BOOL func_0204b1a0(u16 *p);
-u16 func_0204b1b4(u32 x);
-u16 func_0204b1cc(u32 x);
-BOOL func_0204b1e4(u16 *p);
-BOOL func_0204b20c(u16 *p);
-void func_0204b220(u16 *p, s32 y);
-u16 func_0204b248(s32 a, s32 b);
-s32 func_0204b25c(u16 *p);
-s32 func_0204b274(u16 *p);
-BOOL func_0204b288(u16 *p);
-BOOL func_0204b2ac(u16 *p);
-BOOL func_0204b2cc(u16 *p);
-BOOL func_0204b2d4(u16 *p);
-s32 func_0204b2f0(u16 *p);
-BOOL func_0204b300(u16 *p);
-u16 func_0204b318(u32 a, s32 b);
-s32 func_0204b338(u16 *p);
-s32 func_0204b354(u16 *p);
-BOOL func_0204b37c(u16 *p);
-u16 func_0204b3c8(u32 x);
-s32 func_0204b3e0(u16 *p);
-BOOL func_0204b408(u16 *p);
-BOOL func_0204b430(u16 *p);
-s32 func_0204b458(u16 *p);
-BOOL func_0204b480(u16 *p);
-void func_0204b4a8(u16 *out, u32 n);
-void func_0204b510(u16 *dst, u16 *src);
-u16 func_0204b518(u32 x);
-void func_0204b530(u16 *out, u32 n);
-s32 func_0204b598(u16 *p);
-s32 func_0204b5ec(u16 *p);
-void func_0204b640(u16 *out, u32 a, u32 b);
-u16 func_0204b65c(u32 a, u32 b);
-u16 func_0204b670(u32 x);
-s32 func_0204b688(u16 *p);
-s32 func_0204b6a8(u16 *p);
-BOOL func_0204b6d0(u16 *p);
-s32 func_0204b6f8(u16 *p);
-s32 func_0204b718(s32 a, BOOL up, s32 *out);
-u16 func_0204b808(u32 x);
-BOOL func_0204b820(u16 *p);
-BOOL func_0204b858(u32 x);
-BOOL func_0204b8ac(u32 x);
+void Item_FromPlacedForm(void *p, u32 x);
+s32 Item_GetPrice(void *p);
+BOOL Item_IsTreeStage0(u16 *p);
+u16 Item_MakePlayerHouse(u32 x);
+BOOL Item_IsPlayerHouse(u16 *p);
+u16 Item_MakeSnowman(u32 x);
+s32 Item_GetSnowmanIndex(u16 *p);
+BOOL Item_IsSnowman(u16 *p);
+u16 Item_MakeNookShop(u32 x);
+s32 Item_GetNookShopLevel(u16 *p);
+BOOL Item_IsNookShop(u16 *p);
+u16 Item_MakeNeighborHouse(u32 x);
+u16 Item_MakeBuilding(u32 x);
+BOOL Item_IsBuildingOrOccupied(u16 *p);
+BOOL Item_IsBuilding(u16 *p);
+void Item_SetFurnitureDirection(u16 *p, s32 y);
+u16 Item_MakeFurniture(s32 a, s32 b);
+s32 Item_GetFurnitureIndex(u16 *p);
+s32 Item_GetFurnitureDirection(u16 *p);
+BOOL Item_IsFurnitureOrF031(u16 *p);
+BOOL Item_IsOccupiedF031(u16 *p);
+BOOL ItemList_IsFurniture(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
+s32 Item_GetIdClass(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
+u16 Item_MakePaper(u32 a, s32 b);
+s32 Item_GetPaperCount(u16 *p);
+s32 Item_GetPaperIndex(u16 *p);
+BOOL Item_IsFlowerAltItem(u16 *p);
+u16 Item_MakeFlowerItem(u32 x);
+s32 Item_GetFlowerAltIndex(u16 *p);
+BOOL Item_IsFlowerAltRange(u16 *p);
+BOOL Item_IsFlowerItem(u16 *p);
+s32 Item_GetFlowerItemIndex(u16 *p);
+BOOL Item_IsFlowerItemRange(u16 *p);
+void Item_GetNthFlowerAlt(u16 *out, u32 n);
+void Item_CopyB(u16 *dst, u16 *src);
+u16 Item_MakeFlowerAlt(u32 x);
+void Item_GetNthFlowerItem(u16 *out, u32 n);
+s32 Item_GetFlowerAltOrdinal(u16 *p);
+s32 Item_GetFlowerItemOrdinal(u16 *p);
+void Item_SetDesign(u16 *out, u32 a, u32 b);
+u16 Item_MakeDesign(u32 a, u32 b);
+u16 Item_MakeDesignByIndex(u32 x);
+s32 Item_GetDesignSlot(u16 *p);
+s32 Item_GetDesignIndex(u16 *p);
+BOOL Item_IsDesign(u16 *p);
+s32 Item_GetDesignPlayer(u16 *p);
+s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out);
+u16 Item_MakeMoneyBag(u32 x);
+BOOL Item_GetShirtUnkGroup(u16 *p);
+BOOL Item_TestInfoFlag4(u32 x);
+BOOL Item_TestInfoFlag3(u32 x);
 u16 func_0204b900(u16 *p);
-s32 func_0204b928(u16 *p);
-BOOL func_0204b950(u16 *p);
+s32 Item_GetInsectIndex(u16 *p);
+BOOL Item_IsInsect(u16 *p);
 s32 func_0204b978(u16 *p);
-s32 func_0204b998(u16 *p);
-BOOL func_0204b9c0(u16 *p);
-BOOL func_0204b08c(u16 *p);
-u16 func_0204b0e0(u32 x);
-BOOL func_0204b0f8(u16 *p);
-u16 func_0204b10c(u32 x);
-s32 func_0204b124(u16 *p);
-BOOL func_0204b14c(u16 *p);
-u16 func_0204b160(u32 x);
-s32 func_0204b178(u16 *p);
-BOOL func_0204b1a0(u16 *p);
-u16 func_0204b1b4(u32 x);
-u16 func_0204b1cc(u32 x);
-BOOL func_0204b1e4(u16 *p);
-BOOL func_0204b20c(u16 *p);
-void func_0204b220(u16 *p, s32 y);
-u16 func_0204b248(s32 a, s32 b);
-s32 func_0204b25c(u16 *p);
-s32 func_0204b274(u16 *p);
-BOOL func_0204b288(u16 *p);
-BOOL func_0204b2ac(u16 *p);
-BOOL func_0204b2cc(u16 *p);
-BOOL func_0204b2d4(u16 *p);
-s32 func_0204b2f0(u16 *p);
-BOOL func_0204b300(u16 *p);
-u16 func_0204b318(u32 a, s32 b);
-s32 func_0204b338(u16 *p);
-s32 func_0204b354(u16 *p);
-BOOL func_0204b37c(u16 *p);
-u16 func_0204b3c8(u32 x);
-s32 func_0204b3e0(u16 *p);
+s32 Item_GetFishIndex(u16 *p);
+BOOL Item_IsFish(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
+u16 Item_MakePlayerHouse(u32 x);
+BOOL Item_IsPlayerHouse(u16 *p);
+u16 Item_MakeSnowman(u32 x);
+s32 Item_GetSnowmanIndex(u16 *p);
+BOOL Item_IsSnowman(u16 *p);
+u16 Item_MakeNookShop(u32 x);
+s32 Item_GetNookShopLevel(u16 *p);
+BOOL Item_IsNookShop(u16 *p);
+u16 Item_MakeNeighborHouse(u32 x);
+u16 Item_MakeBuilding(u32 x);
+BOOL Item_IsBuildingOrOccupied(u16 *p);
+BOOL Item_IsBuilding(u16 *p);
+void Item_SetFurnitureDirection(u16 *p, s32 y);
+u16 Item_MakeFurniture(s32 a, s32 b);
+s32 Item_GetFurnitureIndex(u16 *p);
+s32 Item_GetFurnitureDirection(u16 *p);
+BOOL Item_IsFurnitureOrF031(u16 *p);
+BOOL Item_IsOccupiedF031(u16 *p);
+BOOL ItemList_IsFurniture(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
+s32 Item_GetIdClass(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
+u16 Item_MakePaper(u32 a, s32 b);
+s32 Item_GetPaperCount(u16 *p);
+s32 Item_GetPaperIndex(u16 *p);
+BOOL Item_IsFlowerAltItem(u16 *p);
+u16 Item_MakeFlowerItem(u32 x);
+s32 Item_GetFlowerAltIndex(u16 *p);
 static inline BOOL Unk_0204b408_R(u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
     if (*p >= lo && *p <= hi) r = TRUE;
     return r;
 }
-BOOL func_0204b408(u16 *p);
-BOOL func_0204b430(u16 *p);
-s32 func_0204b458(u16 *p);
-BOOL func_0204b480(u16 *p);
-void func_0204b4a8(u16 *out, u32 n);
-void func_0204b510(u16 *dst, u16 *src);
-u16 func_0204b518(u32 x);
-void func_0204b530(u16 *out, u32 n);
-s32 func_0204b598(u16 *p);
-s32 func_0204b5ec(u16 *p);
-void func_0204b640(u16 *out, u32 a, u32 b);
-u16 func_0204b65c(u32 a, u32 b);
-u16 func_0204b670(u32 x);
-s32 func_0204b688(u16 *p);
-s32 func_0204b6a8(u16 *p);
-BOOL func_0204b6d0(u16 *p);
-s32 func_0204b6f8(u16 *p);
-s32 func_0204b718(s32 a, BOOL up, s32 *out);
-u16 func_0204b808(u32 x);
-BOOL func_0204b820(u16 *p);
-BOOL func_0204b858(u32 x);
-BOOL func_0204b8ac(u32 x);
+BOOL Item_IsFlowerAltRange(u16 *p);
+BOOL Item_IsFlowerItem(u16 *p);
+s32 Item_GetFlowerItemIndex(u16 *p);
+BOOL Item_IsFlowerItemRange(u16 *p);
+void Item_GetNthFlowerAlt(u16 *out, u32 n);
+void Item_CopyB(u16 *dst, u16 *src);
+u16 Item_MakeFlowerAlt(u32 x);
+void Item_GetNthFlowerItem(u16 *out, u32 n);
+s32 Item_GetFlowerAltOrdinal(u16 *p);
+s32 Item_GetFlowerItemOrdinal(u16 *p);
+void Item_SetDesign(u16 *out, u32 a, u32 b);
+u16 Item_MakeDesign(u32 a, u32 b);
+u16 Item_MakeDesignByIndex(u32 x);
+s32 Item_GetDesignSlot(u16 *p);
+s32 Item_GetDesignIndex(u16 *p);
+BOOL Item_IsDesign(u16 *p);
+s32 Item_GetDesignPlayer(u16 *p);
+s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out);
+u16 Item_MakeMoneyBag(u32 x);
+BOOL Item_GetShirtUnkGroup(u16 *p);
+BOOL Item_TestInfoFlag4(u32 x);
+BOOL Item_TestInfoFlag3(u32 x);
 u16 func_0204b900(u16 *p);
-s32 func_0204b928(u16 *p);
-BOOL func_0204b950(u16 *p);
+s32 Item_GetInsectIndex(u16 *p);
+BOOL Item_IsInsect(u16 *p);
 s32 func_0204b978(u16 *p);
-s32 func_0204b998(u16 *p);
+s32 Item_GetFishIndex(u16 *p);
 }
 }
 
@@ -336,28 +336,28 @@ struct Unk_0204c290_W {
     s32 unk_04;
     s32 unk_08;
 };
-BOOL func_0204a7d0(u16 *p);
-s32 func_0204aa24(u16 *p);
+BOOL Item_IsFullHeadwear(u16 *p);
+s32 Item_GetId(u16 *p);
 void func_0204b950_dummy();
-BOOL func_0204b950(u16 *p);
-BOOL func_0204b2d4(u16 *p);
-BOOL func_0204b300(u16 *p);
-s32 func_0204b2f0(u16 *p);
-s32 func_0204b25c(u16 *p);
+BOOL Item_IsInsect(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
+s32 Item_GetIdClass(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 u32 func_0204f060(s32 x);
-void func_0204bab0(u16 *dst, u16 *src);
-s32 func_02061cbc(u16 *p);
-s32 func_02061ec0(u16 *p);
-s32 func_02061dd0(u16 *p);
-s32 func_020620a4(u16 *p);
-s32 func_02061efc(const Unk_0203442c &p);
+void Item_Copy(u16 *dst, u16 *src);
+s32 ItemInfo_IsHoldable(u16 *p);
+s32 ItemInfo_GetKind(u16 *p);
+s32 ItemInfo_GetUnk07(u16 *p);
+s32 ItemInfo_GetUnk02(u16 *p);
+s32 ItemInfo_GetPrice(const ItemId &p);
 s32 func_020aeb80(void *p);
 s32 func_020acde8(u32 x);
 u16 *func_020acf54(u16 *p);
-u16 *_ZN12Unk_0209865c13func_020986bcEv(void *p);
-void *func_0209750c();
-s32 func_020534d8(s32 x);
-s32 func_020974f8();
+u16 *_ZN10PlayerData13getNookPointsEv(void *p);
+void *PlayerData_GetCurrent();
+s32 FtrInfo_GetPrice(s32 x);
+s32 PlayerData_GetCurrentIndex();
 s32 func_0209cf88(Unk_0204c0f4_Date *d);
 s32 func_0209cd00(Unk_0204c0f4_Date *a, Unk_0204c0f4_Date *b);
 s32 func_0209cf0c();
@@ -372,24 +372,24 @@ Unk_0204c290_W *func_0204da0c();
 u16 *func_0204ebd8(Unk_0204c290_W *w, s32 cx, s32 cy, s32 ix, s32 iy, u32 z);
 void func_0204eb30(Unk_0204c290_W *w, u16 *item, s32 x, s32 y, u32 z);
 extern void *data_020cbb18;
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern Unk_0204c084_Data data_021ed1b0;
 extern Unk_0204c1fc_Entry data_021ed1c8[];
-BOOL func_0204b9c0(u16 *p);
-s32 func_0204b998(u16 *p);
-BOOL func_0204bbe4(u16 *p);
-BOOL func_0204bc0c(u16 *p);
-BOOL func_0204bbbc(u16 *p);
-BOOL func_0204bdc0(u16 *p);
-s32 func_0204bde8(u16 *p);
-s32 func_0204be70(u16 *p);
-s32 func_0204bc34(u16 *p);
-BOOL func_0204bd6c(u16 *p);
+BOOL Item_IsFish(u16 *p);
+s32 Item_GetFishIndex(u16 *p);
+BOOL Item_IsGyroid(u16 *p);
+BOOL Item_IsFossil(u16 *p);
+BOOL Item_IsPainting(u16 *p);
+BOOL Item_IsMoneyBag(u16 *p);
+s32 Item_GetMemberPrice(u16 *p);
+s32 Item_GetPrice(u16 *p);
+s32 Item_GetInfoUnk07(u16 *p);
+BOOL Item_IsInvalid(u16 *p);
 u8 *func_0204bdb8();
-BOOL func_0204c05c(u16 *p);
+BOOL Item_IsFruit(u16 *p);
 s32 func_0204c058(u8 *p);
-u16 func_0204c040(s32 n);
-BOOL func_0204c000(u16 *a, u16 *b);
+u16 Item_MakeFruit(s32 n);
+BOOL Item_Equals(u16 *a, u16 *b);
 s32 func_0204be64(u16 *p);
 s32 func_0204c188(s32 x, u32 id);
 Unk_0204c1fc_Entry *func_0204c1fc(s32 i);
@@ -399,18 +399,18 @@ static inline BOOL Unk_0204b9c0_R(u16 *p, u32 lo, u32 hi) {
     if (*p >= lo && *p <= hi) r = TRUE;
     return r;
 }
-BOOL func_0204b9c0(u16 *p);
+BOOL Item_IsFish(u16 *p);
 s32 func_0204b9e8(u16 *p);
-BOOL func_0204ba30(u16 *a, u16 *out);
-void func_0204bab0(u16 *dst, u16 *src);
+BOOL Item_GetIfNotCreature(u16 *a, u16 *out);
+void Item_Copy(u16 *dst, u16 *src);
 BOOL func_0204bab8(u16 *p);
-s32 func_0204bae0(u16 *p);
-s32 func_0204bb18(u16 *p);
-BOOL func_0204bbbc(u16 *p);
-BOOL func_0204bbe4(u16 *p);
-BOOL func_0204bc0c(u16 *p);
-s32 func_0204bc34(u16 *p);
-s32 func_0204bcb0(u16 *p);
+s32 Item_IsHoldable(u16 *p);
+s32 Item_GetKind(u16 *p);
+BOOL Item_IsPainting(u16 *p);
+BOOL Item_IsGyroid(u16 *p);
+BOOL Item_IsFossil(u16 *p);
+s32 Item_GetInfoUnk07(u16 *p);
+s32 Item_GetInfoUnk02(u16 *p);
 static inline BOOL Unk_0204bd14_A(u16 *p) {
     BOOL r = TRUE;
     if (!(*p == 0xf030 || *p == 0xf031)) r = FALSE;
@@ -426,17 +426,17 @@ static inline BOOL Unk_0204bd14_C(u16 *p) {
     if (!(Unk_0204bd14_B(p) || *p == 0xfffe)) r = FALSE;
     return r;
 }
-BOOL func_0204bd14(u16 *p);
-BOOL func_0204bd6c(u16 *p);
-s32 func_0204bd80(u16 *p);
-BOOL func_0204bdc0(u16 *p);
-s32 func_0204bde8(u16 *p);
+BOOL Item_IsMarker(u16 *p);
+BOOL Item_IsInvalid(u16 *p);
+s32 Item_GetShopPrice(u16 *p);
+BOOL Item_IsMoneyBag(u16 *p);
+s32 Item_GetMemberPrice(u16 *p);
 s32 func_0204be64(u16 *p);
-s32 func_0204be70(u16 *p);
-BOOL func_0204c000(u16 *a, u16 *b);
-u16 func_0204c040(s32 n);
+s32 Item_GetPrice(u16 *p);
+BOOL Item_Equals(u16 *a, u16 *b);
+u16 Item_MakeFruit(s32 n);
 s32 func_0204c058(u8 *p);
-BOOL func_0204c05c(u16 *p);
+BOOL Item_IsFruit(u16 *p);
 void func_0204c084(u32 n);
 u32 func_0204c0ac();
 void func_0204c0b8(Unk_0204c0b8_S *p, s32 k, s32 add);
@@ -584,13 +584,13 @@ extern "C" Unk_0204c0f4_Date *func_0204c140(u8 *p, s32 i) { return (Unk_0204c0f4
 }
 
 namespace nC {
-extern "C" void func_0204c124(u8 *p) { func_0209cf88(func_0204c140(p, func_020974f8())); }
+extern "C" void func_0204c124(u8 *p) { func_0209cf88(func_0204c140(p, PlayerData_GetCurrentIndex())); }
 }
 
 namespace nC {
 extern "C" BOOL func_0204c0f4(u8 *p) {
     BOOL r = FALSE;
-    s32 i = func_020974f8();
+    s32 i = PlayerData_GetCurrentIndex();
     Unk_0204c0f4_Date t;
     func_0209cf88(&t);
     p += 0x58;
@@ -633,7 +633,7 @@ extern "C" void func_0204c084(u32 n) {
 }
 
 namespace nC {
-extern "C" BOOL func_0204c05c(u16 *p) { if (Unk_0204b9c0_R(p, 0x1518, 0x151c)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFruit(u16 *p) { if (Unk_0204b9c0_R(p, 0x1518, 0x151c)) return TRUE; return FALSE; }
 }
 
 namespace nC {
@@ -641,13 +641,13 @@ extern "C" s32 func_0204c058(u8 *p) { return *(s32 *)(p + 4); }
 }
 
 namespace nC {
-extern "C" u16 func_0204c040(s32 n) { if ((u32)n < 5) return n + 0x1518; return 0x1518; }
+extern "C" u16 Item_MakeFruit(s32 n) { if ((u32)n < 5) return n + 0x1518; return 0x1518; }
 }
 
 namespace nC {
-extern "C" BOOL func_0204c000(u16 *a, u16 *b) {
-    if (func_0204b2d4(a)) {
-        if (func_0204b25c(a) == func_0204b25c(b)) return TRUE;
+extern "C" BOOL Item_Equals(u16 *a, u16 *b) {
+    if (Item_IsFurniture(a)) {
+        if (Item_GetFurnitureIndex(a) == Item_GetFurnitureIndex(b)) return TRUE;
         return FALSE;
     }
     if (*a == *b) return TRUE;
@@ -656,26 +656,26 @@ extern "C" BOOL func_0204c000(u16 *a, u16 *b) {
 }
 
 namespace nC {
-extern "C" s32 func_0204be70(u16 *p) {
-    Unk_0203442c a(p);
-    switch (func_0204b2f0(&a.v)) {
+extern "C" s32 Item_GetPrice(u16 *p) {
+    ItemId a(p);
+    switch (Item_GetIdClass(&a.v)) {
     case 1:
-        if (func_0204bdc0(&a.v)) {
-            return func_02061efc(Unk_0203442c(func_0204aa24(&a.v))) * 10;
-        } else if (func_0204c05c(&a.v)) {
-            Unk_0203442c c(func_0204c040(func_0204c058(func_0204bdb8() + 0x15e54)));
-            if (func_0204c000(&a.v, &c.v)) {
-                return func_02061efc(Unk_0203442c(func_0204aa24(&a.v))) / 5;
+        if (Item_IsMoneyBag(&a.v)) {
+            return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v))) * 10;
+        } else if (Item_IsFruit(&a.v)) {
+            ItemId c(Item_MakeFruit(func_0204c058(func_0204bdb8() + 0x15e54)));
+            if (Item_Equals(&a.v, &c.v)) {
+                return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v))) / 5;
             }
-        } else if (func_0204aa24(p) == 0x1406 || func_0204aa24(p) == 0x1407) {
-            return func_02061efc(Unk_0203442c(func_0204aa24(&a.v))) * 100;
+        } else if (Item_GetId(p) == 0x1406 || Item_GetId(p) == 0x1407) {
+            return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v))) * 100;
         }
-        return func_02061efc(Unk_0203442c(func_0204aa24(&a.v)));
+        return ItemInfo_GetPrice(ItemId(Item_GetId(&a.v)));
     case 3:
     case 4: {
-        s32 x = func_0204b25c(&a.v);
-        if (x == 0x208) return func_020534d8(x) * 100;
-        return func_020534d8(x);
+        s32 x = Item_GetFurnitureIndex(&a.v);
+        if (x == 0x208) return FtrInfo_GetPrice(x) * 100;
+        return FtrInfo_GetPrice(x);
     }
     default:
         return 0;
@@ -690,12 +690,12 @@ extern "C" s32 func_0204be64(u16 *p) { return func_020acde8(*p); }
 #pragma dont_inline reset
 
 namespace nC {
-extern "C" s32 func_0204bde8(u16 *p) {
-    s32 a = func_0204be70(p);
-    if (func_0204bdc0(p)) return a;
-    void *g = func_0209750c();
+extern "C" s32 Item_GetMemberPrice(u16 *p) {
+    s32 a = Item_GetPrice(p);
+    if (Item_IsMoneyBag(p)) return a;
+    void *g = PlayerData_GetCurrent();
     if (g) {
-        s32 c = func_0204be64(func_020acf54(_ZN12Unk_0209865c13func_020986bcEv(g)));
+        s32 c = func_0204be64(func_020acf54(_ZN10PlayerData13getNookPointsEv(g)));
         s32 k = 0;
         switch (c) {
         case 2: k = 5; break;
@@ -712,47 +712,47 @@ extern "C" s32 func_0204bde8(u16 *p) {
 }
 
 namespace nC {
-extern "C" BOOL func_0204bdc0(u16 *p) { if (Unk_0204b9c0_R(p, 0x1492, 0x14fd)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsMoneyBag(u16 *p) { if (Unk_0204b9c0_R(p, 0x1492, 0x14fd)) return TRUE; return FALSE; }
 }
 
 #pragma dont_inline on
 namespace nC {
-extern "C" u8 *func_0204bdb8() { return data_021d7350; }
+extern "C" u8 *func_0204bdb8() { return gSaveData; }
 }
 #pragma dont_inline reset
 
 namespace nC {
-extern "C" s32 func_0204bd80(u16 *p) {
-    s32 a = func_0204bde8(p);
-    if (func_0204bdc0(p)) return a;
+extern "C" s32 Item_GetShopPrice(u16 *p) {
+    s32 a = Item_GetMemberPrice(p);
+    if (Item_IsMoneyBag(p)) return a;
     a >>= func_020aeb80(func_0204bdb8() + 0x15db4);
     return a;
 }
 }
 
 namespace nC {
-extern "C" BOOL func_0204bd6c(u16 *p) { if (*p == 0xffff) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsInvalid(u16 *p) { if (*p == 0xffff) return TRUE; return FALSE; }
 }
 
 namespace nC {
-extern "C" BOOL func_0204bd14(u16 *p) {
+extern "C" BOOL Item_IsMarker(u16 *p) {
     BOOL r = TRUE;
-    if (!(Unk_0204bd14_C(p) || func_0204bd6c(p))) r = FALSE;
+    if (!(Unk_0204bd14_C(p) || Item_IsInvalid(p))) r = FALSE;
     return r;
 }
 }
 
 namespace nC {
-extern "C" s32 func_0204bcb0(u16 *p) {
-    switch (func_0204b2f0(p)) {
+extern "C" s32 Item_GetInfoUnk02(u16 *p) {
+    switch (Item_GetIdClass(p)) {
     case 1: {
-        Unk_0203442c e(func_0204aa24(p));
-        return func_020620a4(&e.v);
+        ItemId e(Item_GetId(p));
+        return ItemInfo_GetUnk02(&e.v);
     }
     case 3:
     case 4:
-        if (func_0204bc0c(p)) return 0xa7;
-        if (func_0204bbe4(p)) return 1;
+        if (Item_IsFossil(p)) return 0xa7;
+        if (Item_IsGyroid(p)) return 1;
         return 0;
     default:
         return 0;
@@ -761,16 +761,16 @@ extern "C" s32 func_0204bcb0(u16 *p) {
 }
 
 namespace nC {
-extern "C" s32 func_0204bc34(u16 *p) {
-    Unk_0203442c a(p);
-    switch (func_0204b2f0(&a.v)) {
+extern "C" s32 Item_GetInfoUnk07(u16 *p) {
+    ItemId a(p);
+    switch (Item_GetIdClass(&a.v)) {
     case 1: {
-        Unk_0203442c b(func_0204aa24(&a.v));
-        return func_02061dd0(&b.v);
+        ItemId b(Item_GetId(&a.v));
+        return ItemInfo_GetUnk07(&b.v);
     }
     case 3:
     case 4:
-        if (func_0204bbe4(&a.v)) return 1;
+        if (Item_IsGyroid(&a.v)) return 1;
         return 0;
     default:
         return 0;
@@ -779,27 +779,27 @@ extern "C" s32 func_0204bc34(u16 *p) {
 }
 
 namespace nC {
-extern "C" BOOL func_0204bc0c(u16 *p) { if (Unk_0204b9c0_R(p, 0x450c, 0x45db)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFossil(u16 *p) { if (Unk_0204b9c0_R(p, 0x450c, 0x45db)) return TRUE; return FALSE; }
 }
 
 namespace nC {
-extern "C" BOOL func_0204bbe4(u16 *p) { if (Unk_0204b9c0_R(p, 0x45dc, 0x47d7)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsGyroid(u16 *p) { if (Unk_0204b9c0_R(p, 0x45dc, 0x47d7)) return TRUE; return FALSE; }
 }
 
 namespace nC {
-extern "C" BOOL func_0204bbbc(u16 *p) { if (Unk_0204b9c0_R(p, 0x3894, 0x38e3)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsPainting(u16 *p) { if (Unk_0204b9c0_R(p, 0x3894, 0x38e3)) return TRUE; return FALSE; }
 }
 
 namespace nC {
-extern "C" s32 func_0204bb18(u16 *p) {
-    Unk_0203442c a(p);
-    if (func_0204b2f0(&a.v) == 1) {
-        Unk_0203442c b(func_0204aa24(p));
-        return func_02061ec0(&b.v);
-    } else if (func_0204b2d4(&a.v)) {
-        if (func_0204bc0c(&a.v)) return 0x39;
-        if (func_0204bbe4(&a.v)) return 0x3a;
-        if (func_0204bbbc(&a.v)) return 0x3a;
+extern "C" s32 Item_GetKind(u16 *p) {
+    ItemId a(p);
+    if (Item_GetIdClass(&a.v) == 1) {
+        ItemId b(Item_GetId(p));
+        return ItemInfo_GetKind(&b.v);
+    } else if (Item_IsFurniture(&a.v)) {
+        if (Item_IsFossil(&a.v)) return 0x39;
+        if (Item_IsGyroid(&a.v)) return 0x3a;
+        if (Item_IsPainting(&a.v)) return 0x3a;
         return 0x3b;
     }
     return 0;
@@ -807,10 +807,10 @@ extern "C" s32 func_0204bb18(u16 *p) {
 }
 
 namespace nC {
-extern "C" s32 func_0204bae0(u16 *p) {
-    if (func_0204b2f0(p) == 1) {
-        Unk_0203442c e(func_0204aa24(p));
-        return func_02061cbc(&e.v);
+extern "C" s32 Item_IsHoldable(u16 *p) {
+    if (Item_GetIdClass(p) == 1) {
+        ItemId e(Item_GetId(p));
+        return ItemInfo_IsHoldable(&e.v);
     }
     return 0;
 }
@@ -818,8 +818,8 @@ extern "C" s32 func_0204bae0(u16 *p) {
 
 namespace nC {
 extern "C" BOOL func_0204bab8(u16 *p) {
-    if (func_0204a7d0(p)) {
-        if (func_0204bc34(p) == 8) return TRUE;
+    if (Item_IsFullHeadwear(p)) {
+        if (Item_GetInfoUnk07(p) == 8) return TRUE;
         return FALSE;
     }
     return FALSE;
@@ -827,27 +827,27 @@ extern "C" BOOL func_0204bab8(u16 *p) {
 }
 
 namespace nC {
-extern "C" void func_0204bab0(u16 *dst, u16 *src) { *dst = *src; }
+extern "C" void Item_Copy(u16 *dst, u16 *src) { *dst = *src; }
 }
 
 namespace nC {
-extern "C" BOOL func_0204ba30(u16 *a, u16 *out) {
-    Unk_0203442c e1(0xfff1);
+extern "C" BOOL Item_GetIfNotCreature(u16 *a, u16 *out) {
+    ItemId e1(0xfff1);
     BOOL r = FALSE;
-    Unk_0203442c e2(a);
-    if ((func_0204b300(&e2.v) || func_0204b2d4(&e2.v)) && !func_0204b950(&e2.v) && !func_0204b9c0(&e2.v)) {
-        func_0204bab0(&e1.v, &e2.v);
+    ItemId e2(a);
+    if ((Item_IsNormalItem(&e2.v) || Item_IsFurniture(&e2.v)) && !Item_IsInsect(&e2.v) && !Item_IsFish(&e2.v)) {
+        Item_Copy(&e1.v, &e2.v);
         r = TRUE;
     }
-    if (out) func_0204bab0(out, &e1.v);
+    if (out) Item_Copy(out, &e1.v);
     return r;
 }
 }
 
 namespace nC {
 extern "C" s32 func_0204b9e8(u16 *p) {
-    if (func_0204b9c0(p)) {
-        switch (func_0204f060(func_0204b998(p))) {
+    if (Item_IsFish(p)) {
+        switch (func_0204f060(Item_GetFishIndex(p))) {
         case 1: return 0;
         case 3: return 1;
         case 2: return 2;
@@ -859,94 +859,94 @@ extern "C" s32 func_0204b9e8(u16 *p) {
 }
 
 namespace nC {
-extern "C" BOOL func_0204b9c0(u16 *p) { if (Unk_0204b9c0_R(p, 0x12e8, 0x131f)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFish(u16 *p) { if (Unk_0204b9c0_R(p, 0x12e8, 0x131f)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b998(u16 *p) { if (func_0204b9c0(p)) return func_0204aa24(p) - 0x12e8; return -1; }
+extern "C" s32 Item_GetFishIndex(u16 *p) { if (Item_IsFish(p)) return Item_GetId(p) - 0x12e8; return -1; }
 }
 
 namespace nB {
 extern "C" s32 func_0204b978(u16 *p) {
-    if (func_0204b9c0(p)) return func_0204f34c(func_0204b998(p));
+    if (Item_IsFish(p)) return func_0204f34c(Item_GetFishIndex(p));
     return 10;
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b950(u16 *p) { if (Unk_0204b408_R(p, 0x12b0, 0x12e7)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsInsect(u16 *p) { if (Unk_0204b408_R(p, 0x12b0, 0x12e7)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b928(u16 *p) { if (func_0204b950(p)) return func_0204aa24(p) - 0x12b0; return -1; }
+extern "C" s32 Item_GetInsectIndex(u16 *p) { if (Item_IsInsect(p)) return Item_GetId(p) - 0x12b0; return -1; }
 }
 
 namespace nB {
 extern "C" u16 func_0204b900(u16 *p) {
-    if (func_0204b950(p)) return func_02060c70((u8)func_0204b928(p));
+    if (Item_IsInsect(p)) return func_02060c70((u8)Item_GetInsectIndex(p));
     return 0;
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b8ac(u32 x) {
+extern "C" BOOL Item_TestInfoFlag3(u32 x) {
     Unk_0204b598_Elem e;
-    func_02061478(&e, x);
-    if (func_0204b2f0(&e.v) == 1) return func_02061a58(&e.v);
-    if (func_0204b2d4(&e.v)) return func_02052d8c(&e.v);
+    Item_FromPlacedForm(&e, x);
+    if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag3(&e.v);
+    if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlag7(&e.v);
     return FALSE;
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b858(u32 x) {
+extern "C" BOOL Item_TestInfoFlag4(u32 x) {
     Unk_0204b598_Elem e;
-    func_02061478(&e, x);
-    if (func_0204b2f0(&e.v) == 1) return func_0206198c(&e.v);
-    if (func_0204b2d4(&e.v)) return func_02052d2c(&e.v);
+    Item_FromPlacedForm(&e, x);
+    if (Item_GetIdClass(&e.v) == 1) return ItemInfo_TestFlag4(&e.v);
+    if (Item_IsFurniture(&e.v)) return Ftr_TestIndoorFlagC(&e.v);
     return TRUE;
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b820(u16 *p) {
-    if (func_0204a8c0(p)) {
-        Unk_0203442c e(func_0204aa24(p));
-        return func_02061914(&e.v);
+extern "C" BOOL Item_GetShirtUnkGroup(u16 *p) {
+    if (Item_IsShirt(p)) {
+        ItemId e(Item_GetId(p));
+        return ItemInfo_GetIndoorUnk0(&e.v);
     }
     return FALSE;
 }
 }
 
 namespace nB {
-extern "C" u16 func_0204b808(u32 x) { if (x < 0x6c) return x + 0x1492; return 0x1492; }
+extern "C" u16 Item_MakeMoneyBag(u32 x) { if (x < 0x6c) return x + 0x1492; return 0x1492; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b718(s32 a, BOOL up, s32 *out) {
-    Unk_0203442c e;
+extern "C" s32 Item_FindMoneyBagForAmount(s32 a, BOOL up, s32 *out) {
+    ItemId e;
     u32 i;
     if (out) *out = 0;
     if (up) {
-        func_0204ad94(&e.v, 0x14fd);
-        if (func_0204be70(&e) < a) return 0xfff1;
+        Item_Assign(&e.v, 0x14fd);
+        if (Item_GetPrice(&e) < a) return 0xfff1;
         for (i = 0; i < 0x6c; i++) {
-            func_0204ad94(&e.v, func_0204b808(i));
-            s32 v = func_0204be70(&e);
+            Item_Assign(&e.v, Item_MakeMoneyBag(i));
+            s32 v = Item_GetPrice(&e);
             if (v >= a) {
                 if (out) *out = v - a;
-                return func_0204aa24(&e.v);
+                return Item_GetId(&e.v);
             }
         }
     } else {
-        func_0204ad94(&e.v, 0x1492);
-        if (func_0204be70(&e) > a) return 0xfff1;
+        Item_Assign(&e.v, 0x1492);
+        if (Item_GetPrice(&e) > a) return 0xfff1;
         for (i = 0x6c; i != 0; i--) {
-            func_0204ad94(&e.v, func_0204b808(i - 1));
-            s32 v = func_0204be70(&e);
+            Item_Assign(&e.v, Item_MakeMoneyBag(i - 1));
+            s32 v = Item_GetPrice(&e);
             if (a >= v) {
                 if (out) *out = a - v;
-                return func_0204aa24(&e.v);
+                return Item_GetId(&e.v);
             }
         }
     }
@@ -955,8 +955,8 @@ extern "C" s32 func_0204b718(s32 a, BOOL up, s32 *out) {
 }
 
 namespace nB {
-extern "C" s32 func_0204b6f8(u16 *p) {
-    s32 t = func_0204b6a8(p);
+extern "C" s32 Item_GetDesignPlayer(u16 *p) {
+    s32 t = Item_GetDesignIndex(p);
     s32 r = -1;
     if (t != r) r = (t >> 3) & 3;
     return r;
@@ -964,16 +964,16 @@ extern "C" s32 func_0204b6f8(u16 *p) {
 }
 
 namespace nB {
-extern "C" BOOL func_0204b6d0(u16 *p) { if (Unk_0204b408_R(p, 0x1188, 0x11a7)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsDesign(u16 *p) { if (Unk_0204b408_R(p, 0x1188, 0x11a7)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b6a8(u16 *p) { if (func_0204b6d0(p)) return func_0204aa24(p) - 0x1188; return -1; }
+extern "C" s32 Item_GetDesignIndex(u16 *p) { if (Item_IsDesign(p)) return Item_GetId(p) - 0x1188; return -1; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b688(u16 *p) {
-    s32 t = func_0204b6a8(p);
+extern "C" s32 Item_GetDesignSlot(u16 *p) {
+    s32 t = Item_GetDesignIndex(p);
     s32 r = -1;
     if (t != r) t &= 7;
     else t = r;
@@ -982,26 +982,26 @@ extern "C" s32 func_0204b688(u16 *p) {
 }
 
 namespace nB {
-extern "C" u16 func_0204b670(u32 x) { if (x < 0x20) return x + 0x1188; return 0x1188; }
+extern "C" u16 Item_MakeDesignByIndex(u32 x) { if (x < 0x20) return x + 0x1188; return 0x1188; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b65c(u32 a, u32 b) { u32 x = (a & 3) * 8; return func_0204b670(x + (b & 7)); }
+extern "C" u16 Item_MakeDesign(u32 a, u32 b) { u32 x = (a & 3) * 8; return Item_MakeDesignByIndex(x + (b & 7)); }
 }
 
 namespace nB {
-extern "C" void func_0204b640(u16 *out, u32 a, u32 b) { func_0204a9c4(out, func_0204b65c(a, b)); }
+extern "C" void Item_SetDesign(u16 *out, u32 a, u32 b) { Item_SetId(out, Item_MakeDesign(a, b)); }
 }
 
 namespace nB {
-extern "C" s32 func_0204b5ec(u16 *p) {
-    if (func_0204b430(p)) {
+extern "C" s32 Item_GetFlowerItemOrdinal(u16 *p) {
+    if (Item_IsFlowerItem(p)) {
         u32 i;
-        for (i = 0; i < func_02061788(); i++) {
+        for (i = 0; i < Item_GetFlowerItemCount(); i++) {
             Unk_0204b598_Elem e;
-            func_0204b530(&e.v, i);
-            s32 c = func_0204aa24(p);
-            if (c == func_0204aa24(&e.v)) return i;
+            Item_GetNthFlowerItem(&e.v, i);
+            s32 c = Item_GetId(p);
+            if (c == Item_GetId(&e.v)) return i;
         }
     }
     return -1;
@@ -1009,14 +1009,14 @@ extern "C" s32 func_0204b5ec(u16 *p) {
 }
 
 namespace nB {
-extern "C" s32 func_0204b598(u16 *p) {
-    if (func_0204b37c(p)) {
+extern "C" s32 Item_GetFlowerAltOrdinal(u16 *p) {
+    if (Item_IsFlowerAltItem(p)) {
         u32 i;
-        for (i = 0; i < func_0206177c(); i++) {
+        for (i = 0; i < Item_GetFlowerAltCount(); i++) {
             Unk_0204b598_Elem e;
-            func_0204b4a8(&e.v, i);
-            s32 c = func_0204aa24(p);
-            if (c == func_0204aa24(&e.v)) return i;
+            Item_GetNthFlowerAlt(&e.v, i);
+            s32 c = Item_GetId(p);
+            if (c == Item_GetId(&e.v)) return i;
         }
     }
     return -1;
@@ -1024,85 +1024,85 @@ extern "C" s32 func_0204b598(u16 *p) {
 }
 
 namespace nB {
-extern "C" void func_0204b530(u16 *out, u32 n) {
+extern "C" void Item_GetNthFlowerItem(u16 *out, u32 n) {
     u32 count, i;
-    if (n >= func_02061788()) n = 0;
+    if (n >= Item_GetFlowerItemCount()) n = 0;
     count = 0;
     for (i = 0; i < 0x21; i++) {
-        Unk_0203442c e(func_0204b3c8(i));
-        if (func_0204b430(&e.v)) {
+        ItemId e(Item_MakeFlowerItem(i));
+        if (Item_IsFlowerItem(&e.v)) {
             if (n == count) {
-                func_0204b510(out, &e.v);
+                Item_CopyB(out, &e.v);
                 return;
             }
             count++;
         }
     }
-    func_0204a9c4(out, func_0204b3c8(0));
+    Item_SetId(out, Item_MakeFlowerItem(0));
 }
 }
 
 namespace nB {
-extern "C" u16 func_0204b518(u32 x) { if (x < 0x21) return x + 0x1471; return 0x1471; }
+extern "C" u16 Item_MakeFlowerAlt(u32 x) { if (x < 0x21) return x + 0x1471; return 0x1471; }
 }
 
 namespace nB {
-extern "C" void func_0204b510(u16 *dst, u16 *src) { *dst = *src; }
+extern "C" void Item_CopyB(u16 *dst, u16 *src) { *dst = *src; }
 }
 
 namespace nB {
-extern "C" void func_0204b4a8(u16 *out, u32 n) {
+extern "C" void Item_GetNthFlowerAlt(u16 *out, u32 n) {
     u32 count, i;
-    if (n >= func_0206177c()) n = 0;
+    if (n >= Item_GetFlowerAltCount()) n = 0;
     count = 0;
     for (i = 0; i < 0x21; i++) {
-        Unk_0203442c e(func_0204b518(i));
-        if (func_0204b37c(&e.v)) {
+        ItemId e(Item_MakeFlowerAlt(i));
+        if (Item_IsFlowerAltItem(&e.v)) {
             if (n == count) {
-                func_0204b510(out, &e.v);
+                Item_CopyB(out, &e.v);
                 return;
             }
             count++;
         }
     }
-    func_0204a9c4(out, func_0204b518(0));
+    Item_SetId(out, Item_MakeFlowerAlt(0));
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b480(u16 *p) { if (Unk_0204b408_R(p, 0x1408, 0x1428)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFlowerItemRange(u16 *p) { if (Unk_0204b408_R(p, 0x1408, 0x1428)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b458(u16 *p) { if (func_0204b480(p)) return func_0204aa24(p) - 0x1408; return -1; }
+extern "C" s32 Item_GetFlowerItemIndex(u16 *p) { if (Item_IsFlowerItemRange(p)) return Item_GetId(p) - 0x1408; return -1; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b430(u16 *p) {
-    if (func_0204b480(p) && func_0204b458(p) != 0x1e) return func_02061bf0(p);
+extern "C" BOOL Item_IsFlowerItem(u16 *p) {
+    if (Item_IsFlowerItemRange(p) && Item_GetFlowerItemIndex(p) != 0x1e) return ItemInfo_TestFlag1(p);
     return FALSE;
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b408(u16 *p) { if (Unk_0204b408_R(p, 0x1471, 0x1491)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFlowerAltRange(u16 *p) { if (Unk_0204b408_R(p, 0x1471, 0x1491)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b3e0(u16 *p) { if (func_0204b408(p)) return func_0204aa24(p) - 0x1471; return -1; }
+extern "C" s32 Item_GetFlowerAltIndex(u16 *p) { if (Item_IsFlowerAltRange(p)) return Item_GetId(p) - 0x1471; return -1; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b3c8(u32 x) { if (x < 0x21) return x + 0x1408; return 0x1408; }
+extern "C" u16 Item_MakeFlowerItem(u32 x) { if (x < 0x21) return x + 0x1408; return 0x1408; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b37c(u16 *p) {
-    if (func_0204b408(p)) {
-        s32 t = func_0204b3e0(p);
+extern "C" BOOL Item_IsFlowerAltItem(u16 *p) {
+    if (Item_IsFlowerAltRange(p)) {
+        s32 t = Item_GetFlowerAltIndex(p);
         if (t != 0x1e) {
-            Unk_0203442c e(func_0204b3c8(t));
-            if (func_0204b430(&e.v)) return FALSE;
+            ItemId e(Item_MakeFlowerItem(t));
+            if (Item_IsFlowerItem(&e.v)) return FALSE;
             return TRUE;
         }
     }
@@ -1111,18 +1111,18 @@ extern "C" BOOL func_0204b37c(u16 *p) {
 }
 
 namespace nB {
-extern "C" s32 func_0204b354(u16 *p) {
-    if (func_0204a860(p)) return (func_0204aa24(p) - 0x1000) >> 2;
+extern "C" s32 Item_GetPaperIndex(u16 *p) {
+    if (Item_IsPaper(p)) return (Item_GetId(p) - 0x1000) >> 2;
     return -1;
 }
 }
 
 namespace nB {
-extern "C" s32 func_0204b338(u16 *p) { return ((func_0204aa24(p) - 0x1000) & 3) + 1; }
+extern "C" s32 Item_GetPaperCount(u16 *p) { return ((Item_GetId(p) - 0x1000) & 3) + 1; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b318(u32 a, s32 b) {
+extern "C" u16 Item_MakePaper(u32 a, s32 b) {
     u32 base;
     if (a < 0x40) base = 0x1000 + a * 4;
     else base = 0x1000;
@@ -1131,99 +1131,99 @@ extern "C" u16 func_0204b318(u32 a, s32 b) {
 }
 
 namespace nB {
-extern "C" BOOL func_0204b300(u16 *p) { if (func_0204b2f0(p) == 1) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsNormalItem(u16 *p) { if (Item_GetIdClass(p) == 1) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b2f0(u16 *p) { return (*p & 0xf000) >> 12; }
+extern "C" s32 Item_GetIdClass(u16 *p) { return (*p & 0xf000) >> 12; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b2d4(u16 *p) { switch (func_0204b2f0(p)) { case 3: case 4: return TRUE; } return FALSE; }
+extern "C" BOOL Item_IsFurniture(u16 *p) { switch (Item_GetIdClass(p)) { case 3: case 4: return TRUE; } return FALSE; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b2cc(u16 *p) { return func_0204b2d4(p); }
+extern "C" BOOL ItemList_IsFurniture(u16 *p) { return Item_IsFurniture(p); }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b2ac(u16 *p) { if (func_0204aa24(p) == 0xf031) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsOccupiedF031(u16 *p) { if (Item_GetId(p) == 0xf031) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b288(u16 *p) { if (func_0204b2ac(p) || func_0204b2d4(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFurnitureOrF031(u16 *p) { if (Item_IsOccupiedF031(p) || Item_IsFurniture(p)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b274(u16 *p) { return func_0204aa24(p) & 3; }
+extern "C" s32 Item_GetFurnitureDirection(u16 *p) { return Item_GetId(p) & 3; }
 }
 
 namespace nB {
-extern "C" s32 func_0204b25c(u16 *p) { return (func_0204aa24(p) - 0x3000) >> 2; }
+extern "C" s32 Item_GetFurnitureIndex(u16 *p) { return (Item_GetId(p) - 0x3000) >> 2; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b248(s32 a, s32 b) { return 0x3000 + a * 4 + b; }
+extern "C" u16 Item_MakeFurniture(s32 a, s32 b) { return 0x3000 + a * 4 + b; }
 }
 
 namespace nB {
-extern "C" void func_0204b220(u16 *p, s32 y) {
-    if (func_0204b2d4(p)) *p = func_0204b248(func_0204b25c(p), y);
+extern "C" void Item_SetFurnitureDirection(u16 *p, s32 y) {
+    if (Item_IsFurniture(p)) *p = Item_MakeFurniture(Item_GetFurnitureIndex(p), y);
 }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b20c(u16 *p) { return func_0204aa84(p, 0x5000, 0x5021); }
+extern "C" BOOL Item_IsBuilding(u16 *p) { return Item_IsInRange(p, 0x5000, 0x5021); }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b1e4(u16 *p) { if (func_0204aa24(p) == 0xf030 || func_0204b20c(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsBuildingOrOccupied(u16 *p) { if (Item_GetId(p) == 0xf030 || Item_IsBuilding(p)) return TRUE; return FALSE; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b1cc(u32 x) { return x < 0x22 ? x + 0x5000 : 0x5000; }
+extern "C" u16 Item_MakeBuilding(u32 x) { return x < 0x22 ? x + 0x5000 : 0x5000; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b1b4(u32 x) { return x < 0x8 ? x + 0x5001 : 0x5001; }
+extern "C" u16 Item_MakeNeighborHouse(u32 x) { return x < 0x8 ? x + 0x5001 : 0x5001; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b1a0(u16 *p) { return func_0204aa84(p, 0x500d, 0x5010); }
+extern "C" BOOL Item_IsNookShop(u16 *p) { return Item_IsInRange(p, 0x500d, 0x5010); }
 }
 
 namespace nB {
-extern "C" s32 func_0204b178(u16 *p) { if (func_0204b1a0(p)) return func_0204aa24(p) - 0x500d; return -1; }
+extern "C" s32 Item_GetNookShopLevel(u16 *p) { if (Item_IsNookShop(p)) return Item_GetId(p) - 0x500d; return -1; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b160(u32 x) { return x < 0x4 ? x + 0x500d : 0x500d; }
+extern "C" u16 Item_MakeNookShop(u32 x) { return x < 0x4 ? x + 0x500d : 0x500d; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b14c(u16 *p) { return func_0204aa84(p, 0xb001, 0xb003); }
+extern "C" BOOL Item_IsSnowman(u16 *p) { return Item_IsInRange(p, 0xb001, 0xb003); }
 }
 
 namespace nB {
-extern "C" s32 func_0204b124(u16 *p) { if (func_0204b14c(p)) return func_0204aa24(p) - 0xb001; return -1; }
+extern "C" s32 Item_GetSnowmanIndex(u16 *p) { if (Item_IsSnowman(p)) return Item_GetId(p) - 0xb001; return -1; }
 }
 
 namespace nB {
-extern "C" u16 func_0204b10c(u32 x) { return x < 0x3 ? x + 0xb001 : 0xb001; }
+extern "C" u16 Item_MakeSnowman(u32 x) { return x < 0x3 ? x + 0xb001 : 0xb001; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b0f8(u16 *p) { return func_0204aa84(p, 0x5014, 0x501a); }
+extern "C" BOOL Item_IsPlayerHouse(u16 *p) { return Item_IsInRange(p, 0x5014, 0x501a); }
 }
 
 namespace nB {
-extern "C" u16 func_0204b0e0(u32 x) { return x < 0x7 ? x + 0x5014 : 0x5014; }
+extern "C" u16 Item_MakePlayerHouse(u32 x) { return x < 0x7 ? x + 0x5014 : 0x5014; }
 }
 
 namespace nB {
-extern "C" BOOL func_0204b08c(u16 *p) {
+extern "C" BOOL Item_IsTreeStage0(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x26: case 0x2f: case 0x37: case 0x3f: case 0x47: case 0x4f: case 0x57: case 0x5d: case 0xc8:
         r = TRUE;
     }
@@ -1232,9 +1232,9 @@ extern "C" BOOL func_0204b08c(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204b038(u16 *p) {
+extern "C" BOOL Item_IsTreeStage1(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x27: case 0x30: case 0x38: case 0x40: case 0x48: case 0x50: case 0x58: case 0x5e: case 0xc9:
         r = TRUE;
     }
@@ -1243,9 +1243,9 @@ extern "C" BOOL func_0204b038(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204afe4(u16 *p) {
+extern "C" BOOL Item_IsTreeStage2(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x28: case 0x31: case 0x39: case 0x41: case 0x49: case 0x51: case 0x59: case 0x5f: case 0xca:
         r = TRUE;
     }
@@ -1254,9 +1254,9 @@ extern "C" BOOL func_0204afe4(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204af90(u16 *p) {
+extern "C" BOOL Item_IsTreeStage3(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x29: case 0x32: case 0x3a: case 0x42: case 0x4a: case 0x52: case 0x5a: case 0x60: case 0xcb:
         r = TRUE;
     }
@@ -1265,9 +1265,9 @@ extern "C" BOOL func_0204af90(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204af08(u16 *p) {
+extern "C" BOOL Item_IsTreeGrown(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x2a: case 0x33: case 0x3b: case 0x43: case 0x4b:
     case 0x53: case 0x5b: case 0x61:
     case 0x66: case 0x67: case 0x68: case 0x69: case 0x6a: case 0x6b: case 0x6c: case 0x6d:
@@ -1280,9 +1280,9 @@ extern "C" BOOL func_0204af08(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204aecc(u16 *p) {
+extern "C" BOOL Item_IsFruitTreeLastNoFruit(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x36: case 0x3e: case 0x46: case 0x4e: case 0x56: case 0xcf:
         r = TRUE;
     }
@@ -1291,56 +1291,56 @@ extern "C" BOOL func_0204aecc(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204aec0(u16 *p) { return func_0204aa84(p, 0x26, 0x2a); }
+extern "C" BOOL Item_IsTreePlain(u16 *p) { return Item_IsInRange(p, 0x26, 0x2a); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aeb4(u16 *p) { return func_0204aa84(p, 0x5d, 0x61); }
+extern "C" BOOL Item_IsCedarPlain(u16 *p) { return Item_IsInRange(p, 0x5d, 0x61); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aea8(u16 *p) { return func_0204aa84(p, 0x2f, 0x56); }
+extern "C" BOOL Item_IsFruitTree(u16 *p) { return Item_IsInRange(p, 0x2f, 0x56); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae9c(u16 *p) { return func_0204aa84(p, 0x57, 0x5b); }
+extern "C" BOOL Item_IsMoneyTree(u16 *p) { return Item_IsInRange(p, 0x57, 0x5b); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae90(u16 *p) { return func_0204aa84(p, 0x66, 0x68); }
+extern "C" BOOL Item_IsSpecialTree(u16 *p) { return Item_IsInRange(p, 0x66, 0x68); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae80(u16 *p) { if (*p == 0x69) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsAcornTree(u16 *p) { if (*p == 0x69) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae74(u16 *p) { return func_0204aa84(p, 0x6a, 0x6c); }
+extern "C" BOOL Item_IsSpecialCedar(u16 *p) { return Item_IsInRange(p, 0x6a, 0x6c); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae64(u16 *p) { if (*p == 0x6d) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFestiveCedar(u16 *p) { if (*p == 0x6d) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ae58(u16 *p) { return func_0204aa84(p, 0xc8, 0xcf); }
+extern "C" BOOL Item_IsPalmTree(u16 *p) { return Item_IsInRange(p, 0xc8, 0xcf); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204adf0(u16 *p) {
-    if (func_0204aec0(p) || func_0204aeb4(p) || func_0204aea8(p) || func_0204ae9c(p) || func_0204ae90(p) || func_0204ae80(p) || func_0204ae74(p) || func_0204ae64(p) || func_0204ae58(p)) return TRUE;
+extern "C" BOOL Item_IsTree(u16 *p) {
+    if (Item_IsTreePlain(p) || Item_IsCedarPlain(p) || Item_IsFruitTree(p) || Item_IsMoneyTree(p) || Item_IsSpecialTree(p) || Item_IsAcornTree(p) || Item_IsSpecialCedar(p) || Item_IsFestiveCedar(p) || Item_IsPalmTree(p)) return TRUE;
     return FALSE;
 }
 }
 
 namespace nA {
-extern "C" s32 func_0204ad98(u16 *p) {
+extern "C" s32 Item_GetTreeStage(u16 *p) {
     s32 r = -1;
-    if (func_0204adf0(p)) {
-        if (func_0204b08c(p)) r = 0;
-        else if (func_0204b038(p)) r = 1;
-        else if (func_0204afe4(p)) r = 2;
-        else if (func_0204af90(p)) r = 3;
+    if (Item_IsTree(p)) {
+        if (Item_IsTreeStage0(p)) r = 0;
+        else if (Item_IsTreeStage1(p)) r = 1;
+        else if (Item_IsTreeStage2(p)) r = 2;
+        else if (Item_IsTreeStage3(p)) r = 3;
         else r = 4;
     }
     return r;
@@ -1348,45 +1348,45 @@ extern "C" s32 func_0204ad98(u16 *p) {
 }
 
 namespace nA {
-extern "C" void func_0204ad94(u16 *p, u32 v) { *p = v; }
+extern "C" void Item_Assign(u16 *p, u32 v) { *p = v; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ad88(u16 *p) { return func_0204aa84(p, 0x37, 0x3e); }
+extern "C" BOOL Item_IsAppleTree(u16 *p) { return Item_IsInRange(p, 0x37, 0x3e); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ad7c(u16 *p) { return func_0204aa84(p, 0x3f, 0x46); }
+extern "C" BOOL Item_IsOrangeTree(u16 *p) { return Item_IsInRange(p, 0x3f, 0x46); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ad70(u16 *p) { return func_0204aa84(p, 0x47, 0x4e); }
+extern "C" BOOL Item_IsPearTree(u16 *p) { return Item_IsInRange(p, 0x47, 0x4e); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ad64(u16 *p) { return func_0204aa84(p, 0x2f, 0x36); }
+extern "C" BOOL Item_IsPeachTree(u16 *p) { return Item_IsInRange(p, 0x2f, 0x36); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ad58(u16 *p) { return func_0204aa84(p, 0x4f, 0x56); }
+extern "C" BOOL Item_IsCherryTree(u16 *p) { return Item_IsInRange(p, 0x4f, 0x56); }
 }
 
 namespace nA {
-extern "C" s32 func_0204ad08(u16 *p) {
+extern "C" s32 Item_GetFruitTreeFruit(u16 *p) {
     s32 r = 0;
-    if (func_0204ad88(p)) {
-    } else if (func_0204ad7c(p)) r = 1;
-    else if (func_0204ad70(p)) r = 2;
-    else if (func_0204ad64(p)) r = 3;
-    else if (func_0204ad58(p)) r = 4;
+    if (Item_IsAppleTree(p)) {
+    } else if (Item_IsOrangeTree(p)) r = 1;
+    else if (Item_IsPearTree(p)) r = 2;
+    else if (Item_IsPeachTree(p)) r = 3;
+    else if (Item_IsCherryTree(p)) r = 4;
     return r;
 }
 }
 
 namespace nA {
-extern "C" BOOL func_0204acd8(u16 *p) {
+extern "C" BOOL Item_IsSmallStump(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x2b: case 0x62: case 0xd0: case 0xff:
         r = TRUE;
     }
@@ -1395,9 +1395,9 @@ extern "C" BOOL func_0204acd8(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204aca4(u16 *p) {
+extern "C" BOOL Item_IsMediumStump(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x2c: case 0x63: case 0xd1: case 0x100:
         r = TRUE;
     }
@@ -1406,9 +1406,9 @@ extern "C" BOOL func_0204aca4(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac70(u16 *p) {
+extern "C" BOOL Item_IsLargeStump(u16 *p) {
     BOOL r = FALSE;
-    switch (func_0204aa24(p)) {
+    switch (Item_GetId(p)) {
     case 0x2d: case 0x64: case 0xd2: case 0x101:
         r = TRUE;
     }
@@ -1417,36 +1417,36 @@ extern "C" BOOL func_0204ac70(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac64(u16 *p) { return func_0204aa84(p, 0x2b, 0x2e); }
+extern "C" BOOL Item_IsTreeStump(u16 *p) { return Item_IsInRange(p, 0x2b, 0x2e); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac54(u16 *p) { return func_0204aa84(p, 0xff, 0x102); }
+extern "C" BOOL Item_IsSpecialStump(u16 *p) { return Item_IsInRange(p, 0xff, 0x102); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac30(u16 *p) { if (func_0204ac64(p) || func_0204ac54(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsTreeOrSpecialStump(u16 *p) { if (Item_IsTreeStump(p) || Item_IsSpecialStump(p)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac24(u16 *p) { return func_0204aa84(p, 0x62, 0x65); }
+extern "C" BOOL Item_IsCedarStump(u16 *p) { return Item_IsInRange(p, 0x62, 0x65); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ac18(u16 *p) { return func_0204aa84(p, 0xd0, 0xd3); }
+extern "C" BOOL Item_IsPalmStump(u16 *p) { return Item_IsInRange(p, 0xd0, 0xd3); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204abec(u16 *p) { if (func_0204ac30(p) || func_0204ac24(p) || func_0204ac18(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsStump(u16 *p) { if (Item_IsTreeOrSpecialStump(p) || Item_IsCedarStump(p) || Item_IsPalmStump(p)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" s32 func_0204aba4(u16 *p) {
+extern "C" s32 Item_GetStumpSize(u16 *p) {
     s32 r = -1;
-    if (func_0204abec(p)) {
-        if (func_0204acd8(p)) r = 1;
-        else if (func_0204aca4(p)) r = 2;
-        else if (func_0204ac70(p)) r = 3;
+    if (Item_IsStump(p)) {
+        if (Item_IsSmallStump(p)) r = 1;
+        else if (Item_IsMediumStump(p)) r = 2;
+        else if (Item_IsLargeStump(p)) r = 3;
         else r = 4;
     }
     return r;
@@ -1454,80 +1454,80 @@ extern "C" s32 func_0204aba4(u16 *p) {
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab98(u16 *p) { return func_0204aa84(p, 0x6e, 0x73); }
+extern "C" BOOL Item_IsParchedTulip(u16 *p) { return Item_IsInRange(p, 0x6e, 0x73); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab8c(u16 *p) { return func_0204aa84(p, 0x74, 0x79); }
+extern "C" BOOL Item_IsParchedPansy(u16 *p) { return Item_IsInRange(p, 0x74, 0x79); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab80(u16 *p) { return func_0204aa84(p, 0x7a, 0x7f); }
+extern "C" BOOL Item_IsParchedCosmos(u16 *p) { return Item_IsInRange(p, 0x7a, 0x7f); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab74(u16 *p) { return func_0204aa84(p, 0x80, 0x87); }
+extern "C" BOOL Item_IsParchedRose(u16 *p) { return Item_IsInRange(p, 0x80, 0x87); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab3c(u16 *p) { if (func_0204ab98(p) || func_0204ab8c(p) || func_0204ab80(p) || func_0204ab74(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFlowerParched(u16 *p) { if (Item_IsParchedTulip(p) || Item_IsParchedPansy(p) || Item_IsParchedCosmos(p) || Item_IsParchedRose(p)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab30(u16 *p) { return func_0204aa84(p, 0x0, 0x5); }
+extern "C" BOOL Item_IsTulip(u16 *p) { return Item_IsInRange(p, 0x0, 0x5); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab24(u16 *p) { return func_0204aa84(p, 0x6, 0xb); }
+extern "C" BOOL Item_IsPansy(u16 *p) { return Item_IsInRange(p, 0x6, 0xb); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204ab18(u16 *p) { return func_0204aa84(p, 0xc, 0x11); }
+extern "C" BOOL Item_IsCosmos(u16 *p) { return Item_IsInRange(p, 0xc, 0x11); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aaf4(u16 *p) { if (func_0204aa84(p, 0x12, 0x19) || *p == 0x1c) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsRose(u16 *p) { if (Item_IsInRange(p, 0x12, 0x19) || *p == 0x1c) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aabc(u16 *p) { if (func_0204ab30(p) || func_0204ab24(p) || func_0204ab18(p) || func_0204aaf4(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFlowerFresh(u16 *p) { if (Item_IsTulip(p) || Item_IsPansy(p) || Item_IsCosmos(p) || Item_IsRose(p)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aab0(u16 *p) { return func_0204aa84(p, 0x8a, 0x8f); }
+extern "C" BOOL Item_IsWateredTulip(u16 *p) { return Item_IsInRange(p, 0x8a, 0x8f); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aaa4(u16 *p) { return func_0204aa84(p, 0x90, 0x95); }
+extern "C" BOOL Item_IsWateredPansy(u16 *p) { return Item_IsInRange(p, 0x90, 0x95); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aa98(u16 *p) { return func_0204aa84(p, 0x96, 0x9b); }
+extern "C" BOOL Item_IsWateredCosmos(u16 *p) { return Item_IsInRange(p, 0x96, 0x9b); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aa84(u16 *p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
+extern "C" BOOL Item_IsInRange(u16 *p, u32 lo, u32 hi) { BOOL r = FALSE; if (*p >= lo && *p <= hi) r = TRUE; return r; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aa60(u16 *p) { if (func_0204aa84(p, 0x9c, 0xa3) || *p == 0xa5) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsWateredRose(u16 *p) { if (Item_IsInRange(p, 0x9c, 0xa3) || *p == 0xa5) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204aa28(u16 *p) { if (func_0204aab0(p) || func_0204aaa4(p) || func_0204aa98(p) || func_0204aa60(p)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFlowerWatered(u16 *p) { if (Item_IsWateredTulip(p) || Item_IsWateredPansy(p) || Item_IsWateredCosmos(p) || Item_IsWateredRose(p)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" s32 func_0204aa24(u16 *p) { return *p; }
+extern "C" s32 Item_GetId(u16 *p) { return *p; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a9c8(u16 *p) {
+extern "C" BOOL Item_IsFlower(u16 *p) {
     BOOL r = FALSE;
-    if (func_0204ab3c(p) || func_0204aabc(p) || func_0204aa28(p)) {
+    if (Item_IsFlowerParched(p) || Item_IsFlowerFresh(p) || Item_IsFlowerWatered(p)) {
         r = TRUE;
     } else {
-        switch (func_0204aa24(p)) {
+        switch (Item_GetId(p)) {
         case 0x1a: case 0x1d: case 0x1e: case 0x88: case 0xa4:
             r = TRUE;
         }
@@ -1537,101 +1537,101 @@ extern "C" BOOL func_0204a9c8(u16 *p) {
 }
 
 namespace nA {
-extern "C" void func_0204a9c4(u16 *p, u32 v) { *p = v; }
+extern "C" void Item_SetId(u16 *p, u32 v) { *p = v; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a9ac(u32 x) { if (x < 0x38) return x + 0x12b0; return 0x12b0; }
+extern "C" u16 Item_MakeInsect(u32 x) { if (x < 0x38) return x + 0x12b0; return 0x12b0; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a994(u32 x) { if (x < 0x40) return x + 0x13c8; return 0x13c8; }
+extern "C" u16 Item_MakeHat(u32 x) { if (x < 0x40) return x + 0x13c8; return 0x13c8; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a97c(u32 x) { if (x < 0x44) return x + 0x1144; return 0x1144; }
+extern "C" u16 Item_MakeCarpet(u32 x) { if (x < 0x44) return x + 0x1144; return 0x1144; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a960(u32 x) { if (x < 0x100) return x + 0x11a8; return 0x11a8; }
+extern "C" u16 Item_MakeShirt(u32 x) { if (x < 0x100) return x + 0x11a8; return 0x11a8; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a948(u32 x) { if (x < 0x40) return x + 0x1431; return 0x1431; }
+extern "C" u16 Item_MakeAccessory(u32 x) { if (x < 0x40) return x + 0x1431; return 0x1431; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a920(u16 *p) { if (Unk_0204a7d0_R(p, 0x13c8, 0x1407)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsHat(u16 *p) { if (Unk_0204a7d0_R(p, 0x13c8, 0x1407)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a918(u16 *p) { return func_0204a920(p); }
+extern "C" BOOL ItemList_IsHat(u16 *p) { return Item_IsHat(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a8f0(u16 *p) { if (Unk_0204a7d0_R(p, 0x1144, 0x1187)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsCarpet(u16 *p) { if (Unk_0204a7d0_R(p, 0x1144, 0x1187)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a8e8(u16 *p) { return func_0204a8f0(p); }
+extern "C" BOOL ItemList_IsCarpet(u16 *p) { return Item_IsCarpet(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a8c0(u16 *p) { if (Unk_0204a7d0_R(p, 0x11a8, 0x12a7)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsShirt(u16 *p) { if (Unk_0204a7d0_R(p, 0x11a8, 0x12a7)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a8b8(u16 *p) { return func_0204a8c0(p); }
+extern "C" BOOL ItemList_IsShirt(u16 *p) { return Item_IsShirt(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a890(u16 *p) { if (Unk_0204a7d0_R(p, 0x1431, 0x1470)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsAccessory(u16 *p) { if (Unk_0204a7d0_R(p, 0x1431, 0x1470)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a888(u16 *p) { return func_0204a890(p); }
+extern "C" BOOL ItemList_IsAccessory(u16 *p) { return Item_IsAccessory(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a860(u16 *p) { if (Unk_0204a7d0_R(p, 0x1000, 0x10ff)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsPaper(u16 *p) { if (Unk_0204a7d0_R(p, 0x1000, 0x10ff)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a858(u16 *p) { return func_0204a860(p); }
+extern "C" BOOL ItemList_IsPaper(u16 *p) { return Item_IsPaper(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a830(u16 *p) { if (Unk_0204a7d0_R(p, 0x1380, 0x139f)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsUmbrella(u16 *p) { if (Unk_0204a7d0_R(p, 0x1380, 0x139f)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a828(u16 *p) { return func_0204a830(p); }
+extern "C" BOOL ItemList_IsUmbrella(u16 *p) { return Item_IsUmbrella(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a800(u16 *p) { if (Unk_0204a7d0_R(p, 0x1100, 0x1143)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsWallpaper(u16 *p) { if (Unk_0204a7d0_R(p, 0x1100, 0x1143)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a7f8(u16 *p) { return func_0204a800(p); }
+extern "C" BOOL ItemList_IsWallpaper(u16 *p) { return Item_IsWallpaper(p); }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a7d0(u16 *p) { if (Unk_0204a7d0_R(p, 0x13a8, 0x13c7)) return TRUE; return FALSE; }
+extern "C" BOOL Item_IsFullHeadwear(u16 *p) { if (Unk_0204a7d0_R(p, 0x13a8, 0x13c7)) return TRUE; return FALSE; }
 }
 
 namespace nA {
-extern "C" BOOL func_0204a7c8(u16 *p) { return func_0204a7d0(p); }
+extern "C" BOOL ItemList_IsFullHeadwear(u16 *p) { return Item_IsFullHeadwear(p); }
 }
 
 namespace nA {
-extern "C" u16 func_0204a7b0(u32 x) { if (x < 0x20) return x + 0x1380; return 0x1380; }
+extern "C" u16 Item_MakeUmbrella(u32 x) { if (x < 0x20) return x + 0x1380; return 0x1380; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a798(u32 x) { if (x < 0x44) return x + 0x1100; return 0x1100; }
+extern "C" u16 Item_MakeWallpaper(u32 x) { if (x < 0x44) return x + 0x1100; return 0x1100; }
 }
 
 namespace nA {
-extern "C" u16 func_0204a780(u32 x) { if (x < 0x20) return x + 0x13a8; return 0x13a8; }
+extern "C" u16 Item_MakeFullHeadwear(u32 x) { if (x < 0x20) return x + 0x13a8; return 0x13a8; }
 }

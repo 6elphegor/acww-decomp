@@ -25,8 +25,8 @@ struct Unk_02095dcc_Grid {
     s32 unk_10;
 };
 
-struct Unk_02063380 {
-    void func_0206338c(s32 a, s32 b);
+struct ItemPickSpec {
+    void set(s32 a, s32 b);
     s32 unk_00;
     s32 unk_04;
 };
@@ -62,7 +62,7 @@ extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
 extern u8 data_020d043c[];
-extern u8 data_021d085c[];
+extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 data_021edb68[];
@@ -114,11 +114,11 @@ s32 func_02095478(void *p, s32 i);
 }
 
 extern "C" {
-BOOL func_02095574(s32 *out, s32 a, s32 idx);
+BOOL PlayerActor_GetSlotAction(s32 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-BOOL func_020955e8(s16 *out, s32 a, s32 idx);
+BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 }
 
 extern "C" {
@@ -130,11 +130,11 @@ u32 func_02095758(s32 idx);
 }
 
 extern "C" {
-Unk_02095774_Ent *func_02095774(s32 idx);
+Unk_02095774_Ent *PlayerActor_Get(s32 idx);
 }
 
 extern "C" {
-BOOL func_02095670(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
+BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 }
 
 extern "C" {
@@ -150,7 +150,7 @@ s32 func_020a5ef8();
 }
 
 extern "C" {
-Unk_0209579c_Rec *_ZN12Unk_020d5d8413func_02002d3cEjPS_(s32 a, s32 b);
+Unk_0209579c_Rec *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
 }
 
 extern "C" {
@@ -158,11 +158,11 @@ Unk_02095774_Ent *func_02095204(s32 idx);
 }
 
 extern "C" {
-u32 func_0209521c();
+u32 PlayerSession_FindFreeGfxSlot();
 }
 
 extern "C" {
-void func_0209524c(s32 idx, u32 v);
+void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 }
 
 extern "C" {
@@ -174,7 +174,7 @@ void func_02094308(s32 idx, void *pos, void *rot, u32 flags);
 }
 
 extern "C" {
-BOOL func_02095180(s32 a, s32 b);
+BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 extern "C" {
@@ -194,7 +194,7 @@ s16 *func_02095294(s32 idx);
 }
 
 extern "C" {
-void func_020ed188(void *p);
+void ProcBase_RequestDelete(void *p);
 }
 
 extern "C" {
@@ -294,7 +294,7 @@ void *func_020991e4();
 }
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -310,15 +310,15 @@ void func_0206f604(s32 a, s32 b);
 }
 
 extern "C" {
-void func_02062f94(u16 *a, Unk_02063380 *o, s32 b, s32 c, s32 d, s32 e, s32 f);
+void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-void func_02062ad4(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 
 extern "C" {
-void func_02063388(Unk_02063380 *o);
+void func_02063388(ItemPickSpec *o);
 }
 
 inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
@@ -329,32 +329,32 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
 
 class Unk_020e1c30 {
 public:
-    static Unk_020d8c7c *vfunc_48();
+    static GameProc *vfunc_48();
 };
 
 struct Unk_020e1c78_Rec {
-    Unk_020d8c7c *(*fn)();
+    GameProc *(*fn)();
     s16 a;
     s16 b;
 };
 
-class Unk_020e1c88 : public Unk_020d8c7c {
+class Unk_020e1c88 : public GameProc {
 public:
     Unk_020e1c88();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e1c88();
 };
 
-class Unk_020e1ce0 : public Unk_020d8c7c {
+class Unk_020e1ce0 : public GameProc {
 public:
     Unk_020e1ce0();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e1ce0();
 };
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
@@ -365,7 +365,7 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
 
 Unk_020e1c78_Rec data_020e1c78 = {&Unk_020e1c30::vfunc_48, 8, 12};
 
-Unk_020d8c7c *Unk_020e1c30::vfunc_48() { return new Unk_020e1c88(); }
+GameProc *Unk_020e1c30::vfunc_48() { return new Unk_020e1c88(); }
 
 Unk_020e1c88::Unk_020e1c88() {}
 
@@ -373,7 +373,7 @@ Unk_020e1c88::~Unk_020e1c88() {}
 
 BOOL Unk_020e1c88::vfunc_00() { return TRUE; }
 
-BOOL Unk_020e1c88::vfunc_18() {
+BOOL Unk_020e1c88::onExecute() {
     Unk_020cbb18 *g = data_020cbb18;
     s32 mode = g->unk_64;
     u8 la, lb;
@@ -389,7 +389,7 @@ BOOL Unk_020e1c88::vfunc_18() {
     if (func_020b50e8() == 0x2e) goto ret1;
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f || func_020b50e8() == 0xe) {
         if (func_020a03f0()) return TRUE;
-        Unk_0209579c_Rec *rec = _ZN12Unk_020d5d8413func_02002d3cEjPS_(0x72, 0);
+        Unk_0209579c_Rec *rec = _ZN5Actor13findByProfileEjPS_(0x72, 0);
         if (rec == NULL) goto ret1;
         if (Unk_0209579c_IsTwo(rec->unk_0e)) goto ret1;
         if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
@@ -420,7 +420,7 @@ BOOL Unk_020e1c88::vfunc_18() {
             lr1[1] = (s16)0x8000;
             lr1[2] = 0;
         }
-        func_0209524c(mode, func_0209521c());
+        PlayerSession_SetGfxSlot(mode, PlayerSession_FindFreeGfxSlot());
         func_02094308(mode, &p1, lr1, 0x4000000);
         goto ret1;
     }
@@ -430,15 +430,15 @@ BOOL Unk_020e1c88::vfunc_18() {
     i = 0;
     do {
         if (!_ZN12Unk_020cbb1813func_020729bcEj(g, i) && _ZN12Unk_020cbb1813func_02072e88Ei(g, i) && !func_02095204(i)) {
-            if (func_02095574(&lv1, -1, i) && lv1 < 0x93 && func_02095670(&la, &lx1, &ly1, -1, i) &&
-                la == func_020b50e8() && func_020955e8(&lc, -1, i)) {
+            if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
+                la == func_020b50e8() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
                 p2.y = 2;
                 p2.z = ly1;
                 Unk_0209579c_Set(lr2, 0, lc, 0);
-                func_0209524c(i, func_0209521c());
+                PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
                 func_02094308(i, &p2, lr2, 0x800000);
-            } else if (func_02095180(0x1b, ob)) {
+            } else if (PlayerActor_TestSlotFlag(0x1b, ob)) {
                 u8 *bp = func_020952b0(i);
                 s32 *ip = func_020952bc(i);
                 if (*bp == func_020b50e8() && *ip != 0x93) {
@@ -447,7 +447,7 @@ BOOL Unk_020e1c88::vfunc_18() {
                     p3.y = pp[1];
                     p3.z = pp[2];
                     Unk_0209579c_Set(lr3, 0, *func_02095294(i), 0);
-                    func_0209524c(i, func_0209521c());
+                    PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
                     func_02094308(i, &p3, lr3, (*ip << 22) & 0x3fc00000);
                 }
             }
@@ -456,20 +456,20 @@ BOOL Unk_020e1c88::vfunc_18() {
     } while ((u32)i < 4);
     j = 0;
     do {
-        if (!_ZN12Unk_020cbb1813func_020729bcEj(g, j) && !func_02095180(0x1b, ob)) {
+        if (!_ZN12Unk_020cbb1813func_020729bcEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
             Unk_02095774_Ent *e = func_02095204(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((Unk_0209579c_Rec *)e)->unk_0e)) {
-                    if (func_02095574(&lv2, -1, j)) {
+                    if (PlayerActor_GetSlotAction(&lv2, -1, j)) {
                         if (lv2 >= 0x93) {
-                            func_020ed188(e);
-                        } else if (func_02095670(&lb, &lx2, &ly2, -1, j)) {
-                            if (lb != func_020b50e8()) func_020ed188(e);
+                            ProcBase_RequestDelete(e);
+                        } else if (PlayerActor_GetSlotPosXZ(&lb, &lx2, &ly2, -1, j)) {
+                            if (lb != func_020b50e8()) ProcBase_RequestDelete(e);
                         } else {
-                            func_020ed188(e);
+                            ProcBase_RequestDelete(e);
                         }
                     } else {
-                        func_020ed188(e);
+                        ProcBase_RequestDelete(e);
                     }
                 }
             }
@@ -480,7 +480,7 @@ ret1:
     return TRUE;
 }
 
-BOOL Unk_020e1c88::vfunc_24() { return TRUE; }
+BOOL Unk_020e1c88::onDraw() { return TRUE; }
 
 BOOL Unk_020e1c88::vfunc_0c() { return TRUE; }
 

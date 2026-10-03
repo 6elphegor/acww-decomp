@@ -28,22 +28,22 @@ void *func_021066ac(void *, s32);
 void *NNS_G3dGetTex(void *);
 void func_02055724(void *, s32);
 void *func_0205588c(void *, void *);
-void func_020e8558(void *);
-void *func_020e8608(void *, u32);
+void Mem_Free(void *);
+void *Heap_Alloc(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
-void *_ZN12Unk_0204debc13func_0204df64Ev(void *);
+void *_ZN7TownMap13func_0204df64Ev(void *);
 extern u16 data_020d8d8c, data_020d8d88, data_020d8d90;
 extern u16 data_020c8af8[];
 extern void *data_021c620c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 struct Unk_021e5890_T { u8 pad[0x14]; u8 unk_14; };
 extern Unk_021e5890_T data_021e5890;}
 
 extern "C" {
-void *func_020641ec(void *, void *, s32, void *);
+void *File_LoadAlloc(void *, void *, s32, void *);
 extern char data_021e3680[];
 s32 func_020b50e8(void);
-void _ZN12Unk_0204debc13func_0204df30Ev(char *);
+void _ZN7TownMap13func_0204df30Ev(char *);
 void func_0205c18c(s32, s32);
 }
 extern "C" void *func_02037244(void *a, void *b);
@@ -147,7 +147,7 @@ struct Unk_02036cec {
 };
 
 extern "C" void *func_02037244(void *a, void *b) {
-    return func_020641ec(a, data_021c620c, 4, b);
+    return File_LoadAlloc(a, data_021c620c, 4, b);
 }
 
 Unk_02037108::Unk_02037108() {
@@ -193,7 +193,7 @@ void Unk_02037108::func_0203718c() {
 BOOL Unk_02037108::func_02037108(u32 flag) {
     s32 t = func_020b50e8();
     if (t == 0x2c) {
-        _ZN12Unk_0204debc13func_0204df30Ev(data_021e3680);
+        _ZN7TownMap13func_0204df30Ev(data_021e3680);
     }
     func_0203718c();
     unk_618 = flag;
@@ -217,7 +217,7 @@ BOOL Unk_02037108::func_02037108(u32 flag) {
 
 extern "C" s32 func_020370f8(void *)
 {
-    return (s32)_ZN12Unk_0204debc13func_0204df64Ev(data_021e3680);
+    return (s32)_ZN7TownMap13func_0204df64Ev(data_021e3680);
 }
 
 void Unk_02036cec::func_02037074()
@@ -227,13 +227,13 @@ void Unk_02036cec::func_02037074()
     s32 b = func_020370f8(this);
     void *p;
     func_020639e8(buf, "/bg/ct%d/grd_set%d%c.nsbtx", a, b, ((u32)(data_021e5890.unk_14 << 24) >> 26) + 0x61);
-    p = func_020641ec(buf, data_021f482c, -4, 0);
+    p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     s32 *q = &unk_630;
     *q = (s32)NNS_G3dGetTex(p);
     func_02055724((void *)*q, 0);
     unk_630 = (s32)func_0205588c((void *)unk_630, data_021c620c);
     if (p) {
-        func_020e8558(p);
+        Mem_Free(p);
     }
 }
 
@@ -258,16 +258,16 @@ void *func_02036f24(s32 id, void *heap)
     u8 file[0x68];
     void *p, *r, *t;
     func_020639e8(buf, "/bg/a%d/%04x.arc", id >> 4, id);
-    p = func_020641ec(buf, data_021f482c, -4, 0);
+    p = File_LoadAlloc(buf, gCurrentHeap, -4, 0);
     r = 0;
     if (func_02101340(file, "BG", p)) {
         t = func_021012bc("BG:a/bcl/bcl0");
         func_02101310(file);
-        r = func_020e8608(heap, 0x180);
+        r = Heap_Alloc(heap, 0x180);
         MI_CpuCopy8(t, r, 0x180);
     }
     if (p) {
-        func_020e8558(p);
+        Mem_Free(p);
     }
     return r;
 }
@@ -341,13 +341,13 @@ Unk_02036cec_Entry *Unk_02036cec::func_02036d54(s32 id)
             }
             if (((id & 0xf000) >> 12) == 1) {
                 func_020639e8(l.buf, "/bg/t%d/%04x.nsbtx", hi, id);
-                p = func_020641ec(l.buf, data_021f482c, -4, 0);
+                p = File_LoadAlloc(l.buf, gCurrentHeap, -4, 0);
                 if (p) {
                     l.tmp = (s32)NNS_G3dGetTex(p);
                     func_02055724((void *)l.tmp, 0);
                     e->unk_20 = func_0205588c((void *)l.tmp, heap);
                     if (p) {
-                        func_020e8558(p);
+                        Mem_Free(p);
                     }
                 }
             }

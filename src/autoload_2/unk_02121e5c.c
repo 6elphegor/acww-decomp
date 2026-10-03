@@ -160,7 +160,7 @@ extern u32 MBi_ReadFromCache(void *, u32, u32, u32);
 extern u32 MBi_IsTaskBusy(void *);
 extern void MBi_SetTask(void *, void *, u32, u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern u32 func_02122114(void);
 u32 MBi_CommParentSendBlock(void);
 void func_02121c60(u32 idx);
@@ -207,7 +207,7 @@ u32 MBi_CommParentSendBlock(void) {
                         }
                     }
                 }
-                if (best == 0) func_0206d49c();
+                if (best == 0) Fatal_Trap();
                 buf->f0 = 0;
                 best->state = 1;
                 best->f0 = addr & ~31;

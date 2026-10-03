@@ -2,59 +2,59 @@
 
 struct Unk_0203dad4_Task;
 
-// Library base class (local copy of include/Unk_020d8c7c.h; the signatures of slots 0x18 and 0x20 are the ones the
+// Library base class (local copy of include/GameProc.h; the signatures of slots 0x18 and 0x20 are the ones the
 // overrides in this unit need)
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
+    virtual void postCreate();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 b);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual void vfunc_08();
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual void postCreate();
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
 
-class Unk_020d9620 : public Unk_020d8c7c {
+class Unk_020d9620 : public GameProc {
 public:
     Unk_020d9620() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual void vfunc_20(u32 b);
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     // destructor implicit (D1 is at the lower address)
 };
 
 // Only the non-virtual methods of this class (vtable and constructor are in the next unit)
-class Unk_020d9670 {
+class Character {
 public:
-    void func_0203e3b4(u32 mask);
-    void func_0203e3c4(u32 mask);
-    BOOL func_0203e3d4(u32 mask);
+    void clearCharFlags(u32 mask);
+    void setCharFlags(u32 mask);
+    BOOL testCharFlags(u32 mask);
     BOOL func_0203e3e8();
     void func_0203e3f4();
     s32 func_0203e400();
@@ -129,12 +129,12 @@ extern Unk_0203dbb8_Fn data_020d95dc[];
 extern "C" {
 extern u8 data_021c3cc0;
 extern u8 data_020d96d0;
-extern s32 data_021eda68;
+extern s32 gActorDefaultParent;
 extern s32 data_020cbb18;
 
 Unk_0203e604_Obj *func_02095204(s32 id);
-u32 _ZN12Unk_020d967013func_0203e630Ev(Unk_0203e604_Obj *o);
-Unk_0203e604_Obj *func_0203e604(u32 id);
+u32 _ZN9Character9getCharIdEv(Unk_0203e604_Obj *o);
+Unk_0203e604_Obj *Character_FindByCharId(u32 id);
 Unk_0203dad4_Task *func_0203eb78();
 void func_020652ec(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void func_0203ebdc(Unk_0203dc50_List *l);
@@ -142,9 +142,9 @@ void func_020e79a0(Unk_0203dc50_List *l, Unk_0203dad4_Task *t);
 void func_020a5d4c();
 void func_020a5d0c();
 void func_020a42c4();
-void _ZN17Unk_020d8c7c_Base8vfunc_20Ev(void *a, u32 b);
+void _ZN8ProcBase8vfunc_20Ev(void *a, u32 b);
 BOOL func_0203e2f4();
-BOOL _ZN12Unk_020d967013func_0203e3e8Ev();
+BOOL _ZN9Character13func_0203e3e8Ev();
 s32 func_0203e9ac();
 void func_0203e994(u32 id, u32 v);
 void func_0203e9a0(u32 id, u32 v);
@@ -167,9 +167,9 @@ u32 func_020b4934();
 void func_020b4bbc(u32 a, u32 b);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(s32 v);
 BOOL func_ov004_0222497c();
-Unk_0203e604_Obj *func_0203e5d0(Unk_0203e604_Obj *o);
-BOOL _ZN12Unk_020d967013func_0203e4a8EPS_(Unk_0203e604_Obj *a, Unk_0203e604_Obj *b);
-s32 _ZN12Unk_020d967013func_0203e400Ev(Unk_0203e604_Obj *o);
+Unk_0203e604_Obj *Character_FindInteractionTarget(Unk_0203e604_Obj *o);
+BOOL _ZN9Character16checkInteractionEPS_(Unk_0203e604_Obj *a, Unk_0203e604_Obj *b);
+s32 _ZN9Character13func_0203e400Ev(Unk_0203e604_Obj *o);
 BOOL func_0203e22c(Unk_0203dad4_Task *t);
 
 void func_0203d914(u32 mask);
@@ -181,10 +181,10 @@ s32 _ZN12Unk_020660f813func_02067958Ev(u32 x);
 u32 func_02067918(u32 x);
 s32 _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(u32 a, u32 b);
 u32 func_0206ec6c(u32 a);
-BOOL func_0206f140(void);
+BOOL MenuCtrl_IsIdle(void);
 BOOL func_02094e64(void);
-BOOL func_02094d3c(void);
-void func_0206f0f8(u32 v);
+BOOL PlayerActor_RequestAct05(void);
+void MenuCtrl_RequestOpen(u32 v);
 void func_0203e358(void);
 s32 func_020b14f0(void);
 void func_02065328(void *p);
@@ -220,32 +220,32 @@ extern "C" BOOL func_0203d8b4(u32 x);
 extern "C" void func_0203d914(u32 mask);
 extern "C" BOOL func_0203d924(u32 mask);
 
-void Unk_020d9670::func_0203e42c() { func_0203e3b4(3); }
+void Character::func_0203e42c() { clearCharFlags(3); }
 
-s32 Unk_020d9670::func_0203e400() {
-    if (func_0203e3d4(1)) {
+s32 Character::func_0203e400() {
+    if (testCharFlags(1)) {
         return 0;
     }
-    if (func_0203e3d4(2)) {
+    if (testCharFlags(2)) {
         return 1;
     }
     return 2;
 }
 
-void Unk_020d9670::func_0203e3f4() { func_0203e3c4(4); }
+void Character::func_0203e3f4() { setCharFlags(4); }
 
-BOOL Unk_020d9670::func_0203e3e8() { return func_0203e3d4(4); }
+BOOL Character::func_0203e3e8() { return testCharFlags(4); }
 
-BOOL Unk_020d9670::func_0203e3d4(u32 mask) {
+BOOL Character::testCharFlags(u32 mask) {
     if (unk_e8 & mask) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020d9670::func_0203e3c4(u32 mask) { unk_e8 = unk_e8 | mask; }
+void Character::setCharFlags(u32 mask) { unk_e8 = unk_e8 | mask; }
 
-void Unk_020d9670::func_0203e3b4(u32 mask) { unk_e8 = unk_e8 & ~mask; }
+void Character::clearCharFlags(u32 mask) { unk_e8 = unk_e8 & ~mask; }
 
 extern "C" Unk_020d9620 *func_0203e388(void) {
     return new Unk_020d9620();
@@ -298,16 +298,16 @@ BOOL Unk_020d9620::vfunc_00() {
 BOOL Unk_020d9620::vfunc_0c() { return TRUE; }
 
 extern "C" BOOL func_0203e298(Unk_0203dad4_Task *s) {
-    if (!func_0206f140()) {
+    if (!MenuCtrl_IsIdle()) {
         return FALSE;
     }
     if (!func_02094e64()) {
         return FALSE;
     }
-    if (!func_02094d3c()) {
+    if (!PlayerActor_RequestAct05()) {
         return FALSE;
     }
-    func_0206f0f8(s->unk_16);
+    MenuCtrl_RequestOpen(s->unk_16);
     return TRUE;
 }
 
@@ -346,8 +346,8 @@ extern "C" BOOL func_0203e19c(Unk_0203dad4_Task *t) {
     switch (r) {
     case 2:
         if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18)) {
-            Unk_0203e604_Obj *o = func_0203e604(t->unk_10);
-            if (_ZN12Unk_020d967013func_0203e3e8Ev()) {
+            Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
+            if (_ZN9Character13func_0203e3e8Ev()) {
                 if (t->unk_17 == 1) {
                     if (!o->vfunc_58(func_02095204(4))) {
                         return FALSE;
@@ -376,8 +376,8 @@ extern "C" BOOL func_0203e19c(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203e164(Unk_0203dad4_Task *t) {
-    func_0203e604(t->unk_10);
-    if (_ZN12Unk_020d967013func_0203e3e8Ev()) {
+    Character_FindByCharId(t->unk_10);
+    if (_ZN9Character13func_0203e3e8Ev()) {
         if (!func_0203e19c(t)) {
             return FALSE;
         }
@@ -390,18 +390,18 @@ extern "C" BOOL func_0203e164(Unk_0203dad4_Task *t) {
 }
 
 extern "C" void func_0203e12c(Unk_0203e604_Obj *o, u32 v) {
-    if (_ZN12Unk_020d967013func_0203e3e8Ev()) {
+    if (_ZN9Character13func_0203e3e8Ev()) {
         if (func_0203e9ac() == 1) {
-            func_0203e994(_ZN12Unk_020d967013func_0203e630Ev(o), v);
+            func_0203e994(_ZN9Character9getCharIdEv(o), v);
         }
     }
     o->vfunc_4c(v, 4);
 }
 
 extern "C" void func_0203e0dc(Unk_0203dad4_Task *t, u32 v) {
-    Unk_0203e604_Obj *o = func_0203e604(t->unk_10);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
     if (o != NULL) {
-        if (_ZN12Unk_020d967013func_0203e3e8Ev()) {
+        if (_ZN9Character13func_0203e3e8Ev()) {
             if (func_0203e9ac() == 1) {
                 func_0203e994(t->unk_10, v);
             }
@@ -415,19 +415,19 @@ extern "C" void func_0203e0dc(Unk_0203dad4_Task *t, u32 v) {
 }
 
 extern "C" BOOL func_0203e060(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *a = func_0203e604(t->unk_10);
-    Unk_0203e604_Obj *b = func_0203e604(t->unk_0c);
+    Unk_0203e604_Obj *a = Character_FindByCharId(t->unk_10);
+    Unk_0203e604_Obj *b = Character_FindByCharId(t->unk_0c);
     if (!func_02094de0()) {
         return FALSE;
     }
     t->unk_17 = 0;
     if (a == NULL) {
-        Unk_0203e604_Obj *n = func_0203e5d0(b);
+        Unk_0203e604_Obj *n = Character_FindInteractionTarget(b);
         if (n == NULL) {
             return FALSE;
         }
-        t->unk_10 = _ZN12Unk_020d967013func_0203e630Ev(n);
-    } else if (!_ZN12Unk_020d967013func_0203e4a8EPS_(a, b)) {
+        t->unk_10 = _ZN9Character9getCharIdEv(n);
+    } else if (!_ZN9Character16checkInteractionEPS_(a, b)) {
         if (a->vfunc_54(b)) {
             t->unk_17 = 5;
         } else {
@@ -442,7 +442,7 @@ extern "C" BOOL func_0203e060(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203df94(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = func_0203e604(t->unk_10);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
     switch (t->unk_16) {
     case 0:
     case 1:
@@ -472,7 +472,7 @@ extern "C" BOOL func_0203df94(Unk_0203dad4_Task *t) {
     switch (t->unk_16) {
     case 2: {
         o->vfunc_4c(3, 4);
-        s32 r = _ZN12Unk_020d967013func_0203e400Ev(o);
+        s32 r = _ZN9Character13func_0203e400Ev(o);
         if (t->unk_17 == 5) {
             r = 2;
         }
@@ -497,7 +497,7 @@ extern "C" BOOL func_0203df94(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203df60(Unk_0203dad4_Task *t) {
-    func_0203e604(t->unk_0c);
+    Character_FindByCharId(t->unk_0c);
     if (!func_02094de0()) {
         return FALSE;
     }
@@ -510,7 +510,7 @@ extern "C" BOOL func_0203df60(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203df1c(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = func_0203e604(t->unk_10);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_10);
     switch (t->unk_16) {
     case 4:
         if (func_020951d0()) {
@@ -536,7 +536,7 @@ extern "C" BOOL func_0203def8(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203debc(Unk_0203dad4_Task *t) {
-    if (func_0203e604(t->unk_0c) == NULL) {
+    if (Character_FindByCharId(t->unk_0c) == NULL) {
         return FALSE;
     }
     if (!func_02094f84()) {
@@ -550,7 +550,7 @@ extern "C" BOOL func_0203debc(Unk_0203dad4_Task *t) {
 }
 
 extern "C" BOOL func_0203de70(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = func_0203e604(t->unk_0c);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_0c);
     if (!func_02094de0()) {
         return FALSE;
     }
@@ -582,7 +582,7 @@ extern "C" BOOL func_0203de30(Unk_0203dad4_Task *) {
 }
 
 extern "C" BOOL func_0203ddac(Unk_0203dad4_Task *t) {
-    Unk_0203e604_Obj *o = func_0203e604(t->unk_0c);
+    Unk_0203e604_Obj *o = Character_FindByCharId(t->unk_0c);
     if (o == NULL) {
         return FALSE;
     }
@@ -743,7 +743,7 @@ extern "C" void func_0203dbb8(Unk_0203dad4_Task *) {
     }
 }
 
-BOOL Unk_020d9620::vfunc_18() {
+BOOL Unk_020d9620::onExecute() {
     if (func_0203e2f4()) {
         func_0203dbe8((Unk_0203dad4_Task *)this);
         func_0203dbb8((Unk_0203dad4_Task *)this);
@@ -758,17 +758,17 @@ BOOL Unk_020d9620::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_020d9620::vfunc_24() {
+BOOL Unk_020d9620::onDraw() {
     return TRUE;
 }
 
 void Unk_020d9620::vfunc_20(u32 b) {
     func_020a5d4c();
     func_020a5d0c();
-    if (data_021eda68 != 0) {
+    if (gActorDefaultParent != 0) {
         func_020a42c4();
     }
-    _ZN17Unk_020d8c7c_Base8vfunc_20Ev(this, b);
+    _ZN8ProcBase8vfunc_20Ev(this, b);
 }
 
 extern "C" BOOL func_0203db1c(u32 x) {
@@ -806,13 +806,13 @@ extern "C" BOOL func_0203daa0(Unk_0203e604_Obj *o, s32 v) {
     }
     id = 0;
     if (o != NULL) {
-        id = _ZN12Unk_020d967013func_0203e630Ev(o);
+        id = _ZN9Character9getCharIdEv(o);
     }
     return func_0203dad4(id, 0, 3, 1, (u8)v);
 }
 
 extern "C" BOOL func_0203da7c() {
-    return func_0203dad4(0, _ZN12Unk_020d967013func_0203e630Ev(func_02095204(4)), 8, 1, 0);
+    return func_0203dad4(0, _ZN9Character9getCharIdEv(func_02095204(4)), 8, 1, 0);
 }
 
 extern "C" BOOL func_0203da54() {
@@ -828,7 +828,7 @@ extern "C" BOOL func_0203da24(u8 x) {
     if (o == NULL) {
         return FALSE;
     }
-    return func_0203dad4(0, _ZN12Unk_020d967013func_0203e630Ev(o), 1, 2, x);
+    return func_0203dad4(0, _ZN9Character9getCharIdEv(o), 1, 2, x);
 }
 
 extern "C" BOOL func_0203d9d8() {
@@ -840,7 +840,7 @@ extern "C" BOOL func_0203d9d8() {
         return FALSE;
     }
     func_0203d904(6);
-    return func_0203dad4(0, _ZN12Unk_020d967013func_0203e630Ev(o), 0xb, 1, 0);
+    return func_0203dad4(0, _ZN9Character9getCharIdEv(o), 0xb, 1, 0);
 }
 
 extern "C" BOOL func_0203d9cc() { return func_0203d924(2); }
@@ -885,7 +885,7 @@ extern "C" void func_0203d904(u32 mask) {
 }
 
 extern "C" BOOL func_0203d8dc(u32 x) {
-    return func_0203dad4(0, _ZN12Unk_020d967013func_0203e630Ev(func_02095204(4)), x, 4, 0);
+    return func_0203dad4(0, _ZN9Character9getCharIdEv(func_02095204(4)), x, 4, 0);
 }
 
 extern "C" BOOL func_0203d8b4(u32 x) {
@@ -960,23 +960,23 @@ extern "C" BOOL func_0203d76c(void) {
 extern "C" BOOL func_0203d73c(u32 a, u32 b) {
     u32 t = 0;
     if (b != 0) {
-        t = _ZN12Unk_020d967013func_0203e630Ev((Unk_0203e604_Obj *)b);
+        t = _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)b);
     }
-    return func_0203dad4(_ZN12Unk_020d967013func_0203e630Ev((Unk_0203e604_Obj *)a), t, 2, 3, 0);
+    return func_0203dad4(_ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), t, 2, 3, 0);
 }
 
 extern "C" BOOL func_0203d704(u32 a, s32 b) {
     if (b == 0) {
-        u32 t = _ZN12Unk_020d967013func_0203e630Ev(func_02095204(4));
-        return func_0203dad4(t, _ZN12Unk_020d967013func_0203e630Ev((Unk_0203e604_Obj *)a), 6, 3, 0);
+        u32 t = _ZN9Character9getCharIdEv(func_02095204(4));
+        return func_0203dad4(t, _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), 6, 3, 0);
     }
     return FALSE;
 }
 
 extern "C" BOOL func_0203d6cc(u32 a, s32 b) {
     if (b == 0) {
-        u32 t = _ZN12Unk_020d967013func_0203e630Ev(func_02095204(4));
-        return func_0203dad4(t, _ZN12Unk_020d967013func_0203e630Ev((Unk_0203e604_Obj *)a), 7, 3, 0);
+        u32 t = _ZN9Character9getCharIdEv(func_02095204(4));
+        return func_0203dad4(t, _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)a), 7, 3, 0);
     }
     return FALSE;
 }
@@ -986,7 +986,7 @@ extern "C" BOOL func_0203d67c(u32 x) {
         return FALSE;
     }
     Unk_0203dad4_Task *p = data_021c39c0;
-    u32 v = _ZN12Unk_020d967013func_0203e630Ev((Unk_0203e604_Obj *)x);
+    u32 v = _ZN9Character9getCharIdEv((Unk_0203e604_Obj *)x);
     if (p->unk_10 != v) {
         return FALSE;
     }
@@ -1007,7 +1007,7 @@ extern "C" void func_0203d640(u32 p) {
 
 extern "C" u32 func_0203d608(void) {
     if (func_0203db1c(2) || func_0203db1c(6) || func_0203db1c(7)) {
-        return (u32)func_0203e604(data_021c39c4);
+        return (u32)Character_FindByCharId(data_021c39c4);
     }
     return 0;
 }

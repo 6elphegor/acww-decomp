@@ -304,27 +304,27 @@ extern CbEntry data_027e032c[];
 BOOL getRotDataByIdx_(MtxFx33 *pMtx, const fx16 *pArray3, const fx16 *pArray5, u32 idx) {
     if (idx & 0x8000) {
         u32 n;
-        fx32 A;
-        fx32 B;
+        fx32 LampLights;
+        fx32 LightLevel;
         const fx16 *p;
         u32 pivot;
         pMtx->a[0] = pMtx->a[1] = pMtx->a[2] = pMtx->a[3] = pMtx->a[4] = pMtx->a[5] = pMtx->a[6] = pMtx->a[7] = pMtx->a[8] = 0;
         n = (idx & 0x7fff) * 3;
         p = pArray3 + n;
-        A = p[1];
-        B = p[2];
+        LampLights = p[1];
+        LightLevel = p[2];
         pivot = pArray3[n] & 0xf;
         pMtx->a[pivot] = (pArray3[n] & 0x10) ? -FX32_ONE : FX32_ONE;
-        pMtx->a[data_02135e5c[pivot][0]] = A;
-        pMtx->a[data_02135e5c[pivot][1]] = B;
+        pMtx->a[data_02135e5c[pivot][0]] = LampLights;
+        pMtx->a[data_02135e5c[pivot][1]] = LightLevel;
         if (p[0] & 0x20) {
-            B = -B;
+            LightLevel = -LightLevel;
         }
-        pMtx->a[data_02135e5c[pivot][2]] = B;
+        pMtx->a[data_02135e5c[pivot][2]] = LightLevel;
         if (p[0] & 0x40) {
-            A = -A;
+            LampLights = -LampLights;
         }
-        pMtx->a[data_02135e5c[pivot][3]] = A;
+        pMtx->a[data_02135e5c[pivot][3]] = LampLights;
         return FALSE;
     } else {
         u32 n = (idx & 0x7fff) * 5;

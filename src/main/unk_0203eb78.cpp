@@ -18,7 +18,7 @@ struct Unk_0203ebdc_List {
     /* 0x00 */ Unk_0203eb78_Entry *head;
 };
 
-struct Unk_0203ed90 {
+struct WorldCurve {
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -76,7 +76,7 @@ extern u8 data_021e87d8[];
 }
 
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 
 extern "C" {
@@ -88,7 +88,7 @@ extern s32 data_021c3b94;
 }
 
 extern "C" {
-extern Unk_0203ef38_Global data_021c3ba4;
+extern Unk_0203ef38_Global gWorldCurve;
 }
 
 extern "C" {
@@ -104,7 +104,7 @@ extern s32 data_021c3bbc;
 }
 
 extern "C" {
-extern u8 data_021c4890[];
+extern u8 gBackup[];
 }
 
 extern "C" {
@@ -128,11 +128,11 @@ s32 func_020e79a0(void *list, void *node);
 }
 
 extern "C" {
-void _ZN12Unk_020dd458C1Ev(void *p);
+void _ZN6LetterC1Ev(void *p);
 }
 
 extern "C" {
-void _ZN12Unk_020dd458D1Ev(void *p);
+void _ZN6LetterD1Ev(void *p);
 }
 
 extern "C" {
@@ -148,7 +148,7 @@ void func_02065ac0(void *p);
 }
 
 extern "C" {
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
@@ -156,7 +156,7 @@ s32 func_02097980(s32 p);
 }
 
 extern "C" {
-s32 _ZN12Unk_0209865c13func_02098878Ev(s32 p);
+s32 _ZN10PlayerData8getIndexEv(s32 p);
 }
 
 extern "C" {
@@ -236,7 +236,7 @@ s32 func_0203f4c0(s32 v);
 }
 
 extern "C" {
-s32 func_0204ff6c(void *p);
+s32 Backup_GetStatus(void *p);
 }
 
 extern "C" {
@@ -308,12 +308,12 @@ static inline BOOL IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 Unk_0203eb78_Entry data_021c39f0[15];
 
 extern "C" void *func_0203ecdc(void *p) {
-    _ZN12Unk_020dd458C1Ev(p);
+    _ZN6LetterC1Ev(p);
     return p;
 }
 
 extern "C" void *func_0203eccc(void *p) {
-    _ZN12Unk_020dd458D1Ev(p);
+    _ZN6LetterD1Ev(p);
     return p;
 }
 
@@ -321,20 +321,20 @@ extern "C" u8 *func_0203ecc8(u8 *p) { return p + 0xf6; }
 
 extern "C" BOOL func_0203ec58(u8 *p) {
     u8 l[0xf8];
-    _ZN12Unk_020dd458C1Ev(l);
-    s32 h = func_0209750c();
+    _ZN6LetterC1Ev(l);
+    s32 h = PlayerData_GetCurrent();
     if (*(u16 *)(p + 0xf4) != func_02097980(h)) {
         func_02065e70(l, p);
-        s32 q = _ZN12Unk_0209865c13func_02098878Ev(h);
+        s32 q = _ZN10PlayerData8getIndexEv(h);
         func_02065ba4(l, q);
         func_02065ac0(l);
         if (func_02096acc(l, q, 0)) {
             func_02097954(h, *(u16 *)(p + 0xf4));
-            _ZN12Unk_020dd458D1Ev(l);
+            _ZN6LetterD1Ev(l);
             return TRUE;
         }
     }
-    _ZN12Unk_020dd458D1Ev(l);
+    _ZN6LetterD1Ev(l);
     return FALSE;
 }
 

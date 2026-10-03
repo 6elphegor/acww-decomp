@@ -41,11 +41,11 @@ struct Unk_0204fd24 {
     /* 0x168 */ s32 unk_168;
 };
 
-struct Unk_0204fe98_Global {
+struct Backup {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
-    Unk_0204fe98_Global() {
+    Backup() {
         unk_00 = 0;
         unk_04 = -3;
     }
@@ -77,7 +77,7 @@ void _ZN12Unk_0209c15c13func_0209c15cEv(void *);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 s32 func_0204fcb8(void);
 u32 func_0204f4e0(u32 i);
-s32 _ZN12Unk_020dbe7c13func_020565e8Ei(void *, s32);
+s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
 void func_0204f674(Unk_020db984_Ent *, Unk_020db984_Vec3 *);
 void _ZN12Unk_020dbd5413func_020547ccEPv(void *, void *);
 void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e);
@@ -88,16 +88,16 @@ extern u8 data_020e416c;
 void *_ZN12Unk_0209c15c13func_0209c25cEPt(void *, void *);
 s32 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(void *, void *, const char *);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
-void _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *, void *, s32);
+void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
 void *_ZN12Unk_0209c2f413func_0209c348Ev(void *);
-void *func_020641ec(void *, void *, s32, s32);
+void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_021065dc(void);
 s32 func_021065f8(s32, s32);
 s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, void *);
 void _ZN12Unk_0205454c13func_02054720Eiiitt(void *, s32, s32, s32, s32, s32);
 void _ZN12Unk_020dbd5413func_02054710Ev(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, u32);
-s32 func_0203ef38(void *, void *);
+s32 WorldCurve_ToCurved(void *, void *);
 void func_020e8388(void *, s32, s32, s32);
 void func_020e8434(void *, s32);
 void func_020e8464(void *, s32, s32, s32);
@@ -138,13 +138,13 @@ Unk_0204fd24 *func_0204fcfc(Unk_0204fd24 *p);
 Unk_020db984 *func_0204fdb0(void);
 }
 
-class Unk_020db984 : public Unk_020d8c7c {
+class Unk_020db984 : public GameProc {
 public:
     inline Unk_020db984();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     ~Unk_020db984() {
         _ZN12Unk_0209c15cD1Ev(unk_600);
         __cxa_vec_cleanup(unk_50, 4, 0x16c, (void *)func_0204fcfc);
@@ -178,7 +178,7 @@ extern Unk_020db8b8_Rec data_020db8b8;
 extern char *data_020db8c0[3];
 extern Unk_020db94c_Ent data_020db94c[4];
 extern const u8 data_020ca318[0x160];
-extern Unk_0204fe98_Global data_021c4890;
+extern Backup gBackup;
 
 inline Unk_020db984::Unk_020db984() {
     __cxa_vec_ctor(unk_50, 4, 0x16c, (void *)func_0204fd24, (void *)func_0204fcfc);
@@ -299,7 +299,7 @@ BOOL Unk_020db984::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020db984::vfunc_18() {
+BOOL Unk_020db984::onExecute() {
     volatile s32 v0, v4;
     Unk_020db984 *g = data_021c488c;
     if (g == NULL) return FALSE;
@@ -339,7 +339,7 @@ BOOL Unk_020db984::vfunc_18() {
                     t.y = p->y;
                     t.z = p->z;
                     _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(e, &t);
-                    if (_ZN12Unk_020dbe7c13func_020565e8Ei((u8 *)e + 0x134, 1)) {
+                    if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, 1)) {
                         func_02003e70(e, 0x84d, 0x7f, v4);
                     }
                 }
@@ -364,7 +364,7 @@ void Unk_020db984::func_0204f98c(Unk_020db984_Ent *e) {
     v.x = pv->x; v.y = pv->y; v.z = pv->z;
     s32 mode = *(s32 *)((u8 *)this + 8);
     if (mode == 0) {
-        ang = func_0203ef38(&o, &v);
+        ang = WorldCurve_ToCurved(&o, &v);
     } else if (mode == 1) {
         ang = 0;
         o = v;
@@ -397,14 +397,14 @@ BOOL Unk_020db984::func_0204f874(void *p, Unk_020db984_Ent *e) {
     }
     if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, buf)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), 0);
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), 0);
         t = _ZN12Unk_0209c2f413func_0209c348Ev(x);
         if (id < 10) {
             func_020639e8(buf, "/fish/0%d/fish0%d.nsbca", q, id);
         } else {
             func_020639e8(buf, "/fish/0%d/fish%d.nsbca", q, id);
         }
-        func_020641ec(buf, t, 4, 0);
+        File_LoadAlloc(buf, t, 4, 0);
         s32 u = func_021065f8(func_021065dc(), 0);
         s32 flag = 0x1000;
         if (e->unk_168 == 0) flag = 0;
@@ -426,7 +426,7 @@ BOOL Unk_020db984::func_0204f808(void *p, Unk_020db984_Ent *e) {
     void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
     if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, data_020db8c0[id - 0x38])) {
-        _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
         e->unk_44 = 3;
         func_0204f98c(e);
         r = TRUE;
@@ -442,9 +442,9 @@ BOOL Unk_020db984::func_0204f738(void *p, Unk_020db984_Ent *e) {
     void *y = (u8 *)e + 0x4c;
     if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, data_020db8b0)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
         void *t = _ZN12Unk_0209c2f413func_0209c348Ev(x);
-        func_020641ec(data_020db8ac, t, 4, r);
+        File_LoadAlloc(data_020db8ac, t, 4, r);
         s32 u = func_021065f8(func_021065dc(), r);
         if (_ZN12Unk_020dbd5413func_02054800EPv(m, t)) {
             _ZN12Unk_0205454c13func_02054720Eiiitt(m, u, r, 0x1000, 1, r);
@@ -460,7 +460,7 @@ BOOL Unk_020db984::func_0204f738(void *p, Unk_020db984_Ent *e) {
     return r;
 }
 
-BOOL Unk_020db984::vfunc_24() {
+BOOL Unk_020db984::onDraw() {
     Unk_020db984 *g = data_021c488c;
     if (g == NULL) return FALSE;
     Unk_020db984_Ent *e = g->unk_50;
@@ -613,7 +613,7 @@ extern "C" BOOL func_0204f364(s32 idx, s32 unused) {
         Unk_020db984_Ent *e = &data_021c488c->unk_50[idx];
         s32 t = e->unk_40;
         if (t < 0 || t >= 0x38) return FALSE;
-        if (_ZN12Unk_020dbe7c13func_020565e8Ei((u8 *)e + 0x134, unused)) r = TRUE;
+        if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, unused)) r = TRUE;
     }
     return r;
 }
@@ -684,4 +684,4 @@ const u8 data_020ca318[0x160] = {
 
 Unk_020db984 *data_021c488c;
 
-Unk_0204fe98_Global data_021c4890;
+Backup gBackup;

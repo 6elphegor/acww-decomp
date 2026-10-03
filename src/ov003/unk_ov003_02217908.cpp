@@ -7,10 +7,10 @@ struct Unk_ov003_02215c7c_Blk {
     s64 v[6];
 };
 
-class Unk_020dbe34 {
+class Model {
 public:
-    Unk_020dbe34();
-    virtual ~Unk_020dbe34();
+    Model();
+    virtual ~Model();
     void func_0205553c(s32 *p);
     void func_020555dc();
 
@@ -38,8 +38,8 @@ struct Unk_02003c30 {
     virtual void vfunc_08();
     virtual void vfunc_0c();
     virtual void vfunc_10();
-    void func_02003c30();
-    void func_02003cbc();
+    void callRelease();
+    void callReset();
 };
 
 struct Unk_02003c40 {
@@ -48,8 +48,8 @@ struct Unk_02003c40 {
     virtual void vfunc_08(void *a);
     virtual void vfunc_0c(void *a);
     virtual void vfunc_10(void *a);
-    void func_02003c40(void *a);
-    void func_02003c70(Unk_ov003_02217910_V3 *v);
+    void callRequest(void *a);
+    void callUpdateRelative(Unk_ov003_02217910_V3 *v);
 };
 
 struct Unk_ov003_02217970_Rec {
@@ -97,7 +97,7 @@ struct Unk_ov003_02235460_Col {
 
 extern "C" {
 extern void *data_021c47c4;
-extern void *data_021c3070;
+extern void *gCamera;
 extern s32 data_020c8cbc;
 extern u8 data_0213b91c[];
 extern u8 data_0213b938[];
@@ -127,15 +127,15 @@ void *func_ov003_02217a84(Unk_ov003_02217970_Rec *r, u32 x, u32 y);
 void *func_ov003_02217a9c(Unk_ov003_02217970_Rec *r, u32 x, u32 y);
 }
 
-extern "C" BOOL func_ov003_02217aec(Unk_020dbe34 *p) {
-    if (data_021c3070 != 0) {
+extern "C" BOOL func_ov003_02217aec(Model *p) {
+    if (gCamera != 0) {
         p->func_0205553c(0);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_ov003_02217adc(Unk_020dbe34 *p) {
+extern "C" BOOL func_ov003_02217adc(Model *p) {
     p->func_020555dc();
     return TRUE;
 }
@@ -247,7 +247,7 @@ extern "C" void func_ov003_02217944() {
 }
 
 extern "C" void func_ov003_0221793c(Unk_02003c30 *p) {
-    p->func_02003cbc();
+    p->callReset();
 }
 
 extern "C" void func_ov003_02217910(Unk_02003c40 *p, Unk_ov003_02217910_V3 *v, void *a) {
@@ -255,10 +255,10 @@ extern "C" void func_ov003_02217910(Unk_02003c40 *p, Unk_ov003_02217910_V3 *v, v
     t.x = v->x;
     t.y = v->y;
     t.z = v->z;
-    p->func_02003c70(&t);
-    p->func_02003c40(a);
+    p->callUpdateRelative(&t);
+    p->callRequest(a);
 }
 
 extern "C" void func_ov003_02217908(Unk_02003c30 *p) {
-    p->func_02003c30();
+    p->callRelease();
 }

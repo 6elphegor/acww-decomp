@@ -55,7 +55,7 @@ extern void OS_SleepThread(u32);
 extern void OS_CreateThread(void *, void *, void *, void *, u32, u32);
 extern void OS_WakeupThreadDirect(void *);
 extern void OS_ExitThread(void);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern u32 WM_GetAllowedChannel(void);
 
 typedef struct { u32 flag; u32 irq; } WLock;
@@ -316,8 +316,8 @@ BOOL MBi_IsTaskBusy(WJob *job) {
 void MBi_SetTask(WJob *job, void (*pre)(WJob *), void (*post)(WJob *), u32 prio) {
     WSys *sys = data_02200040;
     u32 irq;
-    if (MBi_IsTaskAvailable() == 0) func_0206d49c();
-    if (job->busy != 0) func_0206d49c();
+    if (MBi_IsTaskAvailable() == 0) Fatal_Trap();
+    if (job->busy != 0) Fatal_Trap();
     if (prio > 31) {
         u32 cur = OS_GetThreadPriority(sys);
         if (prio == 32) {
@@ -377,7 +377,7 @@ void MBi_AttachCacheBuffer(WSlotTab *t, u32 addr, u32 size, u8 *ptr, u32 state) 
     WSlot *e = t->slot;
     WSlot *end = t->slot + 4;
     for (;;) {
-        if (e >= end) func_0206d49c();
+        if (e >= end) Fatal_Trap();
         if (e->state == 0) {
             e->addr = addr;
             e->size = size;
@@ -607,7 +607,7 @@ void func_02125d0c(WMsg2 *m) {
             data_02200018->cb(33, m);
             return;
         case 6:
-            func_0206d49c();
+            Fatal_Trap();
             return;
         case 4:
         case 5:

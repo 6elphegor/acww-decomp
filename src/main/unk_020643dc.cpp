@@ -3,15 +3,15 @@
 
 struct Unk_02064674_Vec { s32 x, y, z; };
 
-// Class "B" of symbols.txt (0x020b22ac...).
-class B {
+// Class "LightLevel" of symbols.txt (0x020b22ac...).
+class LightLevel {
 public:
-    B();
-    ~B();
-    s32 func_020b22ac();
-    BOOL func_020b22c4(BOOL on, s32 a, s32 b, u32 param);
-    void func_020b231c();
-    BOOL func_020b2374(BOOL on);
+    LightLevel();
+    ~LightLevel();
+    s32 getLevel();
+    BOOL switchLight(BOOL on, s32 a, s32 b, u32 param);
+    void update();
+    BOOL switchLightAnimated(BOOL on);
 
     s32 unk_00;
     s32 unk_04;
@@ -22,7 +22,7 @@ public:
 };
 
 struct Unk_020d93b8 {
-    s16 func_0203bc90();
+    s16 getEyeCurveAngle();
 };
 
 struct Unk_02064674_Color {
@@ -40,7 +40,7 @@ struct Unk_020648dc {
     BOOL func_020648dc(s32 mode);
     u8 unk_00;
     s32 unk_04;
-    B unk_08;
+    LightLevel unk_08;
     s32 unk_1c;
 };
 
@@ -159,12 +159,12 @@ struct Unk_02064d6c_Rgb {
     u16 x : 1;
 };
 
-class Unk_020dd408 : public Unk_020d8c7c {
+class Unk_020dd408 : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     void func_02064d6c();
     void func_0206513c();
 
@@ -177,7 +177,7 @@ public:
     /* 0x16c */ u16 unk_16c;
     /* 0x16e */ u16 unk_16e;
     /* 0x170 */ u16 unk_170;
-    /* 0x174 */ B *unk_174;
+    /* 0x174 */ LightLevel *unk_174;
     /* 0x178 */ u8 unk_178;
 };
 
@@ -205,8 +205,8 @@ struct Unk_020b22ac_Dummy;
 
 extern "C" {
 extern u8 data_020e416c;
-extern Unk_020d93b8 *data_021c3070;
-extern Unk_02064fa8_Data data_0213c7e0;
+extern Unk_020d93b8 *gCamera;
+extern Unk_02064fa8_Data gViewMtx;
 }
 
 extern Unk_020dd408 *data_021c9f44;
@@ -232,7 +232,7 @@ void func_0209cf18(Unk_02064870_Time *t);
 void func_0209cdf8(Unk_02064870_Time a, Unk_02064870_Time b, Unk_02064870_Time *out);
 s32 func_020b5184();
 s32 func_020b5164();
-void func_0200402c(u32 a);
+void Snd_PlaySe(u32 a);
 s32 func_020b50e8(void);
 s32 func_020b52f8(void);
 void VEC_Normalize(void *a, void *b);
@@ -351,7 +351,7 @@ void Unk_020dd408::func_0206513c() {
             unk_58[i].unk_12 = rec->unk_06;
             Unk_0206444c *e = &unk_58[i];
             e->unk_14.unk_00 = 0;
-            e->unk_14.unk_08.func_020b2374(0);
+            e->unk_14.unk_08.switchLightAnimated(0);
             unk_174 = &e->unk_14.unk_08;
         }
     }
@@ -386,7 +386,7 @@ BOOL Unk_020dd408::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_020dd408::vfunc_18() {
+BOOL Unk_020dd408::onExecute() {
     Unk_0206444c *p;
     s32 i;
     for (p = unk_58, i = 0; i < unk_54; p++, i++) {
@@ -397,11 +397,11 @@ BOOL Unk_020dd408::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_020dd408::vfunc_24() {
+BOOL Unk_020dd408::onDraw() {
     u8 l[0x24];
     s32 i;
     Unk_0206444c *p;
-    func_02064fa8(&data_0213c7e0, l);
+    func_02064fa8(&gViewMtx, l);
     for (p = unk_58, i = 0; i < unk_54; p++, i++) {
         p->func_0206449c(l);
     }
@@ -504,7 +504,7 @@ extern "C" s16 func_02064cc4(void) {
     switch (o->unk_50) {
     case 2:
     case 3: {
-        s32 t = o->unk_174->func_020b22ac();
+        s32 t = o->unk_174->getLevel();
         Unk_02064d6c_Rgb *x = (Unk_02064d6c_Rgb *)&data_021c9f44->unk_170;
         Unk_02064d6c_Rgb *y = (Unk_02064d6c_Rgb *)&data_021c9f44->unk_16e;
         s32 b = x->b + (((y->b - x->b) * t) >> 12);
@@ -549,7 +549,7 @@ void Unk_02064b98::func_02064c24()
             } else {
                 x = data_020cb6f8[unk_00];
             }
-            func_0200402c(x);
+            Snd_PlaySe(x);
             unk_00 = 2;
         }
     } else {
@@ -623,8 +623,8 @@ void Unk_02064944::func_02064b10()
         func_020649f4();
         break;
     }
-    if (data_021c3070) {
-        func_020e944c(&unk_08, data_021c3070->func_0203bc90());
+    if (gCamera) {
+        func_020e944c(&unk_08, gCamera->getEyeCurveAngle());
     }
     v.x = unk_08.x;
     v.y = unk_08.y;
@@ -834,8 +834,8 @@ void Unk_0206444c::func_0206476c()
     v.y = 0;
     v.z = -0x1000;
     func_020647d0(&v);
-    if (data_021c3070) {
-        func_020e944c(&v, data_021c3070->func_0203bc90());
+    if (gCamera) {
+        func_020e944c(&v, gCamera->getEyeCurveAngle());
     }
     *(u16 *)&c0 = func_020baa04(unk_0c);
     c1 = *(u16 *)&c0;
@@ -848,7 +848,7 @@ void Unk_0206444c::func_0206476c()
 
 void Unk_0206444c::func_020646e0()
 {
-    s32 t = unk_14.unk_08.func_020b22ac();
+    s32 t = unk_14.unk_08.getLevel();
     Unk_020dd408 *g = data_021c9f44;
     Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
     Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
@@ -873,7 +873,7 @@ void Unk_0206444c::func_020646e0()
 
 void Unk_0206444c::func_02064674()
 {
-    s32 t = unk_14.unk_08.func_020b22ac();
+    s32 t = unk_14.unk_08.getLevel();
     Unk_020dd408 *g = data_021c9f44;
     Unk_02064674_Color *pa = (Unk_02064674_Color *)&g->unk_16c;
     Unk_02064674_Color *pb = (Unk_02064674_Color *)&g->unk_16a;
@@ -887,7 +887,7 @@ void Unk_0206444c::func_02064674()
 
 void Unk_0206444c::func_02064644()
 {
-    s32 t = unk_14.unk_08.func_020b22ac();
+    s32 t = unk_14.unk_08.getLevel();
     unk_34 = ((((t << 4) >> 12) + 15) << 10) | ((((t << 2) >> 12) + 25) | (((t * 9 >> 12) + 20) << 5));
 }
 
@@ -942,28 +942,28 @@ void Unk_0206444c::func_020644e8()
             switch (unk_14.unk_04) {
             case 0:
             case 3:
-                unk_14.unk_08.func_020b22c4(1, 1, 0, 0x1000 / unk_14.unk_1c);
+                unk_14.unk_08.switchLight(1, 1, 0, 0x1000 / unk_14.unk_1c);
                 break;
             case 1:
-                unk_14.unk_08.func_020b22c4(1, 1, 1, 0x800);
+                unk_14.unk_08.switchLight(1, 1, 1, 0x800);
                 break;
             default:
-                unk_14.unk_08.func_020b22c4(1, 0, 0, 0x800);
+                unk_14.unk_08.switchLight(1, 0, 0, 0x800);
                 break;
             }
         } else {
             switch (unk_14.unk_04) {
             case 0:
             case 3:
-                unk_14.unk_08.func_020b22c4(0, 1, 0, 0x1000 / unk_14.unk_1c);
+                unk_14.unk_08.switchLight(0, 1, 0, 0x1000 / unk_14.unk_1c);
                 break;
             default:
-                unk_14.unk_08.func_020b22c4(0, 0, 0, 0x800);
+                unk_14.unk_08.switchLight(0, 0, 0, 0x800);
                 break;
             }
         }
     }
-    unk_14.unk_08.func_020b231c();
+    unk_14.unk_08.update();
     func_020645b8();
 }
 

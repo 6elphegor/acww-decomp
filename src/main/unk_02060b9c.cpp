@@ -92,7 +92,7 @@ extern u8 data_020e416c[];
 }
 
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 
 extern "C" {
@@ -108,27 +108,27 @@ void *func_0204d528(s32 i);
 }
 
 extern "C" {
-void *func_020974a0(s32 i);
+void *PlayerData_Get(s32 i);
 }
 
 extern "C" {
-void *_ZN12Unk_0209865c13func_02098750Ev(void *p);
+void *_ZN10PlayerData13func_02098750Ev(void *p);
 }
 
 extern "C" {
-s32 _ZN12Unk_02097d1c13func_02097eb0Ei(void *p, s32 i);
+s32 _ZN15PlayerInventory14getPocketFlagsEi(void *p, s32 i);
 }
 
 extern "C" {
-u16 *_ZN12Unk_02097d1c13func_02097f6cEi(void *p, s32 i);
+u16 *_ZN15PlayerInventory9getPocketEi(void *p, s32 i);
 }
 
 extern "C" {
-void _ZN12Unk_02097d1c13func_02097f30EPtij(void *p, u16 *v, s32 i, s32 z);
+void _ZN15PlayerInventory9setPocketEPtij(void *p, u16 *v, s32 i, s32 z);
 }
 
 extern "C" {
-void *_ZN12Unk_0209865c13func_020986c8Ev(void *p);
+void *_ZN10PlayerData10getCatalogEv(void *p);
 }
 
 extern "C" {
@@ -148,11 +148,11 @@ u16 *func_02039d74(void *p);
 }
 
 extern "C" {
-BOOL func_0204b2d4(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
 }
 
 extern "C" {
-s32 func_0204b25c(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 }
 
 extern "C" {
@@ -164,11 +164,11 @@ void func_0204eb30(void *self, u16 *p, s32 x, s32 y, u32 flag);
 }
 
 extern "C" {
-void func_02061060(void *g);
+void Grid_ConvertFakePaintings(void *g);
 }
 
 extern "C" {
-void func_02061110(u16 *out, u16 *in);
+void Item_ConvertFakePainting(u16 *out, u16 *in);
 }
 
 struct Unk_02061060_Grid {
@@ -178,9 +178,9 @@ struct Unk_02061060_Grid {
 };
 
 static inline BOOL Unk_02060e3c_Eq(u16 *a, u16 *b) {
-    if (func_0204b2d4(a)) {
-        s32 x = func_0204b25c(a);
-        return x == func_0204b25c(b) ? TRUE : FALSE;
+    if (Item_IsFurniture(a)) {
+        s32 x = Item_GetFurnitureIndex(a);
+        return x == Item_GetFurnitureIndex(b) ? TRUE : FALSE;
     }
     u16 p = *a;
     return p == *b ? TRUE : FALSE;
@@ -216,7 +216,7 @@ static inline BOOL Unk_02061168_IsOne(u8 v) {
     return v == 1 ? TRUE : FALSE;
 }
 }
-extern "C" void func_02061168(u16 *out, u16 *in, s32 n) {
+extern "C" void Item_ToPlacedForm(u16 *out, u16 *in, s32 n) {
     if (Unk_02061168_IsOne(data_020e416c[0]) || n != 0) {
     u16 *pv = in;
     if (Unk_02061168_In(pv, 0x11a8, 0x12a7)) {
@@ -324,7 +324,7 @@ extern "C" void func_02061168(u16 *out, u16 *in, s32 n) {
     *out = *in;
 }
 
-extern "C" void func_02061110(u16 *out, u16 *in) {
+extern "C" void Item_ConvertFakePainting(u16 *out, u16 *in) {
     if (Unk_02061110_In(in, 0x38e4, 0x3933)) {
         s32 idx = Unk_02061110_Idx(*in);
         s32 m1 = -1;
@@ -336,7 +336,7 @@ extern "C" void func_02061110(u16 *out, u16 *in) {
     *out = *in;
 }
 
-extern "C" void func_02061060(void *g) {
+extern "C" void Grid_ConvertFakePaintings(void *g) {
     Unk_02061060_Grid *gr = (Unk_02061060_Grid *)g;
     s32 y;
     s32 x;
@@ -354,7 +354,7 @@ extern "C" void func_02061060(void *g) {
                 hy = y >> 4;
                 p = (u16 *)func_0204ebd8(gr, hx, hy, x - (hx << 4), y - (hy << 4), 0);
                 if (p) {
-                    func_02061110(&t, p);
+                    Item_ConvertFakePainting(&t, p);
                     if (!Unk_02060e3c_Eq(p, &t)) {
                         func_0204eb30(gr, &t, x, y, 0);
                     }
@@ -367,42 +367,42 @@ extern "C" void func_02061060(void *g) {
     }
 }
 
-extern "C" void func_02060e3c() {
+extern "C" void Save_ConvertFakePaintings() {
     void *m;
     u16 *q;
     u32 n, k, j;
     u16 t[8];
-    func_02061060(func_0204da0c());
+    Grid_ConvertFakePaintings(func_0204da0c());
     for (j = 0; j < 5; j++) {
-        func_02061060(func_0204d528(j));
+        Grid_ConvertFakePaintings(func_0204d528(j));
     }
     for (k = 0; k < 7; k++) {
-        m = func_020974a0(k);
+        m = PlayerData_Get(k);
         if (m) {
             for (j = 0; j < 15; j++) {
-                s32 s = _ZN12Unk_02097d1c13func_02097eb0Ei(_ZN12Unk_0209865c13func_02098750Ev(m), j);
-                t[0] = *_ZN12Unk_02097d1c13func_02097f6cEi(_ZN12Unk_0209865c13func_02098750Ev(m), j);
-                func_02061110(&t[1], &t[0]);
+                s32 s = _ZN15PlayerInventory14getPocketFlagsEi(_ZN10PlayerData13func_02098750Ev(m), j);
+                t[0] = *_ZN15PlayerInventory9getPocketEi(_ZN10PlayerData13func_02098750Ev(m), j);
+                Item_ConvertFakePainting(&t[1], &t[0]);
                 u16 *pb = &t[0];
                 if (!Unk_02060e3c_Eq(&t[1], pb) && s == 0) {
-                    _ZN12Unk_02097d1c13func_02097f30EPtij(_ZN12Unk_0209865c13func_02098750Ev(m), &t[1], j, 0);
-                    func_0203c41c(_ZN12Unk_0209865c13func_020986c8Ev(m), &t[1], 0);
+                    _ZN15PlayerInventory9setPocketEPtij(_ZN10PlayerData13func_02098750Ev(m), &t[1], j, 0);
+                    func_0203c41c(_ZN10PlayerData10getCatalogEv(m), &t[1], 0);
                 }
             }
         }
     }
     for (k = 0; k < 15; k++) {
         t[2] = func_02039dd4(k);
-        func_02061110(&t[3], &t[2]);
+        Item_ConvertFakePainting(&t[3], &t[2]);
         if (!Unk_02060e3c_Eq(&t[2], &t[3])) {
             func_02039d94(k, t[3]);
         }
     }
     for (k = 0; k < 15; k++) {
-        q = (u16 *)(data_021d7350 + k * 2);
+        q = (u16 *)(gSaveData + k * 2);
         q = (u16 *)((u8 *)q + 0x15ec0);
         t[4] = *q;
-        func_02061110(&t[5], &t[4]);
+        Item_ConvertFakePainting(&t[5], &t[4]);
         if (!Unk_02060e3c_Eq(&t[4], &t[5])) {
             *q = t[5];
         }
@@ -411,7 +411,7 @@ extern "C" void func_02060e3c() {
         q = func_02039d74(data_021ec780 + k * 0xb4);
         for (n = 0; n < 90; q++, n++) {
             t[6] = *q;
-            func_02061110(&t[7], &t[6]);
+            Item_ConvertFakePainting(&t[7], &t[6]);
             if (!Unk_02060e3c_Eq(&t[6], &t[7])) {
                 *q = t[7];
             }

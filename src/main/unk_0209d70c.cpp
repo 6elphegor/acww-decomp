@@ -9,11 +9,11 @@ void func_0206e8b8(void *);
 void MI_CpuCopy8(void *src, void *dst, u32 size);
 }
 
-extern "C" void _ZN12Unk_0204debcC1Ev(void *);
-extern "C" void _ZN12Unk_0206022cC1Ev(void *);
+extern "C" void _ZN7TownMapC1Ev(void *);
+extern "C" void _ZN9HouseDataC1Ev(void *);
 extern "C" void _ZN12Unk_02063578C2Ev(void *);
 extern "C" void _ZN12Unk_0206fe8013func_02070550Ev(void *);
-extern "C" void _ZN12Unk_02071b00C1Ev(void *);
+extern "C" void _ZN19AbleSistersPatternsC1Ev(void *);
 extern "C" void _ZN12Unk_02077198C1Ev(void *);
 extern "C" void _ZN12Unk_0208581013func_0208598cEv(void *);
 extern "C" void _ZN12Unk_02086328C1Ev(void *);
@@ -23,12 +23,12 @@ extern "C" void _ZN12Unk_0208f238C1Ev(void *);
 extern "C" void _ZN12Unk_02097020C1Ev(void *);
 extern "C" void _ZN12Unk_020970b8C1Ev(void *);
 extern "C" void _ZN12Unk_020970b8D1Ev(void *);
-extern "C" void _ZN12Unk_0209ea5013func_0209eb90Ev(void *);
+extern "C" void _ZN11SaveRecord413func_0209eb90Ev(void *);
 extern "C" void _ZN12Unk_020af53cC1Ev(void *);
 extern "C" void _ZN12Unk_020b09f0C2Ev(void *);
 extern "C" void _ZN12Unk_020b246cD2Ev(void *);
 extern "C" void _ZN12Unk_021ed2c0C1Ev(void *);
-extern "C" void _ZN4ArrBC1Ev(void *);
+extern "C" void _ZN12Unk_020aec1cC1Ev(void *);
 extern "C" void func_02039c04(void *);
 extern "C" void func_02039d70(void *);
 extern "C" void func_02039d8c(void *);
@@ -37,35 +37,35 @@ extern "C" void func_02040900(void *);
 extern "C" void func_0204c508(void *);
 extern "C" void func_0205b680(void *);
 extern "C" void func_020639bc(void *);
-extern "C" void func_0207c120(void *);
+extern "C" void SaveVillagers_Construct(void *);
 extern "C" void func_02086234(void *);
 extern "C" void func_02086294(void *);
 extern "C" void func_020868c8(void *);
 extern "C" void func_020874d8(void *);
 extern "C" void func_02096f58(void *);
-extern "C" void func_02097928(void *);
+extern "C" void PlayerDataArray_Construct(void *);
 extern "C" void func_0209eb08(void *);
 extern "C" void func_020ada60(void *);
 extern "C" void func_020c0320(void *);
 extern "C" void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 
-class Unk_0209da44;
-extern Unk_0209da44 data_021d7350;
+class SaveData;
+extern SaveData gSaveData;
 
 // Game-wide state object (0x15fe0 bytes at 0x021d7350, one global constructed by __sinit and registered with its
 // destructor): every data_021d73xx..data_021ed32c label of symbols.txt is a member of it.
-class Unk_0209da44 {
+class SaveData {
 public:
-    Unk_0209da44() {
+    SaveData() {
         u8 *p = (u8 *)this;
         func_020639bc((void *)0x021d7352);
-        func_02097928((void *)0x021d735c);
-        func_0207c120(p + 0x8a3c);
-        _ZN12Unk_0204debcC1Ev(p + 0xc330);
+        PlayerDataArray_Construct((void *)0x021d735c);
+        SaveVillagers_Construct(p + 0x8a3c);
+        _ZN7TownMapC1Ev(p + 0xc330);
         func_02086294(p + 0xe556);
         func_02086234(p + 0xe557);
-        _ZN12Unk_0206022cC1Ev(p + 0xe558);
-        _ZN12Unk_02071b00C1Ev(p + 0xfafc);
+        _ZN9HouseDataC1Ev(p + 0xe558);
+        _ZN19AbleSistersPatternsC1Ev(p + 0xfafc);
         _ZN12Unk_0208f238C1Ev(p + 0x10c3c);
         _ZN12Unk_02077198C1Ev(p + 0x11488);
         __cxa_vec_ctor(p + 0x1200c, 4, 0x98c, (void *)_ZN12Unk_020970b8C1Ev, (void *)_ZN12Unk_020970b8D1Ev);
@@ -77,7 +77,7 @@ public:
         func_02096f58(p + 0x15b5c);
         _ZN12Unk_0208f0a0C1Ev(p + 0x15c58);
         _ZN12Unk_0206fe8013func_02070550Ev(p + 0x15d50);
-        _ZN4ArrBC1Ev(p + 0x15db4);
+        _ZN12Unk_020aec1cC1Ev(p + 0x15db4);
         func_02040900(p + 0x15e18);
         func_0204c508(p + 0x15e54);
         func_02039d70(p + 0x15ec0);
@@ -93,9 +93,9 @@ public:
         _ZN12Unk_02063578C2Ev(p + 0x15fbc);
         func_0209eb08(p + 0x15fc5);
         func_020874d8(p + 0x15fca);
-        _ZN12Unk_0209ea5013func_0209eb90Ev(p + 0x15fdc);
+        _ZN11SaveRecord413func_0209eb90Ev(p + 0x15fdc);
     }
-    ~Unk_0209da44();
+    ~SaveData();
     void func_0209da44();
     void func_0209dae8();
     void func_0209db94();
@@ -156,9 +156,9 @@ public:
     /* 0x15fdc */ u8 unk_15fdc[4];
 };
 
-Unk_0209da44 data_021d7350;
+SaveData gSaveData;
 
-typedef void (Unk_0209da44::*Unk_0209d70c_Fn)();
+typedef void (SaveData::*Unk_0209d70c_Fn)();
 
 // Data order: this unit is placed object by object (see object_order.txt).
 
@@ -179,11 +179,11 @@ extern "C" void func_0209d7bc(u8 *p) {
     func_0209cfe4();
 }
 
-extern "C" void func_0209d70c(Unk_0209da44 *p, u32 idx) {
-    static Unk_0209d70c_Fn tbl[7] = {&Unk_0209da44::func_0209de74, &Unk_0209da44::func_0209ddb0,
-                                     &Unk_0209da44::func_0209dc94, &Unk_0209da44::func_0209dc0c,
-                                     &Unk_0209da44::func_0209db94, &Unk_0209da44::func_0209dae8,
-                                     &Unk_0209da44::func_0209da44};
+extern "C" void SaveData_Setup(SaveData *p, u32 idx) {
+    static Unk_0209d70c_Fn tbl[7] = {&SaveData::func_0209de74, &SaveData::func_0209ddb0,
+                                     &SaveData::func_0209dc94, &SaveData::func_0209dc0c,
+                                     &SaveData::func_0209db94, &SaveData::func_0209dae8,
+                                     &SaveData::func_0209da44};
     (p->*tbl[idx])();
 }
 

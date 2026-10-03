@@ -1,17 +1,17 @@
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#undef postCreate
 
 // Real (mangled) names of other modules' functions that the unit calls as plain functions taking the object first.
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_02098784 _ZN12Unk_0209865c13func_02098784Eh
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define func_02098784 _ZN10PlayerData13func_02098784Eh
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
 #define func_020030b4 _ZN12Unk_02002fc813func_020030b4Ev
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
-#define func_02080da4 _ZN12Unk_0208091c13func_02080da4Ei
-#define func_02080dd8 _ZN12Unk_0208091c13func_02080dd8Ev
-#define func_020aa514 _ZN12Unk_020aa3b813func_020aa514Ev
+#define func_02080da4 _ZN14VillagerMemory13func_02080da4Ei
+#define func_02080dd8 _ZN14VillagerMemory13func_02080dd8Ev
+#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define unk_618_func_02014198 _ZN12Unk_02013b1013func_02014198Ehh
 #define unk_618_func_02014220 _ZN12Unk_02013b1013func_02014220Ev
 #define unk_564_func_020196b4 _ZN12Unk_0201985813func_020196b4Ejiiissiitt
@@ -24,7 +24,7 @@ class Unk_ov045_02259eb0;
 class Unk_ov045_02259e20;
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 u32 func_02063b8c(u32 n);
 void func_0203d67c(void *p);
 void func_0203d704(void *p, s32 a);
@@ -34,13 +34,13 @@ void func_0204ee10(s32 *, s32 *, void *);
 s32 func_0206ed18();
 s32 func_0206ecf0();
 void func_020a78a4(void *, s32, s32);
-s32 func_020aa514();
+s32 ChoiceList_getResult();
 s32 func_0201ade4(void *, s32);
 void func_0201adc8(void *, s32);
 s32 func_0202e1cc(...);
 void func_02034dd0(u32, s32, s32);
 void func_02034d70(u32);
-void *func_0209888c(void *self);
+void *PlayerData_getPlayerId(void *self);
 void func_02098784(void *self, s32 kind);
 void func_02079d64(void *, void *);
 void func_02079e9c(void *);
@@ -77,7 +77,7 @@ s32 func_02090330(u32 kind, void *a, s32 b, s32 c);
 void func_020902f8(s32 id);
 void func_020902d4(s32 id, void *pos, s32 a, s32 b);
 extern u16 data_020c6cc8;
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 *data_020cbb18;
 }
 
@@ -171,29 +171,29 @@ struct Unk_ov045_022590e4_Msg {
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffer classes (see src/main/unk_02062fd4.cpp)
 
-class Unk_020e2a60 {
+class EncodedString {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
     u8 unk_04[10];
 };
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    void func_020a7aa0(Unk_020e2a60 *dst, s32 a, s32 b);
+    void fromEncoded(EncodedString *dst, s32 a, s32 b);
 
     u8 unk_04[14];
 };
 
 // vtable 0x02259dd4, data at +0x12, 0x24 bytes
-class Unk_ov045_02259dd4 : public Unk_020e2a78 {
+class Unk_ov045_02259dd4 : public MsgString {
 public:
     Unk_ov045_02259dd4();
     virtual ~Unk_ov045_02259dd4();
@@ -204,7 +204,7 @@ public:
 };
 
 // vtable 0x02259dec, data at +0xe, 0x24 bytes
-class Unk_ov045_02259dec : public Unk_020e2a60 {
+class Unk_ov045_02259dec : public EncodedString {
 public:
     Unk_ov045_02259dec();
     virtual ~Unk_ov045_02259dec();
@@ -299,25 +299,25 @@ struct Unk_020f4080 {
 struct Unk_020d77a4_Vec3;
 struct Unk_0201bc1c;
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     BOOL vfunc_14();
     BOOL vfunc_20();
-    BOOL vfunc_28();
-    BOOL vfunc_2c();
+    BOOL preDraw();
+    BOOL postDraw();
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
-    void func_0203e468(s32 v);
+    void setInteractionRange(s32 v);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
     u8 pad_68[0x8e - 0x68];
@@ -327,13 +327,13 @@ public:
     u8 pad_96[0xea - 0x96];
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 a);
-    BOOL vfunc_18();
-    BOOL vfunc_24();
+    virtual void postCreate(s32 a);
+    BOOL onExecute();
+    BOOL onDraw();
     BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *p);
     virtual void vfunc_60();
@@ -387,7 +387,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 a);
     virtual void vfunc_78();
     virtual void vfunc_7c();
@@ -422,7 +422,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a, u32 b);
     virtual BOOL vfunc_68();
@@ -537,7 +537,7 @@ BOOL Unk_ov045_02259eb0::vfunc_04() {
     func_0201bc28((Unk_0201bc1c *)&unk_68c);
     unk_68c.func_ov045_02259654(this);
     func_0201bd9c(0x100);
-    func_0203e468(0x5000);
+    setInteractionRange(0x5000);
     unk_654 = -1;
     unk_754 = 0;
     return TRUE;
@@ -563,8 +563,8 @@ BOOL Unk_ov045_02259eb0::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov045_02259eb0::vfunc_24() {
-    if (!Unk_020d77a4::vfunc_24()) {
+BOOL Unk_ov045_02259eb0::onDraw() {
+    if (!Unk_020d77a4::onDraw()) {
         return FALSE;
     }
     func_020553cc(&unk_ec, &unk_65c, 0xe);
@@ -705,8 +705,8 @@ void Unk_ov045_02259e20::vfunc_78(void *arg) {
 }
 
 void Unk_ov045_02259e20::vfunc_14() {
-    void *h = func_0209750c();
-    u8 *gp = data_021d7350;
+    void *h = PlayerData_GetCurrent();
+    u8 *gp = gSaveData;
     u32 sel = 0xff;
     switch (unk_1e) {
     case 9:
@@ -759,7 +759,7 @@ void Unk_ov045_02259e20::vfunc_14() {
             void *r5;
             sel = 0x10;
             kind = unk_b0->func_ov045_02258ee4();
-            arg = func_0209888c(func_0209750c());
+            arg = PlayerData_getPlayerId(PlayerData_GetCurrent());
             switch (unk_b0->unk_744) {
             case 0:
                 func_02098784(h, kind);
@@ -770,7 +770,7 @@ void Unk_ov045_02259e20::vfunc_14() {
                 }
                 break;
             case 1:
-                p = func_0207be2c((gp + 0x8a3c), unk_b0->unk_750, 10, func_0209888c(h));
+                p = func_0207be2c((gp + 0x8a3c), unk_b0->unk_750, 10, PlayerData_getPlayerId(h));
                 if (p != 0) {
                     q = func_0207f88c(p, arg);
                     w = func_0207f86c(p, q);
@@ -838,7 +838,7 @@ void Unk_ov045_02259e20::vfunc_18() {
     u32 sel;
     s32 st;
     func_02015a5c();
-    st = func_020aa514();
+    st = ChoiceList_getResult();
     sel = 0xff;
     switch (unk_1e) {
     case 1:
@@ -932,7 +932,7 @@ void Unk_ov045_02259e20::func_ov045_022590e4() {
         Unk_ov045_02259dd4 src;
         Unk_ov045_02259dec dst;
         func_020a78a4(&dst, unk_b0->unk_750, 0x10);
-        src.func_020a7aa0(&dst, 0, 0);
+        src.fromEncoded(&dst, 0, 0);
         unk_3c->func_02067a3c(0, &src);
         msg = 0xa;
     }

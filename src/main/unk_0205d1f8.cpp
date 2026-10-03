@@ -16,7 +16,7 @@ extern Unk_0205d238 data_021c64dc;
 
 void func_0205bba0();
 void func_0205bbbc();
-void *func_020e8da0(u32 size, void *heap);
+void *FrameHeap_Create(u32 size, void *heap);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
 u32 func_020b50e8();
@@ -58,13 +58,13 @@ void Unk_0205d238::func_0205d278() {
     m = func_020b4928(func_020b50e8());
     if (n < m) m = n;
     for (i = 0; i < m; i++) {
-        ptr[i] = func_020e8da0(func_0205d2fc(), heap);
+        ptr[i] = FrameHeap_Create(func_0205d2fc(), heap);
     }
     if (m == 0) m = 1;
     u32 q = func_020b491c(func_020b50e8());
     m = (q + func_02084fbc()) - m;
     for (i = 4; i < m + 4; i++) {
-        ptr[i] = func_020e8da0(func_0205d2fc(), heap);
+        ptr[i] = FrameHeap_Create(func_0205d2fc(), heap);
     }
 }
 

@@ -79,7 +79,7 @@ extern u32 data_0213c1c8[];
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void func_02000b44(void *);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 void OS_UnlockCard(u32);
 void OS_LockCard(u32);
 void OS_SetThreadPriority(void *, u32);
@@ -339,7 +339,7 @@ BOOL CARD_IdentifyBackup(u32 op) {
     void *arg;
     u32 irq;
     func_02000b44((void *)0x02000bbc);
-    if (op == 0) func_0206d49c();
+    if (op == 0) Fatal_Trap();
     CARD_CheckEnabled();
     irq = OS_DisableInterrupts();
     while (c->flag & 4) OS_SleepThread(&c->tq);

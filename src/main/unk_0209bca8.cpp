@@ -3,20 +3,20 @@
 extern "C" {
 void *MI_CpuFill8(void *p, u32 v, u32 n);
 void func_020639e8(char *dst, const char *fmt, ...);
-s32 func_02063f3c(const char *s);
+s32 File_GetDecodedSizeByPath(const char *s);
 s32 func_02063b8c(s32 n);
 s32 func_02037358(s32 n);
 extern const u32 data_020d0634[6];
 }
 
-// ---- Unk_0206d8b8 (cached record table)
-class Unk_0206d8b8 {
+// ---- RecordFile (cached record table)
+class RecordFile {
 public:
-    Unk_0206d8b8();
-    ~Unk_0206d8b8();
-    void func_0206d8b8();
-    void func_0206d904();
-    BOOL func_0206d940(void *path, s32 size, s32 count);
+    RecordFile();
+    ~RecordFile();
+    void close();
+    void loadAll();
+    BOOL open(void *path, s32 size, s32 count);
     u8 pad[0x1c];
 };
 
@@ -46,7 +46,7 @@ public:
     BOOL func_0209bcf8();
 
     Unk_0209c040 unk_00[0x24];
-    Unk_0206d8b8 unk_120;
+    RecordFile unk_120;
 };
 
 class Unk_0209be24 {
@@ -61,7 +61,7 @@ public:
     BOOL func_0209bfa4();
 
     Unk_0209c040 unk_00[0x24];
-    Unk_0206d8b8 unk_120;
+    RecordFile unk_120;
 };
 
 // ---- row helper
@@ -115,15 +115,15 @@ Unk_0209be24::Unk_0209be24() {}
 Unk_0209be24::~Unk_0209be24() {}
 
 BOOL Unk_0209be24::func_0209bfa4() {
-    if (unk_120.func_0206d940((void *)"/bg/rndCand.bin", 0x10, 0x20c)) {
-        unk_120.func_0206d904();
+    if (unk_120.open((void *)"/bg/rndCand.bin", 0x10, 0x20c)) {
+        unk_120.loadAll();
         return TRUE;
     }
     return FALSE;
 }
 
 void Unk_0209be24::func_0209bf94() {
-    unk_120.func_0206d8b8();
+    unk_120.close();
 }
 
 BOOL Unk_0209be24::func_0209bee4(s32 v) {
@@ -165,7 +165,7 @@ u32 Unk_0209be24::func_0209be58() {
             if (seen[g->func_0209bc54(x, y)->func_0209c058()] == 0) {
                 s32 v = g->func_0209bc54(x, y)->func_0209c058();
                 func_020639e8(buf, "/bg/a%d/%04x.arc", v >> 4, v);
-                total += z + func_02063f3c(buf);
+                total += z + File_GetDecodedSizeByPath(buf);
                 seen[g->func_0209bc54(x, y)->func_0209c058()] = 1;
             }
         }

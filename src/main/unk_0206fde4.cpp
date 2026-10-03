@@ -18,7 +18,7 @@ public:
 
 extern "C" {
 extern Unk_0206fd10_Mtx data_021cb69c;
-s32 func_02052c54(u16 *p);
+s32 Item_GetFossilGroup(u16 *p);
 }
 
 Unk_0206fde4_Mtx data_021cb6cc[31];
@@ -35,7 +35,7 @@ extern "C" s32 func_0206fe34(u32 a, s32 b) {
     u32 i;
     for (i = 0; i < 0x34; i++) {
         u16 v = Unk_0206fe34_Id(i);
-        if (b == func_02052c54(&v)) {
+        if (b == Item_GetFossilGroup(&v)) {
             if (((Unk_0206fe80 *)a)->func_02070358(&v)) {
                 cnt++;
             }

@@ -1,37 +1,37 @@
 #include "types.h"
 // Library base class; its code is ARM in autoload_2 and ITCM. It allocates its objects on a separate heap.
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 a);
+    virtual void postCreate(s32 a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 // Vtable at 0x020d8c74. Its constructor and destructor are inline, which is why derived constructors and destructors
 // store two vtable pointers in a row.
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual void func_0203e678(s32 a);
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual void postCreate(s32 a);
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -49,7 +49,7 @@ struct Unk_0203e22c_State {
     /* 0x17 */ u8 unk_17;
 };
 
-class Unk_020d9670 {
+class Character {
 public:
     virtual void vfunc_00();
     virtual void vfunc_04();
@@ -71,8 +71,8 @@ public:
     virtual void vfunc_44();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual void getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
 };
 
@@ -81,7 +81,7 @@ struct Unk_0203e5d0_Node {
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ Unk_0203e5d0_Node *unk_04;
     /* 0x08 */ u32 unk_08;
-    /* 0x0c */ Unk_020d9670 *unk_0c;
+    /* 0x0c */ Character *unk_0c;
 };
 
 struct Unk_0203e5d0_List {
@@ -93,7 +93,7 @@ struct Unk_0203e5d0_List {
     }
 };
 
-extern Unk_0203e5d0_List data_021c39d4;
+extern Unk_0203e5d0_List gCharacterList;
 extern u32 data_021c39dc;
 extern u32 data_021c39e0[4];
 extern u8 data_020d96d0;
@@ -132,7 +132,7 @@ extern s16 data_020c905c;
 }
 
 extern "C" {
-extern u8 data_0213c874[];
+extern u8 gActorList[];
 }
 
 extern "C" {
@@ -164,7 +164,7 @@ u32 func_0206ec6c(u32);
 }
 
 extern "C" {
-BOOL func_0206f140(void);
+BOOL MenuCtrl_IsIdle(void);
 }
 
 extern "C" {
@@ -172,11 +172,11 @@ BOOL func_02094e64(void);
 }
 
 extern "C" {
-BOOL func_02094d3c(void);
+BOOL PlayerActor_RequestAct05(void);
 }
 
 extern "C" {
-void func_0206f0f8(u32);
+void MenuCtrl_RequestOpen(u32);
 }
 
 extern "C" {
@@ -204,7 +204,7 @@ u32 func_0203d5f0(s32);
 }
 
 extern "C" {
-s32 func_02002bdc(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
+s32 Math_AngleXZ(Unk_0203e4f0_Vec *, Unk_0203e4f0_Vec *);
 }
 
 extern "C" {
@@ -220,7 +220,7 @@ void func_020652dc(void *, void *);
 }
 
 extern "C" {
-void _ZN12Unk_020d5d848vfunc_08Ev(void *, s32);
+void _ZN5Actor10postCreateEv(void *, s32);
 }
 
 extern "C" {
@@ -284,7 +284,7 @@ void func_0203eb38(void);
 }
 
 extern "C" {
-Unk_020d9670 *func_0203e604(u32 id);
+Character *Character_FindByCharId(u32 id);
 }
 
 
@@ -423,7 +423,7 @@ extern "C" void func_0203e8d4(void *msg, u32 aid) {
 
 extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
     u32 r6 = msg[5];
-    Unk_020d9670 *o = func_0203e604((msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8))));
+    Character *o = Character_FindByCharId((msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8))));
     void *w = func_02095204(aid);
     if (!o || !w) {
         if (msg[0] == 4) {
@@ -442,7 +442,7 @@ extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
             r5 = o->vfunc_48(w);
             break;
         case 5:
-            r5 = o->vfunc_54(w);
+            r5 = o->acceptsInteractionOutOfRange(w);
             break;
         case 1:
             r5 = o->vfunc_58(w);

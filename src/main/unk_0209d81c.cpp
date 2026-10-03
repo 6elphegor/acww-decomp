@@ -3,7 +3,7 @@
 extern "C" {
 void func_0209d7bc(void *);
 void func_0209d81c(void *);
-void func_0209d848(u8 *p);
+void SaveData_InitNew(u8 *p);
 void func_0209d994(u8 *p);
 void func_02039cf4(void *);
 void func_02040864(void *);
@@ -15,16 +15,16 @@ void *func_0204da0c(void);
 void _ZN12Unk_0204da1813func_0204da24Ev(void *);
 void _ZN12Unk_0204da1813func_0204dab4Ev(void *);
 void func_0204dd20(void *, u32);
-void _ZN12Unk_0204debc13func_0204df30Ev(void *);
+void _ZN7TownMap13func_0204df30Ev(void *);
 void func_0205b470(void);
 void func_0205b648(void *);
-void _ZN12Unk_0206022c13func_0206058cEv(void *);
+void _ZN9HouseData13func_0206058cEv(void *);
 void _ZN12Unk_0206357813func_02063578Ev(void *);
 void func_02063904(void *, const void *);
 void func_020639b8(void *);
-void func_0206db04(void *);
-void _ZN12Unk_02071b0013func_02071b10Ev(void *);
-void _ZN12Unk_02071c5c13func_02071c98EP12Unk_020942c8S1_(void *, void *, void *);
+void Melody_ResetToDefault(void *);
+void _ZN19AbleSistersPatterns13func_02071b10Ev(void *);
+void _ZN14PlayerPatterns13func_02071c98EP12Unk_020942c8S1_(void *, void *, void *);
 void _ZN12Unk_0207719813func_0207723cEv(void *);
 void func_0207824c(s32);
 void func_02079cc8(void *);
@@ -47,27 +47,27 @@ void _ZN12Unk_020872fc13func_02087368Ev(void *);
 void _ZN12Unk_02087ad813func_02087b18Ev(void *);
 void _ZN12Unk_02087ad813func_02087b38Ev(void *);
 void func_0208f200(void *);
-void _ZN12Unk_0206395413func_02094094EPS_(void *, void *);
+void _ZN6TownId13func_02094094EPS_(void *, void *);
 void *func_0209409c(void);
-void *func_0209750c(void);
-void *func_02097868(void *, s32);
+void *PlayerData_GetCurrent(void);
+void *PlayerData_GetResident(void *, s32);
 void _ZN12Unk_02097ff413func_02097ff4Ej(void *, s32);
 void _ZN12Unk_02097ff413func_0209801cEj(void *, s32);
 void _ZN12Unk_02097ff413func_020981acEj(void *, s32);
 void *_ZN12Unk_02097ff413func_0209832cEv(void *);
 void _ZN12Unk_02097ff413func_020983d8Ev(void *);
-void *_ZN12Unk_0209865c13func_0209868cEv(void *);
-void *_ZN12Unk_0209865c13func_020986a4Ev(void *);
-void *_ZN12Unk_0209865c13func_020986d4Ev(void *);
+void *_ZN10PlayerData13func_0209868cEv(void *);
+void *_ZN10PlayerData13func_020986a4Ev(void *);
+void *_ZN10PlayerData13func_020986d4Ev(void *);
 void func_0209875c(void *, s32);
-void *_ZN12Unk_0209865c13func_0209888cEv(void *);
+void *_ZN10PlayerData11getPlayerIdEv(void *);
 void func_0209c80c();
 s32 func_0209cbd8(void *p);
 void func_0209cf88(void *p);
 void func_0209cfe4(void);
-void _ZN12Unk_0209ea5013func_0209eaccEPv(void *, s32);
-void _ZN12Unk_0209ea5013func_0209eb7cEv(void *);
-void _ZN12Unk_0209ea5013func_0209eb84Ev(void *);
+void _ZN11SaveRecord413func_0209eaccEPv(void *, s32);
+void _ZN11SaveRecord410clearStateEv(void *);
+void _ZN11SaveRecord413setStateValidEv(void *);
 void _ZN12Unk_021ed2c013func_020ad3d8Ev(void *);
 void func_020ada20(void *);
 void func_020ae880(void *);
@@ -77,8 +77,8 @@ void func_020b23a8(void *);
 void func_020b8e90();
 void func_020b8ea0();
 void func_020c02fc(void *);
-extern u32 data_021f482c;
-extern u8 data_021d7350[];
+extern u32 gCurrentHeap;
+extern u8 gSaveData[];
 extern u32 data_020d0704[];
 }
 
@@ -87,7 +87,7 @@ u8 data_020e2384[8] = {0x13, 0x1b, 0x30, 0x1b, 0x0e, 0x29, 0x28, 0x1f};
 struct Unk_0209da44_E98c { u8 b[0x98c]; };
 struct Unk_0209da44_Eb4 { u8 b[0xb4]; };
 
-struct Unk_0209da44 {
+struct SaveData {
     u8 unk_00;
     u8 unk_01;
     u8 f_2[10];
@@ -140,25 +140,25 @@ struct Unk_0209d994_Buf {
     u8 b[8];
 };
 
-void Unk_0209da44::func_0209dc0c() {
+void SaveData::func_0209dc0c() {
     func_0209cbd8(&f_15fb4);
     func_0209cfe4();
-    func_0204dd20(&f_c330, data_021f482c);
+    func_0204dd20(&f_c330, gCurrentHeap);
     func_0209d81c(this);
     func_02063904(&f_2, data_020e2384);
-    func_0209d848((u8 *)this);
+    SaveData_InitNew((u8 *)this);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN12Unk_0204debc13func_0204df30Ev(&f_c330);
+    _ZN7TownMap13func_0204df30Ev(&f_c330);
     func_0207824c(-1);
     func_0207b7fc(&f_8a3c, 0);
-    _ZN12Unk_0209ea5013func_0209eb7cEv(&f_15fdc);
+    _ZN11SaveRecord410clearStateEv(&f_15fdc);
     func_020b8e90();
     func_020850e0();
     _ZN12Unk_02086f1413func_02086f28Ev(func_0208517c());
 }
 
-void Unk_0209da44::func_0209db94() {
+void SaveData::func_0209db94() {
     func_0209d81c(this);
     func_0204d42c();
     func_0204d3d8();
@@ -171,18 +171,18 @@ void Unk_0209da44::func_0209db94() {
     func_020850e0();
     _ZN12Unk_02086f1413func_02086f28Ev(func_0208517c());
     s32 z, i;
-    u8 *p = data_021d7350;
+    u8 *p = gSaveData;
     i = 0;
     z = i;
     p += 0xc;
     for (; i < 4; i++) {
-        void *x = func_02097868(p, i);
+        void *x = PlayerData_GetResident(p, i);
         if (x) func_0209875c(x, z);
     }
 }
 
-void Unk_0209da44::func_0209dae8() {
-    void *a = func_0209750c();
+void SaveData::func_0209dae8() {
+    void *a = PlayerData_GetCurrent();
     func_0209d81c(this);
     func_0204d42c();
     func_0204d3d8();
@@ -197,7 +197,7 @@ void Unk_0209da44::func_0209dae8() {
     func_0207a63c(&f_8a3c);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN12Unk_0204debc13func_0204df30Ev(&f_c330);
+    _ZN7TownMap13func_0204df30Ev(&f_c330);
     func_0209c80c();
     _ZN12Unk_02097ff413func_020981acEj(a, 0);
     func_0207824c(-1);
@@ -207,17 +207,17 @@ void Unk_0209da44::func_0209dae8() {
     func_02079cc8(&f_8a3c);
 }
 
-void Unk_0209da44::func_0209da44() {
-    void *a = func_0209750c();
+void SaveData::func_0209da44() {
+    void *a = PlayerData_GetCurrent();
     func_0209d7bc(this);
-    func_0204dd20(&f_c330, data_021f482c);
+    func_0204dd20(&f_c330, gCurrentHeap);
     func_0209d81c(this);
-    _ZN12Unk_0209ea5013func_0209eaccEPv(&f_15fc5, 0);
+    _ZN11SaveRecord413func_0209eaccEPv(&f_15fc5, 0);
     func_0209d994((u8 *)this);
-    func_0209d848((u8 *)this);
+    SaveData_InitNew((u8 *)this);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN12Unk_0204debc13func_0204df30Ev(&f_c330);
+    _ZN7TownMap13func_0204df30Ev(&f_c330);
     func_0209c80c();
     _ZN12Unk_02097ff413func_0209801cEj(a, 1);
     _ZN12Unk_02097ff413func_0209801cEj(a, 0x23);
@@ -230,39 +230,39 @@ void Unk_0209da44::func_0209da44() {
 }
 
 void func_0209d994(u8 *p) {
-    void *r4 = func_0209750c();
+    void *r4 = PlayerData_GetCurrent();
     Unk_0209d994_Buf l;
-    _ZN12Unk_0209865c13func_0209888cEv(r4);
+    _ZN10PlayerData11getPlayerIdEv(r4);
     l = *(Unk_0209d994_Buf *)func_0209409c();
     func_0209cf88(_ZN12Unk_02097ff413func_0209832cEv(r4));
-    _ZN12Unk_0206395413func_02094094EPS_(_ZN12Unk_0209865c13func_0209888cEv(r4), p + 2);
-    void *r5 = _ZN12Unk_0209865c13func_020986d4Ev(r4);
-    _ZN12Unk_02071c5c13func_02071c98EP12Unk_020942c8S1_(r5, _ZN12Unk_0209865c13func_0209888cEv(r4), &l);
+    _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(r4), p + 2);
+    void *r5 = _ZN10PlayerData13func_020986d4Ev(r4);
+    _ZN14PlayerPatterns13func_02071c98EP12Unk_020942c8S1_(r5, _ZN10PlayerData11getPlayerIdEv(r4), &l);
     _ZN12Unk_02097ff413func_02097ff4Ej(r4, 0x24);
     _ZN12Unk_02097ff413func_02097ff4Ej(r4, 0x25);
     _ZN12Unk_02097ff413func_02097ff4Ej(r4, 0x26);
-    _ZN12Unk_02087ad813func_02087b38Ev(_ZN12Unk_0209865c13func_0209868cEv(r4));
+    _ZN12Unk_02087ad813func_02087b38Ev(_ZN10PlayerData13func_0209868cEv(r4));
     _ZN12Unk_02097ff413func_02097ff4Ej(r4, 0xf);
-    _ZN12Unk_02087ad813func_02087b18Ev(_ZN12Unk_0209865c13func_0209868cEv(r4));
-    _ZN12Unk_020872fc13func_02087368Ev(_ZN12Unk_0209865c13func_020986a4Ev(r4));
+    _ZN12Unk_02087ad813func_02087b18Ev(_ZN10PlayerData13func_0209868cEv(r4));
+    _ZN12Unk_020872fc13func_02087368Ev(_ZN10PlayerData13func_020986a4Ev(r4));
     _ZN12Unk_02097ff413func_020983d8Ev(r4);
     func_020639b8(&l);
 }
 
-void func_0209d848(u8 *p) {
+void SaveData_InitNew(u8 *p) {
     p[0] = 0x8a;
-    _ZN12Unk_0209ea5013func_0209eb84Ev(p + 0x15fdc);
+    _ZN11SaveRecord413setStateValidEv(p + 0x15fdc);
     func_0207b814(p + 0x8a3c);
     func_0207ac60(p + 0x8a3c);
     func_0207a80c();
-    if (func_0209750c()) {
+    if (PlayerData_GetCurrent()) {
         func_0207a63c(p + 0x8a3c);
     }
     func_020b23a8(p + 0x1592c);
-    _ZN12Unk_0206022c13func_0206058cEv(p + 0xe558);
+    _ZN9HouseData13func_0206058cEv(p + 0xe558);
     func_0204d42c();
     func_0204d3d8();
-    _ZN12Unk_02071b0013func_02071b10Ev(p + 0xfafc);
+    _ZN19AbleSistersPatterns13func_02071b10Ev(p + 0xfafc);
     func_0205b470();
     _ZN12Unk_0206357813func_02063578Ev(p + 0x15fbc);
     _ZN12Unk_0207719813func_0207723cEv(p + 0x11488);
@@ -278,7 +278,7 @@ void func_0209d848(u8 *p) {
     func_0208627c(p + 0xe556);
     _ZN12Unk_0208581013func_02085908Ev(p + 0x15efc);
     func_0205b648(p + 0x15fb0);
-    func_0206db04(p + 0x15fa8);
+    Melody_ResetToDefault(p + 0x15fa8);
     func_02039cf4(p + 0x15ec0);
     func_02086204(p + 0xe557);
     func_0208f200(p + 0x10c3c);

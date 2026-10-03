@@ -69,17 +69,17 @@ struct Unk_02076fc8_D {
 };
 
 
-class Unk_020d9200;
-class Unk_020e2a60 {
+class EncodedStringBase;
+class EncodedString {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
     u8 unk_04[10];
 };
 
-class Unk_020e055c : public Unk_020e2a60 {
+class Unk_020e055c : public EncodedString {
 public:
     Unk_020e055c();
     virtual ~Unk_020e055c();
@@ -90,35 +90,35 @@ public:
 // ======== types of unk_02077138.cpp ========
 
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    void func_020a7c3c();
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 // Source-side text buffer of 0xc1 bytes.
-class Unk_020e0574 : public Unk_020e2a78 {
+class Unk_020e0574 : public MsgString {
 public:
     Unk_020e0574();
     virtual ~Unk_020e0574();
@@ -229,7 +229,7 @@ extern "C" {
 extern void *data_021c47c4;
 }
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 extern "C" {
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *);
@@ -280,13 +280,13 @@ extern "C" {
 void func_020e877c(void *);
 }
 extern "C" {
-void *func_020e8da0(s32, void *);
+void *FrameHeap_Create(s32, void *);
 }
 extern "C" {
-void *func_020e8628(void *, s32, s32);
+void *Heap_AllocAligned(void *, s32, s32);
 }
 extern "C" {
-void func_020641b4(void *, void *, s32);
+void File_LoadToBuffer(void *, void *, s32);
 }
 extern "C" {
 void func_0205b944();
@@ -337,7 +337,7 @@ extern "C" {
 BOOL func_0204e418(void *, s32, s32);
 }
 extern "C" {
-BOOL func_0204b300(void *);
+BOOL Item_IsNormalItem(void *);
 }
 extern "C" {
 BOOL func_020780e4(s32, s32);
@@ -352,10 +352,10 @@ extern "C" {
 BOOL func_02077f68(s32, s32, void *);
 }
 extern "C" {
-BOOL func_0204b2d4(void *);
+BOOL Item_IsFurniture(void *);
 }
 extern "C" {
-BOOL func_0204b08c(void *);
+BOOL Item_IsTreeStage0(void *);
 }
 extern "C" {
 s32 func_02081650(s32, s32);
@@ -592,7 +592,7 @@ extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 }
 extern "C" {
-void func_0205125c(void *p, u32 n);
+void Mem_Clear(void *p, u32 n);
 }
 extern "C" {
 void func_02076fc8(u32 a, const char *s);
@@ -628,7 +628,7 @@ extern "C" {
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *));
 }
 extern "C" {
-void _ZN12Unk_020e2a7813func_020a7c3cEv(void *p);
+void _ZN9MsgString5clearEv(void *p);
 }
 extern "C" {
 extern void *data_020cbb18;
@@ -985,7 +985,7 @@ void Unk_020772cc::func_02077348(u8 *src) {
     unk_c1 = src[1];
     unk_c2 = src[2];
     unk_c3 = 0;
-    func_0205125c(this, 0xc0);
+    Mem_Clear(this, 0xc0);
 }
 namespace n6 {
 }
@@ -1123,7 +1123,7 @@ namespace n6 {
 }
 
 Unk_020e0574::Unk_020e0574() {
-    using namespace n6; func_020a7c3c(); }
+    using namespace n6; clear(); }
 namespace n6 {
 }
 
@@ -1204,13 +1204,13 @@ extern "C" {
 BOOL _ZN12Unk_020cbb1813func_02072dc4Ei(void *g, s32 i);
 }
 extern "C" {
-void func_020e85fc(void *g, s32 a);
+void Heap_Free(void *g, s32 a);
 }
 extern "C" {
-void func_020e8628(void *g, s32 a, s32 b);
+void Heap_AllocAligned(void *g, s32 a, s32 b);
 }
 extern "C" {
-void func_0204f054(void *p);
+void OverlayMgr_GetInfo(void *p);
 }
 extern "C" {
 void FS_LoadOverlayImage(void *p);
@@ -1237,7 +1237,7 @@ extern "C" {
 void func_020ea3d0(void *p, u32 v);
 }
 extern "C" {
-void func_0205125c(void *p, u32 n);
+void Mem_Clear(void *p, u32 n);
 }
 extern "C" {
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *), void *(*)(void *));
@@ -1297,25 +1297,25 @@ extern "C" {
 void _ZN12Unk_020e0470D1Ev(void *p);
 }
 extern "C" {
-void *func_020a6b9c(void *p, s32 i);
+void *Msg_SkipLines(void *p, s32 i);
 }
 extern "C" {
-void _ZN12Unk_020e2a7813func_020a7a64EPh(void *p, void *q);
+void _ZN9MsgString7setLineEPh(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(void *p, void *q);
+void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
 }
 extern "C" {
-void _ZN12Unk_020e2a7813func_020a7c3cEv(void *p);
+void _ZN9MsgString5clearEv(void *p);
 }
 extern "C" {
-void func_02050e90(void *p, void *q, u32 n);
+void StrBuf_GetBytes(void *p, void *q, u32 n);
 }
 extern "C" {
 s32 _ZN12Unk_020e047013func_0206f828Ev(void *p);
 }
 extern "C" {
-void func_0203ce60(void *a, void *b, u32 c);
+void MailText_LoadBbs(void *a, void *b, u32 c);
 }
 extern "C" {
 void func_020a791c(void *p);
@@ -1416,7 +1416,7 @@ struct Unk_02077040_B { u32 pad[0x3c / 4]; Unk_02077040_B() { _ZN12Unk_020e0470C
 extern "C" void func_02077118(void *a, u32 b, u32 c) {
     volatile u8 v = *data_021edb68;
     v = (u8)b;
-    func_0203ce60(a, (void *)&v, c);
+    MailText_LoadBbs(a, (void *)&v, c);
 }}
 
 
@@ -1447,16 +1447,16 @@ extern "C" BOOL func_02077040(void *self, void *r1) {
     s32 n = 0;
     s32 i = n;
     for (; i < 6; i++) {
-        void *e = func_020a6b9c((u8 *)r1 + 0x12, i);
+        void *e = Msg_SkipLines((u8 *)r1 + 0x12, i);
         if (e != NULL) {
-            _ZN12Unk_020e2a7813func_020a7a64EPh(&o1, e);
-            _ZN12Unk_020e2a6013func_020a77f8EP12Unk_020e2a78(&o2, &o1);
-            func_02050e90(&o2, buf + n, 0x28);
+            _ZN9MsgString7setLineEPh(&o1, e);
+            _ZN13EncodedString13fromMsgStringEP9MsgString(&o2, &o1);
+            StrBuf_GetBytes(&o2, buf + n, 0x28);
             n = n + _ZN12Unk_020e047013func_0206f828Ev(&o2);
             buf[n] = 0x86;
             n = n + 1;
         } else {
-            _ZN12Unk_020e2a7813func_020a7c3cEv(&o1);
+            _ZN9MsgString5clearEv(&o1);
             buf[n] = 0x86;
             n++;
         }
@@ -1597,9 +1597,9 @@ extern "C" void func_02076d68(void) {
         }
     }
 }
-extern "C" void func_02076d5c(u8 *p, u16 v) { *(u16 *)(p + 0x380) = v; }
+extern "C" void FriendList_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x380) = v; }
 
-extern "C" u16 func_02076d50(u8 *p) { return *(u16 *)(p + 0x380); }
+extern "C" u16 FriendList_GetChecksum(u8 *p) { return *(u16 *)(p + 0x380); }
 
 extern "C" void *func_02076d40(void *p) {
     _ZN12Unk_02076f70C1Ev(p);
@@ -1620,8 +1620,8 @@ extern "C" void *func_02076d18(void *p, void *q) {
 extern "C" void func_02076cf4(void *pp) {
     u8 *p = (u8 *)pp;
     func_02076f1c(p);
-    func_0205125c(p + 0xc, 8);
-    func_0205125c(p + 0x14, 8);
+    Mem_Clear(p + 0xc, 8);
+    Mem_Clear(p + 0x14, 8);
 }
 extern "C" void func_02076cf0(void *p) {}
 extern "C" u8 *func_02076cec(u8 *p) { return p + 0xc; }
@@ -1652,23 +1652,23 @@ extern "C" void func_02076c80(void) {}
 
 extern "C" u8 *func_02076c7c(u8 *p) { return p + 0x40; }
 
-extern "C" void func_02076c74(u8 *p, u16 v) { *(u16 *)(p + 0x4c) = v; }
+extern "C" void PlayerWifiData_SetChecksum(u8 *p, u16 v) { *(u16 *)(p + 0x4c) = v; }
 
-extern "C" u16 func_02076c6c(u8 *p) { return *(u16 *)(p + 0x4c); }
+extern "C" u16 PlayerWifiData_GetChecksum(u8 *p) { return *(u16 *)(p + 0x4c); }
 
 }
 Unk_021cc7d0::~Unk_021cc7d0() {}
 namespace n5 {
 
-extern "C" void func_02076c50(Unk_02076c24_S *s) {
+extern "C" void OverlayHandle_Unload(Unk_02076c24_S *s) {
     FS_EndOverlay(s->unk_08);
     s->unk_00 = -1;
 }
 
-extern "C" void func_02076c24(Unk_02076c24_S *s, s32 v) {
+extern "C" void OverlayHandle_Load(Unk_02076c24_S *s, s32 v) {
     s->unk_04 = 1;
     s->unk_00 = v;
-    func_0204f054(s->unk_08);
+    OverlayMgr_GetInfo(s->unk_08);
     FS_LoadOverlayImage(s->unk_08);
     FS_StartOverlay(s->unk_08);
     s->unk_04 = 0;
@@ -1696,9 +1696,9 @@ extern "C" u32 func_02076bd4(u8 *p) { return *p & 3; }
 
 extern "C" u32 func_02076bc8(u8 *p) { return (*p >> 2) & 0x1f; }
 
-extern "C" void func_02076bb0(s32 a, s32 b) { func_020e8628(data_021c6218, a, b); }
+extern "C" void func_02076bb0(s32 a, s32 b) { Heap_AllocAligned(data_021c6218, a, b); }
 
-extern "C" void func_02076b9c(s32 a) { func_020e85fc(data_021c6218, a); }
+extern "C" void func_02076b9c(s32 a) { Heap_Free(data_021c6218, a); }
 
 extern "C" BOOL func_02076b40(u32 mask) {
     s32 i = 3;
@@ -1881,7 +1881,7 @@ extern "C" {
 extern u8 data_ov003_02258efc;
 }
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 extern "C" {
 extern void (*data_020cbb1c[])(u32);
@@ -1980,10 +1980,10 @@ extern "C" {
 void func_0203eb60(void *p, u32 a);
 }
 extern "C" {
-void *func_020e8618(void *g, u32 a);
+void *Heap_AllocTail(void *g, u32 a);
 }
 extern "C" {
-void func_020e85fc(void *g, void *p);
+void Heap_Free(void *g, void *p);
 }
 extern "C" {
 void func_0206f804(void *p, u32 a);
@@ -2254,11 +2254,11 @@ extern "C" void func_02076200(u32 a) {
     func_02070560(buf);
 }
 extern "C" void func_020761bc(u32 a, u32 b, u32 c, u32 d) {
-    void *g = data_021f482c;
-    void *r = func_020e8618(g, a);
+    void *g = gCurrentHeap;
+    void *r = Heap_AllocTail(g, a);
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, r, a);
     func_0206f804(r, d);
-    func_020e85fc(g, r);
+    Heap_Free(g, r);
 }
 extern "C" void func_02076194(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
@@ -2388,7 +2388,7 @@ extern "C" {
 s32 func_020b50e8();
 }
 extern "C" {
-void *func_020a0370();
+void *SaveManager_Get();
 }
 extern "C" {
 s32 func_020a028c(void *, s32, s32);
@@ -2451,10 +2451,10 @@ extern "C" {
 void _ZN12Unk_0209ada413func_0209ad80Ev();
 }
 extern "C" {
-void *func_02097520(void *);
+void *PlayerData_GetBySessionSlot(void *);
 }
 extern "C" {
-void *_ZN12Unk_0209865c13func_0209888cEv(void *);
+void *_ZN10PlayerData11getPlayerIdEv(void *);
 }
 extern "C" {
 s32 func_0209a9f0(void *, u32, u16 *, void *, s32);
@@ -2487,16 +2487,16 @@ extern "C" {
 s32 func_02080f94(void *);
 }
 extern "C" {
-s32 _ZN12Unk_0208091c13func_02080b78EPt(void *, u16 *);
+s32 _ZN14VillagerMemory13func_02080b78EPt(void *, u16 *);
 }
 extern "C" {
 void func_02077a9c(u32 *, u32 *, void *);
 }
 extern "C" {
-s32 _ZN12Unk_0208091c13func_02080dd0Ea(void *, s32);
+s32 _ZN14VillagerMemory13func_02080dd0Ea(void *, s32);
 }
 extern "C" {
-s32 _ZN12Unk_0208091c13func_02080b38Ei(void *, u32);
+s32 _ZN14VillagerMemory13func_02080b38Ei(void *, u32);
 }
 extern "C" {
 s32 func_02080ecc(void *, void *, u8 *, s32);
@@ -2526,10 +2526,10 @@ extern "C" {
 s32 func_0209549c(u8 *, u8 *, u8 *);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_02098824Eh(void *, u32);
+s32 _ZN10PlayerData12setHairStyleEh(void *, u32);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_020987fcEh(void *, u32);
+s32 _ZN10PlayerData12setHairColorEh(void *, u32);
 }
 extern "C" {
 s32 func_0204fe7c(void *, s32);
@@ -2538,22 +2538,22 @@ extern "C" {
 s32 func_020954c8(void *, u16 *, u32 *);
 }
 extern "C" {
-s32 func_0209463c(u16 *, u32, void *);
+s32 PlayerActor_SetClothing(u16 *, u32, void *);
 }
 extern "C" {
-void *_ZN12Unk_0209865c13func_02098744Ev(void *);
+void *_ZN10PlayerData11getHeldItemEv(void *);
 }
 extern "C" {
-s32 func_0204b2d4(u16 *);
+s32 Item_IsFurniture(u16 *);
 }
 extern "C" {
-s32 func_0204b25c(void *);
+s32 Item_GetFurnitureIndex(void *);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_02098738EPt(void *, u16 *);
+s32 _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
 }
 extern "C" {
-u16 func_02061794(u16 *);
+u16 ItemInfo_GetHoldableIndex(u16 *);
 }
 extern "C" {
 s32 func_020946f0(s32, void *);
@@ -2645,21 +2645,21 @@ extern "C" void func_02075d38(s32 n, s32 b, s32 c, void *d) {
     case 0:
     case 1:
     case 2:
-        func_0209463c(&v, k, d);
+        PlayerActor_SetClothing(&v, k, d);
         break;
     case 3: {
-        void *r7 = func_02097520(d);
-        u16 *r5 = (u16 *)_ZN12Unk_0209865c13func_02098744Ev(r7);
+        void *r7 = PlayerData_GetBySessionSlot(d);
+        u16 *r5 = (u16 *)_ZN10PlayerData11getHeldItemEv(r7);
         BOOL same;
-        if (func_0204b2d4(&v) != 0) {
-            s32 r6 = func_0204b25c(&v);
-            if (r6 == func_0204b25c(r5)) same = TRUE; else same = FALSE;
+        if (Item_IsFurniture(&v) != 0) {
+            s32 r6 = Item_GetFurnitureIndex(&v);
+            if (r6 == Item_GetFurnitureIndex(r5)) same = TRUE; else same = FALSE;
         } else {
             if (v == *r5) same = TRUE; else same = FALSE;
         }
         if (!same) {
-            u16 r = func_02061794(&v);
-            _ZN12Unk_0209865c13func_02098738EPt(r7, &v);
+            u16 r = ItemInfo_GetHoldableIndex(&v);
+            _ZN10PlayerData11setHeldItemEPt(r7, &v);
             func_020946f0(r + 1, d);
         }
         break;
@@ -2671,9 +2671,9 @@ extern "C" void func_02075cf0(s32 n, s32 b, s32 c, void *d) {
     u8 buf[3];
     _ZN12Unk_020cbb1813func_02072770EPhj(data_020cbb18, buf, n);
     func_0209549c(&buf[0], &buf[1], &buf[2]);
-    void *r4 = func_02097520(d);
-    _ZN12Unk_0209865c13func_02098824Eh(r4, buf[1]);
-    _ZN12Unk_0209865c13func_020987fcEh(r4, buf[2]);
+    void *r4 = PlayerData_GetBySessionSlot(d);
+    _ZN10PlayerData12setHairStyleEh(r4, buf[1]);
+    _ZN10PlayerData12setHairColorEh(r4, buf[2]);
 }
 
 extern "C" void func_02075cc8(s32 n, s32 b, s32 c, s32 d) {
@@ -2766,7 +2766,7 @@ extern "C" void func_02075acc(s32 n, s32 b, s32 c, void *d) {
     if (r0 != NULL) {
         void *r5 = func_0207f86c(r0, x);
         if (r5 != NULL) {
-            void *r1 = _ZN12Unk_0209865c13func_0209888cEv(func_02097520(d));
+            void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
             func_02080f4c(r5, r1, data_021d7352, 0);
         }
     }
@@ -2780,7 +2780,7 @@ extern "C" void func_02075a6c(s32 n, s32 b, s32 c, void *d) {
     if (r0 != NULL) {
         void *r5 = func_0207f86c(r0, x);
         if (r5 != NULL) {
-            void *r1 = _ZN12Unk_0209865c13func_0209888cEv(func_02097520(d));
+            void *r1 = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetBySessionSlot(d));
             func_02080ecc(r5, r1, data_021d7352, 0);
         }
     }
@@ -2797,7 +2797,7 @@ extern "C" void func_02075a10() {
         void *r4 = func_0207f86c(r0, x);
         if (r4 != NULL) {
             _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
-            _ZN12Unk_0208091c13func_02080b38Ei(r4, b[1]);
+            _ZN14VillagerMemory13func_02080b38Ei(r4, b[1]);
         }
     }
 }
@@ -2813,7 +2813,7 @@ extern "C" void func_020759b4() {
         void *r4 = func_0207f86c(r0, x);
         if (r4 != NULL) {
             _ZN12Unk_020cbb1813func_02072770EPhj(r5, b + 1, 1);
-            _ZN12Unk_0208091c13func_02080dd0Ea(r4, b[1]);
+            _ZN14VillagerMemory13func_02080dd0Ea(r4, b[1]);
         }
     }
 }
@@ -2830,7 +2830,7 @@ extern "C" void func_02075950() {
         void *r4 = func_0207f86c(r0, k);
         if (r4 != NULL) {
             if (func_02080f94(r4) != 0) {
-                _ZN12Unk_0208091c13func_02080b78EPt(r4, &l.x);
+                _ZN14VillagerMemory13func_02080b78EPt(r4, &l.x);
             }
         }
     }
@@ -2901,9 +2901,9 @@ extern "C" void func_020757ac() {
         func_02078578();
         _ZN12Unk_0209ada413func_0209ad80Ev();
         if (n < 4) {
-            void *q = func_02097520((void *)n);
+            void *q = PlayerData_GetBySessionSlot((void *)n);
             if (q != NULL) {
-                r4 = _ZN12Unk_0209865c13func_0209888cEv(q);
+                r4 = _ZN10PlayerData11getPlayerIdEv(q);
             }
         }
         func_0209a9f0(r7, l.a, &l.c, r4, r5);
@@ -2988,16 +2988,16 @@ extern "C" void func_020755cc() {
 
 extern "C" void func_020755a4(s32 a, s32 b, s32 c, s32 d) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a0284(func_020a0370(), d, 1);
+        if (SaveManager_Get() != 0) {
+            func_020a0284(SaveManager_Get(), d, 1);
         }
     }
 }
 
 extern "C" void func_02075580() {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a0370();
+        if (SaveManager_Get() != 0) {
+            SaveManager_Get();
             func_020a0254(1);
         }
     }
@@ -3005,8 +3005,8 @@ extern "C" void func_02075580() {
 
 extern "C" void func_02075558(s32 a, s32 b, s32 c, s32 d) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a028c(func_020a0370(), d, 1);
+        if (SaveManager_Get() != 0) {
+            func_020a028c(SaveManager_Get(), d, 1);
         }
     }
 }}
@@ -3050,10 +3050,10 @@ extern "C" {
 void *_ZN12Unk_020cbb1813func_02072998Ev(void *);
 }
 extern "C" {
-u32 func_020952e0(u32);
+u32 PlayerSession_GetDataIndex(u32);
 }
 extern "C" {
-u32 func_020974a0(u32);
+u32 PlayerData_Get(u32);
 }
 extern "C" {
 void func_02133ef8(void *, u32);
@@ -3068,10 +3068,10 @@ extern "C" {
 BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *);
 }
 extern "C" {
-void *func_020a0394();
+void *SaveManager_GetTownCompressBuf();
 }
 extern "C" {
-u32 _ZN12Unk_0209f14c13func_0209f14cEv();
+u32 _ZN18TownCompressBuffer7getSizeEv();
 }
 extern "C" {
 BOOL _ZN12Unk_020cbb1813func_02072e88Ei(void *, s32);
@@ -3179,7 +3179,7 @@ extern "C" {
 s32 func_020b50e8();
 }
 extern "C" {
-u32 func_020a0370();
+u32 SaveManager_Get();
 }
 extern "C" {
 void func_020a02a8(u32, u32);
@@ -3202,15 +3202,15 @@ extern "C" void func_02075534() {
 }
 extern "C" void func_0207550c(u32 a, u32 b, u32 c, u32 d) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370()) {
-            func_020a024c(func_020a0370(), d, 1);
+        if (SaveManager_Get()) {
+            func_020a024c(SaveManager_Get(), d, 1);
         }
     }
 }
 extern "C" void func_020754e8() {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370()) {
-            func_020a02a8(func_020a0370(), 1);
+        if (SaveManager_Get()) {
+            func_020a02a8(SaveManager_Get(), 1);
         }
     }
 }
@@ -3313,7 +3313,7 @@ extern "C" BOOL func_02075170(u32 a) {
             }
             m &= 0xf;
             u32 r = (u8)m;
-            r |= (((u8)func_020952e0(0)) << 6) & 0xc0;
+            r |= (((u8)PlayerSession_GetDataIndex(0)) << 6) & 0xc0;
             b[1] = r;
             g = data_020cbb18;
             return _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(g, _ZN12Unk_020cbb1813func_02072ddcEi(g, 4), 2, a, 0, 0, 0, 0, 0, 0);
@@ -3345,8 +3345,8 @@ extern "C" BOOL func_020750ac(u8 *p, void *data, u32 size, u32 type, u32 maskw) 
     return FALSE;
 }
 extern "C" void func_02075078(u8 *p, u32 v) {
-    void *d = func_020a0394();
-    u32 n = _ZN12Unk_0209f14c13func_0209f14cEv();
+    void *d = SaveManager_GetTownCompressBuf();
+    u32 n = _ZN18TownCompressBuffer7getSizeEv();
     u32 sz;
     if (n == 0) sz = 0x15fe4; else sz = n + 4;
     func_020750ac(p, d, sz, 1, v);
@@ -3417,7 +3417,7 @@ fail:
     return FALSE;
 }
 extern "C" void func_02074e80(u8 *p, u32 v) {
-    func_020750ac(p, (void *)func_020974a0(func_020952e0(data_020cbb18->unk_68)), 0x228c, 4, v);
+    func_020750ac(p, (void *)PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68)), 0x228c, 4, v);
 }
 extern "C" void func_02074e50(u8 *p, u32 v) {
     func_020750ac(p, _ZN12Unk_020cbb1813func_02072998Ev(data_020cbb18), 0x68c, 0xc, v);
@@ -3500,7 +3500,7 @@ extern "C" {
 s32 func_020b50e8();
 }
 extern "C" {
-s32 func_020a0370();
+s32 SaveManager_Get();
 }
 extern "C" {
 s32 func_020a0208(s32, s32);
@@ -3536,7 +3536,7 @@ extern "C" {
 void MI_CpuCopy8(void *, void *, u32);
 }
 extern "C" {
-s32 func_0209750c();
+s32 PlayerData_GetCurrent();
 }
 extern "C" {
 s32 func_02097a04(s32);
@@ -3545,7 +3545,7 @@ extern "C" {
 s32 _ZN12Unk_020e282413func_020a148cEv(s32);
 }
 extern "C" {
-s32 func_02095300(s32, s32);
+s32 PlayerSession_SetDataIndex(s32, s32);
 }
 extern "C" {
 void func_020a68a8(void *);
@@ -3590,7 +3590,7 @@ extern "C" {
 s32 func_020a5f7c(u16);
 }
 extern "C" {
-s32 func_020974a0(s32);
+s32 PlayerData_Get(s32);
 }
 extern "C" {
 s32 func_0208f0b0(s32);
@@ -3602,16 +3602,16 @@ extern "C" {
 s32 _ZN12Unk_020e282413func_020a1464Ejh(s32, s32, s32);
 }
 extern "C" {
-s32 func_020a0394();
+s32 SaveManager_GetTownCompressBuf();
 }
 extern "C" {
-s32 _ZN12Unk_0209f14c13func_0209f14cEv(s32);
+s32 _ZN18TownCompressBuffer7getSizeEv(s32);
 }
 extern "C" {
-s32 _ZN12Unk_0209f08013func_0209f08cEj(s32, s32);
+s32 _ZN18TownCompressThread5startEj(s32, s32);
 }
 extern "C" {
-s32 func_020a037c();
+s32 SaveManager_GetTownCompressThread();
 }
 extern "C" {
 s32 func_020a02c8(s32, u16);
@@ -3641,7 +3641,7 @@ extern "C" {
 s32 _ZN12Unk_020cbb1813func_02072ee4EPhjjS0_jtS0_jt(Unk_020cbb18 *, s32, u32, u32, s32, s32, s32, s32, s32, s32);
 }
 extern "C" {
-s32 func_020952e0(s32);
+s32 PlayerSession_GetDataIndex(s32);
 }
 extern "C" {
 s32 func_020750ac(void *, s32, s32, s32, s32);
@@ -3770,11 +3770,11 @@ extern "C" s32 func_02074894() {
     return 0;
 }
 extern "C" s32 func_02074860(void *a) {
-    s32 r = func_020974a0(func_020952e0(data_020cbb18->unk_68));
+    s32 r = PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68));
     return func_020750ac(a, r, 0x228c, 0x15, 1);
 }
 extern "C" s32 func_02074828(void *a) {
-    s32 r = func_02097a04(func_020974a0(func_020952e0(data_020cbb18->unk_68)));
+    s32 r = func_02097a04(PlayerData_Get(PlayerSession_GetDataIndex(data_020cbb18->unk_68)));
     return func_020750ac(a, r, 0x477c, 0x16, 1);
 }
 extern "C" s32 func_020747c0() {
@@ -3789,10 +3789,10 @@ extern "C" s32 func_020747c0() {
 }
 extern "C" void func_02074780(u8 *a) {
     if (func_020b50e8() == 0xc) {
-        if (func_020a0370() != 0) {
+        if (SaveManager_Get() != 0) {
             s32 v = *a;
-            func_020a02c8(func_020a0370(), v & 0xf);
-            func_020a02c0(func_020a0370(), (v >> 6) & 3);
+            func_020a02c8(SaveManager_Get(), v & 0xf);
+            func_020a02c0(SaveManager_Get(), (v >> 6) & 3);
         }
     }
 }
@@ -3800,9 +3800,9 @@ extern "C" void func_02074724(u8 *a, s32 b) {
     u32 n;
     if (func_020b50e8() == 0xc) {
         MI_CpuCopy8(a, &n, 4);
-        s32 p = func_020a0394();
+        s32 p = SaveManager_GetTownCompressBuf();
         MI_CpuCopy8(a + 4, (void *)(p + n), b - 4);
-        s32 r = _ZN12Unk_0209f14c13func_0209f14cEv(p);
+        s32 r = _ZN18TownCompressBuffer7getSizeEv(p);
         u32 lim;
         if (r == 0) {
             lim = 0x15fe4;
@@ -3810,7 +3810,7 @@ extern "C" void func_02074724(u8 *a, s32 b) {
             lim = r + 4;
         }
         if (n + (b - 4) >= lim) {
-            _ZN12Unk_0209f08013func_0209f08cEj(func_020a037c(), 0);
+            _ZN18TownCompressThread5startEj(SaveManager_GetTownCompressThread(), 0);
         }
     }
 }
@@ -3824,8 +3824,8 @@ extern "C" void func_020746c0(u8 *a, s32 b, s32 c) {
         func_0208f1dc(func_0208f0b0(c));
     }
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
-        if (func_020a0370() != 0) {
-            _ZN12Unk_020e282413func_020a1464Ejh(func_020a0370(), c, 1);
+        if (SaveManager_Get() != 0) {
+            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), c, 1);
         }
     }
 }
@@ -3838,8 +3838,8 @@ extern "C" void func_02074668(u8 *a, s32 b) {
         MI_CpuCopy8(a, (void *)func_0208f0b0(4), 0x84c);
     }
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            _ZN12Unk_020e282413func_020a1464Ejh(func_020a0370(), data_020cbb18->unk_64, 1);
+        if (SaveManager_Get() != 0) {
+            _ZN12Unk_020e282413func_020a1464Ejh(SaveManager_Get(), data_020cbb18->unk_64, 1);
         }
     }
 }
@@ -3847,9 +3847,9 @@ extern "C" void func_02074630(u8 *a, s32 b, s32 c) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
     s32 t = c + 3;
-    s32 q = func_020974a0(t);
+    s32 q = PlayerData_Get(t);
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
-    func_02095300(c, t);
+    PlayerSession_SetDataIndex(c, t);
 }
 extern "C" void func_02074620(u8 *a, s32 b, s32 c) {
     func_020a5f9c(c, *a);
@@ -3870,23 +3870,23 @@ extern "C" void func_020745c8(u8 *a) {
 }
 extern "C" void func_0207459c() {
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
-        if (func_020a0370() != 0) {
-            func_020a02a0(func_020a0370(), 1);
+        if (SaveManager_Get() != 0) {
+            func_020a02a0(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void func_02074564(void *a) {
     if (func_020b50e8() == 0xc) {
-        if (func_020a0370() != 0) {
-            MI_CpuCopy8(a, (void *)func_020a0294(func_020a0370()), 8);
-            func_020a0298(func_020a0370(), 1);
+        if (SaveManager_Get() != 0) {
+            MI_CpuCopy8(a, (void *)func_020a0294(SaveManager_Get()), 8);
+            func_020a0298(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void func_02074538() {
     if (func_020b50e8() == 0xd || func_020b50e8() == 0x2f) {
-        if (func_020a0370() != 0) {
-            func_020a02b8(func_020a0370(), 1);
+        if (SaveManager_Get() != 0) {
+            func_020a02b8(SaveManager_Get(), 1);
         }
     }
 }
@@ -3901,7 +3901,7 @@ extern "C" void func_020744fc(void *a, s32 b, s32 c) {
 }
 extern "C" void func_020744b8(u8 *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e || func_020b50e8() == 9) {
-        s32 p = func_020a0370();
+        s32 p = SaveManager_Get();
         if (p != 0) {
             if (func_020eaf90() == 0) {
                 func_020a027c(p, c, *a);
@@ -3929,29 +3929,29 @@ extern "C" void func_0207445c(u8 *a) {
 }
 extern "C" void func_02074434(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a0244(func_020a0370(), c, 1);
+        if (SaveManager_Get() != 0) {
+            func_020a0244(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void func_0207440c(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a023c(func_020a0370(), c, 1);
+        if (SaveManager_Get() != 0) {
+            func_020a023c(SaveManager_Get(), c, 1);
         }
     }
 }
 extern "C" void func_020743e8() {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a02b0(func_020a0370(), 1);
+        if (SaveManager_Get() != 0) {
+            func_020a02b0(SaveManager_Get(), 1);
         }
     }
 }
 extern "C" void func_020743c0(void *a, s32 b, s32 c) {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a024c(func_020a0370(), c, 1);
+        if (SaveManager_Get() != 0) {
+            func_020a024c(SaveManager_Get(), c, 1);
         }
     }
 }
@@ -3961,13 +3961,13 @@ extern "C" void func_020743b4(void *a, s32 b, s32 c) {
 extern "C" void func_0207435c(u8 *a, s32 b) {
     u32 n;
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
+        if (SaveManager_Get() != 0) {
             MI_CpuCopy8(a, &n, 4);
-            s32 r = _ZN12Unk_020e282413func_020a148cEv(func_020a0370());
+            s32 r = _ZN12Unk_020e282413func_020a148cEv(SaveManager_Get());
             Unk_020cbb18 *g = data_020cbb18;
             g->unk_68 = 0;
-            func_02095300(g->unk_68, r);
-            s32 q = func_0209750c();
+            PlayerSession_SetDataIndex(g->unk_68, r);
+            s32 q = PlayerData_GetCurrent();
             MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
         }
     }
@@ -3975,13 +3975,13 @@ extern "C" void func_0207435c(u8 *a, s32 b) {
 extern "C" void func_0207432c(u8 *a, s32 b) {
     u32 n;
     MI_CpuCopy8(a, &n, 4);
-    s32 q = func_02097a04(func_0209750c());
+    s32 q = func_02097a04(PlayerData_GetCurrent());
     MI_CpuCopy8(a + 4, (void *)(q + n), b - 4);
 }
 extern "C" void func_02074308() {
     if (func_020b50e8() == 0x2e) {
-        if (func_020a0370() != 0) {
-            func_020a0208(func_020a0370(), 1);
+        if (SaveManager_Get() != 0) {
+            func_020a0208(SaveManager_Get(), 1);
         }
     }
 }
@@ -4377,7 +4377,7 @@ const FPT_data_020cbc60 data_020cbc60[64] = {
 };
 }
 }
-Unk_021cc7d0 data_021cc7d0;
+Unk_021cc7d0 gOverlayHandle;
 namespace n0 {
 extern "C" {
 extern const FPT_data_020cbe78 data_020cbe78[70];

@@ -7,26 +7,26 @@ public:
 };
 
 extern "C" {
-extern u8 data_021cb420[];
+extern u8 gMelodyPlayer[];
 extern u8 data_021ed2f8[];
-extern u8 data_021cb410[];
-extern s32 data_021cb400;
+extern u8 gMelodyEditPattern[];
+extern s32 sMelodyTimer;
 extern s32 data_021c5384;
 extern u8 data_020e416c;
-extern u8 data_021f482c[];
+extern u8 gCurrentHeap[];
 extern u8 data_027e0438[24];
 extern u8 data_027e0434;
 
-u8 *func_02003ac8(void *);
-u8 *func_02003ad0(void *);
-void func_02003ad8(void *, u32);
-BOOL func_02003ae0(void *);
-void func_02003af0(void *, u32);
-void func_02003af8(void *);
-void func_02003b00(void *, u32);
-void func_02003b08(void *, u32, u32);
-void func_02003b44(void *, u32, void *);
-void func_02003b4c(void *, void *);
+u8 *Snd_MelodyGetDefaultPattern(void *);
+u8 *Snd_MelodyApplyRandomPattern(void *);
+void Snd_MelodyPlayRandom(void *, u32);
+BOOL Snd_MelodyIsPlaying(void *);
+void Snd_MelodyPlayNote(void *, u32);
+void Snd_MelodyStartTrackA(void *);
+void Snd_MelodyPlay(void *, u32);
+void Snd_MelodyPlayAt(void *, u32, u32);
+void Snd_MelodyPlayPattern(void *, u32, void *);
+void Snd_MelodySetPattern(void *, void *);
 s64 func_02133540(u32, u32, u32);
 void *func_020f5b84(void *);
 void func_02001554(u32);
@@ -36,7 +36,7 @@ void func_02001564(u32);
 void func_02001738(u32);
 void func_020016cc(u32);
 void func_020014e4(u32);
-BOOL func_0203a5ac();
+BOOL Camera_RestorePrevMode();
 void func_02002398(u32, u32);
 void func_0206ed98();
 void func_020020b8(u32);
@@ -46,22 +46,22 @@ void func_0206ef68();
 void func_0203d4c4(u32);
 s32 func_01ffcb0c(s32, s32);
 void func_0206ee00(s32);
-BOOL func_0203a35c();
-void func_0203a32c();
+BOOL Camera_IsViewPushed();
+void Camera_PopView();
 void func_0203d4c8(u32);
 void func_020b901c();
 void func_020015e0(u32);
 void func_020014ac(u32);
 void func_0206ef5c();
-BOOL func_0203a830();
+BOOL Camera_SetMode1();
 void func_0206eda4();
 void func_02001650(s32, s32, s32, s32);
 BOOL func_0203d4d4();
 void func_0206ed80();
-u32 func_0209750c();
+u32 PlayerData_GetCurrent();
 u16 *_ZN12Unk_02097ff413func_020983ccEv();
-void *func_020e8618(void *, u32);
-void func_020e85fc(void *, void *);
+void *Heap_AllocTail(void *, u32);
+void Heap_Free(void *, void *);
 void func_0203c764(void *, void *, u32);
 void *func_0203c6d0(void *);
 void *func_0203c6e4(void *);
@@ -237,18 +237,18 @@ extern "C" BOOL func_0206e2f4(void) {
 }
 
 extern "C" void func_0206e240(u16 *p, Unk_020e4608 *x, u8 *img, u16 *pal) {
-    u32 r = func_0209750c();
+    u32 r = PlayerData_GetCurrent();
     BOOL in1 = FALSE;
     u32 v = *p;
     if (v >= 0x11a8 && v <= 0x12a7) in1 = TRUE;
     if (in1 || (v >= 0x12a8 && v <= 0x12af)) {
-        void *heap = *(void **)data_021f482c;
-        void *o = func_020e8618(heap, 0x2c4);
+        void *heap = *(void **)gCurrentHeap;
+        void *o = Heap_AllocTail(heap, 0x2c4);
         if (o != NULL) {
             func_0203c764(o, p, r);
             func_0206dbcc((u16 *)func_0203c6d0(o), pal);
             func_0200203c(func_0203c6e4(o), img, 4, 4);
-            func_020e85fc(heap, o);
+            Heap_Free(heap, o);
             if (x->func_020b84a4((u32)img, 5, 0, 0, 0xf, (u32)pal, 0) != 0) {
                 _ZN12Unk_02097ff413func_020983c0EPt(r, p);
             }
@@ -268,7 +268,7 @@ extern "C" void func_0206e200() {
 
 extern "C" BOOL func_0206e184(u32 arg) {
     char buf[0x24];
-    void *heap = *(void **)data_021f482c;
+    void *heap = *(void **)gCurrentHeap;
     if (!func_02002654("menu/inventory/b_itm_back.bsc", heap, arg)) {
         return FALSE;
     }
@@ -286,22 +286,22 @@ extern "C" BOOL func_0206e084(u32 arg) {
         return func_0206e184(arg);
     }
     BOOL ok;
-    void *heap = *(void **)data_021f482c;
-    s32 r = func_0209750c();
+    void *heap = *(void **)gCurrentHeap;
+    s32 r = PlayerData_GetCurrent();
     u16 tmp = *_ZN12Unk_02097ff413func_020983ccEv();
-    void *a = func_020e8618(heap, 0x200);
+    void *a = Heap_AllocTail(heap, 0x200);
     if (a == NULL) {
         return FALSE;
     }
-    void *b = func_020e8618(heap, 0x20);
+    void *b = Heap_AllocTail(heap, 0x20);
     if (b == NULL) {
-        func_020e85fc(heap, a);
+        Heap_Free(heap, a);
         return FALSE;
     }
-    void *c = func_020e8618(heap, 0x2c4);
+    void *c = Heap_AllocTail(heap, 0x2c4);
     if (c == NULL) {
-        func_020e85fc(heap, a);
-        func_020e85fc(heap, b);
+        Heap_Free(heap, a);
+        Heap_Free(heap, b);
         return FALSE;
     }
     func_0203c764(c, &tmp, r);
@@ -309,9 +309,9 @@ extern "C" BOOL func_0206e084(u32 arg) {
     ok = func_02002580(b, arg, 0, 0, 0);
     func_0200203c(func_0203c6e4(c), a, 4, 4);
     ok &= func_02002438(a, arg, 0, 0, 0xf);
-    func_020e85fc(heap, a);
-    func_020e85fc(heap, b);
-    func_020e85fc(heap, c);
+    Heap_Free(heap, a);
+    Heap_Free(heap, b);
+    Heap_Free(heap, c);
     ok &= func_02002654("menu/inventory/b_itm_back.bsc", heap, arg);
     return ok;
 }
@@ -390,7 +390,7 @@ extern "C" BOOL func_0206defc() {
 }
 
 extern "C" BOOL func_0206deb8() {
-    if (func_0203a830()) {
+    if (Camera_SetMode1()) {
         func_0206eda4();
         func_0206ee00(0);
         data_021cb47c = 0x1000;
@@ -444,8 +444,8 @@ extern "C" BOOL func_0206ddb4() {
 }
 
 extern "C" BOOL func_0206dd48() {
-    if (func_0203a35c()) {
-        func_0203a32c();
+    if (Camera_IsViewPushed()) {
+        Camera_PopView();
     }
     if (Unk_0206dc9c_IsZero(data_020e416c)) {
         func_0203d4c8(0);
@@ -494,7 +494,7 @@ extern "C" BOOL func_0206dc5c() {
     func_020016cc(0x1b);
     func_020014e4(10);
     func_0206e33c();
-    if (func_0203a5ac()) {
+    if (Camera_RestorePrevMode()) {
         data_021cb474.v = 0xb;
     }
     return TRUE;

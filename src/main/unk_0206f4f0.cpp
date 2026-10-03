@@ -9,10 +9,10 @@ struct Unk_0206f6fc_Pos {
 };
 
 extern "C" {
-extern u32 data_021cb410[];
+extern u32 gMelodyEditPattern[];
 extern u32 data_021ed2f8[];
 extern u32 data_021dfd8c[];
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern void *data_020cbb18;
 extern u8 data_021eceac[];
 extern u8 data_021e7f8c[];
@@ -21,16 +21,16 @@ extern u8 data_021ed22e[];
 extern u8 data_020e416c;
 extern u32 data_020c7c1c;
 
-s32 func_0200402c(u32 a);
-void *func_0208a578();
-s32 _ZN12Unk_020e0f1013func_0208c134Eii(void *a, u32 b, u32 c);
-BOOL _ZN12Unk_020e0f1013func_0208c1a4Ev(void *a);
+s32 Snd_PlaySe(u32 a);
+void *Hud_GetCountdown();
+s32 _ZN12HudCountdown5startEii(void *a, u32 b, u32 c);
+BOOL _ZN12HudCountdown9isStoppedEv(void *a);
 s32 MI_CpuCopy8(void *src, void *dst, u32 n);
-void func_0206db34(void *a, void *b);
-void func_0206dad8();
+void Melody_Pack(void *a, void *b);
+void Melody_ApplyEditPattern();
 void func_020795a8(void *a);
-void *func_020e8618(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_AllocTail(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 s32 func_02096a50(void *obj, s32 v);
 BOOL func_02096880(void);
 void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
@@ -75,11 +75,11 @@ u32 data_020de394[5] = {0, 1, 2, 3, 4};
 static inline BOOL Unk_0206f6fc_IsZero(u8 v) { return v == 0 ? TRUE : FALSE; }
 
 extern "C" void func_0206f7d0(u8 *p) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xc0);
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xc0);
     MI_CpuCopy8(p + 1, buf, 0xc0);
     func_02076f88(buf);
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
 }
 
 extern "C" void func_0206f770(u8 *p, u32 id) {
@@ -138,15 +138,15 @@ extern "C" void func_0206f6b8(u8 *p) {
 }
 
 extern "C" void func_0206f668(u8 *p) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xf4);
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xf4);
     MI_CpuCopy8(p + 1, buf, 0xf4);
     u8 *const g = data_021e7f8c;
     void *t = func_0208f158(g);
     func_02065e70(t, buf);
     _ZN12Unk_0208f23813func_0208f168Ev(g);
     _ZN12Unk_0208f23813func_0208f1a8Ej(g, 0);
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
 }
 
 extern "C" void func_0206f650() {
@@ -166,8 +166,8 @@ extern "C" void func_0206f604(u32 a, u32 b, ...) {
 }
 
 extern "C" void func_0206f5ac(u8 *p, u32 code) {
-    void *heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xf4);
+    void *heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xf4);
     s32 r = 0xb;
     MI_CpuCopy8(p + 1, buf, 0xf4);
     if (func_02096a50(buf, 1)) {
@@ -177,38 +177,38 @@ extern "C" void func_0206f5ac(u8 *p, u32 code) {
             r = 0xa;
         }
     }
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
     func_0206f604(r, code);
 }
 
 extern "C" void func_0206f5a0(u8 *p) { data_020de390 = *p; }
 
 extern "C" void func_0206f56c(u8 *p) {
-    MI_CpuCopy8(p + 1, data_021cb410, 0x10);
-    func_0206db34(data_021ed2f8, data_021cb410);
-    func_0206dad8();
+    MI_CpuCopy8(p + 1, gMelodyEditPattern, 0x10);
+    Melody_Pack(data_021ed2f8, gMelodyEditPattern);
+    Melody_ApplyEditPattern();
     func_020795a8(data_021dfd8c);
 }
 
 extern "C" void func_0206f53c(u32 x) {
     if (x == 0) {
-        func_0200402c(0x67);
+        Snd_PlaySe(0x67);
     } else {
-        func_0200402c(0x66);
+        Snd_PlaySe(0x66);
     }
-    void *r = func_0208a578();
-    _ZN12Unk_020e0f1013func_0208c134Eii(r, data_020de394[x], 0);
+    void *r = Hud_GetCountdown();
+    _ZN12HudCountdown5startEii(r, data_020de394[x], 0);
 }
 
 extern "C" void func_0206f4f0(u8 *p) {
     s32 i = p[0] - 0xd;
     if (i == 0) {
-        if (!_ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
+        if (!_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
             func_0206f53c(i);
             func_0206f604(0x12, 4);
         }
     } else {
-        if (_ZN12Unk_020e0f1013func_0208c1a4Ev(func_0208a578())) {
+        if (_ZN12HudCountdown9isStoppedEv(Hud_GetCountdown())) {
             func_0206f53c(i);
             func_0206f604((u8)(i + 0x12), 4);
         }

@@ -49,7 +49,7 @@ s32 DC_InvalidateRange(void *, s32);
 s32 memcmp(const void *, const void *, s32);
 s32 MI_CpuCopy8(void *, void *, s32);
 s32 WM_GetOtherElements(void *, void *);
-s32 func_0206d49c(void *);
+s32 Fatal_Trap(void *);
 s32 WM_ReadStatus(void *);
 s32 WM_Reset(void *);
 s32 WM_End(void *);
@@ -146,7 +146,7 @@ void func_ov001_0221d970(u16 *p) {
         func_ov001_0221db28();
         break;
     default:
-        func_0206d49c(p);
+        Fatal_Trap(p);
         break;
     }
 }

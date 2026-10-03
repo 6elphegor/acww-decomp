@@ -91,7 +91,7 @@ extern Unk_02093bb4_Scratch data_021d0830;
 }
 
 extern "C" {
-extern Unk_02093aa8_Vec data_021f4880;
+extern Unk_02093aa8_Vec gVec3Zero;
 }
 
 extern "C" {
@@ -187,56 +187,56 @@ s32 func_02093f50(Unk_02093dc8_Obj *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e2a78;
+class MsgString;
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
+    BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 extern "C" BOOL func_020a78a4(void *, const void *, s32);
 
 // 8-byte destination buffer at +0xe
-class Unk_020e1c4c : public Unk_020e2a60 {
+class Unk_020e1c4c : public EncodedString {
 public:
     Unk_020e1c4c();
     virtual ~Unk_020e1c4c();
@@ -249,7 +249,7 @@ public:
 };
 
 // 9-byte source buffer at +0x12
-class Unk_020e1c64 : public Unk_020e2a78 {
+class Unk_020e1c64 : public MsgString {
 public:
     Unk_020e1c64();
     virtual ~Unk_020e1c64();
@@ -262,36 +262,36 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
-class Unk_02063954 {
+class TownId {
 public:
     // constructors and methods at 0x020639b8.. are plain functions in symbols.txt (declared below, `this` first)
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ u8 unk_02[8];
 
     s32 func_02094058();
-    void func_02094094(Unk_02063954 *o);
+    void func_02094094(TownId *o);
 };
 
-class Unk_020940a0 : public Unk_02063954 {
+class PlayerId : public TownId {
 public:
-    Unk_020940a0();
-    Unk_020940a0(void *o);
-    Unk_020940a0(const Unk_020940a0 &o);
-    // the base class Unk_02063954 has no declared constructor: its two are called through their symbols
+    PlayerId();
+    PlayerId(void *o);
+    PlayerId(const PlayerId &o);
+    // the base class TownId has no declared constructor: its two are called through their symbols
 
-    void func_020940a0(Unk_020e2a78 *x);
-    void func_020940d0(Unk_020e2a78 *x);
+    void func_020940a0(MsgString *x);
+    void func_020940d0(MsgString *x);
     u8 *func_02094104();
     void func_02094108(void *src);
     s8 func_0209411c();
     void func_02094124(u8 v);
     void func_02094128(u16 v);
     u16 func_0209412c();
-    void func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p);
-    BOOL func_020941e8(Unk_020940a0 *o);
+    void func_020941b4(void *src, u16 a, s8 b, TownId *p);
+    BOOL func_020941e8(PlayerId *o);
     BOOL func_02094218();
-    void func_02094238(Unk_020940a0 *o);
-    void func_02094264(Unk_020940a0 *o);
+    void func_02094238(PlayerId *o);
+    void func_02094264(PlayerId *o);
     void func_02094294();
     void func_020942b8(void *src);
 
@@ -301,14 +301,14 @@ public:
 };
 
 extern "C" {
-extern Unk_02063954 data_021d7352;
-s32 func_02063954(Unk_02063954 *self);
-void func_02063968(Unk_02063954 *self, Unk_02063954 *o);
-void func_0206397c(Unk_02063954 *self, Unk_02063954 *o);
-void func_02063990(Unk_02063954 *self, Unk_02063954 *o);
-void func_020639a0(Unk_02063954 *self);
-void func_020639b8(Unk_02063954 *self);
-void func_020639bc(Unk_02063954 *self, void *o);
+extern TownId data_021d7352;
+s32 func_02063954(TownId *self);
+void func_02063968(TownId *self, TownId *o);
+void func_0206397c(TownId *self, TownId *o);
+void func_02063990(TownId *self, TownId *o);
+void func_020639a0(TownId *self);
+void func_020639b8(TownId *self);
+void func_020639bc(TownId *self, void *o);
 }
 
 extern "C" {
@@ -320,11 +320,11 @@ s32 func_02097740(void *, void *);
 }
 
 extern "C" {
-s32 func_02095774(s32);
+s32 PlayerActor_Get(s32);
 }
 
 extern "C" {
-s32 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
+s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32, u32, u32, u32, u32);
 }
 
 extern "C" {
@@ -344,7 +344,7 @@ BOOL func_02094184(u16 v, u16 *arr, s32 n);
 }
 
 extern "C" {
-s32 func_02095154(s32, s32);
+s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {
@@ -369,7 +369,7 @@ extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
 {
     if (*b == func_020b50e8()) {
         if (*c != 0x75 || *d == 0x75) return;
-        if (func_02095204(*a) != 0 && func_02095154(0x75, *a) != 0) return;
+        if (func_02095204(*a) != 0 && PlayerActor_IsInAction(0x75, *a) != 0) return;
     } else {
         if (*d != 0x75 || *c == 0x75) return;
     }
@@ -387,7 +387,7 @@ extern "C" void func_02094360(s32 *a, u8 *b, s32 *c, s32 *d, s32 *e, s32 *f)
 
 extern "C" s32 func_02094348()
 {
-    return *(s32 *)((u8 *)func_02095774(4) + 0x7fc);
+    return *(s32 *)((u8 *)PlayerActor_Get(4) + 0x7fc);
 }
 
 extern "C" s32 func_02094340() { return 0xc9c; }
@@ -396,18 +396,18 @@ extern "C" s32 func_0209433c() { return 4; }
 
 extern "C" s32 func_02094308(u32 a, u32 b, u32 c, u32 d)
 {
-    return _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
+    return _ZN5Actor5spawnEPvS0_S0_S0_S0_(9, ((a << 30) & 0xc0000000) | (d & 0x3fffffff), b, c, 0);
 }
 
-Unk_020940a0::Unk_020940a0(void *o) { func_020639bc(this, o); }
+PlayerId::PlayerId(void *o) { func_020639bc(this, o); }
 
-Unk_020940a0::Unk_020940a0(const Unk_020940a0 &o) { func_020639bc(this, (void *)&o); func_02094264((Unk_020940a0 *)&o); }
+PlayerId::PlayerId(const PlayerId &o) { func_020639bc(this, (void *)&o); func_02094264((PlayerId *)&o); }
 
-Unk_020940a0::Unk_020940a0() { func_020639b8(this); }
+PlayerId::PlayerId() { func_020639b8(this); }
 
-void Unk_020940a0::func_020942b8(void *src) { MI_CpuCopy8(src, this, 0x16); }
+void PlayerId::func_020942b8(void *src) { MI_CpuCopy8(src, this, 0x16); }
 
-void Unk_020940a0::func_02094294()
+void PlayerId::func_02094294()
 {
     MI_CpuFill8(unk_0c, 0, 8);
     unk_0a = 0;
@@ -415,7 +415,7 @@ void Unk_020940a0::func_02094294()
     func_020639a0(this);
 }
 
-void Unk_020940a0::func_02094264(Unk_020940a0 *o)
+void PlayerId::func_02094264(PlayerId *o)
 {
     MI_CpuCopy8(o->unk_0c, unk_0c, 8);
     unk_0a = o->unk_0a;
@@ -423,7 +423,7 @@ void Unk_020940a0::func_02094264(Unk_020940a0 *o)
     func_0206397c(this, o);
 }
 
-void Unk_020940a0::func_02094238(Unk_020940a0 *o)
+void PlayerId::func_02094238(PlayerId *o)
 {
     MI_CpuCopy8(unk_0c, o->unk_0c, 8);
     o->unk_0a = unk_0a;
@@ -431,19 +431,19 @@ void Unk_020940a0::func_02094238(Unk_020940a0 *o)
     func_02063968(this, o);
 }
 
-BOOL Unk_020940a0::func_02094218()
+BOOL PlayerId::func_02094218()
 {
     if (func_02063954(this) == 1 && unk_0a != 0) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020940a0::func_020941e8(Unk_020940a0 *o)
+BOOL PlayerId::func_020941e8(PlayerId *o)
 {
     if (unk_0a == o->unk_0a && unk_14 == o->unk_14 && memcmp(unk_0c, o->unk_0c, 8) == 0) return TRUE;
     return FALSE;
 }
 
-void Unk_020940a0::func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p)
+void PlayerId::func_020941b4(void *src, u16 a, s8 b, TownId *p)
 {
     MI_CpuCopy8(src, unk_0c, 8);
     unk_0a = a;
@@ -482,41 +482,41 @@ extern "C" u16 func_02094130()
     return (u16)((u16)func_02063b8c(0x7ffc) | 0x8000);
 }
 
-u16 Unk_020940a0::func_0209412c() { return unk_0a; }
+u16 PlayerId::func_0209412c() { return unk_0a; }
 
-void Unk_020940a0::func_02094128(u16 v) { unk_0a = v; }
+void PlayerId::func_02094128(u16 v) { unk_0a = v; }
 
-void Unk_020940a0::func_02094124(u8 v) { unk_14 = v; }
+void PlayerId::func_02094124(u8 v) { unk_14 = v; }
 
-s8 Unk_020940a0::func_0209411c() { return unk_14; }
+s8 PlayerId::func_0209411c() { return unk_14; }
 
-void Unk_020940a0::func_02094108(void *src) { MI_CpuCopy8(src, unk_0c, 8); }
+void PlayerId::func_02094108(void *src) { MI_CpuCopy8(src, unk_0c, 8); }
 
-u8 *Unk_020940a0::func_02094104() { return unk_0c; }
+u8 *PlayerId::func_02094104() { return unk_0c; }
 
-void Unk_020940a0::func_020940d0(Unk_020e2a78 *x)
+void PlayerId::func_020940d0(MsgString *x)
 {
     Unk_020e1c4c buf;
     func_020a78a4(&buf, unk_0c, 8);
-    x->func_020a7aa0(&buf, 0, 0);
+    x->fromEncoded(&buf, 0, 0);
 }
 
-void Unk_020940a0::func_020940a0(Unk_020e2a78 *x)
+void PlayerId::func_020940a0(MsgString *x)
 {
     Unk_020e1c4c buf;
-    buf.func_020a77f8(x);
+    buf.fromMsgString(x);
     buf.func_02093f90(unk_0c, 8);
 }
 
 extern "C" void func_0209409c() {}
 
-void Unk_02063954::func_02094094(Unk_02063954 *o) { func_02063990(this, o); }
+void TownId::func_02094094(TownId *o) { func_02063990(this, o); }
 
-s32 Unk_02063954::func_02094058()
+s32 TownId::func_02094058()
 {
     s32 r = 2;
     if (func_02063954(this) != 0) {
-        Unk_02063954 *p = &data_021d7352;
+        TownId *p = &data_021d7352;
         if (unk_00 == p->unk_00 && memcmp(unk_02, p->unk_02, 8) == 0) {
             r = 0;
         } else {

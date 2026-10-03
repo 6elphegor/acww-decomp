@@ -152,12 +152,12 @@ void *func_0204ebd8(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 void *func_0204cbc0(s32 a);
 s32 func_0204eb30(void *p, void *b, s32 c, s32 d, s32 e);
 void func_0204ee10(s32 *a, s32 *b, s32 c);
-s32 func_0204b25c(void *p);
-s32 func_0204b274(void *p);
-s32 func_02053248(s32 a);
-void _ZN12Unk_0206022c13func_02060244Ejj(void *p, s32 a, s32 b);
-s32 _ZN12Unk_0206022c13func_0206052cEi(void *p, s32 a);
-Unk_02052620 *_ZN12Unk_02060a9013func_0206086cEv();
+s32 Item_GetFurnitureIndex(void *p);
+s32 Item_GetFurnitureDirection(void *p);
+s32 FtrInfo_GetUnk05(s32 a);
+void _ZN9HouseData13func_02060244Ejj(void *p, s32 a, s32 b);
+s32 _ZN9HouseData13func_0206052cEi(void *p, s32 a);
+Unk_02052620 *_ZN9HouseRoom13func_0206086cEv();
 void func_02060174(s32 a);
 void func_020601a4(s32 a, u16 *p);
 s32 func_020b530c(u32 id);
@@ -403,8 +403,8 @@ BOOL Unk_02052620::func_02052620(u32 a, u32 b) { return unk_40.func_02052860(a, 
 
 extern "C" Unk_02052620 *func_020525a8(u32 id) {
     if (func_020b530c(id)) {
-        if (_ZN12Unk_0206022c13func_0206052cEi(data_021e58a8, func_020b533c(id))) {
-            return _ZN12Unk_02060a9013func_0206086cEv();
+        if (_ZN9HouseData13func_0206052cEi(data_021e58a8, func_020b533c(id))) {
+            return _ZN9HouseRoom13func_0206086cEv();
         }
     } else if (func_020b51b8(id)) {
         return &data_021c50e4[func_020b51e8(id)];
@@ -449,11 +449,11 @@ extern "C" s32 func_020524dc(s32 a, s32 b, u32 c) {
 
 extern "C" Unk_0205242c_Self *func_020524a8(Unk_0205242c_Self *p, u16 *q) {
     p->a = -1;
-    s32 r = func_0204b25c(q);
+    s32 r = Item_GetFurnitureIndex(q);
     s32 m = -1;
     if (r != m) {
-        p->a = func_02053248(r);
-        p->b = func_0204b274(q);
+        p->a = FtrInfo_GetUnk05(r);
+        p->b = Item_GetFurnitureDirection(q);
     }
     return p;
 }
@@ -539,7 +539,7 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
-        _ZN12Unk_0206022c13func_02060244Ejj(data_021e58a8, a, b);
+        _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
@@ -548,7 +548,7 @@ extern "C" s32 func_0205218c(Unk_0205218c_B *p) {
         _ZN12Unk_020cbb1813func_020728a4EPhj(g, &t, 1);
         _ZN12Unk_020cbb1813func_02072824Ejj(g, 0x19, 4);
     } else {
-        _ZN12Unk_0206022c13func_02060244Ejj(data_021e58a8, a, b);
+        _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
     }
 }
 
@@ -865,7 +865,7 @@ extern "C" void func_0205170c(s32 a, s32 b, s32 c) {
 }
 
 extern "C" void func_020516e4(s32 a, s32 b) {
-    _ZN12Unk_0206022c13func_02060244Ejj(data_021e58a8, a, b);
+    _ZN9HouseData13func_02060244Ejj(data_021e58a8, a, b);
     func_0205170c(a, b, 4);
 }
 

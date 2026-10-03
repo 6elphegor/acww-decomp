@@ -78,7 +78,7 @@ extern u32 data_0213c1c8[];
 u32 OS_DisableInterrupts(void);
 void OS_RestoreInterrupts(u32);
 void func_02000b44(void *);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 void OS_UnlockCard(u32);
 void OS_LockCard(u32);
 void OS_SetThreadPriority(void *, u32);

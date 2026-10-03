@@ -56,7 +56,7 @@ extern u8 data_020e416c;
 }
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 extern "C" {
@@ -140,7 +140,7 @@ s32 func_02063b8c(s32 a);
 }
 
 extern "C" {
-BOOL func_0204b08c(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
 }
 
 extern "C" {
@@ -160,11 +160,11 @@ s32 _ZN12Unk_0204e2f013func_0204e1a8EP18Unk_0204debc_EntryP16Unk_0204e1a8_Outi(v
 }
 
 extern "C" {
-void func_020e85fc(void *heap, void *p);
+void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {
-void *func_020e8608(void *heap, s32 size);
+void *Heap_Alloc(void *heap, s32 size);
 }
 
 extern "C" {
@@ -189,7 +189,7 @@ u32 func_020603c8(void *p);
 }
 
 extern "C" {
-u32 _ZN12Unk_0206022c13func_020604f8EiPv(void *p, u32 a, void *heap);
+u32 _ZN9HouseData13func_020604f8EiPv(void *p, u32 a, void *heap);
 }
 
 extern "C" {
@@ -217,7 +217,7 @@ s32 func_020b530c();
 }
 
 extern "C" {
-void *_ZN12Unk_0204debc13func_0204debcEi(void *p, void *heap);
+void *_ZN7TownMap13func_0204debcEi(void *p, void *heap);
 }
 
 extern "C" {
@@ -277,12 +277,12 @@ static inline BOOL Unk_0204c6a4_Check(u16 *p) {
 }
 
 // ---- Unk_020da3d4 ----
-class Unk_020da3d4 : public Unk_020d8c7c {
+class Unk_020da3d4 : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     /* 0x50 */ u16 unk_50;
     /* 0x52 */ u16 pad_52;
@@ -318,7 +318,7 @@ extern "C" Unk_0204da0c_Map *func_0204cbc0(s32 a) {
 void Unk_020da3d4::func_0204cb8c(void *heap) {
     s32 i;
     if (unk_58 > 0) {
-        unk_54 = (u32 *)func_020e8608(heap, unk_58 * 4);
+        unk_54 = (u32 *)Heap_Alloc(heap, unk_58 * 4);
         if (unk_54 != NULL) {
             for (i = 0; i < unk_58; i++) unk_54[i] = 0;
         }
@@ -331,11 +331,11 @@ void Unk_020da3d4::func_0204cb3c(void *heap) {
         if (unk_58 > 0) {
             for (i = 0; i < unk_58; i++) {
                 if (unk_54[i] != 0) {
-                    func_020e85fc(heap, (void *)unk_54[i]);
+                    Heap_Free(heap, (void *)unk_54[i]);
                     unk_54[i] = 0;
                 }
             }
-            func_020e85fc(heap, unk_54);
+            Heap_Free(heap, unk_54);
             unk_54 = NULL;
             unk_58 = 0;
         }
@@ -369,9 +369,9 @@ u32 *Unk_020da3d4::func_0204c9e8(u32 *src, s32 n, void *heap) {
     u32 *r = NULL;
     s32 i;
     if (func_020b50e8() == 0 || func_020b50e8() == 0x31 || func_020b50e8() == 0x2c) {
-        r = (u32 *)_ZN12Unk_0204debc13func_0204debcEi(data_021e3680, heap);
+        r = (u32 *)_ZN7TownMap13func_0204debcEi(data_021e3680, heap);
     } else if (func_020b52f8()) {
-        r = (u32 *)_ZN12Unk_0206022c13func_020604f8EiPv(data_021e58a8, func_020b5328(), heap);
+        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(data_021e58a8, func_020b5328(), heap);
     } else if (func_020b51a4()) {
         i = func_020b51d4();
         r = (u32 *)func_0204ce50(heap, 4);
@@ -428,7 +428,7 @@ extern "C" void func_0204c6a4(Unk_0204da0c_Map *p) {
             t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
             if (t) {
                 if (Unk_0204c6a4_Check(t)) {
-                    if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+                    if (!Item_IsTreeStage0(t)) func_0204eb30(p, &val, x, y, 0);
                 }
             }
         x++;
@@ -446,7 +446,7 @@ loop2:
             t = func_0204ebd8(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
             if (t) {
                 if (Unk_0204c6a4_Check(t)) {
-                    if (!func_0204b08c(t)) func_0204eb30(p, &val, x, y, 0);
+                    if (!Item_IsTreeStage0(t)) func_0204eb30(p, &val, x, y, 0);
                 }
             }
         x = x1;
@@ -456,7 +456,7 @@ loop2:
             t2 = func_0204ebd8(p, cx, cy, x - (cx << 4), y - ((u32)cy << 4), 0);
             if (t2) {
                 if (Unk_0204c6a4_Check(t2)) {
-                    if (!func_0204b08c(t2)) func_0204eb30(p, &val, x, y, 0);
+                    if (!Item_IsTreeStage0(t2)) func_0204eb30(p, &val, x, y, 0);
                 }
             }
     }
@@ -478,12 +478,12 @@ s32 Unk_020da3d4::func_0204c5c0(void *heap) {
     unk_54 = NULL;
     unk_58 = 0;
     if (data_021c47c4 == NULL) {
-        data_021c47c4 = func_020e8608(heap, 0x20);
+        data_021c47c4 = Heap_Alloc(heap, 0x20);
         if (data_021c47c4 != NULL) _ZN12Unk_0204e2f013func_0204e2f0Ev();
     }
     if (data_021c47c4 != NULL) {
         info = func_020b5350();
-        h = data_021f482c;
+        h = gCurrentHeap;
         src = NULL;
         sz.a = 0;
         sz.b = 0;
@@ -502,30 +502,30 @@ s32 Unk_020da3d4::func_0204c5c0(void *heap) {
         if (r != NULL) {
             _ZN12Unk_0204e2f013func_0204e1a8EP18Unk_0204debc_EntryP16Unk_0204e1a8_Outi(data_021c47c4, r, &sz, h);
             if (Unk_0204c5c0_IsZero(data_020e416c)) func_0204c6a4((Unk_0204da0c_Map *)data_021c47c4);
-            func_020e85fc(h, r);
+            Heap_Free(h, r);
         }
     }
     return TRUE;
 }
 
 BOOL Unk_020da3d4::vfunc_00() {
-    if (!func_0204c5c0(data_021f482c)) return FALSE;
+    if (!func_0204c5c0(gCurrentHeap)) return FALSE;
     func_0205b470();
     return TRUE;
 }
 
 BOOL Unk_020da3d4::vfunc_0c() {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     if (data_021c47c4 != NULL) {
         func_0204cb3c(heap);
         _ZN12Unk_0204e2f013func_0204e2ccEi(data_021c47c4, heap);
-        func_020e85fc(heap, data_021c47c4);
+        Heap_Free(heap, data_021c47c4);
         data_021c47c4 = NULL;
     }
     return TRUE;
 }
 
-BOOL Unk_020da3d4::vfunc_18() { return TRUE; }
+BOOL Unk_020da3d4::onExecute() { return TRUE; }
 
-BOOL Unk_020da3d4::vfunc_24() { return TRUE; }
+BOOL Unk_020da3d4::onDraw() { return TRUE; }
 

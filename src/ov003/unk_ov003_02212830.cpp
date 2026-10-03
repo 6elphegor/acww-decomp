@@ -1,35 +1,35 @@
 // mwcc-version: 1.2/sp2
 #include "types.h"
 
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u32 unk_04;
     /* 0x08 */ u32 unk_08;
@@ -41,17 +41,17 @@ struct Unk_0203389c_Vec {
 };
 typedef Unk_0203389c_Vec Unk_ov003_Vec;
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ Unk_ov003_Vec unk_5c;
@@ -61,23 +61,23 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
     void func_0203e42c();
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
     /* 0xe4 */ s32 unk_e4;
@@ -87,13 +87,13 @@ public:
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX, except 0x14 (main symbol _ZN12Unk_020ddcf08vfunc_14Ev).
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_s08();
 
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
 
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -114,7 +114,7 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -296,14 +296,14 @@ typedef BOOL (Unk_ov003_02230c6c::*Unk_022129d0_Fn)();
 typedef void (Unk_ov003_02230c6c::*Fn0)();
 typedef BOOL (Unk_ov003_02230c6c::*Fn1)();
 
-class Unk_ov003_02230c6c : public Unk_020d9670, public Unk_020ddcf0 {
+class Unk_ov003_02230c6c : public Character, public Unk_020ddcf0 {
 public:
     Unk_ov003_02230c6c();
     virtual ~Unk_ov003_02230c6c();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
     static void *operator new(unsigned long size);
@@ -386,10 +386,10 @@ public:
 
 extern "C" {
 extern void *data_021c47c4;
-extern void *data_021c3070;
-extern u8 data_021c309c[];
+extern void *gCamera;
+extern u8 gCameraLookAt[];
 extern s32 data_020c8cbc;
-extern u32 data_021f4768;
+extern u32 gFrameCounter;
 extern s32 data_020d0584[4];
 extern u8 data_021ed2e6[];
 extern s16 data_02135f44[];
@@ -413,48 +413,48 @@ s32 func_020e7754(s16 *p, s32 a, s32 b, s32 c);
 void func_020e9888(void *v, s32 ang);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
-s32 func_0203ef38(void *out, void *in);
+s32 WorldCurve_ToCurved(void *out, void *in);
 void func_02099218(void *a, void *b, void *out);
 void func_02099300(void *a, void *out);
 void func_020993dc(void *a);
 void func_020309d4(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
-s32 func_02003e60(void *p, u32 a, u32 b, u32 c);
+s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
 void *func_02095204(u32 a);
-BOOL func_0204b2d4(u16 *p);
-s32 func_0204b25c(u16 *p);
-BOOL func_0204b300(u16 *p);
+BOOL Item_IsFurniture(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
 void func_02039e6c(u16 v);
 void func_0204ee10(s32 *out1, s32 *out2, void *p);
 BOOL func_0204eb30(void *self, u16 *p, s32 x, s32 y, u32 flag);
 u16 *func_0204ebd8(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 s32 func_0204ed8c(void *out, s32 x, s32 z);
-u16 func_0204b10c(void *p);
-s32 func_0204b14c(u16 *c);
+u16 Item_MakeSnowman(void *p);
+s32 Item_IsSnowman(u16 *c);
 s32 func_02063b8c(s32 a);
 s32 func_020307c4(s32 x, s32 y, s32 *a, s32 *b, s32 *c);
 s32 func_02031284(s32 x, s32 y);
 s32 func_02031218(s32 x, s32 y);
-BOOL func_0204bd14(void *p);
+BOOL Item_IsMarker(void *p);
 s32 func_020b5184();
 Rec *func_020af3f4();
-void func_020b35f8(void *a, void *b, const char *c);
+void String_Load(void *a, void *b, const char *c);
 BOOL func_0203d67c(void *p);
 void func_0203d704(void *self, s32 a);
-void *func_020e8608(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_Alloc(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 
-void _ZN12Unk_020d967013func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN12Unk_020d967013func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
-void _ZN12Unk_020e3eb4C1Ev(void *self);
-void _ZN12Unk_020e3eb4D1Ev(void *self);
+void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+void _ZN12MsgString256C1Ev(void *self);
+void _ZN12MsgString256D1Ev(void *self);
 void _ZN12Unk_020af53c13func_020af53cEj(void *self, u32 a);
 s32 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
-void _ZN12Unk_020dbe3413func_0205553cEPi(void *self, void *v);
+void _ZN5Model13func_0205553cEPi(void *self, void *v);
 void _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *self, u32 a, const char *b);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *self, void *v);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *self);
@@ -537,7 +537,7 @@ extern "C" s32 func_ov003_02213fbc() { return 0x800; }
 extern "C" s32 func_ov003_02213fb4() { return 0x1400; }
 
 void *Unk_ov003_02230c6c::operator new(unsigned long size) {
-    void *p = func_020e8608(data_021c620c, size);
+    void *p = Heap_Alloc(data_021c620c, size);
     func_0212899c(p, 0, size);
     return p;
 }
@@ -545,7 +545,7 @@ void *Unk_ov003_02230c6c::operator new(unsigned long size) {
 void Unk_ov003_02230c6c::operator delete(void *p) {
     void *h = data_021c620c;
     if (h) {
-        func_020e85fc(h, p);
+        Heap_Free(h, p);
     }
 }
 
@@ -572,7 +572,7 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
         r = func_020af3f4();
         r[i & 1].w = sv;
     }
-    func_0203e624((u16)unk_08);
+    setCharId((u16)unk_08);
     func_ov003_022129d0(0);
     func_ov003_0221316c(this);
     unk_68.x = unk_5c.x;
@@ -597,7 +597,7 @@ BOOL Unk_ov003_02230c6c::vfunc_00() {
     func_ov003_0222ec00(this);
 }
 
-BOOL Unk_ov003_02230c6c::vfunc_18() {
+BOOL Unk_ov003_02230c6c::onExecute() {
     s32 t = FX_Div(0xa000, 0x64000);
     if (unk_374.e == 0) unk_370 = t;
     unk_68.x = unk_318.x;
@@ -625,18 +625,18 @@ BOOL Unk_ov003_02230c6c::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02230c6c::vfunc_24() {
-    if (data_021c3070 != 0) {
-        if (func_020e9650(data_021c309c, &unk_5c) <= data_020c8cbc) {
+BOOL Unk_ov003_02230c6c::onDraw() {
+    if (gCamera != 0) {
+        if (func_020e9650(gCameraLookAt, &unk_5c) <= data_020c8cbc) {
             s32 s = FX_Div(unk_268, 0x1000);
             V3P v;
             v.x = s;
             v.y = s;
             v.z = s;
             if (unk_398 == 0xb) {
-                _ZN12Unk_020dbe3413func_0205553cEPi(&unk_1cc, &v);
+                _ZN5Model13func_0205553cEPi(&unk_1cc, &v);
             } else {
-                _ZN12Unk_020dbe3413func_0205553cEPi(&unk_130, &v);
+                _ZN5Model13func_0205553cEPi(&unk_130, &v);
             }
             func_020abc10(&unk_5c, unk_268, 0x4000, 0x1000);
         }
@@ -654,7 +654,7 @@ BOOL Unk_ov003_02230c6c::vfunc_0c() {
         s32 hx = lx >> 4;
         s32 hy = ly >> 4;
         u16 *c = func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
-        if (c != 0 && func_0204b14c(c) != 0) {
+        if (c != 0 && Item_IsSnowman(c) != 0) {
             u16 v = 0xfff1;
             func_0204eb30(g, &v, x, y, 0);
         }
@@ -700,14 +700,14 @@ extern "C" void func_ov003_02213a30(Obj *o, s32 a, s32 b)
         q.z = v1.z;
         q.w = data_02135f44[u + 1];
         func_02099218(&q, &o->unk_2f4, &o->unk_2f4);
-        if ((data_021f4768 & 7) == o->unk_08) {
+        if ((gFrameCounter & 7) == o->unk_08) {
             func_020993dc(&o->unk_2f4);
         }
     }
     func_01ffd070(&ex, &o->unk_5c, &o->unk_304);
     ex.y = ex.y + o->unk_268;
     ex.y = ex.y - 0x400;
-    s32 ang = func_0203ef38(&pv, &ex);
+    s32 ang = WorldCurve_ToCurved(&pv, &ex);
     func_020e8388(&m, pv.x, pv.y, pv.z);
     func_020e8434(&m, ang);
     func_02099300(&o->unk_2f4, &m2);
@@ -933,7 +933,7 @@ extern "C" BOOL func_ov003_022132b4(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal
     outPos->z = pv[1].z;
     o->unk_374.e = 1;
     o->unk_390 = h[0];
-    func_02003e60(o->unk_324, 0x820, 0x7f, 0);
+    Snd_SeEmitterPlayHeld(o->unk_324, 0x820, 0x7f, 0);
     {
         s32 t = FX_Div(o->unk_268 - 0xa00, 0xa00);
         s32 r = func_01ffcb0c(0xc00, 0x1000 - t) + 0x200;
@@ -1020,7 +1020,7 @@ extern "C" BOOL func_ov003_02213058(Pos *pos) {
         hy = ly >> 4;
         c = func_0204ebd8(g, hx, hy, lx - (hx << 4), ly - (hy << 4), 0);
         if (c) {
-            if (func_0204bd14(c)) return FALSE;
+            if (Item_IsMarker(c)) return FALSE;
         }
         t = func_020307c4(x, y, &s18, &s1c, &s20);
         if (x != px0 || y != py0) {
@@ -1059,7 +1059,7 @@ extern "C" BOOL func_ov003_02212fd4(void *a, Pos *pos, u16 *out) {
             s32 x, y;
             s32 hx, hy, lx, ly;
             u16 *c;
-            t = func_0204b10c(a);
+            t = Item_MakeSnowman(a);
             func_0204ee10(&x, &y, pos);
             lx = *(volatile s32 *)&x;
             ly = *(volatile s32 *)&y;
@@ -1083,18 +1083,18 @@ extern "C" BOOL func_ov003_02212f04(void *a, void *pos, u16 *out) {
         u8 mask;
         s32 n;
         s32 k;
-        u32 A;
+        u32 LampLights;
         s32 C;
         s32 j;
-        t[0] = func_0204b10c(a);
+        t[0] = Item_MakeSnowman(a);
         func_0204ee10(&x, &y, pos);
         mask = 0;
         n = 0;
-        for (A = 0; A < 8; A++) {
-            const s16 *e = &data_ov003_0222efb8[A * 2];
-            func_0204ed8c(&p, x + data_ov003_0222efb8[A * 2], y + e[1]);
+        for (LampLights = 0; LampLights < 8; LampLights++) {
+            const s16 *e = &data_ov003_0222efb8[LampLights * 2];
+            func_0204ed8c(&p, x + data_ov003_0222efb8[LampLights * 2], y + e[1]);
             if (func_ov003_02213058(&p)) {
-                mask |= 1 << A;
+                mask |= 1 << LampLights;
                 n++;
             }
         }
@@ -1131,14 +1131,14 @@ extern "C" BOOL func_ov003_02212ebc(void *p) {
 
 extern "C" BOOL func_ov003_02212e50(u16 *p) {
     BOOL ok;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         u16 t = 0xfff1;
-        ok = func_0204b25c(p) == func_0204b25c(&t) ? TRUE : FALSE;
+        ok = Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&t) ? TRUE : FALSE;
     } else {
         ok = *p == 0xfff1 ? TRUE : FALSE;
     }
     if (!ok) {
-        if (func_0204b300(p) || func_0204b2d4(p)) {
+        if (Item_IsNormalItem(p) || Item_IsFurniture(p)) {
             func_02039e6c(*p);
             return TRUE;
         }
@@ -1269,23 +1269,23 @@ BOOL Unk_ov003_02230c6c::func_ov003_02212950() {
 void Unk_ov003_02230c6c::func_ov003_0221294c() {}
 
 BOOL Unk_ov003_02230c6c::func_ov003_02212888() {
-    _ZN12Unk_020d967013func_0203e488Ei(this, this);
+    _ZN9Character13func_0203e488Ei(this, this);
     s32 r;
     if (unk_374.g) {
         r = (unk_374.b & 3) * 3 + func_02063b8c(3);
     } else {
         r = (unk_374.b & 3) * 3 + 12 + func_02063b8c(3);
     }
-    func_020a710c("sp_npc_snowman");
+    setFileName("sp_npc_snowman");
     unk_1e = r;
     ((Unk_ov003_02212830_Ctl *)unk_3c)->unk_08 = 1;
     u8 c = 0x26;
     u32 buf[0x46];
-    _ZN12Unk_020e3eb4C1Ev(buf);
-    func_020b35f8(buf, &c, "st_spnpc_name");
+    _ZN12MsgString256C1Ev(buf);
+    String_Load(buf, &c, "st_spnpc_name");
     static_cast<Unk_020ddcf0 &>(*this).func_02065f90((u8 *)((Unk_ov003_02212888_Str *)buf)->vfunc_0c(), 0);
     unk_374.g = 0;
-    _ZN12Unk_020e3eb4D1Ev(buf);
+    _ZN12MsgString256D1Ev(buf);
     return TRUE;
 }
 
@@ -1304,7 +1304,7 @@ BOOL Unk_ov003_02230c6c::func_ov003_02212860() {
 void Unk_ov003_02230c6c::func_ov003_02212830() {
     if (unk_3c) {
         if (((Unk_ov003_02212830_Ctl *)unk_3c)->unk_04 == 0) {
-            _ZN12Unk_020d967013func_0203e47cEi(this, this);
+            _ZN9Character13func_0203e47cEi(this, this);
             func_0203d67c(this);
         }
     }

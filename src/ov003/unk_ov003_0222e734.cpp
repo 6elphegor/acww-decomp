@@ -70,7 +70,7 @@ struct Unk_ov003_0222ed20_Loc {
 
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
 #define func_020af514 _ZN12Unk_020af51413func_020af514Ev
 #define func_020af564 _ZN12Unk_020af53c13func_020af564Ev
@@ -93,10 +93,10 @@ BOOL func_020310f8(s32 a, s32 b);
 s32 func_02063b8c(s32 n);
 void *func_02037558(void *c, u32 i, u32 j, s32 k);
 void func_02037590(void *c, u16 *p, u32 a, u32 b, u32 d);
-BOOL func_0204b14c(u16 *p);
-s32 func_0204b124(u16 *p);
+BOOL Item_IsSnowman(u16 *p);
+s32 Item_GetSnowmanIndex(u16 *p);
 s32 func_020af590(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
-s32 func_02002cf8(u32 a, u32 b, void *c, u32 d, void *e);
+s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
 Unk_ov003_0222ed20_St *func_020af3f4();
 void func_020af514();
 s32 func_020b50bc();
@@ -135,7 +135,7 @@ extern "C" void func_ov003_0222ed20(void *self) {
     struct {
         Unk_ov003_0222ed20_Loc l;
         s32 p[3];
-        Unk_ov003_0222ed20_V3 A, B;
+        Unk_ov003_0222ed20_V3 LampLights, LightLevel;
     } f;
     u32 i;
     for (i = 0; i < 3; i++) {
@@ -157,32 +157,32 @@ extern "C" void func_ov003_0222ed20(void *self) {
         if (func_020af564(data_021ed2e6) == 0) {
             if (func_020af3f4()->a.x != 0) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
-                f.A.x = s->a.x;
-                f.A.y = s->a.y;
-                f.A.z = s->a.z;
+                f.LampLights.x = s->a.x;
+                f.LampLights.y = s->a.y;
+                f.LampLights.z = s->a.z;
             } else {
-                func_ov003_0222e734(self, &f.A, 0, 1);
+                func_ov003_0222e734(self, &f.LampLights, 0, 1);
             }
             if (func_020af3f4()->b.x != 0) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
                 Unk_ov003_0222ed20_V3 *pv = &s->b;
-                f.B.x = pv->x;
-                f.B.y = pv->y;
-                f.B.z = pv->z;
+                f.LightLevel.x = pv->x;
+                f.LightLevel.y = pv->y;
+                f.LightLevel.z = pv->z;
             } else {
-                func_ov003_0222e734(self, &f.B, (s32)&f.A, 1);
+                func_ov003_0222e734(self, &f.LightLevel, (s32)&f.LampLights, 1);
             }
-            if (func_02002cf8(0xbd, 0, &f.A, 0, self)) {
+            if (Actor_spawn(0xbd, 0, &f.LampLights, 0, self)) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
-                s->a.x = f.A.x;
-                s->a.y = f.A.y;
-                s->a.z = f.A.z;
+                s->a.x = f.LampLights.x;
+                s->a.y = f.LampLights.y;
+                s->a.z = f.LampLights.z;
             }
-            if (func_02002cf8(0xbd, 1, &f.B, 0, self)) {
+            if (Actor_spawn(0xbd, 1, &f.LightLevel, 0, self)) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
-                s->b.x = f.B.x;
-                s->b.y = f.B.y;
-                s->b.z = f.B.z;
+                s->b.x = f.LightLevel.x;
+                s->b.y = f.LightLevel.y;
+                s->b.z = f.LightLevel.z;
             }
         }
     }
@@ -206,8 +206,8 @@ extern "C" void func_ov003_0222ec20(void *self) {
                     for (lx = 0; lx < 16; lx++) {
                         u16 *t = (u16 *)func_02037558(cell, lx, ly, 0);
                         if (t != 0) {
-                            if (func_0204b14c(t)) {
-                                s32 v = func_0204b124(t);
+                            if (Item_IsSnowman(t)) {
+                                s32 v = Item_GetSnowmanIndex(t);
                                 if (func_020af590(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
                                     u16 tmp[1];
                                     tmp[0] = 0xfff1;
@@ -216,8 +216,8 @@ extern "C" void func_ov003_0222ec20(void *self) {
                                     n = v * 2 + 2;
                                     Unk_ov003_0222ed20_V3 loc;
                                     func_0204eda4(&loc, bx, by, lx, ly);
-                                    func_02002cf8(0xbd, n, &loc, 0, self);
-                                    func_02002cf8(0xbd, n + 1, &loc, 0, self);
+                                    Actor_spawn(0xbd, n, &loc, 0, self);
+                                    Actor_spawn(0xbd, n + 1, &loc, 0, self);
                                 }
                             }
                         }

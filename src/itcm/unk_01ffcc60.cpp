@@ -4,11 +4,11 @@
 #include "types.h"
 
 extern "C" {
-extern s32 data_021cb3dc;
-extern s32 data_020dc520;
-extern u16 data_021cb3c0;
-extern u8 data_021cb3ec[];
-extern u8 data_021cb3e4[];
+extern s32 sVBlankCount;
+extern s32 gVBlanksPerFrame;
+extern u16 gMainWaitingFrame;
+extern u8 gFrameWaitQueue[];
+extern u8 gVBlankQueue[];
 extern u8 data_027e0000[];
 extern u8 data_027e0434;
 extern u8 data_027e0438[];
@@ -39,17 +39,17 @@ extern "C" void func_01ffccf4(void) {
 }
 
 // vblank work
-extern "C" void func_01ffcc60(void) {
-    data_021cb3dc++;
-    if (data_021cb3dc >= data_020dc520) {
-        if (data_021cb3c0 != 0) {
-            OS_WakeupThread(data_021cb3ec);
-            data_021cb3dc = 0;
+extern "C" void Main_VBlankCallback(void) {
+    sVBlankCount++;
+    if (sVBlankCount >= gVBlanksPerFrame) {
+        if (gMainWaitingFrame != 0) {
+            OS_WakeupThread(gFrameWaitQueue);
+            sVBlankCount = 0;
             func_020b83f0();
         }
     }
     func_0205b714();
-    OS_WakeupThread(data_021cb3e4);
+    OS_WakeupThread(gVBlankQueue);
     *(vu32 *)((u32)data_027e0000 + 0x3ff8) |= 1;
 }
 

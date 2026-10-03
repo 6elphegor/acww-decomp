@@ -1,14 +1,14 @@
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 extern "C" {
-s32 func_0200402c(s32 a);
-void func_02061168(u16 *out, u16 *in, s32 n);
-s32 func_0204b2d4(u16 *p);
+s32 Snd_PlaySe(s32 a);
+void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
+s32 Item_IsFurniture(u16 *p);
 s32 func_02042c64(s32 a, s32 b);
 u16 *func_020342cc(void *a, s32 b, s32 c, s32 d);
 u16 *func_02034250(void *a, s32 b, s32 c, s32 d);
@@ -43,7 +43,7 @@ public:
     /* 0x18 */ u8 unk_18;
 };
 
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -51,11 +51,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -182,23 +182,23 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
     u16 in = a;
     u16 v;
     s32 out;
-    func_02061168(&v, &in, 0);
-    if (func_0204b2d4(&v)) {
+    Item_ToPlacedForm(&v, &in, 0);
+    if (Item_IsFurniture(&v)) {
         switch (func_ov004_02233f08(&out, &v, 1)) {
         case 0:
             func_ov096_0229865c(self);
             func_ov096_02298334(self, 3, 0xff, 0);
-            func_0200402c(0x73);
+            Snd_PlaySe(0x73);
             return 0;
         case 1:
             func_ov096_0229865c(self);
             func_ov096_02298334(self, 5, 0xff, 1);
-            func_0200402c(0x73);
+            Snd_PlaySe(0x73);
             return 0;
         case 2:
             func_ov096_0229865c(self);
             func_ov096_02298334(self, 3, 0xff, 0);
-            func_0200402c(0x73);
+            Snd_PlaySe(0x73);
             return 0;
         default:
             func_ov004_02235028(out);
@@ -209,7 +209,7 @@ extern "C" s32 func_ov097_0229b2bc(Unk_ov096_0229aea8 *self, s32 a) {
     if (self->unk_c4 == -1) {
         func_ov096_0229865c(self);
         func_ov096_02298334(self, 3, 0xff, 0);
-        func_0200402c(0x73);
+        Snd_PlaySe(0x73);
         return 0;
     }
     return 2;

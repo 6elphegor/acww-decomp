@@ -1,12 +1,12 @@
 #include "types.h"
 
 // 2-byte element (0xfff1 = none), constructed by __sinit; destructor is in another unit (0x02004b60)
-class Unk_0203442c {
+class ItemId {
 public:
     u16 unk_00;
 
-    Unk_0203442c() { unk_00 = 0xfff1; }
-    ~Unk_0203442c();
+    ItemId() { unk_00 = 0xfff1; }
+    ~ItemId();
 };
 
 struct Unk_02034250_Id {
@@ -23,9 +23,9 @@ void *func_ov004_0222aa74();
 void *func_ov004_0222aa1c();
 void *func_ov004_0222aacc(u16 *id, s32 a, s32 b);
 void *func_ov004_0222ab80(u16 *id, s32 a, s32 b);
-s32 func_0204b640(u16 *out, s32 a, s32 b);
-BOOL func_0209750c();
-u32 _ZN12Unk_0209865c13func_0209888cEv();
+s32 Item_SetDesign(u16 *out, s32 a, s32 b);
+BOOL PlayerData_GetCurrent();
+u32 _ZN10PlayerData11getPlayerIdEv();
 u32 func_02097740(void *a, u32 b);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *p);
 s32 func_020b50e8();
@@ -33,9 +33,9 @@ BOOL func_020b530c(s32 a);
 void _ZN12Unk_020cbb1813func_020728d4Ev(void *p);
 void _ZN12Unk_020cbb1813func_020728a4EPhj(void *p, void *q, s32 n);
 void _ZN12Unk_020cbb1813func_02072824Ejj(void *p, s32 a, s32 b);
-void *_ZN12Unk_0206022c13func_02060550Ei(void *a, s32 b);
-void _ZN12Unk_02060a9013func_02060808EPtj(void *a, void *b, s32 c);
-void _ZN12Unk_02060a9013func_020607e0EPtj(void *a, void *b, s32 c);
+void *_ZN9HouseData13func_02060550Ei(void *a, s32 b);
+void _ZN9HouseRoom13func_02060808EPtj(void *a, void *b, s32 c);
+void _ZN9HouseRoom13func_020607e0EPtj(void *a, void *b, s32 c);
 
 BOOL func_0203411c(u32 i, u16 *v);
 BOOL func_0203414c(u32 i, u16 *v);
@@ -46,9 +46,9 @@ void *func_020342cc(u16 *id, s32 a, s32 b, s32 c);
 void func_02034194(u16 *a, s32 b, s32 c, s32 d, u8 e);
 }
 
-extern Unk_0203442c data_021c1a44;
-extern Unk_0203442c data_021c1a6c[0x33];
-extern Unk_0203442c data_021c1ad4[0x33];
+extern ItemId data_021c1a44;
+extern ItemId data_021c1a6c[0x33];
+extern ItemId data_021c1ad4[0x33];
 
 static inline BOOL Unk_020341c0_IsOne(u8 v) { return v == 1 ? TRUE : FALSE; }
 
@@ -68,10 +68,10 @@ struct Unk_02034048_Pkt {
 extern "C" void func_020343b0(u16 *out, s32 a) {
     u32 x = a & 7;
     u32 y = 0;
-    if (func_0209750c()) {
-        y = func_02097740(data_021d735c, _ZN12Unk_0209865c13func_0209888cEv()) & 3;
+    if (PlayerData_GetCurrent()) {
+        y = func_02097740(data_021d735c, _ZN10PlayerData11getPlayerIdEv()) & 3;
     }
-    func_0204b640(out, y, x);
+    Item_SetDesign(out, y, x);
 }
 
 extern "C" void func_02034320(u16 *id, s32 a, s32 b, s32 c) {
@@ -215,13 +215,13 @@ extern "C" void func_02034048(Unk_02034048_Pkt *p)
     if (p->id == func_020b50e8()) {
         func_02034194(&tmp, f7, f6, f8, 0);
     } else if (func_020b530c(id)) {
-        void *r = _ZN12Unk_0206022c13func_02060550Ei(data_021e58a8, id);
+        void *r = _ZN9HouseData13func_02060550Ei(data_021e58a8, id);
         if (r != NULL) {
             if (f6) {
-                _ZN12Unk_02060a9013func_02060808EPtj(r, &tmp, f7);
+                _ZN9HouseRoom13func_02060808EPtj(r, &tmp, f7);
                 func_0203414c(id, &tmp);
             } else {
-                _ZN12Unk_02060a9013func_020607e0EPtj(r, &tmp, f7);
+                _ZN9HouseRoom13func_020607e0EPtj(r, &tmp, f7);
                 func_0203411c(id, &tmp);
             }
         }
@@ -232,6 +232,6 @@ extern "C" void func_02034048(Unk_02034048_Pkt *p)
     }
 }
 
-Unk_0203442c data_021c1a44;
-Unk_0203442c data_021c1a6c[0x33];
-Unk_0203442c data_021c1ad4[0x33];
+ItemId data_021c1a44;
+ItemId data_021c1a6c[0x33];
+ItemId data_021c1ad4[0x33];

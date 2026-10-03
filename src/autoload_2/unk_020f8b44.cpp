@@ -19,7 +19,7 @@ struct Q {
 };
 
 struct Fo;
-// view of data_021f5b80 (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as data_021f5bbc)
+// view of gSndMgr (sound manager of G006): +0 current object, +0x2c Q*, +0x3c Hd* (same word as data_021f5bbc)
 struct Mg {
     Fo *cur;
     u8 p4[0x28];
@@ -50,7 +50,7 @@ struct Fo {
     u8 c2e;
 };
 
-// base object (vtable 0x0213bb90), view A (+4 is an fx32 value)
+// base object (vtable 0x0213bb90), view LampLights (+4 is an fx32 value)
 struct Rb {
     u32 w0;
     u16 h4;
@@ -203,22 +203,22 @@ struct Pool32 {
 };
 
 extern "C" {
-extern Mg data_021f5b80;
+extern Mg gSndMgr;
 extern s16 data_021f5c30;
 extern s16 data_021f5c34;
 void func_0210a024(void *p, u32 sel, void *out);
 void func_0210a008(u32 sel, void *out);
 void NNS_SndArcPlayerStartSeq(void *p, u32 v);
-void func_020eda30(void *p, u32 v);
-void func_020eda60(void *p);
+void Snd_StopHandle(void *p, u32 v);
+void Snd_InitHandle(void *p);
 void NNS_SndHandleReleaseSeq(void *p);
 void func_02109fd0(void *p, u32 a, s32 b);
-void func_020f86c0(Rb *r);
-void func_020f87b4(Rb *r);
-void func_020f88b4(Rb *r);
-void func_020f8604(Rb *r, void *arg);
-s32 func_020f83fc(Rb *r);
-void func_020f8a80(Rb *r, u32 mode);
+void BgmSyncSnd_ReadHeader(Rb *r);
+void BgmSyncSnd_ReadVars(Rb *r);
+void BgmSyncSnd_SelectStep(Rb *r);
+void BgmSyncSnd_UpdatePosition(Rb *r, void *arg);
+s32 BgmSyncSnd_CalcPhase(Rb *r);
+void BgmSyncSnd_SetState(Rb *r, u32 mode);
 void func_020f9690(Entry *e, void *list);
 void spl_init(Entry *e, void *tab, void *v);
 Entry *spl_pop_front(void *list);

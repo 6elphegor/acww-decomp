@@ -3,47 +3,47 @@
 
 // ---- Classes defined in other files (declarations only) ----
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    u8 func_020a7a0c(Unk_020e2a78 *other);
-    u8 func_020a7a28(u8 *str);
-    u8 func_020a7a64(u8 *str);
-    void func_020a7c3c();
+    u8 appendString(MsgString *other);
+    u8 append(u8 *str);
+    u8 setLine(u8 *str);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 // 0x2c bytes (ctor func_020b4154, dtor func_020b413c)
-class Unk_020e3efc : public Unk_020e2a78 {
+class MsgString25 : public MsgString {
 public:
-    Unk_020e3efc();
-    virtual ~Unk_020e3efc();
+    MsgString25();
+    virtual ~MsgString25();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
     /* 0x14 */ u32 unk_14[6];
 };
 
-class Unk_020e2a90 : public Unk_02050288 {
+class MsgTextLabel : public TextLabel {
 public:
-    Unk_020e2a90(s32 arg1, s32 arg2, s32 arg3);
-    virtual ~Unk_020e2a90();
-    virtual void func_08();
-    virtual u32 func_0c();
+    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
+    virtual ~MsgTextLabel();
+    virtual void draw();
+    virtual u32 measureWidth();
 };
 
 class Unk_020e45ec {
@@ -56,7 +56,7 @@ public:
 
 // ---- Classes of this file ----
 
-class Unk_020d909c : public Unk_020e2a78 {
+class Unk_020d909c : public MsgString {
 public:
     Unk_020d909c();
     virtual ~Unk_020d909c();
@@ -66,7 +66,7 @@ public:
     /* 0x14 */ u8 unk_14[0x40];
 };
 
-class Unk_020d9084 : public Unk_020e2a78 {
+class Unk_020d9084 : public MsgString {
 public:
     Unk_020d9084();
     virtual ~Unk_020d9084();
@@ -76,8 +76,8 @@ public:
     /* 0x14 */ u8 unk_14[0x80];
 };
 
-// Members of Unk_020d905c, all derived from Unk_020e2a78
-class Unk_020d906c : public Unk_020e2a78 {
+// Members of Unk_020d905c, all derived from MsgString
+class Unk_020d906c : public MsgString {
 public:
     Unk_020d906c();
     virtual ~Unk_020d906c();
@@ -104,9 +104,9 @@ public:
 };
 
 extern "C" {
-void _ZN12Unk_020dbe3413func_0205553cEPi(void *self, void *p);
+void _ZN5Model13func_0205553cEPi(void *self, void *p);
 void func_020af330();
-s32 func_02004064();
+s32 Snd_VolumeOff();
 void func_02001504(u32 v);
 void func_020014cc(u32 v);
 void func_02001574(u32 v);
@@ -115,16 +115,16 @@ u32 func_02001510();
 u32 func_020014d8();
 u32 func_02001580();
 u32 func_02001548();
-char *func_020a6b9c(char *p, u32 n);
-u32 func_020a7f94(Unk_020e2a78 *obj);
+char *Msg_SkipLines(char *p, u32 n);
+u32 func_020a7f94(MsgString *obj);
 u8 *func_020382c8();
 void func_020b4154(void *);
 void func_020b413c(void *);
-void func_020b3270(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
-Unk_020e2a90 *func_020a8008(void *a, s32 b, s32 c);
-void func_020a7fd8(Unk_020e2a90 *obj);
-void *func_020e8594(u32 size);
-void func_020e8558(void *p);
+void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+MsgTextLabel *MsgTextLabel_CreateBuffer(void *a, s32 b, s32 c);
+void MsgTextLabel_Destroy(MsgTextLabel *obj);
+void *Mem_AllocTail(u32 size);
+void Mem_Free(void *p);
 void func_02001ea0(void *src, void *dst, s32 w, s32 h);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 u32 _ZN12Unk_0205712013func_0205713cEv(void *p);
@@ -134,7 +134,7 @@ void G3i_LookAt_(void *a, void *b, void *c, s32 d, void *e);
 s32 func_01ffcb0c(s32 a, s32 b);
 void _ZN12Unk_020dbd3413func_02054b14Ev(void *p);
 void _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *p, u32 a, void *b);
-void func_020b3558(void *o, u8 *p, u32 x);
+void String_Load2d(void *o, u8 *p, u32 x);
 void func_020639e8(void *buf, void *fmt, u32 a);
 void func_020382f4(void *a, void *b);
 void func_0212a360(void *a, void *b);
@@ -148,13 +148,13 @@ extern u32 data_021c2208;
 extern u8 data_021c2240[];
 extern Unk_020dbd34_Mtx data_021f47e0;
 extern u8 data_020e416c;
-extern u8 data_021c4910[];
+extern u8 gFontA[];
 
 struct Unk_020d905c_Ptr {
     /* 0x00 */ u32 pad[3];
     /* 0x0c */ u16 unk_0c;
 };
-extern Unk_020d905c_Ptr *data_021eda68;
+extern Unk_020d905c_Ptr *gActorDefaultParent;
 
 struct Unk_02037ea0_V {
     s32 x, y, z;
@@ -164,7 +164,7 @@ struct Unk_02037ea0_G {
     u8 pad[0x40];
     Unk_02037ea0_V a, c, b;
 };
-extern Unk_02037ea0_V data_021f4880;
+extern Unk_02037ea0_V gVec3Zero;
 extern Unk_02037ea0_G data_027e02c8;
 extern u8 data_027e00d0[];
 extern u8 data_027e0114[];
@@ -250,16 +250,16 @@ s32 func_020ea748(void);
 u32 _ZN12Unk_020cbb1813func_02072374Ev(void *);
 void _ZN12Unk_020cbb1813func_02072380Ej(void *, s32);
 void func_020382fc(void);
-void func_0204fe98(void);
+void Backup_CancelAndWait(void);
 void func_02073154(void);
 s32 _ZN12Unk_020cbb1813func_0207238cEv(void *);
-void _ZN12Unk_020e2a7813func_020a7bd8EPS_(void *, void *);
+void _ZN9MsgString4copyEPS_(void *, void *);
 s32 _s32_div_f(s32, s32);
 }
 extern void *data_020cbb18;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u16 data_021f47d8[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u16 gPad[];
 
 u32 data_021c2208;
 Unk_020d905c data_021c251c;
@@ -284,7 +284,7 @@ extern "C" void func_02038450() {
     _ZN12Unk_020cbb1813func_02072380Ej(g, v);
 }
 
-Unk_020d906c::Unk_020d906c() { func_020a7c3c(); }
+Unk_020d906c::Unk_020d906c() { clear(); }
 
 Unk_020d906c::~Unk_020d906c() {}
 
@@ -292,7 +292,7 @@ u32 Unk_020d906c::vfunc_08() { return 0x100; }
 
 u8 *Unk_020d906c::vfunc_0c() { return (u8 *)this + 0x12; }
 
-Unk_020d909c::Unk_020d909c() { func_020a7c3c(); }
+Unk_020d909c::Unk_020d909c() { clear(); }
 
 Unk_020d909c::~Unk_020d909c() {
 }
@@ -306,7 +306,7 @@ u8 *Unk_020d909c::vfunc_0c() {
 }
 
 Unk_020d9084::Unk_020d9084() {
-    func_020a7c3c();
+    clear();
 }
 
 Unk_020d9084::~Unk_020d9084() {
@@ -391,9 +391,9 @@ extern "C" void func_020380e0() {
     c[0] = 0xe3;
     c[1] = 0xe4;
     c[2] = 0xe5;
-    func_020b3558(&data_021c22f4, &c[0], 0);
-    func_020b3558(&data_021c22a0, &c[1], 0);
-    func_020b3558(&data_021c2408, &c[2], 0);
+    String_Load2d(&data_021c22f4, &c[0], 0);
+    String_Load2d(&data_021c22a0, &c[1], 0);
+    String_Load2d(&data_021c2408, &c[2], 0);
 }
 
 void Unk_020d905c::func_02038058() {
@@ -405,7 +405,7 @@ void Unk_020d905c::func_02038058() {
         }
     }
     BOOL b;
-    if (data_021eda68->unk_0c == 5) {
+    if (gActorDefaultParent->unk_0c == 5) {
         b = TRUE;
     } else {
         b = FALSE;
@@ -445,7 +445,7 @@ void Unk_020d905c::func_02037ea0() {
         G3i_PerspectiveW_(0x424, 0xf74, 0x1548, 0xf6, 0x3e800, 0x1000, 0, data_027e00d0);
         data_027e0148[0x7c / 4] &= ~0x50;
         Unk_02037ea0_V a, b, c, d;
-        a = data_021f4880;
+        a = gVec3Zero;
         b.x = 0;
         b.y = 0;
         b.z = -0x1000;
@@ -461,7 +461,7 @@ void Unk_020d905c::func_02037ea0() {
         d.x = r;
         d.y = r;
         d.z = 0x1000;
-        _ZN12Unk_020dbe3413func_0205553cEPi(&unk_04, &d);
+        _ZN5Model13func_0205553cEPi(&unk_04, &d);
     }
 }
 
@@ -501,34 +501,34 @@ void Unk_020d905c::func_02037d94() {
 }
 
 void Unk_020d905c::func_02037ce4() {
-    void *buf = func_020e8594(0x800);
+    void *buf = Mem_AllocTail(0x800);
     if (buf != NULL) {
-        Unk_020e2a90 *o = func_020a8008(buf, 0x20, 2);
+        MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
         if (o != NULL) {
             o->unk_2c = 5;
             o->unk_10 = (u32)unk_250.vfunc_0c();
             o->unk_58 = 2;
             o->unk_50 = 0;
-            o->unk_28 = (Unk_02050288_Font *)data_021c4910;
+            o->unk_28 = (GameFontDesc *)gFontA;
             o->unk_55 = 0;
-            o->func_02050c44();
+            o->alignCenter();
             o->unk_39 = 1;
             o->unk_38 = 0;
-            o->func_02050c90();
+            o->requestRedraw();
             u32 w = o->unk_30;
-            func_020a7fd8(o);
+            MsgTextLabel_Destroy(o);
             if (unk_e4 >= 0 && unk_e0 != 0) {
                 func_02037c40(buf, w);
             }
             func_02001ea0(buf, unk_2e4, 0x20, 2);
         }
-        func_020e8558(buf);
+        Mem_Free(buf);
     }
 }
 
 void Unk_020d905c::func_02037c40(void *buf, s32 x) {
-    Unk_020e3efc t;
-    func_020b3270(&t, unk_e4, 2, 0, 0, 0);
+    MsgString25 t;
+    String_FormatNumber(&t, unk_e4, 2, 0, 0, 0);
     u32 w = func_020a7f94(&t);
     u32 off;
     if (w < 0x10) {
@@ -537,37 +537,37 @@ void Unk_020d905c::func_02037c40(void *buf, s32 x) {
         off = 0;
     }
     s32 px = x + unk_e0 + off;
-    Unk_020e2a90 *o = func_020a8008(buf, 0x20, 2);
+    MsgTextLabel *o = MsgTextLabel_CreateBuffer(buf, 0x20, 2);
     if (o != NULL) {
         o->unk_2c = 5;
-        o->unk_10 = (u32)((Unk_020e2a78 *)&t)->vfunc_0c();
+        o->unk_10 = (u32)((MsgString *)&t)->vfunc_0c();
         o->unk_58 = 2;
         o->unk_50 = 0;
-        o->unk_28 = (Unk_02050288_Font *)data_021c4910;
+        o->unk_28 = (GameFontDesc *)gFontA;
         o->unk_55 = 0;
         o->unk_30 = px;
         o->unk_39 = 1;
         o->unk_38 = 0;
         o->unk_56 = 1;
-        o->func_02050c90();
-        func_020a7fd8(o);
+        o->requestRedraw();
+        MsgTextLabel_Destroy(o);
     }
 }
 
 void Unk_020d905c::func_02037b90(u32 a, u32 b) {
-    unk_250.func_020a7c3c();
+    unk_250.clear();
     unk_e0 = 0;
-    u8 *r = (u8 *)func_020a6b9c((char *)unk_e8.vfunc_0c(), a);
+    u8 *r = (u8 *)Msg_SkipLines((char *)unk_e8.vfunc_0c(), a);
     if (r != NULL) {
-        unk_250.func_020a7a64(r);
+        unk_250.setLine(r);
         if (unk_e4 >= 0 && a == 3) {
             unk_e0 = func_020a7f94(&unk_250);
             Unk_02037b90_S s = *(Unk_02037b90_S *)data_020d9010;
-            unk_250.func_020a7a28((u8 *)&s);
-            unk_250.func_020a7a0c(&unk_1fc);
+            unk_250.append((u8 *)&s);
+            unk_250.appendString(&unk_1fc);
         }
         if (b != 0 && a == 3 && data_021c2204 != 0) {
-            unk_250.func_020a7a28(func_020382c8());
+            unk_250.append(func_020382c8());
         }
     }
 }
@@ -608,7 +608,7 @@ void Unk_020d905c::func_02037ac8() {
 
 void Unk_020d905c::func_02037ab4() {
     func_020af330();
-    func_02004064();
+    Snd_VolumeOff();
 }
 
 void Unk_020d905c::func_02037a28() {
@@ -673,8 +673,8 @@ void Unk_020d905c::func_02037954() {
 }
 
 void Unk_020d905c::func_02037924() {
-    _ZN12Unk_020e2a7813func_020a7bd8EPS_(&unk_e8, &data_021c22f4);
-    _ZN12Unk_020e2a7813func_020a7bd8EPS_((u8 *)this + 0x1fc, &data_021c22a0);
+    _ZN9MsgString4copyEPS_(&unk_e8, &data_021c22f4);
+    _ZN9MsgString4copyEPS_((u8 *)this + 0x1fc, &data_021c22a0);
     func_020378f0();
 }
 
@@ -722,12 +722,12 @@ void Unk_020d905c::func_02037810() {
     func_02037d94();
     func_02037ab4();
     func_020382fc();
-    func_0204fe98();
+    Backup_CancelAndWait();
     func_02073154();
 }
 
 void Unk_020d905c::func_020377f4() {
-    _ZN12Unk_020e2a7813func_020a7bd8EPS_(&unk_e8, &data_021c2408);
+    _ZN9MsgString4copyEPS_(&unk_e8, &data_021c2408);
     func_020377c4();
 }
 
@@ -750,12 +750,12 @@ void Unk_020d905c::func_02037734() {
     unk_c0 = unk_c0 - 1;
     if (unk_c0 <= 0) {
         BOOL b, a;
-        if (data_021f4770 != 0 && data_021f4774 != 0) {
+        if (gTouchHeld != 0 && gTouchChanged != 0) {
             a = TRUE;
         } else {
             a = FALSE;
         }
-        b = (data_021f47d8[1] & 1) ? TRUE : FALSE;
+        b = (gPad[1] & 1) ? TRUE : FALSE;
         if (a != 0 || b != 0) {
             func_0203771c();
         }

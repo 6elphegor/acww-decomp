@@ -42,22 +42,22 @@ struct Unk_020bc754_Slot;
 struct Unk_020bccc8_Entry;
 struct Unk_020bca5c_Elem;
 struct Unk_020bc754_Vec;
-struct Unk_020dd458;
-struct Unk_02063380;
+struct Letter;
+struct ItemPickSpec;
 struct Unk_02062f94_Ret;
 struct Unk_020bc99c_Loc;
 struct Unk_020bcb04_Ent;
 class Unk_020bc58c;
-struct Unk_02089270;
+struct SpriteAnim;
 struct Unk_020bd058;
 struct Unk_020bda7c;
 struct Unk_020bdcbc;
 struct Unk_020bd8f8;
 struct Unk_020bd054;
-struct Unk_0213b91c;
+struct SndEnvChannel;
 struct Unk_0213b970;
 struct Unk_0213b938;
-struct Unk_02000c8c;
+struct FxVec3;
 struct Unk_020bd0a4_Vec3;
 struct Unk_020bd06c;
 struct Unk_020bd774_Entry;
@@ -108,20 +108,20 @@ struct Unk_020b8ec0_Time { u8 unk_00; u8 unk_01; u8 unk_02; u8 pad[5]; };
 struct Unk_02095204 { u8 pad[0x5c]; struct { u32 unk_00; u32 unk_04; u32 unk_08; } unk_5c; };
 struct Unk_021efc08 { u8 pad[4]; u16 unk_04; };
 struct Unk_021efa88 { u8 pad[2]; u16 unk_02; };
-struct Unk_0213b91c {
+struct SndEnvChannel {
     virtual void vfunc_00();
     u32 unk_04;
 };
-struct Unk_0213b938 : Unk_0213b91c {
+struct Unk_0213b938 : SndEnvChannel {
     virtual void vfunc_00();
     u8 unk_08[8];
 };
-class Unk_020e5668 : public Unk_020d8c7c {
+class Unk_020e5668 : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     /* 0x50 */ Unk_0213b938 unk_50;
 };
@@ -479,14 +479,14 @@ struct Unk_020bca5c_Elem {
 struct Unk_020bc754_Vec {
     s32 x, y, z;
 };
-struct Unk_020dd458 {
-    Unk_020dd458();
-    ~Unk_020dd458();
+struct Letter {
+    Letter();
+    ~Letter();
     u8 unk_00[0xf4];
 };
-struct Unk_02063380 {
-    Unk_02063380(s32 a, s32 b);
-    ~Unk_02063380();
+struct ItemPickSpec {
+    ItemPickSpec(s32 a, s32 b);
+    ~ItemPickSpec();
     u32 unk_00;
     u32 unk_04;
 };
@@ -553,14 +553,14 @@ public:
     Unk_020bca5c_Elem unk_2f58[4];
     u8 unk_2fa8[0x10];
 };
-struct Unk_02089270 {
+struct SpriteAnim {
     u8 unk_00[4];
-    ~Unk_02089270();
+    ~SpriteAnim();
 };
 // 0x74-byte element of the 60-element array at the start of Unk_020bcf04
 struct Unk_020bd058 {
     u8 unk_00[0x10];
-    Unk_02089270 unk_10;
+    SpriteAnim unk_10;
     u8 unk_14[0x74 - 0x14];
     Unk_020bd058();
     ~Unk_020bd058();
@@ -590,7 +590,7 @@ struct Unk_020bd054 {
     void func_020bd6dc();
     void func_020bd6f0(s32 a, s32* p, u8 b);
 };
-struct Unk_0213b970 : Unk_0213b91c {
+struct Unk_0213b970 : SndEnvChannel {
     virtual void vfunc_00();
     u32 unk_08;
     void func_02003c30();
@@ -599,17 +599,17 @@ struct Unk_0213b970 : Unk_0213b91c {
     void func_02003c60(void* p);
     void func_02003cbc();
 };
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 x, y, z;
-    Unk_02000c8c();
-    ~Unk_02000c8c();
+    FxVec3();
+    ~FxVec3();
 };
 struct Unk_020bd0a4_Vec3 {
     s32 x, y, z;
 };
 struct Unk_020bd06c {
     Unk_0213b970 unk_00[8];
-    Unk_02000c8c unk_60[8];
+    FxVec3 unk_60[8];
     u8 unk_c0;
 
     Unk_020bd06c();
@@ -1073,7 +1073,7 @@ public:
     void func_020c0634(Unk_020e6924 *owner);
 };
 // Base of Unk_020e6924; its dtor is out of line.
-class Unk_0202e5a8 : public Unk_020d8c7c_Base {
+class Unk_0202e5a8 : public ProcBase {
 public:
     virtual ~Unk_0202e5a8();
 
@@ -1535,16 +1535,16 @@ extern "C" {
 u32 func_02063b8c(u32 n);
 }
 extern "C" {
-Unk_020bffc0_Mtx *func_0203a220(void);
+Unk_020bffc0_Mtx *Camera_GetViewMatrix(void);
 }
 extern "C" {
-void func_0203eeac(void *out, void *in);
+void WorldCurve_Apply(void *out, void *in);
 }
 extern "C" {
 void MTX_MultVec43(void *a, void *b, void *c);
 }
 extern "C" {
-s32 _ZN12Unk_0203b35013func_0203bc3cEv(s32 a);
+s32 _ZN12Unk_0203b3509getFovTanEv(s32 a);
 }
 extern "C" {
 s32 FX_Div(s32 a, s32 b);
@@ -1556,7 +1556,7 @@ extern "C" {
 s32 __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*dtor)(void *));
 }
 extern "C" {
-void _ZN12Unk_02000c8cD1Ev(void *p);
+void _ZN6FxVec3D1Ev(void *p);
 }
 extern "C" {
 void _ZN12Unk_020bd054D1Ev(void *p);
@@ -1592,7 +1592,7 @@ extern "C" {
 BOOL func_020a032c(void);
 }
 extern "C" {
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 }
 extern "C" {
 BOOL _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
@@ -1616,7 +1616,7 @@ extern "C" {
 s32 _ZN12Unk_020660f813func_020679b4Ev(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020aa3b813func_020aa514Ev(void);
+s32 _ZN10ChoiceList9getResultEv(void);
 }
 extern "C" {
 void _ZN12Unk_020660f813func_02067a84EPhPv(void *a, void *b, u32 c);
@@ -1634,7 +1634,7 @@ extern "C" {
 void _ZN12Unk_02086f8413func_02086f98Ev(void);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_020986a4Ev(s32 a);
+s32 _ZN10PlayerData13func_020986a4Ev(s32 a);
 }
 extern "C" {
 s32 _ZN12Unk_020872fc13func_02087364Ev(s32 a);
@@ -1670,13 +1670,13 @@ extern "C" {
 s32 func_020a0414(void);
 }
 extern "C" {
-s32 func_02097520(s32 a);
+s32 PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
 BOOL func_02094f2c(s32 a, s32 b);
 }
 extern "C" {
-void func_02094b0c(void *v, s32 a, s32 b);
+void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
 }
 extern "C" {
 void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
@@ -1700,7 +1700,7 @@ extern "C" {
 void _Z13func_020c22fcv(void);
 }
 extern "C" {
-void func_0203a5d8(void);
+void Camera_SetMode19(void);
 }
 extern "C" {
 s32 func_020816f8(s32 a);
@@ -1715,10 +1715,10 @@ extern "C" {
 s32 _ZN12Unk_02013b1013func_02014220Ev(void *p);
 }
 extern "C" {
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 }
 extern "C" {
-void func_02094ae8(s32 a, s32 b);
+void PlayerActor_RequestAct70(s32 a, s32 b);
 }
 extern "C" {
 void _Z13func_020c22e0v(void);
@@ -1760,7 +1760,7 @@ extern "C" {
 extern u32 data_020c6d1c;
 }
 extern "C" {
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 }
 extern "C" {
 extern s32 data_020d0e20[];
@@ -1779,7 +1779,7 @@ extern "C" {
 extern Unk_020bffc0_Mtx data_021f47e0;
 }
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 extern "C" {
 extern u8 data_021f4570;
@@ -1812,7 +1812,7 @@ extern "C" Unk_020e5668 *func_020c003c();
 extern "C" void *func_020c0078(void *p);
 
 extern "C" void *func_020c0078(void *p) {
-    __cxa_vec_cleanup((u8 *)p + 0x302c, 8, 0xc, _ZN12Unk_02000c8cD1Ev);
+    __cxa_vec_cleanup((u8 *)p + 0x302c, 8, 0xc, _ZN6FxVec3D1Ev);
     __cxa_vec_cleanup((u8 *)p + 0x2f58, 4, 0x14, _ZN12Unk_020bd054D1Ev);
     __cxa_vec_cleanup(p, 0x3c, 0x74, _ZN12Unk_020bd058D1Ev);
     return p;
@@ -1826,7 +1826,7 @@ extern "C" Unk_020e5668 *func_020c003c() {
 }
 
 extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in) {
-    Unk_020bffc0_Mtx *m = func_0203a220();
+    Unk_020bffc0_Mtx *m = Camera_GetViewMatrix();
     data_021f47e0 = *m;
     Unk_020bfe30_Vec v;
     v.x = in->x;
@@ -1834,9 +1834,9 @@ extern "C" void func_020bffc0(s32 *out, Unk_020bfe30_Vec *in) {
     v.z = in->z;
     u8 a[12];
     s32 b[3];
-    func_0203eeac(a, &v);
+    WorldCurve_Apply(a, &v);
     MTX_MultVec43(a, &data_021f47e0, b);
-    s32 c = _ZN12Unk_0203b35013func_0203bc3cEv(data_021c3070);
+    s32 c = _ZN12Unk_0203b3509getFovTanEv(gCamera);
     s32 q = -FX_Div(0x60000, c);
     func_020e9888(b, FX_Div(q, b[2]));
     *out = b[0] + 0x80000;
@@ -2048,7 +2048,7 @@ extern "C" {
 void func_020e9888(void *, s32);
 }
 extern "C" {
-BOOL _ZN12Unk_0208927013func_020891d8Ev(void *);
+BOOL _ZN10SpriteAnim10isFinishedEv(void *);
 }
 extern "C" {
 s32 _ZN12Unk_020bc58c13func_020bcbd8Ei(void *, s32);
@@ -2064,7 +2064,7 @@ namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } d
 namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
 #define data_021f4488 n12::L_021f4488::data_021f14e0.v
 extern "C" {
-extern u32 data_021f4768;
+extern u32 gFrameCounter;
 }
 namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; u8 v[1]; } data_021f14e0; } }
 #define data_021f4398 n12::L_021f4398::data_021f14e0.v
@@ -2246,7 +2246,7 @@ extern "C" void func_020bfb68(Unk_020bf4b4 *this_) {
     if (m == 0) {
         func_020e9888(&this_->unk_40, 0xe66);
         VEC_Add(&this_->unk_34, &this_->unk_40, &this_->unk_34);
-        if (_ZN12Unk_0208927013func_020891d8Ev(&this_->unk_10)) {
+        if (_ZN10SpriteAnim10isFinishedEv(&this_->unk_10)) {
             this_->unk_04 = 3;
         }
     } else if (m == 1) {
@@ -2457,7 +2457,7 @@ extern "C" void func_020bf664(Unk_020bf4b4 *this_) {
 }
 
 extern "C" void func_020bf634(Unk_020bf4b4 *this_) {
-    if ((data_021f4768 & 0x7f) == 0) {
+    if ((gFrameCounter & 0x7f) == 0) {
         if (!func_020bf948(&this_->unk_34)) {
             this_->unk_04 = 3;
         }
@@ -2550,16 +2550,16 @@ extern "C" {
 s32 func_02063b8c(s32 n);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089244Ev(void *p);
+s32 _ZN10SpriteAnim13getFrameIndexEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891d8Ev(void *p);
+s32 _ZN10SpriteAnim10isFinishedEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_020891d0Ev(void *p);
+void _ZN10SpriteAnim5pauseEv(void *p);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_020891bcEv(void *p);
+void _ZN10SpriteAnim7restartEv(void *p);
 }
 extern "C" {
 s32 func_020bd950(Unk_021f3010 *p, s32 v);
@@ -2595,7 +2595,7 @@ extern "C" {
 void func_020b17e0(s32 a, BOOL b);
 }
 extern "C" {
-void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 a);
+void _ZN8SaveData7setFlagEj(void *p, s32 a);
 }
 extern "C" {
 s32 func_020beef8(s32 a, s32 flag);
@@ -2605,16 +2605,16 @@ namespace L_021f4398 { extern "C" { extern struct S { u8 p[0x2eb8]; Unk_021f4398
 namespace L_021f4488 { extern "C" { extern struct S { u8 p[0x2fa8]; u8 v[1]; } data_021f14e0; } }
 #define data_021f4488 n11::L_021f4488::data_021f14e0.v
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
 extern u8 data_021f14e0[];
 }
 extern "C" {
-extern Unk_020bf1d8_Vec data_021c309c;
+extern Unk_020bf1d8_Vec gCameraLookAt;
 }
 extern "C" {
-extern Unk_020bf1d8_Vec data_021f4880;
+extern Unk_020bf1d8_Vec gVec3Zero;
 }
 extern "C" {
 extern s32 data_020c8cb8;
@@ -2695,7 +2695,7 @@ void Unk_020be018::func_020bf3bc()
     func_020be06c(func_02063b8c(2) == 0 ? 1 : 0, 0x1000);
     unk_0c = 0x16;
     unk_58 = 2;
-    _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 9);
+    _ZN8SaveData7setFlagEj(gSaveData, 9);
     unk_60 = 0;
     unk_64 = 0;
     unk_68 = 0;
@@ -2726,7 +2726,7 @@ void Unk_020be018::func_020bf1d8()
         unk_40.z = 0;
         unk_60 = 2;
     } else if (unk_60 == 2) {
-        if (_ZN12Unk_0208927013func_020891d8Ev(unk_10)) {
+        if (_ZN10SpriteAnim10isFinishedEv(unk_10)) {
             func_020bd964(data_021f3010 + unk_24, 0x25);
             unk_08 = 0x25;
             unk_60 = 3;
@@ -2748,7 +2748,7 @@ void Unk_020be018::func_020bf1d8()
         }
     }
     if ((s32)unk_60 >= 2) {
-        Unk_020bf1d8_Vec v = data_021f4880;
+        Unk_020bf1d8_Vec v = gVec3Zero;
         s32 sc;
         if ((s32)unk_60 >= 4) {
             v.x = unk_2e ? 0x19a : -0x19a;
@@ -2817,7 +2817,7 @@ void Unk_020be018::func_020bef98()
             func_020bdd70(0x7ff);
             unk_60 = 1;
             unk_64 = 0;
-        } else if (_ZN12Unk_0208927013func_02089244Ev(unk_10) == 0) {
+        } else if (_ZN10SpriteAnim13getFrameIndexEv(unk_10) == 0) {
             if (unk_64++ == 0) func_020bdd70(0x7fe);
         } else {
             unk_64 = 0;
@@ -2825,7 +2825,7 @@ void Unk_020be018::func_020bef98()
     } else if (unk_60 == 1) {
         unk_0c = 0x14;
         func_020be0bc();
-        _ZN12Unk_0208927013func_020891d0Ev(unk_10);
+        _ZN10SpriteAnim5pauseEv(unk_10);
         unk_40.x = unk_2e ? 0x3c00 : -0x3c00;
         unk_40.y = -0x4000;
         unk_40.z = 0;
@@ -2841,7 +2841,7 @@ void Unk_020be018::func_020bef98()
             unk_50 = func_01ffcb0c(unk_50, 0x119a);
             unk_60 = 6;
             unk_64 = 0;
-            _ZN12Unk_0208927013func_020891bcEv(unk_10);
+            _ZN10SpriteAnim7restartEv(unk_10);
         }
     }
     if ((s32)unk_60 >= 6) {
@@ -2887,7 +2887,7 @@ namespace n11 {
 void Unk_020be018::func_020bef2c()
 {
     using namespace n11;
-    if (_ZN12Unk_0208927013func_020891d8Ev(unk_10)) unk_04 = 3;
+    if (_ZN10SpriteAnim10isFinishedEv(unk_10)) unk_04 = 3;
 }
 namespace n11 {
 
@@ -2918,7 +2918,7 @@ extern "C" s32 func_020beef8(s32 a, s32 flag)
 
 extern "C" Unk_020bee28_Vec2 func_020bee28(s32 a, s32 b)
 {
-    Unk_020bee28_V v = data_021c309c;
+    Unk_020bee28_V v = gCameraLookAt;
     s32 base = data_020c8cb8;
     s32 d = v.z - base;
     s32 cnt = data_020c8cbc;
@@ -3045,7 +3045,7 @@ void Unk_020be018::func_020beb88(s32 a)
         if (f) { tab = data_020d1338; max = 0xb0; }
         else { tab = data_020d0fa4; max = 0x24; }
     }
-    if (a < 0) a = _ZN12Unk_0208927013func_02089244Ev(unk_10);
+    if (a < 0) a = _ZN10SpriteAnim13getFrameIndexEv(unk_10);
     if (a < 0) max = 0;
     else if (a <= max) max = a;
     s32 x = tab[max];
@@ -3110,10 +3110,10 @@ extern "C" {
 s32 func_02063b74(s32 n);
 }
 extern "C" {
-void _ZN12Unk_02089270C1Ev(void *p);
+void _ZN10SpriteAnimC1Ev(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891d8Ev(void *p);
+s32 _ZN10SpriteAnim10isFinishedEv(void *p);
 }
 extern "C" {
 void _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(void *a, u32 b, u32 c, void *d);
@@ -3143,12 +3143,12 @@ extern "C" {
 extern s32 data_020c8cb8;
 }
 extern "C" {
-extern s32 data_021c309c[];
+extern s32 gCameraLookAt[];
 }
 namespace L_021f44ac { extern "C" { extern struct S { u8 p[0x2fcc]; u8 v[1]; } data_021f14e0; } }
 #define data_021f44ac n10::L_021f44ac::data_021f14e0.v
 extern "C" {
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 }
 extern "C" {
 extern u8 data_021f14e0[];
@@ -3251,7 +3251,7 @@ void Unk_020be204::func_020be970() {
     u32 flags = unk_60;
     BOOL r4 = ((flags >> 30) & 1) ? FALSE : TRUE;
     BOOL r6 = Unk_020be204_Bit(flags, 31);
-    if (_ZN12Unk_0208927013func_020891d8Ev(&unk_10)) {
+    if (_ZN10SpriteAnim10isFinishedEv(&unk_10)) {
         if (r4) {
             func_020bec00();
         }
@@ -3388,7 +3388,7 @@ void Unk_020be204::func_020be6f0(u32 a) {
     if (id == func_02094348() && pos->z < lim) {
         unk_2f = 1;
     }
-    s32 d = pos->z - data_021c309c[2];
+    s32 d = pos->z - gCameraLookAt[2];
     BOOL far = (d < -0x14000 || d > 0xf000) ? TRUE : FALSE;
     a |= far << 31;
     if (far || unk_34.y >= 0xc0000) {
@@ -3461,7 +3461,7 @@ void Unk_020be204::func_020be4d8() {
     if (unk_64 > 0) {
         unk_64--;
         if (unk_64 <= 0 && (unk_60 & 3) == 0) {
-            _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, 7, 0x805, data_021f4880);
+            _ZN12Unk_020bd06c13func_020bd0d4EiiP17Unk_020bd0a4_Vec3(data_021f44ac, 7, 0x805, gVec3Zero);
         }
     } else {
         Unk_020be204_Vec *pos = &unk_34;
@@ -3487,7 +3487,7 @@ namespace n10 {
 }
 Unk_020be204 *Unk_020be204::func_020be4b0() {
     using namespace n10;
-    _ZN12Unk_02089270C1Ev(&unk_10);
+    _ZN10SpriteAnimC1Ev(&unk_10);
     func_020be44c();
     func_020be428();
     return this;
@@ -3826,13 +3826,13 @@ extern "C" {
 extern s32 data_020c8cbc;
 }
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 extern "C" {
 extern s32 data_021ef674;
 }
 extern "C" {
-extern Unk_020bdef0_Vec data_021c309c;
+extern Unk_020bdef0_Vec gCameraLookAt;
 }
 extern "C" {
 extern s16 data_02135f44[][2];
@@ -3853,13 +3853,13 @@ extern "C" {
 void _ZN12Unk_020be20413func_020be428Ev(Unk_020bdd94*);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089268EP16Unk_02089270_Tbl(void*, void*);
+void _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(void*, void*);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089264Ei(void*, s32);
+void _ZN10SpriteAnim11setPlayOnceEi(void*, s32);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_020891bcEv(void*);
+s32 _ZN10SpriteAnim7restartEv(void*);
 }
 extern "C" {
 static inline Unk_021f3010* Unk_020be0bc_Get(s32 i) { return &data_020e6544[i]; }
@@ -3996,9 +3996,9 @@ namespace n09 {
 extern "C" void func_020be0bc(Unk_020be0bc* p) {
     Unk_020be0bc_E i = (Unk_020be0bc_E)p->unk_0c;
     Unk_021f3010* row = &data_020e6544[i];
-    _ZN12Unk_0208927013func_02089268EP16Unk_02089270_Tbl(p->unk_10, row);
-    _ZN12Unk_0208927013func_02089264Ei(p->unk_10, row->unk_08);
-    _ZN12Unk_0208927013func_020891bcEv(p->unk_10);
+    _ZN10SpriteAnim6setSeqEP13SpriteAnimSeq(p->unk_10, row);
+    _ZN10SpriteAnim11setPlayOnceEi(p->unk_10, row->unk_08);
+    _ZN10SpriteAnim7restartEv(p->unk_10);
 }
 
 extern "C" void func_020be094(Unk_020bdd94* p) {
@@ -4039,9 +4039,9 @@ extern "C" BOOL func_020be018(Unk_020bdd94* p, s32 a, s32 b, s32 c) {
 
 extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     Unk_020bdef0_Vec loc;
-    loc.unk_00[0] = data_021c309c.unk_00[0];
-    loc.unk_00[1] = data_021c309c.unk_00[1];
-    loc.unk_00[2] = data_021c309c.unk_00[2];
+    loc.unk_00[0] = gCameraLookAt.unk_00[0];
+    loc.unk_00[1] = gCameraLookAt.unk_00[1];
+    loc.unk_00[2] = gCameraLookAt.unk_00[2];
     s32 inv, idx, z, y, t;
     s32 sx, sy, sc, fx, k, dz;
     dz = loc.unk_00[2] - q->unk_08;
@@ -4055,7 +4055,7 @@ extern "C" void func_020bdef0(Unk_020bdd94* p, Unk_020bdd94_Out* q, s32 a) {
     sx = z << 8;
     sy = func_01ffcb0c(0x50000, k) + 0x50000;
     inv = 0x1000 - k;
-    if (data_021c3070 != 0) {
+    if (gCamera != 0) {
         idx = func_01ffcb0c(func_0203a4b0(), inv);
     } else {
         idx = 0;
@@ -4380,22 +4380,22 @@ extern "C" {
 void func_ov003_02212140();
 }
 extern "C" {
-void func_0203a5ac();
+void Camera_RestorePrevMode();
 }
 extern "C" {
-void func_0203a5ec(s32 a);
+void Camera_StartShake(s32 a);
 }
 extern "C" {
 void func_020bddbc(Unk_020bd0a4_Vec3* out, s32 a, s32 b, s32 c);
 }
 extern "C" {
-void* func_02097868(void* a, s32 i);
+void* PlayerData_GetResident(void* a, s32 i);
 }
 extern "C" {
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void* p);
+s32 _ZN10PlayerData13func_02098a48Ev(void* p);
 }
 extern "C" {
-void* _ZN12Unk_0209865c13func_02098698Ev(void* p);
+void* _ZN10PlayerData13func_02098698Ev(void* p);
 }
 extern "C" {
 void _ZN12Unk_020877e013func_020877e0Ej(void* p, s32 a);
@@ -4413,7 +4413,7 @@ extern "C" {
 void func_ov003_02212190(s32 a, s32 b);
 }
 extern "C" {
-void* func_0209750c();
+void* PlayerData_GetCurrent();
 }
 extern "C" {
 u32 _ZN12Unk_02097ff413func_020981b8Ev(void* p);
@@ -4730,7 +4730,7 @@ void Unk_020bd1b0::func_020bd520() {
 namespace n08 {
 
 extern "C" void func_020bd4fc() {
-    void* p = func_0209750c();
+    void* p = PlayerData_GetCurrent();
     u32 n = _ZN12Unk_02097ff413func_020981b8Ev(p);
     if (n < 0x10) {
         _ZN12Unk_02097ff413func_020981acEj(p, n + 1);
@@ -4738,7 +4738,7 @@ extern "C" void func_020bd4fc() {
 }
 
 extern "C" BOOL func_020bd4e0() {
-    return _ZN12Unk_02097ff413func_020981b8Ev(func_0209750c()) >= 0x10;
+    return _ZN12Unk_02097ff413func_020981b8Ev(PlayerData_GetCurrent()) >= 0x10;
 }
 
 }
@@ -4800,7 +4800,7 @@ void Unk_020bd1b0::func_020bd3ac() {
     unk_08--;
     if (unk_08 <= 0) {
         Unk_020bd0a4_Vec3 v;
-        func_0203a5ec(0xa3d);
+        Camera_StartShake(0xa3d);
         func_020bddbc(&v, unk_0c, unk_10, unk_14);
         data_021f44ac.func_020bd0d4(0, 0x7fd, &v);
         unk_08 = 0x32;
@@ -4816,11 +4816,11 @@ void Unk_020bd1b0::func_020bd334() {
     unk_08--;
     if (unk_08 <= 0) {
         func_ov003_02212140();
-        func_0203a5ac();
+        Camera_RestorePrevMode();
         for (s32 i = 0; i < 4; i++) {
-            void* p = func_02097868(data_021d735c, i);
-            if (p && _ZN12Unk_0209865c13func_02098a48Ev(p)) {
-                _ZN12Unk_020877e013func_020877e0Ej(_ZN12Unk_0209865c13func_02098698Ev(p), 0x14);
+            void* p = PlayerData_GetResident(data_021d735c, i);
+            if (p && _ZN10PlayerData13func_02098a48Ev(p)) {
+                _ZN12Unk_020877e013func_020877e0Ej(_ZN10PlayerData13func_02098698Ev(p), 0x14);
             }
         }
         func_02086284(data_021e58a6);
@@ -4845,7 +4845,7 @@ void Unk_020bd1b0::func_020bd2d8() {
         unk_08--;
     } else {
         Unk_020bd0a4_Vec3 v;
-        func_0203a5ec(0x5c3);
+        Camera_StartShake(0x5c3);
         func_020bddbc(&v, unk_0c, unk_10, unk_14);
         data_021f44ac.func_020bd0d4(0, 0x800, &v);
         unk_08 = 0x1e;
@@ -4866,7 +4866,7 @@ void Unk_020bd1b0::func_020bd288() {
             _ZN12Unk_02086c0413func_02086c04Eii(func_02085174(), p, unk_18);
         }
         func_ov003_02212140();
-        func_0203a5ac();
+        Camera_RestorePrevMode();
         func_020bd25c();
     }
 }
@@ -4925,7 +4925,7 @@ namespace n08 {
 Unk_020bd06c::Unk_020bd06c() {
     using namespace n08;
     unk_c0 = 0;
-    for (Unk_02000c8c* p = unk_60; p < (Unk_02000c8c*)&unk_c0; p++) {
+    for (FxVec3* p = unk_60; p < (FxVec3*)&unk_c0; p++) {
         p->x = 0;
         p->y = 0;
         p->z = 0;
@@ -4982,7 +4982,7 @@ void Unk_020bd06c::func_020bd06c() {
     using namespace n08;
     if (unk_c0) {
         Unk_0213b970* a = unk_00;
-        Unk_02000c8c* b = unk_60;
+        FxVec3* b = unk_60;
         for (s32 i = 0; i < 8; i++, a++, b++) {
             a->func_02003c60(i == 7 ? NULL : b);
         }
@@ -5050,7 +5050,7 @@ extern "C" {
 extern u8 data_021d735c[];
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
 extern u8 data_020e4630[];
@@ -5117,13 +5117,13 @@ extern "C" {
 u32 func_0209cf00();
 }
 extern "C" {
-void *func_02097868(void *p, u32 i);
+void *PlayerData_GetResident(void *p, u32 i);
 }
 extern "C" {
 u32 _ZN12Unk_02097ff413func_02098044Ej(void *p, u32 n);
 }
 extern "C" {
-u32 _ZN12Unk_0209865c13func_0209888cEv(void *p);
+u32 _ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
 void func_020656dc(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
@@ -5138,7 +5138,7 @@ extern "C" {
 void _ZN12Unk_02097ff413func_02097ff4Ej(void *p, u32 n);
 }
 extern "C" {
-void func_02062f94(u16 *ret, Unk_02063380 q, u32 a, u32 b, u32 c, u32 d, u32 e);
+void ItemPick_One(u16 *ret, ItemPickSpec q, u32 a, u32 b, u32 c, u32 d, u32 e);
 }
 extern "C" {
 s32 func_020bc8a0();
@@ -5150,7 +5150,7 @@ extern "C" {
 void func_020947c0(void *p, s32 i);
 }
 extern "C" {
-void _ZN12Unk_0209da4413func_0209e120Ej(void *p, u32 n);
+void _ZN8SaveData9clearFlagEj(void *p, u32 n);
 }
 extern "C" {
 void func_0209d498(void *p);
@@ -5398,7 +5398,7 @@ namespace n07 {
 void Unk_020bc58c::func_020bcadc(BOOL a) {
     using namespace n07;
     if (a) {
-        _ZN12Unk_0209da4413func_0209e120Ej(data_021d7350, 9);
+        _ZN8SaveData9clearFlagEj(gSaveData, 9);
         func_020bcb04();
         func_020bc99c();
     }
@@ -5436,14 +5436,14 @@ void Unk_020bc58c::func_020bc99c() {
     using namespace n07;
     s32 i;
     for (i = 0; i < 4; i++) {
-        void *o = func_02097868(data_021d735c, i);
+        void *o = PlayerData_GetResident(data_021d735c, i);
         if (o != NULL && _ZN12Unk_02097ff413func_02098044Ej(o, 0x32) != 0) {
-            Unk_020dd458 ctx;
+            Letter ctx;
             Unk_020bc99c_Loc l;
             l.a = func_02063b8c(3);
-            func_020656dc(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN12Unk_0209865c13func_0209888cEv(o));
-            Unk_02063380 q(0, 4);
-            func_02062f94(&l.b, q, 0, 0, 1, 1, 0);
+            func_020656dc(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
+            ItemPickSpec q(0, 4);
+            ItemPick_One(&l.b, q, 0, 0, 1, 1, 0);
             _ZN12Unk_0206555413func_02065588Etj(&ctx, l.b, 1);
             if (func_02096aac(&ctx) != 0) {
                 _ZN12Unk_02097ff413func_02097ff4Ej(o, 0x32);
@@ -5695,10 +5695,10 @@ extern "C" {
 s32 _ZN12Unk_02086b7c13func_02086b94Ev();
 }
 extern "C" {
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *, s32);
+s32 _ZN8SaveData8testFlagEj(void *, s32);
 }
 extern "C" {
-extern char data_021d7350[];
+extern char gSaveData[];
 }
 extern "C" {
 extern Unk_020d0f40 data_020d0f40[];
@@ -5739,7 +5739,7 @@ extern "C" {
 void func_020e759c(void *, s32, s32);
 }
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 extern "C" {
 BOOL _ZN12Unk_02097ff413func_02098044Ej(void *, s32);
@@ -6407,7 +6407,7 @@ void Unk_020bbc28::func_020bbdd4() {
                         }
                         u8 c = unk_2f24;
                         if (func_02063b8c(8) < c) {
-                            if (!_ZN12Unk_02097ff413func_02098044Ej(func_0209750c(), 0x30) && func_020bd4e0() && !func_02063b8c(4)) {
+                            if (!_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 0x30) && func_020bd4e0() && !func_02063b8c(4)) {
                                 func_020bc754(5, 0x2d, 0, 1);
                             } else {
                                 func_020bc754(5, 0x2d, 0, 0);
@@ -6429,7 +6429,7 @@ namespace n06 {
 void Unk_020bbc28::func_020bbcc8() {
     using namespace n06;
     if (unk_2f26 != 0) {
-        if (_ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 9)) {
+        if (_ZN8SaveData8testFlagEj(gSaveData, 9)) {
             unk_2f26 = 0;
         } else {
             Unk_020bbcc8_Xxx s;
@@ -7107,16 +7107,16 @@ extern u8 data_021ef690_out[];
 namespace L_021efc08 { extern "C" { extern struct S { u8 p[0x300]; Unk_020baa10_Ptr v; } data_021ef908; } }
 #define data_021efc08 n04::L_021efc08::data_021ef908.v
 extern "C" {
-void _ZN12Unk_02003c3013func_02003c30Ev(void*);
+void _ZN12Unk_02003c3011callReleaseEv(void*);
 }
 extern "C" {
-void _ZN12Unk_02003c4013func_02003c40EPv(void*, s32);
+void _ZN12Unk_02003c4011callRequestEPv(void*, s32);
 }
 extern "C" {
-void _ZN12Unk_02003c4013func_02003c60EPv(void*, void*);
+void _ZN12Unk_02003c4010callUpdateEPv(void*, void*);
 }
 extern "C" {
-void _ZN12Unk_02003c3013func_02003cbcEv(void*);
+void _ZN12Unk_02003c309callResetEv(void*);
 }
 extern "C" {
 s32 func_020b5364(s32);
@@ -7146,19 +7146,19 @@ extern "C" {
 s32 func_020b53ec(u32);
 }
 extern "C" {
-void *_ZN12Unk_0208927013func_02089248Ev(void*);
+void *_ZN10SpriteAnim7getCellEv(void*);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089228Ei(void*, s32);
+s32 _ZN10SpriteAnim9getFrameXEi(void*, s32);
 }
 extern "C" {
-s32 _ZN12Unk_0208927013func_02089210Ei(void*, s32);
+s32 _ZN10SpriteAnim9getFrameYEi(void*, s32);
 }
 extern "C" {
-void func_02087e70(s32, void*, s32, s32, s32, s32, s32, s32, u32, s32, u32, u32);
+void Oam_DrawCell(s32, void*, s32, s32, s32, s32, s32, s32, u32, s32, u32, u32);
 }
 extern "C" {
-void _ZN12Unk_0208927013func_02089140Ev(void*);
+void _ZN10SpriteAnim6updateEv(void*);
 }
 extern "C" {
 void _ZN12Unk_020bc58c13func_020bc928Ev(void*);
@@ -7483,7 +7483,7 @@ extern "C" void func_020bae8c(Unk_020bacc0_Obj *obj) {
                 e->f04 = 2;
                 break;
             case 2:
-                _ZN12Unk_0208927013func_02089140Ev(sub);
+                _ZN10SpriteAnim6updateEv(sub);
                 _ZN12Unk_020be20413func_020be204Ev(e);
                 break;
             case 3:
@@ -7516,11 +7516,11 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
         if (e->f04 != 2) continue;
         if (e->f31 != 0) continue;
         sub = e->f10;
-        r = _ZN12Unk_0208927013func_02089248Ev(sub);
+        r = _ZN10SpriteAnim7getCellEv(sub);
         if (r == NULL) continue;
         pos = (Unk_020bacc0_P *)&e->f34;
-        a = _ZN12Unk_0208927013func_02089228Ei(sub, id);
-        b = _ZN12Unk_0208927013func_02089210Ei(sub, id);
+        a = _ZN10SpriteAnim9getFrameXEi(sub, id);
+        b = _ZN10SpriteAnim9getFrameYEi(sub, id);
         x = a + ((pos->x + 0x800) >> 12);
         py = b + ((pos->y + 0x800) >> 12);
         y = py - yoff;
@@ -7533,7 +7533,7 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
+            Oam_DrawCell(0, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
         } else if (py < 0xc0) {
             u8 k = e->f5c;
             BOOL hidden = FALSE;
@@ -7543,7 +7543,7 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(1, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u8)e->f56, (u8)e->f57);
+            Oam_DrawCell(1, r, x, y, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u8)e->f56, (u8)e->f57);
         } else if (py > 0x100) {
             u8 k;
             BOOL hidden;
@@ -7556,7 +7556,7 @@ extern "C" void func_020bacc0(Unk_020bacc0_Obj *obj) {
                 if (hi < 0 || lo > 0xbf) hidden = TRUE;
             }
             if (hidden) continue;
-            func_02087e70(0, r, x, y2, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
+            Oam_DrawCell(0, r, x, y2, e->f5d, e->f58, e->f4c, e->f50, e->f54, id, (u32)(e->f56 << 24) >> 24, (u32)(e->f57 << 24) >> 24);
         }
     }
 }
@@ -7662,7 +7662,7 @@ extern "C" u8 func_020ba9f8(s32 i) {
 
 extern "C" void func_020ba9e4(Unk_020ba93c_Obj *p) {
     func_020ba93c(p);
-    _ZN12Unk_02003c3013func_02003cbcEv(p);
+    _ZN12Unk_02003c309callResetEv(p);
 }
 
 extern "C" void func_020ba998(Unk_020ba93c_Obj *p) {
@@ -7670,17 +7670,17 @@ extern "C" void func_020ba998(Unk_020ba93c_Obj *p) {
     if (p->f0c != 0) {
         s32 k = data_020d0e70[func_020b5364(0)];
         if (k >= 0) {
-            _ZN12Unk_02003c4013func_02003c40EPv(p, k);
+            _ZN12Unk_02003c4011callRequestEPv(p, k);
         }
     }
     func_02133ef8(v, 12);
     v[2] = p->f0c >> 8;
-    _ZN12Unk_02003c4013func_02003c60EPv(p, v);
+    _ZN12Unk_02003c4010callUpdateEPv(p, v);
     func_020ba8cc(p);
 }
 
 extern "C" void func_020ba990(void *p) {
-    _ZN12Unk_02003c3013func_02003c30Ev(p);
+    _ZN12Unk_02003c3011callReleaseEv(p);
 }
 
 extern "C" void func_020ba93c(Unk_020ba93c_Obj *p) {
@@ -7747,10 +7747,10 @@ extern "C" {
 s32 func_02002580(u8 *a, s32 b, s32 c, s32 d, s32 e);
 }
 extern "C" {
-u8 *func_020641ec(u32 res, void *heap, s32 a, void *b);
+u8 *File_LoadAlloc(u32 res, void *heap, s32 a, void *b);
 }
 extern "C" {
-BOOL func_020641b4(u32 res, u8 *a, s32 b);
+BOOL File_LoadToBuffer(u32 res, u8 *a, s32 b);
 }
 extern "C" {
 s32 func_02063b8c(s32 a);
@@ -7792,19 +7792,19 @@ extern "C" {
 u32 _u32_div_f(u32 a, u32 b);
 }
 extern "C" {
-void func_020e7fcc(void *st, u32 v);
+void Random_SetSeed(void *st, u32 v);
 }
 extern "C" {
-s32 func_020e7f90(void *st, s32 n);
+s32 Random_NextBelow(void *st, s32 n);
 }
 extern "C" {
-void *func_020e8594(s32 n);
+void *Mem_AllocTail(s32 n);
 }
 extern "C" {
 void func_020e759c(s32 *p, s32 a, s32 b);
 }
 extern "C" {
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 }
 extern "C" {
 extern Unk_020b9fe4 data_021eff48;
@@ -7822,7 +7822,7 @@ extern "C" {
 extern Unk_021ed2b0 data_021ed2b0;
 }
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 extern "C" {
 extern u8 data_021d7352[];
@@ -7892,12 +7892,12 @@ extern "C" BOOL func_020ba834() {
         for (j = 0; j < 2; j++) {
             if (data_021eff48.unk_1544[i][j] == 0) {
                 u8 **dst = &data_021f148c[i][j];
-                *dst = func_020641ec(data_020e4ca4[i][j], (void *)data_021f482c, -4, &data_021f149c[i][j]);
+                *dst = File_LoadAlloc(data_020e4ca4[i][j], (void *)gCurrentHeap, -4, &data_021f149c[i][j]);
                 if (!*dst) {
                     return FALSE;
                 }
             } else {
-                func_020641b4(data_020e4ca4[i][j], (u8 *)data_021eff48.unk_1544[i][j], data_021eff48.unk_1554[i][j]);
+                File_LoadToBuffer(data_020e4ca4[i][j], (u8 *)data_021eff48.unk_1544[i][j], data_021eff48.unk_1554[i][j]);
             }
         }
     }
@@ -7908,7 +7908,7 @@ extern "C" BOOL func_020ba800(u16 **p) {
     s32 i;
     for (i = 0; i < 3; i++) {
         if (*p == 0) {
-            *p = (u16 *)func_020e8594(32);
+            *p = (u16 *)Mem_AllocTail(32);
             if (*p == 0) {
                 return FALSE;
             }
@@ -7930,9 +7930,9 @@ void Unk_020b9fe4::func_020ba794() {
     func_02063968(data_021d7352, buf);
     func_0209d498(&t);
     seed = ((u8 *)&t)[3] | ((((u8 *)&t)[4] << 5) | ((buf[0] << 16) | ((((u8 *)&t)[5] & 0x1f) << 9)));
-    func_020e7fcc(&st, 1);
-    func_020e7fcc(&st, seed);
-    unk_1538 = func_020e7f90(&st, 0x2aaa) - 0x1555;
+    Random_SetSeed(&st, 1);
+    Random_SetSeed(&st, seed);
+    unk_1538 = Random_NextBelow(&st, 0x2aaa) - 0x1555;
 }
 namespace n03 {
 
@@ -8179,7 +8179,7 @@ namespace n03 {
 void Unk_020b9fe4::func_020ba1dc() {
     using namespace n03;
     Unk_020ba1dc_Time t;
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     t.unk_00 = 0;
     t.unk_04 = 0;
     func_0209d498(&t);
@@ -8224,7 +8224,7 @@ namespace n03 {
 BOOL Unk_020b9fe4::func_020ba170(s32 idx, s32 unused) {
     using namespace n03;
     BOOL ok = FALSE;
-    if (func_020025fc(data_020e4d34[idx], (void *)data_021f482c, unused, 16, 16, 47)) {
+    if (func_020025fc(data_020e4d34[idx], (void *)gCurrentHeap, unused, 16, 16, 47)) {
         ok = TRUE;
     }
     return ok;
@@ -8245,11 +8245,11 @@ BOOL Unk_020b9fe4::func_020ba10c(u8 **p1, u32 *p2, s32 mode, s32 idx) {
     }
     res = data_020e4ad0[mode][i];
     if (*p1 == NULL) {
-        *p1 = func_020641ec(res, (void *)data_021f482c, -4, p2);
+        *p1 = File_LoadAlloc(res, (void *)gCurrentHeap, -4, p2);
         if (*p1 != NULL) {
             ok = TRUE;
         }
-    } else if (func_020641b4(res, *p1, *p2)) {
+    } else if (File_LoadToBuffer(res, *p1, *p2)) {
         ok = TRUE;
     }
     return ok;
@@ -8868,7 +8868,7 @@ extern u8 data_021ef658[];
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; Unk_021f3010 v[5]; } data_021f14e0; } }
 #define data_021f3010 n01::L_021f3010::data_021f14e0.v
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 namespace L_021f14c8 { extern "C" { extern struct S { u8 p[0x1580]; Unk_021f14c8 v; } data_021eff48; } }
 #define data_021f14c8 n01::L_021f14c8::data_021eff48.v
@@ -8888,7 +8888,7 @@ extern "C" {
 extern u32 data_021ef670;
 }
 extern "C" {
-extern u32 data_021c3070;
+extern u32 gCamera;
 }
 namespace L_021f145c { extern "C" { extern struct S { u8 p[0x1514]; u32 v[1]; } data_021eff48; } }
 #define data_021f145c n01::L_021f145c::data_021eff48.v
@@ -8911,7 +8911,7 @@ extern u8 data_020e416c;
 #define data_020e676c ((char *)"menu/star/a_bg.bch")
 #define data_020e6780 ((u8 *)"menu/star/bg.bsc")
 extern "C" {
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 }
 extern "C" {
 void _ZN12Unk_02097ff413func_0209801cEj(void *p, u32 x);
@@ -9031,16 +9031,16 @@ extern "C" {
 BOOL func_0200261c(const char *path, void *heap, u32 a, u32 b, u32 c, u32 d);
 }
 extern "C" {
-void *func_020e8618(void *heap, u32 size);
+void *Heap_AllocTail(void *heap, u32 size);
 }
 extern "C" {
-void func_020e85fc(void *heap, void *ptr);
+void Heap_Free(void *heap, void *ptr);
 }
 extern "C" {
-void func_020e8558(u32 p);
+void Mem_Free(u32 p);
 }
 extern "C" {
-void func_020641b4(void *a, void *b, u32 c);
+void File_LoadToBuffer(void *a, void *b, u32 c);
 }
 extern "C" {
 void func_020aff60(void *p);
@@ -9197,7 +9197,7 @@ void func_020b9608(void) {
         _ZN12Unk_020b9c9013func_020b9ea8Ev(&data_021eff48);
     }
     func_020ba624(data_021eff48.unk_0000);
-    if (data_021c3070 != 0) {
+    if (gCamera != 0) {
         a = func_0206ede0() * 0x123 >> 12;
         b = func_0203a4b0() * 30 >> 12;
         data_021f145c[data_021f1448.unk_1c ^ 1] = a + b;
@@ -9245,7 +9245,7 @@ BOOL Unk_020e5668::vfunc_00() {
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_18() {
+BOOL Unk_020e5668::onExecute() {
     using namespace n01;
     if (data_021ef670 != 0) {
         if (!func_0206ef50()) {
@@ -9262,7 +9262,7 @@ BOOL Unk_020e5668::vfunc_18() {
 namespace n01 {
 
 }
-BOOL Unk_020e5668::vfunc_24() {
+BOOL Unk_020e5668::onDraw() {
     using namespace n01;
     if (data_021ef670 != 0) {
         func_020bacc0(data_021f14e0);
@@ -9282,13 +9282,13 @@ BOOL Unk_020e5668::vfunc_0c() {
     u32 *p4 = &data_021f14c4;
     u32 v4 = *p4;
     if (v4 != 0) {
-        func_020e8558(v4);
+        Mem_Free(v4);
     }
     *p4 = 0;
     p4 = &data_021f14cc;
     v4 = *p4;
     if (v4 != 0) {
-        func_020e8558(v4);
+        Mem_Free(v4);
     }
     *p4 = 0;
     for (i = 0; i < 2; i++) {
@@ -9299,7 +9299,7 @@ BOOL Unk_020e5668::vfunc_0c() {
             u8 *r0 = row + j * 4;
             u32 *q = (u32 *)(r0 + 0x1544);
             if (*(u32 *)(r0 + 0x1544) != 0) {
-                func_020e8558(*(u32 *)(r0 + 0x1544));
+                Mem_Free(*(u32 *)(r0 + 0x1544));
             }
             *q = 0;
         }
@@ -9307,7 +9307,7 @@ BOOL Unk_020e5668::vfunc_0c() {
     pp = data_021f14ac;
     for (k = 0; k < 3; k++) {
         if (*pp != 0) {
-            func_020e8558(*pp);
+            Mem_Free(*pp);
             *pp = 0;
         }
         pp++;
@@ -9408,23 +9408,23 @@ end:
 }
 
 extern "C" BOOL func_020b91f8(u32 idx) {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     u8 v6 = data_020d0df4[idx];
     void *buf;
     if (!func_0200261c(data_020e676c, heap, v6, 0x10, 0x10, 0x1f)) {
         return FALSE;
     }
-    buf = func_020e8618(heap, 0x1000);
+    buf = Heap_AllocTail(heap, 0x1000);
     if (buf == NULL) {
         return FALSE;
     }
-    func_020641b4(data_020e6780, buf, 0x1000);
+    File_LoadToBuffer(data_020e6780, buf, 0x1000);
     func_020aff60(buf);
     if (!func_020024f0(buf, v6, 0x1000, 0)) {
-        func_020e85fc(heap, buf);
+        Heap_Free(heap, buf);
         return FALSE;
     }
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
     func_020b0788(data_021efc18, v6);
     return TRUE;
 }
@@ -9606,7 +9606,7 @@ extern "C" void func_020b8e20(BOOL x) {
 extern "C" u32 func_020b8e14(void) { return data_021f4420.unk_10; }
 
 extern "C" void func_020b8df0(void) {
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         _ZN12Unk_02097ff413func_0209801cEj(p, 0x32);
         func_020bb018(data_021f14e0);

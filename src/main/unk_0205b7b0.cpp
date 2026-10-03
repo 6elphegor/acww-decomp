@@ -27,7 +27,7 @@ struct Unk_0205c3b0 {
 
 extern "C" {
 extern void *data_021c6198;
-extern void *data_021c619c;
+extern void *gPlayerActorHeap;
 extern void *data_021c61a0;
 extern void *data_021c61a4;
 extern void *data_021c61a8;
@@ -79,11 +79,11 @@ extern u8 *data_020dc10c[];
 extern u16 data_020dc11c[];
 
 void func_020e8c88(void *heap);
-void *func_020e8628(void *, u32, s32);
+void *Heap_AllocAligned(void *, u32, s32);
 void func_020e885c(void *);
 void func_020e877c(void *);
-void *func_020e8e7c(u32 size, void *parent);
-void *func_020e8da0(u32 size, void *parent, ...);
+void *ExpHeap_Create(u32 size, void *parent);
+void *FrameHeap_Create(u32 size, void *parent, ...);
 u32 func_02094340(void);
 u32 func_0209433c(void);
 s32 func_020812f4(void);
@@ -109,9 +109,9 @@ u32 func_0205c604(void);
 u32 func_0205c5fc(void);
 u32 func_0205c5f4(void);
 void MI_CpuCopy8(void *, void *, u32);
-s32 func_020641b4(char *, void *, u32);
+s32 File_LoadToBuffer(char *, void *, u32);
 s32 func_020639e8(char *, const char *, ...);
-BOOL func_0204b2d4(u16 *);
+BOOL Item_IsFurniture(u16 *);
 void func_0205beb8(void);
 void func_0205bed4(void *parent);
 
@@ -235,7 +235,7 @@ const u8 data_020cab98[0x144] = {
 };
 void *data_021c61d4;
 void *data_021c61a0;
-void *data_021c619c;
+void *gPlayerActorHeap;
 void *data_021c61bc;
 Unk_0205c3b0 data_021c6240;
 void *data_021c61dc;
@@ -332,12 +332,12 @@ void Unk_0205c3b0::func_0205c460() {
     v[2] = func_0205c5fc();
     v[3] = func_0205c5f4();
     u32 i;
-    for (i = 0; i < m; i++) unk_00[i] = (u32)func_020e8628(heap, v[1], 4);
-    for (i = 4; i < v[0] + 4; i++) unk_00[i] = (u32)func_020e8628(heap, v[1], 4);
-    for (i = 9; i < m + 9; i++) unk_00[i] = (u32)func_020e8628(heap, v[2], 4);
+    for (i = 0; i < m; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
+    for (i = 4; i < v[0] + 4; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[1], 4);
+    for (i = 9; i < m + 9; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[2], 4);
     m = 4;
-    for (i = 0xd; i < v[0] + 0xd; i++) unk_00[i] = (u32)func_020e8628(heap, v[2], m);
-    for (i = 0x12; i < v[0] + 0x12; i++) unk_00[i] = (u32)func_020e8628(heap, v[3], m);
+    for (i = 0xd; i < v[0] + 0xd; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[2], m);
+    for (i = 0x12; i < v[0] + 0x12; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, v[3], m);
 }
 
 void Unk_0205c3b0::func_0205c420() {
@@ -401,7 +401,7 @@ extern "C" void func_0205c2dc(u8 *p, s32 a, s32 b, s32 c) {
     u32 sz;
     if ((s32)cur > 8) sz = func_0205c5fc();
     else sz = func_0205c604();
-    s32 r = func_020641b4(func_0205c60c(a), (void *)buf, sz);
+    s32 r = File_LoadToBuffer(func_0205c60c(a), (void *)buf, sz);
     if (r != 0) {
         data_021c6240.func_0205c400(cur, a);
         data_021c6240.func_0205c3b0(cur, r);
@@ -431,23 +431,23 @@ extern "C" u32 func_0205c254(u8 *p) { return data_021c6240.func_0205c418(*p); }
 
 extern "C" u32 func_0205c240(u8 *p) { return data_021c6240.func_0205c40c(*p); }
 
-extern "C" void func_0205c228(u32 size, void *parent) { data_021c6218 = func_020e8e7c(size, parent); }
+extern "C" void func_0205c228(u32 size, void *parent) { data_021c6218 = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c20c() { func_020e8c88(data_021c6218); data_021c6218 = 0; }
 
-extern "C" void func_0205c1f4(u32 size, void *parent) { data_021c6214 = func_020e8e7c(size, parent); }
+extern "C" void func_0205c1f4(u32 size, void *parent) { data_021c6214 = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c1d8() { func_020e8c88(data_021c6214); data_021c6214 = 0; }
 
-extern "C" void func_0205c1c0(u32 size, void *parent) { data_021c6210 = func_020e8e7c(size, parent); }
+extern "C" void func_0205c1c0(u32 size, void *parent) { data_021c6210 = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c1a4() { func_020e8c88(data_021c6210); data_021c6210 = 0; }
 
-extern "C" void func_0205c18c(u32 size, void *parent) { data_021c620c = func_020e8e7c(size, parent); }
+extern "C" void func_0205c18c(u32 size, void *parent) { data_021c620c = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c170() { func_020e8c88(data_021c620c); data_021c620c = 0; }
 
-extern "C" void func_0205c158(u32 size, void *parent) { data_021c6208 = func_020e8e7c(size, parent); }
+extern "C" void func_0205c158(u32 size, void *parent) { data_021c6208 = ExpHeap_Create(size, parent); }
 
 extern "C" void func_0205c13c(void) {
     func_020e8c88(data_021c6208);
@@ -455,7 +455,7 @@ extern "C" void func_0205c13c(void) {
 }
 
 extern "C" void func_0205c124(u32 size, void *parent) {
-    data_021c6204 = func_020e8da0(size, parent);
+    data_021c6204 = FrameHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c108(void) {
@@ -464,7 +464,7 @@ extern "C" void func_0205c108(void) {
 }
 
 extern "C" void func_0205c0f0(u32 size, void *parent) {
-    data_021c6200 = func_020e8e7c(size, parent);
+    data_021c6200 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c0d4(void) {
@@ -473,7 +473,7 @@ extern "C" void func_0205c0d4(void) {
 }
 
 extern "C" void func_0205c0bc(u32 size, void *parent) {
-    data_021c61fc = func_020e8e7c(size, parent);
+    data_021c61fc = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c0a0(void) {
@@ -482,7 +482,7 @@ extern "C" void func_0205c0a0(void) {
 }
 
 extern "C" void func_0205c088(u32 size, void *parent) {
-    data_021c61f8 = func_020e8e7c(size, parent);
+    data_021c61f8 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c06c(void) {
@@ -491,7 +491,7 @@ extern "C" void func_0205c06c(void) {
 }
 
 extern "C" void func_0205c054(u32 size, void *parent) {
-    data_021c61f4 = func_020e8e7c(size, parent);
+    data_021c61f4 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c038(void) {
@@ -500,7 +500,7 @@ extern "C" void func_0205c038(void) {
 }
 
 extern "C" void func_0205c020(u32 size, void *parent) {
-    data_021c61f0 = func_020e8e7c(size, parent);
+    data_021c61f0 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205c004(void) {
@@ -509,7 +509,7 @@ extern "C" void func_0205c004(void) {
 }
 
 extern "C" void func_0205bfec(u32 size, void *parent) {
-    data_021c61ec = func_020e8e7c(size, parent);
+    data_021c61ec = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205bfd0(void) {
@@ -518,7 +518,7 @@ extern "C" void func_0205bfd0(void) {
 }
 
 extern "C" void func_0205bfb8(u32 size, void *parent) {
-    data_021c61e8 = func_020e8e7c(size, parent);
+    data_021c61e8 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205bf9c(void) {
@@ -527,7 +527,7 @@ extern "C" void func_0205bf9c(void) {
 }
 
 extern "C" void func_0205bf84(u32 size, void *parent) {
-    data_021c61e4 = func_020e8e7c(size, parent);
+    data_021c61e4 = ExpHeap_Create(size, parent);
 }
 
 extern "C" void func_0205bf68(void) {
@@ -552,7 +552,7 @@ extern "C" void func_0205bed4(void *parent) {
     s3 += s0 * m;
     s3 += s1 * m;
     s3 += s2 * r;
-    data_021c61e0 = func_020e8da0(s3, parent);
+    data_021c61e0 = FrameHeap_Create(s3, parent);
 }
 
 extern "C" void func_0205beb8(void) {
@@ -566,7 +566,7 @@ extern "C" void func_0205be74(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 d = func_02084fbc();
     t += s * (c + d + 1);
-    data_021c61dc = func_020e8da0(t, parent);
+    data_021c61dc = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205be58(void) {
@@ -579,7 +579,7 @@ extern "C" void func_0205be20(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d418());
     t += s * n;
-    data_021c61d8 = func_020e8da0(t, parent);
+    data_021c61d8 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205be04(void) {
@@ -593,7 +593,7 @@ extern "C" void func_0205bdc4(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 d = func_02084fbc();
     t += s * (c + d);
-    data_021c61d4 = func_020e8da0(t, parent);
+    data_021c61d4 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bda8(void) {
@@ -606,7 +606,7 @@ extern "C" void func_0205bd70(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205c8c8());
     t += s * n;
-    data_021c61d0 = func_020e8da0(t, parent);
+    data_021c61d0 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bd54(void) {
@@ -619,7 +619,7 @@ extern "C" void func_0205bd1c(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205ddc0());
     t += s * n;
-    data_021c61cc = func_020e8da0(t, parent);
+    data_021c61cc = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bd00(void) {
@@ -632,7 +632,7 @@ extern "C" void func_0205bcd0(void *parent) {
     u32 s = 0, t = 0;
     s += func_0205f018();
     t += s * n;
-    data_021c61c8 = func_020e8da0(t, parent);
+    data_021c61c8 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bcb4(void) {
@@ -645,7 +645,7 @@ extern "C" void func_0205bc7c(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205d770());
     t += s * n;
-    data_021c61c4 = func_020e8da0(t, parent);
+    data_021c61c4 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bc60(void) {
@@ -659,7 +659,7 @@ extern "C" void func_0205bc20(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 d = func_02084fbc();
     t += s * (c + d);
-    data_021c61c0 = func_020e8da0(t, parent);
+    data_021c61c0 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bc04(void) {
@@ -673,7 +673,7 @@ extern "C" void func_0205bbbc(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 e = c + func_02084fbc();
     t += ALIGN4(s + 0x48) * e;
-    data_021c61bc = func_020e8da0(t, parent);
+    data_021c61bc = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bba0(void) {
@@ -686,7 +686,7 @@ extern "C" void func_0205bb64(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(func_0205eec0());
     t += ALIGN4(s + 0x48) * n;
-    data_021c61b8 = func_020e8da0(t, parent);
+    data_021c61b8 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bb48(void) {
@@ -700,7 +700,7 @@ extern "C" void func_0205bb00(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 e = c + func_02084fbc();
     t += ALIGN4(s + 0x48) * e;
-    data_021c61b4 = func_020e8da0(t, parent);
+    data_021c61b4 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205bae4(void) {
@@ -714,7 +714,7 @@ extern "C" void func_0205baa4(void *parent) {
     s32 c = func_020b491c(func_020b50e8());
     s32 d = func_02084fbc();
     t += s * (c + d);
-    data_021c61b0 = func_020e8da0(t, parent);
+    data_021c61b0 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205ba88(void) {
@@ -733,7 +733,7 @@ extern "C" void func_0205ba1c(void *parent) {
     u32 s = 0, t = 0;
     s += ALIGN4(data_020cbfa4);
     t += s * n;
-    data_021c61ac = func_020e8da0(t, parent);
+    data_021c61ac = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205ba00(void) {
@@ -748,7 +748,7 @@ extern "C" void func_0205b9c0(void *parent) {
     u32 v = (data_020cbfa0 + m) & k;
     v = (v + 0x48 + m) & k;
     t += v * 8;
-    data_021c61a8 = func_020e8da0(t, parent);
+    data_021c61a8 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205b9a4(void) {
@@ -764,7 +764,7 @@ extern "C" void func_0205b960(void *parent) {
     u32 v = (data_020cbf98 + m) & k;
     v = (v + 0x48 + m) & k;
     t += v * n;
-    data_021c61a4 = func_020e8da0(t, parent);
+    data_021c61a4 = FrameHeap_Create(t, parent);
 }
 
 extern "C" void func_0205b944(void) {
@@ -786,7 +786,7 @@ extern "C" void *func_0205b8c0(void *parent) {
     x = ALIGN4(ALIGN4(func_02077e20()) + 0x48);
     u32 size = t + x * m;
     if (size != 0) {
-        data_021c61a0 = func_020e8da0(size, parent);
+        data_021c61a0 = FrameHeap_Create(size, parent);
     }
     return data_021c61a0;
 }
@@ -804,19 +804,19 @@ extern "C" void func_0205b864(void *parent) {
     u32 a = func_0209433c();
     s += AL(16, a);
     t += s * 4;
-    data_021c619c = func_020e8e7c(t, parent);
+    gPlayerActorHeap = ExpHeap_Create(t, parent);
 }
 
 extern "C" void func_0205b848(void) {
-    func_020e8c88(data_021c619c);
-    data_021c619c = NULL;
+    func_020e8c88(gPlayerActorHeap);
+    gPlayerActorHeap = NULL;
 }
 
 extern "C" void func_0205b818(s32 x) {
     Unk_0205b7cc_Zero z = UNK_0205B7CC_ZERO;
     u32 s = (data_020c8ba0 + 3) & ~3;
     s = (s + 0x4b) & ~3;
-    data_021c6198 = func_020e8da0(z + s, (void *)x, s, z);
+    data_021c6198 = FrameHeap_Create(z + s, (void *)x, s, z);
 }
 
 extern "C" void func_0205b7fc() {
@@ -830,7 +830,7 @@ extern "C" void func_0205b7cc(s32 x) {
     u32 s = (data_020c8b9c + 3) & ~3;
     s = (s + 0x4b) & ~3;
     u32 e = z + s;
-    data_021c621c = func_020e8da0(e, (void *)a, s, z);
+    data_021c621c = FrameHeap_Create(e, (void *)a, s, z);
 }
 
 extern "C" void func_0205b7b0() {

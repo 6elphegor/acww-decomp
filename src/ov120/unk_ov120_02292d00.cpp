@@ -1,8 +1,8 @@
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 #define func_ov002_02202844 _ZN18Unk_ov002_02202d9819func_ov002_02202844Ev
@@ -11,12 +11,12 @@
 #define func_0206fab4 _ZN12Unk_020e048813func_0206fab4Eii
 #define func_0206fb9c _ZN12Unk_020e048813func_0206fb9cEjjjhhi
 #define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
-#define func_0208d4fc _ZN12Unk_020e100c13func_0208d4fcEv
-#define func_0208d9a8 _ZN12Unk_020e102813func_0208d9a8Ev
-#define func_0208d9d4 _ZN12Unk_020e102813func_0208d9d4Ei
-#define func_0208dae8 _ZN12Unk_020e102813func_0208dae8Eii
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_020a7c3c _ZN12Unk_020e2a7813func_020a7c3cEv
+#define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
+#define ScrollKnob_areAnimsDone _ZN10ScrollKnob12areAnimsDoneEv
+#define ScrollKnob_setState _ZN10ScrollKnob8setStateEi
+#define ScrollKnob_moveTo _ZN10ScrollKnob6moveToEii
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define MsgString_clear _ZN9MsgString5clearEv
 #define func_020b86c0 _ZN12Unk_020e45f813func_020b86c0Ejhjj
 #define func_020b87d0 _ZN12Unk_020e45f813func_020b87d0Ev
 #define func_ov002_022028f0 _ZN18Unk_ov002_02202d9819func_ov002_022028f0Ev
@@ -33,27 +33,27 @@
 #define func_ov092_02291ce4 _ZN18Unk_ov092_02291ec819func_ov092_02291ce4Eii
 
 extern "C" {
-s32 func_020ed174(void *p);
-void func_020ed188(void *p);
+s32 ProcBase_GetParent(void *p);
+void ProcBase_RequestDelete(void *p);
 void func_020b8800(void *p);
 void func_0206fca8(void *p);
 void func_ov092_02291ce4(s32 a, s32 b, s32 c);
 void func_ov092_02291c5c();
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
-void func_0208dae8(void *p, s32 a, s32 b);
-extern u8 data_021f4770;
-extern u8 data_021f4774;
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void ScrollKnob_moveTo(void *p, s32 a, s32 b);
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
 extern u8 data_020e416c;
 extern u8 data_021ef360[];
 extern u8 data_021d7352[];
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 extern s32 *func_020947f0(s32 v);
 extern void func_020b4934();
 extern s32 *func_020b5010(void *p);
 void func_020026c4(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void func_0200261c(const void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void func_02002438(void *a, u32 b, u32 c, u32 d, u32 e);
-void func_020641b4(const void *a, void *b, u32 c);
+void File_LoadToBuffer(const void *a, void *b, u32 c);
 void func_020024f0(void *a, u32 b, u32 c, u32 d);
 void func_0206ee80(void *a, u32 b, u32 c, u32 d, u32 e, u32 f);
 void func_02002398(u32 a, u32 b);
@@ -66,7 +66,7 @@ void func_020b87d0(void *p);
 void func_02063888(void *p);
 void func_020638d0(void *a, void *b);
 void func_02063870(void *p);
-void func_020b3544(u32 a, void *b);
+void String_SetSlot(u32 a, void *b);
 void func_0206fb9c(void *a, u32 b, u32 c, u32 d, u32 e, u32 f, u32 g);
 void func_0206f9fc(void *a, u32 b);
 void func_0206fab4(void *a, u32 b, u32 c);
@@ -74,15 +74,15 @@ void func_ov117_02292408(void *a, void *b);
 void func_ov117_02292c88(void *p);
 void func_ov002_02202844(void *p);
 void func_ov117_02292cac();
-void *func_020e8618(void *a, u32 b);
-void func_020e85fc(void *a, void *b);
+void *Heap_AllocTail(void *a, u32 b);
+void Heap_Free(void *a, void *b);
 void func_02135558(void *a, void *b, void *c);
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u16 data_021f47d8[];
-void func_0208d9d4(void *p, s32 v);
-s32 func_0208d9a8(void *p);
-s32 func_0208d4fc(void *p);
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u16 gPad[];
+void ScrollKnob_setState(void *p, s32 v);
+s32 ScrollKnob_areAnimsDone(void *p);
+s32 HandCursor_isAnimDone(void *p);
 s32 func_ov002_022028f0(void *p);
 void func_ov002_02202a78(void *p);
 void func_ov002_02202af0(void *p);
@@ -113,10 +113,10 @@ extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
 s16 *func_ov117_02292c40(void *p, s32 i);
 u32 func_ov117_02292c2c(void *p, s32 i);
-void func_020a7c3c(void *p);
+void MsgString_clear(void *p);
 void func_0206fc44(void *p);
-void *func_0209750c();
-s32 func_0209888c(...);
+void *PlayerData_GetCurrent();
+s32 PlayerData_getPlayerId(...);
 s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
 BOOL func_0207bf84(void *a, s32 b);
@@ -178,7 +178,7 @@ public:
     u8 unk_00[0x66];
 };
 
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -186,11 +186,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -236,7 +236,7 @@ public:
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_4c();
     virtual BOOL vfunc_50();
     virtual BOOL vfunc_54();
@@ -369,7 +369,7 @@ static inline BOOL IsZero(u8 v) {
 }
 
 static inline BOOL Unk_ov120_022942c0_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) return TRUE;
+    if (gTouchHeld != 0 && gTouchChanged != 0) return TRUE;
     return FALSE;
 }
 
@@ -436,20 +436,20 @@ BOOL Unk_ov120_02295010::vfunc_00() {
 }
 
 BOOL Unk_ov120_02295010::vfunc_0c() {
-    func_020ed174(this);
+    ProcBase_GetParent(this);
     func_ov092_02291c5c();
     func_ov120_02294614();
     return TRUE;
 }
 
-BOOL Unk_ov120_02295010::vfunc_24() {
+BOOL Unk_ov120_02295010::onDraw() {
     u32 h = unk_94 + 0x60;
     if (func_ov120_02292e08(4)) {
         if (func_ov120_02292e08(8)) {
-            func_0208dae8(&unk_438, 0x67, unk_94 - 0x12 + unk_a4);
+            ScrollKnob_moveTo(&unk_438, 0x67, unk_94 - 0x12 + unk_a4);
         }
         func_ov002_02202844(&unk_480);
-        func_02087e70(1, data_ov120_02294fb8, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov120_02294fb8, 0x80, h, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         s32 a, b;
         if (func_ov120_02292e08(1)) {
             b = 0xc;
@@ -458,8 +458,8 @@ BOOL Unk_ov120_02295010::vfunc_24() {
             b = 0xb;
             a = 0xe;
         }
-        func_02087e70(1, data_ov120_02294f78, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_02087e70(1, data_ov120_02294f98, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov120_02294f78, 0x80, h, a, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov120_02294f98, 0x80, h, b, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         u32 t = unk_ac;
         if (t != 0xe) {
             u8 *e = (u8 *)this + t * 3;
@@ -568,12 +568,12 @@ BOOL Unk_ov120_02295010::vfunc_54() { return TRUE; }
 BOOL Unk_ov120_02295010::vfunc_58() { return TRUE; }
 
 BOOL Unk_ov120_02295010::vfunc_5c() {
-    func_020ed188(this);
+    ProcBase_RequestDelete(this);
     return TRUE;
 }
 
 BOOL Unk_ov120_02295010::func_ov120_022949a8() {
-    func_ov092_02291ce4(func_020ed174(this), 0x44, 1);
+    func_ov092_02291ce4(ProcBase_GetParent(this), 0x44, 1);
     unk_8c = 5;
     func_ov002_02200a60(1);
     return TRUE;
@@ -601,7 +601,7 @@ void Unk_ov120_02295010::func_ov120_0229489c() {
     func_ov120_0229433c();
     func_02063888(buf);
     func_020638d0(data_021d7352, buf);
-    func_020b3544(0, buf);
+    String_SetSlot(0, buf);
     void *q = func_ov120_02293dc0();
     func_0206fb9c(q, 8, 0x1ab, 0x12, 0xf, 0, 0);
     func_0206f9fc(q, 0xa9);
@@ -694,7 +694,7 @@ void Unk_ov120_02295010::func_ov120_02294634() {
     s32 x = (v.x + 0x800) >> 12;
     unk_9e = x - 8;
     unk_9f = z + 13;
-    func_0208d9d4(&unk_438, 1);
+    ScrollKnob_setState(&unk_438, 1);
 }
 
 void Unk_ov120_02295010::func_ov120_02294614() {
@@ -750,31 +750,31 @@ void Unk_ov120_02295010::func_ov120_022944d8() {
 }
 
 void Unk_ov120_02295010::func_ov120_02294428() {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_020026c4("menu/map/b_map_bg.bpl", h, 4, 1, 1, 0xf);
     func_0200261c("menu/map/b_map_bg_0.bch", h, 4, 0x11, 0x11, 0x5f);
     func_0200261c("menu/map/b_map_bg_1.bch", h, 4, 0x230, 0x230, 0x25f);
-    func_020641b4("menu/map/b_map_a_bg.bsc", unk_4e4, 0x800);
+    File_LoadToBuffer("menu/map/b_map_a_bg.bsc", unk_4e4, 0x800);
     func_020024f0(unk_4e4, 4, 0x800, 0);
-    func_020641b4("menu/map/b_map_b_bg.bsc", unk_1ce4, 0x800);
+    File_LoadToBuffer("menu/map/b_map_b_bg.bsc", unk_1ce4, 0x800);
     func_0206ee80(unk_1ce4, 0x13, 0, 0x1c, 1, 4);
 }
 
 extern "C" void *data_ov120_02294f00[2] = {(void *)_ZN18Unk_ov120_0229501019func_ov120_02294078Ev, 0};
 
 void Unk_ov120_02295010::func_ov120_0229439c() {
-    u32 h = data_021f482c;
-    void *p = func_020e8618((void *)h, 0x2000);
+    u32 h = gCurrentHeap;
+    void *p = Heap_AllocTail((void *)h, 0x2000);
     static Unk_ov117_02292c88 obj;
     func_ov117_02292c88(&obj);
     func_ov117_02292408(p, &obj);
     func_02002438(p, 4, 0x60, 0x60, 0x15f);
     func_ov120_022938d0(&obj);
-    func_020e85fc((void *)h, p);
+    Heap_Free((void *)h, p);
 }
 
 void Unk_ov120_02295010::func_ov120_0229433c() {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_020026c4("menu/map/b_map_obj.bpl", h, 8, 6, 6, 0xe);
     func_0200261c("menu/map/b_map_obj_0.bch", h, 8, 0xc0, 0xc0, 0xff);
     func_0200261c("menu/map/b_map_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
@@ -788,7 +788,7 @@ void Unk_ov120_02295010::func_ov120_022942c0() {
     if (Unk_ov120_022942c0_Both()) {
         if (func_ov120_02293374() == 0) {
             if (func_ov120_0229348c()) {
-                func_0208d9d4(&unk_438, 2);
+                ScrollKnob_setState(&unk_438, 2);
                 func_ov002_02200a58(1);
             } else if (func_ov120_02293898() == 0) {
                 s32 t = func_ov120_02293ac0();
@@ -801,8 +801,8 @@ void Unk_ov120_02295010::func_ov120_022942c0() {
 }
 
 void Unk_ov120_02295010::func_ov120_02294290() {
-    if (data_021f4770 == 0) {
-        func_0208d9d4(&unk_438, 3);
+    if (gTouchHeld == 0) {
+        ScrollKnob_setState(&unk_438, 3);
         func_ov120_0229400c();
     }
     func_ov120_02293440();
@@ -822,7 +822,7 @@ void Unk_ov120_02295010::func_ov120_022941b8() {
         func_ov120_022930f0();
         return;
     }
-    u32 k = data_021f47d8[1];
+    u32 k = gPad[1];
     if ((k & 1) != 0) {
         func_ov120_022930d0();
     } else if ((k & 0x800) != 0) {
@@ -846,7 +846,7 @@ void Unk_ov120_02295010::func_ov120_0229418c() {
 }
 
 void Unk_ov120_02295010::func_ov120_02294144() {
-    if (func_0208d4fc(&unk_480)) {
+    if (HandCursor_isAnimDone(&unk_480)) {
         s32 r = func_ov120_02292e7c();
         if (r == 1) {
         } else if (r == 2) {
@@ -860,7 +860,7 @@ void Unk_ov120_02295010::func_ov120_02294144() {
 }
 
 void Unk_ov120_02295010::func_ov120_02294100() {
-    if (func_0208d4fc(&unk_480)) {
+    if (HandCursor_isAnimDone(&unk_480)) {
         func_ov120_02293090();
         if (func_ov120_02292e08(0x800)) {
             func_ov002_02200a58(9);
@@ -871,14 +871,14 @@ void Unk_ov120_02295010::func_ov120_02294100() {
 }
 
 void Unk_ov120_02295010::func_ov120_022940dc() {
-    if (func_0208d9a8(&unk_438)) {
+    if (ScrollKnob_areAnimsDone(&unk_438)) {
         func_ov002_02200a58(7);
     }
 }
 
 void Unk_ov120_02295010::func_ov120_022940a4() {
-    if ((data_021f47d8[0] & 1) == 0) {
-        func_0208d9d4(&unk_438, 3);
+    if ((gPad[0] & 1) == 0) {
+        ScrollKnob_setState(&unk_438, 3);
         func_ov002_02200a58(8);
     } else {
         func_ov120_022933f0();
@@ -886,19 +886,19 @@ void Unk_ov120_02295010::func_ov120_022940a4() {
 }
 
 void Unk_ov120_02295010::func_ov120_02294078() {
-    if (func_0208d9a8(&unk_438)) {
+    if (ScrollKnob_areAnimsDone(&unk_438)) {
         func_ov120_022930b0();
         func_ov120_02292de8(0x1000);
     }
 }
 
 void Unk_ov120_02295010::func_ov120_02294024() {
-    u32 v = data_021f47d8[1];
+    u32 v = gPad[1];
     BOOL r = TRUE;
     if ((v & 1) != 0) goto call;
     if ((v & 0x400) != 0) goto call;
     if ((v & 2) != 0) goto call;
-    if (data_021f4770 == 0 || data_021f4774 == 0) r = FALSE;
+    if (gTouchHeld == 0 || gTouchChanged == 0) r = FALSE;
     if (r) {
     call:
         func_ov120_022949a8();
@@ -911,7 +911,7 @@ void Unk_ov120_02295010::func_ov120_0229400c() {
 }
 
 void Unk_ov120_02295010::func_ov120_02293fc4() {
-    func_0208d9d4(&unk_438, 1);
+    ScrollKnob_setState(&unk_438, 1);
     func_ov120_02293230();
     func_ov002_02200980();
     if (func_ov120_02292e08(0x800)) {
@@ -997,7 +997,7 @@ void *Unk_ov120_02295010::func_ov120_02293dc0() {
 void Unk_ov120_02295010::func_ov120_02293cfc() {
     s32 n = 0;
     s32 m, i;
-    m = func_02097740(data_021d735c, func_0209888c(func_0209750c()));
+    m = func_02097740(data_021d735c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (m != -1) {
         unk_24e4[0] = 1;
         n++;
@@ -1053,9 +1053,9 @@ s32 Unk_ov120_02295010::func_ov120_02293c70(u8 *tbl) {
 
 void Unk_ov120_02295010::func_ov120_02293c04(void *p, u32 idx) {
     if (idx == 0) {
-        func_020a7c3c(p);
+        MsgString_clear(p);
     } else if (idx == 1) {
-        func_ov002_022019a4(p, func_0209888c(func_0209750c()));
+        func_ov002_022019a4(p, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     } else if (idx >= 2 && idx < 6) {
         func_ov002_02201984(p, idx - 2);
     } else if (idx >= 6 && idx < 0xe) {
@@ -1063,7 +1063,7 @@ void Unk_ov120_02295010::func_ov120_02293c04(void *p, u32 idx) {
     } else if (idx >= 0xe && idx < 0x13) {
         func_0206f9fc(p, idx + 0x88);
     } else {
-        func_020a7c3c(p);
+        MsgString_clear(p);
     }
 }
 
@@ -1116,8 +1116,8 @@ s32 Unk_ov120_02295010::func_ov120_02293b0c() {
 }
 
 BOOL Unk_ov120_02295010::func_ov120_02293ac0() {
-    s32 x = data_021ef5f0;
-    s32 y = data_021ef5ec;
+    s32 x = gTouchCurX;
+    s32 y = gTouchCurY;
     if (x < 0x98 || x > 0xe8) {
         return FALSE;
     }
@@ -1194,7 +1194,7 @@ void Unk_ov120_02295010::func_ov120_022938d0(void *src) {
 }
 
 BOOL Unk_ov120_02295010::func_ov120_02293898() {
-    u32 r = func_ov120_02293838(data_021ef5f0, data_021ef5ec);
+    u32 r = func_ov120_02293838(gTouchCurX, gTouchCurY);
     if (r == 0xe) {
         return FALSE;
     }
@@ -1388,8 +1388,8 @@ BOOL Unk_ov120_02295010::func_ov120_0229348c() {
     if (!func_ov120_02292e08(8)) {
         return FALSE;
     }
-    if (func_ov002_02202f18(&unk_438, data_021ef5f0, data_021ef5ec)) {
-        unk_a5 = data_021ef5ec;
+    if (func_ov002_02202f18(&unk_438, gTouchCurX, gTouchCurY)) {
+        unk_a5 = gTouchCurY;
         unk_a6 = unk_a4;
         return TRUE;
     }
@@ -1397,7 +1397,7 @@ BOOL Unk_ov120_02295010::func_ov120_0229348c() {
 }
 
 void Unk_ov120_02295010::func_ov120_02293440() {
-    s32 t = unk_a6 + (data_021ef5ec - unk_a5);
+    s32 t = unk_a6 + (gTouchCurY - unk_a5);
     if (t < 0) {
         t = 0;
     } else if (t > 0x58) {
@@ -1408,7 +1408,7 @@ void Unk_ov120_02295010::func_ov120_02293440() {
 
 void Unk_ov120_02295010::func_ov120_022933f0() {
     s32 t = unk_9a;
-    u32 keys = data_021f47d8[0];
+    u32 keys = gPad[0];
     if (keys & 0x40) {
         t = t - 4;
     } else if (keys & 0x80) {
@@ -1424,8 +1424,8 @@ void Unk_ov120_02295010::func_ov120_022933f0() {
 }
 
 BOOL Unk_ov120_02295010::func_ov120_02293374() {
-    s32 x = data_021ef5f0;
-    s32 y = data_021ef5ec;
+    s32 x = gTouchCurX;
+    s32 y = gTouchCurY;
     if (y < 0x38 || y > 0x4c) {
         return FALSE;
     }
@@ -1623,7 +1623,7 @@ s32 Unk_ov120_02295010::func_ov120_02292e7c() {
     u32 t = unk_ab;
     if (t == 8) {
         func_ov002_02200a58(6);
-        func_0208d9d4(&unk_438, 2);
+        ScrollKnob_setState(&unk_438, 2);
         func_ov120_02292df8(0x1000);
         return 1;
     } else if (t == 0) {

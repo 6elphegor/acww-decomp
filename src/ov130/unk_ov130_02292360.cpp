@@ -1,22 +1,22 @@
 #include "types.h"
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 
 void func_020026c4(const void *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_0200261c(const void *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_02002438(void *p, s32 a, s32 b, s32 c, s32 d);
 void func_02002688(const void *buf, void *h, s32 a, s32 b, s32 c);
 void func_020024f0(void *p, s32 a, s32 b, s32 c);
-u8 *func_020641ec(u32 id, void *heap, s32 a, void *out);
-void func_020641b4(u32 src, void *dst, s32 n);
-void func_020e85fc(void *heap, void *p);
+u8 *File_LoadAlloc(u32 id, void *heap, s32 a, void *out);
+void File_LoadToBuffer(u32 src, void *dst, s32 n);
+void Heap_Free(void *heap, void *p);
 void func_0206f9fc(void *o, u32 v);
 void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
-s32 func_0209750c();
-void _ZN12Unk_0209865c13func_0209888cEv();
-s32 _ZN12Unk_020940a013func_0209411cEv();
-void func_02003f3c(u32 v);
+s32 PlayerData_GetCurrent();
+void _ZN10PlayerData11getPlayerIdEv();
+s32 _ZN8PlayerId13func_0209411cEv();
+void Snd_SetKeySeMode(u32 v);
 }
 
 // text buffer object, 0x40 bytes (vtable 0x020e0488, see src/main/unk_0206f53c.cpp)
@@ -187,9 +187,9 @@ struct Ov130S {
 
 extern "C" {
 void _ZN12Unk_020e048813func_0206fc44Ev(void *p);
-void func_0200402c(s32 v);
-void func_02003f2c(u32 a);
-s32 func_02087e70(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Snd_PlaySe(s32 v);
+void Snd_PlayKeySe(u32 a);
+s32 Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect);
 void func_0206ee80(void *tbl, s32 x0, s32 y0, s32 x1, s32 y1, u32 to);
 BOOL func_ov002_0220128c(u32 v);
@@ -276,18 +276,18 @@ void Unk_ov130_02292360::func_ov130_022930ac(u32 mode, u32 a, u32 b) {
     unk_10 = 0;
     unk_14 = 0;
     unk_18 = 0;
-    if (func_0209750c() != 0) {
-        _ZN12Unk_0209865c13func_0209888cEv();
-        if (_ZN12Unk_020940a013func_0209411cEv() == 0) {
-            func_02003f3c(0);
+    if (PlayerData_GetCurrent() != 0) {
+        _ZN10PlayerData11getPlayerIdEv();
+        if (_ZN8PlayerId13func_0209411cEv() == 0) {
+            Snd_SetKeySeMode(0);
             return;
         }
     }
-    func_02003f3c(1);
+    Snd_SetKeySeMode(1);
 }
 
 void func_ov130_0229304c(s32 x) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_0200261c("menu/bank/bg0.bch", h, x, 0x10, 0x10, 0xff);
     func_0200261c("menu/bank/bg1.bch", h, x, 0x100, 0x100, 0x1a9);
     func_020026c4("menu/bank/bg.bpl", h, x, 1, 1, 0xd);
@@ -295,7 +295,7 @@ void func_ov130_0229304c(s32 x) {
 
 void Unk_ov130_02292360::func_ov130_02292e90() {
     func_ov130_0229304c(unk_0a);
-    func_020641b4(data_ov130_02293488[unk_08], unk_1b4, 0x800);
+    File_LoadToBuffer(data_ov130_02293488[unk_08], unk_1b4, 0x800);
     switch (unk_07) {
     case 0:
     case 1:
@@ -306,7 +306,7 @@ void Unk_ov130_02292360::func_ov130_02292e90() {
         break;
     }
     func_020024f0(unk_1b4, unk_0a, 0x800, 0);
-    func_020641b4(data_ov130_02293470[unk_08], unk_9b4, 0x800);
+    File_LoadToBuffer(data_ov130_02293470[unk_08], unk_9b4, 0x800);
     func_020024f0(unk_9b4, unk_0b, 0x800, 0);
     Unk_020e0488 *o = (Unk_020e0488 *)func_ov130_02292380((Ov130S *)this);
     if (unk_07 == 6) {
@@ -351,12 +351,12 @@ void Unk_ov130_02292360::func_ov130_02292e90() {
 }
 
 void func_ov130_02292db8(s32 n) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     u32 local;
     func_020026c4("menu/bank/obj.bpl", h, 8, 4, 4, 0xe);
     func_0200261c("menu/bank/obj0.bch", h, 8, 0xc0, 0xc0, 0x15f);
     func_0200261c("menu/bank/obj1.bch", h, 8, 0x160, 0x160, 0x1ff);
-    u8 *res = func_020641ec(data_ov130_02293360[n / 5], h, -4, &local);
+    u8 *res = File_LoadAlloc(data_ov130_02293360[n / 5], h, -4, &local);
     u8 *p = res + (n % 5) * 0xc0;
     s32 c = 0x15a;
     s32 i;
@@ -365,7 +365,7 @@ void func_ov130_02292db8(s32 n) {
         p += 0x400;
         c += 0x20;
     }
-    func_020e85fc(h, res);
+    Heap_Free(h, res);
     func_02002688("menu/bank/ten0.bpl", h, 8, n, 4);
 }
 
@@ -529,8 +529,8 @@ extern "C" BOOL func_ov130_02292a38(Ov130S *s) {
 
 extern "C" void func_ov130_022929d4(Ov130S *s) {
     s32 y = (s32)s + 0x60;
-    func_02087e70(1, data_ov130_02293518, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    func_02087e70(1, data_ov130_02293568, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov130_02293518, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov130_02293568, 0x80, y, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 extern "C" void func_ov130_022927b0(Ov130S *s, s32 y) {
@@ -549,8 +549,8 @@ extern "C" void func_ov130_022927b0(Ov130S *s, s32 y) {
         t2 = data_ov130_02293568;
     }
     if (s->unk_09 == 3) r6 += 10;
-    func_02087e70(1, t1, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    func_02087e70(1, t2, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, t1, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, t2, 0x80, r6, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     r4 += 0x60;
     if (s->unk_08 == 4) return;
     if (s->unk_08 == 0 || s->unk_08 == 2) {
@@ -588,11 +588,11 @@ extern "C" s32 func_ov130_0229279c(Ov130S *s) {
 }
 
 extern "C" void func_ov130_02292788(u32 idx) {
-    func_02003f2c(data_ov130_02293390[idx]);
+    Snd_PlayKeySe(data_ov130_02293390[idx]);
 }
 
 extern "C" void func_ov130_0229277c() {
-    func_0200402c(0x2a);
+    Snd_PlaySe(0x2a);
 }
 
 extern "C" BOOL func_ov130_02292758(Ov130S *s) {
@@ -608,12 +608,12 @@ extern "C" void func_ov130_02292708(Ov130S *s) {
     s32 v = s->unk_0c;
     u32 k = s->unk_04;
     if (k == 10) {
-        if (!func_ov130_02292758(s)) func_0200402c(0x34);
+        if (!func_ov130_02292758(s)) Snd_PlaySe(0x34);
     } else {
         n = k + v * 10;
         if (n > s->unk_10) n = s->unk_10;
         if (n == v) {
-            func_0200402c(0x34);
+            Snd_PlaySe(0x34);
         } else {
             func_ov130_02292788(k);
             s->unk_0c = n;

@@ -19,7 +19,7 @@ extern void OS_RestoreInterrupts(u32);
 extern void MI_CpuFill8(void *, u32, u32);
 extern void MI_CpuCopy8(void *, void *, u32);
 extern u32 func_0213335c(u32, u32);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void *MBi_MakeParentSendBuffer(void *, void *);
 extern u32 IsChildAidValid(u32);
 extern u32 MBi_BlockHeaderEnd(u32, u32, void *);

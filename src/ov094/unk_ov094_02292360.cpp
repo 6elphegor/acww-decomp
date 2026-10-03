@@ -185,9 +185,9 @@ public:
 };
 
 // symbols.txt names of main functions (called with the object first)
-#define func_02062564 _ZN12Unk_020dd32413func_02062564EPt
-#define func_0206260c _ZN12Unk_020dd324D1Ev
-#define func_0206267c _ZN12Unk_020dd324C1Ev
+#define ItemName_setFromItem _ZN8ItemName11setFromItemEPt
+#define func_0206260c _ZN8ItemNameD1Ev
+#define func_0206267c _ZN8ItemNameC1Ev
 #define func_02063870 _ZN12Unk_020dd38cD1Ev
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
 #define func_02065578 _ZN12Unk_0206555413func_02065578Ev
@@ -197,21 +197,21 @@ public:
 #define func_0206fc44 _ZN12Unk_020e048813func_0206fc44Ev
 #define func_0206fca8 _ZN12Unk_020e0488D1Ev
 #define func_0206fcc8 _ZN12Unk_020e0488C1Ev
-#define func_02089ac0 _ZN12Unk_020e0d9813func_02089ac0EP6StrBuf
+#define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78
-#define func_0209411c _ZN12Unk_020940a013func_0209411cEv
-#define func_02097d1c _ZN12Unk_02097d1c13func_02097d1cEi
-#define func_02097e68 _ZN12Unk_02097d1c13func_02097e68Ei
-#define func_02097eb0 _ZN12Unk_02097d1c13func_02097eb0Ei
-#define func_02097f6c _ZN12Unk_02097d1c13func_02097f6cEi
-#define func_02098744 _ZN12Unk_0209865c13func_02098744Ev
-#define func_02098750 _ZN12Unk_0209865c13func_02098750Ev
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_020a7bd8 _ZN12Unk_020e2a7813func_020a7bd8EPS_
+#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define func_0209411c _ZN8PlayerId13func_0209411cEv
+#define PlayerInventory_getTotalBells _ZN15PlayerInventory13getTotalBellsEi
+#define PlayerInventory_getLetter _ZN15PlayerInventory9getLetterEi
+#define PlayerInventory_getPocketFlags _ZN15PlayerInventory14getPocketFlagsEi
+#define PlayerInventory_getPocket _ZN15PlayerInventory9getPocketEi
+#define PlayerData_getHeldItem _ZN10PlayerData11getHeldItemEv
+#define func_02098750 _ZN10PlayerData13func_02098750Ev
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define MsgString_copy _ZN9MsgString4copyEPS_
 #define func_020b851c _ZN12Unk_020e460813func_020b851cEjjhjjjj
 #define func_020b85f8 _ZN12Unk_020e4608C1Ev
 #define func_020b8670 _ZN12Unk_020e45f813func_020b8670Ejhj
@@ -224,23 +224,23 @@ public:
 void operator delete(void *p);
 
 extern "C" {
-void func_0200402c(s32 a);
-void func_02003ff4(s32 a, s32 b);
+void Snd_PlaySe(s32 a);
+void Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
 void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
 void func_020024f0(void *a, u32 b, u32 c, s32 d);
 void func_0200261c(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_020026c4(const void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-s32 func_0204bcb0(void *p);
-void func_020510d8(void *a, void *b);
-void func_02062564(void *a, void *b);
+s32 Item_GetInfoUnk02(void *p);
+void StrBuf_Copy(void *a, void *b);
+void ItemName_setFromItem(void *a, void *b);
 void func_0206260c(void *p);
 void func_0206267c(void *p);
 void func_02063870(void *p);
 void func_02063888(void *p);
 void func_020638d0(s32 a, void *p);
 s32 func_020639e8(char *buf, const void *fmt, ...);
-void func_020641b4(const void *src, void *dst, s32 n);
+void File_LoadToBuffer(const void *src, void *dst, s32 n);
 s32 func_02065578(void *o);
 s32 func_020655d0(s32 a);
 s32 func_020655d8(void *o);
@@ -251,7 +251,7 @@ void func_02065c94(void *o);
 void func_02065e70(void *o, s32 x);
 void func_0206ee80(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_0206eed4(s32 a);
-BOOL func_0206ef0c();
+BOOL MenuCtrl_IsTouch();
 void func_0206f9fc(void *p, s32 a);
 void func_0206fab4(void *p, s32 a, s32 b);
 void func_0206fb9c(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -261,7 +261,7 @@ void func_0206fcc8(void *p);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
 s32 func_02088730(s32 a, const void *b, s32 c, s32 d, ...);
-void func_02089ac0(void *a, void *b);
+void LabelBalloon_setText(void *a, void *b);
 void func_02089f30(void *p);
 void func_02089f44(void *p);
 void func_02094018(void *p);
@@ -269,18 +269,18 @@ void func_02094030(void *p);
 s32 func_0209409c(s32 a);
 void func_020940d0(s32 a, void *p);
 s32 func_0209411c();
-s32 func_0209750c();
-s32 func_02097d1c(s32 a, s32 b);
-void *func_02097e68(s32 a, s32 b);
-u32 func_02097eb0(s32 a, s32 b);
-u16 *func_02097f6c(s32 a, s32 b);
-u16 *func_02098744(s32 a);
+s32 PlayerData_GetCurrent();
+s32 PlayerInventory_getTotalBells(s32 a, s32 b);
+void *PlayerInventory_getLetter(s32 a, s32 b);
+u32 PlayerInventory_getPocketFlags(s32 a, s32 b);
+u16 *PlayerInventory_getPocket(s32 a, s32 b);
+u16 *PlayerData_getHeldItem(s32 a);
 s32 func_02098750(s32 a);
-s32 func_0209888c(...);
+s32 PlayerData_getPlayerId(...);
 void func_02098e90(void *a, void *b);
 void func_0209909c(u16 *a, s32 b, s32 c);
-void func_020a7bd8(void *a, void *b);
-void func_020b3544(s32 a, void *p);
+void MsgString_copy(void *a, void *b);
+void String_SetSlot(s32 a, void *p);
 void func_020b851c(void *a, void *b, void *c, s32 d, u32 e, u32 f, u32 g, u32 h);
 void func_020b85f8(void *p);
 s32 func_020b8670(void *a, void *b, s32 c, s32 d);
@@ -290,7 +290,7 @@ void func_020b87d0(void *p);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 func_021355f0(void *p, s32 n, u32 sz, void *dtor);
 s32 func_02135714(void *p, s32 n, u32 sz, void *ctor, void *dtor);
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 s32 _ZN18Unk_ov094_02294a4019func_ov094_02293ac8Ei(void *self, s32 i, s32 j);
 
 extern const u8 data_ov094_022946b4[];
@@ -505,9 +505,9 @@ void func_ov094_02292d1c(S *s, s32 flag) {
 }
 
 void func_ov094_02292c84(S *s, s32 flag) {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_020026c4(data_ov094_0229499c, h, s->unk_0e, 0, 1, 0xd);
-    func_020641b4(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->unk_160, 0x800);
+    File_LoadToBuffer(flag ? data_ov094_022949b8 : data_ov094_022949d8, s->unk_160, 0x800);
     func_020024f0(s->unk_160, s->unk_0e, 0x800, 0);
     func_0200261c(data_ov094_022949f8, h, s->unk_0e, 0, 0x10, 0xff);
     func_0200261c(data_ov094_02294a14, h, s->unk_0e, 0x100, 0x100, 0x1ff);
@@ -516,15 +516,15 @@ void func_ov094_02292c84(S *s, s32 flag) {
 void func_ov094_02292c08(void *o)
 {
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
-    func_0200261c(data_ov094_02294928, data_021f482c, p->unk_0e, 0x200, 0x200, 0x2ff);
+    func_0200261c(data_ov094_02294928, gCurrentHeap, p->unk_0e, 0x200, 0x200, 0x2ff);
     func_ov094_02292b58(p);
     func_ov094_0229260c(p);
     func_ov094_02292864(p);
-    func_020641b4(data_ov094_02294944, p->unk_16, 0x20);
+    File_LoadToBuffer(data_ov094_02294944, p->unk_16, 0x20);
     p->unk_0a = p->unk_32;
-    func_020641b4(data_ov094_02294960, p->unk_16, 0x20);
+    File_LoadToBuffer(data_ov094_02294960, p->unk_16, 0x20);
     p->unk_0c = p->unk_32;
-    func_020641b4(data_ov094_0229497c, p->unk_16, 0x20);
+    File_LoadToBuffer(data_ov094_0229497c, p->unk_16, 0x20);
 }
 
 void func_ov094_02292b58(void *o)
@@ -532,18 +532,18 @@ void func_ov094_02292b58(void *o)
     Unk_ov094_02292360_Obj *p = (Unk_ov094_02292360_Obj *)o;
     u8 buf[0x1c];
     u8 buf2[0x1c];
-    func_0209750c();
-    s32 r = func_0209888c();
+    PlayerData_GetCurrent();
+    s32 r = PlayerData_getPlayerId();
     func_02063888(buf);
     func_020638d0(func_0209409c(r), buf);
-    func_020b3544(0, buf);
+    String_SetSlot(0, buf);
     func_0206fb9c((u8 *)p + 0xe0, p->unk_0e, 0x11, 0xa, 0xf, 0xc, 0);
     func_0206f9fc((u8 *)p + 0xe0, 0x66);
     func_0206fab4((u8 *)p + 0xe0, 1, 0);
     func_02094030(buf2);
     func_020940d0(r, buf2);
     func_0206fb9c((u8 *)p + 0x120, p->unk_0e, 0x25, 8, 0xf, 0xc, 0);
-    func_020a7bd8((u8 *)p + 0x120, buf2);
+    MsgString_copy((u8 *)p + 0x120, buf2);
     func_0206fab4((u8 *)p + 0x120, 1, 0);
     func_02094018(buf2);
     func_02063870(buf);
@@ -551,7 +551,7 @@ void func_ov094_02292b58(void *o)
 
 void func_ov094_02292ae0()
 {
-    s32 g = data_021f482c;
+    s32 g = gCurrentHeap;
     func_020026c4(data_ov094_022948c0, g, 8, 4, 4, 6);
     func_020026c4(data_ov094_022948e0, g, 8, 7, 7, 0xe);
     func_0200261c(data_ov094_022948f8, g, 8, 0xc0, 0xc0, 0x15f);
@@ -578,7 +578,7 @@ void func_ov094_02292a80(void *o)
     func_ov094_02292a60(o);
     func_ov094_02292a40(o);
     if (((Unk_ov094_02292360_Obj *)o)->unk_13 != 0) {
-        func_02003ff4(0x2d, 1);
+        Snd_StopSe(0x2d, 1);
     }
 }
 
@@ -628,10 +628,10 @@ void func_ov094_02292988(void *o)
 
 void func_ov094_02292864(void *o)
 {
-    s32 a = func_0209750c();
-    func_0209888c();
+    s32 a = PlayerData_GetCurrent();
+    PlayerData_getPlayerId();
     s32 b = func_0209411c();
-    u16 *pv = func_02098744(a);
+    u16 *pv = PlayerData_getHeldItem(a);
     s32 idx = 0;
     BOOL fl = FALSE;
     u32 v = *pv;
@@ -665,7 +665,7 @@ void func_ov094_02292814(void *o, s32 a, s32 b)
     } else {
         func_020639e8(buf, data_ov094_022948a4, a);
     }
-    func_020641b4(buf, (u8 *)p + 0x960, 0xc80);
+    File_LoadToBuffer(buf, (u8 *)p + 0x960, 0xc80);
     p->unk_14 = a;
     func_ov094_02292368(p, 4);
 }
@@ -794,7 +794,7 @@ void func_ov094_02292640(void *o, u32 n)
 
 s32 func_ov094_02292628()
 {
-    return func_02097d1c(func_02098750(func_0209750c()), 0);
+    return PlayerInventory_getTotalBells(func_02098750(PlayerData_GetCurrent()), 0);
 }
 
 void func_ov094_0229260c(void *o)
@@ -814,8 +814,8 @@ void func_ov094_02292534(void *o)
         if (p->unk_13 == 0) {
             p->unk_00 = t;
             func_ov094_02292640(p, 0);
-            func_02003ff4(0x2d, 1);
-            func_0200402c(0x3e);
+            Snd_StopSe(0x2d, 1);
+            Snd_PlaySe(0x3e);
         } else {
             s32 c = p->unk_00;
             if (c < t) {
@@ -929,17 +929,17 @@ BOOL func_ov094_022923a4(u32 v)
 
 void func_ov094_02292398()
 {
-    func_0200402c(14);
+    Snd_PlaySe(14);
 }
 
 void func_ov094_0229238c()
 {
-    func_0200402c(12);
+    Snd_PlaySe(12);
 }
 
 void func_ov094_02292380()
 {
-    func_0200402c(13);
+    Snd_PlaySe(13);
 }
 
 s32 func_ov094_02292370(void *o, u32 m)

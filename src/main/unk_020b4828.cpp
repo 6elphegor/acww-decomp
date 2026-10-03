@@ -9,10 +9,10 @@ struct Vec3 {
 };
 
 // local static of func_020b503c; destructor in another unit
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 x, y, z;
-    Unk_02000c8c(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~Unk_02000c8c();
+    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
+    ~FxVec3();
 };
 
 static inline void setVec(Vec3* o, s32 x, s32 y, s32 z) {
@@ -36,9 +36,9 @@ static inline BOOL is1(u8 v) {
 }
 
 // 0x1c-byte table entry (constructor func_020b4fc4, destructor func_020b4fc0)
-struct TileEntry {
-    TileEntry();
-    ~TileEntry();
+struct Unk_020b4fc4 {
+    Unk_020b4fc4();
+    ~Unk_020b4fc4();
     u8 type;      // 0x00
     u8 flag;      // 0x01
     s16 unk_02;   // 0x02
@@ -51,9 +51,9 @@ struct TileEntry {
 };
 
 // 0x18-byte record (constructor func_020b50a4, destructor func_020b50a0)
-struct TileInfo {
-    TileInfo();
-    ~TileInfo();
+struct Unk_020b50a4 {
+    Unk_020b50a4();
+    ~Unk_020b50a4();
     Vec3 pos;     // 0x00
     u32 unk_0c;   // 0x0c
     s16 unk_10;   // 0x10
@@ -63,7 +63,7 @@ struct TileInfo {
 };
 
 struct TileTable {
-    TileEntry* entries;
+    Unk_020b4fc4* entries;
     u8 count;
 };
 
@@ -126,20 +126,20 @@ public:
 };
 
 // Intermediate class (vtable 0x020e2988): its virtuals are defined by another unit, ctor/dtor inline
-class Unk_020e2988 : public Unk_020d8c7c {
+class Unk_020e2988 : public GameProc {
 public:
     Unk_020e2988() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual ~Unk_020e2988() {}
 };
 
@@ -149,8 +149,8 @@ public:
     Unk_020e4238() {}
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
 };
 
@@ -179,19 +179,19 @@ extern s32 data_020c8cc0;
 extern Unk_020cbb18_t* data_020cbb18;
 extern u16 data_020e2974;
 extern u8 data_021e5890[];
-extern S2f0* data_021eda68;
-extern u8 data_021f4770;
-extern u16 data_021f4778;
-extern u16 data_021f477c;
+extern S2f0* gActorDefaultParent;
+extern u8 gTouchHeld;
+extern u16 gTouchX;
+extern u16 gTouchY;
 extern u8 data_021c3cc0;
 extern u8 data_021c3cb8;
 extern u32 data_021c5388;
 extern u32 data_021ce63c;
-extern u32 data_020dc520;
+extern u32 gVBlanksPerFrame;
 extern u8 data_021eda64;
 extern u8 data_021eda50[];
 extern u8 data_021eda58[];
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 extern u32 OVERLAY_2_ID[];
 extern u8 data_ov003_0225812c[];
 extern u8 data_ov006_0225b7b4[];
@@ -212,23 +212,23 @@ void* func_0204da0c();
 BOOL func_0204d700(void* o, Vec3* v, s32* a, s32* b);
 BOOL func_0204d684(void* o, Vec3* v, s32* a, s32* b);
 void func_0209cfb8(u8 *out);
-void func_0204eee4(u32 v);
-void func_0204ef2c(u32 v);
+void OverlayMgr_Release(u32 v);
+void OverlayMgr_Acquire(u32 v);
 void func_020b60dc(s32, u32, u32, u32);
-void func_02095300(s32, s32);
-void func_020952f0(s32);
-void func_0209524c(s32, s32);
-s32 func_020952e0(s32);
+void PlayerSession_SetDataIndex(s32, s32);
+void PlayerSession_ClearDataIndex(s32);
+void PlayerSession_SetGfxSlot(s32, s32);
+s32 PlayerSession_GetDataIndex(s32);
 s32 _ZN12Unk_020afaa413func_020afab8EPhS0_y(void*, void*, void*, u32, u32);
 void _ZN12Unk_020afaa413func_020afad0Ev(void*);
 s32 func_020a5ef8();
 void func_020a5ee8(s32);
-BOOL func_020974a0(s32);
-void _ZN12Unk_0209865c13func_02098a58Ev();
+BOOL PlayerData_Get(s32);
+void _ZN10PlayerData13func_02098a58Ev();
 s32 func_02036c58();
 void _ZN12Unk_0203710813func_02037108Ej(s32, s32);
-void func_0205351c(s32);
-void func_020621a4(s32);
+void FtrInfo_LoadIndoor(s32);
+void ItemInfo_LoadIndoor(s32);
 void _ZN12Unk_020b69a813func_020b69a8Ev();
 void _ZN12Unk_020b696013func_020b6990Ev();
 void func_02038158();
@@ -264,7 +264,7 @@ void func_02045c68();
 u8 func_020a5f08();
 void func_020a5f18(s32);
 void func_02041104();
-void func_0203e6e4();
+void Character_ResetList();
 void func_0203e308();
 void func_02038fb0();
 void func_0203498c();
@@ -289,8 +289,8 @@ void func_0205cdcc();
 void func_0205c62c();
 void func_020716cc();
 void _ZN12Unk_020718a413func_020716f0Ev();
-void func_0205350c();
-void func_02062194();
+void FtrInfo_FreeIndoor();
+void ItemInfo_FreeIndoor();
 void func_020abe10();
 void func_020ac3a4();
 void _ZN12Unk_02036cec13func_02036cecEv();
@@ -315,7 +315,7 @@ void func_0205b864(u32);
 void func_0209c540();
 void func_020ac750();
 void func_0208e974();
-void func_020040cc();
+void Snd_CreateScene();
 }
 
 // ---- data of this unit ----
@@ -327,13 +327,13 @@ u8 func_020b4910(u32 i);
 u8 func_020b491c(u32 i);
 u8 func_020b4928(u32 i);
 u8 *func_020b4934(void);
-u8 func_020b493c(TileEntry* e);
-void func_020b4940(TileEntry* e, u8 v);
-u8 func_020b4944(TileEntry* e);
-BOOL func_020b4948(TileEntry* e);
-u32 func_020b4958(TileEntry* e);
-s32 func_020b495c(TileEntry* e);
-Vec3* func_020b4964(TileEntry* e);
+u8 func_020b493c(Unk_020b4fc4* e);
+void func_020b4940(Unk_020b4fc4* e, u8 v);
+u8 func_020b4944(Unk_020b4fc4* e);
+BOOL func_020b4948(Unk_020b4fc4* e);
+u32 func_020b4958(Unk_020b4fc4* e);
+s32 func_020b495c(Unk_020b4fc4* e);
+Vec3* func_020b4964(Unk_020b4fc4* e);
 void func_020b4968(s32 a, s32 b);
 u8 func_020b4994();
 u8 func_020b49a8(u8* p);
@@ -343,19 +343,19 @@ BOOL func_020b49c4(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q);
 BOOL func_020b4aa8(s32 unused, s32 id, Vec3* pos, u32 w, s16 s, s32 p, s32 q);
 BOOL func_020b4b68(s32 unused, s32 id, u32* type, s16* s);
 BOOL func_020b4aec(s32 a, s32 id, Vec3* out, Vec3* in);
-BOOL func_020b4f18(TileEntry* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q);
-BOOL func_020b4f58(TileEntry* e, u8 id, u8 p, u8 q);
-BOOL func_020b4f78(TileEntry* e, u8 id);
-void func_020b4f8c(TileEntry* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
+BOOL func_020b4f18(Unk_020b4fc4* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q);
+BOOL func_020b4f58(Unk_020b4fc4* e, u8 id, u8 p, u8 q);
+BOOL func_020b4f78(Unk_020b4fc4* e, u8 id);
+void func_020b4f8c(Unk_020b4fc4* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t);
 BOOL func_020b4fe4(u32 id);
-s32 func_020b4ff0(TileInfo* i);
-s32 func_020b4ff8(TileInfo* i);
-u8 func_020b5000(TileInfo* i);
-s32 func_020b5004(TileInfo* i);
-u32 func_020b500c(TileInfo* i);
-Vec3* func_020b5010(TileInfo* i);
-void func_020b5014(TileInfo* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q);
-void func_020b503c(TileInfo* i);
+s32 func_020b4ff0(Unk_020b50a4* i);
+s32 func_020b4ff8(Unk_020b50a4* i);
+u8 func_020b5000(Unk_020b50a4* i);
+s32 func_020b5004(Unk_020b50a4* i);
+u32 func_020b500c(Unk_020b50a4* i);
+Vec3* func_020b5010(Unk_020b50a4* i);
+void func_020b5014(Unk_020b50a4* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q);
+void func_020b503c(Unk_020b50a4* i);
 u8* func_020b50b4();
 BOOL func_020b50bc();
 BOOL func_020b50d0(s32 a);
@@ -434,12 +434,12 @@ extern TileData *data_021ef2f0;
 extern u8 data_021ef2d4;
 extern Unk_020e41d0 data_021ef2e4;
 extern u32 data_021ef2ec;
-extern TileInfo data_021ef348;
-extern TileInfo data_021ef360;
-extern TileEntry data_021ef378;
+extern Unk_020b50a4 data_021ef348;
+extern Unk_020b50a4 data_021ef360;
+extern Unk_020b4fc4 data_021ef378;
 extern S394 data_021ef394;
 extern Unk_020b6960 data_021ef3bc;
-extern Unk_020d9248 data_021ef414;
+extern Unk_020d9248 gViewFrustum;
 
 
 
@@ -478,7 +478,7 @@ u8 data_020e41dc[0x20] = {
 
 Unk_020e41d0 data_021ef2e4;
 
-Unk_020d9248 data_021ef414;
+Unk_020d9248 gViewFrustum;
 
 TileData *data_020e4280[51] = {
     (TileData *)data_ov006_0225b7b4,
@@ -548,7 +548,7 @@ Unk_020b6960 data_021ef3bc;
 
 TileData *data_021ef2f0;
 
-TileEntry data_021ef378;
+Unk_020b4fc4 data_021ef378;
 
 const u16 data_020d0c0c[12] = {
     0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fff, 0x7fdd,
@@ -583,11 +583,11 @@ u32 data_021ef2ec;
 
 u8 data_020e4170 = 0x3f;
 
-TileInfo data_021ef348;
+Unk_020b50a4 data_021ef348;
 
 S394 data_021ef394;
 
-TileInfo data_021ef360;
+Unk_020b50a4 data_021ef360;
 
 const u8 data_020d0c24[0x34] = {
     0x00, 0x18, 0x18, 0x18, 0x18, 0x18, 0x08, 0x08, 0x08, 0x01, 0x0e, 0x01, 0x01, 0x01, 0x01, 0x0a,
@@ -636,29 +636,29 @@ extern "C" Unk_020e4238 *func_020b5d5c(void) {
     return new Unk_020e4238();
 }
 
-extern "C" void func_020b5d4c(void) { func_0204ef2c((u32)OVERLAY_2_ID); }
+extern "C" void func_020b5d4c(void) { OverlayMgr_Acquire((u32)OVERLAY_2_ID); }
 
-extern "C" void func_020b5d3c(void) { func_0204eee4((u32)OVERLAY_2_ID); }
+extern "C" void func_020b5d3c(void) { OverlayMgr_Release((u32)OVERLAY_2_ID); }
 
 extern "C" void func_020b5d00(u8 *obj) {
     s32 a = *(s32 *)(obj + 0x10);
     data_020e4178 = a;
     data_020e4180 = *(s32 *)(obj + 0x14);
     if (a != -1) {
-        func_0204ef2c(a);
+        OverlayMgr_Acquire(a);
     }
     if (data_020e4180 != -1) {
-        func_0204ef2c(data_020e4180);
+        OverlayMgr_Acquire(data_020e4180);
     }
 }
 
 extern "C" void func_020b5cbc(void) {
     if (data_020e4178 != -1) {
-        func_0204eee4(data_020e4178);
+        OverlayMgr_Release(data_020e4178);
         data_020e4178 = -1;
     }
     if (data_020e4180 != -1) {
-        func_0204eee4(data_020e4180);
+        OverlayMgr_Release(data_020e4180);
         data_020e4180 = -1;
     }
 }
@@ -666,11 +666,11 @@ extern "C" void func_020b5cbc(void) {
 extern "C" void func_020b5c54(void) {
     u8 idx = data_020e41fc[data_021ef2ec];
     u32 v = data_020e41b8[idx];
-    func_0204ef2c(v);
+    OverlayMgr_Acquire(v);
     data_020e417c = v;
     data_020e416c = idx;
     if (data_020e434c[data_021ef2ec] != -1) {
-        func_0204ef2c(data_020e434c[data_021ef2ec]);
+        OverlayMgr_Acquire(data_020e434c[data_021ef2ec]);
         data_020e4184 = data_020e434c[data_021ef2ec];
     }
 }
@@ -678,11 +678,11 @@ extern "C" void func_020b5c54(void) {
 extern "C" void func_020b5c0c(void) {
     func_020b5cbc();
     if (data_020e4184 != -1) {
-        func_0204eee4(data_020e4184);
+        OverlayMgr_Release(data_020e4184);
         data_020e4184 = -1;
     }
     if (data_020e417c != -1) {
-        func_0204eee4(data_020e417c);
+        OverlayMgr_Release(data_020e417c);
         data_020e417c = -1;
     }
 }
@@ -718,7 +718,7 @@ BOOL Unk_020b5844::func_020b5af4(u32, u32) {
     if (m == 0x2e || m == 0xd || m == 0xc || m == 0xe || m == 0x2f) {
         if (r0 != 4) func_020a5f18(4);
     }
-    func_0203e6e4();
+    Character_ResetList();
     data_020e4174 = data_020e4170;
     data_020e4170 = func_020b49a8((u8*)&data_021ef378);
     func_020b5d4c();
@@ -737,30 +737,30 @@ BOOL Unk_020b5844::func_020b59f8(u32, u32) {
     func_020b541c();
     func_02041104();
     func_0208e974();
-    func_020040cc();
+    Snd_CreateScene();
     Unk_020cbb18_t* p = data_020cbb18;
     s32 i;
     if (_ZN12Unk_020cbb1813func_02072e88Ei(p, p->unk_64)) {
-        for (i = 0; i < 4; i++) func_0209524c(i, 4);
+        for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     } else if (func_020b52ac()) {
         _ZN12Unk_020cbb1813func_020729a8Ej(p, 4);
-        for (i = 0; i < 4; i++) func_0209524c(i, i);
+        for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, i);
     } else {
         _ZN12Unk_020cbb1813func_020729a8Ej(p, 1);
-        for (i = 0; i < 4; i++) func_0209524c(i, 4);
+        for (i = 0; i < 4; i++) PlayerSession_SetGfxSlot(i, 4);
     }
     if (func_020b52ac()) {
         if (func_020b50e8() == 6) {
             p->f68 = 4;
-            for (i = 3; i >= 0; i--) func_02095300(i, i);
+            for (i = 3; i >= 0; i--) PlayerSession_SetDataIndex(i, i);
         } else if (func_020b50e8() == 7) {
             s32 a = p->f68;
-            s32 b = func_020952e0(a);
+            s32 b = PlayerSession_GetDataIndex(a);
             s32 c = 0;
             for (i = 3; i >= 0; i--) {
                 if (i != a) {
                     if (c == b) c++;
-                    func_02095300(i, c);
+                    PlayerSession_SetDataIndex(i, c);
                     c++;
                 }
             }
@@ -769,7 +769,7 @@ BOOL Unk_020b5844::func_020b59f8(u32, u32) {
         Unk_020cbb18_t* q = data_020cbb18;
         q->unk_64 = 4;
         q->f68 = 4;
-        for (i = 3; i >= 0; i--) func_020952f0(i);
+        for (i = 3; i >= 0; i--) PlayerSession_ClearDataIndex(i);
     }
     return TRUE;
 }
@@ -777,28 +777,28 @@ BOOL Unk_020b5844::func_020b59f8(u32, u32) {
 BOOL Unk_020b5844::func_020b58f0(u32, u32) {
     s32 t = func_02036c58();
     _ZN12Unk_0203710813func_02037108Ej(t, data_021ef2f0->f4 == 1 ? TRUE : FALSE);
-    func_0205351c(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
-    func_020621a4(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
+    FtrInfo_LoadIndoor(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
+    ItemInfo_LoadIndoor(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     func_020716cc();
     _ZN12Unk_020718a413func_02071770Ev();
-    func_0205c644(data_021f482c);
-    func_0205cde4(data_021f482c);
-    func_0205d458(data_021f482c);
-    func_0205d1d0(data_021f482c);
-    func_0205d318(data_021f482c);
-    func_0205eee0(data_021f482c);
-    func_0205c8f4(data_021f482c);
-    func_0205df70(data_021f482c);
-    func_0205f06c(data_021f482c);
-    func_0205d7b0(data_021f482c);
-    func_0205edb8(data_021f482c);
-    func_0206000c(data_021f482c);
+    func_0205c644(gCurrentHeap);
+    func_0205cde4(gCurrentHeap);
+    func_0205d458(gCurrentHeap);
+    func_0205d1d0(gCurrentHeap);
+    func_0205d318(gCurrentHeap);
+    func_0205eee0(gCurrentHeap);
+    func_0205c8f4(gCurrentHeap);
+    func_0205df70(gCurrentHeap);
+    func_0205f06c(gCurrentHeap);
+    func_0205d7b0(gCurrentHeap);
+    func_0205edb8(gCurrentHeap);
+    func_0206000c(gCurrentHeap);
     func_020ac500(data_021ef2f0->f4 == 1 ? TRUE : FALSE);
     func_020abe58();
     func_02077e4c();
     func_02081d08();
     func_02081784();
-    func_0205b864(data_021f482c);
+    func_0205b864(gCurrentHeap);
     func_0209c540();
     if (func_020b50e8() == 0x2c || func_020b50e8() == 0x2d) {
         func_020b49b4((s32)func_020b4934());
@@ -823,7 +823,7 @@ BOOL Unk_020b5844::func_020b5844(u32, u32) {
     func_02089124();
     data_021ce63c = 0;
     func_020b49ac((u8*)&data_021ef378);
-    data_020dc520 = 3;
+    gVBlanksPerFrame = 3;
     func_0203e308();
     if (func_020b50e8() == 0x2e || func_020b50e8() == 0xd || func_020b50e8() == 0x2f)
         func_02038fb0();
@@ -889,8 +889,8 @@ BOOL Unk_020e4238::vfunc_0c() {
     func_0205c62c();
     func_020716cc();
     _ZN12Unk_020718a413func_020716f0Ev();
-    func_0205350c();
-    func_02062194();
+    FtrInfo_FreeIndoor();
+    ItemInfo_FreeIndoor();
     func_020abe10();
     func_020ac3a4();
     func_02036c58();
@@ -902,20 +902,20 @@ BOOL Unk_020e4238::vfunc_0c() {
         Unk_020cbb18_t* p = data_020cbb18;
         for (; i < 4; i++) {
             if (i == 0) {
-                func_02095300(0, p->f68);
+                PlayerSession_SetDataIndex(0, p->f68);
                 p->f68 = 0;
             } else {
-                func_020952f0(i);
+                PlayerSession_ClearDataIndex(i);
             }
         }
     } else if (func_020b50e8() == 7) {
         s32 i = 2;
-        for (; i >= 0; i--) func_020952f0(i + 1);
+        for (; i >= 0; i--) PlayerSession_ClearDataIndex(i + 1);
     } else if (func_020b50e8() == 0xe) {
         s32 v = func_020a5ef8();
         if (v > 0 && v < 4) {
-            if (func_020974a0(v + 3)) _ZN12Unk_0209865c13func_02098a58Ev();
-            func_020952f0(v);
+            if (PlayerData_Get(v + 3)) _ZN10PlayerData13func_02098a58Ev();
+            PlayerSession_ClearDataIndex(v);
         }
         func_020a5ee8(4);
     }
@@ -926,24 +926,24 @@ BOOL Unk_020e4238::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_020e4238::vfunc_18() {
+BOOL Unk_020e4238::onExecute() {
     func_02030518();
     func_02089118();
     BOOL b;
     if (data_021c3cc0 == 2) b = TRUE; else b = FALSE;
     if (!b && data_021c3cb8 == 0) return TRUE;
     if (func_020b4fe4(func_020b49a8((u8*)&data_021ef378))) {
-        s32 r4 = func_020b4944((TileEntry*)func_020b4934());
-        func_020b4968(r4, func_020b493c((TileEntry*)func_020b4934()));
+        s32 r4 = func_020b4944((Unk_020b4fc4*)func_020b4934());
+        func_020b4968(r4, func_020b493c((Unk_020b4fc4*)func_020b4934()));
     }
     return TRUE;
 }
 
-BOOL Unk_020e4238::vfunc_24() {
+BOOL Unk_020e4238::onDraw() {
     func_020b54b0((s32)this);
     NNS_G3dGeFlushBuffer();
     s32 r0 = (s32)func_020b50b4();
-    func_020b60dc(r0, (u8)data_021f4778, (u8)data_021f477c, data_021f4770 ? 1 : 0);
+    func_020b60dc(r0, (u8)gTouchX, (u8)gTouchY, gTouchHeld ? 1 : 0);
     func_02034044();
     func_02088d58();
     return TRUE;
@@ -1014,15 +1014,15 @@ void Unk_020e41d0::vfunc_08() {}
 
 extern "C" u8 func_020b5364(BOOL a) {
     u8 r = 0;
-    if (data_021eda68 != NULL) {
-        u16 x = data_021eda68->fc;
+    if (gActorDefaultParent != NULL) {
+        u16 x = gActorDefaultParent->fc;
         BOOL c3 = TRUE;
         BOOL c2 = TRUE;
         u8 m = data_020e416c;
-        BOOL A = (m == 0) ? TRUE : FALSE;
-        if (!A) {
-            BOOL B = (m == 1) ? TRUE : FALSE;
-            if (!B) c2 = FALSE;
+        BOOL LampLights = (m == 0) ? TRUE : FALSE;
+        if (!LampLights) {
+            BOOL LightLevel = (m == 1) ? TRUE : FALSE;
+            if (!LightLevel) c2 = FALSE;
         }
         if (!c2) {
             if (!a || x != 5) c3 = FALSE;
@@ -1156,17 +1156,17 @@ extern "C" BOOL func_020b50bc() { return func_020b50d0(((Bits14*)&data_021e5890[
 
 extern "C" u8* func_020b50b4() { return (u8*)&data_021ef3bc; }
 
-TileInfo::TileInfo() { func_020b503c(this); }
+Unk_020b50a4::Unk_020b50a4() { func_020b503c(this); }
 
-TileInfo::~TileInfo() {}
+Unk_020b50a4::~Unk_020b50a4() {}
 
 
-extern "C" void func_020b503c(TileInfo* i) {
-    static Unk_02000c8c v(0x30000, 0, 0x30000);
+extern "C" void func_020b503c(Unk_020b50a4* i) {
+    static FxVec3 v(0x30000, 0, 0x30000);
     func_020b5014(i, 0, (Vec3*)&v, 0x800000, 0, -1, -1);
 }
 
-extern "C" void func_020b5014(TileInfo* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q) {
+extern "C" void func_020b5014(Unk_020b50a4* i, s32 id, Vec3* v, u32 w, s16 s, s32 p, s32 q) {
     i->unk_12 = id;
     i->pos.x = v->x;
     i->pos.y = v->y;
@@ -1177,24 +1177,24 @@ extern "C" void func_020b5014(TileInfo* i, s32 id, Vec3* v, u32 w, s16 s, s32 p,
     i->unk_14 = q;
 }
 
-extern "C" Vec3* func_020b5010(TileInfo* i) { return &i->pos; }
+extern "C" Vec3* func_020b5010(Unk_020b50a4* i) { return &i->pos; }
 
-extern "C" u32 func_020b500c(TileInfo* i) { return i->unk_0c; }
+extern "C" u32 func_020b500c(Unk_020b50a4* i) { return i->unk_0c; }
 
-extern "C" s32 func_020b5004(TileInfo* i) { return i->unk_10; }
+extern "C" s32 func_020b5004(Unk_020b50a4* i) { return i->unk_10; }
 
-extern "C" u8 func_020b5000(TileInfo* i) { return i->unk_12; }
+extern "C" u8 func_020b5000(Unk_020b50a4* i) { return i->unk_12; }
 
-extern "C" s32 func_020b4ff8(TileInfo* i) { return i->unk_13; }
+extern "C" s32 func_020b4ff8(Unk_020b50a4* i) { return i->unk_13; }
 
-extern "C" s32 func_020b4ff0(TileInfo* i) { return i->unk_14; }
+extern "C" s32 func_020b4ff0(Unk_020b50a4* i) { return i->unk_14; }
 
 extern "C" BOOL func_020b4fe4(u32 id) {
     if (id < 0x33) return TRUE;
     return FALSE;
 }
 
-TileEntry::TileEntry() {
+Unk_020b4fc4::Unk_020b4fc4() {
     type = 0x3f;
     pos.x = 0;
     pos.y = 0;
@@ -1208,9 +1208,9 @@ TileEntry::TileEntry() {
     unk_18 = 0;
 }
 
-TileEntry::~TileEntry() {}
+Unk_020b4fc4::~Unk_020b4fc4() {}
 
-extern "C" void func_020b4f8c(TileEntry* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
+extern "C" void func_020b4f8c(Unk_020b4fc4* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q, s16 r, u8 t) {
     e->type = id;
     e->pos.x = v->x;
     e->pos.y = v->y;
@@ -1223,7 +1223,7 @@ extern "C" void func_020b4f8c(TileEntry* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, 
     e->unk_18 = t;
 }
 
-extern "C" BOOL func_020b4f78(TileEntry* e, u8 id) {
+extern "C" BOOL func_020b4f78(Unk_020b4fc4* e, u8 id) {
     if (e->type == 0x3f) {
         e->type = id;
         e->flag = 1;
@@ -1232,7 +1232,7 @@ extern "C" BOOL func_020b4f78(TileEntry* e, u8 id) {
     return FALSE;
 }
 
-extern "C" BOOL func_020b4f58(TileEntry* e, u8 id, u8 p, u8 q) {
+extern "C" BOOL func_020b4f58(Unk_020b4fc4* e, u8 id, u8 p, u8 q) {
     if (e->type == 0x3f) {
         e->type = id;
         e->unk_14 = p;
@@ -1243,7 +1243,7 @@ extern "C" BOOL func_020b4f58(TileEntry* e, u8 id, u8 p, u8 q) {
     return FALSE;
 }
 
-extern "C" BOOL func_020b4f18(TileEntry* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q) {
+extern "C" BOOL func_020b4f18(Unk_020b4fc4* e, u8 id, Vec3* v, u32 w, s16 s, u8 p, u8 q) {
     if (e->type == 0x3f) {
         e->type = id;
         e->pos.x = v->x;
@@ -1265,11 +1265,11 @@ extern "C" s32 func_020b4d38(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s,
         if (d) {
             TileTable* t = d->table;
             if (t) {
-                TileEntry* entries = t->entries;
+                Unk_020b4fc4* entries = t->entries;
                 if (entries) {
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
-                        TileEntry* e = &entries[id];
+                        Unk_020b4fc4* e = &entries[id];
                         void* o = func_0204da0c();
                         s32 va, vb;
                         Vec3 v;
@@ -1356,11 +1356,11 @@ extern "C" s32 func_020b4c64(s32 a, s32 id, u8* type, Vec3* pos, u32* w, s16* s,
             if (d) {
                 TileTable* t = d->table;
                 if (t) {
-                    TileEntry* entries = t->entries;
+                    Unk_020b4fc4* entries = t->entries;
                     if (entries) {
                         u8 n = t->count;
                         if (id >= 0 && id < n) {
-                            TileEntry* e = &entries[id];
+                            Unk_020b4fc4* e = &entries[id];
                             u8 ty = e->type;
                             if (e->pos.y == 0) e->pos.y = 0x200;
                             if (_ZN12Unk_020cbb1813func_02072e88Ei(data_020cbb18, data_020cbb18->unk_64) && ty == 7) ty = 8;
@@ -1399,7 +1399,7 @@ extern "C" BOOL func_020b4bbc(s32 a, s32 id) {
         func_020b5014(&data_021ef360, t, &vec, w, s, x, y);
         break;
     }
-    if (func_020b4f18((TileEntry*)a, t, &vec, w, s, u, v)) return TRUE;
+    if (func_020b4f18((Unk_020b4fc4*)a, t, &vec, w, s, u, v)) return TRUE;
 fail:
     return FALSE;
 }
@@ -1412,11 +1412,11 @@ extern "C" BOOL func_020b4b68(s32 unused, s32 id, u32* type, s16* s) {
         if (d) {
             TileTable* t = d->table;
             if (t) {
-                TileEntry* e = t->entries;
+                Unk_020b4fc4* e = t->entries;
                 if (e) {
                     u8 n = t->count;
                     if (id >= 0 && id < n) {
-                        TileEntry* p = &e[id];
+                        Unk_020b4fc4* p = &e[id];
                         if (type) *type = p->unk_18;
                         if (s) *s = p->unk_16;
                         return TRUE;
@@ -1497,22 +1497,22 @@ extern "C" void func_020b4968(s32 a, s32 b) {
     }
 }
 
-extern "C" Vec3* func_020b4964(TileEntry* e) { return &e->pos; }
+extern "C" Vec3* func_020b4964(Unk_020b4fc4* e) { return &e->pos; }
 
-extern "C" s32 func_020b495c(TileEntry* e) { return e->unk_02; }
+extern "C" s32 func_020b495c(Unk_020b4fc4* e) { return e->unk_02; }
 
-extern "C" u32 func_020b4958(TileEntry* e) { return e->unk_10; }
+extern "C" u32 func_020b4958(Unk_020b4fc4* e) { return e->unk_10; }
 
-extern "C" BOOL func_020b4948(TileEntry* e) {
+extern "C" BOOL func_020b4948(Unk_020b4fc4* e) {
     if (e->flag != 0) return TRUE;
     return FALSE;
 }
 
-extern "C" u8 func_020b4944(TileEntry* e) { return e->unk_14; }
+extern "C" u8 func_020b4944(Unk_020b4fc4* e) { return e->unk_14; }
 
-extern "C" void func_020b4940(TileEntry* e, u8 v) { e->unk_14 = v; }
+extern "C" void func_020b4940(Unk_020b4fc4* e, u8 v) { e->unk_14 = v; }
 
-extern "C" u8 func_020b493c(TileEntry* e) { return e->unk_15; }
+extern "C" u8 func_020b493c(Unk_020b4fc4* e) { return e->unk_15; }
 
 extern "C" u8 *func_020b4934(void) { return (u8 *)&data_021ef378; }
 

@@ -37,7 +37,7 @@ s32 FX_ModS32(s32, s32);
 s32 FX_DivS32(s32, s32);
 void G2x_ChangeBlendBrightness_(u32, s32);
 s32 G2x_SetBlendBrightness_(void *, s32, s32);
-void func_0206d49c();
+void Fatal_Trap();
 void *func_ov001_02225db0(u32, u32);
 void *func_ov001_02225dd8(u32, u32);
 void func_ov001_02225d58(void *);
@@ -171,7 +171,7 @@ void func_ov001_02224d60(void *a, ...) {
 void func_ov001_02224cfc(Unk_ov001_02224ca0 *r, void *v) {
     s32 irq = OS_DisableIrqMask(1);
     u32 n = FX_ModS32(r->unk_03 + 1, r->unk_00);
-    if (n == r->unk_02) func_0206d49c();
+    if (n == r->unk_02) Fatal_Trap();
     r->unk_04[r->unk_03] = v;
     r->unk_03 = n;
     OS_EnableIrqMask(irq);

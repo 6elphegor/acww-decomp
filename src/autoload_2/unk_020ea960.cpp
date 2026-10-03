@@ -199,7 +199,7 @@ BOOL OS_ReceiveMessage(void *q, void *msg, u32 flags);
 BOOL OS_SendMessage(void *q, u32 msg, u32 flags);
 s32 func_ov066_022622ac(u32 a, u32 b, u32 c, void *d);
 BOOL func_ov065_02277824(u32 a, u32 b, u32 c);
-void func_0206d760(void);
+void Main_WaitVBlank(void);
 void func_020ebb00(void);
 void func_020ec668(u32 a);
 BOOL func_020ec54c(u32 a, u32 b, u32 c, u32 d);
@@ -210,7 +210,7 @@ extern NetSlot data_021f4ac0[];
 
 extern "C" void func_020ec82c(void) {
     func_020ebb00();
-    func_0206d760();
+    Main_WaitVBlank();
 }
 
 extern "C" void *func_020ec808(u32 a, u32 b) {

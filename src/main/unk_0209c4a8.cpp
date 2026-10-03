@@ -62,7 +62,7 @@ public:
 extern "C" {
 extern u8 data_020e416c;
 extern const u8 data_020d064c[4];
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 
 void func_020b4b68(void *o, u32 id, u32 *p24, s16 *f);
 void func_020b4aec(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec *v40);
@@ -194,9 +194,9 @@ extern "C" void func_0209c878(Unk_0209c82c *t) {
     func_0209c85c(t, -1);
     func_0209c854(t, 0);
     func_0209c850(t, 0);
-    func_0209c840(t, (Unk_0209c82c_V *)data_021f4880);
+    func_0209c840(t, (Unk_0209c82c_V *)gVec3Zero);
     func_0209c83c(t, 0);
-    func_0209c82c(t, (Unk_0209c82c_V *)data_021f4880);
+    func_0209c82c(t, (Unk_0209c82c_V *)gVec3Zero);
 }
 
 extern "C" u32 func_0209c874(Unk_0209c82c *t) {

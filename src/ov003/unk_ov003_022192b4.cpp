@@ -19,27 +19,27 @@
 #define func_02054b14 _ZN12Unk_020dbd3413func_02054b14Ev
 #define func_020547cc _ZN12Unk_020dbd5413func_020547ccEPv
 #define func_020547e4 _ZN12Unk_020dbd5413func_020547e4Ev
-#define func_02056654 _ZN12Unk_020dbe7c13func_02056654Ev
+#define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define func_02054b38 _ZN12Unk_020dbd3413func_02054b38EPv
 #define func_02054800 _ZN12Unk_020dbd5413func_02054800EPv
-#define func_020554a0 _ZN12Unk_020dbe3413func_020554a0Eiiiii
+#define func_020554a0 _ZN5Model13func_020554a0Eiiiii
 #define func_020548a0 _ZN12Unk_020dbd54D1Ev
 #define func_020548d0 _ZN12Unk_020dbd54C1Ev
 #define func_02135714 __cxa_vec_ctor
 #define func_021355f0 __cxa_vec_cleanup
-#define func_02055550 _ZN12Unk_020dbe3413func_02055550EPi
+#define func_02055550 _ZN5Model13func_02055550EPi
 #define func_02054bac _ZN12Unk_020dbd3413func_02054bacEPvS0_S0_
 #define func_02054c88 _ZN12Unk_020dbd3413func_02054c88EPvS0_
 #define func_02054c64 _ZN12Unk_020dbd3413func_02054c64EPvS0_S0_S0_Pji
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 #define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
 #define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_020555ec _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj
+#define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
-#define func_02055bcc _ZN12Unk_020dbe4c13func_02055bccEjPv
-#define func_02055b38 _ZN12Unk_020dbe4c13func_02055b38Eiiit
-#define func_020554c0 _ZN12Unk_020dbe3413func_020554c0Ev
-#define func_02055a9c _ZN12Unk_020dbe4c13func_02055a9cEj
+#define func_02055bcc _ZN9ModelAnim13func_02055bccEjPv
+#define func_02055b38 _ZN9ModelAnim13func_02055b38Eiiit
+#define Model_getRenderObj _ZN5Model12getRenderObjEv
+#define ModelAnim_addToRenderObj _ZN9ModelAnim14addToRenderObjEj
 
 
 // ================================================================ shared (global) classes
@@ -85,7 +85,7 @@ public:
     virtual ~Unk_ov003_02232c08();   // not defined here: D1 is main's, D0 is the separate unit at 0x02219294
 };
 
-class Unk_ov003_0223463c : public Unk_020d8c7c {
+class Unk_ov003_0223463c : public GameProc {
 public:
     inline Unk_ov003_0223463c()
     {
@@ -93,8 +93,8 @@ public:
     }
     virtual BOOL vfunc_0c();
     virtual BOOL vfunc_00();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     /* 0x050 */ u32 unk_50[0x49];
     /* 0x174 */ Unk_020dbd34 unk_174[0x12];
@@ -134,10 +134,10 @@ struct Unk_ov003_0221ff6c_H {
 };
 
 // zero-initialised 3-word object whose (empty) destructor lives in main
-class Unk_02000c8c {
+class FxVec3 {
 public:
-    Unk_02000c8c() {}
-    ~Unk_02000c8c();
+    FxVec3() {}
+    ~FxVec3();
     s32 x, y, z;
 };
 
@@ -288,7 +288,7 @@ void func_02003e50(void *);
 void func_02003e80(void *, void *);
 void func_02003ecc(void *);
 void func_01ffd070(V3 *, void *, void *);
-s32 func_0203ef38(V3 *, V3 *);
+s32 WorldCurve_ToCurved(V3 *, V3 *);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
 void func_020e84f8(Blk *m, s32 x, s32 y, s32 z);
@@ -454,7 +454,7 @@ s32 func_ov003_0221b214(Unk_ov003_0221a4a0 *p);
 u32 func_ov003_022195b8(void *p);
 s32 func_0204ed8c(void *out, s32 x, s32 z);
 s32 func_02133150(s32 a, s32 b);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 void func_0209801c(void *p, s32 a);
 void func_ov003_0221caf0(s32 a, s32 b, u32 c, s32 d);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
@@ -645,7 +645,7 @@ void VEC_Add(void *a, void *b, void *c);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
 void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 func_0204e88c(void *g, s32 x, s32 z);
-s32 func_0204a9c8(void *c);
+s32 Item_IsFlower(void *c);
 s32 func_02044098(void *c, void *p, s32 a, s32 b);
 s32 func_0204403c(void *c, void *p);
 s32 func_02044014(void *p);
@@ -657,13 +657,13 @@ s32 func_02045570(void *p, s32 z);
 s32 func_02045460(void *p, s32 z);
 void *func_0204da0c();
 s32 func_02045510(const P2 &p, s32 a, s32 b);
-void func_020e85fc(void *heap, void *p);
-void *func_020641ec(void *s, void *heap, s32 a, s32 b);
+void Heap_Free(void *heap, void *p);
+void *File_LoadAlloc(void *s, void *heap, s32 a, s32 b);
 void *func_021065dc(void *p);
 void *func_021065f8(void *p, s32 a);
 void func_02054720(void *self, s32 a, s32 b, s32 c, u16 d, u16 e);
 void func_02054710(void *self);
-s32 func_0204af08(void *c);
+s32 Item_IsTreeGrown(void *c);
 s32 func_02043ba8();
 s32 func_ov003_0221ba50(void *self, s32 a);
 s32 func_ov003_0221ba28(s32 a, void *p);
@@ -784,14 +784,14 @@ extern s32 data_ov003_02235938;
 extern u8 *data_ov003_02235930;
 
 s32 func_02072e44(void *p);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 s32 func_02098044(void *p, s32 a);
 void func_0204ed8c(Unk_ov003_0221b8bc_V3 *out, s32 x, s32 z);
 void func_01ffd070(Unk_ov003_0221b8bc_V3 *out, Unk_ov003_0221b8bc_V3 *a, void *m);
 void func_ov003_02219a1c(Unk_ov003_0221b8bc *o, s32 id, Unk_ov003_0221b8bc_V2 *a, Unk_ov003_0221b8bc_V3 *b);
 s32 func_02045220(u8 a, u8 b);
 void *func_02045214(void);
-s32 func_0204ad08(u16 *p);
+s32 Item_GetFruitTreeFruit(u16 *p);
 void func_0204ee10(s32 *x, s32 *y, Unk_ov003_0221b8bc_V3 *v);
 void func_ov003_02219a9c(s32 a, s32 id, Unk_ov003_0221b8bc_V2 *p, Unk_ov003_0221b8bc_V3 *v, s32 f, s32 i);
 void *func_02043ee0(void *p);
@@ -805,18 +805,18 @@ void func_02003e70(void *p, u32 a, u32 b, u32 c);
 void func_ov003_0221b618(Unk_ov003_0221b8bc *o);
 void func_02054b14(void *p);
 void func_02003e50(void *p);
-s32 func_0203ef38(Unk_ov003_0221b8bc_V3 *out, void *v);
+s32 WorldCurve_ToCurved(Unk_ov003_0221b8bc_V3 *out, void *v);
 void func_020e8388(void *p, s32 x, s32 y, s32 z);
 void func_020e8434(void *p, s32 a);
 void func_020547cc(void *p, s32 a);
 u16 func_02064cc4(void);
 void NNS_G3dMdlSetMdlEmi(void *p, s32 a, s32 b);
 void func_020547e4(void *p);
-s32 func_02056654(void *p);
+s32 AnimFrameCtrl_isFinished(void *p);
 void func_02105f00(void *p, s32 a);
 void func_02105f48(void *p, s32 a);
-s32 func_0204aba4(u16 *p);
-s32 func_0204ad98(u16 *p);
+s32 Item_GetStumpSize(u16 *p);
+s32 Item_GetTreeStage(u16 *p);
 void *func_ov003_0221c62c(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
 void *func_ov003_0221c6c4(void *d, s32 mode, s32 n, u16 *cell, Unk_ov003_0221b8bc_V2 *p, s32 c);
 void func_02003e80(void *p, Unk_ov003_0221b8bc_V3 *v);
@@ -826,7 +826,7 @@ void func_020554a0(void *p, void *fn, s32 a, s32 b, void *o, s32 c);
 void func_02003ecc(void *p);
 void func_ov003_0221b5e4(void);
 Unk_ov003_0221b8bc *func_ov003_0221c220(void *a, u16 *cell, s32 n, s32 f);
-s32 func_0204af08(u16 *p);
+s32 Item_IsTreeGrown(u16 *p);
 s32 func_02043ba8(void);
 void func_02045570(Unk_ov003_0221b8bc_V2 *p, s32 a);
 void func_ov003_0221b4b8(Unk_ov003_0221c030_Ent *e);
@@ -1110,7 +1110,7 @@ extern u8 *data_ov003_02235934;
 extern u8 *data_ov003_02235938;
 extern u8 data_ov003_0222f64c[];
 extern u8 *data_021c47c4;
-extern u8 *data_021c3070;
+extern u8 *gCamera;
 
 s32 func_02045220(u8 a, u8 b);
 Unk_ov003_0221cb54_Rec *func_02045214();
@@ -1122,10 +1122,10 @@ u16 *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 func_020452c8(void *o, P2 p, s32 a);
 s32 func_0204962c(u16 *c);
 void func_ov003_0221c030(void *a, void *o, P2 p, s32 mode, s32 flag);
-s32 func_0204b08c(u16 *c);
+s32 Item_IsTreeStage0(u16 *c);
 s32 func_0203a4c4(V3 *v, s32 a, s32 b);
 void *func_02043ec0(void *o);
-s32 func_0204af08(u16 *c);
+s32 Item_IsTreeGrown(u16 *c);
 void func_02045904();
 void func_02045510(P2 p, void *a, s32 b);
 void func_ov003_0221e4d4(void *g, void *o, V3 *a, V3 *b, s32 c, s16 d, s16 e);
@@ -1144,15 +1144,15 @@ void func_020453ac();
 void func_020e8c94(void *p);
 s32 func_02133150(s32 a, s32 b);
 void func_ov003_0221d37c(O *o, void *g);
-extern V3 data_021c309c;
+extern V3 gCameraLookAt;
 extern Blk data_021f47e0;
 void func_0204edd8(V3 *out, V3 *in);
-s32 func_0203ef38(V3 *out, V3 *in);
+s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
 u16 *func_0204eba0(void *g, V3 *pos, s32 layer);
 s32 func_01ffcbd8(void *g, s32 x, s32 z);
-s32 func_0204bc34(u16 *c);
+s32 Item_GetInfoUnk07(u16 *c);
 void func_ov003_0221db54(O *o, void *p, Blk m);
 void func_ov003_0221db98(O *o, u16 *t, Blk m);
 void func_ov003_0221dbf0(O *o, u16 *t, Blk m);
@@ -1258,7 +1258,7 @@ static inline BOOL Chk_0221d37c(u16 *p) {
 }
 // ---- prototypes of this file's functions
 extern "C" { void func_ov003_0221d37c(O *o, void *g); }
-extern "C" { s32 _ZN18Unk_ov003_0223463c8vfunc_24Ev(u8 *self); }
+extern "C" { s32 _ZN18Unk_ov003_0223463c6onDrawEv(u8 *self); }
 extern "C" { s32 func_ov003_0221d118(V3 *out, V3 pos, s32 mask); }
 extern "C" { s32 func_ov003_0221d0c8(V3 *out, s32 b); }
 extern "C" { void func_ov003_0221d078(void *o, V3 a, V3 b, s32 c, s16 d, s16 e); }
@@ -1309,7 +1309,7 @@ public:
     ~Unk_ov003_0221c4e4();
     u32 pad[4];
 };
-class Unk_ov003_0223463c : public Unk_020d8c7c {
+class Unk_ov003_0223463c : public GameProc {
 public:
     Unk_ov003_0223463c();
     virtual ~Unk_ov003_0223463c();
@@ -1354,11 +1354,11 @@ s32 func_020ac22c(s32 a);
 void func_020ac23c(V3 *v, u8 n);
 s32 func_020494bc(u16 *p);
 s32 func_02049370(u16 *p);
-s32 func_0204ad98(u16 *p);
-s32 func_0204ad08(u16 *p);
-s32 func_0204af08(u16 *p);
+s32 Item_GetTreeStage(u16 *p);
+s32 Item_GetFruitTreeFruit(u16 *p);
+s32 Item_IsTreeGrown(u16 *p);
 s32 func_02045d48(s32 a, s32 b);
-s32 func_0203ef38(Unk_ov003_0221e398_V3 *out, Unk_ov003_0221e398_V3 *p);
+s32 WorldCurve_ToCurved(Unk_ov003_0221e398_V3 *out, Unk_ov003_0221e398_V3 *p);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
 s32 func_02133150(s32 a, s32 b);
@@ -1438,7 +1438,7 @@ extern void *data_ov003_02235938;
 extern u8 data_ov003_02235960[];
 extern u8 data_ov003_022359a4[];
 extern Blk data_021f47e0;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern void *data_021f482c_v;
 extern Fn data_ov003_02234264[];
 extern void *data_ov003_02232788[];
@@ -1453,16 +1453,16 @@ extern u32 data_ov003_0222f6a0[];
 extern void *data_ov003_02232bd8[];
 extern u8 data_ov003_02236674[];
 
-s32 func_0203ef38(V3 *out, V3 *in);
+s32 WorldCurve_ToCurved(V3 *out, V3 *in);
 void func_020e8388(Blk *m, s32 x, s32 y, s32 z);
 void func_020e8434(Blk *m, s32 a);
 void func_020e8464(Blk *m, s32 x, s32 y, s32 z);
 void func_020e84f8(Blk *m, s32 x, s32 y, s32 z);
 void func_02105f00(void *p, s32 a);
-void func_020e85fc(void *heap, void *p);
-void *func_020e8f58(void *p, u32 n);
-void *func_020e8e7c(u32 n, void *heap);
-s32 func_0204bc34(volatile u16 *p);
+void Heap_Free(void *heap, void *p);
+void *ExpHeap_CreateInPlace(void *p, u32 n);
+void *ExpHeap_Create(u32 n, void *heap);
+s32 Item_GetInfoUnk07(volatile u16 *p);
 u32 func_0204c0ac();
 void func_02045e14();
 s32 func_02054bac(void *p, void *t, u8 a, u8 b);
@@ -1595,7 +1595,7 @@ extern "C" { BOOL func_ov003_0221e954(Obj *o); }
 extern "C" { BOOL func_ov003_0221e944(); }
 extern "C" { BOOL func_ov003_0221e918(Obj *o); }
 extern "C" { BOOL _ZN18Unk_ov003_0223463c8vfunc_00Ev(Obj *o); }
-extern "C" { BOOL _ZN18Unk_ov003_0223463c8vfunc_18Ev(Obj *o); }
+extern "C" { BOOL _ZN18Unk_ov003_0223463c9onExecuteEv(Obj *o); }
 extern "C" { s32 func_ov003_0221e7b0(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
 extern "C" { s32 func_ov003_0221e750(Obj *o, u32 t, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f); }
 extern "C" { void func_ov003_0221e4d4(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s32 rz); }
@@ -1634,7 +1634,7 @@ extern "C" {
 
 extern Obj *data_ov003_02235930;
 extern void *data_ov003_02235934;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern void *data_ov003_02232720[];
 extern void *data_ov003_022326e8[];
 extern void *data_ov003_02232a28[];
@@ -1650,7 +1650,7 @@ s32 func_020549e4(void *t, void *file, void *heap);
 void *func_020549ac(void *t, void *name);
 s32 func_02054c64(void *p, void *a, void *b, u32 c, u32 d, void *e, u32 f);
 u32 func_0204c0ac();
-void func_020e85fc(void *heap, void *p);
+void Heap_Free(void *heap, void *p);
 
 s32 func_ov003_0221fc70(Obj *o, void *a, void *b, void *c, s32 d);
 s32 func_ov003_0221fcd4(Obj *o, void *a, void *b, void *c, s32 d);
@@ -1739,7 +1739,7 @@ extern void *data_ov003_02235930;
 extern void *data_ov003_02234770;
 extern void *data_ov003_02234774;
 extern void *data_ov003_0223477c;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern void *data_021c47c4;
 extern u8 data_ov003_0225812c[];
 extern u32 data_ov003_0222f810[][3];
@@ -1768,15 +1768,15 @@ BOOL func_020549e4(void *t, void *file, void *heap);
 void *func_020549ac(void *t, void *name);
 void func_02055744(void *a, u32 b);
 void func_020557a0(void *a, u32 b);
-u32 func_02061888(s32 a, s32 b);
+u32 Item_GetIconModelName(s32 a, s32 b);
 s32 func_0204c0ac();
-void *func_020641ec(void *a, void *b, s32 c, s32 d);
+void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGetTex();
 void *func_0204ebd8(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 void *func_0209c25c(void *a, void *b);
 BOOL func_0209c0d0(void *a, void *b, void *c);
 void *func_0209c0ac(void *a);
-void func_020555ec(void *a, void *b, s32 c);
+void Model_setResource(void *a, void *b, s32 c);
 void *func_0209c348(void *a);
 s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
@@ -1787,8 +1787,8 @@ void func_02054720(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_02054710(void *a);
 BOOL func_02055bcc(void *a, void *b, void *c);
 void func_02055b38(void *a, s32 b, s32 c, s32 d, s32 e);
-void *func_020554c0(void *a);
-void func_02055a9c(void *a, void *b);
+void *Model_getRenderObj(void *a);
+void ModelAnim_addToRenderObj(void *a, void *b);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
 
@@ -2676,7 +2676,7 @@ extern "C" u32 data_ov003_02232b88[4] = {
     0, (u32)data_ov003_022326c0, (u32)data_ov003_02232810, (u32)data_ov003_02232718,
 };
 // (registration node 0x2235954 is created with the object below)
-Unk_02000c8c data_ov003_02235948;   // __sinit: registered destructor
+FxVec3 data_ov003_02235948;   // __sinit: registered destructor
 extern "C" const u32 data_ov003_0222f3a0[3] = {
     8, 0xe0005, 0x15c,
 };
@@ -3389,11 +3389,11 @@ namespace ns_0221f798 {
 extern "C" {
 BOOL func_ov003_0221fcd4(void *self, u32 *a, u32 *b, u32 *names, s32 n)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < n; a++, b++, names++, i++) {
         if (*names != 0) {
-            *b = (u32)func_020641ec((void *)*names, heap, -4, 0);
+            *b = (u32)File_LoadAlloc((void *)*names, heap, -4, 0);
             if (*b == 0) {
                 return FALSE;
             }
@@ -3412,10 +3412,10 @@ namespace ns_0221f798 {
 extern "C" {
 BOOL func_ov003_0221fc70(void *self, u32 *a, u32 *b, u32 *names, s32 n)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < n; a++, b++, names++, i++) {
-        *b = (u32)func_020641ec((void *)*names, heap, -4, 0);
+        *b = (u32)File_LoadAlloc((void *)*names, heap, -4, 0);
         if (*b == 0) {
             return FALSE;
         }
@@ -3435,7 +3435,7 @@ BOOL func_ov003_0221fc1c(Unk_ov003_0223463c *self)
     if (func_020549e4(&self->unk_4ae0, (char *)"/fg/icon/icon.nsbmd", data_ov003_02235934)) {
         s32 i;
         for (i = 0; i < 0x49; i++) {
-            self->unk_50[i] = (u32)func_020549ac(&self->unk_4ae0, (void *)func_02061888(i, 1));
+            self->unk_50[i] = (u32)func_020549ac(&self->unk_4ae0, (void *)Item_GetIconModelName(i, 1));
         }
         ok = TRUE;
     }
@@ -3900,23 +3900,23 @@ extern "C" void func_ov003_0221f328(Obj *o, u32 *a, u32 *b, u32 *c, u32 *d)
 namespace ns_0221ede8 {
 extern "C" void func_ov003_0221f2b0(Obj *o, void **a, void **b, void **c)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 j, i;
     for (i = 0; i < 3; i++) {
         for (j = 0; j < 6; a++, j++) {
             if (*a) {
-                func_020e85fc(heap, *a);
+                Heap_Free(heap, *a);
                 *a = 0;
             }
         }
     }
     for (i = 0; i < 3; b++, c++, i++) {
         if (*b) {
-            func_020e85fc(heap, *b);
+            Heap_Free(heap, *b);
             *b = 0;
         }
         if (*c) {
-            func_020e85fc(heap, *c);
+            Heap_Free(heap, *c);
             *c = 0;
         }
     }
@@ -3926,20 +3926,20 @@ extern "C" void func_ov003_0221f2b0(Obj *o, void **a, void **b, void **c)
 namespace ns_0221ede8 {
 extern "C" void func_ov003_0221f258(Obj *o, void **a, void **b, void **c)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < 6; a++, i++) {
         if (*a) {
-            func_020e85fc(heap, *a);
+            Heap_Free(heap, *a);
             *a = 0;
         }
     }
     if (*b) {
-        func_020e85fc(heap, *b);
+        Heap_Free(heap, *b);
         *b = 0;
     }
     if (*c) {
-        func_020e85fc(heap, *c);
+        Heap_Free(heap, *c);
         *c = 0;
     }
 }
@@ -3948,13 +3948,13 @@ extern "C" void func_ov003_0221f258(Obj *o, void **a, void **b, void **c)
 namespace ns_0221ede8 {
 extern "C" void func_ov003_0221f224(Obj *o, void **a, void **b)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     if (*a) {
-        func_020e85fc(heap, *a);
+        Heap_Free(heap, *a);
         *a = 0;
     }
     if (*b) {
-        func_020e85fc(heap, *b);
+        Heap_Free(heap, *b);
         *b = 0;
     }
 }
@@ -3963,20 +3963,20 @@ extern "C" void func_ov003_0221f224(Obj *o, void **a, void **b)
 namespace ns_0221ede8 {
 extern "C" void func_ov003_0221f1cc(Obj *o, void **a, void **b, void **c)
 {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < 6; a++, i++) {
         if (*a) {
-            func_020e85fc(heap, *a);
+            Heap_Free(heap, *a);
             *a = 0;
         }
     }
     if (*b) {
-        func_020e85fc(heap, *b);
+        Heap_Free(heap, *b);
         *b = 0;
     }
     if (*c) {
-        func_020e85fc(heap, *c);
+        Heap_Free(heap, *c);
         *c = 0;
     }
 }
@@ -4148,15 +4148,15 @@ extern "C" BOOL func_ov003_0221ede8(Obj *o)
 namespace ns_0221e4d4 {
 extern "C" {
 void func_ov003_0221ed64(Obj *o, s32 *b, s32 *d, s32 *f, s32 *h) {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     s32 i;
     for (i = 0; i < 4; i++) {
         if (*b != 0) {
-            func_020e85fc(heap, (void *)*b);
+            Heap_Free(heap, (void *)*b);
             *b = 0;
         }
         if (*d != 0) {
-            func_020e85fc(heap, (void *)*d);
+            Heap_Free(heap, (void *)*d);
             *d = 0;
         }
         b++;
@@ -4164,11 +4164,11 @@ void func_ov003_0221ed64(Obj *o, s32 *b, s32 *d, s32 *f, s32 *h) {
     }
     for (i = 0; i < 2; i++) {
         if (*f != 0) {
-            func_020e85fc(heap, (void *)*f);
+            Heap_Free(heap, (void *)*f);
             *f = 0;
         }
         if (*h != 0) {
-            func_020e85fc(heap, (void *)*h);
+            Heap_Free(heap, (void *)*h);
             *h = 0;
         }
         f++;
@@ -4182,14 +4182,14 @@ namespace ns_0221e4d4 {
 extern "C" {
 BOOL func_ov003_0221ec88() {
     BOOL r5 = FALSE, r4 = FALSE;
-    void *A[4], *B[4], *C[4], *D[4];
+    void *LampLights[4], *LightLevel[4], *C[4], *WindowLight[4];
     void *E[2], *F[2], *G[2], *H[2];
     s32 i, j;
     for (i = 0; i < 4; i++) {
-        A[i] = NULL;
-        B[i] = NULL;
+        LampLights[i] = NULL;
+        LightLevel[i] = NULL;
         C[i] = NULL;
-        D[i] = NULL;
+        WindowLight[i] = NULL;
     }
     for (j = 0; j < 2; j++) {
         E[j] = NULL;
@@ -4197,9 +4197,9 @@ BOOL func_ov003_0221ec88() {
         G[j] = NULL;
         H[j] = NULL;
     }
-    if (func_ov003_0221ef9c(data_ov003_02235930, A, B)) {
-        if (func_ov003_0221ef84(data_ov003_02235930, C, D)) {
-            if (func_ov003_0221eef4(data_ov003_02235930, A, C)) {
+    if (func_ov003_0221ef9c(data_ov003_02235930, LampLights, LightLevel)) {
+        if (func_ov003_0221ef84(data_ov003_02235930, C, WindowLight)) {
+            if (func_ov003_0221eef4(data_ov003_02235930, LampLights, C)) {
                 r5 = TRUE;
             }
         }
@@ -4211,7 +4211,7 @@ BOOL func_ov003_0221ec88() {
             }
         }
     }
-    func_ov003_0221ed64(data_ov003_02235930, (s32 *)B, (s32 *)D, (s32 *)F, (s32 *)H);
+    func_ov003_0221ed64(data_ov003_02235930, (s32 *)LightLevel, (s32 *)WindowLight, (s32 *)F, (s32 *)H);
     s32 r = func_ov003_0221ede8(data_ov003_02235930);
     if (r5 && r4 && r) {
         return TRUE;
@@ -4260,7 +4260,7 @@ BOOL func_ov003_0221ebc0() {
         }
     }
     if (b != NULL) {
-        func_020e85fc(data_021f482c, b);
+        Heap_Free(gCurrentHeap, b);
     }
     return r;
 }
@@ -4310,7 +4310,7 @@ BOOL func_ov003_0221ead0() {
         }
     }
     if (b != NULL) {
-        func_020e85fc(data_021f482c, b);
+        Heap_Free(gCurrentHeap, b);
     }
     return r;
 }
@@ -4352,7 +4352,7 @@ BOOL func_ov003_0221e9f8() {
         }
     }
     if (b != NULL) {
-        func_020e85fc(data_021f482c, b);
+        Heap_Free(gCurrentHeap, b);
     }
     return r;
 }
@@ -4427,10 +4427,10 @@ extern "C" {
 BOOL _ZN18Unk_ov003_0223463c8vfunc_00Ev(Obj *o) {
     BOOL r = FALSE;
     if (data_ov003_02235934 == NULL) {
-        data_ov003_02235934 = func_020e8f58(data_ov003_02236674, (u32)(data_ov003_02236674 + 0x21400) - (u32)data_ov003_02236674);
+        data_ov003_02235934 = ExpHeap_CreateInPlace(data_ov003_02236674, (u32)(data_ov003_02236674 + 0x21400) - (u32)data_ov003_02236674);
     }
     if (data_ov003_02235938 == NULL) {
-        data_ov003_02235938 = func_020e8e7c(0x8c00, data_021f482c);
+        data_ov003_02235938 = ExpHeap_Create(0x8c00, gCurrentHeap);
     }
     if (func_ov003_0221fc1c(o)) {
         data_ov003_02235930 = o;
@@ -4452,7 +4452,7 @@ BOOL _ZN18Unk_ov003_0223463c8vfunc_00Ev(Obj *o) {
 
 namespace ns_0221e4d4 {
 extern "C" {
-BOOL _ZN18Unk_ov003_0223463c8vfunc_18Ev(Obj *o) {
+BOOL _ZN18Unk_ov003_0223463c9onExecuteEv(Obj *o) {
     func_ov003_0221a310(data_ov003_022359a4);
     func_ov003_0221c3b4(o->unk_4b20);
     return TRUE;
@@ -4465,7 +4465,7 @@ extern "C" {
 s32 func_ov003_0221e7b0(Obj *o, u32 idx, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f) {
     Unk_ov003_0221e4d4_Model *m = o->unk_50[idx];
     V3 t;
-    s32 ang = func_0203ef38(&t, a);
+    s32 ang = WorldCurve_ToCurved(&t, a);
     func_020e8388(&data_021f47e0, t.x, t.y, t.z);
     func_020e8434(&data_021f47e0, ang);
     func_020e8464(&data_021f47e0, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
@@ -4490,7 +4490,7 @@ s32 func_ov003_0221e750(Obj *o, u32 t, V3 *a, s32 b, V3 *c, s32 d, s32 e, s32 f)
     vc.x = c->x;
     vc.y = c->y;
     vc.z = c->z;
-    s32 idx = func_0204bc34(&type);
+    s32 idx = Item_GetInfoUnk07(&type);
     return func_ov003_0221e7b0(o, idx, &va, b, &vc, *(s16 *)&d, *(s16 *)&e, *(s16 *)&f);
 }
 }
@@ -4505,7 +4505,7 @@ void func_ov003_0221e4d4(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s32 
     volatile u16 type = 0xfff1;
     V3 v;
     type = t;
-    s32 ang = func_0203ef38(&v, pos);
+    s32 ang = WorldCurve_ToCurved(&v, pos);
     func_020e8388(&data_021f47e0, v.x, v.y, v.z);
     func_020e8434(&data_021f47e0, ang);
     func_020e8464(&data_021f47e0, *(s16 *)&rx, *(s16 *)&ry, *(s16 *)&rz);
@@ -4589,7 +4589,7 @@ void func_ov003_0221e4d4(Obj *o, u32 t, V3 *pos, V3 *scale, s32 rx, s32 ry, s32 
     case 1:
     case 3:
     case 4:
-        idx = func_0204bc34(&type);
+        idx = Item_GetInfoUnk07(&type);
         func_ov003_0221db54(o, o->unk_50[idx], data_021f47e0);
         break;
     case 2:
@@ -4611,7 +4611,7 @@ extern "C" void func_ov003_0221e440(O *o, u16 *t, Unk_ov003_0221e398_V3 *v)
     if (k) {
         id = 0x14b8;
     } else {
-        id = data_ov003_0222f028[func_0204ad08(t)];
+        id = data_ov003_0222f028[Item_GetFruitTreeFruit(t)];
     }
     s32 i = 0;
     s32 z = i;
@@ -4644,7 +4644,7 @@ extern "C" void func_ov003_0221e398(O *o, Unk_ov003_0221e398_V3 *t, s32 a, s32 b
         q = &o->unk_1014[(idx + d) % 3];
     }
     Unk_ov003_0221e398_V3 v;
-    s32 r = func_0203ef38(&v, t);
+    s32 r = WorldCurve_ToCurved(&v, t);
     func_020e8388(&data_021f47e0, v.x, v.y, v.z);
     func_020e8434(&data_021f47e0, r);
     func_ov003_0221db54(o, q, data_021f47e0);
@@ -4658,14 +4658,14 @@ extern "C" M *func_ov003_0221e118(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
     struct {
         Unk_ov003_0221e398_V3 a1, a2, t1, t2, b1, sc, t3, b2;
     } l;
-    s32 n = func_0204ad98(t);
+    s32 n = Item_GetTreeStage(t);
     BOOL f = FALSE;
     u32 id = *t;
     if (id >= 0x2f && id <= 0x56) {
         f = TRUE;
     }
     if (f) {
-        if (func_0204af08(t)) {
+        if (Item_IsTreeGrown(t)) {
             l.t1.x = v.x;
             l.t1.y = v.y;
             l.t1.z = v.z;
@@ -4674,7 +4674,7 @@ extern "C" M *func_ov003_0221e118(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
         q = (M *)((u8 *)o + 0x8c4) + n;
     } else if (id >= 0x57 && id <= 0x5b) {
         a = (a ^ b) & 1;
-        if (func_0204af08(t)) {
+        if (Item_IsTreeGrown(t)) {
             l.t2.x = v.x;
             l.t2.y = v.y;
             l.t2.z = v.z;
@@ -4712,7 +4712,7 @@ extern "C" M *func_ov003_0221e118(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
     } else if (id >= 0x5d && id <= 0x61) {
         q = (M *)((u8 *)o + 0xc6c) + n;
     } else if (id >= 0xc8 && id <= 0xcf) {
-        if (func_0204af08(t)) {
+        if (Item_IsTreeGrown(t)) {
             s32 i, z;
             i = 0;
             z = 0;
@@ -4743,7 +4743,7 @@ namespace ns_0221db54 {
 extern "C" void func_ov003_0221e0c4(O *o, u16 *t, s32 a, s32 b, V3 v, Blk m)
 {
     func_ov003_0221e118(o, t, a, b, v, m);
-    func_020ac23c(&v, func_0204ad98(t));
+    func_020ac23c(&v, Item_GetTreeStage(t));
 }
 }
 
@@ -4941,7 +4941,7 @@ extern "C" {
 void func_ov003_0221d37c(O *o, void *g) {
     struct {
         s32 x, z;
-        V3 D, E, A, B, C;
+        V3 WindowLight, E, LampLights, LightLevel, C;
         union {
             Blk m;
             s32 mw[12];
@@ -4950,33 +4950,33 @@ void func_ov003_0221d37c(O *o, void *g) {
     } l;
     s32 idx, dist, i, j, cnt;
     u16 *cell;
-    if (data_021c3070 != 0) {
-        l.A = data_021c309c;
-        func_0204edd8(&l.C, &l.A);
+    if (gCamera != 0) {
+        l.LampLights = gCameraLookAt;
+        func_0204edd8(&l.C, &l.LampLights);
         func_0204ee10(&l.x, &l.z, &l.C);
-        l.B.x = l.C.x + 0x12000;
+        l.LightLevel.x = l.C.x + 0x12000;
         cnt = 0;
-        l.B.y = 0;
-        l.B.z = l.C.z + 0x8000;
+        l.LightLevel.y = 0;
+        l.LightLevel.z = l.C.z + 0x8000;
         j = 4;
         goto jtest;
     jloop:
-        func_0204edd8(&l.D, &l.B);
+        func_0204edd8(&l.WindowLight, &l.LightLevel);
         {
-            s32 r4 = func_0203ef38(&l.E, &l.D);
+            s32 r4 = WorldCurve_ToCurved(&l.E, &l.WindowLight);
             func_020e8388(&data_021f47e0, l.E.x, l.E.y, l.E.z);
             func_020e8434(&data_021f47e0, r4);
         }
         l.m = data_021f47e0;
-        dist = l.D.z - l.C.z;
+        dist = l.WindowLight.z - l.C.z;
         i = 9;
         goto itest;
     iloop:
-        cell = func_0204eba0(g, &l.D, 0);
+        cell = func_0204eba0(g, &l.WindowLight, 0);
         if (cell == 0) goto step;
         if (Chk_0221d37c(cell)) {
-            if (func_0204b08c(cell) == 0) {
-                if (func_0203a4c4(&l.D, 0x2000, 0x2000) != 0) goto step;
+            if (Item_IsTreeStage0(cell) == 0) {
+                if (func_0203a4c4(&l.WindowLight, 0x2000, 0x2000) != 0) goto step;
             }
         }
         {
@@ -4991,9 +4991,9 @@ void func_ov003_0221d37c(O *o, void *g) {
                     if (((*cell) >= 0x26 && (*cell) <= 0x2a) || ((*cell) >= 0x5d && (*cell) <= 0x61) || ((*cell) >= 0x2f && (*cell) <= 0x56) ||
                         ((*cell) >= 0x57 && (*cell) <= 0x5b) || ((*cell) >= 0x66 && (*cell) <= 0x68) || (*cell) == 0x69 ||
                         ((*cell) >= 0x6a && (*cell) <= 0x6c) || (*cell) == 0x6d || ((*cell) >= 0xc8 && (*cell) <= 0xcf)) {
-                        l.F.x = l.D.x;
-                        l.F.y = l.D.y;
-                        l.F.z = l.D.z;
+                        l.F.x = l.WindowLight.x;
+                        l.F.y = l.WindowLight.y;
+                        l.F.z = l.WindowLight.z;
                         func_ov003_0221e0c4(o, cell, l.x + i, l.z + j, &l.F, l.m);
                     } else if (((*cell) >= 0x21 && (*cell) <= 0x24) || ((*cell) >= 0x1f && (*cell) <= 0x20)) {
                         func_ov003_0221ddb4(o, cell, l.m);
@@ -5007,9 +5007,9 @@ void func_ov003_0221d37c(O *o, void *g) {
                                    ((*cell) >= 0x96 && (*cell) <= 0x9b) || ((*cell) >= 0x9c && (*cell) <= 0xa3) || (*cell) == 0xa5) {
                             func_ov003_0221dee8(o, cell, l.m);
                         } else if (((*cell) >= 0xe3 && (*cell) <= 0xe7) || ((*cell) >= 0xe8 && (*cell) <= 0xfb)) {
-                            l.G.x = l.D.x;
-                            l.G.y = l.D.y;
-                            l.G.z = l.D.z;
+                            l.G.x = l.WindowLight.x;
+                            l.G.y = l.WindowLight.y;
+                            l.G.z = l.WindowLight.z;
                             func_ov003_0221dd0c(o, cell, &l.G, l.m);
                         } else if ((*cell) == 0xa6 || (*cell) == 0xfe) {
                             func_ov003_0221dc50(o, cell, l.m);
@@ -5052,7 +5052,7 @@ void func_ov003_0221d37c(O *o, void *g) {
                 if (func_01ffcbd8(g, l.x + i, l.z + j)) {
                     func_ov003_0221dc50(o, cell, l.m);
                 } else {
-                    idx = func_0204bc34(cell);
+                    idx = Item_GetInfoUnk07(cell);
                     func_ov003_0221db54(o, o->unk_50[idx], l.m);
                 }
                 cnt++;
@@ -5064,11 +5064,11 @@ void func_ov003_0221d37c(O *o, void *g) {
         if (cnt >= 0xfc) goto end;
     step:
         l.mw[9] -= 0x2000;
-        l.D.x -= 0x2000;
+        l.WindowLight.x -= 0x2000;
         i--;
     itest:
         if (i >= -9) goto iloop;
-        l.B.z -= 0x2000;
+        l.LightLevel.z -= 0x2000;
         j--;
     jtest:
         if (j >= -14) goto jloop;
@@ -5080,9 +5080,9 @@ end:;
 
 namespace ns_0221cb54 {
 extern "C" {
-s32 _ZN18Unk_ov003_0223463c8vfunc_24Ev(u8 *self) {
+s32 _ZN18Unk_ov003_0223463c6onDrawEv(u8 *self) {
     u8 *a = data_021c47c4;
-    u8 *b = data_021c3070;
+    u8 *b = gCamera;
     if (a != 0 && b != 0) {
         s32 *cnt = (s32 *)(self + 0x6a6c);
         *cnt = (*cnt + 1) % 60;
@@ -5272,7 +5272,7 @@ s32 func_ov003_0221cd80(void *o, P2 pos) {
             u16 *cell = func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
             if (cell != 0) {
                 if (Chk_0221cd80(cell)) {
-                    if (func_0204b08c(cell) == 0) {
+                    if (Item_IsTreeStage0(cell) == 0) {
                         V3 v;
                         func_0204ed8c(&v, pos.x, pos.z);
                         if (func_0203a4c4(&v, 0x2000, 0x2000) == 0) {
@@ -5297,7 +5297,7 @@ s32 func_ov003_0221cd80(void *o, P2 pos) {
                 u32 t = *cell;
                 if (t >= 0x2f && t <= 0x56) k = TRUE;
                 if (k || (t >= 0xc8 && t <= 0xcf) || (t >= 0x57 && t <= 0x5b)) {
-                    if (func_0204af08(cell) != 0) {
+                    if (Item_IsTreeGrown(cell) != 0) {
                         s32 i;
                         for (i = 0; i < 3; i++) {
                             if (func_02045220((u32)a, i) >= 0) {
@@ -5905,7 +5905,7 @@ void func_ov003_0221c13c(void *a, Unk_ov003_0221c030_Ent *o) {
     x = q[0];
     z = q[1];
     w = o->unk_10;
-    n = func_0204ad98(cell);
+    n = Item_GetTreeStage(cell);
     if (n <= 0 || n > 4) {
         func_ov003_0221b4b8(o);
         return;
@@ -5964,7 +5964,7 @@ void func_ov003_0221c030(u8 *a, s32 id, s32 *pos, s32 c, s32 d) {
                 if (f1 == 0 && v >= 0xc8 && v <= 0xcf) {
                     goto l_ae;
                 }
-                if (func_0204af08(cell) != 0) {
+                if (Item_IsTreeGrown(cell) != 0) {
                     goto set;
                 }
             l_ae:
@@ -6033,7 +6033,7 @@ void func_ov003_0221bf88(s32 id, s32 *pos) {
             if (func_02072e44(data_020cbb18) == 0) {
                 id = 0;
             }
-            n = func_0204ad98(cell);
+            n = Item_GetTreeStage(cell);
             if (n > 0 && n <= 4) {
                 e = func_ov003_0221c220(data_ov003_02235930 + 0x4b20, cell, n - 1, (pos[0] ^ pos[1]) & 1);
                 if (e != 0 && pos[0] == e->unk_cc && pos[1] == e->unk_d0 && id == e->unk_04) {
@@ -6064,7 +6064,7 @@ extern "C" {
 void func_ov003_0221bc24(Unk_ov003_0221b8bc *o) {
     if (o->unk_00 == 1) {
         func_020547e4(o->unk_08);
-        if (func_02056654(o->unk_9c + 8)) {
+        if (AnimFrameCtrl_isFinished(o->unk_9c + 8)) {
             func_ov003_0221b618(o);
         } else {
             s32 r5 = 0;
@@ -6173,9 +6173,9 @@ void func_ov003_0221bc24(Unk_ov003_0221b8bc *o) {
                             }
                         }
                         if (f3) {
-                            n = func_0204aba4(cell);
+                            n = Item_GetStumpSize(cell);
                         } else {
-                            n = func_0204ad98(cell);
+                            n = Item_GetTreeStage(cell);
                         }
                         if (n > 0) {
                             Unk_ov003_0221b8bc_V2 a, b;
@@ -6208,7 +6208,7 @@ void func_ov003_0221bbb8(Unk_ov003_0221b8bc *o) {
     if (o->unk_00 == 1) {
         volatile Unk_ov003_0221b8bc_Col2 l;
         Unk_ov003_0221b8bc_V3 v;
-        s32 r = func_0203ef38(&v, &o->unk_c0);
+        s32 r = WorldCurve_ToCurved(&v, &o->unk_c0);
         func_020e8388(&data_021f47e0, v.x, v.y, v.z);
         func_020e8434(&data_021f47e0, r);
         o->unk_6c = data_021f47e0;
@@ -6331,7 +6331,7 @@ void func_ov003_0221b93c(u16 *cell, s32 id, s32 *pos) {
     default:
         tbl = data_ov003_0223291c[0];
         n = 3;
-        arg = data_ov003_0222f034[func_0204ad08(cell)];
+        arg = data_ov003_0222f034[Item_GetFruitTreeFruit(cell)];
         break;
     }
     xy.x = 0;
@@ -6372,7 +6372,7 @@ void func_ov003_0221b8bc(Unk_ov003_0221b8bc *o, s32 *p) {
     Unk_ov003_0221b8bc_V3D c;
     Unk_ov003_0221b8bc_V3 e;
     Unk_ov003_0221b8bc_V3 d;
-    if (func_02072e44(data_020cbb18) == 0 && func_02098044(func_0209750c(), 1) == 0) {
+    if (func_02072e44(data_020cbb18) == 0 && func_02098044(PlayerData_GetCurrent(), 1) == 0) {
         func_0204ed8c(&b, p[0], p[1]);
         Unk_ov003_0221b8bc_V3 *t = data_ov003_0223291c[0];
         t = t + func_ov003_0221ba28(o, &b);
@@ -6441,7 +6441,7 @@ extern "C" void func_ov003_0221b73c(u16 *cell, s32 a, P2 p)
     u32 t = *cell;
     if (t >= 0x2f && t <= 0x56) f = TRUE;
     if (f || (t >= 0xc8 && t <= 0xcf) || (t >= 0x57 && t <= 0x5b)) {
-        if (func_0204af08(cell) != 0) {
+        if (Item_IsTreeGrown(cell) != 0) {
             func_ov003_0221b93c(cell, a, p);
         }
     } else if (t == 0x67 || t == 0x6b) {
@@ -6528,7 +6528,7 @@ extern "C" void func_ov003_0221b570(u32 (*arr)[4])
         for (; j < 4; j++) {
             s32 v = func_ov003_0221b518(arr, i, j);
             if (v != 0) {
-                arr[i][j] = (u32)func_020641ec((void *)v, data_ov003_02235938, 4, 0);
+                arr[i][j] = (u32)File_LoadAlloc((void *)v, data_ov003_02235938, 4, 0);
                 void *r = func_021065dc((void *)arr[i][j]);
                 *(u32 *)((u8 *)&arr[i][j] + 0x80) = (u32)func_021065f8(r, 0);
             } else {
@@ -6549,7 +6549,7 @@ extern "C" void func_ov003_0221b528(u32 (*arr)[4])
         s32 j = 0;
         for (; j < 4; j++) {
             if (arr[i][j] != 0) {
-                func_020e85fc(heap, (void *)arr[i][j]);
+                Heap_Free(heap, (void *)arr[i][j]);
                 arr[i][j] = 0;
             }
         }
@@ -6799,7 +6799,7 @@ extern "C" void func_ov003_0221af8c(Unk_ov003_0221aed4_Fx *self, P2 p, void *g, 
     u16 *c = (u16 *)func_0204ebd8(g, hx, hz, x - (hx << 4), z - (hz << 4), 0);
     if (c != 0) {
         s32 r = func_0204e88c(g, p.x, p.z);
-        if (func_0204a9c8(c) != 0) {
+        if (Item_IsFlower(c) != 0) {
             Unk_ov003_0221aed4_Raw2 q;
             q.x = p.x;
             q.z = p.z;
@@ -7356,7 +7356,7 @@ extern "C" void func_ov003_0221a4a0(Unk_ov003_0221a4a0 *self)
                 func_020b8e38();
                 if (self->unk_50 == 0) {
                     if (self->unk_08 == 0x137b) {
-                        func_0209801c(func_0209750c(), 0x30);
+                        func_0209801c(PlayerData_GetCurrent(), 0x30);
                     }
                     func_ov003_0221caf0(self->unk_10, self->unk_14, self->unk_08, 0);
                 }
@@ -7511,7 +7511,7 @@ void func_ov003_02219e7c(Ent *e) {
                 l.v68.x = pv->x;
                 l.v68.y = pv->y;
                 l.v68.z = pv->z;
-                ang = func_0203ef38(&l.v50, &l.v5c);
+                ang = WorldCurve_ToCurved(&l.v50, &l.v5c);
                 func_020e8388(&data_021f47e0, l.v50.x, l.v50.y, l.v50.z);
                 func_020e8434(&data_021f47e0, ang);
                 func_020e84f8(&data_021f47e0, l.v68.x, l.v68.y, l.v68.z);
@@ -7888,23 +7888,23 @@ extern "C" void func_ov003_02219718(s32 a, s32 b, P2 c)
 namespace ns_0221927c {
 extern "C" void func_ov003_02219654(s32 a, s32 n)
 {
-    V3 A(0, 0, 0);
+    V3 LampLights(0, 0, 0);
     s32 p0 = 0;
     s32 p1 = 0;
     Unk_ov003_02219654_Obj *obj = (Unk_ov003_02219654_Obj *)func_02095204(4);
     if (obj != NULL) {
         Unk_ov003_02219654_V3 *pv = &obj->unk_5c;
-        A.x = pv->x;
-        A.y = pv->y;
-        A.z = pv->z;
-        A.x = A.x + ((n << 12) >> 4);
-        func_0204ee10(&p0, &p1, (s32)&A);
+        LampLights.x = pv->x;
+        LampLights.y = pv->y;
+        LampLights.z = pv->z;
+        LampLights.x = LampLights.x + ((n << 12) >> 4);
+        func_0204ee10(&p0, &p1, (s32)&LampLights);
         p1 = (func_02133150(p1, 16) << 4) + 1;
         s32 tmp[3];
         func_0204ed8c(tmp, p0, p1);
-        A.z = tmp[2];
+        LampLights.z = tmp[2];
     }
-    A.y = 0xa000;
+    LampLights.y = 0xa000;
     s32 t;
     if (a == 0) {
         t = 0x156b;
@@ -7918,7 +7918,7 @@ extern "C" void func_ov003_02219654(s32 a, s32 n)
     } else {
         r = 0;
     }
-    func_ov003_02219dc0(data_ov003_022359a4, r, P2(p0, p1), V3(A.x, A.y, A.z), 0xc, t, 0, 0);
+    func_ov003_02219dc0(data_ov003_022359a4, r, P2(p0, p1), V3(LampLights.x, LampLights.y, LampLights.z), 0xc, t, 0, 0);
 }
 }
 

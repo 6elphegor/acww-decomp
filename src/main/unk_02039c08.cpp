@@ -7,10 +7,10 @@ struct Unk_02039cf4_Obj {
 
 extern "C" {
 s32 func_02063b8c(s32 n);
-void _ZN12Unk_0206338013func_0206338cEii(Unk_02039cf4_Obj *o, s32 a, s32 b);
+void _ZN12ItemPickSpec3setEii(Unk_02039cf4_Obj *o, s32 a, s32 b);
 void func_02063388(Unk_02039cf4_Obj *o);
-void func_02062f94(u16 *a, Unk_02039cf4_Obj *o, s32 b, s32 c, s32 d, s32 e, s32 f);
-BOOL func_0204ba30(u16 *a, u16 *b);
+void ItemPick_One(u16 *a, Unk_02039cf4_Obj *o, s32 b, s32 c, s32 d, s32 e, s32 f);
+BOOL Item_GetIfNotCreature(u16 *a, u16 *b);
 s32 MTX_MultVec43(void *v, void *m, void *out);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -27,8 +27,8 @@ extern "C" u16 func_02039dd4(u32 i);
 
 class Unk_02039eb8 {
 public:
-    s32 func_02039eb8(void *m, void *v, s32 r, s32 *out);
-    void func_02039f9c();
+    s32 testSphere(void *m, void *v, s32 r, s32 *out);
+    void calcPlanes();
 
     /* 0x00 */ s32 unk_00;
     /* 0x04 */ s32 unk_04[3];
@@ -42,7 +42,7 @@ public:
     /* 0x58 */ u16 unk_58;
 };
 
-void Unk_02039eb8::func_02039f9c() {
+void Unk_02039eb8::calcPlanes() {
     s32 v[12];
     s32 idx = unk_58 >> 4;
     s32 s = FX_Div(data_02135f44[idx * 2], data_02135f44[idx * 2 + 1]);
@@ -70,7 +70,7 @@ void Unk_02039eb8::func_02039f9c() {
     VEC_Normalize(&unk_28[0], &unk_28[0]);
 }
 
-s32 Unk_02039eb8::func_02039eb8(void *m, void *v, s32 r, s32 *out) {
+s32 Unk_02039eb8::testSphere(void *m, void *v, s32 r, s32 *out) {
     MTX_MultVec43(v, m, out);
     s32 t = -out[2];
     if (t < unk_50 - r) {
@@ -175,7 +175,7 @@ extern "C" BOOL func_02039d94(u32 i, u16 v) {
         u16 t[2];
         t[0] = v;
         t[1] = 0xfff1;
-        if (func_0204ba30(&t[0], &t[1])) {
+        if (Item_GetIfNotCreature(&t[0], &t[1])) {
             data_021ed22e[i] = t[1];
         }
         return TRUE;
@@ -210,8 +210,8 @@ extern "C" void func_02039cf4(u16 *p) {
         s32 tbl[3] = {1, 0, 2};
         u16 out[2];
         Unk_02039cf4_Obj o1;
-        _ZN12Unk_0206338013func_0206338cEii(&o1, tbl[func_02063b8c(3)], 0);
-        func_02062f94(out, &o1, 0, 0, 1, 1, 0);
+        _ZN12ItemPickSpec3setEii(&o1, tbl[func_02063b8c(3)], 0);
+        ItemPick_One(out, &o1, 0, 0, 1, 1, 0);
         func_02063388(&o1);
         p[i] = out[0];
     }
@@ -249,8 +249,8 @@ extern "C" void func_02039c08(u16 *arr, s32 n) {
                     idx = 2;
                 }
                 if (idx != 0xff) {
-                    _ZN12Unk_0206338013func_0206338cEii(&o1, tbl[idx], 0);
-                    func_02062f94((u16 *)&out, &o1, 0, 0, 1, 1, 0);
+                    _ZN12ItemPickSpec3setEii(&o1, tbl[idx], 0);
+                    ItemPick_One((u16 *)&out, &o1, 0, 0, 1, 1, 0);
                     func_02063388(&o1);
                     *e = *(u16 *)&out;
                     cnt++;

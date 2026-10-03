@@ -11,15 +11,15 @@ extern void *data_020cbb18;
 extern u8 data_021c4ee4[];
 extern u8 data_021e58a8[];
 
-u32 func_020a69b4(u8 *buf, u32 c);
-u8 func_020a7fa8(u8 *buf);
+u32 Msg_DecodeGameChar(u8 *buf, u32 c);
+u8 Msg_MeasureWidth(u8 *buf);
 void *func_ov004_02235718();
 u8 *_ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii(void *p, s32 x, s32 y, s32 z);
 void func_ov004_022087a4(void *p);
 void *func_0204ebd8(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
-s32 func_02052fc4();
-s32 func_0204b2d4(void *p);
-u32 func_0204b25c(void *p);
+s32 FtrInfo_GetDmaUnk04();
+s32 Item_IsFurniture(void *p);
+u32 Item_GetFurnitureIndex(void *p);
 s32 func_02072e44(void *p);
 s32 func_020729cc(void *p, s32 v);
 void func_02052a70(void *p, s32 v);
@@ -70,10 +70,10 @@ extern "C" BOOL func_020513b0(s32 x, s32 y) {
             u16 code;
             void *o = func_0204ebd8(p, hx, hy, x - (hx << 4), y - (hy << 4), 1);
             func_ov004_022087a4(q);
-            if (func_02052fc4() == 1 && o != NULL) {
-                if (func_0204b2d4(o) != 0) {
+            if (FtrInfo_GetDmaUnk04() == 1 && o != NULL) {
+                if (Item_IsFurniture(o) != 0) {
                     code = 0xfff1;
-                    r = func_0204b25c(o) == func_0204b25c(&code) ? TRUE : FALSE;
+                    r = Item_GetFurnitureIndex(o) == Item_GetFurnitureIndex(&code) ? TRUE : FALSE;
                 } else {
                     r = *(u16 *)o == 0xfff1 ? TRUE : FALSE;
                 }
@@ -90,8 +90,8 @@ extern "C" void func_0205137c() {
     s32 i;
     u8 buf[12];
     for (i = 0; (u32)i < 0xe0; i++) {
-        buf[func_020a69b4(buf, (u8)i)] = 0;
-        data_021c4d4c[i] = func_020a7fa8(buf);
+        buf[Msg_DecodeGameChar(buf, (u8)i)] = 0;
+        data_021c4d4c[i] = Msg_MeasureWidth(buf);
     }
 }
 
@@ -174,11 +174,11 @@ extern "C" s32 func_02051270(const u8 *str, s32 maxLen, s32 maxWidth, s32 *outLe
     return 0;
 }
 
-extern "C" void func_02051268(const void *src, void *dst, u32 size) {
+extern "C" void Mem_Copy(const void *src, void *dst, u32 size) {
     MI_CpuCopy8(src, dst, size);
 }
 
-extern "C" void func_0205125c(void *dst, u32 size) {
+extern "C" void Mem_Clear(void *dst, u32 size) {
     MI_CpuFill8(dst, 0, size);
 }
 

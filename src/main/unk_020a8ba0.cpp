@@ -6,19 +6,19 @@ inline void *operator new(unsigned long, void *p) { return p; }
 
 extern "C" {
 // Other files
-BOOL func_0205026c(u8 *out, const u8 *c);
+BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
 }
 
 extern "C" {
-BOOL func_02050278(char *out, u32 index);
+BOOL Text_GameCharToAscii(char *out, u32 index);
 }
 
 extern "C" {
-const char *func_0205020c(void);
+const char *Text_GetSpecialCharStr3(void);
 }
 
 extern "C" {
-const char *func_02050214(void);
+const char *Text_GetSpecialCharStr2(void);
 }
 
 extern "C" {
@@ -30,31 +30,31 @@ u8 *func_02050208(void);
 }
 
 extern "C" {
-u8 *func_0205021c(void);
+u8 *Text_GetSpecialCharStr5(void);
 }
 
 extern "C" {
-u8 *func_02050224(void);
+u8 *Text_GetSpecialCharStr7(void);
 }
 
 extern "C" {
-u8 *func_0205022c(void);
+u8 *Text_GetSpecialCharStr6(void);
 }
 
 extern "C" {
-u8 *func_02050234(void);
+u8 *Text_GetSpecialCharStr4(void);
 }
 
 extern "C" {
-u8 *func_0205023c(void);
+u8 *Text_GetSpecialCharStr1(void);
 }
 
 extern "C" {
-BOOL func_02050f7c(StrBuf *buf, const void *src, s32 len);
+BOOL StrBuf_SetBytes(StrBuf *buf, const void *src, s32 len);
 }
 
 extern "C" {
-void func_0205113c(StrBuf *buf);
+void StrBuf_Clear(StrBuf *buf);
 }
 
 extern "C" {
@@ -82,7 +82,7 @@ void func_0201195c(void);
 }
 
 extern "C" {
-void func_02063d18(void *file, void *buf, u32 size, u32 offset);
+void File_ReadRange(void *file, void *buf, u32 size, u32 offset);
 }
 
 extern "C" {
@@ -130,15 +130,15 @@ void func_0208f000(void);
 }
 
 extern "C" {
-BOOL func_0208f024(void);
+BOOL InputMode_IsButtons(void);
 }
 
 extern "C" {
-void func_0208f038(void);
+void InputMode_SetTouch(void);
 }
 
 extern "C" {
-void func_0208f044(void);
+void InputMode_SetButtons(void);
 }
 
 extern "C" {
@@ -158,11 +158,11 @@ void func_020b77c8(void);
 }
 
 extern "C" {
-void *func_020e8608(void *heap, u32 size);
+void *Heap_Alloc(void *heap, u32 size);
 }
 
 extern "C" {
-void func_020e85fc(void *heap, void *ptr);
+void Heap_Free(void *heap, void *ptr);
 }
 
 extern "C" {
@@ -240,51 +240,51 @@ void func_020a8ce4(void *list);
 
 extern "C" {
 // This file
-BOOL func_020a69ac(u8 *out, const u8 *src);
+BOOL Msg_EncodeGameChar(u8 *out, const u8 *src);
 }
 
 extern "C" {
-BOOL func_020a69b4(char *out, u8 c);
+BOOL Msg_DecodeGameChar(char *out, u8 c);
 }
 
 extern "C" {
-u32 func_020a6c40(u32 a, u32 b);
+u32 Msg_GetCharAt(u32 a, u32 b);
 }
 
 extern "C" {
-BOOL func_020a6d54(void);
+BOOL Input_IsTouchBlocked(void);
 }
 
 extern "C" {
-BOOL func_020a6d74(void);
+BOOL Input_IsKeyBlocked(void);
 }
 
 extern "C" {
-void func_020a6dd8(void);
+void Input_ResetMode(void);
 }
 
 extern "C" {
-u16 func_020a77c0(u8 *p, u32 i);
+u16 Msg_ReadU16(u8 *p, u32 i);
 }
 
 extern "C" {
-u8 func_020a77e0(u8 *p, u32 i);
+u8 Msg_ReadU8(u8 *p, u32 i);
 }
 
 extern "C" {
-u8 func_020a8af4(void *p);
+u8 Bmg_ReadU8(void *p);
 }
 
 extern "C" {
-u16 func_020a8af8(void *p);
+u16 Bmg_ReadU16(void *p);
 }
 
 extern "C" {
-u32 func_020a8afc(void *p);
+u32 Bmg_ReadU32(void *p);
 }
 
 extern "C" {
-u32 func_020a8b00(void *p);
+u32 Bmg_ReadMagic(void *p);
 }
 
 extern "C" {
@@ -296,11 +296,11 @@ void func_020a8b94(void);
 }
 
 extern "C" {
-extern void *data_021c489c;
+extern void *gTextHeap;
 }
 
 extern "C" {
-extern u8 data_021c48c4[];
+extern u8 gTextLabelList[];
 }
 
 extern "C" {
@@ -316,39 +316,39 @@ extern u32 data_020d08c8[];
 }
 
 extern "C" {
-extern u8 data_020d07b8[][7];
+extern u8 sColorTags[][7];
 }
 
 extern "C" {
-extern u8 data_021ef5ec;
+extern u8 gTouchCurY;
 }
 
 extern "C" {
-extern u8 data_021ef5f0;
+extern u8 gTouchCurX;
 }
 
 extern "C" {
-extern u8 data_021ef5f4;
+extern u8 gTouchPressY;
 }
 
 extern "C" {
-extern u8 data_021ef5f8;
+extern u8 gTouchPressX;
 }
 
 extern "C" {
-extern u8 data_021f4770;
+extern u8 gTouchHeld;
 }
 
 extern "C" {
-extern u8 data_021f4774;
+extern u8 gTouchChanged;
 }
 
 extern "C" {
-extern u16 data_021f47d8[2];
+extern u16 gPad[2];
 }
 
 extern "C" {
-extern u8 data_021edb64;
+extern u8 sInputButtonMode;
 }
 
 extern "C" {
@@ -356,42 +356,42 @@ extern u8 data_021edb68;
 }
 
 extern "C" {
-extern u8 data_021edb6c;
+extern u8 sInputLocked;
 }
 
 extern "C" {
 extern u8 data_021edd14;
 }
 
-class Unk_020e2a78;
+class MsgString;
 
 // Script command token, 0x14 bytes
-class Unk_020a72b0 {
+class MsgTag {
 public:
-    Unk_020a72b0();
-    u8 func_020a72b0();
+    MsgTag();
+    u8 getArgU8();
     void func_020a72c4(u32 *a, char **b, char **c);
-    void func_020a72f0(char **a, char **b, char **c);
-    void func_020a7338(char **a, char **b);
-    s32 func_020a736c();
-    BOOL func_020a7374();
-    u32 func_020a7388(u8 *a1, u8 *a2, u8 *a3, u8 *s0, u8 *s1, u8 *s2, u8 *s3, u8 *s4, Unk_020e2a78 *s5,
-                      Unk_020e2a78 *s6);
-    u32 func_020a7404();
-    u32 func_020a7478(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2, u8 *s3,
-                      Unk_020e2a78 *s4, u8 *s5, Unk_020e2a78 *s6);
-    u32 func_020a74fc(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2, u8 *s3,
-                      Unk_020e2a78 *s4);
-    u32 func_020a7574(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0, u8 *s1, Unk_020e2a78 *s2);
-    u32 func_020a75dc(u8 *a1, Unk_020e2a78 *a2, u8 *a3, Unk_020e2a78 *s0);
-    void func_020a7634(u16 *out);
-    void func_020a7648(u8 *buf, s32 n);
-    void func_020a7670(u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
-    void func_020a76bc(u8 *a, u8 *b, u8 *c, u8 *d);
-    void func_020a76fc(u8 *a, u8 *b, u8 *c);
-    void func_020a7730(u8 *a, u8 *b);
-    void func_020a7754(u8 *a);
-    void func_020a777c(u8 *p);
+    void getStrings3(char **a, char **b, char **c);
+    void getStrings2(char **a, char **b);
+    s32 getSlotIndex();
+    BOOL isSlotTag();
+    u32 readArgBytes8Strings2(u8 *a1, u8 *a2, u8 *a3, u8 *s0, u8 *s1, u8 *s2, u8 *s3, u8 *s4, MsgString *s5,
+                      MsgString *s6);
+    u32 getTrailingStringsSize();
+    u32 readArgStrings5(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
+                      MsgString *s4, u8 *s5, MsgString *s6);
+    u32 readArgStrings4(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2, u8 *s3,
+                      MsgString *s4);
+    u32 readArgStrings3(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0, u8 *s1, MsgString *s2);
+    u32 readArgStrings2(u8 *a1, MsgString *a2, u8 *a3, MsgString *s0);
+    void getArgU16(u16 *out);
+    void getArgBytes(u8 *buf, s32 n);
+    void getArgs5(u8 *a, u8 *b, u8 *c, u8 *d, u8 *e);
+    void getArgs4(u8 *a, u8 *b, u8 *c, u8 *d);
+    void getArgs3(u8 *a, u8 *b, u8 *c);
+    void getArgs2(u8 *a, u8 *b);
+    void getArgs1(u8 *a);
+    void parse(u8 *p);
 
     void eq(s32 x, s32 y, u8 *f) {
         if (unk_00 == x && unk_04 == y) *f = 1;
@@ -405,73 +405,73 @@ public:
 };
 
 // 0x020e2a08: small state object (position + two bytes)
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
+    void reset();
+    void copyFrom(MsgStringAttr *other);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
 // buffer interface (destination-side, member at +4)
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
+    BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
 // buffer interface with write position at +4 and member at +8
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7940(u8 *start, u8 *end);
-    BOOL func_020a798c(u8 *start, u8 *end);
-    BOOL func_020a79dc(Unk_020e2a78 *other);
-    u8 func_020a7a0c(Unk_020e2a78 *other);
-    u8 func_020a7a28(u8 *str);
-    u8 func_020a7a64(u8 *str);
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    u8 func_020a7bd8(Unk_020e2a78 *other);
-    u8 func_020a7c04(u8 *str);
-    void func_020a7c3c();
+    BOOL appendRange(u8 *start, u8 *end);
+    BOOL assignRange(u8 *start, u8 *end);
+    BOOL equals(MsgString *other);
+    u8 appendString(MsgString *other);
+    u8 append(u8 *str);
+    u8 setLine(u8 *str);
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    u8 copy(MsgString *other);
+    u8 set(u8 *str);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
-class Unk_020e2a48 : public Unk_020e2a78 {
+class MsgString33 : public MsgString {
 public:
-    Unk_020e2a48();
-    virtual ~Unk_020e2a48();
+    MsgString33();
+    virtual ~MsgString33();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
     void func_020a7188();
 };
 
 // Buffer defined in another file (ctor func_020aa8e0, dtor func_020aa8c8), 0x34 bytes
-class Unk_020aa8e0 : public Unk_020e2a78 {
+class Unk_020aa8e0 : public MsgString {
 public:
     Unk_020aa8e0();
     virtual ~Unk_020aa8e0();
@@ -481,18 +481,18 @@ public:
     /* 0x14 */ u8 unk_14[0x20];
 };
 
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    virtual ~Unk_020e2a30();
+    virtual ~MsgRequest();
     virtual void vfunc_08();
-    Unk_020e2a30();
-    void func_020a710c(const char *src);
+    MsgRequest();
+    void setFileName(const char *src);
 
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
 };
 
-struct Unk_020a7238 {
+struct BmgMsgAttr {
     u32 unk_00;
     u8 unk_04;
     u8 unk_05;
@@ -505,55 +505,55 @@ struct Unk_020a7238 {
 };
 
 // Script interpreter root
-class Unk_020e2b08 {
+class MsgParser {
 public:
-    Unk_020e2b08();
-    virtual ~Unk_020e2b08();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
+    MsgParser();
+    virtual ~MsgParser();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
 
-    void func_020a832c();
-    void func_020a8348(u8 *p);
-    void func_020a8368(u8 *p);
-    BOOL func_020a837c(u32 arg);
-    BOOL func_020a83f0(u32 c);
-    void func_020a83f4(u8 *p);
-    void func_020a8400(s32 n);
-    void func_020a840c();
-    void func_020a84bc();
+    void popText();
+    void pushText(u8 *p);
+    void begin(u8 *p);
+    BOOL step(u32 arg);
+    BOOL isLeadByte(u32 c);
+    void unreadTag(u8 *p);
+    void skip(s32 n);
+    void processTag();
+    void reset();
 
     /* 0x04 */ u8 *unk_04;
     /* 0x08 */ u8 unk_08[0x1c];
 };
 
-class Unk_020e2b4c : public Unk_020e2b08 {
+class MsgWalker : public MsgParser {
 public:
-    Unk_020e2b4c() {}
-    virtual ~Unk_020e2b4c() {}
-    virtual BOOL vfunc_18();
-    u8 *func_020a82ec(BOOL arg);
+    MsgWalker() {}
+    virtual ~MsgWalker() {}
+    virtual BOOL canContinue();
+    u8 *run(BOOL arg);
 };
 
-class Unk_020e2b28 : public Unk_020e2b4c {
+class MsgQuery : public MsgWalker {
 public:
-    Unk_020e2b28();
-    virtual ~Unk_020e2b28();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 v);
-    virtual void vfunc_14(u8 *cmd);
-    virtual BOOL vfunc_18();
+    MsgQuery();
+    virtual ~MsgQuery();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 v);
+    virtual void onTag(u8 *cmd);
+    virtual BOOL canContinue();
 
-    void func_020a69bc();
-    void func_020a69d4();
-    void func_020a69f0();
-    void func_020a69f8();
-    void func_020a6a0c();
+    void onTagFind();
+    void onCharCountLines();
+    void onCharCount();
+    void onCharFindNth();
+    void resetQuery();
 
     /* 0x24 */ u32 unk_24;
-    /* 0x28 */ Unk_020a72b0 unk_28;
+    /* 0x28 */ MsgTag unk_28;
     /* 0x3c */ u32 unk_3c;
     /* 0x40 */ s32 unk_40;
     /* 0x44 */ s32 unk_44;
@@ -564,99 +564,99 @@ public:
     /* 0x58 */ u8 unk_58;
 };
 
-class Unk_020e2ac8;
+class MsgProcessor;
 
-// Text drawn by running a script through Unk_020e2ac8
-class Unk_020e2a90 : public Unk_02050288 {
+// Text drawn by running a script through MsgProcessor
+class MsgTextLabel : public TextLabel {
 public:
-    Unk_020e2a90(s32 arg1, s32 arg2, s32 arg3);
-    Unk_020e2a90(u32 arg1, s32 arg2, s32 arg3);
-    virtual ~Unk_020e2a90();
-    virtual void func_08();
-    virtual u32 func_0c();
+    MsgTextLabel(s32 arg1, s32 arg2, s32 arg3);
+    MsgTextLabel(u32 arg1, s32 arg2, s32 arg3);
+    virtual ~MsgTextLabel();
+    virtual void draw();
+    virtual u32 measureWidth();
 
-    void func_020a7e6c(u8 *p);
-    void func_020a7eac(u32 c);
-    void func_020a7ecc();
-    void func_020a7eec();
-    void func_020a7f0c(Unk_020e2ac8 *v);
+    void onTag(u8 *p);
+    void onChar(u32 c);
+    void onEnd();
+    void onBegin();
+    void setProcessor(MsgProcessor *v);
 
     /* 0x7c */ u32 unk_7c;
-    /* 0x80 */ Unk_020e2ac8 *unk_80;
+    /* 0x80 */ MsgProcessor *unk_80;
 };
 
-class Unk_020e2ac8 : public Unk_020e2b08 {
+class MsgProcessor : public MsgParser {
 public:
-    Unk_020e2ac8(u8 flag);
-    virtual ~Unk_020e2ac8();
+    MsgProcessor(u8 flag);
+    virtual ~MsgProcessor();
 
-    void func_020a8224();
-    void func_020a822c();
-    void func_020a8234();
-    void func_020a823c(Unk_020e2a90 *p);
-    u32 func_020a8240(u8 *p);
+    void clearStopAtNewline();
+    void setStopAtNewline();
+    void clearLabel();
+    void setLabel(MsgTextLabel *p);
+    u32 run(u8 *p);
 
-    /* 0x24 */ Unk_020e2a90 *unk_24;
+    /* 0x24 */ MsgTextLabel *unk_24;
     /* 0x28 */ u8 unk_28;
 };
 
-class Unk_020e2aa8 : public Unk_020e2ac8 {
+class MsgRenderProcessor : public MsgProcessor {
 public:
-    Unk_020e2aa8();
-    virtual ~Unk_020e2aa8();
-    virtual void vfunc_08();
-    virtual void vfunc_0c();
-    virtual void vfunc_10(u32 c);
-    virtual void vfunc_14(u8 *p);
+    MsgRenderProcessor();
+    virtual ~MsgRenderProcessor();
+    virtual void onBegin();
+    virtual void onEnd();
+    virtual void onChar(u32 c);
+    virtual void onTag(u8 *p);
 
     /* 0x2c */ u32 unk_2c;
 };
 
-class Unk_020e2ae8 : public Unk_020e2ac8 {
+class MsgCopyProcessor : public MsgProcessor {
 public:
-    Unk_020e2ae8();
-    virtual ~Unk_020e2ae8();
-    virtual void vfunc_0c();
-    u8 func_020a7d28();
-    void func_020a7d30();
-    void func_020a7d40(Unk_020e2a78 *s, u8 *str, u32 mode, u8 flag);
+    MsgCopyProcessor();
+    virtual ~MsgCopyProcessor();
+    virtual void onEnd();
+    u8 getResult();
+    void finish();
+    void beginCopy(MsgString *s, u8 *str, u32 mode, u8 flag);
 
-    /* 0x2c */ Unk_020e2a78 *unk_2c;
+    /* 0x2c */ MsgString *unk_2c;
     /* 0x30 */ u8 *unk_30;
     /* 0x34 */ u32 unk_34;
     /* 0x38 */ u8 unk_38;
 };
 
-class Unk_020a84e0 {
+class MsgRunner {
 public:
-    Unk_020a84e0(Unk_020e2b4c *obj);
-    void func_020a84e0(u8 *p);
-    BOOL func_020a84f0();
-    void func_020a8520();
+    MsgRunner(MsgWalker *obj);
+    void start(u8 *p);
+    BOOL advance();
+    void reset();
 
-    /* 0x00 */ Unk_020e2b4c *unk_00;
+    /* 0x00 */ MsgWalker *unk_00;
     /* 0x04 */ u8 *unk_04;
     /* 0x08 */ u8 *unk_08;
 };
 
 // BMG message file reader
-class Unk_020e2a18 {
+class BmgReader {
 public:
-    Unk_020e2a18(u8 arg1);
-    virtual ~Unk_020e2a18();
-    virtual u32 vfunc_08() = 0;
-    virtual u32 vfunc_0c() = 0;
+    BmgReader(u8 arg1);
+    virtual ~BmgReader();
+    virtual u32 getBuffer() = 0;
+    virtual u32 getBufferSize() = 0;
 
-    BOOL func_020a8558();
-    BOOL func_020a85a4();
-    BOOL func_020a8694();
-    BOOL func_020a8720();
-    BOOL func_020a876c();
-    BOOL func_020a8844();
-    void func_020a88fc();
-    BOOL func_020a8950(u8 *arg1);
-    void func_020a89f0();
-    u8 func_020a8a20(const char *path);
+    BOOL readText();
+    BOOL readInfEntryWithAttr();
+    BOOL readInfEntry();
+    BOOL readDatHeader();
+    BOOL readInfHeader();
+    BOOL readFileHeader();
+    void resetState();
+    BOOL loadMessage(u8 *arg1);
+    void close();
+    u8 open(const char *path);
 
     /* 0x04 */ u8 unk_04;
     /* 0x05 */ u8 unk_05[0x3f];
@@ -668,22 +668,22 @@ public:
     /* 0xa0 */ u32 unk_a0;
 };
 
-class Unk_020e2b70 : public Unk_020d8c7c {
+class Unk_020e2b70 : public GameProc {
 public:
     Unk_020e2b70();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e2b70();
 };
 
-struct Unk_g4_Ent {
+struct BmgInfEntryAttr {
     u32 unk_00;
     u8 unk_04[6];
 };
 
-struct Unk_021edbcc_t {
+struct BmgInfHeader {
     u32 unk_00;
     u32 unk_04;
     u16 unk_08;
@@ -692,13 +692,13 @@ struct Unk_021edbcc_t {
     u8 unk_0e;
 };
 
-struct Unk_021edba8_t {
+struct BmgDatHeader {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
 };
 
-struct Unk_021edbe0_t {
+struct BmgFileHeader {
     u32 unk_00;
     u32 unk_04;
     u32 unk_08;
@@ -714,20 +714,20 @@ struct Flag18 {
 };
 
 extern "C" {
-extern Unk_021edbcc_t data_021edbcc;
+extern BmgInfHeader sBmgInfHeader;
 }
 
 extern "C" {
-extern Unk_021edba8_t data_021edba8;
+extern BmgDatHeader sBmgDatHeader;
 }
 
 extern "C" {
-extern Unk_021edbe0_t data_021edbe0;
+extern BmgFileHeader sBmgFileHeader;
 }
 
-extern Unk_020e2ac8 data_021edc50;
-extern Unk_020e2ae8 data_021edc80;
-extern Unk_020e2b28 data_021edcbc;
+extern MsgProcessor gMsgRenderProcessor;
+extern MsgCopyProcessor gMsgCopyProcessor;
+extern MsgQuery gMsgQuery;
 extern Flag18 data_021edcfc;
 // prototypes (test harness)
 extern "C" Unk_020e2b70 *func_020a8c84(void);
@@ -746,7 +746,7 @@ Unk_020e2b70::~Unk_020e2b70() {}
 
 BOOL Unk_020e2b70::vfunc_00() {
     func_0208f000();
-    func_020a6dd8();
+    Input_ResetMode();
     func_02002ab8();
     func_0201195c();
     func_02011874();
@@ -765,14 +765,14 @@ BOOL Unk_020e2b70::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_020e2b70::vfunc_18() {
+BOOL Unk_020e2b70::onExecute() {
     func_0208efe0();
     func_02067874();
     func_020b77a8();
     return TRUE;
 }
 
-BOOL Unk_020e2b70::vfunc_24() {
+BOOL Unk_020e2b70::onDraw() {
     func_020b7798();
     func_02067844();
     func_0208efd0();
@@ -785,25 +785,25 @@ struct Unk_020a88fc_Pad {
     ~Unk_020a88fc_Pad() {}
 };
 
-// ---- Unk_020a72b0
+// ---- MsgTag
 
-// ---- Unk_020a7238
+// ---- BmgMsgAttr
 
 extern "C" {
-void func_020a7258(Unk_020a7238 *s);
+void BmgMsgAttr_Clear(BmgMsgAttr *s);
 }
 
 // ---- Touch input
 static inline BOOL IsTouching() {
-    return data_021f4770 != 0 && data_021f4774 != 0;
+    return gTouchHeld != 0 && gTouchChanged != 0;
 }
 
-// ---- Unk_020e2b28
-// Unk_020a72b0::Unk_020a72b0(), which func_020a6a0c calls to re-construct its token in place. A placement new adds a
+// ---- MsgQuery
+// MsgTag::MsgTag(), which func_020a6a0c calls to re-construct its token in place. LampLights placement new adds a
 // null check, and C++ has no other way to call a constructor on an existing object.
-extern "C" void func_020a776c(Unk_020a72b0 *token);
+extern "C" void func_020a776c(MsgTag *token);
 
 extern "C" {
-u32 func_020a6be0(u32 a);
+u32 Msg_CountChars(u32 a);
 }
 

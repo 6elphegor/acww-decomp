@@ -17,7 +17,7 @@ typedef struct BinHdr { u32 sig; u16 bom; u16 ver; u32 size; u16 hdrSize; u16 nB
 typedef struct BlockHdr { u32 kind; u32 size; } BlockHdr;
 typedef struct FInfo { u8 pad[6]; s8 f6; s8 f7; } FInfo;
 
-extern void func_0206d49c(void);                       // OS_Terminate (Thumb)
+extern void Fatal_Trap(void);                       // OS_Terminate (Thumb)
 extern u8 *NNS_G2dFindBinaryBlock(BinHdr *, u32);               // find block by signature
 extern Rect NNSi_G2dFontGetTextRect(Font *, s32, s32, const u16 *);   // text rect (width, height)
 extern s32 NNSi_G2dFontGetTextHeight(Font *, s32, const u16 *);         // text height
@@ -48,7 +48,7 @@ s32 NNSi_G2dGetUnpackedFont(BinHdr *h, FInfo **out)
     } else if (IsFont(h, 1)) {
         kind = 1;
     } else {
-        func_0206d49c();
+        Fatal_Trap();
     }
     NNSi_G2dUnpackNFT(h);
     blk = NNS_G2dFindBinaryBlock(h, 0x46494e46);

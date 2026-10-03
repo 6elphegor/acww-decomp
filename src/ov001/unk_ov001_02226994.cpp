@@ -35,7 +35,7 @@ void func_ov001_022266c0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node 
 void func_ov001_022266d0(Unk_ov001_02226778_Node *head, Unk_ov001_02226778_Node *node);
 void func_ov001_02226710(Unk_ov001_02226778_Node *node);
 Unk_ov001_02226778_Node *func_ov001_02226778();
-void func_0206d49c();
+void Fatal_Trap();
 s32 OS_DisableIrqMask(s32);
 s32 OS_EnableIrqMask(s32);
 void func_ov001_02226994(Unk_ov001_02226778_Node *p);
@@ -94,7 +94,7 @@ Unk_ov001_022269e0_Node *func_ov001_022269e0(s32 idx, s32 size, s32 flag, u32 *o
                 cur = nx;
             } while (cur != (Unk_ov001_022269e0_Node *)((u8 *)base + off + 0x18c));
         }
-        if (cur == (Unk_ov001_022269e0_Node *)((u8 *)data_ov001_0222df74 + off + 0x18c)) func_0206d49c();
+        if (cur == (Unk_ov001_022269e0_Node *)((u8 *)data_ov001_0222df74 + off + 0x18c)) Fatal_Trap();
     } else {
         base = data_ov001_0222df74;
         cur = &base->unk_00[idx].unk_18c;
@@ -110,7 +110,7 @@ Unk_ov001_022269e0_Node *func_ov001_022269e0(s32 idx, s32 size, s32 flag, u32 *o
                 cur = nx;
             } while (cur != (Unk_ov001_022269e0_Node *)((u8 *)base + off + 0x180));
         }
-        if (cur == (Unk_ov001_022269e0_Node *)((u8 *)data_ov001_0222df74 + off + 0x180)) func_0206d49c();
+        if (cur == (Unk_ov001_022269e0_Node *)((u8 *)data_ov001_0222df74 + off + 0x180)) Fatal_Trap();
     }
     *out = blk->unk_08;
     OS_EnableIrqMask(old);

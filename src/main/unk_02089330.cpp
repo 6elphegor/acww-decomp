@@ -1,41 +1,41 @@
 #include "types.h"
 
 extern "C" {
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
-struct Unk_02089270_Rec {
+struct SpriteAnimFrame {
     /* 0x00 */ void *unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s16 unk_08;
     /* 0x0a */ s16 unk_0a;
 };
 
-struct Unk_02089270_Tbl {
-    /* 0x00 */ Unk_02089270_Rec *unk_00;
+struct SpriteAnimSeq {
+    /* 0x00 */ SpriteAnimFrame *unk_00;
     /* 0x04 */ s32 unk_04;
 };
 
 // Animation cursor over a table of 12-byte records (fixed-point frame position)
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    void func_020891d0();
-    BOOL func_020891d8();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    Unk_02089270_Tbl *func_02089240();
-    s32 func_02089244();
-    void *func_02089248();
-    void func_02089258(s32 a, s32 b);
-    void func_02089260(s32 v);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    void pause();
+    BOOL isFinished();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    SpriteAnimSeq *getSeq();
+    s32 getFrameIndex();
+    void *getCell();
+    void setFrame(s32 a, s32 b);
+    void setSpeed(s32 v);
+    void setPlayOnce(s32 v);
+    void setSeq(SpriteAnimSeq *v);
 
-    /* 0x00 */ Unk_02089270_Tbl *unk_00;
+    /* 0x00 */ SpriteAnimSeq *unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
     /* 0x0c */ s32 unk_0c;
@@ -43,26 +43,26 @@ public:
 };
 
 // Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
 // Two-cursor menu/sprite object; vtable 0x020e0d44 (ctor 0x020894c0)
-class Unk_020e0d44 : public Unk_020e0db4 {
+class Unk_020e0d44 : public UiWidget {
 public:
     Unk_020e0d44(u8 flag);
     virtual ~Unk_020e0d44();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
 
     BOOL func_02089284();
@@ -71,8 +71,8 @@ public:
     void func_02089320(s32 x, s32 y);
     void func_02089328();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
-    /* 0x20 */ Unk_02089270 unk_20;
+    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x20 */ SpriteAnim unk_20;
     /* 0x34 */ s32 unk_34;
     /* 0x38 */ s32 unk_38;
     /* 0x3c */ s32 unk_3c;
@@ -91,30 +91,30 @@ Unk_020e0d44::Unk_020e0d44(u8 flag) {
 
 Unk_020e0d44::~Unk_020e0d44() {}
 
-void Unk_020e0d44::vfunc_08() {
+void Unk_020e0d44::draw() {
     if (unk_34 != 0) {
-        void *a = unk_0c.func_02089248();
-        void *b = unk_20.func_02089248();
-        s32 ox0 = unk_0c.func_02089228(-1);
-        s32 oy0 = unk_0c.func_02089210(-1);
-        s32 ox1 = unk_20.func_02089228(-1);
-        s32 oy1 = unk_20.func_02089210(-1);
-        s32 x = unk_38 + func_02089f68();
-        s32 y = unk_3c + func_02089f64();
+        void *a = unk_0c.getCell();
+        void *b = unk_20.getCell();
+        s32 ox0 = unk_0c.getFrameX(-1);
+        s32 oy0 = unk_0c.getFrameY(-1);
+        s32 ox1 = unk_20.getFrameX(-1);
+        s32 oy1 = unk_20.getFrameY(-1);
+        s32 x = unk_38 + getOriginX();
+        s32 y = unk_3c + getOriginY();
         if (unk_41 != 0) {
-            func_02087e70(0, a, x + ox0, y + oy0, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-            func_02087e70(0, b, x + ox1, y + oy1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, a, x + ox0, y + oy0, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, b, x + ox1, y + oy1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         } else {
-            func_02087e70(1, a, x + ox0, y + oy0, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
-            func_02087e70(1, b, x + ox1, y + oy1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, a, x + ox0, y + oy0, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, b, x + ox1, y + oy1, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
 
 void Unk_020e0d44::vfunc_0c() {
     if (unk_34 != 0) {
-        unk_0c.func_02089140();
-        unk_20.func_02089140();
+        unk_0c.update();
+        unk_20.update();
     }
 }
 

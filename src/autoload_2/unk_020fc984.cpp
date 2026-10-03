@@ -419,14 +419,14 @@ extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
         return;
     }
     if (t < t2) {
-        u16 A = h->col;
-        u16 B = r->c0;
-        s32 ar = A & 31;
-        s32 br = B & 31;
-        s32 ag = (A >> 5) & 31;
-        s32 bg = (B >> 5) & 31;
-        s32 ab = (A >> 10) & 31;
-        s32 bb = (B >> 10) & 31;
+        u16 LampLights = h->col;
+        u16 LightLevel = r->c0;
+        s32 ar = LampLights & 31;
+        s32 br = LightLevel & 31;
+        s32 ag = (LampLights >> 5) & 31;
+        s32 bg = (LightLevel >> 5) & 31;
+        s32 ab = (LampLights >> 10) & 31;
+        s32 bb = (LightLevel >> 10) & 31;
         if (r->f2 == 0) {
             p->col = ar | (ag << 5) | (ab << 10);
             return;
@@ -438,12 +438,12 @@ extern "C" void spl_clr_in_out(P *p, Ctx *c, s32 t) {
     }
     if (t < t3) {
         u16 C = r->c2;
-        u16 A = h->col;
-        s32 ar = A & 31;
+        u16 LampLights = h->col;
+        s32 ar = LampLights & 31;
         s32 cr = C & 31;
-        s32 ag = (A >> 5) & 31;
+        s32 ag = (LampLights >> 5) & 31;
         s32 cg = (C >> 5) & 31;
-        s32 ab = (A >> 10) & 31;
+        s32 ab = (LampLights >> 10) & 31;
         s32 cb = (C >> 10) & 31;
         if (r->f2 == 0) {
             p->col = cr | (cg << 5) | (cb << 10);

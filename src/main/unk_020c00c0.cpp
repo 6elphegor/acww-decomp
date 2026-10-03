@@ -57,11 +57,11 @@ u32 func_02063b8c(u32 n);
 }
 
 extern "C" {
-Unk_020bffc0_Mtx *func_0203a220(void);
+Unk_020bffc0_Mtx *Camera_GetViewMatrix(void);
 }
 
 extern "C" {
-void func_0203eeac(void *out, void *in);
+void WorldCurve_Apply(void *out, void *in);
 }
 
 extern "C" {
@@ -125,7 +125,7 @@ BOOL func_020a032c(void);
 }
 
 extern "C" {
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 }
 
 extern "C" {
@@ -225,7 +225,7 @@ s32 func_020a0414(void);
 }
 
 extern "C" {
-s32 func_02097520(s32 a);
+s32 PlayerData_GetBySessionSlot(s32 a);
 }
 
 extern "C" {
@@ -233,7 +233,7 @@ BOOL func_02094f2c(s32 a, s32 b);
 }
 
 extern "C" {
-void func_02094b0c(void *v, s32 a, s32 b);
+void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
 }
 
 extern "C" {
@@ -265,7 +265,7 @@ void func_020c22fc(void);
 }
 
 extern "C" {
-void func_0203a5d8(void);
+void Camera_SetMode19(void);
 }
 
 extern "C" {
@@ -285,11 +285,11 @@ s32 func_02014220(void *p);
 }
 
 extern "C" {
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 }
 
 extern "C" {
-void func_02094ae8(s32 a, s32 b);
+void PlayerActor_RequestAct70(s32 a, s32 b);
 }
 
 extern "C" {
@@ -345,7 +345,7 @@ extern u32 data_020c6d1c;
 }
 
 extern "C" {
-extern u8 data_021f4880[];
+extern u8 gVec3Zero[];
 }
 
 extern "C" {
@@ -373,7 +373,7 @@ extern Unk_020bffc0_Mtx data_021f47e0;
 }
 
 extern "C" {
-extern s32 data_021c3070;
+extern s32 gCamera;
 }
 
 extern "C" {
@@ -474,22 +474,22 @@ public:
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Vtable classes of the library (autoload_2)
-class Unk_0213b91c {
+class SndEnvChannel {
 public:
-    Unk_0213b91c() {}
-    virtual ~Unk_0213b91c();
+    SndEnvChannel() {}
+    virtual ~SndEnvChannel();
     u8 unk_04[0xc];
 };
 
-class Unk_0213b938 : public Unk_0213b91c {
+class Unk_0213b938 : public SndEnvChannel {
 public:
     Unk_0213b938() {}
     virtual ~Unk_0213b938();
 };
 
-class Unk_020e5668 : public Unk_020d8c7c {
+class Unk_020e5668 : public GameProc {
 public:
-    virtual void vfunc_08();
+    virtual void postCreate();
 
     /* 0x50 */ Unk_0213b938 unk_50;
 };
@@ -621,7 +621,7 @@ extern "C" BOOL func_020c010c(Unk_020c010c *self, void *arg) {
         if (func_020a032c()) {
             self->unk_04 = 4;
         } else {
-            s32 t = func_0209750c();
+            s32 t = PlayerData_GetCurrent();
             if (t && ((Unk_02097ff4 *)t)->func_02098044(1)) {
                 self->unk_04 = 4;
             } else {
@@ -736,7 +736,7 @@ public:
 };
 
 // Base of Unk_020e6924; its dtor is out of line.
-class Unk_0202e5a8 : public Unk_020d8c7c_Base {
+class Unk_0202e5a8 : public ProcBase {
 public:
     virtual ~Unk_0202e5a8();
 

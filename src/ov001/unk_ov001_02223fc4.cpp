@@ -38,7 +38,7 @@ s32 func_0212a438(void *);
 s32 memcmp(void *, void *, s32);
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, void *);
-void func_0206d49c();
+void Fatal_Trap();
 void FS_ReadFile(void *, void *, s32);
 void FS_CloseFile(void *);
 void MI_UncompressLZ8(void *, void *);
@@ -79,7 +79,7 @@ extern "C" void func_ov001_022242e8() {
     data_ov001_0222df30 = (Unk_ov001_0222df30 *)func_ov001_02225db0(0xe8, 4);
     FS_InitFile(&o);
     if (FS_OpenFile(&o, (void *)"rom:/dwc/utility.bin") == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     data_ov001_0222df30->unk_e4 = OS_GetLockID();
     r4 = *(u32 *)((u8 *)&o + 0x24);
@@ -88,11 +88,11 @@ extern "C" void func_ov001_022242e8() {
     FS_CloseFile(&o);
     FS_InitArchive(data_ov001_0222df30->unk_88);
     if (FS_RegisterArchiveName(data_ov001_0222df30->unk_88, (void *)data_ov001_0222a450, 3) == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     FS_SetArchiveProc(data_ov001_0222df30->unk_88, (void *)func_ov001_022241d0, 0x602);
     if (FS_LoadArchive(data_ov001_0222df30->unk_88, r4, b[0], b[1], a[0], a[1], (void *)func_ov001_02224188, (void *)func_ov001_02224170) == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     void *r4b = FS_LoadArchiveTables(data_ov001_0222df30->unk_88, 0, 0);
     data_ov001_0222df30->unk_00 = func_ov001_02225dd8((s32)r4b, 4);
@@ -150,7 +150,7 @@ extern "C" void *func_ov001_02224074(void *name, u32 *outSize, s32 c) {
     func_ov001_02224ca0(data_ov001_0222df30->unk_84);
     FS_InitFile(&o);
     if (FS_OpenFile(&o, name) == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     }
     n = o.unk_28 - o.unk_24;
     if (outSize != 0) {

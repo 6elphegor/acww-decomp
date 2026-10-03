@@ -1,35 +1,35 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -O4,s
 #include "types.h"
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -38,17 +38,17 @@ struct Unk_ov009_0225b880_Vec3 {
     s32 x, y, z;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
@@ -57,23 +57,23 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
     void func_0203e42c();
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
     /* 0xe4 */ s32 unk_e4;
@@ -83,13 +83,13 @@ public:
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_s08();
 
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
 
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -100,7 +100,7 @@ struct Unk_020660f8 {
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -155,18 +155,18 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Unk_020d9670, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
     virtual BOOL vfunc_00();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDraw();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov009_0225b880_Vec3 *vfunc_50();
+    virtual Unk_ov009_0225b880_Vec3 *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();
@@ -235,8 +235,8 @@ class Unk_020ad700 {public: u32 func_020ad618(void *w);};
 
 extern "C" {
 extern void *data_021c620c;
-void *func_020e8608(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_Alloc(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
@@ -244,8 +244,8 @@ BOOL func_0206ec6c();
 BOOL func_0206eca4(u32 a);
 BOOL func_0203d67c(void *p);
 BOOL func_0203d704(void *p, u32 a);
-void _ZN12Unk_020d967013func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
-void _ZN12Unk_020d967013func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e47cEi(void *self, Unk_020ddcf0 *sec);
+void _ZN9Character13func_0203e488Ei(void *self, Unk_020ddcf0 *sec);
 BOOL func_020951d0();
 BOOL func_020951c4();
 void func_020949a0(u32 a);
@@ -307,7 +307,7 @@ void func_0204ee10(s32 *, s32 *, s32 *);
 BOOL func_0203006c(s32, s32, s32);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_ov003_02218da8();
-void func_0200402c(u32);
+void Snd_PlaySe(u32);
 u32 func_ov003_02214f3c();
 s32 func_ov003_02214f54();
 }
@@ -316,7 +316,7 @@ class Unk_ov003_02230ff0 : public Unk_ov009_0225e29c {
 public:
     Unk_ov003_02230ff0();
     virtual ~Unk_ov003_02230ff0();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual void vfunc_4c(u32 a, u8 b);
     virtual BOOL vfunc_70();
     virtual void vfunc_88();

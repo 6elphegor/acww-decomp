@@ -122,15 +122,15 @@ struct Unk_020b69a8 : Unk_020b60d8 {
 };
 
 extern "C" {
-s32 func_0203ef38(Vec3 *out, Vec3 *in);
+s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 s32 func_01ffcb0c(s32 a, s32 b);
 extern s16 data_02135f44[];
 extern s16 data_02136f44[];
 extern s16 data_02138f44[];
 void func_020e944c(Vec3 *v, s32 angle);
-extern s32 data_021c3070;
+extern s32 gCamera;
 extern s32 data_020c8cb8;
-extern Mtx43 data_0213c7e0;
+extern Mtx43 gViewMtx;
 s32 func_0203bc3c(s32 a);
 s32 FX_Div(s32 a, s32 b);
 void func_020e94f8(Vec3 *v);
@@ -140,7 +140,7 @@ void MTX_Inverse43(Mtx43 *a, Mtx43 *b);
 void MTX_MultVec43(Vec3 *v, Mtx43 *m, Vec3 *out);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 void func_020e93a0(Vec3 *v, s32 angle);
-void func_0203eeac(Vec3 *out, Vec3 *in);
+void WorldCurve_Apply(Vec3 *out, Vec3 *in);
 s32 func_0202f3a8(Plane *p);
 BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(Unk_020e44d4 *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
 }
@@ -153,9 +153,9 @@ struct Unk_020b69e0_Pad {
 
 BOOL Unk_020e44d4::func_020b6b04(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Vec3 va, vb, vc;
-    func_0203eeac(&va, a);
-    func_0203eeac(&vb, b);
-    func_0203eeac(&vc, c);
+    WorldCurve_Apply(&va, a);
+    WorldCurve_Apply(&vb, b);
+    WorldCurve_Apply(&vc, c);
     return func_020b6ac4(&va, &vb, &vc, d, e);
 }
 
@@ -180,7 +180,7 @@ Unk_020b6a94::~Unk_020b6a94() {
 
 BOOL Unk_020b6a94::func_020b6a48(Vec3 *a, Vec3 *b, s32 c, u8 d) {
     Vec3 v;
-    func_0203eeac(&v, a);
+    WorldCurve_Apply(&v, a);
     return func_020b6a28(&v, b, c, d);
 }
 
@@ -390,9 +390,9 @@ BOOL func_020b6f10(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
 BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d);
 BOOL func_020b705c(u8 v);
 BOOL func_020b60b0(void *obj, Vec3 *out);
-void func_0203ee38(Vec3 *out, Vec3 *in);
-s32 func_0203edc0(void);
-void *_ZN12Unk_020d93b813func_0203bc90Ev(void *cam);
+void WorldCurve_FromCurved(Vec3 *out, Vec3 *in);
+s32 WorldCurve_GetRadius(void);
+void *_ZN12Unk_020d93b816getEyeCurveAngleEv(void *cam);
 void func_020e8344(Mtx43 *m, void *p);
 void func_020e8528(Mtx43 *m, s32 a, s32 b, s32 c);
 void func_020e8434(Mtx43 *m, s32 a);
@@ -407,8 +407,8 @@ extern Unk_020b60dc_Cfg *data_021ef2f0;
 extern s32 data_020c8cbc;
 extern s32 data_020c8cb8;
 extern s32 data_020c7c1c;
-extern void *data_021c3070;
-extern Vec3 data_021c309c;
+extern void *gCamera;
+extern Vec3 gCameraLookAt;
 extern Unk_020b60dc_Node *data_021ce638;
 extern u8 data_020e416c;
 }
@@ -434,10 +434,10 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
     p1 = *pb;
     if (data_021ef2f0->unk_04 == 1) {
         static s32 k1 = data_020c8cbc * 6;
-        static s32 k2 = data_020c7c1c + func_0203edc0();
+        static s32 k2 = data_020c7c1c + WorldCurve_GetRadius();
         s32 kk = k1;
         if (func_020b7074(&r, &p0, &p1, k2, kk)) {
-            func_0203ee38(&v, &r);
+            WorldCurve_FromCurved(&v, &r);
             Unk_020b60dc_Cell x;
             _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(&x, &v, 0, 0);
             if (x.unk_30 != 0) {
@@ -450,10 +450,10 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             func_02033988(&x);
         }
         if (!func_020b60b0(self, 0)) {
-            if (func_020b7074(&r, &p0, &p1, func_0203edc0(), kk)) {
+            if (func_020b7074(&r, &p0, &p1, WorldCurve_GetRadius(), kk)) {
                 p1 = r;
                 Vec3 w;
-                func_0203ee38(&w, &r);
+                WorldCurve_FromCurved(&w, &r);
                 w.y = 0;
                 self->unk_00 = w.x;
                 self->unk_04 = w.y;
@@ -461,10 +461,10 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
             }
         }
         if (!func_020b60b0(self, 0)) {
-            void *cam = data_021c3070;
+            void *cam = gCamera;
             if (cam != 0) {
                 struct { Vec3 a, b, c; } l;
-                l.a = data_021c309c;
+                l.a = gCameraLookAt;
                 Vec3 *pc = &t[2];
                 l.b = *pc;
                 s32 h = data_020c8cb8;
@@ -485,8 +485,8 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                 q[3].y = h;
                 q[3].z = 0;
                 Mtx43 m;
-                func_020e8344(&m, _ZN12Unk_020d93b813func_0203bc90Ev(cam));
-                func_020e8528(&m, 0, func_0203edc0(), 0);
+                func_020e8344(&m, _ZN12Unk_020d93b816getEyeCurveAngleEv(cam));
+                func_020e8528(&m, 0, WorldCurve_GetRadius(), 0);
                 func_020e8434(&m, -0x1000);
                 func_020e8434(&m, 0);
                 Vec3 rr[4];
@@ -513,7 +513,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                             if (_ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(tp, &ip, &p0, &l.c)) {
                                 p1 = ip;
                                 Vec3 j;
-                                func_0203ee38(&j, &ip);
+                                WorldCurve_FromCurved(&j, &ip);
                                 self->unk_00 = j.x;
                                 self->unk_04 = j.y;
                                 self->unk_08 = j.z;
@@ -647,8 +647,8 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
     }
 
     struct { Vec3 e0, e1, lo, hi; } el;
-    func_0203ee38(&el.e0, &p0);
-    func_0203ee38(&el.e1, &p1);
+    WorldCurve_FromCurved(&el.e0, &p0);
+    WorldCurve_FromCurved(&el.e1, &p1);
     if (el.e0.x < el.e1.x) {
         el.lo.x = el.e0.x;
         el.hi.x = el.e1.x;
@@ -714,7 +714,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
                 if (_ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(n, &ip, &p0, &p1)) {
                     p1 = ip;
                     Vec3 kk;
-                    func_0203ee38(&kk, &p1);
+                    WorldCurve_FromCurved(&kk, &p1);
                     self->unk_0c = kk.x;
                     self->unk_10 = kk.y;
                     self->unk_14 = kk.z;
@@ -730,7 +730,7 @@ extern "C" void func_020b60dc(Unk_020b6960 *self, s32 sx, s32 sy, u8 flag) {
         _ZN12Unk_0202f660C1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
         if (_ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(n, &ip, &l)) {
             Vec3 m2;
-            func_0203ee38(&m2, (Vec3 *)n);
+            WorldCurve_FromCurved(&m2, (Vec3 *)n);
             self->unk_0c = m2.x;
             self->unk_10 = m2.y;
             self->unk_14 = m2.z;

@@ -803,7 +803,7 @@ void (*data_ov066_022647a4)(void *);
 
 u32 OS_DisableInterrupts(void);
 s32 OS_RestoreInterrupts(u32);
-s32 func_0206d49c(void);
+s32 Fatal_Trap(void);
 void DC_InvalidateRange(void *p, s32 v);
 s32 DC_StoreRange(void *, s32);
 s32 OS_InitTick(void);
@@ -1520,7 +1520,7 @@ void func_ov066_0226378c(Unk_ov066_02263320_Msg *m) {
         return;
     }
     func_ov066_0225f22c(m->unk_02);
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 Unk_ov066_02263320_Rec *func_ov066_0226375c(u32 id, Unk_ov066_02263320_Rec *head) {

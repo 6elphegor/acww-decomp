@@ -1,10 +1,10 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 
-class Unk_020dd458 {
+class Letter {
 public:
-    Unk_020dd458();
-    virtual ~Unk_020dd458();
+    Letter();
+    virtual ~Letter();
 
     /* 0x04 */ u8 unk_04[0xec];
     /* 0xf0 */ u16 unk_f0;
@@ -24,7 +24,7 @@ struct Unk_020973ec_G {
 
 extern "C" {
 extern Unk_020973ec_G data_021e9350;
-extern u8 data_021cb3b8;
+extern u8 sFatalEntered;
 extern u8 data_021d7352[];
 
 extern s32 data_020e1df8;
@@ -34,9 +34,9 @@ extern s32 data_020e1e04;
 extern s32 data_020e1e08;
 extern s32 data_020e1e0c;
 
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_02097ff413func_02098320Ev(s32);
-s32 _ZN12Unk_0209865c13func_0209888cEv(s32);
+s32 _ZN10PlayerData11getPlayerIdEv(s32);
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32, s32);
 s32 _ZN12Unk_02097ff413func_02097ff4Ej(s32, s32);
 s32 _ZN12Unk_02097ff413func_0209801cEj(s32, s32);
@@ -44,14 +44,14 @@ s32 func_0206e844(void);
 void _ZN12Unk_020dd38cC2Ev(void *);
 void _ZN12Unk_020dd38cD1Ev(void *);
 void func_020638d0(void *, void *);
-void func_0203ce4c(s32, void *);
-void _ZN12Unk_020e3efcC1Ev(void *);
-void _ZN12Unk_020e3efcD1Ev(void *);
-void func_020b3270(void *, s32, s32, s32, s32, s32);
+void MailText_SetSlot(s32, void *);
+void _ZN11MsgString25C1Ev(void *);
+void _ZN11MsgString25D1Ev(void *);
+void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
 u32 _ZN12Unk_0206555413func_02065588Etj(void *, u32, u32);
 void func_020656dc(void *, void *, void *, void *, void *, s32);
-BOOL func_02096aac(Unk_020dd458 *e);
+BOOL func_02096aac(Letter *e);
 void func_0211ea4c(s32 (*f)());
 s32 func_02097438();
 void func_02097410(Unk_020973e4 *p, u32 v);
@@ -67,7 +67,7 @@ s32 data_020e1df8 = 0x10;
 s32 data_020e1e0c = 0x1c;
 
 extern "C" s32 func_02097438() {
-    data_021cb3b8 = 1;
+    sFatalEntered = 1;
     return 1;
 }
 
@@ -98,7 +98,7 @@ extern "C" u32 func_020973e8(Unk_020973e4 *p) { return p->unk_04; }
 extern "C" void func_020973e4(Unk_020973e4 *p, u32 v) { p->unk_04 = v; }
 
 extern "C" void func_02097318(s32 n) {
-    s32 s = func_0209750c();
+    s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
     if (func_0206e844() == 0) {
         if (n > 0) {
@@ -115,16 +115,16 @@ extern "C" void func_02097318(s32 n) {
                         t = 999999999;
                     }
                     func_02097410((Unk_020973e4 *)o, t);
-                    Unk_020dd458 e;
+                    Letter e;
                     u8 ch;
                     u32 buf[11];
                     ch = 0;
-                    _ZN12Unk_020e3efcC1Ev(buf);
-                    func_020b3270(buf, n, 10, 1, 0, 0);
-                    func_0203ce4c(1, buf);
-                    func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN12Unk_0209865c13func_0209888cEv(s));
+                    _ZN11MsgString25C1Ev(buf);
+                    String_FormatNumber(buf, n, 10, 1, 0, 0);
+                    MailText_SetSlot(1, buf);
+                    func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e08, &data_020e1e04, _ZN10PlayerData11getPlayerIdEv(s));
                     func_02096aac(&e);
-                    _ZN12Unk_020e3efcD1Ev(buf);
+                    _ZN11MsgString25D1Ev(buf);
                 }
             }
         }
@@ -132,7 +132,7 @@ extern "C" void func_02097318(s32 n) {
 }
 
 extern "C" void func_02097214(s32 n) {
-    s32 s = func_0209750c();
+    s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
     if (n > 0) {
         s32 m = func_02097414((Unk_020973e4 *)o);
@@ -156,12 +156,12 @@ extern "C" void func_02097214(s32 n) {
             if (_ZN12Unk_02097ff413func_02098044Ej(s, bit) == 0) {
                 u8 ch;
                 ch = k + 0x15;
-                Unk_020dd458 e;
+                Letter e;
                 u32 buf[7];
                 _ZN12Unk_020dd38cC2Ev(buf);
                 func_020638d0(data_021d7352, buf);
-                func_0203ce4c(0, buf);
-                func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN12Unk_0209865c13func_0209888cEv(s));
+                MailText_SetSlot(0, buf);
+                func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
                 _ZN12Unk_0206555413func_02065588Etj(&e, col, 1);
                 if (func_02096aac(&e)) {
                     _ZN12Unk_02097ff413func_0209801cEj(s, bit);
@@ -178,16 +178,16 @@ extern "C" void func_02097214(s32 n) {
 
 
 extern "C" void func_02097110(s32 n) {
-    s32 s = func_0209750c();
+    s32 s = PlayerData_GetCurrent();
     s32 o = _ZN12Unk_02097ff413func_02098320Ev(s);
     if (n > 0) {
         if (_ZN12Unk_02097ff413func_02098044Ej(s, 0x16)) {
             s32 id = func_020973e8((Unk_020973e4 *)o);
-            Unk_020dd458 e;
+            Letter e;
             u8 ch;
             ch = id;
             u32 v;
-            func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, _ZN12Unk_0209865c13func_0209888cEv(s));
+            func_020656dc(&e, &ch, (void *)"sp_npc_pelican", &data_020e1df8, &data_020e1e0c, _ZN10PlayerData11getPlayerIdEv(s));
             v = 0xfff1;
             if (id > 13) goto hi;
             if (id >= 13) goto c13;

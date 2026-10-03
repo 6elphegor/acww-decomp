@@ -41,7 +41,7 @@ void texmtxCalc_flagT___3dsmax(s32 *o, u8 *s)
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
-    s32 cs, sn, sx, sy, p, q, u, v, A, B, t12, t13;
+    s32 cs, sn, sx, sy, p, q, u, v, LampLights, LightLevel, t12, t13;
     long long pA;
     FX_DivAsync(den, num);
     cs = *(s16 *)(s + 34);
@@ -58,11 +58,11 @@ void texmtxCalc_flagT___3dsmax(s32 *o, u8 *s)
     FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
-    B = -(s32)h << 11;
-    A = -(s32)w << 11;
-    pA = (long long)p * A;
-    t13 = (s32)(((long long)v * A + (long long)u * B) >> 8);
-    t12 = (s32)((pA - (long long)q * B) >> 8);
+    LightLevel = -(s32)h << 11;
+    LampLights = -(s32)w << 11;
+    pA = (long long)p * LampLights;
+    t13 = (s32)(((long long)v * LampLights + (long long)u * LightLevel) >> 8);
+    t12 = (s32)((pA - (long long)q * LightLevel) >> 8);
     o[12] = t12 + (w << 15);
     o[13] = t13 + (*(u16 *)(s + 46) << 15);
     o[4] = (-q * FX_GetDivResult()) >> 12;
@@ -75,7 +75,7 @@ void texmtxCalc_flagTS___3dsmax(s32 *o, u8 *s)
     u32 h = *(u16 *)(s + 46);
     s32 num = w << 12;
     s32 den = h << 12;
-    s32 A, B;
+    s32 LampLights, LightLevel;
     FX_DivAsync(den, num);
     o[0] = *(s16 *)(s + 34);
     o[5] = *(s16 *)(s + 34);
@@ -83,10 +83,10 @@ void texmtxCalc_flagTS___3dsmax(s32 *o, u8 *s)
     FX_DivAsync(num, den);
     w = *(u16 *)(s + 44);
     h = *(u16 *)(s + 46);
-    A = -(s32)w << 11;
-    B = -(s32)h << 11;
-    o[12] = (s32)(((long long)*(s16 *)(s + 34) * A - (long long)*(s16 *)(s + 32) * B) >> 8) + (w << 15);
-    o[13] = (s32)(((long long)*(s16 *)(s + 32) * A + (long long)*(s16 *)(s + 34) * B) >> 8) + (*(u16 *)(s + 46) << 15);
+    LampLights = -(s32)w << 11;
+    LightLevel = -(s32)h << 11;
+    o[12] = (s32)(((long long)*(s16 *)(s + 34) * LampLights - (long long)*(s16 *)(s + 32) * LightLevel) >> 8) + (w << 15);
+    o[13] = (s32)(((long long)*(s16 *)(s + 32) * LampLights + (long long)*(s16 *)(s + 34) * LightLevel) >> 8) + (*(u16 *)(s + 46) << 15);
     o[4] = (-*(s16 *)(s + 32) * FX_GetDivResult()) >> 12;
 }
 

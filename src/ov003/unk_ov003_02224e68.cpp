@@ -13,7 +13,7 @@ struct Unk_ov003_02224e68_V3 {
 };
 
 // polymorphic actor returned by func_020951ec (only the slots used here)
-class Unk_ov003_02224bc4_Actor : public Unk_020d8c7c {
+class Unk_ov003_02224bc4_Actor : public GameProc {
 public:
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
@@ -74,7 +74,7 @@ void func_ov003_02221998(void *p);
 void func_0204eda4(V3 *out, s32 a, s32 b, s32 c, s32 d);
 void *func_0204da0c();
 u16 *func_0204ebd8(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-s32 func_0204b1e4();
+s32 Item_IsBuildingOrOccupied();
 s32 func_020312a8(s32 x, s32 y);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 extern u16 data_ov003_02259154[];

@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-void func_02003b6c(u8 v);
+void Snd_SetPanIfChanged(u8 v);
 }
 
 extern u8 data_020d5b0c[];
@@ -15,59 +15,59 @@ struct Unk_02089240_Rec {
     /* 0x04 */ s32 unk_04;
 };
 
-struct Unk_02089270_Tbl;
+struct SpriteAnimSeq;
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    BOOL func_020891d8();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    Unk_02089240_Rec *func_02089240();
-    void *func_02089248();
-    void func_02089258(s32 a, s32 b);
-    void func_02089260(s32 v);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    BOOL isFinished();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    Unk_02089240_Rec *getSeq();
+    void *getCell();
+    void setFrame(s32 a, s32 b);
+    void setSpeed(s32 v);
+    void setPlayOnce(s32 v);
+    void setSeq(SpriteAnimSeq *v);
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e100c : public Unk_020e0db4 {
+class HandCursor : public UiWidget {
 public:
-    Unk_020e100c(BOOL flag);
-    virtual ~Unk_020e100c();
-    virtual void vfunc_08();
+    HandCursor(BOOL flag);
+    virtual ~HandCursor();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208d538(s32 idx);
-    void func_0208d580(s32 idx);
-    void func_0208d60c(s32 a, s32 b);
-    void func_0208d63c();
-    void func_0208d644();
+    void setAnimAtEnd(s32 idx);
+    void setAnim(s32 idx);
+    void setPos(s32 a, s32 b);
+    void disableObjWindow();
+    void enableObjWindow();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
     /* 0x28 */ s32 unk_28;
-    /* 0x2c */ Unk_02089270 unk_2c;
+    /* 0x2c */ SpriteAnim unk_2c;
     /* 0x40 */ s32 unk_40;
     /* 0x44 */ s32 unk_44;
     /* 0x48 */ u8 unk_48;
@@ -75,30 +75,30 @@ public:
     /* 0x4a */ u8 unk_4a;
 };
 
-void Unk_020e100c::func_0208d644() {
+void HandCursor::enableObjWindow() {
     unk_4a = 1;
 }
 
-void Unk_020e100c::func_0208d63c() {
+void HandCursor::disableObjWindow() {
     unk_4a = 0;
 }
 
-void Unk_020e100c::func_0208d60c(s32 a, s32 b) {
+void HandCursor::setPos(s32 a, s32 b) {
     unk_20 = a;
     unk_24 = b;
     if (unk_40 != 0) {
-        s32 v = unk_20 + func_02089f68();
+        s32 v = unk_20 + getOriginX();
         if (v < 0) {
             v = 0;
         }
         if (v > 0xff) {
             v = 0xff;
         }
-        func_02003b6c(v);
+        Snd_SetPanIfChanged(v);
     }
 }
 
-void Unk_020e100c::func_0208d580(s32 idx) {
+void HandCursor::setAnim(s32 idx) {
     s32 a = data_020cf67c[idx];
     s32 n = a + 1;
     BOOL f;
@@ -110,24 +110,24 @@ void Unk_020e100c::func_0208d580(s32 idx) {
         f = TRUE;
     }
     unk_40 = idx;
-    unk_0c.func_02089268((Unk_02089270_Tbl *)(data_020d5b0c + a * 8));
-    unk_0c.func_02089264(f);
-    unk_0c.func_020891bc();
+    unk_0c.setSeq((SpriteAnimSeq *)(data_020d5b0c + a * 8));
+    unk_0c.setPlayOnce(f);
+    unk_0c.restart();
     unk_49 = data_020cf654[idx];
     if (unk_49 != 0) {
-        unk_2c.func_02089268((Unk_02089270_Tbl *)(data_020d5b0c + n * 8));
-        unk_2c.func_02089264(f);
-        unk_2c.func_020891bc();
+        unk_2c.setSeq((SpriteAnimSeq *)(data_020d5b0c + n * 8));
+        unk_2c.setPlayOnce(f);
+        unk_2c.restart();
     }
 }
 
-void Unk_020e100c::func_0208d538(s32 idx) {
-    func_0208d580(idx);
-    Unk_02089240_Rec *p = unk_0c.func_02089240();
-    unk_0c.func_02089258(p->unk_04 - 1, 0);
+void HandCursor::setAnimAtEnd(s32 idx) {
+    setAnim(idx);
+    Unk_02089240_Rec *p = unk_0c.getSeq();
+    unk_0c.setFrame(p->unk_04 - 1, 0);
     if (unk_49 != 0) {
-        Unk_02089240_Rec *q = unk_2c.func_02089240();
-        unk_2c.func_02089258(q->unk_04 - 1, 0);
+        Unk_02089240_Rec *q = unk_2c.getSeq();
+        unk_2c.setFrame(q->unk_04 - 1, 0);
     }
 }
 

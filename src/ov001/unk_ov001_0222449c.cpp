@@ -51,7 +51,7 @@ Unk_ov001_0222df34 *data_ov001_0222df34;
 extern "C" {
 s32 OS_DisableIrqMask(s32);
 void OS_EnableIrqMask(s32);
-void func_0206d49c();
+void Fatal_Trap();
 void func_ov001_02224cfc(Unk_ov001_02224ca0 *, void *);
 Unk_ov001_02224670 *func_ov001_02224ca0(Unk_ov001_02224ca0 *);
 void func_ov001_02224d60(void *, ...);
@@ -129,7 +129,7 @@ Unk_ov001_02224670 *func_ov001_02224870(s32 which, s32 n, s32 flag) {
                 break;
             }
         }
-        if (node == &data_ov001_0222df34[which].unk_210) func_0206d49c();
+        if (node == &data_ov001_0222df34[which].unk_210) Fatal_Trap();
     } else {
         for (node = &data_ov001_0222df34[which].unk_210; node != &data_ov001_0222df34[which].unk_200; node = node->unk_00) {
             Unk_ov001_02224670 *prev = node->unk_00;
@@ -140,7 +140,7 @@ Unk_ov001_02224670 *func_ov001_02224870(s32 which, s32 n, s32 flag) {
                 break;
             }
         }
-        if (node == &data_ov001_0222df34[which].unk_200) func_0206d49c();
+        if (node == &data_ov001_0222df34[which].unk_200) Fatal_Trap();
     }
     OS_EnableIrqMask(irq);
     r->unk_0c = n;

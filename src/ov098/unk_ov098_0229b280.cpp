@@ -1,15 +1,15 @@
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 extern "C" {
-s32 func_0200402c(s32 a);
-s32 func_02095154(s32 a, s32 b);
+s32 Snd_PlaySe(s32 a);
+s32 PlayerActor_IsInAction(s32 a, s32 b);
 u8 *func_02095204(s32 a);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 s32 func_0206e61c();
 s32 func_0204341c(s32 a, void *b, s32 c, s32 d, s32 e);
 s32 func_02042c9c(s32 a, s32 b, s32 c);
@@ -23,8 +23,8 @@ u32 func_0204ec50(void *grid, s32 x, s32 z);
 BOOL func_02030d78(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_02076a6c(void *out, s32 a, s32 b);
 u32 func_02063b8c(u32 a);
-void *func_020e8618(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_AllocTail(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void *func_0208f158(void *p);
 void func_02065e70(void *a, void *b);
@@ -32,9 +32,9 @@ void func_02065e70(void *a, void *b);
 extern void *data_021c6210;
 extern void *data_021c47c4;
 extern u8 data_021e7f8c[];
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u16 data_021f47d8[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u16 gPad[];
 extern "C" s16 data_ov098_0229bd00[16] = {0, 0x1800, -0x1800, 0};
 
 // other overlays
@@ -81,8 +81,8 @@ struct Unk_0208f238 {
 struct Unk_02097ff4 {
     s32 func_02098044(u32 v);
 };
-struct Unk_0209865c {
-    u16 *func_02098744();
+struct PlayerData {
+    u16 *getHeldItem();
 };
 
 // +0x27fc sub-object (0x108 bytes, opaque here)
@@ -96,7 +96,7 @@ public:
 };
 
 // Vtable 0x022044e4 (declaration copied from src/ov002/unk_ov002_02200680.cpp; sub-objects opaque)
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -104,11 +104,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -217,7 +217,7 @@ static inline BOOL Unk_ov098_RangeCheck(u16 *p, u32 lo, u32 hi) {
 }
 
 static inline BOOL Unk_ov098_0229b2d8_Both() {
-    if (data_021f4770 && data_021f4774) {
+    if (gTouchHeld && gTouchChanged) {
         return TRUE;
     }
     return FALSE;
@@ -238,13 +238,13 @@ struct Unk_0229bc90_Pad {
 };
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 s32 func_ov094_022923a4(u32);
 }
 
 extern "C" s32 func_ov098_0229bc90(s32 a, u32 b) {
     Unk_0229bc90_Pad pad;
-    if (((Unk_02097ff4 *)func_0209750c())->func_02098044(1) != 0) {
+    if (((Unk_02097ff4 *)PlayerData_GetCurrent())->func_02098044(1) != 0) {
         if ((b >= 0x14fe && b <= 0x1517) || (b >= 0x151d && b <= 0x151e)) {
             return 0;
         }
@@ -423,7 +423,7 @@ s32 *Unk_ov096_0229aea8::func_ov098_0229b790(s16 a) {
 }
 
 BOOL Unk_ov096_0229aea8::func_ov098_0229b6b4() {
-    u16 *pv = ((Unk_0209865c *)func_0209750c())->func_02098744();
+    u16 *pv = ((PlayerData *)PlayerData_GetCurrent())->getHeldItem();
     BOOL r = FALSE;
     u32 v = *pv;
     if (v >= 0x1369 && v <= 0x1369) {
@@ -524,7 +524,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b4c4() {
     if (unk_c4 == -1) {
         func_ov096_0229865c(this);
         func_ov096_02298334(this, 8, 0xff, 0);
-        func_0200402c(0x73);
+        Snd_PlaySe(0x73);
     } else {
         func_ov002_02200a58(0x29);
         func_ov096_02294dac(0x1000);
@@ -562,14 +562,14 @@ void Unk_ov096_0229aea8::func_ov098_0229b3ac() {
         ((Unk_0208f238 *)d)->func_0208f1a8(0);
     } else {
         void *heap = data_021c6210;
-        u8 *buf = (u8 *)func_020e8618(heap, 0xf5);
+        u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
         buf[0] = 6;
         MI_CpuCopy8((void *)p, buf + 1, 0xf4);
         Unk_020cbb18 *g2 = data_020cbb18;
         g2->func_020728d4();
         g2->func_020728a4(buf, 0xf5);
         g2->func_02072824(0x16, 0);
-        func_020e85fc(heap, buf);
+        Heap_Free(heap, buf);
     }
 }
 
@@ -595,7 +595,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b344() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b2d8() {
     unk_27fc.func_ov002_022040d4();
-    if (func_0206e61c() != 0 || Unk_ov098_0229b2d8_Both() || (data_021f47d8[1] & 1) || (data_021f47d8[1] & 2)) {
+    if (func_0206e61c() != 0 || Unk_ov098_0229b2d8_Both() || (gPad[1] & 1) || (gPad[1] & 2)) {
         func_ov002_02200a58(0x38);
         unk_27fc.func_ov002_022040c8();
     }
@@ -610,7 +610,7 @@ void Unk_ov096_0229aea8::func_ov098_0229b2b0() {
 
 void Unk_ov096_0229aea8::func_ov098_0229b280() {
     unk_27fc.func_ov002_022040d4();
-    if (func_02095154(6, 4) == 0) {
+    if (PlayerActor_IsInAction(6, 4) == 0) {
         unk_27fc.func_ov002_022040c0();
         func_ov096_0229865c(this);
     }

@@ -142,7 +142,7 @@ extern void DC_FlushRange(u32 addr, u32 len);
 extern void DC_InvalidateRange(u32 addr, u32 len);
 extern void IC_InvalidateRange(u32 addr, u32 len);
 extern void func_02000934(u32 addr);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void func_0211aeb4(void *digest, const void *data, u32 len, const void *key, u32 keylen);
 extern void DGT_Hash1Reset(MD5Context *ctx);
 extern void DGT_Hash1SetSource(MD5Context *ctx, const void *data, u32 len);

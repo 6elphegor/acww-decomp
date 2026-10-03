@@ -50,10 +50,10 @@ public:
 extern "C" Unk_0206fe80 data_021ed0a0;
 
 // main's u16 holder class (dtor = main's 0x02004b60)
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c(u16 x) { v = x; }
-    ~Unk_0203442c();
+    ItemId(u16 x) { v = x; }
+    ~ItemId();
 };
 
 extern "C" {
@@ -74,14 +74,14 @@ void *func_ov004_0223df1c(Rec *r);
 void func_ov004_0223df58(Rec *r, V3 *pos, s32 mask, u32 b, s16 c, s32 d, u8 e);
 void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0204eb5c(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
-s32 func_02053228(void *p);
+s32 Ftr_GetUnk05(void *p);
 }
 
-class Unk_ov004_0224f0ec : public Unk_020d8c7c {
+class Unk_ov004_0224f0ec : public GameProc {
 public:
     Unk_ov004_0224f0ec();
     virtual BOOL vfunc_00();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual ~Unk_ov004_0224f0ec();
     virtual BOOL vfunc_48();
 
@@ -437,7 +437,7 @@ BOOL Unk_ov004_0224f0ec::vfunc_48() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224f0ec::vfunc_18() {
+BOOL Unk_ov004_0224f0ec::onExecute() {
     return TRUE;
 }
 
@@ -490,9 +490,9 @@ BOOL Unk_ov004_0224f140::vfunc_48() {
                         k2 = TRUE;
                     }
                     if (!k2) {
-                        static Unk_0203442c sa(0x4a54);
-                        static Unk_0203442c sb(0xfff1);
-                        s32 w = func_02053228(p);
+                        static ItemId sa(0x4a54);
+                        static ItemId sb(0xfff1);
+                        s32 w = Ftr_GetUnk05(p);
                         u16 v = 0xfff1;
                         if (w == 0) {
                             v = sa.v;

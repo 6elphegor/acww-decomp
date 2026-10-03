@@ -1,8 +1,8 @@
 #include "types.h"
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    virtual ~Unk_020dbe7c();
+    virtual ~AnimFrameCtrl();
 
     u32 unk_04;
     u32 unk_08;
@@ -11,10 +11,10 @@ public:
     u32 unk_14;
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c {
+class ModelAnim : public AnimFrameCtrl {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
+    ModelAnim();
+    virtual ~ModelAnim();
     BOOL func_02055bcc(u32 a, void *c);
 
     u32 unk_18;
@@ -23,8 +23,8 @@ public:
 
 extern "C" {
 u32 NNS_G3dAnmObjCalcSizeRequired(const char *a, u32 b);
-void *func_020e8608(void *h, u32 n);
-extern void *data_021f482c;
+void *Heap_Alloc(void *h, u32 n);
+extern void *gCurrentHeap;
 }
 
 char data_020dbe40[4] = {'M', 0, 'A', 'T'};
@@ -35,12 +35,12 @@ extern "C" void *func_02055c08(u32 a, const char *b, void *c) {
     }
     u32 n = NNS_G3dAnmObjCalcSizeRequired(b, a);
     if (c == NULL) {
-        c = data_021f482c;
+        c = gCurrentHeap;
     }
-    return func_020e8608(c, n);
+    return Heap_Alloc(c, n);
 }
 
-BOOL Unk_020dbe4c::func_02055bcc(u32 a, void *c) {
+BOOL ModelAnim::func_02055bcc(u32 a, void *c) {
     if (unk_18 != 0 || unk_1c != 0) {
         return FALSE;
     }

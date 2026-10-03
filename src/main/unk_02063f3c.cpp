@@ -18,7 +18,7 @@ struct Unk_02063d18_File {
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 OS_VSNPrintf(char *buf, u32 n, const char *fmt, va_list va);
-void func_02001314(const char *fmt, ...);
+void Fatal_Panic(const char *fmt, ...);
 void FS_InitFile(void *f);
 BOOL FS_OpenFile(void *f, const char *path);
 BOOL FS_LoadOverlay(void *f);
@@ -27,49 +27,49 @@ s32 FS_SeekFile(void *f, s32 off, s32 z);
 s32 FS_ReadFile(void *f, void *dst, u32 n);
 void MI_UncompressLZ8(const void *src, void *dst);
 u32 func_020e86fc(void *h, u32 flags);
-void *func_020e8608(void *h, u32 size);
+void *Heap_Alloc(void *h, u32 size);
 u32 func_020e8a90(void *h);
-void func_020e85fc(void *h, void *p);
-void *func_020e8628(void *heap, u32 size, s32 align);
+void Heap_Free(void *h, void *p);
+void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 void DC_StoreAll();
 void DC_FlushAll();
 void func_021163b0(void *st, void *dst, void *src);
 s32 func_021162b0(void *st, void *p, s32 n);
 s32 func_020639c0(char *buf, u32 n, const char *fmt, va_list va);
-extern void *data_021f482c;
-extern void *data_021f4824;
+extern void *gCurrentHeap;
+extern void *gRootHeap;
 
-void func_02064398(void *file, const char *path);
-BOOL func_020643b8(void *file, const char *path);
-void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize);
-s32 func_02063f3c(u32 a);
-void func_02063fcc(u32 a, u32 b, const char *fmt, ...);
-void func_02063ffc(const char *fmt, ...);
-void func_02064020(s32 a, s32 b, const char *fmt, ...);
-void func_020641d8(u32 a);
-BOOL func_020643d4(void *file);
-s32 func_02063f60(Unk_02063d18_File *f);
-s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n);
-s32 func_02064040(s32 a, s32 b, s32 c, const char *fmt, va_list va);
-s32 func_020641b4(const char *buf, void *a, u32 b);
+void File_OpenOrPanic(void *file, const char *path);
+BOOL File_Open(void *file, const char *path);
+void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize);
+s32 File_GetDecodedSizeByPath(u32 a);
+void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...);
+void File_LoadF(const char *fmt, ...);
+void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...);
+void File_Load(u32 a);
+BOOL File_LoadOverlayEx(void *file);
+s32 File_GetDecodedSize(Unk_02063d18_File *f);
+s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n);
+s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
+s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
 
-BOOL func_020643d4(void *file) {
+BOOL File_LoadOverlayEx(void *file) {
     return FS_LoadOverlay(file);
 }
 
-BOOL func_020643b8(void *file, const char *path) {
+BOOL File_Open(void *file, const char *path) {
     FS_InitFile(file);
     return FS_OpenFile(file, path);
 }
 
-void func_02064398(void *file, const char *path) {
-    if (!func_020643b8(file, path)) {
-        func_02001314("File can't open. [%s]", path);
+void File_OpenOrPanic(void *file, const char *path) {
+    if (!File_Open(file, path)) {
+        Fatal_Panic("File can't open. [%s]", path);
     }
 }
 
-void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
+void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize) {
     void *ret;
     u32 flags;
     void *h;
@@ -82,22 +82,22 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
     s32 r;
 
     ret = 0;
-    h = data_021f4824;
-    if (heap == 0) heap = data_021f482c;
-    func_02064398(&f, (const char *)path);
+    h = gRootHeap;
+    if (heap == 0) heap = gCurrentHeap;
+    File_OpenOrPanic(&f, (const char *)path);
     path = f.unk_28 - f.unk_24;
     size = path;
     if (size < 8) {
-        ret = func_020e8628(heap, size, align);
+        ret = Heap_AllocAligned(heap, size, align);
         if (ret) FS_ReadFile(&f, ret, size);
     } else if (FS_ReadFile(&f, hdr, 8) != -1) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             usize = hdr[1] >> 8;
-            ret = func_020e8628(heap, usize, align);
+            ret = Heap_AllocAligned(heap, usize, align);
             if (ret) {
                 flags = func_020e86fc(h, 0);
                 func_020e86fc(h, flags & 0xffffbfff);
-                p = func_020e8608(h, size - 4);
+                p = Heap_Alloc(h, size - 4);
                 if (p) {
                     MI_CpuCopy8(&hdr[1], p, 4);
                     DC_StoreAll();
@@ -106,7 +106,7 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
                     if (FS_ReadFile(&f, (u8 *)p + 4, size) != -1) MI_UncompressLZ8(p, ret);
                 } else {
                     size = func_020e8a90(h);
-                    p = func_020e8608(h, size);
+                    p = Heap_Alloc(h, size);
                     if (p) {
                         func_021163b0(st, ret, &hdr[1]);
                         do {
@@ -116,16 +116,16 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
                         } while (1);
                     }
                 }
-                if (p) func_020e85fc(h, p);
+                if (p) Heap_Free(h, p);
                 func_020e86fc(h, flags);
                 size = usize;
             }
         } else {
-            ret = func_020e8628(heap, size, align);
+            ret = Heap_AllocAligned(heap, size, align);
             if (ret) {
                 MI_CpuCopy8(hdr, ret, 8);
                 if (FS_ReadFile(&f, (u8 *)ret + 8, size - 8) == -1) {
-                    func_020e85fc(heap, ret);
+                    Heap_Free(heap, ret);
                     ret = 0;
                 }
             }
@@ -133,24 +133,24 @@ void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize) {
     }
     if (outSize) *outSize = size;
     if (f.unk_14 != 0 && ret) {
-        func_020e85fc(heap, ret);
+        Heap_Free(heap, ret);
         ret = 0;
     }
     FS_CloseFile(&f);
     return ret;
 }
 
-void func_020641d8(u32 a) {
-    func_020641ec(a, 0, 4, 0);
+void File_Load(u32 a) {
+    File_LoadAlloc(a, 0, 4, 0);
 }
 
-s32 func_020641b4(const char *buf, void *a, u32 b) {
+s32 File_LoadToBuffer(const char *buf, void *a, u32 b) {
     Unk_02063d18_File f;
-    func_02064398(&f, buf);
-    return func_0206406c(&f, a, b);
+    File_OpenOrPanic(&f, buf);
+    return File_ReadAll(&f, a, b);
 }
 
-s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
+s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n) {
     s32 ret;
     u32 flags;
     u32 hdr[2];
@@ -166,10 +166,10 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
     } else if (FS_ReadFile(f, &hdr, 8) != -1) {
         if (hdr[0] == 0x37375a4c || hdr[0] == 0x4c5a3737) {
             ret = hdr[1] >> 8;
-            void *h = data_021f4824;
+            void *h = gRootHeap;
             flags = func_020e86fc(h, 0);
             func_020e86fc(h, flags & 0xffffbfff);
-            n = (u32)func_020e8608(h, size - 4);
+            n = (u32)Heap_Alloc(h, size - 4);
             if (n) {
                 MI_CpuCopy8(&hdr[1], (void *)n, 4);
                 DC_StoreAll();
@@ -178,7 +178,7 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
                 if (FS_ReadFile(f, (u8 *)n + 4, size) != -1) MI_UncompressLZ8((void *)n, dst);
             } else {
                 size = func_020e8a90(h);
-                n = (u32)func_020e8608(h, size);
+                n = (u32)Heap_Alloc(h, size);
                 if (n) {
                     func_021163b0(st, dst, &hdr[1]);
                     do {
@@ -188,7 +188,7 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
                     } while (1);
                 }
             }
-            if (n) func_020e85fc(h, (void *)n);
+            if (n) Heap_Free(h, (void *)n);
             func_020e86fc(h, flags);
         } else if (size <= n) {
             MI_CpuCopy8(hdr, dst, 8);
@@ -205,33 +205,33 @@ s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n) {
     return ret;
 }
 
-s32 func_02064040(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
+s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va) {
     char buf[0x80];
     func_020639c0(buf, 0x80, fmt, va);
-    func_020641ec((u32)buf, (void *)a, b, (u32 *)c);
+    File_LoadAlloc((u32)buf, (void *)a, b, (u32 *)c);
 }
 
-void func_02064020(s32 a, s32 b, const char *fmt, ...) {
+void File_LoadAllocF(s32 a, s32 b, const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    func_02064040(a, b, 0, fmt, va);
+    File_LoadAllocV(a, b, 0, fmt, va);
 }
 
-void func_02063ffc(const char *fmt, ...) {
+void File_LoadF(const char *fmt, ...) {
     va_list va;
     va_start(va, fmt);
-    func_02064040(0, 4, 0, fmt, va);
+    File_LoadAllocV(0, 4, 0, fmt, va);
 }
 
-void func_02063fcc(u32 a, u32 b, const char *fmt, ...) {
+void File_LoadToBufferF(u32 a, u32 b, const char *fmt, ...) {
     char buf[0x80];
     va_list va;
     va_start(va, fmt);
     func_020639c0(buf, 0x80, fmt, va);
-    func_020641b4(buf, (void *)a, b);
+    File_LoadToBuffer(buf, (void *)a, b);
 }
 
-s32 func_02063f60(Unk_02063d18_File *f) {
+s32 File_GetDecodedSize(Unk_02063d18_File *f) {
     u32 hdr[2];
     s32 e;
     u32 size = f->unk_28 - f->unk_24;
@@ -249,10 +249,10 @@ fail:
     return e;
 }
 
-s32 func_02063f3c(u32 a) {
+s32 File_GetDecodedSizeByPath(u32 a) {
     Unk_02063d18_File f;
-    func_02064398(&f, (const char *)a);
-    s32 r = func_02063f60(&f);
+    File_OpenOrPanic(&f, (const char *)a);
+    s32 r = File_GetDecodedSize(&f);
     FS_CloseFile(&f);
     return r;
 }

@@ -101,8 +101,8 @@ void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
 u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
 void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
 void abort(void); // abort
-void *func_020ec860(size_t size); // operator new[]
-void func_020ec848(void *p); // operator delete[]
+void *_Znam(size_t size); // operator new[]
+void _ZdaPv(void *p); // operator delete[]
 void func_02135578(void);
 void func_0213559c(void);
 void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
@@ -142,7 +142,7 @@ extern "C" void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor)
 
 // __cxa_vec_new (label in symbols.txt)
 extern "C" void *func_021357e0(size_t count, size_t size, size_t padding, ObjFunc ctor, ObjFunc dtor) {
-    char *block = (char *)func_020ec860(count * size + padding);
+    char *block = (char *)_Znam(count * size + padding);
     char *array;
     char *ptr;
 
@@ -167,7 +167,7 @@ extern "C" void *func_021357e0(size_t count, size_t size, size_t padding, ObjFun
             if (dtor) {
                 func_021358a8(array, ptr, size, dtor);
             }
-            func_020ec848(block);
+            _ZdaPv(block);
             throw;
         }
     }
@@ -247,7 +247,7 @@ extern "C" void func_021355a8(void *array, size_t size, size_t padding, ObjFunc 
         if (dtor) {
             func_02135668(array, ((size_t *)array)[-1], size, dtor);
         }
-        func_020ec848((char *)array - padding);
+        _ZdaPv((char *)array - padding);
     }
 }
 

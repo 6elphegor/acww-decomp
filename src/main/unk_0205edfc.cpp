@@ -20,7 +20,7 @@ extern void func_0205bb64(void);
 extern s32 func_0205bb48(void);
 extern void func_020e885c(void *p);
 extern void func_020e877c(void *p);
-extern void *func_020e8da0(u32 size, void *heap);
+extern void *FrameHeap_Create(u32 size, void *heap);
 u32 func_0205eec0(void);
 u32 func_0205ee3c(u32 *base, u32 idx);
 void func_0205ee44(u32 *tbl);
@@ -53,7 +53,7 @@ extern "C" void func_0205ee7c(u32 *tbl) {
     u32 n = data_020cbb18->unk_6c;
     u32 i;
     for (i = 0; i < n; i++) {
-        tbl[i] = (u32)func_020e8da0(func_0205eec0(), heap);
+        tbl[i] = (u32)FrameHeap_Create(func_0205eec0(), heap);
     }
 }
 

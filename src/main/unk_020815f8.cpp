@@ -51,8 +51,8 @@ struct Unk_02081974_Obj {
 
 extern "C" {
 s32 func_0207c014(s32);
-s32 func_0204b2d4(u16 *);
-s32 func_0204b25c(u16 *);
+s32 Item_IsFurniture(u16 *);
+s32 Item_GetFurnitureIndex(u16 *);
 s32 func_0204ee10(s32 *, s32 *, u32 *);
 s32 func_02063b8c(s32);
 s32 func_02081780();
@@ -145,8 +145,8 @@ s32 Unk_02081c54::func_02081bb0(u16 *p) {
     for (; i < 8; i++) {
         Unk_02081cb0 *s = &unk_00[i];
         BOOL r;
-        if (func_0204b2d4(&s->unk_04)) {
-            r = (func_0204b25c(&s->unk_04) == func_0204b25c(p)) ? TRUE : z1;
+        if (Item_IsFurniture(&s->unk_04)) {
+            r = (Item_GetFurnitureIndex(&s->unk_04) == Item_GetFurnitureIndex(p)) ? TRUE : z1;
         } else {
             r = (s->unk_04 == *p) ? TRUE : z2;
         }
@@ -286,8 +286,8 @@ s32 Unk_02081c54::func_02081908(u16 *p) {
     BOOL z2 = FALSE;
     for (; i < 4; i++) {
         BOOL r;
-        if (func_0204b2d4(&unk_40[i].unk_04)) {
-            r = (func_0204b25c(&unk_40[i].unk_04) == func_0204b25c(p)) ? TRUE : z1;
+        if (Item_IsFurniture(&unk_40[i].unk_04)) {
+            r = (Item_GetFurnitureIndex(&unk_40[i].unk_04) == Item_GetFurnitureIndex(p)) ? TRUE : z1;
         } else {
             u32 a = unk_40[i].unk_04;
             u32 b = *p;

@@ -15,7 +15,7 @@
 	.extern SDK_IRQ_STACKSIZE
 	.extern data_027e0000
 	.extern OS_IrqHandler
-	.extern func_020b0a80
+	.extern NitroStartUp
 	.extern _fp_init
 	.extern func_02135310
 	.arm
@@ -85,7 +85,7 @@ L_020008b0: ; flush_bss
 	ldr r0, L_02000914
 	str r0, [r1, #0]
 	bl _fp_init
-	blx func_020b0a80 ; NitroStartUp (Thumb)
+	blx NitroStartUp ; NitroStartUp (Thumb)
 	bl func_02135310
 	ldr r1, L_02000918
 	ldr lr, L_0200091c ; HW_RESET_VECTOR

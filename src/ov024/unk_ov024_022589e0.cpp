@@ -21,9 +21,9 @@ struct Unk_020b4f8c_Vec {
 };
 
 // vector object with an out-of-line (main) destructor 0x02000c8c
-struct Unk_02000c8c : Unk_020b4f8c_Vec {
-    Unk_02000c8c(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
-    ~Unk_02000c8c();
+struct FxVec3 : Unk_020b4f8c_Vec {
+    FxVec3(s32 a, s32 b, s32 c) : Unk_020b4f8c_Vec(a, b, c) {}
+    ~FxVec3();
 };
 
 // 0x1c-byte map object: constructor 0x020b4f8c, destructor 0x020b4fc0 (both in main)
@@ -80,7 +80,7 @@ extern Unk_ov024_Objs data_ov024_02258ac8;
 extern u32 data_ov024_02258ac4[1];
 extern Unk_ov024_Grid data_ov024_02258ad8;
 extern Unk_ov024_Entry data_ov024_02258b0c[3];
-extern Unk_02000c8c data_ov024_02258b64;
+extern FxVec3 data_ov024_02258b64;
 extern Unk_ov024_Head data_ov024_02258ad0;
 extern Unk_ov024_Rec data_ov024_02258ae0[1];
 extern Unk_020b4f8c data_ov024_02258b70[2];
@@ -101,7 +101,7 @@ Unk_ov024_Entry data_ov024_02258b0c[3] = {
     {1, 1, 0, data_ov024_02258ae0},
 };
 
-Unk_02000c8c data_ov024_02258b64(0x10000, 0x200, 0x1d000);
+FxVec3 data_ov024_02258b64(0x10000, 0x200, 0x1d000);
 
 Unk_ov024_Head data_ov024_02258ad0 = {3, data_ov024_02258b0c};
 

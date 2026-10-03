@@ -364,7 +364,7 @@ extern u32 OS_RestoreInterrupts(u32 enabled);                     // OS_RestoreI
 extern void (*OS_GetIrqFunction(u32 intrBit))(void);           // OS_GetIrqFunction
 extern void OS_SetIrqFunction(u32 intrBit, void (*function)(void)); // OS_SetIrqFunction
 extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg); // OSi_EnterDmaCallback
-extern void func_0206d49c(void);                           // OS_Terminate (Thumb, main)
+extern void Fatal_Trap(void);                           // OS_Terminate (Thumb, main)
 
 /* PROTOS */
 void func_01ff8000(const CPContext *context);

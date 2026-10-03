@@ -3,18 +3,18 @@
 extern "C" {
 void func_0206f9fc(void *a, u32 v);
 void func_0206f994(void *p, void *s, s32 n);
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
 void func_02002688(const char *buf, void *font, s32 a, u32 b, s32 c);
 void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_02002654(const char *a, void *b, s32 c);
-void *func_020641ec(void *a, void *b, s32 c, void *d);
-void func_020e85fc(void *heap, void *p);
+void *File_LoadAlloc(void *a, void *b, s32 c, void *d);
+void Heap_Free(void *heap, void *p);
 s32 func_0206ed50();
 s32 func_020639e8(char *buf, const char *fmt, ...);
 
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 extern char data_ov124_02296e70[],data_ov124_02296e84[],data_ov124_02296e98[],data_ov124_02296eac[],data_ov124_02296ec0[],data_ov124_02296ed4[],data_ov124_02296ee8[],data_ov124_02296efc[],data_ov124_02296f10[],data_ov124_02296f24[];
 extern void *data_ov124_02296e60[];
 extern void *data_ov124_02296f38[];
@@ -88,7 +88,7 @@ Unk_ov124_02296840::~Unk_ov124_02296840() {}
 
 void Unk_ov124_02296840::func_ov124_02296d4c(s32 a, s32 b) {
     func_ov124_02296a8c(a, 5);
-    func_02002654("menu/han/b_bg.bsc", data_021f482c, b);
+    func_02002654("menu/han/b_bg.bsc", gCurrentHeap, b);
     switch (func_0206ed50()) {
     case 4:
     case 7:
@@ -155,7 +155,7 @@ extern "C" s32 func_ov124_02296c30() {
 }
 
 void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
-    void *heap = data_021f482c;
+    void *heap = gCurrentHeap;
     char buf[0x20];
     func_0200261c("menu/han/bg.bch", heap, a, 0x10, 0x10, 0x169);
     func_020026c4("menu/han/bg.bpl", heap, a, 1, 1, 6);
@@ -199,8 +199,8 @@ void Unk_ov124_02296840::func_ov124_02296a8c(s32 a, s32 b) {
 void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
     s32 st = unk_90;
     s32 loc;
-    void *heap = data_021f482c;
-    char *buf = (char *)func_020641ec(data_ov124_02296e60[st / 5], heap, -4, &loc);
+    void *heap = gCurrentHeap;
+    char *buf = (char *)File_LoadAlloc(data_ov124_02296e60[st / 5], heap, -4, &loc);
     char *p = buf + (st % 5) * 0xc0;
     s32 i;
     s32 k = 0x15a;
@@ -211,7 +211,7 @@ void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
         k += 0x20;
         i++;
     } while (i < 6);
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
     func_02002688("menu/han/ten0_obj.bpl", heap, 8, unk_90, v);
     unk_91 = v;
     unk_40.func_ov002_02203cf8((Unk_ov002_02203c5c_Rec *)data_ov124_02296f90, 14, 2);
@@ -237,12 +237,12 @@ void Unk_ov124_02296840::func_ov124_022968ec(s32 v) {
 }
 
 void Unk_ov124_02296840::func_ov124_022968a8(s32 x, s32 y) {
-    func_02087e70(1, data_ov124_02296f50, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov124_02296f50, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void Unk_ov124_02296840::func_ov124_02296858(s32 x, s32 y) {
     unk_40.func_ov002_02203b30(x, y, -1);
-    func_02087e70(1, data_ov124_02296f70, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov124_02296f70, x + 0x80, y + 0x60, unk_91, 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void Unk_ov124_02296840::func_ov124_02296840() {

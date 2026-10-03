@@ -12,14 +12,14 @@ void *func_02133ef8(void *ptr, u32 size);
 void *NNS_FndGetNextListObject(void *list, void *prev);
 void NNS_FndRemoveListObject(void *list, void *obj);
 void NNS_FndInitList(void *list, u32 offset);
-void func_020e8558(void *ptr);
-void func_020e85fc(void *heap, void *ptr);
+void Mem_Free(void *ptr);
+void Heap_Free(void *heap, void *ptr);
 void func_020e8c88(void *heap);
-void *func_020e8e7c(u32 size, void *parent);
+void *ExpHeap_Create(u32 size, void *parent);
 void DC_FlushRange(void *ptr, u32 size);
 void MI_CpuFill8(void *dst, u32 value, u32 size);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void *func_02063ffc(const char *fmt, ...);
+void *File_LoadF(const char *fmt, ...);
 char *func_0212a2ec(char *dst, const char *src, u32 n);
 void func_0206c92c(void);
 
@@ -35,50 +35,50 @@ void GXS_LoadBG2Char(void *src, u32 offset, u32 size);
 void GXS_LoadBG3Char(void *src, u32 offset, u32 size);
 void GXS_LoadOBJ(void *src, u32 offset, u32 size);
 
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 
-s32 func_02050cb4(Unk_02050288_Font *font, s32 c);
-u32 func_02050d9c(Unk_02050288_Font *font, u32 c);
-const u8 *func_02050d54(Unk_02050288_Font *font, u32 c);
-void func_02050dd8(Unk_02050288_Font *font);
-void func_02050e0c(Unk_02050288_Font *font, const char *name, void *arg2, Unk_02050288_Font *ext, u8 arg4);
-BOOL func_020510f4(StrBuf *buf, const char *src);
-BOOL func_0205026c(u8 *out, const u8 *c);
-BOOL func_02050278(char *out, u32 index);
-void func_02050428(void);
-void func_0205046c(void);
-void func_020509dc(s32 arg0);
-void func_02050a54(void);
-void func_02050a5c(void);
-void func_02050a68(void);
-void func_02050ac4(void);
-BOOL func_02050244(u8 *out, u32 c);
+s32 GameFont_FindGlyph(GameFontDesc *font, s32 c);
+u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c);
+const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c);
+void GameFont_Free(GameFontDesc *font);
+void GameFont_Load(GameFontDesc *font, const char *name, void *arg2, GameFontDesc *ext, u8 arg4);
+BOOL StrBuf_SetCString(StrBuf *buf, const char *src);
+BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c);
+BOOL Text_GameCharToAscii(char *out, u32 index);
+void TextLabel_DestroyAll(void);
+void TextLabel_FlushGroup0(void);
+void TextLabel_FlushGroup(s32 arg0);
+void Text_ResetLabels(void);
+void TextLabel_FlushGroup1(void);
+void Text_ShutdownSystem(void);
+void Text_InitSystem(void);
+BOOL Text_AsciiToGameChar(u8 *out, u32 c);
 }
 
-// A font with its constructor and destructor (symbols.txt has them as plain functions)
-struct Unk_02050288_FontObj : Unk_02050288_Font {
-    Unk_02050288_FontObj();
-    ~Unk_02050288_FontObj();
+// LampLights font with its constructor and destructor (symbols.txt has them as plain functions)
+struct GameFont : GameFontDesc {
+    GameFont();
+    ~GameFont();
 };
 
 // Sets up the text system: fonts are loaded in vfunc_00 and freed in vfunc_0c
-class Unk_020dba80 : public Unk_020d8c7c {
+class TextSystemModule : public GameProc {
 public:
-    Unk_020dba80();
+    TextSystemModule();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual ~Unk_020dba80();
+    virtual BOOL onExecute();
+    virtual ~TextSystemModule();
 };
 
 struct Unk_020dba58_Entry {
-    Unk_020dba80 *(*factory)(void);
+    TextSystemModule *(*factory)(void);
     u16 unk_04;
     u16 unk_06;
 };
 
 extern "C" {
-Unk_020dba80 *func_02051200(void);
+TextSystemModule *TextSystemModule_Create(void);
 
 extern const u16 data_020ca480;
 extern const u16 data_020ca484;
@@ -88,33 +88,33 @@ extern const u16 data_020ca490;
 extern const u16 data_020ca494;
 extern const u16 data_020ca498;
 extern const u16 data_020ca49c;
-extern const char *const data_020ca4a0[3];
-extern const Unk_02050288_LoadFunc data_020ca4ac[6];
-extern const Unk_02050288_LoadFunc data_020ca4c4[6];
-extern const u8 data_020ca4dc[0x7a];
-extern const u8 data_020ca558[0xe0];
+extern const char *const sGameFontFileParts[3];
+extern const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6];
+extern const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6];
+extern const u8 sToUpperPairs[0x7a];
+extern const u8 sGameCharToAsciiTable[0xe0];
 // the first object of the next file's .rodata (0x80000000: "glyph of the secondary font")
 extern const u32 data_020ca638;
 extern char data_020dba44[];
 extern char data_020dba48[];
 extern char data_020dba50[];
 extern Unk_020dba58_Entry data_020dba58;
-extern u16 data_020dbac8[0xe0];
-extern void *data_021c489c;
-extern u8 data_021c48c4[0xc];
-extern u8 data_021c494c[0x400];
+extern u16 sCharSortKeyTable[0xe0];
+extern void *gTextHeap;
+extern u8 gTextLabelList[0xc];
+extern u8 gTextTileBuffer[0x400];
 }
-extern Unk_02050288_FontObj data_021c48e8;
-extern Unk_02050288_FontObj data_021c48fc;
-extern Unk_02050288_FontObj data_021c4910;
-extern Unk_02050288_FontObj data_021c4924;
-extern Unk_02050288_FontObj data_021c4938;
+extern GameFont gFontASub;
+extern GameFont gFontD;
+extern GameFont gFontA;
+extern GameFont gFontB;
+extern GameFont gFontC;
 
 // ---- data. The definition order is what makes mwcc emit the objects in the original order (it sorts a
 // file's objects by size with a heapsort over the reversed creation order); do not reorder.
 char data_020dba50[] = "attr";
 
-const u8 data_020ca558[0xe0] = {
+const u8 sGameCharToAsciiTable[0xe0] = {
     0x00, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
     0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x61, 0x62, 0x63, 0x64, 0x65,
     0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75,
@@ -131,7 +131,7 @@ const u8 data_020ca558[0xe0] = {
     0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbe, 0xbf, 0xd7, 0xf7, 0x01, 0x04, 0x06, 0x07,
 };
 
-u16 data_020dbac8[0xe0] = {
+u16 sCharSortKeyTable[0xe0] = {
     data_020ca488, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11,
     0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19,
     0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21,
@@ -162,21 +162,21 @@ u16 data_020dbac8[0xe0] = {
     data_020ca488, data_020ca488, 0x25, 0x25, 0x25, 0x25, 0x25, 0x25,
 };
 
-Unk_02050288_FontObj data_021c48e8;
+GameFont gFontASub;
 
-u8 data_021c494c[0x400];
+u8 gTextTileBuffer[0x400];
 
-Unk_02050288_FontObj data_021c4910;
+GameFont gFontA;
 
-const char *const data_020ca4a0[3] = {data_020dba48, data_020dba50, data_020dba44};
+const char *const sGameFontFileParts[3] = {data_020dba48, data_020dba50, data_020dba44};
 
 const u16 data_020ca488 = 0;
 
-Unk_02050288_FontObj data_021c4924;
+GameFont gFontB;
 
 const u16 data_020ca48c = 4;
 
-Unk_02050288_FontObj data_021c4938;
+GameFont gFontC;
 
 char data_020dba48[] = "head";
 
@@ -184,19 +184,19 @@ const u16 data_020ca49c = 7;
 
 const u16 data_020ca494 = 1;
 
-u8 data_021c48c4[0xc];
+u8 gTextLabelList[0xc];
 
-void *data_021c489c;
+void *gTextHeap;
 
 const u16 data_020ca484 = 2;
 
-Unk_020dba58_Entry data_020dba58 = {func_02051200, 0xce, 0xca};
+Unk_020dba58_Entry data_020dba58 = {TextSystemModule_Create, 0xce, 0xca};
 
 char data_020dba44[] = "img";
 
 const u16 data_020ca498 = 3;
 
-const u8 data_020ca4dc[0x7a] = {
+const u8 sToUpperPairs[0x7a] = {
     0x61, 0x41, 0x62, 0x42, 0x63, 0x43, 0x64, 0x44, 0x65, 0x45, 0x66, 0x46, 0x67, 0x47,
     0x68, 0x48, 0x69, 0x49, 0x6a, 0x4a, 0x6b, 0x4b, 0x6c, 0x4c, 0x6d, 0x4d, 0x6e, 0x4e,
     0x6f, 0x4f, 0x70, 0x50, 0x71, 0x51, 0x72, 0x52, 0x73, 0x53, 0x74, 0x54, 0x75, 0x55,
@@ -208,9 +208,9 @@ const u8 data_020ca4dc[0x7a] = {
     0xfc, 0xdc, 0xfd, 0xdd, 0xfe, 0xde, 0xff, 0x9f, 0x00, 0x00,
 };
 
-Unk_02050288_FontObj data_021c48fc;
+GameFont gFontD;
 
-const Unk_02050288_LoadFunc data_020ca4c4[6] = {
+const Unk_02050288_LoadFunc sTextVramLoadFuncsB[6] = {
     GXS_LoadBG0Char, GXS_LoadBG1Char, GXS_LoadBG2Char, GXS_LoadBG3Char, GXS_LoadOBJ, NULL,
 };
 
@@ -218,44 +218,44 @@ const u16 data_020ca490 = 5;
 
 const u16 data_020ca480 = 6;
 
-const Unk_02050288_LoadFunc data_020ca4ac[6] = {
+const Unk_02050288_LoadFunc sTextVramLoadFuncsA[6] = {
     GX_LoadBG0Char, GX_LoadBG1Char, GX_LoadBG2Char, GX_LoadBG3Char, GX_LoadOBJ, NULL,
 };
 
 // ---- functions, from the highest address to the lowest (mwcc emits a file's functions last to first)
 
-extern "C" Unk_020dba80 *func_02051200(void) {
-    return new Unk_020dba80;
+extern "C" TextSystemModule *TextSystemModule_Create(void) {
+    return new TextSystemModule;
 }
 
-Unk_020dba80::Unk_020dba80() {}
+TextSystemModule::TextSystemModule() {}
 
-Unk_020dba80::~Unk_020dba80() {}
+TextSystemModule::~TextSystemModule() {}
 
-BOOL Unk_020dba80::vfunc_00() {
-    func_02050ac4();
+BOOL TextSystemModule::vfunc_00() {
+    Text_InitSystem();
     func_0206c92c();
     return TRUE;
 }
 
-BOOL Unk_020dba80::vfunc_18() {
-    func_02050a5c();
+BOOL TextSystemModule::onExecute() {
+    TextLabel_FlushGroup1();
     return TRUE;
 }
 
-BOOL Unk_020dba80::vfunc_0c() {
-    func_02050a68();
+BOOL TextSystemModule::vfunc_0c() {
+    Text_ShutdownSystem();
     return TRUE;
 }
 
 extern "C" {
 
-void func_0205113c(StrBuf *buf) {
+void StrBuf_Clear(StrBuf *buf) {
     u32 size = buf->size();
     MI_CpuFill8(buf->data(), 0, size);
 }
 
-BOOL func_020510f4(StrBuf *buf, const char *src) {
+BOOL StrBuf_SetCString(StrBuf *buf, const char *src) {
     u32 size = buf->size();
     char *data = (char *)buf->data();
     s32 last = size - 1;
@@ -270,11 +270,11 @@ BOOL func_020510f4(StrBuf *buf, const char *src) {
     return ok;
 }
 
-BOOL func_020510d8(StrBuf *dst, StrBuf *src) {
-    return func_020510f4(dst, (const char *)src->data());
+BOOL StrBuf_Copy(StrBuf *dst, StrBuf *src) {
+    return StrBuf_SetCString(dst, (const char *)src->data());
 }
 
-BOOL func_02050ff8(StrBuf *out, StrBuf *in) {
+BOOL StrBuf_GameToAscii(StrBuf *out, StrBuf *in) {
     s32 inLen = in->size();
     const u8 *s = in->data();
     char *o = (char *)out->data();
@@ -287,7 +287,7 @@ BOOL func_02050ff8(StrBuf *out, StrBuf *in) {
     for (i = 0; i < inLen; i++, s++) {
         char tmp[4];
         char *p = o + pos;
-        s32 n = func_02050278(tmp, *s);
+        s32 n = Text_GameCharToAscii(tmp, *s);
         if (pos + n <= outLen) {
             if (n == 1) {
                 *p = tmp[0];
@@ -319,12 +319,12 @@ BOOL func_02050ff8(StrBuf *out, StrBuf *in) {
     return !overflow && terminated;
 }
 
-void func_02050fd0(StrBuf *buf) {
+void StrBuf_ClearAlt(StrBuf *buf) {
     u32 size = buf->size();
     MI_CpuFill8(buf->data(), 0, size);
 }
 
-BOOL func_02050f7c(StrBuf *buf, const void *src, s32 len) {
+BOOL StrBuf_SetBytes(StrBuf *buf, const void *src, s32 len) {
     s32 size = buf->size();
     u8 *data = buf->data();
     s32 rest = size - len;
@@ -339,7 +339,7 @@ BOOL func_02050f7c(StrBuf *buf, const void *src, s32 len) {
     return ok;
 }
 
-BOOL func_02050ee0(StrBuf *dst, StrBuf *src) {
+BOOL StrBuf_AsciiToGame(StrBuf *dst, StrBuf *src) {
     const u8 *s = src->data();
     u32 srcLen = src->size();
     u32 i = 0;
@@ -354,7 +354,7 @@ BOOL func_02050ee0(StrBuf *dst, StrBuf *src) {
         if (*s == 0) {
             break;
         }
-        n = func_0205026c(&c, s);
+        n = Text_AsciiToGameCharPtr(&c, s);
         if (n == 0) {
             n = 1;
             result = FALSE;
@@ -376,7 +376,7 @@ BOOL func_02050ee0(StrBuf *dst, StrBuf *src) {
     return result;
 }
 
-BOOL func_02050e90(StrBuf *obj, u8 *dst, s32 size) {
+BOOL StrBuf_GetBytes(StrBuf *obj, u8 *dst, s32 size) {
     const u8 *src = obj->data();
     s32 len = obj->size();
     BOOL fits = size >= len;
@@ -395,63 +395,63 @@ BOOL func_02050e90(StrBuf *obj, u8 *dst, s32 size) {
 
 }
 
-Unk_02050288_FontObj::Unk_02050288_FontObj() {
+GameFont::GameFont() {
     unk_00 = NULL;
     unk_04 = NULL;
     unk_08 = NULL;
 }
 
-Unk_02050288_FontObj::~Unk_02050288_FontObj() {
-    func_02050dd8(this);
+GameFont::~GameFont() {
+    GameFont_Free(this);
 }
 
 extern "C" {
 
-void func_02050e0c(Unk_02050288_Font *font, const char *name, void *arg2, Unk_02050288_Font *ext, u8 arg4) {
+void GameFont_Load(GameFontDesc *font, const char *name, void *arg2, GameFontDesc *ext, u8 arg4) {
     void *files[3];
     s32 i;
     for (i = 0; i < 3; i++) {
-        files[i] = arg2 != NULL ? func_02063ffc("/font/%s_%s_%s.bin", name, data_020ca4a0[i], arg2)
-                                : func_02063ffc("/font/%s_%s.bin", name, data_020ca4a0[i]);
+        files[i] = arg2 != NULL ? File_LoadF("/font/%s_%s_%s.bin", name, sGameFontFileParts[i], arg2)
+                                : File_LoadF("/font/%s_%s.bin", name, sGameFontFileParts[i]);
     }
-    font->unk_00 = (Unk_02050288_FontInfo *)files[0];
-    font->unk_04 = (Unk_02050288_Glyph *)files[1];
+    font->unk_00 = (GameFontHeader *)files[0];
+    font->unk_04 = (GameFontGlyph *)files[1];
     font->unk_08 = (u8 *)files[2];
     font->unk_0c = ext;
     font->unk_10 = arg4;
 }
 
-void func_02050dd8(Unk_02050288_Font *font) {
+void GameFont_Free(GameFontDesc *font) {
     if (font->unk_00 != NULL) {
-        func_020e8558(font->unk_00);
+        Mem_Free(font->unk_00);
         font->unk_00 = NULL;
     }
     if (font->unk_04 != NULL) {
-        func_020e8558(font->unk_04);
+        Mem_Free(font->unk_04);
         font->unk_04 = NULL;
     }
     if (font->unk_08 != NULL) {
-        func_020e8558(font->unk_08);
+        Mem_Free(font->unk_08);
         font->unk_08 = NULL;
     }
 }
 
-u32 func_02050d9c(Unk_02050288_Font *font, u32 c) {
+u32 GameFont_GetGlyphWidth(GameFontDesc *font, u32 c) {
     u32 width = 0;
     if (c & 0x80000000) {
-        width = func_02050d9c(font->unk_0c, c & 0x7fffffff);
+        width = GameFont_GetGlyphWidth(font->unk_0c, c & 0x7fffffff);
     } else if (c < font->unk_00->unk_00) {
         width = font->unk_04[c].unk_02;
     }
     return width;
 }
 
-const u8 *func_02050d54(Unk_02050288_Font *font, u32 c) {
+const u8 *GameFont_GetGlyphBitmap(GameFontDesc *font, u32 c) {
     const u8 *glyph = NULL;
     if (c & 0x80000000) {
-        glyph = func_02050d54(font->unk_0c, c & 0x7fffffff);
+        glyph = GameFont_GetGlyphBitmap(font->unk_0c, c & 0x7fffffff);
     } else {
-        Unk_02050288_FontInfo *info = font->unk_00;
+        GameFontHeader *info = font->unk_00;
         if (c < info->unk_00) {
             u32 size = (u32)(info->unk_04 * info->unk_06) >> 3;
             glyph = font->unk_08 + size * c;
@@ -463,7 +463,7 @@ const u8 *func_02050d54(Unk_02050288_Font *font, u32 c) {
 }
 
 extern "C" {
-s32 func_02050cb4(Unk_02050288_Font *font, s32 c) {
+s32 GameFont_FindGlyph(GameFontDesc *font, s32 c) {
     BOOL ok = FALSE; s32 result = ~ok;
     u32 i;
     u32 idx;
@@ -474,7 +474,7 @@ s32 func_02050cb4(Unk_02050288_Font *font, s32 c) {
         ok = TRUE;
     }
     if (ok) {
-        result = func_02050cb4(font->unk_0c, c + 0x20);
+        result = GameFont_FindGlyph(font->unk_0c, c + 0x20);
         if (result != -1) {
             result |= data_020ca638;
         }
@@ -485,7 +485,7 @@ s32 func_02050cb4(Unk_02050288_Font *font, s32 c) {
         for (; i < count; i++) {
             v = neg;
             if ((i & 0x80000000) != 0) {
-                Unk_02050288_Font *sec = ((volatile Unk_02050288_Font *)font)->unk_0c;
+                GameFontDesc *sec = ((volatile GameFontDesc *)font)->unk_0c;
                 idx = i & 0x7fffffff;
                 if (idx < sec->unk_00->unk_00) {
                     v = sec->unk_04[idx].unk_00;
@@ -503,24 +503,24 @@ s32 func_02050cb4(Unk_02050288_Font *font, s32 c) {
 }
 }
 
-void Unk_02050288::func_02050c90() {
+void TextLabel::requestRedraw() {
     unk_54 = 1;
     if (unk_58 == 2) {
-        func_02050944();
+        render();
         unk_54 = 0;
     }
 }
 
-void Unk_02050288::func_02050c68(s32 arg1) {
+void TextLabel::requestClear(s32 arg1) {
     unk_5c = arg1;
     if (unk_58 == 2 && unk_5c != -1) {
-        func_02050510();
+        clear();
         unk_5c = -1;
     }
 }
 
-void Unk_02050288::func_02050c44() {
-    u32 width = func_0c();
+void TextLabel::alignCenter() {
+    u32 width = measureWidth();
     u32 total = unk_20 * 8;
     if (total > width) {
         unk_30 = (total - width) / 2;
@@ -529,8 +529,8 @@ void Unk_02050288::func_02050c44() {
     }
 }
 
-void Unk_02050288::func_02050c20() {
-    u32 width = func_0c();
+void TextLabel::alignRight() {
+    u32 width = measureWidth();
     u32 total = unk_20 * 8;
     if (total > width) {
         unk_30 = total - width;
@@ -539,14 +539,14 @@ void Unk_02050288::func_02050c20() {
     }
 }
 
-void Unk_02050288::func_02050c04(u8 arg1, u8 arg2, u32 arg3, u32 arg4) {
+void TextLabel::setHighlight(u8 arg1, u8 arg2, u32 arg3, u32 arg4) {
     unk_3a = arg1;
     unk_3b = arg2;
     unk_40 = arg3;
     unk_44 = arg4;
 }
 
-void Unk_02050288::func_02050bc8(u8 arg1, u8 arg2, u32 arg3, u32 arg4, u8 arg5, u8 arg6, u32 arg7, u32 arg8) {
+void TextLabel::setHighlights(u8 arg1, u8 arg2, u32 arg3, u32 arg4, u8 arg5, u8 arg6, u32 arg7, u32 arg8) {
     unk_3a = arg1;
     unk_3b = arg2;
     unk_40 = arg3;
@@ -557,70 +557,70 @@ void Unk_02050288::func_02050bc8(u8 arg1, u8 arg2, u32 arg3, u32 arg4, u8 arg5, 
     unk_4c = arg8;
 }
 
-u32 Unk_02050288::func_02050bb4() {
-    return (func_0c() + 7) >> 3;
+u32 TextLabel::getWidthInTiles() {
+    return (measureWidth() + 7) >> 3;
 }
 
-void Unk_02050288::func_02050ba8() {
+void TextLabel::beginMeasure() {
     unk_68 = 0;
     unk_64 = -1;
 }
 
-void Unk_02050288::func_02050b6c(u32 c) {
-    unk_64 = func_02050cb4(unk_28, c);
+void TextLabel::measureChar(u32 c) {
+    unk_64 = GameFont_FindGlyph(unk_28, c);
     if (unk_64 == -1) {
-        unk_64 = func_02050cb4(unk_28, 0x40);
+        unk_64 = GameFont_FindGlyph(unk_28, 0x40);
     }
-    unk_68 += func_02050d9c(unk_28, unk_64);
+    unk_68 += GameFont_GetGlyphWidth(unk_28, unk_64);
     unk_68 += unk_34;
 }
 
-void Unk_02050288::func_02050b68() {}
+void TextLabel::endMeasure() {}
 
-extern "C" void func_02050ac4(void) {
+extern "C" void Text_InitSystem(void) {
     void *heap;
 
-    func_02050e0c(&data_021c48e8, "fontASub", 0, 0, 1);
-    func_02050e0c(&data_021c4910, "fontA", 0, &data_021c48e8, 0);
-    func_02050e0c(&data_021c4924, "fontB", 0, 0, 0);
-    func_02050e0c(&data_021c4938, "fontC", 0, 0, 0);
-    func_02050e0c(&data_021c48fc, "fontD", 0, 0, 0);
-    heap = func_020e8e7c(0x1800, data_021f482c);
-    data_021c489c = heap;
+    GameFont_Load(&gFontASub, "fontASub", 0, 0, 1);
+    GameFont_Load(&gFontA, "fontA", 0, &gFontASub, 0);
+    GameFont_Load(&gFontB, "fontB", 0, 0, 0);
+    GameFont_Load(&gFontC, "fontC", 0, 0, 0);
+    GameFont_Load(&gFontD, "fontD", 0, 0, 0);
+    heap = ExpHeap_Create(0x1800, gCurrentHeap);
+    gTextHeap = heap;
     if (heap != NULL) {
-        NNS_FndInitList(data_021c48c4, 8);
+        NNS_FndInitList(gTextLabelList, 8);
     }
 }
 
-extern "C" void func_02050a68(void) {
-    if (data_021c489c != NULL) {
-        func_02050428();
-        func_020e8c88(data_021c489c);
-        data_021c489c = NULL;
+extern "C" void Text_ShutdownSystem(void) {
+    if (gTextHeap != NULL) {
+        TextLabel_DestroyAll();
+        func_020e8c88(gTextHeap);
+        gTextHeap = NULL;
     }
-    func_02050dd8(&data_021c48e8);
-    func_02050dd8(&data_021c4910);
-    func_02050dd8(&data_021c4924);
-    func_02050dd8(&data_021c4938);
-    func_02050dd8(&data_021c48fc);
+    GameFont_Free(&gFontASub);
+    GameFont_Free(&gFontA);
+    GameFont_Free(&gFontB);
+    GameFont_Free(&gFontC);
+    GameFont_Free(&gFontD);
 }
 
-extern "C" void func_02050a5c(void) {
-    func_020509dc(1);
+extern "C" void TextLabel_FlushGroup1(void) {
+    TextLabel_FlushGroup(1);
 }
 
-extern "C" void func_02050a54(void) {
-    func_02050428();
+extern "C" void Text_ResetLabels(void) {
+    TextLabel_DestroyAll();
 }
 
-void Unk_02050288::func_02050a34() {
-    MI_CpuFill8(data_021c494c, (u8)(unk_39 | (unk_39 << 4)), 0x400);
+void TextLabel::clearTileBuffer() {
+    MI_CpuFill8(gTextTileBuffer, (u8)(unk_39 | (unk_39 << 4)), 0x400);
 }
 
-extern "C" void func_020509dc(s32 arg0) {
-    Unk_02050288 *obj = NULL;
+extern "C" void TextLabel_FlushGroup(s32 arg0) {
+    TextLabel *obj = NULL;
     for (;;) {
-        obj = (Unk_02050288 *)NNS_FndGetNextListObject(data_021c48c4, obj);
+        obj = (TextLabel *)NNS_FndGetNextListObject(gTextLabelList, obj);
         if (obj == NULL) {
             break;
         }
@@ -628,17 +628,17 @@ extern "C" void func_020509dc(s32 arg0) {
             continue;
         }
         if (obj->unk_5c != -1) {
-            obj->func_02050510();
+            obj->clear();
             obj->unk_5c = -1;
         }
         if (obj->unk_54) {
-            obj->func_02050944();
+            obj->render();
             obj->unk_54 = 0;
         }
     }
 }
 
-void Unk_02050288::func_02050944() {
+void TextLabel::render() {
     u32 height = unk_28->unk_00->unk_06;
     u32 limit = unk_24 << 3;
 
@@ -652,7 +652,7 @@ void Unk_02050288::func_02050944() {
     for (unk_6c = 0; unk_6c < height && unk_6c < limit; unk_6c += 8) {
         u32 next = unk_6c + 8;
         unk_75 = (next >= height || next >= limit) ? 1 : 0;
-        func_08();
+        draw();
         if (unk_55) {
             unk_70 += 0x400;
         } else {
@@ -661,32 +661,32 @@ void Unk_02050288::func_02050944() {
     }
 }
 
-void Unk_02050288::func_0205091c() {
-    func_02050a34();
+void TextLabel::beginRow() {
+    clearTileBuffer();
     unk_38 = unk_74;
     unk_64 = -1;
     unk_68 = unk_30;
     unk_78 = 0;
 }
 
-void Unk_02050288::func_020508b4(u32 c) {
+void TextLabel::drawChar(u32 c) {
     u32 start;
 
-    unk_64 = func_02050cb4(unk_28, c);
+    unk_64 = GameFont_FindGlyph(unk_28, c);
     if (unk_64 == -1) {
-        unk_64 = func_02050cb4(unk_28, 0x40);
+        unk_64 = GameFont_FindGlyph(unk_28, 0x40);
     }
     start = unk_68;
-    unk_68 += func_020506cc();
-    func_02050638();
+    unk_68 += drawGlyph();
+    drawLetterSpacing();
     unk_68 += unk_34;
     if (unk_75 && unk_57) {
-        func_020505cc(start);
+        drawUnderline(start);
     }
     unk_78++;
 }
 
-void Unk_02050288::func_020507d8() {
+void TextLabel::flushRow() {
     u32 size;
     u8 *dst;
     u8 *src;
@@ -698,17 +698,17 @@ void Unk_02050288::func_020507d8() {
     if (size > 0x400) {
         size = 0x400;
     }
-    DC_FlushRange(data_021c494c, size);
+    DC_FlushRange(gTextTileBuffer, size);
     if (unk_50 == 2 || unk_50 == 3) {
-        data_020ca4ac[unk_2c](data_021c494c, unk_70, size);
+        sTextVramLoadFuncsA[unk_2c](gTextTileBuffer, unk_70, size);
     }
     if (unk_50 == 1 || unk_50 == 3) {
-        data_020ca4c4[unk_2c](data_021c494c, unk_70, size);
+        sTextVramLoadFuncsB[unk_2c](gTextTileBuffer, unk_70, size);
     }
     if (unk_50 == 0) {
         if (unk_56) {
             dst = (u8 *)(unk_1c + unk_70);
-            src = data_021c494c;
+            src = gTextTileBuffer;
             end = src + size;
             bg = unk_39;
             bgHigh = bg << 4;
@@ -723,12 +723,12 @@ void Unk_02050288::func_020507d8() {
                 }
             }
         } else {
-            MI_CpuCopy8(data_021c494c, (void *)(unk_1c + unk_70), size);
+            MI_CpuCopy8(gTextTileBuffer, (void *)(unk_1c + unk_70), size);
         }
     }
 }
 
-u32 Unk_02050288::func_020506cc() {
+u32 TextLabel::drawGlyph() {
     u32 glyphWidth;
     const u8 *glyph;
     u8 mask;
@@ -747,17 +747,17 @@ u32 Unk_02050288::func_020506cc() {
     u32 start = 0;
 
     width = unk_28->unk_00->unk_04;
-    glyphWidth = func_02050d9c(unk_28, unk_64);
-    glyph = func_02050d54(unk_28, unk_64);
+    glyphWidth = GameFont_GetGlyphWidth(unk_28, unk_64);
+    glyph = GameFont_GetGlyphBitmap(unk_28, unk_64);
     mask = 0x80;
     pos = (unk_6c * width) >> 3;
 
     drawBackground = TRUE;
-    if (!func_020504f8() && !func_020504e0()) {
+    if (!isInHighlightA() && !isInHighlightB()) {
         drawBackground = FALSE;
     }
-    fg = func_020504ac();
-    bg = func_02050478();
+    fg = getFgColor();
+    bg = getBgColor();
 
     for (row = 0; row < 8; row++) {
         for (x = start; x < width; x++) {
@@ -769,7 +769,7 @@ u32 Unk_02050288::func_020506cc() {
                     tile = px >> 3;
                     index = (row * 8 + (px - tile * 8)) >> 1;
                     if (tile < 0x20) {
-                        pixel = &data_021c494c[tile * 32] + index;
+                        pixel = &gTextTileBuffer[tile * 32] + index;
                         if (px & 1) {
                             *pixel &= ~0xf0;
                             *pixel |= (u8)(color << 4);
@@ -790,7 +790,7 @@ u32 Unk_02050288::func_020506cc() {
     return glyphWidth;
 }
 
-void Unk_02050288::func_02050638() {
+void TextLabel::drawLetterSpacing() {
     u32 color;
     u32 row;
     u32 x;
@@ -799,15 +799,15 @@ void Unk_02050288::func_02050638() {
     u32 index;
     u8 *pixel;
 
-    if (func_020504f8() || func_020504e0()) {
-        color = func_02050478();
+    if (isInHighlightA() || isInHighlightB()) {
+        color = getBgColor();
         for (row = 0; row < 8; row++) {
             for (x = 0; x < unk_34; x++) {
                 px = unk_68 + x;
                 tile = px >> 3;
                 index = (row * 8 + (px - tile * 8)) >> 1;
                 if (tile < 0x20) {
-                    pixel = &data_021c494c[tile * 32] + index;
+                    pixel = &gTextTileBuffer[tile * 32] + index;
                     if (px & 1) {
                         *pixel &= ~0xf0;
                         *pixel |= (u8)(color << 4);
@@ -821,20 +821,20 @@ void Unk_02050288::func_02050638() {
     }
 }
 
-void Unk_02050288::func_020505cc(u32 x) {
+void TextLabel::drawUnderline(u32 x) {
     u32 high;
     u32 color;
     u32 tile;
     u32 index;
     u8 *pixel;
 
-    color = func_020504ac();
+    color = getFgColor();
     high = color << 4;
     for (; x < unk_68; x++) {
         tile = x >> 3;
         index = ((x - tile * 8) + 0x30) >> 1;
         if (tile < 0x20) {
-            pixel = &data_021c494c[tile * 32] + index;
+            pixel = &gTextTileBuffer[tile * 32] + index;
             if (x & 1) {
                 *pixel &= ~0xf0;
                 *pixel |= (u8)high;
@@ -846,12 +846,12 @@ void Unk_02050288::func_020505cc(u32 x) {
     }
 }
 
-void Unk_02050288::func_02050510() {
+void TextLabel::clear() {
     u32 size;
     u32 offset;
     u32 i;
 
-    func_02050a34();
+    clearTileBuffer();
 
     if (unk_5c == 0) {
         size = unk_60;
@@ -870,15 +870,15 @@ void Unk_02050288::func_02050510() {
     }
 
     for (i = 0; i < unk_24; i++) {
-        DC_FlushRange(data_021c494c, size);
+        DC_FlushRange(gTextTileBuffer, size);
         if (unk_50 == 2 || unk_50 == 3) {
-            data_020ca4ac[unk_2c](data_021c494c, offset, size);
+            sTextVramLoadFuncsA[unk_2c](gTextTileBuffer, offset, size);
         }
         if (unk_50 == 1 || unk_50 == 3) {
-            data_020ca4c4[unk_2c](data_021c494c, offset, size);
+            sTextVramLoadFuncsB[unk_2c](gTextTileBuffer, offset, size);
         }
         if (unk_50 == 0) {
-            MI_CpuCopy8(data_021c494c, (void *)(unk_1c + offset), size);
+            MI_CpuCopy8(gTextTileBuffer, (void *)(unk_1c + offset), size);
         }
         if (unk_55) {
             offset += 0x400;
@@ -888,7 +888,7 @@ void Unk_02050288::func_02050510() {
     }
 }
 
-BOOL Unk_02050288::func_020504f8() {
+BOOL TextLabel::isInHighlightA() {
     BOOL result = FALSE;
     if (unk_78 >= unk_40 && unk_78 < unk_40 + unk_44) {
         result = TRUE;
@@ -896,7 +896,7 @@ BOOL Unk_02050288::func_020504f8() {
     return result;
 }
 
-BOOL Unk_02050288::func_020504e0() {
+BOOL TextLabel::isInHighlightB() {
     BOOL result = FALSE;
     if (unk_78 >= unk_48 && unk_78 < unk_48 + unk_4c) {
         result = TRUE;
@@ -904,44 +904,44 @@ BOOL Unk_02050288::func_020504e0() {
     return result;
 }
 
-u8 Unk_02050288::func_020504ac() {
+u8 TextLabel::getFgColor() {
     u8 result = unk_38;
-    if (func_020504f8()) {
+    if (isInHighlightA()) {
         result = unk_3a;
-    } else if (func_020504e0()) {
+    } else if (isInHighlightB()) {
         result = unk_3c;
     }
     return result;
 }
 
-u8 Unk_02050288::func_02050478() {
+u8 TextLabel::getBgColor() {
     u8 result = unk_39;
-    if (func_020504f8()) {
+    if (isInHighlightA()) {
         result = unk_3b;
-    } else if (func_020504e0()) {
+    } else if (isInHighlightB()) {
         result = unk_3d;
     }
     return result;
 }
 
-extern "C" void func_0205046c(void) {
-    func_020509dc(0);
+extern "C" void TextLabel_FlushGroup0(void) {
+    TextLabel_FlushGroup(0);
 }
 
-extern "C" void func_02050428(void) {
-    Unk_02050288 *obj;
+extern "C" void TextLabel_DestroyAll(void) {
+    TextLabel *obj;
     for (;;) {
-        obj = (Unk_02050288 *)NNS_FndGetNextListObject(data_021c48c4, NULL);
+        obj = (TextLabel *)NNS_FndGetNextListObject(gTextLabelList, NULL);
         if (obj == NULL) {
             break;
         }
-        NNS_FndRemoveListObject(data_021c48c4, obj);
-        obj->~Unk_02050288();
-        func_020e85fc(data_021c489c, obj);
+        NNS_FndRemoveListObject(gTextLabelList, obj);
+        obj->~TextLabel();
+        Heap_Free(gTextHeap, obj);
     }
 }
 
-Unk_02050288::Unk_02050288(u32 arg1, s32 arg2, s32 arg3) {
+TextLabel::TextLabel(u32 arg1, s32 arg2, s32 arg3) {
     Unk_02050288_08 zero;
 
     unk_04 = 0;
@@ -951,7 +951,7 @@ Unk_02050288::Unk_02050288(u32 arg1, s32 arg2, s32 arg3) {
     unk_1c = 0;
     unk_20 = arg2;
     unk_24 = arg3;
-    unk_28 = &data_021c4910;
+    unk_28 = &gFontA;
     unk_2c = 2;
     unk_30 = 0;
     unk_34 = 1;
@@ -982,7 +982,7 @@ Unk_02050288::Unk_02050288(u32 arg1, s32 arg2, s32 arg3) {
     unk_78 = 0;
 }
 
-Unk_02050288::Unk_02050288(s32 arg1, s32 arg2, s32 arg3) {
+TextLabel::TextLabel(s32 arg1, s32 arg2, s32 arg3) {
     Unk_02050288_08 zero;
 
     unk_04 = 0;
@@ -992,7 +992,7 @@ Unk_02050288::Unk_02050288(s32 arg1, s32 arg2, s32 arg3) {
     unk_1c = arg1;
     unk_20 = arg2;
     unk_24 = arg3;
-    unk_28 = &data_021c4910;
+    unk_28 = &gFontA;
     unk_2c = 5;
     unk_30 = 0;
     unk_34 = 1;
@@ -1023,23 +1023,23 @@ Unk_02050288::Unk_02050288(s32 arg1, s32 arg2, s32 arg3) {
     unk_78 = 0;
 }
 
-Unk_02050288::~Unk_02050288() {}
+TextLabel::~TextLabel() {}
 
 extern "C" {
 
-BOOL func_02050278(char *out, u32 index) {
-    *out = data_020ca558[index];
+BOOL Text_GameCharToAscii(char *out, u32 index) {
+    *out = sGameCharToAsciiTable[index];
     return TRUE;
 }
 
-BOOL func_02050244(u8 *out, u32 c);
+BOOL Text_AsciiToGameChar(u8 *out, u32 c);
 
-BOOL func_0205026c(u8 *out, const u8 *c) {
-    return func_02050244(out, *c);
+BOOL Text_AsciiToGameCharPtr(u8 *out, const u8 *c) {
+    return Text_AsciiToGameChar(out, *c);
 }
 
-BOOL func_02050244(u8 *out, u32 c) {
-    const u8 *entry = data_020ca558;
+BOOL Text_AsciiToGameChar(u8 *out, u32 c) {
+    const u8 *entry = sGameCharToAsciiTable;
     u32 i = 0;
     while (i < 0xe0) {
         if (*entry == c) {
@@ -1051,18 +1051,18 @@ BOOL func_02050244(u8 *out, u32 c) {
     }
 }
 
-const u8 *func_0205023c(void) { return (const u8 *)&data_020ca494; }
-const u8 *func_02050234(void) { return (const u8 *)&data_020ca48c; }
-const u8 *func_0205022c(void) { return (const u8 *)&data_020ca480; }
-const u8 *func_02050224(void) { return (const u8 *)&data_020ca49c; }
-const u8 *func_0205021c(void) { return (const u8 *)&data_020ca490; }
-const u8 *func_02050214(void) { return (const u8 *)&data_020ca484; }
-const u8 *func_0205020c(void) { return (const u8 *)&data_020ca498; }
+const u8 *Text_GetSpecialCharStr1(void) { return (const u8 *)&data_020ca494; }
+const u8 *Text_GetSpecialCharStr4(void) { return (const u8 *)&data_020ca48c; }
+const u8 *Text_GetSpecialCharStr6(void) { return (const u8 *)&data_020ca480; }
+const u8 *Text_GetSpecialCharStr7(void) { return (const u8 *)&data_020ca49c; }
+const u8 *Text_GetSpecialCharStr5(void) { return (const u8 *)&data_020ca490; }
+const u8 *Text_GetSpecialCharStr2(void) { return (const u8 *)&data_020ca484; }
+const u8 *Text_GetSpecialCharStr3(void) { return (const u8 *)&data_020ca498; }
 int func_02050208(void) { return 0; }
 int func_02050204(void) { return 0; }
 
-u32 func_020501e8(u32 key) {
-    const u8 *entry = data_020ca4dc;
+u32 Text_ToUpper(u32 key) {
+    const u8 *entry = sToUpperPairs;
     while (*entry != 0) {
         if (key == *entry) {
             return entry[1];
@@ -1072,10 +1072,10 @@ u32 func_020501e8(u32 key) {
     return key;
 }
 
-u16 func_020501d4(u32 index) {
+u16 Text_GetCharSortKey(u32 index) {
     u16 result = 0;
     if (index < 0xe0) {
-        result = data_020dbac8[index];
+        result = sCharSortKeyTable[index];
     }
     return result;
 }

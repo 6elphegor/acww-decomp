@@ -131,7 +131,7 @@ extern int PXI_SendWordByFifo(u32, u32, u32);
 extern void PXI_Init(void);
 extern void PXI_SetFifoRecvCallback(u32, void *);
 extern void WaitByLoop(u32);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void PM_ForceToPowerOff(void);
 extern int OS_ReceiveMessage(void *, void *, u32);
 extern void OS_JamMessage(void *, void *, u32);

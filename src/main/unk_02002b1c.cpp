@@ -20,7 +20,7 @@ extern u16 data_020d47e4[32];
 }
 
 extern "C" {
-extern u8 data_0213c7b0[];
+extern u8 gViewMtxInv[];
 }
 
 extern "C" {
@@ -48,7 +48,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **data_021f59e4;
+extern u32 **gProfileTable;
 }
 
 extern "C" {
@@ -60,11 +60,11 @@ extern u32 data_020c6140[];
 }
 
 extern "C" {
-extern void *data_021eda68;
+extern void *gActorDefaultParent;
 }
 
 extern "C" {
-extern u8 data_021ef414[];
+extern u8 gViewFrustum[];
 }
 
 extern "C" {
@@ -136,11 +136,11 @@ void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
-void *func_020641d8(void *p);
+void *File_Load(void *p);
 }
 
 extern "C" {
@@ -204,20 +204,20 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-void *func_020ed4bc(void *list, u32 id, void *p);
+void *ProcList_FindByProfile(void *list, u32 id, void *p);
 }
 
 extern "C" {
-void *func_020ed508(void *list, u32 id);
+void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void func_0202e880(void *a, void *b, void *c, u32 d);
+void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
 class Unk_02039eb8 {
 public:
-    s32 func_02039eb8(void *m, void *v, s32 r, s32 *out);
+    s32 testSphere(void *m, void *v, s32 r, s32 *out);
 };
 
 extern "C" {
@@ -228,12 +228,12 @@ struct Unk_02002804_Buf {
     u16 unk_00[32];
 };
 
-// 0x30-byte record copied around by func_02002848 and func_02002898
+// 0x30-byte record copied around by Gfx3d_SetViewMatrix and func_02002898
 struct Unk_02002848_Data {
     u32 unk_00[12];
 };
 
-extern Unk_02002848_Data data_0213c7e0;
+extern Unk_02002848_Data gViewMtx;
 extern Unk_02002848_Data data_02135934_;
 
 // Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
@@ -290,32 +290,32 @@ struct Unk_0213c874 {
     }
 };
 
-Unk_0213c874 data_0213c874;
-void *data_0213c870;
-void *data_0213c86c;
+Unk_0213c874 gActorList;
+void *sActorSpawnPos;
+void *sActorSpawnRot;
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84() { func_020e79a0(&data_0213c874, &unk_50); }
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor() { func_020e79a0(&gActorList, &unk_50); }
 
-    void func_02002b84(void *out);
-    void func_02002bf4(Unk_02002cb0_Vec *v);
-    void func_02002c10();
-    void func_02002cb0(Unk_02002cb0_Vec *v);
-    void func_02002ce0(s32 a, s32 b, s32 c);
-    static void func_02002cf8(void *a, void *b, void *c, void *d, void *e);
-    static void func_02002d28(void *a, void *b);
-    static void *func_02002d3c(u32 id, Unk_020d5d84 *o);
-    static void *func_02002d74(u32 id);
+    void calcModelMatrix(void *out);
+    void updatePosition(Unk_02002cb0_Vec *v);
+    void calcVelocity();
+    void applyVelocity(Unk_02002cb0_Vec *v);
+    void setCullParams(s32 a, s32 b, s32 c);
+    static void spawn(void *a, void *b, void *c, void *d, void *e);
+    static void setSpawnTransform(void *a, void *b);
+    static void *findByProfile(u32 id, Actor *o);
+    static void *findById(u32 id);
 
     /* 0x50 */ Unk_02002f14_Node unk_50;
     /* 0x5c */ s32 unk_5c;
@@ -373,7 +373,7 @@ extern "C" void func_02002918(void);
 extern "C" u32 func_02002ffc(Unk_02002fc8 *o);
 extern "C" u32 func_02002ff8(Unk_02002fc8 *o);
 extern "C" u32 func_02002fec(u32 id);
-extern "C" void func_02002bdc(s32 *a, s32 *b);
+extern "C" void Math_AngleXZ(s32 *a, s32 *b);
 
 extern "C" u32 func_02002ffc(Unk_02002fc8 *o) { return func_02003008(o->unk_0a); }
 
@@ -390,52 +390,52 @@ u32 Unk_02002fc8::func_02002fc8(u32 arg) {
     return r;
 }
 
-Unk_020d5d84::Unk_020d5d84() {
+Actor::Actor() {
     unk_50.unk_00 = 0;
     unk_50.unk_04 = 0;
     unk_50.unk_08 = this;
-    func_020e7968(&data_0213c874, &unk_50);
-    Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)data_0213c870;
+    func_020e7968(&gActorList, &unk_50);
+    Unk_02002f14_S32Vec *v = (Unk_02002f14_S32Vec *)sActorSpawnPos;
     if (v) {
         unk_5c = v->unk_00;
         unk_60 = v->unk_04;
         unk_64 = v->unk_08;
     }
-    Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)data_0213c86c;
+    Unk_02002f14_S16Vec *w = (Unk_02002f14_S16Vec *)sActorSpawnRot;
     if (w) {
         unk_8c = w->unk_00;
         unk_8e = w->unk_02;
         unk_90 = w->unk_04;
-        Unk_02002f14_S16Vec *x = (Unk_02002f14_S16Vec *)data_0213c86c;
+        Unk_02002f14_S16Vec *x = (Unk_02002f14_S16Vec *)sActorSpawnRot;
         unk_92 = x->unk_00;
         unk_94 = x->unk_02;
         unk_96 = x->unk_04;
     }
-    u32 *e = data_021f59e4[*(u16 *)&unk_04[8]];
+    u32 *e = gProfileTable[*(u16 *)&unk_04[8]];
     unk_b0 = e[2];
-    func_02002ce0(e[3], e[4], e[5]);
+    setCullParams(e[3], e[4], e[5]);
 }
 
-BOOL Unk_020d5d84::vfunc_04() {
-    if (Unk_020d8c7c_Base::vfunc_04()) return TRUE;
+BOOL Actor::vfunc_04() {
+    if (ProcBase::vfunc_04()) return TRUE;
     return FALSE;
 }
 
-void Unk_020d5d84::vfunc_08() {
-    Unk_020d8c7c::vfunc_08();
+void Actor::postCreate() {
+    GameProc::postCreate();
     unk_b0 |= 4;
 }
 
-BOOL Unk_020d5d84::vfunc_10() {
-    if (Unk_020d8c7c_Base::vfunc_10()) return TRUE;
+BOOL Actor::preDelete() {
+    if (ProcBase::preDelete()) return TRUE;
     return FALSE;
 }
 
-BOOL Unk_020d5d84::vfunc_14() { return Unk_020d8c7c_Base::vfunc_14(); }
+BOOL Actor::vfunc_14() { return ProcBase::vfunc_14(); }
 
-BOOL Unk_020d5d84::vfunc_1c() {
+BOOL Actor::preExecute() {
     s32 r4;
-    if (!Unk_020d8c7c_Base::vfunc_1c()) return FALSE;
+    if (!ProcBase::preExecute()) return FALSE;
     unk_68 = unk_5c;
     unk_6c = unk_60;
     unk_70 = unk_64;
@@ -446,7 +446,7 @@ BOOL Unk_020d5d84::vfunc_1c() {
         v[0] = unk_c4;
         v[1] = z;
         v[2] = x;
-        r4 = ((Unk_02039eb8 *)data_021ef414)->func_02039eb8(&data_0213c7e0, v, unk_b8, (s32 *)unk_74);
+        r4 = ((Unk_02039eb8 *)gViewFrustum)->testSphere(&gViewMtx, v, unk_b8, (s32 *)unk_74);
     }
     unk_b0 &= ~4;
     if (unk_b0 & 3) {
@@ -458,52 +458,52 @@ BOOL Unk_020d5d84::vfunc_1c() {
     return TRUE;
 }
 
-BOOL Unk_020d5d84::vfunc_20() { return Unk_020d8c7c_Base::vfunc_20(); }
+BOOL Actor::vfunc_20() { return ProcBase::vfunc_20(); }
 
-BOOL Unk_020d5d84::vfunc_28() {
-    if (!Unk_020d8c7c_Base::vfunc_28()) return FALSE;
+BOOL Actor::preDraw() {
+    if (!ProcBase::preDraw()) return FALSE;
     if ((unk_b0 & 4) && (unk_b0 & 2)) return FALSE;
     return TRUE;
 }
 
-BOOL Unk_020d5d84::vfunc_2c() { return Unk_020d8c7c_Base::vfunc_2c(); }
+BOOL Actor::postDraw() { return ProcBase::postDraw(); }
 
-void *Unk_020d5d84::func_02002d74(u32 id) {
-    void *r = func_020ed508(&data_0213c874, id);
+void *Actor::findById(u32 id) {
+    void *r = ProcList_FindById(&gActorList, id);
     if (r) return ((Unk_02002f14_Node *)r)->unk_08;
     return 0;
 }
 
-void *Unk_020d5d84::func_02002d3c(u32 id, Unk_020d5d84 *o) {
+void *Actor::findByProfile(u32 id, Actor *o) {
     void *r;
     if (o != 0) {
-        r = func_020ed4bc(&data_0213c874, id, &o->unk_50);
+        r = ProcList_FindByProfile(&gActorList, id, &o->unk_50);
     } else {
-        r = func_020ed4bc(&data_0213c874, id, 0);
+        r = ProcList_FindByProfile(&gActorList, id, 0);
     }
     if (r) return ((Unk_02002f14_Node *)r)->unk_08;
     return 0;
 }
 
-void Unk_020d5d84::func_02002d28(void *a, void *b) {
-    data_0213c870 = a;
-    data_0213c86c = b;
+void Actor::setSpawnTransform(void *a, void *b) {
+    sActorSpawnPos = a;
+    sActorSpawnRot = b;
 }
 
-void Unk_020d5d84::func_02002cf8(void *a, void *b, void *c, void *d, void *e) {
+void Actor::spawn(void *a, void *b, void *c, void *d, void *e) {
     void *t = e;
-    if (t == 0) t = data_021eda68;
-    func_02002d28(c, d);
-    func_0202e880(a, t, b, 3);
+    if (t == 0) t = gActorDefaultParent;
+    setSpawnTransform(c, d);
+    GameProc_CreateChild(a, t, b, 3);
 }
 
-void Unk_020d5d84::func_02002ce0(s32 a, s32 b, s32 c) {
+void Actor::setCullParams(s32 a, s32 b, s32 c) {
     unk_b4 = a;
     unk_b8 = b;
     unk_bc = c;
 }
 
-void Unk_020d5d84::func_02002cb0(Unk_02002cb0_Vec *v) {
+void Actor::applyVelocity(Unk_02002cb0_Vec *v) {
     VEC_Add(&unk_5c, &unk_a4, &unk_5c);
     if (v) {
         unk_5c = unk_5c + v->unk_10;
@@ -511,7 +511,7 @@ void Unk_020d5d84::func_02002cb0(Unk_02002cb0_Vec *v) {
     }
 }
 
-void Unk_020d5d84::func_02002c10() {
+void Actor::calcVelocity() {
     if (unk_98 == 0) {
         s32 v = unk_a0;
         s32 w = unk_a8 + unk_9c;
@@ -530,16 +530,16 @@ void Unk_020d5d84::func_02002c10() {
     }
 }
 
-void Unk_020d5d84::func_02002bf4(Unk_02002cb0_Vec *v) {
-    func_02002c10();
-    func_02002cb0(v);
+void Actor::updatePosition(Unk_02002cb0_Vec *v) {
+    calcVelocity();
+    applyVelocity(v);
 }
 
-extern "C" void func_02002bdc(s32 *a, s32 *b) {
+extern "C" void Math_AngleXZ(s32 *a, s32 *b) {
     func_020e7b98(b[0] - a[0], b[2] - a[2]);
 }
 
-void Unk_020d5d84::func_02002b84(void *out) {
+void Actor::calcModelMatrix(void *out) {
     u32 m[12];
     func_020e8388(m, unk_c4, unk_c8, unk_cc);
     func_020e8434(m, (s16)unk_d0);

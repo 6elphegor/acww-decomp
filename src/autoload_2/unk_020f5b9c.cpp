@@ -5,85 +5,85 @@
 // compiler's names as labels; only the vtables are renamed to _ZTV.. at their starts).
 // EXTENT (from the data order): G010a's 13 equal-size vtables are TWO files. With mwcc's data order (vtables created last, in reverse
 // class-declaration order, all objects heapsorted by size) the 13 vtables as one
-// file need the base class Unk_0213bac4 declared 9th, after eight of its own derived classes: impossible. Split after the 8th vtable,
+// file need the base class TvSound declared 9th, after eight of its own derived classes: impossible. Split after the 8th vtable,
 // this file's 8 vtables come out in the original order with the classes declared in the natural order (base, then 9e4, a04, ..., aa4 =
 // vtable order = the order of their methods in the text), and its text ends exactly where the base's methods end (0x020f6850); the other
 // five classes (0x0213bae4..bb64, text 0x020f6850-0x020f7a5c) are the next file, RC_020f6850. The 1-byte data_0213b9d8 in front is not
 // this file's (with it the declaration order would be scrambled; its only user is G012b's func_020f4f74).
 // Classes (vtable start / dsd label at +8; slots: 0 reset, 1 release, 2 event handler, 3 set flag, 4 mute, 5 init):
-//   Unk_0213bac4   base (vtable 0x0213babc): f6800 / f67c8 / f67b8 / f678c / f6764 / f5b9c, helpers report f6678 and update f66d0.
-//                  main constructs all of them (func_02003878, inline constructors) and declares the class in unk_020030d8.cpp.
-//   Unk_0213b9e4 / ba04 / ba24 / ba44 / ba64 / ba84 / baa4 : Unk_0213bac4 (vtables 0x0213b9dc .. 0x0213ba9c); derived members sit in the
+//   TvSound   base (vtable 0x0213babc): f6800 / f67c8 / f67b8 / f678c / f6764 / f5b9c, helpers report f6678 and update f66d0.
+//                  main constructs all of them (TvSound_Create, inline constructors) and declares the class in unk_020030d8.cpp.
+//   TvSoundProgram0 / ba04 / ba24 / ba44 / ba64 / ba84 / baa4 : TvSound (vtables 0x0213b9dc .. 0x0213ba9c); derived members sit in the
 //                  base's tail padding (+0xd).
 // The class DECLARATION order sets the vtable order: keep it.
 #include "types.h"
 
-// Base of the sound-emitter objects that main's func_02003878 creates (inline constructors there store this vtable, then the
+// Base of the sound-emitter objects that main's TvSound_Create creates (inline constructors there store this vtable, then the
 // derived one). main's unk_020030d8.cpp declares the same class (non-virtual helpers func_020037b0.. are defined in main).
-class Unk_0213bac4 {
+class TvSound {
 public:
-    virtual void vfunc_00(); // reset
-    virtual void vfunc_04(); // release both voices
+    virtual void reset(); // reset
+    virtual void release(); // release both voices
     virtual void vfunc_08(s32 id, void *arg); // event handler
-    virtual void vfunc_0c(s32 v);
-    virtual void vfunc_10();
-    virtual void vfunc_14(); // init
+    virtual void turnOn(s32 v);
+    virtual void turnOff();
+    virtual void startSounds(); // init
 
-    void report(s32 code, u32 *slot);
-    void update(void *arg);
+    void startSe(s32 code, u32 *slot);
+    void updatePosition(void *arg);
 
     /* 0x04 */ u32 a; // sound handles
     /* 0x08 */ u32 b;
     /* 0x0c */ u8 c12;
 };
 
-class Unk_0213b9e4 : public Unk_0213bac4 {
+class TvSoundProgram0 : public TvSound {
 public:
-    virtual void vfunc_14();
+    virtual void startSounds();
 };
 
-class Unk_0213ba04 : public Unk_0213bac4 {
+class TvSoundProgram1 : public TvSound {
 public:
-    virtual void vfunc_14();
+    virtual void startSounds();
 };
 
-class Unk_0213ba24 : public Unk_0213bac4 {
+class TvSoundProgram2 : public TvSound {
 public:
-    virtual void vfunc_00();
+    virtual void reset();
     virtual void vfunc_08(s32 id, void *arg);
-    virtual void vfunc_14();
+    virtual void startSounds();
 
     /* 0x0d */ s8 d13;
 };
 
-class Unk_0213ba44 : public Unk_0213bac4 {
+class TvSoundProgram3 : public TvSound {
 public:
     virtual void vfunc_08(s32 id, void *arg);
-    virtual void vfunc_14();
+    virtual void startSounds();
 
     /* 0x0d */ s8 d13;
 };
 
-class Unk_0213ba64 : public Unk_0213bac4 {
+class TvSoundProgram5 : public TvSound {
 public:
     virtual void vfunc_08(s32 id, void *arg);
-    virtual void vfunc_14();
+    virtual void startSounds();
 
     /* 0x0d */ s8 d13;
 };
 
-class Unk_0213ba84 : public Unk_0213bac4 {
+class TvSoundProgram9 : public TvSound {
 public:
     virtual void vfunc_08(s32 id, void *arg);
-    virtual void vfunc_14();
+    virtual void startSounds();
 };
 
-class Unk_0213baa4 : public Unk_0213bac4 {
+class TvSoundWeather : public TvSound {
 public:
     virtual void vfunc_08(s32 id, void *arg);
-    virtual void vfunc_14();
+    virtual void startSounds();
 
-    void nextFrame();
+    void pickNextLoop();
 
     /* 0x0d */ u8 c13;
     /* 0x0e */ u8 c14;
@@ -91,59 +91,59 @@ public:
 };
 
 extern "C" {
-extern u8 data_021f5b80[];
-void func_0206d49c(void);
-u32 func_020f07f0(void *g, u32 n);
+extern u8 gSndMgr[];
+void Fatal_Trap(void);
+u32 SndMgr_Rand(void *g, u32 n);
 void NNS_SndArcPlayerStartSeqArc(void *slot, u32 a, s32 b);
 void NNS_SndArcPlayerStartSeq(void *p, u32 v);
 void func_02109fd0(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetVolume(void *p, s32 v);
 void NNS_SndHandleReleaseSeq(void *p);
 void NNS_SndHandleInit(void *p);
-void func_020eda30(void *p, u32 v);
+void Snd_StopHandle(void *p, u32 v);
 void func_0210a148(void *p, u32 a, u32 b);
 void NNS_SndPlayerSetTrackPan(void *p, u32 a, u32 b);
 void NNS_SndPlayerMoveVolume(void *p, u32 a, u32 b);
 void NNS_SndPlayerStopSeq(void *p, u32 a);
 void func_020f4904(void *a, u32 b);
-u32 func_020f48d8(void);
-u32 func_020f4718(void *a, u32 b);
+u32 Snd_DistanceToVolume(void);
+u32 Snd_CalcPan(void *a, u32 b);
 }
 
 static inline BOOL nz(u32 v) { return v != 0; }
 
-void Unk_0213bac4::vfunc_00() {
+void TvSound::reset() {
     NNS_SndHandleInit(&a);
     NNS_SndHandleInit(&b);
     c12 = 0;
-    vfunc_14();
+    startSounds();
     NNS_SndPlayerSetVolume(&a, 0);
     NNS_SndPlayerSetVolume(&b, 0);
 }
 
-void Unk_0213bac4::vfunc_04() {
-    func_020eda30(&a, 0);
-    func_020eda30(&b, 0);
+void TvSound::release() {
+    Snd_StopHandle(&a, 0);
+    Snd_StopHandle(&b, 0);
     NNS_SndHandleReleaseSeq(&a);
     NNS_SndHandleReleaseSeq(&b);
 }
 
-void Unk_0213bac4::vfunc_08(s32 id, void *arg) {
-    return update(arg);
+void TvSound::vfunc_08(s32 id, void *arg) {
+    return updatePosition(arg);
 }
 
-void Unk_0213bac4::vfunc_0c(s32 v) {
+void TvSound::turnOn(s32 v) {
     c12 = v;
     NNS_SndPlayerSetVolume(&a, 127);
     NNS_SndPlayerSetVolume(&b, 127);
 }
 
-void Unk_0213bac4::vfunc_10() {
+void TvSound::turnOff() {
     NNS_SndPlayerSetVolume(&a, 0);
     NNS_SndPlayerSetVolume(&b, 0);
 }
 
-void Unk_0213bac4::update(void *x) {
+void TvSound::updatePosition(void *x) {
     u32 r5;
     u32 r4;
     if (x == 0) {
@@ -152,45 +152,45 @@ void Unk_0213bac4::update(void *x) {
         return;
     }
     func_020f4904(x, 0);
-    r5 = func_020f48d8();
-    r4 = func_020f4718(x, 0);
+    r5 = Snd_DistanceToVolume();
+    r4 = Snd_CalcPan(x, 0);
     NNS_SndPlayerSetVolume(&a, r5);
     NNS_SndPlayerSetVolume(&b, r5);
     NNS_SndPlayerSetTrackPan(&a, 15, r4);
     NNS_SndPlayerSetTrackPan(&b, 15, r4);
 }
 
-void Unk_0213bac4::report(s32 code, u32 *slot) {
-    if (slot == 0) func_0206d49c();
+void TvSound::startSe(s32 code, u32 *slot) {
+    if (slot == 0) Fatal_Trap();
     NNS_SndArcPlayerStartSeqArc(slot, 1, code % 1000);
 }
 
-void Unk_0213b9e4::vfunc_14() {
-    return report(0x4f0, &a);
+void TvSoundProgram0::startSounds() {
+    return startSe(0x4f0, &a);
 }
 
-void Unk_0213ba04::vfunc_14() {
-    return report(0x4f1, &a);
+void TvSoundProgram1::startSounds() {
+    return startSe(0x4f1, &a);
 }
 
-void Unk_0213ba24::vfunc_00() {
-    Unk_0213bac4::vfunc_00();
+void TvSoundProgram2::reset() {
+    TvSound::reset();
     d13 = -1;
 }
 
-void Unk_0213ba24::vfunc_14() {
-    return report(0x4f2, &b);
+void TvSoundProgram2::startSounds() {
+    return startSe(0x4f2, &b);
 }
 
-void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
+void TvSoundProgram2::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (!nz(b)) report(0x4f2, &b);
+        if (!nz(b)) startSe(0x4f2, &b);
         d13++;
         if (d13 == 3) d13 = 0;
         switch (d13) {
         case 0:
-            report(0x4f6, &a);
+            startSe(0x4f6, &a);
             break;
         case 1:
             NNS_SndArcPlayerStartSeq(&a, 247);
@@ -207,18 +207,18 @@ void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
         func_02109fd0(&a, 0, 2);
         break;
     case 150:
-        report(0x4f3, &b);
+        startSe(0x4f3, &b);
         func_02109fd0(&a, 0, 0);
         break;
     case 200:
-        report(0x4f4, &b);
+        startSe(0x4f4, &b);
         func_02109fd0(&a, 1, 2);
         break;
     case 300:
         func_02109fd0(&a, 0, 3);
         break;
     case 375:
-        report(0x4f5, &b);
+        startSe(0x4f5, &b);
         break;
     case 385:
         if (d13 == 2) NNS_SndPlayerStopSeq(&a, 15);
@@ -237,49 +237,49 @@ void Unk_0213ba24::vfunc_08(s32 id, void *arg) {
         func_0210a148(&b, 0xfff, 100);
         break;
     }
-    update(arg);
+    updatePosition(arg);
 }
 
-void Unk_0213ba44::vfunc_14() {
+void TvSoundProgram3::startSounds() {
     NNS_SndArcPlayerStartSeq(&a, 0xac);
     d13 = 0;
 }
 
-void Unk_0213ba44::vfunc_08(s32 id, void *arg) {
+void TvSoundProgram3::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (d13 == 0) report(0x4f7, &b);
+        if (d13 == 0) startSe(0x4f7, &b);
         break;
     case 120:
-        if (d13 == 1) report(0x4f8, &b);
+        if (d13 == 1) startSe(0x4f8, &b);
         break;
     case 190:
-        if (d13 == 0) report(0x4f9, &b);
+        if (d13 == 0) startSe(0x4f9, &b);
         break;
     case 210:
-        if (d13 == 1) report(0x4fb, &b);
+        if (d13 == 1) startSe(0x4fb, &b);
         break;
     case 300:
-        if (d13 == 0) report(0x4fa, &b);
+        if (d13 == 0) startSe(0x4fa, &b);
         break;
     case 349:
         d13++;
         if (d13 == 2) d13 = 0;
         break;
     }
-    update(arg);
+    updatePosition(arg);
 }
 
-void Unk_0213ba64::vfunc_14() {
+void TvSoundProgram5::startSounds() {
     d13 = 0;
 }
 
-void Unk_0213ba64::vfunc_08(s32 id, void *arg) {
+void TvSoundProgram5::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 1:
-        if (d13 == 0) report(0x4fc, &a);
-        else report(0x4fd, &a);
-        if (!nz(b)) report(0x500, &b);
+        if (d13 == 0) startSe(0x4fc, &a);
+        else startSe(0x4fd, &a);
+        if (!nz(b)) startSe(0x500, &b);
         break;
     case 70:
         func_02109fd0(&b, 1, 1);
@@ -291,8 +291,8 @@ void Unk_0213ba64::vfunc_08(s32 id, void *arg) {
         func_02109fd0(&b, 1, 0);
         break;
     case 230:
-        if (d13 == 0) report(0x4fe, &a);
-        else report(0x4ff, &a);
+        if (d13 == 0) startSe(0x4fe, &a);
+        else startSe(0x4ff, &a);
         break;
     case 253:
         if (d13 == 1) func_02109fd0(&b, 2, 2);
@@ -324,23 +324,23 @@ void Unk_0213ba64::vfunc_08(s32 id, void *arg) {
         if (d13 == 2) d13 = 0;
         break;
     }
-    update(arg);
+    updatePosition(arg);
 }
 
-void Unk_0213ba84::vfunc_14() {
-    report(0x501, &a);
-    report(0x502, &b);
+void TvSoundProgram9::startSounds() {
+    startSe(0x501, &a);
+    startSe(0x502, &b);
 }
 
-void Unk_0213ba84::vfunc_08(s32 id, void *arg) {
+void TvSoundProgram9::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 0:
     case 1:
     case 2:
     case 3:
     case 4:
-        if (!nz(a)) report(0x501, &a);
-        if (!nz(b)) report(0x502, &b);
+        if (!nz(a)) startSe(0x501, &a);
+        if (!nz(b)) startSe(0x502, &b);
         func_02109fd0(&a, 0, 1);
         func_02109fd0(&b, 0, 1);
         break;
@@ -361,55 +361,55 @@ void Unk_0213ba84::vfunc_08(s32 id, void *arg) {
         func_02109fd0(&b, 0, 3);
         break;
     }
-    update(arg);
+    updatePosition(arg);
 }
 
-void Unk_0213baa4::vfunc_14() {
+void TvSoundWeather::startSounds() {
     c13 = 0;
-    c14 = func_020f07f0(data_021f5b80, 3);
+    c14 = SndMgr_Rand(gSndMgr, 3);
     c15 = 0;
     NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));
 }
 
-void Unk_0213baa4::nextFrame() {
+void TvSoundWeather::pickNextLoop() {
     u8 v;
     do {
-        v = func_020f07f0(data_021f5b80, 3);
+        v = SndMgr_Rand(gSndMgr, 3);
     } while (v == c14);
     c14 = v;
     NNS_SndArcPlayerStartSeq(&a, (u16)(c14 + 0xad));
 }
 
-void Unk_0213baa4::vfunc_08(s32 id, void *arg) {
+void TvSoundWeather::vfunc_08(s32 id, void *arg) {
     switch (id) {
     case 10:
         switch (c15) {
         case 0:
-            report(0x503, &b);
+            startSe(0x503, &b);
             break;
         case 1:
-            report(0x505, &b);
+            startSe(0x505, &b);
             break;
         }
         break;
     case 130:
-        if (c15 == 0) report(0x504, &b);
+        if (c15 == 0) startSe(0x504, &b);
         break;
     case 150:
-        if (c15 == 1) report(0x506, &b);
+        if (c15 == 1) startSe(0x506, &b);
         break;
     case 399:
         c13++;
         if (c13 == 7) {
             c13 = 0;
-            nextFrame();
+            pickNextLoop();
         }
         c15++;
         if (c15 == 3) c15 = 0;
         break;
     }
-    update(arg);
+    updatePosition(arg);
 }
 
-void Unk_0213bac4::vfunc_14() {
+void TvSound::startSounds() {
 }

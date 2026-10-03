@@ -8,7 +8,7 @@ void FS_CloseFile(void *);
 void OS_ResetSystem(s32);
 }
 
-u8 data_021c21e4[0x20];
+u8 gBuildTime[0x20];
 
 class Unk_020376f4 {
 public:
@@ -35,11 +35,11 @@ void Unk_020376f4::func_020376f4() {
     }
 }
 
-extern "C" void func_020376c0() {
+extern "C" void Main_LoadBuildTime() {
     u8 buf[0x4c];
     FS_InitFile(buf);
     if (FS_OpenFile(buf, "/BUILDTIME") == 1) {
-        FS_ReadFile(buf, data_021c21e4, 0x20);
+        FS_ReadFile(buf, gBuildTime, 0x20);
         FS_CloseFile(buf);
     }
 }

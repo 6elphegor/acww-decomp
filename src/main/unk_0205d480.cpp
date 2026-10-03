@@ -1,12 +1,12 @@
 #include "types.h"
 
 extern "C" {
-void *func_020e8628(void *heap, s32 size, s32 align);
+void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void func_020e877c(void *p);
 void func_020e885c(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_020641b4(const char *path, void *buf, s32 size);
+s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 func_0205bc60();
 s32 func_0205bc7c();
 extern void *data_021c61c4;
@@ -46,7 +46,7 @@ public:
     void func_020b8b08(void);
 };
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
     u32 unk_04;
     u32 unk_08;
@@ -54,8 +54,8 @@ public:
     u8 unk_10;
     u8 unk_11;
 
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_020551f4(u32 a, u32 b, u32 c);
     void func_02055200(void);
     void func_02055210(void *p);
@@ -81,7 +81,7 @@ static inline BOOL Unk_0205d4e4_IsOne(u8 v) {
 class Unk_0205d5e4 {
 public:
     void *unk_00[4];
-    Unk_020dbe24 unk_10[4];
+    TexVramSlot unk_10[4];
     Unk_020e45ec unk_60[4];
     u8 unk_d0[4];
 
@@ -90,7 +90,7 @@ public:
     void func_0205d5e4(u32 i, u32 v);
     u8 func_0205d5ec(u32 i);
     Unk_020e45ec *func_0205d5f4(u32 i);
-    Unk_020dbe24 *func_0205d600(u32 i);
+    TexVramSlot *func_0205d600(u32 i);
     void *func_0205d60c(u32 i);
     void func_0205d614(void);
     void func_0205d668(void);
@@ -119,7 +119,7 @@ void func_0205d554(u8 *p, s32 idx);
 void func_0205d530(u8 *p);
 BOOL func_0205d4e4(u8 *p);
 void *func_0205d4d0(u8 *p);
-Unk_020dbe24 *func_0205d4bc(u8 *p);
+TexVramSlot *func_0205d4bc(u8 *p);
 Unk_020e45ec *func_0205d4a8(u8 *p);
 u8 func_0205d494(u8 *p);
 void func_0205d480(u8 *p, s32 v);
@@ -185,7 +185,7 @@ void Unk_0205d5e4::func_0205d668(void) {
     }
     void *heap = data_021c61c4;
     for (i = 0; i < n; i++) {
-        unk_00[i] = func_020e8628(heap, func_0205d770(), 4);
+        unk_00[i] = Heap_AllocAligned(heap, func_0205d770(), 4);
     }
 }
 
@@ -206,7 +206,7 @@ void Unk_0205d5e4::func_0205d614(void) {
 }
 
 void *Unk_0205d5e4::func_0205d60c(u32 i) { return unk_00[i]; }
-Unk_020dbe24 *Unk_0205d5e4::func_0205d600(u32 i) { return &unk_10[i]; }
+TexVramSlot *Unk_0205d5e4::func_0205d600(u32 i) { return &unk_10[i]; }
 Unk_020e45ec *Unk_0205d5e4::func_0205d5f4(u32 i) { return &unk_60[i]; }
 u8 Unk_0205d5e4::func_0205d5ec(u32 i) { return unk_d0[i]; }
 void Unk_0205d5e4::func_0205d5e4(u32 i, u32 v) { unk_d0[i] = v; }
@@ -237,7 +237,7 @@ extern "C" void func_0205d554(u8 *p, s32 idx) {
     func_0205d480(p, idx);
     if (idx < 0x4b) {
         char *path = func_0205d778(idx);
-        func_020641b4(path, r6, func_0205d770());
+        File_LoadToBuffer(path, r6, func_0205d770());
     }
 }
 
@@ -261,7 +261,7 @@ extern "C" BOOL func_0205d4e4(u8 *p) {
 extern "C" void *func_0205d4d0(u8 *p) {
     return data_021c6550.func_0205d60c(*p);
 }
-extern "C" Unk_020dbe24 *func_0205d4bc(u8 *p) {
+extern "C" TexVramSlot *func_0205d4bc(u8 *p) {
     return data_021c6550.func_0205d600(*p);
 }
 extern "C" Unk_020e45ec *func_0205d4a8(u8 *p) {

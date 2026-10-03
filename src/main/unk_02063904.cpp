@@ -20,7 +20,7 @@ struct Unk_02063d18_File {
     u8 unk_30[0x18];
 };
 
-struct Unk_02063d18_Hdr {
+struct FileLzHeader {
     u32 magic;
     union {
         u32 w;
@@ -92,11 +92,11 @@ s32 func_01ffcb0c(s32 a, s32 b);
 }
 
 extern "C" {
-u32 func_020e7f90(void *state, u32 n);
+u32 Random_NextBelow(void *state, u32 n);
 }
 
 extern "C" {
-u32 func_020e7fa8(void *state);
+u32 Random_Next(void *state);
 }
 
 extern "C" {
@@ -104,31 +104,31 @@ s32 FS_UnloadOverlay(s32 a, s32 b);
 }
 
 extern "C" {
-s32 func_020643d4(s32 a, s32 b);
+s32 File_LoadOverlayEx(s32 a, s32 b);
 }
 
 extern "C" {
-extern u8 data_021c7c88[];
+extern u8 gRandom[];
 }
 
 extern "C" {
-void func_02064398(Unk_02063d18_File *f, u32 a);
+void File_OpenOrPanic(Unk_02063d18_File *f, u32 a);
 }
 
 extern "C" {
-BOOL func_020643b8(Unk_02063d18_File *f, u32 a);
+BOOL File_Open(Unk_02063d18_File *f, u32 a);
 }
 
 extern "C" {
-void *func_020641ec(u32 path, void *heap, s32 align, u32 *outSize);
+void *File_LoadAlloc(u32 path, void *heap, s32 align, u32 *outSize);
 }
 
 extern "C" {
-void *func_020e8628(void *heap, u32 size, s32 align);
+void *Heap_AllocAligned(void *heap, u32 size, s32 align);
 }
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 extern "C" {
@@ -180,15 +180,15 @@ void func_02063cdc(u8 *p);
 }
 
 extern "C" {
-s32 func_02063f60(Unk_02063d18_File *f);
+s32 File_GetDecodedSize(Unk_02063d18_File *f);
 }
 
 extern "C" {
-void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
+void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
 }
 
 extern "C" {
-s32 func_0206406c(Unk_02063d18_File *f, void *dst, u32 n);
+s32 File_ReadAll(Unk_02063d18_File *f, void *dst, u32 n);
 }
 
 extern "C" {
@@ -196,7 +196,7 @@ u32 func_020e86fc(void *h, u32 flags);
 }
 
 extern "C" {
-void *func_020e8608(void *h, u32 size);
+void *Heap_Alloc(void *h, u32 size);
 }
 
 extern "C" {
@@ -204,7 +204,7 @@ u32 func_020e8a90(void *h);
 }
 
 extern "C" {
-void func_020e85fc(void *h, void *p);
+void Heap_Free(void *h, void *p);
 }
 
 extern "C" {
@@ -224,37 +224,37 @@ s32 func_021162b0(void *st, void *p, s32 n);
 }
 
 extern "C" {
-extern void *data_021f4824;
+extern void *gRootHeap;
 }
 
 extern "C" {
-s32 func_02064040(s32 a, s32 b, s32 c, const char *fmt, va_list va);
+s32 File_LoadAllocV(s32 a, s32 b, s32 c, const char *fmt, va_list va);
 }
 
 extern "C" {
-s32 func_020641b4(const char *buf, void *a, u32 b);
+s32 File_LoadToBuffer(const char *buf, void *a, u32 b);
 }
 
-struct Unk_021c7d40_Buf {
+struct FileBlockCache {
     u16 tbl[0x100];
     u32 raw[0x400];
     u8 out[0x1000];
 };
 
-extern Unk_021c7d40_Buf data_021c7d40;
-extern u16 data_021c7d3c;
-extern u8 data_021c7d38;
+extern FileBlockCache sFileBlockCache;
+extern u16 sFileBlockCacheFileId;
+extern u8 sFileBlockCacheIndex;
 
 extern "C" {
-enum Unk_02063d18_Type { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };
+enum FileBlockType { Unk_02063d18_T0 = 0, Unk_02063d18_T10 = 0x10, Unk_02063d18_TF0 = 0xf0 };
 }
 
-extern "C" BOOL func_02063f18(u32 a);
-extern "C" void func_02063ee8(u32 a, void *dst, u32 size, u32 off);
-extern "C" void func_02063eac(Unk_02063eac_FileId id, s32 a, s32 b, s32 c);
-extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
-extern "C" s32 func_02063d0c(s32 x);
-extern "C" s32 func_02063d00(s32 x);
+extern "C" BOOL File_Exists(u32 a);
+extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off);
+extern "C" void File_ReadRangeById(Unk_02063eac_FileId id, s32 a, s32 b, s32 c);
+extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off);
+extern "C" s32 File_LoadOverlay(s32 x);
+extern "C" s32 File_UnloadOverlay(s32 x);
 extern "C" void func_02063cfc();
 extern "C" void func_02063cf8();
 extern "C" void func_02063cdc(u8 *p);
@@ -287,31 +287,31 @@ extern "C" void func_02063904(u16 *p, const void *src);
 
 
 
-extern "C" BOOL func_02063f18(u32 a) {
+extern "C" BOOL File_Exists(u32 a) {
     Unk_02063d18_File f;
-    BOOL r = func_020643b8(&f, a);
+    BOOL r = File_Open(&f, a);
     if (r) FS_CloseFile(&f);
     return r;
 }
 
-extern "C" void func_02063ee8(u32 a, void *dst, u32 size, u32 off) {
+extern "C" void File_ReadRangeByPath(u32 a, void *dst, u32 size, u32 off) {
     Unk_02063d18_File f;
-    func_02064398(&f, a);
-    func_02063d18(&f, dst, size, off);
+    File_OpenOrPanic(&f, a);
+    File_ReadRange(&f, dst, size, off);
     FS_CloseFile(&f);
 }
 
-extern "C" void func_02063eac(Unk_02063eac_FileId id, s32 a, s32 b, s32 c) {
+extern "C" void File_ReadRangeById(Unk_02063eac_FileId id, s32 a, s32 b, s32 c) {
     Unk_02063d18_File f;
     FS_InitFile(&f);
     if (FS_OpenFileFast(&f, id)) {
-        func_02063d18(&f, (void *)a, b, c);
+        File_ReadRange(&f, (void *)a, b, c);
         FS_CloseFile(&f);
     }
 }
 
-extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off) {
-    Unk_02063d18_Hdr hdr;
+extern "C" void File_ReadRange(Unk_02063d18_File *f, void *dst, u32 size, u32 off) {
+    FileLzHeader hdr;
     u32 n, nblk, base;
     s32 len, c;
     u32 end, lo, hi;
@@ -324,9 +324,9 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
         if ((hdr.w & 0xf0) != 0xf0) return;
         if ((u32)(f->unk_28 - f->unk_24) > 0xffff) return;
         blk = 0x20 << hdr.b.lg;
-        data_021c7d40.tbl[0] = 0;
+        sFileBlockCache.tbl[0] = 0;
         n = ((_u32_div_f((hdr.w >> 8) - 1, blk) + 1)) * 2;
-        FS_ReadFile(f, (u8 *)data_021c7d40.tbl + 2, n);
+        FS_ReadFile(f, (u8 *)sFileBlockCache.tbl + 2, n);
         base = n + 8;
         end = off + size;
         nblk = _u32_div_f(end - 1, blk) + 1;
@@ -335,21 +335,21 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
             if (off >= hi) continue;
             lo = blk * i;
             if (end <= lo) continue;
-            if (f->unk_20 != data_021c7d3c || i != data_021c7d38) {
-                data_021c7d3c = f->unk_20;
-                data_021c7d38 = i;
-                u16 *tp = data_021c7d40.tbl + i;
+            if (f->unk_20 != sFileBlockCacheFileId || i != sFileBlockCacheIndex) {
+                sFileBlockCacheFileId = f->unk_20;
+                sFileBlockCacheIndex = i;
+                u16 *tp = sFileBlockCache.tbl + i;
                 u32 t0 = tp[0];
                 len = tp[1] - t0;
                 FS_SeekFile(f, base + t0, 0);
-                FS_ReadFile(f, data_021c7d40.raw, len);
-                u32 w = data_021c7d40.raw[0];
-                Unk_02063d18_Type ty = (Unk_02063d18_Type)(w & 0xf0);
+                FS_ReadFile(f, sFileBlockCache.raw, len);
+                u32 w = sFileBlockCache.raw[0];
+                FileBlockType ty = (FileBlockType)(w & 0xf0);
                 u32 sz = w >> 8;
                 if (ty == Unk_02063d18_T0) {
-                    MI_CpuCopy8((u8 *)data_021c7d40.raw + 4, data_021c7d40.out, sz);
+                    MI_CpuCopy8((u8 *)sFileBlockCache.raw + 4, sFileBlockCache.out, sz);
                 } else {
-                    MI_UncompressLZ8(data_021c7d40.raw, data_021c7d40.out);
+                    MI_UncompressLZ8(sFileBlockCache.raw, sFileBlockCache.out);
                 }
             }
             a = off - lo;
@@ -357,7 +357,7 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
             b = hi - end;
             if (b < 0) b = 0;
             c = blk - a - b;
-            MI_CpuCopy8(data_021c7d40.out + a, dst, c);
+            MI_CpuCopy8(sFileBlockCache.out + a, dst, c);
             dst = (u8 *)dst + c;
         }
     } else {
@@ -366,16 +366,16 @@ extern "C" void func_02063d18(Unk_02063d18_File *f, void *dst, u32 size, u32 off
     }
 }
 
-extern "C" s32 func_02063d0c(s32 x) { return func_020643d4(0, x); }
+extern "C" s32 File_LoadOverlay(s32 x) { return File_LoadOverlayEx(0, x); }
 
-extern "C" s32 func_02063d00(s32 x) { return FS_UnloadOverlay(0, x); }
+extern "C" s32 File_UnloadOverlay(s32 x) { return FS_UnloadOverlay(0, x); }
 
 extern "C" void func_02063cfc() {}
 
 extern "C" void func_02063cf8() {}
 
 extern "C" void func_02063cdc(u8 *p) {
-    p[1] = (func_020e7fa8(data_021c7c88) >> 31) + 1;
+    p[1] = (Random_Next(gRandom) >> 31) + 1;
 }
 
 extern "C" BOOL func_02063ca0(u8 *p) {
@@ -384,7 +384,7 @@ extern "C" BOOL func_02063ca0(u8 *p) {
         t = p[1];
         if (t == 0) {
             func_02063cdc(p);
-            p[0] = func_020e7f90(data_021c7c88, 0x5a) + 0x1e;
+            p[0] = Random_NextBelow(gRandom, 0x5a) + 0x1e;
         } else {
             p[1] = t - 1;
             return TRUE;
@@ -432,9 +432,9 @@ extern "C" s32 func_02063ba4(s32 x) {
 }
 
 #pragma thumb off
-extern "C" u32 func_02063b8c(u32 n) { return func_020e7f90(data_021c7c88, n); }
+extern "C" u32 func_02063b8c(u32 n) { return Random_NextBelow(gRandom, n); }
 
-extern "C" u32 func_02063b74(u32 n) { return func_020e7f90(data_021c7c88, n); }
+extern "C" u32 func_02063b74(u32 n) { return Random_NextBelow(gRandom, n); }
 #pragma thumb reset
 
 extern "C" s32 func_02063a9c(s32 x, s32 lo, s32 hi, s32 a, s32 b) {
@@ -544,8 +544,8 @@ extern "C" void func_02063904(u16 *p, const void *src) {
 }
 
 
-u8 data_021c7d38;
+u8 sFileBlockCacheIndex;
 
-u16 data_021c7d3c;
+u16 sFileBlockCacheFileId;
 
-Unk_021c7d40_Buf data_021c7d40;
+FileBlockCache sFileBlockCache;

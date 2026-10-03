@@ -27,7 +27,7 @@ extern u16 data_021fcbee;
 extern u16 data_021fcbf0;
 
 extern u32 OS_GetLockID(void);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
 extern void MIi_CpuClear32(u32 data, void *dest, u32 size);
 extern void OSi_UnlockVram(u16 a, u16 b);
@@ -248,7 +248,7 @@ void GX_Init(void) {
     if (data_021fcbd0 == 0) {
         do {
             u32 id = OS_GetLockID();
-            if (id == (u32)-3) func_0206d49c();
+            if (id == (u32)-3) Fatal_Trap();
             data_021fcbd0 = (u16)id;
         } while (data_021fcbd0 == 0);
     }

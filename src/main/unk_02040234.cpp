@@ -19,14 +19,14 @@ public:
 };
 struct Unk_020d96fc_G { u8 b0, b1, b2, b3; };
 
-class Unk_020d96fc : public Unk_020d8c7c {
+class Unk_020d96fc : public GameProc {
 public:
     Unk_020d96fc() {}
     virtual BOOL vfunc_0c();
 };
 
 extern "C" {
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 
 extern "C" {
@@ -86,7 +86,7 @@ void func_0209d338(Unk_0203fe18_Date*, long long*);
 }
 
 extern "C" {
-s32 func_020974f8(void);
+s32 PlayerData_GetCurrentIndex(void);
 }
 
 extern "C" {
@@ -197,7 +197,7 @@ extern "C" {
 BOOL func_020400f8(Unk_0203fe18_B4);
 }
 
-#define SLOT ((Unk_0203ff50_Slot *)(data_021d7350 + 0x15e18))
+#define SLOT ((Unk_0203ff50_Slot *)(gSaveData + 0x15e18))
 
 // prototypes
 extern "C" void func_02040684(Unk_0203ff50_Slot *s);
@@ -282,7 +282,7 @@ extern "C" void func_020404ac(Unk_0203ff50_Slot *s, s32 *arr, s32 *cnt, Unk_0203
     Unk_0203fe18_B4 x;
     Unk_0203fe18_Date c, d, z, cp;
     if (*cnt > 0) {
-        u8 *g = data_021d7350;
+        u8 *g = gSaveData;
         s32 o = *cnt ? 0x15e28 : 0x15e28;
         u8 r4 = g[o];
         s32 *r6 = arr - 1 + r4;
@@ -398,7 +398,7 @@ extern "C" void func_020402e8(void) {
 
 extern "C" void func_02040264(void) {
     if (func_0203f14c() != 1) {
-        u8 *g = data_021d7350;
+        u8 *g = gSaveData;
         Unk_0203fe18_Date d, c;
         Unk_0203ff20_Entry *e;
         u32 t;

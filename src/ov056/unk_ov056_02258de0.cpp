@@ -1,7 +1,7 @@
 #include "types.h"
 #include "Unk_020d8c7c.h"
 
-class Unk_ov056_02258e70 : public Unk_020d8c7c {
+class Unk_ov056_02258e70 : public GameProc {
 public:
     Unk_ov056_02258e70() {}
 };

@@ -9,13 +9,13 @@ public:
     u8 unk_00[0x44];
 };
 
-class Unk_020da258 : public Unk_020d8c7c {
+class Unk_020da258 : public GameProc {
 public:
     Unk_020da258();
     virtual ~Unk_020da258();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
 
     /* 0x50 */ u32 unk_50;
     /* 0x54 */ Unk_020ddcf0 unk_54;
@@ -90,7 +90,7 @@ s32 func_020b4934(void);
 void func_020b4bbc(s32, s32);
 void _ZN12Unk_020d8e1413func_02035368Eii(void *, s32, s32);
 void _ZN12Unk_020d8e1413func_020353b0Eii(void *, s32, s32);
-void _ZN12Unk_020e2a3013func_020a710cEPKc(void *, void *);
+void _ZN10MsgRequest11setFileNameEPKc(void *, void *);
 void _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(void *, void *);
 s32 func_0203d9cc(void);
 BOOL func_02040c10(void);
@@ -106,7 +106,7 @@ BOOL func_02040d80(void);
 void func_02040cac(void);
 s32 func_0203d9d8(void);
 s32 func_0203d9c0(void);
-s32 func_0206da30(void);
+s32 Melody_IsBusy(void);
 s32 func_0204da0c(void);
 s32 func_0204d560(s32, void *);
 s32 func_0204d780(s32, void *, s32, s32);
@@ -138,9 +138,9 @@ extern Unk_02040974_Obj *data_020cbb18;
 extern u8 data_021c3cc0;
 extern "C" Unk_020da258 *func_020410ec();
 struct Unk_020da224_Rec { void *(*unk_00)(); s16 unk_04; s16 unk_06; };
-extern Unk_02040d80_Obj *data_021eda68;
+extern Unk_02040d80_Obj *gActorDefaultParent;
 extern u8 data_021ed170[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 *data_021c1b3c;
 
 static inline u8 Unk_02040cac_B2(u8 *p)
@@ -201,7 +201,7 @@ BOOL Unk_020da258::vfunc_00()
     if (func_02040908()) {
         return FALSE;
     }
-    r5 = data_021d7350;
+    r5 = gSaveData;
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0 && func_020b50e8() != 0xd) {
         if (data_021c3c90 != 0) {
             u32 k;
@@ -261,7 +261,7 @@ BOOL Unk_020da258::vfunc_00()
     return TRUE;
 }
 
-BOOL Unk_020da258::vfunc_18()
+BOOL Unk_020da258::onExecute()
 {
     s32 x = (s32)this;
     if (_ZN12Unk_020cbb1813func_02072e44Ev(data_020cbb18) == 0) {
@@ -355,7 +355,7 @@ extern "C" BOOL func_02040d80(void)
     if (func_020a5cc0(func_020b50e8()) != 0) {
         return FALSE;
     }
-    if (data_021eda68 != 0 && data_021eda68->unk_0c != 6) {
+    if (gActorDefaultParent != 0 && gActorDefaultParent->unk_0c != 6) {
         return FALSE;
     }
     return TRUE;
@@ -441,14 +441,14 @@ extern "C" void func_02040c6c(s32)
 
 extern "C" void func_02040c50(s32)
 {
-    if (func_0206da30() != 0) {
+    if (Melody_IsBusy() != 0) {
         data_021c3ca8.unk_00 = 2;
     }
 }
 
 extern "C" void func_02040c38(s32)
 {
-    if (func_0206da30() == 0) {
+    if (Melody_IsBusy() == 0) {
         func_02040a60(3);
     }
 }
@@ -479,7 +479,7 @@ extern "C" void func_02040b48(s32)
         s32 v = data_021c3ca8.unk_08;
         data_020da220 = v;
         data_020da21c = v;
-        if (func_0203d9c0() != 0 && func_0206da30() == 0) {
+        if (func_0203d9c0() != 0 && Melody_IsBusy() == 0) {
             r = func_0204da0c();
             if (r != 0) {
                 if (data_021c3ca8.unk_04 == 14) {
@@ -504,7 +504,7 @@ extern "C" void func_02040ad8(Unk_02040ad8_Owner *o)
     if (Unk_02040ad8_IsTwo(data_021c3cc0)) {
         Unk_02040a84_Obj *p = (Unk_02040a84_Obj *)func_02067918(0);
         o->unk_54.vfunc_08();
-        _ZN12Unk_020e2a3013func_020a710cEPKc(&o->unk_54, (void *)data_020da22c[data_021c3ca8.unk_01]);
+        _ZN10MsgRequest11setFileNameEPKc(&o->unk_54, (void *)data_020da22c[data_021c3ca8.unk_01]);
         *((u8 *)o + 0x72) = data_021c3ca8.unk_04;
         _ZN12Unk_020660f813func_02067978EP12Unk_020ddcf0(p, &o->unk_54);
         p->unk_08 = 1;

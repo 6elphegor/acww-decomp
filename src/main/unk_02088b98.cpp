@@ -93,25 +93,25 @@ public:
     /* 0x3c */ u8 unk_3c;
 };
 
-struct Unk_02089270_Rec {
+struct SpriteAnimFrame {
     /* 0x00 */ void *unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s16 unk_08;
     /* 0x0a */ s16 unk_0a;
 };
 
-struct Unk_02089270_Tbl {
-    /* 0x00 */ Unk_02089270_Rec *unk_00;
+struct SpriteAnimSeq {
+    /* 0x00 */ SpriteAnimFrame *unk_00;
     /* 0x04 */ s32 unk_04;
 };
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    /* 0x00 */ Unk_02089270_Tbl *unk_00;
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    /* 0x00 */ SpriteAnimSeq *unk_00;
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
     /* 0x0c */ s32 unk_0c;
@@ -121,7 +121,7 @@ public:
 extern "C" {
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
-s32 _ZN12Unk_020d5d8413func_02002d74Ej(s32 v);
+s32 _ZN5Actor8findByIdEj(s32 v);
 void _ZN12Unk_020e0cf48vfunc_04Ev(void *p);
 void func_02089118(void);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
@@ -132,7 +132,7 @@ s32 func_020e9688(Vec3 *v);
 
 Unk_020e0d08 *data_021ce638;
 
-void Unk_02089270::func_02089140() {
+void SpriteAnim::update() {
     if (unk_10 == 0) {
         unk_08 = unk_08 + unk_0c;
         s32 f = unk_08 >> 12;
@@ -146,7 +146,7 @@ void Unk_02089270::func_02089140() {
         }
     } else {
         unk_08 = unk_08 + unk_0c;
-        Unk_02089270_Tbl *t = unk_00;
+        SpriteAnimSeq *t = unk_00;
         s32 f = unk_08 >> 12;
         if (f >= t->unk_00[unk_04].unk_04) {
             s32 n = t->unk_04;
@@ -193,7 +193,7 @@ BOOL Unk_020e0d08::func_020890b0(s32 a) {
 
 s32 Unk_020e0d08::func_02089098() {
     if (unk_2c != 0) {
-        return _ZN12Unk_020d5d8413func_02002d74Ej(unk_2c);
+        return _ZN5Actor8findByIdEj(unk_2c);
     }
     return 0;
 }

@@ -39,7 +39,7 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-extern u32 **data_021f59e4;
+extern u32 **gProfileTable;
 }
 
 extern "C" {
@@ -51,23 +51,23 @@ extern u32 data_020c6140[];
 }
 
 extern "C" {
-extern void *data_021eda68;
+extern void *gActorDefaultParent;
 }
 
 extern "C" {
-extern u8 data_021ef414[];
+extern u8 gViewFrustum[];
 }
 
 extern "C" {
-extern u8 data_0213c874[];
+extern u8 gActorList[];
 }
 
 extern "C" {
-extern void *data_0213c870;
+extern void *sActorSpawnPos;
 }
 
 extern "C" {
-extern void *data_0213c86c;
+extern void *sActorSpawnRot;
 }
 
 extern "C" {
@@ -139,11 +139,11 @@ void GXS_LoadOBJPltt(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 }
 
 extern "C" {
-void *func_020641d8(void *p);
+void *File_Load(void *p);
 }
 
 extern "C" {
@@ -207,15 +207,15 @@ void MI_CpuFill8(void *p, u32 v, u32 n);
 }
 
 extern "C" {
-void *func_020ed4bc(void *list, u32 id, void *p);
+void *ProcList_FindByProfile(void *list, u32 id, void *p);
 }
 
 extern "C" {
-void *func_020ed508(void *list, u32 id);
+void *ProcList_FindById(void *list, u32 id);
 }
 
 extern "C" {
-void func_0202e880(void *a, void *b, void *c, u32 d);
+void GameProc_CreateChild(void *a, void *b, void *c, u32 d);
 }
 
 extern "C" {
@@ -230,7 +230,7 @@ struct Unk_02002804_Buf {
     u16 unk_00[32];
 };
 
-// 0x30-byte record copied around by func_02002848 and func_02002898
+// 0x30-byte record copied around by Gfx3d_SetViewMatrix and func_02002898
 struct Unk_02002848_Data {
     u32 unk_00[12];
 };
@@ -239,8 +239,8 @@ extern Unk_02002848_Data data_02135934_;
 
 u16 data_0213c7a8;
 u32 data_0213c7ac;
-u8 data_0213c7b0[0x30];
-Unk_02002848_Data data_0213c7e0;
+u8 gViewMtxInv[0x30];
+Unk_02002848_Data gViewMtx;
 
 // Object with two heap pointers at +0x48 and +0x4c, first method func_020029e8
 class Unk_020029e8 {
@@ -286,28 +286,28 @@ struct Unk_02002f14_S32Vec {
     s32 unk_08;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
-    void func_02002b84(void *out);
-    void func_02002bf4(Unk_02002cb0_Vec *v);
-    void func_02002c10();
-    void func_02002cb0(Unk_02002cb0_Vec *v);
-    void func_02002ce0(s32 a, s32 b, s32 c);
-    static void func_02002cf8(void *a, void *b, void *c, void *d, void *e);
-    static void func_02002d28(void *a, void *b);
-    static void *func_02002d3c(u32 id, Unk_020d5d84 *o);
-    static void *func_02002d74(u32 id);
+    void calcModelMatrix(void *out);
+    void updatePosition(Unk_02002cb0_Vec *v);
+    void calcVelocity();
+    void applyVelocity(Unk_02002cb0_Vec *v);
+    void setCullParams(s32 a, s32 b, s32 c);
+    static void spawn(void *a, void *b, void *c, void *d, void *e);
+    static void setSpawnTransform(void *a, void *b);
+    static void *findByProfile(u32 id, Actor *o);
+    static void *findById(u32 id);
 
     /* 0x50 */ Unk_02002f14_Node unk_50;
     /* 0x5c */ s32 unk_5c;
@@ -391,8 +391,8 @@ extern "C" void func_02002898(void) {
     *(vu16 *)0x4000340 = 0;
     *(vu16 *)0x4000060 = (*(vu16 *)0x4000060 & 0xffffcfff) | 8;
     G3X_SetClearColor(0, 0, 0x7fff, 0, 1);
-    data_0213c7e0 = *(Unk_02002848_Data *)data_02135934;
-    MTX_Inverse43(&data_0213c7e0, data_0213c7b0);
+    gViewMtx = *(Unk_02002848_Data *)data_02135934;
+    MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
 extern "C" void func_02002870(void) {
@@ -402,9 +402,9 @@ extern "C" void func_02002870(void) {
     *(vu32 *)0x4000440 = 2;
 }
 
-extern "C" void func_02002848(Unk_02002848_Data *src) {
-    data_0213c7e0 = *src;
-    MTX_Inverse43(&data_0213c7e0, data_0213c7b0);
+extern "C" void Gfx3d_SetViewMatrix(Unk_02002848_Data *src) {
+    gViewMtx = *src;
+    MTX_Inverse43(&gViewMtx, gViewMtxInv);
 }
 
 extern "C" void func_02002804(void) {

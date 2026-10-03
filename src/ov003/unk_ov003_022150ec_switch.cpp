@@ -1,35 +1,35 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -O4,s
 #include "types.h"
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c(s32 a);
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw(s32 a);
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -38,17 +38,17 @@ struct Unk_ov003_Vec {
     s32 x, y, z;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c(s32 a);
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw(s32 a);
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
@@ -57,23 +57,23 @@ public:
     /* 0x90 */ u8 pad_90[0xd4 - 0x90];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual Unk_ov003_Vec *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
     void func_0203e42c();
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ u8 unk_d4[0x10];
     /* 0xe4 */ s32 unk_e4;
@@ -83,13 +83,13 @@ public:
 };
 
 // Secondary base at +0xec (vtable main 0x020ddcf0 chain).  Slots are named vfunc_sXX (see aliases above) except 0x14.
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_s08();
 
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
 
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
@@ -100,7 +100,7 @@ struct Unk_020660f8 {
     s32 unk_14;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -154,18 +154,18 @@ struct Unk_ov003_Flags {
 class Unk_020b1ddc;
 
 // ov009 actor base (vtable 0x0225e29c, size 0x2b0).  Return types of the virtuals are those the derived units need.
-class Unk_ov009_0225e29c : public Unk_020d9670, public Unk_020ddcf0 {
+class Unk_ov009_0225e29c : public Character, public Unk_020ddcf0 {
 public:
     Unk_ov009_0225e29c();
     virtual ~Unk_ov009_0225e29c();
     virtual BOOL vfunc_00();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_48(Unk_020d9670 *a);
+    virtual BOOL preDraw();
+    virtual BOOL vfunc_48(Character *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual Unk_ov003_Vec *vfunc_50();
+    virtual Unk_ov003_Vec *getInteractionPos();
     virtual void vfunc_60(u32 a, void *p);
     virtual s32 vfunc_64();
     virtual s32 vfunc_68();
@@ -228,9 +228,9 @@ struct Unk_0209d498_Time {
 };
 
 // 0x20-byte member object (ctor func_02055c88, dtor func_02055c70)
-struct Unk_020dbe4c {
-    Unk_020dbe4c();
-    ~Unk_020dbe4c();
+struct ModelAnim {
+    ModelAnim();
+    ~ModelAnim();
     u8 pad_00[8];
     /* 0x08 */ s32 unk_08;
     u8 pad_0c[0xc];
@@ -269,23 +269,23 @@ extern u32 data_021c6204;
 
 void func_ov003_022150f0(void *p);
 void func_ov003_02215a04(void *p);
-s32 _ZN12Unk_020dbe3413func_020554c0Ev(void *p);
-void _ZN12Unk_020dbe4c13func_02055b00Eiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
-BOOL _ZN12Unk_020dbe4c13func_02055bccEjPv(void *m, s32 a, s32 b);
-void _ZN12Unk_020dbe4c13func_02055b38Eiiit(void *m, s32 a, s32 b, s32 c, s32 d);
-void _ZN12Unk_020dbe4c13func_02055a9cEj(void *m, s32 a);
+s32 _ZN5Model12getRenderObjEv(void *p);
+void _ZN9ModelAnim13func_02055b00Eiiiit(void *m, s32 a, s32 b, s32 c, s32 d, u32 e);
+BOOL _ZN9ModelAnim13func_02055bccEjPv(void *m, s32 a, s32 b);
+void _ZN9ModelAnim13func_02055b38Eiiit(void *m, s32 a, s32 b, s32 c, s32 d);
+void _ZN9ModelAnim14addToRenderObjEj(void *m, s32 a);
 void func_0209d498(void *p);
-s32 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
-void _ZN12Unk_020dbe3413func_02055488Eii(void *m, void (*fn)(void *), void *self);
+s32 _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, void *c, u32 d, u32 e);
+void _ZN5Model13func_02055488Eii(void *m, void (*fn)(void *), void *self);
 s32 _ZN12Unk_02056fd813func_02057110Ei(s32 a, const char *s);
-void func_0200402c(u32 a);
-void _ZN12Unk_020dbe7c13func_020566bcEv(void *m);
+void Snd_PlaySe(u32 a);
+void _ZN13AnimFrameCtrl4stepEv(void *m);
 void _ZN18Unk_ov009_0225e29c19func_ov009_0225bc88Ev(void *p);
 BOOL func_020b1d3c(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void func_020814ec(void *p, void *q);
-void *func_020e8608(u32 heap, u32 size);
+void *Heap_Alloc(u32 heap, u32 size);
 void func_0212899c(void *p, s32 v, u32 n);
 }
 
@@ -297,13 +297,13 @@ public:
     virtual s32 vfunc_0c();
 };
 
-// ---------------------------------------------------------------- X
+// ---------------------------------------------------------------- DoorLight
 class Unk_ov003_022314d0 : public Unk_ov009_0225e29c {
 public:
     virtual BOOL vfunc_b0();
     Unk_ov003_022314d0();
     virtual ~Unk_ov003_022314d0();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
     virtual BOOL vfunc_70();
     static void *operator new(unsigned long size);
     static void operator delete(void *p);
@@ -312,7 +312,7 @@ public:
     /* 0x2b1 */ u8 unk_2b1;
     /* 0x2b2 */ u8 unk_2b2;
     /* 0x2b3 */ u8 pad_2b3;
-    /* 0x2b4 */ Unk_020dbe4c unk_2b4;
+    /* 0x2b4 */ ModelAnim unk_2b4;
     /* 0x2d4 */ u8 unk_2d4;
     /* 0x2d5 */ u8 unk_2d5;
     /* 0x2d6 */ u8 pad_2d6[2];
@@ -328,8 +328,8 @@ public:
     Unk_ov003_02231614();
     virtual ~Unk_ov003_02231614();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_2c(s32 a);
+    virtual BOOL onExecute();
+    virtual BOOL postDraw(s32 a);
     virtual BOOL vfunc_6c(u32 a);
     virtual BOOL vfunc_70();
     virtual void vfunc_74();
@@ -342,7 +342,7 @@ public:
     void func_ov003_0221558c();
     BOOL func_ov003_022155dc();
 
-    /* 0x2b0 */ Unk_020dbe4c unk_2b0;
+    /* 0x2b0 */ ModelAnim unk_2b0;
     /* 0x2d0 */ s8 unk_2d0;
     /* 0x2d1 */ u8 unk_2d1;
     /* 0x2d2 */ u8 pad_2d2[2];
@@ -391,11 +391,11 @@ void func_ov003_022159c8(Unk_ov003_02231614 *self, s32 a, Unk_ov003_02215a04_Obj
 BOOL Unk_ov003_022314d0::vfunc_70() {
     unk_2b0 = data_ov003_02235270;
     unk_2b1 = 0;
-    func_0203e624(unk_2b0);
-    if (_ZN12Unk_020dbe4c13func_02055bccEjPv(&unk_2b4, unk_194, data_021c6204)) {
+    setCharId(unk_2b0);
+    if (_ZN9ModelAnim13func_02055bccEjPv(&unk_2b4, unk_194, data_021c6204)) {
         s32 r1 = func_ov009_0225d6b8(0);
-        _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_2b4, r1, 1, 0x1000, 0);
-        _ZN12Unk_020dbe4c13func_02055a9cEj(&unk_2b4, _ZN12Unk_020dbe3413func_020554c0Ev(unk_138));
+        _ZN9ModelAnim13func_02055b38Eiiit(&unk_2b4, r1, 1, 0x1000, 0);
+        _ZN9ModelAnim14addToRenderObjEj(&unk_2b4, _ZN5Model12getRenderObjEv(unk_138));
     }
     unk_2d4 = 1;
     unk_2b2 = 0xff;
@@ -489,17 +489,17 @@ extern "C" void func_ov003_022150f0(void *arg) {
             switch (r) {
             case 1:
                 if (o->unk_2d5 == 0) {
-                    func_0200402c(0x61);
+                    Snd_PlaySe(0x61);
                 }
                 break;
             case 2:
                 if (o->unk_2d5 == 0) {
-                    func_0200402c(0x60);
+                    Snd_PlaySe(0x60);
                 }
                 break;
             case 3:
                 if (o->unk_2d5 == 0) {
-                    func_0200402c(0x62);
+                    Snd_PlaySe(0x62);
                 }
                 break;
             }

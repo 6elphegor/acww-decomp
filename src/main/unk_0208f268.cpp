@@ -19,25 +19,25 @@ void _ZN12Unk_020dbd5413func_020547ccEPv(void *p, s32 q);
 void _ZN12Unk_020dbd5413func_020547e4Ev(void *p);
 void _ZN12Unk_0205454c13func_02054720Eiiitt(void *p, s32 a, s32 b, s32 c, u16 d, u16 e);
 BOOL _ZN12Unk_020dbd3413func_02054c2cEPvS0_(void *p, u32 a, u32 b);
-void _ZN12Unk_020dbe4c13func_02055b38Eiiit(void *p, s32 a, s32 b, s32 c, u16 e);
-void _ZN12Unk_020dbe4c13func_02055bccEjPv(void *p, void *a, void *c);
-void _ZN12Unk_020dbe4c13func_02055b90EjPv(void *p, void *a, void *c);
-void _ZN12Unk_020dbe4c13func_02055a9cEj(void *p, u32 a);
-u32 _ZN12Unk_020dbe3413func_020554c0Ev(void *p);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *p);
-void _ZN12Unk_020dbe7c13func_020566bcEv(void *p);
-s32 func_0203ef38(void *out, void *in);
+void _ZN9ModelAnim13func_02055b38Eiiit(void *p, s32 a, s32 b, s32 c, u16 e);
+void _ZN9ModelAnim13func_02055bccEjPv(void *p, void *a, void *c);
+void _ZN9ModelAnim13func_02055b90EjPv(void *p, void *a, void *c);
+void _ZN9ModelAnim14addToRenderObjEj(void *p, u32 a);
+u32 _ZN5Model12getRenderObjEv(void *p);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
+void _ZN13AnimFrameCtrl4stepEv(void *p);
+s32 WorldCurve_ToCurved(void *out, void *in);
 s32 func_02064cc4();
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 v);
 void func_020e8464(void *m, s32 x, s32 y, s32 z);
 void func_020e84f8(void *m, s32 x, s32 y, s32 z);
-void func_020e85fc(void *heap, void *p);
-u32 func_020641ec(u32 res, void *heap, u32 a, s32 b);
+void Heap_Free(void *heap, void *p);
+u32 File_LoadAlloc(u32 res, void *heap, u32 a, s32 b);
 void func_020e8c94(void *);
-void *func_020e8e7c(u32, s32);
-void *func_020e8574(u32);
-void func_020e8558(void *);
+void *ExpHeap_Create(u32, s32);
+void *Mem_Alloc(u32);
+void Mem_Free(void *);
 void *SPL_Create(void *, s32, s32);
 void *SPL_CreateWithInitialize(void *, u32, u32);
 Unk_0209002c_Handle *SPL_Init(void *, s32, s32, s32, s32, s32);
@@ -54,7 +54,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 size);
 u16 func_02064f18();
 u16 func_020b5b98();
 s32 func_0204c0ac();
-s32 func_020641d8(void *);
+s32 File_Load(void *);
 void *NNS_FndAllocFromFrmHeapEx(u32 heap, u32 size, s32 align);
 s32 SPL_LoadTexByVRAMManager(u32 h);
 s32 SPL_LoadTexPlttByVRAMManager(u32 h);
@@ -84,10 +84,10 @@ public:
     /* 0x14 */ u32 unk_14;
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c_Anim {
+class ModelAnim : public Unk_020dbe7c_Anim {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
+    ModelAnim();
+    virtual ~ModelAnim();
     /* 0x18 */ u32 *unk_18;
     /* 0x1c */ u32 unk_1c;
 };
@@ -122,7 +122,7 @@ public:
     /* 0xdc */ u32 unk_dc;
     /* 0xe0 */ s32 unk_e0;
     /* 0xe4 */ s32 unk_e4;
-    /* 0xe8 */ Unk_020dbe4c unk_e8[3];
+    /* 0xe8 */ ModelAnim unk_e8[3];
 };
 
 // 0x530-byte group of four entries plus three resource pointers (dtor 0x0208f2e8, ctor 0x0209020c)
@@ -259,12 +259,12 @@ struct Unk_02090168_Arg {
     u32 unk_50;
 };
 
-class Unk_020e141c : public Unk_020d8c7c {
+class Unk_020e141c : public GameProc {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e141c() {}
 
     /* 0x50 */ Unk_0209002c_Handle *unk_50;
@@ -306,8 +306,8 @@ extern void *data_021d04a0;
 extern void *data_021d04a4;
 extern void *data_021d04a8;
 extern s32 *data_021d04ac;
-extern s32 data_021f482c;
-extern u32 data_0213c7e0[];
+extern s32 gCurrentHeap;
+extern u32 gViewMtx[];
 extern u8 data_021f47e0[];
 void *func_0209019c(u32 size);
 
@@ -896,7 +896,7 @@ extern "C" void *func_0209019c(u32 size) {
 }
 
 extern "C" s32 func_0209018c(void *unused) {
-    return func_020641d8((void *)"/spl/spl.spa");
+    return File_Load((void *)"/spl/spl.spa");
 }
 
 extern "C" BOOL func_02090168(Unk_02090168_Arg *p) {
@@ -928,7 +928,7 @@ BOOL Unk_020e141c::vfunc_00()
     data_021d04a4 = NULL;
     unk_54 = 0;
     data_021d04ac = NULL;
-    data_021d04a8 = func_020e8574(0xc000);
+    data_021d04a8 = Mem_Alloc(0xc000);
     if (data_021d04a8 != NULL) {
         data_021d04a4 = NNS_FndCreateFrmHeapEx(data_021d04a8, (void *)0xc000, NULL);
         unk_50 = SPL_Init((void *)func_0209019c, 0x20, 0x64, 0x14, 0x15, 0x32);
@@ -944,7 +944,7 @@ BOOL Unk_020e141c::vfunc_00()
                         result = TRUE;
                     }
                 }
-                func_020e8558(h);
+                Mem_Free(h);
             }
         }
     }
@@ -955,7 +955,7 @@ BOOL Unk_020e141c::vfunc_00()
         }
         if (data_021d04a8 != NULL) {
             func_0208f9c4(&unk_58);
-            func_020e8558(data_021d04a8);
+            Mem_Free(data_021d04a8);
             data_021d04a8 = NULL;
         }
     } else {
@@ -966,7 +966,7 @@ BOOL Unk_020e141c::vfunc_00()
     return result;
 }
 
-BOOL Unk_020e141c::vfunc_18()
+BOOL Unk_020e141c::onExecute()
 {
     func_0208f9f8(&unk_58);
     func_0208f890(unk_35c);
@@ -977,12 +977,12 @@ BOOL Unk_020e141c::vfunc_18()
 extern "C" u16 func_0208ffe4(void *a0, volatile s32 a1, volatile s32 a2, volatile s32 a3)
 {
     Unk_0208ffe4_V t(a1, a2, a3);
-    return func_0203ef38(a0, &t);
+    return WorldCurve_ToCurved(a0, &t);
 }
 
-BOOL Unk_020e141c::vfunc_24()
+BOOL Unk_020e141c::onDraw()
 {
-    func_020f8cb8(unk_50, data_0213c7e0, (void *)func_0208ffe4);
+    func_020f8cb8(unk_50, gViewMtx, (void *)func_0208ffe4);
     func_0208f86c(unk_35c);
     return TRUE;
 }
@@ -995,7 +995,7 @@ BOOL Unk_020e141c::vfunc_0c()
     }
     if (data_021d04a8 != NULL) {
         func_0208f9c4(&unk_58);
-        func_020e8558(data_021d04a8);
+        Mem_Free(data_021d04a8);
         data_021d04a8 = NULL;
     }
     func_0208f834(unk_35c);
@@ -1356,7 +1356,7 @@ extern "C" void func_0208f8b4(Unk_0208f2e8 *b)
 {
     s32 i;
     if (data_021d04a0 == NULL) {
-        data_021d04a0 = func_020e8e7c(0x2800, data_021f482c);
+        data_021d04a0 = ExpHeap_Create(0x2800, gCurrentHeap);
     }
     for (i = 0; i < 4; i++) {
         func_0208f7e4(&b[i], i);
@@ -1449,7 +1449,7 @@ void Unk_0208f6c0::func_0208f6f0(Unk_0208f2e8 *src) {
     s32 i;
     for (i = 0; i < 3; i++) {
         if (data_020e13e4[idx][i] != 0) {
-            unk_00[i] = func_020641ec(data_020e13e4[idx][i], data_021d04a0, 4, 0);
+            unk_00[i] = File_LoadAlloc(data_020e13e4[idx][i], data_021d04a0, 4, 0);
         } else {
             unk_00[i] = 0;
         }
@@ -1461,7 +1461,7 @@ void Unk_0208f6c0::func_0208f6c0() {
     u32 *z = 0;
     for (i = 0; i < 3; i++) {
         if (unk_00[i] != 0) {
-            func_020e85fc(data_021d04a0, (void *)unk_00[i]);
+            Heap_Free(data_021d04a0, (void *)unk_00[i]);
             unk_00[i] = (u32)z;
         }
     }
@@ -1489,21 +1489,21 @@ void Unk_0208f308::func_0208f568(Unk_0208f2e8 *src) {
         }
         if (r[1] != 0) {
             unk_e0 = 1;
-            Unk_020dbe4c *e = &unk_e8[1];
-            _ZN12Unk_020dbe4c13func_02055bccEjPv(e, unk_24.unk_5c, data_021d04a0);
+            ModelAnim *e = &unk_e8[1];
+            _ZN9ModelAnim13func_02055bccEjPv(e, unk_24.unk_5c, data_021d04a0);
             s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-            _ZN12Unk_020dbe4c13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
-            _ZN12Unk_020dbe4c13func_02055a9cEj(e, _ZN12Unk_020dbe3413func_020554c0Ev(&unk_24));
+            _ZN9ModelAnim13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
+            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
         } else {
             unk_e0 = 0;
         }
         if (r[2] != 0) {
             unk_e4 = 1;
-            Unk_020dbe4c *e = &unk_e8[2];
-            _ZN12Unk_020dbe4c13func_02055b90EjPv(e, unk_24.unk_5c, data_021d04a0);
+            ModelAnim *e = &unk_e8[2];
+            _ZN9ModelAnim13func_02055b90EjPv(e, unk_24.unk_5c, data_021d04a0);
             s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-            _ZN12Unk_020dbe4c13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
-            _ZN12Unk_020dbe4c13func_02055a9cEj(e, _ZN12Unk_020dbe3413func_020554c0Ev(&unk_24));
+            _ZN9ModelAnim13func_02055b38Eiiit(e, u, 1, 0x1000, 0);
+            _ZN9ModelAnim14addToRenderObjEj(e, _ZN5Model12getRenderObjEv(&unk_24));
         } else {
             unk_e4 = 0;
         }
@@ -1516,11 +1516,11 @@ void Unk_0208f308::func_0208f508() {
         s32 i;
         for (i = 1; i < 3; i++) {
             if ((&unk_dc)[i] != 0) {
-                _ZN12Unk_020dbe7c13func_020566bcEv(&unk_e8[i]);
+                _ZN13AnimFrameCtrl4stepEv(&unk_e8[i]);
                 *unk_e8[i].unk_18 = unk_e8[i].unk_08;
             }
         }
-        if (_ZN12Unk_020dbe7c13func_02056654Ev(unk_24.unk_9c) != 0) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv(unk_24.unk_9c) != 0) {
             unk_00 = 0;
         }
     }
@@ -1529,7 +1529,7 @@ void Unk_0208f308::func_0208f508() {
 void Unk_0208f308::func_0208f480() {
     if (unk_00 != 0) {
         s32 v[3];
-        s32 r = func_0203ef38(v, unk_04);
+        s32 r = WorldCurve_ToCurved(v, unk_04);
         func_020e8388(data_021f47e0, v[0], v[1], v[2]);
         func_020e8434(data_021f47e0, r);
         func_020e8464(data_021f47e0, unk_1c, unk_1e, unk_20);
@@ -1560,11 +1560,11 @@ void Unk_0208f308::func_0208f3c8(Unk_0208f2e8 *src, void (*cb)(Unk_0208f308 *)) 
     _ZN12Unk_0205454c13func_02054720Eiiitt(&unk_24, t, 1, 0x1000, 0, 0);
     if (unk_e0 != 0) {
         s32 u = func_02106634(func_02106618((void *)r[1]), 0);
-        _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_e8[1], u, 1, 0x1000, 0);
+        _ZN9ModelAnim13func_02055b38Eiiit(&unk_e8[1], u, 1, 0x1000, 0);
     }
     if (unk_e4 != 0) {
         s32 u = func_021067a4(func_02106788((void *)r[2]), 0);
-        _ZN12Unk_020dbe4c13func_02055b38Eiiit(&unk_e8[2], u, 1, 0x1000, 0);
+        _ZN9ModelAnim13func_02055b38Eiiit(&unk_e8[2], u, 1, 0x1000, 0);
     }
     cb(this);
 }

@@ -26,20 +26,20 @@ public:
     u32 unk_98;
 };
 
-class Unk_020dbe34 : public Unk_020dbd34 {
+class Model : public Unk_020dbd34 {
 public:
     void func_02055488(s32 a, s32 b);
-    u32 func_020554c0();
+    u32 getRenderObj();
     void func_0205553c(s32 *p);
     void func_020555dc();
-    void func_02055600(Unk_020553f8_Res *r, u32 a);
+    void setResourceAndBind(Unk_020553f8_Res *r, u32 a);
 };
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    virtual ~Unk_020dbe7c();
-    inline Unk_020dbe7c() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
-    void func_020566bc();
+    virtual ~AnimFrameCtrl();
+    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    void step();
 
     u32 unk_04;
     u32 unk_08;
@@ -48,11 +48,11 @@ public:
     u32 unk_14;
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c {
+class ModelAnim : public AnimFrameCtrl {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
-    void func_02055a9c(u32 a);
+    ModelAnim();
+    virtual ~ModelAnim();
+    void addToRenderObj(u32 a);
     void func_02055b38(s32 a, s32 b, s32 c, u16 d);
     BOOL func_02055bcc(u32 a, void *c);
 
@@ -111,7 +111,7 @@ public:
     /* 0x04 */ Unk_020dbd34 unk_04;
     /* 0xa0 */ s32 unk_a0;
     /* 0xa4 */ s32 unk_a4;
-    /* 0xa8 */ Unk_020dbe4c unk_a8[2];
+    /* 0xa8 */ ModelAnim unk_a8[2];
     /* 0xe8 */ s8 unk_e8;
 };
 
@@ -134,7 +134,7 @@ public:
     /* 0xa8 */ s16 unk_a8;
     /* 0xac */ s32 unk_ac;
     /* 0xb0 */ s32 unk_b0;
-    /* 0xb4 */ Unk_020dbe4c unk_b4[2];
+    /* 0xb4 */ ModelAnim unk_b4[2];
 };
 
 // 4-byte colour constructors (unreferenced except by __sinit)
@@ -171,7 +171,7 @@ struct Unk_ov003_022179b8_Rec {
     u32 pad[0x1c / 4];
 };
 
-class Unk_ov003_02232418 : public Unk_020d8c7c {
+class Unk_ov003_02232418 : public GameProc {
 public:
     /* 0x50 */ Unk_ov003_02217be8 *unk_50;
     /* 0x54 */ Unk_ov003_02217dbc unk_54;
@@ -185,8 +185,8 @@ public:
     Unk_ov003_02232418();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_ov003_02232418();
     void func_ov003_022180a8();
 };
@@ -236,12 +236,12 @@ struct Unk_ov003_02218794_Obj {
 #define func_02036d54 _ZN12Unk_02036cec13func_02036d54Ei
 #define func_02036cd4 _ZN12Unk_02036cec13func_02036cd4Ev
 #define func_02036cc8 _ZN12Unk_02036cec13func_02036cc8Ev
-#define func_0203bc90 _ZN12Unk_020d93b813func_0203bc90Ev
+#define Unk_020d93b8_getEyeCurveAngle _ZN12Unk_020d93b816getEyeCurveAngleEv
 #define func_02056ca4 _ZN12Unk_020dbe8c13func_02056ca4EPhPKcS2_S0_S0_h
 
 extern "C" {
-extern void *data_021c3070;
-extern Unk_ov003_02218478_V3 data_021c309c;
+extern void *gCamera;
+extern Unk_ov003_02218478_V3 gCameraLookAt;
 extern void *data_021c620c;
 extern Unk_ov003_02218478_Grid *data_021c47c4;
 extern s32 data_021ce63c;
@@ -262,15 +262,15 @@ s32 func_02036ca4(void *self);
 void *func_02036d54(void *self, s32 i);
 s32 func_020375d0(void *self);
 s32 func_02037324(s32 a);
-s32 func_0203bc90(void *self);
+s32 Unk_020d93b8_getEyeCurveAngle(void *self);
 void func_0203bac4(void *, s32 *, s32 *);
 s32 func_0203efec(s32);
-s16 func_0203ef38(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
+s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
 s32 func_0203edc8();
 void func_0204edf8(s32 *, s32 *, s32, s32, s32, s32);
 s32 func_02030bc4(s32, s32);
 void func_0204eda4(Unk_ov003_02218478_V3 *, s32, s32, s32, s32);
-void *func_020e8608(void *, s32);
+void *Heap_Alloc(void *, s32);
 void func_020e8388(void *m, s32 x, s32 y, s32 z);
 void func_020e8434(void *m, s32 a);
 s32 func_020302cc();
@@ -365,7 +365,7 @@ BOOL Unk_ov003_02232418::vfunc_00() {
     Unk_ov003_02218478_Grid *g = data_021c47c4;
     unk_148 = g->w;
     unk_14c = g->h;
-    unk_50 = (Unk_ov003_02217be8 *)func_020e8608(data_021c620c, unk_14c * (unk_148 * 0xec));
+    unk_50 = (Unk_ov003_02217be8 *)Heap_Alloc(data_021c620c, unk_14c * (unk_148 * 0xec));
     {
         Unk_ov003_02217be8 *e = unk_50;
         for (; e < unk_50 + unk_148 * unk_14c; e++) {
@@ -409,7 +409,7 @@ BOOL Unk_ov003_02232418::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02232418::vfunc_18() {
+BOOL Unk_ov003_02232418::onExecute() {
     Unk_ov003_02217be8 *e;
     s32 i, j;
     unk_150.func_02217b10();
@@ -444,7 +444,7 @@ static inline BOOL Unk_ov003_022181bc_Chk(s32 x, s32 y, s32 cx, s32 cy) {
     return FALSE;
 }
 
-BOOL Unk_ov003_02232418::vfunc_24() {
+BOOL Unk_ov003_02232418::onDraw() {
     s32 a, cx, cy, b, cam_r, found;
     s32 x, y, idx;
     void *cam;
@@ -456,9 +456,9 @@ BOOL Unk_ov003_02232418::vfunc_24() {
     cy = 0;
     b = ((s32 *)unk_54.func_02217fb4())[2];
     cam_r = 0;
-    cam = data_021c3070;
+    cam = gCamera;
     if (cam != 0) {
-        cam_r = func_0203bc90(cam);
+        cam_r = Unk_020d93b8_getEyeCurveAngle(cam);
         func_0203bac4(cam, &cx, &cy);
         a = func_0203efec(cam_r);
     }
@@ -539,8 +539,8 @@ BOOL Unk_ov003_02232418::vfunc_0c() {
 
 void Unk_ov003_02232418::func_ov003_022180a8() {
     data_ov003_02235490 = 0;
-    if (data_021c3070 != 0) {
-        Unk_ov003_02218478_V3 v = data_021c309c;
+    if (gCamera != 0) {
+        Unk_ov003_02218478_V3 v = gCameraLookAt;
         Unk_ov003_022179b8_Rec q;
         func_ov003_022179b8(&q, &v);
         void *r6 = (void *)func_ov003_02217960(&q);
@@ -635,17 +635,17 @@ BOOL Unk_ov003_02217dbc::func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx) {
     Unk_ov003_02217b78_Ent *e = (Unk_ov003_02217b78_Ent *)func_02036d54(func_02036c58(), data_ov003_0222f010[idx]);
     s32 t = func_02036ce0(func_02036c58());
     Unk_020553f8_Res *res = e->unk_08;
-    ((Unk_020dbe34 *)&unk_00)->func_02055600(res, t);
+    ((Model *)&unk_00)->setResourceAndBind(res, t);
     if (unk_b4[0].func_02055bcc((u32)res, data_021c620c)) {
         unk_b4[0].func_02055b38(func_02036cd4(func_02036c58()), 0, 0x1000, 0);
-        unk_b4[0].func_02055a9c(((Unk_020dbe34 *)&unk_00)->func_020554c0());
+        unk_b4[0].addToRenderObj(((Model *)&unk_00)->getRenderObj());
     }
     if (unk_b4[1].func_02055bcc((u32)res, data_021c620c)) {
         unk_b4[1].func_02055b38(func_02036cc8(func_02036c58()), 0, 0x1000, 0);
-        unk_b4[1].func_02055a9c(((Unk_020dbe34 *)&unk_00)->func_020554c0());
+        unk_b4[1].addToRenderObj(((Model *)&unk_00)->getRenderObj());
     }
     Unk_ov003_02217910_V3 tmp;
-    unk_a8 = func_0203ef38((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&unk_9c);
+    unk_a8 = WorldCurve_ToCurved((Unk_ov003_02218478_V3 *)&tmp, (Unk_ov003_02218478_V3 *)&unk_9c);
     func_020e8388(data_021f47e0, unk_9c.x, 0, 0);
     func_020e8434(data_021f47e0, unk_a8);
     unk_00.unk_64 = *(Unk_ov003_02215c7c_Blk *)data_021f47e0;
@@ -656,10 +656,10 @@ BOOL Unk_ov003_02217dbc::func_02217e48(Unk_ov003_02217910_V3 *pos, s32 idx) {
 
 BOOL Unk_ov003_02217dbc::func_02217e10() {
     if (func_02217f78()) {
-        Unk_020dbe4c *p = &unk_b4[0];
-        Unk_020dbe4c *e = &unk_b4[2];
+        ModelAnim *p = &unk_b4[0];
+        ModelAnim *e = &unk_b4[2];
         for (; p < e; p++) {
-            p->func_020566bc();
+            p->step();
             *p->unk_18 = p->unk_08;
         }
         return TRUE;
@@ -669,7 +669,7 @@ BOOL Unk_ov003_02217dbc::func_02217e10() {
 
 BOOL Unk_ov003_02217dbc::func_02217df0() {
     if (func_02217f78()) {
-        ((Unk_020dbe34 *)&unk_00)->func_0205553c(0);
+        ((Model *)&unk_00)->func_0205553c(0);
         return TRUE;
     }
     return FALSE;
@@ -677,7 +677,7 @@ BOOL Unk_ov003_02217dbc::func_02217df0() {
 
 BOOL Unk_ov003_02217dbc::func_02217dbc() {
     if (func_02217f78()) {
-        ((Unk_020dbe34 *)&unk_00)->func_020555dc();
+        ((Model *)&unk_00)->func_020555dc();
         unk_b0 = -1;
         unk_ac = unk_b0;
         return TRUE;
@@ -700,14 +700,14 @@ BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) 
     u32 q = p->unk_20;
     if (q != 0) t = q;
     Unk_020553f8_Res *res = p->unk_08;
-    ((Unk_020dbe34 *)&unk_04)->func_02055600(res, t);
+    ((Model *)&unk_04)->setResourceAndBind(res, t);
     if (unk_a8[0].func_02055bcc((u32)res, data_021c620c)) {
         unk_a8[0].func_02055b38(func_02036cd4(func_02036c58()), 0, 0x1000, 0);
-        unk_a8[0].func_02055a9c(((Unk_020dbe34 *)&unk_04)->func_020554c0());
+        unk_a8[0].addToRenderObj(((Model *)&unk_04)->getRenderObj());
     }
     if (unk_a8[1].func_02055bcc((u32)res, data_021c620c)) {
         unk_a8[1].func_02055b38(func_02036cc8(func_02036c58()), 0, 0x1000, 0);
-        unk_a8[1].func_02055a9c(((Unk_020dbe34 *)&unk_04)->func_020554c0());
+        unk_a8[1].addToRenderObj(((Model *)&unk_04)->getRenderObj());
     }
     func_020e8388(data_021f47e0, a * data_020c8cbc, 0, 0);
     s16 ang = b * func_0203edc8();
@@ -716,7 +716,7 @@ BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) 
     if (func_02037324(unk_00) & 8) {
         unk_e8 = func_02057110(res, (s32)"m_grd_beA");
         if (unk_e8 != -1) {
-            ((Unk_020dbe34 *)&unk_04)->func_02055488((s32)func_ov003_02218784, (s32)this);
+            ((Model *)&unk_04)->func_02055488((s32)func_ov003_02218784, (s32)this);
         }
     }
     func_ov003_02218034(&unk_04, 1);
@@ -724,23 +724,23 @@ BOOL Unk_ov003_02217be8::func_02217c3c(Unk_ov003_02217c3c_Obj *o, s32 a, s32 b) 
 }
 
 BOOL Unk_ov003_02217be8::func_02217c10() {
-    Unk_020dbe4c *e;
-    Unk_020dbe4c *p;
+    ModelAnim *e;
+    ModelAnim *p;
     p = &unk_a8[0];
     e = &unk_a8[2];
     for (; p < e; p++) {
-        p->func_020566bc();
+        p->step();
         *p->unk_18 = p->unk_08;
     }
     return TRUE;
 }
 
 BOOL Unk_ov003_02217be8::func_02217bfc() {
-    ((Unk_020dbe34 *)&unk_04)->func_0205553c(0);
+    ((Model *)&unk_04)->func_0205553c(0);
     return TRUE;
 }
 
 BOOL Unk_ov003_02217be8::func_02217be8() {
-    ((Unk_020dbe34 *)&unk_04)->func_020555dc();
+    ((Model *)&unk_04)->func_020555dc();
     return TRUE;
 }

@@ -45,7 +45,7 @@ typedef volatile u32 vu32;
 extern "C" {
 u32 OS_DisableIrqMask(u32 a);
 void OS_EnableIrqMask(u32 a);
-void func_0206d49c();
+void Fatal_Trap();
 u32 TP_GetLatestIndexInAuto();
 void TP_GetCalibratedPoint(Unk_ov001_02225924_Pt *p, void *e);
 u32 FX_ModS32(u32 a, u32 b);
@@ -90,11 +90,11 @@ void func_ov001_0222652c()
 {
     u32 buf[3];
     data_ov001_0222df54 = (Unk_ov001_0222df54_S *)func_ov001_02225db0(0x3a, 4);
-    if (TP_GetUserInfo(buf) == 0) func_0206d49c();
+    if (TP_GetUserInfo(buf) == 0) Fatal_Trap();
     TP_SetCalibrateParam(buf);
     TP_RequestAutoSamplingStartAsync(0, 4, data_ov001_0222df54, 5);
     TP_WaitBusy(2);
-    if (TP_CheckError(2) != 0) func_0206d49c();
+    if (TP_CheckError(2) != 0) Fatal_Trap();
     func_ov001_022264d8();
 }
 

@@ -60,7 +60,7 @@ extern u16 MATH_CalcCRC16(void *table, void *data, u32 len);
 extern void MATHi_CRC16InitTableRev(void *table, u32 poly);
 extern void WaitByLoop(u32 n);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, s32 err);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void MI_CpuCopy8(const void *src, void *dst, u32 len);
 extern const char data_0213bbdc[];
 extern const char data_0213bbec[];
@@ -995,7 +995,7 @@ BOOL func_020ff014(S *p, u8 *buf) {
     j = 0;
     do {
         if (!func_020fe9d8(nv, 0x100, buf)) {
-            func_0206d49c();
+            Fatal_Trap();
             return 0;
         }
         MI_CpuCopy8(data_021f5c5c, buf + 0xf0, 14);

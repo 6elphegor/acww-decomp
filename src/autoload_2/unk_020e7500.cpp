@@ -64,26 +64,26 @@ void func_0211ba68(u32, u32);
 void TP_WaitBusy(u32); // TP_WaitBusy
 u32 TP_CheckError(u32); // TP_CheckError
 void TP_RequestAutoSamplingStartAsync(u32, u32, TPData *, u32); // TP_RequestAutoSamplingStartAsync
-void func_0206d49c(void); // Thumb, in main: fatal stop
+void Fatal_Trap(void); // Thumb, in main: fatal stop
 
 extern u16 data_0213a748[]; // atan table (.data of autoload_2)
-extern const s16 data_02135914[]; // direction (angle) by D-pad bits, const s16[16] at the start of .rodata
+extern const s16 kPadDirAngleTable[]; // direction (angle) by WindowLight-pad bits, const s16[16] at the start of .rodata
 extern const s16 data_02135f44[]; // FX_SinCosTable_
-extern s32 data_021f4768;
+extern s32 gFrameCounter;
 extern s32 data_021f476c;
-extern u8 data_021f4770; // touch state of the previous frame
-extern u8 data_021f4774; // touch edge
-extern u16 data_021f4778; // touch x
-extern u16 data_021f477c; // touch y
-extern TPData data_021f4780;
-extern TPData data_021f4788[9]; // auto-sampling buffer
+extern u8 gTouchHeld; // touch state of the previous frame
+extern u8 gTouchChanged; // touch edge
+extern u16 gTouchX; // touch x
+extern u16 gTouchY; // touch y
+extern TPData sTouchPoint;
+extern TPData sTouchSampleBuf[9]; // auto-sampling buffer
 extern u8 data_021f47d0;
-extern u16 data_021f47d4; // keys of the previous frame
-extern PadState data_021f47d8;
+extern u16 sPadPrevHeld; // keys of the previous frame
+extern PadState gPad;
 
 BOOL func_020e7930(List *list, ListNode *node);
 void func_020e7b68(TreeNode *n);
-u32 func_020e7fa8(u32 *seed);
+u32 Random_Next(u32 *seed);
 void func_020e82bc(MtxFx43 *m, s32 angle);
 void func_020e8300(MtxFx43 *m, s32 angle);
 void func_020e8344(MtxFx43 *m, s32 angle);
@@ -95,7 +95,7 @@ static inline s32 FX_Mul(s32 a, s32 b) {
     return (s32)(((s64)a * b + 0x800) >> 12);
 }
 
-// PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work X/Y/fold word 0x027fffa8)
+// PAD_Read / PAD_DetectFold of the SDK (REG_KEYINPUT 0x04000130, shared work DoorLight/Y/fold word 0x027fffa8)
 static inline u16 PAD_Read(void) {
     return (u16)(((*(vu16 *)0x04000130 | *(vu16 *)0x027fffa8) ^ 0x2fff) & 0x2fff);
 }
@@ -182,7 +182,7 @@ extern "C" void func_020e82bc(MtxFx43 *m, s32 angle) {
 extern "C" void func_020e82b8(void) {
 }
 
-extern "C" void func_020e8208(void) {
+extern "C" void Pad_Update(void) {
     u32 keys;
 
     if (PAD_DetectFold()) {
@@ -191,13 +191,13 @@ extern "C" void func_020e8208(void) {
         keys = PAD_Read();
     }
     data_021f47d0 = 0;
-    data_021f47d8.trig = keys & (keys ^ data_021f47d4);
-    data_021f47d4 = keys;
-    data_021f47d8.cur = keys;
-    data_021f47d8.dir = data_02135914[(keys & 0xf0) >> 4];
+    gPad.trig = keys & (keys ^ sPadPrevHeld);
+    sPadPrevHeld = keys;
+    gPad.cur = keys;
+    gPad.dir = kPadDirAngleTable[(keys & 0xf0) >> 4];
 }
 
-extern "C" void func_020e814c(void) {
+extern "C" void TouchPanel_Init(void) {
     TPCalibrateParam calib;
 
     TP_Init();
@@ -205,17 +205,17 @@ extern "C" void func_020e814c(void) {
     TP_SetCalibrateParam(&calib);
     func_0211ba68(3, 30);
     TP_WaitBusy(8);
-    if (TP_CheckError(8) != 0) func_0206d49c();
-    TP_RequestAutoSamplingStartAsync(0, 4, data_021f4788, 9);
+    if (TP_CheckError(8) != 0) Fatal_Trap();
+    TP_RequestAutoSamplingStartAsync(0, 4, sTouchSampleBuf, 9);
     TP_WaitBusy(2);
-    if (TP_CheckError(2) != 0) func_0206d49c();
-    data_021f4770 = 0;
-    data_021f4774 = 0;
-    data_021f4778 = 0xff;
-    data_021f477c = 0xff;
+    if (TP_CheckError(2) != 0) Fatal_Trap();
+    gTouchHeld = 0;
+    gTouchChanged = 0;
+    gTouchX = 0xff;
+    gTouchY = 0xff;
 }
 
-extern "C" void func_020e7fd4(void) {
+extern "C" void TouchPanel_Update(void) {
     TPData buf[4];
     s32 idx;
     s32 i;
@@ -226,40 +226,40 @@ extern "C" void func_020e7fd4(void) {
     for (i = 0; i < 4; i++) {
         s32 j = idx - 4 + i;
         if (j < 0) j += 9;
-        if (data_021f4788[j].touch != 0) touched = TRUE;
-        if (data_021f4788[j].validity != 0) {
+        if (sTouchSampleBuf[j].touch != 0) touched = TRUE;
+        if (sTouchSampleBuf[j].validity != 0) {
             buf[i].touch = 0;
         } else {
-            buf[i] = data_021f4788[j];
+            buf[i] = sTouchSampleBuf[j];
         }
     }
     if (buf[3].touch != 0 && buf[2].touch != 0 && buf[1].touch != 0) {
-        TP_GetCalibratedPoint(&data_021f4780, &buf[2]);
+        TP_GetCalibratedPoint(&sTouchPoint, &buf[2]);
     } else if (buf[0].touch != 0 && buf[1].touch != 0 && buf[2].touch != 0) {
-        TP_GetCalibratedPoint(&data_021f4780, &buf[1]);
+        TP_GetCalibratedPoint(&sTouchPoint, &buf[1]);
     } else if (!touched) {
-        data_021f4780.touch = 0;
-        data_021f4780.x = 0xff;
-        data_021f4780.y = 0xff;
-        data_021f4780.validity = 0;
+        sTouchPoint.touch = 0;
+        sTouchPoint.x = 0xff;
+        sTouchPoint.y = 0xff;
+        sTouchPoint.validity = 0;
     }
-    data_021f4774 = data_021f4780.touch ^ data_021f4770;
-    data_021f4770 = data_021f4780.touch;
-    data_021f4778 = data_021f4780.x;
-    data_021f477c = data_021f4780.y;
+    gTouchChanged = sTouchPoint.touch ^ gTouchHeld;
+    gTouchHeld = sTouchPoint.touch;
+    gTouchX = sTouchPoint.x;
+    gTouchY = sTouchPoint.y;
 }
 
-extern "C" void func_020e7fcc(u32 *seed, u32 v) {
+extern "C" void Random_SetSeed(u32 *seed, u32 v) {
     *seed = v;
 }
 
-extern "C" u32 func_020e7fa8(u32 *seed) {
+extern "C" u32 Random_Next(u32 *seed) {
     *seed = *seed * 0x0019660d + 0x3c6ef35f;
     return *seed;
 }
 
-extern "C" u32 func_020e7f90(u32 *seed, u32 n) {
-    return (u32)(((u64)n * func_020e7fa8(seed)) >> 32);
+extern "C" u32 Random_NextBelow(u32 *seed, u32 n) {
+    return (u32)(((u64)n * Random_Next(seed)) >> 32);
 }
 
 extern "C" s32 func_020e7e6c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s32 min) {
@@ -320,7 +320,7 @@ extern "C" s32 func_020e7d4c(VecFx32 *p, VecFx32 *target, s32 ratio, s32 max, s3
 }
 
 extern "C" void func_020e7d2c(void) {
-    data_021f4768 = 0;
+    gFrameCounter = 0;
     data_021f476c = 0;
 }
 

@@ -5,16 +5,16 @@ struct Counter {
     /* 0x00 */ u8 unk_00;
     /* 0x01 */ u8 unk_01;
 };
-struct Counter2 {
-    Counter2();
+struct Unk_020af238 {
+    Unk_020af238();
     u8 unk_00;
     u8 unk_01;
 };
 
 struct Elem2a { Elem2a(); u16 d; };
 struct Elem2b { Elem2b(); ~Elem2b(); u16 d; };
-struct ArrA { u32 vt; u16 e[0x25]; ArrA(); };
-struct ArrB { u32 vt; Elem2b e[0x25]; ArrB(); };
+struct Unk_020aec00 { u32 vt; u16 e[0x25]; Unk_020aec00(); };
+struct Unk_020aec1c { u32 vt; Elem2b e[0x25]; Unk_020aec1c(); };
 
 struct Str { Str(const u16 *s); ~Str(); u8 d[0x24]; };
 struct Obj30 { Obj30(); ~Obj30(); u8 d[0x30]; };
@@ -64,15 +64,15 @@ s32 func_02076fc8(u8 *a, const void *b);
 }
 
 extern "C" {
-void func_0203ce38(s32 a, s32 b);
+void MailText_SetSlotMonth(s32 a, s32 b);
 }
 
 extern "C" {
-void func_0203ce24(s32 a, s32 b);
+void MailText_SetSlotDayOrdinal(s32 a, s32 b);
 }
 
 extern "C" {
-void func_0203ce4c(s32 a, void *b);
+void MailText_SetSlot(s32 a, void *b);
 }
 
 extern "C" {
@@ -92,11 +92,11 @@ void *func_02037558(void *a, s32 b, s32 c, s32 d);
 }
 
 extern "C" {
-BOOL func_0204b2d4(void *p);
+BOOL Item_IsFurniture(void *p);
 }
 
 extern "C" {
-u32 func_0204b25c(void *p);
+u32 Item_GetFurnitureIndex(void *p);
 }
 
 extern "C" {
@@ -104,11 +104,11 @@ void *func_0204ebd8(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-BOOL func_0204b288();
+BOOL Item_IsFurnitureOrF031();
 }
 
 extern "C" {
-BOOL func_0204b300(void *p);
+BOOL Item_IsNormalItem(void *p);
 }
 
 extern "C" {
@@ -116,15 +116,15 @@ void func_0204eb30(void *a, void *b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-s32 func_0200402c(s32 a);
+s32 Snd_PlaySe(s32 a);
 }
 
 extern "C" {
-void func_02004054();
+void Snd_VolumeOn();
 }
 
 extern "C" {
-void func_02004064();
+void Snd_VolumeOff();
 }
 
 extern "C" {
@@ -132,19 +132,19 @@ void *func_0223xxxx();
 }
 
 extern "C" {
-void func_020b3270(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
+void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 }
 
 extern "C" {
-void func_02062e90(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
+void ItemPick_FillFromRange(void *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, const void *h, s32 i);
 }
 
 extern "C" {
-void func_02061168(void *a, void *b, s32 c);
+void Item_ToPlacedForm(void *a, void *b, s32 c);
 }
 
 extern "C" {
-void func_02062f70(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
+void ItemPick_OneEx(void *a, s32 b, void *c, s32 d, const void *e, s32 f, s32 g, s32 h);
 }
 
 extern "C" {
@@ -164,7 +164,7 @@ void PM_GetBackLight(void *a, void *b);
 }
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -172,7 +172,7 @@ void *func_020986c8(void *a);
 }
 
 extern "C" {
-BOOL func_0203c4cc(void *a, void *b);
+BOOL Catalog_HasItem(void *a, void *b);
 }
 
 extern "C" {
@@ -393,7 +393,7 @@ extern "C" void func_020af33c() {
             data_021ee244 = 1;
             func_020af2fc();
             PM_SetLCDPower(0);
-            func_02004064();
+            Snd_VolumeOff();
         }
         break;
     case 1:
@@ -429,7 +429,7 @@ extern "C" void func_020af2c4() {
 
 extern "C" void func_020af290() {
     if (PM_GetLCDPower() == 1 || PM_SetLCDPower(1)) {
-        if (!func_020af278(2)) func_02004054();
+        if (!func_020af278(2)) Snd_VolumeOn();
         data_021ee244 = 0;
     }
 }

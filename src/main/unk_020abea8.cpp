@@ -106,32 +106,32 @@ void NNS_G3dGeFlushBuffer(void);
 void G3_LoadMtx43(void *p);
 void func_01ffd070(Vec3 *out, Vec3 *a, Vec3 *b);
 u32 _s32_div_f(u32 a, u32 b);
-void *func_020e8608(s32 heap, u32 size);
-void func_020e85fc(s32 heap, void *p);
+void *Heap_Alloc(s32 heap, u32 size);
+void Heap_Free(s32 heap, void *p);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e84f8(void *m, s32 a, s32 b, s32 c);
 void MTX_Concat43(void *a, void *b, void *c);
 void VEC_Normalize(void *a, void *b);
 s32 func_02030814(s32 a);
-void func_0203eeac(Vec3 *out, Vec3 *in);
+void WorldCurve_Apply(Vec3 *out, Vec3 *in);
 Col func_02064cc4(void);
 RGB func_02064f2c(void);
 s32 func_02064c84(s32 a);
 void func_0209cf18(void *p);
-extern s32 data_021f482c;
+extern s32 gCurrentHeap;
 extern s32 data_021c620c;
 extern u8 data_021f47e0[];
-void *func_020641d8(void *p);
+void *File_Load(void *p);
 u8 *NNS_G3dGetTex(void *p);
 void func_02055724(void *p, s32 a);
 u8 *func_0205588c(void *p, s32 heap);
-void func_020e8558(void *p);
+void Mem_Free(void *p);
 void func_020639e8(char *buf, const void *fmt, ...);
 u32 _ZN12Unk_02056fd813func_02057100Ei(u8 *base, char *name);
 u32 _ZN12Unk_02056fd813func_02057078Ei(u8 *base, char *name);
-extern s32 data_021c3070;
-extern Vec3 data_021c309c;
-extern u8 data_0213c7e0[];
+extern s32 gCamera;
+extern Vec3 gCameraLookAt;
+extern u8 gViewMtx[];
 void func_020ac724(void *a, void *b);
 u8 func_020ac2e8(Vec3 *p, s32 q, u8 c);
 u8 func_020ac2c8(Vec3 *p, s32 q);
@@ -212,11 +212,11 @@ extern "C" void func_020ac500(void *arg) {
     if (arg != 0) {
         data_021edf44 = 0;
         Unk_020ac0c4_Entry *e = data_021ee114;
-        void *file = func_020641d8((void *)"/shadow/tex_shadow.nsbtx");
+        void *file = File_Load((void *)"/shadow/tex_shadow.nsbtx");
         u8 *res = NNS_G3dGetTex(file);
         func_02055724(res, 0);
         res = func_0205588c(res, heap);
-        func_020e8558(file);
+        Mem_Free(file);
         u32 i;
         for (i = 0; i < 3; i++) {
             char *name = data_020d094c[i].unk_00;
@@ -275,7 +275,7 @@ extern "C" void func_020ac40c() {
     data_021edf44 = func_01ffcb0c((x - 0x800) << 1, 0x1000);
     func_020e8388(data_021f47e0, 0, 0, 0);
     func_020e84f8(data_021f47e0, 0x20000, 0x20000, 0x20000);
-    MTX_Concat43(data_021f47e0, data_0213c7e0, data_021edfe0);
+    MTX_Concat43(data_021f47e0, gViewMtx, data_021edfe0);
     func_020ac724(data_021edfe0, data_021edfbc);
     RGB c1 = func_02064f2c();
     u8 s = c1.b + (c1.r + c1.g);
@@ -306,11 +306,11 @@ extern "C" void func_020ac3a4() {
 }
 
 extern "C" u8 func_020ac2e8(Vec3 *p, s32 q, u8 r4) {
-    if (data_021c3070 != 0) {
+    if (gCamera != 0) {
         Unk_020ac2e8_V v;
-        v.x = data_021c309c.x;
-        v.y = data_021c309c.y;
-        v.z = data_021c309c.z;
+        v.x = gCameraLookAt.x;
+        v.y = gCameraLookAt.y;
+        v.z = gCameraLookAt.z;
         s32 d, e;
         s32 pz = p->z;
         if (v.z > pz) {
@@ -405,7 +405,7 @@ Unk_020abea8::~Unk_020abea8() {}
 BOOL Unk_020abea8::func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a, s32 b, s32 heap) {
     u32 i;
     if (heap == 0) {
-        heap = data_021f482c;
+        heap = gCurrentHeap;
     }
     unk_30 = &data_021ee114[idx];
     unk_00 = *pos;
@@ -418,7 +418,7 @@ BOOL Unk_020abea8::func_020ac0c4(Vec3 *pos, s32 size, s32 shift, s32 idx, s32 a,
     unk_18 = 0;
     unk_14 = _s32_div_f(shift - 0x200, 0x2000) + 2;
     u32 n4 = unk_14 << 2;
-    unk_1c = (s32 *)func_020e8608(heap, (n4 << 1) + unk_14 * 12);
+    unk_1c = (s32 *)Heap_Alloc(heap, (n4 << 1) + unk_14 * 12);
     unk_28 = (s32 *)((u8 *)unk_1c + n4);
     unk_2c = (Vec3 *)((u8 *)unk_28 + n4);
     for (i = 0; i < unk_14; i++) {
@@ -483,7 +483,7 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
                     tmp.y = y;
                     tmp.z = neg;
                     tmp.z = neg + pos->z;
-                    func_0203eeac(vp, &tmp);
+                    WorldCurve_Apply(vp, &tmp);
                     vp->y >>= shift;
                     vp->z >>= shift;
                 }
@@ -511,10 +511,10 @@ void Unk_020abea8::func_020abed4(Vec3 *pos) {
 
 void Unk_020abea8::func_020abea8(s32 heap) {
     if (heap == 0) {
-        heap = data_021f482c;
+        heap = gCurrentHeap;
     }
     if (unk_1c != 0) {
-        func_020e85fc(heap, unk_1c);
+        Heap_Free(heap, unk_1c);
         unk_1c = 0;
     }
     unk_30 = 0;

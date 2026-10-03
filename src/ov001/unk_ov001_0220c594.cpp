@@ -16,7 +16,7 @@ void (*data_ov001_0222ddfc)();
 u32 data_ov001_0222de00[4];
 //ENDDEFS
 
-extern void func_0206d49c();
+extern void Fatal_Trap();
 extern void func_020ff2e4();
 extern void VBlankIntrWait();
 
@@ -131,8 +131,8 @@ s32 func_ov001_0220c9d8() {
     *ime = 0;
     GX_DispOff();
     *(volatile u32 *)0x4001000 &= ~0x10000;
-    if (OS_IsTickAvailable() == 0) func_0206d49c();
-    if (OS_IsAlarmAvailable() == 0) func_0206d49c();
+    if (OS_IsTickAvailable() == 0) Fatal_Trap();
+    if (OS_IsAlarmAvailable() == 0) Fatal_Trap();
     GX_VBlankIntr(0);
     func_01ffcb28();
     FS_Init(-1);

@@ -36,7 +36,7 @@ public:
     void func_02060034();
 };
 
-class Unk_02060a90 {
+class HouseRoom {
 public:
     Unk_02060b10 unk_000[2];
     Unk_02052620 unk_400;
@@ -45,8 +45,8 @@ public:
     u16 unk_44c;
     u8 unk_44e_0 : 1;
     u8 unk_44e_1 : 1;
-    Unk_02060a90();
-    ~Unk_02060a90();
+    HouseRoom();
+    ~HouseRoom();
     void func_02060878_dummy();
     Unk_0204ee94 *func_02060878(void *heap);
     void func_020608b8(s32 i);
@@ -69,15 +69,15 @@ struct Unk_0206022c_Bits {
     u32 cnt : 8;
 };
 
-class Unk_0206022c {
+class HouseData {
 public:
-    Unk_02060a90 unk_0000[5];
+    HouseRoom unk_0000[5];
     s32 unk_1590;
     Unk_02060034 unk_1594;
     Unk_0206022c_Bits unk_15a0;
 
-    Unk_0206022c();
-    ~Unk_0206022c();
+    HouseData();
+    ~HouseData();
     BOOL func_0206022c();
     BOOL func_02060244(u32 x, u32 set);
     BOOL func_020602cc(u32 v);
@@ -95,27 +95,27 @@ public:
     u32 func_020604c4();
     BOOL func_020604d4();
     Unk_0204ee94 *func_020604f8(s32 idx, void *heap);
-    Unk_02060a90 *func_0206052c(s32 idx);
-    Unk_02060a90 *func_02060550(s32 x);
+    HouseRoom *func_0206052c(s32 idx);
+    HouseRoom *func_02060550(s32 x);
     void func_0206058c();
     void func_020605a8();
     void func_020606d8();
 };
 
 extern "C" {
-extern Unk_0206022c data_021e58a8;
+extern HouseData data_021e58a8;
 extern u8 data_021e6e3c[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern void *data_020dcbd0[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 s32 func_020b533c(u32 x);
 s32 func_020b530c(u32 x);
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *p, s32 v);
-void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 v);
+s32 _ZN8SaveData8testFlagEj(void *p, s32 v);
+void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void func_0204d42c();
 void func_0204d3d8();
 void *func_0204da0c();
-u16 func_0204b0e0(s32 x);
+u16 Item_MakePlayerHouse(s32 x);
 Unk_0204ee94 *func_0204ee64(s32 n, void *heap);
 BOOL func_0204e9dc(void *g, s32 *a, s32 *b, s32 *c, s32 *d, u16 *e, u16 *f, s32 filter, s32 h);
 void func_0204edf8(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
@@ -132,10 +132,10 @@ extern "C" {
 s32 func_020b50e8();
 void *__cxa_vec_cleanup(void *arr, u32 n, u32 sz, void (*dtor)(void *));
 void *__cxa_vec_ctor(void *arr, u32 n, u32 sz, void (*ctor)(void *), void (*dtor)(void *));
-void _ZN12Unk_0203442cD1Ev(void *p);
-void _ZN12Unk_0203442cC1Ev(void *p);
+void _ZN6ItemIdD1Ev(void *p);
+void _ZN6ItemIdC1Ev(void *p);
 void *func_0209cbe0();
-s32 func_020e7fcc(void *a, void *b);
+s32 Random_SetSeed(void *a, void *b);
 void func_0206007c(u8 *bits, u32 i);
 void func_020600d4(u8 *bits, u32 i);
 BOOL func_02060130(u8 *bits, u32 i);
@@ -189,12 +189,12 @@ static inline s32 Unk_02060044_Idx(u32 id)
 }
 
 extern "C" void *_ZN12Unk_02060b10C1Ev(void *p) {
-    __cxa_vec_ctor(p, 0x100, 2, _ZN12Unk_0203442cC1Ev, _ZN12Unk_0203442cD1Ev);
+    __cxa_vec_ctor(p, 0x100, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
     return p;
 }
 
 extern "C" void *_ZN12Unk_02060b10D1Ev(void *p) {
-    __cxa_vec_cleanup(p, 0x100, 2, _ZN12Unk_0203442cD1Ev);
+    __cxa_vec_cleanup(p, 0x100, 2, _ZN6ItemIdD1Ev);
     return p;
 }
 
@@ -207,14 +207,14 @@ void Unk_02060b10::func_02060b14() {
 
 Unk_02060b10 *Unk_02060b10::func_02060b10() { return this; }
 
-Unk_02060a90::Unk_02060a90() { u16 v = 0xfff1;
+HouseRoom::HouseRoom() { u16 v = 0xfff1;
     unk_448 = v;
     unk_44a = v;
     unk_44c = v; }
 
-Unk_02060a90::~Unk_02060a90() {}
+HouseRoom::~HouseRoom() {}
 
-void Unk_02060a90::func_020608b8(s32 i) {
+void HouseRoom::func_020608b8(s32 i) {
     Unk_02060b10 *p = &unk_000[0];
     s32 j = 0;
     for (; j < 2; p++, j++) {
@@ -240,7 +240,7 @@ void Unk_02060a90::func_020608b8(s32 i) {
     }
 }
 
-Unk_0204ee94 *Unk_02060a90::func_02060878(void *heap) {
+Unk_0204ee94 *HouseRoom::func_02060878(void *heap) {
     Unk_0204ee94 *p = func_0204ee64(1, heap);
     if (p) {
         new (p) Unk_0204ee94;
@@ -254,38 +254,38 @@ Unk_0204ee94 *Unk_02060a90::func_02060878(void *heap) {
     return p;
 }
 
-Unk_02052620 *Unk_02060a90::func_0206086c() { return &unk_400; }
+Unk_02052620 *HouseRoom::func_0206086c() { return &unk_400; }
 
-u16 *Unk_02060a90::func_02060850(s32 *out) {
+u16 *HouseRoom::func_02060850(s32 *out) {
     if (out) *out = unk_44e_0;
     return &unk_448;
 }
 
-u16 *Unk_02060a90::func_02060834(s32 *out) {
+u16 *HouseRoom::func_02060834(s32 *out) {
     if (out) *out = unk_44e_1;
     return &unk_44a;
 }
 
-void Unk_02060a90::func_02060808(u16 *src, u32 flag) {
+void HouseRoom::func_02060808(u16 *src, u32 flag) {
     unk_448 = *src;
     unk_44e_0 = flag;
 }
 
-void Unk_02060a90::func_020607e0(u16 *src, u32 flag) {
+void HouseRoom::func_020607e0(u16 *src, u32 flag) {
     unk_44a = *src;
     unk_44e_1 = flag;
 }
 
-u16 *Unk_02060a90::func_020607d4() { return &unk_44c; }
+u16 *HouseRoom::func_020607d4() { return &unk_44c; }
 
-void Unk_02060a90::func_020607c8(u16 *src) { unk_44c = *src; }
+void HouseRoom::func_020607c8(u16 *src) { unk_44c = *src; }
 
-Unk_0206022c::Unk_0206022c() {}
+HouseData::HouseData() {}
 
-Unk_0206022c::~Unk_0206022c() {}
+HouseData::~HouseData() {}
 
-void Unk_0206022c::func_020606d8() {
-    Unk_02060a90 *p = &unk_0000[0];
+void HouseData::func_020606d8() {
+    HouseRoom *p = &unk_0000[0];
     s32 i = 0;
     u8 buf[0x50];
     for (; i < 5; p++, i++) {
@@ -308,13 +308,13 @@ extern "C" BOOL func_02060654(s32 x) {
     arr[2] = 0x501a;
     if (func_0204e9dc(g, &a, &b, &c, &d, &arr[1], &arr[2], 1, 0)) {
         func_0204edf8(&ox, &oz, a, b, c, d);
-        arr[0] = func_0204b0e0(x);
+        arr[0] = Item_MakePlayerHouse(x);
         if (func_0204eb30(g, arr, ox, oz, 0)) return TRUE;
     }
     return FALSE;
 }
 
-void Unk_0206022c::func_020605a8() {
+void HouseData::func_020605a8() {
     if (unk_15a0.c != unk_15a0.d) {
         unk_15a0.c = unk_15a0.d;
     }
@@ -326,12 +326,12 @@ void Unk_0206022c::func_020605a8() {
             unk_15a0.c = unk_15a0.d;
             func_0204d42c();
             func_0204d3d8();
-            _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 13);
+            _ZN8SaveData7setFlagEj(gSaveData, 13);
         }
     }
 }
 
-void Unk_0206022c::func_0206058c() {
+void HouseData::func_0206058c() {
     unk_1590 = 0x4d58;
     unk_15a0.cnt = 0;
 }
@@ -341,24 +341,24 @@ extern "C" BOOL func_0206057c(s32 i) {
     return FALSE;
 }
 
-Unk_02060a90 *Unk_0206022c::func_02060550(s32 x) {
+HouseRoom *HouseData::func_02060550(s32 x) {
     if (func_020b530c(x)) {
         return func_0206052c(func_020b533c(x));
     }
     return NULL;
 }
 
-Unk_02060a90 *Unk_0206022c::func_0206052c(s32 idx) {
-    Unk_02060a90 *r = NULL;
+HouseRoom *HouseData::func_0206052c(s32 idx) {
+    HouseRoom *r = NULL;
     if (func_0206057c(idx)) {
         r = &unk_0000[idx];
     }
     return r;
 }
 
-Unk_0204ee94 *Unk_0206022c::func_020604f8(s32 idx, void *heap) {
+Unk_0204ee94 *HouseData::func_020604f8(s32 idx, void *heap) {
     Unk_0204ee94 *p = NULL;
-    Unk_02060a90 *e = func_0206052c(idx);
+    HouseRoom *e = func_0206052c(idx);
     if (e) {
         p = e->func_02060878(heap);
         if (p) {
@@ -368,14 +368,14 @@ Unk_0204ee94 *Unk_0206022c::func_020604f8(s32 idx, void *heap) {
     return p;
 }
 
-BOOL Unk_0206022c::func_020604d4() {
+BOOL HouseData::func_020604d4() {
     if (unk_15a0.b != func_020604c4()) return TRUE;
     return FALSE;
 }
 
-u32 Unk_0206022c::func_020604c4() { return unk_15a0.a; }
+u32 HouseData::func_020604c4() { return unk_15a0.a; }
 
-BOOL Unk_0206022c::func_02060474() {
+BOOL HouseData::func_02060474() {
     if (unk_15a0.b == func_020604c4()) {
         if ((s32)func_020604c4() < 6) {
             unk_15a0.b = (u8)(func_020604c4() + 1);
@@ -385,14 +385,14 @@ BOOL Unk_0206022c::func_02060474() {
     return FALSE;
 }
 
-u8 Unk_0206022c::func_0206045c() { return (u8)(unk_15a0.c & 0xf); }
+u8 HouseData::func_0206045c() { return (u8)(unk_15a0.c & 0xf); }
 
-BOOL Unk_0206022c::func_02060430(u32 v) {
+BOOL HouseData::func_02060430(u32 v) {
     unk_15a0.d = (u8)(v & 0xf);
     return TRUE;
 }
 
-u16 Unk_0206022c::func_020603f4(s32 x) {
+u16 HouseData::func_020603f4(s32 x) {
     if (x != -1) {
         s32 m = data_021e58a8.func_020604c4();
         if (m < 7) return data_020cb57c[m][x];
@@ -407,11 +407,11 @@ extern "C" u16 func_020603c8() {
     return 0x1003;
 }
 
-u8 Unk_0206022c::func_020603bc() { return unk_15a0.cnt; }
+u8 HouseData::func_020603bc() { return unk_15a0.cnt; }
 
-void Unk_0206022c::func_020603b0(u8 v) { unk_15a0.cnt = v; }
+void HouseData::func_020603b0(u8 v) { unk_15a0.cnt = v; }
 
-void Unk_0206022c::func_02060394(s32 v) {
+void HouseData::func_02060394(s32 v) {
     if (v >= 7) {
         s32 t = unk_15a0.cnt + (v - 6);
         if (t > 10) t = 10;
@@ -419,9 +419,9 @@ void Unk_0206022c::func_02060394(s32 v) {
     }
 }
 
-s32 Unk_0206022c::func_02060388() { return unk_1590; }
+s32 HouseData::func_02060388() { return unk_1590; }
 
-void Unk_0206022c::func_02060370(s32 v) {
+void HouseData::func_02060370(s32 v) {
     if (v < 0) {
         unk_1590 = 0;
     } else {
@@ -429,7 +429,7 @@ void Unk_0206022c::func_02060370(s32 v) {
     }
 }
 
-void Unk_0206022c::func_02060340() {
+void HouseData::func_02060340() {
     if (func_02060388() == 0) {
         u32 m = func_020604c4();
         if (m < 7) {
@@ -438,16 +438,16 @@ void Unk_0206022c::func_02060340() {
     }
 }
 
-s32 Unk_0206022c::func_02060308() {
+s32 HouseData::func_02060308() {
     if (unk_15a0.b == func_020604c4()) {
         if (func_02060388() == 0) {
-            return _ZN12Unk_0209da4413func_0209e170Ej(data_021d7350, 13);
+            return _ZN8SaveData8testFlagEj(gSaveData, 13);
         }
     }
     return 0;
 }
 
-BOOL Unk_0206022c::func_020602cc(u32 v) {
+BOOL HouseData::func_020602cc(u32 v) {
     if (func_02060474()) {
         unk_15a0.e = v;
         return TRUE;
@@ -464,7 +464,7 @@ extern "C" u32 func_020602ac(u32 x) {
     return m;
 }
 
-BOOL Unk_0206022c::func_02060244(u32 x, u32 set) {
+BOOL HouseData::func_02060244(u32 x, u32 set) {
     u32 m = func_020602ac(x);
     if (m) {
         if (set) {
@@ -477,14 +477,14 @@ BOOL Unk_0206022c::func_02060244(u32 x, u32 set) {
     return FALSE;
 }
 
-BOOL Unk_0206022c::func_0206022c() {
+BOOL HouseData::func_0206022c() {
     if (unk_15a0.f != 0) return TRUE;
     return FALSE;
 }
 
 extern "C" u16 *func_020601cc()
 {
-    Unk_02060a90 *r = data_021e58a8.func_02060550(func_020b50e8());
+    HouseRoom *r = data_021e58a8.func_02060550(func_020b50e8());
     if (r != 0) {
         return r->func_020607d4();
     }
@@ -494,7 +494,7 @@ extern "C" u16 *func_020601cc()
 
 extern "C" BOOL func_020601a4(s32 a, u16 *p)
 {
-    Unk_02060a90 *r = data_021e58a8.func_02060550(a);
+    HouseRoom *r = data_021e58a8.func_02060550(a);
     if (r != 0) {
         r->func_020607c8(p);
         return TRUE;

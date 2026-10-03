@@ -26,7 +26,7 @@ void *NNS_FndAllocFromExpHeapEx(void *heap, u32 size, u32 b);
 void NNS_FndDestroyExpHeap(void *heap);
 void *NNS_FndCreateExpHeapEx(void *buf, u32 size, u32 b);
 void MI_CpuFill8(void *p, u32 v, u32 size);
-void func_0206d49c();
+void Fatal_Trap();
 
 void func_ov001_02225924(Unk_ov001_02225924_Pt *a, Unk_ov001_02225924_Pt *b, Unk_ov001_02225924_Rect *out);
 void func_ov001_02225958(u32 a, u32 b, u32 c, u32 d, Unk_ov001_02225924_Rect *out);
@@ -63,7 +63,7 @@ static inline void Unk_ov001_02225ae8_Set(u32 ha, u32 va, Unk_ov001_02225924_Rec
 void func_ov001_02225e58(void *buf) {
     MI_CpuFill8(buf, 0, 0x40000);
     data_ov001_0222df48 = NNS_FndCreateExpHeapEx(buf, 0x40000, 0);
-    if (data_ov001_0222df48 == 0) func_0206d49c();
+    if (data_ov001_0222df48 == 0) Fatal_Trap();
 }
 
 void func_ov001_02225e28() {
@@ -75,7 +75,7 @@ void *func_ov001_02225dd8(u32 size, u32 b) {
     void *p;
     u32 irq = OS_DisableIrqMask(1);
     p = NNS_FndAllocFromExpHeapEx(data_ov001_0222df48, size, b);
-    if (p == 0) func_0206d49c();
+    if (p == 0) Fatal_Trap();
     OS_EnableIrqMask(irq);
     return p;
 }

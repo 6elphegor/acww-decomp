@@ -6,8 +6,8 @@ void GX_LoadOBJ(void *p, u32 src, u32 size);
 void GXS_LoadOBJ(void *p, u32 src, u32 size);
 void GX_LoadOBJPltt(void *p, u32 src, u32 size);
 void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
-void *func_020e8594(u32 size);
-void func_020e8558(void *p);
+void *Mem_AllocTail(u32 size);
+void Mem_Free(void *p);
 BOOL FS_OpenFile(void *self, const void *path);
 BOOL FS_SeekFile(void *self, u32 off, s32 z);
 s32 FS_ReadFile(void *self, void *dst, u32 size);
@@ -61,7 +61,7 @@ const char *Unk_02011580::func_02011640(s32 mode) {
 BOOL Unk_02011580::func_020115e0(s32 mode) {
     void *r6 = (void *)FS_OpenFile(this, func_02011690(mode));
     BOOL ok;
-    unk_48 = (s32)func_020e8594(0x180);
+    unk_48 = (s32)Mem_AllocTail(0x180);
     if (unk_48 != 0) {
         ok = FS_ReadFile(this, (void *)unk_48, 0x180) != -1 ? TRUE : FALSE;
     } else {
@@ -75,7 +75,7 @@ BOOL Unk_02011580::func_020115e0(s32 mode) {
 BOOL Unk_02011580::func_02011580() {
     void *r6 = (void *)FS_OpenFile(this, func_02011640(4));
     BOOL ok;
-    unk_4c = (s32)func_020e8594(0x3000);
+    unk_4c = (s32)Mem_AllocTail(0x3000);
     if (unk_4c != 0) {
         ok = FS_ReadFile(this, (void *)unk_4c, 0x3000) != -1 ? TRUE : FALSE;
     } else {
@@ -88,14 +88,14 @@ BOOL Unk_02011580::func_02011580() {
 
 void Unk_0201106c::func_02011568() {
     if (unk_48 != NULL) {
-        func_020e8558(unk_48);
+        Mem_Free(unk_48);
         unk_48 = NULL;
     }
 }
 
 void Unk_0201106c::func_02011550() {
     if (unk_4c != NULL) {
-        func_020e8558(unk_4c);
+        Mem_Free(unk_4c);
         unk_4c = NULL;
     }
 }
@@ -132,7 +132,7 @@ BOOL Unk_0201106c::func_02011410(s32 k) {
     s32 z1 = 0, z2 = 0, z3 = 0, z4 = 0, z5 = 0;
     u32 src;
     s32 i;
-    unk_4c = (u8 *)func_020e8594(0x500);
+    unk_4c = (u8 *)Mem_AllocTail(0x500);
     ok = TRUE;
     if (unk_4c != NULL) {
         src = z1;

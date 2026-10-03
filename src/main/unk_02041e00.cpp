@@ -106,22 +106,22 @@ struct Unk_02041ac0_Glob {
     Unk_020419b4 *unk_20;
 };
 extern Unk_02041ac0_Glob data_021c3ea4;
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 extern u32 data_021fcc2c[];
 s32 func_02041908();
 s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
 void func_02041aec(Unk_020419b4 *p);
-void *func_020e8608(u32 heap, u32 size);
+void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
-void func_020e9244(u32 a, u32 b);
+void Heap_SetThreadHeap(u32 a, u32 b);
 void OS_WakeupThreadDirect(void *th);
 u32 DC_FlushAll();
 void OS_ExitThread();
 void MI_CpuFill8(void *p, u32 v, u32 n);
 void func_02041b1c(u8 *arg);
 void MI_CpuCopy8(void *src, void *dst, u32 n);
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 data_021ed20c[];
 extern u8 data_021c3e70[];
 void func_0204674c(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
@@ -156,10 +156,10 @@ extern u32 data_020ca150[];
 void _ZN12Unk_020e1c64C1Ev(Unk_02041e00_Obj *o);
 void _ZN12Unk_020e1c64D1Ev(Unk_02041e00_Obj *o);
 s32 func_0207bf60(void *p, u32 v);
-s32 _ZN12Unk_0208086013func_020805c4Ev();
+s32 _ZN12VillagerData13func_020805c4Ev();
 u32 func_02002ff8();
 void func_02081550(Unk_02041e00_Obj *o, u32 v);
-void func_0203ce4c(s32 a, Unk_02041e00_Obj *o);
+void MailText_SetSlot(s32 a, Unk_02041e00_Obj *o);
 s32 func_02063b8c(s32 v);
 s32 func_0203f31c(u32 ty, Unk_02042104_Date *d, s32 v);
 void func_02076ff0(s32 a, const char *fmt, u32 b, u32 c, u32 d);
@@ -377,8 +377,8 @@ void func_02043c28(u16 *a, u16 *b, s32 c);
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *o);
 void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 u8 *func_02095204(s32 a);
-s32 func_0204b08c(u16 *p);
-s32 func_0204ad08(u16 *p);
+s32 Item_IsTreeStage0(u16 *p);
+s32 Item_GetFruitTreeFruit(u16 *p);
 void func_ov003_022197e8(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
 void func_ov003_02219ae0(s32 a, u16 b, Pos p);
 void func_02045570(Pos p, u8 a);
@@ -438,18 +438,18 @@ struct Unk_020434f0_P {
 };
 extern u8 data_021c4350[];
 extern u8 data_021c3ea4[];
-BOOL func_0204b038(u16 *p);
-s32 func_0204ad98(u16 *p);
-BOOL func_0204af08(u16 *p);
+BOOL Item_IsTreeStage1(u16 *p);
+s32 Item_GetTreeStage(u16 *p);
+BOOL Item_IsTreeGrown(u16 *p);
 BOOL func_02043ba8(void);
 u32 func_02042304(void *g, Unk_020434f0_P p);
 BOOL _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
-s32 func_020974f8(void);
+s32 PlayerData_GetCurrentIndex(void);
 extern s32 data_020c9688[];
 s32 _ZN12Unk_0204e2f013func_0204e3a0Eii(void *b, s32 x, s32 y);
 s32 func_0204e88c(void *b, s32 x, s32 y);
 BOOL func_0204962c(u16 *p);
-BOOL func_0204a9c8(u16 *p);
+BOOL Item_IsFlower(u16 *p);
 void func_02043be4(void *a, u16 *p, u16 *q, u8 *r, u16 e);
 extern u8 data_020cbb18[];
 s32 func_02042588(void *g, void *a, s32 code, Unk_020434f0_P p, s32 v0, s32 v1, s32 v2, s32 v3, s32 v4, s32 v5);
@@ -458,7 +458,7 @@ s32 func_020434f0(void *a, u16 *id, Unk_020434f0_P *pos, s32 d);
 void func_02043b90(void);
 void func_02043b9c(void);
 s32 _ZN12Unk_020cbb1813func_02072e88Ei(void *g, s32 v);
-s32 func_0209750c(void);
+s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_02097ff413func_02098044Ej(s32 a, s32 b);
 BOOL func_02043c28(u16 *out, u16 *out2, u16 c);
 void func_02043db8(u16 *out, u8 *flag, u16 c);
@@ -468,7 +468,7 @@ struct Unk_020cbb18 {
 };
 BOOL func_02043ba8(void);
 void func_02043be4(void *a, u16 *p, u16 *q, u8 *r, u16 e);
-BOOL func_0204b08c(volatile u16 *p);
+BOOL Item_IsTreeStage0(volatile u16 *p);
 extern u16 data_020c91dc[];
 static inline BOOL Unk_02043c28_InR(u16 &a, volatile u16 *p, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -489,11 +489,11 @@ static inline s32 Unk_02043c28_Idx(u32 v, u32 lo, u32 hi) {
 BOOL func_02043c28(u16 *out, u16 *out2, u16 c);
 s32 func_02043e70(s32 v);
 s32 func_0204c0f4(void *p);
-s32 func_0204be70(volatile u16 *p);
+s32 Item_GetPrice(volatile u16 *p);
 s32 func_0205b4f8(void);
 s32 func_02063b8c(s32 n);
 s32 func_0204c124(void *p);
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 struct Unk_02043db8_G {
     u8 pad[0x68];
     s32 unk_68;
@@ -583,14 +583,14 @@ struct Unk_02044460_G {
 s32 func_020494bc(u16 *a);
 s32 func_02049370(u16 *a);
 void func_02044460(Unk_02044460_G *g, s32 a, s32 b, s32 c, u8 d, Unk_02044014_Vec3 *v, s16 e);
-void *func_02097520(void);
-u16 *_ZN12Unk_0209865c13func_02098744Ev(void);
+void *PlayerData_GetBySessionSlot(void);
+u16 *_ZN10PlayerData11getHeldItemEv(void);
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *g);
 s32 _ZN12Unk_020cbb1813func_020729ccEj(void *g, s32 a);
 void *func_0204da0c(void);
 void *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_02063b8c(s32 a);
-s32 func_0204a9c8(void);
+s32 Item_IsFlower(void);
 s32 func_020b50e8(void);
 s32 func_0205f094(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 func_0204ed8c(Unk_02044014_Vec3 *out, s32 x, s32 z);
@@ -678,7 +678,7 @@ void func_02044650(Unk_02044490_E *e);
 void func_020445a4(Unk_02044490_E *e);
 void func_0204452c(Unk_02044490_E *e, s32 t);
 void func_02042104(Unk_02044490_E *e);
-s32 func_02095180(s32 a, s32 b);
+s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 void func_0204989c(s32 m, s32 x, s32 z, s32 a, s32 b);
 void func_02044490(Unk_02044490_E *e, s32 t);
 void func_0204452c(Unk_02044490_E *e, s32 m);
@@ -805,17 +805,17 @@ s32 func_0204588c(void *p);
 s32 func_02045354(Unk_020449e8_Pos *p, s32 a);
 s32 func_02043ec0();
 s32 func_020452ec(s32 a, Unk_020449e8_Pos *p, s32 b);
-BOOL func_0204af08(u16 *p);
+BOOL Item_IsTreeGrown(u16 *p);
 BOOL func_02043ba8();
 u32 func_0204da0c();
 s32 func_0204568c(u8 a, Unk_020449e8_Pos *p, u32 val, u32 code, u32 s0, u32 s1, u32 s2, u8 s3, u32 s4, s32 s5);
-s32 func_0204ad08(u16 *p);
+s32 Item_GetFruitTreeFruit(u16 *p);
 u16 *func_0204ebd8(void *obj, s32 tx, s32 ty, s32 px, s32 py, s32 z);
 BOOL _ZN12Unk_0204e2f013func_0204e474Eii(void *obj, s32 x, s32 y);
 s32 func_020453e8(Unk_020449e8_Pos *p, s32 a);
-void _ZN12Unk_0206338013func_0206338cEii(Unk_02044aa8_Rng *r, s32 a, s32 b);
+void _ZN12ItemPickSpec3setEii(Unk_02044aa8_Rng *r, s32 a, s32 b);
 void func_02063388(Unk_02044aa8_Rng *r);
-void func_02062f94(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
+void ItemPick_One(u16 *out, Unk_02044aa8_Rng *r, s32 a, s32 b, s32 c, s32 d, s32 e);
 u32 func_ov003_0221ba28(u32 a, Unk_02044aa8_Vec3 *v);
 BOOL func_020a62a0();
 void func_02044774(Unk_020449e8_Src *s, s32 a, s32 b);
@@ -1078,10 +1078,10 @@ extern u8 data_021ed22e[];
 extern u8 data_021d735c[];
 void *func_0204d528(s32);
 s32 func_020978c8(void *, s32);
-void *func_02097868(void *, s32);
-void *_ZN12Unk_0209865c13func_02098750Ev(void *);
-u16 *_ZN12Unk_02097d1c13func_02097f6cEi(void *, s32);
-s32 _ZN12Unk_02097d1c13func_02097f30EPtij(void *, void *, s32, s32);
+void *PlayerData_GetResident(void *, s32);
+void *_ZN10PlayerData13func_02098750Ev(void *);
+u16 *_ZN15PlayerInventory9getPocketEi(void *, s32);
+s32 _ZN15PlayerInventory9setPocketEPtij(void *, void *, s32, s32);
 s32 func_02063b8c(s32);
 s32 func_020482b0(void *, void *, s32, s32, s32, void *, s32);
 s32 func_0204842c(void *);
@@ -1094,7 +1094,7 @@ s32 func_020b5164();
 s32 func_020402e8();
 s32 func_02041b68();
 s32 func_020c00c0();
-s32 _ZN12Unk_0209ea5013func_0209ea60Ev(void *);
+s32 _ZN11SaveRecord413func_0209ea60Ev(void *);
 s32 func_0209d124(void *, s32);
 s32 func_0204c22c(void *, void *);
 s32 func_0205b124(void *);
@@ -1102,7 +1102,7 @@ s32 func_0205afa0(void *);
 s32 func_0205b120(void *);
 s32 _ZN12Unk_0208634013func_02086444Ei(void *, s32);
 s32 func_020981f8();
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 data_021ed29c[];
 s32 func_0204c084(u32);
 s32 func_0209cc6c(void *);
@@ -1194,11 +1194,11 @@ extern char data_021eca50[];
 extern char data_021dfd8c[];
 extern char data_021c4350[];
 extern u8 data_021ed1f8[];
-extern char data_021d7350[];
+extern char gSaveData[];
 s32 _ZN12Unk_020cbb1813func_02072e44Ev(void *);
 s32 _ZN12Unk_020cbb1813func_020729ccEj(void *, s32);
 void func_0209cf18(void *);
-s32 func_02095670(void *, void *, void *, s32, s32);
+s32 PlayerActor_GetSlotPosXZ(void *, void *, void *, s32, s32);
 s32 func_020b5198(u32);
 s32 func_020b5178(u32);
 Unk_0204674c_P *func_0204da0c();
@@ -1218,7 +1218,7 @@ void func_0209d498(void *);
 void func_020499c4(void *, void *);
 void func_02046c80(void *, void *, s32, s32, void *, s32);
 s32 func_0203f14c();
-s32 func_0209750c();
+s32 PlayerData_GetCurrent();
 void func_0209cf5c(void *);
 void func_0209d124(void *, s32);
 void func_02046ddc(void *, void *, s32, s32, void *);
@@ -1266,16 +1266,16 @@ void func_020474e0(void *, void *, s32, s32, u32);
 void func_0204744c(void *, void *, s32, s32);
 void _ZN12Unk_0208581013func_020859b4Ev(void *);
 void _ZN12Unk_0206fe8013func_020702ecEv(void *);
-void _ZN12Unk_0206022c13func_020605a8Ev(void *);
+void _ZN9HouseData13func_020605a8Ev(void *);
 void func_020ada88();
-void _ZN12Unk_0206022c13func_02060394Ei(void *, s32);
-void func_02060e3c();
+void _ZN9HouseData13func_02060394Ei(void *, s32);
+void Save_ConvertFakePaintings();
 void func_02039c08(void *, s32);
 void func_02039b6c(void *, void *, s32);
 void func_0205b124(void *);
 void func_0205afa0(void *);
 void func_0205b120(void *);
-void _ZN12Unk_0204debc13func_0204df30Ev(void *);
+void _ZN7TownMap13func_0204df30Ev(void *);
 void func_020b8e70(s32);
 void func_02095d64(s32);
 void func_02096570(void *, s32);
@@ -1356,7 +1356,7 @@ extern u8 data_020da2a0[];
 extern u8 data_021ed1a4[];
 extern u8 data_020c910c[];
 extern volatile u32 data_021c40cc[];
-s32 _ZN12Unk_0209ea5013func_0209ea50Ev(u32);
+s32 _ZN11SaveRecord413func_0209ea50Ev(u32);
 void func_0209d498(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 func_0203f2e0(u32, void *, u32);
@@ -1371,7 +1371,7 @@ void func_02045ce8();
 u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
 void func_0204edf8(s32 *, s32 *, s32, s32, s32, s32);
 s32 func_02049854(void *m, s32 x, s32 z, u32 t, s32 f);
-s32 func_0204af08(void *);
+s32 Item_IsTreeGrown(void *);
 s32 func_02063b8c(s32);
 void func_02045d08(s32, s32);
 void func_02047e64(void *, void *, s32, s32);
@@ -1381,7 +1381,7 @@ s32 func_0209cd00(void *, u32);
 s32 func_0204e8b0(void *, s32, s32, s32, s32);
 void func_020497f8(void *, void *, s32, s32, s32, s32, s32, s32);
 s32 func_020b8fd8();
-s32 func_02062ad4(u16 *, u32, u32, u32, u32, u32, u32, u32, u32, u32);
+s32 ItemPick_FromRange(u16 *, u32, u32, u32, u32, u32, u32, u32, u32, u32);
 s32 func_02133150_dummy();
 void func_020482b0(void *, void *, s32, s32, s32, void *, s32);
 void func_0204744c(void *a, void *b, s32 c, s32 d);
@@ -1620,7 +1620,7 @@ void func_02049748(void *q, u16 *t, s32 x, s32 y);
 void func_020488c0(Unk_02048758_Slot (*s)[2], Unk_020480a8_Cell *c);
 void func_02048874(Unk_02048758_Slot (*s)[2], u16 id, s32 x, s32 y, s32 i, s32 j);
 void func_02048838(Unk_02048758_Slot (*s)[2]);
-s32 func_0204b08c(u16 *t);
+s32 Item_IsTreeStage0(u16 *t);
 void func_02048904(Unk_02048758_Slot *s);
 void func_02049790(void *o, u16 id, s32 x, s32 y);
 void *func_0204da0c();
@@ -1689,7 +1689,7 @@ struct Unk_0204da0c_Map {
     Unk_0204da0c_Size unk_04;
 };
 u16 *func_0204ebd8(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-BOOL func_0204b08c(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
 void func_02049790(void *m, u32 id, s32 x, s32 y);
 BOOL _ZN12Unk_0204e2f013func_0204e378Eii(void *m, s32 x, s32 y);
 s32 func_02049854(void *m, s32 x, s32 y, u32 id, s32 layer);
@@ -1871,8 +1871,8 @@ s32 func_02063b8c(s32 n);
 extern Unk_020492fc_Cell *data_020da300[][10];
 s32 func_02049370(u16 *p);
 u16 *func_0204ebd8(void *a, s32 x, s32 y, s32 lx, s32 ly, s32 z);
-BOOL func_0204b08c(u16 *p);
-BOOL func_0204b1e4(u16 *p);
+BOOL Item_IsTreeStage0(u16 *p);
+BOOL Item_IsBuildingOrOccupied(u16 *p);
 void func_02049790(void *a, u32 v, s32 x, s32 y);
 BOOL func_020495e8(u16 *p);
 BOOL func_0204962c(u16 *p);
@@ -1892,8 +1892,8 @@ struct Unk_02049790_Cell {
 struct Unk_02049790_Row {
     Unk_02049790_Cell cells[4];
 };
-BOOL func_0204aecc(u16 *p);
-BOOL func_0204af08(u16 *p);
+BOOL Item_IsFruitTreeLastNoFruit(u16 *p);
+BOOL Item_IsTreeGrown(u16 *p);
 void func_02049854(void *a, s32 x, s32 y, u32 v, s32 flag);
 void func_0204eb5c(void *a, u16 *t, s32 x, s32 y, s32 p4, s32 p5, s32 z);
 void func_0204e99c(void *a, s32 x, s32 y, s32 p4, s32 p5);
@@ -1951,8 +1951,8 @@ static inline BOOL Unk_02049e40_InRange(u32 v, u32 lo, u32 hi) {
 }
 u16 *func_0204ebd8(void *map, s32 x, s32 z, s32 a, s32 b, s32 c);
 BOOL func_0204e8b0(void *map, s32 x, s32 z, s32 a, s32 b);
-BOOL func_0204af08(u16 *p);
-BOOL func_0204af90(u16 *p);
+BOOL Item_IsTreeGrown(u16 *p);
+BOOL Item_IsTreeStage3(u16 *p);
 void func_0204edf8(s32 *o1, s32 *o2, s32 x, s32 z, s32 a, s32 b);
 s32 func_02049854(void *map, s32 x, s32 z, s32 v, s32 w);
 void func_0204a630(Unk_02049e40_Out *out);
@@ -2957,7 +2957,7 @@ extern "C" void func_0204a1c0(Unk_02049e40_Out *out, void *map, s32 x, s32 z) {
                 if (t >= 0x26 && t <= 0x2a) x1 = TRUE;
                 if (x1 || (t >= 0x66 && t <= 0x68)) {
                     out->unk_20 |= 0x800;
-                } else if (t >= 0x5d && t <= 0x61 && (func_0204af90(p) || func_0204af08(p))) {
+                } else if (t >= 0x5d && t <= 0x61 && (Item_IsTreeStage3(p) || Item_IsTreeGrown(p))) {
                     out->unk_20 |= 0x1000;
                 } else if (*p == 0x6d) {
                     out->unk_1a++;
@@ -3107,7 +3107,7 @@ extern "C" void func_02049e40(Unk_02049e40_Out *out, void *map, s32 x, s32 z) {
                 if (t >= 0x26 && t <= 0x2a) x1 = TRUE;
                 if (x1 || (t >= 0x66 && t <= 0x68)) {
                     out->unk_20 |= 0x800;
-                } else if (t >= 0x5d && t <= 0x61 && func_0204af08(p)) {
+                } else if (t >= 0x5d && t <= 0x61 && Item_IsTreeGrown(p)) {
                     out->unk_20 |= 0x1000;
                 } else if (*p == 0x6d) {
                     out->unk_1a++;
@@ -3442,9 +3442,9 @@ extern "C" void func_02049790(void *a, u32 v, s32 x, s32 y) {
 namespace nN {
 extern "C" void func_02049748(void *a, u16 *p, s32 x, s32 y) {
     u16 v = *p;
-    if (func_0204aecc(p)) {
+    if (Item_IsFruitTreeLastNoFruit(p)) {
         v = v - 3;
-    } else if (!func_0204af08(p)) {
+    } else if (!Item_IsTreeGrown(p)) {
         v = v + 1;
     }
     func_02049854(a, x, y, v, 0);
@@ -3454,7 +3454,7 @@ extern "C" void func_02049748(void *a, u16 *p, s32 x, s32 y) {
 namespace nN {
 extern "C" BOOL func_0204962c(u16 *p) {
     BOOL result = FALSE;
-    if (func_0204b1e4(p)) {
+    if (Item_IsBuildingOrOccupied(p)) {
         result = TRUE;
     } else {
         BOOL h = TRUE;
@@ -3492,7 +3492,7 @@ extern "C" BOOL func_0204962c(u16 *p) {
         if (!a) {
             if (!(v >= 0xc8 && v <= 0xcf)) h = FALSE;
         }
-        if (h && !func_0204b08c(p)) {
+        if (h && !Item_IsTreeStage0(p)) {
             result = TRUE;
         } else {
             BOOL d4 = TRUE, d3 = TRUE, d2 = TRUE, d1 = FALSE;
@@ -3555,7 +3555,7 @@ extern "C" s32 func_0204956c(void *a, s32 *pos) {
     s32 by = y >> 4;
     u16 *p = func_0204ebd8(a, bx, by, x - (bx << 4), y - (by << 4), 0);
     if (p != NULL) {
-        if (func_0204b08c(p)) {
+        if (Item_IsTreeStage0(p)) {
             func_02049790(a, *p, pos[0], pos[1]);
         }
     }
@@ -3966,7 +3966,7 @@ extern "C" void func_02048cf0(u32 a, void *m, Pos size) {
         loop:
             {
                 u16 *cell = Cell(m, x, y, 0);
-                if (cell && func_0204b08c(cell)) {
+                if (cell && Item_IsTreeStage0(cell)) {
                     switch (*cell) {
                     case 0x5d:
                         func_02048ddc(a, m, cell, size, x, y);
@@ -4006,7 +4006,7 @@ extern "C" void func_02048c30(u32 a, void *m, Pos size) {
                 {
                     u16 *cell = Cell(m, x, y, 0);
                     if (cell) {
-                        if (func_0204b08c(cell)) {
+                        if (Item_IsTreeStage0(cell)) {
                             func_02048cc4(a, m, size, Pos(x, y));
                         }
                     }
@@ -4034,7 +4034,7 @@ s32 x, y; u8 *p; s32 count, i; u16 *cell; s32 hx, hy;
             cell = func_0204ebd8(m, hx, hy, x - (hx << 4), y - (hy << 4), 0);
             if (cell) {
                 if (Unk_020489cc_Check(cell)) {
-                    if (func_0204b08c(cell)) {
+                    if (Item_IsTreeStage0(cell)) {
 count = 0; p = data_020c9850;
                         for (i = 0; i < 0x30; p++, i++) {
                             u8 b = *p;
@@ -4165,7 +4165,7 @@ extern "C" void func_02048758(void *a, void *q, s32 w, s32 h) {
             t = func_0204ebd8(q, x + 1, y + 1, 0, 0, 0);
             func_020488c0(s, &((Unk_020480a8_Cell (*)[4])nZ::data_021c40cc.unk_44)[x][y]);
             for (i = 0; i < 256; t++, i++) {
-                if (t != NULL && func_0204b08c(t) != 0) {
+                if (t != NULL && Item_IsTreeStage0(t) != 0) {
                     func_02048874(s, *t, x + 1, y + 1, i & 15, (i >> 4) & 15);
                 }
             }
@@ -4956,7 +4956,7 @@ extern "C" void func_020474e0(void *a, void *b, s32 c, s32 d, u8 e) {
             px = func_02063b8c(c - 1);
             py = func_02063b8c(d - 1);
             for (s32 i = 0; i < 3; i++) {
-                func_02062ad4(&v[1], 0x45dc, 0x7f, 0, 0, 0, 1, 10, 0, 1);
+                ItemPick_FromRange(&v[1], 0x45dc, 0x7f, 0, 0, 0, 1, 10, 0, 1);
                 v[0] = v[1];
                 px = (px + 1 + func_02063b8c(c - 1)) % c;
                 py = (py + 1 + func_02063b8c(d - 1)) % d;
@@ -5040,7 +5040,7 @@ extern "C" void func_02047290(void *a, void *b, s32 x, s32 z) {
             u16 *p = func_0204ebd8(b, x + 1, z + 1, j, i, 0);
             if (p != 0) {
                 if (Unk_020470b8_R(p, 0x26, 0x2a) || (*p >= 0x66 && *p <= 0x68)) {
-                    if (func_0204af08(p) != 0) {
+                    if (Item_IsTreeGrown(p) != 0) {
                         s32 bx, bz;
                         func_0204edf8(&bx, &bz, x + 1, z + 1, j, i);
                         arr[n].x = bx;
@@ -5110,7 +5110,7 @@ extern "C" void func_020470b8(void *a, void *m, s32 x, s32 z) {
         for (j = 0; j < 16; j++) {
             u16 *p = func_0204ebd8(m, x + 1, z + 1, j, i, 0);
             if (p != 0) {
-                if (Unk_020470b8_R(p, 0x5d, 0x61) && func_0204af08(p) != 0) {
+                if (Unk_020470b8_R(p, 0x5d, 0x61) && Item_IsTreeGrown(p) != 0) {
                     s32 bx, bz;
                     func_0204edf8(&bx, &bz, x + 1, z + 1, j, i);
                     arr[n].x = bx;
@@ -5186,7 +5186,7 @@ extern "C" void func_02046f04(void *a, void *b, void *c, s32 d, s32 e, s32 f, s3
     Unk_02046f04_Entry *p = func_0203f2d8();
     u32 t;
     func_0209cfa0(&t);
-    s32 h = _ZN12Unk_0209ea5013func_0209ea50Ev(g + 0x15fc5);
+    s32 h = _ZN11SaveRecord413func_0209ea50Ev(g + 0x15fc5);
     for (s32 i = 0; i < 7; p++, i++) {
         s32 ok;
         if (p->type == 99) continue;
@@ -5219,7 +5219,7 @@ extern "C" void func_02046f04(void *a, void *b, void *c, s32 d, s32 e, s32 f, s3
 
 namespace nJ {
 extern "C" void func_02046e90(u32 a, u32 b, u32 c) {
-    if (_ZN12Unk_0209ea5013func_0209ea50Ev(b + 0x15fc5) == 0) {
+    if (_ZN11SaveRecord413func_0209ea50Ev(b + 0x15fc5) == 0) {
         Unk_02046e90_Pair d;
         u8 buf[8];
         d.a = 0;
@@ -5306,7 +5306,7 @@ extern "C" void func_02046d28(void *a, s32 b) {
 
 namespace nI {
 extern "C" void func_02046c80(void *a, void *p, s32 x, s32 y, void *c, s32 f) {
-    if (!func_0203f14c() || (f && !func_0209750c())) {
+    if (!func_0203f14c() || (f && !PlayerData_GetCurrent())) {
         Unk_02046c80_T s;
         u8 *q;
         s.a = 0;
@@ -5315,14 +5315,14 @@ extern "C" void func_02046c80(void *a, void *p, s32 x, s32 y, void *c, s32 f) {
         func_0209d124(&s, 6);
         q = data_021ed1f8;
         if (q[2] != s.bytes[5] || q[1] != s.bytes[4] || q[0] != s.bytes[3]) {
-            func_02046ddc(a, p, x, y, data_021d7350);
-            func_02046f04(a, p, x, y, c, f, data_021d7350);
+            func_02046ddc(a, p, x, y, gSaveData);
+            func_02046f04(a, p, x, y, c, f, gSaveData);
             q[2] = s.bytes[5];
             q[1] = s.bytes[4];
             q[0] = s.bytes[3];
         }
         func_02046d28(a, f);
-        func_02046e90(a, data_021d7350, f);
+        func_02046e90(a, gSaveData, f);
     }
 }
 }
@@ -5498,15 +5498,15 @@ extern "C" void func_0204674c(void *a, u8 *b, u8 *c, s32 n, u8 e, s32 f) {
         _ZN12Unk_0208581013func_020859b4Ev(data_021ed24c);
         _ZN12Unk_0206fe8013func_020702ecEv(data_021ed0a0);
         char *const g = data_021e58a8;
-        _ZN12Unk_0206022c13func_020605a8Ev(g);
+        _ZN9HouseData13func_020605a8Ev(g);
         func_020ada88();
-        _ZN12Unk_0206022c13func_02060394Ei(g, n);
-        func_02060e3c();
+        _ZN9HouseData13func_02060394Ei(g, n);
+        Save_ConvertFakePaintings();
         func_02039c08(data_021ed210, n);
         func_02039b6c(data_021ed22e, c, n);
         func_0205b124(&obj);
         func_0205afa0(&obj);
-        _ZN12Unk_0204debc13func_0204df30Ev(data_021e3680);
+        _ZN7TownMap13func_0204df30Ev(data_021e3680);
         func_020b8e70(n);
         func_02095d64(n);
         func_02096570(&t3, n);
@@ -5588,7 +5588,7 @@ extern "C" void func_020465a4(void *a) {
                 s32 found = 0;
                 s32 i;
                 for (i = 0; i < 4; i++) {
-                    if (func_02095670(&l, x, &y, -1, i)) {
+                    if (PlayerActor_GetSlotPosXZ(&l, x, &y, -1, i)) {
                         if (func_020b5198(l.a) || func_020b5178(l.a)) {
                             if ((s32)y >> 17 == 4) {
                                 found = 1;
@@ -5701,10 +5701,10 @@ extern "C" void func_02046358() {
     s32 z2 = 0;
     for (i = 0; i < 4; i++) {
         if (func_020978c8(data_021d735c, i) != 0) {
-            void *q = func_02097868(data_021d735c, i);
+            void *q = PlayerData_GetResident(data_021d735c, i);
             for (j = z; j < 15; j++) {
-                void *r = _ZN12Unk_0209865c13func_02098750Ev(q);
-                u16 *e = _ZN12Unk_02097d1c13func_02097f6cEi(r, j);
+                void *r = _ZN10PlayerData13func_02098750Ev(q);
+                u16 *e = _ZN15PlayerInventory9getPocketEi(r, j);
                 if (e != 0) {
                     if (Unk_02046358_R1(e)) {
                         s32 t;
@@ -5720,7 +5720,7 @@ extern "C" void func_02046358() {
                             x = 0x154a;
                         }
                         w = x;
-                        _ZN12Unk_02097d1c13func_02097f30EPtij(r, &w, j, z2);
+                        _ZN15PlayerInventory9setPocketEPtij(r, &w, j, z2);
                     }
                 }
             }
@@ -5746,7 +5746,7 @@ extern "C" void func_0204631c(void *p) {
 
 namespace nH {
 extern "C" void func_020462b4(void *unused) {
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     u16 *p = (u16 *)data_021ed22e;
     s32 i;
     for (i = 0; i < 15; p++, i++) {
@@ -5809,7 +5809,7 @@ extern "C" void func_020460dc(s32 flag) {
     } l;
     Unk_020460dc_Obj o;
     Unk_02045f6c_Rgb *src;
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     s32 dt, days, hours;
     l.t.w[0] = 0;
     l.t.w[1] = 0;
@@ -5836,7 +5836,7 @@ extern "C" void func_020460dc(s32 flag) {
         dt = func_020c00c0();
         if (flag == 0) {
             if (func_020b5184() != 0 || func_020b5164() != 0) {
-                _ZN12Unk_0209ea5013func_0209ea60Ev(base + 0x15fc5);
+                _ZN11SaveRecord413func_0209ea60Ev(base + 0x15fc5);
             }
         }
         if (flag != 0 || func_020b5184() != 0 || func_020b5164() != 0) {
@@ -6958,7 +6958,7 @@ extern "C" u32 func_02044cd8(Unk_020449e8_Out *a, u32 id) {
     default: {
         u16 v = 0xfff1;
         v = id;
-        r = data_020c9200[func_0204ad08(&v)];
+        r = data_020c9200[Item_GetFruitTreeFruit(&v)];
     }
     }
     return r;
@@ -7037,8 +7037,8 @@ extern "C" void func_02044aa8(Unk_020449e8_Out *o, Unk_020449e8_Src *s, u32 x) {
                 code = 0x1492;
             } else {
                 v2 = 0xfff1;
-                _ZN12Unk_0206338013func_0206338cEii(&rng, 0, 0);
-                func_02062f94(&ret, &rng, 0, 0, 1, 1, 0);
+                _ZN12ItemPickSpec3setEii(&rng, 0, 0);
+                ItemPick_One(&ret, &rng, 0, 0, 1, 1, 0);
                 v2 = ret;
                 func_02063388(&rng);
                 code = v2;
@@ -7092,7 +7092,7 @@ extern "C" BOOL func_020449e8(Unk_020449e8_Out *o, Unk_020449e8_Src *s, u32 x) {
         u32 b = v;
         if (b >= 0x2f && c <= 0x56) rr = TRUE;
         if (rr || (c >= 0xc8 && c <= 0xcf) || (c >= 0x57 && c <= 0x5b)) {
-            if (func_0204af08((u16 *)&v)) {
+            if (Item_IsTreeGrown((u16 *)&v)) {
                 func_02044bf4(o, x, s->code);
                 res = TRUE;
             }
@@ -7330,7 +7330,7 @@ extern "C" void func_02044490(Unk_02044490_E *e, s32 t) {
         }
     } else if (e->unk_01_2 != 0) {
         if (t == func_020b50e8() && data_021c3f88 != 0) {
-            if (func_02095180(10, 4)) {
+            if (PlayerActor_TestSlotFlag(10, 4)) {
                 func_02042104(e);
                 func_02044650(e);
             } else {
@@ -7547,7 +7547,7 @@ extern "C" void func_02044014(Unk_02043f04_Pos *p) {
 
 namespace nE {
 extern "C" s32 func_02043fc0(void *m, Unk_02043f04_Pos *p, s32 f) {
-    if (func_0204a9c8()) {
+    if (Item_IsFlower()) {
         Unk_02043f04_Pos t;
         t.x = p->x;
         t.z = p->z;
@@ -7639,8 +7639,8 @@ extern "C" s32 func_02043e94(s32 a) {
 namespace nE {
 extern "C" u32 func_02043e70(void) {
     u32 r = 0xfff1;
-    if (func_02097520()) {
-        u16 *p = _ZN12Unk_0209865c13func_02098744Ev();
+    if (PlayerData_GetBySessionSlot()) {
+        u16 *p = _ZN10PlayerData11getHeldItemEv();
         if (p) {
             r = *p;
         }
@@ -7660,9 +7660,9 @@ extern "C" void func_02043db8(u16 *out, u8 *flag, u16 c) {
             u32 r7;
             *out = 0x26;
             *flag = 0;
-            r7 = (u32)data_021d7350;
+            r7 = (u32)gSaveData;
             if (func_0204c0f4((void *)(r7 + 0x15e54))) {
-                s32 x = func_0204be70(&t);
+                s32 x = Item_GetPrice(&t);
                 s32 y = func_0205b4f8();
                 s32 sum = x / 1000 + y / 25;
                 if (sum > 100) {
@@ -7708,7 +7708,7 @@ extern "C" BOOL func_02043c28(u16 *out, u16 *out2, u16 c) {
             *out = 0x5d;
             *out2 = 0x5d;
         }
-    } else if (func_0204b08c(&t)) {
+    } else if (Item_IsTreeStage0(&t)) {
         u16 a2;
         if (Unk_02043c28_InR(a2, &t, 0xc8, 0xcf)) {
             *out = 0xc8;
@@ -7749,7 +7749,7 @@ extern "C" BOOL func_02043ba8(void) {
     BOOL r = FALSE;
     Unk_020cbb18 *g = *(Unk_020cbb18 **)data_020cbb18;
     if (_ZN12Unk_020cbb1813func_02072e88Ei(g, g->unk_64) == 0) {
-        if (_ZN12Unk_02097ff413func_02098044Ej(func_0209750c(), 1) == 0) {
+        if (_ZN12Unk_02097ff413func_02098044Ej(PlayerData_GetCurrent(), 1) == 0) {
             if (data_021c3ea4[0x1c] == 0) {
                 r = TRUE;
             }
@@ -7787,10 +7787,10 @@ extern "C" s32 func_020439f8(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
     if (!k7) { if (cc != 0x6d) k8 = FALSE; }
     if (!k8) { if (!(cc >= 0xc8 && cc <= 0xcf)) k9 = FALSE; }
     if (k9) {
-        if (!func_0204b08c(id)) {
-            if (!func_0204b038(id)) {
+        if (!Item_IsTreeStage0(id)) {
+            if (!Item_IsTreeStage1(id)) {
                 s32 kind = 1;
-                s32 off = func_0204ad98(id) - 1;
+                s32 off = Item_GetTreeStage(id) - 1;
                 if (Unk_020437d0_R(id, 0x26, 0x2a) || (*id >= 0x57 && *id <= 0x5b) || (*id >= 0x66 && *id <= 0x68) || *id == 0x69) {
                     code = off + 0x27;
                 } else {
@@ -7803,13 +7803,13 @@ extern "C" s32 func_020439f8(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
                         code = *id;
                     }
                 } else if ((*id >= 0x2f && *id <= 0x56) || (*id >= 0xc8 && *id <= 0xcf)) {
-                    if (func_0204af08(id)) {
+                    if (Item_IsTreeGrown(id)) {
                         code = *id + 1;
                     } else {
                         code = *id;
                     }
                 } else if (*id >= 0x57 && *id <= 0x5b) {
-                    if (!func_0204af08(id)) {
+                    if (!Item_IsTreeGrown(id)) {
                         code = *id;
                     }
                 } else if (*id == 0x6d) {
@@ -7835,8 +7835,8 @@ extern "C" s32 func_020437d0(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
     if (((code >= 0x26 && code <= 0x2a) || (code >= 0x5d && code <= 0x61) || (code >= 0x2f && code <= 0x56) ||
          (code >= 0x57 && code <= 0x5b) || (code >= 0x66 && code <= 0x68) || code == 0x69 ||
          (code >= 0x6a && code <= 0x6c) || code == 0x6d || (code >= 0xc8 && code <= 0xcf)) &&
-        !func_0204b08c(id)) {
-        off = func_0204ad98(id) - 1;
+        !Item_IsTreeStage0(id)) {
+        off = Item_GetTreeStage(id) - 1;
         kind = 6;
         v24 = (u8)func_02042304(data_021c4350, *pos);
         if (mode != 2) {
@@ -7863,7 +7863,7 @@ extern "C" s32 func_020437d0(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
                         code = *id;
                     }
                 } else if ((*id >= 0x2f && *id <= 0x56) || (*id >= 0xc8 && *id <= 0xcf)) {
-                    if (func_0204af08(id)) {
+                    if (Item_IsTreeGrown(id)) {
                         code = *id + 1;
                     } else {
                         code = *id;
@@ -7880,7 +7880,7 @@ extern "C" s32 func_020437d0(void *a, u16 *id, Unk_020434f0_P *pos, s32 mode) {
             kind = 0xc;
             if (!_ZN12Unk_020cbb1813func_02072e44Ev(*(void **)data_020cbb18)) {
                 s32 q = (*id - 0xe8) / 5;
-                if (q == func_020974f8()) {
+                if (q == PlayerData_GetCurrentIndex()) {
                     if (mode != 2) {
                         kind = 0xe;
                     }
@@ -7944,7 +7944,7 @@ extern "C" s32 func_02043540(void *a, void *b, u16 *id, Unk_020434f0_P *pos, u16
         l.v1 = c;
         if (!_ZN12Unk_020cbb1813func_02072e44Ev(*(void **)data_020cbb18)) {
             s32 q = (*id - 0xe8) / 5;
-            if (q == func_020974f8()) {
+            if (q == PlayerData_GetCurrentIndex()) {
                 kind = 0xe;
             }
         }
@@ -7969,9 +7969,9 @@ extern "C" s32 func_02043540(void *a, void *b, u16 *id, Unk_020434f0_P *pos, u16
         if (k2 || (((d >= 0x26 && d <= 0x2a) || (d >= 0x5d && d <= 0x61) || (d >= 0x2f && d <= 0x56) ||
                     (d >= 0x57 && d <= 0x5b) || (d >= 0x66 && d <= 0x68) || d == 0x69 || (d >= 0x6a && d <= 0x6c) ||
                     d == 0x6d || (d >= 0xc8 && d <= 0xcf)) &&
-                   func_0204b08c(id))) {
+                   Item_IsTreeStage0(id))) {
             kind = 0xb;
-        } else if (func_0204a9c8(id) || Unk_020437d0_R(id, 0x21, 0x24) || (*id >= 0x1f && *id <= 0x20) || *id == 0xe2) {
+        } else if (Item_IsFlower(id) || Unk_020437d0_R(id, 0x21, 0x24) || (*id >= 0x1f && *id <= 0x20) || *id == 0xe2) {
             kind = 8;
         } else {
             s32 r = func_0204e88c(b, pos->a, pos->b);
@@ -8347,7 +8347,7 @@ extern "C" s32 func_02042d10(s32 idx) {
                     Unk_02042d10_Vec *q = (Unk_02042d10_Vec *)(o + 0x5c);
                     volatile u16 id = 0xfff1;
                     id = e->f10;
-                    if (func_0204b08c((u16 *)&id)) {
+                    if (Item_IsTreeStage0((u16 *)&id)) {
                         BOOL in = FALSE;
                         u16 v1 = id;
                         u16 v2 = id;
@@ -8355,7 +8355,7 @@ extern "C" s32 func_02042d10(s32 idx) {
                             in = TRUE;
                         }
                         if (in) {
-                            v = data_020c91f4[func_0204ad08((u16 *)&id)];
+                            v = data_020c91f4[Item_GetFruitTreeFruit((u16 *)&id)];
                         } else if (e->f10 == 0xc8) {
                             v = 0x1548;
                         }
@@ -9192,9 +9192,9 @@ extern "C" void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d
         case 5:
         case 6:
         case 7:
-            if (func_0207bf60(data_021dfd8c, ty) != 0 && _ZN12Unk_0208086013func_020805c4Ev() != 0) {
+            if (func_0207bf60(data_021dfd8c, ty) != 0 && _ZN12VillagerData13func_020805c4Ev() != 0) {
                 func_02081550(&obj, func_02002ff8());
-                func_0203ce4c(v0c, &obj);
+                MailText_SetSlot(v0c, &obj);
                 t = func_02063b8c(3) + 0x1e;
             }
             break;

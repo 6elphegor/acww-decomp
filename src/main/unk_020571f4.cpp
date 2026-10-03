@@ -10,10 +10,10 @@ struct Unk_02058ddc_V {
     Unk_02058ddc_V(const Unk_02058ddc_V &o) : x(o.x), y(o.y), z(o.z) {}
 };
 
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 x, y, z;
-    Unk_02000c8c(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
-    ~Unk_02000c8c();
+    FxVec3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
+    ~FxVec3();
 };
 
 struct Unk_02059384_Rec {
@@ -82,7 +82,7 @@ extern "C" {
 void func_020f440c(void *p);
 }
 
-class Unk_020dc034 : public Unk_020d8c7c {
+class Unk_020dc034 : public GameProc {
 public:
     Unk_020dc034() { unk_50 = 0xfff1; func_020f440c(&unk_dc); }
 
@@ -116,8 +116,8 @@ public:
 
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     void func_02057450(void);
     void func_020574cc(void);
@@ -225,9 +225,9 @@ void func_ov004_0222c524(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s1
 void func_ov003_0221d028(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void func_ov004_0222c4d8(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 s32 func_0204f3e4(s32 c4, s32 idx, Unk_020dc034_V *p, Unk_020dc034_V *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
-s32 _ZN12Unk_020d967013func_0203e630Ev(void *p);
-BOOL func_0204b2d4(u16 *p);
-s32 func_0204b25c(u16 *p);
+s32 _ZN9Character9getCharIdEv(void *p);
+BOOL Item_IsFurniture(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
 s32 func_0204f49c();
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
@@ -283,13 +283,13 @@ Unk_020dc034_Entry data_021c5b48[12][2] = {
 };
 
 u8 data_021c5a30[4] = { data_020ca690[1] - data_020ca690[0], data_020ca690[2] - data_020ca690[1], data_020ca690[3] - data_020ca690[2] };
-Unk_02000c8c data_021c5a78(-0x400, -0x300, 0x1100);
+FxVec3 data_021c5a78(-0x400, -0x300, 0x1100);
 u8 data_021c5a2c[4] = { data_020ca680[1] - data_020ca680[0], data_020ca680[2] - data_020ca680[1] };
 u8 data_021c5a28[4] = { data_020ca684[1] - data_020ca684[0], data_020ca684[2] - data_020ca684[1] };
 u8 data_021c5a24[4] = { data_020ca67c[1] - data_020ca67c[0] };
-Unk_02000c8c data_021c5acc(0, 0, 0xd00);
+FxVec3 data_021c5acc(0, 0, 0xd00);
 s32 data_021c5ae8[4] = { 0, Unk_020574cc_Abs(data_020ca6c4[1] / data_021c5a30[0]), Unk_020574cc_Abs(data_020ca6c4[2] / data_021c5a30[1]), Unk_020574cc_Abs(data_020ca6c4[3] / data_021c5a30[2]) };
-Unk_02000c8c data_021c5a84(0, 0, 0x1300);
+FxVec3 data_021c5a84(0, 0, 0x1300);
 
 // ---- own functions (declared for forward references) ----
 s32 func_020573f4(s32 a);
@@ -373,7 +373,7 @@ BOOL Unk_020dc034::vfunc_0c()
     return TRUE;
 }
 
-BOOL Unk_020dc034::vfunc_18()
+BOOL Unk_020dc034::onExecute()
 {
     if (unk_5c >= 0 && unk_5c < 2) {
         if (unk_da < 0xc) {
@@ -402,7 +402,7 @@ BOOL Unk_020dc034::vfunc_18()
     return TRUE;
 }
 
-BOOL Unk_020dc034::vfunc_24()
+BOOL Unk_020dc034::onDraw()
 {
     func_02058d54();
     return TRUE;
@@ -442,9 +442,9 @@ BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner
         unk_cc[0] = o0;
         unk_cc[1] = o1;
         BOOL x;
-        if (func_0204b2d4(&unk_50)) {
+        if (Item_IsFurniture(&unk_50)) {
             u16 tmp = 0x1565;
-            x = func_0204b25c(&unk_50) == func_0204b25c(&tmp);
+            x = Item_GetFurnitureIndex(&unk_50) == Item_GetFurnitureIndex(&tmp);
         } else {
             x = unk_50 == 0x1565;
         }
@@ -476,7 +476,7 @@ BOOL Unk_020dc034::func_02059068(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner
 BOOL Unk_020dc034::func_0205902c(void *p, u32 idx)
 {
     if (idx < 2 && unk_cc[idx] != NULL) {
-        if (_ZN12Unk_020d967013func_0203e630Ev(p) == _ZN12Unk_020d967013func_0203e630Ev(*(Unk_020dc034_Owner_Base **)((u8 *)this + idx * 4 + 0xcc))) {
+        if (_ZN9Character9getCharIdEv(p) == _ZN9Character9getCharIdEv(*(Unk_020dc034_Owner_Base **)((u8 *)this + idx * 4 + 0xcc))) {
             return TRUE;
         }
     }
@@ -1077,7 +1077,7 @@ void Unk_020dc034::func_02057e48()
         VEC_Add(&unk_60, &unk_78, &unk_60);
         unk_d6 = unk_d6 + 1;
         if ((s32)unk_d6 >= n) {
-            static Unk_02000c8c s(0x10000, 0, 0x17000);
+            static FxVec3 s(0x10000, 0, 0x17000);
             Unk_020dc034_V t2;
             t2.x = 0;
             t2.y = 0;
@@ -1145,7 +1145,7 @@ void Unk_020dc034::func_02057cf4()
 
 void Unk_020dc034::func_02057be8()
 {
-    static Unk_02000c8c s(0x10000, 0, 0x17000);
+    static FxVec3 s(0x10000, 0, 0x17000);
     Unk_020dc034_V t;
     t.x = 0;
     t.y = 0;

@@ -20,17 +20,17 @@ struct Unk_021ede90 {
     u32 unk_00, unk_04, unk_08, unk_0c, unk_10;
 };
 
-class Unk_020dbe34 {
+class Model {
 public:
-    Unk_020dbe34();
-    virtual ~Unk_020dbe34();
+    Model();
+    virtual ~Model();
     u8 pad_04[0x58];
     void *unk_5c;
     u8 pad_60[4];
     void func_0205553c(s32 *scale);
 };
 
-class Unk_020dbd34 : public Unk_020dbe34 {
+class Unk_020dbd34 : public Model {
 public:
     Unk_020dbd34();
     virtual ~Unk_020dbd34();
@@ -52,7 +52,7 @@ void _ZN12Unk_0203398c13func_020339bcEP16Unk_0203389c_Vecii(Unk_02033914 *p, Vec
 s32 _ZN12Unk_0203389c13func_02033914Ei(Unk_02033914 *p, s32 a);
 void func_02033988(Unk_02033914 *p);
 BOOL func_020b51fc(void);
-s32 func_0203ef38(Vec3 *out, Vec3 *in);
+s32 WorldCurve_ToCurved(Vec3 *out, Vec3 *in);
 Col func_02064cc4(void);
 u8 func_020ac2c8(Vec3 *p, s32 q);
 extern u8 data_020e416c;
@@ -154,7 +154,7 @@ extern "C" void func_020abc10(Vec3 *pos, s32 a, s32 b, s32 c) {
             s32 t;
             pos2 = *pos;
             pos2.y = off + func_02030814(0);
-            t = func_0203ef38(&out, &pos2);
+            t = WorldCurve_ToCurved(&out, &pos2);
             func_020e8388(data_021f47e0, out.x, out.y, out.z);
             func_020e8434(data_021f47e0, t);
             *(Mtx43 *)data_021edea0.unk_64 = *(Mtx43 *)data_021f47e0;

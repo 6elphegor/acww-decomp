@@ -46,11 +46,11 @@ extern u32 data_020e2f04[];
 extern u8 data_021e7f8c[];
 
 // external
-void _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(u32 a, u32 b, Vec3 *v, void *c, u32 d);
+void _ZN5Actor5spawnEPvS0_S0_S0_S0_(u32 a, u32 b, Vec3 *v, void *c, u32 d);
 u64 OS_GetTick(void);
 BOOL func_02051218(const u8 *a, const u8 *b, s32 len);
-void func_0205125c(void *dst, u32 size);
-s32 func_02051268(const void *src, void *dst, u32 size);
+void Mem_Clear(void *dst, u32 size);
+s32 Mem_Copy(const void *src, void *dst, u32 size);
 Entry *_ZN12Unk_0208f23813func_0208f154Ev(void *p);
 BOOL _ZN12Unk_0208f23813func_0208f1c0Ev(void *p);
 void func_020b0a30(void *e);
@@ -62,18 +62,18 @@ s32 func_020b8ec0(void *a, s32 x, s32 y);
 s32 func_020b8f98(void);
 s32 func_020b8f8c(void);
 void func_020a78a4(void *buf, const void *src, s32 len);
-void _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(void *self, void *buf, s32 a, s32 b);
+void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *self, void *buf, s32 a, s32 b);
 void _ZN12Unk_020e2f5cC2Ev(void *buf);
 void _ZN12Unk_020e2f5cD1Ev(void *buf);
 void func_0209d498(void *p);
 s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
-void func_020641b4(u32 a, void *b, u32 c);
+void File_LoadToBuffer(u32 a, void *b, u32 c);
 void *func_020b87d0(void *p);
 u32 func_02063b8c(u32 n);
-void func_0204eee4(u32 a);
-void func_0204ef2c(u32 a);
-void *func_0209750c(void);
-u8 *_ZN12Unk_0209865c13func_0209888cEv(void *p);
+void OverlayMgr_Release(u32 a);
+void OverlayMgr_Acquire(u32 a);
+void *PlayerData_GetCurrent(void);
+u8 *_ZN10PlayerData11getPlayerIdEv(void *p);
 // 0x02291f60 exists in every overlay of the slot (relocs.txt: module:overlays(113,123,...)); the
 // call names the first one's symbol.
 s32 _ZN18Unk_ov113_02293640D1Ev(void *p);
@@ -261,7 +261,7 @@ Entry *func_020b04a4(s32 idx) {
 }
 
 void func_020b0450(u8 *dst) {
-    u8 *src = _ZN12Unk_0209865c13func_0209888cEv(func_0209750c());
+    u8 *src = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
     *(u16 *)dst = *(u16 *)src;
     *(B8 *)(dst + 2) = *(B8 *)(src + 2);
     *(u16 *)(dst + 0xa) = *(u16 *)(src + 0xa);
@@ -271,14 +271,14 @@ void func_020b0450(u8 *dst) {
 }
 
 void func_020b0428(u8 *src, s32 idx) {
-    func_02051268(src, func_020b05bc()->entries[idx].name, 16);
+    Mem_Copy(src, func_020b05bc()->entries[idx].name, 16);
 }
 
 void func_020b03f0(u8 *dst, s32 idx) {
     Base *base = func_020b05bc();
-    func_0205125c(dst, 16);
+    Mem_Clear(dst, 16);
     if (func_020b0980(base, idx)) {
-        func_02051268(base->entries[idx].name, dst, 16);
+        Mem_Copy(base->entries[idx].name, dst, 16);
     }
 }
 
@@ -291,7 +291,7 @@ BOOL func_020b03a0(void *self, s32 idx) {
     e = func_020b053c(idx);
     _ZN12Unk_020e2f5cC2Ev(buf);
     func_020a78a4(buf, e->name, 16);
-    _ZN12Unk_020e2a7813func_020a7aa0EP12Unk_020e2a60ii(self, buf, 0, 0);
+    _ZN9MsgString11fromEncodedEP13EncodedStringii(self, buf, 0, 0);
     _ZN12Unk_020e2f5cD1Ev(buf);
     return TRUE;
 }
@@ -378,11 +378,11 @@ s32 func_020b0218(void) {
 }
 
 void func_020b0208(void) {
-    func_0204ef2c((u32)OVERLAY_127_ID);
+    OverlayMgr_Acquire((u32)OVERLAY_127_ID);
 }
 
 void func_020b01f8(void) {
-    func_0204eee4((u32)OVERLAY_127_ID);
+    OverlayMgr_Release((u32)OVERLAY_127_ID);
 }
 
 BOOL func_020b01b0(Entry *e) {
@@ -553,7 +553,7 @@ BOOL func_020afeb4(List *self, u8 *idxp, u64 start) {
     while (TRUE) {
         Vec3 v;
         setv(&v, (n->x << 12) >> 4, (n->y << 12) >> 4, (n->z << 12) >> 4);
-        _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_(n->unk_00, n->unk_10, &v, &n->pad_08[0], 0);
+        _ZN5Actor5spawnEPvS0_S0_S0_S0_(n->unk_00, n->unk_10, &v, &n->pad_08[0], 0);
         n++;
         i++;
         if (idxp != NULL) {

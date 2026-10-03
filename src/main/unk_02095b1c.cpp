@@ -25,8 +25,8 @@ struct Unk_02095dcc_Grid {
     s32 unk_10;
 };
 
-struct Unk_02063380 {
-    void func_0206338c(s32 a, s32 b);
+struct ItemPickSpec {
+    void set(s32 a, s32 b);
     s32 unk_00;
     s32 unk_04;
 };
@@ -62,7 +62,7 @@ extern u32 data_020d03d8[];
 extern u32 data_020d03e8[];
 extern u32 data_020d03f8[];
 extern u8 data_020d043c[];
-extern u8 data_021d085c[];
+extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
 extern u8 data_021eceac[];
 extern u8 data_021edb68[];
@@ -114,11 +114,11 @@ s32 func_02095478(void *p, s32 i);
 }
 
 extern "C" {
-BOOL func_02095574(s32 *out, s32 a, s32 idx);
+BOOL PlayerActor_GetSlotAction(s32 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-BOOL func_020955e8(s16 *out, s32 a, s32 idx);
+BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 }
 
 extern "C" {
@@ -130,11 +130,11 @@ u32 func_02095758(s32 idx);
 }
 
 extern "C" {
-Unk_02095774_Ent *func_02095774(s32 idx);
+Unk_02095774_Ent *PlayerActor_Get(s32 idx);
 }
 
 extern "C" {
-BOOL func_02095670(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
+BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
 }
 
 extern "C" {
@@ -158,11 +158,11 @@ Unk_02095774_Ent *func_02095204(s32 idx);
 }
 
 extern "C" {
-u32 func_0209521c();
+u32 PlayerSession_FindFreeGfxSlot();
 }
 
 extern "C" {
-void func_0209524c(s32 idx, u32 v);
+void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 }
 
 extern "C" {
@@ -174,7 +174,7 @@ void func_02094308(s32 idx, void *pos, void *rot, u32 flags);
 }
 
 extern "C" {
-BOOL func_02095180(s32 a, s32 b);
+BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 extern "C" {
@@ -194,7 +194,7 @@ s16 *func_02095294(s32 idx);
 }
 
 extern "C" {
-void func_020ed188(void *p);
+void ProcBase_RequestDelete(void *p);
 }
 
 extern "C" {
@@ -294,7 +294,7 @@ void *func_020991e4();
 }
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 }
 
 extern "C" {
@@ -310,15 +310,15 @@ void func_0206f604(s32 a, s32 b);
 }
 
 extern "C" {
-void func_02062f94(u16 *a, Unk_02063380 *o, s32 b, s32 c, s32 d, s32 e, s32 f);
+void ItemPick_One(u16 *a, ItemPickSpec *o, s32 b, s32 c, s32 d, s32 e, s32 f);
 }
 
 extern "C" {
-void func_02062ad4(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void ItemPick_FromRange(u16 *a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 
 extern "C" {
-void func_02063388(Unk_02063380 *o);
+void func_02063388(ItemPickSpec *o);
 }
 
 inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
@@ -329,22 +329,22 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
 
 class Unk_020e1c88 {
 public:
-    static Unk_020d8c7c *vfunc_48();
+    static GameProc *vfunc_48();
 };
 
 struct Unk_020e1cd0_Rec {
-    Unk_020d8c7c *(*fn)();
+    GameProc *(*fn)();
     s16 a;
     s16 b;
 };
 
-class Unk_020e1ce0 : public Unk_020d8c7c {
+class Unk_020e1ce0 : public GameProc {
 public:
     Unk_020e1ce0();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e1ce0();
 };
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
@@ -355,7 +355,7 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
 
 Unk_020e1cd0_Rec data_020e1cd0 = {&Unk_020e1c88::vfunc_48, 10, 14};
 
-Unk_020d8c7c *Unk_020e1c88::vfunc_48() { return new Unk_020e1ce0(); }
+GameProc *Unk_020e1c88::vfunc_48() { return new Unk_020e1ce0(); }
 
 Unk_020e1ce0::Unk_020e1ce0() {}
 
@@ -363,7 +363,7 @@ Unk_020e1ce0::~Unk_020e1ce0() {}
 
 BOOL Unk_020e1ce0::vfunc_00() { return TRUE; }
 
-BOOL Unk_020e1ce0::vfunc_18() {
+BOOL Unk_020e1ce0::onExecute() {
     Unk_020cbb18 *g;
     s32 i, m1;
     s32 *p8;
@@ -386,9 +386,9 @@ BOOL Unk_020e1ce0::vfunc_18() {
             r4 = func_020952a0(idx);
             p10 = func_02095294(idx);
             if (c != 0xc && c != 0xd && c != 0xe && c != 0x2f && c != 0x2e) {
-                if (func_02095574(&v, m1, idx)) {
-                    if (func_02095670(&c, &x, &y, m1, idx)) {
-                        if (func_020955e8(&s, m1, idx)) {
+                if (PlayerActor_GetSlotAction(&v, m1, idx)) {
+                    if (PlayerActor_GetSlotPosXZ(&c, &x, &y, m1, idx)) {
+                        if (PlayerActor_GetSlotAngle(&s, m1, idx)) {
                             func_02094360(&idx, &c, p8, &v, &x, &y);
                             *p8 = v;
                             *pc = c;
@@ -418,7 +418,7 @@ BOOL Unk_020e1ce0::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_020e1ce0::vfunc_24() { return TRUE; }
+BOOL Unk_020e1ce0::onDraw() { return TRUE; }
 
 BOOL Unk_020e1ce0::vfunc_0c() { return TRUE; }
 

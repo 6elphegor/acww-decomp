@@ -1,12 +1,12 @@
 // mwcc-flags: -nothumb -O4,p
 // RC_020f0dec: autoload_2 0x020f0dec-0x020f0fb4 (8 functions) + bss 0x021f5b80-0x021f5bf8 (autoload_3) + main .init
 // 0x020c6080-0x020c6094 / .ctor 0x020d1f50-0x020d1f54 (its __sinit). mwcc 1.2/base, C++, ARM, -O4,p.
-// REAL-CLASS shape: the sound/BGM manager SndMgr and its one object data_021f5b80, a
+// REAL-CLASS shape: the sound/BGM manager SndMgr and its one object gSndMgr, a
 // file-scope object with an out-of-line constructor, which mwcc builds in the file's __sinit (main .init 0x020c6080: a tail call of
 // the C1 constructor 0x020f0f70; the C2 is unreferenced and dead-stripped). Every member keeps its symbols.txt name (aliases.txt).
 // Extent: the text and the 0x78-byte object are certain; the 4-byte bss words before it (0x021f5b48-0x021f5b7c, used only by
-// func_020ee98c and G006 0x020ef150-0x020f0dec) are equal-or-smaller objects, so they may belong to this file too (then G006, and
-// perhaps func_020ee98c, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
+// SndMgr_PlayTalkVoice and G006 0x020ef150-0x020f0dec) are equal-or-smaller objects, so they may belong to this file too (then G006, and
+// perhaps SndMgr_PlayTalkVoice, are this file's first part); nothing in the data decides it, so the unit takes only what is proven.
 #include "types.h"
 
 class SndMgr {
@@ -16,8 +16,8 @@ public:
     void update();                           // 0x020f0e3c
     void volumeOff();                        // 0x020f0e2c
     void volumeOn();                         // 0x020f0e1c
-    void setMode(u32 v);                     // 0x020f0e08
-    void applyMode();                        // 0x020f0df8
+    void setOutputMode(u32 v);                     // 0x020f0e08
+    void startOutputEffect();                        // 0x020f0df8
     void stopAll();                          // 0x020f0dec
 
     /* 0x00 */ u32 unk_00;
@@ -54,26 +54,26 @@ public:
 
 // the sound manager (C linkage name as in symbols.txt; other files use data_021f5bbc / bc0 / be0 = members at +0x3c / +0x40 / +0x60,
 // recorded as linker-script names by renames.txt)
-SndMgr data_021f5b80;
+SndMgr gSndMgr;
 
 extern "C" {
-void func_0206d49c(void); // Thumb, in main: fatal stop
+void Fatal_Trap(void); // Thumb, in main: fatal stop
 void *NNS_SndHeapCreate(u32 a, u32 b);
-void func_020edbbc(u32 a, u32 b, u32 c, u32 d);
+void Snd_InitSystem(u32 a, u32 b, u32 c, u32 d);
 u32 func_0211d6e0(void);
 void func_0210b280(u32 a);
 void NNS_SndSetMasterVolume(u32 a);
-void *func_020edc88(void);
+void *Snd_GetHeap(void);
 void func_0210e8bc(u32 a, void *b);
 void func_0210e6ac(void *p);
-void func_020ed9c8(u32 a);
-void func_020eda60(void *p);
+void Snd_LoadGroup(u32 a);
+void Snd_InitHandle(void *p);
 u32 OS_GetTick(void);
-void func_020edb14(void);
-void func_020ef728(SndMgr *self);
-void func_020effd4(SndMgr *self);
-void func_020efe70(SndMgr *self);
-void func_020edb74(u32 a);
+void Snd_Main(void);
+void SndMgr_UpdateVoice(SndMgr *self);
+void SndMgr_UpdateTrackRamps(SndMgr *self);
+void SndMgr_UpdateVolumeRamps(SndMgr *self);
+void Snd_StartOutputEffect(u32 a);
 void func_0210ee4c(u32 a);
 void NNS_SndCaptureStopEffect(SndMgr *self);
 }
@@ -89,21 +89,21 @@ SndMgr::SndMgr() {
 
 void SndMgr::init(u32 a, u32 b, u32 c) {
     unk_28 = NULL;
-    if (unk_28 != NULL) func_0206d49c();
+    if (unk_28 != NULL) Fatal_Trap();
     unk_28 = NNS_SndHeapCreate(a, 0x339c);
-    if (unk_28 == NULL) func_0206d49c();
-    func_020edbbc(a + 0x339c, b - 0x339c, c, 0);
+    if (unk_28 == NULL) Fatal_Trap();
+    Snd_InitSystem(a + 0x339c, b - 0x339c, c, 0);
     func_0210b280(func_0211d6e0() - 1);
     unk_50 = 1;
-    applyMode();
+    startOutputEffect();
     NNS_SndSetMasterVolume(127);
-    func_0210e8bc(10, func_020edc88());
+    func_0210e8bc(10, Snd_GetHeap());
     func_0210e6ac(&unk_34);
-    func_020ed9c8(0);
-    func_020eda60(&unk_48);
-    func_020eda60(&unk_38);
-    func_020eda60(&unk_3c);
-    func_020eda60(&unk_40);
+    Snd_LoadGroup(0);
+    Snd_InitHandle(&unk_48);
+    Snd_InitHandle(&unk_38);
+    Snd_InitHandle(&unk_3c);
+    Snd_InitHandle(&unk_40);
     unk_00 = 0;
     unk_64 = 0;
     unk_68 = 0;
@@ -114,10 +114,10 @@ void SndMgr::init(u32 a, u32 b, u32 c) {
 }
 
 void SndMgr::update() {
-    func_020edb14();
-    func_020ef728(this);
-    func_020effd4(this);
-    func_020efe70(this);
+    Snd_Main();
+    SndMgr_UpdateVoice(this);
+    SndMgr_UpdateTrackRamps(this);
+    SndMgr_UpdateVolumeRamps(this);
 }
 
 void SndMgr::volumeOff() {
@@ -128,13 +128,13 @@ void SndMgr::volumeOn() {
     NNS_SndSetMasterVolume(127);
 }
 
-void SndMgr::setMode(u32 v) {
+void SndMgr::setOutputMode(u32 v) {
     unk_50 = v;
     func_0210ee4c(unk_50);
 }
 
-void SndMgr::applyMode() {
-    func_020edb74(unk_50);
+void SndMgr::startOutputEffect() {
+    Snd_StartOutputEffect(unk_50);
 }
 
 void SndMgr::stopAll() {

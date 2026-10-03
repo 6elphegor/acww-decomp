@@ -14,7 +14,7 @@ public:
 extern "C" {
 s32 func_02063b8c(s32);
 BOOL _ZN12Unk_0209c04013func_0209c040Ei(Unk_0209c060 *, s32);
-void *_ZN12Unk_0206d8b813func_0206d86cEj(void *, s32);
+void *_ZN10RecordFile9getRecordEj(void *, s32);
 }
 
 class Unk_0209b5d4 {
@@ -38,7 +38,7 @@ void Unk_0209b5d4::func_0209b5d4(s32 seed) {
         v = (u32)seed % 0x20c;
     }
     data_021d7128 = v;
-    p = (u8 *)_ZN12Unk_0206d8b813func_0206d86cEj(unk_120, v);
+    p = (u8 *)_ZN10RecordFile9getRecordEj(unk_120, v);
     if (p) {
         for (y = 1; y < 5; y++) {
             for (x = 1; x < 5; x++) {

@@ -1,54 +1,54 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
 #define func_02002fc8 _ZN12Unk_02002fc813func_02002fc8Ej
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
+#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_0206fcc8 _ZN12Unk_020e0488C1Ev
 #define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_020a7bd8 _ZN12Unk_020e2a7813func_020a7bd8EPS_
-#define func_020a7a28 _ZN12Unk_020e2a7813func_020a7a28EPh
-#define func_020a7a0c _ZN12Unk_020e2a7813func_020a7a0cEPS_
-#define func_0208e290 _ZN12Unk_020e109813func_0208e290Ev
+#define MsgString_copy _ZN9MsgString4copyEPS_
+#define MsgString_append _ZN9MsgString6appendEPh
+#define MsgString_appendString _ZN9MsgString12appendStringEPS_
+#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN17Unk_020d8c7c_Base8vfunc_14Ev(void *self, s32 a);
-void _ZN12Unk_020d8c7c8vfunc_08Ev(void *self, s32 a);
+BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(void *self, s32 x, s32 a, s32 b);
 void func_02002fc8(s32 a, void *buf);
 s32 func_020805c4(void *self);
 void func_02094018(void *p);
 void func_02094030(void *p);
 void func_020940d0(s32 a, void *buf);
-s32 func_0209888c(void *self);
+s32 PlayerData_getPlayerId(void *self);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
-void func_020a7bd8(void *self, void *src);
-void func_020a7a28(void *self, const void *s);
-void func_020a7a0c(void *self, void *src);
-void func_0208e290(void *self, void *src);
+void MsgString_copy(void *self, void *src);
+void MsgString_append(void *self, const void *s);
+void MsgString_appendString(void *self, void *src);
+void LabelButton_setLabelText(void *self, void *src);
 
 void func_020021b8(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
 void func_020021fc(s32 a, s32 b, s32 c);
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 void func_0206e020();
 BOOL func_0206e2f4();
 BOOL func_0206e308();
-void func_0206ef28();
-void func_0206ef3c();
-void func_0206f290(void *p);
-void func_0206f2b0(void *p);
+void MenuCtrl_SetButtons();
+void MenuCtrl_SetTouch();
+void MenuCtrl_RemoveOpenMenu(void *p);
+void MenuCtrl_AddOpenMenu(void *p);
 void func_02001564(s32 a);
 void func_02001750(s32 a);
 s32 func_02001580();
@@ -59,27 +59,27 @@ void func_02001724(s32 a, s32 b);
 void func_020016b0(s32 a);
 void func_0200151c(s32 a);
 void func_02001554(s32 a);
-void *func_020e8618(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_AllocTail(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
-void *func_020ed174(void *p);
-void func_020ed0d8(void *p, u32 v);
-void func_020ed03c(void *p, u32 v);
+void *ProcBase_GetParent(void *p);
+void ProcBase_SetExecutePriority(void *p, u32 v);
+void ProcBase_SetDrawPriority(void *p, u32 v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_02065b5c(void *p);
 void func_02065ba4(void *p, s32 a);
 void func_02065bd0(void *p, s32 a);
-void func_020b3558(void *buf, u8 *c, s32 z);
+void String_Load2d(void *buf, u8 *c, s32 z);
 void func_0206f994(void *dst, const void *s, s32 len);
 void func_0206f9fc(void *a, s32 v);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 s32 func_020978c8(void *a, s32 b);
-void *func_02097868(void *a, s32 b);
+void *PlayerData_GetResident(void *a, s32 b);
 s32 func_0207bf84(void *a, s32 b);
 void *func_0207bf60(void *a, s32 b);
 s32 func_0207f854(void *a, s32 b);
-BOOL func_0206ef00();
+BOOL MenuCtrl_IsButtons();
 void func_0200212c(s32 a);
 s32 func_0200273c(s32 a);
 s32 func_0200140c();
@@ -90,7 +90,7 @@ s32 func_020013cc(s32 a);
 void func_020020b8(s32 a);
 void func_02002398(s32 a, u32 b);
 void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-u8 *func_020641ec(const char *path, void *heap, s32 a, s32 b);
+u8 *File_LoadAlloc(const char *path, void *heap, s32 a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
 void func_020024f0(void *buf, s32 a, s32 b, s32 c);
@@ -98,21 +98,21 @@ void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_02002654(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 func_0206e61c();
 
 extern void *data_021c6210;
-extern void *data_021f482c;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern volatile u16 data_021f47d8[];
+extern void *gCurrentHeap;
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern volatile u16 gPad[];
 extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5f8;
-extern u8 data_021ef5f4;
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u8 gTouchPressX;
+extern u8 gTouchPressY;
 extern u8 data_021edb5c[];
 }
 
@@ -127,44 +127,44 @@ extern char _ZTV18Unk_ov002_02204754[];
 extern void *_ZTV18Unk_ov002_0220464c[7];
 extern void *_ZTV18Unk_ov002_02204614[7];
 extern void *_ZTV18Unk_ov002_02204630[7];
-extern char _ZTV12Unk_020d8c7c[];
-void *_ZN17Unk_020d8c7c_BaseC2Ev(void *self);
-void *_ZN12Unk_020e1098C2Ehi(void *self, u8 a, s32 b);
-void *_ZN12Unk_020e100cC2Ei(void *self, s32 flag);
-void *_ZN12Unk_020e100cD2Ev(void *self);
+extern char _ZTV8GameProc[];
+void *_ZN8ProcBaseC2Ev(void *self);
+void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
+void *_ZN10HandCursorC2Ei(void *self, s32 flag);
+void *_ZN10HandCursorD2Ev(void *self);
 void *_ZN18Unk_ov002_022044d4C1Ev(void *self);
 void *_ZN18Unk_ov002_022044b4C1Ev(void *self);
 void *_ZN18Unk_ov002_02204604C1Ev(void *self);
 void *_ZN18Unk_ov002_02204604D1Ev(void *self);
-void _ZN12Unk_020e100c8vfunc_08Ev();
+void _ZN10HandCursor4drawEv();
 void _ZN18Unk_ov002_02202d988vfunc_0cEv();
-void _ZN12Unk_020e0db48vfunc_10Eii();
+void _ZN8UiWidget9setOriginEii();
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the main module
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    s32 func_02089244();
-    void *func_02089248();
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    s32 getFrameIndex();
+    void *getCell();
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 };
 
-class Unk_020e0d80 : public Unk_020d9218 {
+class Unk_020e0d80 : public MsgStringBase {
 public:
     Unk_020e0d80();
     virtual ~Unk_020e0d80();
@@ -174,12 +174,12 @@ public:
     /* 0x04 */ u8 unk_04[0x24];
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
+    void reset();
+    void copyFrom(MsgStringAttr *other);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
@@ -187,19 +187,19 @@ public:
 };
 
 // buffer interface with write position at +4 and member at +8
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
-// String buffer wrapping a text renderer (Unk_02050288) at +0x3c
-class Unk_020e0488 : public Unk_020e2a78 {
+// String buffer wrapping a text renderer (TextLabel) at +0x3c
+class Unk_020e0488 : public MsgString {
 public:
     Unk_020e0488();
     virtual ~Unk_020e0488();
@@ -212,49 +212,49 @@ public:
     void func_0206fc44();
 
     /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ Unk_02050288 *unk_3c;
+    /* 0x3c */ TextLabel *unk_3c;
 };
 
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e0d98 : public Unk_020e0db4 {
+class LabelBalloon : public UiWidget {
 public:
-    Unk_020e0d98(s32 flag);
-    virtual ~Unk_020e0d98();
-    virtual void vfunc_08();
+    LabelBalloon(s32 flag);
+    virtual ~LabelBalloon();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    s32 func_02089868();
-    s32 func_0208987c();
-    s32 func_02089880();
-    s32 func_020898bc();
-    BOOL func_02089a24();
-    BOOL func_02089a40();
-    void func_02089a5c(s32 flag);
-    void func_02089ab0(u8 v);
-    void func_02089ab8();
-    void func_02089ac0(StrBuf *src);
-    void func_02089ad8(s32 a, s32 b);
-    void func_02089ae0();
-    void func_02089ae8();
-    void func_02089b00();
-    void func_02089b08();
-    void func_02089b10();
+    s32 getWidth();
+    s32 getPosY();
+    s32 getPosX();
+    s32 getState();
+    BOOL requestClose();
+    BOOL requestOpen();
+    void refreshText(s32 flag);
+    void setClampToScreen(u8 v);
+    void enableCenterText();
+    void setText(StrBuf *src);
+    void setPos(s32 a, s32 b);
+    void hideLayer2();
+    void showLayer2();
+    void disablePopAnim();
+    void disableObjWindow();
+    void enableObjWindow();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
-    /* 0x20 */ Unk_02089270 unk_20;
+    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x20 */ SpriteAnim unk_20;
     /* 0x34 */ s32 unk_34;
     /* 0x38 */ s32 unk_38;
     /* 0x3c */ s32 unk_3c;
@@ -266,31 +266,31 @@ public:
     /* 0x54 */ u8 unk_54[9];
     /* 0x60 */ Unk_020e0d80 unk_60;
     /* 0x88 */ Unk_020e0d80 unk_88;
-    /* 0xb0 */ Unk_02050288 *unk_b0;
-    /* 0xb4 */ Unk_02050288 *unk_b4;
+    /* 0xb0 */ TextLabel *unk_b0;
+    /* 0xb4 */ TextLabel *unk_b4;
     /* 0xb8 */ s32 unk_b8;
 };
 
-class Unk_020e100c : public Unk_020e0db4 {
+class HandCursor : public UiWidget {
 public:
-    Unk_020e100c(BOOL flag);
-    virtual ~Unk_020e100c();
-    virtual void vfunc_08();
+    HandCursor(BOOL flag);
+    virtual ~HandCursor();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208d4fc();
-    s32 func_0208d534();
-    void func_0208d538(s32 idx);
-    void func_0208d580(s32 idx);
-    void func_0208d60c(s32 a, s32 b);
-    void func_0208d63c();
-    void func_0208d644();
+    BOOL isAnimDone();
+    s32 getAnim();
+    void setAnimAtEnd(s32 idx);
+    void setAnim(s32 idx);
+    void setPos(s32 a, s32 b);
+    void disableObjWindow();
+    void enableObjWindow();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
     /* 0x28 */ s32 unk_28;
-    /* 0x2c */ Unk_02089270 unk_2c;
+    /* 0x2c */ SpriteAnim unk_2c;
     /* 0x40 */ s32 unk_40;
     /* 0x44 */ s32 unk_44;
     /* 0x48 */ u8 unk_48;
@@ -298,57 +298,57 @@ public:
     /* 0x4a */ u8 unk_4a;
 };
 
-class Unk_020e1028 : public Unk_020e0db4 {
+class ScrollKnob : public UiWidget {
 public:
-    Unk_020e1028(u32 flag);
-    virtual ~Unk_020e1028();
-    virtual void vfunc_08();
+    ScrollKnob(u32 flag);
+    virtual ~ScrollKnob();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208d9a8();
-    s32 func_0208d9d0();
-    void func_0208d9d4(s32 idx);
-    void func_0208da58(s32 *a, s32 *b);
+    BOOL areAnimsDone();
+    s32 getState();
+    void setState(s32 idx);
+    void getAnimOffset(s32 *a, s32 *b);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_02089270 unk_14;
-    /* 0x28 */ Unk_02089270 unk_28;
+    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x28 */ SpriteAnim unk_28;
     /* 0x3c */ s32 unk_3c;
     /* 0x40 */ u8 unk_40;
     /* 0x44 */ s32 unk_44;
 };
 
-class Unk_020e1098 : public Unk_020e0db4 {
+class LabelButton : public UiWidget {
 public:
-    Unk_020e1098(u8 a, s32 b);
-    virtual ~Unk_020e1098();
-    virtual void vfunc_08();
+    LabelButton(u8 a, s32 b);
+    virtual ~LabelButton();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208e110();
-    s32 func_0208e138();
-    void func_0208e13c(s32 v);
-    void func_0208e1fc(s32 *x, s32 *y);
-    void func_0208e288(s32 x, s32 y);
-    void func_0208e2c8();
-    void func_0208e2d0();
-    void func_0208e2d8();
+    BOOL isAnimDone();
+    s32 getState();
+    void setState(s32 v);
+    void getAnimOffset(s32 *x, s32 *y);
+    void setPos(s32 x, s32 y);
+    void showLayer2();
+    void hideLayer2();
+    void enableObjWindow();
 
     /* 0x0c */ u8 unk_0c[0x64];
 };
 
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_08();
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -398,7 +398,7 @@ extern Unk_ov002_02203c5c_Rec data_ov002_0220482c[];
 }
 
 // Vtable 0x02204468
-class Unk_ov002_02204468 : public Unk_020e0d98 {
+class Unk_ov002_02204468 : public LabelBalloon {
 public:
     Unk_ov002_02204468();
     virtual ~Unk_ov002_02204468();
@@ -495,7 +495,7 @@ class Unk_ov002_022044e4;
 typedef void (Unk_ov002_022044e4::*Unk_ov002_02200a68_Fn)();
 
 // Vtable 0x022044e4
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -503,11 +503,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -589,11 +589,11 @@ public:
 };
 
 // Menu, vtable 0x02204770
-class Unk_ov002_02204770 : public Unk_020e0d98 {
+class Unk_ov002_02204770 : public LabelBalloon {
 public:
     Unk_ov002_02204770();
     virtual ~Unk_ov002_02204770();
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 
     void func_ov002_022039d8();
     void func_ov002_022039f8(u8 a, s32 b, s32 c);
@@ -650,11 +650,11 @@ public:
 };
 
 // Base of the 0x0220471c / 0x02204738 classes
-class Unk_ov002_02204754 : public Unk_020e1098 {
+class Unk_ov002_02204754 : public LabelButton {
 public:
     Unk_ov002_02204754(u8 a, s32 b);
     virtual ~Unk_ov002_02204754();
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 };
 
 class Unk_ov002_0220471c : public Unk_ov002_02204754 {
@@ -735,7 +735,7 @@ public:
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
-class Unk_ov002_02202d98 : public Unk_020e100c {
+class Unk_ov002_02202d98 : public HandCursor {
 public:
     Unk_ov002_02202d98(BOOL flag);
     ~Unk_ov002_02202d98();
@@ -784,7 +784,7 @@ public:
     virtual ~Unk_ov002_02204630();
 };
 
-class Unk_ov002_022046b0 : public Unk_020e1028 {
+class Unk_ov002_022046b0 : public ScrollKnob {
 public:
     Unk_ov002_022046b0();
     virtual ~Unk_ov002_022046b0();
@@ -827,7 +827,7 @@ public:
     Unk_ov002_02204558();
     virtual ~Unk_ov002_02204558();
 
-    void func_ov002_02202200(Unk_020e0d98 *p);
+    void func_ov002_02202200(LabelBalloon *p);
     void func_ov002_02202278(s32 a, s32 b);
     void func_ov002_02202294(s32 a, s32 b);
     void func_ov002_0220229c(s32 a, s32 b);
@@ -942,7 +942,7 @@ void func_ov002_02203920();
 }
 
 static inline BOOL Unk_ov002_022009d4_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -999,24 +999,24 @@ void Unk_ov002_02204558::func_ov002_02202310(s32 a, s32 b, const char *path) {
     } else {
         unk_24 = path;
     }
-    void *heap = data_021f482c;
-    u8 *buf = func_020641ec(unk_24, heap, -4, 0);
+    void *heap = gCurrentHeap;
+    u8 *buf = File_LoadAlloc(unk_24, heap, -4, 0);
     unk_04 = *(u16 *)(buf + 0x44) & 0x3ff;
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
     u16 v = unk_04;
     s32 i;
     for (i = 0; i < 5; i++) {
         unk_28[i].func_ov002_022024f8(a, v, 1, 9);
         v += 0x1a;
     }
-    unk_190.vfunc_10(0x60, 0x8c);
-    unk_190.func_0208e288(0, 0);
-    unk_190.func_0208e2d0();
-    unk_190.func_0208e2d8();
-    unk_190.func_0208e13c(1);
+    unk_190.setOrigin(0x60, 0x8c);
+    unk_190.setPos(0, 0);
+    unk_190.hideLayer2();
+    unk_190.enableObjWindow();
+    unk_190.setState(1);
     unk_200.func_ov002_022039d8();
     unk_200.func_ov002_022039f8(0x1f, 0x80, 0xc);
-    unk_200.func_02089b10();
+    unk_200.enableObjWindow();
     unk_14 = 0;
 }
 
@@ -1056,12 +1056,12 @@ void Unk_ov002_02204558::func_ov002_02202278(s32 a, s32 b) {
     func_ov002_02202190((Self *)this, a, b);
 }
 
-void Unk_ov002_02204558::func_ov002_02202200(Unk_020e0d98 *p) {
+void Unk_ov002_02204558::func_ov002_02202200(LabelBalloon *p) {
     unk_19 = 0;
-    s32 x = p->func_02089880() + 0x80;
-    s32 y = p->func_0208987c() + 0x60;
+    s32 x = p->getPosX() + 0x80;
+    s32 y = p->getPosY() + 0x60;
     s32 h = func_ov002_02201ca4((Self *)this);
-    s32 hw = p->func_02089868() >> 1;
+    s32 hw = p->getWidth() >> 1;
     s32 r = x + hw;
     if (r > 0x100) {
         x -= r - 0x100;
@@ -1103,13 +1103,13 @@ void func_ov002_02202190(Self *self, s32 x, s32 y) {
 }
 
 void func_ov002_02202144(Self *self) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_020026c4("menu/inventory/b_itm.bpl", h, self->unk_1a, 0, 3, 3);
     func_0200261c("menu/inventory/b_choice.bch", h, self->unk_1a, 0x242, 0x242, 0x2d7);
 }
 
 void func_ov002_022020fc(Self *self) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_020026c4("menu/friend/bg1.bpl", h, self->unk_1a, 0xe, 0xe, 0xe);
     func_0200261c("menu/friend/bg1.bch", h, self->unk_1a, 0x26e, 0x26e, 0x27d);
 }
@@ -1126,7 +1126,7 @@ void func_ov002_02202098(Self *self, s32 x) {
     if (x != 0) {
         self->func_ov002_022013cc(2);
     }
-    func_0200402c(0x13);
+    Snd_PlaySe(0x13);
     self->func_ov002_022013c4(0x10);
 }
 
@@ -1138,7 +1138,7 @@ void func_ov002_02202064(Self *self, s32 x) {
     if (self->func_ov002_022013d4(0x10)) {
         self->func_ov002_022013c4(0x10);
     } else {
-        func_0200402c(0x14);
+        Snd_PlaySe(0x14);
     }
 }
 
@@ -1157,8 +1157,8 @@ void func_ov002_02202018(Self *self, u32 x) {
 void func_ov002_02201f18(Self *self) {
     func_02002398(self->unk_1a, self->unk_10);
     func_0200226c(self->unk_1a, 0, 0, 0);
-    void *heap = data_021f482c;
-    u8 *buf = func_020641ec(self->unk_24, heap, -4, 0);
+    void *heap = gCurrentHeap;
+    u8 *buf = File_LoadAlloc(self->unk_24, heap, -4, 0);
     u32 n = self->unk_1c;
     if (n != 5) {
         u16 v = *(u16 *)(buf + 0x22);
@@ -1195,7 +1195,7 @@ void func_ov002_02201f18(Self *self) {
         MIi_CpuCopy16(s - 2, d - 2, 0x1e);
     }
     func_020024f0(buf, self->unk_1a, 0x800, 0);
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
 }
 
 void func_ov002_02201ea4(Self *self) {
@@ -1244,8 +1244,8 @@ void func_ov002_02201e40(Self *self) {
 void func_ov002_02201df0(Self *self) {
     ((Unk_ov002_02201194 *)&self->unk_2bc)->func_ov002_02200d78(self->unk_1a, -self->unk_08, -self->unk_0c);
     s32 r = ((Unk_ov002_02201194 *)&self->unk_2bc)->func_ov002_02201140();
-    self->unk_190.func_0208e288(0, r);
-    self->unk_200.func_02089ad8(0, -(r >> 2));
+    self->unk_190.setPos(0, r);
+    self->unk_200.setPos(0, -(r >> 2));
 }
 
 void func_ov002_02201d24(Self *self) {
@@ -1272,7 +1272,7 @@ void func_ov002_02201d24(Self *self) {
         if (self->unk_21 != 0) {
             self->unk_21 = self->unk_21 - 1;
             if (self->unk_21 == 0) {
-                self->unk_200.func_02089a5c(0);
+                self->unk_200.refreshText(0);
             }
         }
         func_ov002_02201df0(self);
@@ -1378,8 +1378,8 @@ void func_ov002_02201b58(Self *self) {
 
 void func_ov002_02201b28(Self *self) {
     if (self->func_ov002_022013d4(1)) {
-        self->unk_190.vfunc_08();
-        self->unk_200.vfunc_08();
+        self->unk_190.draw();
+        self->unk_200.draw();
     }
 }
 
@@ -1394,7 +1394,7 @@ void func_ov002_02201b04(Self *self) {
 
 void func_ov002_02201ad8(Self *self, s32 x) {
     self->func_ov002_022013cc(8);
-    if (func_0206ef00()) {
+    if (MenuCtrl_IsButtons()) {
         self->unk_1e = 2;
     } else {
         self->unk_1e = 5;
@@ -1407,9 +1407,9 @@ void func_ov002_02201aa0(Self *self, s32 a, s32 b) {
     if (b == 0) {
         self->func_ov002_022013cc(0x10);
     } else if (self->unk_1c - 1 == a) {
-        func_0200402c(0x2a);
+        Snd_PlaySe(0x2a);
     } else {
-        func_0200402c(0x29);
+        Snd_PlaySe(0x29);
     }
 }
 
@@ -1419,7 +1419,7 @@ u8 func_ov002_02201a70(Self *self, s32 x) {
     if (x == 0) {
         self->func_ov002_022013cc(0x10);
     } else {
-        func_0200402c(0x2a);
+        Snd_PlaySe(0x2a);
     }
     return t;
 }
@@ -1427,9 +1427,9 @@ u8 func_ov002_02201a70(Self *self, s32 x) {
 void func_ov002_02201a3c(Self *self, u32 x) {
     func_ov002_02201ad8(self, x);
     if (self->func_ov002_0220144c(self->unk_20, (u8)x) == 0xf) {
-        func_0200402c(0x2a);
+        Snd_PlaySe(0x2a);
     } else {
-        func_0200402c(0x29);
+        Snd_PlaySe(0x29);
     }
 }
 
@@ -1469,19 +1469,19 @@ void func_ov002_022019a4(s32 a, s32 b) {
     u32 buf[7];
     func_02094030(buf);
     func_020940d0(b, buf);
-    func_020a7bd8((void *)a, buf);
+    MsgString_copy((void *)a, buf);
     func_02094018(buf);
 }
 
 void func_ov002_02201984(s32 x, s32 y) {
-    func_ov002_022019a4(x, func_0209888c(func_02097868(data_021d735c, y)));
+    func_ov002_022019a4(x, PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, y)));
 }
 
 void func_ov002_02201958(s32 a, s32 b) {
     u32 buf[7];
     func_02094030(buf);
     func_02002fc8(b, buf);
-    func_020a7bd8((void *)a, buf);
+    MsgString_copy((void *)a, buf);
     func_02094018(buf);
 }
 
@@ -1518,7 +1518,7 @@ void Unk_ov002_022013ac::func_ov002_022017c4()
     for (i = 0; i < 0x19; i++) {
         unk_2d8[i] = 0;
     }
-    g = func_0209888c(func_0209750c());
+    g = PlayerData_getPlayerId(PlayerData_GetCurrent());
     t = func_02097740(data_021d735c, g);
     n = 0;
     k = 1;
@@ -1654,7 +1654,7 @@ s32 Unk_ov002_022013ac::func_ov002_02201680(Unk_ov002_022013ac_Rec *r, void *s, 
     for (i = 0; i < 5; i++) {
         u8 *q = &r->unk_00[i];
         if (r->unk_00[i] == 0xff) {
-            func_020a7bd8(&unk_28[i], s);
+            MsgString_copy(&unk_28[i], s);
             r->unk_05[i] = v;
             r->unk_0a |= 1 << i;
             q[0] = 0xfe;
@@ -1713,11 +1713,11 @@ void Unk_ov002_022013ac::func_ov002_02201534(Unk_ov002_022013ac_Rec *r)
     func_0206fcc8(a);
     func_0206fcc8(b);
     func_0206f994(b, buf, 2);
-    func_020a7bd8(a, b);
-    func_020a7a28(a, "/");
+    MsgString_copy(a, b);
+    MsgString_append(a, "/");
     func_0206f994(b, buf + 2, 2);
-    func_020a7a0c(a, b);
-    func_0208e290(&unk_190, a);
+    MsgString_appendString(a, b);
+    LabelButton_setLabelText(&unk_190, a);
     unk_190.vfunc_0c();
     unk_20 = r->unk_00[0];
     func_0206fca8(b);
@@ -1786,13 +1786,13 @@ u32 Unk_ov002_022013ac::func_ov002_0220144c(u32 a, u32 b)
     }
     switch (t) {
     case 0xf:
-        func_0200402c(0x28);
+        Snd_PlaySe(0x28);
         break;
     case 0xe:
-        func_0200402c(0x29);
+        Snd_PlaySe(0x29);
         break;
     default:
-        func_0200402c(0x27);
+        Snd_PlaySe(0x27);
         break;
     }
     return t;
@@ -1852,5 +1852,5 @@ void Unk_ov002_022013ac::func_ov002_022013c4(u32 m)
 void Unk_ov002_022013ac::func_ov002_022013ac(void *buf, u32 c)
 {
     u8 t = c;
-    func_020b3558(buf, &t, 0);
+    String_Load2d(buf, &t, 0);
 }

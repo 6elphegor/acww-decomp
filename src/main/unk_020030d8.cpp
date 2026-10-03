@@ -22,54 +22,54 @@ BOOL func_0206edb0();
 s32 func_0206edbc();
 s32 func_020eaf18();
 s32 func_020eb0cc();
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern const s8 data_020c6158[8];
 const s8 data_020c6158[8] = {-18, -12, -2, -1, 0, 0, 0, 0};
 extern u8 data_020d47a4[];
 
-struct Unk_02089270_Tbl;
+struct SpriteAnimSeq;
 
 // Sub-object at +0xc of Unk_020d5e0c (ctor 0x02089270, dtor 0x0208926c)
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    void func_020891d0();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    void *func_02089248();
-    void func_02089258(s32 a, s32 b);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    void pause();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    void *getCell();
+    void setFrame(s32 a, s32 b);
+    void setPlayOnce(s32 v);
+    void setSeq(SpriteAnimSeq *v);
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
 // Base class with vtable at 0x020e0db4 (ctor 0x02089fa8, D2 0x02089f78)
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
 // Vtable at 0x020d5e0c
-class Unk_020d5e0c : public Unk_020e0db4 {
+class Unk_020d5e0c : public UiWidget {
 public:
     Unk_020d5e0c();
     virtual ~Unk_020d5e0c();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
 
     void func_02003178();
@@ -82,7 +82,7 @@ public:
     void func_02003394();
     void func_020033a0();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
     /* 0x28 */ s32 unk_28;
@@ -126,20 +126,20 @@ struct Unk_020d467c {
 };
 extern Unk_020d467c data_020d467c;
 
-// Base of the objects created in func_02003878 (vtable data_0213bac4, in autoload_2)
-class Unk_0213bac4 {
+// Base of the objects created in TvSound_Create (vtable data_0213bac4, in autoload_2)
+class TvSound {
 public:
-    virtual void vfunc_00();
-    virtual void vfunc_04();
+    virtual void reset();
+    virtual void release();
     virtual void vfunc_08(s32 a, void *b);
-    virtual void vfunc_0c(s32 a);
-    virtual void vfunc_10();
+    virtual void turnOn(s32 a);
+    virtual void turnOff();
 
-    void func_020037b0();
-    void func_020037c0(s32 a);
-    void func_020037d0(s32 a, void *b);
-    void func_02003830();
-    void func_02003840();
+    void callTurnOff();
+    void callTurnOn(s32 a);
+    void callUpdate(s32 a, void *b);
+    void callRelease();
+    void callReset();
 };
 
 struct Unk_02003878_Vec {
@@ -147,8 +147,8 @@ struct Unk_02003878_Vec {
     s32 unk_04;
     s32 unk_08;
 };
-extern s32 data_021c3070;
-extern Unk_02003878_Vec data_021c3084;
+extern s32 gCamera;
+extern Unk_02003878_Vec gCameraEye;
 
 // bss, in the order __sinit constructs them
 Unk_02003574 data_0213c894;
@@ -156,17 +156,17 @@ Unk_020d5e0c data_0213c8ac;
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-void Unk_0213bac4::func_02003840() { vfunc_00(); }
+void TvSound::callReset() { reset(); }
 
-void Unk_0213bac4::func_02003830() { vfunc_04(); }
+void TvSound::callRelease() { release(); }
 
-void Unk_0213bac4::func_020037d0(s32 a, void *b) {
+void TvSound::callUpdate(s32 a, void *b) {
     if (b != 0) {
         Unk_02003878_Vec v = *(Unk_02003878_Vec *)b;
-        if (data_021c3070 != 0) {
-            v.unk_00 = v.unk_00 - data_021c3084.unk_00;
-            v.unk_04 = v.unk_04 - data_021c3084.unk_04;
-            v.unk_08 = v.unk_08 - data_021c3084.unk_08;
+        if (gCamera != 0) {
+            v.unk_00 = v.unk_00 - gCameraEye.unk_00;
+            v.unk_04 = v.unk_04 - gCameraEye.unk_04;
+            v.unk_08 = v.unk_08 - gCameraEye.unk_08;
             vfunc_08(a, &v);
         }
     } else {
@@ -174,9 +174,9 @@ void Unk_0213bac4::func_020037d0(s32 a, void *b) {
     }
 }
 
-void Unk_0213bac4::func_020037c0(s32 a) { vfunc_0c(a); }
+void TvSound::callTurnOn(s32 a) { turnOn(a); }
 
-void Unk_0213bac4::func_020037b0() { vfunc_10(); }
+void TvSound::callTurnOff() { turnOff(); }
 
 extern "C" void func_020037a0() { data_0213c894.func_0200373c(); }
 
@@ -230,7 +230,7 @@ void Unk_02003574::func_020036ec() {
 
 void Unk_02003574::func_020036a4() {
     if (unk_08 != 0) {
-        func_02087e70(0, (void *)data_020d467c.unk_08[unk_00][0], unk_04 + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(0, (void *)data_020d467c.unk_08[unk_00][0], unk_04 + 0x80, 0x60, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
 }
 
@@ -322,12 +322,12 @@ Unk_020d5e0c::~Unk_020d5e0c() {
     func_02003394();
 }
 
-void Unk_020d5e0c::vfunc_08() {
+void Unk_020d5e0c::draw() {
     if (unk_24 != 0) {
-        void *h = unk_0c.func_02089248();
+        void *h = unk_0c.getCell();
         if (h != 0) {
-            s32 x = func_02089f68() + unk_0c.func_02089228(-1);
-            s32 y = func_02089f64() + unk_0c.func_02089210(-1);
+            s32 x = getOriginX() + unk_0c.getFrameX(-1);
+            s32 y = getOriginY() + unk_0c.getFrameY(-1);
             if (unk_32 != 0) {
                 x += 0x78;
                 y += 0x48;
@@ -335,7 +335,7 @@ void Unk_020d5e0c::vfunc_08() {
                 x += unk_20;
                 y += unk_30 != 0 ? 0x8c : 0;
             }
-            func_02087e70(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(0, h, x, y, -1, -1, 0x1000, 0x1000, 0, -1, 0, 0);
         }
     }
 }
@@ -370,7 +370,7 @@ void Unk_020d5e0c::func_020033a0() {
 }
 
 void Unk_020d5e0c::func_02003394() {
-    unk_0c.func_020891bc();
+    unk_0c.restart();
 }
 
 void Unk_020d5e0c::func_02003384() {
@@ -378,18 +378,18 @@ void Unk_020d5e0c::func_02003384() {
 }
 
 void Unk_020d5e0c::func_02003374() {
-    vfunc_08();
+    draw();
 }
 
 void Unk_020d5e0c::func_0200331c(BOOL flag) {
-    unk_0c.func_02089268((Unk_02089270_Tbl *)data_020d47a4);
+    unk_0c.setSeq((SpriteAnimSeq *)data_020d47a4);
     if (flag) {
-        unk_0c.func_02089264(1);
-        unk_0c.func_02089258(1, 0);
-        unk_0c.func_020891d0();
+        unk_0c.setPlayOnce(1);
+        unk_0c.setFrame(1, 0);
+        unk_0c.pause();
     } else {
-        unk_0c.func_02089264(0);
-        unk_0c.func_020891bc();
+        unk_0c.setPlayOnce(0);
+        unk_0c.restart();
     }
     unk_33 = 0;
 }
@@ -462,7 +462,7 @@ void Unk_020d5e0c::func_020031c4() {
     if (unk_3c > 0) {
         unk_3c--;
     }
-    unk_0c.func_02089140();
+    unk_0c.update();
 }
 
 void Unk_020d5e0c::func_02003178() {

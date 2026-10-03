@@ -50,7 +50,7 @@ void MI_CpuFill8(void *, s32, s32);
 void MI_CpuCopy8(void *, void *, s32);
 void MB_End();
 s32 MB_CommGetChildUser(s32);
-void func_0206d49c();
+void Fatal_Trap();
 u64 OS_GetTick();
 u32 WM_GetNextTgid();
 void func_020fefb0(void *);
@@ -339,7 +339,7 @@ extern "C" void func_ov001_02223688() {
         func_ov001_02221a84();
         return;
     default:
-        func_0206d49c();
+        Fatal_Trap();
     case 3:
         return;
     }

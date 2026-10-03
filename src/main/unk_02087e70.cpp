@@ -48,13 +48,13 @@ extern s32 data_020cf588[];
 extern s16 data_02135f44[];
 extern Unk_02088b20 *data_021ce63c;
 
-BOOL func_02087c8c(u32 mode);
-s32 func_02087cd8(void *base, s32 *cnt, s32 *m);
+BOOL Oam_UseBufferA(u32 mode);
+s32 Oam_AllocAffine(void *base, s32 *cnt, s32 *m);
 s32 FX_Div(s32 v, s32 s);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02087e30(u32 *p);
 s32 func_02087e50(u32 *p);
-s32 func_0203eeac(Vec3 *out, void *in);
+s32 WorldCurve_Apply(Vec3 *out, void *in);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 s64 func_01ffd028(void *v, void *p);
 void MIi_CpuCopy32(void *a, void *b, u32 c);
@@ -65,12 +65,12 @@ void GXS_LoadOAM(void *a, u32 b, u32 c);
 Unk_020b6960 *func_020b50b4();
 }
 
-extern s32 data_021cde28;
-extern s32 data_021cde2c;
-extern s32 data_021cde30;
-extern s32 data_021cde34;
-extern Unk_02087e70_Oam data_021cde38[0x80];
-extern Unk_02087e70_Oam data_021ce238[0x80];
+extern s32 sOamAffineCountA;
+extern s32 sOamCountA;
+extern s32 sOamAffineCountB;
+extern s32 sOamCountB;
+extern Unk_02087e70_Oam sOamBufferA[0x80];
+extern Unk_02087e70_Oam sOamBufferB[0x80];
 
 enum Unk_02087e70_Mode_ { Unk_02087e70_Mode_0 = 0, Unk_02087e70_Mode_1 = 1, Unk_02087e70_Mode_2 = 2, Unk_02087e70_Mode_3 = 3 };
 
@@ -122,8 +122,8 @@ extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
     Vec3 v1, v2, v3;
     Vec3 pts[6];
     u32 i;
-    func_0203eeac(&v1, a);
-    func_0203eeac(&v2, b);
+    WorldCurve_Apply(&v1, a);
+    WorldCurve_Apply(&v2, b);
     func_020e9960(&v3, &v2, &v1);
     v3.x = FX_Div(v3.x, 0x6000);
     v3.y = FX_Div(v3.y, 0x6000);
@@ -151,26 +151,26 @@ extern "C" BOOL func_02088a20(void *a, void *b, s32 rad, u8 *out) {
     return result;
 }
 
-extern "C" void func_020889f4() {
-    GX_LoadOAM(data_021cde38, 0, 0x400);
-    GXS_LoadOAM(data_021ce238, 0, 0x400);
+extern "C" void Oam_LoadBuffers() {
+    GX_LoadOAM(sOamBufferA, 0, 0x400);
+    GXS_LoadOAM(sOamBufferB, 0, 0x400);
 }
 
-extern "C" void func_020889cc() {
-    DC_FlushRange(data_021cde38, 0x400);
-    DC_FlushRange(data_021ce238, 0x400);
+extern "C" void Oam_FlushBuffers() {
+    DC_FlushRange(sOamBufferA, 0x400);
+    DC_FlushRange(sOamBufferB, 0x400);
 }
 
-extern "C" void func_02088960() {
-    data_021cde38[0].a01 = 0xc0;
-    data_021cde38[0].a2 = 0;
-    MIi_CpuCopy32(data_021cde38, &data_021cde38[1], 0x18);
-    MIi_CpuCopyFast(data_021cde38, &data_021cde38[4], 0x3e0);
-    MIi_CpuCopyFast(data_021cde38, data_021ce238, 0x400);
-    data_021cde2c = 0;
-    data_021cde28 = 0;
-    data_021cde34 = 0;
-    data_021cde30 = 0;
+extern "C" void Oam_ResetBuffers() {
+    sOamBufferA[0].a01 = 0xc0;
+    sOamBufferA[0].a2 = 0;
+    MIi_CpuCopy32(sOamBufferA, &sOamBufferA[1], 0x18);
+    MIi_CpuCopyFast(sOamBufferA, &sOamBufferA[4], 0x3e0);
+    MIi_CpuCopyFast(sOamBufferA, sOamBufferB, 0x400);
+    sOamCountA = 0;
+    sOamAffineCountA = 0;
+    sOamCountB = 0;
+    sOamAffineCountB = 0;
 }
 
 extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri, s32 *rect) {
@@ -181,22 +181,22 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
     u32 bit13, base;
     s32 x0, y0, w, h;
     s32 mode2;
-    if (func_02087c8c(mode)) {
-        cntp = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        cntp = &sOamCountA;
         c = *cntp;
         if (c >= 0x80) {
             return -1;
         }
-        ent = data_021cde38 + c;
-        othp = &data_021cde28;
+        ent = sOamBufferA + c;
+        othp = &sOamAffineCountA;
     } else {
-        cntp = &data_021cde34;
+        cntp = &sOamCountB;
         c = *cntp;
         if (c >= 0x80) {
             return -1;
         }
-        ent = data_021ce238 + c;
-        othp = &data_021cde30;
+        ent = sOamBufferB + c;
+        othp = &sOamAffineCountB;
     }
     x0 = (info[0] << 7) >> 23;
     if (x0 >= 0x100) {
@@ -225,7 +225,7 @@ extern "C" s32 func_02088730(s32 mode, u32 *info, s32 x, s32 y, s32 pal, s32 pri
         pri = (info[1] << 20) >> 30;
     }
     if (rect) {
-        idx = func_02087cd8(ent - *cntp, othp, rect);
+        idx = Oam_AllocAffine(ent - *cntp, othp, rect);
         if (idx == -1) {
             return -4;
         }
@@ -256,22 +256,22 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
     s32 n;
     u32 b13;
     u32 w1lo;
-    if (func_02087c8c(mode)) {
-        cnt = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        cnt = &sOamCountA;
         n = *cnt;
         if (n >= 0x80) {
             return 0;
         }
-        oam = &data_021cde38[n];
-        aux = &data_021cde28;
+        oam = &sOamBufferA[n];
+        aux = &sOamAffineCountA;
     } else {
-        cnt = &data_021cde34;
+        cnt = &sOamCountB;
         n = *cnt;
         if (n >= 0x80) {
             return 0;
         }
-        oam = &data_021ce238[n];
-        aux = &data_021cde30;
+        oam = &sOamBufferB[n];
+        aux = &sOamAffineCountB;
     }
     x = (e->w0 << 7) >> 23;
     if (x >= 0x100) {
@@ -362,7 +362,7 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
             m[2] = -m[2];
             m[3] = -m[3];
         }
-        idx = func_02087cd8(oam - *cnt, aux, m);
+        idx = Oam_AllocAffine(oam - *cnt, aux, m);
         if (idx == -1) {
             return 0;
         }
@@ -382,7 +382,7 @@ extern "C" Unk_02087e70_Oam *func_02088378(u32 mode, Unk_02087e70_Ent *e, s32 dx
     return oam;
 }
 
-extern "C" void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
+extern "C" void Oam_DrawCell(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32 pal, s32 pri, s32 sx, s32 sy, s32 rot, s32 sz, s32 fx, s32 fy)
 {
     Unk_02087e70_Oam *oam;
     s32 priv;
@@ -405,16 +405,16 @@ extern "C" void func_02087e70(u32 mode, Unk_02087e70_Ent *e, s32 dx, s32 dy, s32
     BOOL k3;
     BOOL k0;
     BOOL k1;
-    if (func_02087c8c(mode)) {
-        oam = data_021cde38;
-        cnt = &data_021cde2c;
+    if (Oam_UseBufferA(mode)) {
+        oam = sOamBufferA;
+        cnt = &sOamCountA;
         oam += *cnt;
-        aux = &data_021cde28;
+        aux = &sOamAffineCountA;
     } else {
-        oam = data_021ce238;
-        cnt = &data_021cde34;
+        oam = sOamBufferB;
+        cnt = &sOamCountB;
         oam += *cnt;
-        aux = &data_021cde30;
+        aux = &sOamAffineCountB;
     }
     if (sx != 0x1000 || sy != 0x1000 || rot != 0) {
         use = TRUE;
@@ -553,7 +553,7 @@ top:
                 m[2] = -m[2];
                 m[3] = -m[3];
             }
-            idx = func_02087cd8(oam - *cnt, aux, m);
+            idx = Oam_AllocAffine(oam - *cnt, aux, m);
             if (idx == -1) {
                 if (e->w1id == 0xffff) {
                     goto end;
@@ -591,21 +591,21 @@ end:;
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern Unk_02087e70_Oam data_021cde38[0x80];
-extern s32 data_021cde34;
-extern Unk_02087e70_Oam data_021ce238[0x80];
-extern s32 data_021cde2c;
-extern s32 data_021cde30;
-extern s32 data_021cde28;
+extern Unk_02087e70_Oam sOamBufferA[0x80];
+extern s32 sOamCountB;
+extern Unk_02087e70_Oam sOamBufferB[0x80];
+extern s32 sOamCountA;
+extern s32 sOamAffineCountB;
+extern s32 sOamAffineCountA;
 
-Unk_02087e70_Oam data_021cde38[0x80];
+Unk_02087e70_Oam sOamBufferA[0x80];
 
-s32 data_021cde34;
+s32 sOamCountB;
 
-Unk_02087e70_Oam data_021ce238[0x80];
+Unk_02087e70_Oam sOamBufferB[0x80];
 
-s32 data_021cde2c;
+s32 sOamCountA;
 
-s32 data_021cde30;
+s32 sOamAffineCountB;
 
-s32 data_021cde28;
+s32 sOamAffineCountA;

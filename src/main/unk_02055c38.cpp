@@ -63,14 +63,14 @@ extern "C" s32 _ZN12Unk_02056fd813func_02057078Ei(u8 *hdr, const char *name);
 extern "C" u8 *_ZN12Unk_02056fd813func_02057048Ei(u8 *hdr, s32 idx);
 extern "C" s32 _ZN12Unk_02056fd813func_02056fd8Ei(u8 *hdr, s32 idx);
 extern "C" s32 func_02057180(u32 v);
-extern "C" void _ZN12Unk_020dbe7c13func_020566bcEv(void *p);
+extern "C" void _ZN13AnimFrameCtrl4stepEv(void *p);
 extern "C" void func_02056714(void *p);
-extern "C" s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *p, u32 a, u32 b, void *c, void *d);
+extern "C" s32 _ZN13AnimFrameCtrl5setupEihit(void *p, u32 a, u32 b, void *c, void *d);
 extern "C" void *NNS_G3dGetAnmByIdx(void *p, s32 x);
 extern "C" s32 NNS_G3dGetResDictIdxByName(void *a, void *b);
 extern "C" void *NNSi_G3dGetTexPatAnmDataByIdx(void *a, s32 i);
 extern "C" void *NNS_G3dGetTex(void *p);
-extern "C" void *func_020e8608(void *heap, u32 size);
+extern "C" void *Heap_Alloc(void *heap, u32 size);
 extern "C" BOOL _ZN12Unk_020e45ec13func_020b8984EPvjj(void *a, void *b, u32 c, void *d);
 extern "C" void _ZN12Unk_020e45ec13func_020b89c8Ev(void *a);
 extern "C" void _ZN12Unk_020e45ec13func_020b8b08Ev(void *a);
@@ -91,27 +91,27 @@ extern "C" void func_020563cc(Unk_020561d8_Vec *v);
 extern "C" void func_02056274(Unk_020561d8_Vec *a, Unk_020561d8_Vec *b, Unk_020561d8_Vec *out, s32 t);
 extern "C" void func_020562e0(Unk_020561d8_Mtx *a, Unk_020561d8_Mtx *b, Unk_020561d8_Mtx *out, s32 t);
 extern "C" s32 func_02057158(void *p, s32 a);
-extern "C" void *data_021f482c;
+extern "C" void *gCurrentHeap;
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
     u32 unk_04;
     s32 unk_08;
     s32 unk_0c;
     s32 unk_10;
     u8 unk_14;
-    inline Unk_020dbe7c() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
-    virtual ~Unk_020dbe7c();
-    BOOL func_02056654();
-    void func_0205668c(s32 frames, u8 mode, s32 speed, u16 last);
-    void func_020566bc();
-    BOOL func_020565e8(s32 x);
+    inline AnimFrameCtrl() : unk_08(0), unk_0c(0), unk_10(0x1000) {}
+    virtual ~AnimFrameCtrl();
+    BOOL isFinished();
+    void setup(s32 frames, u8 mode, s32 speed, u16 last);
+    void step();
+    BOOL hasPassedFrame(s32 x);
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c {
+class ModelAnim : public AnimFrameCtrl {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
+    ModelAnim();
+    virtual ~ModelAnim();
 
     u32 unk_18;
     u32 unk_1c;
@@ -136,7 +136,7 @@ public:
     Unk_0205614c *func_0205614c();
 };
 
-class Unk_020dbe5c : public Unk_020dbe7c {
+class Unk_020dbe5c : public AnimFrameCtrl {
 public:
     void *unk_18;
     void *unk_1c;
@@ -203,7 +203,7 @@ struct Unk_02056e38 {
     BOOL func_02056e88(u8 *hdr, s32 i1, s32 i2, u8 *x, s32 a, s32 b);
 };
 
-class Unk_020dbe8c : public Unk_020dbe7c {
+class Unk_020dbe8c : public AnimFrameCtrl {
 public:
     Unk_02056f94 unk_18;
     u8 *unk_50;
@@ -543,7 +543,7 @@ BOOL Unk_020dbe8c::func_02056ca4(u8 *hdr, const char *n1, const char *n2, u8 *x,
     unk_50 = hdr;
     unk_78 = x;
     unk_7c = y;
-    func_0205668c(*(u16 *)(y + 4), 0, 0x1000, 0);
+    setup(*(u16 *)(y + 4), 0, 0x1000, 0);
     func_02056bf8();
     return TRUE;
 }
@@ -551,7 +551,7 @@ BOOL Unk_020dbe8c::func_02056ca4(u8 *hdr, const char *n1, const char *n2, u8 *x,
 BOOL Unk_020dbe8c::func_02056bf8() {
     s32 xy[2];
     unk_88 = unk_84;
-    func_020566bc();
+    step();
     func_02056b84(&xy[0], &xy[1]);
     if (unk_84 == xy[0] || unk_8c != 0) {
         xy[0] = -1;
@@ -838,9 +838,9 @@ extern "C" s32 func_02056744(u8 *hdr, const char *name, s32 p, s32 q, s32 r) {
     return 0;
 }
 
-Unk_020dbe7c::~Unk_020dbe7c() {}
+AnimFrameCtrl::~AnimFrameCtrl() {}
 
-void Unk_020dbe7c::func_020566bc() {
+void AnimFrameCtrl::step() {
     s32 cur = unk_08;
     unk_0c = cur;
     u8 m = unk_14;
@@ -867,7 +867,7 @@ void Unk_020dbe7c::func_020566bc() {
     unk_08 = v;
 }
 
-void Unk_020dbe7c::func_0205668c(s32 frames, u8 mode, s32 speed, u16 last) {
+void AnimFrameCtrl::setup(s32 frames, u8 mode, s32 speed, u16 last) {
     if (last == 0xffff) {
         last = frames - 1;
     }
@@ -878,7 +878,7 @@ void Unk_020dbe7c::func_0205668c(s32 frames, u8 mode, s32 speed, u16 last) {
     unk_0c = unk_08;
 }
 
-BOOL Unk_020dbe7c::func_02056654() {
+BOOL AnimFrameCtrl::isFinished() {
     switch (unk_14) {
     case 1:
         if (unk_08 >= (s32)unk_04 - 0x1000) {
@@ -894,7 +894,7 @@ BOOL Unk_020dbe7c::func_02056654() {
     return FALSE;
 }
 
-BOOL Unk_020dbe7c::func_020565e8(s32 x) {
+BOOL AnimFrameCtrl::hasPassedFrame(s32 x) {
     s32 lim = x << 12;
     s32 a = unk_08;
     s32 b = unk_0c;
@@ -1115,11 +1115,11 @@ void Unk_020dbe5c::func_02055f9c() {
 BOOL Unk_020dbe5c::func_02055f1c(void *r1, void *r2, u32 r3, void *heap) {
     unk_18 = r1;
     if (heap == NULL) {
-        heap = data_021f482c;
+        heap = gCurrentHeap;
     }
     unk_1c = NNS_G3dGetTex(r2);
     unk_26 = r3;
-    unk_28 = (Unk_0205614c *)func_020e8608(heap, unk_26 * 0x28);
+    unk_28 = (Unk_0205614c *)Heap_Alloc(heap, unk_26 * 0x28);
     if (unk_28 == NULL) {
         return FALSE;
     }
@@ -1163,11 +1163,11 @@ void Unk_020dbe5c::func_02055e4c(void *r1, void *r2, u32 r3, u8 p5, void *p6) {
         unk_28[i].unk_20 = 0xff;
         unk_28[i].unk_24 = 0xffff;
     }
-    ::_ZN12Unk_020dbe7c13func_0205668cEihit(this, r3, p5, p6, r2);
+    ::_ZN13AnimFrameCtrl5setupEihit(this, r3, p5, p6, r2);
 }
 
 void Unk_020dbe5c::func_02055e38() {
-    ::_ZN12Unk_020dbe7c13func_020566bcEv(this);
+    ::_ZN13AnimFrameCtrl4stepEv(this);
     func_02055df0();
 }
 
@@ -1233,11 +1233,11 @@ extern "C" void func_02055cd0(Unk_02055cd0_Obj *p, void *q) {
     }
 }
 
-Unk_020dbe4c::Unk_020dbe4c() {
+ModelAnim::ModelAnim() {
     unk_1c = 0;
     unk_18 = 0;
 }
 
-Unk_020dbe4c::~Unk_020dbe4c() {
+ModelAnim::~ModelAnim() {
 }
 

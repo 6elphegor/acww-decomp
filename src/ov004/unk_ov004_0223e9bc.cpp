@@ -14,18 +14,18 @@ extern const u32 data_ov004_0224502c[];
 extern const u32 data_ov004_0224482c[];
 extern const u32 data_ov004_02244c2c[];
 
-BOOL func_0204b2d4(u16 *p);
-s32 func_0204b25c(u16 *p);
-BOOL func_0204b288(u16 *p);
-BOOL func_0204b300(u16 *p);
-BOOL func_0204bae0(u16 *p);
-s32 func_0204bb18(u16 *p);
-s32 func_0204b248(s32 a, s32 b);
+BOOL Item_IsFurniture(u16 *p);
+s32 Item_GetFurnitureIndex(u16 *p);
+BOOL Item_IsFurnitureOrF031(u16 *p);
+BOOL Item_IsNormalItem(u16 *p);
+BOOL Item_IsHoldable(u16 *p);
+s32 Item_GetKind(u16 *p);
+s32 Item_MakeFurniture(s32 a, s32 b);
 u32 func_020b50e8();
 BOOL func_020b5254();
 BOOL func_020b5268(u32 id);
 s32 func_020b5284();
-void func_02061478(u16 *out, u16 *in);
+void Item_FromPlacedForm(u16 *out, u16 *in);
 u16 *func_020ad8e8(void *tbl, s32 idx, u16 *out);
 u16 *func_020ae844(void *tbl, s32 idx, u16 *out);
 s32 func_020ae82c(void *tbl, u16 *p);
@@ -61,7 +61,7 @@ public:
     void func_ov004_0223e9d8();
 };
 
-class Unk_ov004_0224f284 : public Unk_020d8c7c {
+class Unk_ov004_0224f284 : public GameProc {
 public:
     typedef BOOL (Unk_ov004_0224f284::*Fn)();
 
@@ -69,8 +69,8 @@ public:
     virtual ~Unk_ov004_0224f284();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     BOOL func_ov004_0223ea98();
     BOOL func_ov004_0223ef44();
@@ -84,26 +84,26 @@ public:
 
 static inline BOOL Unk_ov004_0223eb8c_Chk(u16 *p) {
     u16 c = 0xfff1;
-    if (func_0204b2d4(p)) {
-        s32 a = func_0204b25c(p);
-        if (a == func_0204b25c(&c)) return TRUE;
+    if (Item_IsFurniture(p)) {
+        s32 a = Item_GetFurnitureIndex(p);
+        if (a == Item_GetFurnitureIndex(&c)) return TRUE;
         return FALSE;
     }
     if (*p == 0xfff1) return TRUE;
     return FALSE;
 }
 
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c(u16 x) { v = x; }
-    ~Unk_0203442c();
+    ItemId(u16 x) { v = x; }
+    ~ItemId();
 };
 
 static inline BOOL Unk_ov004_0223ed40_Chk(u16 *p, u16 *c, u16 k) {
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         *c = k;
-        s32 a = func_0204b25c(p);
-        if (a == func_0204b25c(c)) return TRUE;
+        s32 a = Item_GetFurnitureIndex(p);
+        if (a == Item_GetFurnitureIndex(c)) return TRUE;
         return FALSE;
     }
     if (*p == k) return TRUE;
@@ -128,15 +128,15 @@ extern "C" u8 *func_ov004_0223f278() {
 
 extern "C" s32 func_ov004_0223f210(u16 *p) {
     u16 c;
-    func_02061478(&c, p);
-    if (func_0204b2d4(&c)) return 0x19;
-    if (func_0204bae0(&c)) goto e;
+    Item_FromPlacedForm(&c, p);
+    if (Item_IsFurniture(&c)) return 0x19;
+    if (Item_IsHoldable(&c)) goto e;
     if (!Unk_ov004_0223f210_R(&c, 0x156c, 0x156c)) goto rest;
 e:
     return 0x42;
 rest:
     if (c >= 0x13a8 && c <= 0x13c7) return 9;
-    return func_0204bb18(&c);
+    return Item_GetKind(&c);
 }
 
 Unk_ov004_0224f284::Unk_ov004_0224f284() {}
@@ -312,9 +312,9 @@ BOOL Unk_ov004_0224f284::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224f284::vfunc_18() { return TRUE; }
+BOOL Unk_ov004_0224f284::onExecute() { return TRUE; }
 
-BOOL Unk_ov004_0224f284::vfunc_24() { return TRUE; }
+BOOL Unk_ov004_0224f284::onDraw() { return TRUE; }
 
 BOOL Unk_ov004_0224f284::vfunc_0c() { return TRUE; }
 
@@ -341,10 +341,10 @@ BOOL Unk_ov004_0224f284::func_ov004_0223f018(u16 *item, s32 code) {
                 if (t) {
                     BOOL r;
                     s32 f1 = 0, f2 = 0;
-                    if (func_0204b2d4(t)) {
+                    if (Item_IsFurniture(t)) {
                         u16 c = 0xfff1;
-                        s32 a = func_0204b25c(t);
-                        r = (a == func_0204b25c(&c)) ? 1 : f1;
+                        s32 a = Item_GetFurnitureIndex(t);
+                        r = (a == Item_GetFurnitureIndex(&c)) ? 1 : f1;
                     } else {
                         r = (*t == 0xfff1) ? 1 : f2;
                     }
@@ -371,18 +371,18 @@ void Unk_ov004_0224f284::func_ov004_0223ef60() {
         BOOL a, b;
         v[0] = 0xfff1;
         u16 *r = func_020ae844(data_021ed104, i, &v[0]);
-        if (func_0204b2d4(r)) {
+        if (Item_IsFurniture(r)) {
             v[1] = 0xfff1;
-            s32 x = func_0204b25c(r);
-            a = (x == func_0204b25c(&v[1])) ? 1 : f1;
+            s32 x = Item_GetFurnitureIndex(r);
+            a = (x == Item_GetFurnitureIndex(&v[1])) ? 1 : f1;
         } else {
             a = (*r == 0xfff1) ? 1 : f2;
         }
         if (!a) {
-            if (func_0204b2d4(&v[0])) {
+            if (Item_IsFurniture(&v[0])) {
                 v[2] = 0xfff1;
-                s32 x = func_0204b25c(&v[0]);
-                b = (x == func_0204b25c(&v[2])) ? 1 : f3;
+                s32 x = Item_GetFurnitureIndex(&v[0]);
+                b = (x == Item_GetFurnitureIndex(&v[2])) ? 1 : f3;
             } else {
                 b = (v[0] == 0xfff1) ? 1 : f4;
             }
@@ -423,7 +423,7 @@ extern "C" BOOL func_ov004_0223eeb8(u16 *p) {
 }
 
 extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
-    static Unk_0203442c dflt(0xfff1);
+    static ItemId dflt(0xfff1);
     u16 cv[3];
     void *g = data_021c47c4;
     if (g) {
@@ -432,13 +432,13 @@ extern "C" u16 *func_ov004_0223ed40(s32 x, s32 y) {
         u16 *r4 = func_0204ebd8(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
         if (r4) {
             if (!Unk_ov004_0223ed40_Chk(r4, &cv[1], 0xfff1)) {
-                if (func_0204b288(r4)) {
+                if (Item_IsFurnitureOrF031(r4)) {
                     void *o = func_ov004_022355d8(func_ov004_02235718(), x, y, 0);
                     if (!o) return &dflt.v;
-                    static Unk_0203442c v2(0xfff1);
-                    v2.v = func_0204b248(func_ov004_022087a4(o), 0);
+                    static ItemId v2(0xfff1);
+                    v2.v = Item_MakeFurniture(func_ov004_022087a4(o), 0);
                     if (func_ov004_0223eeb8(&v2.v)) return &v2.v;
-                } else if (func_0204b300(r4)) {
+                } else if (Item_IsNormalItem(r4)) {
                     if (!Unk_ov004_0223ed40_Chk(r4, &cv[2], 0x1547)) {
                         if (func_ov004_0223eeb8(r4)) return r4;
                     }
@@ -534,18 +534,18 @@ void Unk_ov004_0224f284::func_ov004_0223eb8c() {
         BOOL a, b;
         v[0] = 0xfff1;
         u16 *r = func_020ad8e8(data_021ed2d4, i, &v[0]);
-        if (func_0204b2d4(r)) {
+        if (Item_IsFurniture(r)) {
             v[1] = 0xfff1;
-            s32 x = func_0204b25c(r);
-            a = (x == func_0204b25c(&v[1])) ? 1 : f1;
+            s32 x = Item_GetFurnitureIndex(r);
+            a = (x == Item_GetFurnitureIndex(&v[1])) ? 1 : f1;
         } else {
             a = (*r == 0xfff1) ? 1 : f2;
         }
         if (!a) {
-            if (func_0204b2d4(&v[0])) {
+            if (Item_IsFurniture(&v[0])) {
                 v[2] = 0xfff1;
-                s32 x = func_0204b25c(&v[0]);
-                b = (x == func_0204b25c(&v[2])) ? 1 : f3;
+                s32 x = Item_GetFurnitureIndex(&v[0]);
+                b = (x == Item_GetFurnitureIndex(&v[2])) ? 1 : f3;
             } else {
                 b = (v[0] == 0xfff1) ? 1 : f4;
             }
@@ -591,21 +591,21 @@ void Unk_ov004_0223e9bc::func_ov004_0223e9d8() {
         BOOL f;
         buf[0] = 0xfff1;
         r4 = func_020acfa8(data_021ed2c0, i, buf);
-        if (func_0204b2d4(r4)) {
+        if (Item_IsFurniture(r4)) {
             s32 a, b;
             buf[1] = 0xfff1;
-            a = func_0204b25c(r4);
-            b = func_0204b25c(&buf[1]);
+            a = Item_GetFurnitureIndex(r4);
+            b = Item_GetFurnitureIndex(&buf[1]);
             f = (a == b) ? 1 : z1;
         } else {
             f = (*r4 == 0xfff1) ? 1 : z2;
         }
         if (!f) {
-            if (func_0204b2d4(buf)) {
+            if (Item_IsFurniture(buf)) {
                 s32 a, b;
                 buf[2] = 0xfff1;
-                a = func_0204b25c(buf);
-                b = func_0204b25c(&buf[2]);
+                a = Item_GetFurnitureIndex(buf);
+                b = Item_GetFurnitureIndex(&buf[2]);
                 f = (a == b) ? 1 : z3;
             } else {
                 f = (buf[0] == 0xfff1) ? 1 : z4;

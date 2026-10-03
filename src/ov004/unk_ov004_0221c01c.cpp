@@ -7,36 +7,36 @@ struct Unk_ov004_0221b6d4_Out {
 
 #include "types.h"
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 struct Unk_0201bc1c;
 
-struct Unk_020aa3b8 {
-    s32 func_020aa514();
+struct ChoiceList {
+    s32 getResult();
 };
 
 struct Unk_020660f8 {
@@ -84,7 +84,7 @@ public:
     virtual void vfunc_88();
     void *func_02015aac();
     void func_02015ab0(u32 p);
-    Unk_020aa3b8 *func_02015a5c();
+    ChoiceList *func_02015a5c();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -196,25 +196,25 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
@@ -227,13 +227,13 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -285,7 +285,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 v);
     virtual void vfunc_78();
     virtual void vfunc_7c();
@@ -351,7 +351,7 @@ struct Unk_ov004_0224d0a0_Ent {
 #define func_0201b9bc _ZN12Unk_020d77a413func_0201b9bcEv
 #define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
 #define func_0201bd9c _ZN12Unk_020d77a413func_0201bd9cEi
-#define func_0203e468 _ZN12Unk_020d967013func_0203e468Ei
+#define Character_setInteractionRange _ZN9Character19setInteractionRangeEi
 #define func_02015e48 _ZN12Unk_02015b8c13func_02015e48Ej
 #define func_0201a6c0 _ZN12Unk_0201a33413func_0201a6c0EhiiP17Unk_0201a334_Vec3iih
 #define func_0201a8d0 _ZN12Unk_0201a8c413func_0201a8d0Eiiii
@@ -363,17 +363,17 @@ struct Unk_ov004_0224d0a0_Ent {
 #define func_02019790 _ZN12Unk_0201985813func_02019790Ev
 #define func_020195c8 _ZN12Unk_0201985813func_020195c8Eiijtt
 #define func_0202e548 _ZN12Unk_020d8bc813func_0202e548Eii
-#define func_0209868c _ZN12Unk_0209865c13func_0209868cEv
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
+#define func_0209868c _ZN10PlayerData13func_0209868cEv
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_02087c4c _ZN12Unk_02087ad813func_02087c4cEv
 #define func_02087c3c _ZN12Unk_02087ad813func_02087c3cEj
 #define func_02087c50 _ZN12Unk_02087ad813func_02087c50Ej
 #define func_02087c54 _ZN12Unk_02087ad813func_02087c54Ev
-#define func_0209411c _ZN12Unk_020940a013func_0209411cEv
+#define func_0209411c _ZN8PlayerId13func_0209411cEv
 #define func_02072e44 _ZN12Unk_020cbb1813func_02072e44Ev
 #define func_02072e88 _ZN12Unk_020cbb1813func_02072e88Ei
-#define func_02002d3c _ZN12Unk_020d5d8413func_02002d3cEjPS_
-#define func_02002cf8 _ZN12Unk_020d5d8413func_02002cf8EPvS0_S0_S0_S0_
+#define Actor_findByProfile _ZN5Actor13findByProfileEjPS_
+#define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define func_ov068_0226c334 _ZN18Unk_ov068_0227081019func_ov068_0226c334Ev
 #define func_020539a0 _ZN12Unk_020dbd7413func_020539a0Ev
 #define func_02056520 _ZN12Unk_020dbe6c13func_02056520Ei
@@ -382,7 +382,7 @@ extern "C" {
 extern Unk_ov004_0221b954_Global *data_020cbb18;
 extern s32 data_020c6d1c;
 extern u16 data_020c6cc8;
-extern Unk_ov004_0221b954_Vec data_021f4880;
+extern Unk_ov004_0221b954_Vec gVec3Zero;
 extern u32 data_ov004_0224cf54[];
 extern u8 data_ov004_0224cec8[];
 extern u8 data_ov004_0224cf8c[];
@@ -405,7 +405,7 @@ void func_0201bc28(void *self, void *p);
 u32 func_0201bc4c(void *self, u32 id);
 s32 func_0201bcbc(void *self, void *p);
 void func_0201bd9c(void *self, s32 v);
-void func_0203e468(void *self, s32 v);
+void Character_setInteractionRange(void *self, s32 v);
 void func_02015ab0(void *self, u32 v);
 void *func_02015aac(void *self);
 void func_02015e48(void *self, u32 v);
@@ -425,16 +425,16 @@ s32 func_02014220(void *self);
 void func_020141b4(void *self, s32 a, s32 b, s32 c);
 void func_0202e548(void *self, s32 a, s32 b);
 void func_02067a84(void *self, void *p, u32 d);
-void *func_0209750c(void);
+void *PlayerData_GetCurrent(void);
 void *func_0209868c(void *p);
-void *func_0209888c(void *p);
+void *PlayerData_getPlayerId(void *p);
 s32 func_02087c4c(void *p);
 void func_02087c3c(void *p, u32 v);
 void func_02087c50(void *self, u32 v);
 u32 func_02087c54(void *self);
 s32 func_0209411c(void *p);
 void func_02003ddc(void *p, u32 a, u32 b, u32 c);
-void func_0203a250();
+void Camera_UnmuteSe();
 void func_02034d70(u32 a);
 void func_02034d84(u32 a);
 void func_02034dd0(u32 a, u32 b, u32 c);
@@ -446,12 +446,12 @@ s32 func_020a62a0(void);
 s32 func_02072e44(void *p);
 s32 func_02072e88(void *p, u32 i);
 s16 *func_0209c37c(s32 a, s32 b);
-void *func_02002d3c(s32 a, s32 b);
-void func_02002cf8(s32 a, s32 b, const void *c, const void *d, s32 e);
+void *Actor_findByProfile(s32 a, s32 b);
+void Actor_spawn(s32 a, s32 b, const void *c, const void *d, s32 e);
 s32 func_ov068_0226c334(void *p);
-s32 func_02095154(s32 a, s32 b);
-void func_0208a598(void);
-void func_0208a58c(void);
+s32 PlayerActor_IsInAction(s32 a, s32 b);
+void Hud_Hide(void);
+void Hud_Show(void);
 void func_0203d67c(void *p);
 void func_0203d6cc(void *p, s32 a);
 void func_020553cc(void *p, void *q, s32 n);
@@ -459,7 +459,7 @@ void func_020539a0(void *p);
 void func_02056520(void *p, s32 n);
 s32 func_02034d2c(void);
 s32 func_020e77cc(s32 a, s32 b, s32 c);
-u8 *func_02003bbc(void);
+u8 *Snd_GetBeatState(void);
 // other ov004 units
 void func_ov004_022247fc();
 void func_ov004_022265e4();
@@ -510,7 +510,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(u32 idx, u32 v);
     virtual BOOL vfunc_68();
@@ -562,7 +562,7 @@ BOOL Unk_ov004_0224d0a0::vfunc_04() {
     func_0201bc28(this, &unk_658);
     unk_658.func_ov004_0221cf0c((s32)this);
     func_0201bd9c(this, 0x100);
-    func_0203e468(this, 0x5000);
+    Character_setInteractionRange(this, 0x5000);
     func_0201a8d0(&unk_350, 2, 0x166, 0xcc, 0x133);
     func_0201ad34(&unk_2a0, 0xf2);
     func_0201ad30(&unk_2a0, 0xf4);
@@ -587,7 +587,7 @@ BOOL Unk_ov004_0224d0a0::vfunc_00() {
         func_ov004_0221d37c(0);
     }
     if (func_02072e88(data_020cbb18, data_020cbb18->unk_64) == 0) {
-        func_02002cf8(0x66, 0xd01d, data_ov004_02240128, data_ov004_02240120, 0);
+        Actor_spawn(0x66, 0xd01d, data_ov004_02240128, data_ov004_02240120, 0);
     }
     return TRUE;
 }
@@ -600,8 +600,8 @@ BOOL Unk_ov004_0224d0a0::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224d0a0::vfunc_24() {
-    if (Unk_020d77a4::vfunc_24() == 0) {
+BOOL Unk_ov004_0224d0a0::onDraw() {
+    if (Unk_020d77a4::onDraw() == 0) {
         return FALSE;
     }
     func_020553cc(&unk_ec, unk_714, 0xe);
@@ -631,7 +631,7 @@ BOOL Unk_ov004_0224d0a0::vfunc_68() {
             }
             unk_77a = 1;
         }
-        u8 *q = func_02003bbc();
+        u8 *q = Snd_GetBeatState();
         if (q != 0) {
             if ((s8)q[3] != 1) {
                 unk_ec.unk_a4 = 0;
@@ -666,7 +666,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
     if (unk_774 > 0) {
         unk_774++;
         if (unk_774 > 0x14) {
-            func_0201a6c0(&unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+            func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             unk_774 = -1;
         }
     } else if (unk_774 == 0) {
@@ -675,7 +675,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
         }
     }
     if (func_02072e44(data_020cbb18) == 0 && *func_0209c37c(0, 0x4a) == 0) {
-        if (func_02095154(0x27, 4) != 0) {
+        if (PlayerActor_IsInAction(0x27, 4) != 0) {
             func_0203d6cc(this, 0);
         }
     }
@@ -689,7 +689,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d278() {
 BOOL Unk_ov004_0224d0a0::func_ov004_0221d20c() {
     void *p = func_02015aac(&unk_658);
     s32 r = 0;
-    func_0201a6c0(&unk_3b0, 1, r, r, &data_021f4880, 4, data_020c6d1c, 1);
+    func_0201a6c0(&unk_3b0, 1, r, r, &gVec3Zero, 4, data_020c6d1c, 1);
     if (p != 0) {
         r = func_0201bcbc(this, p);
     }
@@ -700,12 +700,12 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d20c() {
 BOOL Unk_ov004_0224d0a0::func_ov004_0221d17c() {
     if (func_02014220(&unk_618) == 0) {
         if (func_02072e44(data_020cbb18) == 0 && *func_0209c37c(0, 0x4a) == 0) {
-            if (func_02095154(0x28, 4) != 0) {
+            if (PlayerActor_IsInAction(0x28, 4) != 0) {
                 func_ov004_02224a38(2);
             }
-            func_0208a58c();
+            Hud_Show();
         }
-        func_0201a6c0(&unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+        func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
         func_0203d67c(this);
         func_ov004_0221d37c(2);
     }
@@ -739,14 +739,14 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d104() {
 }
 
 BOOL Unk_ov004_0224d0a0::func_ov004_0221d0e4() {
-    if (func_02095154(0x28, 4) != 0) {
+    if (PlayerActor_IsInAction(0x28, 4) != 0) {
         func_ov004_0221d37c(1);
     }
     return TRUE;
 }
 
 BOOL Unk_ov004_0224d0a0::func_ov004_0221d0ac() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -769,7 +769,7 @@ BOOL Unk_ov004_0224d0a0::func_ov004_0221d010() {
 }
 
 BOOL Unk_ov004_0224d0a0::func_ov004_0221cfd8() {
-    func_0201a6c0(&unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+    func_0201a6c0(&unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
     return TRUE;
 }
 
@@ -811,13 +811,13 @@ void Unk_ov004_0224d010::func_ov004_0221cf0c(s32 v) {
 
 void Unk_ov004_0224d010::vfunc_78(void *arg) {
     Unk_ov004_0221b6d4_Out *out = (Unk_ov004_0221b6d4_Out *)arg;
-    void *h = func_0209868c(func_0209750c());
+    void *h = func_0209868c(PlayerData_GetCurrent());
     if (func_020a032c() != 0) {
         out->unk_00 = data_ov004_0224cf54[1];
         out->unk_04 = 0x1f;
     } else {
         out->unk_00 = data_ov004_0224cf54[0];
-        void *o = func_02002d3c(0x66, 0);
+        void *o = Actor_findByProfile(0x66, 0);
         if (func_02072e44(data_020cbb18) != 0 || *func_0209c37c(0, 0x4a) != 0) {
             out->unk_04 = func_02063b8c(3) + 0x55;
         } else if (func_0202e1cc(0x17) != 0) {
@@ -827,7 +827,7 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
                 s32 c = func_02087c4c(h) >> 2;
                 out->unk_04 = data_ov004_0224cec8[c] + func_02063b8c(3);
             }
-        } else if (func_02095154(0x28, 4) == 0) {
+        } else if (PlayerActor_IsInAction(0x28, 4) == 0) {
             if (func_0202e1cc(0x16, 1) == 0) {
                 out->unk_04 = func_02087c4c(h) >> 1;
             } else if (o != 0 && func_ov068_0226c334(o) == 7) {
@@ -837,7 +837,7 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
             }
         } else {
             if (func_0202e1cc(0x17, 0) == 0) {
-                func_0208a598();
+                Hud_Hide();
             }
             out->unk_04 = (func_02087c4c(h) >> 2) + 0x14;
         }
@@ -845,7 +845,7 @@ void Unk_ov004_0224d010::vfunc_78(void *arg) {
 }
 
 void Unk_ov004_0224d010::vfunc_14() {
-    void *h = func_0209868c(func_0209750c());
+    void *h = func_0209868c(PlayerData_GetCurrent());
     Unk_ov004_0221cc88_Obj *o = (Unk_ov004_0221cc88_Obj *)unk_3c;
     u32 d = data_ov004_0224cf54[0];
     u32 r = 0xff;
@@ -883,8 +883,8 @@ void Unk_ov004_0224d010::vfunc_14() {
 }
 
 void Unk_ov004_0224d010::vfunc_18() {
-    void *h = func_0209868c(func_0209750c());
-    s32 t = func_02015a5c()->func_020aa514();
+    void *h = func_0209868c(PlayerData_GetCurrent());
+    s32 t = func_02015a5c()->getResult();
     u32 d = data_ov004_0224cf54[0];
     u32 r = 0xff;
     if ((s32)unk_1e >= 0x24 && (s32)unk_1e <= 0x2b) {
@@ -946,13 +946,13 @@ void Unk_ov004_0224d010::func_ov004_0221cbe4(s32 v) {
 
 void Unk_ov004_0224d010::func_ov004_0221c794() {
     Unk_020660f8 *r6 = unk_3c;
-    u8 r7 = (u8)((func_02087c4c(func_0209868c(func_0209750c())) >> 2) + 0x24);
+    u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x24);
     void *r5 = &unk_b0->unk_564;
     u8 buf;
     switch (unk_b4) {
     case 0:
         if (r6->unk_04 == 5) {
-            func_0201a6c0(&unk_b0->unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+            func_0201a6c0(&unk_b0->unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020196b4(r5, 3, 1, 0, 0, 0, 0, 0, 0, data_020c6cc8, 0);
             unk_b4 = 1;
         }
@@ -1032,7 +1032,7 @@ void Unk_ov004_0224d010::func_ov004_0221c794() {
         break;
     case 9:
         if (func_02019790(r5)) {
-            func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+            func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020195c8(r5, 1, 0xf8, 1, data_020c6cc8, 0);
             func_ov004_02226664();
             unk_b4 = 10;
@@ -1077,7 +1077,7 @@ void Unk_ov004_0224d010::func_ov004_0221c608() {
             func_02003ddc(&unk_b0->unk_514, 0x4e3, 0x7f, 0);
         }
         if (unk_b0->unk_778 == 0x46) {
-            if (func_0209411c(func_0209888c(func_0209750c())) == 0) {
+            if (func_0209411c(PlayerData_getPlayerId(PlayerData_GetCurrent())) == 0) {
                 func_02003ddc(&unk_b0->unk_514, 0x4e4, 0x7f, 0);
             } else {
                 func_02003ddc(&unk_b0->unk_514, 0x4e5, 0x7f, 0);
@@ -1098,7 +1098,7 @@ void Unk_ov004_0224d010::func_ov004_0221c608() {
             func_02067a84(r6, &buf, data_ov004_0224cf54[0]);
             r6->unk_08 = 1;
             func_0202e1cc(0x17, 1);
-            void *p = func_0209868c(func_0209750c());
+            void *p = func_0209868c(PlayerData_GetCurrent());
             if (func_02063b8c(0xa) < 5) {
                 func_02087c3c(p, func_02087c4c(p) + 1);
             }
@@ -1117,7 +1117,7 @@ void Unk_ov004_0224d010::vfunc_70() {
 
 void Unk_ov004_0224d010::func_ov004_0221c304() {
     Unk_020660f8 *r6 = unk_3c;
-    u8 r7 = (u8)((func_02087c4c(func_0209868c(func_0209750c())) >> 2) + 0x51);
+    u8 r7 = (u8)((func_02087c4c(func_0209868c(PlayerData_GetCurrent())) >> 2) + 0x51);
     void *r5 = &unk_b0->unk_564;
     u8 buf;
     switch (unk_b4) {
@@ -1138,8 +1138,8 @@ void Unk_ov004_0224d010::func_ov004_0221c304() {
             func_02003ddc(&unk_b0->unk_514, 0x4e7, 0x7f, 0);
         }
         if (func_ov004_02226520()) {
-            func_0203a250();
-            func_0201a6c0(&unk_b0->unk_3b0, 0, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+            Camera_UnmuteSe();
+            func_0201a6c0(&unk_b0->unk_3b0, 0, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020195c8(r5, 4, 0xf8, 3, data_020c6cc8, 0);
             func_ov004_02226644();
             unk_b4 = 2;
@@ -1178,7 +1178,7 @@ void Unk_ov004_0224d010::func_ov004_0221c304() {
         }
         if (func_02019790(r5)) {
             func_ov004_02226704();
-            func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &data_021f4880, 4, data_020c6d1c, 1);
+            func_0201a6c0(&unk_b0->unk_3b0, 1, 0, 0, &gVec3Zero, 4, data_020c6d1c, 1);
             func_020196b4(r5, 3, 1, 0, 0, 0, (s16)0xc000, 0, 0, data_020c6cc8, 0);
             unk_b4 = 5;
         }

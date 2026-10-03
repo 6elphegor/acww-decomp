@@ -1,30 +1,30 @@
 // mwcc-version: 1.2/base
 // mwcc-flags: -str reuse
 #include "types.h"
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 class Unk_ov004_0224c574;
@@ -53,10 +53,10 @@ class Unk_ov004_0224c574;
 #define func_0204e328 _ZN12Unk_0204e2f013func_0204e328EPv
 #define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
 #define func_0207fd9c _ZN12Unk_0207fb8013func_0207fd9cEv
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
-#define func_02080dd8 _ZN12Unk_0208091c13func_02080dd8Ev
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_020aa514 _ZN12Unk_020aa3b813func_020aa514Ev
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
+#define func_02080dd8 _ZN14VillagerMemory13func_02080dd8Ev
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define func_ov004_0220711c _ZN18Unk_ov004_0224882c19func_ov004_0220711cEPiS0_ii
 #define func_ov004_022355d8 _ZN18Unk_ov004_0223570819func_ov004_022355d8Eiii
 #define func_ov004_02235624 _ZN18Unk_ov004_0223570819func_ov004_02235624Eiii
@@ -100,11 +100,11 @@ struct Unk_ov004_0224c4e4_Out {
 extern "C" {
 extern u16 data_020c6cc8;
 extern void *data_021c47c4;
-extern s32 data_021f482c;
-extern u8 data_021ef5d0;
-extern u8 data_021ef5cc;
+extern s32 gCurrentHeap;
+extern u8 gTouchPrevHeld;
+extern u8 gTouchPrevChanged;
 extern u8 data_020e416c;
-extern u16 data_021f47d8[];
+extern u16 gPad[];
 extern s16 data_02135f44[];
 extern void *data_020cbb18;
 extern Unk_ov004_022187b8_Ent data_ov004_02250718[8];
@@ -139,8 +139,8 @@ void func_0201adc8(void *, s32);
 void func_02099014(void *, s32);
 void func_ov004_022344dc(void);
 void func_0207e400(void *, void *, s32, s32);
-s32 func_0204b2d4(void *);
-u32 func_0204b25c(void *);
+s32 Item_IsFurniture(void *);
+u32 Item_GetFurnitureIndex(void *);
 void func_ov004_02235d04(void);
 void func_020135c4(void *);
 void func_020b50dc(void);
@@ -150,8 +150,8 @@ s32 func_0201bdec(void *);
 s32 func_0204cc1c(void *, s32, s32);
 void func_0201bc28(void *, void *);
 void func_0202d388(void *, void *, u32);
-void func_020e8558(s32);
-s32 func_02053248(void);
+void Mem_Free(s32);
+s32 FtrInfo_GetUnk05(void);
 void *func_0207fd9c(void *o);
 void *func_0207e310(void *o);
 void *func_020805c4(void *o);
@@ -164,27 +164,27 @@ void func_0204ee10(s32 *x, s32 *y, void *v);
 void *func_ov004_02235718();
 s32 func_ov004_02235624(void *g, s32 x, s32 y, u32 z);
 void *func_ov004_022355d8(void *g, s32 x, s32 y, u32 z);
-u16 func_0204b248(void *p, u32 a);
+u16 Item_MakeFurniture(void *p, u32 a);
 void func_ov004_0220711c(void *o, s32 *x, s32 *y, u32 a, u32 b);
 void *func_020b50b4();
 void func_020b60b0(void *a, void *b);
 void *func_020b6048(void *a, u32 b, u32 c);
 s32 func_0207e3b8(void *o, s32 *xy, u32 a, u32 b);
-void *func_020aa514(void *o);
+void *ChoiceList_getResult(void *o);
 u32 func_0200301c(void *a, void *b, u32 c, const void *d);
 void *func_ov004_022087a4();
 s32 func_02098ffc();
 void func_02067a84(void *a, u8 *b, void *c);
-void func_0208a598();
+void Hud_Hide();
 u32 func_02063b8c(u32 a);
-void *func_0209750c();
-void *func_0209888c(void *o);
+void *PlayerData_GetCurrent();
+void *PlayerData_getPlayerId(void *o);
 void *func_0207f55c(void *o, void *a);
 void *func_0207f854(void *o, void *a);
 void func_02080ecc(void *o, u32 a, u32 b, u32 c);
 s32 func_02080dd8(void *o);
 void func_ov004_022180e0(void *o);
-s32 func_0204be70(void *o);
+s32 Item_GetPrice(void *o);
 void func_02015958(void *o, s32 a, u32 b, u32 c, u32 d, u32 e);
 s32 func_0207e7a8(void *o, u16 *p);
 s32 func_0201ade4(void *o, s32 a);
@@ -213,13 +213,13 @@ struct Unk_020135e4 { Unk_020135e4(); ~Unk_020135e4(); u8 pad[8]; u8 unk_08; u8 
 struct Unk_02019858 { Unk_02019858(); ~Unk_02019858(); u32 pad[0xb4 / 4]; };
 struct Unk_02014254 { Unk_02014254(); ~Unk_02014254(); u32 pad[0x28 / 4]; };
 
-class Unk_020f43c8 {
+class SndSeEmitter {
 public:
-    Unk_020f43c8();
-    virtual ~Unk_020f43c8();
+    SndSeEmitter();
+    virtual ~SndSeEmitter();
     u32 pad[0x40 / 4];
 };
-class Unk_020f4080 : public Unk_020f43c8 {
+class Unk_020f4080 : public SndSeEmitter {
 public:
     Unk_020f4080();
     ~Unk_020f4080() {}
@@ -242,25 +242,25 @@ public:
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct Unk_0201c078 { Unk_0201c078(); ~Unk_0201c078(); u32 pad[0x5c / 4]; };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u32 pad_04[0x58 / 4];
     u32 unk_5c;
@@ -272,12 +272,12 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -325,7 +325,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void *vfunc_64();
     virtual u8 *vfunc_6c();
     virtual u8 *vfunc_70();
@@ -549,7 +549,7 @@ extern "C" Unk_ov004_022187b8_Ent data_ov004_02250718[8] = {
 
 // ---------------------------------------------------------------------------------------------------------------------
 static inline BOOL Unk_ov004_02217954_Both() {
-    if (data_021ef5d0 != 0 && data_021ef5cc != 0) {
+    if (gTouchPrevHeld != 0 && gTouchPrevChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -583,7 +583,7 @@ BOOL Unk_ov004_0224c574::vfunc_00() {
     }
     func_0202ffb0(0);
     unk_a54 = 0;
-    unk_a50 = func_0204cc1c(&unk_a54, func_0201bdec(this), data_021f482c);
+    unk_a50 = func_0204cc1c(&unk_a54, func_0201bdec(this), gCurrentHeap);
     return TRUE;
 }
 
@@ -592,7 +592,7 @@ BOOL Unk_ov004_0224c574::vfunc_0c() {
         return FALSE;
     }
     if (unk_a50 != 0) {
-        func_020e8558(unk_a50);
+        Mem_Free(unk_a50);
         unk_a50 = 0;
         unk_a54 = 0;
     }
@@ -830,9 +830,9 @@ void Unk_ov004_0224c4e4::func_ov004_022181c4(Unk_ov004_0224c574 *owner) {
 void Unk_ov004_0224c4e4::func_ov004_022180e0() {
     u16 *p = &unk_1a0->unk_894;
     BOOL same;
-    if (func_0204b2d4(p)) {
+    if (Item_IsFurniture(p)) {
         u16 t = 0xfff1;
-        if (func_0204b25c(p) == func_0204b25c(&t)) {
+        if (Item_GetFurnitureIndex(p) == Item_GetFurnitureIndex(&t)) {
             same = TRUE;
         } else {
             same = FALSE;
@@ -860,7 +860,7 @@ void Unk_ov004_0224c4e4::func_ov004_022180e0() {
 }
 
 void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
-    void *r7 = func_0207f55c(unk_1a0->unk_82c, func_0209888c(func_0209750c()));
+    void *r7 = func_0207f55c(unk_1a0->unk_82c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
     if (r7) {
         func_02080ecc(r7, 0, 0, 0);
     }
@@ -874,21 +874,21 @@ void Unk_ov004_0224c4e4::vfunc_78(Unk_ov004_0224c4e4_Out *out) {
     u16 w;
     u16 t;
     BOOL eq;
-    if (func_0204b2d4(q)) {
+    if (Item_IsFurniture(q)) {
         t = 0xfff1;
-        eq = func_0204b25c(q) == func_0204b25c(&t) ? TRUE : FALSE;
+        eq = Item_GetFurnitureIndex(q) == Item_GetFurnitureIndex(&t) ? TRUE : FALSE;
     } else {
         eq = *q == 0xfff1 ? TRUE : FALSE;
     }
     if (!eq) {
         s32 r6 = 0;
         func_0201578c(this, &unk_1a0->unk_894, r6, 7);
-        unk_1a4 = func_0204be70(&unk_1a0->unk_894);
+        unk_1a4 = Item_GetPrice(&unk_1a0->unk_894);
         if (unk_1a4 < 10) {
             unk_1a4 = 10;
         }
-        if (func_0209750c()) {
-            r7 = func_0207f854(unk_1a0->unk_82c, func_0209888c(func_0209750c()));
+        if (PlayerData_GetCurrent()) {
+            r7 = func_0207f854(unk_1a0->unk_82c, PlayerData_getPlayerId(PlayerData_GetCurrent()));
         }
         if (r7) {
             r6 = func_02080dd8(r7);
@@ -954,7 +954,7 @@ void Unk_ov004_0224c574::vfunc_80() { unk_a4e = 1; }
 void Unk_ov004_0224c4e4::vfunc_14() {}
 
 void Unk_ov004_0224c4e4::vfunc_18() {
-    void *r6 = func_020aa514(func_02015a5c(this));
+    void *r6 = ChoiceList_getResult(func_02015a5c(this));
     u32 r4 = 0xff;
     u8 *s;
     if (unk_1a0->unk_a4c == 1) {
@@ -966,7 +966,7 @@ void Unk_ov004_0224c4e4::vfunc_18() {
             r4 = (u8)func_02063b8c(3);
             if (r6 == 0) {
                 func_0200301c(func_020805c4(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q11_trade2");
-                func_0208a598();
+                Hud_Hide();
                 unk_1a0->unk_a4c = 2;
             } else {
                 func_0200301c(func_020805c4(unk_1a0->unk_82c), data_ov004_022506c8, 0x28, "q_no");
@@ -1046,7 +1046,7 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
     if (unk_a4c != 2) {
         return FALSE;
     }
-    if (p != NULL && func_0203e2f4() == 0 && func_02014220(&unk_618) == 0 && ((data_021f47d8[1] & 1) != 0 || flag)) {
+    if (p != NULL && func_0203e2f4() == 0 && func_02014220(&unk_618) == 0 && ((gPad[1] & 1) != 0 || flag)) {
     } else {
         return FALSE;
     }
@@ -1085,7 +1085,7 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
     if (c2 == NULL) {
         return FALSE;
     }
-    r[0] = func_0204b248(func_ov004_022087a4(), 0);
+    r[0] = Item_MakeFurniture(func_ov004_022087a4(), 0);
     x2 = hx;
     y2 = hy;
     func_ov004_0220711c(c2, &x2, &y2, 0, 0);
@@ -1095,9 +1095,9 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
     if (vfunc_64()) {
         if (func_0207e3b8(vfunc_64(), &hx, unk_a50, unk_a54)) {
             BOOL e1;
-            if (func_0204b2d4(&unk_894)) {
+            if (Item_IsFurniture(&unk_894)) {
                 r[1] = 0x409c;
-                e1 = func_0204b25c(&unk_894) == func_0204b25c(&r[1]) ? TRUE : FALSE;
+                e1 = Item_GetFurnitureIndex(&unk_894) == Item_GetFurnitureIndex(&r[1]) ? TRUE : FALSE;
             } else {
                 e1 = unk_894 == 0x409c ? TRUE : FALSE;
             }
@@ -1105,9 +1105,9 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
                 goto fail;
             }
             BOOL e2;
-            if (func_0204b2d4(&unk_894)) {
+            if (Item_IsFurniture(&unk_894)) {
                 r[2] = 0x40a0;
-                e2 = func_0204b25c(&unk_894) == func_0204b25c(&r[2]) ? TRUE : FALSE;
+                e2 = Item_GetFurnitureIndex(&unk_894) == Item_GetFurnitureIndex(&r[2]) ? TRUE : FALSE;
             } else {
                 e2 = unk_894 == 0x40a0 ? TRUE : FALSE;
             }
@@ -1115,9 +1115,9 @@ BOOL Unk_ov004_0224c574::func_ov004_02217954() {
                 goto fail;
             }
             BOOL e3;
-            if (func_0204b2d4(&unk_894)) {
+            if (Item_IsFurniture(&unk_894)) {
                 r[3] = 0x3820;
-                e3 = func_0204b25c(&unk_894) == func_0204b25c(&r[3]) ? TRUE : FALSE;
+                e3 = Item_GetFurnitureIndex(&unk_894) == Item_GetFurnitureIndex(&r[3]) ? TRUE : FALSE;
             } else {
                 e3 = unk_894 == 0x3820 ? TRUE : FALSE;
             }

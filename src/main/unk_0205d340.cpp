@@ -5,11 +5,11 @@ extern void *data_021c61d8;
 extern u8 *data_020cbb18;
 extern char data_021c651c[0x14];
 
-void *func_020e8628(void *heap, s32 size, s32 align);
+void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_020641b4(void *path, void *buf, s32 size);
+s32 File_LoadToBuffer(void *path, void *buf, s32 size);
 s32 func_0205be04();
 s32 func_0205be20();
 s32 func_0205d418();
@@ -67,7 +67,7 @@ extern "C" void func_0205d3d0(u32 *arr) {
     u32 n = *(u8 *)(data_020cbb18 + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
-        arr[i] = (u32)func_020e8628(heap, func_0205d418(), 4);
+        arr[i] = (u32)Heap_AllocAligned(heap, func_0205d418(), 4);
     }
 }
 
@@ -89,7 +89,7 @@ void Unk_0205d340::func_0205d388(u32 x) { v = x; }
 s32 Unk_0205d340::func_0205d354(u32 idx) {
     void *p = data_021c650c.func_0205d3a0(v);
     void *name = func_0205d420(idx);
-    return func_020641b4(name, p, func_0205d418());
+    return File_LoadToBuffer(name, p, func_0205d418());
 }
 
 void *Unk_0205d340::func_0205d340() { return data_021c650c.func_0205d3a0(v); }

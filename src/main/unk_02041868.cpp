@@ -37,10 +37,10 @@ extern u32 data_021fcc2c[];
 
 extern Unk_020cbb18 *data_020cbb18;
 extern Unk_02041ac0_Glob data_021c3ea4;
-extern u32 data_021f482c;
+extern u32 gCurrentHeap;
 extern u8 data_ov003_02258ef8;
 extern volatile u32 data_021c40cc[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 extern u8 data_021ed20c[];
 
 u8 data_021c3e70[4];
@@ -59,7 +59,7 @@ s32 _ZN12Unk_020cbb1813func_02072e88Ei(u32, u32);
 s32 func_020b5184();
 s32 func_020b5164();
 void func_ov003_0222675c();
-void func_020e85fc(u32, u32);
+void Heap_Free(u32, u32);
 s32 OS_IsThreadTerminated();
 void OS_KillThread(u32, u32);
 s32 func_02041938(Unk_02041938 *p);
@@ -86,13 +86,13 @@ void func_02041e00(void *o, Unk_02041e00_Ent *z, Unk_02042104_Date *d);
 void func_02041b1c(u8 *arg);
 void OS_ExitThread();
 u32 DC_FlushAll();
-void func_020e9244(u32 a, u32 b);
+void Heap_SetThreadHeap(u32 a, u32 b);
 void func_0204674c(void *r, u8 *a, u8 *b, u32 c, u32 d, u32 e);
 void MI_CpuFill8(void *p, u32 v, u32 n);
 s32 func_020419b4(Unk_020419b4 *p);
 void func_02041a80(Unk_020419b4 *p, u8 *a, u8 *b, u32 c, u8 d);
 void func_02041aec(Unk_020419b4 *p);
-void *func_020e8608(u32 heap, u32 size);
+void *Heap_Alloc(u32 heap, u32 size);
 void OS_CreateThread(void *th, void *fn, void *arg, void *stack, u32 size, u32 prio);
 void OS_WakeupThreadDirect(void *th);
 }
@@ -198,7 +198,7 @@ extern "C" void func_02041c10(void *o, u8 *base, s32 cnt, Unk_02042104_Date *d, 
 }
 
 extern "C" void func_02041b68() {
-    u8 *base = data_021d7350;
+    u8 *base = gSaveData;
     Unk_02042104_Date d;
     *(u32 *)&d = 0;
     *((u32 *)&d + 1) = 0;
@@ -225,7 +225,7 @@ extern "C" void func_02041b1c(u8 *arg) {
     DC_FlushAll();
     Unk_020419b4 *g = data_021c3ea4.unk_20;
     func_0204674c(&data_021c3ea4, arg, arg + 8, *(u32 *)(arg + 0x10), arg[0x14], 1);
-    func_020e9244(g->unk_c0, g->unk_c4);
+    Heap_SetThreadHeap(g->unk_c0, g->unk_c4);
     g->unk_10e9 = 1;
     OS_ExitThread();
 }
@@ -239,7 +239,7 @@ extern "C" void func_02041aec(Unk_020419b4 *p) {
 }
 
 extern "C" void func_02041ac0() {
-    data_021c3ea4.unk_20 = (Unk_020419b4 *)func_020e8608(data_021f482c, 0x10ec);
+    data_021c3ea4.unk_20 = (Unk_020419b4 *)Heap_Alloc(gCurrentHeap, 0x10ec);
     if (data_021c3ea4.unk_20 != 0) {
         func_02041aec(data_021c3ea4.unk_20);
     }
@@ -269,9 +269,9 @@ extern "C" s32 func_020419b4(Unk_020419b4 *p) {
     p->unk_10ea = 1;
     OS_CreateThread(p, (void *)func_02041b1c, p->unk_c8, &p->unk_10e4, 0x1000, 0x1e);
     p->unk_c0 = data_021fcc2c[1];
-    p->unk_c4 = data_021f482c;
-    func_020e9244(p->unk_c0, 0);
-    func_020e9244((u32)p, p->unk_c4);
+    p->unk_c4 = gCurrentHeap;
+    Heap_SetThreadHeap(p->unk_c0, 0);
+    Heap_SetThreadHeap((u32)p, p->unk_c4);
     OS_WakeupThreadDirect(p);
     return 1;
 }
@@ -309,7 +309,7 @@ extern "C" void func_02041908() {
     Unk_02041938 *p = (Unk_02041938 *)data_021c3ea4.unk_20;
     if (p != 0) {
         func_02041938(p);
-        func_020e85fc(data_021f482c, (u32)p);
+        Heap_Free(gCurrentHeap, (u32)p);
         data_021c3ea4.unk_20 = 0;
     }
 }

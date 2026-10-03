@@ -3,23 +3,23 @@
 #include "Unk_020d8c7c.h"
 
 // ---- sub-object declarations (defined in src/main/unk_0208d154.cpp etc.) ----
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e0ff0 : public Unk_020e0db4 {
+class Unk_020e0ff0 : public UiWidget {
 public:
     Unk_020e0ff0();
     virtual ~Unk_020e0ff0();
-    virtual void vfunc_08();
+    virtual void draw();
     virtual void vfunc_0c();
 
     BOOL func_0208d2d8();
@@ -32,15 +32,15 @@ public:
     /* 0x0c */ u8 unk_0c[0x74];
 };
 
-class Unk_020e100c : public Unk_020e0db4 {
+class HandCursor : public UiWidget {
 public:
-    Unk_020e100c(BOOL flag);
-    virtual ~Unk_020e100c();
-    virtual void vfunc_08();
+    HandCursor(BOOL flag);
+    virtual ~HandCursor();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208d580(s32 idx);
-    void func_0208d60c(s32 a, s32 b);
+    void setAnim(s32 idx);
+    void setPos(s32 a, s32 b);
 
     /* 0x0c */ u8 unk_0c[0x40];
 };
@@ -100,13 +100,13 @@ struct Unk_ov004_0223e2f4_Pad {
 
 extern "C" {
 extern u8 data_021c3cc0;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u8 data_021ef5d0;
-extern u8 data_021ef5cc;
-extern u8 data_021d7350[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u8 gTouchPrevHeld;
+extern u8 gTouchPrevChanged;
+extern u8 gSaveData[];
 extern u8 data_021d735c[];
-extern Unk_ov004_0223e2f4_Pad data_021f47d8;
+extern Unk_ov004_0223e2f4_Pad gPad;
 extern Unk_ov004_0223e2f4_G *data_020cbb18;
 extern const Unk_ov004_0223e10c_Pair data_ov004_0224480c[];
 extern const Unk_ov004_0223e10c_Pair data_ov004_022447e4;
@@ -114,37 +114,37 @@ extern const s32 data_ov004_022447dc[];
 extern const s32 data_ov004_022447ec[];
 #define data_ov004_022447f0 ((const s32 *)((const u8 *)data_ov004_022447ec + 4))
 Unk_ov004_0224e2b8_Stub *func_ov004_0222a2c0();
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 
 s32 func_020978c8(void *, s32);
 u8 *func_020951ec(u32 id);
-void *func_02097868(void *a, s32 i);
-void *_ZN12Unk_0209865c13func_0209888cEv(void *self);
-void _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78(void *self, void *o);
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
-#define func_020940d0 _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78
-void func_0203a124(s32 *a, s32 *b, void *c);
+void *PlayerData_GetResident(void *a, s32 i);
+void *_ZN10PlayerData11getPlayerIdEv(void *self);
+void _ZN8PlayerId13func_020940d0EP9MsgString(void *self, void *o);
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
+#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+void Camera_ProjectCurvedToScreen(s32 *a, s32 *b, void *c);
 void func_02094018(void *p);
 void func_02094030(void *);
 s32 *func_020947f0(u32);
-void func_02094b0c(void *v, s32 a, s32 b);
-void func_02094ae8(s32 a, u32 b);
+void PlayerActor_RequestAct6F(void *v, s32 a, s32 b);
+void PlayerActor_RequestAct70(s32 a, u32 b);
 BOOL func_020a0868(void);
 void func_020a0954(void);
 BOOL func_020e7500(void *p);
-BOOL func_0208f010();
-BOOL func_0208f024();
-void func_0208f038(void);
-void func_0208f044(void);
+BOOL InputMode_IsTouch();
+BOOL InputMode_IsButtons();
+void InputMode_SetTouch(void);
+void InputMode_SetButtons(void);
 u8 *func_020b50b4();
 s32 func_020b6080(u8 *obj, void *out, s32 *a, u8 *b);
-void func_020b3558(void *o, u8 *p, u32 x);
+void String_Load2d(void *o, u8 *p, u32 x);
 void func_0209d498(void *p);
 s32 func_0209d3d0(void *a, void *b, s32 n);
-s32 _ZN12Unk_0209da4413func_0209e170Ej(void *self, u32 i);
-#define func_0209e170 _ZN12Unk_0209da4413func_0209e170Ej
-s32 _ZN12Unk_0209865c13func_02098a48Ev(void *self);
-#define func_02098a48 _ZN12Unk_0209865c13func_02098a48Ev
+s32 _ZN8SaveData8testFlagEj(void *self, u32 i);
+#define SaveData_testFlag _ZN8SaveData8testFlagEj
+s32 _ZN10PlayerData13func_02098a48Ev(void *self);
+#define func_02098a48 _ZN10PlayerData13func_02098a48Ev
 s32 func_0206e838(void);
 s32 func_0206e7f8(void);
 s32 func_0206e820(void);
@@ -174,13 +174,13 @@ static inline BOOL Unk_ov004_0223e2f4_IsMode2() {
     return FALSE;
 }
 
-class Unk_ov004_0224f20c : public Unk_020d8c7c {
+class Unk_ov004_0224f20c : public GameProc {
 public:
     Unk_ov004_0224f20c();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_ov004_0224f20c();
 
     void func_ov004_0223e10c();
@@ -200,7 +200,7 @@ public:
     void func_ov004_0223e690();
     void func_ov004_0223e6bc(s32 state);
 
-    /* 0x050 */ Unk_020e100c unk_50;
+    /* 0x050 */ HandCursor unk_50;
     /* 0x09c */ Unk_020e0ff0 unk_9c[5];
     /* 0x31c */ u8 unk_31c;
     /* 0x31d */ u8 unk_31d;
@@ -233,14 +233,14 @@ Unk_ov004_0223e6bc_Ent data_ov004_02258854[7] = {
 #undef M
 
 static inline BOOL Unk_ov004_0223e2f4_Both47() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 static inline BOOL Unk_ov004_0223e580_BothEf() {
-    if (data_021ef5d0 != 0 && data_021ef5cc != 0) {
+    if (gTouchPrevHeld != 0 && gTouchPrevChanged != 0) {
         return TRUE;
     }
     return FALSE;
@@ -261,9 +261,9 @@ BOOL Unk_ov004_0224f20c::vfunc_00() {
     u8 c;
     u8 i;
     func_0203d990();
-    g = data_021d7350;
+    g = gSaveData;
     for (i = 0; i < 4; i++) {
-        void *o = func_02097868(g + 0xc, i);
+        void *o = PlayerData_GetResident(g + 0xc, i);
         if (o != 0 && func_02098a48(o) != 0) {
             unk_31c = i;
             break;
@@ -273,10 +273,10 @@ BOOL Unk_ov004_0224f20c::vfunc_00() {
         unk_9c[i].func_0208d324(i);
     }
     c = 0x81;
-    func_020b3558(&unk_338, &c, 0);
-    if (func_0209e170(g, 0) == 0) {
+    String_Load2d(&unk_338, &c, 0);
+    if (SaveData_testFlag(g, 0) == 0) {
         func_ov004_0223e6bc(0);
-    } else if (func_0208f024()) {
+    } else if (InputMode_IsButtons()) {
         func_ov004_0223e6bc(2);
     } else {
         func_ov004_0223e6bc(1);
@@ -307,7 +307,7 @@ BOOL Unk_ov004_0224f20c::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224f20c::vfunc_18() {
+BOOL Unk_ov004_0224f20c::onExecute() {
     func_ov004_0223e014(this);
     func_ov004_0223e10c();
     if (*(u32 *)((u8 *)data_ov004_02258854 + 8 + unk_320 * 16) != 0) {
@@ -316,12 +316,12 @@ BOOL Unk_ov004_0224f20c::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_ov004_0224f20c::vfunc_24() {
-    unk_50.vfunc_08();
+BOOL Unk_ov004_0224f20c::onDraw() {
+    unk_50.draw();
     u8 i;
     for (i = 0; i < 5; i++) {
         Unk_020e0ff0 *e = &unk_9c[i];
-        e->vfunc_08();
+        e->draw();
     }
     return TRUE;
 }
@@ -334,7 +334,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e6bc(s32 state) {
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e690() {
-    unk_50.func_0208d580(0);
+    unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
         unk_9c[i].func_0208d2d8();
@@ -343,7 +343,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e690() {
 
 void Unk_ov004_0224f20c::func_ov004_0223e664() {
     if (!func_ov004_0222975c()) {
-        if (func_0208f024()) {
+        if (InputMode_IsButtons()) {
             func_ov004_0223e6bc(2);
         } else {
             func_ov004_0223e6bc(1);
@@ -352,7 +352,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e664() {
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e638() {
-    unk_50.func_0208d580(0);
+    unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
         unk_9c[i].func_0208d2f0();
@@ -366,7 +366,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e580() {
     if (!Unk_ov004_0223e2f4_IsMode2()) {
         return;
     }
-    if (func_0208f010() && Unk_ov004_0223e580_BothEf()) {
+    if (InputMode_IsTouch() && Unk_ov004_0223e580_BothEf()) {
         if (func_020b6080(func_020b50b4(), out, &a, &c) && a == 1) {
             data_020cbb18->unk_68 = c;
             unk_31c = c;
@@ -376,14 +376,14 @@ void Unk_ov004_0224f20c::func_ov004_0223e580() {
     }
     if (func_ov004_0222975c()) {
         func_ov004_0223e6bc(0);
-    } else if (data_021f47d8.unk_02 & 0xff3) {
-        func_0208f044();
+    } else if (gPad.unk_02 & 0xff3) {
+        InputMode_SetButtons();
         func_ov004_0223e6bc(2);
     }
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e554() {
-    unk_50.func_0208d580(7);
+    unk_50.setAnim(7);
     u8 i;
     for (i = 0; i < 5; i++) {
         unk_9c[i].func_0208d2f0();
@@ -406,12 +406,12 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
         return;
     }
     if (Unk_ov004_0223e2f4_Both47()) {
-        func_0208f038();
+        InputMode_SetTouch();
         func_ov004_0223e6bc(1);
         return;
     }
     if (unk_31d != 0) {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if (k & 0x80) {
             unk_31d = 0;
             goto L500;
@@ -438,7 +438,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
     st = unk_31c;
     switch (st) {
     case 0: {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x80) {
@@ -452,7 +452,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
         break;
     }
     case 1: {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x80) {
@@ -466,7 +466,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
         break;
     }
     case 2: {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if (k & 0x10) {
             st = st + 1;
         } else if (k & 0x40) {
@@ -481,7 +481,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
         break;
     }
     case 3: {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if (k & 0x20) {
             st = st - 1;
         } else if (k & 0x40) {
@@ -501,7 +501,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2f4() {
     }
 L500:
     {
-        u16 k = data_021f47d8.unk_02;
+        u16 k = gPad.unk_02;
         if ((k & 8) || (k & 1)) {
             if (unk_31d != 0) {
                 func_ov004_02229738();
@@ -520,7 +520,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e2a4() {
         r = TRUE;
     }
     func_ov004_02224ad8(r, 1);
-    unk_50.func_0208d580(0);
+    unk_50.setAnim(0);
     u8 i;
     for (i = 0; i < 5; i++) {
         unk_9c[i].func_0208d2d8();
@@ -536,7 +536,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e280() {
 
 void Unk_ov004_0224f20c::func_ov004_0223e260() {
     func_ov004_0223f43c(this);
-    func_02094ae8(0, 4);
+    PlayerActor_RequestAct70(0, 4);
     unk_324 = 5;
 }
 
@@ -563,7 +563,7 @@ void Unk_ov004_0224f20c::func_ov004_0223e1e4() {
     v[1] = p[1];
     v[2] = p[2];
     v[2] = v[2] + 0x6000;
-    func_02094b0c(v, 0x2b8, 4);
+    PlayerActor_RequestAct6F(v, 0x2b8, 4);
 }
 
 void Unk_ov004_0224f20c::func_ov004_0223e1e0() {
@@ -582,8 +582,8 @@ void Unk_ov004_0224f20c::func_ov004_0223e10c() {
                 v[1] = pv[1];
                 v[2] = pv[2];
                 Unk_020e1c64 o;
-                func_020940d0(func_0209888c(func_02097868(data_021d735c, i)), &o);
-                func_0203a124(&x, &y, v);
+                func_020940d0(PlayerData_getPlayerId(PlayerData_GetResident(data_021d735c, i)), &o);
+                Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += data_ov004_0224480c[i].a;
                 y += data_ov004_0224480c[i].b;
                 Unk_020e0ff0 *e = &unk_9c[i];
@@ -611,7 +611,7 @@ extern "C" void func_ov004_0223e014(Unk_ov004_0224f20c *o) {
     } else {
         pp = (u8 *)func_020951ec(o->unk_31c) + 0x5c;
     }
-    func_0203a124(&xy[0], &xy[1], pp);
+    Camera_ProjectCurvedToScreen(&xy[0], &xy[1], pp);
     if (o->unk_31d == 0) {
         xy[0] = xy[0] + data_ov004_022447ec[o->unk_31c * 2];
         xy[1] = xy[1] + data_ov004_022447f0[o->unk_31c * 2];
@@ -628,11 +628,11 @@ extern "C" void func_ov004_0223e014(Unk_ov004_0224f20c *o) {
     if (t) {
         if (o->unk_320 == 2) {
             if (o->unk_330 != xy[0] || o->unk_334 != xy[1]) {
-                func_0200402c(0xb);
+                Snd_PlaySe(0xb);
             }
         }
     }
-    o->unk_50.func_0208d60c(xy[0], xy[1]);
+    o->unk_50.setPos(xy[0], xy[1]);
     o->unk_50.vfunc_0c();
     o->unk_330 = xy[0];
     o->unk_334 = xy[1];

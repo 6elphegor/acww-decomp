@@ -43,7 +43,7 @@ s32 MB_CommIsBootable(s32);
 s32 MB_CommGetChildUser(s32);
 void func_02124a94(s32);
 void MB_End();
-void func_0206d49c();
+void Fatal_Trap();
 void FS_InitFile(void *);
 s32 FS_OpenFile(void *, s32);
 s32 MB_GetSegmentLength(void *);
@@ -102,7 +102,7 @@ void func_ov001_02221734(s32 a, s32 b) {
     zp->v[6] = 0;
     *(Unk_ov001_02221734_Z *)data_ov001_0222df08 = *zp;
     data_ov001_0222df08->unk_1b140 = (u8 *)data_ov001_0222df08 + 0x10040;
-    if (func_021251ac(data_ov001_0222df08->unk_1b140, &d, a, b, 2) != 0) func_0206d49c();
+    if (func_021251ac(data_ov001_0222df08->unk_1b140, &d, a, b, 2) != 0) Fatal_Trap();
     MB_SetParentCommParam(0x100, 1);
     MB_CommSetParentStateCallback((void *)func_ov001_02220d40);
     func_ov001_02220d2c(1);
@@ -115,7 +115,7 @@ void func_ov001_022216d0(s32 *a, s32 b) {
         return;
     }
     if (func_ov001_022215f4(a) != 0) return;
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 s32 func_ov001_022215f4(s32 *p) {
@@ -383,7 +383,7 @@ void func_ov001_02220d40(u32 id, u32 cmd, u8 *data)
         break;
     }
     default:
-        func_0206d49c();
+        Fatal_Trap();
         break;
     }
 }

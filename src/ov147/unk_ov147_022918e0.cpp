@@ -7,32 +7,32 @@ struct Unk_ov147_0229213c_Desc {
     u8 unk_08;
 };
 
-class Unk_020aa72c {
+class ChoiceEntry {
 public:
-    void func_020aa784(const u8 *p);
-    void func_020aa780(const void *p);
-    void func_020aa72c();
-    void func_020aa778(const u8 *p);
-    void *func_020aa7a0();
+    void setMsgIndex(const u8 *p);
+    void setBmgName(const void *p);
+    void loadText();
+    void setValue(const u8 *p);
+    void *getText();
 };
 
-class Unk_020aa3b8 {
+class ChoiceList {
 public:
-    void func_020aa5f4();
-    Unk_020aa72c *func_020aa560(s32 i);
-    void func_020aa4cc(s32 v);
-    s32 func_020aa4b8();
-    s32 func_020aa514();
-    void func_020aa680(s32 a, s32 b);
-    void func_020aa638(s32 a, const u8 *b, s32 c, const u8 *d, const char *e, s32 f);
-    void func_020aa608();
+    void clear();
+    ChoiceEntry *getEntry(s32 i);
+    void setCount(s32 v);
+    s32 setCancelToLast();
+    s32 getResult();
+    void reset(s32 a, s32 b);
+    void setEntry(s32 a, const u8 *b, s32 c, const u8 *d, const char *e, s32 f);
+    void loadTexts();
 };
 
 class Unk_020ddcf0;
 
 class Unk_020660f8 {
 public:
-    Unk_020aa3b8 *func_020679b4();
+    ChoiceList *func_020679b4();
     void func_020679c0(s32 v);
     void func_02067a3c(s32 a, void *b);
     void func_02067a84(u8 *a, void *b);
@@ -46,15 +46,15 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_0209865c {
+class PlayerData {
 public:
-    void *func_0209888c();
+    void *getPlayerId();
 };
 
-class Unk_0209da44 {
+class SaveData {
 public:
-    s32 func_0209e1a0();
-    BOOL func_0209e170(u32 a);
+    s32 isValid();
+    BOOL testFlag(u32 a);
 };
 
 class Unk_02065554 {
@@ -77,14 +77,14 @@ public:
     u8 unk_04[0x20];
 };
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    u8 func_020a7bd8(Unk_020e2a78 *other);
+    u8 copy(MsgString *other);
 };
 
-class Unk_020940a0 {
+class PlayerId {
 public:
-    void func_020940d0(Unk_020e2a78 *p);
+    void func_020940d0(MsgString *p);
 };
 
 class Unk_020e1c64 {
@@ -105,42 +105,42 @@ void func_02002398(s32 a, s32 b);
 void func_020026c4(void *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void func_020024f0(void *a, s32 b, s32 c, s32 d);
 void func_02002438(void *a, s32 b, s32 c, s32 d, s32 e);
-void func_020641b4(void *a, void *b, u32 n);
+void File_LoadToBuffer(void *a, void *b, u32 n);
 void MI_CpuCopy8(void *a, void *b, u32 n);
 void MI_CpuFill8(void *a, s32 b, u32 n);
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 u32 func_0209ccd0();
 void *func_0208f158(void *p);
 BOOL func_020978c8(void *t, s32 i);
 s32 func_020978a4(void *t);
-void *func_02097868(void *t, s32 i);
+void *PlayerData_GetResident(void *t, s32 i);
 void func_020a0420(s32 i);
 void func_020a0364();
 void func_020a0358();
 void func_020a034c();
-const void *func_020aa3ac(u32 i);
+const void *Choice_GetBmgName(u32 i);
 
 extern u8 data_021e7f8c[];
 extern u8 data_021d735c[];
-extern Unk_0209da44 data_021d7350;
+extern SaveData gSaveData;
 extern u8 data_021edb5c;
 extern u8 data_021c3cc0;
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 class Unk_ov147_022933e8;
 
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_08();
-    void func_020a710c(const char *s);
+    void setFileName(const char *s);
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -258,9 +258,9 @@ extern u8 data_ov147_022938cc[];
 extern const u8 data_ov147_022930bc[];
 extern char *data_ov147_02293270;
 extern Unk_ov147_0229372c data_ov147_0229372c[];
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern u16 data_021f47d8[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern u16 gPad[];
 extern u8 *data_021c1b3c;
 
 void func_020a4414(s32 a, s32 b, s32 c, s32 d);
@@ -270,8 +270,8 @@ void func_020a08c4();
 void func_020a0960();
 void func_020a096c();
 void func_0203d52c();
-void func_0208f044();
-void func_0208f038();
+void InputMode_SetButtons();
+void InputMode_SetTouch();
 BOOL func_020e7500(void *p);
 void func_02034d84(s32 a);
 void func_02034d70(s32 a);
@@ -282,8 +282,8 @@ void func_020a042c();
 void func_0203cbb8();
 void _ZN12Unk_0203c92c13func_0203c98cEv();
 void func_0203d990();
-s32 func_0206d5b8();
-s32 func_020a07a4();
+s32 Main_TakeDwcInitResult();
+s32 Save_CheckBackupError();
 s32 func_0203d538();
 void func_0203d520();
 Unk_ov147_022933e8 *func_ov147_02292bf8();
@@ -308,20 +308,20 @@ static inline BOOL Unk_ov147_022924c0_IsTwo() {
 }
 
 static inline BOOL Unk_ov147_0229281c_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
 // Vtable 0x022933e8, size 0xf4
-class Unk_ov147_022933e8 : public Unk_020d8c7c {
+class Unk_ov147_022933e8 : public GameProc {
 public:
     Unk_ov147_022933e8();
     virtual ~Unk_ov147_022933e8();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
+    virtual BOOL onExecute();
 
     void func_ov147_022918e0(u32 *p, s32 x, s32 y);
     void func_ov147_02291914(u32 *p, s32 i);
@@ -406,14 +406,14 @@ BOOL Unk_ov147_022933e8::vfunc_00() {
     func_0203cbb8();
     _ZN12Unk_0203c92c13func_0203c98cEv();
     func_0203d990();
-    if (func_0206d5b8() == 3) {
+    if (Main_TakeDwcInitResult() == 3) {
         unk_f0 = 1;
     }
     func_ov147_02292988(0);
     unk_a6 = 0;
     unk_a7 = 0;
     unk_ac.func_ov147_0229306c();
-    if (func_020a07a4() == 1) {
+    if (Save_CheckBackupError() == 1) {
         unk_9e = 1;
     }
     func_ov147_02292a14(func_0203d538() != 0 ? TRUE : FALSE);
@@ -435,7 +435,7 @@ BOOL Unk_ov147_022933e8::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov147_022933e8::vfunc_18() {
+BOOL Unk_ov147_022933e8::onExecute() {
     if (((Unk_ov147_0229372c *)((u8 *)data_ov147_0229372c + 8))[unk_50].enter) {
         (this->*data_ov147_0229372c[unk_50].update)();
     }
@@ -485,12 +485,12 @@ void Unk_ov147_022933e8::func_ov147_02292988(s32 state) {
 void Unk_ov147_022933e8::func_ov147_0229297c() { unk_a8 = 0xe10; }
 
 void Unk_ov147_022933e8::func_ov147_0229281c() {
-    if (data_021f47d8[1] != 0) {
-        func_0208f044();
+    if (gPad[1] != 0) {
+        InputMode_SetButtons();
     } else if (Unk_ov147_0229281c_Both()) {
-        func_0208f038();
+        InputMode_SetTouch();
     }
-    u32 pad = data_021f47d8[1];
+    u32 pad = gPad[1];
     if ((pad & 2) == 0 && (pad & 0x400) == 0 && (pad & 0x800) == 0) {
         if (unk_f0 != 0 || unk_9e != 0 || (pad & 8) != 0 || (pad & 1) != 0 || Unk_ov147_0229281c_Both()) {
             if (Unk_ov147_022924c0_IsTwo()) {
@@ -541,17 +541,17 @@ void Unk_ov147_022933e8::func_ov147_02292718() {
         Unk_020660f8 *r = func_02067918(0);
         unk_54.vfunc_08();
         if (unk_f0 != 0) {
-            unk_54.func_020a710c(data_ov147_02293270);
+            unk_54.setFileName(data_ov147_02293270);
             *((u8 *)this + 0x72) = 0x32;
             unk_f0 = 0;
         } else if (unk_9e != 0) {
-            unk_54.func_020a710c("sp_etc_sequence2");
+            unk_54.setFileName("sp_etc_sequence2");
             *((u8 *)this + 0x72) = 9;
-        } else if (data_021d7350.func_0209e170(0x12)) {
-            unk_54.func_020a710c(data_ov147_02293270);
+        } else if (gSaveData.testFlag(0x12)) {
+            unk_54.setFileName(data_ov147_02293270);
             *((u8 *)this + 0x72) = 0x24;
         } else {
-            unk_54.func_020a710c(data_ov147_02293270);
+            unk_54.setFileName(data_ov147_02293270);
             *((u8 *)this + 0x72) = unk_54.func_ov147_02291ce0();
         }
         r->func_02067978(&unk_54);
@@ -703,7 +703,7 @@ void Unk_ov147_022934a4::vfunc_14() {
     };
     Unk_020660f8 *r5 = func_02067918(0);
     s32 r6 = func_020978a4(data_021d735c);
-    s32 r0 = data_021d7350.func_0209e1a0();
+    s32 r0 = gSaveData.isValid();
     Unk_ov147_022933e8 *r2 = unk_44;
     if (r2->unk_9e != 0) {
         r5->func_02067a78();
@@ -784,11 +784,11 @@ void Unk_ov147_022934a4::vfunc_14() {
 
 void Unk_ov147_022934a4::func_ov147_0229213c(Unk_ov147_0229213c_Desc *d) {
     Unk_020660f8 *sp0 = unk_3c;
-    Unk_020aa3b8 *sp10 = sp0->func_020679b4();
+    ChoiceList *sp10 = sp0->func_020679b4();
     u8 *r5 = d->unk_00;
     u8 *r6 = d->unk_04;
     u32 r7 = d->unk_08;
-    sp10->func_020aa680(r7, r7 - 1);
+    sp10->reset(r7, r7 - 1);
     s32 r4;
     s32 z0 = 0;
     s32 z1 = 0;
@@ -801,54 +801,54 @@ void Unk_ov147_022934a4::func_ov147_0229213c(Unk_ov147_0229213c_Desc *d) {
         }
         t[0] = c;
         t[1] = r6[r4];
-        sp10->func_020aa638(r4, t, 1, &t[1], (const char *)z1, f);
+        sp10->setEntry(r4, t, 1, &t[1], (const char *)z1, f);
     }
-    sp10->func_020aa608();
+    sp10->loadTexts();
     sp0->func_020679c0(1);
 }
 
 void Unk_ov147_022934a4::func_ov147_02292074() {
     Unk_020660f8 *sp0 = unk_3c;
-    Unk_020aa3b8 *r6 = sp0->func_020679b4();
-    r6->func_020aa5f4();
+    ChoiceList *r6 = sp0->func_020679b4();
+    r6->clear();
     s32 r5 = 0;
     s32 r4 = 0;
     u8 buf[3];
     for (r4 = 0; r4 < 4; r4++) {
         if (func_020978c8(data_021d735c, r4)) {
             Unk_020e1c64 o;
-            ((Unk_020940a0 *)((Unk_0209865c *)func_02097868(data_021d735c, r4))->func_0209888c())->func_020940d0((Unk_020e2a78 *)&o);
-            Unk_020aa72c *r7 = r6->func_020aa560(r5);
+            ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
+            ChoiceEntry *r7 = r6->getEntry(r5);
             buf[0] = 4;
-            r7->func_020aa778(&buf[0]);
-            ((Unk_020e2a78 *)r7->func_020aa7a0())->func_020a7bd8((Unk_020e2a78 *)&o);
+            r7->setValue(&buf[0]);
+            ((MsgString *)r7->getText())->copy((MsgString *)&o);
             r5++;
         }
     }
-    Unk_020aa72c *p = r6->func_020aa560(r5);
+    ChoiceEntry *p = r6->getEntry(r5);
     buf[1] = 0x10;
-    p->func_020aa784(&buf[1]);
-    p->func_020aa780(func_020aa3ac(1));
+    p->setMsgIndex(&buf[1]);
+    p->setBmgName(Choice_GetBmgName(1));
     buf[2] = 0;
-    p->func_020aa778(&buf[2]);
-    p->func_020aa72c();
-    r6->func_020aa4cc(r5 + 1);
-    r6->func_020aa4b8();
+    p->setValue(&buf[2]);
+    p->loadText();
+    r6->setCount(r5 + 1);
+    r6->setCancelToLast();
     sp0->func_020679c0(1);
 }
 
 void Unk_ov147_022934a4::vfunc_70() {
     if (unk_1e == 0x24 || unk_1e == 0x27) {
-        func_0200402c(0x3a);
+        Snd_PlaySe(0x3a);
     }
 }
 
 void Unk_ov147_022934a4::vfunc_18() {
     typedef void (Unk_ov147_022934a4::*Fn)();
     Unk_020660f8 *sp0 = func_02067918(0);
-    s32 r5 = sp0->func_020679b4()->func_020aa514();
+    s32 r5 = sp0->func_020679b4()->getResult();
     s32 sp4 = func_020978a4(data_021d735c);
-    s32 sp8 = data_021d7350.func_0209e1a0();
+    s32 sp8 = gSaveData.isValid();
     static Fn t0[4] = { 0, &Unk_ov147_022934a4::func_ov147_02291cf8, 0, &Unk_ov147_022934a4::func_ov147_02291dbc };
     static Fn t1[4] = { &Unk_ov147_022934a4::func_ov147_02291dd4, &Unk_ov147_022934a4::func_ov147_02291cf8, 0, &Unk_ov147_022934a4::func_ov147_02291dbc };
     static Fn t2[4] = { &Unk_ov147_022934a4::func_ov147_02291dc8, &Unk_ov147_022934a4::func_ov147_02291cf8, 0, &Unk_ov147_022934a4::func_ov147_02291dbc };
@@ -917,7 +917,7 @@ void Unk_ov147_022934a4::func_ov147_02291dbc() {
 
 void Unk_ov147_022934a4::func_ov147_02291d34() {
     Unk_020660f8 *r7 = func_02067918(0);
-    s32 a = r7->func_020679b4()->func_020aa514();
+    s32 a = r7->func_020679b4()->getResult();
     u8 r6 = 0x31;
     s32 r5 = 0;
     s32 r4;
@@ -926,7 +926,7 @@ void Unk_ov147_022934a4::func_ov147_02291d34() {
             if (a == r5) {
                 func_020a0420(r4);
                 Unk_020e1c64 o;
-                ((Unk_020940a0 *)((Unk_0209865c *)func_02097868(data_021d735c, r4))->func_0209888c())->func_020940d0((Unk_020e2a78 *)&o);
+                ((PlayerId *)((PlayerData *)PlayerData_GetResident(data_021d735c, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
                 r7->func_02067a3c(0, &o);
                 r6 = 4;
             }
@@ -957,14 +957,14 @@ void Unk_ov147_022933e8::func_ov147_02291c08() {
     func_0203d4c8(1);
     func_0200226c(5, 0, 0, 0);
     func_02002398(5, 1);
-    func_020026c4((void *)"menu/title/bg_us.bpl", (s32)data_021f482c, 5, 8, 8, 0xf);
-    func_020641b4((void *)"menu/title/bg_us.bsc", data_ov147_02293c8c, 0x800);
+    func_020026c4((void *)"menu/title/bg_us.bpl", (s32)gCurrentHeap, 5, 8, 8, 0xf);
+    File_LoadToBuffer((void *)"menu/title/bg_us.bsc", data_ov147_02293c8c, 0x800);
     func_020024f0(data_ov147_02293c8c, 5, 0x800, 0);
-    func_020641b4((void *)"menu/title/bg_us.bch", data_ov147_0229448c, 0x3800);
+    File_LoadToBuffer((void *)"menu/title/bg_us.bch", data_ov147_0229448c, 0x3800);
     MI_CpuFill8(data_ov147_02297c8c, 0, 0x3800);
-    func_020641b4((void *)"menu/title/mask0.bch", data_ov147_022937ec, 0xe0);
-    func_020641b4((void *)"menu/title/mask1.bch", data_ov147_02293aac, 0x1e0);
-    func_020641b4((void *)"menu/title/mask2.bch", data_ov147_022938cc, 0x1e0);
+    File_LoadToBuffer((void *)"menu/title/mask0.bch", data_ov147_022937ec, 0xe0);
+    File_LoadToBuffer((void *)"menu/title/mask1.bch", data_ov147_02293aac, 0x1e0);
+    File_LoadToBuffer((void *)"menu/title/mask2.bch", data_ov147_022938cc, 0x1e0);
     func_02002438(data_ov147_02297c8c, 5, 0x140, 0x140, 0x2ff);
 }
 

@@ -45,7 +45,7 @@ void _ZN12Unk_0201106c13func_020114b0Ei(void *p, u32 v);
 s32 _ZN12Unk_0201106c13func_02011410Ei(void *p, u32 v);
 void _ZN12Unk_0201106c13func_0201137cEi(void *p, u32 v);
 void _ZN12Unk_0201106c13func_02011408Ev(void *p);
-s32 func_0208f010(void);
+s32 InputMode_IsTouch(void);
 s32 func_020b50e8(void);
 s32 func_02038f00(void);
 void MI_CpuFill8(void *dst, u32 v, u32 n);
@@ -122,7 +122,7 @@ void Unk_02011580::func_02011800(u32 a) {
     if (p->func_02011580()) _ZN12Unk_0201106c13func_020114b0Ei(p, a);
     _ZN12Unk_0201106c13func_02011550Ev(p);
     if (func_0201188c() == 2) {
-        if (func_0208f010()) func_02011748(1, 0, a);
+        if (InputMode_IsTouch()) func_02011748(1, 0, a);
     }
 }
 
@@ -134,7 +134,7 @@ void Unk_02011580::func_02011788(u32 a, u32 b) {
     if (_ZN12Unk_0201106c13func_02011410Ei(p, a)) _ZN12Unk_0201106c13func_0201137cEi(p, b);
     _ZN12Unk_0201106c13func_02011408Ev(p);
     if (a == 2 || (a == 4 && func_0201188c() == 2)) {
-        if (func_0208f010()) func_02011748(1, 0, b);
+        if (InputMode_IsTouch()) func_02011748(1, 0, b);
     }
 }
 

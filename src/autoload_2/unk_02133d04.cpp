@@ -103,8 +103,8 @@ void func_02133bc0(ThrowContext *context, ExceptionInfo *info);
 u32 __PopStackFrame(ThrowContext *context, ExceptionInfo *info);
 void func_02133aec(ThrowContext *context, ExceptionInfo *info, char *pc);
 void abort(void); // abort
-void *func_020ec860(size_t size); // operator new[]
-void func_020ec848(void *p); // operator delete[]
+void *_Znam(size_t size); // operator new[]
+void _ZdaPv(void *p); // operator delete[]
 void func_02135578(void);
 void func_02135668(void *array, size_t count, size_t size, ObjFunc dtor);
 void func_021358a8(char *start, char *ptr, size_t size, ObjFunc dtor);

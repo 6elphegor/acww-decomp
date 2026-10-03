@@ -39,7 +39,7 @@ extern void func_02133ae0(void);
 
 extern void CpuSet(void *src, void *dst, u32 mode);
 extern void WaitByLoop(u32);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32, u32);
 extern void PXI_SetFifoRecvCallback(u32, void *);
@@ -649,7 +649,7 @@ void CTRDGi_CallbackForInitModuleInfo(u32 tag, u32 data) {
     if ((data & 0x3f) == 1) {
         data_02200054[0] = 1;
     } else {
-        func_0206d49c();
+        Fatal_Trap();
     }
 }
 
@@ -661,14 +661,14 @@ void func_02127118(u32 tag, u32 data) {
         if (r == 0) return;
         CTRDG_TerminateForPulledOut();
     } else {
-        func_0206d49c();
+        Fatal_Trap();
     }
 }
 
 // calls CTRDGi_SendtoPxi(2), then OS_Terminate
 void CTRDG_TerminateForPulledOut(void) {
     CTRDGi_SendtoPxi(2);
-    func_0206d49c();
+    Fatal_Trap();
 }
 
 // clears the state at data_02200054 via CpuSet (fill) and stores OS_GetLockID() in its second halfword

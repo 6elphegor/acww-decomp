@@ -127,7 +127,7 @@ extern u16 *data_0213c21c;
 
 extern u32 OS_DisableInterrupts(void);
 extern void OS_RestoreInterrupts(u32);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void DC_InvalidateRange(void *, u32);
 extern void OS_GetMacAddress(u8 *);
 extern void MI_DmaCopy16(u32, void *, void *, u32);

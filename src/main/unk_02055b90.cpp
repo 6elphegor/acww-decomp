@@ -1,8 +1,8 @@
 #include "types.h"
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    virtual ~Unk_020dbe7c();
+    virtual ~AnimFrameCtrl();
 
     u32 unk_04;
     u32 unk_08;
@@ -11,10 +11,10 @@ public:
     u32 unk_14;
 };
 
-class Unk_020dbe4c : public Unk_020dbe7c {
+class ModelAnim : public AnimFrameCtrl {
 public:
-    Unk_020dbe4c();
-    virtual ~Unk_020dbe4c();
+    ModelAnim();
+    virtual ~ModelAnim();
     BOOL func_02055b90(u32 a, void *c);
 
     u32 unk_18;
@@ -25,7 +25,7 @@ extern "C" void *func_02055c08(u32 a, const char *b, void *c);
 
 char data_020dbe3c[4] = {'J', 0, 'A', 'C'};
 
-BOOL Unk_020dbe4c::func_02055b90(u32 a, void *c) {
+BOOL ModelAnim::func_02055b90(u32 a, void *c) {
     if (unk_18 != 0 || unk_1c != 0) {
         return FALSE;
     }

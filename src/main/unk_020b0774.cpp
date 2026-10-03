@@ -6,56 +6,56 @@ extern char data_020e2ef0[0x14];
 extern "C" {
 u32 func_02063b8c(u32 n);
 void MI_CpuCopy8(const void *src, void *dst, u32 size);
-void func_020641b4(u32 a, void *b, u32 c);
+void File_LoadToBuffer(u32 a, void *b, u32 c);
 s32 func_02002580(void *a, u32 b, u32 c, u32 d, u32 e);
 void _ZN12Unk_020e45f813func_020b8618Ejhjh(void *p, void *q, u32 a, u32 b, u32 c);
 void _ZN12Unk_020e45f8C1Ev(void *p);
-void func_0205125c(void *p, u32 n);
-u32 _ZN12Unk_020940a013func_02094294Ev(void *p);
-void _ZN12Unk_020940a0C1Ev(void *p);
-void _ZN12Unk_020940a0C1EPv(void *p);
+void Mem_Clear(void *p, u32 n);
+u32 _ZN8PlayerId13func_02094294Ev(void *p);
+void _ZN8PlayerIdC1Ev(void *p);
+void _ZN8PlayerIdC1EPv(void *p);
 }
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
     s32 unk_04;
     u8 unk_08;
     u8 unk_09;
 };
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    Unk_020e2a08 unk_04;
+    MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    void func_020a7c3c();
+    void clear();
     u32 unk_04;
-    Unk_020e2a08 unk_08;
+    MsgStringAttr unk_08;
 };
 
-class Unk_020e2f74 : public Unk_020e2a78 {
+class Unk_020e2f74 : public MsgString {
 public:
     Unk_020e2f74();
     virtual ~Unk_020e2f74();
@@ -64,7 +64,7 @@ public:
     u8 unk_12[0x11];
 };
 
-class Unk_020e2f5c : public Unk_020e2a60 {
+class Unk_020e2f5c : public EncodedString {
 public:
     Unk_020e2f5c();
     virtual ~Unk_020e2f5c();
@@ -98,11 +98,11 @@ void *_ZN12Unk_020e45f813func_020b87d0Ev(void *p);
 }
 
 Unk_020b0a60::Unk_020b0a60() {
-    _ZN12Unk_020940a0C1EPv(this);
+    _ZN8PlayerIdC1EPv(this);
 }
 
 Unk_020b0a60::~Unk_020b0a60() {
-    _ZN12Unk_020940a0C1Ev(this);
+    _ZN8PlayerIdC1Ev(this);
 }
 
 extern "C" {
@@ -111,8 +111,8 @@ u32 func_020b0a30(u8 *p) {
     for (i = 0; i < 16; i++) {
         ((u16 *)(p + 0x26))[i] = 0xffff;
     }
-    func_0205125c(p + 0x16, 16);
-    return _ZN12Unk_020940a013func_02094294Ev(p);
+    Mem_Clear(p + 0x16, 16);
+    return _ZN8PlayerId13func_02094294Ev(p);
 }
 void *func_020b0a18(void *p, const void *src) {
     MI_CpuCopy8(src, p, 0x46);
@@ -144,7 +144,7 @@ BOOL func_020b0980(u8 *p, u32 bit) {
 }
 
 Unk_020e2f74::Unk_020e2f74() {
-    func_020a7c3c();
+    clear();
 }
 
 Unk_020e2f74::~Unk_020e2f74() {}
@@ -203,7 +203,7 @@ void func_020b0788(u8 *self, s32 arg) {
     }
     self[0x32c] = arg;
     for (j = 0; j < 5; j++) {
-        func_020641b4((u32)data_020e2f04[j], self + 0xa4 + j * 0x80, 0x80);
+        File_LoadToBuffer((u32)data_020e2f04[j], self + 0xa4 + j * 0x80, 0x80);
     }
     MI_CpuCopy8(self + 0xa4, self + 0x24, 0x80);
     func_02002580(self + 0x24, arg, 4, 4, 7);

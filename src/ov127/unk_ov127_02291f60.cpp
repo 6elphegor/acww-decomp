@@ -48,10 +48,10 @@ extern "C" u8 data_ov127_02293fa0[4];
 
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 void func_020026c4(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void func_0200261c(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
-void func_020641b4(const char *a, void *b, u32 c);
+void File_LoadToBuffer(const char *a, void *b, u32 c);
 void func_020024f0(void *a, u32 b, u32 c, u32 d);
 void func_0200226c(u32 a, u32 b, u32 c, u32 d);
 void func_020affac(void *p);
@@ -65,9 +65,9 @@ void _ZN12Unk_020e45f813func_020b87d0Ev(void *self);
 s32 _ZN12Unk_020e45f813func_020b86c0Ejhjj(void *self, void *b, s32 c, s32 d, s32 e);
 s32 func_02087dac(void *info, s32 x, s32 y, s32 a, s32 b);
 void func_02088730(s32 mode, void *info, s32 x, s32 y, s32 pal, s32 pri, s32 flag);
-s32 func_02003ff4(s32 a, s32 b);
+s32 Snd_StopSe(s32 a, s32 b);
 void func_02004008(s32 a);
-s32 func_02003b6c(s32 a);
+s32 Snd_SetPanIfChanged(s32 a);
 void func_020021fc(u32 a, s32 b, s32 c);
 void func_020e9960(Unk_ov127_02291f60_Vec *out, Unk_ov127_02291f60_Vec *a, Unk_ov127_02291f60_Vec *b);
 s32 func_020e9688(Unk_ov127_02291f60_Vec *v);
@@ -118,23 +118,23 @@ extern "C" void func_ov127_02292a7c(u8 *s) {
 extern "C" void func_ov127_02292a0c(u8 *s, u32 v) {
     s[0x2832] = v;
     func_0200226c(s[0x2832], 1, 0, 0);
-    func_0200261c("menu/star/b_bg.bch", data_021f482c, s[0x2832], 0x10, 0x10, 0x1f);
-    func_020641b4("menu/star/bg.bsc", s + 0x24, 0x1000);
+    func_0200261c("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
+    File_LoadToBuffer("menu/star/bg.bsc", s + 0x24, 0x1000);
     func_020affac(s + 0x24);
     func_020024f0(s + 0x24, s[0x2832], 0x1000, 0);
 }
 
 extern "C" void func_ov127_02292994(u8 *s, u32 v) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     s[0x2833] = v;
     func_020026c4("menu/star/b_scp_bg.bpl", h, s[0x2833], 4, 8, 0xb);
     func_0200261c("menu/star/b_scp_bg.bch", h, s[0x2833], 0x20, 0x20, 0xbf);
-    func_020641b4("menu/star/b_scp_bg.bsc", s + 0x2024, 0x800);
+    File_LoadToBuffer("menu/star/b_scp_bg.bsc", s + 0x2024, 0x800);
     func_020024f0(s + 0x2024, s[0x2833], 0x800, 0);
 }
 
 extern "C" void func_ov127_02292950() {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     func_020026c4("menu/star/b_scp_obj.bpl", h, 8, 5, 5, 9);
     func_0200261c("menu/star/b_scp_obj.bch", h, 8, 0xc0, 0xc0, 0x13f);
 }
@@ -289,11 +289,11 @@ extern "C" void func_ov127_022925c8(Unk_ov127_02291f60 *s, s32 d, s32 e)
     } else {
         if (func_ov127_02292238(s, 8) == 1) {
             func_ov127_02292218(s, 8);
-            func_02003ff4(0x883, 1);
+            Snd_StopSe(0x883, 1);
         }
     }
     if (func_ov127_02292238(s, 8) && e != 0) {
-        func_02003b6c(data_ov127_02293fa0[d]);
+        Snd_SetPanIfChanged(data_ov127_02293fa0[d]);
     }
 }
 
@@ -301,7 +301,7 @@ extern "C" void func_ov127_0229257c(Unk_ov127_02291f60 *s, s32 d)
 {
     if (func_ov127_02292238(s, 8)) {
         func_ov127_02292218(s, 8);
-        func_02003ff4(0x883, 1);
+        Snd_StopSe(0x883, 1);
     }
     func_ov127_02292698(s, d, 1, 0);
     s->unk_2836 = 2;

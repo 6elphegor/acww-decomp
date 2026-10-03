@@ -26,26 +26,26 @@ struct Unk_ov003_0225b738_Col {
     }
 };
 
-class Unk_ov003_02234f10 : public Unk_020d8c7c {
+class Unk_ov003_02234f10 : public GameProc {
 public:
     Unk_ov003_02234f10();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_ov003_02234f10();
 };
 
 // ---- externs ----
 // other modules' methods are reached through their real mangled symbols (object first)
-#define func_0203c0b0 _ZN12Unk_020d93b813func_0203c0b0Eiii
+#define Unk_020d93b8_lerpPoses _ZN12Unk_020d93b89lerpPosesEiii
 
 extern "C" {
 void *func_020947f0(u32);
-s32 func_0203a6fc(void *a, void *b, void *c, void *d, s32 *e);
-s32 func_0203a7b8(void *a, void *b, void *c, s32 *d);
+s32 Camera_CalcTriangleSpan(void *a, void *b, void *c, void *d, s32 *e);
+s32 Camera_CalcPointSpan(void *a, void *b, void *c, s32 *d);
 s32 FX_Div(s32 a, s32 b);
-s32 func_0203c0b0(void *self, s32 a, s32 b, s32 c);
+s32 Unk_020d93b8_lerpPoses(void *self, s32 a, s32 b, s32 c);
 void func_ov003_0222ec20(void *self);
 void func_ov003_0222ed20(void *self);
 Unk_ov003_02234f10 *func_ov003_0222eef8();
@@ -75,9 +75,9 @@ extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
     s32 t;
     s32 v;
     if (cam->unk_1ca != 0) {
-        v = func_0203a6fc(c, cam->unk_1cc, cam->unk_1d8, cam->unk_110, &t);
+        v = Camera_CalcTriangleSpan(c, cam->unk_1cc, cam->unk_1d8, cam->unk_110, &t);
     } else {
-        v = func_0203a7b8(c, cam->unk_1cc, cam->unk_110, &t);
+        v = Camera_CalcPointSpan(c, cam->unk_1cc, cam->unk_110, &t);
     }
     cam->unk_118 = cam->unk_118 + t;
     if (v < 0x4800) {
@@ -87,7 +87,7 @@ extern "C" void func_ov003_0222ef10(Unk_ov003_0222ef10_Cam *cam) {
     }
     u32 q = FX_Div(v - 0x4800, 0x6800);
     cam->unk_1e4 = 0x1000 - q;
-    func_0203c0b0(cam, 0xa, 0, q);
+    Unk_020d93b8_lerpPoses(cam, 0xa, 0, q);
 }
 
 extern "C" Unk_ov003_02234f10 *func_ov003_0222eef8() {
@@ -104,6 +104,6 @@ BOOL Unk_ov003_02234f10::vfunc_00() {
     return TRUE;
 }
 
-BOOL Unk_ov003_02234f10::vfunc_18() { return TRUE; }
-BOOL Unk_ov003_02234f10::vfunc_24() { return TRUE; }
+BOOL Unk_ov003_02234f10::onExecute() { return TRUE; }
+BOOL Unk_ov003_02234f10::onDraw() { return TRUE; }
 BOOL Unk_ov003_02234f10::vfunc_0c() { return TRUE; }

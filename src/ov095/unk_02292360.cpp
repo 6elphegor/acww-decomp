@@ -50,9 +50,9 @@ struct Unk_ov095_02294dc0_Entry {
 
 extern "C" {
 extern volatile u16 data_020ca488;
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u32 data_021f482c;
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u32 gCurrentHeap;
 extern s32 func_ov090_02291944(s32 a);
 BOOL func_02087dac(void *p, s32 a, s32 b, s32 c, s32 d);
 BOOL func_ov002_0220125c(void *p);
@@ -64,14 +64,14 @@ s32 func_0200261c(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 s32 func_020026c4(void *a, u32 b, s32 c, s32 d, s32 e, s32 f);
 s32 func_0203f07c(s32 i);
 s32 func_0203f0c0(void);
-s32 func_020501d4(s32 a);
-s32 func_02051268(void *src, void *dst, s32 n);
+s32 Text_GetCharSortKey(s32 a);
+s32 Mem_Copy(void *src, void *dst, s32 n);
 s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
 s32 func_020512e0(u8 *s, s32 n);
 s32 func_02051348(u8 *s, s32 n);
 s32 func_02051370(u32 c);
-s32 func_020641b4(void *name, void *buf, s32 size);
-s32 func_020641ec(s32 a, s32 b, s32 c, s32 d);
+s32 File_LoadToBuffer(void *name, void *buf, s32 size);
+s32 File_LoadAlloc(s32 a, s32 b, s32 c, s32 d);
 s32 func_0206cf4c(u8 *str, s32 *starts, s32 *cnt, s32 len, s32 maxw, s32 pxw, s32 maxLines);
 s32 func_0206e694(s32 a);
 s32 func_0206e6b8(void);
@@ -81,24 +81,24 @@ s32 _ZN12Unk_020e048813func_0206fb48Ejjjhhi(void *a, s32 b, s32 c, s32 d, s32 e,
 s32 func_02087d6c(void *p, s32 n, s32 c, s32 d, s32 e, s32 f);
 s32 func_02087e0c(void *p);
 s32 func_02087e14(void *p);
-s32 func_02087e70(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
+s32 Oam_DrawCell(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 s32 func_02088730(s32 a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g);
-s32 _ZN12Unk_020940a013func_0209411cEv(void);
-s32 func_0209750c(void);
+s32 _ZN8PlayerId13func_0209411cEv(void);
+s32 PlayerData_GetCurrent(void);
 s32 _ZN12Unk_020e45f813func_020b86c0Ejhjj(void *a, void *b, s32 c, s32 d, s32 e);
-s32 func_020e85fc(u32 heap, void *p);
+s32 Heap_Free(u32 heap, void *p);
 s32 _s32_div_f(s32 a, s32 b);
 s32 func_ov090_02291944(s32 a);
 s32 func_ov090_02291a78(s32 a);
-void *func_020e8618(u32 heap, s32 size);
+void *Heap_AllocTail(u32 heap, s32 size);
 void func_020024f0(void *a, s32 b, s32 c, s32 d);
-void func_02003f2c(u32 a);
-void func_02003f3c(s32 a);
-void func_0200402c(s32 a);
+void Snd_PlayKeySe(u32 a);
+void Snd_SetKeySeMode(s32 a);
+void Snd_PlaySe(s32 a);
 void func_0206e688(s32 a, s32 b);
 void func_0206e6ac(s32 a);
 void _ZN12Unk_020e048813func_0206fc44Ev(void *a);
-void _ZN12Unk_0209865c13func_0209888cEv(void);
+void _ZN10PlayerData11getPlayerIdEv(void);
 void _ZN12Unk_020e45f813func_020b8714Ejhjjj(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void _ZN12Unk_020e45f813func_020b87d0Ev(void *a);
 void MI_CpuCopy8(void *a, void *b, s32 c);
@@ -1127,7 +1127,7 @@ void func_ov095_02294648(Unk_ov095_02292360 *s, s32 mode, s32 a, s32 c)
     } else {
         func_0206e688(s->unk_02, mode);
     }
-    g = data_021f482c;
+    g = gCurrentHeap;
     if (c == 0) {
         func_020026c4((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 1, 4);
         func_020026c4((void *)"menu/chat2/b_cht_bg.bpl", g, a, 1, 7, 7);
@@ -1136,16 +1136,16 @@ void func_ov095_02294648(Unk_ov095_02292360 *s, s32 mode, s32 a, s32 c)
     if (s->unk_05[2] == mode && c != 0) {
         goto end;
     }
-    func_020641b4((void *)data_ov095_022957cc[mode], (u8 *)s + 0x34, 0x22c0);
+    File_LoadToBuffer((void *)data_ov095_022957cc[mode], (u8 *)s + 0x34, 0x22c0);
     if (func_ov095_02292370(s, 4) != 0) {
         h = (s32)data_ov095_022957ec[mode];
     } else {
         h = (s32)data_ov095_0229584c[mode];
     }
-    h = func_020641ec(h, g, -4, 0);
+    h = File_LoadAlloc(h, g, -4, 0);
     MI_CpuCopy8((void *)(h + 0x240), (u8 *)s + 0x25fc, 0x380);
     func_ov095_0229434c(s);
-    func_020e85fc(g, (void *)h);
+    Heap_Free(g, (void *)h);
     _ZN12Unk_020e45f813func_020b8714Ejhjjj((u8 *)s + 0x22f4, (u8 *)s + 0x34, a, 0x1ea, 0x1ea, 0x2ff);
     s->unk_05[2] = mode;
     switch (s->unk_05[2]) {
@@ -1271,14 +1271,14 @@ void func_ov095_02294478(Unk_ov095_02292360 *s, s32 a)
     r->unk_04 = (r->unk_04 & ~0x3ff) | 0x103;
     r = (Unk_ov095_02294478_Reg *)s->unk_30;
     r->unk_0c = (r->unk_0c & ~0x3ff) | 0x107;
-    if (func_0209750c() != 0) {
-        _ZN12Unk_0209865c13func_0209888cEv();
-        if (_ZN12Unk_020940a013func_0209411cEv() == 0) {
-            func_02003f3c(0);
+    if (PlayerData_GetCurrent() != 0) {
+        _ZN10PlayerData11getPlayerIdEv();
+        if (_ZN8PlayerId13func_0209411cEv() == 0) {
+            Snd_SetKeySeMode(0);
             return;
         }
     }
-    func_02003f3c(1);
+    Snd_SetKeySeMode(1);
 }
 
 void func_ov095_02294438(Unk_ov095_02292360 *s)
@@ -1297,12 +1297,12 @@ void func_ov095_0229442c(Unk_ov095_02292360 *s)
 
 void func_ov095_022943f8(Unk_ov095_02292360 *s, s32 a)
 {
-    func_0200261c((void *)"menu/letter/b_ltr.bch", data_021f482c, a, 0x13d, 0x1eb, 0x1f0);
+    func_0200261c((void *)"menu/letter/b_ltr.bch", gCurrentHeap, a, 0x13d, 0x1eb, 0x1f0);
 }
 
 void func_ov095_022943dc(Unk_ov095_02292360 *s, s32 a)
 {
-    func_020641b4((void *)a, (u8 *)s + 0x23bc, 0x800);
+    File_LoadToBuffer((void *)a, (u8 *)s + 0x23bc, 0x800);
 }
 
 void func_ov095_022943b4(Unk_ov095_02292360 *s, s32 a)
@@ -1465,35 +1465,35 @@ BOOL func_ov095_02293ff0(Unk_ov095_02292360 *s, void *p1, s32 p2, u8 *p3, s32 a4
     s32 o28;
     struct Pad { s32 v[6]; Pad() {} ~Pad() {} } pad;
     u8 saved = s->unk_2d;
-    u32 heap = data_021f482c;
-    void *buf = func_020e8618(heap, 0xc0);
+    u32 heap = gCurrentHeap;
+    void *buf = Heap_AllocTail(heap, 0xc0);
     if (buf == NULL) {
         return FALSE;
     }
-    func_02051268(p1, buf, a4);
+    Mem_Copy(p1, buf, a4);
     loc = *p3;
     if (func_ov095_022940f0(s, (u8 *)buf, p2, &loc, a4, 0x2710, a8, 0) == 0) {
-        func_020e85fc(heap, buf);
+        Heap_Free(heap, buf);
         return FALSE;
     }
     if (func_0206cf4c((u8 *)buf, &o28, &o24, a4, a5, a7, a6) == 0) {
         if (s->unk_2d != saved) {
             s->unk_2d = saved;
         }
-        func_020e85fc(heap, buf);
+        Heap_Free(heap, buf);
         if (func_ov095_02292370(s, 0x100) == 0) {
             func_ov095_02292368(s, 0x80);
         }
         return FALSE;
     }
     if (a8 == 0) {
-        func_02051268(buf, p1, a4);
+        Mem_Copy(buf, p1, a4);
         *p3 = loc;
         if (a9 == 1 && loc != 0) {
             func_ov095_02292380(s, ((u8 *)p1)[loc - 1]);
         }
     }
-    func_020e85fc(heap, buf);
+    Heap_Free(heap, buf);
     return TRUE;
 }
 
@@ -1581,11 +1581,11 @@ s32 func_ov095_02293dc8(Unk_ov095_02292360 *s, s32 a, s32 b)
     switch (a) {
     case 0x101:
         func_ov095_02294648(s, 0, b, 1);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x102:
         func_ov095_02294648(s, 1, b, 1);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x103:
     case 0x104:
@@ -1594,29 +1594,29 @@ s32 func_ov095_02293dc8(Unk_ov095_02292360 *s, s32 a, s32 b)
         break;
     case 0x11f:
         func_ov095_02294550(s, b);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x120:
         func_ov095_02294594(s, b);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x107:
     case 0x108:
     case 0x109:
         func_ov095_022945e0(s, a, b);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x121:
         func_ov095_02294648(s, 4, b, 1);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x122:
         func_ov095_02294648(s, 5, b, 1);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     case 0x123:
         func_ov095_02294648(s, 2, b, 1);
-        func_0200402c(0x18);
+        Snd_PlaySe(0x18);
         return 2;
     }
     func_ov095_02294520(s, b);
@@ -1655,7 +1655,7 @@ void func_ov095_02293d88(Unk_ov095_02292360 *s)
 
 void func_ov095_02293cc0(Unk_ov095_02292360 *s)
 {
-    u32 h = data_021f482c;
+    u32 h = gCurrentHeap;
     func_020026c4((void *)"menu/chat2/b_cht_obj.bpl", h, 8, 4, 4, 0xe);
     func_0200261c((void *)"menu/chat2/b_cht_obj_0.bch", h, 8, 0xc0, 0xc0, 0x13f);
     func_0200261c((void *)"menu/chat2/b_cht_obj_1.bch", h, 8, 0x180, 0x180, 0x1ff);
@@ -1677,7 +1677,7 @@ void func_ov095_02293c1c(Unk_ov095_02292360 *s)
     for (i = 0; i < s->unk_04; i++) {
         s->unk_28[i] = func_0203f07c(i);
     }
-    func_020641b4((void *)"menu/chat2/ten0.bch", s->unk_2bbc, 0x1000);
+    File_LoadToBuffer((void *)"menu/chat2/ten0.bch", s->unk_2bbc, 0x1000);
     for (i = 0; i < s->unk_04; i++) {
         v = s->unk_28[i] - 1;
         off = ((v & 0xf) << 6) + ((v >> 4) << 11);
@@ -1690,7 +1690,7 @@ void func_ov095_02293c1c(Unk_ov095_02292360 *s)
 s32 func_ov095_02293b60(Unk_ov095_02292360 *s, s32 x, s32 y, s32 z)
 {
     s32 sel = 0;
-    volatile s32 A, B;
+    volatile s32 LampLights, LightLevel;
     s32 i;
     switch (s->unk_02) {
     case 1:
@@ -1703,16 +1703,16 @@ s32 func_ov095_02293b60(Unk_ov095_02292360 *s, s32 x, s32 y, s32 z)
         break;
     }
     i = 0;
-    B = i;
-    A = i;
+    LightLevel = i;
+    LampLights = i;
     for (; i < 3; i++) {
         if (sel == i) {
-            func_02088730(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, A);
+            func_02088730(1, s->unk_30 + (i << 3), x, y + 2, 0xb, z, LampLights);
         } else {
-            func_02088730(1, s->unk_30 + (i << 3), x, y, 0xa, z, B);
+            func_02088730(1, s->unk_30 + (i << 3), x, y, 0xa, z, LightLevel);
         }
     }
-    func_02087e70(1, s->unk_30 + 0x18, x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, s->unk_30 + 0x18, x, y, -1, z, 0x1000, 0x1000, 0, -1, 0, 0);
     if (func_ov095_02292370(s, 4) == 0) {
         y -= 8;
     }
@@ -1721,7 +1721,7 @@ s32 func_ov095_02293b60(Unk_ov095_02292360 *s, s32 x, s32 y, s32 z)
 
 s32 func_ov095_02293b24(Unk_ov095_02292360 *s, s32 x, s32 y)
 {
-    return func_02087e70(1, func_ov095_02293b0c(s), x, y, -1, 3, 0x1000, 0x1000, 0, -1, 0, 0);
+    return Oam_DrawCell(1, func_ov095_02293b0c(s), x, y, -1, 3, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void *func_ov095_02293b0c(Unk_ov095_02292360 *s)
@@ -1760,7 +1760,7 @@ void func_ov095_02293a30(void *s, s32 x, s32 y, s32 z, s32 w)
 
 BOOL func_ov095_022939f8()
 {
-    if (func_02087dac(data_ov095_02295588, data_021ef5f0 - 0x80, data_021ef5ec - 0x60, 0, 0) != 0) {
+    if (func_02087dac(data_ov095_02295588, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0) != 0) {
         return TRUE;
     }
     return FALSE;
@@ -1768,7 +1768,7 @@ BOOL func_ov095_022939f8()
 
 BOOL func_ov095_02293990(Unk_ov095_02292360 *s)
 {
-    s32 r = func_02087d6c(s->unk_30, 3, data_021ef5f0 - 0x80, data_021ef5ec - 0x60, 2, 2);
+    s32 r = func_02087d6c(s->unk_30, 3, gTouchCurX - 0x80, gTouchCurY - 0x60, 2, 2);
     if (r == -1) {
         return FALSE;
     }
@@ -1787,13 +1787,13 @@ BOOL func_ov095_02293990(Unk_ov095_02292360 *s)
         return FALSE;
     }
     s->unk_02 = r;
-    func_0200402c(0x18);
+    Snd_PlaySe(0x18);
     return TRUE;
 }
 
 BOOL func_ov095_0229394c(Unk_ov095_02292360 *s)
 {
-    s32 r = func_02087d6c((&data_ov095_02295e48[4]), s->unk_04, data_021ef5f0 - 0x80, data_021ef5ec - 0x60, 0, 0);
+    s32 r = func_02087d6c((&data_ov095_02295e48[4]), s->unk_04, gTouchCurX - 0x80, gTouchCurY - 0x60, 0, 0);
     if (r == -1) {
         return FALSE;
     }
@@ -1827,19 +1827,19 @@ void func_ov095_022938f8(void *s, s32 x, s32 y, s32 z)
 
 void func_ov095_0229388c(Unk_ov095_02292360 *s, s32 x, s32 y)
 {
-    func_02087e70(1, data_ov095_02295894, x, y, s->unk_05[0], 2, 0x1000, 0x1000, 0, -1, 0, 0);
-    func_02087e70(1, data_ov095_022958bc, x, y, s->unk_05[1], 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295894, x, y, s->unk_05[0], 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_022958bc, x, y, s->unk_05[1], 2, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 void func_ov095_02293824(Unk_ov095_02292360 *s, s32 x, s32 y)
 {
-    func_02087e70(1, data_ov095_02295da4, x, y, s->unk_05[0], 1, 0x1000, 0x1000, 0, -1, 0, 0);
-    func_02087e70(1, data_ov095_02295dd4, x, y, s->unk_05[1], 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295da4, x, y, s->unk_05[0], 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov095_02295dd4, x, y, s->unk_05[1], 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 s32 func_ov095_022937e4(void *s, s32 x, s32 y, s32 idx)
 {
-    return func_02087e70(1, (void *)data_ov095_0229605c[idx], x, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+    return Oam_DrawCell(1, (void *)data_ov095_0229605c[idx], x, y, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
 }
 
 s32 func_ov095_022937d0(void *s, s32 x, s32 y, s32 idx)
@@ -3070,19 +3070,19 @@ s32 func_ov095_02292404(Unk_ov095_02292360 *s)
 
 void func_ov095_022923f8()
 {
-    func_0200402c(0x16);
+    Snd_PlaySe(0x16);
 }
 
 void func_ov095_022923ec()
 {
-    func_0200402c(0x17);
+    Snd_PlaySe(0x17);
 }
 
 void func_ov095_02292380(Unk_ov095_02292360 *s, s32 a)
 {
     if (func_ov095_02292370(s, 0x200) == 0) {
         func_ov095_02292368(s, 0x200);
-        s32 r = func_020501d4(a);
+        s32 r = Text_GetCharSortKey(a);
         switch (r) {
         case 0x25:
         case 0x26:
@@ -3094,9 +3094,9 @@ void func_ov095_02292380(Unk_ov095_02292360 *s, s32 a)
             r = data_020ca488;
         }
         if (r != data_020ca488) {
-            func_02003f2c(r);
+            Snd_PlayKeySe(r);
         } else {
-            func_02003f2c(0x2c);
+            Snd_PlayKeySe(0x2c);
         }
     }
 }

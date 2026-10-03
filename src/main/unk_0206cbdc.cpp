@@ -4,8 +4,8 @@
 extern "C" {
 s32 func_020512e0(void *p, s32 n);
 s32 func_02051270(void *str, s32 maxLen, s32 maxWidth, s32 *outLen, s32 arg4);
-Unk_02050288 *func_020a8054(u32 a, s32 b, s32 c);
-void func_020a7fd8(Unk_02050288 *obj);
+TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
+void MsgTextLabel_Destroy(TextLabel *obj);
 BOOL func_020027b4(u32 x);
 s32 func_02002778(u32 n);
 s32 func_020a78a4(void *buf, const void *src, s32 len);
@@ -15,57 +15,57 @@ void func_0200226c(void *p, s32 a, s32 b, s32 c);
 void func_020021fc(void *p, s32 a, s32 b);
 void *func_02065c8c(void *p);
 void func_ov002_02202dd4(void *a, void *b);
-void func_0205125c(void *p, s32 n);
+void Mem_Clear(void *p, s32 n);
 void func_02065604(void *dst, void *src);
 s32 func_02051348(void *p, s32 n);
 }
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200();
+    virtual ~EncodedStringBase();
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218();
+    virtual ~MsgStringBase();
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
     s32 unk_04;
     u8 unk_08;
     u8 unk_09;
 };
 
-class Unk_020e2a78;
+class MsgString;
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
-    Unk_020e2a08 unk_04;
+    MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    void clear();
 
     u32 unk_04;
-    Unk_020e2a08 unk_08;
+    MsgStringAttr unk_08;
 };
 
 // 0x28-byte destination buffer at +0xe
-class Unk_020ddf5c : public Unk_020e2a60 {
+class Unk_020ddf5c : public EncodedString {
 public:
     Unk_020ddf5c() {}
     virtual ~Unk_020ddf5c() {}
@@ -75,7 +75,7 @@ public:
     /* 0x0e */ u8 unk_0e[0x28];
 };
 
-class Unk_020ddf44 : public Unk_020e2a78 {
+class Unk_020ddf44 : public MsgString {
 public:
     Unk_020ddf44();
     virtual ~Unk_020ddf44();
@@ -85,15 +85,15 @@ public:
     void func_0206cc14(u8 a, u8 b);
     void func_0206cc20(u8 a, u8 b, u32 c);
     void func_0206cc38();
-    void func_0206cc6c(Unk_020e2a60 *src, BOOL b);
-    void func_0206cc84(Unk_020e2a60 *src);
+    void func_0206cc6c(EncodedString *src, BOOL b);
+    void func_0206cc84(EncodedString *src);
     void func_0206cc9c(BOOL b);
     void func_0206cce0();
     void func_0206cdb0();
     void func_0206cdcc(u16 v, u32 x);
 
     /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ Unk_02050288 *unk_3c;
+    /* 0x3c */ TextLabel *unk_3c;
     /* 0x40 */ u16 unk_40;
     /* 0x42 */ u8 unk_42;
     /* 0x43 */ u8 unk_43;
@@ -199,7 +199,7 @@ s32 Unk_0206d0a0::func_0206d2d4() {
 }
 
 void Unk_0206d0a0::func_0206d288(void *src) {
-    func_0205125c(unk_1c8, 0x28);
+    Mem_Clear(unk_1c8, 0x28);
     func_02065604(src, unk_1c8);
     unk_208 = func_020512e0(unk_1c8, 0x28);
     unk_20c = func_02051348(unk_1c8, 0x28);
@@ -378,7 +378,7 @@ u32 Unk_020ddf5c::vfunc_08() { return 0x28; }
 u8 *Unk_020ddf5c::vfunc_0c() { return (u8 *)this + 0xe; }
 
 Unk_020ddf44::Unk_020ddf44() {
-    func_020a7c3c();
+    clear();
     unk_3c = NULL;
     unk_40 = 0;
     unk_45 = 0;
@@ -402,14 +402,14 @@ u8 *Unk_020ddf44::vfunc_0c() { return (u8 *)this + 0x12; }
 
 void Unk_020ddf44::func_0206cdb0() {
     if (unk_3c != NULL) {
-        func_020a7fd8(unk_3c);
+        MsgTextLabel_Destroy(unk_3c);
         unk_3c = NULL;
     }
 }
 
 void Unk_020ddf44::func_0206cce0() {
     if (unk_3c == NULL) {
-        unk_3c = func_020a8054(unk_40, 0x14, 2);
+        unk_3c = MsgTextLabel_CreateVram(unk_40, 0x14, 2);
         if (unk_3c != NULL) {
             u8 a, b;
             unk_3c->unk_2c = unk_42;
@@ -427,12 +427,12 @@ void Unk_020ddf44::func_0206cce0() {
             }
             if (unk_46) {
                 if (unk_49) {
-                    unk_3c->func_02050bc8(a, b, unk_45, unk_46, 0xc, 0, unk_48, unk_49);
+                    unk_3c->setHighlights(a, b, unk_45, unk_46, 0xc, 0, unk_48, unk_49);
                 } else {
-                    unk_3c->func_02050c04(a, b, unk_45, unk_46);
+                    unk_3c->setHighlight(a, b, unk_45, unk_46);
                 }
             } else if (unk_49) {
-                unk_3c->func_02050c04(0xc, 0, unk_48, unk_49);
+                unk_3c->setHighlight(0xc, 0, unk_48, unk_49);
             }
         }
     }
@@ -442,28 +442,28 @@ void Unk_020ddf44::func_0206cc9c(BOOL b) {
     if (unk_44) {
         func_0206cce0();
         if (unk_3c) {
-            Unk_02050288 *t;
+            TextLabel *t;
             unk_44 = 0;
             t = unk_3c;
             t->unk_10 = (u32)vfunc_0c();
-            if (b) unk_3c->func_02050c20();
-            unk_3c->func_02050c90();
+            if (b) unk_3c->alignRight();
+            unk_3c->requestRedraw();
         }
     }
 }
 
-void Unk_020ddf44::func_0206cc84(Unk_020e2a60 *src) {
-    func_020a7aa0(src, 0, 0);
+void Unk_020ddf44::func_0206cc84(EncodedString *src) {
+    fromEncoded(src, 0, 0);
     unk_44 = 1;
 }
 
-void Unk_020ddf44::func_0206cc6c(Unk_020e2a60 *src, BOOL b) {
-    func_020a7aa0(src, 1, b);
+void Unk_020ddf44::func_0206cc6c(EncodedString *src, BOOL b) {
+    fromEncoded(src, 1, b);
     unk_44 = 1;
 }
 
 void Unk_020ddf44::func_0206cc38() {
-    func_020a7c3c();
+    clear();
     unk_45 = 0;
     unk_46 = 0;
     unk_47 = 0;

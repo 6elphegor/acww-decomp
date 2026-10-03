@@ -1,35 +1,35 @@
 #include "types.h"
 
 // Local copies of the library base classes with the parameters these overrides forward.
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
+    virtual void postCreate(s32 a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual void vfunc_08(s32 a);
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual void postCreate(s32 a);
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -62,16 +62,16 @@ public:
 };
 
 // Static object registered with the atexit-style helper (class of the destructor at func_02000c8c).
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 unk_00;
     s32 unk_04;
     s32 unk_08;
-    Unk_02000c8c() {
+    FxVec3() {
         unk_00 = 0x10000;
         unk_04 = 0;
         unk_08 = 0x5000;
     }
-    ~Unk_02000c8c();
+    ~FxVec3();
 };
 
 struct Unk_020a4778_Id {
@@ -261,20 +261,20 @@ struct Unk_020a512c {
 };
 
 // Vtable at 0x020e2980; its constructor and destructor are inline.
-class Unk_020e2988 : public Unk_020d8c7c {
+class Unk_020e2988 : public GameProc {
 public:
     Unk_020e2988() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual ~Unk_020e2988() {}
 };
 
@@ -295,8 +295,8 @@ static inline BOOL IsZero_020a5d4c(u8 v) {
 
 extern "C" {
 void func_02002918(void);
-void func_02004074(void);
-s32 func_0202e880(u32 a, u32 b, s32 c, s32 d);
+void Snd_DestroyScene(void);
+s32 GameProc_CreateChild(u32 a, u32 b, s32 c, s32 d);
 void func_0203d4c0(void);
 void func_0203d544(void);
 BOOL func_0203d56c(void);
@@ -318,8 +318,8 @@ s32 func_02073168(void);
 void func_020739b8(s32 a);
 void func_0208e968(void);
 s32 func_02097444(s32 a);
-s32 func_020974a0(s32 a);
-Unk_020872fc *_ZN12Unk_0209865c13func_020986a4Ev(s32 a);
+s32 PlayerData_Get(s32 a);
+Unk_020872fc *_ZN10PlayerData13func_020986a4Ev(s32 a);
 void func_0209caf4(void);
 void func_0209f230(s32 a);
 void func_020a0408(s32 a);
@@ -363,8 +363,8 @@ void func_020b78f4(s32 a);
 void func_020b7914(s32 a);
 void func_020e9b70(void);
 u32 func_020eaf28(void);
-s32 func_020eca8c(void *p);
-s32 func_020ed188(void *p);
+s32 ProcBase_HasCreatingChild(void *p);
+s32 ProcBase_RequestDelete(void *p);
 void GX_SetBankForTexPltt(s32 a);
 void GX_SetBankForTex(s32 a);
 void GX_SetBankForBGExtPltt(s32 a);
@@ -396,7 +396,7 @@ extern u8 data_021eda58;
 extern u8 data_021eda5c;
 extern u8 data_021eda60;
 extern u8 data_021eda64;
-extern void *data_021eda68;
+extern void *gActorDefaultParent;
 
 // callers pass an untruncated int to these u8/u16 parameters
 extern "C" void _ZN12Unk_020a473813func_020a4c48Et(void *self, s32 v);
@@ -1684,14 +1684,14 @@ void Unk_020a4738::func_020a4778() {
         func_020a0408(func_020a4c18());
         func_020b4a08(func_020b4934(), 0);
         if (func_020a4c00() == 0) {
-            s32 x = func_020974a0(func_020a4c18() + 3);
+            s32 x = PlayerData_Get(func_020a4c18() + 3);
             u16 *p;
             u8 *idb = (u8 *)&data_021d7352;
-            if (x != 0 && _ZN12Unk_0209865c13func_020986a4Ev(x)->func_02087314() && (p = _ZN12Unk_0209865c13func_020986a4Ev(x)->func_02087364(), p[0] == *(u16 *)idb) &&
+            if (x != 0 && _ZN10PlayerData13func_020986a4Ev(x)->func_02087314() && (p = _ZN10PlayerData13func_020986a4Ev(x)->func_02087364(), p[0] == *(u16 *)idb) &&
                 memcmp(p + 1, idb + 2, 8) == 0) {
                 func_020b4f58(func_020b4934(), 0x2f, 2, 2);
             } else {
-                static Unk_02000c8c s;
+                static FxVec3 s;
                 func_020b4f18(func_020b4934(), 0xd, &s, 0x800000, 0, 2, 2);
             }
         } else {
@@ -1767,7 +1767,7 @@ extern "C" void func_020a4698(void) {
 }
 
 BOOL Unk_020e2988::vfunc_04() {
-    if (!Unk_020d8c7c_Base::vfunc_04()) {
+    if (!ProcBase::vfunc_04()) {
         return FALSE;
     }
     if (data_021eda64 != 0) {
@@ -1775,7 +1775,7 @@ BOOL Unk_020e2988::vfunc_04() {
     }
     func_020a4698();
     func_0208e968();
-    data_021eda68 = this;
+    gActorDefaultParent = this;
     data_021eda54 = 4;
     func_020a6470();
     func_020a5dac();
@@ -1795,7 +1795,7 @@ BOOL Unk_020e2988::vfunc_04() {
     return TRUE;
 }
 
-void Unk_020e2988::vfunc_08(s32 a) {
+void Unk_020e2988::postCreate(s32 a) {
     if (a == 2) {
         data_021eda64 = 0;
         if (*(u16 *)&unk_04[8] != 6) {
@@ -1806,11 +1806,11 @@ void Unk_020e2988::vfunc_08(s32 a) {
         func_02045c68();
         func_0203d4c0();
     }
-    Unk_020d8c7c::vfunc_08(a);
+    GameProc::postCreate(a);
 }
 
-BOOL Unk_020e2988::vfunc_10() {
-    if (Unk_020d8c7c_Base::vfunc_10()) {
+BOOL Unk_020e2988::preDelete() {
+    if (ProcBase::preDelete()) {
         return TRUE;
     }
     return FALSE;
@@ -1824,17 +1824,17 @@ BOOL Unk_020e2988::vfunc_14(s32 a) {
         if (data_021d726c != 0) {
             func_0209caf4();
         }
-        data_021eda68 = 0;
-        func_02004074();
+        gActorDefaultParent = 0;
+        Snd_DestroyScene();
     }
-    return Unk_020d8c7c_Base::vfunc_14(a);
+    return ProcBase::vfunc_14(a);
 }
 
-BOOL Unk_020e2988::vfunc_1c() {
+BOOL Unk_020e2988::preExecute() {
     func_020739b8(0);
     func_020a5c30();
     func_02045c68();
-    if (Unk_020d8c7c_Base::vfunc_1c() == 0) {
+    if (ProcBase::preExecute() == 0) {
         return FALSE;
     }
     if (data_021d726c != 0) {
@@ -1852,7 +1852,7 @@ BOOL Unk_020e2988::vfunc_1c() {
         return FALSE;
     }
     if (unk_04[0xf] & 1) {
-        if (func_020eca8c(this) == 0) {
+        if (ProcBase_HasCreatingChild(this) == 0) {
             unk_04[0xf] &= ~1;
             unk_04[0xf] &= ~4;
         } else {
@@ -1872,16 +1872,16 @@ BOOL Unk_020e2988::vfunc_1c() {
     return TRUE;
 }
 
-BOOL Unk_020e2988::vfunc_20() { return Unk_020d8c7c_Base::vfunc_20(); }
+BOOL Unk_020e2988::vfunc_20() { return ProcBase::vfunc_20(); }
 
-BOOL Unk_020e2988::vfunc_28() {
-    if (Unk_020d8c7c_Base::vfunc_28()) {
+BOOL Unk_020e2988::preDraw() {
+    if (ProcBase::preDraw()) {
         return TRUE;
     }
     return FALSE;
 }
 
-BOOL Unk_020e2988::vfunc_2c() { return Unk_020d8c7c_Base::vfunc_2c(); }
+BOOL Unk_020e2988::postDraw() { return ProcBase::postDraw(); }
 
 extern "C" void func_020a4414(u32 a, u32 b, u32 c, u32 d) {
     data_020e2974 = a;
@@ -1903,7 +1903,7 @@ extern "C" BOOL func_020a4394(void) {
     if (data_020e2974 == 2) {
         OS_ResetSystem(1);
     }
-    s32 r = func_0202e880(data_020e2974, data_021d72e8, 0, 2);
+    s32 r = GameProc_CreateChild(data_020e2974, data_021d72e8, 0, 2);
     if (r != 0) {
         data_020e2974 = 0xd8;
         data_020e2970 = 1;
@@ -1918,7 +1918,7 @@ extern "C" void func_020a42c4(void *p) {
         if (Unk_020a42c4_IsTwo(m) == 0) {
             if (Unk_020a42c4_IsZero(m) != 0) {
                 func_020a4414(0xd4, 0, 0, 0);
-                func_020ed188(p);
+                ProcBase_RequestDelete(p);
                 func_0203e358();
                 func_0203eb38();
             }
@@ -1931,16 +1931,16 @@ extern "C" void func_020a42c4(void *p) {
                     if (data_020cbb18->func_02072e88(data_020cbb18->unk_64) != 0) {
                         switch (func_020a5ec8()) {
                         case 5:
-                            func_020ed188(p);
+                            ProcBase_RequestDelete(p);
                             func_020a5ed8(6);
                             break;
                         case 12:
-                            func_020ed188(p);
+                            ProcBase_RequestDelete(p);
                             func_020a5ed8(0xd);
                             break;
                         }
                     } else {
-                        func_020ed188(p);
+                        ProcBase_RequestDelete(p);
                     }
                 }
             }
@@ -1950,7 +1950,7 @@ extern "C" void func_020a42c4(void *p) {
 
 // ======== FUNCTIONS ========
 
-void *data_021eda68;
+void *gActorDefaultParent;
 u8 data_021eda60;
 volatile u8 data_021eda54;
 u8 data_021eda64;

@@ -2,18 +2,18 @@
 #include "types.h"
 
 extern "C" {
-void *func_020e8628(void *heap, s32 size, s32 align);
+void *Heap_AllocAligned(void *heap, s32 size, s32 align);
 void func_020e877c(void);
 void func_020e885c(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-s32 func_020641b4(const char *path, void *buf, s32 size);
+s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
 s32 func_0205bd00(void);
 s32 func_0205bd1c(void);
 void _ZN12Unk_0205f8d413func_0205fba8Ev(void *p);
-s32 func_02061b24(u16 *p);
-s32 func_0204b430(u16 *p);
-s32 func_0204b5ec(u16 *p);
+s32 ItemInfo_TestFlag2(u16 *p);
+s32 Item_IsFlowerItem(u16 *p);
+s32 Item_GetFlowerItemOrdinal(u16 *p);
 void func_02063a1c(void *, void *, void *, void *);
 void func_02063a5c(void *, void *, void *, void *);
 void _ZN12Unk_0205ca9413func_0205ca94EPtiii(void *, void *, s32, s32, s32);
@@ -59,7 +59,7 @@ public:
     void func_020b8b08(void);
 };
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
     u32 unk_04;
     u32 unk_08;
@@ -67,8 +67,8 @@ public:
     u8 unk_10;
     u8 unk_11;
 
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_020551f4(u32 a, u32 b, u32 c);
     void func_02055200(void);
     void func_02055210(void *p);
@@ -94,7 +94,7 @@ static inline BOOL Unk_0205d4e4_IsOne(u8 v) {
 class Unk_0205dbb8 {
 public:
     void *unk_00[4];
-    Unk_020dbe24 unk_10[4][2];
+    TexVramSlot unk_10[4][2];
     Unk_020e45ec unk_b0[4][2];
     void *unk_190[4][2];
     u8 unk_1b0[4][2];
@@ -102,7 +102,7 @@ public:
     void func_0205dbb8(u32 i, u32 j, u32 v);
     s32 func_0205dbc8(u32 i, u32 j);
     Unk_020e45ec *func_0205dbd8(u32 i, u32 j);
-    Unk_020dbe24 *func_0205dbe8(u32 i, u32 j);
+    TexVramSlot *func_0205dbe8(u32 i, u32 j);
     void func_0205dbf8(u32 i, u32 j, void *v);
     void *func_0205dc0c(u32 i, u32 j);
     void *func_0205dc20(u32 i);
@@ -123,7 +123,7 @@ struct Unk_0205dd38_Bytes {
 class Unk_0205dd1c {
 public:
     u32 unk_00[4];
-    Unk_020dbe24 unk_10[8];
+    TexVramSlot unk_10[8];
     Unk_020e45ec unk_b0[8];
     Unk_0205dd38_Pair unk_190[4];
     Unk_0205dd38_Bytes unk_1b0[4];
@@ -186,7 +186,7 @@ BOOL func_0205d87c(u8 *p);
 void *func_0205d868(u8 *p);
 void *func_0205d854(u8 *p, s32 j);
 void func_0205d834(u8 *p, s32 j, void *v);
-Unk_020dbe24 *func_0205d820(u8 *p, s32 j);
+TexVramSlot *func_0205d820(u8 *p, s32 j);
 Unk_020e45ec *func_0205d80c(u8 *p, s32 j);
 s32 func_0205d7f8(u8 *p, s32 j);
 void func_0205d7d8(u8 *p, s32 j, u32 v);
@@ -250,7 +250,7 @@ extern "C" void func_0205ddc8(s32 flag, u32 a, u16 *p, u32 *o1, u32 *o2) {
     } else {
         u32 v = *p;
         if ((v >= 0x13c8 && v <= 0x1407) || (v >= 0x1429 && v <= 0x1430)) {
-            if (func_02061b24(p) == 0) {
+            if (ItemInfo_TestFlag2(p) == 0) {
                 a = func_0205df20(a);
                 goto done1;
             }
@@ -273,8 +273,8 @@ done1:
             if (t >= 0 && (u32)t < 0x48)
                 r = func_0205df14(t);
         } else if (v >= 0x1408 && v <= 0x1428) {
-            if (func_0204b430(p) != 0) {
-                s32 t = func_0204b5ec(p);
+            if (Item_IsFlowerItem(p) != 0) {
+                s32 t = Item_GetFlowerItemOrdinal(p);
                 if (t >= 0 && (u32)t < 0x16) {
                     r = func_0205defc(t);
                     if (r == 0x9c)
@@ -312,7 +312,7 @@ void Unk_0205dbb8::func_0205dcac(void) {
     }
     void *heap = (void *)data_021c61cc;
     for (i = 0; i < n; i++) {
-        unk_00[i] = func_020e8628(heap, func_0205ddc0(), 4);
+        unk_00[i] = Heap_AllocAligned(heap, func_0205ddc0(), 4);
     }
 }
 
@@ -339,7 +339,7 @@ void Unk_0205dbb8::func_0205dc28(void) {
 void *Unk_0205dbb8::func_0205dc20(u32 i) { return unk_00[i]; }
 void *Unk_0205dbb8::func_0205dc0c(u32 i, u32 j) { return unk_190[i][j]; }
 void Unk_0205dbb8::func_0205dbf8(u32 i, u32 j, void *v) { unk_190[i][j] = v; }
-Unk_020dbe24 *Unk_0205dbb8::func_0205dbe8(u32 i, u32 j) { return &unk_10[i][j]; }
+TexVramSlot *Unk_0205dbb8::func_0205dbe8(u32 i, u32 j) { return &unk_10[i][j]; }
 Unk_020e45ec *Unk_0205dbb8::func_0205dbd8(u32 i, u32 j) { return &unk_b0[i][j]; }
 s32 Unk_0205dbb8::func_0205dbc8(u32 i, u32 j) { return unk_1b0[i][j]; }
 void Unk_0205dbb8::func_0205dbb8(u32 i, u32 j, u32 v) { unk_1b0[i][j] = v; }
@@ -376,7 +376,7 @@ extern "C" void func_0205db04(u8 *p) {
 extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
     void *buf = func_0205d868(p);
     s32 sz = func_0205ddc0();
-    s32 r4 = func_020641b4(func_0205df38(a), buf, sz);
+    s32 r4 = File_LoadToBuffer(func_0205df38(a), buf, sz);
     s32 res = 0;
     if (r4 != 0) {
         r4 = (r4 + 3) & ~3;
@@ -386,7 +386,7 @@ extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
         if (b < 0x9e) {
             buf = (u8 *)buf + r4;
             sz -= r4;
-            res = func_020641b4(func_0205df38(b), buf, sz);
+            res = File_LoadToBuffer(func_0205df38(b), buf, sz);
             if (res != 0) {
                 func_0205d834(p, 1, buf);
                 if (Unk_0205da08_InRange(c)) {
@@ -407,7 +407,7 @@ extern "C" s32 func_0205da08(u8 *p, s32 a, s32 b, u16 *c, s32 d) {
 
 extern "C" void func_0205d934(u8 *p) {
     void *q = NNS_G3dGetTex(func_0205d854(p, 0));
-    Unk_020dbe24 *d0 = func_0205d820(p, 0);
+    TexVramSlot *d0 = func_0205d820(p, 0);
     d0->func_02055210(q);
     if (func_0205d7f8(p, 1) < 0x9e) {
         void *src = func_0205d854(p, 1);
@@ -419,7 +419,7 @@ extern "C" void func_0205d934(u8 *p) {
             s32 e = NNS_G3dTexGetRequiredSize(q2);
             s32 f = NNS_G3dTex4x4GetRequiredSize(q2);
             s32 g = NNS_G3dPlttGetRequiredSize(q2);
-            Unk_020dbe24 *d1 = func_0205d820(p, 1);
+            TexVramSlot *d1 = func_0205d820(p, 1);
             u32 x = d0->func_020552ec(d0->func_02055334(a), e);
             u32 y = d0->func_020552d8(d0->func_02055328(b), f);
             u32 z = d0->func_0205526c(d0->func_02055300(c), g);
@@ -465,7 +465,7 @@ extern "C" void *func_0205d854(u8 *p, s32 j) {
 extern "C" void func_0205d834(u8 *p, s32 j, void *v) {
     MGR->func_0205dbf8(*p, j, v);
 }
-extern "C" Unk_020dbe24 *func_0205d820(u8 *p, s32 j) {
+extern "C" TexVramSlot *func_0205d820(u8 *p, s32 j) {
     return MGR->func_0205dbe8(*p, j);
 }
 extern "C" Unk_020e45ec *func_0205d80c(u8 *p, s32 j) {

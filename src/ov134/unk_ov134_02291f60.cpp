@@ -2,17 +2,17 @@
 #include "types.h"
 
 // Base of the menu cursor sub-object at +0x18
-class Unk_020e1028 {
+class ScrollKnob {
 public:
-    virtual ~Unk_020e1028();
+    virtual ~ScrollKnob();
     virtual void vfunc_08();
     virtual void vfunc_0c();
-    void func_0208dae8(s32 x, s32 y);
-    BOOL func_0208d9a8();
+    void moveTo(s32 x, s32 y);
+    BOOL areAnimsDone();
     u8 unk_04[0x44];
 };
 
-class Unk_ov002_022046b0 : public Unk_020e1028 {
+class Unk_ov002_022046b0 : public ScrollKnob {
 public:
     Unk_ov002_022046b0();
     ~Unk_ov002_022046b0();
@@ -238,21 +238,21 @@ void func_ov134_022949ec(S *s);
 void func_ov134_02294a28(S *s);
 void func_ov134_02294a34(S *s, u32 a, u32 b, u32 c, u8 d);
 
-extern u16 data_021f47d8;
-extern s32 data_021f482c;
+extern u16 gPad;
+extern s32 gCurrentHeap;
 void func_020021b8(u32 a, u32 b, u32 c, u32 d, u32 e);
 void func_020021fc(u32 a, s32 b, s32 c);
 void MIi_CpuCopy16(void *dst, void *src, u32 n);
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 _s32_div_f(s32 a, s32 b);
 void func_0206ee80(void *map, s32 a, s32 b, s32 c, s32 d, s32 e);
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 void func_0200152c(u32 a);
 void func_0200151c(u32 a);
 void func_0200212c(u32 a);
 void func_020020b8(u32 a);
 void func_02004008(s32 a);
-void func_02003ff4(s32 a, s32 b);
+void Snd_StopSe(s32 a, s32 b);
 void func_02001724(u32 a, u32 b);
 u32 func_0200273c(u32 a);
 void func_020016b0(u32 a);
@@ -277,7 +277,7 @@ void func_ov002_02202e48(void *p);
 void func_ov002_02202e54(void *p);
 void func_02088730(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g);
 void func_02088378(u32 a, const void *b, void *c, void *d, s32 e, s32 f, s32 g, u32 h, s32 i);
-void func_02087e70(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
+void Oam_DrawCell(u32 a, const void *b, void *c, u32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j, s32 k, s32 l);
 void func_0206f9c8(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 void func_0206f9e4(void *a, const void *c, u32 v);
 void func_0206f9fc(void *a, u32 v);
@@ -286,9 +286,9 @@ void func_0200261c(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
 void func_02002654(const void *name, s32 h, s32 a);
 void func_02002688(const void *name, s32 h, s32 a, s32 b, s32 c);
 void func_020026c4(const void *name, s32 h, s32 a, s32 b, s32 c, s32 d);
-void func_020641b4(const void *src, void *dst, s32 n);
-void *func_020641ec(const void *a, s32 h, s32 b, u32 *out);
-void func_020e85fc(s32 h, void *p);
+void File_LoadToBuffer(const void *src, void *dst, s32 n);
+void *File_LoadAlloc(const void *a, s32 h, s32 b, u32 *out);
+void Heap_Free(s32 h, void *p);
 extern "C" const u8 data_ov134_02294c58[6];
 extern "C" const u8 data_ov134_02294c60[6];
 extern "C" const u8 data_ov134_02294c68[7];
@@ -453,11 +453,11 @@ extern "C" void func_ov134_022948e4(S *s) {
     }
     s32 t = s->unk_b7;
     if (t > 0) {
-        if (data_021f47d8 & 0x40) {
+        if (gPad & 0x40) {
             s->unk_b7 = 0;
         }
     } else if (t < 0) {
-        if (data_021f47d8 & 0x80) {
+        if (gPad & 0x80) {
             s->unk_b7 = 0;
         }
     }
@@ -475,15 +475,15 @@ extern "C" BOOL func_ov134_022948b8(S *s) {
 }
 
 extern "C" void func_ov134_022947e8(S *s) {
-    s32 h = data_021f482c;
+    s32 h = gCurrentHeap;
     func_0200261c("menu/clock/b_tim_bg.bch", h, s->unk_a2, 0x10, 0x10, 0x80);
     func_020026c4("menu/clock/b_tim_bg.bpl", h, s->unk_a2, 1, 1, 10);
     func_020026c4((const void *)data_ov134_02294d64[s->unk_a0], h, s->unk_a2, 1, 1, 2);
     func_02002654("menu/clock/bga.bsc", h, s->unk_a2);
-    func_020641b4((const void *)data_ov134_02294d94[s->unk_a0], s->unk_584, 0x800);
+    File_LoadToBuffer((const void *)data_ov134_02294d94[s->unk_a0], s->unk_584, 0x800);
     func_ov134_02293320(s);
-    func_020641b4("menu/clock/b_tim_b1_bg.bsc", s->unk_d84, 0x800);
-    func_020641b4("menu/clock/b_tim_bg_9.bpl", s->unk_2584, 0x20);
+    File_LoadToBuffer("menu/clock/b_tim_b1_bg.bsc", s->unk_d84, 0x800);
+    File_LoadToBuffer("menu/clock/b_tim_bg_9.bpl", s->unk_2584, 0x20);
 }
 
 extern "C" void func_ov134_022947b8(S *s, u8 a) {
@@ -492,12 +492,12 @@ extern "C" void func_ov134_022947b8(S *s, u8 a) {
 }
 
 extern "C" void func_ov134_022946fc(S *s) {
-    s32 h = data_021f482c;
+    s32 h = gCurrentHeap;
     func_020026c4("menu/clock/b_tim_obj.bpl", h, 8, 4, 4, 10);
     func_0200261c("menu/clock/b_tim_obj.bch", h, 8, 0xc0, 0xc0, 0x1df);
     u32 v = s->unk_a1;
     u32 out;
-    u8 *buf = (u8 *)func_020641ec((const void *)data_ov134_02294d40[v >> 2], h, -4, &out);
+    u8 *buf = (u8 *)File_LoadAlloc((const void *)data_ov134_02294d40[v >> 2], h, -4, &out);
     u8 *p = buf + ((s32)v % 4) * 0x100;
     s32 x = 0xc0;
     s32 i = 0;
@@ -507,7 +507,7 @@ extern "C" void func_ov134_022946fc(S *s) {
         x += 0x20;
         i++;
     } while (i < 8);
-    func_020e85fc(h, buf);
+    Heap_Free(h, buf);
     func_02002688("menu/clock/b_tim_ten0_obj.bpl", h, 8, s->unk_a1, 4);
 }
 
@@ -764,34 +764,34 @@ extern "C" void func_ov134_02293c48(S *s, u8 *a, u8 *b) {
         func_02088378(1, data_ov134_02294e84 + 2, p, q, -1, 2, 0x1000, s->unk_92, 0);
         func_02088378(1, data_ov134_02294e84 + 4, p, q, -1, 2, 0x1000, s->unk_94, 0);
     }
-    func_02087e70(1, data_ov134_02294d44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+    Oam_DrawCell(1, data_ov134_02294d44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     if (s->func_ov134_02291f80(4)) {
         s->unk_18.vfunc_08();
     }
     if (s->unk_74 != 0) {
-        func_02087e70(1, data_ov134_02294d74, s->unk_7c - 8, s->unk_b5, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_02087e70(1, s->unk_74, s->unk_7c - 8, s->unk_b5, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294d74, s->unk_7c - 8, s->unk_b5, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, s->unk_74, s->unk_7c - 8, s->unk_b5, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (s->unk_78 != 0) {
-        func_02087e70(1, (void *)s->unk_78, s->unk_7c - 8, s->unk_b6, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (void *)s->unk_78, s->unk_7c - 8, s->unk_b6, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     if (s->unk_70 != 0) {
-        func_02087e70(1, (void *)s->unk_70, s->unk_7c, s->unk_80, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (void *)s->unk_70, s->unk_7c, s->unk_80, -1, 1, 0x1000, 0x1000, 0, -1, 0, 0);
     }
     switch (s->unk_a0) {
     case 0:
-        func_02087e70(1, data_ov134_02294db4, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294db4, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
     case 3: {
         s32 i;
-        func_02087e70(1, data_ov134_02294f44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294f44, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         for (i = 0; i < 5; i++) {
             if (s->unk_a0 == 3) {
                 if (i == 3) continue;
                 if (i == 4) continue;
             }
-            func_02087e70(1, (const void *)data_ov134_02294e9c[i], r6, (u32)r7, i == s->unk_b1 ? 7 : -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+            Oam_DrawCell(1, (const void *)data_ov134_02294e9c[i], r6, (u32)r7, i == s->unk_b1 ? 7 : -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         }
-        func_02087e70(1, (const void *)data_ov134_02294e9c[5], r6, (u32)r7, s->func_ov134_02291f80(8) ? 10 : 9, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, (const void *)data_ov134_02294e9c[5], r6, (u32)r7, s->func_ov134_02291f80(8) ? 10 : 9, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     case 2: {
@@ -807,15 +807,15 @@ extern "C" void func_ov134_02293c48(S *s, u8 *a, u8 *b) {
             v1 = 6;
             v2 = 6;
         }
-        func_02087e70(1, data_ov134_02295104, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_02087e70(1, data_ov134_02295034, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295104, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295034, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     case 1: {
         s32 v1, v2;
         u32 b1;
-        func_02087e70(1, data_ov134_02294d54, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_02087e70(1, data_ov134_02295204, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02294d54, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295204, r6, (u32)r7, -1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         b1 = s->unk_b1;
         if (b1 == 3) {
             v1 = 7;
@@ -827,8 +827,8 @@ extern "C" void func_ov134_02293c48(S *s, u8 *a, u8 *b) {
             v1 = 6;
             v2 = 6;
         }
-        func_02087e70(1, data_ov134_022950d4, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
-        func_02087e70(1, data_ov134_02295014, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_022950d4, r6, (u32)r7, v1, 2, 0x1000, 0x1000, 0, -1, 0, 0);
+        Oam_DrawCell(1, data_ov134_02295014, r6, (u32)r7, v2, 2, 0x1000, 0x1000, 0, -1, 0, 0);
         break;
     }
     }
@@ -881,7 +881,7 @@ extern "C" void func_ov134_02293b30(Unk_ov134_02291f60 *self, s32 x, s32 y) {
     }
     t = func_ov134_022938c4(self, self->unk_96, w);
     if (t < -1000 || t > 1000) {
-        func_0200402c(0x1a);
+        Snd_PlaySe(0x1a);
         self->unk_96 = w;
     }
 }
@@ -1077,8 +1077,8 @@ extern "C" BOOL func_ov134_02293660(Unk_ov134_02291f60 *self) {
         func_ov134_0229393c(self);
     }
     if (r == TRUE) {
-        func_02003ff4(0x54, 1);
-        func_0200402c(0x2e);
+        Snd_StopSe(0x54, 1);
+        Snd_PlaySe(0x2e);
     }
     return r;
 }
@@ -1275,7 +1275,7 @@ extern "C" void func_ov134_02293024(Unk_ov134_02291f60 *self, s32 idx) {
     s32 z;
     s32 r6;
     u16 *row;
-    func_0200402c(0x13);
+    Snd_PlaySe(0x13);
     self->unk_a5 = idx;
     self->unk_a9 = 0;
     func_0200212c(self->unk_a4);
@@ -1410,7 +1410,7 @@ extern "C" s32 func_ov134_02292ea8(Unk_ov134_02291f60 *self, s32 x, s32 y) {
 }
 
 extern "C" void func_ov134_02292e40(Unk_ov134_02291f60 *self) {
-    func_0200402c(0x29);
+    Snd_PlaySe(0x29);
     self->unk_a9 = 3;
     self->unk_af = 3;
     func_0200151c(1);
@@ -1422,7 +1422,7 @@ extern "C" void func_ov134_02292e40(Unk_ov134_02291f60 *self) {
 }
 
 extern "C" void func_ov134_02292df4(Unk_ov134_02291f60 *self) {
-    func_0200402c(0x2a);
+    Snd_PlaySe(0x2a);
     self->unk_a9 = 4;
     self->unk_af = 3;
     func_0200151c(1);
@@ -1449,7 +1449,7 @@ extern "C" s32 func_ov134_02292cb0(Unk_ov134_02291f60 *self) {
             self->unk_af = self->unk_af - 1;
             self->func_ov134_02291f94(self->unk_af);
         } else {
-            func_0200402c(0x14);
+            Snd_PlaySe(0x14);
             self->unk_a9 = 6;
             self->unk_af = 3;
             func_0200152c(1);
@@ -1839,7 +1839,7 @@ void Unk_ov134_02291f60::func_ov134_022924b0(s32 x) {
 
 void Unk_ov134_02291f60::func_ov134_02292450() {
     s32 old = unk_64;
-    u32 k = data_021f47d8;
+    u32 k = gPad;
     if (k & 0x40) {
         unk_64 = old - 4;
         if (unk_64 < 0x20) {
@@ -1863,7 +1863,7 @@ void Unk_ov134_02291f60::func_ov134_02292444() {
 }
 
 BOOL Unk_ov134_02291f60::func_ov134_02292420() {
-    if (unk_18.func_0208d9a8()) {
+    if (unk_18.areAnimsDone()) {
         unk_18.func_ov002_02202f0c();
         return TRUE;
     }
@@ -1881,7 +1881,7 @@ void Unk_ov134_02291f60::func_ov134_022923d4() {
 }
 
 void Unk_ov134_02291f60::func_ov134_022923c0() {
-    unk_18.func_0208dae8(unk_60 - 0x78, unk_64 - 0x60);
+    unk_18.moveTo(unk_60 - 0x78, unk_64 - 0x60);
 }
 
 s32 Unk_ov134_02291f60::func_ov134_022923a0() {
@@ -1925,7 +1925,7 @@ s32 Unk_ov134_02291f60::func_ov134_0229219c(u32 pad) {
         }
         s32 v = unk_b7;
         if (v >= 6) {
-            if (data_021f47d8 & 0x40) {
+            if (gPad & 0x40) {
                 if (func_ov134_02292134()) {
                     if (unk_04 != 0) {
                         func_ov134_02292c3c(this, unk_00 + unk_04);
@@ -1934,7 +1934,7 @@ s32 Unk_ov134_02291f60::func_ov134_0229219c(u32 pad) {
                     }
                     if (func_ov134_02291f80(0x100)) {
                         func_ov134_02291f60(0x100);
-                        func_0200402c(0xb);
+                        Snd_PlaySe(0xb);
                     } else {
                         func_ov134_02291f70(0x100);
                     }
@@ -1944,7 +1944,7 @@ s32 Unk_ov134_02291f60::func_ov134_0229219c(u32 pad) {
                 unk_b7 = 0;
             }
         } else if (v <= -6) {
-            if (data_021f47d8 & 0x80) {
+            if (gPad & 0x80) {
                 if (func_ov134_022920f4()) {
                     if (unk_04 != 0) {
                         func_ov134_02292c3c(this, unk_00 + unk_04);
@@ -1953,7 +1953,7 @@ s32 Unk_ov134_02291f60::func_ov134_0229219c(u32 pad) {
                     }
                     if (func_ov134_02291f80(0x100)) {
                         func_ov134_02291f60(0x100);
-                        func_0200402c(0xb);
+                        Snd_PlaySe(0xb);
                     } else {
                         func_ov134_02291f70(0x100);
                     }

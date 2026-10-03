@@ -8,14 +8,14 @@ struct Unk_02037638_S8 {
 };
 
 extern "C" {
-void *func_020641ec(const char *, void *, s32, void *);
-void func_020e8558(void *);
-void *func_020e8628(void *, s32, s32);
+void *File_LoadAlloc(const char *, void *, s32, void *);
+void Mem_Free(void *);
+void *Heap_AllocAligned(void *, s32, s32);
 void MI_CpuFill8(void *, s32, s32);
 s32 func_0209c06c(s32);
 s32 func_020303d0(s32, s32, s32, s32);
 u32 func_02037324(u32 x);
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 u8 *data_021c21dc;
@@ -115,7 +115,7 @@ void Unk_02037618::func_02037618(Unk_02037618_Sub *s, u32 t, u32 u) {
 }
 
 extern "C" Unk_02037618 *func_020375dc(s32 n, void *heap, s32 x) {
-    Unk_02037618 *p = (Unk_02037618 *)func_020e8628(heap, n * 0x28, x);
+    Unk_02037618 *p = (Unk_02037618 *)Heap_AllocAligned(heap, n * 0x28, x);
     if (p != 0) {
         s32 i;
         for (i = 0; i < n; i++) {
@@ -264,12 +264,12 @@ extern "C" BOOL func_020373c4(void *base, u32 a, u32 b) {
 }
 
 extern "C" BOOL func_02037394() {
-    data_021c21dc = (u8 *)func_020641ec("/bg/bkattr.bin", data_021f482c, 4, &data_021c21e0);
+    data_021c21dc = (u8 *)File_LoadAlloc("/bg/bkattr.bin", gCurrentHeap, 4, &data_021c21e0);
     return TRUE;
 }
 
 extern "C" BOOL func_02037374() {
-    func_020e8558(data_021c21dc);
+    Mem_Free(data_021c21dc);
     data_021c21dc = 0;
     return TRUE;
 }

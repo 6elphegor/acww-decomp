@@ -91,7 +91,7 @@ extern Unk_02093bb4_Scratch data_021d0830;
 }
 
 extern "C" {
-extern Unk_02093aa8_Vec data_021f4880;
+extern Unk_02093aa8_Vec gVec3Zero;
 }
 
 extern "C" {
@@ -187,56 +187,56 @@ s32 func_02093f50(Unk_02093dc8_Obj *o);
 // ---------------------------------------------------------------------------------------------------------------------
 // Message buffers (see unk_0206c714.cpp for the bases)
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e2a78;
+class MsgString;
 
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
+    BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 extern "C" BOOL func_020a78a4(void *, const void *, s32);
 
 // 8-byte destination buffer at +0xe
-class Unk_020e1c4c : public Unk_020e2a60 {
+class Unk_020e1c4c : public EncodedString {
 public:
     Unk_020e1c4c();
     virtual ~Unk_020e1c4c();
@@ -249,7 +249,7 @@ public:
 };
 
 // 9-byte source buffer at +0x12
-class Unk_020e1c64 : public Unk_020e2a78 {
+class Unk_020e1c64 : public MsgString {
 public:
     Unk_020e1c64();
     virtual ~Unk_020e1c64();
@@ -262,42 +262,42 @@ public:
 // ---------------------------------------------------------------------------------------------------------------------
 // Record with a 10-byte header (id + 8 bytes), a u16 at +0xa, 8 bytes at +0xc and an s8 at +0x14
 
-class Unk_02063954 {
+class TownId {
 public:
-    Unk_02063954();
-    Unk_02063954(void *o);
+    TownId();
+    TownId(void *o);
     s32 func_02063954();
-    void func_02063968(Unk_02063954 *o);
-    void func_0206397c(Unk_02063954 *o);
-    void func_02063990(Unk_02063954 *o);
+    void func_02063968(TownId *o);
+    void func_0206397c(TownId *o);
+    void func_02063990(TownId *o);
     void func_020639a0();
 
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ u8 unk_02[8];
 
     s32 func_02094058();
-    void func_02094094(Unk_02063954 *o);
+    void func_02094094(TownId *o);
 };
 
-class Unk_020940a0 : public Unk_02063954 {
+class PlayerId : public TownId {
 public:
-    Unk_020940a0();
-    Unk_020940a0(void *o);
-    Unk_020940a0(const Unk_020940a0 &o);
+    PlayerId();
+    PlayerId(void *o);
+    PlayerId(const PlayerId &o);
 
-    void func_020940a0(Unk_020e2a78 *x);
-    void func_020940d0(Unk_020e2a78 *x);
+    void func_020940a0(MsgString *x);
+    void func_020940d0(MsgString *x);
     u8 *func_02094104();
     void func_02094108(void *src);
     s8 func_0209411c();
     void func_02094124(u8 v);
     void func_02094128(u16 v);
     u16 func_0209412c();
-    void func_020941b4(void *src, u16 a, s8 b, Unk_02063954 *p);
-    BOOL func_020941e8(Unk_020940a0 *o);
+    void func_020941b4(void *src, u16 a, s8 b, TownId *p);
+    BOOL func_020941e8(PlayerId *o);
     BOOL func_02094218();
-    void func_02094238(Unk_020940a0 *o);
-    void func_02094264(Unk_020940a0 *o);
+    void func_02094238(PlayerId *o);
+    void func_02094264(PlayerId *o);
     void func_02094294();
     void func_020942b8(void *src);
 
@@ -307,7 +307,7 @@ public:
 };
 
 extern "C" {
-extern Unk_02063954 data_021d7352;
+extern TownId data_021d7352;
 }
 
 extern "C" {
@@ -319,7 +319,7 @@ s32 func_02097740(void *, void *);
 }
 
 extern "C" {
-s32 func_02095774(s32);
+s32 PlayerActor_Get(s32);
 }
 
 extern "C" {
@@ -343,7 +343,7 @@ BOOL func_02094184(u16 v, u16 *arr, s32 n);
 }
 
 extern "C" {
-s32 func_02095154(s32, s32);
+s32 PlayerActor_IsInAction(s32, s32);
 }
 
 extern "C" {

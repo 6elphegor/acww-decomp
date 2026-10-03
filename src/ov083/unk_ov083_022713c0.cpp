@@ -1,30 +1,30 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 struct Unk_0201bc1c;
@@ -35,8 +35,8 @@ struct Unk_ov083_Vec {
     s32 x, y, z;
 };
 
-struct Unk_020aa3b8 {
-    s32 func_020aa514();
+struct ChoiceList {
+    s32 getResult();
 };
 
 struct Unk_ov083_02271620_Out {
@@ -45,9 +45,9 @@ struct Unk_ov083_02271620_Out {
 };
 
 extern "C" {
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_0209865cEv(void *p);
-void *_ZN12Unk_0209865c13func_0209868cEv(void *p);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData13func_0209865cEv(void *p);
+void *_ZN10PlayerData13func_0209868cEv(void *p);
 void _ZN12Unk_02087ad813func_02087b24Ev(void *p);
 s32 func_02098ffc();
 s32 func_02098eb0(u16 *p);
@@ -67,7 +67,7 @@ BOOL func_020851bc(void *p, s32 v);
 void func_020851a4(void *p, s32 v);
 void func_02085290(void *p);
 void _ZN12Unk_0208581013func_02085900Ej(void *p, s32 v);
-void _ZN12Unk_0209da4413func_0209e148Ej(void *p, s32 v);
+void _ZN8SaveData7setFlagEj(void *p, s32 v);
 void func_020856a4(void *p, s32 v);
 u32 func_0203f42c(s32 v);
 void func_02053848(void *p, s32 a, s32 b);
@@ -77,7 +77,7 @@ BOOL _ZN12Unk_02013b1013func_02014220Ev(void *self);
 void _ZN12Unk_02013b1013func_020141b4Essh(void *self, u32 a, u32 b, u32 c);
 void _ZN12Unk_0201985813func_020196b4Ejiiissiitt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1, u32 s2, u32 s3, u32 s4, u32 s5, u32 s6);
 extern u8 data_021ed24c[];
-extern u8 data_021d7350[];
+extern u8 gSaveData[];
 }
 
 struct Unk_020660f8 {
@@ -122,7 +122,7 @@ public:
     virtual void vfunc_88();
     void *func_02015aac();
     void func_02015ab0(u32 p);
-    Unk_020aa3b8 *func_02015a5c();
+    ChoiceList *func_02015a5c();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -251,25 +251,25 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 v);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
@@ -282,13 +282,13 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -340,7 +340,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 v);
     virtual void vfunc_78();
     virtual void vfunc_7c();
@@ -467,7 +467,7 @@ BOOL Unk_ov083_02271c4c::func_ov083_022717d8() {
     u8 *const g = data_021ed24c;
     func_02085290(g);
     _ZN12Unk_0208581013func_02085900Ej(g, 3);
-    _ZN12Unk_0209da4413func_0209e148Ej(data_021d7350, 0xf);
+    _ZN8SaveData7setFlagEj(gSaveData, 0xf);
     return TRUE;
 }
 
@@ -511,7 +511,7 @@ void Unk_ov083_02271bbc::func_ov083_022716e0(Unk_ov083_02271c4c *owner) {
 void Unk_ov083_02271bbc::vfunc_78(Unk_ov083_02271620_Out *out) {
     u16 h;
     u32 w[2];
-    _ZN12Unk_0209865c13func_0209865cEv(func_0209750c());
+    _ZN10PlayerData13func_0209865cEv(PlayerData_GetCurrent());
     out->a = (u32)"sp_npc_turtle3";
     if (unk_b0 == -1) {
         h = 0x37e0;
@@ -569,7 +569,7 @@ void Unk_ov083_02271bbc::vfunc_14() {
     } else {
         if (unk_1e == 5 || unk_1e == 6 || unk_1e == 9) {
             if (!func_0202e1cc(0x1d, 1)) {
-                _ZN12Unk_02087ad813func_02087b24Ev(_ZN12Unk_0209865c13func_0209868cEv(func_0209750c()));
+                _ZN12Unk_02087ad813func_02087b24Ev(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent()));
                 if (func_02098ffc() >= 0) {
                     msg = 7;
                     func_020ac7cc(&h3);
@@ -594,7 +594,7 @@ void Unk_ov083_02271bbc::vfunc_18() {
     u8 b1;
     u8 b2;
     u16 h;
-    s32 t = func_02015a5c()->func_020aa514();
+    s32 t = func_02015a5c()->getResult();
     u8 *s = (u8 *)"sp_npc_turtle3";
     u8 msg = 0xff;
     if (unk_b0 >= 0) {

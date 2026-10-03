@@ -3,8 +3,8 @@
 extern "C" {
 s32 func_02065578();
 void func_02065c94(void *p);
-void _ZN12Unk_020dd458D1Ev(void *p);
-void _ZN12Unk_020dd458C1Ev(void *p);
+void _ZN6LetterD1Ev(void *p);
+void _ZN6LetterC1Ev(void *p);
 void func_020874c8(void *p);
 void func_020874d8(void *p);
 void func_020789ac(void *p);
@@ -35,8 +35,8 @@ public:
     u32 func_0208f198();
     void func_0208f1a8(u32 v);
     s32 func_0208f1c0();
-    u32 func_0208f1c4();
-    void func_0208f1d0(u32 v);
+    u32 getChecksum();
+    void setChecksum(u32 v);
 
     /* 0x000 */ u8 unk_000[0xf4];
     /* 0x0f4 */ u8 unk_0f4;
@@ -61,7 +61,7 @@ extern "C" void *func_0208f0b0(s32 i);
 extern "C" void *func_0208f0e8(s32 i);
 
 Unk_0208f238::Unk_0208f238() {
-    _ZN12Unk_020dd458C1Ev(this);
+    _ZN6LetterC1Ev(this);
     _ZN12Unk_020b0a60C1Ev((u8 *)this + 0xf4);
     func_020789bc((u8 *)this + 0x13c);
     func_020874d8((u8 *)this + 0x83e);
@@ -71,7 +71,7 @@ Unk_0208f238::~Unk_0208f238() {
     func_020874c8((u8 *)this + 0x83e);
     func_020789ac((u8 *)this + 0x13c);
     _ZN12Unk_020b0a60D1Ev((u8 *)this + 0xf4);
-    _ZN12Unk_020dd458D1Ev(this);
+    _ZN6LetterD1Ev(this);
 }
 
 extern "C" void func_0208f200() {}
@@ -82,9 +82,9 @@ extern "C" void func_0208f1dc(void *p) {
     func_020b0a30((u8 *)p + 0xf4);
 }
 
-void Unk_0208f238::func_0208f1d0(u32 v) { unk_84a = v; }
+void Unk_0208f238::setChecksum(u32 v) { unk_84a = v; }
 
-u32 Unk_0208f238::func_0208f1c4() { return unk_84a; }
+u32 Unk_0208f238::getChecksum() { return unk_84a; }
 
 s32 Unk_0208f238::func_0208f1c0() { return 1; }
 

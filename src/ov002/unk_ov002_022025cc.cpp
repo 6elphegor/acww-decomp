@@ -1,54 +1,54 @@
 // ov002: shared library overlay (menu / cursor / slider helpers used by the scene overlays).
-#define vfunc_08() vfunc_08(s32 a)
+#define postCreate() postCreate(s32 a)
 #define vfunc_14() vfunc_14(s32 a)
 #include "types.h"
 #include "Unk_020d8c7c.h"
 #include "text/Unk_02050288.h"
-#undef vfunc_08
+#undef postCreate
 #undef vfunc_14
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
 #define func_02002fc8 _ZN12Unk_02002fc813func_02002fc8Ej
-#define func_020805c4 _ZN12Unk_0208086013func_020805c4Ev
+#define func_020805c4 _ZN12VillagerData13func_020805c4Ev
 #define func_02094018 _ZN12Unk_020e1c64D1Ev
 #define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN12Unk_020940a013func_020940d0EP12Unk_020e2a78
-#define func_0209888c _ZN12Unk_0209865c13func_0209888cEv
+#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_0206fcc8 _ZN12Unk_020e0488C1Ev
 #define func_0206fca8 _ZN12Unk_020e0488D1Ev
-#define func_020a7bd8 _ZN12Unk_020e2a7813func_020a7bd8EPS_
-#define func_020a7a28 _ZN12Unk_020e2a7813func_020a7a28EPh
-#define func_020a7a0c _ZN12Unk_020e2a7813func_020a7a0cEPS_
-#define func_0208e290 _ZN12Unk_020e109813func_0208e290Ev
+#define MsgString_copy _ZN9MsgString4copyEPS_
+#define MsgString_append _ZN9MsgString6appendEPh
+#define MsgString_appendString _ZN9MsgString12appendStringEPS_
+#define LabelButton_setLabelText _ZN11LabelButton12setLabelTextEv
 
 extern "C" {
-BOOL _ZN17Unk_020d8c7c_Base8vfunc_14Ev(void *self, s32 a);
-void _ZN12Unk_020d8c7c8vfunc_08Ev(void *self, s32 a);
+BOOL _ZN8ProcBase8vfunc_14Ev(void *self, s32 a);
+void _ZN8GameProc10postCreateEv(void *self, s32 a);
 void _ZN18Unk_ov002_0220477019func_ov002_022039f8Ehii(void *self, s32 x, s32 a, s32 b);
 void func_02002fc8(s32 a, void *buf);
 s32 func_020805c4(void *self);
 void func_02094018(void *p);
 void func_02094030(void *p);
 void func_020940d0(s32 a, void *buf);
-s32 func_0209888c(void *self);
+s32 PlayerData_getPlayerId(void *self);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
-void func_020a7bd8(void *self, void *src);
-void func_020a7a28(void *self, const void *s);
-void func_020a7a0c(void *self, void *src);
-void func_0208e290(void *self, void *src);
+void MsgString_copy(void *self, void *src);
+void MsgString_append(void *self, const void *s);
+void MsgString_appendString(void *self, void *src);
+void LabelButton_setLabelText(void *self, void *src);
 
 void func_020021b8(s32 a, s32 x0, s32 y0, s32 x1, s32 y1);
 void func_020021fc(s32 a, s32 b, s32 c);
-void func_0200402c(s32 a);
+void Snd_PlaySe(s32 a);
 void func_0206e020();
 BOOL func_0206e2f4();
 BOOL func_0206e308();
-void func_0206ef28();
-void func_0206ef3c();
-void func_0206f290(void *p);
-void func_0206f2b0(void *p);
+void MenuCtrl_SetButtons();
+void MenuCtrl_SetTouch();
+void MenuCtrl_RemoveOpenMenu(void *p);
+void MenuCtrl_AddOpenMenu(void *p);
 void func_02001564(s32 a);
 void func_02001750(s32 a);
 s32 func_02001580();
@@ -59,27 +59,27 @@ void func_02001724(s32 a, s32 b);
 void func_020016b0(s32 a);
 void func_0200151c(s32 a);
 void func_02001554(s32 a);
-void *func_020e8618(void *heap, u32 size);
-void func_020e85fc(void *heap, void *p);
+void *Heap_AllocTail(void *heap, u32 size);
+void Heap_Free(void *heap, void *p);
 void *func_0212899c(void *p, s32 v, u32 n);
-void *func_020ed174(void *p);
-void func_020ed0d8(void *p, u32 v);
-void func_020ed03c(void *p, u32 v);
+void *ProcBase_GetParent(void *p);
+void ProcBase_SetExecutePriority(void *p, u32 v);
+void ProcBase_SetDrawPriority(void *p, u32 v);
 s32 func_01ffcb0c(s32 a, s32 b);
 void func_02065b5c(void *p);
 void func_02065ba4(void *p, s32 a);
 void func_02065bd0(void *p, s32 a);
-void func_020b3558(void *buf, u8 *c, s32 z);
+void String_Load2d(void *buf, u8 *c, s32 z);
 void func_0206f994(void *dst, const void *s, s32 len);
 void func_0206f9fc(void *a, s32 v);
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 s32 func_02097740(void *a, s32 b);
 s32 func_020978c8(void *a, s32 b);
-void *func_02097868(void *a, s32 b);
+void *PlayerData_GetResident(void *a, s32 b);
 s32 func_0207bf84(void *a, s32 b);
 void *func_0207bf60(void *a, s32 b);
 s32 func_0207f854(void *a, s32 b);
-BOOL func_0206ef00();
+BOOL MenuCtrl_IsButtons();
 void func_0200212c(s32 a);
 s32 func_0200273c(s32 a);
 s32 func_0200140c();
@@ -90,7 +90,7 @@ s32 func_020013cc(s32 a);
 void func_020020b8(s32 a);
 void func_02002398(s32 a, u32 b);
 void func_0200226c(s32 a, s32 b, s32 c, s32 d);
-u8 *func_020641ec(const char *path, void *heap, s32 a, s32 b);
+u8 *File_LoadAlloc(const char *path, void *heap, s32 a, s32 b);
 void MIi_CpuCopy16(void *dst, void *src, s32 n);
 void MIi_CpuClear16(s32 v, void *dst, s32 n);
 void func_020024f0(void *buf, s32 a, s32 b, s32 c);
@@ -98,21 +98,21 @@ void func_020026c4(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_0200261c(const char *buf, void *h, s32 x, s32 a, s32 b, s32 c);
 void func_02002654(char *buf, void *h, s32 x);
 s32 func_020639e8(char *buf, const char *fmt, ...);
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 func_0206e61c();
 
 extern void *data_021c6210;
-extern void *data_021f482c;
-extern u8 data_021f4770;
-extern u8 data_021f4774;
-extern volatile u16 data_021f47d8[];
+extern void *gCurrentHeap;
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
+extern volatile u16 gPad[];
 extern u8 data_021d735c[];
 extern u8 data_021dfd8c[];
-extern u8 data_021ef5f0;
-extern u8 data_021ef5ec;
-extern u8 data_021ef5f8;
-extern u8 data_021ef5f4;
+extern u8 gTouchCurX;
+extern u8 gTouchCurY;
+extern u8 gTouchPressX;
+extern u8 gTouchPressY;
 extern u8 data_021edb5c[];
 }
 
@@ -127,44 +127,44 @@ extern char _ZTV18Unk_ov002_02204754[];
 extern void *_ZTV18Unk_ov002_0220464c[7];
 extern void *_ZTV18Unk_ov002_02204614[7];
 extern void *_ZTV18Unk_ov002_02204630[7];
-extern char _ZTV12Unk_020d8c7c[];
-void *_ZN17Unk_020d8c7c_BaseC2Ev(void *self);
-void *_ZN12Unk_020e1098C2Ehi(void *self, u8 a, s32 b);
-void *_ZN12Unk_020e100cC2Ei(void *self, s32 flag);
-void *_ZN12Unk_020e100cD2Ev(void *self);
+extern char _ZTV8GameProc[];
+void *_ZN8ProcBaseC2Ev(void *self);
+void *_ZN11LabelButtonC2Ehi(void *self, u8 a, s32 b);
+void *_ZN10HandCursorC2Ei(void *self, s32 flag);
+void *_ZN10HandCursorD2Ev(void *self);
 void *_ZN18Unk_ov002_022044d4C1Ev(void *self);
 void *_ZN18Unk_ov002_022044b4C1Ev(void *self);
 void *_ZN18Unk_ov002_02204604C1Ev(void *self);
 void *_ZN18Unk_ov002_02204604D1Ev(void *self);
-void _ZN12Unk_020e100c8vfunc_08Ev();
+void _ZN10HandCursor4drawEv();
 void _ZN18Unk_ov002_02202d988vfunc_0cEv();
-void _ZN12Unk_020e0db48vfunc_10Eii();
+void _ZN8UiWidget9setOriginEii();
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes of the main module
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    s32 func_02089244();
-    void *func_02089248();
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    s32 getFrameIndex();
+    void *getCell();
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 };
 
-class Unk_020e0d80 : public Unk_020d9218 {
+class Unk_020e0d80 : public MsgStringBase {
 public:
     Unk_020e0d80();
     virtual ~Unk_020e0d80();
@@ -174,12 +174,12 @@ public:
     /* 0x04 */ u8 unk_04[0x24];
 };
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
+    void reset();
+    void copyFrom(MsgStringAttr *other);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
@@ -187,19 +187,19 @@ public:
 };
 
 // buffer interface with write position at +4 and member at +8
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
-// String buffer wrapping a text renderer (Unk_02050288) at +0x3c
-class Unk_020e0488 : public Unk_020e2a78 {
+// String buffer wrapping a text renderer (TextLabel) at +0x3c
+class Unk_020e0488 : public MsgString {
 public:
     Unk_020e0488();
     virtual ~Unk_020e0488();
@@ -212,49 +212,49 @@ public:
     void func_0206fc44();
 
     /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ Unk_02050288 *unk_3c;
+    /* 0x3c */ TextLabel *unk_3c;
 };
 
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e0d98 : public Unk_020e0db4 {
+class LabelBalloon : public UiWidget {
 public:
-    Unk_020e0d98(s32 flag);
-    virtual ~Unk_020e0d98();
-    virtual void vfunc_08();
+    LabelBalloon(s32 flag);
+    virtual ~LabelBalloon();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    s32 func_02089868();
-    s32 func_0208987c();
-    s32 func_02089880();
-    s32 func_020898bc();
-    BOOL func_02089a24();
-    BOOL func_02089a40();
-    void func_02089a5c(s32 flag);
-    void func_02089ab0(u8 v);
-    void func_02089ab8();
-    void func_02089ac0(StrBuf *src);
-    void func_02089ad8(s32 a, s32 b);
-    void func_02089ae0();
-    void func_02089ae8();
-    void func_02089b00();
-    void func_02089b08();
-    void func_02089b10();
+    s32 getWidth();
+    s32 getPosY();
+    s32 getPosX();
+    s32 getState();
+    BOOL requestClose();
+    BOOL requestOpen();
+    void refreshText(s32 flag);
+    void setClampToScreen(u8 v);
+    void enableCenterText();
+    void setText(StrBuf *src);
+    void setPos(s32 a, s32 b);
+    void hideLayer2();
+    void showLayer2();
+    void disablePopAnim();
+    void disableObjWindow();
+    void enableObjWindow();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
-    /* 0x20 */ Unk_02089270 unk_20;
+    /* 0x0c */ SpriteAnim unk_0c;
+    /* 0x20 */ SpriteAnim unk_20;
     /* 0x34 */ s32 unk_34;
     /* 0x38 */ s32 unk_38;
     /* 0x3c */ s32 unk_3c;
@@ -266,31 +266,31 @@ public:
     /* 0x54 */ u8 unk_54[9];
     /* 0x60 */ Unk_020e0d80 unk_60;
     /* 0x88 */ Unk_020e0d80 unk_88;
-    /* 0xb0 */ Unk_02050288 *unk_b0;
-    /* 0xb4 */ Unk_02050288 *unk_b4;
+    /* 0xb0 */ TextLabel *unk_b0;
+    /* 0xb4 */ TextLabel *unk_b4;
     /* 0xb8 */ s32 unk_b8;
 };
 
-class Unk_020e100c : public Unk_020e0db4 {
+class HandCursor : public UiWidget {
 public:
-    Unk_020e100c(BOOL flag);
-    virtual ~Unk_020e100c();
-    virtual void vfunc_08();
+    HandCursor(BOOL flag);
+    virtual ~HandCursor();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208d4fc();
-    s32 func_0208d534();
-    void func_0208d538(s32 idx);
-    void func_0208d580(s32 idx);
-    void func_0208d60c(s32 a, s32 b);
-    void func_0208d63c();
-    void func_0208d644();
+    BOOL isAnimDone();
+    s32 getAnim();
+    void setAnimAtEnd(s32 idx);
+    void setAnim(s32 idx);
+    void setPos(s32 a, s32 b);
+    void disableObjWindow();
+    void enableObjWindow();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
     /* 0x24 */ s32 unk_24;
     /* 0x28 */ s32 unk_28;
-    /* 0x2c */ Unk_02089270 unk_2c;
+    /* 0x2c */ SpriteAnim unk_2c;
     /* 0x40 */ s32 unk_40;
     /* 0x44 */ s32 unk_44;
     /* 0x48 */ u8 unk_48;
@@ -298,57 +298,57 @@ public:
     /* 0x4a */ u8 unk_4a;
 };
 
-class Unk_020e1028 : public Unk_020e0db4 {
+class ScrollKnob : public UiWidget {
 public:
-    Unk_020e1028(u32 flag);
-    virtual ~Unk_020e1028();
-    virtual void vfunc_08();
+    ScrollKnob(u32 flag);
+    virtual ~ScrollKnob();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208d9a8();
-    s32 func_0208d9d0();
-    void func_0208d9d4(s32 idx);
-    void func_0208da58(s32 *a, s32 *b);
+    BOOL areAnimsDone();
+    s32 getState();
+    void setState(s32 idx);
+    void getAnimOffset(s32 *a, s32 *b);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_02089270 unk_14;
-    /* 0x28 */ Unk_02089270 unk_28;
+    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x28 */ SpriteAnim unk_28;
     /* 0x3c */ s32 unk_3c;
     /* 0x40 */ u8 unk_40;
     /* 0x44 */ s32 unk_44;
 };
 
-class Unk_020e1098 : public Unk_020e0db4 {
+class LabelButton : public UiWidget {
 public:
-    Unk_020e1098(u8 a, s32 b);
-    virtual ~Unk_020e1098();
-    virtual void vfunc_08();
+    LabelButton(u8 a, s32 b);
+    virtual ~LabelButton();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    BOOL func_0208e110();
-    s32 func_0208e138();
-    void func_0208e13c(s32 v);
-    void func_0208e1fc(s32 *x, s32 *y);
-    void func_0208e288(s32 x, s32 y);
-    void func_0208e2c8();
-    void func_0208e2d0();
-    void func_0208e2d8();
+    BOOL isAnimDone();
+    s32 getState();
+    void setState(s32 v);
+    void getAnimOffset(s32 *x, s32 *y);
+    void setPos(s32 x, s32 y);
+    void showLayer2();
+    void hideLayer2();
+    void enableObjWindow();
 
     /* 0x0c */ u8 unk_0c[0x64];
 };
 
-class Unk_020e2a30 {
+class MsgRequest {
 public:
-    Unk_020e2a30();
-    virtual ~Unk_020e2a30();
+    MsgRequest();
+    virtual ~MsgRequest();
     virtual void vfunc_08();
-    void func_020a710c(const char *src);
+    void setFileName(const char *src);
     /* 0x04 */ char unk_04[0x1a];
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020ddcf0 : public Unk_020e2a30 {
+class Unk_020ddcf0 : public MsgRequest {
 public:
     Unk_020ddcf0();
     virtual ~Unk_020ddcf0();
@@ -398,7 +398,7 @@ extern Unk_ov002_02203c5c_Rec data_ov002_0220482c[];
 }
 
 // Vtable 0x02204468
-class Unk_ov002_02204468 : public Unk_020e0d98 {
+class Unk_ov002_02204468 : public LabelBalloon {
 public:
     Unk_ov002_02204468();
     virtual ~Unk_ov002_02204468();
@@ -495,7 +495,7 @@ class Unk_ov002_022044e4;
 typedef void (Unk_ov002_022044e4::*Unk_ov002_02200a68_Fn)();
 
 // Vtable 0x022044e4
-class Unk_ov002_022044e4 : public Unk_020d8c7c {
+class Unk_ov002_022044e4 : public GameProc {
 public:
     Unk_ov002_022044e4();
     virtual ~Unk_ov002_022044e4();
@@ -503,11 +503,11 @@ public:
     static void operator delete(void *p);
 
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 a);
-    virtual BOOL vfunc_10();
+    virtual void postCreate(s32 a);
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14(s32 a);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
     virtual BOOL vfunc_48();
     virtual BOOL vfunc_4c();
@@ -589,11 +589,11 @@ public:
 };
 
 // Menu, vtable 0x02204770
-class Unk_ov002_02204770 : public Unk_020e0d98 {
+class Unk_ov002_02204770 : public LabelBalloon {
 public:
     Unk_ov002_02204770();
     virtual ~Unk_ov002_02204770();
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 
     void func_ov002_022039d8();
     void func_ov002_022039f8(u8 a, s32 b, s32 c);
@@ -650,11 +650,11 @@ public:
 };
 
 // Base of the 0x0220471c / 0x02204738 classes
-class Unk_ov002_02204754 : public Unk_020e1098 {
+class Unk_ov002_02204754 : public LabelButton {
 public:
     Unk_ov002_02204754(u8 a, s32 b);
     virtual ~Unk_ov002_02204754();
-    virtual void vfunc_10(s32 a, s32 b);
+    virtual void setOrigin(s32 a, s32 b);
 };
 
 class Unk_ov002_0220471c : public Unk_ov002_02204754 {
@@ -735,7 +735,7 @@ public:
 };
 
 // Intermediate base of the vtables 0x02204614 / 0x02204630 / 0x0220464c
-class Unk_ov002_02202d98 : public Unk_020e100c {
+class Unk_ov002_02202d98 : public HandCursor {
 public:
     Unk_ov002_02202d98(BOOL flag);
     ~Unk_ov002_02202d98();
@@ -784,7 +784,7 @@ public:
     virtual ~Unk_ov002_02204630();
 };
 
-class Unk_ov002_022046b0 : public Unk_020e1028 {
+class Unk_ov002_022046b0 : public ScrollKnob {
 public:
     Unk_ov002_022046b0();
     virtual ~Unk_ov002_022046b0();
@@ -827,7 +827,7 @@ public:
     Unk_ov002_02204558();
     virtual ~Unk_ov002_02204558();
 
-    void func_ov002_02202200(Unk_020e0d98 *p);
+    void func_ov002_02202200(LabelBalloon *p);
     void func_ov002_02202278(s32 a, s32 b);
     void func_ov002_02202294(s32 a, s32 b);
     void func_ov002_0220229c(s32 a, s32 b);
@@ -942,18 +942,18 @@ void func_ov002_02203920();
 }
 
 static inline BOOL Unk_ov002_022009d4_Both() {
-    if (data_021f4770 != 0 && data_021f4774 != 0) {
+    if (gTouchHeld != 0 && gTouchChanged != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void func_ov002_02202e54() { func_0200402c(0x19); }
+extern "C" void func_ov002_02202e54() { Snd_PlaySe(0x19); }
 
-extern "C" void func_ov002_02202e48() { func_0200402c(0x33); }
+extern "C" void func_ov002_02202e48() { Snd_PlaySe(0x33); }
 
 extern "C" void func_ov002_02202dd4(s32 a, void *b) {
-    void *h = data_021f482c;
+    void *h = gCurrentHeap;
     char buf[0x20];
     func_020639e8(buf, "menu/paper/chr/%03d.bch", a);
     func_0200261c(buf, h, (s32)b, 0x10, 0x10, 0x74);
@@ -964,27 +964,27 @@ extern "C" void func_ov002_02202dd4(s32 a, void *b) {
 }
 
 extern "C" void *_ZN18Unk_ov002_0220464cC1Ei(Unk_ov002_0220464c *self, BOOL flag) {
-    _ZN12Unk_020e100cC2Ei(self, flag);
+    _ZN10HandCursorC2Ei(self, flag);
     *(void **)self = &_ZTV18Unk_ov002_0220464c[2];
     _ZN18Unk_ov002_02204604C1Ev(&self->unk_4c);
-    self->func_0208d580(0);
+    self->setAnim(0);
     self->unk_4c.func_ov002_022027a4();
     self->unk_28 = 0;
-    self->func_0208d644();
+    self->enableObjWindow();
     return self;
 }
 
 extern "C" void *_ZN18Unk_ov002_0220464cD1Ev(Unk_ov002_0220464c *self) {
     *(void **)self = &_ZTV18Unk_ov002_0220464c[2];
     _ZN18Unk_ov002_02204604D1Ev(&self->unk_4c);
-    _ZN12Unk_020e100cD2Ev(self);
+    _ZN10HandCursorD2Ev(self);
     return self;
 }
 
 extern "C" void *_ZN18Unk_ov002_0220464cD0Ev(Unk_ov002_0220464c *self) {
     *(void **)self = &_ZTV18Unk_ov002_0220464c[2];
     _ZN18Unk_ov002_02204604D1Ev(&self->unk_4c);
-    _ZN12Unk_020e100cD2Ev(self);
+    _ZN10HandCursorD2Ev(self);
     operator delete(self);
     return self;
 }
@@ -992,22 +992,22 @@ extern "C" void *_ZN18Unk_ov002_0220464cD0Ev(Unk_ov002_0220464c *self) {
 extern "C" void *_ZN18Unk_ov002_0220464cD2Ev(Unk_ov002_0220464c *self) {
     *(void **)self = &_ZTV18Unk_ov002_0220464c[2];
     _ZN18Unk_ov002_02204604D1Ev(&self->unk_4c);
-    _ZN12Unk_020e100cD2Ev(self);
+    _ZN10HandCursorD2Ev(self);
     return self;
 }
 
 void Unk_ov002_0220464c::func_ov002_02202d00(s32 idx) {
-    if (idx != func_0208d534() || idx == 6 || idx == 0xc) {
-        func_0208d580(idx);
+    if (idx != getAnim() || idx == 6 || idx == 0xc) {
+        setAnim(idx);
     }
 }
 
 void Unk_ov002_0220464c::func_ov002_02202ca0() {
-    if (func_0208d534() == 1) {
+    if (getAnim() == 1) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a + 0x10, b);
-    } else if (func_0208d534() == 0xd) {
+    } else if (getAnim() == 0xd) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a + 4, b + 0x18);
@@ -1016,11 +1016,11 @@ void Unk_ov002_0220464c::func_ov002_02202ca0() {
 }
 
 void Unk_ov002_0220464c::func_ov002_02202c40() {
-    if (func_0208d534() == 7) {
+    if (getAnim() == 7) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a - 0x10, b);
-    } else if (func_0208d534() == 0xd) {
+    } else if (getAnim() == 0xd) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a - 0xc, b + 0x18);
@@ -1029,11 +1029,11 @@ void Unk_ov002_0220464c::func_ov002_02202c40() {
 }
 
 void Unk_ov002_0220464c::func_ov002_02202be0() {
-    if (func_0208d534() == 1) {
+    if (getAnim() == 1) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a + 0xc, b - 0x18);
-    } else if (func_0208d534() == 7) {
+    } else if (getAnim() == 7) {
         s32 a = func_ov002_022028c8();
         s32 b = func_ov002_022028a0();
         func_ov002_02202a40(a - 4, b - 0x18);
@@ -1043,28 +1043,28 @@ void Unk_ov002_0220464c::func_ov002_02202be0() {
 
 // ------------------------------------------------------------------------------------
 void Unk_ov002_0220464c::func_ov002_02202b68() {
-    switch (func_0208d534()) {
+    switch (getAnim()) {
     case 0:
         break;
     case 1:
     case 2:
     case 3:
-        func_0208d580(2);
+        setAnim(2);
         break;
     case 7:
     case 8:
     case 9:
-        func_0208d580(8);
+        setAnim(8);
         break;
     case 13:
     case 14:
     case 15:
-        func_0208d580(0xe);
+        setAnim(0xe);
         break;
     case 16:
     case 17:
     case 18:
-        func_0208d580(0x11);
+        setAnim(0x11);
         break;
     case 4:
     case 5:
@@ -1073,73 +1073,73 @@ void Unk_ov002_0220464c::func_ov002_02202b68() {
     case 11:
     case 12:
     default:
-        func_0208d580(8);
+        setAnim(8);
         break;
     }
 }
 
 void Unk_ov002_02202d98::func_ov002_02202af0() {
-    switch (func_0208d534()) {
+    switch (getAnim()) {
     case 0:
         break;
     case 1:
     case 2:
     case 3:
-        func_0208d580(3);
+        setAnim(3);
         break;
     case 7:
     case 8:
     case 9:
-        func_0208d580(9);
+        setAnim(9);
         break;
     case 13:
     case 14:
     case 15:
-        func_0208d580(0xf);
+        setAnim(0xf);
         break;
     case 16:
     case 17:
     case 18:
-        func_0208d580(0x12);
+        setAnim(0x12);
         break;
     default:
-        func_0208d580(9);
+        setAnim(9);
         break;
     }
 }
 
 void Unk_ov002_02202d98::func_ov002_02202a78() {
-    switch (func_0208d534()) {
+    switch (getAnim()) {
     case 0:
         break;
     case 1:
     case 2:
     case 3:
-        func_0208d580(1);
+        setAnim(1);
         break;
     case 7:
     case 8:
     case 9:
-        func_0208d580(7);
+        setAnim(7);
         break;
     case 13:
     case 14:
     case 15:
-        func_0208d580(0xd);
+        setAnim(0xd);
         break;
     case 16:
     case 17:
     case 18:
-        func_0208d580(0x10);
+        setAnim(0x10);
         break;
     default:
-        func_0208d580(9);
+        setAnim(9);
         break;
     }
 }
 
 void Unk_ov002_02202d98::func_ov002_02202a6c(s32 x, s32 y) {
-    func_0208d60c(x - 0x80, y - 0x60);
+    setPos(x - 0x80, y - 0x60);
 }
 
 void Unk_ov002_02202d98::func_ov002_02202a40(s32 x, s32 y) {
@@ -1149,22 +1149,22 @@ void Unk_ov002_02202d98::func_ov002_02202a40(s32 x, s32 y) {
 }
 
 void Unk_ov002_02202d98::func_ov002_02202a18(s32 x, s32 y, s32 n) {
-    func_0200402c(0xb);
+    Snd_PlaySe(0xb);
     unk_4c.func_ov002_022026c4(x, y, n);
 }
 
 void Unk_ov002_02202d98::func_ov002_022029e8(s32 x, s32 y, s32 n, s32 f) {
     if (f != 0) {
-        func_0200402c(0xb);
+        Snd_PlaySe(0xb);
     }
     unk_4c.func_ov002_02202694(x, y, n);
 }
 
 void Unk_ov002_02202d98::func_ov002_0220298c(s32 x, s32 y, s32 n, u8 e) {
-    s32 dx = x - (unk_20 + func_02089f68());
-    func_0200402c(0xb);
+    s32 dx = x - (unk_20 + getOriginX());
+    Snd_PlaySe(0xb);
     if (dx >= -0x30 && dx <= 0x30) {
-        s32 dy = y - (unk_24 + func_02089f64());
+        s32 dy = y - (unk_24 + getOriginY());
         if (dy >= -0x30 && dy <= 0x30) {
             n = e;
         }
@@ -1173,16 +1173,16 @@ void Unk_ov002_02202d98::func_ov002_0220298c(s32 x, s32 y, s32 n, u8 e) {
 }
 
 BOOL Unk_ov002_02202d98::func_ov002_02202928() {
-    switch (func_0208d534()) {
+    switch (getAnim()) {
     case 4:
     case 10:
-        if (unk_0c.func_02089244() >= 4) {
+        if (unk_0c.getFrameIndex() >= 4) {
             return TRUE;
         }
         return FALSE;
     case 5:
     case 11:
-        if (unk_0c.func_02089244() < 3) {
+        if (unk_0c.getFrameIndex() < 3) {
             return TRUE;
         }
         return FALSE;
@@ -1198,9 +1198,9 @@ BOOL Unk_ov002_02202d98::func_ov002_02202928() {
 }
 
 BOOL Unk_ov002_02202d98::func_ov002_022028fc() {
-    s32 t = func_0208d534();
+    s32 t = getAnim();
     if (t == 6 || t == 0xc) {
-        if (unk_0c.func_02089244() == 2) {
+        if (unk_0c.getFrameIndex() == 2) {
             return TRUE;
         }
         return FALSE;
@@ -1213,29 +1213,29 @@ BOOL Unk_ov002_02202d98::func_ov002_022028f0() {
 }
 
 s32 Unk_ov002_02202d98::func_ov002_022028c8() {
-    s32 t = unk_0c.func_02089228(-1);
-    return t + (unk_20 + func_02089f68());
+    s32 t = unk_0c.getFrameX(-1);
+    return t + (unk_20 + getOriginX());
 }
 
 s32 Unk_ov002_02202d98::func_ov002_022028a0() {
-    s32 t = unk_0c.func_02089210(-1);
-    return t + (unk_24 + func_02089f64());
+    s32 t = unk_0c.getFrameY(-1);
+    return t + (unk_24 + getOriginY());
 }
 
 s32 Unk_ov002_02202d98::func_ov002_0220288c() {
-    return unk_20 + func_02089f68();
+    return unk_20 + getOriginX();
 }
 
 s32 Unk_ov002_02202d98::func_ov002_02202878() {
-    return unk_24 + func_02089f64();
+    return unk_24 + getOriginY();
 }
 
 void Unk_ov002_02202d98::func_ov002_02202844() {
-    Unk_020e100c::vfunc_08();
+    HandCursor::draw();
     s32 old = unk_20;
-    if (old + func_02089f68() > 0xe0) {
+    if (old + getOriginX() > 0xe0) {
         unk_20 -= 0x100;
-        Unk_020e100c::vfunc_08();
+        HandCursor::draw();
         unk_20 = old;
     }
 }
@@ -1245,14 +1245,14 @@ void Unk_ov002_02202d98::vfunc_0c() {
     s32 x = unk_4c.func_ov002_02202710();
     s32 y = unk_4c.func_ov002_02202708();
     func_ov002_02202a6c(x, y);
-    if (func_0208d4fc()) {
-        if (func_0208d534() == 5) {
-            func_0208d580(1);
-        } else if (func_0208d534() == 0xb) {
-            func_0208d580(7);
+    if (isAnimDone()) {
+        if (getAnim() == 5) {
+            setAnim(1);
+        } else if (getAnim() == 0xb) {
+            setAnim(7);
         }
     }
-    Unk_020e100c::vfunc_0c();
+    HandCursor::vfunc_0c();
 }
 
 Unk_ov002_02204604::Unk_ov002_02204604() {}
@@ -1392,9 +1392,9 @@ extern "C" void *_ZTV18Unk_ov002_02204630[7] = {
     0,
     (void *)_ZN18Unk_ov002_02204630D1Ev,
     (void *)_ZN18Unk_ov002_02204630D0Ev,
-    (void *)_ZN12Unk_020e100c8vfunc_08Ev,
+    (void *)_ZN10HandCursor4drawEv,
     (void *)_ZN18Unk_ov002_02202d988vfunc_0cEv,
-    (void *)_ZN12Unk_020e0db48vfunc_10Eii,
+    (void *)_ZN8UiWidget9setOriginEii,
 };
 
 extern "C" void *_ZTV18Unk_ov002_02204614[7] = {
@@ -1402,9 +1402,9 @@ extern "C" void *_ZTV18Unk_ov002_02204614[7] = {
     0,
     (void *)_ZN18Unk_ov002_02204614D1Ev,
     (void *)_ZN18Unk_ov002_02204614D0Ev,
-    (void *)_ZN12Unk_020e100c8vfunc_08Ev,
+    (void *)_ZN10HandCursor4drawEv,
     (void *)_ZN18Unk_ov002_02202d988vfunc_0cEv,
-    (void *)_ZN12Unk_020e0db48vfunc_10Eii,
+    (void *)_ZN8UiWidget9setOriginEii,
 };
 
 extern "C" void *_ZTV18Unk_ov002_0220464c[7] = {
@@ -1412,7 +1412,7 @@ extern "C" void *_ZTV18Unk_ov002_0220464c[7] = {
     0,
     (void *)_ZN18Unk_ov002_0220464cD1Ev,
     (void *)_ZN18Unk_ov002_0220464cD0Ev,
-    (void *)_ZN12Unk_020e100c8vfunc_08Ev,
+    (void *)_ZN10HandCursor4drawEv,
     (void *)_ZN18Unk_ov002_02202d988vfunc_0cEv,
-    (void *)_ZN12Unk_020e0db48vfunc_10Eii,
+    (void *)_ZN8UiWidget9setOriginEii,
 };

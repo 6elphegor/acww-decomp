@@ -2,7 +2,7 @@
 #include "text/Unk_02050288.h"
 
 extern "C" {
-void func_02087e70(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
+void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 }
 
 extern "C" {
@@ -14,7 +14,7 @@ s32 func_020b50e8();
 }
 
 extern "C" {
-s32 func_02095134(s32 v);
+s32 PlayerActor_GetAction(s32 v);
 }
 
 extern "C" {
@@ -30,127 +30,127 @@ void GXS_LoadOBJPltt(void *p, u32 src, u32 size);
 }
 
 extern "C" {
-Unk_02050288 *func_020a8054(u32 a, s32 b, s32 c);
+TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c);
 }
 
 extern "C" {
-void func_020a7fd8(Unk_02050288 *obj);
+void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
-class Unk_020e2a78 {
+class MsgString {
 public:
-    static void func_020a7bd8(Unk_020e2a78 *p);
+    static void copy(MsgString *p);
 };
 
 extern s32 data_021c5384;
 extern u8 data_020d4694[];
 extern u8 data_020d468c[];
-struct Unk_02089270_Tbl { u32 unk_00; u32 unk_04; };
-extern Unk_02089270_Tbl data_020d5b0c[];
-extern u16 data_021ceb00[2];
+struct SpriteAnimSeq { u32 unk_00; u32 unk_04; };
+extern SpriteAnimSeq data_020d5b0c[];
+extern u16 sLabelButtonColorCache[2];
 extern const u8 data_020cf6ec[4];
 extern const u32 data_020cf6f0[2];
 extern const u8 data_020cf6e8[4];
 extern const s32 data_020cf708[4];
 extern const s32 data_020cf6f8[4];
 
-class Unk_02089270 {
+class SpriteAnim {
 public:
-    Unk_02089270();
-    ~Unk_02089270();
-    void func_02089140();
-    void func_020891bc();
-    BOOL func_020891d8();
-    s32 func_02089210(s32 v);
-    s32 func_02089228(s32 v);
-    void *func_02089248();
-    void func_02089260(s32 v);
-    void func_02089264(s32 v);
-    void func_02089268(Unk_02089270_Tbl *v);
+    SpriteAnim();
+    ~SpriteAnim();
+    void update();
+    void restart();
+    BOOL isFinished();
+    s32 getFrameY(s32 v);
+    s32 getFrameX(s32 v);
+    void *getCell();
+    void setSpeed(s32 v);
+    void setPlayOnce(s32 v);
+    void setSeq(SpriteAnimSeq *v);
 
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020e0db4 {
+class UiWidget {
 public:
-    Unk_020e0db4();
-    virtual ~Unk_020e0db4();
-    virtual void vfunc_08() = 0;
+    UiWidget();
+    virtual ~UiWidget();
+    virtual void draw() = 0;
     virtual void vfunc_0c() = 0;
-    virtual void vfunc_10(s32 a, s32 b);
-    s32 func_02089f64();
-    s32 func_02089f68();
+    virtual void setOrigin(s32 a, s32 b);
+    s32 getOriginY();
+    s32 getOriginX();
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e1028 : public Unk_020e0db4 {
+class ScrollKnob : public UiWidget {
 public:
-    Unk_020e1028(u32 flag);
-    virtual ~Unk_020e1028();
-    virtual void vfunc_08();
+    ScrollKnob(u32 flag);
+    virtual ~ScrollKnob();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208d9d4();
-    void func_0208dae4(s32 v);
-    void func_0208dae8(s32 x, s32 y);
+    void setState();
+    void setPriority(s32 v);
+    void moveTo(s32 x, s32 y);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
-    /* 0x14 */ Unk_02089270 unk_14;
-    /* 0x28 */ Unk_02089270 unk_28;
+    /* 0x14 */ SpriteAnim unk_14;
+    /* 0x28 */ SpriteAnim unk_28;
     /* 0x3c */ s32 unk_3c;
     /* 0x40 */ u8 unk_40;
     /* 0x44 */ s32 unk_44;
 };
 
-class Unk_020e1064 : public Unk_020e0db4 {
+class HudUnkIcon : public UiWidget {
 public:
-    Unk_020e1064();
-    virtual ~Unk_020e1064();
-    virtual void vfunc_08();
+    HudUnkIcon();
+    virtual ~HudUnkIcon();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208ddb8();
-    void func_0208ddd8();
-    void func_0208de10();
-    void func_0208de30();
+    void updateHiding();
+    void updateShown();
+    void updateAppearing();
+    void updateHidden();
 
-    /* 0x0c */ Unk_02089270 unk_0c;
+    /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
 };
 
-extern Unk_020e1064 data_021ceadc;
+extern HudUnkIcon sHudUnkIcon;
 
-class Unk_020e1098 : public Unk_020e0db4 {
+class LabelButton : public UiWidget {
 public:
-    Unk_020e1098(u32 flag);
-    virtual ~Unk_020e1098();
-    virtual void vfunc_08();
+    LabelButton(u32 flag);
+    virtual ~LabelButton();
+    virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208dff4();
-    void func_0208e074();
-    void func_0208e08c();
-    BOOL func_0208e110();
-    s32 func_0208e138();
-    void func_0208e13c(s32 v);
-    void func_0208e1fc(s32 *outx, s32 *outy);
-    void func_0208e288(s32 x, s32 y);
-    void func_0208e290();
-    void func_0208e2c8();
-    void func_0208e2d0();
-    void func_0208e2d8();
+    void syncTextColor();
+    void freeLabel();
+    void createLabel();
+    BOOL isAnimDone();
+    s32 getState();
+    void setState(s32 v);
+    void getAnimOffset(s32 *outx, s32 *outy);
+    void setPos(s32 x, s32 y);
+    void setLabelText();
+    void showLayer2();
+    void hideLayer2();
+    void enableObjWindow();
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
     /* 0x14 */ s32 unk_14;
     /* 0x18 */ s32 unk_18;
-    /* 0x1c */ Unk_02089270 unk_1c;
-    /* 0x30 */ Unk_02089270 unk_30;
+    /* 0x1c */ SpriteAnim unk_1c;
+    /* 0x30 */ SpriteAnim unk_30;
     /* 0x44 */ s32 unk_44;
-    /* 0x48 */ Unk_02050288 *unk_48;
+    /* 0x48 */ TextLabel *unk_48;
     /* 0x4c */ StrBuf unk_4c;
     /* 0x50 */ u32 unk_50[6];
     /* 0x68 */ u16 unk_68;
@@ -160,105 +160,105 @@ public:
     /* 0x6d */ u8 unk_6d;
 };
 
-void Unk_020e1098::func_0208e2d8() { unk_6b = 1; }
+void LabelButton::enableObjWindow() { unk_6b = 1; }
 
-void Unk_020e1098::func_0208e2d0() { unk_6c = 1; }
+void LabelButton::hideLayer2() { unk_6c = 1; }
 
-void Unk_020e1098::func_0208e2c8() { unk_6c = 0; }
+void LabelButton::showLayer2() { unk_6c = 0; }
 
-void Unk_020e1098::func_0208e290() {
-    Unk_020e2a78::func_020a7bd8((Unk_020e2a78 *)&unk_4c);
-    Unk_02050288 *o = unk_48;
+void LabelButton::setLabelText() {
+    MsgString::copy((MsgString *)&unk_4c);
+    TextLabel *o = unk_48;
     if (o != NULL) {
         o->unk_10 = (u32)unk_4c.data();
-        unk_48->func_02050c44();
-        unk_48->func_02050c90();
+        unk_48->alignCenter();
+        unk_48->requestRedraw();
         unk_6d = 1;
     }
 }
 
-void Unk_020e1098::func_0208e288(s32 x, s32 y) { unk_0c = x; unk_10 = y; }
+void LabelButton::setPos(s32 x, s32 y) { unk_0c = x; unk_10 = y; }
 
-void Unk_020e1098::func_0208e1fc(s32 *outx, s32 *outy) {
+void LabelButton::getAnimOffset(s32 *outx, s32 *outy) {
     s32 x = 0;
     s32 y = x;
     if (unk_44 == 2) {
-        x = unk_1c.func_02089228(-1) - unk_1c.func_02089228(0);
-        y = unk_1c.func_02089210(-1) - unk_1c.func_02089210(0);
+        x = unk_1c.getFrameX(-1) - unk_1c.getFrameX(0);
+        y = unk_1c.getFrameY(-1) - unk_1c.getFrameY(0);
     } else if (unk_44 == 3) {
-        x = unk_1c.func_02089228(0) - unk_1c.func_02089228(-1);
-        y = unk_1c.func_02089210(0) - unk_1c.func_02089210(-1);
+        x = unk_1c.getFrameX(0) - unk_1c.getFrameX(-1);
+        y = unk_1c.getFrameY(0) - unk_1c.getFrameY(-1);
     }
     *outx = x;
     *outy = y;
 }
 
-void Unk_020e1098::func_0208e13c(s32 v) {
+void LabelButton::setState(s32 v) {
     s32 i = data_020cf6e8[unk_18] + data_020cf708[v];
     s32 j = i + 1;
     s32 k = data_020cf6f8[v];
     unk_44 = v;
-    unk_1c.func_02089268(&data_020d5b0c[i]);
-    unk_1c.func_02089264(k);
-    unk_1c.func_020891bc();
-    unk_30.func_02089268(&data_020d5b0c[v ? j : j]);
-    unk_30.func_02089264(k);
-    unk_30.func_020891bc();
+    unk_1c.setSeq(&data_020d5b0c[i]);
+    unk_1c.setPlayOnce(k);
+    unk_1c.restart();
+    unk_30.setSeq(&data_020d5b0c[v ? j : j]);
+    unk_30.setPlayOnce(k);
+    unk_30.restart();
     if (v == 1) {
-        unk_1c.func_02089260(0);
-        unk_30.func_02089260(0);
+        unk_1c.setSpeed(0);
+        unk_30.setSpeed(0);
     }
     if (v == 0) {
-        func_0208e074();
+        freeLabel();
     } else {
-        func_0208e08c();
+        createLabel();
         unk_68 = unk_44 == 2 ? 0x7d5f : 0x50c0;
         unk_6d = 1;
     }
 }
 
-s32 Unk_020e1098::func_0208e138() { return unk_44; }
+s32 LabelButton::getState() { return unk_44; }
 
-BOOL Unk_020e1098::func_0208e110() {
-    if (unk_1c.func_020891d8() && unk_30.func_020891d8()) {
+BOOL LabelButton::isAnimDone() {
+    if (unk_1c.isFinished() && unk_30.isFinished()) {
         return TRUE;
     }
     return FALSE;
 }
 
-void Unk_020e1098::func_0208e08c() {
+void LabelButton::createLabel() {
     if (unk_48 == NULL) {
-        unk_48 = func_020a8054(data_020cf6f0[unk_18], 6, 2);
+        unk_48 = MsgTextLabel_CreateVram(data_020cf6f0[unk_18], 6, 2);
         if (unk_48 != NULL) {
             unk_48->unk_2c = 4;
-            Unk_02050288 *t = unk_48;
+            TextLabel *t = unk_48;
             t->unk_10 = (u32)unk_4c.data();
             if (unk_6a != 0) {
                 unk_48->unk_50 = 2;
             }
             unk_48->unk_55 = 1;
-            unk_48->func_02050c44();
+            unk_48->alignCenter();
             unk_48->unk_39 = 0;
             unk_48->unk_38 = data_020cf6ec[unk_18];
-            unk_48->func_02050c90();
+            unk_48->requestRedraw();
             unk_6d = 1;
         }
     }
 }
 
-void Unk_020e1098::func_0208e074() {
+void LabelButton::freeLabel() {
     if (unk_48 != NULL) {
-        func_020a7fd8(unk_48);
+        MsgTextLabel_Destroy(unk_48);
         unk_48 = NULL;
     }
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Unk_020e1098
+// LabelButton
 
-void Unk_020e1098::func_0208dff4() {
+void LabelButton::syncTextColor() {
     if (unk_6d == 0) {
-        if (unk_68 != data_021ceb00[unk_18]) {
+        if (unk_68 != sLabelButtonColorCache[unk_18]) {
             unk_6d = 1;
         }
     }
@@ -267,7 +267,7 @@ void Unk_020e1098::func_0208dff4() {
         DC_FlushRange(&unk_68, 2);
         GX_LoadOBJPltt(&unk_68, n, 2);
         GXS_LoadOBJPltt(&unk_68, n, 2);
-        data_021ceb00[unk_18] = unk_68;
+        sLabelButtonColorCache[unk_18] = unk_68;
         unk_6d = 0;
     }
 }
@@ -278,7 +278,7 @@ extern const s32 data_020cf708[4];
 extern const u32 data_020cf6f0[2];
 extern const u8 data_020cf6ec[4];
 extern const u8 data_020cf6e8[4];
-extern u16 data_021ceb00[2];
+extern u16 sLabelButtonColorCache[2];
 
 const s32 data_020cf6f8[4] = {1, 1, 1, 1};
 
@@ -290,4 +290,4 @@ const u8 data_020cf6ec[4] = {0xe, 0xf, 0, 0};
 
 const u8 data_020cf6e8[4] = {0, 4, 0, 0};
 
-u16 data_021ceb00[2];
+u16 sLabelButtonColorCache[2];

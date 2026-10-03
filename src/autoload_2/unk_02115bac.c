@@ -8,7 +8,7 @@ typedef volatile u16 vu16;
 typedef volatile u32 vu32;
 typedef void (*MIDmaCallback)(void *arg);
 
-extern void func_0206d49c(void); // OS_Terminate
+extern void Fatal_Trap(void); // OS_Terminate
 extern u32 OS_DisableInterrupts(void); // OS_DisableInterrupts
 extern void OS_RestoreInterrupts(u32 mode); // OS_RestoreInterrupts
 extern void MIi_CheckDma0SourceAddress(u32 dmaNo, u32 src, u32 size, u32 flags); // MIi_CheckDma0SourceAddress

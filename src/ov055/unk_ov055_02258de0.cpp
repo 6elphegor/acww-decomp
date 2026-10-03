@@ -1,29 +1,29 @@
 #include "types.h"
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 struct Unk_ov055_022593b0_Out {
@@ -175,31 +175,31 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-struct Unk_0203442c {
+struct ItemId {
     u16 unk_00;
-    Unk_0203442c();
-    ~Unk_0203442c();
+    ItemId();
+    ~ItemId();
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual BOOL vfunc_58();
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
@@ -212,13 +212,13 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -273,7 +273,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 v);
     virtual void vfunc_78();
     virtual void vfunc_7c();
@@ -296,14 +296,14 @@ struct Unk_0208f238 {
 };
 
 extern "C" {
-extern u8 data_021cc7d0[];
+extern u8 gOverlayHandle[];
 extern u32 OVERLAY_68_ID[];
 extern u32 OVERLAY_67_ID[];
 extern u8 data_021ecfa8[];
 extern u16 data_020c6cc8;
-extern u16 data_021f47d8[];
-extern u8 data_021f4770;
-extern u8 data_021f4774;
+extern u16 gPad[];
+extern u8 gTouchHeld;
+extern u8 gTouchChanged;
 extern u8 data_021c3cc0;
 extern const void *data_ov055_02259820;
 extern u8 data_ov055_02259880[];
@@ -311,27 +311,27 @@ extern u8 data_ov055_022598b0[];
 extern Unk_ov055_02259994 *data_ov055_02259a40;
 
 s32 _ZN12Unk_02013b1013func_02014220Ev(void *self);
-void func_02076c50(void *p);
-void func_02076c24(void *p, u32 v);
+void OverlayHandle_Unload(void *p);
+void OverlayHandle_Load(void *p, u32 v);
 Unk_0208f238 *func_0208f0b0(s32 i);
 void func_0208f1dc(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
 s32 func_020b013c();
-s32 func_020a049c();
+s32 Save_WriteVillagerTransfer();
 s32 func_020e9a08(void *p);
 s32 func_020e9a18(void *p);
 void func_020e9a3c(void *p);
 void func_020e9a48(void *p);
 void func_020e9a54(void *a, void *b, u32 n);
-void func_0200402c(s32 v);
+void Snd_PlaySe(s32 v);
 void func_02073a0c();
 void func_02073bac();
 void _ZN12Unk_020660f813func_02067a84EPhPv(void *self, void *m, const void *x);
 void _ZN12Unk_020660f813func_02067a6cEv(void *self);
 void _ZN12Unk_020660f813func_02067a78Ev(void *self);
 void *_ZN12Unk_020660f813func_020679b4Ev(void *self);
-s32 _ZN12Unk_020aa3b813func_020aa514Ev(void *self);
+s32 _ZN10ChoiceList9getResultEv(void *self);
 void _ZN12Unk_020d771413func_02015ab0Ej(void *self, u32 v);
 void func_0203d984();
 void func_0203d990();
@@ -496,7 +496,7 @@ extern "C" Unk_ov055_02259994 *data_ov055_02259a40 = 0;
 static inline BOOL Unk_ov055_02259484_IsTwo(u8 v) { return v == 2 ? TRUE : FALSE; }
 
 static inline BOOL Unk_ov055_0225915c_Both() {
-    return (data_021f4770 != 0 && data_021f4774 != 0) ? TRUE : FALSE;
+    return (gTouchHeld != 0 && gTouchChanged != 0) ? TRUE : FALSE;
 }
 
 extern "C" Unk_ov055_02259994 *func_ov055_02259624() { return new Unk_ov055_02259994; }
@@ -631,7 +631,7 @@ void Unk_ov055_02259904::vfunc_14() {
 }
 
 void Unk_ov055_02259904::vfunc_18() {
-    s32 t = _ZN12Unk_020aa3b813func_020aa514Ev(_ZN12Unk_020660f813func_020679b4Ev(unk_3c));
+    s32 t = _ZN10ChoiceList9getResultEv(_ZN12Unk_020660f813func_020679b4Ev(unk_3c));
     if (unk_1e == 0x3a && t == 1) {
         func_02073a0c();
     }
@@ -678,7 +678,7 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
         _ZN12Unk_020660f813func_02067a84EPhPv(unk_3c, &m[0], data_ov055_02259820);
         func_ov055_0225922c(2);
     } else {
-        if ((data_021f47d8[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
+        if ((gPad[1] & 1) == 0 && !Unk_ov055_0225915c_Both() && r5 == 0) {
             return;
         }
         func_020e9a3c(func_02072144());
@@ -690,7 +690,7 @@ void Unk_ov055_02259904::func_ov055_0225915c() {
 
 void Unk_ov055_02259904::func_ov055_02259128() {
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
-        func_0200402c(0x69);
+        Snd_PlaySe(0x69);
         _ZN12Unk_020660f813func_02067a6cEv(unk_3c);
         func_ov055_0225922c(0);
     }
@@ -703,7 +703,7 @@ void Unk_ov055_02259904::func_ov055_022590b0() {
     void *r4 = unk_3c;
     if (((*(volatile u16 *)0x027fffa8 & 0x8000) >> 15) == 0) {
         if (func_020e9a08(func_02072144())) {
-            func_0200402c(0x69);
+            Snd_PlaySe(0x69);
             func_02073a0c();
             u8 m = 0x3c;
             _ZN12Unk_020660f813func_02067a84EPhPv(unk_3c, &m, data_ov055_02259820);
@@ -774,7 +774,7 @@ void Unk_ov055_02259994::func_ov055_02258f04() {
     unk_f5c.unk_f8 = 1;
     func_0208f1dc(r4);
     if (unk_70c == 0) {
-        s32 r = func_020a049c();
+        s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
             unk_70c = 1;
         }
@@ -784,7 +784,7 @@ void Unk_ov055_02259994::func_ov055_02258f04() {
 void Unk_ov055_02259994::func_ov055_02258ed4() {
     if (unk_70c == 0) {
         func_0208f0b0(4);
-        s32 r = func_020a049c();
+        s32 r = Save_WriteVillagerTransfer();
         if (r == 1 || r == 4) {
             unk_70c = 1;
         }
@@ -792,13 +792,13 @@ void Unk_ov055_02259994::func_ov055_02258ed4() {
 }
 
 void Unk_ov055_02259994::func_ov055_02258eb4() {
-    func_02076c50(data_021cc7d0);
-    func_02076c24(data_021cc7d0, (u32)OVERLAY_67_ID);
+    OverlayHandle_Unload(gOverlayHandle);
+    OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_67_ID);
 }
 
 void Unk_ov055_02259994::func_ov055_02258e94() {
-    func_02076c50(data_021cc7d0);
-    func_02076c24(data_021cc7d0, (u32)OVERLAY_68_ID);
+    OverlayHandle_Unload(gOverlayHandle);
+    OverlayHandle_Load(gOverlayHandle, (u32)OVERLAY_68_ID);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

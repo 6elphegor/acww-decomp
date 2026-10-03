@@ -6,54 +6,54 @@
 // Paste this block unchanged into TU18..TU26 (it is the base of 0224d618 (TU18), 0224d80c (TU19), 0224dd98 (TU23),
 // 0224def8 (TU24), 0224e034 (TU25), 0224e2b8 (TU26)).  It is what TU17's unit.cpp compiles; vtable symbols in the
 // original (0x0224d4e0, 0x70 bytes):
-//   slot 00 Unk_020d8c7c_Base::vfunc_00        04 M::vfunc_04               08 Unk_020d9670::func_0203e678(s32)
-//   0c Base::vfunc_0c   10 M::vfunc_10   14 Unk_020d5d84::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
+//   slot 00 ProcBase::vfunc_00        04 M::vfunc_04               08 Character::postCreate(s32)
+//   0c Base::vfunc_0c   10 M::vfunc_10   14 Actor::vfunc_14   18 Base::vfunc_18   1c M::vfunc_1c
 //   20 M::vfunc_20(u32) (symbols.txt calls it func_ov004_022250cc: renames.txt  ov004 022250cc _ZN18Unk_ov004_0224d4e88vfunc_20Ej)
-//   24 Base::vfunc_24   28 Unk_020d5d84::vfunc_28   2c Unk_020d5d84::vfunc_2c   30..3c Base   40 D1  44 D0
-//   48..5c Unk_020d9670 (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
+//   24 Base::vfunc_24   28 Actor::preDraw   2c Actor::postDraw   30..3c Base   40 D1  44 D0
+//   48..5c Character (vfunc_48/4c/50/54/58/5c)   60 M::vfunc_60(u32)   64 M::vfunc_64(Vec *)
 // Notes for derived classes:
 //  * M's constructor is the base-object ctor _ZN18Unk_ov004_0224d4e8C2Ev (0x02225244, the only ctor in the original);
 //    TU17 defines it as an extern "C" function with that name, derived constructors call it as M::M() (C2).
 //  * The helper members unk_1a4 (Unk_ov004_02224ee4: real C1/D1 methods), unk_248 (Unk_ov004_02224d60) and unk_250
 //    (Unk_ov004_02224cf4) are driven through plain extern "C" functions func_ov004_02224xxxx(void *self, ...) (their symbols.txt
 //    names); the inline member wrappers below call them.  Their destructors are called by M's own destructor bodies
-//    (func_ov004_02224ce4 / func_ov004_02224d5c), so B and Cf4 have no destructor here.
-//  * Unk_020d8c7c_Base .. Unk_020d9670 are an own copy of the library chain (the header Unk_020d8c7c.h names slot 08
-//    vfunc_08, the real symbol is Unk_020d9670::func_0203e678(s32); slot 20 takes a u32).  Do not also include Unk_020d8c7c.h.
+//    (func_ov004_02224ce4 / func_ov004_02224d5c), so LightLevel and Cf4 have no destructor here.
+//  * ProcBase .. Character are an own copy of the library chain (the header GameProc.h names slot 08
+//    vfunc_08, the real symbol is Character::postCreate(s32); slot 20 takes a u32).  Do not also include GameProc.h.
 //  * Names a derived class must not reuse: unk_ea (u8, 0xff = none), unk_ec (Unk_020dbd54), unk_1a4, unk_248, unk_250.
 // Layout: M is 0x290 bytes; Unk_020ddcf0 (secondary base of the derived classes) starts at 0x290.
 
-// Library base class chain (header Unk_020d8c7c.h rebuilt so that the vtable names the real symbols:
-// slot 08 is Unk_020d9670::func_0203e678(s32), slot 20 takes a u32).
-class Unk_020d8c7c_Base {
+// Library base class chain (header GameProc.h rebuilt so that the vtable names the real symbols:
+// slot 08 is Character::postCreate(s32), slot 20 takes a u32).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void func_0203e678(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    Unk_020d8c7c() {}
-    virtual ~Unk_020d8c7c() {}
+    GameProc() {}
+    virtual ~GameProc() {}
 
     /* 0x04 */ u8 unk_04[0x4c];
 };
@@ -69,39 +69,39 @@ struct Unk_0203e5d0_Node {
     /* 0x0c */ void *unk_0c;
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c {
+class Actor : public GameProc {
 public:
-    Unk_020d5d84();
+    Actor();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
-    virtual ~Unk_020d5d84();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
+    virtual ~Actor();
 
     /* 0x50 */ u8 unk_50[0xc];
     /* 0x5c */ s32 unk_5c[3];
     /* 0x68 */ u8 pad_68[0xd4 - 0x68];
 };
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual void func_0203e678(s32 v);
+    Character();
+    virtual ~Character();
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48(void *a);
     virtual void vfunc_4c(u32 a, u8 b);
-    virtual void *vfunc_50();
-    virtual BOOL vfunc_54(void *a);
+    virtual void *getInteractionPos();
+    virtual BOOL acceptsInteractionOutOfRange(void *a);
     virtual BOOL vfunc_58(void *a);
     virtual BOOL vfunc_5c();
 
-    void func_0203e624(u32 a);
+    void setCharId(u32 a);
 
     /* 0xd4 */ Unk_0203e5d0_Node unk_d4;
     /* 0xe4 */ s32 unk_e4;
@@ -125,21 +125,21 @@ public:
     u32 unk_98;
 };
 
-class Unk_020dbe7c {
+class AnimFrameCtrl {
 public:
-    virtual ~Unk_020dbe7c();
-    inline Unk_020dbe7c() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
+    virtual ~AnimFrameCtrl();
+    inline AnimFrameCtrl() : unk_a4(0), unk_a8(0), unk_ac(0x1000) {}
     u32 unk_a0;
     s32 unk_a4;
     s32 unk_a8;
     s32 unk_ac;
     u32 unk_b0;
 
-    s32 func_02056654();
-    s32 func_020565e8(s32 a);
+    s32 isFinished();
+    s32 hasPassedFrame(s32 a);
 };
 
-class Unk_020dbd54 : public Unk_020dbd34, public Unk_020dbe7c {
+class Unk_020dbd54 : public Unk_020dbd34, public AnimFrameCtrl {
 public:
     Unk_020dbd54();
     virtual ~Unk_020dbd54();
@@ -211,13 +211,13 @@ public:
     u32 unk_00[0x10];
 };
 
-class Unk_ov004_0224d4e8 : public Unk_020d9670 {
+class Unk_ov004_0224d4e8 : public Character {
 public:
     Unk_ov004_0224d4e8();
     virtual ~Unk_ov004_0224d4e8();
     virtual BOOL vfunc_04();
-    virtual BOOL vfunc_10();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preDelete();
+    virtual BOOL preExecute();
     virtual void vfunc_20(u32 a);
     virtual BOOL vfunc_60(u32 v);
     virtual void vfunc_64(Unk_ov004_02224ee4_Vec *out);
@@ -348,14 +348,14 @@ public:
 typedef BOOL (ObjB::*Fn)();
 
 // the colour-less 3-word global used by the state machine (inline ctor, dtor is a main stub)
-struct Unk_02000c8c {
+struct FxVec3 {
     s32 x, y, z;
-    Unk_02000c8c(s32 a, s32 b, s32 c) {
+    FxVec3(s32 a, s32 b, s32 c) {
         x = a;
         y = b;
         z = c;
     }
-    ~Unk_02000c8c();
+    ~FxVec3();
 };
 
 struct Unk_ov004_0224d988_M {
@@ -390,8 +390,8 @@ public:
     virtual ~Unk_ov004_0224d988();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
 
     /* 0x290 */ Unk_ov004_0224d988_M unk_290[9];
     /* 0x908 */ Unk_ov004_0224d988_H unk_908[9];
@@ -419,15 +419,15 @@ u32 _ZN12Unk_0205454c13func_0205458cEv(void *);
 s32 _ZN12Unk_0205454c13func_02054720Eiiitt(void *, u32, u32, u32, u32, u32);
 s32 _ZN12Unk_020dbd5413func_02054710Ev(void *);
 s32 _ZN12Unk_020dbd5413func_02054800EPv(void *, void *);
-s32 _ZN12Unk_020dbe7c13func_02056654Ev(void *);
+s32 _ZN13AnimFrameCtrl10isFinishedEv(void *);
 s32 _ZN12Unk_020dbd5413func_020547ccEPv(void *, u32);
 s32 _ZN12Unk_020dbd5413func_020547e4Ev(void *);
-s32 _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(void *, void *, u32);
+s32 _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, u32);
 s32 NNS_G3dBindMdlTex(void *, u32);
 s32 NNS_G3dBindMdlPltt(void *, u32);
-s32 func_0203a5ac(void);
-s32 func_0203a264(void);
-s32 func_0203a598(void);
+s32 Camera_RestorePrevMode(void);
+s32 Camera_MuteSe(void);
+s32 Camera_SetMode4(void);
 s32 func_020902f8(void *);
 s32 func_02090268(u32 a, void *b, void *c, u32 d);
 u32 func_ov004_0221c08c(void);
@@ -437,9 +437,9 @@ void *func_ov004_0221c0b8(void);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void *func_02034d2c(void);
 s32 func_020e77cc(void *p, u32 a, u32 b);
-Unk_ov004_022275fc_Sess *func_02003bbc(void);
+Unk_ov004_022275fc_Sess *Snd_GetBeatState(void);
 s32 func_020902d4(s32 a, void *b, u32 c, u32 d);
-void *func_020e8608(void *heap, u32 size);
+void *Heap_Alloc(void *heap, u32 size);
 void *__cxa_vec_ctor(void *array, u32 count, u32 size, void *(*ctor)(void *), void *(*dtor)(void *, s32));
 void *__cxa_vec_cleanup(void *array, u32 count, u32 size, void *(*dtor)(void *, s32));
 void func_ov004_02224d60(void *);
@@ -504,18 +504,18 @@ void func_ov004_022264a0(void);
 #define CDB (*(ObjB * volatile *)&data_ov004_02250cd0)
 #define CDC (*(Unk_ov004_0224d988 * volatile *)&data_ov004_02250cd0)
 // declarations (definition order below sets the data layout)
-extern "C" { extern Unk_02000c8c data_ov004_02250d2c; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d44; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d5c; }
+extern "C" { extern FxVec3 data_ov004_02250d2c; }
+extern "C" { extern FxVec3 data_ov004_02250d44; }
+extern "C" { extern FxVec3 data_ov004_02250d5c; }
 extern "C" { extern void *data_ov004_0224d920[2]; }
 extern "C" { extern void *data_ov004_0224d8f8[2]; }
 extern "C" { extern void *data_ov004_0224d8e0[2]; }
-extern "C" { extern Unk_02000c8c data_ov004_02250cd8; }
+extern "C" { extern FxVec3 data_ov004_02250cd8; }
 extern "C" { extern void *data_ov004_0224d8d8[2]; }
 extern "C" { extern void *volatile data_ov004_02250cd0; }
 extern "C" { extern void *data_ov004_0224d908[2]; }
-extern "C" { extern Unk_02000c8c data_ov004_02250cf0; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d08; }
+extern "C" { extern FxVec3 data_ov004_02250cf0; }
+extern "C" { extern FxVec3 data_ov004_02250d08; }
 extern "C" { extern void *data_ov004_0224d948[2]; }
 extern "C" { extern void *data_ov004_0224d940[2]; }
 extern "C" { extern void *data_ov004_0224d8d0[2]; }
@@ -532,16 +532,16 @@ extern "C" { extern void *data_ov004_0224d958[2]; }
 extern "C" { extern void *data_ov004_0224d928[2]; }
 extern "C" { extern void *data_ov004_0224d8c8[2]; }
 extern "C" { extern Unk_ov004_Scene_Entry data_ov004_0224d968; }// declarations (definition order below sets the data layout)
-extern "C" { extern Unk_02000c8c data_ov004_02250d2c; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d44; }
+extern "C" { extern FxVec3 data_ov004_02250d2c; }
+extern "C" { extern FxVec3 data_ov004_02250d44; }
 extern "C" { extern void *data_ov004_0224d938[2]; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d5c; }
+extern "C" { extern FxVec3 data_ov004_02250d5c; }
 extern "C" { extern void *data_ov004_0224d8e0[2]; }
-extern "C" { extern Unk_02000c8c data_ov004_02250cd8; }
-extern "C" { extern Unk_02000c8c data_ov004_02250cf0; }
+extern "C" { extern FxVec3 data_ov004_02250cd8; }
+extern "C" { extern FxVec3 data_ov004_02250cf0; }
 extern "C" { extern void *data_ov004_0224d918[2]; }
 extern "C" { extern void *data_ov004_0224d908[2]; }
-extern "C" { extern Unk_02000c8c data_ov004_02250d08; }
+extern "C" { extern FxVec3 data_ov004_02250d08; }
 extern "C" { extern void *data_ov004_0224d958[2]; }
 extern "C" { extern void *data_ov004_0224d950[2]; }
 extern "C" { extern void *data_ov004_0224d948[2]; }
@@ -561,25 +561,25 @@ extern "C" { extern void *volatile data_ov004_02250cd0; }
 extern "C" { extern void *data_ov004_0224d8c8[2]; }
 extern "C" { extern Unk_ov004_Scene_Entry data_ov004_0224d968; }
 
-extern "C" Unk_02000c8c data_ov004_02250d2c(0, 0, 0);
+extern "C" FxVec3 data_ov004_02250d2c(0, 0, 0);
 
-extern "C" Unk_02000c8c data_ov004_02250d44(0x17700, 0x1900, 0x15800);
+extern "C" FxVec3 data_ov004_02250d44(0x17700, 0x1900, 0x15800);
 
 extern "C" void *data_ov004_0224d938[2] = {(void *)func_ov004_02226b80, 0};
 
-extern "C" Unk_02000c8c data_ov004_02250d5c(0x17800, 0x1a00, 0x13400);
+extern "C" FxVec3 data_ov004_02250d5c(0x17800, 0x1a00, 0x13400);
 
 extern "C" void *data_ov004_0224d8e0[2] = {(void *)func_ov004_02226914, 0};
 
-extern "C" Unk_02000c8c data_ov004_02250cd8(0x10c00, 0x1600, 0x1b000);
+extern "C" FxVec3 data_ov004_02250cd8(0x10c00, 0x1600, 0x1b000);
 
-extern "C" Unk_02000c8c data_ov004_02250cf0(0x16a00, 0x1900, 0x13000);
+extern "C" FxVec3 data_ov004_02250cf0(0x16a00, 0x1900, 0x13000);
 
 extern "C" void *data_ov004_0224d918[2] = {(void *)func_ov004_0222687c, 0};
 
 extern "C" void *data_ov004_0224d908[2] = {(void *)func_ov004_02226f6c, 0};
 
-extern "C" Unk_02000c8c data_ov004_02250d08(0x16600, 0x1900, 0x11e00);
+extern "C" FxVec3 data_ov004_02250d08(0x16600, 0x1900, 0x11e00);
 
 extern "C" void *data_ov004_0224d958[2] = {(void *)func_ov004_02226ec0, 0};
 
@@ -674,11 +674,11 @@ BOOL Unk_ov004_0224d988::vfunc_00() {
 }
 
 // @22275fc
-BOOL Unk_ov004_0224d988::vfunc_18() {
+BOOL Unk_ov004_0224d988::onExecute() {
     ObjB *o = (ObjB *)this;
     u8 i;
     if (func_020e77cc(func_02034d2c(), 0x63, 0xab)) {
-        Unk_ov004_022275fc_Sess *t = func_02003bbc();
+        Unk_ov004_022275fc_Sess *t = Snd_GetBeatState();
         if (t != NULL) {
             if (t->unk_03 != 1) {
                 o->unk_190 = 0;
@@ -714,7 +714,7 @@ BOOL Unk_ov004_0224d988::vfunc_18() {
 }
 
 // @22275f8
-BOOL Unk_ov004_0224d988::vfunc_24() {
+BOOL Unk_ov004_0224d988::onDraw() {
     ObjB *o = (ObjB *)this;
     return TRUE;
 }
@@ -1012,15 +1012,15 @@ BOOL func_ov004_02226a68(ObjA *o) {
 
 // @2226914
 void func_ov004_02226914(ObjA *o) {
-    if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 6) && _ZN12Unk_020dbe7c13func_02056654Ev((u8 *)o + 0x3e4)) {
+    if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 6) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
         UP(9, M1, R1, 1, 0);
         UP(7, M2, R2, 1, 0);
-    } else if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 9) && _ZN12Unk_020dbe7c13func_02056654Ev((u8 *)o + 0x3e4)) {
+    } else if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 9) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
         UP(0xa, M1, R1, 1, 0);
         UP(8, M2, R2, 1, 0);
-    } else if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 0xa) && _ZN12Unk_020dbe7c13func_02056654Ev((u8 *)o + 0x3e4)) {
-        func_0203a264();
-        func_0203a598();
+    } else if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 0xa) && _ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
+        Camera_MuteSe();
+        Camera_SetMode4();
         UP(0xb, M1, R1, 1, 0);
         UP(9, M2, R2, 1, 0);
     }
@@ -1028,7 +1028,7 @@ void func_ov004_02226914(ObjA *o) {
 
 // @2226904
 BOOL func_ov004_02226904(void) {
-    func_0203a5ac();
+    Camera_RestorePrevMode();
     return TRUE;
 }
 
@@ -1043,7 +1043,7 @@ BOOL func_ov004_02226904(void) {
 
 void func_ov004_0222687c(ObjA *o) {
     if (_ZN12Unk_0205454c13func_0205458cEv(M1) == func_ov004_02224d8c(R1, 0xb)) {
-        if (_ZN12Unk_020dbe7c13func_02056654Ev((u8 *)o + 0x3e4)) {
+        if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)o + 0x3e4)) {
             UP(0xc, M1, R1, 1, 0);
             UP(0xa, M2, R2, 1, 0);
         }
@@ -1067,7 +1067,7 @@ void func_ov004_022267dc(void *ov, u32 idx, const char *id, const char *x) {
     func_ov004_02224dbc(r, id);
     q = b + 0xecc + idx * 4;
     func_ov004_02224d10(q, x);
-    _ZN12Unk_020dbe3413func_020555ecEP16Unk_020553f8_Resj(b + 0x290 + idx * 0xb8, func_ov004_02224d68(r), 0);
+    _ZN5Model11setResourceEP16Unk_020553f8_Resj(b + 0x290 + idx * 0xb8, func_ov004_02224d68(r), 0);
     NNS_G3dBindMdlTex(func_ov004_02224d68(r), func_ov004_02224d04(q));
     NNS_G3dBindMdlPltt(func_ov004_02224d68(r), func_ov004_02224d04(q));
 }
@@ -1213,7 +1213,7 @@ BOOL func_ov004_02226520(void) {
     if (g) {
         u32 t = _ZN12Unk_0205454c13func_0205458cEv((u8 *)g + 0x348);
         if (t == func_ov004_02224d8c((u8 *)g + 0x9ac, 0xc)) {
-            if (_ZN12Unk_020dbe7c13func_02056654Ev((u8 *)CDA + 0x3e4)) {
+            if (_ZN13AnimFrameCtrl10isFinishedEv((u8 *)CDA + 0x3e4)) {
                 return TRUE;
             }
         }

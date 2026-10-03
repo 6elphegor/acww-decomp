@@ -221,7 +221,7 @@ void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void func_ov003_02220db0(void *a, s32 b);
 void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
-s16 func_02002bdc(void *, void *);
+s16 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
 s32 _s32_div_f(s32 a, s32 b);
 void func_ov003_0222e328(void *, s32);
@@ -240,7 +240,7 @@ s32 func_ov003_022135c4(void *o, s32 a);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e780c(s32 a, s32 b);
-BOOL func_0204bd14(u16 *p);
+BOOL Item_IsMarker(u16 *p);
 s32 func_02031218(s32 x, s32 y);
 s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
 void func_020af3fc();
@@ -257,7 +257,7 @@ s32 VEC_Add(void *, void *, void *);
 s32 func_ov003_0222ab68(void *, void *, s32);
 s32 func_02106020(s32, s32);
 s32 func_ov003_02212338(s32);
-s32 _ZN12Unk_020dbe7c13func_0205668cEihit(void *, s32, s32, s32, s32);
+s32 _ZN13AnimFrameCtrl5setupEihit(void *, s32, s32, s32, s32);
 s32 func_ov003_0222dd54(void *, s32, s32);
 s32 func_ov003_0222af48(BObj *, s32);
 s32 func_ov003_02229910(BObj *);
@@ -272,7 +272,7 @@ s32 func_ov003_0221227c();
 void func_02043b90();
 void func_ov068_02269424(BVec *, BS50 *, s32);
 void func_ov068_022696e4(s32 *, s32);
-s32 func_0206f11c(void);
+s32 MenuCtrl_IsMenuOpen(void);
 s32 func_020e7870(s32 *, s32, s32, s32, s32);
 void func_ov003_0222d674(void *);
 s32 func_ov003_0222d720(void *);
@@ -284,16 +284,16 @@ s32 func_ov003_022135f0(void *, void *);
 s32 func_ov003_02213fb4(void);
 s32 func_ov003_02213fbc(void);
 s32 func_ov003_0222c620(s32, s32);
-s32 func_02094a08(void);
+s32 PlayerActor_RequestAct79(void);
 void func_02034d70(s32);
 void func_02034e10(s32, s32, s32, s32);
-void func_02094f00(s32, s32);
+void PlayerActor_SetSlotFlag(s32, s32);
 void func_02034dd0(s32, s32, s32);
 void _ZN12Unk_020dbd5413func_020547a4Ei(void *, s32);
 s32 func_ov068_02268b70(BObj *, s16 *);
 void func_0204ed8c(void *, u32, u32);
-u16 func_0204b1cc(u32);
-void *func_020b27a4(u16 *);
+u16 Item_MakeBuilding(u32);
+void *StrBSize_Get(u16 *);
 u32 _ZN12Unk_020b28ac13func_020b2b98Ev(void *);
 s32 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(void *, s32 *, s32 *, u32);
 void *func_ov003_02218b40(u32);
@@ -459,7 +459,7 @@ s32 func_ov068_0226a4f0(DObj *o) {
                 o->unk_21c = o->unk_21c + 0x10;
                 {
                     s32 old = o->unk_23a;
-                    s32 rr = func_02002bdc(pos, v1e0);
+                    s32 rr = Math_AngleXZ(pos, v1e0);
                     o->unk_240 = rr + old;
                 }
                 o->unk_251 = 0xe;
@@ -596,7 +596,7 @@ void func_ov068_0226a1a0(DObj *o) {
     }
     if (t > 0 && o->unk_24a == 0) {
         if (d > 0x266) {
-            ang = func_02002bdc(pos, v1e0);
+            ang = Math_AngleXZ(pos, v1e0);
             func_ov003_0222e328(&dv, ang);
             o->unk_23a = ang;
             pos->x = pos->x + func_01ffcb0c(dv.x, 0xa000);
@@ -737,8 +737,8 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
     cur.y = 0;
     cur.z = z;
     for (i = 0; i < 0x22; i++) {
-        u16 id = func_0204b1cc(i);
-        void *obj = func_020b27a4(&id);
+        u16 id = Item_MakeBuilding(i);
+        void *obj = StrBSize_Get(&id);
         if (obj != 0) {
             u32 cnt = _ZN12Unk_020b28ac13func_020b2b98Ev(obj);
             s32 px = zp, pz = zp;
@@ -815,7 +815,7 @@ void Unk_ov068_02268214::func_ov068_02269d18() {
 }
 
 
-namespace B20 { extern "C" s16 func_02002bdc(void *, void *); }
+namespace B20 { extern "C" s16 Math_AngleXZ(void *, void *); }
 void Unk_ov068_02268214::func_ov068_02269b20() {
     u8 *a = (u8 *)func_ov003_0222eb10(unk_21c);
     s32 *pos = unk_204;
@@ -830,7 +830,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
         q = a;
         q = a + 0x5c;
         r6 = func_ov003_022135e4(a);
-        ang = B20::func_02002bdc(q, pos);
+        ang = B20::Math_AngleXZ(q, pos);
         rot = ang;
         w[0] = *(s32 *)(a + 0x5c);
         w[1] = *(s32 *)(q + 4);
@@ -947,7 +947,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
         rnd = (u8)func_02063b8c(0x64);
         s32 c = unk_254;
         s32 h = unk_23a;
-        ang = (s16)(func_02002bdc(pos, pp) - h);
+        ang = (s16)(Math_AngleXZ(pos, pp) - h);
         if (unk_24a != 0) {
             if (c < 0xfe) {
                 c = (s16)(c + 1);
@@ -955,7 +955,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
             }
             if (c >= 0x3c) {
                 if (dist < FX_Div(0x1000, 0x10000)) {
-                    if (func_02094a08() != 0) {
+                    if (PlayerActor_RequestAct79() != 0) {
                         unk_24a = 0;
                         *p = 0;
                         unk_251 = 9;
@@ -1009,7 +1009,7 @@ void Unk_ov068_02268214::func_ov068_022697b8() {
     u8 *tp = (u8 *)func_02095204(4);
     s32 *v = unk_210;
     if (tp != 0) {
-        unk_23a = func_02002bdc(unk_204, tp + 0x5c);
+        unk_23a = Math_AngleXZ(unk_204, tp + 0x5c);
     }
     NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
     unk_251 = 2;
@@ -1041,7 +1041,7 @@ void Unk_ov068_02268214::func_ov068_02269714() {
         v[2] = 0x1000;
         func_02034d70(0x19);
         func_02034e10(0x1a, 0x3f, 0x7f, 0);
-        func_02094f00(0x1a, 4);
+        PlayerActor_SetSlotFlag(0x1a, 4);
     }
 }
 
@@ -1074,7 +1074,7 @@ void Unk_ov068_02268214::func_ov068_022694c0() {
     u8 *cnt = &unk_256;
     if (t > 0) {
         unk_232 = t - 1;
-    } else if (func_0206f11c() != 0) {
+    } else if (MenuCtrl_IsMenuOpen() != 0) {
         h = h + 0x1554;
         unk_23a = h;
         func_ov003_0222e328(v, h);
@@ -1088,7 +1088,7 @@ void Unk_ov068_02268214::func_ov068_022694c0() {
         return;
     }
     u8 *pp = tp + 0x5c;
-    ang = func_02002bdc(pos, pp);
+    ang = Math_AngleXZ(pos, pp);
     s32 r6 = unk_257 + unk_21c;
     dist = func_020e9650(pos, pp);
     if (dist < 0x1000) {
@@ -1140,16 +1140,16 @@ void func_ov068_02269424(BVec *a, BS50 *b, s32 d) {
     if (t > 0x38e) {
         func_ov068_022696e4((s32 *)a, 0);
         if (d > 0) {
-            _ZN12Unk_020dbe7c13func_0205668cEihit(&b->unk_9c, 0, 3, 0x4000, (u16)ang);
+            _ZN13AnimFrameCtrl5setupEihit(&b->unk_9c, 0, 3, 0x4000, (u16)ang);
         } else {
-            _ZN12Unk_020dbe7c13func_0205668cEihit(&b->unk_9c, 0x5a, 1, 0x4000, (u16)ang);
+            _ZN13AnimFrameCtrl5setupEihit(&b->unk_9c, 0x5a, 1, 0x4000, (u16)ang);
         }
     } else {
         func_ov068_022696e4((s32 *)a, 1);
         if (ang > 0x2d) {
-            _ZN12Unk_020dbe7c13func_0205668cEihit(&b->unk_9c, 0x2e, 3, 0x4000, (u16)ang);
+            _ZN13AnimFrameCtrl5setupEihit(&b->unk_9c, 0x2e, 3, 0x4000, (u16)ang);
         } else {
-            _ZN12Unk_020dbe7c13func_0205668cEihit(&b->unk_9c, 0x2e, 1, 0x4000, (u16)ang);
+            _ZN13AnimFrameCtrl5setupEihit(&b->unk_9c, 0x2e, 1, 0x4000, (u16)ang);
         }
     }
 }
@@ -1166,7 +1166,7 @@ void func_ov068_02269250(BObj *o) {
             s16 c = o->unk_23a;
             s16 buf = c;
             BVec vec;
-            func_020e7530(&buf, func_02002bdc(r6, (u8 *)q + 0x5c), 0x1554);
+            func_020e7530(&buf, Math_AngleXZ(r6, (u8 *)q + 0x5c), 0x1554);
             o->unk_23a = buf;
             func_ov003_0222e328(&vec, buf);
             r6->x = r6->x + func_01ffcb0c(0x23000, vec.x);
@@ -1236,7 +1236,7 @@ void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
             if (*p == 0) {
                 void *q = func_02095204(4);
                 if (q) {
-                    o->unk_23a = func_02002bdc(&o->unk_204, (u8 *)q + 0x5c);
+                    o->unk_23a = Math_AngleXZ(&o->unk_204, (u8 *)q + 0x5c);
                     func_ov003_0222dd54(o, 1, 0);
                 }
             }
@@ -1303,7 +1303,7 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
             if (mode == 1) {
                 if (*r6 == 0) {
                     func_ov003_0222dd54(o, 1, 0);
-                    t23a = func_02002bdc(v, (void *)q);
+                    t23a = Math_AngleXZ(v, (void *)q);
                 }
                 *r6 = *r6 + 1;
             }
@@ -1319,9 +1319,9 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
             }
             if (o->unk_24b) {
                 if (func_020e9650(v, (void *)q) < 0x2000) {
-                    func_020e7530(&t23a, func_02002bdc(v, (void *)q), 0xe38);
+                    func_020e7530(&t23a, Math_AngleXZ(v, (void *)q), 0xe38);
                 } else {
-                    func_020e7530(&t23a, func_02002bdc(v, (void *)q), 0x71c);
+                    func_020e7530(&t23a, Math_AngleXZ(v, (void *)q), 0x71c);
                 }
                 o->unk_23a = t23a;
             }
@@ -1334,9 +1334,9 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
         } else {
             s32 b = (s32)s->unk_a4 >> 12;
             if ((u16)b < 4 && (u16)a < 0xb) {
-                _ZN12Unk_020dbe7c13func_0205668cEihit(&s->unk_9c, 0xb, 1, 0x1000, 4);
+                _ZN13AnimFrameCtrl5setupEihit(&s->unk_9c, 0xb, 1, 0x1000, 4);
             } else if ((u16)a == 0xb && (u16)b == 0xa) {
-                _ZN12Unk_020dbe7c13func_0205668cEihit(&s->unk_9c, 0xe, 0, 0x1000, 10);
+                _ZN13AnimFrameCtrl5setupEihit(&s->unk_9c, 0xe, 0, 0x1000, 10);
             }
         }
     }
@@ -1353,7 +1353,7 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
                 if (func_ov003_02212338(o->unk_24d == 0x37 ? 1 : 0)) {
                     o->unk_251 = 0x13;
                     o->unk_24c = 1;
-                    _ZN12Unk_020dbe7c13func_0205668cEihit(&o->unk_50.unk_9c, 0, 2, 0x1000, (u32)(o->unk_50.unk_a4 << 4) >> 16);
+                    _ZN13AnimFrameCtrl5setupEihit(&o->unk_50.unk_9c, 0, 2, 0x1000, (u32)(o->unk_50.unk_a4 << 4) >> 16);
                 } else {
                     s32 t = *pp;
                     if (t > 0 && o->unk_24d == 0x36) {
@@ -1384,7 +1384,7 @@ s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
         } else if (o->unk_24b) {
             s16 t = o->unk_23a;
             func_ov003_0222dd54(o, 0, 1);
-            func_020e7530(&t, func_02002bdc((void *)q, v), 0x666);
+            func_020e7530(&t, Math_AngleXZ((void *)q, v), 0x666);
             o->unk_23a = t;
             o->unk_251 = 7;
         }
@@ -1489,7 +1489,7 @@ BOOL Unk_ov068_02268214::func_ov068_02268a30(s16 *out, s32 *dist, s32 *pos) {
         pos[1] = FX_Div(0xb000, 0x10000);
         pos[2] += 0x1000;
     }
-    *out = func_02002bdc(p, pos);
+    *out = Math_AngleXZ(p, pos);
     *out = *out - unk_23a;
     if (*out > 0x38e) {
         *out = 0x38e;
@@ -1553,7 +1553,7 @@ void Unk_ov068_02268214::func_ov068_02268864(s16 *p, s32 a, s32 b, u8 thr, s32 s
 
 void Unk_ov068_02268214::func_ov068_022687e8(s32 *p) {
     if (*p > 0 && unk_24a == 0 && unk_254 >= unk_255) {
-        unk_240 = func_02002bdc(p, unk_204);
+        unk_240 = Math_AngleXZ(p, unk_204);
         unk_244 = (func_02063b8c(4) + 7) * 20;
         unk_251 = 7;
         unk_24a = 1;

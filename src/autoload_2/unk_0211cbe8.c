@@ -176,7 +176,7 @@ extern void PXI_Init(void);
 extern BOOL PXI_IsCallbackReady(u32 tag, u32 proc);
 extern void PXI_SetFifoRecvCallback(u32 tag, void *cb);
 extern s32 PXI_SendWordByFifo(u32 tag, u32 data, u32 err);
-extern void func_0206d49c(void);
+extern void Fatal_Trap(void);
 extern void OS_InitMutex(void *p);
 extern BOOL RTCi_WriteRawStatus2Async(void);
 

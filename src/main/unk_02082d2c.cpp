@@ -99,7 +99,7 @@ struct Unk_02082d74_M {
     ~Unk_02082d74_M();
 };
 
-class Unk_020e09ac : public Unk_020d8c7c {
+class Unk_020e09ac : public GameProc {
 public:
     virtual ~Unk_020e09ac();
     /* 0x50 */ Unk_02082d74_M unk_50;
@@ -202,7 +202,7 @@ s32 func_02063b8c(s32 a);
 }
 
 extern "C" {
-s32 func_0209750c();
+s32 PlayerData_GetCurrent();
 }
 
 extern "C" {

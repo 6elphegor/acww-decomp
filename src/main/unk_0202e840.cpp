@@ -1,35 +1,35 @@
 #include "types.h"
 
 // Library base class (ARM code in autoload_2 / ITCM). vfunc_08 takes a flag here.
-class Unk_020d8c7c_Base {
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 // Real vtable class for the library base: its D1/D0 are compiler generated here.
-class Unk_020d8c7c : public Unk_020d8c7c_Base {
+class GameProc : public ProcBase {
 public:
-    virtual void vfunc_08(int a);
+    virtual void postCreate(int a);
     u8 unk_04[0x4c];
 };
 
@@ -51,11 +51,11 @@ void func_020e9888(void *v, s32 s);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e9650(void *a, void *b);
 s32 _ZN12Unk_0202f66013func_0202f758EP15Unk_0202f660_V3(void *a, void *b);
-void func_020ec8bc();
-s32 func_020ec8d4(u32 a, void *b, u32 c, u32 d);
+void Proc_CreateRoot();
+s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
-void func_020ed188();
-void func_020ed2b4(void *self, int a);
+void ProcBase_RequestDelete();
+void _ZN17Unk_020d8c7c_Base10postCreateEi(void *self, int a);
 }
 
 // ---- sphere (position + radius), vtable-less ----
@@ -143,13 +143,13 @@ extern "C" void func_0202e8b0() {
     data_021bf984 = 0x14;
 }
 
-void Unk_020d8c7c::vfunc_08(int a) {
+void GameProc::postCreate(int a) {
     if (a == 1) {
-        func_020ed188();
+        ProcBase_RequestDelete();
     }
-    func_020ed2b4(this, a);
+    _ZN17Unk_020d8c7c_Base10postCreateEi(this, a);
 }
 
-extern "C" void func_0202e880(u32 a, void *b, u32 c, u32 d) { func_020ec8d4(a, b, c, d); }
+extern "C" void GameProc_CreateChild(u32 a, void *b, u32 c, u32 d) { Proc_CreateChild(a, b, c, d); }
 
-extern "C" void func_0202e878() { func_020ec8bc(); }
+extern "C" void GameProc_CreateRoot() { Proc_CreateRoot(); }

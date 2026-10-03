@@ -1,30 +1,30 @@
 // mwcc-flags: -str reuse
 #include "types.h"
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 struct Unk_0201bc1c;
@@ -36,14 +36,14 @@ struct Unk_ov077_022715bc_Out {
     u8 b;
 };
 
-struct Unk_020aa3b8 {
-    s32 func_020aa514();
-    void *func_020aa508();
+struct ChoiceList {
+    s32 getResult();
+    void *getSliderValue();
 };
 
 extern "C" {
-void *func_0209750c();
-void *_ZN12Unk_0209865c13func_0209868cEv(void *p);
+void *PlayerData_GetCurrent();
+void *_ZN10PlayerData13func_0209868cEv(void *p);
 s32 _ZN12Unk_02087ad813func_02087bf4Ev(void *p);
 void _ZN12Unk_020660f813func_02067a1cEiii(void *self, s32 a, u8 *b, void *c);
 void _ZN12Unk_0201985813func_020195c8Eiijtt(void *self, u32 a, u32 b, u32 c, u32 s0, u32 s1);
@@ -69,7 +69,7 @@ BOOL func_0203d67c(void *p);
 void *func_020850e0();
 void *func_0208517c(void *p);
 void _ZN12Unk_02086f1413func_02086f14Ej(void *p, u32 v);
-s32 func_020ed188(void *p);
+s32 ProcBase_RequestDelete(void *p);
 s32 func_0204ee10(s32 *x, s32 *y, void *v);
 s32 func_0204ed8c(void *out, s32 x, s32 z);
 void func_0203d6cc(void *p, s32 a);
@@ -128,7 +128,7 @@ public:
     virtual void vfunc_80();
     void *func_02015aac();
     void func_02015ab0(u32 p);
-    Unk_020aa3b8 *func_02015a5c();
+    ChoiceList *func_02015a5c();
     u8 pad_04[0x1a];
     u8 unk_1e;
     u8 pad_1f[0x3c - 0x1f];
@@ -283,28 +283,28 @@ struct Unk_020f4080 {
     ~Unk_020f4080();
 };
 
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 v);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     void func_0203e42c();
-    void func_0203e468(s32 a);
+    void setInteractionRange(s32 a);
     u8 pad_04[0x58];
     s32 unk_5c, unk_60, unk_64;
     u8 pad_68[0x8e - 0x68];
@@ -316,13 +316,13 @@ public:
     u8 pad_9c[0xea - 0x9c];
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
     virtual ~Unk_020d77a4();
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -374,7 +374,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 v);
     virtual void vfunc_78();
     virtual void vfunc_7c();
@@ -399,7 +399,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_24();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a);
     virtual BOOL vfunc_68();
@@ -543,7 +543,7 @@ BOOL Unk_ov077_0227224c::vfunc_00() {
         return FALSE;
     }
     unk_4cc.unk_1c |= 2;
-    func_0203e468(0);
+    setInteractionRange(0);
     func_ov077_02271d18(3);
     func_0203e42c();
     func_0203d96c();
@@ -558,9 +558,9 @@ BOOL Unk_ov077_0227224c::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_ov077_0227224c::vfunc_24() {
+BOOL Unk_ov077_0227224c::onDraw() {
     if (unk_654 != 3) {
-        Unk_020d77a4::vfunc_24();
+        Unk_020d77a4::onDraw();
     }
     return TRUE;
 }
@@ -644,7 +644,7 @@ BOOL Unk_ov077_0227224c::func_ov077_02271a84() {
     Unk_ov077_02271a84_V3 v;
     s32 i;
     if (pl == NULL) {
-        func_020ed188(this);
+        ProcBase_RequestDelete(this);
         return TRUE;
     }
     unk_ec.unk_ac = 0;
@@ -755,7 +755,7 @@ BOOL Unk_ov077_0227224c::func_ov077_02271874() {
         if (unk_564.func_02019790()) {
             func_0203d67c(this);
             _ZN12Unk_02086f1413func_02086f14Ej(func_0208517c(func_020850e0()), 0);
-            func_020ed188(this);
+            ProcBase_RequestDelete(this);
             if (unk_720 != -1) {
                 func_020902f8(unk_720);
                 unk_720 = -1;
@@ -860,7 +860,7 @@ void Unk_ov077_022721bc::vfunc_1c(s32 a) {
 }
 
 void Unk_ov077_022721bc::vfunc_78(Unk_ov077_022715bc_Out *out) {
-    s32 t = _ZN12Unk_02087ad813func_02087bf4Ev(_ZN12Unk_0209865c13func_0209868cEv(func_0209750c())) - 1;
+    s32 t = _ZN12Unk_02087ad813func_02087bf4Ev(_ZN10PlayerData13func_0209868cEv(PlayerData_GetCurrent())) - 1;
     if (t < 0) {
         t = 0;
     } else if (t > 5) {
@@ -910,7 +910,7 @@ void Unk_ov077_022721bc::vfunc_14() {
 
 void Unk_ov077_022721bc::vfunc_18() {
     u8 cmd;
-    s32 r = func_02015a5c()->func_020aa514();
+    s32 r = func_02015a5c()->getResult();
     cmd = 0xff;
     switch (unk_1e) {
     case 0xb:
@@ -924,7 +924,7 @@ void Unk_ov077_022721bc::vfunc_18() {
     case 0x20:
     case 0x21: {
         u32 n = func_02063b8c(0xd);
-        if (func_020e77cc(func_02015a5c()->func_020aa508(), n, n + 5) != 0) {
+        if (func_020e77cc(func_02015a5c()->getSliderValue(), n, n + 5) != 0) {
             cmd = 0x22;
         } else {
             cmd = func_02063b8c(2) == 0 ? 0x20 : 0x21;

@@ -38,7 +38,7 @@ extern s16 data_02135f44[];
 extern u8 data_021c7468[];
 
 s32 func_0205ef74(u8 *p);
-s32 func_020641b4(void *path, void *dst, u32 size);
+s32 File_LoadToBuffer(void *path, void *dst, u32 size);
 s32 func_0205ef60(u8 *p);
 char *func_0205f034(u32 x);
 s32 func_0205f030();
@@ -48,7 +48,7 @@ void func_0205ef88(u8 *p, u8 v);
 s32 func_0205efa0(u32 *a, u32 i);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
-void *func_020e8628(void *h, s32 size, s32 align);
+void *Heap_AllocAligned(void *h, s32 size, s32 align);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_0205bcb4();
 s32 func_0205bcd0();
@@ -85,8 +85,8 @@ void func_020e9768(Unk_0205f1e8_Vec *v, s32 n);
 void func_020e8388(Unk_0205f7f4_Mtx *m, s32 x, s32 y, s32 z);
 void func_ov003_02222f1c();
 void *func_0205fd94(u8 *tbl, u32 idx);
-void func_0203ee38(void *p, Unk_0205f1e8_Vec *v);
-void func_0203ef38(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
+void WorldCurve_FromCurved(void *p, Unk_0205f1e8_Vec *v);
+void WorldCurve_ToCurved(Unk_0205f1e8_Vec *a, Unk_0205f1e8_Vec *b);
 s32 func_0205fbb8(void *p);
 void func_0205553c(void *e, s32 a);
 void func_02033988(void *p);
@@ -266,7 +266,7 @@ extern "C" void func_0205efd0(u32 *out)
     u32 n = data_020cbb18[0x6c];
     u32 i;
     for (i = 0; i < n; i++) {
-        out[i] = (u32)func_020e8628(h, func_0205f018(), 4);
+        out[i] = (u32)Heap_AllocAligned(h, func_0205f018(), 4);
     }
 }
 
@@ -320,12 +320,12 @@ extern "C" s32 func_0205ef60(u8 *p)
 extern "C" void func_0205ef34(u32 x, u32 y) {
     u32 dst = func_0205ef74((u8 *)x);
     void *path = (void *)func_0205f034(y);
-    func_020641b4(path, (void *)dst, func_0205f030());
+    File_LoadToBuffer(path, (void *)dst, func_0205f030());
 }
 
 extern "C" void func_0205ef08(u32 x, u32 y) {
     u32 dst = func_0205ef60((u8 *)x);
     void *path = (void *)func_0205f034(y);
-    func_020641b4(path, (void *)dst, func_0205f02c());
+    File_LoadToBuffer(path, (void *)dst, func_0205f02c());
 }
 

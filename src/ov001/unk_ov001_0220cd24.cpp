@@ -28,7 +28,7 @@ Unk_ov001_0220cd24_Big *data_ov001_0222de14;
 extern "C" {
 extern void *data_ov001_0222de1c;
 
-extern void func_0206d49c();
+extern void Fatal_Trap();
 extern void MIi_CpuCopy16(void *, void *, u32);
 
 extern u32 func_ov001_0220c5e0();
@@ -60,7 +60,7 @@ void func_ov001_0220d0e4(Unk_ov001_0220cd24_Fn a) {
     s.v[2] = (s32)func_ov001_0220cc10(data_ov001_0222de1c, 0x10);
     *(u8 *)&s.v[6] = func_ov001_0220c5e0() + 0x31;
     func_ov001_02223ecc(data_ov001_0222de14, &s);
-    if (func_ov001_02223ca8() == 0) func_0206d49c();
+    if (func_ov001_02223ca8() == 0) Fatal_Trap();
     data_ov001_0222de14->unk_1e29c = func_ov001_02227094(0, (void *)func_ov001_0220cd24, 0, 0x78);
 }
 

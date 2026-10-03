@@ -27,14 +27,14 @@ struct Unk_ov004_0223f44c_V3D {
 };
 
 // 0x20-byte static table; the destructor is main's func_020b... (see notes: needs main 0x0203c230 renamed)
-struct Unk_0203c230 {
+struct CameraSetup {
     s16 a, b;
     s32 w0;
     Unk_ov004_0223f44c_V3D p;
     Unk_ov004_0223f44c_V3D q;
-    ~Unk_0203c230();
+    ~CameraSetup();
 };
-typedef Unk_0203c230 Unk_0223f44c_Tbl;
+typedef CameraSetup Unk_0223f44c_Tbl;
 
 // 4-byte static object (four bytes set by __sinit)
 struct Unk_ov004_0223f43c_B4 {
@@ -59,7 +59,7 @@ struct Unk_0223f534_Ent {
     s16 pad;
 };
 
-// Camera object (data_021c3070); see src/main/unk_0203a058.cpp.
+// Camera object (gCamera); see src/main/unk_0203a058.cpp.
 struct Unk_021c3070 {
     /* 0x00 */ u8 unk_00[0xfc];
     /* 0xfc */ s16 unk_fc, unk_fe;
@@ -85,10 +85,10 @@ struct Unk_ov004_0223fe00_Sub {
 };
 
 extern "C" {
-extern Unk_021c3070 *data_021c3070;
-extern Unk_0223f44c_Vec data_021f4880;
+extern Unk_021c3070 *gCamera;
+extern Unk_0223f44c_Vec gVec3Zero;
 extern s16 data_02135f44[];
-extern u32 data_020c8ce8[][3];
+extern u32 sCameraPoseGrid[][3];
 extern Unk_0223f44c_Tbl data_ov004_0224f36c;
 extern Unk_0223f44c_Tbl data_ov004_0224f34c;
 extern Unk_0223f44c_Tbl data_ov004_0224f38c;
@@ -103,43 +103,43 @@ extern const Unk_0223f44c_Vec data_ov004_0224682c;
 Unk_0223f44c_Vec *func_020947f0(s32 a);
 s32 func_020b50e8(void);
 s32 func_02063b8c(s32 a);
-s32 func_02002bdc(void *a, void *b);
+s32 Math_AngleXZ(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
-void func_01ffcbb0(void *out, Unk_021c3070 *o);
+void Camera_GetLookAtPoint(void *out, Unk_021c3070 *o);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 void func_01ffd070(void *out, void *a, void *b);
 void func_020e9790(void *out, void *in, s32 s);
 void func_020e93a0(void *v, s32 a);
-void func_0203a458(void);
-void func_0203a468(void);
-void func_0203a234(Unk_021c3070 *o, s32 a);
-s32 func_0203a7b8(void *p, void *a, s32 *b, s32 *out);
+void Camera_StartBlend(void);
+void Camera_FinishBlend(void);
+void Camera_PlaySe(Unk_021c3070 *o, s32 a);
+s32 Camera_CalcPointSpan(void *p, void *a, s32 *b, s32 *out);
 
 // methods of Unk_0203b350 / Unk_020d93b8 (main), called through their real symbols with the object first
-s32 _ZN12Unk_0203b35013func_0203bc48Ev(Unk_021c3070 *o);
-s16 _ZN12Unk_020d93b813func_0203bc68Ev(Unk_021c3070 *o);
-s16 _ZN12Unk_020d93b813func_0203bc7cEv(Unk_021c3070 *o);
-s32 _ZN12Unk_0203b35013func_0203b7acEi(Unk_021c3070 *o, s32 a);
-void _ZN12Unk_0203b35013func_0203b56cEv(Unk_021c3070 *o);
-void _ZN12Unk_0203b35013func_0203b484EP14Unk_0203b350_Viii(Unk_021c3070 *o, void *a, s32 b, s32 c, s32 d);
-void _ZN12Unk_020d93b813func_0203c07cEPj(Unk_021c3070 *o, u32 *src);
-void _ZN12Unk_020d93b813func_0203c09cEi(Unk_021c3070 *o, s32 a);
-void _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos(Unk_021c3070 *o, s32 a, s32 b);
-void _ZN12Unk_020d93b813func_0203c0b0Eiii(Unk_021c3070 *o, s32 a, s32 b, s32 c);
-s32 _ZN12Unk_0203b35013func_0203b8e0EPi(Unk_021c3070 *o, s32 *p);
-#define func_0203bc48 _ZN12Unk_0203b35013func_0203bc48Ev
-#define func_0203bc68 _ZN12Unk_020d93b813func_0203bc68Ev
-#define func_0203bc7c _ZN12Unk_020d93b813func_0203bc7cEv
-#define func_0203b7ac _ZN12Unk_0203b35013func_0203b7acEi
-#define func_0203b56c _ZN12Unk_0203b35013func_0203b56cEv
-#define func_0203b484 _ZN12Unk_0203b35013func_0203b484EP14Unk_0203b350_Viii
-#define func_0203c07c _ZN12Unk_020d93b813func_0203c07cEPj
-#define func_0203c09c _ZN12Unk_020d93b813func_0203c09cEi
-#define func_0203c1a4 _ZN12Unk_020d93b813func_0203c1a4EiP16Unk_0203bc68_Pos
-#define func_0203c0b0 _ZN12Unk_020d93b813func_0203c0b0Eiii
-#define func_0203b8e0 _ZN12Unk_0203b35013func_0203b8e0EPi
+s32 _ZN12Unk_0203b35011getDistanceEv(Unk_021c3070 *o);
+s16 _ZN12Unk_020d93b86getYawEv(Unk_021c3070 *o);
+s16 _ZN12Unk_020d93b88getPitchEv(Unk_021c3070 *o);
+s32 _ZN12Unk_0203b3507setModeEi(Unk_021c3070 *o, s32 a);
+void _ZN12Unk_0203b35011updateBlendEv(Unk_021c3070 *o);
+void _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii(Unk_021c3070 *o, void *a, s32 b, s32 c, s32 d);
+void _ZN12Unk_020d93b814setBlendParamsEPj(Unk_021c3070 *o, u32 *src);
+void _ZN12Unk_020d93b814setBlendPresetEi(Unk_021c3070 *o, s32 a);
+void _ZN12Unk_020d93b88loadPoseEiP10CameraPose(Unk_021c3070 *o, s32 a, s32 b);
+void _ZN12Unk_020d93b89lerpPosesEiii(Unk_021c3070 *o, s32 a, s32 b, s32 c);
+s32 _ZN12Unk_0203b35015getRoomEdgeSideEPi(Unk_021c3070 *o, s32 *p);
+#define Unk_0203b350_getDistance _ZN12Unk_0203b35011getDistanceEv
+#define Unk_020d93b8_getYaw _ZN12Unk_020d93b86getYawEv
+#define Unk_020d93b8_getPitch _ZN12Unk_020d93b88getPitchEv
+#define Unk_0203b350_setMode _ZN12Unk_0203b3507setModeEi
+#define Unk_0203b350_updateBlend _ZN12Unk_0203b35011updateBlendEv
+#define Unk_0203b350_setLookAtOrbit _ZN12Unk_0203b35014setLookAtOrbitEP14Unk_0203b350_Viii
+#define Unk_020d93b8_setBlendParams _ZN12Unk_020d93b814setBlendParamsEPj
+#define Unk_020d93b8_setBlendPreset _ZN12Unk_020d93b814setBlendPresetEi
+#define Unk_020d93b8_loadPose _ZN12Unk_020d93b88loadPoseEiP10CameraPose
+#define Unk_020d93b8_lerpPoses _ZN12Unk_020d93b89lerpPosesEiii
+#define Unk_0203b350_getRoomEdgeSide _ZN12Unk_0203b35015getRoomEdgeSideEPi
 
 void func_ov004_0223f44c(Unk_021c3070 *o);
 void func_ov004_0223f534(Unk_021c3070 *o);
@@ -150,11 +150,11 @@ void func_ov004_0223f644(Unk_021c3070 *o);
     do {                                                                \
         Unk_0223f44c_Vec cam;                                           \
         s32 p, q;                                                       \
-        func_0203b56c(o);                                               \
-        func_01ffcbb0(&cam, o);                                         \
-        p = func_0203bc7c(o);                                           \
-        q = func_0203bc68(o);                                           \
-        func_0203b484(o, &cam, p, q, func_0203bc48(o));                 \
+        Unk_0203b350_updateBlend(o);                                               \
+        Camera_GetLookAtPoint(&cam, o);                                         \
+        p = Unk_020d93b8_getPitch(o);                                           \
+        q = Unk_020d93b8_getYaw(o);                                           \
+        Unk_0203b350_setLookAtOrbit(o, &cam, p, q, Unk_0203b350_getDistance(o));                 \
     } while (0)
 
 extern "C" {
@@ -174,7 +174,7 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
         a = (Unk_ov004_0223fe00_Sub *)&self->unk_fc;
     }
     p = func_020947f0(4);
-    t = func_0203a7b8(p, &self->unk_1cc, &self->unk_110, &dy);
+    t = Camera_CalcPointSpan(p, &self->unk_1cc, &self->unk_110, &dy);
     if (t < 0x4800) {
         t = 0x4800;
     } else if (t > 0xb000) {
@@ -183,8 +183,8 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
     sc = FX_Div(t - 0x4800, 0x6800);
     inv = 0x1000 - sc;
     self->unk_1e4 = inv;
-    func_0203c0b0(self, 0xb, data_020c8ce8[self->unk_1f0][self->unk_1ec], sc);
-    d = data_021f4880;
+    Unk_020d93b8_lerpPoses(self, 0xb, sCameraPoseGrid[self->unk_1f0][self->unk_1ec], sc);
+    d = gVec3Zero;
     if (p->z > self->unk_1cc.z) {
         d = *p;
     } else {
@@ -192,9 +192,9 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
         d.y = self->unk_1cc.y;
         d.z = self->unk_1cc.z;
     }
-    sp4 = func_0203b8e0(self, &a->unk_14);
+    sp4 = Unk_0203b350_getRoomEdgeSide(self, &a->unk_14);
     sp8 = 0;
-    ang = func_02002bdc(&a->unk_14, &d);
+    ang = Math_AngleXZ(&a->unk_14, &d);
     s32 av = ang < 0 ? (s16)-ang : ang;
     t = 0x2000 - av;
     if (t < 0) t = 0;
@@ -227,33 +227,33 @@ void func_ov004_0223fe00(Unk_021c3070 *self, Unk_ov004_0223fe00_Sub *a) {
 }
 
 BOOL func_ov004_0223fdbc(Unk_021c3070 *self) {
-    func_0203c1a4(self, 0x11, 0);
-    func_0203c09c(self, 0);
-    self->unk_110 = data_021f4880.x;
-    self->unk_114 = data_021f4880.y;
-    self->unk_118 = data_021f4880.z;
-    func_0203a468();
+    Unk_020d93b8_loadPose(self, 0x11, 0);
+    Unk_020d93b8_setBlendPreset(self, 0);
+    self->unk_110 = gVec3Zero.x;
+    self->unk_114 = gVec3Zero.y;
+    self->unk_118 = gVec3Zero.z;
+    Camera_FinishBlend();
     return TRUE;
 }
 
 BOOL func_ov004_0223fd70(Unk_021c3070 *self) {
-    func_0203c1a4(self, data_020c8ce8[1][1], 0);
-    func_0203c09c(self, 0);
+    Unk_020d93b8_loadPose(self, sCameraPoseGrid[1][1], 0);
+    Unk_020d93b8_setBlendPreset(self, 0);
     Unk_0223f44c_Vec *p = func_020947f0(4);
     self->unk_110 = p->x;
     self->unk_114 = p->y;
     self->unk_118 = p->z;
-    func_0203a458();
+    Camera_StartBlend();
     return TRUE;
 }
 
 void func_ov004_0223fd30(Unk_021c3070 *self) {
     Unk_0223f44c_Vec v;
-    func_0203b56c(self);
-    func_01ffcbb0(&v, self);
-    s32 a = func_0203bc7c(self);
-    s32 b = func_0203bc68(self);
-    func_0203b484(self, &v, a, b, func_0203bc48(self));
+    Unk_0203b350_updateBlend(self);
+    Camera_GetLookAtPoint(&v, self);
+    s32 a = Unk_020d93b8_getPitch(self);
+    s32 b = Unk_020d93b8_getYaw(self);
+    Unk_0203b350_setLookAtOrbit(self, &v, a, b, Unk_0203b350_getDistance(self));
 }
 
 s32 func_ov004_0223fcf4() {
@@ -277,23 +277,23 @@ s32 func_ov004_0223fcf4() {
 }
 
 BOOL func_ov004_0223fcd4() {
-    if (data_021c3070) {
-        return func_0203b7ac(data_021c3070, 11);
+    if (gCamera) {
+        return Unk_0203b350_setMode(gCamera, 11);
     }
     return FALSE;
 }
 
 BOOL func_ov004_0223fcb4() {
-    if (data_021c3070) {
-        return func_0203b7ac(data_021c3070, 12);
+    if (gCamera) {
+        return Unk_0203b350_setMode(gCamera, 12);
     }
     return FALSE;
 }
 
 BOOL func_ov004_0223fc8c(Unk_021c3070 *o) {
-    func_0203c1a4(o, func_ov004_0223fcf4() + 0x12, 0);
-    func_0203c09c(o, 0);
-    func_0203a458();
+    Unk_020d93b8_loadPose(o, func_ov004_0223fcf4() + 0x12, 0);
+    Unk_020d93b8_setBlendPreset(o, 0);
+    Camera_StartBlend();
     return TRUE;
 }
 
@@ -309,9 +309,9 @@ void func_ov004_0223fc28(Unk_021c3070 *o) {
 }
 
 BOOL func_ov004_0223fc00(Unk_021c3070 *o) {
-    func_0203c1a4(o, func_ov004_0223fcf4() + 0x16, 0);
-    func_0203c09c(o, 0);
-    func_0203a458();
+    Unk_020d93b8_loadPose(o, func_ov004_0223fcf4() + 0x16, 0);
+    Unk_020d93b8_setBlendPreset(o, 0);
+    Camera_StartBlend();
     return TRUE;
 }
 
@@ -327,21 +327,21 @@ void func_ov004_0223fb9c(Unk_021c3070 *o) {
 }
 
 BOOL func_ov004_0223fb64(Unk_0223f44c_Vec *v) {
-    Unk_021c3070 *c = data_021c3070;
+    Unk_021c3070 *c = gCamera;
     if (c) {
         Unk_0223f44c_Vec *d = &c->unk_1cc;
         *d = *v;
-        return func_0203b7ac(data_021c3070, 0x10);
+        return Unk_0203b350_setMode(gCamera, 0x10);
     }
     return FALSE;
 }
 
 BOOL func_ov004_0223fb34(Unk_021c3070 *o) {
     func_020947f0(4);
-    func_0203c1a4(o, 0x1e, 0);
-    func_0203c09c(o, 0);
-    func_0203a458();
-    func_0203a234(o, 0x2f);
+    Unk_020d93b8_loadPose(o, 0x1e, 0);
+    Unk_020d93b8_setBlendPreset(o, 0);
+    Camera_StartBlend();
+    Camera_PlaySe(o, 0x2f);
     return TRUE;
 }
 
@@ -363,9 +363,9 @@ void func_ov004_0223fa94(Unk_021c3070 *o) {
 }
 
 BOOL func_ov004_0223fa54(Unk_021c3070 *o) {
-    func_0203c1a4(o, data_020c8ce8[o->unk_1f0][o->unk_1ec], 0);
-    func_0203c09c(o, 0);
-    func_0203a458();
+    Unk_020d93b8_loadPose(o, sCameraPoseGrid[o->unk_1f0][o->unk_1ec], 0);
+    Unk_020d93b8_setBlendPreset(o, 0);
+    Camera_StartBlend();
     return TRUE;
 }
 
@@ -377,9 +377,9 @@ void func_ov004_0223f9f0(Unk_021c3070 *o) {
 }
 
 BOOL func_ov004_0223f9d0(Unk_021c3070 *o) {
-    func_0203c1a4(o, 0x1d, 0);
-    func_0203c09c(o, 4);
-    func_0203a458();
+    Unk_020d93b8_loadPose(o, 0x1d, 0);
+    Unk_020d93b8_setBlendPreset(o, 4);
+    Camera_StartBlend();
     return TRUE;
 }
 
@@ -391,16 +391,16 @@ void func_ov004_0223f96c(Unk_021c3070 *o) {
 }
 
 void func_ov004_0223f958(void) {
-    func_0203b7ac(data_021c3070, 0xe);
+    Unk_0203b350_setMode(gCamera, 0xe);
 }
 
 void func_ov004_0223f944(void) {
-    func_0203b7ac(data_021c3070, 0xf);
+    Unk_0203b350_setMode(gCamera, 0xf);
 }
 
 BOOL func_ov004_0223f92c(Unk_021c3070 *o) {
-    func_0203c1a4(o, 0x20, 0);
-    func_0203a468();
+    Unk_020d93b8_loadPose(o, 0x20, 0);
+    Camera_FinishBlend();
     return TRUE;
 }
 
@@ -412,24 +412,24 @@ void func_ov004_0223f8bc(Unk_021c3070 *o) {
 }
 
 void func_ov004_0223f894(Unk_0223f44c_Vec *v) {
-    data_021c3070->unk_1cc = *v;
-    func_0203b7ac(data_021c3070, 0x14);
+    gCamera->unk_1cc = *v;
+    Unk_0203b350_setMode(gCamera, 0x14);
 }
 
 void func_ov004_0223f880(void) {
-    func_0203b7ac(data_021c3070, 0x12);
+    Unk_0203b350_setMode(gCamera, 0x12);
 }
 
 void func_ov004_0223f870(void) {
-    func_ov004_0223f644(data_021c3070);
+    func_ov004_0223f644(gCamera);
 }
 
 void func_ov004_0223f860(void) {
-    func_ov004_0223f534(data_021c3070);
+    func_ov004_0223f534(gCamera);
 }
 
 void func_ov004_0223f850(void) {
-    func_ov004_0223f44c(data_021c3070);
+    func_ov004_0223f44c(gCamera);
 }
 
 #define COPY_TBL(o, t)                 \
@@ -455,8 +455,8 @@ BOOL func_ov004_0223f7b0(Unk_021c3070 *o) {
     m->b0 = 0;
     m->b1 = 0;
     COPY_TBL(o, data_ov004_0224f36c);
-    func_0203c07c(o, data_ov004_0224f32c);
-    func_0203a458();
+    Unk_020d93b8_setBlendParams(o, data_ov004_0224f32c);
+    Camera_StartBlend();
     return TRUE;
 }
 
@@ -469,7 +469,7 @@ void func_ov004_0223f6bc(Unk_021c3070 *o) {
         o->unk_114 = e->w1;
         o->unk_118 = e->w2;
         VEC_Subtract(&o->unk_110, &o->unk_104, &o->unk_110);
-        if (func_0203bc48(o) > 0x1400) {
+        if (Unk_0203b350_getDistance(o) > 0x1400) {
             o->unk_100 = o->unk_100 + e->w6;
         }
         o->unk_fc = o->unk_fc + e->h20;
@@ -486,8 +486,8 @@ void func_ov004_0223f6bc(Unk_021c3070 *o) {
 
 void func_ov004_0223f644(Unk_021c3070 *o) {
     COPY_TBL(o, data_ov004_0224f38c);
-    func_0203c07c(o, data_ov004_0224f33c);
-    func_0203a458();
+    Unk_020d93b8_setBlendParams(o, data_ov004_0224f33c);
+    Camera_StartBlend();
 }
 
 void func_ov004_0223f534(Unk_021c3070 *o) {
@@ -535,7 +535,7 @@ void func_ov004_0223f534(Unk_021c3070 *o) {
     o->unk_fe = e->h1e;
     o->unk_fc = e->h1c;
     o->unk_100 = e->w5;
-    func_0203a468();
+    Camera_FinishBlend();
 }
 
 void func_ov004_0223f44c(Unk_021c3070 *o) {
@@ -553,12 +553,12 @@ void func_ov004_0223f44c(Unk_021c3070 *o) {
     o->unk_15c = data_ov004_0224f34c.q.x;
     o->unk_160 = data_ov004_0224f34c.q.y;
     o->unk_164 = data_ov004_0224f34c.q.z;
-    func_0203c07c(o, data_ov004_0224f31c);
-    func_0203a458();
+    Unk_020d93b8_setBlendParams(o, data_ov004_0224f31c);
+    Camera_StartBlend();
 }
 
 void func_ov004_0223f43c(void) {
-    func_ov004_0223fd70(data_021c3070);
+    func_ov004_0223fd70(gCamera);
 }
 
 }

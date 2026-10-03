@@ -3,7 +3,7 @@
 
 extern "C" {
 void func_02002ab8(void);
-void func_020040cc(void);
+void Snd_CreateScene(void);
 void func_0208e9a8(void);
 u32 func_0209c08c(void);
 void func_020a4414(u32 a, u32 b, u32 c, u32 d);
@@ -23,20 +23,20 @@ struct Unk_020cbb18 {
 extern Unk_020cbb18 *data_020cbb18;
 
 // Intermediate game-state class with an inline constructor that sets flags
-class Unk_020e2988 : public Unk_020d8c7c {
+class Unk_020e2988 : public GameProc {
 public:
     Unk_020e2988() {
         unk_04[0xf] |= 1;
         unk_04[0xf] |= 4;
     }
     virtual BOOL vfunc_04();
-    virtual void vfunc_08();
-    virtual BOOL vfunc_10();
+    virtual void postCreate();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_1c();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual ~Unk_020e2988() {}
 };
 
@@ -44,8 +44,8 @@ class Unk_020e40cc : public Unk_020e2988 {
 public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual ~Unk_020e40cc() {}
 
     void func_020b4704();
@@ -77,7 +77,7 @@ BOOL Unk_020e40cc::vfunc_00() {
     } else {
         unk_50 = 1;
     }
-    func_020040cc();
+    Snd_CreateScene();
     func_020b541c();
     func_02002ab8();
     func_0208e9a8();
@@ -90,7 +90,7 @@ BOOL Unk_020e40cc::vfunc_0c() {
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_18() {
+BOOL Unk_020e40cc::onExecute() {
     typedef void (Unk_020e40cc::*Fn)();
     Fn dead = &Unk_020e40cc::func_020b4728;
     static Fn table[3] = {&Unk_020e40cc::func_020b4728, &Unk_020e40cc::func_020b4708, &Unk_020e40cc::func_020b4704};
@@ -98,4 +98,4 @@ BOOL Unk_020e40cc::vfunc_18() {
     return TRUE;
 }
 
-BOOL Unk_020e40cc::vfunc_24() { return TRUE; }
+BOOL Unk_020e40cc::onDraw() { return TRUE; }

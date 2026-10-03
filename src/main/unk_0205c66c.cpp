@@ -1,9 +1,9 @@
 #include "types.h"
 
-class Unk_020dbe24 {
+class TexVramSlot {
 public:
-    Unk_020dbe24();
-    virtual ~Unk_020dbe24();
+    TexVramSlot();
+    virtual ~TexVramSlot();
     void func_02055200(void);
     void func_02055340(void *a, void *b, void *c);
     void func_02055210(void *p);
@@ -24,7 +24,7 @@ public:
 
 struct Unk_0205c788 {
     u32 unk_00[4];
-    Unk_020dbe24 unk_10[4];
+    TexVramSlot unk_10[4];
     Unk_020e45ec unk_60[4];
 
     Unk_0205c788();
@@ -41,10 +41,10 @@ extern Unk_0205c788 data_021c6314;
 extern void *data_021c61d0;
 extern u8 *data_020cbb18;
 
-void *func_020e8628(void *, u32, s32);
+void *Heap_AllocAligned(void *, u32, s32);
 void func_020e885c(void *);
 void func_020e877c(void *);
-s32 func_020641b4(char *, void *, u32);
+s32 File_LoadToBuffer(char *, void *, u32);
 s32 func_0205bd54();
 s32 func_0205bd70();
 s32 NNS_G3dGetTex(void *);
@@ -93,7 +93,7 @@ void Unk_0205c788::func_0205c7ec() {
         unk_10[i].func_02055340((void *)a, (void *)b, (void *)c);
     }
     void *heap = data_021c61d0;
-    for (i = 0; i < cnt; i++) unk_00[i] = (u32)func_020e8628(heap, func_0205c8c8(), 4);
+    for (i = 0; i < cnt; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, func_0205c8c8(), 4);
 }
 
 void Unk_0205c788::func_0205c7a8() {
@@ -121,12 +121,12 @@ extern "C" void func_0205c744(u8 *p) {
 extern "C" s32 func_0205c718(u8 *p, u32 idx) {
     void *buf = func_0205c694(p);
     char *name = func_0205c8d0(idx);
-    return func_020641b4(name, buf, func_0205c8c8());
+    return File_LoadToBuffer(name, buf, func_0205c8c8());
 }
 
 extern "C" void func_0205c6f4(u8 *p) {
     s32 x = NNS_G3dGetTex(func_0205c694(p));
-    ((Unk_020dbe24 *)func_0205c680(p))->func_02055210((void *)x);
+    ((TexVramSlot *)func_0205c680(p))->func_02055210((void *)x);
 }
 
 extern "C" s32 func_0205c6a8(u8 *p) {

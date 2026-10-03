@@ -4,60 +4,60 @@
 // ---------------------------------------------------------------------------------------------------------------------
 // Classes from other files (see unk_020a6914.cpp)
 
-class Unk_020e2a08 {
+class MsgStringAttr {
 public:
-    Unk_020e2a08();
-    virtual ~Unk_020e2a08();
-    void func_020a8b1c();
-    void func_020a8b34(Unk_020e2a08 *other);
+    MsgStringAttr();
+    virtual ~MsgStringAttr();
+    void reset();
+    void copyFrom(MsgStringAttr *other);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ u8 unk_08;
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020d9200 {
+class EncodedStringBase {
 public:
-    virtual ~Unk_020d9200() {}
+    virtual ~EncodedStringBase() {}
 };
 
-class Unk_020d9218 {
+class MsgStringBase {
 public:
-    virtual ~Unk_020d9218() {}
+    virtual ~MsgStringBase() {}
 };
 
-class Unk_020e2a78;
+class MsgString;
 
 // buffer interface (destination-side, member at +4)
-class Unk_020e2a60 : public Unk_020d9200 {
+class EncodedString : public EncodedStringBase {
 public:
-    Unk_020e2a60();
-    virtual ~Unk_020e2a60();
+    EncodedString();
+    virtual ~EncodedString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a77f8(Unk_020e2a78 *src);
+    BOOL fromMsgString(MsgString *src);
 
-    /* 0x04 */ Unk_020e2a08 unk_04;
+    /* 0x04 */ MsgStringAttr unk_04;
 };
 
 // buffer interface with write position at +4 and member at +8
-class Unk_020e2a78 : public Unk_020d9218 {
+class MsgString : public MsgStringBase {
 public:
-    Unk_020e2a78();
-    virtual ~Unk_020e2a78();
+    MsgString();
+    virtual ~MsgString();
     virtual u32 vfunc_08() = 0;
     virtual u8 *vfunc_0c() = 0;
-    BOOL func_020a7aa0(Unk_020e2a60 *src, BOOL a, BOOL b);
-    void func_020a7c3c();
+    BOOL fromEncoded(EncodedString *src, BOOL a, BOOL b);
+    void clear();
 
     /* 0x04 */ u32 unk_04;
-    /* 0x08 */ Unk_020e2a08 unk_08;
+    /* 0x08 */ MsgStringAttr unk_08;
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Fixed 0x29 byte string holder
-class Unk_020e0470 : public Unk_020e2a60 {
+class Unk_020e0470 : public EncodedString {
 public:
     Unk_020e0470();
     virtual ~Unk_020e0470();
@@ -69,8 +69,8 @@ public:
     /* 0x0e */ u8 unk_0e[0x29];
 };
 
-// String buffer wrapping a text renderer (Unk_02050288) at +0x3c
-class Unk_020e0488 : public Unk_020e2a78 {
+// String buffer wrapping a text renderer (TextLabel) at +0x3c
+class Unk_020e0488 : public MsgString {
 public:
     Unk_020e0488();
     virtual ~Unk_020e0488();
@@ -90,7 +90,7 @@ public:
     void func_0206fc44();
 
     /* 0x12 */ u8 unk_12[0x2a];
-    /* 0x3c */ Unk_02050288 *unk_3c;
+    /* 0x3c */ TextLabel *unk_3c;
 };
 
 struct Unk_0206fd10_Mtx {
@@ -125,7 +125,7 @@ extern u32 data_020de394[];
 }
 
 extern "C" {
-extern u32 data_021cb410[];
+extern u32 gMelodyEditPattern[];
 }
 
 extern "C" {
@@ -137,7 +137,7 @@ extern u32 data_021dfd8c[];
 }
 
 extern "C" {
-extern void *data_021f482c;
+extern void *gCurrentHeap;
 }
 
 extern "C" {
@@ -177,15 +177,15 @@ extern Unk_0206f804_Fn data_020de3a8[];
 }
 
 extern "C" {
-extern Unk_02050288_Font data_021c48fc;
+extern GameFontDesc gFontD;
 }
 
 extern "C" {
-extern Unk_02050288_Font data_021c4924;
+extern GameFontDesc gFontB;
 }
 
 extern "C" {
-extern Unk_02050288_Font data_021c4938;
+extern GameFontDesc gFontC;
 }
 
 extern "C" {
@@ -197,11 +197,11 @@ extern Unk_0206fde4_Mtx data_021cb6cc[];
 }
 
 extern "C" {
-s32 func_0200402c(u32 a);
+s32 Snd_PlaySe(u32 a);
 }
 
 extern "C" {
-void *func_0208a578();
+void *Hud_GetCountdown();
 }
 
 extern "C" {
@@ -213,11 +213,11 @@ s32 MI_CpuCopy8(void *src, void *dst, u32 n);
 }
 
 extern "C" {
-void func_0206db34(void *a, void *b);
+void Melody_Pack(void *a, void *b);
 }
 
 extern "C" {
-void func_0206dad8();
+void Melody_ApplyEditPattern();
 }
 
 extern "C" {
@@ -225,11 +225,11 @@ void func_020795a8(void *a);
 }
 
 extern "C" {
-void *func_020e8618(void *heap, u32 size);
+void *Heap_AllocTail(void *heap, u32 size);
 }
 
 extern "C" {
-void func_020e85fc(void *heap, void *p);
+void Heap_Free(void *heap, void *p);
 }
 
 extern "C" {
@@ -321,23 +321,23 @@ BOOL func_020a78a4(Unk_020e0470 *buf, const void *src, s32 len);
 }
 
 extern "C" {
-BOOL func_02050e90(Unk_020e0470 *buf, u8 *dst, s32 size);
+BOOL StrBuf_GetBytes(Unk_020e0470 *buf, u8 *dst, s32 size);
 }
 
 extern "C" {
-void func_020b3270(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
+void String_FormatNumber(void *o, s32 a, s32 b, s32 c, s32 d, u8 e);
 }
 
 extern "C" {
-void func_020b35f8(void *a, u8 *b, void *c);
+void String_Load(void *a, u8 *b, void *c);
 }
 
 extern "C" {
-void func_020b3558(void *a, u8 *b, u32 c);
+void String_Load2d(void *a, u8 *b, u32 c);
 }
 
 extern "C" {
-u32 func_020a7fa8(u32 arg);
+u32 Msg_MeasureWidth(u32 arg);
 }
 
 extern "C" {
@@ -345,15 +345,15 @@ void _ZdlPv(void *p);
 }
 
 extern "C" {
-Unk_02050288 *func_020a8008(u32 a, u32 b, u32 c);
+TextLabel *MsgTextLabel_CreateBuffer(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-Unk_02050288 *func_020a8054(u32 a, u32 b, u32 c);
+TextLabel *MsgTextLabel_CreateVram(u32 a, u32 b, u32 c);
 }
 
 extern "C" {
-void func_020a7fd8(Unk_02050288 *obj);
+void MsgTextLabel_Destroy(TextLabel *obj);
 }
 
 extern "C" {
@@ -381,7 +381,7 @@ void MTX_Identity43_(void *p);
 }
 
 extern "C" {
-s32 func_02052c54(u16 *p);
+s32 Item_GetFossilGroup(u16 *p);
 }
 
 extern "C" {
@@ -449,19 +449,19 @@ void func_0206f81c();
 }
 
 extern "C" {
-BOOL func_0206f88c(Unk_020e2a78 *a, u8 *b, s32 len);
+BOOL func_0206f88c(MsgString *a, u8 *b, s32 len);
 }
 
 extern "C" {
-void func_0206f920(Unk_020e2a78 *dst, const void *s, s32 len, BOOL a, u8 b);
+void func_0206f920(MsgString *dst, const void *s, s32 len, BOOL a, u8 b);
 }
 
 extern "C" {
-void func_0206f964(Unk_020e2a78 *a, u8 *b);
+void func_0206f964(MsgString *a, u8 *b);
 }
 
 extern "C" {
-void func_0206f994(Unk_020e2a78 *dst, const void *s, s32 len);
+void func_0206f994(MsgString *dst, const void *s, s32 len);
 }
 
 extern "C" {
@@ -558,7 +558,7 @@ void func_0206fd10(void *a, Unk_0206fd10_Vec *v, Unk_0206fd10_Vec *w) {
 }
 
 Unk_020e0488::Unk_020e0488() {
-    func_020a7c3c();
+    clear();
     unk_3c = NULL;
 }
 
@@ -570,7 +570,7 @@ u8 *Unk_020e0488::vfunc_0c() { return (u8 *)this + 0x12; }
 
 void Unk_020e0488::func_0206fc44() {
     if (unk_3c != NULL) {
-        func_020a7fd8(unk_3c);
+        MsgTextLabel_Destroy(unk_3c);
         unk_3c = NULL;
     }
 }

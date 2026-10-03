@@ -224,7 +224,7 @@ s32 WM_SetParentParameter(void (*)(Msg *), void *);
 s32 WM_StartParent(void (*)(Msg *));
 void DC_InvalidateRange(void *, u32);
 void MI_CpuCopy8(void *, void *, u32);
-void func_0206d49c(void);
+void Fatal_Trap(void);
 u32 _u32_div_f(u32, u32);
 u16 func_021276e0(u32, u32);
 s32 WM_Reset(void *);
@@ -732,7 +732,7 @@ extern "C" s32 func_ov067_02261484(u32 cmd, void *arg) {
         ret = func_ov067_0225f3fc(&data_ov067_02262268->unk_5760, (Unk_ov067_0225f3fc_Msg *)arg);
         break;
     default:
-        func_0206d49c();
+        Fatal_Trap();
         break;
     }
     return ret;
@@ -743,7 +743,7 @@ extern "C" void func_ov067_02261350(u32 a, u32 b, u32 c) {
     s32 ie = OS_DisableInterrupts();
     if (func_ov067_02261148() == 0) {
         if ((a & 0x1f) != 0) {
-            func_0206d49c();
+            Fatal_Trap();
         }
         z = 0;
         data_ov067_02262268 = (Unk_ov067_02261484_G *)a;
@@ -857,7 +857,7 @@ extern "C" void func_ov067_02261048(u32 a0, u32 a1, u32 a2, u32 a3, u32 a4, u32 
     if (e == NULL) {
         e = (Unk_ov067_02261048_Ent *)func_ov067_0225f8f4(&data_ov067_02262268->unk_5760, 0, 0, 1);
         if (e == NULL) {
-            func_0206d49c();
+            Fatal_Trap();
         } else {
             e->unk_00 = a0;
             e->unk_04 = a1;
@@ -1866,9 +1866,9 @@ end:
 extern "C" u16 func_ov067_0225f1a0(s32 n) {
     u32 m = WM_GetAllowedChannel();
     if (m == 0) {
-        func_0206d49c();
+        Fatal_Trap();
     } else if (m == 0x8000) {
-        func_0206d49c();
+        Fatal_Trap();
     } else {
         n++;
         if (((1 << (n - 1)) & m) == 0) {

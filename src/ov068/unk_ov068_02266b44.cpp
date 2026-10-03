@@ -1,30 +1,30 @@
 // mwcc-version: 1.2/base
 #include "types.h"
 
-// Library base class (same as Unk_020d8c7c.h, but vfunc_08 takes the s32 the vtable symbol names).
-class Unk_020d8c7c_Base {
+// Library base class (same as GameProc.h, but vfunc_08 takes the s32 the vtable symbol names).
+class ProcBase {
 public:
     static void *operator new(unsigned long size);
     static void operator delete(void *ptr);
 
-    Unk_020d8c7c_Base();
+    ProcBase();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
-    virtual void vfunc_08(s32 v);
+    virtual void postCreate(s32 v);
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual BOOL vfunc_14();
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_1c();
+    virtual BOOL onExecute();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_24();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL onDraw();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
     virtual BOOL vfunc_30();
-    virtual BOOL vfunc_34();
-    virtual BOOL vfunc_38();
+    virtual BOOL createHeapFitted();
+    virtual BOOL createHeap();
     virtual BOOL vfunc_3c();
-    virtual ~Unk_020d8c7c_Base();
+    virtual ~ProcBase();
 };
 
 class Unk_ov068_0226fb80;
@@ -44,7 +44,7 @@ class Unk_ov068_0226fea4;
 #define func_0201bc4c _ZN12Unk_020d77a413func_0201bc4cEj
 #define func_0201bcbc _ZN12Unk_020d77a413func_0201bcbcEPS_
 #define func_0201bda8 _ZN12Unk_020d77a413func_0201bda8EPt
-#define func_02060388 _ZN12Unk_0206022c13func_02060388Ev
+#define func_02060388 _ZN9HouseData13func_02060388Ev
 #define func_02067a84 _ZN12Unk_020660f813func_02067a84EPhPv
 #define func_02097ff4 _ZN12Unk_02097ff413func_02097ff4Ej
 
@@ -87,28 +87,28 @@ struct Unk_ov068_SceneEntry {
 };
 
 // Main's tiny class with an external destructor (one u16 element of the local static table of vfunc_04).
-struct Unk_0203442c {
+struct ItemId {
     u16 v;
-    Unk_0203442c(u16 x) { v = x; }
-    ~Unk_0203442c();
+    ItemId(u16 x) { v = x; }
+    ~ItemId();
 };
 
 extern "C" {
-void *func_0209750c();
+void *PlayerData_GetCurrent();
 BOOL func_0203d704(void *p, s32 a);
 void func_0203d67c(void *p);
 u32 func_020ae02c(void *p);
 u32 func_020e7518(void *p);
-void func_020ed188(void *p);
+void ProcBase_RequestDelete(void *p);
 void func_02034d70(u32 a);
 void func_02034d84(u32 a);
 void func_02034dd0(u32 a, u32 b, u32 c);
 void func_02034e10(s32 a, s32 b, s32 c, s32 d);
-void func_0203a844();
-void func_0203a680(Unk_ov068_02266680_Vec *v);
+void Camera_SetModeDefault();
+void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
 BOOL func_020951b8(s32 a);
 void *func_020947f0(s32 a);
-void func_02094b0c(void *v, u32 a, u32 b);
+void PlayerActor_RequestAct6F(void *v, u32 a, u32 b);
 void func_02094f48(s32 a, s32 b);
 void func_020a02d0();
 BOOL func_020a0304();
@@ -162,25 +162,25 @@ struct Unk_020e06dc { Unk_020e06dc(); u32 pad[0x14 / 4]; };
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Scene object (vtable 0x0226ff34). The class chain declares every slot after the class that names it in the vtable symbols.
-class Unk_020d5d84 : public Unk_020d8c7c_Base {
+class Actor : public ProcBase {
 public:
     virtual BOOL vfunc_14();
     virtual BOOL vfunc_20();
-    virtual BOOL vfunc_28();
-    virtual BOOL vfunc_2c();
+    virtual BOOL preDraw();
+    virtual BOOL postDraw();
 };
 
 struct Unk_020d77a4_Vec3;
 
-class Unk_020d9670 : public Unk_020d5d84 {
+class Character : public Actor {
 public:
-    Unk_020d9670();
-    virtual ~Unk_020d9670();
-    virtual BOOL vfunc_1c();
+    Character();
+    virtual ~Character();
+    virtual BOOL preExecute();
     virtual BOOL vfunc_48();
     virtual void vfunc_4c(s32 a);
-    virtual void vfunc_50();
-    virtual void vfunc_54(void *p);
+    virtual void getInteractionPos();
+    virtual void acceptsInteractionOutOfRange(void *p);
     virtual void vfunc_58(void *p);
     u32 pad_04[0x58 / 4];
     u32 unk_5c;
@@ -192,12 +192,12 @@ public:
     u32 unk_d4, unk_d8, unk_dc;
 };
 
-class Unk_020d77a4 : public Unk_020d9670 {
+class Unk_020d77a4 : public Character {
 public:
     Unk_020d77a4() : unk_ea(0xfff1) {}
-    virtual void vfunc_08(s32 v);
-    virtual BOOL vfunc_18();
-    virtual BOOL vfunc_24();
+    virtual void postCreate(s32 v);
+    virtual BOOL onExecute();
+    virtual BOOL onDraw();
     virtual BOOL vfunc_30();
     virtual void vfunc_5c(Unk_020d77a4_Vec3 *v);
     virtual void vfunc_60();
@@ -246,7 +246,7 @@ public:
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_04();
     virtual BOOL vfunc_0c();
-    virtual BOOL vfunc_10();
+    virtual BOOL preDelete();
     virtual void vfunc_74(u32 a);
     virtual u32 vfunc_78();
     virtual BOOL vfunc_7c();
@@ -459,9 +459,9 @@ extern "C" Unk_ov068_0226ff34 *func_ov068_0226746c() {
 }
 
 BOOL Unk_ov068_0226ff34::vfunc_04() {
-    static Unk_0203442c tbl[4] = {
-        Unk_0203442c(0xd019), Unk_0203442c(0xd01a),
-        Unk_0203442c(0xd01b), Unk_0203442c(0xd01c)
+    static ItemId tbl[4] = {
+        ItemId(0xd019), ItemId(0xd01a),
+        ItemId(0xd01b), ItemId(0xd01c)
     };
     if (!Unk_020d8bc8::vfunc_04()) {
         return FALSE;
@@ -515,7 +515,7 @@ BOOL Unk_ov068_0226ff34::vfunc_00() {
     func_ov068_02267238(0);
     unk_710 = unk_8e;
     unk_4cc.unk_1c |= 2;
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         if (!func_020a0304()) {
             if (!func_020a0318()) {
@@ -577,7 +577,7 @@ BOOL Unk_ov068_0226ff34::func_ov068_022671dc() {
 
 BOOL Unk_ov068_0226ff34::func_ov068_022671a4() {
     if (func_02014220(&unk_618) == 0) {
-        func_0203a844();
+        Camera_SetModeDefault();
         func_02034dd0(0x13, 0x3c, 0);
         func_02034d84(0x47);
         func_ov068_02267238(3);
@@ -592,7 +592,7 @@ BOOL Unk_ov068_0226ff34::func_ov068_0226716c() {
     v.y = p->y;
     v.z = p->z;
     v.z += 0x2000;
-    func_02094b0c(&v, 0x400, 4);
+    PlayerActor_RequestAct6F(&v, 0x400, 4);
     return TRUE;
 }
 
@@ -633,7 +633,7 @@ BOOL Unk_ov068_0226ff34::func_ov068_02267048() {
 BOOL Unk_ov068_0226ff34::func_ov068_02267008() {
     if (func_02019790(&unk_564) != 0 || func_020e7518(&unk_720) == 0) {
         func_0203d67c(this);
-        if (func_0209750c()) {
+        if (PlayerData_GetCurrent()) {
             func_020a02d0();
         }
     }
@@ -649,7 +649,7 @@ BOOL Unk_ov068_0226ff34::func_ov068_02266fc4() {
     if (func_020e7518(&unk_720) == 0) {
         func_02034d70(0x13);
         func_02034dd0(0x12, 5, 5);
-        func_020ed188(this);
+        ProcBase_RequestDelete(this);
     }
     return TRUE;
 }
@@ -665,7 +665,7 @@ void Unk_ov068_0226fea4::func_ov068_02266f58(Unk_ov068_0226fb80 *o) {
 }
 
 void Unk_ov068_0226fea4::vfunc_78(Unk_ov068_02266f30_Out *out) {
-    void *p = func_0209750c();
+    void *p = PlayerData_GetCurrent();
     if (p != 0) {
         func_02097ff4(p, 0x23);
     }
@@ -800,7 +800,7 @@ void Unk_ov068_0226fea4::func_ov068_02266bd0() {
                 t.y = pt->y;
                 t.z = pt->z;
                 t.y += 0x2000;
-                func_0203a680(&t);
+                Camera_FocusOnPoint(&t);
                 func_ov068_02266d64(0);
             }
         }
