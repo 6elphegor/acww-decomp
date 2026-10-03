@@ -27,7 +27,7 @@ they cannot be split across files. Start from the unit files in `src/ovNNN/`.
   * a method `_ZN18Unk_ov139_02291f6019func_ov139_02292154Ei` → class `Unk_ov139_02291f60`, method
     `func_ov139_02292154(s32)`; parameter letters: `h` u8, `t` u16, `j` u32, `i` s32, `s` s16, `a` s8,
     `Ph` u8*, `Pv` void*. Return types are not mangled: keep whatever the function matched with.
-  * a plain `func_XXXXXXXX` → `extern "C"`. LampLights `_Z13func_0207217cv` → C++ linkage, declared outside `extern "C"`.
+  * a plain `func_XXXXXXXX` → `extern "C"`. LampLights `_Z25NetOverlay_AssertWirelessv` → C++ linkage, declared outside `extern "C"`.
   * a call the unit wrote as a free function taking the object (`f(&unk_94, i)`) becomes a method call
     (`unk_94.f(i)`) when the real symbol is a method; the code is the same.
   * methods of one object split across several classes in ov002 (known case: `Unk_ov002_02202d98` and
@@ -230,7 +230,7 @@ dependencies on the unit's objects; without any such file the build is as before
 
     # comment
     src/ov009/unk_ov009_0225b880.cpp:
-        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN18Unk_ov009_0225e29c8vfunc_4cEjh
+        extra src/ov009/unk_ov009_0225b880_switch.cpp _ZN13BuildingActor8vfunc_4cEjh
         place __arraydtor$303 0x0225e05c
 
 * `<main source>:` — a unit of this overlay's `delinks.txt` (one block per unit; the other units of the overlay
@@ -306,7 +306,7 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
 * An object that nothing placed points to, and that has no `symbols.txt` name, needs a `place` line.
 * Two sections of one object that share a local symbol name cannot be selected (the tool reports it).
 * LampLights link-once function that another unit already provides at its own address (the shared thunk
-  `_ZThn236_N18Unk_ov009_0225e29c8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
+  `_ZThn236_N13BuildingActor8vfunc_88Ev` in ov003 TU04) lies outside the unit's range, is therefore not
   placed, and the first copy keeps being used.
 * Tools that compare `src/ovNNN/*.cpp` with `delinks.txt` see the extra file as an unlisted source.
 
