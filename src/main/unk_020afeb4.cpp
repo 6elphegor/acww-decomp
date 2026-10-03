@@ -1,6 +1,6 @@
 #include "types.h"
 
-// TU210: 0x020afeb4-0x020b0774. Owns data_021ee27c (.bss, autoload_3 0x021ee27c-0x021ee284).
+// TU210: 0x020afeb4-0x020b0774. Owns sConstellationColumns (.bss, autoload_3 0x021ee27c-0x021ee284).
 
 struct Entry {
     u16 unk_00;
@@ -39,7 +39,7 @@ struct List {
 
 extern "C" {
 extern Base data_021ec31c;
-u32 data_021ee27c[2];  // .bss, autoload_3 0x021ee27c
+u32 sConstellationColumns[2];  // .bss, autoload_3 0x021ee27c
 extern u8 data_020e2f84[];
 extern u32 OVERLAY_127_ID[];
 extern u32 data_020e2f04[];
@@ -81,25 +81,25 @@ void MI_CpuCopy8(const void *src, void *dst, u32 size);
 u64 func_02132ef8(u64 a, u64 b);
 
 // this file
-void func_020b04f8(Entry *e, s32 idx, s32 flag);
-BOOL func_020b0074(s32 n);
-s32 func_020b005c(s32 x, s32 y);
-void func_020b0008(u16 *p, u32 slot, s32 r);
-void func_020affd4(u16 *p, Entry *e, s32 r);
-void func_020affac(u16 *p);
-BOOL func_020b0084(const u8 *name, s32 skip);
-BOOL func_020b01b0(Entry *e);
-void func_020b01f8(void);
-void func_020b0208(void);
+void Constellation_Store(Entry *e, s32 idx, s32 flag);
+BOOL Constellation_IsLineTile(s32 n);
+s32 Constellation_CellToScreenIndex(s32 x, s32 y);
+void Constellation_SetLinePalette(u16 *p, u32 slot, s32 r);
+void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r);
+void Constellation_HighlightAll(u16 *p);
+BOOL Constellation_IsNameTaken(const u8 *name, s32 skip);
+BOOL Constellation_AddReceived(Entry *e);
+void Constellation_ReleaseSkyOverlay(void);
+void Constellation_AcquireSkyOverlay(void);
 Base *Constellation_GetData(void);
-Entry *func_020b04a4(s32 i);
-Entry *func_020b053c(s32 i);
+Entry *Constellation_GetRecordAlt(s32 i);
+Entry *Constellation_GetRecord(s32 i);
 s32 Constellation_FindFreeSlot(void);
-void func_020b05c4(u16 *p, s32 *a, s32 *b);
-BOOL func_020b02bc(s32 x, s32 y, s32 px, s32 py);
-BOOL func_020b0708(s32 n);
-void func_020b073c(s32 n);
-void func_020b0764(void);
+void Constellation_CalcCentre(u16 *p, s32 *a, s32 *b);
+BOOL Constellation_IsInView(s32 x, s32 y, s32 px, s32 py);
+BOOL Constellation_TestColumn(s32 n);
+void Constellation_MarkColumn(s32 n);
+void Constellation_ClearColumns(void);
 u8 *func_020b0774(s32 n);
 
 inline void setv(Vec3 *v, s32 x, s32 y, s32 z) {
@@ -108,31 +108,31 @@ inline void setv(Vec3 *v, s32 x, s32 y, s32 z) {
     v->z = z;
 }
 
-void func_020b0764(void) {
-    data_021ee27c[1] = 0;
-    data_021ee27c[0] = 0;
+void Constellation_ClearColumns(void) {
+    sConstellationColumns[1] = 0;
+    sConstellationColumns[0] = 0;
 }
 
-void func_020b073c(s32 n) {
+void Constellation_MarkColumn(s32 n) {
     if (n >= 0x20) {
-        data_021ee27c[1] |= 1 << (n - 0x20);
+        sConstellationColumns[1] |= 1 << (n - 0x20);
     } else {
-        data_021ee27c[0] |= 1 << n;
+        sConstellationColumns[0] |= 1 << n;
     }
 }
 
-BOOL func_020b0708(s32 n) {
+BOOL Constellation_TestColumn(s32 n) {
     if (n >= 0x20) {
-        return (data_021ee27c[1] & (1 << (n - 0x20))) != 0;
+        return (sConstellationColumns[1] & (1 << (n - 0x20))) != 0;
     }
-    return (data_021ee27c[0] & (1 << n)) != 0;
+    return (sConstellationColumns[0] & (1 << n)) != 0;
 }
 
-void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
+void Constellation_CalcCentre(u16 *p, s32 *outA, s32 *outB) {
     u8 *d;
     s32 minv, maxv, i, j, t, a, b;
     s32 f1, f2, f3, f4;
-    func_020b0764();
+    Constellation_ClearColumns();
     minv = 0x20;
     maxv = -1;
     for (i = 0; i < 16; i++) {
@@ -143,7 +143,7 @@ void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
                 u8 y = d[1];
                 d += 2;
                 if (x != 0xff) {
-                    func_020b073c(x);
+                    Constellation_MarkColumn(x);
                     if (minv > y) {
                         minv = y;
                     }
@@ -157,7 +157,7 @@ void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
         }
     }
     t = 0;
-    while (t < 0x40 && !func_020b0708(t)) {
+    while (t < 0x40 && !Constellation_TestColumn(t)) {
         t++;
     }
     a = (t - 1) & 0x3f;
@@ -165,7 +165,7 @@ void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
     f1 = 0;
     f2 = 0;
     while (!f1 && a != b) {
-        if (func_020b0708(a)) {
+        if (Constellation_TestColumn(a)) {
             f2 = 0;
             b = a;
         } else if (f2) {
@@ -180,7 +180,7 @@ void func_020b05c4(u16 *p, s32 *outA, s32 *outB) {
         f3 = 0;
         f4 = 0;
         while (!f3 && a != t) {
-            if (func_020b0708(a)) {
+            if (Constellation_TestColumn(a)) {
                 f4 = 0;
                 t = a;
             } else if (f4) {
@@ -229,7 +229,7 @@ s32 Constellation_CountFreeSlots(void) {
     return n;
 }
 
-Entry *func_020b053c(s32 idx) {
+Entry *Constellation_GetRecord(s32 idx) {
     Base *base = Constellation_GetData();
     if (func_020b0980(base, idx) == 0) {
         return NULL;
@@ -237,7 +237,7 @@ Entry *func_020b053c(s32 idx) {
     return base->entries + idx;
 }
 
-void func_020b04f8(Entry *e, s32 idx, s32 flag) {
+void Constellation_Store(Entry *e, s32 idx, s32 flag) {
     Base *base = Constellation_GetData();
     func_020b09ac(base, idx);
     func_020b0a18(&base->entries[idx], e);
@@ -252,7 +252,7 @@ void Constellation_Erase(s32 idx) {
     base->mask &= ~(1 << idx);
 }
 
-Entry *func_020b04a4(s32 idx) {
+Entry *Constellation_GetRecordAlt(s32 idx) {
     Base *base = Constellation_GetData();
     if (func_020b0980(base, idx) == 0) {
         return NULL;
@@ -260,7 +260,7 @@ Entry *func_020b04a4(s32 idx) {
     return base->entries + idx;
 }
 
-void func_020b0450(u8 *dst) {
+void Constellation_SetCreator(u8 *dst) {
     u8 *src = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
     *(u16 *)dst = *(u16 *)src;
     *(B8 *)(dst + 2) = *(B8 *)(src + 2);
@@ -270,11 +270,11 @@ void func_020b0450(u8 *dst) {
     dst[0x15] = src[0x15];
 }
 
-void func_020b0428(u8 *src, s32 idx) {
+void Constellation_SetName(u8 *src, s32 idx) {
     Mem_Copy(src, Constellation_GetData()->entries[idx].name, 16);
 }
 
-void func_020b03f0(u8 *dst, s32 idx) {
+void Constellation_CopyName(u8 *dst, s32 idx) {
     Base *base = Constellation_GetData();
     Mem_Clear(dst, 16);
     if (func_020b0980(base, idx)) {
@@ -288,7 +288,7 @@ BOOL Constellation_GetName(void *self, s32 idx) {
     if (!func_020b0980(Constellation_GetData(), idx)) {
         return FALSE;
     }
-    e = func_020b053c(idx);
+    e = Constellation_GetRecord(idx);
     _ZN12Unk_020e2f5cC2Ev(buf);
     func_020a78a4(buf, e->name, 16);
     _ZN9MsgString11fromEncodedEP13EncodedStringii(self, buf, 0, 0);
@@ -327,14 +327,14 @@ void Constellation_ClearNewFlags(void) {
 
 void Constellation_GetViewingTime(void *a, s32 idx) {
     s32 x, y;
-    Entry *e = func_020b053c(idx);
-    func_020b05c4(e->slots, &x, &y);
+    Entry *e = Constellation_GetRecord(idx);
+    Constellation_CalcCentre(e->slots, &x, &y);
     x -= 0x80;
     y -= 0x60;
     Sky_GetStarViewingTime(a, x, y);
 }
 
-BOOL func_020b02bc(s32 x, s32 y, s32 px, s32 py) {
+BOOL Constellation_IsInView(s32 x, s32 y, s32 px, s32 py) {
     if (py < y + 0x10 || py > y + 0x88) {
         return FALSE;
     }
@@ -344,7 +344,7 @@ BOOL func_020b02bc(s32 x, s32 y, s32 px, s32 py) {
     return TRUE;
 }
 
-s32 func_020b0218(void) {
+s32 Constellation_FindVisibleNow(void) {
     u32 tm[2];
     s32 d, px, py, x, y, dx, i, bestd, dy, best;
     tm[0] = 0;
@@ -357,13 +357,13 @@ s32 func_020b0218(void) {
     y = Sky_GetStarScrollY();
     best = -1;
     for (i = 0; i < 16; i++) {
-        Entry *e = func_020b053c(i);
+        Entry *e = Constellation_GetRecord(i);
         if (e) {
-            func_020b05c4(e->slots, &px, &py);
+            Constellation_CalcCentre(e->slots, &px, &py);
             if (px < x) {
                 px += 0x200;
             }
-            if (func_020b02bc(x, y, px, py)) {
+            if (Constellation_IsInView(x, y, px, py)) {
                 dy = py - (y + 0x60);
                 dx = px - (x + 0x80);
                 d = dx * dx + dy * dy;
@@ -377,33 +377,33 @@ s32 func_020b0218(void) {
     return best;
 }
 
-void func_020b0208(void) {
+void Constellation_AcquireSkyOverlay(void) {
     OverlayMgr_Acquire((u32)OVERLAY_127_ID);
 }
 
-void func_020b01f8(void) {
+void Constellation_ReleaseSkyOverlay(void) {
     OverlayMgr_Release((u32)OVERLAY_127_ID);
 }
 
-BOOL func_020b01b0(Entry *e) {
+BOOL Constellation_AddReceived(Entry *e) {
     s32 idx = Constellation_FindFreeSlot();
     s32 r;
     if (idx == -1) {
         return FALSE;
     }
-    if (func_020b0084(e->name, -1)) {
+    if (Constellation_IsNameTaken(e->name, -1)) {
         return FALSE;
     }
-    func_020b0208();
+    Constellation_AcquireSkyOverlay();
     r = _ZN11BbsReadMenuD1Ev(e);
-    func_020b01f8();
+    Constellation_ReleaseSkyOverlay();
     if (r) {
-        func_020b04f8(e, idx, 1);
+        Constellation_Store(e, idx, 1);
     }
     return r;
 }
 
-void func_020b013c(void) {
+void Constellation_PrepareExchange(void) {
     Entry *e;
     Base *base;
     s32 n, i;
@@ -423,7 +423,7 @@ void func_020b013c(void) {
                 if (n > 0) {
                     n--;
                 } else {
-                    func_020b0a18(e, func_020b053c(i));
+                    func_020b0a18(e, Constellation_GetRecord(i));
                     break;
                 }
             }
@@ -431,7 +431,7 @@ void func_020b013c(void) {
     }
 }
 
-void func_020b00c4(void) {
+void Constellation_ImportExchanged(void) {
     Entry *e;
     s32 i, j;
     s32 count;
@@ -451,18 +451,18 @@ void func_020b00c4(void) {
             }
         }
         if (count != 0) {
-            if (func_020b01b0(e)) {
+            if (Constellation_AddReceived(e)) {
                 func_020b0a30(e);
             }
         }
     }
 }
 
-BOOL func_020b0084(const u8 *name, s32 skip) {
+BOOL Constellation_IsNameTaken(const u8 *name, s32 skip) {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (skip != i) {
-            Entry *e = func_020b053c(i);
+            Entry *e = Constellation_GetRecord(i);
             if (e) {
                 if (func_02051218(name, e->name, 16)) {
                     return TRUE;
@@ -473,14 +473,14 @@ BOOL func_020b0084(const u8 *name, s32 skip) {
     return FALSE;
 }
 
-BOOL func_020b0074(s32 n) {
+BOOL Constellation_IsLineTile(s32 n) {
     if (n >= 0x13 && n <= 0x1f) {
         return TRUE;
     }
     return FALSE;
 }
 
-s32 func_020b005c(s32 x, s32 y) {
+s32 Constellation_CellToScreenIndex(s32 x, s32 y) {
     s32 off = 0;
     if (x >= 0x20) {
         off += 0x400;
@@ -489,7 +489,7 @@ s32 func_020b005c(s32 x, s32 y) {
     return off + (x + y * 32);
 }
 
-void func_020b0008(u16 *p, u32 slot, s32 r) {
+void Constellation_SetLinePalette(u16 *p, u32 slot, s32 r) {
     u8 *d = func_020b0774(slot);
     s32 j, i;
     j = i = 0;
@@ -503,35 +503,35 @@ void func_020b0008(u16 *p, u32 slot, s32 r) {
         x = d[i];
         y = d[i + 1];
         i += 2;
-        idx = func_020b005c(x, y);
+        idx = Constellation_CellToScreenIndex(x, y);
         p[idx] = (p[idx] & 0xfff) | (r << 12);
     }
 }
 
-void func_020affd4(u16 *p, Entry *e, s32 r) {
+void Constellation_SetLinesPalette(u16 *p, Entry *e, s32 r) {
     s32 i;
     for (i = 0; i < 16; i++) {
         if (e->slots[i] != 0xffff) {
-            func_020b0008(p, e->slots[i], r);
+            Constellation_SetLinePalette(p, e->slots[i], r);
         }
     }
 }
 
-void func_020affac(u16 *p) {
+void Constellation_HighlightAll(u16 *p) {
     s32 i;
     for (i = 0; i < 16; i++) {
-        Entry *e = func_020b04a4(i);
+        Entry *e = Constellation_GetRecordAlt(i);
         if (e) {
-            func_020affd4(p, e, 7);
+            Constellation_SetLinesPalette(p, e, 7);
         }
     }
 }
 
-void func_020aff60(u16 *p) {
+void Constellation_MaskSkyScreen(u16 *p) {
     s32 i;
-    func_020affac(p);
+    Constellation_HighlightAll(p);
     for (i = 0; i < 0x800; p++, i++) {
-        if (func_020b0074(*p & 0x3ff)) {
+        if (Constellation_IsLineTile(*p & 0x3ff)) {
             if (((*p & 0xf000) >> 12) != 7) {
                 *p = 0x4010;
             }
@@ -539,7 +539,7 @@ void func_020aff60(u16 *p) {
     }
 }
 
-BOOL func_020afeb4(List *self, u8 *idxp, u64 start) {
+BOOL SceneSpawnGroup_SpawnActors(List *self, u8 *idxp, u64 start) {
     s32 i;
     BOOL result;
     Node *n;

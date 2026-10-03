@@ -324,8 +324,8 @@ static inline s32 Unk_0203c23c_None() {
 extern "C" {
 extern Unk_021c3070 *gCamera;
 extern Unk_0203a148_Mtx data_021f47e0;
-extern s32 data_020d9254;
-extern s32 data_020d9250;
+extern s32 sCameraSpanDepthScale;
+extern s32 sCameraFollowVillagerIdx;
 extern s16 data_02135f44[];
 extern Unk_0203a9b8_Vec gVec3Zero;
 extern Unk_0203a9b8_Cfg *gCurSceneInfo;
@@ -517,7 +517,7 @@ BOOL Camera_ProjectToScreen(s32 *x, s32 *y, Unk_0203a148_Vec *p);
 BOOL Camera_IsBlending(void);
 void Camera_RestoreView(void);
 void Camera_PlaySe(Unk_021c3070 *o, s32 a);
-void func_0203bac4(s32 a, s32 *x, s32 *z);
+void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z);
 }
 
 // ---- members called from the plain functions (explicit object argument; names filled by the build script) ----
@@ -610,14 +610,14 @@ BOOL Unk_020d93b8::vfunc_00() {
     calcRoomBounds();
     s32 r = Scene_GetCurrent();
     if (r == 9) {
-        data_020d9254 = 0x1000;
+        sCameraSpanDepthScale = 0x1000;
     } else {
-        data_020d9254 = 0x1800;
+        sCameraSpanDepthScale = 0x1800;
     }
     switch (r) {
     case 0x2c: {
         Unk_0203be94_Obj *p = 0;
-        s32 *g = &data_020d9250;
+        s32 *g = &sCameraFollowVillagerIdx;
         s32 i = *g;
         if (i == 8) {
             p = (Unk_0203be94_Obj *)NpcRegistry_PickRandomVillager((s32)g);
@@ -626,7 +626,7 @@ BOOL Unk_020d93b8::vfunc_00() {
             if (i == 8) {
                 i = (s32)p;
             } else {
-                while (i != data_020d9250) {
+                while (i != sCameraFollowVillagerIdx) {
                     p = NpcRegistry_GetVillager(i);
                     if (p) {
                         if (p->vfunc_a8()) break;
@@ -638,13 +638,13 @@ BOOL Unk_020d93b8::vfunc_00() {
                     }
                 }
             }
-            data_020d9250 = i;
+            sCameraFollowVillagerIdx = i;
         }
         if (p) {
             unk_21c = (s32)p;
             setMode(7);
         } else {
-            data_020d9250 = 8;
+            sCameraFollowVillagerIdx = 8;
             setMode(8);
         }
         break;
@@ -814,7 +814,7 @@ void Unk_020d93b8::updateEyeCurveAngle()
     M(s16, 0x1ac) = func_0203edd0(&M(u8, 0x194));
 }
 
-extern "C" void func_0203bac4(s32 a, s32 *x, s32 *z)
+extern "C" void Camera_GetLookAtBlock(s32 a, s32 *x, s32 *z)
 {
     V3 t;
     Camera_GetLookAtPoint(&t, (void *)a);
@@ -1435,7 +1435,7 @@ extern "C" s32 Camera_CalcPointSpan(Unk_0203a148_Vec *a, Unk_0203a148_Vec *b, Un
     v2.x = sub.x;
     v2.y = sub.y;
     v2.z = sub.z;
-    v2.z = func_01ffcb0c(*(volatile s32 *)&sub.z, data_020d9254);
+    v2.z = func_01ffcb0c(*(volatile s32 *)&sub.z, sCameraSpanDepthScale);
     len = VEC_Mag(&v2);
     if (c != NULL) {
         func_01ffd070(&t1, a, b);
@@ -1558,7 +1558,7 @@ extern "C" void Camera_SetMode5(void) {
     _ZN12Unk_020d93b87setModeEi(gCamera, 5);
 }
 
-extern "C" BOOL func_0203a528(Unk_0203a148_Vec *v) {
+extern "C" BOOL Camera_RetargetFocus(Unk_0203a148_Vec *v) {
     if (gCamera->unk_1f8 == 0x13) {
         gCamera->unk_c8 = 0;
         gCamera->unk_b8 = 0;
@@ -1572,7 +1572,7 @@ extern "C" BOOL func_0203a528(Unk_0203a148_Vec *v) {
     return TRUE;
 }
 
-extern "C" BOOL func_0203a4c4(Unk_0203a148_Vec *v, s32 unused, s32 h) {
+extern "C" BOOL Camera_IsBlockingFocusView(Unk_0203a148_Vec *v, s32 unused, s32 h) {
     Unk_021c3070 *o = gCamera;
     if (o != NULL) {
         s32 t = o->unk_1f8;
@@ -1590,7 +1590,7 @@ extern "C" BOOL func_0203a4c4(Unk_0203a148_Vec *v, s32 unused, s32 h) {
     return FALSE;
 }
 
-extern "C" s32 func_0203a4b0(void) {
+extern "C" s32 Camera_GetCloseUpFactor(void) {
     return gCamera->unk_1e8;
 }
 
@@ -1640,11 +1640,11 @@ extern "C" BOOL Camera_PopView(void) {
     return TRUE;
 }
 
-extern "C" void func_0203a318(void) {
+extern "C" void Camera_SetSwayPattern3(void) {
     Camera_SetSwayPattern(gCamera, 3);
 }
 
-extern "C" void func_0203a304(void) {
+extern "C" void Camera_LockFocusYaw(void) {
     gCamera->unk_1f5 = 1;
 }
 
@@ -1757,8 +1757,8 @@ Unk_021c30ec sCameraModeTable[21] = {
 Unk_021c3070 *gCamera;
 s32 gCameraDistance;
 
-s32 data_020d9250 = 0x8;
-s32 data_020d9254 = 0x1800;
+s32 sCameraFollowVillagerIdx = 0x8;
+s32 sCameraSpanDepthScale = 0x1800;
 Unk_0203c1f0_Entry sCameraProfile = { (void *)Camera_Create, 0xb, 0x6 };
 void *data_020d9258[2] = { (void *)Camera_UpdateMode20, 0 };
 void *data_020d9260[2] = { (void *)_ZN12Unk_020d93b813initModeShakeEv, 0 };
@@ -1805,7 +1805,7 @@ void *data_020d93a8[2] = { (void *)Camera_InitMode20, 0 };
 
 // .rodata 0x020c8ce4-0x020c8d3c: the three objects before sCameraBlendTable continue this file's ascending size run
 // (4, 0x24, 0x30, 0x60, 0x294). data_020c8ce4 is read by the unit at 0x02038474 (0x020388f8), sCameraPoseGrid by this
-// file and ov004, data_020c8d0c (with the interior labels 0x020c8d0e/d10/d14) by ov068.
+// file and ov004, kCameraSwayPatterns (with the interior labels 0x020c8d0e/d10/d14) by ov068.
 extern const u8 data_020c8ce4[4];
 const u8 data_020c8ce4[4] = { 0, 0, 0, 0 };
 const Unk_0203a9b8_Row sCameraPoseGrid[3] = { { { 1, 2, 3 } }, { { 4, 5, 6 } }, { { 7, 8, 9 } } };
@@ -1815,8 +1815,8 @@ struct Unk_020c8d0c_Row {
     s32 c;
     s32 d;
 };
-extern const Unk_020c8d0c_Row data_020c8d0c[4];
-const Unk_020c8d0c_Row data_020c8d0c[4] = {
+extern const Unk_020c8d0c_Row kCameraSwayPatterns[4];
+const Unk_020c8d0c_Row kCameraSwayPatterns[4] = {
     { 0x0, 0x14, 0x0, 0x0 },
     { 0xa, 0x1, 0x2000, 0x28 },
     { 0xa, 0x1, 0x2000, 0x64 },

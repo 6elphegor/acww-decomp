@@ -15,11 +15,11 @@ struct Unk_0209c7a4_T {
     u8 unk_00, unk_01, unk_02, unk_03;
 };
 
-// 0x24-byte state object at data_021d7290
-class Unk_0209c82c {
+// 0x24-byte state object at sRoomEntryRequest
+class RoomEntryRequest {
 public:
-    Unk_0209c82c();
-    ~Unk_0209c82c();
+    RoomEntryRequest();
+    ~RoomEntryRequest();
 
     /* 0x00 */ u8 unk_00;
     /* 0x04 */ Unk_0209c82c_V unk_04;
@@ -35,10 +35,10 @@ struct Unk_0209c980_Raw {
     u8 unk_00;
 };
 
-class Unk_0209c980 : public Unk_0209c980_Raw {
+class SceneOccupants : public Unk_0209c980_Raw {
 public:
-    Unk_0209c980();
-    ~Unk_0209c980();
+    SceneOccupants();
+    ~SceneOccupants();
 };
 
 class CommManager {
@@ -61,7 +61,7 @@ public:
 
 extern "C" {
 extern u8 gFieldSceneKind;
-extern const u8 data_020d064c[4];
+extern const u8 sExclusiveRoomScenes[4];
 extern u8 gVec3Zero[];
 
 void SceneExit_GetDoor(void *o, u32 id, u32 *p24, s16 *f);
@@ -73,213 +73,213 @@ s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
 Unk_0209c614_Actor *PlayerActor_GetActor(u32 n);
 
-u32 func_0209c7ec(u32 v);
-void func_0209c82c(Unk_0209c82c *t, Unk_0209c82c_V *v);
-void func_0209c83c(Unk_0209c82c *t, u32 v);
-void func_0209c840(Unk_0209c82c *t, Unk_0209c82c_V *v);
-void func_0209c850(Unk_0209c82c *t, u32 v);
-void func_0209c854(Unk_0209c82c *t, u32 v);
-void func_0209c85c(Unk_0209c82c *t, u32 v);
-void func_0209c860(Unk_0209c82c *t, u32 v);
-void func_0209c878(Unk_0209c82c *t);
-s32 func_0209c8d4(Unk_0209c980_Raw *t, u32 i, u32 b);
-void func_0209c8f0(Unk_0209c980_Raw *t, u32 i, u32 b);
-void func_0209c908(Unk_0209c980_Raw *t, u32 i, u32 b);
-void func_0209c920(Unk_0209c980_Raw *t);
-s32 func_0209c93c(Unk_0209c980_Raw *t, u32 b);
-s32 func_0209c95c(Unk_0209c980_Raw *t);
-u32 func_0209c980(Unk_0209c980_Raw *t, u32 i);
-void func_0209c994(Unk_0209c980_Raw *t, u32 i);
-void func_0209c9ac(Unk_0209c980_Raw *t, u32 i);
-void func_0209c9c4(Unk_0209c980_Raw *t);
+u32 RoomEntry_IsExclusiveScene(u32 v);
+void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v);
+void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v);
+void RoomEntryRequest_SetPos(RoomEntryRequest *t, Unk_0209c82c_V *v);
+void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v);
+void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v);
+void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v);
+void RoomEntryRequest_SetResult(RoomEntryRequest *t, u32 v);
+void RoomEntryRequest_Init(RoomEntryRequest *t);
+s32 SceneOccupantTable_CountWith(Unk_0209c980_Raw *t, u32 i, u32 b);
+void SceneOccupantTable_Remove(Unk_0209c980_Raw *t, u32 i, u32 b);
+void SceneOccupantTable_Add(Unk_0209c980_Raw *t, u32 i, u32 b);
+void SceneOccupantTable_Clear(Unk_0209c980_Raw *t);
+s32 SceneOccupants_CountWith(Unk_0209c980_Raw *t, u32 b);
+s32 SceneOccupants_Count(Unk_0209c980_Raw *t);
+u32 SceneOccupants_Has(Unk_0209c980_Raw *t, u32 i);
+void SceneOccupants_Remove(Unk_0209c980_Raw *t, u32 i);
+void SceneOccupants_Add(Unk_0209c980_Raw *t, u32 i);
+void SceneOccupants_Clear(Unk_0209c980_Raw *t);
 }
 
-// the 0x33-entry array object at data_021d72b4
-class Unk_0209c980_Set {
+// the 0x33-entry array object at sSceneOccupantTable
+class SceneOccupantTable {
 public:
-    Unk_0209c980_Set() { func_0209c920(e); }
-    ~Unk_0209c980_Set();
+    SceneOccupantTable() { SceneOccupantTable_Clear(e); }
+    ~SceneOccupantTable();
 
-    Unk_0209c980 e[0x33];
+    SceneOccupants e[0x33];
 };
 
 // data (rodata)
 
-extern const u8 data_020d064c[4];
-const u8 data_020d064c[4] = {0x1f, 0x1d, 0x22, 0x20};
+extern const u8 sExclusiveRoomScenes[4];
+const u8 sExclusiveRoomScenes[4] = {0x1f, 0x1d, 0x22, 0x20};
 
 // data (bss), in the order __sinit constructs them
 
-Unk_0209c82c data_021d7290;
-Unk_0209c980_Set data_021d72b4;
+RoomEntryRequest sRoomEntryRequest;
+SceneOccupantTable sSceneOccupantTable;
 
-extern "C" void func_0209c5a0(u32 a, u32 b);
+extern "C" void RoomEntry_Leave(u32 a, u32 b);
 
-Unk_0209c980::Unk_0209c980() {
-    func_0209c9c4(this);
+SceneOccupants::SceneOccupants() {
+    SceneOccupants_Clear(this);
 }
 
-Unk_0209c980_Set::~Unk_0209c980_Set() {}
+SceneOccupantTable::~SceneOccupantTable() {}
 
-extern "C" void func_0209c9c4(Unk_0209c980_Raw *t) {
+extern "C" void SceneOccupants_Clear(Unk_0209c980_Raw *t) {
     t->unk_00 = 0;
 }
 
-extern "C" void func_0209c9ac(Unk_0209c980_Raw *t, u32 i) {
+extern "C" void SceneOccupants_Add(Unk_0209c980_Raw *t, u32 i) {
     t->unk_00 |= 1 << (i & 3);
 }
 
-extern "C" void func_0209c994(Unk_0209c980_Raw *t, u32 i) {
+extern "C" void SceneOccupants_Remove(Unk_0209c980_Raw *t, u32 i) {
     t->unk_00 &= ~(1 << (i & 3));
 }
 
-extern "C" u32 func_0209c980(Unk_0209c980_Raw *t, u32 i) {
+extern "C" u32 SceneOccupants_Has(Unk_0209c980_Raw *t, u32 i) {
     return ((t->unk_00 >> (i & 3)) & 1) != 0 ? TRUE : FALSE;
 }
 
-extern "C" s32 func_0209c95c(Unk_0209c980_Raw *t) {
+extern "C" s32 SceneOccupants_Count(Unk_0209c980_Raw *t) {
     s32 n = 0;
     u32 i = n;
     for (; i < 4; i++) {
-        if (func_0209c980(t, i)) {
+        if (SceneOccupants_Has(t, i)) {
             n++;
         }
     }
     return n;
 }
 
-Unk_0209c980::~Unk_0209c980() {}
+SceneOccupants::~SceneOccupants() {}
 
-extern "C" s32 func_0209c93c(Unk_0209c980_Raw *t, u32 b) {
+extern "C" s32 SceneOccupants_CountWith(Unk_0209c980_Raw *t, u32 b) {
     Unk_0209c980_Raw c;
     c.unk_00 = t->unk_00;
-    func_0209c9ac(&c, b);
-    return func_0209c95c(&c);
+    SceneOccupants_Add(&c, b);
+    return SceneOccupants_Count(&c);
 }
 
-extern "C" void func_0209c920(Unk_0209c980_Raw *t) {
+extern "C" void SceneOccupantTable_Clear(Unk_0209c980_Raw *t) {
     u32 i;
     for (i = 0; i < 0x33; i++) {
-        func_0209c9c4(t + i);
+        SceneOccupants_Clear(t + i);
     }
 }
 
-extern "C" void func_0209c908(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" void SceneOccupantTable_Add(Unk_0209c980_Raw *t, u32 i, u32 b) {
     if (i < 0x33) {
-        func_0209c9ac(t + i, b);
+        SceneOccupants_Add(t + i, b);
     }
 }
 
-extern "C" void func_0209c8f0(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" void SceneOccupantTable_Remove(Unk_0209c980_Raw *t, u32 i, u32 b) {
     if (i < 0x33) {
-        func_0209c994(t + i, b);
+        SceneOccupants_Remove(t + i, b);
     }
 }
 
-extern "C" s32 func_0209c8d4(Unk_0209c980_Raw *t, u32 i, u32 b) {
+extern "C" s32 SceneOccupantTable_CountWith(Unk_0209c980_Raw *t, u32 i, u32 b) {
     if (i < 0x33) {
-        return func_0209c93c(t + i, b);
+        return SceneOccupants_CountWith(t + i, b);
     }
     return 0;
 }
 
-Unk_0209c82c::Unk_0209c82c() {
-    func_0209c878(this);
+RoomEntryRequest::RoomEntryRequest() {
+    RoomEntryRequest_Init(this);
 }
 
-Unk_0209c82c::~Unk_0209c82c() {}
+RoomEntryRequest::~RoomEntryRequest() {}
 
-extern "C" void func_0209c878(Unk_0209c82c *t) {
-    func_0209c860(t, 2);
-    func_0209c85c(t, -1);
-    func_0209c854(t, 0);
-    func_0209c850(t, 0);
-    func_0209c840(t, (Unk_0209c82c_V *)gVec3Zero);
-    func_0209c83c(t, 0);
-    func_0209c82c(t, (Unk_0209c82c_V *)gVec3Zero);
+extern "C" void RoomEntryRequest_Init(RoomEntryRequest *t) {
+    RoomEntryRequest_SetResult(t, 2);
+    RoomEntryRequest_SetExitId(t, -1);
+    RoomEntryRequest_SetDoorKind(t, 0);
+    RoomEntryRequest_SetScene(t, 0);
+    RoomEntryRequest_SetPos(t, (Unk_0209c82c_V *)gVec3Zero);
+    RoomEntryRequest_SetAngle(t, 0);
+    RoomEntryRequest_SetRetreatPos(t, (Unk_0209c82c_V *)gVec3Zero);
 }
 
-extern "C" u32 func_0209c874(Unk_0209c82c *t) {
+extern "C" u32 RoomEntryRequest_GetResult(RoomEntryRequest *t) {
     return t->unk_1f;
 }
 
-extern "C" u32 func_0209c86c(Unk_0209c82c *t) {
+extern "C" u32 RoomEntryRequest_GetDoorKind(RoomEntryRequest *t) {
     return t->unk_20;
 }
 
-extern "C" void *func_0209c868(Unk_0209c82c *t) {
+extern "C" void *RoomEntryRequest_GetPos(RoomEntryRequest *t) {
     return &t->unk_04;
 }
 
-extern "C" void *func_0209c864(Unk_0209c82c *t) {
+extern "C" void *RoomEntryRequest_GetRetreatPos(RoomEntryRequest *t) {
     return &t->unk_10;
 }
 
-extern "C" void func_0209c860(Unk_0209c82c *t, u32 v) {
+extern "C" void RoomEntryRequest_SetResult(RoomEntryRequest *t, u32 v) {
     t->unk_1f = v;
 }
 
-extern "C" void func_0209c85c(Unk_0209c82c *t, u32 v) {
+extern "C" void RoomEntryRequest_SetExitId(RoomEntryRequest *t, u32 v) {
     t->unk_1e = v;
 }
 
-extern "C" void func_0209c854(Unk_0209c82c *t, u32 v) {
+extern "C" void RoomEntryRequest_SetDoorKind(RoomEntryRequest *t, u32 v) {
     t->unk_20 = v;
 }
 
-extern "C" void func_0209c850(Unk_0209c82c *t, u32 v) {
+extern "C" void RoomEntryRequest_SetScene(RoomEntryRequest *t, u32 v) {
     t->unk_00 = v;
 }
 
-extern "C" void func_0209c840(Unk_0209c82c *t, Unk_0209c82c_V *v) {
+extern "C" void RoomEntryRequest_SetPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
     t->unk_04.x = v->x;
     t->unk_04.y = v->y;
     t->unk_04.z = v->z;
 }
 
-extern "C" void func_0209c83c(Unk_0209c82c *t, u32 v) {
+extern "C" void RoomEntryRequest_SetAngle(RoomEntryRequest *t, u32 v) {
     t->unk_1c = v;
 }
 
-extern "C" void func_0209c82c(Unk_0209c82c *t, Unk_0209c82c_V *v) {
+extern "C" void RoomEntryRequest_SetRetreatPos(RoomEntryRequest *t, Unk_0209c82c_V *v) {
     t->unk_10.x = v->x;
     t->unk_10.y = v->y;
     t->unk_10.z = v->z;
 }
 
-extern "C" void func_0209c80c() {
-    func_0209c878(&data_021d7290);
-    func_0209c920(data_021d72b4.e);
+extern "C" void RoomEntry_Reset() {
+    RoomEntryRequest_Init(&sRoomEntryRequest);
+    SceneOccupantTable_Clear(sSceneOccupantTable.e);
 }
 
-extern "C" u32 func_0209c7ec(u32 v) {
+extern "C" u32 RoomEntry_IsExclusiveScene(u32 v) {
     s32 i;
     for (i = 0; (u32)i < 2; i++) {
-        if (v == data_020d064c[i * 2]) {
+        if (v == sExclusiveRoomScenes[i * 2]) {
             return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" s32 func_0209c7a4(void *p) {
+extern "C" s32 RoomEntry_IsExclusiveExit(void *p) {
     Unk_0209c7a4_T t;
     s32 b, a;
     u32 c[3];
     if (SceneExit_Resolve(Scene_GetWarpRequest(), (u32)p, (u8 *)&t, (Unk_0209c614_Vec *)c, (u32 *)&a, (u16 *)&b, &t.unk_02, &t.unk_01, 0, 0)) {
-        return func_0209c7ec(t.unk_00);
+        return RoomEntry_IsExclusiveScene(t.unk_00);
     }
     return 0;
 }
 
-extern "C" BOOL func_0209c614(u32 id) {
+extern "C" BOOL RoomEntry_Request(u32 id) {
     Unk_0209c614_Actor *p = PlayerActor_GetActor(4);
     void *o = Scene_GetWarpRequest();
     Unk_0209c614_S s;
     u32 a20, a24;
     Unk_0209c614_Vec v28, v34, v40, v4c;
     s32 r = SceneExit_Resolve(o, id, &s.a, &v28, &a20, &s.e, &s.c, &s.b, 0, 0);
-    func_0209c860(&data_021d7290, 0);
+    RoomEntryRequest_SetResult(&sRoomEntryRequest, 0);
     if (r != 0 && p != 0) {
         Unk_0209c614_Vec *pv = &p->unk_5c;
         v40.x = pv->x;
@@ -288,15 +288,15 @@ extern "C" BOOL func_0209c614(u32 id) {
         s32 h = p->unk_8e;
         SceneExit_GetDoor(Scene_GetWarpRequest(), id, &a24, &s.f);
         SceneExit_SnapPos(Scene_GetWarpRequest(), id, &v34, &v40);
-        func_0209c85c(&data_021d7290, id);
-        func_0209c854(&data_021d7290, a24);
-        func_0209c850(&data_021d7290, s.a);
+        RoomEntryRequest_SetExitId(&sRoomEntryRequest, id);
+        RoomEntryRequest_SetDoorKind(&sRoomEntryRequest, a24);
+        RoomEntryRequest_SetScene(&sRoomEntryRequest, s.a);
         if (a24 != 0) {
-            func_0209c840(&data_021d7290, &v34);
-            func_0209c83c(&data_021d7290, s.f);
+            RoomEntryRequest_SetPos(&sRoomEntryRequest, &v34);
+            RoomEntryRequest_SetAngle(&sRoomEntryRequest, s.f);
         } else {
-            func_0209c840(&data_021d7290, &v40);
-            func_0209c83c(&data_021d7290, h);
+            RoomEntryRequest_SetPos(&sRoomEntryRequest, &v40);
+            RoomEntryRequest_SetAngle(&sRoomEntryRequest, h);
         }
         v4c.x = v40.x;
         v4c.y = v40.y;
@@ -304,15 +304,15 @@ extern "C" BOOL func_0209c614(u32 id) {
         v4c.z = v4c.z + 0x2000;
         FieldPos_SnapToUnitCenter(&v4c, &v4c);
         v4c.x = v40.x;
-        func_0209c82c(&data_021d7290, &v4c);
-        if (func_0209c7ec(s.a)) {
+        RoomEntryRequest_SetRetreatPos(&sRoomEntryRequest, &v4c);
+        if (RoomEntry_IsExclusiveScene(s.a)) {
             CommManager *g = gCommManager;
             if (!g->isOnline() || g->isMyAid(0) != 0) {
-                if ((u32)func_0209c8d4(data_021d72b4.e, s.a, 0) <= 1) {
-                    func_0209c908(data_021d72b4.e, s.a, 0);
-                    func_0209c860(&data_021d7290, 2);
+                if ((u32)SceneOccupantTable_CountWith(sSceneOccupantTable.e, s.a, 0) <= 1) {
+                    SceneOccupantTable_Add(sSceneOccupantTable.e, s.a, 0);
+                    RoomEntryRequest_SetResult(&sRoomEntryRequest, 2);
                 } else {
-                    func_0209c860(&data_021d7290, 1);
+                    RoomEntryRequest_SetResult(&sRoomEntryRequest, 1);
                 }
             } else {
                 s.d = s.a;
@@ -322,21 +322,21 @@ extern "C" BOOL func_0209c614(u32 id) {
                 g->endRecord(0x33, 0);
             }
         } else {
-            func_0209c860(&data_021d7290, 2);
+            RoomEntryRequest_SetResult(&sRoomEntryRequest, 2);
         }
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" void *func_0209c60c() {
-    return &data_021d7290;
+extern "C" void *RoomEntry_GetRequest() {
+    return &sRoomEntryRequest;
 }
 
-extern "C" void func_0209c5a0(u32 a, u32 b) {
+extern "C" void RoomEntry_Leave(u32 a, u32 b) {
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->isMyAid(0) != 0 || g->isMyAid(4) != 0) {
-        func_0209c8f0(data_021d72b4.e, a, b);
+        SceneOccupantTable_Remove(sSceneOccupantTable.e, a, b);
     } else {
         u8 v = a;
         g = gCommManager;
@@ -346,8 +346,8 @@ extern "C" void func_0209c5a0(u32 a, u32 b) {
     }
 }
 
-extern "C" void func_0209c540() {
-    func_0209c878(&data_021d7290);
+extern "C" void RoomEntry_OnSceneLoad() {
+    RoomEntryRequest_Init(&sRoomEntryRequest);
     BOOL is1;
     if (gFieldSceneKind == 1) is1 = TRUE;
     else is1 = FALSE;
@@ -357,17 +357,17 @@ extern "C" void func_0209c540() {
         u32 i = 0;
         u32 z = i;
         for (; i < 2; i++) {
-            const u8 *e = &data_020d064c[i * 2];
-            if (r6 == e[1] && r5 == e[0]) func_0209c5a0(r5, z);
+            const u8 *e = &sExclusiveRoomScenes[i * 2];
+            if (r6 == e[1] && r5 == e[0]) RoomEntry_Leave(r5, z);
         }
     }
 }
 
-extern "C" void func_0209c4e4(u8 *p, u32 x) {
+extern "C" void RoomEntry_RecvEnterRequest(u8 *p, u32 x) {
     u32 b = *p;
     u8 flag;
-    if ((u32)func_0209c8d4(data_021d72b4.e, b, x) <= 1) {
-        func_0209c908(data_021d72b4.e, b, x);
+    if ((u32)SceneOccupantTable_CountWith(sSceneOccupantTable.e, b, x) <= 1) {
+        SceneOccupantTable_Add(sSceneOccupantTable.e, b, x);
         flag = 1;
     } else {
         flag = 0;
@@ -378,17 +378,17 @@ extern "C" void func_0209c4e4(u8 *p, u32 x) {
     g->endRecord(0x34, x);
 }
 
-extern "C" void func_0209c4bc(u8 *p) {
+extern "C" void RoomEntry_RecvEnterReply(u8 *p) {
     if (*p) {
-        func_0209c860(&data_021d7290, 2);
+        RoomEntryRequest_SetResult(&sRoomEntryRequest, 2);
     } else {
-        func_0209c860(&data_021d7290, 1);
+        RoomEntryRequest_SetResult(&sRoomEntryRequest, 1);
     }
 }
 
 // code
 
-extern "C" void func_0209c4a8(u8 *p, u32 x) {
-    func_0209c8f0(data_021d72b4.e, *p, x);
+extern "C" void RoomEntry_RecvLeave(u8 *p, u32 x) {
+    SceneOccupantTable_Remove(sSceneOccupantTable.e, *p, x);
 }
 

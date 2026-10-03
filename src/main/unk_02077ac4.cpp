@@ -1144,7 +1144,7 @@ void MI_CpuFill8(void *dst, s32 v, s32 n);
 s32 EventSchedule_CollectDayAll(void *buf, void *d);
 s32 DateTime_AddDays(void *d, s32 n);
 s32 Event_GetState(u32 a, void *d, s32 z);
-u32 func_02040c70();
+u32 EventAnnounce_GetCurrentEvent();
 void *Villager_GetState(void *p);
 s32 VillagerState_GetPresence(void *p);
 s32 VillagerState_GetErrand(void *p);
@@ -9256,7 +9256,7 @@ extern "C" s32 VillagerEvent_GetTodayIndex() {
         MI_CpuCopy8(&a, &b, 8);
         if (Event_GetState(v, &b, 0)) f = TRUE; else f = FALSE;
         if (f) {
-            if (v == func_02040c70()) return i;
+            if (v == EventAnnounce_GetCurrentEvent()) return i;
         }
         t++;
     }

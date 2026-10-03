@@ -21,17 +21,17 @@ struct Unk_0202f2ac_V3 {
     s32 x, y, z;
 };
 
-// base class (symbols.txt: Unk_020d8ccc); its destructor is called through its D1 symbol (0x0202f620)
-struct Unk_020d8ccc {
-    Unk_020d8ccc();
+// base class (symbols.txt: CollisionTriangle); its destructor is called through its D1 symbol (0x0202f620)
+struct CollisionTriangle {
+    CollisionTriangle();
     virtual void vfunc_00(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void vfunc_0c(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual void collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     u8 pad[0x34];
 };
 
-struct TouchPickTriangle : Unk_020d8ccc {
+struct TouchPickTriangle : CollisionTriangle {
     TouchPickTriangle();
     ~TouchPickTriangle();
     BOOL setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e);
@@ -50,15 +50,15 @@ struct Unk_020b6e10 {
 
 struct CollisionCylinder {
     CollisionCylinder(Unk_0202f660_V3 *c, s32 a, s32 b);
-    BOOL func_0202f968(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
-    BOOL func_0202f7b8(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
+    BOOL clipSegmentCaps(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
+    BOOL clipSegmentSideBounded(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b);
     u8 pad[0x14];
 };
 
 // the original calls the D2 copy (0x0202fdb4) of the destructor, which a declared ~CollisionCylinder() would not
 extern "C" void _ZN17CollisionCylinderD2Ev(CollisionCylinder *self);
 // base destructor: the original derived destructor calls the D1 copy (0x0202f620)
-extern "C" void _ZN12Unk_020d8cccD1Ev(Unk_020d8ccc *self);
+extern "C" void _ZN17CollisionTriangleD1Ev(CollisionTriangle *self);
 
 extern "C" {
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -114,8 +114,8 @@ extern "C" BOOL func_020b6f10(Vec3 *p, Vec3 *q, Vec3 *r, s32 a, s32 b) {
     v4c.y = func_01ffcb0c(cs, y3) - func_01ffcb0c(sn, z);
     v4c.z = func_01ffcb0c(sn, y3) + func_01ffcb0c(cs, z);
     CollisionCylinder o((Unk_0202f660_V3 *)&v4c, a, b);
-    if (o.func_0202f968((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
-        o.func_0202f7b8((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
+    if (o.clipSegmentCaps((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34) ||
+        o.clipSegmentSideBounded((Unk_0202f660_V3 *)&v40, (Unk_0202f660_V3 *)&v34)) {
         func_020e944c(&v40, ang);
         s32 rz = v40.z, ry = v40.y, rx = v40.x;
         p->x = rx;
@@ -219,6 +219,6 @@ TouchPickTriangle::TouchPickTriangle() {
 }
 
 TouchPickTriangle::~TouchPickTriangle() {
-    _ZN12Unk_020d8cccD1Ev(this);
+    _ZN17CollisionTriangleD1Ev(this);
 }
 

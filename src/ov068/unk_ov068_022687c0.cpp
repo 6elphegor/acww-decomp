@@ -219,7 +219,7 @@ void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
 void func_02003e70(void *a, s32 b, s32 c, s32 d);
 void FieldFish_ScareAround(void *a, s32 b);
-void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
+void *_ZN11PooledModel8getModelEv(void *);
 void NNS_G3dMdlSetMdlAlpha(void *, s32, s32);
 s16 Math_AngleXZ(void *, void *);
 s32 func_02063b8c(s32);
@@ -1011,7 +1011,7 @@ void Unk_ov068_02268214::func_ov068_022697b8() {
     if (tp != 0) {
         unk_23a = Math_AngleXZ(unk_204, tp + 0x5c);
     }
-    NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(unk_130), 0, 0x1f);
     unk_251 = 2;
     v[0] = 1;
     v[1] = 1;
@@ -1214,7 +1214,7 @@ void func_ov068_02269250(BObj *o) {
             z->z = 0;
             o->unk_21c = 0;
             Town_ClearBeesReleased();
-            NNS_G3dMdlSetMdlAlpha((void *)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)_ZN11PooledModel8getModelEv(o->unk_130), 0, 0);
         }
     }
 }
@@ -1299,7 +1299,7 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
     s16 *r6 = &o->unk_23e;
     BS50 *s = &o->unk_50;
     if (*r6 == 0 || o->unk_24d == 0x37) {
-        if (func_02106020((s32)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0) == 0x1f) {
+        if (func_02106020((s32)_ZN11PooledModel8getModelEv(o->unk_130), 0) == 0x1f) {
             if (mode == 1) {
                 if (*r6 == 0) {
                     Insect_PlaySe(o, 1, 0);
@@ -1346,7 +1346,7 @@ s32 func_ov068_02268e8c(BObj *o, u32 mode, u32 q) {
 
 s32 func_ov068_02268ce8(BObj *o, u32 mode, u32 q, s16 *p) {
     BVec *v = &o->unk_204;
-    if (o->unk_247 != 0 && (*p == 0 || *p > 0x1f) && func_02106020((s32)_ZN12Unk_0209c0ac13func_0209c0acEv(o->unk_130), 0) == 0x1f) {
+    if (o->unk_247 != 0 && (*p == 0 || *p > 0x1f) && func_02106020((s32)_ZN11PooledModel8getModelEv(o->unk_130), 0) == 0x1f) {
         if (mode == 3 || mode == 1) {
             if (func_020e9650((void *)q, v) < 0x1000) {
                 s16 *pp = &o->unk_23e;
@@ -1562,6 +1562,6 @@ void Unk_ov068_02268214::func_ov068_022687e8(s32 *p) {
 }
 
 void Unk_ov068_02268214::func_ov068_022687c0() {
-    NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(unk_130), 0, 0x1f);
+    NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(unk_130), 0, 0x1f);
     unk_251 = 0x12;
 }

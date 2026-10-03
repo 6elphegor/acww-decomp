@@ -4757,12 +4757,12 @@ void _ZN10MsgRequest11setFileNameEPKc(Sec *s, void *n);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN12Unk_0200769416keepsBgCheckWorkEj(Obj *o, s32 a);
 void _ZN12Unk_02006d1413requestWalkToEP16Unk_02006d14_Vecjjs(Obj *o, V3 *v, u32 a, u32 b, s32 c);
-s32 func_0209c60c(void);
-s32 func_0209c614(s32 a);
-s32 func_0209c874(s32 p);
-s32 func_0209c86c(s32 p);
-V3 *func_0209c864(s32 p);
-s32 func_0209c7a4(s32 a);
+s32 RoomEntry_GetRequest(void);
+s32 RoomEntry_Request(s32 a);
+s32 RoomEntryRequest_GetResult(s32 p);
+s32 RoomEntryRequest_GetDoorKind(s32 p);
+V3 *RoomEntryRequest_GetRetreatPos(s32 p);
+s32 RoomEntry_IsExclusiveExit(s32 a);
 s32 Scene_GetWarpRequest(void);
 void SceneWarp_RequestExit(s32 a, s32 b);
 void SceneExit_SnapPos(s32 a, s32 b, V3 *v, V3 *w);
@@ -5026,7 +5026,7 @@ extern "C" void PlayerActor_SetupLeaveRoom(Obj *o, Unk_ov004_02220314_Msgp *m) {
         v.z = o->unk_5c.z;
     }
     bool flag = 0;
-    if (func_0209c7a4(o->unk_800)) {
+    if (RoomEntry_IsExclusiveExit(o->unk_800)) {
         flag = 1;
     }
     PlayerActor_LeaveRoomSetWork(r, mode, ang, v.x, v.z, flag);
@@ -5123,18 +5123,18 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
             SceneWarp_RequestExit(Scene_GetWarpRequest(), o->unk_800);
         }
     } else {
-        s32 p = func_0209c60c();
+        s32 p = RoomEntry_GetRequest();
         switch (*st) {
         case 1:
-            if (!func_0209c614(o->unk_800)) break;
+            if (!RoomEntry_Request(o->unk_800)) break;
             *st = *st + 1;
         case 2: {
-            s32 c = func_0209c874(p);
+            s32 c = RoomEntryRequest_GetResult(p);
             switch (c) {
             case 0:
                 break;
             case 2:
-                if (func_0209c86c(p) == 0) {
+                if (RoomEntryRequest_GetDoorKind(p) == 0) {
                     SceneWarp_RequestExit(Scene_GetWarpRequest(), o->unk_800);
                 } else {
                     *st = 0;
@@ -5169,7 +5169,7 @@ extern "C" void PlayerActor_LeaveRoomCheckArrive(Obj *o) {
             if (q != 0) {
                 if (q->unk_04 == 0) {
                     struct { u32 pad; V3 a; V3 b; } l;
-                    V3 *v = func_0209c864(p);
+                    V3 *v = RoomEntryRequest_GetRetreatPos(p);
                     l.a.x = v->x;
                     l.a.y = v->y;
                     l.a.z = v->z;

@@ -28,7 +28,7 @@
 #define func_02088bf8 _ZN12Unk_020e0d3013func_02088bf8EPvP4Vec3iijjjhi
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
 #define func_02133150 _s32_div_f
 #define FtrActor_startPull _ZN8FtrActor9startPullEs
 #define FtrActor_startPush _ZN8FtrActor9startPushEs
@@ -329,11 +329,11 @@ public:
 // main's 0x18-byte pool object
 typedef void *(*Unk_0209c1a4_Alloc)(u32, u32);
 typedef void (*Unk_0209c15c_Fn)();
-class Unk_0209c15c {
+class ModelSlotPool {
 public:
-    Unk_0209c15c();
-    ~Unk_0209c15c();
-    BOOL func_0209c15c();
+    ModelSlotPool();
+    ~ModelSlotPool();
+    BOOL destroy();
     u16 unk_00;
     u32 unk_04;
     u32 unk_08;
@@ -529,7 +529,7 @@ extern FtrActorTable sFtrActorTable;
 extern FtrContactSet sFtrContactSet;
 extern FtrActorGrid sFtrActorGrid;
 extern FtrActorHeap sFtrActorHeap;
-extern Unk_0209c15c sFtrMgrPool;
+extern ModelSlotPool sFtrMgrPool;
 extern FxVec3 sFtrRemovePos;
 extern s32 sFtrMgrSoundRangeSq;
 
@@ -644,7 +644,7 @@ FtrActor *PlayerActor_GetActor(s32 a);
 s32 PlayerData_GetCurrent(void);
 s32 func_02097740(void *a, s32 b);
 s32 PlayerData_getPlayerId(...);
-void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
+void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 s32 Date_GetWeatherPeriod(void *);
 s32 Clock_GetWeekday();
 void Clock_GetMinuteHour(void *);
@@ -952,7 +952,7 @@ BOOL FurnitureManager::vfunc_00() {
     if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
-    func_0209c1a4(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)FurnitureHeap_Create,
+    ModelSlotPool_init(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)FurnitureHeap_Create,
                   (void *)FurnitureHeap_Destroy, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
     func_ov004_02234ad0(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
@@ -999,7 +999,7 @@ BOOL FurnitureManager::vfunc_0c() {
         TvScreen_Release(&unk_64);
     }
     FtrPreviewer_GetInstance()->freeBuffers();
-    sFtrMgrPool.func_0209c15c();
+    sFtrMgrPool.destroy();
     sFurnitureManager = 0;
     FtrContactSet_GetInstance()->clear();
     sFtrActorHeap.destroy();
@@ -1730,7 +1730,7 @@ void *FtrContactSet::canMoveAt(s32 v) {
 
 extern "C" char data_ov004_0224e934[8] = "tv_cc";
 
-Unk_0209c15c sFtrMgrPool;
+ModelSlotPool sFtrMgrPool;
 
 extern "C" char sFtrMoveAnimModelName[0x10] = "FTT:a/bmd/bmd0";
 

@@ -121,7 +121,7 @@ void *TownSessionState_GetPeteFall(void *p);
 s32 PeteFallState_hasFallPos(void *p);
 void PeteFallState_getPos(void *p, void *q);
 void PeteFallState_clear(void *p);
-s32 func_02040c88();
+s32 EventAnnounce_IsBusy();
 extern u16 data_020c6cc8;
 extern s32 data_020c6d1c;
 extern s32 data_020c6cf0;
@@ -582,7 +582,7 @@ BOOL SpNpcPete::vfunc_0c() {
     if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
-    if (func_02040c88() == 0) {
+    if (EventAnnounce_IsBusy() == 0) {
         PeteFallState_clear(TownSessionState_GetPeteFall(TownSessionState_Get()));
     }
     return TRUE;

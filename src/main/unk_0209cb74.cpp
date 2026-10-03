@@ -103,7 +103,7 @@ void func_0209c408(void);
 void BuildingStates_Reset(void);
 void BuildingOccupancy_Reset(void);
 void func_02034164(void);
-void func_020407fc(void *);
+void EventWeekSlots_OnLoad(void *);
 void Weather_Apply(void *);
 void Town_OnLoad(void);
 void NookShop_UpdateDaily(void *, s32);
@@ -176,7 +176,7 @@ extern "C" void SaveData_Apply(u8 *p) {
     BuildingStates_Reset();
     BuildingOccupancy_Reset();
     func_02034164();
-    func_020407fc(p + 0x15e18);
+    EventWeekSlots_OnLoad(p + 0x15e18);
     Weather_Apply(p + 0x15f66);
     Town_OnLoad();
     NookShop_UpdateDaily(p + 0x15db4, 0);

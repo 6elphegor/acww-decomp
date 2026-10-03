@@ -40,19 +40,19 @@
 #define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
 #define func_02088d38 _ZN12Unk_020e0d0813func_02088d38Ej
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c128 _ZN12Unk_0209c0acD1Ev
-#define func_0209c140 _ZN12Unk_0209c0acC1Ev
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c2d8 _ZN12Unk_0209c15cD1Ev
-#define func_0209c2dc _ZN12Unk_0209c15cC1Ev
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define func_0209c128 _ZN11PooledModelD1Ev
+#define func_0209c140 _ZN11PooledModelC1Ev
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
+#define func_0209c2dc _ZN13ModelSlotPoolC1Ev
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_021355f0 __cxa_vec_cleanup
 #define func_02135714 __cxa_vec_ctor
 
@@ -991,17 +991,17 @@ void Mem_Free(void *p);
 void AnimModel_detachVisAnim(void *p);
 void AnimModel_detachJointAnim(void *p);
 void Unk_02003c30_callRelease(void *p);
-void func_0209c0b4(void *p);
-void func_0209c224(void *p, void *q);
+void PooledModel_unload(void *p);
+void ModelSlotPool_release(void *p, void *q);
 void func_0209c128(void *p);
-void func_0209c364(void *p);
+void ModelSlotHandle_Destroy(void *p);
 void func_02054e24(void *p);
 void func_02054e3c(void *p);
-void func_0209c370(void *p);
+void ModelSlotHandle_Init(void *p);
 void func_0209c140(void *p);
-void func_0209c0c8(void *p);
-void func_0209c15c(void *p);
-void *func_0209c0ac(void *p);
+void PooledModel_reset(void *p);
+void ModelSlotPool_destroy(void *p);
+void *PooledModel_getModel(void *p);
 u32 func_02106020(u32 a, u32 b);
 void AnimModel_drawAnimated(void *obj, void *arg);
 void AnimModel_stepAnim(void *obj);
@@ -1034,12 +1034,12 @@ void func_02133ef8(void *p, s32 n);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 BOOL File_Exists(void *s);
 s32 File_LoadAlloc(void *s, s32 a, s32 b, s32 c);
-u32 func_0209c25c(void *self, void *p);
-void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
+u32 ModelSlotPool_acquire(void *self, void *p);
+void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 void MuseumInsectHeap_Create();
 void MuseumInsectHeap_Destroy();
-BOOL func_0209c0d0(void *self, u32 a, void *s);
-u32 func_0209c348(u32 self);
+BOOL PooledModel_loadFromSlot(void *self, u32 a, void *s);
+u32 ModelSlot_getHeap(u32 self);
 void Model_setResource(void *self, u32 a, s32 b);
 BOOL ModelAnim_allocMatAnm(void *self, u32 a, u32 b);
 void ModelAnim_init(void *self, s32 a, s32 b, s32 c, s32 d);
@@ -2591,7 +2591,7 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self)
             EffectSpl_CreateOneShot(0x80, v, 0, gEffectSplDefaultInitCbs);
             self->unk_98 = (func_02063b8c(11) + 5) * 20;
             self->unk_192 = Math_AngleXZ(&o, v);
-            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_288), 0, 31);
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_288), 0, 31);
             V3_bb5c *sp = &self->unk_2c8;
             V3_bb5c *dp = &self->unk_34;
             self->unk_34.x = sp->x;
@@ -2651,7 +2651,7 @@ extern "C" void MuseumInsect_MoleCricketCrawl(Obj_bb5c *self, s16 *p)
         }
     } else {
         self->unk_172 = 16;
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_288), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_288), 0, 0);
         self->unk_174 = 60;
         *p = 0;
     }
@@ -3600,7 +3600,7 @@ void Unk_ov004_02239e70::runSpider() {
             unk_172 = 0x19;
             unk_194 = 0;
             unk_2c8.x = unk_4c;
-            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(unk_288), 0, 0);
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(unk_288), 0, 0);
             unk_98 = (func_02063b8c(4) + 3) * 20;
         }
         break;
@@ -3629,7 +3629,7 @@ void Unk_ov004_02239e70::runSpider() {
                 unk_172 = 1;
                 unk_9c = 0;
                 AnimFrameCtrl_setup(&unk_b0.anim, 0x21, 1, 0x1000, 0);
-                NNS_G3dMdlSetMdlAlpha(func_0209c0ac(unk_288), 0, 0x1f);
+                NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(unk_288), 0, 0x1f);
             }
         } else {
             unk_160 = 1;
@@ -4370,7 +4370,7 @@ extern "C" void MuseumInsect_SetupOrchidMantis(Unk_ov004_02238af4 *o) {
 
 extern "C" void MuseumInsect_SetupMoleCricket(Unk_ov004_02238af4 *o) {
     _ZN18Unk_ov004_022394344initEjiisii(o, 0xc8, 0x3c, 0, 0, 0, 0);
-    NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_288), 0, 0);
+    NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_288), 0, 0);
     s32 a[2], b[2];
     a[0] = 0xa6;
     a[1] = 0x106;
@@ -4782,8 +4782,8 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
     p = ((u8 *)sMuseumInsects) + i * 0x2d8;
     p[0x196] = v;
     *(s32 *)(p + 0x198) = 1;
-    func_0209c25c(m + 0x180, p + 0x284);
-    func_0209c0c8(p + 0x288);
+    ModelSlotPool_acquire(m + 0x180, p + 0x284);
+    PooledModel_reset(p + 0x288);
     MuseumInsect_InitPlacement(m, p);
     *(s32 *)(p + 0x18) = 0;
     *(s32 *)(p + 0x1c) = 0;
@@ -4793,7 +4793,7 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
 }
 
 BOOL MuseumInsectRoom::vfunc_00() {
-    func_0209c1a4(unk_180, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
+    ModelSlotPool_init(unk_180, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
     spawnDonatedInsects();
     return TRUE;
 }
@@ -4805,7 +4805,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
     u8 *mdl;
     u8 *rec;
     u32 sp1c;
-    res = func_0209c25c(m + 0x180, s + 0x284);
+    res = ModelSlotPool_acquire(m + 0x180, s + 0x284);
     mdl = s + 0x288;
     char nm[0x10];
     char pth[0x18];
@@ -4842,9 +4842,9 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
     }
     func_020639e8(pth + 1, "%s.nsbmd", nm);
     if (File_Exists(pth + 1)) {
-        if (func_0209c0d0(mdl, res, pth + 1)) {
+        if (PooledModel_loadFromSlot(mdl, res, pth + 1)) {
             r6 = s + 0xb0;
-            Model_setResource(r6, (u32)func_0209c0ac(mdl), 0);
+            Model_setResource(r6, (u32)PooledModel_getModel(mdl), 0);
             rec = ((u8 *)sMuseumInsectParams) + t * 4;
             if (*rec) {
                 func_020639e8(pth + 1, "%s.nsbva", nm);
@@ -4852,7 +4852,7 @@ extern "C" void MuseumInsectRoom_LoadInsect(u8 *m, u8 *s) {
                 func_020639e8(pth + 1, "%s.nsbca", nm);
             }
             if (File_Exists(pth + 1)) {
-                sp10 = func_0209c348(res);
+                sp10 = ModelSlot_getHeap(res);
                 if (t == 0x38) {
                     tmp = *(u32 *)(m + 0x19c) = File_LoadAlloc(pth + 1, *(s32 *)gCurrentHeap, 4, 0);
                 } else if (t == 0x23) {
@@ -5137,7 +5137,7 @@ BOOL MuseumInsectRoom::onDraw() {
                 AnimModel_drawAnimated(obj, (void *)z0);
             }
             if (hasShadow(e)) {
-                u32 r = func_02106020((u32)func_0209c0ac(e->unk_288), z1);
+                u32 r = func_02106020((u32)PooledModel_getModel(e->unk_288), z1);
                 func_020abdd0(&e->unk_2c8, sMuseumInsectParams[id].unk_02, 0x9000, (u8)r);
             }
         }
@@ -5166,7 +5166,7 @@ BOOL MuseumInsectRoom::vfunc_0c() {
     for (i = 0; i < 0x20; i++) {
         releaseInsect(i);
     }
-    func_0209c15c(unk_180);
+    ModelSlotPool_destroy(unk_180);
     return TRUE;
 }
 
@@ -5250,17 +5250,17 @@ MuseumInsect::MuseumInsect() {
     func_02135714(unk_178, 2, 0xc, (void *)func_02000c98, (void *)func_02000c8c);
     func_02088bc8(&unk_19c);
     func_02054e3c(unk_1e8);
-    func_0209c370(unk_284);
+    ModelSlotHandle_Init(unk_284);
     func_0209c140(unk_288);
     unk_196 = -1;
-    func_0209c0c8(unk_288);
+    PooledModel_reset(unk_288);
     unk_2d4 = 0;
     unk_198 = 0;
 }
 
 MuseumInsect::~MuseumInsect() {
     func_0209c128(unk_288);
-    func_0209c364(unk_284);
+    ModelSlotHandle_Destroy(unk_284);
     func_02054e24(unk_1e8);
     func_02088bb0(&unk_19c);
     func_021355f0(unk_178, 2, 0xc, (void *)func_02000c8c);
@@ -5292,8 +5292,8 @@ void MuseumInsectRoom::releaseInsect(s32 idx) {
         r->unk_198 = 0;
         r->unk_168 = 0;
         r->unk_172 = 0x19;
-        func_0209c0b4(r->unk_288);
-        func_0209c224(unk_180, r->unk_284);
+        PooledModel_unload(r->unk_288);
+        ModelSlotPool_release(unk_180, r->unk_284);
         r->unk_2d4 = 0;
     }
 }

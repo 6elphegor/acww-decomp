@@ -72,9 +72,9 @@ struct Unk_ov003_0222ed20_Loc {
 // other modules' methods are reached through their real mangled symbols (object first)
 #define Actor_spawn _ZN5Actor5spawnEPvS0_S0_S0_S0_
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020af514 _ZN12Unk_020af51413func_020af514Ev
-#define func_020af564 _ZN12Unk_020af53c13func_020af564Ev
-#define func_020af590 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_
+#define LooseSnowballs_reset _ZN14LooseSnowballs5resetEv
+#define SnowmanRecords_isFull _ZN14SnowmanRecords6isFullEv
+#define SnowmanRecords_getInfo _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_
 
 extern "C" {
 extern Unk_ov003_0222e734_Grid *gSceneBlockMap;
@@ -95,13 +95,13 @@ void *MapBlock_GetItemPtr(void *c, u32 i, u32 j, s32 k);
 void MapBlock_SetItem(void *c, u16 *p, u32 a, u32 b, u32 d);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
-s32 func_020af590(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
+s32 SnowmanRecords_getInfo(void *o, s32 i, void *a, void *b, void *c, void *d, void *e, void *f);
 s32 Actor_spawn(u32 a, u32 b, void *c, u32 d, void *e);
 Unk_ov003_0222ed20_St *func_020af3f4();
-void func_020af514();
+void LooseSnowballs_reset();
 s32 GroundSeason_IsSnow();
 s32 Scene_InTown();
-BOOL func_020af564(void *o);
+BOOL SnowmanRecords_isFull(void *o);
 void Clock_GetDateTime(void *);
 void DateTime_SubDays(void *, s32);
 BOOL Snowball_IsInBallState(void *p);
@@ -129,7 +129,7 @@ Unk_ov003_0222eb10_Obj *sSnowballs[8];
 extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64) != 0 || GroundSeason_IsSnow() == 0) {
         func_020af3f4();
-        func_020af514();
+        LooseSnowballs_reset();
         return;
     }
     struct {
@@ -145,16 +145,16 @@ extern "C" void SnowballSpawner_SpawnLooseBalls(void *self) {
         if (((u8 *)&f.l)[6] < 6) {
             DateTime_SubDays(f.l.w, 1);
         }
-        if (func_020af590(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
+        if (SnowmanRecords_getInfo(data_021ed2e6, i, &f.p[0], &f.p[1], &f.p[2], &f.l.k[0], &f.l.k[1], &f.l.k[2]) != 0) {
             if (f.l.k[0] == ((u8 *)&f.l)[9] && f.l.k[1] == ((u8 *)&f.l)[8] && f.l.k[2] == ((u8 *)&f.l)[7]) {
                 func_020af3f4();
-                func_020af514();
+                LooseSnowballs_reset();
                 return;
             }
         }
     }
     if (Scene_InTown() != 0) {
-        if (func_020af564(data_021ed2e6) == 0) {
+        if (SnowmanRecords_isFull(data_021ed2e6) == 0) {
             if (func_020af3f4()->a.x != 0) {
                 Unk_ov003_0222ed20_St *s = func_020af3f4();
                 f.LampLights.x = s->a.x;
@@ -208,7 +208,7 @@ extern "C" void SnowballSpawner_SpawnSnowmen(void *self) {
                         if (t != 0) {
                             if (Item_IsSnowman(t)) {
                                 s32 v = Item_GetSnowmanIndex(t);
-                                if (func_020af590(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
+                                if (SnowmanRecords_getInfo(data_021ed2e6, v, 0, 0, 0, 0, 0, 0) == 0) {
                                     u16 tmp[1];
                                     tmp[0] = 0xfff1;
                                     MapBlock_SetItem(cell, tmp, lx, ly, 0);

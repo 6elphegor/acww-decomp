@@ -3838,7 +3838,7 @@ extern "C" {
 extern s16 data_02135f44[][2];
 }
 extern "C" {
-s32 func_0203a4b0();
+s32 Camera_GetCloseUpFactor();
 }
 extern "C" {
 void SkySprite_ProjectWorldPos(Unk_020bdd94*, Unk_020bdd94_Out*, s32);
@@ -4056,7 +4056,7 @@ extern "C" void SkySprite_ProjectWorldPos(Unk_020bdd94* p, Unk_020bdd94_Out* q, 
     sy = func_01ffcb0c(0x50000, k) + 0x50000;
     inv = 0x1000 - k;
     if (gCamera != 0) {
-        idx = func_01ffcb0c(func_0203a4b0(), inv);
+        idx = func_01ffcb0c(Camera_GetCloseUpFactor(), inv);
     } else {
         idx = 0;
     }
@@ -4404,7 +4404,7 @@ extern "C" {
 void GulliverQuest_Clear(void* p);
 }
 extern "C" {
-void func_02040974(s32 a, s32 b, s32 c);
+void EventAnnounce_Request(s32 a, s32 b, s32 c);
 }
 extern "C" {
 s32 FieldItemFx_StartBalloonDrop(s32 a, s32 b);
@@ -4824,7 +4824,7 @@ void SkyShotSequence::actUfoCrashed() {
             }
         }
         GulliverQuest_Clear(data_021e58a6);
-        func_02040974(0x44, 0x63, 0);
+        EventAnnounce_Request(0x44, 0x63, 0);
         reset();
     }
 }
@@ -5724,7 +5724,7 @@ extern "C" {
 s32 func_02063b8c(s32);
 }
 extern "C" {
-s32 func_02040c7c();
+s32 EventAnnounce_GetActiveEvent();
 }
 extern "C" {
 BOOL Scene_InTownUnk31();
@@ -6316,7 +6316,7 @@ void Unk_020bbc28::updateFireworksShow() {
     Unk_020bbcc8_Xxx t1, t2, t3, t4;
     s.a = 0;
     s.b = 0;
-    s32 kind = func_02040c7c();
+    s32 kind = EventAnnounce_GetActiveEvent();
     Clock_GetDateTime(&s);
     MI_CpuCopy8(&s, &t1, 8);
     if (Event_GetState(0x13, &t1, 1)) {
@@ -9043,7 +9043,7 @@ extern "C" {
 void File_LoadToBuffer(void *a, void *b, u32 c);
 }
 extern "C" {
-void func_020aff60(void *p);
+void Constellation_MaskSkyScreen(void *p);
 }
 extern "C" {
 BOOL Gfx2d_LoadScreen(void *p, u32 a, u32 b, u32 c);
@@ -9133,7 +9133,7 @@ extern "C" {
 s32 MenuCtrl_GetTransitionProgress(void);
 }
 extern "C" {
-s32 func_0203a4b0(void);
+s32 Camera_GetCloseUpFactor(void);
 }
 extern "C" {
 u16 Sky_GetStarScrollYNow(void *p);
@@ -9199,7 +9199,7 @@ void Sky_FrameOutdoor(void) {
     Sky_ApplyPalettes(gWeatherManager.unk_0000);
     if (gCamera != 0) {
         a = MenuCtrl_GetTransitionProgress() * 0x123 >> 12;
-        b = func_0203a4b0() * 30 >> 12;
+        b = Camera_GetCloseUpFactor() * 30 >> 12;
         data_021f145c[data_021f1448.unk_1c ^ 1] = a + b;
     }
     data_021f1448.unk_3e = Sky_GetStarScrollYNow(&gWeatherManager);
@@ -9419,7 +9419,7 @@ extern "C" BOOL Sky_LoadStarBg(u32 idx) {
         return FALSE;
     }
     File_LoadToBuffer(data_020e6780, buf, 0x1000);
-    func_020aff60(buf);
+    Constellation_MaskSkyScreen(buf);
     if (!Gfx2d_LoadScreen(buf, v6, 0x1000, 0)) {
         Heap_Free(heap, buf);
         return FALSE;

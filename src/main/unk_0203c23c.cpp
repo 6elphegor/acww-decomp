@@ -85,11 +85,11 @@ extern u32 gWorldCurve[];
 }
 
 extern "C" {
-extern s32 data_020d9250;
+extern s32 sCameraFollowVillagerIdx;
 }
 
 extern "C" {
-extern s32 data_020d9254;
+extern s32 sCameraSpanDepthScale;
 }
 
 extern "C" {

@@ -1115,8 +1115,8 @@ void RecycleBin_SpoilTurnips(void *);
 void Town_ApplyElapsedDays(void *, void *, s32, s32, s32);
 u16 *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
 s32 FieldUnit_FromBlockUnit(void *, void *, s32, s32, s32, s32);
-s32 func_02040d80();
-s32 func_02040974(s32, s32, s32);
+s32 EventAnnounce_CanCheck();
+s32 EventAnnounce_Request(s32, s32, s32);
 s32 Town_UpdateSeashells(void *);
 s32 Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
@@ -5872,7 +5872,7 @@ extern "C" void Town_UpdateDay(s32 flag) {
 
 namespace nH {
 extern "C" void Town_CheckDayChange() {
-    if (func_02040d80() != 0) {
+    if (EventAnnounce_CanCheck() != 0) {
         if (_ZN11CommManager8isOnlineEv(gCommManager) == 0) {
             Unk_02046a0_Ts t;
             t.w[0] = 0;
@@ -5889,7 +5889,7 @@ extern "C" void Town_CheckDayChange() {
             ((u8 *)&t)[0xa] = 6;
             s32 d = DateTime_DiffMinutes(&t.w[2], &t) / 60 / 24;
             if (d >= 1) {
-                func_02040974(-1, 99, 0);
+                EventAnnounce_Request(-1, 99, 0);
             }
         }
         Town_UpdateSeashells(gTownUpdater);

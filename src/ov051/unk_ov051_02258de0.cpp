@@ -95,7 +95,7 @@ s32 func_020e7518(void *p);
 void TalkRequestFlags_ClearSceneHold();
 void TalkRequestFlags_SetSceneHold();
 s32 func_02063b8c(s32 a);
-void func_0203a318();
+void Camera_SetSwayPattern3();
 void ScreenTransition_StartFadeOut(s32 a, s32 b);
 void Snd_FadeOutScene();
 void ScreenTransition_StartFadeIn(s32 a, s32 b, s32 c);
@@ -684,7 +684,7 @@ BOOL SpNpcKappn::mainAct04() {
     if (TalkWindow_Get(0)->unk_04 == 0) {
         if (func_02063b8c(4) == 0) {
             TaxiInterior_StartDriverAnim();
-            func_0203a318();
+            Camera_SetSwayPattern3();
             unk_716 = 10;
         }
         ScreenTransition_StartFadeOut(0, 0xf);

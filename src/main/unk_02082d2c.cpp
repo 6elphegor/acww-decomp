@@ -27,72 +27,72 @@ struct Unk_02082d68 {
 };
 
 struct Unk_020829b0_Y_dummy;
-struct Unk_020829b0 : public Unk_02082d68 {
+struct SpNpcAnimHeapRefSlot : public Unk_02082d68 {
     Unk_020829b0_Y unk_04;
-    Unk_020829b0();
-    ~Unk_020829b0();
-    void func_020829b0();
+    SpNpcAnimHeapRefSlot();
+    ~SpNpcAnimHeapRefSlot();
+    void assign();
 };
 
-struct Unk_02082af0 : public Unk_02082d68 {
+struct VillagerAnimHeapRefSlot : public Unk_02082d68 {
     Unk_02082af0_X unk_04;
-    void func_02082af0(u32 x);
+    void assign(u32 x);
 };
 
-struct Unk_02082c54 : public Unk_02082d68 {
+struct NpcBodyAnimSlot : public Unk_02082d68 {
     Unk_02082c54_Z unk_01[3];
-    void func_02082c54(s32 a, s32 i);
+    void assignLayer(s32 a, s32 i);
 };
 
-class Unk_020e085c {
+class NpcResPool {
 public:
-    Unk_020e085c(s32 n);
-    virtual ~Unk_020e085c();
-    virtual void vfunc_08(u32 i) = 0;
-    virtual void vfunc_0c(u32 i);
-    virtual u8 *vfunc_10(u32 i) = 0;
-    s32 func_02082cb0();
-    void func_02082d04();
+    NpcResPool(s32 n);
+    virtual ~NpcResPool();
+    virtual void occupySlot(u32 i) = 0;
+    virtual void releaseSlot(u32 i);
+    virtual u8 *getSlot(u32 i) = 0;
+    s32 findFreeSlot();
+    void clearAllSlots();
 
     /* 0x04 */ s32 unk_04;
 };
 
-class Unk_020e0798 : public Unk_020e085c {
+class VillagerAnimHeapRefPool : public NpcResPool {
 public:
-    Unk_020e0798();
-    virtual ~Unk_020e0798();
-    virtual void vfunc_08(u32 i);
-    virtual u8 *vfunc_10(u32 i);
-    Unk_02082af0_X *func_020829f4(u32 i);
+    VillagerAnimHeapRefPool();
+    virtual ~VillagerAnimHeapRefPool();
+    virtual void occupySlot(u32 i);
+    virtual u8 *getSlot(u32 i);
+    Unk_02082af0_X *getHeapRef(u32 i);
 
-    /* 0x08 */ Unk_02082af0 unk_08[8];
+    /* 0x08 */ VillagerAnimHeapRefSlot unk_08[8];
 };
 
-class Unk_020e0840 : public Unk_020e085c {
+class NpcBodyAnimPool : public NpcResPool {
 public:
-    Unk_020e0840();
-    virtual ~Unk_020e0840();
-    virtual u8 *vfunc_10(u32 i);
-    virtual void vfunc_08(u32 i);
-    Unk_02082c54_Z *func_02082b34(u32 i, u32 off);
+    NpcBodyAnimPool();
+    virtual ~NpcBodyAnimPool();
+    virtual u8 *getSlot(u32 i);
+    virtual void occupySlot(u32 i);
+    Unk_02082c54_Z *getLayer(u32 i, u32 off);
 
-    /* 0x08 */ Unk_02082c54 unk_08[5];
+    /* 0x08 */ NpcBodyAnimSlot unk_08[5];
 };
 
 extern "C" {
-Unk_020e0798 *func_02082a50();
+VillagerAnimHeapRefPool *VillagerAnimHeapRefPool_Get();
 }
 
 extern "C" {
-Unk_020e0840 *func_02082bb4();
+NpcBodyAnimPool *NpcBodyAnimPool_Get();
 }
 
 extern "C" {
-extern Unk_020e0798 data_021cd3d4;
+extern VillagerAnimHeapRefPool sVillagerAnimHeapRefPool;
 }
 
 extern "C" {
-extern Unk_020e0840 data_021cd360;
+extern NpcBodyAnimPool sNpcBodyAnimPool;
 }
 
 struct Unk_02082d74_M {
@@ -134,7 +134,7 @@ extern u8 sPeteVisitTable[], sDateVisitorTable[], sDateVisitorChecks[], sVisitor
 }
 
 extern "C" {
-extern s32 data_020cf1bc[];
+extern s32 sNpcBodyAnimLayerIdBases[];
 }
 
 extern "C" {
@@ -294,9 +294,9 @@ Unk_02082d68::Unk_02082d68() { unk_00 = 0; }
 
 Unk_02082d68::~Unk_02082d68() {}
 
-Unk_020e085c::Unk_020e085c(s32 n) { unk_04 = n; }
+NpcResPool::NpcResPool(s32 n) { unk_04 = n; }
 
-Unk_020e085c::~Unk_020e085c() {}
+NpcResPool::~NpcResPool() {}
 
 struct Unk_02082dd0_V { s32 x, y, z; };
 

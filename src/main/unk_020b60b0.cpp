@@ -23,7 +23,7 @@ struct Unk_0202f64c {
     virtual void vfunc_00();
     virtual void vfunc_04();
     virtual void vfunc_08();
-    virtual void vfunc_0c();
+    virtual void collide();
     u8 pad[0x34];
 };
 
@@ -141,8 +141,8 @@ void MTX_MultVec43(Vec3 *v, Mtx43 *m, Vec3 *out);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 void func_020e93a0(Vec3 *v, s32 angle);
 void WorldCurve_Apply(Vec3 *out, Vec3 *in);
-s32 func_0202f3a8(Plane *p);
-BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
+s32 Collision_CalcTriangleNormal(Plane *p);
+BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(TouchPickTriangle *t, Vec3 *a, Vec3 *b, Vec3 *c, Plane *p);
 }
 
 struct Unk_020b69e0_Pad {
@@ -161,10 +161,10 @@ BOOL TouchPickTriangle::setup(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
 
 BOOL TouchPickTriangle::setupCurved(Vec3 *a, Vec3 *b, Vec3 *c, s32 d, u8 e) {
     Plane p;
-    if (func_0202f3a8(&p) != 0) {
+    if (Collision_CalcTriangleNormal(&p) != 0) {
         unk_3c = d;
         unk_40 = e;
-        return _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(this, a, b, c, &p);
+        return _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(this, a, b, c, &p);
     }
     return FALSE;
 }
@@ -372,18 +372,18 @@ struct Unk_020b60dc_Rec {
 };
 
 extern "C" {
-void _ZN12Unk_020d8cccC1EP15Unk_0202f660_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *d);
-void _ZN12Unk_020d8cccD2Ev(void *t);
-void _ZN12Unk_020d8cccC1Ev(void *t);
-BOOL _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *n);
-s32 _ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(void *t, Vec3 *p);
-BOOL _ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(void *t, Vec3 *out, Vec3 *a, Vec3 *b);
+void _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *d);
+void _ZN17CollisionTriangleD2Ev(void *t);
+void _ZN17CollisionTriangleC1Ev(void *t);
+BOOL _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(void *t, Vec3 *a, Vec3 *b, Vec3 *c, Vec3 *n);
+s32 _ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(void *t, Vec3 *p);
+BOOL _ZN17CollisionTriangle16intersectSegmentEP15Unk_0202f2ac_V3S1_S1_(void *t, Vec3 *out, Vec3 *a, Vec3 *b);
 void _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_020b60dc_Cell *x, Vec3 *v, s32 a, s32 b);
 void _ZN10GroundInfo10initAtUnitEiiii(Unk_020b60dc_Cell *x, s32 a, s32 b, s32 c, s32 d);
 void GroundInfo_Destruct(Unk_020b60dc_Cell *x);
 s32 _ZN14GroundInfoBase9getHeightEi(Unk_020b60dc_Cell *x, s32 k);
-void _ZN12Unk_0202f660C1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
-void _ZN12Unk_0202f660D1Ev(Unk_020b60dc_Line *l);
+void _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(Unk_020b60dc_Line *l, Vec3 *a, Vec3 *b);
+void _ZN16CollisionSegmentD1Ev(Unk_020b60dc_Line *l);
 BOOL _ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(void *n, Vec3 *out, Unk_020b60dc_Line *l);
 void func_020b6e38(Basis *out, s32 a, s32 b);
 BOOL func_020b6f10(Vec3 *out, Vec3 *in, void *node, s32 a, s32 b);
@@ -396,7 +396,7 @@ void *_ZN12Unk_020d93b816getEyeCurveAngleEv(void *cam);
 void func_020e8344(Mtx43 *m, void *p);
 void func_020e8528(Mtx43 *m, s32 a, s32 b, s32 c);
 void func_020e8434(Mtx43 *m, s32 a);
-void func_0202f3a8(Vec3 *out, Vec3 *a, Vec3 *b, Vec3 *c);
+void Collision_CalcTriangleNormal(Vec3 *out, Vec3 *a, Vec3 *b, Vec3 *c);
 BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *a, s32 *b, s32 *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, Vec3 *v);
 s32 BuildingList_FindByGrid(s32 a, s32 b);
@@ -495,22 +495,22 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                 MTX_MultVec43(&q[2], &m, &rr[2]);
                 MTX_MultVec43(&q[3], &m, &rr[3]);
                 Vec3 pl;
-                func_0202f3a8(&pl, &rr[0], &rr[1], &rr[2]);
+                Collision_CalcTriangleNormal(&pl, &rr[0], &rr[1], &rr[2]);
                 Unk_020b60dc_Tri tri[2];
-                _ZN12Unk_020d8cccC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[0], &rr[0], &rr[1], &rr[2], &pl);
-                _ZN12Unk_020d8cccC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[1], &rr[0], &rr[2], &rr[3], &pl);
+                _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[0], &rr[0], &rr[1], &rr[2], &pl);
+                _ZN17CollisionTriangleC1EP15Unk_0202f660_V3S1_S1_S1_(&tri[1], &rr[0], &rr[2], &rr[3], &pl);
                 Unk_020b60dc_Tri *tp = &tri[0];
                 for (u32 i = 0; i < 2; tp++, i++) {
-                    if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(tp, &p0) >= 0) {
+                    if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(tp, &p0) >= 0) {
                         BOOL in;
-                        if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(tp, &l.c) >= 0) {
+                        if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(tp, &l.c) >= 0) {
                             in = TRUE;
                         } else {
                             in = FALSE;
                         }
                         if (!in) {
                             Vec3 ip;
-                            if (_ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(tp, &ip, &p0, &l.c)) {
+                            if (_ZN17CollisionTriangle16intersectSegmentEP15Unk_0202f2ac_V3S1_S1_(tp, &ip, &p0, &l.c)) {
                                 p1 = ip;
                                 Vec3 j;
                                 WorldCurve_FromCurved(&j, &ip);
@@ -522,8 +522,8 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                         }
                     }
                 }
-                _ZN12Unk_020d8cccD2Ev(&tri[1]);
-                _ZN12Unk_020d8cccD2Ev(&tri[0]);
+                _ZN17CollisionTriangleD2Ev(&tri[1]);
+                _ZN17CollisionTriangleD2Ev(&tri[0]);
             }
         }
     } else {
@@ -569,22 +569,22 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                     Vec3 n;
                     n.x = 0; n.y = 0x1000; n.z = 0;
                     Unk_020b60dc_Tri ua[2];
-                    _ZN12Unk_020d8cccC1Ev(&ua[0]);
-                    _ZN12Unk_020d8cccC1Ev(&ua[1]);
-                    _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(&ua[0], &s[1], &s[2], &s[4], &n);
-                    _ZN12Unk_020d8ccc13func_0202f364EP15Unk_0202f2ac_V3S1_S1_S1_(&ua[1], &s[2], &s[3], &s[4], &n);
+                    _ZN17CollisionTriangleC1Ev(&ua[0]);
+                    _ZN17CollisionTriangleC1Ev(&ua[1]);
+                    _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(&ua[0], &s[1], &s[2], &s[4], &n);
+                    _ZN17CollisionTriangle3setEP15Unk_0202f2ac_V3S1_S1_S1_(&ua[1], &s[2], &s[3], &s[4], &n);
                     Unk_020b60dc_Tri *up = &ua[0];
                     for (u32 i = 0; i < 2; up++, i++) {
-                        if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(up, &p0) >= 0) {
+                        if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(up, &p0) >= 0) {
                             BOOL in;
-                            if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(up, &p1) >= 0) {
+                            if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(up, &p1) >= 0) {
                                 in = TRUE;
                             } else {
                                 in = FALSE;
                             }
                             if (!in) {
                                 Vec3 ip;
-                                if (_ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(up, &ip, &p0, &p1)) {
+                                if (_ZN17CollisionTriangle16intersectSegmentEP15Unk_0202f2ac_V3S1_S1_(up, &ip, &p0, &p1)) {
                                     p1 = ip;
                                     self->unk_00 = p1.x;
                                     self->unk_04 = p1.y;
@@ -594,8 +594,8 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
                             }
                         }
                     }
-                    _ZN12Unk_020d8cccD2Ev(&ua[1]);
-                    _ZN12Unk_020d8cccD2Ev(&ua[0]);
+                    _ZN17CollisionTriangleD2Ev(&ua[1]);
+                    _ZN17CollisionTriangleD2Ev(&ua[0]);
                 }
                 GroundInfo_Destruct(&y);
             }
@@ -703,15 +703,15 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     }
     Vec3 ip;
     for (TouchPickTriangle *n = self->unk_1c; n != 0; n = n->unk_38) {
-        if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(n, &p0) >= 0) {
+        if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(n, &p0) >= 0) {
             BOOL in;
-            if (_ZN12Unk_020d8ccc13func_0202f274EP15Unk_0202f2ac_V3(n, &p1) >= 0) {
+            if (_ZN17CollisionTriangle10distanceToEP15Unk_0202f2ac_V3(n, &p1) >= 0) {
                 in = TRUE;
             } else {
                 in = FALSE;
             }
             if (!in) {
-                if (_ZN12Unk_020d8ccc13func_0202f11cEP15Unk_0202f2ac_V3S1_S1_(n, &ip, &p0, &p1)) {
+                if (_ZN17CollisionTriangle16intersectSegmentEP15Unk_0202f2ac_V3S1_S1_(n, &ip, &p0, &p1)) {
                     p1 = ip;
                     Vec3 kk;
                     WorldCurve_FromCurved(&kk, &p1);
@@ -727,7 +727,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
     TouchPickSphere *n = self->unk_20;
     while (n != 0) {
         Unk_020b60dc_Line l;
-        _ZN12Unk_0202f660C1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
+        _ZN16CollisionSegmentC1EP15Unk_0202f660_V3S1_(&l, &p0, &p1);
         if (_ZN12Unk_0202e9c813func_0202e918EP17Unk_0202e918_Vec3P16Unk_0202e918_Cap(n, &ip, &l)) {
             Vec3 m2;
             WorldCurve_FromCurved(&m2, (Vec3 *)n);
@@ -738,7 +738,7 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
             self->unk_19 = n->unk_10;
         }
         n = n->unk_18;
-        _ZN12Unk_0202f660D1Ev(&l);
+        _ZN16CollisionSegmentD1Ev(&l);
     }
     self->unk_20 = 0;
     self->unk_24 = 0;

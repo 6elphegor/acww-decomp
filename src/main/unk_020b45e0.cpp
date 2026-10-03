@@ -5,7 +5,7 @@ extern "C" {
 void AbAllObjGfx_Upload(void);
 void Snd_CreateScene(void);
 void TransitionCommIcon_Resume(void);
-u32 func_0209c08c(void);
+u32 Scene_GetSavedFadeIn(void);
 void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 u32 NetArea_GetMoveState(void);
 void NetArea_SetMoveState(u32 x);
@@ -65,7 +65,7 @@ void Unk_020e40cc::func_020b4728() {
 }
 
 void Unk_020e40cc::func_020b4708() {
-    Scene_Request(6, 3, func_0209c08c(), 1);
+    Scene_Request(6, 3, Scene_GetSavedFadeIn(), 1);
     unk_50 = 2;
 }
 

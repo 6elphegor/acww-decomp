@@ -59,7 +59,7 @@ void StarSky_ScrollY(void *p, s32 a, s32 b);
 void func_020b0780(void *p);
 void func_020b0788(void *p, s32 a);
 void func_020b080c(void *p);
-u8 *func_020b053c();
+u8 *Constellation_GetRecord();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void PlayerActor_LocalRequestAct12();
 void PlayerActor_RequestAct10();
@@ -913,7 +913,7 @@ void StargazingMenu::setupNameLabel() {
         unk_2d16 = 1;
         s32 u = unk_2d08;
         if (u != unk_2d0c) {
-            u8 *s = ((u8 *(*)(s32))func_020b053c)(u);
+            u8 *s = ((u8 *(*)(s32))Constellation_GetRecord)(u);
             String_FromEncodedBytes(&unk_2cb0, s + 0x16, 0x10);
             unk_2d18 = (unk_2cb0.getTextWidth() + 7) >> 3;
             if (unk_2d18 < 2) {

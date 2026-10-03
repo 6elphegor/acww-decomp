@@ -263,7 +263,7 @@ void *BgModelCache_getAcre(void *self, s32 i);
 s32 MapBlockAcre_getAcreId(void *self);
 s32 Acre_GetAttr(s32 a);
 s32 Unk_020d93b8_getEyeCurveAngle(void *self);
-void func_0203bac4(void *, s32 *, s32 *);
+void Camera_GetLookAtBlock(void *, s32 *, s32 *);
 s32 func_0203efec(s32);
 s16 WorldCurve_ToCurved(Unk_ov003_02218478_V3 *out, Unk_ov003_02218478_V3 *v);
 s32 func_0203edc8();
@@ -459,7 +459,7 @@ BOOL FieldGround::onDraw() {
     cam = gCamera;
     if (cam != 0) {
         cam_r = Unk_020d93b8_getEyeCurveAngle(cam);
-        func_0203bac4(cam, &cx, &cy);
+        Camera_GetLookAtBlock(cam, &cx, &cy);
         a = func_0203efec(cam_r);
     }
     found = 0;

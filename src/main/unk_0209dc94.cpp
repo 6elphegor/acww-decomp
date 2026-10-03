@@ -11,12 +11,12 @@ void func_0209d994(u8 *p);
 void *PlayerData_GetCurrent();
 void _ZN12Unk_02097ff47setFlagEj(void *, s32);
 void _ZN12Unk_02097ff49clearFlagEj(void *, s32);
-void func_0209c80c();
+void RoomEntry_Reset();
 void Clock_Init();
 void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
 void func_020af3f4();
-void _ZN12Unk_020af51413func_020af514Ev();
+void _ZN14LooseSnowballs5resetEv();
 void VillagerStates_SetBirthdayVisitor(s32);
 void TownSessionState_Get();
 void *TownSessionState_GetResettiFlag();
@@ -39,7 +39,7 @@ s32 func_0203cb70();
 void Snd_SetOutputMode(void *);
 void LostChild_LoadFromTown();
 void BottleLetter_WashUpThrownBottle();
-void func_020b00c4();
+void Constellation_ImportExchanged();
 void LetterDelivery_DeliverReceivedLetter();
 void GameStart_Clear();
 void func_020b8eb0();
@@ -89,8 +89,8 @@ void _ZN18BottleLetterRecord11clearRecordEv(void *);
 void func_0208f088(void *);
 void HappyRoomDate_SetToday(void *);
 void _ZN11SaveRecord49resetDateEv(void *);
-void _ZN12Unk_020af53c13func_020af674Ev(void *);
-void func_0204085c(void *);
+void _ZN14SnowmanRecords8clearAllEv(void *);
+void EventWeekSlots_Reset(void *);
 void _ZN15LostChildRecord5clearEv(void *);
 void _ZN12Unk_0208620c13func_0208620cEv(void *);
 void func_0208f1dc(void *);
@@ -99,7 +99,7 @@ void SaveVillagers_Clear(void *);
 void func_020639b8(void *);
 void func_02039c00(void *);
 void func_02039d6c(void *);
-void func_020408fc(void *);
+void EventWeekSlots_Destruct(void *);
 void func_0204c504(void *);
 void _ZN7TownMapD1Ev(void *);
 void HappyRoomDate_Destruct(void *);
@@ -125,16 +125,16 @@ void _ZN11SaveRecord413func_0209eb8cEv(void *);
 void _ZN8ReddShopD1Ev(void *);
 void AbleShop_Destruct(void *);
 void _ZN12Unk_020aec00C1Ev(void *);
-void _ZN12Unk_020af53cD1Ev(void *);
+void _ZN14SnowmanRecordsD1Ev(void *);
 void _ZN12Unk_020b09f0D1Ev(void *);
 void _ZN15TownStyleRecordC2Ev(void *);
 void Weather_Destruct(void *);
 extern u32 gCurrentHeap;
 extern u8 gSaveData[];
-extern const u32 data_020d0704[2];
+extern const u32 sSndOutputModeTable[2];
 }
 
-const u32 data_020d0704[2] = {1, 0};
+const u32 sSndOutputModeTable[2] = {1, 0};
 
 struct SaveData {
     u8 unk_00;
@@ -178,9 +178,9 @@ struct SaveData {
     u32 f_15fd8[1];
     u8 f_15fdc[0x4];
 
-    void func_0209dc94();
-    void func_0209ddb0();
-    void func_0209de74();
+    void setupContinue();
+    void setupNewResident();
+    void setupNewTown();
     void resetPlayer(s32 i);
     void reset();
     void clear();
@@ -197,7 +197,7 @@ SaveData::~SaveData() {
     func_0209eb04(&f_15fc5);
     _ZN12Unk_02063578D2Ev(&f_15fbc);
     HappyRoomDate_Destruct(&f_15fb0);
-    _ZN12Unk_020af53cD1Ev(&f_15f96);
+    _ZN14SnowmanRecordsD1Ev(&f_15f96);
     AbleShop_Destruct(&f_15f84);
     _ZN8ReddShopD1Ev(&f_15f70);
     Weather_Destruct(&f_15f66);
@@ -207,7 +207,7 @@ SaveData::~SaveData() {
     func_02039c00(&f_15ede);
     func_02039d6c(&f_15ec0);
     func_0204c504(&f_15e54);
-    func_020408fc(&f_15e18);
+    EventWeekSlots_Destruct(&f_15e18);
     _ZN12Unk_020aec00C1Ev(&f_15db4);
     _ZN10MuseumData13func_0207054cEv(&f_15d50);
     _ZN12Unk_0208f0a0D1Ev(&f_15c58);
@@ -300,8 +300,8 @@ void SaveData::reset() {
     func_0208f088(&f_15c58);
     HappyRoomDate_SetToday(&f_15fb0);
     _ZN11SaveRecord49resetDateEv(&f_15fc5);
-    _ZN12Unk_020af53c13func_020af674Ev(&f_15f96);
-    func_0204085c(&f_15e18);
+    _ZN14SnowmanRecords8clearAllEv(&f_15f96);
+    EventWeekSlots_Reset(&f_15e18);
     _ZN15LostChildRecord5clearEv(&f_15fca);
     _ZN12Unk_0208620c13func_0208620cEv(&f_e557);
     func_0208f1dc(&f_10c3c);
@@ -317,7 +317,7 @@ void SaveData::resetPlayer(s32 i) {
     if (r) _ZN13LetterStorage5clearEv(r + i * 0x477c);
 }
 
-void SaveData::func_0209de74() {
+void SaveData::setupNewTown() {
     void *a = PlayerData_GetCurrent();
     SaveData_SyncClockOffset(this);
     TownMap_Generate(&f_c330, gCurrentHeap);
@@ -328,9 +328,9 @@ void SaveData::func_0209de74() {
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
     SaveData_InitNew((u8 *)this);
     func_020af3f4();
-    _ZN12Unk_020af51413func_020af514Ev();
+    _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
-    func_0209c80c();
+    RoomEntry_Reset();
     _ZN12Unk_02097ff47setFlagEj(a, 1);
     _ZN12Unk_02097ff47setFlagEj(a, 0x23);
     _ZN12Unk_02097ff49clearFlagEj(a, 9);
@@ -341,7 +341,7 @@ void SaveData::func_0209de74() {
     SaveVillagers_UpdateAllRoomInfo(&f_8a3c);
 }
 
-void SaveData::func_0209ddb0() {
+void SaveData::setupNewResident() {
     void *a = PlayerData_GetCurrent();
     func_0209d81c(this);
     HouseRoomMaps_UpdateAll();
@@ -358,9 +358,9 @@ void SaveData::func_0209ddb0() {
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&f_8a3c);
     func_020af3f4();
-    _ZN12Unk_020af51413func_020af514Ev();
+    _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
-    func_0209c80c();
+    RoomEntry_Reset();
     _ZN12Unk_02097ff414setSkyShotHitsEj(a, 0);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&f_8a3c, 1);
@@ -369,7 +369,7 @@ void SaveData::func_0209ddb0() {
     SaveVillagers_UpdateAllRoomInfo(&f_8a3c);
 }
 
-void SaveData::func_0209dc94() {
+void SaveData::setupContinue() {
     void *a = PlayerData_GetCurrent();
     if (Scene_GetCurrent() != 6) {
         func_0209d81c(this);
@@ -382,14 +382,14 @@ void SaveData::func_0209dc94() {
     VillagerStates_ResetErrands();
     SaveVillagers_AssignErrands(&f_8a3c);
     func_020af3f4();
-    _ZN12Unk_020af51413func_020af514Ev();
+    _ZN14LooseSnowballs5resetEv();
     _ZN7TownMap18updateGroundSeasonEv(&f_c330);
-    func_0209c80c();
+    RoomEntry_Reset();
     HappyRoom_SendWelcomeLetter();
-    Snd_SetOutputMode((void *)data_020d0704[func_0203cb70()]);
+    Snd_SetOutputMode((void *)sSndOutputModeTable[func_0203cb70()]);
     LostChild_LoadFromTown();
     BottleLetter_WashUpThrownBottle();
-    func_020b00c4();
+    Constellation_ImportExchanged();
     LetterDelivery_DeliverReceivedLetter();
     GameStart_Clear();
     func_020b8eb0();

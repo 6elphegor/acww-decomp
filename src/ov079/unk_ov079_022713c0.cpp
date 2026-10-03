@@ -516,7 +516,7 @@ BOOL Npc_IsPosBlocked(void *pos);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *v, s32 a);
 void _ZN9NpcLookAt9setTargetEhiiP17Unk_0201a334_Vec3iih(void *p, u32 a, u32 b, void *c, void *d, u32 e, u32 f, u32 g);
-BOOL func_02040c88();
+BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
 void TownSessionState_GetVisitorPos(void *p);
 void _ZN10VisitorPos13pickRandomPosEv();
@@ -594,7 +594,7 @@ BOOL SpNpcWendell::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (func_02040c88() == 0) {
+    if (EventAnnounce_IsBusy() == 0) {
         TownSessionState_GetVisitorPos(TownSessionState_Get());
         _ZN10VisitorPos13pickRandomPosEv();
     }

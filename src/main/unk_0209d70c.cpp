@@ -24,7 +24,7 @@ extern "C" void _ZN12LetterOutboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxC1Ev(void *);
 extern "C" void _ZN13PlayerMailboxD1Ev(void *);
 extern "C" void _ZN11SaveRecord413func_0209eb90Ev(void *);
-extern "C" void _ZN12Unk_020af53cC1Ev(void *);
+extern "C" void _ZN14SnowmanRecordsC1Ev(void *);
 extern "C" void _ZN12Unk_020b09f0C2Ev(void *);
 extern "C" void _ZN15TownStyleRecordD2Ev(void *);
 extern "C" void _ZN8ReddShopC1Ev(void *);
@@ -33,7 +33,7 @@ extern "C" void func_02039c04(void *);
 extern "C" void func_02039d70(void *);
 extern "C" void func_02039d8c(void *);
 extern "C" void func_02039d90(void *);
-extern "C" void func_02040900(void *);
+extern "C" void EventWeekSlots_Construct(void *);
 extern "C" void func_0204c508(void *);
 extern "C" void HappyRoomDate_Construct(void *);
 extern "C" void func_020639bc(void *);
@@ -78,7 +78,7 @@ public:
         _ZN12Unk_0208f0a0C1Ev(p + 0x15c58);
         _ZN10MuseumData13func_02070550Ev(p + 0x15d50);
         _ZN8NookShopC1Ev(p + 0x15db4);
-        func_02040900(p + 0x15e18);
+        EventWeekSlots_Construct(p + 0x15e18);
         func_0204c508(p + 0x15e54);
         func_02039d70(p + 0x15ec0);
         func_02039c04(p + 0x15ede);
@@ -88,7 +88,7 @@ public:
         Weather_Construct(p + 0x15f66);
         _ZN8ReddShopC1Ev(p + 0x15f70);
         AbleShop_Construct(p + 0x15f84);
-        _ZN12Unk_020af53cC1Ev(p + 0x15f96);
+        _ZN14SnowmanRecordsC1Ev(p + 0x15f96);
         HappyRoomDate_Construct(p + 0x15fb0);
         _ZN12Unk_02063578C2Ev(p + 0x15fbc);
         func_0209eb08(p + 0x15fc5);
@@ -100,9 +100,9 @@ public:
     void func_0209dae8();
     void func_0209db94();
     void func_0209dc0c();
-    void func_0209dc94();
-    void func_0209ddb0();
-    void func_0209de74();
+    void setupContinue();
+    void setupNewResident();
+    void setupNewTown();
 
     /* 0x00000 */ u8 unk_0[2];
     /* 0x00002 */ u8 unk_2[10];
@@ -180,8 +180,8 @@ extern "C" void SaveData_SyncClockOffset(u8 *p) {
 }
 
 extern "C" void SaveData_Setup(SaveData *p, u32 idx) {
-    static Unk_0209d70c_Fn tbl[7] = {&SaveData::func_0209de74, &SaveData::func_0209ddb0,
-                                     &SaveData::func_0209dc94, &SaveData::func_0209dc0c,
+    static Unk_0209d70c_Fn tbl[7] = {&SaveData::setupNewTown, &SaveData::setupNewResident,
+                                     &SaveData::setupContinue, &SaveData::func_0209dc0c,
                                      &SaveData::func_0209db94, &SaveData::func_0209dae8,
                                      &SaveData::func_0209da44};
     (p->*tbl[idx])();

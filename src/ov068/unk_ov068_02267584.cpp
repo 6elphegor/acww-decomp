@@ -3,7 +3,7 @@
 
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
-#define func_020af608 _ZN12Unk_020af53c13func_020af608Ejjj
+#define SnowmanRecords_add _ZN14SnowmanRecords3addEjjj
 
 struct Unk_ov068_022678c4_Ent {
     u32 a, b, c, d;
@@ -188,7 +188,7 @@ s32 func_020e7b98(s32 x, s32 z);
 s32 func_020e780c(s32 a, s32 b);
 BOOL Item_IsMarker(u16 *p);
 s32 Ground_GetDigKind(s32 x, s32 y);
-s32 func_020af608(void *tbl, s32 a, s32 b, s32 c);
+s32 SnowmanRecords_add(void *tbl, s32 a, s32 b, s32 c);
 void func_020af3fc();
 s32 GroundInfoBase_getHeight(void *o, s32 f);
 u16 *BlockMap_GetItemPtrAtPos(void *grid, void *pos, u32 z);
@@ -412,7 +412,7 @@ void Unk_ov068_02268214::execSnowballRoll() {
                 case 1:
                     s32 lv;
                     lv = Snowball_GetSizeRatioRank(FX_Div(unk_268, *(s32 *)(o + 0x268)));
-                    s32 res = func_020af608(data_021ed2e6, unk_268, *(s32 *)(o + 0x268), lv);
+                    s32 res = SnowmanRecords_add(data_021ed2e6, unk_268, *(s32 *)(o + 0x268), lv);
                     if (res != -1) {
                         Unk_ov068_02268214_Flags &of = *(Unk_ov068_02268214_Flags *)(o + 0x374);
                         of.f0_1 = res;

@@ -18,14 +18,14 @@ extern u8 *data_021c1b3c;
 
 s32 Snd_PlaySe(u32 id);
 s32 MenuCtrl_GetIndex();
-void *func_020b053c(s32 i);
+void *Constellation_GetRecord(s32 i);
 void MenuCtrl_SetResult(u32 a);
 BOOL MenuCtrl_IsTouch();
 BOOL MenuCtrl_IsButtons();
 void func_020b0a30(void *p);
-void func_020b0450(void *p);
-void func_020b04f8(void *p, s32 a, s32 b);
-void func_020b05c4(void *p, s32 *a, s32 *b);
+void Constellation_SetCreator(void *p);
+void Constellation_Store(void *p, s32 a, s32 b);
+void Constellation_CalcCentre(void *p, s32 *a, s32 *b);
 void func_020b0780(void *a);
 void func_020b0788(void *a, s32 b);
 void func_020b080c(void *a);
@@ -1200,7 +1200,7 @@ void ConstellationEditorMenu::startFinish() {
     setMainState(0xa);
     clearFlags(0x10);
     func_ov129_022948a4(0);
-    func_020b05c4(unk_2f00, &a, &b);
+    Constellation_CalcCentre(unk_2f00, &a, &b);
     a = a & 0xfffc;
     b = b & 0xfffc;
     StarSky_SetScrollTarget(&unk_6b8, a, b);
@@ -1235,7 +1235,7 @@ void ConstellationEditorMenu::acceptConfirmation() {
         s32 n = MenuCtrl_GetIndex();
         static Unk_020b0a60 obj;
         func_020b0a30(&obj);
-        func_020b0450(&obj);
+        Constellation_SetCreator(&obj);
         s32 i;
         for (i = 0; i < 16; i++) {
             obj.unk_26[i] = unk_2f00[i];
@@ -1243,7 +1243,7 @@ void ConstellationEditorMenu::acceptConfirmation() {
         for (i = 0; i < 16; i++) {
             obj.unk_16[i] = unk_2ef0[i];
         }
-        func_020b04f8(&obj, n, 0);
+        Constellation_Store(&obj, n, 0);
         Snd_PlaySe(0x27);
     }
 }
@@ -1485,7 +1485,7 @@ void ConstellationEditorMenu::func_ov129_02294a50() {
     s32 i = 0;
     do {
         if (i != n) {
-            u16 *p = (u16 *)func_020b053c(i);
+            u16 *p = (u16 *)Constellation_GetRecord(i);
             if (p != NULL) {
                 s32 j = 0;
                 for (; j < 16; j++) {
@@ -1501,7 +1501,7 @@ void ConstellationEditorMenu::func_ov129_02294a50() {
 }
 
 void ConstellationEditorMenu::func_ov129_0229497c() {
-    Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)func_020b053c(MenuCtrl_GetIndex());
+    Unk_ov129_0229497c_Save *t = (Unk_ov129_0229497c_Save *)Constellation_GetRecord(MenuCtrl_GetIndex());
     s32 i;
     u16 *p = unk_2f00;
     u32 first = 0xffff;

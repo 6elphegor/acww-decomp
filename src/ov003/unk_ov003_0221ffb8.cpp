@@ -45,17 +45,17 @@
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c128 _ZN12Unk_0209c0acD1Ev
-#define func_0209c140 _ZN12Unk_0209c0acC1Ev
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define func_0209c128 _ZN11PooledModelD1Ev
+#define func_0209c140 _ZN11PooledModelC1Ev
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_02133150 _s32_div_f
 #define func_021355f0 __cxa_vec_cleanup
 // ---- from file 2
@@ -313,10 +313,10 @@ struct Unk_ov003_02221498_Tbl {
     Unk_ov003_022216f8_MFP unk_08;
 };
 
-class Unk_0209c15c {
+class ModelSlotPool {
 public:
-    Unk_0209c15c();
-    ~Unk_0209c15c();
+    ModelSlotPool();
+    ~ModelSlotPool();
     u32 unk_00[6];
 };
 
@@ -329,8 +329,8 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
 
-    /* 0x50 */ Unk_0209c15c unk_50;
-    /* 0x68 */ Unk_0209c15c unk_68;
+    /* 0x50 */ ModelSlotPool unk_50;
+    /* 0x68 */ ModelSlotPool unk_68;
     /* 0x80 */ s32 unk_80;
     /* 0x84 */ u8 pad_84[4];
 };
@@ -852,17 +852,17 @@ public:
 extern "C" {
 void func_020f440c(void *p);
 void func_020f43fc(void *p);
-void func_0209c370(void *p);
-void func_0209c364(void *p);
+void ModelSlotHandle_Init(void *p);
+void ModelSlotHandle_Destroy(void *p);
 void _ZN14CollisionStateC1Ev(void *p);
 void _ZN14CollisionStateD1Ev(void *p);
 void _ZN11CachedModelC1Ev(void *p);
 void _ZN11CachedModelD1Ev(void *p);
 void _ZN9AnimModelC1Ev(void *p);
 void _ZN9AnimModelD1Ev(void *p);
-void _ZN12Unk_0209c0acC1Ev(void *p);
-void _ZN12Unk_0209c0acD1Ev(void *p);
-void _ZN12Unk_0209c0ac13func_0209c0c8Ev(void *p);
+void _ZN11PooledModelC1Ev(void *p);
+void _ZN11PooledModelD1Ev(void *p);
+void _ZN11PooledModel5resetEv(void *p);
 }
 
 // empty global object at sBottleThrowStateOwner (out-of-line empty constructor and destructor)
@@ -873,17 +873,17 @@ public:
 };
 
 // members of the 0x13c-byte object at sFishFinModel (constructors and destructors live in main)
-class Unk_0209c364 {
+class ModelSlotHandle {
 public:
-    Unk_0209c364();
-    ~Unk_0209c364();
+    ModelSlotHandle();
+    ~ModelSlotHandle();
     u8 raw[4];
 };
 
-class Unk_0209c0ac {
+class PooledModel {
 public:
-    Unk_0209c0ac();
-    ~Unk_0209c0ac();
+    PooledModel();
+    ~PooledModel();
     u8 raw[0x50];
 };
 
@@ -899,8 +899,8 @@ public:
     FishFinModel();
     ~FishFinModel();
     u32 unk_00;
-    Unk_0209c364 unk_04;
-    Unk_0209c0ac unk_08;
+    ModelSlotHandle unk_04;
+    PooledModel unk_08;
     AnimModel unk_58;
     FishFinMatAnim unk_11c;
 };
@@ -952,9 +952,9 @@ void func_020947c0(u16 *out, s32 a);
 void *func_020947f0(s32 a);
 void *PlayerActor_GetCharacter(s32 n);
 void *PlayerActor_GetActor(s32 n);
-void func_0209c224(void *p, void *q);
-void *func_0209c25c(void *p, void *q);
-s32 func_0209c348(void *a);
+void ModelSlotPool_release(void *p, void *q);
+void *ModelSlotPool_acquire(void *p, void *q);
+s32 ModelSlot_getHeap(void *a);
 s64 func_020e9600(void *a, s32 b);
 s32 func_020e9650(void *a, void *b);
 s32 func_021065dc(s32 a);
@@ -1014,16 +1014,16 @@ void Fishing_CalcArcSpeed(V3_f5 *a, V3_f5 *b, s32 *c, s32 *d, s32 e);
 void FishBobber_nudge(void *);
 void NetBuf_PackPair20(void *, s32, s32);
 void func_020944f8(T48_f5 *out, u32 a);
-void *func_0209c0ac(void *a);
-void func_0209c0b4(void *p);
-void func_0209c0c8(void *p);
-BOOL func_0209c0d0(void *a, void *b, void *c);
+void *PooledModel_getModel(void *a);
+void PooledModel_unload(void *p);
+void PooledModel_reset(void *p);
+BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
 void func_0209c128(void *p);
 void func_0209c140(void *p);
-s32 func_0209c15c(void *p);
-void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void func_0209c364(void *p);
-void func_0209c370(void *p);
+s32 ModelSlotPool_destroy(void *p);
+void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
+void ModelSlotHandle_Destroy(void *p);
+void ModelSlotHandle_Init(void *p);
 s32 Weather_GetFallingPrecip();
 BOOL func_020e7500(void *a);
 s32 func_020e780c(s32, s32);
@@ -3847,7 +3847,7 @@ FishShadow::FishShadow()
     *(volatile u8 **)(a + 0x40) = data_0213b91c;
     *(volatile u8 **)(a + 0x40) = data_0213b954;
     _ZN14CollisionStateC1Ev(a + 0x4c);
-    func_0209c370(a + 0x7c);
+    ModelSlotHandle_Init(a + 0x7c);
     _ZN11CachedModelC1Ev(a + 0x84);
     _ZN9AnimModelC1Ev(a + 0x144);
     *(u32 *)(a + 0x208) = 0;
@@ -3876,7 +3876,7 @@ FishShadow::~FishShadow()
     FishCroak_Destroy(a + 0x248);
     _ZN9AnimModelD1Ev(a + 0x144);
     _ZN11CachedModelD1Ev(a + 0x84);
-    func_0209c364(a + 0x7c);
+    ModelSlotHandle_Destroy(a + 0x7c);
     _ZN14CollisionStateD1Ev(a + 0x4c);
     func_020f43fc(a);
 }
@@ -3886,7 +3886,7 @@ FishShadow::~FishShadow()
 FishFinModel::FishFinModel()
 {
     unk_00 = 0;
-    _ZN12Unk_0209c0ac13func_0209c0c8Ev(&unk_08);
+    _ZN11PooledModel5resetEv(&unk_08);
 }
 
 
@@ -3998,8 +3998,8 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
 //@ 0x22216cc
 extern "C" BOOL FishFinModel_Attach(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 2;
-    ((void (*)(void *, void *))func_0209c25c)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
-    func_0209c0c8(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
+    ((void (*)(void *, void *))ModelSlotPool_acquire)(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
+    PooledModel_reset(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
     return TRUE;
 }
 
@@ -4009,8 +4009,8 @@ extern "C" void FishFinModel_Release(u8 *a) {
     (*(u32 *)((u8 *)&sFishFinModel)) = 0;
     AnimModel_detachJointAnim(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])));
     CachedModel_release(((u8 *)((u8 *)&sFishFinModel.unk_58.raw[0])));
-    func_0209c0b4(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
-    func_0209c224(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
+    PooledModel_unload(((u8 *)((u8 *)&sFishFinModel.unk_08.raw[0])));
+    ModelSlotPool_release(a + 0x68, ((u8 *)((u8 *)&sFishFinModel.unk_04.raw[0])));
     sFishFinModel.unk_11c.unk_18 = 0;
     sFishFinModel.unk_11c.unk_1c = 0;
 }
@@ -4019,8 +4019,8 @@ extern "C" void FishFinModel_Release(u8 *a) {
 //@ 0x2221524
 BOOL FieldFishManager::vfunc_00() {
     u8 *a = (u8 *)this;
-    func_0209c1a4(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
-    func_0209c1a4(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
+    ModelSlotPool_init(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
+    ModelSlotPool_init(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
     *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
     Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows));
     s32 i = 0;
@@ -4354,17 +4354,17 @@ extern "C" void FieldFishManager_FreeShadows(O_f3 *o) {
             f = TRUE;
         }
         ((s32 (*)(O_f3 *, s32))FishShadow_Despawn)(o, i);
-        ((s32 (*)(void *, void *))func_0209c224)((u8 *)o + 0x50, (u8 *)e + 0x7c);
+        ((s32 (*)(void *, void *))ModelSlotPool_release)((u8 *)o + 0x50, (u8 *)e + 0x7c);
         func_02003e50(e);
         Unk_02003c30_callRelease((u8 *)e + 0x40);
         e = (E_f3 *)((u8 *)e + 0x24c);
     }
     Mem_Free(o->unk_80);
-    func_0209c15c((u8 *)o + 0x50);
+    ModelSlotPool_destroy((u8 *)o + 0x50);
     if (f != FALSE) {
         ((s32 (*)(O_f3 *))FishFinModel_Release)(o);
     }
-    func_0209c15c((u8 *)o + 0x68);
+    ModelSlotPool_destroy((u8 *)o + 0x68);
 }
 
 
@@ -5057,8 +5057,8 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
     if (p == NULL) {
         return r;
     }
-    ((void (*)(s32, void *))func_0209c25c)(q, self + 0x7c);
-    s32 t = ((s32 (*)(void))func_0209c348)();
+    ((void (*)(s32, void *))ModelSlotPool_acquire)(q, self + 0x7c);
+    s32 t = ((s32 (*)(void))ModelSlot_getHeap)();
     s32 u = func_021065f8(func_021065dc((s32)p), r);
     if (((BOOL (*)(void *, s32))AnimModel_allocAnmObj)(o, t)) {
         BlendAnimModel_initAnim(o, u, r, 0x1000, 1, r);
@@ -5073,12 +5073,12 @@ extern "C" BOOL FishShadow_LoadModel(u8 *self, void *p, s32 q) {
 extern "C" BOOL FishFinModel_Load(u8 *self, void *a)
 {
     BOOL ok = FALSE;
-    void *res = func_0209c25c(a, self + 4);
+    void *res = ModelSlotPool_acquire(a, self + 4);
     u8 *m = self + 8;
-    if (func_0209c0d0(m, res, (*(void * *)((u8 *)&sFishFinModelPath)))) {
+    if (PooledModel_loadFromSlot(m, res, (*(void * *)((u8 *)&sFishFinModelPath)))) {
         u8 *r4 = self + 0x58;
-        Model_setResource(r4, func_0209c0ac(m), 0);
-        void *nm = ((void * (*)(void *))func_0209c348)(res);
+        Model_setResource(r4, PooledModel_getModel(m), 0);
+        void *nm = ((void * (*)(void *))ModelSlot_getHeap)(res);
         File_LoadAlloc((*(void * *)((u8 *)&sFishFinAnimPath)), nm, 4, 0);
         s32 v = func_021065f8(((s32 (*)(void))func_021065dc)(), 0);
         if (AnimModel_allocAnmObj(r4, nm)) {

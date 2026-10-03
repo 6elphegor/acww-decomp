@@ -126,9 +126,9 @@ void *BlancaFaceRecord_getPattern(void *a);
 void *Pattern_getInfo(void *a);
 void PatternInfo_setTitleRaw(void *a, void *b);
 void PatternInfo_getTitleRaw(void *a, void *b);
-BOOL func_020b0084(void *a, s32 b);
-void func_020b0428(void *a, s32 b);
-void func_020b03f0(void *a, s32 b);
+BOOL Constellation_IsNameTaken(void *a, s32 b);
+void Constellation_SetName(void *a, s32 b);
+void Constellation_CopyName(void *a, s32 b);
 s32 func_02063904(void *a, void *b);
 s32 PlayerData_GetCurrent();
 s32 PlayerData_getPlayerId(...);
@@ -1945,7 +1945,7 @@ void NameEntryMenu::loadDesignName() {
 }
 
 void NameEntryMenu::func_ov126_0229763c() {
-    func_020b03f0(unk_4088, MenuCtrl_GetIndex());
+    Constellation_CopyName(unk_4088, MenuCtrl_GetIndex());
 }
 
 u8 *NameEntryMenu::getFriendEntry() {
@@ -2046,10 +2046,10 @@ s32 NameEntryMenu::storeTownName() {
 
 void NameEntryMenu::func_ov126_02297328() {
     s32 t = MenuCtrl_GetIndex();
-    if (func_020b0084(unk_4088, t)) {
+    if (Constellation_IsNameTaken(unk_4088, t)) {
         MenuCtrl_SetResult(0);
     }
-    func_020b0428(unk_4088, t);
+    Constellation_SetName(unk_4088, t);
 }
 
 void NameEntryMenu::storeStatsPatternName() {

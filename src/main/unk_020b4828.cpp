@@ -204,7 +204,7 @@ BOOL _ZN11CommManager7isMyAidEj(Unk_020cbb18_t* p, u32 i);
 void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 NetArea_GetSlotScene(u32 i);
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
-s32 func_0209c098(s32 a);
+s32 Scene_SaveFadeIn(s32 a);
 u32 PlayerActor_GetResumeTransform(Vec3* a, s16* b);
 void FieldPos_ToUnit(s32* a, s32* b, Vec3* c);
 void FieldPos_SnapToUnitCenter(Vec3* out, Vec3* in);
@@ -219,8 +219,8 @@ void PlayerSession_SetDataIndex(s32, s32);
 void PlayerSession_ClearDataIndex(s32);
 void PlayerSession_SetGfxSlot(s32, s32);
 s32 PlayerSession_GetDataIndex(s32);
-s32 _ZN12Unk_020afaa413func_020afab8EPhS0_y(void*, void*, void*, u32, u32);
-void _ZN12Unk_020afaa413func_020afad0Ev(void*);
+s32 _ZN12Unk_020afaa412runSpawnListEPhS0_y(void*, void*, void*, u32, u32);
+void _ZN12Unk_020afaa420createSceneMapModuleEv(void*);
 s32 NetSession_GetLastSyncSlot();
 void NetSession_SetLastSyncSlot(s32);
 BOOL PlayerData_Get(s32);
@@ -312,7 +312,7 @@ void func_020abe58();
 void NpcHeapPools_CreateAll();
 void func_02081d08();
 void PlayerActorHeap_Create(u32);
-void func_0209c540();
+void RoomEntry_OnSceneLoad();
 void NookShop_OnSceneLoad();
 void TransitionCommIcon_ResumeWinOut();
 void Snd_CreateScene();
@@ -799,7 +799,7 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
     func_02081d08();
     NpcRegistry_Clear();
     PlayerActorHeap_Create(gCurrentHeap);
-    func_0209c540();
+    RoomEntry_OnSceneLoad();
     if (Scene_GetCurrent() == 0x2c || Scene_GetCurrent() == 0x2d) {
         Scene_ResetTownReturnPos((s32)Scene_GetWarpRequest());
     }
@@ -808,12 +808,12 @@ BOOL FieldSceneSteps::stepLoadResources(u32, u32) {
 }
 
 BOOL FieldSceneSteps::stepCreateSceneProc(u32, u32) {
-    _ZN12Unk_020afaa413func_020afad0Ev((void*)gCurSceneInfo);
+    _ZN12Unk_020afaa420createSceneMapModuleEv((void*)gCurSceneInfo);
     return TRUE;
 }
 
 BOOL FieldSceneSteps::stepRunSceneEntries(u32 a, u32 b) {
-    return _ZN12Unk_020afaa413func_020afab8EPhS0_y((void*)gCurSceneInfo, data_021eda50, data_021eda58, a, b);
+    return _ZN12Unk_020afaa412runSpawnListEPhS0_y((void*)gCurSceneInfo, data_021eda50, data_021eda58, a, b);
 }
 
 BOOL FieldSceneSteps::stepFinish(u32, u32) {
@@ -1493,7 +1493,7 @@ extern "C" u8 Scene_GetRequestedScene() { return SceneWarp_GetScene((u8*)Scene_G
 extern "C" void FieldScene_Request(s32 a, s32 b) {
     if (gNextSceneProfile != 5) {
         Scene_Request(5, a, 3, 1);
-        func_0209c098(b);
+        Scene_SaveFadeIn(b);
     }
 }
 

@@ -559,7 +559,7 @@ extern "C" {
 extern u32 data_021ee24c;
 }
 extern "C" {
-extern u8 data_021ee25c[];
+extern u8 gLooseSnowballs[];
 }
 extern "C" {
 extern u8 gFieldSceneKind;

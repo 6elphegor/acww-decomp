@@ -317,7 +317,7 @@ Unk_0208f238 *func_0208f0b0(s32 i);
 void func_0208f1dc(void *p);
 void *MI_CpuCopy8(void *dst, void *src, u32 n);
 void *MI_CpuFill8(void *p, s32 v, u32 n);
-s32 func_020b013c();
+s32 Constellation_PrepareExchange();
 s32 Save_WriteVillagerTransfer();
 s32 func_020e9a08(void *p);
 s32 func_020e9a18(void *p);
@@ -768,7 +768,7 @@ void SpNpcRover::vfunc_4c(s32 a) {
 }
 
 void SpNpcRover::prepareTagData() {
-    func_020b013c();
+    Constellation_PrepareExchange();
     Unk_0208f238 *r4 = func_0208f0b0(4);
     MI_CpuCopy8(r4, &unk_710, 0x84c);
     unk_f5c.unk_f8 = 1;

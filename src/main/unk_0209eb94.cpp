@@ -960,7 +960,7 @@ BOOL CommSend_TownChunk(u8 *p, u32 v);
 BOOL CommSend_DateTime(u32 v);
 void JoinHistory_Push(u32 v);
 void LetterDelivery_DeliverOutgoing();
-void func_020b013c();
+void Constellation_PrepareExchange();
 void JoinHistory_Clear();
 BOOL CommCtrl_SendAct07();
 BOOL CommSend_VillagerTransfer(u8 *p);
@@ -1078,7 +1078,7 @@ void SaveData_Setup(void *p, s32 n);
 void SaveData_Apply(void *p);
 void VillagerStates_Destroy();
 void SaveManager_StartGatekeeperTalk(void *p, s32 n);
-s32 func_020b013c();
+s32 Constellation_PrepareExchange();
 s32 PlayerData_GetCurrent(void *p);
 void _ZN12Unk_02097ff49clearFlagEj(s32 a, s32 b);
 void Clock_Init();
@@ -2079,7 +2079,7 @@ void Unk_020a3238::execAct13() {
 
 void Unk_020a3238::enterAct14() {
     NI::SaveManager_StartGatekeeperTalk(this, 1);
-    NI::func_020b013c();
+    NI::Constellation_PrepareExchange();
 }
 
 extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
@@ -2232,7 +2232,7 @@ extern "C" void SaveManager_EnterAct15(Unk_020a25d8 *p) {
     if (NH::gCommManager->unk_6c == 1) {
         NH::LetterDelivery_DeliverOutgoing();
         NH::LetterDelivery_DeliverOutgoing();
-        NH::func_020b013c();
+        NH::Constellation_PrepareExchange();
         NH::JoinHistory_Clear();
     }
 }

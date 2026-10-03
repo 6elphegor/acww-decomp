@@ -59,7 +59,7 @@ struct Unk_ov068_02266680_Color {
 extern "C" {
 extern Unk_ov068_02266680_Vec gVec3Zero;
 extern void *gSceneBlockMap;
-extern Unk_ov068_0226647c_Row data_020c8d0c[];
+extern Unk_ov068_0226647c_Row kCameraSwayPatterns[];
 extern s16 data_02135f44[];
 extern s32 data_ov068_0226fc48;
 extern s32 data_ov068_0226fc40;
@@ -326,8 +326,8 @@ extern "C" void Camera_SetSwayPattern(Unk_ov068_0226647c_Cam *c, s32 idx) {
     if (c->unk_224 >= 4) {
         c->unk_224 = 0;
     }
-    c->unk_220 = data_020c8d0c[c->unk_224].a;
-    c->unk_220 += func_02063b8c(data_020c8d0c[c->unk_224].b);
+    c->unk_220 = kCameraSwayPatterns[c->unk_224].a;
+    c->unk_220 += func_02063b8c(kCameraSwayPatterns[c->unk_224].b);
     c->unk_21c = 0;
 }
 
@@ -336,8 +336,8 @@ extern "C" void Camera_SetSwayPattern2(Unk_ov068_0226647c_Cam *c, s32 idx) {
     if (c->unk_225 >= 4) {
         c->unk_225 = 0;
     }
-    c->unk_222 = data_020c8d0c[c->unk_225].a;
-    c->unk_222 += func_02063b8c(data_020c8d0c[c->unk_225].b);
+    c->unk_222 = kCameraSwayPatterns[c->unk_225].a;
+    c->unk_222 += func_02063b8c(kCameraSwayPatterns[c->unk_225].b);
     c->unk_21e = 0;
 }
 
@@ -380,17 +380,17 @@ extern "C" s32 Camera_UpdateSway(Unk_ov068_0226647c_Cam *c) {
             Camera_SetSwayPattern2(c, c->unk_225);
         }
     }
-    s32 d = data_020c8d0c[c->unk_225].c;
+    s32 d = kCameraSwayPatterns[c->unk_225].c;
     if (d != 0) {
         c->unk_21e = c->unk_21e + d;
         u32 idx = ((u16)c->unk_21e >> 4) * 2;
-        c->unk_174 = func_01ffcb0c(data_02135f44[idx], data_020c8d0c[c->unk_225].d);
+        c->unk_174 = func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->unk_225].d);
     }
-    d = data_020c8d0c[c->unk_224].c;
+    d = kCameraSwayPatterns[c->unk_224].c;
     if (d != 0) {
         c->unk_21c = c->unk_21c + d;
         u32 idx = ((u16)c->unk_21c >> 4) * 2;
-        return func_01ffcb0c(data_02135f44[idx], data_020c8d0c[c->unk_224].d);
+        return func_01ffcb0c(data_02135f44[idx], kCameraSwayPatterns[c->unk_224].d);
     }
     return 0;
 }

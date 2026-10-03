@@ -254,22 +254,22 @@ struct BgmManager {
 class BuildingActor;
 struct Unk_ov009_0225cc24_Obj;
 
-class Unk_020d8ccc {
+class CollisionTriangle {
 public:
-    Unk_020d8ccc();
+    CollisionTriangle();
     virtual s32 vfunc_00(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual void vfunc_0c(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual void collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual void onActorNear(Unk_ov009_0225b880_Vec3 *a, Unk_ov009_0225cc24_Obj *o, s32 off);
-    s32 func_0202f274(Unk_0202f2ac_V3 *p);
-    BOOL func_0202f050(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
+    s32 distanceTo(Unk_0202f2ac_V3 *p);
+    BOOL intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, Unk_0202f2ac_V3 *q);
 
     s32 unk_04[9];
     s32 unk_28, unk_2c, unk_30, unk_34;
 };
 
-class TriangleTrigger : public Unk_020d8ccc {
+class TriangleTrigger : public CollisionTriangle {
 public:
     TriangleTrigger();
     void setupTrigger(Unk_02031e10_Vec *a, Unk_02031e10_Vec *b, Unk_02031e10_Vec *c, s32 d);
@@ -692,7 +692,7 @@ void AnimModel_attachAnim(void *);
 void Model_clearResource(void *);
 void Model_setInitCallback(void *, void *, void *);
 void func_020548a0(void *);
-void func_0209c364(void *);
+void ModelSlotHandle_Destroy(void *);
 void Clock_GetMinuteHour(void *);
 void BuildingLights_setLit(void *, s32, s32, s32);
 void BuildingLights_updateLights(void *, void *);
@@ -705,14 +705,14 @@ s32 func_02002dd0(void *, u32);
 BOOL func_0203e638(void *);
 BOOL func_0203e650(void *);
 void Character_setCharId(void *, u32);
-BOOL func_0203a4c4(void *, s32, s32);
+BOOL Camera_IsBlockingFocusView(void *, s32, s32);
 s32 WorldCurve_Apply(void *, void *);
 void NNS_G3dBindMdlPltt(void *, s32);
 void NNS_G3dBindMdlTex(void *, s32);
 
 void func_020548d0(void *);
 void func_020b2034(void *);
-void func_0209c370(void *);
+void ModelSlotHandle_Init(void *);
 void *func_021065dc();
 u32 func_021065f8(void *, u32);
 void *NNS_G3dGetMdlSet();
@@ -873,11 +873,11 @@ BuildingActor::BuildingActor() {
     func_020548d0(unk_138);
     func_020b2034(unk_1f0);
     func_ov009_0225b94c(unk_234);
-    func_0209c370(unk_28e);
+    ModelSlotHandle_Init(unk_28e);
 }
 
 BuildingActor::~BuildingActor() {
-    func_0209c364(unk_28e);
+    ModelSlotHandle_Destroy(unk_28e);
     func_ov009_0225b934(unk_234);
     func_020b200c(unk_1f0);
     func_020548a0(unk_138);
@@ -972,7 +972,7 @@ BOOL BuildingActor::preDraw() {
     if ((unk_231 & 1) == 0) {
         u16 *p = getItemId();
         BOOL r = Unk_ov009_0225d858_Is(p, 0x500b);
-        if (r || !func_0203a4c4(&unk_290, unk_29c, unk_2a0)) {
+        if (r || !Camera_IsBlockingFocusView(&unk_290, unk_29c, unk_2a0)) {
             if (vfunc_b0()) {
                 updateMatrix();
             }
@@ -1522,7 +1522,7 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
         if (unk_4c != NULL) {
             if (Unk_ov009_0225cc24_IsNine(o->unk_0c)) {
                 if (PlayerActor_GetActor(4) == o) {
-                    s32 d = func_0202f274((Unk_0202f2ac_V3 *)v);
+                    s32 d = distanceTo((Unk_0202f2ac_V3 *)v);
                     if (d >= 0) {
                         if (d <= off + 0x666) {
                             if (unk_4c->getDoorPos(&p, &ang)) {
@@ -1536,7 +1536,7 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
                                     b.z = a.z;
                                     b.x = b.x - func_01ffcb0c(unk_28, 0x2000);
                                     b.z = b.z - func_01ffcb0c(unk_30, 0x2000);
-                                    if (func_0202f050((Unk_0202f2ac_V3 *)&c, (Unk_0202f2ac_V3 *)&a, (Unk_0202f2ac_V3 *)&b)) {
+                                    if (intersectLine((Unk_0202f2ac_V3 *)&c, (Unk_0202f2ac_V3 *)&a, (Unk_0202f2ac_V3 *)&b)) {
                                         return TRUE;
                                     }
                                 }

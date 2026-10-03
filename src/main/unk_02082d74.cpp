@@ -362,7 +362,7 @@ extern EventVisitorEntry sEventHostTable[];
 extern s32 sEventHostCheckValues[];
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
-s32 func_02040c70();
+s32 EventAnnounce_GetCurrentEvent();
 s32 SceneId_IsHouseRoom(s32);
 s32 Taxi_IsArriving();
 s32 Taxi_IsLeaving();
@@ -1756,7 +1756,7 @@ extern "C" BOOL Visitor_FindEventHost(s32 flag)
             idx = F2::Visitor_FindActiveEventEntry(F2::sEventHostTable, 8);
         if (idx != -1) {
             r6 = F2::sEventHostCheckValues[idx];
-            if (r6 != F2::func_02040c70() && r6 != 0x13)
+            if (r6 != F2::EventAnnounce_GetCurrentEvent() && r6 != 0x13)
                 idx = -1;
         }
         if (idx != -1) {

@@ -56,7 +56,7 @@ s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
 s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
-s32 func_02040c7c(void);
+s32 EventAnnounce_GetActiveEvent(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
@@ -726,7 +726,7 @@ s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(void *p, s32 a, s32 b, s32 c, s32 d, s32 
 void _ZN12BgmSceneFade6updateEv(void *p);
 s32 _ZN12BgmSceneFade14hasExitSilenceEv(s32 a);
 s32 _ZN8BgmClock14hasYearChangedEv(s32 a);
-s32 func_02040c7c(void);
+s32 EventAnnounce_GetActiveEvent(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
@@ -1300,7 +1300,7 @@ void EventBgm::end() {
 void EventBgm::setKeep(u32 a) { unk_14 = a; }
 
 void EventBgm::updateEvents() {
-    s32 r5 = func_02040c7c();
+    s32 r5 = EventAnnounce_GetActiveEvent();
     u32 t[2];
     u32 b0[2], b1[2], b2[2];
     BOOL r6, r7;

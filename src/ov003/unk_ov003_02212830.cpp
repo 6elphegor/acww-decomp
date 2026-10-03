@@ -452,8 +452,8 @@ void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 void _ZN12MsgString256C1Ev(void *self);
 void _ZN12MsgString256D1Ev(void *self);
-void _ZN12Unk_020af53c13func_020af53cEj(void *self, u32 a);
-s32 _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
+void _ZN14SnowmanRecords12markUnplacedEj(void *self, u32 a);
+s32 _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *self, u32 m, s32 *a, s32 *b, s32 *c, s32 z1, s32 z2, s32 z3);
 void _ZN5Model10drawScaledEPi(void *self, void *v);
 void _ZN11CachedModel10loadCachedEPvS0_(void *self, u32 a, const char *b);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *self, void *v);
@@ -660,7 +660,7 @@ BOOL Snowball::vfunc_0c() {
         }
         if (Snowball_PlaceSnowmanAt((void *)unk_374.a, (Pos *)&unk_5c, &unk_396) == 0) {
             if (Snowball_PlaceSnowmanNearby((void *)unk_374.a, &unk_5c, &unk_396) == 0) {
-                _ZN12Unk_020af53c13func_020af53cEj(data_021ed2e6, unk_374.a);
+                _ZN14SnowmanRecords12markUnplacedEj(data_021ed2e6, unk_374.a);
             }
         }
         Snowball_DropDisplacedItem(&unk_396);
@@ -984,7 +984,7 @@ extern "C" void Snowball_InitState(Obj *o) {
     } else {
         r = Snowball_IsSnowmanBody(o);
         o->unk_374.a = (o->unk_08 - 2) >> 1;
-        if (_ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(data_021ed2e6, o->unk_374.a, &s10, &s14, &s18, 0, 0, 0)) {
+        if (_ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(data_021ed2e6, o->unk_374.a, &s10, &s14, &s18, 0, 0, 0)) {
             o->unk_374.b = (u16)s18;
             if (r) {
                 o->unk_268 = s14;

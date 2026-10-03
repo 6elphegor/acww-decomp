@@ -2259,10 +2259,10 @@ void TalkRequest_FinishLeaveRoom();
 void PlayerActor_TurnAngle(void *, s32);
 void _ZN12Unk_020102ec9setAngleYEPs(Unk_02006d14 *, void *);
 void _ZN12Unk_020102ec17moveWithCollisionEv(Unk_02006d14 *);
-void *func_0209c60c();
-s32 func_0209c86c();
+void *RoomEntry_GetRequest();
+s32 RoomEntryRequest_GetDoorKind();
 s32 Ground_GetDefaultY(u32);
-s32 *func_0209c868(void *);
+s32 *RoomEntryRequest_GetPos(void *);
 s32 FX_Div(s32, s32);
 s32 func_01ffcb0c(s32, s32);
 void _ZN12Unk_020102ec10switchAnimEijt(Unk_02006d14 *, u32, u32, u32);
@@ -4327,7 +4327,7 @@ void func_02094420(s32 *p);
 void *Scene_GetWarpRequest(void);
 BOOL SceneExit_GetDoor(void *a, s32 b, s32 *c, s32 *d);
 void func_02094400(s32 *p);
-BOOL func_0209c7a4(s32 v);
+BOOL RoomEntry_IsExclusiveExit(s32 v);
 BOOL Scene_InUnk6To8(void);
 void TalkRequest_FinishSceneEntry(void);
 void TalkRequest_AddLeaveRoom(void);
@@ -5801,7 +5801,7 @@ extern "C" void PlayerActor_CheckSceneExit(s32 a) {
             func_02094420(&sp4);
             if (SceneExit_GetDoor(Scene_GetWarpRequest(), sp4, &sp8, &sp0)) {
                 func_02094400(&sp8);
-                if (sp8 == 1 || sp8 == 2 || sp8 == 4 || func_0209c7a4(sp4)) {
+                if (sp8 == 1 || sp8 == 2 || sp8 == 4 || RoomEntry_IsExclusiveExit(sp4)) {
                     if (Scene_InUnk6To8()) {
                         TalkRequest_FinishSceneEntry();
                     }
@@ -10252,12 +10252,12 @@ void Unk_02006d14::walkToMove() {
     using namespace nG;
     if (_ZN12Unk_02006d1414testActionFlagEj(this, 0x18)) {
         _ZN12Unk_020102ec17moveWithCollisionEv(((nG::Unk_02006d14 *)this));
-        void *r7 = func_0209c60c();
-        if (func_0209c86c() == 1) {
+        void *r7 = RoomEntry_GetRequest();
+        if (RoomEntryRequest_GetDoorKind() == 1) {
             s32 *r4 = &((nG::Unk_02006d14 *)this)->unk_5c.y;
             s32 r6 = Ground_GetDefaultY(0);
             if (((nG::Unk_02006d14 *)this)->unk_5c.y >= r6) {
-                s32 d = Unk_0200905c_abs(((s32 *)func_0209c868(r7))[2] - ((nG::Unk_02006d14 *)this)->unk_5c.z);
+                s32 d = Unk_0200905c_abs(((s32 *)RoomEntryRequest_GetPos(r7))[2] - ((nG::Unk_02006d14 *)this)->unk_5c.z);
                 if (d < 0x1000) {
                     s32 m = FX_Div(0x1000 - d, 0x1000) * 6;
                     *r4 = *r4 + (m >> 5);

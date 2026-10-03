@@ -31,19 +31,19 @@
 #define MuseumData_isDonated _ZN10MuseumData9isDonatedEPt
 #define func_02088c64 _ZN12Unk_020e0d1c13func_02088c64EP4Vec3iijjjhi
 #define func_02089040 _ZN12Unk_020e0d0813func_02089040Ev
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c128 _ZN12Unk_0209c0acD1Ev
-#define func_0209c140 _ZN12Unk_0209c0acC1Ev
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c2d8 _ZN12Unk_0209c15cD1Ev
-#define func_0209c2dc _ZN12Unk_0209c15cC1Ev
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define func_0209c128 _ZN11PooledModelD1Ev
+#define func_0209c140 _ZN11PooledModelC1Ev
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define func_0209c2d8 _ZN13ModelSlotPoolD1Ev
+#define func_0209c2dc _ZN13ModelSlotPoolC1Ev
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define TouchPicker_addBox _ZN11TouchPicker6addBoxEP12Unk_020b6e10P4Vec3iiisih
 #define TouchPicker_pushBox _ZN11TouchPicker7pushBoxEP12Unk_020b6e10
 #define func_020b6df4 _ZN12Unk_020b6e10D2Ev
@@ -682,21 +682,21 @@ void func_02088c64(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 
 void func_02089040(void *a);
 P *func_020947f0(s32 n);
 P *PlayerActor_GetActor(s32 n);
-s32 func_0209c0ac(void *);
-void func_0209c0b4(void *p);
-void func_0209c0c8(void *p);
-s32 func_0209c0d0(void *, s32, char *);
+s32 PooledModel_getModel(void *);
+void PooledModel_unload(void *p);
+void PooledModel_reset(void *p);
+s32 PooledModel_loadFromSlot(void *, s32, char *);
 void func_0209c128(void *);
 void func_0209c140(void *);
-s32 func_0209c15c(void *);
-void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void func_0209c224(void *p, void *q);
-s32 func_0209c25c(void *, void *);
+s32 ModelSlotPool_destroy(void *);
+void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
+void ModelSlotPool_release(void *p, void *q);
+s32 ModelSlotPool_acquire(void *, void *);
 void func_0209c2d8(void *p);
 void func_0209c2dc(void *p);
-s32 func_0209c348(s32);
-void func_0209c364(u16 *);
-void func_0209c370(u16 *);
+s32 ModelSlot_getHeap(s32);
+void ModelSlotHandle_Destroy(u16 *);
+void ModelSlotHandle_Init(u16 *);
 void *Scene_GetTouchPicker(void);
 s32 func_020b6080(void *, void *, void *, void *);
 void TouchPicker_addBox(void *t, void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
@@ -1043,12 +1043,12 @@ extern "C" void MuseumAquarium_Create() {
 AquariumFish::AquariumFish() {
     func_ov004_02232608(unk_04);
     func_02054514(unk_64);
-    func_0209c370((u16 *)unk_166);
+    ModelSlotHandle_Init((u16 *)unk_166);
     func_0209c140(unk_168);
     __cxa_vec_ctor(unk_1d0, 2, 0xc, func_02000c98, func_02000c8c);
     unk_15c = -1;
     unk_160 = 0;
-    func_0209c0c8(unk_168);
+    PooledModel_reset(unk_168);
     unk_1c6 = 0;
     unk_1c7 = 1;
     unk_1f1 = 0;
@@ -1059,7 +1059,7 @@ AquariumFish::AquariumFish() {
 AquariumFish::~AquariumFish() {
     __cxa_vec_cleanup(unk_1d0, 2, 0xc, func_02000c8c);
     func_0209c128(unk_168);
-    func_0209c364((u16 *)unk_166);
+    ModelSlotHandle_Destroy((u16 *)unk_166);
     func_020544d8(unk_64);
     func_ov004_022325f0(unk_04);
 }
@@ -3676,8 +3676,8 @@ extern "C" BOOL MuseumAquarium_RequestFishModel(Mgr *self, s32 i)
     if (*p == NULL) return FALSE;
     (*p)->unk_15c = i;
     (*p)->unk_160 = 1;
-    func_0209c25c((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
-    func_0209c0c8((u8 *)*p + 0x168);
+    ModelSlotPool_acquire((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
+    PooledModel_reset((u8 *)*p + 0x168);
     return TRUE;
 }
 
@@ -3696,8 +3696,8 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
         (*p)->unk_160 = 0;
         AnimModel_detachJointAnim((u8 *)*p + 0x64);
         CachedModel_release((u8 *)*p + 0x64);
-        func_0209c0b4((u8 *)*p + 0x168);
-        func_0209c224((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
+        PooledModel_unload((u8 *)*p + 0x168);
+        ModelSlotPool_release((u8 *)self + 0x7f8, (u8 *)*p + 0x166);
         switch ((*p)->unk_15c) {
         case 0xb:
             if (sAquariumFrog) {
@@ -3718,7 +3718,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 
 extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
 {
-    func_0209c1a4((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
+    ModelSlotPool_init((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
     sAquariumRoom = *(s32 *)&self->unk_04[4];
     if (sAquariumRoom == 0) {
         self->unk_50[0].unk_50[0] = 0xc000;
@@ -4053,7 +4053,7 @@ extern "C" void MuseumAquarium_UpdateObstacles(Mgr *o, s32 n) {
 extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     s32 res = 0;
     s32 n = (*p)->unk_15c;
-    s32 a = func_0209c25c((u8 *)o + 0x7f8, (*p)->unk_166);
+    s32 a = ModelSlotPool_acquire((u8 *)o + 0x7f8, (*p)->unk_166);
     void *b = (*p)->unk_168;
     char buf[0x18];
     s32 k = n / 10 + 10;
@@ -4062,15 +4062,15 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
     } else {
         func_020639e8(buf, "/fish/%d/m_fish%d.nsbmd", k, n);
     }
-    if (func_0209c0d0(b, a, buf)) {
+    if (PooledModel_loadFromSlot(b, a, buf)) {
         void *q;
         s32 c, d;
         (*p)->unk_1c0 = Aquarium_RandAngle(0x168, 0);
         (*p)->unk_1c2 = (*p)->unk_1c0;
         (*p)->vfunc_00();
         q = (u8 *)(*p) + 0x64;
-        Model_setResource(q, func_0209c0ac(b), 0);
-        c = func_0209c348(a);
+        Model_setResource(q, PooledModel_getModel(b), 0);
+        c = ModelSlot_getHeap(a);
         if ((*p)->unk_54[0] == 0) {
             MuseumAquarium_ReleaseFish(o, idx);
             return 0;
@@ -4079,7 +4079,7 @@ extern "C" s32 MuseumAquarium_LoadFishModel(Mgr *o, R **p, s32 idx) {
         if (AnimModel_allocAnmObj(q, c)) {
             BlendAnimModel_initAnim(q, d, 0, 0x1000, 1, 0);
             AnimModel_attachAnim(q);
-            CachedModel_allocJointRecord(q, func_0209c348(a));
+            CachedModel_allocJointRecord(q, ModelSlot_getHeap(a));
             (*p)->unk_160 = 2;
             (*p)->unk_1e8 = (*p)->unk_15c;
             MuseumAquarium_CalcFishMtx(o, p);
@@ -4148,7 +4148,7 @@ extern "C" s32 _ZN14MuseumAquarium8vfunc_0cEv(Mgr *o) {
             *p = 0;
         }
     }
-    func_0209c15c((u8 *)o + 0x7f8);
+    ModelSlotPool_destroy((u8 *)o + 0x7f8);
     Snd_StopSe(0x4da, 1);
     return TRUE;
 }

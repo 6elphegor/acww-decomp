@@ -2622,7 +2622,7 @@ s32 _ZN12Unk_020d77109startTaskEi(Unk_02014258 *p, s32 a);
 u32 Camera_IsBlending(void);
 u32 Camera_GetBlendFramesLeft(void);
 void _ZN14TalkMsgRequest17changeSpeakerNameEP9MsgStringj(Unk_02014258 *p, Unk_020140d0_X *x, u8 *b);
-void func_0203a528(Unk_02013b10_Vec *v);
+void Camera_RetargetFocus(Unk_02013b10_Vec *v);
 void _ZN14TalkMsgRequest14setSpeakerNameEPhj(Unk_02013b10_Obj *o, s32 a, u8 *b);
 void _ZN10MsgRequest11setFileNameEPKc(Unk_02013b10_Obj *o, s32 a);
 s32 _ZN15TalkWindowState14isVoicePlayingEv(Unk_02013b10_Sub *p);
@@ -9371,7 +9371,7 @@ BOOL Unk_02014258::switchSpeakerFocus() {
             v.y = pv->y;
             v.z = pv->z;
             v.y += 0x2000;
-            func_0203a528(&v);
+            Camera_RetargetFocus(&v);
         }
         unk_a8 = 2;
     }

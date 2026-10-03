@@ -50,7 +50,7 @@ s32 func_020e94f8(void *v);
 void func_020e9888(void *v, s32 s);
 s32 func_020e96a4(void *a, void *b);
 s32 func_020e9650(void *a, void *b);
-s32 _ZN12Unk_0202f66013func_0202f758EP15Unk_0202f660_V3(void *a, void *b);
+s32 _ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(void *a, void *b);
 void Proc_CreateRoot();
 s32 Proc_CreateChild(u32 a, void *b, u32 c, u32 d);
 s32 func_0211c618(s32 *out);
@@ -100,7 +100,7 @@ void Unk_0202e9c8::func_0202e9b4(Unk_0202e918_Vec3 *p, s32 r) {
 BOOL Unk_0202e9c8::func_0202e918(Unk_0202e918_Vec3 *out, Unk_0202e918_Cap *cap) {
     s32 z;
     s32 r = unk_0c;
-    if (_ZN12Unk_0202f66013func_0202f758EP15Unk_0202f660_V3(cap, this) <= r) {
+    if (_ZN16CollisionSegment10distanceToEP15Unk_0202f660_V3(cap, this) <= r) {
         z = unk_08 + func_01ffcb0c(cap->unk_20, unk_0c);
         s32 y = unk_04 + func_01ffcb0c(cap->unk_1c, unk_0c);
         s32 x = unk_00 + func_01ffcb0c(cap->unk_18, unk_0c);

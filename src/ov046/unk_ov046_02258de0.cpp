@@ -115,7 +115,7 @@ Unk_ov046_02258e68_Actor *PlayerActor_GetActor(s32 n);
 s32 func_020e9650(Unk_ov046_02258e68_Vec *a, Unk_ov046_02258e68_Vec *b);
 void *Scene_GetTouchPicker();
 s32 func_020b6080(void *a, void *b, void *c, s32 d);
-void func_0203a304();
+void Camera_LockFocusYaw();
 void TalkRequest_AddPlayerTalk6(void *p, s32 v);
 void TalkRequest_SetTargetDone(void *self);
 s32 Clock_GetTimeOfDay();
@@ -1462,7 +1462,7 @@ end:
 BOOL SpNpcCeleste::tryStartTelescopeTalk() {
     if (isPlayerAtTelescope()) {
         unk_658.setTopic(4);
-        func_0203a304();
+        Camera_LockFocusYaw();
         TalkRequest_AddPlayerTalk6(this, 0);
         return TRUE;
     }

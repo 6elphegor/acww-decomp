@@ -2505,13 +2505,13 @@ extern "C" {
 s32 VillagerMemory_InitForPlayer(void *, void *, u8 *, s32);
 }
 extern "C" {
-s32 func_0209c4a8(void *, s32);
+s32 RoomEntry_RecvLeave(void *, s32);
 }
 extern "C" {
-s32 func_0209c4bc(void *);
+s32 RoomEntry_RecvEnterReply(void *);
 }
 extern "C" {
-s32 func_0209c4e4(void *, s32);
+s32 RoomEntry_RecvEnterRequest(void *, s32);
 }
 extern "C" {
 s32 FieldAction_OnNetResult(void *, s32);
@@ -2743,19 +2743,19 @@ extern "C" void CommRecv_ItemActionResult(s32 a, s32 b, s32 c) {
 extern "C" void CommRecv_ObjectUseRequest(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
-    func_0209c4e4(&buf, d);
+    RoomEntry_RecvEnterRequest(&buf, d);
 }
 
 extern "C" void CommRecv_ObjectUseReply() {
     u32 buf;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
-    func_0209c4bc(&buf);
+    RoomEntry_RecvEnterReply(&buf);
 }
 
 extern "C" void CommRecv_ObjectUseRelease(s32 a, s32 b, s32 c, s32 d) {
     u32 buf;
     _ZN11CommManager10readRecordEPhj(gCommManager, &buf, 1);
-    func_0209c4a8(&buf, d);
+    RoomEntry_RecvLeave(&buf, d);
 }
 
 extern "C" void CommRecv_VillagerMemoryInit(s32 n, s32 b, s32 c, void *d) {

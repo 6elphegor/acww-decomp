@@ -13,7 +13,7 @@ void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, cons
 void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 void LetterDelivery_QueueOutgoing(void *a, s32 b);
 void func_020af488(u32 a);
-extern u8 data_021ee25c[];
+extern u8 gLooseSnowballs[];
 extern const u16 data_020d09cc[];
 extern u32 data_020e2eb8, data_020e2ebc;
 }
@@ -64,7 +64,7 @@ extern "C" void func_020af3fc() {
     }
 }
 
-extern "C" u8 *func_020af3f4() { return data_021ee25c; }
+extern "C" u8 *func_020af3f4() { return gLooseSnowballs; }
 
 
 u32 data_020e2ebc = 0x11;

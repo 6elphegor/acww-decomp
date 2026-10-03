@@ -156,7 +156,7 @@ s32 func_020e96a4(void *a, void *b);
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 BOOL TownMap_IsPosWalkable(void *a, s32 b);
-BOOL func_02040c88();
+BOOL EventAnnounce_IsBusy();
 void *TownSessionState_Get();
 void TownSessionState_GetVisitorPos(void *p);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *self, s32 a, s32 b);
@@ -608,7 +608,7 @@ BOOL SpNpcLyle::vfunc_0c() {
     if (!SpNpcActor::vfunc_0c()) {
         return FALSE;
     }
-    if (func_02040c88() == 0) {
+    if (EventAnnounce_IsBusy() == 0) {
         TownSessionState_GetVisitorPos(TownSessionState_Get());
         _ZN10VisitorPos13pickRandomPosEv();
     }

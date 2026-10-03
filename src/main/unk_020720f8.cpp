@@ -659,7 +659,7 @@ extern "C" {
 void SpotSync_Release(u32);
 }
 extern "C" {
-void func_0209c5a0(u32, u32);
+void RoomEntry_Leave(u32, u32);
 }
 extern "C" {
 void PlayerSession_ResetLastState(u32);
@@ -699,9 +699,9 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
                 SpotSync_Release(3);
                 for (u32 i = 0; i < 0x33; i++) {
                     u32 r6 = (u8)i;
-                    func_0209c5a0(r6, 1);
-                    func_0209c5a0(r6, 2);
-                    func_0209c5a0(r6, 3);
+                    RoomEntry_Leave(r6, 1);
+                    RoomEntry_Leave(r6, 2);
+                    RoomEntry_Leave(r6, 3);
                 }
             } else {
                 s32 r6 = -r4;
@@ -710,7 +710,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
                 }
                 SpotSync_Release(r6);
                 for (u32 i = 0; i < 0x33; i++) {
-                    func_0209c5a0((u8)i, r6);
+                    RoomEntry_Leave((u8)i, r6);
                 }
             }
         }

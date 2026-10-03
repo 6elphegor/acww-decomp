@@ -72,8 +72,8 @@ class FishDisplay;
 
 extern "C" {
 s32 func_02072e44(void *);
-void _ZN12Unk_0209c15cD1Ev(void *);
-void _ZN12Unk_0209c15c13func_0209c15cEv(void *);
+void _ZN13ModelSlotPoolD1Ev(void *);
+void _ZN13ModelSlotPool7destroyEv(void *);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
 s32 FishDisplay_FindFreeEntry(void);
 u32 FishDisplay_GetRequestKind(u32 i);
@@ -85,11 +85,11 @@ extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 data_020ca314[];
 extern u8 gFieldSceneKind;
-void *_ZN12Unk_0209c15c13func_0209c25cEPt(void *, void *);
-s32 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(void *, void *, const char *);
-void *_ZN12Unk_0209c0ac13func_0209c0acEv(void *);
+void *_ZN13ModelSlotPool7acquireEPt(void *, void *);
+s32 _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(void *, void *, const char *);
+void *_ZN11PooledModel8getModelEv(void *);
 void _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *, void *, s32);
-void *_ZN12Unk_0209c2f413func_0209c348Ev(void *);
+void *_ZN9ModelSlot7getHeapEv(void *);
 void *File_LoadAlloc(void *, void *, s32, s32);
 s32 func_021065dc(void);
 s32 func_021065f8(s32, s32);
@@ -105,25 +105,25 @@ void func_020e8404(void *, s32);
 void func_020e83d4(void *, s32);
 s32 func_020639e8(char *, const char *, ...);
 extern u8 data_021f47e0[];
-void _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
+void _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
 void FishDisplayHeap_Create(void);
 void FishDisplayHeap_Destroy(void);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
 void _ZN9AnimModel15detachJointAnimEv(void *p);
-void _ZN12Unk_0209c0ac13func_0209c0b4Ev(void *p);
+void _ZN11PooledModel6unloadEv(void *p);
 void _ZN11CachedModel7releaseEv(void *p);
-void _ZN12Unk_0209c15c13func_0209c224EPt(void *p, void *q);
-void _ZN12Unk_0209c0ac13func_0209c0c8Ev(void *p);
+void _ZN13ModelSlotPool7releaseEPt(void *p, void *q);
+void _ZN11PooledModel5resetEv(void *p);
 void _ZN9AnimModelD1Ev(void *p);
-void _ZN12Unk_0209c0acD1Ev(void *p);
-void func_0209c364(void *p);
+void _ZN11PooledModelD1Ev(void *p);
+void ModelSlotHandle_Destroy(void *p);
 void func_020f43fc(void *p);
 void func_020f440c(void *p);
-void func_0209c370(void *p);
-void _ZN12Unk_0209c0acC1Ev(void *p);
+void ModelSlotHandle_Init(void *p);
+void _ZN11PooledModelC1Ev(void *p);
 void _ZN9AnimModelC1Ev(void *p);
-void _ZN12Unk_0209c15cC1Ev(void *p);
+void _ZN13ModelSlotPoolC1Ev(void *p);
 void *__cxa_vec_ctor(void *p, s32 n, s32 size, void *ctor, void *dtor);
 void _ZN9AnimModel8stepAnimEv(void *);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *, void *);
@@ -146,7 +146,7 @@ public:
     virtual BOOL onExecute();
     virtual BOOL onDraw();
     ~FishDisplay() {
-        _ZN12Unk_0209c15cD1Ev(unk_600);
+        _ZN13ModelSlotPoolD1Ev(unk_600);
         __cxa_vec_cleanup(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
     }
     void releaseEntry(s32);
@@ -182,7 +182,7 @@ extern Backup gBackup;
 
 inline FishDisplay::FishDisplay() {
     __cxa_vec_ctor(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
-    _ZN12Unk_0209c15cC1Ev(unk_600);
+    _ZN13ModelSlotPoolC1Ev(unk_600);
 }
 
 extern const u8 sFishBaseSizes[];
@@ -214,12 +214,12 @@ extern "C" FishDisplay *FishDisplay_Create(void) {
 
 extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
     func_020f440c(e);
-    func_0209c370(e->unk_48);
-    _ZN12Unk_0209c0acC1Ev(e->unk_4c);
+    ModelSlotHandle_Init(e->unk_48);
+    _ZN11PooledModelC1Ev(e->unk_4c);
     _ZN9AnimModelC1Ev(e->unk_98);
     e->unk_40 = -1;
     e->unk_44 = 0;
-    _ZN12Unk_0209c0ac13func_0209c0c8Ev(e->unk_4c);
+    _ZN11PooledModel5resetEv(e->unk_4c);
     e->unk_8c = 0x1000;
     e->unk_90 = 0x1000;
     e->unk_94 = 0x1000;
@@ -235,8 +235,8 @@ extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
 
 extern "C" Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *e) {
     _ZN9AnimModelD1Ev(e->unk_98);
-    _ZN12Unk_0209c0acD1Ev(e->unk_4c);
-    func_0209c364(e->unk_48);
+    _ZN11PooledModelD1Ev(e->unk_4c);
+    ModelSlotHandle_Destroy(e->unk_48);
     func_020f43fc(e);
     return e;
 }
@@ -265,8 +265,8 @@ BOOL FishDisplay::beginLoad(s32 idx) {
     if (idx != -1) {
         Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->unk_50[idx];
         e->unk_44 = 2;
-        _ZN12Unk_0209c15c13func_0209c25cEPt(unk_600, e->unk_48);
-        _ZN12Unk_0209c0ac13func_0209c0c8Ev(e->unk_4c);
+        _ZN13ModelSlotPool7acquireEPt(unk_600, e->unk_48);
+        _ZN11PooledModel5resetEv(e->unk_4c);
         _ZN12Unk_02003c3013func_02003eccEv(e);
         r = TRUE;
     }
@@ -282,9 +282,9 @@ void FishDisplay::releaseEntry(s32 idx) {
         e->unk_40 = -1;
         e->unk_44 = 0;
         _ZN9AnimModel15detachJointAnimEv(e->unk_98);
-        _ZN12Unk_0209c0ac13func_0209c0b4Ev(e->unk_4c);
+        _ZN11PooledModel6unloadEv(e->unk_4c);
         _ZN11CachedModel7releaseEv(e->unk_98);
-        _ZN12Unk_0209c15c13func_0209c224EPt(unk_600, e->unk_48);
+        _ZN13ModelSlotPool7releaseEPt(unk_600, e->unk_48);
     }
 }
 
@@ -294,7 +294,7 @@ BOOL FishDisplay::vfunc_00() {
     } else if (*(s32 *)&unk_04[4] == 1) {
         sFishDisplayEntryCount = 1;
     }
-    _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE(unk_600, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");
+    _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE(unk_600, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");
     gFishDisplay = this;
     return TRUE;
 }
@@ -328,7 +328,7 @@ BOOL FishDisplay::onExecute() {
         case 3:
             if (e->unk_40 == 0x3b) {
                 _ZN9AnimModel8stepAnimEv((u8 *)e + 0x98);
-                NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv((u8 *)e + 0x4c), v0, *(u32 *)((u8 *)e + 0x164));
+                NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv((u8 *)e + 0x4c), v0, *(u32 *)((u8 *)e + 0x164));
             } else if (e->unk_40 == 0x38 || e->unk_40 == 0x39 || e->unk_40 == 0x3a) {
             } else {
                 _ZN9AnimModel8stepAnimEv((u8 *)e + 0x98);
@@ -386,7 +386,7 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     char buf[0x18];
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->unk_40;
-    void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
     void *t;
     void *y = (u8 *)e + 0x4c;
     s32 q = id / 16;
@@ -395,10 +395,10 @@ BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     } else {
         func_020639e8(buf, "/fish/0%d/fish%d.nsbmd", q, id);
     }
-    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, buf)) {
+    if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, buf)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), 0);
-        t = _ZN12Unk_0209c2f413func_0209c348Ev(x);
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN11PooledModel8getModelEv(y), 0);
+        t = _ZN9ModelSlot7getHeapEv(x);
         if (id < 10) {
             func_020639e8(buf, "/fish/0%d/fish0%d.nsbca", q, id);
         } else {
@@ -423,10 +423,10 @@ BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->unk_40;
-    void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
-    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, sFishStaticMdlPaths[id - 0x38])) {
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
+    if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishStaticMdlPaths[id - 0x38])) {
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN11PooledModel8getModelEv(y), r);
         e->unk_44 = 3;
         updateTransform(e);
         r = TRUE;
@@ -438,12 +438,12 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->unk_40;
-    void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
+    void *x = _ZN13ModelSlotPool7acquireEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
-    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, sFishShadowMdlPath)) {
+    if (_ZN11PooledModel12loadFromSlotEP9ModelSlotPKc(y, x, sFishShadowMdlPath)) {
         u8 *m = (u8 *)e + 0x98;
-        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
-        void *t = _ZN12Unk_0209c2f413func_0209c348Ev(x);
+        _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN11PooledModel8getModelEv(y), r);
+        void *t = _ZN9ModelSlot7getHeapEv(x);
         File_LoadAlloc(sFishShadowAnmPath, t, 4, r);
         s32 u = func_021065f8(func_021065dc(), r);
         if (_ZN9AnimModel11allocAnmObjEPv(m, t)) {
@@ -452,7 +452,7 @@ BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
             e->unk_44 = 3;
             updateTransform(e);
             if (id == 0x3b) {
-                NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(y), r, e->unk_164);
+                NNS_G3dMdlSetMdlAlpha(_ZN11PooledModel8getModelEv(y), r, e->unk_164);
             }
             r = TRUE;
         }
@@ -480,7 +480,7 @@ BOOL FishDisplay::vfunc_0c() {
     for (s32 i = 0; i < sFishDisplayEntryCount; i++) {
         releaseEntry(i);
     }
-    _ZN12Unk_0209c15c13func_0209c15cEv(unk_600);
+    _ZN13ModelSlotPool7destroyEv(unk_600);
     gFishDisplay = NULL;
     return TRUE;
 }

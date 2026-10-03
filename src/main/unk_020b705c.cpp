@@ -7,8 +7,8 @@ typedef Unk_0202f660_V3 Vec3;
 
 struct CollisionCylinder {
     CollisionCylinder(Vec3 *c, s32 a, s32 b);
-    BOOL func_0202f968(Vec3 *a, Vec3 *b);
-    BOOL func_0202f7b8(Vec3 *a, Vec3 *b);
+    BOOL clipSegmentCaps(Vec3 *a, Vec3 *b);
+    BOOL clipSegmentSideBounded(Vec3 *a, Vec3 *b);
     u8 pad[0x14];
 };
 
@@ -55,7 +55,7 @@ extern "C" BOOL func_020b7074(Vec3 *out, Vec3 *a, Vec3 *b, s32 c, s32 d) {
     s32 x = v30.x;
     v30.x = func_01ffcb0c(cs, x) - func_01ffcb0c(sn, y);
     v30.y = func_01ffcb0c(sn, x) + func_01ffcb0c(cs, y);
-    if (o.func_0202f7b8(&v30, &v24)) {
+    if (o.clipSegmentSideBounded(&v30, &v24)) {
         s32 y2, x2, sn2, cs2;
         y2 = v30.y;
         sn2 = data_02138f44[0];

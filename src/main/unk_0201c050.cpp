@@ -2612,7 +2612,7 @@ s32 Clock_GetDateTime(void *);
 BOOL func_020a78a4(void *, const void *, s32);
 s32 ReddPassword_CurrentPlayerKnows();
 s32 ReddShop_IsTentOpen();
-s32 func_020b0218();
+s32 Constellation_FindVisibleNow();
 void * Constellation_GetData();
 s32 func_020b0980(void *, s32);
 s32 String_MakeNickname(void *, void *, u8 *);
@@ -12361,7 +12361,7 @@ BOOL VillagerTalkTopics::selectTsuStar() {
         return FALSE;
     }
     base = Constellation_GetData();
-    r4 = func_020b0218();
+    r4 = Constellation_FindVisibleNow();
     r7 = (void *)((u32)PlayerData_GetCurrent());
     p14 = 0;
     p18 = 0;

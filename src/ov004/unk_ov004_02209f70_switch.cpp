@@ -412,22 +412,22 @@ struct FtrStackedSet {
 };
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
-class Unk_0202f048 {
+class CollisionVec2 {
 public:
     s32 x, y;
-    void func_0202f048(s32 a, s32 b);
-    void func_0202efe4(Unk_0202f048 *a, Unk_0202f048 *b);
-    s64 func_0202ef84(Unk_0202f048 *p);
-    BOOL func_0202ef40();
+    void set(s32 a, s32 b);
+    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
+    s64 distSq(CollisionVec2 *p);
+    BOOL normalize();
 };
 
-class Unk_020d8ce4 {
+class CollisionEdge {
 public:
-    virtual ~Unk_020d8ce4();
-    Unk_0202f048 unk_04, unk_0c, unk_14;
+    virtual ~CollisionEdge();
+    CollisionVec2 unk_04, unk_0c, unk_14;
     s32 unk_1c;
-    BOOL func_0202ece8(Unk_0202f048 *out, Unk_0202f048 *a, Unk_0202f048 *b);
-    s32 func_0202ebb0(Unk_0202f048 *p);
+    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
+    s32 isBetweenEnds(CollisionVec2 *p);
 };
 
 struct Unk_ov004_02206744_V3 {
@@ -444,7 +444,7 @@ struct Unk_ov004_02206570_Act {
 };
 
 struct BoxCollider {
-    virtual void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+    virtual void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
     u8 pad_04[0x98];
     BoxCollider();
     ~BoxCollider();
@@ -453,7 +453,7 @@ struct BoxCollider {
 struct FtrCollider : BoxCollider {
     void *unk_9c;
     FtrCollider();
-    void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+    void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
     void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
     void clearOwner();
     void setOwner(void *p);

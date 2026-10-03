@@ -415,22 +415,22 @@ struct FtrStackedSet {
 };
 
 // ---- 0x022487cc : BoxCollider (member at 0x628)
-class Unk_0202f048 {
+class CollisionVec2 {
 public:
     s32 x, y;
-    void func_0202f048(s32 a, s32 b);
-    void func_0202efe4(Unk_0202f048 *a, Unk_0202f048 *b);
-    s64 func_0202ef84(Unk_0202f048 *p);
-    BOOL func_0202ef40();
+    void set(s32 a, s32 b);
+    void setDiff(CollisionVec2 *a, CollisionVec2 *b);
+    s64 distSq(CollisionVec2 *p);
+    BOOL normalize();
 };
 
-class Unk_020d8ce4 {
+class CollisionEdge {
 public:
-    virtual ~Unk_020d8ce4();
-    Unk_0202f048 unk_04, unk_0c, unk_14;
+    virtual ~CollisionEdge();
+    CollisionVec2 unk_04, unk_0c, unk_14;
     s32 unk_1c;
-    BOOL func_0202ece8(Unk_0202f048 *out, Unk_0202f048 *a, Unk_0202f048 *b);
-    s32 func_0202ebb0(Unk_0202f048 *p);
+    BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);
+    s32 isBetweenEnds(CollisionVec2 *p);
 };
 
 struct Unk_ov004_02206744_V3 {
@@ -447,7 +447,7 @@ struct Unk_ov004_02206570_Act {
 };
 
 struct BoxCollider {
-    virtual void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+    virtual void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
     u8 pad_04[0x98];
     BoxCollider();
     ~BoxCollider();
@@ -456,7 +456,7 @@ struct BoxCollider {
 struct FtrCollider : BoxCollider {
     void *unk_9c;
     FtrCollider();
-    void onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 c);
+    void onEdgeContact(CollisionEdge *a, Unk_ov004_02206570_Act *b, s32 c);
     void slideOwnerForWideFtr(Unk_ov004_02206570_Act *b);
     void clearOwner();
     void setOwner(void *p);
@@ -3105,7 +3105,7 @@ s32 ClothTex_GetTex(s32);
 s32 FtrSync_RequestAct(void *, s32, s32, s32);
 s32 FtrSync_ChangeAct(void *, s32, s32, s32);
 void Item_FromPlacedForm(u16 *, u16 *);
-s32 _ZN12Unk_0209c2f413func_0209c348Ev();
+s32 _ZN9ModelSlot7getHeapEv();
 void *Heap_Alloc(s32, s32);
 void ClothTex_LoadItem(s32, u16 *, s32);
 BOOL _ZN9FtrSwitch4isOnEv(void *);
@@ -3309,7 +3309,7 @@ BOOL FtrShirt::initModel() {
     if (r) {
         p14::Item_FromPlacedForm(&w, &v);
         p14::FtrActor_GetHeap(this);
-        unk_840 = (s32)p14::Heap_Alloc(p14::_ZN12Unk_0209c2f413func_0209c348Ev(), 0x2c4);
+        unk_840 = (s32)p14::Heap_Alloc(p14::_ZN9ModelSlot7getHeapEv(), 0x2c4);
         p14::ClothTex_LoadItem(unk_840, &w, 0);
         if (p14::_ZN9FtrSwitch4isOnEv(b14_f_73c)) {
             changeAct(0, 0xff);
@@ -3490,7 +3490,7 @@ void _ZN14BlendAnimModel9stepBlendEv(void *);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *, void *, s32, s32, s32, s32);
 void _ZN9AnimModel10attachAnimEv(void *);
 BOOL _ZN9AnimModel11allocAnmObjEPv(void *, u32);
-u32 _ZN12Unk_0209c2f413func_0209c348Ev(u32);
+u32 _ZN9ModelSlot7getHeapEv(u32);
 u32 Scene_GetCurrent(void);
 void FtrSync_RequestToggleGyroid(u32, void *, u32);
 }
@@ -3662,27 +3662,27 @@ BOOL FtrKind19::initModel() {
     u32 r4 = p15::FtrActor_GetHeap(this);
     if (p15::_ZN10FtrAnimSet6getBvaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
         u32 t = b15_unk_590;
-        if (p15::_ZN9ModelAnim13allocJointAnmEjPv(&b15_unk_7c0[3], t, p15::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p15::_ZN9ModelAnim13allocJointAnmEjPv(&b15_unk_7c0[3], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
             p15::_ZN9ModelAnim4initEiiit(&b15_unk_7c0[3], p15::_ZN10FtrAnimSet6getBvaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 0, 0x1000, 0);
             p15::_ZN9ModelAnim14addToRenderObjEj(&b15_unk_7c0[3], p15::_ZN5Model12getRenderObjEv(b15_f_534));
         }
     }
     if (p15::_ZN10FtrAnimSet6getBtaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
         u32 t = b15_unk_590;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[1], t, p15::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[1], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
             p15::_ZN9ModelAnim4initEiiit(&b15_unk_7c0[1], p15::_ZN10FtrAnimSet6getBtaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 0, 0x1000, 0);
             p15::_ZN9ModelAnim14addToRenderObjEj(&b15_unk_7c0[1], p15::_ZN5Model12getRenderObjEv(b15_f_534));
         }
     }
     if (p15::_ZN10FtrAnimSet6getBcaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
-        if (p15::_ZN9AnimModel11allocAnmObjEPv(b15_f_534, p15::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p15::_ZN9AnimModel11allocAnmObjEPv(b15_f_534, p15::_ZN9ModelSlot7getHeapEv(r4))) {
             p15::_ZN14BlendAnimModel8initAnimEiiitt(b15_f_534, p15::_ZN10FtrAnimSet6getBcaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 0, 0x1000, 0, 0);
             p15::_ZN9AnimModel10attachAnimEv(b15_f_534);
         }
     }
     if (p15::_ZN10FtrAnimSet6getBtpEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
         u32 t = b15_unk_590;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[2], t, p15::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[2], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
             Unk_ov004_02208ba8_Rec *r = p15::_ZN10FtrAnimSet6getBtpEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0);
             p15::_ZN9ModelAnim11initWithTexEiiiit(&b15_unk_7c0[2], r, p15::_ZN11FtrModelRes10getTextureEv(b15_f_6c8), 0, 0x1000, 0);
             p15::_ZN9ModelAnim14addToRenderObjEj(&b15_unk_7c0[2], p15::_ZN5Model12getRenderObjEv(b15_f_534));
@@ -3690,7 +3690,7 @@ BOOL FtrKind19::initModel() {
     }
     if (p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0) != NULL) {
         u32 t = b15_unk_590;
-        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[0], t, p15::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p15::_ZN9ModelAnim11allocMatAnmEjPv(&b15_unk_7c0[0], t, p15::_ZN9ModelSlot7getHeapEv(r4))) {
             p15::_ZN9ModelAnim4initEiiit(&b15_unk_7c0[0], p15::_ZN10FtrAnimSet6getBmaEj(p15::_ZN11FtrModelRes10getAnimSetEv(b15_f_6c8), 0), 3, 0x1000, 0);
             p15::_ZN9ModelAnim14addToRenderObjEj(&b15_unk_7c0[0], p15::_ZN5Model12getRenderObjEv(b15_f_534));
         }
@@ -3767,7 +3767,7 @@ s32 _ZN14BlendAnimModel8initAnimEiiitt(void *, s32, s32, s32, s32, s32);
 s32 _ZN11CachedModel16allocJointRecordEPv(void *, s32);
 s32 _ZN11CommManager8isOnlineEv(void *);
 s32 func_020943dc(void);
-s32 _ZN12Unk_0209c2f413func_0209c348Ev(void);
+s32 _ZN9ModelSlot7getHeapEv(void);
 s32 Scene_GetCurrent(void);
 s32 Scene_InVillagerHouse(void);
 }
@@ -4053,7 +4053,7 @@ BOOL FtrGyroid::initModel() {
     initSync(p16::FtrSound_GetSe3());
     p16::_ZN8FtrActor9initAnimsEiiii(this, 0, 1, 0x1000, 0);
     p16::FtrActor_GetHeap(this);
-    p16::_ZN11CachedModel16allocJointRecordEPv(b16_unk_534, p16::_ZN12Unk_0209c2f413func_0209c348Ev());
+    p16::_ZN11CachedModel16allocJointRecordEPv(b16_unk_534, p16::_ZN9ModelSlot7getHeapEv());
     if (b16_unk_768 == 1) {
         p16::_ZN9FtrSwitch3setEji(b16_unk_73c, 0, 0);
         s32 s = p16::Scene_GetCurrent();
@@ -4961,7 +4961,7 @@ void _ZN14BlendAnimModel8initAnimEiiitt(void *, void *, s32, s32, s32, s32);
 void _ZN9AnimModel10attachAnimEv(void *);
 BOOL _ZN9AnimModel11allocAnmObjEPv(void *, u32);
 BOOL _ZN13AnimFrameCtrl10isFinishedEv(void *);
-u32 _ZN12Unk_0209c2f413func_0209c348Ev(u32);
+u32 _ZN9ModelSlot7getHeapEv(u32);
 u32 Scene_GetCurrent(void);
 s32 _ZN11FtrModelRes10getAnimSetEv(void *);
 void *_ZN10FtrAnimSet6getBcaEj(void *, u32);
@@ -5055,12 +5055,12 @@ BOOL FtrClock::initModel() {
     unk_842.h = unk_844.h;
     unk_840 = -1;
     if (b19_unk_77c == 0x10) {
-        if (p19::_ZN9AnimModel11allocAnmObjEPv(b19_f_534, p19::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p19::_ZN9AnimModel11allocAnmObjEPv(b19_f_534, p19::_ZN9ModelSlot7getHeapEv(r4))) {
             p19::_ZN14BlendAnimModel8initAnimEiiitt(b19_f_534, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(b19_f_6c8), 0), 1, 0x1000, 0, 0);
             p19::_ZN9AnimModel10attachAnimEv(b19_f_534);
         }
     } else if (b19_unk_77c == 0x11) {
-        if (p19::_ZN9AnimModel11allocAnmObjEPv(b19_f_534, p19::_ZN12Unk_0209c2f413func_0209c348Ev(r4))) {
+        if (p19::_ZN9AnimModel11allocAnmObjEPv(b19_f_534, p19::_ZN9ModelSlot7getHeapEv(r4))) {
             p19::_ZN14BlendAnimModel8initAnimEiiitt(b19_f_534, p19::_ZN10FtrAnimSet6getBcaEj((void *)p19::_ZN11FtrModelRes10getAnimSetEv(b19_f_6c8), 0), 0, 0x1000, 0, 0);
             p19::_ZN9AnimModel10attachAnimEv(b19_f_534);
         }

@@ -31,11 +31,11 @@
 #define CachedModel_loadWithSharedTex _ZN11CachedModel17loadWithSharedTexEPvS0_S0_
 #define CachedModel_load _ZN11CachedModel4loadEPvS0_
 #define CachedModel_loadWithTex _ZN11CachedModel11loadWithTexEPvS0_S0_S0_Pji
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define Model_setResource _ZN5Model11setResourceEP16Unk_020553f8_Resj
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define ModelAnim_allocMatAnm _ZN9ModelAnim11allocMatAnmEjPv
 #define ModelAnim_init _ZN9ModelAnim4initEiiit
 #define Model_getRenderObj _ZN5Model12getRenderObjEv
@@ -1123,7 +1123,7 @@ s32 PendingUnit_FindForAid(void *o, P2 p, s32 a);
 s32 Town_IsSaplingBlocker(u16 *c);
 void TreeAnimSet_Request(void *a, void *o, P2 p, s32 mode, s32 flag);
 s32 Item_IsTreeStage0(u16 *c);
-s32 func_0203a4c4(V3 *v, s32 a, s32 b);
+s32 Camera_IsBlockingFocusView(V3 *v, s32 a, s32 b);
 void *Field_AidOrZero(void *o);
 s32 Item_IsTreeGrown(u16 *c);
 void PendingUnit_Apply();
@@ -1773,11 +1773,11 @@ s32 TownState_GetSeasonPeriod();
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void *NNS_G3dGetTex();
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
-void *func_0209c25c(void *a, void *b);
-BOOL func_0209c0d0(void *a, void *b, void *c);
-void *func_0209c0ac(void *a);
+void *ModelSlotPool_acquire(void *a, void *b);
+BOOL PooledModel_loadFromSlot(void *a, void *b, void *c);
+void *PooledModel_getModel(void *a);
 void Model_setResource(void *a, void *b, s32 c);
-void *func_0209c348(void *a);
+void *ModelSlot_getHeap(void *a);
 s32 func_021065dc();
 s32 func_021065f8(s32 a, s32 b);
 s32 func_02106654();
@@ -4976,7 +4976,7 @@ void FieldObj_DrawUnits(O *o, void *g) {
         if (cell == 0) goto step;
         if (Chk_0221d37c(cell)) {
             if (Item_IsTreeStage0(cell) == 0) {
-                if (func_0203a4c4(&l.WindowLight, 0x2000, 0x2000) != 0) goto step;
+                if (Camera_IsBlockingFocusView(&l.WindowLight, 0x2000, 0x2000) != 0) goto step;
             }
         }
         {
@@ -5275,7 +5275,7 @@ s32 Tree_BeginReaction(void *o, P2 pos) {
                     if (Item_IsTreeStage0(cell) == 0) {
                         V3 v;
                         FieldPos_FromUnitCenter(&v, pos.x, pos.z);
-                        if (func_0203a4c4(&v, 0x2000, 0x2000) == 0) {
+                        if (Camera_IsBlockingFocusView(&v, 0x2000, 0x2000) == 0) {
                             result = 1;
                         }
                     }

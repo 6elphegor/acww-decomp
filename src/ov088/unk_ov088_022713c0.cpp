@@ -116,7 +116,7 @@ void MI_CpuFill8(void *p, s32 v, u32 n);
 void String_Load(void *a, u8 *b, const char *c);
 void *Choice_GetBmgName(s32 v);
 BOOL func_0202e360();
-BOOL func_02040c88();
+BOOL EventAnnounce_IsBusy();
 extern u32 __ptmf_null[];
 void _ZN15TalkWindowState17setSlotFromStringEiii(void *self, s32 idx, u8 *p, void *s);
 s32 _ZN19Unk_020133cc_Player20getNewEmotionToLearnEv(void *self);
@@ -612,7 +612,7 @@ BOOL SpNpcShrunk::vfunc_0c() {
     if (SpNpcActor::vfunc_0c() == 0) {
         return FALSE;
     }
-    if (func_02040c88() == 0) {
+    if (EventAnnounce_IsBusy() == 0) {
         TownSessionState_GetVisitorPos(TownSessionState_Get())->pickRandomPos();
     }
     return TRUE;

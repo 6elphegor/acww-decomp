@@ -99,18 +99,18 @@ public:
     u32 pad[0x28 / 4];
 };
 
-class Unk_0209c0ac {
+class PooledModel {
 public:
-    Unk_0209c0ac();
-    ~Unk_0209c0ac();
-    void func_0209c0c8();
+    PooledModel();
+    ~PooledModel();
+    void reset();
     u32 pad[0x40 / 4];
 };
 
-class Unk_0209c364 {
+class ModelSlotHandle {
 public:
-    Unk_0209c364();
-    ~Unk_0209c364();
+    ModelSlotHandle();
+    ~ModelSlotHandle();
     u32 pad[2];
 };
 
@@ -144,7 +144,7 @@ public:
     /* 0x020 */ CollisionState unk_20;
     /* 0x050 */ AnimModel unk_50;
     /* 0x108 */ Unk_02088b20 unk_108;
-    /* 0x130 */ Unk_0209c0ac unk_130;
+    /* 0x130 */ PooledModel unk_130;
     /* 0x170 */ u32 unk_170;
     /* 0x174 */ Unk_0213b954 unk_174;
     /* 0x184 */ u8 pad_184[0x1ec - 0x184];
@@ -152,7 +152,7 @@ public:
     /* 0x204 */ u8 unk_204[0xc];
     u8 pad_210[0x22c - 0x210];
     /* 0x22c */ s32 unk_22c;
-    /* 0x230 */ Unk_0209c364 unk_230;
+    /* 0x230 */ ModelSlotHandle unk_230;
     /* 0x238 */ u16 unk_238;
     /* 0x23a */ u16 unk_23a;
     /* 0x23c */ u16 unk_23c;
@@ -231,10 +231,10 @@ struct Unk_ov003_02228710_Act {
     u8 pad_25a[2];
 };
 
-class Unk_0209c15c {
+class ModelSlotPool {
 public:
-    Unk_0209c15c();
-    ~Unk_0209c15c();
+    ModelSlotPool();
+    ~ModelSlotPool();
     u32 unk_00[6];
 };
 
@@ -258,9 +258,9 @@ public:
     BOOL allocHeldInsect(Unk_ov003_02228710_Act *e);
     void freeInsect(Unk_ov003_02228710_Act *e, s32 mode);
 
-    /* 0x50 */ Unk_0209c15c unk_50;
-    /* 0x68 */ Unk_0209c15c unk_68;
-    /* 0x80 */ Unk_0209c15c unk_80;
+    /* 0x50 */ ModelSlotPool unk_50;
+    /* 0x68 */ ModelSlotPool unk_68;
+    /* 0x80 */ ModelSlotPool unk_80;
     /* 0x98 */ u32 unk_98[2];
 };
 
@@ -516,8 +516,8 @@ BOOL CommManager_isSlotActive(void *p, u32 v);
 void Clock_GetMinuteHour(void *p);
 void Clock_GetDayMonth(void *p);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-void func_0209c364(void *p);
-void func_0209c370(void *p);
+void ModelSlotHandle_Destroy(void *p);
+void ModelSlotHandle_Init(void *p);
 void func_0209c128(void *p);
 void func_0209c140(void *p);
 void func_0209c0c8(void *p);
@@ -563,8 +563,8 @@ extern "C" BOOL Insect_IsAtWateringPoint(void *p);
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -654,7 +654,7 @@ extern Rec sSpecialInsects[];
 extern Rec sHeldInsects[];
 extern u8 sTrashFlySpawnEnabled;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
-s32 func_0209c0ac(void *p);
+s32 PooledModel_getModel(void *p);
 s32 func_02106020(s32 a, s32 b);
 void WorldCurve_FromCurved(void *dst, void *src);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -669,7 +669,7 @@ s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 s32 func_020e9650(void *a, void *b);
 void Mem_Free(void *p);
 s32 Math_AngleXZ(void *a, void *b);
-void func_0209c15c(void *p);
+void ModelSlotPool_destroy(void *p);
 void Town_ClearBeesReleased(void);
 s32 Insect_RollKind(s8 *p);
 void Insect_SetScale(Rec *e, s32 v);
@@ -716,7 +716,7 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 struct Unk_ov003_0225980c_V3 {
@@ -796,7 +796,7 @@ void MTX_MultVec43(V3 *a, Blk *b, V3 *c);
 s32 Effect_Create(s32 a, V3 *v, s32 b, u16 *c);
 s32 Effect_SetPosition(s32 h, V3 *v, s32 a, u16 *c);
 s32 Effect_End(s32 h);
-void *func_0209c0ac(void *p);
+void *PooledModel_getModel(void *p);
 s32 func_02106020(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 AnimModel_drawAnimated(void *p, void *q);
@@ -944,7 +944,7 @@ s32 NetArea_IsLocalOwner(void);
 s32 Weather_GetFallingPrecip(void);
 s32 PlayerActor_GetAction(s32 v);
 void Effect_End(s32 h);
-BOOL func_0203a4c4(void *p, s32 a, s32 b);
+BOOL Camera_IsBlockingFocusView(void *p, s32 a, s32 b);
 void Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 func_020e9650(void *a, void *b);
 void Unk_02003c40_callUpdateRelative(void *obj, V3 *v);
@@ -1035,10 +1035,10 @@ extern "C" void FieldInsect_UpdateAll(void *a);
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -1207,11 +1207,11 @@ void Unk_02003c30_callReset(void *obj);
 void AnimModel_stepAnim(void *obj);
 void AnimFrameCtrl_step(void *e);
 void func_02133ef8(void *p, s32 n);
-void *func_0209c25c(void *sub, void *p);
-BOOL func_0209c0d0(void *p, void *h, char *path);
-void *func_0209c0ac(void *p);
+void *ModelSlotPool_acquire(void *sub, void *p);
+BOOL PooledModel_loadFromSlot(void *p, void *h, char *path);
+void *PooledModel_getModel(void *p);
 void Model_setResource(void *o, void *a, s32 b);
-void *func_0209c348(void *h);
+void *ModelSlot_getHeap(void *h);
 void *File_LoadAlloc(char *path, void *h, s32 a, s32 b);
 s32 func_02106788(void *r);
 s32 func_021067a4(s32 a, s32 b);
@@ -1292,16 +1292,16 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode);
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 extern "C" {
 extern u32 *gCommManager[];
-void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
+void ModelSlotPool_init(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
 void FieldInsectHeap_Create();
 void FieldInsectHeap_Destroy();
 void SpecialInsectHeap_Create();
@@ -1313,11 +1313,11 @@ void InsectSpawn_BuildMasks();
 void func_02041868();
 void AnimModel_detachAnim(void *p);
 void Unk_02003c30_callRelease(void *p);
-void func_0209c0b4(void *p);
-void func_0209c0c8(void *p);
-void func_0209c224(void *p, void *q);
-void func_0209c25c(void *p, void *q);
-void *func_0209c0ac(void *p);
+void PooledModel_unload(void *p);
+void PooledModel_reset(void *p);
+void ModelSlotPool_release(void *p, void *q);
+void ModelSlotPool_acquire(void *p, void *q);
+void *PooledModel_getModel(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 func_02063b8c(s32 n);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
@@ -1393,7 +1393,7 @@ void *InsectManager_Create();
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 struct Unk_ov003_02229050_Vec {
     s32 x, y, z;
@@ -1475,7 +1475,7 @@ void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, s32 v);
 void GroundInfo_initAtPos(Buf *b, void *pos, s32 a, s32 c);
 void GroundInfo_Destruct(Buf *b);
-void *func_0209c0ac(void *p);
+void *PooledModel_getModel(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 Insect_SetAnimSpeed(Rec *self, s32 a);
 void TreeBug_Update(Rec *self);
@@ -1542,7 +1542,7 @@ extern "C" void Insect_SetWanderBox(Rec *self);
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 struct Unk_ov003_02229a3c_V3 {
     s32 x, y, z;
@@ -1617,7 +1617,7 @@ void *TownBlockMap_Get(void);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 s32 Math_AngleXZ(void *a, void *b);
-void *func_0209c0ac(void *p);
+void *PooledModel_getModel(void *p);
 void NNS_G3dMdlSetMdlAlpha(void *a, s32 b, s32 c);
 void Insect_Despawn(Rec *o);
 void Crawler_Escape(Rec *o, s16 *p);
@@ -1707,7 +1707,7 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p);
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -1784,7 +1784,7 @@ s32 func_02063b8c(s32 n);
 s32 func_02133150(s32 a, s32 b);
 void AnimFrameCtrl_setup(void *p, u32 a, s32 b, s32 c, u32 d);
 void AnimModel_setFrame(void *p, u16 v);
-s32 func_0209c0ac(void *p);
+s32 PooledModel_getModel(void *p);
 u32 func_02106020(u32 a, u32 b);
 s32 NNS_G3dMdlSetMdlAlpha(s32 p, s32 a, s32 b);
 void FieldPos_ToUnit(s32 *x, s32 *y, void *p);
@@ -1886,7 +1886,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self);
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -1969,7 +1969,7 @@ extern Unk_020cbb18_Ptr *gCommManager;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 MenuCtrl_IsMenuOpen();
-s32 func_0209c0ac(void *p);
+s32 PooledModel_getModel(void *p);
 s32 func_02106020(void *a, s32 b);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
@@ -2028,7 +2028,7 @@ extern "C" void PillBug_Curled(Rec *self);
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 struct Unk_ov003_0222b6e0_V3 {
@@ -2106,7 +2106,7 @@ extern u8 gEffectSplDefaultInitCbs[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL Ground_GetDigKind(s32 x, s32 y);
-s32 func_0209c0ac(void *p);
+s32 PooledModel_getModel(void *p);
 s32 NNS_G3dMdlSetMdlAlpha(void *p, s32 a, s32 b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -5077,7 +5077,7 @@ extern "C" void Bee_Update(Rec *o) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bf7c
@@ -5116,7 +5116,7 @@ extern "C" void Hoverer_Update(Rec *self) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222be88
@@ -5131,7 +5131,7 @@ extern "C" void Ant_Update(Rec *self) {
     case 7:
     case 8:
         if (Insect_FadeOut(self, 4)) {
-            NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(self->unk_130), 0, 0);
             self->unk_251 = 0x13;
             V3 *p = &self->unk_204;
             p->x = 0;
@@ -5170,7 +5170,7 @@ extern "C" void Ant_Update(Rec *self) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222be0c
@@ -5202,7 +5202,7 @@ extern "C" void MoleCricket_Update(Rec *self) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bd60
@@ -5213,7 +5213,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
         if (o != 0) {
             s32 a = Math_AngleXZ(pos, (u8 *)o + 0x5c);
             self->unk_251 = 5;
-            NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
+            NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(self->unk_130), 0, 0x1f);
             self->unk_23a = a + 0x8000;
             *cnt = 0;
         }
@@ -5238,7 +5238,7 @@ extern "C" void MoleCricket_CheckDugUp(Rec *self, s16 *cnt) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222bb28
@@ -5338,7 +5338,7 @@ extern "C" void Insect_HopArc(Rec *self, s16 *cnt) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b928
@@ -5420,7 +5420,7 @@ extern "C" void Insect_EscapeRun(Rec *self, s16 *cnt) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b838
@@ -5468,7 +5468,7 @@ extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b784
@@ -5517,7 +5517,7 @@ extern "C" s32 Insect_SteerAroundObstacle(Rec *self) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269d58 _ZN18Unk_ov068_0226821419func_ov068_02269d58Ev
 namespace s10 {
 // 0x222b6e0
@@ -5558,7 +5558,7 @@ extern "C" void PillBug_Update(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5601,7 +5601,7 @@ extern "C" void PillBug_Curled(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5654,7 +5654,7 @@ extern "C" void PillBug_Walk(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5684,7 +5684,7 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
             if (o) {
                 s32 v = Math_AngleXZ(sub, (u8 *)o + 0x5c);
                 self->unk_251 = 5;
-                NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(self->unk_130), 0, 0x1f);
+                NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(self->unk_130), 0, 0x1f);
                 self->unk_23a = v + 0x8000;
                 *out = 0;
                 return TRUE;
@@ -5704,7 +5704,7 @@ extern "C" BOOL Insect_CheckRockStrike(Rec *self, s16 *out) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5740,7 +5740,7 @@ extern "C" void Moth_Update(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5832,7 +5832,7 @@ extern "C" void Flea_Update(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5927,7 +5927,7 @@ extern "C" void Stinger_Update(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -5961,16 +5961,16 @@ extern "C" void DungBeetle_Update(Rec *self) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
 // 0x222af48
 extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
     u8 *p = self->unk_130;
-    s32 t = func_02106020((void *)func_0209c0ac(p), 0);
+    s32 t = func_02106020((void *)PooledModel_getModel(p), 0);
     if (t > 7) {
-        NNS_G3dMdlSetMdlAlpha((void *)func_0209c0ac(p), 0, t - a);
+        NNS_G3dMdlSetMdlAlpha((void *)PooledModel_getModel(p), 0, t - a);
     } else {
         return TRUE;
     }
@@ -5987,7 +5987,7 @@ extern "C" BOOL Insect_FadeOut(Rec *self, s32 a) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_ov068_02269b20 _ZN18Unk_ov068_0226821419func_ov068_02269b20Ev
 #define func_ov068_02269d18 _ZN18Unk_ov068_0226821419func_ov068_02269d18Ev
 namespace s09 {
@@ -6064,7 +6064,7 @@ extern "C" BOOL Insect_GroundWalk(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6155,7 +6155,7 @@ extern "C" s32 Insect_GroundWalkNet(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6204,7 +6204,7 @@ extern "C" void Insect_ClampStepXZ(V3 *out, V3 *in, s32 c) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6212,7 +6212,7 @@ namespace s08 {
 // 0x222a8d0
 extern "C" void Spider_Update(Rec *self) {
     s16 *cnt = &self->unk_242;
-    func_02106020(func_0209c0ac(self->unk_130), 0);
+    func_02106020(PooledModel_getModel(self->unk_130), 0);
     s32 st = self->unk_251;
     if (st != 0xb && st != 9) {
         s32 xy[2];
@@ -6248,7 +6248,7 @@ extern "C" void Spider_Update(Rec *self) {
             self->unk_251 = 0x13;
             self->unk_23c = 0;
             self->unk_204.x = self->unk_21c;
-            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0);
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0);
         }
         break;
     case 1:
@@ -6276,7 +6276,7 @@ extern "C" void Spider_Update(Rec *self) {
             self->unk_251 = 1;
             self->unk_254 = 0;
             AnimFrameCtrl_setup(self->unk_ec, 0x21, 1, 0x1000, 0);
-            NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0x1f);
+            NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0x1f);
         } else {
             self->unk_100 = 1;
         }
@@ -6297,7 +6297,7 @@ extern "C" void Spider_Update(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6376,7 +6376,7 @@ extern "C" void TreeBug_Update(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6438,7 +6438,7 @@ extern "C" void TreeBug_Idle(Rec *self, s16 *cnt) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6484,7 +6484,7 @@ extern "C" void TreeBug_ClimbUp(Rec *self, s16 *cnt) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6530,7 +6530,7 @@ extern "C" void TreeBug_ClimbDown(Rec *self, s16 *cnt) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6583,7 +6583,7 @@ extern "C" void TreeBug_Wiggle(Rec *self, s16 *cnt) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define func_02133150 _s32_div_f
 #define func_ov068_02269a28 _ZN18Unk_ov068_0226821419func_ov068_02269a28Ev
 #define func_ov068_02269aa4 _ZN18Unk_ov068_0226821419func_ov068_02269aa4Ev
@@ -6639,7 +6639,7 @@ extern "C" void TreeBug_FlyOff(Rec *self, s16 *cnt) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x222a24c
 extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p) {
@@ -6682,7 +6682,7 @@ extern "C" void TreeBug_DropAndFly(Rec *o, s16 *p) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x222a1c8
 extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
@@ -6701,7 +6701,7 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
                 if (v > 0x1f) {
                     v = 0x1f;
                 }
-                NNS_G3dMdlSetMdlAlpha(func_0209c0ac(o->unk_130), 0, v);
+                NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(o->unk_130), 0, v);
             }
         }
     }
@@ -6713,7 +6713,7 @@ extern "C" void Walkingstick_CheckAlarm(Rec *o, s16 *p) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x222a090
 extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
@@ -6765,7 +6765,7 @@ extern "C" void TreeBug_CheckAlarm(Rec *o, s16 *p) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x2229eac
 extern "C" void Crawler_Update(Rec *o) {
@@ -6835,7 +6835,7 @@ extern "C" void Crawler_Update(Rec *o) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x2229dcc
 extern "C" BOOL Insect_IsOnFlower(void *pp) {
@@ -6864,7 +6864,7 @@ extern "C" BOOL Insect_IsOnFlower(void *pp) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x2229c1c
 extern "C" void Crawler_Watch(Rec *o, s16 *p) {
@@ -6931,7 +6931,7 @@ extern "C" void Crawler_Watch(Rec *o, s16 *p) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x2229ab4
 extern "C" void Crawler_Wander(Rec *o) {
@@ -7000,7 +7000,7 @@ extern "C" void Crawler_Wander(Rec *o) {
 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s07 {
 // 0x2229a3c
 extern "C" void Insect_PlaceOnPlantSide(Rec *o) {
@@ -7023,7 +7023,7 @@ extern "C" void Insect_PlaceOnPlantSide(Rec *o) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229938
 extern "C" void Insect_SetWanderBox(Rec *self) {
@@ -7060,12 +7060,12 @@ extern "C" void Insect_SetWanderBox(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229910
 extern "C" void Insect_Despawn(Rec *self) {
     self->unk_250 = 4;
-    NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_130), 0, 0);
+    NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(self->unk_130), 0, 0);
 }
 }
 #undef func_020339bc
@@ -7076,7 +7076,7 @@ extern "C" void Insect_Despawn(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22297c8
 extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
@@ -7133,7 +7133,7 @@ extern "C" void Crawler_Escape(Rec *self, s16 *pp) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229698
 extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, s16 s1, s32 s2, s32 s3, u32 s4, u32 s5) {
@@ -7184,7 +7184,7 @@ extern "C" void Insect_InitBehaviour(Rec *self, s16 a1, s32 a2, s32 a3, s16 s0, 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229670
 extern "C" s16 Insect_RandomAngle() {
@@ -7203,7 +7203,7 @@ extern "C" s16 Insect_RandomAngle() {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229668
 extern "C" void Insect_UpdateButterfly(Rec *self) {
@@ -7218,7 +7218,7 @@ extern "C" void Insect_UpdateButterfly(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22295ec
 extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) {
@@ -7239,7 +7239,7 @@ extern "C" void Insect_InitFlutter(Rec *self, s32 a, s32 b, s32 c, u8 d, s32 e) 
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22294f8
 extern "C" void Insect_InitButterfly(Rec *self) {
@@ -7282,7 +7282,7 @@ extern "C" void Insect_InitButterfly(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22294f0
 extern "C" void Insect_UpdateMoth(Rec *self) {
@@ -7297,7 +7297,7 @@ extern "C" void Insect_UpdateMoth(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229464
 extern "C" void Insect_InitMoth(Rec *self) {
@@ -7322,7 +7322,7 @@ extern "C" void Insect_InitMoth(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229424
 extern "C" void Insect_InitFirefly(Rec *self) {
@@ -7340,7 +7340,7 @@ extern "C" void Insect_InitFirefly(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x222941c
 extern "C" void Insect_UpdateFirefly(Rec *self) {
@@ -7355,7 +7355,7 @@ extern "C" void Insect_UpdateFirefly(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22293f8
 extern "C" void Insect_InitMosquito(Rec *self) {
@@ -7370,7 +7370,7 @@ extern "C" void Insect_InitMosquito(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22293f0
 extern "C" void Insect_UpdateMosquito(Rec *self) {
@@ -7385,7 +7385,7 @@ extern "C" void Insect_UpdateMosquito(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229370
 extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d) {
@@ -7407,7 +7407,7 @@ extern "C" void Insect_PlaceOnTrunk(Rec *self, s32 a, s32 b, s32 c, s32 d) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229368
 extern "C" void Insect_UpdateTreeBug(Rec *self) {
@@ -7422,7 +7422,7 @@ extern "C" void Insect_UpdateTreeBug(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229144
 extern "C" void Insect_InitTreeBug(Rec *self) {
@@ -7508,7 +7508,7 @@ extern "C" void Insect_InitTreeBug(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22290e4
 extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d) {
@@ -7526,7 +7526,7 @@ extern "C" void Insect_InitHop(Rec *self, s32 a, s32 b, s32 c, u8 d) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x22290dc
 extern "C" void Insect_UpdateHopper(Rec *self) {
@@ -7541,7 +7541,7 @@ extern "C" void Insect_UpdateHopper(Rec *self) {
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 namespace s06 {
 // 0x2229050
 extern "C" void Insect_InitHopper(Rec *self) {
@@ -7573,12 +7573,12 @@ extern "C" void Insect_InitHopper(Rec *self) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2229010
 extern "C" void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, u8 p4, u8 p5) {
@@ -7602,12 +7602,12 @@ extern "C" void Insect_InitDragonflyParams(Unk_ov003_02228710_Act *a, s32 x, s32
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228fb4
 extern "C" void Insect_InitDragonfly(Unk_ov003_02228710_Act *a) {
@@ -7639,12 +7639,12 @@ extern "C" void Insect_InitDragonfly(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228fac
 extern "C" void Insect_UpdateDragonfly(Unk_ov003_02228710_Act *a) {
@@ -7666,12 +7666,12 @@ extern "C" void Insect_UpdateDragonfly(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228f6c
 extern "C" void Insect_InitPondskater(Unk_ov003_02228710_Act *a) {
@@ -7695,12 +7695,12 @@ extern "C" void Insect_InitPondskater(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228f64
 extern "C" void Insect_UpdatePondskater(Unk_ov003_02228710_Act *a) {
@@ -7722,12 +7722,12 @@ extern "C" void Insect_UpdatePondskater(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228f0c
 extern "C" void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 z, s16 w) {
@@ -7755,12 +7755,12 @@ extern "C" void Insect_InitOnPlant(Unk_ov003_02228710_Act *a, s32 x, s32 y, s32 
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228f04
 extern "C" void Insect_UpdateCrawler(Unk_ov003_02228710_Act *a) {
@@ -7782,12 +7782,12 @@ extern "C" void Insect_UpdateCrawler(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228e60
 extern "C" void Insect_InitCrawler(Unk_ov003_02228710_Act *a) {
@@ -7824,12 +7824,12 @@ extern "C" void Insect_InitCrawler(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228de0
 extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a) {
@@ -7840,7 +7840,7 @@ extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a) {
     }
     a->unk_232 = 0x168;
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(a->unk_130), 0, 0);
     }
 }
 }
@@ -7859,12 +7859,12 @@ extern "C" void Insect_InitBurrower(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228dd8
 extern "C" void Insect_UpdateMoleCricket(Unk_ov003_02228710_Act *a) {
@@ -7886,12 +7886,12 @@ extern "C" void Insect_UpdateMoleCricket(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228dd0
 extern "C" void Insect_UpdatePillBug(Unk_ov003_02228710_Act *a) {
@@ -7913,17 +7913,17 @@ extern "C" void Insect_UpdatePillBug(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d7c
 extern "C" void Insect_InitBee(Unk_ov003_02228710_Act *a) {
     if (a->unk_251 == 0x13) {
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(a->unk_130), 0, 0);
     }
     Insect_InitBehaviour(a, 0, 0x5a, 0x3c, 0, 0, 2, 0, 0, 0);
     a->unk_21c = 0;
@@ -7944,12 +7944,12 @@ extern "C" void Insect_InitBee(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d74
 extern "C" void Insect_UpdateBee(Unk_ov003_02228710_Act *a) {
@@ -7971,12 +7971,12 @@ extern "C" void Insect_UpdateBee(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d48
 extern "C" void Insect_InitHoneybee(Unk_ov003_02228710_Act *a) {
@@ -7999,12 +7999,12 @@ extern "C" void Insect_InitHoneybee(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d40
 extern "C" void Insect_UpdateHoneybee(Unk_ov003_02228710_Act *a) {
@@ -8026,12 +8026,12 @@ extern "C" void Insect_UpdateHoneybee(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d14
 extern "C" void Insect_InitFly(Unk_ov003_02228710_Act *a) {
@@ -8054,12 +8054,12 @@ extern "C" void Insect_InitFly(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228d0c
 extern "C" void Insect_UpdateFly(Unk_ov003_02228710_Act *a) {
@@ -8081,12 +8081,12 @@ extern "C" void Insect_UpdateFly(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228cc4
 extern "C" void Insect_InitFlea(Unk_ov003_02228710_Act *a) {
@@ -8110,12 +8110,12 @@ extern "C" void Insect_InitFlea(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228cbc
 extern "C" void Insect_UpdateFlea(Unk_ov003_02228710_Act *a) {
@@ -8137,12 +8137,12 @@ extern "C" void Insect_UpdateFlea(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228c1c
 extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a) {
@@ -8152,7 +8152,7 @@ extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a) {
     Insect_InitBehaviour(a, t, 0x5a, 0x40, 0, 0, 0x28, 0, 3, 0);
     if (a->unk_251 != 0xb && a->unk_251 != 0x10) {
         a->unk_21c = p->x;
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(a->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(a->unk_130), 0, 0);
         p->z -= 0x7d0;
     } else {
         a->unk_238 = (s16)0xc000;
@@ -8175,12 +8175,12 @@ extern "C" void Insect_InitSpider(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228c14
 extern "C" void Insect_UpdateSpider(Unk_ov003_02228710_Act *a) {
@@ -8202,12 +8202,12 @@ extern "C" void Insect_UpdateSpider(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228c0c
 extern "C" void Insect_UpdateStinger(Unk_ov003_02228710_Act *a) {
@@ -8229,12 +8229,12 @@ extern "C" void Insect_UpdateStinger(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228bdc
 extern "C" void Insect_InitTarantula(Unk_ov003_02228710_Act *a) {
@@ -8257,12 +8257,12 @@ extern "C" void Insect_InitTarantula(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b98
 extern "C" void Insect_InitScorpion(Unk_ov003_02228710_Act *a) {
@@ -8286,12 +8286,12 @@ extern "C" void Insect_InitScorpion(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b74
 extern "C" void Insect_InitAnt(Unk_ov003_02228710_Act *a) {
@@ -8313,12 +8313,12 @@ extern "C" void Insect_InitAnt(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b6c
 extern "C" void Insect_UpdateAnt(Unk_ov003_02228710_Act *a) {
@@ -8340,12 +8340,12 @@ extern "C" void Insect_UpdateAnt(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b48
 extern "C" void Insect_InitDungBeetle(Unk_ov003_02228710_Act *a) {
@@ -8367,12 +8367,12 @@ extern "C" void Insect_InitDungBeetle(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b40
 extern "C" void Insect_UpdateDungBeetle(Unk_ov003_02228710_Act *a) {
@@ -8394,12 +8394,12 @@ extern "C" void Insect_UpdateDungBeetle(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b38
 extern "C" void Insect_InitKind38(Unk_ov003_02228710_Act *a) {
@@ -8421,12 +8421,12 @@ extern "C" void Insect_InitKind38(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b30
 extern "C" void Insect_UpdateKind38(Unk_ov003_02228710_Act *a) {
@@ -8448,12 +8448,12 @@ extern "C" void Insect_UpdateKind38(Unk_ov003_02228710_Act *a) {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 namespace s05 {
 // 0x2228b18
 extern "C" // factory (allocates 0xa0 bytes)
@@ -8476,12 +8476,12 @@ void *InsectManager_Create() {
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228ad0
 InsectManager::InsectManager() { using namespace s05;
     sWateringActive = 0;
@@ -8501,12 +8501,12 @@ InsectManager::InsectManager() { using namespace s05;
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228a48
 InsectManager::~InsectManager() { using namespace s05;
 }
@@ -8525,12 +8525,12 @@ InsectManager::~InsectManager() { using namespace s05;
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x222898c
 BOOL InsectManager::allocHeldInsect(Unk_ov003_02228710_Act *e) { using namespace s05;
     if (e->unk_250 != 0) {
@@ -8561,8 +8561,8 @@ BOOL InsectManager::allocHeldInsect(Unk_ov003_02228710_Act *e) { using namespace
         pv->z = w.z;
     }
     e->unk_250 = 2;
-    func_0209c25c(&unk_80, e->unk_230);
-    func_0209c0c8(e->unk_130);
+    ModelSlotPool_acquire(&unk_80, e->unk_230);
+    PooledModel_reset(e->unk_130);
     e->unk_249 = 1;
     return TRUE;
 }
@@ -8581,18 +8581,18 @@ BOOL InsectManager::allocHeldInsect(Unk_ov003_02228710_Act *e) { using namespace
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228924
 BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
     Unk_ov003_02228710_Act *e = (Unk_ov003_02228710_Act *)&sSpecialInsects[idx];
     if (e->unk_250 == 0) {
-        func_0209c25c(&unk_68, e->unk_230);
-        func_0209c0c8(e->unk_130);
+        ModelSlotPool_acquire(&unk_68, e->unk_230);
+        PooledModel_reset(e->unk_130);
         e->unk_249 = 1;
         e->unk_18 = 0;
         e->unk_1c = 0;
@@ -8617,18 +8617,18 @@ BOOL InsectManager::allocSpecialInsect(s32 id, s32 idx) { using namespace s05;
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x22288dc
 BOOL InsectManager::allocFieldInsect(Unk_ov003_02228710_Act *e) { using namespace s05;
     if (e->unk_250 == 0) {
         e->unk_250 = 2;
-        func_0209c25c(&unk_50, e->unk_230);
-        func_0209c0c8(e->unk_130);
+        ModelSlotPool_acquire(&unk_50, e->unk_230);
+        PooledModel_reset(e->unk_130);
         e->unk_249 = 0;
         return TRUE;
     }
@@ -8649,12 +8649,12 @@ BOOL InsectManager::allocFieldInsect(Unk_ov003_02228710_Act *e) { using namespac
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x22287c8
 void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using namespace s05;
     Unk_ov003_02228710_Vec *p = &e->unk_204;
@@ -8681,18 +8681,18 @@ void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using name
     e->unk_23a = 0;
     e->unk_242 = 0;
     e->unk_251 = 0x13;
-    func_0209c0b4(e->unk_130);
+    PooledModel_unload(e->unk_130);
     e->unk_18 = 0;
     e->unk_1c = 0;
     e->unk_254 = 0;
     e->unk_24a = 0;
     e->unk_236 = 0;
     if (mode == 1) {
-        func_0209c224(&unk_50, e->unk_230);
+        ModelSlotPool_release(&unk_50, e->unk_230);
     } else if (mode == 2) {
-        func_0209c224(&unk_68, e->unk_230);
+        ModelSlotPool_release(&unk_68, e->unk_230);
     } else {
-        func_0209c224(&unk_80, e->unk_230);
+        ModelSlotPool_release(&unk_80, e->unk_230);
     }
     e->unk_170 = 0;
 }
@@ -8711,17 +8711,17 @@ void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using name
 #define AnimModel_detachAnim _ZN9AnimModel10detachAnimEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0b4 _ZN12Unk_0209c0ac13func_0209c0b4Ev
-#define func_0209c0c8 _ZN12Unk_0209c0ac13func_0209c0c8Ev
-#define func_0209c1a4 _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE
-#define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_unload _ZN11PooledModel6unloadEv
+#define PooledModel_reset _ZN11PooledModel5resetEv
+#define ModelSlotPool_init _ZN13ModelSlotPool4initEjPvS0_jPFS0_jjEPFvvE
+#define ModelSlotPool_release _ZN13ModelSlotPool7releaseEPt
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
 // 0x2228710
 BOOL InsectManager::vfunc_00() { using namespace s05;
-    func_0209c1a4(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)FieldInsectHeap_Create, (void *)FieldInsectHeap_Destroy, 0);
-    func_0209c1a4(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)SpecialInsectHeap_Create, (void *)SpecialInsectHeap_Destroy, 0);
-    func_0209c1a4(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)HeldInsectHeap_Create, (void *)HeldInsectHeap_Destroy, 0);
+    ModelSlotPool_init(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)FieldInsectHeap_Create, (void *)FieldInsectHeap_Destroy, 0);
+    ModelSlotPool_init(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)SpecialInsectHeap_Create, (void *)SpecialInsectHeap_Destroy, 0);
+    ModelSlotPool_init(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)HeldInsectHeap_Create, (void *)HeldInsectHeap_Destroy, 0);
     u32 *g = gCommManager[0];
     if (CommManager_isSlotActive(g, g[0x64 / 4]) == 0) {
         allocSpecialInsect(0x3a, 0);
@@ -8756,10 +8756,10 @@ BOOL InsectManager::vfunc_00() { using namespace s05;
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -8808,18 +8808,18 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     }
     void *h;
     if (mode == 0) {
-        h = func_0209c25c(a->unk_50, &e->unk_230);
+        h = ModelSlotPool_acquire(a->unk_50, &e->unk_230);
     } else if (mode == 1) {
-        h = func_0209c25c(a->unk_68, &e->unk_230);
+        h = ModelSlotPool_acquire(a->unk_68, &e->unk_230);
     } else {
-        h = func_0209c25c(a->unk_80, &e->unk_230);
+        h = ModelSlotPool_acquire(a->unk_80, &e->unk_230);
     }
     p130 = e->unk_130;
-    if (!func_0209c0d0(p130, h, l.path)) {
+    if (!PooledModel_loadFromSlot(p130, h, l.path)) {
         return;
     }
     obj = e->unk_50;
-    Model_setResource(obj, func_0209c0ac(p130), 0);
+    Model_setResource(obj, PooledModel_getModel(p130), 0);
     rec = &sInsectModelParams[t4];
     if (rec->unk_00 != 0) {
         func_020639e8(l.path, sInsectVisAnimExtFmt, l.name);
@@ -8829,7 +8829,7 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
     if (!File_Exists(l.path)) {
         return;
     }
-    h2 = func_0209c348(h);
+    h2 = ModelSlot_getHeap(h);
     void *r7;
     if (mode == 1) {
         if (t4 == 0x3a) {
@@ -8944,10 +8944,10 @@ extern "C" void Insect_LoadModel(Unk_ov003_022283d0_Own *a, Rec *e, s32 mode) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9058,10 +9058,10 @@ extern "C" void Insect_UpdateHideTimer(void *a, Rec *e) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9244,10 +9244,10 @@ L268:
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9320,10 +9320,10 @@ BOOL InsectManager::onExecute() { using namespace s04;
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9441,10 +9441,10 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9521,10 +9521,10 @@ extern "C" s32 FieldInsect_GetKindAndAlarm(u8 *out, u32 idx) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9610,10 +9610,10 @@ extern "C" BOOL FieldInsect_IsTreeKind(u32 idx) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -9686,10 +9686,10 @@ extern "C" s32 FieldInsect_GetPosAndKind(Vec3 *out, u32 idx) {
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
 #define func_02088b20 _ZN12Unk_02088b2013func_02088b20EP4Vec3iS1_h
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c0d0 _ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc
-#define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
-#define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define PooledModel_loadFromSlot _ZN11PooledModel12loadFromSlotEP9ModelSlotPKc
+#define ModelSlotPool_acquire _ZN13ModelSlotPool7acquireEPt
+#define ModelSlot_getHeap _ZN9ModelSlot7getHeapEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov068_022687c0 _ZN18Unk_ov068_0226821419func_ov068_022687c0Ev
 #define sInsectPathFmt0x "/insect/01/bug0%d"
@@ -10246,7 +10246,7 @@ extern "C" s32 InsectPool_Draw(void *a, Rec *o, s32 n) {
 loop0:
     if (o->unk_250 == 3 && o->unk_249 != 0) {
         if (n == 8) {
-            if (Insect_IsTreeKindForCulling(a, *(u8 *)&o->unk_24d) == 0 || func_0203a4c4(&o->unk_204, 0x2000, 0x2000) == 0) {
+            if (Insect_IsTreeKindForCulling(a, *(u8 *)&o->unk_24d) == 0 || Camera_IsBlockingFocusView(&o->unk_204, 0x2000, 0x2000) == 0) {
                 Insect_Draw(a, o);
             }
         } else {
@@ -10274,7 +10274,7 @@ test0:
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x222733c
@@ -10323,7 +10323,7 @@ extern "C" BOOL Insect_IsTreeKindForCulling(s32 a, s32 t) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227320
@@ -10347,7 +10347,7 @@ extern "C" V3 *HeldInsect_GetPos(s32 idx) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227248
@@ -10400,7 +10400,7 @@ extern "C" void HeldInsect_Start(s32 t, s32 idx) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x22271a8
@@ -10436,7 +10436,7 @@ extern "C" void Insect_OnNetRemove(s32 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x222716c
@@ -10469,7 +10469,7 @@ extern "C" BOOL Insect_CanHopAway(s32 t) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227100
@@ -10479,7 +10479,7 @@ extern "C" void Insect_OnClaimGranted(s32 id) {
     if ((id >> 4) & 1) o = &sFieldInsects[idx];
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     if (o->unk_250 == 3) {
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0);
     }
     o->unk_251 = 0x10;
 }
@@ -10499,7 +10499,7 @@ extern "C" void Insect_OnClaimGranted(s32 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2227074
@@ -10534,7 +10534,7 @@ extern "C" void HeldInsect_Remove(u8 id, s32 flag) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226fac
@@ -10580,7 +10580,7 @@ extern "C" s32 Insect_FinishCatch(u8 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226ee8
@@ -10628,7 +10628,7 @@ extern "C" s32 Insect_GetCatchResult(s32 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226e70
@@ -10639,7 +10639,7 @@ extern "C" void Insect_CancelCatch(s32 id) {
     else if ((id >> 5) & 1) o = &sSpecialInsects[idx];
     if (o->unk_251 == 0x10 && o->unk_24d >= 0) {
         o->unk_251 = 0x13;
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0x1f);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0x1f);
     }
 }
 }
@@ -10658,7 +10658,7 @@ extern "C" void Insect_CancelCatch(s32 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226d54
@@ -10672,12 +10672,12 @@ extern "C" s32 Insect_TryCatch(u8 id) {
     u32 c4 = (u8)o->unk_24d;
     if (c4 == -1 || o->unk_250 != 3 || t6 == 0xb || t6 == 9 || t6 == 0x10) return 0;
     if (c4 == 0x31 || c4 == 0x1e || c4 == 0x35) {
-        if (func_02106020(func_0209c0ac(&o->unk_130), 0) < 0x1f) return 0;
+        if (func_02106020(PooledModel_getModel(&o->unk_130), 0) < 0x1f) return 0;
     }
     if (c4 == 0x35 && t6 == 0x13) return 0;
     s32 c = o->unk_24d;
     if (c != 0x3a && c != 0x3b) {
-        NNS_G3dMdlSetMdlAlpha(func_0209c0ac(&o->unk_130), 0, 0);
+        NNS_G3dMdlSetMdlAlpha(PooledModel_getModel(&o->unk_130), 0, 0);
         o->unk_251 = 0x10;
     }
     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
@@ -10707,7 +10707,7 @@ extern "C" s32 Insect_TryCatch(u8 id) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226d08
@@ -10739,14 +10739,14 @@ extern "C" void Insect_SetScale(Obj *o, s32 v) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226c88
 extern "C" void Insect_Draw(void *a, Obj *o) {
     s32 *p = &o->unk_210;
     if (*p > 0) {
-        void *t = func_0209c0ac(&o->unk_130);
+        void *t = PooledModel_getModel(&o->unk_130);
         s32 r = func_02106020(t, 0);
         u32 c;
         r = (31 - r) << 1;
@@ -10774,7 +10774,7 @@ extern "C" void Insect_Draw(void *a, Obj *o) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226c14
@@ -10812,7 +10812,7 @@ extern "C" BOOL Insect_HasShadow(void *a, Obj *o) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 namespace s02 {
 // 0x2226a9c
@@ -10881,7 +10881,7 @@ extern "C" void Insect_SetModelMatrix(void *a, Obj *o, s32 flag) {
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
 #define CommManager_isMyAid _ZN11CommManager7isMyAidEj
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
 #define data_ov003_02234b06 ((Unk_ov003_02234b06_Rec *)&::sInsectModelParams[1])
 #define sFieldInsects (*(Obj (*)[1])&::sFieldInsects)
 #define sSpecialInsects (*(Obj (*)[1])&::sSpecialInsects)
@@ -10912,8 +10912,8 @@ BOOL InsectManager::onDraw() { using namespace s02;
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -10946,9 +10946,9 @@ BOOL InsectManager::vfunc_0c() { using namespace s01;
         pc++;
         func_ov003_022287c8(obj, q, 3);
     }
-    func_0209c15c(obj->unk_50);
-    func_0209c15c(obj->unk_68);
-    func_0209c15c(obj->unk_80);
+    ModelSlotPool_destroy(obj->unk_50);
+    ModelSlotPool_destroy(obj->unk_68);
+    ModelSlotPool_destroy(obj->unk_80);
     Town_ClearBeesReleased();
     return TRUE;
 }
@@ -10973,8 +10973,8 @@ BOOL InsectManager::vfunc_0c() { using namespace s01;
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11043,8 +11043,8 @@ extern "C" void InsectPool_UpdateInViewOfPlayer(s32 obj, s32 flag, s32 idx, s32 
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11114,8 +11114,8 @@ extern "C" void InsectPool_UpdateInView(s32 obj, s32 flag) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11143,8 +11143,8 @@ extern "C" void Insect_EnableTrashFlies(void) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11270,8 +11270,8 @@ fail:
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11318,8 +11318,8 @@ extern "C" s32 Insect_TrySpawnRandom(s32 a, s32 b, s8 c, u32 d) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11350,8 +11350,8 @@ extern "C" void Insect_SpawnBeeSwarm(Vec3 *v) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11443,8 +11443,8 @@ extern "C" BOOL HeldInsect_SetHandMatrix(s32 idx, s16 *p, Unk_ov003_02226180_Blk
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11484,8 +11484,8 @@ extern "C" BOOL Insect_NetClaim(s32 x) {
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_0209c0ac _ZN12Unk_0209c0ac13func_0209c0acEv
-#define func_0209c15c _ZN12Unk_0209c15c13func_0209c15cEv
+#define PooledModel_getModel _ZN11PooledModel8getModelEv
+#define ModelSlotPool_destroy _ZN13ModelSlotPool7destroyEv
 #define func_ov003_022287c8 _ZN13InsectManager10freeInsectEP22Unk_ov003_02228710_Acti
 #define func_ov003_022288dc _ZN13InsectManager16allocFieldInsectEP22Unk_ov003_02228710_Act
 #define data_ov003_02259484 ((u8 *)&::sSpecialInsects[0].unk_130)
@@ -11498,7 +11498,7 @@ extern "C" BOOL Insect_IsBeeSwarmOut(void) {
     Unk_020cbb18_Ptr *p = gCommManager;
     if (CommManager_isSlotActive(p, p->unk_64) == 0) {
         Rec *e = sSpecialInsects;
-        if (func_02106020(func_0209c0ac(data_ov003_02259484), 0) > 0x1e && e->unk_250 == 3 && e->unk_24d != 0x13) {
+        if (func_02106020(PooledModel_getModel(data_ov003_02259484), 0) > 0x1e && e->unk_250 == 3 && e->unk_24d != 0x13) {
             return TRUE;
         }
     }
@@ -11639,7 +11639,7 @@ extern "C" void Insect_TickFrame(u8 *self)
 // 0x2225f2c
 Insect::Insect()
 { using namespace s00;
-    unk_130.func_0209c0c8();
+    unk_130.reset();
     unk_251 = 0x13;
     unk_24f = 0;
     unk_23a = 0;

@@ -398,7 +398,7 @@ s32 Ground_IsWalkable(s32 a, s32 b);
 s32 Ground_CanPlaceItem(s32 a, s32 b);
 u32 _ZN12BgModelCache7getAcreEi(u32 a, u32 b);
 u32 GroundSeason_CalcPhase();
-void _ZN12Unk_020af53c13func_020af694Ev(const char *s);
+void _ZN14SnowmanRecords11updateDailyEv(const char *s);
 void BuriedMask_Reset(void *p);
 BOOL Item_IsNormalItem(u16 *p);
 void func_02039e6c(u16 v);
@@ -412,7 +412,7 @@ BOOL _ZN11CommManager8isOnlineEv(void *g);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
 s32 Item_GetStumpSize(u16 *p);
-void _ZN12Unk_020af53c13func_020af64cEj(void *obj, s32 v);
+void _ZN14SnowmanRecords6removeEj(void *obj, s32 v);
 extern char data_021ed2e6[];
 extern void *gCommManager;
 BOOL func_0204f0f4(u8 v);
@@ -1006,7 +1006,7 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
                     if (Item_IsFurniture(cell) || Item_IsNormalItem(cell)) {
                         if (!_ZN11CommManager8isOnlineEv(g)) func_02039e6c(*cell);
                     } else if (Item_IsSnowman(cell)) {
-                        _ZN12Unk_020af53c13func_020af64cEj(data_021ed2e6, Item_GetSnowmanIndex(cell));
+                        _ZN14SnowmanRecords6removeEj(data_021ed2e6, Item_GetSnowmanIndex(cell));
                     }
                 }
                 Ns_0204debc::BlockMap_SetItemAtUnit(this, c, px, py, 0);
@@ -1333,7 +1333,7 @@ u32 TownMap::getGrassType() {
 void TownMap::updateGroundSeason() {
     u32 v = GroundSeason_CalcPhase();
     unk_2224_hi = v;
-    _ZN12Unk_020af53c13func_020af694Ev(data_021ed2e6);
+    _ZN14SnowmanRecords11updateDailyEv(data_021ed2e6);
 }
 
 void *TownMap::buildBlockEntries(s32 heap) {

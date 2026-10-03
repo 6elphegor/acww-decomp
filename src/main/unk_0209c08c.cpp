@@ -78,7 +78,7 @@ extern u8 gFieldSceneKind;
 }
 
 extern "C" {
-extern u8 data_020d064c[];
+extern u8 sExclusiveRoomScenes[];
 }
 
 extern "C" {
@@ -86,31 +86,31 @@ extern void *gCurrentHeap;
 }
 
 extern "C" {
-extern u8 data_021d7290[];
+extern u8 sRoomEntryRequest[];
 }
 
 extern "C" {
-extern u8 data_021d72b4[];
+extern u8 sSceneOccupantTable[];
 }
 
 extern "C" {
-s32 func_0209c860(void *p, s32 v);
+s32 RoomEntryRequest_SetResult(void *p, s32 v);
 }
 
 extern "C" {
-s32 func_0209c8d4(void *p, u32 a, u32 b);
+s32 SceneOccupantTable_CountWith(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-s32 func_0209c8f0(void *p, u32 a, u32 b);
+s32 SceneOccupantTable_Remove(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-s32 func_0209c908(void *p, u32 a, u32 b);
+s32 SceneOccupantTable_Add(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-s32 func_0209c878(void *p);
+s32 RoomEntryRequest_Init(void *p);
 }
 
 extern "C" {
@@ -152,31 +152,31 @@ void SceneExit_SnapPos(void *o, u32 id, Unk_0209c614_Vec *v34, Unk_0209c614_Vec 
 }
 
 extern "C" {
-void func_0209c85c(void *p, u32 id);
+void RoomEntryRequest_SetExitId(void *p, u32 id);
 }
 
 extern "C" {
-void func_0209c854(void *p, u32 v);
+void RoomEntryRequest_SetDoorKind(void *p, u32 v);
 }
 
 extern "C" {
-void func_0209c850(void *p, u32 v);
+void RoomEntryRequest_SetScene(void *p, u32 v);
 }
 
 extern "C" {
-void func_0209c840(void *p, Unk_0209c614_Vec *v);
+void RoomEntryRequest_SetPos(void *p, Unk_0209c614_Vec *v);
 }
 
 extern "C" {
-void func_0209c83c(void *p, s32 v);
+void RoomEntryRequest_SetAngle(void *p, s32 v);
 }
 
 extern "C" {
-void func_0209c82c(void *p, Unk_0209c614_Vec *v);
+void RoomEntryRequest_SetRetreatPos(void *p, Unk_0209c614_Vec *v);
 }
 
 extern "C" {
-BOOL func_0209c7ec(u32 v);
+BOOL RoomEntry_IsExclusiveScene(u32 v);
 }
 
 extern "C" {
@@ -333,13 +333,13 @@ public:
 };
 
 // ---- pool entry (0x1c bytes)
-class Unk_0209c2f4 {
+class ModelSlot {
 public:
-    Unk_0209c2f4();
-    BOOL func_0209c2f4();
-    BOOL func_0209c300(void *a, void *b, u32 size, void *extra);
-    TexVramSlot *func_0209c344();
-    void *func_0209c348();
+    ModelSlot();
+    BOOL clear();
+    BOOL init(void *a, void *b, u32 size, void *extra);
+    TexVramSlot *getVramSlot();
+    void *getHeap();
 
     u8 unk_00;
     void *unk_04;
@@ -347,14 +347,14 @@ public:
 };
 
 // ---- model resource holder (derived from ModelResource)
-class Unk_0209c0ac {
+class PooledModel {
 public:
-    Unk_0209c0ac();
-    ~Unk_0209c0ac();
-    void *func_0209c0ac();
-    void func_0209c0b4();
-    void func_0209c0c8();
-    s32 func_0209c0d0(Unk_0209c2f4 *e, const char *name);
+    PooledModel();
+    ~PooledModel();
+    void *getModel();
+    void unload();
+    void reset();
+    s32 loadFromSlot(ModelSlot *e, const char *name);
 
     ModelResource unk_00;
     u8 unk_34;
@@ -363,59 +363,59 @@ public:
 };
 
 // ---- pool of 0x1c-byte entries
-class Unk_0209c15c {
+class ModelSlotPool {
 public:
-    Unk_0209c15c();
-    ~Unk_0209c15c();
-    BOOL func_0209c15c();
-    BOOL func_0209c1a4(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free);
-    void func_0209c224(u16 *idx);
-    Unk_0209c2f4 *func_0209c25c(u16 *idx);
+    ModelSlotPool();
+    ~ModelSlotPool();
+    BOOL destroy();
+    BOOL init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free);
+    void release(u16 *idx);
+    ModelSlot *acquire(u16 *idx);
 
     u16 unk_00;
     u32 unk_04;
     u32 unk_08;
-    Unk_0209c2f4 *unk_0c;
+    ModelSlot *unk_0c;
     Unk_0209c1a4_Alloc unk_10;
     Unk_0209c15c_Fn unk_14;
 };
 // global of the file: 1-byte state with empty inline constructor/destructor (func_0209c0a8 / func_0209c0a4)
-class Unk_0209c08c {
+class SavedFadeIn {
 public:
-    Unk_0209c08c();
-    ~Unk_0209c08c();
+    SavedFadeIn();
+    ~SavedFadeIn();
     u8 unk_00;
 };
 
-Unk_0209c08c data_021d7158;
+SavedFadeIn sSavedFadeIn;
 
-extern "C" void func_0209c370(u16 *p);
-extern "C" void func_0209c364(u16 *p);
-extern "C" void func_0209c098(u32 v);
-extern "C" u32 func_0209c08c();
+extern "C" void ModelSlotHandle_Init(u16 *p);
+extern "C" void ModelSlotHandle_Destroy(u16 *p);
+extern "C" void Scene_SaveFadeIn(u32 v);
+extern "C" u32 Scene_GetSavedFadeIn();
 
-extern "C" void func_0209c370(u16 *p) {
+extern "C" void ModelSlotHandle_Init(u16 *p) {
     *p = 0xffff;
 }
 
-extern "C" void func_0209c364(u16 *p) {
+extern "C" void ModelSlotHandle_Destroy(u16 *p) {
     *p = 0xffff;
 }
 
-Unk_0209c2f4::Unk_0209c2f4() {
+ModelSlot::ModelSlot() {
     unk_00 = 0;
     unk_04 = 0;
 }
 
-void *Unk_0209c2f4::func_0209c348() {
+void *ModelSlot::getHeap() {
     return unk_04;
 }
 
-TexVramSlot *Unk_0209c2f4::func_0209c344() {
+TexVramSlot *ModelSlot::getVramSlot() {
     return &unk_08;
 }
 
-BOOL Unk_0209c2f4::func_0209c300(void *a, void *b, u32 size, void *extra) {
+BOOL ModelSlot::init(void *a, void *b, u32 size, void *extra) {
     if (size) {
         unk_04 = FrameHeap_Create((size + 3) & ~3, (u32)extra);
     }
@@ -426,13 +426,13 @@ BOOL Unk_0209c2f4::func_0209c300(void *a, void *b, u32 size, void *extra) {
     return TRUE;
 }
 
-BOOL Unk_0209c2f4::func_0209c2f4() {
+BOOL ModelSlot::clear() {
     unk_00 = 0;
     unk_04 = 0;
     return TRUE;
 }
 
-Unk_0209c15c::Unk_0209c15c() {
+ModelSlotPool::ModelSlotPool() {
     unk_10 = 0;
     unk_14 = 0;
     unk_0c = 0;
@@ -441,15 +441,15 @@ Unk_0209c15c::Unk_0209c15c() {
     unk_00 = 0xffff;
 }
 
-Unk_0209c15c::~Unk_0209c15c() {}
+ModelSlotPool::~ModelSlotPool() {}
 
-Unk_0209c2f4 *Unk_0209c15c::func_0209c25c(u16 *idx) {
+ModelSlot *ModelSlotPool::acquire(u16 *idx) {
     u32 i = *idx;
     if (i == 0xffff) {
-        Unk_0209c2f4 *e;
+        ModelSlot *e;
         u16 k;
         u32 n;
-        Unk_0209c2f4 *arr;
+        ModelSlot *arr;
         arr = unk_0c;
         e = arr;
         k = 0;
@@ -463,7 +463,7 @@ Unk_0209c2f4 *Unk_0209c15c::func_0209c25c(u16 *idx) {
             }
         }
         u32 h = unk_00;
-        Unk_0209c2f4 *r = &arr[h];
+        ModelSlot *r = &arr[h];
         if (arr[h].unk_00 == 0) {
             r->unk_00 = 1;
             *idx = unk_00;
@@ -477,11 +477,11 @@ Unk_0209c2f4 *Unk_0209c15c::func_0209c25c(u16 *idx) {
     return 0;
 }
 
-void Unk_0209c15c::func_0209c224(u16 *idx) {
+void ModelSlotPool::release(u16 *idx) {
     u32 i = *idx;
     if (i != 0xffff) {
-        Unk_0209c2f4 *arr = unk_0c;
-        Unk_0209c2f4 *e = &arr[i];
+        ModelSlot *arr = unk_0c;
+        ModelSlot *e = &arr[i];
         arr[i].unk_00 = 0;
         unk_00 = *idx;
         *idx = 0xffff;
@@ -490,7 +490,7 @@ void Unk_0209c15c::func_0209c224(u16 *idx) {
     }
 }
 
-BOOL Unk_0209c15c::func_0209c1a4(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free) {
+BOOL ModelSlotPool::init(u32 n, void *a, void *b, u32 size, Unk_0209c1a4_Alloc alloc, Unk_0209c15c_Fn free) {
     void *mem;
     unk_10 = alloc;
     unk_14 = free;
@@ -499,25 +499,25 @@ BOOL Unk_0209c15c::func_0209c1a4(u32 n, void *a, void *b, u32 size, Unk_0209c1a4
     mem = 0;
     unk_08 = 0;
     if (size) mem = unk_10(total, 0);
-    unk_0c = (Unk_0209c2f4 *)Mem_Alloc(unk_04 * 0x1c);
-    Unk_0209c2f4 *e = unk_0c;
+    unk_0c = (ModelSlot *)Mem_Alloc(unk_04 * 0x1c);
+    ModelSlot *e = unk_0c;
     if (e) {
         u32 i;
         for (i = 0; i < unk_04; i++) {
-            e = new (e) Unk_0209c2f4;
-            if (!e->func_0209c300(a, b, size, mem)) return FALSE;
+            e = new (e) ModelSlot;
+            if (!e->init(a, b, size, mem)) return FALSE;
             e++;
         }
     }
     return TRUE;
 }
 
-BOOL Unk_0209c15c::func_0209c15c() {
-    Unk_0209c2f4 *e = unk_0c;
+BOOL ModelSlotPool::destroy() {
+    ModelSlot *e = unk_0c;
     if (e != 0) {
         u32 i;
         for (i = 0; i < unk_04; i++) {
-            e->func_0209c2f4();
+            e->clear();
             e++;
         }
         Mem_Free(unk_0c);
@@ -532,50 +532,50 @@ BOOL Unk_0209c15c::func_0209c15c() {
     return TRUE;
 }
 
-Unk_0209c0ac::Unk_0209c0ac() {
+PooledModel::PooledModel() {
     unk_34 = 0;
     unk_38 = 0;
 }
 
-Unk_0209c0ac::~Unk_0209c0ac() {
-    func_0209c0b4();
+PooledModel::~PooledModel() {
+    unload();
 }
 
-s32 Unk_0209c0ac::func_0209c0d0(Unk_0209c2f4 *e, const char *name) {
+s32 PooledModel::loadFromSlot(ModelSlot *e, const char *name) {
     if (unk_38 == 0) unk_38 = e;
     if (unk_34 == 0) {
-        TexVramSlot *r = e->func_0209c344();
-        void *t = e->func_0209c348();
+        TexVramSlot *r = e->getVramSlot();
+        void *t = e->getHeap();
         if (unk_00.loadModel((void *)name, r, t, gCurrentHeap) == 3) unk_34 = 1;
     }
     return unk_34;
 }
 
-void Unk_0209c0ac::func_0209c0c8() {
-    func_0209c0b4();
+void PooledModel::reset() {
+    unload();
 }
 
-void Unk_0209c0ac::func_0209c0b4() {
+void PooledModel::unload() {
     unk_34 = 0;
     unk_38 = 0;
     unk_3c = 0;
     unk_00.release();
 }
 
-void *Unk_0209c0ac::func_0209c0ac() {
+void *PooledModel::getModel() {
     return unk_00.getModel();
 }
 
-Unk_0209c08c::Unk_0209c08c() {}
+SavedFadeIn::SavedFadeIn() {}
 
-Unk_0209c08c::~Unk_0209c08c() {}
+SavedFadeIn::~SavedFadeIn() {}
 
-extern "C" void func_0209c098(u32 v) {
-    data_021d7158.unk_00 = v;
+extern "C" void Scene_SaveFadeIn(u32 v) {
+    sSavedFadeIn.unk_00 = v;
 }
 
-extern "C" u32 func_0209c08c() {
-    return data_021d7158.unk_00;
+extern "C" u32 Scene_GetSavedFadeIn() {
+    return sSavedFadeIn.unk_00;
 }
 
 struct Unk_0209c3cc_Nib {
@@ -619,7 +619,7 @@ struct Unk_0209c41c_Pack {
     u8 hi : 4;
 };
 
-extern "C" void func_0209c5a0(u32 a, u32 b);
+extern "C" void RoomEntry_Leave(u32 a, u32 b);
 
 struct Unk_0209c614_Actor {
     u8 pad_00[0x5c];

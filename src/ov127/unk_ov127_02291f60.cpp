@@ -54,13 +54,13 @@ void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void File_LoadToBuffer(const char *a, void *b, u32 c);
 void Gfx2d_LoadScreen(void *a, u32 b, u32 c, u32 d);
 void Gfx2d_SetLayerControl(u32 a, u32 b, u32 c, u32 d);
-void func_020affac(void *p);
+void Constellation_HighlightAll(void *p);
 void _ZN10BgVramTaskC1Ev(void *self);
 
-Unk_ov127_02291fcc *func_020b04a4(s32 i);
-Unk_ov127_02291fcc *func_020b053c(s32 i);
-s32 func_020b005c(s32 x, s32 y);
-void func_020b0008(void *p);
+Unk_ov127_02291fcc *Constellation_GetRecordAlt(s32 i);
+Unk_ov127_02291fcc *Constellation_GetRecord(s32 i);
+s32 Constellation_CellToScreenIndex(s32 x, s32 y);
+void Constellation_SetLinePalette(void *p);
 void _ZN10BgVramTask6cancelEv(void *self);
 s32 _ZN10BgVramTask13requestScreenEjhjj(void *self, void *b, s32 c, s32 d, s32 e);
 s32 Cell_HitTest(void *info, s32 x, s32 y, s32 a, s32 b);
@@ -120,7 +120,7 @@ extern "C" void StarSky_LoadSkyBg(u8 *s, u32 v) {
     Gfx2d_SetLayerControl(s[0x2832], 1, 0, 0);
     Gfx2d_LoadCharFile("menu/star/b_bg.bch", gCurrentHeap, s[0x2832], 0x10, 0x10, 0x1f);
     File_LoadToBuffer("menu/star/bg.bsc", s + 0x24, 0x1000);
-    func_020affac(s + 0x24);
+    Constellation_HighlightAll(s + 0x24);
     Gfx2d_LoadScreen(s + 0x24, s[0x2832], 0x1000, 0);
 }
 
@@ -395,7 +395,7 @@ extern "C" s32 StarSky_ScreenToCellInScope(Unk_ov127_02291f60 *s, s32 x, s32 y, 
 
 extern "C" void StarSky_RebuildScreen(Unk_ov127_02291f60 *s)
 {
-    func_020b0008(s->unk_24);
+    Constellation_SetLinePalette(s->unk_24);
     StarSky_SetFlags(s, 2);
 }
 
@@ -494,7 +494,7 @@ extern "C" void StarSky_ClearFlags(Unk_ov127_02291f60 *s, u32 m)
 
 extern "C" s32 StarSky_GetStarAt(s32 x, s32 y)
 {
-    return StarSky_GetStarAtCellIndex(func_020b005c(x, y));
+    return StarSky_GetStarAtCellIndex(Constellation_CellToScreenIndex(x, y));
 }
 
 extern "C" s32 StarSky_GetStarAtCellIndex(s32 i)
@@ -509,7 +509,7 @@ extern "C" s32 StarSky_GetStarAtCellIndex(s32 i)
 
 extern "C" s32 StarSky_GetLineAt(s32 x, s32 y)
 {
-    return StarSky_GetLineAtCellIndex(func_020b005c(x, y));
+    return StarSky_GetLineAtCellIndex(Constellation_CellToScreenIndex(x, y));
 }
 
 extern "C" s32 StarSky_GetLineAtCellIndex(s32 i)
@@ -604,7 +604,7 @@ extern "C" s32 StarSky_FindConstellationByLine(u16 v)
 {
     s32 i, j;
     for (i = 0; i < 16; i++) {
-        Unk_ov127_02291fcc *q = func_020b053c(i);
+        Unk_ov127_02291fcc *q = Constellation_GetRecord(i);
         if (q == 0) {
             continue;
         }
@@ -1019,7 +1019,7 @@ extern "C" BOOL StarSky_IsConstellationFree(Unk_ov127_02291fcc *p)
     s32 i, j, k;
     StarSky_CollectStars(p, sTestedConstellationStars);
     for (i = 0; i < 16; i++) {
-        Unk_ov127_02291fcc *q = func_020b04a4(i);
+        Unk_ov127_02291fcc *q = Constellation_GetRecordAlt(i);
         if (q == 0) {
             continue;
         }

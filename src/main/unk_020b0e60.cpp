@@ -368,7 +368,7 @@ u32 Villager_GetWhereabouts(void);
 void Town_RemoveShipParts(void);
 void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
-void _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
+void _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
 void Scene_GetWarpRequest(void);
 s32 ScenePos_GetUnitZ(void *a);
 s32 ScenePos_GetUnitX(void *a);
@@ -789,7 +789,7 @@ BOOL TownUnitShapeQuery::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volati
                     } else if (Item_IsSnowman(p)) {
                         s32 t = Item_GetSnowmanIndex(p);
                         s32 u, w;
-                        _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(data_021ed2e6, t, &u, &w, 0, 0, 0, 0);
+                        _ZN14SnowmanRecords7getInfoEjPjS0_S0_PhS1_S1_(data_021ed2e6, t, &u, &w, 0, 0, 0, 0);
                         *a = 0x1000;
                         *b = 0x2000;
                         *c = 0;
