@@ -95,8 +95,8 @@ pairs, e.g. `Ent data_ov083_02271d20[3] = {{&C::f824,&C::f7d8},{&C::f790,&C::f76
 * Strings shared by several functions (one copy in the original) need `// mwcc-flags: -str reuse` on line 1;
   the default `-str noreuse` makes one copy per use. `#pragma reuse_strings` is ignored.
 * The overlays built on main's `Unk_020d77a4`/`Unk_020d8bc8` scene classes (ov080, ov083, ...) share a set of
-  main renames and class chains: copy `pipeline_wip/scratch/link_ov083/renames.txt` and the class declarations
-  from `link_ov083/unit.cpp` rather than inventing new names. Their inline constructors store
+  main renames and class chains: reuse the class declarations of the linked ov083 units rather than inventing new
+  names. Their inline constructors store
   `_ZTV12Unk_020d77a4` / `_ZTV12Unk_020d8bc8` (being added to main's symbols.txt).
 
 ## 3. Order the functions
@@ -176,8 +176,7 @@ static map objects of main's class `Unk_020b4f8c`). Their one source file define
 names; mwcc emits the Thumb `__sinit_<file>` (`.init`) and its `.ctor` word itself from the objects with a
 non-constant initialiser (an aggregate with an `extern u8` element: the byte that `__sinit` copies from ov003/ov004;
 `Unk_020b4f8c` objects built by their out-of-line constructor and registered with `__register_global_object`).
-The units are in `pipeline_wip/sdk_units/OV_ovNNN/` (generated and order-solved by
-`pipeline_wip/smallov2_work/gen.py` / `solve.py`).
+Their sources were generated from the original image, with the definition order solved against the data layout.
 
 * The spec has no `.text` line: `unit unit.cpp`, then `.init`, `.ctor`, `.data` and (when not empty) `.bss`.
   `install_tu.py ovNNN spec.txt` names the file after the first range (`src/ovNNN/unk_ovNNN_<.init start>.cpp`).
@@ -317,7 +316,7 @@ that follow from the order) for it: ignore those, but not BYTES or MISSING lines
 
 The ARM9 main module (0x02000000-0x020e7500, `src/main`, `config/usa/arm9/{delinks,symbols,relocs}.txt`) is linked
 one original translation unit at a time: `install_tu.py main <spec>` makes one unit `complete` and leaves the rest
-delinked. The unit table is `pipeline_wip/scratch/link_main/plan.md` (TU000-TU238, `tu/TUnnn.txt` per unit).
+delinked.
 Everything in sections 1-5 above applies (real names, function order, data definitions, `__sinit`); this section
 is what is different. All of it was checked with full ROM builds (TU014-017, TU048, TU068, TU102, TU113, TU138,
 TU139, TU183, TU185, TU198, TU210).
@@ -493,8 +492,8 @@ They are listed in one file for the whole program, `config/usa/arm9/abs_symbols.
     SDK_SECTION_ARENA_EX_START    abs:0x02400000
 
 and used in C as the SDK does: `extern u8 SDK_SYS_STACKSIZE[];` ... `(s32)SDK_SYS_STACKSIZE`,
-`(void *)SDK_SECTION_ARENA_EX_START`. Examples: `pipeline_wip/sdk_units/L001` (OS_InitThread), `L003`/`L004`
-(OS_GetInitArenaLo/Hi).
+`(void *)SDK_SECTION_ARENA_EX_START`. Examples: OS_InitThread, OS_GetInitArenaLo/Hi
+in `src/autoload_2`.
 
 * **Build.** `tools/lcf_symbols.py` (the same step as above; `tools/configure.py` adds it when either kind of file
   has entries, so rerun `configure.py` after creating the file) appends `SDK_SYS_STACKSIZE = 0x2000;` to the end of
@@ -642,7 +641,7 @@ prints the linker errors, `romdiff.py`, `linkprep.py diff main` and reverts `src
 * `aliases.py` links a rewritten copy of the object (`build/usa/aliases/...`). Tools that read the unit's object
   from `build/usa/src/main` see the unpatched one.
 * Unit names follow the text start. Installing a unit renames the old file that started there; anything that
-  refers to `src/main` file names (plans, `merge_notes.txt`, objdiff history) must use addresses.
+  refers to `src/main` file names (plans, notes, objdiff history) must use addresses.
 
 # Library modules (autoload_2, itcm)
 
@@ -693,7 +692,7 @@ names from the module's own `symbols.txt` (both have `kind:label` aliases, e.g. 
 accepts `lcf_symbols.txt` in the module directory (section starts `AUTOLOAD_2_DATA_START`, `ITCM_TEXT_START`);
 `force_active.py` keeps the unit's `symbols.txt` globals. `python3 tools/configure.py usa` after every install.
 
-First unit: `pipeline_wip/sdk_units/T001` (GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154).
+First unit: GX_SetGraphicsMode/GXS_SetGraphicsMode, 0x0210f0c4-0x0210f154.
 
 SDK functions that use numbers of the SDK's linker script (stack sizes, arena starts) need the names of
 `config/usa/arm9/abs_symbols.txt`: see "Absolute symbols" under "Names the linker script defines".
@@ -810,7 +809,9 @@ refused or, when it is trimmed, renamed with its own extension.
   marker words and Nintendo's filler as data, and the 18 Thumb SVC stubs of libsyscall (`IntrWait`, `WaitByLoop`,
   `CpuSet`, ...) as global functions at their addresses, 11 of them at 2-mod-4 addresses. ARM callers in autoload_2
   and ov001 reach them with `blx`, Thumb callers with `bl`. No symbol at 0x02000000 is needed (the range starts at
-  the section start). Generated from the original image by `pipeline_wip/asm_tooling_work/t/gen_secure.py`.
+  the section start). The filler is not stored in the repository: `.incbin` lines read it from the extracted ROM
+  (`extract/usa/arm9/arm9.bin`), expanded by `tools/expand_incbin.py` before mwasmarm (whose own `.incbin` reads
+  files in text mode).
 
 ## Limits
 
