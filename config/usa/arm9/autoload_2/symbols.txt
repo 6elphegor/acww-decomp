@@ -2118,8 +2118,7 @@ func_02131604 kind:function(arm,size=0x18,unknown) addr:0x02131604
 _dsub kind:function(arm,size=0x10) addr:0x0213161c
 func_0213162c kind:function(arm,size=0x3a4,unknown) addr:0x0213162c
 _fadd kind:function(arm,size=0xc) addr:0x021319d0
-func_021319dc kind:function(arm,size=0x210,unknown) addr:0x021319dc
-func_02131bec kind:function(arm,size=0x8) addr:0x02131bec
+func_021319dc kind:function(arm,size=0x218,unknown) addr:0x021319dc
 func_02131bf4 kind:function(arm,size=0x48) addr:0x02131bf4
 func_02131c3c kind:function(arm,size=0x40) addr:0x02131c3c
 func_02131c7c kind:function(arm,size=0x3c) addr:0x02131c7c
@@ -2136,6 +2135,7 @@ func_02131ec0 kind:function(arm,size=0x24) addr:0x02131ec0
 func_02131ee4 kind:function(arm,size=0x90) addr:0x02131ee4
 func_02131f74 kind:function(arm,size=0x90) addr:0x02131f74
 func_02132004 kind:function(arm,size=0x88) addr:0x02132004
+_dneq kind:label(arm) addr:0x02132004
 func_0213208c kind:function(arm,size=0x88) addr:0x0213208c
 _deq kind:label(arm) addr:0x0213208c
 func_02132114 kind:function(arm,size=0x84) addr:0x02132114
@@ -2143,10 +2143,13 @@ func_02132114 kind:function(arm,size=0x84) addr:0x02132114
 func_02132198 kind:function(arm,size=0x88) addr:0x02132198
 _dls kind:label(arm) addr:0x02132198
 func_02132220 kind:function(arm,size=0x88) addr:0x02132220
+_dleq kind:label(arm) addr:0x02132220
 func_021322a8 kind:function(arm,size=0x98) addr:0x021322a8
 .L_021322bc kind:label(arm) addr:0x021322bc local
 func_02132340 kind:function(arm,size=0x88) addr:0x02132340
+_dgr kind:label(arm) addr:0x02132340
 func_021323c8 kind:function(arm,size=0x88) addr:0x021323c8
+_dgeq kind:label(arm) addr:0x021323c8
 func_02132450 kind:function(arm,size=0x98) addr:0x02132450
 .L_02132464 kind:label(arm) addr:0x02132464 local
 func_021324e8 kind:function(arm,size=0x50) addr:0x021324e8

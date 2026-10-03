@@ -1,13 +1,16 @@
 // mwcc-flags: -nothumb -O4,p
 // Original assembly (Metrowerks ARM runtime): hand-written in the original; linked as assembly per the project's
-// assembly policy.
-// autoload_2 0x021319d0-0x02131bec: _fadd (float add)
+// assembly policy (accepted by user decision 2026-10-02).
+// autoload_2 0x021319d0-0x02131bf4: _fadd (float add)
 // Entry and body are two asm functions laid out contiguously: the entry flips the sign of y and BRANCHES INTO THE
 // BODY OF THE OPPOSITE OPERATION when the signs differ (_dadd <-> _dsub, _fadd <-> _fsub). mwcc's assembler has no
 // global label inside an asm function and no `function+offset` operand, so that body start is its own symbol.
+// The last two instructions (0x02131bec `mvn r0, #0x80000000; bx lr`, dsd: func_02131bec) are unreachable: a
+// duplicate of the NaN return just before them, referenced from nowhere. They are the dead tail of this file
+// (like the unreachable code kept in _fsub) and are merged into the _fadd body here.
 #include "types.h"
 
-// routines of other A002 units that this one branches to
+// routines of other units that this one branches to
 void func_02132c8c(void);
 
 // asm functions are emitted first and in source order: they are laid out contiguously.
@@ -24,6 +27,7 @@ asm void _fadd(void)
 }
 
 // _fadd body; also entered from _fsub (0x02132c88). Evidence: rrx (`orr r0, r1, r0, rrx`).
+// 0x02131bec-0x02131bf4 is unreachable (kept as in the original).
 asm void func_021319dc(void)
 {
     subs ip, r0, r1
@@ -172,6 +176,8 @@ L_02131bd8:
     orr r0, r2, r0, lsr #1
     bx lr
 L_02131be4:
+    mvn r0, #0x80000000
+    bx lr
     mvn r0, #0x80000000
     bx lr
 }
