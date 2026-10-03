@@ -227,10 +227,10 @@ struct TouchPicker {
     BOOL pushTriangle(TouchPickTriangle *o);
 };
 
-struct Unk_020b28ac {
-    void func_020b28ac(s32 *a, s32 *b, s32 *c, s32 *d);
-    BOOL func_020b2958(s32 *a, s32 *b, s32 *c, u32 i);
-    u32 func_020b29e4();
+struct StrBSizeData {
+    void getSolidBounds(s32 *a, s32 *b, s32 *c, s32 *d);
+    BOOL getTriangle(s32 *a, s32 *b, s32 *c, u32 i);
+    u32 getTriangleCount();
 };
 
 class Unk_020abea8 {
@@ -581,7 +581,7 @@ extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
 extern u8 data_020d0a7c[];
-extern void *data_021c6204;
+extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
@@ -592,16 +592,16 @@ void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
 void _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
-Unk_020b28ac *StrBSize_Get(u16 *p);
+StrBSizeData *StrBSize_Get(u16 *p);
 
-void func_020b16bc(void *self, const u8 *src);
-void func_020b16b8(void *self);
-s32 func_020b1694(void *self);
-s32 func_020b1698(void *self);
-s32 func_020b169c(void *self);
-s32 func_020b16a0(void *self);
-s32 func_020b16a4(void *self);
-s32 func_020b16b0(void *self);
+void BuildingInfo_Copy(void *self, const u8 *src);
+void BuildingInfo_Destroy(void *self);
+s32 BuildingInfo_GetViewRangeBack(void *self);
+s32 BuildingInfo_GetViewRangeFront(void *self);
+s32 BuildingInfo_GetViewRangeX(void *self);
+s32 BuildingInfo_GetUnk05(void *self);
+s32 BuildingInfo_GetInteriorScene(void *self);
+s32 BuildingInfo_GetEntranceType(void *self);
 
 void Snd_SeEmitterPlayHeld(void *, u32, u32, u32);
 void func_02003e70(void *, u32, u32, u32);
@@ -617,8 +617,8 @@ void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void TalkAutoAdvance_start(void *, u32);
-void func_020b1040(u32, u32);
-void func_020b101c();
+void BuildingOccupancy_Leave(u32, u32);
+void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
 s32 func_020e780c(s32, s32);
@@ -635,10 +635,10 @@ s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
 void Scene_SetTownReturnPos(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
-void func_020b0f00();
+void Building_SetLastEntranceType();
 
-s32 func_020b10c4(u32);
-void func_020b10e0(u32);
+s32 BuildingOccupancy_GetAnswer(u32);
+void BuildingOccupancy_RequestEnter(u32);
 BOOL Item_IsNookShop(u16 *);
 void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
@@ -651,7 +651,7 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);
-BOOL func_020b1d3c(u32, u32);
+BOOL BuildingState_Set(u32, u32);
 
 void *Heap_Alloc(void *heap, u32 size);
 u32 BuildingList_IndexOf(void *p);
@@ -680,7 +680,7 @@ BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
-s32 func_020b1d80(u32);
+s32 BuildingState_Get(u32);
 s32 Field_GetStructureTexSuffix();
 void FieldStructureMgr_GetPlayerHouseTex();
 s32 PlayerHouseTex_Get();
@@ -796,8 +796,8 @@ struct Unk_ov009_0225df84_Obj {
 void BuildingActor::vfunc_4c(u32 a, u8 b) {
     switch (a) {
     case 6:
-        func_020b1040(unk_132, 0);
-        func_020b101c();
+        BuildingOccupancy_Leave(unk_132, 0);
+        HouseVisitor_ClearPresent();
         Scene_GetWarpRequest();
         Scene_ResetTownReturnPos();
         unk_230 = 1;

@@ -33,9 +33,9 @@ BOOL SceneId_IsHouseRoom(s32 a);
 void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *q, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
-void *_ZN9HouseData13func_02060550Ei(void *a, s32 b);
-void _ZN9HouseRoom13func_02060808EPtj(void *a, void *b, s32 c);
-void _ZN9HouseRoom13func_020607e0EPtj(void *a, void *b, s32 c);
+void *_ZN9HouseData15getRoomForSceneEi(void *a, s32 b);
+void _ZN9HouseRoom12setWallpaperEPtj(void *a, void *b, s32 c);
+void _ZN9HouseRoom9setCarpetEPtj(void *a, void *b, s32 c);
 
 BOOL func_0203411c(u32 i, u16 *v);
 BOOL func_0203414c(u32 i, u16 *v);
@@ -215,13 +215,13 @@ extern "C" void func_02034048(Unk_02034048_Pkt *p)
     if (p->id == Scene_GetCurrent()) {
         func_02034194(&tmp, f7, f6, f8, 0);
     } else if (SceneId_IsHouseRoom(id)) {
-        void *r = _ZN9HouseData13func_02060550Ei(gSaveHouse, id);
+        void *r = _ZN9HouseData15getRoomForSceneEi(gSaveHouse, id);
         if (r != NULL) {
             if (f6) {
-                _ZN9HouseRoom13func_02060808EPtj(r, &tmp, f7);
+                _ZN9HouseRoom12setWallpaperEPtj(r, &tmp, f7);
                 func_0203414c(id, &tmp);
             } else {
-                _ZN9HouseRoom13func_020607e0EPtj(r, &tmp, f7);
+                _ZN9HouseRoom9setCarpetEPtj(r, &tmp, f7);
                 func_0203411c(id, &tmp);
             }
         }

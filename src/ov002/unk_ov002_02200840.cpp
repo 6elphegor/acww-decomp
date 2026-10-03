@@ -102,7 +102,7 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 MenuCtrl_IsForceCloseDue();
 
-extern void *data_021c6210;
+extern void *gMenuHeap;
 extern void *gCurrentHeap;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
@@ -1504,7 +1504,7 @@ void MenuProc::restartKeyRepeat() { ((KeyRepeatView *)&unk_50)->init(8, 1, 7); }
 void MenuProc::initKeyRepeat(s32 a, s32 b, s32 c) { ((KeyRepeatView *)&unk_50)->init(a, b, c); }
 
 void *MenuProc::operator new(unsigned long size) {
-    void *p = Heap_AllocTail(data_021c6210, size);
+    void *p = Heap_AllocTail(gMenuHeap, size);
     if (p == 0) {
         return 0;
     }
@@ -1512,7 +1512,7 @@ void *MenuProc::operator new(unsigned long size) {
     return p;
 }
 
-void MenuProc::operator delete(void *p) { Heap_Free(data_021c6210, p); }
+void MenuProc::operator delete(void *p) { Heap_Free(gMenuHeap, p); }
 
 s32 MenuProc::getSlideOffsetY() { return ((MenuSlideView *)&unk_70)->getOffsetY(); }
 

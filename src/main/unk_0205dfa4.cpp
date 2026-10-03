@@ -105,11 +105,11 @@ public:
     virtual ~HeldItemTexAnim();
 };
 
-class Unk_0205f8d4 {
+class FishBobber {
 public:
     u8 pad[0x40];
-    void func_0205fd7c();
-    void func_0205fd80();
+    void destruct();
+    void construct();
 };
 
 // ---- manager singleton (sHeldItemModelBank) ----
@@ -195,7 +195,7 @@ public:
     u8 unk_00;
     u32 unk_04;
     HeldItemTexAnim unk_08;
-    Unk_0205f8d4 unk_28;
+    FishBobber unk_28;
     HeldItemModel();
     ~HeldItemModel();
 };
@@ -217,8 +217,8 @@ extern char sHeldItemModelPathBuf[0x18];
 extern char sHeldItemAnimPathBuf[0x18];
 extern char sHeldItemTexAnimPathBuf[0x1c];
 extern HeldItemModelBank sHeldItemModelBank;
-extern void *data_021c61b4;
-extern void *data_021c61c0;
+extern void *gHeldItemAnimHeap;
+extern void *gHeldItemModelHeap;
 extern Unk_0205f6f8_Cfg *gCommManager;
 
 s32 func_020639e8(char *buf, const char *fmt, ...);
@@ -235,13 +235,13 @@ void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void *Scene_GetCurrent(void);
 u32 Scene_GetMaxPlayers(void *p);
 u32 Scene_GetMaxCharacters(void *p);
-s32 func_02084fbc(void);
+s32 NpcSpawn_GetSpNpcSlotCount(void);
 u32 ItemInfo_GetHoldableIndex(u16 *p);
 u32 ItemInfo_GetHoldableCount(void);
-void func_0205bae4(void);
-s32 func_0205bc04(void);
-void func_0205bc20(void);
-void func_0205bb00(u32 x);
+void HeldItemAnimHeap_Destroy(void);
+s32 HeldItemModelHeap_Destroy(void);
+void HeldItemModelHeap_Create(void);
+void HeldItemAnimHeap_Create(u32 x);
 
 void HeldItemModels_OnJointCalcPost(Unk_0205dfb8_Obj *o);
 void HeldItemModel_Update(Unk_0205dfb8_Obj *o);
@@ -249,14 +249,14 @@ void HeldItemModels_OnJointCalcPre(Unk_0205e61c_Obj *self);
 
 void Model_GetJointWorldMtx(void *slot, Unk_0205dfb8_Out *out, u32 a);
 void _ZN9AnimModel12drawAnimatedEPv(void *slot, Unk_0205dfb8_Vec *v);
-void func_0205f7f4(void *sub, Unk_0205dfb8_Out *o, Unk_0205dfb8_Vec *v);
+void FishBobber_Draw(void *sub, Unk_0205dfb8_Out *o, Unk_0205dfb8_Vec *v);
 void WorldCurve_FromCurved(Unk_0205dfb8_Vec *o, Unk_0205dfb8_Vec *v);
-void _ZN12Unk_0205f8d413func_0205faf8EP16Unk_0205f8d4_Vec(void *sub, Unk_0205dfb8_Vec *v);
+void _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(void *sub, Unk_0205dfb8_Vec *v);
 void _ZN13AnimFrameCtrl4stepEv(void *p);
-void _ZN12Unk_0205f8d413func_0205f8d4Ev(void *p);
+void _ZN10FishBobber6updateEv(void *p);
 void _ZN14BlendAnimModel9stepBlendEv(void *slot);
-void _ZN12Unk_0205f8d413func_0205f92cEi(void *p, u32 k);
-void _ZN12Unk_0205f8d413func_0205fcccEv(void *p);
+void _ZN10FishBobber8setStateEi(void *p, u32 k);
+void _ZN10FishBobber6detachEv(void *p);
 void _ZN9AnimModel15detachJointAnimEv(void *slot);
 void _ZN14BlendAnimModel15onJointCalcPostEPS_(void *slot, void *o);
 u32 func_0205cdbc(void);
@@ -274,7 +274,7 @@ void _ZN9ModelAnim4initEiiit(u32 *p, u32 a, u32 b, u32 c, u32 d);
 void _ZN9ModelAnim14addToRenderObjEj(u32 *p, u32 a);
 void _ZN9AnimModel10attachAnimEv(void *slot);
 void _ZN5Model11setCallbackEiiiii(void *slot, void (*fn)(void *), u32 a, u32 b, void *o, u32 c);
-void _ZN12Unk_0205f8d413func_0205fd0cEjP9Characterj(void *p, u32 id, u32 x, u32 k);
+void _ZN10FishBobber6attachEjP9Characterj(void *p, u32 id, u32 x, u32 k);
 void func_0205fba8(void *p);
 
 u32 HeldItem_GetPlttVramSize(void);
@@ -341,22 +341,22 @@ char sHeldItemTexAnimPathBuf[0x1c];
 HeldItemModelBank sHeldItemModelBank;
 
 extern "C" void HeldItemModels_Init(u32 x) {
-    func_0205bc20();
+    HeldItemModelHeap_Create();
     HeldItemModels_AllocVram(&sHeldItemModelBank);
-    if (data_021c61c0) {
-        func_020e877c(data_021c61c0);
+    if (gHeldItemModelHeap) {
+        func_020e877c(gHeldItemModelHeap);
     }
-    func_0205bb00(x);
+    HeldItemAnimHeap_Create(x);
     HeldItemModels_CreateAnimHeaps(&sHeldItemModelBank);
-    if (data_021c61b4) {
-        func_020e877c(data_021c61b4);
+    if (gHeldItemAnimHeap) {
+        func_020e877c(gHeldItemAnimHeap);
     }
 }
 
 extern "C" void HeldItemModels_Destroy(void) {
     HeldItemModels_ReleaseAll(&sHeldItemModelBank);
-    func_0205bae4();
-    func_0205bc04();
+    HeldItemAnimHeap_Destroy();
+    HeldItemModelHeap_Destroy();
 }
 
 extern "C" char *HeldItem_GetModelPath(u32 x) {
@@ -417,14 +417,14 @@ extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
         n = cfg;
     }
     m = n ? n : 1;
-    end = Scene_GetMaxCharacters(Scene_GetCurrent()) + func_02084fbc() - m;
+    end = Scene_GetMaxCharacters(Scene_GetCurrent()) + NpcSpawn_GetSpNpcSlotCount() - m;
     for (i = 0; i < n; i++) {
         self->unk_dc[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
     }
     for (i = 4; i < end + 4; i++) {
         self->unk_dc[i].alloc((void *)HeldItem_GetTexVramSize(), (void *)HeldItem_GetTex4x4VramSize(), (void *)HeldItem_GetPlttVramSize());
     }
-    heap = data_021c61c0;
+    heap = gHeldItemModelHeap;
     for (i = 0; i < n; i++) {
         self->unk_00[i] = Heap_AllocAligned(heap, HeldItem_GetModelBufferSize(), 4);
     }
@@ -435,7 +435,7 @@ extern "C" void HeldItemModels_AllocVram(HeldItemModelBank *self) {
 }
 
 extern "C" void HeldItemModels_CreateAnimHeaps(HeldItemModelBank *self) {
-    void *heap = data_021c61b4;
+    void *heap = gHeldItemAnimHeap;
     u32 n;
     u32 i = gCommManager->unk_6c;
     n = Scene_GetMaxPlayers(Scene_GetCurrent());
@@ -449,7 +449,7 @@ extern "C" void HeldItemModels_CreateAnimHeaps(HeldItemModelBank *self) {
         n = 1;
     }
     u32 t = Scene_GetMaxCharacters(Scene_GetCurrent());
-    n = t + func_02084fbc() - n;
+    n = t + NpcSpawn_GetSpNpcSlotCount() - n;
     n += 4;
     for (i = 4; i < n; i++) {
         self->unk_24[i] = FrameHeap_Create(HeldItem_GetAnimHeapSize(), heap);
@@ -475,14 +475,14 @@ extern "C" void HeldItemModels_ReleaseAll(HeldItemModelBank *self) {
             self->unk_b20[j] = 0;
         }
     }
-    if (data_021c61b4) {
-        func_020e885c(data_021c61b4);
+    if (gHeldItemAnimHeap) {
+        func_020e885c(gHeldItemAnimHeap);
     }
     for (k = 0; k < 9; k++) {
         self->unk_00[k] = 0;
     }
-    if (data_021c61c0) {
-        func_020e885c(data_021c61c0);
+    if (gHeldItemModelHeap) {
+        func_020e885c(gHeldItemModelHeap);
     }
 }
 
@@ -619,13 +619,13 @@ HeldItemTexAnim::HeldItemTexAnim() {}
 HeldItemTexAnim::~HeldItemTexAnim() {}
 
 HeldItemModel::HeldItemModel() {
-    unk_28.func_0205fd80();
+    unk_28.construct();
     unk_00 = 9;
     unk_04 = 0x1000;
 }
 
 HeldItemModel::~HeldItemModel() {
-    unk_28.func_0205fd7c();
+    unk_28.destruct();
 }
 
 extern "C" void HeldItemModels_OnJointCalcPre(Unk_0205e61c_Obj *self) {
@@ -710,20 +710,20 @@ extern "C" void HeldItemModel_Setup(Unk_0205dfb8_Obj *o, u32 id, u32 x, u16 *cod
     }
 done:
     if (Unk_0205ddc8_In(code, 0x1375, 0x1375)) {
-        _ZN12Unk_0205f8d413func_0205fd0cEjP9Characterj(o->unk_28, id, x, 1);
+        _ZN10FishBobber6attachEjP9Characterj(o->unk_28, id, x, 1);
     } else if (*code >= 0x1374 && *code <= 0x1374) {
-        _ZN12Unk_0205f8d413func_0205fd0cEjP9Characterj(o->unk_28, id, x, 0);
+        _ZN10FishBobber6attachEjP9Characterj(o->unk_28, id, x, 0);
     } else if ((*code >= 0x137a && *code <= 0x137a) || (*code >= 0x137b && *code <= 0x137b)) {
-        _ZN12Unk_0205f8d413func_0205fd0cEjP9Characterj(o->unk_28, id, x, 2);
+        _ZN10FishBobber6attachEjP9Characterj(o->unk_28, id, x, 2);
     } else {
-        _ZN12Unk_0205f8d413func_0205fd0cEjP9Characterj(o->unk_28, id, x, 3);
+        _ZN10FishBobber6attachEjP9Characterj(o->unk_28, id, x, 3);
     }
     if (Unk_0205ddc8_In(code, 0x1374, 0x1374) || (*code >= 0x1375 && *code <= 0x1375))
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 1);
+        _ZN10FishBobber8setStateEi(o->unk_28, 1);
 }
 
 extern "C" void HeldItemModel_Release(Unk_0205dfb8_Obj *o) {
-    _ZN12Unk_0205f8d413func_0205fcccEv(o->unk_28);
+    _ZN10FishBobber6detachEv(o->unk_28);
     u32 id = o->unk_00;
     if (HeldItem_GetAnimId(HeldItemModels_GetItem(&sHeldItemModelBank, id)) != 0x2b) {
         _ZN9AnimModel15detachJointAnimEv(HeldItemModels_GetModel(&sHeldItemModelBank, id));
@@ -751,23 +751,23 @@ extern "C" void HeldItemModel_PlayAnim(Unk_0205dfb8_Obj *o, s32 a, u32 b, u32 c)
     ((void (*)(HeldItemModelBank *, u32, u32, u32, u32))HeldItemModels_PlayAnim)(&sHeldItemModelBank, o->unk_00, a, b, c);
     switch (a) {
     case 0x13:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 1);
+        _ZN10FishBobber8setStateEi(o->unk_28, 1);
         break;
     case 0x15:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 3);
+        _ZN10FishBobber8setStateEi(o->unk_28, 3);
         break;
     case 0x16:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 2);
+        _ZN10FishBobber8setStateEi(o->unk_28, 2);
         break;
     case 0x18:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 6);
+        _ZN10FishBobber8setStateEi(o->unk_28, 6);
         break;
     case 0x19:
     case 0x1b:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 7);
+        _ZN10FishBobber8setStateEi(o->unk_28, 7);
         break;
     case 0x1a:
-        _ZN12Unk_0205f8d413func_0205f92cEi(o->unk_28, 8);
+        _ZN10FishBobber8setStateEi(o->unk_28, 8);
         break;
     case 0x28:
         HeldItemModels_PlayTexAnim(&sHeldItemModelBank, o->unk_00, 1, c);
@@ -793,7 +793,7 @@ extern "C" void HeldItemModel_Update(Unk_0205dfb8_Obj *o) {
             }
         }
     }
-    _ZN12Unk_0205f8d413func_0205f8d4Ev(o->unk_28);
+    _ZN10FishBobber6updateEv(o->unk_28);
 }
 
 extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Unk_0205dfb8_Out *src) {
@@ -821,7 +821,7 @@ extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Unk_0205dfb8_Out *src) {
             HeldItemModel_GetJointMtx(&E, o, 0);
             LightLevel = E;
         }
-        func_0205f7f4(o->unk_28, &LightLevel, &LampLights);
+        FishBobber_Draw(o->unk_28, &LightLevel, &LampLights);
         F.x = LightLevel.v[9];
         F.y = LightLevel.v[10];
         F.z = LightLevel.v[11];
@@ -832,7 +832,7 @@ extern "C" void HeldItemModel_Draw(Unk_0205dfb8_Obj *o, Unk_0205dfb8_Out *src) {
             G.x = C.x;
             G.y = C.y;
             G.z = C.z;
-            _ZN12Unk_0205f8d413func_0205faf8EP16Unk_0205f8d4_Vec(o->unk_28, &G);
+            _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec(o->unk_28, &G);
             break;
         }
     }

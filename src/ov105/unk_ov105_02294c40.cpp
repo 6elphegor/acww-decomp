@@ -107,7 +107,7 @@ extern u8 gTouchPressX;
 extern u8 gTouchPressY;
 extern u32 gCurrentHeap;
 extern u8 gSavePlayers[];
-extern void *data_021c6210;
+extern void *gMenuHeap;
 }
 
 // Main-module helper classes (real symbol names) -------------------------------------------------

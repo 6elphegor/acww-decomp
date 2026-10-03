@@ -186,7 +186,7 @@ BOOL func_02094e64(void);
 BOOL PlayerActor_RequestAct05(void);
 void MenuCtrl_RequestOpen(u32 v);
 void TalkRequestQueue_Reset(void);
-s32 func_020b14f0(void);
+s32 Field_GetExitedBuildingKey(void);
 void PrioList_Init(void *p);
 void func_0203ebb0(void);
 void func_0203eb38(void);
@@ -262,7 +262,7 @@ extern "C" void TalkRequestQueue_Reset(void) {
 extern "C" void TalkRequestQueue_StartInitial(void) {
     TalkRequestQueue_Reset();
     Unk_0203dad4_Task *s = func_0203eb78();
-    s32 r = func_020b14f0();
+    s32 r = Field_GetExitedBuildingKey();
     if (r != 0) {
         s->unk_0c = (u32)r;
         s->unk_10 = 0;

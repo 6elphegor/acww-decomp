@@ -27,7 +27,7 @@ void _ZN12Unk_0205ca9413func_0205cbb0Ej(void *);
 void NpcTexPatBufRef_Assign(void *);
 void SpNpcAnimHeapRef_Assign(void *);
 void VillagerAnimHeapRef_Assign(void *);
-void func_0205c384(void *);
+void AnimSlotRef_Assign(void *);
 struct Unk_020829b0;
 void _ZN12Unk_020829b013func_020829b0Ev(Unk_020829b0 *, u32);
 }
@@ -271,7 +271,7 @@ Unk_02082c54::Unk_02082c54() {}
 Unk_02082c54::~Unk_02082c54() {}
 
 void Unk_02082c54::func_02082c54(s32 a, s32 i) {
-    func_0205c384(&unk_01[i]);
+    AnimSlotRef_Assign(&unk_01[i]);
 }
 
 Unk_020e0840::Unk_020e0840() : Unk_020e085c(5) {}

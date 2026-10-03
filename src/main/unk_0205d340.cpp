@@ -1,7 +1,7 @@
 #include "types.h"
 
 extern "C" {
-extern void *data_021c61d8;
+extern void *gPlayerFaceTexHeap;
 extern u8 *gCommManager;
 extern char data_021c651c[0x14];
 
@@ -10,8 +10,8 @@ void func_020e885c(void *p);
 void func_020e877c(void *p);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(void *path, void *buf, s32 size);
-s32 func_0205be04();
-s32 func_0205be20();
+s32 PlayerFaceTexHeap_Destroy();
+s32 PlayerFaceTexHeap_Create();
 s32 func_0205d418();
 void *func_0205d420(u32 x);
 void func_0205d3d0(u32 *arr);
@@ -39,16 +39,16 @@ char data_021c651c[0x14];
 Unk_0205d3a0 data_021c650c;
 
 extern "C" void func_0205d458() {
-    func_0205be20();
+    PlayerFaceTexHeap_Create();
     func_0205d3d0(data_021c650c.ptr);
-    if (data_021c61d8) {
-        func_020e877c(data_021c61d8);
+    if (gPlayerFaceTexHeap) {
+        func_020e877c(gPlayerFaceTexHeap);
     }
 }
 
 extern "C" void func_0205d440() {
     data_021c650c.func_0205d3a8();
-    func_0205be04();
+    PlayerFaceTexHeap_Destroy();
 }
 
 extern "C" void *func_0205d420(u32 x) {
@@ -63,7 +63,7 @@ Unk_0205d3a0::Unk_0205d3a0() {}
 Unk_0205d3a0::~Unk_0205d3a0() {}
 
 extern "C" void func_0205d3d0(u32 *arr) {
-    void *heap = data_021c61d8;
+    void *heap = gPlayerFaceTexHeap;
     u32 n = *(u8 *)(gCommManager + 0x6c);
     u32 i;
     for (i = 0; i < n; i++) {
@@ -73,7 +73,7 @@ extern "C" void func_0205d3d0(u32 *arr) {
 
 void Unk_0205d3a0::func_0205d3a8() {
     for (s32 i = 0; i < 4; i++) ptr[i] = 0;
-    if (data_021c61d8) func_020e885c(data_021c61d8);
+    if (gPlayerFaceTexHeap) func_020e885c(gPlayerFaceTexHeap);
 }
 
 void *Unk_0205d3a0::func_0205d3a0(u32 idx) { return (void *)ptr[idx]; }

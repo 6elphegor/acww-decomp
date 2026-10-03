@@ -214,13 +214,13 @@ extern "C" {
 extern void *sNpcTexPatBufPool[];
 }
 extern "C" {
-extern void *data_021c61a4;
+extern void *gSpNpcAnimPoolHeap;
 }
 extern "C" {
-extern void *data_021c61a8;
+extern void *gVillagerAnimPoolHeap;
 }
 extern "C" {
-extern void *data_021c61ac;
+extern void *gNpcTexPatBufHeap;
 }
 extern "C" {
 extern u8 gFieldSceneKind;
@@ -289,31 +289,31 @@ extern "C" {
 void File_LoadToBuffer(void *, void *, s32);
 }
 extern "C" {
-void func_0205b944();
+void SpNpcAnimPoolHeap_Destroy();
 }
 extern "C" {
-void func_0205b960();
+void SpNpcAnimPoolHeap_Create();
 }
 extern "C" {
-void func_0205b9a4();
+void VillagerAnimPoolHeap_Destroy();
 }
 extern "C" {
-void func_0205b9c0();
+void VillagerAnimPoolHeap_Create();
 }
 extern "C" {
-void func_0205ba00();
+void NpcTexPatBufHeap_Destroy();
 }
 extern "C" {
-void func_0205ba1c();
+void NpcTexPatBufHeap_Create();
 }
 extern "C" {
-void func_0205b8a0();
+void NpcModelHeap_Destroy();
 }
 extern "C" {
-void func_0205b8c0(void *);
+void NpcModelHeap_Create(void *);
 }
 extern "C" {
-s32 func_02084fbc();
+s32 NpcSpawn_GetSpNpcSlotCount();
 }
 extern "C" {
 s32 Town_GetMaxOutdoorVillagers();
@@ -1941,13 +1941,13 @@ extern "C" {
 void func_0209c3cc(void *p);
 }
 extern "C" {
-void func_020b1234(void *p, u32 a);
+void BuildingOccupancy_OnLeaveRecord(void *p, u32 a);
 }
 extern "C" {
-void func_020b1260(void *p, u32 a);
+void BuildingOccupancy_OnEnterRecord(void *p, u32 a);
 }
 extern "C" {
-void func_020b1388(void *p);
+void Building_ApplyStateRecord(void *p);
 }
 extern "C" {
 void SpotSync_OnRelease(u32 a);
@@ -2010,13 +2010,13 @@ extern "C" {
 s32 func_02063a04(void *a, void *b, u32 n);
 }
 extern "C" {
-void func_020842c0(u32 a, u32 b);
+void NpcNetRecord_PackSpNpc(u32 a, u32 b);
 }
 extern "C" {
-void func_020843c4(u32 a, u32 b);
+void NpcNetRecord_PackVillager(u32 a, u32 b);
 }
 extern "C" {
-void func_02084404(u32 a, u32 b);
+void NpcNetRecord_InitVillagerVar(u32 a, u32 b);
 }
 extern "C" {
 void func_020954f8(u32 a, u32 b);
@@ -2129,14 +2129,14 @@ extern "C" void CommBlock_ParseAll(u8 *p, u32 n) {
 }
 extern "C" u32 CommSyncVar_GetVarSize(u32 i) { return sCommSyncVarVarSizes[i]; }
 extern "C" u32 CommSyncVar_GetVarOffset(u32 i) { return sCommSyncVarVarOffsets[i]; }
-extern "C" void CommSyncVar_InitVillager0(u32 a) { func_02084404(a, 0xc); }
-extern "C" void CommSyncVar_InitVillager1(u32 a) { func_02084404(a, 0xd); }
-extern "C" void CommSyncVar_InitVillager2(u32 a) { func_02084404(a, 0xe); }
-extern "C" void CommSyncVar_InitVillager3(u32 a) { func_02084404(a, 0xf); }
-extern "C" void CommSyncVar_InitVillager4(u32 a) { func_02084404(a, 0x10); }
-extern "C" void CommSyncVar_InitVillager5(u32 a) { func_02084404(a, 0x11); }
-extern "C" void CommSyncVar_InitVillager6(u32 a) { func_02084404(a, 0x12); }
-extern "C" void CommSyncVar_InitVillager7(u32 a) { func_02084404(a, 0x13); }
+extern "C" void CommSyncVar_InitVillager0(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xc); }
+extern "C" void CommSyncVar_InitVillager1(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xd); }
+extern "C" void CommSyncVar_InitVillager2(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xe); }
+extern "C" void CommSyncVar_InitVillager3(u32 a) { NpcNetRecord_InitVillagerVar(a, 0xf); }
+extern "C" void CommSyncVar_InitVillager4(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x10); }
+extern "C" void CommSyncVar_InitVillager5(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x11); }
+extern "C" void CommSyncVar_InitVillager6(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x12); }
+extern "C" void CommSyncVar_InitVillager7(u32 a) { NpcNetRecord_InitVillagerVar(a, 0x13); }
 extern "C" void CommSyncVar_InitVar(u32 i) {
     void (*f)(void *) = sCommSyncVarInitHandlers[i];
     if (f) {
@@ -2158,14 +2158,14 @@ extern "C" void CommSyncVar_PackVar08(u32 a) { func_020954f8(a, 0x8); }
 extern "C" void CommSyncVar_PackVar09(u32 a) { func_020954f8(a, 0x9); }
 extern "C" void CommSyncVar_PackVar0A(u32 a) { func_020954f8(a, 0xa); }
 extern "C" void CommSyncVar_PackVar0B(u32 a) { func_020954f8(a, 0xb); }
-extern "C" void CommSyncVar_PackVillager0(u32 a) { func_020843c4(a, 0xc); }
-extern "C" void CommSyncVar_PackVillager1(u32 a) { func_020843c4(a, 0xd); }
-extern "C" void CommSyncVar_PackVillager2(u32 a) { func_020843c4(a, 0xe); }
-extern "C" void CommSyncVar_PackVillager3(u32 a) { func_020843c4(a, 0xf); }
-extern "C" void CommSyncVar_PackVillager4(u32 a) { func_020843c4(a, 0x10); }
-extern "C" void CommSyncVar_PackVillager5(u32 a) { func_020843c4(a, 0x11); }
-extern "C" void CommSyncVar_PackVillager6(u32 a) { func_020843c4(a, 0x12); }
-extern "C" void CommSyncVar_PackVillager7(u32 a) { func_020843c4(a, 0x13); }
+extern "C" void CommSyncVar_PackVillager0(u32 a) { NpcNetRecord_PackVillager(a, 0xc); }
+extern "C" void CommSyncVar_PackVillager1(u32 a) { NpcNetRecord_PackVillager(a, 0xd); }
+extern "C" void CommSyncVar_PackVillager2(u32 a) { NpcNetRecord_PackVillager(a, 0xe); }
+extern "C" void CommSyncVar_PackVillager3(u32 a) { NpcNetRecord_PackVillager(a, 0xf); }
+extern "C" void CommSyncVar_PackVillager4(u32 a) { NpcNetRecord_PackVillager(a, 0x10); }
+extern "C" void CommSyncVar_PackVillager5(u32 a) { NpcNetRecord_PackVillager(a, 0x11); }
+extern "C" void CommSyncVar_PackVillager6(u32 a) { NpcNetRecord_PackVillager(a, 0x12); }
+extern "C" void CommSyncVar_PackVillager7(u32 a) { NpcNetRecord_PackVillager(a, 0x13); }
 extern "C" void CommSyncVar_PackPlayerMsg0(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x14, b); }
 extern "C" void CommSyncVar_PackPlayerMsg1(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x15, b); }
 extern "C" void CommSyncVar_PackPlayerMsg2(u32 a, u32 b) { ChatBalloon_PackSyncVar(a, 0x16, b); }
@@ -2178,44 +2178,44 @@ extern "C" void CommSyncVar_PackVar1C(u32 a, u32 b) { InsectNetSync_PackVar(a, 0
 extern "C" void CommSyncVar_PackVar1D(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1d, b); }
 extern "C" void CommSyncVar_PackVar1E(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1e, b); }
 extern "C" void CommSyncVar_PackVar1F(u32 a, u32 b) { InsectNetSync_PackVar(a, 0x1f, b); }
-extern "C" void CommSyncVar_PackSpNpc00(u32 a) { func_020842c0(a, 0x20); }
-extern "C" void CommSyncVar_PackSpNpc01(u32 a) { func_020842c0(a, 0x21); }
-extern "C" void CommSyncVar_PackSpNpc02(u32 a) { func_020842c0(a, 0x22); }
-extern "C" void CommSyncVar_PackSpNpc03(u32 a) { func_020842c0(a, 0x23); }
-extern "C" void CommSyncVar_PackSpNpc04(u32 a) { func_020842c0(a, 0x24); }
-extern "C" void CommSyncVar_PackSpNpc05(u32 a) { func_020842c0(a, 0x25); }
-extern "C" void CommSyncVar_PackSpNpc06(u32 a) { func_020842c0(a, 0x26); }
-extern "C" void CommSyncVar_PackSpNpc07(u32 a) { func_020842c0(a, 0x27); }
-extern "C" void CommSyncVar_PackSpNpc08(u32 a) { func_020842c0(a, 0x28); }
-extern "C" void CommSyncVar_PackSpNpc09(u32 a) { func_020842c0(a, 0x29); }
-extern "C" void CommSyncVar_PackSpNpc0A(u32 a) { func_020842c0(a, 0x2a); }
-extern "C" void CommSyncVar_PackSpNpc0B(u32 a) { func_020842c0(a, 0x2b); }
-extern "C" void CommSyncVar_PackSpNpc0C(u32 a) { func_020842c0(a, 0x2c); }
-extern "C" void CommSyncVar_PackSpNpc0D(u32 a) { func_020842c0(a, 0x2d); }
-extern "C" void CommSyncVar_PackSpNpc0E(u32 a) { func_020842c0(a, 0x2e); }
-extern "C" void CommSyncVar_PackSpNpc0F(u32 a) { func_020842c0(a, 0x2f); }
-extern "C" void CommSyncVar_PackSpNpc10(u32 a) { func_020842c0(a, 0x30); }
-extern "C" void CommSyncVar_PackSpNpc11(u32 a) { func_020842c0(a, 0x31); }
-extern "C" void CommSyncVar_PackSpNpc12(u32 a) { func_020842c0(a, 0x32); }
-extern "C" void CommSyncVar_PackSpNpc13(u32 a) { func_020842c0(a, 0x33); }
-extern "C" void CommSyncVar_PackSpNpc14(u32 a) { func_020842c0(a, 0x34); }
-extern "C" void CommSyncVar_PackSpNpc15(u32 a) { func_020842c0(a, 0x35); }
-extern "C" void CommSyncVar_PackSpNpc16(u32 a) { func_020842c0(a, 0x36); }
-extern "C" void CommSyncVar_PackSpNpc17(u32 a) { func_020842c0(a, 0x37); }
-extern "C" void CommSyncVar_PackSpNpc18(u32 a) { func_020842c0(a, 0x38); }
-extern "C" void CommSyncVar_PackSpNpc19(u32 a) { func_020842c0(a, 0x39); }
-extern "C" void CommSyncVar_PackSpNpc1A(u32 a) { func_020842c0(a, 0x3a); }
-extern "C" void CommSyncVar_PackSpNpc1B(u32 a) { func_020842c0(a, 0x3b); }
-extern "C" void CommSyncVar_PackSpNpc1C(u32 a) { func_020842c0(a, 0x3c); }
-extern "C" void CommSyncVar_PackSpNpc1D(u32 a) { func_020842c0(a, 0x3d); }
-extern "C" void CommSyncVar_PackSpNpc1E(u32 a) { func_020842c0(a, 0x3e); }
-extern "C" void CommSyncVar_PackSpNpc1F(u32 a) { func_020842c0(a, 0x3f); }
-extern "C" void CommSyncVar_PackSpNpc20(u32 a) { func_020842c0(a, 0x40); }
-extern "C" void CommSyncVar_PackSpNpc21(u32 a) { func_020842c0(a, 0x41); }
-extern "C" void CommSyncVar_PackSpNpc22(u32 a) { func_020842c0(a, 0x42); }
-extern "C" void CommSyncVar_PackSpNpc23(u32 a) { func_020842c0(a, 0x43); }
-extern "C" void CommSyncVar_PackSpNpc24(u32 a) { func_020842c0(a, 0x44); }
-extern "C" void CommSyncVar_PackSpNpc25(u32 a) { func_020842c0(a, 0x45); }
+extern "C" void CommSyncVar_PackSpNpc00(u32 a) { NpcNetRecord_PackSpNpc(a, 0x20); }
+extern "C" void CommSyncVar_PackSpNpc01(u32 a) { NpcNetRecord_PackSpNpc(a, 0x21); }
+extern "C" void CommSyncVar_PackSpNpc02(u32 a) { NpcNetRecord_PackSpNpc(a, 0x22); }
+extern "C" void CommSyncVar_PackSpNpc03(u32 a) { NpcNetRecord_PackSpNpc(a, 0x23); }
+extern "C" void CommSyncVar_PackSpNpc04(u32 a) { NpcNetRecord_PackSpNpc(a, 0x24); }
+extern "C" void CommSyncVar_PackSpNpc05(u32 a) { NpcNetRecord_PackSpNpc(a, 0x25); }
+extern "C" void CommSyncVar_PackSpNpc06(u32 a) { NpcNetRecord_PackSpNpc(a, 0x26); }
+extern "C" void CommSyncVar_PackSpNpc07(u32 a) { NpcNetRecord_PackSpNpc(a, 0x27); }
+extern "C" void CommSyncVar_PackSpNpc08(u32 a) { NpcNetRecord_PackSpNpc(a, 0x28); }
+extern "C" void CommSyncVar_PackSpNpc09(u32 a) { NpcNetRecord_PackSpNpc(a, 0x29); }
+extern "C" void CommSyncVar_PackSpNpc0A(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2a); }
+extern "C" void CommSyncVar_PackSpNpc0B(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2b); }
+extern "C" void CommSyncVar_PackSpNpc0C(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2c); }
+extern "C" void CommSyncVar_PackSpNpc0D(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2d); }
+extern "C" void CommSyncVar_PackSpNpc0E(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2e); }
+extern "C" void CommSyncVar_PackSpNpc0F(u32 a) { NpcNetRecord_PackSpNpc(a, 0x2f); }
+extern "C" void CommSyncVar_PackSpNpc10(u32 a) { NpcNetRecord_PackSpNpc(a, 0x30); }
+extern "C" void CommSyncVar_PackSpNpc11(u32 a) { NpcNetRecord_PackSpNpc(a, 0x31); }
+extern "C" void CommSyncVar_PackSpNpc12(u32 a) { NpcNetRecord_PackSpNpc(a, 0x32); }
+extern "C" void CommSyncVar_PackSpNpc13(u32 a) { NpcNetRecord_PackSpNpc(a, 0x33); }
+extern "C" void CommSyncVar_PackSpNpc14(u32 a) { NpcNetRecord_PackSpNpc(a, 0x34); }
+extern "C" void CommSyncVar_PackSpNpc15(u32 a) { NpcNetRecord_PackSpNpc(a, 0x35); }
+extern "C" void CommSyncVar_PackSpNpc16(u32 a) { NpcNetRecord_PackSpNpc(a, 0x36); }
+extern "C" void CommSyncVar_PackSpNpc17(u32 a) { NpcNetRecord_PackSpNpc(a, 0x37); }
+extern "C" void CommSyncVar_PackSpNpc18(u32 a) { NpcNetRecord_PackSpNpc(a, 0x38); }
+extern "C" void CommSyncVar_PackSpNpc19(u32 a) { NpcNetRecord_PackSpNpc(a, 0x39); }
+extern "C" void CommSyncVar_PackSpNpc1A(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3a); }
+extern "C" void CommSyncVar_PackSpNpc1B(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3b); }
+extern "C" void CommSyncVar_PackSpNpc1C(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3c); }
+extern "C" void CommSyncVar_PackSpNpc1D(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3d); }
+extern "C" void CommSyncVar_PackSpNpc1E(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3e); }
+extern "C" void CommSyncVar_PackSpNpc1F(u32 a) { NpcNetRecord_PackSpNpc(a, 0x3f); }
+extern "C" void CommSyncVar_PackSpNpc20(u32 a) { NpcNetRecord_PackSpNpc(a, 0x40); }
+extern "C" void CommSyncVar_PackSpNpc21(u32 a) { NpcNetRecord_PackSpNpc(a, 0x41); }
+extern "C" void CommSyncVar_PackSpNpc22(u32 a) { NpcNetRecord_PackSpNpc(a, 0x42); }
+extern "C" void CommSyncVar_PackSpNpc23(u32 a) { NpcNetRecord_PackSpNpc(a, 0x43); }
+extern "C" void CommSyncVar_PackSpNpc24(u32 a) { NpcNetRecord_PackSpNpc(a, 0x44); }
+extern "C" void CommSyncVar_PackSpNpc25(u32 a) { NpcNetRecord_PackSpNpc(a, 0x45); }
 extern "C" void CommSyncVar_SetVar(u32 a, u32 b, u32 c, s32 d) {
     CommManager *g = gCommManager;
     s32 r = _ZN11CommManager14isSyncVarDirtyEi(g, a);
@@ -2306,17 +2306,17 @@ extern "C" void CommRecv_SpotRelease(u32 a, u32 b, u32 c, u32 d) { SpotSync_OnRe
 extern "C" void CommRecv_BuildingState(u32 a) {
     u8 buf[4];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_020b1388(buf);
+    Building_ApplyStateRecord(buf);
 }
 extern "C" void CommRecv_BuildingEnter(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_020b1260(buf, d);
+    BuildingOccupancy_OnEnterRecord(buf, d);
 }
 extern "C" void CommRecv_BuildingLeave(u32 a, u32 b, u32 c, u32 d) {
     u8 buf[8];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, a);
-    func_020b1234(buf, d);
+    BuildingOccupancy_OnLeaveRecord(buf, d);
 }
 extern "C" void CommRecv_Act25(u32 a) {
     u8 buf[4];
@@ -3089,10 +3089,10 @@ extern "C" {
 void CommRecord_UnpackSource(void *, void *, void *);
 }
 extern "C" {
-void func_0205f094(s32, s32, u32, u32, u32);
+void ItemSync_SetAtUnit(s32, s32, u32, u32, u32);
 }
 extern "C" {
-void func_0205f144(void *);
+void ItemSync_Apply(void *);
 }
 extern "C" {
 u32 _ZN11CommManager10getAuxBufBEv(void *);
@@ -3275,7 +3275,7 @@ extern "C" void CommRecv_ItemSet(u32 n) {
     u8 buf[5];
     while (i < n) {
         _ZN11CommManager10readRecordEPhj(g, buf, 5);
-        func_0205f144(buf);
+        ItemSync_Apply(buf);
         i += 5;
     }
 }
@@ -3288,7 +3288,7 @@ extern "C" void CommRecv_ItemSetRequest(u32 n) {
         _ZN11CommManager10readRecordEPhj(g, buf + 2, 5);
         u32 v = NetBuf_ReadU16(buf + 2);
         CommRecord_UnpackSource(buf + 4, buf, buf + 1);
-        func_0205f094(((s8 *)buf)[5], ((s8 *)buf)[6], buf[0], v, buf[1] ? 1 : z);
+        ItemSync_SetAtUnit(((s8 *)buf)[5], ((s8 *)buf)[6], buf[0], v, buf[1] ? 1 : z);
         i += 5;
     }
 }

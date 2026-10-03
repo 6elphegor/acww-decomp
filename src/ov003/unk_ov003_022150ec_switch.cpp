@@ -265,7 +265,7 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern u32 data_021c6204;
+extern u32 gFieldStructureHeap;
 
 void CountdownDigit_Update(void *p);
 void CountdownSign_ModelCallback(void *p);
@@ -281,7 +281,7 @@ s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void Snd_PlaySe(u32 a);
 void _ZN13AnimFrameCtrl4stepEv(void *m);
 void _ZN13BuildingActor12updateMatrixEv(void *p);
-BOOL func_020b1d3c(u32 a, u32 b);
+BOOL BuildingState_Set(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
@@ -392,7 +392,7 @@ BOOL CountdownDigit::vfunc_70() {
     unk_2b0 = sCountdownSpawnIndex;
     unk_2b1 = 0;
     setCharId(unk_2b0);
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b4, unk_194, data_021c6204)) {
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b4, unk_194, gFieldStructureHeap)) {
         s32 r1 = getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&unk_2b4, r1, 1, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_2b4, _ZN5Model12getRenderObjEv(unk_138));

@@ -5,8 +5,8 @@
 
 // ================================================================ other modules' real names
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define func_0204e3a0 _ZN8BlockMap13func_0204e3a0Eii
-#define func_0204e474 _ZN8BlockMap13func_0204e474Eii
+#define BlockMap_getDigKind _ZN8BlockMap10getDigKindEii
+#define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define func_02133150 _s32_div_f
 #define func_02003e50 _ZN12Unk_02003c3013func_02003e50Ev
 #define func_02003e80 _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec
@@ -183,10 +183,10 @@ BOOL CommManager_isOnline(CommManager *g);
 
 void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
-BOOL func_0204e3a0(void *g, s32 x, s32 z);
+BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_Find(void *p, s32 a);
-BOOL func_0204e474(void *g, s32 x, s32 z);
+BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 z);
 void *func_02095204(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
@@ -281,7 +281,7 @@ extern Blk data_021f47e0;
 
 void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *x, s32 *y, s32 v);
-s32 func_0204e3a0(void *m, s32 x, s32 y);
+s32 BlockMap_getDigKind(void *m, s32 x, s32 y);
 s32 CommManager_isOnline(void *g);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 y);
 void func_02003e50(void *);
@@ -639,7 +639,7 @@ extern void *sFieldObjectAnimHeap;
 extern Unk_ov003_0221b7d4_Rec *data_ov003_0223291c[];
 
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
-BOOL func_0204e3a0(void *g, s32 x, s32 z);
+BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 s32 Field_SetUnitItem(s32 a, s32 b, u32 c, s32 d);
 void VEC_Add(void *a, void *b, void *c);
 s32 func_02003e70(void *p, u32 a, u32 b, u32 c);
@@ -6863,7 +6863,7 @@ namespace ns_0221aed4 {
 extern "C" void FieldItemFx_InitFillHole(Unk_ov003_0221aed4_Fx *self, P2 p, void *g)
 {
     FieldPos_FromUnitCenter(&self->unk_18, p.x, p.z);
-    if (func_0204e3a0(g, p.x, p.z) == 0) {
+    if (BlockMap_getDigKind(g, p.x, p.z) == 0) {
         self->unk_08 = 0xfc;
     } else {
         self->unk_08 = 0xfd;
@@ -7373,7 +7373,7 @@ namespace ns_02219b84 {
 extern "C" {
 void FieldItemFx_InitPitfallClose(Ent *e, P2 *p, void *m) {
     FieldPos_FromUnitCenter(&e->unk_18, p->x, p->y);
-    if (func_0204e3a0(m, p->x, p->y) == 0) {
+    if (BlockMap_getDigKind(m, p->x, p->y) == 0) {
         e->unk_08 = 0xfc;
     } else {
         e->unk_08 = 0xfd;
@@ -7687,7 +7687,7 @@ s32 FieldItemFx_StartDigHole(s32 type, s32 v, s32 w) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (func_0204e3a0(map, ox, oy) == 0) {
+    if (BlockMap_getDigKind(map, ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7708,7 +7708,7 @@ s32 FieldItemFx_StartPitfallHole(s32 type, s32 v) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (func_0204e3a0(map, ox, oy) == 0) {
+    if (BlockMap_getDigKind(map, ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7729,7 +7729,7 @@ s32 FieldItemFx_StartFillHole(s32 type, s32 v) {
     s32 oy = 0;
     FieldPos_ToUnit(&ox, &oy, v);
     u32 k;
-    if (func_0204e3a0(map, ox, oy) == 0) {
+    if (BlockMap_getDigKind(map, ox, oy) == 0) {
         k = 0xfc;
     } else {
         k = 0xfd;
@@ -7862,7 +7862,7 @@ extern "C" s32 FieldItemFx_StartHoleShrink(s32 a, s32 b)
     s32 p1 = 0;
     FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
-    if (func_0204e3a0(g, p0, p1) == 0) {
+    if (BlockMap_getDigKind(g, p0, p1) == 0) {
         sel = 0xfc;
     } else {
         sel = 0xfd;
@@ -7948,7 +7948,7 @@ extern "C" s32 FieldItemFx_FindLandingUnit(s32 *p)
             pos.x = x;
             pos.z = z;
             if (PendingUnit_Find(&pos, k14) < 0) {
-                if (func_0204e474(g, x, z)) {
+                if (BlockMap_canPlaceItem(g, x, z)) {
                     p[0] = x;
                     p[1] = z;
                     result = 0;
@@ -7979,7 +7979,7 @@ extern "C" s32 FieldItemFx_StartPitfallClose(s32 a, s32 b)
     s32 p1 = 0;
     FieldPos_ToUnit(&p0, &p1, b);
     s32 sel;
-    if (func_0204e3a0(g, p0, p1) == 0) {
+    if (BlockMap_getDigKind(g, p0, p1) == 0) {
         sel = 0xfc;
     } else {
         sel = 0xfd;

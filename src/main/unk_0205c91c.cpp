@@ -16,7 +16,7 @@ struct ItemId {
 struct Unk_0205cbe8;
 
 extern "C" {
-extern void *data_021c61dc;
+extern void *gCharaClothTexHeap;
 extern u8 *gCommManager;
 
 BOOL Item_IsFurniture(u16 *p);
@@ -24,15 +24,15 @@ s32 Item_GetFurnitureIndex(u16 *p);
 BOOL ClothTex_LoadItemThunk(u32 a, u16 *b, s32 c);
 BOOL ClothTex_LoadPatternThunk(void *, void *);
 u32 ClothTex_GetBufferSize();
-void func_0205be58();
-void func_0205be74();
+void CharaClothTexHeap_Destroy();
+void CharaClothTexHeap_Create();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-u32 func_02084fbc();
+u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 }
 
@@ -67,14 +67,14 @@ void func_0205c930(void *p, s32 x);
 }
 
 extern "C" void func_0205cde4() {
-    func_0205be74();
+    CharaClothTexHeap_Create();
     data_021c6404.func_0205ccb0();
-    if (data_021c61dc) func_020e877c(data_021c61dc);
+    if (gCharaClothTexHeap) func_020e877c(gCharaClothTexHeap);
 }
 
 extern "C" void func_0205cdcc() {
     data_021c6404.func_0205cc70();
-    func_0205be58();
+    CharaClothTexHeap_Destroy();
 }
 
 extern "C" void func_0205cdbc() { data_021c6404.func_0205cc64(); }
@@ -86,7 +86,7 @@ Unk_0205cbe8::Unk_0205cbe8() {
 Unk_0205cbe8::~Unk_0205cbe8() {}
 
 void Unk_0205cbe8::func_0205ccb0() {
-    void *heap = data_021c61dc;
+    void *heap = gCharaClothTexHeap;
     u32 n = gCommManager[0x6c];
     u32 m = Scene_GetMaxPlayers(Scene_GetCurrent());
     u32 i;
@@ -97,7 +97,7 @@ void Unk_0205cbe8::func_0205ccb0() {
     ptr[4] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
-    m = (q + func_02084fbc()) - m;
+    m = (q + NpcSpawn_GetSpNpcSlotCount()) - m;
     for (i = 5; i < m + 5; i++) {
         ptr[i] = (u32)Heap_AllocAligned(heap, ClothTex_GetBufferSize(), 4);
     }
@@ -111,7 +111,7 @@ void Unk_0205cbe8::func_0205cc70() {
         ptr[i] = 0;
         id[i].v = 0xfff1;
     }
-    if (data_021c61dc) func_020e885c(data_021c61dc);
+    if (gCharaClothTexHeap) func_020e885c(gCharaClothTexHeap);
 }
 
 u32 Unk_0205cbe8::func_0205cc68(u32 idx) { return ptr[idx]; }

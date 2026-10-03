@@ -911,8 +911,8 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt   // main
 #define func_0209c344 _ZN12Unk_0209c2f413func_0209c344Ev   // main
 #define func_0209c348 _ZN12Unk_0209c2f413func_0209c348Ev   // main
-#define func_020b1ddc _ZN12Unk_020b1ddc13func_020b1ddcEv   // main
-#define func_020b1e74 _ZN12Unk_020b1ddc13func_020b1e74Ev   // main
+#define Unk_020b1ddc_rotateMinuteHand _ZN12Unk_020b1ddc16rotateMinuteHandEv   // main
+#define Unk_020b1ddc_rotateHourHand _ZN12Unk_020b1ddc14rotateHourHandEv   // main
 #define LightLevel_getLevel _ZN10LightLevel8getLevelEv   // main
 #define Math_LerpFx _Z11Math_LerpFxiii   // main
 #define LightLevel_update _ZN10LightLevel6updateEv   // main
@@ -1077,8 +1077,8 @@ void Effect_PlayById2(u32 id, void *v, u32 a, u32 b);
 void *func_020947f0(u32 id);
 void *Math_AngleXZ(void *v, void *cam);
 u32 Scene_InUnk6To8(void);
-void func_020b1e74(void *p);
-void func_020b1ddc(void *p);
+void Unk_020b1ddc_rotateHourHand(void *p);
+void Unk_020b1ddc_rotateMinuteHand(void *p);
 extern u8 gCameraEye[];
 extern u8 gCameraLookAt[];
 BOOL SceneId_IsHouseRoom(u32 a);
@@ -3199,9 +3199,9 @@ BOOL FtrActor::vfunc_68() {
 void FtrActor::vfunc_6c(s32 a, void *b) {
     if (unk_740 != 0) {
         if (unk_73e == a) {
-            func_020b1e74(b);
+            Unk_020b1ddc_rotateHourHand(b);
         } else if (unk_73f == a) {
-            func_020b1ddc(b);
+            Unk_020b1ddc_rotateMinuteHand(b);
         }
     }
 }

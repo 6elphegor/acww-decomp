@@ -436,8 +436,8 @@ extern "C" void *sInsectBehaviours[120] = {
 extern "C" { Unk_ov003_02258f18 sWateringPos; }
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -500,8 +500,8 @@ void *func_02000c98(void *);
 void *func_02000c8c(void *);
 u32 Item_MakeBuilding(u32 a);
 void *StrBSize_Get(u16 *p);
-u32 func_020b2b98(void *p);
-BOOL func_020b2ae0(void *p, s32 *x, s32 *y, u32 i);
+u32 StrBSizeData_getLightUnitCount(void *p);
+BOOL StrBSizeData_getLightUnit(void *p, s32 *x, s32 *y, u32 i);
 BuildingActor *BuildingList_FindByItem(u32 id);
 void func_02133150();
 void *TownBlockMap_Get();
@@ -1302,12 +1302,12 @@ namespace s05 {
 extern "C" {
 extern u32 *gCommManager[];
 void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void func_0205c088();
-void func_0205c06c();
-void func_0205c0f0();
-void func_0205c0d4();
-void func_0205c0bc();
-void func_0205c0a0();
+void FieldInsectHeap_Create();
+void FieldInsectHeap_Destroy();
+void SpecialInsectHeap_Create();
+void SpecialInsectHeap_Destroy();
+void HeldInsectHeap_Create();
+void HeldInsectHeap_Destroy();
 BOOL CommManager_isSlotActive(void *p, u32 v);
 void InsectSpawn_BuildMasks();
 void func_02041868();
@@ -8719,9 +8719,9 @@ void InsectManager::freeInsect(Unk_ov003_02228710_Act *e, s32 mode) { using name
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt
 // 0x2228710
 BOOL InsectManager::vfunc_00() { using namespace s05;
-    func_0209c1a4(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)func_0205c088, (void *)func_0205c06c, 0);
-    func_0209c1a4(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)func_0205c0f0, (void *)func_0205c0d4, 0);
-    func_0209c1a4(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)func_0205c0bc, (void *)func_0205c0a0, 0);
+    func_0209c1a4(&unk_50, 8, 0x400, 0x40, 0x9c4, (void *)FieldInsectHeap_Create, (void *)FieldInsectHeap_Destroy, 0);
+    func_0209c1a4(&unk_68, 2, 0x400, 0x40, 0x6e8, (void *)SpecialInsectHeap_Create, (void *)SpecialInsectHeap_Destroy, 0);
+    func_0209c1a4(&unk_80, 4, 0x400, 0x40, 0x9c4, (void *)HeldInsectHeap_Create, (void *)HeldInsectHeap_Destroy, 0);
     u32 *g = gCommManager[0];
     if (CommManager_isSlotActive(g, g[0x64 / 4]) == 0) {
         allocSpecialInsect(0x3a, 0);
@@ -11518,8 +11518,8 @@ extern "C" BOOL Insect_IsBeeSwarmOut(void) {
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11545,8 +11545,8 @@ extern "C" BOOL Insect_IsAtWateringPoint(void *p)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11573,8 +11573,8 @@ extern "C" BOOL Insect_RollKind(u8 *out)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11610,8 +11610,8 @@ extern "C" s32 Insect_GetTimeSlot()
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11632,8 +11632,8 @@ extern "C" void Insect_TickFrame(u8 *self)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225f2c
@@ -11664,8 +11664,8 @@ Insect::Insect()
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ed0
@@ -11677,8 +11677,8 @@ Insect::~Insect() { using namespace s00;}
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11695,8 +11695,8 @@ extern "C" void Insect_SetAnimSpeed(u8 *self, u32 v)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11742,8 +11742,8 @@ extern "C" BOOL Insect_PickSpecialSpawn(u8 *a, u8 *b, s32 c)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11779,8 +11779,8 @@ extern "C" BOOL Insect_IsAllowedOnline(s32 a)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11824,8 +11824,8 @@ extern "C" BOOL Insect_RollFromSpawnTable(u32 a, u32 b, u8 *out)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11857,8 +11857,8 @@ extern "C" void FieldInsect_PurgeStale()
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11915,8 +11915,8 @@ extern "C" s32 Insect_GetWeatherReaction(s32 a, s32 b)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225be0
@@ -11928,8 +11928,8 @@ InsectMatAnim::InsectMatAnim() { using namespace s00;}
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 // 0x2225ba8
@@ -11941,8 +11941,8 @@ InsectMatAnim::~InsectMatAnim() { using namespace s00;}
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -11968,8 +11968,8 @@ extern "C" s32 InsectSpawn_CopyMask(void *p, s32 t)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -12107,8 +12107,8 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -12133,8 +12133,8 @@ extern "C" void InsectSpawn_BuildLightMask(u16 (*arr)[4][16])
 #undef data_ov003_022595b0
 
 #define CommManager_isSlotActive _ZN11CommManager12isSlotActiveEi
-#define func_020b2ae0 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j
-#define func_020b2b98 _ZN12Unk_020b28ac13func_020b2b98Ev
+#define StrBSizeData_getLightUnit _ZN12StrBSizeData12getLightUnitEPiS0_j
+#define StrBSizeData_getLightUnitCount _ZN12StrBSizeData17getLightUnitCountEv
 #define func_02133150 _s32_div_f
 #define data_ov003_022595b0 ((u8 *)&::sSpecialInsects[1])
 namespace s00 {
@@ -12150,14 +12150,14 @@ extern "C" void InsectSpawn_ClearLitUnits(u16 (*arr)[4][16])
         id = Item_MakeBuilding(i);
         p = StrBSize_Get(&id);
         if (p != 0) {
-            n = func_020b2b98(p);
+            n = StrBSizeData_getLightUnitCount(p);
             if (n != 0) {
                 o = BuildingList_FindByItem(id);
                 if (o != 0) {
                     u32 j;
                     for (j = 0; j < n; j++) {
                         s32 xy[2];
-                        if (func_020b2ae0(p, &xy[0], &xy[1], j)) {
+                        if (StrBSizeData_getLightUnit(p, &xy[0], &xy[1], j)) {
                             if (o->callIsLit() == 1) {
                                 s32 px = xy[0] + o->getGridX();
                                 s32 py = xy[1] + o->getGridZ();

@@ -466,11 +466,11 @@ void func_020e9960(Unk_ov068_0226b12c_Vec3 *, Unk_ov068_0226b12c_Vec3 *, Unk_ov0
 void func_01ffd070(Unk_ov068_0226b12c_Vec3 *, void *, Unk_ov068_0226b12c_Vec3 *);
 s32 func_020e7b98(s32, s32);
 s32 FX_Div(s32, s32);
-void func_020b0f18();
-void func_020b0f3c();
+void Taxi_ClearArriving();
+void Taxi_ClearLeaving();
 void func_02094f64(s32);
-BOOL func_020b0f0c();
-BOOL func_020b0f30();
+BOOL Taxi_IsArriving();
+BOOL Taxi_IsLeaving();
 void Scene_ResetTownReturnPos();
 void _ZN10PlayerData11setHeldItemEPt(void *, u16 *);
 BOOL KappnTaxi_RequestPlayerGetOut();
@@ -514,12 +514,12 @@ BOOL KappnTaxi::vfunc_70() {
     unk_2c8.x = unk_5c[0];
     unk_2c8.y = unk_5c[1];
     unk_2c8.z = unk_5c[2];
-    if (func_020b0f0c()) {
+    if (Taxi_IsArriving()) {
         unk_2da = 1;
         Scene_GetWarpRequest();
         Scene_ResetTownReturnPos();
         setTaxiState(1);
-    } else if (func_020b0f30()) {
+    } else if (Taxi_IsLeaving()) {
         unk_2da = 1;
         if (p) {
             u16 t = 0xfff1;
@@ -552,8 +552,8 @@ BOOL KappnTaxi::vfunc_0c() {
     }
     if (unk_2da) {
         unk_2da = 0;
-        func_020b0f18();
-        func_020b0f3c();
+        Taxi_ClearArriving();
+        Taxi_ClearLeaving();
     }
     return TRUE;
 }

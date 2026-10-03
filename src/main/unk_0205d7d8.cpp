@@ -8,9 +8,9 @@ void func_020e885c(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
-s32 func_0205bd00(void);
-s32 func_0205bd1c(void);
-void _ZN12Unk_0205f8d413func_0205fba8Ev(void *p);
+s32 PlayerHeadModelHeap_Destroy(void);
+s32 PlayerHeadModelHeap_Create(void);
+void _ZN10FishBobber9isInWaterEv(void *p);
 s32 ItemInfo_TestFlag2(u16 *p);
 s32 Item_IsFlowerItem(u16 *p);
 s32 Item_GetFlowerItemOrdinal(u16 *p);
@@ -23,7 +23,7 @@ s32 NNS_G3dTexGetRequiredSize(void *p);
 s32 NNS_G3dTex4x4GetRequiredSize(void *p);
 s32 NNS_G3dPlttGetRequiredSize(void *p);
 extern u8 *gCommManager;
-extern u32 data_021c61cc;
+extern u32 gPlayerHeadModelHeap;
 }
 
 class Unk_020b83b0 {
@@ -210,19 +210,19 @@ PlayerHeadBankData sPlayerHeadBankData;
 #define MGR ((PlayerHeadBank *)&sPlayerHeadBankData)
 
 extern "C" void HeldItemModel_IsBobberLanded(u8 *p) {
-    _ZN12Unk_0205f8d413func_0205fba8Ev(p + 0x28);
+    _ZN10FishBobber9isInWaterEv(p + 0x28);
 }
 
 extern "C" void PlayerHeadBank_Init(void) {
-    func_0205bd1c();
+    PlayerHeadModelHeap_Create();
     MGR->setup();
-    if (data_021c61cc != 0)
+    if (gPlayerHeadModelHeap != 0)
         func_020e877c();
 }
 
 extern "C" void PlayerHeadBank_Destroy(void) {
     MGR->releaseAll();
-    func_0205bd00();
+    PlayerHeadModelHeap_Destroy();
 }
 
 extern "C" char *PlayerHead_GetModelPath(u32 a) {
@@ -310,7 +310,7 @@ void PlayerHeadBank::setup(void) {
     for (i = 0; i < n; i++) {
         unk_10[i][0].alloc((void *)PlayerHead_GetTexVramSize(), (void *)PlayerHead_GetTex4x4VramSize(), (void *)PlayerHead_GetPlttVramSize());
     }
-    void *heap = (void *)data_021c61cc;
+    void *heap = (void *)gPlayerHeadModelHeap;
     for (i = 0; i < n; i++) {
         unk_00[i] = Heap_AllocAligned(heap, PlayerHead_GetBufferSize(), 4);
     }
@@ -327,8 +327,8 @@ void PlayerHeadBank::releaseAll(void) {
         unk_190[i][0] = NULL;
         unk_190[i][1] = NULL;
     }
-    if (data_021c61cc) {
-        func_020e885c((void *)data_021c61cc);
+    if (gPlayerHeadModelHeap) {
+        func_020e885c((void *)gPlayerHeadModelHeap);
     }
     for (i = 0; i < 4; i++) {
         unk_1b0[i][0] = 0x9e;

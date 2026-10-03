@@ -300,12 +300,12 @@ public:
 };
 
 extern "C" {
-extern void *data_021c6204;
+extern void *gFieldStructureHeap;
 extern void *gCommManager;
 extern u8 data_021f47e0[];
 
-BOOL func_020b1454(void *o, s32 v);
-BOOL func_020b1d3c(u32 a, s32 b);
+BOOL Building_RequestState(void *o, s32 v);
+BOOL BuildingState_Set(u32 a, s32 b);
 BOOL TalkRequest_SetTargetDone(void *p);
 void _ZN14BlendAnimModel8initAnimEiiitt(void *self, void *a, s32 b, s32 c, u16 d, u16 e);
 void _ZN9AnimModel8stepAnimEv(void *self);
@@ -329,7 +329,7 @@ u32 BuildingList_IndexOf(void *p);
 BOOL Scene_InTown();
 BOOL _ZN11CommManager8isOnlineEv(void *self);
 BOOL _ZN11CommManager7isMyAidEj(void *self, u32 a);
-u32 func_020b1d80(u32 a);
+u32 BuildingState_Get(u32 a);
 void Mailbox_Create();
 void _ZN15TouchPickSphereC1Ev(TouchPickSphere *self);
 void _ZN15TouchPickSphereD1Ev(TouchPickSphere *self);
@@ -417,7 +417,7 @@ Mailbox::~Mailbox() {
 
 BOOL Mailbox::vfunc_70() {
     if (getBtaAnim(0)) {
-        if (unk_2b4.allocMatAnm((u32)unk_194, data_021c6204)) {
+        if (unk_2b4.allocMatAnm((u32)unk_194, gFieldStructureHeap)) {
             unk_2b4.init((s32)getBtaAnim(0), 1, 0x1000, 0);
             unk_2b4.addToRenderObj((u32)((Model *)unk_138)->getRenderObj());
         }
@@ -446,7 +446,7 @@ BOOL Mailbox::vfunc_70() {
     if (isUsable()) {
         vfunc_6c(0);
     } else {
-        vfunc_6c(func_020b1d80(unk_132));
+        vfunc_6c(BuildingState_Get(unk_132));
     }
     return TRUE;
 }
@@ -572,7 +572,7 @@ s32 Mailbox::enterUseOpen() {
     v.b = Ground_GetDefaultY(0);
     v.c = unk_5c[2] + 0x2000;
     if (PlayerActor_LocalRequestAct6A(&v)) {
-        func_020b1454(this, 3);
+        Building_RequestState(this, 3);
     }
     return TRUE;
 }
@@ -608,7 +608,7 @@ s32 Mailbox::execUseMenuWait() {
 
 // ---- old file 02216df0
 s32 Mailbox::enterUseClose() {
-    func_020b1454(this, 5);
+    Building_RequestState(this, 5);
     return TRUE;
 }
 
@@ -626,7 +626,7 @@ s32 Mailbox::vfunc_6c(s32 idx) {
         &Mailbox::enterLidOpened, &Mailbox::enterLidClose,
         &Mailbox::enterMailGone};
     if ((u32)idx < 7) {
-        if ((this->*tbl[idx])() && func_020b1d3c(unk_132, idx)) {
+        if ((this->*tbl[idx])() && BuildingState_Set(unk_132, idx)) {
             unk_130 = idx;
             return TRUE;
         }
@@ -659,7 +659,7 @@ BOOL Mailbox::enterNoMail() {
 
 void Mailbox::execNoMail() {
     if (countLetters()) {
-        func_020b1454(this, 1);
+        Building_RequestState(this, 1);
     }
 }
 
@@ -671,7 +671,7 @@ BOOL Mailbox::enterMailArrive() {
 
 void Mailbox::execMailArrive() {
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
-        func_020b1454(this, 2);
+        Building_RequestState(this, 2);
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }
@@ -704,7 +704,7 @@ void Mailbox::execLidOpen() {
     unk_2b4.step();
     *unk_2b4.unk_18 = unk_2b4.unk_08;
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
-        func_020b1454(this, 4);
+        Building_RequestState(this, 4);
     }
 }
 
@@ -731,9 +731,9 @@ BOOL Mailbox::enterLidClose() {
 void Mailbox::execLidClose() {
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
         if (countLetters() == 0) {
-            func_020b1454(this, 6);
+            Building_RequestState(this, 6);
         } else {
-            func_020b1454(this, 2);
+            Building_RequestState(this, 2);
         }
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
@@ -753,7 +753,7 @@ BOOL Mailbox::enterMailGone() {
 // ---- state methods
 void Mailbox::execMailGone() {
     if (isUsable() && ((AnimFrameCtrl *)unk_1d4)->isFinished()) {
-        func_020b1454(this, 0);
+        Building_RequestState(this, 0);
     } else {
         _ZN9AnimModel8stepAnimEv(unk_138);
     }

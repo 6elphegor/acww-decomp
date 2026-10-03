@@ -17,7 +17,7 @@
 #define func_020323b0 _ZN14CollisionStateC1Ev
 #define GroundInfoBase_getHeight _ZN14GroundInfoBase9getHeightEi
 #define GroundInfo_initAtPos _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii
-#define func_0204e474 _ZN8BlockMap13func_0204e474Eii
+#define BlockMap_canPlaceItem _ZN8BlockMap12canPlaceItemEii
 #define AnimModel_attachAnim _ZN9AnimModel10attachAnimEv
 #define BlendAnimModel_initAnim _ZN14BlendAnimModel8initAnimEiiitt
 #define AnimModel_setFrame _ZN9AnimModel8setFrameEi
@@ -91,8 +91,8 @@ public:
 
 class HouseData {
 public:
-    u8 func_020603bc();
-    void func_020603b0(u8 v);
+    u8 getRoachCount();
+    void setRoachCount(u8 v);
 };
 
 extern "C" {
@@ -258,7 +258,7 @@ void func_02000c98();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 void *NpcRegistry_FindVillager(u32 i);
-BOOL func_0204e474(void *g, s32 x, s32 y);
+BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 y);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
 void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
@@ -343,7 +343,7 @@ HouseRoachManager::~HouseRoachManager() {
 
 BOOL HouseRoachManager::vfunc_0c() {
     if (!Scene_InHouseRoom() || gCommManager->isOnline()) return TRUE;
-    ((HouseData *)gSaveHouse)->func_020603b0(sHouseRoachTotal);
+    ((HouseData *)gSaveHouse)->setRoachCount(sHouseRoachTotal);
     sHouseRoachManager = 0;
     return TRUE;
 }
@@ -456,7 +456,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
         goto xt0;
     xl0:
         if (g == 0) goto xn0;
-        if (func_0204e474(g, x, y) == 0) goto xn0;
+        if (BlockMap_canPlaceItem(g, x, y) == 0) goto xn0;
         hx = x >> 4;
         hy = y >> 4;
         cell = BlockMap_GetItemPtr(g, hx, hy, x - (hx << 4), y - (hy << 4), 0);
@@ -520,7 +520,7 @@ extern "C" BOOL HouseRoach_SpawnInitial(void *owner) {
 }
 
 extern "C" BOOL HouseRoach_LoadCount(void *self) {
-    sHouseRoachTotal = ((HouseData *)gSaveHouse)->func_020603bc();
+    sHouseRoachTotal = ((HouseData *)gSaveHouse)->getRoachCount();
     if (sHouseRoachTotal != 0) return TRUE;
     return FALSE;
 }

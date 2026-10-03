@@ -501,7 +501,7 @@ struct Unk_ov054_SceneEntry {
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
-#define func_02060388 _ZN9HouseData13func_02060388Ev
+#define HouseData_getDebt _ZN9HouseData7getDebtEv
 #define func_02063818 _ZN12Unk_020dd374D1Ev
 #define func_02063830 _ZN12Unk_020dd374C1Ev
 #define func_02063870 _ZN12Unk_020dd38cD1Ev
@@ -553,7 +553,7 @@ void func_020973e4(void *h, u8 i);
 void Unk_02097ff4_setFlag(void *g, s32 v);
 s32 Unk_02097ff4_testFlag(void *g, s32 v);
 s32 TalkWindowState_setNextMessage(void *m, void *buf, u32 cb);
-s32 func_02060388(void *m);
+s32 HouseData_getDebt(void *m);
 void ActorTalkRequest_setNumberSlot(void *self, s32 a, s32 b, s32 c, s32 d, s32 e);
 void Unk_020d7710_setSubSceneKind(void *self, s32 a, s32 b);
 void Unk_020d7710_openSubScene(void *self, s32 a);
@@ -671,7 +671,7 @@ void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Clock_GetMinuteHour(void *p);
 void Actor_spawn(s32 a, u32 b, void *v, void *p, void *owner);
 void *TownBlockMap_Get();
-void func_020b0f48();
+void Taxi_SetLeaving();
 BOOL Town_FindTownHall(void *r, s32 *a, s32 *b, s32 *c);
 void *Scene_GetWarpRequest();
 s32 SceneWarp_RequestAt(void *r, s32 a, void *v, s32 b, s32 c, s32 d, s32 e);
@@ -1226,7 +1226,7 @@ BOOL SpNpcPellyPhyllis::mainAct08() {
     s32 a, b;
     s32 v[3];
     if (TalkWindow_Get(0)->unk_04 == 5) {
-        func_020b0f48();
+        Taxi_SetLeaving();
         void *r = TownBlockMap_Get();
         if (r) {
             if (Town_FindTownHall(r, &v[0], &a, &b)) {
@@ -1545,7 +1545,7 @@ void SpNpcPellyPhyllisTalk::onLoanPaymentEntered() {
     s32 r5;
     u16 v[2];
     if (MenuCtrl_IsResultOk()) {
-        r5 = func_02060388(gSaveHouse);
+        r5 = HouseData_getDebt(gSaveHouse);
         ActorTalkRequest_setNumberSlot(this, r5, 4, 10, 1, 0);
         if (r5 == 0) {
             r5 = 0x15;
@@ -2410,7 +2410,7 @@ void SpNpcPellyPhyllisTalk::openPostOfficeMenu(s32 a) {
     unk_b0 = 0;
     if (!Talk_IsInOwnTown()) {
         unk_b0 = 2;
-    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && func_02060388(gSaveHouse) != 0) {
+    } else if (Unk_02097ff4_testFlag(g, 1) == 0 && HouseData_getDebt(gSaveHouse) != 0) {
         if (unk_ac->isLocalSlotActive()) {
             unk_b0 = 4;
         } else {
@@ -2460,7 +2460,7 @@ void SpNpcPellyPhyllisTalk::openLetterStorage() {
 }
 
 void SpNpcPellyPhyllisTalk::askLoanPayment() {
-    ActorTalkRequest_setNumberSlot(this, func_02060388(gSaveHouse), 4, 10, 1, 0);
+    ActorTalkRequest_setNumberSlot(this, HouseData_getDebt(gSaveHouse), 4, 10, 1, 0);
     u8 m = 0x12;
     TalkWindowState_setNextMessage(unk_3c, &m, (u32)sSpNpcPellyPhyllisMsgKeys[unk_ac->unk_804][0]);
 }

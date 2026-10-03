@@ -43,8 +43,8 @@ void _ZN10HandCursor15enableObjWindowEv(void *self);
 s32 NumberPad_LoadBgGraphics(s32 a);
 void ProcBase_RequestDelete(void *p);
 
-void _ZN9HouseData13func_02060370Ei(void *self, s32 v);
-s32 _ZN9HouseData13func_02060388Ev(void *self);
+void _ZN9HouseData7setDebtEi(void *self, s32 v);
+s32 _ZN9HouseData7getDebtEv(void *self);
 s32 _ZN10HandCursor7getAnimEv(void *self);
 s32 _ZN10HandCursor10isAnimDoneEv(void *self);
 void MenuButtons_LoadTextColors(void *self);

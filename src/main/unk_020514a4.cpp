@@ -155,11 +155,11 @@ void FieldPos_ToUnit(s32 *a, s32 *b, s32 c);
 s32 Item_GetFurnitureIndex(void *p);
 s32 Item_GetFurnitureDirection(void *p);
 s32 FtrInfo_GetUnk05(s32 a);
-void _ZN9HouseData13func_02060244Ejj(void *p, s32 a, s32 b);
-s32 _ZN9HouseData13func_0206052cEi(void *p, s32 a);
+void _ZN9HouseData11setRoomFlagEjj(void *p, s32 a, s32 b);
+s32 _ZN9HouseData7getRoomEi(void *p, s32 a);
 RoomFtrState *_ZN9HouseRoom13func_0206086cEv();
-void func_02060174(s32 a);
-void func_020601a4(s32 a, u16 *p);
+void HouseRoom_ClearSongForScene(s32 a);
+void HouseRoom_SetSongForScene(s32 a, u16 *p);
 s32 SceneId_IsHouseRoom(u32 id);
 s32 SceneId_GetHouseRoom(u32 id);
 s32 SceneId_IsVillagerHouse(u32 id);
@@ -403,7 +403,7 @@ BOOL RoomFtrState::removeGyroidBeat(u32 a, u32 b) { return unk_40.remove(a, b); 
 
 extern "C" RoomFtrState *RoomFtrState_GetForScene(u32 id) {
     if (SceneId_IsHouseRoom(id)) {
-        if (_ZN9HouseData13func_0206052cEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
+        if (_ZN9HouseData7getRoomEi(gSaveHouse, SceneId_GetHouseRoom(id))) {
             return _ZN9HouseRoom13func_0206086cEv();
         }
     } else if (SceneId_IsVillagerHouse(id)) {
@@ -512,9 +512,9 @@ extern "C" s32 FtrSync_ApplyState(u8 a, s32 b, s32 c, s32 d, u8 e, bool f, bool 
         if (f) {
             u32 t = i;
             u16 v = t < 0x46 ? (u16)(t + 0x1323) : 0x1323;
-            func_020601a4(a, &v);
+            HouseRoom_SetSongForScene(a, &v);
         } else if (!h) {
-            func_02060174(a);
+            HouseRoom_ClearSongForScene(a);
         }
     }
     return 1;
@@ -539,7 +539,7 @@ extern "C" s32 FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
     u32 a = p->a;
     BOOL b = p->b ? 1 : 0;
     if (p->c == 1) {
-        _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
+        _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
         Unk_0205218c_B t;
         t = *p;
         t.c = 0;
@@ -548,7 +548,7 @@ extern "C" s32 FtrSync_OnRoomLightRecord(Unk_0205218c_B *p) {
         _ZN11CommManager11writeRecordEPhj(g, &t, 1);
         _ZN11CommManager9endRecordEjj(g, 0x19, 4);
     } else {
-        _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
+        _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
     }
 }
 
@@ -865,7 +865,7 @@ extern "C" void FtrSync_SendRoomLight(s32 a, s32 b, s32 c) {
 }
 
 extern "C" void FtrSync_ApplyRoomLight(s32 a, s32 b) {
-    _ZN9HouseData13func_02060244Ejj(gSaveHouse, a, b);
+    _ZN9HouseData11setRoomFlagEjj(gSaveHouse, a, b);
     FtrSync_SendRoomLight(a, b, 4);
 }
 

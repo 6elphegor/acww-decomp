@@ -32,8 +32,8 @@ void MenuCtrl_TickForceClose();
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_SetResult(u32 v);
 void MenuCtrl_SetIndex(u32 v);
-BOOL func_020600f4(s32 v);
-void func_0206009c(s32 v);
+BOOL SongSet_HasSong(s32 v);
+void SongSet_AddSong(s32 v);
 
 BOOL MenuKeys_HasRight(void *pad);
 BOOL MenuKeys_HasLeft(void *pad);
@@ -1202,10 +1202,10 @@ void SongPickMenu::onPopupChoice() {
     switch (unk_27ff) {
     case 0: {
         s32 r5 = getSlotItem(unk_27fc);
-        if (func_020600f4(r5)) {
+        if (SongSet_HasSong(r5)) {
             SongPickMenu_ShowError((S *)this, 0x11);
         } else {
-            func_0206009c(r5);
+            SongSet_AddSong(r5);
             SongPickMenu_SetSlotItem((S *)this, unk_27fc, 0xfff1, 0);
             closeWithSlot();
         }

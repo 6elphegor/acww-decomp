@@ -176,7 +176,7 @@ BOOL ItemInfo_TestFlag3(u16 *p);
 BOOL Ftr_TestIndoorFlagC(u16 *p);
 BOOL Ftr_TestIndoorFlag7(u16 *p);
 u32 func_02060c70(u32 x);
-s32 func_0204f34c(s32 x);
+s32 Fish_GetBaseSize(s32 x);
 void Item_FromPlacedForm(void *p, u32 x);
 s32 Item_GetPrice(void *p);
 BOOL Item_IsTreeStage0(u16 *p);
@@ -868,7 +868,7 @@ extern "C" s32 Item_GetFishIndex(u16 *p) { if (Item_IsFish(p)) return Item_GetId
 
 namespace nB {
 extern "C" s32 func_0204b978(u16 *p) {
-    if (Item_IsFish(p)) return func_0204f34c(Item_GetFishIndex(p));
+    if (Item_IsFish(p)) return Fish_GetBaseSize(Item_GetFishIndex(p));
     return 10;
 }
 }

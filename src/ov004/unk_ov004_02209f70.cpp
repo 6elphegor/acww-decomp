@@ -4525,9 +4525,9 @@ u32 Villager_GetInfo4d();
 void _ZN8ItemNameC1EPt(void *out, u16 *in);
 void _ZN8ItemNameD1Ev(void *p);
 void _ZN15TalkWindowState12setNamedSlotEiPvj(void *a, s32 b, void *c, s32 d);
-u16 *func_020601cc();
-s32 func_02060158();
-void func_02060190(u16 *p);
+u16 *HouseRoom_GetCurrentSong();
+s32 HouseRoom_ClearCurrentSong();
+void HouseRoom_SetCurrentSong(u16 *p);
 s32 MenuCtrl_IsFinished();
 s32 MenuCtrl_IsResultOk();
 u16 MenuCtrl_GetSongItem();
@@ -4676,7 +4676,7 @@ BOOL FtrStereo::enterTalkAct04() {
         p18::_ZN15TalkWindowState12setNamedSlotEiPvj(((Unk_ov004_0220ebd8_Ptr *)unk_3c), 0, buf1, 7);
         p18::_ZN8ItemNameD1Ev(buf1);
     } else {
-        u16 *p = p18::func_020601cc();
+        u16 *p = p18::HouseRoom_GetCurrentSong();
         BOOL ok = FALSE;
         if (*p >= 0x1323 && *p <= 0x1368) ok = TRUE;
         if (ok) {
@@ -4797,7 +4797,7 @@ void FtrStereo::stopSong(u32 a, BOOL b) {
             p18::Bgm_Release(a + 0xb0);
             if (b) {
                 u16 v = 0xfff1;
-                p18::func_02060190(&v);
+                p18::HouseRoom_SetCurrentSong(&v);
             }
             unk_840 = 0;
         }
@@ -4809,7 +4809,7 @@ void FtrStereo::startSong(u32 a) {
         if (a < 0x46) {
             p18::Bgm_Request(0x11, a + 0xb0, 0x7f, 0);
             u16 v = Unk_ov004_0220ec30_Val(a);
-            p18::func_02060190(&v);
+            p18::HouseRoom_SetCurrentSong(&v);
             unk_840 = 1;
         }
     }
@@ -4868,7 +4868,7 @@ BOOL FtrStereo::initModel() {
             }
         } else {
             volatile u16 v;
-            v = *p18::func_020601cc();
+            v = *p18::HouseRoom_GetCurrentSong();
             BOOL f = FALSE;
             u32 hi = v;
             u32 lo = v;
@@ -4882,7 +4882,7 @@ BOOL FtrStereo::initModel() {
                 }
                 changeAct(1, x);
             } else {
-                p18::func_02060158();
+                p18::HouseRoom_ClearCurrentSong();
                 changeAct(0, 0xff);
             }
         }
@@ -5514,7 +5514,7 @@ void SaveManager_RequestAct01(void);
 BOOL GameStart_IsNewTown(void);
 BOOL GameStart_IsNewResident(void);
 s32 PlayerData_GetCurrentIndex(void);
-u32 func_020b0f54(void);
+u32 Room_CountOccupants(void);
 s32 _ZN11CommManager8isOnlineEv(void *p);
 void PlayerActor_LocalRequestGetOutOfBed(u32 a, u32 b);
 BOOL PlayerActor_LocalRequestBedApproach(Unk_ov004_0221076c_R *a, s32 *b, u16 *c, s16 d, s32 e);
@@ -5811,7 +5811,7 @@ void FtrBed::execFtrAct01() {
                     }
                 }
             } else {
-                if (p21::func_020b0f54() <= 1) {
+                if (p21::Room_CountOccupants() <= 1) {
                     unk_854 = 2;
                 }
             }

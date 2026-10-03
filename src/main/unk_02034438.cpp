@@ -28,7 +28,7 @@ void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
-BOOL func_020b0f0c();
+BOOL Taxi_IsArriving();
 void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 s32 Weather_GetPrecipKind(void);
@@ -60,7 +60,7 @@ s32 func_02040c7c(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-s32 func_020b0f30(void);
+s32 Taxi_IsLeaving(void);
 s32 _ZN10PlayerData10getErrandsEv(s32 a);
 s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
@@ -689,7 +689,7 @@ void func_020728a4(void *p, void *q, s32 n);
 void func_02072824(void *p, s32 a, s32 b);
 BOOL Scene_GetSkyKind(s32 v);
 BOOL Scene_InTown();
-BOOL func_020b0f0c();
+BOOL Taxi_IsArriving();
 void Melody_StartTrackA();
 void __cxa_vec_cleanup(void *p, u32 n, u32 sz, void (*d)());
 extern BgmManager *data_021c1b3c;
@@ -730,7 +730,7 @@ s32 func_02040c7c(void);
 void Clock_GetDateTime(void *);
 void MI_CpuCopy8(void *, void *, u32);
 s32 Event_GetState(u32, void *, u32);
-s32 func_020b0f30(void);
+s32 Taxi_IsLeaving(void);
 s32 _ZN10PlayerData10getErrandsEv(s32 a);
 s32 PlayerErrands_IsJobActive(s32 a);
 extern u16 data_020c8b9c[];
@@ -867,7 +867,7 @@ s32 _ZN8BgmClock13isTimeInRangeEjjjjjj(s32 o, s32 a, s32 b, s32 c, s32 d, s32 e,
 extern u32 gCommManager;
 s32 _ZN11CommManager8isOnlineEv(u32 a);
 s32 PlayerData_GetCurrent(void);
-s32 func_020b0f0c(void);
+s32 Taxi_IsArriving(void);
 s32 _ZN12Unk_02097ff48testFlagEj(s32 a, s32 b);
 }
 }
@@ -1203,10 +1203,10 @@ void FieldSpecialBgm::start() {
     unk_0b = 1;
     if (unk_08 == 0xffff) {
         s32 r5 = Ns_02035e2c::PlayerData_GetCurrent();
-        if (Ns_02035e2c::func_020b0f0c() != 0) {
+        if (Ns_02035e2c::Taxi_IsArriving() != 0) {
             Ns_02035e2c::Bgm_RequestSilence(3, 0, 5);
             play(4, 0x45, 1);
-        } else if (func_020b0f30() != 0) {
+        } else if (Taxi_IsLeaving() != 0) {
             play(0xd, 0x4a, 0);
         } else if (r5 != 0 && (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 0x23) != 0 || (Ns_02035e2c::_ZN12Unk_02097ff48testFlagEj(r5, 1) != 0 && PlayerErrands_IsJobActive(_ZN10PlayerData10getErrandsEv(r5)) == 0))) {
             play(0x1c, 0x46, 0);
@@ -2665,7 +2665,7 @@ void BgmManager::updateHourChime() {
             ok = FALSE;
         }
         if (Scene_InTown()) {
-            if (func_020b0f0c()) {
+            if (Taxi_IsArriving()) {
                 ok = FALSE;
             }
         }

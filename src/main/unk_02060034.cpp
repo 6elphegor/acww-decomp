@@ -4,13 +4,13 @@ inline void *operator new(unsigned long, void *p) {
     return p;
 }
 
-class Unk_02060b10 {
+class RoomItemGrid {
 public:
     u16 unk_00[0x100];
-    Unk_02060b10();
-    ~Unk_02060b10();
-    Unk_02060b10 *func_02060b10();
-    void func_02060b14();
+    RoomItemGrid();
+    ~RoomItemGrid();
+    RoomItemGrid *getGrid();
+    void clear();
 };
 
 class RoomFtrState {
@@ -28,17 +28,17 @@ struct MapBlockEntry {
     MapBlockEntry();
 };
 
-class Unk_02060034 {
+class SongSet {
 public:
     u8 unk_00[12];
-    Unk_02060034();
-    ~Unk_02060034();
-    void func_02060034();
+    SongSet();
+    ~SongSet();
+    void clear();
 };
 
 class HouseRoom {
 public:
-    Unk_02060b10 unk_000[2];
+    RoomItemGrid unk_000[2];
     RoomFtrState unk_400;
     u16 unk_448;
     u16 unk_44a;
@@ -48,14 +48,14 @@ public:
     HouseRoom();
     ~HouseRoom();
     void func_02060878_dummy();
-    MapBlockEntry *func_02060878(void *heap);
-    void func_020608b8(s32 i);
-    void func_020607c8(u16 *src);
-    u16 *func_020607d4();
-    void func_020607e0(u16 *src, u32 flag);
-    void func_02060808(u16 *src, u32 flag);
-    u16 *func_02060834(s32 *out);
-    u16 *func_02060850(s32 *out);
+    MapBlockEntry *buildBlockEntry(void *heap);
+    void reset(s32 i);
+    void setSong(u16 *src);
+    u16 *getSong();
+    void setCarpet(u16 *src, u32 flag);
+    void setWallpaper(u16 *src, u32 flag);
+    u16 *getCarpet(s32 *out);
+    u16 *getWallpaper(s32 *out);
     RoomFtrState *func_0206086c();
 };
 
@@ -73,38 +73,38 @@ class HouseData {
 public:
     HouseRoom unk_0000[5];
     s32 unk_1590;
-    Unk_02060034 unk_1594;
+    SongSet unk_1594;
     Unk_0206022c_Bits unk_15a0;
 
     HouseData();
     ~HouseData();
-    BOOL func_0206022c();
-    BOOL func_02060244(u32 x, u32 set);
-    BOOL func_020602cc(u32 v);
-    s32 func_02060308();
-    void func_02060340();
-    void func_02060370(s32 v);
-    s32 func_02060388();
-    void func_02060394(s32 v);
-    void func_020603b0(u8 v);
-    u8 func_020603bc();
-    u16 func_020603f4(s32 x);
-    BOOL func_02060430(u32 v);
-    u8 func_0206045c();
-    BOOL func_02060474();
-    u32 func_020604c4();
-    BOOL func_020604d4();
-    MapBlockEntry *func_020604f8(s32 idx, void *heap);
-    HouseRoom *func_0206052c(s32 idx);
-    HouseRoom *func_02060550(s32 x);
-    void func_0206058c();
-    void func_020605a8();
-    void func_020606d8();
+    BOOL hasRoomFlags();
+    BOOL setRoomFlag(u32 x, u32 set);
+    BOOL orderUpgrade(u32 v);
+    s32 isUpgradePaidOff();
+    void startLoan();
+    void setDebt(s32 v);
+    s32 getDebt();
+    void addRoachesForDays(s32 v);
+    void setRoachCount(u8 v);
+    u8 getRoachCount();
+    u16 getRoomAcreId(s32 x);
+    BOOL orderRoofPaint(u32 v);
+    u8 getRoofColor();
+    BOOL requestLevelUp();
+    u32 getLevel();
+    BOOL isUpgradePending();
+    MapBlockEntry *buildRoomBlockEntry(s32 idx, void *heap);
+    HouseRoom *getRoom(s32 idx);
+    HouseRoom *getRoomForScene(s32 x);
+    void resetDebt();
+    void applyPendingWork();
+    void reset();
 };
 
 extern "C" {
 extern HouseData gSaveHouse;
-extern u8 data_021e6e3c[];
+extern u8 gSaveSongSet[];
 extern u8 gSaveData[];
 extern void *data_020dcbd0[];
 extern u8 gSaveData[];
@@ -122,10 +122,10 @@ void FieldUnit_FromBlockUnit(s32 *ox, s32 *oz, s32 a, s32 b, s32 c, s32 d);
 void *BlockMap_SetItemAtUnit(void *g, u16 *a, s32 x, s32 z, u8 d);
 void OS_GetOwnerInfo(u8 *buf);
 void RoomFtrState_SetSwitch(s32 a, s32 b, s32 c, s32 d, s32 e);
-u32 func_020602ac(u32 x);
-BOOL func_0206057c(s32 i);
+u32 HouseData_GetRoomFlagMask(u32 x);
+BOOL HouseData_IsValidRoomIndex(s32 i);
 u16 func_020603c8();
-BOOL func_02060654(s32 x);
+BOOL PlayerHouse_ReplaceStructure(s32 x);
 }
 
 extern "C" {
@@ -136,11 +136,11 @@ void _ZN6ItemIdD1Ev(void *p);
 void _ZN6ItemIdC1Ev(void *p);
 void *Clock_GetTimeSeed();
 s32 Random_SetSeed(void *a, void *b);
-void func_0206007c(u8 *bits, u32 i);
-void func_020600d4(u8 *bits, u32 i);
-BOOL func_02060130(u8 *bits, u32 i);
-BOOL func_02060190(u16 *p);
-BOOL func_020601a4(s32 a, u16 *p);
+void SongSet_ClearBit(u8 *bits, u32 i);
+void SongSet_SetBit(u8 *bits, u32 i);
+BOOL SongSet_TestBit(u8 *bits, u32 i);
+BOOL HouseRoom_SetCurrentSong(u16 *p);
+BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 }
 
 
@@ -152,12 +152,12 @@ public:
 };
 
 extern const u16 data_020cb550[7];
-extern const s32 data_020cb560[7];
-extern const u16 data_020cb57c[7][5];
+extern const s32 sHouseLoanAmounts[7];
+extern const u16 sHouseRoomAcreIds[7][5];
 
 const u16 data_020cb550[7] = {0x1003, 0x1003, 0x1003, 0x1008, 0x1008, 0x1008, 0x1008};
-const s32 data_020cb560[7] = {0x4d58, 0x1d4c0, 0x48c10, 0x91ff0, 0xb1bc0, 0xcf080, 0xe7720};
-const u16 data_020cb57c[7][5] = {
+const s32 sHouseLoanAmounts[7] = {0x4d58, 0x1d4c0, 0x48c10, 0x91ff0, 0xb1bc0, 0xcf080, 0xe7720};
+const u16 sHouseRoomAcreIds[7][5] = {
     {0x1002, 0x100e, 0x100c, 0x100a, 0x1007},
     {0x1004, 0x100e, 0x100c, 0x100a, 0x1007},
     {0x1005, 0x100e, 0x100c, 0x100a, 0x1007},
@@ -188,24 +188,24 @@ static inline s32 Unk_02060044_Idx(u32 id)
     return -1;
 }
 
-extern "C" void *_ZN12Unk_02060b10C1Ev(void *p) {
+extern "C" void *_ZN12RoomItemGridC1Ev(void *p) {
     __cxa_vec_ctor(p, 0x100, 2, _ZN6ItemIdC1Ev, _ZN6ItemIdD1Ev);
     return p;
 }
 
-extern "C" void *_ZN12Unk_02060b10D1Ev(void *p) {
+extern "C" void *_ZN12RoomItemGridD1Ev(void *p) {
     __cxa_vec_cleanup(p, 0x100, 2, _ZN6ItemIdD1Ev);
     return p;
 }
 
-void Unk_02060b10::func_02060b14() {
+void RoomItemGrid::clear() {
     u16 *p = unk_00;
     for (s32 i = 0; i < 0x100; i++) {
         *p++ = 0xfff1;
     }
 }
 
-Unk_02060b10 *Unk_02060b10::func_02060b10() { return this; }
+RoomItemGrid *RoomItemGrid::getGrid() { return this; }
 
 HouseRoom::HouseRoom() { u16 v = 0xfff1;
     unk_448 = v;
@@ -214,11 +214,11 @@ HouseRoom::HouseRoom() { u16 v = 0xfff1;
 
 HouseRoom::~HouseRoom() {}
 
-void HouseRoom::func_020608b8(s32 i) {
-    Unk_02060b10 *p = &unk_000[0];
+void HouseRoom::reset(s32 i) {
+    RoomItemGrid *p = &unk_000[0];
     s32 j = 0;
     for (; j < 2; p++, j++) {
-        p->func_02060b14();
+        p->clear();
     }
     unk_400.reset();
     static Unk_020608b8_W t1[5] = { Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e), Unk_020608b8_W(0x113e) };
@@ -227,8 +227,8 @@ void HouseRoom::func_020608b8(s32 i) {
     unk_44a = t2[i].v;
     unk_44c = 0xfff1;
     if (i == 0) {
-        Unk_02060b10 *a = unk_000[0].func_02060b10();
-        Unk_02060b10 *b = unk_000[1].func_02060b10();
+        RoomItemGrid *a = unk_000[0].getGrid();
+        RoomItemGrid *b = unk_000[1].getGrid();
         if (a) {
             a->unk_00[0xa6] = 0x3808;
             a->unk_00[0xa9] = 0x374c;
@@ -240,14 +240,14 @@ void HouseRoom::func_020608b8(s32 i) {
     }
 }
 
-MapBlockEntry *HouseRoom::func_02060878(void *heap) {
+MapBlockEntry *HouseRoom::buildBlockEntry(void *heap) {
     MapBlockEntry *p = MapBlockEntry_NewArray(1, heap);
     if (p) {
         new (p) MapBlockEntry;
     }
     if (p) {
         for (s32 i = 0; i < 2; i++) {
-            p->unk_04[i] = (u32)unk_000[i].func_02060b10();
+            p->unk_04[i] = (u32)unk_000[i].getGrid();
         }
         p->unk_0c = 0;
     }
@@ -256,50 +256,50 @@ MapBlockEntry *HouseRoom::func_02060878(void *heap) {
 
 RoomFtrState *HouseRoom::func_0206086c() { return &unk_400; }
 
-u16 *HouseRoom::func_02060850(s32 *out) {
+u16 *HouseRoom::getWallpaper(s32 *out) {
     if (out) *out = unk_44e_0;
     return &unk_448;
 }
 
-u16 *HouseRoom::func_02060834(s32 *out) {
+u16 *HouseRoom::getCarpet(s32 *out) {
     if (out) *out = unk_44e_1;
     return &unk_44a;
 }
 
-void HouseRoom::func_02060808(u16 *src, u32 flag) {
+void HouseRoom::setWallpaper(u16 *src, u32 flag) {
     unk_448 = *src;
     unk_44e_0 = flag;
 }
 
-void HouseRoom::func_020607e0(u16 *src, u32 flag) {
+void HouseRoom::setCarpet(u16 *src, u32 flag) {
     unk_44a = *src;
     unk_44e_1 = flag;
 }
 
-u16 *HouseRoom::func_020607d4() { return &unk_44c; }
+u16 *HouseRoom::getSong() { return &unk_44c; }
 
-void HouseRoom::func_020607c8(u16 *src) { unk_44c = *src; }
+void HouseRoom::setSong(u16 *src) { unk_44c = *src; }
 
 HouseData::HouseData() {}
 
 HouseData::~HouseData() {}
 
-void HouseData::func_020606d8() {
+void HouseData::reset() {
     HouseRoom *p = &unk_0000[0];
     s32 i = 0;
     u8 buf[0x50];
     for (; i < 5; p++, i++) {
-        p->func_020608b8(i);
+        p->reset(i);
     }
     unk_15a0.a = 0;
-    unk_1594.func_02060034();
+    unk_1594.clear();
     OS_GetOwnerInfo(buf);
     unk_15a0.d = buf[1];
     unk_15a0.c = unk_15a0.d;
     unk_15a0.e = 0;
 }
 
-extern "C" BOOL func_02060654(s32 x) {
+extern "C" BOOL PlayerHouse_ReplaceStructure(s32 x) {
     void *g = TownBlockMap_Get();
     u16 arr[3];
     s32 ox, oz, a, b, c, d;
@@ -314,13 +314,13 @@ extern "C" BOOL func_02060654(s32 x) {
     return FALSE;
 }
 
-void HouseData::func_020605a8() {
+void HouseData::applyPendingWork() {
     if (unk_15a0.c != unk_15a0.d) {
         unk_15a0.c = unk_15a0.d;
     }
     u32 b = unk_15a0.b;
-    if (b != func_020604c4()) {
-        if (func_02060654(b)) {
+    if (b != getLevel()) {
+        if (PlayerHouse_ReplaceStructure(b)) {
             unk_15a0.a = unk_15a0.b;
             unk_15a0.d = unk_15a0.e;
             unk_15a0.c = unk_15a0.d;
@@ -331,87 +331,87 @@ void HouseData::func_020605a8() {
     }
 }
 
-void HouseData::func_0206058c() {
+void HouseData::resetDebt() {
     unk_1590 = 0x4d58;
     unk_15a0.cnt = 0;
 }
 
-extern "C" BOOL func_0206057c(s32 i) {
+extern "C" BOOL HouseData_IsValidRoomIndex(s32 i) {
     if (i >= 0 && i < 5) return TRUE;
     return FALSE;
 }
 
-HouseRoom *HouseData::func_02060550(s32 x) {
+HouseRoom *HouseData::getRoomForScene(s32 x) {
     if (SceneId_IsHouseRoom(x)) {
-        return func_0206052c(SceneId_GetHouseRoom(x));
+        return getRoom(SceneId_GetHouseRoom(x));
     }
     return NULL;
 }
 
-HouseRoom *HouseData::func_0206052c(s32 idx) {
+HouseRoom *HouseData::getRoom(s32 idx) {
     HouseRoom *r = NULL;
-    if (func_0206057c(idx)) {
+    if (HouseData_IsValidRoomIndex(idx)) {
         r = &unk_0000[idx];
     }
     return r;
 }
 
-MapBlockEntry *HouseData::func_020604f8(s32 idx, void *heap) {
+MapBlockEntry *HouseData::buildRoomBlockEntry(s32 idx, void *heap) {
     MapBlockEntry *p = NULL;
-    HouseRoom *e = func_0206052c(idx);
+    HouseRoom *e = getRoom(idx);
     if (e) {
-        p = e->func_02060878(heap);
+        p = e->buildBlockEntry(heap);
         if (p) {
-            p->unk_00 = func_020603f4(idx);
+            p->unk_00 = getRoomAcreId(idx);
         }
     }
     return p;
 }
 
-BOOL HouseData::func_020604d4() {
-    if (unk_15a0.b != func_020604c4()) return TRUE;
+BOOL HouseData::isUpgradePending() {
+    if (unk_15a0.b != getLevel()) return TRUE;
     return FALSE;
 }
 
-u32 HouseData::func_020604c4() { return unk_15a0.a; }
+u32 HouseData::getLevel() { return unk_15a0.a; }
 
-BOOL HouseData::func_02060474() {
-    if (unk_15a0.b == func_020604c4()) {
-        if ((s32)func_020604c4() < 6) {
-            unk_15a0.b = (u8)(func_020604c4() + 1);
+BOOL HouseData::requestLevelUp() {
+    if (unk_15a0.b == getLevel()) {
+        if ((s32)getLevel() < 6) {
+            unk_15a0.b = (u8)(getLevel() + 1);
             return TRUE;
         }
     }
     return FALSE;
 }
 
-u8 HouseData::func_0206045c() { return (u8)(unk_15a0.c & 0xf); }
+u8 HouseData::getRoofColor() { return (u8)(unk_15a0.c & 0xf); }
 
-BOOL HouseData::func_02060430(u32 v) {
+BOOL HouseData::orderRoofPaint(u32 v) {
     unk_15a0.d = (u8)(v & 0xf);
     return TRUE;
 }
 
-u16 HouseData::func_020603f4(s32 x) {
+u16 HouseData::getRoomAcreId(s32 x) {
     if (x != -1) {
-        s32 m = gSaveHouse.func_020604c4();
-        if (m < 7) return data_020cb57c[m][x];
+        s32 m = gSaveHouse.getLevel();
+        if (m < 7) return sHouseRoomAcreIds[m][x];
         return 0x1002;
     }
     return 0x1002;
 }
 
 extern "C" u16 func_020603c8() {
-    s32 m = gSaveHouse.func_020604c4();
+    s32 m = gSaveHouse.getLevel();
     if (m < 7) return data_020cb550[m];
     return 0x1003;
 }
 
-u8 HouseData::func_020603bc() { return unk_15a0.cnt; }
+u8 HouseData::getRoachCount() { return unk_15a0.cnt; }
 
-void HouseData::func_020603b0(u8 v) { unk_15a0.cnt = v; }
+void HouseData::setRoachCount(u8 v) { unk_15a0.cnt = v; }
 
-void HouseData::func_02060394(s32 v) {
+void HouseData::addRoachesForDays(s32 v) {
     if (v >= 7) {
         s32 t = unk_15a0.cnt + (v - 6);
         if (t > 10) t = 10;
@@ -419,9 +419,9 @@ void HouseData::func_02060394(s32 v) {
     }
 }
 
-s32 HouseData::func_02060388() { return unk_1590; }
+s32 HouseData::getDebt() { return unk_1590; }
 
-void HouseData::func_02060370(s32 v) {
+void HouseData::setDebt(s32 v) {
     if (v < 0) {
         unk_1590 = 0;
     } else {
@@ -429,33 +429,33 @@ void HouseData::func_02060370(s32 v) {
     }
 }
 
-void HouseData::func_02060340() {
-    if (func_02060388() == 0) {
-        u32 m = func_020604c4();
+void HouseData::startLoan() {
+    if (getDebt() == 0) {
+        u32 m = getLevel();
         if (m < 7) {
-            func_02060370(data_020cb560[m]);
+            setDebt(sHouseLoanAmounts[m]);
         }
     }
 }
 
-s32 HouseData::func_02060308() {
-    if (unk_15a0.b == func_020604c4()) {
-        if (func_02060388() == 0) {
+s32 HouseData::isUpgradePaidOff() {
+    if (unk_15a0.b == getLevel()) {
+        if (getDebt() == 0) {
             return _ZN8SaveData8testFlagEj(gSaveData, 13);
         }
     }
     return 0;
 }
 
-BOOL HouseData::func_020602cc(u32 v) {
-    if (func_02060474()) {
+BOOL HouseData::orderUpgrade(u32 v) {
+    if (requestLevelUp()) {
         unk_15a0.e = v;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_020602ac(u32 x) {
+extern "C" u32 HouseData_GetRoomFlagMask(u32 x) {
     s32 r = SceneId_GetHouseRoom(x);
     u8 m = 0;
     if (r != -1) {
@@ -464,8 +464,8 @@ extern "C" u32 func_020602ac(u32 x) {
     return m;
 }
 
-BOOL HouseData::func_02060244(u32 x, u32 set) {
-    u32 m = func_020602ac(x);
+BOOL HouseData::setRoomFlag(u32 x, u32 set) {
+    u32 m = HouseData_GetRoomFlagMask(x);
     if (m) {
         if (set) {
             unk_15a0.f = unk_15a0.f | m;
@@ -477,53 +477,53 @@ BOOL HouseData::func_02060244(u32 x, u32 set) {
     return FALSE;
 }
 
-BOOL HouseData::func_0206022c() {
+BOOL HouseData::hasRoomFlags() {
     if (unk_15a0.f != 0) return TRUE;
     return FALSE;
 }
 
-extern "C" u16 *func_020601cc()
+extern "C" u16 *HouseRoom_GetCurrentSong()
 {
-    HouseRoom *r = gSaveHouse.func_02060550(Scene_GetCurrent());
+    HouseRoom *r = gSaveHouse.getRoomForScene(Scene_GetCurrent());
     if (r != 0) {
-        return r->func_020607d4();
+        return r->getSong();
     }
     static Unk_020601cc_Dflt dflt;
     return &dflt.unk_00;
 }
 
-extern "C" BOOL func_020601a4(s32 a, u16 *p)
+extern "C" BOOL HouseRoom_SetSongForScene(s32 a, u16 *p)
 {
-    HouseRoom *r = gSaveHouse.func_02060550(a);
+    HouseRoom *r = gSaveHouse.getRoomForScene(a);
     if (r != 0) {
-        r->func_020607c8(p);
+        r->setSong(p);
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_02060190(u16 *p)
+extern "C" BOOL HouseRoom_SetCurrentSong(u16 *p)
 {
-    return func_020601a4(Scene_GetCurrent(), p);
+    return HouseRoom_SetSongForScene(Scene_GetCurrent(), p);
 }
 
-extern "C" BOOL func_02060174(s32 a)
-{
-    u16 v = 0xfff1;
-    return func_020601a4(a, &v);
-}
-
-extern "C" BOOL func_02060158()
+extern "C" BOOL HouseRoom_ClearSongForScene(s32 a)
 {
     u16 v = 0xfff1;
-    return func_02060190(&v);
+    return HouseRoom_SetSongForScene(a, &v);
 }
 
-Unk_02060034::Unk_02060034() {}
+extern "C" BOOL HouseRoom_ClearCurrentSong()
+{
+    u16 v = 0xfff1;
+    return HouseRoom_SetCurrentSong(&v);
+}
 
-Unk_02060034::~Unk_02060034() {}
+SongSet::SongSet() {}
 
-extern "C" BOOL func_02060130(u8 *bits, u32 i)
+SongSet::~SongSet() {}
+
+extern "C" BOOL SongSet_TestBit(u8 *bits, u32 i)
 {
     if (i < 0x46) {
         if ((bits[i >> 3] >> (i & 7)) & 1) {
@@ -534,43 +534,43 @@ extern "C" BOOL func_02060130(u8 *bits, u32 i)
     return FALSE;
 }
 
-extern "C" BOOL func_020600f4(u32 id)
+extern "C" BOOL SongSet_HasSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        return func_02060130(data_021e6e3c, Unk_02060044_Idx(id));
+        return SongSet_TestBit(gSaveSongSet, Unk_02060044_Idx(id));
     }
     return FALSE;
 }
 
-extern "C" void func_020600d4(u8 *bits, u32 i)
+extern "C" void SongSet_SetBit(u8 *bits, u32 i)
 {
     if (i < 0x46) {
         bits[i >> 3] |= 1 << (i & 7);
     }
 }
 
-extern "C" void func_0206009c(u32 id)
+extern "C" void SongSet_AddSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        func_020600d4(data_021e6e3c, Unk_02060044_Idx(id));
+        SongSet_SetBit(gSaveSongSet, Unk_02060044_Idx(id));
     }
 }
 
-extern "C" void func_0206007c(u8 *bits, u32 i)
+extern "C" void SongSet_ClearBit(u8 *bits, u32 i)
 {
     if (i < 0x46) {
         bits[i >> 3] &= ~(1 << (i & 7));
     }
 }
 
-extern "C" void func_02060044(u32 id)
+extern "C" void SongSet_RemoveSong(u32 id)
 {
     if (id >= 0x1323 && id <= 0x1368) {
-        func_0206007c(data_021e6e3c, Unk_02060044_Idx(id));
+        SongSet_ClearBit(gSaveSongSet, Unk_02060044_Idx(id));
     }
 }
 
-void Unk_02060034::func_02060034()
+void SongSet::clear()
 {
     u32 i = 0;
     s32 z = 0;

@@ -99,7 +99,7 @@ void func_0203a318();
 void ScreenTransition_StartFadeOut(s32 a, s32 b);
 void Snd_FadeOutScene();
 void ScreenTransition_StartFadeIn(s32 a, s32 b, s32 c);
-void func_020b0f24();
+void Taxi_SetArriving();
 s32 TaxiInterior_StopRain();
 void TaxiInterior_StartDriverAnim();
 extern u16 data_020c6cc8;
@@ -651,7 +651,7 @@ BOOL SpNpcKappn::mainAct03() {
     } l;
     if (Unk_ov051_02259a8c_IsZero(gScreenTransition)) {
         ScreenTransition_StartFadeIn(3, 0, 1);
-        func_020b0f24();
+        Taxi_SetArriving();
         if (GameStart_IsMode3() || GameStart_IsNewTown()) {
             l.w[0] = 0;
             l.w[1] = 0;

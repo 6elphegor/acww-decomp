@@ -150,7 +150,7 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 s32 TalkRequest_IsActive();
 void Clock_GetDateTime(void *);
 s32 DateTime_DiffMinutes(void *, void *);
-void func_020b1028();
+void HouseVisitor_SetPresent();
 void func_02015ab0(void *, s32);
 s32 NpcActor_getPlayerActor(void *, s32);
 void *ActorTalkRequest_getChoiceList(void *);
@@ -211,8 +211,8 @@ void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
 u32 *TalkWindow_Get(s32);
 u32 func_020e7518(void *);
 void func_02003e70(void *, u32, u32, u32);
-s32 func_020b0e60();
-void func_020b101c();
+s32 Building_PlayDoorChime();
+void HouseVisitor_ClearPresent();
 void VillagerStates_SetFleaMarketBuyer(s32);
 void *func_02095204(s32);
 s32 VillagerState_ResetRole(void *);
@@ -735,7 +735,7 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
         (vfunc_64() && o && func_02094218(o) && Villager_FindMemory(vfunc_64(), o) &&
          VillagerMemory_isFleaMarketVisited(Villager_FindMemory(vfunc_64(), o)))) {
         unk_adc = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
-        func_020b1028();
+        HouseVisitor_SetPresent();
         Ground_LockExit(0);
         FtrMgr_SetSaleMode();
         Clock_GetDateTime(unk_ac8);
@@ -761,7 +761,7 @@ BOOL FleaMarketBuyerVillager::vfunc_0c() {
         return FALSE;
     }
     if (unk_ac0 == 6 || unk_ac0 == 4) {
-        func_020b101c();
+        HouseVisitor_ClearPresent();
         VillagerStates_SetFleaMarketBuyer(-1);
     }
     if (vfunc_64()) {
@@ -798,7 +798,7 @@ void FleaMarketBuyerVillager::changeAct(s32 idx) {
 
 void FleaMarketBuyerVillager::func_ov004_02219ef4() {
     func_02003e70(&unk_514, 0x4cb, 0x7f, 0);
-    func_020b0e60();
+    Building_PlayDoorChime();
 }
 
 BOOL FleaMarketBuyerVillager::setupAct00() {
@@ -1421,7 +1421,7 @@ void FleaMarketBuyerVillager::vfunc_4c(s32 cmd, u32 b) {
         if (unk_ac0 == 0) {
             FtrActorTable_GetInstance();
             unk_adc = (s32)FtrActorTable_countUsed();
-            func_020b1028();
+            HouseVisitor_SetPresent();
             Ground_LockExit(0);
             FtrMgr_SetSaleMode();
             Clock_GetDateTime(unk_ac8);

@@ -294,8 +294,8 @@ s32 func_ov068_02268b70(BObj *, s16 *);
 void FieldPos_FromUnitCenter(void *, u32, u32);
 u16 Item_MakeBuilding(u32);
 void *StrBSize_Get(u16 *);
-u32 _ZN12Unk_020b28ac13func_020b2b98Ev(void *);
-s32 _ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(void *, s32 *, s32 *, u32);
+u32 _ZN12StrBSizeData17getLightUnitCountEv(void *);
+s32 _ZN12StrBSizeData12getLightUnitEPiS0_j(void *, s32 *, s32 *, u32);
 void *BuildingList_FindByItem(u32);
 s32 _ZN13BuildingActor9callIsLitEv(void *);
 s32 _ZN13BuildingActor8getGridXEv(void *);
@@ -740,14 +740,14 @@ s32 func_ov068_02269e54(DObj *o, DVec *out) {
         u16 id = Item_MakeBuilding(i);
         void *obj = StrBSize_Get(&id);
         if (obj != 0) {
-            u32 cnt = _ZN12Unk_020b28ac13func_020b2b98Ev(obj);
+            u32 cnt = _ZN12StrBSizeData17getLightUnitCountEv(obj);
             s32 px = zp, pz = zp;
             if (cnt != 0) {
                 void *q = BuildingList_FindByItem(id);
                 if (q != 0) {
                     u32 j;
                     for (j = zj; j < cnt; j++) {
-                        if (_ZN12Unk_020b28ac13func_020b2ae0EPiS0_j(obj, &px, &pz, j) != 0 && _ZN13BuildingActor9callIsLitEv(q) == 1) {
+                        if (_ZN12StrBSizeData12getLightUnitEPiS0_j(obj, &px, &pz, j) != 0 && _ZN13BuildingActor9callIsLitEv(q) == 1) {
                             DVec t;
                             Unk_ov068_02269e54_Pad pad;
                             s32 d;

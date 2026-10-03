@@ -102,7 +102,7 @@ void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, 
 void GXS_LoadOBJPltt(const void *p, u32 a, u32 b);
 s32 MenuCtrl_IsForceCloseDue();
 
-extern void *data_021c6210;
+extern void *gMenuHeap;
 extern void *gCurrentHeap;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;

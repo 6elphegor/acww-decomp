@@ -5,7 +5,7 @@ struct Unk_020db984_Vec3 {
     s32 x, y, z;
 };
 
-struct Unk_020db984_Ent {
+struct FishDisplayEntry {
     u8 pad_00[0x40];
     s32 unk_40;
     s32 unk_44;
@@ -75,13 +75,13 @@ s32 func_02072e44(void *);
 void _ZN12Unk_0209c15cD1Ev(void *);
 void _ZN12Unk_0209c15c13func_0209c15cEv(void *);
 void *__cxa_vec_cleanup(void *p, u32 n, u32 size, void *dtor);
-s32 func_0204fcb8(void);
-u32 func_0204f4e0(u32 i);
+s32 FishDisplay_FindFreeEntry(void);
+u32 FishDisplay_GetRequestKind(u32 i);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *, s32);
-void func_0204f674(Unk_020db984_Ent *, Unk_020db984_Vec3 *);
+void FishDisplayEntry_SetScale(FishDisplayEntry *, Unk_020db984_Vec3 *);
 void _ZN9AnimModel12drawAnimatedEPv(void *, void *);
-void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e);
-extern s32 data_020db8b4;
+void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e);
+extern s32 sFishDisplayEntryCount;
 extern FishDisplay *gFishDisplay;
 extern u8 data_020ca314[];
 extern u8 gFieldSceneKind;
@@ -106,8 +106,8 @@ void func_020e83d4(void *, s32);
 s32 func_020639e8(char *, const char *, ...);
 extern u8 data_021f47e0[];
 void _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, const char *f);
-void func_0205bfb8(void);
-void func_0205bf9c(void);
+void FishDisplayHeap_Create(void);
+void FishDisplayHeap_Destroy(void);
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
 void _ZN9AnimModel15detachJointAnimEv(void *p);
@@ -133,9 +133,9 @@ void NetBuf_UnpackPair20(void *buf, s32 *a, s32 *b);
 }
 
 extern "C" {
-Unk_0204fd24 *func_0204fd24(Unk_0204fd24 *p);
-Unk_0204fd24 *func_0204fcfc(Unk_0204fd24 *p);
-FishDisplay *func_0204fdb0(void);
+Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *p);
+Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *p);
+FishDisplay *FishDisplay_Create(void);
 }
 
 class FishDisplay : public GameProc {
@@ -147,45 +147,45 @@ public:
     virtual BOOL onDraw();
     ~FishDisplay() {
         _ZN12Unk_0209c15cD1Ev(unk_600);
-        __cxa_vec_cleanup(unk_50, 4, 0x16c, (void *)func_0204fcfc);
+        __cxa_vec_cleanup(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Destruct);
     }
-    void func_0204fbec(s32);
-    BOOL func_0204fc64(s32);
-    void func_0204f98c(Unk_020db984_Ent *);
-    BOOL func_0204f738(void *, Unk_020db984_Ent *);
-    BOOL func_0204f808(void *, Unk_020db984_Ent *);
-    BOOL func_0204f874(void *, Unk_020db984_Ent *);
+    void releaseEntry(s32);
+    BOOL beginLoad(s32);
+    void updateTransform(FishDisplayEntry *);
+    BOOL loadShadowModel(void *, FishDisplayEntry *);
+    BOOL loadStaticModel(void *, FishDisplayEntry *);
+    BOOL loadFishModel(void *, FishDisplayEntry *);
 
-    Unk_020db984_Ent unk_50[4];
+    FishDisplayEntry unk_50[4];
     u8 unk_600[0x18];
 };
 
 extern "C" {
-Unk_0204fd24 *func_0204fd24(Unk_0204fd24 *p);
-Unk_0204fd24 *func_0204fcfc(Unk_0204fd24 *p);
-FishDisplay *func_0204fdb0(void);
+Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *p);
+Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *p);
+FishDisplay *FishDisplay_Create(void);
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern char *data_020db8b0;
-extern void *data_020db8ac;
-extern char data_020db8cc[];
-extern char data_020db8e4[];
-extern char data_020db8fc[];
-extern char data_020db914[];
-extern char data_020db930[];
-extern Unk_020db8b8_Rec data_020db8b8;
-extern char *data_020db8c0[3];
+extern char *sFishShadowMdlPath;
+extern void *sFishShadowAnmPath;
+extern char sFishMdl56File[];
+extern char sFishMdl57File[];
+extern char sFishMdl58File[];
+extern char sFishShadowMdlFile[];
+extern char sFishShadowAnmFile[];
+extern Unk_020db8b8_Rec sFishDisplayProfile;
+extern char *sFishStaticMdlPaths[3];
 extern Unk_020db94c_Ent sFishDisplayRequests[4];
-extern const u8 data_020ca318[0x160];
+extern const u8 sFishBaseSizes[0x160];
 extern Backup gBackup;
 
 inline FishDisplay::FishDisplay() {
-    __cxa_vec_ctor(unk_50, 4, 0x16c, (void *)func_0204fd24, (void *)func_0204fcfc);
+    __cxa_vec_ctor(unk_50, 4, 0x16c, (void *)FishDisplayEntry_Construct, (void *)FishDisplayEntry_Destruct);
     _ZN12Unk_0209c15cC1Ev(unk_600);
 }
 
-extern const u8 data_020ca318[];
+extern const u8 sFishBaseSizes[];
 
 static inline BOOL Unk_0204f4f8_IsZero(u8 v) {
     return v == 0 ? TRUE : FALSE;
@@ -197,22 +197,22 @@ extern "C" void FishDisplay_RecvAct00(s8 *p, u32 v) {
     s32 c = p[1];
     MI_CpuCopy8(p + 2, buf, 5);
     NetBuf_UnpackPair20(buf, &a, &b);
-    func_0204f4f8((u8)v, 0, c, a, b);
+    FishDisplay_PostRequest((u8)v, 0, c, a, b);
 }
 
 extern "C" void FishDisplay_RecvAct01(void *p, u32 v) {
-    func_0204f4f8((u8)v, 1, -1, 0, 0);
+    FishDisplay_PostRequest((u8)v, 1, -1, 0, 0);
 }
 
 extern "C" void FishDisplay_RecvAct02(void *p, u32 v) {
-    func_0204f4f8((u8)v, 2, -1, 0, 0);
+    FishDisplay_PostRequest((u8)v, 2, -1, 0, 0);
 }
 
-extern "C" FishDisplay *func_0204fdb0(void) {
+extern "C" FishDisplay *FishDisplay_Create(void) {
     return new FishDisplay();
 }
 
-extern "C" Unk_0204fd24 *func_0204fd24(Unk_0204fd24 *e) {
+extern "C" Unk_0204fd24 *FishDisplayEntry_Construct(Unk_0204fd24 *e) {
     func_020f440c(e);
     func_0209c370(e->unk_48);
     _ZN12Unk_0209c0acC1Ev(e->unk_4c);
@@ -233,7 +233,7 @@ extern "C" Unk_0204fd24 *func_0204fd24(Unk_0204fd24 *e) {
     return e;
 }
 
-extern "C" Unk_0204fd24 *func_0204fcfc(Unk_0204fd24 *e) {
+extern "C" Unk_0204fd24 *FishDisplayEntry_Destruct(Unk_0204fd24 *e) {
     _ZN9AnimModelD1Ev(e->unk_98);
     _ZN12Unk_0209c0acD1Ev(e->unk_4c);
     func_0209c364(e->unk_48);
@@ -241,12 +241,12 @@ extern "C" Unk_0204fd24 *func_0204fcfc(Unk_0204fd24 *e) {
     return e;
 }
 
-extern "C" s32 func_0204fcb8(void) {
+extern "C" s32 FishDisplay_FindFreeEntry(void) {
     s32 i = 0;
     s32 r = -1;
     if (gFishDisplay != NULL) {
         Unk_0204fd24 *e = (Unk_0204fd24 *)gFishDisplay->unk_50;
-        for (; i < data_020db8b4; e++, i++) {
+        for (; i < sFishDisplayEntryCount; e++, i++) {
             if (e->unk_44 == 0) {
                 r = i;
                 e->unk_44 = 1;
@@ -257,7 +257,7 @@ extern "C" s32 func_0204fcb8(void) {
     return r;
 }
 
-BOOL FishDisplay::func_0204fc64(s32 idx) {
+BOOL FishDisplay::beginLoad(s32 idx) {
     BOOL r = FALSE;
     if (gFishDisplay == NULL) {
         return FALSE;
@@ -273,8 +273,8 @@ BOOL FishDisplay::func_0204fc64(s32 idx) {
     return r;
 }
 
-void FishDisplay::func_0204fbec(s32 idx) {
-    if (idx >= 0 && idx < data_020db8b4 && gFishDisplay != NULL) {
+void FishDisplay::releaseEntry(s32 idx) {
+    if (idx >= 0 && idx < sFishDisplayEntryCount && gFishDisplay != NULL) {
         Unk_0204fd24 *e = (Unk_0204fd24 *)&gFishDisplay->unk_50[idx];
         if (e->unk_44 != 0 && e->unk_44 != 1) {
             _ZN12Unk_02003c3013func_02003e50Ev(e);
@@ -290,11 +290,11 @@ void FishDisplay::func_0204fbec(s32 idx) {
 
 BOOL FishDisplay::vfunc_00() {
     if (*(s32 *)&unk_04[4] == 0) {
-        data_020db8b4 = 4;
+        sFishDisplayEntryCount = 4;
     } else if (*(s32 *)&unk_04[4] == 1) {
-        data_020db8b4 = 1;
+        sFishDisplayEntryCount = 1;
     }
-    _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE(unk_600, data_020db8b4, 0x800, 0x80, 0x134c, (void *)func_0205bfb8, (void *)func_0205bf9c, "fish_disp");
+    _ZN12Unk_0209c15c13func_0209c1a4EjPvS0_jPFS0_jjEPFvvE(unk_600, sFishDisplayEntryCount, 0x800, 0x80, 0x134c, (void *)FishDisplayHeap_Create, (void *)FishDisplayHeap_Destroy, "fish_disp");
     gFishDisplay = this;
     return TRUE;
 }
@@ -303,25 +303,25 @@ BOOL FishDisplay::onExecute() {
     volatile s32 v0, v4;
     FishDisplay *g = gFishDisplay;
     if (g == NULL) return FALSE;
-    Unk_020db984_Ent *e = g->unk_50;
+    FishDisplayEntry *e = g->unk_50;
     s32 i = 0;
     v4 = 0;
     v0 = 0;
-    for (; i < data_020db8b4; e++, i++) {
+    for (; i < sFishDisplayEntryCount; e++, i++) {
         switch (e->unk_44) {
         case 1:
             if (e->unk_40 != -1) {
-                func_0204fc64(i);
+                beginLoad(i);
             }
             break;
         case 2: {
             s32 t = e->unk_40;
             if ((u32)(t - 0x38) <= 2) {
-                func_0204f808(unk_600, e);
+                loadStaticModel(unk_600, e);
             } else if (t == 0x3b) {
-                func_0204f738(unk_600, e);
+                loadShadowModel(unk_600, e);
             } else {
-                func_0204f874(unk_600, e);
+                loadFishModel(unk_600, e);
             }
             break;
         }
@@ -344,17 +344,17 @@ BOOL FishDisplay::onExecute() {
                     }
                 }
             }
-            func_0204f98c(e);
+            updateTransform(e);
             break;
         case 4:
-            func_0204fbec(i);
+            releaseEntry(i);
             break;
         }
     }
     return TRUE;
 }
 
-void FishDisplay::func_0204f98c(Unk_020db984_Ent *e) {
+void FishDisplay::updateTransform(FishDisplayEntry *e) {
     u8 *m = (u8 *)e + 0x98;
     s32 id = e->unk_40;
     Unk_020db984_Vec3 v;
@@ -381,7 +381,7 @@ void FishDisplay::func_0204f98c(Unk_020db984_Ent *e) {
     *(Unk_0204f98c_Mtx *)(m + 0x64) = *(Unk_0204f98c_Mtx *)data_021f47e0;
 }
 
-BOOL FishDisplay::func_0204f874(void *p, Unk_020db984_Ent *e) {
+BOOL FishDisplay::loadFishModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     char buf[0x18];
     if (p == NULL || e == NULL) return FALSE;
@@ -412,45 +412,45 @@ BOOL FishDisplay::func_0204f874(void *p, Unk_020db984_Ent *e) {
             _ZN14BlendAnimModel8initAnimEiiitt(m, u, 0, flag, 1, 0);
             _ZN9AnimModel10attachAnimEv(m);
             e->unk_44 = 3;
-            func_0204f98c(e);
+            updateTransform(e);
             r = TRUE;
         }
     }
     return r;
 }
 
-BOOL FishDisplay::func_0204f808(void *p, Unk_020db984_Ent *e) {
+BOOL FishDisplay::loadStaticModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->unk_40;
     void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
-    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, data_020db8c0[id - 0x38])) {
+    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, sFishStaticMdlPaths[id - 0x38])) {
         _ZN5Model11setResourceEP16Unk_020553f8_Resj((u8 *)e + 0x98, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
         e->unk_44 = 3;
-        func_0204f98c(e);
+        updateTransform(e);
         r = TRUE;
     }
     return r;
 }
 
-BOOL FishDisplay::func_0204f738(void *p, Unk_020db984_Ent *e) {
+BOOL FishDisplay::loadShadowModel(void *p, FishDisplayEntry *e) {
     BOOL r = FALSE;
     if (p == NULL || e == NULL) return FALSE;
     s32 id = e->unk_40;
     void *x = _ZN12Unk_0209c15c13func_0209c25cEPt(p, (u8 *)e + 0x48);
     void *y = (u8 *)e + 0x4c;
-    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, data_020db8b0)) {
+    if (_ZN12Unk_0209c0ac13func_0209c0d0EP12Unk_0209c2f4PKc(y, x, sFishShadowMdlPath)) {
         u8 *m = (u8 *)e + 0x98;
         _ZN5Model11setResourceEP16Unk_020553f8_Resj(m, _ZN12Unk_0209c0ac13func_0209c0acEv(y), r);
         void *t = _ZN12Unk_0209c2f413func_0209c348Ev(x);
-        File_LoadAlloc(data_020db8ac, t, 4, r);
+        File_LoadAlloc(sFishShadowAnmPath, t, 4, r);
         s32 u = func_021065f8(func_021065dc(), r);
         if (_ZN9AnimModel11allocAnmObjEPv(m, t)) {
             _ZN14BlendAnimModel8initAnimEiiitt(m, u, r, 0x1000, 1, r);
             _ZN9AnimModel10attachAnimEv(m);
             e->unk_44 = 3;
-            func_0204f98c(e);
+            updateTransform(e);
             if (id == 0x3b) {
                 NNS_G3dMdlSetMdlAlpha(_ZN12Unk_0209c0ac13func_0209c0acEv(y), r, e->unk_164);
             }
@@ -463,8 +463,8 @@ BOOL FishDisplay::func_0204f738(void *p, Unk_020db984_Ent *e) {
 BOOL FishDisplay::onDraw() {
     FishDisplay *g = gFishDisplay;
     if (g == NULL) return FALSE;
-    Unk_020db984_Ent *e = g->unk_50;
-    for (s32 i = 0; i < data_020db8b4; e++, i++) {
+    FishDisplayEntry *e = g->unk_50;
+    for (s32 i = 0; i < sFishDisplayEntryCount; e++, i++) {
         if (e->unk_44 == 3) {
             Unk_020db984_Vec3 v;
             v.x = e->unk_150.x;
@@ -477,21 +477,21 @@ BOOL FishDisplay::onDraw() {
 }
 
 BOOL FishDisplay::vfunc_0c() {
-    for (s32 i = 0; i < data_020db8b4; i++) {
-        func_0204fbec(i);
+    for (s32 i = 0; i < sFishDisplayEntryCount; i++) {
+        releaseEntry(i);
     }
     _ZN12Unk_0209c15c13func_0209c15cEv(unk_600);
     gFishDisplay = NULL;
     return TRUE;
 }
 
-extern "C" void func_0204f674(Unk_020db984_Ent *e, Unk_020db984_Vec3 *v) {
+extern "C" void FishDisplayEntry_SetScale(FishDisplayEntry *e, Unk_020db984_Vec3 *v) {
     e->unk_150.x = v->x;
     e->unk_150.y = v->y;
     e->unk_150.z = v->z;
 }
 
-extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
+extern "C" void FishDisplay_PostRequest(u32 a, u32 b, s32 c, u32 d, u32 e) {
     if (a < 4 && c < 0x38) {
         switch (b) {
         case 0:
@@ -505,7 +505,7 @@ extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
             break;
         case 1:
             if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
-                if (func_0204f4e0(a) == 3) {
+                if (FishDisplay_GetRequestKind(a) == 3) {
                     sFishDisplayRequests[a].unk_00 = b;
                 } else {
                     sFishDisplayRequests[a].unk_00 = 8;
@@ -522,7 +522,7 @@ extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
             break;
         case 2:
             if (Unk_0204f4f8_IsZero(gFieldSceneKind)) {
-                if (func_0204f4e0(a) == 3 || func_0204f4e0(a) == 8 || func_0204f4e0(a) == 1) {
+                if (FishDisplay_GetRequestKind(a) == 3 || FishDisplay_GetRequestKind(a) == 8 || FishDisplay_GetRequestKind(a) == 1) {
                     sFishDisplayRequests[a].unk_00 = b;
                 } else {
                     sFishDisplayRequests[a].unk_00 = 8;
@@ -558,38 +558,38 @@ extern "C" void func_0204f4f8(u32 a, u32 b, s32 c, u32 d, u32 e) {
     }
 }
 
-extern "C" u32 func_0204f4e0(u32 i) {
+extern "C" u32 FishDisplay_GetRequestKind(u32 i) {
     if (i >= 4) return 9;
     return sFishDisplayRequests[i].unk_00;
 }
 
-extern "C" u32 func_0204f4c8(u32 i) {
+extern "C" u32 FishDisplay_GetRequestFish(u32 i) {
     if (i >= 4) return 0xff;
     return sFishDisplayRequests[i].unk_01;
 }
 
-extern "C" BOOL func_0204f4a4(u32 *a, u32 *b, u32 i) {
+extern "C" BOOL FishDisplay_GetRequestPos(u32 *a, u32 *b, u32 i) {
     if (i >= 4) return FALSE;
     *a = sFishDisplayRequests[i].unk_04;
     *b = sFishDisplayRequests[i].unk_08;
     return TRUE;
 }
 
-extern "C" s32 func_0204f49c(void) {
-    return func_0204fcb8();
+extern "C" s32 FishDisplay_Acquire(void) {
+    return FishDisplay_FindFreeEntry();
 }
 
-extern "C" BOOL func_0204f3e4(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Unk_020db984_Vec3 *vec, s16 a5, s16 a6, s16 a7, u8 a8, u8 a9, u32 a10) {
+extern "C" BOOL FishDisplay_SetEntry(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Unk_020db984_Vec3 *vec, s16 a5, s16 a6, s16 a7, u8 a8, u8 a9, u32 a10) {
     BOOL r = FALSE;
     FishDisplay *g = gFishDisplay;
-    if (g != NULL && idx >= 0 && idx < data_020db8b4 && id >= 0 && id < 0x3c) {
-        Unk_020db984_Ent *e = &g->unk_50[idx];
+    if (g != NULL && idx >= 0 && idx < sFishDisplayEntryCount && id >= 0 && id < 0x3c) {
+        FishDisplayEntry *e = &g->unk_50[idx];
         e->unk_40 = id;
         Unk_020db984_Vec3 *d = &e->unk_8c;
         d->x = pos->x; d->y = pos->y; d->z = pos->z;
         Unk_020db984_Vec3 t;
         t.x = vec->x; t.y = vec->y; t.z = vec->z;
-        func_0204f674(e, &t);
+        FishDisplayEntry_SetScale(e, &t);
         e->unk_15c = a5;
         e->unk_15e = a6;
         e->unk_160 = a7;
@@ -601,16 +601,16 @@ extern "C" BOOL func_0204f3e4(s32 idx, s32 id, Unk_020db984_Vec3 *pos, Unk_020db
     return r;
 }
 
-extern "C" void func_0204f3b4(s32 idx) {
-    if (gFishDisplay != NULL && idx >= 0 && idx < data_020db8b4) {
+extern "C" void FishDisplay_Release(s32 idx) {
+    if (gFishDisplay != NULL && idx >= 0 && idx < sFishDisplayEntryCount) {
         gFishDisplay->unk_50[idx].unk_44 = 4;
     }
 }
 
-extern "C" BOOL func_0204f364(s32 idx, s32 unused) {
+extern "C" BOOL FishDisplay_HasPassedFrame(s32 idx, s32 unused) {
     BOOL r = FALSE;
-    if (idx >= 0 && idx < data_020db8b4) {
-        Unk_020db984_Ent *e = &gFishDisplay->unk_50[idx];
+    if (idx >= 0 && idx < sFishDisplayEntryCount) {
+        FishDisplayEntry *e = &gFishDisplay->unk_50[idx];
         s32 t = e->unk_40;
         if (t < 0 || t >= 0x38) return FALSE;
         if (_ZN13AnimFrameCtrl14hasPassedFrameEi((u8 *)e + 0x134, unused)) r = TRUE;
@@ -618,37 +618,37 @@ extern "C" BOOL func_0204f364(s32 idx, s32 unused) {
     return r;
 }
 
-extern "C" u32 func_0204f34c(u32 x) {
+extern "C" u32 Fish_GetBaseSize(u32 x) {
     if (x >= 0x38) return 10;
-    return *(u16 *)(data_020ca318 + x * 6);
+    return *(u16 *)(sFishBaseSizes + x * 6);
 }
 
 // ---------------------------------------------------------------- functions
-extern "C" u32 func_0204f334(u32 x) {
+extern "C" u32 Fish_GetSizeClass(u32 x) {
     if (x >= 0x3b) return 3;
     return data_020ca314[x * 6];
 }
 
-char *data_020db8b0 = data_020db914;
+char *sFishShadowMdlPath = sFishShadowMdlFile;
 
-void *data_020db8ac = data_020db930;
+void *sFishShadowAnmPath = sFishShadowAnmFile;
 
 // ---------------------------------------------------------------- data
-char data_020db8cc[] = "/fish/03/fish56.nsbmd";
+char sFishMdl56File[] = "/fish/03/fish56.nsbmd";
 
-char data_020db8e4[] = "/fish/03/fish57.nsbmd";
+char sFishMdl57File[] = "/fish/03/fish57.nsbmd";
 
-char data_020db8fc[] = "/fish/03/fish58.nsbmd";
+char sFishMdl58File[] = "/fish/03/fish58.nsbmd";
 
-char data_020db914[] = "/fish/03/fish_shadow.nsbmd";
+char sFishShadowMdlFile[] = "/fish/03/fish_shadow.nsbmd";
 
-char data_020db930[] = "/fish/03/fish_shadow.nsbca";
+char sFishShadowAnmFile[] = "/fish/03/fish_shadow.nsbca";
 
-s32 data_020db8b4 = 4;
+s32 sFishDisplayEntryCount = 4;
 
-Unk_020db8b8_Rec data_020db8b8 = {(void *)func_0204fdb0, 0xc2, 8};
+Unk_020db8b8_Rec sFishDisplayProfile = {(void *)FishDisplay_Create, 0xc2, 8};
 
-char *data_020db8c0[3] = {data_020db8cc, data_020db8e4, data_020db8fc};
+char *sFishStaticMdlPaths[3] = {sFishMdl56File, sFishMdl57File, sFishMdl58File};
 
 Unk_020db94c_Ent sFishDisplayRequests[4] = {
     {8, 0xff, 0, 0},
@@ -657,7 +657,7 @@ Unk_020db94c_Ent sFishDisplayRequests[4] = {
     {8, 0xff, 0, 0},
 };
 
-const u8 data_020ca318[0x160] = {
+const u8 sFishBaseSizes[0x160] = {
     0x0a, 0x00, 0x00, 0x03, 0x03, 0x00, 0x0f, 0x00, 0x01, 0x03, 0x04, 0x00, 0x1e, 0x00, 0x01, 0x03,
     0x03, 0x00, 0x23, 0x00, 0x02, 0x02, 0x03, 0x00, 0x32, 0x00, 0x03, 0x02, 0x03, 0x00, 0x4b, 0x00,
     0x03, 0x02, 0x03, 0x00, 0x4b, 0x00, 0x00, 0x02, 0x03, 0x00, 0x0f, 0x00, 0x00, 0x02, 0x03, 0x00,

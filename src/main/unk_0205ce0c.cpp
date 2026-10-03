@@ -31,20 +31,20 @@ struct Unk_0205cfb4 {
 
 extern "C" {
 extern Unk_0205cfb4 data_021c6464;
-extern void *data_021c61d4;
+extern void *gCharaFaceAnimHeap;
 extern u8 *gCommManager;
 extern const u8 data_020cb1ec[];
 extern u8 data_021c6450[];
 
-void func_0205bda8();
-void func_0205bdc4();
+void CharaFaceAnimHeap_Destroy();
+void CharaFaceAnimHeap_Create();
 void *Heap_AllocAligned(void *heap, u32 size, u32 align);
 void func_020e885c(void *p);
 void func_020e877c(void *p);
 u32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(u32 a);
 u32 Scene_GetMaxCharacters(u32 a);
-u32 func_02084fbc();
+u32 NpcSpawn_GetSpNpcSlotCount();
 void MI_CpuCopy8(void *dst, void *src, u32 n);
 s32 File_LoadToBuffer(void *name, void *buf, s32 size);
 void func_020639e8(void *buf, const char *fmt, u32 a, u32 b);
@@ -56,14 +56,14 @@ u8 *func_0205d198(u32 x);
 }
 
 extern "C" void func_0205d1d0() {
-    func_0205bdc4();
+    CharaFaceAnimHeap_Create();
     data_021c6464.func_0205d0ac();
-    if (data_021c61d4) func_020e877c(data_021c61d4);
+    if (gCharaFaceAnimHeap) func_020e877c(gCharaFaceAnimHeap);
 }
 
 extern "C" void func_0205d1b8() {
     data_021c6464.func_0205d054();
-    func_0205bda8();
+    CharaFaceAnimHeap_Destroy();
 }
 
 extern "C" u8 *func_0205d198(u32 x) {
@@ -84,7 +84,7 @@ Unk_0205cfb4::Unk_0205cfb4() {
 Unk_0205cfb4::~Unk_0205cfb4() {}
 
 void Unk_0205cfb4::func_0205d0ac() {
-    void *heap = data_021c61d4;
+    void *heap = gCharaFaceAnimHeap;
     u32 n, i, m;
     n = gCommManager[0x6c];
     m = Scene_GetMaxPlayers(Scene_GetCurrent());
@@ -94,7 +94,7 @@ void Unk_0205cfb4::func_0205d0ac() {
     }
     if (m == 0) m = 1;
     u32 q = Scene_GetMaxCharacters(Scene_GetCurrent());
-    m = (q + func_02084fbc()) - m;
+    m = (q + NpcSpawn_GetSpNpcSlotCount()) - m;
     u32 al = 4;
     for (i = al; i < m + 4; i++) {
         ptr[i] = (u32)Heap_AllocAligned(heap, func_0205d178(), al);
@@ -109,7 +109,7 @@ void Unk_0205cfb4::func_0205d054() {
             a[j][i] = 0;
         }
     }
-    if (data_021c61d4) func_020e885c(data_021c61d4);
+    if (gCharaFaceAnimHeap) func_020e885c(gCharaFaceAnimHeap);
 }
 
 u32 Unk_0205cfb4::func_0205d038(u32 i, u32 j) {

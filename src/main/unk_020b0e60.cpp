@@ -185,8 +185,8 @@ struct Obj_b4 {
 
 class Unk_020b1ddc {
 public:
-    void func_020b1ddc();
-    void func_020b1e74();
+    void rotateMinuteHand();
+    void rotateHourHand();
 
     u8 pad[0xb4];
     Obj_b4 *unk_b4;
@@ -254,10 +254,10 @@ public:
     /* 0x34 */ WindowLight unk_34;
 };
 
-class Unk_020b23a0 {
+class TownStyleRecordView {
 public:
-    u8 *func_020b23a0();
-    void func_020b23a4();
+    u8 *getTownFlag();
+    void getHouseStyles();
 };
 
 class Unk_020b246c_Sub {
@@ -266,19 +266,19 @@ public:
     ~Unk_020b246c_Sub();
 };
 
-class Unk_020b246c {
+class TownStyleRecord {
 public:
-    Unk_020b246c();
-    ~Unk_020b246c();
+    TownStyleRecord();
+    ~TownStyleRecord();
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ Unk_020b246c_Sub unk_04;
 };
 
-class Unk_020b24ac {
+class TownFlag {
 public:
-    void func_020b24ac();
-    Unk_020b24ac *func_020b24d4();
+    void getGateDesign();
+    TownFlag *initDefault();
 
     /* 0x000 */ u8 unk_000[0x228];
     /* 0x228 */ u8 unk_228;
@@ -290,27 +290,27 @@ public:
     virtual ~UnitShapeQueryX();
 };
 
-class Unk_020e3dcc : public UnitShapeQueryX {
+class TownUnitShapeQuery : public UnitShapeQueryX {
 public:
-    Unk_020e3dcc();
-    virtual ~Unk_020e3dcc();
+    TownUnitShapeQuery();
+    virtual ~TownUnitShapeQuery();
     virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y);
 };
 
-class Unk_020b28ac {
+class StrBSizeData {
 public:
-    void func_020b28ac(s32 *outX, s32 *outY, s32 *outW, s32 *outH);
-    BOOL func_020b2958(s32 *a, s32 *b, s32 *c, u32 idx);
-    u32 func_020b29e4();
-    BOOL func_020b2a0c(s32 *a, s32 *b, s32 *c, u32 idx);
-    BOOL func_020b2a5c(s32 *a, s32 *b, u32 idx);
-    BOOL func_020b2aac(s32 *a, s32 *b, u32 idx);
-    BOOL func_020b2ae0(s32 *a, s32 *b, u32 idx);
-    u32 func_020b2b0c();
-    u32 func_020b2b28();
-    u32 func_020b2b5c();
-    u32 func_020b2b80();
-    u32 func_020b2b98();
+    void getSolidBounds(s32 *outX, s32 *outY, s32 *outW, s32 *outH);
+    BOOL getTriangle(s32 *a, s32 *b, s32 *c, u32 idx);
+    u32 getTriangleCount();
+    BOOL getSolidUnit(s32 *a, s32 *b, s32 *c, u32 idx);
+    BOOL getFootprintUnit(s32 *a, s32 *b, u32 idx);
+    BOOL getClearUnit(s32 *a, s32 *b, u32 idx);
+    BOOL getLightUnit(s32 *a, s32 *b, u32 idx);
+    u32 getFootprintUnitCount();
+    u32 getSolidUnitCount();
+    u32 getFloorUnitCount();
+    u32 getClearUnitCount();
+    u32 getLightUnitCount();
 };
 
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
@@ -365,7 +365,7 @@ BOOL _ZN11CommManager7isMyAidEj(void *p, u32 a);
 BOOL _ZN11CommManager8isOnlineEv(void *p);
 BOOL SaveVillagers_Get(void *a, u32 b);
 u32 Villager_GetWhereabouts(void);
-void func_02084ffc(void);
+void Town_RemoveShipParts(void);
 void GulliverQuest_Init(void *a);
 void Clock_GetMinuteHour(u8 *out);
 void _ZN12Unk_020af53c13func_020af590EjPjS0_S0_PhS1_S1_(void *p, s32 a, s32 *b, s32 *c, s32 d, s32 e, s32 f, s32 g);
@@ -394,45 +394,45 @@ BOOL _ZN13BuildingActor15getEntranceTypeEv(void);
 
 
 extern const u32 sLightFlickerTable[11];
-extern const u16 data_020d0a14[52];
-extern s32 data_020e3db4;
-extern u8 data_021ee288;
-extern u8 data_021ee28c;
-extern u8 data_021ee290;
+extern const u16 sSceneBuildingTable[52];
+extern s32 sHourHandCos;
+extern u8 sTaxiArriving;
+extern u8 sTaxiLeaving;
+extern u8 sHouseVisitorPresent;
 extern void *sStrBSizeArchive;
-extern u32 data_021ee2a0;
-extern s32 data_021ee2a4;
-extern s32 data_021ee2ac;
-extern FieldObjectShapeQuery data_021ee2b0;
-extern u32 data_021ee2b4;
-extern u32 data_021ee2bc;
-extern char data_021ee2c4[12];
-extern u8 data_021ee30c[0x22];
-extern NibblePair data_021ee330[0x22];
+extern u32 sLastEntranceType;
+extern s32 sHourHandSin;
+extern s32 sHourHandFrame;
+extern FieldObjectShapeQuery sFieldObjectShapeQuery;
+extern u32 sExitedBuildingKey;
+extern u32 sFieldStructureMgr;
+extern char sLampMatNameBuf[12];
+extern u8 sBuildingStates[0x22];
+extern NibblePair sBuildingOccupancy[0x22];
 extern u32 sStrBSizeTable[0x22];
 
 // own prototypes
 extern "C" {
-u32 func_020b2c14(s32 v);
-s32 func_020b2bac(u32 arg);
+u32 Math_CountBits4(s32 v);
+s32 Item_GetBuildingIndex(u32 arg);
 void StrBSize_Load(void);
 void StrBSize_Unload(void);
 u32 StrBSize_Get(u16 *p);
-BOOL func_020b278c(u32 v);
-BOOL func_020b2774(void);
-u32 func_020b2768(void);
+BOOL FieldStructureMgr_Register(u32 v);
+BOOL FieldStructureMgr_Unregister(void);
+u32 FieldStructureMgr_Get(void);
 void func_020b260c(void *p);
 void func_020b2608(void *p);
-void func_020b2530(u8 *out);
-u32 func_020b2514(u8 *p, u32 idx);
-void func_020b24a4(void *p);
-void func_020b249c(void *p);
-void func_020b23a8(u8 *self);
-u16 func_020b207c(void);
-void func_020b1dc0(void);
-u8 func_020b1d80(u32 id);
-BOOL func_020b1d3c(u32 id, u8 val);
-u16 *func_020b1c8c(s32 *outX, s32 *outY);
+void TownStyle_RollVillagerHouseStyles(u8 *out);
+u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx);
+void TownFlag_SetPattern(void *p);
+void TownFlag_GetPattern(void *p);
+void TownStyleRecord_InitNew(u8 *self);
+u16 Light_GetBaseEmission(void);
+void BuildingStates_Reset(void);
+u8 BuildingState_Get(u32 id);
+BOOL BuildingState_Set(u32 id, u8 val);
+u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY);
 void TownStructure_PlaceAtEventPlot(u16 id);
 BOOL TownStructure_RemoveFromEventPlot(u16 id);
 void Town_PlaceReddTent(void);
@@ -444,56 +444,56 @@ BOOL Town_RemoveGracieCar(void);
 void Town_PlaceCountdownSign(void);
 BOOL Town_RemoveCountdownSign(void);
 u32 MapBlock_CountSigns(u8 *cell);
-u32 func_020b1a18(u8 *cell, u32 target, u32 v);
-BOOL func_020b19ec(u8 *cell, u32 v);
-BOOL func_020b17e0(s32 *pos, BOOL flag);
-BOOL func_020b16e4(void);
-void func_020b16bc(Info *dst, Info *src);
-void func_020b16b8(Info *i);
-u16 func_020b16b4(Info *i);
-u8 func_020b16b0(Info *i);
-u8 func_020b16ac(Info *i);
-s8 func_020b16a4(Info *i);
-u8 func_020b16a0(Info *i);
-u8 func_020b169c(Info *i);
-u8 func_020b1698(Info *i);
-u8 func_020b1694(Info *i);
-u8 func_020b1690(Info *i);
-u32 func_020b1674(Info *i, u32 b, u32 c);
-u32 func_020b1664(u32 a, u32 b, u32 c);
-u32 func_020b1614(u32 a);
-BOOL func_020b15ec(void);
-u32 func_020b15d4(void);
-u32 func_020b14f0(void);
-BOOL func_020b1454(Obj *o, s32 v);
-u32 func_020b1428(s32 v);
-u32 func_020b13e0(u32 v);
-BOOL func_020b1388(u16 *p);
-void func_020b1260(Flags1 *p, s32 bit);
-void func_020b1234(u8 *p, s32 bit);
-void func_020b11fc(void);
-void func_020b10e0(u32 arg);
-u8 func_020b10c4(u32 a);
-void func_020b1040(u32 a, u32 b);
-u8 func_020b1034(void);
-void func_020b1028(void);
-void func_020b101c(void);
-u32 func_020b0fb0(u32 a);
-u32 func_020b0f80(u32 a);
-u32 func_020b0f54(void);
-void func_020b0f48(void);
-void func_020b0f3c(void);
-u8 func_020b0f30(void);
-void func_020b0f24(void);
-void func_020b0f18(void);
-u8 func_020b0f0c(void);
-void func_020b0f00(u32 a);
-u32 func_020b0ef4(void);
-void func_020b0e60(void);
+u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v);
+BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v);
+BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag);
+BOOL Town_RemoveGulliverShip(void);
+void BuildingInfo_Copy(Info *dst, Info *src);
+void BuildingInfo_Destroy(Info *i);
+u16 BuildingInfo_GetProfile(Info *i);
+u8 BuildingInfo_GetEntranceType(Info *i);
+u8 BuildingInfo_GetKind(Info *i);
+s8 BuildingInfo_GetInteriorScene(Info *i);
+u8 BuildingInfo_GetUnk05(Info *i);
+u8 BuildingInfo_GetViewRangeX(Info *i);
+u8 BuildingInfo_GetViewRangeFront(Info *i);
+u8 BuildingInfo_GetViewRangeBack(Info *i);
+u8 BuildingInfo_GetCapacity(Info *i);
+u32 BuildingInfo_MakeKey(Info *i, u32 b, u32 c);
+u32 BuildingKey_Make(u32 a, u32 b, u32 c);
+u32 Building_GetDoorAnimParamAt(u32 a);
+BOOL Field_HasExitedBuildingKey(void);
+u32 Field_CacheExitedBuildingKey(void);
+u32 Field_GetExitedBuildingKey(void);
+BOOL Building_RequestState(Obj *o, s32 v);
+u32 SaveVillager_IsAsleepAt(s32 v);
+u32 Building_IsOwnerAsleep(u32 v);
+BOOL Building_ApplyStateRecord(u16 *p);
+void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit);
+void BuildingOccupancy_OnLeaveRecord(u8 *p, s32 bit);
+void BuildingOccupancy_Reset(void);
+void BuildingOccupancy_RequestEnter(u32 arg);
+u8 BuildingOccupancy_GetAnswer(u32 a);
+void BuildingOccupancy_Leave(u32 a, u32 b);
+u8 HouseVisitor_IsPresent(void);
+void HouseVisitor_SetPresent(void);
+void HouseVisitor_ClearPresent(void);
+u32 BuildingOccupancy_GetPlayersForScene(u32 a);
+u32 BuildingOccupancy_CountForScene(u32 a);
+u32 Room_CountOccupants(void);
+void Taxi_SetLeaving(void);
+void Taxi_ClearLeaving(void);
+u8 Taxi_IsLeaving(void);
+void Taxi_SetArriving(void);
+void Taxi_ClearArriving(void);
+u8 Taxi_IsArriving(void);
+void Building_SetLastEntranceType(u32 a);
+u32 Building_GetLastEntranceType(void);
+void Building_PlayDoorChime(void);
 }
 
 
-extern "C" u32 func_020b2c14(s32 v) {
+extern "C" u32 Math_CountBits4(s32 v) {
     u32 n = 0;
     for (u32 i = 0; i < 4; i++) {
         if ((v >> i) & 1) {
@@ -503,7 +503,7 @@ extern "C" u32 func_020b2c14(s32 v) {
     return n;
 }
 
-extern "C" s32 func_020b2bac(u32 arg) {
+extern "C" s32 Item_GetBuildingIndex(u32 arg) {
     u16 v = arg;
     if (Item_IsNookShop(&v)) {
         v = Item_MakeNookShop(0);
@@ -519,7 +519,7 @@ extern "C" s32 func_020b2bac(u32 arg) {
     return -1;
 }
 
-u32 Unk_020b28ac::func_020b2b98() {
+u32 StrBSizeData::getLightUnitCount() {
     s8 *p = (s8 *)this;
     u32 n = 0;
     while (p[0] == 0x4d) {
@@ -529,7 +529,7 @@ u32 Unk_020b28ac::func_020b2b98() {
     return n;
 }
 
-u32 Unk_020b28ac::func_020b2b80() {
+u32 StrBSizeData::getClearUnitCount() {
     s8 *p = (s8 *)this;
     u32 n = 0;
     s32 c;
@@ -540,8 +540,8 @@ u32 Unk_020b28ac::func_020b2b80() {
     return n;
 }
 
-u32 Unk_020b28ac::func_020b2b5c() {
-    s8 *p = (s8 *)this + func_020b2b80() * 4;
+u32 StrBSizeData::getFloorUnitCount() {
+    s8 *p = (s8 *)this + getClearUnitCount() * 4;
     u32 n = 0;
     while (p[0] == 0x46) {
         p += 4;
@@ -550,9 +550,9 @@ u32 Unk_020b28ac::func_020b2b5c() {
     return n;
 }
 
-u32 Unk_020b28ac::func_020b2b28() {
-    u32 a = func_020b2b80();
-    u32 b = func_020b2b5c();
+u32 StrBSizeData::getSolidUnitCount() {
+    u32 a = getClearUnitCount();
+    u32 b = getFloorUnitCount();
     s8 *p = (s8 *)this + a * 4 + b * 4;
     u32 n = 0;
     while (p[0] == 0x53) {
@@ -562,20 +562,20 @@ u32 Unk_020b28ac::func_020b2b28() {
     return n;
 }
 
-u32 Unk_020b28ac::func_020b2b0c() {
-    u32 a = func_020b2b5c();
-    return a + func_020b2b28();
+u32 StrBSizeData::getFootprintUnitCount() {
+    u32 a = getFloorUnitCount();
+    return a + getSolidUnitCount();
 }
 
-BOOL Unk_020b28ac::func_020b2ae0(s32 *a, s32 *b, u32 idx) {
-    if (idx < func_020b2b98()) {
-        return func_020b2aac(a, b, idx);
+BOOL StrBSizeData::getLightUnit(s32 *a, s32 *b, u32 idx) {
+    if (idx < getLightUnitCount()) {
+        return getClearUnit(a, b, idx);
     }
     return FALSE;
 }
 
-BOOL Unk_020b28ac::func_020b2aac(s32 *a, s32 *b, u32 idx) {
-    if (idx < func_020b2b80()) {
+BOOL StrBSizeData::getClearUnit(s32 *a, s32 *b, u32 idx) {
+    if (idx < getClearUnitCount()) {
         s8 *e = (s8 *)this + idx * 4;
         *a = e[2];
         *b = e[3];
@@ -584,9 +584,9 @@ BOOL Unk_020b28ac::func_020b2aac(s32 *a, s32 *b, u32 idx) {
     return FALSE;
 }
 
-BOOL Unk_020b28ac::func_020b2a5c(s32 *a, s32 *b, u32 idx) {
-    s8 *base = (s8 *)this + func_020b2b80() * 4;
-    if (idx < func_020b2b0c()) {
+BOOL StrBSizeData::getFootprintUnit(s32 *a, s32 *b, u32 idx) {
+    s8 *base = (s8 *)this + getClearUnitCount() * 4;
+    if (idx < getFootprintUnitCount()) {
         s8 *e = base + idx * 4;
         *a = e[2];
         *b = e[3];
@@ -598,10 +598,10 @@ BOOL Unk_020b28ac::func_020b2a5c(s32 *a, s32 *b, u32 idx) {
     return FALSE;
 }
 
-BOOL Unk_020b28ac::func_020b2a0c(s32 *a, s32 *b, s32 *c, u32 idx) {
-    s8 *base = (s8 *)this + func_020b2b80() * 4;
-    if (idx < func_020b2b28()) {
-        u32 t = func_020b2b5c();
+BOOL StrBSizeData::getSolidUnit(s32 *a, s32 *b, s32 *c, u32 idx) {
+    s8 *base = (s8 *)this + getClearUnitCount() * 4;
+    if (idx < getSolidUnitCount()) {
+        u32 t = getFloorUnitCount();
         s8 *e = base + (t + idx) * 4;
         *a = e[1];
         *b = e[2];
@@ -611,15 +611,15 @@ BOOL Unk_020b28ac::func_020b2a0c(s32 *a, s32 *b, s32 *c, u32 idx) {
     return FALSE;
 }
 
-u32 Unk_020b28ac::func_020b29e4() {
-    u32 a = func_020b2b5c();
-    u32 b = func_020b2b80();
-    u32 c = func_020b2b28();
+u32 StrBSizeData::getTriangleCount() {
+    u32 a = getFloorUnitCount();
+    u32 b = getClearUnitCount();
+    u32 c = getSolidUnitCount();
     return *(u32 *)((u8 *)this + (a + (b + c) + 1) * 4);
 }
 
-BOOL Unk_020b28ac::func_020b2958(s32 *a, s32 *b, s32 *c, u32 idx) {
-    u32 count = func_020b29e4();
+BOOL StrBSizeData::getTriangle(s32 *a, s32 *b, s32 *c, u32 idx) {
+    u32 count = getTriangleCount();
     a[0] = 0;
     a[1] = 0;
     a[2] = 0;
@@ -630,9 +630,9 @@ BOOL Unk_020b28ac::func_020b2958(s32 *a, s32 *b, s32 *c, u32 idx) {
     c[1] = 0;
     c[2] = 0;
     if (idx < count) {
-        u32 x = func_020b2b5c();
-        u32 y = func_020b2b80();
-        u32 z = func_020b2b28();
+        u32 x = getFloorUnitCount();
+        u32 y = getClearUnitCount();
+        u32 z = getSolidUnitCount();
         u8 *base = (u8 *)this + ((x + (y + z) + 1) * 4 + 4);
         s32 *e = (s32 *)(base + idx * 0x24);
         a[0] = e[0];
@@ -649,9 +649,9 @@ BOOL Unk_020b28ac::func_020b2958(s32 *a, s32 *b, s32 *c, u32 idx) {
     return FALSE;
 }
 
-void Unk_020b28ac::func_020b28ac(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
+void StrBSizeData::getSolidBounds(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
     s32 maxX = 0, minX = 0, maxY = 0, minY = 0;
-    u32 count = func_020b2b28();
+    u32 count = getSolidUnitCount();
     if (count != 0) {
         u32 i = 0;
         maxX = -1;
@@ -660,7 +660,7 @@ void Unk_020b28ac::func_020b28ac(s32 *outX, s32 *outY, s32 *outW, s32 *outH) {
         minY = 1;
         for (; i < count; i++) {
             s32 ea, ex, ey;
-            if (func_020b2a0c(&ea, &ex, &ey, i)) {
+            if (getSolidUnit(&ea, &ex, &ey, i)) {
                 if (ex < minX) {
                     minX = ex;
                 }
@@ -746,33 +746,33 @@ extern "C" u32 StrBSize_Get(u16 *p) {
     return 0;
 }
 
-extern "C" BOOL func_020b278c(u32 v) {
-    if (data_021ee2bc == 0) {
-        data_021ee2bc = v;
+extern "C" BOOL FieldStructureMgr_Register(u32 v) {
+    if (sFieldStructureMgr == 0) {
+        sFieldStructureMgr = v;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" BOOL func_020b2774(void) {
-    if (data_021ee2bc != 0) {
-        data_021ee2bc = 0;
+extern "C" BOOL FieldStructureMgr_Unregister(void) {
+    if (sFieldStructureMgr != 0) {
+        sFieldStructureMgr = 0;
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_020b2768(void) {
-    return data_021ee2bc;
+extern "C" u32 FieldStructureMgr_Get(void) {
+    return sFieldStructureMgr;
 }
 
-Unk_020e3dcc::Unk_020e3dcc() {}
+TownUnitShapeQuery::TownUnitShapeQuery() {}
 
-Unk_020e3dcc::~Unk_020e3dcc() {}
+TownUnitShapeQuery::~TownUnitShapeQuery() {}
 
-BOOL Unk_020e3dcc::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
+BOOL TownUnitShapeQuery::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
-        if (!_ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(&data_021ee2b0, a, b, c, x, y)) {
+        if (!_ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(&sFieldObjectShapeQuery, a, b, c, x, y)) {
             void *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;
@@ -813,7 +813,7 @@ extern "C" void func_020b260c(void *p) {}
 
 extern "C" void func_020b2608(void *p) {}
 
-extern "C" void func_020b2530(u8 *out) {
+extern "C" void TownStyle_RollVillagerHouseStyles(u8 *out) {
     s32 a = func_02063b8c(5);
     s32 sel = 0;
     s32 b = func_02063b8c(4);
@@ -865,7 +865,7 @@ extern "C" void func_020b2530(u8 *out) {
     out[3] = s + q;
 }
 
-extern "C" u32 func_020b2514(u8 *p, u32 idx) {
+extern "C" u32 TownStyle_GetVillagerHouseStyle(u8 *p, u32 idx) {
     u32 v = p[idx & 3];
     if (v >= 25) {
         v = (s32)v % 25;
@@ -881,34 +881,34 @@ Unk_020b246c_Sub::Unk_020b246c_Sub() {
     _ZN15TownFlagPatternD1Ev(this);
 }
 
-Unk_020b24ac *Unk_020b24ac::func_020b24d4() {
+TownFlag *TownFlag::initDefault() {
     unk_228 = func_02063b8c(3);
-    return (Unk_020b24ac *)TownFlagPattern_InitDefault(this);
+    return (TownFlag *)TownFlagPattern_InitDefault(this);
 }
 
-void Unk_020b24ac::func_020b24ac() {
+void TownFlag::getGateDesign() {
     if (unk_228 >= 3) {
         unk_228 = (u32)unk_228 % 3;
-        func_020b24ac();
+        getGateDesign();
     }
 }
 
-extern "C" void func_020b24a4(void *p) { Pattern_CopyFields(p); }
+extern "C" void TownFlag_SetPattern(void *p) { Pattern_CopyFields(p); }
 
-extern "C" void func_020b249c(void *p) { TownFlagPattern_GetPattern(p); }
+extern "C" void TownFlag_GetPattern(void *p) { TownFlagPattern_GetPattern(p); }
 
-Unk_020b246c::~Unk_020b246c() {
+TownStyleRecord::~TownStyleRecord() {
     func_020b260c(this);
 }
 
-Unk_020b246c::Unk_020b246c() {
+TownStyleRecord::TownStyleRecord() {
     func_020b2608(this);
 }
 
-extern "C" void func_020b23a8(u8 *self)
+extern "C" void TownStyleRecord_InitNew(u8 *self)
 {
-    func_020b2530(self);
-    ((Unk_020b24ac *)(self + 4))->func_020b24d4();
+    TownStyle_RollVillagerHouseStyles(self);
+    ((TownFlag *)(self + 4))->initDefault();
     s32 j;
     s32 i;
     u8 *cell;
@@ -938,9 +938,9 @@ extern "C" void func_020b23a8(u8 *self)
     }
 }
 
-void Unk_020b23a0::func_020b23a4() {}
+void TownStyleRecordView::getHouseStyles() {}
 
-u8 *Unk_020b23a0::func_020b23a0() { return (u8 *)this + 4; }
+u8 *TownStyleRecordView::getTownFlag() { return (u8 *)this + 4; }
 
 LightLevel::LightLevel()
 {
@@ -1072,7 +1072,7 @@ void LampLights::apply(Pal *p, s32 t)
 {
     if (t != 0) {
         NNSi_G3dModifyMatFlag(p, 1, 0x400);
-        u16 col = func_020b207c();
+        u16 col = Light_GetBaseEmission();
         s32 r7 = Math_LerpFx(t, ((col >> 10) & 0x1f) << 12, 0x1f000);
         s32 g = Math_LerpFx(t, (col & 0x1f) << 12, 0x1f000);
         s32 b = Math_LerpFx(t, ((col >> 5) & 0x1f) << 12, 0x1f000);
@@ -1085,15 +1085,15 @@ void LampLights::apply(Pal *p, s32 t)
     }
 }
 
-extern "C" u16 func_020b207c(void)
+extern "C" u16 Light_GetBaseEmission(void)
 {
     return (u16)(data_027e0148[6] >> 16);
 }
 
 const char *LampLights::getMaterialName(s32 i)
 {
-    func_020639e8(data_021ee2c4, "lp_m%d", i);
-    return data_021ee2c4;
+    func_020639e8(sLampMatNameBuf, "lp_m%d", i);
+    return sLampMatNameBuf;
 }
 
 BuildingLights::BuildingLights() {}
@@ -1125,22 +1125,22 @@ BOOL BuildingLights::setLit(BOOL on, s32 a, s32 b) { return switchLight(on, a, b
 
 BOOL BuildingLights::isLit() { return getLevel() ? TRUE : FALSE; }
 
-void Unk_020b1ddc::func_020b1e74()
+void Unk_020b1ddc::rotateHourHand()
 {
     Mtx33 tmp;
     u8 t[2];
     Mtx33 *m = &unk_b4->mtx;
     Clock_GetMinuteHour(t);
-    if (data_021ee2ac != gFrameCounter) {
+    if (sHourHandFrame != gFrameCounter) {
         s32 rem = t[1] % 0xc;
         s32 a = (s16)-(FX_Div(rem << 12, 0xc000) * 0xffff >> 12);
         s32 b = (FX_Div(t[0] << 12, 0x3c000) * 0x1555 << 4) >> 16;
         s32 idx = (u16)(s16)(a - b) >> 4;
-        data_021ee2a4 = data_02135f44[idx * 2];
-        data_020e3db4 = data_02135f44[idx * 2 + 1];
-        data_021ee2ac = gFrameCounter;
+        sHourHandSin = data_02135f44[idx * 2];
+        sHourHandCos = data_02135f44[idx * 2 + 1];
+        sHourHandFrame = gFrameCounter;
     }
-    MTX_RotZ33_(&tmp, data_021ee2a4, data_020e3db4);
+    MTX_RotZ33_(&tmp, sHourHandSin, sHourHandCos);
     if (unk_b4->flags & 2) {
         *m = tmp;
     } else {
@@ -1149,7 +1149,7 @@ void Unk_020b1ddc::func_020b1e74()
     unk_b4->flags &= ~2;
 }
 
-void Unk_020b1ddc::func_020b1ddc()
+void Unk_020b1ddc::rotateMinuteHand()
 {
     Mtx33 tmp;
     u8 t[2];
@@ -1167,17 +1167,17 @@ void Unk_020b1ddc::func_020b1ddc()
     unk_b4->flags &= ~2;
 }
 
-extern "C" void func_020b1dc0(void)
+extern "C" void BuildingStates_Reset(void)
 {
     u32 i;
     u8 v = 0;
     for (i = 0; i < 0x22; i++) {
-        data_021ee30c[i] = v;
+        sBuildingStates[i] = v;
     }
-    data_021ee290 = v;
+    sHouseVisitorPresent = v;
 }
 
-extern "C" u8 func_020b1d80(u32 id)
+extern "C" u8 BuildingState_Get(u32 id)
 {
     Unk_020b1d3c_Pad pad;
     if (InRange32(id)) {
@@ -1188,13 +1188,13 @@ extern "C" u8 func_020b1d80(u32 id)
             idx = -1;
         }
         if (idx < 0x22) {
-            return data_021ee30c[idx];
+            return sBuildingStates[idx];
         }
     }
     return 0;
 }
 
-extern "C" BOOL func_020b1d3c(u32 id, u8 val)
+extern "C" BOOL BuildingState_Set(u32 id, u8 val)
 {
     Unk_020b1d3c_Pad pad;
     if (InRange32(id)) {
@@ -1205,14 +1205,14 @@ extern "C" BOOL func_020b1d3c(u32 id, u8 val)
             idx = -1;
         }
         if (idx < 0x22) {
-            data_021ee30c[idx] = val;
+            sBuildingStates[idx] = val;
             return TRUE;
         }
     }
     return FALSE;
 }
 
-extern "C" u16 *func_020b1c8c(s32 *outX, s32 *outY)
+extern "C" u16 *Town_GetEventPlotItem(s32 *outX, s32 *outY)
 {
     s32 x, y;
     Map *m = TownBlockMap_Get();
@@ -1255,7 +1255,7 @@ extern "C" void TownStructure_PlaceAtEventPlot(u16 id)
     t[0] = id;
     if (InRangeV(t[0])) {
         s32 x, y;
-        u16 *p = func_020b1c8c(&x, &y);
+        u16 *p = Town_GetEventPlotItem(&x, &y);
         if (p) {
             Map *m = TownBlockMap_Get();
             if (m) {
@@ -1274,7 +1274,7 @@ extern "C" BOOL TownStructure_RemoveFromEventPlot(u16 id)
     t[0] = id;
     if (InRangeV(t[0])) {
         s32 x, y;
-        u16 *p = func_020b1c8c(&x, &y);
+        u16 *p = Town_GetEventPlotItem(&x, &y);
         if (p) {
             BOOL eq;
             if (Item_IsFurniture()) {
@@ -1329,7 +1329,7 @@ extern "C" u32 MapBlock_CountSigns(u8 *cell) {
     return count;
 }
 
-extern "C" u32 func_020b1a18(u8 *cell, u32 target, u32 v) {
+extern "C" u32 MapBlock_ReplaceNthSign(u8 *cell, u32 target, u32 v) {
     u32 count = 0;
     u32 y, x;
     if (cell) {
@@ -1354,14 +1354,14 @@ extern "C" u32 func_020b1a18(u8 *cell, u32 target, u32 v) {
     return 0;
 }
 
-extern "C" BOOL func_020b19ec(u8 *cell, u32 v) {
+extern "C" BOOL MapBlock_ReplaceRandomSign(u8 *cell, u32 v) {
     if (MapBlock_CountSigns(cell)) {
-        return func_020b1a18(cell, func_02063b8c(), v);
+        return MapBlock_ReplaceNthSign(cell, func_02063b8c(), v);
     }
     return 0;
 }
 
-extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
+extern "C" BOOL Town_PlaceGulliverShip(s32 *pos, BOOL flag) {
     Grid *g = TownBlockMap_Get();
     s32 x, y, i, j;
     if (g == NULL) {
@@ -1372,7 +1372,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     if (flag) {
         for (i = x - 1; i >= 1; i--) {
             for (j = 1; j <= 4; j++) {
-                if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
+                if (MapBlock_ReplaceRandomSign(GetCell(g, i, j), 0x5020)) {
                     GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
@@ -1382,7 +1382,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     } else {
         for (i = x + 1; i <= 4; i++) {
             for (j = 1; j <= 4; j++) {
-                if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
+                if (MapBlock_ReplaceRandomSign(GetCell(g, i, j), 0x5020)) {
                     GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
@@ -1392,7 +1392,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     }
     for (i = 1; i <= 4; i++) {
         if (i != y) {
-            if (func_020b19ec(GetCell(g, x, i), 0x5020)) {
+            if (MapBlock_ReplaceRandomSign(GetCell(g, x, i), 0x5020)) {
                 GulliverQuest_Init(&data_021e58a6);
                 TownUpdater_MarkEventApplied(0x44);
                 return TRUE;
@@ -1402,7 +1402,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     if (flag) {
         for (i = x + 1; i <= 4; i++) {
             for (j = 1; j <= 4; j++) {
-                if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
+                if (MapBlock_ReplaceRandomSign(GetCell(g, i, j), 0x5020)) {
                     GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
@@ -1412,7 +1412,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
     } else {
         for (i = x - 1; i >= 1; i--) {
             for (j = 1; j <= 4; j++) {
-                if (func_020b19ec(GetCell(g, i, j), 0x5020)) {
+                if (MapBlock_ReplaceRandomSign(GetCell(g, i, j), 0x5020)) {
                     GulliverQuest_Init(&data_021e58a6);
                     TownUpdater_MarkEventApplied(0x44);
                     return TRUE;
@@ -1420,7 +1420,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
             }
         }
     }
-    if (func_020b19ec(GetCell(g, x, y), 0x5020)) {
+    if (MapBlock_ReplaceRandomSign(GetCell(g, x, y), 0x5020)) {
         GulliverQuest_Init(&data_021e58a6);
         TownUpdater_MarkEventApplied(0x44);
         return TRUE;
@@ -1429,7 +1429,7 @@ extern "C" BOOL func_020b17e0(s32 *pos, BOOL flag) {
 }
 
 
-extern "C" BOOL func_020b16e4(void) {
+extern "C" BOOL Town_RemoveGulliverShip(void) {
     Grid *g = TownBlockMap_Get();
     s32 y, x;
     if (g == NULL) {
@@ -1444,7 +1444,7 @@ extern "C" BOOL func_020b16e4(void) {
                 if (MapBlock_FindItemInRange(cell, &a, &b, &m1, &m1, 0)) {
                     static Marker2 m2(0x500a);
                     if (BlockMap_RemoveStructureAt(g, x, y, a, b, &m2)) {
-                        func_02084ffc();
+                        Town_RemoveShipParts();
                         return TRUE;
                     }
                 }
@@ -1454,7 +1454,7 @@ extern "C" BOOL func_020b16e4(void) {
     return FALSE;
 }
 
-extern "C" void func_020b16bc(Info *dst, Info *src) {
+extern "C" void BuildingInfo_Copy(Info *dst, Info *src) {
     dst->unk_00 = src->unk_00;
     dst->unk_02 = src->unk_02;
     dst->unk_03 = src->unk_03;
@@ -1466,31 +1466,31 @@ extern "C" void func_020b16bc(Info *dst, Info *src) {
     dst->unk_09 = src->unk_09;
 }
 
-extern "C" void func_020b16b8(Info *i) {}
+extern "C" void BuildingInfo_Destroy(Info *i) {}
 
-extern "C" u16 func_020b16b4(Info *i) { return i->unk_00; }
+extern "C" u16 BuildingInfo_GetProfile(Info *i) { return i->unk_00; }
 
-extern "C" u8 func_020b16b0(Info *i) { return i->unk_02; }
+extern "C" u8 BuildingInfo_GetEntranceType(Info *i) { return i->unk_02; }
 
-extern "C" u8 func_020b16ac(Info *i) { return i->unk_03; }
+extern "C" u8 BuildingInfo_GetKind(Info *i) { return i->unk_03; }
 
-extern "C" s8 func_020b16a4(Info *i) { return i->unk_04; }
+extern "C" s8 BuildingInfo_GetInteriorScene(Info *i) { return i->unk_04; }
 
-extern "C" u8 func_020b16a0(Info *i) { return i->unk_05; }
+extern "C" u8 BuildingInfo_GetUnk05(Info *i) { return i->unk_05; }
 
-extern "C" u8 func_020b169c(Info *i) { return i->unk_06; }
+extern "C" u8 BuildingInfo_GetViewRangeX(Info *i) { return i->unk_06; }
 
-extern "C" u8 func_020b1698(Info *i) { return i->unk_07; }
+extern "C" u8 BuildingInfo_GetViewRangeFront(Info *i) { return i->unk_07; }
 
-extern "C" u8 func_020b1694(Info *i) { return i->unk_08; }
+extern "C" u8 BuildingInfo_GetViewRangeBack(Info *i) { return i->unk_08; }
 
-extern "C" u8 func_020b1690(Info *i) { return i->unk_09; }
+extern "C" u8 BuildingInfo_GetCapacity(Info *i) { return i->unk_09; }
 
-extern "C" u32 func_020b1674(Info *i, u32 b, u32 c) { return func_020b1664(func_020b16b4(i), b, c); }
+extern "C" u32 BuildingInfo_MakeKey(Info *i, u32 b, u32 c) { return BuildingKey_Make(BuildingInfo_GetProfile(i), b, c); }
 
-extern "C" u32 func_020b1664(u32 a, u32 b, u32 c) { return (a << 16) | (((c & 0xff) << 8) | (b & 0xff)); }
+extern "C" u32 BuildingKey_Make(u32 a, u32 b, u32 c) { return (a << 16) | (((c & 0xff) << 8) | (b & 0xff)); }
 
-extern "C" u32 func_020b1614(u32 a) {
+extern "C" u32 Building_GetDoorAnimParamAt(u32 a) {
     Obj *o;
     if (!IsEnabled()) {
         return 1;
@@ -1509,24 +1509,24 @@ extern "C" u32 func_020b1614(u32 a) {
     return 1;
 }
 
-extern "C" BOOL func_020b15ec(void) {
+extern "C" BOOL Field_HasExitedBuildingKey(void) {
     if (!Scene_InTown()) {
         return TRUE;
     }
-    if (data_021ee2b4 != 0) {
+    if (sExitedBuildingKey != 0) {
         return TRUE;
     }
     return FALSE;
 }
 
-extern "C" u32 func_020b15d4(void) {
-    data_021ee2b4 = func_020b14f0();
+extern "C" u32 Field_CacheExitedBuildingKey(void) {
+    sExitedBuildingKey = Field_GetExitedBuildingKey();
 }
 
-extern "C" u32 func_020b14f0(void) {
+extern "C" u32 Field_GetExitedBuildingKey(void) {
     s32 x, y;
     u16 *p;
-    if (!Scene_InTown() || func_020b0f0c()) {
+    if (!Scene_InTown() || Taxi_IsArriving()) {
         return 0;
     }
     if (IsEnabled()) {
@@ -1559,9 +1559,9 @@ extern "C" u32 func_020b14f0(void) {
                     } else {
                         src = &data_020d0a7c[0];
                     }
-                    func_020b16bc(&info, src);
-                    result = func_020b1674(&info, x, y);
-                    func_020b16b8(&info);
+                    BuildingInfo_Copy(&info, src);
+                    result = BuildingInfo_MakeKey(&info, x, y);
+                    BuildingInfo_Destroy(&info);
                     return result;
                 }
             }
@@ -1570,7 +1570,7 @@ extern "C" u32 func_020b14f0(void) {
     return 0;
 }
 
-extern "C" BOOL func_020b1454(Obj *o, s32 v) {
+extern "C" BOOL Building_RequestState(Obj *o, s32 v) {
     if (IsEnabled()) {
         if (o->vfunc_6c(v)) {
             if (_ZN11CommManager8isOnlineEv(gCommManager)) {
@@ -1590,7 +1590,7 @@ extern "C" BOOL func_020b1454(Obj *o, s32 v) {
     return FALSE;
 }
 
-extern "C" u32 func_020b1428(s32 v) {
+extern "C" u32 SaveVillager_IsAsleepAt(s32 v) {
     if (SaveVillagers_Get(&gSaveVillagers, v)) {
         if (Villager_GetWhereabouts() == 2) {
             return TRUE;
@@ -1600,7 +1600,7 @@ extern "C" u32 func_020b1428(s32 v) {
     return FALSE;
 }
 
-extern "C" u32 func_020b13e0(u32 v) {
+extern "C" u32 Building_IsOwnerAsleep(u32 v) {
     volatile u16 x = v;
     BOOL in = FALSE;
     u16 y = x;
@@ -1614,12 +1614,12 @@ extern "C" u32 func_020b13e0(u32 v) {
         } else {
             i = -1;
         }
-        return func_020b1428(i);
+        return SaveVillager_IsAsleepAt(i);
     }
     return 0;
 }
 
-extern "C" BOOL func_020b1388(u16 *p) {
+extern "C" BOOL Building_ApplyStateRecord(u16 *p) {
     Flags2 *f = (Flags2 *)p;
     u32 a = Item_MakeBuilding(f->a);
     u8 b = f->b;
@@ -1629,45 +1629,45 @@ extern "C" BOOL func_020b1388(u16 *p) {
             return o->vfunc_6c(b);
         }
     }
-    return func_020b1d3c(a, b);
+    return BuildingState_Set(a, b);
 }
 
-extern "C" void func_020b1260(Flags1 *p, s32 bit) {
+extern "C" void BuildingOccupancy_OnEnterRecord(Flags1 *p, s32 bit) {
     u32 mode = p->mode;
     u32 idx = p->idx;
     switch (mode) {
     case 1:
     case 2:
     case 3:
-        data_021ee330[idx].hi = mode;
+        sBuildingOccupancy[idx].hi = mode;
         break;
     default: {
-        NibblePair *e = &data_021ee330[idx];
+        NibblePair *e = &sBuildingOccupancy[idx];
         u8 lo = e->lo;
-        u32 before = func_020b2c14(lo);
+        u32 before = Math_CountBits4(lo);
         u32 after;
         void *d;
         Flags1 pk;
         Info info;
         Info *src;
         lo = lo | (1 << bit);
-        after = func_020b2c14(lo);
+        after = Math_CountBits4(lo);
         if (idx < 0x22) {
             src = &data_020d0a7c[idx];
         } else {
             src = &data_020d0a7c[0];
         }
-        func_020b16bc(&info, src);
-        if (after > func_020b1690(&info)) {
+        BuildingInfo_Copy(&info, src);
+        if (after > BuildingInfo_GetCapacity(&info)) {
             e->hi = 2;
         } else {
             idx = Item_MakeBuilding(idx);
-            if (func_020b13e0(idx) && before == 0) {
+            if (Building_IsOwnerAsleep(idx) && before == 0) {
                 e->hi = 3;
             } else {
                 e->lo = lo;
                 e->hi = 1;
-                func_020b13e0(idx);
+                Building_IsOwnerAsleep(idx);
             }
         }
         pk = *p;
@@ -1676,50 +1676,50 @@ extern "C" void func_020b1260(Flags1 *p, s32 bit) {
         _ZN11CommManager11beginRecordEv(d);
         _ZN11CommManager11writeRecordEPhj(d, &pk, 1);
         _ZN11CommManager9endRecordEjj(d, 0x23, bit);
-        func_020b16b8(&info);
+        BuildingInfo_Destroy(&info);
     }
     }
 }
 
-extern "C" void func_020b1234(u8 *p, s32 bit) {
-    data_021ee330[*p].lo = data_021ee330[*p].lo & ~(1 << bit);
+extern "C" void BuildingOccupancy_OnLeaveRecord(u8 *p, s32 bit) {
+    sBuildingOccupancy[*p].lo = sBuildingOccupancy[*p].lo & ~(1 << bit);
 }
 
-extern "C" void func_020b11fc(void) {
+extern "C" void BuildingOccupancy_Reset(void) {
     u8 *p;
-    for (p = (u8 *)data_021ee330; p < (u8 *)(data_021ee330 + 0x22); p++) {
+    for (p = (u8 *)sBuildingOccupancy; p < (u8 *)(sBuildingOccupancy + 0x22); p++) {
         *p &= ~0xf;
         *p &= ~0xf0;
     }
-    data_021ee290 = 0;
+    sHouseVisitorPresent = 0;
 }
 
-extern "C" void func_020b10e0(u32 arg) {
+extern "C" void BuildingOccupancy_RequestEnter(u32 arg) {
     Bits bits;
     u16 buf[5];
-    u32 idx = func_020b2bac(arg);
+    u32 idx = Item_GetBuildingIndex(arg);
     void *p = gCommManager;
     if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
-        NibblePair *e = data_021ee330 + idx;
+        NibblePair *e = sBuildingOccupancy + idx;
         u8 lo;
         u32 y, z;
         lo = e->lo;
-        z = func_020b2c14(lo);
+        z = Math_CountBits4(lo);
         lo = (u8)(lo | 1);
-        y = func_020b2c14(lo);
-        func_020b16bc((Info *)buf, idx < 0x22 ? &data_020d0a7c[idx] : data_020d0a7c);
-        if (y > func_020b1690((Info *)buf)) {
+        y = Math_CountBits4(lo);
+        BuildingInfo_Copy((Info *)buf, idx < 0x22 ? &data_020d0a7c[idx] : data_020d0a7c);
+        if (y > BuildingInfo_GetCapacity((Info *)buf)) {
             e->hi = 2;
-        } else if (func_020b13e0(arg) && z == 0) {
+        } else if (Building_IsOwnerAsleep(arg) && z == 0) {
             e->hi = 3;
         } else {
             e->lo = lo;
             e->hi = 1;
-            func_020b13e0(arg);
+            Building_IsOwnerAsleep(arg);
         }
-        func_020b16b8((Info *)buf);
+        BuildingInfo_Destroy((Info *)buf);
     } else {
-        data_021ee330[idx].hi = 0;
+        sBuildingOccupancy[idx].hi = 0;
         bits.a = 0;
         bits.b = idx;
         p = gCommManager;
@@ -1729,15 +1729,15 @@ extern "C" void func_020b10e0(u32 arg) {
     }
 }
 
-extern "C" u8 func_020b10c4(u32 a) {
-    return data_021ee330[func_020b2bac(a)].hi;
+extern "C" u8 BuildingOccupancy_GetAnswer(u32 a) {
+    return sBuildingOccupancy[Item_GetBuildingIndex(a)].hi;
 }
 
-extern "C" void func_020b1040(u32 a, u32 b) {
-    u32 i = func_020b2bac(a);
+extern "C" void BuildingOccupancy_Leave(u32 a, u32 b) {
+    u32 i = Item_GetBuildingIndex(a);
     void *p = gCommManager;
     if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0) || _ZN11CommManager7isMyAidEj(p, 4)) {
-        data_021ee330[i].lo &= ~(1 << b);
+        sBuildingOccupancy[i].lo &= ~(1 << b);
     } else {
         u8 x = i;
         p = gCommManager;
@@ -1747,22 +1747,22 @@ extern "C" void func_020b1040(u32 a, u32 b) {
     }
 }
 
-extern "C" u8 func_020b1034(void) {
-    return data_021ee290;
+extern "C" u8 HouseVisitor_IsPresent(void) {
+    return sHouseVisitorPresent;
 }
 
-extern "C" void func_020b1028(void) {
-    data_021ee290 = 1;
+extern "C" void HouseVisitor_SetPresent(void) {
+    sHouseVisitorPresent = 1;
 }
 
-extern "C" void func_020b101c(void) {
-    data_021ee290 = 0;
+extern "C" void HouseVisitor_ClearPresent(void) {
+    sHouseVisitorPresent = 0;
 }
 
-extern "C" u32 func_020b0fb0(u32 a) {
+extern "C" u32 BuildingOccupancy_GetPlayersForScene(u32 a) {
     void *p = gCommManager;
     if (!_ZN11CommManager8isOnlineEv(p) || _ZN11CommManager7isMyAidEj(p, 0)) {
-        volatile u16 id = ((u16 *)data_020d0a14)[a];
+        volatile u16 id = ((u16 *)sSceneBuildingTable)[a];
         BOOL ok = FALSE;
         u16 v = id;
         if (v < 0x5000 || v > 0x5021) {
@@ -1770,76 +1770,76 @@ extern "C" u32 func_020b0fb0(u32 a) {
             ok = TRUE;
         }
         if (ok) {
-            return data_021ee330[func_020b2bac(v)].lo;
+            return sBuildingOccupancy[Item_GetBuildingIndex(v)].lo;
         }
     }
     return 0;
 }
 
-extern "C" u32 func_020b0f80(u32 a) {
-    u32 r = func_020b2c14(func_020b0fb0(a));
-    if (SceneId_IsHouseRoom(a) && func_020b1034()) {
+extern "C" u32 BuildingOccupancy_CountForScene(u32 a) {
+    u32 r = Math_CountBits4(BuildingOccupancy_GetPlayersForScene(a));
+    if (SceneId_IsHouseRoom(a) && HouseVisitor_IsPresent()) {
         return r + 2;
     }
     return r;
 }
 
-extern "C" u32 func_020b0f54(void) {
+extern "C" u32 Room_CountOccupants(void) {
     if (isFlag1()) {
-        return func_020b0f80(Scene_GetCurrent());
+        return BuildingOccupancy_CountForScene(Scene_GetCurrent());
     }
     return 0;
 }
 
-extern "C" void func_020b0f48(void) {
-    data_021ee28c = 1;
+extern "C" void Taxi_SetLeaving(void) {
+    sTaxiLeaving = 1;
 }
 
-extern "C" void func_020b0f3c(void) {
-    data_021ee28c = 0;
+extern "C" void Taxi_ClearLeaving(void) {
+    sTaxiLeaving = 0;
 }
 
-extern "C" u8 func_020b0f30(void) {
-    return data_021ee28c;
+extern "C" u8 Taxi_IsLeaving(void) {
+    return sTaxiLeaving;
 }
 
-extern "C" void func_020b0f24(void) {
-    data_021ee288 = 1;
+extern "C" void Taxi_SetArriving(void) {
+    sTaxiArriving = 1;
 }
 
-extern "C" void func_020b0f18(void) {
-    data_021ee288 = 0;
+extern "C" void Taxi_ClearArriving(void) {
+    sTaxiArriving = 0;
 }
 
-extern "C" u8 func_020b0f0c(void) {
-    return data_021ee288;
+extern "C" u8 Taxi_IsArriving(void) {
+    return sTaxiArriving;
 }
 
-extern "C" void func_020b0f00(u32 a) {
-    data_021ee2a0 = a;
+extern "C" void Building_SetLastEntranceType(u32 a) {
+    sLastEntranceType = a;
 }
 
-extern "C" u32 func_020b0ef4(void) {
-    return data_021ee2a0;
+extern "C" u32 Building_GetLastEntranceType(void) {
+    return sLastEntranceType;
 }
 
 
-s32 data_021ee2ac;
-u32 data_021ee2a0;
+s32 sHourHandFrame;
+u32 sLastEntranceType;
 void *sStrBSizeArchive;
-u8 data_021ee28c;
-u32 data_021ee2b4;
-const u16 data_020d0a14[52] = {
+u8 sTaxiLeaving;
+u32 sExitedBuildingKey;
+const u16 sSceneBuildingTable[52] = {
     0xfff1, 0x5014, 0x5014, 0x5014, 0x5014, 0x5014, 0x5014, 0x5014, 0x5014, 0x5000, 0x500c, 0x500b, 0x500b,
     0x500b, 0x500b, 0x5012, 0x5013, 0x5001, 0x5002, 0x5003, 0x5004, 0x5005, 0x5006, 0x5007, 0x5008, 0x5009,
     0x500d, 0x500e, 0x500f, 0x5010, 0x5010, 0x5010, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011, 0x5011,
     0x5011, 0x5011, 0x5011, 0xfff1, 0xfff1, 0xfff1, 0xfff1, 0xfff1, 0x500b, 0xfff1, 0xfff1, 0xfff1, 0x0000};
 const u32 sLightFlickerTable[11] = {0x0, 0x19a, 0x333, 0x4cd, 0x333, 0x19a, 0x4cd, 0x666, 0x800, 0x666, 0x4cd};
-NibblePair data_021ee330[0x22];
-char data_021ee2c4[12];
-FieldObjectShapeQuery data_021ee2b0;
+NibblePair sBuildingOccupancy[0x22];
+char sLampMatNameBuf[12];
+FieldObjectShapeQuery sFieldObjectShapeQuery;
 
-extern "C" void func_020b0e60(void) {
+extern "C" void Building_PlayDoorChime(void) {
     u32 a = Scene_GetCurrent();
     s32 r = -1;
     if (SceneId_IsHouseRoom(a) || SceneId_IsVillagerHouse(a)) {
@@ -1859,10 +1859,10 @@ extern "C" void func_020b0e60(void) {
 
 
 
-u8 data_021ee30c[0x22];
-u32 data_021ee2bc;
-u8 data_021ee290;
-s32 data_020e3db4 = 0x1000;
+u8 sBuildingStates[0x22];
+u32 sFieldStructureMgr;
+u8 sHouseVisitorPresent;
+s32 sHourHandCos = 0x1000;
 u32 sStrBSizeTable[0x22];
-u8 data_021ee288;
-s32 data_021ee2a4;
+u8 sTaxiArriving;
+s32 sHourHandSin;

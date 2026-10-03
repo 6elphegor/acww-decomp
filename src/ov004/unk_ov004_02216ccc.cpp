@@ -121,8 +121,8 @@ void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 func_02063b8c(u32);
 void FieldPos_ToUnit(s32 *, s32 *, void *);
 void FieldPos_FromUnitCenter(s32 *, s32, s32);
-s32 func_02083eb4(void *, s32, s32);
-s32 func_02083ed4(void *, s32, s32);
+s32 RoomFreeUnitMap_TestUpper(void *, s32, s32);
+s32 RoomFreeUnitMap_Test(void *, s32, s32);
 
 u32 CommManager_isOnline(void *g);
 s32 CommManager_isSlotActive(void *g, u32 v);
@@ -133,7 +133,7 @@ u32 Item_GetFurnitureIndex(void *p);
 void VillagerMood_update(void *o, void *owner);
 void VillagerTalkTopics_updateCatchPlans(void *o, const void *a, const void *b, u32 c);
 void TalkRequest_AddPlayerTalk6(void *o, u32 a);
-void func_02083f44(void *o);
+void RoomFreeUnitMap_Build(void *o);
 void Unk_02013474_enableFootsteps(void *o);
 void *Villager_GetState(void *o);
 u32 VillagerState_GetRole(void *o);
@@ -345,10 +345,10 @@ public:
     ~HouseOwnerAiMember();
 };
 
-class Unk_02084038 {
+class RoomFreeUnitMap {
 public:
-    Unk_02084038();
-    ~Unk_02084038();
+    RoomFreeUnitMap();
+    ~RoomFreeUnitMap();
     u32 pad[0x20 / 4];
 };
 
@@ -368,7 +368,7 @@ public:
     typedef BOOL (HouseOwnerVillager::*Fn)();
     /* 0x894 */ Fn unk_894;
     /* 0x89c */ HouseOwnerAiMember unk_89c;
-    /* 0x8b0 */ Unk_02084038 unk_8b0;
+    /* 0x8b0 */ RoomFreeUnitMap unk_8b0;
     /* 0x8d0 */ u8 unk_8d0;
     /* 0x8d4 */ s32 unk_8d4;
 };
@@ -389,7 +389,7 @@ BOOL HouseOwnerVillager::vfunc_04() {
     }
     NpcActor_setTalkRequest(this, &unk_680);
     unk_680.vfunc_08();
-    func_02083f44(&unk_8b0);
+    RoomFreeUnitMap_Build(&unk_8b0);
     unk_8d4 = 0;
     unk_8d0 = 0;
     void *p = vfunc_64();
@@ -539,14 +539,14 @@ BOOL HouseOwnerAi::findStepTarget(s32 *o1, s32 *o2, HouseOwnerVillager *o) {
     px += sHouseOwnerStepDirs[dir].dx;
     py += data_ov004_0225065c[dir].dx;
     if ((u32) * (volatile s32 *)&y < 0xe) {
-        if (func_02083eb4(&o->unk_8b0, px, py) != 0) {
+        if (RoomFreeUnitMap_TestUpper(&o->unk_8b0, px, py) != 0) {
             FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];
             return TRUE;
         }
     } else {
-        if (func_02083ed4(&o->unk_8b0, px, py) != 0) {
+        if (RoomFreeUnitMap_Test(&o->unk_8b0, px, py) != 0) {
             FieldPos_FromUnitCenter(v, px, py);
             *o1 = v[0];
             *o2 = v[2];

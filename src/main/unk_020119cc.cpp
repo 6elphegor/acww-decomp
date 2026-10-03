@@ -338,7 +338,7 @@ struct Unk_020133cc_Vec {
     s32 x;
     s32 y;
     s32 z;
-    s32 func_020b0cbc();
+    s32 Footstep_GetSeAtPos();
 };
 
 // unk_020131a4.cpp
@@ -2514,7 +2514,7 @@ s32 func_01ffcb0c(s32, s32);
 void FieldPos_SnapToUnitCenter(Unk_02011f74_Vec *, Unk_02011f74_Vec *);
 s32 TownMap_IsPosWalkable(Unk_02011f74_Vec *, s32);
 s32 TownMap_IsUnitWalkable(s32, s32, Unk_02011f74_World *);
-s32 _ZN8BlockMap13func_0204e350Eii(Unk_02011f74_World *, s32, s32);
+s32 _ZN8BlockMap12getWalkLinksEii(Unk_02011f74_World *, s32, s32);
 static inline Unk_02011f74_Cell *GetCell(Unk_02011f74_World *w, u32 x, u32 y)
 {
     if (x < (u32)w->size.a && (u32)w->size.b > y && w->unk_00 != NULL) {
@@ -2546,14 +2546,14 @@ namespace nC2 { extern Unk_020130f0_Dir sRouteDirs[4]; }
 void _ZN13VillagerRoute12rememberUnitEj(void *self, Unk_02012810_Vec *v);
 extern s32 sRouteDirs[];
 extern Unk_02012f04_Obj *gSceneBlockMap;
-s32 _ZN8BlockMap13func_0204e328EPv(Unk_02012f04_Obj *o, Unk_02012810_Vec *v);
+s32 _ZN8BlockMap17getWalkLinksAtPosEPv(Unk_02012f04_Obj *o, Unk_02012810_Vec *v);
 u32 BlockMap_GetBlockAttr(Unk_02012f04_Obj *o, s32 x, s32 z);
 s32 func_020e9650(Unk_02012810_Vec *a, Unk_02012810_Vec *b);
 void FieldPos_ToBlockUnit2(Unk_02012b94_Pair *a, Unk_02012b94_Pair *c, Unk_02012810_Vec *v);
 void FieldPos_FromBlockUnitCenter(Unk_02012810_Vec *out, u32 a, u32 b, u32 c, u32 d);
 s32 TownMap_IsUnitWalkable(u32 x, u32 z, Unk_02012f04_Obj *o);
 s32 Random_PickSetBit(u32 mask, s32 n, s32 max);
-s32 _ZN8BlockMap13func_0204e350Eii(Unk_02012f04_Obj *o, u32 x, u32 z);
+s32 _ZN8BlockMap12getWalkLinksEii(Unk_02012f04_Obj *o, u32 x, u32 z);
 void FieldUnit_FromBlockUnit(u32 *bx, u32 *bz, u32 x, u32 z, u32 a, u32 b);
 s32 func_02063b8c(s32 n);
 void FieldPos_ToUnit(u32 *x, u32 *z, Unk_02012810_Vec *v);
@@ -2590,8 +2590,8 @@ Unk_020133cc_Player* _ZN8NpcActor14getTalkRequestEv(void *self);
 void _ZN9Character13func_0203e47cEi(void *self, Unk_020133cc_Player* o);
 BOOL _ZN13AnimFrameCtrl14hasPassedFrameEi(void *self, u32 v);
 void Snd_SeEmitterPlayAlternate(void *self, s32 a, u32 b);
-s32 func_020b0cbc(void *self);
-BOOL _ZN8BlockMap13func_0204e350Eii(void* p, u32 x, u32 y);
+s32 Footstep_GetSeAtPos(void *self);
+BOOL _ZN8BlockMap12getWalkLinksEii(void* p, u32 x, u32 y);
 void FieldPos_FromUnitCenter(void* p, u32 x, u32 y);
 void FieldPos_ToUnit(u32* a, u32* b, u32 c);
 void MI_CpuFill8(void* p, u32 v, u32 n);
@@ -2751,13 +2751,13 @@ s32 *_ZN11NpcMoveCtrl13func_0201a8ccEv(void *p);
 s32 func_01ffcb0c(s32 a, s32 b);
 void *_ZN12Unk_020e071813func_020820a0Ej(void *p, u32 idx);
 s32 _ZN12Unk_020e071813func_0208211cEv(void *p);
-s32 func_0205c240(void *p);
-s32 func_0205c254(void *p);
-s32 func_0205c2dc(void *p, u32 a, u32 b, u32 c);
-s32 func_0205c57c(u32 a);
-s32 func_0205c5d0(void);
-u32 func_0205c5ac(s32 a, u32 b);
-u32 func_0205c588(s32 a, u32 b);
+s32 AnimSlotRef_GetAnimId(void *p);
+s32 AnimSlotRef_GetData(void *p);
+s32 AnimSlotRef_Load(void *p, u32 a, u32 b, u32 c);
+s32 CharaAnim_GetJointGroup(u32 a);
+s32 JointGroup_GetRangeCount(void);
+u32 JointGroup_GetRangeFirst(s32 a, u32 b);
+u32 JointGroup_GetRangeLast(s32 a, u32 b);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
 s32 _ZN11NpcAnimCtrl8playAnimEP16Unk_02015fe0_Objiiiiti(void *a, void *b, u32 c, u32 d, u32 s0, u32 s1, u32 s2, u32 s3);
 s32 func_021065dc(s32 a);
@@ -2772,11 +2772,11 @@ namespace nI {
 extern "C" {
 
 BOOL Item_IsHoldable(u16 *p);
-s32 func_0205c570(void *p);
-s32 func_0205c57c(s32 a);
-s32 func_0205c588(s32 a, s32 b);
-s32 func_0205c5ac(s32 a, s32 b);
-s32 func_0205c5d0(void);
+s32 CharaAnim_GetHoldPoseMode(void *p);
+s32 CharaAnim_GetJointGroup(s32 a);
+s32 JointGroup_GetRangeLast(s32 a, s32 b);
+s32 JointGroup_GetRangeFirst(s32 a, s32 b);
+s32 JointGroup_GetRangeCount(void);
 s32 HeldItem_GetHandPose(u16 *p);
 void _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(void *a, void *b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h);
 void ThreeLayerAnimModel_AssignJointsToLayer2(void *a, s32 b, s32 c);
@@ -2791,8 +2791,8 @@ s32 _ZN12Unk_02015b8c9getAnimIdEj(void *a, s32 b);
 s32 _ZN14NpcSpeechState12getMouthTypeEv(void *a);
 void _ZN11NpcFaceAnim16setFaceAnimsFromEPvii(void *a, s32 b, s32 c, s32 d);
 void *_ZN12Unk_020e071813func_020820a0Ej(void *a, s32 b);
-void func_0205c2dc(void *a, s32 b, s32 c, s32 d);
-void *func_0205c254(void *a);
+void AnimSlotRef_Load(void *a, s32 b, s32 c, s32 d);
+void *AnimSlotRef_GetData(void *a);
 void *func_021065dc(void *a);
 void *func_021065f8(void *a, s32 b);
 void _ZN12Unk_02015b8c17setAnimSpeedFixedEh(void *a, s32 b);
@@ -3056,8 +3056,8 @@ s32 _ZN9NpcLookAt14calcClampedYawEP17Unk_0201a334_Vec3S1_i(void *self, void *a, 
 s32 _ZN9NpcLookAt7calcYawEP17Unk_0201a334_Vec3S1_i(void *self, void *a, void *b, s32 c);
 BOOL NpcLookAt_GetHeadPos(void *self, void *a);
 extern s32 sNpcTalkMouthAnims[];
-s32 func_0205c5e8(void *p);
-s32 func_0205c5dc(void *p);
+s32 CharaAnim_GetEyeAnim(void *p);
+s32 CharaAnim_GetMouthAnim(void *p);
 void *_ZN12Unk_020e06c813func_02081e5cEv(void *p);
 void _ZN12Unk_0205ce0c13func_0205ce78Eiii(void *h, s32 a, s32 b, s32 c);
 void *_ZN12Unk_0205ce0c13func_0205cf60Ev(void *h);
@@ -3165,7 +3165,7 @@ void *_ZN10PlayerData12getInventoryEv(void *p);
 s32 func_02097a48(void *p, s32 v, s32 n);
 s32 func_02097ce4(void *p, s32 a, s32 b);
 s32 func_02097a90(void *p, s32 v, s32 n, s32 m);
-u32 _ZN8BlockMap13func_0204e328EPv(void *g, Unk_020d77a4_Vec3 *v);
+u32 _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, Unk_020d77a4_Vec3 *v);
 void FieldPos_SnapToUnitCenter(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
 void func_01ffd070(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
 s32 func_020e9650(Unk_020d77a4_Vec3 *a, Unk_020d77a4_Vec3 *b);
@@ -3238,7 +3238,7 @@ extern s32 data_020c6d60[];
 extern s32 data_020c6d48[];
 extern s32 data_020c6d20;
 extern u8 sNpcAvoidOffsets[];
-extern s32 data_021c61a0;
+extern s32 gNpcModelHeap;
 extern s16 data_02135f44[];
 BOOL NetArea_IsLocalOwner();
 s32 _ZN9Character10postCreateEi(void *self, s32 x);
@@ -3256,15 +3256,15 @@ void _ZN19Unk_020133cc_Player22resetLastTaughtEmotionEv(void *p);
 void *MI_CpuFill8(void *dst, s32 v, u32 n);
 void *MI_CpuCopy8(void *dst, const void *src, u32 n);
 u8 Npc_GetInfoByte2(void *p);
-u8 *func_020841fc(void *p);
+u8 *NpcNetRecord_GetVar(void *p);
 s32 Scene_GetCurrent();
-void func_02084254(void *a, s32 b, void *c, s32 d, void *e, void *f);
+void NpcNetRecord_SetState(void *a, s32 b, void *c, s32 d, void *e, void *f);
 BOOL _ZN11CommManager12isSlotActiveEi(Unk_020d77a4_Global *g, s32 v);
 BOOL _ZN11CommManager8isOnlineEv(Unk_020d77a4_Global *g);
 void CommSyncVar_SetVar(s32 a, void *args, s32 b, s32 c);
-void func_02084228(void *a, u32 b, u32 c);
-s32 func_0208416c(s32 a, s32 b, void *c);
-s32 func_0208419c(s32 a, s32 b, s32 c, void *d);
+void NpcNetRecord_SetSlots(void *a, u32 b, u32 c);
+s32 NpcNetRecord_GetSlots(s32 a, s32 b, void *c);
+s32 NpcNetRecord_SetSlotsAndSync(s32 a, s32 b, s32 c, void *d);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void _ZN16ActorTalkRequest13setOwnerActorEP18Unk_02015b8c_Scene(Unk_0201bc1c *a, void *b);
 s32 func_020951ec(u32 id);
@@ -3826,7 +3826,7 @@ BOOL NpcActor::loadModel() {
     using namespace nR;
     s32 t = getModelPath();
     BOOL r = FALSE;
-    if (_ZN11CachedModel4loadEPvS0_(unk_ec, t, data_021c61a0) != 0) {
+    if (_ZN11CachedModel4loadEPvS0_(unk_ec, t, gNpcModelHeap) != 0) {
         r = TRUE;
     }
     return r;
@@ -4056,7 +4056,7 @@ BOOL NpcActor::isNetOwner() {
     using namespace nR;
     Unk_020d77a4_Global *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) != 0 && unk_563 == 0) {
-        u8 *p = func_020841fc(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&unk_ea);
         if (p != NULL && p[0] != 0) {
             if ((p[1] == 4 && NetArea_IsLocalOwner() != 0) || p[1] == g->unk_64) {
                 return TRUE;
@@ -4070,12 +4070,12 @@ BOOL NpcActor::isNetOwner() {
 
 s32 NpcActor::netSetSlots(s32 a, s32 b, s32 c) {
     using namespace nR;
-    return func_0208419c(a, b, c, &unk_ea);
+    return NpcNetRecord_SetSlotsAndSync(a, b, c, &unk_ea);
 }
 
 void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     using namespace nR;
-    func_02084228(&unk_ea, b, c);
+    NpcNetRecord_SetSlots(&unk_ea, b, c);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
@@ -4090,7 +4090,7 @@ void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
 
 s32 NpcActor::func_0201b9e8(s32 a, s32 b) {
     using namespace nR;
-    return func_0208416c(a, b, &unk_ea);
+    return NpcNetRecord_GetSlots(a, b, &unk_ea);
 }
 
 BOOL NpcActor::netIsTalkLocked() {
@@ -4109,7 +4109,7 @@ BOOL NpcActor::netIsTalkLocked() {
 BOOL NpcActor::getNetUserBytes(u8 *src, u32 n) {
     using namespace nR;
     if (unk_563 == 0) {
-        u8 *p = func_020841fc(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&unk_ea);
         if (n > 4) {
             n = 4;
         }
@@ -4131,7 +4131,7 @@ void NpcActor::setNetUserBytes(void *dst, s32 n) {
 
 void NpcActor::netSendState(u32 a, ...) {
     using namespace nR;
-    func_02084254(&unk_ea, Scene_GetCurrent(), &unk_5c, unk_8e, unk_568, unk_62d);
+    NpcNetRecord_SetState(&unk_ea, Scene_GetCurrent(), &unk_5c, unk_8e, unk_568, unk_62d);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64) != 0) {
         if (isNetOwner() != 0) {
             s32 t = (unk_ea & 0xf000) >> 12;
@@ -4147,7 +4147,7 @@ void NpcActor::netSendState(u32 a, ...) {
 BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
     using namespace nR;
     if (unk_563 == 0) {
-        u8 *p = func_020841fc(&unk_ea);
+        u8 *p = NpcNetRecord_GetVar(&unk_ea);
         if (p != NULL) {
             NetBuf_UnpackPair20(p + 4, a, a + 2);
             MI_CpuCopy8(p + 9, b, 2);
@@ -4159,7 +4159,7 @@ BOOL NpcActor::netReadPosition(s32 *a, u8 *b) {
 
 BOOL NpcActor::netReadAction(s32 *a, s32 *b, u8 *c) {
     using namespace nR;
-    u8 *p = func_020841fc(&unk_ea);
+    u8 *p = NpcNetRecord_GetVar(&unk_ea);
     if (p != NULL) {
         *a = p[0xf];
         *b = p[0x10];
@@ -4451,8 +4451,8 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
     s32 z0, z1, z2, z3;
     *out = *in;
     g = gSceneBlockMap;
-    m0 = _ZN8BlockMap13func_0204e328EPv(g, (V3 *)((u8 *)self + 0x5c));
-    m1 = _ZN8BlockMap13func_0204e328EPv(g, in);
+    m0 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, (V3 *)((u8 *)self + 0x5c));
+    m1 = _ZN8BlockMap17getWalkLinksAtPosEPv(g, in);
     FieldPos_SnapToUnitCenter(&a, (V3 *)((u8 *)self + 0x5c));
     FieldPos_SnapToUnitCenter(&b, in);
     best = 0;
@@ -4465,7 +4465,7 @@ extern "C" void NpcActor_FindFreeUnitNear(V3 *out, NpcActor *self, V3 *in) {
             func_01ffd070(&t1, &a, (V3 *)(data_020c6dcc + i1 * 12));
             cand1 = t1;
             d1 = func_020e9650((V3 *)((u8 *)self + 0x5c), &cand1);
-            if (_ZN8BlockMap13func_0204e328EPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
+            if (_ZN8BlockMap17getWalkLinksAtPosEPv(g, &cand1) && TownMap_IsPosWalkable(&cand1, z0)) {
                 if (bestDist == 0 || bestDist > d1) {
                     bestDist = d1;
                     best = i1;
@@ -5659,8 +5659,8 @@ void NpcFaceAnim::setFaceAnims(s32 t, s32 u, s32 x, s32 mode) {
 void NpcFaceAnim::setFaceAnimsFrom(void *a, s32 b, s32 c) {
     using namespace nO;
     if (isLoaded()) {
-        s32 t = func_0205c5e8(a);
-        s32 u = func_0205c5dc(a);
+        s32 t = CharaAnim_GetEyeAnim(a);
+        s32 u = CharaAnim_GetMouthAnim(a);
         if (t == 0x16f) {
             t = 0;
         }
@@ -7754,8 +7754,8 @@ void *NpcAnimCtrl::getAnimResource(s32 a, s32 b) {
     void *p = _ZN12Unk_020e071813func_020820a0Ej(this, b);
     void *r = 0;
     if (p) {
-        func_0205c2dc(p, a, 0, 0);
-        void *q = func_0205c254(p);
+        AnimSlotRef_Load(p, a, 0, 0);
+        void *q = AnimSlotRef_GetData(p);
         q = func_021065dc(q);
         r = func_021065f8(q, 0);
     }
@@ -7835,7 +7835,7 @@ vdone:
 void NpcAnimCtrl::playHoldItemPose(Unk_02015fe0_Obj *o, u16 *p, void *q, u16 x) {
     using namespace nI;
     if (Item_IsHoldable(p)) {
-        if (func_0205c570(q) != 3) {
+        if (CharaAnim_GetHoldPoseMode(q) != 3) {
             if (Unk_02015fe0_R(p, 0x1369, 0x1369)) {
                 void *r = getAnimResource(0x13f, 1);
                 if (r) {
@@ -7848,12 +7848,12 @@ void NpcAnimCtrl::playHoldItemPose(Unk_02015fe0_Obj *o, u16 *p, void *q, u16 x) 
                     void *r = getAnimResource(id, 1);
                     if (r) {
                         _ZN17TwoLayerAnimModel10playLayer2Ejjjjjji(o->unk_ec, r, x, 0, 0x1000, 0, 0, 0);
-                        s32 t = func_0205c57c(id);
+                        s32 t = CharaAnim_GetJointGroup(id);
                         if (t < 4) {
-                            u32 n = func_0205c5d0();
+                            u32 n = JointGroup_GetRangeCount();
                             for (u32 i = 0; i < n; i++) {
-                                s32 a = func_0205c5ac(t, i);
-                                ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, a, func_0205c588(t, i));
+                                s32 a = JointGroup_GetRangeFirst(t, i);
+                                ThreeLayerAnimModel_AssignJointsToLayer2(o->unk_ec, a, JointGroup_GetRangeLast(t, i));
                             }
                         } else {
                             _ZN17TwoLayerAnimModel18playLayer2FromBaseEjj(o->unk_ec, 0, 0);
@@ -7883,7 +7883,7 @@ void Unk_02015b8c::loadTalkGesture() {
     using namespace nH;
     void *p = _ZN12Unk_020e071813func_020820a0Ej(this, 2);
     if (p != NULL) {
-        func_0205c2dc(p, 0x143, 0, 0);
+        AnimSlotRef_Load(p, 0x143, 0, 0);
     }
 }
 
@@ -7893,7 +7893,7 @@ u32 Unk_02015b8c::getTalkGestureData() {
     if (hasTalkGesture()) {
         void *p = _ZN12Unk_020e071813func_020820a0Ej(this, 2);
         if (p != NULL) {
-            r = func_021065f8(func_021065dc(func_0205c254(p)), r);
+            r = func_021065f8(func_021065dc(AnimSlotRef_GetData(p)), r);
         }
     }
     return r;
@@ -7904,12 +7904,12 @@ void Unk_02015b8c::playTalkGesture(Unk_02015b8c_Scene *scene, u32 a, u32 b) {
     u32 r1 = getTalkGestureData();
     if (r1 != 0) {
         _ZN19ThreeLayerAnimModel10playLayer3Ejjjjjji(((void *)((u8 *)(scene) + (0xec))), r1, 0, 1, 0x1000, a, b, 0);
-        s32 t = func_0205c57c(0x143);
+        s32 t = CharaAnim_GetJointGroup(0x143);
         if (t < 4) {
-            u32 n = func_0205c5d0();
+            u32 n = JointGroup_GetRangeCount();
             for (u32 i = 0; i < n; i++) {
-                u32 x = func_0205c5ac(t, i);
-                _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)((u8 *)(scene) + (0xec))), x, func_0205c588(t, i));
+                u32 x = JointGroup_GetRangeFirst(t, i);
+                _ZN19ThreeLayerAnimModel20assignJointsToLayer3Ejj(((void *)((u8 *)(scene) + (0xec))), x, JointGroup_GetRangeLast(t, i));
             }
         } else {
             stopTalkGesture(scene);
@@ -7945,7 +7945,7 @@ BOOL Unk_02015b8c::isAnimFinished(Unk_02015b8c_Scene *scene) {
 s32 Unk_02015b8c::getAnimId(u32 idx) {
     using namespace nH;
     if (_ZN12Unk_020e071813func_020820a0Ej(this, idx) != NULL) {
-        return func_0205c240(_ZN12Unk_020e071813func_020820a0Ej(this, idx));
+        return AnimSlotRef_GetAnimId(_ZN12Unk_020e071813func_020820a0Ej(this, idx));
     }
     return 0x144;
 }
@@ -9993,7 +9993,7 @@ void Unk_02013474::playFootstepSe(Unk_020133cc_Player* p) {
     u32 f = p->unk_b0;
     if (!(Unk_02013568_IsSet(f, 4) && Unk_02013568_IsSet(f, 2))) {
         if (unk_00 != 0) {
-            nD::Snd_SeEmitterPlayAlternate(&p->unk_514, nD::func_020b0cbc(&p->unk_5c), 0);
+            nD::Snd_SeEmitterPlayAlternate(&p->unk_514, nD::Footstep_GetSeAtPos(&p->unk_5c), 0);
         }
     }
 }
@@ -10166,7 +10166,7 @@ extern "C" BOOL _ZN12Unk_0201281011scanForPathEP16Unk_02012810_VecP17Unk_02012b9
             if (o.unk_30 != 0) cnt++; else cnt = zero;
             if (cnt >= 4) break;
         }
-        if (_ZN8BlockMap13func_0204e350Eii(q, x, y)) {
+        if (_ZN8BlockMap12getWalkLinksEii(q, x, y)) {
             FieldPos_FromUnitCenter(p1, x, y);
             return TRUE;
         }
@@ -10235,7 +10235,7 @@ u32 Unk_02012810::findNearestPath(Unk_02012b94_Pair *out, Unk_02012810_Vec *pos)
     Unk_02012b94_Pair *pq = &o->unk_0c;
     q.x = pq->x;
     q.z = pq->z;
-    if (_ZN8BlockMap13func_0204e328EPv(o, pos) != 0) {
+    if (_ZN8BlockMap17getWalkLinksAtPosEPv(o, pos) != 0) {
         return 4;
     }
     for (s32 i = 0; i < 4; i++) {
@@ -10322,7 +10322,7 @@ s32 Unk_02012810::scanDir(Unk_02012b94_Pair *out, Unk_02012e08_Pos pos, u32 mask
             pos.x += dx;
             pos.z += dz;
             cnt++;
-            s32 r = _ZN8BlockMap13func_0204e350Eii(obj, pos.x, pos.z);
+            s32 r = _ZN8BlockMap12getWalkLinksEii(obj, pos.x, pos.z);
             if (r == 0) {
                 u32 z = pos.z - dz;
                 out->x = pos.x - dx;
@@ -10431,7 +10431,7 @@ extern "C" void VillagerRoute_PickPathUnitInBlock(Unk_02012b94_Pair *out, s32 un
     FieldUnit_FromBlockUnit(&bx, &bz, p->x, p->z, 0, 0);
     for (z = 0; z < 16; z++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN8BlockMap13func_0204e350Eii(obj, bx + x, bz + z) != 0) {
+            if (_ZN8BlockMap12getWalkLinksEii(obj, bx + x, bz + z) != 0) {
                 mask[z] |= 1 << x;
                 cnt++;
             }
@@ -10484,7 +10484,7 @@ void Unk_02012810::planStep(Unk_02012810_Vec *pos) {
     if (o == 0) {
         return;
     }
-    present = _ZN8BlockMap13func_0204e328EPv(o, pos);
+    present = _ZN8BlockMap17getWalkLinksAtPosEPv(o, pos);
     if (present == 0) {
         unk_90 = findNearestPath(&unk_1c, pos);
         unk_04 = 0;
@@ -10621,7 +10621,7 @@ BOOL Unk_02012164::followPathDir(Unk_02011f74_Vec *p, Unk_02011f74_Pair *lim, Un
             b += dz;
             BOOL eq = FALSE;
             if (unk_1c == a && unk_20 == b) eq = TRUE;
-            if (eq || _ZN8BlockMap13func_0204e350Eii(w, a, b)) {
+            if (eq || _ZN8BlockMap12getWalkLinksEii(w, a, b)) {
                 FieldPos_FromUnitCenter(p, a, b);
                 nB::_ZN12Unk_020128108planStepEP16Unk_02012810_Vec(this, p);
                 break;
@@ -10667,7 +10667,7 @@ BOOL Unk_02012164::advanceOnPath(Unk_02011f74_Vec *p, Unk_02011f74_World *w) {
         FieldPos_ToUnit(&a, &b, p);
         a += sRouteDirs[k * 2];
         b += (sRouteDirs + 1)[k * 2];
-        if (!_ZN8BlockMap13func_0204e350Eii(w, a, b)) {
+        if (!_ZN8BlockMap12getWalkLinksEii(w, a, b)) {
             FieldPos_FromUnitCenter(p, a, b);
             nB::_ZN12Unk_0201281014clearJunctionsEv(this);
             unk_88 = 0;

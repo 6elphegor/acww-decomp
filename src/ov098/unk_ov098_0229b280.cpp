@@ -29,7 +29,7 @@ void MI_CpuCopy8(void *src, void *dst, s32 n);
 void *func_0208f158(void *p);
 void func_02065e70(void *a, void *b);
 
-extern void *data_021c6210;
+extern void *gMenuHeap;
 extern void *gSceneBlockMap;
 extern u8 data_021e7f8c[];
 extern u8 gTouchHeld;
@@ -561,7 +561,7 @@ void PocketMenu::sendBottleLetter() {
         ((Unk_0208f238 *)d)->func_0208f168();
         ((Unk_0208f238 *)d)->func_0208f1a8(0);
     } else {
-        void *heap = data_021c6210;
+        void *heap = gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
         buf[0] = 6;
         MI_CpuCopy8((void *)p, buf + 1, 0xf4);

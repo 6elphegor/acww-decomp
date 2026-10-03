@@ -14,10 +14,10 @@ struct Unk_0205ee34 {
 };
 
 extern "C" {
-extern void *data_021c61b8;
+extern void *gPlayerBodyAnimHeap;
 extern Unk_0205f6f8_Cfg *gCommManager;
-extern void func_0205bb64(void);
-extern s32 func_0205bb48(void);
+extern void PlayerBodyAnimHeap_Create(void);
+extern s32 PlayerBodyAnimHeap_Destroy(void);
 extern void func_020e885c(void *p);
 extern void func_020e877c(void *p);
 extern void *FrameHeap_Create(u32 size, void *heap);
@@ -30,16 +30,16 @@ void func_0205ee7c(u32 *tbl);
 Unk_0205eebc data_021c73b8;
 
 extern "C" void func_0205eee0(void) {
-    func_0205bb64();
+    PlayerBodyAnimHeap_Create();
     func_0205ee7c(data_021c73b8.unk_00);
-    if (data_021c61b8) {
-        func_020e877c(data_021c61b8);
+    if (gPlayerBodyAnimHeap) {
+        func_020e877c(gPlayerBodyAnimHeap);
     }
 }
 
 extern "C" void func_0205eec8(void) {
     func_0205ee44(data_021c73b8.unk_00);
-    func_0205bb48();
+    PlayerBodyAnimHeap_Destroy();
 }
 
 extern "C" u32 func_0205eec0(void) { return 0x768; }
@@ -49,7 +49,7 @@ Unk_0205eebc::Unk_0205eebc() {}
 Unk_0205eebc::~Unk_0205eebc() {}
 
 extern "C" void func_0205ee7c(u32 *tbl) {
-    void *heap = data_021c61b8;
+    void *heap = gPlayerBodyAnimHeap;
     u32 n = gCommManager->unk_6c;
     u32 i;
     for (i = 0; i < n; i++) {
@@ -65,8 +65,8 @@ extern "C" void func_0205ee44(u32 *tbl) {
             tbl[i] = 0;
         }
     }
-    if (data_021c61b8) {
-        func_020e885c(data_021c61b8);
+    if (gPlayerBodyAnimHeap) {
+        func_020e885c(gPlayerBodyAnimHeap);
     }
 }
 

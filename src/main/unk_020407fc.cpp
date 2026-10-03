@@ -121,7 +121,7 @@ s32 TalkRequestFlags_SetSceneHold(void);
 s32 Scene_InTownUnk31(void);
 void Town_RefreshEventsOffline(void);
 void Town_UpdateDay(s32);
-s32 func_020b101c(void);
+s32 HouseVisitor_ClearPresent(void);
 void MIi_CpuClear16(u32 v, u32 dst, u32 size);
 u32 G2_GetBG2ScrPtr();
 u32 G2_GetBG2CharPtr();
@@ -254,7 +254,7 @@ BOOL Unk_020da258::vfunc_00()
             if (v != 99) {
                 data_020da218 = v;
             }
-            func_020b101c();
+            HouseVisitor_ClearPresent();
         }
         break;
     }

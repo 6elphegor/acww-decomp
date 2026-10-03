@@ -116,7 +116,7 @@ BOOL BgVramTask_requestScreen(void *p, void *a, u32 b, u32 c, u32 d);
 void BgVramTask_cancel(void *p);
 
 void *PlayerData_GetCurrent();
-u32 func_020b0f54();
+u32 Room_CountOccupants();
 s32 Pocket_FindEmpty();
 s32 Pocket_AddItem(u16 *p, u32 v);
 void Snd_PlaySe(s32 id);
@@ -1546,7 +1546,7 @@ void DesignTab::equipDesign(u32 m) {
 void DesignTab::placeDesignInRoom() {
     u32 buf;
     s32 r;
-    if (func_020b0f54() > 1) {
+    if (Room_CountOccupants() > 1) {
         openMessageWindow(9, 0);
         Snd_PlaySe(0x73);
         return;
@@ -2078,10 +2078,10 @@ BOOL DesignTab::isWearDone(s32 k) {
 BOOL DesignTab::isRoomEditAllowed() {
     Unk_ov121_Comm *c = gCommManager;
     if (CommManager_isOnline(c)) {
-        if (c->unk_64 != 0 || func_020b0f54() > 1) {
+        if (c->unk_64 != 0 || Room_CountOccupants() > 1) {
             return FALSE;
         }
-    } else if (func_020b0f54() > 1) {
+    } else if (Room_CountOccupants() > 1) {
         return FALSE;
     }
     return TRUE;

@@ -93,7 +93,7 @@ void ItemPick_One(u16 *out, Unk_ov072_02271a58_Obj *o, s32 a, s32 b, s32 c, s32 
 void *TownBlockMap_Get();
 void *MapBlock_GetItemPtr(void *cell, s32 a, s32 b, s32 c);
 void MapBlock_SetItem(void *cell, u16 *h, s32 a, s32 b, s32 c);
-BOOL _ZN8BlockMap13func_0204e440Eiiii(void *self, s32 x, s32 y, s32 z, s32 w);
+BOOL _ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(void *self, s32 x, s32 y, s32 z, s32 w);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 layer);
 BOOL Item_IsMarker(void *p);
@@ -717,7 +717,7 @@ extern "C" BOOL SpNpcGulliver_PlaceShipPart(u8 *cnt, s32 *pe, void *g0) {
                             for (v[3] = 0; v[3] < 16; v[3]++) {
                                 for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
                                     if (*(u16 *)t == 0xfff1) {
-                                        if (_ZN8BlockMap13func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                                        if (_ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
                                             if (SpNpcGulliver_IsSpotClear((s32 *)&v[0], (s32 *)&v[2], g)) {
                                                 if (k2 == 0) {
                                                     h = 0x1568;
@@ -768,7 +768,7 @@ extern "C" void SpNpcGulliver_ScatterShipParts() {
                         for (v[3] = 0; v[3] < 16; v[3]++) {
                             for (v[2] = 0; v[2] < 16; t += 2, v[2]++) {
                                 if (*(u16 *)t == 0xfff1) {
-                                    if (_ZN8BlockMap13func_0204e440Eiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
+                                    if (_ZN8BlockMap23canPlaceItemAtBlockUnitEiiii(g, v[0], v[1], *(volatile s32 *)&v[2], v[3])) {
                                         if (SpNpcGulliver_IsSpotClear(&v[0], &v[2], g)) {
                                             (*cnt)++;
                                         }

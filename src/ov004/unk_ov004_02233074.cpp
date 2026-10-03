@@ -632,8 +632,8 @@ BOOL TexPatVramAnim_update(void *p);
 BOOL TexPatVramAnim_init(void *self, void *hdr, const char *n1, const char *n2, void *x, void *y, u32 flag);
 void func_02056d54(void *p);
 void func_02056d8c(void *p);
-void func_0205c13c();
-void func_0205c158();
+void FurnitureHeap_Destroy();
+void FurnitureHeap_Create();
 void Item_ToPlacedForm(u16 *out, u16 *in, s32 n);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 func_02063b8c(s32 a);
@@ -952,8 +952,8 @@ BOOL FurnitureManager::vfunc_00() {
     if (Scene_InMuseumRoom()) {
         flags = 0x1c00;
     }
-    func_0209c1a4(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)func_0205c158,
-                  (void *)func_0205c13c, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
+    func_0209c1a4(&sFtrMgrPool, FtrMgr_GetMaxFurniture(), 0x2000, 0x80, flags, (void *)FurnitureHeap_Create,
+                  (void *)FurnitureHeap_Destroy, (void *)"\x89\xc6\x8b\xef\x83\x7d\x83\x6c\x81\x5b\x83\x57\x83\x83\x81\x5b");
     func_ov004_02234ad0(this);
     if (FtrMgr_GetMaxFurniture() > 1) {
         TvScreen_Load(&unk_64);

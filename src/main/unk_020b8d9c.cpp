@@ -2592,7 +2592,7 @@ extern "C" {
 s32 func_020947f0();
 }
 extern "C" {
-void func_020b17e0(s32 a, BOOL b);
+void Town_PlaceGulliverShip(s32 a, BOOL b);
 }
 extern "C" {
 void _ZN8SaveData7setFlagEj(void *p, s32 a);
@@ -2742,7 +2742,7 @@ void Unk_020be018::updateUfo()
             func_02040208(0x44);
             func_02094348();
             s32 obj = func_020947f0();
-            func_020b17e0(obj, unk_2e == 0 ? 1 : 0);
+            Town_PlaceGulliverShip(obj, unk_2e == 0 ? 1 : 0);
             _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
             unk_04 = 3;
         }

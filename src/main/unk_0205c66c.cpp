@@ -38,15 +38,15 @@ struct Unk_0205c788 {
 
 extern "C" {
 extern Unk_0205c788 data_021c6314;
-extern void *data_021c61d0;
+extern void *gPlayerBodyModelHeap;
 extern u8 *gCommManager;
 
 void *Heap_AllocAligned(void *, u32, s32);
 void func_020e885c(void *);
 void func_020e877c(void *);
 s32 File_LoadToBuffer(char *, void *, u32);
-s32 func_0205bd54();
-s32 func_0205bd70();
+s32 PlayerBodyModelHeap_Destroy();
+s32 PlayerBodyModelHeap_Create();
 s32 NNS_G3dGetTex(void *);
 u32 func_0205c8c0();
 u32 func_0205c8bc();
@@ -59,14 +59,14 @@ void *func_0205c694(u8 *p);
 }
 
 extern "C" void func_0205c8f4() {
-    func_0205bd70();
+    PlayerBodyModelHeap_Create();
     data_021c6314.func_0205c7ec();
-    if (data_021c61d0) func_020e877c(data_021c61d0);
+    if (gPlayerBodyModelHeap) func_020e877c(gPlayerBodyModelHeap);
 }
 
 extern "C" void func_0205c8dc() {
     data_021c6314.func_0205c7a8();
-    func_0205bd54();
+    PlayerBodyModelHeap_Destroy();
 }
 
 extern char *data_020dc3b8[];
@@ -92,7 +92,7 @@ void Unk_0205c788::func_0205c7ec() {
         u32 c = func_0205c8b8();
         unk_10[i].alloc((void *)a, (void *)b, (void *)c);
     }
-    void *heap = data_021c61d0;
+    void *heap = gPlayerBodyModelHeap;
     for (i = 0; i < cnt; i++) unk_00[i] = (u32)Heap_AllocAligned(heap, func_0205c8c8(), 4);
 }
 
@@ -100,7 +100,7 @@ void Unk_0205c788::func_0205c7a8() {
     for (s32 i = 0; i < 4; i++) unk_10[i].clear();
     s32 j;
     for (j = 0; j < 4; j++) unk_00[j] = 0;
-    if (data_021c61d0) func_020e885c(data_021c61d0);
+    if (gPlayerBodyModelHeap) func_020e885c(gPlayerBodyModelHeap);
 }
 
 u32 Unk_0205c788::func_0205c7a0(s32 i) { return unk_00[i]; }

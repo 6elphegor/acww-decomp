@@ -430,7 +430,7 @@ extern u8 gTouchCurX;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern CommManager *gCommManager;
-extern void *data_021c6210;
+extern void *gMenuHeap;
 }
 
 extern "C" u32 data_ov112_02299ac0[];
@@ -2393,7 +2393,7 @@ void BbsWriteMenu::endDialogDim() {
 
 void BbsWriteMenu::sendPostToPeers() {
     if (((CommManager *)(gCommManager))->isOnline()) {
-        void *heap = data_021c6210;
+        void *heap = gMenuHeap;
         u8 *buf = (u8 *)Heap_AllocTail(heap, 0xc1);
         buf[0] = 0;
         MI_CpuCopy8(unk_c3, &buf[1], 0xc0);

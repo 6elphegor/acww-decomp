@@ -118,9 +118,9 @@ BOOL TalkRequest_IsActive();
 s32 func_0201188c();
 void TalkRequest_AddMenu(u32);
 void MenuScreen_Reset();
-void func_0205c1a4();
+void MenuHeap_Destroy();
 void PrioList_Init(void *);
-void func_0205c1c0(u32, u32);
+void MenuHeap_Create(u32, u32);
 void MenuScreen_ClearState();
 void PendingUnit_ClearActiveOfAid(u32);
 void func_0206f53c(u32);
@@ -440,7 +440,7 @@ extern "C" MenuManager *MenuManager_Create() { return new MenuManager; }
 
 
 BOOL MenuManager::vfunc_00() {
-    func_0205c1c0(0x8c00, 0);
+    MenuHeap_Create(0x8c00, 0);
     sMenuLoadedMask[0] = sMenuLoadedMask[1] = sMenuLoadedMask[2] = 0;
     sMenuReleaseMask[0] = sMenuReleaseMask[1] = sMenuReleaseMask[2] = 0;
     sMenuRequest[1] = 0x2e;
@@ -461,7 +461,7 @@ BOOL MenuManager::vfunc_0c() {
     sMenuReleaseMask[2] |= sMenuLoadedMask[2];
     MenuCtrl_ReleaseClosedMenus();
     MenuScreen_Reset();
-    func_0205c1a4();
+    MenuHeap_Destroy();
     PrioList_Init(&sOpenMenuList);
     sMenuRequest[1] = 0x2e;
     sMenuRequest[0] = 0;

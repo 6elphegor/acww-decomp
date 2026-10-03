@@ -44,7 +44,7 @@ class SpNpcNookIntroTalk;
 #define NpcActor_getPlayerActor _ZN8NpcActor14getPlayerActorEj
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setNpcHandle _ZN8NpcActor12setNpcHandleEPt
-#define func_02060388 _ZN9HouseData13func_02060388Ev
+#define HouseData_getDebt _ZN9HouseData7getDebtEv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 
@@ -115,7 +115,7 @@ BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
 s32 func_020978a4(void *self);
 void Unk_02097ff4_clearFlag(void *self, s32 a);
-void *func_02060388(void *self);
+void *HouseData_getDebt(void *self);
 void TalkWindowState_setNextMessage(void *self, void *buf, void *p);
 void ActorTalkRequest_setNumberSlot(void *self, void *a, s32 b, s32 c, s32 d, s32 e);
 void func_02015ab0(void *self, s32 a);
@@ -685,7 +685,7 @@ void SpNpcNookIntroTalk::vfunc_14() {
         break;
     case 10:
     case 13: {
-        void *p = func_02060388(gSaveHouse);
+        void *p = HouseData_getDebt(gSaveHouse);
         if (p == 0) {
             buf = 0xf;
         } else {

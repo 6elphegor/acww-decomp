@@ -15,10 +15,10 @@ void *TownBlockMap_Get(void);
 void _ZN12TownBlockMap6bindBgEv(void *);
 void _ZN12TownBlockMap13updateAcreIdsEv(void *);
 void TownMap_Generate(void *, u32);
-void _ZN7TownMap13func_0204df30Ev(void *);
-void func_0205b470(void);
-void func_0205b648(void *);
-void _ZN9HouseData13func_0206058cEv(void *);
+void _ZN7TownMap18updateGroundSeasonEv(void *);
+void FengShui_UpdateHouse(void);
+void HappyRoomDate_Reset(void *);
+void _ZN9HouseData9resetDebtEv(void *);
 void _ZN12Unk_0206357813func_02063578Ev(void *);
 void func_02063904(void *, const void *);
 void func_020639b8(void *);
@@ -73,7 +73,7 @@ void AbleShop_InitNew(void *);
 void NookShop_InitNew(void *);
 void func_020af3f4();
 void _ZN12Unk_020af51413func_020af514Ev();
-void func_020b23a8(void *);
+void TownStyleRecord_InitNew(void *);
 void func_020b8e90();
 void func_020b8ea0();
 void Weather_InitNew(void *);
@@ -149,7 +149,7 @@ void SaveData::func_0209dc0c() {
     SaveData_InitNew((u8 *)this);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN7TownMap13func_0204df30Ev(&f_c330);
+    _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     VillagerStates_SetBirthdayVisitor(-1);
     SaveVillagers_UpdateOutdoor(&f_8a3c, 0);
     _ZN11SaveRecord410clearStateEv(&f_15fdc);
@@ -197,7 +197,7 @@ void SaveData::func_0209dae8() {
     SaveVillagers_AssignErrands(&f_8a3c);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN7TownMap13func_0204df30Ev(&f_c330);
+    _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     func_0209c80c();
     _ZN12Unk_02097ff414setSkyShotHitsEj(a, 0);
     VillagerStates_SetBirthdayVisitor(-1);
@@ -217,7 +217,7 @@ void SaveData::func_0209da44() {
     SaveData_InitNew((u8 *)this);
     func_020af3f4();
     _ZN12Unk_020af51413func_020af514Ev();
-    _ZN7TownMap13func_0204df30Ev(&f_c330);
+    _ZN7TownMap18updateGroundSeasonEv(&f_c330);
     func_0209c80c();
     _ZN12Unk_02097ff47setFlagEj(a, 1);
     _ZN12Unk_02097ff47setFlagEj(a, 0x23);
@@ -258,12 +258,12 @@ void SaveData_InitNew(u8 *p) {
     if (PlayerData_GetCurrent()) {
         SaveVillagers_AssignErrands(p + 0x8a3c);
     }
-    func_020b23a8(p + 0x1592c);
-    _ZN9HouseData13func_0206058cEv(p + 0xe558);
+    TownStyleRecord_InitNew(p + 0x1592c);
+    _ZN9HouseData9resetDebtEv(p + 0xe558);
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
     _ZN19AbleSistersPatterns19initDefaultPatternsEv(p + 0xfafc);
-    func_0205b470();
+    FengShui_UpdateHouse();
     _ZN12Unk_0206357813func_02063578Ev(p + 0x15fbc);
     _ZN8BbsBoard5resetEv(p + 0x11488);
     NookShop_InitNew(p + 0x15db4);
@@ -277,7 +277,7 @@ void SaveData_InitNew(u8 *p) {
     ReddLastSale_Clear(p + 0x15f34);
     GulliverQuest_Init(p + 0xe556);
     _ZN13ContestRecord10resetTodayEv(p + 0x15efc);
-    func_0205b648(p + 0x15fb0);
+    HappyRoomDate_Reset(p + 0x15fb0);
     Melody_ResetToDefault(p + 0x15fa8);
     func_02039cf4(p + 0x15ec0);
     RoostGuestRoll_Init(p + 0xe557);

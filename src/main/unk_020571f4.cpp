@@ -206,7 +206,7 @@ extern "C" {
 extern u8 gFieldSceneKind[];
 extern u8 gSaveVillagers[];
 
-void func_0204f3b4(s32 a);
+void FishDisplay_Release(s32 a);
 s32 func_020e9650(void *a, void *b);
 void func_020e761c(s32 *p, s32 target, s32 step);
 void func_020e93a0(Unk_020dc034_V *v, s32 angle);
@@ -218,17 +218,17 @@ void func_020e9960(Unk_020dc034_V *out, Unk_020dc034_V *a, Unk_020dc034_V *b);
 void func_020e759c(s32 *p, s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
 s32 func_02133150(s32 a, s32 b);
-s32 func_0204f334(s32 a);
+s32 Fish_GetSizeClass(s32 a);
 s32 Effect_PlayById(s32 a, Unk_020dc034_V *v, void *b, void *c);
 void Field_DrawIconModel(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void RoomItemIcons_DrawIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void Field_DrawItemIcon(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
 void RoomItemIcons_DrawItem(u32 id, Unk_02058ddc_V *a, Unk_02058ddc_V *b, s16 x, s16 y, s16 z);
-s32 func_0204f3e4(s32 c4, s32 idx, Unk_020dc034_V *p, Unk_020dc034_V *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
+s32 FishDisplay_SetEntry(s32 c4, s32 idx, Unk_020dc034_V *p, Unk_020dc034_V *q, s32 a0, s32 a1, s32 a2, s32 z0, s32 z1, s32 k);
 s32 _ZN9Character9getCharIdEv(void *p);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
-s32 func_0204f49c();
+s32 FishDisplay_Acquire();
 void _ZN12Unk_02003c3013func_02003e50Ev(void *p);
 void _ZN12Unk_02003c3013func_02003eccEv(void *p);
 void _ZN12Unk_02003c4013func_02003e80EP16Unk_02003a6c_Vec(void *p, Unk_020dc034_V *v);
@@ -467,7 +467,7 @@ BOOL HandOverItem::begin(u16 *id, s32 a, u8 b, s32 c, Unk_020dc034_Owner_Base *o
         BOOL r2 = FALSE;
         if (unk_50 >= 0x12e8 && unk_50 <= 0x131f) r2 = TRUE;
         if (r2) {
-            unk_c4 = func_0204f49c();
+            unk_c4 = FishDisplay_Acquire();
         }
     }
     return FALSE;
@@ -541,7 +541,7 @@ void HandOverItem_DrawItem(HandOverItem *self, u16 *id, Unk_020dc034_V *p, Unk_0
         if (c4 != -1) {
             s32 idx;
             if (*id >= 0x12e8 && *id <= 0x131f) idx = *id - 0x12e8; else idx = -1;
-            func_0204f3e4(c4, idx, p, q, ang[0], ang[1], ang[2], 0, 0, 0x1f);
+            FishDisplay_SetEntry(c4, idx, p, q, ang[0], ang[1], ang[2], 0, 0, 0x1f);
             return;
         }
     }
@@ -647,7 +647,7 @@ void HandOverItem::startAct01()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
@@ -687,7 +687,7 @@ void HandOverItem::act01Phase1()
     s32 a = data_020ca6c4[unk_d4];
     s32 b = data_021c5ae8[unk_d4];
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        s32 k = HandOverItem_GetFishScale(func_0204f334(unk_50 - 0x12e8));
+        s32 k = HandOverItem_GetFishScale(Fish_GetSizeClass(unk_50 - 0x12e8));
         a = func_01ffcb0c(a, k);
         b = func_01ffcb0c(b, k);
     }
@@ -737,7 +737,7 @@ void HandOverItem::startAct03()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5a84;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset2((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
@@ -781,7 +781,7 @@ void HandOverItem::startAct04()
     unk_9c.z = 0;
     pos = *(Unk_020dc034_V *)&data_021c5acc;
     if (Unk_020586bc_Range(&unk_50, 0x12e8, 0x131f)) {
-        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], func_0204f334(unk_50 - 0x12e8)), &pos);
+        VEC_Add(&pos, HandOverItem_GetFishHoldOffset((Unk_020593e8_Obj *)unk_cc[0], Fish_GetSizeClass(unk_50 - 0x12e8)), &pos);
     }
     ::_ZN12HandOverItem13getHoldOffsetEj(&off, this, 0);
     VEC_Add(&pos, &off, &pos);
@@ -1459,7 +1459,7 @@ extern "C" void HandOverItem_End(s32 a) {
     if (sHandOverItem) {
         if (HandOverItem_IsMaster(a) == 1) {
             if (sHandOverItem->unk_c4 != -1) {
-                func_0204f3b4(sHandOverItem->unk_c4);
+                FishDisplay_Release(sHandOverItem->unk_c4);
             }
             sHandOverItem->resetState();
         }

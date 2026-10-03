@@ -97,14 +97,14 @@ class HouseRoom;
 class HouseRoom {
 public:
     u8 pad[0x448];
-    void func_020607e0(u16 *src, u32 flag);
-    void func_02060808(u16 *src, u32 flag);
-    u16 *func_02060834(s32 *out);
-    u16 *func_02060850(s32 *out);
+    void setCarpet(u16 *src, u32 flag);
+    void setWallpaper(u16 *src, u32 flag);
+    u16 *getCarpet(s32 *out);
+    u16 *getWallpaper(s32 *out);
 };
 class HouseData {
 public:
-    HouseRoom *func_0206052c(s32 idx);
+    HouseRoom *getRoom(s32 idx);
 };
 
 // ======== types of unk_0207116c.cpp ========
@@ -1825,17 +1825,17 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                 } while (y2 < 16);
             }
         }
-        HouseRoom *e = gSaveHouse.func_0206052c(m);
+        HouseRoom *e = gSaveHouse.getRoom(m);
         if (e != NULL) {
             u16 tmp[2];
-            u16 *pv1 = e->func_02060850(NULL);
+            u16 *pv1 = e->getWallpaper(NULL);
             BOOL f1 = FALSE;
             u16 v1 = *pv1;
             if (v1 >= 0x1188 && v1 <= 0x11a7) {
                 f1 = TRUE;
             }
             if (f1) {
-                u16 *pv2 = e->func_02060850(NULL);
+                u16 *pv2 = e->getWallpaper(NULL);
                 BOOL f2 = FALSE;
                 u16 v2 = *pv2;
                 if (v2 >= 0x1188 && v2 <= 0x11a7) {
@@ -1844,17 +1844,17 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                 idx = ((Unk_020707ec_K3(f2, v2) >> 3) & 3);
  if (idx == p) {
                     tmp[0] = 0x113e;
-                    e->func_02060808(&tmp[0], 0);
+                    e->setWallpaper(&tmp[0], 0);
                 }
             }
-            u16 *pv3 = e->func_02060834(NULL);
+            u16 *pv3 = e->getCarpet(NULL);
             BOOL f3 = FALSE;
             u16 v3 = *pv3;
             if (v3 >= 0x1188 && v3 <= 0x11a7) {
                 f3 = TRUE;
             }
             if (f3) {
-                u16 *pv4 = e->func_02060834(NULL);
+                u16 *pv4 = e->getCarpet(NULL);
                 BOOL f4 = FALSE;
                 u16 v4 = *pv4;
                 if (v4 >= 0x1188 && v4 <= 0x11a7) {
@@ -1863,7 +1863,7 @@ extern "C" void Pattern_RemovePlayerItems(s32 p) {
                 idx = ((Unk_020707ec_K3(f4, v4) >> 3) & 3);
  if (idx == p) {
                     tmp[1] = 0x1182;
-                    e->func_020607e0(&tmp[1], 0);
+                    e->setCarpet(&tmp[1], 0);
                 }
             }
         }
@@ -2029,10 +2029,10 @@ extern "C" {
 s32 _ZN12VillagerData10getPatternEv(void *p);
 }
 extern "C" {
-s32 _ZN12Unk_020b23a013func_020b23a0Ev(void *p);
+s32 _ZN19TownStyleRecordView11getTownFlagEv(void *p);
 }
 extern "C" {
-void func_020b249c(s32 p);
+void TownFlag_GetPattern(s32 p);
 }
 static inline BOOL Unk_020703d8_R(u16 v, u32 lo, u32 hi) {
     BOOL r = FALSE;
@@ -2057,7 +2057,7 @@ extern "C" s32 PatternSrc_GetAble(s32 x) {
     return _ZN19AbleSistersPatterns10getPatternEh(gSaveAbleSistersPatterns, x);
 }
 extern "C" void PatternSrc_GetTownFlag() {
-    func_020b249c(_ZN12Unk_020b23a013func_020b23a0Ev(gSaveTownFlag));
+    TownFlag_GetPattern(_ZN19TownStyleRecordView11getTownFlagEv(gSaveTownFlag));
 }
 extern "C" s32 PatternSrc_GetVillager(s32 x) {
     void *p = SaveVillagers_Get(gSaveVillagers, x);

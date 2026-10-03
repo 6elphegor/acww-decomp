@@ -1912,13 +1912,13 @@ extern "C" void AbleShop_StockShirts(S1 *a, u32 *b) {
 // ======== unk_020acf38.cpp ========
 namespace n2 {
 extern "C" {
-u32 func_0205b504();
+u32 FengShui_GetTotal();
 }
 extern "C" {
-s32 func_0205b4e0();
+s32 FengShui_GetEastTotal();
 }
 extern "C" {
-s32 func_0205b4ec();
+s32 FengShui_GetSouthTotal();
 }
 extern "C" {
 u32 func_02063b8c(u32 n);
@@ -2496,7 +2496,7 @@ void ReddShop::restock() {
     u32 a, b;
     u32 i;
     clearStock();
-    a = func_0205b504() / 10 + 0x32;
+    a = FengShui_GetTotal() / 10 + 0x32;
     if (func_02063b8c(100) < a) {
         ItemPickSpec q(0, 0x26);
         arr[0].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
@@ -2504,7 +2504,7 @@ void ReddShop::restock() {
         ItemPickSpec q(0, 0x27);
         arr[0].v = ItemPick_One(&q, 0, 0, 0, 1, 0).v;
     }
-    b = (func_0205b4e0() + func_0205b4ec()) / 10 + 0x32;
+    b = (FengShui_GetEastTotal() + FengShui_GetSouthTotal()) / 10 + 0x32;
     for (i = 1; i < 3; i++) {
         if (func_02063b8c(100) < b) {
             ItemPickSpec q(0, 5);

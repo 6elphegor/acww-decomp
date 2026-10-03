@@ -83,7 +83,7 @@ s32 _ZN13NpcActionCtrl9getActionEv(void *self);
 void _ZN11NpcMoveCtrl14setSpeedPresetEiiii(void *self, s32 a, s32 b, s32 c, s32 d);
 void _ZN11NpcMoveCtrl14setTargetAngleEs(void *self, s32 v);
 void _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3(void *self, void *v);
-void _ZN8BlockMap13func_0204e328EPv(void *g, void *v);
+void _ZN8BlockMap17getWalkLinksAtPosEPv(void *g, void *v);
 void *func_020947f0(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_UnlockExit();
@@ -829,7 +829,7 @@ BOOL SpNpcRedd::mainAct09() {
     Unk_ov052_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    _ZN8BlockMap13func_0204e328EPv(gSceneBlockMap, &unk_5c);
+    _ZN8BlockMap17getWalkLinksAtPosEPv(gSceneBlockMap, &unk_5c);
     if (t > 0x4000) {
         if (_ZN13NpcActionCtrl9getActionEv(&unk_564) == 1) {
             _ZN13NpcActionCtrl13requestActionEjiiissiitt(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);

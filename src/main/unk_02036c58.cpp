@@ -43,7 +43,7 @@ extern "C" {
 void *File_LoadAlloc(void *, void *, s32, void *);
 extern char gSaveTownMap[];
 s32 Scene_GetCurrent(void);
-void _ZN7TownMap13func_0204df30Ev(char *);
+void _ZN7TownMap18updateGroundSeasonEv(char *);
 void BgHeap_Create(s32, s32);
 }
 extern "C" void *BgModel_LoadFile(void *a, void *b);
@@ -193,7 +193,7 @@ void BgModelCacheObj::clearEntries() {
 BOOL BgModelCacheObj::setup(u32 flag) {
     s32 t = Scene_GetCurrent();
     if (t == 0x2c) {
-        _ZN7TownMap13func_0204df30Ev(gSaveTownMap);
+        _ZN7TownMap18updateGroundSeasonEv(gSaveTownMap);
     }
     clearEntries();
     unk_618 = flag;

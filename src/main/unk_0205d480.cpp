@@ -7,9 +7,9 @@ void func_020e885c(void *p);
 void *NNS_G3dGetTex(void *h);
 s32 func_020639e8(char *buf, const char *fmt, ...);
 s32 File_LoadToBuffer(const char *path, void *buf, s32 size);
-s32 func_0205bc60();
-s32 func_0205bc7c();
-extern void *data_021c61c4;
+s32 PlayerGlassesModelHeap_Destroy();
+s32 PlayerGlassesModelHeap_Create();
+extern void *gPlayerGlassesModelHeap;
 extern u8 *gCommManager;
 }
 
@@ -136,16 +136,16 @@ char data_021c653c[0x14];
 Unk_0205d5e4 data_021c6550;
 
 extern "C" void func_0205d7b0() {
-    func_0205bc7c();
+    PlayerGlassesModelHeap_Create();
     data_021c6550.func_0205d668();
-    if (data_021c61c4) {
-        func_020e877c(data_021c61c4);
+    if (gPlayerGlassesModelHeap) {
+        func_020e877c(gPlayerGlassesModelHeap);
     }
 }
 
 extern "C" void func_0205d798() {
     data_021c6550.func_0205d614();
-    func_0205bc60();
+    PlayerGlassesModelHeap_Destroy();
 }
 
 extern "C" char *func_0205d778(s32 x) {
@@ -183,7 +183,7 @@ void Unk_0205d5e4::func_0205d668(void) {
     for (i = 0; i < n; i++) {
         unk_10[i].alloc((void *)func_0205d750(), (void *)func_0205d74c(), (void *)func_0205d748());
     }
-    void *heap = data_021c61c4;
+    void *heap = gPlayerGlassesModelHeap;
     for (i = 0; i < n; i++) {
         unk_00[i] = Heap_AllocAligned(heap, func_0205d770(), 4);
     }
@@ -197,8 +197,8 @@ void Unk_0205d5e4::func_0205d614(void) {
     for (i = 0; i < 4; i++) {
         unk_00[i] = NULL;
     }
-    if (data_021c61c4) {
-        func_020e885c(data_021c61c4);
+    if (gPlayerGlassesModelHeap) {
+        func_020e885c(gPlayerGlassesModelHeap);
     }
     for (i = 0; i < 4; i++) {
         unk_d0[i] = 0x4b;

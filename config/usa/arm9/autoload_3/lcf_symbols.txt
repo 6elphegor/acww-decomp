@@ -167,7 +167,7 @@ data_021c43bc addr:0x021c43bc base:sFieldActions
 data_021c5b50 addr:0x021c5b50 base:sHandOverItemActs
 data_021c5bc8 addr:0x021c5bc8 base:sHandOverItemActs
 data_021c5c48 addr:0x021c5c48 base:sHandOverItemActs
-data_021c6164 addr:0x021c6164 base:data_021c6064
+data_021c6164 addr:0x021c6164 base:sHappyRoomUnk06Masks
 data_021c7d1c addr:0x021c7d1c base:gItemInfo
 data_021ce840 addr:0x021ce840 base:gHud
 data_021cea14 addr:0x021cea14 base:gHud
@@ -181,7 +181,7 @@ data_021e5890 addr:0x021e5890 base:gSaveData
 data_021e58a6 addr:0x021e58a6 base:gSaveData
 data_021e58a7 addr:0x021e58a7 base:gSaveData
 gSaveHouse addr:0x021e58a8 base:gSaveData
-data_021e6e3c addr:0x021e6e3c base:gSaveData
+gSaveSongSet addr:0x021e6e3c base:gSaveData
 gSaveAbleSistersPatterns addr:0x021e6e4c base:gSaveData
 data_021e7f8c addr:0x021e7f8c base:gSaveData
 data_021e87d8 addr:0x021e87d8 base:gSaveData
@@ -216,7 +216,7 @@ data_021ed2d0 addr:0x021ed2d0 base:gSaveData
 data_021ed2d4 addr:0x021ed2d4 base:gSaveData
 data_021ed2e6 addr:0x021ed2e6 base:gSaveData
 gSaveTownTune addr:0x021ed2f8 base:gSaveData
-data_021ed300 addr:0x021ed300 base:gSaveData
+gSaveHappyRoomDate addr:0x021ed300 base:gSaveData
 data_021ed304 addr:0x021ed304 base:gSaveData
 data_021ed30c addr:0x021ed30c base:gSaveData
 data_021ed315 addr:0x021ed315 base:gSaveData
@@ -241,7 +241,7 @@ data_021edbec addr:0x021edbec base:sBmgFileHeader
 data_021edbf0 addr:0x021edbf0 base:sBmgFileHeader
 data_021edbfc addr:0x021edbfc base:sBmgFileHeader
 data_021edcfc addr:0x021edcfc base:gMsgQuery
-data_021ee352 addr:0x021ee352 base:data_021ee330
+data_021ee352 addr:0x021ee352 base:sBuildingOccupancy
 data_021ef548 addr:0x021ef548 base:sFieldInfoBalloon
 data_021ef690 addr:0x021ef690 base:sSkyLight
 data_021ef90c addr:0x021ef90c base:sSkyGradient

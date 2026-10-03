@@ -11,8 +11,8 @@ BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 u16 Item_MakePaper(u32 a, s32 b);
 s32 Item_MakeFurniture(s32 a, s32 b);
-s32 func_0205b4e0(void);
-s32 func_0205b4ec(void);
+s32 FengShui_GetEastTotal(void);
+s32 FengShui_GetSouthTotal(void);
 s32 FX_Div(s32 a, s32 b);
 s32 func_02063b8c(s32 a);
 void *__cxa_vec_ctor(void *, u32, u32, void (*)(void *), void (*)(void *));
@@ -200,7 +200,7 @@ u8 *Unk_020635d8::func_020637a0() {
 }
 
 u32 Unk_020635d8::func_02063654(s32 mode, RandomSource *rng) {
-    u32 a = (u8)(60 - (u8)FX_Div(func_0205b4e0() + func_0205b4ec(), 0xa000));
+    u32 a = (u8)(60 - (u8)FX_Div(FengShui_GetEastTotal() + FengShui_GetSouthTotal(), 0xa000));
     u32 b = (u8)(70 - a);
     if (mode == 0) {
         RandomSource local;
@@ -230,7 +230,7 @@ u32 Unk_020635d8::func_02063654(s32 mode, RandomSource *rng) {
 }
 
 extern "C" u8 func_02063600(u32 idx) {
-    u32 m = (u8)FX_Div(func_0205b4e0() + func_0205b4ec(), 0xa000);
+    u32 m = (u8)FX_Div(FengShui_GetEastTotal() + FengShui_GetSouthTotal(), 0xa000);
     u8 t[3] = {0, 30, 0};
     t[0] = 0x3c - m;
     t[2] = m + 10;

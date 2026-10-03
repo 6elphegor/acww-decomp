@@ -31,10 +31,10 @@ struct Unk_0205f92c_Buf {
     s32 unk_3c;
 };
 
-class Unk_0205f8d4;
-class Unk_0205fbc8;
+class FishBobber;
+class FishBobberPool;
 
-typedef void (Unk_0205f8d4::*Unk_0205f8d4_Fn)();
+typedef void (FishBobber::*Unk_0205f8d4_Fn)();
 
 class TexVramSlot {
 public:
@@ -94,9 +94,9 @@ public:
     Unk_0205f6b4_Obj *_ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(Unk_0205f8d4_Vec *v, s32 a, s32 b);
 };
 extern "C" {
-extern u32 data_021c61b0;
+extern u32 gFishBobberHeap;
 extern CommManager *gCommManager;
-extern u8 data_021e6e3c[];
+extern u8 gSaveSongSet[];
 extern u8 gSaveHouse[];
 
 s32 Effect_End(s32 h);
@@ -115,29 +115,29 @@ s32 func_020639e8(char *buf, char *fmt, ...);
 s32 Scene_GetCurrent();
 u32 Scene_GetMaxPlayers(s32 a);
 u32 Scene_GetMaxCharacters(s32 a);
-u32 func_02084fbc();
+u32 NpcSpawn_GetSpNpcSlotCount();
 void func_020e885c();
 void func_020e877c();
 void *Heap_AllocAligned(u32 heap, u32 size, u32 align);
-s32 func_0205ba88();
-void func_0205baa4();
+s32 FishBobberHeap_Destroy();
+void FishBobberHeap_Create();
 void *func_02060550(void *a, s32 b);
 void func_020607c8(void *a, u16 *b);
 u16 *func_020607d4(void *a);
-u32 func_0205ffac();
-u32 func_0205ffb0();
-u32 func_0205ffb4();
-u32 func_0205ffbc();
-char *func_0205ffc4(u32 n);
-void func_0206007c(u8 *bits, u32 i);
-void func_020600d4(u8 *bits, u32 i);
-BOOL func_02060130(u8 *bits, u32 i);
-BOOL func_02060190(u16 *p);
-BOOL func_020601a4(s32 a, u16 *p);
+u32 FishBobber_GetPlttVramSize();
+u32 FishBobber_GetTex4x4VramSize();
+u32 FishBobber_GetTexVramSize();
+u32 FishBobber_GetModelSize();
+char *FishBobber_GetModelPath(u32 n);
+void SongSet_ClearBit(u8 *bits, u32 i);
+void SongSet_SetBit(u8 *bits, u32 i);
+BOOL SongSet_TestBit(u8 *bits, u32 i);
+BOOL HouseRoom_SetCurrentSong(u16 *p);
+BOOL HouseRoom_SetSongForScene(s32 a, u16 *p);
 extern s16 data_02135f44[];
 
-s32 func_0205bcb4();
-s32 func_0205bcd0();
+s32 PlayerPaletteHeap_Destroy();
+s32 PlayerPaletteHeap_Create();
 void NetBuf_WriteU16(void *p, s32 v);
 void CommRecord_PackSource(void *p, s32 a, u8 b);
 BOOL NetArea_IsLocalOwner();
@@ -169,31 +169,31 @@ void FieldFish_StartCastSplash();
 void WorldCurve_FromCurved(void *p, Unk_0205f8d4_Vec *v);
 void WorldCurve_ToCurved(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b);
 void _ZN5Model10drawScaledEPi(void *e, s32 a);
-BOOL func_0205f1e8(Unk_0205f8d4_Vec *a, s32 k, Unk_0205f8d4_Vec *b, s32 *c, u8 flag);
-void func_0205f284(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode);
+BOOL Fishing_StepArc(Unk_0205f8d4_Vec *a, s32 k, Unk_0205f8d4_Vec *b, s32 *c, u8 flag);
+void Fishing_CalcArcSpeed(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode);
 }
 
-class Unk_0205f8d4 {
+class FishBobber {
 public:
-    void func_0205f8d4();
-    void func_0205f92c(s32 state);
-    void func_0205fae8(Unk_0205f8d4_Vec *v);
-    void func_0205faf8(Unk_0205f8d4_Vec *v);
-    void func_0205fb08();
-    void func_0205fb20();
-    void func_0205fb34();
-    void func_0205fb40();
-    BOOL func_0205fb70();
-    BOOL func_0205fb88();
-    BOOL func_0205fba8();
-    void *func_0205fbb8();
-    void func_0205fbbc(void *p);
-    void func_0205fbc0(s32 v);
-    u8 func_0205fbc4();
-    void func_0205fccc();
-    void func_0205fd0c(u32 id, Character *actor, u32 n);
-    void func_0205fd7c();
-    void func_0205fd80();
+    void update();
+    void setState(s32 state);
+    void setPos(Unk_0205f8d4_Vec *v);
+    void setTargetPos(Unk_0205f8d4_Vec *v);
+    void startCatchLift();
+    void endCatch();
+    void isCatchLanded();
+    void nudge();
+    BOOL checkReelResult();
+    BOOL tryHook();
+    BOOL isInWater();
+    void *getFish();
+    void setFish(void *p);
+    void setOwnerAid(s32 v);
+    u8 getSlot();
+    void detach();
+    void attach(u32 id, Character *actor, u32 n);
+    void destruct();
+    void construct();
 
     u8 unk_00;
     u8 pad_01[3];
@@ -211,70 +211,70 @@ public:
     s32 unk_3c;
 };
 
-class Unk_0205fbc8 {
+class FishBobberPool {
 public:
-    Unk_0205fbc8();
-    ~Unk_0205fbc8();
-    Unk_0205f8d4 *func_0205fbc8(s32 idx);
-    void func_0205fbec(s32 idx, Unk_0205f8d4 *p);
-    BOOL func_0205fbfc(s32 idx);
-    void func_0205fc48(s32 idx);
-    void func_0205fc6c(s32 idx, u32 n);
-    void func_0205fc98(s32 idx);
-    CachedModel *func_0205fd94(s32 idx);
-    TexVramTask *func_0205fda4(s32 idx);
-    TexVramSlot *func_0205fdb0(s32 idx);
-    void *func_0205fdbc(s32 idx);
-    void func_0205fdc4();
-    void func_0205fe14();
+    FishBobberPool();
+    ~FishBobberPool();
+    FishBobber *getFloatingBobber(s32 idx);
+    void setBobber(s32 idx, FishBobber *p);
+    BOOL pollTexUpload(s32 idx);
+    void relocateTex(s32 idx);
+    void loadModelFile(s32 idx, u32 n);
+    void cancelTexUpload(s32 idx);
+    CachedModel *getModel(s32 idx);
+    TexVramTask *getTexTask(s32 idx);
+    TexVramSlot *getTexSlot(s32 idx);
+    void *getModelBuffer(s32 idx);
+    void freeBuffers();
+    void allocBuffers();
 
     void *unk_00[9];
     TexVramSlot unk_24[9];
     TexVramTask unk_d8[9];
     CachedModel unk_1d4[9];
-    Unk_0205f8d4 *unk_750[9];
+    FishBobber *unk_750[9];
 };
 
-class Unk_0205f360 : public Unk_0205f8d4 {
+class FishBobberStates : public FishBobber {
 public:
-    void func_0205f2fc();
-    void func_0205f360();
-    void func_0205f388();
-    void func_0205f3c4();
-    void func_0205f400();
-    void func_0205f4e4();
-    void func_0205f52c();
-    void func_0205f6b4();
-    void func_0205f77c();
-    void func_0205f7ec();
-    void func_0205f7f0();
+    void updateCastSwing();
+    void updateAct09();
+    void updateEscape();
+    void updateReelIn();
+    void updateHooked();
+    void updateBite();
+    void updateFloat();
+    void updateCast();
+    void updateCastFail();
+    void updateHeld();
+    void updateIdle();
 };
 
-typedef void (Unk_0205f360::*Unk_0205f360_Fn)();
+typedef void (FishBobberStates::*Unk_0205f360_Fn)();
 
-extern "C" void _ZN12Unk_0205f36013func_0205f360Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f388Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f3c4Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f400Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f52cEv(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f4e4Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f6b4Ev(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f77cEv(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f7ecEv(void);
-extern "C" void _ZN12Unk_0205f36013func_0205f7f0Ev(void);
+extern "C" void _ZN16FishBobberStates11updateAct09Ev(void);
+extern "C" void _ZN16FishBobberStates12updateEscapeEv(void);
+extern "C" void _ZN16FishBobberStates12updateReelInEv(void);
+extern "C" void _ZN16FishBobberStates12updateHookedEv(void);
+extern "C" void _ZN16FishBobberStates11updateFloatEv(void);
+extern "C" void _ZN16FishBobberStates10updateBiteEv(void);
+extern "C" void _ZN16FishBobberStates10updateCastEv(void);
+extern "C" void _ZN16FishBobberStates14updateCastFailEv(void);
+extern "C" void _ZN16FishBobberStates10updateHeldEv(void);
+extern "C" void _ZN16FishBobberStates10updateIdleEv(void);
 
-Unk_0205fbc8 data_021c7468;
-void *data_020dc4c4[2] = {(void *)_ZN12Unk_0205f36013func_0205f388Ev, 0};
-void *data_020dc504[2] = {(void *)_ZN12Unk_0205f36013func_0205f7f0Ev, 0};
-void *data_020dc4fc[2] = {(void *)_ZN12Unk_0205f36013func_0205f7ecEv, 0};
-void *data_020dc4f4[2] = {(void *)_ZN12Unk_0205f36013func_0205f77cEv, 0};
-void *data_020dc4ec[2] = {(void *)_ZN12Unk_0205f36013func_0205f6b4Ev, 0};
-void *data_020dc4bc[2] = {(void *)_ZN12Unk_0205f36013func_0205f360Ev, 0};
-void *data_020dc4e4[2] = {(void *)_ZN12Unk_0205f36013func_0205f4e4Ev, 0};
-void *data_020dc4d4[2] = {(void *)_ZN12Unk_0205f36013func_0205f400Ev, 0};
-void *data_020dc4cc[2] = {(void *)_ZN12Unk_0205f36013func_0205f3c4Ev, 0};
-void *data_020dc4dc[2] = {(void *)_ZN12Unk_0205f36013func_0205f52cEv, 0};
-Unk_0205f360_Fn data_021c7418[10] = {
+FishBobberPool sFishBobberPool;
+void *data_020dc4c4[2] = {(void *)_ZN16FishBobberStates12updateEscapeEv, 0};
+void *data_020dc504[2] = {(void *)_ZN16FishBobberStates10updateIdleEv, 0};
+void *data_020dc4fc[2] = {(void *)_ZN16FishBobberStates10updateHeldEv, 0};
+void *data_020dc4f4[2] = {(void *)_ZN16FishBobberStates14updateCastFailEv, 0};
+void *data_020dc4ec[2] = {(void *)_ZN16FishBobberStates10updateCastEv, 0};
+void *data_020dc4bc[2] = {(void *)_ZN16FishBobberStates11updateAct09Ev, 0};
+void *data_020dc4e4[2] = {(void *)_ZN16FishBobberStates10updateBiteEv, 0};
+void *data_020dc4d4[2] = {(void *)_ZN16FishBobberStates12updateHookedEv, 0};
+void *data_020dc4cc[2] = {(void *)_ZN16FishBobberStates12updateReelInEv, 0};
+void *data_020dc4dc[2] = {(void *)_ZN16FishBobberStates11updateFloatEv, 0};
+Unk_0205f360_Fn sFishBobberStateFns[10] = {
     *(Unk_0205f360_Fn *)data_020dc504,
     *(Unk_0205f360_Fn *)data_020dc4fc,
     *(Unk_0205f360_Fn *)data_020dc4f4,
@@ -286,46 +286,46 @@ Unk_0205f360_Fn data_021c7418[10] = {
     *(Unk_0205f360_Fn *)data_020dc4c4,
     *(Unk_0205f360_Fn *)data_020dc4bc
 };
-char data_021c7404[0x14];
+char sFishBobberPathBuf[0x14];
 
 static inline BOOL Unk_0205fbfc_Is2(u8 v) { return v == 2 ? TRUE : FALSE; }
 static inline BOOL Unk_0205fbfc_Is1(u8 v) { return v == 1 ? TRUE : FALSE; }
 
-extern "C" void func_0206000c()
+extern "C" void FishBobberPool_Create()
 {
-    func_0205baa4();
-    data_021c7468.func_0205fe14();
-    if (data_021c61b0 != 0) {
+    FishBobberHeap_Create();
+    sFishBobberPool.allocBuffers();
+    if (gFishBobberHeap != 0) {
         func_020e877c();
     }
 }
 
-extern "C" void func_0205fff4()
+extern "C" void FishBobberPool_Destroy()
 {
-    data_021c7468.func_0205fdc4();
-    func_0205ba88();
+    sFishBobberPool.freeBuffers();
+    FishBobberHeap_Destroy();
 }
 
-extern "C" Unk_0205f8d4 *func_0205ffe4(s32 idx)
+extern "C" FishBobber *FishBobber_GetFloating(s32 idx)
 {
-    return data_021c7468.func_0205fbc8(idx);
+    return sFishBobberPool.getFloatingBobber(idx);
 }
 
-extern "C" char *func_0205ffc4(u32 n)
+extern "C" char *FishBobber_GetModelPath(u32 n)
 {
-    func_020639e8(data_021c7404, "/PItm/Uki0/%d.nsbmd", n);
-    return data_021c7404;
+    func_020639e8(sFishBobberPathBuf, "/PItm/Uki0/%d.nsbmd", n);
+    return sFishBobberPathBuf;
 }
 
-extern "C" u32 func_0205ffbc() { return 0x4d8; }
+extern "C" u32 FishBobber_GetModelSize() { return 0x4d8; }
 
-extern "C" u32 func_0205ffb4() { return 0x200; }
+extern "C" u32 FishBobber_GetTexVramSize() { return 0x200; }
 
-extern "C" u32 func_0205ffb0() { return 0; }
+extern "C" u32 FishBobber_GetTex4x4VramSize() { return 0; }
 
-extern "C" u32 func_0205ffac() { return 0x20; }
+extern "C" u32 FishBobber_GetPlttVramSize() { return 0x20; }
 
-Unk_0205fbc8::Unk_0205fbc8()
+FishBobberPool::FishBobberPool()
 {
     s32 i;
     for (i = 0; i < 9; i++) {
@@ -334,11 +334,11 @@ Unk_0205fbc8::Unk_0205fbc8()
     }
 }
 
-Unk_0205fbc8::~Unk_0205fbc8()
+FishBobberPool::~FishBobberPool()
 {
 }
 
-void Unk_0205fbc8::func_0205fe14()
+void FishBobberPool::allocBuffers()
 {
     u32 a = gCommManager->unk_6c;
     u32 n = Scene_GetMaxPlayers(Scene_GetCurrent());
@@ -352,29 +352,29 @@ void Unk_0205fbc8::func_0205fe14()
     } else {
         a = 1;
     }
-    m = Scene_GetMaxCharacters(Scene_GetCurrent()) + func_02084fbc() - a;
+    m = Scene_GetMaxCharacters(Scene_GetCurrent()) + NpcSpawn_GetSpNpcSlotCount() - a;
     for (i = 0; i < n; i++) {
-        u32 x = func_0205ffb4();
-        u32 y = func_0205ffb0();
-        unk_24[i].alloc((void *)x, (void *)y, (void *)func_0205ffac());
+        u32 x = FishBobber_GetTexVramSize();
+        u32 y = FishBobber_GetTex4x4VramSize();
+        unk_24[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
     }
     for (i = 4; i < m + 4; i++) {
-        u32 x = func_0205ffb4();
-        u32 y = func_0205ffb0();
-        unk_24[i].alloc((void *)x, (void *)y, (void *)func_0205ffac());
+        u32 x = FishBobber_GetTexVramSize();
+        u32 y = FishBobber_GetTex4x4VramSize();
+        unk_24[i].alloc((void *)x, (void *)y, (void *)FishBobber_GetPlttVramSize());
     }
-    u32 heap = data_021c61b0;
+    u32 heap = gFishBobberHeap;
     for (i = 0; i < n; i++) {
-        unk_00[i] = Heap_AllocAligned(heap, func_0205ffbc(), 4);
+        unk_00[i] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), 4);
     }
     u32 j = 4;
     a = 4;
     for (; j < m + 4; j++) {
-        unk_00[j] = Heap_AllocAligned(heap, func_0205ffbc(), a);
+        unk_00[j] = Heap_AllocAligned(heap, FishBobber_GetModelSize(), a);
     }
 }
 
-void Unk_0205fbc8::func_0205fdc4()
+void FishBobberPool::freeBuffers()
 {
     s32 i;
     for (i = 0; i < 9; i++) {
@@ -384,32 +384,32 @@ void Unk_0205fbc8::func_0205fdc4()
         unk_00[i] = 0;
         unk_750[i] = 0;
     }
-    if (data_021c61b0 != 0) {
+    if (gFishBobberHeap != 0) {
         func_020e885c();
     }
 }
 
-void *Unk_0205fbc8::func_0205fdbc(s32 idx)
+void *FishBobberPool::getModelBuffer(s32 idx)
 {
     return unk_00[idx];
 }
 
-TexVramSlot *Unk_0205fbc8::func_0205fdb0(s32 idx)
+TexVramSlot *FishBobberPool::getTexSlot(s32 idx)
 {
     return &unk_24[idx];
 }
 
-TexVramTask *Unk_0205fbc8::func_0205fda4(s32 idx)
+TexVramTask *FishBobberPool::getTexTask(s32 idx)
 {
     return &unk_d8[idx];
 }
 
-CachedModel *Unk_0205fbc8::func_0205fd94(s32 idx)
+CachedModel *FishBobberPool::getModel(s32 idx)
 {
     return &unk_1d4[idx];
 }
 
-void Unk_0205f8d4::func_0205fd80()
+void FishBobber::construct()
 {
     unk_00 = 9;
     unk_28 = 0;
@@ -418,38 +418,38 @@ void Unk_0205f8d4::func_0205fd80()
     unk_3c = -1;
 }
 
-void Unk_0205f8d4::func_0205fd7c()
+void FishBobber::destruct()
 {
 }
 
-void Unk_0205f8d4::func_0205fd0c(u32 id, Character *actor, u32 n)
+void FishBobber::attach(u32 id, Character *actor, u32 n)
 {
     unk_00 = id;
     if (n < 3) {
-        data_021c7468.func_0205fbec(id, this);
-        data_021c7468.func_0205fc6c(id, n);
+        sFishBobberPool.setBobber(id, this);
+        sFishBobberPool.loadModelFile(id, n);
     } else {
-        data_021c7468.func_0205fbec(id, 0);
-        data_021c7468.func_0205fc6c(id, 0);
+        sFishBobberPool.setBobber(id, 0);
+        sFishBobberPool.loadModelFile(id, 0);
     }
-    void *p = data_021c7468.func_0205fdbc(id);
-    data_021c7468.func_0205fc48(id);
-    data_021c7468.func_0205fd94(id)->setFromFile(p);
+    void *p = sFishBobberPool.getModelBuffer(id);
+    sFishBobberPool.relocateTex(id);
+    sFishBobberPool.getModel(id)->setFromFile(p);
     if (actor) {
         unk_28 = actor;
     }
     unk_04 = 0;
 }
 
-void Unk_0205f8d4::func_0205fccc()
+void FishBobber::detach()
 {
-    data_021c7468.func_0205fd94(func_0205fbc4())->release();
-    data_021c7468.func_0205fc98(func_0205fbc4());
-    data_021c7468.func_0205fbec(func_0205fbc4(), 0);
+    sFishBobberPool.getModel(getSlot())->release();
+    sFishBobberPool.cancelTexUpload(getSlot());
+    sFishBobberPool.setBobber(getSlot(), 0);
     unk_00 = 9;
 }
 
-void Unk_0205fbc8::func_0205fc98(s32 idx)
+void FishBobberPool::cancelTexUpload(s32 idx)
 {
     if (Unk_0205fbfc_Is1(unk_d8[idx].unk_0d)) {
         unk_d8[idx].cancel();
@@ -458,70 +458,70 @@ void Unk_0205fbc8::func_0205fc98(s32 idx)
     }
 }
 
-void Unk_0205fbc8::func_0205fc6c(s32 idx, u32 n)
+void FishBobberPool::loadModelFile(s32 idx, u32 n)
 {
-    char *name = func_0205ffc4(n);
-    void *p = func_0205fdbc(idx);
-    File_LoadToBuffer(name, p, func_0205ffbc());
+    char *name = FishBobber_GetModelPath(n);
+    void *p = getModelBuffer(idx);
+    File_LoadToBuffer(name, p, FishBobber_GetModelSize());
 }
 
-void Unk_0205fbc8::func_0205fc48(s32 idx)
+void FishBobberPool::relocateTex(s32 idx)
 {
-    void *h = NNS_G3dGetTex(func_0205fdbc(idx));
-    func_0205fdb0(idx)->relocateTexture(h);
+    void *h = NNS_G3dGetTex(getModelBuffer(idx));
+    getTexSlot(idx)->relocateTexture(h);
 }
 
-BOOL Unk_0205fbc8::func_0205fbfc(s32 idx)
+BOOL FishBobberPool::pollTexUpload(s32 idx)
 {
-    TexVramTask *p = func_0205fda4(idx);
+    TexVramTask *p = getTexTask(idx);
     u8 t = p->unk_0d;
     if (Unk_0205fbfc_Is2(t)) {
         return TRUE;
     }
     if (!Unk_0205fbfc_Is1(t)) {
-        p->requestTexResource((u32 *)NNS_G3dGetTex(func_0205fdbc(idx)), 1);
+        p->requestTexResource((u32 *)NNS_G3dGetTex(getModelBuffer(idx)), 1);
     }
     return FALSE;
 }
 
-void Unk_0205fbc8::func_0205fbec(s32 idx, Unk_0205f8d4 *p)
+void FishBobberPool::setBobber(s32 idx, FishBobber *p)
 {
     unk_750[idx] = p;
 }
 
-Unk_0205f8d4 *Unk_0205fbc8::func_0205fbc8(s32 idx)
+FishBobber *FishBobberPool::getFloatingBobber(s32 idx)
 {
     if (idx >= 4) {
         return 0;
     }
-    Unk_0205f8d4 *p = unk_750[idx];
+    FishBobber *p = unk_750[idx];
     if (p != 0 && p->unk_04 == 4) {
         return p;
     }
     return 0;
 }
 
-u8 Unk_0205f8d4::func_0205fbc4()
+u8 FishBobber::getSlot()
 {
     return unk_00;
 }
 
-void Unk_0205f8d4::func_0205fbc0(s32 v)
+void FishBobber::setOwnerAid(s32 v)
 {
     unk_3c = v;
 }
 
-void Unk_0205f8d4::func_0205fbbc(void *p)
+void FishBobber::setFish(void *p)
 {
     unk_2c = p;
 }
 
-void *Unk_0205f8d4::func_0205fbb8()
+void *FishBobber::getFish()
 {
     return unk_2c;
 }
 
-BOOL Unk_0205f8d4::func_0205fba8()
+BOOL FishBobber::isInWater()
 {
     if ((u32)(unk_04 - 4) <= 1) {
         return TRUE;
@@ -529,16 +529,16 @@ BOOL Unk_0205f8d4::func_0205fba8()
     return FALSE;
 }
 
-BOOL Unk_0205f8d4::func_0205fb88()
+BOOL FishBobber::tryHook()
 {
     if (unk_2c == 0) {
-        func_0205f92c(7);
+        setState(7);
         return FALSE;
     }
     return FishShadow_TryHook(unk_2c);
 }
 
-BOOL Unk_0205f8d4::func_0205fb70()
+BOOL FishBobber::checkReelResult()
 {
     if (unk_2c == 0) {
         return TRUE;
@@ -546,7 +546,7 @@ BOOL Unk_0205f8d4::func_0205fb70()
     return FishShadow_CheckReelResult(unk_2c);
 }
 
-void Unk_0205f8d4::func_0205fb40()
+void FishBobber::nudge()
 {
     Unk_0205f92c_Buf buf;
     _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(&buf, &unk_08, 1, 1);
@@ -556,38 +556,38 @@ void Unk_0205f8d4::func_0205fb40()
     GroundInfo_Destruct(&buf);
 }
 
-void Unk_0205f8d4::func_0205fb34()
+void FishBobber::isCatchLanded()
 {
     FishCatch_IsLandedForShadow(unk_2c);
 }
 
-void Unk_0205f8d4::func_0205fb20()
+void FishBobber::endCatch()
 {
     FishCatch_EndForShadow(unk_2c);
     unk_2c = 0;
 }
 
-void Unk_0205f8d4::func_0205fb08()
+void FishBobber::startCatchLift()
 {
     FishCatch_StartLift((void *)unk_3c, 0);
     unk_2c = 0;
 }
 
-void Unk_0205f8d4::func_0205faf8(Unk_0205f8d4_Vec *v)
+void FishBobber::setTargetPos(Unk_0205f8d4_Vec *v)
 {
     unk_1c.x = v->x;
     unk_1c.y = v->y;
     unk_1c.z = v->z;
 }
 
-void Unk_0205f8d4::func_0205fae8(Unk_0205f8d4_Vec *v)
+void FishBobber::setPos(Unk_0205f8d4_Vec *v)
 {
     unk_08.x = v->x;
     unk_08.y = v->y;
     unk_08.z = v->z;
 }
 
-void Unk_0205f8d4::func_0205f92c(s32 state)
+void FishBobber::setState(s32 state)
 {
     Unk_0205f8d4_Vec v;
     Unk_0205f92c_Buf buf;
@@ -627,7 +627,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
         b.x = unk_08.x;
         b.y = unk_08.y;
         b.z = unk_08.z;
-        func_0205f284(&a, &b, &unk_14, &unk_18, 1);
+        Fishing_CalcArcSpeed(&a, &b, &unk_14, &unk_18, 1);
         if (buf.unk_30 != 0) {
             v.x = unk_08.x;
             v.y = unk_08.y;
@@ -651,7 +651,7 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
         d.x = unk_08.x;
         d.y = unk_08.y;
         d.z = unk_08.z;
-        func_0205f284(&c, &d, &unk_14, &unk_18, 2);
+        Fishing_CalcArcSpeed(&c, &d, &unk_14, &unk_18, 2);
         break;
     }
     case 5:
@@ -692,21 +692,21 @@ void Unk_0205f8d4::func_0205f92c(s32 state)
     GroundInfo_Destruct(&buf);
 }
 
-void Unk_0205f8d4::func_0205f8d4()
+void FishBobber::update()
 {
-    data_021c7468.func_0205fbfc(unk_00);
+    sFishBobberPool.pollTexUpload(unk_00);
     unk_30++;
     unk_38 = 0;
     if (unk_04 >= 10) {
-        func_0205f92c(0);
+        setState(0);
     }
-    (((Unk_0205f360 *)this)->*data_021c7418[unk_04])();
+    (((FishBobberStates *)this)->*sFishBobberStateFns[unk_04])();
 }
 
-extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
+extern "C" void FishBobber_Draw(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
 {
     if (*(s32 *)(self + 4) != 0) {
-        u8 *e = (u8 *)data_021c7468.func_0205fd94(*self);
+        u8 *e = (u8 *)sFishBobberPool.getModel(*self);
         Unk_0205f7f4_Mtx mt = *m;
         Unk_0205f8d4_Vec v;
         if (*(s32 *)(self + 4) <= 1) {
@@ -719,7 +719,7 @@ extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
             v.y = *(s32 *)(self + 12);
             v.z = *(s32 *)(self + 16);
             if (*(s32 *)(self + 4) == 6) {
-                s32 r = (s32)((Unk_0205f8d4 *)self)->func_0205fbb8();
+                s32 r = (s32)((FishBobber *)self)->getFish();
                 if (r != 0) {
                     Unk_0205f8d4_Vec t;
                     Unk_0205f8d4_Vec *pv = (Unk_0205f8d4_Vec *)(r + 0x120);
@@ -742,20 +742,20 @@ extern "C" void func_0205f7f4(u8 *self, Unk_0205f7f4_Mtx *m, s32 arg)
     }
 }
 
-void Unk_0205f360::func_0205f7f0()
+void FishBobberStates::updateIdle()
 {
 }
 
-void Unk_0205f360::func_0205f7ec()
+void FishBobberStates::updateHeld()
 {
 }
 
-void Unk_0205f360::func_0205f77c()
+void FishBobberStates::updateCastFail()
 {
     if (unk_30 < 0xf) {
-        func_0205f2fc();
+        updateCastSwing();
     } else if (unk_30 >= 0x15) {
-        func_0205f92c(1);
+        setState(1);
     } else {
         s16 ang = (s16)(*(s16 *)((u8 *)unk_28 + 0x8e) - 0x1838);
         u32 idx = (u16)ang >> 4;
@@ -765,12 +765,12 @@ void Unk_0205f360::func_0205f77c()
     }
 }
 
-void Unk_0205f360::func_0205f6b4()
+void FishBobberStates::updateCast()
 {
     Unk_0205f6b4_Obj o;
     Unk_0205f8d4_Vec v, a, b, c;
     if (unk_30 < 0xf) {
-        func_0205f2fc();
+        updateCastSwing();
         if (unk_30 == 0xe) {
             a.x = unk_1c.x;
             a.y = unk_1c.y;
@@ -778,18 +778,18 @@ void Unk_0205f360::func_0205f6b4()
             b.x = unk_08.x;
             b.y = unk_08.y;
             b.z = unk_08.z;
-            func_0205f284(&a, &b, &unk_14, &unk_18, 0);
+            Fishing_CalcArcSpeed(&a, &b, &unk_14, &unk_18, 0);
         }
     } else {
         c.x = unk_1c.x;
         c.y = unk_1c.y;
         c.z = unk_1c.z;
-        func_0205f1e8(&c, unk_14, &unk_08, &unk_18, 0);
+        Fishing_StepArc(&c, unk_14, &unk_08, &unk_18, 0);
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
         if (o.unk_30 != 0) {
             s32 y = o.unk_3c;
             if (y >= unk_08.y) {
-                func_0205f92c(4);
+                setState(4);
                 unk_08.y = o.unk_3c - 0x333;
                 v.x = unk_08.x;
                 v.y = unk_08.y;
@@ -804,7 +804,7 @@ void Unk_0205f360::func_0205f6b4()
     }
 }
 
-void Unk_0205f360::func_0205f52c()
+void FishBobberStates::updateFloat()
 {
     u16 ang;
     Unk_0205f8d4_Vec base;
@@ -875,7 +875,7 @@ void Unk_0205f360::func_0205f52c()
     }
 }
 
-void Unk_0205f360::func_0205f4e4()
+void FishBobberStates::updateBite()
 {
     GroundInfo o;
         _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii((Unk_0205f92c_Buf *)&o, &unk_08, 1, 1);
@@ -889,11 +889,11 @@ void Unk_0205f360::func_0205f4e4()
     }
 }
 
-void Unk_0205f360::func_0205f400()
+void FishBobberStates::updateHooked()
 {
     if (unk_2c == 0) {
         if (_ZN11CommManager7isMyAidEj((void *)gCommManager, unk_3c)) {
-            func_0205f92c(4);
+            setState(4);
             return;
         }
         GroundInfo o;
@@ -934,37 +934,37 @@ void Unk_0205f360::func_0205f400()
     }
 }
 
-void Unk_0205f360::func_0205f3c4()
+void FishBobberStates::updateReelIn()
 {
     Unk_0205f8d4_Vec v;
     v.x = unk_1c.x;
     v.y = unk_1c.y;
     v.z = unk_1c.z;
-    if (func_0205f1e8(&v, unk_14, &unk_08, &unk_18, 1)) {
-        func_0205f92c(1);
+    if (Fishing_StepArc(&v, unk_14, &unk_08, &unk_18, 1)) {
+        setState(1);
     }
 }
 
-void Unk_0205f360::func_0205f388()
+void FishBobberStates::updateEscape()
 {
     Unk_0205f8d4_Vec v;
     v.x = unk_1c.x;
     v.y = unk_1c.y;
     v.z = unk_1c.z;
-    if (func_0205f1e8(&v, unk_14, &unk_08, &unk_18, 1)) {
-        func_0205f92c(1);
+    if (Fishing_StepArc(&v, unk_14, &unk_08, &unk_18, 1)) {
+        setState(1);
     }
 }
 
-void Unk_0205f360::func_0205f360()
+void FishBobberStates::updateAct09()
 {
     unk_08.y += 0x1000;
     if (unk_08.y >= 0x28000) {
-        func_0205f92c(0);
+        setState(0);
     }
 }
 
-void Unk_0205f360::func_0205f2fc()
+void FishBobberStates::updateCastSwing()
 {
     s32 d = _s32_div_f(unk_30 * unk_30 * 0x4800, 0xe1);
     s16 ang = (s16)(*(s16 *)((u8 *)unk_28 + 0x8e) - d);
@@ -974,7 +974,7 @@ void Unk_0205f360::func_0205f2fc()
     unk_08.z -= func_01ffcb0c(data_02135f44[idx + 1], 0x2ee);
 }
 
-extern "C" void func_0205f284(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode)
+extern "C" void Fishing_CalcArcSpeed(Unk_0205f8d4_Vec *a, Unk_0205f8d4_Vec *b, s32 *c, s32 *d, u8 mode)
 {
     s32 t;
     switch (mode) {

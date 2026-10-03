@@ -259,14 +259,14 @@ public:
 
 class HouseData {
 public:
-    BOOL func_0206022c();
-    u8 func_0206045c();
+    BOOL hasRoomFlags();
+    u8 getRoofColor();
     u8 pad[0x15a4];
 };
 
 extern "C" {
 extern u32 gCurrentHeap;
-extern void *data_021c6204;
+extern void *gFieldStructureHeap;
 extern HouseData gSaveHouse;
 extern const s8 sHexDigits[];
 extern char data_ov003_02235358[];
@@ -357,7 +357,7 @@ BOOL PlayerHouse::onDraw() {
     return TRUE;
 }
 
-extern "C" u8 PlayerHouse_GetTexIndex() { return gSaveHouse.func_0206045c(); }
+extern "C" u8 PlayerHouse_GetTexIndex() { return gSaveHouse.getRoofColor(); }
 
 extern "C" char *PlayerHouse_GetTexPath() {
     u32 i = PlayerHouse_GetTexIndex();
@@ -370,7 +370,7 @@ void PlayerHouse::loadHouseTex() {
     void *r4 = File_LoadAlloc(PlayerHouse_GetTexPath(), gCurrentHeap, -4, 0);
     unk_2b0 = NNS_G3dGetTex(r4);
     if (Gfx3d_LoadTex(unk_2b0, 0)) {
-        unk_2b0 = Gfx3d_CopyTex(unk_2b0, data_021c6204);
+        unk_2b0 = Gfx3d_CopyTex(unk_2b0, gFieldStructureHeap);
     }
     Mem_Free(r4);
 }
@@ -393,7 +393,7 @@ BOOL PlayerHouse::vfunc_90() {
     return FALSE;
 }
 
-BOOL PlayerHouse::vfunc_9c() { return gSaveHouse.func_0206022c(); }
+BOOL PlayerHouse::vfunc_9c() { return gSaveHouse.hasRoomFlags(); }
 
 BOOL PlayerHouse::vfunc_8c() { return TRUE; }
 

@@ -2427,7 +2427,7 @@ s32 func_0204f100(u32);
 void * func_0204f234(u32, void *);
 s32 Item_GetFossilGroup(u16 *);
 s32 Ftr_GetUnk05(void *);
-s32 func_0205b4f8();
+s32 FengShui_GetWestTotal();
 s32 func_0205c91c(void *);
 void func_0205ca2c(void *, void *);
 s32 func_02060b9c(u32);
@@ -6194,7 +6194,7 @@ BOOL VillagerTalkTopics::selectApBuy() {
     if (unk_120 != 0xfff1) {
         s32 t = func_02063b74(0xccd) + 0xccd;
         t *= Item_GetPrice(&unk_120);
-        unk_19c = (t >> 14) + ((u32)func_0205b4f8()) * 3;
+        unk_19c = (t >> 14) + ((u32)FengShui_GetWestTotal()) * 3;
         unk_19c = Talk_RoundBells(unk_19c);
         if (unk_19c <= _ZN15PlayerInventory13getTotalBellsEi(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()), 1)) {
             Talk_SelectTopicMessage(this, &unk_100, &unk_11e, 30, VillagerId_GetPersonality(_ZN12VillagerData13getVillagerIdEv(r6)), sTalkTopicApBuy.unk_00, sTalkTopicApBuy.unk_04, 0, 0);
@@ -6248,7 +6248,7 @@ BOOL VillagerTalkTopics::selectApSell() {
         if (unk_198 != 0xfff1) {
             t = func_02063b74(0xccd) + 0xccd;
             t = (t * Item_GetPrice(&unk_198)) >> 12;
-            u = func_0205b4f8() * 3;
+            u = FengShui_GetWestTotal() * 3;
             if (t <= u) {
                 u = 0;
             }
@@ -8707,7 +8707,7 @@ void VillagerTalkTopics::continueDeliveryReport(void *p) {
                 Villager_RemoveReceivedItem(unk_fc->unk_82c, &unk_120);
             }
         } else if (r < 0x28) {
-            unk_19c_w = 0x1f4 + func_0205b4f8() * 4;
+            unk_19c_w = 0x1f4 + FengShui_GetWestTotal() * 4;
             unk_19c_w = ((u32)Talk_RoundBells(unk_19c_w));
             Talk_GetMoneyItem(&h[1], unk_19c_w);
             unk_120 = h[1];
@@ -8765,7 +8765,7 @@ void VillagerTalkTopics::selectQ06Good(Unk_0201d2d0_Out *out) {
         break;
     }
     if (unk_120 == 0xfff1) {
-        unk_19c_p = (void *)(func_0205b4f8() * 4 + 0x1f4);
+        unk_19c_p = (void *)(FengShui_GetWestTotal() * 4 + 0x1f4);
         unk_19c_p = ((void *)Talk_RoundBells((s32)unk_19c_p));
         Talk_GetMoneyItem(&loc[4], (u32)unk_19c_p);
         unk_120 = loc[4];
@@ -8793,7 +8793,7 @@ void VillagerTalkTopics::selectQ06Normal(Unk_0201d2d0_Out *out) {
         break;
     }
     if (unk_120 == 0xfff1) {
-        unk_19c_p = (void *)(func_0205b4f8() * 4 + 0x1f4);
+        unk_19c_p = (void *)(FengShui_GetWestTotal() * 4 + 0x1f4);
         unk_19c_p = ((void *)Talk_RoundBells((s32)unk_19c_p));
         Talk_GetMoneyItem(&loc[2], (u32)unk_19c_p);
         unk_120 = loc[2];
@@ -8812,7 +8812,7 @@ void VillagerTalkTopics::selectQ06Bad(Unk_0201d2d0_Out *out) {
         unk_120 = loc[0];
     }
     if (unk_120 == 0xfff1) {
-        unk_19c_p = (void *)(func_0205b4f8() * 4 + 0x1f4);
+        unk_19c_p = (void *)(FengShui_GetWestTotal() * 4 + 0x1f4);
         unk_19c_p = ((void *)Talk_RoundBells((s32)unk_19c_p));
         Talk_GetMoneyItem(&loc[1], (u32)unk_19c_p);
         unk_120 = loc[1];
@@ -9926,7 +9926,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
         case 0:
         case 1:
             if (r7 < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x1f4;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x1f4;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[0], unk_19c);
                 unk_198 = buf[0];
@@ -9939,7 +9939,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
             if (unk_198 != 0xfff1) {
                 Villager_RemoveReceivedItem(unk_fc->unk_82c, &unk_198);
             } else if (func_02063b8c(100) < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x2bc;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x2bc;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[2], unk_19c);
                 unk_198 = buf[2];
@@ -9964,7 +9964,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
             if (unk_198 != 0xfff1) {
                 Villager_RemoveReceivedItem(r6, &unk_198);
             } else if (r7 < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x1f4;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x1f4;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[6], unk_19c);
                 unk_198 = buf[6];
@@ -9978,7 +9978,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
             if (unk_198 != 0xfff1) {
                 Villager_RemoveReceivedItem(r6, &unk_198);
             } else if (func_02063b8c(100) < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x2bc;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x2bc;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[8], unk_19c);
                 unk_198 = buf[8];
@@ -9999,7 +9999,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
         case 0:
         case 1:
             if (r7 < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x1f4;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x1f4;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[11], unk_19c);
                 unk_198 = buf[11];
@@ -10013,7 +10013,7 @@ void VillagerTalkRequestItemTopics::pickRequestReward() {
             if (unk_198 != 0xfff1) {
                 Villager_RemoveReceivedItem(r6, &unk_198);
             } else if (func_02063b8c(100) < 30) {
-                unk_19c = func_0205b4f8() * 4 + 0x2bc;
+                unk_19c = FengShui_GetWestTotal() * 4 + 0x2bc;
                 unk_19c = Talk_RoundBells(unk_19c);
                 Talk_GetMoneyItem(&buf[13], unk_19c);
                 unk_198 = buf[13];

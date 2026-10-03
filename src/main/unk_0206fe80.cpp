@@ -61,7 +61,7 @@ s32 func_020718e4(s32 t);
 void *SaveVillagers_Get(void *a, s32 x);
 s32 func_020805b8(void *p);
 s32 func_020b23a0(void *p);
-void func_020b249c(s32 p);
+void TownFlag_GetPattern(s32 p);
 }
 
 struct Unk_020702ec_Date {

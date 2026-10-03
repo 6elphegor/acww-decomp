@@ -16,7 +16,7 @@ struct CommManager {
 extern "C" {
 void MI_CpuCopy8(const void *src, void *dst, u32 n);
 s32 Scene_GetCurrent();
-void func_02084040();
+void NpcNetRecord_ResetTalkSlots();
 }
 
 extern CommManager *gCommManager;
@@ -47,7 +47,7 @@ extern "C" void func_020a65c8(u8 *p) {
     Scene_GetCurrent();
     MI_CpuCopy8(p, &v, 1);
     if (v != 0) {
-        func_02084040();
+        NpcNetRecord_ResetTalkSlots();
     }
 }
 

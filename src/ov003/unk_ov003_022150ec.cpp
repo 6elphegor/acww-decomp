@@ -265,7 +265,7 @@ extern u32 sCountdownMinutes;
 extern const s32 sCountdownDigitOffsetsX[6];
 extern char data_ov003_02231750[];
 extern char data_ov003_022318b8[];
-extern u32 data_021c6204;
+extern u32 gFieldStructureHeap;
 
 void CountdownDigit_Update(void *p);
 void CountdownSign_ModelCallback(void *p);
@@ -281,7 +281,7 @@ s32 _ZN12G3dResAccess10findMatIdxEi(s32 a, const char *s);
 void Snd_PlaySe(u32 a);
 void _ZN13AnimFrameCtrl4stepEv(void *m);
 void _ZN13BuildingActor12updateMatrixEv(void *p);
-BOOL func_020b1d3c(u32 a, u32 b);
+BOOL BuildingState_Set(u32 a, u32 b);
 void func_02094030(void *p);
 void func_02094018(void *p);
 void Npc_GetName(void *p, void *q);
@@ -394,7 +394,7 @@ CountdownDigit::CountdownDigit() {}
 CountdownDigit::~CountdownDigit() {}
 
 void *CountdownDigit::operator new(unsigned long size) {
-    void *p = Heap_Alloc(data_021c6204, size);
+    void *p = Heap_Alloc(gFieldStructureHeap, size);
     func_0212899c(p, 0, size);
     return p;
 }
@@ -445,7 +445,7 @@ BOOL CountdownSign::vfunc_6c(u32 a) {
     static Unk_02215680_Fn tbl[3] = { &CountdownSign::enterCountdown, &CountdownSign::enterNewYear };
     if (a < 3) {
         if ((this->*tbl[a])()) {
-            if (func_020b1d3c(unk_132, a)) {
+            if (BuildingState_Set(unk_132, a)) {
                 unk_130 = a;
                 return TRUE;
             }
@@ -516,7 +516,7 @@ BOOL CountdownSign::vfunc_70() {
     } while (i < 6);
     _ZN5Model15setInitCallbackEii(unk_138, CountdownSign_ModelCallback, this);
     unk_2d0 = _ZN12G3dResAccess10findMatIdxEi(unk_194, "m_cbs_Adt");
-    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, unk_194, data_021c6204)) {
+    if (_ZN9ModelAnim11allocMatAnmEjPv(&unk_2b0, unk_194, gFieldStructureHeap)) {
         s32 r1 = getBtaAnim(0);
         _ZN9ModelAnim4initEiiit(&unk_2b0, r1, 0, 0x1000, 0);
         _ZN9ModelAnim14addToRenderObjEj(&unk_2b0, _ZN5Model12getRenderObjEv(unk_138));

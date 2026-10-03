@@ -264,8 +264,8 @@ public:
 
 class Unk_020b1ddc {
 public:
-    void func_020b1e74();
-    void func_020b1ddc();
+    void rotateHourHand();
+    void rotateMinuteHand();
 };
 
 extern "C" {
@@ -340,9 +340,9 @@ BOOL TownHall::vfunc_70() {
 
 void TownHall::vfunc_60(u32 a, void *p) {
     if ((s32)a == unk_2b0) {
-        ((Unk_020b1ddc *)p)->func_020b1e74();
+        ((Unk_020b1ddc *)p)->rotateHourHand();
     } else if ((s32)a == unk_2b1) {
-        ((Unk_020b1ddc *)p)->func_020b1ddc();
+        ((Unk_020b1ddc *)p)->rotateMinuteHand();
     }
 }
 

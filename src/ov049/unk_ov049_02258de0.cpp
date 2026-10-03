@@ -21,7 +21,7 @@
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
-#define func_0204e328 _ZN8BlockMap13func_0204e328EPv
+#define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_0206267c _ZN8ItemNameC1Ev
 #define TalkWindowState_getChoiceList _ZN15TalkWindowState13getChoiceListEv
@@ -256,7 +256,7 @@ void TalkRequest_SetTargetDone(void *self);
 void NpcActor_FindFreeUnitNear(Unk_ov049_0225aba8_Vec *out, void *self, Unk_ov049_0225aba8_Vec *v);
 void NpcMoveCtrl_setTargetAngle(void *self, s32 v);
 void NpcMoveCtrl_setWaypoint(void *self, Unk_ov049_0225aba8_Vec *v);
-void func_0204e328(void *g, void *v);
+void BlockMap_getWalkLinksAtPos(void *g, void *v);
 s32 func_020e972c(Unk_ov049_0225aba8_Vec *a, void *b);
 s32 func_020e96ec(Unk_ov049_0225aba8_Vec *a, void *b);
 s32 func_020e7518(void *p);
@@ -1069,7 +1069,7 @@ BOOL SpNpcMabel::mainAct01() {
     s32 r6 = getDistanceToPlayer(4);
     s32 t = getAngleToPlayer(4);
     s32 r4 = func_020e780c(unk_8e, t);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (r6 > 0x5000 && func_020e96ec(&out, &unk_5c)) {
         changeAct(3);
     } else if (r4 > 0x2000) {
@@ -1111,7 +1111,7 @@ BOOL SpNpcMabel::mainAct02() {
     s32 r6 = getDistanceToPlayer(4);
     s32 r4 = getAngleToPlayer(4);
     func_020e780c(unk_8e, r4);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (r6 > 0x5000) {
         if (func_020e96ec(&out, &unk_5c)) {
             changeAct(3);
@@ -1146,7 +1146,7 @@ BOOL SpNpcMabel::mainAct03() {
     Unk_ov049_0225aba8_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (t > 0x6000) {
         if (NpcActionCtrl_getAction(&unk_564) == 1) {
             NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
@@ -1332,7 +1332,7 @@ BOOL SpNpcMabel::mainAct0D() {
     Unk_ov049_0225aba8_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (t > 0x6000) {
         if (NpcActionCtrl_getAction(&unk_564) == 1) {
             NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);

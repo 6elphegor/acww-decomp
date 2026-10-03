@@ -386,9 +386,9 @@ extern void *gCommManager;
 extern void *sSpNpcAnimHeapPool[];
 extern void *sVillagerAnimHeapPool[];
 extern void *sNpcTexPatBufPool[];
-extern void *data_021c61a4;
-extern void *data_021c61a8;
-extern void *data_021c61ac;
+extern void *gSpNpcAnimPoolHeap;
+extern void *gVillagerAnimPoolHeap;
+extern void *gNpcTexPatBufHeap;
 extern u8 gFieldSceneKind;
 extern void *gSceneBlockMap;
 extern void *gCurrentHeap;
@@ -411,22 +411,22 @@ void func_020e877c(void *);
 void *FrameHeap_Create(s32, void *);
 void *Heap_AllocAligned(void *, s32, s32);
 void File_LoadToBuffer(void *, void *, s32);
-void func_0205b944();
-void func_0205b960();
-void func_0205b9a4();
-void func_0205b9c0();
-void func_0205ba00();
-void func_0205ba1c();
-void func_0205b8a0();
-void func_0205b8c0(void *);
-s32 func_02084fbc();
+void SpNpcAnimPoolHeap_Destroy();
+void SpNpcAnimPoolHeap_Create();
+void VillagerAnimPoolHeap_Destroy();
+void VillagerAnimPoolHeap_Create();
+void NpcTexPatBufHeap_Destroy();
+void NpcTexPatBufHeap_Create();
+void NpcModelHeap_Destroy();
+void NpcModelHeap_Create(void *);
+s32 NpcSpawn_GetSpNpcSlotCount();
 s32 Town_GetMaxOutdoorVillagers();
 s32 Scene_GetCurrent();
 s32 Scene_GetMaxCharacters(s32);
 s32 Scene_GetMaxPlayers(s32);
 void FieldPos_ToUnit(s32 *, s32 *, s32);
 void *BlockMap_GetItemPtr(void *, s32, s32, s32, s32, s32);
-BOOL _ZN8BlockMap13func_0204e418Eii(void *, s32, s32);
+BOOL _ZN8BlockMap10isWalkableEii(void *, s32, s32);
 BOOL Item_IsNormalItem(void *);
 BOOL Field_IsUnitOccupied(s32, s32);
 s32 Field_FindPlayerAtUnit(s32, s32);
@@ -1049,12 +1049,12 @@ void *PlayerData_GetResident(void *, s32);
 s32 Villager_GetUpcomingBirthdayDay(void *, s32, void *);
 s32 _ZN12Unk_02097ff413func_02098198Ej(void *, s32);
 void _ZN12Unk_02097ff413func_02098188Ejj(void *, s32, s32);
-s32 func_0205989c(void *, void *);
+s32 Villager_SendBirthdayNoticeLetter(void *, void *);
 void VillagerState_SetMood(void *, s32);
 void VillagerState_SetMoodTimer(void *, s32);
-void func_0205b124(void *);
-void func_0205b120(void *);
-s32 func_0205af28(void *, s32, u16 *, s32 *, s32 *, s32 *);
+void RoomScoreEvaluator_Construct(void *);
+void RoomScoreEvaluator_Destruct(void *);
+s32 HappyRoom_EvaluateVillagerRoom(void *, s32, u16 *, s32 *, s32 *, s32 *);
 void SaveVillagers_UpdateRoomInfo(void *, s32);
 void SaveVillagers_GiveFortuneGreeting(void *, void *);
 void SaveVillagers_DoubleTalkUrges(void *);
@@ -1194,7 +1194,7 @@ s32 ErrandRecord_GetTime(void *p);
 s32 DateTime_DiffDays(void *p, s32 q);
 void HouseVisitInvite_Clear(void *p);
 void _ZN12ErrandRecord7setStepEh(void *p, s32 v);
-BOOL func_020594dc(u32 a, s32 b, void *c);
+BOOL Villager_SendHouseVisitLetter(u32 a, s32 b, void *c);
 BOOL SaveVillagers_ShouldAssignErrands(void *p);
 s32 PlayerData_GetCurrent(void *p);
 s32 Errand_GetClassIndex(u32 *o, u32 v);
@@ -2297,7 +2297,7 @@ void _ZN12Unk_020dd38cD1Ev(void *p);
 s32 func_02063954(void *p);
 s32 func_020638d0(void *a, void *b);
 s32 MailText_SetSlot(s32 a, void *b);
-s32 func_02059900(void *a, u32 b, void *c, void *d, void *e, s32 f);
+s32 Villager_SendLetterWithPaper(void *a, u32 b, void *c, void *d, void *e, s32 f);
 void *PlayerData_GetCurrent();
 s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 a);
 s32 Clock_GetDateTime(void *p);
@@ -4369,7 +4369,7 @@ extern "C" void Villager_SendBirthdayLetter(void *t, void *p, void *q) {
                             if (h[0] != 0xfff1) {
                                 hp = h;
                             }
-                            if (func_02059900(((u8 *)"ev_birth"), (u8)func_02063b8c(3), r7, r10, hp, -1)) {
+                            if (Villager_SendLetterWithPaper(((u8 *)"ev_birth"), (u8)func_02063b8c(3), r7, r10, hp, -1)) {
                                 _ZN14VillagerMemory21setBirthdayLetterSentEv(e);
                             }
                             func_02063388(o1);
@@ -4429,7 +4429,7 @@ extern "C" void Villager_SendNewYearLetter(void *t, void *p, void *q) {
                             _ZN11MsgString25C1Ev(str);
                             String_FormatNumber(str, ((u8 *)buf)[5] + 0x7d0, 4, 0, 0, 0);
                             MailText_SetSlot(2, str);
-                            if (func_02059900(((u8 *)"ev_newyear"), (u8)func_02063b8c(3), r6, r7, 0, 2)) {
+                            if (Villager_SendLetterWithPaper(((u8 *)"ev_newyear"), (u8)func_02063b8c(3), r6, r7, 0, 2)) {
                                 _ZN14VillagerMemory20setNewYearLetterSentEv(e);
                             }
                             _ZN11MsgString25D1Ev(str);
@@ -4475,7 +4475,7 @@ extern "C" void Villager_SendByeLetter(void *t, void *p) {
                                 MailText_SetSlot(2, obj);
                             }
                         }
-                        func_02059900(((u8 *)"byebye"), (u8)func_02063b8c(5), q, r6, 0, -1);
+                        Villager_SendLetterWithPaper(((u8 *)"byebye"), (u8)func_02063b8c(5), q, r6, 0, -1);
                         _ZN12Unk_020dd38cD1Ev(obj);
                     }
                 }
@@ -8989,7 +8989,7 @@ extern "C" void SaveVillagers_UpdatePlayerErrandKind15(s32 unused, s32 q) {
                             _ZN12ErrandRecord7setStepEh(r6, 4);
                             if (r7) {
                                 u32 bits = ((Unk_0207a550_Rec *)r4)->unk_20;
-                                if (func_020594dc(bits, _ZN10PlayerData11getPlayerIdEv(e), r4)) HouseVisitInvite_Clear(r4);
+                                if (Villager_SendHouseVisitLetter(bits, _ZN10PlayerData11getPlayerIdEv(e), r4)) HouseVisitInvite_Clear(r4);
                             }
                         } else {
                             HouseVisitInvite_Clear(r4);
@@ -9412,11 +9412,11 @@ extern "C" void SaveVillagers_UpdateRoomInfo(void *self, s32 idx) {
                 Unk_02079ce8_Obj *r5 = (Unk_02079ce8_Obj *)Villager_GetState(o);
                 if (r5 != NULL) {
                     u32 x[4];
-                    func_0205b124(x);
+                    RoomScoreEvaluator_Construct(x);
                     h = 0;
-                    r5->unk_20 = func_0205af28(x, idx, &h, &v5, &z1, &z2);
+                    r5->unk_20 = HappyRoom_EvaluateVillagerRoom(x, idx, &h, &v5, &z1, &z2);
                     r5->unk_24 = h;
-                    func_0205b120(x);
+                    RoomScoreEvaluator_Destruct(x);
                 }
             }
         }
@@ -9468,7 +9468,7 @@ extern "C" void SaveVillagers_UpdateBirthdayNotices(u8 *self) {
                                 if (t != -1) {
                                     s32 c = _ZN12Unk_02097ff413func_02098198Ej(r7, i);
                                     if (c != t) {
-                                        if (func_0205989c(a, o) != 0) {
+                                        if (Villager_SendBirthdayNoticeLetter(a, o) != 0) {
                                             _ZN12Unk_02097ff413func_02098188Ejj(r7, i, (u8)t);
                                         }
                                     }
@@ -11166,7 +11166,7 @@ extern "C" BOOL TownMap_IsUnitWalkable(s32 x, s32 y, void *grid) {
     if (grid == 0) {
         grid = gSceneBlockMap;
     }
-    if (grid != 0 && _ZN8BlockMap13func_0204e418Eii(grid, x, y)) {
+    if (grid != 0 && _ZN8BlockMap10isWalkableEii(grid, x, y)) {
         s32 hx = x >> 4;
         s32 hy = y >> 4;
         u16 *c = (u16 *)BlockMap_GetItemPtr(grid, hx, hy, x - (hx << 4), y - (hy << 4), 0);
@@ -11247,7 +11247,7 @@ extern "C" BOOL TownMap_FindBuildingAbovePos(s32 a, s32 h, s32 *px, s32 *py) {
 
 namespace nA {
 extern "C" void NpcHeapPools_CreateAll() {
-    func_0205b8c0(gCurrentHeap);
+    NpcModelHeap_Create(gCurrentHeap);
     NpcTexPatBufs_Create(gCurrentHeap);
     VillagerAnimHeaps_Create(gCurrentHeap);
     SpNpcAnimHeaps_Create(gCurrentHeap);
@@ -11256,7 +11256,7 @@ extern "C" void NpcHeapPools_CreateAll() {
 
 namespace nA {
 extern "C" void NpcHeapPools_DestroyAll() {
-    func_0205b8a0();
+    NpcModelHeap_Destroy();
     NpcTexPatBufs_Destroy();
     VillagerAnimHeaps_Destroy();
     SpNpcAnimHeaps_Destroy();
@@ -11290,10 +11290,10 @@ extern "C" void _ZN16NpcTexPatBufPoolD1Ev() {}
 
 namespace nA {
 extern "C" void NpcTexPatBufs_Create(void *) {
-    func_0205ba1c();
+    NpcTexPatBufHeap_Create();
     NpcTexPatBufPool_Alloc(sNpcTexPatBufPool);
-    if (data_021c61ac != 0) {
-        func_020e877c(data_021c61ac);
+    if (gNpcTexPatBufHeap != 0) {
+        func_020e877c(gNpcTexPatBufHeap);
     }
 }
 }
@@ -11301,7 +11301,7 @@ extern "C" void NpcTexPatBufs_Create(void *) {
 namespace nA {
 extern "C" void NpcTexPatBufs_Destroy() {
     NpcTexPatBufPool_Free(sNpcTexPatBufPool);
-    func_0205ba00();
+    NpcTexPatBufHeap_Destroy();
 }
 }
 
@@ -11313,9 +11313,9 @@ extern "C" void *NpcTexPatBufPool_Get(void **p, s32 i) {
 
 namespace nA {
 extern "C" void NpcTexPatBufPool_Alloc(void **p) {
-    void *heap = data_021c61ac;
+    void *heap = gNpcTexPatBufHeap;
     s32 t = Unk_02077d58_Count();
-    s32 n = t + func_02084fbc();
+    s32 n = t + NpcSpawn_GetSpNpcSlotCount();
     s32 i;
     for (i = 0; i < n; i++) {
         p[i] = Heap_AllocAligned(heap, 0x2f88, 4);
@@ -11325,7 +11325,7 @@ extern "C" void NpcTexPatBufPool_Alloc(void **p) {
 
 namespace nA {
 extern "C" void NpcTexPatBufPool_Free(void **p) {
-    void *heap = data_021c61ac;
+    void *heap = gNpcTexPatBufHeap;
     s32 i;
     for (i = 0; i < 5; i++) {
         p[i] = 0;
@@ -11351,10 +11351,10 @@ extern "C" void _ZN20VillagerAnimHeapPoolD1Ev() {}
 
 namespace nA {
 extern "C" void VillagerAnimHeaps_Create(void *) {
-    func_0205b9c0();
+    VillagerAnimPoolHeap_Create();
     VillagerAnimHeapPool_Alloc(sVillagerAnimHeapPool);
-    if (data_021c61a8 != 0) {
-        func_020e877c(data_021c61a8);
+    if (gVillagerAnimPoolHeap != 0) {
+        func_020e877c(gVillagerAnimPoolHeap);
     }
 }
 }
@@ -11362,7 +11362,7 @@ extern "C" void VillagerAnimHeaps_Create(void *) {
 namespace nA {
 extern "C" void VillagerAnimHeaps_Destroy() {
     VillagerAnimHeapPool_Free(sVillagerAnimHeapPool);
-    func_0205b9a4();
+    VillagerAnimPoolHeap_Destroy();
 }
 }
 
@@ -11374,7 +11374,7 @@ extern "C" void *VillagerAnimHeapPool_Get(void **p, s32 i) {
 
 namespace nA {
 extern "C" void VillagerAnimHeapPool_Alloc(void **p) {
-    void *heap = data_021c61a8;
+    void *heap = gVillagerAnimPoolHeap;
     s32 i;
     for (i = 0; i < 8; i++) {
         p[i] = FrameHeap_Create(0x7ac, heap);
@@ -11384,7 +11384,7 @@ extern "C" void VillagerAnimHeapPool_Alloc(void **p) {
 
 namespace nA {
 extern "C" void VillagerAnimHeapPool_Free(void **p) {
-    void *heap = data_021c61a8;
+    void *heap = gVillagerAnimPoolHeap;
     s32 i;
     s32 z = 0;
     for (i = 0; i < 8; i++) {
@@ -11414,10 +11414,10 @@ extern "C" void _ZN17SpNpcAnimHeapPoolD1Ev() {}
 
 namespace nA {
 extern "C" void SpNpcAnimHeaps_Create(void *) {
-    func_0205b960();
+    SpNpcAnimPoolHeap_Create();
     SpNpcAnimHeapPool_Alloc(sSpNpcAnimHeapPool);
-    if (data_021c61a4 != 0) {
-        func_020e877c(data_021c61a4);
+    if (gSpNpcAnimPoolHeap != 0) {
+        func_020e877c(gSpNpcAnimPoolHeap);
     }
 }
 }
@@ -11425,7 +11425,7 @@ extern "C" void SpNpcAnimHeaps_Create(void *) {
 namespace nA {
 extern "C" void SpNpcAnimHeaps_Destroy() {
     SpNpcAnimHeapPool_Free(sSpNpcAnimHeapPool);
-    func_0205b944();
+    SpNpcAnimPoolHeap_Destroy();
 }
 }
 
@@ -11437,8 +11437,8 @@ extern "C" void *SpNpcAnimHeapPool_Get(void **p, s32 i) {
 
 namespace nA {
 extern "C" void SpNpcAnimHeapPool_Alloc(void **p) {
-    void *heap = data_021c61a4;
-    s32 n = func_02084fbc();
+    void *heap = gSpNpcAnimPoolHeap;
+    s32 n = NpcSpawn_GetSpNpcSlotCount();
     s32 i;
     for (i = 0; i < n; i++) {
         p[i] = FrameHeap_Create(0x7ac, heap);
@@ -11448,7 +11448,7 @@ extern "C" void SpNpcAnimHeapPool_Alloc(void **p) {
 
 namespace nA {
 extern "C" void SpNpcAnimHeapPool_Free(void **p) {
-    void *heap = data_021c61a4;
+    void *heap = gSpNpcAnimPoolHeap;
     s32 i;
     s32 z = 0;
     for (i = 0; i < 4; i++) {

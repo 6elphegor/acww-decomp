@@ -80,16 +80,16 @@
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv
 #define AnimFrameCtrl_setup _ZN13AnimFrameCtrl5setupEihit
 #define func_0205d354 _ZN12Unk_0205d34013func_0205d354Ej
-#define func_0205f92c _ZN12Unk_0205f8d413func_0205f92cEi
-#define func_0205fae8 _ZN12Unk_0205f8d413func_0205fae8EP16Unk_0205f8d4_Vec
-#define func_0205faf8 _ZN12Unk_0205f8d413func_0205faf8EP16Unk_0205f8d4_Vec
-#define func_0205fb08 _ZN12Unk_0205f8d413func_0205fb08Ev
-#define func_0205fb20 _ZN12Unk_0205f8d413func_0205fb20Ev
-#define func_0205fb34 _ZN12Unk_0205f8d413func_0205fb34Ev
-#define func_0205fb70 _ZN12Unk_0205f8d413func_0205fb70Ev
-#define func_0205fb88 _ZN12Unk_0205f8d413func_0205fb88Ev
-#define func_0205fbb8 _ZN12Unk_0205f8d413func_0205fbb8Ev
-#define func_0205fbbc _ZN12Unk_0205f8d413func_0205fbbcEPv
+#define FishBobber_setState _ZN10FishBobber8setStateEi
+#define FishBobber_setPos _ZN10FishBobber6setPosEP16Unk_0205f8d4_Vec
+#define FishBobber_setTargetPos _ZN10FishBobber12setTargetPosEP16Unk_0205f8d4_Vec
+#define FishBobber_startCatchLift _ZN10FishBobber14startCatchLiftEv
+#define FishBobber_endCatch _ZN10FishBobber8endCatchEv
+#define FishBobber_isCatchLanded _ZN10FishBobber13isCatchLandedEv
+#define FishBobber_checkReelResult _ZN10FishBobber15checkReelResultEv
+#define FishBobber_tryHook _ZN10FishBobber7tryHookEv
+#define FishBobber_getFish _ZN10FishBobber7getFishEv
+#define FishBobber_setFish _ZN10FishBobber7setFishEPv
 #define func_0206260c _ZN8ItemNameD1Ev
 #define func_02062650 _ZN8ItemNameC1EPt
 #define TalkWindowState_setNamedSlot _ZN15TalkWindowState12setNamedSlotEiPvj
@@ -1705,8 +1705,8 @@ s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void Unk_02006d14_turnAwayFromCamera(Obj *o, s32 a);
 void Unk_02006d14_playSeAt(Obj *o, s32 a, V3 *v);
 s32 AnimFrameCtrl_hasPassedFrame(void *p, u32 a);
-void func_0205f92c(void *p, u32 a);
-void func_0205fae8(void *p, V3 *v);
+void FishBobber_setState(void *p, u32 a);
+void FishBobber_setPos(void *p, V3 *v);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_02006d14_setActionFlag(Obj *o, u32 a);
 s32 Unk_02006d14_testActionFlag(Obj *o, u32 a);
@@ -3220,10 +3220,10 @@ void Unk_020102ec_updateBodyCollider(Obj *o);
 s32 CommManager_isLocalSlot(void *g, u32 a);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void Unk_020102ec_startAnim(Obj *o, s32 a, u32 b, u32 c);
-Act *func_0205fbb8(void *p);
-void func_0205fbbc(void *p, u32 a);
-void func_0205fb20(void *p);
-void func_0205fb08(void *p);
+Act *FishBobber_getFish(void *p);
+void FishBobber_setFish(void *p, u32 a);
+void FishBobber_endCatch(void *p);
+void FishBobber_startCatchLift(void *p);
 void PlayerActor_ApplyHoldOffset(Blk *b, u32 a);
 void FishCatch_SetDisplayPosScale(Act *a, V3 *b, V3 *c);
 void Fish_GetDisplayScale(V3 *v, s32 a);
@@ -3389,7 +3389,7 @@ extern u8 data_ov003_02230ac0[];
 extern u8 sFishEscapeSpeed[];
 
 void Unk_02006d14_turnToCamera(Obj *o, s32 a);
-Act *func_0205fbb8(void *p);
+Act *FishBobber_getFish(void *p);
 void Fish_GetDisplayScale(V3 *v, s32 a);
 void PlayerActor_ApplyHoldOffset(Blk *b, V3 *v);
 void WorldCurve_FromCurved(V3 *a, V3 *b);
@@ -3413,7 +3413,7 @@ void TalkRequest_FinishPlayerMessage();
 s32 PlayerActor_RequestFishStore(Obj *o, u32 a, s32 b, s32 c);
 void Camera_SetModeDefault();
 s32 FieldAction_RequestDropForAid(u32 a, u32 b);
-void func_0205fb08(void *p);
+void FishBobber_startCatchLift(void *p);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 void PlayerActor_RequestFishRelease(Obj *o, void *d, u32 a, u32 b, s32 c);
 void Unk_02006d14_requestAct76(Obj *o, u32 a, u32 b, u32 c, u32 d, s32 e);
@@ -3428,7 +3428,7 @@ void Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_02006d14_netFollowTransform(Obj *o);
 void Unk_020102ec_updateBodyCollider(Obj *o);
 s32 AnimFrameCtrl_isFinished(void *p);
-s32 func_0205fb34(void *p);
+s32 FishBobber_isCatchLanded(void *p);
 void Unk_02006d14_playSe(Obj *o, u32 a);
 void Unk_020102ec_moveWithCollision(Obj *o);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -3575,9 +3575,9 @@ s32 Unk_02006d14_netFollowTransform(Obj *o);
 s32 Unk_020102ec_updateBodyCollider(Obj *o);
 s32 Unk_020102ec_moveWithCollision(Obj *o);
 s32 CommManager_isLocalSlot(void *g, u32 a);
-s32 func_0205fb70(void *p);
-s32 func_0205fb88(void *p);
-s32 func_0205fbb8(void *p);
+s32 FishBobber_checkReelResult(void *p);
+s32 FishBobber_tryHook(void *p);
+s32 FishBobber_getFish(void *p);
 s32 HeldItemModel_IsBobberLanded(void *p);
 s32 Unk_02006d14_playSeAt(Obj *o, u32 a, void *b);
 s32 Unk_02006d14_playSe(Obj *o, u32 a);
@@ -3594,9 +3594,9 @@ s32 BgmVolumeMixer_endFishDuck(void *p);
 s32 func_020e7b98(s32 a, s32 b);
 s32 PlayerActor_TurnAngle(u16 *a, s32 b);
 s32 Unk_020102ec_setAngleY(Obj *o, u16 *a);
-s32 func_0205fae8(void *p, V3 *v);
-s32 func_0205faf8(void *p, V3 *v);
-s32 func_0205f92c(void *p, u32 a);
+s32 FishBobber_setPos(void *p, V3 *v);
+s32 FishBobber_setTargetPos(void *p, V3 *v);
+s32 FishBobber_setState(void *p, u32 a);
 s32 Scene_GetTouchPicker();
 s32 TouchPick_GetGroundPos(s32 a, s32 b);
 s32 PlayerActor_DecreaseClamped(s32 a, s32 b, s32 c);
@@ -4416,7 +4416,7 @@ s32 Unk_02006d14_nudgeForward(Obj *o);
 s32 Unk_02007694_getActionDonePriority(Obj *o, s32 a);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 Item_IsFurniture(u16 *p);
-s32 func_020b0f30();
+s32 Taxi_IsLeaving();
 s32 PlayerActor_requestWait(Obj *o, s32 a, s32 b, s32 c);
 s32 Unk_02006d14_requestAct76(Obj *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 TalkRequest_FinishSceneEntry();
@@ -4431,7 +4431,7 @@ s32 Scene_GetCurrent();
 s32 Unk_02097ff4_testFlag(void *p, s32 a);
 s32 Scene_GetPrevious();
 s32 SceneId_IsHouseRoom(s32 a);
-u32 func_020b1614(void *p);
+u32 Building_GetDoorAnimParamAt(void *p);
 s32 Unk_020102ec_advanceAnim(Obj *o);
 s32 Unk_020102ec_updateBodyCollider(Obj *o);
 s32 Unk_02006d14_playFootstepSe(Obj *o);
@@ -4763,9 +4763,9 @@ void Fish_GetDisplayScale(V3 *v, s32 a);
 void HeldInsect_SetHandMatrix(u8 id, s16 *a, Blk *p, s32 f);
 void HeldInsect_Remove(u8 a, s32 b);
 void HeldInsect_Start(u8 a, u8 b);
-s32 func_0204f3e4(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
-void func_0204f3b4(void *a);
-void *func_0204f49c();
+s32 FishDisplay_SetEntry(void *a, s32 b, V3 *c, V3 *d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
+void FishDisplay_Release(void *a);
+void *FishDisplay_Acquire();
 void Unk_02007694_requestAct05(Obj *o, s32 a, s32 b, s32 c);
 s32 func_02133150(s32 a, s32 b);
 s32 func_02132a4c(s32 a);
@@ -5501,7 +5501,7 @@ extern "C" void PlayerActor_SetupReleaseCreature(Obj *o, u8 *m) {
         HeldInsect_Start(i, o->unk_7fc);
         id = 0x9f;
     } else {
-        r4->unk_08 = func_0204f49c();
+        r4->unk_08 = FishDisplay_Acquire();
         id = 0x9e;
     }
     Unk_020102ec_startAnimOnce(o, id, 3, 3);
@@ -5534,7 +5534,7 @@ extern "C" void PlayerActor_EndReleaseCreature(Obj *o) {
     if (r4->unk_0c == 0) {
         HeldInsect_Remove(o->unk_7fc, 1);
     } else {
-        func_0204f3b4(r4->unk_08);
+        FishDisplay_Release(r4->unk_08);
     }
 }
 }
@@ -5623,7 +5623,7 @@ extern "C" void PlayerActor_ReleaseCreatureUpdateModel(Obj *o) {
         v5c.z = b.v[11];
         WorldCurve_FromCurved(&v5c, &v5c);
         i = Idx(&t.a, 0x12e8, 0x131f);
-        func_0204f3e4(r6->unk_08, i, &v5c, &v68, 0, 0, 0, 1, 1, 0x1f);
+        FishDisplay_SetEntry(r6->unk_08, i, &v5c, &v68, 0, 0, 0, 1, 1, 0x1f);
     }
 }
 }
@@ -6392,7 +6392,7 @@ extern "C" s32 PlayerActor_SetupDoorExit(Obj *o, Msg *m) {
         u = 0;
         o->unk_7f4 = 1;
     } else {
-        u = (u8)func_020b1614(o->unk_5c);
+        u = (u8)Building_GetDoorAnimParamAt(o->unk_5c);
         if (u <= 1) {
             Unk_020102ec_startAnimOnce(o, 0x35, 0, 0);
         } else {
@@ -6498,7 +6498,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
     switch (*pst) {
     case 0: {
         BOOL r = Unk_ov003_022107fc_Eq(v, &v[5]);
-        if (r == 0 && func_020b0f30() == 0 && Unk_02006d14_testActionFlag(o, 0x1d) == 0) {
+        if (r == 0 && Taxi_IsLeaving() == 0 && Unk_02006d14_testActionFlag(o, 0x1d) == 0) {
             PlayerActor_RequestStowItem(o, 2, 2, 0, 0, 0, 6, -1);
             return;
         }
@@ -6521,7 +6521,7 @@ extern "C" void PlayerActor_DoorExitCheckEnd(Obj *o) {
         if (CommManager_isLocalSlot(g, o->unk_7fc)) {
             TownSessionState_ClearFlag(TownSessionState_Get(), 0);
         }
-        if (func_020b0f30() == 0) {
+        if (Taxi_IsLeaving() == 0) {
             Unk_02006d14_requestAct76(o, 2, 0, 0, 6, -1);
             return;
         }
@@ -8043,7 +8043,7 @@ extern "C" s32 PlayerActor_SetupFishCast(Obj *o, Arg *a) {
     s32 x = q.x;
     l.t1.x = x; l.t1.y = 0; l.t1.z = z;
     l.t2.x = x; l.t2.y = 0; l.t2.z = z;
-    func_0205faf8(o->unk_5c4, &l.t2);
+    FishBobber_setTargetPos(o->unk_5c4, &l.t2);
     PlayerActor_FishCastSetNetData(o->unk_8ec, l.t1.x, l.t1.z);
     o->unk_7d0 = func_020e7b98(l.t1.x - o->unk_5c, l.t1.z - o->unk_64);
 }
@@ -8204,7 +8204,7 @@ extern "C" s32 PlayerActor_SetupFishWait(Obj *o) {
             cur.x = pos.x;
             cur.y = pos.y;
             cur.z = pos.z;
-            func_0205fae8(o->unk_5c4, &cur);
+            FishBobber_setPos(o->unk_5c4, &cur);
         }
     }
     HeldItemModel_PlayAnim(o->unk_59c, 0x17, 3, 0);
@@ -8232,7 +8232,7 @@ extern "C" s32 PlayerActor_EndFishWait(Obj *o, s32 a) {
     if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
         BgmVolumeMixer_endFishDuck(data_021c1b3c + 0x1c4);
     } else if (a != 0x50 && a != 0x51) {
-        func_0205f92c(o->unk_5c4, 1);
+        FishBobber_setState(o->unk_5c4, 1);
     }
 }
 }
@@ -8252,11 +8252,11 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
         if (st == 4) goto case4;
         if (st == 3) goto end;
         if (k == 4) {
-            func_0205f92c(o->unk_5c4, k);
+            FishBobber_setState(o->unk_5c4, k);
             l.t2 = pos;
-            func_0205fae8(o->unk_5c4, &l.t2);
+            FishBobber_setPos(o->unk_5c4, &l.t2);
         } else if (st >= 6) {
-            func_0205f92c(o->unk_5c4, 0);
+            FishBobber_setState(o->unk_5c4, 0);
         }
         goto end;
     case4: {
@@ -8266,10 +8266,10 @@ extern "C" void PlayerActor_FishWaitSyncBobber(Obj *o) {
         s32 dz = l.cur.z - pos.z;
         if (dx * dx + dz * dz >= 0x400000) {
             l.t3 = pos;
-            func_0205fae8(o->unk_5c4, &l.t3);
+            FishBobber_setPos(o->unk_5c4, &l.t3);
         }
         if (k == 5) {
-            func_0205f92c(o->unk_5c4, k);
+            FishBobber_setState(o->unk_5c4, k);
             Unk_02006d14_playSe(o, 0x84f);
             o->unk_8c0.x = pos.x;
             o->unk_8c0.y = pos.y;
@@ -8312,7 +8312,7 @@ extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
     PlayerActor_FishWaitOnBobberLand(o);
     if (HeldItemModel_IsBobberLanded(o->unk_59c)) {
         if (Unk_02006d14_testActionFlag(o, 0xb)) {
-            if (func_0205fbb8(o->unk_5c4)) {
+            if (FishBobber_getFish(o->unk_5c4)) {
                 FishShadow_OnRodPulled();
             } else {
                 FieldFish_ScareAround(&o->unk_5cc, 0x1000);
@@ -8320,7 +8320,7 @@ extern "C" s32 PlayerActor_FishWaitCheckInput(Obj *o) {
             PlayerActor_RequestFishReelIn(o, 0, 6, -1);
         } else {
             if (o->unk_13c != 0 || TouchPick_GetGroundPos(Scene_GetTouchPicker(), 0)) {
-                if (func_0205fb88(o->unk_5c4)) {
+                if (FishBobber_tryHook(o->unk_5c4)) {
                     PlayerActor_RequestFishHook(o, 6, -1);
                 } else {
                     PlayerActor_RequestFishReelIn(o, 0, 6, -1);
@@ -8376,7 +8376,7 @@ extern "C" s32 PlayerActor_FishHookCheckResult(Obj *o) {
     V3 *p = &o->unk_5cc;
     volatile s32 pad;
     if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-        switch (func_0205fb70(o->unk_5c4)) {
+        switch (FishBobber_checkReelResult(o->unk_5c4)) {
         case 0:
             Unk_02006d14_playSeAt(o, 0x7f6, p);
             break;
@@ -8563,7 +8563,7 @@ extern "C" s32 PlayerActor_NetFishLand(Obj *o, s16 a) {
 namespace ns_0220d6f4 {
 extern "C" void PlayerActor_FishLandCheckEnd(Obj *o) {
     if (AnimFrameCtrl_isFinished(o->unk_2cc)) {
-        if (func_0205fb34(o->unk_5c4)) PlayerActor_RequestFishShowCatch(o, 0, 6, -1);
+        if (FishBobber_isCatchLanded(o->unk_5c4)) PlayerActor_RequestFishShowCatch(o, 0, 6, -1);
     }
 }
 }
@@ -8608,7 +8608,7 @@ extern "C" void PlayerActor_SetupFishShowCatch(Obj *o, u8 *p) {
     r->unk_05 = func_0203c338();
     if (b == 0) {
         if (CommManager_isLocalSlot(gCommManager, o->unk_7fc)) {
-            Act *a = func_0205fbb8(o->unk_5c4);
+            Act *a = FishBobber_getFish(o->unk_5c4);
             s8 v = a->unk_7e;
             r->unk_03 = v;
             if (v < 0x38) {
@@ -8656,7 +8656,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     V3 v78;
     Unk_02006d14_turnToCamera(o, 0x400);
     r6 = &o->unk_7d0;
-    a = func_0205fbb8(o->unk_5c4);
+    a = FishBobber_getFish(o->unk_5c4);
     if (a) {
         b = o->unk_694;
         Fish_GetDisplayScale(&v54, a->unk_7e);
@@ -8777,7 +8777,7 @@ extern "C" void PlayerActor_FishShowCatchUpdate(Obj *o) {
     case 4:
         if (o->unk_128 == 0) return;
         if (o->unk_128->unk_04 != 0) return;
-        func_0205fb08(o->unk_5c4);
+        FishBobber_startCatchLift(o->unk_5c4);
         func_0203e47c(o, o);
         Unk_02006d14_clearActionFlag(o, 0x11);
         TalkRequest_FinishPlayerMessage();
@@ -8876,7 +8876,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
     V3 vf;
     Blk bl;
     V3 v48;
-    Act *p5 = func_0205fbb8(o->unk_5c4);
+    Act *p5 = FishBobber_getFish(o->unk_5c4);
     s32 f;
     if (o->unk_700 == 0x5a) {
         f = *(s32 *)&o->unk_2d4 >> 12;
@@ -8926,7 +8926,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
             v[3] = v[0];
             Pocket_AddFoundItem(&v[3]);
         }
-        func_0205fb20(o->unk_5c4);
+        FishBobber_endCatch(o->unk_5c4);
         break;
     case 1:
         if (o->unk_700 == 0x5a) {
@@ -8942,7 +8942,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                 if (!MenuCtrl_IsFinished()) return;
                 o->unk_818 = 0xf;
                 if (MenuCtrl_IsResultOk()) {
-                    func_0205fbbc(o->unk_5c4, 0);
+                    FishBobber_setFish(o->unk_5c4, 0);
                     if (Unk_02006d14_testActionFlag(o, 0x11)) {
                         Unk_02006d14_clearActionFlag(o, 0x11);
                         func_0203e47c(o, o);
@@ -8982,7 +8982,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     PlayerActor_RequestFishRelease(o, data_ov003_02230ac8, 0, 6, -1);
                     PlayerActor_FishStoreSetNetState(r7, 2);
                 }
-                func_0205fb08(o->unk_5c4);
+                FishBobber_startCatchLift(o->unk_5c4);
                 if (Unk_02006d14_testActionFlag(o, 0x11)) {
                     Unk_02006d14_clearActionFlag(o, 0x11);
                     func_0203e47c(o, o);
@@ -9003,7 +9003,7 @@ extern "C" void PlayerActor_FishStoreUpdate(Obj *o) {
                     b.z = vf.z;
                     FishCatch_SetDisplayPosScale(p5, &a, &b);
                 }
-                func_0205fb08(o->unk_5c4);
+                FishBobber_startCatchLift(o->unk_5c4);
                 *r6 = 2;
                 Unk_020102ec_startAnim(o, 0, 6, 6);
             }
@@ -12026,11 +12026,11 @@ extern "C" void PlayerActor_SlingshotUpdate(Obj *o) {
         if (o->unk_2d4.mid < 0xb) {
             Unk_02006d14_playSeAt(o, 0x851, &v);
         } else if (AnimFrameCtrl_hasPassedFrame(o->unk_2cc, 0xb)) {
-            func_0205f92c(o->unk_5c4, 9);
+            FishBobber_setState(o->unk_5c4, 9);
             w.x = v.x;
             w.y = v.y;
             w.z = v.z;
-            func_0205fae8(o->unk_5c4, &w);
+            FishBobber_setPos(o->unk_5c4, &w);
             Unk_02006d14_playSe(o, 0x852);
             Unk_02006d14_playSe(o, 0x853);
             Unk_02006d14_setActionFlag(o, 9);

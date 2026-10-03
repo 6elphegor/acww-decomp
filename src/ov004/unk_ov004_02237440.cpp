@@ -1036,8 +1036,8 @@ BOOL File_Exists(void *s);
 s32 File_LoadAlloc(void *s, s32 a, s32 b, s32 c);
 u32 func_0209c25c(void *self, void *p);
 void func_0209c1a4(void *p, s32 n, s32 a, s32 b, s32 c, void *d, void *e, void *f);
-void func_0205c054();
-void func_0205c038();
+void MuseumInsectHeap_Create();
+void MuseumInsectHeap_Destroy();
 BOOL func_0209c0d0(void *self, u32 a, void *s);
 u32 func_0209c348(u32 self);
 void Model_setResource(void *self, u32 a, s32 b);
@@ -4793,7 +4793,7 @@ extern "C" BOOL MuseumInsectRoom_AddInsect(u8 *m, s8 v) {
 }
 
 BOOL MuseumInsectRoom::vfunc_00() {
-    func_0209c1a4(unk_180, 0x20, 0x400, 0x40, 0x9c4, (void *)func_0205c054, (void *)func_0205c038, 0);
+    func_0209c1a4(unk_180, 0x20, 0x400, 0x40, 0x9c4, (void *)MuseumInsectHeap_Create, (void *)MuseumInsectHeap_Destroy, 0);
     spawnDonatedInsects();
     return TRUE;
 }

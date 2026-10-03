@@ -310,7 +310,7 @@ public:
 extern "C" {
 extern u8 gSaveVillagers[];
 extern void *gCommManager;
-extern void *data_021c6204;
+extern void *gFieldStructureHeap;
 extern const u8 sVillagerHouseClosedMsgs[];
 extern const u8 sVillagerHouseClosedMsgsAlt[];
 extern char data_ov003_02235330[];
@@ -472,7 +472,7 @@ BOOL VillagerHouse::vfunc_70() {
             NNS_G3dBindMdlTex(a, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
             void *b = HouseLightUpDeco_GetModel(FieldStructureMgr_GetLightUpDeco(), q);
             NNS_G3dBindMdlPltt(b, HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco()));
-            if (unk_368.allocMatAnm((u32)unk_2b0.unk_5c, data_021c6204)) {
+            if (unk_368.allocMatAnm((u32)unk_2b0.unk_5c, gFieldStructureHeap)) {
                 s32 c = HouseLightUpDeco_GetTexPattern(FieldStructureMgr_GetLightUpDeco());
                 s32 d = HouseLightUpDeco_GetTex(FieldStructureMgr_GetLightUpDeco());
                 unk_368.initWithTex(c, d, 0, 0x1000, 0);

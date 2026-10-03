@@ -7,11 +7,11 @@ u32 func_02063b8c(u32 n);
 }
 
 extern "C" {
-u32 func_020b2bac(u32 a);
+u32 Item_GetBuildingIndex(u32 a);
 }
 
 extern "C" {
-u32 func_020b2c14(u32 a);
+u32 Math_CountBits4(u32 a);
 }
 
 extern "C" {
@@ -67,7 +67,7 @@ u32 ItemInfo_GetIndoorUnk1(u16 *p);
 }
 
 extern "C" {
-void func_020b16bc(void *p, const void *q);
+void BuildingInfo_Copy(void *p, const void *q);
 }
 
 extern "C" {
@@ -99,15 +99,15 @@ void func_02072824(void *p, u32 a, u32 b);
 }
 
 extern "C" {
-u32 func_020b1690(void *p);
+u32 BuildingInfo_GetCapacity(void *p);
 }
 
 extern "C" {
-void func_020b16b8(void *p);
+void BuildingInfo_Destroy(void *p);
 }
 
 extern "C" {
-BOOL func_020b13e0(u32 a);
+BOOL Building_IsOwnerAsleep(u32 a);
 }
 
 extern "C" {
@@ -123,19 +123,19 @@ extern u8 gFieldSceneKind;
 }
 
 extern "C" {
-extern u32 data_021ee2a0;
+extern u32 sLastEntranceType;
 }
 
 extern "C" {
-extern u8 data_021ee288;
+extern u8 sTaxiArriving;
 }
 
 extern "C" {
-extern u8 data_021ee28c;
+extern u8 sTaxiLeaving;
 }
 
 extern "C" {
-extern u8 data_021ee290;
+extern u8 sHouseVisitorPresent;
 }
 
 extern "C" {
@@ -151,7 +151,7 @@ extern u32 data_021ee2f4;
 }
 
 extern "C" {
-extern u16 data_020d0a14[];
+extern u16 sSceneBuildingTable[];
 }
 
 extern "C" {
@@ -159,7 +159,7 @@ extern u8 data_020d0a7c[];
 }
 
 extern "C" {
-extern u8 data_021ee330[];
+extern u8 sBuildingOccupancy[];
 }
 
 extern "C" {
@@ -388,15 +388,15 @@ void Startup_FillOverlayArea(void);
 }
 
 extern "C" {
-void func_020b0b54(void);
+void Startup_SetupMainArena(void);
 }
 
 extern "C" {
-void func_020b0b74(u32 a, u32 b);
+void Startup_OnWvrStartUp(u32 a, u32 b);
 }
 
 extern "C" {
-void func_020b0c80(void);
+void Main_InitStub(void);
 }
 
 extern "C" {
@@ -404,31 +404,31 @@ void Main_InitVBlank(void);
 }
 
 extern "C" {
-u32 func_020b0d24(u32 a);
+u32 Footstep_GetSeForAttr(u32 a);
 }
 
 extern "C" {
-u32 func_020b0d38(u32 a);
+u32 GroundAttr_GetAtPos(u32 a);
 }
 
 extern "C" {
-u32 func_020b0d60(u32 a);
+u32 GroundAttr_ResolveCarpet(u32 a);
 }
 
 extern "C" {
-u32 func_020b0d94(u32 a);
+u32 Footstep_AttrToSe(u32 a);
 }
 
 extern "C" {
-u32 func_020b0f80(u32 a);
+u32 BuildingOccupancy_CountForScene(u32 a);
 }
 
 extern "C" {
-u32 func_020b0fb0(u32 a);
+u32 BuildingOccupancy_GetPlayersForScene(u32 a);
 }
 
 extern "C" {
-u8 func_020b1034(void);
+u8 HouseVisitor_IsPresent(void);
 }
 
 extern "C" {
@@ -443,7 +443,7 @@ extern "C" {
 extern u32 OVERLAY_69_ID[];
 }
 
-volatile u8 data_021ee284;
+volatile u8 sWvrStartUpDone;
 
 extern "C" {
 extern u8 gHeapCreateOption[];
@@ -486,18 +486,18 @@ inline BOOL isSpecial(u32 b) {
 inline BOOL isFlag0() {
     return gFieldSceneKind == 0;
 }
-extern "C" u32 func_020b0d94(u32 a) {
+extern "C" u32 Footstep_AttrToSe(u32 a) {
     u32 b = Scene_GetCurrent();
     u32 r = GroundAttr_GetFootstepSe(a);
     if (r == 0xffff) {
         if (isFlag0()) {
             r = 0xc8;
         } else if (SceneId_IsNookShop(b)) {
-            r = func_020b0d24(5);
+            r = Footstep_GetSeForAttr(5);
         } else if (SceneId_IsHouseRoom(b) || SceneId_IsUnk6To8(b)) {
-            r = func_020b0d24(6);
+            r = Footstep_GetSeForAttr(6);
         } else if (SceneId_IsMuseumRoom(b)) {
-            r = func_020b0d24(5);
+            r = Footstep_GetSeForAttr(5);
         } else {
             r = 0x4a6;
         }
@@ -512,7 +512,7 @@ extern "C" u32 func_020b0d94(u32 a) {
     return r;
 }
 
-extern "C" u32 func_020b0d60(u32 a) {
+extern "C" u32 GroundAttr_ResolveCarpet(u32 a) {
     if (a == 0x1a) {
         if (isFlag1()) {
             u16 v = *RoomShell_GetCarpet();
@@ -522,36 +522,36 @@ extern "C" u32 func_020b0d60(u32 a) {
     return a;
 }
 
-extern "C" u32 func_020b0d38(u32 a) {
+extern "C" u32 GroundAttr_GetAtPos(u32 a) {
     u8 buf[0x40];
     u32 r;
     _ZN10GroundInfo9initAtPosEP16Unk_0203389c_Vecii(buf, (void *)a, 0, 0);
-    r = func_020b0d60(*(u32 *)(buf + 0x34));
+    r = GroundAttr_ResolveCarpet(*(u32 *)(buf + 0x34));
     GroundInfo_Destruct(buf);
     return r;
 }
 
-extern "C" u32 func_020b0d24(u32 a) {
-    return func_020b0d94(func_020b0d60(a));
+extern "C" u32 Footstep_GetSeForAttr(u32 a) {
+    return Footstep_AttrToSe(GroundAttr_ResolveCarpet(a));
 }
 
-extern "C" void func_020b0cbc(u32 a) {
+extern "C" void Footstep_GetSeAtPos(u32 a) {
     if (Ground_GetExitAtPos() != (u32)-1) {
         u32 b = Scene_GetCurrent();
         if (SceneId_IsNookShop(b)) {
-            func_020b0d24(5);
+            Footstep_GetSeForAttr(5);
             return;
         }
         if (SceneId_IsHouseRoom(b) || SceneId_IsUnk6To8(b)) {
-            func_020b0d24(6);
+            Footstep_GetSeForAttr(6);
             return;
         }
         if (SceneId_IsMuseumRoom(b)) {
-            func_020b0d24(5);
+            Footstep_GetSeForAttr(5);
             return;
         }
     }
-    func_020b0d24(func_020b0d38(a));
+    Footstep_GetSeForAttr(GroundAttr_GetAtPos(a));
 }
 
 extern "C" void Main_InitVBlank(void) {
@@ -563,10 +563,10 @@ extern "C" void Main_InitVBlank(void) {
     sVBlankReady = 1;
 }
 
-extern "C" void func_020b0c80(void) {}
+extern "C" void Main_InitStub(void) {}
 
 extern "C" void Main_Init(void) {
-    func_020b0c80();
+    Main_InitStub();
     func_01ffcb28();
     func_020e99a4();
     HBlank_Init();
@@ -603,14 +603,14 @@ extern "C" void Main_Init(void) {
     OverlayHandle_Load(gOverlayHandle, OVERLAY_68_ID);
 }
 
-extern "C" void func_020b0b74(u32 a, u32 b) {
+extern "C" void Startup_OnWvrStartUp(u32 a, u32 b) {
     if (b != 0) {
         Fatal_Trap();
     }
-    data_021ee284 = 1;
+    sWvrStartUpDone = 1;
 }
 
-extern "C" void func_020b0b54(void) {
+extern "C" void Startup_SetupMainArena(void) {
     OS_SetProtectionRegion2(0x23ff017);
     OS_SetArenaHi(0, 0x23ff000);
 }
@@ -642,14 +642,14 @@ extern "C" void NitroStartUp(void) {
     old = *ime;
     *ime = 1;
     r5 = func_01ffa314();
-    data_021ee284 = 0;
-    WVR_StartUpAsync(8, func_020b0b74, 0);
-    while (data_021ee284 == 0) {
+    sWvrStartUpDone = 0;
+    WVR_StartUpAsync(8, Startup_OnWvrStartUp, 0);
+    while (sWvrStartUpDone == 0) {
     }
     OS_RestoreInterrupts(r5);
     *ime;
     *ime = old;
-    func_020b0b54();
+    Startup_SetupMainArena();
     func_02097428();
     FS_Init(2);
     Startup_FillOverlayArea();

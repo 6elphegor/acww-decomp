@@ -34,7 +34,7 @@ void *ProcBase_GetParent(void *p);
 void ProcBase_SetExecutePriority(void *p, u32 v);
 void ProcBase_SetDrawPriority(void *p, u32 v);
 
-extern void *data_021c6210;
+extern void *gMenuHeap;
 extern u8 gTouchHeld;
 extern u8 gTouchChanged;
 extern u16 gPad[];

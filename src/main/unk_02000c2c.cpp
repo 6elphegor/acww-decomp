@@ -117,7 +117,7 @@ u32 Task_GetPhaseName(u32 a);
 u32 func_021122b0(void);
 u32 func_02113438(Unk_02000fc0_Node *a);
 void func_020e8b38(u32 a);
-void func_0204eeb0(void);
+void BlockMap_DebugStub(void);
 u8 *OS_GetDTCMAddress(void);
 void OS_VSNPrintf(const char *a, u32 b, const char *c, void *d);
 s32 Fatal_Trap(void);
@@ -373,7 +373,7 @@ void CrashScreen_Frame(void) {
                 }
             }
             if ((trig & 2) != 0 && held != 0) {
-                func_0204eeb0();
+                BlockMap_DebugStub();
             }
         }
         break;

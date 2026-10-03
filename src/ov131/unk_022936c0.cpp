@@ -35,8 +35,8 @@ s32 func_02097ce4(void *p, s32 v, s32 w);
 void *ProcBase_GetParent();
 void ProcBase_RequestDelete(void *p);
 
-void _ZN9HouseData13func_02060370Ei(void *self, s32 v);
-s32 _ZN9HouseData13func_02060388Ev(void *self);
+void _ZN9HouseData7setDebtEi(void *self, s32 v);
+s32 _ZN9HouseData7getDebtEv(void *self);
 s32 _ZN10HandCursor7getAnimEv(void *self);
 s32 _ZN10HandCursor10isAnimDoneEv(void *self);
 void MenuButtons_LoadTextColors(void *self);
@@ -638,7 +638,7 @@ void AmountEntryMenu::setupAmounts() {
     void *g = gSaveHouse;
     switch (m) {
     case 0x34:
-        lo = _ZN9HouseData13func_02060388Ev(g);
+        lo = _ZN9HouseData7getDebtEv(g);
         break;
     case 0x35:
         lo = func_02097414(q);
@@ -694,7 +694,7 @@ void AmountEntryMenu::commitAmount() {
     }
     switch (m) {
     case 0x34:
-        _ZN9HouseData13func_02060370Ei(gSaveHouse, c - a);
+        _ZN9HouseData7setDebtEi(gSaveHouse, c - a);
         break;
     case 0x35:
         func_02097410(q, c + a);

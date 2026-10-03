@@ -275,10 +275,10 @@ public:
 };
 struct Unk_02082088 { Unk_02082088(); ~Unk_02082088(); u32 pad[2]; };
 struct VillagerMood { VillagerMood(); ~VillagerMood(); u8 pad[0x5b]; u8 unk_5b; };
-class Unk_02084038 {
+class RoomFreeUnitMap {
 public:
-    Unk_02084038();
-    ~Unk_02084038();
+    RoomFreeUnitMap();
+    ~RoomFreeUnitMap();
     u32 pad[0x20 / 4];
 };
 
@@ -535,7 +535,7 @@ public:
     /* 0x898 */ u32 unk_898;
     /* 0x89c */ SickVillagerTalk unk_89c;
     /* 0xa44 */ Unk_ov004_0224cb98_BFn unk_a44;
-    /* 0xa4c */ Unk_02084038 unk_a4c;
+    /* 0xa4c */ RoomFreeUnitMap unk_a4c;
     /* 0xa6c */ s16 unk_a6c;
     /* 0xa6e */ u16 unk_a6e;
     /* 0xa70 */ Unk_ov004_0221a7d4_Vec unk_a70;

@@ -284,15 +284,15 @@ BOOL PlayerActor_LocalRequestDoorEnter(u32 a, s32 *b, s32 *c, s32 d);
 BOOL MenuCtrl_IsResultOk();
 s32 ReddPassword_LearnCurrentPlayer();
 s32 _ZN15TalkWindowState14setNextMessageEPhPv(void *o, u8 *p, char *s);
-void func_020b1040(u32 a, u32 b);
+void BuildingOccupancy_Leave(u32 a, u32 b);
 extern u8 data_ov003_02231138[];
 extern u8 data_021ed2c0[];
 ReddPassword *_ZN8ReddShop11getPasswordEv(void *p);
 s32 _ZN12ReddPassword14getAnswerIndexEv();
 void MenuCtrl_OpenLauncherWithIndex(u32 a, s32 b);
 s32 ReddPassword_CurrentPlayerKnows();
-u32 func_020b10c4(u32 a);
-void func_020b10e0(u32 a);
+u32 BuildingOccupancy_GetAnswer(u32 a);
+void BuildingOccupancy_RequestEnter(u32 a);
 s32 func_020e780c(s32 a, s32 b);
 }
 
@@ -325,8 +325,8 @@ void ClothTex_Construct(void *);
 BOOL ClothTex_LoadPattern(void *a, void *b);
 void *ClothTex_GetTex(void *);
 s32 func_020b23a0(void *);
-s32 func_020b249c(s32);
-void func_020b24a4(s32, void *);
+s32 TownFlag_GetPattern(s32);
+void TownFlag_SetPattern(s32, void *);
 s32 func_020b24ac(s32);
 void func_020547e4(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
@@ -508,14 +508,14 @@ void ReddTent::execTentIdle() {
 
 
 BOOL ReddTent::enterTentCheck() {
-    func_020b10e0(unk_132);
+    BuildingOccupancy_RequestEnter(unk_132);
     unk_232.f1 = 0;
     return TRUE;
 }
 
 
 void ReddTent::execTentCheck() {
-    u32 r = func_020b10c4(unk_132);
+    u32 r = BuildingOccupancy_GetAnswer(unk_132);
     if (r != 0) {
         u8 s;
         if (r == 2) {
@@ -536,7 +536,7 @@ BOOL ReddTent::enterTentTalkOpen() {
     if (vfunc_8c() == 0) {
         unk_1e = 0x34;
         if (unk_232.f1 == 0) {
-            func_020b1040(unk_132, 0);
+            BuildingOccupancy_Leave(unk_132, 0);
         }
     } else {
         if (unk_232.f1) {
@@ -612,7 +612,7 @@ void ReddTent::execTentMenu() {
             _ZN15TalkWindowState14setNextMessageEPhPv(unk_3c, &r[1], "sp_npc_fox");
             ((Unk_ov003_022141bc_Target *)unk_3c)->unk_08 = 1;
             setTentState(3);
-            func_020b1040(unk_132, 0);
+            BuildingOccupancy_Leave(unk_132, 0);
         }
     }
 }

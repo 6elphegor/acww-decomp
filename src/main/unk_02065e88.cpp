@@ -1150,7 +1150,7 @@ struct Unk_02068848_Owner {
 
 class HouseData {
 public:
-    s32 func_020604c4();
+    s32 getLevel();
 };
 
 // Script command handlers: member functions reached through pointer tables at 0x020dd6b4..0x020ddbf8
@@ -3239,7 +3239,7 @@ void TalkParserCondTags::tagBranchHouseUnk() {
     u8 r[5];
     Sel(unk_24)->vfunc_34(4, 4);
     unk_38.getArgs4(&r[1], &r[2], &r[3], &r[4]);
-    s32 t = ((HouseData *)gSaveHouse)->func_020604c4();
+    s32 t = ((HouseData *)gSaveHouse)->getLevel();
     s32 i;
     if (t == 0) i = 0;
     else if (t >= 1 && t <= 2) i = 1;

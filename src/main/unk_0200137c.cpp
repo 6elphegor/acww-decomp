@@ -253,7 +253,7 @@ void func_020e8b38(u32 a);
 }
 
 extern "C" {
-void func_0204eeb0(void);
+void BlockMap_DebugStub(void);
 }
 
 extern "C" {

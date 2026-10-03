@@ -33,7 +33,7 @@ struct Unk_ov004_Vec3C : Unk_ov004_Vec3 {
 };
 
 extern "C" {
-extern void *data_021c6210;
+extern void *gMenuHeap;
 // linker-provided absolute symbol (overlay id 93), no relocation in the original
 extern u32 OVERLAY_93_ID[];
 
@@ -69,7 +69,7 @@ extern void *sKkShowFx;
 
 void KkShowFx_Start(void) {
     OverlayMgr_Acquire((u32)OVERLAY_93_ID);
-    sKkShowFx = Heap_Alloc(data_021c6210, 0x1fc4);
+    sKkShowFx = Heap_Alloc(gMenuHeap, 0x1fc4);
     if (sKkShowFx) {
         func_ov093_022921b8(sKkShowFx);
     }
@@ -92,7 +92,7 @@ void KkShowFx_CallUnk1f70(void) {
 void KkShowFx_Stop() {
     if (sKkShowFxActive & 1) {
         func_ov093_02291f5c(sKkShowFx);
-        void *heap = data_021c6210;
+        void *heap = gMenuHeap;
         func_ov093_02292174(sKkShowFx);
         Heap_Free(heap, sKkShowFx);
         sKkShowFx = 0;

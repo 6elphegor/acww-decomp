@@ -282,10 +282,10 @@ void ClothTex_Destruct(void *);
 void ClothTex_Construct(void *);
 BOOL ClothTex_LoadPattern(void *a, void *b);
 void *ClothTex_GetTex(void *);
-void *_ZN12Unk_020b23a013func_020b23a0Ev(void *);
-s32 func_020b249c(s32);
-void func_020b24a4(s32, void *);
-s32 _ZN12Unk_020b24ac13func_020b24acEv(void *);
+void *_ZN19TownStyleRecordView11getTownFlagEv(void *);
+s32 TownFlag_GetPattern(s32);
+void TownFlag_SetPattern(s32, void *);
+s32 _ZN8TownFlag13getGateDesignEv(void *);
 void _ZN9AnimModel8stepAnimEv(void *);
 void FieldPos_ToUnit(s32 *, s32 *, s32 *);
 BOOL Ground_SetQuadrantsBlocked(s32, s32, s32);
@@ -295,8 +295,8 @@ u32 GateHouse_GetModelName();
 s32 GateHouse_GetDesign();
 void GateHouse_Create();
 }
-#define func_020b23a0 _ZN12Unk_020b23a013func_020b23a0Ev
-#define func_020b24ac _ZN12Unk_020b24ac13func_020b24acEv
+#define TownStyleRecordView_getTownFlag _ZN19TownStyleRecordView11getTownFlagEv
+#define TownFlag_getGateDesign _ZN8TownFlag13getGateDesignEv
 #define AnimModel_stepAnim _ZN9AnimModel8stepAnimEv
 
 class GateHouse : public BuildingActor {
@@ -349,7 +349,7 @@ GateHouse::~GateHouse() {
 
 BOOL GateHouse::vfunc_70() {
     void *t = unk_194;
-    unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(gSaveTownFlag)));
+    unk_2b0.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
     s32 x;
     s32 y;
     FieldPos_ToUnit(&x, &y, unk_5c);
@@ -375,7 +375,7 @@ BOOL GateHouse::vfunc_0c() {
 }
 
 extern "C" s32 GateHouse_GetDesign() {
-    return func_020b24ac(func_020b23a0(gSaveTownFlag));
+    return TownFlag_getGateDesign(TownStyleRecordView_getTownFlag(gSaveTownFlag));
 }
 
 extern "C" u32 GateHouse_GetModelName() {
@@ -411,7 +411,7 @@ BOOL GateHouse::vfunc_94() {
 
 extern "C" BOOL GateHouse_ApplyTownFlag(GateHouse *self) {
     void *t = self->unk_194;
-    self->unk_2b0.apply(t, (void *)func_020b249c((s32)func_020b23a0(gSaveTownFlag)));
+    self->unk_2b0.apply(t, (void *)TownFlag_GetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag)));
     return TRUE;
 }
 
@@ -426,7 +426,7 @@ GateHouseFlagTexture::~GateHouseFlagTexture() {
 BOOL GateHouseFlagTexture::apply(void *res, void *b) {
     if (ClothTex_LoadPattern(unk_28, b)) {
         if (unk_00.request(res, (u32) "w", ClothTex_GetTex(unk_28), 0, 0)) {
-            func_020b24a4((s32)func_020b23a0(gSaveTownFlag), b);
+            TownFlag_SetPattern((s32)TownStyleRecordView_getTownFlag(gSaveTownFlag), b);
             return TRUE;
         }
     }

@@ -578,7 +578,7 @@ void *func_020947f0(s32 n);
 BOOL Ground_IsOnLockedExit(void *v);
 u32 NpcActor_getAngleTo(void *p, void *q);
 s32 NpcActor_findAvoidPos(void *p, void *out);
-void func_020b101c();
+void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_SavePlayerPos(void *o, s32 v);
 void SceneWarp_RequestExit(void *o, s32 v);
@@ -616,14 +616,14 @@ s32 TalkRequest_SetTargetDone(void *);
 void NpcActionCtrl_requestAction(void *, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 s32 NpcActionCtrl_isActionDone(void *);
 void func_02003e70(void *, s32, s32, s32);
-void func_020b0e60();
+void Building_PlayDoorChime();
 void NpcTalkCtrl_requestTalk(void *, s32, s32);
-void func_0205b124(void *);
-s32 func_0205afdc(void *, void *);
-void func_020b1028();
+void RoomScoreEvaluator_Construct(void *);
+s32 HappyRoom_RateMainRoom(void *, void *);
+void HouseVisitor_SetPresent();
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, s32);
-void func_0205b120(void *);
+void RoomScoreEvaluator_Destruct(void *);
 VillagerActor *func_02095204(s32);
 s32 func_020e9650(void *, void *);
 }
@@ -670,10 +670,10 @@ s32 func_0202d948(void *);
 void Unk_02013474_enableFootsteps(void *);
 void Scene_GetPrevious();
 s32 SceneId_IsTown();
-void func_020b1028();
-void func_0205b124(void *);
-void func_0205b120(void *);
-void *func_0205afdc(void *, void *);
+void HouseVisitor_SetPresent();
+void RoomScoreEvaluator_Construct(void *);
+void RoomScoreEvaluator_Destruct(void *);
+void *HappyRoom_RateMainRoom(void *, void *);
 s32 func_0201b138(void *);
 s32 func_0202dab0(void *);
 void NpcActor_setTalkRequest(void *, void *);
@@ -721,13 +721,13 @@ BOOL HouseVisitVillager::vfunc_00() {
         setVisitState(0);
     } else if (HouseVisit_IsCalled(&unk_898) != 0) {
         u32 buf[6];
-        func_020b1028();
+        HouseVisitor_SetPresent();
         unk_a56 = (func_02063b8c(0x14) + 0x28) * 0x3c;
         unk_a54 = func_02063b8c(4) + 2;
-        func_0205b124(buf);
-        unk_a4c = (u32)func_0205afdc(buf, &unk_a44);
+        RoomScoreEvaluator_Construct(buf);
+        unk_a4c = (u32)HappyRoom_RateMainRoom(buf, &unk_a44);
         setVisitState(6);
-        func_0205b120(buf);
+        RoomScoreEvaluator_Destruct(buf);
     } else {
         unk_a56 = (func_02063b8c(0x28) + 0x3c) * 0x3c;
         unk_a54 = func_02063b8c(4) + 7;
@@ -1194,15 +1194,15 @@ BOOL HouseVisitVillager::enterVisitCall() {
     unk_a3c = data_0213a740;
     unk_4cc.unk_44 = 0;
     Ground_LockExit(0);
-    func_0205b124(loc);
-    unk_a4c = func_0205afdc(loc, &unk_a44);
-    func_020b1028();
+    RoomScoreEvaluator_Construct(loc);
+    unk_a4c = HappyRoom_RateMainRoom(loc, &unk_a44);
+    HouseVisitor_SetPresent();
     if (vfunc_64()) {
         VillagerState_SetRole(Villager_GetState(vfunc_64()), 2);
     }
     unk_a59 = 30;
     func_02003e70(&unk_514, 0x4ca, 0x7f, 0);
-    func_0205b120(loc);
+    RoomScoreEvaluator_Destruct(loc);
     return TRUE;
 }
 
@@ -1228,7 +1228,7 @@ void HouseVisitVillager::execVisitDoorOpen() {
     using namespace sB;
     if (unk_898.unk_3c->unk_04 == 0) {
         func_02003e70(&unk_514, 0x4cb, 0x7f, 0);
-        func_020b0e60();
+        Building_PlayDoorChime();
         setVisitState(3);
     }
 }
@@ -1477,7 +1477,7 @@ void HouseVisitVillager::execVisitLeave() {
     using namespace sA;
     if (unk_898.unk_3c != NULL) {
         if (unk_898.unk_3c->unk_04 == 0) {
-            func_020b101c();
+            HouseVisitor_ClearPresent();
             if (vfunc_64() != NULL) {
                 VillagerState_ResetRole(Villager_GetState(vfunc_64()));
             }

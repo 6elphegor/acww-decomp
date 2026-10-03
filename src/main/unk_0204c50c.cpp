@@ -92,7 +92,7 @@ s32 BlockMap_ClearBuriedAtUnit(Unk_0204da0c_Map *m, s32 x, s32 y);
 }
 
 extern "C" {
-s32 _ZN8BlockMap13func_0204e300Eii(void *m, s32 x, s32 y);
+s32 _ZN8BlockMap14clearPlantFlagEii(void *m, s32 x, s32 y);
 }
 
 extern "C" {
@@ -144,7 +144,7 @@ BOOL Item_IsTreeStage0(u16 *p);
 }
 
 extern "C" {
-s32 func_0205b470();
+s32 FengShui_UpdateHouse();
 }
 
 extern "C" {
@@ -189,7 +189,7 @@ u32 func_020603c8(void *p);
 }
 
 extern "C" {
-u32 _ZN9HouseData13func_020604f8EiPv(void *p, u32 a, void *heap);
+u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
 }
 
 extern "C" {
@@ -371,7 +371,7 @@ u32 *SceneMapModule::buildEntries(u32 *src, s32 n, void *heap) {
     if (Scene_GetCurrent() == 0 || Scene_GetCurrent() == 0x31 || Scene_GetCurrent() == 0x2c) {
         r = (u32 *)_ZN7TownMap17buildBlockEntriesEi(gSaveTownMap, heap);
     } else if (Scene_InHouseRoom()) {
-        r = (u32 *)_ZN9HouseData13func_020604f8EiPv(gSaveHouse, Scene_GetHouseRoom(), heap);
+        r = (u32 *)_ZN9HouseData19buildRoomBlockEntryEiPv(gSaveHouse, Scene_GetHouseRoom(), heap);
     } else if (Scene_InVillagerHouse()) {
         i = Scene_GetVillagerHouse();
         r = (u32 *)ItemGrid_Alloc(heap, 4);
@@ -422,7 +422,7 @@ extern "C" void Town_ClearBorderTrees(Unk_0204da0c_Map *p) {
     if (x <= x1) {
         goto test;
     loop:
-        _ZN8BlockMap13func_0204e300Eii(p, x, y);
+        _ZN8BlockMap14clearPlantFlagEii(p, x, y);
             cx = x >> 4;
             cy = y >> 4;
             t = BlockMap_GetItemPtr(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
@@ -440,7 +440,7 @@ extern "C" void Town_ClearBorderTrees(Unk_0204da0c_Map *p) {
 loop2:
     {
         x = x0;
-        _ZN8BlockMap13func_0204e300Eii(p, x, y);
+        _ZN8BlockMap14clearPlantFlagEii(p, x, y);
             cx = x >> 4;
             cy = y >> 4;
             t = BlockMap_GetItemPtr(p, cx, cy, x - (cx << 4), y - (cy << 4), 0);
@@ -450,7 +450,7 @@ loop2:
                 }
             }
         x = x1;
-        _ZN8BlockMap13func_0204e300Eii(p, x, y);
+        _ZN8BlockMap14clearPlantFlagEii(p, x, y);
             cx = x >> 4;
             cy = y >> 4;
             t2 = BlockMap_GetItemPtr(p, cx, cy, x - (cx << 4), y - ((u32)cy << 4), 0);
@@ -510,7 +510,7 @@ s32 SceneMapModule::buildSceneMap(void *heap) {
 
 BOOL SceneMapModule::vfunc_00() {
     if (!buildSceneMap(gCurrentHeap)) return FALSE;
-    func_0205b470();
+    FengShui_UpdateHouse();
     return TRUE;
 }
 

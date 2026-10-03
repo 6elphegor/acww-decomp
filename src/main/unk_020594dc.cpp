@@ -46,17 +46,17 @@ struct Unk_0205b6e4 {
     Unk_0205b6e4 *unk_18;
 };
 
-class Unk_0205b448 {
+class RoomFengShui {
 public:
     u8 unk_00, unk_01, unk_02;
-    Unk_0205b448();
-    ~Unk_0205b448();
-    u8 func_0205b448();
-    u8 func_0205b444();
-    u8 func_0205b440();
-    void func_0205b460();
-    void func_0205b2b4(s32 m);
-    u8 func_0205b320(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind);
+    RoomFengShui();
+    ~RoomFengShui();
+    u8 getWestCount();
+    u8 getSouthCount();
+    u8 getEastCount();
+    void clear();
+    void evaluate(s32 m);
+    u8 countInStrip(s32 m, s32 x0, s32 x1, s32 y0, s32 y1, s32 kind);
 };
 
 class RoomScoreEvaluator {
@@ -67,49 +67,49 @@ public:
     u32 unk_0c;
     u16 unk_10;
     u16 unk_12;
-    void func_02059d1c(void *grid);
-    s32 func_02059db0(void *grid, u8 *f1, u8 *f2);
-    s32 func_02059e94(void *grid, s32 *out);
-    s32 func_02059f3c(void *grid, s32 *out1, s32 *out2);
-    s32 func_0205a1d0(void *grid);
-    s32 func_0205a31c(Unk_0205b448 *o);
-    s32 func_0205a344(void *grid);
-    void func_0205a3c0(void *grid);
-    s32 func_0205a480(void *grid);
-    s32 func_0205a580(void *grid);
-    s32 func_0205a6bc(void *grid, u32 *out);
+    void collectLuckyItems(void *grid);
+    s32 calcPenalty(void *grid, u8 *f1, u8 *f2);
+    s32 scoreCollection(void *grid, s32 *out);
+    s32 scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2);
+    s32 scoreColorTheme(void *grid);
+    s32 scoreFengShui(RoomFengShui *o);
+    s32 scoreBasePoints(void *grid);
+    void collectUnk06Kinds(void *grid);
+    s32 scoreSets(void *grid);
+    s32 scoreThemes(void *grid);
+    s32 scoreSeries(void *grid, u32 *out);
 };
 
 // call-site view of the callback tables (struct-returning virtuals)
-class Unk_020dc0fc_Ops {
+class RoomScoreSourceCallView {
 public:
     virtual void *vfunc_00(s32 i) = 0;
     virtual Unk_0205a930_H vfunc_04(s32 i) = 0;
     virtual Unk_0205a930_H vfunc_08(s32 i) = 0;
 };
 
-class Unk_020dc0fc {
+class RoomScoreSource {
 public:
-    Unk_020dc0fc();
-    ~Unk_020dc0fc();
+    RoomScoreSource();
+    ~RoomScoreSource();
     virtual void *vfunc_00(s32 i) = 0;
     virtual void vfunc_04(s32 a, s32 key) = 0;
     virtual void vfunc_08(s32 a, s32 key) = 0;
 };
 
-class Unk_020dc09c : public Unk_020dc0fc {
+class VillagerRoomScoreSource : public RoomScoreSource {
 public:
-    Unk_020dc09c();
-    ~Unk_020dc09c();
+    VillagerRoomScoreSource();
+    ~VillagerRoomScoreSource();
     virtual void *vfunc_00(s32 i);
     virtual void vfunc_04(s32 a, s32 key);
     virtual void vfunc_08(s32 a, s32 key);
 };
 
-class Unk_020dc0b0 : public Unk_020dc0fc {
+class HouseRoomScoreSource : public RoomScoreSource {
 public:
-    Unk_020dc0b0();
-    ~Unk_020dc0b0();
+    HouseRoomScoreSource();
+    ~HouseRoomScoreSource();
     virtual void *vfunc_00(s32 i);
     virtual void vfunc_04(s32 a, s32 key);
     virtual void vfunc_08(s32 a, s32 key);
@@ -122,14 +122,14 @@ extern const u16 data_020cab84[];
 extern u8 gSaveVillagers[];
 extern u8 gSaveData[];
 extern u8 gSavePlayers[];
-extern u8 data_021ed300[];
+extern u8 gSaveHappyRoomDate[];
 extern u8 gSaveHouse[];
 extern void *gCurrentHeap;
 }
 
 // ---- own data ----
-extern const u32 data_020cab74[3];
-const u32 data_020cab74[3] = { 0, 4, 3 };
+extern const u32 sHouseVisitGiftKinds[3];
+const u32 sHouseVisitGiftKinds[3] = { 0, 4, 3 };
 
 u32 data_020dc07c[1] = { 0x1f };
 u32 data_020dc080[1] = { 2 };
@@ -143,43 +143,43 @@ void MI_CpuFill8(void *p, s32 v, s32 n);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
 }
 
-class Unk_021c5f3c {
+class HappyRoomSeriesScores {
 public:
     u32 w[0x4a];
-    Unk_021c5f3c() { MI_CpuFill8(this, 0, 0x128); }
-    ~Unk_021c5f3c();
+    HappyRoomSeriesScores() { MI_CpuFill8(this, 0, 0x128); }
+    ~HappyRoomSeriesScores();
 };
 
-class Unk_021c5e5c {
+class HappyRoomFtrBitset {
 public:
     u8 b[0xe0];
-    Unk_021c5e5c() {
+    HappyRoomFtrBitset() {
         volatile u32 z = 0;
         MIi_CpuClearFast(z, this, 0xe0);
     }
-    ~Unk_021c5e5c();
+    ~HappyRoomFtrBitset();
 };
 
-class Unk_021c6064 {
+class HappyRoomUnk06Masks {
 public:
     u32 w[0x4a];
     u32 extra;
-    Unk_021c6064() {
+    HappyRoomUnk06Masks() {
         u32 i;
         for (i = 0; i < 0x4a; i++) w[i] = 0;
         extra = 0;
     }
-    ~Unk_021c6064();
+    ~HappyRoomUnk06Masks();
 };
 
-u8 data_021c5cc8;
-u8 data_021c5ccc;
-u8 data_021c5cd0;
-void *data_021c5cd8;
-u8 data_021c5dec[0x28];
-Unk_021c5f3c data_021c5f3c;
-Unk_021c5e5c data_021c5e5c;
-Unk_021c6064 data_021c6064;
+u8 sFengShuiEastTotal;
+u8 sFengShuiWestTotal;
+u8 sFengShuiSouthTotal;
+void *sHappyRoomVillagerMap;
+u8 sVillagerLetterWithPaperPath[0x28];
+HappyRoomSeriesScores sHappyRoomSeriesScores;
+HappyRoomFtrBitset sHappyRoomLuckyFtr;
+HappyRoomUnk06Masks sHappyRoomUnk06Masks;
 
 
 static inline BOOL Unk_0205a6bc_Range(u16 *p, u32 lo, u32 hi)
@@ -192,8 +192,8 @@ static inline BOOL Unk_0205a6bc_Range(u16 *p, u32 lo, u32 hi)
 static inline BOOL Unk_0205a6bc_Max(s32 i, u32 v)
 {
     if (i < 0x4a) {
-        if (data_021c5f3c.w[i] < v) {
-            data_021c5f3c.w[i] = v;
+        if (sHappyRoomSeriesScores.w[i] < v) {
+            sHappyRoomSeriesScores.w[i] = v;
             return TRUE;
         }
     }
@@ -202,7 +202,7 @@ static inline BOOL Unk_0205a6bc_Max(s32 i, u32 v)
 
 static inline u32 Unk_0205a930_Get(s32 i, u32 dflt)
 {
-    if (i < 0x4a) return data_021c5f3c.w[i];
+    if (i < 0x4a) return sHappyRoomSeriesScores.w[i];
     return dflt;
 }
 
@@ -234,7 +234,7 @@ s32 _ZN12Unk_02097ff48testFlagEj(void *p, s32 v);
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 void Letter_ComposeFromMail(void *obj, u8 *b, const void *fmt, void *s, void *s2, void *p);
 s32 _ZN12Unk_02097ff47setFlagEj(void *p, s32 v);
-s32 _ZN8BlockMap13func_0204e474Eii(void *grid, s32 x, s32 y);
+s32 _ZN8BlockMap12canPlaceItemEii(void *grid, s32 x, s32 y);
 s32 _ZN8SaveData8testFlagEj(void *tbl, s32 v);
 void _ZN8SaveData7setFlagEj(void *tbl, s32 v);
 void *PlayerData_GetResident(void *tbl, s32 i);
@@ -262,7 +262,7 @@ s32 Ftr_GetFlagPairA(u16 *p);
 s32 Ftr_GetFlagPairB(u16 *p);
 void MI_CpuFill8(void *p, s32 v, s32 n);
 s32 FX_Div(s32 a, s32 b);
-s32 _ZN9HouseData13func_020604c4Ev(void *p);
+s32 _ZN9HouseData8getLevelEv(void *p);
 void func_02034038(s32 v);
 void func_0203402c(u32 v);
 void MIi_CpuClearFast(u32 v, void *dst, u32 n);
@@ -280,9 +280,9 @@ s32 ItemInfo_GetSeries(u16 *p);
 void *VillagerRoomMap_Create(s32 a, void *heap);
 void VillagerRoomMap_Destroy(void *heap);
 void *HouseRoomMaps_Get(s32 i);
-void *_ZN9HouseData13func_0206052cEi(void *p, s32 a);
-u16 *_ZN9HouseRoom13func_02060850EPi(void *h, s32 i);
-u16 *_ZN9HouseRoom13func_02060834EPi(void *h, s32 i);
+void *_ZN9HouseData7getRoomEi(void *p, s32 a);
+u16 *_ZN9HouseRoom12getWallpaperEPi(void *h, s32 i);
+u16 *_ZN9HouseRoom9getCarpetEPi(void *h, s32 i);
 s32 SaveVillagers_Get(void *p, s32 k);
 s32 Villager_GetCarpet();
 s32 Villager_GetWallpaper();
@@ -303,18 +303,18 @@ s32 func_0209788c(void *p, s32 q);
 
 // ---- own functions ----
 extern "C" {
-BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v);
-BOOL func_02059a30(s32 *a, s32 *b, s32 *c, s32 *d, void *grid);
-BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n);
-void func_02059adc(void *self, s32 n);
-u32 func_0205b130(u32 *p);
-s32 func_0205b55c(u8 *out);
-void func_0205b524(u8 *out);
-s32 func_0205a930(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, Unk_020dc0fc_Ops *ops, s32 count, s32 base, u8 flag);
-void func_0205b650(u8 *out);
-u8 func_0205b4e0();
-u8 func_0205b4ec();
-u8 func_0205b4f8();
+BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v);
+BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *grid);
+BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n);
+void HappyRoom_SendPrizeLetter(void *self, s32 n);
+u32 HappyRoom_CalcLuckyBonus(u32 *p);
+s32 HappyRoomDate_IsNewWeek(u8 *out);
+void HappyRoomDate_SetEvalDay(u8 *out);
+s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *ops, s32 count, s32 base, u8 flag);
+void HappyRoomDate_SetToday(u8 *out);
+u8 FengShui_GetEastTotal();
+u8 FengShui_GetSouthTotal();
+u8 FengShui_GetWestTotal();
 }
 
 extern "C" BOOL HBlank_Replace(Unk_0205b6e4 *t, s32 a, void (*b)()) {
@@ -324,17 +324,17 @@ extern "C" BOOL HBlank_Replace(Unk_0205b6e4 *t, s32 a, void (*b)()) {
     return TRUE;
 }
 
-Unk_021c5f3c::~Unk_021c5f3c() {}
+HappyRoomSeriesScores::~HappyRoomSeriesScores() {}
 
-Unk_021c5e5c::~Unk_021c5e5c() {}
+HappyRoomFtrBitset::~HappyRoomFtrBitset() {}
 
-Unk_021c6064::~Unk_021c6064() {}
+HappyRoomUnk06Masks::~HappyRoomUnk06Masks() {}
 
-extern "C" void func_0205b680() {}
+extern "C" void HappyRoomDate_Construct() {}
 
-extern "C" void func_0205b67c() {}
+extern "C" void HappyRoomDate_Destruct() {}
 
-extern "C" void func_0205b650(u8 *out) {
+extern "C" void HappyRoomDate_SetToday(u8 *out) {
     Unk_0205b524_T t;
     t.w0 = 0;
     t.w1 = 0;
@@ -345,11 +345,11 @@ extern "C" void func_0205b650(u8 *out) {
     out[3] = 0;
 }
 
-extern "C" void func_0205b648(u8 *out) {
-    func_0205b650(out);
+extern "C" void HappyRoomDate_Reset(u8 *out) {
+    HappyRoomDate_SetToday(out);
 }
 
-extern "C" s32 func_0205b55c(u8 *out) {
+extern "C" s32 HappyRoomDate_IsNewWeek(u8 *out) {
     struct {
         Unk_0205b524_T a, b, c;
     } l;
@@ -399,7 +399,7 @@ extern "C" s32 func_0205b55c(u8 *out) {
 #undef LB
 }
 
-extern "C" void func_0205b524(u8 *out) {
+extern "C" void HappyRoomDate_SetEvalDay(u8 *out) {
     Unk_0205b524_T t;
     t.w0 = 0;
     t.w1 = 0;
@@ -410,55 +410,55 @@ extern "C" void func_0205b524(u8 *out) {
     out[2] = ((u8 *)&t)[5];
 }
 
-extern "C" u32 func_0205b504() {
-    u32 a = func_0205b4e0();
-    u32 b = func_0205b4f8();
-    u32 c = func_0205b4ec();
+extern "C" u32 FengShui_GetTotal() {
+    u32 a = FengShui_GetEastTotal();
+    u32 b = FengShui_GetWestTotal();
+    u32 c = FengShui_GetSouthTotal();
     return a + (b + c);
 }
 
-extern "C" u8 func_0205b4f8() { return data_021c5ccc; }
+extern "C" u8 FengShui_GetWestTotal() { return sFengShuiWestTotal; }
 
-extern "C" u8 func_0205b4ec() { return data_021c5cd0; }
+extern "C" u8 FengShui_GetSouthTotal() { return sFengShuiSouthTotal; }
 
-extern "C" u8 func_0205b4e0() { return data_021c5cc8; }
+extern "C" u8 FengShui_GetEastTotal() { return sFengShuiEastTotal; }
 
-extern "C" void func_0205b470() {
+extern "C" void FengShui_UpdateHouse() {
     u32 i;
-    data_021c5cc8 = 0;
-    data_021c5cd0 = 0;
-    data_021c5ccc = 0;
+    sFengShuiEastTotal = 0;
+    sFengShuiSouthTotal = 0;
+    sFengShuiWestTotal = 0;
     for (i = 0; i < 5; i++) {
-        Unk_0205b448 s;
+        RoomFengShui s;
         void *m = HouseRoomMaps_Get(i);
         if (m != NULL) {
-            s.func_0205b2b4((s32)m);
-            data_021c5ccc += s.func_0205b448();
-            data_021c5cd0 += s.func_0205b444();
-            data_021c5cc8 += s.func_0205b440();
+            s.evaluate((s32)m);
+            sFengShuiWestTotal += s.getWestCount();
+            sFengShuiSouthTotal += s.getSouthCount();
+            sFengShuiEastTotal += s.getEastCount();
         }
     }
 }
 
-void Unk_0205b448::func_0205b460() {
+void RoomFengShui::clear() {
     unk_02 = 0;
     unk_01 = unk_02;
     unk_00 = unk_01;
 }
 
-Unk_0205b448::Unk_0205b448() {
-    func_0205b460();
+RoomFengShui::RoomFengShui() {
+    clear();
 }
 
-Unk_0205b448::~Unk_0205b448() {}
+RoomFengShui::~RoomFengShui() {}
 
-u8 Unk_0205b448::func_0205b448() { return unk_00; }
+u8 RoomFengShui::getWestCount() { return unk_00; }
 
-u8 Unk_0205b448::func_0205b444() { return unk_01; }
+u8 RoomFengShui::getSouthCount() { return unk_01; }
 
-u8 Unk_0205b448::func_0205b440() { return unk_02; }
+u8 RoomFengShui::getEastCount() { return unk_02; }
 
-u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
+u8 RoomFengShui::countInStrip(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile s32 y1, volatile s32 kind) {
     u32 cnt = 0;
     u8 layer = 0;
     s32 f;
@@ -510,45 +510,45 @@ u8 Unk_0205b448::func_0205b320(s32 m, s32 x0, s32 x1, volatile s32 y0, volatile 
     return 0xff;
 }
 
-void Unk_0205b448::func_0205b2b4(s32 m) {
+void RoomFengShui::evaluate(s32 m) {
     s32 v0, v1, v2, v3;
-    func_02059a30(&v0, &v1, &v2, &v3, (void *)m);
-    unk_00 = func_0205b320(m, v0, v0 + 1, v2, v3, 1);
-    unk_01 = func_0205b320(m, v0, v1, v3 - 1, v3, 4);
-    unk_02 = func_0205b320(m, v1 - 1, v1, v2, v3, 2);
+    RoomMap_GetFloorBounds(&v0, &v1, &v2, &v3, (void *)m);
+    unk_00 = countInStrip(m, v0, v0 + 1, v2, v3, 1);
+    unk_01 = countInStrip(m, v0, v1, v3 - 1, v3, 4);
+    unk_02 = countInStrip(m, v1 - 1, v1, v2, v3, 2);
 }
 
-extern "C" Unk_020dc0fc::Unk_020dc0fc() {}
+extern "C" RoomScoreSource::RoomScoreSource() {}
 
-extern "C" Unk_020dc0fc::~Unk_020dc0fc() {}
+extern "C" RoomScoreSource::~RoomScoreSource() {}
 
-extern "C" Unk_020dc0b0::Unk_020dc0b0() {}
+extern "C" HouseRoomScoreSource::HouseRoomScoreSource() {}
 
-extern "C" Unk_020dc0b0::~Unk_020dc0b0() {}
+extern "C" HouseRoomScoreSource::~HouseRoomScoreSource() {}
 
-extern "C" void *Unk_020dc0b0::vfunc_00(s32 i) {
+extern "C" void *HouseRoomScoreSource::vfunc_00(s32 i) {
     return HouseRoomMaps_Get(i);
 }
 
-extern "C" void Unk_020dc0b0::vfunc_04(s32 a, s32 key) {
-    void *h = _ZN9HouseData13func_0206052cEi(gSaveHouse, key);
-    *(u16 *)this = *_ZN9HouseRoom13func_02060850EPi(h, 0);
+extern "C" void HouseRoomScoreSource::vfunc_04(s32 a, s32 key) {
+    void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
+    *(u16 *)this = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
 }
 
-extern "C" void Unk_020dc0b0::vfunc_08(s32 a, s32 key) {
-    void *h = _ZN9HouseData13func_0206052cEi(gSaveHouse, key);
-    *(u16 *)this = *_ZN9HouseRoom13func_02060834EPi(h, 0);
+extern "C" void HouseRoomScoreSource::vfunc_08(s32 a, s32 key) {
+    void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
+    *(u16 *)this = *_ZN9HouseRoom9getCarpetEPi(h, 0);
 }
 
-extern "C" Unk_020dc09c::Unk_020dc09c() {}
+extern "C" VillagerRoomScoreSource::VillagerRoomScoreSource() {}
 
-extern "C" Unk_020dc09c::~Unk_020dc09c() {}
+extern "C" VillagerRoomScoreSource::~VillagerRoomScoreSource() {}
 
-extern "C" void *Unk_020dc09c::vfunc_00(s32 i) {
-    return data_021c5cd8;
+extern "C" void *VillagerRoomScoreSource::vfunc_00(s32 i) {
+    return sHappyRoomVillagerMap;
 }
 
-extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
+extern "C" void VillagerRoomScoreSource::vfunc_04(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetWallpaper();
@@ -560,7 +560,7 @@ extern "C" void Unk_020dc09c::vfunc_04(s32 a, s32 key) {
     }
 }
 
-extern "C" void Unk_020dc09c::vfunc_08(s32 a, s32 key) {
+extern "C" void VillagerRoomScoreSource::vfunc_08(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetCarpet();
@@ -573,7 +573,7 @@ extern "C" void Unk_020dc09c::vfunc_08(s32 a, s32 key) {
 }
 
 #pragma thumb off
-extern "C" u32 func_0205b130(u32 *p) {
+extern "C" u32 HappyRoom_CalcLuckyBonus(u32 *p) {
     u32 s = 0;
     u32 i;
     for (i = 0; i < 0xde; i += 4) {
@@ -583,14 +583,14 @@ extern "C" u32 func_0205b130(u32 *p) {
 }
 #pragma thumb reset
 
-extern "C" void func_0205b124(Unk_0205afdc *p) {
+extern "C" void RoomScoreEvaluator_Construct(Unk_0205afdc *p) {
     p->unk_10 = 0xfff1;
     p->unk_12 = 0xfff1;
 }
 
-extern "C" void func_0205b120() {}
+extern "C" void RoomScoreEvaluator_Destruct() {}
 
-extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
+extern "C" u32 HappyRoom_RateMainRoom(Unk_0205afdc *p, s32 *out) {
     void *m = HouseRoomMaps_Get(0);
     s32 x = 3;
     u32 flags = 0;
@@ -600,25 +600,25 @@ extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
         u8 fl[2];
         u32 cnt;
         s32 v8, vc, v0;
-        for (i = 0; i < 0x4a; i++) data_021c6064.w[i] = 0;
-        data_021c6064.extra = 0;
-        MI_CpuFill8(&data_021c5f3c, 0, 0x128);
-        func_02059a30((s32 *)p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
+        for (i = 0; i < 0x4a; i++) sHappyRoomUnk06Masks.w[i] = 0;
+        sHappyRoomUnk06Masks.extra = 0;
+        MI_CpuFill8(&sHappyRoomSeriesScores, 0, 0x128);
+        RoomMap_GetFloorBounds((s32 *)p, &p->unk_08, &p->unk_04, &p->unk_0c, m);
         p->unk_10 = 0x1100;
         p->unk_12 = 0x1144;
-        h = _ZN9HouseData13func_0206052cEi(gSaveHouse, 0);
+        h = _ZN9HouseData7getRoomEi(gSaveHouse, 0);
         if (h != NULL) {
-            p->unk_10 = *_ZN9HouseRoom13func_02060850EPi(h, 0);
-            p->unk_12 = *_ZN9HouseRoom13func_02060834EPi(h, 0);
+            p->unk_10 = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
+            p->unk_12 = *_ZN9HouseRoom9getCarpetEPi(h, 0);
         }
         fl[0] = 0;
         fl[1] = 0;
-        ((RoomScoreEvaluator *)p)->func_02059db0(m, &fl[0], &fl[1]);
-        ((RoomScoreEvaluator *)p)->func_0205a3c0(m);
+        ((RoomScoreEvaluator *)p)->calcPenalty(m, &fl[0], &fl[1]);
+        ((RoomScoreEvaluator *)p)->collectUnk06Kinds(m);
         cnt = 0;
-        v8 = ((RoomScoreEvaluator *)p)->func_0205a6bc(m, &cnt);
-        vc = ((RoomScoreEvaluator *)p)->func_0205a580(m);
-        v0 = ((RoomScoreEvaluator *)p)->func_0205a480(m);
+        v8 = ((RoomScoreEvaluator *)p)->scoreSeries(m, &cnt);
+        vc = ((RoomScoreEvaluator *)p)->scoreThemes(m);
+        v0 = ((RoomScoreEvaluator *)p)->scoreSets(m);
         if (fl[1] != 0) {
             x--;
             flags |= 1;
@@ -627,7 +627,7 @@ extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
             x--;
             flags |= 2;
         }
-        if ((data_021c6064.extra & 0xf) == 0xf) {
+        if ((sHappyRoomUnk06Masks.extra & 0xf) == 0xf) {
             x++;
             flags |= 4;
         }
@@ -649,28 +649,28 @@ extern "C" u32 func_0205afdc(Unk_0205afdc *p, s32 *out) {
     return flags;
 }
 
-extern "C" void func_0205afa0(s32 a) {
+extern "C" void HappyRoom_EvaluateHouse(s32 a) {
     s32 v0;
-    Unk_020dc0b0 ops;
+    HouseRoomScoreSource ops;
     s32 v1, v2, v3;
-    func_0205a930((RoomScoreEvaluator *)a, (u16 *)&v0, &v1, &v2, &v3, (Unk_020dc0fc_Ops *)&ops, 5, 0, 1);
+    HappyRoom_Evaluate((RoomScoreEvaluator *)a, (u16 *)&v0, &v1, &v2, &v3, (RoomScoreSourceCallView *)&ops, 5, 0, 1);
 }
 
-extern "C" s32 func_0205af28(s32 a, s32 b, s32 *c, s32 *d, s32 *e, s32 *f) {
+extern "C" s32 HappyRoom_EvaluateVillagerRoom(s32 a, s32 b, s32 *c, s32 *d, s32 *e, s32 *f) {
     s32 r;
-    if (data_021c5cd8 == NULL) {
-        data_021c5cd8 = VillagerRoomMap_Create(b, gCurrentHeap);
+    if (sHappyRoomVillagerMap == NULL) {
+        sHappyRoomVillagerMap = VillagerRoomMap_Create(b, gCurrentHeap);
     }
-    Unk_020dc09c ops;
-    r = func_0205a930((RoomScoreEvaluator *)a, (u16 *)c, d, e, (s32 *)f, (Unk_020dc0fc_Ops *)&ops, 1, b, 0);
-    if (data_021c5cd8 != NULL) {
+    VillagerRoomScoreSource ops;
+    r = HappyRoom_Evaluate((RoomScoreEvaluator *)a, (u16 *)c, d, e, (s32 *)f, (RoomScoreSourceCallView *)&ops, 1, b, 0);
+    if (sHappyRoomVillagerMap != NULL) {
         VillagerRoomMap_Destroy(gCurrentHeap);
-        data_021c5cd8 = NULL;
+        sHappyRoomVillagerMap = NULL;
     }
     return r;
 }
 
-extern "C" s32 func_0205a930(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, Unk_020dc0fc_Ops *ops, s32 count, s32 base, u8 flag)
+extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *ops, s32 count, s32 base, u8 flag)
 {
     s32 total;
     s32 sel;
@@ -687,10 +687,10 @@ extern "C" s32 func_0205a930(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb
     *pa = 0;
     *pb = 0;
     *pc = 0;
-    MI_CpuFill8(&data_021c5f3c, 0, 0x128);
-    Unk_0205a930_Clear(&data_021c5e5c, 0xe0);
-    for (k = 0; k < 0x4a; k++) data_021c6064.w[k] = 0;
-    data_021c6064.extra = 0;
+    MI_CpuFill8(&sHappyRoomSeriesScores, 0, 0x128);
+    Unk_0205a930_Clear(&sHappyRoomLuckyFtr, 0xe0);
+    for (k = 0; k < 0x4a; k++) sHappyRoomUnk06Masks.w[k] = 0;
+    sHappyRoomUnk06Masks.extra = 0;
     total = 0;
     s10 = 0; s14 = 0; s18 = 0; s1c = 0; s20 = 0; s24 = 0; s28 = 0; s2c = 0; s30 = 0; j = 0;
     goto test0;
@@ -700,22 +700,22 @@ loop0:
         void *m = ops->vfunc_00(idx);
         p->unk_10 = ops->vfunc_04(idx).unk_00;
         p->unk_12 = ops->vfunc_08(idx).unk_00;
-        func_02059a30((s32 *)p, (s32 *)&p->unk_08, (s32 *)&p->unk_04, (s32 *)&p->unk_0c, m);
-        Unk_0205b448 obj;
-        obj.func_0205b2b4((s32)m);
-        p->func_0205a6bc(m, 0);
-        p->func_0205a580(m);
-        p->func_0205a480(m);
-        p->func_02059d1c(m);
-        p->func_0205a3c0(m);
-        s10 += p->func_0205a344(m);
-        s14 += p->func_0205a31c(&obj);
-        s18 += p->func_0205a1d0(m);
-        s1c += p->func_02059f3c(m, pb, pc);
-        s20 += p->func_02059e94(m, pa);
+        RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->unk_08, (s32 *)&p->unk_04, (s32 *)&p->unk_0c, m);
+        RoomFengShui obj;
+        obj.evaluate((s32)m);
+        p->scoreSeries(m, 0);
+        p->scoreThemes(m);
+        p->scoreSets(m);
+        p->collectLuckyItems(m);
+        p->collectUnk06Kinds(m);
+        s10 += p->scoreBasePoints(m);
+        s14 += p->scoreFengShui(&obj);
+        s18 += p->scoreColorTheme(m);
+        s1c += p->scoreFlagPairThemes(m, pb, pc);
+        s20 += p->scoreCollection(m, pa);
         f[0] = 0;
         f[1] = 0;
-        s24 -= p->func_02059db0(m, &f[0], &f[1]);
+        s24 -= p->calcPenalty(m, &f[0], &f[1]);
         if (f[0] != 0) s2c = 1;
         if (f[1] != 0) s30 = 1;
     }
@@ -779,10 +779,10 @@ test0:
         }
     }
     r7 = 0;
-    if ((data_021c6064.extra & 0xf) == 0xf) {
+    if ((sHappyRoomUnk06Masks.extra & 0xf) == 0xf) {
         BOOL found = FALSE;
         for (i = 0; i < 0x4a; i++) {
-            if ((data_021c6064.w[i] & 0xf) == 0xf) {
+            if ((sHappyRoomUnk06Masks.w[i] & 0xf) == 0xf) {
                 found = TRUE;
                 break;
             }
@@ -791,7 +791,7 @@ test0:
         else r7 += 0x3e8;
         total += r7;
     }
-    t = func_0205b130((u32 *)&data_021c5e5c);
+    t = HappyRoom_CalcLuckyBonus((u32 *)&sHappyRoomLuckyFtr);
     total += t;
     if (total < 0) total = 0;
     if (flags) {
@@ -811,11 +811,11 @@ test0:
         if ((u32)t >= 0x1b58) *flags |= 0x400;
     }
     if (flag != 0) {
-        if (func_0205b55c(data_021ed300) == 0) {
+        if (HappyRoomDate_IsNewWeek(gSaveHappyRoomDate) == 0) {
             if (*func_0209c37c(0, 0x22) == 0) goto end;
         }
         {
-            x = _ZN9HouseData13func_020604c4Ev(gSaveHouse);
+            x = _ZN9HouseData8getLevelEv(gSaveHouse);
             u16 b;
             s32 nb;
             u32 q;
@@ -873,9 +873,9 @@ test0:
                 }
             }
             if ((u32)(kind - 0xb) > 2) sel = idxA;
-            if (func_02059c14(p, kind, total, sel, *pa) != 0) {
-                func_02059adc(p, total);
-                func_0205b524(data_021ed300);
+            if (HappyRoom_SendScoreLetters(p, kind, total, sel, *pa) != 0) {
+                HappyRoom_SendPrizeLetter(p, total);
+                HappyRoomDate_SetEvalDay(gSaveHappyRoomDate);
             }
         }
     }
@@ -883,7 +883,7 @@ end:
     return total;
 }
 
-s32 RoomScoreEvaluator::func_0205a6bc(void *grid, u32 *out)
+s32 RoomScoreEvaluator::scoreSeries(void *grid, u32 *out)
 {
     u32 max;
     u16 acc[0x94 / 2];
@@ -960,7 +960,7 @@ s32 RoomScoreEvaluator::func_0205a6bc(void *grid, u32 *out)
     return 0x4a;
 }
 
-s32 RoomScoreEvaluator::func_0205a580(void *grid)
+s32 RoomScoreEvaluator::scoreThemes(void *grid)
 {
     u16 acc[0x94 / 2];
     u8 layer;
@@ -1012,14 +1012,14 @@ s32 RoomScoreEvaluator::func_0205a580(void *grid)
                 if (i == lo && i == hi) {
                     if ((s32)i < 0x4a) {
                         u32 v = (n + 1) * 3000;
-                        if (data_021c5f3c.w[i] < v) data_021c5f3c.w[i] = v;
+                        if (sHappyRoomSeriesScores.w[i] < v) sHappyRoomSeriesScores.w[i] = v;
                     }
                     res = 1;
                 }
             } else {
                 if (i == lo && i == hi) {
                     if ((s32)i < 0x4a) {
-                        if (data_021c5f3c.w[i] < 3000) data_021c5f3c.w[i] = 3000;
+                        if (sHappyRoomSeriesScores.w[i] < 3000) sHappyRoomSeriesScores.w[i] = 3000;
                     }
                 }
             }
@@ -1028,7 +1028,7 @@ s32 RoomScoreEvaluator::func_0205a580(void *grid)
     return res;
 }
 
-s32 RoomScoreEvaluator::func_0205a480(void *grid)
+s32 RoomScoreEvaluator::scoreSets(void *grid)
 {
     u16 acc[0x94 / 2];
     u8 layer;
@@ -1073,7 +1073,7 @@ s32 RoomScoreEvaluator::func_0205a480(void *grid)
                 res = 1;
                 if ((s32)i < 0x4a) {
                     u32 v = n * 1000;
-                    if (data_021c5f3c.w[i] < v) data_021c5f3c.w[i] = v;
+                    if (sHappyRoomSeriesScores.w[i] < v) sHappyRoomSeriesScores.w[i] = v;
                 }
             }
         }
@@ -1081,7 +1081,7 @@ s32 RoomScoreEvaluator::func_0205a480(void *grid)
     return res;
 }
 
-void RoomScoreEvaluator::func_0205a3c0(void *grid)
+void RoomScoreEvaluator::collectUnk06Kinds(void *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1105,8 +1105,8 @@ void RoomScoreEvaluator::func_0205a3c0(void *grid)
                     else if (kind == 2) bit = 2;
                     else if (kind == 3) bit = 4;
                     else if (kind == 4) bit = 8;
-                    *(volatile u32 *)&data_021c6064.w[idx] = bit | *(volatile u32 *)&data_021c6064.w[idx];
-                    data_021c6064.extra |= bit;
+                    *(volatile u32 *)&sHappyRoomUnk06Masks.w[idx] = bit | *(volatile u32 *)&sHappyRoomUnk06Masks.w[idx];
+                    sHappyRoomUnk06Masks.extra |= bit;
                 }
                 x++;
             test0:
@@ -1116,7 +1116,7 @@ void RoomScoreEvaluator::func_0205a3c0(void *grid)
     }
 }
 
-s32 RoomScoreEvaluator::func_0205a344(void *grid)
+s32 RoomScoreEvaluator::scoreBasePoints(void *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1144,14 +1144,14 @@ s32 RoomScoreEvaluator::func_0205a344(void *grid)
     return total;
 }
 
-s32 RoomScoreEvaluator::func_0205a31c(Unk_0205b448 *o)
+s32 RoomScoreEvaluator::scoreFengShui(RoomFengShui *o)
 {
-    s32 a = o->func_0205b440();
-    s32 b = o->func_0205b448();
-    return (a + (b + o->func_0205b444())) * 100;
+    s32 a = o->getEastCount();
+    s32 b = o->getWestCount();
+    return (a + (b + o->getSouthCount())) * 100;
 }
 
-s32 RoomScoreEvaluator::func_0205a1d0(void *grid)
+s32 RoomScoreEvaluator::scoreColorTheme(void *grid)
 {
     u32 n;
     u8 layer;
@@ -1215,7 +1215,7 @@ s32 RoomScoreEvaluator::func_0205a1d0(void *grid)
     return 0;
 }
 
-s32 RoomScoreEvaluator::func_02059f3c(void *grid, s32 *out1, s32 *out2)
+s32 RoomScoreEvaluator::scoreFlagPairThemes(void *grid, s32 *out1, s32 *out2)
 {
     u8 a_[3];
     u8 b_[3];
@@ -1323,7 +1323,7 @@ s32 RoomScoreEvaluator::func_02059f3c(void *grid, s32 *out1, s32 *out2)
     return total;
 }
 
-s32 RoomScoreEvaluator::func_02059e94(void *grid, s32 *out)
+s32 RoomScoreEvaluator::scoreCollection(void *grid, s32 *out)
 {
     u8 counts[5];
     u8 layer;
@@ -1365,7 +1365,7 @@ s32 RoomScoreEvaluator::func_02059e94(void *grid, s32 *out)
     return total;
 }
 
-s32 RoomScoreEvaluator::func_02059db0(void *grid, u8 *f1, u8 *f2)
+s32 RoomScoreEvaluator::calcPenalty(void *grid, u8 *f1, u8 *f2)
 {
     u8 layer;
     u32 y, x;
@@ -1404,7 +1404,7 @@ s32 RoomScoreEvaluator::func_02059db0(void *grid, u8 *f1, u8 *f2)
     return total;
 }
 
-void RoomScoreEvaluator::func_02059d1c(void *grid)
+void RoomScoreEvaluator::collectLuckyItems(void *grid)
 {
     u8 layer;
     u32 y, x;
@@ -1421,7 +1421,7 @@ void RoomScoreEvaluator::func_02059d1c(void *grid)
                 if (p && Item_IsFurniture(p)) {
                     s32 v = Item_GetFurnitureIndex(p);
                     if (FtrInfo_TestIndoorFlag0(v)) {
-                        data_021c5e5c.b[v >> 3] |= 1 << (v & 7);
+                        sHappyRoomLuckyFtr.b[v >> 3] |= 1 << (v & 7);
                     }
                 }
             }
@@ -1433,7 +1433,7 @@ void RoomScoreEvaluator::func_02059d1c(void *grid)
     }
 }
 
-extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
+extern "C" BOOL HappyRoom_SendScoreLetters(void *self, s32 a, s32 b, s32 c, s32 n)
 {
     u32 objA[0xb];
     u32 objB[9];
@@ -1474,7 +1474,7 @@ extern "C" BOOL func_02059c14(void *self, s32 a, s32 b, s32 c, s32 n)
     return FALSE;
 }
 
-extern "C" void func_02059adc(void *self, s32 n)
+extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
 {
     s32 id;
     s32 t;
@@ -1517,7 +1517,7 @@ extern "C" void func_02059adc(void *self, s32 n)
     }
 }
 
-extern "C" BOOL func_02059a30(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
+extern "C" BOOL RoomMap_GetFloorBounds(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
 {
     BOOL f0, f1, f2, f3;
     s32 y, x;
@@ -1528,7 +1528,7 @@ extern "C" BOOL func_02059a30(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
     f0 = FALSE; f1 = FALSE; f2 = FALSE; f3 = FALSE;
     for (y = 0; y < 16; y++) {
         for (x = 0; x < 16; x++) {
-            if (_ZN8BlockMap13func_0204e474Eii(grid, x, y)) {
+            if (_ZN8BlockMap12canPlaceItemEii(grid, x, y)) {
                 if (x <= *a) { *a = x; f0 = TRUE; }
                 if (x >= *b) { *b = x; f1 = TRUE; }
                 if (y <= *c) { *c = y; f2 = TRUE; }
@@ -1543,7 +1543,7 @@ extern "C" BOOL func_02059a30(s32 *a, s32 *b, s32 *c, s32 *d, void *grid)
     return FALSE;
 }
 
-extern "C" BOOL func_020599b0()
+extern "C" BOOL HappyRoom_SendWelcomeLetter()
 {
     u32 obj[0x3d];
     u8 b;
@@ -1562,18 +1562,18 @@ extern "C" BOOL func_020599b0()
     return FALSE;
 }
 
-extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v)
+extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32 v)
 {
     if (SaveVillagers_Find(gSaveVillagers, r3)) {
         u8 buf[2];
         u32 obj[0x3d];
-        _ZN10VillagerId12makeFileNameEPvjj(r3, data_021c5dec, 0x28, (s32)r0);
+        _ZN10VillagerId12makeFileNameEPvjj(r3, sVillagerLetterWithPaperPath, 0x28, (s32)r0);
         buf[0] = r1;
         VillagerId_GetPersonality(r3);
         buf[1] = LetterPaper_PickForPersonality();
         if (v != -1) buf[1] = v;
         _ZN6LetterC1Ev(obj);
-        func_02065920(obj, buf, data_021c5dec, &buf[1], r3, r2, 1);
+        func_02065920(obj, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
         if (p) _ZN12Unk_0206555410setPresentEtj(obj, *p, 1);
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
             _ZN6LetterD1Ev(obj);
@@ -1588,18 +1588,18 @@ extern "C" BOOL func_02059900(const void *r0, u8 r1, s32 r2, s32 r3, u16 *p, s32
     return FALSE;
 }
 
-extern "C" BOOL func_0205989c(s32 a, s32 b)
+extern "C" BOOL Villager_SendBirthdayNoticeLetter(s32 a, s32 b)
 {
     void *r = SaveVillagers_Find(gSaveVillagers, b);
     if (r) {
         MailText_SetSlotMonth(2, *(u8 *)Villager_GetBirthday(r));
         MailText_SetSlotDayOrdinal(3, ((u8 *)Villager_GetBirthday(r))[1]);
-        return func_02059900("ev_nbirth", func_02063b8c(3), a, b, 0, 0x1a);
+        return Villager_SendLetterWithPaper("ev_nbirth", func_02063b8c(3), a, b, 0, 0x1a);
     }
     return FALSE;
 }
 
-extern "C" s32 func_020594dc(u32 a, s32 b, s32 c)
+extern "C" s32 Villager_SendHouseVisitLetter(u32 a, s32 b, s32 c)
 {
     if (a < 1) {
         return 0;
@@ -1634,7 +1634,7 @@ extern "C" s32 func_020594dc(u32 a, s32 b, s32 c)
     case 0:
     default: {
         s32 r6 = func_0209788c(gSavePlayers, b);
-        u32 r4 = data_020cab74[func_02063b8c(3)];
+        u32 r4 = sHouseVisitGiftKinds[func_02063b8c(3)];
         ItemPickSpec o(r4, 0);
         s32 x;
         res = ItemPick_One(o, r6, 0, 1, 1, (s32)&x);
@@ -1644,6 +1644,6 @@ extern "C" s32 func_020594dc(u32 a, s32 b, s32 c)
         break;
     }
     }
-    return func_02059900("re_q10", func_02063b8c(3), b, c, (u16 *)&res, -1);
+    return Villager_SendLetterWithPaper("re_q10", func_02063b8c(3), b, c, (u16 *)&res, -1);
 }
 

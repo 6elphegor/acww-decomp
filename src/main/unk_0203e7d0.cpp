@@ -180,7 +180,7 @@ void MenuCtrl_RequestOpen(u32);
 }
 
 extern "C" {
-s32 func_020b14f0(void);
+s32 Field_GetExitedBuildingKey(void);
 }
 
 extern "C" {

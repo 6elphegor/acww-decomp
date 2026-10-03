@@ -107,11 +107,11 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_020b0f0c();
+s32 Taxi_IsArriving();
 }
 
 extern "C" {
-s32 func_020b0f30();
+s32 Taxi_IsLeaving();
 }
 
 extern "C" {
@@ -620,7 +620,7 @@ extern "C" void Snd_CreateScene() {
                 NEW(0x20, func_020f269c);
                 break;
             }
-            if (func_020b0f0c() != 0 || func_020b0f30() != 0) {
+            if (Taxi_IsArriving() != 0 || Taxi_IsLeaving() != 0) {
                 NEW(8, func_020f2878);
             } else if (Scene_InTownUnk31() != 0) {
                 NEW(8, func_020f1118);

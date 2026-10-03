@@ -1770,7 +1770,7 @@ s32 FieldPos_FromUnitCenter(void *p, u32 a, s32 b);
 u16 *BlockMap_GetItemPtrAtPos(void *g, void *p, s32 a);
 s32 Pocket_FindEmpty(void);
 s32 Scene_InHouseRoom(void);
-u32 func_020b0f54(void);
+u32 Room_CountOccupants(void);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 void PendingUnit_ApplyAt(void *p, s32 a);
@@ -2155,7 +2155,7 @@ extern "C" void PlayerActor_SetupPickUpItem(Obj *o, Msg *m) {
             return;
         }
     }
-    if (func_020b0f54() <= 1) {
+    if (Room_CountOccupants() <= 1) {
         if (b < 0) {
             struct {
                 s32 a;
@@ -2346,7 +2346,7 @@ s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN11PlayerActor17getInputMagnitudeEv(Obj *o);
 s32 _ZN11PlayerActor19getInputDirRelativeEv(Obj *o);
 s32 _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
-s32 func_020b0f54(void);
+s32 Room_CountOccupants(void);
 s32 Scene_InHouseRoom(void);
 s32 TalkRequest_AddPlayerMessage(void);
 void TalkRequest_FinishPlayerMessage(void);
@@ -2792,7 +2792,7 @@ extern "C" void PlayerActor_FtrHoldUpdate(Obj *o) {
             o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
             _ZN11PlayerActor11requestWaitEjjj(o, 3, 1, -1);
         } else if (_ZN11PlayerActor17getInputMagnitudeEv(o) > 0x333) {
-            if ((u32)func_020b0f54() <= 1) {
+            if ((u32)Room_CountOccupants() <= 1) {
                 o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
                 switch (_ZN11PlayerActor19getInputDirRelativeEv(o)) {
                 case 2:
@@ -5776,8 +5776,8 @@ void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, s32 a);
 s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 s32 TalkRequest_FinishSceneEntry();
-s32 func_020b0ef4();
-void func_020b0e60();
+s32 Building_GetLastEntranceType();
+void Building_PlayDoorChime();
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
 s32 Scene_InHouseRoom();
@@ -6032,7 +6032,7 @@ extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
     s32 r7 = 0;
     o->unk_2dc = r7;
     u32 r5 = r7;
-    s32 mode = func_020b0ef4();
+    s32 mode = Building_GetLastEntranceType();
     o->unk_7f4 = 1;
     switch (mode) {
     case 2:
@@ -6064,7 +6064,7 @@ extern "C" void PlayerActor_SetupDoorWalkIn(Obj *o, Obj *arg) {
     } else {
         if (r5 != 0) {
             _ZN12Unk_02006d146playSeEj(o, r5);
-            if (r5 == 0x4cb) func_020b0e60();
+            if (r5 == 0x4cb) Building_PlayDoorChime();
         }
         c.x = r6->x;
         c.y = r6->y;
@@ -6095,7 +6095,7 @@ extern "C" void PlayerActor_DoorWalkInUpdate(Obj *o) {
         if (r4->unk_15 == 2) {
             if (*p != 0) return;
             if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->unk_7fc) == 0) {
-                func_020b0e60();
+                Building_PlayDoorChime();
                 _ZN12Unk_02006d146playSeEj(o, 0x4cb);
             }
             o->unk_7f4 = 1;
@@ -6193,7 +6193,7 @@ extern "C" void PlayerActor_SetupDoorWalkOut(Obj *o, Obj *arg) {
     V3 *r6 = (V3 *)((u8 *)arg + 0xc);
     if (o->unk_700 != 1) _ZN12Unk_020102ec9startAnimEijt(o, 1, 3, 0);
     u32 r5 = 0;
-    s32 r7 = func_020b0ef4();
+    s32 r7 = Building_GetLastEntranceType();
     switch (r7) {
     case 2:
         r5 = 0x4cb;
@@ -6211,7 +6211,7 @@ extern "C" void PlayerActor_SetupDoorWalkOut(Obj *o, Obj *arg) {
     if (r5 != 0) {
         if (_ZN11CommManager11isLocalSlotEj(gCommManager, o->unk_7fc) == 0) {
             _ZN12Unk_02006d146playSeEj(o, r5);
-            if (r5 == 0x4cb) func_020b0e60();
+            if (r5 == 0x4cb) Building_PlayDoorChime();
         }
     }
     c.x = r6->x;
@@ -6338,7 +6338,7 @@ void _ZN11CommManager9endRecordEjj(void *g, u32 a, u32 b);
 s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 void func_020954b8(u8 *p, s32 a, s32 b);
 s32 Scene_InHouseRoom();
-s32 func_020b0f54();
+s32 Room_CountOccupants();
 s32 Scene_GetWarpRequest();
 void SceneWarp_RequestExit(s32 a, s32 b);
 s32 Pocket_FindEmpty();
@@ -6640,7 +6640,7 @@ extern "C" s32 PlayerActor_RoomInteractAt(Obj *o, s32 param) {
         }
         if (r5 == 0) goto second;
         if (Item_IsNormalItem(r5) == 0) goto second;
-        if ((u32)func_020b0f54() <= 1) {
+        if ((u32)Room_CountOccupants() <= 1) {
             if (_ZN12Unk_02006d1415startFieldQueryEiii(o, &tgt, 0, param) == 0) goto second;
             if (_ZN12Unk_02006d1420requestByFieldAnswerEii(o, &tgt, 1) == 0) goto second;
             return 1;
@@ -6675,7 +6675,7 @@ second:
         _ZN12Unk_02006d1418requestPickUpReachE17Unk_0200b750_Pairijs(o, &pe, -1, 6, -1);
         return 1;
     }
-    if ((u32)func_020b0f54() <= 1) {
+    if ((u32)Room_CountOccupants() <= 1) {
         if (_ZN12Unk_02006d1415startFieldQueryEiii(o, &tgt, 0, param) == 0) goto fail;
         if (_ZN12Unk_02006d1420requestByFieldAnswerEii(o, &tgt, 0) == 0) goto fail;
         return 1;

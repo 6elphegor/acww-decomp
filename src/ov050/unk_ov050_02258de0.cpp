@@ -25,15 +25,15 @@
 #define NpcMoveCtrl_setTargetAngle _ZN11NpcMoveCtrl14setTargetAngleEs
 #define NpcMoveCtrl_setWaypoint _ZN11NpcMoveCtrl11setWaypointEP17Unk_0201a334_Vec3
 #define RoomBgm_forceClosingMusic _ZN7RoomBgm17forceClosingMusicEv
-#define func_0204e328 _ZN8BlockMap13func_0204e328EPv
-#define func_020602cc _ZN9HouseData13func_020602ccEj
-#define func_02060308 _ZN9HouseData13func_02060308Ev
-#define func_02060340 _ZN9HouseData13func_02060340Ev
-#define func_02060370 _ZN9HouseData13func_02060370Ei
-#define func_02060388 _ZN9HouseData13func_02060388Ev
-#define func_02060430 _ZN9HouseData13func_02060430Ej
-#define func_020604c4 _ZN9HouseData13func_020604c4Ev
-#define func_020604d4 _ZN9HouseData13func_020604d4Ev
+#define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
+#define HouseData_orderUpgrade _ZN9HouseData12orderUpgradeEj
+#define HouseData_isUpgradePaidOff _ZN9HouseData16isUpgradePaidOffEv
+#define HouseData_startLoan _ZN9HouseData9startLoanEv
+#define HouseData_setDebt _ZN9HouseData7setDebtEi
+#define HouseData_getDebt _ZN9HouseData7getDebtEv
+#define HouseData_orderRoofPaint _ZN9HouseData14orderRoofPaintEj
+#define HouseData_getLevel _ZN9HouseData8getLevelEv
+#define HouseData_isUpgradePending _ZN9HouseData16isUpgradePendingEv
 #define TalkWindowState_setSlotFromString _ZN15TalkWindowState17setSlotFromStringEiii
 #define TalkWindowState_setSlot _ZN15TalkWindowState7setSlotEiPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
@@ -707,16 +707,16 @@ s32 Item_IsFurniture(void *p);
 s32 Item_GetShopPrice(u16 *p);
 void *Item_GetMemberPrice(u16 *p);
 s32 Item_GetPrice(u16 *p);
-void func_0204e328(void *g, void *v);
+void BlockMap_getWalkLinksAtPos(void *g, void *v);
 void FieldPos_ToUnit(s32 *a, s32 *b, Unk_ov050_0225c9dc_Vec *v);
-void func_020602cc(void *g, s32 a);
-s32 func_02060308(void *m);
-void func_02060340(void *g);
-void func_02060370(void *g, s32 v);
-s32 func_02060388(void *g);
-void func_02060430(void *g, u32 a);
-s32 func_020604c4(void *m);
-BOOL func_020604d4(void *p);
+void HouseData_orderUpgrade(void *g, s32 a);
+s32 HouseData_isUpgradePaidOff(void *m);
+void HouseData_startLoan(void *g);
+void HouseData_setDebt(void *g, s32 v);
+s32 HouseData_getDebt(void *g);
+void HouseData_orderRoofPaint(void *g, u32 a);
+s32 HouseData_getLevel(void *m);
+BOOL HouseData_isUpgradePending(void *p);
 s32 func_020626a8(u16 *p);
 s32 func_02063b8c(s32 a);
 void TalkWindowState_setSlotFromString(void *o, s32 a, void *b, void *c);
@@ -1702,7 +1702,7 @@ BOOL SpNpcNookShop::mainAct10() {
     Unk_ov050_0225c9dc_Vec out;
     NpcActor_FindFreeUnitNear(&out, this, &v);
     s32 t = getDistanceToPlayer(4);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (t > 0x4000) {
         if (NpcActionCtrl_getAction(&unk_564) == 1) {
             NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);
@@ -2391,55 +2391,55 @@ s32 SpNpcNookShopTalk::getTopic() {
 extern "C" s32 SpNpcNookShop_GetHouseUpgradeMsg(void *self) {
     u8 *g = gSaveData;
     u8 *const m = gSaveHouse;
-    s32 r5 = func_02060388(m);
-    s32 r4 = func_020604c4(m);
-    s32 r6 = func_02060308(m);
+    s32 r5 = HouseData_getDebt(m);
+    s32 r4 = HouseData_getLevel(m);
+    s32 r6 = HouseData_isUpgradePaidOff(m);
     if (SaveData_testFlag(g, 0xe)) {
         return 0;
     }
-    if (r5 == 0 && r4 == 0 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 0 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x41;
     }
     if (r4 == 1 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x49;
     }
-    if (r5 == 0 && r4 == 1 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 1 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4a;
     }
     if (r4 == 2 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x4b;
     }
-    if (r5 == 0 && r4 == 2 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 2 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4c;
     }
     if (r4 == 3 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x4d;
     }
-    if (r5 == 0 && r4 == 3 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 3 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x4e;
     }
     if (r4 == 4 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x4f;
     }
-    if (r5 == 0 && r4 == 4 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 4 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x50;
     }
     if (r4 == 5 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x51;
     }
-    if (r5 == 0 && r4 == 5 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 5 && !HouseData_isUpgradePending(g + 0xe558)) {
         return 0x52;
     }
     if (r4 == 6 && r6 != 0) {
         SaveData_clearFlag(gSaveData, 0xd);
         return 0x53;
     }
-    if (r5 == 0 && r4 == 6 && !func_020604d4(g + 0xe558)) {
+    if (r5 == 0 && r4 == 6 && !HouseData_isUpgradePending(g + 0xe558)) {
         SaveData_setFlag(gSaveData, 0xe);
         return 0x54;
     }
@@ -2993,12 +2993,12 @@ void SpNpcNookShopTalk::onArbeitMsgEnd31(void *h) {
 void SpNpcNookShopTalk::arbeitReduceLoan(void *h) {
     u8 *const a = gSaveData;
     u8 *const g = gSaveHouse;
-    if (func_02060388(g) < 0x579) {
+    if (HouseData_getDebt(g) < 0x579) {
         unk_cc = 0x36;
     } else {
-        s32 t = func_02060388(g);
-        func_02060370(g, t - 0x578);
-        s32 s = func_02060388(a + 0xe558);
+        s32 t = HouseData_getDebt(g);
+        HouseData_setDebt(g, t - 0x578);
+        s32 s = HouseData_getDebt(a + 0xe558);
         ActorTalkRequest_setNumberSlot(this, s, 2, 10, 1, 0);
         unk_cc = 0x34;
     }
@@ -3384,7 +3384,7 @@ void SpNpcNookShopTalk::onPurchaseDone() {
         } else {
             idx = -1;
         }
-        func_02060430(gSaveHouse, (u8)idx);
+        HouseData_orderRoofPaint(gSaveHouse, (u8)idx);
     } else {
         unk_cc = 0x23;
     }
@@ -3436,7 +3436,7 @@ void SpNpcNookShopTalk::showFirstPurchaseHint() {
 }
 
 void SpNpcNookShopTalk::ackHouseUpgrade() {
-    func_02060340(gSaveHouse);
+    HouseData_startLoan(gSaveHouse);
 }
 
 void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
@@ -3444,7 +3444,7 @@ void SpNpcNookShopTalk::setRoofColor(s32 row, s32 col) {
     u8 v = q[col];
     u8 b = v;
     TalkWindowState_setSlotFromString(unk_3c, 2, &b, (void *)"st_roof_paint");
-    func_020602cc(gSaveHouse, v);
+    HouseData_orderUpgrade(gSaveHouse, v);
 }
 extern "C" void *data_ov050_0225e080[2] = {(void *)_ZN17SpNpcNookShopTalk20arbeitPresentUniformEPv, 0};
 

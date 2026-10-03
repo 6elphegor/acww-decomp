@@ -107,7 +107,7 @@ extern u8 gTouchPressX;
 extern u8 gTouchPressY;
 extern u32 gCurrentHeap;
 extern u8 gSavePlayers[];
-extern void *data_021c6210;
+extern void *gMenuHeap;
 }
 
 // Main-module helper classes (real symbol names) -------------------------------------------------
@@ -2430,7 +2430,7 @@ void PostOfficeMenu::updateOnlineSend() {
 }
 
 BOOL PostOfficeMenu::sendLetterRecord(void *p) {
-    void *heap = data_021c6210;
+    void *heap = gMenuHeap;
     u8 *buf = (u8 *)Heap_AllocTail(heap, 0xf5);
     buf[0] = 8;
     MI_CpuCopy8(p, buf + 1, 0xf4);

@@ -37,9 +37,9 @@
 #define func_02055cac _ZN9ModelAnimC2Ev
 #define AnimFrameCtrl_hasPassedFrame _ZN13AnimFrameCtrl14hasPassedFrameEi
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv
-#define func_0205f92c _ZN12Unk_0205f8d413func_0205f92cEi
-#define func_0205fb40 _ZN12Unk_0205f8d413func_0205fb40Ev
-#define func_0205fbbc _ZN12Unk_0205f8d413func_0205fbbcEPv
+#define FishBobber_setState _ZN10FishBobber8setStateEi
+#define FishBobber_nudge _ZN10FishBobber5nudgeEv
+#define FishBobber_setFish _ZN10FishBobber7setFishEPv
 #define CommManager_endRecord _ZN11CommManager9endRecordEjj
 #define CommManager_writeRecord _ZN11CommManager11writeRecordEPhj
 #define CommManager_beginRecord _ZN11CommManager11beginRecordEv
@@ -931,13 +931,13 @@ s32 Collision_Move(void *a, void *b, void *c, s32 d, s32 e, s32 f, s32 g);
 s32 Ground_GetWaterKind(s32 x, s32 y);
 u32 MapBlock_GetAttr(void *c);
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
-void func_0204f4f8(u32 i, s32 a, s32 b, s32 c, s32 d);
+void FishDisplay_PostRequest(u32 i, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_attachAnim(void *o);
 void BlendAnimModel_initAnim(void *o, s32 a, s32 b, s32 c, s32 d, s32 e);
 BOOL AnimModel_allocAnmObj(void *o, void *t);
-s32 func_0205f92c(void *p, s32 a);
-void func_0205fbbc(void *e, void *o);
-void *func_0205ffe4();
+s32 FishBobber_setState(void *p, s32 a);
+void FishBobber_setFish(void *e, void *o);
+void *FishBobber_GetFloating();
 u32 func_02063b8c(u32 n);
 void *File_LoadAlloc(void *a, void *b, s32 c, s32 d);
 void CommManager_endRecord(void *g, s32 a, s32 b);
@@ -980,13 +980,13 @@ void FieldPos_FromUnitCenter(void *a, s32 x, s32 y);
 void FieldPos_SnapToUnitCenter(void *a, void *b);
 void FieldUnit_FromBlockUnit(s32 *a, s32 *b, s32 c, s32 d, s32 e, s32 f);
 BOOL func_0204f134(s32 *a, s32 *b, s32 c);
-BOOL func_0204f364(void *o, s32 a);
-void func_0204f3b4(s32 h);
-void func_0204f3e4(s32 h, s32 a, V3_f5 *p, V3_f5 *q, s32 r, s32 s, s32 t, s32 u, s32 v, s32 w);
-s32 func_0204f49c();
-s32 func_0204f4a4(Unk_ov003_02221364_Vec *v, s32 *p, u8 i);
-u32 func_0204f4c8(u8 i);
-u32 func_0204f4e0(u8 i);
+BOOL FishDisplay_HasPassedFrame(void *o, s32 a);
+void FishDisplay_Release(s32 h);
+void FishDisplay_SetEntry(s32 h, s32 a, V3_f5 *p, V3_f5 *q, s32 r, s32 s, s32 t, s32 u, s32 v, s32 w);
+s32 FishDisplay_Acquire();
+s32 FishDisplay_GetRequestPos(Unk_ov003_02221364_Vec *v, s32 *p, u8 i);
+u32 FishDisplay_GetRequestFish(u8 i);
+u32 FishDisplay_GetRequestKind(u8 i);
 void AnimModel_detachJointAnim(void *p);
 s32 AnimModel_drawAnimated(void *p, V3_f3 *v);
 s32 AnimModel_stepAnim(void *p);
@@ -1005,13 +1005,13 @@ void func_02055c38(void *p);
 void func_02055cac(void *p);
 BOOL AnimFrameCtrl_hasPassedFrame(void *o, s32 a);
 s32 AnimFrameCtrl_step(void *p);
-void func_0205bfd0();
-void func_0205bfec();
-void func_0205c004();
-void func_0205c020();
-BOOL func_0205f1e8(V3_f5 *a, s32 b, s32 *c, s32 *d, s32 e);
-void func_0205f284(V3_f5 *a, V3_f5 *b, s32 *c, s32 *d, s32 e);
-void func_0205fb40(void *);
+void FishFinHeap_Destroy();
+void FishFinHeap_Create();
+void FishShadowHeap_Destroy();
+void FishShadowHeap_Create();
+BOOL Fishing_StepArc(V3_f5 *a, s32 b, s32 *c, s32 *d, s32 e);
+void Fishing_CalcArcSpeed(V3_f5 *a, V3_f5 *b, s32 *c, s32 *d, s32 e);
+void FishBobber_nudge(void *);
 void NetBuf_PackPair20(void *, s32, s32);
 void func_020944f8(T48_f5 *out, u32 a);
 void *func_0209c0ac(void *a);
@@ -2049,7 +2049,7 @@ extern "C" s32 FishShadow_BiteInspect(Obj_f8 *self)
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, s, (s16)self->unk_138);
         if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_23d = 0;
-            func_0205fb40(p);
+            FishBobber_nudge(p);
             self->unk_225 = 1;
         }
         break;
@@ -2103,7 +2103,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         s32 dv = ((s32)((u8 *)(sFishSizeClassParams))[self->unk_1ff * 0x14] << 12) / 100;
         if (((s32 (*)(void *, void *, s32, s32, s32))FieldFish_IsInBox)(&self->unk_120, q, dv, dv, dv)) {
             self->unk_13c = r;
-            ((s32 (*)(void *, u32))func_0205f92c)(p, 5);
+            ((s32 (*)(void *, u32))FishBobber_setState)(p, 5);
             func_02003e70(self, 0x84f, 0x7f, r);
             {
                 s32 t = self->unk_7e;
@@ -2142,7 +2142,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         d = ((s64 (*)(void *, void *))func_020e9600)(&self->unk_120, q);
         if ((s64)func_01ffcb0c(dv, dv) >= d) {
             self->unk_23d = 0;
-            func_0205fb40(p);
+            FishBobber_nudge(p);
             self->unk_225 = 4;
         }
         ((void (*)(void *, s32))FishShadow_SetAnimSpeed)(self, 0x18);
@@ -2155,7 +2155,7 @@ extern "C" s32 FishShadow_BiteNibble(Obj_f8 *self)
         } else {
             ang = Math_AngleXZ(&self->unk_120, q);
             if (((s32 (*)(s32, s32))FieldFish_RandRange)(0, 100) < 5) {
-                func_0205fb40(p);
+                FishBobber_nudge(p);
             }
         }
         ((s32 (*)(void *, s32, s32))FieldFish_MoveXZ)(&self->unk_120, 0x100, ang);
@@ -2233,7 +2233,7 @@ extern "C" s32 FishShadow_BiteTug(Obj_f8 *self)
         u8 *lim = ((Unk_ov003_02223924_Tbl *)((u8 *)&sFishRodParams[0].q))[idx].p;
         if (cur >= lim[data_020ca316[self->unk_7e * 6]]) {
             self->unk_13c = 0;
-            ((s32 (*)(void *, u32))func_0205f92c)(p, 4);
+            ((s32 (*)(void *, u32))FishBobber_setState)(p, 4);
             return 0;
         }
     }
@@ -2432,7 +2432,7 @@ extern "C" BOOL FishShadow_TryHook(Obj_f7 *o) {
         o->unk_224 = 5;
         o->unk_225 = 10;
         o->unk_13c = 0;
-        ((void (*)(Ent_f7 *, s32))func_0205f92c)(e, 6);
+        ((void (*)(Ent_f7 *, s32))FishBobber_setState)(e, 6);
         o->unk_23e = FieldFish_RandRange(0, 2) != 0;
         o->unk_23f = FieldFish_RandRange(((u8 *)((u8 *)&sFishSizeClassParams[0].a2))[o->unk_1ff * 0x14], ((u8 *)((u8 *)&sFishSizeClassParams[0].a3))[o->unk_1ff * 0x14]);
         V3_f7 *ps = &e->unk_08;
@@ -2652,7 +2652,7 @@ extern "C" BOOL FishCatch_NetSendStored(s32 idx) {
 //@ 0x222323c
 extern "C" BOOL FishCatch_IsDisplayReady(Rec_f7 *self, u32 a) {
     BOOL r = FALSE;
-    if (func_0204f364(self->unk_44, 1)) {
+    if (FishDisplay_HasPassedFrame(self->unk_44, 1)) {
         r = TRUE;
     }
     return r;
@@ -2719,7 +2719,7 @@ extern "C" BOOL FishShadow_FleeFromPlayer(Obj_f7 *self) {
 //@ 0x2222fe4
 extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
     s32 res = 0;
-    Ent_f7 *e = ((Ent_f7 * (*)(void))func_0205ffe4)();
+    Ent_f7 *e = ((Ent_f7 * (*)(void))FishBobber_GetFloating)();
     s32 who;
     Obj_f7 *p;
     s32 ok;
@@ -2771,7 +2771,7 @@ extern "C" BOOL FishShadow_TryNoticeBobber(Obj_f7 *self) {
             } else {
                 self->unk_227 = (s8)who;
                 self->unk_22c = e;
-                ((void (*)(Ent_f7 *, void *))func_0205fbbc)(e, self);
+                ((void (*)(Ent_f7 *, void *))FishBobber_setFish)(e, self);
                 res = 1;
                 self->unk_23c = 1;
             }
@@ -2796,7 +2796,7 @@ extern "C" BOOL FishShadow_CanSeeBobber(void *self, s32 a1, s32 a2, s32 a3)
     s32 val;
     Unk_ov003_02222f28_Ent *t;
 
-    p = (u8 *)func_0205ffe4();
+    p = (u8 *)FishBobber_GetFloating();
     if (p == 0) {
         return FALSE;
     }
@@ -2939,7 +2939,7 @@ extern "C" BOOL FishShadow_LoseBobber(Obj_f6 *self)
     }
     self->unk_23d = 0;
     self->unk_227 = -1;
-    ((void (*)(void *, s32))func_0205fbbc)(p, 0);
+    ((void (*)(void *, s32))FishBobber_setFish)(p, 0);
     self->unk_22c = 0;
     self->unk_23c = 0;
     self->unk_224 = 7;
@@ -3276,7 +3276,7 @@ extern "C" void FishCatch_Update(Obj_f6 *self, void *arg)
         if (((s32 (*)(void *))CommManager_isOnline)(s)) {
             if (((s32 (*)(void *, void *))CommManager_isMyAid)(s, arg) == 0) {
                 if (self->unk_40 == 4) {
-                    ((s32 (*)(void *, s32, s32, s32, s32))func_0204f4f8)(arg, 8, -1, 0, 0);
+                    ((s32 (*)(void *, s32, s32, s32, s32))FishDisplay_PostRequest)(arg, 8, -1, 0, 0);
                 }
             }
         }
@@ -3296,7 +3296,7 @@ extern "C" BOOL FishCatch_StateStart(Self_f5 *self, u32 a) {
     if (self->unk_44 != -1) {
         return FALSE;
     }
-    self->unk_44 = func_0204f49c();
+    self->unk_44 = FishDisplay_Acquire();
     if (self->unk_48 != 5) {
         ((void (*)(V3_f5 *, s32))Fish_GetDisplayScale)(&self->unk_84, self->unk_90);
     }
@@ -3352,7 +3352,7 @@ extern "C" BOOL FishCatch_SetupLine(Self_f5 *self, u32 a) {
     CP(l.dead, l.w);
     CP(l.y, l.w);
     CP(l.z, self->unk_60);
-    func_0205f284(&l.y, &l.z, &self->unk_4c, &self->unk_50, 3);
+    Fishing_CalcArcSpeed(&l.y, &l.z, &self->unk_4c, &self->unk_50, 3);
     CP(self->unk_54, self->unk_60);
     return TRUE;
 }
@@ -3424,7 +3424,7 @@ extern "C" BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a) {
         break;
     }
     }
-    func_0204f3e4(self->unk_44, self->unk_90, &self->unk_54, &self->unk_84, self->unk_96, self->unk_98, self->unk_9a, 1, r6, r5);
+    FishDisplay_SetEntry(self->unk_44, self->unk_90, &self->unk_54, &self->unk_84, self->unk_96, self->unk_98, self->unk_9a, 1, r6, r5);
     return TRUE;
 }
 
@@ -3443,7 +3443,7 @@ extern "C" BOOL FishCatch_UpdateLocalReel(Self_f5 *self, u32 a) {
         r = TRUE;
         V3_f5 u;
         CP(u, t);
-        if (func_0205f1e8(&u, self->unk_4c, &self->unk_54.x, &self->unk_50, r)) {
+        if (Fishing_StepArc(&u, self->unk_4c, &self->unk_54.x, &self->unk_50, r)) {
             self->unk_80 = r;
             CP(self->unk_6c, t);
         }
@@ -3473,7 +3473,7 @@ extern "C" BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a) {
         FishCatch_GetLineEnd(self, e, &l.t);
         r = TRUE;
         CP(l.u, l.t);
-        if (func_0205f1e8(&l.u, self->unk_4c, &self->unk_54.x, &self->unk_50, r)) {
+        if (Fishing_StepArc(&l.u, self->unk_4c, &self->unk_54.x, &self->unk_50, r)) {
             self->unk_80 = r;
             CP(self->unk_6c, l.t);
         }
@@ -3524,7 +3524,7 @@ extern "C" BOOL FishCatch_DetachShadow(Self_f5 *self) {
 
 //@ 0x22221a0
 extern "C" void FishCatch_Reset(Self_f5 *self, s32 a) {
-    func_0204f3b4(self->unk_44);
+    FishDisplay_Release(self->unk_44);
     self->unk_44 = -1;
     self->unk_40 = 0;
     self->unk_78 = -1;
@@ -3719,7 +3719,7 @@ extern "C" void FishCatch_PollRemote(void *a) {
     s32 z = 0;
     for (; i < 4; i++) {
         if (CommManager_isMyAid(net, i) == 0) {
-            u32 t = func_0204f4e0(i);
+            u32 t = FishDisplay_GetRequestKind(i);
             if (t == 9) {
                 t = 1;
             }
@@ -3733,14 +3733,14 @@ extern "C" void FishCatch_PollRemote(void *a) {
                 break;
             case 1:
                 if (FishCatch_EndRemote(a, i)) {
-                    ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(i, 8, m1, z, z);
+                    ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(i, 8, m1, z, z);
                 } else {
                     sFishCatches[i].unk_40 = 4;
                 }
                 break;
             case 2:
                 if (FishCatch_StartRemoteLift(a, i)) {
-                    ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(i, 8, m1, zero, zero);
+                    ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(i, 8, m1, zero, zero);
                 } else {
                     sFishCatches[i].unk_40 = 4;
                 }
@@ -3760,12 +3760,12 @@ extern "C" void FishCatch_PollRemote(void *a) {
 
 //@ 0x2221b94
 extern "C" void FishCatch_StartRemoteHook(void *a, s32 idx) {
-    u32 r = func_0204f4c8(idx);
+    u32 r = FishDisplay_GetRequestFish(idx);
     Unk_ov003_02221364_Vec v;
     v.y = -0x1333;
-    if (func_0204f4a4(&v, &v.z, idx)) {
+    if (FishDisplay_GetRequestPos(&v, &v.z, idx)) {
         if (FishCatch_StartRemoteReel(a, idx, r, &v)) {
-            ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(idx, 3, -1, 0, 0);
+            ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(idx, 3, -1, 0, 0);
         } else {
             FishCatch *e = sFishCatches + idx;
             e->unk_40 = 4;
@@ -3984,7 +3984,7 @@ extern "C" void FishShadow_Despawn(void *a, s32 idx) {
         if (s->unk_22c != 0) {
             FishCatch *ent = sFishCatches + s->unk_227;
             if (ent->unk_40 != 1) {
-                ((void (*)(void *, s32))func_0205fbbc)(s->unk_22c, 0);
+                ((void (*)(void *, s32))FishBobber_setFish)(s->unk_22c, 0);
                 s->unk_22c = 0;
                 s->unk_227 = -1;
                 s->unk_23c = 0;
@@ -4019,8 +4019,8 @@ extern "C" void FishFinModel_Release(u8 *a) {
 //@ 0x2221524
 BOOL FieldFishManager::vfunc_00() {
     u8 *a = (u8 *)this;
-    func_0209c1a4(a + 0x50, 6, 0, 0, 0x800, (void *)func_0205c020, (void *)func_0205c004, (void *)"fish_sdw");
-    func_0209c1a4(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)func_0205bfec, (void *)func_0205bfd0, (void *)"fish_fin");
+    func_0209c1a4(a + 0x50, 6, 0, 0, 0x800, (void *)FishShadowHeap_Create, (void *)FishShadowHeap_Destroy, (void *)"fish_sdw");
+    func_0209c1a4(a + 0x68, 1, 0x400, 0x80, 0x800, (void *)FishFinHeap_Create, (void *)FishFinHeap_Destroy, (void *)"fish_fin");
     *(s32 *)(a + 0x80) = ((s32 (*)(u32, void *, s32, u32))File_LoadAlloc)((*(u32 *)((u8 *)&sFishShadowAnimPath)), gCurrentHeap, 4, 0);
     Unk_ov003_02221524_Slot *s = ((Unk_ov003_02221524_Slot *)(sFishShadows));
     s32 i = 0;
@@ -4046,8 +4046,8 @@ BOOL FieldFishManager::vfunc_00() {
     s32 k = 0;
     void *net = gCommManager;
     for (; k < 4; k++) {
-        if (CommManager_isOnline(net) && !CommManager_isMyAid(net, k) && func_0204f4e0(k) == 3) {
-            ((void (*)(u8, s32, s32, s32, s32))func_0204f4f8)(k, 6, -1, z, z);
+        if (CommManager_isOnline(net) && !CommManager_isMyAid(net, k) && FishDisplay_GetRequestKind(k) == 3) {
+            ((void (*)(u8, s32, s32, s32, s32))FishDisplay_PostRequest)(k, 6, -1, z, z);
         }
         func_02003ecc(q);
         q += 0xa4;

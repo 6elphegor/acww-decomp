@@ -12,7 +12,7 @@ s32 Item_IsFurniture(u16 *p);
 s32 FieldAction_RequestDrop(s32 a, s32 b);
 u16 *func_020342cc(void *a, s32 b, s32 c, s32 d);
 u16 *func_02034250(void *a, s32 b, s32 c, s32 d);
-u32 func_020b0f54();
+u32 Room_CountOccupants();
 s32 FtrMgr_FindPlacementForPlayer(void *out, void *in, s32 n);
 s32 FtrMgr_SpawnFromArg(s32 p);
 BOOL ChoiceIdList_Add(u8 *p, u32 a, u32 b);
@@ -220,10 +220,10 @@ extern "C" s32 PocketMenu_RequestDropIndoor(PocketMenu *self, s32 a) {
 extern "C" BOOL PocketMenu_CanEditRoom() {
     CommManager *g = gCommManager;
     if (g->isOnline()) {
-        if (g->unk_64 != 0 || func_020b0f54() > 1) {
+        if (g->unk_64 != 0 || Room_CountOccupants() > 1) {
             return FALSE;
         }
-    } else if (func_020b0f54() > 1) {
+    } else if (Room_CountOccupants() > 1) {
         return FALSE;
     }
     return TRUE;

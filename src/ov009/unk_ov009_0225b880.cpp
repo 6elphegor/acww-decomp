@@ -227,10 +227,10 @@ struct TouchPicker {
     BOOL pushTriangle(TouchPickTriangle *o);
 };
 
-struct Unk_020b28ac {
-    void func_020b28ac(s32 *a, s32 *b, s32 *c, s32 *d);
-    BOOL func_020b2958(s32 *a, s32 *b, s32 *c, u32 i);
-    u32 func_020b29e4();
+struct StrBSizeData {
+    void getSolidBounds(s32 *a, s32 *b, s32 *c, s32 *d);
+    BOOL getTriangle(s32 *a, s32 *b, s32 *c, u32 i);
+    u32 getTriangleCount();
 };
 
 class Unk_020abea8 {
@@ -581,7 +581,7 @@ extern BuildingResources sBuildingResources[];
 extern u32 gCamera;
 extern Unk_ov009_0225b880_Vec3 gCameraLookAt;
 extern u8 data_020d0a7c[];
-extern void *data_021c6204;
+extern void *gFieldStructureHeap;
 extern void *gCurrentHeap;
 extern BgmManager *data_021c1b3c;
 
@@ -592,16 +592,16 @@ void _ZN12SndSeEmitterD2Ev(void *self);
 extern u8 data_0213b9c4[];
 void func_ov009_0225b94c(void *self);
 void _ZN17BuildingSeEmitter11setPositionEP23Unk_ov009_0225b880_Vec3(void *self, Unk_ov009_0225b880_Vec3 *v, u32 extra);
-Unk_020b28ac *StrBSize_Get(u16 *p);
+StrBSizeData *StrBSize_Get(u16 *p);
 
-void func_020b16bc(void *self, const u8 *src);
-void func_020b16b8(void *self);
-s32 func_020b1694(void *self);
-s32 func_020b1698(void *self);
-s32 func_020b169c(void *self);
-s32 func_020b16a0(void *self);
-s32 func_020b16a4(void *self);
-s32 func_020b16b0(void *self);
+void BuildingInfo_Copy(void *self, const u8 *src);
+void BuildingInfo_Destroy(void *self);
+s32 BuildingInfo_GetViewRangeBack(void *self);
+s32 BuildingInfo_GetViewRangeFront(void *self);
+s32 BuildingInfo_GetViewRangeX(void *self);
+s32 BuildingInfo_GetUnk05(void *self);
+s32 BuildingInfo_GetInteriorScene(void *self);
+s32 BuildingInfo_GetEntranceType(void *self);
 
 void Snd_SeEmitterPlayHeld(void *, u32, u32, u32);
 void func_02003e70(void *, u32, u32, u32);
@@ -617,8 +617,8 @@ void *TriangleTrigger_getCenter(void *);
 BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void TalkAutoAdvance_start(void *, u32);
-void func_020b1040(u32, u32);
-void func_020b101c();
+void BuildingOccupancy_Leave(u32, u32);
+void HouseVisitor_ClearPresent();
 void *Scene_GetWarpRequest();
 void Scene_ResetTownReturnPos();
 s32 func_020e780c(s32, s32);
@@ -635,10 +635,10 @@ s32 Scene_GetCurrent();
 s32 SceneWarp_RequestExit(void *, s32);
 s32 Ground_GetDefaultY(u32);
 void Scene_SetTownReturnPos(void *, s32, Unk_ov009_0225b880_Vec3 *, u32, s32, u32, u32);
-void func_020b0f00();
+void Building_SetLastEntranceType();
 
-s32 func_020b10c4(u32);
-void func_020b10e0(u32);
+s32 BuildingOccupancy_GetAnswer(u32);
+void BuildingOccupancy_RequestEnter(u32);
 BOOL Item_IsNookShop(u16 *);
 void AnimModel_stepAnim(void *);
 BOOL AnimFrameCtrl_isFinished(void *);
@@ -651,7 +651,7 @@ void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
 s32 func_020b6014(void *, s32 *, u8 *);
 void *func_02095204(u32);
-BOOL func_020b1d3c(u32, u32);
+BOOL BuildingState_Set(u32, u32);
 
 void *Heap_Alloc(void *heap, u32 size);
 u32 BuildingList_IndexOf(void *p);
@@ -680,7 +680,7 @@ BOOL Gfx3d_LoadTexAndPltt(void *p, u32 a);
 void *Gfx3d_CopyTex(void *p, void *g);
 
 u16 Item_MakeBuilding(u32 x);
-s32 func_020b1d80(u32);
+s32 BuildingState_Get(u32);
 s32 Field_GetStructureTexSuffix();
 void FieldStructureMgr_GetPlayerHouseTex();
 s32 PlayerHouseTex_Get();
@@ -930,7 +930,7 @@ BOOL BuildingActor::preExecute() {
     ((BuildingSeEmitter *)unk_234)->activate();
     u16 *p = getItemId();
     if (Unk_ov009_0225d858_Is(p, 0x501d)) {
-        s32 t = func_020b1d80(unk_132);
+        s32 t = BuildingState_Get(unk_132);
         if (unk_130 != t) {
             vfunc_6c(t);
         }
@@ -1016,14 +1016,14 @@ void BuildingActor::initEntryArea() {
 
 void BuildingActor::setupAnims() {
     if (func_ov009_0225d708() != 0 || func_ov009_0225d6f0() != 0) {
-        AnimModel_allocAnmObj(unk_138, data_021c6204);
+        AnimModel_allocAnmObj(unk_138, gFieldStructureHeap);
         BlendAnimModel_initAnim(unk_138, (void *)func_ov009_0225d708(), 0, 0x1000, 0, 0);
         AnimModel_attachAnim(unk_138);
     }
     if (getEntranceType() != 0) {
         u16 *p = getItemId();
         if (Unk_ov009_0225d858_Is(p, 0x501d)) {
-            vfunc_6c(func_020b1d80(unk_132));
+            vfunc_6c(BuildingState_Get(unk_132));
         } else {
             vfunc_6c(0);
         }
@@ -1043,9 +1043,9 @@ s32 BuildingActor::getViewRangeX() {
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b169c(&t) << 13;
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetViewRangeX(&t) << 13;
+    BuildingInfo_Destroy(&t);
     return r;
 }
 
@@ -1062,9 +1062,9 @@ s32 BuildingActor::getViewRangeBack() {
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b1694(&t) << 13;
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetViewRangeBack(&t) << 13;
+    BuildingInfo_Destroy(&t);
     return r;
 }
 
@@ -1081,9 +1081,9 @@ s32 BuildingActor::getViewRangeFront() {
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b1698(&t) << 13;
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetViewRangeFront(&t) << 13;
+    BuildingInfo_Destroy(&t);
     return r;
 }
 
@@ -1134,9 +1134,9 @@ s32 BuildingActor::getEntranceType() {
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b16b0(&t);
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetEntranceType(&t);
+    BuildingInfo_Destroy(&t);
     return r;
 }
 
@@ -1218,12 +1218,12 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
     if (BuildingResources_IsLoaded(e)) {
         return TRUE;
     }
-    Unk_020b28ac *h = StrBSize_Get(&unk_132);
+    StrBSizeData *h = StrBSize_Get(&unk_132);
     if (h != NULL) {
-        h->func_020b28ac(&e->unk_40, &e->unk_44, &e->unk_48, &e->unk_4c);
+        h->getSolidBounds(&e->unk_40, &e->unk_44, &e->unk_48, &e->unk_4c);
     }
     if (a != NULL) {
-        void *data = File_LoadAlloc(a, data_021c6204, 4, 0);
+        void *data = File_LoadAlloc(a, gFieldStructureHeap, 4, 0);
         if (data != NULL) {
             char b1[0x1e];
             char b2[0x1e];
@@ -1277,7 +1277,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
             if (r5 != NULL) {
                 e->unk_14 = (s32)NNS_G3dGetTex(r5);
                 if (Gfx3d_LoadTex((void *)e->unk_14, 0)) {
-                    e->unk_14 = (s32)Gfx3d_CopyTex((void *)e->unk_14, data_021c6204);
+                    e->unk_14 = (s32)Gfx3d_CopyTex((void *)e->unk_14, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -1289,7 +1289,7 @@ BOOL BuildingActor::loadResources(char *a, char *b, char *c) {
             if (r5 != NULL) {
                 e->unk_18 = (s32)NNS_G3dGetTex(r5);
                 if (Gfx3d_LoadTexAndPltt((void *)e->unk_18, 0)) {
-                    e->unk_18 = (s32)Gfx3d_CopyTex((void *)e->unk_18, data_021c6204);
+                    e->unk_18 = (s32)Gfx3d_CopyTex((void *)e->unk_18, gFieldStructureHeap);
                 }
                 Mem_Free(r5);
             }
@@ -1374,7 +1374,7 @@ void BuildingActor::createShadows(Unk_ov009_0225bc88_Blk *m) {
     BuildingResources *e = getResources();
     if (e != NULL) {
         if (e->unk_1c != NULL) {
-            void *heap = data_021c6204;
+            void *heap = gFieldStructureHeap;
             u32 n = e->unk_1c->getCount();
             unk_280 = (Unk_020abea8 *)Heap_Alloc(heap, n * 0x34);
             Unk_020abea8 *p = unk_280;
@@ -1428,9 +1428,9 @@ void BuildingActor::destroyShadows() {
 
 void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
     unk_28c = 0;
-    Unk_020b28ac *h = StrBSize_Get(&unk_132);
+    StrBSizeData *h = StrBSize_Get(&unk_132);
     if (h != NULL) {
-        unk_28c = h->func_020b29e4();
+        unk_28c = h->getTriangleCount();
         if (unk_28c != 0) {
             BuildingCollider *e4;
             TouchPickTriangle *e6;
@@ -1439,13 +1439,13 @@ void BuildingActor::createColliders(Unk_ov009_0225bc88_Blk *m) {
             Unk_ov009_0225b880_Vec3 a, b, c;
             Unk_ov009_0225b880_Vec3 wa, wb, wc;
             Unk_ov009_0225b880_Vec3 la, lb, lc;
-            unk_284 = (TouchPickTriangle *)Heap_Alloc(data_021c6204, unk_28c * 0x44);
-            unk_288 = (BuildingCollider *)Heap_Alloc(data_021c6204, unk_28c * 0x54);
+            unk_284 = (TouchPickTriangle *)Heap_Alloc(gFieldStructureHeap, unk_28c * 0x44);
+            unk_288 = (BuildingCollider *)Heap_Alloc(gFieldStructureHeap, unk_28c * 0x54);
             e4 = unk_288;
             e6 = unk_284;
             k = BuildingList_IndexOf(this);
             for (i = 0; i < unk_28c; e4++, e6++, i++) {
-                if (h->func_020b2958(&a.x, &b.x, &c.x, i)) {
+                if (h->getTriangle(&a.x, &b.x, &c.x, i)) {
                     Building_LocalToWorld(&wa, (s32)&a, (s32)m);
                     Building_LocalToWorld(&wb, (s32)&b, (s32)m);
                     Building_LocalToWorld(&wc, (s32)&c, (s32)m);
@@ -1560,7 +1560,7 @@ s32 BuildingActor::vfunc_6c(s32 a) {
     };
     if ((u32)a < 7) {
         if ((this->*tbl[a])()) {
-            if (func_020b1d3c(unk_132, a)) {
+            if (BuildingState_Set(unk_132, a)) {
                 unk_130 = a;
                 return TRUE;
             }
@@ -1888,7 +1888,7 @@ void BuildingActor::execEntryIdle() {}
 
 BOOL BuildingActor::enterEntryCheck() {
     if (unk_27c == 0) {
-        func_020b10e0(unk_132);
+        BuildingOccupancy_RequestEnter(unk_132);
     }
     unk_232.f1 = 0;
     unk_233 = 0;
@@ -1897,7 +1897,7 @@ BOOL BuildingActor::enterEntryCheck() {
 
 BOOL BuildingActor::execEntryCheck() {
     if (unk_27c == 0) {
-        s32 r = func_020b10c4(unk_132);
+        s32 r = BuildingOccupancy_GetAnswer(unk_132);
         if (r != 0) {
             s32 v = (r == 2) ? 1 : 0;
             u8 *p = (u8 *)&unk_232;
@@ -2018,7 +2018,7 @@ void BuildingActor::execEntryWarp() {
                 s32 k = Scene_GetCurrent();
                 Scene_SetTownReturnPos(o, k, &v, 0xf000000, (s16)(ang + 0x8000), unk_228, unk_22c);
                 getEntranceType();
-                func_020b0f00();
+                Building_SetLastEntranceType();
                 unk_232.f0 = 1;
             }
         }
@@ -2172,9 +2172,9 @@ s32 BuildingActor::getInteriorScene(){
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b16a4(&t);
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetInteriorScene(&t);
+    BuildingInfo_Destroy(&t);
     return r;
 }
 
@@ -2191,9 +2191,9 @@ s32 BuildingActor::vfunc_a0(){
         v = -1;
     }
     Unk_ov009_0225bb0c_Tmp t;
-    func_020b16bc(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
-    s32 r = func_020b16a0(&t);
-    func_020b16b8(&t);
+    BuildingInfo_Copy(&t, v < 0x22 ? data_020d0a7c + v * 10 : data_020d0a7c);
+    s32 r = BuildingInfo_GetUnk05(&t);
+    BuildingInfo_Destroy(&t);
     return r;
 }
 

@@ -193,10 +193,10 @@ struct Unk_0204e1a8_Loc {
     Unk_0204e1a8_Vec v;
 };
 
-struct Unk_020e3dcc {
+struct TownUnitShapeQuery {
     u8 data[4];
-    Unk_020e3dcc();
-    ~Unk_020e3dcc();
+    TownUnitShapeQuery();
+    ~TownUnitShapeQuery();
 };
 
 class TownMap {
@@ -211,7 +211,7 @@ public:
     ~TownMap();
 
     void *buildBlockEntries(s32 heap);
-    void func_0204df30();
+    void updateGroundSeason();
     u32 getGrassType();
     BOOL toTownAcreIndex(Unk_0204debc_Pos *out, Unk_0204debc_Pos *in);
     BOOL isTownAcre(s32 x, s32 y);
@@ -239,16 +239,16 @@ public:
     BOOL build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap);
     void free(s32 heap);
     void clear();
-    s32 func_0204e300(s32 a, s32 b);
-    void func_0204e328(void *a);
-    s32 func_0204e350(s32 a, s32 b);
-    s32 func_0204e378(s32 a, s32 b);
-    s32 func_0204e3a0(s32 a, s32 b);
-    s32 func_0204e3c8(s32 a, s32 b);
-    s32 func_0204e3f0(s32 a, s32 b);
-    s32 func_0204e418(s32 a, s32 b);
-    void func_0204e440(s32 a, s32 b, s32 c, s32 d);
-    s32 func_0204e474(s32 a, s32 b);
+    s32 clearPlantFlag(s32 a, s32 b);
+    void getWalkLinksAtPos(void *a);
+    s32 getWalkLinks(s32 a, s32 b);
+    s32 getPlantFlag(s32 a, s32 b);
+    s32 getDigKind(s32 a, s32 b);
+    s32 isShore(s32 a, s32 b);
+    s32 isGrassSurface(s32 a, s32 b);
+    s32 isWalkable(s32 a, s32 b);
+    void canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d);
+    s32 canPlaceItem(s32 a, s32 b);
 };
 
 struct Unk_0204e858_Vec {
@@ -323,7 +323,7 @@ void Town_ReplaceSouthCedars(void *p);
 void Town_InitNew();
 s32 func_02063b8c(s32 a);
 BOOL Item_IsTreeStage0(u16 *p);
-s32 func_0205b470();
+s32 FengShui_UpdateHouse();
 s32 func_0204e2cc(void *a, void *heap);
 void func_0204e2f0();
 s32 func_0204e1a8(void *a, void *b, void *c, void *heap);
@@ -332,7 +332,7 @@ void *Heap_Alloc(void *heap, s32 size);
 Unk_020b5350_Info *Scene_GetMapInfo();
 s32 Scene_InUnk6To8();
 u32 func_020603c8(void *p);
-u32 _ZN9HouseData13func_020604f8EiPv(void *p, u32 a, void *heap);
+u32 _ZN9HouseData19buildRoomBlockEntryEiPv(void *p, u32 a, void *heap);
 s32 Scene_GetCurrent();
 s32 Scene_InHouseRoom();
 u32 Scene_GetHouseRoom();
@@ -342,7 +342,7 @@ s32 SceneId_IsHouseRoom();
 void *_ZN7TownMap17buildBlockEntriesEi(void *p, void *heap);
 extern const Unk_020ca2f4_Ent sFgDataFiles[4];
 extern u32 gSaveVillagers;
-extern u32 data_021c621c;
+extern u32 gRoomBclHeap;
 extern u32 data_020c8cbc;
 extern u32 data_020c8cb8;
 void *Heap_AllocAligned(void *heap, s32 size, s32 align);
@@ -363,28 +363,28 @@ void _ZN8MapBlock4initEiP15Unk_02037674_V3iiiP16Unk_02037618_Subjiij(u32 h, u32 
 u32 _ZN12MapBlockAcre9getAcreIdEv(u32 h);
 u32 BgModel_LoadBcl(u32 a, u32 b);
 s32 _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(u32 h, s32 a, u32 b, u32 c);
-u32 _ZN9HouseData13func_020603f4Ei(u32 *a);
+u32 _ZN9HouseData13getRoomAcreIdEi(u32 *a);
 void _ZN12MapBlockAcre9setAcreIdEj(u32 h, s32 i);
-void func_0205b7b0();
-void func_0205b7cc();
+void RoomBclHeap_Destroy();
+void RoomBclHeap_Create();
 u32 SceneId_GetHouseRoom(u32 v);
-s32 func_0206057c();
+s32 HouseData_IsValidRoomIndex();
 u16 *_ZN7TownMap12getAcreItemsEP16Unk_0204debc_Pos(void *t, s32 *idx);
 void _ZN7TownMap5clearEv(void *t);
 void Town_GenerateAcres(void *t);
-extern void *data_021c6198;
+extern void *gTownBclHeap;
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 s32 _ZN7TownMap15removeStructureEiiPt(u32 a, u32 b, u32 c, u32 d);
 s32 _ZN7TownMap12putStructureEPtii(u32 a, u32 b, u32 c, u32 d);
 void *StrBSize_Get(u16 *t);
-u32 _ZN12Unk_020b28ac13func_020b29e4Ev(void *h);
-s32 _ZN12Unk_020b28ac13func_020b2958EPiS0_S0_j(void *h, Unk_0204d560_Vec *a, Unk_0204d560_Vec *b, Unk_0204d560_Vec *c, u32 i);
+u32 _ZN12StrBSizeData16getTriangleCountEv(void *h);
+s32 _ZN12StrBSizeData11getTriangleEPiS0_S0_j(void *h, Unk_0204d560_Vec *a, Unk_0204d560_Vec *b, Unk_0204d560_Vec *c, u32 i);
 s32 FX_Div(s32 a, s32 b);
 s32 Ground_GetDefaultY(s32 a);
 void MapBlock_Init(void *a, s32 b, void *c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 *i, s32 j);
-s32 func_0205b7fc();
-void func_0205b818();
+s32 TownBclHeap_Destroy();
+void TownBclHeap_Create();
 void func_02004b60();
 void func_0203442c();
 void CollisionMap_Select(s32 v);
@@ -402,12 +402,12 @@ void _ZN12Unk_020af53c13func_020af694Ev(const char *s);
 void BuriedMask_Reset(void *p);
 BOOL Item_IsNormalItem(u16 *p);
 void func_02039e6c(u16 v);
-s32 func_020b2768();
+s32 FieldStructureMgr_Get();
 BOOL FieldStructureMgr_SpawnBuilding(s32 a, void *b, s32 x, s32 y, s32 f);
-u32 _ZN12Unk_020b28ac13func_020b2b0cEv(void *h);
-u32 _ZN12Unk_020b28ac13func_020b2b80Ev(void *h);
-BOOL _ZN12Unk_020b28ac13func_020b2a5cEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
-BOOL _ZN12Unk_020b28ac13func_020b2aacEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
+u32 _ZN12StrBSizeData21getFootprintUnitCountEv(void *h);
+u32 _ZN12StrBSizeData17getClearUnitCountEv(void *h);
+BOOL _ZN12StrBSizeData16getFootprintUnitEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
+BOOL _ZN12StrBSizeData12getClearUnitEPiS0_j(void *h, s32 *dx, s32 *dy, u32 i);
 BOOL _ZN11CommManager8isOnlineEv(void *g);
 BOOL Item_IsSnowman(u16 *p);
 s32 Item_GetSnowmanIndex(u16 *p);
@@ -492,7 +492,7 @@ s32 BlockMap_PutStructure(u32 a, u32 b, u32 c, u32 d);
 TownBlockMap *TownBlockMap_Get();
 s32 TownBlockMap_Destroy(void *heap);
 BOOL TownBlockMap_Create(void *heap);
-void func_0204dcb0();
+void AcreItemGrid_Get();
 void ItemGrid_Clear(u16 *p);
 u8 *TownMap_GetAcres(void *p);
 void TownMap_Generate(Unk_0204dd20_Obj *o, s32 arg);
@@ -526,7 +526,7 @@ void FieldPos_ToBlockUnit2(s32 *a, s32 *c, Unk_0204e858_Vec *v);
 void FieldPos_ToBlockUnit(s32 *ax, s32 *az, s32 *cx, s32 *cz, Unk_0204e858_Vec *v);
 MapBlockEntry *MapBlockEntry_NewArray(s32 n, void *heap);
 MapBlockEntry::MapBlockEntry();
-void func_0204eeb0();
+void BlockMap_DebugStub();
 }
 
 namespace Ns_0204c318 {
@@ -550,7 +550,7 @@ extern "C" {
 extern u32 gSaveHouse;
 void FieldUnit_FromBlockUnit(u32 *a, u32 *b, u32 w, u32 h, u32 c, u32 d);
 Unk_0204d0f4_Info *MapBlockEntry_NewArray(s32 a, void *heap);
-void *_ZN9HouseData13func_020604f8EiPv(u32 *a, s32 b, void *heap);
+void *_ZN9HouseData19buildRoomBlockEntryEiPv(u32 *a, s32 b, void *heap);
 }
 }
 
@@ -588,7 +588,7 @@ void MapBlock_Init(void *a, u32 b, void *c, void *d, u32 e, void *f, u32 g, u32 
 extern s32 data_020c8cbc, data_020c8cb8;
 void *MapBlockEntry_NewArray(s32 n, s32 heap);
 void ItemGrid_Clear(void *p);
-void *func_0204dcb0(void *p);
+void *AcreItemGrid_Get(void *p);
 void *BlockMap_GetItemPtr(void *self, s32 x, s32 y, s32 sx, s32 sy, u32 flag);
 void FieldPos_ToUnit(s32 *out1, s32 *out2, void *p);
 void BlockMap_SetItemAtUnit(void *self, u16 *p, s32 x, s32 y, u32 flag);
@@ -684,7 +684,7 @@ static inline BOOL Unk_0204e8b0_Bit(u16 *m, u32 x, u32 y) {
     return r;
 }
 
-extern "C" void func_0204eeb0() {}
+extern "C" void BlockMap_DebugStub() {}
 
 extern "C" MapBlockEntry::MapBlockEntry() {
     u32 *p = unk_04;
@@ -990,13 +990,13 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
     }
     if (Unk_0204e51c_InRange(b, 0x5000, 0x5021)) h = StrBSize_Get(b);
     if (h) {
-        cnt = _ZN12Unk_020b28ac13func_020b2b0cEv(h);
+        cnt = _ZN12StrBSizeData21getFootprintUnitCountEv(h);
         i = 0;
         gx = x;
         gy = y;
         g = gCommManager;
         for (; i < cnt; i++) {
-            if (_ZN12Unk_020b28ac13func_020b2a5cEPiS0_j(h, &dx, &dy, i)) {
+            if (_ZN12StrBSizeData16getFootprintUnitEPiS0_j(h, &dx, &dy, i)) {
                 px = gx + dx;
                 py = gy + dy;
                 hx = px >> 4;
@@ -1021,9 +1021,9 @@ BOOL TownMap::replaceStructure(u16 *a, u16 *b, u16 *c, volatile s32 x, volatile 
             ok = *c == 0xf030;
         }
         if (ok) {
-            cnt2 = _ZN12Unk_020b28ac13func_020b2b80Ev(h);
+            cnt2 = _ZN12StrBSizeData17getClearUnitCountEv(h);
             for (j = 0; j < cnt2; j++) {
-                if (_ZN12Unk_020b28ac13func_020b2aacEPiS0_j(h, &dx, &dy, j)) {
+                if (_ZN12StrBSizeData12getClearUnitEPiS0_j(h, &dx, &dy, j)) {
                     qx = gx + dx;
                     qy = gy + dy;
                     hx = qx >> 4;
@@ -1079,68 +1079,68 @@ BOOL TownMap::removeStructure(s32 x, s32 y, u16 *p) {
     return r;
 }
 
-s32 BlockMap::func_0204e474(s32 a, s32 b) { 
+s32 BlockMap::canPlaceItem(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_CanPlaceItem(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-void BlockMap::func_0204e440(s32 a, s32 b, s32 c, s32 d) {
+void BlockMap::canPlaceItemAtBlockUnit(s32 a, s32 b, s32 c, s32 d) {
     s32 x = 0, y = 0;
     FieldUnit_FromBlockUnit(&x, &y, a, b, c, d);
-    func_0204e474(x, y);
+    canPlaceItem(x, y);
 }
 
-s32 BlockMap::func_0204e418(s32 a, s32 b) { 
+s32 BlockMap::isWalkable(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_IsWalkable(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-s32 BlockMap::func_0204e3f0(s32 a, s32 b) { 
+s32 BlockMap::isGrassSurface(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_IsGrassSurface(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-s32 BlockMap::func_0204e3c8(s32 a, s32 b) { 
+s32 BlockMap::isShore(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_IsShore(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-s32 BlockMap::func_0204e3a0(s32 a, s32 b) { 
+s32 BlockMap::getDigKind(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_GetDigKind(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-s32 BlockMap::func_0204e378(s32 a, s32 b) { 
+s32 BlockMap::getPlantFlag(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_GetPlantFlag(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-s32 BlockMap::func_0204e350(s32 a, s32 b) { 
+s32 BlockMap::getWalkLinks(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_GetWalkLinks(a, b); 
     CollisionMap_Select(0); 
     return r; 
 }
 
-void BlockMap::func_0204e328(void *a) {
+void BlockMap::getWalkLinksAtPos(void *a) {
     s32 x = 0, y = 0;
     Ns_0204debc::FieldPos_ToUnit(&x, &y, a);
-    func_0204e350(x, y);
+    getWalkLinks(x, y);
 }
 
-s32 BlockMap::func_0204e300(s32 a, s32 b) { 
+s32 BlockMap::clearPlantFlag(s32 a, s32 b) { 
     CollisionMap_Select(unk_1c); 
     s32 r = Ground_ClearPlantFlag(a, b); 
     CollisionMap_Select(0); 
@@ -1231,7 +1231,7 @@ BOOL BlockMap::build(Unk_0204debc_Entry *e, Unk_0204e1a8_Out *sz, s32 heap) {
         unk_14 = unk_04 * Ns_0204debc::data_020c8cbc;
         unk_18 = unk_08 * data_020c8cb8;
         FieldUnit_FromBlockUnit(&unk_0c, &unk_10, unk_04, unk_08, 0, 0);
-        static Unk_020e3dcc obj;
+        static TownUnitShapeQuery obj;
         Ns_0204debc::CollisionMap_Bind(unk_04, unk_08, &obj, unk_1c);
         for (l.y = 0; l.y < unk_08; l.y++) {
             for (l.x = 0; l.x < unk_04; l.x++) {
@@ -1256,8 +1256,8 @@ BOOL TownMap::placeStructure(u16 *a, s32 x, s32 y, u8 flag) {
     u16 *p = (u16 *)Ns_0204debc::BlockMap_GetItemPtr(this, hx, hy, x - (hx << 4), y - (hy << 4), 0);
     tile = 0xfff1;
     if (p) tile = *p;
-    if (flag && func_020b2768()) {
-        return FieldStructureMgr_SpawnBuilding(func_020b2768(), a, x, y, 1);
+    if (flag && FieldStructureMgr_Get()) {
+        return FieldStructureMgr_SpawnBuilding(FieldStructureMgr_Get(), a, x, y, 1);
     }
     if (putStructure(a, x, y)) {
         if (Item_IsNormalItem(&tile) || Item_IsFurniture(&tile)) func_02039e6c(tile);
@@ -1293,7 +1293,7 @@ void *TownMap::getAcreItems(Unk_0204debc_Pos *in) {
     b.x = in->x;
     b.y = in->y;
     if (toTownAcreIndex(&a, &b)) {
-        r = Ns_0204debc::func_0204dcb0((u8 *)this + 0x24 + a.y * 0x800 + a.x * 0x200);
+        r = Ns_0204debc::AcreItemGrid_Get((u8 *)this + 0x24 + a.y * 0x800 + a.x * 0x200);
     }
     return r;
 }
@@ -1330,7 +1330,7 @@ u32 TownMap::getGrassType() {
     return unk_2224_lo;
 }
 
-void TownMap::func_0204df30() {
+void TownMap::updateGroundSeason() {
     u32 v = GroundSeason_CalcPhase();
     unk_2224_hi = v;
     _ZN12Unk_020af53c13func_020af694Ev(data_021ed2e6);
@@ -1452,7 +1452,7 @@ extern "C" void ItemGrid_Clear(u16 *p) {
     for (i = 0; i < 0x100; p++, i++) *p = 0xfff1;
 }
 
-extern "C" void func_0204dcb0() {}
+extern "C" void AcreItemGrid_Get() {}
 
 void TownBlockMap::clear() {
     unk_04 = 0;
@@ -1465,7 +1465,7 @@ void TownBlockMap::clear() {
 
 extern "C" BOOL TownBlockMap_Create(void *heap) {
     BOOL r = TRUE;
-    func_0205b818();
+    TownBclHeap_Create();
     if (!gTownBlockMap) {
         gTownBlockMap = (TownBlockMap *)Ns_0204d560::Heap_Alloc(heap, 0x20);
         if (gTownBlockMap) {
@@ -1483,7 +1483,7 @@ extern "C" s32 TownBlockMap_Destroy(void *heap) {
         Heap_Free(heap, gTownBlockMap);
         gTownBlockMap = 0;
     }
-    func_0205b7fc();
+    TownBclHeap_Destroy();
 }
 
 BOOL TownBlockMap::build(void *heap) {
@@ -1547,7 +1547,7 @@ void TownBlockMap::updateAcreIds() {
 
 void TownBlockMap::bindBg() {
     s32 x, y;
-    Ns_0204d560::func_020e885c(data_021c6198);
+    Ns_0204d560::func_020e885c(gTownBclHeap);
     Ns_0204d560::CollisionMap_Bind(unk_04, unk_08, 0, unk_1c);
     for (y = 0; y < unk_08; y++) {
         for (x = 0; x < unk_04; x++) {
@@ -1559,7 +1559,7 @@ void TownBlockMap::bindBg() {
             }
             if (c) {
                 u32 t = Ns_0204d560::_ZN12MapBlockAcre9getAcreIdEv(c);
-                void *d = data_021c6198;
+                void *d = gTownBclHeap;
                 Ns_0204d560::BgModelCache_Get(d);
                 Ns_0204d560::_ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(c, 0, Ns_0204d560::BgModel_LoadBcl(t, d), unk_1c);
             }
@@ -1617,16 +1617,16 @@ extern "C" void BlockMap_FindStructure(u16 *ret, void *m, s32 *pos, s32 *p4, s32
     if (!Unk_0204d560_Chk(t)) {
         h = StrBSize_Get(t);
         if (h) {
-            n = _ZN12Unk_020b28ac13func_020b29e4Ev(h);
+            n = _ZN12StrBSizeData16getTriangleCountEv(h);
             sx = 0; sz = 0; i = 0;
             for (; i < n; i++) {
                 Unk_0204d560_Vec v1, v2, v3;
-                if (_ZN12Unk_020b28ac13func_020b2958EPiS0_S0_j(h, &v1, &v2, &v3, i)) {
+                if (_ZN12StrBSizeData11getTriangleEPiS0_S0_j(h, &v1, &v2, &v3, i)) {
                     sx += v1.x; sx += v2.x; sx += v3.x;
                     sz += v1.z; sz += v2.z; sz += v3.z;
                 }
             }
-            d = (s32)_ZN12Unk_020b28ac13func_020b29e4Ev(h) * 3 << 12;
+            d = (s32)_ZN12StrBSizeData16getTriangleCountEv(h) * 3 << 12;
             ax = FX_Div(sx, d);
             az = FX_Div(sz, d);
             zz = v.z + az + 0x1000;
@@ -1692,7 +1692,7 @@ extern "C" void HouseRoomMap_Clear(Unk_0204d0a4 *p) {
 
 extern "C" Unk_0204d0a4 *HouseRoomMaps_Get(s32 i) {
     Unk_0204d0a4 *r = 0;
-    if (func_0206057c()) r = gHouseRoomMaps[i];
+    if (HouseData_IsValidRoomIndex()) r = gHouseRoomMaps[i];
     return r;
 }
 
@@ -1707,7 +1707,7 @@ extern "C" Unk_0204d0a4 *HouseRoomMaps_GetForScene(s32 a) {
 extern "C" BOOL HouseRoomMaps_Create(void *heap) {
     BOOL r = TRUE;
     s32 i;
-    func_0205b7cc();
+    RoomBclHeap_Create();
     for (i = 0; i < 5; i++) {
         Unk_0204d0a4 **e = &gHouseRoomMaps[i];
         if (!*e) {
@@ -1739,7 +1739,7 @@ extern "C" void HouseRoomMaps_Destroy(void *heap) {
             *e = 0;
         }
     }
-    func_0205b7b0();
+    RoomBclHeap_Destroy();
 }
 
 extern "C" void HouseRoomMaps_UpdateAll() {
@@ -1750,13 +1750,13 @@ extern "C" void HouseRoomMaps_UpdateAll() {
 }
 
 extern "C" void HouseRoomMap_Update(Unk_0204d0a4 *p, s32 i) {
-    u32 v = _ZN9HouseData13func_020603f4Ei(&Ns_0204cc48::gSaveHouse);
+    u32 v = _ZN9HouseData13getRoomAcreIdEi(&Ns_0204cc48::gSaveHouse);
     if (p->unk_00) _ZN12MapBlockAcre9setAcreIdEj(p->unk_00, v);
 }
 
 extern "C" void HouseRoomMaps_BindBg() {
     s32 i;
-    func_020e885c(data_021c621c);
+    func_020e885c(gRoomBclHeap);
     for (i = 0; i < 5; i++) {
         if (gHouseRoomMaps[i]) HouseRoomMap_BindBg(gHouseRoomMaps[i]);
     }
@@ -1773,7 +1773,7 @@ extern "C" void HouseRoomMap_BindBg(Unk_0204d0a4 *p) {
 join:
     if (h) {
         u32 a = _ZN12MapBlockAcre9getAcreIdEv(h);
-        u32 g = data_021c621c;
+        u32 g = gRoomBclHeap;
         BgModelCache_Get();
         _ZN8MapBlock6bindBgEP16Unk_02037618_Subjj(h, 0, BgModel_LoadBcl(a, g), p->unk_1c);
     }
@@ -1791,7 +1791,7 @@ extern "C" BOOL HouseRoomMap_Init(Unk_0204d0a4 *p, s32 i, void *heap) {
     if (!p->unk_00) {
         p->unk_00 = MapBlock_NewArray(1, heap, 4);
     }
-    info = (Unk_0204d0f4_Info *)Ns_0204cc48::_ZN9HouseData13func_020604f8EiPv(&Ns_0204cc48::gSaveHouse, i, heap);
+    info = (Unk_0204d0f4_Info *)Ns_0204cc48::_ZN9HouseData19buildRoomBlockEntryEiPv(&Ns_0204cc48::gSaveHouse, i, heap);
     if (p->unk_00 && info) {
         l.v.x = 0; l.v.y = 0; l.v.z = 0;
         p->unk_04 = 1;

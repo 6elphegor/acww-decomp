@@ -672,8 +672,8 @@ s32 CachedModel_allocJointRecord(void *, s32);
 void Model_setInitCallback(void *self, void *fn, void *arg);
 s32 Model_setResource(void *, s32, s32);
 BOOL AnimFrameCtrl_hasPassedFrame(void *p, s32 v);
-void func_0205bf68(void);
-void func_0205bf84(void);
+void MuseumAquariumHeap_Destroy(void);
+void MuseumAquariumHeap_Create(void);
 s32 func_020639e8(char *, char *, ...);
 s32 func_02063b8c(s32 n);
 s32 File_LoadAlloc(char *, s32, s32, s32);
@@ -3718,7 +3718,7 @@ extern "C" void MuseumAquarium_ReleaseFish(Mgr *self, s32 i)
 
 extern "C" BOOL _ZN14MuseumAquarium8vfunc_00Ev(Mgr *self)
 {
-    func_0209c1a4((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)func_0205bf84, (void *)func_0205bf68, 0);
+    func_0209c1a4((u8 *)self + 0x7f8, 0x38, 0x800, 0x80, 0xc00, (void *)MuseumAquariumHeap_Create, (void *)MuseumAquariumHeap_Destroy, 0);
     sAquariumRoom = *(s32 *)&self->unk_04[4];
     if (sAquariumRoom == 0) {
         self->unk_50[0].unk_50[0] = 0xc000;

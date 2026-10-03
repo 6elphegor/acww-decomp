@@ -45,9 +45,9 @@ static inline Unk_ov117_02292b54_Cell *Unk_ov117_02292b54_GetCell(Unk_ov117_0229
     return NULL;
 }
 
-struct HouseData { void func_020604c4(); };
+struct HouseData { void getLevel(); };
 struct VillagerDataItemView { u8 *getHousePos(); };
-struct Unk_020b28ac { void func_020b28ac(s32 *, s32 *, s32 *, s32 *); };
+struct StrBSizeData { void getSolidBounds(s32 *, s32 *, s32 *, s32 *); };
 
 extern "C" {
 TownMapImage *sTownMapImage;
@@ -207,7 +207,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
             y += 1;
             void *h = StrBSize_Get(&t);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 y = y + (o2 >> 11);
             }
@@ -219,7 +219,7 @@ extern "C" void TownMapMarkers_AddVillagerHouses(TownMapMarkers *s) {
 extern "C" void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s) {
     Unk_ov117_02292b54_Grid *g = TownBlockMap_Get();
     if (g != NULL) {
-        ((HouseData *)gSaveHouse)->func_020604c4();
+        ((HouseData *)gSaveHouse)->getLevel();
         u16 t[2];
         s32 x, z, a, b, c, d, o1, o2, o3, o4;
         t[0] = 0x5014;
@@ -238,7 +238,7 @@ extern "C" void TownMapMarkers_AddPlayerHouse(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(cell);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }
@@ -260,7 +260,7 @@ extern "C" void TownMapMarkers_AddMuseum(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(&t);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }
@@ -282,7 +282,7 @@ extern "C" void TownMapMarkers_AddGateHouse(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(&t);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }
@@ -304,7 +304,7 @@ extern "C" void TownMapMarkers_AddAbleSisters(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(&t);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }
@@ -326,7 +326,7 @@ extern "C" void TownMapMarkers_AddTownHall(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(&t);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }
@@ -356,7 +356,7 @@ extern "C" void TownMapMarkers_AddNookShop(TownMapMarkers *s) {
             z += 1;
             void *h = StrBSize_Get(cell);
             if (h) {
-                ((Unk_020b28ac *)h)->func_020b28ac(&o1, &o2, &o3, &o4);
+                ((StrBSizeData *)h)->getSolidBounds(&o1, &o2, &o3, &o4);
                 x = x + (o1 >> 11);
                 z = z + (o2 >> 11);
             }

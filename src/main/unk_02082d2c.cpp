@@ -17,7 +17,7 @@ struct Unk_02082af0_X {
 struct Unk_02082c54_Z {
     Unk_02082c54_Z();
     ~Unk_02082c54_Z();
-    void func_0205c384();
+    void AnimSlotRef_Assign();
 };
 
 struct Unk_02082d68 {
@@ -146,7 +146,7 @@ extern u8 data_021ed315, gSaveGameStats;
 }
 
 extern "C" {
-void func_0205c384(void *p);
+void AnimSlotRef_Assign(void *p);
 }
 
 extern "C" {
@@ -222,11 +222,11 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_02083ba4();
+s32 Visitor_IsNookJobActive();
 }
 
 extern "C" {
-s32 func_02083b84();
+s32 Visitor_IsTaxiActive();
 }
 
 extern "C" {

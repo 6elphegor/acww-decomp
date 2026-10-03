@@ -97,15 +97,15 @@ void MsgString_copy(void *p, void *q);
 void LabelString_createLabel(void *obj, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void LabelString_redrawAligned(void *obj, s32 a, s32 b);
 void LabelString_destroyLabel(void *obj);
-u16 *func_020601cc();
-s32 func_020600f4(u32 id);
+u16 *HouseRoom_GetCurrentSong();
+s32 SongSet_HasSong(u32 id);
 void ScrollKnob_moveTo(void *p, s32 a, s32 b);
 s32 ScrollKnob_areAnimsDone(void *p);
 void HandCursor_disableObjWindow(void *p);
 void func_020e761c(void *p, s32 v, s32 n);
 s32 Pocket_FindEmpty();
 void Pocket_SetItem(u16 *p, s32 a, s32 b);
-void func_02060044(u32 v);
+void SongSet_RemoveSong(u32 v);
 void MenuCtrl_SetResult(s32 v);
 void MenuCtrl_SetSongItem(u32 v);
 s32 MenuCtrl_IsTouch();
@@ -745,7 +745,7 @@ void C::updateTakeOutDelay() {
     if (unk_c0 != 0) {
         unk_c0 = *(volatile u8 *)&unk_c0 - 1;
     } else {
-        func_02060044(unk_664[unk_ba]);
+        SongSet_RemoveSong(unk_664[unk_ba]);
         s32 p = *(volatile s16 *)&unk_ba;
         s32 q = *(volatile s16 *)&unk_bc;
         if (p < q) {
@@ -865,7 +865,7 @@ BOOL MusicMenu::takeOutSong() {
         }
         unk_bc = -1;
     }
-    func_02060044(unk_664[unk_ba]);
+    SongSet_RemoveSong(unk_664[unk_ba]);
     scrollToSong(unk_ba);
     unk_c0 = 10;
     paintTakeOutButton(8);
@@ -995,7 +995,7 @@ void MusicMenu::buildSongList() {
     unk_b8 = 0;
     s16 *pc = &unk_b8;
     for (; i < 0x46; i++) {
-        if (func_020600f4(id)) {
+        if (SongSet_HasSong(id)) {
             unk_664[unk_b8] = id;
             *pc = *pc + 1;
         }
@@ -1011,15 +1011,15 @@ void MusicMenu::findCurrentSong() {
     id = 0x1323;
     n = 0;
     unk_bc = -1;
-    if (*func_020601cc() != 0xfff1) {
-        u16 *pv = func_020601cc();
+    if (*HouseRoom_GetCurrentSong() != 0xfff1) {
+        u16 *pv = HouseRoom_GetCurrentSong();
         if (Unk_ov144_02292c5c_Rng(pv, id, 0x1368)) {
             target = *pv - 0x1323;
         } else {
             target = -1;
         }
         for (i = 0; i < 0x46; i++) {
-            if (func_020600f4(id)) {
+            if (SongSet_HasSong(id)) {
                 if (i == target) {
                     unk_bc = n;
                     i = 0x46;

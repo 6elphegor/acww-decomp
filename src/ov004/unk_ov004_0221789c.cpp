@@ -50,7 +50,7 @@ class FleaMarketSellerVillager;
 #define NpcActor_getDistanceToPlayer _ZN8NpcActor19getDistanceToPlayerEj
 #define NpcActor_getNpcIndex _ZN8NpcActor11getNpcIndexEv
 #define VillagerTalk_begin _ZN12VillagerTalk5beginEP13VillagerActorj
-#define func_0204e328 _ZN8BlockMap13func_0204e328EPv
+#define BlockMap_getWalkLinksAtPos _ZN8BlockMap17getWalkLinksAtPosEPv
 #define TalkWindowState_setNextMessage _ZN15TalkWindowState14setNextMessageEPhPv
 #define VillagerDataProfileView_getShirt _ZN23VillagerDataProfileView8getShirtEv
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
@@ -118,7 +118,7 @@ s32 NpcActor_getAngleToPlayer(void *, u32);
 s32 NpcActor_getPlayerActor(void *, u32);
 void NpcMoveCtrl_setTargetAngle(void *, s32);
 void NpcMoveCtrl_setWaypoint(void *, void *);
-void func_0204e328(void *, void *);
+void BlockMap_getWalkLinksAtPos(void *, void *);
 s32 func_020e972c(void *, void *);
 s32 func_020e96ec(void *, void *);
 s32 func_020e7518(void *);
@@ -793,7 +793,7 @@ BOOL FleaMarketSellerVillager::mainAct07() {
     a.z = p->z;
     NpcActor_FindFreeUnitNear(&b, this, &a);
     r4 = NpcActor_getDistanceToPlayer(this, 4);
-    func_0204e328(gSceneBlockMap, &unk_5c);
+    BlockMap_getWalkLinksAtPos(gSceneBlockMap, &unk_5c);
     if (r4 > 0x4000) {
         if (NpcActionCtrl_getAction(&unk_564) == 1) {
             NpcActionCtrl_requestAction(&unk_564, 2, 1, 0, 0, 0x800, 0, 0, 0, data_020c6cc8, 0);

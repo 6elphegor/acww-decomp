@@ -641,7 +641,7 @@ extern "C" {
 void func_0209c408();
 }
 extern "C" {
-void func_020b1dc0();
+void BuildingStates_Reset();
 }
 extern "C" {
 void func_0203eb38();
@@ -653,7 +653,7 @@ extern "C" {
 void *Item_MakeBuilding(u32);
 }
 extern "C" {
-void func_020b1040(void *, u32);
+void BuildingOccupancy_Leave(void *, u32);
 }
 extern "C" {
 void SpotSync_Release(u32);
@@ -681,7 +681,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
     }
     RoomFtrState_ResetAll();
     func_0209c408();
-    func_020b1dc0();
+    BuildingStates_Reset();
     func_0203eb38();
     func_0206f81c();
     if (r4 < 0) {
@@ -690,9 +690,9 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
             if (r4 == -4) {
                 for (u32 i = 0; i < 0x22; i++) {
                     void *r6 = Item_MakeBuilding(i);
-                    func_020b1040(r6, 1);
-                    func_020b1040(r6, 2);
-                    func_020b1040(r6, 3);
+                    BuildingOccupancy_Leave(r6, 1);
+                    BuildingOccupancy_Leave(r6, 2);
+                    BuildingOccupancy_Leave(r6, 3);
                 }
                 SpotSync_Release(1);
                 SpotSync_Release(2);
@@ -706,7 +706,7 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
             } else {
                 s32 r6 = -r4;
                 for (u32 i = 0; i < 0x22; i++) {
-                    func_020b1040(Item_MakeBuilding(i), r6);
+                    BuildingOccupancy_Leave(Item_MakeBuilding(i), r6);
                 }
                 SpotSync_Release(r6);
                 for (u32 i = 0; i < 0x33; i++) {
