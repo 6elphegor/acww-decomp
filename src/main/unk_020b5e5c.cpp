@@ -15,7 +15,7 @@ extern "C" s32 FtrActorTable_GetInstance(void);
 extern "C" s32 BuildingList_GetAt(s32 a);
 extern "C" s32 NpcRegistry_FindSpNpc(void);
 extern "C" s32 NpcRegistry_FindVillager(void);
-extern "C" s32 func_020951ec(void);
+extern "C" s32 PlayerActor_GetCharacter(void);
 extern "C" BOOL func_020b705c(u8 v);
 
 class FtrActorTable {
@@ -103,7 +103,7 @@ extern "C" s32 func_020b6014(s32 a, s32 *pa, u8 *pb) {
 
 extern "C" s32 func_020b6010(void) { return 0; }
 
-extern "C" s32 func_020b6008(void) { return func_020951ec(); }
+extern "C" s32 func_020b6008(void) { return PlayerActor_GetCharacter(); }
 
 extern "C" s32 func_020b6000(void) { return NpcRegistry_FindVillager(); }
 

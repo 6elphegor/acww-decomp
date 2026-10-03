@@ -294,10 +294,10 @@ public:
     u8 pad_60[0xb8 - 0x60];
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
     u32 pad[8];
 };
 
@@ -337,8 +337,8 @@ void *_ZN23VillagerDataProfileView9getInfo28Ev(void *self);
 void *_ZN12VillagerData13getVillagerIdEv(void *self);
 void *_ZN5Model12getRenderObjEv(void *self);
 BOOL _ZN5Model11setResourceEP16Unk_020553f8_Resj(void *self, void *res, u32 b);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
 void NNS_G3dBindMdlPltt(void *a, s32 b);
 
 s32 FieldStructureMgr_GetVillagerHouseTex();
@@ -573,10 +573,10 @@ void VillagerHouse::vfunc_78() {
         }
     }
     u32 l[9];
-    _ZN12Unk_020e1c64C1Ev(&l[1]);
+    _ZN11MsgString9BC1Ev(&l[1]);
     VillagerId_getName(VillagerData_getVillagerId(p), &l[1]);
     TalkWindowState_setSlot(unk_3c, 0, &l[1]);
-    _ZN12Unk_020e1c64D1Ev(&l[1]);
+    _ZN11MsgString9BD1Ev(&l[1]);
 }
 
 BOOL VillagerHouse::vfunc_8c() {

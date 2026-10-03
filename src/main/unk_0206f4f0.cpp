@@ -37,15 +37,15 @@ void _ZN11CommManager11beginRecordEv(void *p);
 void _ZN11CommManager11writeRecordEPhj(void *p, void *d, s32 n);
 void _ZN11CommManager9endRecordEjj(void *p, s32 a, s32 b);
 void BottleLetterRecord_GetLetter(void *p);
-void func_02065c94();
+void Letter_Clear();
 void *func_0208f158(void *p);
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 void _ZN12Unk_0208f23813func_0208f168Ev(void *p);
 void _ZN12Unk_0208f23813func_0208f1a8Ej(void *p, s32 v);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 s32 FishCatch_StartRelease(u8 a, u32 b, void *c);
 s32 BottleThrow_SetTarget(void *a, u8 b);
-u8 *func_02095204(u8 x);
+u8 *PlayerActor_GetActor(u8 x);
 BOOL HeldInsect_GetStage(u8 x);
 void HeldInsect_Start(u32 a, u8 b);
 s32 HeldInsect_Release(u8 a, s32 b);
@@ -90,7 +90,7 @@ extern "C" void func_0206f770(u8 *p, u32 id) {
         q = p + 1;
         id8 = id;
         off = (p[2] - 0x1e) * 0xb6;
-        u8 *r = func_02095204(id8);
+        u8 *r = PlayerActor_GetActor(id8);
         if (r != NULL) {
             off = off + *(s16 *)(r + 0x8e);
             if (HeldInsect_GetStage(id8) == 0) {
@@ -143,7 +143,7 @@ extern "C" void func_0206f668(u8 *p) {
     MI_CpuCopy8(p + 1, buf, 0xf4);
     u8 *const g = data_021e7f8c;
     void *t = func_0208f158(g);
-    func_02065e70(t, buf);
+    Letter_Copy(t, buf);
     _ZN12Unk_0208f23813func_0208f168Ev(g);
     _ZN12Unk_0208f23813func_0208f1a8Ej(g, 0);
     Heap_Free(heap, buf);
@@ -151,7 +151,7 @@ extern "C" void func_0206f668(u8 *p) {
 
 extern "C" void func_0206f650() {
     BottleLetterRecord_GetLetter(data_021eceac);
-    func_02065c94();
+    Letter_Clear();
 }
 
 extern "C" u8 func_0206f644() { return data_020de390; }

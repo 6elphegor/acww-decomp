@@ -39,10 +39,10 @@ void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void func_0203c42c(void *a, void *p, s32 skip, s32 set);
 u16 Item_MakePaper(void *p, s32 a);
-void func_02065af0(void *a);
-void * func_02065c8c(void *p);
-void func_02065c94(void *a);
-void func_02065e70(void *p, void *q);
+void Letter_MarkRead(void *a);
+void * Letter_GetPaper(void *p);
+void Letter_Clear(void *a);
+void Letter_Copy(void *p, void *q);
 BOOL MenuCtrl_IsForceCloseDue();
 void MenuCtrl_TickForceClose();
 void MenuCtrl_SetResult(s32 a);
@@ -99,7 +99,7 @@ MailboxMenu *MailboxMenu_Create();
 void MailboxMenu_SetupBgLayers();
 }
 
-class Unk_02065554;
+class LetterView;
 class LetterRenderer;
 class Unk_0206d1d4_Src;
 class PlayerMailbox;
@@ -270,10 +270,10 @@ public:
     u32 unk_00[0x164 / 4];
 };
 
-class Unk_02065554 {
+class LetterView {
 public:
-    s32 func_02065578();
-    u32 func_020655d0();
+    s32 getState();
+    u32 getPresent();
 };
 
 class PlayerMailbox {
@@ -774,7 +774,7 @@ BOOL MailboxMenu::execClosed() {
     s32 i = 0;
     u8 *q = (u8 *)unk_2924;
     for (; i < 10; i++) {
-        func_02065e70(p, q + i * 0xf4);
+        Letter_Copy(p, q + i * 0xf4);
         p += 0xf4;
     }
     ProcBase_RequestDelete(this);
@@ -870,7 +870,7 @@ void MailboxMenu::transitionAct06() {
 void MailboxMenu::transitionAct07() {
     void *t = getSlotLetter(unk_b9);
     registerLetterPaper(t);
-    func_02065af0(t);
+    Letter_MarkRead(t);
     ((LetterRenderer *)&unk_26a4)->func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -946,12 +946,12 @@ void MailboxMenu::initParts() {
     ((PopupChoiceMenu *)&unk_229c)->init(3, 0, 0);
     ((LetterRenderer *)&unk_26a4)->func_0206d39c(3);
     for (i = 0; i < 10; i++) {
-        func_02065c94((u8 *)unk_2924 + i * 0xf4);
+        Letter_Clear((u8 *)unk_2924 + i * 0xf4);
     }
     PlayerData_GetCurrent();
     p = ((PlayerMailbox *)func_020979d8())->getLetter(0);
     for (i = 0; i < 10; i++) {
-        func_02065e70((u8 *)unk_2924 + i * 0xf4, p);
+        Letter_Copy((u8 *)unk_2924 + i * 0xf4, p);
         p += 0xf4;
     }
     setFlags(0x4000);
@@ -1767,7 +1767,7 @@ u32 MailboxMenu::findFirstMailboxLetter() {
     Letter *p = unk_2924;
     s32 i;
     for (i = 0; i < 10; p++, i++) {
-        if (((Unk_02065554 *)p)->func_02065578()) {
+        if (((LetterView *)p)->getState()) {
             return (u8)(i + 0x15);
         }
     }
@@ -1846,7 +1846,7 @@ u32 MailboxMenu::getSlotAt(u32 a, s32 b, s32 c) {
 
 BOOL MailboxMenu::dropHeldOnSlot(u32 a) {
     if (isSlotEmpty(a) == 0) {
-        func_02065e70(&unk_3e8c, getSlotLetter(a));
+        Letter_Copy(&unk_3e8c, getSlotLetter(a));
         putLetterInSlot(unk_b7, &unk_3e8c);
     }
     releaseHeldTo(a);
@@ -1870,10 +1870,10 @@ void * MailboxMenu::getSlotLetter(u32 a) {
 }
 
 void MailboxMenu::registerLetterPaper(void *p) {
-    if (((Unk_02065554 *)p)->func_02065578() == 2 || ((Unk_02065554 *)p)->func_02065578() == 3) {
+    if (((LetterView *)p)->getState() == 2 || ((LetterView *)p)->getState() == 3) {
         void *r4 = PlayerData_GetCurrent();
         u16 v = 0xfff1;
-        v = Item_MakePaper(func_02065c8c(p), 4);
+        v = Item_MakePaper(Letter_GetPaper(p), 4);
         func_0203c42c(((PlayerData *)r4)->getCatalog(), &v, 0, 1);
     }
 }
@@ -2002,7 +2002,7 @@ void MailboxMenu::pickUpFrom(u32 a) {
     if (isLetterSlot(a) || isMailboxSlot(a)) {
         u32 r4 = toLetterGridIndex(a);
         unk_b4 = 1;
-        func_02065e70(&unk_3d98, ((LetterGrid *)&unk_b58)->getLetter(r4));
+        Letter_Copy(&unk_3d98, ((LetterGrid *)&unk_b58)->getLetter(r4));
         ((LetterGrid *)&unk_b58)->clearLetter(r4);
     }
 }
@@ -2016,7 +2016,7 @@ void MailboxMenu::releaseHeldTo(u32 a) {
 
 void MailboxMenu::exchangeHeldWith(u32 a) {
     if (unk_b4 == 1) {
-        func_02065e70(&unk_3e8c, &unk_3d98);
+        Letter_Copy(&unk_3e8c, &unk_3d98);
         pickUpFrom(a);
         putLetterInSlot(a, &unk_3e8c);
     }
@@ -2193,7 +2193,7 @@ void MailboxMenu::selectLetter(u32 idx, u32 x) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(&unk_229c.unk_2f4, 0, 0);
     }
-    s32 r5 = ((Unk_02065554 *)r7)->func_02065578();
+    s32 r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
             ChoiceIdList_Add(&unk_229c.unk_2f4, 0x17, 1);
@@ -2201,7 +2201,7 @@ void MailboxMenu::selectLetter(u32 idx, u32 x) {
             ChoiceIdList_Add(&unk_229c.unk_2f4, 0x14, 1);
         }
     }
-    if (((Unk_02065554 *)r7)->func_020655d0() == 0xfff1) {
+    if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
             ChoiceIdList_Add(&unk_229c.unk_2f4, 0x15, 3);
         }

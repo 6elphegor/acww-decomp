@@ -457,7 +457,7 @@ void MI_CpuCopy8(void *dst, void *src, u32 n);
 void _ZN12Unk_020dd38cC2Ev(void *p);
 void _ZN12Unk_020dd38cD1Ev(void *p);
 void func_020638d0(void *a, void *b);
-void *func_0209409c(void *a);
+void *PlayerId_GetTownId(void *a);
 void *_ZN10PlayerData11getPlayerIdEv(void *a);
 void *_ZN10PlayerData18getLostChildRecordEv(void *a);
 void *PlayerData_GetCurrent();
@@ -576,8 +576,8 @@ void HouseRoomMaps_UpdateAll();
 void HouseRoomMaps_BindBg();
 void Town_OnLoad();
 void Comm_ResetPeerState(s32);
-u8 *func_020952c8(s32);
-u16 *func_020952d8();
+u8 *PlayerSession_GetSessionFlags(s32);
+u16 *PlayerSession_GetLastPlayDate();
 void Clock_GetDateTime(void *);
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32, Unk_020a0088_Date);
 void _ZN8SaveData5resetEv(void *);
@@ -966,7 +966,7 @@ BOOL CommCtrl_SendAct07();
 BOOL CommSend_VillagerTransfer(u8 *p);
 BOOL func_02097444(s32 v);
 BOOL func_020a03f0();
-void *func_02095204(u32 v);
+void *PlayerActor_GetActor(u32 v);
 void ProcBase_RequestDelete();
 BOOL CommSend_JoinReady();
 u32 Net_GetMyAid();
@@ -1087,10 +1087,10 @@ s32 func_0204198c();
 s32 func_02041960();
 void func_02041ac0();
 s32 PlayerData_GetResident(void *p, u32 n);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
 s32 _ZN10PlayerData11getPlayerIdEv(...);
-void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, void *p);
+void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *p);
 void _ZN10PlayerData5resetEv(s32 a);
 void _ZN8SaveData11resetPlayerEi(void *p, u32 n);
 s32 func_020978a4(void *p);
@@ -1728,8 +1728,8 @@ void Unk_020a3238::enterAct06() {
     u8 *d = NI::gSaveData;
     u8 buf[0x1c];
     s32 h = NI::PlayerData_GetResident(NI::gSavePlayers, NI::sEraseResidentSlot);
-    NI::_ZN12Unk_020e1c64C1Ev(buf);
-    NI::_ZN8PlayerId13func_020940d0EP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
+    NI::_ZN11MsgString9BC1Ev(buf);
+    NI::_ZN8PlayerId13getNameStringEP9MsgString(NI::_ZN10PlayerData11getPlayerIdEv(h), buf);
     o->setSlot(0, buf);
     NI::_ZN10PlayerData5resetEv(h);
     NI::_ZN8SaveData11resetPlayerEi(d, NI::sEraseResidentSlot);
@@ -1738,7 +1738,7 @@ void Unk_020a3238::enterAct06() {
         *(u8 *)(d + 0x15e76) = 0;
     }
     unk_9d = 0;
-    NI::_ZN12Unk_020e1c64D1Ev(buf);
+    NI::_ZN11MsgString9BD1Ev(buf);
 }
 
 void Unk_020a3238::execAct06() {
@@ -2133,7 +2133,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
         } else if (NH::func_020a03f0()) {
-            NH::func_02095204(4);
+            NH::PlayerActor_GetActor(4);
             NH::ProcBase_RequestDelete();
             p->unk_9d = 5;
         }
@@ -2141,7 +2141,7 @@ extern "C" void SaveManager_ExecAct14(Unk_020a25d8 *p) {
     case 5:
         if (NH::Comm_IsConnectionLost(1)) {
             NH::Comm_SetLostFlag();
-        } else if (NH::func_02095204(4) == 0) {
+        } else if (NH::PlayerActor_GetActor(4) == 0) {
             if (NH::CommSend_JoinReady()) {
                 p->unk_9d = 6;
             }
@@ -4454,7 +4454,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
         t = ND::PlayerSession_GetDataIndex(0);
         if (t < 7) {
             r5 = ND::PlayerData_Get(t);
-            r4 = ND::func_020952c8(r5);
+            r4 = ND::PlayerSession_GetSessionFlags(r5);
             if (*r4 & 6) {
                 l.d[0] = 0;
                 l.d[1] = 0;
@@ -4464,7 +4464,7 @@ extern "C" void NetSession_ReturnToSolo(void *a, s32 b, s32 c) {
                 l.packed.v = (l.packed.v & ~0xf800) | ((((u8 *)l.d)[3] & 0x1f) << 11);
                 if (*r4 & 2) *r4 |= 0x11;
             } else {
-                l.packed.v = *ND::func_020952d8();
+                l.packed.v = *ND::PlayerSession_GetLastPlayDate();
                 *r4 = *r4 | ((*r4 >> 4) & 1);
             }
             ND::_ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(r5, l.packed);
@@ -4558,7 +4558,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     if (r7 == 0) return;
     u32 sa[7];
     NC::_ZN12Unk_020dd38cC2Ev(sa);
-    NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
+    NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)), sa);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r7);
     if (NC::_ZN15LostChildRecord11getDaysLeftEv(r6)) {
         NC::func_0209fef8(self, r6);
@@ -4577,7 +4577,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
         if (!o->isSlotActive(i)) continue;
         other = NC::PlayerData_GetBySessionSlot(i);
         if (!other) continue;
-        NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
+        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)), sb);
         other2 = NC::_ZN10PlayerData18getLostChildRecordEv(other);
         if (NC::_ZN15LostChildRecord11getDaysLeftEv(other2)) continue;
         if (NC::Net_GetMode() == 3 || NC::Net_GetMode() == 4) {
@@ -4600,10 +4600,10 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     }
     s32 r4 = NC::func_02063b8c(2);
     NC::_ZN15LostChildRecord14setKaitlinRoleEh(other2, r4 == 0 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEv(other2, NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
+    NC::_ZN15LostChildRecord9setTownIdEv(other2, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r7)));
     NC::_ZN15LostChildRecord11setDaysLeftEh(other2, 0xa);
     NC::_ZN15LostChildRecord14setKaitlinRoleEh(r6, r4 == 1 ? 1 : 0);
-    NC::_ZN15LostChildRecord9setTownIdEv(r6, NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(other)));
+    NC::_ZN15LostChildRecord9setTownIdEv(r6, NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(other)));
     NC::_ZN15LostChildRecord11setDaysLeftEh(r6, 0xa);
     NC::func_0209fef8(self, r6);
     NC::func_0209fef8(self, other2);
@@ -4614,7 +4614,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     u32 sc[7];
     NC::_ZN12Unk_020dd38cC2Ev(sc);
     if (c4) {
-        NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
+        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sc);
     }
     NC::MI_CpuCopy8(r6, NC::_ZN12Unk_0208f23813func_0208f18cEv(m7), 0xc);
     c4 = NC::PlayerData_GetBySessionSlot((s32)h5);
@@ -4622,7 +4622,7 @@ extern "C" void LostChild_TryPair(Unk_0209f638 *self, s32 idx) {
     u32 sd[7];
     NC::_ZN12Unk_020dd38cC2Ev(sd);
     if (c4) {
-        NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
+        NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(c4)), sd);
     }
     NC::MI_CpuCopy8(other2, NC::_ZN12Unk_0208f23813func_0208f18cEv(m5), 0xc);
     NC::_ZN12Unk_020dd38cD1Ev(sd);
@@ -4651,7 +4651,7 @@ extern "C" void LostChild_ApplyReceived(Unk_0209f638 *self) {
     void *r4 = NC::PlayerData_GetCurrent();
     u32 s1[7];
     NC::_ZN12Unk_020dd38cC2Ev(s1);
-    NC::func_020638d0(NC::func_0209409c(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
+    NC::func_020638d0(NC::PlayerId_GetTownId(NC::_ZN10PlayerData11getPlayerIdEv(r4)), s1);
     void *r6 = NC::_ZN10PlayerData18getLostChildRecordEv(r4);
     void *q = NC::_ZN12Unk_0208f23813func_0208f18cEv(p5);
     u32 s2[7];

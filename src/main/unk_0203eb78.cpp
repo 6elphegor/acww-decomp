@@ -136,15 +136,15 @@ void _ZN6LetterD1Ev(void *p);
 }
 
 extern "C" {
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void func_02065ba4(void *p, s32 q);
+void Letter_SetRecipientResident(void *p, s32 q);
 }
 
 extern "C" {
-void func_02065ac0(void *p);
+void Letter_MarkReceived(void *p);
 }
 
 extern "C" {
@@ -324,10 +324,10 @@ extern "C" BOOL func_0203ec58(u8 *p) {
     _ZN6LetterC1Ev(l);
     s32 h = PlayerData_GetCurrent();
     if (*(u16 *)(p + 0xf4) != func_02097980(h)) {
-        func_02065e70(l, p);
+        Letter_Copy(l, p);
         s32 q = _ZN10PlayerData8getIndexEv(h);
-        func_02065ba4(l, q);
-        func_02065ac0(l);
+        Letter_SetRecipientResident(l, q);
+        Letter_MarkReceived(l);
         if (LetterDelivery_PutInMailbox(l, q, 0)) {
             func_02097954(h, *(u16 *)(p + 0xf4));
             _ZN6LetterD1Ev(l);

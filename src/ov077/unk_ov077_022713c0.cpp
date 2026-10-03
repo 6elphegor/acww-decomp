@@ -61,7 +61,7 @@ void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 s32 func_020e7518(void *p);
 BOOL MenuCtrl_IsFinished();
 BOOL MenuCtrl_IsResultOk();
-s32 func_020951ec(s32 v);
+s32 PlayerActor_GetCharacter(s32 v);
 u16 _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
 s32 Effect_Create(s32 a, void *b, s32 c, s32 d);
 void Effect_End(s32 h);
@@ -638,7 +638,7 @@ BOOL SpNpcResetti::setupAct03() {
 }
 
 BOOL SpNpcResetti::mainAct03() {
-    Unk_ov077_02271a84_Pl *pl = (Unk_ov077_02271a84_Pl *)func_020951ec(4);
+    Unk_ov077_02271a84_Pl *pl = (Unk_ov077_02271a84_Pl *)PlayerActor_GetCharacter(4);
     s32 dx, dz;
     s32 ax, az;
     Unk_ov077_02271a84_V3 v;
@@ -708,7 +708,7 @@ BOOL SpNpcResetti::setupAct04() {
 }
 
 BOOL SpNpcResetti::mainAct04() {
-    s32 r = func_020951ec(4);
+    s32 r = PlayerActor_GetCharacter(4);
     u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     unk_8e = v;
     unk_94 = v;
@@ -736,7 +736,7 @@ BOOL SpNpcResetti::setupAct05() {
 }
 
 BOOL SpNpcResetti::mainAct05() {
-    s32 r = func_020951ec(4);
+    s32 r = PlayerActor_GetCharacter(4);
     s32 f;
     u16 v = _ZN8NpcActor10getAngleToEPS_(this, (void *)r);
     unk_8e = v;

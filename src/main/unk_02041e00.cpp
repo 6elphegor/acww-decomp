@@ -153,8 +153,8 @@ struct Unk_02041e00_Obj {
 };
 extern u8 gSaveVillagers[];
 extern u32 sBbsEventMsgs[];
-void _ZN12Unk_020e1c64C1Ev(Unk_02041e00_Obj *o);
-void _ZN12Unk_020e1c64D1Ev(Unk_02041e00_Obj *o);
+void _ZN11MsgString9BC1Ev(Unk_02041e00_Obj *o);
+void _ZN11MsgString9BD1Ev(Unk_02041e00_Obj *o);
 s32 SaveVillagers_Get(void *p, u32 v);
 s32 _ZN12VillagerData13getVillagerIdEv();
 u32 VillagerId_GetSpecies();
@@ -199,7 +199,7 @@ struct Unk_02042104_Bits {
     u16 h6[3];
 };
 extern u8 gFieldSceneKind;
-u32 func_02095204(u32 v);
+u32 PlayerActor_GetActor(u32 v);
 void PendingUnit_CancelAt(Unk_02042104_Pair *p, s32 k);
 void FieldAction_WaterFlowers(u32 v, Unk_02042104_Pair *p);
 void FieldItemFx_StartDrop(u32 a, u32 b, Unk_02042104_Pair *c, Unk_02042104_Vec *d);
@@ -290,7 +290,7 @@ u16 *FieldAction_CheckFreeUnit(u32, void *, s32, s32, Unk_020422c0_Pos *);
 BOOL FieldItemFx_StartPop(u32, u32, Unk_020422c0_Pos *);
 BOOL FieldItemFx_StartDrop(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *);
 BOOL ItemDrop_StartToUnit(u32, u32, Unk_020422c0_Pos *, Unk_02042830_V3 *, u32);
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 u32 FieldPlayer_GetHeldItem(void *);
 u16 Flower_GetWateredForm(void *, void *, s32);
 void ItemSync_SetAtUnit(s32, s32, s32, u32, s32);
@@ -376,7 +376,7 @@ s32 FieldAction_FindDropUnit(s32 a, s32 *pos, void *out);
 void Item_ToPlantedFieldId(u16 *a, u16 *b, s32 c);
 s32 _ZN11CommManager8isOnlineEv(void *o);
 void *BlockMap_GetItemPtr(void *m, s32 a, s32 b, s32 c, s32 d, s32 e);
-u8 *func_02095204(s32 a);
+u8 *PlayerActor_GetActor(s32 a);
 s32 Item_IsTreeStage0(u16 *p);
 s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldItemFx_StartPlant(s32 a, u16 b, Pos p, Unk_02042d10_Vec v);
@@ -569,7 +569,7 @@ struct Unk_02043e94_G { u8 pad_00[0x64]; s32 unk_64; s32 unk_68; };
 struct Unk_02043f04_Pos { s32 x, z; };
 struct Unk_02044014_Vec3 { s32 x, y, z; };
 extern Unk_02043e94_G *gCommManager;
-extern u8 data_020e12cc[];
+extern u8 gEffectSplDefaultInitCbs[];
 extern u8 data_020da2a4[];
 extern u8 data_020da2a8[];
 struct Unk_02044460_G {
@@ -594,7 +594,7 @@ s32 Item_IsFlower(void);
 s32 Scene_GetCurrent(void);
 s32 ItemSync_SetAtUnit(s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 FieldPos_FromUnitCenter(Unk_02044014_Vec3 *out, s32 x, s32 z);
-s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
+s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
 s32 Flower_TrampleAt(Unk_02043f04_Pos *p, s32 f);
 s32 Flower_TrampleTile(void *m, Unk_02043f04_Pos *p, s32 f);
 void Flower_SpawnPetalFx(u16 *a, Unk_02043f04_Pos *p, s16 c, s32 d);
@@ -798,7 +798,7 @@ static inline BOOL Unk_02044aa8_R(volatile u16 *p, u32 c, u32 lo, u32 hi)
 }
 BOOL _ZN11CommManager8isOnlineEv(CommManager *g);
 s32 FieldPos_FromUnitCenter(Unk_02044aa8_Vec3 *out, s32 x, s32 z);
-Unk_0204512c_Obj *func_02095204(u32 i);
+Unk_0204512c_Obj *PlayerActor_GetActor(u32 i);
 s32 func_01ffcb0c(s32 a, s32 b);
 u32 Field_AidOrLocal(u32 a);
 s32 PendingUnit_Reset(void *p);
@@ -1204,7 +1204,7 @@ s32 SceneId_IsTownUnk31(u32);
 Unk_0204674c_P *TownBlockMap_Get();
 s32 func_02063b8c(s32);
 void Town_SpawnSeashellsInAcre(void *, void *, s32);
-Unk_02046650_O *func_02095204(s32);
+Unk_02046650_O *PlayerActor_GetActor(s32);
 void TownEval_EvaluateAcreAt(void *, void *, s32, s32);
 s32 Town_SpawnItemInAcre(void *, void *, s32, s32, u32, void *, s32);
 s32 Town_IsSandAt();
@@ -5560,7 +5560,7 @@ extern "C" void Town_UpdateSeashellsOffline(void *a) {
     Clock_GetMinuteHour(&t);
     if (t != gTownUpdater[0]) {
         if ((s32)(*(u8 *)&t) % 10 == 3) {
-            Unk_02046650_O *o = func_02095204(4);
+            Unk_02046650_O *o = PlayerActor_GetActor(4);
             if (o) {
                 Unk_0204674c_P *p = TownBlockMap_Get();
                 u32 *o2 = &o->f5c;
@@ -6717,7 +6717,7 @@ extern "C" BOOL Field_IsUnitClearOfOthers(Unk_020449e8_Pos *p, s32 idx) {
     FieldPos_FromUnitCenter(&v, p->x, p->y);
     for (s32 i = 0; i < 4; i++) {
         if (i != idx) {
-            Unk_0204512c_Obj *o = func_02095204(i);
+            Unk_0204512c_Obj *o = PlayerActor_GetActor(i);
             if (o) {
                 Unk_02044aa8_Vec3 *q = &o->pos;
                 s32 dx = v.x - q->x;
@@ -7501,9 +7501,9 @@ yes:
     }
     w = v;
     FlowerFx_SetParams(&(*(Unk_02044460_G *)nZ::gTownUpdater.unk_04), d, k, t, flag, &w, c);
-    func_0208fc88(id1, &v, 0, data_020da2a8);
+    EffectSpl_CreateOneShot(id1, &v, 0, data_020da2a8);
     if (d != 1) {
-        func_0208fc88(id2, &v, 0, data_020da2a4);
+        EffectSpl_CreateOneShot(id2, &v, 0, data_020da2a4);
     }
 }
 }
@@ -7533,7 +7533,7 @@ extern "C" void Weed_SpawnPullFx(u16 *a, Unk_02043f04_Pos *p) {
     }
     Unk_02044014_Vec3 v;
     FieldPos_FromUnitCenter(&v, p->x, p->z);
-    func_0208fc88(id, &v, 0, data_020e12cc);
+    EffectSpl_CreateOneShot(id, &v, 0, gEffectSplDefaultInitCbs);
 }
 }
 
@@ -7541,7 +7541,7 @@ namespace nE {
 extern "C" void func_02044014(Unk_02043f04_Pos *p) {
     Unk_02044014_Vec3 v;
     FieldPos_FromUnitCenter(&v, p->x, p->z);
-    func_0208fc88(0x94, &v, 0, data_020e12cc);
+    EffectSpl_CreateOneShot(0x94, &v, 0, gEffectSplDefaultInitCbs);
 }
 }
 
@@ -8341,7 +8341,7 @@ extern "C" s32 FieldAction_PollResult(s32 idx) {
         switch (e->f0c) {
         case 0x13: {
             if (e->f10 != 0xfff1) {
-                u8 *o = func_02095204(4);
+                u8 *o = PlayerActor_GetActor(4);
                 if (o) {
                     u16 v = e->f12;
                     Unk_02042d10_Vec *q = (Unk_02042d10_Vec *)(o + 0x5c);
@@ -8518,7 +8518,7 @@ extern "C" s32 FieldAction_FindDropUnit(void *self, Unk_020422c0_Pos *p, u8 *out
     u8 *w, *o, *g;
     s32 z;
     w = (u8 *)gSceneBlockMap;
-    o = (u8 *)func_02095204(4);
+    o = (u8 *)PlayerActor_GetActor(4);
     res = 0;
     if (w != NULL && o != NULL) {
         ent = (s32 *)&sDropUnitOrder[func_02063ba4(*(s16 *)(o + 0x8e))];
@@ -8581,7 +8581,7 @@ extern "C" s32 FieldAction_PollDrop(s32 idx) {
     }
     switch (e->unk_08) {
     case 2: {
-        u8 *o = (u8 *)func_02095204(4);
+        u8 *o = (u8 *)PlayerActor_GetActor(4);
         if (w != NULL && o != NULL) {
             Unk_02042830_V3 *pv = (Unk_02042830_V3 *)(o + 0x5c);
             if (Unk_02042830_IsZero(gFieldSceneKind)) {
@@ -8686,7 +8686,7 @@ extern "C" void FieldAction_WaterFlowers(void *self, Unk_020422c0_Pos *p) {
     Unk_020422c0_Pos q;
     s8 *dx, *dy;
     m = TownBlockMap_Get();
-    o = func_02095204(4);
+    o = PlayerActor_GetActor(4);
     if (m == NULL || o == NULL) {
         return;
     }
@@ -9031,7 +9031,7 @@ extern "C" void FieldActionFx_Start(Unk_02042104_Bits *p) {
     case 16:
     case 17:
     case 18: {
-        u32 o = func_02095204(p->idx);
+        u32 o = PlayerActor_GetActor(p->idx);
         if (o != 0) {
             Unk_02042104_Vec *q = (Unk_02042104_Vec *)(o + 0x5c);
             if (Unk_02042104_IsZero(gFieldSceneKind)) {
@@ -9055,7 +9055,7 @@ extern "C" void FieldActionFx_Start(Unk_02042104_Bits *p) {
         break;
     case 19:
         if (p->h4 != 0xfff1) {
-            u32 o = func_02095204(p->idx);
+            u32 o = PlayerActor_GetActor(p->idx);
             if (o != 0) {
                 Unk_02042104_Vec *q = (Unk_02042104_Vec *)(o + 0x5c);
                 m.v[2] = *q;
@@ -9174,7 +9174,7 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
     Unk_02042104_Date tmp;
     Unk_02041e00_Obj obj;
     s32 t, n;
-    _ZN12Unk_020e1c64C1Ev(&obj);
+    _ZN11MsgString9BC1Ev(&obj);
     i = 0;
     v10 = 0;
     v0c = 0;
@@ -9218,6 +9218,6 @@ extern "C" void TownBbs_PostDayEvents(void *o, Unk_02041e00_Ent *z, Unk_02042104
         n = i + 1;
         i = n;
     } while (n < 7);
-    _ZN12Unk_020e1c64D1Ev(&obj);
+    _ZN11MsgString9BD1Ev(&obj);
 }
 }

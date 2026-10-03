@@ -479,7 +479,7 @@ extern "C" {
 void _ZN10PlayerData11getPlayerIdEv(u32);
 }
 extern "C" {
-void *_ZN8PlayerId13func_02094104Ev();
+void *_ZN8PlayerId7getNameEv();
 }
 extern "C" {
 void *func_02063964(void *);
@@ -662,7 +662,7 @@ extern "C" {
 void func_0209c5a0(u32, u32);
 }
 extern "C" {
-void func_02095260(u32);
+void PlayerSession_ResetLastState(u32);
 }
 extern "C" {
 void ReddPassword_ForgetVisitor();
@@ -718,10 +718,10 @@ extern "C" void Comm_ResetPeerState(s32 r4) {
     if (r4 < 0) {
         if (r4 == -4) {
             for (u32 i = 0; i < 4; i++) {
-                func_02095260(i);
+                PlayerSession_ResetLastState(i);
             }
         } else {
-            func_02095260(-r4);
+            PlayerSession_ResetLastState(-r4);
         }
     }
     if (r4 == -4) {
@@ -929,7 +929,7 @@ extern "C" void Comm_Start(s32 a, u32 b, u32 c) {
             l1c += 0x1c;
         }
         _ZN10PlayerData11getPlayerIdEv(l18);
-        MI_CpuCopy8(_ZN8PlayerId13func_02094104Ev(), r6, 8);
+        MI_CpuCopy8(_ZN8PlayerId7getNameEv(), r6, 8);
         MI_CpuCopy8(func_02063964((u8 *)((u32)gSaveData + 2)), r6 + 8, 8);
         _ZN10PlayerData15getWifiUserDataEv(l18);
         MI_CpuCopy8(PlayerWifiData_GetDwcUserData(), r6 + 0x10, 0x40);
@@ -2524,16 +2524,16 @@ extern "C" {
 void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
 }
 extern "C" {
-Unk_020942c8 *func_0209409c(Unk_020942c8 *p);
+Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
 void func_02063950(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN8PlayerId13func_02094128Et(Unk_020942c8 *p, u32 v);
+void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN6TownId13func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
+void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
 s32 memcmp(void *a, void *b, u32 n);

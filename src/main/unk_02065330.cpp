@@ -9,10 +9,10 @@ public:
     virtual u8 *data() = 0;
 };
 
-class Unk_020dd468 : public EncodedString {
+class EncodedString128 : public EncodedString {
 public:
-    Unk_020dd468();
-    virtual ~Unk_020dd468();
+    EncodedString128();
+    virtual ~EncodedString128();
     virtual u32 capacity();
     virtual u8 *data();
 
@@ -53,16 +53,16 @@ public:
 };
 
 // Object with the byte/halfword state accessed by func_02065554 and friends.
-class Unk_02065554 {
+class LetterView {
 public:
-    void func_02065518();
-    BOOL func_02065554();
-    void func_02065564(u32 v);
-    u8 func_02065578();
+    void loadDefaultGreeting();
+    BOOL isToFutureSelf();
+    void setState(u32 v);
+    u8 getState();
     u32 setPresent(u16 v, u32 w);
-    void func_020655ac(u32 v);
-    u8 func_020655c0();
-    u16 func_020655d0();
+    void setPresentFlags(u32 v);
+    u8 getPresentFlags();
+    u16 getPresent();
 
     /* 0x00 */ u32 unk_00;
     /* 0x04 */ Letter unk_04;
@@ -78,8 +78,8 @@ public:
     /* 0xf2 */ u16 pad_f2;
 };
 
-// Object filled by func_02065388 (0x52 bytes).
-struct Unk_02065388_Obj {
+// Object filled by LetterDefaults_Init (0x52 bytes).
+struct LetterDefaults {
     /* 0x00 */ u8 unk_00[0x18];
     /* 0x18 */ u8 unk_18[0x18];
     /* 0x30 */ u8 unk_30[0x20];
@@ -98,10 +98,10 @@ void VillagerId_Construct(void *);
 void VillagerId_Destruct(void *);
 void _ZN8PlayerIdC1EPv(void *);
 void _ZN8PlayerIdC1Ev(void *);
-void _ZN12Unk_020e1c64C1Ev(void *);
-void _ZN12Unk_020e1c64D1Ev(void *);
-void _ZN12Unk_020e1c4cC1Ev(void *);
-void _ZN12Unk_020e1c4cD1Ev(void *);
+void _ZN11MsgString9BC1Ev(void *);
+void _ZN11MsgString9BD1Ev(void *);
+void _ZN14EncodedString8C1Ev(void *);
+void _ZN14EncodedString8D1Ev(void *);
 void _ZN11LabelStringC1Ev(void *);
 void _ZN11LabelStringD1Ev(void *);
 void _ZN15EncodedString41C1Ev(void *);
@@ -120,13 +120,13 @@ struct Unk_02065d5c_Buf18 {
 };
 struct Unk_02065dc8_Obj1c {
     u32 v[7];
-    Unk_02065dc8_Obj1c() { _ZN12Unk_020e1c64C1Ev(this); }
-    ~Unk_02065dc8_Obj1c() { _ZN12Unk_020e1c64D1Ev(this); }
+    Unk_02065dc8_Obj1c() { _ZN11MsgString9BC1Ev(this); }
+    ~Unk_02065dc8_Obj1c() { _ZN11MsgString9BD1Ev(this); }
 };
 struct Unk_02065dc8_Obj18 {
     u32 v[6];
-    Unk_02065dc8_Obj18() { _ZN12Unk_020e1c4cC1Ev(this); }
-    ~Unk_02065dc8_Obj18() { _ZN12Unk_020e1c4cD1Ev(this); }
+    Unk_02065dc8_Obj18() { _ZN14EncodedString8C1Ev(this); }
+    ~Unk_02065dc8_Obj18() { _ZN14EncodedString8D1Ev(this); }
 };
 struct Unk_02065dc8_Obj44 {
     u32 v[0x11];
@@ -140,9 +140,9 @@ struct Unk_02065a1c_Str {
     ~Unk_02065a1c_Str() { _ZN15EncodedString41D1Ev(this); }
 };
 
-extern Unk_020ddf2c data_021c9fa4;
-extern Unk_020ddefc data_021ca094;
-extern Unk_020ddf14 data_021c9fd0;
+extern Unk_020ddf2c sMailGreeting;
+extern Unk_020ddefc sMailBody;
+extern Unk_020ddf14 sMailSignature;
 extern u8 gSavePlayers[];
 extern u8 gSaveVillagers[];
 
@@ -158,14 +158,14 @@ s32 MailText_LoadLetterZ(void *a, void *b, void *c, void *d, void *e1, void *e2,
 void MailText_SetSlot(s32 i, void *x);
 void _ZN10VillagerId7getNameEj(void *o, void *x);
 void VillagerId_CopyFrom(void *o, void *x);
-void _ZN8PlayerId13func_02094264EPS_(void *o, void *x);
-void _ZN8PlayerId13func_020940d0EP9MsgString(void *o, void *x);
-void _ZN8PlayerId13func_02094238EPS_(void *src, void *dst);
+void _ZN8PlayerId8copyFromEPS_(void *o, void *x);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *o, void *x);
+void _ZN8PlayerId6copyToEPS_(void *src, void *dst);
 void VillagerId_CopyTo(void *src, void *dst);
 void VillagerId_Copy(void *o, void *x);
 void _ZN13EncodedString13fromMsgStringEP9MsgString(void *o, void *x);
-void _ZN12Unk_020e1c4c13func_02093f90EPvj(void *o, void *x, u32 n);
-void _ZN8PlayerId13func_020942b8EPv(void *o, void *x);
+void _ZN14EncodedString86copyToEPvj(void *o, void *x, u32 n);
+void _ZN8PlayerId6setRawEPv(void *o, void *x);
 void String_Load2dMenu(void *o, u32 x);
 void String_ToEncodedBytes(void *o, void *x);
 void StrBuf_ClearAlt(void *o);
@@ -178,37 +178,37 @@ void *PlayerData_GetResident(void *);
 void *SaveVillagers_Get(void *);
 void *_ZN12VillagerData13getVillagerIdEv(void *);
 
-void func_02065388(Unk_02065388_Obj *o);
-void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
-void func_02065470(Unk_02065388_Obj *a, Unk_02065554 *b);
-void func_020654c8(Unk_02065554 *o, u8 *p);
-u32 func_020655d8(Unk_02065554 *self);
-void func_02065610(Unk_02065554 *self, void *out);
-void func_02065a1c(Unk_02065554 *self, s32 *pv, void *a, void *b, void *c);
-void func_0206567c(Unk_02065554 *self, void *a, void *b, void *c, s32 v);
-void func_02065724(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj);
-void func_02065818(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
-void func_0206598c(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
-void func_02065c94(Unk_02065554 *self);
-void func_02065c34(Unk_02065554 *self, u32 v);
-u32 func_02065ce0(Letter *self, u32 t);
-void func_02065cf0(Letter *self, u32 v);
-void func_02065cf4(Letter *self);
-void func_02065cfc(Letter *self, void *src);
-void func_02065d10(Letter *self, void *src);
-void func_02065d24(Letter *self, void *src);
-Letter *func_02065d38(Letter *self);
-Letter *func_02065d48(Letter *self);
-void func_02065d5c(Letter *self, void *out);
-void func_02065dc8(Letter *self, void *out);
+void LetterDefaults_Init(LetterDefaults *o);
+void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra);
+void LetterDefaults_Store(LetterDefaults *a, LetterView *b);
+void Letter_SetSignature(LetterView *o, u8 *p);
+u32 Letter_IsBottle(LetterView *self);
+void Letter_GetSenderNameBytes(LetterView *self, void *out);
+void Letter_SetTexts(LetterView *self, s32 *pv, void *a, void *b, void *c);
+void Letter_FillBottleMail(LetterView *self, void *a, void *b, void *c, s32 v);
+void Letter_FillSystemMail(LetterView *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj);
+void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
+void Letter_FillFromVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2);
+void Letter_Clear(LetterView *self);
+void Letter_InitDraft(LetterView *self, u32 v);
+u32 LetterParty_IsType(Letter *self, u32 t);
+void LetterParty_SetType(Letter *self, u32 v);
+void LetterParty_SetBottle(Letter *self);
+void LetterParty_SetFutureSelf(Letter *self, void *src);
+void LetterParty_SetPlayer(Letter *self, void *src);
+void LetterParty_SetVillager(Letter *self, void *src);
+Letter *LetterParty_AsVillager(Letter *self);
+Letter *LetterParty_AsPlayer(Letter *self);
+void LetterParty_GetName(Letter *self, void *out);
+void LetterParty_GetNameBytes(Letter *self, void *out);
 }
 
-extern "C" Unk_02065554 *func_02065e70(Unk_02065554 *self, const Unk_02065554 *src) {
+extern "C" LetterView *Letter_Copy(LetterView *self, const LetterView *src) {
     MI_CpuCopy8(src, self, 0xf4);
     return self;
 }
 
-extern "C" void func_02065dc8(Letter *self, void *out) {
+extern "C" void LetterParty_GetNameBytes(Letter *self, void *out) {
     Unk_02065dc8_Obj1c a;
     Unk_02065dc8_Obj18 b;
     Unk_02065d5c_Str c;
@@ -227,7 +227,7 @@ extern "C" void func_02065dc8(Letter *self, void *out) {
         VillagerId_CopyFrom(&c, self);
         _ZN10VillagerId7getNameEj(&c, &a);
         _ZN13EncodedString13fromMsgStringEP9MsgString(&b, &a);
-        _ZN12Unk_020e1c4c13func_02093f90EPvj(&b, out, 8);
+        _ZN14EncodedString86copyToEPvj(&b, out, 8);
         break;
     case 7:
         String_Load2dMenu(&d, 0x43);
@@ -236,7 +236,7 @@ extern "C" void func_02065dc8(Letter *self, void *out) {
     }
 }
 
-extern "C" void func_02065d5c(Letter *self, void *out) {
+extern "C" void LetterParty_GetName(Letter *self, void *out) {
     Unk_02065d5c_Str a;
     Unk_02065d5c_Buf18 b;
     switch (self->unk_16) {
@@ -246,8 +246,8 @@ extern "C" void func_02065d5c(Letter *self, void *out) {
     case 1:
     case 2:
     case 6:
-        _ZN8PlayerId13func_02094264EPS_(&b, self);
-        _ZN8PlayerId13func_020940d0EP9MsgString(&b, out);
+        _ZN8PlayerId8copyFromEPS_(&b, self);
+        _ZN8PlayerId13getNameStringEP9MsgString(&b, out);
         break;
     case 3:
     case 5:
@@ -257,36 +257,36 @@ extern "C" void func_02065d5c(Letter *self, void *out) {
     }
 }
 
-extern "C" Letter *func_02065d48(Letter *self) {
+extern "C" Letter *LetterParty_AsPlayer(Letter *self) {
     if (self->unk_16 != 1 && self->unk_16 != 2 && self->unk_16 != 6) return 0;
     return self;
 }
 
-extern "C" Letter *func_02065d38(Letter *self) {
+extern "C" Letter *LetterParty_AsVillager(Letter *self) {
     if (self->unk_16 != 3 && self->unk_16 != 5) return 0;
     return self;
 }
 
-extern "C" void func_02065d24(Letter *self, void *src) {
+extern "C" void LetterParty_SetVillager(Letter *self, void *src) {
     self->unk_16 = 3;
     VillagerId_CopyTo(src, self);
 }
 
-extern "C" void func_02065d10(Letter *self, void *src) {
+extern "C" void LetterParty_SetPlayer(Letter *self, void *src) {
     self->unk_16 = 2;
-    _ZN8PlayerId13func_02094238EPS_(src, self);
+    _ZN8PlayerId6copyToEPS_(src, self);
 }
 
-extern "C" void func_02065cfc(Letter *self, void *src) {
+extern "C" void LetterParty_SetFutureSelf(Letter *self, void *src) {
     self->unk_16 = 1;
-    _ZN8PlayerId13func_02094238EPS_(src, self);
+    _ZN8PlayerId6copyToEPS_(src, self);
 }
 
-extern "C" void func_02065cf4(Letter *self) { self->unk_16 = 7; }
+extern "C" void LetterParty_SetBottle(Letter *self) { self->unk_16 = 7; }
 
-extern "C" void func_02065cf0(Letter *self, u32 v) { self->unk_16 = v; }
+extern "C" void LetterParty_SetType(Letter *self, u32 v) { self->unk_16 = v; }
 
-extern "C" u32 func_02065ce0(Letter *self, u32 t) {
+extern "C" u32 LetterParty_IsType(Letter *self, u32 t) {
     if (self->unk_16 == t) return TRUE;
     return FALSE;
 }
@@ -295,46 +295,46 @@ Letter::Letter() {}
 
 Letter::~Letter() {}
 
-extern "C" void func_02065c94(Unk_02065554 *self) {
+extern "C" void Letter_Clear(LetterView *self) {
     MI_CpuFill8(self, 0, 0xf4);
     self->unk_f0 = 0xfff1;
 }
 
-extern "C" u32 func_02065c8c(Unk_02065554 *self) { return self->unk_ed; }
+extern "C" u32 Letter_GetPaper(LetterView *self) { return self->unk_ed; }
 
-extern "C" void func_02065c34(Unk_02065554 *self, u32 v) {
+extern "C" void Letter_InitDraft(LetterView *self, u32 v) {
     void *r = PlayerData_GetCurrent();
-    func_02065c94(self);
+    Letter_Clear(self);
     self->unk_ed = v;
     self->unk_ef = 0;
     self->unk_1c.unk_16 = 2;
-    _ZN8PlayerId13func_02094238EPS_(_ZN10PlayerData11getPlayerIdEv(r), &self->unk_1c);
-    self->func_02065564(1);
-    func_020654c8(self, _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(r)) + 0x30);
+    _ZN8PlayerId6copyToEPS_(_ZN10PlayerData11getPlayerIdEv(r), &self->unk_1c);
+    self->setState(1);
+    Letter_SetSignature(self, _ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(r)) + 0x30);
 }
 
-extern "C" void func_02065bfc(Unk_02065554 *self) {
+extern "C" void Letter_InitBottleDraft(LetterView *self) {
     u8 c;
-    func_02065c34(self, 0xc);
-    self->func_02065564(4);
-    func_02065cf4(&self->unk_04);
+    Letter_InitDraft(self, 0xc);
+    self->setState(4);
+    LetterParty_SetBottle(&self->unk_04);
     c = 0x23;
-    func_020653cc(&c, self->unk_34, &self->unk_ec, 0);
+    Letter_LoadTemplate2d(&c, self->unk_34, &self->unk_ec, 0);
 }
 
-extern "C" void func_02065bd0(Unk_02065554 *self) {
+extern "C" void Letter_SetRecipientVillager(LetterView *self) {
     void *r = _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers));
-    self->func_02065518();
-    func_02065d24(&self->unk_04, r);
+    self->loadDefaultGreeting();
+    LetterParty_SetVillager(&self->unk_04, r);
 }
 
-extern "C" void func_02065ba4(Unk_02065554 *self) {
+extern "C" void Letter_SetRecipientResident(LetterView *self) {
     void *r = _ZN10PlayerData11getPlayerIdEv(PlayerData_GetResident(gSavePlayers));
-    self->func_02065518();
-    func_02065d10(&self->unk_04, r);
+    self->loadDefaultGreeting();
+    LetterParty_SetPlayer(&self->unk_04, r);
 }
 
-extern "C" void func_02065b5c(Unk_02065554 *self) {
+extern "C" void Letter_SetRecipientFutureSelf(LetterView *self) {
     void *a = PlayerData_GetCurrent();
     void *b = _ZN10PlayerData11getPlayerIdEv(a);
     if (self->unk_04.unk_16 != 1) {
@@ -342,51 +342,51 @@ extern "C" void func_02065b5c(Unk_02065554 *self) {
         Mem_Copy(c + 0x18, self->unk_34, 0x18);
         self->unk_ec = c[0x51];
     }
-    func_02065cfc(&self->unk_04, b);
+    LetterParty_SetFutureSelf(&self->unk_04, b);
 }
 
-extern "C" void func_02065b28(Unk_02065554 *self) {
-    switch (self->func_02065578()) {
+extern "C" void Letter_MarkSent(LetterView *self) {
+    switch (self->getState()) {
     case 1:
-        self->func_02065564(2);
+        self->setState(2);
         break;
     case 4:
-        self->func_02065564(5);
+        self->setState(5);
         break;
     default:
         return;
     }
-    self->func_020655ac(1);
+    self->setPresentFlags(1);
 }
 
-extern "C" void func_02065af0(Unk_02065554 *self) {
-    switch (self->func_02065578()) {
+extern "C" void Letter_MarkRead(LetterView *self) {
+    switch (self->getState()) {
     case 2:
-        self->func_02065564(3);
+        self->setState(3);
         break;
     case 5:
-        self->func_02065564(6);
+        self->setState(6);
         break;
     case 7:
-        self->func_02065564(8);
+        self->setState(8);
         break;
     }
 }
 
-extern "C" void func_02065ac0(Unk_02065554 *self) {
-    self->func_02065564(2);
+extern "C" void Letter_MarkReceived(LetterView *self) {
+    self->setState(2);
     self->unk_ef = 0x11;
     if (self->unk_f0 != 0xfff1) {
-        self->func_020655ac(1);
+        self->setPresentFlags(1);
     }
 }
 
-extern "C" void func_02065a1c(Unk_02065554 *self, s32 *pv, void *a, void *b, void *c) {
+extern "C" void Letter_SetTexts(LetterView *self, s32 *pv, void *a, void *b, void *c) {
     self->unk_ec = *pv;
     Unk_02065a1c_Str l;
     _ZN13EncodedString13fromMsgStringEP9MsgString(&l, a);
     Mem_Copy(l.text, self->unk_34, 0x18);
-    static Unk_020dd468 s;
+    static EncodedString128 s;
     StrBuf_ClearAlt(&s);
     _ZN13EncodedString13fromMsgStringEP9MsgString(&s, b);
     Mem_Copy(s.text, self->unk_4c, 0x80);
@@ -394,193 +394,193 @@ extern "C" void func_02065a1c(Unk_02065554 *self, s32 *pv, void *a, void *b, voi
     Mem_Copy(l.text, self->unk_cc, 0x20);
 }
 
-extern "C" void func_0206598c(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
+extern "C" void Letter_FillFromVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
     Unk_02065d5c_Str l1;
     Unk_02065d5c_Buf18 l2;
     VillagerId_Copy(&l1, s1);
-    _ZN8PlayerId13func_020942b8EPv(&l2, s2);
-    func_02065c94(self);
+    _ZN8PlayerId6setRawEPv(&l2, s2);
+    Letter_Clear(self);
     self->unk_ed = *ped;
     self->unk_ef = 0;
-    func_02065d24(&self->unk_1c, &l1);
-    func_02065d10(&self->unk_04, &l2);
+    LetterParty_SetVillager(&self->unk_1c, &l1);
+    LetterParty_SetPlayer(&self->unk_04, &l2);
     if (v < 0) {
-        func_02065cf0(&self->unk_04, 5);
+        LetterParty_SetType(&self->unk_04, 5);
         v = 0;
     }
-    self->func_02065564(2);
-    func_02065a1c(self, &v, a, b, c);
+    self->setState(2);
+    Letter_SetTexts(self, &v, a, b, c);
 }
 
-extern "C" void func_02065920(Unk_02065554 *self, void *a1, void *a2, void *a3, void *a4, void *a5, s32 a6) {
+extern "C" void Letter_ComposeVillagerMail(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, s32 a6) {
     u32 out;
     if (a6 != 0xb) {
         Unk_02065dc8_Obj1c o;
         _ZN10VillagerId7getNameEj(a4, &o);
         MailText_SetSlot(a6, &o);
     }
-    MailText_LoadLetter(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2);
-    func_0206598c(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out, (u8 *)a3, a4, a5);
+    MailText_LoadLetter(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2);
+    Letter_FillFromVillager(self, &sMailGreeting, &sMailBody, &sMailSignature, out, (u8 *)a3, a4, a5);
 }
 
-extern "C" void func_020658a8(Unk_02065554 *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
+extern "C" void Letter_ComposeVillagerMailZ(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
     u32 out;
     if (a9 != 0xb) {
         Unk_02065dc8_Obj1c o;
         _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
-    MailText_LoadLetterZ(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2, a3, a4, a5);
-    func_0206598c(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out, a6, a7, a8);
+    MailText_LoadLetterZ(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2, a3, a4, a5);
+    Letter_FillFromVillager(self, &sMailGreeting, &sMailBody, &sMailSignature, out, a6, a7, a8);
 }
 
-extern "C" void func_02065818(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
+extern "C" void Letter_FillVillagerToVillager(LetterView *self, void *a, void *b, void *c, s32 v, u8 *ped, void *s1, void *s2) {
     Unk_02065d5c_Str l1;
     Unk_02065d5c_Str l2;
     VillagerId_Copy(&l1, s1);
     VillagerId_Copy(&l2, s2);
-    func_02065c94(self);
+    Letter_Clear(self);
     self->unk_ed = *ped;
     self->unk_ef = 0;
-    func_02065d24(&self->unk_1c, &l1);
-    func_02065d24(&self->unk_04, &l2);
+    LetterParty_SetVillager(&self->unk_1c, &l1);
+    LetterParty_SetVillager(&self->unk_04, &l2);
     if (v < 0) {
-        func_02065cf0(&self->unk_04, 5);
+        LetterParty_SetType(&self->unk_04, 5);
         v = 0;
     }
-    self->func_02065564(7);
-    func_02065a1c(self, &v, a, b, c);
+    self->setState(7);
+    Letter_SetTexts(self, &v, a, b, c);
 }
 
-extern "C" void func_020657a0(Unk_02065554 *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
+extern "C" void Letter_ComposeVillagerToVillagerZ(LetterView *self, void *a1, void *a2, void *a3, void *a4, void *a5, u8 *a6, void *a7, void *a8, s32 a9) {
     u32 out;
     if (a9 != 0xb) {
         Unk_02065dc8_Obj1c o;
         _ZN10VillagerId7getNameEj(a7, &o);
         MailText_SetSlot(a9, &o);
     }
-    MailText_LoadLetterZ(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a1, a2, a3, a4, a5);
-    func_02065818(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out, a6, a7, a8);
+    MailText_LoadLetterZ(&sMailGreeting, &sMailBody, &sMailSignature, &out, a1, a2, a3, a4, a5);
+    Letter_FillVillagerToVillager(self, &sMailGreeting, &sMailBody, &sMailSignature, out, a6, a7, a8);
 }
 
-extern "C" void func_02065724(Unk_02065554 *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj) {
+extern "C" void Letter_FillSystemMail(LetterView *self, void *a, void *b, void *c, s32 v, u8 *pef, u8 *ped, void *obj) {
     Unk_02065d5c_Buf18 tmp;
-    _ZN8PlayerId13func_020942b8EPv(&tmp, obj);
-    func_02065c94(self);
+    _ZN8PlayerId6setRawEPv(&tmp, obj);
+    Letter_Clear(self);
     self->unk_ed = *ped;
     self->unk_ef = *pef;
-    func_02065cf0(&self->unk_1c, 4);
-    func_02065d10(&self->unk_04, &tmp);
+    LetterParty_SetType(&self->unk_1c, 4);
+    LetterParty_SetPlayer(&self->unk_04, &tmp);
     if (v < 0) {
-        func_02065cf0(&self->unk_04, 6);
+        LetterParty_SetType(&self->unk_04, 6);
         v = 0;
     }
-    self->func_02065564(2);
-    func_02065a1c(self, &v, a, b, c);
+    self->setState(2);
+    Letter_SetTexts(self, &v, a, b, c);
 }
 
-extern "C" void Letter_ComposeFromMail(Unk_02065554 *self, void *a, void *b, u8 *pef, u8 *ped, void *obj) {
+extern "C" void Letter_ComposeFromMail(LetterView *self, void *a, void *b, u8 *pef, u8 *ped, void *obj) {
     u32 out;
-    MailText_LoadLetter(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a, b);
-    func_02065724(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out, pef, ped, obj);
+    MailText_LoadLetter(&sMailGreeting, &sMailBody, &sMailSignature, &out, a, b);
+    Letter_FillSystemMail(self, &sMailGreeting, &sMailBody, &sMailSignature, out, pef, ped, obj);
 }
 
-extern "C" void func_0206567c(Unk_02065554 *self, void *a, void *b, void *c, s32 v) {
-    func_02065c94(self);
+extern "C" void Letter_FillBottleMail(LetterView *self, void *a, void *b, void *c, s32 v) {
+    Letter_Clear(self);
     self->unk_ed = 0xc;
-    self->func_02065564(5);
-    func_02065cf0(&self->unk_1c, 4);
-    func_02065cf4(&self->unk_04);
+    self->setState(5);
+    LetterParty_SetType(&self->unk_1c, 4);
+    LetterParty_SetBottle(&self->unk_04);
     if (v < 0) {
-        func_02065cf0(&self->unk_04, 6);
+        LetterParty_SetType(&self->unk_04, 6);
         v = 0;
     }
     self->unk_ef = 0xc;
-    func_02065a1c(self, &v, a, b, c);
+    Letter_SetTexts(self, &v, a, b, c);
 }
 
-extern "C" void func_02065640(Unk_02065554 *self, void *a, void *b) {
+extern "C" void Letter_ComposeBottleMail(LetterView *self, void *a, void *b) {
     u32 out;
-    MailText_LoadLetter(&data_021c9fa4, &data_021ca094, &data_021c9fd0, &out, a, b);
-    func_0206567c(self, &data_021c9fa4, &data_021ca094, &data_021c9fd0, out);
+    MailText_LoadLetter(&sMailGreeting, &sMailBody, &sMailSignature, &out, a, b);
+    Letter_FillBottleMail(self, &sMailGreeting, &sMailBody, &sMailSignature, out);
 }
 
-extern "C" Letter *func_02065634(Unk_02065554 *self) { return func_02065d48(&self->unk_1c); }
+extern "C" Letter *Letter_GetSenderPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->unk_1c); }
 
-extern "C" Letter *func_02065628(Unk_02065554 *self) { return func_02065d48(&self->unk_04); }
+extern "C" Letter *Letter_GetRecipientPlayer(LetterView *self) { return LetterParty_AsPlayer(&self->unk_04); }
 
-extern "C" Letter *func_0206561c(Unk_02065554 *self) { return func_02065d38(&self->unk_04); }
+extern "C" Letter *Letter_GetRecipientVillager(LetterView *self) { return LetterParty_AsVillager(&self->unk_04); }
 
-extern "C" void func_02065610(Unk_02065554 *self, void *out) { func_02065dc8(&self->unk_1c, out); }
+extern "C" void Letter_GetSenderNameBytes(LetterView *self, void *out) { LetterParty_GetNameBytes(&self->unk_1c, out); }
 
-extern "C" void func_02065604(Unk_02065554 *self, void *out) { func_02065dc8(&self->unk_04, out); }
+extern "C" void Letter_GetRecipientNameBytes(LetterView *self, void *out) { LetterParty_GetNameBytes(&self->unk_04, out); }
 
-extern "C" u32 func_020655fc(Unk_02065554 *self) { return self->unk_ef; }
+extern "C" u32 Letter_GetKind(LetterView *self) { return self->unk_ef; }
 
-extern "C" void func_020655f0(Unk_02065554 *self, void *out) { func_02065d5c(&self->unk_1c, out); }
+extern "C" void Letter_GetSenderName(LetterView *self, void *out) { LetterParty_GetName(&self->unk_1c, out); }
 
 // ---- free functions
-extern "C" void func_020655e4(Unk_02065554 *self, void *out) { func_02065d5c(&self->unk_04, out); }
+extern "C" void Letter_GetRecipientName(LetterView *self, void *out) { LetterParty_GetName(&self->unk_04, out); }
 
-extern "C" u32 func_020655d8(Unk_02065554 *self) { return func_02065ce0(&self->unk_04, 7); }
+extern "C" u32 Letter_IsBottle(LetterView *self) { return LetterParty_IsType(&self->unk_04, 7); }
 
-u16 Unk_02065554::func_020655d0() {
+u16 LetterView::getPresent() {
     return unk_f0;
 }
 
-u8 Unk_02065554::func_020655c0() {
+u8 LetterView::getPresentFlags() {
     return (u8)((unk_ee & 0xc0) >> 6);
 }
 
-void Unk_02065554::func_020655ac(u32 v) {
+void LetterView::setPresentFlags(u32 v) {
     unk_ee = (unk_ee & 0x3f) | (v << 6);
 }
 
-u32 Unk_02065554::setPresent(u16 v, u32 w) {
+u32 LetterView::setPresent(u16 v, u32 w) {
     u16 old = unk_f0;
     if (w == 0xff) w = 0;
     unk_f0 = v;
-    func_020655ac(w);
+    setPresentFlags(w);
     return old;
 }
 
-u8 Unk_02065554::func_02065578() {
+u8 LetterView::getState() {
     return unk_ee & 0x3f;
 }
 
-void Unk_02065554::func_02065564(u32 v) {
+void LetterView::setState(u32 v) {
     unk_ee = (unk_ee & 0xc0) | v;
 }
 
-BOOL Unk_02065554::func_02065554() {
+BOOL LetterView::isToFutureSelf() {
     if (unk_04.unk_16 == 1) return TRUE;
     return FALSE;
 }
 
-void Unk_02065554::func_02065518() {
+void LetterView::loadDefaultGreeting() {
     if ((u8)(unk_04.unk_16 + 0xfe) <= 1) return;
     u8 *p = (u8 *)_ZN15PlayerInventory9getUnk988Ev(_ZN10PlayerData12getInventoryEv(PlayerData_GetCurrent()));
     Mem_Copy(p, unk_34, 0x18);
     unk_ec = p[0x50];
 }
 
-extern "C" void func_020654c8(Unk_02065554 *o, u8 *p) {
+extern "C" void Letter_SetSignature(LetterView *o, u8 *p) {
     u8 buf[0x10];
     if (p[0] != 0) {
         Mem_Copy(p, o->unk_cc, 0x20);
     } else {
         Mem_Clear(buf + 2, 8);
-        func_02065610(o, buf + 2);
+        Letter_GetSenderNameBytes(o, buf + 2);
         buf[0] = 0x24;
-        func_020653cc(buf, o->unk_cc, buf + 1, buf + 2);
+        Letter_LoadTemplate2d(buf, o->unk_cc, buf + 1, buf + 2);
     }
 }
 
-extern "C" void func_02065470(Unk_02065388_Obj *a, Unk_02065554 *b) {
+extern "C" void LetterDefaults_Store(LetterDefaults *a, LetterView *b) {
     Mem_Copy(b->unk_cc, a->unk_30, 0x20);
-    if (func_020655d8(b) == 0) {
+    if (Letter_IsBottle(b) == 0) {
         u8 *dst;
-        if (b->func_02065554()) {
+        if (b->isToFutureSelf()) {
             dst = a->unk_18;
             a->unk_51 = b->unk_ec;
         } else {
@@ -591,7 +591,7 @@ extern "C" void func_02065470(Unk_02065388_Obj *a, Unk_02065554 *b) {
     }
 }
 
-extern "C" void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
+extern "C" void Letter_LoadTemplate2d(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
     u32 src[16];
     Unk_020653cc_Buf out;
     s32 n;
@@ -623,32 +623,32 @@ extern "C" void func_020653cc(u8 *code, u8 *dst, u8 *lenOut, u8 *extra) {
     _ZN11LabelStringD1Ev(src);
 }
 
-extern "C" void func_02065388(Unk_02065388_Obj *o) {
+extern "C" void LetterDefaults_Init(LetterDefaults *o) {
     u8 code[2];
     MI_CpuFill8(o, 0, 0x52);
     code[0] = 0x23;
-    func_020653cc(&code[0], (u8 *)o, &o->unk_50, NULL);
+    Letter_LoadTemplate2d(&code[0], (u8 *)o, &o->unk_50, NULL);
     code[1] = 0x26;
-    func_020653cc(&code[1], o->unk_18, &o->unk_51, NULL);
+    Letter_LoadTemplate2d(&code[1], o->unk_18, &o->unk_51, NULL);
 }
 
-Unk_020dd468::Unk_020dd468() {
+EncodedString128::EncodedString128() {
 }
 
-Unk_020dd468::~Unk_020dd468() {
+EncodedString128::~EncodedString128() {
 }
 
-u32 Unk_020dd468::capacity() {
+u32 EncodedString128::capacity() {
     return 0x80;
 }
 
-// ---- Unk_020dd468 (vtable owner)
+// ---- EncodedString128 (vtable owner)
 
-u8 *Unk_020dd468::data() {
+u8 *EncodedString128::data() {
     return (u8 *)this + 0xe;
 }
 
 // ---- bss (in __sinit construction order)
-Unk_020ddf2c data_021c9fa4;
-Unk_020ddefc data_021ca094;
-Unk_020ddf14 data_021c9fd0;
+Unk_020ddf2c sMailGreeting;
+Unk_020ddefc sMailBody;
+Unk_020ddf14 sMailSignature;

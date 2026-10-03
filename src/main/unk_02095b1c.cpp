@@ -58,9 +58,9 @@ inline u16 Unk_02095f38_F(u32 v) {
 }
 
 extern CommManager *gCommManager;
-extern u32 data_020d03d8[];
-extern u32 data_020d03e8[];
-extern u32 data_020d03f8[];
+extern u32 sPlayerPosSyncVars[];
+extern u32 sPlayerAngleSyncVars[];
+extern u32 sPlayerStateSyncVars[];
 extern u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
@@ -110,7 +110,7 @@ void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 }
 
 extern "C" {
-s32 func_02095478(void *p, s32 i);
+s32 PlayerSessionTable_GetActor(void *p, s32 i);
 }
 
 extern "C" {
@@ -122,11 +122,11 @@ BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-u32 func_02095720(s32 idx);
+u32 PlayerActor_GetNetStateVar(s32 idx);
 }
 
 extern "C" {
-u32 func_02095758(s32 idx);
+u32 PlayerActor_GetNetPosVar(s32 idx);
 }
 
 extern "C" {
@@ -154,7 +154,7 @@ Unk_0209579c_Rec *func_02002d3c(s32 a, s32 b);
 }
 
 extern "C" {
-Unk_02095774_Ent *func_02095204(s32 idx);
+Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
 }
 
 extern "C" {
@@ -166,11 +166,11 @@ void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 }
 
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 
 extern "C" {
-void func_02094308(s32 idx, void *pos, void *rot, u32 flags);
+void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
 }
 
 extern "C" {
@@ -178,19 +178,19 @@ BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 extern "C" {
-u8 *func_020952b0(s32 idx);
+u8 *PlayerSession_GetLastScene(s32 idx);
 }
 
 extern "C" {
-s32 *func_020952bc(s32 idx);
+s32 *PlayerSession_GetLastAction(s32 idx);
 }
 
 extern "C" {
-s32 *func_020952a0(s32 idx);
+s32 *PlayerSession_GetLastPos(s32 idx);
 }
 
 extern "C" {
-s16 *func_02095294(s32 idx);
+s16 *PlayerSession_GetLastAngle(s32 idx);
 }
 
 extern "C" {
@@ -202,7 +202,7 @@ u8 NetArea_GetSlotScene(s32 idx);
 }
 
 extern "C" {
-void func_02094360(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
+void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
 }
 
 extern "C" {
@@ -234,7 +234,7 @@ void func_0208f168(void *p);
 }
 
 extern "C" {
-void func_02065b28(void *p);
+void Letter_MarkSent(void *p);
 }
 
 extern "C" {
@@ -242,11 +242,11 @@ void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void func_02065c94(void *p);
+void Letter_Clear(void *p);
 }
 
 extern "C" {
@@ -286,7 +286,7 @@ s32 Town_WashUpBottle();
 }
 
 extern "C" {
-void func_02065640(void *a, void *b, void *c);
+void Letter_ComposeBottleMail(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -327,7 +327,7 @@ inline BOOL Unk_02095dcc_R(u16 *p, u32 lo, u32 hi) {
     return r;
 }
 
-class Unk_020e1c88 {
+class RemotePlayerSpawner {
 public:
     static GameProc *vfunc_48();
 };
@@ -338,14 +338,14 @@ struct Unk_020e1cd0_Rec {
     s16 b;
 };
 
-class Unk_020e1ce0 : public GameProc {
+class PlayerNetSync : public GameProc {
 public:
-    Unk_020e1ce0();
+    PlayerNetSync();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e1ce0();
+    virtual ~PlayerNetSync();
 };
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[0] = a;
@@ -353,17 +353,17 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[2] = c;
 }
 
-Unk_020e1cd0_Rec data_020e1cd0 = {&Unk_020e1c88::vfunc_48, 10, 14};
+Unk_020e1cd0_Rec sPlayerNetSyncProfile = {&RemotePlayerSpawner::vfunc_48, 10, 14};
 
-GameProc *Unk_020e1c88::vfunc_48() { return new Unk_020e1ce0(); }
+GameProc *RemotePlayerSpawner::vfunc_48() { return new PlayerNetSync(); }
 
-Unk_020e1ce0::Unk_020e1ce0() {}
+PlayerNetSync::PlayerNetSync() {}
 
-Unk_020e1ce0::~Unk_020e1ce0() {}
+PlayerNetSync::~PlayerNetSync() {}
 
-BOOL Unk_020e1ce0::vfunc_00() { return TRUE; }
+BOOL PlayerNetSync::vfunc_00() { return TRUE; }
 
-BOOL Unk_020e1ce0::onExecute() {
+BOOL PlayerNetSync::onExecute() {
     CommManager *g;
     s32 i, m1;
     s32 *p8;
@@ -381,15 +381,15 @@ BOOL Unk_020e1ce0::onExecute() {
         if (_ZN11CommManager12isSlotActiveEi(g, i) && !_ZN11CommManager7isMyAidEj(g, i)) {
             idx = i;
             c = NetArea_GetSlotScene(i);
-            p8 = func_020952bc(idx);
-            pc = func_020952b0(idx);
-            r4 = func_020952a0(idx);
-            p10 = func_02095294(idx);
+            p8 = PlayerSession_GetLastAction(idx);
+            pc = PlayerSession_GetLastScene(idx);
+            r4 = PlayerSession_GetLastPos(idx);
+            p10 = PlayerSession_GetLastAngle(idx);
             if (c != 0xc && c != 0xd && c != 0xe && c != 0x2f && c != 0x2e) {
                 if (PlayerActor_GetSlotAction(&v, m1, idx)) {
                     if (PlayerActor_GetSlotPosXZ(&c, &x, &y, m1, idx)) {
                         if (PlayerActor_GetSlotAngle(&s, m1, idx)) {
-                            func_02094360(&idx, &c, p8, &v, &x, &y);
+                            PlayerSession_RemovePitfallOnClimbOut(&idx, &c, p8, &v, &x, &y);
                             *p8 = v;
                             *pc = c;
                             s32 yt = y;
@@ -405,7 +405,7 @@ BOOL Unk_020e1ce0::onExecute() {
         i--;
     } while (i >= 0);
     if (_ZN11CommManager12isSlotActiveEi(gCommManager, gCommManager->unk_64)) {
-        Unk_02095774_Ent *o = func_02095204(4);
+        Unk_02095774_Ent *o = PlayerActor_GetActor(4);
         if (o) {
             s32 n = g->unk_68;
             if (n < 4) {
@@ -418,7 +418,7 @@ BOOL Unk_020e1ce0::onExecute() {
     return TRUE;
 }
 
-BOOL Unk_020e1ce0::onDraw() { return TRUE; }
+BOOL PlayerNetSync::onDraw() { return TRUE; }
 
-BOOL Unk_020e1ce0::vfunc_0c() { return TRUE; }
+BOOL PlayerNetSync::vfunc_0c() { return TRUE; }
 

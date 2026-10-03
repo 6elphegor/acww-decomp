@@ -113,8 +113,8 @@ public:
 #define BlancaFaceRecord_setConcept _ZN16BlancaFaceRecord10setConceptEj
 #define BlancaFaceRecord_setState _ZN16BlancaFaceRecord8setStateEj
 #define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
-#define func_020941e8 _ZN8PlayerId13func_020941e8EPS_
-#define func_02094218 _ZN8PlayerId13func_02094218Ev
+#define PlayerId_equals _ZN8PlayerId6equalsEPS_
+#define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define func_020942c8 _ZN8PlayerIdC1Ev
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
 #define MatTexVramTask_request _ZN14MatTexVramTask7requestEPvjS0_jj
@@ -156,9 +156,9 @@ Unk_ov074_02271564_A *Pattern_getInfo();
 Unk_ov074_02271564_B *PatternInfo_getAuthor(Unk_ov074_02271564_A *a);
 void PatternInfo_getTitle(Unk_ov074_02271564_A *a, void *b);
 void func_02072064(Unk_ov074_02271564_A *a);
-BOOL func_02094218(Unk_ov074_02271564_B *b);
-BOOL func_020941e8(Unk_ov074_02271564_B *a, void *b);
-u32 func_0209409c(Unk_ov074_02271564_B *a);
+BOOL PlayerId_isValid(Unk_ov074_02271564_B *b);
+BOOL PlayerId_equals(Unk_ov074_02271564_B *a, void *b);
+u32 PlayerId_GetTownId(Unk_ov074_02271564_B *a);
 void func_020942c8(Unk_ov074_02271564_B *a);
 s32 memcmp(void *a, void *b, s32 n);
 void func_0206267c(void *p);
@@ -973,10 +973,10 @@ void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
     if (func_02063b8c(2) == 0 || Talk_CheckAndSetPlayerFlag(0x2b, 0) == 0) {
         out->unk_04 = 3;
     } else {
-        if (func_02094218(&m) != 0) {
+        if (PlayerId_isValid(&m) != 0) {
             PlayerData *p = PlayerData_GetCurrent();
             u16 *q = (u16 *)p->getPlayerId();
-            if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+            if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && PlayerId_equals(&m, q) != 0) {
                 out->unk_04 = func_02063b8c(4) + 0x18;
                 goto next;
             }
@@ -985,9 +985,9 @@ void SpNpcBlancaTalk::vfunc_78(TalkStartMsg *out) {
     }
 next:
     func_0206267c(obj);
-    if (func_02094218(&m) != 0) {
+    if (PlayerId_isValid(&m) != 0) {
         setPlayerNameSlot((u32)&m, 1);
-        setTownNameSlot(func_0209409c(&m), 0);
+        setTownNameSlot(PlayerId_GetTownId(&m), 0);
         buf[0] = BlancaFaceRecord_getConcept(g);
         TalkWindowState_setSlotFromString(unk_3c, 2, buf, ((char *)"st_impress"));
         PatternInfo_getTitle(&l, obj);
@@ -1047,20 +1047,20 @@ void SpNpcBlancaTalk::vfunc_18() {
     switch (unk_1e) {
     case 3:
         if (r5 == 0) {
-            if (func_02094218(&m) != 0) {
+            if (PlayerId_isValid(&m) != 0) {
                 PlayerData *p = PlayerData_GetCurrent();
                 u16 *q = (u16 *)p->getPlayerId();
-                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && PlayerId_equals(&m, q) != 0) {
                     t = 0xa;
                     break;
                 }
             }
             t = 9;
         } else {
-            if (func_02094218(&m) != 0) {
+            if (PlayerId_isValid(&m) != 0) {
                 PlayerData *p = PlayerData_GetCurrent();
                 u16 *q = (u16 *)p->getPlayerId();
-                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && func_020941e8(&m, q) != 0) {
+                if (m.a == q[0] && memcmp(m.b, q + 1, 8) == 0 && PlayerId_equals(&m, q) != 0) {
                     t = 0xc;
                     break;
                 }

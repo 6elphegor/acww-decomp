@@ -190,8 +190,8 @@ public:
 #define func_0206267c _ZN8ItemNameC1Ev
 #define func_02063870 _ZN12Unk_020dd38cD1Ev
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
-#define func_02065578 _ZN12Unk_0206555413func_02065578Ev
-#define func_020655d0 _ZN12Unk_0206555413func_020655d0Ev
+#define LetterView_getState _ZN10LetterView8getStateEv
+#define LetterView_getPresent _ZN10LetterView10getPresentEv
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
 #define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
 #define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
@@ -200,9 +200,9 @@ public:
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define func_02094018 _ZN11MsgString9BD1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 #define PlayerId_getGender _ZN8PlayerId9getGenderEv
 #define PlayerInventory_getTotalBells _ZN15PlayerInventory13getTotalBellsEi
 #define PlayerInventory_getLetter _ZN15PlayerInventory9getLetterEi
@@ -241,14 +241,14 @@ void func_02063888(void *p);
 void func_020638d0(s32 a, void *p);
 s32 func_020639e8(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
-s32 func_02065578(void *o);
-s32 func_020655d0(s32 a);
-s32 func_020655d8(void *o);
-void func_020655e4(void *o, void *buf);
-void func_020655f0(void *o, void *buf);
-s32 func_020655fc(void *o);
-void func_02065c94(void *o);
-void func_02065e70(void *o, s32 x);
+s32 LetterView_getState(void *o);
+s32 LetterView_getPresent(s32 a);
+s32 Letter_IsBottle(void *o);
+void Letter_GetRecipientName(void *o, void *buf);
+void Letter_GetSenderName(void *o, void *buf);
+s32 Letter_GetKind(void *o);
+void Letter_Clear(void *o);
+void Letter_Copy(void *o, s32 x);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
@@ -266,8 +266,8 @@ void func_02089f30(void *p);
 void func_02089f44(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-s32 func_0209409c(s32 a);
-void func_020940d0(s32 a, void *p);
+s32 PlayerId_GetTownId(s32 a);
+void PlayerId_getNameString(s32 a, void *p);
 s32 PlayerId_getGender();
 s32 PlayerData_GetCurrent();
 s32 PlayerInventory_getTotalBells(s32 a, s32 b);
@@ -535,13 +535,13 @@ void InventoryBg_SetupTextWindows(void *o)
     PlayerData_GetCurrent();
     s32 r = PlayerData_getPlayerId();
     func_02063888(buf);
-    func_020638d0(func_0209409c(r), buf);
+    func_020638d0(PlayerId_GetTownId(r), buf);
     String_SetSlot(0, buf);
     LabelString_createLabel((u8 *)p + 0xe0, p->unk_0e, 0x11, 0xa, 0xf, 0xc, 0);
     String_Load2dMenu((u8 *)p + 0xe0, 0x66);
     LabelString_redrawAligned((u8 *)p + 0xe0, 1, 0);
     func_02094030(buf2);
-    func_020940d0(r, buf2);
+    PlayerId_getNameString(r, buf2);
     LabelString_createLabel((u8 *)p + 0x120, p->unk_0e, 0x25, 8, 0xf, 0xc, 0);
     MsgString_copy((u8 *)p + 0x120, buf2);
     LabelString_redrawAligned((u8 *)p + 0x120, 1, 0);

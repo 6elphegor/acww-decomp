@@ -122,10 +122,10 @@ public:
     u32 pad[9];
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
     u32 pad[7];
 };
 
@@ -193,11 +193,11 @@ void Character_setCharId(void *self, u32 a);
 s32 TouchPicker_addSphere(TouchPicker *self, TouchPickSphere *o, void *a, u32 b, u32 c, u32 d);
 s32 MuseumData_isDonated(void *self, u16 *p);
 s32 MuseumData_getDonationState(void *self, u16 *p);
-s32 MuseumData_getDonorName(void *self, Unk_020e1c64 *a, u16 *p);
+s32 MuseumData_getDonorName(void *self, MsgString9B *a, u16 *p);
 void *TalkWindowState_getChoiceList(void *self);
 void TalkWindowState_openChoices(void *self, s32 a);
 void TalkWindowState_setNamedSlot(void *self, s32 a, ItemName *b, u32 c);
-void TalkWindowState_setSlot(void *self, s32 a, Unk_020e1c64 *b);
+void TalkWindowState_setSlot(void *self, s32 a, MsgString9B *b);
 void TalkWindowState_setNextMessage(void *self, u8 *a, void *b);
 BOOL ChoiceList_getResult(void *self);
 void ChoiceList_loadTexts(void *self);
@@ -212,7 +212,7 @@ s32 func_020e9650(void *a, void *b);
 s32 func_020e780c(s32 a, s32 b);
 TouchPicker *Scene_GetTouchPicker(void);
 s32 Scene_GetCurrent(void);
-Unk_ov004_022146ec_Actor *func_020951ec(u32);
+Unk_ov004_022146ec_Actor *PlayerActor_GetCharacter(u32);
 void func_01ffd070(void *, void *, void *);
 }
 

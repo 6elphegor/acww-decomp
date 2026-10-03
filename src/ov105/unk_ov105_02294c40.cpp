@@ -22,9 +22,9 @@ void *Heap_AllocTail(void *heap, u32 n);
 void Heap_Free(void *heap, void *p);
 void func_0206f638(s32 a);
 s32 func_0206f644();
-void func_02065c94(void *p);
-void func_02065e70(void *dst, void *src);
-void func_02065af0(u32 a);
+void Letter_Clear(void *p);
+void Letter_Copy(void *dst, void *src);
+void Letter_MarkRead(u32 a);
 void MenuCtrl_SetFutureLetter(void *p);
 void MenuCtrl_SetPostOfficeResult(u32 a);
 s32 MenuCtrl_PostOfficeLettersSent();
@@ -120,11 +120,11 @@ public:
 };
 
 // Same 0xf4-byte element object under the name that owns the state accessors
-class Unk_02065554 {
+class LetterView {
 public:
-    s32 func_02065554();
-    s32 func_02065578();
-    u32 func_020655d0();
+    s32 isToFutureSelf();
+    s32 getState();
+    u32 getPresent();
 };
 
 class CommManager {
@@ -148,15 +148,15 @@ class MsgString {
 public:
     virtual ~MsgString();
 };
-class Unk_020e1c64 : public MsgString {
+class MsgString9B : public MsgString {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u32 unk_04[7];
 };
 class PlayerId {
 public:
-    void func_020940d0(MsgString *p);
+    void getNameString(MsgString *p);
 };
 class PlayerData {
 public:
@@ -861,7 +861,7 @@ BOOL LetterStorageMenu::execClosed() {
             s32 i;
             Letter *p = (Letter *)((LetterStorage *)h)->getPage(0);
             for (i = 0; i < 0x4b; i++) {
-                func_02065e70(p, &unk_2b10[i]);
+                Letter_Copy(p, &unk_2b10[i]);
                 p++;
             }
         }
@@ -961,14 +961,14 @@ void LetterStorageMenu::transitionAct06() {
 
 void LetterStorageMenu::transitionAct07() {
     void *p = (void *)getSlotLetter(unk_2a3);
-    switch (((Unk_02065554 *)p)->func_02065578()) {
+    switch (((LetterView *)p)->getState()) {
     case 2:
     case 5:
     case 7:
         setFlags(0x1000);
         break;
     }
-    func_02065af0((u32)p);
+    Letter_MarkRead((u32)p);
     unk_2890.func_0206d2e0((Unk_0206d1d4_Src *)p, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -1119,13 +1119,13 @@ void LetterStorageMenu::initParts() {
     i = 0;
     unk_2a8 = 0;
     for (; i < 0x4b; i++) {
-        func_02065c94(&unk_2b10[i]);
+        Letter_Clear(&unk_2b10[i]);
     }
     void *q = func_02097a04((void *)PlayerData_GetCurrent());
     if (q) {
         u8 *p = (u8 *)((LetterStorage *)q)->getPage(0);
         for (i = 0; i < 0x4b; i++) {
-            func_02065e70(&unk_2b10[i], p);
+            Letter_Copy(&unk_2b10[i], p);
             p += 0xf4;
         }
     }
@@ -1889,7 +1889,7 @@ u32 LetterStorageMenu::findFreeStorageSlot() {
     Letter *p = &unk_2b10[unk_2a8 * 0x19];
     s32 i;
     for (i = 0; i < 0x19; p++, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) {
+        if (((LetterView *)p)->getState() == 0) {
             return (u8)(i + 0x24);
         }
     }
@@ -1964,7 +1964,7 @@ s32 LetterStorageMenu::getSlotAt(u32 a, u32 b, u32 c) {
 
 BOOL LetterStorageMenu::dropHeldOnSlot(u32 a) {
     if (!isSlotEmpty(a)) {
-        func_02065e70(&unk_1a8, (void *)getSlotLetter(a));
+        Letter_Copy(&unk_1a8, (void *)getSlotLetter(a));
         putLetterInSlot(unk_29f, &unk_1a8);
     }
     releaseHeldTo(a);
@@ -1975,7 +1975,7 @@ void LetterStorageMenu::putLetterInSlot(u32 a, void *c) {
     if (isLetterSlot(a) || isStorageSlot(a)) {
         unk_d44.func_ov094_02294318(toLetterGridIndex(a), (s32)c);
     } else if (isPageTabSlot(a)) {
-        func_02065e70(&unk_2b10[(unk_2a1 - 0x24) + unk_2a0 * 0x19], c);
+        Letter_Copy(&unk_2b10[(unk_2a1 - 0x24) + unk_2a0 * 0x19], c);
     }
 }
 
@@ -2133,7 +2133,7 @@ void LetterStorageMenu::pickUpFrom(u32 b) {
     if (s->isLetterSlot(b) || s->isStorageSlot(b)) {
         u32 r4 = s->toLetterGridIndex(b);
         s->unk_29c = 1;
-        func_02065e70(&s->unk_b4, s->unk_d44.getLetter(r4));
+        Letter_Copy(&s->unk_b4, s->unk_d44.getLetter(r4));
         s->unk_d44.clearLetter(r4);
     }
 }
@@ -2149,7 +2149,7 @@ void LetterStorageMenu::releaseHeldTo(u32 b) {
 void LetterStorageMenu::exchangeHeldWith(u32 b) {
     S *s = this;
     if (s->unk_29c == 1) {
-        func_02065e70(&s->unk_1a8, &s->unk_b4);
+        Letter_Copy(&s->unk_1a8, &s->unk_b4);
         s->pickUpFrom(b);
         s->putLetterInSlot(b, &s->unk_1a8);
     }
@@ -2351,7 +2351,7 @@ void LetterStorageMenu::selectLetter(u32 a, u32 b) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(s->unk_2488.unk_2f4, 0, 0);
     }
-    u32 r5 = ((Unk_02065554 *)r7)->func_02065578();
+    u32 r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
             ChoiceIdList_Add(s->unk_2488.unk_2f4, 0x17, 1);
@@ -2359,7 +2359,7 @@ void LetterStorageMenu::selectLetter(u32 a, u32 b) {
             ChoiceIdList_Add(s->unk_2488.unk_2f4, 0x14, 1);
         }
     }
-    if (((Unk_02065554 *)r7)->func_020655d0() == 0xfff1) {
+    if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
             ChoiceIdList_Add(s->unk_2488.unk_2f4, 0x15, 3);
         }

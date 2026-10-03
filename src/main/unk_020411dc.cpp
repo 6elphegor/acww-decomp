@@ -78,8 +78,8 @@ void Gfx2d_SetBrightness(s32);
 s32 CommCaution_ArePlanesHidden();
 s32 func_020e759c(void *, u32, s32);
 s32 FX_Div(s32, s32);
-void func_0208e9d4(u32);
-void func_0208e9f4(u32);
+void TransitionCommIcon_RequestHide(u32);
+void TransitionCommIcon_RequestShow(u32);
 void Snd_FadeOutScene();
 s32 FX_Sqrt(s32);
 void Gfx2d_DisableMainWindows(u32);
@@ -284,7 +284,7 @@ extern "C" BOOL ScreenTransition_StartFadeOut(u32 a, u32 b) {
     if (fn) {
         fn();
         ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeOut();
-        func_0208e9f4(a);
+        TransitionCommIcon_RequestShow(a);
         if (a == 2) Snd_FadeOutScene();
     }
     if (b == 0 || a == 3) {
@@ -312,7 +312,7 @@ extern "C" BOOL ScreenTransition_StartFadeIn(u32 a, u32 b, u32 c) {
     }
     if (c == 0) {
         ((BgmSceneFade *)(data_021c1b3c + 0x2d0))->onFadeIn();
-        func_0208e9d4(a);
+        TransitionCommIcon_RequestHide(a);
     }
     return TRUE;
 }

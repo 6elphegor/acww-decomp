@@ -49,7 +49,7 @@ void _ZN11MsgString25C1Ev(void *);
 void _ZN11MsgString25D1Ev(void *);
 void String_FormatNumber(void *, s32, s32, s32, s32, s32);
 s32 _s32_div_f(s32, s32);
-u32 _ZN12Unk_0206555410setPresentEtj(void *, u32, u32);
+u32 _ZN10LetterView10setPresentEtj(void *, u32, u32);
 void Letter_ComposeFromMail(void *, void *, void *, void *, void *, s32);
 BOOL LetterDelivery_PutInAddresseeMailbox(Letter *e);
 void func_0211ea4c(s32 (*f)());
@@ -162,7 +162,7 @@ extern "C" void func_02097214(s32 n) {
                 func_020638d0(gSaveTownId, buf);
                 MailText_SetSlot(0, buf);
                 Letter_ComposeFromMail(&e, &ch, (void *)"sp_npc_pelican", &data_020e1e00, &data_020e1dfc, _ZN10PlayerData11getPlayerIdEv(s));
-                _ZN12Unk_0206555410setPresentEtj(&e, col, 1);
+                _ZN10LetterView10setPresentEtj(&e, col, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                     _ZN12Unk_02097ff47setFlagEj(s, bit);
                 }
@@ -219,7 +219,7 @@ extern "C" void func_02097110(s32 n) {
         c20: v = 0x1404;
         done:
             if (v != 0xfff1) {
-                _ZN12Unk_0206555410setPresentEtj(&e, v, 1);
+                _ZN10LetterView10setPresentEtj(&e, v, 1);
             }
             if (LetterDelivery_PutInAddresseeMailbox(&e)) {
                 _ZN12Unk_02097ff49clearFlagEj(s, 0x16);

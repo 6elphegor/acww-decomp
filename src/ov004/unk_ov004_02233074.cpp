@@ -640,7 +640,7 @@ s32 func_02063b8c(s32 a);
 void *File_LoadAlloc(const char *a, void *b, s32 c, s32 d);
 s32 func_02088bf8(void *a, void *b, void *c, u32 d, u32 e, u32 f, u32 g, u32 h, u32 i, u32 j);
 s32 func_02089040(void *a);
-FtrActor *func_02095204(s32 a);
+FtrActor *PlayerActor_GetActor(s32 a);
 s32 PlayerData_GetCurrent(void);
 s32 func_02097740(void *a, s32 b);
 s32 PlayerData_getPlayerId(...);
@@ -3915,7 +3915,7 @@ extern "C" void FtrMgr_SpawnAllFromMap(void *) {
 
 // @0x22349a8 unk_02234774.cpp
 extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
-    u8 *p = (u8 *)func_02095204(4);
+    u8 *p = (u8 *)PlayerActor_GetActor(4);
     if (p != NULL) {
         Unk_ov004_Vec3 v0;
         Unk_ov004_Vec3 *pv = (Unk_ov004_Vec3 *)(p + 0x5c);
@@ -3952,7 +3952,7 @@ extern "C" void FtrMgr_NotifyNearestCabinClock(void *) {
 
 // @0x2234908 unk_02234774.cpp
 extern "C" void FtrMgr_NotifyNearestSoundingClock(void *) {
-    u8 *p = (u8 *)func_02095204(4);
+    u8 *p = (u8 *)PlayerActor_GetActor(4);
     if (p != NULL) {
         Unk_ov004_Vec3 v0;
         Unk_ov004_Vec3 *pv = (Unk_ov004_Vec3 *)(p + 0x5c);
@@ -3995,7 +3995,7 @@ extern "C" void FurnitureManager_UpdateTvSound(FurnitureManager *self) {
         v8.x = gVec3Zero.x;
         v8.y = gVec3Zero.y;
         v8.z = gVec3Zero.z;
-        u8 *p = (u8 *)func_02095204(4);
+        u8 *p = (u8 *)PlayerActor_GetActor(4);
         if (p != NULL) {
             Unk_ov004_Vec3 v14;
             Unk_ov004_Vec3 *pv = (Unk_ov004_Vec3 *)(p + 0x5c);
@@ -4135,7 +4135,7 @@ extern "C" s32 FtrMgr_FindFacingFurniture(s32 *ox, s32 *oy, Unk_ov004_Vec3 *pos,
 
 // @0x2234588 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_FindFurnitureFacingPlayer(s32 *a, s32 *b, u16 *c, u16 *d) {
-    FtrActor *o = func_02095204(4);
+    FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
         return FtrMgr_FindFacingFurniture(a, b, &o->unk_5c, o->unk_8e, c, d);
     }
@@ -4422,7 +4422,7 @@ testL:
 
 // @0x2233f08 unk_02233dc0.cpp
 extern "C" s32 FtrMgr_FindPlacementForPlayer(void *a, u16 *b, u32 c) {
-    FtrActor *o = func_02095204(4);
+    FtrActor *o = PlayerActor_GetActor(4);
     if (o != 0) {
         return FtrMgr_FindPlacement(a, b, &o->unk_5c, o->unk_8e, c);
     }

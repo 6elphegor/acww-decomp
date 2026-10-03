@@ -1529,7 +1529,7 @@ extern "C" {
 void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
 }
 extern "C" {
-Unk_020bfe38_Ent *func_02095204(s32 n);
+Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
 }
 extern "C" {
 u32 func_02063b8c(u32 n);
@@ -1673,7 +1673,7 @@ extern "C" {
 s32 PlayerData_GetBySessionSlot(s32 a);
 }
 extern "C" {
-BOOL func_02094f2c(s32 a, s32 b);
+BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 }
 extern "C" {
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
@@ -1682,7 +1682,7 @@ extern "C" {
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32 h, s32 i, s32 j);
 }
 extern "C" {
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 }
 extern "C" {
 BOOL _ZN13NpcActionCtrl12isActionDoneEv(void *p);
@@ -1891,7 +1891,7 @@ void Unk_020bfe30::updateRainDrop() {
     using namespace n13;
     Unk_020bfe30_Vec *p = &unk_34;
     VEC_Add(p, &unk_40, p);
-    Unk_020bfe38_Ent *e = func_02095204(4);
+    Unk_020bfe38_Ent *e = PlayerActor_GetActor(4);
     if (e) {
         s32 d = -(e->unk_5c - e->unk_68);
         s32 m = sRainParallax[unk_68];
@@ -2057,7 +2057,7 @@ extern "C" {
 BOOL SkySprite_FollowShootingStar(Unk_020bf4b4 *);
 }
 extern "C" {
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 }
 namespace L_021f3010 { extern "C" { extern struct S { u8 p[0x1b30]; u8 v[1]; } gSkySprites; } }
 #define data_021f3010 n12::L_021f3010::gSkySprites.v
@@ -2179,7 +2179,7 @@ extern "C" void SkySprite_UpdateSnowFlake(Unk_020bf4b4 *this_) {
     Unk_020bfcd0_Obj *o;
     s32 base, ang;
     VEC_Add(pos, &this_->unk_40, pos);
-    o = (Unk_020bfcd0_Obj *)func_02095204(4);
+    o = (Unk_020bfcd0_Obj *)PlayerActor_GetActor(4);
     if (o != NULL) {
         s32 dv = -(o->unk_5c - o->unk_68);
         dv = (dv * sSnowParallax[this_->unk_68]) >> 12;
@@ -2586,7 +2586,7 @@ extern "C" {
 void func_02040208(s32 a);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
 s32 func_020947f0();
@@ -2740,7 +2740,7 @@ void Unk_020be018::updateUfo()
     } else if (unk_60 == 4) {
         if (unk_34.y > 0xd0000) {
             func_02040208(0x44);
-            func_02094348();
+            PlayerActor_GetLocalSessionSlot();
             s32 obj = func_020947f0();
             Town_PlaceGulliverShip(obj, unk_2e == 0 ? 1 : 0);
             _ZN15SkyShotSequence9onUfoFellEv(data_021f4488);
@@ -3125,7 +3125,7 @@ extern "C" {
 Unk_020be204_Vec Sky_ProjectToScreenX(Unk_020be204_Vec *v);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
 s32 _ZN12Unk_020bc58c5spawnEiiP16Unk_020bc754_Veci(void *a, u32 b, u32 c, void *d, u32 e);
@@ -3385,7 +3385,7 @@ void Unk_020be204::initShot(u32 a) {
     p40->y = -0xc000;
     p40->z = 0;
     s32 lim = data_020c8cb8 * 2;
-    if (id == func_02094348() && pos->z < lim) {
+    if (id == PlayerActor_GetLocalSessionSlot() && pos->z < lim) {
         unk_2f = 1;
     }
     s32 d = pos->z - gCameraLookAt[2];
@@ -4422,7 +4422,7 @@ extern "C" {
 void _ZN12Unk_02097ff414setSkyShotHitsEj(void* p, u8 v);
 }
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 extern "C" {
 s32 func_02063b8c(s32 a);
@@ -4593,7 +4593,7 @@ namespace n08 {
 }
 void SkyShotSequence::startShot(s32 a) {
     using namespace n08;
-    if (a == func_02094348()) {
+    if (a == PlayerActor_GetLocalSessionSlot()) {
         unk_00 = 1;
         unk_04 = a;
         unk_08 = 0x2b;
@@ -5129,7 +5129,7 @@ extern "C" {
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 extern "C" {
-void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 }
 extern "C" {
 u32 LetterDelivery_PutInAddresseeMailbox(void *c);
@@ -5444,7 +5444,7 @@ void Unk_020bc58c::sendWishLetters() {
             Letter_ComposeFromMail(&ctx, &l, data_020e6794, data_020e4634, data_020e4630, _ZN10PlayerData11getPlayerIdEv(o));
             ItemPickSpec q(0, 4);
             ItemPick_One(&l.b, q, 0, 0, 1, 1, 0);
-            _ZN12Unk_0206555410setPresentEtj(&ctx, l.b, 1);
+            _ZN10LetterView10setPresentEtj(&ctx, l.b, 1);
             if (LetterDelivery_PutInAddresseeMailbox(&ctx) != 0) {
                 _ZN12Unk_02097ff49clearFlagEj(o, 0x32);
             }
@@ -8331,7 +8331,7 @@ extern "C" {
 void Clock_GetMinuteHour(u8 *out);
 }
 extern "C" {
-Unk_020b9964_Obj *func_02095204(u32 x);
+Unk_020b9964_Obj *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
 s32 func_02064c84(u32 x);
@@ -8634,7 +8634,7 @@ extern "C" void Sky_UpdateLineTables()
     s32 idx = (gWeatherManager[1] + 1) % 2;
     s32 j, i;
     pal = (u16 *)((u8 *)data_021f1158 + idx * 0x180);
-    Unk_020b9964_Obj *o = func_02095204(4);
+    Unk_020b9964_Obj *o = PlayerActor_GetActor(4);
     if (o) {
         Unk_020b9964_Src *p = &o->src;
         if (p) {
@@ -9016,7 +9016,7 @@ extern "C" {
 void Sky_FrameIndoor(void);
 }
 extern "C" {
-void *func_02095204(u32 x);
+void *PlayerActor_GetActor(u32 x);
 }
 extern "C" {
 void _ZN13SkyObjPalette10invalidateEi(void *p, s32 x);
@@ -9485,7 +9485,7 @@ extern "C" BOOL Sky_SetEngine(s32 arg) {
             result = TRUE;
         }
     }
-    void *p = func_02095204(4);
+    void *p = PlayerActor_GetActor(4);
     u32 *dst = &data_021f14dc;
     *dst = 0;
     if (p != NULL) {

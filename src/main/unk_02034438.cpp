@@ -43,7 +43,7 @@ void Snd_FadeOutBgmTracks(s32 a);
 void func_020947c0(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
-s32 func_02094fec(void);
+s32 PlayerActor_GetActionOrSpawnAction(void);
 s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
 s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
@@ -710,7 +710,7 @@ void func_020947c0(void *p, s32 n);
 s32 Item_IsFurniture(void *p);
 s32 Item_GetFurnitureIndex(void *p);
 extern Unk_020355dc_Data *gActorDefaultParent;
-s32 func_02094fec(void);
+s32 PlayerActor_GetActionOrSpawnAction(void);
 s32 _ZN7RoomBgm7setKeepEj(void *p, s32 a);
 s32 _ZN8FieldBgm7setKeepEj(void *p, s32 a);
 void Snd_DuckSubPlayers(s32);
@@ -2063,7 +2063,7 @@ extern "C" void *Bgm_GetRoomBgm(void) { return Ns_020354d8::data_021c1b3c + 0x2a
 void BgmSceneFade::onFadeIn() {
     if (gActorDefaultParent->unk_0c != 5) {
         if (unk_0c < 0) {
-            s32 r = func_02094fec();
+            s32 r = PlayerActor_GetActionOrSpawnAction();
             if (r != 0x3c) {
                 if (r == 0x8b) {
                     unk_0c = 0x21;

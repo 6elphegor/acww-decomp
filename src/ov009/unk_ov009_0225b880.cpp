@@ -625,9 +625,9 @@ s32 func_020e780c(s32, s32);
 s32 func_020e9650(void *, void *);
 s32 *func_020947f0(u32);
 BOOL PlayerActor_LocalRequestDoorEnter(u32, s32 *, s32 *, s32);
-BOOL func_020951d0();
-void func_020949a0(u32);
-BOOL func_020951c4();
+BOOL PlayerActor_IsStowFinished();
+void PlayerActor_RequestStowThenAct10(u32);
+BOOL PlayerActor_IsEnteringDoor();
 void Camera_SetMode3();
 void TalkRequest_SetTargetDone(void *);
 BOOL PlayerActor_LocalRequestDoorApproach(s32 *, s32 *, s16 *);
@@ -650,7 +650,7 @@ BOOL TalkRequestFlags_IsResetti();
 void TalkRequest_AddPlayerTalk6(void *, s32);
 TouchPicker *Scene_GetTouchPicker();
 s32 func_020b6014(void *, s32 *, u8 *);
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 BOOL BuildingState_Set(u32, u32);
 
 void *Heap_Alloc(void *heap, u32 size);
@@ -662,7 +662,7 @@ void TriangleTrigger_Register(void *node);
 s32 WorldCurve_ToCurved(void *out, void *in);
 void func_020e8388(void *m, s32 a, s32 b, s32 c);
 void func_020e8434(void *m, s32 a);
-BOOL func_02094e3c();
+BOOL PlayerActor_IsInterruptibleByMenu();
 s32 func_020639e8(char *buf, const char *fmt, ...);
 void *File_LoadAlloc(void *a, void *heap, s32 c, s32 d);
 BOOL File_Exists(void *p);
@@ -1316,7 +1316,7 @@ BuildingResources *BuildingActor::getResources() {
 void BuildingActor::func_ov009_0225d0d8() {
     if (unk_230 >= 1) {
         if (unk_230 == 3) {
-            if (func_02094e3c()) {
+            if (PlayerActor_IsInterruptibleByMenu()) {
                 switch (getEntranceType()) {
                 case 2:
                     Field_SetDoorExitMode(1);
@@ -1521,7 +1521,7 @@ BOOL BuildingCollider::isPlayerAtDoor(Unk_ov009_0225b880_Vec3 *v, s32 off, Unk_o
     if (o != NULL) {
         if (unk_4c != NULL) {
             if (Unk_ov009_0225cc24_IsNine(o->unk_0c)) {
-                if (func_02095204(4) == o) {
+                if (PlayerActor_GetActor(4) == o) {
                     s32 d = func_0202f274((Unk_0202f2ac_V3 *)v);
                     if (d >= 0) {
                         if (d <= off + 0x666) {
@@ -1615,7 +1615,7 @@ void BuildingActor::execDoorIdle() {
         }
         if ((unk_231 & 2) != 0 && f == 0) {
             s32 a = func_020b6014(Scene_GetTouchPicker(), 0, 0);
-            s32 b = (s32)func_02095204(4);
+            s32 b = (s32)PlayerActor_GetActor(4);
             if (b != 0 && b == a) {
                 if (vfunc_8c() == 0) {
                     clearTalkStartMode();
@@ -1943,12 +1943,12 @@ void BuildingActor::execEntryTalk() {
 }
 
 BOOL BuildingActor::enterEntry04() {
-    func_020949a0(0);
+    PlayerActor_RequestStowThenAct10(0);
     return TRUE;
 }
 
 void BuildingActor::execEntry04() {
-    if (func_020951d0()) {
+    if (PlayerActor_IsStowFinished()) {
         setEntryState(5);
     }
 }
@@ -1980,7 +1980,7 @@ BOOL BuildingActor::enterEntry05() {
 }
 
 void BuildingActor::execEntry05() {
-    if (func_020951c4()) {
+    if (PlayerActor_IsEnteringDoor()) {
         switch (getEntranceType()) {
         case 2:
             Camera_SetMode3();
@@ -2026,12 +2026,12 @@ void BuildingActor::execEntryWarp() {
 }
 
 BOOL BuildingActor::enterEntry07() {
-    func_020949a0(0);
+    PlayerActor_RequestStowThenAct10(0);
     return TRUE;
 }
 
 void BuildingActor::execEntry07() {
-    if (func_020951d0()) {
+    if (PlayerActor_IsStowFinished()) {
         setEntryState(8);
     }
 }

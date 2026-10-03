@@ -12,7 +12,7 @@ struct Unk_ov003_02224e68_V3 {
     Unk_ov003_02224e68_V3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
 };
 
-// polymorphic actor returned by func_020951ec (only the slots used here)
+// polymorphic actor returned by PlayerActor_GetCharacter (only the slots used here)
 class Unk_ov003_02224bc4_Actor : public GameProc {
 public:
     virtual BOOL vfunc_48(void *a);
@@ -64,7 +64,7 @@ extern BottleThrow sBottleThrows[4];
 extern V3 data_ov003_02257d50;
 extern CommManager *gCommManager;
 
-Unk_ov003_02224bc4_Actor *func_020951ec(s32 n);
+Unk_ov003_02224bc4_Actor *PlayerActor_GetCharacter(s32 n);
 void func_0203239c(void *p);
 void func_020323b0(void *p);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);

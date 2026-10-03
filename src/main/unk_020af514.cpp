@@ -182,7 +182,7 @@ s32 PlayerSession_GetDataIndex(u32);
 BOOL func_020978c8(void *, s32);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(u32, u32);
-void func_02094308(u32, Vec3 *, Vec3s *, u32);
+void PlayerActor_Spawn(u32, Vec3 *, Vec3s *, u32);
 void func_020e93a0(Vec3 *, s32);
 void func_01ffd070(Vec3 *, Vec3 *, Vec3 *);
 
@@ -278,7 +278,7 @@ BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
                 u32 v;
                 Vec3 pos;
                 if (items->func_020afd04(i, TRUE, &pos, &rot, &v)) {
-                    func_02094308(i, &pos, &rot, v);
+                    PlayerActor_Spawn(i, &pos, &rot, v);
                 }
             }
         } else {
@@ -288,7 +288,7 @@ BOOL Unk_020afbb8::func_020afc48(u8 *idx, u32 lo, u32 hi) {
                 Vec3 pos;
                 if (items->func_020afd04(i, FALSE, &pos, &rot, &v)) {
                     PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
-                    func_02094308(i, &pos, &rot, v);
+                    PlayerActor_Spawn(i, &pos, &rot, v);
                 }
             }
         }

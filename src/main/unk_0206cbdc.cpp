@@ -13,10 +13,10 @@ void Gfx2d_HideLayer(void *p);
 void Gfx2d_SetLayerPriority(void *p, s32 v);
 void Gfx2d_SetLayerControl(void *p, s32 a, s32 b, s32 c);
 void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
-void *func_02065c8c(void *p);
+void *Letter_GetPaper(void *p);
 void Menu_LoadPaperBg(void *a, void *b);
 void Mem_Clear(void *p, s32 n);
-void func_02065604(void *dst, void *src);
+void Letter_GetRecipientNameBytes(void *dst, void *src);
 s32 func_02051348(void *p, s32 n);
 }
 
@@ -180,7 +180,7 @@ void LetterRenderer::func_0206d2e0(Unk_0206d1d4_Src *src, void *a, void *b, s32 
     Gfx2d_HideLayer(b);
     Gfx2d_SetLayerPriority(b, 1);
     Gfx2d_SetLayerControl(b, 0, 0, 0);
-    Menu_LoadPaperBg(func_02065c8c(src), b);
+    Menu_LoadPaperBg(Letter_GetPaper(src), b);
     Gfx2d_SetLayerOffset(b, 0, 0);
     Gfx2d_HideLayer(a);
     Gfx2d_SetLayerPriority(a, c);
@@ -200,7 +200,7 @@ s32 LetterRenderer::func_0206d2d4() {
 
 void LetterRenderer::func_0206d288(void *src) {
     Mem_Clear(unk_1c8, 0x28);
-    func_02065604(src, unk_1c8);
+    Letter_GetRecipientNameBytes(src, unk_1c8);
     unk_208 = func_020512e0(unk_1c8, 0x28);
     unk_20c = func_02051348(unk_1c8, 0x28);
 }

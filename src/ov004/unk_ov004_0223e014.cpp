@@ -45,10 +45,10 @@ public:
     /* 0x0c */ u8 unk_0c[0x40];
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 
     /* 0x00 */ u8 unk_00[0x1c];
 };
@@ -117,12 +117,12 @@ Unk_ov004_0224e2b8_Stub *RoomTelephone_GetInstance();
 void Snd_PlaySe(s32 a);
 
 s32 func_020978c8(void *, s32);
-u8 *func_020951ec(u32 id);
+u8 *PlayerActor_GetCharacter(u32 id);
 void *PlayerData_GetResident(void *a, s32 i);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
-void _ZN8PlayerId13func_020940d0EP9MsgString(void *self, void *o);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *self, void *o);
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
-#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 void Camera_ProjectCurvedToScreen(s32 *a, s32 *b, void *c);
 void func_02094018(void *p);
 void func_02094030(void *);
@@ -212,7 +212,7 @@ public:
     /* 0x32c */ s32 unk_32c;
     /* 0x330 */ s32 unk_330;
     /* 0x334 */ s32 unk_334;
-    /* 0x338 */ Unk_020e1c64 unk_338;
+    /* 0x338 */ MsgString9B unk_338;
 };
 
 // scene registration entry (referenced from main by address only)
@@ -427,7 +427,7 @@ void ResidentSelect::updatePadSelect() {
                 st = 0;
             }
         }
-        if (func_020951ec(st) == 0) {
+        if (PlayerActor_GetCharacter(st) == 0) {
             goto L500;
         }
         unk_31d = 0;
@@ -442,7 +442,7 @@ void ResidentSelect::updatePadSelect() {
             st = st + 1;
         } else if (k & 0x80) {
             st = st + 2;
-            if (!func_020951ec(st)) {
+            if (!PlayerActor_GetCharacter(st)) {
                 st = st + 1;
             }
         } else if (k & 0x40) {
@@ -456,7 +456,7 @@ void ResidentSelect::updatePadSelect() {
             st = st - 1;
         } else if (k & 0x80) {
             st = st + 2;
-            if (!func_020951ec(st)) {
+            if (!PlayerActor_GetCharacter(st)) {
                 st = st - 1;
             }
         } else if (k & 0x40) {
@@ -470,9 +470,9 @@ void ResidentSelect::updatePadSelect() {
             st = st + 1;
         } else if (k & 0x40) {
             st = st - 2;
-            if (!func_020951ec(st)) {
+            if (!PlayerActor_GetCharacter(st)) {
                 st = st + 1;
-                if (!func_020951ec(st)) {
+                if (!PlayerActor_GetCharacter(st)) {
                     unk_31d = 1;
                 }
             }
@@ -485,9 +485,9 @@ void ResidentSelect::updatePadSelect() {
             st = st - 1;
         } else if (k & 0x40) {
             st = st - 2;
-            if (!func_020951ec(st)) {
+            if (!PlayerActor_GetCharacter(st)) {
                 st = st - 1;
-                if (!func_020951ec(st)) {
+                if (!PlayerActor_GetCharacter(st)) {
                     unk_31d = 1;
                 }
             }
@@ -495,7 +495,7 @@ void ResidentSelect::updatePadSelect() {
         break;
     }
     }
-    if (func_020951ec(st) != 0) {
+    if (PlayerActor_GetCharacter(st) != 0) {
         unk_31c = st;
     }
 L500:
@@ -572,7 +572,7 @@ void ResidentSelect::updateNameLabels() {
     u8 i;
     for (i = 0; i < 4; i++) {
         if (func_020978c8(gSavePlayers, i) != 0) {
-            u8 *a = func_020951ec(i);
+            u8 *a = PlayerActor_GetCharacter(i);
             if (a != 0) {
                 s32 x, y;
                 s32 v[3];
@@ -580,8 +580,8 @@ void ResidentSelect::updateNameLabels() {
                 v[0] = *(s32 *)(a + 0x5c);
                 v[1] = pv[1];
                 v[2] = pv[2];
-                Unk_020e1c64 o;
-                func_020940d0(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i)), &o);
+                MsgString9B o;
+                PlayerId_getNameString(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i)), &o);
                 Camera_ProjectCurvedToScreen(&x, &y, v);
                 x += sResidentLabelOffsets[i].a;
                 y += sResidentLabelOffsets[i].b;
@@ -608,7 +608,7 @@ extern "C" void ResidentSelect_UpdateCursor(ResidentSelect *o) {
     if (o->unk_31d != 0) {
         pp = RoomTelephone_GetInstance()->vfunc_50();
     } else {
-        pp = (u8 *)func_020951ec(o->unk_31c) + 0x5c;
+        pp = (u8 *)PlayerActor_GetCharacter(o->unk_31c) + 0x5c;
     }
     Camera_ProjectCurvedToScreen(&xy[0], &xy[1], pp);
     if (o->unk_31d == 0) {

@@ -2,7 +2,7 @@
 
 extern "C" {
 s32 func_02065578();
-void func_02065c94(void *p);
+void Letter_Clear(void *p);
 void _ZN6LetterD1Ev(void *p);
 void _ZN6LetterC1Ev(void *p);
 void LostChildRecord_Destruct(void *p);
@@ -78,7 +78,7 @@ extern "C" void func_0208f200() {}
 
 extern "C" void func_0208f1dc(void *p) {
     MI_CpuFill8(p, 0, 0x84c);
-    func_02065c94(p);
+    Letter_Clear(p);
     func_020b0a30((u8 *)p + 0xf4);
 }
 

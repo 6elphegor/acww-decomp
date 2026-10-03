@@ -483,7 +483,7 @@ s32 func_02063b8c(s32 n);
 void PlayerActor_LocalRequestSit();
 void _ZN17PlayerSpNpcRecord15addHaircutCountEj(void *p, u32 v);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-s32 func_020951b8(s32 a);
+s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_LocalRequestHaircutStart(u8 *a, u8 *b);
 void BarberMachine_Start();
 void func_02003ddc(void *a, u32 b, u32 c, u32 d);
@@ -931,7 +931,7 @@ BOOL SpNpcHarriet::mainAct09() {
         break;
     }
     case 2:
-        if (func_020951b8(4) == 0) {
+        if (PlayerActor_IsScriptedWalking(4) == 0) {
             TalkRequest_SetTargetDone(this);
             changeAct(4);
         }

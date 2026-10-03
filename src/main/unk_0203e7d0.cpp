@@ -148,7 +148,7 @@ void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
-BOOL func_02094960(void);
+BOOL PlayerActor_RequestAct10(void);
 }
 
 extern "C" {
@@ -156,7 +156,7 @@ void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
-BOOL func_02094c38(void);
+BOOL PlayerActor_RequestReturnToWait(void);
 }
 
 extern "C" {
@@ -168,7 +168,7 @@ BOOL MenuCtrl_IsIdle(void);
 }
 
 extern "C" {
-BOOL func_02094e64(void);
+BOOL PlayerActor_CanOpenMenu(void);
 }
 
 extern "C" {
@@ -248,7 +248,7 @@ BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 }
 
 extern "C" {
@@ -424,7 +424,7 @@ extern "C" void func_0203e8d4(void *msg, u32 aid) {
 extern "C" void func_0203e7d0(u8 *msg, u32 aid) {
     u32 r6 = msg[5];
     Character *o = Character_FindByCharId((msg[4] << 24) | ((msg[3] << 16) | (msg[1] | (msg[2] << 8))));
-    void *w = func_02095204(aid);
+    void *w = PlayerActor_GetActor(aid);
     if (!o || !w) {
         if (msg[0] == 4) {
             if (!_ZN11CommManager7isMyAidEj(gCommManager, aid)) {

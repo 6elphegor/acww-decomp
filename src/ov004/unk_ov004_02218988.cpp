@@ -56,7 +56,7 @@ class FleaMarketBuyerVillager;
 #define VillagerMemory_isFleaMarketVisited _ZN14VillagerMemory19isFleaMarketVisitedEv
 #define VillagerMemory_setReceivedItem _ZN14VillagerMemory15setReceivedItemEPt
 #define VillagerMemory_getFriendship _ZN14VillagerMemory13getFriendshipEv
-#define func_02094218 _ZN8PlayerId13func_02094218Ev
+#define PlayerId_isValid _ZN8PlayerId7isValidEv
 #define PlayerData_getInventory _ZN10PlayerData12getInventoryEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define ChoiceList_getResult _ZN10ChoiceList9getResultEv
@@ -214,13 +214,13 @@ void func_02003e70(void *, u32, u32, u32);
 s32 Building_PlayDoorChime();
 void HouseVisitor_ClearPresent();
 void VillagerStates_SetFleaMarketBuyer(s32);
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 s32 VillagerState_ResetRole(void *);
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, u32);
 void Unk_02013474_enableFootsteps(void *);
 void NpcLookAt_disable(void *);
-s32 func_02094218(void *);
+s32 PlayerId_isValid(void *);
 s32 VillagerMemory_isFleaMarketVisited(s32);
 void NpcActor_setTalkRequest(void *, void *);
 void VillagerTalk_begin(void *, void *, u32);
@@ -732,7 +732,7 @@ BOOL FleaMarketBuyerVillager::vfunc_00() {
     }
     Scene_GetPrevious();
     if (SceneId_IsTownUnk31() != 0 ||
-        (vfunc_64() && o && func_02094218(o) && Villager_FindMemory(vfunc_64(), o) &&
+        (vfunc_64() && o && PlayerId_isValid(o) && Villager_FindMemory(vfunc_64(), o) &&
          VillagerMemory_isFleaMarketVisited(Villager_FindMemory(vfunc_64(), o)))) {
         unk_adc = (s32)FtrActorTable_countUsed(FtrActorTable_GetInstance());
         HouseVisitor_SetPresent();
@@ -816,7 +816,7 @@ BOOL FleaMarketBuyerVillager::mainAct00() {
             unk_ad7 = 100;
             return TRUE;
         }
-        Unk_ov004_02219e0c_Obj *p = (Unk_ov004_02219e0c_Obj *)func_02095204(4);
+        Unk_ov004_02219e0c_Obj *p = (Unk_ov004_02219e0c_Obj *)PlayerActor_GetActor(4);
         if (p) {
             Unk_ov004_02219e0c_V v;
             Unk_ov004_02219e0c_V *pv = &p->unk_5c;

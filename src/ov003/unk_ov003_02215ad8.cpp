@@ -272,12 +272,12 @@ public:
 extern "C" {
 void Clock_GetDateTime(void *p);
 void Npc_GetName(void *p, void *q);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
 void KatrinaTent_Create();
 }
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define func_02094018 _ZN11MsgString9BD1Ev
 
 class KatrinaTent : public BuildingActor {
 public:

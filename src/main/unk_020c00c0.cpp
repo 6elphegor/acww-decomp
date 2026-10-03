@@ -49,7 +49,7 @@ void VEC_Add(Unk_020bfe30_Vec *a, Unk_020bfe30_Vec *b, Unk_020bfe30_Vec *c);
 }
 
 extern "C" {
-Unk_020bfe38_Ent *func_02095204(s32 n);
+Unk_020bfe38_Ent *PlayerActor_GetActor(s32 n);
 }
 
 extern "C" {
@@ -229,7 +229,7 @@ s32 PlayerData_GetBySessionSlot(s32 a);
 }
 
 extern "C" {
-BOOL func_02094f2c(s32 a, s32 b);
+BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
 }
 
 extern "C" {
@@ -241,7 +241,7 @@ void func_020196b4(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g, s32
 }
 
 extern "C" {
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 }
 
 extern "C" {

@@ -63,7 +63,7 @@ void _ZN12Unk_020d771012openSubSceneEi(void *self, s32 a);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *self, u32 a, u32 b, u32 c, u32 d, u32 e);
 void _ZN12Unk_02015b8c9getAnimIdEj(void *self, s32 a);
 u32 _ZN8PlayerId9getGenderEv(void *self);
-void _ZN8PlayerId13func_02094124Eh(void *self, s32 a);
+void _ZN8PlayerId9setGenderEh(void *self, s32 a);
 void *_ZN10PlayerData11getPlayerIdEv(void *self);
 void _ZN10PlayerData11setFaceTypeEh(void *self, u32 a);
 void _ZN10PlayerData12setHairColorEh(void *self, u32 a);
@@ -983,7 +983,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
+        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -993,7 +993,7 @@ void SpNpcKappnTalk::onBoyNameChoice(u32 sel) {
         }
         break;
     case 1:
-        _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
+        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
         msg[2] = 0xe;
         unk_3c->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;
@@ -1004,7 +1004,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
     u8 msg[3];
     switch (sel) {
     case 0:
-        _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
+        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 1);
         if (GameStart_IsNewResident()) {
             msg[0] = genderMsg(0x19);
             unk_3c->setNextMessage(&msg[0], sSpNpcKappnMsgKey);
@@ -1014,7 +1014,7 @@ void SpNpcKappnTalk::onGirlNameChoice(u32 sel) {
         }
         break;
     case 1:
-        _ZN8PlayerId13func_02094124Eh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
+        _ZN8PlayerId9setGenderEh(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), 0);
         msg[2] = 0xd;
         unk_3c->setNextMessage(&msg[2], sSpNpcKappnMsgKey);
         break;

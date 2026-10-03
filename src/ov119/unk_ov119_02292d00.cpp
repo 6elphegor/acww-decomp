@@ -9,7 +9,7 @@
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
 #define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
 #define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
-#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 #define PlayerData_getWifiUserData _ZN10PlayerData15getWifiUserDataEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define PlayerData_getFriendList _ZN10PlayerData13getFriendListEv
@@ -18,7 +18,7 @@
 #define MsgString_clear _ZN9MsgString5clearEv
 #define MsgString_copy _ZN9MsgString4copyEPS_
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define func_02094104 _ZN8PlayerId13func_02094104Ev
+#define PlayerId_getName _ZN8PlayerId7getNameEv
 #define MenuTabBar_requestSaveOnClose _ZN10MenuTabBar18requestSaveOnCloseEv
 #define MenuTabBar_hideTabs _ZN10MenuTabBar8hideTabsEv
 #define MenuTabBar_selectTab _ZN10MenuTabBar9selectTabEj
@@ -29,8 +29,8 @@
 #define PopupChoiceMenuBody_addCustomRow _ZN19PopupChoiceMenuBody12addCustomRowEP17PopupChoiceIdListPvj
 #define PopupChoiceMenuBody_hitTestRowOrLast _ZN19PopupChoiceMenuBody16hitTestRowOrLastEii
 
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define func_02094018 _ZN11MsgString9BD1Ev
 extern "C" {
 extern u8 data_021edb68;
 extern u16 gPad[];
@@ -72,7 +72,7 @@ void String_Load2d(void *p, void *q, s32 a);
 void *Msg_SkipLines(void *p, s32 i);
 void func_020638d0(void *a, void *b);
 void *func_02063964(void *a);
-void *func_0209409c(void *a);
+void *PlayerId_GetTownId(void *a);
 void Mem_Copy(void *a, void *b, s32 c);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void MIi_CpuCopy16(void *src, void *dst, s32 n);
@@ -130,7 +130,7 @@ void PopupChoice_Draw(void *p);
 void LabelString_redrawAligned(void *self, s32 a, s32 b);
 void LabelString_createLabel(void *self, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f);
 void LabelString_destroyLabel(void *self);
-void func_020940d0(void *self, void *b);
+void PlayerId_getNameString(void *self, void *b);
 void *PlayerData_getWifiUserData(void *self);
 void *PlayerData_getPlayerId(void *self);
 void *PlayerData_getFriendList(void *self);
@@ -139,7 +139,7 @@ void MsgString_setLine(void *self, void *b);
 void MsgString_clear(void *self);
 void MsgString_copy(void *self, void *b);
 BOOL CommManager_isOnline(void *self);
-void *func_02094104(void *self);
+void *PlayerId_getName(void *self);
 void MenuTabBar_requestSaveOnClose(void *self);
 void MenuTabBar_hideTabs(void *self);
 void MenuTabBar_selectTab(void *self, u32 idx);
@@ -152,8 +152,8 @@ void _ZN12Unk_020dd38cC2Ev(void *self);
 void _ZN12Unk_020dd38cD1Ev(void *self);
 void _ZN12Unk_020dd374C2Ev(void *self);
 void _ZN12Unk_020dd374D1Ev(void *self);
-void _ZN12Unk_020e1c64C1Ev(void *self);
-void _ZN12Unk_020e1c64D1Ev(void *self);
+void _ZN11MsgString9BC1Ev(void *self);
+void _ZN11MsgString9BD1Ev(void *self);
 
 struct Unk_ov119_Comm {
     u32 unk_00[0x64 / 4];
@@ -343,8 +343,8 @@ struct Unk_ov119_A {
 };
 struct Unk_ov119_B {
     u32 pad[7];
-    Unk_ov119_B() { _ZN12Unk_020e1c64C1Ev(this); }
-    ~Unk_ov119_B() { _ZN12Unk_020e1c64D1Ev(this); }
+    Unk_ov119_B() { _ZN11MsgString9BC1Ev(this); }
+    ~Unk_ov119_B() { _ZN11MsgString9BD1Ev(this); }
 };
 struct Unk_ov119_C {
     u32 pad[6];
@@ -1428,17 +1428,17 @@ void FriendRosterTab::openRegisterChoices()
         s32 skip = g->unk_64;
         s32 i = 0;
         u32 tmp[7];
-        _ZN12Unk_020e1c64C1Ev(tmp);
+        _ZN11MsgString9BC1Ev(tmp);
         for (; i < 4; i++) {
             if (skip != i) {
                 void *p = PlayerData_GetBySessionSlot(i);
                 if (p) {
-                    func_020940d0(PlayerData_getPlayerId(p), tmp);
+                    PlayerId_getNameString(PlayerData_getPlayerId(p), tmp);
                     PopupChoiceMenuBody_addCustomRow(&unk_dc, U3D0, tmp, (u8)(i + 6));
                 }
             }
         }
-        _ZN12Unk_020e1c64D1Ev(tmp);
+        _ZN11MsgString9BD1Ev(tmp);
     }
     ChoiceIdList_Add(U3D0, 0xce, 5);
     ChoiceIdList_Add(U3D0, 2, 0xa);
@@ -1522,9 +1522,9 @@ void FriendRosterTab::registerPresentPlayer()
     u8 *rec = b + i * 0x1c;
     void *d = FriendEntry_GetFriendData(rec);
     DwcFriendData_Copy(d, PlayerWifiData_GetOwnFriendData(PlayerData_getWifiUserData(a)));
-    void *e = func_02094104(c);
+    void *e = PlayerId_getName(c);
     Mem_Copy(e, FriendEntry_GetPlayerName(rec), 8);
-    void *f = func_02063964(func_0209409c(c));
+    void *f = func_02063964(PlayerId_GetTownId(c));
     Mem_Copy(f, FriendEntry_GetTownName(rec), 8);
     MenuTabBar_requestSaveOnClose(ProcBase_GetParent(this));
     unk_b4 = i;
@@ -1816,7 +1816,7 @@ void FriendRosterTab::drawPresentPage() {
     u32 LampLights[7];
     u32 LightLevel[7];
     _ZN12Unk_020dd38cC2Ev(LampLights);
-    _ZN12Unk_020e1c64C1Ev(LightLevel);
+    _ZN11MsgString9BC1Ev(LightLevel);
     for (i = 0; i < 8; i++) {
         a = allocTextLabel();
         b = allocTextLabel();
@@ -1832,10 +1832,10 @@ void FriendRosterTab::drawPresentPage() {
         }
         if (rec != 0) {
             void *g2 = PlayerData_getPlayerId(rec);
-            func_020638d0(func_0209409c(g2), &LampLights);
+            func_020638d0(PlayerId_GetTownId(g2), &LampLights);
             String_SetSlot(0, &LampLights);
             String_Load2dMenu(a, 0x66);
-            func_020940d0(g2, &LightLevel);
+            PlayerId_getNameString(g2, &LightLevel);
             MsgString_copy(b, &LightLevel);
             setRowIcon(&unk_9d4[pos], 0x58);
             unk_b2 = unk_b2 | (1 << i);
@@ -1853,7 +1853,7 @@ void FriendRosterTab::drawPresentPage() {
         pos += 0x40;
     }
     BgScreen_SetRectPalette(unk_9d4, 5, 6, 0x17, 0x15, 5);
-    _ZN12Unk_020e1c64D1Ev(LightLevel);
+    _ZN11MsgString9BD1Ev(LightLevel);
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
 
@@ -1862,19 +1862,19 @@ void FriendRosterTab::drawOwnCodePage() {
     void *a = allocTextLabel();
     u32 LampLights[7];
     _ZN12Unk_020dd38cC2Ev(LampLights);
-    func_020638d0(func_0209409c(g), &LampLights);
+    func_020638d0(PlayerId_GetTownId(g), &LampLights);
     String_SetSlot(0, &LampLights);
     String_Load2dMenu(a, 0x66);
     LabelString_createLabel(a, 4, 0x102, 10, 0xf, 0, 0);
     LabelString_redrawAligned(a, 0, 0);
     void *b = allocTextLabel();
     u32 LightLevel[7];
-    _ZN12Unk_020e1c64C1Ev(LightLevel);
-    func_020940d0(g, &LightLevel);
+    _ZN11MsgString9BC1Ev(LightLevel);
+    PlayerId_getNameString(g, &LightLevel);
     MsgString_copy(b, &LightLevel);
     LabelString_createLabel(b, 4, 0x116, 8, 0xf, 0, 0);
     LabelString_redrawAligned(b, 0, 0);
-    _ZN12Unk_020e1c64D1Ev(LightLevel);
+    _ZN11MsgString9BD1Ev(LightLevel);
     _ZN12Unk_020dd38cD1Ev(LampLights);
 }
 

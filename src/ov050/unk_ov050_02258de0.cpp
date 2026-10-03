@@ -45,8 +45,8 @@
 #define Unk_02086f84_clearClosingTime _ZN12Unk_02086f8416clearClosingTimeEv
 #define PlayerSpNpcRecord_stampArbeitDate _ZN17PlayerSpNpcRecord15stampArbeitDateEv
 #define PlayerSpNpcRecord_getArbeitDate _ZN17PlayerSpNpcRecord13getArbeitDateEv
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
+#define func_02094018 _ZN11MsgString9BD1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
 #define Unk_02097ff4_clearFlag _ZN12Unk_02097ff49clearFlagEj
 #define Unk_02097ff4_setFlag _ZN12Unk_02097ff47setFlagEj
 #define Unk_02097ff4_testFlag _ZN12Unk_02097ff48testFlagEj
@@ -135,10 +135,10 @@ struct Unk_ov050_0225c0a0_Msg {
     u16 unk_04;
 };
 
-struct Unk_020e1c64 {
+struct MsgString9B {
     u8 pad_00[0x1c];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 };
 
 struct Unk_ov050_MsgRow {
@@ -747,8 +747,8 @@ void func_02094030(void *p);
 void *func_020947f0(s32 a);
 void PlayerActor_RequestWalkTo(Unk_ov050_0225c9dc_Vec *v, s32 a, s32 b);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
-BOOL func_020951b8(s32 a);
-void *func_02095204(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
+void *PlayerActor_GetActor(s32 a);
 void *PlayerData_GetCurrent();
 void func_02097740(void *a, s32 b);
 void Unk_02097ff4_clearFlag(void *p, s32 v);
@@ -1565,7 +1565,7 @@ BOOL SpNpcNookShop::mainAct11() {
         break;
     }
     case 2:
-        if (func_020951b8(4) == 0) {
+        if (PlayerActor_IsScriptedWalking(4) == 0) {
             TalkRequest_SetTargetDone(this);
             changeAct(2);
         }
@@ -2607,7 +2607,7 @@ void SpNpcNookShopTalk::pickArbeitStartMsg0F(Unk_ov050_0225b908_Out *out) {
         u8 *a = (u8 *)PlayerErrands_GetSlot(PlayerData_getErrands(g), 0);
         void *b = PlayerErrandSlot_GetRecord(a);
         u8 *c = (u8 *)PlayerErrandSlot_GetVillager(a, 1);
-        Unk_020e1c64 o;
+        MsgString9B o;
         if (ErrandRecord_getStep(b) == 2) {
             out->unk_04 = 0x28;
             return;
@@ -4144,7 +4144,7 @@ BOOL SpNpcNookShop::pickItemTopic() {
     u16 t[2];
     s32 bx, by;
     Unk_ov050_022590f8_Vec v;
-    Character *p = (Character *)func_02095204(4);
+    Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov050_022590f8_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;

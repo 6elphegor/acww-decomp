@@ -190,8 +190,8 @@ public:
 #define func_0206267c _ZN8ItemNameC1Ev
 #define func_02063870 _ZN12Unk_020dd38cD1Ev
 #define func_02063888 _ZN12Unk_020dd38cC1Ev
-#define func_02065578 _ZN12Unk_0206555413func_02065578Ev
-#define func_020655d0 _ZN12Unk_0206555413func_020655d0Ev
+#define LetterView_getState _ZN10LetterView8getStateEv
+#define LetterView_getPresent _ZN10LetterView10getPresentEv
 #define LabelString_redrawAligned _ZN11LabelString13redrawAlignedEii
 #define LabelString_createLabel _ZN11LabelString11createLabelEjjjhhi
 #define LabelString_destroyLabel _ZN11LabelString12destroyLabelEv
@@ -200,9 +200,9 @@ public:
 #define LabelBalloon_setText _ZN12LabelBalloon7setTextEP6StrBuf
 #define func_02089f30 _ZN12Unk_020e0d80D1Ev
 #define func_02089f44 _ZN12Unk_020e0d80C1Ev
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define func_02094018 _ZN11MsgString9BD1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 #define PlayerId_getGender _ZN8PlayerId9getGenderEv
 #define PlayerInventory_getTotalBells _ZN15PlayerInventory13getTotalBellsEi
 #define PlayerInventory_getLetter _ZN15PlayerInventory9getLetterEi
@@ -241,14 +241,14 @@ void func_02063888(void *p);
 void func_020638d0(s32 a, void *p);
 s32 func_020639e8(char *buf, const void *fmt, ...);
 void File_LoadToBuffer(const void *src, void *dst, s32 n);
-s32 func_02065578(void *o);
-s32 func_020655d0(s32 a);
-s32 func_020655d8(void *o);
-void func_020655e4(void *o, void *buf);
-void func_020655f0(void *o, void *buf);
-s32 func_020655fc(void *o);
-void func_02065c94(void *o);
-void func_02065e70(void *o, s32 x);
+s32 LetterView_getState(void *o);
+s32 LetterView_getPresent(s32 a);
+s32 Letter_IsBottle(void *o);
+void Letter_GetRecipientName(void *o, void *buf);
+void Letter_GetSenderName(void *o, void *buf);
+s32 Letter_GetKind(void *o);
+void Letter_Clear(void *o);
+void Letter_Copy(void *o, s32 x);
 void BgScreen_SetRectPalette(void *p, s32 a, s32 b, s32 c, s32 d, s32 e);
 s32 Menu_GetIconCharIndex(s32 a);
 BOOL MenuCtrl_IsTouch();
@@ -266,8 +266,8 @@ void func_02089f30(void *p);
 void func_02089f44(void *p);
 void func_02094018(void *p);
 void func_02094030(void *p);
-s32 func_0209409c(s32 a);
-void func_020940d0(s32 a, void *p);
+s32 PlayerId_GetTownId(s32 a);
+void PlayerId_getNameString(s32 a, void *p);
 s32 PlayerId_getGender();
 s32 PlayerData_GetCurrent();
 s32 PlayerInventory_getTotalBells(s32 a, s32 b);
@@ -550,18 +550,18 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
     u32 b1[0x1c / 4];
     u32 b2[0x28 / 4];
     u32 b3[0x28 / 4];
-    s32 t = func_02065578(o);
+    s32 t = LetterView_getState(o);
     func_0206fcc8(b0);
     func_02094030(b1);
     func_02089f44(b2);
     func_02089f44(b3);
-    s32 k = func_020655fc(o);
+    s32 k = Letter_GetKind(o);
     if (k == 0x11) {
-        func_020655f0(o, b1);
+        Letter_GetSenderName(o, b1);
         String_SetSlot(1, b1);
         String_Load2dMenu(b0, 0x4b);
     } else if (k == 0) {
-        func_020655f0(o, b1);
+        Letter_GetSenderName(o, b1);
         String_SetSlot(1, b1);
         if (t == 4) {
             String_Load2dMenu(b0, 0x4b);
@@ -572,14 +572,14 @@ void LetterGrid::setBalloonLetterText(void *out, void *o) {
         String_Load2dMenu(b0, sLetterKindMsgIds[k]);
     }
     StrBuf_Copy(b3, b0);
-    if (func_020655d8(o) != 0) {
+    if (Letter_IsBottle(o) != 0) {
         u32 b4[0x40 / 4];
         func_0206fcc8(b4);
         String_Load2dMenu(b4, 0x43);
         String_SetSlot(0, b4);
         func_0206fca8(b4);
     } else {
-        func_020655e4(o, b1);
+        Letter_GetRecipientName(o, b1);
         String_SetSlot(0, b1);
     }
     String_Load2dMenu(b0, 0x3c);
@@ -655,12 +655,12 @@ void *LetterGrid::getLetter(s32 i) {
 }
 
 void LetterGrid::func_ov094_02294318(s32 i, s32 x) {
-    func_02065e70(getLetter(i), x);
+    Letter_Copy(getLetter(i), x);
     LetterGrid_SetBit((u32 *)&unk_08, i);
 }
 
 void LetterGrid::clearLetter(s32 i) {
-    func_02065c94(getLetter(i));
+    Letter_Clear(getLetter(i));
     LetterGrid_ClearBit((u32 *)&unk_08, i);
 }
 
@@ -674,7 +674,7 @@ void LetterGrid::highlightLetterKinds(u32 flags) {
     f2 = flags & 2;
     f4 = flags & 4;
     do {
-        s32 t = func_02065578(getLetter(i));
+        s32 t = LetterView_getState(getLetter(i));
         switch (t) {
         case 1:
             if (f1 != 0) {
@@ -833,7 +833,7 @@ void LetterGrid_DrawSlot(InventoryItemGrid *o, s32 a1, s32 idx, s32 x, s32 y0)
                 x += w;
                 y += w;
             }
-            if (((LetterGrid *)o)->isHighlighted((u8)idx) != 0 && func_02065578((void *)a1) == 4) {
+            if (((LetterGrid *)o)->isHighlighted((u8)idx) != 0 && LetterView_getState((void *)a1) == 4) {
                 t = 0xe;
             } else {
                 t = ((LetterGrid *)o)->getLetterPalette((void *)a1);
@@ -963,12 +963,12 @@ void LetterGrid_SetLetterArray(Unk_ov094_02293ca0_Obj *o, u8 *p, s32 m, s32 n)
 
 s32 LetterGrid_GetIconIndex(void *o, s32 h)
 {
-    s32 r = func_02065578((void *)h);
+    s32 r = LetterView_getState((void *)h);
     if (r == 0) {
         return -1;
     }
     s32 t = (r - 1) * 2;
-    if (func_020655d0(h) != 0xfff1) {
+    if (LetterView_getPresent(h) != 0xfff1) {
         t = t + 1;
     }
     return t;

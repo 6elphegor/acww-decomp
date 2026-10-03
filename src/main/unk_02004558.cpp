@@ -697,7 +697,7 @@ void func_020f0e3c(void *a);
 void func_020f0e68(void *a, void *b, u32 c, void *d, s32 e);
 void Heap_Free(void *heap, void *p);
 void *Heap_AllocAligned(void *heap, unsigned long size, s32 align);
-s32 func_0209433c(void);
+s32 PlayerActor_GetObjectAlign(void);
 void func_0212899c(void *p, s32 v, unsigned long n);
 BOOL _ZN11PlayerActor8doCreateEv(void *self);
 void _ZN11PlayerActor9doExecuteEv(void *self);
@@ -1257,7 +1257,7 @@ s32 _ZN12Unk_02006d1415requestPickUpAtEP16Unk_0200b144_Posihis(void *p, void *v,
 s32 _ZN12Unk_02006d1422requestPickUpFanfareAtEP17Unk_02006d14_Pairhjs(void *p, void *v, s32 a, s32 b, s32 c);
 s32 _ZN11PlayerActor11requestWaitEjjj(void *p, s32 a, s32 b, s32 c);
 s32 PlayerActor_GetSlotAction(s32 *out, s32 a, s32 b);
-u8 *func_02095720(s32 v);
+u8 *PlayerActor_GetNetStateVar(s32 v);
 s32 NetBuf_ReadS16(void *p);
 void MI_CpuCopy8(void *dst, void *src, s32 n);
 void PlayerActor_RequestAct68(void *p, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f);
@@ -2279,7 +2279,7 @@ void _ZN12Unk_020102ec8setSpeedEPj(Unk_02006d14 *, void *);
 BOOL _ZN12Unk_02006d1416isGuestInSessionEv(Unk_02006d14 *);
 void *PlayerActor_GetPlayerData(Unk_02006d14 *);
 void Clock_GetDateTime(void *);
-u8 *func_020952c8();
+u8 *PlayerSession_GetSessionFlags();
 void DateTime_SubDays(void *, s32);
 void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(void *, Unk_020092c8_Bits);
 void _ZN12Unk_02006d1418netFollowTransformEv(Unk_02006d14 *);
@@ -3001,7 +3001,7 @@ void *TalkRequest_GetTalkTarget();
 void *NpcRegistry_FindByHandle(void *);
 s32 func_020e7b98(s32, s32);
 void PlayerActor_TurnAngle(void *, s32);
-void func_02094c38();
+void PlayerActor_RequestReturnToWait();
 void _ZN12Unk_020102ec11advanceAnimEv(void *);
 s32 _ZN12Unk_02006d1415requestPickUpAtEP16Unk_0200b144_Posihis(void *, Unk_0200b750_Pair pr, s32 a, s32 b, u32 c, s32 d);
 void _ZN12Unk_02006d1415clearActionFlagEj(void *, u32 id);
@@ -3247,7 +3247,7 @@ void _ZN8FaintBgm12startSilenceEv(void *p);
 void Net_WifiHostKeepAlive();
 s32 Net_GetMode();
 void HeldItemModel_PlayAnim(void *p, s32 a, s32 b, s32 c);
-s32 func_020952c8();
+s32 PlayerSession_GetSessionFlags();
 s32 PlayerActor_TestSlotFlag(s32 a, s32 b);
 s32 PlayerActor_GetSlotAction(void *p, s32 a, s32 b);
 void Effect_Create(s32 a, void *b, void *c, s32 d);
@@ -3862,7 +3862,7 @@ s32 PlayerActor_GetTan(Unk_02006d14 *p);
 s32 _ZN11CommManager11beginRecordEv(CommManager *g);
 s32 _ZN11CommManager11writeRecordEPhj(CommManager *g, void *p, s32 n);
 s32 _ZN11CommManager9endRecordEjj(CommManager *g, s32 a, s32 b);
-s32 func_020954e0(u32 *out, u32 a, u32 b);
+s32 PlayerActor_PackClothesChange(u32 *out, u32 a, u32 b);
 s32 WorldCurve_FromCurved(Unk_02006d14_Vec3 *v);
 BOOL InputMode_IsButtons();
 BOOL InputMode_IsTouch();
@@ -3910,7 +3910,7 @@ void _ZN10PlayerData15setLastPlayDateE17Unk_0209865c_Bits(s32 a, Unk_0200f17c_Da
 void *func_0209c37c(s32 a, s32 b);
 s32 PlayerActor_GetTan(Unk_02006d14 *o);
 BOOL _ZN12Unk_02006d1416isGuestInSessionEv(Unk_02006d14 *o);
-Unk_0200f17c_Date *func_020952d8();
+Unk_0200f17c_Date *PlayerSession_GetLastPlayDate();
 void PlayerActor_GetPlayerData(void *o);
 Unk_0200f17c_Date _ZN10PlayerData15getLastPlayDateEv();
 void Clock_GetDateTime(void *p);
@@ -4285,8 +4285,8 @@ BOOL _ZN12Unk_02006d1416isGuestInSessionEv(u32 a);
 s32 PlayerActor_CompareLastPlayDate(u32 a, void *b, void *c);
 void PlayerActor_SetLastPlayDate(u32 a, u32 b, void *c);
 s32 DateTime_DiffDays(void *a, void *b);
-u8 *func_020952c8(void);
-u16 *func_020952d0(void);
+u8 *PlayerSession_GetSessionFlags(void);
+u16 *PlayerSession_GetTanTimer(void);
 void _ZN10PlayerData6setTanEh(u32 a, u32 b);
 void _ZN12Unk_02006d1410netSendTanEv(u32 a);
 u16 *_ZN10PlayerData11getHeldItemEv(void);
@@ -4331,7 +4331,7 @@ BOOL func_0209c7a4(s32 v);
 BOOL Scene_InUnk6To8(void);
 void TalkRequest_FinishSceneEntry(void);
 void TalkRequest_AddLeaveRoom(void);
-s32 func_020951ec(s32 v);
+s32 PlayerActor_GetCharacter(s32 v);
 void TalkRequest_AddSceneExit(s32 a, s32 b);
 extern void *gCommManager;
 s32 PlayerActor_GetTan(void *p);
@@ -5807,7 +5807,7 @@ extern "C" void PlayerActor_CheckSceneExit(s32 a) {
                     }
                     TalkRequest_AddLeaveRoom();
                 } else {
-                    TalkRequest_AddSceneExit(func_020951ec(4), sp4);
+                    TalkRequest_AddSceneExit(PlayerActor_GetCharacter(4), sp4);
                 }
             }
         }
@@ -6025,7 +6025,7 @@ u32 Unk_020102ec::calcTan(u32 r7) {
         break;
     default: {
         s32 n = DateTime_DiffDays(&b, &a);
-        u8 *p = func_020952c8();
+        u8 *p = PlayerSession_GetSessionFlags();
         if (n >= 2) {
             s32 h = n >> 1;
             if ((s32)r5 > h) {
@@ -6047,7 +6047,7 @@ u32 Unk_020102ec::calcTan(u32 r7) {
         break;
     }
     }
-    u16 *q = func_020952d0();
+    u16 *q = PlayerSession_GetTanTimer();
     if (*q == 0) {
         *q = 0x4650;
     }
@@ -6989,7 +6989,7 @@ extern "C" void PlayerActor_SetLastPlayDate(Unk_02006d14 *o, s32 a, Unk_0200f17c
     u16 *r = (u16 *)func_0209c37c(0, 0x50);
     *r = d->c * 10 + (d->b * 1000 + PlayerActor_GetTan(o));
     if (!_ZN12Unk_02006d1416isGuestInSessionEv(o)) {
-        *func_020952d8() = *d;
+        *PlayerSession_GetLastPlayDate() = *d;
     }
 }
 }
@@ -7189,7 +7189,7 @@ void Unk_02006d14::netSendClothesChange(u32 a, u32 b) {
     using namespace nP;
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
         u32 buf;
-        func_020954e0(&buf, b, a);
+        PlayerActor_PackClothesChange(&buf, b, a);
         CommManager *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, &buf, 3);
@@ -7925,9 +7925,9 @@ void PlayerActor::waitCheckInput() {
     if (Scene_InHouseRoom()) {
         BOOL b = gScreenTransition == 2 ? TRUE : FALSE;
         if (b) {
-            if (!(*(u8 *)func_020952c8() & 8)) {
+            if (!(*(u8 *)PlayerSession_GetSessionFlags() & 8)) {
                 if (sHouseRoachActiveCount) {
-                    *(u8 *)func_020952c8() |= 8;
+                    *(u8 *)PlayerSession_GetSessionFlags() |= 8;
                     _ZN12Unk_0200804012requestAct77Esjj(this, ((nM::PlayerActor *)this)->unk_8e, 6, -1);
                     return;
                 }
@@ -8508,7 +8508,7 @@ void Unk_02006d14::changeClothesCheckEnd() {
         } else if (t == 0x10) {
             requestAct10(0, 5, -1);
         } else {
-            func_02094c38();
+            PlayerActor_RequestReturnToWait();
         }
     }
 }
@@ -10162,8 +10162,8 @@ void Unk_02006d14::setupWalkTo(Unk_02006d14_Item *item, u32 old) {
                     loc.date.w0 = 0;
                     loc.date.w1 = 0;
                     Clock_GetDateTime(&loc.date);
-                    { u8 *q0 = func_020952c8(); *q0 = *q0 & 0xf9; }
-                    { u8 *q1 = func_020952c8(); if ((*q1 & 1) == 0) DateTime_SubDays(&loc.date, 1); }
+                    { u8 *q0 = PlayerSession_GetSessionFlags(); *q0 = *q0 & 0xf9; }
+                    { u8 *q1 = PlayerSession_GetSessionFlags(); if ((*q1 & 1) == 0) DateTime_SubDays(&loc.date, 1); }
                     loc.bits.y = loc.date.b[5];
                     loc.bits.m = loc.date.b[4];
                     loc.bits.d = loc.date.b[3];
@@ -11097,7 +11097,7 @@ void Unk_02005e7c::followNetAction() {
         _ZN12Unk_02006d1415clearActionFlagEj(this, 0x12);
     }
     unk_8f4 = st;
-    u8 *r = func_02095720(unk_7fc);
+    u8 *r = PlayerActor_GetNetStateVar(unk_7fc);
     if (r != NULL) {
         MI_CpuCopy8(r + 4, unk_8ec, 8);
     }
@@ -11110,7 +11110,7 @@ void Unk_02005e7c::followNetAction() {
         st = 2;
     }
     s32 idx = -1;
-    r = func_02095720(unk_7fc);
+    r = PlayerActor_GetNetStateVar(unk_7fc);
     if (r != NULL) {
         idx = NetBuf_ReadS16(r + 2);
     }
@@ -11540,7 +11540,7 @@ BOOL PlayerActor::vfunc_0c() {
 void *PlayerActor::operator new(unsigned long size) {
     using namespace nA;
     void *heap = gPlayerActorHeap;
-    void *p = Heap_AllocAligned(heap, size, func_0209433c());
+    void *p = Heap_AllocAligned(heap, size, PlayerActor_GetObjectAlign());
     if (p == 0) {
         return 0;
     }

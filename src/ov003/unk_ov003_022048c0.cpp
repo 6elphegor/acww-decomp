@@ -95,10 +95,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u8 pad_04[0x18];
 };
 
@@ -352,7 +352,7 @@ BOOL VillagerBoard::setupRead() {
     setFileName("obj_etc_board");
     unk_1e = 0;
     ((TalkWindowState *)unk_3c)->unk_08 = 1;
-    Unk_020e1c64 buf;
+    MsgString9B buf;
     _ZN12VillagerData13getVillagerIdEv(SaveVillagers_Get(gSaveVillagers, *(s32 *)((u8 *)this + 8)))->getName((u32)&buf);
     ((TalkWindowState *)unk_3c)->setSlot(0, &buf);
     return TRUE;

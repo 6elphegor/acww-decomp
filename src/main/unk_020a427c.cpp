@@ -316,7 +316,7 @@ void _ZN11CommManager12clearAuxLenAEv(void *);
 u32 _ZN11CommManager10getAuxBufAEv(void *);
 s32 Comm_GetMemberMask(void);
 void Comm_ProcessReceived(s32 a);
-void func_0208e968(void);
+void TransitionCommIcon_Suspend(void);
 s32 func_02097444(s32 a);
 s32 PlayerData_Get(s32 a);
 LostChildRecord *_ZN10PlayerData18getLostChildRecordEv(s32 a);
@@ -1774,7 +1774,7 @@ BOOL SceneBase::vfunc_04() {
         return TRUE;
     }
     SceneBase_SetupGraphics();
-    func_0208e968();
+    TransitionCommIcon_Suspend();
     gActorDefaultParent = this;
     sSceneFadeInDelay = 4;
     func_020a6470();

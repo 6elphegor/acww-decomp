@@ -264,7 +264,7 @@ void FieldPos_FromUnitCenter(void *p, s32 x, s32 y);
 void *Item_GetFurnitureIndex(void *p);
 BOOL Item_IsFurniture();
 s32 func_02063b8c(s32 n);
-void *func_02095204(u32 a);
+void *PlayerActor_GetActor(u32 a);
 s32 func_020e9650(void *a, void *b);
 void ProcBase_RequestDelete(void *p);
 void *Actor_spawn(u32 a, u32 b, void *c, void *d, void *e);
@@ -375,7 +375,7 @@ BOOL HouseRoachManager::onExecute() {
         }
     }
     if (mask != 0xff && mask != 0) {
-        void *p = func_02095204(4);
+        void *p = PlayerActor_GetActor(4);
         s32 best = 0xfffffff;
         if (p != 0) {
             void *q = (u8 *)p + 0x5c;
@@ -784,7 +784,7 @@ BOOL HouseRoach::checkHeight() {
 }
 
 BOOL HouseRoach::checkStomped() {
-    Unk_ov004_02236320_Ent *pl = (Unk_ov004_02236320_Ent *)func_02095204(4);
+    Unk_ov004_02236320_Ent *pl = (Unk_ov004_02236320_Ent *)PlayerActor_GetActor(4);
     if (unk_214 != 0) {
         if (unk_22a == 0) {
             if (pl != NULL) {
@@ -925,7 +925,7 @@ Unk_ov004_02236320_Ent *HouseRoach::getNearestCharacter() {
     Unk_ov004_02236320_V3 *a;
     Unk_ov004_02236320_V3 *b;
     Unk_ov004_02236320_V3 *c;
-    p = (Unk_ov004_02236320_Ent *)func_02095204(4);
+    p = (Unk_ov004_02236320_Ent *)PlayerActor_GetActor(4);
     g = sHouseRoachVillager;
     if (g != NULL) {
         if (p != NULL) {
@@ -957,7 +957,7 @@ void HouseRoach::updateCrawl() {
     for (i = 0; i < 2; i++) {
         s32 o;
         if (i == 0) {
-            o = (s32)func_02095204(4);
+            o = (s32)PlayerActor_GetActor(4);
         } else {
             o = (s32)sHouseRoachVillager;
         }
@@ -1004,7 +1004,7 @@ BOOL HouseRoach::move() {
     for (i = 0; i < 2; i++) {
         s32 o;
         if (i == 0) {
-            o = (s32)func_02095204(4);
+            o = (s32)PlayerActor_GetActor(4);
         } else {
             o = (s32)sHouseRoachVillager;
         }

@@ -99,10 +99,10 @@ public:
     /* 0x1e */ u8 unk_1e;
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u8 pad_04[0x18];
 };
 
@@ -421,7 +421,7 @@ void Collision_Move(void *self, void *a, void *b, s32 c, s32 d, void *o, s32 k);
 void func_02003e70(void *p, u32 a, u32 b, u32 c);
 s32 Snd_SeEmitterPlayHeld(void *p, u32 a, u32 b, u32 c);
 void func_020abc10(void *p, s32 a, s32 b, s32 c);
-void *func_02095204(u32 a);
+void *PlayerActor_GetActor(u32 a);
 BOOL Item_IsFurniture(u16 *p);
 s32 Item_GetFurnitureIndex(u16 *p);
 BOOL Item_IsNormalItem(u16 *p);
@@ -864,7 +864,7 @@ extern "C" BOOL Snowball_TryPush(Obj *o, V3 *outPos, u16 *outAng, s32 *outVal, s
     s32 ox, oz;
     s32 dist;
     ang = ang;
-    p = (Unk_ov003_022132b4_Tgt *)func_02095204(4);
+    p = (Unk_ov003_022132b4_Tgt *)PlayerActor_GetActor(4);
     if (!Scene_InTown()) return FALSE;
     if (!p) return FALSE;
     if (o->unk_39c != 0 || o->unk_398 != 0) return FALSE;
@@ -1011,7 +1011,7 @@ extern "C" BOOL Snowball_CanBuildSnowmanAt(Pos *pos) {
         void *c;
         px0 = -1;
         py0 = -1;
-        a = func_02095204(4);
+        a = PlayerActor_GetActor(4);
         if (a) FieldPos_ToUnit(&px0, &py0, (u8 *)a + 0x5c);
         FieldPos_ToUnit(&x, &y, pos);
         lx = *(volatile s32 *)&x;

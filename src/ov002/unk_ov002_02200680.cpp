@@ -11,9 +11,9 @@
 // Real names of functions of other modules (plain names that are really methods / ctors / dtors)
 #define VillagerId_getName _ZN10VillagerId7getNameEj
 #define VillagerData_getVillagerId _ZN12VillagerData13getVillagerIdEv
-#define func_02094018 _ZN12Unk_020e1c64D1Ev
-#define func_02094030 _ZN12Unk_020e1c64C1Ev
-#define func_020940d0 _ZN8PlayerId13func_020940d0EP9MsgString
+#define func_02094018 _ZN11MsgString9BD1Ev
+#define func_02094030 _ZN11MsgString9BC1Ev
+#define PlayerId_getNameString _ZN8PlayerId13getNameStringEP9MsgString
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
 #define func_0206fcc8 _ZN11LabelStringC1Ev
 #define func_0206fca8 _ZN11LabelStringD1Ev
@@ -30,7 +30,7 @@ void VillagerId_getName(s32 a, void *buf);
 s32 VillagerData_getVillagerId(void *self);
 void func_02094018(void *p);
 void func_02094030(void *p);
-void func_020940d0(s32 a, void *buf);
+void PlayerId_getNameString(s32 a, void *buf);
 s32 PlayerData_getPlayerId(void *self);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
@@ -66,9 +66,9 @@ void *ProcBase_GetParent(void *p);
 void ProcBase_SetExecutePriority(void *p, u32 v);
 void ProcBase_SetDrawPriority(void *p, u32 v);
 s32 func_01ffcb0c(s32 a, s32 b);
-void func_02065b5c(void *p);
-void func_02065ba4(void *p, s32 a);
-void func_02065bd0(void *p, s32 a);
+void Letter_SetRecipientFutureSelf(void *p);
+void Letter_SetRecipientResident(void *p, s32 a);
+void Letter_SetRecipientVillager(void *p, s32 a);
 void String_Load2d(void *buf, u8 *c, s32 z);
 void String_FromEncodedBytes(void *dst, const void *s, s32 len);
 void String_Load2dMenu(void *a, s32 v);

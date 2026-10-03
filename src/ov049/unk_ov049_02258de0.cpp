@@ -39,7 +39,7 @@
 #define PatternInfo_getTitle _ZN11PatternInfo8getTitleEPv
 #define PatternInfo_getAuthor _ZN11PatternInfo9getAuthorEv
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
-#define func_020941e8 _ZN8PlayerId13func_020941e8EPS_
+#define PlayerId_equals _ZN8PlayerId6equalsEPS_
 #define func_020942c8 _ZN8PlayerIdC1Ev
 #define PlayerData_getErrands _ZN10PlayerData10getErrandsEv
 #define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
@@ -147,7 +147,7 @@ s16 *func_0209c37c(s32 a, s32 b);
 Unk_ov049_0225aba8_Vec *func_020947f0(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void TalkRequest_AddPlayerTalk6(void *self, s32 a);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 s32 TalkRequest_IsActive();
 BOOL NpcTalkCtrl_isBusy(void *self);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -215,7 +215,7 @@ s32 NpcRegistry_FindSpNpc(s32 n);
 void ActorTalkRequest_setPartnerActor(void *self, s32 v);
 void Unk_020d7710_setPocketFilter(void *, void *, u32, u32);
 void Unk_020d7710_openSubScene(void *self, s32 a);
-void func_02094f48(s32, s32);
+void PlayerActor_SetNoFaceTalkTarget(s32, s32);
 void Camera_RestorePrevMode();
 void Camera_SetMode4();
 s32 Pocket_FindEmpty();
@@ -236,9 +236,9 @@ void PatternInfo_getTitle(void *a, void *b);
 void TalkWindowState_setNamedSlot(void *a, s32 b, void *c, s32 d);
 const Unk_ov049_0225a714_Pair *PatternInfo_getAuthor(void *a);
 const Unk_ov049_0225a714_Pair *PlayerData_getPlayerId(...);
-const Unk_ov049_0225a714_P *func_0209409c(Unk_ov049_0225a714_Pair *a);
+const Unk_ov049_0225a714_P *PlayerId_GetTownId(Unk_ov049_0225a714_Pair *a);
 s32 memcmp(const void *a, const void *b, u32 n);
-BOOL func_020941e8(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
+BOOL PlayerId_equals(Unk_ov049_0225a714_Pair *a, Unk_ov049_0225a714_Pair *b);
 void ActorTalkRequest_setPlayerNameSlot(void *self, void *a, s32 n);
 void ActorTalkRequest_setTownNameSlot(void *self, void *a, s32 n);
 void func_020639b8(Unk_ov049_0225a714_P *p);
@@ -1448,8 +1448,8 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
         TalkWindowState_setNamedSlot(unk_3c, 2, &q, 7);
         Unk_ov049_0225a714_Pair a(*PatternInfo_getAuthor(Pattern_getInfo(q6)));
         Unk_ov049_0225a714_Pair b(*PlayerData_getPlayerId(r7));
-        Unk_ov049_0225a714_P c(*func_0209409c(&a));
-        Unk_ov049_0225a714_P d(*func_0209409c(&b));
+        Unk_ov049_0225a714_P c(*PlayerId_GetTownId(&a));
+        Unk_ov049_0225a714_P d(*PlayerId_GetTownId(&b));
         if (GameStart_IsActive() != 0) {
             out->unk_00 = sSpNpcMabelMsgKeys[2];
             out->unk_04 = 0x1d;
@@ -1457,7 +1457,7 @@ void SpNpcMabelTalk::vfunc_78(TalkStartMsg *out) {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
             ActorTalkRequest_setTownNameSlot(this, &c, 3);
             out->unk_04 = 0x33;
-        } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && func_020941e8(&a, &b) != 0) {
+        } else if (a.id0 == b.id0 && memcmp(&a.name0, &b.name0, 8) == 0 && PlayerId_equals(&a, &b) != 0) {
         } else {
             ActorTalkRequest_setPlayerNameSlot(this, &a, 2);
             out->unk_04 = 0x32;
@@ -1866,7 +1866,7 @@ void SpNpcMabelTalk::onItemPriceChoice(s32 v) {
                 }
             }
         }
-        func_02094f48(1, 4);
+        PlayerActor_SetNoFaceTalkTarget(1, 4);
         Camera_SetMode4();
         TalkWindowState_lockAdvance(unk_3c);
         setScript(7);
@@ -1906,7 +1906,7 @@ void SpNpcMabelTalk::onTryOnChoice(s32 v) {
             PlayerActor_RequestWearFaceItemAlt((u16 *)&C[1]);
         }
     }
-    func_02094f48(0, 4);
+    PlayerActor_SetNoFaceTalkTarget(0, 4);
     setScript(8);
     Camera_RestorePrevMode();
     if (v == 0) {
@@ -2330,7 +2330,7 @@ BOOL SpNpcMabel::pickShopItemAtPlayer() {
     u16 t[3];
     s32 bx, by;
     Unk_ov049_02258ee0_Vec v;
-    Character *p = (Character *)func_02095204(4);
+    Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov049_02258ee0_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || NpcTalkCtrl_isBusy(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;

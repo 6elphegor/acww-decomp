@@ -382,7 +382,7 @@ void NpcMoveCtrl_setWaypoint(void *, void *);
 s32 Math_AngleXZ(void *, void *);
 s32 func_020e780c(s32, s32);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 s32 NpcActionCtrl_requestStand(void *, s32, u32);
@@ -1194,7 +1194,7 @@ void BirthdayHostVillager::mainAct04() {}
 
 BOOL BirthdayHostVillager::setupAct05() {
     BOOL r;
-    void *o = func_02095204(4);
+    void *o = PlayerActor_GetActor(4);
     if (o != 0) {
         NpcTalkCtrl_requestTurnAndTalk(unk_618, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;

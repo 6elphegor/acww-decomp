@@ -116,7 +116,7 @@ void Pocket_RemoveItem(s32 n);
 s32 MenuCtrl_BuildPocketMask(void *cb);
 s32 NpcActor_CanPlayerPay(void *owner, s32 n);
 void NpcActor_ChargePlayer(void *owner, s32 n);
-u32 func_020951ec(s32 n);
+u32 PlayerActor_GetCharacter(s32 n);
 s32 Math_AngleXZ(void *a, void *b);
 BOOL NpcActor_IsFrontAngle(s16 a);
 u32 Random_Next(void *p);
@@ -810,7 +810,7 @@ void SpNpcLyle::act01Step2() {
 }
 
 BOOL SpNpcLyle::setupAct01() {
-    unk_730 = (Character *)func_020951ec(4);
+    unk_730 = (Character *)PlayerActor_GetCharacter(4);
     Unk_ov071_02271f54_Vec *pv = &unk_5c;
     unk_734 = *pv;
     _ZN13NpcActionCtrl15requestPlayAnimEiijtt(&unk_564, 1, 0xdf, 1, data_020c6cc8, 0);
@@ -998,7 +998,7 @@ BOOL SpNpcLyle::setupAct04() {
 }
 
 BOOL SpNpcLyle::mainAct04() {
-    unk_730 = (Character *)func_020951ec(4);
+    unk_730 = (Character *)PlayerActor_GetCharacter(4);
     if (Talk_CheckAndSetPlayerFlag(0x28, 0) != 0) {
         if (isNearCameraFocus(1) != 0) {
             changeAct(3);

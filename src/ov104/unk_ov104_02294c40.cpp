@@ -22,9 +22,9 @@ void *Heap_AllocTail(void *heap, u32 n);
 void Heap_Free(void *heap, void *p);
 void func_0206f638(s32 a);
 s32 func_0206f644();
-void func_02065c94(void *p);
-void func_02065e70(void *dst, void *src);
-void func_02065af0(u32 a);
+void Letter_Clear(void *p);
+void Letter_Copy(void *dst, void *src);
+void Letter_MarkRead(u32 a);
 void MenuCtrl_SetFutureLetter(void *p);
 void MenuCtrl_SetPostOfficeResult(u32 a);
 s32 MenuCtrl_PostOfficeLettersSent();
@@ -120,11 +120,11 @@ public:
 };
 
 // Same 0xf4-byte element object under the name that owns the state accessors
-class Unk_02065554 {
+class LetterView {
 public:
-    s32 func_02065554();
-    s32 func_02065578();
-    u32 func_020655d0();
+    s32 isToFutureSelf();
+    s32 getState();
+    u32 getPresent();
 };
 
 class CommManager {
@@ -148,15 +148,15 @@ class MsgString {
 public:
     virtual ~MsgString();
 };
-class Unk_020e1c64 : public MsgString {
+class MsgString9B : public MsgString {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u32 unk_04[7];
 };
 class PlayerId {
 public:
-    void func_020940d0(MsgString *p);
+    void getNameString(MsgString *p);
 };
 class PlayerData {
 public:
@@ -882,7 +882,7 @@ void PostOfficeMenu::transitionAct06() {
 
 void PostOfficeMenu::transitionAct07() {
     void *t = getSlotLetter(unk_b9);
-    func_02065af0((u32)t);
+    Letter_MarkRead((u32)t);
     unk_288c.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -951,7 +951,7 @@ void PostOfficeMenu_InitParts(S *s) {
     s->unk_2484.init(3, 0, 0);
     s->unk_288c.func_0206d39c(3);
     for (i = 0; i < 10; i++) {
-        func_02065c94((u8 *)s->unk_2b0c + i * 0xf4);
+        Letter_Clear((u8 *)s->unk_2b0c + i * 0xf4);
     }
     PostOfficeMenu_BackupPocketLetters(s);
     s->unk_bf = 0;
@@ -1557,7 +1557,7 @@ u8 PostOfficeMenu::findFreeBoxSlot() {
     u8 *p = (u8 *)unk_2b0c;
     s32 i;
     for (i = 0; i < 10; p += 0xf4, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) {
+        if (((LetterView *)p)->getState() == 0) {
             return i + 0x15;
         }
     }
@@ -1627,7 +1627,7 @@ u8 PostOfficeMenu::getSlotAt(u32 i, s32 a, u32 flag) {
 
 BOOL PostOfficeMenu::dropHeldOnSlot(u32 i) {
     if (isSlotEmpty(i) == 0) {
-        func_02065e70(&unk_1b4, getSlotLetter(i));
+        Letter_Copy(&unk_1b4, getSlotLetter(i));
         putLetterInSlot(unk_b7, &unk_1b4);
     }
     releaseHeldTo(i);
@@ -1783,7 +1783,7 @@ void PostOfficeMenu::pickUpFrom(u32 i) {
     if (isLetterSlot(i) || isBoxSlot(i)) {
         u32 t = toLetterGridIndex(i);
         unk_b4 = 1;
-        func_02065e70(&unk_c0, unk_d40.getLetter(t));
+        Letter_Copy(&unk_c0, unk_d40.getLetter(t));
         unk_d40.clearLetter(t);
     }
 }
@@ -1797,7 +1797,7 @@ void PostOfficeMenu::releaseHeldTo(u32 i) {
 
 void PostOfficeMenu::exchangeHeldWith(u32 i) {
     if (unk_b4 == 1) {
-        func_02065e70(&unk_1b4, &unk_c0);
+        Letter_Copy(&unk_1b4, &unk_c0);
         pickUpFrom(i);
         putLetterInSlot(i, &unk_1b4);
     }
@@ -1955,7 +1955,7 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(s->unk_2484.unk_2f4, 0, 0);
     }
-    r5 = ((Unk_02065554 *)r7)->func_02065578();
+    r5 = ((LetterView *)r7)->getState();
     if (r5 != 0) {
         if (r5 == 7) {
             ChoiceIdList_Add(s->unk_2484.unk_2f4, 0x17, 1);
@@ -1963,7 +1963,7 @@ void PostOfficeMenu_SelectLetter(S *s, u32 a, s32 b) {
             ChoiceIdList_Add(s->unk_2484.unk_2f4, 0x14, 1);
         }
     }
-    if (((Unk_02065554 *)r7)->func_020655d0() == 0xfff1) {
+    if (((LetterView *)r7)->getPresent() == 0xfff1) {
         if (r5 == 3 || r5 == 6 || r5 == 1 || r5 == 4) {
             ChoiceIdList_Add(s->unk_2484.unk_2f4, 0x15, 3);
         }
@@ -2111,7 +2111,7 @@ void PostOfficeMenu_BackupPocketLetters(S *s) {
     u8 id;
     s32 i = 0;
     for (id = 0xb; id <= 0x14; i++, id++) {
-        func_02065e70((u8 *)s->unk_3494 + i * 0xf4, s->getSlotLetter(id));
+        Letter_Copy((u8 *)s->unk_3494 + i * 0xf4, s->getSlotLetter(id));
     }
 }
 
@@ -2128,8 +2128,8 @@ void PostOfficeMenu::returnUnsentLetters(s32 flag) {
     u8 *e = (u8 *)unk_2b0c;
     for (i = 0; i < 10; e += 0xf4, i++) {
         if (flag != 0 && (unk_b2 & (1 << i))) {
-            func_02065c94(e);
-        } else if (((Unk_02065554 *)e)->func_02065578() != 0) {
+            Letter_Clear(e);
+        } else if (((LetterView *)e)->getState() != 0) {
             s32 r = findFreePocketSlot();
             if (r != 0x21) {
                 putLetterInSlot(r, e);
@@ -2163,7 +2163,7 @@ BOOL PostOfficeMenu::hasOtherTownLetter(void *p) {
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < 10; q += 0xf4, i++) {
-        if (((Unk_02065554 *)q)->func_02065578() == 1 && ((Unk_02065554 *)q)->func_02065554() != 0) {
+        if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             return TRUE;
         }
     }
@@ -2176,7 +2176,7 @@ u32 PostOfficeMenu::takeOtherTownLetter(void *p) {
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < 10; q += 0xf4, i++) {
-        if (((Unk_02065554 *)q)->func_02065578() == 1 && ((Unk_02065554 *)q)->func_02065554() != 0) {
+        if (((LetterView *)q)->getState() == 1 && ((LetterView *)q)->isToFutureSelf() != 0) {
             if (t == -1) {
                 t = i;
             } else {
@@ -2191,7 +2191,7 @@ u32 PostOfficeMenu::takeOtherTownLetter(void *p) {
             r |= 1;
             u8 *e = (u8 *)p + t * 0xf4;
             MenuCtrl_SetFutureLetter(e);
-            func_02065c94(e);
+            Letter_Clear(e);
         }
     }
     return r;
@@ -2205,20 +2205,20 @@ u32 PostOfficeMenu::checkSendLetters(void *p, s32 flag) {
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < 10; q += 0xf4, i++) {
-        if (((Unk_02065554 *)q)->func_02065578() != 0) {
-            if (((Unk_02065554 *)q)->func_02065578() != 1) {
+        if (((LetterView *)q)->getState() != 0) {
+            if (((LetterView *)q)->getState() != 1) {
                 if (flag != 0) {
                     unk_b2 |= 1 << i;
                 } else {
-                    func_02065c94(q);
+                    Letter_Clear(q);
                 }
-            } else if (((Unk_02065554 *)q)->func_02065554() == 0) {
+            } else if (((LetterView *)q)->isToFutureSelf() == 0) {
                 if (LetterDelivery_HasKnownAddressee(q) != 0) {
                     if (queueLetterForDelivery(q) != 0) {
                         if (flag != 0) {
                             unk_b2 |= 1 << i;
                         } else {
-                            func_02065c94(q);
+                            Letter_Clear(q);
                         }
                         r |= 0x300;
                     } else {
@@ -2242,12 +2242,12 @@ u32 PostOfficeMenu::queueLetters(void *p) {
     u8 *q = (u8 *)p;
     s32 i;
     for (i = 0; i < n; q += 0xf4, i++) {
-        if (((Unk_02065554 *)q)->func_02065578() != 1) {
-            func_02065c94(q);
-        } else if (((Unk_02065554 *)q)->func_02065554() == 0) {
+        if (((LetterView *)q)->getState() != 1) {
+            Letter_Clear(q);
+        } else if (((LetterView *)q)->isToFutureSelf() == 0) {
             if (LetterDelivery_HasKnownAddressee(q) != 0) {
                 if (queueLetterForDelivery(q) != 0) {
-                    func_02065c94(q);
+                    Letter_Clear(q);
                     r |= 0x200;
                 } else {
                     r |= 0x20;
@@ -2277,12 +2277,12 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     s32 z;
     s32 j;
     for (; i < n; q += 0xf4, i++) {
-        if (((Unk_02065554 *)q)->func_02065554() == 0) {
+        if (((LetterView *)q)->isToFutureSelf() == 0) {
             t = LetterDelivery_FindAddresseePlayer(q);
             if (t != -2) {
                 if (t != -1) {
                     if (LetterDelivery_PutInMailbox(q, t, 1) != 0) {
-                        func_02065c94(q);
+                        Letter_Clear(q);
                         r |= 0x200;
                     } else {
                         u32 bit = 1 << t;
@@ -2294,7 +2294,7 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
                 } else {
                     if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
                         LetterDelivery_SendToVillager(q);
-                        func_02065c94(q);
+                        Letter_Clear(q);
                         r |= 0x200;
                     }
                 }
@@ -2304,10 +2304,10 @@ u32 PostOfficeMenu::deliverToMailboxes(void *p) {
     if (cnt != 0) {
         z = 0;
         obj = TalkWindow_Get(0);
-        Unk_020e1c64 buf;
+        MsgString9B buf;
         for (j = 0; j < 4; j++) {
             if (mask & (1 << j)) {
-                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, j))->getPlayerId())->func_020940d0(&buf);
+                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, j))->getPlayerId())->getNameString(&buf);
                 switch (z) {
                 case 0:
                     obj->setSlot(7, &buf);
@@ -2338,7 +2338,7 @@ u32 PostOfficeMenu::deliverVillagerLettersNow(void *p) {
     for (i = 0; i < n; q += 0xf4, i++) {
         if (LetterDelivery_FindAddresseeVillager(q) >= 0) {
             LetterDelivery_SendToVillager(q);
-            func_02065c94(q);
+            Letter_Clear(q);
             r |= 0x200;
         }
     }
@@ -2406,8 +2406,8 @@ void PostOfficeMenu::updateOnlineSend() {
     }
     while (unk_be < 10) {
         void *e = &unk_2b0c[unk_be];
-        if (((Unk_02065554 *)e)->func_02065554() == 0) {
-            if (((Unk_02065554 *)e)->func_02065578() == 1) {
+        if (((LetterView *)e)->isToFutureSelf() == 0) {
+            if (((LetterView *)e)->getState() == 1) {
                 unk_b0 |= 0x100;
                 if (LetterDelivery_HasKnownAddressee(e) != 0) {
                     if (r6 == 10) {

@@ -17,7 +17,7 @@ void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Snd_PlaySe(u32 a);
-void func_02065e70(void *a, void *b);
+void Letter_Copy(void *a, void *b);
 void MenuCtrl_SetResult(u32 a);
 void MenuCtrl_SetIndex(u32 a);
 BOOL MenuCtrl_IsButtons();
@@ -1087,7 +1087,7 @@ u32 LetterGiveMenu::hitTestSlot(u32 a, u32 b, u32 c) {
 
 BOOL LetterGiveMenu::dropOnSlot(u32 b) {
     if (isSlotEmpty(b) == 0) {
-        func_02065e70(&unk_1a0, getLetter(b));
+        Letter_Copy(&unk_1a0, getLetter(b));
         setLetter(unk_297, &unk_1a0);
     }
     dropCarriedLetter(b);
@@ -1226,7 +1226,7 @@ void LetterGiveMenu::pickUpLetter(u32 a) {
     if (isLetterSlot(a)) {
         s32 r4 = slotToLetterIndex(a);
         unk_294 = 1;
-        func_02065e70(&unk_ac, unk_d38.getLetter(r4));
+        Letter_Copy(&unk_ac, unk_d38.getLetter(r4));
         unk_d38.clearLetter(r4);
     }
 }
@@ -1240,7 +1240,7 @@ void LetterGiveMenu::dropCarriedLetter(u32 a) {
 
 void LetterGiveMenu::swapCarriedLetter(u32 a) {
     if (unk_294 == 1) {
-        func_02065e70(&unk_1a0, &unk_ac);
+        Letter_Copy(&unk_1a0, &unk_ac);
         pickUpLetter(a);
         setLetter(a, &unk_1a0);
     }

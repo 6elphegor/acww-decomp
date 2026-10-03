@@ -3,8 +3,8 @@
 extern "C" {
 void Oam_DrawCell(u32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 s32 TalkRequestFlags_IsSceneHold();
-s32 _ZN12Unk_0206555413func_02065578Ev();
-void func_02065c94(void *p);
+s32 _ZN10LetterView8getStateEv();
+void Letter_Clear(void *p);
 }
 
 // Sub-object at +0x14 of Unk_020e1164 (ctor 0x02089270, dtor 0x0208926c)
@@ -46,10 +46,10 @@ public:
     virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208ee40();
-    BOOL func_0208ee94();
-    void func_0208ee8c();
-    void func_0208ee90();
+    void startModeAnim();
+    BOOL isDrawBlocked();
+    void exit();
+    void init();
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -85,10 +85,10 @@ Unk_0208f0a0::Unk_0208f0a0() {}
 
 Unk_0208f0a0::~Unk_0208f0a0() {}
 
-extern "C" void func_0208f088(void *p) { func_02065c94(p); }
+extern "C" void func_0208f088(void *p) { Letter_Clear(p); }
 
 extern "C" BOOL func_0208f070() {
-    if (_ZN12Unk_0206555413func_02065578Ev()) {
+    if (_ZN10LetterView8getStateEv()) {
         return TRUE;
     }
     return FALSE;
@@ -120,9 +120,9 @@ extern "C" BOOL InputMode_IsTouch() {
     return FALSE;
 }
 
-extern "C" void func_0208f000() { data_021ceb80.func_0208ee90(); }
+extern "C" void func_0208f000() { data_021ceb80.init(); }
 
-extern "C" void func_0208eff0() { data_021ceb80.func_0208ee8c(); }
+extern "C" void func_0208eff0() { data_021ceb80.exit(); }
 
 extern "C" void func_0208efe0() { data_021ceb80.vfunc_0c(); }
 
@@ -130,7 +130,7 @@ extern "C" void func_0208efd0() { data_021ceb80.draw(); }
 
 void Unk_020e1164::draw() {
     if (unk_28 != 0) {
-        if (!func_0208ee94()) {
+        if (!isDrawBlocked()) {
             void *h = unk_14.getCell();
             s32 x = getOriginX() + unk_14.getFrameX(-1);
             s32 y = getOriginY() + unk_14.getFrameY(-1);
@@ -144,7 +144,7 @@ void Unk_020e1164::vfunc_0c() {
         unk_14.update();
     }
     if (unk_0c != unk_10) {
-        func_0208ee40();
+        startModeAnim();
         unk_10 = unk_0c;
     }
 }

@@ -75,8 +75,8 @@ void _ZN15TalkWindowState13unlockAdvanceEv(void *p);
 s32 Math_AngleXZ(void *a, void *b);
 void PlayerActor_RequestTurnTo(s32 a, s32 b);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
-BOOL func_02094f2c(s32 a, s32 b);
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_SetNetFollowPaused(s32 a, s32 b);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 s32 Net_GetJoiningAid(void);
 s32 PlayerData_GetBySessionSlot(s32 a);
 BOOL func_020a03c4(void);
@@ -821,7 +821,7 @@ BOOL SpNpcMissing1::mainAct08() {
     switch (unk_724) {
     case 0:
         if (Unk_020c06a0_IsMode2()) {
-            if (func_02094f2c(1, r5)) {
+            if (PlayerActor_SetNetFollowPaused(1, r5)) {
                 unk_724 = 1;
             }
         }
@@ -833,7 +833,7 @@ BOOL SpNpcMissing1::mainAct08() {
         unk_724 = 2;
         break;
     case 2:
-        if (func_020951b8(r5)) {
+        if (PlayerActor_IsScriptedWalking(r5)) {
             break;
         }
         if (_ZN13NpcActionCtrl12isActionDoneEv(&unk_564)) {

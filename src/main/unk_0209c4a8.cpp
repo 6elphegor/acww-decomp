@@ -71,7 +71,7 @@ void *Scene_GetWarpRequest();
 s32 SceneExit_Resolve(void *o, u32 id, u8 *a, Unk_0209c614_Vec *v, u32 *p20, u16 *e, u8 *c, u8 *b, s32 z0, s32 z1);
 s32 Scene_GetCurrent();
 s32 Scene_GetPrevious();
-Unk_0209c614_Actor *func_02095204(u32 n);
+Unk_0209c614_Actor *PlayerActor_GetActor(u32 n);
 
 u32 func_0209c7ec(u32 v);
 void func_0209c82c(Unk_0209c82c *t, Unk_0209c82c_V *v);
@@ -273,7 +273,7 @@ extern "C" s32 func_0209c7a4(void *p) {
 }
 
 extern "C" BOOL func_0209c614(u32 id) {
-    Unk_0209c614_Actor *p = func_02095204(4);
+    Unk_0209c614_Actor *p = PlayerActor_GetActor(4);
     void *o = Scene_GetWarpRequest();
     Unk_0209c614_S s;
     u32 a20, a24;

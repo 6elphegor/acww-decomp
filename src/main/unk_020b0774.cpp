@@ -11,7 +11,7 @@ s32 Gfx2d_LoadPaletteRange(void *a, u32 b, u32 c, u32 d, u32 e);
 void _ZN10BgVramTask19requestPaletteRangeEjhjh(void *p, void *q, u32 a, u32 b, u32 c);
 void _ZN10BgVramTaskC1Ev(void *p);
 void Mem_Clear(void *p, u32 n);
-u32 _ZN8PlayerId13func_02094294Ev(void *p);
+u32 _ZN8PlayerId5clearEv(void *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
 }
@@ -112,7 +112,7 @@ u32 func_020b0a30(u8 *p) {
         ((u16 *)(p + 0x26))[i] = 0xffff;
     }
     Mem_Clear(p + 0x16, 16);
-    return _ZN8PlayerId13func_02094294Ev(p);
+    return _ZN8PlayerId5clearEv(p);
 }
 void *func_020b0a18(void *p, const void *src) {
     MI_CpuCopy8(src, p, 0x46);

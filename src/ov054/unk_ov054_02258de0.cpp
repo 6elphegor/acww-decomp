@@ -656,7 +656,7 @@ s32 NetOverlay_Restore();
 s32 func_02063b8c(s32 a);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
 void TalkRequest_SetTargetDone(void *self);
-s32 func_020951b8(s32 a);
+s32 PlayerActor_IsScriptedWalking(s32 a);
 void PlayerActor_RequestWalkTo(void *v, s32 a, s32 b);
 Unk_ov054_Vec *func_020947f0(s32 a);
 s32 NpcActionCtrl_getAction(void *self);
@@ -1107,7 +1107,7 @@ BOOL SpNpcPellyPhyllis::setupAct01() {
 }
 
 BOOL SpNpcPellyPhyllis::mainAct01() {
-    if (func_020951b8(4) == 0) {
+    if (PlayerActor_IsScriptedWalking(4) == 0) {
         changeAct(4);
     }
     return TRUE;

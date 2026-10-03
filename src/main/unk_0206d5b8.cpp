@@ -150,7 +150,7 @@ void Gfx2d_SetLayerOffset(void *p, s32 a, s32 b);
 }
 
 extern "C" {
-void *func_02065c8c(void *p);
+void *Letter_GetPaper(void *p);
 }
 
 extern "C" {
@@ -162,7 +162,7 @@ void Mem_Clear(void *p, s32 n);
 }
 
 extern "C" {
-void func_02065604(void *dst, void *src);
+void Letter_GetRecipientNameBytes(void *dst, void *src);
 }
 
 extern "C" {

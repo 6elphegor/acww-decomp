@@ -205,7 +205,7 @@ void _ZN11CommManager14setMemberCountEj(void*, s32);
 u32 NetArea_GetSlotScene(u32 i);
 void Scene_Request(s32 a, s32 b, s32 c, s32 d);
 s32 func_0209c098(s32 a);
-u32 func_0209501c(Vec3* a, s16* b);
+u32 PlayerActor_GetResumeTransform(Vec3* a, s16* b);
 void FieldPos_ToUnit(s32* a, s32* b, Vec3* c);
 void FieldPos_SnapToUnitCenter(Vec3* out, Vec3* in);
 void* TownBlockMap_Get();
@@ -314,7 +314,7 @@ void func_02081d08();
 void PlayerActorHeap_Create(u32);
 void func_0209c540();
 void NookShop_OnSceneLoad();
-void func_0208e974();
+void TransitionCommIcon_ResumeWinOut();
 void Snd_CreateScene();
 }
 
@@ -736,7 +736,7 @@ BOOL FieldSceneSteps::stepEnterScene(u32, u32) {
 BOOL FieldSceneSteps::stepSetupSystems(u32, u32) {
     Scene_SetupGraphics();
     ScreenTransition_ShowCover();
-    func_0208e974();
+    TransitionCommIcon_ResumeWinOut();
     Snd_CreateScene();
     Unk_020cbb18_t* p = gCommManager;
     s32 i;
@@ -1464,7 +1464,7 @@ extern "C" void Scene_SavePlayerPos(s32 unused, s32 add) {
     s16 s;
     s32 p, q;
     Vec3 v;
-    u32 r = func_0209501c(&v, &s);
+    u32 r = PlayerActor_GetResumeTransform(&v, &s);
     p = 0;
     q = 0;
     FieldPos_ToUnit(&p, &q, &v);

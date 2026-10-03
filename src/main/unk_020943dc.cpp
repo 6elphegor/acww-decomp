@@ -70,7 +70,7 @@ extern u8 gFieldSceneKind;
 }
 
 extern "C" {
-extern u8 data_020d0408[];
+extern u8 sEmotionHoldFrames[];
 }
 
 extern "C" {

@@ -26,7 +26,7 @@ public:
 
 class PlayerId {
 public:
-    void func_020940d0(MsgString *o);
+    void getNameString(MsgString *o);
 };
 
 class PlayerData {
@@ -34,10 +34,10 @@ public:
     void *getPlayerId();
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u8 pad_04[0x18];
 };
 
@@ -1176,8 +1176,8 @@ void ChatMenu_RedrawText(S *s) {
 
 void ChatMenu_SendText(S *s) {
     PlayerData *r = PlayerData_GetCurrent();
-    Unk_020e1c64 buf;
-    ((PlayerId *)r->getPlayerId())->func_020940d0((MsgString *)&buf);
+    MsgString9B buf;
+    ((PlayerId *)r->getPlayerId())->getNameString((MsgString *)&buf);
     String_CensorTaboo(&s->unk_3c68);
     ChatBalloon_Post(*(s32 *)(gCommManager + 0x64), &buf, &s->unk_3c68);
     ChatMenu_ClearText(s);

@@ -84,8 +84,8 @@ void func_020e885c(void *);
 void func_020e877c(void *);
 void *ExpHeap_Create(u32 size, void *parent);
 void *FrameHeap_Create(u32 size, void *parent, ...);
-u32 func_02094340(void);
-u32 func_0209433c(void);
+u32 PlayerActor_GetObjectSize(void);
+u32 PlayerActor_GetObjectAlign(void);
 s32 Town_GetMaxOutdoorVillagers(void);
 void *Scene_GetCurrent(void);
 s32 Scene_GetMaxCharacters(void *);
@@ -800,8 +800,8 @@ extern "C" void NpcModelHeap_Destroy(void) {
 
 extern "C" void PlayerActorHeap_Create(void *parent) {
     u32 s = 0, t = 0;
-    s += ALIGN4(func_02094340());
-    u32 a = func_0209433c();
+    s += ALIGN4(PlayerActor_GetObjectSize());
+    u32 a = PlayerActor_GetObjectAlign();
     s += AL(16, a);
     t += s * 4;
     gPlayerActorHeap = ExpHeap_Create(t, parent);

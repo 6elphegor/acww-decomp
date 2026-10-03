@@ -20,8 +20,8 @@ void Gfx2d_SetLayerPriority(u32 a, u32 b);
 void Gfx2d_SetLayerControl(u32 n, u32 a, u32 b, u32 c);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-void func_02065af0();
-void func_02065e70(void *dst, void *src);
+void Letter_MarkRead();
+void Letter_Copy(void *dst, void *src);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
 void *ProcBase_GetParent(void *p);
@@ -91,10 +91,10 @@ public:
     u32 unk_00[0x38 / 4];
 };
 
-class Unk_02065554 {
+class LetterView {
 public:
-    s32 func_02065578();
-    u32 func_020655d0();
+    s32 getState();
+    u32 getPresent();
 };
 
 class Letter {
@@ -665,7 +665,7 @@ void PocketLettersMenu::transitionAct04() {
 
 void PocketLettersMenu::transitionAct05() {
     s32 t = getSlotLetter(unk_2afd);
-    func_02065af0();
+    Letter_MarkRead();
     unk_2678.func_0206d2e0((Unk_0206d1d4_Src *)t, (void *)3, (void *)4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -1171,7 +1171,7 @@ u32 PocketLettersMenu::getSlotAt(u32 a, u32 b, s32 c) {
 
 BOOL PocketLettersMenu::dropHeldOnSlot(u32 a) {
     if (!isSlotEmpty(a)) {
-        func_02065e70(&unk_2a04, (void *)getSlotLetter(a));
+        Letter_Copy(&unk_2a04, (void *)getSlotLetter(a));
         putLetterInSlot(unk_2afb, &unk_2a04);
     }
     releaseHeldTo(a);
@@ -1318,7 +1318,7 @@ void PocketLettersMenu::pickUpFrom(u32 idx) {
         s32 r4 = toLetterIndex(idx);
         unk_2af8 = 1;
         s32 r = unk_b2c.getLetter(r4);
-        func_02065e70(&unk_2910, (void *)r);
+        Letter_Copy(&unk_2910, (void *)r);
         unk_b2c.clearLetter(r4);
     }
 }
@@ -1332,7 +1332,7 @@ void PocketLettersMenu::releaseHeldTo(u32 idx) {
 
 void PocketLettersMenu::exchangeHeldWith(u32 idx) {
     if (unk_2af8 == 1) {
-        func_02065e70(&unk_2a04, &unk_2910);
+        Letter_Copy(&unk_2a04, &unk_2910);
         pickUpFrom(idx);
         putLetterInSlot(idx, &unk_2a04);
     }
@@ -1469,7 +1469,7 @@ void PocketLettersMenu::selectLetter(u32 idx) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(&unk_2270.unk_2f4, 0, 0);
     }
-    s32 r4 = ((Unk_02065554 *)r6)->func_02065578();
+    s32 r4 = ((LetterView *)r6)->getState();
     if (r4 != 0) {
         if (r4 == 7) {
             ChoiceIdList_Add(&unk_2270.unk_2f4, 0x17, 1);
@@ -1477,7 +1477,7 @@ void PocketLettersMenu::selectLetter(u32 idx) {
             ChoiceIdList_Add(&unk_2270.unk_2f4, 0x14, 1);
         }
     }
-    if (((Unk_02065554 *)r6)->func_020655d0() != 0xfff1 && r4 == 3 || r4 == 6 || r4 == 1) {
+    if (((LetterView *)r6)->getPresent() != 0xfff1 && r4 == 3 || r4 == 6 || r4 == 1) {
         ChoiceIdList_Add(&unk_2270.unk_2f4, 0x15, 2);
     }
     ChoiceIdList_Add(&unk_2270.unk_2f4, 2, 3);

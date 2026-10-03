@@ -101,10 +101,10 @@ public:
     char text[0x2a];
 };
 
-class Unk_020e1c64 : public MsgString {
+class MsgString9B : public MsgString {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u32 unk_04[6];
 };
 
@@ -131,7 +131,7 @@ public:
 
 class PlayerId {
 public:
-    void func_020940d0(MsgString *p);
+    void getNameString(MsgString *p);
 };
 
 class PlayerData {
@@ -954,8 +954,8 @@ void BbsWriteMenu::init() {
     Mem_Clear(unk_c3, 0xc0);
     LabelString a;
     PlayerData *t = PlayerData_GetCurrent();
-    Unk_020e1c64 b;
-    t->getPlayerId()->func_020940d0(&b);
+    MsgString9B b;
+    t->getPlayerId()->getNameString(&b);
     String_SetSlot(0, &b);
     String_Load2dMenu(&a, 0x89);
     EncodedString41 c;

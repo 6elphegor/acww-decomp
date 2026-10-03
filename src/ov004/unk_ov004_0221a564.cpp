@@ -170,7 +170,7 @@ void VillagerId_makeFileName(void *, const void *, s32, const void *);
 s32 MenuCtrl_BuildPocketMask(void *);
 s32 MenuCtrl_OpenPocketSelect(s32, u32);
 s32 TalkRequest_SetTargetDone(void *);
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 s32 NpcActor_getAngleTo(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, u32, s32, u32);
 s32 NpcActionCtrl_requestEmotion(void *, u32, u32, u32);
@@ -1086,7 +1086,7 @@ void SickVillager::mainAct02() {}
 
 BOOL SickVillager::setupAct03() {
     BOOL r;
-    void *o = func_02095204(4);
+    void *o = PlayerActor_GetActor(4);
     if (o != 0) {
         NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, NpcActor_getAngleTo(this, o), 0);
         r = TRUE;

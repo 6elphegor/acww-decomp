@@ -57,9 +57,9 @@ public:
     BOOL testFlag(u32 a);
 };
 
-class Unk_02065554 {
+class LetterView {
 public:
-    u8 func_02065578();
+    u8 getState();
 };
 
 class Unk_0208f238 {
@@ -84,13 +84,13 @@ public:
 
 class PlayerId {
 public:
-    void func_020940d0(MsgString *p);
+    void getNameString(MsgString *p);
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u8 unk_04[0x18];
 };
 
@@ -815,8 +815,8 @@ void TitleTalk::openResidentChoices() {
     u8 buf[3];
     for (r4 = 0; r4 < 4; r4++) {
         if (func_020978c8(gSavePlayers, r4)) {
-            Unk_020e1c64 o;
-            ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
+            MsgString9B o;
+            ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->getNameString((MsgString *)&o);
             ChoiceEntry *r7 = r6->getEntry(r5);
             buf[0] = 4;
             r7->setValue(&buf[0]);
@@ -924,8 +924,8 @@ void TitleTalk::chooseResident() {
         if (func_020978c8(gSavePlayers, r4)) {
             if (a == r5) {
                 SaveManager_SetEraseResidentSlot(r4);
-                Unk_020e1c64 o;
-                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->func_020940d0((MsgString *)&o);
+                MsgString9B o;
+                ((PlayerId *)((PlayerData *)PlayerData_GetResident(gSavePlayers, r4))->getPlayerId())->getNameString((MsgString *)&o);
                 r7->setSlot(0, &o);
                 r6 = 4;
             }
@@ -940,7 +940,7 @@ void TitleTalk::chooseResident() {
 
 void TitleTalk::chooseTagMode() {
     u8 *g = data_021e7f8c;
-    if (((Unk_02065554 *)func_0208f158(g))->func_02065578()) {
+    if (((LetterView *)func_0208f158(g))->getState()) {
         if (((Unk_0208f238 *)g)->func_0208f15c() == 0) {
             u8 v = 0x35;
             unk_3c->setNextMessage(&v, 0);

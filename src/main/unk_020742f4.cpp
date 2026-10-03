@@ -364,7 +364,7 @@ extern "C" {
 void *func_020947f0(s32);
 }
 extern "C" {
-s32 func_020951ec(s32);
+s32 PlayerActor_GetCharacter(s32);
 }
 extern "C" {
 struct Unk_020781ec_Data *VillagerStates_Get();
@@ -2019,7 +2019,7 @@ extern "C" {
 void NpcNetRecord_InitVillagerVar(u32 a, u32 b);
 }
 extern "C" {
-void func_020954f8(u32 a, u32 b);
+void PlayerActor_PackNetState(u32 a, u32 b);
 }
 extern "C" {
 void ChatBalloon_PackSyncVar(u32 a, u32 b, u32 c);
@@ -2154,10 +2154,10 @@ extern "C" void CommSyncVar_PackPlayerAngle0(u32 a, s16 *b) { CommSyncVar_PackAn
 extern "C" void CommSyncVar_PackPlayerAngle1(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
 extern "C" void CommSyncVar_PackPlayerAngle2(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
 extern "C" void CommSyncVar_PackPlayerAngle3(u32 a, s16 *b) { CommSyncVar_PackAngle(a, b); }
-extern "C" void CommSyncVar_PackVar08(u32 a) { func_020954f8(a, 0x8); }
-extern "C" void CommSyncVar_PackVar09(u32 a) { func_020954f8(a, 0x9); }
-extern "C" void CommSyncVar_PackVar0A(u32 a) { func_020954f8(a, 0xa); }
-extern "C" void CommSyncVar_PackVar0B(u32 a) { func_020954f8(a, 0xb); }
+extern "C" void CommSyncVar_PackVar08(u32 a) { PlayerActor_PackNetState(a, 0x8); }
+extern "C" void CommSyncVar_PackVar09(u32 a) { PlayerActor_PackNetState(a, 0x9); }
+extern "C" void CommSyncVar_PackVar0A(u32 a) { PlayerActor_PackNetState(a, 0xa); }
+extern "C" void CommSyncVar_PackVar0B(u32 a) { PlayerActor_PackNetState(a, 0xb); }
 extern "C" void CommSyncVar_PackVillager0(u32 a) { NpcNetRecord_PackVillager(a, 0xc); }
 extern "C" void CommSyncVar_PackVillager1(u32 a) { NpcNetRecord_PackVillager(a, 0xd); }
 extern "C" void CommSyncVar_PackVillager2(u32 a) { NpcNetRecord_PackVillager(a, 0xe); }
@@ -2523,7 +2523,7 @@ extern "C" {
 s32 func_020945d4(u32, s32);
 }
 extern "C" {
-s32 func_0209549c(u8 *, u8 *, u8 *);
+s32 PlayerActor_UnpackHair(u8 *, u8 *, u8 *);
 }
 extern "C" {
 s32 _ZN10PlayerData12setHairStyleEh(void *, u32);
@@ -2535,7 +2535,7 @@ extern "C" {
 s32 FishDisplay_OnNetPacket(void *, s32);
 }
 extern "C" {
-s32 func_020954c8(void *, u16 *, u32 *);
+s32 PlayerActor_UnpackClothesChange(void *, u16 *, u32 *);
 }
 extern "C" {
 s32 PlayerActor_SetClothing(u16 *, u32, void *);
@@ -2639,7 +2639,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
     u8 buf[4];
     u32 k;
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
-    func_020954c8(buf, &h, &k);
+    PlayerActor_UnpackClothesChange(buf, &h, &k);
     v = h;
     switch (k) {
     case 0:
@@ -2670,7 +2670,7 @@ extern "C" void CommRecv_ClothesChange(s32 n, s32 b, s32 c, void *d) {
 extern "C" void CommRecv_HairChange(s32 n, s32 b, s32 c, void *d) {
     u8 buf[3];
     _ZN11CommManager10readRecordEPhj(gCommManager, buf, n);
-    func_0209549c(&buf[0], &buf[1], &buf[2]);
+    PlayerActor_UnpackHair(&buf[0], &buf[1], &buf[2]);
     void *r4 = PlayerData_GetBySessionSlot(d);
     _ZN10PlayerData12setHairStyleEh(r4, buf[1]);
     _ZN10PlayerData12setHairColorEh(r4, buf[2]);

@@ -143,7 +143,7 @@ extern Unk_ov004_0222c570_Comm *gCommManager;
 extern u8 data_021f47e0[];
 extern u8 gCameraLookAt[];
 
-void *func_02095204(u32 a);
+void *PlayerActor_GetActor(u32 a);
 s32 CommManager_isOnline(void *g);
 void ModelSet_Release(void *p);
 s32 ModelSet_Load(void *p, void *a, s32 b);
@@ -345,7 +345,7 @@ BOOL RoomItemIcons::vfunc_0c() {
 
 extern "C" BOOL ItemDrop_StartFromLocalPlayer(u16 *p, Unk_ov004_0222c570_Vec *v) {
     void *g = (void *)gSceneBlockMap;
-    Unk_ov004_0222c570_Global *o = (Unk_ov004_0222c570_Global *)func_02095204(4);
+    Unk_ov004_0222c570_Global *o = (Unk_ov004_0222c570_Global *)PlayerActor_GetActor(4);
     BOOL r = FALSE;
     if (g != NULL && o != NULL) {
         Unk_ov004_0222c570_Comm *c = gCommManager;

@@ -23,8 +23,8 @@
 #define BlancaFaceRecord_getPattern _ZN16BlancaFaceRecord10getPatternEv
 #define HandCursor_isAnimDone _ZN10HandCursor10isAnimDoneEv
 #define HandCursor_getAnim _ZN10HandCursor7getAnimEv
-#define func_02094104 _ZN8PlayerId13func_02094104Ev
-#define func_02094108 _ZN8PlayerId13func_02094108EPv
+#define PlayerId_getName _ZN8PlayerId7getNameEv
+#define PlayerId_setName _ZN8PlayerId7setNameEPv
 #define PlayerData_getFriendList _ZN10PlayerData13getFriendListEv
 #define PlayerData_getPatterns _ZN10PlayerData11getPatternsEv
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv
@@ -135,8 +135,8 @@ s32 PlayerData_getPlayerId(...);
 s32 func_02097740(void *a, s32 b);
 BOOL func_020978c8(void *a, s32 b);
 s32 PlayerData_GetResident(void *a, s32 b);
-s32 func_02094104(s32 a);
-void func_02094108(s32 a, void *b);
+s32 PlayerId_getName(s32 a);
+void PlayerId_setName(s32 a, void *b);
 void func_0206fcc8(void *p);
 void func_0206fca8(void *p);
 void String_LoadByIndex(void *p, const char *fmt, s32 a);
@@ -2031,13 +2031,13 @@ void NameEntryMenu::storePlayerName() {
     s32 i;
     for (i = 0; i < 4; i++) {
         if (i != n && func_020978c8(gSavePlayers, i)) {
-            if (func_02051218((void *)func_02094104(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
+            if (func_02051218((void *)PlayerId_getName(PlayerData_getPlayerId(PlayerData_GetResident(gSavePlayers, i))), unk_4088, 8)) {
                 MenuCtrl_SetResult(2);
                 return;
             }
         }
     }
-    func_02094108(PlayerData_getPlayerId(t), unk_4088);
+    PlayerId_setName(PlayerData_getPlayerId(t), unk_4088);
 }
 
 s32 NameEntryMenu::storeTownName() {

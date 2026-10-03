@@ -82,10 +82,10 @@ public:
     /* 0x00 */ u8 unk_00[0x14];
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
     u32 pad[0x1c / 4];
 };
 
@@ -277,7 +277,7 @@ void String_Load2d(ChatBalloonText *buf, u8 *c, s32 z);
 void Snd_PlaySe(u32 a);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
-void _ZN8PlayerId13func_020940d0EP9MsgString(void *p, Unk_020e1c64 *t);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *p, MsgString9B *t);
 void StrBuf_ClearAlt(void *p);
 void StrBuf_AsciiToGame(EncodedStringBaseRef *p, void *q);
 void StrBuf_GameToAscii(ChatBalloonName *a, EncodedStringBaseRef *b);
@@ -1057,10 +1057,10 @@ extern "C" void ChatBalloon_PackSyncVar(u8 *a, void *b, ChatBalloon *c) {
 extern "C" void ChatQuickMsg_PostWantToSave() {
     void *p = PlayerData_GetCurrent();
     if (sChatQuickMsgCooldown <= 0 && p != NULL) {
-        Unk_020e1c64 t;
+        MsgString9B t;
         ChatBalloonText buf;
         u8 code;
-        _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
+        _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(p), &t);
         code = 0xef;
         String_Load2d(&buf, &code, 0);
         ChatBalloon_Post(gCommManager->unk_64, (StrBuf *)&t, &buf);
@@ -1156,8 +1156,8 @@ extern "C" void ChatQuickMsg_CheckButtons(void *self) {
         if (!skip) {
             u8 ch = code;
             String_Load2d(&buf, &ch, 0);
-            Unk_020e1c64 t;
-            _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), &t);
+            MsgString9B t;
+            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent()), &t);
             ChatBalloon_Post(g->unk_64, (StrBuf *)&t, &buf);
             Snd_PlaySe(0x32);
             sChatQuickMsgCooldown = 0x1e;

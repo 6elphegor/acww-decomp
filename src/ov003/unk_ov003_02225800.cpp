@@ -507,7 +507,7 @@ void func_02133150();
 void *TownBlockMap_Get();
 s32 func_02063b8c(s32 n);
 BOOL InsectSpawn_FindUnitInBlock(void *a, s32 code, s32 *x, s32 *y, void *obj, u8 flag);
-void *func_02095204(s32 n);
+void *PlayerActor_GetActor(s32 n);
 s32 func_020e9650(void *a, s32 *v);
 void *MI_CpuCopy8(void *dst, void *src, s32 n);
 s32 Weather_GetFallingPrecip();
@@ -664,7 +664,7 @@ void Effect_End(s32);
 s32 Weather_GetFallingPrecip(void);
 s32 NetArea_IsLocalOwner(void);
 u8 func_02060b9c(u8 v);
-void *func_02095204(s32 v);
+void *PlayerActor_GetActor(s32 v);
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
 s32 func_020e9650(void *a, void *b);
 void Mem_Free(void *p);
@@ -803,7 +803,7 @@ s32 AnimModel_drawAnimated(void *p, void *q);
 void func_020abdd0(void *p, s32 a, u32 b, u8 c);
 BOOL CommManager_isSlotActive(void *p, s32 i);
 BOOL NetArea_IsLocalOwner();
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 BOOL CommManager_isMyAid(void *g, s32 a);
 void CommManager_beginRecord(void *g);
 void CommManager_writeRecord(void *g, void *buf, s32 n);
@@ -1194,7 +1194,7 @@ extern void *gCurrentHeap;
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 s32 PlayerActor_GetSlotPosXZ(u8 *a, s32 *b, s32 *c, s32 d, s32 e);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 Unk_ov003_02227f20_Slot *NpcRegistry_FindVillager(s32 i);
 s32 func_020e9650(void *a, void *b);
 void func_ov068_022687c0(void *p);
@@ -1609,7 +1609,7 @@ extern "C" {
 s32 func_02063b8c(s32 n);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-void *func_02095204(s32 n);
+void *PlayerActor_GetActor(s32 n);
 s32 func_020e9650(void *a, void *b);
 s32 AnimFrameCtrl_setup(void *o, s32 a, s32 b, s32 c, s32 d);
 void AnimModel_setFrame(void *o, s32 v);
@@ -2102,7 +2102,7 @@ struct Unk_ov003_0222bb28_V3 : V3 {
 
 extern "C" {
 extern Unk_020cbb18_Ptr *gCommManager;
-extern u8 data_020e12cc[];
+extern u8 gEffectSplDefaultInitCbs[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
 BOOL Ground_GetDigKind(s32 x, s32 y);
@@ -2118,7 +2118,7 @@ void func_02041868();
 void *TownBlockMap_Get();
 void FieldPos_ToUnit(s32 *a, s32 *b, void *c);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, u32 layer);
-void func_0208fc88(u32 a, void *b, u32 c, void *d);
+void EffectSpl_CreateOneShot(u32 a, void *b, u32 c, void *d);
 void Insect_Despawn(Rec *e);
 void Crawler_Wander(Rec *o);
 BOOL Insect_IsAtWateringPoint(void *p);
@@ -2257,7 +2257,7 @@ s32 func_02133150(s32 a, s32 b);
 s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
 s32 func_020e7870(void *a, s32 b, s32 c, s32 d, s32 e);
 s32 func_020e9650(void *a, void *b);
-Unk_02095204_Obj *func_02095204(u32 n);
+Unk_02095204_Obj *PlayerActor_GetActor(u32 n);
 void Insect_SetAnimSpeed(Rec *o, s32 a);
 void Crawler_Escape(Rec *o, s16 *p);
 void Insect_Despawn(Rec *e);
@@ -2504,7 +2504,7 @@ extern Unk_020cbb18_Ptr *gCommManager;
 extern s16 data_02135f44[];
 BOOL CommManager_isSlotActive(Unk_020cbb18_Ptr *p, u32 v);
 BOOL NetArea_IsLocalOwner();
-void *func_02095204(u32 a);
+void *PlayerActor_GetActor(u32 a);
 s32 Math_AngleXZ(void *a, void *b);
 s32 FX_Div(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -2668,7 +2668,7 @@ void AnimModel_setFrame(void *p, s32 v);
 s32 Ground_GetDefaultY(u32 a);
 s32 func_02133150(s32 a, s32 b);
 s32 func_01ffcb0c(s32 a, s32 b);
-Unk_02095204_Obj *func_02095204(u32 n);
+Unk_02095204_Obj *PlayerActor_GetActor(u32 n);
 s32 Unk_02003c40_callRequest(void *p, s32 v);
 s32 Unk_02003c40_callRequestSustained(void *p, s32 v);
 s32 Effect_Create(s32 a, V3 *v, void *p, s32 b);
@@ -3083,7 +3083,7 @@ extern "C" Unk_02095204_Obj *Insect_FindNearestPlayer(V3 *pos) {
         s32 dx, dz, d;
         Unk_02095204_Obj *p;
         V3 *q;
-        p = func_02095204(i);
+        p = PlayerActor_GetActor(i);
         if (p != 0) {
             q = &p->unk_5c;
             dx = pos->x - p->unk_5c.x;
@@ -3642,7 +3642,7 @@ extern "C" void Insect_FlutterSteer(Rec *self, s16 *p, s32 a, s32 b, u8 e, s32 f
                     if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
                         e2 = (void *)Insect_FindNearestPlayer(r4);
                     } else {
-                        e2 = func_02095204(4);
+                        e2 = PlayerActor_GetActor(4);
                     }
                     if (e2 != NULL) {
                         self->unk_23a = Math_AngleXZ((u8 *)e2 + 0x5c, r4);
@@ -3878,7 +3878,7 @@ extern "C" void Insect_FlutterFlight(Rec *self) {
                 Insect_SetAnimSpeed(self, t);
             }
         } else {
-            void *e = func_02095204(4);
+            void *e = PlayerActor_GetActor(4);
             if (e != NULL) {
                 func_020e9960(&w, r7, (u8 *)e + 0x5c);
                 v = w;
@@ -4423,7 +4423,7 @@ extern "C" s32 Insect_TurnToTarget(Rec *self, u32 a) {
 namespace s11 {
 // 0x222c8f8
 extern "C" void Insect_AccumAlarm(Rec *o, V3 *out, s32 *dist, u8 *flag, u8 a, u8 b) {
-    Unk_02095204_Obj *p = func_02095204(a);
+    Unk_02095204_Obj *p = PlayerActor_GetActor(a);
     if (p) {
         s32 r5 = o->unk_254;
         s32 lim = o->unk_224;
@@ -5440,7 +5440,7 @@ extern "C" void MoleCricket_Burrow(Rec *self, s16 *cnt) {
         s32 x, y;
         FieldPos_ToUnit(&x, &y, &self->unk_204);
         if (Ground_GetDigKind(x, y) == 0 && CommManager_isSlotActive(gCommManager, gCommManager->unk_64) == 0) {
-            func_0208fc88(0x80, &self->unk_204, 0, data_020e12cc);
+            EffectSpl_CreateOneShot(0x80, &self->unk_204, 0, gEffectSplDefaultInitCbs);
         } else {
             self->unk_251 = 9;
         }
@@ -6772,7 +6772,7 @@ extern "C" void Crawler_Update(Rec *o) {
     s16 *p = &o->unk_242;
     if ((u8)(s8)(o->unk_24d - 0xe) <= 1 && o->unk_f4.mid != 0) {
         if (o->unk_251 == 4 || o->unk_251 == 0x13) {
-            void *r = func_02095204(4);
+            void *r = PlayerActor_GetActor(4);
             if (r != 0) {
                 o->unk_23a = Math_AngleXZ(&o->unk_204, (u8 *)r + 0x5c);
             }
@@ -6868,7 +6868,7 @@ extern "C" BOOL Insect_IsOnFlower(void *pp) {
 namespace s07 {
 // 0x2229c1c
 extern "C" void Crawler_Watch(Rec *o, s16 *p) {
-    void *r4 = func_02095204(4);
+    void *r4 = PlayerActor_GetActor(4);
     V3 *q = &o->unk_204;
     if (Insect_IsOnFlower(q) == 0) {
         o->unk_254 = 0xfe;
@@ -9368,7 +9368,7 @@ extern "C" void Insect_CheckDisturbance(void *a, Rec *e) {
         }
     } else {
         if (PlayerActor_TestSlotFlag9(4)) {
-            u8 *p = (u8 *)func_02095204(4);
+            u8 *p = (u8 *)PlayerActor_GetActor(4);
             if (p) {
                 s32 lim = e->unk_224;
                 if (func_020e9650(&e->unk_204, p + 0x5c) < lim) {
@@ -10353,7 +10353,7 @@ namespace s02 {
 // 0x2227248
 extern "C" void HeldInsect_Start(s32 t, s32 idx) {
     Obj *o = &sHeldInsects[idx];
-    u8 *e = (u8 *)func_02095204(idx);
+    u8 *e = (u8 *)PlayerActor_GetActor(idx);
     if (e != 0) {
         V3 *pv = (V3 *)(e + 0x5c);
         V3 *d = &o->unk_204;
@@ -11183,7 +11183,7 @@ extern "C" BOOL Insect_Spawn(s32 obj, s32 kind, u8 sub, s32 flag) {
     if (found < 0 && flag != 2) {
         goto fail;
     }
-    Vec3 *q = (Vec3 *)func_02095204(4);
+    Vec3 *q = (Vec3 *)PlayerActor_GetActor(4);
     if (q != 0 && flag == 1 && kind != 0x33) {
         if (CommManager_isSlotActive(gCommManager, gCommManager->unk_64)) {
             s32 k;
@@ -12008,7 +12008,7 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
         y = n & 3;
         data_ov003_02258f08++;
         if (InsectSpawn_FindUnitInBlock(a, code, &x, &y, obj, (u8)flag)) {
-            b = func_02095204(4);
+            b = PlayerActor_GetActor(4);
             data_ov003_02258f04 = 1;
             if (b) {
                 s32 v[3];
@@ -12054,7 +12054,7 @@ extern "C" s32 InsectSpawn_PickPos(u8 *self, void *a, s32 code, u32 flag)
             x = n >> 2;
             y = n & 3;
             if (InsectSpawn_FindUnitInBlock(a, code, &x, &y, obj, (u8)flag)) {
-                void *b = func_02095204(4);
+                void *b = PlayerActor_GetActor(4);
                 if (b) {
                     s32 v[3];
                     v[0] = x;

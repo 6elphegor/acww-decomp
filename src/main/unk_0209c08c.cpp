@@ -132,7 +132,7 @@ struct Unk_0209c614_S {
 }
 
 extern "C" {
-Unk_0209c614_Actor *func_02095204(u32 n);
+Unk_0209c614_Actor *PlayerActor_GetActor(u32 n);
 }
 
 extern "C" {

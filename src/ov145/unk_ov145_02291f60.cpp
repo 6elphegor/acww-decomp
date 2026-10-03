@@ -69,10 +69,10 @@ public:
     /* 0x09 */ u8 unk_09;
 };
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     u8 pad_04[0x18];
 };
 
@@ -199,7 +199,7 @@ public:
     /* 0x90 */ u8 unk_90;
 };
 
-typedef Unk_020e1c64 Unk_ov145_02292600_A;
+typedef MsgString9B Unk_ov145_02292600_A;
 typedef ItemName Unk_ov145_02292600_B;
 
 extern "C" {

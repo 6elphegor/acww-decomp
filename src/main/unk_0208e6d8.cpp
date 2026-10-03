@@ -16,9 +16,9 @@ extern u32 *data_020d5d0c[];
 }
 extern "C" u64 OS_GetTick(void);
 
-extern const u8 data_020cf718[4];
-extern const u8 data_020cf71c[4];
-extern const u16 data_020cf720[2];
+extern const u8 sCommIconShowDelays[4];
+extern const u8 sCommIconHideDelays[4];
+extern const u16 sBusyIconSe[2];
 
 
 struct Unk_0208e9d4_Ptr {
@@ -61,25 +61,25 @@ public:
     /* 0x08 */ s32 unk_08;
 };
 
-class Unk_020e10dc : public UiWidget {
+class TalkBusyIcon : public UiWidget {
 public:
-    Unk_020e10dc();
-    virtual ~Unk_020e10dc();
+    TalkBusyIcon();
+    virtual ~TalkBusyIcon();
     virtual void draw();
     virtual void vfunc_0c();
-    void func_0208eb9c();
-    void func_0208ebcc();
-    void func_0208ebe8();
-    void func_0208ec10();
-    void func_0208ec34();
-    void func_0208ec48();
-    void func_0208ec50(s32 a, s32 b);
-    void func_0208ec58();
-    void func_0208ec68();
-    void func_0208ec78();
-    void func_0208ec7c();
-    void func_0208ee30();
-    void func_0208ee38(u32 v);
+    void stopSe();
+    void startSe();
+    void updateShown();
+    void enterShown();
+    void updateHidden();
+    void enterHidden();
+    void setPos(s32 a, s32 b);
+    void callDraw();
+    void callUpdate();
+    void exit();
+    void init();
+    void requestHide();
+    void requestShow(u32 v);
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ u16 unk_10;
@@ -91,21 +91,21 @@ public:
     /* 0x20 */ u8 unk_20;
 };
 
-class Unk_020e10f8 : public UiWidget {
+class TransitionCommIcon : public UiWidget {
 public:
-    Unk_020e10f8();
-    virtual ~Unk_020e10f8();
+    TransitionCommIcon();
+    virtual ~TransitionCommIcon();
     virtual void draw();
     virtual void vfunc_0c();
-    void func_0208e7c0();
-    void func_0208e798();
-    void func_0208e870();
-    void func_0208e8b0();
-    void func_0208e8d0();
-    void func_0208e8dc();
-    void func_0208e8ec();
-    void func_0208e8fc();
-    void func_0208e904();
+    void updateShown();
+    void setupAnim();
+    void enterShown();
+    void updateHidden();
+    void enterHidden();
+    void callDraw();
+    void callUpdate();
+    void exit();
+    void init();
 
     /* 0x0c */ SpriteAnim unk_0c;
     /* 0x20 */ s32 unk_20;
@@ -117,10 +117,10 @@ public:
     /* 0x39 */ u8 unk_39;
 };
 
-class Unk_020e1114 : public GameProc {
+class TransitionCommIconProc : public GameProc {
 public:
-    Unk_020e1114();
-    virtual ~Unk_020e1114();
+    TransitionCommIconProc();
+    virtual ~TransitionCommIconProc();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
@@ -135,10 +135,10 @@ public:
     virtual void draw();
     virtual void vfunc_0c();
 
-    void func_0208ee40();
-    BOOL func_0208ee94();
-    void func_0208ee8c();
-    void func_0208ee90();
+    void startModeAnim();
+    BOOL isDrawBlocked();
+    void exit();
+    void init();
 
     /* 0x0c */ s32 unk_0c;
     /* 0x10 */ s32 unk_10;
@@ -146,29 +146,29 @@ public:
     /* 0x28 */ u8 unk_28;
 };
 
-extern "C" Unk_020e1114 *func_0208e780();
+extern "C" TransitionCommIconProc *TransitionCommIconProc_Create();
 
-extern Unk_020e10f8 data_021ceb38;
+extern TransitionCommIcon sTransitionCommIcon;
 
 extern "C" {
-void func_0208e928();
-void func_0208e938();
-void func_0208e948();
-void func_0208e958();
+void TransitionCommIcon_Draw();
+void TransitionCommIcon_Update();
+void TransitionCommIcon_Exit();
+void TransitionCommIcon_Init();
 }
 
-typedef void (Unk_020e10f8::*Unk_020e10f8_Fn)();
+typedef void (TransitionCommIcon::*Unk_020e10f8_Fn)();
 
-typedef void (Unk_020e10dc::*Unk_020e10dc_Fn)();
+typedef void (TalkBusyIcon::*Unk_020e10dc_Fn)();
 
 struct Unk_020e10bc_Rec {
-    Unk_020e1114 *(*fn)();
+    TransitionCommIconProc *(*fn)();
     s16 unk_04;
     s16 unk_06;
 };
-extern Unk_020e10bc_Rec data_020e10bc;
+extern Unk_020e10bc_Rec sTransitionCommIconProfile;
 
-BOOL Unk_020e1164::func_0208ee94() {
+BOOL Unk_020e1164::isDrawBlocked() {
     BOOL r = FALSE;
     if (TalkRequestFlags_IsSceneHold()) {
         r = TRUE;
@@ -176,11 +176,11 @@ BOOL Unk_020e1164::func_0208ee94() {
     return r;
 }
 
-void Unk_020e1164::func_0208ee90() {}
+void Unk_020e1164::init() {}
 
-void Unk_020e1164::func_0208ee8c() {}
+void Unk_020e1164::exit() {}
 
-void Unk_020e1164::func_0208ee40() {
+void Unk_020e1164::startModeAnim() {
     if (unk_0c == 0) {
         unk_28 = 0;
     } else {
@@ -197,16 +197,16 @@ void Unk_020e1164::func_0208ee40() {
     }
 }
 
-void Unk_020e10dc::func_0208ee38(u32 v) {
+void TalkBusyIcon::requestShow(u32 v) {
     unk_13 = 1;
     unk_1c = v;
 }
 
-void Unk_020e10dc::func_0208ee30() {
+void TalkBusyIcon::requestHide() {
     unk_13 = 0;
 }
 
-Unk_020e10dc::Unk_020e10dc() {
+TalkBusyIcon::TalkBusyIcon() {
     unk_0c = 0;
     unk_10 = 0;
     unk_12 = 0;
@@ -217,11 +217,11 @@ Unk_020e10dc::Unk_020e10dc() {
     unk_20 = 0;
 }
 
-Unk_020e10dc::~Unk_020e10dc() {
-    func_0208eb9c();
+TalkBusyIcon::~TalkBusyIcon() {
+    stopSe();
 }
 
-void Unk_020e10dc::draw() {
+void TalkBusyIcon::draw() {
     if (unk_0c != 0) {
         s32 x = unk_14 + getOriginX();
         s32 y = unk_18 + getOriginY();
@@ -236,72 +236,72 @@ void Unk_020e10dc::draw() {
     }
 }
 
-void Unk_020e10dc::vfunc_0c() {
-    static Unk_020e10dc_Fn tbl[2] = {&Unk_020e10dc::func_0208ec34, &Unk_020e10dc::func_0208ebe8};
+void TalkBusyIcon::vfunc_0c() {
+    static Unk_020e10dc_Fn tbl[2] = {&TalkBusyIcon::updateHidden, &TalkBusyIcon::updateShown};
     unk_10 += 0x1111;
     (this->*tbl[unk_0c])();
 }
 
-void Unk_020e10dc::func_0208ec7c() { func_0208ec48(); }
+void TalkBusyIcon::init() { enterHidden(); }
 
-void Unk_020e10dc::func_0208ec78() {}
+void TalkBusyIcon::exit() {}
 
-void Unk_020e10dc::func_0208ec68() { vfunc_0c(); }
+void TalkBusyIcon::callUpdate() { vfunc_0c(); }
 
-// ---- Unk_020e10dc ----
-void Unk_020e10dc::func_0208ec58() { draw(); }
+// ---- TalkBusyIcon ----
+void TalkBusyIcon::callDraw() { draw(); }
 
-void Unk_020e10dc::func_0208ec50(s32 a, s32 b) {
+void TalkBusyIcon::setPos(s32 a, s32 b) {
     unk_14 = a;
     unk_18 = b;
 }
 
-void Unk_020e10dc::func_0208ec48() { unk_0c = 0; }
+void TalkBusyIcon::enterHidden() { unk_0c = 0; }
 
-void Unk_020e10dc::func_0208ec34() {
+void TalkBusyIcon::updateHidden() {
     if (unk_13 != 0) {
-        func_0208ec10();
+        enterShown();
     }
 }
 
-void Unk_020e10dc::func_0208ec10() {
+void TalkBusyIcon::enterShown() {
     unk_0c = 1;
-    func_0208ebcc();
+    startSe();
     if (unk_12 != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_EnableMainWindows(4);
     }
 }
 
-void Unk_020e10dc::func_0208ebe8() {
+void TalkBusyIcon::updateShown() {
     if (unk_13 == 0) {
-        func_0208eb9c();
+        stopSe();
         if (unk_12 != 0) {
             Gfx2d_DisableMainWindows(4);
         }
-        func_0208ec48();
+        enterHidden();
     }
 }
 
-void Unk_020e10dc::func_0208ebcc() {
-    u16 v = data_020cf720[unk_1c];
+void TalkBusyIcon::startSe() {
+    u16 v = sBusyIconSe[unk_1c];
     unk_20 = 1;
     func_02004008(v);
 }
 
-void Unk_020e10dc::func_0208eb9c() {
-    u16 v = data_020cf720[unk_1c];
+void TalkBusyIcon::stopSe() {
+    u16 v = sBusyIconSe[unk_1c];
     if (unk_20 != 0) {
         unk_20 = 0;
         Snd_StopSe(v, 1);
     }
 }
 
-Unk_020e10f8::Unk_020e10f8() : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_30(0), unk_38(0), unk_39(0) {}
+TransitionCommIcon::TransitionCommIcon() : unk_20(0), unk_24(0), unk_28(0), unk_2c(0), unk_30(0), unk_38(0), unk_39(0) {}
 
-Unk_020e10f8::~Unk_020e10f8() {}
+TransitionCommIcon::~TransitionCommIcon() {}
 
-void Unk_020e10f8::draw() {
+void TransitionCommIcon::draw() {
     if (unk_38 != 0) {
         if (unk_39 == 0) {
             s32 x = getOriginX();
@@ -313,58 +313,58 @@ void Unk_020e10f8::draw() {
     }
 }
 
-const u16 data_020cf720[2] = {4, 5};
-const u8 data_020cf718[4] = {8, 8, 8, 1};
-const u8 data_020cf71c[4] = {5, 5, 5, 1};
+const u16 sBusyIconSe[2] = {4, 5};
+const u8 sCommIconShowDelays[4] = {8, 8, 8, 1};
+const u8 sCommIconHideDelays[4] = {5, 5, 5, 1};
 
-void Unk_020e10f8::vfunc_0c() {
-    static Unk_020e10f8_Fn tbl[2] = {&Unk_020e10f8::func_0208e8b0, &Unk_020e10f8::func_0208e7c0};
+void TransitionCommIcon::vfunc_0c() {
+    static Unk_020e10f8_Fn tbl[2] = {&TransitionCommIcon::updateHidden, &TransitionCommIcon::updateShown};
     (this->*tbl[unk_20])();
 }
 
-extern "C" void func_0208e9f4(u32 i) {
+extern "C" void TransitionCommIcon_RequestShow(u32 i) {
     u32 t = gActorDefaultParent->unk_0c;
     BOOL e = gCommManager->isOnline();
     if (t != 5 && e) {
-        data_021ceb38.unk_24 = data_020cf718[i];
+        sTransitionCommIcon.unk_24 = sCommIconShowDelays[i];
     }
 }
 
-extern "C" void func_0208e9d4(u32 i) {
+extern "C" void TransitionCommIcon_RequestHide(u32 i) {
     if (gActorDefaultParent->unk_0c != 5) {
-        data_021ceb38.unk_28 = data_020cf71c[i];
+        sTransitionCommIcon.unk_28 = sCommIconHideDelays[i];
     }
 }
 
-extern "C" void func_0208e9a8() {
-    if (data_021ceb38.unk_20 != 0) {
+extern "C" void TransitionCommIcon_Resume() {
+    if (sTransitionCommIcon.unk_20 != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_EnableMainWindows(4);
     }
-    data_021ceb38.unk_39 = 0;
+    sTransitionCommIcon.unk_39 = 0;
 }
 
-extern "C" void func_0208e974() {
-    if (data_021ceb38.unk_20 != 0) {
+extern "C" void TransitionCommIcon_ResumeWinOut() {
+    if (sTransitionCommIcon.unk_20 != 0) {
         Gfx2d_SetMainObjWinPlanes(0x10);
         Gfx2d_SetMainWinOutPlanes(4);
         Gfx2d_EnableMainWindows(4);
     }
-    data_021ceb38.unk_39 = 0;
+    sTransitionCommIcon.unk_39 = 0;
 }
 
-extern "C" void func_0208e968() { data_021ceb38.unk_39 = 1; }
+extern "C" void TransitionCommIcon_Suspend() { sTransitionCommIcon.unk_39 = 1; }
 
-extern "C" void func_0208e958() { data_021ceb38.func_0208e904(); }
+extern "C" void TransitionCommIcon_Init() { sTransitionCommIcon.init(); }
 
-extern "C" void func_0208e948() { data_021ceb38.func_0208e8fc(); }
+extern "C" void TransitionCommIcon_Exit() { sTransitionCommIcon.exit(); }
 
-extern "C" void func_0208e938() { data_021ceb38.func_0208e8ec(); }
+extern "C" void TransitionCommIcon_Update() { sTransitionCommIcon.callUpdate(); }
 
-extern "C" void func_0208e928() { data_021ceb38.func_0208e8dc(); }
+extern "C" void TransitionCommIcon_Draw() { sTransitionCommIcon.callDraw(); }
 
-void Unk_020e10f8::func_0208e904() {
-    func_0208e798();
+void TransitionCommIcon::init() {
+    setupAnim();
     unk_24 = 0;
     unk_28 = 0;
     unk_2c = 0;
@@ -373,29 +373,29 @@ void Unk_020e10f8::func_0208e904() {
     unk_39 = 0;
 }
 
-void Unk_020e10f8::func_0208e8fc() { func_0208e8d0(); }
+void TransitionCommIcon::exit() { enterHidden(); }
 
-void Unk_020e10f8::func_0208e8ec() { vfunc_0c(); }
+void TransitionCommIcon::callUpdate() { vfunc_0c(); }
 
-// ---- Unk_020e10f8 ----
-void Unk_020e10f8::func_0208e8dc() { draw(); }
+// ---- TransitionCommIcon ----
+void TransitionCommIcon::callDraw() { draw(); }
 
-void Unk_020e10f8::func_0208e8d0() {
+void TransitionCommIcon::enterHidden() {
     unk_20 = 0;
     unk_24 = 0;
     unk_38 = 0;
 }
 
-void Unk_020e10f8::func_0208e8b0() {
+void TransitionCommIcon::updateHidden() {
     if (unk_24 > 0) {
         unk_24--;
         if (unk_24 <= 0) {
-            func_0208e870();
+            enterShown();
         }
     }
 }
 
-void Unk_020e10f8::func_0208e870() {
+void TransitionCommIcon::enterShown() {
     unk_20 = 1;
     unk_28 = 0;
     Gfx2d_SetMainObjWinPlanes(0x10);
@@ -406,7 +406,7 @@ void Unk_020e10f8::func_0208e870() {
     unk_38 = 1;
 }
 
-void Unk_020e10f8::func_0208e7c0() {
+void TransitionCommIcon::updateShown() {
     u64 now = OS_GetTick();
     if (now >= unk_30) {
         if (unk_2c == 0) {
@@ -431,43 +431,43 @@ void Unk_020e10f8::func_0208e7c0() {
         unk_28--;
         if (unk_28 <= 0) {
             Gfx2d_DisableMainWindows(4);
-            func_0208e8d0();
+            enterHidden();
         }
     }
 }
 
-void Unk_020e10f8::func_0208e798() {
+void TransitionCommIcon::setupAnim() {
     unk_0c.setSeq((SpriteAnimSeq *)data_020d5d34);
     unk_0c.setPlayOnce(1);
     unk_0c.restart();
 }
 
-extern "C" Unk_020e1114 *func_0208e780() { return new Unk_020e1114(); }
+extern "C" TransitionCommIconProc *TransitionCommIconProc_Create() { return new TransitionCommIconProc(); }
 
-Unk_020e1114::Unk_020e1114() {}
+TransitionCommIconProc::TransitionCommIconProc() {}
 
-Unk_020e1114::~Unk_020e1114() {}
+TransitionCommIconProc::~TransitionCommIconProc() {}
 
-BOOL Unk_020e1114::vfunc_00() {
-    func_0208e958();
+BOOL TransitionCommIconProc::vfunc_00() {
+    TransitionCommIcon_Init();
     return TRUE;
 }
 
-BOOL Unk_020e1114::vfunc_0c() {
-    func_0208e948();
+BOOL TransitionCommIconProc::vfunc_0c() {
+    TransitionCommIcon_Exit();
     return TRUE;
 }
 
-BOOL Unk_020e1114::onExecute() {
-    func_0208e938();
+BOOL TransitionCommIconProc::onExecute() {
+    TransitionCommIcon_Update();
     return TRUE;
 }
 
-BOOL Unk_020e1114::onDraw() {
-    func_0208e928();
+BOOL TransitionCommIconProc::onDraw() {
+    TransitionCommIcon_Draw();
     return TRUE;
 }
 
 
-Unk_020e10f8 data_021ceb38;
-Unk_020e10bc_Rec data_020e10bc = {func_0208e780, 0xcc, 0xc8};
+TransitionCommIcon sTransitionCommIcon;
+Unk_020e10bc_Rec sTransitionCommIconProfile = {TransitionCommIconProc_Create, 0xcc, 0xc8};

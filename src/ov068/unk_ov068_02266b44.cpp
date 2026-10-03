@@ -106,10 +106,10 @@ void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Bgm_Request(s32 a, s32 b, s32 c, s32 d);
 void Camera_SetModeDefault();
 void Camera_FocusOnPoint(Unk_ov068_02266680_Vec *v);
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 void *func_020947f0(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
-void func_02094f48(s32 a, s32 b);
+void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void GameStart_Clear();
 BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
@@ -559,7 +559,7 @@ BOOL SpNpcNookIntro::setupAct00() {
 
 BOOL SpNpcNookIntro::mainAct00() {
     if (TalkRequest_AddPlayerTalk6(this, 0)) {
-        func_02094f48(1, 4);
+        PlayerActor_SetNoFaceTalkTarget(1, 4);
     }
     return TRUE;
 }
@@ -597,7 +597,7 @@ BOOL SpNpcNookIntro::setupAct02() {
 }
 
 BOOL SpNpcNookIntro::mainAct02() {
-    if (func_020951b8(4) == 0) {
+    if (PlayerActor_IsScriptedWalking(4) == 0) {
         unk_658.vfunc_08();
         func_02015ab0(&unk_658, NpcActor_getPlayerActor(this, 4));
         changeAct(1);
@@ -753,7 +753,7 @@ void SpNpcNookIntroTalk::runWalkScript() {
         if (unk_3c->unk_04 == 5) {
             Bgm_ReleasePriority(0x13);
             Bgm_Request(0x15, 0x47, 0x7f, 1);
-            func_02094f48(0, 4);
+            PlayerActor_SetNoFaceTalkTarget(0, 4);
             Unk_ov068_02266bd0_Owner *o = (Unk_ov068_02266bd0_Owner *)unk_b4;
             Unk_ov068_02266680_Vec *pv = &o->unk_5c;
             Unk_ov068_02266680_Vec *pd = &o->unk_714;

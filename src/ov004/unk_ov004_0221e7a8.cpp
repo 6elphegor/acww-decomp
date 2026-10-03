@@ -1119,9 +1119,9 @@ s32 PlayerActor_OffsetByAngle(V3 *out, Obj *o, V3 *pos, s16 *ang, s32 *d);
 s32 _ZN12Unk_0200769421getActionDonePriorityEj(Obj *o, u32 a);
 void _ZN12Unk_02006d1412requestAct10Esji(Obj *o, u32 a, u32 b, s32 c);
 void _ZN11PlayerActor11requestWaitEjjj(Obj *o, s32 a, s32 b, s32 c);
-u16 *func_020952d0(void);
-Bits16 *func_020952d8(void);
-u8 *func_020952c8(void);
+u16 *PlayerSession_GetTanTimer(void);
+Bits16 *PlayerSession_GetLastPlayDate(void);
+u8 *PlayerSession_GetSessionFlags(void);
 u32 PlayerActor_GetPlayerData(Obj *o);
 u32 PlayerActor_GetTan(Obj *o);
 u32 _ZN10PlayerData15getLastPlayDateEv(void);
@@ -1373,20 +1373,20 @@ extern "C" void PlayerActor_GetOutOfBedCheckEnd(Obj *o) {
         if (o->unk_7d0.unk_0a != 0) {
             volatile u16 t[2];
             _ZN12Unk_02006d1412requestAct10Esji(o, 0, 5, -1);
-            *func_020952d0() = 0x4650;
+            *PlayerSession_GetTanTimer() = 0x4650;
             PlayerActor_GetPlayerData(o);
             t[0] = _ZN10PlayerData15getLastPlayDateEv();
             t[1] = t[0];
-            *(u16 *)func_020952d8() = t[1];
+            *(u16 *)PlayerSession_GetLastPlayDate() = t[1];
             s32 r5 = PlayerActor_CompareLastPlayDateNow(o);
             u16 *r7 = func_0209c37c(0, 0x50);
             u32 r4 = PlayerActor_GetTan(o);
-            Bits16 *r6 = func_020952d8();
-            *r7 = r4 + r6->mid * 1000 + func_020952d8()->hi * 10;
+            Bits16 *r6 = PlayerSession_GetLastPlayDate();
+            *r7 = r4 + r6->mid * 1000 + PlayerSession_GetLastPlayDate()->hi * 10;
             if (r5 == 0) {
-                *func_020952c8() = 0x11;
+                *PlayerSession_GetSessionFlags() = 0x11;
             } else {
-                *func_020952c8() = 0;
+                *PlayerSession_GetSessionFlags() = 0;
             }
         } else {
             _ZN11PlayerActor11requestWaitEjjj(o, 0, 1, -1);
@@ -5293,7 +5293,7 @@ typedef Unk_ov004_0221fa00_Bits Bits;
 extern "C" {
 extern void *gCommManager;
 extern u8 gScreenTransition;
-extern u8 data_020e12cc[];
+extern u8 gEffectSplDefaultInitCbs[];
 
 s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
 s32 _ZN11PlayerActor11pushRequestEP19PlayerActionRequest(Obj *o, Msg *m);
@@ -5304,7 +5304,7 @@ s32 _ZN12Unk_020102ec20netApproachTransformEv(Obj *o);
 void _ZN12Unk_020102ec18updateBodyColliderEv(Obj *o);
 s32 _ZN13AnimFrameCtrl14hasPassedFrameEi(void *p, u32 a);
 s32 _ZN13AnimFrameCtrl10isFinishedEv(void *p);
-void func_0208fc88(u32 a, void *b, u32 c, void *d);
+void EffectSpl_CreateOneShot(u32 a, void *b, u32 c, void *d);
 void PlayerActor_GetHat(u16 *p, Obj *o);
 s32 _ZN12Unk_02006d1416requestHatChangeEPthhh(Obj *o, u16 *p, u32 a, u32 b, s32 c);
 s32 PlayerActor_GetPlayerData(Obj *o);
@@ -5679,7 +5679,7 @@ extern "C" void PlayerActor_EndHaircutFinish(Obj *o) {
 extern "C" void PlayerActor_HaircutFinishUpdate(Obj *o) {
     _ZN12Unk_020102ec11advanceAnimEv(o);
     if (_ZN13AnimFrameCtrl14hasPassedFrameEi(&o->unk_2cc, 10)) {
-        func_0208fc88(0x60, (u8 *)o + 0x6dc, 0, data_020e12cc);
+        EffectSpl_CreateOneShot(0x60, (u8 *)o + 0x6dc, 0, gEffectSplDefaultInitCbs);
     }
     if (((Bits *)&o->unk_2d4)->mid >= 0xb) {
         Rec *r = &o->unk_7d0;
@@ -6336,7 +6336,7 @@ void _ZN11CommManager11beginRecordEv(void *g);
 void _ZN11CommManager11writeRecordEPhj(void *g, u8 *b, u32 n);
 void _ZN11CommManager9endRecordEjj(void *g, u32 a, u32 b);
 s32 _ZN11CommManager11isLocalSlotEj(void *g, u32 a);
-void func_020954b8(u8 *p, s32 a, s32 b);
+void PlayerActor_PackHair(u8 *p, s32 a, s32 b);
 s32 Scene_InHouseRoom();
 s32 Room_CountOccupants();
 s32 Scene_GetWarpRequest();
@@ -6692,7 +6692,7 @@ fail:
 extern "C" void PlayerActor_NetSendHair(void *unused, s32 a, s32 b) {
     u8 buf[4];
     if (_ZN11CommManager8isOnlineEv(gCommManager)) {
-        func_020954b8(buf, a, b);
+        PlayerActor_PackHair(buf, a, b);
         void *g = gCommManager;
         _ZN11CommManager11beginRecordEv(g);
         _ZN11CommManager11writeRecordEPhj(g, buf, 1);

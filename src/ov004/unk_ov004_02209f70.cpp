@@ -4109,7 +4109,7 @@ void Model_BindMatTexByIdx(void *, void *, void *, s32, s32);
 void Model_BindMatTexByName(void *, void *, void *, void *, void *);
 void FtrSync_RequestAct(void *, s32, s32, s32);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-void func_02094f20();
+void PlayerActor_KeepAnimForNextAction();
 }
 }
 
@@ -4515,7 +4515,7 @@ void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
 s32 TalkRequest_SetTargetDone(void *self);
 s32 TalkRequest_AddPlayerTalk6(void *self, s32 a);
-s32 func_02094f20();
+s32 PlayerActor_KeepAnimForNextAction();
 void _ZN10MsgRequest11setFileNameEPKc(void *p, void *q);
 s32 Scene_InVillagerHouse();
 u32 Scene_GetVillagerHouse();
@@ -4585,7 +4585,7 @@ void FtrStereo::execFtrAct00() {
     if (p18::_ZN9FtrSwitch10isChangingEv(b18_f_73c)) {
         p18::_ZN9FtrSwitch3setEji(b18_f_73c, 0, 0);
         p18::TalkRequest_AddPlayerTalk6(this, 0);
-        p18::func_02094f20();
+        p18::PlayerActor_KeepAnimForNextAction();
     }
 }
 
@@ -5209,7 +5209,7 @@ s32 Ground_GetExitAt(s32, s32);
 void _ZN11FtrTileListC1Ev(void *);
 void _ZN11FtrTileList7releaseEv(void *);
 void TalkRequest_AddPlayerTalk6(void *, s32);
-void func_02094f20(void);
+void PlayerActor_KeepAnimForNextAction(void);
 void func_020e93a0(void *, s32);
 void _ZN8FtrActorC2Ev(void *);
 void _ZN8FtrActorD2Ev(void *);
@@ -5353,7 +5353,7 @@ void FtrStorage::execFtrAct00() {
             arr.release();
         }
         p20::TalkRequest_AddPlayerTalk6(this, 0);
-        p20::func_02094f20();
+        p20::PlayerActor_KeepAnimForNextAction();
     } else {
         if (isPreview()) {
             changeAct(1, 0xff);
@@ -5484,7 +5484,7 @@ void FieldPos_ToUnit(s32 *x, s32 *y, void *v);
 s32 func_020e9650(void *a, void *b);
 void func_020e93a0(void *v, s32 a);
 void VEC_Add(void *a, void *b, void *c);
-void *func_02095204(s32 i);
+void *PlayerActor_GetActor(s32 i);
 BOOL FtrMgr_IsFurnitureUsable(void);
 BOOL FtrActor_IsPosClearOfCharacters(void *v, s32 a, s32 b, s32 c, s32 d);
 BOOL FtrMgr_GetSurfaceHeight(s32 a, s32 b);
@@ -5850,7 +5850,7 @@ void FtrBed::execFtrAct00() {
     u16 v;
     BOOL r7 = FALSE;
     void *o = p21::_ZN13FtrContactSet11findContactEPv(p21::FtrContactSet_GetInstance(), this);
-    Unk_ov004_022108f0_Pl *pl = (Unk_ov004_022108f0_Pl *)p21::func_02095204(4);
+    Unk_ov004_022108f0_Pl *pl = (Unk_ov004_022108f0_Pl *)p21::PlayerActor_GetActor(4);
     if (o != 0) {
         if (pl != 0) {
             if (p21::FtrMgr_IsFurnitureUsable() != 0) {
@@ -7510,7 +7510,7 @@ void FtrStereo::execFtrAct01() {
     if (((FtrSwitch *)b17_unk_73c)->isChanging()) {
         ((FtrSwitch *)b17_unk_73c)->set(1, 0);
         p17::TalkRequest_AddPlayerTalk6(this, 0);
-        p17::func_02094f20();
+        p17::PlayerActor_KeepAnimForNextAction();
     }
 }
 

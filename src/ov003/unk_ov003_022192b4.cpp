@@ -187,7 +187,7 @@ BOOL BlockMap_getDigKind(void *g, s32 x, s32 z);
 void *BlockMap_GetItemPtr(void *g, s32 hx, s32 hz, s32 lx, s32 lz, s32 layer);
 s32 PendingUnit_Find(void *p, s32 a);
 BOOL BlockMap_canPlaceItem(void *g, s32 x, s32 z);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 s32 func_02133150(s32 a, s32 b);
 void FieldPos_FromUnitCenter(void *out, s32 x, s32 z);
 s32 func_02063ba4(s32 a);
@@ -434,7 +434,7 @@ struct Unk_ov003_0221a4a0 {
 extern "C" {
 
 extern Unk_ov003_0221a4a0_V3 sBalloonSplashPos;
-extern u8 data_020e12cc[];
+extern u8 gEffectSplDefaultInitCbs[];
 extern s16 data_02135f44[];
 extern s32 sItemPopScaleXZ[];
 extern s32 sItemPopScaleY[];
@@ -443,8 +443,8 @@ void GroundInfo_initAtPos(Unk_ov003_0221a4a0_Buf *b, void *pos, s32 a, s32 c);
 void GroundInfo_Destruct(Unk_ov003_0221a4a0_Buf *b);
 void VEC_Add(void *a, void *b, void *out);
 void func_01ffd070(Unk_ov003_0221a4a0_V3 *out, void *m, Unk_ov003_0221a4a0_V3 *v);
-s32 func_0208fc88(s32 id, void *v, s32 c, void *cb);
-void func_0208fb00(s32 a, void *fn);
+s32 EffectSpl_CreateOneShot(s32 id, void *v, s32 c, void *cb);
+void EffectModel_Start(s32 a, void *fn);
 void Sky_PlayBalloonDropSe(s32 a);
 void Sky_EndBalloonDrop(void);
 void PlayerActor_LocalRequestAct77From(void *p);
@@ -795,7 +795,7 @@ s32 Item_GetFruitTreeFruit(u16 *p);
 void FieldPos_ToUnit(s32 *x, s32 *y, Unk_ov003_0221b8bc_V3 *v);
 void FieldItemFx_StartTreeDrop(s32 a, s32 id, Unk_ov003_0221b8bc_V2 *p, Unk_ov003_0221b8bc_V3 *v, s32 f, s32 i);
 void *Field_AidOrLocal(void *p);
-u16 *func_02095204(void *p);
+u16 *PlayerActor_GetActor(void *p);
 void *TownBlockMap_Get(void);
 u16 *BlockMap_GetItemPtr(void *g, s32 hx, s32 hy, s32 lx, s32 ly, s32 e);
 s32 PendingUnit_Find(Unk_ov003_0221b8bc_V2 *p, s32 a);
@@ -977,9 +977,9 @@ void *func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02133150(s32 a, s32 b);
 u32 TownState_GetSeasonPeriod();
 s32 FieldPos_FromUnitCenter(Vec3 *out, s32 x, s32 z);
-s32 func_0208fb20(s32, void *, s32, void *);
-s32 func_0208fdac(void *);
-s32 func_0208fdc0(void *);
+s32 EffectSpl_CreateTracked(s32, void *, s32, void *);
+s32 EffectCb_UpdateTint(void *);
+s32 EffectCb_InitAtPos(void *);
 s32 Scene_InTown();
 s32 BlockMap_SetItemAtUnit(void *grid, u16 *v, s32 x, s32 y, s32 z);
 s32 BlockMap_SetBuriedAtUnit(void *grid, s32 x, s32 y);
@@ -5565,7 +5565,7 @@ void TreeLeafFx_OnEffectInit(Unk_ov003_0221c858_Obj *self) {
     s32 i;
     Tgt *t = self->unk_0c;
     Rec *r;
-    func_0208fdc0(self);
+    EffectCb_InitAtPos(self);
     self->unk_0a = sTreeLeafFx.unk_40;
     i = sTreeLeafFx.unk_40;
     if (i < 0) i = 0;
@@ -5596,7 +5596,7 @@ namespace ns_0221c220 {
 extern "C" {
 s32 TreeLeafFx_OnEffectUpdate(Unk_ov003_0221c858_Obj *self) {
     BOOL r = TRUE;
-    func_0208fdac(self);
+    EffectCb_UpdateTint(self);
     Rec *rec = &sTreeLeafFx.unk_00[self->unk_0a];
     if (rec->unk_00 == 3) {
         r = FALSE;
@@ -5679,7 +5679,7 @@ Rec *TreeLeafFx_SpawnSeasonal(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p
             out2 = out;
             TreeLeafFx_SetRecord(r, v14, 0, p1, p2, &out2, p5);
             if (TreeLeafFx_GetParams(r) != 0) {
-                func_0208fb20(data_ov003_0222f298[v14], &out, 0, &q);
+                EffectSpl_CreateTracked(data_ov003_0222f298[v14], &out, 0, &q);
             } else {
                 r->unk_00 = 3;
             }
@@ -5707,7 +5707,7 @@ Rec *TreeLeafFx_SpawnLeaves(Set *self, s32 p1, u32 p2, u16 *p3, Pos *p4, s32 p5)
         out2 = out;
         TreeLeafFx_SetRecord(r, v14, 1, p1, p2, &out2, p5);
         if (TreeLeafFx_GetParams(r) != 0) {
-            func_0208fb20(v18, &out, 0, &q);
+            EffectSpl_CreateTracked(v18, &out, 0, &q);
         } else {
             r->unk_00 = 3;
         }
@@ -6297,7 +6297,7 @@ namespace ns_0221b8bc {
 extern "C" {
 s32 Tree_GetDropSide(Unk_ov003_0221b8bc *o, Unk_ov003_0221b8bc_V3 *p) {
     s32 r = 0;
-    u16 *q = func_02095204(Field_AidOrLocal(o));
+    u16 *q = PlayerActor_GetActor(Field_AidOrLocal(o));
     if (q != 0) {
         if (*(s32 *)((u8 *)q + 0x5c) < p->x) {
             r = 1;
@@ -7314,9 +7314,9 @@ extern "C" void FieldItemFx_UpdateBalloonDrop(Unk_ov003_0221a4a0 *self)
                 sBalloonSplashPos.y = self->unk_1c;
                 sBalloonSplashPos.z = self->unk_20;
                 sBalloonSplashPos.y = t;
-                func_0208fc88(0x45, &sBalloonSplashPos, 0, data_020e12cc);
-                func_0208fc88(0x4a, &sBalloonSplashPos, 0, data_020e12cc);
-                func_0208fb00(2, (void *)FieldItemFx_SplashPosCallback);
+                EffectSpl_CreateOneShot(0x45, &sBalloonSplashPos, 0, gEffectSplDefaultInitCbs);
+                EffectSpl_CreateOneShot(0x4a, &sBalloonSplashPos, 0, gEffectSplDefaultInitCbs);
+                EffectModel_Start(2, (void *)FieldItemFx_SplashPosCallback);
                 self->unk_4c = 1;
                 self->unk_50 = 12;
                 self->unk_1c = self->unk_1c - 0x2000;
@@ -7877,7 +7877,7 @@ extern "C" void FieldItemFx_StartStrikeShake(s32 a, s32 b, P2 c)
     s32 r = 0;
     s32 tmp[3];
     FieldPos_FromUnitCenter(tmp, c.x, c.z);
-    u8 *obj = (u8 *)func_02095204(4);
+    u8 *obj = (u8 *)PlayerActor_GetActor(4);
     if (obj != NULL) {
         r = (s32)(func_02063ba4(*(s16 *)(obj + 0x8e)) << 29) >> 16;
     }
@@ -7891,7 +7891,7 @@ extern "C" void FieldItemFx_StartBalloonDrop(s32 a, s32 n)
     V3 LampLights(0, 0, 0);
     s32 p0 = 0;
     s32 p1 = 0;
-    Unk_ov003_02219654_Obj *obj = (Unk_ov003_02219654_Obj *)func_02095204(4);
+    Unk_ov003_02219654_Obj *obj = (Unk_ov003_02219654_Obj *)PlayerActor_GetActor(4);
     if (obj != NULL) {
         Unk_ov003_02219654_V3 *pv = &obj->unk_5c;
         LampLights.x = pv->x;

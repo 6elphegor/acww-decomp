@@ -681,7 +681,7 @@ s32 MuseumData_isDonated(void *, u16 *);
 void func_02088c64(void *self, void *pos, s32 w, s32 h, u32 a, u32 b, u32 c, u8 t, s32 d);
 void func_02089040(void *a);
 P *func_020947f0(s32 n);
-P *func_02095204(s32 n);
+P *PlayerActor_GetActor(s32 n);
 s32 func_0209c0ac(void *);
 void func_0209c0b4(void *p);
 void func_0209c0c8(void *p);
@@ -2327,7 +2327,7 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
         AquariumFish_TurnToTarget(o);
     }
     AquariumFish_UpdateAnimSpeed(o, 0x666);
-    P *p = func_02095204(4);
+    P *p = PlayerActor_GetActor(4);
     if (p != 0) {
         V3 v;
         V3 *pv = &p->unk_5c;
@@ -2351,7 +2351,7 @@ extern "C" void AquariumPiranha_StateSwim(E75c *o) {
 
 extern "C" void AquariumPiranha_StateApproach(E75c *o) {
     V3 v;
-    P *p = func_02095204(4);
+    P *p = PlayerActor_GetActor(4);
     if (p == 0) {
         o->unk_255 = 0;
         return;

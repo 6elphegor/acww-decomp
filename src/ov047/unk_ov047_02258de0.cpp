@@ -50,10 +50,10 @@ struct Unk_ov047_0225a074_Buf {
     u16 unk_02;
 };
 
-struct Unk_020e1c64 {
+struct MsgString9B {
     u8 pad_00[0x20];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 };
 
 struct Unk_ov047_0225a3e4_Msg {
@@ -1065,7 +1065,7 @@ void SpNpcBlathersTalk::scriptDonationItemChosen() {
     Unk_ov047_0225a5e8_Msg m;
     m.unk_00 = 0x22;
     if (MenuCtrl_IsResultOk()) {
-        Unk_020e1c64 ob;
+        MsgString9B ob;
         unk_c4 = -1;
         unk_c4 = MenuCtrl_GetIndex();
         unk_ca = Pocket_GetItem(unk_c4);

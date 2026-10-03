@@ -980,7 +980,7 @@ void func_02000c98();
 void func_02135714(void *p, u32 n, u32 size, void *ctor, void *dtor);
 void func_021355f0(void *p, u32 n, u32 size, void *dtor);
 s32 func_02063b8c(s32 n);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 s32 func_020e9650(void *a, void *b);
 void Clock_GetMinuteHour(void *p);
 void func_0209c2d8(void *p);
@@ -1083,8 +1083,8 @@ void func_020e98f4(void *out, void *in, s32 s);
 void VEC_Subtract(void *a, void *b, void *c);
 void VEC_Add(void *a, void *b, void *c);
 s32 func_020e7d4c(void *a, void *b, s32 c, s32 d, s32 e);
-extern u8 data_020e12cc[];
-void func_0208fc88(u32, void *, s32, void *);
+extern u8 gEffectSplDefaultInitCbs[];
+void EffectSpl_CreateOneShot(u32, void *, s32, void *);
 s32 FX_Div(s32, s32);
 s32 PlayerActor_RequestAct79();
 void func_ov004_02239a4c(void *, s32);
@@ -1702,7 +1702,7 @@ extern "C" s32 MuseumInsect_UpdateAlertLevel(void *self_, void *out_) {
     s16 r4 = self->unk_9c;
     old = r4;
     s32 r7 = self->unk_9e;
-    u8 *p = (u8 *)func_02095204(4);
+    u8 *p = (u8 *)PlayerActor_GetActor(4);
     if (p != 0) {
         out->e = 1;
         out->c = *(s32 *)(p + 0x98);
@@ -2354,7 +2354,7 @@ extern "C" void MuseumInsect_MosquitoChase(Obj_bb5c *self, s16 *p)
         s16 pad;
     } l;
     V3_bb5c d;
-    b = (u8 *)func_02095204(4);
+    b = (u8 *)PlayerActor_GetActor(4);
     if (b != 0) {
         V3_bb5c *v = &self->unk_2c8;
         s32 dist;
@@ -2485,7 +2485,7 @@ extern "C" void MuseumInsect_RunFlea(void *self_)
     if (self->unk_172 == 4) {
         MuseumInsect_FleaJump(self);
     } else if (MuseumInsect_TickTimer(self) != 0) {
-        u8 *p = (u8 *)func_02095204(4);
+        u8 *p = (u8 *)PlayerActor_GetActor(4);
         if (p != 0) {
             u8 r = func_02063b8c(0x21) + 0x10;
             V3_bb5c *v = &self->unk_2c8;
@@ -2515,7 +2515,7 @@ extern "C" void MuseumInsect_FleaJump(Obj_bb5c *self)
         s32 k = self->unk_98 << 12;
         v->y = func_01ffcb0c(0x99a - func_01ffcb0c(0x7b, k), k);
         if (v->y < 0) {
-            u8 *p = (u8 *)func_02095204(4);
+            u8 *p = (u8 *)PlayerActor_GetActor(4);
             s32 n = 20;
             if (p != 0) {
                 if (func_020e9650(p + 0x5c, v) > 0x6000) {
@@ -2588,7 +2588,7 @@ extern "C" void MuseumInsect_MoleCricketCheckEmerge(Obj_bb5c *self)
         }
         if ((s32)idx > self->unk_9e) {
             self->unk_172 = 5;
-            func_0208fc88(0x80, v, 0, data_020e12cc);
+            EffectSpl_CreateOneShot(0x80, v, 0, gEffectSplDefaultInitCbs);
             self->unk_98 = (func_02063b8c(11) + 5) * 20;
             self->unk_192 = Math_AngleXZ(&o, v);
             NNS_G3dMdlSetMdlAlpha(func_0209c0ac(self->unk_288), 0, 31);
@@ -2647,7 +2647,7 @@ extern "C" void MuseumInsect_MoleCricketCrawl(Obj_bb5c *self, s16 *p)
                 }
             }
         } else if (*q == 5) {
-            func_0208fc88(0x80, &self->unk_2c8, 0, data_020e12cc);
+            EffectSpl_CreateOneShot(0x80, &self->unk_2c8, 0, gEffectSplDefaultInitCbs);
         }
     } else {
         self->unk_172 = 16;
@@ -3639,7 +3639,7 @@ void Unk_ov004_02239e70::runSpider() {
 }
 
 BOOL Unk_ov004_02239e70::isPlayerNear() {
-    u8 *r = (u8 *)func_02095204(4);
+    u8 *r = (u8 *)PlayerActor_GetActor(4);
     if (r != NULL) {
         if (func_020e9650(r + 0x5c, &unk_2c8) < 0x4800) {
             return TRUE;

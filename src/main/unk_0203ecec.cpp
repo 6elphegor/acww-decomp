@@ -135,15 +135,15 @@ void func_02065cc8(void *p);
 }
 
 extern "C" {
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void func_02065ba4(void *p, s32 q);
+void Letter_SetRecipientResident(void *p, s32 q);
 }
 
 extern "C" {
-void func_02065ac0(void *p);
+void Letter_MarkReceived(void *p);
 }
 
 extern "C" {

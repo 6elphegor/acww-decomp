@@ -796,7 +796,7 @@ struct Unk_ov003_02224ba4_V3 {
 
 typedef Unk_ov003_02224ba4_V3 V3_f10;
 
-// polymorphic actor returned by func_020951ec (only the slots used here)
+// polymorphic actor returned by PlayerActor_GetCharacter (only the slots used here)
 class Unk_ov003_02224bc4_Actor : public GameProc {
 public:
     virtual BOOL vfunc_48(void *a);
@@ -950,8 +950,8 @@ void Effect_End(s32 h);
 s32 Effect_Create(s32 a, void *v, s32 b, s32 c);
 void func_020947c0(u16 *out, s32 a);
 void *func_020947f0(s32 a);
-void *func_020951ec(s32 n);
-void *func_02095204(s32 n);
+void *PlayerActor_GetCharacter(s32 n);
+void *PlayerActor_GetActor(s32 n);
 void func_0209c224(void *p, void *q);
 void *func_0209c25c(void *p, void *q);
 s32 func_0209c348(void *a);
@@ -1483,7 +1483,7 @@ extern "C" s32 BottleThrow_Start(s32 i)
     if (e->unk_30 != 0) {
         return 1;
     }
-    p = ((Unk_ov003_02224bc4_Actor * (*)(s32))func_020951ec)(i);
+    p = ((Unk_ov003_02224bc4_Actor * (*)(s32))PlayerActor_GetCharacter)(i);
     if (p == 0) {
         return 0;
     }
@@ -2563,7 +2563,7 @@ extern "C" BOOL FishCatch_StartLift(s32 idx, s32 flag) {
     if (idx < 0 || idx > 3) {
         return FALSE;
     }
-    u8 *ob = (u8 *)func_02095204(idx);
+    u8 *ob = (u8 *)PlayerActor_GetActor(idx);
     if (ob == NULL) {
         return FALSE;
     }
@@ -3308,7 +3308,7 @@ extern "C" BOOL FishCatch_StateStart(Self_f5 *self, u32 a) {
         if (!FishCatch_SetupLine(self, a)) {
             return FALSE;
         }
-        Ent_f5 *e = ((Ent_f5 * (*)(u32))func_02095204)(a);
+        Ent_f5 *e = ((Ent_f5 * (*)(u32))PlayerActor_GetActor)(a);
         if (e != NULL) {
             u32 f = e->unk_b0;
             if (Unk_ov003_02222490_Bit(f, 4) && Unk_ov003_02222490_Bit(f, 2)) {
@@ -3335,7 +3335,7 @@ extern "C" BOOL FishCatch_SetupLine(Self_f5 *self, u32 a) {
         self->unk_40 = 4;
         return FALSE;
     }
-    if (((Ent_f5 * (*)(u32))func_020951ec)(a) == NULL) {
+    if (((Ent_f5 * (*)(u32))PlayerActor_GetCharacter)(a) == NULL) {
         self->unk_40 = 4;
         return FALSE;
     }
@@ -3366,7 +3366,7 @@ extern "C" BOOL FishCatch_StateHold(Self_f5 *self, u32 a) {
         Pad() {}
         ~Pad() {}
     } pad;
-    Ent_f5 *e = ((Ent_f5 * (*)(u32))func_020951ec)(a);
+    Ent_f5 *e = ((Ent_f5 * (*)(u32))PlayerActor_GetCharacter)(a);
     if (e == NULL) {
         self->unk_40 = 4;
         return r;
@@ -3411,7 +3411,7 @@ extern "C" BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a) {
         FishCatch_UpdateArc(self, r6);
         break;
     case 5: {
-        Ent_f5 *e = ((Ent_f5 * (*)(u32))func_02095204)(a);
+        Ent_f5 *e = ((Ent_f5 * (*)(u32))PlayerActor_GetActor)(a);
         if (e == NULL) {
             self->unk_40 = 4;
             return r6;
@@ -3433,7 +3433,7 @@ extern "C" BOOL FishCatch_StateUpdate(Self_f5 *self, u32 a) {
 extern "C" BOOL FishCatch_UpdateLocalReel(Self_f5 *self, u32 a) {
     BOOL r = FALSE;
     if (self->unk_80 == 0) {
-        Ent_f5 *e = ((Ent_f5 * (*)(u32))func_020951ec)(a);
+        Ent_f5 *e = ((Ent_f5 * (*)(u32))PlayerActor_GetCharacter)(a);
         if (e == NULL) {
             self->unk_40 = 4;
             return r;
@@ -3464,7 +3464,7 @@ extern "C" BOOL FishCatch_UpdateRemoteReel(Self_f5 *self, u32 a) {
         V3_f5 w, u;
         T48_f5 blk;
     } l;
-    Ent_f5 *e = ((Ent_f5 * (*)(u32))func_020951ec)(a);
+    Ent_f5 *e = ((Ent_f5 * (*)(u32))PlayerActor_GetCharacter)(a);
     if (e == NULL) {
         self->unk_40 = 4;
         return FALSE;
@@ -4580,7 +4580,7 @@ extern "C" void FieldWater_ApplyFlow(s32 *p, s32 b) {
 //@ 0x22209c8
 extern "C" BOOL FieldFish_IsPlayerRunning(s32 idx) {
     BOOL r = FALSE;
-    u8 *o = ((u8 * (*)(s32))func_02095204)(idx);
+    u8 *o = ((u8 * (*)(s32))PlayerActor_GetActor)(idx);
     if (o != NULL) {
         if (*(s32 *)(o + 0x98) > 0x548) {
             r = TRUE;
@@ -4592,7 +4592,7 @@ extern "C" BOOL FieldFish_IsPlayerRunning(s32 idx) {
 
 //@ 0x2220994
 extern "C" BOOL FieldFish_IsPlayerNear(void *self, s32 b, s32 idx) {
-    u8 *o = ((u8 * (*)(s32))func_02095204)(idx);
+    u8 *o = ((u8 * (*)(s32))PlayerActor_GetActor)(idx);
     if (o == NULL) {
         return FALSE;
     }
@@ -4865,7 +4865,7 @@ extern "C" BOOL FieldFish_PickSpawnUnit(void *self, s32 *ox, s32 *oz, s32 *a3, s
 extern "C" BOOL FishShadow_CanSpawnFish(void *self, Unk_ov003_02220844_Obj *e, s32 id) {
     BOOL ok = Unk_ov003_022203f8_Chk(self, id);
     if (ok) {
-        if (((u8 * (*)(s32))func_02095204)(4) == NULL) {
+        if (((u8 * (*)(s32))PlayerActor_GetActor)(4) == NULL) {
             return FALSE;
         }
         s32 i;
@@ -5020,7 +5020,7 @@ extern "C" BOOL FishCatch_StartRelease(s32 idx, u16 id0, Unk_ov003_02220128_Vec3
     if (rec->unk_40 != 0) {
         return FALSE;
     }
-    u8 *ob = ((u8 * (*)(s32))func_02095204)(idx);
+    u8 *ob = ((u8 * (*)(s32))PlayerActor_GetActor)(idx);
     if (ob == NULL) {
         return FALSE;
     }

@@ -4,7 +4,7 @@
 extern "C" {
 void AbAllObjGfx_Upload(void);
 void Snd_CreateScene(void);
-void func_0208e9a8(void);
+void TransitionCommIcon_Resume(void);
 u32 func_0209c08c(void);
 void Scene_Request(u32 a, u32 b, u32 c, u32 d);
 u32 NetArea_GetMoveState(void);
@@ -80,7 +80,7 @@ BOOL Unk_020e40cc::vfunc_00() {
     Snd_CreateScene();
     Scene_SetupGraphics();
     AbAllObjGfx_Upload();
-    func_0208e9a8();
+    TransitionCommIcon_Resume();
     return TRUE;
 }
 

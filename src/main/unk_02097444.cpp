@@ -58,10 +58,10 @@ s32 func_02097578(void *p);
 void __cxa_vec_cleanup(void *, u32, u32, void *(*)(void *, s32));
 void *__cxa_vec_ctor(void *, u32, u32, void *(*)(void *, s32), void *(*)(void *, s32));
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
-s32 _ZN8PlayerId13func_02094218Ev(void *p);
-u16 _ZN8PlayerId13func_0209412cEv(void *p);
-u32 func_02094154(u16 *p, u32 n);
-s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
+s32 _ZN8PlayerId7isValidEv(void *p);
+u16 _ZN8PlayerId5getIdEv(void *p);
+u32 PlayerId_GenerateUniqueId(u16 *p, u32 n);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 _ZN10PlayerData8setupNewEjjjjhhhhhjPt(void *, s32, u32, s32, u32, u32, u32, u32, u32, u32, u32, u16 *);
 s32 _ZN10PlayerData6setBedEPt(void *, void *);
 s32 memcmp(void *, void *, u32);
@@ -311,7 +311,7 @@ extern "C" u8 *func_020977d0(u8 *base, u16 *p) {
                     u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(e);
                     if (p[0] == q[0]) {
                         if (memcmp(p + 1, q + 1, 8) == 0) {
-                            if (_ZN8PlayerId13func_020941e8EPS_(p, q) != 0) continue;
+                            if (_ZN8PlayerId6equalsEPS_(p, q) != 0) continue;
                         }
                     }
                 }
@@ -334,13 +334,13 @@ extern "C" void func_020977ac(void *p) {
 extern "C" s32 func_020977a0(void *p) { return _ZN12Unk_02097ff414findUnusedSlotEi(p, 4); }
 
 extern "C" s32 func_02097740(u8 *base, u16 *p) {
-    if (_ZN8PlayerId13func_02094218Ev(p) == 1) {
+    if (_ZN8PlayerId7isValidEv(p) == 1) {
         s32 i;
         for (i = 0; i < 4; i++) {
             u16 *q = (u16 *)_ZN10PlayerData11getPlayerIdEv(base + i * 0x228c);
             if (p[0] == q[0]) {
                 if (memcmp(p + 1, q + 1, 8) == 0) {
-                    if (_ZN8PlayerId13func_020941e8EPS_(p, q) != 0) return i;
+                    if (_ZN8PlayerId6equalsEPS_(p, q) != 0) return i;
                 }
             }
         }
@@ -361,8 +361,8 @@ extern "C" u8 *func_020975f0(u8 *base, s32 a1, s32 a2, u32 idx) {
         for (i = 0; i < 4; i++) {
             if (i != idx) {
                 u8 *q = base + i * 0x228c;
-                if (_ZN8PlayerId13func_02094218Ev(_ZN10PlayerData11getPlayerIdEv(q)) == 1) {
-                    v[cnt] = _ZN8PlayerId13func_0209412cEv(_ZN10PlayerData11getPlayerIdEv(q));
+                if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(q)) == 1) {
+                    v[cnt] = _ZN8PlayerId5getIdEv(_ZN10PlayerData11getPlayerIdEv(q));
                     cnt++;
                 }
             }
@@ -370,7 +370,7 @@ extern "C" u8 *func_020975f0(u8 *base, s32 a1, s32 a2, u32 idx) {
         _ZN10PlayerData5resetEv(r);
         hdr = 0xfff1;
         {
-            u32 s = func_02094154(v, cnt);
+            u32 s = PlayerId_GenerateUniqueId(v, cnt);
             _ZN10PlayerData8setupNewEjjjjhhhhhjPt(r, a1, s, a2, 0, 0, 0, 0, 0, 0, 0, &hdr);
         }
         idx &= 3;

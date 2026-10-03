@@ -2,12 +2,12 @@
 #pragma opt_loop_invariants off
 #define LB(o) (((u8 *)&l)[o])
 extern "C" {
-void _ZN8PlayerId13func_02094294Ev(void *p);
+void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
 void _ZN11MsgString25C1Ev(void *p);
 void _ZN11MsgString25D1Ev(void *p);
 void _ZN8ItemNameC1EPt(void *p, u16 *v);
@@ -24,8 +24,8 @@ void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
-s32 _ZN8PlayerId13func_02094218Ev(void *p);
-void _ZN8PlayerId13func_020940d0EP9MsgString(void *a, void *b);
+s32 _ZN8PlayerId7isValidEv(void *p);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
 s32 func_02063b8c(u32 n);
 void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(void *p);
@@ -42,12 +42,12 @@ u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
 s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
 void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN12Unk_0206555410setPresentEtj(void *obj, u32 v, s32 w);
+void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
-s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
@@ -132,8 +132,8 @@ extern u32 sContestResultBbsFiles[4];
 
 struct Unk_02085df0_Rec {
     u32 unk_00[7];
-    Unk_02085df0_Rec() { _ZN12Unk_020e1c64C1Ev(this); }
-    ~Unk_02085df0_Rec() { _ZN12Unk_020e1c64D1Ev(this); }
+    Unk_02085df0_Rec() { _ZN11MsgString9BC1Ev(this); }
+    ~Unk_02085df0_Rec() { _ZN11MsgString9BD1Ev(this); }
 };
 
 struct Unk_02085df0_Num {
@@ -616,14 +616,14 @@ extern char data_020e0c7c[];
 extern char data_020e0c88[];
 extern char data_020e0c98[];
 s32 VillagerId_Clear(Unk_02085810_Rec *p);
-void _ZN8PlayerId13func_02094294Ev(void *p);
+void _ZN8PlayerId5clearEv(void *p);
 void Clock_GetDate(u8 *p);
 void VillagerId_Destruct(Unk_02085810_Rec *p);
 void VillagerId_Construct(Unk_02085810_Rec *p);
 void _ZN8PlayerIdC1Ev(void *p);
 void _ZN8PlayerIdC1EPv(void *p);
-void _ZN12Unk_020e1c64C1Ev(void *p);
-void _ZN12Unk_020e1c64D1Ev(void *p);
+void _ZN11MsgString9BC1Ev(void *p);
+void _ZN11MsgString9BD1Ev(void *p);
 void _ZN11MsgString25C1Ev(void *p);
 void _ZN11MsgString25D1Ev(void *p);
 void _ZN8ItemNameC1EPt(void *p, u16 *v);
@@ -640,8 +640,8 @@ void MailText_SetSlotMonth(s32 i, s32 x);
 void MailText_SetSlotDayOrdinal(s32 i, s32 x);
 void _ZN10VillagerId7getNameEj(void *a, void *b);
 s32 _ZN10VillagerId7isValidEv(void *p);
-s32 _ZN8PlayerId13func_02094218Ev(void *p);
-void _ZN8PlayerId13func_020940d0EP9MsgString(void *a, void *b);
+s32 _ZN8PlayerId7isValidEv(void *p);
+void _ZN8PlayerId13getNameStringEP9MsgString(void *a, void *b);
 s32 func_02063b8c(u32 n);
 void DateTime_Make(void *a, void *b, u32 c, u32 d, u32 e);
 void Clock_GetDateTime(void *p);
@@ -658,12 +658,12 @@ u16 *_ZN10PlayerData11getPlayerIdEv(void *p);
 s32 _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(void *p);
 void _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(void *p);
 void Letter_ComposeFromMail(void *obj, void *b, void *fmt, void *s, void *s2, void *p);
-void _ZN12Unk_0206555410setPresentEtj(void *obj, u32 v, s32 w);
+void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 w);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 void _ZN6LetterC1Ev(void *p);
 void _ZN6LetterD1Ev(void *p);
 s32 memcmp(void *a, void *b, u32 n);
-s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 s32 Clock_GetWeekday();
 s32 func_020e77cc(u32 v, u32 lo, u32 hi);
 s32 NookShop_GetLevel(void *p);
@@ -776,7 +776,7 @@ void func_020877c0(void *a, void *b);
 
 namespace Ns_02086204 {
 extern "C" {
-u32 _ZN8PlayerId13func_02094294Ev(void *p);
+u32 _ZN8PlayerId5clearEv(void *p);
 s32 func_02063b8c(s32 a);
 }
 }
@@ -1037,7 +1037,7 @@ extern "C" void PlayerSpNpcRecord_SendMissingLetter() {
         Ns_020874d8::Letter_ComposeFromMail(big, &l, "sp_npc_missing", data_020e0c44, &l.b, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(r4));
         _ZN12ItemPickSpec3setEii(obj, 0, 0x1b);
         ItemPick_One(&l.h, obj, 0, 0, 1, 1, 0);
-        _ZN12Unk_0206555410setPresentEtj(big, l.h, 1);
+        _ZN10LetterView10setPresentEtj(big, l.h, 1);
         func_02063388(obj);
         if (LetterDelivery_QueueOutgoing(big, 0)) {
             Ns_020874d8::_ZN12Unk_02097ff49clearFlagEj(r4, 0x36);
@@ -1055,7 +1055,7 @@ BOOL PlayerSpNpcRecord::sendInsuranceLetter(s32 idx, u16 *v) {
     void *o = PlayerData_GetCurrent();
     c = idx;
     Ns_020874d8::Letter_ComposeFromMail(big, &c, "sp_npc_insurance", data_020e0c4c, data_020e0c54, Ns_020874d8::_ZN10PlayerData11getPlayerIdEv(o));
-    _ZN12Unk_0206555410setPresentEtj(big, *v, 1);
+    _ZN10LetterView10setPresentEtj(big, *v, 1);
     if (LetterDelivery_QueueOutgoing(big, 0)) {
         r = TRUE;
     } else {
@@ -1072,7 +1072,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
     s32 r6;
     _ZN11MsgString25C1Ev(bufA);
     void *obj = PlayerData_GetCurrent();
-    _ZN12Unk_020e1c64C1Ev(bufB);
+    _ZN11MsgString9BC1Ev(bufB);
     PlayerSpNpcRecord *r7 = (PlayerSpNpcRecord *)_ZN10PlayerData14getSpNpcRecordEv(obj);
     if (_ZN12Unk_02097ff48testFlagEj(obj, 0x17)) {
         if (_ZN12Unk_02097ff48testFlagEj(obj, 0x19)) {
@@ -1108,7 +1108,7 @@ void PlayerSpNpcRecord::sendInsuranceLetters() {
             }
         }
     }
-    _ZN12Unk_020e1c64D1Ev(bufB);
+    _ZN11MsgString9BD1Ev(bufB);
     _ZN11MsgString25D1Ev(bufA);
 }
 
@@ -2176,7 +2176,7 @@ ReddLastSale::~ReddLastSale() {
 }
 
 void ReddLastSale::clear() {
-    Ns_02086204::_ZN8PlayerId13func_02094294Ev(this);
+    Ns_02086204::_ZN8PlayerId5clearEv(this);
     unk_16 = 0xfff1;
 }
 
@@ -2296,14 +2296,14 @@ u32 RoostGuestRoll::getAfternoonGuest() { return unk_00_2; }
 BOOL RoostGuestRoll::hasLateGuest() { if (unk_00_3) return TRUE; return FALSE; }
 
 void ContestRecord::postResultNotice() {
-    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) {
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) {
         _ZN8SaveData9clearFlagEj(gSaveData, 0xf);
         return;
     }
     if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
     if (_ZN8SaveData8testFlagEj(gSaveData, 0xf) == 0) return;
     Unk_02085df0_Rec rec;
-    if (_ZN8PlayerId13func_02094218Ev(this) != 0) _ZN8PlayerId13func_020940d0EP9MsgString(this, &rec);
+    if (_ZN8PlayerId7isValidEv(this) != 0) _ZN8PlayerId13getNameStringEP9MsgString(this, &rec);
     else _ZN10VillagerId7getNameEj(&unk_16, &rec);
     if ((u8)(unk_37 + 0xff) <= 1) {
         MailText_SetSlotMonth(0, unk_35);
@@ -2338,7 +2338,7 @@ void ContestRecord::postResultNotice() {
 }
 
 void ContestRecord::sendResultLetters() {
-    if (_ZN8PlayerId13func_02094218Ev(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
+    if (_ZN8PlayerId7isValidEv(this) == 0 && _ZN10VillagerId7isValidEv(&unk_16) == 0) return;
     if (unk_37 != 1 && unk_37 != 2 && unk_37 != 3) return;
     Unk_020859b4_Loc l;
     Clock_GetDate(l.unk_06);
@@ -2374,7 +2374,7 @@ void ContestRecord::sendResultLetters() {
         }
         if (r6 == 1 && DateTime_DiffDays(l.unk_0c, &l.unk_14) < 1) return;
     }
-    if (unk_37 == 3 && _ZN8PlayerId13func_02094218Ev(this) == 0) {
+    if (unk_37 == 3 && _ZN8PlayerId7isValidEv(this) == 0) {
         postResultNotice();
         clear();
         return;
@@ -2418,9 +2418,9 @@ void ContestRecord::sendResultLetters() {
             else ok = _ZN17PlayerSpNpcRecord16hasEnteredBugOffEv(r7);
         } else {
             u16 *p = _ZN10PlayerData11getPlayerIdEv(r4);
-            if ((unk_00.unk_00 == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
+            if ((unk_00.unk_00 == p[0] && memcmp((u8 *)this + 2, p + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, p) != 0) || _ZN17PlayerSpNpcRecord15hasFestivalGiftEv(r7) != 0) {
                 l.unk_00 = func_02063b8c(3);
-                _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
+                _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
                 _ZN17PlayerSpNpcRecord17clearFestivalGiftEv(r7);
                 MailText_SetSlot(z2c, &rec);
                 ok = 1;
@@ -2429,22 +2429,22 @@ void ContestRecord::sendResultLetters() {
         if (ok == 0) continue;
         if ((u8)(unk_37 + 0xff) <= 1) {
             u16 *q = _ZN10PlayerData11getPlayerIdEv(r4);
-            if (unk_00.unk_00 == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(this, q) != 0) {
+            if (unk_00.unk_00 == q[0] && memcmp((u8 *)this + 2, q + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, q) != 0) {
                 l.unk_00 = func_02063b8c(3);
             } else {
                 l.unk_00 = func_02063b8c(3) + 3;
             }
-            _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
+            _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), &rec);
             MailText_SetSlot(4, &rec);
         }
         u16 *w = _ZN10PlayerData11getPlayerIdEv(r4);
         Letter_ComposeFromMail(&buf, &l, sContestResultMailFiles[unk_37], data_020e0c50, data_020e0c48, w);
         u16 *x = _ZN10PlayerData11getPlayerIdEv(r4);
-        if ((unk_00.unk_00 == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(this, x) != 0) || unk_37 == 3) {
+        if ((unk_00.unk_00 == x[0] && memcmp((u8 *)this + 2, x + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(this, x) != 0) || unk_37 == 3) {
             l.unk_02 = 0x3878;
             if (unk_37 == 2) l.unk_02 = 0x387c;
             else if (unk_37 == 3) l.unk_02 = 0x3880;
-            _ZN12Unk_0206555410setPresentEtj(&buf, l.unk_02, 1);
+            _ZN10LetterView10setPresentEtj(&buf, l.unk_02, 1);
         }
         LetterDelivery_PutInAddresseeMailbox(&buf);
     }
@@ -2468,7 +2468,7 @@ ContestRecord *ContestRecord::destruct() {
 }
 
 void ContestRecord::clear() {
-    _ZN8PlayerId13func_02094294Ev(this);
+    _ZN8PlayerId5clearEv(this);
     VillagerId_Clear(&unk_16);
     VillagerId_Clear(&unk_22);
     unk_2e = 0xfff1;

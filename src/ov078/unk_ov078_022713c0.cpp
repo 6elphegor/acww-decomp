@@ -41,10 +41,10 @@ struct Unk_0202368c_Obj {
     u32 v[2];
 };
 
-struct Unk_020e1c64 {
+struct MsgString9B {
     u32 v[7];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 };
 
 struct ChoiceList {
@@ -825,7 +825,7 @@ void SpNpcSaharahTalk::attachOwner(SpNpcSaharah *owner) {
 void SpNpcSaharahTalk::vfunc_78(TalkStartMsg *out) {
     u16 h;
     void *g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
-    Unk_020e1c64 o;
+    MsgString9B o;
     out->a = (u32)"sp_npc_camel";
     if (unk_b0 == -1) {
         h = 0x13ac;
@@ -878,7 +878,7 @@ void SpNpcSaharahTalk::vfunc_14() {
     u8 msg;
     u8 *s;
     h[0] = 0xfff1;
-    Unk_020e1c64 o3;
+    MsgString9B o3;
     g = _ZN18SickVillagerRecord15getParcelErrandEv(_ZN10PlayerData10getErrandsEv(PlayerData_GetCurrent()));
     s = (u8 *)"sp_npc_camel";
     msg = 0;

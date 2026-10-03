@@ -59,9 +59,9 @@ void Gfx2d_SetLayerOffset(s32 a, s32 b, s32 c);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ResetSubBlend();
 void func_02003f5c(s32 a);
-void func_02094960();
+void PlayerActor_RequestAct10();
 void PlayerActor_RequestAct05();
-s32 func_02094fb4();
+s32 PlayerActor_IsChangingClothes();
 BOOL PlayerActor_RequestWearShirtAlt();
 BOOL PlayerActor_RequestWearHatAlt();
 void ProcBase_RequestDelete(void *p);
@@ -826,7 +826,7 @@ void PatternEditorMenu::stateRewear() {
 }
 
 void PatternEditorMenu::stateWaitWear() {
-    if (func_02094fb4() == 0) {
+    if (PlayerActor_IsChangingClothes() == 0) {
         setTransitionState(4);
     }
 }
@@ -975,7 +975,7 @@ void PatternEditorMenu::releaseResources() {
     unk_5004.freeTexts();
     resetPaletteLabel();
     cancelVramTasks();
-    func_02094960();
+    PlayerActor_RequestAct10();
     if (MenuCtrl_GetMode() == 3) {
         func_02003f5c(0);
     }

@@ -92,8 +92,8 @@ void Mem_Clear(void *, s32);
 void Mem_Copy(u32, void *, s32);
 void MI_CpuCopy8(void *, const void *, u32);
 void *Inventory_GetEmptyLetter(void);
-void func_02065e70(void *, void *);
-void func_02065b28(void *);
+void Letter_Copy(void *, void *);
+void Letter_MarkSent(void *);
 u32 PlayerData_GetCurrent(void);
 void *func_02097a3c(u32);
 void *FutureLetter_GetLetter(void *);
@@ -878,15 +878,15 @@ extern "C" BOOL MenuCtrl_OpenPostOffice(void) {
 extern "C" void MenuCtrl_SetPostOfficeResult(u32 v) { sPostOfficeResult = v; }
 
 extern "C" void MenuCtrl_SetFutureLetter(void *a) {
-    func_02065e70(&sFutureLetter, a);
+    Letter_Copy(&sFutureLetter, a);
 }
 
 extern "C" void MenuCtrl_StoreFutureLetter(void) {
     u32 a = PlayerData_GetCurrent();
     void *p = FutureLetter_GetLetter(func_02097a3c(a));
     u8 *q;
-    func_02065e70(p, &sFutureLetter);
-    func_02065b28(p);
+    Letter_Copy(p, &sFutureLetter);
+    Letter_MarkSent(p);
     q = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(a));
     q[0] = 1;
     q[1] = 1;
@@ -900,7 +900,7 @@ extern "C" void MenuCtrl_StoreFutureLetter(void) {
 extern "C" void MenuCtrl_ReturnFutureLetter(void) {
     void *p = Inventory_GetEmptyLetter();
     if (p) {
-        func_02065e70(p, &sFutureLetter);
+        Letter_Copy(p, &sFutureLetter);
     }
 }
 

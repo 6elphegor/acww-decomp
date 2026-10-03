@@ -573,7 +573,7 @@ void NNS_G3dMdlSetMdlAlpha(void *o, u32 i, u32 v);
 s32 func_02063b8c(s32 n);
 s32 func_020e9650(void *a, void *b);
 s32 func_020e96ec(void *a, void *b);
-void *func_02095204(s32 n);
+void *PlayerActor_GetActor(s32 n);
 void *func_020947f0(s32 n);
 BOOL Ground_IsOnLockedExit(void *v);
 u32 NpcActor_getAngleTo(void *p, void *q);
@@ -624,7 +624,7 @@ void HouseVisitor_SetPresent();
 void *Villager_GetState(void *);
 void VillagerState_SetRole(void *, s32);
 void RoomScoreEvaluator_Destruct(void *);
-VillagerActor *func_02095204(s32);
+VillagerActor *PlayerActor_GetActor(s32);
 s32 func_020e9650(void *, void *);
 }
 
@@ -1174,7 +1174,7 @@ BOOL HouseVisitVillager::enterVisitOutside() {
 void HouseVisitVillager::execVisitOutside() {
     using namespace sB;
     if (HouseVisit_IsAppointmentNow(this)) {
-        VillagerActor *p = func_02095204(4);
+        VillagerActor *p = PlayerActor_GetActor(4);
         if (p) {
             Unk_ov068_02270afc_Vec v;
             Unk_ov068_02270afc_Vec *pv = (Unk_ov068_02270afc_Vec *)&p->unk_5c;
@@ -1436,7 +1436,7 @@ void HouseVisitVillager::execVisitIdle7() {
 
 BOOL HouseVisitVillager::enterVisitTalk() {
     using namespace sA;
-    void *p = func_02095204(4);
+    void *p = PlayerActor_GetActor(4);
     if (p != NULL) {
         u32 x = NpcActor_getAngleTo(this, p);
         if (unk_a50 != 0 || unk_a51 != 0) {

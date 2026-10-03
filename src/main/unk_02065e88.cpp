@@ -38,7 +38,7 @@ class BmgMsgAttr;
 class MsgString25;
 class MsgString11;
 class Unk_020dd38c;
-class Unk_020e1c64;
+class MsgString9B;
 class MsgString17;
 class MsgString17B;
 struct Unk_02067f44_Sel;
@@ -895,7 +895,7 @@ class MsgString11 { public: u32 pad[0x20 / 4]; MsgString11(); };
 
 class Unk_020dd38c { public: u32 pad[0x1c / 4]; Unk_020dd38c(); };
 
-class Unk_020e1c64 { public: u32 pad[0x1c / 4]; Unk_020e1c64(); };
+class MsgString9B { public: u32 pad[0x1c / 4]; MsgString9B(); };
 
 class MsgString17 { public: u32 pad[0x24 / 4]; MsgString17(); };
 
@@ -929,9 +929,9 @@ struct TalkWindow {
     MsgString25 unk_17dc, unk_1808, unk_1834;
     MsgString11 unk_1860;
     Unk_020dd38c unk_1880;
-    Unk_020e1c64 unk_189c, unk_18b8, unk_18d4, unk_18f0, unk_190c;
+    MsgString9B unk_189c, unk_18b8, unk_18d4, unk_18f0, unk_190c;
     MsgString33 unk_1928, unk_195c;
-    Unk_020e1c64 unk_1990;
+    MsgString9B unk_1990;
     MsgString17 unk_19ac;
     MsgString17B unk_19d0;
     u8 unk_19f4, unk_19f5, unk_19f6, unk_19f7;
@@ -3348,10 +3348,10 @@ extern "C" { BOOL FS_CloseFile(void *self); }
 extern "C" { void _ZN12Unk_020e0d44C1Eh(void *p, s32 v); }
 extern "C" { void _ZN12Unk_020e0d4413func_02089328Ev(void *p); }
 extern "C" { void _ZN12Unk_020e0d44D1Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec78Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec7cEv(void *p); }
-extern "C" { void _ZN12Unk_020e10dcD1Ev(void *p); }
-extern "C" { void _ZN12Unk_020e10dcC1Ev(void *p); }
+extern "C" { void _ZN12TalkBusyIcon4exitEv(void *p); }
+extern "C" { void _ZN12TalkBusyIcon4initEv(void *p); }
+extern "C" { void _ZN12TalkBusyIconD1Ev(void *p); }
+extern "C" { void _ZN12TalkBusyIconC1Ev(void *p); }
 extern "C" { BOOL Talk_IsAltTextEnabled(void); }
 extern "C" { s32 Villager_GetAnimalKind(void); }
 extern "C" { s32 PlayerData_GetCurrentIndex(void); }
@@ -3660,19 +3660,19 @@ TalkFrame *TalkFrame::construct() {
     unk_04 = NULL;
     unk_08 = NULL;
     _ZN12Unk_020e0d44C1Eh(unk_0c, 1);
-    _ZN12Unk_020e10dcC1Ev(unk_50);
+    _ZN12TalkBusyIconC1Ev(unk_50);
     unk_74 = 0;
     unk_78 = 0;
     unk_7c = 0;
     _ZN12Unk_020e0d4413func_02089328Ev(unk_0c);
-    _ZN12Unk_020e10dc13func_0208ec7cEv(unk_50);
+    _ZN12TalkBusyIcon4initEv(unk_50);
     return this;
 }
 TalkFrame *TalkFrame::destruct() {
     using namespace n10;
-    _ZN12Unk_020e10dc13func_0208ec78Ev(unk_50);
+    _ZN12TalkBusyIcon4exitEv(unk_50);
     freeBuffers();
-    _ZN12Unk_020e10dcD1Ev(unk_50);
+    _ZN12TalkBusyIconD1Ev(unk_50);
     _ZN12Unk_020e0d44D1Ev(unk_0c);
     return this;
 }
@@ -3822,11 +3822,11 @@ extern "C" { void _ZN15TalkWindowState15setVoicePlayingEi(void *, s32); }
 extern "C" { void _ZN15TalkWindowState10resetVoiceEv(void *); }
 extern "C" { BOOL Text_AsciiToGameChar(u8 *); }
 extern "C" { s32 Text_GetCharSortKey(u32); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec50Eii(void *, s32, s32); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec58Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ec68Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ee30Ev(void *); }
-extern "C" { void _ZN12Unk_020e10dc13func_0208ee38Ej(void *); }
+extern "C" { void _ZN12TalkBusyIcon6setPosEii(void *, s32, s32); }
+extern "C" { void _ZN12TalkBusyIcon8callDrawEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon10callUpdateEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon11requestHideEv(void *); }
+extern "C" { void _ZN12TalkBusyIcon11requestShowEj(void *); }
 extern "C" { s32 _ZN12Unk_020e0d4413func_020892acEv(void *); }
 extern "C" { BOOL _ZN12Unk_020e0d4413func_02089284Ev(void *); }
 extern "C" { void _ZN12Unk_020e0d4413func_02089320Eii(void *, s32, s32); }
@@ -3939,24 +3939,24 @@ BOOL TalkFrameView::isArrowEndDone()
 void TalkFrameView::showBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ee38Ej((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon11requestShowEj((u8 *)this + 0x50);
     unk_7c = -1;
 }
 void TalkFrameView::hideBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ee30Ev((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon11requestHideEv((u8 *)this + 0x50);
     unk_7c = 4;
 }
 void TalkFrameView::updateBusyIcon()
 {
     using namespace n8;
-    _ZN12Unk_020e10dc13func_0208ec50Eii((u8 *)this + 0x50, unk_74 + 0x59, unk_78 + 0x4b);
-    _ZN12Unk_020e10dc13func_0208ec68Ev((u8 *)this + 0x50);
+    _ZN12TalkBusyIcon6setPosEii((u8 *)this + 0x50, unk_74 + 0x59, unk_78 + 0x4b);
+    _ZN12TalkBusyIcon10callUpdateEv((u8 *)this + 0x50);
     if (unk_7c > 0) unk_7c--;
 }
 void TalkFrameView::drawBusyIcon() {
-    using namespace n8; _ZN12Unk_020e10dc13func_0208ec58Ev((u8 *)this + 0x50); }
+    using namespace n8; _ZN12TalkBusyIcon8callDrawEv((u8 *)this + 0x50); }
 namespace n8 {
 extern "C" u8 Talk_ColorTagToTextColor(u32 x)
 {
@@ -4211,7 +4211,7 @@ extern "C" { s32 Input_StoreMode(); }
 extern "C" { s32 Input_LoadMode(); }
 extern "C" { s32 _ZN12MsgString17BD1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString17D1Ev(void *p); }
-extern "C" { s32 _ZN12Unk_020e1c64D1Ev(void *p); }
+extern "C" { s32 _ZN11MsgString9BD1Ev(void *p); }
 extern "C" { s32 _ZN12Unk_020dd38cD1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString11D1Ev(void *p); }
 extern "C" { s32 _ZN11MsgString25D1Ev(void *p); }
@@ -4240,14 +4240,14 @@ TalkWindowState::~TalkWindowState() {
     detachRequest();
     _ZN12MsgString17BD1Ev(unk_19d0);
     _ZN11MsgString17D1Ev(unk_19ac);
-    _ZN12Unk_020e1c64D1Ev(unk_1990);
+    _ZN11MsgString9BD1Ev(unk_1990);
     _ZN11MsgString33D1Ev(unk_195c);
     _ZN11MsgString33D1Ev(unk_1928);
-    _ZN12Unk_020e1c64D1Ev(unk_190c);
-    _ZN12Unk_020e1c64D1Ev(unk_18f0);
-    _ZN12Unk_020e1c64D1Ev(unk_18d4);
-    _ZN12Unk_020e1c64D1Ev(unk_18b8);
-    _ZN12Unk_020e1c64D1Ev(unk_189c);
+    _ZN11MsgString9BD1Ev(unk_190c);
+    _ZN11MsgString9BD1Ev(unk_18f0);
+    _ZN11MsgString9BD1Ev(unk_18d4);
+    _ZN11MsgString9BD1Ev(unk_18b8);
+    _ZN11MsgString9BD1Ev(unk_189c);
     _ZN12Unk_020dd38cD1Ev(unk_1880);
     _ZN11MsgString11D1Ev(unk_1860);
     _ZN11MsgString25D1Ev(unk_1834);
@@ -4711,7 +4711,7 @@ extern "C" { s32 _ZN20VillagerDataItemView14getGreetingForEPvS0_(void *a, void *
 extern "C" { void _ZN20VillagerDataItemView16getComplimentForEPvS0_(void *a, void *b, s32 c); }
 extern "C" { void Villager_GetNicknameFor(void *a, void *b, s32 c); }
 extern "C" { void _ZN23VillagerDataProfileView14getCatchphraseEPvS0_(void *a, void *b, s32 c); }
-extern "C" { void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, void *b); }
+extern "C" { void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, void *b); }
 extern "C" { Unk_02066978_Owner *_ZN14TalkMsgRequest13func_02065f10Ev(void *p); }
 extern "C" { TextLabel *MsgTextLabel_CreateVram(u32 a, s32 b, s32 c); }
 
@@ -4770,7 +4770,7 @@ BOOL TalkWindowMsg::buildPlayerName() {
     using namespace n5;
     void *r4 = PlayerData_GetCurrent();
     _ZN9MsgString5clearEv(unk_189c);
-    _ZN8PlayerId13func_020940d0EP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), unk_189c);
+    _ZN8PlayerId13getNameStringEP9MsgString(_ZN10PlayerData11getPlayerIdEv(r4), unk_189c);
     return TRUE;
 }
 void TalkWindowMsg::clearFriendName() {

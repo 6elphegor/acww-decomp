@@ -78,10 +78,10 @@ struct Unk_020954f8_L { u32 out; u8 t[12]; };
 
 extern "C" {
 extern u8 gFieldSceneKind;
-extern const u8 data_020d0408[];
-extern const u32 data_020d03d8[];
-extern const u32 data_020d03e8[];
-extern const u32 data_020d03f8[];
+extern const u8 sEmotionHoldFrames[];
+extern const u32 sPlayerPosSyncVars[];
+extern const u32 sPlayerAngleSyncVars[];
+extern const u32 sPlayerStateSyncVars[];
 extern const s32 data_020d0428;
 extern CommManager *gCommManager;
 }
@@ -149,29 +149,29 @@ BOOL _ZN11CommManager11isLocalSlotEj(CommManager *g, s32 v);
 u32 _ZN11CommManager10getSyncVarEj(CommManager *g, u32 v);
 void NetBuf_UnpackPair20(u32 a, s32 *x, s32 *y);
 void CommRecord_UnpackSource(u32 a, u8 *b, s32 c);
-u32 func_02095720(s32 v);
-u32 func_0209573c(s32 v);
-u32 func_02095758(s32 v);
+u32 PlayerActor_GetNetStateVar(s32 v);
+u32 PlayerActor_GetNetAngleVar(s32 v);
+u32 PlayerActor_GetNetPosVar(s32 v);
 BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx);
 
 BOOL PlayerActor_SetSlotFlag(s32 a, s32 b);
 BOOL PlayerActor_ClearSlotFlag(s32 a, s32 b);
 BOOL PlayerActor_IsInAction(s32 v, s32 id);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-u8 func_02095430(PlayerSessionTable *p, s32 i);
-void func_02095440(PlayerSessionTable *p, s32 i);
-void func_0209544c(PlayerSessionTable *p, s32 i, s32 v);
-u8 func_02095454(PlayerSessionTable *p, s32 i);
-void func_02095464(PlayerSessionTable *p, s32 i);
-void func_02095470(PlayerSessionTable *p, s32 i, s32 v);
-u32 func_02095478(PlayerSessionTable *p, s32 i);
-void func_02095488(PlayerSessionTable *p, s32 i);
-void func_02095494(PlayerSessionTable *p, s32 i, u32 v);
-u32 func_020953f4(PlayerSessionTable *p);
-u16 *func_02095294(s32 i);
-Unk_02095338_E *func_020952a0(s32 i);
-u8 *func_020952b0(s32 i);
-u32 *func_020952bc(s32 i);
+u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_ClearGfxSlot(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_SetGfxSlot(PlayerSessionTable *p, s32 i, s32 v);
+u8 PlayerSessionTable_GetDataIndex(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_ClearDataIndex(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v);
+u32 PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i);
+void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, u32 v);
+u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p);
+u16 *PlayerSession_GetLastAngle(s32 i);
+Unk_02095338_E *PlayerSession_GetLastPos(s32 i);
+u8 *PlayerSession_GetLastScene(s32 i);
+u32 *PlayerSession_GetLastAction(s32 i);
 s32 PlayerActor_RequestChangeClothes(u16 *p, s32 a, s32 b);
 void func_02095200();
 void func_02095218();
@@ -181,14 +181,14 @@ extern "C" Unk_02006d14 *PlayerActor_Get(s32 idx) {
     if (idx == 4) {
         idx = gCommManager->unk_68;
     }
-    return (Unk_02006d14 *)func_02095478(&gPlayerSessionTable, idx);
+    return (Unk_02006d14 *)PlayerSessionTable_GetActor(&gPlayerSessionTable, idx);
 }
 
-extern "C" u32 func_02095758(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03d8[idx]); }
+extern "C" u32 PlayerActor_GetNetPosVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerPosSyncVars[idx]); }
 
-extern "C" u32 func_0209573c(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03e8[idx]); }
+extern "C" u32 PlayerActor_GetNetAngleVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerAngleSyncVars[idx]); }
 
-extern "C" u32 func_02095720(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, data_020d03f8[idx]); }
+extern "C" u32 PlayerActor_GetNetStateVar(s32 idx) { return _ZN11CommManager10getSyncVarEj(gCommManager, sPlayerStateSyncVars[idx]); }
 
 // ---------------------------------------------------------------- functions (file unk_02095670)
 extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx) {
@@ -206,12 +206,12 @@ extern "C" BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32
         }
         return FALSE;
     }
-    u32 t = func_02095720(idx);
+    u32 t = PlayerActor_GetNetStateVar(idx);
     if (t == 0) return FALSE;
     s32 v;
     if (!PlayerActor_GetSlotAction((u32 *)&v, mode, idx)) return FALSE;
     if (v >= 0x93) return FALSE;
-    u32 t2 = func_02095758(idx);
+    u32 t2 = PlayerActor_GetNetPosVar(idx);
     if (t2 == 0) return FALSE;
     s32 a, b;
     NetBuf_UnpackPair20(t2, &a, &b);
@@ -235,7 +235,7 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
         }
         return FALSE;
     }
-    if (!func_02095720(idx)) {
+    if (!PlayerActor_GetNetStateVar(idx)) {
         return FALSE;
     }
     if (!PlayerActor_GetSlotAction(&st, a, idx)) {
@@ -244,7 +244,7 @@ extern "C" BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx)
     if ((s32)st >= 0x93) {
         return FALSE;
     }
-    u8 *q = (u8 *)func_0209573c(idx);
+    u8 *q = (u8 *)PlayerActor_GetNetAngleVar(idx);
     if (!q) {
         return FALSE;
     }
@@ -266,7 +266,7 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
         }
         return FALSE;
     }
-    u8 *p = (u8 *)func_02095720(idx);
+    u8 *p = (u8 *)PlayerActor_GetNetStateVar(idx);
     if (!p) {
         return FALSE;
     }
@@ -278,7 +278,7 @@ extern "C" BOOL PlayerActor_GetSlotAction(u32 *out, s32 a, s32 idx)
     return TRUE;
 }
 
-extern "C" void func_020954f8(void *dst, s32 x)
+extern "C" void PlayerActor_PackNetState(void *dst, s32 x)
 {
     Unk_020954f8_L l;
     Unk_02006d14 *o = PlayerActor_Get(4);
@@ -295,40 +295,40 @@ extern "C" void func_020954f8(void *dst, s32 x)
     MI_CpuCopy8(l.t, dst, CommSyncVar_GetVarSize(x));
 }
 
-extern "C" void func_020954e0(u8 *p, u16 h, u8 v)
+extern "C" void PlayerActor_PackClothesChange(u8 *p, u16 h, u8 v)
 {
     NetBuf_WriteU16(p, h);
     p[2] = v;
 }
 
-extern "C" void func_020954c8(u8 *p, u16 *a, u32 *b)
+extern "C" void PlayerActor_UnpackClothesChange(u8 *p, u16 *a, u32 *b)
 {
     *a = NetBuf_ReadU16(p);
     *b = p[2];
 }
 
-extern "C" void func_020954b8(u8 *p, u32 a, u32 b)
+extern "C" void PlayerActor_PackHair(u8 *p, u32 a, u32 b)
 {
     *p = ((b << 4) & 0x70) | (a & 0xf);
 }
 
-extern "C" void func_0209549c(u8 *src, u8 *a, u8 *b)
+extern "C" void PlayerActor_UnpackHair(u8 *src, u8 *a, u8 *b)
 {
     *a = src[0] & 0xf;
     *b = (src[0] >> 4) & 7;
 }
 
-extern "C" void func_02095494(PlayerSessionTable *p, s32 i, u32 v)
+extern "C" void PlayerSessionTable_SetActor(PlayerSessionTable *p, s32 i, u32 v)
 {
     p->unk_00[i] = v;
 }
 
-extern "C" void func_02095488(PlayerSessionTable *p, s32 i)
+extern "C" void PlayerSessionTable_ClearActor(PlayerSessionTable *p, s32 i)
 {
-    func_02095494(p, i, 0);
+    PlayerSessionTable_SetActor(p, i, 0);
 }
 
-extern "C" u32 func_02095478(PlayerSessionTable *p, s32 i)
+extern "C" u32 PlayerSessionTable_GetActor(PlayerSessionTable *p, s32 i)
 {
     if (i < 4) {
         return p->unk_00[i];
@@ -336,17 +336,17 @@ extern "C" u32 func_02095478(PlayerSessionTable *p, s32 i)
     return 0;
 }
 
-extern "C" void func_02095470(PlayerSessionTable *p, s32 i, s32 v)
+extern "C" void PlayerSessionTable_SetDataIndex(PlayerSessionTable *p, s32 i, s32 v)
 {
     p->unk_10[i] = v;
 }
 
-extern "C" void func_02095464(PlayerSessionTable *p, s32 i)
+extern "C" void PlayerSessionTable_ClearDataIndex(PlayerSessionTable *p, s32 i)
 {
-    func_02095470(p, i, 7);
+    PlayerSessionTable_SetDataIndex(p, i, 7);
 }
 
-extern "C" u8 func_02095454(PlayerSessionTable *p, s32 i)
+extern "C" u8 PlayerSessionTable_GetDataIndex(PlayerSessionTable *p, s32 i)
 {
     if (i < 4) {
         return p->unk_10[i];
@@ -354,17 +354,17 @@ extern "C" u8 func_02095454(PlayerSessionTable *p, s32 i)
     return 7;
 }
 
-extern "C" void func_0209544c(PlayerSessionTable *p, s32 i, s32 v)
+extern "C" void PlayerSessionTable_SetGfxSlot(PlayerSessionTable *p, s32 i, s32 v)
 {
     p->unk_14[i] = v;
 }
 
-extern "C" void func_02095440(PlayerSessionTable *p, s32 i)
+extern "C" void PlayerSessionTable_ClearGfxSlot(PlayerSessionTable *p, s32 i)
 {
-    func_0209544c(p, i, 4);
+    PlayerSessionTable_SetGfxSlot(p, i, 4);
 }
 
-extern "C" u8 func_02095430(PlayerSessionTable *p, s32 i)
+extern "C" u8 PlayerSessionTable_GetGfxSlot(PlayerSessionTable *p, s32 i)
 {
     if (i < 4) {
         return p->unk_14[i];
@@ -372,12 +372,12 @@ extern "C" u8 func_02095430(PlayerSessionTable *p, s32 i)
     return 4;
 }
 
-extern "C" u32 func_020953f4(PlayerSessionTable *p)
+extern "C" u32 PlayerSessionTable_FindFreeGfxSlot(PlayerSessionTable *p)
 {
     u32 i, j;
     for (i = 0; i < 4; i++) {
         for (j = 0; j < 4; j++) {
-            if (i == func_02095430(p, j)) {
+            if (i == PlayerSessionTable_GetGfxSlot(p, j)) {
                 break;
             }
         }
@@ -393,8 +393,8 @@ PlayerSessionTable::PlayerSessionTable()
     u32 i;
     __cxa_vec_ctor(unk_34, 4, 12, (void *)func_02000c98, (void *)_ZN6FxVec3D1Ev);
     for (i = 0; i < 4; i++) {
-        func_02095464(&gPlayerSessionTable, i);
-        func_02095440(&gPlayerSessionTable, i);
+        PlayerSessionTable_ClearDataIndex(&gPlayerSessionTable, i);
+        PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);
         unk_20[i] = 0x93;
         unk_30[i] = 0x33;
         unk_34[i].a = 0;
@@ -416,98 +416,98 @@ PlayerSessionTable::~PlayerSessionTable()
 
 extern "C" void PlayerSession_SetActor(s32 i, u32 v)
 {
-    func_02095494(&gPlayerSessionTable, i, v);
+    PlayerSessionTable_SetActor(&gPlayerSessionTable, i, v);
 }
 
 extern "C" void PlayerSession_ClearActor(s32 i)
 {
-    func_02095488(&gPlayerSessionTable, i);
+    PlayerSessionTable_ClearActor(&gPlayerSessionTable, i);
 }
 
 extern "C" void PlayerSession_SetDataIndex(s32 i, s32 v)
 {
-    func_02095470(&gPlayerSessionTable, i, v);
+    PlayerSessionTable_SetDataIndex(&gPlayerSessionTable, i, v);
 }
 
 extern "C" void PlayerSession_ClearDataIndex(s32 i)
 {
-    func_02095464(&gPlayerSessionTable, i);
+    PlayerSessionTable_ClearDataIndex(&gPlayerSessionTable, i);
 }
 
 extern "C" u8 PlayerSession_GetDataIndex(s32 i)
 {
-    return func_02095454(&gPlayerSessionTable, i);
+    return PlayerSessionTable_GetDataIndex(&gPlayerSessionTable, i);
 }
 
-extern "C" Unk_02095338_D *func_020952d8()
+extern "C" Unk_02095338_D *PlayerSession_GetLastPlayDate()
 {
     return &gPlayerSessionTable.unk_18;
 }
 
-extern "C" u16 *func_020952d0()
+extern "C" u16 *PlayerSession_GetTanTimer()
 {
     return &gPlayerSessionTable.unk_1a;
 }
 
-extern "C" u8 *func_020952c8()
+extern "C" u8 *PlayerSession_GetSessionFlags()
 {
     return &gPlayerSessionTable.unk_1c;
 }
 
-extern "C" u32 *func_020952bc(s32 i)
+extern "C" u32 *PlayerSession_GetLastAction(s32 i)
 {
     return &gPlayerSessionTable.unk_20[i];
 }
 
-extern "C" u8 *func_020952b0(s32 i)
+extern "C" u8 *PlayerSession_GetLastScene(s32 i)
 {
     return &gPlayerSessionTable.unk_30[i];
 }
 
-extern "C" Unk_02095338_E *func_020952a0(s32 i)
+extern "C" Unk_02095338_E *PlayerSession_GetLastPos(s32 i)
 {
     return &gPlayerSessionTable.unk_34[i];
 }
 
-extern "C" u16 *func_02095294(s32 i)
+extern "C" u16 *PlayerSession_GetLastAngle(s32 i)
 {
     return &gPlayerSessionTable.unk_64[i];
 }
 
-extern "C" void func_02095260(s32 i)
+extern "C" void PlayerSession_ResetLastState(s32 i)
 {
-    *func_020952bc(i) = 0x93;
-    *func_020952b0(i) = 0x33;
-    Unk_02095338_E *e = func_020952a0(i);
+    *PlayerSession_GetLastAction(i) = 0x93;
+    *PlayerSession_GetLastScene(i) = 0x33;
+    Unk_02095338_E *e = PlayerSession_GetLastPos(i);
     e->a = 0;
     e->b = 0;
     e->c = 0;
-    *func_02095294(i) = 0;
+    *PlayerSession_GetLastAngle(i) = 0;
 }
 
 extern "C" void PlayerSession_SetGfxSlot(s32 i, s32 v)
 {
-    func_0209544c(&gPlayerSessionTable, i, v);
+    PlayerSessionTable_SetGfxSlot(&gPlayerSessionTable, i, v);
 }
 
 extern "C" void PlayerSession_ClearGfxSlot(s32 i)
 {
-    func_02095440(&gPlayerSessionTable, i);
+    PlayerSessionTable_ClearGfxSlot(&gPlayerSessionTable, i);
 }
 
 extern "C" u8 PlayerSession_GetGfxSlot(s32 i)
 {
-    return func_02095430(&gPlayerSessionTable, i);
+    return PlayerSessionTable_GetGfxSlot(&gPlayerSessionTable, i);
 }
 
 extern "C" u32 PlayerSession_FindFreeGfxSlot()
 {
-    return func_020953f4(&gPlayerSessionTable);
+    return PlayerSessionTable_FindFreeGfxSlot(&gPlayerSessionTable);
 }
 
 extern "C" void func_02095218() {}
 
-extern "C" void func_02095204(s32 id)
+extern "C" void PlayerActor_GetActor(s32 id)
 {
     PlayerActor_Get(id);
     func_02095218();
@@ -515,7 +515,7 @@ extern "C" void func_02095204(s32 id)
 
 extern "C" void func_02095200() {}
 
-extern "C" void func_020951ec(s32 id)
+extern "C" void PlayerActor_GetCharacter(s32 id)
 {
     PlayerActor_Get(id);
     func_02095200();
@@ -531,27 +531,27 @@ extern "C" u32 PlayerActor_ParamGetAction(u32 v)
     return (v >> 22) & 0xff;
 }
 
-extern "C" BOOL func_020951d0()
+extern "C" BOOL PlayerActor_IsStowFinished()
 {
     return PlayerActor_TestSlotFlag(1, 4);
 }
 
-extern "C" BOOL func_020951c4()
+extern "C" BOOL PlayerActor_IsEnteringDoor()
 {
     return PlayerActor_TestSlotFlag(4, 4);
 }
 
-extern "C" BOOL func_020951b8(s32 a)
+extern "C" BOOL PlayerActor_IsScriptedWalking(s32 a)
 {
     return PlayerActor_TestSlotFlag(5, a);
 }
 
-extern "C" BOOL func_020951ac()
+extern "C" BOOL PlayerActor_IsInAct05()
 {
     return PlayerActor_IsInAction(5, 4);
 }
 
-extern "C" BOOL func_020951a0()
+extern "C" BOOL PlayerActor_IsInWaitMenu()
 {
     return PlayerActor_IsInAction(0x90, 4);
 }
@@ -586,7 +586,7 @@ extern "C" s32 PlayerActor_GetAction(s32 id)
     return 0x93;
 }
 
-extern "C" s32 func_0209501c(Unk_02006d14_V3 *out, s16 *outAng)
+extern "C" s32 PlayerActor_GetResumeTransform(Unk_02006d14_V3 *out, s16 *outAng)
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -653,7 +653,7 @@ extern "C" s32 func_0209501c(Unk_02006d14_V3 *out, s16 *outAng)
     return 0x93;
 }
 
-extern "C" s32 func_02094fec()
+extern "C" s32 PlayerActor_GetActionOrSpawnAction()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -666,7 +666,7 @@ extern "C" s32 func_02094fec()
     return 0x93;
 }
 
-extern "C" BOOL func_02094fb4()
+extern "C" BOOL PlayerActor_IsChangingClothes()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o && o->unk_7ec == 7 && o->unk_2d4 < 0x13000) {
@@ -675,12 +675,12 @@ extern "C" BOOL func_02094fb4()
     return FALSE;
 }
 
-extern "C" BOOL func_02094fa8()
+extern "C" BOOL PlayerActor_IsChangingHeldItem()
 {
     return PlayerActor_IsInAction(0x3f, 4);
 }
 
-extern "C" s32 func_02094f84()
+extern "C" s32 PlayerActor_CanAcceptTalk()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -689,7 +689,7 @@ extern "C" s32 func_02094f84()
     return 0;
 }
 
-extern "C" BOOL func_02094f64(s32 c)
+extern "C" BOOL PlayerActor_SetEventLock(s32 c)
 {
     if (c) {
         return PlayerActor_SetSlotFlag(0xb, 4);
@@ -697,7 +697,7 @@ extern "C" BOOL func_02094f64(s32 c)
     return PlayerActor_ClearSlotFlag(0xb, 4);
 }
 
-extern "C" BOOL func_02094f48(s32 c, s32 b)
+extern "C" BOOL PlayerActor_SetNoFaceTalkTarget(s32 c, s32 b)
 {
     if (c) {
         return PlayerActor_SetSlotFlag(0xe, b);
@@ -705,7 +705,7 @@ extern "C" BOOL func_02094f48(s32 c, s32 b)
     return PlayerActor_ClearSlotFlag(0xe, b);
 }
 
-extern "C" BOOL func_02094f2c(s32 c, s32 b)
+extern "C" BOOL PlayerActor_SetNetFollowPaused(s32 c, s32 b)
 {
     if (c) {
         return PlayerActor_SetSlotFlag(0x10, b);
@@ -713,7 +713,7 @@ extern "C" BOOL func_02094f2c(s32 c, s32 b)
     return PlayerActor_ClearSlotFlag(0x10, b);
 }
 
-extern "C" BOOL func_02094f20()
+extern "C" BOOL PlayerActor_KeepAnimForNextAction()
 {
     return PlayerActor_SetSlotFlag(0x17, 4);
 }
@@ -738,7 +738,7 @@ extern "C" BOOL PlayerActor_ClearSlotFlag(s32 a, s32 b)
     return FALSE;
 }
 
-extern "C" BOOL func_02094e64()
+extern "C" BOOL PlayerActor_CanOpenMenu()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -760,7 +760,7 @@ extern "C" BOOL func_02094e64()
     return FALSE;
 }
 
-extern "C" BOOL func_02094e3c()
+extern "C" BOOL PlayerActor_IsInterruptibleByMenu()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -773,7 +773,7 @@ extern "C" BOOL func_02094e3c()
     return FALSE;
 }
 
-extern "C" BOOL func_02094de0()
+extern "C" BOOL PlayerActor_CanStartTalk()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -794,7 +794,7 @@ extern "C" BOOL func_02094de0()
     return FALSE;
 }
 
-extern "C" BOOL func_02094d88()
+extern "C" BOOL PlayerActor_IsEventIdle()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -811,7 +811,7 @@ extern "C" BOOL func_02094d88()
     return FALSE;
 }
 
-extern "C" BOOL func_02094d60()
+extern "C" BOOL PlayerActor_IsInterruptible()
 {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
@@ -834,7 +834,7 @@ extern "C" s32 PlayerActor_RequestAct05()
     return 0;
 }
 
-extern "C" s32 func_02094c38() {
+extern "C" s32 PlayerActor_RequestReturnToWait() {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         s32 r4 = o->unk_7ec;
@@ -953,7 +953,7 @@ extern "C" s32 PlayerActor_RequestAct79() {
     return 0;
 }
 
-extern "C" void func_020949a0(u32 a) {
+extern "C" void PlayerActor_RequestStowThenAct10(u32 a) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         s32 t = _ZN12Unk_02006d1415getHeldToolKindEv(o);
@@ -971,7 +971,7 @@ extern "C" void func_020949a0(u32 a) {
     }
 }
 
-extern "C" s32 func_02094960() {
+extern "C" s32 PlayerActor_RequestAct10() {
     Unk_02006d14 *o = PlayerActor_Get(4);
     if (o) {
         if (o->unk_7ec == 0x28) {
@@ -982,7 +982,7 @@ extern "C" s32 func_02094960() {
     return 0;
 }
 
-extern "C" s32 func_02094898() {
+extern "C" s32 PlayerActor_LocalRequestExitWalkOut() {
     Unk_02006d14 *o = PlayerActor_Get(4);
     s16 h;
     s32 pad;
@@ -1025,7 +1025,7 @@ extern "C" s32 PlayerActor_RequestAct13() {
 extern "C" s32 PlayerActor_RequestEmotion(u8 *p) {
     Unk_02006d14 *o = PlayerActor_Get(4);
     u32 v = *p;
-    u8 t = data_020d0408[v - 1];
+    u8 t = sEmotionHoldFrames[v - 1];
     if (o) {
         o->unk_7f8 = _ZN12Unk_0200769421getActionDonePriorityEj(o, o->unk_7ec);
         return _ZN12Unk_02006d1414requestEmotionEhhjs(o, *p, t, 5, -1);
@@ -1034,22 +1034,22 @@ extern "C" s32 PlayerActor_RequestEmotion(u8 *p) {
 }
 
 // Declarations for data defined further down (definition order sets the data layout)
-extern const u32 data_020d03e8[4];
-extern const u32 data_020d03f8[4];
-extern const u8 data_020d0408[0x20];
-extern const u32 data_020d03d8[4];
+extern const u32 sPlayerAngleSyncVars[4];
+extern const u32 sPlayerStateSyncVars[4];
+extern const u8 sEmotionHoldFrames[0x20];
+extern const u32 sPlayerPosSyncVars[4];
 extern PlayerSessionTable gPlayerSessionTable;
 
-const u32 data_020d03e8[4] = {4, 5, 6, 7};
+const u32 sPlayerAngleSyncVars[4] = {4, 5, 6, 7};
 
-const u32 data_020d03f8[4] = {8, 9, 10, 11};
+const u32 sPlayerStateSyncVars[4] = {8, 9, 10, 11};
 
-const u8 data_020d0408[0x20] = {
+const u8 sEmotionHoldFrames[0x20] = {
     0x0f, 0x0f, 0x14, 0x0f, 0x22, 0x22, 0x19, 0x22, 0x22, 0x2c, 0x14, 0x14, 0x24, 0x2c, 0x1c, 0x18,
     0x1a, 0x26, 0x1e, 0x0f, 0x0f, 0x0f, 0x28, 0x0f, 0x1b, 0x14, 0x22, 0x28, 0x14, 0x00, 0x00, 0x00,
 };
 
 // ---------------------------------------------------------------- data
-const u32 data_020d03d8[4] = {0, 1, 2, 3};
+const u32 sPlayerPosSyncVars[4] = {0, 1, 2, 3};
 
 PlayerSessionTable gPlayerSessionTable;

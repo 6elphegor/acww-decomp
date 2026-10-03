@@ -225,8 +225,8 @@ void VillagerId_GetPersonality(s32 a);
 s32 LetterPaper_PickForPersonality();
 void _ZN6LetterC1Ev(void *obj);
 void _ZN6LetterD1Ev(void *obj);
-void func_02065920(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
-void _ZN12Unk_0206555410setPresentEtj(void *obj, u32 v, s32 f);
+void Letter_ComposeVillagerMail(void *obj, u8 *b, void *fmt, u8 *c, s32 a, s32 b2, s32 c2);
+void _ZN10LetterView10setPresentEtj(void *obj, u32 v, s32 f);
 s32 LetterDelivery_PutInAddresseeMailbox(void *obj);
 s32 LetterDelivery_QueueOutgoing(void *obj, s32 v);
 void *PlayerData_GetCurrent();
@@ -1500,7 +1500,7 @@ extern "C" void HappyRoom_SendPrizeLetter(void *self, s32 n)
                 _ZN6LetterC1Ev(obj);
                 b = id;
                 Letter_ComposeFromMail(obj, &b, "ev_happyroom", data_020dc084, data_020dc08c, _ZN10PlayerData11getPlayerIdEv(p));
-                _ZN12Unk_0206555410setPresentEtj(obj, off, 1);
+                _ZN10LetterView10setPresentEtj(obj, off, 1);
                 if (LetterDelivery_PutInAddresseeMailbox(obj)) {
                     _ZN8SaveData7setFlagEj(gSaveData, t);
                     _ZN6LetterD1Ev(obj);
@@ -1573,8 +1573,8 @@ extern "C" BOOL Villager_SendLetterWithPaper(const void *r0, u8 r1, s32 r2, s32 
         buf[1] = LetterPaper_PickForPersonality();
         if (v != -1) buf[1] = v;
         _ZN6LetterC1Ev(obj);
-        func_02065920(obj, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
-        if (p) _ZN12Unk_0206555410setPresentEtj(obj, *p, 1);
+        Letter_ComposeVillagerMail(obj, buf, sVillagerLetterWithPaperPath, &buf[1], r3, r2, 1);
+        if (p) _ZN10LetterView10setPresentEtj(obj, *p, 1);
         if (LetterDelivery_PutInAddresseeMailbox(obj)) {
             _ZN6LetterD1Ev(obj);
             return TRUE;

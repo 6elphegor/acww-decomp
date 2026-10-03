@@ -262,7 +262,7 @@ s32 Insect_PlaySe(void *, s32, s32);
 s32 Insect_FadeOut(BObj *, s32);
 s32 Insect_Despawn(BObj *);
 void func_020e7530(s16 *, s32, s32);
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 s32 Insect_UpdateAlarm(BObj *, BVec *);
 s32 func_ov068_02268ce8(BObj *, u32, u32, s16 *);
 s32 func_ov068_02268e8c(BObj *, u32, u32);
@@ -337,7 +337,7 @@ void func_ov068_0226a6ac(DObj *o, u8 *fp, DVec *out) {
 
     best = 0xfffffff;
     flag = 1;
-    p = func_02095204(4);
+    p = PlayerActor_GetActor(4);
     me = &o->unk_204;
     if (p != 0) {
         DVec *q = (DVec *)((u8 *)p + 0x5c);
@@ -637,7 +637,7 @@ void func_ov068_0226a004(DObj *o) {
     save.z = pos->z;
     Insect_CheckAlarm(o);
     if (o->unk_24a != 0) {
-        DVec *q = (DVec *)func_02095204(4);
+        DVec *q = (DVec *)PlayerActor_GetActor(4);
         if (q != 0) {
             q = (DVec *)((u8 *)q + 0x5c);
             if (o->unk_238 == 1 && o->unk_24d == 8) {
@@ -883,7 +883,7 @@ void Unk_ov068_02268214::func_ov068_02269b20() {
 BOOL Unk_ov068_02268214::func_ov068_02269aa4() {
     s32 *v = unk_204;
     if (PlayerActor_IsLocalAct67HitAt(v) != 0) {
-        u8 *p = (u8 *)func_02095204(4);
+        u8 *p = (u8 *)PlayerActor_GetActor(4);
         if (p != 0) {
             if (v[0] < *(s32 *)(p + 0x5c)) {
                 v[0] = v[0] - FX_Div(0x14000, 0x10000);
@@ -931,7 +931,7 @@ BOOL Unk_ov068_02268214::func_ov068_02269a28() {
 void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
     s32 dist;
     u32 rnd;
-    u8 *tp = (u8 *)func_02095204(4);
+    u8 *tp = (u8 *)PlayerActor_GetActor(4);
     s32 *pos = unk_204;
     s32 ang = 0;
     s32 v[3];
@@ -1006,7 +1006,7 @@ void Unk_ov068_02268214::func_ov068_02269840(s16 *p) {
 
 
 void Unk_ov068_02268214::func_ov068_022697b8() {
-    u8 *tp = (u8 *)func_02095204(4);
+    u8 *tp = (u8 *)PlayerActor_GetActor(4);
     s32 *v = unk_210;
     if (tp != 0) {
         unk_23a = Math_AngleXZ(unk_204, tp + 0x5c);
@@ -1063,7 +1063,7 @@ extern "C" void func_ov068_022696e4(s32 *v, s32 up) {
 }
 
 void Unk_ov068_02268214::func_ov068_022694c0() {
-    u8 *tp = (u8 *)func_02095204(4);
+    u8 *tp = (u8 *)PlayerActor_GetActor(4);
     s32 ang, dist;
     s32 *pos = unk_204;
     s32 cur = unk_23a;
@@ -1161,7 +1161,7 @@ void func_ov068_02269250(BObj *o) {
     BVec *r6 = &o->unk_204;
     u32 st = o->unk_251;
     if (st == 3) {
-        void *q = func_02095204(4);
+        void *q = PlayerActor_GetActor(4);
         if (q) {
             s16 c = o->unk_23a;
             s16 buf = c;
@@ -1234,7 +1234,7 @@ void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
             s32 t = *p;
             o->unk_204.y = o->unk_204.y + (func_01ffcb0c(FX_Div(0x1000, 0x12000), t << 12) + t * t * -10);
             if (*p == 0) {
-                void *q = func_02095204(4);
+                void *q = PlayerActor_GetActor(4);
                 if (q) {
                     o->unk_23a = Math_AngleXZ(&o->unk_204, (u8 *)q + 0x5c);
                     Insect_PlaySe(o, 1, 0);
@@ -1261,7 +1261,7 @@ void func_ov068_02269110(BObj *o, s16 *p, u32 mode) {
 
 s32 func_ov068_02269040(BObj *o, s16 *p) {
     s32 r = 0;
-    void *q = func_02095204(4);
+    void *q = PlayerActor_GetActor(4);
     if (q) {
         u32 qq = (u32)q + 0x5c;
         BVec vec;

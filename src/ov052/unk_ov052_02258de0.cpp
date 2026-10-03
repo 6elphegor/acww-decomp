@@ -88,7 +88,7 @@ void *func_020947f0(s32 a);
 s32 Ground_IsOnLockedExit(void *p);
 void Ground_UnlockExit();
 void Ground_LockExit(s32 a);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
 void FieldPos_ToUnit(s32 *bx, s32 *by, void *pos);
@@ -114,8 +114,8 @@ void _ZN12ReddLastSale8setBuyerEPKS_(void *a, void *b);
 void _ZN12ReddLastSale7setItemEPKS_(void *a, void *b);
 void _ZN12ReddLastSale12copyItemFromEPKS_(void *dst, void *src);
 void *ReddLastSale_GetBuyer(void *p);
-s32 _ZN8PlayerId13func_02094218Ev(void *p);
-s32 _ZN8PlayerId13func_020941e8EPS_(void *a, void *b);
+s32 _ZN8PlayerId7isValidEv(void *p);
+s32 _ZN8PlayerId6equalsEPS_(void *a, void *b);
 void NpcActor_FindFreeUnitNear(void *out, void *self, void *v);
 s32 func_020e7518(void *p);
 s32 func_020e780c(s32 a, s32 b);
@@ -950,13 +950,13 @@ void SpNpcReddTalk::vfunc_78(TalkStartMsg *out) {
                 } else if (Talk_CheckAndSetPlayerFlag(1, 1) == 0) {
                     unk_ac = 7;
                 } else {
-                    if (_ZN8PlayerId13func_02094218Ev(ReddLastSale_GetBuyer(data_021ed284)) != 0 &&
+                    if (_ZN8PlayerId7isValidEv(ReddLastSale_GetBuyer(data_021ed284)) != 0 &&
                         (_ZN12ReddLastSale12copyItemFromEPKS_(&b, data_021ed284), !Unk_ov052_022595dc_Eq(&b, &k2))) {
                         _ZN12ReddLastSale12copyItemFromEPKS_(&c, data_021ed284);
                         _ZN16ActorTalkRequest15setItemNameSlotEjjj(this, &c, 0, 7);
                         u16 *r6 = (u16 *)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
                         u16 *r7 = (u16 *)ReddLastSale_GetBuyer(data_021ed284);
-                        if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && _ZN8PlayerId13func_020941e8EPS_(r7, r6) != 0)) {
+                        if (!(r7[0] == r6[0] && memcmp(r7 + 1, r6 + 1, 8) == 0 && _ZN8PlayerId6equalsEPS_(r7, r6) != 0)) {
                             _ZN16ActorTalkRequest17setPlayerNameSlotEjj(this, ReddLastSale_GetBuyer(data_021ed284), 1);
                             unk_ac = 8;
                         } else {
@@ -1211,7 +1211,7 @@ BOOL SpNpcRedd::pickDisplayItem() {
     u16 t[2];
     s32 bx, by;
     Unk_ov052_Vec v;
-    Character *p = (Character *)func_02095204(4);
+    Character *p = (Character *)PlayerActor_GetActor(4);
     BOOL f = Unk_ov052_02258f34_Flags() ? TRUE : FALSE;
     if (p == 0 || TalkRequest_IsActive() != 0 || _ZN11NpcTalkCtrl6isBusyEv(&unk_618) != 0 || ((gPad[1] & 1) == 0 && f == 0)) {
         return FALSE;

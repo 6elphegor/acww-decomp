@@ -947,7 +947,7 @@ void operator delete(void *p);
 struct ItemName { ItemName(u16 *p); ~ItemName(); u32 pad[0x28 / 4]; };
 
 // unk_020156ac.cpp
-struct Unk_020e1c64 { Unk_020e1c64(); ~Unk_020e1c64(); u32 pad[0x20 / 4]; };
+struct MsgString9B { MsgString9B(); ~MsgString9B(); u32 pad[0x20 / 4]; };
 
 // unk_020156ac.cpp
 struct Unk_020dd38c { Unk_020dd38c(); ~Unk_020dd38c(); u32 pad[0x20 / 4]; };
@@ -2701,8 +2701,8 @@ u32 func_020947f0();
 s32 Math_AngleXZ(u32 a, u8 *b);
 void func_02094574(u32 a, s16 b, u32 c);
 void PlayerActor_RequestTurnTo(s32 a, u32 b);
-void func_02094f48(u32 a, u32 b);
-Unk_020155e4_Ret *func_020951ec(u32 a);
+void PlayerActor_SetNoFaceTalkTarget(u32 a, u32 b);
+Unk_020155e4_Ret *PlayerActor_GetCharacter(u32 a);
 s32 _ZN8NpcActor10getAngleToEPS_(u8 *a, u8 *b);
 s32 _ZN8NpcActor16getAngleToPlayerEj(u8 *a, u32 b);
 void _ZN13NpcActionCtrl13requestActionEjiiissiitt(u8 *p, u32 a, u32 b, u32 c, u32 d, u32 e, s32 f, u32 g, u32 h, u32 i, u32 j);
@@ -2719,13 +2719,13 @@ extern u32 gVec3Zero;
 extern u16 data_020c6cc8;
 s32 Scene_GetCurrent(void);
 s32 Net_GetJoiningAid(void);
-s32 func_02094348(void);
+s32 PlayerActor_GetLocalSessionSlot(void);
 s32 _ZN15TalkWindowState17setSlotFromStringEiii(u32 a, u32 b, u32 c, u32 d);
 s32 _ZN15TalkWindowState12setNamedSlotEiPvj(u32 a, u32 b, void *c, u32 d);
 s32 _ZN15TalkWindowState7setSlotEiPv(u32 a, u32 b, void *c);
 u32 _ZN15TalkWindowState13getChoiceListEv(u32 a);
 void _ZN10VillagerId7getNameEj(u32 a, void *b);
-void _ZN8PlayerId13func_020940d0EP9MsgString(u32 a, void *b);
+void _ZN8PlayerId13getNameStringEP9MsgString(u32 a, void *b);
 void func_020638d0(u32 a, void *b);
 void String_GetDayOrdinal(void *a, u32 b);
 void String_GetMonthName(void *a, u32 b);
@@ -3112,7 +3112,7 @@ extern s16 data_02135f44[];
 extern Unk_0201a334_Vec3 sNpcObstacleProbeOffsets[];
 extern Unk_0201ab4c_Ent sNpcMoveModeTable[];
 s32 NpcLookAt_GetHeadPos(Unk_0201a734_Obj *self, Unk_0201a334_Vec3 *out);
-Unk_0201a334_Scene *func_020951ec(s32 h);
+Unk_0201a334_Scene *PlayerActor_GetCharacter(s32 h);
 BOOL func_0209451c(Unk_0201a334_Vec3 *out, s32 h);
 s32 func_020e7530(s16 *p, s32 v, s32 n);
 s32 func_020e96a4(void *a, void *b);
@@ -3174,7 +3174,7 @@ s32 TownMap_IsPosWalkable(Unk_020d77a4_Vec3 *v, s32 a);
 void func_02133ef8(void *p, u32 n);
 s32 _ZN11CommManager8isOnlineEv(u8 *g);
 Unk_020d77a4_Vec3 *func_020947f0(u32 n);
-s32 func_02094f48(s32 a, s32 b);
+s32 PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void WorldCurve_FromCurved(Unk_020d77a4_Vec3 *out, Unk_020d77a4_Vec3 *in);
 void _ZN8NpcActor12releaseModelEv(void *p);
 void _ZN11NpcFaceAnim7releaseEv(void *p);
@@ -3267,7 +3267,7 @@ s32 NpcNetRecord_GetSlots(s32 a, s32 b, void *c);
 s32 NpcNetRecord_SetSlotsAndSync(s32 a, s32 b, s32 c, void *d);
 void NetBuf_UnpackPair20(void *a, void *b, void *c);
 void _ZN16ActorTalkRequest13setOwnerActorEP18Unk_02015b8c_Scene(Unk_0201bc1c *a, void *b);
-s32 func_020951ec(u32 id);
+s32 PlayerActor_GetCharacter(u32 id);
 BOOL PlayerActor_GetSlotPosXZ(u8 *a, void *b, void *c, s32 d, u32 e);
 s32 Math_AngleXZ(void *a, void *b);
 s32 func_020e96a4(void *a, void *b);
@@ -3888,7 +3888,7 @@ s32 NpcActor::getDistanceTo(NpcActor *other) {
 
 s32 NpcActor::getDistanceToPlayer(u32 id) {
     using namespace nR;
-    return getDistanceTo((NpcActor *)func_020951ec(id));
+    return getDistanceTo((NpcActor *)PlayerActor_GetCharacter(id));
 }
 
 BOOL NpcActor::isNear(NpcActor *other, s32 n) {
@@ -3908,7 +3908,7 @@ BOOL NpcActor::isNear(NpcActor *other, s32 n) {
 
 BOOL NpcActor::isPlayerNear(s32 n, u32 id) {
     using namespace nR;
-    return isNear((NpcActor *)func_020951ec(id), n);
+    return isNear((NpcActor *)PlayerActor_GetCharacter(id), n);
 }
 
 s32 NpcActor::getAngleTo(NpcActor *other) {
@@ -3929,7 +3929,7 @@ s32 NpcActor::getAngleToPlayer(u32 id) {
     if (PlayerActor_GetSlotPosXZ(&flag, &vec, &vec.z, -1, id) != 0) {
         result = Math_AngleXZ(&unk_5c, &vec);
     } else {
-        s32 p = func_020951ec(id);
+        s32 p = PlayerActor_GetCharacter(id);
         if (p != 0) {
             result = getAngleTo((NpcActor *)p);
         }
@@ -3944,7 +3944,7 @@ s16 NpcActor::getRelativeAngleTo(NpcActor *other) {
 
 s32 NpcActor::getPlayerActor(u32 id) {
     using namespace nR;
-    return func_020951ec(id);
+    return PlayerActor_GetCharacter(id);
 }
 
 void NpcActor::setTalkRequest(Unk_0201bc1c *p) {
@@ -4432,7 +4432,7 @@ BOOL NpcActor::vfunc_5c(Unk_020d77a4_Vec3 *out) {
 void NpcActor::vfunc_4c(s32 v) {
     using namespace nQ;
     if (v == 8) {
-        func_02094f48(0, 4);
+        PlayerActor_SetNoFaceTalkTarget(0, 4);
     }
 }
 
@@ -5052,7 +5052,7 @@ BOOL NpcLookAt::canSeeTarget(Unk_0201a334_Scene *scene) {
     z.z = 0;
     switch (unk_00) {
     case 1: {
-        Unk_0201a334_Scene *t = func_020951ec(unk_64);
+        Unk_0201a334_Scene *t = PlayerActor_GetCharacter(unk_64);
         if (t != 0) {
             p = &t->unk_5c;
         }
@@ -5167,7 +5167,7 @@ void NpcLookAt::relax() {
 
 void NpcLookAt::lookAtPlayer(Unk_0201a334_Scene *scene, s32 h, s32 limit, u8 flag) {
     using namespace nP;
-    Unk_0201a334_Scene *t = func_020951ec(h);
+    Unk_0201a334_Scene *t = PlayerActor_GetCharacter(h);
     if (t != 0) {
         Unk_0201a334_Vec3 v;
         if (func_0209451c(&v, h)) {
@@ -8315,14 +8315,14 @@ void ActorTalkRequest::setTownNameSlot(u32 a, u32 b) {
 
 void ActorTalkRequest::setPlayerNameSlot(u32 a, u32 b) {
     using namespace nH;
-    Unk_020e1c64 local;
-    _ZN8PlayerId13func_020940d0EP9MsgString(a, &local);
+    MsgString9B local;
+    _ZN8PlayerId13getNameStringEP9MsgString(a, &local);
     _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
 }
 
 void ActorTalkRequest::setVillagerNameSlot(u32 a, u32 b) {
     using namespace nH;
-    Unk_020e1c64 local;
+    MsgString9B local;
     _ZN10VillagerId7getNameEj(a, &local);
     _ZN15TalkWindowState7setSlotEiPv(unk_3c, b, &local);
 }
@@ -8399,7 +8399,7 @@ extern "C" s32 TalkRequest_GetPlayerId(void) {
     if (Scene_GetCurrent() == 0x2f) {
         return Net_GetJoiningAid();
     }
-    return func_02094348();
+    return PlayerActor_GetLocalSessionSlot();
 }
 }
 
@@ -8432,7 +8432,7 @@ void Unk_020d7710::makePlayerLookAt(u8 *p) {
     u32 b = func_020947f0();
     if (b != 0) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
-        s16 d = s - func_020951ec(4)->unk_8e;
+        s16 d = s - PlayerActor_GetCharacter(4)->unk_8e;
         func_02094574(0, d, a);
     }
 }
@@ -8445,7 +8445,7 @@ void Unk_020d7710::makePlayerTurnTo(u8 *p) {
         s32 s = Math_AngleXZ(b, p + 0x5c);
         func_02094574(0, 0, a);
         PlayerActor_RequestTurnTo(s, a);
-        func_02094f48(1, a);
+        PlayerActor_SetNoFaceTalkTarget(1, a);
     }
 }
 

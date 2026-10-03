@@ -412,8 +412,8 @@ u32 Scene_GetCurrent();
 TouchPicker *Scene_GetTouchPicker();
 BOOL func_020b6080(TouchPicker *obj, Unk_ov004_02229970_Xyz *out, s32 *a, u8 *b);
 s32 func_020b6014(TouchPicker *o, u32 a, u32 b);
-void *func_02095204(u32 x);
-void *func_020951ec(s32 v);
+void *PlayerActor_GetActor(u32 x);
+void *PlayerActor_GetCharacter(s32 v);
 void TalkRequest_AddPlayerTalk6(void *p, s32 a);
 void TalkRequest_SetTargetDone(void *p);
 BOOL InputMode_IsTouch();
@@ -831,9 +831,9 @@ void RoomTelephone::enterAct01() {
 
 void RoomTelephone::execAct00() {
     s32 r5 = func_020b6014(Scene_GetTouchPicker(), 0, 0);
-    void *r0 = func_02095204(4);
+    void *r0 = PlayerActor_GetActor(4);
     if (r5 && r0 && (void *)r5 == r0) {
-        if (vfunc_48(func_020951ec(4))) {
+        if (vfunc_48(PlayerActor_GetCharacter(4))) {
             TalkRequest_AddPlayerTalk6(this, 0);
             return;
         }

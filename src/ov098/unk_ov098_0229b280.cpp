@@ -8,7 +8,7 @@
 extern "C" {
 s32 Snd_PlaySe(s32 a);
 s32 PlayerActor_IsInAction(s32 a, s32 b);
-u8 *func_02095204(s32 a);
+u8 *PlayerActor_GetActor(s32 a);
 void *PlayerData_GetCurrent();
 s32 MenuCtrl_IsForceCloseDue();
 s32 FieldAction_RequestTool(s32 a, void *b, s32 c, s32 d, s32 e);
@@ -27,7 +27,7 @@ void *Heap_AllocTail(void *heap, u32 size);
 void Heap_Free(void *heap, void *p);
 void MI_CpuCopy8(void *src, void *dst, s32 n);
 void *func_0208f158(void *p);
-void func_02065e70(void *a, void *b);
+void Letter_Copy(void *a, void *b);
 
 extern void *gMenuHeap;
 extern void *gSceneBlockMap;
@@ -297,7 +297,7 @@ void PocketMenu::addBottleOption() {
 }
 
 BOOL PocketMenu::findWaterNearPlayer(s32 flag) {
-    u8 *p = func_02095204(4);
+    u8 *p = PlayerActor_GetActor(4);
     s32 base;
     u8 *q;
     q = p + 0x5c;
@@ -388,7 +388,7 @@ void PocketMenu::mainAct2C() {
         s32 r5 = ok ? a - 0x12b0 : -1;
         u32 t = (u8)func_02063b8c(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
-        x += *(s16 *)(func_02095204(4) + 0x8e);
+        x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
@@ -435,7 +435,7 @@ BOOL PocketMenu::findBuryHole() {
             return FALSE;
         }
     }
-    u8 *q = func_02095204(4);
+    u8 *q = PlayerActor_GetActor(4);
     s32 px = 0, py = 0;
     void *grid = TownBlockMap_Get();
     FieldPos_ToUnit(&px, &py, q + 0x5c);
@@ -557,7 +557,7 @@ void PocketMenu::sendBottleLetter() {
     CommManager *g = gCommManager;
     if (!g->isOnline() || g->unk_64 == 0) {
         u8 *const d = data_021e7f8c;
-        func_02065e70(func_0208f158(d), (void *)p);
+        Letter_Copy(func_0208f158(d), (void *)p);
         ((Unk_0208f238 *)d)->func_0208f168();
         ((Unk_0208f238 *)d)->func_0208f1a8(0);
     } else {

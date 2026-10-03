@@ -57,10 +57,10 @@ struct ChoiceString {
     ~ChoiceString();
 };
 
-struct Unk_020e1c64 {
+struct MsgString9B {
     u32 v[7];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 };
 
 struct TalkWindowState {
@@ -910,7 +910,7 @@ void SpNpcShrunkTalk::openEmotionPage(s32 mode) {
     PlayerData_GetCurrent();
     g = unk_3c->getChoiceList();
     b[0] = 0;
-    Unk_020e1c64 o;
+    MsgString9B o;
     b[1] = 5;
     ChoiceString str;
     g->clear();

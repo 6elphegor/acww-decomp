@@ -154,8 +154,8 @@ void Gfx2d_LoadCharFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadPaletteFile(const char *a, void *b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_ResetLayer(s32 a);
 void Gfx2d_ShowLayer(s32 a);
-BOOL func_02094fa8();
-BOOL func_02094fb4();
+BOOL PlayerActor_IsChangingHeldItem();
+BOOL PlayerActor_IsChangingClothes();
 BOOL PlayerActor_RequestWearShirt(u16 *v);
 BOOL PlayerActor_RequestWearHat(u16 *v);
 BOOL PlayerActor_RequestChangeHeldItem(u16 *v);
@@ -2064,12 +2064,12 @@ BOOL DesignTab::requestWear(s32 k, u32 v) {
 
 BOOL DesignTab::isWearDone(s32 k) {
     if (k == 2) {
-        if (func_02094fa8() == 0) {
+        if (PlayerActor_IsChangingHeldItem() == 0) {
             return TRUE;
         }
         return FALSE;
     }
-    if (func_02094fb4() == 0) {
+    if (PlayerActor_IsChangingClothes() == 0) {
         return TRUE;
     }
     return FALSE;

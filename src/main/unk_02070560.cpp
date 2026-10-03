@@ -8,7 +8,7 @@ class Unk_020942c8;
 
 namespace U125_calls {
 extern "C" void func_020a78a4(EncodedString16Buf *o, u8 *src, s32 n);
-extern "C" BOOL _ZN8PlayerId13func_020941e8EPS_(Unk_020942c8 *self, Unk_020942c8 *o);
+extern "C" BOOL _ZN8PlayerId6equalsEPS_(Unk_020942c8 *self, Unk_020942c8 *o);
 }
 
 // ======== types of unk_0206fe80.cpp ========
@@ -345,16 +345,16 @@ extern "C" {
 void PatternPresetInfo_Apply(void *t, PatternInfo *s, s32 id);
 }
 extern "C" {
-Unk_020942c8 *func_0209409c(Unk_020942c8 *p);
+Unk_020942c8 *PlayerId_GetTownId(Unk_020942c8 *p);
 }
 extern "C" {
 void func_02063950(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN8PlayerId13func_02094128Et(Unk_020942c8 *p, u32 v);
+void _ZN8PlayerId5setIdEt(Unk_020942c8 *p, u32 v);
 }
 extern "C" {
-void _ZN6TownId13func_02094094EPS_(Unk_020942c8 *a, Unk_020942c8 *b);
+void _ZN6TownId7setTownEPS_(Unk_020942c8 *a, Unk_020942c8 *b);
 }
 extern "C" {
 s32 memcmp(void *a, void *b, u32 n);
@@ -395,7 +395,7 @@ void _ZN9MsgString11fromEncodedEP13EncodedStringii(void *dst, EncodedString16Buf
 BOOL PatternInfo::infoEquals(PatternInfo *o) {
     using namespace n4;
     if (unk_26.lo == o->unk_26.lo && unk_26.hi == o->unk_26.hi && unk_00 == o->unk_00 &&
-        memcmp(&unk_02, &o->unk_02, 8) == 0 && U125_calls::_ZN8PlayerId13func_020941e8EPS_(this, o) != 0) {
+        memcmp(&unk_02, &o->unk_02, 8) == 0 && U125_calls::_ZN8PlayerId6equalsEPS_(this, o) != 0) {
         for (u32 i = 0; i < 16; i++) {
             if (unk_16.b[i] != o->unk_16.b[i]) return FALSE;
         }
@@ -592,11 +592,11 @@ void PlayerPatterns::replaceAuthorTown(Unk_020942c8 *a, Unk_020942c8 *b) {
     for (u8 i = 0; i < 8; i++) {
         PatternInfo *s = getPattern(i)->getInfo();
         Unk_020942c8 *base = s->getAuthor();
-        Unk_020942c8 *p = func_0209409c(base);
+        Unk_020942c8 *p = PlayerId_GetTownId(base);
         if (p->unk_00 == b->unk_00) {
             if (memcmp(&p->unk_02, &b->unk_02, 8) == 0) {
-                if (U125_calls::_ZN8PlayerId13func_020941e8EPS_(base, a)) {
-                    _ZN6TownId13func_02094094EPS_(s->getAuthor(), func_0209409c(a));
+                if (U125_calls::_ZN8PlayerId6equalsEPS_(base, a)) {
+                    _ZN6TownId7setTownEPS_(s->getAuthor(), PlayerId_GetTownId(a));
                 }
             }
         }
@@ -671,8 +671,8 @@ void AbleSistersPatterns::initDefaultPatterns() {
             AblePatternDefaults_Extract(t, getPattern(i)->getPixels(), i);
             void *tbl = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(tbl, getPattern(i)->getInfo(), i + 8);
-            func_02063950(func_0209409c(getPattern(i)->getInfo()->getAuthor()), g1);
-            _ZN8PlayerId13func_02094128Et(getPattern(i)->getInfo()->getAuthor(), g2);
+            func_02063950(PlayerId_GetTownId(getPattern(i)->getInfo()->getAuthor()), g1);
+            _ZN8PlayerId5setIdEt(getPattern(i)->getInfo()->getAuthor(), g2);
         }
         Mem_Free(t);
     }
@@ -814,13 +814,13 @@ extern "C" {
 void *_ZN11PatternInfo9getAuthorEv(void *p);
 }
 extern "C" {
-void *func_0209409c(void *p);
+void *PlayerId_GetTownId(void *p);
 }
 extern "C" {
 void func_02063950(u16 *p, u16 v);
 }
 extern "C" {
-void _ZN8PlayerId13func_02094128Et(void *p, u16 v);
+void _ZN8PlayerId5setIdEt(void *p, u16 v);
 }
 extern "C" {
 void _ZN7PatternD1Ev(void *p);
@@ -844,19 +844,19 @@ extern "C" {
 void _ZN9MsgString3setEPh(void *dst, void *src);
 }
 extern "C" {
-void _ZN8PlayerId13func_020940a0EP9MsgString(void *a, void *b);
+void _ZN8PlayerId13setNameStringEP9MsgString(void *a, void *b);
 }
 extern "C" {
-void _ZN6TownId13func_02094094EPS_(void *a, void *b);
+void _ZN6TownId7setTownEPS_(void *a, void *b);
 }
 extern "C" {
 void func_020638a0(void *a, void *b);
 }
 extern "C" {
-void _ZN12Unk_020e1c64C1Ev(void *);
+void _ZN11MsgString9BC1Ev(void *);
 }
 extern "C" {
-void _ZN12Unk_020e1c64D1Ev(void *);
+void _ZN11MsgString9BD1Ev(void *);
 }
 extern "C" {
 void _ZN8PlayerIdC1EPv(void *);
@@ -1014,9 +1014,9 @@ extern "C" void TownFlagPattern_InitDefault(void *self) {
         void *g = PatternPresetInfo_Get();
         PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)), 0x10);
         Unk_02071a50_Calls::func_02063990(
-            func_0209409c(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)))),
+            PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self)))),
             Unk_02071a50_Calls::gSaveData.unk_02);
-        _ZN8PlayerId13func_02094128Et(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self))),
+        _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(Unk_02071a50_Calls::TownFlagPattern_GetPattern(self))),
                       Unk_02071a50_Calls::data_020d03d4);
         Mem_Free(buf);
     }
@@ -1052,8 +1052,8 @@ BOOL PatternTexCache::loadPresetPattern(s32 n) {
             PresetPatternFile_Extract(buf, _ZN7Pattern9getPixelsEv(getPresetPattern()));
             void *g = PatternPresetInfo_Get();
             PatternPresetInfo_Apply(g, _ZN7Pattern7getInfoEv(getPresetPattern()), n + 0x12);
-            func_02063950((u16 *)func_0209409c(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern()))), data_020cb6f4);
-            _ZN8PlayerId13func_02094128Et(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern())), data_020d03d0);
+            func_02063950((u16 *)PlayerId_GetTownId(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern()))), data_020cb6f4);
+            _ZN8PlayerId5setIdEt(_ZN11PatternInfo9getAuthorEv(_ZN7Pattern7getInfoEv(getPresetPattern())), data_020d03d0);
             Mem_Free(buf);
         }
         return TRUE;
@@ -1300,17 +1300,17 @@ extern "C" BOOL PatternPresetInfo_Apply(void *tbl, void *dst, s32 idx) {
             _ZN11PatternInfo8setTasteEj(dst, rec[1]);
             _ZN12Unk_020dd38cC2Ev(l.o1);
             _ZN9MsgString3setEPh(l.o1, rec + 0x1e);
-            _ZN12Unk_020e1c64C1Ev(l.o2);
+            _ZN11MsgString9BC1Ev(l.o2);
             _ZN9MsgString3setEPh(l.o2, rec + 0x13);
             func_020639bc(l.o3);
             func_020638a0(l.o3, l.o1);
             _ZN8PlayerIdC1EPv(l.o4);
-            _ZN8PlayerId13func_020940a0EP9MsgString(l.o4, l.o2);
-            _ZN6TownId13func_02094094EPS_(l.o4, l.o3);
+            _ZN8PlayerId13setNameStringEP9MsgString(l.o4, l.o2);
+            _ZN6TownId7setTownEPS_(l.o4, l.o3);
             _ZN11PatternInfo9setAuthorEP12Unk_020942c8(dst, l.o4);
             _ZN8PlayerIdC1Ev(l.o4);
             func_020639b8(l.o3);
-            _ZN12Unk_020e1c64D1Ev(l.o2);
+            _ZN11MsgString9BD1Ev(l.o2);
             _ZN12Unk_020dd38cD1Ev(l.o1);
             _ZN8ItemNameD1Ev(l.o0);
             return TRUE;
@@ -1948,7 +1948,7 @@ extern "C" {
 s32 _ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-void _ZN8PlayerId13func_020940d0EP9MsgString(s32 a, s32 b);
+void _ZN8PlayerId13getNameStringEP9MsgString(s32 a, s32 b);
 }
 extern "C" {
 s32 PlayerData_GetCurrentIndex();
@@ -1978,7 +1978,7 @@ extern "C" {
 void MailText_SetSlot(s32 i, void *p);
 }
 extern "C" {
-void _ZN12Unk_0206555410setPresentEtj(void *p, u32 a, s32 b);
+void _ZN10LetterView10setPresentEtj(void *p, u32 a, s32 b);
 }
 extern "C" {
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, s32 f);

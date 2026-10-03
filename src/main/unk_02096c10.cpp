@@ -8,8 +8,8 @@ public:
 
     u8 func_02065578();
     u32 func_02065588(u32 v, u32 w);
-    void func_02065b28();
-    void func_02065e70(Letter *src);
+    void Letter_MarkSent();
+    void Letter_Copy(Letter *src);
 
     /* 0x04 */ u8 unk_04[0xec];
     /* 0xf0 */ u16 unk_f0;
@@ -122,7 +122,7 @@ extern "C" {
 void LetterDelivery_Update(void *);
 s32 Scene_AllowsLetterDelivery(void);
 s32 func_02063b8c(s32);
-void func_02065c94(void *);
+void Letter_Clear(void *);
 void _ZN6LetterD1Ev(void *);
 void _ZN6LetterC1Ev(void *);
 }
@@ -141,7 +141,7 @@ Letter *PlayerMailbox::getLetter(s32 i) {
 void PlayerMailbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        func_02065c94(&unk_00[i]);
+        Letter_Clear(&unk_00[i]);
     }
     unk_988 = 0;
 }
@@ -168,7 +168,7 @@ Letter *LetterOutbox::getLetter(s32 i) {
 void LetterOutbox::clear() {
     s32 i;
     for (i = 0; i < 10; i++) {
-        func_02065c94(&unk_00[i]);
+        Letter_Clear(&unk_00[i]);
     }
     unk_98c = 0;
     unk_988 = 1;
@@ -202,7 +202,7 @@ Letter *LetterStorage::getPage(s32 i) {
 void LetterStorage::clear() {
     s32 i;
     for (i = 0; i < 75; i++) {
-        func_02065c94(&unk_00[i]);
+        Letter_Clear(&unk_00[i]);
     }
 }
 
@@ -219,7 +219,7 @@ extern "C" Letter *BottleLetterRecord_Destruct(Letter *p) {
 extern "C" void BottleLetterRecord_GetLetter() {}
 
 void BottleLetterRecord::clearRecord() {
-    func_02065c94(this);
+    Letter_Clear(this);
     clearUsedMessages();
 }
 
@@ -287,7 +287,7 @@ u8 *FutureLetter::getDeliveryDate() {
 }
 
 void FutureLetter::clearFutureLetter() {
-    func_02065c94(this);
+    Letter_Clear(this);
     unk_f4 = 1;
     unk_f5 = 1;
     unk_f6 = 0;

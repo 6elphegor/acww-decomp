@@ -107,15 +107,15 @@ extern s16 data_02135f44[];
 }
 
 extern "C" {
-s32 func_0208fb20(void *, s32, s32, void *);
+s32 EffectSpl_CreateTracked(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 func_0208fc88(void *, s32, s32, void *);
+s32 EffectSpl_CreateOneShot(void *, s32, s32, void *);
 }
 
 extern "C" {
-s32 func_0208fe0c(void *);
+s32 EffectSpl_ApplySceneTint(void *);
 }
 
 extern "C" {
@@ -236,23 +236,23 @@ public:
 extern "C" BOOL func_020a78a4(void *, const void *, s32);
 
 // 8-byte destination buffer at +0xe
-class Unk_020e1c4c : public EncodedString {
+class EncodedString8 : public EncodedString {
 public:
-    Unk_020e1c4c();
-    virtual ~Unk_020e1c4c();
+    EncodedString8();
+    virtual ~EncodedString8();
     virtual u32 capacity();
     virtual u8 *data();
 
-    void func_02093f90(void *dst, u32 n);
+    void copyTo(void *dst, u32 n);
 
     /* 0x0e */ u8 unk_0e[8];
 };
 
 // 9-byte source buffer at +0x12
-class Unk_020e1c64 : public MsgString {
+class MsgString9B : public MsgString {
 public:
-    Unk_020e1c64();
-    virtual ~Unk_020e1c64();
+    MsgString9B();
+    virtual ~MsgString9B();
     virtual u32 vfunc_08();
     virtual u8 *vfunc_0c();
 
@@ -275,8 +275,8 @@ public:
     /* 0x00 */ u16 unk_00;
     /* 0x02 */ u8 unk_02[8];
 
-    s32 func_02094058();
-    void func_02094094(TownId *o);
+    s32 getTownRelation();
+    void setTown(TownId *o);
 };
 
 class PlayerId : public TownId {
@@ -285,21 +285,21 @@ public:
     PlayerId(void *o);
     PlayerId(const PlayerId &o);
 
-    void func_020940a0(MsgString *x);
-    void func_020940d0(MsgString *x);
-    u8 *func_02094104();
-    void func_02094108(void *src);
+    void setNameString(MsgString *x);
+    void getNameString(MsgString *x);
+    u8 *getName();
+    void setName(void *src);
     s8 getGender();
-    void func_02094124(u8 v);
-    void func_02094128(u16 v);
-    u16 func_0209412c();
-    void func_020941b4(void *src, u16 a, s8 b, TownId *p);
-    BOOL func_020941e8(PlayerId *o);
-    BOOL func_02094218();
-    void func_02094238(PlayerId *o);
-    void func_02094264(PlayerId *o);
-    void func_02094294();
-    void func_020942b8(void *src);
+    void setGender(u8 v);
+    void setId(u16 v);
+    u16 getId();
+    void set(void *src, u16 a, s8 b, TownId *p);
+    BOOL equals(PlayerId *o);
+    BOOL isValid();
+    void copyTo(PlayerId *o);
+    void copyFrom(PlayerId *o);
+    void clear();
+    void setRaw(void *src);
 
     /* 0x0a */ u16 unk_0a;
     /* 0x0c */ u8 unk_0c[8];
@@ -335,11 +335,11 @@ s32 Scene_GetCurrent();
 }
 
 extern "C" {
-s32 func_02095204(s32);
+s32 PlayerActor_GetActor(s32);
 }
 
 extern "C" {
-BOOL func_02094184(u16 v, u16 *arr, s32 n);
+BOOL PlayerId_ListContainsId(u16 v, u16 *arr, s32 n);
 }
 
 extern "C" {
@@ -354,13 +354,13 @@ extern "C" {
 s32 Area_PlaceItem(s32, s32, s32, s32, s32);
 }
 
-Unk_020e1c4c::Unk_020e1c4c() {}
+EncodedString8::EncodedString8() {}
 
-Unk_020e1c4c::~Unk_020e1c4c() {}
+EncodedString8::~EncodedString8() {}
 
-u32 Unk_020e1c4c::capacity() { return 8; }
+u32 EncodedString8::capacity() { return 8; }
 
-void Unk_020e1c4c::func_02093f90(void *dst, u32 n) { MI_CpuCopy8(unk_0e, dst, n); }
+void EncodedString8::copyTo(void *dst, u32 n) { MI_CpuCopy8(unk_0e, dst, n); }
 
-u8 *Unk_020e1c4c::data() { return unk_0e; }
+u8 *EncodedString8::data() { return unk_0e; }
 

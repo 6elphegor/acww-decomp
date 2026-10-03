@@ -272,9 +272,9 @@ BOOL TalkRequest_SetTargetDone(void *p);
 BOOL TalkRequest_AddPlayerTalk6(void *p, u32 a);
 void _ZN9Character13func_0203e47cEi(void *self, TalkMsgRequest *sec);
 void _ZN9Character13func_0203e488Ei(void *self, TalkMsgRequest *sec);
-BOOL func_020951d0();
-BOOL func_020951c4();
-void func_020949a0(u32 a);
+BOOL PlayerActor_IsStowFinished();
+BOOL PlayerActor_IsEnteringDoor();
+void PlayerActor_RequestStowThenAct10(u32 a);
 void *Scene_GetWarpRequest();
 BOOL SceneWarp_RequestExit(void *o, s32 a);
 s32 Scene_GetCurrent();
@@ -634,13 +634,13 @@ void ReddTent::execTentGoIn() {
 
 
 BOOL ReddTent::enterTentEntry07() {
-    func_020949a0(0);
+    PlayerActor_RequestStowThenAct10(0);
     return TRUE;
 }
 
 
 void ReddTent::execTentEntry07() {
-    if (func_020951d0()) {
+    if (PlayerActor_IsStowFinished()) {
         if (setTentState(8)) {
             _ZN9Character13func_0203e47cEi(this, this);
         }
@@ -655,7 +655,7 @@ BOOL ReddTent::enterTentWalkIn() {
 
 
 void ReddTent::execTentWalkIn() {
-    if (func_020951c4()) {
+    if (PlayerActor_IsEnteringDoor()) {
         setTentState(9);
     } else if (unk_2b6 == 0) {
         s16 ang;
@@ -678,7 +678,7 @@ BOOL ReddTent::enterTentWarp() {
 // ================================================================
 // class ReddTent (state functions)
 void ReddTent::execTentWarp() {
-    if (func_020951d0()) {
+    if (PlayerActor_IsStowFinished()) {
         unk_2b4++;
     }
     u32 lim;

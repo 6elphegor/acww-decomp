@@ -155,7 +155,7 @@ s32 FtrInfo_GetUnk05(void);
 void *VillagerDataProfileView_getShirt(void *o);
 void *Villager_GetState(void *o);
 void *VillagerData_getVillagerId(void *o);
-void *func_02095204(u32 a);
+void *PlayerActor_GetActor(u32 a);
 s32 Ground_IsOnLockedExit(void *p);
 s32 TalkRequest_IsActive();
 s32 func_01ffcb0c(s32 a, s32 b);
@@ -1041,7 +1041,7 @@ BOOL FleaMarketSellerVillager::checkFurnitureTap() {
     s32 x2, y2;
     Unk_ov004_02217954_V v0;
     Unk_ov004_02217954_V v1;
-    u8 *p = (u8 *)func_02095204(4);
+    u8 *p = (u8 *)PlayerActor_GetActor(4);
     BOOL flag = Unk_ov004_02217954_Both() ? TRUE : FALSE;
     if (unk_a4c != 2) {
         return FALSE;

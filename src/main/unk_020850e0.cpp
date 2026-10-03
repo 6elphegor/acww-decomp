@@ -110,7 +110,7 @@ BOOL Item_IsFurniture(u16 *);
 s32 Item_GetFurnitureIndex(u16 *);
 void *PlayerData_GetCurrent();
 void *_ZN10PlayerData11getPlayerIdEv(void *);
-s32 _ZN8PlayerId13func_02094218Ev(void *);
+s32 _ZN8PlayerId7isValidEv(void *);
 s32 _ZN12Unk_02097ff48testFlagEj(void *, s32);
 s32 func_0203c338();
 s32 func_0203c31c();
@@ -134,7 +134,7 @@ void _ZN13PeteFallState13func_02086eecEv(void *);
 void _ZN16ResettiVisitFlag13func_02086f34Ev(void *);
 void _ZN17VisitorSpawnFlags13func_02086c00Ev(void *);
 void VillagerId_Clear(...);
-void _ZN8PlayerId13func_02094294Ev(...);
+void _ZN8PlayerId5clearEv(...);
 s32 func_02063b8c(s32);
 s32 Random_PickSetBit(u32, s32, s32);
 s32 BlockMap_FindItemAllAttr(void *, s32 *, s32 *, s32 *, s32 *, u16 *, u16 *, s32, s32);
@@ -186,7 +186,7 @@ void ContestRecord::setHolderPlayer(Unk_02085810_Base *src) { unk_00 = *src; Vil
 
 void ContestRecord::func_020858ac() {}
 
-void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { unk_16 = *src; _ZN8PlayerId13func_02094294Ev(this); }
+void ContestRecord::setHolderVillager(Unk_02085810_Rec *src) { unk_16 = *src; _ZN8PlayerId5clearEv(this); }
 
 Unk_02085810_Rec *ContestRecord::getHolderVillager() { return &unk_16; }
 
@@ -455,7 +455,7 @@ extern "C" void ContestRecord_JudgeGardens(void *self)
         _ZN13ContestRecord17getHolderVillagerEv(self);
         VillagerId_Clear();
         _ZN13ContestRecord13func_020858acEv(self);
-        _ZN8PlayerId13func_02094294Ev();
+        _ZN8PlayerId5clearEv();
         if (grid != NULL) {
             mask = 0;
             best = -1;
@@ -572,7 +572,7 @@ extern "C" void TownSessionState_CheckTortimerReward(void *self)
 {
     void *r5 = PlayerData_GetCurrent();
     if (r5 != NULL) {
-        if (_ZN8PlayerId13func_02094218Ev(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
+        if (_ZN8PlayerId7isValidEv(_ZN10PlayerData11getPlayerIdEv(r5)) != 0) {
             if (_ZN12Unk_02097ff48testFlagEj(r5, 1) == 0) {
                 if ((_ZN12Unk_02097ff48testFlagEj(r5, 0x21) == 0 && func_0203c338() != 0) ||
                     (_ZN12Unk_02097ff48testFlagEj(r5, 0x22) == 0 && func_0203c31c() != 0)) {

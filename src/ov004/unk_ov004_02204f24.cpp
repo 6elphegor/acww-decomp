@@ -905,7 +905,7 @@ static inline BOOL Unk_ov004_02205820_Is3d(u16 v) {
 #define AnimFrameCtrl_isFinished _ZN13AnimFrameCtrl10isFinishedEv   // main
 #define AnimFrameCtrl_step _ZN13AnimFrameCtrl4stepEv   // main
 #define func_02056fcc _ZN12G3dResAccess13func_02056fccEi   // main
-#define func_02094058 _ZN6TownId13func_02094058Ev   // main
+#define TownId_getTownRelation _ZN6TownId15getTownRelationEv   // main
 #define PlayerData_getPlayerId _ZN10PlayerData11getPlayerIdEv   // main
 #define func_0209c224 _ZN12Unk_0209c15c13func_0209c224EPt   // main
 #define func_0209c25c _ZN12Unk_0209c15c13func_0209c25cEPt   // main
@@ -996,7 +996,7 @@ s32 func_01ffcb0c(s32 a, s32 b);
 void func_020e93a0(Unk_ov004_Vec3 *v, s16 a);
 void func_01ffd070(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *a, Unk_ov004_Vec3 *b);
 s32 func_02056fcc(void *p, u32 id);
-void *func_02095204(s32 a);
+void *PlayerActor_GetActor(s32 a);
 u16 Item_MakeFurniture(s32 a, s32 b);
 s32 FtrMgr_GetSurfaceHeightAtPos(void *v);
 s32 ItemDrop_StartFromLocalPlayer(u16 *a, Unk_ov004_Vec3 *b);
@@ -1118,7 +1118,7 @@ s32 FtrInfo_GetDmaUnk06();
 s32 NpcRegistry_GetSlotCount();
 void *NpcRegistry_GetBySlot(s32 i);
 s32 PlayerData_getPlayerId();
-s32 func_02094058();
+s32 TownId_getTownRelation();
 s32 BlendAnimModel_getAnmObj(void *o);
 void BlendAnimModel_stepBlend(void *o);
 s32 AnimFrameCtrl_isFinished(void *o);
@@ -1939,7 +1939,7 @@ FxVec3 *FtrActor::getInteractionPos() {
     v.x = unk_5c[0];
     v.y = unk_5c[1];
     v.z = unk_5c[2];
-    u8 *o = (u8 *)func_02095204(4);
+    u8 *o = (u8 *)PlayerActor_GetActor(4);
     if (o) {
         s32 i = *(u16 *)(o + 0x8e) >> 4;
         s32 k = i * 2;
@@ -2232,7 +2232,7 @@ extern "C" void FtrActor_GetCenter(Self *self, Unk_ov004_02208284_V3 *out) {
 extern "C" BOOL FtrActor_TestPlayerUnk() {
     if (PlayerData_GetCurrent() != 0) {
         if (PlayerData_getPlayerId() != 0) {
-            if (func_02094058() == 0) {
+            if (TownId_getTownRelation() == 0) {
                 return TRUE;
             }
             return FALSE;
@@ -2255,10 +2255,10 @@ extern "C" BOOL FtrActor_IsPosClearOfCharacters(Self *self, s32 a, s32 b, s32 c,
     u32 i;
     u32 j;
     u32 n;
-    p = func_02095204(4);
+    p = PlayerActor_GetActor(4);
     if (p) {
         for (i = 0; i < 4; i++) {
-            void *q = func_02095204(i);
+            void *q = PlayerActor_GetActor(i);
             if (q && p != q) {
                 if (FtrActor_IsWithinDist(self, a, (u8 *)q + 0x5c, c)) {
                     return FALSE;
@@ -2960,7 +2960,7 @@ BOOL FtrActor::canMoveTo(s32 a, s32 b) {
         return FALSE;
     }
     grid = gSceneBlockMap;
-    u8 *cam = (u8 *)func_02095204(4);
+    u8 *cam = (u8 *)PlayerActor_GetActor(4);
     if (unk_284 == 1) {
         return FALSE;
     }
@@ -3438,7 +3438,7 @@ void FtrCollider::onEdgeContact(Unk_020d8ce4 *a, Unk_ov004_02206570_Act *b, s32 
     s32 r7;
     s32 r5;
     s32 px, pz;
-    void *chk = func_02095204(4);
+    void *chk = PlayerActor_GetActor(4);
     if (b != NULL && (void *)b == chk) {
         if (unk_9c != NULL && ((FtrActor *)unk_9c)->isAct(1)) {
             Unk_ov004_02206744_V3 *pv;
@@ -4408,7 +4408,7 @@ BOOL FtrActor::enterAppear() {
     unk_15e = 0;
     unk_160 = 0x2710;
     unk_164 = 0x800;
-    if (func_02095204(4)) {
+    if (PlayerActor_GetActor(4)) {
         Unk_ov004_Vec3 pos;
         u16 t;
         FtrActor_GetCenter(this, &pos);

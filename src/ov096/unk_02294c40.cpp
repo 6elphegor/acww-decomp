@@ -187,13 +187,13 @@ u32 Item_FindMoneyBagForAmount(u32 v, s32 a, s32 *out);
 BOOL func_0204bab8(u16 *p);
 BOOL Item_IsHoldable(u16 *p);
 u32 Item_GetPrice(u16 *p);
-s32 _ZN12Unk_0206555413func_02065578Ev(void *obj);
-void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, u32 c);
-s32 _ZN12Unk_0206555413func_020655c0Ev(void *a);
-s32 _ZN12Unk_0206555413func_020655d0Ev(void *obj);
-void func_02065af0();
-s32 func_02065bfc();
-void func_02065c34(void *p, u8 v);
+s32 _ZN10LetterView8getStateEv(void *obj);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, u32 c);
+s32 _ZN10LetterView15getPresentFlagsEv(void *a);
+s32 _ZN10LetterView10getPresentEv(void *obj);
+void Letter_MarkRead();
+s32 Letter_InitBottleDraft();
+void Letter_InitDraft(void *p, u8 v);
 void _ZN6LetterC1Ev(void *p);
 void *_ZN6LetterD1Ev(void *p);
 void *_ZN15MenuLabelButtonD1Ev(void *p);
@@ -206,7 +206,7 @@ void *_ZN18TouchPromptBalloonD1Ev(void *p);
 void *_ZN11InventoryBgD1Ev(void *p);
 void *_ZN10LetterGridD1Ev(void *p);
 void *_ZN17InventoryItemGridD1Ev(void *p);
-void func_02065e70(void *dst, void *src);
+void Letter_Copy(void *dst, void *src);
 void _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(void *p, void *q, s32 a, s32 b, s32 c);
 void _ZN14LetterRenderer13func_0206d394Ev(void *p);
 void _ZN14LetterRenderer13func_0206d39cEi(void *p, s32 a);
@@ -238,9 +238,9 @@ s32 PlayerActor_RequestFaceChange();
 s32 PlayerActor_RequestWearHat(u16 *p);
 s32 PlayerActor_RequestWearFaceItem(u16 *p);
 s32 PlayerActor_RequestWearShirt(u16 *p);
-s32 func_02094fa8();
-s32 func_02094fb4();
-s32 func_020951ac();
+s32 PlayerActor_IsChangingHeldItem();
+s32 PlayerActor_IsChangingClothes();
+s32 PlayerActor_IsInAct05();
 void *PlayerData_GetCurrent();
 s32 func_02097ac4(void *p, s32 a, s32 b);
 s32 _ZN15PlayerInventory13getTotalBellsEi(void *p, s32 a);
@@ -1185,7 +1185,7 @@ void PocketMenu::stateWaitSlideOut() {
 
 void PocketMenu::stateOpenLetterView() {
     void *r4 = getActionLetter();
-    func_02065af0();
+    Letter_MarkRead();
     _ZN14LetterRenderer13func_0206d2e0EP16Unk_0206d1d4_SrcPvS2_i(unk_2904, r4, 3, 4, 1);
     beginSubSlideIn(3, 0, 0, 0x30);
     Gfx2d_ShowLayer(3);
@@ -2089,7 +2089,7 @@ extern "C" void _ZN10PocketMenu9mainAct2BEv(S *s)
 
 extern "C" void _ZN10PocketMenu9mainAct2FEv(S *s)
 {
-    if (func_020951ac()) {
+    if (PlayerActor_IsInAct05()) {
         PocketMenu_ReturnToIdle(s);
     }
 }
@@ -2480,7 +2480,7 @@ extern "C" void PocketMenu_SetSlotItem(S *s, u32 id, u32 a, u32 b)
         InventoryItemGrid_SetSlotItem((u8 *)s + 0x358, t, a, b);
         InventoryItemGrid_RefreshSlot((u8 *)s + 0x358, t);
     } else if (PocketMenu_IsLetterTarget(s, id)) {
-        _ZN12Unk_0206555410setPresentEtj(PocketMenu_GetLetter(s, id), a, b);
+        _ZN10LetterView10setPresentEtj(PocketMenu_GetLetter(s, id), a, b);
     } else if (id == 0x25) {
         _ZN10PocketMenu15depositToWalletEt(s, a);
     }
@@ -2540,7 +2540,7 @@ extern "C" u32 PocketMenu_HitLetter(S *s, s32 a, s32 b, s32 c)
 extern "C" s32 PocketMenu_DropLetterAt(S *s, u32 id)
 {
     if (!PocketMenu_IsSlotEmpty(s, id)) {
-        func_02065e70(s->s_2c8c, PocketMenu_GetLetter(s, id));
+        Letter_Copy(s->s_2c8c, PocketMenu_GetLetter(s, id));
         PocketMenu_SetLetter(s, s->unk_b4, s->s_2c8c);
     }
     _ZN10PocketMenu11putHandBackEjj(s, id, 1);
@@ -2706,7 +2706,7 @@ extern "C" u32 PocketMenu_GetItem(S *s, u32 id)
         if (PocketMenu_IsSlotEmpty(s, id)) {
             return 0xfff1;
         }
-        return _ZN12Unk_0206555413func_020655d0Ev(PocketMenu_GetLetter(s, id));
+        return _ZN10LetterView10getPresentEv(PocketMenu_GetLetter(s, id));
     }
     if (PocketMenu_IsSpecialTarget(s, id)) {
         return s->unk_ae;
@@ -2720,7 +2720,7 @@ extern "C" s32 PocketMenu_GetItemFlags(S *s, u32 id)
         return InventoryItemGrid_GetSlotFlags((u8 *)s + 0x358, PocketMenu_TargetToGridIndex(s, id));
     }
     if (PocketMenu_IsLetterTarget(s, id)) {
-        return _ZN12Unk_0206555413func_020655c0Ev(PocketMenu_GetLetter(s, id));
+        return _ZN10LetterView15getPresentFlagsEv(PocketMenu_GetLetter(s, id));
     }
     PocketMenu_IsSpecialTarget(s, id);
     return 0;
@@ -2752,10 +2752,10 @@ s32 PocketMenu::checkPlace(u32 a, u32 b, u32 c) {
             return 1;
         }
         void *p = PocketMenu_GetLetter((S *)this, a);
-        if (_ZN12Unk_0206555413func_020655d0Ev(p) != 0xfff1) {
+        if (_ZN10LetterView10getPresentEv(p) != 0xfff1) {
             return 3;
         }
-        s32 s = _ZN12Unk_0206555413func_02065578Ev(p);
+        s32 s = _ZN10LetterView8getStateEv(p);
         if (s == 7 || s == 8 || func_ov094_02292414(b)) {
             return 2;
         }
@@ -3004,7 +3004,7 @@ void PocketMenu::pickUpLetter(u32 a) {
     s32 r = PocketMenu_TargetToLetterIndex((S *)this, a);
     unk_b1 = 1;
     void *p = _ZN10LetterGrid9getLetterEi(unk_db8, r);
-    func_02065e70(unk_2b98, p);
+    Letter_Copy(unk_2b98, p);
     _ZN10LetterGrid11clearLetterEi(unk_db8, r);
 }
 
@@ -3054,7 +3054,7 @@ void PocketMenu::returnHand(u32 f) {
 void PocketMenu::swapHandWith(u32 a) {
     switch (unk_b1) {
     case 1:
-        func_02065e70(unk_2c8c, unk_2b98);
+        Letter_Copy(unk_2c8c, unk_2b98);
         pickUp(a);
         PocketMenu_SetLetter((S *)this, a, unk_2c8c);
         break;
@@ -3293,15 +3293,15 @@ BOOL PocketMenu::requestUseOnPlayer(s32 k, u16 v) {
 BOOL PocketMenu::isUseOnPlayerBusy(s32 k) {
     switch (k) {
     case 5:
-        return func_02094fa8();
+        return PlayerActor_IsChangingHeldItem();
     case 7:
     case 8:
-        if (func_020951ac()) {
+        if (PlayerActor_IsInAct05()) {
             return FALSE;
         }
         return TRUE;
     default:
-        return func_02094fb4();
+        return PlayerActor_IsChangingClothes();
     }
 }
 
@@ -3719,7 +3719,7 @@ void PocketMenu::actionWriteLetter() {
 void PocketMenu::actionAct08() {
     if (allocLetterSlot()) {
         s32 t = (s32)getActionLetter();
-        func_02065bfc();
+        Letter_InitBottleDraft();
         MenuCtrl_SetArg((void *)t);
         PocketMenu_ClearSlotItem((S *)this, unk_b8);
         requestTab(8);
@@ -4019,7 +4019,7 @@ void PocketMenu::addLetterOptions(s32 a) {
     if (MenuCtrl_IsButtons()) {
         ChoiceIdList_Add(unk_27f0, 0, 1);
     }
-    s32 t = _ZN12Unk_0206555413func_02065578Ev(o);
+    s32 t = _ZN10LetterView8getStateEv(o);
     clearFlags(8);
     switch (t) {
     case 1:
@@ -4032,7 +4032,7 @@ void PocketMenu::addLetterOptions(s32 a) {
         }
         ChoiceIdList_Add(unk_27f0, 0x16, 5);
         if (testFlags(8) == 0) {
-            if (_ZN12Unk_0206555413func_020655d0Ev(o) == 0xfff1) {
+            if (_ZN10LetterView10getPresentEv(o) == 0xfff1) {
                 if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
                     ChoiceIdList_Add(unk_27f0, 0x15, 0xa);
                 }
@@ -4048,7 +4048,7 @@ void PocketMenu::addLetterOptions(s32 a) {
         ChoiceIdList_Add(unk_27f0, 0x14, 3);
         break;
     }
-    if (_ZN12Unk_0206555413func_020655d0Ev(o) != 0xfff1) {
+    if (_ZN10LetterView10getPresentEv(o) != 0xfff1) {
         ChoiceIdList_Add(unk_27f0, 0x18, 6);
     } else if (t == 1 || t == 3 || t == 6) {
         if (Unk_ov096_0229590c_IsZero(gFieldSceneKind)) {
@@ -4427,7 +4427,7 @@ void PocketMenu::writeLetterOnPaper() {
     void *r4 = getActionLetter();
     v = PocketMenu_GetItem((S *)this, unk_b8);
     s32 r6 = Item_GetPaperIndex(&v);
-    func_02065c34(r4, (u8)r6);
+    Letter_InitDraft(r4, (u8)r6);
     _ZN19PopupChoiceMenuBody14applyAddresseeEPvj(unk_24fc, r4, unk_be);
     MenuCtrl_SetArg(r4);
     requestTab(8);

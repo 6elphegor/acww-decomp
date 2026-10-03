@@ -52,7 +52,7 @@ void _ZN10PlayerData14getSpNpcRecordEv(void *);
 void _ZN17PlayerSpNpcRecord13addResetCountEv();
 void _ZN12Unk_02097ff425sendForeignVillagerLetterEv(void *);
 void *_ZN10PlayerData11getPlayerIdEv(void *);
-void _ZN6TownId13func_02094094EPS_(void *, void *);
+void _ZN6TownId7setTownEPS_(void *, void *);
 void *_ZN10PlayerData11getPatternsEv(void *);
 void _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(void *, void *);
 void _ZN13PlayerMailbox5clearEv(void *);
@@ -323,7 +323,7 @@ void SaveData::func_0209de74() {
     TownMap_Generate(&f_c330, gCurrentHeap);
     func_0209d81c(this);
     _ZN11SaveRecord412setDateTodayEPv(&f_15fc5, 0);
-    _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
+    _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
     void *t = _ZN10PlayerData11getPatternsEv(a);
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
     SaveData_InitNew((u8 *)this);
@@ -347,7 +347,7 @@ void SaveData::func_0209ddb0() {
     HouseRoomMaps_UpdateAll();
     HouseRoomMaps_BindBg();
     Clock_Init();
-    _ZN6TownId13func_02094094EPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
+    _ZN6TownId7setTownEPS_(_ZN10PlayerData11getPlayerIdEv(a), &f_2);
     void *t = _ZN10PlayerData11getPatternsEv(a);
     _ZN14PlayerPatterns19initDefaultPatternsEP12Unk_020942c8(t, _ZN10PlayerData11getPlayerIdEv(a));
     _ZN12Unk_02097ff47setFlagEj(a, 1);

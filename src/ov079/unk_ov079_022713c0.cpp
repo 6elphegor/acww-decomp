@@ -39,10 +39,10 @@ struct Unk_0202368c_Obj {
     u32 v[2];
 };
 
-struct Unk_020e1c64 {
+struct MsgString9B {
     u32 v[8];
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
 };
 
 struct TalkStartMsg {
@@ -61,8 +61,8 @@ void _ZN12Unk_020d771019requestReopenWindowEv(void *p);
 void _ZN16ActorTalkRequest13setNumberSlotEijiii(void *p, s32 a, u32 b, s32 c, s32 d, s32 e);
 void _ZN16ActorTalkRequest17setPlayerNameSlotEjj(void *p, void *q, u32 a);
 BOOL _ZN8NpcActor10getAngleToEPS_(void *p, void *q);
-s32 _ZN8PlayerId13func_02094218Ev(void *p);
-s32 _ZN8PlayerId13func_020941e8EPS_(void *p, void *q);
+s32 _ZN8PlayerId7isValidEv(void *p);
+s32 _ZN8PlayerId6equalsEPS_(void *p, void *q);
 s32 _ZN10VillagerId7isValidEv(void *p);
 void _ZN10VillagerId7getNameEj(void *p, void *q);
 void *_ZN13ContestRecord13func_020858acEv(void *p);
@@ -84,7 +84,7 @@ void ItemPick_One(u16 *out, Unk_0202368c_Obj *o, s32 a, s32 b, s32 c, s32 d, s32
 void func_02063388(Unk_0202368c_Obj *o);
 void TalkRequest_SetTargetDone(void *p);
 void func_020947c0(u16 *out, void *p);
-void *func_02094348();
+void *PlayerActor_GetLocalSessionSlot();
 void Clock_GetDateTime(void *p);
 s32 Pocket_FindItem(u16 *p);
 s32 Pocket_FindEmpty();

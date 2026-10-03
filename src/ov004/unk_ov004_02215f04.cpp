@@ -378,7 +378,7 @@ s32 ActorTalkRequest_setVillagerNameSlot(void *, void *, u32);
 s32 func_0201bd20(void *, u32);
 s32 Math_AngleXZ(void *, void *);
 void NpcTalkCtrl_requestTurnAndTalk(void *, s32, s32, s32);
-void *func_02095204(s32);
+void *PlayerActor_GetActor(s32);
 s32 NpcActor_getAngleTo(void *, void *);
 s32 NpcActionCtrl_requestEmotion(void *, s32, s32, u32);
 void func_02067a84(void *, void *, s32);
@@ -471,10 +471,10 @@ u8 sBirthdayGuestMsgFile[0x28];
 extern "C" BirthdayHostVillager *sBirthdayHostVillager;
 extern "C" s32 Room_PickRandomWalkTarget(Unk_ov004_Vec3 *out, Unk_ov004_Vec3 *in, s32 angle);
 
-class Unk_020e1c64 {
+class MsgString9B {
 public:
-    Unk_020e1c64();
-    ~Unk_020e1c64();
+    MsgString9B();
+    ~MsgString9B();
     u32 pad[8];
 };
 
@@ -715,7 +715,7 @@ void BirthdayGuestVillagerTalk::vfunc_78(void *arg) {
         u8 *const g = gSaveData;
         void *p = Scene_GetVillagerHouse();
         if (SaveVillagers_IsOccupied(gSaveVillagers, p)) {
-            Unk_020e1c64 loc;
+            MsgString9B loc;
             ActorTalkRequest_setVillagerNameSlot((u8 *)unk_1a0 + 0x898, VillagerData_getVillagerId(SaveVillagers_Get(g + 0x8a3c, p)), 1);
         }
         BirthdayGuestVillager *o2 = unk_1a0;
@@ -986,7 +986,7 @@ BOOL BirthdayGuestVillager::setupAct04() {
 void BirthdayGuestVillager::mainAct04() {}
 
 BOOL BirthdayGuestVillager::setupAct05() {
-    void *p = func_02095204(4);
+    void *p = PlayerActor_GetActor(4);
     if (p != NULL) {
         NpcTalkCtrl_requestTurnAndTalk(&unk_618, 0, NpcActor_getAngleTo(this, p), 0);
         return TRUE;

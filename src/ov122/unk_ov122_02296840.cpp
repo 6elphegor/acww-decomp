@@ -25,10 +25,10 @@ public:
     u32 unk_04[(0x94 - 4) / 4];
 };
 
-class Unk_020dd468 : public EncodedString {
+class EncodedString128 : public EncodedString {
 public:
-    Unk_020dd468();
-    virtual ~Unk_020dd468();
+    EncodedString128();
+    virtual ~EncodedString128();
     u32 unk_04[(0x90 - 4) / 4];
     u8 unk_90[0x28];
     u8 unk_b8[0x80];
@@ -194,7 +194,7 @@ void _ZN13EncodedString13fromMsgStringEP9MsgString(void *p, void *q);
 void PlayerData_GetCurrent();
 void _ZN10PlayerData12getInventoryEv();
 void *_ZN15PlayerInventory9getUnk988Ev();
-void func_02065470(void *a, void *b);
+void LetterDefaults_Store(void *a, void *b);
 s32 _ZN12Unk_0206ce9813func_0206cf34Ev(void *p);
 void _ZN14MenuCursorBase11setPoseIdleEv(void *p);
 void _ZN14MenuCursorBase14setPoseReleaseEv(void *p);
@@ -282,10 +282,10 @@ void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_LoadPaletteFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
 void Gfx2d_LoadCharFile(const char *a, s32 b, s32 c, s32 d, s32 e, s32 f);
-void *func_02065c8c(void *p);
+void *Letter_GetPaper(void *p);
 void Menu_LoadPaperBg(void *p, s32 a);
 s32 MenuCtrl_GetArg();
-s32 func_020655d8(void *p);
+s32 Letter_IsBottle(void *p);
 void _ZN10ScrollKnob8setStateEi(void *p, s32 v);
 void Keyboard_LoadObjGfx(void *p);
 void Keyboard_DisableModifierKeys(void *p);
@@ -552,7 +552,7 @@ public:
     /* 0x3e8c */ MenuScrollKnob unk_3e8c;
     /* 0x3ed4 */ MenuCursorBuf0 unk_3ed4;
     /* 0x3f38 */ Unk_020ddefc unk_3f38;
-    /* 0x3fcc */ Unk_020dd468 unk_3fcc;
+    /* 0x3fcc */ EncodedString128 unk_3fcc;
     /* 0x4104 */ PopupChoiceMenu unk_4104;
     /* 0x43f8 */ MenuBottomButtons unk_43f8;
     /* 0x455c */ MenuErrorMessage unk_455c;
@@ -1078,7 +1078,7 @@ void LetterWriteMenu::init() {
     _ZN15PopupChoiceMenu4initEiiPKc(&unk_4104, 6, 1, 0);
     _ZN19PopupChoiceMenuBody18buildAddresseeListEv(&unk_4104);
     unk_a4 = 0;
-    if (func_020655d8(unk_bc)) {
+    if (Letter_IsBottle(unk_bc)) {
         Keyboard_SetAltWriteLayout(&unk_c0);
         setFlags(0x10);
     }
@@ -1133,7 +1133,7 @@ void LetterWriteMenu::loadBg() {
     refreshKeys();
     Keyboard_LoadScreenNow(&unk_c0, 6);
     Gfx2d_LoadCharFile("menu/chat2/b_cht.bch", h, 6, 0x13d, 0x13d, 0x1e9);
-    Menu_LoadPaperBg(func_02065c8c(unk_bc), 4);
+    Menu_LoadPaperBg(Letter_GetPaper(unk_bc), 4);
     _ZN14LetterRenderer16loadLetterScreenEj(&unk_3c7c, 3);
     redrawText(1, 1);
     _ZN14LetterRenderer13func_0206d380Ev(&unk_3c7c);
@@ -2754,7 +2754,7 @@ void LetterWriteMenu::func_ov122_02296a48() {
 void LetterWriteMenu::storeLetterDefaults() {
     PlayerData_GetCurrent();
     _ZN10PlayerData12getInventoryEv();
-    func_02065470(_ZN15PlayerInventory9getUnk988Ev(), unk_bc);
+    LetterDefaults_Store(_ZN15PlayerInventory9getUnk988Ev(), unk_bc);
 }
 
 void LetterWriteMenu::censorField(u8 *src, u32 n) {

@@ -257,7 +257,7 @@ void BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
-void func_02065c94();
+void Letter_Clear();
 }
 
 extern "C" {
@@ -265,7 +265,7 @@ void *func_0208f158(void *p);
 }
 
 extern "C" {
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
@@ -289,7 +289,7 @@ s32 BottleThrow_SetTarget(void *a, u8 b);
 }
 
 extern "C" {
-u8 *func_02095204(u8 x);
+u8 *PlayerActor_GetActor(u8 x);
 }
 
 extern "C" {

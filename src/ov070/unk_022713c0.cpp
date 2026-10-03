@@ -451,7 +451,7 @@ void MailText_SetSlot(s32 i, void *x);
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, void *f);
 u16 Item_MakePaper(u32 a, s32 b);
 void func_0203c41c(void *a, u16 *p, s32 c);
-void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 s32 func_020626cc(u16 *p, s32 mode);
 u32 func_02063b8c(u32 a);
 void Hud_Hide();
@@ -1035,9 +1035,9 @@ void SpNpcGracieTalk::vfunc_14() {
                     func_0203c41c(r7->getCatalog(), &s.unk_04, 0);
                 }
                 if (lvl <= 2) {
-                    _ZN12Unk_0206555410setPresentEtj(obj, 0x12a7, 1);
+                    _ZN10LetterView10setPresentEtj(obj, 0x12a7, 1);
                 } else if (lvl <= 4) {
-                    _ZN12Unk_0206555410setPresentEtj(obj, 0x1248, 1);
+                    _ZN10LetterView10setPresentEtj(obj, 0x1248, 1);
                 }
             }
         }

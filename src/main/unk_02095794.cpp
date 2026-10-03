@@ -58,9 +58,9 @@ inline u16 Unk_02095f38_F(u32 v) {
 }
 
 extern CommManager *gCommManager;
-extern u32 data_020d03d8[];
-extern u32 data_020d03e8[];
-extern u32 data_020d03f8[];
+extern u32 sPlayerPosSyncVars[];
+extern u32 sPlayerAngleSyncVars[];
+extern u32 sPlayerStateSyncVars[];
 extern u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
@@ -110,7 +110,7 @@ void CommSyncVar_SetVar(s32 a, void *b, s32 c, s32 d);
 }
 
 extern "C" {
-s32 func_02095478(void *p, s32 i);
+s32 PlayerSessionTable_GetActor(void *p, s32 i);
 }
 
 extern "C" {
@@ -122,11 +122,11 @@ BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 }
 
 extern "C" {
-u32 func_02095720(s32 idx);
+u32 PlayerActor_GetNetStateVar(s32 idx);
 }
 
 extern "C" {
-u32 func_02095758(s32 idx);
+u32 PlayerActor_GetNetPosVar(s32 idx);
 }
 
 extern "C" {
@@ -154,7 +154,7 @@ Unk_0209579c_Rec *_ZN5Actor13findByProfileEjPS_(s32 a, s32 b);
 }
 
 extern "C" {
-Unk_02095774_Ent *func_02095204(s32 idx);
+Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
 }
 
 extern "C" {
@@ -166,11 +166,11 @@ void PlayerSession_SetGfxSlot(s32 idx, u32 v);
 }
 
 extern "C" {
-s32 func_02094348();
+s32 PlayerActor_GetLocalSessionSlot();
 }
 
 extern "C" {
-void func_02094308(s32 idx, void *pos, void *rot, u32 flags);
+void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
 }
 
 extern "C" {
@@ -178,19 +178,19 @@ BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
 }
 
 extern "C" {
-u8 *func_020952b0(s32 idx);
+u8 *PlayerSession_GetLastScene(s32 idx);
 }
 
 extern "C" {
-s32 *func_020952bc(s32 idx);
+s32 *PlayerSession_GetLastAction(s32 idx);
 }
 
 extern "C" {
-s32 *func_020952a0(s32 idx);
+s32 *PlayerSession_GetLastPos(s32 idx);
 }
 
 extern "C" {
-s16 *func_02095294(s32 idx);
+s16 *PlayerSession_GetLastAngle(s32 idx);
 }
 
 extern "C" {
@@ -202,7 +202,7 @@ u8 NetArea_GetSlotScene(s32 idx);
 }
 
 extern "C" {
-void func_02094360(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
+void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
 }
 
 extern "C" {
@@ -234,7 +234,7 @@ void func_0208f168(void *p);
 }
 
 extern "C" {
-void func_02065b28(void *p);
+void Letter_MarkSent(void *p);
 }
 
 extern "C" {
@@ -242,11 +242,11 @@ void *BottleLetterRecord_GetLetter(void *p);
 }
 
 extern "C" {
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 }
 
 extern "C" {
-void func_02065c94(void *p);
+void Letter_Clear(void *p);
 }
 
 extern "C" {
@@ -286,7 +286,7 @@ s32 Town_WashUpBottle();
 }
 
 extern "C" {
-void func_02065640(void *a, void *b, void *c);
+void Letter_ComposeBottleMail(void *a, void *b, void *c);
 }
 
 extern "C" {
@@ -338,24 +338,24 @@ struct Unk_020e1c78_Rec {
     s16 b;
 };
 
-class Unk_020e1c88 : public GameProc {
+class RemotePlayerSpawner : public GameProc {
 public:
-    Unk_020e1c88();
+    RemotePlayerSpawner();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e1c88();
+    virtual ~RemotePlayerSpawner();
 };
 
-class Unk_020e1ce0 : public GameProc {
+class PlayerNetSync : public GameProc {
 public:
-    Unk_020e1ce0();
+    PlayerNetSync();
     virtual BOOL vfunc_00();
     virtual BOOL vfunc_0c();
     virtual BOOL onExecute();
     virtual BOOL onDraw();
-    virtual ~Unk_020e1ce0();
+    virtual ~PlayerNetSync();
 };
 static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[0] = a;
@@ -363,17 +363,17 @@ static inline void Unk_0209579c_Set(s16 *d, s16 a, s16 b, s16 c) {
     d[2] = c;
 }
 
-Unk_020e1c78_Rec data_020e1c78 = {&Unk_020e1c30::vfunc_48, 8, 12};
+Unk_020e1c78_Rec sRemotePlayerSpawnerProfile = {&Unk_020e1c30::vfunc_48, 8, 12};
 
-GameProc *Unk_020e1c30::vfunc_48() { return new Unk_020e1c88(); }
+GameProc *Unk_020e1c30::vfunc_48() { return new RemotePlayerSpawner(); }
 
-Unk_020e1c88::Unk_020e1c88() {}
+RemotePlayerSpawner::RemotePlayerSpawner() {}
 
-Unk_020e1c88::~Unk_020e1c88() {}
+RemotePlayerSpawner::~RemotePlayerSpawner() {}
 
-BOOL Unk_020e1c88::vfunc_00() { return TRUE; }
+BOOL RemotePlayerSpawner::vfunc_00() { return TRUE; }
 
-BOOL Unk_020e1c88::onExecute() {
+BOOL RemotePlayerSpawner::onExecute() {
     CommManager *g = gCommManager;
     s32 mode = g->unk_64;
     u8 la, lb;
@@ -398,7 +398,7 @@ BOOL Unk_020e1c88::onExecute() {
             mode = NetSession_GetLastSyncSlot();
         }
         if (mode >= 4) goto ret1;
-        if (func_02095204(mode)) goto ret1;
+        if (PlayerActor_GetActor(mode)) goto ret1;
         p1.x = 0;
         p1.y = 0;
         p1.z = 0;
@@ -421,15 +421,15 @@ BOOL Unk_020e1c88::onExecute() {
             lr1[2] = 0;
         }
         PlayerSession_SetGfxSlot(mode, PlayerSession_FindFreeGfxSlot());
-        func_02094308(mode, &p1, lr1, 0x4000000);
+        PlayerActor_Spawn(mode, &p1, lr1, 0x4000000);
         goto ret1;
     }
     if (!_ZN11CommManager12isSlotActiveEi(g, mode)) goto ret1;
-    if (!func_02095204(4)) goto ret1;
-    ob = func_02094348();
+    if (!PlayerActor_GetActor(4)) goto ret1;
+    ob = PlayerActor_GetLocalSessionSlot();
     i = 0;
     do {
-        if (!_ZN11CommManager11isLocalSlotEj(g, i) && _ZN11CommManager12isSlotActiveEi(g, i) && !func_02095204(i)) {
+        if (!_ZN11CommManager11isLocalSlotEj(g, i) && _ZN11CommManager12isSlotActiveEi(g, i) && !PlayerActor_GetActor(i)) {
             if (PlayerActor_GetSlotAction(&lv1, -1, i) && lv1 < 0x93 && PlayerActor_GetSlotPosXZ(&la, &lx1, &ly1, -1, i) &&
                 la == Scene_GetCurrent() && PlayerActor_GetSlotAngle(&lc, -1, i)) {
                 p2.x = lx1;
@@ -437,18 +437,18 @@ BOOL Unk_020e1c88::onExecute() {
                 p2.z = ly1;
                 Unk_0209579c_Set(lr2, 0, lc, 0);
                 PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
-                func_02094308(i, &p2, lr2, 0x800000);
+                PlayerActor_Spawn(i, &p2, lr2, 0x800000);
             } else if (PlayerActor_TestSlotFlag(0x1b, ob)) {
-                u8 *bp = func_020952b0(i);
-                s32 *ip = func_020952bc(i);
+                u8 *bp = PlayerSession_GetLastScene(i);
+                s32 *ip = PlayerSession_GetLastAction(i);
                 if (*bp == Scene_GetCurrent() && *ip != 0x93) {
-                    s32 *pp = func_020952a0(i);
+                    s32 *pp = PlayerSession_GetLastPos(i);
                     p3.x = pp[0];
                     p3.y = pp[1];
                     p3.z = pp[2];
-                    Unk_0209579c_Set(lr3, 0, *func_02095294(i), 0);
+                    Unk_0209579c_Set(lr3, 0, *PlayerSession_GetLastAngle(i), 0);
                     PlayerSession_SetGfxSlot(i, PlayerSession_FindFreeGfxSlot());
-                    func_02094308(i, &p3, lr3, (*ip << 22) & 0x3fc00000);
+                    PlayerActor_Spawn(i, &p3, lr3, (*ip << 22) & 0x3fc00000);
                 }
             }
         }
@@ -457,7 +457,7 @@ BOOL Unk_020e1c88::onExecute() {
     j = 0;
     do {
         if (!_ZN11CommManager11isLocalSlotEj(g, j) && !PlayerActor_TestSlotFlag(0x1b, ob)) {
-            Unk_02095774_Ent *e = func_02095204(j);
+            Unk_02095774_Ent *e = PlayerActor_GetActor(j);
             if (e) {
                 if (!Unk_0209579c_IsTwo(((Unk_0209579c_Rec *)e)->unk_0e)) {
                     if (PlayerActor_GetSlotAction(&lv2, -1, j)) {
@@ -480,7 +480,7 @@ ret1:
     return TRUE;
 }
 
-BOOL Unk_020e1c88::onDraw() { return TRUE; }
+BOOL RemotePlayerSpawner::onDraw() { return TRUE; }
 
-BOOL Unk_020e1c88::vfunc_0c() { return TRUE; }
+BOOL RemotePlayerSpawner::vfunc_0c() { return TRUE; }
 

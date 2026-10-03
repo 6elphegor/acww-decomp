@@ -122,7 +122,7 @@ void TalkRequestFlags_Clear(u32);
 }
 
 extern "C" {
-BOOL func_02094960(void);
+BOOL PlayerActor_RequestAct10(void);
 }
 
 extern "C" {
@@ -130,7 +130,7 @@ void TalkRequest_SetTalkTarget(u32);
 }
 
 extern "C" {
-BOOL func_02094c38(void);
+BOOL PlayerActor_RequestReturnToWait(void);
 }
 
 extern "C" {
@@ -142,7 +142,7 @@ BOOL MenuCtrl_IsIdle(void);
 }
 
 extern "C" {
-BOOL func_02094e64(void);
+BOOL PlayerActor_CanOpenMenu(void);
 }
 
 extern "C" {
@@ -222,7 +222,7 @@ BOOL _ZN11CommManager7isMyAidEj(void *, u32);
 }
 
 extern "C" {
-void *func_02095204(u32);
+void *PlayerActor_GetActor(u32);
 }
 
 extern "C" {

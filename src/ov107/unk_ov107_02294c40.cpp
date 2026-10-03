@@ -235,7 +235,7 @@ s32 FieldAction_RequestDropOrPlace(s32 a, s32 b);
 s32 FieldAction_RequestToolAtPending(s32 a, s32 b, s32 c, s32 d);
 u16 *PendingUnit_GetActivePosOfAid(s32 a);
 void NetBuf_PackPair20(void *dst, s32 a, s32 b);
-u8 *func_02095204(s32 a);
+u8 *PlayerActor_GetActor(s32 a);
 s32 Ground_FindWaterAhead(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
 u32 func_02063b8c(s32 a);
 u16 MenuCtrl_GetPocketsFullItem();
@@ -250,7 +250,7 @@ void MenuCtrl_SetResult(s32 a);
 void Snd_PlaySe(u32 a);
 BOOL MenuCtrl_IsButtons();
 BOOL MenuCtrl_IsTouch();
-BOOL func_020951a0();
+BOOL PlayerActor_IsInWaitMenu();
 void Gfx2d_SetLayerPriority(s32 a, s32 b);
 void Gfx2d_SetLayerControl(s32 a, s32 b, s32 c, s32 d);
 void Gfx2d_ResetLayer(s32 a);
@@ -987,7 +987,7 @@ void PocketsFullMenu::mainAct13()
 
 void PocketsFullMenu::mainAct14()
 {
-    if (func_020951a0()) {
+    if (PlayerActor_IsInWaitMenu()) {
         closeWithSelection();
     }
 }
@@ -1526,7 +1526,7 @@ void PocketsFullMenu::mainAct10() {
         s32 r5 = ok ? a - 0x12b0 : -1;
         u8 t = func_02063b8c(0x3c);
         s16 x = (t - 0x1e) * 0xb6;
-        x += *(s16 *)(func_02095204(4) + 0x8e);
+        x += *(s16 *)(PlayerActor_GetActor(4) + 0x8e);
         HeldInsect_Start((u8)r5, r7);
         HeldInsect_Release(r7, x);
         PlayerActor_LocalReleaseCatch(0);
@@ -1555,7 +1555,7 @@ BOOL PocketsFullMenu::canReleaseFish() {
     if (t == 0x2c) {
         return FishCatch_GetReelTarget(&unk_c0, k);
     }
-    u8 *p = func_02095204(4);
+    u8 *p = PlayerActor_GetActor(4);
     void *q = p + 0x5c;
     s32 i = 0;
     s32 base = *(s16 *)(p + 0x8e);

@@ -62,7 +62,7 @@ void func_020b080c(void *p);
 u8 *func_020b053c();
 void Oam_DrawCell(s32 a, void *h, s32 x, s32 y, s32 s0, s32 s1, s32 s2, s32 s3, s32 s4, s32 s5, s32 s6, s32 s7);
 void PlayerActor_LocalRequestAct12();
-void func_02094960();
+void PlayerActor_RequestAct10();
 void BgmTracks_FadeInScene22(void *p);
 void BgmTracks_FadeOutScene22(void *p);
 void Gfx2d_LoadCharFile(void *a, void *b, s32 c, s32 d, s32 e, s32 f);
@@ -545,7 +545,7 @@ void StargazingMenu::releaseResources() {
     StarSky_CancelUpload(&unk_478);
     unk_94.freeText();
     unk_2cb0.destroyLabel();
-    func_02094960();
+    PlayerActor_RequestAct10();
     BgmTracks_FadeInScene22(data_021c1b3c + 0x2f0);
     Gfx2d_LoadCharFile((void *)"menu/inventory/b_itm0.bch", gCurrentHeap, 3, 0, 0x10, 0x10);
 }

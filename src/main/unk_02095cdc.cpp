@@ -64,9 +64,9 @@ struct Unk_02096484_Base {
 struct Unk_02096484_Rec : Unk_02096484_Base {
     Unk_02096484_Rec() { a = 0; b = 0; }
 };
-class Unk_02065554 {
+class LetterView {
 public:
-    u8 func_02065578();
+    u8 getState();
     u8 pad[0xf4];
 };
 
@@ -180,9 +180,9 @@ inline u16 Unk_02095f38_F(u32 v) {
     return 0x1518;
 }
 extern CommManager *gCommManager;
-extern u32 data_020d03d8[];
-extern u32 data_020d03e8[];
-extern u32 data_020d03f8[];
+extern u32 sPlayerPosSyncVars[];
+extern u32 sPlayerAngleSyncVars[];
+extern u32 sPlayerStateSyncVars[];
 extern const u8 sThrownBottleReturnOdds[];
 extern u8 gPlayerSessionTable[];
 extern u8 data_021e7f8c[];
@@ -228,19 +228,19 @@ void func_02063870(void *);
 void func_02063888(void *);
 void func_020638d0(void *, void *);
 s32 func_02063b8c(u32 n);
-s32 _ZN12Unk_0206555413func_02065578Ev(void *p);
-void _ZN12Unk_0206555410setPresentEtj(void *, u32, s32);
-void *func_0206561c(void);
-void *func_02065628(void);
-void func_02065640(void *a, void *b, void *c);
+s32 _ZN10LetterView8getStateEv(void *p);
+void _ZN10LetterView10setPresentEtj(void *, u32, s32);
+void *Letter_GetRecipientVillager(void);
+void *Letter_GetRecipientPlayer(void);
+void Letter_ComposeBottleMail(void *a, void *b, void *c);
 s32 Letter_ComposeFromMail(void *, void *, u8 *, void *, void *, void *);
-void func_02065ac0(void *);
-void func_02065b28(void *p);
-void func_02065ba4(void *, void *);
-void func_02065c94(void *p);
+void Letter_MarkReceived(void *);
+void Letter_MarkSent(void *p);
+void Letter_SetRecipientResident(void *, void *);
+void Letter_Clear(void *p);
 void _ZN6LetterD1Ev(void *);
 void _ZN6LetterC1Ev(void *);
-void func_02065e70(void *p, void *q);
+void Letter_Copy(void *p, void *q);
 s32 MenuCtrl_IsClockMovedForward(void);
 void func_0206f604(s32 a, s32 b);
 u32 func_02072970(CommManager *p, u32 v);
@@ -262,26 +262,26 @@ s32 _ZN12Unk_0208f23813func_0208f15cEv(void *p);
 void _ZN12Unk_0208f23813func_0208f168Ev(void *p);
 s32 _ZN12Unk_0208f23813func_0208f198Ev(void *p);
 s32 _ZN12Unk_0208f23813func_0208f1c0Ev(void *p);
-void _ZN8PlayerId13func_02094264EPS_(void *, void *);
+void _ZN8PlayerId8copyFromEPS_(void *, void *);
 void _ZN8PlayerIdC1Ev(void *);
 void _ZN8PlayerIdC1EPv(void *);
-void func_02094308(s32 idx, void *pos, void *rot, u32 flags);
-s32 func_02094348();
-void func_02094360(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
+void PlayerActor_Spawn(s32 idx, void *pos, void *rot, u32 flags);
+s32 PlayerActor_GetLocalSessionSlot();
+void PlayerSession_RemovePitfallOnClimbOut(s32 *idx, u8 *b, s32 *v, s32 *c, s32 *d, s32 *e);
 BOOL PlayerActor_TestSlotFlag(s32 a, s32 b);
-Unk_02095774_Ent *func_02095204(s32 idx);
+Unk_02095774_Ent *PlayerActor_GetActor(s32 idx);
 u32 PlayerSession_FindFreeGfxSlot();
 void PlayerSession_SetGfxSlot(s32 idx, u32 v);
-s16 *func_02095294(s32 idx);
-s32 *func_020952a0(s32 idx);
-u8 *func_020952b0(s32 idx);
-s32 *func_020952bc(s32 idx);
-s32 func_02095478(void *p, s32 i);
+s16 *PlayerSession_GetLastAngle(s32 idx);
+s32 *PlayerSession_GetLastPos(s32 idx);
+u8 *PlayerSession_GetLastScene(s32 idx);
+s32 *PlayerSession_GetLastAction(s32 idx);
+s32 PlayerSessionTable_GetActor(void *p, s32 i);
 BOOL PlayerActor_GetSlotAction(s32 *out, s32 a, s32 idx);
 BOOL PlayerActor_GetSlotAngle(s16 *out, s32 a, s32 idx);
 BOOL PlayerActor_GetSlotPosXZ(u8 *outb, s32 *x, s32 *y, s32 mode, s32 idx);
-u32 func_02095720(s32 idx);
-u32 func_02095758(s32 idx);
+u32 PlayerActor_GetNetStateVar(s32 idx);
+u32 PlayerActor_GetNetPosVar(s32 idx);
 Unk_02095774_Ent *PlayerActor_Get(s32 idx);
 void BottleLetter_WashUpThrownBottle();
 void BottleLetter_OnNewDay(s32 a);
@@ -339,7 +339,7 @@ s32 _ZN17MotherLetterState13checkLastDateEPi(void *, void *);
 void func_02096e00();
 void _ZN12FutureLetter17clearFutureLetterEv(void *);
 u8 *_ZN12FutureLetter15getDeliveryDateEv(void *);
-Unk_02065554 *FutureLetter_GetLetter(void *);
+LetterView *FutureLetter_GetLetter(void *);
 s32 _ZN18BottleLetterRecord17pickUnusedMessageEv(void *p);
 void func_02096ed4();
 BOOL func_02096ee8(s32 i);
@@ -422,20 +422,20 @@ extern "C" s32 LetterDelivery_DeliverOutgoing(void) {
     volatile s32 zero = 0;
     for (i = 0; i < n; i++) {
         Letter *p = &base[i];
-        if (((Unk_02065554 *)p)->func_02065578() != 0) {
+        if (((LetterView *)p)->getState() != 0) {
             s32 idx = LetterDelivery_FindAddresseePlayer(p);
             if (idx == -2) {
-                func_02065c94(p);
+                Letter_Clear(p);
             } else if (idx != ~zero) {
                 if (LetterDelivery_PutInMailbox(p, idx, flag) != 0) {
-                    func_02065c94(p);
+                    Letter_Clear(p);
                 }
             } else {
                 if (LetterDelivery_FindAddresseeVillager(p) < 0) {
-                    func_02065c94(p);
+                    Letter_Clear(p);
                 } else {
                     LetterDelivery_SendToVillager(p);
-                    func_02065c94(p);
+                    Letter_Clear(p);
                 }
             }
         }
@@ -450,7 +450,7 @@ extern "C" BOOL LetterDelivery_IsMailboxFull(s32 idx) {
     Letter *p = data_021e935c[idx].getLetter(0);
     s32 i;
     for (i = 0; i < 10; p++, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) {
+        if (((LetterView *)p)->getState() == 0) {
             return FALSE;
         }
     }
@@ -461,10 +461,10 @@ extern "C" BOOL LetterDelivery_PutInMailbox(Letter *e, s32 idx, u32 flag) {
     Letter *p = data_021e935c[idx].getLetter(0);
     s32 i;
     for (i = 0; i < 10; p++, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) {
-            func_02065e70(p, e);
+        if (((LetterView *)p)->getState() == 0) {
+            Letter_Copy(p, e);
             if (flag) {
-                func_02065b28(p);
+                Letter_MarkSent(p);
             }
             return TRUE;
         }
@@ -488,10 +488,10 @@ extern "C" BOOL LetterDelivery_QueueOutgoing(Letter *e, BOOL flag) {
     s32 i;
     Letter *p = data_021eb98c.getLetter(0);
     for (i = 0; i < 10; p++, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) {
-            func_02065e70(p, e);
+        if (((LetterView *)p)->getState() == 0) {
+            Letter_Copy(p, e);
             if (flag) {
-                func_02065b28(p);
+                Letter_MarkSent(p);
             }
             return TRUE;
         }
@@ -517,12 +517,12 @@ extern "C" BOOL LetterDelivery_HasKnownAddressee(Letter *e) {
 }
 
 extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
-    void *r4 = func_02065628();
+    void *r4 = Letter_GetRecipientPlayer();
     u8 tmp[0x18];
     s32 res;
     if (r4 == 0) return -1;
     _ZN8PlayerIdC1EPv(tmp);
-    _ZN8PlayerId13func_02094264EPS_(tmp, r4);
+    _ZN8PlayerId8copyFromEPS_(tmp, r4);
     res = func_02097740(gSavePlayers, tmp);
     if (func_020978fc(res)) {
         _ZN8PlayerIdC1Ev(tmp);
@@ -534,7 +534,7 @@ extern "C" s32 LetterDelivery_FindAddresseePlayer(Letter *) {
 
 extern "C" s32 LetterDelivery_FindAddresseeVillager(Letter *) {
     void *r5 = gSaveVillagers;
-    void *r4 = func_0206561c();
+    void *r4 = Letter_GetRecipientVillager();
     u8 tmp[12];
     s32 res;
     if (r4 == 0) return -1;
@@ -553,10 +553,10 @@ extern "C" s32 LetterList_Compact(void *base, s32 n) {
     s32 i = 0, j = i;
     for (; i < n; i++) {
         u8 *e = (u8 *)base + i * 0xf4;
-        if (((Unk_02065554 *)e)->func_02065578()) {
+        if (((LetterView *)e)->getState()) {
             if (i != j) {
-                func_02065e70((u8 *)base + j * 0xf4, e);
-                func_02065c94(e);
+                Letter_Copy((u8 *)base + j * 0xf4, e);
+                Letter_Clear(e);
             }
             j++;
         }
@@ -569,7 +569,7 @@ extern "C" s32 LetterList_CountUsed(void *base, s32 n) {
     cnt = 0;
     i = cnt;
     for (; i < n; i++) {
-        if (((Unk_02065554 *)((u8 *)base + i * 0xf4))->func_02065578()) cnt++;
+        if (((LetterView *)((u8 *)base + i * 0xf4))->getState()) cnt++;
     }
     return cnt;
 }
@@ -578,7 +578,7 @@ extern "C" void func_020968e0(void) {}
 
 extern "C" s32 LetterDelivery_HasFutureLetter(void *p) {
     if (p == 0) p = PlayerData_GetCurrent();
-    if (FutureLetter_GetLetter(func_02097a3c(p))->func_02065578() != 0) return 1;
+    if (FutureLetter_GetLetter(func_02097a3c(p))->getState() != 0) return 1;
     return 0;
 }
 
@@ -586,7 +586,7 @@ extern "C" s32 LetterDelivery_HasFreeOutgoingSlot(void) {
     s32 i;
     u8 *p = (u8 *)_ZN12LetterOutbox9getLetterEi(&data_021eb98c, 0);
     for (i = 0; i < 10; p += 0xf4, i++) {
-        if (((Unk_02065554 *)p)->func_02065578() == 0) return 1;
+        if (((LetterView *)p)->getState() == 0) return 1;
     }
     return 0;
 }
@@ -602,7 +602,7 @@ extern "C" void LetterDelivery_Update(void) {
     s32 i;
     u8 *r6;
     void *s0;
-    Unk_02065554 *s4;
+    LetterView *s4;
     LampLights.a = 0; LampLights.b = 0;
     Clock_GetDateTime(&LampLights);
     Y.a = 0; Y.b = 0; Z.a = 0; Z.b = 0;
@@ -639,7 +639,7 @@ extern "C" void LetterDelivery_Update(void) {
             s0 = PlayerData_GetResident(gSavePlayers, i);
             r6 = _ZN12FutureLetter15getDeliveryDateEv(func_02097a3c(s0));
             s4 = FutureLetter_GetLetter(func_02097a3c(s0));
-            if (((Unk_02065554 *)s4)->func_02065578()) {
+            if (((LetterView *)s4)->getState()) {
                 Y.a = z0; Y.b = z0;
                 Y.d5 = r6[2];
                 Y.d4 = r6[1];
@@ -681,8 +681,8 @@ extern "C" void LetterDelivery_DeliverReceivedLetter(void) {
         if (LetterDelivery_IsMailboxFull(-1) == 0) {
             void *r5 = func_0208f05c(r6);
             void *r4 = _ZN10PlayerData8getIndexEv(PlayerData_GetCurrent());
-            func_02065ba4(r5, r4);
-            func_02065ac0(r5);
+            Letter_SetRecipientResident(r5, r4);
+            Letter_MarkReceived(r5);
             if (LetterDelivery_PutInMailbox((Letter *)r5, (s32)r4, 0) != 0) func_0208f088(r6);
         }
     }
@@ -849,7 +849,7 @@ extern "C" s32 MotherLetter_Send(s32 a, s32 b) {
     u32 buf[0xf4 / 4];
     s32 r4;
     _ZN6LetterC1Ev(buf);
-    func_02065c94(buf);
+    Letter_Clear(buf);
     r4 = (s32)_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent());
     rec[0] = data_021edb68[0];
     rec[0] = MotherLetter_GetMsgIndex(a);
@@ -858,7 +858,7 @@ extern "C" s32 MotherLetter_Send(s32 a, s32 b) {
     rec[2] = LetterPaper_PickRandom(3, b);
     Letter_ComposeFromMail(buf, rec, MotherLetter_GetFileName(a), rec + 1, rec + 2, (void *)r4);
     u32 t = MotherLetter_GetPresent(a);
-    if (t != 0xfff1) _ZN12Unk_0206555410setPresentEtj(buf, t, 1);
+    if (t != 0xfff1) _ZN10LetterView10setPresentEtj(buf, t, 1);
     if (LetterDelivery_PutInAddresseeMailbox((Letter *)buf)) {
         _ZN6LetterD1Ev(buf);
         return 1;
@@ -949,15 +949,15 @@ extern "C" s32 BottleLetter_Open() {
     void *r5 = Inventory_GetEmptyLetter();
     if (r5 == NULL) return FALSE;
     void *o = BottleLetterRecord_GetLetter(data_021eceac);
-    if (!_ZN12Unk_0206555413func_02065578Ev(o)) {
-        func_02065c94(o);
+    if (!_ZN10LetterView8getStateEv(o)) {
+        Letter_Clear(o);
         return TRUE;
     }
     void *t = PlayerData_GetCurrent();
     u16 buf = 0x1033;
     func_0203c42c(_ZN10PlayerData10getCatalogEv(t), &buf, 0, 1);
-    func_02065e70(r5, o);
-    func_02065c94(o);
+    Letter_Copy(r5, o);
+    Letter_Clear(o);
     CommManager *g = gCommManager;
     if (_ZN11CommManager8isOnlineEv(g) && g->unk_64 != 0) func_0206f604(7, 0);
     return TRUE;
@@ -965,9 +965,9 @@ extern "C" s32 BottleLetter_Open() {
 
 extern "C" s32 BottleLetter_CreateGameLetter(u8 *p) {
     void *o = BottleLetterRecord_GetLetter(data_021eceac);
-    if (_ZN12Unk_0206555413func_02065578Ev(o)) return FALSE;
+    if (_ZN10LetterView8getStateEv(o)) return FALSE;
     if (BottleLetter_PlaceBottle() == 0) return FALSE;
-    func_02065640(o, p, (void *)"ev_bottle");
+    Letter_ComposeBottleMail(o, p, (void *)"ev_bottle");
     return TRUE;
 }
 
@@ -1003,7 +1003,7 @@ extern "C" void BottleLetter_OnNewDay(s32 a) {
     if (a > 0) {
         if (BottleLetter_IsBottleInTown() == 0) {
             void *const o = data_021eceac;
-            if (_ZN12Unk_0206555413func_02065578Ev(BottleLetterRecord_GetLetter(o))) {
+            if (_ZN10LetterView8getStateEv(BottleLetterRecord_GetLetter(o))) {
                 BottleLetter_PlaceBottle();
             } else if (func_02063b8c(10) == 7) {
                 u8 v = data_021edb68[0];
@@ -1019,7 +1019,7 @@ extern "C" void BottleLetter_WashUpThrownBottle() {
     void *const o = data_021e7f8c;
     if (_ZN12Unk_0208f23813func_0208f1c0Ev(o)) {
         void *r4 = func_0208f158(o);
-        if (_ZN12Unk_0206555413func_02065578Ev(r4)) {
+        if (_ZN10LetterView8getStateEv(r4)) {
             s32 t = _ZN12Unk_0208f23813func_0208f198Ev(o);
             switch (t) {
             case 0: {
@@ -1034,9 +1034,9 @@ extern "C" void BottleLetter_WashUpThrownBottle() {
                 break;
             }
             _ZN12Unk_0208f23813func_0208f168Ev(o);
-            func_02065b28(r4);
-            func_02065e70(BottleLetterRecord_GetLetter(data_021eceac), r4);
-            func_02065c94(r4);
+            Letter_MarkSent(r4);
+            Letter_Copy(BottleLetterRecord_GetLetter(data_021eceac), r4);
+            Letter_Clear(r4);
             if (BottleLetter_IsBottleInTown() == 0) BottleLetter_PlaceBottle();
         }
     }

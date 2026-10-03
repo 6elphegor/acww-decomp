@@ -478,7 +478,7 @@ extern "C" {
 void Letter_ComposeFromMail(void *a, void *b, const void *c, const void *d, const void *e, u32 f);
 }
 extern "C" {
-void _ZN12Unk_0206555410setPresentEtj(void *a, u32 b, s32 c);
+void _ZN10LetterView10setPresentEtj(void *a, u32 b, s32 c);
 }
 extern "C" {
 void LetterDelivery_QueueOutgoing(void *a, s32 b);
@@ -1960,7 +1960,7 @@ extern "C" {
 void *_ZN10PlayerData11getPlayerIdEv(void *p);
 }
 extern "C" {
-u32 _ZN6TownId13func_02094058Ev(void *p);
+u32 _ZN6TownId15getTownRelationEv(void *p);
 }
 extern "C" {
 u32 _ZN11CommManager8isOnlineEv(u32 v);
@@ -2313,7 +2313,7 @@ extern "C" void ReddPassword_ForgetVisitor() {
 }
 
 extern "C" BOOL ReddPassword_VisitorKnows() {
-    if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
+    if (_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
         return sReddVisitorKnowsPassword;
     }
     return FALSE;
@@ -2323,7 +2323,7 @@ extern "C" BOOL ReddPassword_VisitorKnows() {
 BOOL ReddPassword::setVisitorKnows() {
     using namespace n2;
     if (slot != -1) {
-        if (_ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
+        if (_ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 1) {
             n2::sReddVisitorKnowsPassword = 1;
             return TRUE;
         }
@@ -2440,7 +2440,7 @@ extern "C" BOOL ReddPassword_CurrentPlayerKnows() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         void *q = _ZN10PlayerData11getPlayerIdEv(p);
-        if (_ZN6TownId13func_02094058Ev(q) == 1) {
+        if (_ZN6TownId15getTownRelationEv(q) == 1) {
             return ReddPassword_VisitorKnows();
         }
         u8 v = func_02097740(gSavePlayers, q) & 3;
@@ -2453,7 +2453,7 @@ extern "C" BOOL ReddPassword_LearnCurrentPlayer() {
     void *p = PlayerData_GetCurrent();
     if (p != NULL) {
         void *q = _ZN10PlayerData11getPlayerIdEv(p);
-        if (_ZN6TownId13func_02094058Ev(q) == 1) {
+        if (_ZN6TownId15getTownRelationEv(q) == 1) {
             return data_021ed2c0.getPassword()->setVisitorKnows();
         }
         u8 v = func_02097740(gSavePlayers, q) & 3;
@@ -2877,7 +2877,7 @@ extern "C" {
 void Letter_ComposeFromMail(void *o, void *a, const void *b, void *c, void *d, void *e);
 }
 extern "C" {
-void _ZN12Unk_0206555410setPresentEtj(void *o, u32 a, u32 b);
+void _ZN10LetterView10setPresentEtj(void *o, u32 a, u32 b);
 }
 extern "C" {
 u32 Item_GetMemberPrice(void *p);
@@ -2919,7 +2919,7 @@ extern "C" {
 u32 ShopStock_GetCode22Index(u32 a, u32 b);
 }
 extern "C" {
-u32 _ZN6TownId13func_02094058Ev(void *p);
+u32 _ZN6TownId15getTownRelationEv(void *p);
 }
 extern "C" {
 u32 NookShop_SellSlot(void *p, u32 a, u32 b, u32 c);
@@ -3097,7 +3097,7 @@ extern "C" void NookPoints_SendMemberLetters(void) {
                         _ZN6LetterC1Ev(obj);
                         ib = i;
                         Letter_ComposeFromMail(obj, &ib, "sp_npc_atm", data_020e2e34, data_020e2e38, _ZN10PlayerData11getPlayerIdEv(r5));
-                        _ZN12Unk_0206555410setPresentEtj(obj, kNookMemberGiftItems[i & 3], 1);
+                        _ZN10LetterView10setPresentEtj(obj, kNookMemberGiftItems[i & 3], 1);
                         if (LetterDelivery_QueueOutgoing(obj, z)) {
                             _ZN12Unk_02097ff47setFlagEj(r5, j);
                         }
@@ -3225,7 +3225,7 @@ extern "C" void Shop_RecordPurchase(u32 a, u32 b, u32 c, u32 d, int mode, u8 fla
 }
 
 extern "C" void NookShop_RecordBuyback(int a) {
-    BOOL x = _ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
+    BOOL x = _ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
     if (a > 0x249f0) {
         a = 0x249f0;
     }
@@ -3250,7 +3250,7 @@ extern "C" void NookShop_BuyAt(u32 a, u32 b, u32 c, u32 d) {
         r = NookShop_FindItem(data_021ed104, v);
     }
     if (r != (u32)-1) {
-        BOOL x = _ZN6TownId13func_02094058Ev(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
+        BOOL x = _ZN6TownId15getTownRelationEv(_ZN10PlayerData11getPlayerIdEv(PlayerData_GetCurrent())) == 0;
         ShopAckCounter_Start(sShopAckCounter);
         Shop_RecordPurchase(r, c, d, x, 0, 1, 0);
     }
@@ -3284,7 +3284,7 @@ extern "C" BOOL NookShop_SendCatalogOrder(void *name) {
         u8 *d = data_021ed104;
         by = NookShop_GetLevel(d);
         Letter_ComposeFromMail(obj, &by, "sp_npc_raccoon", data_020e2e40, data_020e2e3c, _ZN10PlayerData11getPlayerIdEv(r4));
-        _ZN12Unk_0206555410setPresentEtj(obj, id, 1);
+        _ZN10LetterView10setPresentEtj(obj, id, 1);
         u32 r = Item_GetMemberPrice(&id);
         if (LetterDelivery_QueueOutgoing(obj, 0)) {
             NookShop_AddSales(d, r, 1);

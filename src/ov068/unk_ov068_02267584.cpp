@@ -130,10 +130,10 @@ void Bgm_ReleasePriority(u32 a);
 void Bgm_Release(u32 a);
 void Bgm_RequestSilence(u32 a, u32 b, u32 c);
 void Camera_SetModeDefault();
-BOOL func_020951b8(s32 a);
+BOOL PlayerActor_IsScriptedWalking(s32 a);
 void *func_020947f0(s32 a);
 void PlayerActor_RequestWalkTo(void *v, u32 a, u32 b);
-void func_02094f48(s32 a, s32 b);
+void PlayerActor_SetNoFaceTalkTarget(s32 a, s32 b);
 void GameStart_Clear();
 BOOL GameStart_IsNewResident();
 BOOL GameStart_IsNewTown();
@@ -167,7 +167,7 @@ void func_020e9888(void *, s32);
 s32 func_020e9650(void *, void *);
 void func_020e7820(void *, s32, s32, s32);
 s32 func_020e9688(void *);
-Unk_ov068_022678c4_Rec *func_02095204(s32);
+Unk_ov068_022678c4_Rec *PlayerActor_GetActor(s32);
 extern s32 data_020c7c1c;
 void func_01ffd070(Unk_ov068_02268608_Vec *out, void *a, void *b);
 void Effect_Create(s32 a, void *v, s32 b, void *h);
@@ -518,7 +518,7 @@ s32 Unk_ov068_022678c4::enterSnowballFall() {
     s32 d = func_020e9688(&v);
     if (d < 0x2b8) {
         if (d == 0) {
-            Unk_ov068_022678c4_Rec *r = func_02095204(4);
+            Unk_ov068_022678c4_Rec *r = PlayerActor_GetActor(4);
             if (r) {
                 s32 a = (r->unk_8e >> 4) * 2;
                 unk_2ec = func_01ffcb0c(0x2b8, data_02135f44[a]);
