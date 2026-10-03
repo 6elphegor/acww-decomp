@@ -490,6 +490,17 @@ class Rename:
         self.counts = defaultdict(int)
         self.files = set()
         self.unresolved = []
+        for m in getattr(self, "members", ()):
+            m.reset()
+
+    def absorb_members(self):
+        """counts and problems of the member aliases of a func record (see check_func) become the record's"""
+        for m in getattr(self, "members", ()):
+            for k, v in m.counts.items():
+                self.counts[f"member {m.path[-1]}::{m.new}: {k}"] += v
+            self.files |= m.files
+            self.unresolved += m.unresolved
+            m.counts, m.unresolved = defaultdict(int), []
 
     def label(self):
         q = f"{self.qual}:" if self.qual else ""
@@ -961,6 +972,26 @@ class Index:
             if from_symbols:
                 self.sym_methods[method].add(path)
 
+    def addresses(self):
+        """symbols.txt name -> {(module, address)}"""
+        if not hasattr(self, "_addr_of"):
+            self._addr_of = defaultdict(set)
+            for key, names in self.sym_addr.items():
+                for n in names:
+                    self._addr_of[n].add(key)
+        return self._addr_of
+
+    def method_symbols(self, cls, meth):
+        """the mangled symbols.txt names of cls::meth"""
+        if not hasattr(self, "_method_syms"):
+            self._method_syms = defaultdict(list)
+            for n in self.symbols:
+                mm = parse_mangled(n) if n.startswith("_Z") else None
+                for path, m in (class_method_pairs(mm) if mm else ()):
+                    if path and path[-1]:
+                        self._method_syms[(path[-1], m)].append(n)
+        return self._method_syms.get((cls, meth), [])
+
     def used(self, name):
         return name in self.symbols or name in self.other_config or name in self.tokens or name in self.components
 
@@ -1093,9 +1124,9 @@ class Index:
             if slots:
                 for e in slots:
                     e[1], e[2] = cls, pure
-            elif name in secondary:
-                continue
-            elif virtual:
+            elif virtual or name in secondary:
+                # a new virtual, or an override of a secondary base's virtual that the primary chain lacks: mwcc gives
+                # those their own primary slots too (B17: BuildingActor's vfunc_60/6c/88; ROM vtable 0x0225e29c)
                 table.append([name, cls, pure])
                 if dtor:
                     table.append([name, cls, pure])
@@ -1176,7 +1207,7 @@ def expression_type(fm, idx, j, pos, depth):
         inner = m[k + 1:j]
         cast = re.match(r"\s*\(\s*(?:const\s+)?(?:struct\s+|class\s+)?([A-Za-z_]\w*)\s*\*\s*\)", inner)
         if cast:
-            return resolve_type(fm, cast[1], idx)
+            return resolve_type(fm, cast[1], idx, pos)
         before = back_ws(m, k - 1)
         if before >= 0 and (m[before].isalnum() or m[before] == "_"):
             f = k - 1
@@ -1195,7 +1226,7 @@ def expression_type(fm, idx, j, pos, depth):
     name = m[k:j + 1]
     if name == "this":
         encl = fm.enclosing_class(pos)
-        return resolve_type(fm, encl, idx) if encl else None
+        return resolve_type(fm, encl, idx, pos) if encl else None
     # a member of another expression: `a.b->name`
     owner, access = receiver_type(fm, idx, k, depth + 1)
     if access:
@@ -1203,7 +1234,14 @@ def expression_type(fm, idx, j, pos, depth):
     return variable_type(fm, idx, name, pos)
 
 
-def resolve_type(fm, name, idx=None):
+def resolve_type(fm, name, idx=None, pos=None):
+    if pos is not None and idx is not None:
+        # a class name aliased by a macro active here (`#define TalkMsgRequest Unk_020ddcf0_v13`): the compiler sees
+        # the alias's class
+        alias = fm.macro("define", name, pos)
+        if alias and alias != name and not alias.startswith("_Z") and \
+                (alias in idx.view(fm.vkey) or alias in idx.classes):
+            return alias
     if idx is not None and name in idx.view(fm.vkey):
         return name  # a class of this view (another unit of a merged file may typedef the same name)
     seen = set()
@@ -1217,7 +1255,7 @@ def return_type(fm, idx, func, pos):
     """the class a function or method named func returns (pointer or reference): its nearest declaration before
     pos in the file, or its only one"""
     pat = re.compile(r"\b([A-Za-z_]\w*)\s*[*&]\s*(?:[A-Za-z_]\w*\s*::\s*)?" + re.escape(func) + r"\s*\(")
-    found = [(mo.start(), resolve_type(fm, mo[1], idx)) for mo in pat.finditer(fm.masked)]
+    found = [(mo.start(), resolve_type(fm, mo[1], idx, mo.start())) for mo in pat.finditer(fm.masked)]
     found = [(at, t) for at, t in found if t in idx.classes or t in idx.sym_components]
     before = [t for at, t in found if at < pos]
     if before:
@@ -1229,18 +1267,18 @@ def return_type(fm, idx, func, pos):
 def variable_type(fm, idx, name, pos):
     cast = fm.macro("cast", name, pos)
     if cast:
-        return resolve_type(fm, cast, idx)
+        return resolve_type(fm, cast, idx, pos)
     value = fm.macro("define", name, pos)
     if value and not value.startswith("_Z"):
         name = value  # `#define OWNER unk_13b0`
     t = variable_type_raw(fm, idx, name, pos)
-    return resolve_type(fm, t, idx) if t else None
+    return resolve_type(fm, t, idx, pos) if t else None
 
 
 def variable_type_raw(fm, idx, name, pos):
     m = fm.masked
     pat = re.compile(r"\b([A-Za-z_]\w*)\s*(?:\*+\s*(?:const\s+)?|&\s*|\s)\s*\b" + re.escape(name) + r"\b\s*(?=[;,)=\[])")
-    found = [(mo.start(), resolve_type(fm, mo[1], idx)) for mo in pat.finditer(m)]
+    found = [(mo.start(), resolve_type(fm, mo[1], idx, mo.start())) for mo in pat.finditer(m)]
     found = [(at, t) for at, t in found if t in idx.classes or t in idx.sym_components]
     head = fm.enclosing_def(pos)
     if head is None:
@@ -1253,7 +1291,7 @@ def variable_type_raw(fm, idx, name, pos):
             return local[-1]
     cls = fm.enclosing_class(pos)
     if cls:
-        cls = resolve_type(fm, cls, idx)
+        cls = resolve_type(fm, cls, idx, pos)
         ft = idx.field_type(cls, name, fm.vkey)
         if ft:
             return ft
@@ -1276,6 +1314,11 @@ class Renamer:
         for r in renames:
             if r.kind == "func":
                 self.funcs[r.old] = r
+                for m in getattr(r, "members", ()):  # member aliases of the same function
+                    for path, old in m.pairs:
+                        self.any_pairs[old][path[-1]] = m
+                        self.global_pairs[old][path[-1]] = m
+                        self.mangled_members[old].append((path, m))
             elif r.kind == "class":
                 self.classes[r.old] = r
             else:
@@ -1377,7 +1420,7 @@ class Renamer:
         out.append(tok[last:])
         return "".join(out)
 
-    def decide_method(self, tok, text, pos, fm, code, path):
+    def decide_method(self, tok, text, pos, fm, code, path, free_fallback=False):
         """new name for a method identifier at pos, or None to keep it"""
         idx = self.idx
         fpath = fm.path if fm is not None else None
@@ -1398,7 +1441,7 @@ class Renamer:
             return None
         q = re.search(r"([A-Za-z_]\w*)\s*::\s*(?:~\s*)?$", text[max(0, pos - 200):pos])
         if q:
-            qcls = resolve_type(fm, q[1], idx) if fm is not None else q[1]
+            qcls = resolve_type(fm, q[1], idx, pos) if fm is not None else q[1]
             owner = idx.lookup(qcls, tok, fpath) or qcls
             r = pairs.get(owner)
             return self.hit(r, "src" if code else "comment/docs", path) if r else None
@@ -1443,7 +1486,7 @@ class Renamer:
         if not access:
             cls = fm.enclosing_class(pos)
             if cls is not None:
-                cls = resolve_type(fm, cls, idx)
+                cls = resolve_type(fm, cls, idx, pos)
             if cls is None:
                 for r in {id(x): x for x in pairs.values()}.values():
                     r.counts["left (free function of the same name)"] += 1
@@ -1452,6 +1495,8 @@ class Renamer:
         if owner:
             r = pairs.get(owner)
             return self.hit(r, "src", path) if r else None
+        if free_fallback and not access:
+            return None  # an unqualified name that no class of the chain declares: the free function of that name
         # unresolved: safe only if every class of this file's view that has this method name is renamed
         declared = {c for c, ci in idx.view(fm.vkey).items() if tok in ci.all_methods}
         if declared and declared <= set(pairs) and tok not in idx.field_names and tok not in idx.symbols:
@@ -1477,7 +1522,7 @@ class Renamer:
         decisions = set()
         for u in uses:
             cls = fm.enclosing_class(u)
-            cls = resolve_type(fm, cls, idx) if cls else None
+            cls = resolve_type(fm, cls, idx, u) if cls else None
             owner = idx.lookup(cls, tok, fpath) if cls else None
             if owner is None:
                 decisions.add("unresolved")
@@ -1520,6 +1565,11 @@ class Renamer:
                 if rf is not None:
                     return self.hit(rf, category, path)
                 r = self.funcs.get(tok) or self.classes.get(tok)
+                if r is not None and getattr(r, "members", None) and category == "src":
+                    # the name is also a member alias: occurrences that resolve to the member get the member's name
+                    member = self.decide_method(tok, text, a + m.start(), fm, code, path, free_fallback=True)
+                    if member:
+                        return member
                 if r is not None and self.in_scope(r, module):
                     if category.startswith("config"):
                         self.produced[r.new].add(r)
@@ -1654,6 +1704,20 @@ def normalize(r, idx):
             r.notes.append(f"`{before}` is a C++ free function: {r.ident} -> {r.new} in sources, symbol -> "
                            f"{r.new_mangled}")
             return
+    elif IDENT.fullmatch(r.old) and r.old not in idx.symbols and not r.old.startswith("_Z") and \
+            any(n.startswith(f"_Z{len(r.old)}{r.old}") for n in idx.symbols):
+        # the plain identifier of a C++ free function whose symbol is mangled (`func func_020c22e0 X` for the symbol
+        # `_Z13func_020c22e0v`): the same `free` rename
+        for n in sorted(idx.symbols):
+            mm = parse_mangled(n) if n.startswith(f"_Z{len(r.old)}{r.old}") else None
+            if mm and not mm.nested and mm.names and mm.names[0][0] == 2 and mm.names[0][2] == r.old:
+                before = r.label()
+                r.kind, r.ident = "free", r.old
+                r.old = n
+                r.new_mangled = f"_Z{len(r.new)}{r.new}{n[mm.names[0][1]:]}"
+                r.notes.append(f"`{before}`: the symbol is the C++ free function {n}: {r.ident} -> {r.new} in sources, "
+                               f"symbol -> {r.new_mangled}")
+                return
     elif r.old not in idx.symbols and r.old not in idx.other_config and len(idx.sym_methods.get(r.old, ())) == 1:
         (path,) = idx.sym_methods[r.old]
         if all(path):
@@ -1718,6 +1782,39 @@ def check_func(r, idx, allow_existing):
         errors.append(f"{r.where}: {r.new} is already used ({describe_use(idx, r.new)}); --allow-existing to accept")
     if r.old.startswith("_Z"):
         r.notes.append("old name is mangled: only literal uses change (symbols.txt, extern \"C\" declarations)")
+    if in_syms and r.old in idx.sym_methods:
+        # the name is also a method name in mangled symbols (alias labels of the same function, e.g.
+        # `_ZN9TalkFrame13func_02068524Ev` next to `func_02068524`): a class copy declares the function as a member
+        # and calls it as one. The token rename changes those declarations and calls, so the method component of
+        # those mangled names must change too, which is only right when they are names of the same address.
+        # Occurrences that resolve to the member (declaration, calls from member functions) and the mangled alias get
+        # a member-style name: lowerCamel of the part after `<Class>_` of the new name
+        # (`TalkFrame_FreeBuffers` -> TalkFrame::freeBuffers); the free function's occurrences get the new name.
+        addr_of = idx.addresses()
+        mine = addr_of.get(r.old, set())
+        r.members = []
+        for path in sorted(idx.sym_methods[r.old], key=str):
+            if not path or not all(path):
+                continue
+            cls = path[-1]
+            syms = idx.method_symbols(cls, r.old)
+            if not (syms and all(addr_of.get(n, set()) & mine for n in syms)):
+                errors.append(f"{r.where}: {r.old} is also the method {'::'.join(path)}::{r.old} at another address "
+                              f"({', '.join(syms)}); rename that with `member`, or this one by its address name")
+                continue
+            rest = r.new.split("_", 1)[1] if "_" in r.new.strip("_") else ""
+            if not rest or not IDENT.fullmatch(rest) or rest[0].isdigit():
+                errors.append(f"{r.where}: {r.old} is also declared as a member of {cls} (alias "
+                              f"{', '.join(syms)}); give the member its own name with `method {cls} {r.old} <name>` "
+                              f"(or name the function `<Class>_<Name>` to derive it)")
+                continue
+            mname = rest[0].lower() + rest[1:]
+            m = Rename("member", None, r.old, mname, r.where, r.raw, r.batch)
+            m.path, m.pairs, m.file_pairs, m.parent = (cls,), [((cls,), r.old)], None, r
+            errors += check_new_method(m, idx, [cls], allow_existing, {cls: idx.files_with(cls) or [None]})
+            r.members.append(m)
+            r.notes.append(f"also declared as a member of {cls} (alias {', '.join(syms)}): member occurrences and "
+                           f"the alias become {cls}::{mname}")
     if not in_syms and r.old in idx.other_config:
         r.notes.append("not in symbols.txt: a linker script name (lcf_symbols.txt / abs_symbols.txt)")
     elif not in_syms:
@@ -1928,20 +2025,29 @@ def check_vfunc(r, idx, allow_existing):
             break
     if root != cls:
         r.notes.append(f"slot {4 * s:#04x} is introduced by {root}: its whole hierarchy is renamed")
-    members = hierarchy(idx, root)
+    # Copies of a class may name its bases differently per file (ov046's TalkMsgRequest derives from a local
+    # ActorTalkRequest that introduces the slot there). Every base that has the slot in some file's primary chain is a
+    # root too; the hierarchy is the union of their descendants.
+    # Globally one root. A file whose copy of a member continues ABOVE the root with a local base that has the slot
+    # (ov046: TalkMsgRequest : ActorTalkRequest) gets that base and its other subclasses in that file renamed too
+    # (local_roots below); hierarchies are never merged globally through such copies.
+    roots, members = {root}, set(hierarchy(idx, root))
+    local_roots = defaultdict(set)   # file -> local bases above the root that have the slot
     errors, file_pairs, mangled, olds = [], defaultdict(set), set(), defaultdict(set)
     file_class_pairs = {}
-    secondary_pairs, secondary_classes = set(), set()
+    secondary_pairs, secondary_classes, secondary_seen = set(), set(), set()
     class_files = defaultdict(list)
     for p in idx.files:
         view = idx.view(p)
         for d in [d for d in members if d in view]:
             class_files[d].append(p)
-            if root not in idx.primary_chain(d, p):
-                if root in idx.ancestors(d, p):
+            if not roots & set(idx.primary_chain(d, p)):
+                sec = sorted(roots & idx.ancestors(d, p))
+                if sec:
+                    secondary_seen.add(d)
                     # through a secondary base: the slot is in a secondary vtable (with _ZThn thunks); an override
                     # has the root's name for the slot in this file
-                    rt = idx.layout(root, p)
+                    rt = idx.layout(sec[0], p)
                     if rt and s < len(rt):
                         rname = rt[s][0]
                         dt = idx.layout(d, p) or []
@@ -1957,7 +2063,9 @@ def check_vfunc(r, idx, allow_existing):
                             secondary_pairs.add(((d,), rname))
                             olds[d].add(rname)
                             secondary_classes.add(d)
-                continue
+                    continue
+                # a copy of the class without the root in its chain (no base declared, or bases that lack the
+                # slot): the slot by position in this copy's own declaration
             t = idx.layout(d, p)
             if not t or s >= len(t):
                 continue
@@ -1982,11 +2090,63 @@ def check_vfunc(r, idx, allow_existing):
             file_pairs[p].add((owner, name))
             file_class_pairs[(p, d)] = (owner, name)
             olds[owner].add(name)
+            chain = idx.primary_chain(d, p)
+            if root in chain:
+                for base in chain[chain.index(root) + 1:]:
+                    bt = idx.layout(base, p)
+                    if not (bt and s < len(bt)):
+                        break
+                    local_roots[p].add(base)
+    # local bases above the root (see above): their slot and that of their other subclasses in the same file
+    for p, bases in local_roots.items():
+        view = idx.view(p)
+        for x in view:
+            if x in members:
+                continue
+            chain = idx.primary_chain(x, p)
+            if not set(chain) & bases:
+                continue
+            t = idx.layout(x, p)
+            if not t or s >= len(t) or t[s][0] == "~":
+                continue
+            name, owner, _ = t[s]
+            file_pairs[p].add((owner, name))
+            olds[owner].add(name)
+            if file_uses_class_symbols(idx, p, owner, name) and owner not in bases:
+                # a subclass outside the hierarchy defines or names the override here: its symbol follows
+                mangled.add(((owner,), name))
+        r.notes.append(f"{p.relative_to(idx.repo.root)}: local base(s) {', '.join(sorted(bases))} above {root} "
+                       f"declare the slot; renamed in that file with their subclasses")
+    # View classes: a file that aliases a hierarchy class to a stand-in class with `#define A B` (A in the hierarchy,
+    # B declared in the file, e.g. `#define TalkMsgRequest Unk_020ddcf0_v13`) types A's objects as B there; B's slot
+    # (by position in B's own declaration) is renamed in that file too
+    views = []
+    for p, fm in idx.files.items():
+        for (kind, alias), entries in fm.macro_ranges.items():
+            if kind != "define" or alias not in members:
+                continue
+            for _, target in entries:
+                if target.startswith("_Z") or target in members or target not in idx.view(p):
+                    continue
+                t = idx.layout(target, p)
+                if not t or s >= len(t) or t[s][0] == "~":
+                    errors.append(f"{r.where}: {p.relative_to(idx.repo.root)} aliases {alias} to {target} "
+                                  f"(#define), whose declaration has no slot {4 * s:#04x}")
+                    continue
+                file_pairs[p].add((t[s][1], t[s][0]))
+                olds[t[s][1]].add(t[s][0])
+                class_files[target].append(p)
+                if idx.lookup(target, r.new, p):
+                    errors.append(f"{r.where}: view class {target} ({p.relative_to(idx.repo.root)}) already has a "
+                                  f"method {r.new}")
+                views.append(f"{target} ({t[s][1]}::{t[s][0]}, {p.relative_to(idx.repo.root)})")
+    if views:
+        r.notes.append(f"view classes aliased by #define, renamed by slot position: {'; '.join(sorted(set(views))[:4])}")
     # The ROM vtables are the authority, not the vfunc_NN names or one file's copy of a class. For every class of
     # the hierarchy that has a _ZTV symbol, the slot function's names in symbols.txt (aliases: the names other files
     # use) are the mangled names to rename, and a file whose copy of the class disagrees with the ROM (swapped or
     # shifted slots) is left unchanged for this record.
-    verified, rom_owned, excluded = 0, set(), {}
+    verified, rom_owned, excluded, by_position = 0, set(), {}, set()
     for d in sorted(members):
         if d in secondary_classes and not any((p, d) in file_class_pairs for p in class_files.get(d, [])):
             continue  # reaches the root through a secondary base: its primary vtable is another one
@@ -2013,15 +2173,24 @@ def check_vfunc(r, idx, allow_existing):
                 other = rom_slot(idx, d, i)
                 if other and other[1]:
                     other_slots |= {n for _, n in owners_at(other[0])}
-        good = []
+        # The slot is found by POSITION in each file's own declarations, and whatever name a copy uses for it is
+        # renamed there (copies name slots differently: `func_0203e678` in the overlays' ProcBase copies, `postCreate`
+        # in main; opaque copies don't redeclare the override). The one dangerous case: the copy's name is the ROM
+        # name of ANOTHER slot of this class and the file refers to that name by symbol (qualified call, definition):
+        # renaming it would retarget that reference. Refused with the file.
+        dangerous = []
         for p, (owner, name) in copies.items():
-            if name in rom_methods or (owner in rom_classes and name not in other_slots):
-                good.append(p)
+            agrees = name in rom_methods or (owner in rom_classes and name not in other_slots)
+            if agrees:
+                continue
+            if name in other_slots and file_uses_class_symbols(idx, p, owner, name):
+                dangerous.append(f"{p.relative_to(idx.repo.root)} ({owner}::{name})")
             else:
-                excluded[p] = f"{d}::{name}" + (" (the ROM name of another slot)" if name in other_slots else "")
-        if copies and not good:
-            errors.append(f"{r.where}: the ROM vtable of {d}, slot {4 * s:#04x}, points to {', '.join(names)}; no "
-                          f"source declaration agrees ({', '.join(sorted(set(f'{o}::{n}' for o, n in copies.values())))})")
+                by_position.add(p)
+        if dangerous:
+            errors.append(f"{r.where}: slot {4 * s:#04x} of {d} is {', '.join(names)} in the ROM, but in "
+                          f"{'; '.join(dangerous[:3])} that name is the ROM name of another slot and the file refers "
+                          f"to it by symbol")
             continue
         verified += 1
         rom_owned.add(d)
@@ -2029,19 +2198,41 @@ def check_vfunc(r, idx, allow_existing):
             if o in members:
                 mangled.add(((o,), n))
                 olds[o].add(n)
-    for p, why in sorted(excluded.items()):
-        file_pairs.pop(p, None)
-        r.notes.append(f"{p.relative_to(idx.repo.root)}: its copy of the class disagrees with the ROM vtable at slot "
-                       f"{4 * s:#04x} ({why}); left unchanged")
+    if by_position:
+        r.notes.append(f"{len(by_position)} files name slot {4 * s:#04x} differently from the ROM symbols (their own "
+                       f"copies of the classes); renamed by position")
     # classes without a ROM vtable symbol: the names their declarations give the slot
     for (p, d), (owner, name) in file_class_pairs.items():
         if p not in excluded and owner not in rom_owned and d not in rom_owned:
             mangled.add(((owner,), name))
     mangled |= secondary_pairs
+    # only classes that really sit in two hierarchies: reached through a secondary base, or with this-adjusting
+    # thunks, and their descendants (single-inheritance base-less copies are opaque copies: position decides)
+    lineage = set(members)
+    for q in idx.files_with(root):
+        lineage |= set(idx.primary_chain(root, q))
+
+    def copies_disagree(c):
+        """one copy has the root in c's primary chain, another a primary chain through a base outside the root's
+        lineage (not a class of the hierarchy, not a primary base of the root): copies disagree about c's primary
+        base, so one of them is another hierarchy (truncated or base-less copies don't count)"""
+        with_root = without_root = False
+        for q in idx.files_with(c):
+            chain = idx.primary_chain(c, q)
+            if root in chain:
+                with_root = True
+            elif set(chain[1:]) - lineage:
+                without_root = True
+        return with_root and without_root
+
+    dual = {c for c in members if c in secondary_classes or c in secondary_seen or copies_disagree(c)}
+    dual |= {c for c in members if idx.ancestors(c) & dual}
     for (o,), n in sorted(mangled):
+        if o not in dual:
+            continue
         for q in idx.files_with(o):
             t = idx.layout(o, q)
-            if not t or root in idx.primary_chain(o, q):
+            if not t or roots & set(idx.primary_chain(o, q)):
                 continue
             hits = [i for i, e in enumerate(t) if e[0] == n and e[1] == o]
             if hits and len(idx.primary_chain(o, q)) == 1 and not file_uses_class_symbols(idx, q, o, n):
@@ -2223,7 +2414,8 @@ def modules_known(idx):
 def post_check(renames, changed, produced=None):
     errs = defaultdict(list)
     for r in renames:
-        total = sum(v for k, v in r.counts.items() if not k.startswith(("skipped", "left")))
+        r.absorb_members()
+        total =sum(v for k, v in r.counts.items() if not k.startswith(("skipped", "left")))
         if total == 0:
             errs[r].append(f"{r.where}: {r.label()}: nothing to rename")
         if r.unresolved:
