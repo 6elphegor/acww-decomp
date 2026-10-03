@@ -61,6 +61,10 @@ src/itcm/unk_01ffa4a0.c:
     complete
     .text       start:0x01ffa4a0 end:0x01ffb040
 
+src/itcm/unk_01ffb040.c:
+    complete
+    .text       start:0x01ffb040 end:0x01ffb448
+
 src/itcm/unk_01ffb448.c:
     complete
     .text       start:0x01ffb448 end:0x01ffb498
@@ -85,6 +89,10 @@ src/itcm/unk_01ffb898.c:
     complete
     .text       start:0x01ffb898 end:0x01ffbb6c
 
+src/itcm/unk_01ffbb6c.c:
+    complete
+    .text       start:0x01ffbb6c end:0x01ffbf00
+
 src/itcm/unk_01ffbf00.c:
     complete
     .text       start:0x01ffbf00 end:0x01ffbf40
@@ -96,6 +104,10 @@ src/itcm/unk_01ffbf40.c:
 src/itcm/unk_01ffbfa0.c:
     complete
     .text       start:0x01ffbfa0 end:0x01ffc4c8
+
+src/itcm/unk_01ffc4c8.c:
+    complete
+    .text       start:0x01ffc4c8 end:0x01ffc538
 
 src/itcm/unk_01ffc538.c:
     complete
