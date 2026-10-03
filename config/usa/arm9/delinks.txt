@@ -11,7 +11,7 @@ src/main/unk_02000000.s:
     complete
     .text       start:0x02000000 end:0x02000800
 
-src/main/unk_02000800.cpp:
+src/main/unk_02000800.s:
     complete
     .text       start:0x02000800 end:0x02000b44
 
@@ -662,7 +662,7 @@ src/main/unk_0206d3f4.cpp:
     .text       start:0x0206d3f4 end:0x0206d470
     .data       start:0x020ddf6c end:0x020ddf88
 
-src/main/unk_0206d470.cpp:
+src/main/unk_0206d470.s:
     complete
     .text       start:0x0206d470 end:0x0206d49c
 

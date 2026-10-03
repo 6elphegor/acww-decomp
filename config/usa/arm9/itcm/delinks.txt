@@ -5,7 +5,7 @@ src/itcm/unk_01ff8000.c:
     complete
     .text       start:0x01ff8000 end:0x01ff8164
 
-src/itcm/unk_01ff8164.c:
+src/itcm/unk_01ff8164.s:
     complete
     .text       start:0x01ff8164 end:0x01ff81a8
 
@@ -13,7 +13,7 @@ src/itcm/unk_01ff81a8.c:
     complete
     .text       start:0x01ff81a8 end:0x01ff81dc
 
-src/itcm/unk_01ff81dc.c:
+src/itcm/unk_01ff81dc.s:
     complete
     .text       start:0x01ff81dc end:0x01ff8228
 
@@ -29,7 +29,7 @@ src/itcm/unk_01ff9e10.c:
     complete
     .text       start:0x01ff9e10 end:0x01ffa2ec
 
-src/itcm/unk_01ffa2ec.c:
+src/itcm/unk_01ffa2ec.s:
     complete
     .text       start:0x01ffa2ec end:0x01ffa328
 
@@ -37,7 +37,7 @@ src/itcm/unk_01ffa328.c:
     complete
     .text       start:0x01ffa328 end:0x01ffa3b4
 
-src/itcm/unk_01ffa3b4.c:
+src/itcm/unk_01ffa3b4.s:
     complete
     .text       start:0x01ffa3b4 end:0x01ffa3cc
 
@@ -45,7 +45,7 @@ src/itcm/unk_01ffa3cc.c:
     complete
     .text       start:0x01ffa3cc end:0x01ffa3d4
 
-src/itcm/unk_01ffa3d4.c:
+src/itcm/unk_01ffa3d4.s:
     complete
     .text       start:0x01ffa3d4 end:0x01ffa404
 
@@ -53,7 +53,7 @@ src/itcm/unk_01ffa404.c:
     complete
     .text       start:0x01ffa404 end:0x01ffa494
 
-src/itcm/unk_01ffa494.c:
+src/itcm/unk_01ffa494.s:
     complete
     .text       start:0x01ffa494 end:0x01ffa4a0
 
@@ -65,11 +65,11 @@ src/itcm/unk_01ffb040.c:
     complete
     .text       start:0x01ffb040 end:0x01ffb448
 
-src/itcm/unk_01ffb448.c:
+src/itcm/unk_01ffb448.s:
     complete
     .text       start:0x01ffb448 end:0x01ffb498
 
-src/itcm/unk_01ffb498.c:
+src/itcm/unk_01ffb498.s:
     complete
     .text       start:0x01ffb498 end:0x01ffb4e8
 
@@ -77,11 +77,11 @@ src/itcm/unk_01ffb4e8.c:
     complete
     .text       start:0x01ffb4e8 end:0x01ffb7cc
 
-src/itcm/unk_01ffb7cc.c:
+src/itcm/unk_01ffb7cc.s:
     complete
     .text       start:0x01ffb7cc end:0x01ffb828
 
-src/itcm/unk_01ffb828.c:
+src/itcm/unk_01ffb828.s:
     complete
     .text       start:0x01ffb828 end:0x01ffb898
 
@@ -97,7 +97,7 @@ src/itcm/unk_01ffbf00.c:
     complete
     .text       start:0x01ffbf00 end:0x01ffbf40
 
-src/itcm/unk_01ffbf40.c:
+src/itcm/unk_01ffbf40.s:
     complete
     .text       start:0x01ffbf40 end:0x01ffbfa0
 
@@ -129,11 +129,11 @@ src/itcm/unk_01ffd0e4.cpp:
     complete
     .text       start:0x01ffd0e4 end:0x01ffd50c
 
-src/itcm/unk_01ffd50c.c:
+src/itcm/unk_01ffd50c.s:
     complete
     .text       start:0x01ffd50c end:0x01ffd6c0
 
-src/itcm/unk_01ffd6c0.c:
+src/itcm/unk_01ffd6c0.s:
     complete
     .text       start:0x01ffd6c0 end:0x01ffd784
 

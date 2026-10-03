@@ -1,0 +1,26 @@
+; Original assembly (NitroSDK os_system.c): hand-written in the original; linked as assembly per the project's
+; assembly policy.
+; itcm 0x01ffa3b4-0x01ffa3cc: OS_GetProcMode (mrs cpsr), OS_Halt (mcr p15 c7,c0,4: wait for interrupt).
+; Assembled with mwasmarm (tools/configure.py, rule mwasm).
+
+	.text
+
+	.arm
+
+; OS_GetProcMode: CPSR mode bits (HW_PSR_CPU_MODE_MASK 0x1f)
+	.global func_01ffa3b4
+	.type func_01ffa3b4, @function
+	.size func_01ffa3b4, 0xc
+func_01ffa3b4:
+	mrs r0, cpsr
+	and r0, r0, #0x1f
+	bx lr
+
+; OS_Halt
+	.global func_01ffa3c0
+	.type func_01ffa3c0, @function
+	.size func_01ffa3c0, 0xc
+func_01ffa3c0:
+	mov r0, #0
+	mcr p15, 0, r0, c7, c0, 4
+	bx lr

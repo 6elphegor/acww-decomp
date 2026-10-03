@@ -270,8 +270,6 @@ from:0x01ffd6b0 kind:load to:0x027e0450 module:dtcm
 from:0x01ffd6b4 kind:load to:0x021fcc2c module:autoload(3)
 from:0x01ffd6b8 kind:load to:0x01ff806c module:itcm
 from:0x01ffd6bc kind:load to:0x01ff8000 module:itcm
-from:0x01ffd70c kind:arm_call to:0x01ffd770 module:itcm
-from:0x01ffd71c kind:arm_call to:0x01ffd770 module:itcm
 from:0x01ffd758 kind:load to:0x027e0000 module:dtcm
 from:0x01ffd8d8 kind:arm_call to:0x01ffd784 module:itcm
 from:0x01ffd90c kind:arm_call to:0x01ffa2ec module:itcm
