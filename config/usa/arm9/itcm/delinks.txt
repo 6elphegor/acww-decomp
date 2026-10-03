@@ -20,3 +20,19 @@ src/itcm/unk_01ff8ad4.c:
 src/itcm/unk_01ff9e10.c:
     complete
     .text       start:0x01ff9e10 end:0x01ffa2ec
+
+src/itcm/unk_01ffa328.c:
+    complete
+    .text       start:0x01ffa328 end:0x01ffa3b4
+
+src/itcm/unk_01ffa3cc.c:
+    complete
+    .text       start:0x01ffa3cc end:0x01ffa3d4
+
+src/itcm/unk_01ffa404.c:
+    complete
+    .text       start:0x01ffa404 end:0x01ffa494
+
+src/itcm/unk_01ffa4a0.c:
+    complete
+    .text       start:0x01ffa4a0 end:0x01ffb040
