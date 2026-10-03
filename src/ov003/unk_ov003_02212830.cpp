@@ -247,9 +247,9 @@ class ActorCollider {
 public:
     ActorCollider();
     ~ActorCollider();
-    virtual Unk_ov003_Vec *vfunc_00() = 0;
-    virtual u32 vfunc_04() = 0;
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual Unk_ov003_Vec *getPos() = 0;
+    virtual u32 getOwnerId() = 0;
+    virtual void onCollide(u32 a, u32 b, u32 c);
 
     void *getHitActor();
     void submit();
@@ -267,8 +267,8 @@ class ActorFollowCollider : public ActorCollider {
 public:
     ActorFollowCollider();
     ~ActorFollowCollider();
-    virtual Unk_ov003_Vec *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual Unk_ov003_Vec *getPos();
+    virtual u32 getOwnerId();
     s32 setupForActor(void *o, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
@@ -277,7 +277,7 @@ class SnowballCollider : public ActorFollowCollider {
 public:
     SnowballCollider();
     ~SnowballCollider();
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual void onCollide(u32 a, u32 b, u32 c);
     /* 0x44 */ u8 unk_44;
 };
 
@@ -517,7 +517,7 @@ SnowballCollider::~SnowballCollider() {
 
 // ================================================================
 // class SnowballCollider
-void SnowballCollider::vfunc_08(u32 a, u32 b, u32 c) {
+void SnowballCollider::onCollide(u32 a, u32 b, u32 c) {
     if (c & 4) {
         unk_44 = 1;
     }

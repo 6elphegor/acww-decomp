@@ -58,7 +58,7 @@ public:
     CollisionEdge(CollisionVec2 *a, CollisionVec2 *b);
     CollisionEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c);
     ~CollisionEdge();
-    virtual BOOL vfunc_00() { return TRUE; }
+    virtual BOOL hasRoundEnds() { return TRUE; }
 
     BOOL pushBackCrossing(CollisionVec2 *a, CollisionVec2 *b, s32 c);
     BOOL pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 c);
@@ -82,9 +82,9 @@ public:
     CollisionTriangle();
     CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
     ~CollisionTriangle();
-    virtual BOOL vfunc_00(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     Unk_0202f2ac_V3 unk_04, unk_10, unk_1c, unk_28;
     s32 unk_34;
@@ -94,7 +94,7 @@ public:
     BOOL containsXY(Unk_0202f2ac_V3 *p);
     s32 distanceTo(Unk_0202f2ac_V3 *p);
     s32 calcOffset();
-    BOOL func_0202f2d8(Unk_0202f2ac_V3 *p);
+    BOOL containsXZ(Unk_0202f2ac_V3 *p);
     BOOL set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
 };
 
@@ -307,13 +307,13 @@ CollisionTriangle::CollisionTriangle(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk
 
 BOOL CollisionTriangle::collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
     BOOL r = FALSE;
-    if (vfunc_04(a, b, c)) r = TRUE;
-    if (vfunc_00(a, b, c)) r = TRUE;
-    if (vfunc_08(a, b, c)) r = TRUE;
+    if (pushBackCrossing(a, b, c)) r = TRUE;
+    if (pushOutFace(a, b, c)) r = TRUE;
+    if (pushOutEdges(a, b, c)) r = TRUE;
     return r;
 }
 
-BOOL CollisionTriangle::vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
+BOOL CollisionTriangle::pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
     Unk_0202f2ac_V3 o;
     BOOL r = FALSE;
     if (distanceTo(a) <= 0 && distanceTo(b) > 0 && intersectSegment(&o, a, b)) {
@@ -325,7 +325,7 @@ BOOL CollisionTriangle::vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) 
     return r;
 }
 
-BOOL CollisionTriangle::vfunc_00(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
+BOOL CollisionTriangle::pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
     BOOL result = FALSE;
     s32 d = distanceTo(a);
     if (d >= 0 && d <= c + 0x200) {
@@ -350,7 +350,7 @@ end:
     return result;
 }
 
-BOOL CollisionTriangle::vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
+BOOL CollisionTriangle::pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c) {
     Unk_0202f2ac_V3 w, v;
     BOOL result;
     s32 d;
@@ -404,7 +404,7 @@ BOOL CollisionTriangle::set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac
     return TRUE;
 }
 
-BOOL CollisionTriangle::func_0202f2d8(Unk_0202f2ac_V3 *p) {
+BOOL CollisionTriangle::containsXZ(Unk_0202f2ac_V3 *p) {
     Unk_0202f2ac_V3 a, b, c;
     func_020e9960(&a, &unk_04, p);
     func_020e9960(&b, &unk_10, p);
@@ -483,7 +483,7 @@ BOOL CollisionTriangle::intersectLine(Unk_0202f2ac_V3 *out, Unk_0202f2ac_V3 *p, 
         out->y = y;
         out->z = z;
         if (Unk_0202f2ac_Abs(unk_28.y) >= 4) {
-            if (func_0202f2d8(out)) {
+            if (containsXZ(out)) {
                 return TRUE;
             }
         }
@@ -688,7 +688,7 @@ BOOL CollisionEdge::pushOutFace(CollisionVec2 *a, CollisionVec2 *b, s32 c) {
 
 BOOL CollisionEdge::pushOutEnds(CollisionVec2 *a, CollisionVec2 *b, s32 c) {
     CollisionVec2 *q;
-    if (!vfunc_00()) {
+    if (!hasRoundEnds()) {
         return FALSE;
     }
     s32 d = distanceTo(a);

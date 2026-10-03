@@ -20,9 +20,9 @@ struct Plane {
 struct Unk_0202f64c {
     Unk_0202f64c();
     ~Unk_0202f64c();
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual void vfunc_08();
+    virtual void pushOutFace();
+    virtual void pushBackCrossing();
+    virtual void pushOutEdges();
     virtual void collide();
     u8 pad[0x34];
 };
@@ -351,15 +351,16 @@ struct Unk_020b60dc_Cell {
     u32 pad_34[0xc / 4];
 };
 
-class Unk_020b60dc_Node {
+// ActorCollider (unk_02088b98.cpp), the fields TouchPick_Cast reads
+class ActorCollider {
 public:
-    virtual Vec3 *vfunc_00();
+    virtual Vec3 *getPos();
     u32 unk_04;
     u32 unk_08;
     u8 unk_0c;
     u8 unk_0d;
     u8 pad_0e[0x38 - 0xe];
-    Unk_020b60dc_Node *unk_38;
+    ActorCollider *unk_38;
 };
 
 struct Unk_020b60dc_Rec {
@@ -409,7 +410,7 @@ extern s32 data_020c8cb8;
 extern s32 data_020c7c1c;
 extern void *gCamera;
 extern Vec3 gCameraLookAt;
-extern Unk_020b60dc_Node *gActorColliderList;
+extern ActorCollider *gActorColliderList;
 extern u8 gFieldSceneKind;
 }
 
@@ -633,15 +634,15 @@ extern "C" void TouchPick_Cast(TouchPicker *self, s32 sx, s32 sy, u8 flag) {
             self->unk_19 = n->unk_18;
         }
     }
-    for (Unk_020b60dc_Node *n = gActorColliderList; n != 0; n = n->unk_38) {
-        if (TouchPickKind_HasTarget(n->unk_0c)) {
-            if (TouchPick_HitCylinder(&p1, &p0, n->vfunc_00(), n->unk_04, n->unk_08)) {
-                Vec3 *vp = n->vfunc_00();
+    for (ActorCollider *col = gActorColliderList; col != 0; col = col->unk_38) {
+        if (TouchPickKind_HasTarget(col->unk_0c)) {
+            if (TouchPick_HitCylinder(&p1, &p0, col->getPos(), col->unk_04, col->unk_08)) {
+                Vec3 *vp = col->getPos();
                 self->unk_0c = vp->x;
                 self->unk_10 = vp->y;
                 self->unk_14 = vp->z;
-                self->unk_18 = n->unk_0c;
-                self->unk_19 = n->unk_0d;
+                self->unk_18 = col->unk_0c;
+                self->unk_19 = col->unk_0d;
             }
         }
     }

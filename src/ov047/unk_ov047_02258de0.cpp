@@ -161,9 +161,9 @@ u32 _ZN18SickVillagerRecord15getParcelErrandEv(u32 a);
 void _ZN12ErrandRecord7setStepEh(u32 a, s32 b);
 void _ZN8SaveData7setFlagEj(void *g, u32 n);
 BOOL _ZN8SaveData8testFlagEj(void *g, u32 n);
-BOOL _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
+BOOL _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 }
-#define func_0201b9e8(a, b) _ZN8NpcActor13func_0201b9e8Eii(this, a, b)
+#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define CommManager_isOnline _ZN11CommManager8isOnlineEv
 #define NpcTalkCtrl_isBusy _ZN11NpcTalkCtrl6isBusyEv
 #define NpcTalkCtrl_requestTurnAndTalk _ZN11NpcTalkCtrl18requestTurnAndTalkEssh
@@ -976,7 +976,7 @@ BOOL SpNpcBlathers::mainAct06() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (func_0201b9e8(&a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
+        if (NpcActor_netGetSlots(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
@@ -998,7 +998,7 @@ BOOL SpNpcBlathers::mainAct07() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(&a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -2046,7 +2046,7 @@ void SpNpcBlathers::vfunc_4c(u32 cmd, u32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (func_0201b9e8(&a, &b)) {
+                if (NpcActor_netGetSlots(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                         changeAct(0);

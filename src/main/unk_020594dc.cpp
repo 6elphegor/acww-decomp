@@ -83,36 +83,36 @@ public:
 // call-site view of the callback tables (struct-returning virtuals)
 class RoomScoreSourceCallView {
 public:
-    virtual void *vfunc_00(s32 i) = 0;
-    virtual Unk_0205a930_H vfunc_04(s32 i) = 0;
-    virtual Unk_0205a930_H vfunc_08(s32 i) = 0;
+    virtual void *getRoomMap(s32 i) = 0;
+    virtual Unk_0205a930_H getWallpaper(s32 i) = 0;
+    virtual Unk_0205a930_H getCarpet(s32 i) = 0;
 };
 
 class RoomScoreSource {
 public:
     RoomScoreSource();
     ~RoomScoreSource();
-    virtual void *vfunc_00(s32 i) = 0;
-    virtual void vfunc_04(s32 a, s32 key) = 0;
-    virtual void vfunc_08(s32 a, s32 key) = 0;
+    virtual void *getRoomMap(s32 i) = 0;
+    virtual void getWallpaper(s32 a, s32 key) = 0;
+    virtual void getCarpet(s32 a, s32 key) = 0;
 };
 
 class VillagerRoomScoreSource : public RoomScoreSource {
 public:
     VillagerRoomScoreSource();
     ~VillagerRoomScoreSource();
-    virtual void *vfunc_00(s32 i);
-    virtual void vfunc_04(s32 a, s32 key);
-    virtual void vfunc_08(s32 a, s32 key);
+    virtual void *getRoomMap(s32 i);
+    virtual void getWallpaper(s32 a, s32 key);
+    virtual void getCarpet(s32 a, s32 key);
 };
 
 class HouseRoomScoreSource : public RoomScoreSource {
 public:
     HouseRoomScoreSource();
     ~HouseRoomScoreSource();
-    virtual void *vfunc_00(s32 i);
-    virtual void vfunc_04(s32 a, s32 key);
-    virtual void vfunc_08(s32 a, s32 key);
+    virtual void *getRoomMap(s32 i);
+    virtual void getWallpaper(s32 a, s32 key);
+    virtual void getCarpet(s32 a, s32 key);
 };
 
 // ---- data of other units ----
@@ -310,7 +310,7 @@ void HappyRoom_SendPrizeLetter(void *self, s32 n);
 u32 HappyRoom_CalcLuckyBonus(u32 *p);
 s32 HappyRoomDate_IsNewWeek(u8 *out);
 void HappyRoomDate_SetEvalDay(u8 *out);
-s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *ops, s32 count, s32 base, u8 flag);
+s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag);
 void HappyRoomDate_SetToday(u8 *out);
 u8 FengShui_GetEastTotal();
 u8 FengShui_GetSouthTotal();
@@ -526,16 +526,16 @@ extern "C" HouseRoomScoreSource::HouseRoomScoreSource() {}
 
 extern "C" HouseRoomScoreSource::~HouseRoomScoreSource() {}
 
-extern "C" void *HouseRoomScoreSource::vfunc_00(s32 i) {
+extern "C" void *HouseRoomScoreSource::getRoomMap(s32 i) {
     return HouseRoomMaps_Get(i);
 }
 
-extern "C" void HouseRoomScoreSource::vfunc_04(s32 a, s32 key) {
+extern "C" void HouseRoomScoreSource::getWallpaper(s32 a, s32 key) {
     void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
     *(u16 *)this = *_ZN9HouseRoom12getWallpaperEPi(h, 0);
 }
 
-extern "C" void HouseRoomScoreSource::vfunc_08(s32 a, s32 key) {
+extern "C" void HouseRoomScoreSource::getCarpet(s32 a, s32 key) {
     void *h = _ZN9HouseData7getRoomEi(gSaveHouse, key);
     *(u16 *)this = *_ZN9HouseRoom9getCarpetEPi(h, 0);
 }
@@ -544,11 +544,11 @@ extern "C" VillagerRoomScoreSource::VillagerRoomScoreSource() {}
 
 extern "C" VillagerRoomScoreSource::~VillagerRoomScoreSource() {}
 
-extern "C" void *VillagerRoomScoreSource::vfunc_00(s32 i) {
+extern "C" void *VillagerRoomScoreSource::getRoomMap(s32 i) {
     return sHappyRoomVillagerMap;
 }
 
-extern "C" void VillagerRoomScoreSource::vfunc_04(s32 a, s32 key) {
+extern "C" void VillagerRoomScoreSource::getWallpaper(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetWallpaper();
@@ -560,7 +560,7 @@ extern "C" void VillagerRoomScoreSource::vfunc_04(s32 a, s32 key) {
     }
 }
 
-extern "C" void VillagerRoomScoreSource::vfunc_08(s32 a, s32 key) {
+extern "C" void VillagerRoomScoreSource::getCarpet(s32 a, s32 key) {
     u16 v;
     if (SaveVillagers_Get(gSaveVillagers, key) != 0) {
         u32 t = Villager_GetCarpet();
@@ -670,7 +670,7 @@ extern "C" s32 HappyRoom_EvaluateVillagerRoom(s32 a, s32 b, s32 *c, s32 *d, s32 
     return r;
 }
 
-extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *ops, s32 count, s32 base, u8 flag)
+extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s32 *pb, s32 *pc, RoomScoreSourceCallView *source, s32 count, s32 base, u8 flag)
 {
     s32 total;
     s32 sel;
@@ -697,9 +697,9 @@ extern "C" s32 HappyRoom_Evaluate(RoomScoreEvaluator *p, u16 *flags, s32 *pa, s3
 loop0:
     {
         idx = base + j;
-        void *m = ops->vfunc_00(idx);
-        p->unk_10 = ops->vfunc_04(idx).unk_00;
-        p->unk_12 = ops->vfunc_08(idx).unk_00;
+        void *m = source->getRoomMap(idx);
+        p->unk_10 = source->getWallpaper(idx).unk_00;
+        p->unk_12 = source->getCarpet(idx).unk_00;
         RoomMap_GetFloorBounds((s32 *)p, (s32 *)&p->unk_08, (s32 *)&p->unk_04, (s32 *)&p->unk_0c, m);
         RoomFengShui obj;
         obj.evaluate((s32)m);

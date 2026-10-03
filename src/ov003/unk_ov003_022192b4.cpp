@@ -72,16 +72,17 @@ public:
     u8 pad[0x6a70 - 0x4b20];
 };
 
-// main's UnitShapeQuery (its destructor stubs 0x020315d0/f4/2031600/0x0203160c are byte-identical; the call in D0 goes to
-// 0x020315d0, which symbols.txt names ...C2Ev, so the base is declared under another name whose D2 symbol is an alias of it)
-struct Unk_020d8d3c_B {
-    virtual ~Unk_020d8d3c_B();
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
+// main's UnitShapeQuery, declared in its label spelling UnitShapeQueryX (its destructor stubs 0x020315d0/f4/2031600/0x0203160c
+// are byte-identical; the call in D0 goes to 0x020315d0, which symbols.txt names ...C2Ev, so the base is declared under the
+// X spelling, whose D2 label is an alias of it)
+struct UnitShapeQueryX {
+    virtual ~UnitShapeQueryX();
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
 };
 
-class FieldObjectShapeQuery : public Unk_020d8d3c_B {
+class FieldObjectShapeQuery : public UnitShapeQueryX {
 public:
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
     virtual ~FieldObjectShapeQuery();   // not defined here: D1 is main's, D0 is the separate unit at 0x02219294
 };
 
@@ -3362,7 +3363,7 @@ u8 *FieldObj_GetShapeRecord(u8 *p)
 }
 }
 
-BOOL FieldObjectShapeQuery::vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z) {
+BOOL FieldObjectShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z) {
     using ns_0221f798::gSceneBlockMap;
     using ns_0221f798::BlockMap_GetItemPtr;
     using ns_0221f798::FieldObj_GetShapeRecord;

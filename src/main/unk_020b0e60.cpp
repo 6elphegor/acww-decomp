@@ -288,13 +288,14 @@ class UnitShapeQueryX {
 public:
     UnitShapeQueryX();
     virtual ~UnitShapeQueryX();
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
 };
 
 class TownUnitShapeQuery : public UnitShapeQueryX {
 public:
     TownUnitShapeQuery();
     virtual ~TownUnitShapeQuery();
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y);
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y);
 };
 
 class StrBSizeData {
@@ -316,7 +317,7 @@ public:
 // overlay class whose vtable is at 0x02232c00 (only its D1 is in this unit)
 class FieldObjectShapeQuery : public UnitShapeQueryX {
 public:
-    virtual void vfunc_08();
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
     virtual ~FieldObjectShapeQuery() {}
 };
 
@@ -387,7 +388,7 @@ void NNS_G3dMdlSetMdlDiff(Ctx *c, s32 i, u16 v);
 void NNSi_G3dModifyMatFlag(Pal *p, s32 a, s32 b);
 Obj *BuildingList_FindByItem(u32 a);
 Obj *Building_FindNearPos(u32 a);
-BOOL _ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
+BOOL _ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(void *p, s32 *a, s32 *b, s32 *c, s32 x, s32 y);
 u16 *_ZN13BuildingActor9getItemIdEv(Obj *o);
 BOOL _ZN13BuildingActor15getEntranceTypeEv(void);
 }
@@ -770,9 +771,9 @@ TownUnitShapeQuery::TownUnitShapeQuery() {}
 
 TownUnitShapeQuery::~TownUnitShapeQuery() {}
 
-BOOL TownUnitShapeQuery::vfunc_08(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
+BOOL TownUnitShapeQuery::getUnitShape(s32 *a, s32 *b, s32 *c, volatile s32 x, volatile s32 y) {
     if (func_020b2768_is_flag()) {
-        if (!_ZN21FieldObjectShapeQuery8vfunc_08EPiS0_S0_ii(&sFieldObjectShapeQuery, a, b, c, x, y)) {
+        if (!_ZN21FieldObjectShapeQuery12getUnitShapeEPiS0_S0_ii(&sFieldObjectShapeQuery, a, b, c, x, y)) {
             void *m = gSceneBlockMap;
             if (m != NULL) {
                 s32 lx = x;

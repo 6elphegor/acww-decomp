@@ -11,9 +11,9 @@ class ActorColliderView {
 public:
     ActorColliderView();
     ~ActorColliderView();
-    virtual Vec3 *vfunc_00() = 0;
-    virtual u32 vfunc_04() = 0;
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual Vec3 *getPos() = 0;
+    virtual u32 getOwnerId() = 0;
+    virtual void onCollide(u32 a, u32 b, u32 c);
     void setup(s32 a, s32 b, s32 c, s32 d, u32 e, u8 f, s32 g);
     u8 pad[0x3c];
 };
@@ -22,8 +22,8 @@ class ActorFollowColliderView : public ActorColliderView {
 public:
     ActorFollowColliderView();
     ~ActorFollowColliderView();
-    virtual Vec3 *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual Vec3 *getPos();
+    virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
@@ -32,8 +32,8 @@ class ActorPlacedCollider : public ActorFollowColliderView {
 public:
     ActorPlacedCollider();
     ~ActorPlacedCollider();
-    virtual Vec3 *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual Vec3 *getPos();
+    virtual u32 getOwnerId();
     void setupForActorAt(void *p, Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x44 */ Vec3 unk_44;
 };
@@ -42,8 +42,8 @@ class StaticCollider : public ActorColliderView {
 public:
     StaticCollider();
     ~StaticCollider();
-    virtual Vec3 *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual Vec3 *getPos();
+    virtual u32 getOwnerId();
     void setupAtPos(Vec3 *v, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ Vec3 unk_40;
 };
@@ -52,8 +52,8 @@ class ActorFollowCollider : public ActorColliderView {
 public:
     ActorFollowCollider();
     ~ActorFollowCollider();
-    virtual Vec3 *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual Vec3 *getPos();
+    virtual u32 getOwnerId();
     void setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g);
     /* 0x40 */ u8 *unk_40;
 };
@@ -62,9 +62,9 @@ class ActorCollider {
 public:
     ActorCollider();
     ~ActorCollider();
-    virtual Vec3 *vfunc_00() = 0;
-    virtual u32 vfunc_04() = 0;
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual Vec3 *getPos() = 0;
+    virtual u32 getOwnerId() = 0;
+    virtual void onCollide(u32 a, u32 b, u32 c);
     void submit();
     void resetHit();
     BOOL isHitByGroup(u32 mask);
@@ -122,7 +122,7 @@ extern "C" {
 s32 func_020e7b98(s32 a, s32 b);
 s32 func_020e780c(s32 a, s32 b);
 s32 _ZN5Actor8findByIdEj(s32 v);
-void _ZN19ActorFollowCollider8vfunc_04Ev(void *p);
+void _ZN19ActorFollowCollider10getOwnerIdEv(void *p);
 void ActorCollider_ClearList(void);
 void func_020e9960(Vec3 *out, Vec3 *a, Vec3 *b);
 s32 FX_Div(s32 a, s32 b);
@@ -160,13 +160,13 @@ void SpriteAnim::update() {
     }
 }
 
-u32 StaticCollider::vfunc_04() { return FALSE; }
+u32 StaticCollider::getOwnerId() { return FALSE; }
 
-Vec3 *StaticCollider::vfunc_00() { return &unk_40; }
+Vec3 *StaticCollider::getPos() { return &unk_40; }
 
-u32 ActorPlacedCollider::vfunc_04() { _ZN19ActorFollowCollider8vfunc_04Ev(this); }
+u32 ActorPlacedCollider::getOwnerId() { _ZN19ActorFollowCollider10getOwnerIdEv(this); }
 
-Vec3 *ActorPlacedCollider::vfunc_00() { return &unk_44; }
+Vec3 *ActorPlacedCollider::getPos() { return &unk_44; }
 
 extern "C" void ActorCollider_InitList(void) { ActorCollider_ClearList(); }
 
@@ -178,7 +178,7 @@ ActorCollider::ActorCollider() {
 
 ActorCollider::~ActorCollider() {}
 
-void ActorCollider::vfunc_08(u32 a, u32 b, u32 c) {}
+void ActorCollider::onCollide(u32 a, u32 b, u32 c) {}
 
 BOOL ActorCollider::isPushedFromAngle(s32 a) {
     if (unk_3c != 0) {
@@ -234,9 +234,9 @@ BOOL ActorCollider::canCollideWith(ActorCollider *o) {
         r = FALSE;
     }
     if (r) {
-        u32 a = vfunc_04();
+        u32 a = getOwnerId();
         if (a != 0) {
-            if (a == o->vfunc_04()) {
+            if (a == o->getOwnerId()) {
                 return FALSE;
             }
         }
@@ -262,12 +262,12 @@ extern "C" void ActorCollider_ResolveAll() {
         }
     }
     while (gActorColliderList) {
-        cv = gActorColliderList->vfunc_00();
+        cv = gActorColliderList->getPos();
         for (o = gActorColliderList->unk_38; o; o = o->unk_38) {
             if (!gActorColliderList->canCollideWith(o)) {
                 continue;
             }
-            func_020e9960(&d, o->vfunc_00(), cv);
+            func_020e9960(&d, o->getPos(), cv);
             if (d.y < 0) {
                 t = o->unk_08 + d.y;
             } else {
@@ -291,31 +291,31 @@ extern "C" void ActorCollider_ResolveAll() {
                 if (pen >= gActorColliderList->unk_30) {
                     gActorColliderList->unk_30 = pen;
                     gActorColliderList->unk_28 = o->unk_1c;
-                    gActorColliderList->unk_2c = o->vfunc_04();
+                    gActorColliderList->unk_2c = o->getOwnerId();
                     gActorColliderList->unk_0e = o->unk_0c;
                     gActorColliderList->unk_0f = o->unk_0d;
                 }
             } else {
                 gActorColliderList->unk_28 = o->unk_1c;
-                gActorColliderList->unk_2c = o->vfunc_04();
+                gActorColliderList->unk_2c = o->getOwnerId();
                 gActorColliderList->unk_0e = o->unk_0c;
                 gActorColliderList->unk_0f = o->unk_0d;
             }
             if (o->unk_1c & 1) {
                 if (pen >= o->unk_30) {
                     o->unk_28 = gActorColliderList->unk_1c;
-                    o->unk_2c = gActorColliderList->vfunc_04();
+                    o->unk_2c = gActorColliderList->getOwnerId();
                     o->unk_0e = gActorColliderList->unk_0c;
                     o->unk_0f = gActorColliderList->unk_0d;
                 }
             } else {
                 o->unk_28 = gActorColliderList->unk_1c;
-                o->unk_2c = gActorColliderList->vfunc_04();
+                o->unk_2c = gActorColliderList->getOwnerId();
                 o->unk_0e = gActorColliderList->unk_0c;
                 o->unk_0f = gActorColliderList->unk_0d;
             }
-            gActorColliderList->vfunc_08(o->unk_0c, o->unk_0d, o->unk_1c);
-            o->vfunc_08(gActorColliderList->unk_0c, gActorColliderList->unk_0d, gActorColliderList->unk_1c);
+            gActorColliderList->onCollide(o->unk_0c, o->unk_0d, o->unk_1c);
+            o->onCollide(gActorColliderList->unk_0c, gActorColliderList->unk_0d, gActorColliderList->unk_1c);
             if (gActorColliderList->unk_1c & 1) {
                 continue;
             }
@@ -373,9 +373,9 @@ ActorFollowCollider::ActorFollowCollider() {
 ActorFollowCollider::~ActorFollowCollider() {
 }
 
-Vec3 *ActorFollowCollider::vfunc_00() { return (Vec3 *)(unk_40 + 0x5c); }
+Vec3 *ActorFollowCollider::getPos() { return (Vec3 *)(unk_40 + 0x5c); }
 
-u32 ActorFollowCollider::vfunc_04() { return *(u32 *)(unk_40 + 4); }
+u32 ActorFollowCollider::getOwnerId() { return *(u32 *)(unk_40 + 4); }
 
 void ActorFollowCollider::setupForActor(void *p, s32 a, s32 b, u32 c, u32 d, u32 e, u8 f, s32 g) {
     unk_40 = (u8 *)p;

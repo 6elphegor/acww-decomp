@@ -335,7 +335,7 @@ struct Unk_ov004_0221e0b4_Ent {
 #define func_0201b08c _ZN8NpcActor8vfunc_4cEi
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
+#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_getAngleTo _ZN8NpcActor10getAngleToEPS_
 #define NpcActor_setCollisionRadius _ZN8NpcActor18setCollisionRadiusEi
@@ -379,7 +379,7 @@ extern Unk_ov004_0221e0b4_Ent sSpNpcBookerActTable[];
 void func_0201b08c(void *self, u32 a, u32 b);
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
-s32 func_0201b9e8(void *self, s32 *a, s32 *b);
+s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 BOOL NpcActor_netIsTalkLocked(void *self);
 void NpcActor_setTalkRequest(void *self, void *p);
 u32 NpcActor_getPlayerActor(void *self, u32 id);
@@ -637,7 +637,7 @@ BOOL SpNpcBooker::mainAct04() {
     if (NpcActor_isNetOwner(this)) {
         a = 4;
         b = 4;
-        if (func_0201b9e8(this, &a, &b)) {
+        if (NpcActor_netGetSlots(this, &a, &b)) {
             s32 av = a;
             s32 g = gCommManager->unk_64;
             if (av == g && av == b) {
@@ -661,7 +661,7 @@ BOOL SpNpcBooker::mainAct05() {
     if (NpcActor_isNetOwner(this)) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
             changeAct(3);
         }
@@ -973,7 +973,7 @@ void SpNpcBooker::vfunc_4c(u32 cmd, u32 arg) {
             if (NpcActor_isNetOwner(this) != 0) {
                 a = 4;
                 b = 4;
-                if (func_0201b9e8(this, &a, &b) != 0) {
+                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
                     if ((arg != 4 && arg == (u32)b) || arg == 4) {
                         NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
                         changeAct(0);

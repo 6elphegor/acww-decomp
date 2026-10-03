@@ -314,7 +314,7 @@ struct Unk_ov004_0221b6d4_Bits {
 // Real symbol names of the callees outside this unit (all are called as free functions taking the object first).
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
-#define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
+#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
 #define NpcActor_setNetUserBytes _ZN8NpcActor15setNetUserBytesEPvi
 #define NpcActor_getNetUserBytes _ZN8NpcActor15getNetUserBytesEPhj
@@ -354,7 +354,7 @@ extern u32 sSpNpcSableMsgFiles[];
 
 s32 NpcActor_netSetSlotsIfOwner(void *self, s32 a, s32 b, s32 c);
 BOOL NpcActor_isNetOwner(void *self);
-s32 func_0201b9e8(void *self, s32 *a, s32 *b);
+s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 BOOL NpcActor_netIsTalkLocked(void *self);
 void NpcActor_setNetUserBytes(void *self, void *p, s32 n);
 BOOL NpcActor_getNetUserBytes(void *self, u8 *p, u32 n);
@@ -612,7 +612,7 @@ BOOL SpNpcSable::mainAct04() {
     if (NpcActor_isNetOwner(this)) {
         a = 4;
         b = 4;
-        if (func_0201b9e8(this, &a, &b)) {
+        if (NpcActor_netGetSlots(this, &a, &b)) {
             s32 av = a;
             s32 g = gCommManager->unk_64;
             if (av == g && av == b) {
@@ -652,7 +652,7 @@ BOOL SpNpcSable::mainAct05() {
     if (NpcActor_isNetOwner(this)) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (NpcActor_netGetSlots(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             NpcActor_netSetSlotsIfOwner(this, 1, gCommManager->unk_64, 4);
             changeAct(0);
         }
@@ -808,7 +808,7 @@ void SpNpcSable::vfunc_4c(u32 idx, u32 v) {
             if (NpcActor_isNetOwner(this) != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (func_0201b9e8(this, &a, &b) != 0) {
+                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
                     if (v == 4) {
                         goto chk;
                     }

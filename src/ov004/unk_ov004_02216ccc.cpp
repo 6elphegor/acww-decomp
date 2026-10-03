@@ -40,7 +40,7 @@ class HouseOwnerVillager;
 #define NpcActionCtrl_isActionDone _ZN13NpcActionCtrl12isActionDoneEv
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcActor_netIsTalkLocked _ZN8NpcActor15netIsTalkLockedEv
-#define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
+#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define NpcActor_netSetSlotsIfOwner _ZN8NpcActor18netSetSlotsIfOwnerEjjjz
 #define NpcActor_isNetOwner _ZN8NpcActor10isNetOwnerEv
 #define NpcActor_setTalkRequest _ZN8NpcActor14setTalkRequestEP12Unk_0201bc1c
@@ -99,7 +99,7 @@ extern const u8 data_ov004_02240094[5];
 
 s32 NpcActor_netSetSlotsIfOwner(void *, u32, u32, u32);
 s32 NpcActor_isNetOwner(void *);
-s32 func_0201b9e8(void *, s32 *, s32 *);
+s32 NpcActor_netGetSlots(void *, s32 *, s32 *);
 s32 NpcActor_netIsTalkLocked(void *);
 s32 VillagerTalk_getEventKind(void *);
 s32 Villager_GetResidentStatus(void *);
@@ -672,7 +672,7 @@ BOOL HouseOwnerAi::updateState03(HouseOwnerVillager *o) {
         s32 la;
         void *w = o->unk_82c;
         s32 g;
-        if (func_0201b9e8(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
+        if (NpcActor_netGetSlots(o, &a, &b) != 0 && ((la = a), la == (g = gCommManager->unk_64)) && la == b) {
             NpcActor_netSetSlotsIfOwner(o, 1, g, g);
             if (w != 0 && Villager_GetResidentStatus(w) != 3) {
                 o->unk_8d4 = 12;
@@ -702,7 +702,7 @@ BOOL HouseOwnerAi::updateState04(HouseOwnerVillager *o) {
     if (NpcActor_isNetOwner(o) != 0) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(o, &a, &b) != 0) {
+        if (NpcActor_netGetSlots(o, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     NpcActor_netSetSlotsIfOwner(o, 1, gCommManager->unk_64, 4);
@@ -792,7 +792,7 @@ void HouseOwnerVillager::vfunc_4c(u32 idx, u32 v) {
             if (NpcActor_isNetOwner(this) != 0) {
                 s32 a = 4;
                 s32 b = 4;
-                if (func_0201b9e8(this, &a, &b) != 0) {
+                if (NpcActor_netGetSlots(this, &a, &b) != 0) {
                     if (v == 4) {
                         goto chk;
                     }

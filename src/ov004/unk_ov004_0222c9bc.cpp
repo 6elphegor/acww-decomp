@@ -117,9 +117,9 @@ class ActorCollider {
 public:
     ActorCollider();
     ~ActorCollider();
-    virtual void *vfunc_00() = 0;
-    virtual u32 vfunc_04() = 0;
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual void *getPos() = 0;
+    virtual u32 getOwnerId() = 0;
+    virtual void onCollide(u32 a, u32 b, u32 c);
 
     /* 0x04 */ s32 unk_04;
     /* 0x08 */ s32 unk_08;
@@ -145,8 +145,8 @@ class StaticCollider : public ActorCollider {
 public:
     StaticCollider();
     ~StaticCollider();
-    virtual void *vfunc_00();
-    virtual u32 vfunc_04();
+    virtual void *getPos();
+    virtual u32 getOwnerId();
     /* 0x40 */ V3 unk_40;
 };
 
@@ -317,7 +317,7 @@ class AquariumFishHitBox : public StaticCollider {
 public:
     AquariumFishHitBox();
     ~AquariumFishHitBox();
-    virtual void vfunc_08(u32 a, u32 b, u32 c);
+    virtual void onCollide(u32 a, u32 b, u32 c);
     /* 0x4c */ AquariumFish *unk_4c;
 };
 
@@ -3559,7 +3559,7 @@ extern "C" void AquariumFish_KeepInsideX(R *e) {
     }
 }
 
-void AquariumFishHitBox::vfunc_08(u32 a, u32 idx, u32 c) {
+void AquariumFishHitBox::onCollide(u32 a, u32 idx, u32 c) {
     R *q0 = unk_4c;
     if (q0) {
         R *p = q0;

@@ -411,7 +411,7 @@ public:
 
 class CollisionEdge {
 public:
-    virtual ~CollisionEdge();
+    virtual BOOL hasRoundEnds();
     CollisionVec2 unk_04, unk_0c, unk_14;
     s32 unk_1c;
     BOOL intersectLine(CollisionVec2 *out, CollisionVec2 *a, CollisionVec2 *b);

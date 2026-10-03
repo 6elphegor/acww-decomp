@@ -837,7 +837,7 @@ BOOL SpNpcNookShop_IsDeliveryParcel(u16 *p, s32 m);
 SpNpcNookShop *SpNpcNookShop_CreateTommy();
 SpNpcNookShop *SpNpcNookShop_CreateTimmy();
 SpNpcNookShop *SpNpcNookShop_Create();
-s32 _ZN8NpcActor13func_0201b9e8Eii(void *self, s32 *a, s32 *b);
+s32 _ZN8NpcActor11netGetSlotsEii(void *self, s32 *a, s32 *b);
 }
 
 #define func_ov050_0225bd54_self _ZN17SpNpcNookShopTalk17checkNotInUniformEP22Unk_ov050_0225b908_Out
@@ -1597,7 +1597,7 @@ BOOL SpNpcNookShop::mainAct08() {
         s32 a = 4;
         s32 b = 4;
         u32 x, t;
-        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && ((x = a), x == (t = gCommManager->unk_64)) && x == b) {
             netSetSlotsIfOwner(1, t, t);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
@@ -1641,7 +1641,7 @@ BOOL SpNpcNookShop::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) && a == 4 && NetArea_IsLocalOwner()) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
             changeAct(0xd);
         }
@@ -4097,7 +4097,7 @@ void SpNpcNookShop::vfunc_4c(u32 cmd, u32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b)) {
+                if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                         changeAct(0xd);

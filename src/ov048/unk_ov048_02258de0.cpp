@@ -194,7 +194,7 @@ s32 DwcFriendData_IsValid(void *);
 s32 NetOverlay_LoadWireless();
 s32 Comm_Start(s32, s32, s32);
 s32 Comm_End();
-s32 _ZN8NpcActor13func_0201b9e8Eii(void *, s32 *, s32 *);
+s32 _ZN8NpcActor11netGetSlotsEii(void *, s32 *, s32 *);
 BOOL NetArea_IsLocalOwner();
 Unk_ov048_Rec * TalkWindow_Get(s32);
 void SaveManager_RequestAct02();
@@ -2182,7 +2182,7 @@ BOOL SpNpcCopper::mainAct0F() {
         b = 4;
         s32 u;
         s32 x;
-        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) != 0 && (x = a, u = gCommManager->unk_64, x == u) && x == b) {
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) != 0 && (x = a, u = gCommManager->unk_64, x == u) && x == b) {
             netSetSlotsIfOwner(1, u, u);
             ((ActorTalkRequest *)&unk_658)->vfunc_08();
             unk_658.func_02015ab0(getPlayerActor(4));
@@ -2204,7 +2204,7 @@ BOOL SpNpcCopper::mainAct11() {
     if (isNetOwner() != 0) {
         a = 4;
         b = 4;
-        if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b) != 0) {
+        if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b) != 0) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner() != 0) {
                     netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
@@ -3570,7 +3570,7 @@ void SpNpcCopper::vfunc_4c(u32 cmd, u32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (_ZN8NpcActor13func_0201b9e8Eii(this, &a, &b)) {
+                if (_ZN8NpcActor11netGetSlotsEii(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                         SpNpcCopper_ChangeAct(this, 1);

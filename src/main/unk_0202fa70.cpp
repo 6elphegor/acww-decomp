@@ -8,7 +8,7 @@ struct Unk_0202f2ac_V3 {
     Unk_0202f2ac_V3(s32 a, s32 b, s32 c) : x(a), y(b), z(c) {}
 };
 struct Unk_0202ff44_V3;
-struct Unk_02030608_Obj;
+struct CollisionVisitor;
 struct Unk_02031304_Vec;
 struct Unk_020314f4_Vec;
 struct UnitShapeQueryX;
@@ -53,7 +53,7 @@ s32 func_020e94f8(void *v);
 void func_020e93a0(void *v, ...);
 
 // functions of this unit that the files declared with different stand-in prototypes
-void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
+void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, CollisionVisitor *visitor, u32 flags, u8 p5, u8 p6);
 s32 Ground_GetHeightAt(Unk_0202ff44_V3 *p, u32 *out, u32 flags0);
 u32 CollisionMap_IsBound(s32 a);
 u32 Ground_GetWalkLinks(s32 x, s32 y);
@@ -112,13 +112,13 @@ public:
     CollisionTriangleX();
     CollisionTriangleX(Unk_0202f660_V3 *a, Unk_0202f660_V3 *b, Unk_0202f660_V3 *c, Unk_0202f660_V3 *d);
     ~CollisionTriangleX();
-    virtual BOOL vfunc_00(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL vfunc_04(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
-    virtual BOOL vfunc_08(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushOutFace(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushBackCrossing(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
+    virtual BOOL pushOutEdges(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     virtual BOOL collide(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, s32 c);
     Unk_0202f2ac_V3 unk_04, unk_10, unk_1c, unk_28;
     s32 unk_34;
-    BOOL func_0202f2d8(Unk_0202f2ac_V3 *p);
+    BOOL containsXZ(Unk_0202f2ac_V3 *p);
     BOOL set(Unk_0202f2ac_V3 *a, Unk_0202f2ac_V3 *b, Unk_0202f2ac_V3 *c, Unk_0202f2ac_V3 *d);
 };
 
@@ -184,16 +184,6 @@ struct Unk_0202fe84_Pad { s32 v[6]; Unk_0202fe84_Pad() {} ~Unk_0202fe84_Pad() {}
 
 // ---------------------------------------------------------------- unk_0202ff44.cpp
 struct Unk_0202ff44_V3 { s32 x, y, z; };
-struct Unk_0202ff44_Obj {
-    virtual void vfunc_00(void *a);
-    virtual void vfunc_04(void *a);
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-};
-struct Unk_02030608_Obj {
-    virtual void vfunc_00(void *a);
-    virtual void vfunc_04(void *a);
-    virtual void vfunc_08(void *a);
-};
 struct Unk_01ffcb5c_Chunk { u8 *unk_00; u8 *unk_04; };
 extern "C" Unk_01ffcb5c_Chunk *func_01ffcb5c(s32 x, s32 z);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
@@ -238,11 +228,6 @@ extern "C" s32 Ground_CanPlaceItem(s32 a, s32 b);
 extern "C" BOOL Ground_IsShore(s32 a, s32 b);
 extern "C" BOOL Ground_IsWaterAround(Unk_02030e48_Vec *pos, s32 r, s32 *out, s32 flags);
 extern "C" BOOL Ground_FindWaterAlongDir(Unk_02030e48_Vec *out, Unk_02030e48_Vec *pos, u32 dist, s32 *dir, u32 count, s32 r, s32 flags);
-struct Unk_020310f8_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 d, s32 e);
-};
 extern "C" BOOL Ground_IsGrassSurface(s32 a, s32 b);
 struct Unk_02030f10_Vec : Unk_02030e48_Vec { Unk_02030f10_Vec() {} };
 static inline BOOL Unk_02030f10_Flat(Unk_02033b94 *T)
@@ -297,7 +282,7 @@ struct Unk_020314f4_Vec { s32 x, y, z; };
 struct UnitShapeQueryX {
     UnitShapeQueryX();
     virtual ~UnitShapeQueryX();
-    virtual s32 vfunc_08();
+    virtual BOOL getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
 };
 struct Unk_020d8ce8 {
     u8 pad_000[0x120];
@@ -347,7 +332,7 @@ struct Unk_02031b90_Vec {
 };
 extern "C" void _ZN16BoxColliderShape15updateTransformEP16Unk_0203182c_VeciS1_(void* self, Unk_02031b90_Vec* a, s32 b, Unk_02031b90_Vec* c);
 struct BoxColliderX {
-    virtual void vfunc_00();
+    virtual void onEdgeContact();
     s32 unk_04, unk_08, unk_0c;
     s32 unk_10, unk_14, unk_18;
     s32 unk_1c, unk_20, unk_24;
@@ -413,9 +398,9 @@ static inline BOOL Unk_02031f90_Ge0(s32 v) {
 struct CollisionVisitor {
     CollisionVisitor();
     ~CollisionVisitor();
-    virtual void vfunc_00(u8 *p);
-    virtual void vfunc_04(u8 *p);
-    virtual void vfunc_08(u8 *p);
+    virtual void visitWalls(u8 *p);
+    virtual void visitFloors(u8 *p);
+    virtual void visitCylinders(u8 *p);
 };
 struct Unk_02032028_V {
     s32 x, y, z;
@@ -479,7 +464,7 @@ struct Unk_020d8d28_Best {
 extern "C" s32 _ZN17ShapeCylinderList9landOnTopEP15Unk_02032808_V3iPj(u8* p, s32 a, void* b, s32* out, s32 c, s32 d);
 extern "C" void _ZN17ShapeCylinderList7pushOutEP15Unk_02032808_V3iPv(u8* p, s32 a, s32 b, void* c, s32 d, s32 e);
 extern "C" void _ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(u8* p, s32 a, void* b, s32 c, void* d, s32 e);
-extern "C" s32 _ZN17CollisionTriangle13func_0202f2d8EP15Unk_0202f2ac_V3(void* p, void* v);
+extern "C" s32 _ZN17CollisionTriangle10containsXZEP15Unk_0202f2ac_V3(void* p, void* v);
 extern "C" void* _ZN13CollisionTagXD2Ev(void* p);
 extern "C" void* _ZN13CollisionTagXC2Ev(void* p);
 struct Unk_020d8d28_Dead {
@@ -497,9 +482,9 @@ struct MoveCollisionVisitor : CollisionVisitor {
     u32 unk_24;
 
     MoveCollisionVisitor() {}
-    virtual void vfunc_00(u8* p);
-    virtual void vfunc_04(u8* p);
-    virtual void vfunc_08(u8* p);
+    virtual void visitWalls(u8* p);
+    virtual void visitFloors(u8* p);
+    virtual void visitCylinders(u8* p);
 };
 
 struct SegmentCollisionVisitor : CollisionVisitor {
@@ -516,9 +501,9 @@ struct SegmentCollisionVisitor : CollisionVisitor {
     s32 unk_3c;
 
     SegmentCollisionVisitor() {}
-    virtual void vfunc_00(u8* p);
-    virtual void vfunc_04(u8* p);
-    virtual void vfunc_08(u8* p);
+    virtual void visitWalls(u8* p);
+    virtual void visitFloors(u8* p);
+    virtual void visitCylinders(u8* p);
 };
 
 // ---------------------------------------------------------------- unk_02032494.cpp
@@ -582,11 +567,6 @@ struct ShapeCylinderList {
     volatile u32 unk_00;
     ShapeCylinder unk_04[16];
 };
-struct Unk_020324d8_Obj {
-    virtual void vfunc_00();
-    virtual void vfunc_04();
-    virtual BOOL vfunc_08(s32 *a, s32 *b, s32 *c, s32 x, s32 z);
-};
 
 // ---------------------------------------------------------------- unk_02032dc4.cpp
 extern "C" s32 func_020e7b98(s32 a, s32 b);
@@ -612,7 +592,7 @@ public:
 };
 class CollisionEdge {
 public:
-    virtual BOOL vfunc_00();
+    virtual BOOL hasRoundEnds();
     CollisionEdge() {
         unk_04.set(0, 0);
         unk_0c.set(0, 0);
@@ -639,7 +619,7 @@ public:
     WallEdge();
     WallEdge(CollisionVec2 *a, CollisionVec2 *b, CollisionVec2 *c, s32 p4, s32 p5, u32 p6, u32 p7);
     ~WallEdge();
-    virtual BOOL vfunc_00()
+    virtual BOOL hasRoundEnds()
     {
         if (unk_28 == 3) {
             return FALSE;
@@ -791,7 +771,7 @@ public:
     void reset();
 
     CollisionBlockRef unk_00[6][6];
-    Unk_0202ff44_Obj *unk_120;
+    UnitShapeQueryX *unk_120;
     u32 unk_124;
     u32 unk_128;
     s32 unk_12c;
@@ -855,9 +835,9 @@ extern "C" void Ground_ClearWalkLinks(s32 x, s32 z, s32 mask);
 extern "C" void Ground_SetWalkLinks(s32 x, s32 z, s32 v);
 extern "C" void Collision_AddDigHole(s32 a, s32 b);
 extern "C" void Collision_UpdateDigHoles(void);
-extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx);
+extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, UnitShapeQueryX *o, s32 idx);
 extern "C" void CollisionMap_Select(s32 v);
-extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6);
+extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, CollisionVisitor *visitor, u32 flags, u8 p5, u8 p6);
 extern "C" s32 Collision_HasUnitShapeAt(Unk_0202ff44_V3 *p);
 extern "C" s32 Collision_HasUnitShape(s32 x, s32 z);
 extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r);
@@ -1378,7 +1358,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 b(a.x, a.y, a.z - func_01ffcb0c(sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x + func_01ffcb0c(sl, 0x1666), a.y, a.z);
             CollisionTriangleX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&sCollisionUpVector);
-            if (tri.func_0202f2d8(pos)) {
+            if (tri.containsXZ(pos)) {
                 unk_34 = 0x16;
                 _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0x6000);
             } else {
@@ -1397,7 +1377,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 b(a.x, a.y, a.z + func_01ffcb0c(0x1000 - sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x - func_01ffcb0c(0x1000 - sl, 0x1666), a.y, a.z);
             CollisionTriangleX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&sCollisionUpVector);
-            if (!tri.func_0202f2d8(pos)) {
+            if (!tri.containsXZ(pos)) {
                 unk_34 = 0x16;
                 _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0x6000);
             } else {
@@ -1416,7 +1396,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 b(a.x, a.y, a.z - func_01ffcb0c(sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x - func_01ffcb0c(sl, 0x1666), a.y, a.z);
             CollisionTriangleX tri((Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&sCollisionUpVector);
-            if (tri.func_0202f2d8(pos)) {
+            if (tri.containsXZ(pos)) {
                 unk_34 = 0x16;
                 _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0xffffa000);
             } else {
@@ -1435,7 +1415,7 @@ void GroundInfoCalc::compute(Unk_0202f2ac_V3 *pos, s32 flag, s32 arg) {
             Unk_0202f2ac_V3 b(a.x, a.y, a.z + func_01ffcb0c(0x1000 - sl, 0x1666));
             Unk_0202f2ac_V3 c(a.x + func_01ffcb0c(0x1000 - sl, 0x1666), a.y, a.z);
             CollisionTriangleX tri((Unk_0202f660_V3 *)&a, (Unk_0202f660_V3 *)&b, (Unk_0202f660_V3 *)&c, (Unk_0202f660_V3 *)&sCollisionUpVector);
-            if (!tri.func_0202f2d8(pos)) {
+            if (!tri.containsXZ(pos)) {
                 unk_34 = 0x16;
                 _ZN14GroundInfoBase10setWaveDirEiii(this, gc, sl, 0xffffa000);
             } else {
@@ -1866,7 +1846,7 @@ void ShapeCylinderList::collectFromUnits(void *obj, s32 x0, s32 x1, s32 z0, s32 
         for (; x <= x1; x++) {
             s32 a, b;
             volatile s32 c;
-            if (((Unk_020324d8_Obj *)obj)->vfunc_08(&a, &b, (s32 *)&c, x, z)) {
+            if (((UnitShapeQueryX *)obj)->getUnitShape(&a, &b, (s32 *)&c, x, z)) {
                 if (c == 2) {
                     if (flag) {
                         Unk_02032808_V3 p;
@@ -2045,17 +2025,17 @@ extern "C" void* CollisionTag_Destruct(void* p) {
     return p;
 }
 
-void MoveCollisionVisitor::vfunc_00(u8* p) {
+void MoveCollisionVisitor::visitWalls(u8* p) {
     _ZN12WallEdgeList7collideEP15Unk_0202f2ac_V3S1_iP16Unk_02032dc4_Outi(p, (s32)unk_08, &unk_0c, unk_1c, unk_04, unk_20);
 }
 
-void MoveCollisionVisitor::vfunc_04(u8* p) {
+void MoveCollisionVisitor::visitFloors(u8* p) {
     u8* e;
     Unk_020d8d28_Dead dead;
     u8* end = p + *(s32*)(p + 0xa00) * 0x40;
     for (e = p; e < end; e += 0x40) {
         if (unk_08->unk_04 < *(s32*)(e + 8)) {
-            if (_ZN17CollisionTriangle13func_0202f2d8EP15Unk_0202f2ac_V3(e, unk_08)) {
+            if (_ZN17CollisionTriangle10containsXZEP15Unk_0202f2ac_V3(e, unk_08)) {
                 unk_08->unk_04 = *(s32*)(e + 8);
                 unk_04->unk_04 |= 1;
                 unk_04->unk_08 = *(u8*)(e + 0x38);
@@ -2064,7 +2044,7 @@ void MoveCollisionVisitor::vfunc_04(u8* p) {
     }
 }
 
-void MoveCollisionVisitor::vfunc_08(u8* p) {
+void MoveCollisionVisitor::visitCylinders(u8* p) {
     s32 out;
     if (unk_24 & 1) {
         s32 t = (s32)Collision_GetShapeQuery();
@@ -2079,7 +2059,7 @@ void MoveCollisionVisitor::vfunc_08(u8* p) {
     }
 }
 
-void SegmentCollisionVisitor::vfunc_00(u8* p) {
+void SegmentCollisionVisitor::visitWalls(u8* p) {
     Unk_02031ed4_Vec out;
     Unk_02032028_Ent* e;
     unk_34 = *(s32*)(p + 0x480);
@@ -2116,7 +2096,7 @@ void SegmentCollisionVisitor::vfunc_00(u8* p) {
     }
 }
 
-void SegmentCollisionVisitor::vfunc_04(u8* p) {
+void SegmentCollisionVisitor::visitFloors(u8* p) {
     Unk_02031ed4_Vec out;
     u8* e;
     u8* end;
@@ -2143,7 +2123,7 @@ void SegmentCollisionVisitor::vfunc_04(u8* p) {
     }
 }
 
-void SegmentCollisionVisitor::vfunc_08(u8* p) {
+void SegmentCollisionVisitor::visitCylinders(u8* p) {
     u8* r6;
     u8* e;
     volatile Unk_02031ed4_Vec t;
@@ -2322,7 +2302,7 @@ void BoxColliderX::setupBox(s32 a, s32 b, s32 c, Unk_02031b90_Vec* p, s16 s, Unk
     unk_98 = 1;
 }
 
-void BoxColliderX::vfunc_00() {}
+void BoxColliderX::onEdgeContact() {}
 
 BoxColliderListOwner::BoxColliderListOwner() {}
 
@@ -2557,17 +2537,17 @@ UnitShapeQueryX::UnitShapeQueryX() {}
 
 UnitShapeQueryX::~UnitShapeQueryX() {}
 
-s32 UnitShapeQueryX::vfunc_08() { return 0; }
+BOOL UnitShapeQueryX::getUnitShape(s32 *a, s32 *b, s32 *c, s32 x, s32 z) { return FALSE; }
 
 CollisionVisitor::CollisionVisitor() {}
 
 CollisionVisitor::~CollisionVisitor() {}
 
-void CollisionVisitor::vfunc_00(u8 *p) {}
+void CollisionVisitor::visitWalls(u8 *p) {}
 
-void CollisionVisitor::vfunc_04(u8 *p) {}
+void CollisionVisitor::visitFloors(u8 *p) {}
 
-void CollisionVisitor::vfunc_08(u8 *p) {}
+void CollisionVisitor::visitCylinders(u8 *p) {}
 
 extern "C" u32 CollisionMap_IsFullyBound(s32 i)
 {
@@ -2774,10 +2754,10 @@ extern "C" BOOL Ground_IsFreeGrassOffPath(s32 a, s32 b)
 
 extern "C" BOOL Ground_IsFreeGrass(s32 a, s32 b)
 {
-    Unk_020310f8_Obj *o = (Unk_020310f8_Obj *)Collision_GetShapeQuery();
-    if (o) {
+    UnitShapeQueryX *query = Collision_GetShapeQuery();
+    if (query) {
         s32 x, y, z;
-        if (o->vfunc_08(&x, &y, &z, a, b)) return FALSE;
+        if (query->getUnitShape(&x, &y, &z, a, b)) return FALSE;
     }
     return Ground_IsGrassSurface(a, b);
 }
@@ -3133,10 +3113,10 @@ extern "C" s32 Ground_GetDefaultY(void) {
 }
 
 extern "C" BOOL Collision_GetUnitShape(s32 x, s32 z, s32 *p, s32 *q, s32 *r) {
-    Unk_0202ff44_Obj *o = gCurCollisionMap->unk_120;
-    if (o) {
+    UnitShapeQueryX *query = gCurCollisionMap->unk_120;
+    if (query) {
         s32 a, b, c;
-        if (o->vfunc_08(&a, &b, &c, x, z)) {
+        if (query->getUnitShape(&a, &b, &c, x, z)) {
             *p = a;
             *q = b;
             *r = c;
@@ -3155,7 +3135,7 @@ extern "C" s32 Collision_HasUnitShapeAt(Unk_0202ff44_V3 *p) {
     return Collision_HasUnitShape(p->x >> 13, p->z >> 13);
 }
 
-extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_02030608_Obj *o, u32 flags, u8 p5, u8 p6) {
+extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, CollisionVisitor *visitor, u32 flags, u8 p5, u8 p6) {
     Unk_0202ff44_V3 v18, v24, v30, v3c;
     s32 x1, x2, z1, z2;
     BOOL f4 = (flags & 4) ? TRUE : FALSE;
@@ -3191,9 +3171,9 @@ extern "C" void Collision_Query(Unk_0202ff44_V3 *a, Unk_0202ff44_V3 *b, Unk_0203
     if (p5 && flags) {
         _ZN17FloorTriangleList14buildFromCellsEP12Unk_02033a0ciiii(&sCollisionWorld.unk_e48, &sCollisionWorld.unk_1a94, x1, x2, z1, z2);
     }
-    o->vfunc_08(&sCollisionWorld.unk_184c);
-    o->vfunc_00(&sCollisionWorld.unk_9c4);
-    o->vfunc_04(&sCollisionWorld.unk_e48);
+    visitor->visitCylinders((u8 *)&sCollisionWorld.unk_184c);
+    visitor->visitWalls((u8 *)&sCollisionWorld.unk_9c4);
+    visitor->visitFloors((u8 *)&sCollisionWorld.unk_e48);
 }
 
 extern "C" void CollisionMap_Select(s32 v) {
@@ -3210,7 +3190,7 @@ extern "C" void CollisionMap_Select(s32 v) {
     }
 }
 
-extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, Unk_0202ff44_Obj *o, s32 idx) {
+extern "C" BOOL CollisionMap_Bind(u32 a, u32 b, UnitShapeQueryX *o, s32 idx) {
     CollisionMap *m = &sCollisionWorld.unk_04[idx];
     BOOL ok = TRUE;
     CollisionMap_Reset(idx);

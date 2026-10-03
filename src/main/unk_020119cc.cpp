@@ -2252,7 +2252,7 @@ public:
     void setNetUserBytes(void *dst, s32 n);
     BOOL getNetUserBytes(u8 *src, u32 n);
     BOOL netIsTalkLocked();
-    s32 func_0201b9e8(s32 a, s32 b);
+    s32 netGetSlots(s32 a, s32 b);
     void netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...);
     s32 netSetSlots(s32 a, s32 b, s32 c);
     BOOL isNetOwner();
@@ -4087,7 +4087,7 @@ void NpcActor::netSetSlotsIfOwner(u32 a, u32 b, u32 c, ...) {
     }
 }
 
-s32 NpcActor::func_0201b9e8(s32 a, s32 b) {
+s32 NpcActor::netGetSlots(s32 a, s32 b) {
     using namespace nR;
     return NpcNetRecord_GetSlots(a, b, &unk_ea);
 }
@@ -4096,7 +4096,7 @@ BOOL NpcActor::netIsTalkLocked() {
     using namespace nR;
     s32 a = 4;
     s32 b = 4;
-    if (func_0201b9e8((s32)&a, (s32)&b) != 0) {
+    if (netGetSlots((s32)&a, (s32)&b) != 0) {
         if (b < 4) {
             return TRUE;
         }

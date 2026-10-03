@@ -5,13 +5,13 @@
 
 extern "C" {
 extern u32 _ZTV21FieldObjectShapeQuery[];
-void _ZN14Unk_020d8d3c_BD2Ev(void *self);
+void _ZN15UnitShapeQueryXD2Ev(void *self);
 void _ZdlPv(void *p);
 
 void *_ZN21FieldObjectShapeQueryD0Ev(void *self)
 {
     *(u32 *)self = (u32)&_ZTV21FieldObjectShapeQuery[2];
-    _ZN14Unk_020d8d3c_BD2Ev(self);
+    _ZN15UnitShapeQueryXD2Ev(self);
     _ZdlPv(self);
     return self;
 }

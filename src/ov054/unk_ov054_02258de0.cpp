@@ -500,7 +500,7 @@ struct Unk_ov054_SceneEntry {
 #define NpcActionCtrl_getAction _ZN13NpcActionCtrl9getActionEv
 #define NpcMoveCtrl_setTurnMode _ZN11NpcMoveCtrl11setTurnModeEh
 #define NpcMoveCtrl_setSpeedPreset _ZN11NpcMoveCtrl14setSpeedPresetEiiii
-#define func_0201b9e8 _ZN8NpcActor13func_0201b9e8Eii
+#define NpcActor_netGetSlots _ZN8NpcActor11netGetSlotsEii
 #define HouseData_getDebt _ZN9HouseData7getDebtEv
 #define func_02063818 _ZN15EncodedString8BD1Ev
 #define func_02063830 _ZN15EncodedString8BC1Ev
@@ -571,7 +571,7 @@ void MenuCtrl_StoreFutureLetter();
 s32 NetArea_IsLocalOwner();
 void func_02015ab0(void *self, s32 v);
 s32 NpcTalkCtrl_isBusy(void *self);
-s32 func_0201b9e8(void *self, s32 *a, s32 *b);
+s32 NpcActor_netGetSlots(void *self, s32 *a, s32 *b);
 
 s32 func_0212a438(const char *s);
 s32 strncmp(const void *a, const char *b, s32 n);
@@ -1245,7 +1245,7 @@ BOOL SpNpcPellyPhyllis::mainAct09() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b) && a == gCommManager->unk_64 && a == b) {
+        if (NpcActor_netGetSlots(this, &a, &b) && a == gCommManager->unk_64 && a == b) {
             netSetSlotsIfOwner(1, gCommManager->unk_64, gCommManager->unk_64);
             unk_658.vfunc_08();
             func_02015ab0(&unk_658, getPlayerActor(4));
@@ -1264,7 +1264,7 @@ BOOL SpNpcPellyPhyllis::mainAct0A() {
     if (isNetOwner()) {
         s32 a = 4;
         s32 b = 4;
-        if (func_0201b9e8(this, &a, &b)) {
+        if (NpcActor_netGetSlots(this, &a, &b)) {
             if (a == 4) {
                 if (NetArea_IsLocalOwner()) {
                     netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
@@ -2575,7 +2575,7 @@ void SpNpcPellyPhyllis::vfunc_4c(u32 cmd, u32 arg) {
             if (isNetOwner()) {
                 a = 4;
                 b = 4;
-                if (func_0201b9e8(this, &a, &b)) {
+                if (NpcActor_netGetSlots(this, &a, &b)) {
                     if ((arg != 4 && (s32)arg == b) || arg == 4) {
                         netSetSlotsIfOwner(1, gCommManager->unk_64, 4);
                         changeAct(2);
